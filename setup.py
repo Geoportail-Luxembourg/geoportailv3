@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+    from setuptools import setup, find_packages
+
+setup(
+    name='geoportail_v3',
+    version='1.0',
+    description='geoportail_v3, a c2cgeoportal project',
+    author='camptocamp',
+    author_email='info@camptocamp.com',
+    url='http://www.camptocamp.com/geospatial-solutions',
+    install_requires=[
+        'c2cgeoportal',
+    ],
+    packages=find_packages(exclude=['ez_setup']),
+    include_package_data=True,
+    message_extractors={'geoportail_v3': [
+        ('static/**', 'ignore', None),
+        ('**.py', 'python', None),
+        ('templates/**', 'mako', {'input_encoding': 'utf-8'})]},
+    zip_safe=False,
+    entry_points={
+        'paste.app_factory': [
+            'main = geoportail_v3:main',
+        ],
+        'console_scripts': [
+            'create_db = geoportail_v3.scripts.create_db:main',
+        ],
+    },
+)

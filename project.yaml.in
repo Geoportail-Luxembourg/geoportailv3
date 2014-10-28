@@ -1,0 +1,6 @@
+project_folder: geoportail_v3
+project_package: geoportail_v3
+host: <host>
+checker_path: /${instanceid}/wsgi/check_collector?
+template_vars:
+    mobile_application_title: 
