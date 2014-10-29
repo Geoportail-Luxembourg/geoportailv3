@@ -1,5 +1,5 @@
-project_folder: geoportail_v3
-project_package: geoportail_v3
+project_folder: geoportailv3
+project_package: geoportailv3
 host: <host>
 checker_path: /${instanceid}/wsgi/check_collector?
 template_vars:

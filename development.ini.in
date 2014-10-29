@@ -1,12 +1,12 @@
 [app:app]
-use = egg:geoportail_v3
-project = geoportail_v3
+use = egg:geoportailv3
+project = geoportailv3
 reload_templates = true
 debug_authorization = false
 debug_notfound = false
 debug_routematch = false
 debug_templates = true
-mako.directories = geoportail_v3:templates
+mako.directories = geoportailv3:templates
     c2cgeoportal:templates
 app.cfg = %(here)s/config.yaml
 # Authentication settings
@@ -48,7 +48,7 @@ port = ${vars:waitress_port}
 # Begin logging configuration
 
 [loggers]
-keys = root, c2cgeoportal, geoportail_v3
+keys = root, c2cgeoportal, geoportailv3
 
 [handlers]
 keys = console
@@ -65,10 +65,10 @@ level = DEBUG
 handlers =
 qualname = c2cgeoportal
 
-[logger_geoportail_v3]
+[logger_geoportailv3]
 level = DEBUG
 handlers =
-qualname = geoportail_v3
+qualname = geoportailv3
 
 [logger_sqlalchemy]
 level = INFO
