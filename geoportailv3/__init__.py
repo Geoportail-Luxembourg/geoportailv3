@@ -17,6 +17,7 @@ def main(global_config, **settings):
     config.add_settings({'srid': 2169})
 
     config.include('c2cgeoportal')
+    config.include('pyramid_closure')
 
     config.add_translation_dirs('geoportailv3:locale/')
 
@@ -58,5 +59,12 @@ def main(global_config, **settings):
                     renderer='geoportailv3:static/mobile/build/production/App/config.js',
                     route_name='mobile_config_prod')
     config.add_static_view('mobile', 'geoportailv3:static/mobile/build/production/App')
+
+    # static views for js resources in node_modules and for closure
+    config.add_static_view('node_modules', settings.get('node_modules_path'))
+    config.add_static_view('closure', settings.get('closure_library_path'))
+
+    # view and route for the ngeo.html page
+    config.add_route('ngeo', '/ngeo')
 
     return config.make_wsgi_app()
