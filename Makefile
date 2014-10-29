@@ -1,7 +1,4 @@
 SITE_PACKAGES = $(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())" 2> /dev/null)
-CLOSURE_UTIL_PATH := openlayers/node_modules/closure-util
-CLOSURE_LIBRARY_PATH = $(shell node -e 'process.stdout.write(require("$(CLOSURE_UTIL_PATH)").getLibraryPath())' 2> /dev/null)
-CLOSURE_COMPILER_PATH = $(shell node -e 'process.stdout.write(require("$(CLOSURE_UTIL_PATH)").getCompilerPath())' 2> /dev/null)
 OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
 NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
 APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
@@ -34,7 +31,6 @@ build: geoportailv3/static/build/build.js geoportailv3/static/build/build.css ge
 clean:
 	rm -f .build/node_modules.timestamp
 	rm -f .build/dev-requirements.timestamp
-	rm -f common.ini
 	rm -f geoportailv3/locale/*.pot
 	rm -rf geoportailv3/static/build
 
@@ -60,7 +56,7 @@ lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.times
 install-dev-egg: $(SITE_PACKAGES)/geoportailv3.egg-link
 
 .PHONY: serve
-serve: install build common.ini
+serve: install build development.ini
 	.build/venv/bin/pserve --reload development.ini
 
 geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
@@ -125,6 +121,3 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 
 $(SITE PACKAGES)/geoportailv3.egg-link: .build/venv setup.py
 	.build/venv/bin/pip install -r requirements.txt
-
-common.ini: common.ini.in
-	sed 's|__CLOSURE_LIBRARY_PATH__|$(CLOSURE_LIBRARY_PATH)|' $< > $@
