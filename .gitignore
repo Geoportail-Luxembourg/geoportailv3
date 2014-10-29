@@ -5,6 +5,7 @@ apache/frontend.conf
 apache/mapserver.conf
 apache/wsgi.conf
 deploy/deploy.cfg
+alembic.ini
 development.ini
 production.ini
 config.yaml
@@ -22,3 +23,6 @@ geoportailv3/static/mobile/build/
 geoportailv3/static/mobile/openlayers-mobile.js
 geoportailv3/static/mobile/bootstrap.js
 geoportailv3/static/mobile/bootstrap.json
+.build
+node_modules
+*.po~
