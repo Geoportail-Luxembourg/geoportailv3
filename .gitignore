@@ -24,3 +24,4 @@ geoportailv3/static/mobile/bootstrap.js
 geoportailv3/static/mobile/bootstrap.json
 .build
 node_modules
+*.po~
