@@ -5,6 +5,7 @@ apache/frontend.conf
 apache/mapserver.conf
 apache/wsgi.conf
 deploy/deploy.cfg
+alembic.ini
 development.ini
 production.ini
 config.yaml
