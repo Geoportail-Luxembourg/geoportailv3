@@ -8,9 +8,9 @@ except ImportError:
     from setuptools import setup, find_packages
 
 setup(
-    name='geoportail_v3',
+    name='geoportailv3',
     version='1.0',
-    description='geoportail_v3, a c2cgeoportal project',
+    description='geoportailv3, a c2cgeoportal project',
     author='camptocamp',
     author_email='info@camptocamp.com',
     url='http://www.camptocamp.com/geospatial-solutions',
@@ -19,17 +19,17 @@ setup(
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
-    message_extractors={'geoportail_v3': [
+    message_extractors={'geoportailv3': [
         ('static/**', 'ignore', None),
         ('**.py', 'python', None),
         ('templates/**', 'mako', {'input_encoding': 'utf-8'})]},
     zip_safe=False,
     entry_points={
         'paste.app_factory': [
-            'main = geoportail_v3:main',
+            'main = geoportailv3:main',
         ],
         'console_scripts': [
-            'create_db = geoportail_v3.scripts.create_db:main',
+            'create_db = geoportailv3.scripts.create_db:main',
         ],
     },
 )

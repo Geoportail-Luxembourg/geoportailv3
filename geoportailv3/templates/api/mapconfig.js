@@ -53,7 +53,7 @@ Extended APIs.
                     size: new OpenLayers.Size(200, 100),
                     layers: [new OpenLayers.Layer.Image(
                         "Overview Map",
-                        "${request.static_url('geoportail_v3:static/images/overviewmap.png')}",
+                        "${request.static_url('geoportailv3:static/images/overviewmap.png')}",
                         OpenLayers.Bounds.fromArray([420000, 30000, 900000, 350000]),
                         new OpenLayers.Size(200, 100),
                         {isBaseLayer: true}

@@ -6,16 +6,16 @@ Version 1.6
 
 1. Get the new files:
 
-    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportail_v3 package=geoportail_v3
+    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
 
-    cp /tmp/geoportail_v3/alembic.ini.in .
+    cp /tmp/geoportailv3/alembic.ini.in .
     git add alembic.ini.in
 
-    rm -rf /tmp/geoportail_v3
+    rm -rf /tmp/geoportailv3
 
 2. Removes the no more used files:
 
-    git rm -r geoportail_v3/CONST_migration
+    git rm -r geoportailv3/CONST_migration
 
 3. In the mapfile add the following lines to all restricted layers:
 
@@ -50,18 +50,18 @@ Version 1.5
 Full git hub diff: https://github.com/camptocamp/c2cgeoportal/compare/1.4...1.5#diff-24
 (Every files started with `c2cgeoportal/scaffolds/create/`)
 
-1. In the `geoportail_v3/__init__.py` file:
+1. In the `geoportailv3/__init__.py` file:
 
    * Use a cache header in the static view:
 
-        - config.add_static_view('proj', 'geoportail_v3:static')
-        + config.add_static_view('proj', 'geoportail_v3:static',
+        - config.add_static_view('proj', 'geoportailv3:static')
+        + config.add_static_view('proj', 'geoportailv3:static',
         +     cache_max_age=int(config.get_settings()["default_max_age"])
         + )
 
 2. Update the mobile application:
 
-    * In the `geoportail_v3/static/mobile/config.js` file do the following changes:
+    * In the `geoportailv3/static/mobile/config.js` file do the following changes:
 
         - // App.info includes information that is needed by internal
         - // components, such as the Login view component.
@@ -101,7 +101,7 @@ Full git hub diff: https://github.com/camptocamp/c2cgeoportal/compare/1.4...1.5#
 
 3. Update the templates:
 
-  * In the `geoportail_v3/templates/viewer.js`:
+  * In the `geoportailv3/templates/viewer.js`:
 
     * Import the json dumps.
     * Add some print argument (printProviderConfig).
@@ -253,22 +253,22 @@ Full git hub diff: https://github.com/camptocamp/c2cgeoportal/compare/1.4...1.5#
 Version 1.4.5
 =============
 
-1. In the `geoportail_v3/__init__.py` replace 'testing' by 'production':
+1. In the `geoportailv3/__init__.py` replace 'testing' by 'production':
 
          config.add_route('mobile_index_prod', '/mobile/')
          config.add_view('c2cgeoportal.views.entry.Entry',
                          attr='mobile',
-    -                    renderer='geoportail_v3:static/mobile/build/testing/App/index.html',
-    +                    renderer='geoportail_v3:static/mobile/build/production/App/index.html',
+    -                    renderer='geoportailv3:static/mobile/build/testing/App/index.html',
+    +                    renderer='geoportailv3:static/mobile/build/production/App/index.html',
                          route_name='mobile_index_prod')
          config.add_route('mobile_config_prod', '/mobile/config.js')
          config.add_view('c2cgeoportal.views.entry.Entry',
                          attr='mobileconfig',
-    -                    renderer='geoportail_v3:static/mobile/build/testing/App/config.js',
-    +                    renderer='geoportail_v3:static/mobile/build/production/App/config.js',
+    -                    renderer='geoportailv3:static/mobile/build/testing/App/config.js',
+    +                    renderer='geoportailv3:static/mobile/build/production/App/config.js',
                          route_name='mobile_config_prod')
-    -    config.add_static_view('mobile', 'geoportail_v3:static/mobile/build/testing/App')
-    +    config.add_static_view('mobile', 'geoportail_v3:static/mobile/build/production/App')
+    -    config.add_static_view('mobile', 'geoportailv3:static/mobile/build/testing/App')
+    +    config.add_static_view('mobile', 'geoportailv3:static/mobile/build/production/App')
 
 2. To add the cache version parameter to the JS/CSS URLs:
 
@@ -276,36 +276,36 @@ Version 1.4.5
 
    cache_version = ${cache_version}
 
-   * In ``geoportail_v3/templates/index.html`` do the following changes:
+   * In ``geoportailv3/templates/index.html`` do the following changes:
 
-   - <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/build/app.css')}" />
-   + <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/build/app.css', _query=url_params)}" />
+   - <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/build/app.css')}" />
+   + <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/build/app.css', _query=url_params)}" />
 
-   - <script type="text/javascript" src="${request.static_url('geoportail_v3:static/build/app.js')}"></script>
-   - <script type="text/javascript" src="${request.static_url('geoportail_v3:static/build/lang-%s.js' % lang)}"></script>
-   + <script type="text/javascript" src="${request.static_url('geoportail_v3:static/build/app.js', _query=url_params)}"></script>
-   + <script type="text/javascript" src="${request.static_url('geoportail_v3:static/build/lang-%s.js' % lang, _query=url_params)}"></script>
+   - <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/app.js')}"></script>
+   - <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/lang-%s.js' % lang)}"></script>
+   + <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/app.js', _query=url_params)}"></script>
+   + <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/lang-%s.js' % lang, _query=url_params)}"></script>
 
    - <script type="text/javascript" src="${request.route_url('viewer')}${extra_params}"></script>
    + <script type="text/javascript" src="${request.route_url('viewer', _query=extra_params)}"></script>
 
-   The same changes must be done in ``geoportail_v3/templates/edit.html`` and ``geoportail_v3/templates/routing.html``.
+   The same changes must be done in ``geoportailv3/templates/edit.html`` and ``geoportailv3/templates/routing.html``.
 
-   In ``geoportail_v3/templates/api/api.js`` do the following changes:
+   In ``geoportailv3/templates/api/api.js`` do the following changes:
 
      document.write('<scr' + 'ipt type="text/javascript" src="'
-   -     + "${request.static_url('geoportail_v3:static/build/api.js')}" + '"></scr' + 'ipt>');
-   +     + "${request.static_url('geoportail_v3:static/build/api.js', _query=url_params)}" + '"></scr' + 'ipt>');
+   -     + "${request.static_url('geoportailv3:static/build/api.js')}" + '"></scr' + 'ipt>');
+   +     + "${request.static_url('geoportailv3:static/build/api.js', _query=url_params)}" + '"></scr' + 'ipt>');
      document.write('<scr' + 'ipt type="text/javascript" src="'
-   -     + "${request.static_url('geoportail_v3:static/build/api-lang-%s.js' % lang)}" + '"></scr' + 'ipt>');
-   +     + "${request.static_url('geoportail_v3:static/build/api-lang-%s.js' % lang, _query=url_params)}" + '"></scr' + 'ipt>');
+   -     + "${request.static_url('geoportailv3:static/build/api-lang-%s.js' % lang)}" + '"></scr' + 'ipt>');
+   +     + "${request.static_url('geoportailv3:static/build/api-lang-%s.js' % lang, _query=url_params)}" + '"></scr' + 'ipt>');
      document.write('<link rel="stylesheet" type="text/css" href="'
-   -     + "${request.static_url('geoportail_v3:static/build/api.css')}" + '" />');
-   +     + "${request.static_url('geoportail_v3:static/build/api.css', _query=url_params)}" + '" />');
+   -     + "${request.static_url('geoportailv3:static/build/api.css')}" + '" />');
+   +     + "${request.static_url('geoportailv3:static/build/api.css', _query=url_params)}" + '" />');
 
-   Similar changes are needed in ``geoportail_v3/templates/api/xapi.js`` as well.
+   Similar changes are needed in ``geoportailv3/templates/api/xapi.js`` as well.
 
-11. In the `geoportail_v3/__init__.py` file:
+11. In the `geoportailv3/__init__.py` file:
 
    * Use the multiauthpolicy:
 
@@ -317,7 +317,7 @@ Version 1.4.5
         -from c2cgeoportal.resources import FAModels, defaultgroupsfinder
         +from c2cgeoportal.resources import FAModels
         +from c2cgeoportal.lib.authentication import create_authentication
-        from geoportail_v3.resources import Root
+        from geoportailv3.resources import Root
 
         def main(global_config, **settings):
             """ This function returns a Pyramid WSGI application.
@@ -375,14 +375,14 @@ Version 1.4
 
     git add versions.cfg
 
-    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportail_v3 package=geoportail_v3
+    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
 
-    cp /tmp/geoportail_v3/README.rst .
+    cp /tmp/geoportailv3/README.rst .
     git add README.rst
-    cp /tmp/geoportail_v3/geoportail_v3/templates/routing.{js,html} geoportail_v3/templates/
-    git add geoportail_v3/templates/routing.{js,html}
+    cp /tmp/geoportailv3/geoportailv3/templates/routing.{js,html} geoportailv3/templates/
+    git add geoportailv3/templates/routing.{js,html}
 
-    rm -rf /tmp/geoportail_v3
+    rm -rf /tmp/geoportailv3
 
 2. Remove the deprecated files:
 
@@ -401,32 +401,32 @@ Version 1.4
 
   * Set all the `root` sections to:
 
-        geoportail_v3/static/lib/cgxp/core/src/script
-        geoportail_v3/static/lib/cgxp/ext
-        geoportail_v3/static/lib/cgxp/geoext/lib
-        geoportail_v3/static/lib/cgxp/openlayers/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/Spherical/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/DynamicMeasure/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/AddViaPoint/lib
-        geoportail_v3/static/lib/cgxp/gxp/src/script
-        geoportail_v3/static/lib/cgxp/proj4js
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/Measure/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
-        geoportail_v3/static/lib/cgxp/sandbox
-        geoportail_v3/static/lib/cgxp/styler/lib
-        geoportail_v3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
-        geoportail_v3/static/lib/cgxp/ext.ux/GroupComboBox
-        geoportail_v3/static/lib/cgxp/ext.ux/ColorPicker
-        geoportail_v3/static/lib/cgxp/ext.ux/base64
-        geoportail_v3/static/lib/cgxp/ext.overrides
-        geoportail_v3/static/lib/cgxp/dygraphs
-        geoportail_v3/static/js
+        geoportailv3/static/lib/cgxp/core/src/script
+        geoportailv3/static/lib/cgxp/ext
+        geoportailv3/static/lib/cgxp/geoext/lib
+        geoportailv3/static/lib/cgxp/openlayers/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/Spherical/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/DynamicMeasure/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/AddViaPoint/lib
+        geoportailv3/static/lib/cgxp/gxp/src/script
+        geoportailv3/static/lib/cgxp/proj4js
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/Measure/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
+        geoportailv3/static/lib/cgxp/sandbox
+        geoportailv3/static/lib/cgxp/styler/lib
+        geoportailv3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
+        geoportailv3/static/lib/cgxp/ext.ux/GroupComboBox
+        geoportailv3/static/lib/cgxp/ext.ux/ColorPicker
+        geoportailv3/static/lib/cgxp/ext.ux/base64
+        geoportailv3/static/lib/cgxp/ext.overrides
+        geoportailv3/static/lib/cgxp/dygraphs
+        geoportailv3/static/js
 
   * Use the ext debug files (3x):
 
@@ -447,32 +447,32 @@ Version 1.4
 
         [routing.js]
         root =
-            geoportail_v3/static/lib/cgxp/core/src/script
-            geoportail_v3/static/lib/cgxp/ext
-            geoportail_v3/static/lib/cgxp/geoext/lib
-            geoportail_v3/static/lib/cgxp/openlayers/lib
-            geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
-            geoportail_v3/static/lib/cgxp/openlayers.addins/Spherical/lib
-            geoportail_v3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
-            geoportail_v3/static/lib/cgxp/openlayers.addins/DynamicMeasure/lib
-            geoportail_v3/static/lib/cgxp/openlayers.addins/AddViaPoint/lib
-            geoportail_v3/static/lib/cgxp/gxp/src/script
-            geoportail_v3/static/lib/cgxp/proj4js
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/Measure/lib
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
-            geoportail_v3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
-            geoportail_v3/static/lib/cgxp/sandbox
-            geoportail_v3/static/lib/cgxp/styler/lib
-            geoportail_v3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
-            geoportail_v3/static/lib/cgxp/ext.ux/GroupComboBox
-            geoportail_v3/static/lib/cgxp/ext.ux/ColorPicker
-            geoportail_v3/static/lib/cgxp/ext.ux/base64
-            geoportail_v3/static/lib/cgxp/ext.overrides
-            geoportail_v3/static/lib/cgxp/dygraphs
-            geoportail_v3/static/js
+            geoportailv3/static/lib/cgxp/core/src/script
+            geoportailv3/static/lib/cgxp/ext
+            geoportailv3/static/lib/cgxp/geoext/lib
+            geoportailv3/static/lib/cgxp/openlayers/lib
+            geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
+            geoportailv3/static/lib/cgxp/openlayers.addins/Spherical/lib
+            geoportailv3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
+            geoportailv3/static/lib/cgxp/openlayers.addins/DynamicMeasure/lib
+            geoportailv3/static/lib/cgxp/openlayers.addins/AddViaPoint/lib
+            geoportailv3/static/lib/cgxp/gxp/src/script
+            geoportailv3/static/lib/cgxp/proj4js
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/Measure/lib
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
+            geoportailv3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
+            geoportailv3/static/lib/cgxp/sandbox
+            geoportailv3/static/lib/cgxp/styler/lib
+            geoportailv3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
+            geoportailv3/static/lib/cgxp/ext.ux/GroupComboBox
+            geoportailv3/static/lib/cgxp/ext.ux/ColorPicker
+            geoportailv3/static/lib/cgxp/ext.ux/base64
+            geoportailv3/static/lib/cgxp/ext.overrides
+            geoportailv3/static/lib/cgxp/dygraphs
+            geoportailv3/static/js
         first =
             Ext/adapter/ext/ext-base-debug.js
             Ext/ext-all-debug.js
@@ -578,7 +578,7 @@ Version 1.4
 
 5. Update the templates:
 
-  * In the `geoportail_v3/templates/viewer.js`
+  * In the `geoportailv3/templates/viewer.js`
 
       - The LayerTree defaultThemes parameter has been separated in two to allow to handle separately
         the default theme and the themes loaded from url, then replace:
@@ -596,7 +596,7 @@ Version 1.4
             % endif
             defaultThemes: ["to_be_defined"],
 
-  * In all the `geoportail_v3/templates/*.js` files (including in `geoportail_v3/templates/api/`):
+  * In all the `geoportailv3/templates/*.js` files (including in `geoportailv3/templates/api/`):
 
       - Remove the `getMatrix` method from the `WMTS_OPTIONS`.
 
@@ -605,41 +605,41 @@ Version 1.4
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
 
   * Add the new configuration to the ``cgxp_querier`` plugin in the
-    ``geoportail_v3/templates/viewer.js`` file:
+    ``geoportailv3/templates/viewer.js`` file:
 
         attributeURLs: ${queryer_attribute_urls | n}
 
-  * In `geoportail_v3/templates/viewer.js`, `geoportail_v3/templates/api/mapconfig.js`,
-    `geoportail_v3/templates/edit.js` replace
+  * In `geoportailv3/templates/viewer.js`, `geoportailv3/templates/api/mapconfig.js`,
+    `geoportailv3/templates/edit.js` replace
     `url: '${tilecache_url}',` by `url: ${tiles_url | n},` (no quotes).
 
   * Change the `X-UA-Compatible` meta in the HTML templates, and other little
-    things to do: in `geoportail_v3/templates/index.html`:
+    things to do: in `geoportailv3/templates/index.html`:
 
     - <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9">
     + <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9; IE=EmulateIE10">
 
-    in `geoportail_v3/templates/edit.html`:
+    in `geoportailv3/templates/edit.html`:
 
     - <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
     + <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9; IE=EmulateIE10">
-      <title>geoportail_v3 Geoportal Editor</title>
+      <title>geoportailv3 Geoportal Editor</title>
     - <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    + <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportail_v3:static/images/favicon.ico')}">
+    + <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportailv3:static/images/favicon.ico')}">
 
-    in `geoportail_v3/templates/routing.html`:
+    in `geoportailv3/templates/routing.html`:
 
-    - <meta name="keywords" content="geoportail_v3, mapfish, editor, geoportal">
-    - <meta name="description" content="geoportail_v3 Geoportal Editor.">
+    - <meta name="keywords" content="geoportailv3, mapfish, editor, geoportal">
+    - <meta name="description" content="geoportailv3 Geoportal Editor.">
     - <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
-    + <meta name="keywords" content="geoportail_v3, mapfish, routing, geoportal">
-    + <meta name="description" content="geoportail_v3 Routing.">
+    + <meta name="keywords" content="geoportailv3, mapfish, routing, geoportal">
+    + <meta name="description" content="geoportailv3 Routing.">
     + <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9; IE=EmulateIE10">
-      <title>geoportail_v3 Routing</title>
+      <title>geoportailv3 Routing</title>
     - <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-    + <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportail_v3:static/images/favicon.ico')}">
+    + <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportailv3:static/images/favicon.ico')}">
 
-    in `geoportail_v3/templates/edit.js`:
+    in `geoportailv3/templates/edit.js`:
 
     - var THEMES = {
       var THEMES = {
@@ -648,7 +648,7 @@ Version 1.4
 
     It is now possible to allow the user to change his password, and optionally to remind him to change it.
 
-      - In the `geoportail_v3/templates/viewer.js` and `geoportail_v3/templates/edit.js` files:
+      - In the `geoportailv3/templates/viewer.js` and `geoportailv3/templates/edit.js` files:
         You need to add some configuration parameters in the `cgxp_login` plugin:
 
             {
@@ -674,7 +674,7 @@ Version 1.4
         If you need it see the documentation about password replication:
         http://docs.camptocamp.net/c2cgeoportal/integrator/password_replication.html
 
-      - The form in geoportail_v3/templates/index.html and geoportail_v3/templates/edit.html must be updated:
+      - The form in geoportailv3/templates/index.html and geoportailv3/templates/edit.html must be updated:
 
               <form method="POST" id="loginForm" style="display: none">
                   <input id="login" name="login" type="text" autocomplete="on"/>
@@ -686,127 +686,127 @@ Version 1.4
   * In the XAPI we don't anymore reset all default CSS attributes.
     Than the XAPI should not anymore break the CSS of the page.
 
-    In the `geoportail_v3/templates/api/viewer.js` file in the `portalConfig`,
+    In the `geoportailv3/templates/api/viewer.js` file in the `portalConfig`,
     you should add the line:
 
                 ctCls: 'x-map',
 
-    In the file `geoportail_v3/templates/api/xapi.js`, replace:
+    In the file `geoportailv3/templates/api/xapi.js`, replace:
 
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/ext-all.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/ext-all.css')}" + '" />');
 
    By:
 
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/core/src/theme/reset.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/core/src/theme/reset.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/editor.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/editor.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/pivotgrid.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/pivotgrid.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/menu.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/menu.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/panel.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/panel.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/grid.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/grid.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/debug.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/debug.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/qtips.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/qtips.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/dd.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/dd.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/form.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/form.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/resizable.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/resizable.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/toolbar.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/toolbar.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/slider.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/slider.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/combo.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/combo.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/layout.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/layout.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/dialog.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/dialog.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/core.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/core.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/button.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/button.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/progress.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/progress.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/tabs.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/tabs.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/box.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/box.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/borders.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/borders.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/date-picker.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/date-picker.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/tree.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/tree.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/window.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/window.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/visual/list-view.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/visual/list-view.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/editor.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/editor.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/pivotgrid.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/pivotgrid.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/menu.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/menu.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/panel.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/panel.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/grid.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/grid.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/debug.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/debug.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/qtips.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/qtips.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/dd.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/dd.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/form.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/form.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/resizable.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/resizable.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/toolbar.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/toolbar.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/panel-reset.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/panel-reset.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/slider.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/slider.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/combo.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/combo.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/layout.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/layout.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/dialog.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/dialog.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/core.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/core.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/button.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/button.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/progress.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/progress.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/tabs.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/tabs.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/box.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/box.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/borders.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/borders.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/date-picker.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/date-picker.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/tree.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/tree.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/window.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/window.css')}" + '" />');
         document.write('<link rel="stylesheet" type="text/css" href="'
-                + "${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/resources/css/structure/list-view.css')}" + '" />');
+                + "${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/structure/list-view.css')}" + '" />');
 
 
   * Because of a bug in Chrome on Windows highlighted by changes in OpenLayers,
     parts of the user may turn gray on large screens.  We advice you do the
-    following changes in `geoportail_v3/templates/viewer.js`:
+    following changes in `geoportailv3/templates/viewer.js`:
 
         -       wmsURL: "${request.route_url('mapserverproxy', path='')}"
         +       wmsURL: "${request.route_url('mapserverproxy', path='')}",
@@ -885,34 +885,34 @@ Version 1.4
       - Some files can be removed from the mobile application directory since they
         are not used anymore. You can launch the following command::
 
-            $ git rm -r geoportail_v3/static/mobile/.senchasdk \
-                     geoportail_v3/static/mobile/app/view/GeolocateControl.js \
-                     geoportail_v3/static/mobile/app/view/MobileMeasure.js \
-                     geoportail_v3/static/mobile/sdk
+            $ git rm -r geoportailv3/static/mobile/.senchasdk \
+                     geoportailv3/static/mobile/app/view/GeolocateControl.js \
+                     geoportailv3/static/mobile/app/view/MobileMeasure.js \
+                     geoportailv3/static/mobile/sdk
 
-      - In the ``geoportail_v3/__init__.py`` the following modifications of the
+      - In the ``geoportailv3/__init__.py`` the following modifications of the
         routes to mobile built application are required::
 
          config.add_route('mobile_index_prod', '/mobile/')
          config.add_view('c2cgeoportal.views.entry.Entry',
                          attr='mobile',
-    -                    renderer='geoportail_v3:static/mobile/build/production/index.html',
-    +                    renderer='geoportail_v3:static/mobile/build/testing/App/index.html',
+    -                    renderer='geoportailv3:static/mobile/build/production/index.html',
+    +                    renderer='geoportailv3:static/mobile/build/testing/App/index.html',
                          route_name='mobile_index_prod')
          config.add_route('mobile_config_prod', '/mobile/config.js')
          config.add_view('c2cgeoportal.views.entry.Entry',
                          attr='mobileconfig',
-    -                    renderer='geoportail_v3:static/mobile/build/production/config.js',
-    +                    renderer='geoportail_v3:static/mobile/build/testing/App/config.js',
+    -                    renderer='geoportailv3:static/mobile/build/production/config.js',
+    +                    renderer='geoportailv3:static/mobile/build/testing/App/config.js',
                          route_name='mobile_config_prod')
-    -    config.add_static_view('mobile', 'geoportail_v3:static/mobile/build/production')
-    +    config.add_static_view('mobile', 'geoportail_v3:static/mobile/build/testing/App')
+    -    config.add_static_view('mobile', 'geoportailv3:static/mobile/build/production')
+    +    config.add_static_view('mobile', 'geoportailv3:static/mobile/build/testing/App')
 
 
-  * In the `geoportail_v3/static/mobile/config.js` file:
+  * In the `geoportailv3/static/mobile/config.js` file:
 
       - Move the 'rasterTpl' and all other mobile specific localisation
-        in the `geoportail_v3/static/js/Proj/Lang/<lang>.js` files.
+        in the `geoportailv3/static/js/Proj/Lang/<lang>.js` files.
 
       - Remove any lines for translations:
 
@@ -939,7 +939,7 @@ Version 1.4
         background layers should now be listed in the map config.
 
 
-  * In the `geoportail_v3/static/mobile/app/view/Settings.js` file:
+  * In the `geoportailv3/static/mobile/app/view/Settings.js` file:
 
       - Currently the view is not scrollable, add the following in the config object:
 
@@ -963,10 +963,10 @@ Version 1.4
 
     @@ -8,6 +8,7 @@
      root =
-         geoportail_v3/static/lib/cgxp/openlayers/lib
-         geoportail_v3/static/lib/cgxp/proj4js
-    +    geoportail_v3/static/js
-    +    geoportail_v3/static/mobile
+         geoportailv3/static/lib/cgxp/openlayers/lib
+         geoportailv3/static/lib/cgxp/proj4js
+    +    geoportailv3/static/js
+    +    geoportailv3/static/mobile
      first =
          OpenLayers/SingleFile.js
          OpenLayers/Console.js
@@ -991,20 +991,20 @@ Version 1.4
     +    Proj/Lang/en.js
     +    Proj/Lang/de.js
 
-  * Add missing ``geoportail_v3/static/mobile/resources/css/app.css`` line in the ``.gitignore`` file,
+  * Add missing ``geoportailv3/static/mobile/resources/css/app.css`` line in the ``.gitignore`` file,
     and remove the related file:
 
-       git rm -f geoportail_v3/static/mobile/resources/css/app.css
+       git rm -f geoportailv3/static/mobile/resources/css/app.css
 
   * Add new lines to your application's ``.gitignore`` file:
 
-       geoportail_v3/static/mobile/bootstrap.js
-       geoportail_v3/static/mobile/bootstrap.json
+       geoportailv3/static/mobile/bootstrap.js
+       geoportailv3/static/mobile/bootstrap.json
 
     Also remove the corresponding files from your repository:
 
-        git rm -f geoportail_v3/static/mobile/bootstrap.js
-        git rm -f geoportail_v3/static/mobile/bootstrap.json
+        git rm -f geoportailv3/static/mobile/bootstrap.js
+        git rm -f geoportailv3/static/mobile/bootstrap.json
 
 10. In the `apache/wsgi.conf.in` do the following changes:
 
@@ -1017,7 +1017,7 @@ Version 1.4
 
         RewriteRule ^${vars:apache-entry-point}routing/?$ /${vars:instanceid}/wsgi/routing [PT]
 
-11. In the file `geoportail_v3/__init__.py` remove the following code::
+11. In the file `geoportailv3/__init__.py` remove the following code::
 
     from c2cgeoportal.views.tilecache import load_tilecache_config
 
@@ -1138,7 +1138,7 @@ Version 1.3.1
        mobile_default_theme:
 
 2. To make the `X-UA-Compatible` work again in the
-   `geoportail_v3/templates/index.html` file the following block should be moved
+   `geoportailv3/templates/index.html` file the following block should be moved
    below all the <meta> tags:
 
         % if not no_redirect and mobile_url is not None:
@@ -1153,7 +1153,7 @@ Version 1.3.1
    a major regression in the mobile app, where longpress queries no longer
    work.
 
-   To fix it edit geoportail_v3/static/mobile/config.js and add `fallThrough: true`
+   To fix it edit geoportailv3/static/mobile/config.js and add `fallThrough: true`
    to the map config, before `theme: null` for example:
 
 
@@ -1180,16 +1180,16 @@ Version 1.3
    The c2cgeoportal mobile functions to be configured as view callables in the
    application are now part of the c2cgeoportal entry.py view module. This
    change requires changing the way mobile views should be defined in the
-   application. Edit geoportail_v3/__init__.py and replace the entire "# mobile
+   application. Edit geoportailv3/__init__.py and replace the entire "# mobile
    views and routes" block by the one provided in the "mobile" chapter of the
    integrator doc [*]. Do not forget to replace "<package_name>" by
-   "geoportail_v3" in the new route and view definitions.
+   "geoportailv3" in the new route and view definitions.
 
    [*] <http://docs.camptocamp.net/c2cgeoportal/integrator/mobile.html#adding-mobile-routes-and-views>
 
    To use the "Login" view component as documented in the mobile chapter of the
    documentation you need to have the following line in
-   geoportail_v3/static/mobile/config.js:
+   geoportailv3/static/mobile/config.js:
 
    App.info = '${info | n}';
 
@@ -1198,8 +1198,8 @@ Version 1.3
 2. Adding the following entries to all the ``root`` lists in
    ``jsbuild/app.cfg`` is recommended:
 
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/WMSBrowser/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/StreetViewPanel
 
 3. Adding the following entry at the end of the ``first`` sections
    of all files (except the language ones) in ``jsbuild/app.cfg`` is recommended:
@@ -1215,7 +1215,7 @@ Version 1.3
 
 5. Auto redirection to mobile application has been added.
 
-   Add the following in the ``geoportail_v3/templates/index.html`` for the main
+   Add the following in the ``geoportailv3/templates/index.html`` for the main
    application just after the ``<head>`` opening tag:
 
         % if not no_redirect and mobile_url is not None:
@@ -1264,23 +1264,23 @@ Version 1.3
    https://github.com/camptocamp/c2cgeoportal/commit/3a8f0e4d87ab4199d474c0e8ed6cc33038e2e795
    or regenerate the API help:
 
-        ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportail_v3 package=geoportail_v3
-        cp -r /tmp/geoportail_v3/geoportail_v3/templates/api/apihelp.html geoportail_v3/templates/api
-        cp -r /tmp/geoportail_v3/geoportail_v3/templates/api/xapihelp.html geoportail_v3/templates/api
-        rm -rf /tmp/geoportail_v3
+        ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
+        cp -r /tmp/geoportailv3/geoportailv3/templates/api/apihelp.html geoportailv3/templates/api
+        cp -r /tmp/geoportailv3/geoportailv3/templates/api/xapihelp.html geoportailv3/templates/api
+        rm -rf /tmp/geoportailv3
 
 10. c2cgeoportal 1.3 requires papyrus 0.10dev1. If papyrus is set to 0.9 or
     lower in the [versions] section of buildout.cfg, change it to 0.10dev1.
 
-11. In the file `geoportail_v3/templates/edit.html` you should add
+11. In the file `geoportailv3/templates/edit.html` you should add
     the `${extra_params}` value:
 
 -        <script type="text/javascript" src="${request.route_url('edit.js')}"></script>
 +        <script type="text/javascript" src="${request.route_url('edit.js')}${extra_params}"></script>
 
 12. Don't need anymore to specify the queryableLayers in th API.
-    Than you should do on your `geoportail_v3/templates/api/api.js`
-    and in `geoportail_v3/templates/api/xapi.js` do this replacement:
+    Than you should do on your `geoportailv3/templates/api/api.js`
+    and in `geoportailv3/templates/api/xapi.js` do this replacement:
 
 -    this.queryableLayers = [<...>];
 +    this.queryableLayers = ${queryable_layers|n};
@@ -1298,13 +1298,13 @@ Version 1.2
    As minimal you should get the new files:
 
         ./buildout/bin/pcreate -s c2cgeoportal_create \
-                /tmp/geoportail_v3 package=geoportail_v3
-        cp -r /tmp/geoportail_v3/geoportail_v3/static/mobile/custom.scss geoportail_v3/static/mobile/
-        cp -r /tmp/geoportail_v3/geoportail_v3/static/mobile/app/ geoportail_v3/static/mobile/
-        rm -rf /tmp/geoportail_v3
+                /tmp/geoportailv3 package=geoportailv3
+        cp -r /tmp/geoportailv3/geoportailv3/static/mobile/custom.scss geoportailv3/static/mobile/
+        cp -r /tmp/geoportailv3/geoportailv3/static/mobile/app/ geoportailv3/static/mobile/
+        rm -rf /tmp/geoportailv3
 
 2. CGXP plugin WFSGetFeature now requires that the themes are explicitly passed
-   in its configuration in geoportail_v3/templates/viewer.js using the following
+   in its configuration in geoportailv3/templates/viewer.js using the following
    parameter:
 
     themes: THEMES
@@ -1372,16 +1372,16 @@ Version 1.2
 7. It is now possible to disable the administration interface, for example on
    productive instances of the application. To do so:
 
-   a. Edit the main() function in geoportail_v3/__init__.py and use
+   a. Edit the main() function in geoportailv3/__init__.py and use
 
        from pyramid.settings import asbool
        if asbool(config.get_settings().get('enable_admin_interface')):
-           config.formalchemy_admin('admin', package='geoportail_v3',
+           config.formalchemy_admin('admin', package='geoportailv3',
                    view='fa.jquery.pyramid.ModelView', factory=FAModels)
 
       instead of
 
-       config.formalchemy_admin('admin', package='geoportail_v3',
+       config.formalchemy_admin('admin', package='geoportailv3',
                view='fa.jquery.pyramid.ModelView', factory=FAModels)
 
    b. Add the following parameter in the ``[app:app]`` section of
@@ -1401,7 +1401,7 @@ Version 1.2
    a. We recommend you add the following to the root list in the app.js section
       of ``app.cfg``:
 
-       geoportail_v3/static/lib/cgxp/ext.ux/GroupComboBox
+       geoportailv3/static/lib/cgxp/ext.ux/GroupComboBox
 
    b. If you want the results to be grouped, add a ``grouping`` option to the
       FullTextSearch plugin in ``viewer.js`` as well as the following line in
@@ -1417,7 +1417,7 @@ Version 1.2
             ptype: "cgxp_redlining",
             toggleGroup: "maptools",
             actionTarget: "center.tbar",
-            layerManagerUrl: "${request.static_url('geoportail_v3:static/lib/cgxp/sandbox/LayerManager/ux/')}"
+            layerManagerUrl: "${request.static_url('geoportailv3:static/lib/cgxp/sandbox/LayerManager/ux/')}"
         },
 
 10. The ``functionality`` variable available in Mako templates (e.g. ``viewer.js``)
@@ -1455,21 +1455,21 @@ Version 1.2
     a few implications on existing applications, whether you want your
     applications to expose the JavaScript APIs or not.
 
-    Project Lang Files (geoportail_v3/static/js/Lang)
+    Project Lang Files (geoportailv3/static/js/Lang)
 
         You need to split each lang file into two files. For example,
-        geoportail_v3/static/js/Proj/Lang/fr.js should be splitted into
-        geoportail_v3/static/js/Proj/Lang/fr.js and
-        geoportail_v3/static/js/Proj/Lang/GeoExt-fr.js. The former should include
+        geoportailv3/static/js/Proj/Lang/fr.js should be splitted into
+        geoportailv3/static/js/Proj/Lang/fr.js and
+        geoportailv3/static/js/Proj/Lang/GeoExt-fr.js. The former should include
         OpenLayers-based translations only, and the latter should include
         GeoExt-based translations only. If your application does not have
         GeoExt-based translations (which is a good thing), you will need to
-        create an empty geoportail_v3/static/js/Proj/Lang/GeoExt-fr.js file. And you
+        create an empty geoportailv3/static/js/Proj/Lang/GeoExt-fr.js file. And you
         obviously need to repeat this GeoExt-en.js and GeoExt-de.js.
 
     JavaScript Build Config (jsbuild/app.cfg)
 
-        The geoportail_v3/static/js/Proj/Lang/GeoExt-<code>.js files should now be
+        The geoportailv3/static/js/Proj/Lang/GeoExt-<code>.js files should now be
         listed in the ``include`` list of ``[lang-<code>.js]`` sections. For
         example:
 
@@ -1500,12 +1500,12 @@ Version 1.2
 
     Application-level CSS
 
-        The geoportail_v3/static/css/proj.css include the application-level CSS.
+        The geoportailv3/static/css/proj.css include the application-level CSS.
         This file should be splitted into three files:
 
-        - geoportail_v3/static/css/proj.css
-        - geoportail_v3/static/css/proj-map.css
-        - geoportail_v3/static/css/proj-widgets.css
+        - geoportailv3/static/css/proj.css
+        - geoportailv3/static/css/proj-map.css
+        - geoportailv3/static/css/proj-widgets.css
 
         proj-map.css is used by the main application viewers (viewer.js and
         edit.js), the Simple API, and the Extended API. It shouldn't include
@@ -1530,8 +1530,8 @@ Version 1.2
         This is done by adding the following <link> tags below that for
         proj.css:
 
-            <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/css/proj-map.css')}" />
-            <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/css/proj-widgets.css')}" />
+            <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/css/proj-map.css')}" />
+            <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/css/proj-widgets.css')}" />
 
     Adding the APIs to your application
 
@@ -1539,20 +1539,20 @@ Version 1.2
         create a temporary project and copy the API files from this
         temporary project to yours::
 
-        $ cd geoportail_v3
+        $ cd geoportailv3
         $ ./buildout/bin/pcreate -s c2cgeoportal_create \
-                /tmp/geoportail_v3 package=geoportail_v3
-        $ cp -r /tmp/geoportail_v3/geoportail_v3/templates/api geoportail_v3/templates/
-        $ cp -r /tmp/geoportail_v3/geoportail_v3/static/apihelp geoportail_v3/static/
-        $ rm -rf /tmp/geoportail_v3
+                /tmp/geoportailv3 package=geoportailv3
+        $ cp -r /tmp/geoportailv3/geoportailv3/templates/api geoportailv3/templates/
+        $ cp -r /tmp/geoportailv3/geoportailv3/static/apihelp geoportailv3/static/
+        $ rm -rf /tmp/geoportailv3
 
     Clean up (remove old API-related files)
 
-        $ cd geoportail_v3
-        $ rm -f geoportail_v3/static/js/api/Map.js
-        $ rm -f geoportail_v3/templates/apihelp.html
-        $ rm -f geoportail_v3/templates/apiloader.js
-        $ rm -f geoportail_v3/templates/apiviewer.js
+        $ cd geoportailv3
+        $ rm -f geoportailv3/static/js/api/Map.js
+        $ rm -f geoportailv3/templates/apihelp.html
+        $ rm -f geoportailv3/templates/apiloader.js
+        $ rm -f geoportailv3/templates/apiviewer.js
 
     Add RewriteRule's to Apache config
 
@@ -1580,7 +1580,7 @@ Version 1.2
     The following path should be added in all root sections
     of `jsbuild/app.cfg`:
 
-    geoportail_v3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
+    geoportailv3/static/lib/cgxp/openlayers.addins/URLCompressed/lib
 
 15. CGXP's Redlining plugin (drawing tools) has been enhanced. It requires the
     following updates:
@@ -1597,7 +1597,7 @@ Version 1.2
       loaded in debug mode, you'll have to add the following code right above
       the one for ``proj.css``:
 
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/lib/cgxp/ext/Ext/examples/ux/css/Spinner.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/examples/ux/css/Spinner.css')}" />
 
 16. Update the checker for the new api, in the section `check_collector` the
     `checker_apiloader` doesn't exists anymore,
@@ -1616,13 +1616,13 @@ Version 1.2
 18. In the file `jsbuild/app.cfg`, for file `[lang-en.js]`, in section `include`:
     remove the line `CGXP/locale/en.js`, and add the localisation in the files:
 
-    `geoportail_v3/static/js/Proj/Lang/en.js`:
+    `geoportailv3/static/js/Proj/Lang/en.js`:
     "layertree": "Themes"
 
-    `geoportail_v3/static/js/Proj/Lang/fr.js`:
+    `geoportailv3/static/js/Proj/Lang/fr.js`:
     "layertree": "Thèmes"
 
-    `geoportail_v3/static/js/Proj/Lang/de.js`:
+    `geoportailv3/static/js/Proj/Lang/de.js`:
     "layertree": "Themen"
 
 
@@ -1636,7 +1636,7 @@ Version 1.1
 2. For the FeaturesWindow CGXP plugin we need to add the following line to the
    jsbuild/app.cfg file in the root sections:
 
-    geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
+    geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureSelectionModel/lib
 
 3. The admin interface relies on the js.jqueryui_selectmenu Python package,
    which does not work with js.jquery > 1.7.1 (the Jump to... dropdown does not
@@ -1651,7 +1651,7 @@ Version 1.1
    loged into. See <https://github.com/camptocamp/c2cgeoportal/issues/196>.
 
    Fixing the issue requires manual changes to development.ini.in,
-   production.ini.in, and geoportail_v3/__init__.py.
+   production.ini.in, and geoportailv3/__init__.py.
 
    Edit development.ini.in and production.ini.in and add the following
    variable definition to the [app:app] section:
@@ -1661,7 +1661,7 @@ Version 1.1
    (It is probably a good idea to group the definitions of authtkt_secret and
    authtkt_cookie_name together, as they're both related to authentication.)
 
-   Now edit geoportail_v3/__init__.py to pass a `cookie_name` to the
+   Now edit geoportailv3/__init__.py to pass a `cookie_name` to the
    `AuthTktAuthenticationPolicy` constructor:
 
         authentication_policy = AuthTktAuthenticationPolicy(
@@ -1836,7 +1836,7 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
         by
         "wms_onlineresource" "http://${vars:host}/${vars:instanceid}/wsgi/mapserv_proxy"
 
-    - Add the following line in the [app:geoportail_v3] of the production.ini.in
+    - Add the following line in the [app:geoportailv3] of the production.ini.in
             and the developement.ini.in:
         app.cfg = %(here)s/config.yaml
 
@@ -1861,7 +1861,7 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
         tilecache_url
 
     - Re apply the update scaffold to regenerate the CONST_buildout file:
-        ./buildout/bin/pcreate --interactive -s c2cgeoportal_update ../geoportail_v3 package=geoportail_v3
+        ./buildout/bin/pcreate --interactive -s c2cgeoportal_update ../geoportailv3 package=geoportailv3
 
     - In the file ``print/templates/print.mako.in`` replace
         ``${vars:mapserv_host}`` and ``${vars:wsgi_host}`` by ``${vars:host}``.
@@ -1870,7 +1870,7 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
         Allow from ${vars:mapserv_host}
         we will use only ${vars:mapserv_allow}
 
-    - Edit ``geoportail_v3/templates/viewer.js`` and ``geoportail_v3/templates/edit.js`` and change
+    - Edit ``geoportailv3/templates/viewer.js`` and ``geoportailv3/templates/edit.js`` and change
 
           % if len(tilecache_url) == 0
 
@@ -1905,7 +1905,7 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
 3. To add the support of WMTS layers the database should be updated by
    standard procedure, CGXP also. We also need the ogcproxy, and to
    use is we need to add the following line in the file
-   geoportail_v3/templates/viewer.js:
+   geoportailv3/templates/viewer.js:
 
         OpenLayers.ProxyHost = "${request.route_url('ogcproxy')}?url=";
 
@@ -1928,11 +1928,11 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
    <a href="javascript:cgxp.tools.openInfoWindow('http://www.test.com', 'Popup title', 600, 500);">Link text</a>
 
 5. Add new deploy hooks to set the databases rights.
-   cd geoportail_v3
-   ./buildout/bin/pcreate --overwrite -s c2cgeoportal_create /tmp/geoportail_v3 package=geoportail_v3
-   cp /tmp/geoportail_v3/deploy/hooks/post-restore-database.in deploy/hooks/
+   cd geoportailv3
+   ./buildout/bin/pcreate --overwrite -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
+   cp /tmp/geoportailv3/deploy/hooks/post-restore-database.in deploy/hooks/
    chmod +x deploy/hooks/post-restore-database.in
-   rm -rf /tmp/geoportail_v3
+   rm -rf /tmp/geoportailv3
 
 6. HTTPS detection
 
@@ -1957,44 +1957,44 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
 
    Copy config.js and mobile.cfg from c2cgeoportal_create:
 
-   $ cd geoportail_v3
+   $ cd geoportailv3
    $ ./buildout/bin/pcreate -s c2cgeoportal_create \
-           /tmp/geoportail_v3 package=geoportail_v3
-   $ cp /tmp/geoportail_v3/geoportail_v3/static/mobile/config.js \
-        geoportail_v3/static/mobile/
-   $ cp /tmp/geoportail_v3/jsbuild/mobile.cfg jsbuild/
-   $ rm -rf /tmp/geoportail_v3
+           /tmp/geoportailv3 package=geoportailv3
+   $ cp /tmp/geoportailv3/geoportailv3/static/mobile/config.js \
+        geoportailv3/static/mobile/
+   $ cp /tmp/geoportailv3/jsbuild/mobile.cfg jsbuild/
+   $ rm -rf /tmp/geoportailv3
 
    Add routes and views:
 
    # mobile views and routes
    config.add_route('mobile_index_dev', '/mobile_dev/')
    config.add_view('c2cgeoportal.views.mobile.index',
-                   renderer='geoportail_v3:static/mobile/index.html',
+                   renderer='geoportailv3:static/mobile/index.html',
                    route_name='mobile_index_dev')
    config.add_route('mobile_config_dev', '/mobile_dev/config.js')
    config.add_view('c2cgeoportal.views.mobile.config',
-                   renderer='geoportail_v3:static/mobile/config.js',
+                   renderer='geoportailv3:static/mobile/config.js',
                    route_name='mobile_config_dev')
-   config.add_static_view('mobile_dev', 'geoportail_v3:static/mobile')
+   config.add_static_view('mobile_dev', 'geoportailv3:static/mobile')
 
    config.add_route('mobile_index_prod', '/mobile/')
    config.add_view('c2cgeoportal.views.mobile.index',
-                   renderer='geoportail_v3:static/mobile/build/production/index.html',
+                   renderer='geoportailv3:static/mobile/build/production/index.html',
                    route_name='mobile_index_prod')
    config.add_route('mobile_config_prod', '/mobile/config.js')
    config.add_view('c2cgeoportal.views.mobile.config',
-                   renderer='geoportail_v3:static/mobile/build/production/config.js',
+                   renderer='geoportailv3:static/mobile/build/production/config.js',
                    route_name='mobile_config_prod')
-   config.add_static_view('mobile', 'geoportail_v3:static/mobile/build/production')
+   config.add_static_view('mobile', 'geoportailv3:static/mobile/build/production')
 
    Now read http://docs.camptocamp.net/c2cgeoportal/integrator/mobile.html to
    know how to build and customize the mobile application.
 
 9. GeoExt popup css resource in template for debug mode was missing
    - add:
-     <link rel="stylesheet" type="text/css" href="${request.static_url('geoportail_v3:static/lib/cgxp/geoext/resources/css/popup.css')}" />
-     in file geoportail_v3/templates/index.html
+     <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/geoext/resources/css/popup.css')}" />
+     in file geoportailv3/templates/index.html
 
 10. In the CGXP print plugin config autoFit: true should be set in the "options"
    object instead of the "outputConfig" object.
@@ -2046,14 +2046,14 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
     And add the following lines to the jsbuild/app.cfg file:
 
     - in the root section:
-        geoportail_v3/static/lib/cgxp/ext.overrides
+        geoportailv3/static/lib/cgxp/ext.overrides
 
     - in the include section:
         DragTracker.js #ext.override
 
 12. Add the following line to the root section of the app.js section in jsbuild/app.cfg:
 
-    geoportail_v3/static/lib/cgxp/dygraphs
+    geoportailv3/static/lib/cgxp/dygraphs
 
     Also add the following line in the index.html template:
 
@@ -2070,11 +2070,11 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
 
 15. Update the print. A new file is required. To get it do the following:
 
-    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportail_v3 package=geoportail_v3
-    cp /tmp/geoportail_v3/print/WEB-INF/classes/spring-application-context.xml \
+    ./buildout/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
+    cp /tmp/geoportailv3/print/WEB-INF/classes/spring-application-context.xml \
             print/WEB-INF/classes
     git add print/WEB-INF/classes/spring-application-context.xml
-    rm -rf /tmp/geoportail_v3
+    rm -rf /tmp/geoportailv3
 
 16. The cgxp-install part is now deactivated by default, so if you still use
     SVN, you have to add it back in your ``buildout.cfg`` file, section
@@ -2098,9 +2098,9 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
         parts -= cgxp-install
 
 17. It is recommended to edit the project's ``development.ini.in`` and
-    ``production.ini.in`` files and change ``[app:geoportail_v3]`` to
+    ``production.ini.in`` files and change ``[app:geoportailv3]`` to
     ``[app:app]``, and in the section ``[pipeline:main]`` replace
-    ``pipeline = weberror fanstatic geoportail_v3`` by
+    ``pipeline = weberror fanstatic geoportailv3`` by
     ``pipeline = weberror fanstatic app``. In this way the ``manage_db``
     and ``manage_users`` commands can be used without specifying any
     application name using the ``--app-name`` switch - "app" is the default.
@@ -2136,14 +2136,14 @@ tilecache_url: http://$${vars:host}/$${vars:parent_instanceid}/wsgi/tilecache
 20. In the file '.gitignore' the following lines should be added:
     *.pyc
     deploy/hooks/post-restore-database
-    geoportail_v3/static/mobile/resources/sass/.sass-cache
-    geoportail_v3/static/mobile/archive/
-    geoportail_v3/static/mobile/build/
-    geoportail_v3/static/mobile/openlayers-mobile.js
+    geoportailv3/static/mobile/resources/sass/.sass-cache
+    geoportailv3/static/mobile/archive/
+    geoportailv3/static/mobile/build/
+    geoportailv3/static/mobile/openlayers-mobile.js
 
 21. Improve the checker an add a check collector, see integator/check in the
     documentation to configure them.
-    Something like this can be removed in the geoportail_v3/__init__.py
+    Something like this can be removed in the geoportailv3/__init__.py
     config.add_settings({'check_print_template': '1 A4 portrait'})
     config.add_settings({'check_FullTextSearch': 'te'})
 
@@ -2231,23 +2231,23 @@ work in an existing project several steps are required:
 
    [edit.js]
    root =
-       geoportail_v3/static/lib/cgxp/core/src/script
-       geoportail_v3/static/lib/cgxp/ext
-       geoportail_v3/static/lib/cgxp/geoext/lib
-       geoportail_v3/static/lib/cgxp/openlayers/lib
-       geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthControl/lib
-       geoportail_v3/static/lib/cgxp/openlayers.addins/Spherical/lib
-       geoportail_v3/static/lib/cgxp/gxp/src/script
-       geoportail_v3/static/lib/cgxp/proj4js
-       geoportail_v3/static/lib/cgxp/geoext.ux/ux/Measure/lib
-       geoportail_v3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
-       geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
-       geoportail_v3/static/lib/cgxp/sandbox
-       geoportail_v3/static/lib/cgxp/styler/lib
-       geoportail_v3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
-       geoportail_v3/static/lib/cgxp/ext.ux/ColorPicker
-       geoportail_v3/static/lib/cgxp/ext.ux/base64
-       geoportail_v3/static/js
+       geoportailv3/static/lib/cgxp/core/src/script
+       geoportailv3/static/lib/cgxp/ext
+       geoportailv3/static/lib/cgxp/geoext/lib
+       geoportailv3/static/lib/cgxp/openlayers/lib
+       geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthControl/lib
+       geoportailv3/static/lib/cgxp/openlayers.addins/Spherical/lib
+       geoportailv3/static/lib/cgxp/gxp/src/script
+       geoportailv3/static/lib/cgxp/proj4js
+       geoportailv3/static/lib/cgxp/geoext.ux/ux/Measure/lib
+       geoportailv3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
+       geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
+       geoportailv3/static/lib/cgxp/sandbox
+       geoportailv3/static/lib/cgxp/styler/lib
+       geoportailv3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
+       geoportailv3/static/lib/cgxp/ext.ux/ColorPicker
+       geoportailv3/static/lib/cgxp/ext.ux/base64
+       geoportailv3/static/js
    first =
        Ext/adapter/ext/ext-base.js
        Ext/ext-all.js
@@ -2290,25 +2290,25 @@ work in an existing project several steps are required:
        OpenLayers/Renderer/VML.js
 
 3. Optionally you can add the line
-   geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib to the "root"
+   geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib to the "root"
    list of every [*.js] section of jsbuild/app.cfg. This is optional because
    only the editing interface (edit.js) should require scripts from this
    directory. But it may be a good idea to have every [*.js] section use the
    same "root" list.
 
-4. You need to add two Mako templates to geoportail_v3/templates, namely edit.html
+4. You need to add two Mako templates to geoportailv3/templates, namely edit.html
    and edit.js. These files are in the c2cgeoportal_create paster template, so
    they're not automatically added to the application source tree when the
    c2cgeoportal_update template is applied. The easiest way to get them is to
    apply the c2cgeoportal_create directory outside the existing application,
    and copy the files from the newly created directory to the application:
 
-   cd geoportail_v3
+   cd geoportailv3
    ./buildout/bin/paster create --template c2cgeoportal_create \
-       --output-dir=/tmp/geoportail_v3 package=geoportail_v3
-   cp /tmp/geoportail_v3/geoportail_v3/templates/edit.html geoportail_v3/templates/
-   cp /tmp/geoportail_v3/geoportail_v3/templates/edit.js geoportail_v3/templates/
-   rm -rf /tmp/geoportail_v3
+       --output-dir=/tmp/geoportailv3 package=geoportailv3
+   cp /tmp/geoportailv3/geoportailv3/templates/edit.html geoportailv3/templates/
+   cp /tmp/geoportailv3/geoportailv3/templates/edit.js geoportailv3/templates/
+   rm -rf /tmp/geoportailv3
 
 5. SQL queries in the DATA properties should be changed in the mapfile for the
    editable layers. They should use the new "mapfile_data_subselect" Buildout
@@ -2335,28 +2335,28 @@ Other changes
    jsbuild_root_dir = ${buildout:directory}
 
 4. To be able to use the AddKMLFile CGXP plugin (cgxp_addkmlfile) the directory
-   geoportail_v3/static/lib/cgxp/ext.ux/base64 should be a "root" in each [*.js]
+   geoportailv3/static/lib/cgxp/ext.ux/base64 should be a "root" in each [*.js]
    section of jsbuild/app.cfg. Example:
 
     [app.js]
     root =
-        geoportail_v3/static/lib/cgxp/core/src/script
-        geoportail_v3/static/lib/cgxp/ext
-        geoportail_v3/static/lib/cgxp/geoext/lib
-        geoportail_v3/static/lib/cgxp/openlayers/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthControl/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/Spherical/lib
-        geoportail_v3/static/lib/cgxp/gxp/src/script
-        geoportail_v3/static/lib/cgxp/proj4js
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/Measure/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
-        geoportail_v3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
-        geoportail_v3/static/lib/cgxp/sandbox
-        geoportail_v3/static/lib/cgxp/styler/lib
-        geoportail_v3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
-        geoportail_v3/static/lib/cgxp/ext.ux/ColorPicker
-        geoportail_v3/static/lib/cgxp/ext.ux/base64
-        geoportail_v3/static/js
+        geoportailv3/static/lib/cgxp/core/src/script
+        geoportailv3/static/lib/cgxp/ext
+        geoportailv3/static/lib/cgxp/geoext/lib
+        geoportailv3/static/lib/cgxp/openlayers/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthControl/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/Spherical/lib
+        geoportailv3/static/lib/cgxp/gxp/src/script
+        geoportailv3/static/lib/cgxp/proj4js
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/Measure/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/SimplePrint/lib
+        geoportailv3/static/lib/cgxp/geoext.ux/ux/FeatureEditing/lib
+        geoportailv3/static/lib/cgxp/sandbox
+        geoportailv3/static/lib/cgxp/styler/lib
+        geoportailv3/static/lib/cgxp/ext.ux/TwinTriggerComboBox
+        geoportailv3/static/lib/cgxp/ext.ux/ColorPicker
+        geoportailv3/static/lib/cgxp/ext.ux/base64
+        geoportailv3/static/js
 
 5. To be able to install c2cgeoportal applications behind proxies with limited
    access to the outside world we had to patch Distribute and Buildout. See
@@ -2387,25 +2387,25 @@ Other changes
 
 6. In jsbuild/app.cfg, replace GoogleEarthControl by GoogleEarthView to
    have the following entry:
-        geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
    And add the following entries to api.js, and all language files
    (like en.js, fr.js, de.js, ...) to have all identical root:
-        geoportail_v3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
-        geoportail_v3/static/lib/cgxp/openlayers.addins/Spherical/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/GoogleEarthView/lib
+        geoportailv3/static/lib/cgxp/openlayers.addins/Spherical/lib
 
 7. Templates modifications:
 
    The base templates are deprecated, to get the new version do
    (Careful: this will overwrite your changes):
-       cd geoportail_v3
+       cd geoportailv3
        ./buildout/bin/paster create --template c2cgeoportal_create \
-           --output-dir=/tmp/geoportail_v3 package=geoportail_v3
-       cp /tmp/geoportail_v3/geoportail_v3/templates/apihelp.html geoportail_v3/templates/
-       cp /tmp/geoportail_v3/geoportail_v3/templates/apiloader.html geoportail_v3/templates/
-       cp /tmp/geoportail_v3/geoportail_v3/templates/apiviewer.html geoportail_v3/templates/
-       cp /tmp/geoportail_v3/geoportail_v3/templates/index.html geoportail_v3/templates/
-       cp /tmp/geoportail_v3/geoportail_v3/templates/viewer.js geoportail_v3/templates/
-       rm -rf /tmp/geoportail_v3
+           --output-dir=/tmp/geoportailv3 package=geoportailv3
+       cp /tmp/geoportailv3/geoportailv3/templates/apihelp.html geoportailv3/templates/
+       cp /tmp/geoportailv3/geoportailv3/templates/apiloader.html geoportailv3/templates/
+       cp /tmp/geoportailv3/geoportailv3/templates/apiviewer.html geoportailv3/templates/
+       cp /tmp/geoportailv3/geoportailv3/templates/index.html geoportailv3/templates/
+       cp /tmp/geoportailv3/geoportailv3/templates/viewer.js geoportailv3/templates/
+       rm -rf /tmp/geoportailv3
 
    Notes:
 
@@ -2603,7 +2603,7 @@ Wed, 14 Dec 2011 17:00:24 +0100
 Implements group restriction to acces to the admin interface.
 
 To continue to acces to the admin interface you should, in the file
-'geoportail_v3/__init__.py' replace the line
+'geoportailv3/__init__.py' replace the line
 -     authentication_policy = AuthTktAuthenticationPolicy(settings.get('authtkt_secret'))
 by:
 +     authentication_policy = AuthTktAuthenticationPolicy(settings.get('authtkt_secret'),
@@ -2641,9 +2641,9 @@ CGXP mode from SVN to GIT(hub).
 Now we use a buildout task to do the clone.
 
 To update your project do:
-$$ svn propdel svn:externals geoportail_v3/static/lib/
-$$ rm -rf geoportail_v3/static/lib/cgxp
-$$ svn propset svn:ignore cgxp geoportail_v3/static/lib/
+$$ svn propdel svn:externals geoportailv3/static/lib/
+$$ rm -rf geoportailv3/static/lib/cgxp
+$$ svn propset svn:ignore cgxp geoportailv3/static/lib/
 
 -------------------------------
 

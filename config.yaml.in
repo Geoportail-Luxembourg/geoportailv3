@@ -176,7 +176,7 @@ check_collector:
             - name: checker_viewer
               display: Viewer script
     hosts:
-        - display: geoportail_v3
+        - display: geoportailv3
           url: http://${host}/${vars:instanceid}/wsgi
           type: main
 #        - display: Child:

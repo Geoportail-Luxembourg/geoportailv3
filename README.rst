@@ -1,7 +1,7 @@
-geoportail_v3 project
+geoportailv3 project
 ===================
 
-geoportail_v3 is the implementation of the v3 of the map viewer of the luxembourgish geoportal.
+geoportailv3 is the implementation of the v3 of the map viewer of the luxembourgish geoportal.
 
 
 Read the `Documentation <http://docs.camptocamp.net/c2cgeoportal/>`_
@@ -11,14 +11,14 @@ Checkout
 
 .. code:: bash
 
-   git clone git@github.com:camptocamp/geoportail_v3.git
+   git clone git@github.com:camptocamp/geoportailv3.git
 
 Build
 -----
 
 .. code:: bash
 
-  cd geoportail_v3
+  cd geoportailv3
 
   git submodule update --init
 
