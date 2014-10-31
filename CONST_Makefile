@@ -11,21 +11,25 @@ help:
 	@echo
 	@echo "Main targets:"
 	@echo
+	@echo "- build              Build and configure the project"
 	@echo "- check              Perform a number of checks on the code"
+	@echo "- serve              Run the development server (pserve)"
 	@echo "- clean              Remove generated files"
 	@echo "- cleanall           Remove all the build artefacts"
+	@echo
+	@echo "Secondary targets:"
+	@echo
+	@echo "- build-web          Build the javascript and the css"
 	@echo "- compile-catalog    Compile the translation catalog"
 	@echo "- flake8             Run flake8 checker on the Python code"
-	@echo "- install            Install and build the project"
 	@echo "- lint               Check the JavaScript code with linters"
-	@echo "- serve              Run the development server (pserve)"
 	@echo
 
-.PHONY: check
-check: flake8 lint build
-
 .PHONY: build
-build: geoportailv3/static/build/build.js geoportailv3/static/build/build.css geoportailv3/static/build/build.min.css
+build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web
+
+.PHONY: check
+check: flake8 lint build-web
 
 .PHONY: clean
 clean:
@@ -39,6 +43,9 @@ cleanall: clean
 	rm -rf .build
 	rm -rf node_modules
 
+.PHONY: build-web
+build-web: geoportailv3/static/build/build.js geoportailv3/static/build/build.css geoportailv3/static/build/build.min.css
+
 .PHONY: compile-catalog
 compile-catalog: geoportailv3/static/build/locale/fr/geoportailv3.json
 
@@ -46,17 +53,11 @@ compile-catalog: geoportailv3/static/build/locale/fr/geoportailv3.json
 flake8: .build/venv/bin/flake8
 	.build/venv/bin/flake8 geoportailv3
 
-.PHONY: install
-install: build install-dev-egg .build/node_modules.timestamp
-
 .PHONY: lint
 lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.timestamp .build/jshint.timestamp
 
-.PHONY: install-dev-egg
-install-dev-egg: $(SITE_PACKAGES)/geoportailv3.egg-link
-
 .PHONY: serve
-serve: install build development.ini
+serve: build development.ini
 	.build/venv/bin/pserve --reload development.ini
 
 geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
