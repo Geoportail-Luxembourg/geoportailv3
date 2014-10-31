@@ -4,6 +4,11 @@ NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/
 APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
 APP_HTML_FILES = $(shell find geoportailv3/templates -type f -name '*.html')
 LESS_FILES = $(shell find less -type f -name '*.less')
+TEMPLATE_EXCLUDE += buildout .build CONST_alembic/script.py.mako print/templates/print.mako
+FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
+TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print 2> /dev/null)
+MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null)
+JINJA_FILES = $(shell find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null)
 
 .PHONY: help
 help:
@@ -20,13 +25,14 @@ help:
 	@echo "Secondary targets:"
 	@echo
 	@echo "- build-web          Build the javascript and the css"
+	@echo "- build-server       Build the files required by the server"
 	@echo "- compile-catalog    Compile the translation catalog"
 	@echo "- flake8             Run flake8 checker on the Python code"
 	@echo "- lint               Check the JavaScript code with linters"
 	@echo
 
 .PHONY: build
-build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web
+build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web build-server
 
 .PHONY: check
 check: flake8 lint build-web
@@ -37,6 +43,9 @@ clean:
 	rm -f .build/dev-requirements.timestamp
 	rm -f geoportailv3/locale/*.pot
 	rm -rf geoportailv3/static/build
+	rm -f $(TEMPLATE_FILES:.in=)
+	rm -f $(MAKO_FILES:.mako=)
+	rm -f $(JINJA_FILES:.jinja=)
 
 .PHONY: cleanall
 cleanall: clean
@@ -53,12 +62,36 @@ compile-catalog: geoportailv3/static/build/locale/fr/geoportailv3.json
 flake8: .build/venv/bin/flake8
 	.build/venv/bin/flake8 geoportailv3
 
+.PHONY: build-server
+build-server: $(TEMPLATE_FILES:.in=) $(MAKO_FILES:.mako=) $(JINJA_FILES:.jinja=)
+
 .PHONY: lint
 lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.timestamp .build/jshint.timestamp
 
 .PHONY: serve
 serve: build development.ini
 	.build/venv/bin/pserve --reload development.ini
+
+$(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+ifeq ($(origin VARS_FILE), undefined)
+	echo "Error: the variable VARS_FILE is required."
+	exit 1
+endif
+	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) $@.in
+
+$(MAKO_FILES:.mako=): $(MAKO_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+ifeq ($(origin VARS_FILE), undefined)
+	echo "Error: the variable VARS_FILE is required."
+	exit 1
+endif
+	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) $@.mako
+
+$(JINJA_FILES:.jinja=): $(JINJA_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+ifeq ($(origin VARS_FILE), undefined)
+	echo "Error: the variable VARS_FILE is required."
+	exit 1
+endif
+	.build/venv/bin/c2c-template --engine jinja --vars $(VARS_FILE) $@.jinja
 
 geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
