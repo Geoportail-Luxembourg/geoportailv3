@@ -149,9 +149,10 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 	.build/venv/bin/pip install -r dev-requirements.txt > /dev/null 2>&1
 	touch $@
 
-.build/venv:
+.build/venv/.timestamp:
 	mkdir -p $(dir $@)
-	virtualenv --no-site-packages $@
+	virtualenv --no-site-packages $(dir $@)
+	touch $@
 
-$(SITE PACKAGES)/geoportailv3.egg-link: .build/venv setup.py
+$(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv/.timestamp setup.py
 	.build/venv/bin/pip install -r requirements.txt
