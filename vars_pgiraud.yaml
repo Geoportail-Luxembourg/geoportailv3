@@ -1,0 +1,4 @@
+extends: vars_geoportailv3.yaml
+
+vars:
+    instanceid: pgiraud
