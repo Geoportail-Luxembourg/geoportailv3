@@ -33,7 +33,7 @@ help:
 	@echo
 
 .PHONY: build
-build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web build-server
+build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web build-server compile-catalog
 
 .PHONY: check
 check: flake8 lint build-web
