@@ -6,13 +6,6 @@
         <meta name="keywords" content="geoportailv3, geoportal">
         <meta name="description" content="geoportailv3 Geoportal Application.">
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9; IE=EmulateIE10">
-% if not no_redirect and mobile_url is not None:
-        <script>
-            if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-                window.location = "${mobile_url}";
-            }
-        </script>
-% endif
         <title>${_('Application Title')}</title>
         <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportailv3:static/images/favicon.ico')}">
 
@@ -90,22 +83,5 @@
                 <p>${_('search tip message') | n}</p>
             </div>
         </div>
-
-% if debug:
-    <%!
-    from jstools.merge import Merger
-    %>
-    <%
-    jsbuild_cfg = request.registry.settings.get('jsbuild_cfg')
-    jsbuild_root_dir = request.registry.settings.get('jsbuild_root_dir')
-    %>
-    % for script in Merger.from_fn(jsbuild_cfg.split(), root_dir=jsbuild_root_dir).list_run(['app.js', 'lang-%s.js' % lang]):
-        <script type="text/javascript" src="${request.static_url(script.replace('/', ':', 1))}"></script>
-    % endfor
-% else:
-        <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/app.js', _query=url_params)}"></script>
-        <script type="text/javascript" src="${request.static_url('geoportailv3:static/build/lang-%s.js' % lang, _query=url_params)}"></script>
-% endif
-        <script type="text/javascript" src="${request.route_url('viewer', _query=extra_params)}"></script>
     </body>
 </html>
