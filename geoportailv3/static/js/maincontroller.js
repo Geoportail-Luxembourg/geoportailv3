@@ -1,5 +1,6 @@
 goog.provide('app_main_controller');
 
+goog.require('app');
 goog.require('ngeo_map_directive');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -7,7 +8,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 (function() {
-  var module = angular.module('app', ['ngeo', 'gettext']);
+  var module = angular.module('app');
 
   module.controller('MainController', ['$scope', 'gettextCatalog',
     'langUrlTemplate',
