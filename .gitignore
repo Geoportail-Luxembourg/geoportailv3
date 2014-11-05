@@ -23,6 +23,7 @@ geoportailv3/static/mobile/build/
 geoportailv3/static/mobile/openlayers-mobile.js
 geoportailv3/static/mobile/bootstrap.js
 geoportailv3/static/mobile/bootstrap.json
+geoportailv3/static/build
 .build
 node_modules
 *.po~
