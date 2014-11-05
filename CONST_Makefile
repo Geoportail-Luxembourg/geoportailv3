@@ -9,6 +9,7 @@ FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type
 TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print 2> /dev/null)
 MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null)
 JINJA_FILES = $(shell find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null)
+VARS_FILES += CONST_vars.yaml
 
 .PHONY: help
 help:
@@ -73,21 +74,21 @@ lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.times
 serve: build development.ini
 	.build/venv/bin/pserve --reload development.ini
 
-$(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template
+$(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
 	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) $@.in
 
-$(MAKO_FILES:.mako=): $(MAKO_FILES) .build/venv/bin/c2c-template
+$(MAKO_FILES:.mako=): $(MAKO_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
 	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) $@.mako
 
-$(JINJA_FILES:.jinja=): $(JINJA_FILES) .build/venv/bin/c2c-template
+$(JINJA_FILES:.jinja=): $(JINJA_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
