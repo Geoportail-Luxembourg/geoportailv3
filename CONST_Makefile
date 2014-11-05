@@ -41,6 +41,7 @@ check: flake8 lint build-web
 clean:
 	rm -f .build/node_modules.timestamp
 	rm -f .build/dev-requirements.timestamp
+	rm -f .build/venv.timestamp
 	rm -f geoportailv3/locale/*.pot
 	rm -rf geoportailv3/static/build
 	rm -f $(TEMPLATE_FILES:.in=)
@@ -152,14 +153,14 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 
 .build/venv/bin/c2c-template: .build/dev-requirements.timestamp
 
-.build/dev-requirements.timestamp: .build/venv
+.build/dev-requirements.timestamp: .build/venv.timestamp
 	.build/venv/bin/pip install -r dev-requirements.txt > /dev/null 2>&1
 	touch $@
 
-.build/venv/.timestamp:
+.build/venv.timestamp:
 	mkdir -p $(dir $@)
-	virtualenv --no-site-packages $(dir $@)
+	virtualenv --no-site-packages .build/venv
 	touch $@
 
-$(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv/.timestamp setup.py
+$(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py
 	.build/venv/bin/pip install -r requirements.txt
