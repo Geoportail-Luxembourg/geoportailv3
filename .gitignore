@@ -4,6 +4,7 @@ apache/README.txt
 apache/frontend.conf
 apache/mapserver.conf
 apache/wsgi.conf
+apache/geoportailv3.wsgi
 deploy/deploy.cfg
 alembic.ini
 development.ini
