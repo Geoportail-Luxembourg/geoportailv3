@@ -11,7 +11,7 @@ Checkout
 
 .. code:: bash
 
-   git clone git@github.com:camptocamp/geoportailv3.git
+   git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
 
 Build
 -----
