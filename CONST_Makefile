@@ -154,7 +154,7 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 
 .build/venv/bin/c2c-template: .build/dev-requirements.timestamp
 
-.build/dev-requirements.timestamp: .build/venv.timestamp
+.build/dev-requirements.timestamp: .build/venv.timestamp dev-requirements.txt
 	.build/venv/bin/pip install -r dev-requirements.txt > /dev/null 2>&1
 	touch $@
 
@@ -163,5 +163,5 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 	virtualenv --no-site-packages .build/venv
 	touch $@
 
-$(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py
+$(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py requirements.txt
 	.build/venv/bin/pip install -r requirements.txt
