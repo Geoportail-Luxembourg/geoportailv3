@@ -72,21 +72,21 @@ lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.times
 serve: build development.ini
 	.build/venv/bin/pserve --reload development.ini
 
-$(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+$(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
 	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) $@.in
 
-$(MAKO_FILES:.mako=): $(MAKO_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+$(MAKO_FILES:.mako=): $(MAKO_FILES) .build/venv/bin/c2c-template
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
 	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) $@.mako
 
-$(JINJA_FILES:.jinja=): $(JINJA_FILES) $(SITE_PACKAGES)/geoportailv3.egg-link
+$(JINJA_FILES:.jinja=): $(JINJA_FILES) .build/venv/bin/c2c-template
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
@@ -144,6 +144,8 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 .build/venv/bin/gjslint: .build/dev-requirements.timestamp
 
 .build/venv/bin/flake8: .build/dev-requirements.timestamp
+
+.build/venv/bin/c2c-template: .build/dev-requirements.timestamp
 
 .build/dev-requirements.timestamp: .build/venv
 	.build/venv/bin/pip install -r dev-requirements.txt > /dev/null 2>&1
