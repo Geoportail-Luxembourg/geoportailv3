@@ -21,7 +21,7 @@ vars:
     # sqlalchemy schema
     schema: webapp
     # database parent schema
-    parent_schema:
+    parent_schema: ""
     # apache/mapserver.conf "Allow" statement
     mapserv_allow: Allow from 127.0.0.1
     # mapserver connexion string
