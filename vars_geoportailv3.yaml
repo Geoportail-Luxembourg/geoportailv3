@@ -1,7 +1,6 @@
 extends: CONST_vars.yaml
 
 vars:
-    instanceid: main
     # instance id
     instanceid: main
     # database name
