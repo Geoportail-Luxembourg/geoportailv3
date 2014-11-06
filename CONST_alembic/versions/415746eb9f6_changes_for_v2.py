@@ -27,7 +27,7 @@
 # of the authors and should not be interpreted as representing official policies,
 # either expressed or implied, of the FreeBSD Project.
 
-"""changes for v2
+"""Changes to start the implementation of the version 2
 
 Revision ID: 415746eb9f6
 Revises: None
@@ -52,6 +52,8 @@ def upgrade():
         engine, 'interface', schema=schema
     ):
         return
+
+    op.drop_table('user_functionality', schema=schema)
 
     op.create_table(
         'interface',
@@ -171,13 +173,15 @@ def upgrade():
     op.bulk_insert(interface, [
         {'name': 'main'},
         {'name': 'mobile'},
+        {'name': 'edit'},
+        {'name': 'routing'},
     ])
 
     op.execute(
         'INSERT INTO %(schema)s.interface_layer (layer_id, interface_id) '
         '(SELECT l.id AS layer_id, i.id AS interface_id '
         'FROM %(schema)s.layer AS l, %(schema)s.interface AS i '
-        'WHERE i.name = \'main\' AND l."inDesktopViewer")' % {'schema': schema}
+        'WHERE i.name in (\'main\', \'edit\', \'routing\') AND l."inDesktopViewer")' % {'schema': schema}
     )
     op.execute(
         'INSERT INTO %(schema)s.interface_layer (layer_id, interface_id) '
@@ -190,7 +194,7 @@ def upgrade():
         'INSERT INTO %(schema)s.interface_theme (theme_id, interface_id) '
         '(SELECT l.id AS theme_id, i.id AS interface_id '
         'FROM %(schema)s.theme AS l, %(schema)s.interface AS i '
-        'WHERE i.name = \'main\' AND l."inDesktopViewer")' % {'schema': schema}
+        'WHERE i.name in (\'main\', \'edit\', \'routing\') AND l."inDesktopViewer")' % {'schema': schema}
     )
     op.execute(
         'INSERT INTO %(schema)s.interface_theme (theme_id, interface_id) '
@@ -218,9 +222,9 @@ def upgrade():
             'id', Integer, ForeignKey(schema + '.layer.id'), primary_key=True
         ),
         Column('layer', Unicode),
-        Column('imageType', Unicode(10)),
+        Column('image_type', Unicode(10)),
         Column('style', Unicode),
-        Column('timeMode', Unicode(8)),
+        Column('time_mode', Unicode(8)),
         schema=schema,
     )
 
@@ -231,10 +235,10 @@ def upgrade():
         ),
         Column('url', Unicode),
         Column('layer', Unicode),
-        Column('imageType', Unicode(10)),
+        Column('image_type', Unicode(10)),
         Column('style', Unicode),
-        Column('isSingleTile', Boolean),
-        Column('timeMode', Unicode(8)),
+        Column('is_single_tile', Boolean),
+        Column('time_mode', Unicode(8)),
         schema=schema,
     )
 
@@ -278,14 +282,14 @@ def upgrade():
 def downgrade():
     schema = context.get_context().config.get_main_option('schema')
 
-    op.drop_table('wmts_dimension')
-    op.drop_table('ui_metadata')
-    op.drop_table('layer_wmts')
-    op.drop_table('layer_external_wms')
-    op.drop_table('layer_internal_wms')
+    op.drop_table('wmts_dimension', schema=schema)
+    op.drop_table('ui_metadata', schema=schema)
+    op.drop_table('layer_wmts', schema=schema)
+    op.drop_table('layer_external_wms', schema=schema)
+    op.drop_table('layer_internal_wms', schema=schema)
 
     op.add_column('layer', Column('inMobileViewer', Boolean, default=False), schema=schema)
-    op.add_column('layer', Column('inDesktopViewer', Boolean), default=True, schema=schema)
+    op.add_column('layer', Column('inDesktopViewer', Boolean, default=True), schema=schema)
 
     op.alter_column('layer', 'geo_table', new_column_name='geoTable', schema=schema)
 
@@ -310,25 +314,25 @@ def downgrade():
         'UPDATE ONLY %(schema)s.theme AS t '
         'SET "inMobileViewer" = TRUE '
         'FROM %(schema)s.interface AS i, %(schema)s.interface_theme AS it '
-        'WHERE i.name = \'mobile\' AND i.id = it.interface_is AND id.theme_id = t.id' % {'schema': schema}
+        'WHERE i.name = \'mobile\' AND i.id = it.interface_id AND it.theme_id = t.id' % {'schema': schema}
     )
     op.execute(
         'UPDATE ONLY %(schema)s.theme AS t '
         'SET "inDesktopViewer" = TRUE '
         'FROM %(schema)s.interface AS i, %(schema)s.interface_theme AS it '
-        'WHERE i.name = \'main\' AND i.id = it.interface_is AND id.theme_id = t.id' % {'schema': schema}
+        'WHERE i.name = \'main\' AND i.id = it.interface_id AND it.theme_id = t.id' % {'schema': schema}
     )
     op.execute(
         'UPDATE ONLY %(schema)s.layer AS l '
         'SET "inMobileViewer" = TRUE '
         'FROM %(schema)s.interface AS i, %(schema)s.interface_layer AS il '
-        'WHERE i.name = \'mobile\' AND i.id = il.interface_is AND id.layer_id = l.id' % {'schema': schema}
+        'WHERE i.name = \'mobile\' AND i.id = il.interface_id AND il.layer_id = l.id' % {'schema': schema}
     )
     op.execute(
         'UPDATE ONLY %(schema)s.layer AS l '
         'SET "inDesktopViewer" = TRUE '
         'FROM %(schema)s.interface AS i, %(schema)s.interface_layer AS il '
-        'WHERE i.name = \'main\' AND i.id = il.interface_is AND id.layer_id = l.id' % {'schema': schema}
+        'WHERE i.name = \'main\' AND i.id = il.interface_id AND il.layer_id = l.id' % {'schema': schema}
     )
 
     op.add_column('layer', Column('timeMode', Unicode(8)), schema=schema)
@@ -359,7 +363,7 @@ def downgrade():
         'INSERT INTO %(schema)s.layer ('
         'id, "isChecked", icon, "layerType", url, "imageType", style, dimensions, "matrixSet", '
         '"wmsUrl", "wmsLayers", "queryLayers", kml, "isSingleTile", legend, "legendImage", "legendRule", '
-        '"isLegendExpanded, "minResolution", "maxResolution", disclaimer, "identifierAttributeField", '
+        '"isLegendExpanded", "minResolution", "maxResolution", disclaimer, "identifierAttributeField", '
         '"excludeProperties", "timeMode") '
         '(SELECT '
         'id, is_checked, icon, layer_type, url, image_type, style, dimensions, matrix_set, '
@@ -369,7 +373,20 @@ def downgrade():
         'FROM %(schema)s.layerv1)' % {'schema': schema}
     )
 
-    op.drop_table('layerv1')
-    op.drop_table('interface_theme')
-    op.drop_table('interface_layer')
-    op.drop_table('interface')
+    op.drop_table('layerv1', schema=schema)
+    op.drop_table('interface_theme', schema=schema)
+    op.drop_table('interface_layer', schema=schema)
+    op.drop_table('interface', schema=schema)
+
+    op.create_table(
+        'user_functionality',
+        Column(
+            'user_id', Integer,
+            ForeignKey(schema + '.user.id'), primary_key=True
+        ),
+        Column(
+            'functionality_id', Integer,
+            ForeignKey(schema + '.functionality.id'), primary_key=True
+        ),
+        schema=schema,
+    )
