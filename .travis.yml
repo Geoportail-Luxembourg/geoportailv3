@@ -1,0 +1,10 @@
+language: python
+
+python:
+- 2.7
+
+install:
+- make -f travis.mk build
+
+script:
+- make -f travis.mk check
