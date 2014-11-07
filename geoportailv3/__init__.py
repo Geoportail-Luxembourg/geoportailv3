@@ -2,7 +2,8 @@
 
 from pyramid.config import Configurator
 from pyramid.settings import asbool
-from c2cgeoportal import locale_negotiator, add_interface, INTERFACE_TYPE_NGEO_CATALOGUE
+from c2cgeoportal import locale_negotiator, \
+    add_interface, INTERFACE_TYPE_NGEO_CATALOGUE
 from c2cgeoportal.resources import FAModels
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
