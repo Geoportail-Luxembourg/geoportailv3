@@ -15,8 +15,8 @@ setup(
     author_email='info@camptocamp.com',
     url='http://www.camptocamp.com/geospatial-solutions',
     install_requires=[
-        'c2cgeoportal',
-        'pyramid_closure'
+        'c2cgeoportal>=1.6.0dev-20141106',
+        'pyramid_closure',
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
