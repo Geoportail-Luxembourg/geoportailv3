@@ -37,6 +37,12 @@ pyramid_closure.roots_with_prefix =
 node_modules_path = %(here)s/node_modules/
 closure_library_path = ${closure_library_path}
 
+pyramid.includes =
+    pyramid_debugtoolbar
+
+debugtoolbar.hosts =
+    0.0.0.0/0
+
 [filter:fanstatic]
 use = egg:fanstatic#fanstatic
 publisher_signature = fanstatic
