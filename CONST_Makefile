@@ -72,7 +72,7 @@ lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.times
 
 .PHONY: serve
 serve: build development.ini
-	.build/venv/bin/pserve --reload development.ini
+	.build/venv/bin/pserve --reload --monitor-restart development.ini
 
 $(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
