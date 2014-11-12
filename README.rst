@@ -6,6 +6,22 @@ geoportailv3 is the implementation of the v3 of the map viewer of the luxembourg
 
 Read the `Documentation <http://docs.camptocamp.net/c2cgeoportal/>`_
 
+System-level dependencies
+-------------------------
+
+The following must be installed on the system:
+
+* ``git``
+* ``python-virtualenv``
+* ``httpd``
+* ``mod_wsgi``
+* ``postgresql-devel`` (or ``libpq-dev`` on Debian)
+* ``python-devel``
+* ``gcc``
+* ``npm``
+
+Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
+
 Checkout
 --------
 
