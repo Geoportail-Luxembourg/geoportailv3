@@ -51,5 +51,7 @@ def main(global_config, **settings):
 
     # view and route for the ngeo.html page
     config.add_route('ngeo', '/ngeo')
+    config.add_route('my_route', '/my_route')
+    config.add_route('my_json_route', '/my_json_route')
 
     return config.make_wsgi_app()
