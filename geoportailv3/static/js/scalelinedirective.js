@@ -2,7 +2,7 @@ goog.provide('app_scaleline_directive');
 
 goog.require('app');
 goog.require('ngeo_control_directive');
-
+goog.require('ol.control.ScaleLine');
 
 (function() {
   var module = angular.module('app');
