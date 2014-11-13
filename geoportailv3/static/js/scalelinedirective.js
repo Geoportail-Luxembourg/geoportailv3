@@ -4,9 +4,9 @@ goog.require('app');
 goog.require('ngeo_control_directive');
 
 
-(function(){
+(function() {
   var module = angular.module('app');
-  
+
   module.directive('appScaleline', [
     function() {
       return {
@@ -18,13 +18,14 @@ goog.require('ngeo_control_directive');
           this['createControl'] = function(target) {
             return new ol.control.ScaleLine({
               target: target
-            })
-          }
-        }, 
+            });
+          };
+        },
         controllerAs: 'ctrl',
         bindToController: true,
-        template: '<div ngeo-control="ctrl.createControl" ngeo-control-map="ctrl.map">'
+        template: '<div ngeo-control="ctrl.createControl"' +
+            'ngeo-control-map="ctrl.map">'
       };
-    }  
+    }
   ]);
 })();
