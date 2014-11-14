@@ -15,7 +15,7 @@ goog.require('ol.control.ScaleLine');
       return {
         restrict: 'E',
         scope: {
-          map: '=appScalelineMap'
+          'map': '=appScalelineMap'
         },
         controller: function() {
           this['createControl'] = function(target) {
