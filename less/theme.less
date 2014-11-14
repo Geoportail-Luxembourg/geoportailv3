@@ -1,0 +1,35 @@
+/** Themes related styling (mainly colors) **/
+.theme(@theme, @primary-color) {
+  [data-theme="@{theme}"] {
+    .btn {
+      color: @primary-color;
+      &:hover {
+        color: white;
+        background-color: @primary-color;
+      }
+    }
+
+    #sidebar {
+      background-color: desaturate(lighten(@primary-color, 15%), 10%);
+    }
+
+    .sidebar-controls,
+    .toolbox {
+      li > a {
+        color: @primary-color;
+        &:hover {
+          color: white;
+          background-color: @primary-color;
+        }
+      }
+      li.active > a {
+        color: white;
+        background-color: @primary-color;
+      }
+    }
+  }
+}
+
+.theme(eau, #03a2ac);
+.theme(agriculture, #f39c11);
+.theme(environnement, #879d31);
