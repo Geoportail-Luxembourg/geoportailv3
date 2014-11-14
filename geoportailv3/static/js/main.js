@@ -7,3 +7,4 @@
 goog.provide('app_main');
 
 goog.require('app_main_controller');
+goog.require('app_print_directive');
