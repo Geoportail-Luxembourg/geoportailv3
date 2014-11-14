@@ -8,6 +8,9 @@ goog.require('ol.control.ScaleLine');
   var module = angular.module('app');
 
   module.directive('appScaleline', [
+    /**
+     * @return {angular.Directive} The Directive Object Definition.
+     */
     function() {
       return {
         restrict: 'E',
