@@ -110,11 +110,11 @@ geoportailv3/static/build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $
 
 geoportailv3/static/build/build.min.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc --clean-css less/geoportailv3.less > $@
+	./node_modules/.bin/lessc --clean-css less/geoportailv3.less $@
 
 geoportailv3/static/build/build.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc less/geoportailv3.less > $@
+	./node_modules/.bin/lessc less/geoportailv3.less $@
 
 geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC_MESSAGES/geoportailv3-client.po
 	mkdir -p $(dir $@)
