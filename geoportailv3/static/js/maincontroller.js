@@ -1,7 +1,7 @@
 goog.provide('app_main_controller');
 
 goog.require('app');
-goog.require('ngeo_map_directive');
+goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
@@ -21,17 +21,17 @@ goog.require('ol.tilegrid.WMTS');
      * @param {string} langUrlTemplate Language URL template.
      */
     function($scope, gettextCatalog, langUrlTemplate) {
-      var switchLanguage = $scope['switchLanguage'] = function(lang) {
+      var switchLanguage = this['switchLanguage'] = function(lang) {
         gettextCatalog.setCurrentLanguage(lang);
         gettextCatalog.loadRemote(langUrlTemplate.replace('__lang__', lang));
-        $scope['lang'] = lang;
+        this['lang'] = lang;
       };
 
       /** @type {ol.proj.Projection} */
       var projection = ol.proj.get('EPSG:3857');
       var projectionExtent = [300000, 6000000, 1000000, 6700000];
       /** @type {ol.Map} */
-      $scope['map'] = new ol.Map({
+      this['map'] = new ol.Map({
         layers: [
           new ol.layer.Tile({
             title: 'basemap (mapproxy) - global scheme',

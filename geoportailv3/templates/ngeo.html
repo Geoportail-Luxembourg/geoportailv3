@@ -4,7 +4,7 @@
     closure_library_path = settings.get('closure_library_path')
 %>\
 <!DOCTYPE html>
-<html lang={{lang}} ng-app="app" ng-controller="MainController">
+<html lang={{ctrl.lang}} ng-app="app" ng-controller="MainController as ctrl">
   <head>
     <title>Simple example</title>
     <meta charset="utf-8">
@@ -19,8 +19,8 @@
   </head>
   <body>
     <h1 translate>Hello!</h1>
-    <div id="map" ngeo-map></div>
-    <app-scaleline app-scaleline-map="map"></app-scaleline>
+    <div id="map" ngeo-map="ctrl.map"></div>
+    <app-scaleline app-scaleline-map="ctrl.map"></app-scaleline>
 % if debug:
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
