@@ -1,3 +1,8 @@
+<%
+    settings = request.registry.settings
+    node_modules_path = settings.get('node_modules_path')
+    closure_library_path = settings.get('closure_library_path')
+%>\
 <!DOCTYPE html>
 <html lang={{lang}} ng-app="app" ng-controller="MainController">
   <head>
@@ -7,9 +12,9 @@
           content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
 % if debug:
-    <link rel="stylesheet" href="/proj/build/build.css" type="text/css">
+    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
 % else:
-    <link rel="stylesheet" href="/proj/build/build.min.css" type="text/css">
+    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
 % endif
   </head>
   <body>
@@ -17,20 +22,20 @@
     <div id="map" ngeo-map></div>
     <app-scaleline app-scaleline-map="map"></app-scaleline>
 % if debug:
-    <script src="/node_modules/angular/angular.js"></script>
-    <script src="/node_modules/angular-gettext/dist/angular-gettext.js"></script>
-    <script src="/closure/closure/goog/base.js"></script>
-    <script src="${request.route_path('deps.js')}"></script>
-    <script src="/proj/js/main.js"></script>
+    <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
+    <script src="${request.route_url('deps.js')}"></script>
+    <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
 % else:
-    <script src="/node_modules/angular/angular.min.js"></script>
-    <script src="/node_modules/angular-gettext/dist/angular-gettext.min.js"></script>
-    <script src="/proj/build/build.js"></script>
+    <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>
       (function() {
          var appModule = angular.module('app');
-         appModule.constant('langUrlTemplate', '/proj/build/locale/__lang__/geoportailv3.json');
+         appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
        })();
     </script>
   </body>
