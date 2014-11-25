@@ -6,5 +6,5 @@
  */
 goog.provide('app_main');
 
-goog.require('app_main_controller');
-goog.require('app_scaleline_directive');
+goog.require('app.MainController');
+goog.require('app.scalelineDirective');
