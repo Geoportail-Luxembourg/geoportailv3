@@ -3,6 +3,10 @@
  */
 goog.provide('app');
 
-(function() {
-  angular.module('app', ['ngeo', 'gettext']);
-})();
+goog.require('ngeo');
+
+
+/**
+ * @type {!angular.Module}
+ */
+app.module = angular.module('app', [ngeoModule.name, 'gettext']);
