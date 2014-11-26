@@ -12,9 +12,9 @@
           content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
 % if debug:
-    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
+    <link rel="stylesheet" href="${request.static_path('geoportailv3:static/build/build.css')}" type="text/css">
 % else:
-    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
+    <link rel="stylesheet" href="${request.static_path('geoportailv3:static/build/build.min.css')}" type="text/css">
 % endif
   </head>
   <body data-theme="environnement">
@@ -83,22 +83,22 @@
       </ul>
     </footer>
 % if debug:
-    <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-animate/angular-animate.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
-    <script src="${request.route_url('deps.js')}"></script>
-    <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
+    <script src="${request.static_path('%s/angular/angular.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('%s/angular-animate/angular-animate.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('%s/closure/goog/base.js' % closure_library_path)}"></script>
+    <script src="${request.route_path('deps.js')}"></script>
+    <script src="${request.static_path('geoportailv3:static/js/main.js')}"></script>
 % else:
-    <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
+    <script src="${request.static_path('%s/angular/angular.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_path('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>
       (function() {
          var appModule = angular.module('app');
-         appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
+         appModule.constant('langUrlTemplate', '${request.static_path('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
        })();
     </script>
   </body>
