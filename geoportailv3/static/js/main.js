@@ -8,3 +8,4 @@ goog.provide('app_main');
 
 goog.require('app.MainController');
 goog.require('app.scalelineDirective');
+goog.require('ngeo.btngroupDirective');
