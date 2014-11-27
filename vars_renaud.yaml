@@ -2,3 +2,10 @@ extends: vars_geoportailv3.yaml
 
 vars:
     instanceid: renaud
+    # database name
+    db: mapv3
+    # database schema
+    schema: geov3
+    # Name of the server hosting the application
+    host: workshop.geoportal.lu
+
