@@ -43,10 +43,16 @@
 
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
-      <div id="sidebar">
-        <h1 translate>Hello!</h1>
-        <button class="btn btn-default">a button</button>
-        a long text with overflow over the map. not long enough yet.
+      <div id="sidebar" ng-class="ctrl.sidebarOpen ? 'open' : ''"
+           ngeo-resizemap="ctrl.map">
+        <div id="layers" ng-class="ctrl.layersOpen ? 'show' : 'hide'">
+          <h1 translate>Layers</h1>
+          <button ng-click="ctrl.sidebarOpen = false;">Close</button>
+        </div>
+        <div id="layers" ng-class="ctrl.mymapsOpen ? 'show' : 'hide'">
+          <h1 translate>My Maps</h1>
+          <button ng-click="ctrl.sidebarOpen = false;">Close</button>
+        </div>
       </div>
       <div id="map" ngeo-map="ctrl.map">
         <app-scaleline app-scaleline-map="ctrl.map"></app-scaleline>
@@ -55,9 +61,14 @@
 
     <!-- Begin bottom bar -->
     <footer class="footer">
-      <ul class="sidebar-controls nav navbar-nav pull-left">
-        <li class="active"><a href>couches</a></li>
-        <li><a href>mes cartes</a></li>
+      <ul class="sidebar-controls nav navbar-nav pull-left"
+          ng-class="ctrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
+        <li ngeo-btn ng-model="ctrl.layersOpen">
+          <a href translate>Layers</a>
+        </li>
+        <li ngeo-btn ng-model="ctrl.mymapsOpen">
+          <a href translate>My Maps</a>
+        </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
         <li><a href>items</a></li>
@@ -74,12 +85,14 @@
 % if debug:
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-animate/angular-animate.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
     <script src="${request.route_url('deps.js')}"></script>
     <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
 % else:
     <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>

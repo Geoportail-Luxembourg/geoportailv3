@@ -46,13 +46,11 @@ body {
   height: 100%;
   max-width: 100%;
   float: left;
-  .transition(all 300ms 0 ease-out);
+  .transition(all 300ms ease-out 0s);
 }
 
-.sidebar-open {
-  #sidebar {
-    margin-left: 0;
-  }
+#sidebar.open {
+  margin-left: 0;
 }
 
 @media (min-width: @screen-sm-min) {
