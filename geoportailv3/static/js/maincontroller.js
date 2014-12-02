@@ -17,6 +17,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} langUrlTemplate Language URL template.
  * @constructor
+ * @export
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
