@@ -32,6 +32,8 @@ class LuxLayerInternalWMS(LayerInternalWMS):
     )
     url = Column(Unicode, label=_(u'Url'))
     layers = Column(Unicode, label=_(u'Layers'))
+    is_poi = Column(Boolean, label=_(u'Is a POI'))
+    collection_id = Column(Integer, label=_(u'Collection ID'))
 
 
 class LuxLayerExternalWMS(LayerExternalWMS):
@@ -50,8 +52,6 @@ class LuxLayerExternalWMS(LayerExternalWMS):
         primary_key=True
     )
     category_id = Column(Integer, label=_(u'Category ID'))
-    is_poi = Column(Boolean, label=_(u'Is a POI'))
-    collection_id = Column(Integer, label=_(u'Collection ID'))
 
 # association table role <> Theme
 lux_role_theme = Table(
