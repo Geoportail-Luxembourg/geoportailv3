@@ -17,19 +17,20 @@ help:
 	@echo
 	@echo "Main targets:"
 	@echo
-	@echo "- build              Build and configure the project"
-	@echo "- check              Perform a number of checks on the code"
-	@echo "- serve              Run the development server (pserve)"
-	@echo "- clean              Remove generated files"
-	@echo "- cleanall           Remove all the build artefacts"
+	@echo "- build                Build and configure the project"
+	@echo "- check                Perform a number of checks on the code"
+	@echo "- serve                Run the development server (pserve)"
+	@echo "- clean                Remove generated files"
+	@echo "- cleanall             Remove all the build artefacts"
 	@echo
 	@echo "Secondary targets:"
 	@echo
-	@echo "- build-web          Build the javascript and the css"
-	@echo "- build-server       Build the files required by the server"
-	@echo "- compile-catalog    Compile the translation catalog"
-	@echo "- flake8             Run flake8 checker on the Python code"
-	@echo "- lint               Check the JavaScript code with linters"
+	@echo "- build-web            Build the javascript and the css"
+	@echo "- build-server         Build the files required by the server"
+	@echo "- compile-catalog      Compile the translation catalog"
+	@echo "- flake8               Run flake8 checker on the Python code"
+	@echo "- lint                 Check the JavaScript code with linters"
+	@echo "- update-node-modules  Update node modules (using --force)"
 	@echo
 
 .PHONY: build
@@ -73,6 +74,10 @@ lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.times
 .PHONY: serve
 serve: build development.ini
 	.build/venv/bin/pserve --reload --monitor-restart development.ini
+
+.PHONY: update-node-modules
+update-node-modules:
+	npm install --force
 
 $(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
