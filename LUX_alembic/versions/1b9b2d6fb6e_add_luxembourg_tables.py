@@ -33,6 +33,9 @@ def upgrade():
         sa.Column(
             'layers', sa.VARCHAR(length=1000),  autoincrement=False,
             nullable=True),
+        sa.Column('is_poi', sa.BOOLEAN(), autoincrement=False, nullable=True),
+        sa.Column(
+            'collection_id', sa.INTEGER(), autoincrement=False, nullable=True),
         sa.ForeignKeyConstraint(['id'], [schema + '.layer_internal_wms.id'],
                                 name=u'lux_layer_internal_wms_fk1',
                                 onupdate=u'CASCADE',
@@ -60,9 +63,6 @@ def upgrade():
         sa.Column('id', sa.INTEGER(), autoincrement=False, nullable=False),
         sa.Column(
             'category_id', sa.INTEGER(), autoincrement=False, nullable=True),
-        sa.Column('is_poi', sa.BOOLEAN(), autoincrement=False, nullable=True),
-        sa.Column(
-            'collection_id', sa.INTEGER(), autoincrement=False, nullable=True),
         sa.ForeignKeyConstraint(['id'], [schema + '.layer_external_wms.id'],
                                 name=u'lux_layer_external_wms_fk1',
                                 onupdate=u'CASCADE', ondelete=u'CASCADE'),
