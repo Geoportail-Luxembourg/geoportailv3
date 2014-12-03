@@ -7,7 +7,7 @@ from pyramid.i18n import TranslationStringFactory
 from c2cgeoportal.models import *  # noqa
 from pyramid.security import Allow, ALL_PERMISSIONS
 from formalchemy import Column
-from sqlalchemy import ForeignKey, Table
+from sqlalchemy import ForeignKey
 from sqlalchemy.types import Integer, Boolean, Unicode
 from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 
@@ -52,17 +52,3 @@ class LuxLayerExternalWMS(LayerExternalWMS):
         primary_key=True
     )
     category_id = Column(Integer, label=_(u'Category ID'))
-
-# association table role <> Theme
-lux_role_theme = Table(
-    'lux_role_theme', Base.metadata,
-    Column(
-        'theme_id', Integer,
-        ForeignKey(_schema + '.theme.id'), primary_key=True
-    ),
-    Column(
-        'functionality_id', Integer,
-        ForeignKey(_schema + '.role.id'), primary_key=True
-    ),
-    schema=_schema
-)
