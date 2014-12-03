@@ -11,6 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: geoportailv3/templates/ngeo.html
+msgid "Info"
+msgstr "Infos"
+
+#: geoportailv3/templates/ngeo.html
 msgid "Layers"
 msgstr "Couches"
 

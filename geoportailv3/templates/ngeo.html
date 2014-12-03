@@ -57,6 +57,12 @@
             ✕
           </button>
         </div>
+        <div id="info" ng-class="ctrl.infoOpen ? 'show' : 'hide'">
+          <h2 translate>Info</h2>
+          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+            ✕
+          </button>
+        </div>
       </div>
       <div id="map" ngeo-map="ctrl.map">
         <app-scaleline app-scaleline-map="ctrl.map"></app-scaleline>
@@ -67,11 +73,14 @@
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="ctrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
-        <li ngeo-btn ng-model="ctrl.layersOpen">
+        <li ngeo-btn ng-model="ctrl.layersOpen" class="layers icon">
           <a href translate>Layers</a>
         </li>
-        <li ngeo-btn ng-model="ctrl.mymapsOpen">
+        <li ngeo-btn ng-model="ctrl.mymapsOpen" class="mymaps icon">
           <a href translate>My Maps</a>
+        </li>
+        <li ngeo-btn ng-model="ctrl.infoOpen" class="info icon">
+          <a href translate>Info</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
@@ -80,10 +89,16 @@
         <li><a href>droite</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav">
-        <li class="hidden-xs"><a class="square" href="#">dessiner</a></li>
-        <li class="hidden-xs"><a class="square" href="#">mesurer</a></li>
-        <li class="hidden-xs"><a class="square" href="#">print</a></li>
-        <li><a class="square" href="#">share</a></li>
+        <li class="hidden-xs draw icon">
+          <a href>dessiner</a>
+        </li>
+        <li class="hidden-xs measure icon">
+          <a href>mesurer</a>
+        </li>
+        <li class="hidden-xs print icon">
+          <a href>print</a>
+        </li>
+        <li class="share icon"><a class="square" href="#">share</a></li>
       </ul>
     </footer>
 % if debug:
