@@ -1,0 +1,54 @@
+@font-face {
+  font-family: "geoportail-icons";
+  src: url("../webfonts/geoportail-icons.eot");
+  src: url("../webfonts/geoportail-icons.eot?#iefix") format("embedded-opentype"),
+       url("../webfonts/geoportail-icons.woff") format("woff"),
+       url("../webfonts/geoportail-icons.ttf") format("truetype"),
+       url("../webfonts/geoportail-icons.svg#geoportail-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+li.icon {
+
+  a {
+    padding: 0;
+    position: relative;
+    width: 64px;
+    padding-top: 32px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  a:after {
+   font-family: "geoportail-icons" !important;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 2em;
+  }
+}
+
+.icon.layers a:after {
+  content: '\e00e';
+}
+.icon.mymaps a:after {
+  content: '\e01d';
+}
+.icon.infos a:after {
+  content: '\e01f';
+}
+.icon.draw a:after {
+  content: '\e01e';
+}
+.icon.measure a:after {
+  content: '\e021';
+}
+.icon.print a:after {
+  content: '\e02e';
+}
+.icon.share a:after {
+  content: '\e02a';
+}
