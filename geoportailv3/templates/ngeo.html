@@ -46,12 +46,16 @@
       <div id="sidebar" ng-class="ctrl.sidebarOpen ? 'open' : ''"
            ngeo-resizemap="ctrl.map">
         <div id="layers" ng-class="ctrl.layersOpen ? 'show' : 'hide'">
-          <h1 translate>Layers</h1>
-          <button ng-click="ctrl.sidebarOpen = false;">Close</button>
+          <h2 translate>Layers</h2>
+          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+            ✕
+          </button>
         </div>
-        <div id="layers" ng-class="ctrl.mymapsOpen ? 'show' : 'hide'">
-          <h1 translate>My Maps</h1>
-          <button ng-click="ctrl.sidebarOpen = false;">Close</button>
+        <div id="mymaps" ng-class="ctrl.mymapsOpen ? 'show' : 'hide'">
+          <h2 translate>My Maps</h2>
+          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+            ✕
+          </button>
         </div>
       </div>
       <div id="map" ngeo-map="ctrl.map">
