@@ -129,26 +129,22 @@ app.MainController.prototype.switchLanguage = function(lang) {
  */
 app.MainController.prototype.manageSidebar_ = function(scope) {
 
-  scope.$watch(goog.bind(function() {
-    return this['mymapsOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
+  var toggleSidebar = goog.bind(function(newVal, oldVal) {
     this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'] ||
         this['infosOpen'];
-  }, this));
+  }, this);
+
+  scope.$watch(goog.bind(function() {
+    return this['mymapsOpen'];
+  }, this), toggleSidebar);
 
   scope.$watch(goog.bind(function() {
     return this['layersOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
-    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'] ||
-        this['infosOpen'];
-  }, this));
+  }, this), toggleSidebar);
 
   scope.$watch(goog.bind(function() {
     return this['infosOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
-    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'] ||
-        this['infosOpen'];
-  }, this));
+  }, this), toggleSidebar);
 
   scope.$watch(goog.bind(function() {
     return this['sidebarOpen'];
