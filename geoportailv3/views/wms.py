@@ -1,8 +1,9 @@
 from pyramid.view import view_config
 from geoportailv3.models import LuxLayerInternalWMS
-from c2cgeoportal.models import DBSession
+from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPBadGateway
+from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
+from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
 
@@ -13,22 +14,39 @@ class Wms(object):
 
     def __init__(self, request):
         self.request = request
-        if request.environ.get("REMOTE_USER"):
-            self.user = request.environ.get("REMOTE_USER")
-        else:
-            self.user = None
 
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
         layers = self.request.params.get('LAYERS', '')
         layers = layers.split(',')
-
+        if len(layers) == 0:
+            return HTTPBadRequest()
         # TODO: Multiple layers could be requested with a single request
-        # Today the first layer win.
+        # Today the first layer wins.
         layer = layers[0]
 
         internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
-            LuxLayerInternalWMS.layer == layer).one()
+            LuxLayerInternalWMS.layer == layer).first()
+        if internal_wms is None:
+            return HTTPNotFound()
+
+        # If the layer is not public and we are not connected then refuse
+        if not internal_wms.public and self.request.user is None:
+            return HTTPUnauthorized()
+
+        # If the layer is not public and we are connected check the rights
+        if not internal_wms.public and self.request.user is not None:
+            # Check if the layer has a resctriction area
+            restriction = DBSession.query(RestrictionArea).filter(
+                RestrictionArea.roles.any(
+                    Role.id == self.request.user['role'])).filter(
+                RestrictionArea.layers.any(
+                    Layer.id == internal_wms.id
+                )
+                ).first()
+            # If not restriction is set then return unauthorized
+            if restriction is None or not restriction.readwrite:
+                return HTTPUnauthorized()
 
         remote_host = internal_wms.url
 
@@ -47,7 +65,7 @@ class Wms(object):
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
         # check sso
-        if self.user:
+        if self.request.user:
             pass
 
         url = ""
@@ -71,7 +89,6 @@ class Wms(object):
             log.error(url)
             return HTTPBadGateway()
 
-        headers = {}
-        headers['content-type'] = f.info()['Content-Type']
+        headers = {"Content-Type": f.info()['Content-Type']}
 
         return Response(data, headers=headers)
