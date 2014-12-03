@@ -3,7 +3,15 @@
 @navbars-button-border-color: #8394a0;
 
 header {
+  &.navbar {
+    border-width: 0;
+  }
   .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .nav {
   > li {
@@ -63,6 +71,18 @@ header {
 /* styling */
 /***********/
 
+header {
+  .navbar-form {
+    padding: 0;
+  }
+}
+
+#user-experience {
+  li > a {
+    border-left: 1px solid @navbars-button-border-color;
+    text-indent: -9999px;
+  }
+}
 .toolbox,
 .sidebar-controls {
   li:first-child > a {

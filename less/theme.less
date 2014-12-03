@@ -1,6 +1,13 @@
 /** Themes related styling (mainly colors) **/
 .theme(@theme, @primary-color) {
   [data-theme="@{theme}"] {
+    @secondary-color: desaturate(lighten(@primary-color, 15%), 10%);
+    .form-control {
+      background-color: @secondary-color;
+      .placeholder(white);
+      color: white;
+    }
+
     .btn {
       color: @primary-color;
       &:hover {
@@ -10,13 +17,19 @@
     }
 
     #sidebar {
-      background-color: desaturate(lighten(@primary-color, 15%), 10%);
+      background-color: @secondary-color;
     }
 
     .sidebar-controls,
     .toolbox {
       li > a {
         color: @primary-color;
+      }
+    }
+    #user-experience,
+    .sidebar-controls,
+    .toolbox {
+      li > a {
         &:hover {
           color: white;
           background-color: @primary-color;
