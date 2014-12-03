@@ -50,6 +50,7 @@
           <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
+          <app-catalog app-catalog-map="ctrl.map"></app-catalog>
         </div>
         <div id="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
           <h2 translate>My Maps</h2>
@@ -119,6 +120,10 @@
       (function() {
          var appModule = angular.module('app');
          appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
+         appModule.constant('treeUrl', '${request.static_url('geoportailv3:static/tree.json')}');
+
+         appModule.value('ngeoLayercatalogTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layercatalog.html' % node_modules_path)}');
+         appModule.value('ngeoLayercatalognodeTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layercatalognode.html' % node_modules_path)}');
        })();
     </script>
   </body>

@@ -8,5 +8,6 @@ goog.provide('app_main');
 
 goog.require('app.MainController');
 goog.require('app.scalelineDirective');
+goog.require('app.catalogDirective');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.resizemapDirective');
