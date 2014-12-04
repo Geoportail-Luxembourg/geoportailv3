@@ -1,0 +1,5 @@
+extends: vars_geoportailv3.yaml
+
+vars:
+    instanceid: wepa
+    waitress_port: 8082
