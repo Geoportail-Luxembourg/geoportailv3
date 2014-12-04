@@ -51,5 +51,5 @@ def main(global_config, **settings):
 
     # view and route for the ngeo.html page
     config.add_route('ngeo', '/ngeo')
-
+    config.add_route('testi18n', 'i18n')
     return config.make_wsgi_app()
