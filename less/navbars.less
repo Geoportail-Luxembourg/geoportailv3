@@ -5,6 +5,9 @@
 header {
   &.navbar {
     border-width: 0;
+    @media (max-width: @screen-xs-max) {
+      min-height: 40px;
+    }
   }
   .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
 
@@ -64,6 +67,21 @@ header {
     .sidebar-controls.open {
       left: 100%;
     }
+  }
+}
+
+/***********/
+/* Sizing  */
+/***********/
+
+@media (max-width: @screen-xs-max) {
+  .navbar-brand,
+  .navbar-nav,
+  .navbar-nav > li > a {
+    line-height: 10px;
+  }
+  .navbar-brand {
+    height: 40px;
   }
 }
 
