@@ -4,7 +4,7 @@
     closure_library_path = settings.get('closure_library_path')
 %>\
 <!DOCTYPE html>
-<html lang={{ctrl.lang}} ng-app="app" ng-controller="MainController as ctrl">
+<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
   <head>
     <title>map.geoportail.lu</title>
     <meta charset="utf-8">
@@ -43,34 +43,34 @@
 
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
-      <div id="sidebar" ng-class="ctrl.sidebarOpen ? 'open' : ''"
-           ngeo-resizemap="ctrl.map">
-        <div id="layers" ng-class="ctrl.layersOpen ? 'show' : 'hide'">
+      <div id="sidebar" ng-class="mainCtrl.sidebarOpen ? 'open' : ''"
+           ngeo-resizemap="mainCtrl.map">
+        <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <h2 translate>Layers</h2>
-          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
         </div>
-        <div id="mymaps" ng-class="ctrl.mymapsOpen ? 'show' : 'hide'">
+        <div id="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
           <h2 translate>My Maps</h2>
-          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
         </div>
       </div>
-      <div id="map" ngeo-map="ctrl.map">
-        <app-scaleline app-scaleline-map="ctrl.map"></app-scaleline>
+      <div id="map" ngeo-map="mainCtrl.map">
+        <app-scaleline app-scaleline-map="mainCtrl.map"></app-scaleline>
       </div>
     </div>
 
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
-          ng-class="ctrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
-        <li ngeo-btn ng-model="ctrl.layersOpen">
+          ng-class="mainCtrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
+        <li ngeo-btn ng-model="mainCtrl.layersOpen">
           <a href translate>Layers</a>
         </li>
-        <li ngeo-btn ng-model="ctrl.mymapsOpen">
+        <li ngeo-btn ng-model="mainCtrl.mymapsOpen">
           <a href translate>My Maps</a>
         </li>
       </ul>
