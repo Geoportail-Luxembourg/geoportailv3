@@ -66,17 +66,16 @@
       "typeInvalidation",
       "undefinedNames",
       "undefinedVars",
+      "unknownDefines",
       "uselessCode",
       "visibility"
-    ],
-    "jscomp_off": [
-      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
     ],
     "angular_pass": true,
     "compilation_level": "ADVANCED",
+    "warning_level": "VERBOSE",
     "generate_exports": true,
     "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
