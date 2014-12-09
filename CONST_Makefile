@@ -5,6 +5,8 @@ NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/
 APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
 APP_HTML_FILES = $(shell find geoportailv3/templates -type f -name '*.html')
 APP_PYTHON_FILES = $(shell find geoportailv3/ -type f -name '*.py')
+APP_SERVER_LOC_FILES = $(shell find geoportailv3/locale/ -type f -name 'geoportailv3.po')
+APP_CLIENT_LOC_FILES = $(shell find geoportailv3/locale/ -type f -name 'geoportailv3-client.po')
 LESS_FILES = $(shell find less -type f -name '*.less')
 TEMPLATE_EXCLUDE += buildout .build CONST_alembic/script.py.mako print/templates/print.mako
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
@@ -44,7 +46,7 @@ help:
 	@echo
 
 .PHONY: build
-build: $(SITE_PACKAGES)/geoportailv3.egg-link update-translations build-web build-server compile-catalog 
+build: $(SITE_PACKAGES)/geoportailv3.egg-link update-translations build-web build-server compile-catalog
 
 .PHONY: check
 check: flake8 lint build-web
@@ -90,8 +92,7 @@ update-node-modules:
 	npm install --force
 
 .PHONY: update-translations
-update-translations:
-	python setup.py extract_messages && msgfmt geoportailv3/locale/*/LC_MESSAGES/*.po geoportailv3/locale/
+update-translations: $(APP_SERVER_LOC_FILES) $(APP_CLIENT_LOC_FILES)
 
 $(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
@@ -124,8 +125,11 @@ geoportailv3/locale/fr/LC_MESSAGES/geoportailv3-client.po: geoportailv3/locale/g
 	cd geoportailv3/locale && msgmerge --update fr/LC_MESSAGES/geoportailv3-client.po geoportailv3-client.pot
 	touch $@
 
-geoportailv3/locale/fr/LC_MESSAGES/geoportailv3.po: geoportailv3/locale/geoportailv3.pot
-	cd geoportailv3/locale && msgmerge --update fr/LC_MESSAGES/geoportailv3.po geoportailv3.pot
+$(APP_SERVER_LOC_FILES): geoportailv3/locale/geoportailv3.pot
+	msgmerge --update $@ geoportailv3/locale/geoportailv3.pot
+
+$(APP_CLIENT_LOC_FILES): geoportailv3/locale/geoportailv3-client.pot
+	msgmerge --update $@ geoportailv3/locale/geoportailv3-client.pot
 
 geoportailv3/static/build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) .build/externs/angular-1.3.js .build/externs/angular-1.3-q.js .build/externs/angular-1.3-http-promise.js .build/node_modules.timestamp
 	mkdir -p $(dir $@)
