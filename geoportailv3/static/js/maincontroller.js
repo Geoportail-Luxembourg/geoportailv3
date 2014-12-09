@@ -49,6 +49,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
    */
   this['layersOpen'] = false;
 
+  /**
+   * @type {Boolean}
+   */
+  this['infosOpen'] = false;
+
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSidebar_($scope);
@@ -124,17 +129,22 @@ app.MainController.prototype.switchLanguage = function(lang) {
  */
 app.MainController.prototype.manageSidebar_ = function(scope) {
 
+  var toggleSidebar = goog.bind(function(newVal, oldVal) {
+    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'] ||
+        this['infosOpen'];
+  }, this);
+
   scope.$watch(goog.bind(function() {
     return this['mymapsOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
-    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'];
-  }, this));
+  }, this), toggleSidebar);
 
   scope.$watch(goog.bind(function() {
     return this['layersOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
-    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'];
-  }, this));
+  }, this), toggleSidebar);
+
+  scope.$watch(goog.bind(function() {
+    return this['infosOpen'];
+  }, this), toggleSidebar);
 
   scope.$watch(goog.bind(function() {
     return this['sidebarOpen'];
@@ -142,6 +152,7 @@ app.MainController.prototype.manageSidebar_ = function(scope) {
     if (!newVal) {
       this['mymapsOpen'] = false;
       this['layersOpen'] = false;
+      this['infosOpen'] = false;
     }
   }, this));
 };

@@ -4,6 +4,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: geoportailv3/templates/ngeo.html
+msgid "Infos"
+msgstr ""
+
+#: geoportailv3/templates/ngeo.html
 msgid "Layers"
 msgstr ""
 

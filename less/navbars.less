@@ -3,7 +3,18 @@
 @navbars-button-border-color: #8394a0;
 
 header {
+  &.navbar {
+    border-width: 0;
+    @media (max-width: @screen-xs-max) {
+      min-height: 40px;
+    }
+  }
   .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .nav {
   > li {
@@ -60,14 +71,47 @@ header {
 }
 
 /***********/
+/* Sizing  */
+/***********/
+
+.navbar-nav > li > a {
+  line-height: 18px;
+}
+
+@media (max-width: @screen-xs-max) {
+  .navbar-brand,
+  .navbar-nav,
+  .navbar-nav > li > a {
+    line-height: 10px;
+  }
+  .navbar-brand {
+    height: 40px;
+  }
+}
+
+/***********/
 /* styling */
 /***********/
 
-.toolbox,
-.sidebar-controls {
+header {
+  .navbar-form {
+    padding: 0;
+  }
+  .navbar-nav {
+    li > a {
+      border-left: 1px solid @navbars-button-border-color;
+      text-indent: -9999px;
+    }
+  }
+}
+
+.toolbox {
   li:first-child > a {
     border-left: 1px solid @navbars-button-border-color;
   }
+}
+.toolbox,
+.sidebar-controls {
   li > a {
     border-right: 1px solid @navbars-button-border-color;
   }
@@ -75,6 +119,7 @@ header {
 
 .footer-navigation > li > a {
   color: #6b818f;
+  text-transform: uppercase;
 }
 
 @media (min-width: @screen-sm-min) {
