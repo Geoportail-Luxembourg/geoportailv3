@@ -30,19 +30,26 @@ li.icon a {
   &:after {
    font-family: "geoportail-icons" !important;
     position: absolute;
-    top: 10px;
+    top: 8px;
     left: 0;
     text-align: center;
     width: 100%;
     font-size: 2em;
     text-indent: 0;
+    @media (max-width: @screen-xs-max) {
+      top: 10px;
+    }
   }
+
 }
 button.icon:after {
   top: -10px;
 }
 li.icon a {
-  padding-top: 30px;
+  padding-top: 32px;
+  @media (max-width: @screen-xs-max) {
+    padding-top: 30px;
+  }
 }
 #user-experience li.icon a:after {
   top: 15px;
