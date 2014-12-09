@@ -8,6 +8,7 @@ available_locale_names:
 - en
 - fr
 - de
+- lb
 
 # The dogpile.cache configuration.
 #
