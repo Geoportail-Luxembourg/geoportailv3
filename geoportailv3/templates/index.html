@@ -1,87 +1,110 @@
-<!DOCTYPE HTML>
-<html lang="${lang}">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="Content-Language" content="${lang}" />
-        <meta name="keywords" content="geoportailv3, geoportal">
-        <meta name="description" content="geoportailv3 Geoportal Application.">
-        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9; IE=EmulateIE10">
-        <title>${_('Application Title')}</title>
-        <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('geoportailv3:static/images/favicon.ico')}">
-
-        <style>
-        html, body {
-            margin: 0;
-        }
-        #loading-mask {
-          background-color: white;
-          height: 100%;
-          left: 0;
-          position: absolute;
-          top: 0;
-          width: 100%;
-          z-index: 20000;
-        }
-        #loading {
-          height: auto;
-          width: 100%;
-          text-align: center;
-          position: absolute;
-          top: 50%;
-          z-index: 20001;
-        }
-        .loading-indicator-static {
-          background: url("${request.static_url('c2cgeoportal:static/images/loading.gif')}") no-repeat transparent;
-          font-size: 13px;
-          font-family: tahoma,arial,verdana,sans-serif;
-          padding: 0 0 3px 20px;
-          display: inline;
-        }
-        </style>
+<%
+    settings = request.registry.settings
+    node_modules_path = settings.get('node_modules_path')
+    closure_library_path = settings.get('closure_library_path')
+%>\
+<!DOCTYPE html>
+<html lang={{ctrl.lang}} ng-app="app" ng-controller="MainController as ctrl">
+  <head>
+    <title>map.geoportail.lu</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 % if debug:
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/ext-all.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/openlayers/theme/default/style.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/geoext/resources/css/popup.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/geoext/resources/css/gxtheme-gray.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/geoext.ux/ux/Measure/resources/css/measure.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/sandbox/FeatureEditing/resources/css/feature-editing.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/styler/theme/css/styler.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/gxp/src/theme/all.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/core/src/theme/all.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/ext.ux/ColorPicker/ressources/colorpicker.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/lib/cgxp/ext/Ext/examples/ux/css/Spinner.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/css/proj.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/css/proj-map.css')}" />
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/css/proj-widgets.css')}" />
+    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
 % else:
-        <link rel="stylesheet" type="text/css" href="${request.static_url('geoportailv3:static/build/app.css', _query=url_params)}" />
+    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
 % endif
-    </head>
-    <body class="${lang}">
-        <div id="loading-mask" style=""></div>
-        <div id="loading">
-            <div class="loading-indicator-static">${_('Loading message')}</div>
+  </head>
+  <body data-theme="environnement">
+    <!-- Begin fixed top bar -->
+    <header class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="">
+          <a href class="navbar-brand">Logo</a>
         </div>
-        <div id="header-out">
-            <div class="linkplaceholdercontainer">
-                <a href="http://camptocamp.com">
-                    <div class="linkplaceholder"></div>
-                </a>
-            </div>
-            <div id="header-in"></div>
-        </div>
-        <noscript><p>JavaScript is required here</p></noscript>
-        <form method="POST" id="loginForm" style="display: none">
-            <input id="login" name="login" type="text" autocomplete="on"/>
-            <input id="password" name="password" type="password" autocomplete="on"/>
-            <input id="newPassword" name="newPassword" type="password" />
-            <input id="confirmNewPassword" name="confirmNewPassword" type="password" />
+
+        <ul id="user-experience" class="nav navbar-nav pull-right">
+          <li class="visible-xs-inline-block"><a href>Search</a></li>
+          <li><a href>User</a></li>
+          <li><a href>Lang</a></li>
+        </ul>
+        <form class="navbar-form pull-right hidden-xs" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Mot-clés" />
+          </div>
+          <button type="submit" class="btn btn-default">
+            Search
+          </button>
         </form>
-        <div style="display:none">
-            <div id="search-tip">
-                <p>${_('search tip message') | n}</p>
-            </div>
+      </div>
+    </header>
+
+    <!-- Begin page content (ie. map + left sidebar) -->
+    <div id="main-container">
+      <div id="sidebar" ng-class="ctrl.sidebarOpen ? 'open' : ''"
+           ngeo-resizemap="ctrl.map">
+        <div id="layers" ng-class="ctrl.layersOpen ? 'show' : 'hide'">
+          <h2 translate>Layers</h2>
+          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+            ✕
+          </button>
         </div>
-    </body>
+        <div id="mymaps" ng-class="ctrl.mymapsOpen ? 'show' : 'hide'">
+          <h2 translate>My Maps</h2>
+          <button class="close-panel" ng-click="ctrl.sidebarOpen = false;">
+            ✕
+          </button>
+        </div>
+      </div>
+      <div id="map" ngeo-map="ctrl.map">
+        <app-scaleline app-scaleline-map="ctrl.map"></app-scaleline>
+      </div>
+    </div>
+
+    <!-- Begin bottom bar -->
+    <footer class="footer">
+      <ul class="sidebar-controls nav navbar-nav pull-left"
+          ng-class="ctrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
+        <li ngeo-btn ng-model="ctrl.layersOpen">
+          <a href translate>Layers</a>
+        </li>
+        <li ngeo-btn ng-model="ctrl.mymapsOpen">
+          <a href translate>My Maps</a>
+        </li>
+      </ul>
+      <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a href>items</a></li>
+        <li><a href>menu</a></li>
+        <li><a href>droite</a></li>
+      </ul>
+      <ul class="toolbox nav navbar-nav">
+        <li class="hidden-xs"><a class="square" href="#">dessiner</a></li>
+        <li class="hidden-xs"><a class="square" href="#">mesurer</a></li>
+        <li class="hidden-xs"><a class="square" href="#">print</a></li>
+        <li><a class="square" href="#">share</a></li>
+      </ul>
+    </footer>
+% if debug:
+    <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-animate/angular-animate.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
+    <script src="${request.route_url('deps.js')}"></script>
+    <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
+    <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
+% else:
+    <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
+% endif
+    <script>
+      (function() {
+         var appModule = angular.module('app');
+         appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
+       })();
+    </script>
+  </body>
 </html>
