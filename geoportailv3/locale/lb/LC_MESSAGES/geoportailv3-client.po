@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: geoportailv 3\n"
+"PO-Revision-Date: 2014-12-09 15:19+0100\n"
+"Last-Translator:  <wepa@workshop3-local.geoportal.lu>\n"
+"Language-Team: Letzeburgesch\n"
+"Language: lb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: geoportailv3/templates/ngeo.html
+msgid "Layers"
+msgstr ""
+
+#: geoportailv3/templates/ngeo.html
+msgid "My Maps"
+msgstr ""

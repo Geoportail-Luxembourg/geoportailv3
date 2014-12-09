@@ -1,6 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-12-09 14:55+0100\n"
 "PO-Revision-Date: 2014-10-22 16:08+0200\n"
 "Last-Translator: Eric Lemoine <eric.lemoine@camptocamp.com>\n"
 "Language-Team: French\n"
