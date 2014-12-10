@@ -1,5 +1,5 @@
 SITE_PACKAGES = $(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())" 2> /dev/null)
-PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print(sys.version_info.major + '.' + sys.version_info.minor)" 2> /dev/null)
+PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print('%i.%i' % (sys.version_info.major, sys.version_info.minor))" 2> /dev/null)
 OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
 NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
 APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
