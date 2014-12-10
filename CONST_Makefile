@@ -172,14 +172,10 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 
 $(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py \
 		requirements.txt \
-		$(SITE_PACKAGES)/nosexcover-1.0.8-py$(PYTHON_VERSION).egg-info/PKG-INFO \
 		$(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO
 	.build/venv/bin/pip install -r requirements.txt
 
 # We manually install nosexcover and setuptools_git because of
 # https://github.com/Geoportail-Luxembourg/geoportailv3/issues/83
-$(SITE_PACKAGES)/nosexcover-1.0.8-py$(PYTHON_VERSION).egg-info/PKG-INFO:
-	.build/venv/bin/pip install "nosexcover==1.0.8"
-
 $(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO:
 	.build/venv/bin/pip install "setuptools_git==1.1"
