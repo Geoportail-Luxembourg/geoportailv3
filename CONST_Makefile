@@ -114,7 +114,7 @@ geoportailv3/locale/geoportailv3-client.pot: $(APP_HTML_FILES)
 	node tasks/extract-messages.js $^ > $@
 
 geoportailv3/locale/geoportailv3.pot: $(APP_PYTHON_FILES) $(APP_HTML_FILES)
-	.build/venv/bin/pot-create -c lingua.ini geoportailv3
+	.build/venv/bin/pot-create -c lingua.ini -o geoportailv3/locale/geoportailv3.pot geoportailv3
 
 $(APP_SERVER_LOC_FILES): geoportailv3/locale/geoportailv3.pot
 	msgmerge --update $@ geoportailv3/locale/geoportailv3.pot
