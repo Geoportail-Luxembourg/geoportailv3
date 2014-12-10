@@ -17,6 +17,7 @@ setup(
     install_requires=[
         'c2cgeoportal>=1.6.0dev-20141107',
         'pyramid_closure',
+        'lingua==3.6.1',
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
