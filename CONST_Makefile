@@ -121,9 +121,8 @@ geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 geoportailv3/locale/geoportailv3-client.pot: $(APP_HTML_FILES)
 	node tasks/extract-messages.js $^ > $@
 
-geoportailv3/locale/fr/LC_MESSAGES/geoportailv3-client.po: geoportailv3/locale/geoportailv3-client.pot
-	cd geoportailv3/locale && msgmerge --update fr/LC_MESSAGES/geoportailv3-client.po geoportailv3-client.pot
-	touch $@
+geoportailv3/locale/geoportailv3.pot: $(APP_PYTHON_FILES) $(APP_HTML_FILES)
+	.build/venv/bin/pot-create -c lingua.ini geoportailv3
 
 $(APP_SERVER_LOC_FILES): geoportailv3/locale/geoportailv3.pot
 	msgmerge --update $@ geoportailv3/locale/geoportailv3.pot
