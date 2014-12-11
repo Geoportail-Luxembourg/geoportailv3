@@ -3,14 +3,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "Infos"
 msgstr ""
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "Layers"
 msgstr ""
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "My Maps"
 msgstr ""
