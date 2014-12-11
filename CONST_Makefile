@@ -1,16 +1,24 @@
 SITE_PACKAGES = $(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())" 2> /dev/null)
 PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print('%i.%i' % (sys.version_info.major, sys.version_info.minor))" 2> /dev/null)
-OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
-NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
-APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
-APP_HTML_FILES = $(shell find geoportailv3/templates -type f -name '*.html')
-LESS_FILES = $(shell find less -type f -name '*.less')
+OL_JS_FILES != find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null
+NGEO_JS_FILES != find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null
+APP_JS_FILES != find geoportailv3/static/js -type f -name '*.js'
+APP_HTML_FILES != find geoportailv3/templates -type f -name '*.html'
+LESS_FILES != find less -type f -name '*.less'
 TEMPLATE_EXCLUDE += buildout .build CONST_alembic/script.py.mako print/templates/print.mako
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
-TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print 2> /dev/null)
-MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null)
-JINJA_FILES = $(shell find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null)
+TEMPLATE_FILES != find $(FIND_OPTS) -name "*.in" -print 2> /dev/null
+MAKO_FILES != find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null
+JINJA_FILES != find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null
 VARS_FILES += CONST_vars.yaml
+CONFIG_VARS += authtkt_cookie_name authtkt_secret sqlalchemy.url auth_replication_enabled \
+	sqlalchemy_replication.url schema parentschema enable_admin_interface pyramid_closure.roots \
+	pyramid_closure.roots_with_prefix node_modules_path closure_library_path default_locale_name \
+	available_locale_names cache admin_interface functionalities external_themes_url \
+	external_mapserv_url raster shortener mapserv_url hide_capabilities use_security_metadata \
+	print_url tiles_url checker check_collector wfs default_max_age
+ENVIRONMENT_VARS += INSTANCE_ID=${INSTANCE_ID}
+C2C_TEMPLATE_CMD = $(ENVIRONMENT_VARS) .build/venv/bin/c2c-template --vars $(VARS_FILE)
 
 .PHONY: help
 help:
@@ -67,7 +75,7 @@ flake8: .build/venv/bin/flake8
 	.build/venv/bin/flake8 geoportailv3
 
 .PHONY: build-server
-build-server: $(TEMPLATE_FILES:.in=) $(MAKO_FILES:.mako=) $(JINJA_FILES:.jinja=)
+build-server: $(TEMPLATE_FILES:.in=) $(MAKO_FILES:.mako=) $(JINJA_FILES:.jinja=) .build/config.yaml
 
 .PHONY: lint
 lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.timestamp .build/jshint.timestamp
@@ -82,24 +90,24 @@ update-node-modules:
 
 $(TEMPLATE_FILES:.in=): $(TEMPLATE_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
-	echo "Error: the variable VARS_FILE is required."
+	@echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) $@.in
+	$(C2C_TEMPLATE_CMD) --engine template --files $@.in
 
 $(MAKO_FILES:.mako=): $(MAKO_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
-	echo "Error: the variable VARS_FILE is required."
+	@echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) $@.mako
+	$(C2C_TEMPLATE_CMD) --engine mako --files $@.mako
 
 $(JINJA_FILES:.jinja=): $(JINJA_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
-	echo "Error: the variable VARS_FILE is required."
+	@echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine jinja --vars $(VARS_FILE) $@.jinja
+	$(C2C_TEMPLATE_CMD) --engine jinja --files $@.jinja
 
 geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
@@ -174,8 +182,12 @@ $(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py \
 		requirements.txt \
 		$(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO
 	.build/venv/bin/pip install -r requirements.txt
+	touch -m $@ | true
 
 # We manually install nosexcover and setuptools_git because of
 # https://github.com/Geoportail-Luxembourg/geoportailv3/issues/83
 $(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO:
 	.build/venv/bin/pip install "setuptools_git==1.1"
+
+.build/config.yaml: .build/venv/bin/c2c-template ${VARS_FILES}
+	$(C2C_TEMPLATE_CMD) --get-config $@ $(CONFIG_VARS)

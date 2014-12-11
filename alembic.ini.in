@@ -23,7 +23,7 @@ script_location = CONST_alembic
 sqlalchemy.url = postgresql://${dbuser}:${dbpassword}@${dbhost}:${dbport}/${db}
 version_table_schema = ${schema}
 schema = ${schema}
-parentschema = ${parent_schema}
+parentschema = ${parentschema}
 srid = 2169
 
 # Logging configuration

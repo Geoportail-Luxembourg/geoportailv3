@@ -1,8 +1,6 @@
 extends: CONST_vars.yaml
 
 vars:
-    # instance id
-    instanceid: main
     # database name
     db: lux
     # database schema
@@ -22,7 +20,10 @@ vars:
     dbpassword_replication: to_be_defined
 
     # closure paths
-    closure_library_path: __import__('subprocess').Popen(['node', '-e', 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'], stdout=__import__('subprocess').PIPE).stdout.read()
+    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
 
-interpreted-vars:
-- closure_library_path
+interpreted:
+    node:
+        vars:
+        - closure_library_path
+        cmd: ["node", "-e"]

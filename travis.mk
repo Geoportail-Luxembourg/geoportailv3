@@ -1,3 +1,3 @@
-VARS_FILE = vars_travis.yaml
+INSTANCE_ID = travis
 
 include geoportailv3.mk

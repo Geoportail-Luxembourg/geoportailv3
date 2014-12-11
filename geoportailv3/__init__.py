@@ -46,6 +46,7 @@ def main(global_config, **settings):
     add_interface(config, interface_type=INTERFACE_TYPE_NGEO_CATALOGUE)
 
     # static views for js resources in node_modules and for closure
+    settings = config.get_settings()
     config.add_static_view('node_modules', settings.get('node_modules_path'))
     config.add_static_view('closure', settings.get('closure_library_path'))
 

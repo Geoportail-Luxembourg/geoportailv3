@@ -1,3 +1,3 @@
-VARS_FILE = vars_sbrunner.yaml
+INSTANCE_ID = sbrunner
 
 include geoportailv3.mk
