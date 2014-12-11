@@ -57,7 +57,8 @@ vars:
     directory: __import__('os').getcwd()
     PYTHONPATH: __import__('distutils').sysconfig.get_python_lib()
 
-interpreted-vars:
-- authtkt_secret
-- directory
-- PYTHONPATH
+interpreted:
+  python:
+    - authtkt_secret
+    - directory
+    - PYTHONPATH
