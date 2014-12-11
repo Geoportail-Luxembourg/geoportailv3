@@ -4,11 +4,11 @@ vars:
     # instance id
     instanceid: main
     # database name
-    db: to_be_defined
+    db: lux
     # database schema
-    schema: main
+    schema: geov3
     # Name of the server hosting the application
-    host: to_be_defined
+    host: localhost
     # Administration interface activation
     enable_admin_interface: true
 

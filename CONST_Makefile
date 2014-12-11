@@ -1,5 +1,5 @@
 SITE_PACKAGES = $(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())" 2> /dev/null)
-PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print(sys.version_info.major + '.' + sys.version_info.minor)" 2> /dev/null)
+PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print('%i.%i' % (sys.version_info.major, sys.version_info.minor))" 2> /dev/null)
 OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
 NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
 APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
@@ -109,6 +109,7 @@ geoportailv3/locale/geoportailv3-client.pot: $(APP_HTML_FILES)
 
 geoportailv3/locale/fr/LC_MESSAGES/geoportailv3-client.po: geoportailv3/locale/geoportailv3-client.pot
 	cd geoportailv3/locale && msgmerge --update fr/LC_MESSAGES/geoportailv3-client.po geoportailv3-client.pot
+	touch $@
 
 geoportailv3/static/build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) .build/externs/angular-1.3.js .build/externs/angular-1.3-q.js .build/externs/angular-1.3-http-promise.js .build/node_modules.timestamp
 	mkdir -p $(dir $@)
@@ -171,14 +172,10 @@ geoportailv3/static/build/locale/fr/geoportailv3.json: geoportailv3/locale/fr/LC
 
 $(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py \
 		requirements.txt \
-		$(SITE_PACKAGES)/nosexcover-1.0.8-py$(PYTHON_VERSION).egg-info/PKG-INFO \
 		$(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO
 	.build/venv/bin/pip install -r requirements.txt
 
 # We manually install nosexcover and setuptools_git because of
 # https://github.com/Geoportail-Luxembourg/geoportailv3/issues/83
-$(SITE_PACKAGES)/nosexcover-1.0.8-py$(PYTHON_VERSION).egg-info/PKG-INFO:
-	.build/venv/bin/pip install "nosexcover==1.0.8"
-
 $(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO:
 	.build/venv/bin/pip install "setuptools_git==1.1"
