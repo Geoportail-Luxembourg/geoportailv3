@@ -24,5 +24,7 @@ vars:
     # closure paths
     closure_library_path: __import__('subprocess').Popen(['node', '-e', 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'], stdout=__import__('subprocess').PIPE).stdout.read()
 
-interpreted-vars:
-- closure_library_path
+
+interpreted:
+  python:
+    - closure_library_path

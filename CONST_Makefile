@@ -85,21 +85,21 @@ ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) $@.in
+	.build/venv/bin/c2c-template --engine template --vars $(VARS_FILE) --files $@.in
 
 $(MAKO_FILES:.mako=): $(MAKO_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) $@.mako
+	.build/venv/bin/c2c-template --engine mako --vars $(VARS_FILE) --files $@.mako
 
 $(JINJA_FILES:.jinja=): $(JINJA_FILES) .build/venv/bin/c2c-template ${VARS_FILES}
 ifeq ($(origin VARS_FILE), undefined)
 	echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	.build/venv/bin/c2c-template --engine jinja --vars $(VARS_FILE) $@.jinja
+	.build/venv/bin/c2c-template --engine jinja --vars $(VARS_FILE) --files $@.jinja
 
 geoportailv3/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
