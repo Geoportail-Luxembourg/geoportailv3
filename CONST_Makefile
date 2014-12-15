@@ -1,15 +1,15 @@
 SITE_PACKAGES = $(shell .build/venv/bin/python -c "import distutils; print(distutils.sysconfig.get_python_lib())" 2> /dev/null)
 PYTHON_VERSION = $(shell .build/venv/bin/python -c "import sys; print('%i.%i' % (sys.version_info.major, sys.version_info.minor))" 2> /dev/null)
-OL_JS_FILES != find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null
-NGEO_JS_FILES != find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null
-APP_JS_FILES != find geoportailv3/static/js -type f -name '*.js'
-APP_HTML_FILES != find geoportailv3/templates -type f -name '*.html'
-LESS_FILES != find less -type f -name '*.less'
+OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
+NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
+APP_JS_FILES = $(shell find geoportailv3/static/js -type f -name '*.js')
+APP_HTML_FILES = $(shell find geoportailv3/templates -type f -name '*.html')
+LESS_FILES = $(shell find less -type f -name '*.less')
 TEMPLATE_EXCLUDE += buildout .build CONST_alembic/script.py.mako print/templates/print.mako
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
-TEMPLATE_FILES != find $(FIND_OPTS) -name "*.in" -print 2> /dev/null
-MAKO_FILES != find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null
-JINJA_FILES != find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null
+TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print 2> /dev/null)
+MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print 2> /dev/null)
+JINJA_FILES = $(shell find $(FIND_OPTS) -name "*.jinja" -print 2> /dev/null)
 VARS_FILES += CONST_vars.yaml
 CONFIG_VARS += authtkt_cookie_name authtkt_secret sqlalchemy.url auth_replication_enabled \
 	sqlalchemy_replication.url schema parentschema enable_admin_interface pyramid_closure.roots \
