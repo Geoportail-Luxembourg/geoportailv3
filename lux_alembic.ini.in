@@ -24,7 +24,7 @@ sqlalchemy.url = postgresql://${dbuser}:${dbpassword}@${dbhost}:${dbport}/${db}
 version_table_schema = ${schema}
 version_table = lux_version
 schema = ${schema}
-parentschema = ${parent_schema}
+parentschema = ${parentschema}
 srid = 2169
 
 # Logging configuration

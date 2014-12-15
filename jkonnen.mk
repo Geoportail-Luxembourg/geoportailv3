@@ -1,3 +1,3 @@
-VARS_FILE = vars_jkonnen.yaml
+INSTANCE_ID = jkonnen
 
 include geoportailv3.mk

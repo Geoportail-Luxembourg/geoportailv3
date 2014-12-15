@@ -1,3 +1,3 @@
-VARS_FILE = vars_petz.yaml
+INSTANCE_ID = petz
 
 include geoportailv3.mk

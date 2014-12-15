@@ -1,3 +1,3 @@
-VARS_FILE = vars_pgiraud.yaml
+INSTANCE_ID = pgiraud
 
 include geoportailv3.mk
