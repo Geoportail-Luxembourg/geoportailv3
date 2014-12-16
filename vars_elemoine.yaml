@@ -1,0 +1,5 @@
+extends: vars_geoportailv3.yaml
+
+vars:
+    # overwrite dbport for the ssh tunnel to the db
+    dbport: 9999
