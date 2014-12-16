@@ -25,16 +25,16 @@
           <a href class="navbar-brand">Logo</a>
         </div>
 
-        <ul id="user-experience" class="nav navbar-nav pull-right">
-          <li class="visible-xs-inline-block"><a href>Search</a></li>
-          <li><a href>User</a></li>
-          <li><a href>Lang</a></li>
+        <ul class="nav navbar-nav pull-right">
+          <li class="visible-xs-inline-block search icon"><a href>Search</a></li>
+          <li class="user icon"><a href>User</a></li>
+          <li class="lang icon"><a href>Lang</a></li>
         </ul>
         <form class="navbar-form pull-right hidden-xs" role="search">
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Mot-clés" />
           </div>
-          <button type="submit" class="btn btn-default">
+          <button type="submit" class="icon search">
             Search
           </button>
         </form>
@@ -57,6 +57,12 @@
             ✕
           </button>
         </div>
+        <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+          <h2 translate>Infos</h2>
+          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
+            ✕
+          </button>
+        </div>
       </div>
       <div id="map" ngeo-map="mainCtrl.map">
         <app-scaleline app-scaleline-map="mainCtrl.map"></app-scaleline>
@@ -67,11 +73,14 @@
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="mainCtrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
-        <li ngeo-btn ng-model="mainCtrl.layersOpen">
+        <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
           <a href translate>Layers</a>
         </li>
-        <li ngeo-btn ng-model="mainCtrl.mymapsOpen">
+        <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
           <a href translate>My Maps</a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
+          <a href translate>Infos</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
@@ -80,10 +89,16 @@
         <li><a href>droite</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav">
-        <li class="hidden-xs"><a class="square" href="#">dessiner</a></li>
-        <li class="hidden-xs"><a class="square" href="#">mesurer</a></li>
-        <li class="hidden-xs"><a class="square" href="#">print</a></li>
-        <li><a class="square" href="#">share</a></li>
+        <li class="hidden-xs draw icon">
+          <a href>dessiner</a>
+        </li>
+        <li class="hidden-xs measure icon">
+          <a href>mesurer</a>
+        </li>
+        <li class="hidden-xs print icon">
+          <a href>print</a>
+        </li>
+        <li class="share icon"><a class="square" href="#">share</a></li>
       </ul>
     </footer>
 % if debug:

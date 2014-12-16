@@ -10,14 +10,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "Infos"
 msgstr "Infos"
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "Layers"
 msgstr "Couches"
 
-#: geoportailv3/templates/ngeo.html
+#: geoportailv3/templates/index.html
 msgid "My Maps"
 msgstr "Mes Cartes"
