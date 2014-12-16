@@ -2,8 +2,7 @@ goog.provide('app.catalogDirective');
 
 goog.require('app');
 goog.require('app.LayerFactory');
-goog.require('ngeo.layercatalogDirective');
-
+goog.require('ngeo.layertreeDirective');
 
 
 /**
@@ -18,8 +17,8 @@ app.catalogDirective = function() {
     controller: 'AppCatalogController',
     controllerAs: 'ctrl',
     bindToController: true,
-    template: '<div ngeo-layercatalog="ctrl.tree" ' +
-        'ngeo-layercatalog-map="ctrl.map"></div>'
+    template: '<div ngeo-layertree="ctrl.tree" ' +
+        'ngeo-layertree-map="ctrl.map"></div>'
   };
 };
 

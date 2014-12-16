@@ -63,4 +63,4 @@ app.layerFactory = function(node) {
 };
 
 
-app.module.value('ngeoLayercatalogLayerFactory', app.layerFactory);
+app.module.value('ngeoLayertreeLayerFactory', app.layerFactory);
