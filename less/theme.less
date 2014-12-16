@@ -2,6 +2,7 @@
 .theme(@theme, @primary-color) {
   [data-theme="@{theme}"] {
     @secondary-color: desaturate(lighten(@primary-color, 15%), 10%);
+    @tertiary-color: darken(@primary-color, 10%);
     .form-control {
       background-color: @secondary-color;
       .placeholder(white);
@@ -18,6 +19,21 @@
 
     #sidebar {
       background-color: @secondary-color;
+      .nav-tabs li {
+        a {
+          background-color: @tertiary-color;
+          color: @primary-color;
+        }
+        &> a:hover,
+        &.active > a {
+          background-color: @primary-color;
+          color: white;
+        }
+      }
+
+      .tab-content {
+        background-color: @primary-color;
+      }
     }
 
     .sidebar-controls,

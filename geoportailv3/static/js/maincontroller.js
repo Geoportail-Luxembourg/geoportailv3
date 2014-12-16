@@ -155,6 +155,12 @@ app.MainController.prototype.manageSidebar_ = function(scope) {
       this['infosOpen'] = false;
     }
   }, this));
+
+  // activate tabs
+  $('#layers ul.nav-tabs a').click(function(e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
 };
 
 

@@ -2,9 +2,8 @@
   h2 {
     font-size: 40px;
     line-height: 1;
-    margin-left: 20px;
-    margin-top: 12px;
-    margin-bottom: 20px;
+    padding: 12px 0 12px 12px;
+    margin: 0;
     text-transform: uppercase;
     color: #fff;
   }
@@ -23,5 +22,25 @@
     &:hover {
       opacity: 0.7;
     }
+  }
+
+  &> div {
+    height: 100%;
+  }
+
+  .nav-tabs>li {
+    padding-right: 5px;
+    &>a {
+      text-transform: uppercase;
+      font-size: 24px;
+      line-height: 1;
+      border: 0;
+    }
+  }
+
+  #layers .tab-content {
+    // 100% - h2 font-size - padding-top - padding-bottom - tab font-size - tab padding*2;
+    height: ~"calc(100% - 40px - 2 * 12px - 24px - 2 * 10px)";
+    overflow: auto;
   }
 }

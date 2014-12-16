@@ -50,7 +50,18 @@
           <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
-          <app-catalog app-catalog-map="mainCtrl.map"></app-catalog>
+          <ul class="nav nav-tabs nav-justified">
+            <li role="presentation"><a href="#mylayers">My Layers</a></li>
+            <li role="presentation" class="active"><a href="#catalog">Catalog</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="mylayers" class="tab-pane">
+              mylayers
+            </div>
+            <div id="catalog" class="tab-pane active">
+              <app-catalog app-catalog-map="mainCtrl.map"></app-catalog>
+            </div>
+          </div>
         </div>
         <div id="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
           <h2 translate>My Maps</h2>
@@ -110,17 +121,22 @@
     <script src="${request.route_url('deps.js')}"></script>
     <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
     <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/jquery/jquery.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.js' % node_modules_path)}"></script>
 % else:
     <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/jquery/jquery.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>
       (function() {
          var appModule = angular.module('app');
          appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
-         appModule.constant('treeUrl', '${request.static_url('geoportailv3:static/tree.json')}');
+         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 0, 'catalogue': 'true' })}");
+         appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layertree.html' % node_modules_path)}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layertreenode.html' % node_modules_path)}');

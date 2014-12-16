@@ -35,7 +35,7 @@ app.module.directive('appCatalog', app.catalogDirective);
  */
 app.CatalogController = function($http, treeUrl) {
   $http.get(treeUrl).then(goog.bind(function(resp) {
-    this['tree'] = resp.data;
+    this['tree'] = resp.data.items[2];
   }, this));
 };
 
