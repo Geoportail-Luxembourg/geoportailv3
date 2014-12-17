@@ -50,7 +50,5 @@ def main(global_config, **settings):
     config.add_static_view('node_modules', settings.get('node_modules_path'))
     config.add_static_view('closure', settings.get('closure_library_path'))
 
-    # view and route for the ngeo.html page
-    config.add_route('ngeo', '/ngeo')
     config.add_route('wms', '/wms')
     return config.make_wsgi_app()
