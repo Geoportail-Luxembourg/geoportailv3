@@ -138,8 +138,8 @@
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 0, 'catalogue': 'true' })}");
          appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
 
-         appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layertree.html' % node_modules_path)}');
-         appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('%s/ngeo/src/directives/partials/layertreenode.html' % node_modules_path)}');
+         appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
+         appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
        })();
     </script>
   </body>

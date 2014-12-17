@@ -1,0 +1,44 @@
+#catalogtree {
+  padding: 10px;
+
+  .panel {
+    border: 0;
+    margin-bottom: 1px;
+    > a {
+      background-color: grey;
+      display: block;
+      text-transform: uppercase;
+      position: relative;
+      padding: 5px 10px;
+      &:hover {
+        color: white;
+        text-decoration: none;
+        &:after {
+          border-top-color: white;
+        }
+      }
+
+      &:after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-top: 6px solid red;
+        border-right: 8px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 8px solid transparent;
+        position: absolute;
+        right: 10px;
+        top: 16px;
+      }
+
+      &[aria-expanded=true] {
+        color: white !important;
+        &:after {
+          border-top-color: transparent !important;
+          border-bottom-color: white;
+          top: 10px;
+        }
+      }
+    }
+  }
+}
