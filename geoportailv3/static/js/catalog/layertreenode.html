@@ -1,0 +1,14 @@
+<a data-toggle="collapse" data-parent="#catalogtree" href="#tree_{{::layertreenodeCtrl.node.name}}"
+   ng-if="::layertreenodeCtrl.node.children">
+  {{::layertreenodeCtrl.node.name}}
+</a>
+<span ng-if="::!layertreenodeCtrl.node.children">
+  {{::layertreenodeCtrl.node.name}}
+  <input type="checkbox" ng-if="::!layertreenodeCtrl.node.children"
+      ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
+</span>
+<ul id="tree_{{::layertreenodeCtrl.node.name}}" ng-if="::layertreenodeCtrl.node.children"
+  class="collapse">
+  <li ng-repeat="node in ::layertreenodeCtrl.node.children"
+      ngeo-layertreenode="::node" ngeo-layertreenode-map="::layertreenodeCtrl.map"></li>
+</ul>
