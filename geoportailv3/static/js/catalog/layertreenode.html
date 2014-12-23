@@ -2,11 +2,12 @@
    ng-if="::layertreenodeCtrl.node.children">
   {{::layertreenodeCtrl.node.name}}
 </a>
-<span ng-if="::!layertreenodeCtrl.node.children">
+<div ng-if="::!layertreenodeCtrl.node.children">
+  <a class="btn btn-default" ng-click="catalogCtrl.getInfo(node, layer)">i</a>
   {{::layertreenodeCtrl.node.name}}
   <input type="checkbox" ng-if="::!layertreenodeCtrl.node.children"
       ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
-</span>
+</div>
 <ul id="tree_{{::layertreenodeCtrl.node.name}}" ng-if="::layertreenodeCtrl.node.children"
   class="collapse">
   <li ng-repeat="node in ::layertreenodeCtrl.node.children"

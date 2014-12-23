@@ -15,10 +15,10 @@ app.catalogDirective = function() {
       'map': '=appCatalogMap'
     },
     controller: 'AppCatalogController',
-    controllerAs: 'ctrl',
+    controllerAs: 'catalogCtrl',
     bindToController: true,
-    template: '<div ngeo-layertree="ctrl.tree" ' +
-        'ngeo-layertree-map="ctrl.map"></div>'
+    template: '<div ngeo-layertree="catalogCtrl.tree" ' +
+        'ngeo-layertree-map="catalogCtrl.map"></div>'
   };
 };
 
@@ -31,12 +31,23 @@ app.module.directive('appCatalog', app.catalogDirective);
  * @constructor
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl Catalog tree URL.
+ * @export
  * @ngInject
  */
 app.CatalogController = function($http, treeUrl) {
   $http.get(treeUrl).then(goog.bind(function(resp) {
     this['tree'] = resp.data.items[2];
   }, this));
+};
+
+
+/**
+ * @param {Object} node Tree node.
+ * @param {ol.layer.Layer} layer OpenLayers layer.
+ * @export
+ */
+app.CatalogController.prototype.getInfo = function(node, layer) {
+  window.alert(node['name']);
 };
 
 
