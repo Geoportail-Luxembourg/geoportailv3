@@ -29,7 +29,7 @@ app.layerFactory = function(node) {
     return null;
   }
   var type = node['type'];
-  if ([type, node.name].join('_') in app.layerCache) {
+  if ([type, node['name']].join('_') in app.layerCache) {
     return app.layerCache[type];
   }
 
@@ -42,7 +42,7 @@ app.layerFactory = function(node) {
   } else {
     return null;
   }
-  app.layerCache[[type, node.name].join('_')] = layer;
+  app.layerCache[[type, node['name']].join('_')] = layer;
   return layer;
 };
 
@@ -59,7 +59,7 @@ app.wmtsLayerFactory = function(node) {
     source: new ol.source.WMTS({
       url: 'http://wmts.geoportail.lu/mapproxy_4_v3/' +
           'wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-      layer: node.name,
+      layer: node['name'],
       // FIXME should be replaced by node.matrixSet
       // but there's a typo in the database for this attribute
       matrixSet: 'GLOBAL_WEBMERCATOR',
@@ -99,14 +99,14 @@ app.wmsLayerFactory = function(node) {
       // FIXME use the internalWmsUrl constant instead
       url: 'http://devv3.geoportail.lu/main/wsgi/wms',
       params: {
-        'LAYERS': node.name
+        'LAYERS': node['name']
       }
     });
   } else if (type == 'external WMS') {
     source = new ol.source.ImageWMS({
       url: node.url,
       params: {
-        'LAYERS': node.name
+        'LAYERS': node['name']
       }
     });
   }
