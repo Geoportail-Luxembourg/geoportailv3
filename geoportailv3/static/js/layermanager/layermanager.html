@@ -6,5 +6,6 @@
       {{ layer.get('label') }}
     </label>
     <input type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
+    <a class="button" ng-click="layermanagerCtrl.removeLayer(layer);">remove</a>
   </li>
 </ul>

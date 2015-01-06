@@ -28,9 +28,16 @@ app.module.directive('appLayermanager', app.layermanagerDirective);
 /**
  * @constructor
  * @export
- * @ngInject
  */
-app.LayermanagerController = function() {
+app.LayermanagerController = function() {};
+
+
+/**
+ * @param {ol.Layer} layer Layer.
+ * @export
+ */
+app.LayermanagerController.prototype.removeLayer = function(layer) {
+  this['map'].removeLayer(layer);
 };
 
 
