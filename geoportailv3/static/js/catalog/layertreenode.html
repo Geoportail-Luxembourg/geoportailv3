@@ -1,5 +1,5 @@
-<a data-toggle="collapse" data-parent="#catalog-{{::catalogCtrl.uid}}"
-   href="#tree_{{::layertreenodeCtrl.node.name}}"
+<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.uid}}"
+   href="#catalog-{{::layertreenodeCtrl.uid}}"
    ng-if="::layertreenodeCtrl.node.children">
   {{::layertreenodeCtrl.node.name}}
 </a>
@@ -9,7 +9,7 @@
   <input type="checkbox" ng-if="::!layertreenodeCtrl.node.children"
       ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
 </div>
-<ul id="tree_{{::layertreenodeCtrl.node.name}}" ng-if="::layertreenodeCtrl.node.children"
+<ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="::layertreenodeCtrl.node.children"
   class="collapse">
   <li ng-repeat="node in ::layertreenodeCtrl.node.children"
       ngeo-layertreenode="::node" ngeo-layertreenode-map="::layertreenodeCtrl.map"></li>
