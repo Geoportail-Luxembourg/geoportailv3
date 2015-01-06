@@ -133,12 +133,11 @@ app.MainController.prototype.manageSidebar_ = function(scope) {
 
 
 /**
- * @param {jQuery.event} $event Event.
+ * @param {string} selector JQuery selector for the tab link.
  * @export
  */
-app.MainController.prototype.showTab = function($event) {
-  $event.preventDefault();
-  $($event.target).tab('show');
+app.MainController.prototype.showTab = function(selector) {
+  $(selector).tab('show');
 };
 
 
