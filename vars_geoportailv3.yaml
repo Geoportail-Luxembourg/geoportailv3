@@ -23,7 +23,7 @@ vars:
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
 
     servers:
-        my_maps: http://map.geoportail.lu/my_maps
+        my_maps: http://ws.geoportail.lu/mymaps
 
 interpreted:
     node:
