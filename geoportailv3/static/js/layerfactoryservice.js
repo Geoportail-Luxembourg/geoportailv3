@@ -21,10 +21,11 @@ app.layerCache = {};
 
 
 /**
+ * @private
  * @param {Object} node Catalog tree node.
  * @return {ol.layer.Layer} OpenLayers layer.
  */
-app.layerFactory = function(node) {
+app.layerFactory_ = function(node) {
   if (!('type' in node)) {
     return null;
   }
@@ -36,9 +37,9 @@ app.layerFactory = function(node) {
   var layer;
 
   if (type.indexOf('WMS') != -1) {
-    layer = app.wmsLayerFactory(node);
+    layer = app.wmsLayerFactory_(node);
   } else if (type == 'WMTS') {
-    layer = app.wmtsLayerFactory(node);
+    layer = app.wmtsLayerFactory_(node);
   } else {
     return null;
   }
@@ -48,10 +49,11 @@ app.layerFactory = function(node) {
 
 
 /**
+ * @private
  * @param {Object} node Catalog tree node.
  * @return {ol.layer.Layer} OpenLayers layer.
  */
-app.wmtsLayerFactory = function(node) {
+app.wmtsLayerFactory_ = function(node) {
 
   var projection = ol.proj.get('EPSG:3857');
 
@@ -87,10 +89,11 @@ app.wmtsLayerFactory = function(node) {
 
 
 /**
+ * @private
  * @param {Object} node Catalog tree node.
  * @return {ol.layer.Layer} OpenLayers layer.
  */
-app.wmsLayerFactory = function(node) {
+app.wmsLayerFactory_ = function(node) {
   var type = node['type'];
   var layer;
   var source;
@@ -118,4 +121,4 @@ app.wmsLayerFactory = function(node) {
 };
 
 
-app.module.value('ngeoLayertreeLayerFactory', app.layerFactory);
+app.module.value('ngeoLayertreeLayerFactory', app.layerFactory_);
