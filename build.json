@@ -1,5 +1,5 @@
 {
-  "exports": ["*"],
+  "exports": [],
   "src": [
     "node_modules/openlayers/src/**/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
@@ -66,9 +66,11 @@
       "typeInvalidation",
       "undefinedNames",
       "undefinedVars",
-      "unknownDefines",
       "uselessCode",
       "visibility"
+    ],
+    "jscomp_off": [
+      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
