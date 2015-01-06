@@ -1,5 +1,5 @@
 <ul>
-  <li ng-repeat="layer in layermanagerCtrl.map.getLayers().getArray()">
+  <li ng-repeat="layer in layermanagerCtrl.map.getLayers().getArray() | noBgLayer">
     <label>
       <input type="checkbox" ng-model="layer.visible" />
       {{ layer.get('label') }}
