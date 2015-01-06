@@ -52,16 +52,19 @@
           </button>
           <ul class="nav nav-tabs nav-justified">
             <li role="presentation">
-              <a href="#mylayers" ng-click="mainCtrl.showTab($event);">My Layers</a>
+              <a href="#mylayers" data-toggle="tab">My Layers</a>
             </li>
             <li role="presentation" class="active">
-              <a href="#catalog" ng-click="mainCtrl.showTab($event);">Catalog</a>
+              <a href="#catalog" data-toggle="tab">Catalog</a>
             </li>
           </ul>
           <div class="tab-content">
             <div id="mylayers" class="tab-pane">
               <app-layermanager app-layermanager-map="::mainCtrl.map">
               </app-layermanager>
+              <div class="text-center">
+                <button ng-click="mainCtrl.showTab('a[href=#catalog]');">+ Add layers</button>
+              </div>
             </div>
             <div id="catalog" class="tab-pane active">
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
