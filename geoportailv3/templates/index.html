@@ -60,7 +60,8 @@
           </ul>
           <div class="tab-content">
             <div id="mylayers" class="tab-pane">
-              mylayers
+              <app-layermanager app-layermanager-map="::mainCtrl.map">
+              </app-layermanager>
             </div>
             <div id="catalog" class="tab-pane active">
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
@@ -144,6 +145,7 @@
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
+         appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
        })();
     </script>
   </body>

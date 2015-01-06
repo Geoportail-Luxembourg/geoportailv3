@@ -1,0 +1,9 @@
+<ul>
+  <li ng-repeat="layer in layermanagerCtrl.map.getLayers().getArray()">
+    <label>
+      <input type="checkbox" ng-model="layer.visible" />
+      {{ layer.get('label') }}
+    </label>
+    <input type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
+  </li>
+</ul>
