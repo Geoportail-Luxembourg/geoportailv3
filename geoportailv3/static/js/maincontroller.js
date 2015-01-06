@@ -155,12 +155,16 @@ app.MainController.prototype.manageSidebar_ = function(scope) {
       this['infosOpen'] = false;
     }
   }, this));
+};
 
-  // activate tabs
-  $('#layers ul.nav-tabs a').click(function(e) {
-    e.preventDefault();
-    $(this).tab('show');
-  });
+
+/**
+ * @param {jQuery.event} $event Event.
+ * @export
+ */
+app.MainController.prototype.showTab = function($event) {
+  $event.preventDefault();
+  $($event.target).tab('show');
 };
 
 
