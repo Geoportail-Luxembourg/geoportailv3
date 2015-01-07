@@ -13,13 +13,69 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: geoportailv3/templates/index.html
-msgid "Infos"
+msgid "draw"
+msgstr "Dessiner"
+
+#: geoportailv3/templates/index.html
+#, fuzzy
+msgid "infos"
 msgstr "Infos"
 
 #: geoportailv3/templates/index.html
-msgid "Layers"
+msgid "item1"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item2"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item3"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "lang"
+msgstr "Language"
+
+#: geoportailv3/templates/index.html
+msgid "layers"
 msgstr "Couches"
 
 #: geoportailv3/templates/index.html
-msgid "My Maps"
+msgid "logo"
+msgstr "Logo"
+
+#: geoportailv3/templates/index.html
+msgid "map_title"
+msgstr "Titre de la carte"
+
+#: geoportailv3/templates/index.html
+msgid "measure"
+msgstr "Mesurer"
+
+#: geoportailv3/templates/index.html
+msgid "my_maps"
 msgstr "Mes Cartes"
+
+#: geoportailv3/templates/index.html
+msgid "print"
+msgstr "Imprimer"
+
+#: geoportailv3/templates/index.html
+msgid "search"
+msgstr "Recherche"
+
+#: geoportailv3/templates/index.html
+msgid "search_key_words"
+msgstr "Mots clés"
+
+#: geoportailv3/templates/index.html
+msgid "share"
+msgstr "Partager"
+
+#: geoportailv3/templates/index.html
+msgid "user"
+msgstr "Utilisateur"
+
+#~ msgid "My Maps"
+#~ msgstr "Mes Cartes"
