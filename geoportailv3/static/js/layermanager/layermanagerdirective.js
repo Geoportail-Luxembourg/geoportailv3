@@ -30,7 +30,9 @@ app.module.directive('appLayermanager', app.layermanagerDirective);
  * @constructor
  * @export
  */
-app.LayermanagerController = function() {};
+app.LayermanagerController = function() {
+  this['uid'] = goog.getUid(this);
+};
 
 
 /**
