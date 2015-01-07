@@ -1,11 +1,12 @@
 <div ng-if="!layermanagerCtrl.layers.length" translate>No layer selected</div>
 <ul>
   <li ng-repeat="layer in layermanagerCtrl.layers">
-    <label>
+    {{ layer.get('label') }}
+    <a data-toggle="collapse" href="#layermanager-{{ $index }}">expand/collapse</a>
+    <div id="layermanager-{{ $index }}" class="collapse">
       <input type="checkbox" ng-model="layer.visible" />
-      {{ layer.get('label') }}
-    </label>
-    <input type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
-    <a class="button" ng-click="layermanagerCtrl.removeLayer(layer);">remove</a>
+      <input type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
+      <a class="button" ng-click="layermanagerCtrl.removeLayer(layer);">remove</a>
+    </div>
   </li>
 </ul>
