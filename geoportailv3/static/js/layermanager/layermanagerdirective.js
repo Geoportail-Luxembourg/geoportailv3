@@ -33,7 +33,7 @@ app.LayermanagerController = function() {};
 
 
 /**
- * @param {ol.Layer} layer Layer.
+ * @param {ol.layer.Layer} layer Layer.
  * @export
  */
 app.LayermanagerController.prototype.removeLayer = function(layer) {
