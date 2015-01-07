@@ -1,0 +1,7 @@
+extends: vars_geoportailv3.yaml
+
+vars:
+  modwsgi_user: apache
+  db: mapv3
+  http_proxy: http://proxy:3128
+  
