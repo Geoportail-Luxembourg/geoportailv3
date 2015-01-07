@@ -1,5 +1,5 @@
 <div ng-if="!layermanagerCtrl.layers.length" translate>No layer selected</div>
-<ul>
+<ul class="layermanager">
   <li ng-repeat="layer in layermanagerCtrl.layers">
     {{ layer.get('label') }}
     <a data-toggle="collapse" href="#layermanager-{{ $index }}">expand/collapse</a>
