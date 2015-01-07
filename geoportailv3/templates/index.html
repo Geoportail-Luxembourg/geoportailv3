@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
   <head>
-    <title>map.geoportail.lu</title>
+    <title translate>map_title</title>
     <meta charset="utf-8">
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
@@ -23,17 +23,17 @@
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="">
-          <a href class="navbar-brand">Logo</a>
+          <a href class="navbar-brand" translate>logo</a>
         </div>
 
         <ul class="nav navbar-nav pull-right">
-          <li class="visible-xs-inline-block search icon"><a href>Search</a></li>
-          <li class="user icon"><a href>User</a></li>
-          <li class="lang icon"><a href>Lang</a></li>
+          <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
+          <li class="user icon"><a href translate>user</a></li>
+          <li class="lang icon"><a href translate>lang</a></li>
         </ul>
         <form class="navbar-form pull-right hidden-xs" role="search">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Mot-clés" />
+              <input type="text" class="form-control" placeholder="{{'search_key_words'|translate}}" />
           </div>
           <button type="submit" class="icon search">
             Search
@@ -47,18 +47,18 @@
       <div id="sidebar" ng-class="mainCtrl.sidebarOpen ? 'open' : ''"
            ngeo-resizemap="mainCtrl.map">
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
-          <h2 translate>Layers</h2>
+          <h2 translate>layers</h2>
           <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
           <ul class="nav nav-tabs nav-justified">
             <li role="presentation" class="active">
-              <a href="#mylayers" data-toggle="tab">My Layers
+              <a href="#mylayers" data-toggle="tab" translate>My Layers
                 <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
               </a>
             </li>
             <li role="presentation">
-              <a href="#catalog" data-toggle="tab">Catalog</a>
+              <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
           </ul>
           <div class="tab-content">
@@ -67,7 +67,7 @@
                 app-layermanager-layers="::mainCtrl.selectedLayers">
               </app-layermanager>
               <div class="text-center">
-                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');">+ Add layers</button>
+                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Add layers</button>
               </div>
             </div>
             <div id="catalog" class="tab-pane">
@@ -76,13 +76,13 @@
           </div>
         </div>
         <div id="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
-          <h2 translate>My Maps</h2>
+          <h2 translate>my_maps</h2>
           <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
         </div>
         <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
-          <h2 translate>Infos</h2>
+          <h2 translate>infos</h2>
           <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
             ✕
           </button>
@@ -98,31 +98,31 @@
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="mainCtrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
         <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
-          <a href translate>Layers</a>
+          <a href translate>layers</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
-          <a href translate>My Maps</a>
+          <a href translate>my_maps</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
-          <a href translate>Infos</a>
+          <a href translate>infos</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
-        <li><a href>items</a></li>
-        <li><a href>menu</a></li>
-        <li><a href>droite</a></li>
+        <li><a href translate>item1</a></li>
+        <li><a href translate>item2</a></li>
+        <li><a href translate>item3</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav">
         <li class="hidden-xs draw icon">
-          <a href>dessiner</a>
+          <a href translate>draw</a>
         </li>
         <li class="hidden-xs measure icon">
-          <a href>mesurer</a>
+          <a href translate>measure</a>
         </li>
         <li class="hidden-xs print icon">
-          <a href>print</a>
+          <a href translate>print</a>
         </li>
-        <li class="share icon"><a class="square" href="#">share</a></li>
+        <li class="share icon"><a class="square" href="#" translate>share</a></li>
       </ul>
     </footer>
 % if debug:
