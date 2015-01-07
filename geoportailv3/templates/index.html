@@ -139,7 +139,7 @@
       (function() {
          var appModule = angular.module('app');
          appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
-         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop' })}");
+         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 0, 'catalogue': 'true' })}");
          appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
