@@ -11,7 +11,8 @@ app.layermanagerDirective = function(appLayermanagerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appLayermanagerMap'
+      'map': '=appLayermanagerMap',
+      'layers': '=appLayermanagerLayers'
     },
     controller: 'AppLayermanagerController',
     controllerAs: 'layermanagerCtrl',

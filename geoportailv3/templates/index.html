@@ -52,7 +52,9 @@
           </button>
           <ul class="nav nav-tabs nav-justified">
             <li role="presentation" class="active">
-              <a href="#mylayers" data-toggle="tab">My Layers</a>
+              <a href="#mylayers" data-toggle="tab">My Layers
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{ mainCtrl.selectedLayers.length }})</span>
+              </a>
             </li>
             <li role="presentation">
               <a href="#catalog" data-toggle="tab">Catalog</a>
@@ -60,7 +62,8 @@
           </ul>
           <div class="tab-content">
             <div id="mylayers" class="tab-pane active">
-              <app-layermanager app-layermanager-map="::mainCtrl.map">
+              <app-layermanager app-layermanager-map="::mainCtrl.map"
+                app-layermanager-layers="mainCtrl.selectedLayers">
               </app-layermanager>
               <div class="text-center">
                 <button ng-click="mainCtrl.showTab('a[href=#catalog]');">+ Add layers</button>
