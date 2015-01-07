@@ -2,11 +2,14 @@
 <ul id="layermanager-{{::layermanagerCtrl.uid}}" class="layermanager">
   <li ng-repeat="layer in layermanagerCtrl.layers" class="panel">
     {{ layer.get('label') }}
-    <a data-toggle="collapse" data-parent="#layermanager-{{::layermanagerCtrl.uid}}" href="#layermanager-item-{{ $index }}">expand/collapse</a>
+    <a data-toggle="collapse" data-parent="#layermanager-{{::layermanagerCtrl.uid}}" href="#layermanager-item-{{ $index }}">
+      <span class="collapsed fa fa-ellipsis-h"></span>
+      <span class="expanded fa fa-remove"></span>
+    </a>
     <div id="layermanager-item-{{ $index }}" class="collapse">
       <input type="checkbox" ng-model="layer.visible" />
-      <input type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
-      <a class="button" ng-click="layermanagerCtrl.removeLayer(layer);">remove</a>
+      <input class="opacity" type="range" min="0" max="1" step="0.05" ng-model="layer.opacity" />
+      <a class="delete" ng-click="layermanagerCtrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>
     </div>
   </li>
 </ul>

@@ -9,5 +9,33 @@ ul.layermanager {
   li {
     margin-bottom: 1px;
     padding: 5px 10px;
+
+    a[data-toggle=collapse] .expanded,
+    a[data-toggle=collapse] .collapsed {
+      float: right;
+      line-height: inherit;
+    }
+
+    a .expanded {
+      display: none;
+    }
+
+    a[aria-expanded=true] {
+      .collapsed {
+        display: none;
+      }
+      .expanded {
+        display: block;
+      }
+    }
+
+    input.opacity {
+      width: 50px;
+      display: inline-block;
+    }
+    .delete {
+      float: right;
+      cursor: pointer;
+    }
   }
 }
