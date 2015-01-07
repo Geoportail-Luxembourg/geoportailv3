@@ -66,6 +66,10 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSidebar_($scope);
+
+  $scope.$watchCollection(goog.bind(function() {
+    return this['map'].getLayers().getArray();
+  }, this), goog.bind(this.updateSelectedLayers_, this));
 };
 
 
@@ -82,6 +86,16 @@ app.MainController.prototype.setMap_ = function() {
       zoom: 8
     })
   });
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.updateSelectedLayers_ = function() {
+  var items_ = this['map'].getLayers().getArray().slice().reverse();
+  items_.pop();
+  this['selectedLayers'] = items_;
 };
 
 

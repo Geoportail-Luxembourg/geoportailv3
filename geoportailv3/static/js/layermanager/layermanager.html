@@ -1,6 +1,6 @@
-<div ng-if="!(filteredLayers = (layermanagerCtrl.map.getLayers().getArray() | noBgLayer)).length" translate>No layer selected</div>
+<div ng-if="!layermanagerCtrl.layers.length" translate>No layer selected</div>
 <ul>
-  <li ng-repeat="layer in filteredLayers">
+  <li ng-repeat="layer in layermanagerCtrl.layers">
     <label>
       <input type="checkbox" ng-model="layer.visible" />
       {{ layer.get('label') }}
