@@ -45,22 +45,3 @@ app.LayermanagerController.prototype.removeLayer = function(layer) {
 
 
 app.module.controller('AppLayermanagerController', app.LayermanagerController);
-
-
-/**
- * @return {function(Array):Array}
- */
-app.noBgLayerFilter = function() {
-  /**
-   * @param {Array} items Array to remove the background layer from.
-   * @return {Array} Filtered array.
-   */
-  return function(items) {
-    var items_ = items.slice().reverse();
-    items_.pop();
-    return items_;
-  };
-};
-
-
-app.module.filter('noBgLayer', app.noBgLayerFilter);
