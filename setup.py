@@ -18,6 +18,7 @@ setup(
         'c2cgeoportal>=1.6.0dev-20141210',
         'pyramid_closure',
         'lingua==3.6.1',
+        'git+https://github.com/petzlux/transifex-client.git@fix-ssl-hostname',
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
