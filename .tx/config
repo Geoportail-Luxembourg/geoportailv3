@@ -4,12 +4,12 @@ host = https://www.transifex.com
 
 [geoportailv3-lu.geoportailv3-client]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-client.po
-source_file = geoportailv3/locale/en/LC_MESSAGES/geoportailv3-client.po
+source_file = geoportailv3/locale/geoportailv3-client.pot
 source_lang = en
 type = PO
 
 [geoportailv3-lu.geoportailv3]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3.po
-source_file = geoportailv3/locale/en/LC_MESSAGES/geoportailv3.po
+source_file = geoportailv3/locale/geoportailv3.pot
 source_lang = en
 type = PO
