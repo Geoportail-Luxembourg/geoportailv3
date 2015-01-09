@@ -1,19 +1,78 @@
+#
+# Translators:
+# patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: geoportailv 3\n"
-"PO-Revision-Date: 2014-12-09 15:18+0100\n"
-"Last-Translator:  <wepa@workshop3-local.geoportal.lu>\n"
-"Language-Team: German\n"
+"Project-Id-Version: portail\n"
+"PO-Revision-Date: 2015-01-09 14:27+0000\n"
+"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/"
+"language/de/)\n"
 "Language: de\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geoportailv3/templates/ngeo.html
-msgid "Layers"
+#: geoportailv3/templates/index.html
+msgid "draw"
+msgstr "Zeichnen"
+
+#: geoportailv3/templates/index.html
+msgid "infos"
 msgstr ""
 
-#: geoportailv3/templates/ngeo.html
-msgid "My Maps"
+#: geoportailv3/templates/index.html
+msgid "item1"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item2"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item3"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "lang"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "layers"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "logo"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "map_title"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "measure"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "my_maps"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "print"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "search"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "search_key_words"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "share"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "user"
 msgstr ""
