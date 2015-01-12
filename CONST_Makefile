@@ -7,6 +7,7 @@ APP_HTML_FILES = $(shell find geoportailv3/templates -type f -name '*.html')
 APP_PYTHON_FILES = $(shell find geoportailv3/ -type f -name '*.py')
 APP_SERVER_LOC_FILES = $(shell find geoportailv3/locale/ -type f -name 'geoportailv3.po')
 APP_CLIENT_LOC_FILES = $(shell find geoportailv3/locale/ -type f -name 'geoportailv3-client.po')
+APP_DB_LOC_FILES = $(shell find geoportailv3/locale/ -type f -name 'geoportailv3-db.po')
 LESS_FILES = $(shell find less -type f -name '*.less')
 TEMPLATE_EXCLUDE += buildout .build CONST_alembic/script.py.mako print/templates/print.mako
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
@@ -93,7 +94,7 @@ update-node-modules:
 	npm install --force
 
 .PHONY: update-translations
-update-translations: $(APP_PYTHON_FILES) $(APP_HTML_FILES) $(APP_SERVER_LOC_FILES) $(APP_CLIENT_LOC_FILES) geoportailv3/locale/geoportailv3.pot geoportailv3/locale/geoportailv3-client.pot
+update-translations: $(APP_PYTHON_FILES) $(APP_HTML_FILES) $(APP_SERVER_LOC_FILES) $(APP_CLIENT_LOC_FILES) $(APP_DB_LOC_FILES) geoportailv3/locale/geoportailv3-db.pot geoportailv3/locale/geoportailv3.pot geoportailv3/locale/geoportailv3-client.pot
 	.build/venv/bin/tx push -s
 	.build/venv/bin/tx pull -l en
 	.build/venv/bin/tx pull -l fr
@@ -129,6 +130,10 @@ geoportailv3/locale/geoportailv3-client.pot: $(APP_HTML_FILES)
 
 geoportailv3/locale/geoportailv3.pot: $(APP_PYTHON_FILES) $(APP_HTML_FILES)
 	.build/venv/bin/pot-create -c lingua.ini -o geoportailv3/locale/geoportailv3.pot geoportailv3
+
+geoportailv3/locale/geoportailv3-db.pot:
+	.build/venv/bin/python2.7 geoportailv3/utils/db_to_pot.py
+	msguniq geoportailv3/locale/geoportailv3-db.pot -o geoportailv3/locale/geoportailv3-db.pot
 
 $(APP_SERVER_LOC_FILES): geoportailv3/locale/geoportailv3.pot
 	msgmerge --update $@ geoportailv3/locale/geoportailv3.pot
