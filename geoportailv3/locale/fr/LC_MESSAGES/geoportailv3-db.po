@@ -1,0 +1,2160 @@
+# 
+# Translators:
+# patrick weber <pweber@spatialbit.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: portail\n"
+"PO-Revision-Date: 2015-01-12 15:38+0000\n"
+"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: theme.101
+msgid "preemption"
+msgstr ""
+
+#: theme.102
+msgid "mobiliteit"
+msgstr ""
+
+#: theme.103
+msgid "tourisme_mobile"
+msgstr ""
+
+#: theme.104
+msgid "topo_mobile"
+msgstr ""
+
+#: theme.105
+msgid "emwelt"
+msgstr ""
+
+#: theme.106
+msgid "theme-test"
+msgstr ""
+
+#: theme.107 lu_ext_wms.292
+msgid "nordstad"
+msgstr ""
+
+#: theme.108
+msgid "go"
+msgstr ""
+
+#: theme.109
+msgid "prof"
+msgstr ""
+
+#: theme.110
+msgid "main_mobile"
+msgstr ""
+
+#: theme.111
+msgid "user_content_mobile"
+msgstr ""
+
+#: theme.112
+msgid "api"
+msgstr ""
+
+#: theme.113
+msgid "arbed"
+msgstr ""
+
+#: theme.114 group.255
+msgid "commande"
+msgstr ""
+
+#: theme.115
+msgid "ortho_mobile"
+msgstr ""
+
+#: theme.116
+msgid "tourisme"
+msgstr ""
+
+#: theme.117
+msgid "main"
+msgstr ""
+
+#: theme.118
+msgid "cadastre_mobile"
+msgstr ""
+
+#: theme.119
+msgid "emwelt_mobile"
+msgstr ""
+
+#: theme.120
+msgid "eau_mobile"
+msgstr ""
+
+#: theme.121
+msgid "remich"
+msgstr ""
+
+#: theme.122
+msgid "test"
+msgstr ""
+
+#: theme.123
+msgid "at"
+msgstr ""
+
+#: theme.124
+msgid "agriculture"
+msgstr ""
+
+#: theme.125
+msgid "preizerdaul"
+msgstr ""
+
+#: theme.126
+msgid "wellenstein"
+msgstr ""
+
+#: theme.127
+msgid "at_mobile"
+msgstr ""
+
+#: theme.128
+msgid "eau"
+msgstr ""
+
+#: theme.129
+msgid "lintgen"
+msgstr ""
+
+#: theme.130
+msgid "lenoz"
+msgstr ""
+
+#: theme.131
+msgid "municipalities"
+msgstr ""
+
+#: group.132
+msgid "emwelt_biotop_kadaster_mobile"
+msgstr ""
+
+#: lu_int_wms.133
+msgid "mobiliteit_pr"
+msgstr ""
+
+#: lu_int_wms.134
+msgid "mobiliteit_cfl"
+msgstr ""
+
+#: lu_int_wms.135
+msgid "mobiliteit_bornes"
+msgstr ""
+
+#: lu_int_wms.136
+msgid "aero_1963_20k"
+msgstr ""
+
+#: l_wmts.137
+msgid "emwelt_biotop_kadaster_f_mobile"
+msgstr ""
+
+#: l_wmts.138
+msgid "emwelt_biotop_kadaster_b_mobile"
+msgstr ""
+
+#: l_wmts.139
+msgid "emwelt_biotop_kadaster_p_mobile"
+msgstr ""
+
+#: l_wmts.140
+msgid "emwelt_biotop_kadaster_s_mobile"
+msgstr ""
+
+#: group.141
+msgid "group_nordstad"
+msgstr ""
+
+#: group.142
+msgid "env_natura2000"
+msgstr ""
+
+#: lu_int_wms.143
+msgid "arrets_bus"
+msgstr ""
+
+#: lu_ext_wms.144
+msgid "user_content_vtt"
+msgstr ""
+
+#: l_wmts.145
+msgid "topo_tour_20k"
+msgstr ""
+
+#: lu_ext_wms.146
+msgid "tour_nordic_walking"
+msgstr ""
+
+#: lu_int_wms.147
+msgid "parcelles_preemption"
+msgstr ""
+
+#: l_wmts.148
+msgid "addresses"
+msgstr ""
+
+#: l_wmts.149
+msgid "communes_cadastrales"
+msgstr ""
+
+#: lu_int_wms.150
+msgid "PAG"
+msgstr ""
+
+#: lu_ext_wms.151
+msgid "user_content_velo"
+msgstr ""
+
+#: l_wmts.152
+msgid "topo_50k"
+msgstr ""
+
+#: l_wmts.153
+msgid "TOPO_CARTESHISTO_1979"
+msgstr ""
+
+#: lu_int_wms.154
+msgid "env_bruit_air_lden"
+msgstr ""
+
+#: lu_ext_wms.155
+msgid "tour_cfl"
+msgstr ""
+
+#: lu_ext_wms.156
+msgid "tour_pistes_velo"
+msgstr ""
+
+#: group.157
+msgid "eau_luft_sat_bilder"
+msgstr ""
+
+#: group.158
+msgid "env_obs"
+msgstr ""
+
+#: l_wmts.159
+msgid "ac_wellenstein_pag_volumes_batiments"
+msgstr ""
+
+#: lu_int_wms.160
+msgid "env_obs1999"
+msgstr ""
+
+#: group.161
+msgid "mittal_bg"
+msgstr ""
+
+#: group.162
+msgid "adressen"
+msgstr ""
+
+#: group.163
+msgid "env_bruit"
+msgstr ""
+
+#: lu_int_wms.164
+msgid "env_corine"
+msgstr ""
+
+#: lu_ext_wms.165
+msgid "tour_quality_trails"
+msgstr ""
+
+#: group.166
+msgid "eau_zones_protegees"
+msgstr ""
+
+#: group.167
+msgid "mittal_group"
+msgstr ""
+
+#: group.168
+msgid "anf_data"
+msgstr ""
+
+#: group.169
+msgid "oberflachendarstellung_mobile"
+msgstr ""
+
+#: l_wmts.170
+msgid "TOPO_CARTESHISTO_1964_RGB"
+msgstr ""
+
+#: lu_int_wms.171
+msgid "natura2000_oiseaux"
+msgstr ""
+
+#: group.172
+msgid "flurstucke_grundstucke_prof"
+msgstr ""
+
+#: l_wmts.173
+msgid "ivv_grosslagen"
+msgstr ""
+
+#: lu_ext_wms.174
+msgid "tour_autopedestre"
+msgstr ""
+
+#: lu_ext_wms.175
+msgid "tour_sentiers_communaux"
+msgstr ""
+
+#: group.176
+msgid "luft_und_satellitenbilder"
+msgstr ""
+
+#: group.177
+msgid "tour_sentiers_locaux"
+msgstr ""
+
+#: group.178
+msgid "anf_secteurs_ecologiques_group"
+msgstr ""
+
+#: l_wmts.179
+msgid "roads"
+msgstr ""
+
+#: l_wmts.180
+msgid "ac_wellenstein_pag_zones"
+msgstr ""
+
+#: group.181
+msgid "env_bruit_axes_ferroviaires"
+msgstr ""
+
+#: group.182
+msgid "eau_morphometrie"
+msgstr ""
+
+#: l_wmts.183
+msgid "TOPO_CARTESHISTO_1990_50k"
+msgstr ""
+
+#: group.184
+msgid "eau_grenzen"
+msgstr ""
+
+#: group.185
+msgid "unwelt_biologie_geologie"
+msgstr ""
+
+#: l_wmts.186
+msgid "topo_decoupage_tc"
+msgstr ""
+
+#: lu_ext_wms.187
+msgid "tour_mullerthal_trail"
+msgstr ""
+
+#: group.188
+msgid "env_bruit_air"
+msgstr ""
+
+#: lu_int_wms.189
+msgid "PRM_PCN"
+msgstr ""
+
+#: l_wmts.190
+msgid "TOPO_CARTESHISTO_1979_RGB"
+msgstr ""
+
+#: group.191
+msgid "hohe"
+msgstr ""
+
+#: lu_int_wms.192
+msgid "PRM"
+msgstr ""
+
+#: l_wmts.193
+msgid "topo_decoupage_5000"
+msgstr ""
+
+#: group.194
+msgid "infrastrucktur_une_kommunikation"
+msgstr ""
+
+#: l_wmts.195
+msgid "topo_5k"
+msgstr ""
+
+#: group.196
+msgid "verkehrsnetze"
+msgstr ""
+
+#: lu_ext_wms.197
+msgid "tour_sentiers_ajl"
+msgstr ""
+
+#: lu_ext_wms.198
+msgid "tour_temp"
+msgstr ""
+
+#: group.199
+msgid "asta_prof"
+msgstr ""
+
+#: l_wmts.200
+msgid "buildings"
+msgstr ""
+
+#: l_wmts.201
+msgid "topo_decoupage_100k"
+msgstr ""
+
+#: l_wmts.202
+msgid "TOPO_CARTESHISTO_1964"
+msgstr ""
+
+#: l_wmts.203
+msgid "wg_relief"
+msgstr ""
+
+#: l_wmts.204
+msgid "wg_relief_dhm_2m"
+msgstr ""
+
+#: group.205
+msgid "asta_meteo_group"
+msgstr ""
+
+#: lu_ext_wms.206
+msgid "tour_escape_ardenne"
+msgstr ""
+
+#: l_wmts.207
+msgid "topo_20k"
+msgstr ""
+
+#: lu_int_wms.208
+msgid "eau_new_Provisorische_ZPS"
+msgstr ""
+
+#: group.209
+msgid "eau_zones_protegees_nationales"
+msgstr ""
+
+#: group.210
+msgid "eau_zones_protegees_communautaires"
+msgstr ""
+
+#: group.211
+msgid "eau_env_natura2000"
+msgstr ""
+
+#: l_wmts.212
+msgid "ac_wellenstein_pag_complet"
+msgstr ""
+
+#: l_wmts.213
+msgid "decoupage_geo25_50k"
+msgstr ""
+
+#: group.214
+msgid "verkehrsnetze_tourisme"
+msgstr ""
+
+#: lu_ext_wms.215
+msgid "tour_moto"
+msgstr ""
+
+#: lu_int_wms.216
+msgid "env_obs2007"
+msgstr ""
+
+#: l_wmts.217
+msgid "decoupage_communes"
+msgstr ""
+
+#: l_wmts.218
+msgid "TOPO_CARTESHISTO_1966-74_50k"
+msgstr ""
+
+#: lu_ext_wms.219
+msgid "tour_saint_jacques"
+msgstr ""
+
+#: l_wmts.220
+msgid "topo_decoupage_50k"
+msgstr ""
+
+#: l_wmts.221
+msgid "TOPO_CARTES_1944"
+msgstr ""
+
+#: l_wmts.222
+msgid "ivv_klimakarte"
+msgstr ""
+
+#: group.223
+msgid "basisden_mobile"
+msgstr ""
+
+#: l_wmts.224
+msgid "topo_250k"
+msgstr ""
+
+#: lu_int_wms.225
+msgid "parcels_go"
+msgstr ""
+
+#: l_wmts.226
+msgid "ortho_2004"
+msgstr ""
+
+#: l_wmts.227
+msgid "ortho_2001"
+msgstr ""
+
+#: lu_int_wms.228
+msgid "natura2000_habitats"
+msgstr ""
+
+#: lu_ext_wms.229
+msgid "tour_sentiers_nationaux"
+msgstr ""
+
+#: group.230
+msgid "flurstucke_grundstucke_go"
+msgstr ""
+
+#: lu_int_wms.231
+msgid "aero_1951_25k"
+msgstr ""
+
+#: lu_int_wms.232
+msgid "mittal"
+msgstr ""
+
+#: l_wmts.233
+msgid "ortho_2007"
+msgstr ""
+
+#: group.234
+msgid "env_bruit_axes_routiers"
+msgstr ""
+
+#: group.235
+msgid "geologie_"
+msgstr ""
+
+#: group.236
+msgid "eau_basisdaten"
+msgstr ""
+
+#: lu_ext_wms.237
+msgid "tour_sentiers_gr"
+msgstr ""
+
+#: group.238
+msgid "group_ac_remich_pag"
+msgstr ""
+
+#: l_wmts.239
+msgid "TOPO_CARTESHISTO_2000"
+msgstr ""
+
+#: l_wmts.240
+msgid "ign_topo"
+msgstr ""
+
+#: group.241
+msgid "user_generated_content"
+msgstr ""
+
+#: l_wmts.242
+msgid "ivv_kleinlagen"
+msgstr ""
+
+#: group.243
+msgid "anf_forets"
+msgstr ""
+
+#: group.244
+msgid "basisden"
+msgstr ""
+
+#: l_wmts.245
+msgid "geologie"
+msgstr ""
+
+#: group.246
+msgid "env_zones_protegees_nationales"
+msgstr ""
+
+#: group.247
+msgid "env_zones_protegees"
+msgstr ""
+
+#: lu_ext_wms.248
+msgid "tour_sentiers_syndicats"
+msgstr ""
+
+#: group.249
+msgid "infrastrucktur_une_kommunikation_prof"
+msgstr ""
+
+#: group.250
+msgid "flurstucke_grundstucke"
+msgstr ""
+
+#: group.251
+msgid "mymaps"
+msgstr ""
+
+#: lu_ext_wms.252
+msgid "tour_DeLux"
+msgstr ""
+
+#: l_wmts.253
+msgid "ign_ortho"
+msgstr ""
+
+#: l_wmts.254
+msgid "1927_CAHANSEN"
+msgstr ""
+
+#: lu_int_wms.256
+msgid "env_bruit_axes_routiers_lngt"
+msgstr ""
+
+#: l_wmts.257
+msgid "feuilles_cadastrales"
+msgstr ""
+
+#: l_wmts.258
+msgid "ac_wellenstein_pag_limites"
+msgstr ""
+
+#: l_wmts.259
+msgid "ac_wellenstein_pag_voies_acces"
+msgstr ""
+
+#: lu_int_wms.260
+msgid "env_bruit_axes_ferroviaires_lngt"
+msgstr ""
+
+#: group.261
+msgid "tour_rando_v2"
+msgstr ""
+
+#: l_wmts.262
+msgid "topo_100k"
+msgstr ""
+
+#: l_wmts.263
+msgid "cadastre"
+msgstr ""
+
+#: l_wmts.264
+msgid "wg_exposition"
+msgstr ""
+
+#: lu_int_wms.265
+msgid "PA"
+msgstr ""
+
+#: l_wmts.266
+msgid "topo_decoupage_r"
+msgstr ""
+
+#: l_wmts.267
+msgid "sections_cadastrales_labels"
+msgstr ""
+
+#: l_wmts.268
+msgid "ac_remich_ortho"
+msgstr ""
+
+#: l_wmts.269
+msgid "districts_labels"
+msgstr ""
+
+#: l_wmts.270
+msgid "communes_labels"
+msgstr ""
+
+#: lu_ext_wms.271
+msgid "user_content"
+msgstr ""
+
+#: lu_ext_wms.272
+msgid "user_content_poi"
+msgstr ""
+
+#: l_wmts.273
+msgid "ivv_flik_parcels"
+msgstr ""
+
+#: l_wmts.274
+msgid "pedologie_100k"
+msgstr ""
+
+#: group.275
+msgid "anf_data_map"
+msgstr ""
+
+#: lu_int_wms.276
+msgid "eau_new_Chemischer_Zustand_der_WK_2009"
+msgstr ""
+
+#: l_wmts.277
+msgid "TOPO25K1954C24"
+msgstr ""
+
+#: group.278
+msgid "prof_daten"
+msgstr ""
+
+#: group.279
+msgid "env_sentiers"
+msgstr ""
+
+#: group.280
+msgid "group_mobiliteit"
+msgstr ""
+
+#: l_wmts.281
+msgid "TOPO_CARTESHISTO_2000_50k"
+msgstr ""
+
+#: group.282
+msgid "group_ac_wellenstein_pag"
+msgstr ""
+
+#: group.283
+msgid "anf_unites_admin"
+msgstr ""
+
+#: group.284
+msgid "tour_velo_v2"
+msgstr ""
+
+#: l_wmts.285
+msgid "ac_wellenstein_pag_alignements_a_preserver"
+msgstr ""
+
+#: l_wmts.286
+msgid "asta_meteo"
+msgstr ""
+
+#: group.287
+msgid "gebaude_prof"
+msgstr ""
+
+#: l_wmts.288
+msgid "TOPO_CARTESHISTO_1989"
+msgstr ""
+
+#: l_wmts.289
+msgid "wg_hohenlinien_10m"
+msgstr ""
+
+#: group.290
+msgid "group_ac_preizerdaul_pag"
+msgstr ""
+
+#: l_wmts.291
+msgid "wg_hangneigung_"
+msgstr ""
+
+#: group.293
+msgid "flurstucke_grundstucke_mittal"
+msgstr ""
+
+#: group.294
+msgid "topographische_karten"
+msgstr ""
+
+#: l_wmts.295
+msgid "wg_ikonos_satellitendaten"
+msgstr ""
+
+#: lu_ext_wms.296
+msgid "tour_pistes_vtt"
+msgstr ""
+
+#: l_wmts.297
+msgid "geologie_ancienne_edition"
+msgstr ""
+
+#: l_wmts.298
+msgid "topo"
+msgstr ""
+
+#: lu_int_wms.299
+msgid "ac_preizerdaul_pag"
+msgstr ""
+
+#: lu_int_wms.300
+msgid "ac_preizerdaul_ortho_2009"
+msgstr ""
+
+#: l_wmts.301
+msgid "ivv_parcels"
+msgstr ""
+
+#: l_wmts.302
+msgid "TOPO_CARTESHISTO_1993_50k"
+msgstr ""
+
+#: l_wmts.303
+msgid "ac_wellenstein_pag_perimetres_zones"
+msgstr ""
+
+#: l_wmts.304
+msgid "wg_landnutzung"
+msgstr ""
+
+#: l_wmts.305
+msgid "communes"
+msgstr ""
+
+#: group.306
+msgid "anf_reserves"
+msgstr ""
+
+#: group.307
+msgid "tour_quality"
+msgstr ""
+
+#: l_wmts.308
+msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
+msgstr ""
+
+#: l_wmts.309
+msgid "decoupage_geo25k"
+msgstr ""
+
+#: group.310
+msgid "asta"
+msgstr ""
+
+#: l_wmts.311
+msgid "wg_versiegelungsklassen"
+msgstr ""
+
+#: group.312
+msgid "administrative_einheiten"
+msgstr ""
+
+#: lu_int_wms.313
+msgid "env_bruit_axes_ferroviaires_lden"
+msgstr ""
+
+#: l_wmts.314
+msgid "ortho_irc"
+msgstr ""
+
+#: group.315
+msgid "umweltuberwachung"
+msgstr ""
+
+#: group.316
+msgid "topo_carteshisto"
+msgstr ""
+
+#: l_wmts.317
+msgid "geologie_nouvelle_edition"
+msgstr ""
+
+#: group.318
+msgid "tour_mymaps"
+msgstr ""
+
+#: lu_ext_wms.319
+msgid "env_sentiersnature"
+msgstr ""
+
+#: group.320
+msgid "eau_topographie"
+msgstr ""
+
+#: group.321
+msgid "eau_landnutzung"
+msgstr ""
+
+#: group.322
+msgid "eau_anf_reserves"
+msgstr ""
+
+#: lu_int_wms.323
+msgid "eau_natura2000_oiseaux"
+msgstr ""
+
+#: l_wmts.324
+msgid "toponymes"
+msgstr ""
+
+#: group.325
+msgid "pedologie"
+msgstr ""
+
+#: group.326
+msgid "anf_chasse"
+msgstr ""
+
+#: group.327
+msgid "go_daten"
+msgstr ""
+
+#: group.328
+msgid "oberflachendarstellung"
+msgstr ""
+
+#: group.329
+msgid "unwelt_biologie_geologie_mobile"
+msgstr ""
+
+#: lu_int_wms.330
+msgid "env_bruit_axes_routiers_lden"
+msgstr ""
+
+#: lu_int_wms.331
+msgid "env_bruit_air_lngt"
+msgstr ""
+
+#: l_wmts.332
+msgid "1907_CAHANSEN"
+msgstr ""
+
+#: l_wmts.333
+msgid "cantons"
+msgstr ""
+
+#: lu_int_wms.334
+msgid "toponymes_go"
+msgstr ""
+
+#: group.335
+msgid "geodesy"
+msgstr ""
+
+#: group.336
+msgid "ign"
+msgstr ""
+
+#: group.337
+msgid "bodennutzung"
+msgstr ""
+
+#: group.338
+msgid "env_zones_protegees_communautaires"
+msgstr ""
+
+#: group.339
+msgid "weinbau"
+msgstr ""
+
+#: group.340
+msgid "tour_auto_moto_v2"
+msgstr ""
+
+#: group.341
+msgid "group_preemption"
+msgstr ""
+
+#: group.342
+msgid "lebensraume_une_biotope"
+msgstr ""
+
+#: group.343
+msgid "gebaude"
+msgstr ""
+
+#: group.344
+msgid "asta_zones_prot"
+msgstr ""
+
+#: lu_int_wms.345
+msgid "eau_natura2000_habitats"
+msgstr ""
+
+#: lu_int_wms.346
+msgid "aero_1951_10k"
+msgstr ""
+
+#: l_wmts.347
+msgid "ortho_2010"
+msgstr ""
+
+#: l_wmts.348
+msgid "ortho"
+msgstr ""
+
+#: l_wmts.349
+msgid "ac_remich_pag"
+msgstr ""
+
+#: l_wmts.350
+msgid "topo_decoupage_ortho"
+msgstr ""
+
+#: l_wmts.351
+msgid "cantons_labels"
+msgstr ""
+
+#: lu_int_wms.352
+msgid "all_maps_root_account"
+msgstr ""
+
+#: lu_int_wms.353
+msgid "all_my_maps"
+msgstr ""
+
+#: l_wmts.354
+msgid "country"
+msgstr ""
+
+#: l_wmts.355
+msgid "communes_cadastrales_labels"
+msgstr ""
+
+#: l_wmts.356
+msgid "roads_labels"
+msgstr ""
+
+#: lu_int_wms.357
+msgid "ac_preizerdaul_ortho"
+msgstr ""
+
+#: lu_int_wms.358
+msgid "cfl_hecto"
+msgstr ""
+
+#: l_wmts.359
+msgid "parcels_labels"
+msgstr ""
+
+#: l_wmts.360
+msgid "districts"
+msgstr ""
+
+#: l_wmts.361
+msgid "sections_cadastrales"
+msgstr ""
+
+#: lu_ext_wms.362
+msgid "user_content_rando"
+msgstr ""
+
+#: lu_ext_wms.363
+msgid "user_content_autre"
+msgstr ""
+
+#: lu_int_wms.364
+msgid "FERRARIS"
+msgstr ""
+
+#: l_wmts.365
+msgid "parcels"
+msgstr ""
+
+#: l_wmts.366
+msgid "ortho_2013"
+msgstr ""
+
+#: group.367
+msgid "natur_an_emwelt"
+msgstr ""
+
+#: lu_int_wms.368
+msgid "affaires"
+msgstr ""
+
+#: lu_ext_wms.369
+msgid "luxembourg_on_horse"
+msgstr ""
+
+#: lu_int_wms.370
+msgid "natur_an_emwelt_terrains"
+msgstr ""
+
+#: lu_int_wms.371
+msgid "mobiliteit_bikeshare"
+msgstr ""
+
+#: lu_int_wms.372
+msgid "asta_flik_parcels_2014_prof"
+msgstr ""
+
+#: l_wmts.373
+msgid "emwelt_biotop_kadaster_f"
+msgstr ""
+
+#: l_wmts.374
+msgid "emwelt_biotop_kadaster_b"
+msgstr ""
+
+#: group.375
+msgid "emwelt_biotop_kadaster"
+msgstr ""
+
+#: l_wmts.376
+msgid "emwelt_biotop_kadaster_p"
+msgstr ""
+
+#: l_wmts.377
+msgid "emwelt_biotop_kadaster_s"
+msgstr ""
+
+#: lu_ext_wms.378
+msgid "tour_pistes_velo_mymaps"
+msgstr ""
+
+#: l_wmts.379
+msgid "eau_new_HQ100_merged_2013"
+msgstr ""
+
+#: group.380
+msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
+msgstr ""
+
+#: lu_int_wms.381
+msgid "topo_decoupage_ortho_2013"
+msgstr ""
+
+#: lu_int_wms.382
+msgid "prpl_luref"
+msgstr ""
+
+#: lu_int_wms.383
+msgid "prpl_ntl"
+msgstr ""
+
+#: lu_int_wms.384
+msgid "buildings_go"
+msgstr ""
+
+#: lu_int_wms.385
+msgid "parcels_labels_go"
+msgstr ""
+
+#: lu_int_wms.386
+msgid "eau_anf_reserves_naturelles"
+msgstr ""
+
+#: lu_int_wms.387
+msgid "eau_anf_reserves_forestieres"
+msgstr ""
+
+#: lu_int_wms.388
+msgid "eau_anf_reserves_naturelles_totalite"
+msgstr ""
+
+#: lu_int_wms.389
+msgid "eau_anf_reserves_dig"
+msgstr ""
+
+#: lu_ext_wms.390
+msgid "Merovingien"
+msgstr ""
+
+#: group.391
+msgid "Archeo"
+msgstr ""
+
+#: lu_int_wms.392
+msgid "anf_peuplements_semenciers"
+msgstr ""
+
+#: lu_int_wms.393
+msgid "anf_reserves_naturelles"
+msgstr ""
+
+#: lu_int_wms.394
+msgid "anf_proprietes_forestieres"
+msgstr ""
+
+#: lu_int_wms.395
+msgid "anf_stations_biologiques"
+msgstr ""
+
+#: lu_int_wms.396
+msgid "anf_reserves_forestieres"
+msgstr ""
+
+#: lu_ext_wms.397
+msgid "Prehistoire"
+msgstr "Préhistoire"
+
+#: lu_ext_wms.398
+msgid "Moyen Age"
+msgstr ""
+
+#: lu_ext_wms.399
+msgid "Temps modernes"
+msgstr ""
+
+#: lu_ext_wms.400
+msgid "Epoque indefinie"
+msgstr ""
+
+#: lu_int_wms.401
+msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
+msgstr ""
+
+#: lu_int_wms.402
+msgid "eau_new_Sanitaere_Schutzzonen_Stausee"
+msgstr ""
+
+#: lu_int_wms.403
+msgid "parcels_prof"
+msgstr ""
+
+#: l_wmts.404
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
+msgstr ""
+
+#: lu_ext_wms.405
+msgid "Protohistoire"
+msgstr ""
+
+#: lu_ext_wms.406
+msgid "Gallo-Romain"
+msgstr ""
+
+#: lu_int_wms.407
+msgid "anf_arbres_remarquables"
+msgstr ""
+
+#: group.408
+msgid "at_pst"
+msgstr ""
+
+#: group.409
+msgid "at_pszae"
+msgstr ""
+
+#: group.410
+msgid "at_ps"
+msgstr ""
+
+#: lu_int_wms.411
+msgid "at_psp_gep"
+msgstr ""
+
+#: lu_int_wms.412
+msgid "at_psp_cv"
+msgstr ""
+
+#: lu_int_wms.413
+msgid "anf_secteurs_ecologiques"
+msgstr ""
+
+#: lu_int_wms.414
+msgid "anf_lots_chasse"
+msgstr ""
+
+#: lu_int_wms.415
+msgid "at_psp_zm_tot"
+msgstr ""
+
+#: group.416
+msgid "at_psp"
+msgstr ""
+
+#: group.417
+msgid "at_psp_zm"
+msgstr ""
+
+#: group.418
+msgid "at_psl"
+msgstr ""
+
+#: lu_int_wms.419
+msgid "at_psl1"
+msgstr ""
+
+#: lu_int_wms.420
+msgid "at_pszae2"
+msgstr ""
+
+#: lu_int_wms.421
+msgid "at_pszae3"
+msgstr ""
+
+#: lu_int_wms.422
+msgid "at_pszae4"
+msgstr ""
+
+#: group.423
+msgid "at_pst_prm"
+msgstr ""
+
+#: lu_int_wms.424
+msgid "at_psp_re"
+msgstr ""
+
+#: lu_int_wms.425
+msgid "at_pszae1"
+msgstr ""
+
+#: lu_int_wms.426
+msgid "at_pst2"
+msgstr ""
+
+#: lu_int_wms.427
+msgid "at_psp_zvi"
+msgstr ""
+
+#: lu_int_wms.428
+msgid "at_pst3"
+msgstr ""
+
+#: lu_int_wms.429
+msgid "at_pst1"
+msgstr ""
+
+#: lu_int_wms.430
+msgid "ng"
+msgstr ""
+
+#: l_wmts.431
+msgid "wg_hangneigung_map"
+msgstr ""
+
+#: l_wmts.432
+msgid "wg_relief_map"
+msgstr ""
+
+#: l_wmts.433
+msgid "wg_exposition_map"
+msgstr ""
+
+#: l_wmts.434
+msgid "wg_hohenlinien_10m_map"
+msgstr ""
+
+#: group.435
+msgid "map_morphometrie"
+msgstr ""
+
+#: lu_int_wms.436
+msgid "remembrements"
+msgstr ""
+
+#: lu_int_wms.437
+msgid "repere_alti"
+msgstr ""
+
+#: lu_int_wms.438
+msgid "anf_arrondissements"
+msgstr ""
+
+#: lu_int_wms.439
+msgid "anf_triages"
+msgstr ""
+
+#: lu_int_wms.440
+msgid "anf_reserves_naturelles_totalite"
+msgstr ""
+
+#: lu_int_wms.441
+msgid "anf_reserves_dig"
+msgstr ""
+
+#: lu_int_wms.442
+msgid "eau_new_Intensitaet_-_HQ_extrem_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.443
+msgid "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)"
+msgstr ""
+
+#: lu_int_wms.444
+msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
+msgstr ""
+
+#: lu_int_wms.445
+msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
+msgstr ""
+
+#: lu_int_wms.446
+msgid "eau_new_UeSG_100-jaehrlich_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.447
+msgid "MO"
+msgstr ""
+
+#: group.448
+msgid "eau_4_lintgen"
+msgstr ""
+
+#: group.449
+msgid "pag_lintgen"
+msgstr ""
+
+#: lu_int_wms.450
+msgid "eau_new_Trinkwasserentnahmepunkte"
+msgstr ""
+
+#: lu_int_wms.451
+msgid "eau_new_Pumpstationen_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.452
+msgid "eau_new_Trinkwassersyndikate"
+msgstr ""
+
+#: lu_int_wms.453
+msgid "pag_lintgen_layer"
+msgstr ""
+
+#: lu_int_wms.454
+msgid "eau_new_Gefahrenklassen_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.455
+msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
+msgstr ""
+
+#: group.456
+msgid "eau_new_Projekt_TIMIS_(usage_interne)"
+msgstr ""
+
+#: group.457
+msgid "group_lenoz"
+msgstr ""
+
+#: lu_int_wms.458
+msgid "eau_new_Stausee_Sauer"
+msgstr ""
+
+#: lu_int_wms.459
+msgid "eau_new_Grundwasser_(Nitratrichtlinie)"
+msgstr ""
+
+#: lu_int_wms.460
+msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.461
+msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.462
+msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.463
+msgid ""
+"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
+msgstr ""
+
+#: lu_int_wms.464
+msgid "eau_new_UeSG_extrem_(usage_interne)"
+msgstr ""
+
+#: l_wmts.465
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
+msgstr ""
+
+#: lu_int_wms.466
+msgid "eau_new_Einschraenkung_Waermepumpe"
+msgstr ""
+
+#: lu_int_wms.467
+msgid "eau_new_Intensitaet_-_HQ_10_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.468
+msgid "eau_new_Badegewaesser_-_Qualitaet"
+msgstr ""
+
+#: group.469
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.470
+msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
+msgstr ""
+
+#: lu_int_wms.471
+msgid "eau_new_Physiko-Chemie_2015"
+msgstr ""
+
+#: lu_int_wms.472
+msgid "eau_new_Querprofile"
+msgstr ""
+
+#: lu_int_wms.473
+msgid "eau_new_Gesamtzustand_2009"
+msgstr ""
+
+#: lu_int_wms.474
+msgid "eau_new_Chemischer_Zustand_2009"
+msgstr ""
+
+#: lu_int_wms.475
+msgid "eau_new_Primaere_Gewaesser"
+msgstr ""
+
+#: l_wmts.476
+msgid "communes_cadastrales_labels_eau"
+msgstr ""
+
+#: group.477
+msgid "eau_new_Grundwasser_2009"
+msgstr ""
+
+#: lu_int_wms.478
+msgid "eau_new_Typologie_Gewaesser_2015"
+msgstr ""
+
+#: lu_int_wms.479
+msgid "eau_new_Oberflaechenwasserkoerper_2015"
+msgstr ""
+
+#: lu_int_wms.480
+msgid "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie"
+msgstr ""
+
+#: lu_int_wms.481
+msgid "eau_new_Hydromorphologischer_Zustand_2015"
+msgstr ""
+
+#: lu_int_wms.482
+msgid "eau_new_Phytobenthos_2015"
+msgstr ""
+
+#: lu_int_wms.483
+msgid "eau_new_Makro-Invertebraten_2015"
+msgstr ""
+
+#: lu_int_wms.484
+msgid "eau_new_Zustand_der_WK_2015"
+msgstr ""
+
+#: l_wmts.485
+msgid "sections_cadastrales_labels_eau"
+msgstr ""
+
+#: lu_int_wms.486
+msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
+msgstr ""
+
+#: lu_int_wms.487
+msgid "eau_new_Einschaetzung_guter_Zustand_2021"
+msgstr ""
+
+#: lu_int_wms.488
+msgid "eau_new_Erheblich_veraenderte_WK_2015"
+msgstr ""
+
+#: lu_int_wms.489
+msgid "eau_new_Hydromorphologischer_Zustand_2009"
+msgstr ""
+
+#: lu_int_wms.490
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)_2010"
+msgstr ""
+
+#: lu_int_wms.491
+msgid "eau_new_HQextrem_merged_2010"
+msgstr ""
+
+#: lu_int_wms.492
+msgid "eau_new_Lufttemperatur"
+msgstr ""
+
+#: lu_int_wms.493
+msgid "eau_new_Wassertiefe_-_HQ_extrem_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.494
+msgid "eau_new_UeSG_10-jaehrlich_(usage_interne)"
+msgstr ""
+
+#: l_wmts.495
+msgid "feuilles_cadastrales_eau"
+msgstr ""
+
+#: lu_int_wms.496
+msgid "eau_new_Trinkwasserbehaelter"
+msgstr ""
+
+#: lu_int_wms.497
+msgid "eau_new_Kilometrierung_sekundaere_Gewaesser"
+msgstr ""
+
+#: l_wmts.498
+msgid "sections_cadastrales_eau"
+msgstr ""
+
+#: l_wmts.499
+msgid "toponymes_eau"
+msgstr ""
+
+#: lu_int_wms.500
+msgid "eau_new_Oberflaechenwasserkoerper_2009"
+msgstr ""
+
+#: lu_int_wms.501
+msgid "eau_new_Gewaesserentwicklungsfaehigkeit_2009_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.502
+msgid "eau_new_Grundwasserkoerper_2009"
+msgstr ""
+
+#: lu_int_wms.503
+msgid "parcels_labels_eau"
+msgstr ""
+
+#: lu_int_wms.504
+msgid ""
+"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
+msgstr ""
+
+#: group.505
+msgid "flurstucke_grundstucke_eau"
+msgstr ""
+
+#: l_wmts.506
+msgid "communes_cadastrales_eau"
+msgstr ""
+
+#: lu_int_wms.507
+msgid "parcels_eau"
+msgstr ""
+
+#: lu_int_wms.508
+msgid "buildings_eau"
+msgstr ""
+
+#: group.509
+msgid "eau_new_Risikobeurteilung_2021"
+msgstr ""
+
+#: group.510
+msgid "eau_new_Trinkwasser"
+msgstr ""
+
+#: lu_int_wms.511
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)_2010"
+msgstr ""
+
+#: lu_int_wms.512
+msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
+msgstr ""
+
+#: l_wmts.513
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
+msgstr ""
+
+#: lu_int_wms.514
+msgid "eau_new_Typologie_Oberflaechengewasser_2009"
+msgstr ""
+
+#: lu_int_wms.515
+msgid "eau_new_Grundwasserkoerper_2015"
+msgstr ""
+
+#: lu_int_wms.516
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)_2010"
+msgstr ""
+
+#: lu_int_wms.517
+msgid "eau_new_Niederschlag"
+msgstr ""
+
+#: lu_int_wms.518
+msgid "eau_new_Schneehoehe"
+msgstr ""
+
+#: group.519
+msgid "eau_new_Gewaessernetz"
+msgstr ""
+
+#: group.520
+msgid "eau_new_Fischerei"
+msgstr ""
+
+#: lu_int_wms.521
+msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
+msgstr ""
+
+#: group.522
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
+msgstr ""
+
+#: group.523
+msgid "eau_new_Oberflaechengewaesser_2021"
+msgstr ""
+
+#: group.524
+msgid "eau_new_Messstationen"
+msgstr ""
+
+#: lu_int_wms.525
+msgid "eau_new_Wassertiefe_-_HQ_10_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.526
+msgid "eau_new_Oekologischer_Zustand_2009"
+msgstr ""
+
+#: group.527
+msgid "eau_new_Klimatologische_Messstationen"
+msgstr ""
+
+#: group.528
+msgid "eau_new_Historische_Ueberschwemmungsgebiete"
+msgstr ""
+
+#: group.529
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2013"
+msgstr ""
+
+#: lu_int_wms.530
+msgid "eau_new_Luftfeucht"
+msgstr ""
+
+#: lu_int_wms.531
+msgid "eau_new_Luftdruck"
+msgstr ""
+
+#: lu_int_wms.532
+msgid "eau_new_Globalstrahlung"
+msgstr ""
+
+#: lu_int_wms.533
+msgid "eau_new_Trinkwasserknappheit_(Zustand_orange)"
+msgstr ""
+
+#: lu_int_wms.534
+msgid "eau_new_Wassertiefe_-_HQ_100_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.535
+msgid "eau_new_Betrachtungsraeume_2015"
+msgstr ""
+
+#: lu_int_wms.536
+msgid "eau_new_Bodentemperatur"
+msgstr ""
+
+#: group.537
+msgid "eau_new_Zusaetzliche_Informationen"
+msgstr ""
+
+#: group.538
+msgid "eau_new_Oberflaechengewaesser_2009"
+msgstr ""
+
+#: lu_int_wms.539
+msgid "eau_new_Chemischer_Zustand_2015"
+msgstr ""
+
+#: lu_int_wms.540
+msgid "eau_new_Oekologischer_Zustand_2015"
+msgstr ""
+
+#: lu_int_wms.541
+msgid "eau_new_Temporaer_fliessende_Baeche"
+msgstr ""
+
+#: group.542
+msgid "eau_new_Messstationen_(WRRL)"
+msgstr ""
+
+#: lu_int_wms.543
+msgid "eau_new_HQ10_merged_2010"
+msgstr ""
+
+#: lu_int_wms.544
+msgid "eau_new_Kilometrierung_primaere_Gewaesser"
+msgstr ""
+
+#: lu_int_wms.545
+msgid "eau_new_Sekundaere_Gewaesser"
+msgstr ""
+
+#: lu_int_wms.546
+msgid "eau_new_Fischereiabschnitte"
+msgstr ""
+
+#: lu_int_wms.547
+msgid "eau_new_WRRL_-_Ueberblicksueberwachung"
+msgstr ""
+
+#: lu_int_wms.548
+msgid "eau_new_Bohrungen"
+msgstr ""
+
+#: lu_int_wms.549
+msgid "eau_new_Quellen"
+msgstr ""
+
+#: lu_int_wms.550
+msgid "eau_new_HQ100_merged_2010"
+msgstr ""
+
+#: lu_int_wms.551
+msgid "eau_new_Online_Messstationen"
+msgstr ""
+
+#: group.552
+msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
+msgstr ""
+
+#: group.553
+msgid "eau_new_Grundwasser_2021"
+msgstr ""
+
+#: lu_int_wms.554
+msgid "eau_new_Grundwasserleiter"
+msgstr ""
+
+#: lu_int_wms.555
+msgid "eau_new_Chemischer_Zustand_der_WK_2015"
+msgstr ""
+
+#: lu_int_wms.556
+msgid "eau_new_UESG_Sauer_1995"
+msgstr ""
+
+#: lu_int_wms.557
+msgid "eau_new_Erheblich_veraenderte_OWK_2009"
+msgstr ""
+
+#: lu_int_wms.558
+msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.559
+msgid "eau_new_Einzugsgebiete"
+msgstr ""
+
+#: group.560
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
+msgstr ""
+
+#: lu_int_wms.561
+msgid "eau_new_UESG_1983_-_Mosel"
+msgstr ""
+
+#: lu_int_wms.562
+msgid "eau_new_Feuchtgebiete_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.563
+msgid "eau_new_Durchgaengigkeit"
+msgstr ""
+
+#: lu_int_wms.564
+msgid "eau_new_Kontrollpunkte_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.565
+msgid "eau_new_UESG_1993_(ausser_Mosel)"
+msgstr ""
+
+#: lu_int_wms.566
+msgid "eau_new_UESG_Alzette_1995"
+msgstr ""
+
+#: group.567
+msgid "eau_new_Schutzgebiete"
+msgstr ""
+
+#: group.568
+msgid "eau_new_Gewaesserschutz"
+msgstr ""
+
+#: lu_int_wms.569
+msgid "eau_new_Abwassersyndikate"
+msgstr ""
+
+#: lu_int_wms.570
+msgid "eau_new_Betrachtungsraeume_2009"
+msgstr ""
+
+#: l_wmts.571
+msgid "eau_new_HQextrem_merged_2013"
+msgstr ""
+
+#: lu_int_wms.572
+msgid "eau_new_Klaeranlagen"
+msgstr ""
+
+#: lu_int_wms.573
+msgid "eau_new_Makrophyten_2015"
+msgstr ""
+
+#: lu_int_wms.574
+msgid "eau_new_Fische_2015"
+msgstr ""
+
+#: l_wmts.575
+msgid "eau_new_HQ10_merged_2013"
+msgstr ""
+
+#: group.576
+msgid "eau_new_Grundwasser_2015"
+msgstr ""
+
+#: lu_int_wms.577
+msgid "eau_new_Bauwerke"
+msgstr ""
+
+#: group.578
+msgid "eau_new_Oberflaechengewaesser_Messstationen"
+msgstr ""
+
+#: group.579
+msgid "eau_new_Grundwasser_Messstationen"
+msgstr ""
+
+#: group.580
+msgid "eau_new_Wasserrahmenrichtlinie"
+msgstr ""
+
+#: lu_int_wms.581
+msgid "eau_new_Grundwasserabhaengige_terrestriche_Oekosysteme"
+msgstr ""
+
+#: group.582
+msgid "eau_new_Bewirtschaftungsplan_2009"
+msgstr ""
+
+#: lu_int_wms.583
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet"
+msgstr ""
+
+#: lu_int_wms.584
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet"
+msgstr ""
+
+#: lu_int_wms.585
+msgid "eau_new_Kanal_-__Muehlgraben"
+msgstr ""
+
+#: group.586
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
+msgstr ""
+
+#: group.587
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
+msgstr ""
+
+#: group.588
+msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
+msgstr ""
+
+#: lu_int_wms.589
+msgid "eau_new_Waermepumpe_(usage_interne)"
+msgstr ""
+
+#: group.590
+msgid "eau_new_Bewirtschaftungsplan_2015"
+msgstr ""
+
+#: lu_int_wms.591
+msgid "eau_new_Alluvialer_Grundwasserspiegel"
+msgstr ""
+
+#: group.592
+msgid "eau_new_Oberflaechengewaesser_2015"
+msgstr ""
+
+#: group.593
+msgid "eau_new_Nitratrichtlinie"
+msgstr ""
+
+#: lu_int_wms.594
+msgid "eau_new_Nitratrichtlinie_Messstationen"
+msgstr ""
+
+#: group.595
+msgid "eau_new_Grundwasser"
+msgstr ""
+
+#: group.596
+msgid "eau_new_Gewaesser"
+msgstr ""
+
+#: group.597
+msgid "eau_new_Hydrologische_Messstationen"
+msgstr ""
+
+#: lu_int_wms.598
+msgid "eau_new_Wasserstand"
+msgstr ""
+
+#: group.599
+msgid "eau_new_Ueberschwemmungsgebiete_(UESG)"
+msgstr ""
+
+#: group.600
+msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
+msgstr ""
+
+#: group.601
+msgid "eau_new_Historische_Karten_(usage_interne)"
+msgstr ""
+
+#: lu_int_wms.602
+msgid "eau_new_Gesamtzustand_2015"
+msgstr ""
+
+#: lu_int_wms.603
+msgid "eau_new_Badegewaesser"
+msgstr ""
+
+#: lu_int_wms.604
+msgid "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise"
+msgstr ""
+
+#: lu_int_wms.605
+msgid "eau_new_Zustand_der_WK_2009"
+msgstr ""
+
+#: group.606
+msgid "tourisme_poi"
+msgstr ""
+
+#: lu_int_wms.607
+msgid "ont_poi_3"
+msgstr ""
+
+#: lu_int_wms.608
+msgid "lenoz_lmg"
+msgstr ""
+
+#: lu_int_wms.609
+msgid "lenoz_ecoles_old"
+msgstr ""
+
+#: lu_int_wms.610
+msgid "ont_poi_5"
+msgstr ""
+
+#: lu_int_wms.611
+msgid "lenoz_creches"
+msgstr ""
+
+#: lu_int_wms.612
+msgid "ont_poi_7"
+msgstr ""
+
+#: lu_int_wms.613
+msgid "ont_poi_6"
+msgstr ""
+
+#: lu_int_wms.614
+msgid "lenoz_Banken"
+msgstr ""
+
+#: lu_int_wms.615
+msgid "wrrl_intern_mn"
+msgstr ""
+
+#: lu_int_wms.616
+msgid "wrrl_intern_gb_k7"
+msgstr ""
+
+#: lu_int_wms.617
+msgid "lenoz_Tankstelle"
+msgstr ""
+
+#: lu_int_wms.618
+msgid "wrrl_intern_5b_sk"
+msgstr ""
+
+#: group.619
+msgid "wrrl_intern_hs"
+msgstr ""
+
+#: group.620
+msgid "wrrl_intern_group"
+msgstr ""
+
+#: group.621
+msgid "asta_esp_group"
+msgstr ""
+
+#: lu_int_wms.622
+msgid "lenoz_Ärzte"
+msgstr ""
+
+#: lu_int_wms.623
+msgid "lenoz_Post"
+msgstr ""
+
+#: lu_int_wms.624
+msgid "lenoz_Lycees"
+msgstr ""
+
+#: lu_int_wms.625
+msgid "lenoz_Restaurants"
+msgstr ""
+
+#: lu_int_wms.626
+msgid "asta_esp_lisiere"
+msgstr ""
+
+#: lu_int_wms.627
+msgid "asta_esp_esp"
+msgstr ""
+
+#: lu_int_wms.628
+msgid "ont_poi"
+msgstr ""
+
+#: lu_int_wms.629
+msgid "ont_poi_2"
+msgstr ""
+
+#: lu_int_wms.630
+msgid "parcelles_etat"
+msgstr ""
+
+#: lu_int_wms.631
+msgid "mobi_pickup"
+msgstr ""
+
+#: group.632
+msgid "logt"
+msgstr ""
+
+#: group.633
+msgid "osm"
+msgstr ""
+
+#: lu_int_wms.634
+msgid "osm_mq"
+msgstr ""
+
+#: l_wmts.635
+msgid "asta_flik_parcels_2015"
+msgstr ""
+
+#: lu_int_wms.636
+msgid "ont_poi_4"
+msgstr ""
+
+#: lu_int_wms.637
+msgid "anf_carte_simpl_forets"
+msgstr ""
+
+#: lu_int_wms.638
+msgid "logt_bauluecken"
+msgstr ""
