@@ -20,7 +20,7 @@ setup(
         'lingua==3.6.1',
     ],
     dependency_links=[
-        'git+https://github.com/petzlux/transifex-client.git@fix-ssl-hostname',
+        'git+https://github.com/transifex/transifex-client.git@fix-proxies',
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
