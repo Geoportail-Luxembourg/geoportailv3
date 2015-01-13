@@ -1,16 +1,15 @@
-#
+# 
 # Translators:
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-01-09 14:27+0000\n"
+"PO-Revision-Date: 2015-01-13 15:56+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/"
-"language/de/)\n"
-"Language: de\n"
+"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: geoportailv3/templates/index.html
@@ -19,13 +18,6 @@ msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "Catalog"
-msgstr ""
-
-#: geoportailv3/templates/index.html
-msgid ""
-"My Layers\n"
-"                <span ng-if=\"mainCtrl.selectedLayers.length > "
-"0\">({{mainCtrl.selectedLayers.length}})</span>"
 msgstr ""
 
 #: geoportailv3/templates/index.html
@@ -66,6 +58,10 @@ msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "measure"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "my_layers"
 msgstr ""
 
 #: geoportailv3/templates/index.html
