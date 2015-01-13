@@ -131,7 +131,7 @@ geoportailv3/locale/geoportailv3-client.pot: $(APP_HTML_FILES)
 geoportailv3/locale/geoportailv3.pot: $(APP_PYTHON_FILES) $(APP_HTML_FILES)
 	.build/venv/bin/pot-create -c lingua.ini -o geoportailv3/locale/geoportailv3.pot geoportailv3
 
-geoportailv3/locale/geoportailv3-db.pot: development.ini
+geoportailv3/locale/geoportailv3-db.pot: build-server
 	.build/venv/bin/python2.7 geoportailv3/utils/db_to_pot.py
 	msguniq geoportailv3/locale/geoportailv3-db.pot -o geoportailv3/locale/geoportailv3-db.pot
 
