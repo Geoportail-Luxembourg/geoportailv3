@@ -3,7 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-01-12 15:36+0000\n"
+"PO-Revision-Date: 2015-01-13 15:39+0000\n"
+"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -141,19 +142,19 @@ msgstr ""
 
 #: lu_int_wms.133
 msgid "mobiliteit_pr"
-msgstr ""
+msgstr "Park + Ride"
 
 #: lu_int_wms.134
 msgid "mobiliteit_cfl"
-msgstr ""
+msgstr "CFL train stations"
 
 #: lu_int_wms.135
 msgid "mobiliteit_bornes"
-msgstr ""
+msgstr "Electric charging points"
 
 #: lu_int_wms.136
 msgid "aero_1963_20k"
-msgstr ""
+msgstr "Aerial images from 1963 (1:20k)"
 
 #: l_wmts.137
 msgid "emwelt_biotop_kadaster_f_mobile"
@@ -181,19 +182,19 @@ msgstr ""
 
 #: lu_int_wms.143
 msgid "arrets_bus"
-msgstr ""
+msgstr " Public Transport"
 
 #: lu_ext_wms.144
 msgid "user_content_vtt"
-msgstr ""
+msgstr "Mountainbiking"
 
 #: l_wmts.145
 msgid "topo_tour_20k"
-msgstr ""
+msgstr "Regional tourist map 1:20000 R"
 
 #: lu_ext_wms.146
 msgid "tour_nordic_walking"
-msgstr ""
+msgstr "Nordic Walking Parcs"
 
 #: lu_int_wms.147
 msgid "parcelles_preemption"
@@ -201,39 +202,39 @@ msgstr ""
 
 #: l_wmts.148
 msgid "addresses"
-msgstr ""
+msgstr "Addresses"
 
 #: l_wmts.149
 msgid "communes_cadastrales"
-msgstr ""
+msgstr "Cadastral municipalities"
 
 #: lu_int_wms.150
 msgid "PAG"
-msgstr ""
+msgstr "Land use plan"
 
 #: lu_ext_wms.151
 msgid "user_content_velo"
-msgstr ""
+msgstr "Cycling"
 
 #: l_wmts.152
 msgid "topo_50k"
-msgstr ""
+msgstr "Topographical Map 1:50000"
 
 #: l_wmts.153
 msgid "TOPO_CARTESHISTO_1979"
-msgstr ""
+msgstr "Topographical Map 1:20k 1979 B/W"
 
 #: lu_int_wms.154
 msgid "env_bruit_air_lden"
-msgstr ""
+msgstr "Airport 2011 (LDEN)"
 
 #: lu_ext_wms.155
 msgid "tour_cfl"
-msgstr ""
+msgstr "CFL: Rail, Walk, Cycle"
 
 #: lu_ext_wms.156
 msgid "tour_pistes_velo"
-msgstr ""
+msgstr "Cycling Trails"
 
 #: group.157
 msgid "eau_luft_sat_bilder"
@@ -245,11 +246,11 @@ msgstr ""
 
 #: l_wmts.159
 msgid "ac_wellenstein_pag_volumes_batiments"
-msgstr ""
+msgstr "Buildings"
 
 #: lu_int_wms.160
 msgid "env_obs1999"
-msgstr ""
+msgstr "Landcover 1999"
 
 #: group.161
 msgid "mittal_bg"
@@ -265,11 +266,11 @@ msgstr ""
 
 #: lu_int_wms.164
 msgid "env_corine"
-msgstr ""
+msgstr "Corine Landcover 2006"
 
 #: lu_ext_wms.165
 msgid "tour_quality_trails"
-msgstr ""
+msgstr "other quality trails"
 
 #: group.166
 msgid "eau_zones_protegees"
@@ -289,11 +290,11 @@ msgstr ""
 
 #: l_wmts.170
 msgid "TOPO_CARTESHISTO_1964_RGB"
-msgstr ""
+msgstr "Topographical Map 1:20k 1964"
 
 #: lu_int_wms.171
 msgid "natura2000_oiseaux"
-msgstr ""
+msgstr "Bird protection zones Natura 2000"
 
 #: group.172
 msgid "flurstucke_grundstucke_prof"
@@ -301,15 +302,15 @@ msgstr ""
 
 #: l_wmts.173
 msgid "ivv_grosslagen"
-msgstr ""
+msgstr "Winegrowing areas"
 
 #: lu_ext_wms.174
 msgid "tour_autopedestre"
-msgstr ""
+msgstr "Rambling routes"
 
 #: lu_ext_wms.175
 msgid "tour_sentiers_communaux"
-msgstr ""
+msgstr "Municipality Trails"
 
 #: group.176
 msgid "luft_und_satellitenbilder"
@@ -317,7 +318,7 @@ msgstr ""
 
 #: group.177
 msgid "tour_sentiers_locaux"
-msgstr ""
+msgstr "Local Footpaths (not maintained by the DG Tourism)"
 
 #: group.178
 msgid "anf_secteurs_ecologiques_group"
@@ -325,11 +326,11 @@ msgstr ""
 
 #: l_wmts.179
 msgid "roads"
-msgstr ""
+msgstr "Road Network"
 
 #: l_wmts.180
 msgid "ac_wellenstein_pag_zones"
-msgstr ""
+msgstr "Zones"
 
 #: group.181
 msgid "env_bruit_axes_ferroviaires"
@@ -341,7 +342,7 @@ msgstr ""
 
 #: l_wmts.183
 msgid "TOPO_CARTESHISTO_1990_50k"
-msgstr ""
+msgstr "Topographical Map 1:50k 1990"
 
 #: group.184
 msgid "eau_grenzen"
@@ -357,7 +358,7 @@ msgstr ""
 
 #: lu_ext_wms.187
 msgid "tour_mullerthal_trail"
-msgstr ""
+msgstr "Mullerthal Trail"
 
 #: group.188
 msgid "env_bruit_air"
@@ -369,7 +370,7 @@ msgstr ""
 
 #: l_wmts.190
 msgid "TOPO_CARTESHISTO_1979_RGB"
-msgstr ""
+msgstr "Topographical Map 1:20k 1979"
 
 #: group.191
 msgid "hohe"
@@ -389,7 +390,7 @@ msgstr ""
 
 #: l_wmts.195
 msgid "topo_5k"
-msgstr ""
+msgstr "Topographical Map 1:5000"
 
 #: group.196
 msgid "verkehrsnetze"
@@ -397,11 +398,11 @@ msgstr ""
 
 #: lu_ext_wms.197
 msgid "tour_sentiers_ajl"
-msgstr ""
+msgstr "Youthhostel Trails"
 
 #: lu_ext_wms.198
 msgid "tour_temp"
-msgstr ""
+msgstr "Temporary Layer"
 
 #: group.199
 msgid "asta_prof"
@@ -417,15 +418,15 @@ msgstr ""
 
 #: l_wmts.202
 msgid "TOPO_CARTESHISTO_1964"
-msgstr ""
+msgstr "Topographical Map 1:20k 1964 B/W"
 
 #: l_wmts.203
 msgid "wg_relief"
-msgstr ""
+msgstr "Relief"
 
 #: l_wmts.204
 msgid "wg_relief_dhm_2m"
-msgstr ""
+msgstr "Relief DEM 2"
 
 #: group.205
 msgid "asta_meteo_group"
@@ -433,15 +434,15 @@ msgstr ""
 
 #: lu_ext_wms.206
 msgid "tour_escape_ardenne"
-msgstr ""
+msgstr "EscapArdenne"
 
 #: l_wmts.207
 msgid "topo_20k"
-msgstr ""
+msgstr "Topographical Map 1:20000"
 
 #: lu_int_wms.208
 msgid "eau_new_Provisorische_ZPS"
-msgstr ""
+msgstr "Provisional ZPS"
 
 #: group.209
 msgid "eau_zones_protegees_nationales"
@@ -457,7 +458,7 @@ msgstr ""
 
 #: l_wmts.212
 msgid "ac_wellenstein_pag_complet"
-msgstr ""
+msgstr "Complete plan"
 
 #: l_wmts.213
 msgid "decoupage_geo25_50k"
@@ -469,11 +470,11 @@ msgstr ""
 
 #: lu_ext_wms.215
 msgid "tour_moto"
-msgstr ""
+msgstr "ADAC Motorbike Tour"
 
 #: lu_int_wms.216
 msgid "env_obs2007"
-msgstr ""
+msgstr "Landcover 2007"
 
 #: l_wmts.217
 msgid "decoupage_communes"
@@ -481,11 +482,11 @@ msgstr ""
 
 #: l_wmts.218
 msgid "TOPO_CARTESHISTO_1966-74_50k"
-msgstr ""
+msgstr "Topographical Map 1:50k 1966"
 
 #: lu_ext_wms.219
 msgid "tour_saint_jacques"
-msgstr ""
+msgstr "Way of St. James"
 
 #: l_wmts.220
 msgid "topo_decoupage_50k"
@@ -493,11 +494,11 @@ msgstr ""
 
 #: l_wmts.221
 msgid "TOPO_CARTES_1944"
-msgstr ""
+msgstr "German War map 1:25k 1939"
 
 #: l_wmts.222
 msgid "ivv_klimakarte"
-msgstr ""
+msgstr "Climate map"
 
 #: group.223
 msgid "basisden_mobile"
@@ -505,7 +506,7 @@ msgstr ""
 
 #: l_wmts.224
 msgid "topo_250k"
-msgstr ""
+msgstr "Topographical Map 1:250000"
 
 #: lu_int_wms.225
 msgid "parcels_go"
@@ -513,19 +514,19 @@ msgstr ""
 
 #: l_wmts.226
 msgid "ortho_2004"
-msgstr ""
+msgstr "Orthophoto 2004"
 
 #: l_wmts.227
 msgid "ortho_2001"
-msgstr ""
+msgstr "Orthophoto 2001"
 
 #: lu_int_wms.228
 msgid "natura2000_habitats"
-msgstr ""
+msgstr "Habitats Natura 2000"
 
 #: lu_ext_wms.229
 msgid "tour_sentiers_nationaux"
-msgstr ""
+msgstr "National Footpaths"
 
 #: group.230
 msgid "flurstucke_grundstucke_go"
@@ -533,7 +534,7 @@ msgstr ""
 
 #: lu_int_wms.231
 msgid "aero_1951_25k"
-msgstr ""
+msgstr "Aerial images from 1951 (1:25k)"
 
 #: lu_int_wms.232
 msgid "mittal"
@@ -541,7 +542,7 @@ msgstr ""
 
 #: l_wmts.233
 msgid "ortho_2007"
-msgstr ""
+msgstr "Orthophoto 2007"
 
 #: group.234
 msgid "env_bruit_axes_routiers"
@@ -557,7 +558,7 @@ msgstr ""
 
 #: lu_ext_wms.237
 msgid "tour_sentiers_gr"
-msgstr ""
+msgstr "Long distance footpaths"
 
 #: group.238
 msgid "group_ac_remich_pag"
@@ -565,7 +566,7 @@ msgstr ""
 
 #: l_wmts.239
 msgid "TOPO_CARTESHISTO_2000"
-msgstr ""
+msgstr "Topographical Map 1:20k 2000"
 
 #: l_wmts.240
 msgid "ign_topo"
@@ -577,7 +578,7 @@ msgstr ""
 
 #: l_wmts.242
 msgid "ivv_kleinlagen"
-msgstr ""
+msgstr "Small winegrowing areas"
 
 #: group.243
 msgid "anf_forets"
@@ -601,7 +602,7 @@ msgstr ""
 
 #: lu_ext_wms.248
 msgid "tour_sentiers_syndicats"
-msgstr ""
+msgstr "Local Syndicate Trails"
 
 #: group.249
 msgid "infrastrucktur_une_kommunikation_prof"
@@ -617,7 +618,7 @@ msgstr ""
 
 #: lu_ext_wms.252
 msgid "tour_DeLux"
-msgstr ""
+msgstr "Naturwanderpark DeLux"
 
 #: l_wmts.253
 msgid "ign_ortho"
@@ -625,27 +626,27 @@ msgstr ""
 
 #: l_wmts.254
 msgid "1927_CAHANSEN"
-msgstr ""
+msgstr "Topographical Map 1927"
 
 #: lu_int_wms.256
 msgid "env_bruit_axes_routiers_lngt"
-msgstr ""
+msgstr "Roads 2011 (LNGT)"
 
 #: l_wmts.257
 msgid "feuilles_cadastrales"
-msgstr ""
+msgstr "Historical cadastral sheets"
 
 #: l_wmts.258
 msgid "ac_wellenstein_pag_limites"
-msgstr ""
+msgstr "Limits"
 
 #: l_wmts.259
 msgid "ac_wellenstein_pag_voies_acces"
-msgstr ""
+msgstr "Roads"
 
 #: lu_int_wms.260
 msgid "env_bruit_axes_ferroviaires_lngt"
-msgstr ""
+msgstr "Railroads 2011 (LNGT)"
 
 #: group.261
 msgid "tour_rando_v2"
@@ -653,15 +654,15 @@ msgstr ""
 
 #: l_wmts.262
 msgid "topo_100k"
-msgstr ""
+msgstr "Topographical Map 1:100000"
 
 #: l_wmts.263
 msgid "cadastre"
-msgstr ""
+msgstr "Cadastre plan"
 
 #: l_wmts.264
 msgid "wg_exposition"
-msgstr ""
+msgstr "Exposition"
 
 #: lu_int_wms.265
 msgid "PA"
@@ -669,19 +670,19 @@ msgstr ""
 
 #: l_wmts.266
 msgid "topo_decoupage_r"
-msgstr ""
+msgstr "Regional Mapsheets"
 
 #: l_wmts.267
 msgid "sections_cadastrales_labels"
-msgstr ""
+msgstr "Cadastral sections  (names)"
 
 #: l_wmts.268
 msgid "ac_remich_ortho"
-msgstr ""
+msgstr "Orthophoto Remich"
 
 #: l_wmts.269
 msgid "districts_labels"
-msgstr ""
+msgstr "Districts (names)"
 
 #: l_wmts.270
 msgid "communes_labels"
@@ -689,15 +690,15 @@ msgstr ""
 
 #: lu_ext_wms.271
 msgid "user_content"
-msgstr ""
+msgstr "Not categorized content"
 
 #: lu_ext_wms.272
 msgid "user_content_poi"
-msgstr ""
+msgstr "Points of interest"
 
 #: l_wmts.273
 msgid "ivv_flik_parcels"
-msgstr ""
+msgstr "FLIK reference parcels for Vineyards 2013"
 
 #: l_wmts.274
 msgid "pedologie_100k"
@@ -709,11 +710,11 @@ msgstr ""
 
 #: lu_int_wms.276
 msgid "eau_new_Chemischer_Zustand_der_WK_2009"
-msgstr ""
+msgstr "Chemical status of the WB 2009"
 
 #: l_wmts.277
 msgid "TOPO25K1954C24"
-msgstr ""
+msgstr "Topographical Map 1954"
 
 #: group.278
 msgid "prof_daten"
@@ -729,7 +730,7 @@ msgstr ""
 
 #: l_wmts.281
 msgid "TOPO_CARTESHISTO_2000_50k"
-msgstr ""
+msgstr "Topographical Map 1:50k 2000"
 
 #: group.282
 msgid "group_ac_wellenstein_pag"
@@ -745,11 +746,11 @@ msgstr ""
 
 #: l_wmts.285
 msgid "ac_wellenstein_pag_alignements_a_preserver"
-msgstr ""
+msgstr "Alignments to be saved"
 
 #: l_wmts.286
 msgid "asta_meteo"
-msgstr ""
+msgstr "Weatherstations"
 
 #: group.287
 msgid "gebaude_prof"
@@ -757,11 +758,11 @@ msgstr ""
 
 #: l_wmts.288
 msgid "TOPO_CARTESHISTO_1989"
-msgstr ""
+msgstr "Topographical Map 1:20k 1989"
 
 #: l_wmts.289
 msgid "wg_hohenlinien_10m"
-msgstr ""
+msgstr "Contour 10 m"
 
 #: group.290
 msgid "group_ac_preizerdaul_pag"
@@ -769,7 +770,7 @@ msgstr ""
 
 #: l_wmts.291
 msgid "wg_hangneigung_"
-msgstr ""
+msgstr "Slope"
 
 #: group.293
 msgid "flurstucke_grundstucke_mittal"
@@ -781,11 +782,11 @@ msgstr ""
 
 #: l_wmts.295
 msgid "wg_ikonos_satellitendaten"
-msgstr ""
+msgstr "Satellite pcitures Ikonos"
 
 #: lu_ext_wms.296
 msgid "tour_pistes_vtt"
-msgstr ""
+msgstr "Mountainbike Trails"
 
 #: l_wmts.297
 msgid "geologie_ancienne_edition"
@@ -793,7 +794,7 @@ msgstr ""
 
 #: l_wmts.298
 msgid "topo"
-msgstr ""
+msgstr "Automatical Topographical Map"
 
 #: lu_int_wms.299
 msgid "ac_preizerdaul_pag"
@@ -805,23 +806,23 @@ msgstr ""
 
 #: l_wmts.301
 msgid "ivv_parcels"
-msgstr ""
+msgstr "Vineyards 2013"
 
 #: l_wmts.302
 msgid "TOPO_CARTESHISTO_1993_50k"
-msgstr ""
+msgstr "Topographical Map 1:50k 1993"
 
 #: l_wmts.303
 msgid "ac_wellenstein_pag_perimetres_zones"
-msgstr ""
+msgstr "Zone contours"
 
 #: l_wmts.304
 msgid "wg_landnutzung"
-msgstr ""
+msgstr "Land use"
 
 #: l_wmts.305
 msgid "communes"
-msgstr ""
+msgstr "Municipalities"
 
 #: group.306
 msgid "anf_reserves"
@@ -829,11 +830,11 @@ msgstr ""
 
 #: group.307
 msgid "tour_quality"
-msgstr ""
+msgstr "Quality Label Trails"
 
 #: l_wmts.308
 msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
-msgstr ""
+msgstr "Spaces to be saved"
 
 #: l_wmts.309
 msgid "decoupage_geo25k"
@@ -845,7 +846,7 @@ msgstr ""
 
 #: l_wmts.311
 msgid "wg_versiegelungsklassen"
-msgstr ""
+msgstr "Sealing"
 
 #: group.312
 msgid "administrative_einheiten"
@@ -853,11 +854,11 @@ msgstr ""
 
 #: lu_int_wms.313
 msgid "env_bruit_axes_ferroviaires_lden"
-msgstr ""
+msgstr "Railroads 2011 (LDEN)"
 
 #: l_wmts.314
 msgid "ortho_irc"
-msgstr ""
+msgstr "Orthophoto 2007 (infrared)"
 
 #: group.315
 msgid "umweltuberwachung"
@@ -865,7 +866,7 @@ msgstr ""
 
 #: group.316
 msgid "topo_carteshisto"
-msgstr ""
+msgstr "Historical topographical Maps"
 
 #: l_wmts.317
 msgid "geologie_nouvelle_edition"
@@ -877,7 +878,7 @@ msgstr ""
 
 #: lu_ext_wms.319
 msgid "env_sentiersnature"
-msgstr ""
+msgstr "Nature trails"
 
 #: group.320
 msgid "eau_topographie"
@@ -897,7 +898,7 @@ msgstr ""
 
 #: l_wmts.324
 msgid "toponymes"
-msgstr ""
+msgstr "Cadastral region names"
 
 #: group.325
 msgid "pedologie"
@@ -921,19 +922,19 @@ msgstr ""
 
 #: lu_int_wms.330
 msgid "env_bruit_axes_routiers_lden"
-msgstr ""
+msgstr "Roads 2011 (LDEN)"
 
 #: lu_int_wms.331
 msgid "env_bruit_air_lngt"
-msgstr ""
+msgstr "Airport 2011 (LNGT)"
 
 #: l_wmts.332
 msgid "1907_CAHANSEN"
-msgstr ""
+msgstr "Topographical Map 1907"
 
 #: l_wmts.333
 msgid "cantons"
-msgstr ""
+msgstr "Cantons"
 
 #: lu_int_wms.334
 msgid "toponymes_go"
@@ -941,7 +942,7 @@ msgstr ""
 
 #: group.335
 msgid "geodesy"
-msgstr ""
+msgstr "Geodesy"
 
 #: group.336
 msgid "ign"
@@ -985,27 +986,27 @@ msgstr ""
 
 #: lu_int_wms.346
 msgid "aero_1951_10k"
-msgstr ""
+msgstr "Aerial images from 1951 (1:10k)"
 
 #: l_wmts.347
 msgid "ortho_2010"
-msgstr ""
+msgstr "Orthophoto 2010"
 
 #: l_wmts.348
 msgid "ortho"
-msgstr ""
+msgstr "Orthophoto 2013"
 
 #: l_wmts.349
 msgid "ac_remich_pag"
-msgstr ""
+msgstr "Land Use Plan Remich"
 
 #: l_wmts.350
 msgid "topo_decoupage_ortho"
-msgstr ""
+msgstr "Orthophoto Grid"
 
 #: l_wmts.351
 msgid "cantons_labels"
-msgstr ""
+msgstr "Cantons (names)"
 
 #: lu_int_wms.352
 msgid "all_maps_root_account"
@@ -1017,15 +1018,15 @@ msgstr ""
 
 #: l_wmts.354
 msgid "country"
-msgstr ""
+msgstr "Country"
 
 #: l_wmts.355
 msgid "communes_cadastrales_labels"
-msgstr ""
+msgstr "Cadastral municipalities (names)"
 
 #: l_wmts.356
 msgid "roads_labels"
-msgstr ""
+msgstr "Road Names"
 
 #: lu_int_wms.357
 msgid "ac_preizerdaul_ortho"
@@ -1033,39 +1034,39 @@ msgstr ""
 
 #: lu_int_wms.358
 msgid "cfl_hecto"
-msgstr ""
+msgstr "Mileage of the CFL tracks"
 
 #: l_wmts.359
 msgid "parcels_labels"
-msgstr ""
+msgstr "Cadastral parcels (numbers)"
 
 #: l_wmts.360
 msgid "districts"
-msgstr ""
+msgstr "Districts"
 
 #: l_wmts.361
 msgid "sections_cadastrales"
-msgstr ""
+msgstr "Cadastral sections"
 
 #: lu_ext_wms.362
 msgid "user_content_rando"
-msgstr ""
+msgstr "Rambling"
 
 #: lu_ext_wms.363
 msgid "user_content_autre"
-msgstr ""
+msgstr "Others"
 
 #: lu_int_wms.364
 msgid "FERRARIS"
-msgstr ""
+msgstr "Ferraris Map 1:20k 1778"
 
 #: l_wmts.365
 msgid "parcels"
-msgstr ""
+msgstr "Cadastral parcels"
 
 #: l_wmts.366
 msgid "ortho_2013"
-msgstr ""
+msgstr "Orthophoto 2013"
 
 #: group.367
 msgid "natur_an_emwelt"
@@ -1077,7 +1078,7 @@ msgstr ""
 
 #: lu_ext_wms.369
 msgid "luxembourg_on_horse"
-msgstr ""
+msgstr "Luxemburg on horse"
 
 #: lu_int_wms.370
 msgid "natur_an_emwelt_terrains"
@@ -1085,7 +1086,7 @@ msgstr ""
 
 #: lu_int_wms.371
 msgid "mobiliteit_bikeshare"
-msgstr ""
+msgstr "Bike sharing "
 
 #: lu_int_wms.372
 msgid "asta_flik_parcels_2014_prof"
@@ -1093,23 +1094,23 @@ msgstr ""
 
 #: l_wmts.373
 msgid "emwelt_biotop_kadaster_f"
-msgstr ""
+msgstr "Surface elements without orchards"
 
 #: l_wmts.374
 msgid "emwelt_biotop_kadaster_b"
-msgstr ""
+msgstr "Buffer"
 
 #: group.375
 msgid "emwelt_biotop_kadaster"
-msgstr ""
+msgstr "Biotope cadaster of the open landscapes"
 
 #: l_wmts.376
 msgid "emwelt_biotop_kadaster_p"
-msgstr ""
+msgstr "Point elements"
 
 #: l_wmts.377
 msgid "emwelt_biotop_kadaster_s"
-msgstr ""
+msgstr "Orchards"
 
 #: lu_ext_wms.378
 msgid "tour_pistes_velo_mymaps"
@@ -1117,11 +1118,11 @@ msgstr ""
 
 #: l_wmts.379
 msgid "eau_new_HQ100_merged_2013"
-msgstr ""
+msgstr "HQ100 [floods with medium probability]"
 
 #: group.380
 msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
-msgstr ""
+msgstr "Drinking water protection Zones [ZPS]"
 
 #: lu_int_wms.381
 msgid "topo_decoupage_ortho_2013"
@@ -1133,7 +1134,7 @@ msgstr ""
 
 #: lu_int_wms.383
 msgid "prpl_ntl"
-msgstr ""
+msgstr "Geodetic network points : NTL system"
 
 #: lu_int_wms.384
 msgid "buildings_go"
@@ -1169,23 +1170,23 @@ msgstr ""
 
 #: lu_int_wms.392
 msgid "anf_peuplements_semenciers"
-msgstr ""
+msgstr "Forests seed stands"
 
 #: lu_int_wms.393
 msgid "anf_reserves_naturelles"
-msgstr ""
+msgstr "Nature reserves"
 
 #: lu_int_wms.394
 msgid "anf_proprietes_forestieres"
-msgstr ""
+msgstr "Public forests"
 
 #: lu_int_wms.395
 msgid "anf_stations_biologiques"
-msgstr ""
+msgstr "Regional biological stations"
 
 #: lu_int_wms.396
 msgid "anf_reserves_forestieres"
-msgstr ""
+msgstr "Forest reserves"
 
 #: lu_ext_wms.397
 msgid "Prehistoire"
@@ -1205,11 +1206,11 @@ msgstr ""
 
 #: lu_int_wms.401
 msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
-msgstr ""
+msgstr "Drinking water shortage at critical level (level \"red\")"
 
 #: lu_int_wms.402
 msgid "eau_new_Sanitaere_Schutzzonen_Stausee"
-msgstr ""
+msgstr "Sanitary protection zones reservoir"
 
 #: lu_int_wms.403
 msgid "parcels_prof"
@@ -1217,7 +1218,7 @@ msgstr ""
 
 #: l_wmts.404
 msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
-msgstr ""
+msgstr "HQ100 [medium probability]"
 
 #: lu_ext_wms.405
 msgid "Protohistoire"
@@ -1229,99 +1230,99 @@ msgstr ""
 
 #: lu_int_wms.407
 msgid "anf_arbres_remarquables"
-msgstr ""
+msgstr "Remarkable trees ANF"
 
 #: group.408
 msgid "at_pst"
-msgstr ""
+msgstr "SP transport"
 
 #: group.409
 msgid "at_pszae"
-msgstr ""
+msgstr "SP economic activity zones"
 
 #: group.410
 msgid "at_ps"
-msgstr ""
+msgstr "Sectoral plans (SP)"
 
 #: lu_int_wms.411
 msgid "at_psp_gep"
-msgstr ""
+msgstr "Large landscape units"
 
 #: lu_int_wms.412
 msgid "at_psp_cv"
-msgstr ""
+msgstr "Green belts"
 
 #: lu_int_wms.413
 msgid "anf_secteurs_ecologiques"
-msgstr ""
+msgstr "Ecological sectors"
 
 #: lu_int_wms.414
 msgid "anf_lots_chasse"
-msgstr ""
+msgstr "Hunting lots"
 
 #: lu_int_wms.415
 msgid "at_psp_zm_tot"
-msgstr ""
+msgstr "Multifunctional zones (total)"
 
 #: group.416
 msgid "at_psp"
-msgstr ""
+msgstr "SP landscapes"
 
 #: group.417
 msgid "at_psp_zm"
-msgstr ""
+msgstr "Multifunctional zones"
 
 #: group.418
 msgid "at_psl"
-msgstr ""
+msgstr "SP housing"
 
 #: lu_int_wms.419
 msgid "at_psl1"
-msgstr ""
+msgstr "Zones for major housing projects"
 
 #: lu_int_wms.420
 msgid "at_pszae2"
-msgstr ""
+msgstr "New economic activity zones and extensions"
 
 #: lu_int_wms.421
 msgid "at_pszae3"
-msgstr ""
+msgstr "Existing economic activity zones to be reclassified"
 
 #: lu_int_wms.422
 msgid "at_pszae4"
-msgstr ""
+msgstr "Economic activity zones with transitional provisions"
 
 #: group.423
 msgid "at_pst_prm"
-msgstr ""
+msgstr "Parking space management"
 
 #: lu_int_wms.424
 msgid "at_psp_re"
-msgstr ""
+msgstr "Ecological network"
 
 #: lu_int_wms.425
 msgid "at_pszae1"
-msgstr ""
+msgstr "Existing economic activity zones"
 
 #: lu_int_wms.426
 msgid "at_pst2"
-msgstr ""
+msgstr "Reserved corridors"
 
 #: lu_int_wms.427
 msgid "at_psp_zvi"
-msgstr ""
+msgstr "Interurban green zone"
 
 #: lu_int_wms.428
 msgid "at_pst3"
-msgstr ""
+msgstr "Parking space categories"
 
 #: lu_int_wms.429
 msgid "at_pst1"
-msgstr ""
+msgstr "SPT projects"
 
 #: lu_int_wms.430
 msgid "ng"
-msgstr ""
+msgstr "Height reference points"
 
 #: l_wmts.431
 msgid "wg_hangneigung_map"
@@ -1345,7 +1346,7 @@ msgstr ""
 
 #: lu_int_wms.436
 msgid "remembrements"
-msgstr ""
+msgstr "Land consolidation zones"
 
 #: lu_int_wms.437
 msgid "repere_alti"
@@ -1353,39 +1354,39 @@ msgstr ""
 
 #: lu_int_wms.438
 msgid "anf_arrondissements"
-msgstr ""
+msgstr "Regional nature and forest districts"
 
 #: lu_int_wms.439
 msgid "anf_triages"
-msgstr ""
+msgstr "Local nature and forest districts"
 
 #: lu_int_wms.440
 msgid "anf_reserves_naturelles_totalite"
-msgstr ""
+msgstr "Nature reserves (totality)"
 
 #: lu_int_wms.441
 msgid "anf_reserves_dig"
-msgstr ""
+msgstr "Nature reserves (DIG)"
 
 #: lu_int_wms.442
 msgid "eau_new_Intensitaet_-_HQ_extrem_(usage_interne)"
-msgstr ""
+msgstr "Extreme flood intensity"
 
 #: lu_int_wms.443
 msgid "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)"
-msgstr ""
+msgstr "Vulnerable zones  [Nitrates directive]"
 
 #: lu_int_wms.444
 msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
-msgstr ""
+msgstr "Ecosystems dep. on SW"
 
 #: lu_int_wms.445
 msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
-msgstr ""
+msgstr "ZPS created by grand-ducal regulation"
 
 #: lu_int_wms.446
 msgid "eau_new_UeSG_100-jaehrlich_(usage_interne)"
-msgstr ""
+msgstr "Floodplain 100 year flood"
 
 #: lu_int_wms.447
 msgid "MO"
@@ -1401,15 +1402,15 @@ msgstr ""
 
 #: lu_int_wms.450
 msgid "eau_new_Trinkwasserentnahmepunkte"
-msgstr ""
+msgstr "Drinking water abstraction points"
 
 #: lu_int_wms.451
 msgid "eau_new_Pumpstationen_(usage_interne)"
-msgstr ""
+msgstr "Pumping stations"
 
 #: lu_int_wms.452
 msgid "eau_new_Trinkwassersyndikate"
-msgstr ""
+msgstr "Drinking water syndicates"
 
 #: lu_int_wms.453
 msgid "pag_lintgen_layer"
@@ -1417,15 +1418,15 @@ msgstr ""
 
 #: lu_int_wms.454
 msgid "eau_new_Gefahrenklassen_(usage_interne)"
-msgstr ""
+msgstr "Hazard classification"
 
 #: lu_int_wms.455
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
-msgstr ""
+msgstr "Artificial water bodies 2015"
 
 #: group.456
 msgid "eau_new_Projekt_TIMIS_(usage_interne)"
-msgstr ""
+msgstr "TIMIS Project"
 
 #: group.457
 msgid "group_lenoz"
@@ -1433,76 +1434,76 @@ msgstr ""
 
 #: lu_int_wms.458
 msgid "eau_new_Stausee_Sauer"
-msgstr ""
+msgstr "Upper Sure Lake"
 
 #: lu_int_wms.459
 msgid "eau_new_Grundwasser_(Nitratrichtlinie)"
-msgstr ""
+msgstr "Groundwater [Nitrates directive]"
 
 #: lu_int_wms.460
 msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
-msgstr ""
+msgstr "Artificial basin"
 
 #: lu_int_wms.461
 msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
-msgstr ""
+msgstr "Restrictions geothermal heat pumps"
 
 #: lu_int_wms.462
 msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
-msgstr ""
+msgstr "100 year flood intensity"
 
 #: lu_int_wms.463
 msgid ""
 "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
-msgstr ""
+msgstr "Risk assessment of the WB to reach good chemical status "
 
 #: lu_int_wms.464
 msgid "eau_new_UeSG_extrem_(usage_interne)"
-msgstr ""
+msgstr "Floodplain extreme depth"
 
 #: l_wmts.465
 msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
-msgstr ""
+msgstr "HQ10 [high probability]"
 
 #: lu_int_wms.466
 msgid "eau_new_Einschraenkung_Waermepumpe"
-msgstr ""
+msgstr "Restrictions geothermal heat pumps"
 
 #: lu_int_wms.467
 msgid "eau_new_Intensitaet_-_HQ_10_(usage_interne)"
-msgstr ""
+msgstr "10 year flood intensity"
 
 #: lu_int_wms.468
 msgid "eau_new_Badegewaesser_-_Qualitaet"
-msgstr ""
+msgstr "Bathing Water Quality"
 
 #: group.469
 msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
-msgstr ""
+msgstr "Project flood risk maps 2010"
 
 #: lu_int_wms.470
 msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
-msgstr ""
+msgstr "Groundwater monitoring - Nitrates Directive"
 
 #: lu_int_wms.471
 msgid "eau_new_Physiko-Chemie_2015"
-msgstr ""
+msgstr "Physico-chemistry 2015"
 
 #: lu_int_wms.472
 msgid "eau_new_Querprofile"
-msgstr ""
+msgstr "Cross sections"
 
 #: lu_int_wms.473
 msgid "eau_new_Gesamtzustand_2009"
-msgstr ""
+msgstr "Global status 2009"
 
 #: lu_int_wms.474
 msgid "eau_new_Chemischer_Zustand_2009"
-msgstr ""
+msgstr "Chemical status 2009"
 
 #: lu_int_wms.475
 msgid "eau_new_Primaere_Gewaesser"
-msgstr ""
+msgstr "Main watercourses"
 
 #: l_wmts.476
 msgid "communes_cadastrales_labels_eau"
@@ -1510,35 +1511,35 @@ msgstr ""
 
 #: group.477
 msgid "eau_new_Grundwasser_2009"
-msgstr ""
+msgstr "Groundwater 2009"
 
 #: lu_int_wms.478
 msgid "eau_new_Typologie_Gewaesser_2015"
-msgstr ""
+msgstr "Surface water typology 2015"
 
 #: lu_int_wms.479
 msgid "eau_new_Oberflaechenwasserkoerper_2015"
-msgstr ""
+msgstr "Surface water bodies 2015"
 
 #: lu_int_wms.480
 msgid "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie"
-msgstr ""
+msgstr "Surface water monitoring - Nitrates Directive"
 
 #: lu_int_wms.481
 msgid "eau_new_Hydromorphologischer_Zustand_2015"
-msgstr ""
+msgstr "Hydromorphological status 2015"
 
 #: lu_int_wms.482
 msgid "eau_new_Phytobenthos_2015"
-msgstr ""
+msgstr "Phytobenthos 2015"
 
 #: lu_int_wms.483
 msgid "eau_new_Makro-Invertebraten_2015"
-msgstr ""
+msgstr "Macroinvertebrates 2015"
 
 #: lu_int_wms.484
 msgid "eau_new_Zustand_der_WK_2015"
-msgstr ""
+msgstr "Status of the WB 2015"
 
 #: l_wmts.485
 msgid "sections_cadastrales_labels_eau"
@@ -1546,39 +1547,39 @@ msgstr ""
 
 #: lu_int_wms.486
 msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
-msgstr ""
+msgstr "Quantitative status of the WB 2015"
 
 #: lu_int_wms.487
 msgid "eau_new_Einschaetzung_guter_Zustand_2021"
-msgstr ""
+msgstr "Assessement good status 2021"
 
 #: lu_int_wms.488
 msgid "eau_new_Erheblich_veraenderte_WK_2015"
-msgstr ""
+msgstr "Heavily modified WB 2015"
 
 #: lu_int_wms.489
 msgid "eau_new_Hydromorphologischer_Zustand_2009"
-msgstr ""
+msgstr "Hydromorphological status 2009"
 
 #: lu_int_wms.490
 msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)_2010"
-msgstr ""
+msgstr "HQ extreme [low probability] 2010"
 
 #: lu_int_wms.491
 msgid "eau_new_HQextrem_merged_2010"
-msgstr ""
+msgstr "HQ extreme [floods with a low probability] 2010"
 
 #: lu_int_wms.492
 msgid "eau_new_Lufttemperatur"
-msgstr ""
+msgstr "Air temperature"
 
 #: lu_int_wms.493
 msgid "eau_new_Wassertiefe_-_HQ_extrem_(usage_interne)"
-msgstr ""
+msgstr "Extreme flood event"
 
 #: lu_int_wms.494
 msgid "eau_new_UeSG_10-jaehrlich_(usage_interne)"
-msgstr ""
+msgstr "Floodplain 10 year flood"
 
 #: l_wmts.495
 msgid "feuilles_cadastrales_eau"
@@ -1586,11 +1587,11 @@ msgstr ""
 
 #: lu_int_wms.496
 msgid "eau_new_Trinkwasserbehaelter"
-msgstr ""
+msgstr "Drinking water tanks"
 
 #: lu_int_wms.497
 msgid "eau_new_Kilometrierung_sekundaere_Gewaesser"
-msgstr ""
+msgstr "Measurement affluent watercourses"
 
 #: l_wmts.498
 msgid "sections_cadastrales_eau"
@@ -1602,15 +1603,15 @@ msgstr ""
 
 #: lu_int_wms.500
 msgid "eau_new_Oberflaechenwasserkoerper_2009"
-msgstr ""
+msgstr "Surface water bodies 2009"
 
 #: lu_int_wms.501
 msgid "eau_new_Gewaesserentwicklungsfaehigkeit_2009_(usage_interne)"
-msgstr ""
+msgstr "Development capacity 2009"
 
 #: lu_int_wms.502
 msgid "eau_new_Grundwasserkoerper_2009"
-msgstr ""
+msgstr "Groundwater bodies 2009"
 
 #: lu_int_wms.503
 msgid "parcels_labels_eau"
@@ -1619,7 +1620,7 @@ msgstr ""
 #: lu_int_wms.504
 msgid ""
 "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
-msgstr ""
+msgstr "Risk assessment of the WB to reach good quantitative status "
 
 #: group.505
 msgid "flurstucke_grundstucke_eau"
@@ -1639,323 +1640,323 @@ msgstr ""
 
 #: group.509
 msgid "eau_new_Risikobeurteilung_2021"
-msgstr ""
+msgstr "Risk assessment 2021"
 
 #: group.510
 msgid "eau_new_Trinkwasser"
-msgstr ""
+msgstr "Drinking water"
 
 #: lu_int_wms.511
 msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)_2010"
-msgstr ""
+msgstr "HQ10 [high probability] 2010"
 
 #: lu_int_wms.512
 msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
-msgstr ""
+msgstr "Quantitative status of the WB 2009"
 
 #: l_wmts.513
 msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
-msgstr ""
+msgstr "HQ extreme [low probability]"
 
 #: lu_int_wms.514
 msgid "eau_new_Typologie_Oberflaechengewasser_2009"
-msgstr ""
+msgstr "Surface water typology 2009"
 
 #: lu_int_wms.515
 msgid "eau_new_Grundwasserkoerper_2015"
-msgstr ""
+msgstr "Ground water bodies 2015"
 
 #: lu_int_wms.516
 msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)_2010"
-msgstr ""
+msgstr "HQ100 [medium probability] 2010"
 
 #: lu_int_wms.517
 msgid "eau_new_Niederschlag"
-msgstr ""
+msgstr "Precipitation"
 
 #: lu_int_wms.518
 msgid "eau_new_Schneehoehe"
-msgstr ""
+msgstr "Snow height"
 
 #: group.519
 msgid "eau_new_Gewaessernetz"
-msgstr ""
+msgstr "Hydrography"
 
 #: group.520
 msgid "eau_new_Fischerei"
-msgstr ""
+msgstr "Fishing service"
 
 #: lu_int_wms.521
 msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
-msgstr ""
+msgstr "Sensitive areas [Urban waste water treatment directive]"
 
 #: group.522
 msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
-msgstr ""
+msgstr "Project flood risk maps 2013"
 
 #: group.523
 msgid "eau_new_Oberflaechengewaesser_2021"
-msgstr ""
+msgstr "Surface waters 2021"
 
 #: group.524
 msgid "eau_new_Messstationen"
-msgstr ""
+msgstr "Gauging stations"
 
 #: lu_int_wms.525
 msgid "eau_new_Wassertiefe_-_HQ_10_(usage_interne)"
-msgstr ""
+msgstr "10 year flood depth"
 
 #: lu_int_wms.526
 msgid "eau_new_Oekologischer_Zustand_2009"
-msgstr ""
+msgstr "Ecological status 2009"
 
 #: group.527
 msgid "eau_new_Klimatologische_Messstationen"
-msgstr ""
+msgstr "Precipitation measurement"
 
 #: group.528
 msgid "eau_new_Historische_Ueberschwemmungsgebiete"
-msgstr ""
+msgstr "Historic floodplains"
 
 #: group.529
 msgid "eau_new_Projekt_Hochwassergefahrenkarten_2013"
-msgstr ""
+msgstr "Project flood hazard maps 2013"
 
 #: lu_int_wms.530
 msgid "eau_new_Luftfeucht"
-msgstr ""
+msgstr "Air humidity"
 
 #: lu_int_wms.531
 msgid "eau_new_Luftdruck"
-msgstr ""
+msgstr "Air pressure"
 
 #: lu_int_wms.532
 msgid "eau_new_Globalstrahlung"
-msgstr ""
+msgstr "Global radiation "
 
 #: lu_int_wms.533
 msgid "eau_new_Trinkwasserknappheit_(Zustand_orange)"
-msgstr ""
+msgstr "Drinking water shortage (level \"orange\")"
 
 #: lu_int_wms.534
 msgid "eau_new_Wassertiefe_-_HQ_100_(usage_interne)"
-msgstr ""
+msgstr "100 year flood depth"
 
 #: lu_int_wms.535
 msgid "eau_new_Betrachtungsraeume_2015"
-msgstr ""
+msgstr "Catchment areas 2015"
 
 #: lu_int_wms.536
 msgid "eau_new_Bodentemperatur"
-msgstr ""
+msgstr "Soil temperature"
 
 #: group.537
 msgid "eau_new_Zusaetzliche_Informationen"
-msgstr ""
+msgstr "Additional Informations"
 
 #: group.538
 msgid "eau_new_Oberflaechengewaesser_2009"
-msgstr ""
+msgstr "Surface waters 2009"
 
 #: lu_int_wms.539
 msgid "eau_new_Chemischer_Zustand_2015"
-msgstr ""
+msgstr "Chemical status 2015"
 
 #: lu_int_wms.540
 msgid "eau_new_Oekologischer_Zustand_2015"
-msgstr ""
+msgstr "Ecological status 2015"
 
 #: lu_int_wms.541
 msgid "eau_new_Temporaer_fliessende_Baeche"
-msgstr ""
+msgstr "Temporary watercourses"
 
 #: group.542
 msgid "eau_new_Messstationen_(WRRL)"
-msgstr ""
+msgstr "Monitoring stations [WFD]"
 
 #: lu_int_wms.543
 msgid "eau_new_HQ10_merged_2010"
-msgstr ""
+msgstr "HQ10 [floods with a high probability] 2010"
 
 #: lu_int_wms.544
 msgid "eau_new_Kilometrierung_primaere_Gewaesser"
-msgstr ""
+msgstr "Measurement main watercourses"
 
 #: lu_int_wms.545
 msgid "eau_new_Sekundaere_Gewaesser"
-msgstr ""
+msgstr "Affluent watercourses"
 
 #: lu_int_wms.546
 msgid "eau_new_Fischereiabschnitte"
-msgstr ""
+msgstr "Fishing sections"
 
 #: lu_int_wms.547
 msgid "eau_new_WRRL_-_Ueberblicksueberwachung"
-msgstr ""
+msgstr "WFD  - surveillance monitoring"
 
 #: lu_int_wms.548
 msgid "eau_new_Bohrungen"
-msgstr ""
+msgstr "Drills"
 
 #: lu_int_wms.549
 msgid "eau_new_Quellen"
-msgstr ""
+msgstr "Springs"
 
 #: lu_int_wms.550
 msgid "eau_new_HQ100_merged_2010"
-msgstr ""
+msgstr "HQ100 [floods with medium probability] 2010"
 
 #: lu_int_wms.551
 msgid "eau_new_Online_Messstationen"
-msgstr ""
+msgstr "Online stations"
 
 #: group.552
 msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
-msgstr ""
+msgstr "Quality elements of the ecological status 2015"
 
 #: group.553
 msgid "eau_new_Grundwasser_2021"
-msgstr ""
+msgstr "Groundwater 2021"
 
 #: lu_int_wms.554
 msgid "eau_new_Grundwasserleiter"
-msgstr ""
+msgstr "Aquifers"
 
 #: lu_int_wms.555
 msgid "eau_new_Chemischer_Zustand_der_WK_2015"
-msgstr ""
+msgstr "Chemical status of the WB 2015"
 
 #: lu_int_wms.556
 msgid "eau_new_UESG_Sauer_1995"
-msgstr ""
+msgstr "Floodplain Sauer 1995"
 
 #: lu_int_wms.557
 msgid "eau_new_Erheblich_veraenderte_OWK_2009"
-msgstr ""
+msgstr "Heavily modified SWB 2009"
 
 #: lu_int_wms.558
 msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
-msgstr ""
+msgstr "Natural basin"
 
 #: lu_int_wms.559
 msgid "eau_new_Einzugsgebiete"
-msgstr ""
+msgstr "Catchment areas"
 
 #: group.560
 msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
-msgstr ""
+msgstr "Water bodies [WB] status 2009"
 
 #: lu_int_wms.561
 msgid "eau_new_UESG_1983_-_Mosel"
-msgstr ""
+msgstr "Floodplain 1983 - Mosel"
 
 #: lu_int_wms.562
 msgid "eau_new_Feuchtgebiete_(usage_interne)"
-msgstr ""
+msgstr "Wetlands"
 
 #: lu_int_wms.563
 msgid "eau_new_Durchgaengigkeit"
-msgstr ""
+msgstr "Continuity"
 
 #: lu_int_wms.564
 msgid "eau_new_Kontrollpunkte_(usage_interne)"
-msgstr ""
+msgstr "Monitoring points"
 
 #: lu_int_wms.565
 msgid "eau_new_UESG_1993_(ausser_Mosel)"
-msgstr ""
+msgstr "Floodplain 1993 [without Mosel]"
 
 #: lu_int_wms.566
 msgid "eau_new_UESG_Alzette_1995"
-msgstr ""
+msgstr "Floodplain Alzette 1995"
 
 #: group.567
 msgid "eau_new_Schutzgebiete"
-msgstr ""
+msgstr "Protected sites"
 
 #: group.568
 msgid "eau_new_Gewaesserschutz"
-msgstr ""
+msgstr "Prevention of water pollution"
 
 #: lu_int_wms.569
 msgid "eau_new_Abwassersyndikate"
-msgstr ""
+msgstr "Waste water syndicats"
 
 #: lu_int_wms.570
 msgid "eau_new_Betrachtungsraeume_2009"
-msgstr ""
+msgstr "Catchment areas 2009"
 
 #: l_wmts.571
 msgid "eau_new_HQextrem_merged_2013"
-msgstr ""
+msgstr "HQ extreme (floods with a low probability)"
 
 #: lu_int_wms.572
 msgid "eau_new_Klaeranlagen"
-msgstr ""
+msgstr "Waste water treatment plants"
 
 #: lu_int_wms.573
 msgid "eau_new_Makrophyten_2015"
-msgstr ""
+msgstr "Macrophytes 2015"
 
 #: lu_int_wms.574
 msgid "eau_new_Fische_2015"
-msgstr ""
+msgstr "Fish 2015"
 
 #: l_wmts.575
 msgid "eau_new_HQ10_merged_2013"
-msgstr ""
+msgstr "HQ10 [floods with a high probability]"
 
 #: group.576
 msgid "eau_new_Grundwasser_2015"
-msgstr ""
+msgstr "Groundwater 2015"
 
 #: lu_int_wms.577
 msgid "eau_new_Bauwerke"
-msgstr ""
+msgstr "Buildings"
 
 #: group.578
 msgid "eau_new_Oberflaechengewaesser_Messstationen"
-msgstr ""
+msgstr "Surface water stations"
 
 #: group.579
 msgid "eau_new_Grundwasser_Messstationen"
-msgstr ""
+msgstr "Groundwater monitoring stations"
 
 #: group.580
 msgid "eau_new_Wasserrahmenrichtlinie"
-msgstr ""
+msgstr "Water framework directive [WFD]"
 
 #: lu_int_wms.581
 msgid "eau_new_Grundwasserabhaengige_terrestriche_Oekosysteme"
-msgstr ""
+msgstr "Groundwater Dependent Terrestrial Ecosystems"
 
 #: group.582
 msgid "eau_new_Bewirtschaftungsplan_2009"
-msgstr ""
+msgstr "River Basin Management Plan 2009"
 
 #: lu_int_wms.583
 msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet"
-msgstr ""
+msgstr "Groundwater [WFD] - Quantitative monitoring"
 
 #: lu_int_wms.584
 msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet"
-msgstr ""
+msgstr "Groundwater [WFD] - Qualitative monitoring"
 
 #: lu_int_wms.585
 msgid "eau_new_Kanal_-__Muehlgraben"
-msgstr ""
+msgstr "Channel - Millchannel"
 
 #: group.586
 msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
-msgstr ""
+msgstr "Water bodies  [WB] status 2015"
 
 #: group.587
 msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
-msgstr ""
+msgstr "Project flood hazard maps 2010"
 
 #: group.588
 msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
-msgstr ""
+msgstr "Water scarcity plan"
 
 #: lu_int_wms.589
 msgid "eau_new_Waermepumpe_(usage_interne)"
@@ -1963,67 +1964,67 @@ msgstr ""
 
 #: group.590
 msgid "eau_new_Bewirtschaftungsplan_2015"
-msgstr ""
+msgstr "River Basin Management Plan 2015"
 
 #: lu_int_wms.591
 msgid "eau_new_Alluvialer_Grundwasserspiegel"
-msgstr ""
+msgstr "Alluvial groundwater level"
 
 #: group.592
 msgid "eau_new_Oberflaechengewaesser_2015"
-msgstr ""
+msgstr "Surface waters 2015"
 
 #: group.593
 msgid "eau_new_Nitratrichtlinie"
-msgstr ""
+msgstr "Nitrates directive"
 
 #: lu_int_wms.594
 msgid "eau_new_Nitratrichtlinie_Messstationen"
-msgstr ""
+msgstr "Nitrates Directive"
 
 #: group.595
 msgid "eau_new_Grundwasser"
-msgstr ""
+msgstr "Groundwater"
 
 #: group.596
 msgid "eau_new_Gewaesser"
-msgstr ""
+msgstr "Watercourses"
 
 #: group.597
 msgid "eau_new_Hydrologische_Messstationen"
-msgstr ""
+msgstr "Hydrological stations"
 
 #: lu_int_wms.598
 msgid "eau_new_Wasserstand"
-msgstr ""
+msgstr "Water level"
 
 #: group.599
 msgid "eau_new_Ueberschwemmungsgebiete_(UESG)"
-msgstr ""
+msgstr "Floodplains"
 
 #: group.600
 msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
-msgstr ""
+msgstr "Standing waters"
 
 #: group.601
 msgid "eau_new_Historische_Karten_(usage_interne)"
-msgstr ""
+msgstr "Historic maps"
 
 #: lu_int_wms.602
 msgid "eau_new_Gesamtzustand_2015"
-msgstr ""
+msgstr "Global status 2015"
 
 #: lu_int_wms.603
 msgid "eau_new_Badegewaesser"
-msgstr ""
+msgstr "Bathing Waters"
 
 #: lu_int_wms.604
 msgid "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise"
-msgstr ""
+msgstr " ZPS ongoing public procedure"
 
 #: lu_int_wms.605
 msgid "eau_new_Zustand_der_WK_2009"
-msgstr ""
+msgstr "Status of the WB 2009"
 
 #: group.606
 msgid "tourisme_poi"
@@ -2031,7 +2032,7 @@ msgstr ""
 
 #: lu_int_wms.607
 msgid "ont_poi_3"
-msgstr ""
+msgstr "Nature & excursions"
 
 #: lu_int_wms.608
 msgid "lenoz_lmg"
@@ -2043,7 +2044,7 @@ msgstr ""
 
 #: lu_int_wms.610
 msgid "ont_poi_5"
-msgstr ""
+msgstr "Sports & leisure"
 
 #: lu_int_wms.611
 msgid "lenoz_creches"
@@ -2051,11 +2052,11 @@ msgstr ""
 
 #: lu_int_wms.612
 msgid "ont_poi_7"
-msgstr ""
+msgstr "Shopping"
 
 #: lu_int_wms.613
 msgid "ont_poi_6"
-msgstr ""
+msgstr "Family & Kids"
 
 #: lu_int_wms.614
 msgid "lenoz_Banken"
@@ -2087,7 +2088,7 @@ msgstr ""
 
 #: group.621
 msgid "asta_esp_group"
-msgstr ""
+msgstr "Ecological focus areas "
 
 #: lu_int_wms.622
 msgid "lenoz_Ärzte"
@@ -2107,19 +2108,19 @@ msgstr ""
 
 #: lu_int_wms.626
 msgid "asta_esp_lisiere"
-msgstr ""
+msgstr "forest edges"
 
 #: lu_int_wms.627
 msgid "asta_esp_esp"
-msgstr ""
+msgstr "landscape features"
 
 #: lu_int_wms.628
 msgid "ont_poi"
-msgstr ""
+msgstr "Eat & Sleep"
 
 #: lu_int_wms.629
 msgid "ont_poi_2"
-msgstr ""
+msgstr "Art & culture"
 
 #: lu_int_wms.630
 msgid "parcelles_etat"
@@ -2127,7 +2128,7 @@ msgstr ""
 
 #: lu_int_wms.631
 msgid "mobi_pickup"
-msgstr ""
+msgstr "«Pickup» stations"
 
 #: group.632
 msgid "logt"
@@ -2143,11 +2144,11 @@ msgstr ""
 
 #: l_wmts.635
 msgid "asta_flik_parcels_2015"
-msgstr ""
+msgstr "FLIK Parcels 2015 (prov)"
 
 #: lu_int_wms.636
 msgid "ont_poi_4"
-msgstr ""
+msgstr "Go out"
 
 #: lu_int_wms.637
 msgid "anf_carte_simpl_forets"
@@ -2155,4 +2156,28 @@ msgstr ""
 
 #: lu_int_wms.638
 msgid "logt_bauluecken"
+msgstr "Baulücken"
+
+#: l_wmts.639
+msgid "streets_jpeg"
+msgstr ""
+
+#: l_wmts.640
+msgid "topo_bw_jpeg"
+msgstr ""
+
+#: group.641
+msgid "bglayers"
+msgstr ""
+
+#: l_wmts.642
+msgid "topogr_global"
+msgstr ""
+
+#: l_wmts.643
+msgid "orthogr_2013_global"
+msgstr ""
+
+#: l_wmts.644
+msgid "basemap_global"
 msgstr ""

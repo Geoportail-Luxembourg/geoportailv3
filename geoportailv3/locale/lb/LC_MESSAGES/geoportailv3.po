@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"POT-Creation-Date: 2015-01-09 16:00+0100\n"
+"POT-Creation-Date: 2015-01-13 11:52+0100\n"
 "PO-Revision-Date: 2015-01-09 14:18+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/projects/p/"
@@ -24,11 +24,11 @@ msgstr "Intern WMS Couch"
 msgid "Internal WMS layers"
 msgstr ""
 
-#: geoportailv3/models.py:40
+#: geoportailv3/models.py:41
 msgid "External WMS layer"
 msgstr ""
 
-#: geoportailv3/models.py:41
+#: geoportailv3/models.py:42
 msgid "External WMS layers"
 msgstr ""
 
@@ -48,6 +48,10 @@ msgstr ""
 msgid "Collection ID"
 msgstr ""
 
-#: geoportailv3/models.py:54
+#: geoportailv3/models.py:37
+msgid "REST url"
+msgstr ""
+
+#: geoportailv3/models.py:55
 msgid "Category ID"
 msgstr ""

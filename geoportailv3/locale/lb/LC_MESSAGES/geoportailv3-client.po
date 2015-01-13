@@ -14,6 +14,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: geoportailv3/templates/index.html
+msgid "+ Add layers"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "Catalog"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid ""
+"My Layers\n"
+"                <span ng-if=\"mainCtrl.selectedLayers.length > "
+"0\">({{mainCtrl.selectedLayers.length}})</span>"
+msgstr ""
+
+#: geoportailv3/templates/index.html
 msgid "draw"
 msgstr ""
 
