@@ -94,6 +94,7 @@ app.MainController.prototype.setMap_ = function() {
  */
 app.MainController.prototype.updateSelectedLayers_ = function() {
   var items_ = this['map'].getLayers().getArray().slice().reverse();
+  // Exclude the current background layer
   items_.pop();
   this['selectedLayers'] = items_;
 };
