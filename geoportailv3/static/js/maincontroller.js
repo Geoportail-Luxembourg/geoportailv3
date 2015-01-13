@@ -71,10 +71,7 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSidebar_($scope);
-
-  $scope.$watchCollection(goog.bind(function() {
-    return this['map'].getLayers().getArray();
-  }, this), goog.bind(this.updateSelectedLayers_, this));
+  this.manageSelectedLayers_($scope);
 };
 
 
@@ -95,19 +92,29 @@ app.MainController.prototype.setMap_ = function() {
 
 
 /**
+ * @param {angular.Scope} scope Scope.
  * @private
  */
-app.MainController.prototype.updateSelectedLayers_ = function() {
-  // empty the selectedLayers array
-  this['selectedLayers'].length = 0;
+app.MainController.prototype.manageSelectedLayers_ = function(scope) {
 
-  var layers = this['map'].getLayers().getArray();
-  // create a reversed shallow copy
-  layers = layers.slice().reverse();
-  // Exclude the current background layer
-  for (i = layers.length - 1; i >= 1; i--) {
-    this['selectedLayers'].push(layers[i]);
+  function updateSelectedLayers_() {
+    // empty the selectedLayers array
+    this['selectedLayers'].length = 0;
+
+    var layers = this['map'].getLayers().getArray();
+    // create a reversed shallow copy
+    layers = layers.slice().reverse();
+    // Exclude the current background layer
+    var i;
+    var len = layers.length;
+    for (i = len - 1; i >= 1; i--) {
+      this['selectedLayers'].push(layers[i]);
+    }
   }
+
+  scope.$watchCollection(goog.bind(function() {
+    return this['map'].getLayers().getArray();
+  }, this), goog.bind(updateSelectedLayers_, this));
 };
 
 
