@@ -51,18 +51,25 @@
             ✕
           </button>
           <ul class="nav nav-tabs nav-justified">
-            <li role="presentation">
-              <a href="#mylayers" ng-click="mainCtrl.showTab($event);">My Layers</a>
-            </li>
             <li role="presentation" class="active">
-              <a href="#catalog" ng-click="mainCtrl.showTab($event);">Catalog</a>
+              <a href="#mylayers" data-toggle="tab">My Layers
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+              </a>
+            </li>
+            <li role="presentation">
+              <a href="#catalog" data-toggle="tab">Catalog</a>
             </li>
           </ul>
           <div class="tab-content">
-            <div id="mylayers" class="tab-pane">
-              mylayers
+            <div id="mylayers" class="tab-pane active">
+              <app-layermanager app-layermanager-map="::mainCtrl.map"
+                app-layermanager-layers="::mainCtrl.selectedLayers">
+              </app-layermanager>
+              <div class="text-center">
+                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');">+ Add layers</button>
+              </div>
             </div>
-            <div id="catalog" class="tab-pane active">
+            <div id="catalog" class="tab-pane">
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
             </div>
           </div>
@@ -144,6 +151,7 @@
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
+         appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
        })();
     </script>
   </body>
