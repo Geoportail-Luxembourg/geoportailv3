@@ -63,6 +63,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
    */
   this['infosOpen'] = false;
 
+  /**
+   * @type {Array}
+   */
+  this['selectedLayers'] = [];
+
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSidebar_($scope);
@@ -93,10 +98,16 @@ app.MainController.prototype.setMap_ = function() {
  * @private
  */
 app.MainController.prototype.updateSelectedLayers_ = function() {
-  var items_ = this['map'].getLayers().getArray().slice().reverse();
+  // empty the selectedLayers array
+  this['selectedLayers'].length = 0;
+
+  var layers = this['map'].getLayers().getArray();
+  // create a reversed shallow copy
+  layers = layers.slice().reverse();
   // Exclude the current background layer
-  items_.pop();
-  this['selectedLayers'] = items_;
+  for (i = layers.length - 1; i >= 1; i--) {
+    this['selectedLayers'].push(layers[i]);
+  }
 };
 
 
