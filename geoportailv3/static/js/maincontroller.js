@@ -101,12 +101,10 @@ app.MainController.prototype.manageSelectedLayers_ = function(scope) {
     // empty the selectedLayers array
     this['selectedLayers'].length = 0;
 
-    var layers = this['map'].getLayers().getArray();
-    // create a reversed shallow copy
-    layers = layers.slice().reverse();
-    // Exclude the current background layer
     var i;
+    var layers = this['map'].getLayers().getArray();
     var len = layers.length;
+    // Current background layer is excluded
     for (i = len - 1; i >= 1; i--) {
       this['selectedLayers'].push(layers[i]);
     }
