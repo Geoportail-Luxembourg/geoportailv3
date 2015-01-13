@@ -63,7 +63,7 @@
           <div class="tab-content">
             <div id="mylayers" class="tab-pane active">
               <app-layermanager app-layermanager-map="::mainCtrl.map"
-                app-layermanager-layers="mainCtrl.selectedLayers">
+                app-layermanager-layers="::mainCtrl.selectedLayers">
               </app-layermanager>
               <div class="text-center">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');">+ Add layers</button>
