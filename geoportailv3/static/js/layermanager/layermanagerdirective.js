@@ -15,7 +15,7 @@ app.layermanagerDirective = function(appLayermanagerTemplateUrl) {
       'layers': '=appLayermanagerLayers'
     },
     controller: 'AppLayermanagerController',
-    controllerAs: 'layermanagerCtrl',
+    controllerAs: 'ctrl',
     bindToController: true,
     templateUrl: appLayermanagerTemplateUrl
   };
