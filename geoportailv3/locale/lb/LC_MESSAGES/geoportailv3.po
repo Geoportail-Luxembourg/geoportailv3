@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"POT-Creation-Date: 2015-01-13 11:52+0100\n"
+"POT-Creation-Date: 2015-01-13 16:55+0100\n"
 "PO-Revision-Date: 2015-01-09 14:18+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/projects/p/"
