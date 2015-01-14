@@ -1,8 +1,11 @@
-<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.uid}}"
+<a data-toggle="collapse" data-parent="#catalog-{{::layertreenodeCtrl.parentUid}}"
    href="#catalog-{{::layertreenodeCtrl.uid}}"
-   ng-if="::layertreenodeCtrl.node.children">
+   ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
   {{::layertreenodeCtrl.node.name}}
 </a>
+<span ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
+  {{::layertreenodeCtrl.node.name}}
+</span>
 <div ng-if="::!layertreenodeCtrl.node.children">
   <a class="btn btn-default" ng-click="catalogCtrl.getInfo(node, layer)">i</a>
   {{::layertreenodeCtrl.node.name}}
@@ -10,7 +13,8 @@
       ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
 </div>
 <ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="::layertreenodeCtrl.node.children"
-  class="collapse">
+  ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
   <li ng-repeat="node in ::layertreenodeCtrl.node.children"
-      ngeo-layertreenode="::node" ngeo-layertreenode-map="::layertreenodeCtrl.map"></li>
+      ngeo-layertreenode="::node" ngeo-layertreenode-map="::layertreenodeCtrl.map"
+      ng-class="(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''">panel"></li>
 </ul>

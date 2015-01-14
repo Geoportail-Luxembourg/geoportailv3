@@ -57,11 +57,30 @@
       }
     }
     ul.catalog {
-      .panel > a {
-        color: @primary-color;
-        background-color: @tertiary-color;
-        &:after {
-          border-top-color: @primary-color;
+      ul {
+        background-color: @secondary-color;
+      }
+      color: @tertiary-color;
+      a {
+        color: @tertiary-color;
+      }
+      > .panel {
+        > a {
+          color: @primary-color;
+          background-color: @tertiary-color;
+          &:after {
+            border-top-color: @primary-color;
+          }
+        }
+        > ul > li.panel > a {
+          &:before,
+          &:after {
+            background-color: @tertiary-color;
+          }
+          background-color: lighten(@secondary-color, 20%);
+          &[aria-expanded=true] {
+            background-color: @secondary-color;
+          }
         }
       }
     }

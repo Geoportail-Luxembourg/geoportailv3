@@ -1,23 +1,37 @@
 ul.catalog {
   padding: 10px;
 
+  ul {
+    list-style-type: none;
+    padding-left: 10px;
+  }
+  // no padding for the second level
+  > li > ul {
+    padding: 0;
+  }
+  > .panel > a {
+    text-transform: uppercase;
+  }
+
   .panel {
     border: 0;
     margin-bottom: 1px;
+    background-color: transparent;
     > a {
-      background-color: grey;
       display: block;
-      text-transform: uppercase;
       position: relative;
       padding: 5px 10px;
       &:hover {
-        color: white;
         text-decoration: none;
         &:after {
           border-top-color: white;
         }
       }
+    }
+  }
 
+  > li.panel {
+    > a {
       &:after {
         content: '';
         width: 0;
@@ -30,6 +44,9 @@ ul.catalog {
         right: 10px;
         top: 16px;
       }
+      &:hover {
+        color: white;
+      }
 
       &[aria-expanded=true] {
         color: white !important;
@@ -37,6 +54,34 @@ ul.catalog {
           border-top-color: transparent !important;
           border-bottom-color: white;
           top: 10px;
+        }
+      }
+    }
+    ul > li.panel {
+      > a {
+
+        &:after {
+          content: '';
+          display: block;
+          width: 17px;
+          height: 3px;
+          position: absolute;
+          top: 50%;
+          right: 10px;
+        }
+
+        &:before {
+          content: '';
+          display: block;
+          height: 17px;
+          width: 3px;
+          position: absolute;
+          top: 50%;
+          right: 17px;
+          margin-top: -7px;
+        }
+        &[aria-expanded=true]:before {
+          display: none;
         }
       }
     }
