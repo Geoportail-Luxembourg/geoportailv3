@@ -1,0 +1,56 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-01-14 16:16+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ./geoportailv3/models.py:19
+msgid "Internal WMS layer"
+msgstr ""
+
+#: ./geoportailv3/models.py:20
+msgid "Internal WMS layers"
+msgstr ""
+
+#: ./geoportailv3/models.py:41
+msgid "External WMS layer"
+msgstr ""
+
+#: ./geoportailv3/models.py:42
+msgid "External WMS layers"
+msgstr ""
+
+#: ./geoportailv3/models.py:33
+msgid "Url"
+msgstr ""
+
+#: ./geoportailv3/models.py:34
+msgid "Layers"
+msgstr ""
+
+#: ./geoportailv3/models.py:35
+msgid "Is a POI"
+msgstr ""
+
+#: ./geoportailv3/models.py:36
+msgid "Collection ID"
+msgstr ""
+
+#: ./geoportailv3/models.py:37
+msgid "REST url"
+msgstr ""
+
+#: ./geoportailv3/models.py:55
+msgid "Category ID"
+msgstr ""
