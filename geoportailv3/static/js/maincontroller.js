@@ -63,9 +63,15 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
    */
   this['infosOpen'] = false;
 
+  /**
+   * @type {Array}
+   */
+  this['selectedLayers'] = [];
+
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSidebar_($scope);
+  this.manageSelectedLayers_($scope);
 };
 
 
@@ -82,6 +88,31 @@ app.MainController.prototype.setMap_ = function() {
       zoom: 8
     })
   });
+};
+
+
+/**
+ * @param {angular.Scope} scope Scope.
+ * @private
+ */
+app.MainController.prototype.manageSelectedLayers_ = function(scope) {
+
+  function updateSelectedLayers_() {
+    // empty the selectedLayers array
+    this['selectedLayers'].length = 0;
+
+    var i;
+    var layers = this['map'].getLayers().getArray();
+    var len = layers.length;
+    // Current background layer is excluded
+    for (i = len - 1; i >= 1; i--) {
+      this['selectedLayers'].push(layers[i]);
+    }
+  }
+
+  scope.$watchCollection(goog.bind(function() {
+    return this['map'].getLayers().getArray();
+  }, this), goog.bind(updateSelectedLayers_, this));
 };
 
 
@@ -133,12 +164,11 @@ app.MainController.prototype.manageSidebar_ = function(scope) {
 
 
 /**
- * @param {jQuery.event} $event Event.
+ * @param {string} selector JQuery selector for the tab link.
  * @export
  */
-app.MainController.prototype.showTab = function($event) {
-  $event.preventDefault();
-  $($event.target).tab('show');
+app.MainController.prototype.showTab = function(selector) {
+  $(selector).tab('show');
 };
 
 
