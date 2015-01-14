@@ -48,7 +48,7 @@ help:
 	@echo
 
 .PHONY: build
-build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web update-translations compile-js-catalog build-server
+build: $(SITE_PACKAGES)/geoportailv3.egg-link build-web compile-js-catalog build-server
 
 .PHONY: check
 check: flake8 lint build-web
@@ -58,7 +58,6 @@ clean:
 	rm -f .build/node_modules.timestamp
 	rm -f .build/dev-requirements.timestamp
 	rm -f .build/venv.timestamp
-	rm -f geoportailv3/locale/*.pot
 	rm -rf geoportailv3/static/build
 	rm -f $(TEMPLATE_FILES:.in=)
 	rm -f $(MAKO_FILES:.mako=)

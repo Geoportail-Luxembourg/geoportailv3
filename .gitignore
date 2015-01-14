@@ -15,7 +15,6 @@ project.yaml
 mapserver/c2cgeoportal.map
 *.egg-info/
 geoportailv3/locale/*/LC_MESSAGES/*.mo
-geoportailv3/locale/*.pot
 print/config.yaml
 print/templates/print.mako
 deploy/hooks/post-restore-database
