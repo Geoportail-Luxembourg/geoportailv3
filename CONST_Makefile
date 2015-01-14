@@ -159,7 +159,7 @@ geoportailv3/static/build/locale/lb/geoportailv3.json: geoportailv3/locale/lb/LC
 	mkdir -p $(dir $@)
 	node tasks/compile-catalog $+ > $@
 
-geoportailv3/static/build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) .build/externs/angular-1.3.js .build/externs/angular-1.3-q.js .build/externs/angular-1.3-http-promise.js .build/node_modules.timestamp
+geoportailv3/static/build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) .build/externs/angular-1.3.js .build/externs/angular-1.3-q.js .build/externs/angular-1.3-http-promise.js .build/externs/jquery-1.9.js .build/node_modules.timestamp
 	mkdir -p $(dir $@)
 	node tasks/build.js $< $@
 
