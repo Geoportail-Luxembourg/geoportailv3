@@ -1,7 +1,16 @@
+# 
+# Translators:
+# patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
+"Project-Id-Version: portail\n"
+"PO-Revision-Date: 2015-01-13 15:56+0000\n"
+"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: geoportailv3/templates/index.html
 msgid "+ Add layers"
@@ -13,7 +22,7 @@ msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "draw"
-msgstr ""
+msgstr "Zeichnen"
 
 #: geoportailv3/templates/index.html
 msgid "infos"
