@@ -1,41 +1,34 @@
-# 
-# Translators:
-# patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-01-13 15:50+0000\n"
-"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: Luxembourgish (http://www.transifex.com/projects/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "Language: lb\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: theme.101
 msgid "preemption"
-msgstr ""
+msgstr "Sektioun"
 
 #: theme.102
 msgid "mobiliteit"
-msgstr ""
+msgstr "Park + Ride"
 
 #: theme.103
 msgid "tourisme_mobile"
-msgstr ""
+msgstr "Tourismus"
 
 #: theme.104
 msgid "topo_mobile"
-msgstr ""
+msgstr "Topographie"
 
 #: theme.105
 msgid "emwelt"
-msgstr ""
+msgstr "Emwelt"
 
 #: theme.106
 msgid "theme-test"
-msgstr ""
+msgstr "Landesplanung"
 
 #: theme.107 lu_ext_wms.292
 msgid "nordstad"
@@ -51,15 +44,15 @@ msgstr ""
 
 #: theme.110
 msgid "main_mobile"
-msgstr ""
+msgstr "Allgemeng"
 
 #: theme.111
 msgid "user_content_mobile"
-msgstr ""
+msgstr "Kaarten vun Benotzer"
 
 #: theme.112
 msgid "api"
-msgstr ""
+msgstr "Camping"
 
 #: theme.113
 msgid "arbed"
@@ -67,15 +60,15 @@ msgstr ""
 
 #: theme.114 group.255
 msgid "commande"
-msgstr ""
+msgstr "Municipality"
 
 #: theme.115
 msgid "ortho_mobile"
-msgstr ""
+msgstr "Loftbiller"
 
 #: theme.116
 msgid "tourisme"
-msgstr ""
+msgstr "Tourismus"
 
 #: theme.117
 msgid "main"
@@ -83,19 +76,19 @@ msgstr ""
 
 #: theme.118
 msgid "cadastre_mobile"
-msgstr ""
+msgstr "Kadaster"
 
 #: theme.119
 msgid "emwelt_mobile"
-msgstr ""
+msgstr "Emwelt"
 
 #: theme.120
 msgid "eau_mobile"
-msgstr ""
+msgstr "Waasser"
 
 #: theme.121
 msgid "remich"
-msgstr ""
+msgstr "PAG Remich"
 
 #: theme.122
 msgid "test"
@@ -107,7 +100,7 @@ msgstr ""
 
 #: theme.124
 msgid "agriculture"
-msgstr ""
+msgstr "Landwirtschaft"
 
 #: theme.125
 msgid "preizerdaul"
@@ -115,15 +108,15 @@ msgstr ""
 
 #: theme.126
 msgid "wellenstein"
-msgstr ""
+msgstr "wellenstein_link_title"
 
 #: theme.127
 msgid "at_mobile"
-msgstr ""
+msgstr "Raumplanung"
 
 #: theme.128
 msgid "eau"
-msgstr ""
+msgstr "Moossen"
 
 #: theme.129
 msgid "lintgen"
@@ -139,7 +132,7 @@ msgstr ""
 
 #: group.132
 msgid "emwelt_biotop_kadaster_mobile"
-msgstr ""
+msgstr "Pufferzone"
 
 #: lu_int_wms.133
 msgid "mobiliteit_pr"
@@ -159,19 +152,19 @@ msgstr "Loftbiller vun 1963 (1:20k)"
 
 #: l_wmts.137
 msgid "emwelt_biotop_kadaster_f_mobile"
-msgstr ""
+msgstr "Flächenelementer ouni Bongerten"
 
 #: l_wmts.138
 msgid "emwelt_biotop_kadaster_b_mobile"
-msgstr ""
+msgstr "Pufferzone"
 
 #: l_wmts.139
 msgid "emwelt_biotop_kadaster_p_mobile"
-msgstr ""
+msgstr "Punktelementer"
 
 #: l_wmts.140
 msgid "emwelt_biotop_kadaster_s_mobile"
-msgstr ""
+msgstr "Bongerten"
 
 #: group.141
 msgid "group_nordstad"
@@ -179,7 +172,7 @@ msgstr ""
 
 #: group.142
 msgid "env_natura2000"
-msgstr ""
+msgstr "Natura 2000"
 
 #: lu_int_wms.143
 msgid "arrets_bus"
@@ -239,11 +232,11 @@ msgstr "Velosweeër"
 
 #: group.157
 msgid "eau_luft_sat_bilder"
-msgstr ""
+msgstr "eau_link_title"
 
 #: group.158
 msgid "env_obs"
-msgstr ""
+msgstr "Biotoptypenkartéirung 1999"
 
 #: l_wmts.159
 msgid "ac_wellenstein_pag_volumes_batiments"
@@ -259,11 +252,11 @@ msgstr ""
 
 #: group.162
 msgid "adressen"
-msgstr ""
+msgstr "Adressen"
 
 #: group.163
 msgid "env_bruit"
-msgstr ""
+msgstr "Fluchhafen 2011 (LNGT)"
 
 #: lu_int_wms.164
 msgid "env_corine"
@@ -275,19 +268,19 @@ msgstr "aner Qualitéitswéër"
 
 #: group.166
 msgid "eau_zones_protegees"
-msgstr ""
+msgstr "Schutzgebidder"
 
 #: group.167
 msgid "mittal_group"
-msgstr ""
+msgstr "Landesplanung"
 
 #: group.168
 msgid "anf_data"
-msgstr ""
+msgstr "Revéieren vun der Naturverwaltung"
 
 #: group.169
 msgid "oberflachendarstellung_mobile"
-msgstr ""
+msgstr "Uewerflächenduerstellung"
 
 #: l_wmts.170
 msgid "TOPO_CARTESHISTO_1964_RGB"
@@ -299,7 +292,7 @@ msgstr "Vulleschutzgebidder Natura 2000"
 
 #: group.172
 msgid "flurstucke_grundstucke_prof"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: l_wmts.173
 msgid "ivv_grosslagen"
@@ -315,7 +308,7 @@ msgstr "Gememgeweeër"
 
 #: group.176
 msgid "luft_und_satellitenbilder"
-msgstr ""
+msgstr "Loft a Satellitebilder"
 
 #: group.177
 msgid "tour_sentiers_locaux"
@@ -323,7 +316,7 @@ msgstr "Lokal Wanderweeër (nët vun der DG Tourismus ënnerhalen)"
 
 #: group.178
 msgid "anf_secteurs_ecologiques_group"
-msgstr ""
+msgstr "Ökologesch Gebidder"
 
 #: l_wmts.179
 msgid "roads"
@@ -335,11 +328,11 @@ msgstr "Zonen"
 
 #: group.181
 msgid "env_bruit_axes_ferroviaires"
-msgstr ""
+msgstr "Eisebunn 2011 (LDEN)"
 
 #: group.182
 msgid "eau_morphometrie"
-msgstr ""
+msgstr "Morphologie"
 
 #: l_wmts.183
 msgid "TOPO_CARTESHISTO_1990_50k"
@@ -347,15 +340,15 @@ msgstr "Topografesch Kaart 1:50k 1990"
 
 #: group.184
 msgid "eau_grenzen"
-msgstr ""
+msgstr "Grenzen"
 
 #: group.185
 msgid "unwelt_biologie_geologie"
-msgstr ""
+msgstr "Ëmwelt Biologie a Geologie"
 
 #: l_wmts.186
 msgid "topo_decoupage_tc"
-msgstr ""
+msgstr "Blaatschnett Regional Kaart"
 
 #: lu_ext_wms.187
 msgid "tour_mullerthal_trail"
@@ -363,7 +356,7 @@ msgstr "Mullerthal Trail"
 
 #: group.188
 msgid "env_bruit_air"
-msgstr ""
+msgstr "Fluchhafen 2011 (LNGT)"
 
 #: lu_int_wms.189
 msgid "PRM_PCN"
@@ -379,15 +372,15 @@ msgstr ""
 
 #: lu_int_wms.192
 msgid "PRM"
-msgstr ""
+msgstr "PRE"
 
 #: l_wmts.193
 msgid "topo_decoupage_5000"
-msgstr ""
+msgstr "Blaatschnett Regional Kaart"
 
 #: group.194
 msgid "infrastrucktur_une_kommunikation"
-msgstr ""
+msgstr "Infrastruktur a Kommunikatioun"
 
 #: l_wmts.195
 msgid "topo_5k"
@@ -395,7 +388,7 @@ msgstr "Topografesch Kaart 1:5000"
 
 #: group.196
 msgid "verkehrsnetze"
-msgstr ""
+msgstr "Verkéiersnetzer"
 
 #: lu_ext_wms.197
 msgid "tour_sentiers_ajl"
@@ -407,7 +400,7 @@ msgstr "Temporäre Layer"
 
 #: group.199
 msgid "asta_prof"
-msgstr ""
+msgstr "Ökologisch wertvolle Flächen "
 
 #: l_wmts.200
 msgid "buildings"
@@ -415,7 +408,7 @@ msgstr ""
 
 #: l_wmts.201
 msgid "topo_decoupage_100k"
-msgstr ""
+msgstr "Blaatschnett Regional Kaart"
 
 #: l_wmts.202
 msgid "TOPO_CARTESHISTO_1964"
@@ -431,7 +424,7 @@ msgstr "Relief DHM 2m"
 
 #: group.205
 msgid "asta_meteo_group"
-msgstr ""
+msgstr "Ökologisch wertvolle Flächen "
 
 #: lu_ext_wms.206
 msgid "tour_escape_ardenne"
@@ -447,15 +440,15 @@ msgstr "Provisoresch ZPS"
 
 #: group.209
 msgid "eau_zones_protegees_nationales"
-msgstr ""
+msgstr "National Schutzgebidder"
 
 #: group.210
 msgid "eau_zones_protegees_communautaires"
-msgstr ""
+msgstr "International Schutzgebidder"
 
 #: group.211
 msgid "eau_env_natura2000"
-msgstr ""
+msgstr "Natura 2000"
 
 #: l_wmts.212
 msgid "ac_wellenstein_pag_complet"
@@ -467,7 +460,7 @@ msgstr ""
 
 #: group.214
 msgid "verkehrsnetze_tourisme"
-msgstr ""
+msgstr "Verkéiersnetzer"
 
 #: lu_ext_wms.215
 msgid "tour_moto"
@@ -479,7 +472,7 @@ msgstr "Biotoptypenkartéirung 2007"
 
 #: l_wmts.217
 msgid "decoupage_communes"
-msgstr ""
+msgstr "Gemengecode"
 
 #: l_wmts.218
 msgid "TOPO_CARTESHISTO_1966-74_50k"
@@ -491,7 +484,7 @@ msgstr "Saint Jacques Wee"
 
 #: l_wmts.220
 msgid "topo_decoupage_50k"
-msgstr ""
+msgstr "Blaatschnett Regional Kaart"
 
 #: l_wmts.221
 msgid "TOPO_CARTES_1944"
@@ -503,7 +496,7 @@ msgstr "Klimakaart"
 
 #: group.223
 msgid "basisden_mobile"
-msgstr ""
+msgstr "Allgemeng"
 
 #: l_wmts.224
 msgid "topo_250k"
@@ -511,7 +504,7 @@ msgstr "Topografesch Kaart 1:250000"
 
 #: lu_int_wms.225
 msgid "parcels_go"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: l_wmts.226
 msgid "ortho_2004"
@@ -531,7 +524,7 @@ msgstr "National Wanderweeër"
 
 #: group.230
 msgid "flurstucke_grundstucke_go"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: lu_int_wms.231
 msgid "aero_1951_25k"
@@ -547,15 +540,15 @@ msgstr "Orthophoto 2007"
 
 #: group.234
 msgid "env_bruit_axes_routiers"
-msgstr ""
+msgstr "Stroossen 2011(LNGT)"
 
 #: group.235
 msgid "geologie_"
-msgstr ""
+msgstr "Geologie"
 
 #: group.236
 msgid "eau_basisdaten"
-msgstr ""
+msgstr "Basisdaten"
 
 #: lu_ext_wms.237
 msgid "tour_sentiers_gr"
@@ -563,7 +556,7 @@ msgstr "Grouss Wanderweeër (GR)"
 
 #: group.238
 msgid "group_ac_remich_pag"
-msgstr ""
+msgstr "PAG Remich"
 
 #: l_wmts.239
 msgid "TOPO_CARTESHISTO_2000"
@@ -571,11 +564,11 @@ msgstr "Topografesch Kaart 1:20k 2000"
 
 #: l_wmts.240
 msgid "ign_topo"
-msgstr ""
+msgstr "Automatesch topografesch Kaart"
 
 #: group.241
 msgid "user_generated_content"
-msgstr ""
+msgstr "Net kategoriséiert"
 
 #: l_wmts.242
 msgid "ivv_kleinlagen"
@@ -583,23 +576,23 @@ msgstr "Klenglagen am Weibau"
 
 #: group.243
 msgid "anf_forets"
-msgstr ""
+msgstr "Revéieren vun der Naturverwaltung"
 
 #: group.244
 msgid "basisden"
-msgstr ""
+msgstr "Basisdaten"
 
 #: l_wmts.245
 msgid "geologie"
-msgstr ""
+msgstr "Geologie"
 
 #: group.246
 msgid "env_zones_protegees_nationales"
-msgstr ""
+msgstr "National Schutzgebidder"
 
 #: group.247
 msgid "env_zones_protegees"
-msgstr ""
+msgstr "Schutzgebidder"
 
 #: lu_ext_wms.248
 msgid "tour_sentiers_syndicats"
@@ -607,15 +600,15 @@ msgstr "Syncdicats d'initiative - Weeër"
 
 #: group.249
 msgid "infrastrucktur_une_kommunikation_prof"
-msgstr ""
+msgstr "Infrastruktur a Kommunikatioun"
 
 #: group.250
 msgid "flurstucke_grundstucke"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: group.251
 msgid "mymaps"
-msgstr ""
+msgstr "Méng Kaarten"
 
 #: lu_ext_wms.252
 msgid "tour_DeLux"
@@ -623,7 +616,7 @@ msgstr "Naturwanderpark DeLux"
 
 #: l_wmts.253
 msgid "ign_ortho"
-msgstr ""
+msgstr "Orthophoto 2013"
 
 #: l_wmts.254
 msgid "1927_CAHANSEN"
@@ -651,7 +644,7 @@ msgstr "Eisebunn 2011 (LNGT)"
 
 #: group.261
 msgid "tour_rando_v2"
-msgstr ""
+msgstr "Wanderweeër"
 
 #: l_wmts.262
 msgid "topo_100k"
@@ -667,7 +660,7 @@ msgstr "Expositioun"
 
 #: lu_int_wms.265
 msgid "PA"
-msgstr ""
+msgstr "PAG"
 
 #: l_wmts.266
 msgid "topo_decoupage_r"
@@ -687,7 +680,7 @@ msgstr "Distrikter (Nimm)"
 
 #: l_wmts.270
 msgid "communes_labels"
-msgstr ""
+msgstr "Kantoner (Nimm)"
 
 #: lu_ext_wms.271
 msgid "user_content"
@@ -703,7 +696,7 @@ msgstr "FLIK Referenzparzellen Weibau 2013"
 
 #: l_wmts.274
 msgid "pedologie_100k"
-msgstr ""
+msgstr "Geologie"
 
 #: group.275
 msgid "anf_data_map"
@@ -723,11 +716,11 @@ msgstr ""
 
 #: group.279
 msgid "env_sentiers"
-msgstr ""
+msgstr "Naturpied"
 
 #: group.280
 msgid "group_mobiliteit"
-msgstr ""
+msgstr "Park + Ride"
 
 #: l_wmts.281
 msgid "TOPO_CARTESHISTO_2000_50k"
@@ -735,15 +728,15 @@ msgstr "Topografesch Kaart 1:50k 2000"
 
 #: group.282
 msgid "group_ac_wellenstein_pag"
-msgstr ""
+msgstr "Zonen"
 
 #: group.283
 msgid "anf_unites_admin"
-msgstr ""
+msgstr "Gemeng"
 
 #: group.284
 msgid "tour_velo_v2"
-msgstr ""
+msgstr "Velos- & Mountainbike Weeër"
 
 #: l_wmts.285
 msgid "ac_wellenstein_pag_alignements_a_preserver"
@@ -775,11 +768,11 @@ msgstr "Hangneigung"
 
 #: group.293
 msgid "flurstucke_grundstucke_mittal"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: group.294
 msgid "topographische_karten"
-msgstr ""
+msgstr "Topografesch Kaarten"
 
 #: l_wmts.295
 msgid "wg_ikonos_satellitendaten"
@@ -791,7 +784,7 @@ msgstr "Moutainbike Weeër"
 
 #: l_wmts.297
 msgid "geologie_ancienne_edition"
-msgstr ""
+msgstr "Geologësch Kaart, al Editioun"
 
 #: l_wmts.298
 msgid "topo"
@@ -799,11 +792,11 @@ msgstr "Automatesch topografesch Kaart"
 
 #: lu_int_wms.299
 msgid "ac_preizerdaul_pag"
-msgstr ""
+msgstr "PAG Remich"
 
 #: lu_int_wms.300
 msgid "ac_preizerdaul_ortho_2009"
-msgstr ""
+msgstr "Orthophoto Remich"
 
 #: l_wmts.301
 msgid "ivv_parcels"
@@ -827,7 +820,7 @@ msgstr "Gemengen"
 
 #: group.306
 msgid "anf_reserves"
-msgstr ""
+msgstr "Naturschutzgebidder (DIG)"
 
 #: group.307
 msgid "tour_quality"
@@ -839,7 +832,7 @@ msgstr "Ze erhale Flächen"
 
 #: l_wmts.309
 msgid "decoupage_geo25k"
-msgstr ""
+msgstr "Blaatschnett Regional Kaart"
 
 #: group.310
 msgid "asta"
@@ -851,7 +844,7 @@ msgstr "Versijelung"
 
 #: group.312
 msgid "administrative_einheiten"
-msgstr ""
+msgstr "Administrativ Eenheeten"
 
 #: lu_int_wms.313
 msgid "env_bruit_axes_ferroviaires_lden"
@@ -863,7 +856,7 @@ msgstr "Orthophoto 2007 (infrarout)"
 
 #: group.315
 msgid "umweltuberwachung"
-msgstr ""
+msgstr "Ëmweltiwwerwaachung"
 
 #: group.316
 msgid "topo_carteshisto"
@@ -871,11 +864,11 @@ msgstr "Historësch topografesch Kaarten"
 
 #: l_wmts.317
 msgid "geologie_nouvelle_edition"
-msgstr ""
+msgstr "Geologësch Kaart, nei Editioun"
 
 #: group.318
 msgid "tour_mymaps"
-msgstr ""
+msgstr "Temporäre Layer"
 
 #: lu_ext_wms.319
 msgid "env_sentiersnature"
@@ -883,19 +876,19 @@ msgstr "Naturpied"
 
 #: group.320
 msgid "eau_topographie"
-msgstr ""
+msgstr "Topographie"
 
 #: group.321
 msgid "eau_landnutzung"
-msgstr ""
+msgstr "Landnotzung"
 
 #: group.322
 msgid "eau_anf_reserves"
-msgstr ""
+msgstr "Naturschutzgebidder (DIG)"
 
 #: lu_int_wms.323
 msgid "eau_natura2000_oiseaux"
-msgstr ""
+msgstr "Vulleschutzgebidder Natura 2000"
 
 #: l_wmts.324
 msgid "toponymes"
@@ -903,11 +896,11 @@ msgstr "Kadaster-Flouernimm"
 
 #: group.325
 msgid "pedologie"
-msgstr ""
+msgstr "Geologie"
 
 #: group.326
 msgid "anf_chasse"
-msgstr ""
+msgstr "Juegdlousen"
 
 #: group.327
 msgid "go_daten"
@@ -915,11 +908,11 @@ msgstr ""
 
 #: group.328
 msgid "oberflachendarstellung"
-msgstr ""
+msgstr "Uewerflächenduerstellung"
 
 #: group.329
 msgid "unwelt_biologie_geologie_mobile"
-msgstr ""
+msgstr "Ëmwelt Biologie a Geologie"
 
 #: lu_int_wms.330
 msgid "env_bruit_axes_routiers_lden"
@@ -939,7 +932,7 @@ msgstr "Kantoner"
 
 #: lu_int_wms.334
 msgid "toponymes_go"
-msgstr ""
+msgstr "Kadaster-Flouernimm"
 
 #: group.335
 msgid "geodesy"
@@ -947,15 +940,15 @@ msgstr "Geodäsie"
 
 #: group.336
 msgid "ign"
-msgstr ""
+msgstr "Wäinbauland"
 
 #: group.337
 msgid "bodennutzung"
-msgstr ""
+msgstr "Buedemnotzung"
 
 #: group.338
 msgid "env_zones_protegees_communautaires"
-msgstr ""
+msgstr "International Schutzgebidder"
 
 #: group.339
 msgid "weinbau"
@@ -963,7 +956,7 @@ msgstr ""
 
 #: group.340
 msgid "tour_auto_moto_v2"
-msgstr ""
+msgstr "Oldtimer- & Moto Touren"
 
 #: group.341
 msgid "group_preemption"
@@ -971,7 +964,7 @@ msgstr ""
 
 #: group.342
 msgid "lebensraume_une_biotope"
-msgstr ""
+msgstr "Liewensraim a Biotoper"
 
 #: group.343
 msgid "gebaude"
@@ -979,11 +972,11 @@ msgstr ""
 
 #: group.344
 msgid "asta_zones_prot"
-msgstr ""
+msgstr "Ökologisch wertvolle Flächen "
 
 #: lu_int_wms.345
 msgid "eau_natura2000_habitats"
-msgstr ""
+msgstr "Habitater Natura 2000"
 
 #: lu_int_wms.346
 msgid "aero_1951_10k"
@@ -1011,7 +1004,7 @@ msgstr "Kantoner (Nimm)"
 
 #: lu_int_wms.352
 msgid "all_maps_root_account"
-msgstr ""
+msgstr "All ëffentlech Kaarten vun mengem Haptkont"
 
 #: lu_int_wms.353
 msgid "all_my_maps"
@@ -1031,7 +1024,7 @@ msgstr "Stroossennimm"
 
 #: lu_int_wms.357
 msgid "ac_preizerdaul_ortho"
-msgstr ""
+msgstr "Orthophoto Remich"
 
 #: lu_int_wms.358
 msgid "cfl_hecto"
@@ -1071,7 +1064,7 @@ msgstr "Orthophoto 2013"
 
 #: group.367
 msgid "natur_an_emwelt"
-msgstr ""
+msgstr "Mehrfachnotzung"
 
 #: lu_int_wms.368
 msgid "affaires"
@@ -1091,7 +1084,7 @@ msgstr "Vëlolocatiouns-Systemer"
 
 #: lu_int_wms.372
 msgid "asta_flik_parcels_2014_prof"
-msgstr ""
+msgstr "FLIK Parzellen 2014"
 
 #: l_wmts.373
 msgid "emwelt_biotop_kadaster_f"
@@ -1115,7 +1108,7 @@ msgstr "Bongerten"
 
 #: lu_ext_wms.378
 msgid "tour_pistes_velo_mymaps"
-msgstr ""
+msgstr "Velosweeër"
 
 #: l_wmts.379
 msgid "eau_new_HQ100_merged_2013"
@@ -1127,11 +1120,11 @@ msgstr "Drénkwaasserschutzgebidder [ZPS]"
 
 #: lu_int_wms.381
 msgid "topo_decoupage_ortho_2013"
-msgstr ""
+msgstr "Bladschnëtt Orthophotos"
 
 #: lu_int_wms.382
 msgid "prpl_luref"
-msgstr ""
+msgstr "Croquisen vun de geodätesche Festpunkten : LUREF System"
 
 #: lu_int_wms.383
 msgid "prpl_ntl"
@@ -1143,23 +1136,23 @@ msgstr ""
 
 #: lu_int_wms.385
 msgid "parcels_labels_go"
-msgstr ""
+msgstr "Kadasterparzellen (Nummeren)"
 
 #: lu_int_wms.386
 msgid "eau_anf_reserves_naturelles"
-msgstr ""
+msgstr "Naturschutzgebidder"
 
 #: lu_int_wms.387
 msgid "eau_anf_reserves_forestieres"
-msgstr ""
+msgstr "Bësch-Naturschutzgebidder"
 
 #: lu_int_wms.388
 msgid "eau_anf_reserves_naturelles_totalite"
-msgstr ""
+msgstr "Naturschutzgebidder (alleguerten)"
 
 #: lu_int_wms.389
 msgid "eau_anf_reserves_dig"
-msgstr ""
+msgstr "Naturschutzgebidder (DIG)"
 
 #: lu_ext_wms.390
 msgid "Merovingien"
@@ -1215,7 +1208,7 @@ msgstr "Sanitär Schutzzone Stauséi"
 
 #: lu_int_wms.403
 msgid "parcels_prof"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: l_wmts.404
 msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
@@ -1327,23 +1320,23 @@ msgstr "Héichtereferenzpunkten"
 
 #: l_wmts.431
 msgid "wg_hangneigung_map"
-msgstr ""
+msgstr "Hangneigung"
 
 #: l_wmts.432
 msgid "wg_relief_map"
-msgstr ""
+msgstr "Relief"
 
 #: l_wmts.433
 msgid "wg_exposition_map"
-msgstr ""
+msgstr "Expositioun"
 
 #: l_wmts.434
 msgid "wg_hohenlinien_10m_map"
-msgstr ""
+msgstr "Héichtelinnen 10m"
 
 #: group.435
 msgid "map_morphometrie"
-msgstr ""
+msgstr "Morphologie"
 
 #: lu_int_wms.436
 msgid "remembrements"
@@ -1395,7 +1388,7 @@ msgstr ""
 
 #: group.448
 msgid "eau_4_lintgen"
-msgstr ""
+msgstr "eau_link_title"
 
 #: group.449
 msgid "pag_lintgen"
@@ -1454,9 +1447,9 @@ msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
 msgstr "Intensitéit 100-jäerlecht HW"
 
 #: lu_int_wms.463
-msgid ""
-"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
-msgstr "Risikobeurteleeung fir dass d'WK de gudde chemeschen Zoustand erreechen"
+msgid "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
+msgstr ""
+"Risikobeurteleeung fir dass d'WK de gudde chemeschen Zoustand erreechen"
 
 #: lu_int_wms.464
 msgid "eau_new_UeSG_extrem_(usage_interne)"
@@ -1508,7 +1501,7 @@ msgstr "Haaptgewässer"
 
 #: l_wmts.476
 msgid "communes_cadastrales_labels_eau"
-msgstr ""
+msgstr "Kadastergemengen (Nimm)"
 
 #: group.477
 msgid "eau_new_Grundwasser_2009"
@@ -1544,7 +1537,7 @@ msgstr " Zoustand vun den WK 2015"
 
 #: l_wmts.485
 msgid "sections_cadastrales_labels_eau"
-msgstr ""
+msgstr "Kadastersektiounen (Nimm)"
 
 #: lu_int_wms.486
 msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
@@ -1584,7 +1577,7 @@ msgstr "ISG 10-jäerlech"
 
 #: l_wmts.495
 msgid "feuilles_cadastrales_eau"
-msgstr ""
+msgstr "Kadaster Urpläng"
 
 #: lu_int_wms.496
 msgid "eau_new_Trinkwasserbehaelter"
@@ -1596,11 +1589,11 @@ msgstr "Kilometréierung Niewegewässer"
 
 #: l_wmts.498
 msgid "sections_cadastrales_eau"
-msgstr ""
+msgstr "Kadastersektiounen"
 
 #: l_wmts.499
 msgid "toponymes_eau"
-msgstr ""
+msgstr "Kadaster-Flouernimm"
 
 #: lu_int_wms.500
 msgid "eau_new_Oberflaechenwasserkoerper_2009"
@@ -1616,24 +1609,24 @@ msgstr "Grondwaasserkierper 2009"
 
 #: lu_int_wms.503
 msgid "parcels_labels_eau"
-msgstr ""
+msgstr "Kadasterparzellen (Nummeren)"
 
 #: lu_int_wms.504
-msgid ""
-"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
-msgstr "Risikobeurteleeung fir dass d'WK de gudde quantitativen Zoustand erreechen"
+msgid "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
+msgstr ""
+"Risikobeurteleeung fir dass d'WK de gudde quantitativen Zoustand erreechen"
 
 #: group.505
 msgid "flurstucke_grundstucke_eau"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: l_wmts.506
 msgid "communes_cadastrales_eau"
-msgstr ""
+msgstr "Kadastergemengen"
 
 #: lu_int_wms.507
 msgid "parcels_eau"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: lu_int_wms.508
 msgid "buildings_eau"
@@ -2029,7 +2022,7 @@ msgstr " Zoustand vun den WK 2009"
 
 #: group.606
 msgid "tourisme_poi"
-msgstr ""
+msgstr "Tourismus"
 
 #: lu_int_wms.607
 msgid "ont_poi_3"
@@ -2125,7 +2118,7 @@ msgstr "Konscht & Kultur"
 
 #: lu_int_wms.630
 msgid "parcelles_etat"
-msgstr ""
+msgstr "Kadasterparzellen"
 
 #: lu_int_wms.631
 msgid "mobi_pickup"
@@ -2137,7 +2130,7 @@ msgstr ""
 
 #: group.633
 msgid "osm"
-msgstr ""
+msgstr "Numm"
 
 #: lu_int_wms.634
 msgid "osm_mq"
@@ -2153,7 +2146,7 @@ msgstr "Ausgoën"
 
 #: lu_int_wms.637
 msgid "anf_carte_simpl_forets"
-msgstr ""
+msgstr "Vereinfacht Kaart vun den natiirlechen Bëscher"
 
 #: lu_int_wms.638
 msgid "logt_bauluecken"
@@ -2161,7 +2154,7 @@ msgstr "Baulücken"
 
 #: l_wmts.639
 msgid "streets_jpeg"
-msgstr ""
+msgstr "Stroossennnetz"
 
 #: l_wmts.640
 msgid "topo_bw_jpeg"
@@ -2177,8 +2170,3026 @@ msgstr ""
 
 #: l_wmts.643
 msgid "orthogr_2013_global"
-msgstr ""
+msgstr "Orthophoto 2013"
 
 #: l_wmts.644
 msgid "basemap_global"
 msgstr ""
+
+#~ msgid "Gebäude"
+#~ msgstr "Gebeier"
+
+#~ msgid "Bevölkerungsdichte"
+#~ msgstr "Bevölkerungsverdeelung"
+
+#~ msgid "Natürliche Risikozonen"
+#~ msgstr "Natierlech Risikozonen"
+
+#~ msgid "Jährlichkeiten"
+#~ msgstr "Jährlechkeeten"
+
+#~ msgid "Gewässerschutz"
+#~ msgstr "Gewässerschutz"
+
+#~ msgid "Hochwassergefahrenkarten (100-jährlich)"
+#~ msgstr "Héichwaassergeforenkaarten (100-järleg)"
+
+#~ msgid "Intensität"
+#~ msgstr "Intensitéit"
+
+#~ msgid "Kläranlagen"
+#~ msgstr "Kläranlagen"
+
+#~ msgid ""
+#~ "Ihre Bildschirmauflösung ist kleiner als 1024x768 pixels. map.geo.admin."
+#~ "ch is not optmized for small screen resolution."
+#~ msgstr ""
+#~ "Är Bildschirmopléisung ass méi kleng wéi 1024x768 Pixel. map.geoportail."
+#~ "lu ass net fir eng kleng Bildschirmopléisung optiméiert."
+
+#~ msgid "Raum und Bevölkerung"
+#~ msgstr "Raum a Bevölkerung"
+
+#~ msgid "Öffentliche Einrichtungen und Dienste"
+#~ msgstr "Ëffentlech Ariichtungen"
+
+#~ msgid "Hochwassergefahrenkarten (10-jährlich)"
+#~ msgstr "Héichwaassergeforenkaarten (10-järleg)"
+
+#~ msgid "poi_repere"
+#~ msgstr "Croquisen vun de geodätesche Festpunkten : LUREF 2014 Punkten"
+
+#~ msgid "prpl ntl"
+#~ msgstr "Croquisen vun de geodätesche Festpunkten : NTL System"
+
+#~ msgid "mobiliteit_bikeshare_reservation"
+#~ msgstr "Reservatioun"
+
+#~ msgid "K_STATUS"
+#~ msgstr "Status"
+
+#~ msgid "K_NAME"
+#~ msgstr "Numm"
+
+#~ msgid "K_STATUS_5000"
+#~ msgstr "am Gaang"
+
+#~ msgid "K_STATUS_5001"
+#~ msgstr "ofgeschloss"
+
+#~ msgid "K_TYP_5000"
+#~ msgstr "Landwirtschaft"
+
+#~ msgid "K_TYP_5001"
+#~ msgstr "Fortwirtschaft"
+
+#~ msgid "K_TYP_5002"
+#~ msgstr "Wäibau"
+
+#~ msgid "K_TYP"
+#~ msgstr "Typ"
+
+#~ msgid "contact url"
+#~ msgstr "https://www.geoportail.lu/lb/iwwert-eis/kontakteiert-ons/"
+
+#~ msgid "Données eau"
+#~ msgstr "Waasserinformatiounen"
+
+#~ msgid "POI ONT"
+#~ msgstr "Interessant Plazen vum ONT"
+
+#~ msgid "Eat & Sleep"
+#~ msgstr "Iessen & Iwwernuechten"
+
+#~ msgid "Art & culture"
+#~ msgstr "Konscht & Kultur"
+
+#~ msgid "Nature & excursions"
+#~ msgstr "Natur & Ausflich"
+
+#~ msgid "Sortir"
+#~ msgstr "Ausgoën"
+
+#~ msgid "Sport & Loisir"
+#~ msgstr "Sport & Fräizäit"
+
+#~ msgid "Shopping"
+#~ msgstr "Shopping"
+
+#~ msgid "pré"
+#~ msgstr "Wis"
+
+#~ msgid "Mineralische Bodenschätze"
+#~ msgstr "Mineralesch Buedemschätz"
+
+#~ msgid "Gewässernetz"
+#~ msgstr "Gewässernetz"
+
+#~ msgid "Haltestellenname"
+#~ msgstr "Statioun"
+
+#~ msgid "par_335"
+#~ msgstr "Heck"
+
+#~ msgid "par_type"
+#~ msgstr "Typ"
+
+#~ msgid "help title"
+#~ msgstr "Hëllef"
+
+#~ msgid "place verte"
+#~ msgstr "Gréng Zon"
+
+#~ msgid "Niederschlagsmessstationen"
+#~ msgstr "Nidderschlagsmiessstatiounen"
+
+#~ msgid "Weitere Messtationen"
+#~ msgstr "Weitere Messtationen"
+
+#~ msgid "Axes routiers (LNGT)"
+#~ msgstr "Stroossekaméidi 2011 (LNGT)"
+
+#~ msgid "Revision date"
+#~ msgstr "Revisiounsdatum"
+
+#~ msgid "bâtiment à habitation"
+#~ msgstr "Wunngebai"
+
+#~ msgid "You are using Internet Explorer 6."
+#~ msgstr "Dir benotzt Internet Explorer 6."
+
+#~ msgid "mesurage.type.notnumerized"
+#~ msgstr "Nach nët gescannt"
+
+#~ msgid "bat_149"
+#~ msgstr "Ondéfinéiert Gebai"
+
+#~ msgid "bat_154"
+#~ msgstr "Gebai dat op Basis vu Loftopnahmen komplétéiert ass"
+
+#~ msgid "mymaps.width"
+#~ msgstr "Breet"
+
+#~ msgid "mesurage.type.abornement"
+#~ msgstr "Grenzfeststellung"
+
+#~ msgid "partie bâtiment"
+#~ msgstr "Gebaideel"
+
+#~ msgid "Parcelles viticoles 2012"
+#~ msgstr "Wéngerten 2012"
+
+#~ msgid "Geografische Namen"
+#~ msgstr "Geografesch Nimm"
+
+#~ msgid "aire de stockage"
+#~ msgstr "Lagerplaz"
+
+#~ msgid "Rajouter point"
+#~ msgstr "Punkt bäifügen"
+
+#~ msgid "mf.print.scale"
+#~ msgstr "Moossstaf"
+
+#~ msgid "par_320"
+#~ msgstr "Gaart"
+
+#~ msgid "bâtiment scolaire"
+#~ msgstr "Schoulgebai"
+
+#~ msgid "pâture"
+#~ msgstr "Weed"
+
+#~ msgid "reserves_forestieres_code_national"
+#~ msgstr "CODE_NATIONAL"
+
+#~ msgid "réserve naturelle"
+#~ msgstr "Naturreservat"
+
+#~ msgid "Previous view"
+#~ msgstr "No hannen"
+
+#~ msgid "Messstationen"
+#~ msgstr "Miessstatiounen"
+
+#~ msgid "geoseo_communes_txt"
+#~ msgstr ""
+#~ "Hei fannt dir eng Lëscht vun all de Gemengen vu Lëtzebuerg. Duerch ee "
+#~ "Klick op eng Gemeng kommt dir op eng Lëscht vun allen "
+#~ "Informatiounsschichten, déi am Geoportal verfügbar sinn."
+
+#~ msgid "geoseo_commune_txt"
+#~ msgstr ""
+#~ "Hei fannt dir eng Lësch vun allen Informationslayer déi am Geoportal zur "
+#~ "Verfügung stinn. Ee Klick op den Numm vun engem Layer brëngt Iech an eng "
+#~ "detailliert Siicht fir déi gewielten Gemeng. Ee Klick op den Icon riets "
+#~ "vum Numm brëngt Iech direkt an de Geoportal."
+
+#~ msgid "anf_phytosociologie"
+#~ msgstr "Bëschvegetatioun"
+
+#~ msgid "Occupation biophysique du sol 2007"
+#~ msgstr "Biotoptypenkartéirung 2007"
+
+#~ msgid "measure.popup.azimut"
+#~ msgstr "Azimut"
+
+#~ msgid "Valideur"
+#~ msgstr "Valideur"
+
+#~ msgid "Automate"
+#~ msgstr "Ticketsautomat"
+
+#~ msgid "Guichet"
+#~ msgstr "Guichet"
+
+#~ msgid "Logement"
+#~ msgstr "Logement"
+
+#~ msgid "vaine"
+#~ msgstr "Brooch"
+
+#~ msgid "Divers…"
+#~ msgstr "Family & Kids"
+
+#~ msgid "Gewässer"
+#~ msgstr "Gewässer"
+
+#~ msgid "mesurage.type.evaluation"
+#~ msgstr "Evaluatioun"
+
+#~ msgid "marché"
+#~ msgstr "Maarkt"
+
+#~ msgid "Triangle"
+#~ msgstr "Dräieck"
+
+#~ msgid "can_name"
+#~ msgstr "Numm"
+
+#~ msgid "adr_code_postal"
+#~ msgstr "Postleitzahl"
+
+#~ msgid "Envoyer un commentaire"
+#~ msgstr "Ee Kommentar schécken"
+
+#~ msgid "Emprises Voiture"
+#~ msgstr "Uschlëss Auto"
+
+#~ msgid "nam_name"
+#~ msgstr "Numm"
+
+#~ msgid "mr9"
+#~ msgstr ""
+#~ "de Betrib vu Sprangbier, Waasserspiller, auss er déi mat zouenem "
+#~ "Waasserkreeslaf"
+
+#~ msgid "mr4"
+#~ msgstr ""
+#~ "d'Bewässere vu Gäert an anere Planzen, ausser mat Hëllef vun der Strenz"
+
+#~ msgid "mr5"
+#~ msgstr "d'Wäsche vun Autoen, ausser a professionnele Wäschanlagen"
+
+#~ msgid "mr6"
+#~ msgstr "d'Opfëlle vu Reewaasserbehälter, ausser fir hygienesch Zwecker"
+
+#~ msgid "Schutzgebiete"
+#~ msgstr "Schutzgebidder"
+
+#~ msgid "terrain de sport"
+#~ msgstr "Sportsfeld"
+
+#~ msgid "mr1"
+#~ msgstr "d'Opfëllen an Nofëlle vu Schwämmen, onofhängeg vun der Kapazitéit"
+
+#~ msgid "Aerial Images"
+#~ msgstr "Loftbild"
+
+#~ msgid "mr3"
+#~ msgstr "d'Bewässere vu Wues a Sportsterrainen"
+
+#~ msgid "Name"
+#~ msgstr "Numm"
+
+#~ msgid "geoseo_communes_page_title"
+#~ msgstr "Geodaten vun der Gemeng"
+
+#~ msgid "geoseo_theme"
+#~ msgstr "Thema"
+
+#~ msgid "themeswitcher.window_title"
+#~ msgstr "Themenlëscht"
+
+#~ msgid "BTK_B"
+#~ msgstr "Pufferzone"
+
+#~ msgid "Forêts"
+#~ msgstr "Bëscher"
+
+#~ msgid "Cities"
+#~ msgstr "Gemengen"
+
+#~ msgid "name"
+#~ msgstr "Numm"
+
+#~ msgid "par_602"
+#~ msgstr "Landstrooss"
+
+#~ msgid "wg_schneehohe"
+#~ msgstr "Schnéihéicht"
+
+#~ msgid "Commune"
+#~ msgstr "Gemeng"
+
+#~ msgid "wg_messstationen_oberflachenwasser"
+#~ msgstr "Iwwerflächengewässer"
+
+#~ msgid "par_608"
+#~ msgstr "Syndikatswee"
+
+#~ msgid "wg_oberflachenwasser_wrrl"
+#~ msgstr "Iwwerflächengewässer"
+
+#~ msgid "mymaps.delete"
+#~ msgstr "Läschen"
+
+#~ msgid "par_641"
+#~ msgstr "Flugplaz"
+
+#~ msgid "Search"
+#~ msgstr "Sich"
+
+#~ msgid "mymaps.deleteimage"
+#~ msgstr "Läschen"
+
+#~ msgid "Opacity:"
+#~ msgstr "Transparenz"
+
+#~ msgid "bat_101"
+#~ msgstr "Wunngebai"
+
+#~ msgid "parc"
+#~ msgstr "Park"
+
+#~ msgid "Bruit"
+#~ msgstr "Kaméidi"
+
+#~ msgid "bat_name"
+#~ msgstr "Typ"
+
+#~ msgid "par_642"
+#~ msgstr "Heliport"
+
+#~ msgid "par_520"
+#~ msgstr "Park"
+
+#~ msgid "bat_114"
+#~ msgstr "Ruin"
+
+#~ msgid "GEFID"
+#~ msgstr "GEFID"
+
+#~ msgid "mr2"
+#~ msgstr ""
+#~ "d'Erneiere vum Waasser bei private, stationäre Schwämmen, private "
+#~ "Waasserflächen, Sprangbier a Waasserspiller"
+
+#~ msgid "wg_fischereiabschnitte"
+#~ msgstr "Fëschereiofschnëtter"
+
+#~ msgid "Meteo"
+#~ msgstr "Wiederdaten"
+
+#~ msgid "crassier"
+#~ msgstr "Schlaackentipp"
+
+#~ msgid "par_511"
+#~ msgstr "Haff"
+
+#~ msgid "Adresse"
+#~ msgstr "Adress"
+
+#~ msgid "X"
+#~ msgstr "X"
+
+#~ msgid "Höhe"
+#~ msgstr "Héicht"
+
+#~ msgid "Données ANF"
+#~ msgstr "Daten vun der Naturverwaltung"
+
+#~ msgid "que_fluss"
+#~ msgstr "Floss"
+
+#~ msgid "Mode de transport"
+#~ msgstr "Transportmodus"
+
+#~ msgid "geoadmin.profile.loading"
+#~ msgstr "Héichteprofil ass amgaang ze lueden.."
+
+#~ msgid "par_606"
+#~ msgstr "Wirtschaftswee"
+
+#~ msgid "Login"
+#~ msgstr "Benotzernumm"
+
+#~ msgid "par_310"
+#~ msgstr "Wäinbauland"
+
+#~ msgid "bâtiment agricole"
+#~ msgstr "Landwirtschaftlecht Gebai"
+
+#~ msgid "wg_wasserspiegel"
+#~ msgstr "Waasserspijel"
+
+#~ msgid "jump_to_map"
+#~ msgstr "Op d'Kaart sprangen"
+
+#~ msgid "bgLayer_label"
+#~ msgstr "Auswiel vum Hannergrondlayer"
+
+#~ msgid "accessibility.close"
+#~ msgstr "Zoumaan"
+
+#~ msgid "immeuble en copropriété"
+#~ msgstr "Gebai a Copropriétéit"
+
+#~ msgid "theme.main"
+#~ msgstr "Allgemeng"
+
+#~ msgid "red"
+#~ msgstr "red"
+
+#~ msgid "bat_127"
+#~ msgstr "Buer"
+
+#~ msgid "ruine"
+#~ msgstr "Ruin"
+
+#~ msgid "sec_code"
+#~ msgstr "Code"
+
+#~ msgid "Occupation du sol"
+#~ msgstr "Buedemnotzung"
+
+#~ msgid "mymaps.category"
+#~ msgstr "Kategorie"
+
+#~ msgid "show layer options"
+#~ msgstr "Layeroptiounen uweisen"
+
+#~ msgid "Umwelt, Biologie und Geologie"
+#~ msgstr "Ëmwelt, Biologie a Geologie"
+
+#~ msgid "Ambulance"
+#~ msgstr "Ambulanz"
+
+#~ msgid "Plan sécheresse"
+#~ msgstr "Plang fir Dréchent"
+
+#~ msgid "mr8"
+#~ msgstr "d'Kille vu Liewensmëttel sou wéi Gedrénks mat fléissendem Waasser"
+
+#~ msgid "geoadmin.profile.yLabel"
+#~ msgstr "Héicht (m)"
+
+#~ msgid ""
+#~ "Your screen resolution is smaller than 1024x768 pixels. map.geo.admin.ch "
+#~ "is not optmized for small screen resolution."
+#~ msgstr ""
+#~ "Your screen resolution is smaller than 1024x768 pixels. map.geo.admin.ch "
+#~ "is not optmized for small screen resolution."
+
+#~ msgid "par_542"
+#~ msgstr "Testpist"
+
+#~ msgid "wg_uesg_100_jaehrlich"
+#~ msgstr "ISG 100-jährlech"
+
+#~ msgid "Geo search..."
+#~ msgstr "Sich no Uertschaften Gemengen Koordinaten ..."
+
+#~ msgid "par_occupation"
+#~ msgstr "Bebauung"
+
+#~ msgid "cimetière"
+#~ msgstr "Kiefeg"
+
+#~ msgid "Parcelles FLIK 2011"
+#~ msgstr "FLIK Parzellen 2011"
+
+#~ msgid "Parcelles FLIK 2013"
+#~ msgstr "FLIK Parzellen 2013"
+
+#~ msgid "Parcelles FLIK 2012"
+#~ msgstr "FLIK Parzellen 2012"
+
+#~ msgid "mymaps.map_created_by"
+#~ msgstr "Kaart erstellt vum "
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "sec_district"
+#~ msgstr "Distrikt"
+
+#~ msgid "arial 24"
+#~ msgstr "arial 24"
+
+#~ msgid "phytosociologie_nom"
+#~ msgstr "NAME"
+
+#~ msgid "ruisseau"
+#~ msgstr "Baach"
+
+#~ msgid "Grundwasser"
+#~ msgstr "Grondwaasser"
+
+#~ msgid "wg_einzugsgebiete"
+#~ msgstr "Anzuchsgebidder"
+
+#~ msgid "Recherche de couches .."
+#~ msgstr "No engem Layer sichen ..."
+
+#~ msgid "par_lieu-dit"
+#~ msgstr "Flouernumm"
+
+#~ msgid "Luft- und Satellitenbilder"
+#~ msgstr "Loft- an Satellitebiller"
+
+#~ msgid "mr7"
+#~ msgstr "d'Botze vun Trottoiren, Garagenafahrten, Zougangsweeër an Häff"
+
+#~ msgid "mymaps.name"
+#~ msgstr "Numm"
+
+#~ msgid "mesurage.type.rapport"
+#~ msgstr "Rapport"
+
+#~ msgid "redlining action"
+#~ msgstr "Zeechnen"
+
+#~ msgid "mo2"
+#~ msgstr "d'Bewässere vu Wues a Sportsterrainen"
+
+#~ msgid "réservoir d’hydrocarbures"
+#~ msgstr "Brennstofftank"
+
+#~ msgid "BTK_P"
+#~ msgstr "Punktelementer"
+
+#~ msgid "Direction"
+#~ msgstr "Richtung"
+
+#~ msgid "rivers"
+#~ msgstr "Flëssleef"
+
+#~ msgid "BTK_F"
+#~ msgstr "Flächenelementer ouni Bongerten"
+
+#~ msgid "GEMEINDE"
+#~ msgstr ""
+#~ "Aktuellen Numm vun der Gemeng, di de gréissten Deel vum Biotop ophëllt"
+
+#~ msgid "GEOCODE"
+#~ msgstr "Eendeitege Code vum Biotop"
+
+#~ msgid "BTYP1_Code"
+#~ msgstr "Code vum éischte Biotop"
+
+#~ msgid "BEWERTUNG1"
+#~ msgstr "Bewäertung vum éischte Biotop"
+
+#~ msgid "BTYP1_Name"
+#~ msgstr "Däitschen Numm vum éischte Biotop"
+
+#~ msgid "BTYP1_Nom"
+#~ msgstr "Franséischen Numm vum éischte Biotop"
+
+#~ msgid "BTYP2_Code"
+#~ msgstr "Code vum zweete Biotop"
+
+#~ msgid "BEWERTUNG2"
+#~ msgstr "Bewäertung vum zweete Biotop"
+
+#~ msgid "g_A2_portrait"
+#~ msgstr "A2 Portrait"
+
+#~ msgid "BTYP2_Name"
+#~ msgstr "Däitschen Numm vum zweete Biotop"
+
+#~ msgid "BTYP2_Nom"
+#~ msgstr "Franséischen Numm vum zweete Biotop"
+
+#~ msgid "BTYP3_Code"
+#~ msgstr "Code vum drëtte Biotop"
+
+#~ msgid "BEWERTUNG3"
+#~ msgstr "Bewäertung vum drëtte Biotop"
+
+#~ msgid "BTYP3_Name"
+#~ msgstr "Däitschen Numm vum drëtte Biotop"
+
+#~ msgid "BTYP3_Nom"
+#~ msgstr "Franséischen Numm vum drëtte Biotop"
+
+#~ msgid "BKGemeinde"
+#~ msgstr "Gemengennumm während dem Kartéierungsjoer"
+
+#~ msgid "BKJahr"
+#~ msgstr "Kartéierungsjoer"
+
+#~ msgid "Shape_ares"
+#~ msgstr "Fläech an Ar (100m²) opgeronnt op de Meter-Carré"
+
+#~ msgid "Buffer_Id"
+#~ msgstr "Eendeitege Code vun der Pufferzone"
+
+#~ msgid "Leg_Gr"
+#~ msgstr "Däitsch Legende vun der Pufferzone: \"PZ\""
+
+#~ msgid "Leg_Fr"
+#~ msgstr "Franséisch Legende vun der Pufferzone: \"PZ\""
+
+#~ msgid "My account"
+#~ msgstr "Mäi Kont"
+
+#~ msgid "BUFFER_Name"
+#~ msgstr "Däitschen Numm: \"Pufferzone\""
+
+#~ msgid "BUFFER_Nom"
+#~ msgstr "Franséischen Numm: \"Pufferzone\""
+
+#~ msgid "Create polygon"
+#~ msgstr "Polygon zeechnen"
+
+#~ msgid "BTK_S"
+#~ msgstr "Bongerten"
+
+#~ msgid "BTK_P_mobile"
+#~ msgstr "Offeland-Biotopkadaster: Punktelementer"
+
+#~ msgid "Hydrologische Messstationen"
+#~ msgstr "Hydrologesch Miessstatiounen"
+
+#~ msgid "par_332"
+#~ msgstr "Bësch"
+
+#~ msgid "Export data"
+#~ msgstr "Export"
+
+#~ msgid "BTK_F_mobile"
+#~ msgstr "Offeland-Biotopkadaster: Flächenelementer ouni Bongerten"
+
+#~ msgid "station d’épuration"
+#~ msgstr "Kläranlag"
+
+#~ msgid "BTK_S_mobile"
+#~ msgstr "Offeland-Biotopkadaster: Bongerten"
+
+#~ msgid "BTK_B_mobile"
+#~ msgstr "Offeland-Biotopkadaster: Pufferzone"
+
+#~ msgid "par_601"
+#~ msgstr "Nationalstrooss"
+
+#~ msgid "adr_localite"
+#~ msgstr "Uertschaft"
+
+#~ msgid "wg_lufttemperatur"
+#~ msgstr "Lofttemperatur"
+
+#~ msgid "Azimut:"
+#~ msgstr "Azimut : "
+
+#~ msgid "reserves_forestieres_date_classement"
+#~ msgstr "DATUM_SORTIERUNG"
+
+#~ msgid "Land- und Wassertwirtschaft"
+#~ msgstr "Land- a Waassertwirtschaft"
+
+#~ msgid "Produktions- und Industrieanlagen"
+#~ msgstr "Produktiouns- an Industrieanlagen"
+
+#~ msgid "Statistische Einheiten"
+#~ msgstr "Statistisch Eenheeten"
+
+#~ msgid "yellow"
+#~ msgstr "yellow"
+
+#~ msgid "arbres_remarquables_coord_y"
+#~ msgstr "Y"
+
+#~ msgid "bat_123"
+#~ msgstr "Gesondheets- a Sozialservicer"
+
+#~ msgid "wg_quellen"
+#~ msgstr "Quell"
+
+#~ msgid "projectionCombo_label"
+#~ msgstr "Auswiel vum Koordinatesystem"
+
+#~ msgid "wg_uesg_50_jaehrlich"
+#~ msgstr "ISG 50-jährlech"
+
+#~ msgid "chemin syndical"
+#~ msgstr "Syndikatswee"
+
+#~ msgid "construction spéciale"
+#~ msgstr "Speziell Konstruktioun"
+
+#~ msgid "parcel_numero"
+#~ msgstr "Nummer"
+
+#~ msgid "par_commune"
+#~ msgstr "Gemeng"
+
+#~ msgid "mymaps.title"
+#~ msgstr "Méng Kaarten"
+
+#~ msgid "wg_intensitaet_hq_200"
+#~ msgstr "Intensitéit 200-jährlecht Héichwaasser"
+
+#~ msgid "Stehende Gewässer"
+#~ msgstr "Stagnéierend Gewässer"
+
+#~ msgid "asta_flik_parcels_2012"
+#~ msgstr "FLIK Parzellen 2012"
+
+#~ msgid "par_334"
+#~ msgstr "Gebësch"
+
+#~ msgid "par_336"
+#~ msgstr "Planzung"
+
+#~ msgid "Area measurement (double-click to terminate)"
+#~ msgstr "Fläch moossen (Doppelklick fier oofzeschléissen)"
+
+#~ msgid "par_330"
+#~ msgstr "Lagerplaatz"
+
+#~ msgid "par_333"
+#~ msgstr "Bësch"
+
+#~ msgid "zone humide"
+#~ msgstr "Fiichtgebitt"
+
+#~ msgid "Commander un extrait"
+#~ msgstr "Extrait bestellen"
+
+#~ msgid "slidertip"
+#~ msgstr ""
+#~ "<center>Benotzt dëse Schieber <p> fir stufelos tëscht <p> Loftbild and "
+#~ "Toposkaart ze wiesselen<p>  <img src='http://map.geoportail.lu/gfx/"
+#~ "slider_illustration.png' width=90 height=30> </center>"
+
+#~ msgid "centre sportif"
+#~ msgstr "Sportszentrum"
+
+#~ msgid "Einzelbaum"
+#~ msgstr "Eenzelbam"
+
+#~ msgid "par_902"
+#~ msgstr "archäologesche Site"
+
+#~ msgid "mesurage.type.jugement"
+#~ msgstr "Geriichtsurteel"
+
+#~ msgid "par_525"
+#~ msgstr "Gréng Zon"
+
+#~ msgid "wg_intensitaet_hq_extrem"
+#~ msgstr "Intensitéit Extremt Héichwaasser"
+
+#~ msgid "Baumallee"
+#~ msgstr "Bamallée"
+
+#~ msgid "move layer down"
+#~ msgstr "Layer-Reihenfolg änneren"
+
+#~ msgid "mymaps.image"
+#~ msgstr "Bild"
+
+#~ msgid "Zones de protection"
+#~ msgstr "Schutzgebidder"
+
+#~ msgid "mr10"
+#~ msgstr ""
+#~ "d'Verwenne vum Waasser aus dem ëffentlesche Versuergungsnetz zu "
+#~ "Klimatiséierungszwecker, ausser wann et wierklech néideg ass"
+
+#~ msgid "nat_name"
+#~ msgstr "Numm"
+
+#~ msgid "mymaps.unsupportedimagetypemsg"
+#~ msgstr ""
+#~ "Nëmmen Dateien mat der Erweiderung .gif, .png, .jpg oder .jpeg ginn "
+#~ "ugeholl."
+
+#~ msgid "Monitoring (WRRL)"
+#~ msgstr "Monitoring"
+
+#~ msgid "bat_108"
+#~ msgstr "Zuchgare oder arrêt"
+
+#~ msgid "bat_109"
+#~ msgstr "Serre"
+
+#~ msgid "wg_kanal__muhlgraben"
+#~ msgstr "Kanal Millekanal"
+
+#~ msgid "wg_oberflachenwasserkorper"
+#~ msgstr "Iwwerflächenwaasserkierper"
+
+#~ msgid "bat_102"
+#~ msgstr "Industrie- oder Handwierksgebai"
+
+#~ msgid "bat_103"
+#~ msgstr "Geschäftsgebai"
+
+#~ msgid "bat_100"
+#~ msgstr "Ëffentlecht Gebai"
+
+#~ msgid "bat_106"
+#~ msgstr "Gebai fir religiéis Notzung"
+
+#~ msgid "bat_107"
+#~ msgstr "Gemëscht Gebai"
+
+#~ msgid "bat_104"
+#~ msgstr "Landwirtschaftlecht Gebai"
+
+#~ msgid "par_201"
+#~ msgstr "Baach"
+
+#~ msgid "par_200"
+#~ msgstr "Floss"
+
+#~ msgid "par_203"
+#~ msgstr "Weiher"
+
+#~ msgid "par_204"
+#~ msgstr "Fiichtgebitt"
+
+#~ msgid "par_206"
+#~ msgstr "Waasserfläch"
+
+#~ msgid "Circle"
+#~ msgstr "Krees"
+
+#~ msgid "lan_type"
+#~ msgstr "Typ"
+
+#~ msgid "port"
+#~ msgstr "Hafen"
+
+#~ msgid "bdcarto_100k"
+#~ msgstr "bdcarto_100k"
+
+#~ msgid "wg_feuchtgebiete"
+#~ msgstr "Fiichtgebieter"
+
+#~ msgid "flik_perimetre"
+#~ msgstr "Ëmfang"
+
+#~ msgid "par_630"
+#~ msgstr "Eisebunn"
+
+#~ msgid "j_A0_landscape"
+#~ msgstr "A0 Landscape"
+
+#~ msgid "geoadmin.profile.exportCSV"
+#~ msgstr "CSV exportéiren"
+
+#~ msgid "aéroport"
+#~ msgstr "Flughafen"
+
+#~ msgid "heightdiffminus"
+#~ msgstr "Biergof"
+
+#~ msgid "hoh_elevation"
+#~ msgstr "Héicht"
+
+#~ msgid "flik_surface"
+#~ msgstr "Fläch"
+
+#~ msgid "mymaps.description"
+#~ msgstr "Beschreiwung"
+
+#~ msgid "mymaps.save"
+#~ msgstr "Späicheren"
+
+#~ msgid "mymaps.not_saved_modifications_msg"
+#~ msgstr ""
+#~ "Dir hutt di läscht Ännerungen nach net ofgespäichert.<br/> Wëllt Dir lo "
+#~ "späicheren ?"
+
+#~ msgid "wg_landesgrenzen"
+#~ msgstr "Landesgrenzen"
+
+#~ msgid "home url"
+#~ msgstr "http://www.geoportail.lu"
+
+#~ msgid "show_accessibility_help_window"
+#~ msgstr "Accessibilitéit-Hëllef uweisen"
+
+#~ msgid "Contact"
+#~ msgstr "Kontakt"
+
+#~ msgid "décombres"
+#~ msgstr "Bauschutt"
+
+#~ msgid "wg_gefahrenklassen"
+#~ msgstr "Geforenklassen"
+
+#~ msgid "Landnutzung nach Corine"
+#~ msgstr "Landnotzung laut Corine"
+
+#~ msgid "wg_bauwerke"
+#~ msgstr "Bauwierker"
+
+#~ msgid "mymaps.mail"
+#~ msgstr "E-mail"
+
+#~ msgid "sec_commune_cad"
+#~ msgstr "Kadastergemeng"
+
+#~ msgid "Cours d'eau"
+#~ msgstr "Waasserleef"
+
+#~ msgid "Full extent"
+#~ msgstr "Iwwersichtskaart"
+
+#~ msgid "geoadmin.profile.errorMsg"
+#~ msgstr "Et ass ee Fehler geschitt, probéiert et nach eng Kéier.."
+
+#~ msgid "Hochwasser"
+#~ msgstr "Héichwaasser"
+
+#~ msgid "peuplements_semenciers_proprietaire"
+#~ msgstr "BESITZER"
+
+#~ msgid "theme.agriculture_mobile"
+#~ msgstr "Landwirtschaft"
+
+#~ msgid "phase2"
+#~ msgstr "Rout"
+
+#~ msgid "phytosociologie_abbreviation"
+#~ msgstr "ABKÜRZUNG"
+
+#~ msgid "mobile.close"
+#~ msgstr "Zoumaachen"
+
+#~ msgid "wg_naturliche_(bassin)"
+#~ msgstr "Natierleche Baséng"
+
+#~ msgid "map_sent_by_mail_content"
+#~ msgstr ""
+#~ "Een Notzer vun der mobiler Geoportal App huet Iech eng Kaart geschéckt."
+#~ "<br/><a href='%s'>Link zu der Kaart</a>"
+
+#~ msgid "Le plus court"
+#~ msgstr "Kierzste Wew"
+
+#~ msgid "reserves_naturelles_totalite_nom"
+#~ msgstr "NAME"
+
+#~ msgid "mymaps.copy_to_own_maps"
+#~ msgstr "Eng Kopie vun der Kaart erstellen"
+
+#~ msgid "c_A3_landscape"
+#~ msgstr "A3 Landscape"
+
+#~ msgid "wg_sanitare_schutzzonen_stausee"
+#~ msgstr "Sanitär Schutzzone Stauséi"
+
+#~ msgid "camp militaire"
+#~ msgstr "Militäreschen Terrain"
+
+#~ msgid "wg_pumpstationen"
+#~ msgstr "Pompelstatiounen"
+
+#~ msgid "Baumreihe"
+#~ msgstr "Bamrei"
+
+#~ msgid "Star"
+#~ msgstr "Stär"
+
+#~ msgid "mesurage.type.vertical"
+#~ msgstr "Dossier vum Cadastre vertical"
+
+#~ msgid "sec_name"
+#~ msgstr "Numm"
+
+#~ msgid "next"
+#~ msgstr "No vir"
+
+#~ msgid "bâtiment non défini"
+#~ msgstr "Ondéfinéiert Gebai"
+
+#~ msgid "place voirie"
+#~ msgstr "Plaz déi zur Strooss gehéiert"
+
+#~ msgid "mymaps.show_profile"
+#~ msgstr "Héichteprofil uweisen"
+
+#~ msgid "Sols"
+#~ msgstr "Buedemkaarten"
+
+#~ msgid "Click to enlarge the graph"
+#~ msgstr "Klickt fir d'Grafik ze vergréisseren"
+
+#~ msgid "wg_bohrungen"
+#~ msgstr "Buerung"
+
+#~ msgid "autoroute"
+#~ msgstr "Autobunn"
+
+#~ msgid "point géodésique"
+#~ msgstr "geodätesche Punkt"
+
+#~ msgid "par_610"
+#~ msgstr "Duerchgang oder Trap"
+
+#~ msgid "phase0"
+#~ msgstr "Giel"
+
+#~ msgid "réservoir d’eau"
+#~ msgstr "Waassertank"
+
+#~ msgid "N/A"
+#~ msgstr "N/A"
+
+#~ msgid "length"
+#~ msgstr "Längt"
+
+#~ msgid "wg_hmwb_(stark_modifizierte_wasserkorper)"
+#~ msgstr "HMWB (staark modifizéiert Waasserkiirper)"
+
+#~ msgid "mymaps.export.msg"
+#~ msgstr "Kaart matt allen Objekter exportéiren"
+
+#~ msgid "mymaps.confirm_map_deletion"
+#~ msgstr "Sidd Dir sécher, dass dir des Kaart läsche wëllt ?"
+
+#~ msgid "site archéologique"
+#~ msgstr "archäologesche Site"
+
+#~ msgid "Do you really want to add a new circle ?"
+#~ msgstr "Wëllt Dir wierklech nach ee Krees zeechnen ?"
+
+#~ msgid "disclaimer url"
+#~ msgstr "http://wiki.geoportal.lu/doku.php?id=lu:mcg_1"
+
+#~ msgid "Zoom to the max extent"
+#~ msgstr "Ganz Lëtzebuerg"
+
+#~ msgid "que_profilnumm"
+#~ msgstr "Nummer"
+
+#~ msgid "Unités administratives de gestion de la nature"
+#~ msgstr "Verwaltungseenheeten vun der Naturverwaltung"
+
+#~ msgid "mymaps.show_orientation"
+#~ msgstr "Richtung vum Wee uweisen"
+
+#~ msgid "geoportail_link_title"
+#~ msgstr ""
+#~ "Den nationale Geoportal vum Groussherzogtum Lëtzebuerg (nei Fenster)"
+
+#~ msgid "Graphic size"
+#~ msgstr "Gréisst"
+
+#~ msgid "Feature tooltip"
+#~ msgstr "Objektinformatioun"
+
+#~ msgid "mesurage.type.autres"
+#~ msgstr "Net ëffentlech Vermoossungen"
+
+#~ msgid "comment_email_subject"
+#~ msgstr "Ee Kommentar fir är Kaart %s ass vum User %s (%s) geschéckt ginn"
+
+#~ msgid "Projekt Hochwassergefahrenkarten"
+#~ msgstr "Projet Héichwaassergeforenkaarten"
+
+#~ msgid "stations_biologiques_station_biologique"
+#~ msgstr "stations_biologiques_station_biologique"
+
+#~ msgid "wg_gewasserentwicklungsfahigkeit"
+#~ msgstr "Gewässerentwécklungsfähegkeet"
+
+#~ msgid "bassin"
+#~ msgstr "Becken"
+
+#~ msgid "mymaps.importtip"
+#~ msgstr ""
+#~ "Importéiren vun geografeschen Informatiounen aus enger GPX oder KML Datei"
+
+#~ msgid "par_331"
+#~ msgstr "Bësch"
+
+#~ msgid "reserves_dig_date_classement"
+#~ msgstr "DATUM_SORTIERUNG"
+
+#~ msgid "sentier"
+#~ msgstr "Pad"
+
+#~ msgid "Pas de péage"
+#~ msgstr "Ouni Péage"
+
+#~ msgid "home title"
+#~ msgstr "Ufankssäit"
+
+#~ msgid "wg_durchgangigkeit"
+#~ msgstr "Duerchgängegkeet"
+
+#~ msgid "measure.tooltip.area"
+#~ msgstr "Fläch"
+
+#~ msgid "Carte des sols"
+#~ msgstr "Buedemkaart 1:100'000"
+
+#~ msgid "mesurage.type.fusion"
+#~ msgstr "Parzellefusioun"
+
+#~ msgid "place"
+#~ msgstr "Plaz"
+
+#~ msgid "piste d'essai"
+#~ msgstr "Testpist"
+
+#~ msgid "page is loading. please wait..."
+#~ msgstr "map.geoportail.lu gëtt gelueden."
+
+#~ msgid "étang"
+#~ msgstr "Weiher"
+
+#~ msgid "Stroke color"
+#~ msgstr "Strëchfaarf"
+
+#~ msgid "Biogeografische Regionen"
+#~ msgstr "Biogeografesch Regiounen"
+
+#~ msgid "fr"
+#~ msgstr "Ëffentlecht Gebai"
+
+#~ msgid "aérodrome"
+#~ msgstr "Flugplaz"
+
+#~ msgid "Hochwasserrisikomanagementrichtlinie"
+#~ msgstr "Héichwaasserrisikomanagementrichtlinn"
+
+#~ msgid "pixelmaps-color"
+#~ msgstr "Topografesch Kaart"
+
+#~ msgid "Je veux créer un compte"
+#~ msgstr "Ech wëll een neien Benotzerkonto opmaachen"
+
+#~ msgid "mf.print.layout"
+#~ msgstr "Layout"
+
+#~ msgid "Calculer itinéraire"
+#~ msgstr "Wee berechnen"
+
+#~ msgid "par_640"
+#~ msgstr "Flughafen"
+
+#~ msgid "Axes ferroviaires"
+#~ msgstr "Eisebunn"
+
+#~ msgid "Cliquez dans l'image pour agrandir"
+#~ msgstr "Klickt an d'Bild fir et ze vergréisseren"
+
+#~ msgid "Trinkwasser"
+#~ msgstr "Drénkwaasser"
+
+#~ msgid "bâtiment religieux"
+#~ msgstr "Gebai fir religiéis Notzung"
+
+#~ msgid "wg_grundwasserkorper"
+#~ msgstr "Grondwaasserkierper"
+
+#~ msgid "Distance:"
+#~ msgstr "Distanz : "
+
+#~ msgid "chemin d'exploitation"
+#~ msgstr "Wirtschaftswee"
+
+#~ msgid "Attributes"
+#~ msgstr "Attributer"
+
+#~ msgid "que_hq200"
+#~ msgstr "Waasserspijel (T200)"
+
+#~ msgid "peuplements_semenciers_essence"
+#~ msgstr "BAUMART"
+
+#~ msgid "num_cadast"
+#~ msgstr "num_cadast"
+
+#~ msgid "cour"
+#~ msgstr "Haff"
+
+#~ msgid "adr_rue"
+#~ msgstr "Strooss"
+
+#~ msgid "Viticulture"
+#~ msgstr "Weibau"
+
+#~ msgid "We recommend to upgrade to a newer release."
+#~ msgstr "Mir empfehlen eng méi nei Versioun ze benotzen."
+
+#~ msgid "Axes routiers"
+#~ msgstr "Stroossen"
+
+#~ msgid "style"
+#~ msgstr "style"
+
+#~ msgid "que_pathToPDF"
+#~ msgstr "Détail"
+
+#~ msgid "par_411"
+#~ msgstr "Bauschutt"
+
+#~ msgid "par_412"
+#~ msgstr "Tipp"
+
+#~ msgid "Projekt Hochwasserrisikokarten"
+#~ msgstr "Projet Héichwaasserrisikokaarten"
+
+#~ msgid "mymaps_map"
+#~ msgstr "Link op d'Kaart"
+
+#~ msgid "measure.tooltip.profile"
+#~ msgstr "Héichteprofil"
+
+#~ msgid "mobile.features"
+#~ msgstr "Element(er)"
+
+#~ msgid "wg_niederschlag"
+#~ msgstr "Nidderschlag"
+
+#~ msgid "passage ou escalier"
+#~ msgstr "Duerchgang oder Trap"
+
+#~ msgid "serre"
+#~ msgstr "Serre"
+
+#~ msgid "mesurage.type.plan"
+#~ msgstr "Plang"
+
+#~ msgid "reserves_naturelles_date_classement"
+#~ msgstr "DATUM_SORTIERUNG"
+
+#~ msgid "Valid until"
+#~ msgstr "Gülteg bis"
+
+#~ msgid "can_district"
+#~ msgstr "Distrikt"
+
+#~ msgid "Longitude"
+#~ msgstr "Längegrad"
+
+#~ msgid "Keywords"
+#~ msgstr "Stëchwieder"
+
+#~ msgid "about that layer"
+#~ msgstr "Informatiounen zu dësem Datesatz"
+
+#~ msgid "que_hq100"
+#~ msgstr "Waasserspijel (T100)"
+
+#~ msgid "services de santé ou sociaux"
+#~ msgstr "Gesondheets- a Sozialservicer"
+
+#~ msgid "Do you really want to delete this feature ?"
+#~ msgstr "Wëllt Dir wierklech dest Objekt läschen ?"
+
+#~ msgid "wg_trinkwasserentnahmepunkte"
+#~ msgstr "Drénkwaasserentnamepunkten"
+
+#~ msgid "surface hydrographique"
+#~ msgstr "Waasserfläch"
+
+#~ msgid "Create point"
+#~ msgstr "Punkt zeechnen"
+
+#~ msgid "No metadata for this layer"
+#~ msgstr "Et si keng Metadaten fir dëse Layer verfügbar"
+
+#~ msgid "gare ou halte"
+#~ msgstr "Zuchgare oder arrêt"
+
+#~ msgid "Überschwemmungsgebiete"
+#~ msgstr "Iwwerschwemmungsgebieter"
+
+#~ msgid "themeswitcher.link_prefix"
+#~ msgstr "Thema :&nbsp;"
+
+#~ msgid "print action"
+#~ msgstr "Drécken"
+
+#~ msgid "Gesundheit une Sicherheit"
+#~ msgstr "Gesondheet a Sécherheet"
+
+#~ msgid "mymaps.unsupportedfiletitle"
+#~ msgstr "Dateitipp net ënnerstëtzt"
+
+#~ msgid "mobile.redirect_msg"
+#~ msgstr ""
+#~ "Dir benotzt d’ mobil Versioun. Dir kënnt och d’Standardversioun <a "
+#~ "href='${url}'>benotzen</a>."
+
+#~ msgid "wg_hauptgewasser"
+#~ msgstr "Haaptgewässer"
+
+#~ msgid "secteurs_ecologiques_secteur"
+#~ msgstr "SEKTOR"
+
+#~ msgid "par_512"
+#~ msgstr "Kiefeg"
+
+#~ msgid "mymaps.comment.failure"
+#~ msgstr "Problem beim Fortschécken vun ärem Kommentar."
+
+#~ msgid "bâtiment industriel ou artisanal"
+#~ msgstr "Industrie- oder Handwierksgebai"
+
+#~ msgid "bâtiment complété à partir d'un survol aérien"
+#~ msgstr "Gebai dat op Basis vu Loftopnahmen komplétéiert ass"
+
+#~ msgid "Print"
+#~ msgstr "Drécken"
+
+#~ msgid "Delete feature"
+#~ msgstr "Läschen"
+
+#~ msgid "Opacity"
+#~ msgstr "Duerchsiichtegkeet"
+
+#~ msgid "mesurage.type.legende"
+#~ msgstr "Légende"
+
+#~ msgid "geoadmin.profile.help"
+#~ msgstr "Zeechent eng Linn op der Kaart. Duebelklick fir opzehalen."
+
+#~ msgid "mymaps.form.title"
+#~ msgstr "Titel"
+
+#~ msgid "bâtiment à usage mixte"
+#~ msgstr "Gemëscht Gebai"
+
+#~ msgid "que_type"
+#~ msgstr "Typ"
+
+#~ msgid "Axes routiers (LDEN)"
+#~ msgstr "Stroossekaméidi 2011 (LDEN)"
+
+#~ msgid "mymaps.redlining_disabled"
+#~ msgstr ""
+#~ "Zeechenfonktiounen sin während dem Editéiren vun enger Kaart ausgeschalt"
+
+#~ msgid "bois"
+#~ msgstr "Bësch"
+
+#~ msgid "que_wsp_aufnah"
+#~ msgstr "Waasserspijel"
+
+#~ msgid "jump_to_catalog"
+#~ msgstr "An de Katalog sprangen"
+
+#~ msgid "Valid from"
+#~ msgstr "Gülteg vun"
+
+#~ msgid "wg_wassertiefe_hq_200"
+#~ msgstr "200-jährlech Héichwaasserdéift"
+
+#~ msgid "par_604"
+#~ msgstr "Gemengewee"
+
+#~ msgid "a_A4_landscape"
+#~ msgstr "A4 Landscape"
+
+#~ msgid "mymaps.no_map"
+#~ msgstr "Keng Kaart verfügbar"
+
+#~ msgid "par_600"
+#~ msgstr "Autobunn"
+
+#~ msgid "Log off"
+#~ msgstr "Ausloggen"
+
+#~ msgid "Stations météo"
+#~ msgstr "Wiederstatiounen"
+
+#~ msgid "peuplements_semenciers_numero"
+#~ msgstr "NUMMER"
+
+#~ msgid "mymaps.comment.invalidCaptcha"
+#~ msgstr "Dir hutt ee falsche Sëcherheetscode agin."
+
+#~ msgid "par_num_cadast"
+#~ msgstr "Kadasternummer"
+
+#~ msgid "construction légère"
+#~ msgstr "Liicht Konstruktioun"
+
+#~ msgid "mymaps_map_explanation"
+#~ msgstr "Klickt op de Link fir méi Detailler iwwert d'Kaart ze gesinn"
+
+#~ msgid "station de pompage"
+#~ msgstr "Pompelstatioun"
+
+#~ msgid "centre polyvalent"
+#~ msgstr "Mehrzweckgebai"
+
+#~ msgid "wg_nitrat_ober"
+#~ msgstr "Iwwerflächengewässer (Nitratveruerdnung)"
+
+#~ msgid "wg_wassertiefe_hq_100"
+#~ msgstr "100-jährlech Héichwaasserdéift"
+
+#~ msgid "mesurage.type.nouvelleConstruction"
+#~ msgstr "Neibau"
+
+#~ msgid "wg_badegewasser"
+#~ msgstr "Badegewässer"
+
+#~ msgid "Veuillez vous identifier"
+#~ msgstr "Authentifizéiert Iech w.e.g."
+
+#~ msgid "measure.text.panel"
+#~ msgstr "Tool auswielen <br/> (mat Duebelklick oofschléissen)"
+
+#~ msgid "par_510"
+#~ msgstr "Bebaute Plaz"
+
+#~ msgid "Rating"
+#~ msgstr "Bewertung"
+
+#~ msgid "wg_uesg_1993_(ausser_mosel)"
+#~ msgstr "ISG 1993 (ausser Musel)"
+
+#~ msgid "bool1"
+#~ msgstr "bool1"
+
+#~ msgid "bool0"
+#~ msgstr "bool0"
+
+#~ msgid "Wasserrahmenrichtlinie"
+#~ msgstr "Waasserramerichtlinn"
+
+#~ msgid "measure.tooltip.length"
+#~ msgstr "Distanz"
+
+#~ msgid "Symbol"
+#~ msgstr "Symbol"
+
+#~ msgid "flik_code_sect"
+#~ msgstr "Kadastersektioun"
+
+#~ msgid "rochers"
+#~ msgstr "Fielsen"
+
+#~ msgid "zoomin"
+#~ msgstr "Razoomen"
+
+#~ msgid "Cities_labels"
+#~ msgstr "Gemengen (Nimm)"
+
+#~ msgid "azimut_measurement_help"
+#~ msgstr ""
+#~ "Klickt an d'Kaart fir de Wënkel, d'Distanz an d'Héichtendifferenz "
+#~ "tëschent zwee Punkten ze rechnen"
+
+#~ msgid "reserves_naturelles_totalite_date_classement"
+#~ msgstr "DATUM_SORTIERUNG"
+
+#~ msgid "wg_grundwasser"
+#~ msgstr "Grondwaasser"
+
+#~ msgid "wg_timis_hochwasser_intensitaten_hq100"
+#~ msgstr "Intensitéit 100-jährlecht HW"
+
+#~ msgid "mymaps.rating_ok"
+#~ msgstr "Är Meenung guff berücksichtegt. Merci."
+
+#~ msgid "Axes ferroviaires (LDEN)"
+#~ msgstr "Eisebunnskaméidi 2011 (LDEN)"
+
+#~ msgid "PDF"
+#~ msgstr "Drécken"
+
+#~ msgid "Chercher adresse"
+#~ msgstr "Adress sichen"
+
+#~ msgid "fontaine"
+#~ msgstr "Buer"
+
+#~ msgid "transformateur"
+#~ msgstr "Transformator"
+
+#~ msgid "Taxi"
+#~ msgstr "Taxi"
+
+#~ msgid "wg_wassertiefe_hq_extrem"
+#~ msgstr "Extrem Héichwaasserdéift"
+
+#~ msgid "mymaps.area"
+#~ msgstr "Fläch : ${area}"
+
+#~ msgid "zoomout"
+#~ msgstr "Rauszoomen"
+
+#~ msgid "permalink action"
+#~ msgstr "Link"
+
+#~ msgid "file_sent_by_mail"
+#~ msgstr "[geoportail.lu] Eng Datei fir Iech"
+
+#~ msgid "Link here"
+#~ msgstr "Heihin verlinken"
+
+#~ msgid "Messstationen WRRL"
+#~ msgstr "Miessstatiounen (WRRL)"
+
+#~ msgid "par_205"
+#~ msgstr "Becken"
+
+#~ msgid "wg_timis_ueberflutungsflachen_hq100"
+#~ msgstr "ISG 100-jährlech"
+
+#~ msgid "wg_bodentemperatur"
+#~ msgstr "Buedemtemperatur"
+
+#~ msgid "mymaps.ratings"
+#~ msgstr "Meenung(en)"
+
+#~ msgid "Distance measurement (double-click to terminate)"
+#~ msgstr "Distanz moossen (Doppelklick fier oofzeschléissen)"
+
+#~ msgid "remove layer"
+#~ msgstr "Datesaz läschen"
+
+#~ msgid "Asta"
+#~ msgstr "Agrikulturdaten"
+
+#~ msgid "parking"
+#~ msgstr "Parkplaz"
+
+#~ msgid "asta_flik_parcels"
+#~ msgstr "FLIK Parzellen 2011"
+
+#~ msgid "Limitation"
+#~ msgstr "Aschränkungen fir den öffentlëchen Zougang"
+
+#~ msgid "portail_environnement_link_title"
+#~ msgstr "portail_environnement_link_title"
+
+#~ msgid "Energiequellen"
+#~ msgstr "Energiequellen"
+
+#~ msgid ""
+#~ "Rajoutez des points en cliquant dans la carte ou en cherchant des adresses"
+#~ msgstr ""
+#~ "Dir kënnt Punkten définéiren, andeems der eng Adress an dem Sichfeld "
+#~ "ënnendrënner antippt oder andeems der an d'Kaart klickt, nodeems der op "
+#~ "de Knäppchen hei uewendriwwer geklickt hutt. <br><br>Wann ee Punkt op der "
+#~ "Kaart ugewise gett, kënnt der en bewegen andeems der drop klickt an en "
+#~ "dann matt der Maus verschiebt."
+
+#~ msgid "voie ferrée"
+#~ msgstr "Eisebunn"
+
+#~ msgid "non défini"
+#~ msgstr "ondéfinéiert"
+
+#~ msgid "wg_uesg_1983___mosel"
+#~ msgstr "ISG 1983 - Musel"
+
+#~ msgid "wg_timis_wassertiefe_hq10"
+#~ msgstr "Déift 10 jährlecht HW"
+
+#~ msgid "Meteorologie"
+#~ msgstr "Meteorologie"
+
+#~ msgid "Pan"
+#~ msgstr "Kaart verschieben"
+
+#~ msgid "reserves_naturelles_totalite_code_national"
+#~ msgstr "CODE_NATIONAL"
+
+#~ msgid "Bewirtschaftungsplan"
+#~ msgstr "Bewirtschaftungsplang"
+
+#~ msgid "Actions"
+#~ msgstr "Aktiounen"
+
+#~ msgid "peuplements_semenciers_admis"
+#~ msgstr "ANGENOMMEN"
+
+#~ msgid "accessibility.print_tooltip"
+#~ msgstr "Mëcht des Hellefsait an enger neier Fenster op an print se"
+
+#~ msgid "Delete object"
+#~ msgstr "Objekt läschen"
+
+#~ msgid "pixelmaps-gray"
+#~ msgstr "Topografesch Kaart S/W"
+
+#~ msgid "mo6"
+#~ msgstr "d'Kille vu Liewensmëttel sou wéi Gedrénks mat fléissendem Waasser"
+
+#~ msgid "bat_120"
+#~ msgstr "Waassertank"
+
+#~ msgid "bat_121"
+#~ msgstr "Kläranlag"
+
+#~ msgid "bat_122"
+#~ msgstr "Schoulgebai"
+
+#~ msgid "secteurs_ecologiques_region"
+#~ msgstr "REGION"
+
+#~ msgid "bat_124"
+#~ msgstr "Mehrzweckgebai"
+
+#~ msgid "bat_125"
+#~ msgstr "Zuch Infrastruktur"
+
+#~ msgid "bat_126"
+#~ msgstr "Ënnerierdescht Gebai"
+
+#~ msgid "bat_128"
+#~ msgstr "Garage"
+
+#~ msgid "bat_129"
+#~ msgstr "Liicht Konstruktioun"
+
+#~ msgid "Mot de passe"
+#~ msgstr "Passwuert"
+
+#~ msgid "jump_to_layer_selection"
+#~ msgstr "An d'Layerauswiel sprangen"
+
+#~ msgid "wg_querprofile"
+#~ msgstr "Querprofiler"
+
+#~ msgid "que_hqext"
+#~ msgstr "Waasserspijel (T extrem)"
+
+#~ msgid "par_550"
+#~ msgstr "Militäreschen Terrain"
+
+#~ msgid "Layer metadata"
+#~ msgstr "Komplett Metadaten"
+
+#~ msgid "triages_nom"
+#~ msgstr "NAME"
+
+#~ msgid "mymaps.zoom_to"
+#~ msgstr "Zoomen"
+
+#~ msgid "wg_timis_hochwasser_intensitaten_ehq"
+#~ msgstr "Intensitéit Extremt HW"
+
+#~ msgid "loadingText"
+#~ msgstr "Lueden Daten ..."
+
+#~ msgid "hide column"
+#~ msgstr "Layerlëscht verstoppen"
+
+#~ msgid "d_A3_portrait"
+#~ msgstr "A3 Portrait"
+
+#~ msgid "Chasse"
+#~ msgstr "Juegd"
+
+#~ msgid "Fill color"
+#~ msgstr "Fëllfaarf"
+
+#~ msgid "reserves_dig_nom"
+#~ msgstr "NAME"
+
+#~ msgid "disclaimer title"
+#~ msgstr "Legal Aspekter"
+
+#~ msgid "par_650"
+#~ msgstr "Schleis"
+
+#~ msgid "par_651"
+#~ msgstr "Hafen"
+
+#~ msgid "Hochwasserrisikokarten (100-jährlich)"
+#~ msgstr "Héichwaasserrisikokaarten (100-järleg)"
+
+#~ msgid "Modellierte Überschwemmungsgebiete nach TIMIS"
+#~ msgstr "Modeléiert Iwwerschwemmungsgebieter"
+
+#~ msgid "mo3"
+#~ msgstr "d'Wäsche vun Autoen, ausser a professionnele Wäschanlagen"
+
+#~ msgid "wg_stausee_sauer"
+#~ msgstr "Stausee Sauer"
+
+#~ msgid "wg_intensitaet_hq_50"
+#~ msgstr "Intensitéit 50-jährlecht Héichwaasser"
+
+#~ msgid "wg_nebengewasser"
+#~ msgstr "Niewegewässer"
+
+#~ msgid "mymaps.loading"
+#~ msgstr "Lueden"
+
+#~ msgid "mf.print.mapTitle"
+#~ msgstr "Titel"
+
+#~ msgid "Secteurs écologiques"
+#~ msgstr "Ökologesch Gebidder"
+
+#~ msgid "par_300"
+#~ msgstr "Akerland"
+
+#~ msgid "distance"
+#~ msgstr "Distanz"
+
+#~ msgid "NG95"
+#~ msgstr "NG95"
+
+#~ msgid "You can add only 5 layers in the layer tree."
+#~ msgstr "Dir kënnt nëmmen 15 Layeren auswielen."
+
+#~ msgid "mymaps.create_new"
+#~ msgstr "Nei Kaart erstellen"
+
+#~ msgid "All my public maps"
+#~ msgstr "All méng ëffentlech Kaarten"
+
+#~ msgid "blind warning"
+#~ msgstr ""
+#~ "Dëst ass eng kartographësch Applikatioun an domatt net fir Blanner "
+#~ "optimiséiert."
+
+#~ msgid "reserves_dig_code_national"
+#~ msgstr "CODE_NATIONAL"
+
+#~ msgid "infrastructure ferroviaire"
+#~ msgstr "Zuch Infrastruktur"
+
+#~ msgid "zone industrielle"
+#~ msgstr "Industriezon"
+
+#~ msgid "mo5"
+#~ msgstr "d'Botze vun Trottoiren, Garagenafahrten an Häff"
+
+#~ msgid "lots_chasse_responsable"
+#~ msgstr "VERANTWORTLICH"
+
+#~ msgid "par_420"
+#~ msgstr "Depot"
+
+#~ msgid "par_301"
+#~ msgstr "Weed"
+
+#~ msgid "Versorgungswirtschaft und staatliche Dienste"
+#~ msgstr "Versuergungs- an öffentlech Déngschter"
+
+#~ msgid "Camion"
+#~ msgstr "Camion"
+
+#~ msgid "Create line"
+#~ msgstr "Linn zeechnen"
+
+#~ msgid "reserves_naturelles_code_national"
+#~ msgstr "CODE_NATIONAL"
+
+#~ msgid "mymaps.import"
+#~ msgstr "Importéiren"
+
+#~ msgid "Layer Selection"
+#~ msgstr "Auswiel"
+
+#~ msgid "dis_name"
+#~ msgstr "Distrikt"
+
+#~ msgid "wg_klaranlagen"
+#~ msgstr "Kläranlagen"
+
+#~ msgid "lots_chasse_numero"
+#~ msgstr "NUMMER"
+
+#~ msgid "wg_provisorische_trinkwasser_schutzzonen"
+#~ msgstr "Provisoresch Drénkwaasserschutzgebidder"
+
+#~ msgid "mymaps.advanced"
+#~ msgstr "Erweidert Optiounen"
+
+#~ msgid "nat_code"
+#~ msgstr "Code"
+
+#~ msgid "Parcelles FLIK viticoles 2012"
+#~ msgstr "FLIK Referenzparzellen Wéngerten 2012"
+
+#~ msgid "yellow 2"
+#~ msgstr "yellow 2"
+
+#~ msgid "radius"
+#~ msgstr "Radius"
+
+#~ msgid "adr_numero"
+#~ msgstr "Nummer"
+
+#~ msgid "Sentiers Nature"
+#~ msgstr "Sentiers Nature"
+
+#~ msgid "reserves_forestieres_nom"
+#~ msgstr "NAME"
+
+#~ msgid "Artenvielfalt"
+#~ msgstr "Artevillfalt"
+
+#~ msgid "jardin"
+#~ msgstr "Gaart"
+
+#~ msgid "communes_gdl"
+#~ msgstr "Gemengen vum Groussherzogtum Lëtzebuerg"
+
+#~ msgid "Critères"
+#~ msgstr "Critèren"
+
+#~ msgid "poste électrique"
+#~ msgstr "Elektrizitéitswierk"
+
+#~ msgid "Carte géologique générale"
+#~ msgstr "Geologësch Iwwersiichtskaart"
+
+#~ msgid "chemin repris"
+#~ msgstr "Landstrooss"
+
+#~ msgid "aire de loisirs"
+#~ msgstr "Plaz fir Fräizäitaktivitéiten"
+
+#~ msgid "Next view"
+#~ msgstr "No vir"
+
+#~ msgid "showdetail_tooltip"
+#~ msgstr "Méi Infos zu desem Layer"
+
+#~ msgid "terre labourable"
+#~ msgstr "Akerland"
+
+#~ msgid "wg_wrrl_oberflachenwasserkorper"
+#~ msgstr "Iwwerflächenwaasserkierper"
+
+#~ msgid "Do you really want to delete all features ?"
+#~ msgstr "Wëllt Dir wierklech all Objekter läschen ?"
+
+#~ msgid "mymaps.back_to_list"
+#~ msgstr "Lëscht vun de Kaarten"
+
+#~ msgid "décharge"
+#~ msgstr "Tipp"
+
+#~ msgid "piscine"
+#~ msgstr "Schwämm"
+
+#~ msgid "Referenzsysteme"
+#~ msgstr "Referenzsystemer"
+
+#~ msgid "que_hq50"
+#~ msgstr "Waasserspijel (T50)"
+
+#~ msgid "Delete all features"
+#~ msgstr "All Objekter läschen"
+
+#~ msgid "Close"
+#~ msgstr "Zoumaachen"
+
+#~ msgid "TOPO_CARTESHISTO_1952"
+#~ msgstr "Topografesch Kaart 1:20k 1952 S/W"
+
+#~ msgid "asta_link_title"
+#~ msgstr "asta_link_title"
+
+#~ msgid "map_sent_by_mail"
+#~ msgstr "[geoportail.lu] Eng Kaart fir Iech"
+
+#~ msgid "phase1"
+#~ msgstr "Orange"
+
+#~ msgid "Elevation offset:"
+#~ msgstr "Héichtendifferenz : "
+
+#~ msgid "wg_intensitaet_hq_100"
+#~ msgstr "Intensitéit 100-jährlecht Héichwaasser"
+
+#~ msgid "Piéton"
+#~ msgstr "Foussgänger"
+
+#~ msgid "Font color"
+#~ msgstr "Faarf vun der Schrëft"
+
+#~ msgid "mymaps.export.txt"
+#~ msgstr "Exportéiren"
+
+#~ msgid "piste cyclable"
+#~ msgstr "Veloswee"
+
+#~ msgid "par_910"
+#~ msgstr "Naturreservat"
+
+#~ msgid "par_913"
+#~ msgstr "Industriezon"
+
+#~ msgid "Elevation:"
+#~ msgstr "Héicht : "
+
+#~ msgid "mymaps.comment.success"
+#~ msgstr "Kommentar erfollëgreich fortgeschéckt."
+
+#~ msgid "rivière"
+#~ msgstr "Floss"
+
+#~ msgid "bat_147"
+#~ msgstr "Gebai a Copropriétéit"
+
+#~ msgid "mymaps.public"
+#~ msgstr "Ëffentlech"
+
+#~ msgid "mymaps.saved"
+#~ msgstr "Gespäichert"
+
+#~ msgid "mymaps.color"
+#~ msgstr "Faarf"
+
+#~ msgid "carrière"
+#~ msgstr "Steebroch"
+
+#~ msgid "mf.print.print"
+#~ msgstr "PDF"
+
+#~ msgid "par_500"
+#~ msgstr "Plaz"
+
+#~ msgid "par_614"
+#~ msgstr "Strooss"
+
+#~ msgid "Map URL"
+#~ msgstr "Deen ënnestoende Link an eng Email abannen"
+
+#~ msgid "show column"
+#~ msgstr "Layerlëscht uweisen"
+
+#~ msgid "plantation"
+#~ msgstr "Planzung"
+
+#~ msgid "geoadmin.profile"
+#~ msgstr "Héichteprofil"
+
+#~ msgid "arrondissements_nom"
+#~ msgstr "NAME"
+
+#~ msgid "nat_type"
+#~ msgstr "Typ"
+
+#~ msgid "wg_uesg_200_jaehrlich"
+#~ msgstr "ISG 200-jährlech"
+
+#~ msgid "Biologie"
+#~ msgstr "Biologie"
+
+#~ msgid "search_label"
+#~ msgstr "Geografesch Sich"
+
+#~ msgid "geoseo_commune_layer_txt"
+#~ msgstr ""
+#~ "Hei fannt dir eng Duerstellung vun dem Layer an der Gemeng, déi dir "
+#~ "ausgewielt hutt. Ee Klick op den Numm vum Layer brëngt Iech direkt an de "
+#~ "Geoportal."
+
+#~ msgid "geoseo_themes_txt"
+#~ msgstr ""
+#~ "Klickt op den Numm vun engem Thema fir all d'Layeren vun deem Thema "
+#~ "ugewisen ze kréien."
+
+#~ msgid ""
+#~ "double clic pour enlever un point, cliquer-glisser pour changer l'ordre"
+#~ msgstr ""
+#~ "Duebelklick fir ee Punkt ze läschen, Drag&Drop fir d'Reihefolg ze änneren"
+
+#~ msgid "elevation"
+#~ msgstr "Héicht"
+
+#~ msgid "move layer up"
+#~ msgstr "Layer-Reihenfolg änneren"
+
+#~ msgid "bat_118"
+#~ msgstr "Pompelstatioun"
+
+#~ msgid "Profile"
+#~ msgstr "Héichteprofil"
+
+#~ msgid "chemin communal"
+#~ msgstr "Gemengewee"
+
+#~ msgid "héliport"
+#~ msgstr "Heliport"
+
+#~ msgid "mymaps.linkmsg"
+#~ msgstr "Kopéiert folgende Link, fir en un är Frënn weiderzeleeden: "
+
+#~ msgid "wg_trinkwassersyndikate"
+#~ msgstr "Drénkwaassersyndikater"
+
+#~ msgid "wg_kilometrierung_hauptgewasser"
+#~ msgstr "Kilometréierung Haaptgewässer"
+
+#~ msgid "mymaps.modify"
+#~ msgstr "Editéiren"
+
+#~ msgid "Hochwasserrisikokarten (extrem)"
+#~ msgstr "Héichwaasserrisikokaarten (extrem)"
+
+#~ msgid "phytosociologie_code"
+#~ msgstr "CODE"
+
+#~ msgid "bat_117"
+#~ msgstr "Transformator"
+
+#~ msgid "Distance"
+#~ msgstr "Distanz"
+
+#~ msgid "J'ai perdu mon mot de passe"
+#~ msgstr "Ech hu mäi Passwuert verluer"
+
+#~ msgid "mymaps.leavecomment"
+#~ msgstr "Kommentar verfaassen"
+
+#~ msgid "mymaps_feature_name"
+#~ msgstr "Numm"
+
+#~ msgid "bat_105"
+#~ msgstr "Speziellt oder klasséiert Gebai"
+
+#~ msgid "bat_110"
+#~ msgstr "Liicht Konstruktioun"
+
+#~ msgid "measure.text.button"
+#~ msgstr "Moossen"
+
+#~ msgid "com_canton"
+#~ msgstr "Kanton"
+
+#~ msgid "red 2"
+#~ msgstr "red 2"
+
+#~ msgid "mo1"
+#~ msgstr "d'Opfëlle vu Schwämme mat enger Kapazitéit vun iwwert 2 Kubikmeter"
+
+#~ msgid "mymaps.uploadimagetip"
+#~ msgstr "Bild derbäisetzen oder änneren"
+
+#~ msgid "mo7"
+#~ msgstr ""
+#~ "d'Verwenne vum Waasser aus dem ëffentlesche Versuergungsnetz zu "
+#~ "Klimatiséierungszwecker, ausser wann et wierklech néideg ass"
+
+#~ msgid "wg_timis_ueberflutungsflachen_ehq"
+#~ msgstr "ISG extrem"
+
+#~ msgid "mo4"
+#~ msgstr "d'Opfëlle vu Reewaasserbehälter, ausser fir hygienesch Zwecker"
+
+#~ msgid "mymaps.linestyle"
+#~ msgstr "Linestyle"
+
+#~ msgid "mymaps.defaulttitle"
+#~ msgstr "Ouni Titel"
+
+#~ msgid "help url"
+#~ msgstr ""
+#~ "http://wiki.geoportal.lu/doku.php?id=lu:index#mapgeoportail_-"
+#~ "_mapgeoportaillu"
+
+#~ msgid "TOPO_CARTESHISTO_1987"
+#~ msgstr "Topografesch Kaart 1:20k 1987 S/W"
+
+#~ msgid "wg_kontrollpunkte"
+#~ msgstr "Iwwerwaachungspunkten"
+
+#~ msgid "Pistes cyclables nationales"
+#~ msgstr "National Velosweeër"
+
+#~ msgid "par_302"
+#~ msgstr "Wis"
+
+#~ msgid "par_303"
+#~ msgstr "Brooch"
+
+#~ msgid "Description"
+#~ msgstr "Beschreiwung"
+
+#~ msgid "previous"
+#~ msgstr "No hannen"
+
+#~ msgid "Gebiete mit naturbedingten Risiken"
+#~ msgstr "Gebidder matt natierleche Risiken"
+
+#~ msgid "eau_phase_orange"
+#~ msgstr "Phase Orange"
+
+#~ msgid "Weitere Messstationen"
+#~ msgstr "Weider météorologesch Miesstatiounen"
+
+#~ msgid "com_district"
+#~ msgstr "Distrikt"
+
+#~ msgid "pixelmap-color attribution"
+#~ msgstr "Topografesch Kaart: ACT"
+
+#~ msgid "bâtiment état futur achèvement"
+#~ msgstr "Nach net fäerdegt Gebai"
+
+#~ msgid "Baumgruppe"
+#~ msgstr "Bamgrupp"
+
+#~ msgid "bat_119"
+#~ msgstr "Waassertuurm"
+
+#~ msgid "mymaps.invalidfeatures"
+#~ msgstr "Verschidden Objekter konnten net importéiert wgin"
+
+#~ msgid "themeswitcher.tooltip"
+#~ msgstr "Een anert Thema wielen"
+
+#~ msgid "wg_grundwasserleiter"
+#~ msgstr "Grondwaasserleeder"
+
+#~ msgid "mymaps.link_tip"
+#~ msgstr "Klickt hier, fir ee Link ob des Kaart ze kréien."
+
+#~ msgid "bat_116"
+#~ msgstr "Elektrizitéitswierk"
+
+#~ msgid "bat_111"
+#~ msgstr "Speziell Konstruktioun"
+
+#~ msgid "mymaps.delete_tip"
+#~ msgstr ""
+#~ "Dir kënnt ee Punkt vun der Linn läschen, andeems der mat der Maus "
+#~ "dropgitt an d'Tast 'Del' oder 'D' dréckt"
+
+#~ msgid "bat_113"
+#~ msgstr "Brennstofftank"
+
+#~ msgid "bat_112"
+#~ msgstr "Monument"
+
+#~ msgid "Sentiers"
+#~ msgstr "Pied"
+
+#~ msgid "b_A4_portrait"
+#~ msgstr "A4 Portrait"
+
+#~ msgid "par_541"
+#~ msgstr "Schwämm"
+
+#~ msgid "par_contenance"
+#~ msgstr "Flächeninhalt"
+
+#~ msgid "par_545"
+#~ msgstr "Sportsfeld"
+
+#~ msgid "par_623"
+#~ msgstr "Plaz déi zur Strooss gehéiert"
+
+#~ msgid "par_622"
+#~ msgstr "Parkplaz"
+
+#~ msgid "par_621"
+#~ msgstr "Maarkt"
+
+#~ msgid "accessibility.print"
+#~ msgstr "Des Hëllef printen (nei Fenster)"
+
+#~ msgid "construction souterraine"
+#~ msgstr "Ënnerierdescht Gebai"
+
+#~ msgid "par_611"
+#~ msgstr "Veloswee"
+
+#~ msgid "User generated public maps"
+#~ msgstr "Vu Benotzer publizéierte Contenu"
+
+#~ msgid "mymaps_feature_length"
+#~ msgstr "Längt"
+
+#~ msgid "garage"
+#~ msgstr "Garage"
+
+#~ msgid "Hydrologische Messtationen"
+#~ msgstr "Hydrologische Messtationen"
+
+#~ msgid "heightdiffplus"
+#~ msgstr "Biergop"
+
+#~ msgid "haie"
+#~ msgstr "Heck"
+
+#~ msgid "wg_kilometrierung_nebengewasser"
+#~ msgstr "Kilometréierung Niewegewässer"
+
+#~ msgid "Warning Internet Explorer 6"
+#~ msgstr "Warnung Internet Explorer 6"
+
+#~ msgid "Interdiction pour"
+#~ msgstr "Verbuet fir"
+
+#~ msgid "mymaps.reverse"
+#~ msgstr "Richtung emdréien"
+
+#~ msgid "par_532"
+#~ msgstr "Plaz fir Fräizäitaktivitéiten"
+
+#~ msgid "arbres_remarquables_coord_x"
+#~ msgstr "X"
+
+#~ msgid "Le plus rapide"
+#~ msgstr "Schnellste Wee"
+
+#~ msgid "Catalog"
+#~ msgstr "Katalog"
+
+#~ msgid "asta_flik_parcels_2013"
+#~ msgstr "FLIK Parzellen 2013"
+
+#~ msgid "sec_canton"
+#~ msgstr "Kanton"
+
+#~ msgid "verger"
+#~ msgstr "Uebst"
+
+#~ msgid "f_A2_landscape"
+#~ msgstr "A2 Landscape"
+
+#~ msgid "Atmosphärische Bedingungen"
+#~ msgstr "Atmosphäresch Bedingungen"
+
+#~ msgid "wg_wassertiefe_hq_50"
+#~ msgstr "50-jährlech Héichwaasserdéift"
+
+#~ msgid "Mauvais identifiant ou mot de passe"
+#~ msgstr "Falsche Benotzernumm oder Passwuert"
+
+#~ msgid "Voiture"
+#~ msgstr "Auto"
+
+#~ msgid "par_120"
+#~ msgstr "ondéfinéiert"
+
+#~ msgid "wg_timis_ueberflutungsflachen_hq10"
+#~ msgstr "ISG 10-jährlech"
+
+#~ msgid "mymaps_feature_label"
+#~ msgstr "Label"
+
+#~ msgid "Save context"
+#~ msgstr "Kontext speicheren"
+
+#~ msgid "Link to object"
+#~ msgstr "Link op dësen Objet"
+
+#~ msgid "mf.information"
+#~ msgstr "Print-Dokument "
+
+#~ msgid "mymaps.sent"
+#~ msgstr "Geschéckt"
+
+#~ msgid "Edit Feature"
+#~ msgstr "Objekt editéiren"
+
+#~ msgid "rue"
+#~ msgstr "Strooss"
+
+#~ msgid "wg_uesg_extrem"
+#~ msgstr "ISG Extrem"
+
+#~ msgid "mymaps.send"
+#~ msgstr "Schécken"
+
+#~ msgid "place (occupée)"
+#~ msgstr "Bebaute Plaz"
+
+#~ msgid "Réinitialiser"
+#~ msgstr "Reinitialiséiren"
+
+#~ msgid "Square"
+#~ msgstr "Quadrat"
+
+#~ msgid "par_999"
+#~ msgstr "Mehrfachnotzung"
+
+#~ msgid "file_sent_by_mail_content"
+#~ msgstr ""
+#~ "Di ugehaangen Datei ass Iech vun engem Notzer vun der mobiler Geoportal "
+#~ "App geschëckt ginn"
+
+#~ msgid "tools.text.accessibility_note"
+#~ msgstr "Des Tools setzen eng Maus firaus"
+
+#~ msgid "Create circle"
+#~ msgstr "Krees zeechnen"
+
+#~ msgid "flik_commune"
+#~ msgstr "Kadastergememg"
+
+#~ msgid "Search data..."
+#~ msgstr "Daten suchen..."
+
+#~ msgid "arbres_remarquables_type"
+#~ msgstr "Typ"
+
+#~ msgid "mymaps_feature_description"
+#~ msgstr "Beschreiwung"
+
+#~ msgid "com_name"
+#~ msgstr "Gemeng"
+
+#~ msgid "bâtiment commercial"
+#~ msgstr "Geschäftsgebai"
+
+#~ msgid "Download as GPX"
+#~ msgstr "Als GPX-Datei rooflueden"
+
+#~ msgid "par_323"
+#~ msgstr "Uebst"
+
+#~ msgid "measure.tooltip.azimut"
+#~ msgstr "Azimut"
+
+#~ msgid "Aéroport"
+#~ msgstr "Fluchhafen"
+
+#~ msgid "phase"
+#~ msgstr "Phase"
+
+#~ msgid "Données thématiques"
+#~ msgstr "Thematësch Daten"
+
+#~ msgid "voidLayer"
+#~ msgstr "Keen Hannergrond"
+
+#~ msgid "mymaps.form.description"
+#~ msgstr "Beschreiwung"
+
+#~ msgid "Hochwassergefahrenkarten (extrem)"
+#~ msgstr "Héichwaassergeforenkaarten (extrem)"
+
+#~ msgid "par_1000"
+#~ msgstr "ondéfinéiert"
+
+#~ msgid "canal"
+#~ msgstr "Kanal"
+
+#~ msgid "wg_einschrankung_warmepumpe"
+#~ msgstr "Aschränkungen Wärmepompelen"
+
+#~ msgid "contact title"
+#~ msgstr "Kontakt"
+
+#~ msgid "wg_timis_hochwasser_gefahrdungen"
+#~ msgstr "Geforenklassen"
+
+#~ msgid "mf.print.pdfReady"
+#~ msgstr "Ärt Dokument ass fäerdeg fir rofzelueden"
+
+#~ msgid "wg_trinkwasserbehalter"
+#~ msgstr "Drénkwaasserbehälter"
+
+#~ msgid "wg_timis_hochwasser_intensitaten_hq10"
+#~ msgstr "Intensitéit 10-jährlecht HW"
+
+#~ msgid "par_900"
+#~ msgstr "geodätesche Punkt"
+
+#~ msgid "redlining"
+#~ msgstr "Zeechnen"
+
+#~ msgid "mymaps.not_saved_modifications"
+#~ msgstr "Verännerungen net gespäichert"
+
+#~ msgid "Full map"
+#~ msgstr "Grouss Kaart"
+
+#~ msgid "proprietes_forestieres_propriete"
+#~ msgstr "BESITZ "
+
+#~ msgid "château d’eau"
+#~ msgstr "Waassertuurm"
+
+#~ msgid "mymaps.unsupportedfilemsg"
+#~ msgstr "Nëmme GPX oder KML - Dateien kënnen importéiert ginn."
+
+#~ msgid "mymaps.length"
+#~ msgstr "Längt : ${length}"
+
+#~ msgid "Occupation biophysique du sol 1999"
+#~ msgstr "Biotoptypenkartéirung 1999"
+
+#~ msgid "arial 12"
+#~ msgstr "arial 12"
+
+#~ msgid "par_natureCulture"
+#~ msgstr "Notzung"
+
+#~ msgid "arial 16"
+#~ msgstr "arial 16"
+
+#~ msgid "Landnutzung"
+#~ msgstr "Landnotzung"
+
+#~ msgid "mymaps.comment"
+#~ msgstr "Kommentar"
+
+#~ msgid "écluse"
+#~ msgstr "Schleis"
+
+#~ msgid "Cross"
+#~ msgstr "Kräiz"
+
+#~ msgid "mobiliteit_bikeshare_type"
+#~ msgstr "Typ"
+
+#~ msgid "searchQuicktip"
+#~ msgstr ""
+#~ "Hei kënnt dir noch Adressen, Parzellen, Uertschaften, Flouernimm oder "
+#~ "Koordinaten sichen.<p>E puer Beispiller: <li><b>Addressen: </b>Fir \"54, "
+#~ "avenue Gaston Diderich\" <i>tippt der 54 Did</i><li><b>Parzellen :</b> "
+#~ "Fir \"614/4236 zu Lëtzebuerg, Merl-Nord\" <i>tippt der 614/4236</i>"
+
+#~ msgid "Découpage Orthophotos"
+#~ msgstr "Bladschnëtt Orthophotos"
+
+#~ msgid "pixelmap-gray attribution"
+#~ msgstr "Topografesch Kaart S/W: ACT"
+
+#~ msgid "webbasemap"
+#~ msgstr "Basiskaart"
+
+#~ msgid "mymaps.export.feature.msg"
+#~ msgstr "Dësen Objet exportéiren"
+
+#~ msgid "bat_115"
+#~ msgstr "Sportszentrum"
+
+#~ msgid "scaleCombo_label"
+#~ msgstr "Auswiel vom Moossstab"
+
+#~ msgid "Arrêts"
+#~ msgstr "Weepunkten"
+
+#~ msgid "web browser warning"
+#~ msgstr ""
+#~ "Dës Säit ass net fir ären Browser optimiséiert. Mir empfehlen Iech, "
+#~ "Firefox ze benotzen."
+
+#~ msgid "Axes ferroviaires (LNGT)"
+#~ msgstr "Eisebunnskaméidi 2011 (LNGT)"
+
+#~ msgid "mymaps.infomsg"
+#~ msgstr ""
+#~ "\"Méng Kaarten\" erlaabt et, personaliséiert Kaarten (gelueden Layer an "
+#~ "geografesch Ausdehnung) ze erstellen an éigen Informatiounen (Punkten, "
+#~ "Linnen, Flächen, Texter) derbäi ze setzen. <br/> Dir kënnt d'Kaarten "
+#~ "ofspeicheren an un anerer weidergin ...<br/> Fir är éigen Karten ze "
+#~ "erstellen, musst dir Iech (uewe riets) aloggen. Falls der nach keen Konto "
+#~ "am Geoportal hutt, kënnt dir <a href=http://myaccount.geoportail.lu?"
+#~ "lang=lu target=\"_blank\">hei</a> een uleeën."
+
+#~ msgid "Sentiers nature"
+#~ msgstr "Naturpied"
+
+#~ msgid "wg_betrachtungsraume"
+#~ msgstr "Betrachtungsräume"
+
+#~ msgid "Arrêts de bus"
+#~ msgstr "Ëffentlechen Transport"
+
+#~ msgid "Operateur"
+#~ msgstr "Bedreiwer"
+
+#~ msgid "Station"
+#~ msgstr "Statioun"
+
+#~ msgid "par_202"
+#~ msgstr "Kanal"
+
+#~ msgid "Connection Voiture"
+#~ msgstr "Ubannung Auto"
+
+#~ msgid "Emprises Velo"
+#~ msgstr "Uschlëss Vëlo"
+
+#~ msgid "Connection Velo"
+#~ msgstr "Ubannung Vëlo"
+
+#~ msgid "Cout"
+#~ msgstr "Präis"
+
+#~ msgid "Open"
+#~ msgstr "Erreechbar"
+
+#~ msgid "k_A0_portrait"
+#~ msgstr "A0 Portrait"
+
+#~ msgid "i_A1_portrait"
+#~ msgstr "A1 Portrait"
+
+#~ msgid "h_A1_landscape"
+#~ msgstr "A1 Landscape"
+
+#~ msgid "Create label"
+#~ msgstr "Text agin"
+
+#~ msgid "arbres_remarquables_arbre_baum"
+#~ msgstr "Bam"
+
+#~ msgid "mf.print.generatingPDF"
+#~ msgstr "Print..."
+
+#~ msgid "monument"
+#~ msgstr "Monument"
+
+#~ msgid "New Circle with same center"
+#~ msgstr "Nach een konzentreschen Krees zeechnen"
+
+#~ msgid "Coordinates:"
+#~ msgstr "Koordinaten : "
+
+#~ msgid "wg_timis_wassertiefe_hq100"
+#~ msgstr "Déift 100 jährlecht HW"
+
+#~ msgid "Vélo"
+#~ msgstr "Velo"
+
+#~ msgid "bat_146"
+#~ msgstr "Gebaideel"
+
+#~ msgid "bat_145"
+#~ msgstr "Administrativt Gebai"
+
+#~ msgid "flik_numero"
+#~ msgstr "FLIK Nummer"
+
+#~ msgid "bat_148"
+#~ msgstr "Nach nit fäerdegt Gebai"
+
+#~ msgid "par_410"
+#~ msgstr "Schlaackentipp"
+
+#~ msgid "Latitude"
+#~ msgstr "Breetegrad"
+
+#~ msgid "Descriptif"
+#~ msgstr "Beschreiwung"
+
+#~ msgid "bâtiment remarquable ou classé"
+#~ msgstr "Speziellt oder klasséiert Gebai"
+
+#~ msgid "wg_kunstliche_(bassin)"
+#~ msgstr "Kënstleche Baséng"
+
+#~ msgid "geoadmin.profile.xLabel"
+#~ msgstr "Distanz (m)"
+
+#~ msgid "mymaps.no_category"
+#~ msgstr "-- Keng Kategorie --"
+
+#~ msgid "Outline color"
+#~ msgstr "Faarf vun der Linn"
+
+#~ msgid "mymaps_feature_area"
+#~ msgstr "Fläch"
+
+#~ msgid "par_mesurage"
+#~ msgstr "Leschte Mesurage"
+
+#~ msgid "Warning screen resolution"
+#~ msgstr "Warnung Bildschirmopléisung"
+
+#~ msgid "Temps"
+#~ msgstr "Zäit"
+
+#~ msgid "wg_abwasser_syndikate"
+#~ msgstr "Ofwaassersyndikater"
+
+#~ msgid "wg_uesg_alzette_1995"
+#~ msgstr "ISG Uelzecht 1995"
+
+#~ msgid "wg_nitratbelastung"
+#~ msgstr "Nitratbelaaschtung"
+
+#~ msgid "route nationale"
+#~ msgstr "Nationalstrooss"
+
+#~ msgid "broussailles"
+#~ msgstr "Gebësch"
+
+#~ msgid "wg_grundwasser_wrrl"
+#~ msgstr "Grondwaasser"
+
+#~ msgid "Type d'itinéraire"
+#~ msgstr "Berechnungsart"
+
+#~ msgid "flood_risk"
+#~ msgstr "Héichwaasserrisiken"
+
+#~ msgid "Wassertiefe"
+#~ msgstr "Waasserdéift"
+
+#~ msgid "app title"
+#~ msgstr "map.geoportail.lu"
+
+#~ msgid "reserves_naturelles_nom"
+#~ msgstr "NAME"
+
+#~ msgid "theme.eau"
+#~ msgstr "Waasser"
+
+#~ msgid "Boden"
+#~ msgstr "Buedem"
+
+#~ msgid "Energie und Wirtschaft"
+#~ msgstr "Energie a Wirtschaft"
+
+#~ msgid "dépôt"
+#~ msgstr "Depot"
+
+#~ msgid "par_920"
+#~ msgstr "Fielsen"
+
+#~ msgid "par_612"
+#~ msgstr "Pued"
+
+#~ msgid "Continue drawing"
+#~ msgstr "Objekt weiderzeechnen"
+
+#~ msgid "par_401"
+#~ msgstr "Carrière"
+
+#~ msgid "Bodenbedeckung"
+#~ msgstr "Buedembedeckung"
+
+#~ msgid "wg_timis_wassertiefe_ehq"
+#~ msgstr "Déift Extremt HW"
+
+#~ msgid "par_530"
+#~ msgstr "Camping"
+
+#~ msgid "Raumplanung"
+#~ msgstr "Raumplanung an -entwécklung"
+
+#~ msgid "Pas de mesures en cours"
+#~ msgstr "allgemeng Spuermoossnahmen ëmmer gëlteg"
+
+#~ msgid "Réserves"
+#~ msgstr "Schutzgebidder"
+
+#~ msgid "hide layer options"
+#~ msgstr "Layeroptiounen ausblenden"
+
+#~ msgid "Hochwasserrisikokarten (10-jährlich)"
+#~ msgstr "Héichwaasserrisikokaarten (10-järleg)"
+
+#~ msgid "Historische Überschwemmungsgebiete"
+#~ msgstr "Historech Iwwerschwemmungsgebieter"
+
+#~ msgid "Legend"
+#~ msgstr "mat Legend"
+
+#~ msgid "aerial attribution"
+#~ msgstr "Loftbild: ACT 2013"
+
+#~ msgid "mobiliteit_bikeshare_station"
+#~ msgstr "Statioun"
+
+#~ msgid "mobiliteit_bikeshare_adress"
+#~ msgstr "Adress"
+
+#~ msgid "mobiliteit_bikeshare_bornes"
+#~ msgstr "Bornen"
+
+#~ msgid "mobiliteit_bikeshare_ouvert"
+#~ msgstr "Erreechbar"
+
+#~ msgid "mobiliteit_bikeshare_link"
+#~ msgstr "Link"
+
+#~ msgid "mobiliteit_bikeshare_system"
+#~ msgstr "Service"
+
+#~ msgid "Parcelles FLIK viticoles 2013"
+#~ msgstr "FLIK Referenzparzellen Wéngerten 2013"
+
+#~ msgid "Parcelles viticoles 2013"
+#~ msgstr "Wéngerten 2013"
+
+#~ msgid "geoseo_addresses_txt"
+#~ msgstr ""
+#~ "Dës Säit weist all d'Adressen un, déi op geoportal.lu verlinkt sinn. "
+#~ "Klickt op den Numm vun enger Uertschaft, fir d'Lëscht vun Stroossen ze "
+#~ "gesinn."
+
+#~ msgid "mymaps.fontSize"
+#~ msgstr "Textgréisst"
+
+#~ msgid "geoseo_addresses_page_title"
+#~ msgstr "Index vun de Stroossen vun"
+
+#~ msgid "geoseo_addresses_localite_txt"
+#~ msgstr "Lëscht vun de Stroossen:"
+
+#~ msgid "geoseo_addresses_localite_rue_txt"
+#~ msgstr "Lëscht vun Hausnummeren, déi an der Strooss verlinkt sinn:"
+
+#~ msgid "geoseo_addresses_localite_rue_numero_txt"
+#~ msgstr ""
+#~ "Klickt op den Adresslink fir se op http://map.geoportail.lu opzemaan."
+
+#~ msgid "geoseo_adresses_meta_tags"
+#~ msgstr "Adress, Adressen, Lëtzebuerg, geoportal, Kaart"
+
+#~ msgid "geoseo_communes_meta_tags"
+#~ msgstr "Gemeng, Gemengen, Daten, Geodaten, Geoportal, Lëtzebuerg, Kaart"
+
+#~ msgid "addresses_gdl"
+#~ msgstr "Adressen vum Grossherzogtum Lëtzebuerg"
+
+#~ msgid "Information about popup"
+#~ msgstr "Informatiounen iwwert d'Popupfënster"
+
+#~ msgid "wg_uesg_sure_1995"
+#~ msgstr "ISG Sauer 1995"
+
+#~ msgid "Information about features style"
+#~ msgstr "Informatiounen iwwert d'Duerstellung vun Objeten"
+
+#~ msgid "Symbol Name"
+#~ msgstr "Numm vum Symbol"
+
+#~ msgid "Choose symbol"
+#~ msgstr "Wielt ee Symbol aus"
+
+#~ msgid "Angle"
+#~ msgstr "Wénkel"
+
+#~ msgid "Symbol tree"
+#~ msgstr "Symbolbam"
+
+#~ msgid "Add new user symbol"
+#~ msgstr "Neit Symbol bäifügen"
+
+#~ msgid "User Symbols"
+#~ msgstr "Symboler vum User"
+
+#~ msgid "Public Symbols"
+#~ msgstr "Ëffentlech Symboler"
+
+#~ msgid "Click to select the file to import in the library"
+#~ msgstr "Klickt, fir end Datei eropzelueden"
+
+#~ msgid "Available symbols"
+#~ msgstr "Verfügbar Symboler"
+
+#~ msgid "Symbol gallery"
+#~ msgstr "Symbolgallerie"
+
+#~ msgid "Import in file library"
+#~ msgstr "An d'Bibliothéik importéiren"
+
+#~ msgid "Aeroport (LDEN)"
+#~ msgstr "Fluchhafekaméidi 2011 (LDEN)"
+
+#~ msgid "Aeroport (LNGT)"
+#~ msgstr "Fluchhafekaméidi 2011 (LNGT)"
+
+#~ msgid "CAPA"
+#~ msgstr "Ausbaugréisst"
+
+#~ msgid "aucun supplement defintif pour vehicules de service"
+#~ msgstr "keng zousätzlech Parkplazen fir Déngschtween"
+
+#~ msgid "Nouvelle Zone / extension ?"
+#~ msgstr "Nei Zone / Erweiderung ?"
+
+#~ msgid "Projet"
+#~ msgstr "Projet"
+
+#~ msgid "Reclassement en"
+#~ msgstr "Emklasséierung an"
+
+#~ msgid "Superficie"
+#~ msgstr "Surface"
+
+#~ msgid "Type Zone"
+#~ msgstr "Typ vun der Zone"
+
+#~ msgid "webbasemap attribution"
+#~ msgstr "Basiskaart: ACT"
+
+#~ msgid "Categorie 3 et future categorie 1"
+#~ msgstr "Standuertkategorie 3 an zukünfteg Standuertkategorie 1"
+
+#~ msgid "Artisanat"
+#~ msgstr "Handwiek"
+
+#~ msgid "Commerce de detail"
+#~ msgstr "Eenzelhandel"
+
+#~ msgid "Categorie 1"
+#~ msgstr "Standuertkategorie 1"
+
+#~ msgid "Categorie 2"
+#~ msgstr "Standuertkategorie 2"
+
+#~ msgid "Categorie 2 et future categorie 1"
+#~ msgstr "Standuertkategorie 2 an zukünfteg Standuertkategorie 1"
+
+#~ msgid "Categorie 3"
+#~ msgstr "Standuertkategorie 3"
+
+#~ msgid "Concept de mobilite separe requis"
+#~ msgstr "Mobilitéitskonzept noutwendeg"
+
+#~ msgid "Industrie"
+#~ msgstr "Industrie"
+
+#~ msgid "Length"
+#~ msgstr "Längt"
+
+#~ msgid "Numero cadastral"
+#~ msgstr "Parzellennummer"
+
+#~ msgid "places"
+#~ msgstr "Parkplazen"
+
+#~ msgid "places obligatoires"
+#~ msgstr "obligatoresch Parkplazen"
+
+#~ msgid "places provisoires supplementaires"
+#~ msgstr "provisoresch zousätzlech Parkplazen"
+
+#~ msgid ""
+#~ "places supplementaires definitives pour activites generant un taux de "
+#~ "visiteurs eleve"
+#~ msgstr ""
+#~ "definitiv zousätzlech Parkplazen fir Aktivitéiten mat villen Visiteuren"
+
+#~ msgid "Services administratifs ou professionnels"
+#~ msgstr "Bürodingschtleeschtungen an Administratiounen"
+
+#~ msgid ""
+#~ "supplement defintif pour vehicules de service selon besoin concret "
+#~ "justifie"
+#~ msgstr "definitiv zousätzlech Parkplazen fir Déngschtween"
+
+#~ msgid "Surface construite brute"
+#~ msgstr "Bruttogeschossfläch"
+
+#~ msgid "Surface de production artisanale"
+#~ msgstr "Bruttogeschossfläch fir d'Produktioun"
+
+#~ msgid "Surface de vente directement liee a une act. artisanale"
+#~ msgstr "Bruttogeschossfläch fir den Verkaf"
+
+#~ msgid "Activite"
+#~ msgstr "Aktivitéit"
+
+#~ msgid "Categorie"
+#~ msgstr "Kategorie"
+
+#~ msgid "FID"
+#~ msgstr "FID"
+
+#~ msgid "Industrie/Artisanat"
+#~ msgstr "Industrie/Handwierk"
+
+#~ msgid "Nb"
+#~ msgstr "Nr."
+
+#~ msgid "No Projet"
+#~ msgstr "Projets-Nr."
+
+#~ msgid "Nom Projet"
+#~ msgstr "Projetsnumm"
+
+#~ msgid "Nom Site"
+#~ msgstr "Numm vum Site"
+
+#~ msgid "Nom Zone"
+#~ msgstr "Numm vun der Zone"
+
+#~ msgid "Nr_Projet"
+#~ msgstr "Projets-Nr."
+
+#~ msgid "Perimetre"
+#~ msgstr "Perimeter"
+
+#~ msgid "Priorite"
+#~ msgstr "Prioritéit"
+
+#~ msgid "Remarque"
+#~ msgstr "Remarque"
+
+#~ msgid "Services/bureaux"
+#~ msgstr "Dengschtleeschtungen/Bureauen"
+
+#~ msgid "Site"
+#~ msgstr "Site"
+
+#~ msgid "Surface en ha"
+#~ msgstr "Surface an ha"
+
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "Cause mauvais etat"
+#~ msgstr "Raison bad status"
+
+#~ msgid "Cause risque"
+#~ msgstr "Reason risk"
+
+#~ msgid "Code"
+#~ msgstr "Code"
+
+#~ msgid "Code cours d'eau"
+#~ msgstr "Code watercourse"
+
+#~ msgid "Code de la station"
+#~ msgstr "Station code"
+
+#~ msgid "Code masse d'eau"
+#~ msgstr "Code water body"
+
+#~ msgid "Code national"
+#~ msgstr "National code"
+
+#~ msgid "Code station"
+#~ msgstr "Station code"
+
+#~ msgid "Exploitant"
+#~ msgstr "Operator"
+
+#~ msgid "Gewasserna"
+#~ msgstr "Watercourse"
+
+#~ msgid "Hyperlink"
+#~ msgstr "Hyperlink"
+
+#~ msgid "Hyperlinks"
+#~ msgstr "Hyperlinks"
+
+#~ msgid "IPS"
+#~ msgstr "IPS"
+
+#~ msgid "N° autorisation"
+#~ msgstr "Permit number"
+
+#~ msgid "Nitrates (mg/l)"
+#~ msgstr "Nitrates (mg/l)"
+
+#~ msgid "nom"
+#~ msgstr "name"
+
+#~ msgid "Nom de l'ecosysteme"
+#~ msgstr "Ecosystem name"
+
+#~ msgid "Nom de la station"
+#~ msgstr "Station name"
+
+#~ msgid "Nom station"
+#~ msgstr "Station name"
+
+#~ msgid "Nom(s) du/des capages(s) concerne(s)"
+#~ msgstr "Name of the concerned intake"
+
+#~ msgid "Partie numero"
+#~ msgstr "Partial number"
+
+#~ msgid "Profondeur"
+#~ msgstr "Depth"
+
+#~ msgid "Qualite"
+#~ msgstr "Quality"
+
+#~ msgid "Syndicat"
+#~ msgstr "Syndicate"
+
+#~ msgid "Fiche station"
+#~ msgstr "Fiche"
+
+#~ msgid "Photo station"
+#~ msgstr "Bild"
