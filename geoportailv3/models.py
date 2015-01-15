@@ -34,6 +34,7 @@ class LuxLayerInternalWMS(LayerInternalWMS):
     layers = Column(Unicode, label=_(u'Layers'))
     is_poi = Column(Boolean, label=_(u'Is a POI'))
     collection_id = Column(Integer, label=_(u'Collection ID'))
+    rest_url = Column(Unicode, label=_(u'REST url'))
 
 
 class LuxLayerExternalWMS(LayerExternalWMS):

@@ -1,7 +1,7 @@
 /** Themes related styling (mainly colors) **/
 .theme(@theme, @primary-color) {
   [data-theme="@{theme}"] {
-    @secondary-color: desaturate(lighten(@primary-color, 15%), 10%);
+    @secondary-color: desaturate(lighten(@primary-color, 30%), 5%);
     @tertiary-color: darken(@primary-color, 10%);
     .form-control {
       background-color: @secondary-color;
@@ -63,6 +63,15 @@
         &:after {
           border-top-color: @primary-color;
         }
+      }
+    }
+
+    ul.layermanager {
+      &, a {
+        color: @primary-color;
+      }
+      li {
+        background-color: @secondary-color;
       }
     }
   }

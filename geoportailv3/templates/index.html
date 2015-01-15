@@ -70,7 +70,7 @@
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=#catalog]');" translate>+ Add layers</button>
               </div>
             </div>
-            <div id="catalog" class="tab-pane active">
+            <div id="catalog" class="tab-pane">
               <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
             </div>
           </div>
@@ -152,6 +152,7 @@
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
+         appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
        })();
     </script>
   </body>
