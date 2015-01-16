@@ -8,14 +8,8 @@ source_file = geoportailv3/locale/geoportailv3-client.pot
 source_lang = frp
 type = PO
 
-[geoportailv3-lu.geoportailv3]
-file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3.po
-source_file = geoportailv3/locale/geoportailv3.pot
-source_lang = frp
-type = PO
-
-[geoportailv3-lu.geoportailv3-db]
-file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-db.po
-source_file = geoportailv3/locale/geoportailv3-db.pot
+[geoportailv3-lu.geoportailv3-server]
+file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-server.po
+source_file = geoportailv3/locale/geoportailv3-server.pot
 source_lang = frp
 type = PO

@@ -4,9 +4,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-01-13 15:56+0000\n"
-"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"PO-Revision-Date: 2015-01-21 08:16+0000\n"
+"Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
@@ -87,3 +88,2477 @@ msgstr ""
 #: geoportailv3/templates/index.html
 msgid "user"
 msgstr ""
+
+#: theme.101
+msgid "preemption"
+msgstr "Sektion"
+
+#: theme.102
+msgid "mobiliteit"
+msgstr "Park + Ride"
+
+#: theme.103
+msgid "tourisme_mobile"
+msgstr "Tourismus"
+
+#: theme.104
+msgid "topo_mobile"
+msgstr "Topographie"
+
+#: theme.105
+msgid "emwelt"
+msgstr "Umwelt"
+
+#: theme.106
+msgid "theme-test"
+msgstr "Raumordnung"
+
+#: theme.107 l_ext_wms.350
+msgid "nordstad"
+msgstr ""
+
+#: theme.108
+msgid "go"
+msgstr ""
+
+#: theme.109
+msgid "prof"
+msgstr ""
+
+#: theme.110
+msgid "main_mobile"
+msgstr "Allgemein"
+
+#: theme.111
+msgid "user_content_mobile"
+msgstr "Karten von Anwendern"
+
+#: theme.112
+msgid "api"
+msgstr "Campingplatz"
+
+#: theme.113
+msgid "arbed"
+msgstr ""
+
+#: theme.114 group.302
+msgid "commande"
+msgstr "Gemeinde"
+
+#: theme.115
+msgid "ortho_mobile"
+msgstr "Luftbilder"
+
+#: theme.116
+msgid "tourisme"
+msgstr "Tourismus"
+
+#: theme.117
+msgid "main"
+msgstr ""
+
+#: theme.118
+msgid "cadastre_mobile"
+msgstr "Kataster"
+
+#: theme.119
+msgid "emwelt_mobile"
+msgstr "Umwelt"
+
+#: theme.120
+msgid "eau_mobile"
+msgstr "Wasser"
+
+#: theme.121
+msgid "remich"
+msgstr "Flächennutzungsplan Remich"
+
+#: theme.122
+msgid "test"
+msgstr ""
+
+#: theme.123
+msgid "at"
+msgstr ""
+
+#: theme.124
+msgid "agriculture"
+msgstr "Landwirtschaft"
+
+#: theme.125
+msgid "preizerdaul"
+msgstr ""
+
+#: theme.126
+msgid "wellenstein"
+msgstr "wellenstein_link_title"
+
+#: theme.127
+msgid "at_mobile"
+msgstr "Raumplanung"
+
+#: theme.128
+msgid "eau"
+msgstr "Messen"
+
+#: theme.129
+msgid "lintgen"
+msgstr ""
+
+#: theme.130
+msgid "lenoz"
+msgstr ""
+
+#: theme.131
+msgid "municipalities"
+msgstr ""
+
+#: group.132
+msgid "emwelt_biotop_kadaster_mobile"
+msgstr "Pufferzonen"
+
+#: group.141
+msgid "group_nordstad"
+msgstr ""
+
+#: group.142
+msgid "env_natura2000"
+msgstr "Natura 2000"
+
+#: group.149
+msgid "eau_jaehrlichkeiten"
+msgstr ""
+
+#: group.161
+msgid "eau_luft_sat_bilder"
+msgstr "eau_link_title"
+
+#: group.162
+msgid "env_obs"
+msgstr "Biotoptypenkartierung 1999"
+
+#: group.168
+msgid "mittal_bg"
+msgstr ""
+
+#: group.169
+msgid "eau_uesg"
+msgstr ""
+
+#: group.170
+msgid "adressen"
+msgstr "Adressen"
+
+#: group.171
+msgid "env_bruit"
+msgstr "Flughafen 2011 (LNGT)"
+
+#: group.176
+msgid "eau_zones_protegees"
+msgstr "Schutzgebiete"
+
+#: group.177
+msgid "mittal_group"
+msgstr "Raumordnung"
+
+#: group.178
+msgid "anf_data"
+msgstr "Lokale Naturschutz- und Forstreviere"
+
+#: group.180
+msgid "oberflachendarstellung_mobile"
+msgstr "Oberflächendarstellung"
+
+#: group.186
+msgid "flurstucke_grundstucke_prof"
+msgstr "Katasterparzellen"
+
+#: group.191
+msgid "luft_und_satellitenbilder"
+msgstr "Luft und Satellitenbilder"
+
+#: group.192
+msgid "tour_sentiers_locaux"
+msgstr "Lokale Wanderwege (kein Unterhalt von der Tourismusdirektion)"
+
+#: group.193
+msgid "anf_secteurs_ecologiques_group"
+msgstr "Oekologische Wuchsbezirke"
+
+#: group.196
+msgid "env_bruit_axes_ferroviaires"
+msgstr "Eisenbahnlinien 2011 (LDEN)"
+
+#: group.197
+msgid "eau_morphometrie"
+msgstr "Morphometrie"
+
+#: group.199
+msgid "eau_grenzen"
+msgstr "Grenzen"
+
+#: group.200
+msgid "unwelt_biologie_geologie"
+msgstr "Umwelt Biologie und Geologie"
+
+#: group.203
+msgid "env_bruit_air"
+msgstr "Flughafen 2011 (LNGT)"
+
+#: group.206
+msgid "hohe"
+msgstr ""
+
+#: group.209
+msgid "infrastrucktur_une_kommunikation"
+msgstr "Infrastruktur und Kommunikation"
+
+#: group.212
+msgid "verkehrsnetze"
+msgstr "Verkehrsnetze"
+
+#: group.215
+msgid "eau_gewaessernetz"
+msgstr ""
+
+#: group.217
+msgid "asta_prof"
+msgstr "Ökologisch wertvolle Flächen "
+
+#: group.222
+msgid "eau_bwp"
+msgstr ""
+
+#: group.225
+msgid "asta_meteo_group"
+msgstr "Ökologisch wertvolle Flächen "
+
+#: group.231
+msgid "eau_zones_protegees_nationales"
+msgstr "Nationale Schutzgebiete"
+
+#: group.232
+msgid "eau_zones_protegees_communautaires"
+msgstr "Internationale Schutzgebiete"
+
+#: group.233
+msgid "eau_env_natura2000"
+msgstr "Natura 2000"
+
+#: l_ext_wms.144
+msgid "user_content_vtt"
+msgstr "Mountainbike"
+
+#: l_ext_wms.148
+msgid "tour_nordic_walking"
+msgstr "Nordic Walking Parcs"
+
+#: l_ext_wms.154
+msgid "user_content_velo"
+msgstr "Radfahren"
+
+#: l_ext_wms.159
+msgid "tour_cfl"
+msgstr "CFL: Bahn, Wandern, Radfahren"
+
+#: l_ext_wms.160
+msgid "tour_pistes_velo"
+msgstr "Fahrradwege"
+
+#: l_ext_wms.175
+msgid "tour_quality_trails"
+msgstr "andere Qualitätswege"
+
+#: l_ext_wms.188
+msgid "tour_autopedestre"
+msgstr "Rundwanderwege"
+
+#: l_ext_wms.190
+msgid "tour_sentiers_communaux"
+msgstr "Gemeindewege"
+
+#: l_ext_wms.202
+msgid "tour_mullerthal_trail"
+msgstr "Mullerthal Trail"
+
+#: l_ext_wms.214
+msgid "tour_sentiers_ajl"
+msgstr "Jugendherbergen Wandern"
+
+#: l_ext_wms.216
+msgid "tour_temp"
+msgstr "Temporärer Layer"
+
+#: l_ext_wms.226
+msgid "tour_escape_ardenne"
+msgstr "EscapArdenne"
+
+#: l_wmts.137
+msgid "emwelt_biotop_kadaster_f_mobile"
+msgstr "Flächige Objekte mit Ausnahme der Streuobstwiesen"
+
+#: l_wmts.138
+msgid "emwelt_biotop_kadaster_b_mobile"
+msgstr "Pufferzonen"
+
+#: l_wmts.139
+msgid "emwelt_biotop_kadaster_p_mobile"
+msgstr "Punktuelle Objekte"
+
+#: l_wmts.140
+msgid "emwelt_biotop_kadaster_s_mobile"
+msgstr "Steuobstwiesen"
+
+#: l_wmts.145
+msgid "wg_quellen"
+msgstr ""
+
+#: l_wmts.146
+msgid "wg_einzugsgebiete"
+msgstr ""
+
+#: l_wmts.147
+msgid "topo_tour_20k"
+msgstr "Regionale touristische Karte 1:20000 R"
+
+#: l_wmts.151
+msgid "addresses"
+msgstr "Adressen"
+
+#: l_wmts.152
+msgid "communes_cadastrales"
+msgstr "Katastergemeinden"
+
+#: l_wmts.155
+msgid "wg_durchgangigkeit"
+msgstr ""
+
+#: l_wmts.156
+msgid "topo_50k"
+msgstr "Topographische Karte 1:50000"
+
+#: l_wmts.157
+msgid "TOPO_CARTESHISTO_1979"
+msgstr "Topographische Karte 1:20k 1979 S/W"
+
+#: group.236
+msgid "eau_wassertiefe"
+msgstr ""
+
+#: group.237
+msgid "eau_hydrologische_ms"
+msgstr ""
+
+#: group.239
+msgid "verkehrsnetze_tourisme"
+msgstr "Verkehrsnetze"
+
+#: group.241
+msgid "eau_intensitaet"
+msgstr ""
+
+#: group.253
+msgid "eau_mod_uesg"
+msgstr ""
+
+#: group.254
+msgid "basisden_mobile"
+msgstr "Allgemein"
+
+#: group.266
+msgid "flurstucke_grundstucke_go"
+msgstr "Katasterparzellen"
+
+#: group.272
+msgid "env_bruit_axes_routiers"
+msgstr "Strassen 2011 (LNGT)"
+
+#: group.273
+msgid "geologie_"
+msgstr "Geologie"
+
+#: group.274
+msgid "eau_basisdaten"
+msgstr "Basisdaten"
+
+#: group.277
+msgid "group_ac_remich_pag"
+msgstr "Flächennutzungsplan Remich"
+
+#: group.281
+msgid "user_generated_content"
+msgstr "Nicht kategorisierter Inhalt"
+
+#: group.285
+msgid "anf_forets"
+msgstr "Lokale Naturschutz- und Forstreviere"
+
+#: group.287
+msgid "basisden"
+msgstr "Basisdaten"
+
+#: group.289
+msgid "env_zones_protegees_nationales"
+msgstr "Nationale Schutzgebiete"
+
+#: group.291
+msgid "env_zones_protegees"
+msgstr "Schutzgebiete"
+
+#: group.293
+msgid "infrastrucktur_une_kommunikation_prof"
+msgstr "Infrastruktur und Kommunikation"
+
+#: group.295
+msgid "flurstucke_grundstucke"
+msgstr "Katasterparzellen"
+
+#: group.296
+msgid "eau_d_i_cr"
+msgstr ""
+
+#: group.297
+msgid "mymaps"
+msgstr "Meine Karten"
+
+#: group.309
+msgid "tour_rando_v2"
+msgstr "Wanderwege"
+
+#: group.310
+msgid "eau_messstationen_wrrl"
+msgstr ""
+
+#: group.324
+msgid "anf_data_map"
+msgstr ""
+
+#: group.327
+msgid "prof_daten"
+msgstr ""
+
+#: group.328
+msgid "env_sentiers"
+msgstr "Naturpfade"
+
+#: group.329
+msgid "group_mobiliteit"
+msgstr "Park + Ride"
+
+#: group.333
+msgid "group_ac_wellenstein_pag"
+msgstr "Zonen"
+
+#: group.334
+msgid "anf_unites_admin"
+msgstr "Gemeinde"
+
+#: group.335
+msgid "tour_velo_v2"
+msgstr "Rad- und Mountainbike Wege"
+
+#: group.338
+msgid "gebaude_prof"
+msgstr ""
+
+#: group.343
+msgid "group_ac_preizerdaul_pag"
+msgstr ""
+
+#: group.347
+msgid "eau_hist_uesg"
+msgstr ""
+
+#: group.348
+msgid "eau_weitere_ms"
+msgstr ""
+
+#: group.351
+msgid "flurstucke_grundstucke_mittal"
+msgstr "Katasterparzellen"
+
+#: group.352
+msgid "topographische_karten"
+msgstr "Topographische Karten"
+
+#: l_ext_wms.243
+msgid "tour_moto"
+msgstr "ADAC Motorradtour"
+
+#: l_ext_wms.247
+msgid "tour_saint_jacques"
+msgstr "Sankt Jakob Weg"
+
+#: l_ext_wms.265
+msgid "tour_sentiers_nationaux"
+msgstr "Nationale Wanderwege"
+
+#: l_ext_wms.275
+msgid "tour_sentiers_gr"
+msgstr "Große Wanderwege"
+
+#: l_ext_wms.292
+msgid "tour_sentiers_syndicats"
+msgstr "Interessenvereinswege"
+
+#: l_ext_wms.298
+msgid "tour_DeLux"
+msgstr "Naturwanderpark DeLux"
+
+#: l_ext_wms.320
+msgid "user_content"
+msgstr "Nicht kategorisierter Inhalt"
+
+#: l_ext_wms.321
+msgid "user_content_poi"
+msgstr "Points of interest"
+
+#: l_ext_wms.356
+msgid "tour_pistes_vtt"
+msgstr "Moutainbike-Wege"
+
+#: l_wmts.235
+msgid "ac_wellenstein_pag_complet"
+msgstr "Komplettübersicht"
+
+#: l_wmts.238
+msgid "decoupage_geo25_50k"
+msgstr ""
+
+#: l_wmts.240
+msgid "wg_badegewasser"
+msgstr ""
+
+#: l_wmts.242
+msgid "wg_kanal__muhlgraben"
+msgstr ""
+
+#: l_wmts.245
+msgid "decoupage_communes"
+msgstr "Gemeindecode"
+
+#: l_wmts.246
+msgid "TOPO_CARTESHISTO_1966-74_50k"
+msgstr "Topographische Karte 1:50k 1966"
+
+#: l_wmts.248
+msgid "topo_decoupage_50k"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.249
+msgid "TOPO_CARTES_1944"
+msgstr "Deutsche Kriegskarte 1:25k 1939"
+
+#: l_wmts.250
+msgid "wg_grundwasser"
+msgstr ""
+
+#: l_wmts.251
+msgid "ivv_klimakarte"
+msgstr "Klimakarte"
+
+#: group.368
+msgid "anf_reserves"
+msgstr "Naturschutzgebiete (DIG)"
+
+#: group.370
+msgid "tour_quality"
+msgstr "Qualitätswanderwege"
+
+#: group.373
+msgid "asta"
+msgstr ""
+
+#: group.376
+msgid "administrative_einheiten"
+msgstr "Verwaltungseinheiten"
+
+#: group.377
+msgid "eau_stehende_gewaesser"
+msgstr ""
+
+#: group.381
+msgid "umweltuberwachung"
+msgstr "Umweltüberwachung"
+
+#: group.382
+msgid "topo_carteshisto"
+msgstr "Historische topographische Karten"
+
+#: group.385
+msgid "tour_mymaps"
+msgstr "Temporärer Layer"
+
+#: group.390
+msgid "eau_topographie"
+msgstr "Topographie"
+
+#: group.391
+msgid "eau_d_i_in"
+msgstr ""
+
+#: group.392
+msgid "eau_landnutzung"
+msgstr "Landnutzung"
+
+#: group.393
+msgid "eau_anf_reserves"
+msgstr "Naturschutzgebiete (DIG)"
+
+#: group.396
+msgid "pedologie"
+msgstr "Geologie"
+
+#: group.397
+msgid "anf_chasse"
+msgstr "Jagdlose"
+
+#: group.398
+msgid "go_daten"
+msgstr ""
+
+#: group.399
+msgid "oberflachendarstellung"
+msgstr "Oberflächendarstellung"
+
+#: group.400
+msgid "unwelt_biologie_geologie_mobile"
+msgstr "Umwelt Biologie und Geologie"
+
+#: group.402
+msgid "eau_ns_ms"
+msgstr ""
+
+#: group.410
+msgid "geodesy"
+msgstr "Geodäsie"
+
+#: group.411
+msgid "ign"
+msgstr "Weinbaugebiet"
+
+#: group.414
+msgid "bodennutzung"
+msgstr "Bodennutzung"
+
+#: group.415
+msgid "env_zones_protegees_communautaires"
+msgstr "Internationale Schutzgebiete"
+
+#: group.417
+msgid "weinbau"
+msgstr ""
+
+#: group.418
+msgid "tour_auto_moto_v2"
+msgstr "Oldtimer- & Motorrad Touren"
+
+#: group.419
+msgid "group_preemption"
+msgstr ""
+
+#: group.422
+msgid "lebensraume_une_biotope"
+msgstr "Lebensräume und Biotope"
+
+#: group.423
+msgid "gebaude"
+msgstr ""
+
+#: group.424
+msgid "asta_zones_prot"
+msgstr "Ökologisch wertvolle Flächen "
+
+#: group.426
+msgid "eau_monitoring"
+msgstr ""
+
+#: group.448
+msgid "natur_an_emwelt"
+msgstr "Mehrfachnutzung"
+
+#: group.456
+msgid "emwelt_biotop_kadaster"
+msgstr "Offenland-Biotopkataster"
+
+#: group.461
+msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
+msgstr "Trinkwasser Schutzzonen [ZPS]"
+
+#: group.473
+msgid "Archeo"
+msgstr ""
+
+#: group.489
+msgid "at_pst"
+msgstr "SP Transport"
+
+#: group.490
+msgid "at_pszae"
+msgstr "SP Gewerbegebiete"
+
+#: l_ext_wms.389
+msgid "env_sentiersnature"
+msgstr "Naturpfade"
+
+#: l_ext_wms.443
+msgid "user_content_rando"
+msgstr "Wandern"
+
+#: l_ext_wms.444
+msgid "user_content_autre"
+msgstr "Andere"
+
+#: l_ext_wms.450
+msgid "luxembourg_on_horse"
+msgstr "Luxemburg zu Pferd"
+
+#: l_ext_wms.459
+msgid "tour_pistes_velo_mymaps"
+msgstr "Fahrradwege"
+
+#: l_ext_wms.472
+msgid "Merovingien"
+msgstr ""
+
+#: l_ext_wms.479
+msgid "Prehistoire"
+msgstr ""
+
+#: l_ext_wms.480
+msgid "Moyen Age"
+msgstr ""
+
+#: l_ext_wms.481
+msgid "Temps modernes"
+msgstr ""
+
+#: l_ext_wms.482
+msgid "Epoque indefinie"
+msgstr ""
+
+#: l_ext_wms.486
+msgid "Protohistoire"
+msgstr ""
+
+#: l_ext_wms.487
+msgid "Gallo-Romain"
+msgstr ""
+
+#: l_wmts.364
+msgid "TOPO_CARTESHISTO_1993_50k"
+msgstr "Topographische Karte 1:50k 1993"
+
+#: l_wmts.365
+msgid "ac_wellenstein_pag_perimetres_zones"
+msgstr "Zonenumrisse"
+
+#: l_wmts.366
+msgid "wg_landnutzung"
+msgstr "Landnutzung"
+
+#: l_wmts.367
+msgid "communes"
+msgstr "Gemeinden"
+
+#: l_wmts.369
+msgid "wg_timis_ueberflutungsflachen_hq10"
+msgstr ""
+
+#: l_wmts.371
+msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
+msgstr "Zu erhaltende Flächen"
+
+#: l_wmts.372
+msgid "decoupage_geo25k"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.374
+msgid "wg_cr_in10"
+msgstr ""
+
+#: l_wmts.375
+msgid "wg_versiegelungsklassen"
+msgstr "Versiegelungsklassen"
+
+#: l_wmts.379
+msgid "wg_hauptgewasser"
+msgstr ""
+
+#: l_wmts.380
+msgid "ortho_irc"
+msgstr "Orthophoto 2007 (infrarot)"
+
+#: l_wmts.383
+msgid "wg_einschrankung_warmepumpe"
+msgstr ""
+
+#: l_wmts.384
+msgid "geologie_nouvelle_edition"
+msgstr "Geologische Karte, neue Ausgabe"
+
+#: l_wmts.386
+msgid "wg_timis_hochwasser_gefahrdungen"
+msgstr ""
+
+#: l_wmts.387
+msgid "wg_trinkwasserbehalter"
+msgstr ""
+
+#: l_wmts.388
+msgid "wg_timis_hochwasser_intensitaten_hq10"
+msgstr ""
+
+#: l_wmts.395
+msgid "toponymes"
+msgstr "Katasterflurnamen"
+
+#: l_wmts.401
+msgid "wg_schneehohe"
+msgstr ""
+
+#: l_wmts.404
+msgid "wg_kunstliche_(bassin)"
+msgstr ""
+
+#: l_wmts.406
+msgid "1907_CAHANSEN"
+msgstr "Topographische Karte 1907"
+
+#: l_wmts.407
+msgid "cantons"
+msgstr "Kantone"
+
+#: l_wmts.408
+msgid "wg_cr_in100"
+msgstr ""
+
+#: l_wmts.412
+msgid "wg_uesg_alzette_1995"
+msgstr ""
+
+#: group.491
+msgid "at_ps"
+msgstr "Sektorielle Pläne (SP)"
+
+#: group.497
+msgid "at_psp"
+msgstr "SP Landschaften"
+
+#: group.498
+msgid "at_psp_zm"
+msgstr "Multifunktionale Gebiete"
+
+#: group.499
+msgid "at_psl"
+msgstr "SP Wohnungswesen"
+
+#: group.504
+msgid "at_pst_prm"
+msgstr "Parkraum-Management"
+
+#: group.516
+msgid "map_morphometrie"
+msgstr "Morphometrie"
+
+#: group.530
+msgid "eau_4_lintgen"
+msgstr "eau_link_title"
+
+#: group.531
+msgid "pag_lintgen"
+msgstr ""
+
+#: group.538
+msgid "eau_new_Projekt_TIMIS_(usage_interne)"
+msgstr "Projekt TIMIS"
+
+#: group.539
+msgid "group_lenoz"
+msgstr ""
+
+#: group.551
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
+msgstr "Projekt Hochwasserrisikokarten 2010"
+
+#: group.559
+msgid "eau_new_Grundwasser_2009"
+msgstr "Grundwasser 2009"
+
+#: group.587
+msgid "flurstucke_grundstucke_eau"
+msgstr "Katasterparzellen"
+
+#: group.591
+msgid "eau_new_Risikobeurteilung_2021"
+msgstr "Risikobewertung 2021"
+
+#: group.592
+msgid "eau_new_Trinkwasser"
+msgstr "Trinkwasser"
+
+#: group.705
+msgid "wrrl_intern_group"
+msgstr ""
+
+#: l_wmts.512
+msgid "wg_hangneigung_map"
+msgstr "Hangneigung °"
+
+#: l_wmts.513
+msgid "wg_relief_map"
+msgstr "Relief"
+
+#: l_wmts.514
+msgid "wg_exposition_map"
+msgstr "Exposition"
+
+#: l_wmts.515
+msgid "wg_hohenlinien_10m_map"
+msgstr "Höhenlinien 10m"
+
+#: l_wmts.547
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
+msgstr "HQ10 [hohe Wahrscheinlichkeit]"
+
+#: l_wmts.558
+msgid "communes_cadastrales_labels_eau"
+msgstr "Katastergemeinden (Namen)"
+
+#: l_wmts.567
+msgid "sections_cadastrales_labels_eau"
+msgstr "Katastersektionen (Namen)"
+
+#: l_wmts.577
+msgid "feuilles_cadastrales_eau"
+msgstr "Kataster Urpläne"
+
+#: l_wmts.580
+msgid "sections_cadastrales_eau"
+msgstr "Katastersektionen"
+
+#: l_wmts.581
+msgid "toponymes_eau"
+msgstr "Katasterflurnamen"
+
+#: l_wmts.588
+msgid "communes_cadastrales_eau"
+msgstr "Katastergemeinden"
+
+#: l_wmts.595
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
+msgstr "HQ extrem [niedrige Wahrscheinlichkeit]"
+
+#: group.601
+msgid "eau_new_Gewaessernetz"
+msgstr "Gewässernetz"
+
+#: group.602
+msgid "eau_new_Fischerei"
+msgstr "Fischerei"
+
+#: group.604
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
+msgstr "Projekt Hochwasserrisikokarten 2013"
+
+#: group.605
+msgid "eau_new_Oberflaechengewaesser_2021"
+msgstr "Oberflächengewässer 2021"
+
+#: group.606
+msgid "eau_new_Messstationen"
+msgstr "Messstationen"
+
+#: group.609
+msgid "eau_new_Klimatologische_Messstationen"
+msgstr "Klimatologische Messstationen"
+
+#: group.610
+msgid "eau_new_Historische_Ueberschwemmungsgebiete"
+msgstr "Historische Überschwemmungsgebiete"
+
+#: group.611
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2013"
+msgstr "Projekt Hochwassergefahrenkarten 2013"
+
+#: group.619
+msgid "eau_new_Zusaetzliche_Informationen"
+msgstr "Zusätzliche Informationen"
+
+#: group.620
+msgid "eau_new_Oberflaechengewaesser_2009"
+msgstr "Oberflächengewässer 2009"
+
+#: group.624
+msgid "eau_new_Messstationen_(WRRL)"
+msgstr "Messstationen   [WRRL]"
+
+#: group.634
+msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
+msgstr "Qualitätskomponenten  des ökologischen Zustands 2015"
+
+#: group.635
+msgid "eau_new_Grundwasser_2021"
+msgstr "Grundwasser 2021"
+
+#: group.642
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
+msgstr "Zustand der Wasserkörper [WK] 2009"
+
+#: group.649
+msgid "eau_new_Schutzgebiete"
+msgstr "Schutzgebiete"
+
+#: group.650
+msgid "eau_new_Gewaesserschutz"
+msgstr "Gewässerschutz"
+
+#: group.658
+msgid "eau_new_Grundwasser_2015"
+msgstr "Grundwasser 2015"
+
+#: group.660
+msgid "eau_new_Oberflaechengewaesser_Messstationen"
+msgstr "Oberflächengewässer Messstationen"
+
+#: group.661
+msgid "eau_new_Grundwasser_Messstationen"
+msgstr "Grundwasser Messstationen"
+
+#: group.662
+msgid "eau_new_Wasserrahmenrichtlinie"
+msgstr "Wasserrahmenrichtlinie [WRRL]"
+
+#: group.664
+msgid "eau_new_Bewirtschaftungsplan_2009"
+msgstr "Bewirtschaftungsplan 2009"
+
+#: group.668
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
+msgstr "Zustand der Wasserkörper [WK] 2015"
+
+#: group.669
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
+msgstr "Projekt Hochwassergefahrenkarten 2010"
+
+#: group.670
+msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
+msgstr "Plan im Fall einer Trockenheit"
+
+#: group.672
+msgid "eau_new_Bewirtschaftungsplan_2015"
+msgstr "Bewirtschaftungsplan 2015"
+
+#: group.674
+msgid "eau_new_Oberflaechengewaesser_2015"
+msgstr "Oberflächengewässer 2015"
+
+#: group.675
+msgid "eau_new_Nitratrichtlinie"
+msgstr "Nitratrichtlinie"
+
+#: group.677
+msgid "eau_new_Grundwasser"
+msgstr "Grundwasser"
+
+#: group.678
+msgid "eau_new_Gewaesser"
+msgstr "Gewässer"
+
+#: group.679
+msgid "eau_new_Hydrologische_Messstationen"
+msgstr "Hydrologische Messstationen"
+
+#: group.681
+msgid "eau_new_Ueberschwemmungsgebiete_(UESG)"
+msgstr "Überschwemmungsgebiete [UESG]"
+
+#: group.682
+msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
+msgstr "Stehende Gewässer"
+
+#: group.683
+msgid "eau_new_Historische_Karten_(usage_interne)"
+msgstr "Historische Karten"
+
+#: group.688
+msgid "tourisme_poi"
+msgstr "Tourismus"
+
+#: group.704
+msgid "wrrl_intern_hs"
+msgstr ""
+
+#: l_wmts.653
+msgid "eau_new_HQextrem_merged_2013"
+msgstr "HQ extrem [HW Risiko mit niedriger Wahrscheinlichkeit]"
+
+#: l_wmts.657
+msgid "eau_new_HQ10_merged_2013"
+msgstr "HQ10 [HW Risiko mit hoher Wahrscheinlichkeit]"
+
+#: group.706
+msgid "asta_esp_group"
+msgstr "Ökologisch wertvolle Flächen "
+
+#: group.716
+msgid "logt"
+msgstr ""
+
+#: group.717
+msgid "osm"
+msgstr "Name"
+
+#: l_int_wms.133
+msgid "mobiliteit_pr"
+msgstr "Park + Ride"
+
+#: l_int_wms.134
+msgid "mobiliteit_cfl"
+msgstr "Bahnhaltestellen CFL"
+
+#: l_int_wms.135
+msgid "mobiliteit_bornes"
+msgstr "Elektro-Ladestationen"
+
+#: l_int_wms.136
+msgid "aero_1963_20k"
+msgstr "Luftbilder von 1963 (1:20k)"
+
+#: l_int_wms.143
+msgid "arrets_bus"
+msgstr "Öffentlicher Transport"
+
+#: l_int_wms.150
+msgid "parcelles_preemption"
+msgstr ""
+
+#: l_int_wms.153
+msgid "PAG"
+msgstr "Flächennutzungsplan"
+
+#: l_int_wms.158
+msgid "env_bruit_air_lden"
+msgstr "Flughafen 2011 (LDEN)"
+
+#: l_int_wms.166
+msgid "env_obs1999"
+msgstr "Biotoptypenkartierung 1999"
+
+#: l_int_wms.173
+msgid "env_corine"
+msgstr "Corine Landcover 2006"
+
+#: l_int_wms.184
+msgid "natura2000_oiseaux"
+msgstr "Vogelschutzgebiete Natura 2000"
+
+#: l_int_wms.204
+msgid "PRM_PCN"
+msgstr ""
+
+#: l_int_wms.207
+msgid "PRM"
+msgstr "PRE"
+
+#: l_int_wms.230
+msgid "eau_new_Provisorische_ZPS"
+msgstr "Provisorische ZPS"
+
+#: l_int_wms.244
+msgid "env_obs2007"
+msgstr "Biotoptypenkartierung 2007"
+
+#: l_int_wms.256
+msgid "parcels_go"
+msgstr "Katasterparzellen"
+
+#: l_int_wms.264
+msgid "natura2000_habitats"
+msgstr "Habitate Natura 2000"
+
+#: l_int_wms.268
+msgid "aero_1951_25k"
+msgstr "Luftbilder von 1951 (1:25k)"
+
+#: l_int_wms.269
+msgid "mittal"
+msgstr ""
+
+#: l_int_wms.303
+msgid "env_bruit_axes_routiers_lngt"
+msgstr "Strassen 2011 (LNGT)"
+
+#: l_int_wms.308
+msgid "env_bruit_axes_ferroviaires_lngt"
+msgstr "Eisenbahnlinien 2011 (LNGT)"
+
+#: l_int_wms.314
+msgid "PA"
+msgstr "Flächennutzungsplan"
+
+#: l_int_wms.325
+msgid "eau_new_Chemischer_Zustand_der_WK_2009"
+msgstr "Chemischer Zustand der WK 2009"
+
+#: l_int_wms.360
+msgid "ac_preizerdaul_pag"
+msgstr "Flächennutzungsplan Remich"
+
+#: l_int_wms.361
+msgid "ac_preizerdaul_ortho_2009"
+msgstr "Orthophoto Remich"
+
+#: l_int_wms.378
+msgid "env_bruit_axes_ferroviaires_lden"
+msgstr "Eisenbahnlinien 2011 (LDEN)"
+
+#: l_int_wms.394
+msgid "eau_natura2000_oiseaux"
+msgstr "Vogelschutzgebiete Natura 2000"
+
+#: l_int_wms.403
+msgid "env_bruit_axes_routiers_lden"
+msgstr "Strassen 2011 (LDEN)"
+
+#: l_int_wms.405
+msgid "env_bruit_air_lngt"
+msgstr "Flughafen 2011 (LNGT)"
+
+#: l_int_wms.409
+msgid "toponymes_go"
+msgstr "Katasterflurnamen"
+
+#: l_int_wms.425
+msgid "eau_natura2000_habitats"
+msgstr "Habitate Natura 2000"
+
+#: l_int_wms.427
+msgid "aero_1951_10k"
+msgstr "Luftbilder von 1951 (1:10k)"
+
+#: l_int_wms.433
+msgid "all_maps_root_account"
+msgstr "Alle öffentliche Karten meines Hauptkontos"
+
+#: l_int_wms.434
+msgid "all_my_maps"
+msgstr ""
+
+#: l_int_wms.438
+msgid "ac_preizerdaul_ortho"
+msgstr "Orthophoto Remich"
+
+#: l_int_wms.439
+msgid "cfl_hecto"
+msgstr "Kilometrierung der CFL-Strecken"
+
+#: l_int_wms.445
+msgid "FERRARIS"
+msgstr "Ferraris Karte 1:20k 1778"
+
+#: l_int_wms.449
+msgid "affaires"
+msgstr ""
+
+#: l_int_wms.451
+msgid "natur_an_emwelt_terrains"
+msgstr ""
+
+#: l_int_wms.452
+msgid "mobiliteit_bikeshare"
+msgstr "Fahrradverleihsysteme"
+
+#: l_int_wms.453
+msgid "asta_flik_parcels_2014_prof"
+msgstr "FLIK Parzellen 2014"
+
+#: l_int_wms.462
+msgid "topo_decoupage_ortho_2013"
+msgstr "Blattschnitt Orthophotos"
+
+#: l_int_wms.463
+msgid "prpl_luref"
+msgstr "Einmessskizzen der geodätischen Festpunkte : LUREF System"
+
+#: l_int_wms.464
+msgid "prpl_ntl"
+msgstr "Einmessskizzen der geodätischen Festpunkte : NTL System"
+
+#: l_int_wms.465
+msgid "parcels_prof"
+msgstr "Katasterparzellen"
+
+#: l_int_wms.466
+msgid "buildings_go"
+msgstr ""
+
+#: l_int_wms.467
+msgid "parcels_labels_go"
+msgstr "Katasterparzellen (Nummern)"
+
+#: l_int_wms.468
+msgid "eau_anf_reserves_naturelles"
+msgstr "Naturschutzgebiete"
+
+#: l_int_wms.469
+msgid "eau_anf_reserves_forestieres"
+msgstr "Waldnaturschutzgebiete"
+
+#: l_int_wms.470
+msgid "eau_anf_reserves_naturelles_totalite"
+msgstr "Naturschutzgebiete (alle)"
+
+#: l_int_wms.471
+msgid "eau_anf_reserves_dig"
+msgstr "Naturschutzgebiete (DIG)"
+
+#: l_int_wms.474
+msgid "anf_peuplements_semenciers"
+msgstr "Forstliche Saatgutbestände"
+
+#: l_int_wms.475
+msgid "anf_reserves_naturelles"
+msgstr "Naturschutzgebiete"
+
+#: l_int_wms.476
+msgid "anf_proprietes_forestieres"
+msgstr "Öffentlicher Wald"
+
+#: l_int_wms.477
+msgid "anf_stations_biologiques"
+msgstr "Biologische Stationen"
+
+#: l_int_wms.478
+msgid "anf_reserves_forestieres"
+msgstr "Waldnaturschutzgebiete"
+
+#: l_int_wms.483
+msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
+msgstr "Erhöhte Trinkwasserknappheit (Zustand \"rot\")"
+
+#: l_int_wms.484
+msgid "eau_new_Sanitaere_Schutzzonen_Stausee"
+msgstr "Sanitäre Schutzzonen Stausee"
+
+#: l_int_wms.488
+msgid "anf_arbres_remarquables"
+msgstr "Merkenswerte Bäume ANF"
+
+#: l_int_wms.492
+msgid "at_psp_gep"
+msgstr "Große Landschafträume"
+
+#: l_int_wms.493
+msgid "at_psp_cv"
+msgstr "Grünzüge / Grünzäsuren"
+
+#: l_int_wms.494
+msgid "anf_secteurs_ecologiques"
+msgstr "Oekologische Wuchsbezirke"
+
+#: l_int_wms.495
+msgid "anf_lots_chasse"
+msgstr "Jagdlose"
+
+#: l_int_wms.496
+msgid "at_psp_zm_tot"
+msgstr "Multifunktionale Gebiete (Gesamtheit)"
+
+#: l_int_wms.500
+msgid "at_psl1"
+msgstr "Gebiete für größere Wohnungsbauprojekte"
+
+#: l_int_wms.501
+msgid "at_pszae2"
+msgstr "Neue Gewerbegebiete und Erweiterungen"
+
+#: l_int_wms.502
+msgid "at_pszae3"
+msgstr "Bestehende Gewerbegebiete zum Umwidmen"
+
+#: l_int_wms.503
+msgid "at_pszae4"
+msgstr "Gewerbegebiete mit Übergangsvorschriften"
+
+#: l_int_wms.505
+msgid "at_psp_re"
+msgstr "Ökologisches Netzwerk"
+
+#: l_int_wms.506
+msgid "at_pszae1"
+msgstr "Bestehende Gewerbegebiete"
+
+#: l_int_wms.507
+msgid "at_pst2"
+msgstr "Reservierte Trassen"
+
+#: l_int_wms.508
+msgid "at_psp_zvi"
+msgstr "Zwischenstädtische Grünzone"
+
+#: l_int_wms.509
+msgid "at_pst3"
+msgstr "Parkraum-Standortkategorien"
+
+#: l_int_wms.510
+msgid "at_pst1"
+msgstr "SPT-Projekte"
+
+#: l_int_wms.511
+msgid "ng"
+msgstr "Höhenreferenzpunkte"
+
+#: l_int_wms.517
+msgid "remembrements"
+msgstr "Flurbereinigungsperimeter"
+
+#: l_int_wms.518
+msgid "repere_alti"
+msgstr ""
+
+#: l_int_wms.519
+msgid "anf_arrondissements"
+msgstr "Regionale Naturschutz- und Forstämter"
+
+#: l_int_wms.520
+msgid "anf_triages"
+msgstr "Lokale Naturschutz- und Forstreviere"
+
+#: l_int_wms.521
+msgid "anf_phytosociologie"
+msgstr ""
+
+#: l_int_wms.522
+msgid "anf_reserves_naturelles_totalite"
+msgstr "Naturschutzgebiete (alle)"
+
+#: l_int_wms.523
+msgid "anf_reserves_dig"
+msgstr "Naturschutzgebiete (DIG)"
+
+#: l_int_wms.524
+msgid "eau_new_Intensitaet_-_HQ_extrem_(usage_interne)"
+msgstr "Intensität HQ extrem"
+
+#: l_int_wms.525
+msgid "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)"
+msgstr "Gefährdete Gebiete [Nitratrichtlinie]"
+
+#: l_int_wms.526
+msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
+msgstr "Oberflächenwasserabhängige Ökosysteme"
+
+#: l_int_wms.527
+msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
+msgstr " ZPS durch grosshrzgl. Verordnung festgelegt"
+
+#: l_int_wms.528
+msgid "eau_new_UeSG_100-jaehrlich_(usage_interne)"
+msgstr "ÜSG 100-jährlich"
+
+#: l_int_wms.529
+msgid "MO"
+msgstr ""
+
+#: l_int_wms.532
+msgid "eau_new_Trinkwasserentnahmepunkte"
+msgstr "Trinkwasserentnahmepunkte"
+
+#: l_int_wms.533
+msgid "eau_new_Pumpstationen_(usage_interne)"
+msgstr "Pumpstationen"
+
+#: l_int_wms.534
+msgid "eau_new_Trinkwassersyndikate"
+msgstr "Trinkwassersyndikate"
+
+#: l_int_wms.535
+msgid "pag_lintgen_layer"
+msgstr ""
+
+#: l_int_wms.536
+msgid "eau_new_Gefahrenklassen_(usage_interne)"
+msgstr "Gefahrenklassen"
+
+#: l_int_wms.537
+msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
+msgstr "Künstliche Wasserkörper 2015"
+
+#: l_int_wms.540
+msgid "eau_new_Stausee_Sauer"
+msgstr "Obersauer Stausee"
+
+#: l_int_wms.541
+msgid "eau_new_Grundwasser_(Nitratrichtlinie)"
+msgstr "Grundwasser [Nitratrichtlinie]"
+
+#: l_int_wms.542
+msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
+msgstr "Künstliche [Bassin]"
+
+#: l_int_wms.543
+msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
+msgstr "Einschränkung Wärmepumpen"
+
+#: l_int_wms.544
+msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
+msgstr "Intensität HQ 100"
+
+#: l_int_wms.545
+msgid ""
+"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
+msgstr "Risikobeurteilung des WK hinsichtlich der Verfehlung des guten chemischen Zustandes"
+
+#: l_int_wms.546
+msgid "eau_new_UeSG_extrem_(usage_interne)"
+msgstr "ÜSG extrem"
+
+#: l_int_wms.548
+msgid "eau_new_Einschraenkung_Waermepumpe"
+msgstr "Einschränkung Wärmepumpen"
+
+#: l_int_wms.549
+msgid "eau_new_Intensitaet_-_HQ_10_(usage_interne)"
+msgstr "Intensität HQ10"
+
+#: l_wmts.719
+msgid "asta_flik_parcels_2015"
+msgstr "FLIK Parzellen 2015 (prov)"
+
+#: l_int_wms.550
+msgid "eau_new_Badegewaesser_-_Qualitaet"
+msgstr "Badegewässer - Qualität"
+
+#: l_int_wms.552
+msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
+msgstr "Messstationen Grundwasser - Nitratrichtlinie"
+
+#: l_int_wms.553
+msgid "eau_new_Physiko-Chemie_2015"
+msgstr "Physiko-Chemie 2015"
+
+#: l_int_wms.554
+msgid "eau_new_Querprofile"
+msgstr "Querprofile"
+
+#: l_int_wms.555
+msgid "eau_new_Gesamtzustand_2009"
+msgstr "Gesamtzustand  2009"
+
+#: l_int_wms.556
+msgid "eau_new_Chemischer_Zustand_2009"
+msgstr "Chemischer Zustand 2009"
+
+#: l_int_wms.557
+msgid "eau_new_Primaere_Gewaesser"
+msgstr "Primäre Gewässer"
+
+#: l_int_wms.560
+msgid "eau_new_Typologie_Gewaesser_2015"
+msgstr "Typologie Gewässer 2015"
+
+#: l_int_wms.561
+msgid "eau_new_Oberflaechenwasserkoerper_2015"
+msgstr "Oberflächenwasserkörper 2015"
+
+#: l_int_wms.562
+msgid "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie"
+msgstr "Messstationen Oberflächengewässer - Nitratrichtlinie"
+
+#: l_int_wms.563
+msgid "eau_new_Hydromorphologischer_Zustand_2015"
+msgstr "Hydromorphologischer Zustand 2015"
+
+#: l_int_wms.564
+msgid "eau_new_Phytobenthos_2015"
+msgstr "Phytobenthos 2015"
+
+#: l_int_wms.565
+msgid "eau_new_Makro-Invertebraten_2015"
+msgstr "Makro-Invertebraten 2015"
+
+#: l_int_wms.566
+msgid "eau_new_Zustand_der_WK_2015"
+msgstr "Zustand der WK 2015"
+
+#: l_int_wms.568
+msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
+msgstr "Quantitativer Zustand der WK 2015"
+
+#: l_int_wms.569
+msgid "eau_new_Einschaetzung_guter_Zustand_2021"
+msgstr "Einschätzung guter Zustand 2021"
+
+#: l_int_wms.570
+msgid "eau_new_Erheblich_veraenderte_WK_2015"
+msgstr "Erheblich veränderte WK 2015"
+
+#: l_int_wms.571
+msgid "eau_new_Hydromorphologischer_Zustand_2009"
+msgstr "Hydromorphologischer Zustand2009"
+
+#: l_int_wms.572
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)_2010"
+msgstr "HQ extrem [niedrige Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.573
+msgid "eau_new_HQextrem_merged_2010"
+msgstr "HQ extrem [HW Risiko mit niedriger Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.574
+msgid "eau_new_Lufttemperatur"
+msgstr "Lufttemperatur"
+
+#: l_int_wms.575
+msgid "eau_new_Wassertiefe_-_HQ_extrem_(usage_interne)"
+msgstr "Wassertiefe HQ extrem"
+
+#: l_int_wms.576
+msgid "eau_new_UeSG_10-jaehrlich_(usage_interne)"
+msgstr "ÜSG 10-jährlich"
+
+#: l_int_wms.578
+msgid "eau_new_Trinkwasserbehaelter"
+msgstr "Trinkwasserbehälter"
+
+#: l_int_wms.579
+msgid "eau_new_Kilometrierung_sekundaere_Gewaesser"
+msgstr "Kilometrierung sekundäre Gewässer"
+
+#: l_int_wms.582
+msgid "eau_new_Oberflaechenwasserkoerper_2009"
+msgstr "Oberflächenwasserkörper 2009"
+
+#: l_int_wms.583
+msgid "eau_new_Gewaesserentwicklungsfaehigkeit_2009_(usage_interne)"
+msgstr "Gewässerentwicklungsfähigkeit 2009"
+
+#: l_int_wms.584
+msgid "eau_new_Grundwasserkoerper_2009"
+msgstr "Grundwasserkörper 2009"
+
+#: l_int_wms.585
+msgid "parcels_labels_eau"
+msgstr "Katasterparzellen (Nummern)"
+
+#: l_int_wms.586
+msgid ""
+"eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
+msgstr "Risikobeurteilung des WK hinsichtlich der Verfehlung des guten mengenmäßigen Zustandes"
+
+#: l_int_wms.589
+msgid "parcels_eau"
+msgstr "Katasterparzellen"
+
+#: l_int_wms.590
+msgid "buildings_eau"
+msgstr ""
+
+#: l_int_wms.593
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)_2010"
+msgstr "HQ10 [hohe Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.594
+msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
+msgstr "Quantitativer Zustand der WK 2009"
+
+#: l_int_wms.596
+msgid "eau_new_Typologie_Oberflaechengewasser_2009"
+msgstr "Typologie Oberflächengewässer 2009"
+
+#: l_int_wms.597
+msgid "eau_new_Grundwasserkoerper_2015"
+msgstr "Grundwasserkörper 2015"
+
+#: l_int_wms.598
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)_2010"
+msgstr "HQ100 [mittlere Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.599
+msgid "eau_new_Niederschlag"
+msgstr "Niederschlag"
+
+#: l_int_wms.600
+msgid "eau_new_Schneehoehe"
+msgstr "Schneehöhe"
+
+#: l_int_wms.603
+msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
+msgstr "Empfindliche Gebiete [Kommunalabwasserrichtlinie]"
+
+#: l_int_wms.607
+msgid "eau_new_Wassertiefe_-_HQ_10_(usage_interne)"
+msgstr "Wassertiefe HQ 10"
+
+#: l_int_wms.608
+msgid "eau_new_Oekologischer_Zustand_2009"
+msgstr "Ökologischer Zustand2009"
+
+#: l_int_wms.612
+msgid "eau_new_Luftfeucht"
+msgstr "Luftfeuchte"
+
+#: l_int_wms.613
+msgid "eau_new_Luftdruck"
+msgstr "Luftdruck"
+
+#: l_int_wms.614
+msgid "eau_new_Globalstrahlung"
+msgstr "Globalstrahlung"
+
+#: l_int_wms.615
+msgid "eau_new_Trinkwasserknappheit_(Zustand_orange)"
+msgstr "Trinkwasserknappheit (Zustand \"orange\")"
+
+#: l_int_wms.616
+msgid "eau_new_Wassertiefe_-_HQ_100_(usage_interne)"
+msgstr "Wassertiefe HQ 100"
+
+#: l_int_wms.617
+msgid "eau_new_Betrachtungsraeume_2015"
+msgstr "Betrachtungsräume 2015"
+
+#: l_int_wms.618
+msgid "eau_new_Bodentemperatur"
+msgstr "Bodentemperatur"
+
+#: l_int_wms.621
+msgid "eau_new_Chemischer_Zustand_2015"
+msgstr "Chemischer Zustand 2015"
+
+#: l_int_wms.622
+msgid "eau_new_Oekologischer_Zustand_2015"
+msgstr "Ökologischer Zustand 2015"
+
+#: l_int_wms.623
+msgid "eau_new_Temporaer_fliessende_Baeche"
+msgstr "Temporär fliessende Bäche"
+
+#: l_int_wms.625
+msgid "eau_new_HQ10_merged_2010"
+msgstr "HQ10 [HW Risiko mit hoher Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.626
+msgid "eau_new_Kilometrierung_primaere_Gewaesser"
+msgstr "Kilometrierung primäre Gewässer"
+
+#: l_int_wms.627
+msgid "eau_new_Sekundaere_Gewaesser"
+msgstr "Sekundäre Gewässer"
+
+#: l_int_wms.628
+msgid "eau_new_Fischereiabschnitte"
+msgstr "Fischereiabschnitte"
+
+#: l_int_wms.629
+msgid "eau_new_WRRL_-_Ueberblicksueberwachung"
+msgstr "WRRL - Überblicksüberwachung"
+
+#: l_int_wms.630
+msgid "eau_new_Bohrungen"
+msgstr "Bohrungen"
+
+#: l_int_wms.631
+msgid "eau_new_Quellen"
+msgstr "Quellen"
+
+#: l_int_wms.632
+msgid "eau_new_HQ100_merged_2010"
+msgstr "HQ100 [HW Risiko mit mittler Wahrscheinlichkeit] 2010"
+
+#: l_int_wms.633
+msgid "eau_new_Online_Messstationen"
+msgstr "Online Messstationen"
+
+#: l_int_wms.636
+msgid "eau_new_Grundwasserleiter"
+msgstr "Grundwasserleiter"
+
+#: l_int_wms.637
+msgid "eau_new_Chemischer_Zustand_der_WK_2015"
+msgstr "Chemischer Zustand der WK 2015"
+
+#: l_int_wms.638
+msgid "eau_new_UESG_Sauer_1995"
+msgstr "UESG Sauer 1995"
+
+#: l_int_wms.639
+msgid "eau_new_Erheblich_veraenderte_OWK_2009"
+msgstr "Erheblich veränderte OWK 2009"
+
+#: l_int_wms.640
+msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
+msgstr "Natürliche [Bassin]"
+
+#: l_int_wms.641
+msgid "eau_new_Einzugsgebiete"
+msgstr "Einzugsgebiete"
+
+#: l_int_wms.643
+msgid "eau_new_UESG_1983_-_Mosel"
+msgstr "UESG 1983 - Mosel"
+
+#: l_int_wms.644
+msgid "eau_new_Feuchtgebiete_(usage_interne)"
+msgstr "Feuchtgebiete"
+
+#: l_int_wms.645
+msgid "eau_new_Durchgaengigkeit"
+msgstr "Durchgängigkeit"
+
+#: l_int_wms.646
+msgid "eau_new_Kontrollpunkte_(usage_interne)"
+msgstr "Kontrollpunkte"
+
+#: l_int_wms.647
+msgid "eau_new_UESG_1993_(ausser_Mosel)"
+msgstr "UESG 1993 [ausser Mosel]"
+
+#: l_int_wms.648
+msgid "eau_new_UESG_Alzette_1995"
+msgstr "UESG Alzette 1995"
+
+#: l_int_wms.651
+msgid "eau_new_Abwassersyndikate"
+msgstr "Abwassersyndikate"
+
+#: l_int_wms.652
+msgid "eau_new_Betrachtungsraeume_2009"
+msgstr "Betrachtungsräume 2009"
+
+#: l_int_wms.654
+msgid "eau_new_Klaeranlagen"
+msgstr "Kläranlagen"
+
+#: l_int_wms.655
+msgid "eau_new_Makrophyten_2015"
+msgstr "Makrophyten 2015"
+
+#: l_int_wms.656
+msgid "eau_new_Fische_2015"
+msgstr "Fische 2015"
+
+#: l_int_wms.659
+msgid "eau_new_Bauwerke"
+msgstr "Bauwerke"
+
+#: l_int_wms.663
+msgid "eau_new_Grundwasserabhaengige_terrestriche_Oekosysteme"
+msgstr "Grundwasserabhängige terrestrische Ökosysteme"
+
+#: l_int_wms.665
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet"
+msgstr "Grundwasser [WRRL] - Überwachung der Quantität"
+
+#: l_int_wms.666
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet"
+msgstr "Grundwasser [WRRL] - Überwachung der Qualität"
+
+#: l_int_wms.667
+msgid "eau_new_Kanal_-__Muehlgraben"
+msgstr "Kanal - Mühlgraben"
+
+#: l_int_wms.671
+msgid "eau_new_Waermepumpe_(usage_interne)"
+msgstr "Wärmepumpe"
+
+#: l_int_wms.673
+msgid "eau_new_Alluvialer_Grundwasserspiegel"
+msgstr "Alluvialer Grundwasserspiegel"
+
+#: l_int_wms.676
+msgid "eau_new_Nitratrichtlinie_Messstationen"
+msgstr "Nitratrichtlinie"
+
+#: l_int_wms.680
+msgid "eau_new_Wasserstand"
+msgstr "Wasserstand"
+
+#: l_int_wms.684
+msgid "eau_new_Gesamtzustand_2015"
+msgstr "Gesamtzustand 2015"
+
+#: l_int_wms.685
+msgid "eau_new_Badegewaesser"
+msgstr "Badegewässer"
+
+#: l_int_wms.686
+msgid "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise"
+msgstr " ZPS laufende öffentliche Verfahrungsweise"
+
+#: l_int_wms.687
+msgid "eau_new_Zustand_der_WK_2009"
+msgstr "Zustand der WK 2009"
+
+#: l_int_wms.689
+msgid "ont_poi_5"
+msgstr "Sport & Freizeit"
+
+#: l_int_wms.690
+msgid "ont_poi_7"
+msgstr "Einkaufen"
+
+#: l_int_wms.691
+msgid "ont_poi"
+msgstr "Essen & Übernachten"
+
+#: l_int_wms.692
+msgid "ont_poi_2"
+msgstr "Kunst & Kultur"
+
+#: l_int_wms.693
+msgid "ont_poi_3"
+msgstr "Natur & Ausflüge"
+
+#: l_int_wms.694
+msgid "ont_poi_6"
+msgstr "Family & Kids"
+
+#: l_int_wms.695
+msgid "ont_poi_4"
+msgstr "Ausgehen"
+
+#: l_int_wms.696
+msgid "lenoz_lmg"
+msgstr ""
+
+#: l_int_wms.697
+msgid "lenoz_ecoles_old"
+msgstr ""
+
+#: l_int_wms.698
+msgid "lenoz_creches"
+msgstr ""
+
+#: l_int_wms.699
+msgid "lenoz_Banken"
+msgstr ""
+
+#: l_int_wms.700
+msgid "wrrl_intern_mn"
+msgstr ""
+
+#: l_int_wms.701
+msgid "wrrl_intern_gb_k7"
+msgstr ""
+
+#: l_int_wms.702
+msgid "lenoz_Tankstelle"
+msgstr ""
+
+#: l_int_wms.703
+msgid "wrrl_intern_5b_sk"
+msgstr ""
+
+#: l_int_wms.707
+msgid "lenoz_Ärzte"
+msgstr ""
+
+#: l_int_wms.708
+msgid "lenoz_Post"
+msgstr ""
+
+#: l_int_wms.709
+msgid "anf_carte_simpl_forets"
+msgstr "Vereinfachte Karte der natürlichen Waldgesellschaften"
+
+#: l_int_wms.710
+msgid "lenoz_Lycees"
+msgstr ""
+
+#: l_int_wms.711
+msgid "lenoz_Restaurants"
+msgstr ""
+
+#: l_int_wms.712
+msgid "asta_esp_lisiere"
+msgstr "Waldrandstreifen "
+
+#: l_int_wms.713
+msgid "asta_esp_esp"
+msgstr "Landschaftsstrukturelemente "
+
+#: l_int_wms.714
+msgid "parcelles_etat"
+msgstr "Katasterparzellen"
+
+#: l_int_wms.715
+msgid "mobi_pickup"
+msgstr "«Pickup»-Stationen"
+
+#: l_int_wms.718
+msgid "osm_mq"
+msgstr ""
+
+#: l_int_wms.720
+msgid "logt_bauluecken"
+msgstr "Baulücken"
+
+#: l_wmts.163
+msgid "wg_oberflachenwasserkorper"
+msgstr ""
+
+#: l_wmts.164
+msgid "rivers"
+msgstr ""
+
+#: l_wmts.165
+msgid "ac_wellenstein_pag_volumes_batiments"
+msgstr "Gebäude"
+
+#: l_wmts.167
+msgid "wg_feuchtgebiete"
+msgstr ""
+
+#: l_wmts.172
+msgid "wg_bauwerke"
+msgstr ""
+
+#: l_wmts.174
+msgid "wg_sanitare_schutzzonen_stausee"
+msgstr ""
+
+#: l_wmts.179
+msgid "wg_pumpstationen"
+msgstr ""
+
+#: l_wmts.181
+msgid "TOPO_CARTESHISTO_1964_RGB"
+msgstr "Topographische Karte 1:20k 1964"
+
+#: l_wmts.182
+msgid "wg_bohrungen"
+msgstr ""
+
+#: l_wmts.183
+msgid "wg_hmwb_(stark_modifizierte_wasserkorper)"
+msgstr ""
+
+#: l_wmts.185
+msgid "wg_cr_ext"
+msgstr ""
+
+#: l_wmts.187
+msgid "ivv_grosslagen"
+msgstr "Lagen im Weinbau"
+
+#: l_wmts.189
+msgid "wg_gewasserentwicklungsfahigkeit"
+msgstr ""
+
+#: l_wmts.194
+msgid "roads"
+msgstr "Straßennetz"
+
+#: l_wmts.195
+msgid "ac_wellenstein_pag_zones"
+msgstr "Zonen"
+
+#: l_wmts.198
+msgid "TOPO_CARTESHISTO_1990_50k"
+msgstr "Topographische Karte 1:50k 1990"
+
+#: l_wmts.201
+msgid "topo_decoupage_tc"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.205
+msgid "TOPO_CARTESHISTO_1979_RGB"
+msgstr "Topographische Karte 1:20k 1979"
+
+#: l_wmts.208
+msgid "topo_decoupage_5000"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.210
+msgid "topo_5k"
+msgstr "Topographische Karte 1:5000"
+
+#: l_wmts.211
+msgid "wg_niederschlag"
+msgstr ""
+
+#: l_wmts.213
+msgid "wg_trinkwasserentnahmepunkte"
+msgstr ""
+
+#: l_wmts.218
+msgid "buildings"
+msgstr ""
+
+#: l_wmts.219
+msgid "wg_lufttemperatur"
+msgstr ""
+
+#: l_wmts.220
+msgid "topo_decoupage_100k"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.221
+msgid "TOPO_CARTESHISTO_1964"
+msgstr "Topographische Karte 1:20k 1964 S/W"
+
+#: l_wmts.223
+msgid "wg_relief"
+msgstr "Relief"
+
+#: l_wmts.224
+msgid "wg_relief_dhm_2m"
+msgstr "Relief DHM 2m"
+
+#: l_wmts.227
+msgid "topo_20k"
+msgstr "Topographische Karte 1:20000"
+
+#: l_wmts.228
+msgid "wg_uesg_1993_(ausser_mosel)"
+msgstr ""
+
+#: l_wmts.229
+msgid "wg_nitratbelastung"
+msgstr ""
+
+#: l_wmts.234
+msgid "wg_messstationen_oberflachenwasser"
+msgstr ""
+
+#: l_wmts.252
+msgid "wg_oberflachenwasser_wrrl"
+msgstr ""
+
+#: l_wmts.255
+msgid "topo_250k"
+msgstr "Topographische Karte 1:250000"
+
+#: l_wmts.257
+msgid "wg_timis_ueberflutungsflachen_hq100"
+msgstr ""
+
+#: l_wmts.258
+msgid "wg_bodentemperatur"
+msgstr ""
+
+#: l_wmts.259
+msgid "wg_uesg_1983___mosel"
+msgstr ""
+
+#: l_wmts.260
+msgid "wg_timis_wassertiefe_hq10"
+msgstr ""
+
+#: l_wmts.261
+msgid "ortho_2004"
+msgstr "Orthophoto 2004"
+
+#: l_wmts.262
+msgid "ortho_2001"
+msgstr "Orthophoto 2001"
+
+#: l_wmts.263
+msgid "wg_fischereiabschnitte"
+msgstr ""
+
+#: l_wmts.267
+msgid "wg_nitrat_ober"
+msgstr ""
+
+#: l_wmts.270
+msgid "ortho_2007"
+msgstr "Orthophoto 2007"
+
+#: l_wmts.271
+msgid "wg_wasserspiegel"
+msgstr ""
+
+#: l_wmts.276
+msgid "wg_querprofile"
+msgstr ""
+
+#: l_wmts.278
+msgid "TOPO_CARTESHISTO_2000"
+msgstr "Topographische Karte 1:20k 2000"
+
+#: l_wmts.279
+msgid "wg_nebengewasser"
+msgstr ""
+
+#: l_wmts.280
+msgid "ign_topo"
+msgstr "Automatische topographische Karte"
+
+#: l_wmts.282
+msgid "wg_naturliche_(bassin)"
+msgstr ""
+
+#: l_wmts.283
+msgid "wg_timis_hochwasser_intensitaten_hq100"
+msgstr ""
+
+#: l_wmts.284
+msgid "ivv_kleinlagen"
+msgstr "Kleinlagen im Weinbau"
+
+#: l_wmts.286
+msgid "wg_provisorische_trinkwasser_schutzzonen"
+msgstr ""
+
+#: l_wmts.288
+msgid "geologie"
+msgstr "Geologie"
+
+#: l_wmts.290
+msgid "wg_uesg_sure_1995"
+msgstr ""
+
+#: l_wmts.294
+msgid "wg_wrrl_oberflachenwasserkorper"
+msgstr ""
+
+#: l_wmts.299
+msgid "ign_ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.300
+msgid "wg_timis_wassertiefe_hq100"
+msgstr ""
+
+#: l_wmts.301
+msgid "1927_CAHANSEN"
+msgstr "Topographische Karte 1927"
+
+#: l_wmts.304
+msgid "feuilles_cadastrales"
+msgstr "Kataster Urpläne"
+
+#: l_wmts.305
+msgid "wg_cr_100"
+msgstr ""
+
+#: l_wmts.306
+msgid "ac_wellenstein_pag_limites"
+msgstr "Grenzen"
+
+#: l_wmts.307
+msgid "ac_wellenstein_pag_voies_acces"
+msgstr "Zufahrtswege"
+
+#: l_wmts.311
+msgid "topo_100k"
+msgstr "Topographische Karte 1:100000"
+
+#: l_wmts.312
+msgid "cadastre"
+msgstr "Katasterplan"
+
+#: l_wmts.313
+msgid "wg_exposition"
+msgstr "Exposition"
+
+#: l_wmts.315
+msgid "topo_decoupage_r"
+msgstr "Blattschnitt Regionale Karte"
+
+#: l_wmts.316
+msgid "sections_cadastrales_labels"
+msgstr "Katastersektionen (Namen)"
+
+#: l_wmts.317
+msgid "ac_remich_ortho"
+msgstr "Orthophoto Remich"
+
+#: l_wmts.318
+msgid "districts_labels"
+msgstr "Bezirke (Namen)"
+
+#: l_wmts.319
+msgid "communes_labels"
+msgstr "Kantone (Namen)"
+
+#: l_wmts.322
+msgid "ivv_flik_parcels"
+msgstr "FLIK Referenzparzellen Weinbau 2013"
+
+#: l_wmts.323
+msgid "pedologie_100k"
+msgstr "Geologie"
+
+#: l_wmts.326
+msgid "TOPO25K1954C24"
+msgstr "Topographische Karte 1954"
+
+#: l_wmts.330
+msgid "TOPO_CARTESHISTO_2000_50k"
+msgstr "Topographische Karte 1:50k 2000"
+
+#: l_wmts.331
+msgid "wg_trinkwassersyndikate"
+msgstr ""
+
+#: l_wmts.332
+msgid "wg_kilometrierung_hauptgewasser"
+msgstr ""
+
+#: l_wmts.336
+msgid "ac_wellenstein_pag_alignements_a_preserver"
+msgstr "Zu erhaltende Ausrichtungen"
+
+#: l_wmts.337
+msgid "asta_meteo"
+msgstr "Wetterstationen"
+
+#: l_wmts.339
+msgid "wg_timis_ueberflutungsflachen_ehq"
+msgstr ""
+
+#: l_wmts.340
+msgid "wg_kontrollpunkte"
+msgstr ""
+
+#: l_wmts.341
+msgid "TOPO_CARTESHISTO_1989"
+msgstr "Topographische Karte 1:20k 1989"
+
+#: l_wmts.342
+msgid "wg_hohenlinien_10m"
+msgstr "Höhenlinien 10m"
+
+#: l_wmts.344
+msgid "wg_abwasser_syndikate"
+msgstr ""
+
+#: l_wmts.345
+msgid "wg_hangneigung_"
+msgstr "Hangneigung °"
+
+#: l_wmts.346
+msgid "eau_phase_orange"
+msgstr ""
+
+#: l_wmts.349
+msgid "wg_grundwasserleiter"
+msgstr ""
+
+#: l_wmts.353
+msgid "wg_ikonos_satellitendaten"
+msgstr "Ikonos Satellitendaten"
+
+#: l_wmts.354
+msgid "wg_stausee_sauer"
+msgstr ""
+
+#: l_wmts.355
+msgid "wg_cr_inext"
+msgstr ""
+
+#: l_wmts.357
+msgid "geologie_ancienne_edition"
+msgstr "Geologische Karte, alte Ausgabe"
+
+#: l_wmts.358
+msgid "wg_klaranlagen"
+msgstr ""
+
+#: l_wmts.359
+msgid "topo"
+msgstr "Automatische topographische Karte"
+
+#: l_wmts.362
+msgid "ivv_parcels"
+msgstr "Weinbergsparzellen 2013"
+
+#: l_wmts.363
+msgid "wg_kilometrierung_nebengewasser"
+msgstr ""
+
+#: l_wmts.413
+msgid "wg_timis_hochwasser_intensitaten_ehq"
+msgstr ""
+
+#: l_wmts.416
+msgid "wg_grundwasser_wrrl"
+msgstr ""
+
+#: l_wmts.420
+msgid "wg_timis_wassertiefe_ehq"
+msgstr ""
+
+#: l_wmts.421
+msgid "wg_cr_10"
+msgstr ""
+
+#: l_wmts.428
+msgid "ortho_2010"
+msgstr "Orthophoto 2010"
+
+#: l_wmts.429
+msgid "ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.430
+msgid "ac_remich_pag"
+msgstr "Flächennutzungsplan Remich"
+
+#: l_wmts.431
+msgid "topo_decoupage_ortho"
+msgstr "Blattschnitt Orthophotos"
+
+#: l_wmts.432
+msgid "cantons_labels"
+msgstr "Kantone (Namen)"
+
+#: l_wmts.435
+msgid "country"
+msgstr "Landesgrenzen"
+
+#: l_wmts.436
+msgid "communes_cadastrales_labels"
+msgstr "Katastergemeinden (Namen)"
+
+#: l_wmts.437
+msgid "roads_labels"
+msgstr "Straßennamen"
+
+#: l_wmts.440
+msgid "parcels_labels"
+msgstr "Katasterparzellen (Nummern)"
+
+#: l_wmts.441
+msgid "districts"
+msgstr "Bezirke"
+
+#: l_wmts.442
+msgid "sections_cadastrales"
+msgstr "Katastersektionen"
+
+#: l_wmts.446
+msgid "parcels"
+msgstr "Katasterparzellen"
+
+#: l_wmts.447
+msgid "ortho_2013"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.454
+msgid "emwelt_biotop_kadaster_f"
+msgstr "Flächige Objekte mit Ausnahme der Streuobstwiesen"
+
+#: l_wmts.455
+msgid "emwelt_biotop_kadaster_b"
+msgstr "Pufferzonen"
+
+#: l_wmts.457
+msgid "emwelt_biotop_kadaster_p"
+msgstr "Punktuelle Objekte"
+
+#: l_wmts.458
+msgid "emwelt_biotop_kadaster_s"
+msgstr "Steuobstwiesen"
+
+#: l_wmts.460
+msgid "eau_new_HQ100_merged_2013"
+msgstr "HQ100 [HW Risiko mit mittler Wahrscheinlichkeit]"
+
+#: l_wmts.485
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
+msgstr "HQ100 [mittlere Wahrscheinlichkeit]"

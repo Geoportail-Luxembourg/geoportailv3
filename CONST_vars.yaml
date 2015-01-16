@@ -1,8 +1,12 @@
 vars:
     # project instance id
     instanceid: INSTANCE_ID
-    # the Unix user under which the modwsgi daemon processes are executed,
-    # can be overriden in development-specific buildout config files
+    # is in developement mode
+    development: DEVELOPMENT
+    # the package name
+    package: geoportailv3
+
+    # the Unix user under which the modwsgi daemon processes are executed.
     modwsgi_user: www-data
     # url-path where the instance must respond.
     apache-entry-point: /{instanceid}/
@@ -33,7 +37,7 @@ vars:
     # mapserver join close
     mapserver_join_where: 'rra.role_id: %role_id% AND rra.restrictionarea_id: ra.id AND lra.restrictionarea_id: ra.id AND lra.layer_id: la.id AND la.name:'
     # mapserver metadata for validation
-    mapserver_layer_metadata:
+    mapserver_layer_metadata: ""
     mapserver_layer_validation:
         '"default_role_id" "-1"
         "role_id" "^-?[0-9]*$"'
@@ -53,6 +57,7 @@ vars:
     db_replication: to_be_defined
     dbuser_replication: to_be_defined
     dbpassword_replication: to_be_defined
+    enable_admin_interface: True
 
     directory: pwd
     python_path: __import__('distutils').sysconfig.get_python_lib()
@@ -60,18 +65,27 @@ vars:
     # Authentication settings
     authtkt_cookie_name: auth_tkt_{instanceid}
     # Database informations
-    sqlalchemy.url: postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{db}
-    sqlalchemy_replication.url: postgresql://{dbuser_replication}:{dbpassword_replication}@{dbhost_replication}:{dbport_replication}/{db_replication}
+    sqlalchemy:
+        url: postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{db}
+    sqlalchemy_replication:
+        url: postgresql://{dbuser_replication}:{dbpassword_replication}@{dbhost_replication}:{dbport_replication}/{db_replication}
 
     # 10 days of default cache
     default_max_age: 864000
 
+    # For debug mode
+    jsbuild:
+        config: jsbuild/app.cfg
+        root_dir: {directory}
+
     # pyramid_closure configuration
-    pyramid_closure.roots: '{closure_library_path}/closure/goog'
-    pyramid_closure.roots_with_prefix: '
-        ../../../../../../../../../proj/js {directory}/geoportailv3/static/js
-        ../../../../../../../../../node_modules/openlayers {directory}/node_modules/openlayers
-        ../../../../../../../../../node_modules/ngeo/src {directory}/node_modules/ngeo/src'
+    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
+    pyramid_closure:
+        roots: '{closure_library_path}/closure/goog'
+        roots_with_prefix: '
+            ../../../../../../../../../proj/js {directory}/{package}/static/js
+            ../../../../../../../../../node_modules/openlayers {directory}/node_modules/openlayers
+            ../../../../../../../../../node_modules/ngeo/src {directory}/node_modules/ngeo/src'
 
     # used for the "node_modules" and "closure" static views
     node_modules_path: '{directory}/node_modules'
@@ -155,6 +169,8 @@ vars:
     # If the WFS service is different from the WMS service, uncomment and set the
     # external_mapserv_wfs_url parameter
     #external_mapserv_wfs_url:
+
+    servers:
 
     # The "raster web services" configuration. See the "raster"
     # chapter in the integrator documentation.
@@ -276,6 +292,7 @@ interpreted:
     - python_path
     environment:
     - instanceid
+    - development
     bash:
     - directory
     yaml:
