@@ -6,6 +6,7 @@ goog.require('app');
 /**
  * @param {string} appLayermanagerTemplateUrl Url to layermanager template
  * @return {angular.Directive} The Directive Definition Object.
+ * @ngInject
  */
 app.layermanagerDirective = function(appLayermanagerTemplateUrl) {
   return {
