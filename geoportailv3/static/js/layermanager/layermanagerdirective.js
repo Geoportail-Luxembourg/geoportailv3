@@ -60,4 +60,13 @@ app.LayermanagerController.prototype.removeLayer = function(layer) {
 };
 
 
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ * @export
+ */
+app.LayermanagerController.prototype.changeVisibility = function(layer) {
+  layer.set('opacity', layer.get('opacity') > 0 ? 0 : 1);
+};
+
+
 app.module.controller('AppLayermanagerController', app.LayermanagerController);
