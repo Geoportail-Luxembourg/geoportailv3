@@ -16,5 +16,7 @@
   ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
   <li ng-repeat="node in ::layertreenodeCtrl.node.children"
       ngeo-layertreenode="::node" ngeo-layertreenode-map="::layertreenodeCtrl.map"
-      ng-class="(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''"></li>
+      ngeo-layertreenode-layerexpr="layertreenodeCtrl.layerExpr"
+      ng-class="(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''">
+  </li>
 </ul>

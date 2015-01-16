@@ -1,6 +1,6 @@
+goog.provide('app.GetLayerForCatalogNode');
 goog.provide('app.GetWmsLayer');
 goog.provide('app.GetWmtsLayer');
-goog.provide('app.LayerFactory');
 
 goog.require('app');
 goog.require('ngeo.DecorateLayer');
@@ -26,7 +26,7 @@ app.GetWmsLayer;
 /**
  * @typedef {function(Object):ol.layer.Layer}
  */
-app.LayerFactory;
+app.GetLayerForCatalogNode;
 
 
 /**
@@ -128,23 +128,23 @@ app.module.factory('appGetWmsLayer', app.getWmsLayer_);
 
 
 /**
- * The function returning the function used as the ngeoLayertreeLayerFactory,
- * which should be defined for the ngeoLayertreenode directive.
+ * Function returning a function used to get the layer object for a catalog
+ * tree node.
  *
  * @param {app.GetWmtsLayer} appGetWmtsLayer The getWmtsLayer function.
  * @param {app.GetWmsLayer} appGetWmsLayer The getWmsLayer function.
- * @return {app.LayerFactory} The layer factory.
+ * @return {app.GetLayerForCatalogNode} The getLayerForCatalogNode function.
  * @private
  * @ngInject
  */
-app.createLayerFactory_ = function(appGetWmtsLayer, appGetWmsLayer) {
-  return layerFactory_;
+app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
+  return getLayerForCatalogNode;
 
   /**
    * @param {Object} node Catalog tree node.
    * @return {ol.layer.Layer} OpenLayers layer.
    */
-  function layerFactory_(node) {
+  function getLayerForCatalogNode(node) {
     var layer, layerCacheKey, type;
     if (!('type' in node)) {
       return null;
@@ -169,4 +169,4 @@ app.createLayerFactory_ = function(appGetWmtsLayer, appGetWmsLayer) {
 
 
 
-app.module.factory('ngeoLayertreeLayerFactory', app.createLayerFactory_);
+app.module.factory('appGetLayerForCatalogNode', app.getLayerForCatalogNode_);
