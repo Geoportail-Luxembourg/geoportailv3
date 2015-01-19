@@ -18,7 +18,7 @@ app.scalelineDirective = function() {
     controller: 'AppScalelineController',
     controllerAs: 'ctrl',
     bindToController: true,
-    template: '<div ngeo-control="ctrl.createControl"' +
+    template: '<div ngeo-control="ctrl.control"' +
         'ngeo-control-map="ctrl.map">'
   };
 };
@@ -33,11 +33,10 @@ app.module.directive('appScaleline', app.scalelineDirective);
  * @constructor
  */
 app.ScalelineDirectiveController = function() {
-  this['createControl'] = function(target) {
-    return new ol.control.ScaleLine({
-      target: target
-    });
-  };
+  /**
+   * @type {ol.control.ScaleLine}
+   */
+  this['control'] = new ol.control.ScaleLine();
 };
 
 
