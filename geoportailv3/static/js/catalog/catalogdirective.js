@@ -1,7 +1,7 @@
 goog.provide('app.catalogDirective');
 
 goog.require('app');
-goog.require('app.LayerFactory');
+goog.require('app.GetLayerForCatalogNode');
 goog.require('ngeo.layertreeDirective');
 
 
@@ -18,7 +18,8 @@ app.catalogDirective = function() {
     controllerAs: 'catalogCtrl',
     bindToController: true,
     template: '<div ngeo-layertree="catalogCtrl.tree" ' +
-        'ngeo-layertree-map="catalogCtrl.map"></div>'
+        'ngeo-layertree-map="catalogCtrl.map" ' +
+        'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)"></div>'
   };
 };
 
@@ -31,10 +32,12 @@ app.module.directive('appCatalog', app.catalogDirective);
  * @constructor
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl Catalog tree URL.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
+ *     create layers from catalog nodes.
  * @export
  * @ngInject
  */
-app.CatalogController = function($http, treeUrl) {
+app.CatalogController = function($http, treeUrl, appGetLayerForCatalogNode) {
   $http.get(treeUrl).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -42,6 +45,12 @@ app.CatalogController = function($http, treeUrl) {
       function(resp) {
         this['tree'] = resp.data['items'][2];
       }, this));
+
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
 };
 
 
@@ -52,6 +61,19 @@ app.CatalogController = function($http, treeUrl) {
  */
 app.CatalogController.prototype.getInfo = function(node, layer) {
   window.alert(node['name']);
+};
+
+
+/**
+ * Return the OpenLayers layer for this node. `null` is returned if the node
+ * is not a leaf.
+ * @param {Object} node Tree node.
+ * @return {ol.layer.Layer} The OpenLayers layer.
+ * @export
+ */
+app.CatalogController.prototype.getLayer = function(node) {
+  var layer = this.getLayerFunc_(node);
+  return layer;
 };
 
 
