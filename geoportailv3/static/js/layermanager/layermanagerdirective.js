@@ -65,7 +65,7 @@ app.LayermanagerController.prototype.removeLayer = function(layer) {
  * @export
  */
 app.LayermanagerController.prototype.changeVisibility = function(layer) {
-  var currentOpacity = parseFloat(layer.get('opacity'));
+  var currentOpacity = parseFloat(layer.getOpacity());
   var newOpacity;
   if (currentOpacity === 0) {
     newOpacity = layer.get('oldOpacity') ? layer.get('oldOpacity') : 1;
