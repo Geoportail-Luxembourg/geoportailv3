@@ -5,6 +5,7 @@ html, body {
 }
 @topbar-height: 50px;
 @bottombar-height: 50px;
+@leftbar-width: 320px;
 body {
   /* padding top by top bar height */
   padding-top: @topbar-height;
@@ -42,7 +43,7 @@ body {
 
 #sidebar {
   display: block;
-  width: 300px;
+  width: @leftbar-width;
   height: 100%;
   max-width: 100%;
   float: left;
@@ -56,7 +57,7 @@ body {
 
 @media (min-width: @screen-sm-min) {
   #sidebar {
-    margin-left: -300px;
+    margin-left: -(@leftbar-width);
   }
 }
 @media (max-width: @screen-xs-max) {
