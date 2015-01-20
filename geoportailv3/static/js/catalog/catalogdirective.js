@@ -1,3 +1,17 @@
+/**
+ * @fileoverview This file provides the "catalog" directive. That directive is
+ * used to create the catalog tree in the page. It is based on the
+ * "ngeo-layertree" directive. And it relies on c2cgeoportal's "themes" web
+ * service.
+ *
+ * Example:
+ *
+ * <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
+ *
+ * Note the use of the one-time binding operator (::) in the map expression.
+ * One-time binding is used because we know the map is not going to change
+ * during the lifetime of the application.
+ */
 goog.provide('app.catalogDirective');
 
 goog.require('app');

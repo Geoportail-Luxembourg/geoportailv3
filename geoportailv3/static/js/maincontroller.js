@@ -1,3 +1,12 @@
+/**
+ * @fileoverview This file defines the controller class for the application's
+ * main controller (created using "ng-controller" in the page).
+ *
+ * In particular, this controller creates the OpenLayers map, and makes it
+ * available in the controller for use from other parts (directives) of the
+ * application. It also defines the behavior of elements of the HTML page (the
+ * management of the sidebar for example).
+ */
 goog.provide('app.MainController');
 
 goog.require('app');

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview This file defines Angular services to use to get OpenLayers
+ * layers for the application.
+ */
 goog.provide('app.GetLayerForCatalogNode');
 goog.provide('app.GetWmsLayer');
 goog.provide('app.GetWmtsLayer');
