@@ -91,6 +91,7 @@ serve: build development.ini
 .PHONY: update-node-modules
 update-node-modules:
 	npm install --force
+	touch .build/node_modules.timestamp
 
 .PHONY: update-translations
 update-translations: $(APP_PYTHON_FILES) $(APP_HTML_FILES) $(APP_SERVER_LOC_FILES) $(APP_CLIENT_LOC_FILES) $(APP_DB_LOC_FILES) geoportailv3/locale/geoportailv3-db.pot geoportailv3/locale/geoportailv3.pot geoportailv3/locale/geoportailv3-client.pot
@@ -229,5 +230,5 @@ $(SITE_PACKAGES)/geoportailv3.egg-link: .build/venv.timestamp setup.py \
 $(SITE_PACKAGES)/setuptools_git-1.1-py$(PYTHON_VERSION).egg-info/PKG-INFO:
 	.build/venv/bin/pip install "setuptools_git==1.1"
 
-.build/config.yaml: .build/venv/bin/c2c-template ${VARS_FILES}
+.build/config.yaml: .build/venv/bin/c2c-template ${VARS_FILES} .build/node_modules.timestamp
 	$(C2C_TEMPLATE_CMD) --get-config $@ $(CONFIG_VARS)
