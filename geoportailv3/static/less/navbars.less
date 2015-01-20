@@ -38,6 +38,20 @@ header {
     /* force items to appear on the same line even for small screens */
     display: inline-block;
   }
+
+  .toolbox-panel {
+    display: none;
+    position: absolute;
+    top: auto;
+    bottom: 100%;
+    white-space: nowrap;
+    background-color: white;
+    border: 1px solid;
+  }
+
+  .active .toolbox-panel {
+    display: block;
+  }
 }
 
 .sidebar-controls {

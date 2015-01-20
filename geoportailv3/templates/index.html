@@ -113,17 +113,23 @@
         <li><a href translate>item2</a></li>
         <li><a href translate>item3</a></li>
       </ul>
-      <ul class="toolbox nav navbar-nav">
-        <li class="hidden-xs draw icon">
-          <a href translate>draw</a>
+      <ul class="toolbox nav navbar-nav" ngeo-btn-group>
+        <li class="hidden-xs draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">draw</a>
+          <div class="toolbox-panel">The panel for draw tools</div>
         </li>
-        <li class="hidden-xs measure icon">
-          <a href translate>measure</a>
+        <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
+          <div class="toolbox-panel">The panel for measure tools</div>
         </li>
-        <li class="hidden-xs print icon">
-          <a href translate>print</a>
+        <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
+          <div class="toolbox-panel">The panel for print tools</div>
         </li>
-        <li class="share icon"><a class="square" href="#" translate>share</a></li>
+        <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">share</a>
+          <div class="toolbox-panel">The panel for share tools</div>
+        </li>
       </ul>
     </footer>
 % if debug:
