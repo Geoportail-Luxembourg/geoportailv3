@@ -38,7 +38,7 @@ def get_cursor():
     conn = psycopg2.connect(**source_conf)
     cursor = conn.cursor()
     query = "Select *, ST_Transform(\"searchLayer\".geom,4326) as geom_4326 \
-            from public.\"searchLayer\" ;"
+            from public.\"searchLayer\";"
     cursor.execute(query)
     return cursor
 
@@ -68,6 +68,11 @@ def recreate_index():
     )
 
 
+def statuslog(text):
+    sys.stdout.write(text)
+    sys.stdout.flush()
+
+
 def dictfetchmany(cursor, i):
     "Returns all rows from a cursor as a dict"
     desc = cursor.description
@@ -79,8 +84,7 @@ def dictfetchmany(cursor, i):
 if __name__ == '__main__':
     client = get_client(env['request'])
 #    recreate_index()
-    sys.stdout.write("\rCreating Database Query ")
-    sys.stdout.flush()
+    statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1
     while True:
@@ -95,9 +99,9 @@ if __name__ == '__main__':
             }
             action['_source'] = extract_document(result['id'], result)
             doc_list.append(action)
-            sys.stdout.write("\rIndexed Elements: %i" % int(counter))
-            sys.stdout.flush()
+            statuslog("\rIndexed Elements: %i" % int(counter))
             counter = counter + 1
         helpers.bulk(client.es, doc_list)
         if not results:
+            statuslog("\n")
             break
