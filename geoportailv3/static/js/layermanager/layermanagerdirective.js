@@ -68,7 +68,8 @@ app.LayermanagerController.prototype.changeVisibility = function(layer) {
   var currentOpacity = layer.getOpacity();
   var newOpacity;
   if (currentOpacity === 0) {
-    newOpacity = layer.get('oldOpacity') ? layer.get('oldOpacity') : 1;
+    var oldOpacity = layer.get('oldOpacity');
+    newOpacity = goog.isDef(oldOpacity) ? oldOpacity : 1;
     // reset oldOpacity for later use
     layer.set('oldOpacity', undefined);
   } else {
