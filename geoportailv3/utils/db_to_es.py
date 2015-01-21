@@ -82,7 +82,7 @@ if __name__ == '__main__':
     c = get_cursor()
     counter = 1
     while True:
-        multiple = 1000
+        multiple = 10000
         results = c.fetchmany(multiple)
         doc_list = []
         for result in results:
