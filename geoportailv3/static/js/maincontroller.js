@@ -10,7 +10,6 @@
 goog.provide('app.MainController');
 
 goog.require('app');
-goog.require('app.GetWmtsLayer');
 goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -26,13 +25,11 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angular.Scope} $scope Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} langUrlTemplate Language URL template.
- * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @constructor
  * @export
  * @ngInject
  */
-app.MainController = function($scope, gettextCatalog, langUrlTemplate,
-    appGetWmtsLayer) {
+app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -45,12 +42,6 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
    * @private
    */
   this.langUrlTemplate_ = langUrlTemplate;
-
-  /**
-   * @type {app.GetWmtsLayer}
-   * @private
-   */
-  this.getWmtsLayer_ = appGetWmtsLayer;
 
   /**
    * @type {Boolean}
@@ -91,7 +82,6 @@ app.MainController.prototype.setMap_ = function() {
 
   /** @type {ol.Map} */
   this['map'] = new ol.Map({
-    layers: [this.getWmtsLayer_('basemap_global')],
     view: new ol.View({
       center: ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857'),
       zoom: 8
