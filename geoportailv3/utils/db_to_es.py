@@ -2,10 +2,12 @@ from pyramid.paster import bootstrap
 env = bootstrap('development.ini')
 
 import psycopg2
+from psycopg2.extras import DictCursor
 import json
 import sys
 from pyramid_es import get_client
 from elasticsearch import helpers
+from elasticsearch.helpers import BulkIndexError
 from shapely.wkb import loads
 from shapely.geometry import mapping
 
@@ -36,7 +38,7 @@ def get_cursor():
         'port': '5432'
     }
     conn = psycopg2.connect(**source_conf)
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=DictCursor)
     query = "Select *, ST_Transform(\"searchLayer\".geom,4326) as geom_4326 \
             from public.\"searchLayer\";"
     cursor.execute(query)
@@ -73,14 +75,6 @@ def statuslog(text):
     sys.stdout.flush()
 
 
-def dictfetchmany(cursor, i):
-    "Returns all rows from a cursor as a dict"
-    desc = cursor.description
-    return [
-        dict(zip([col[0] for col in desc], row))
-        for row in cursor.fetchmany(i)
-    ]
-
 if __name__ == '__main__':
     client = get_client(env['request'])
 #    recreate_index()
@@ -89,7 +83,7 @@ if __name__ == '__main__':
     counter = 1
     while True:
         multiple = 1000
-        results = dictfetchmany(c, multiple)
+        results = c.fetchmany(multiple)
         doc_list = []
         for result in results:
             action = {
@@ -101,7 +95,11 @@ if __name__ == '__main__':
             doc_list.append(action)
             statuslog("\rIndexed Elements: %i" % int(counter))
             counter = counter + 1
-        helpers.bulk(client.es, doc_list)
+        try:
+            helpers.bulk(client.es, doc_list, chunk_size=multiple)
+        except BulkIndexError as e:
+            statuslog(e.errors)
+            break
         if not results:
             statuslog("\n")
             break
