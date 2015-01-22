@@ -25,6 +25,12 @@ vars:
     servers:
         my_maps: http://ws.geoportail.lu/mymaps
 
+    available_locale_names:
+      - en
+      - de
+      - fr
+      - lb
+
 interpreted:
     node:
         vars:
