@@ -22,7 +22,6 @@ def main(global_config, **settings):
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
-    config.include('pyramid_es')
 
     config.add_translation_dirs('geoportailv3:locale/')
 
