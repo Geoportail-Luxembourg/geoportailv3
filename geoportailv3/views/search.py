@@ -4,6 +4,7 @@ import json
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
+from shapely.geometry import shape
 from pyramid_es import get_client
 
 class FullTextSearchView(object):
@@ -15,29 +16,9 @@ class FullTextSearchView(object):
         request.response.cache_control.max_age = \
             request.registry.settings["default_max_age"]
         self.settings = request.registry.settings.get('fulltextsearch', {})
-        if 'languages' in self.settings:  # pragma: nocover
-            self.languages = self.settings['languages']
-        else:
-            self.languages = {
-                'fr': 'french',
-                'en': 'english',
-                'de': 'german',
-            }
 
     @view_config(route_name='fulltextsearch', renderer='geojson')
     def fulltextsearch(self):
-
-        try:
-            lang = self.request.registry.settings['default_locale_name']
-        except KeyError:
-            return HTTPInternalServerError(
-                detail='default_locale_name not defined in settings')
-        try:
-            lang = self.languages[lang]
-        except KeyError:
-            return HTTPInternalServerError(
-                detail='%s not defined in languages' % lang)
-
         if 'query' not in self.request.params:
             return HTTPBadRequest(detail='no query')
         query = self.request.params.get('query')
