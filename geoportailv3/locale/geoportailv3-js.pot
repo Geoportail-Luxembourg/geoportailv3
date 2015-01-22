@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: geoportailv3/templates/index.html
+msgid "+ Add layers"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "Catalog"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "draw"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "infos"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item1"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item2"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "item3"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "lang"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "layers"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "logo"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "map_title"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "measure"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "my_layers"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "my_maps"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "print"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "search"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "search_key_words"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "share"
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid "user"
+msgstr ""

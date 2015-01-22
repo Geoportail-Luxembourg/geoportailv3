@@ -60,13 +60,13 @@ class TsVector(UserDefinedType):
 
 def upgrade():
     schema = context.get_context().config.get_main_option('schema')
-    parentschema = context.get_context().config.get_main_option('parent_schema')
+    parentschema = context.get_context().config.get_main_option('parentschema')
     srid = context.get_context().config.get_main_option('srid')
 
     engine = op.get_bind().engine
     if op.get_context().dialect.has_table(
         engine, 'functionality', schema=schema
-    ):
+    ):  # pragma: nocover
         return
 
     op.create_table(
@@ -125,7 +125,7 @@ def upgrade():
         schema=schema,
     )
     op.bulk_insert(role, [
-        {'name': 'admin'}
+        {'name': 'role_admin'}
     ])
 
     op.create_table(
@@ -187,7 +187,7 @@ def upgrade():
         Column('params', Unicode, nullable=True),
         schema=schema,
     )
-    op.execute("SELECT AddGeometryColumn('%(schema)s', 'tsearch', 'the_geom', %(srid)s, 'POLYGON', 2)" % {
+    op.execute("SELECT AddGeometryColumn('%(schema)s', 'tsearch', 'the_geom', %(srid)s, 'GEOMETRY', 2)" % {
         'schema': schema, 'srid': srid
     })
     op.create_index(
@@ -214,7 +214,7 @@ def upgrade():
         Column('role_id', Integer, ForeignKey(schema + '.role.id'), nullable=False),
         schema=schema,
     )
-    if parentschema is not None:
+    if parentschema is not None and parentschema is not "":  # pragma: nocover
         op.add_column(
             'user',
             Column('parent_role_id', Integer, ForeignKey(parentschema + '.role.id')),
@@ -224,7 +224,7 @@ def upgrade():
         "INSERT INTO %(schema)s.user (type, username, email, password, role_id) "
         "(SELECT 'user', 'admin', 'info@example.com', '%(pass)s', r.id "
         "FROM %(schema)s.role AS r "
-        "WHERE r.name = 'admin')" % {
+        "WHERE r.name = 'role_admin')" % {
             'schema': schema,
             'pass': sha1('admin').hexdigest()
         }

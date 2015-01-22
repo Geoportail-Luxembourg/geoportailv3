@@ -7,4 +7,25 @@ endif
 
 TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako
 
+LANGUAGES = en fr de lb
+CGXP = FALSE
+MOBILE = FALSE
+NGEO = TRUE
+TILECLOUD_CHAIN = FALSE
+PRINT3 = FALSE
+
+DISABLE_BUILD_RULES = test-packages test-packages-ngeo compile-py-catalog
+
+PRE_RULES = update-translations
+
 include CONST_Makefile
+
+DEV_REQUIREMENTS += transifex-client
+
+.PHONY: update-translations
+update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot 
+	.build/venv/bin/tx push -s
+	.build/venv/bin/tx pull -l en
+	.build/venv/bin/tx pull -l fr
+	.build/venv/bin/tx pull -l de
+	.build/venv/bin/tx pull -l lb

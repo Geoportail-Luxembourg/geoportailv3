@@ -28,25 +28,24 @@
 # either expressed or implied, of the FreeBSD Project.
 
 
-"""${message}
+"""Alter_column_url_to_remove_limitation
 
-Revision ID: ${up_revision}
-Revises: ${down_revision}
-Create Date: ${create_date}
+Revision ID: 3f89a7d71a5e
+Revises: 20137477bd02
+Create Date: 2014-12-18 10:27:52.263992
 
 """
 
 # revision identifiers, used by Alembic.
-revision = ${repr(up_revision)}
-down_revision = ${repr(down_revision)}
+revision = '3f89a7d71a5e'
+down_revision = '20137477bd02'
 
-from alembic import op
-import sqlalchemy as sa
-${imports if imports else ""}
+from alembic import op, context
+from sqlalchemy import types
 
 def upgrade():
-    ${upgrades if upgrades else "pass"}
-
+    schema='%s_static' % context.get_context().config.get_main_option('schema')
+    op.alter_column('shorturl', 'url', type_=types.Unicode, schema=schema)
 
 def downgrade():
-    ${downgrades if downgrades else "pass"}
+    pass

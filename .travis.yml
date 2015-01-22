@@ -7,4 +7,4 @@ install:
 - make -f travis.mk build
 
 script:
-- make -f travis.mk check
+- make -f travis.mk checks
