@@ -52,7 +52,9 @@ class FullTextSearchView(object):
                     "label": o.label,
                     "layer_name": o.layer_name,
                 }
-                feature = Feature(id=o.object_id, geometry=json.loads(o.ts), properties=properties)
+                geom = json.loads(o.ts)
+                bbox = shape(json.loads(o.ts)).bounds
+                feature = Feature(id=o.object_id, geometry=json.loads(o.ts), properties=properties, bbox=bbox)
                 features.append(feature)
 
         # TODO: add callback function if provided in self.request, else return geojson
