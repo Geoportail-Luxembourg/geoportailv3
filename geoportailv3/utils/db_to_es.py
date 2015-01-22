@@ -3,30 +3,15 @@ env = bootstrap('development.ini')
 
 import psycopg2
 from psycopg2.extras import DictCursor
-import json
 import sys
-from pyramid_es import get_client
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from shapely.wkb import loads
 from shapely.geometry import mapping
+from geoportailv3.lib.search import get_es, get_index, ensure_index
 
 
-ES_CONFIG = {
-    'settings': {
-    },
-    'mappings': {
-        'properties': {
-            'object_id': {'type': 'string'},
-            'layer_name': {'type': 'string'},
-            'label': {'type': 'string'},
-            'public': {'type': 'string'},
-            'params': {'type': 'string'},
-            'role_id': {'type': 'string'},
-            'ts': {'type': 'geo_shape'},
-        }
-    }
-}
+request = env['request']
 
 
 def get_cursor():
@@ -40,35 +25,32 @@ def get_cursor():
     conn = psycopg2.connect(**source_conf)
     cursor = conn.cursor(cursor_factory=DictCursor)
     query = "Select *, ST_Transform(\"searchLayer\".geom,4326) as geom_4326 \
-            from public.\"searchLayer\";"
+            from public.\"searchLayer\" ;"
     cursor.execute(query)
     return cursor
 
 
-def extract_document(obj_id, obj=None):
-    doc = {}
+def update_document(index, type, obj_id, obj=None):
+    doc = {
+        "_index": index,
+        "_type": "poi",
+        "_id": obj_id,
+    }
+    doc['_source'] = {}
     geom = loads(obj['geom_4326'], hex=True)
-    geojson = json.dumps(mapping(geom))
-    doc['object_id'] = obj['id']
-    doc['object_type'] = 'poi'
-    doc['layer_name'] = obj['type']
-    doc['label'] = obj['label']
-    doc['ts'] = geojson
+    if geom.is_valid:
+        doc['_source']['ts'] = mapping(geom)
+    else:
+        print '\nInvalid Geom: %s (%s): %s \n' % (obj['type'], 
+                                                  obj['id'], 
+                                                  obj['label'])
+    doc['_source']['object_id'] = obj_id
+    doc['_source']['object_type'] = 'poi'
+    doc['_source']['layer_name'] = obj['type']
+    doc['_source']['label'] = obj['label']
+    doc['_source']['role_id'] = 1
+    doc['_source']['public'] = True
     return doc
-
-
-def recreate_index():
-    es = client.es
-    if es.indices.exists(index=client.index):
-        es.indices.delete(index=client.index)
-
-    es.indices.create(index=client.index)
-    es.indices.put_mapping(
-        index=client.index,
-        doc_type='poi',
-        body=ES_CONFIG['mappings']
-    )
-
 
 def statuslog(text):
     sys.stdout.write(text)
@@ -76,30 +58,26 @@ def statuslog(text):
 
 
 if __name__ == '__main__':
-    client = get_client(env['request'])
-#    recreate_index()
+    ensure_index(get_es(request), get_index(request), True)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1
     while True:
-        multiple = 10000
+        multiple = 1000
         results = c.fetchmany(multiple)
         doc_list = []
         for result in results:
-            action = {
-                "_index": client.index,
-                "_type": "poi",
-                "_id": str(result['id']),
-            }
-            action['_source'] = extract_document(result['id'], result)
-            doc_list.append(action)
+            doc = update_document(get_index(request), 'poi', result['id'], result)
+            doc_list.append(doc)
             statuslog("\rIndexed Elements: %i" % int(counter))
             counter = counter + 1
         try:
-            helpers.bulk(client.es, doc_list, chunk_size=multiple)
+            helpers.bulk(client=get_es(request),
+                         actions=doc_list,
+                         chunk_size=multiple,
+                         raise_on_error=True)
         except BulkIndexError as e:
-            statuslog(e.errors)
-            break
+            print "\n %s" % e
         if not results:
             statuslog("\n")
             break

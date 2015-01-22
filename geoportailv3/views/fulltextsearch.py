@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import re
-import json
-from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
-from shapely.geometry import shape
-from pyramid_es import get_client
+from shapely.geometry import shape, mapping
+from geoportailv3.lib.search import get_es, get_index
 
 class FullTextSearchView(object):
 
@@ -41,20 +39,25 @@ class FullTextSearchView(object):
         if partitionlimit > maxlimit:
             partitionlimit = maxlimit
 
-        client = get_client(self.request)
-        query = client.query(q=query)
-        objs = query.execute(size=limit)
-
+        terms = 'label:%s' % query
+        es = get_es(self.request)
+        search = es.search(index=get_index(self.request), q=terms, size=limit)
+        objs = search['hits']['hits']
         features = []
+
         for o in objs:
-            if o.ts is not None:
+            s = o['_source']
+            if s['ts'] is not None:
                 properties = {
-                    "label": o.label,
-                    "layer_name": o.layer_name,
+                    "label": s['label'],
+                    "layer_name": s['layer_name'],
                 }
-                geom = json.loads(o.ts)
-                bbox = shape(json.loads(o.ts)).bounds
-                feature = Feature(id=o.object_id, geometry=json.loads(o.ts), properties=properties, bbox=bbox)
+                geom = shape(s['ts'])
+                bbox = geom.bounds
+                feature = Feature(id=s['object_id'],
+                                  geometry=mapping(geom),
+                                  properties=properties,
+                                  bbox=bbox)
                 features.append(feature)
 
         # TODO: add callback function if provided in self.request, else return geojson
