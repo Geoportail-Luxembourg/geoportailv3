@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
-
+import json
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.view import view_config
-
 from geojson import Feature, FeatureCollection
-from sqlalchemy import func, desc, or_, and_
-from geoalchemy2.shape import to_shape
-
-from c2cgeoportal.models import DBSession, FullTextSearch
-
 from pyramid_es import get_client
 
 class FullTextSearchView(object):
@@ -66,35 +60,18 @@ class FullTextSearchView(object):
         if partitionlimit > maxlimit:
             partitionlimit = maxlimit
 
-        terms = '&'.join(re.sub("'", "''", w) + ':*' for w in query.split(' ') if w != '')
-        _filter = "%(tsvector)s @@ to_tsquery('%(lang)s', '%(terms)s')" % \
-            {'tsvector': 'ts', 'lang': lang, 'terms': terms}
-
-        # flake8 does not like `== True`
-        if self.request.user is None:
-            _filter = and_(_filter, FullTextSearch.public.is_(True))
-        else:
-            _filter = and_(
-                _filter,
-                or_(
-                    FullTextSearch.public.is_(True),
-                    FullTextSearch.role_id.is_(None),
-                    FullTextSearch.role_id == self.request.user.role.id
-                )
-            )
-
         client = get_client(self.request)
-        query = client.query(q=terms)
+        query = client.query(q=query)
         objs = query.execute(size=limit)
 
         features = []
         for o in objs:
-            if o._source.ts is not None:
+            if o.ts is not None:
                 properties = {
-                    "label": o._source.label,
-                    "layer_name": o._source.layer_name,
+                    "label": o.label,
+                    "layer_name": o.layer_name,
                 }
-                feature = o._source.ts 
+                feature = Feature(id=o.object_id, geometry=json.loads(o.ts), properties=properties)
                 features.append(feature)
 
         # TODO: add callback function if provided in self.request, else return geojson
