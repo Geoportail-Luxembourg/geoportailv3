@@ -61,7 +61,7 @@ ES_MAPPINGS = {
 def get_es(request):
     elasticHost = \
         request.registry.settings.get('elastic.servers', 'localhost:9200')
-    return Elasticsearch(elasticHost)
+    return Elasticsearch(hosts=elasticHost, timeout=60)
 
 
 def get_index(request):

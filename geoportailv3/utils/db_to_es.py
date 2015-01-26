@@ -4,10 +4,10 @@ env = bootstrap('development.ini')
 import psycopg2
 from psycopg2.extras import DictCursor
 import sys
+import json
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
-from shapely.wkb import loads
-from shapely.geometry import mapping
+from elasticsearch.exceptions import ConnectionTimeout
 from geoportailv3.lib.search import get_es, get_index, ensure_index
 
 
@@ -24,7 +24,7 @@ def get_cursor():
     }
     conn = psycopg2.connect(**source_conf)
     cursor = conn.cursor(cursor_factory=DictCursor)
-    query = "Select *, ST_Transform(\"searchLayer\".geom,4326) as geom_4326 \
+    query = "Select *, ST_AsGeoJSON(ST_Transform(\"searchLayer\".geom,4326)) as geom_4326 \
             from public.\"searchLayer\" ;"
     cursor.execute(query)
     return cursor
@@ -37,13 +37,7 @@ def update_document(index, type, obj_id, obj=None):
         "_id": obj_id,
     }
     doc['_source'] = {}
-    geom = loads(obj['geom_4326'], hex=True)
-    if geom.is_valid:
-        doc['_source']['ts'] = mapping(geom)
-    else:
-        print '\nInvalid Geom: %s (%s): %s \n' % (obj['type'], 
-                                                  obj['id'], 
-                                                  obj['label'])
+    doc['_source']['ts'] = json.loads(obj['geom_4326'])
     doc['_source']['object_id'] = obj_id
     doc['_source']['object_type'] = 'poi'
     doc['_source']['layer_name'] = obj['type']
@@ -58,12 +52,12 @@ def statuslog(text):
 
 
 if __name__ == '__main__':
-    ensure_index(get_es(request), get_index(request), True)
+    ensure_index(get_es(request), get_index(request), False)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1
     while True:
-        multiple = 1000
+        multiple = 250
         results = c.fetchmany(multiple)
         doc_list = []
         for result in results:
@@ -76,7 +70,7 @@ if __name__ == '__main__':
                          actions=doc_list,
                          chunk_size=multiple,
                          raise_on_error=True)
-        except BulkIndexError as e:
+        except (BulkIndexError, ConnectionTimeout) as e:
             print "\n %s" % e
         if not results:
             statuslog("\n")
