@@ -39,9 +39,28 @@ class FullTextSearchView(object):
         if partitionlimit > maxlimit:
             partitionlimit = maxlimit
 
-        terms = 'label:%s' % query
+        query_body = {
+            "query": {
+                "filtered": {
+                    "query": {
+                        "match": {
+                            "label": {
+                                "query": query,
+                                "operator": "and"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if self.request.user is None:
+            query_body['query']['filtered']['filter'] = {"term": {"public": True}}
+
         es = get_es(self.request)
-        search = es.search(index=get_index(self.request), q=terms, size=limit)
+        search = es.search(index=get_index(self.request),
+                           body=query_body,
+                           size=limit)
         objs = search['hits']['hits']
         features = []
 

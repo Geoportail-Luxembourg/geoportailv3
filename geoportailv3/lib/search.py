@@ -1,38 +1,57 @@
 from elasticsearch import Elasticsearch
+import json
 
 
-ES_CONFIG = {
-    'settings': {
-        "analysis": {
-            "filter": {
-                "autocomplete": {
-                    "type": "edgeNGram",
-                    "min_ngram": 2,
-                    "max_ngram": 15,
-                    "side": "front"
-                }
+ES_ANALYSIS = {
+    'analysis': {
+        'filter': {
+            'ngram_filter': {
+                'type': 'nGram',
+                'min_gram': 2,
+                'max_gram': 20,
+                'token_chars': [
+                    'letter',
+                    'digit',
+                    'punctuation',
+                    'symbol'
+                ]
+            }
+        },
+        'analyzer': {
+            'ngram_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'whitespace',
+                'filter': [
+                    'lowercase',
+                    'asciifolding',
+                    'ngram_filter'
+                ]
             },
-            "analyzer": {
-                "autocomplete": {
-                    "type": "custom",
-                    "tokenizer": "standard",
-                    "filter": ["lowercase", "asciifolding","autocomplete"]
-                }
+            'whitespace_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'whitespace',
+                'filter': [
+                    'lowercase',
+                    'asciifolding'
+                ]
             }
         }
-    },
-    'mappings': {
+    }
+}
+
+ES_MAPPINGS = {
+    'poi': {
         'properties': {
-            'object_id': {'type': 'string'},
-            'layer_name': {'type': 'string'},
+            'object_id': {'type': 'string', 'index': 'not_analyzed'},
+            'layer_name': {'type': 'string', 'index': 'not_analyzed'},
             'label': {
                 'type': 'string',
-                'index_analyzer': 'autocomplete',
-                'search_analyer': 'whitespace'
-            },
-            'public': {'type': 'boolean'},
-            'params': {'type': 'string'},
-            'role_id': {'type': 'integer'},
+                'index_analyzer': 'ngram_analyzer',
+                'search_analyzer': 'whitespace_analyzer'
+                },
+            'public': {'type': 'boolean', 'index': 'not_analyzed'},
+            'params': {'type': 'string', 'index': 'not_analyzed'},
+            'role_id': {'type': 'integer', 'index': 'not_analyzed'},
             'ts': {'type': 'geo_shape'},
         }
     }
@@ -54,5 +73,8 @@ def ensure_index(client, index, recreate=False):
     if recreate or not exists:
         if exists:
             client.indices.delete(index)
+        settings = {}
+        settings['settings'] = ES_ANALYSIS
+        settings['mappings'] = ES_MAPPINGS
         client.indices.create(index,
-                              body=dict(settings=ES_CONFIG))
+                              body=settings)
