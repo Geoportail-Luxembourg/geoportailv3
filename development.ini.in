@@ -9,6 +9,8 @@ debug_templates = true
 mako.directories = geoportailv3:templates
     c2cgeoportal:templates
 app.cfg = %(here)s/.build/config.yaml
+elastic.servers = ${search_host}
+elastic.index = ${search_index}
 
 [filter:fanstatic]
 use = egg:fanstatic#fanstatic
