@@ -54,8 +54,9 @@
           <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
           <ul class="nav nav-tabs">
             <li role="presentation" class="active">
-            <a href="#mylayers" data-toggle="tab">{{'my_layers'|translate}}
-                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            <a href="#mylayers" data-toggle="tab">
+              <span translate>my_layers</span>
+              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
               </a>
             </li>
             <li role="presentation">
