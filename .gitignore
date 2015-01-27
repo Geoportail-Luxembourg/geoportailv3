@@ -25,5 +25,6 @@
 #/geoportailv3/static/mobile/bootstrap.js
 #/geoportailv3/static/mobile/bootstrap.json
 /geoportailv3/static/build
+/.eggs
 /.build
 /node_modules
