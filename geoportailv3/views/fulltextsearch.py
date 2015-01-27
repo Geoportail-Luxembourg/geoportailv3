@@ -40,6 +40,11 @@ class FullTextSearchView(object):
         if partitionlimit > maxlimit:
             partitionlimit = maxlimit
 
+        try:
+            layer = self.request.params.get('layer')
+        except:
+            pass
+
         query_body = {
             "query": {
                 "filtered": {
@@ -50,13 +55,26 @@ class FullTextSearchView(object):
                                 "operator": "and"
                             }
                         }
+                    },
+                    "filter": {
+                        "bool": {
+                            "must": [],
+                            "should": [],
+                            "must_not": [],
+                        }
                     }
                 }
             }
         }
+        filters = query_body['query']['filtered']['filter']['bool']
 
+        if layer:
+            filters['must'].append({"term": {"layer_name": layer}})
         if self.request.user is None:
-            query_body['query']['filtered']['filter'] = {"term": {"public": True}}
+            filters['must'].append({"term": {"public": True}})
+        else:
+            filters['should'].append({"term": {"public": True}})
+            filters['should'].append({"term": {"role_id": self.request.user.role.id}})
 
         es = get_es(self.request)
         search = es.search(index=get_index(self.request),
