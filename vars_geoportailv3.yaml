@@ -19,6 +19,10 @@ vars:
     dbuser_replication: to_be_defined
     dbpassword_replication: to_be_defined
 
+    #elasticsearch settings
+    search_host: workshop3-local.geoportal.lu:9200
+    search_index: index
+
     # closure paths
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
 
