@@ -46,12 +46,12 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
   /**
    * @type {Boolean}
    */
-  this['sidebarOpen'] = false;
+  this['drawOpen'] = false;
 
   /**
    * @type {Boolean}
    */
-  this['mymapsOpen'] = false;
+  this['infosOpen'] = false;
 
   /**
    * @type {Boolean}
@@ -61,7 +61,27 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
   /**
    * @type {Boolean}
    */
-  this['infosOpen'] = false;
+  this['measureOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
+  this['mymapsOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
+  this['printOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
+  this['shareOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
+  this['sidebarOpen'] = false;
 
   /**
    * @type {Array}
