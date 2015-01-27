@@ -44,42 +44,42 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
   this.langUrlTemplate_ = langUrlTemplate;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['drawOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['infosOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['layersOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['measureOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['mymapsOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['printOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['shareOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['sidebarOpen'] = false;
 
