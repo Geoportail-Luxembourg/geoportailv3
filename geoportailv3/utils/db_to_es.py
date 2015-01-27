@@ -46,6 +46,7 @@ def update_document(index, type, obj_id, obj=None):
     doc['_source']['public'] = True
     return doc
 
+
 def statuslog(text):
     sys.stdout.write(text)
     sys.stdout.flush()
@@ -61,7 +62,10 @@ if __name__ == '__main__':
         results = c.fetchmany(multiple)
         doc_list = []
         for result in results:
-            doc = update_document(get_index(request), 'poi', result['id'], result)
+            doc = update_document(get_index(request),
+                                  'poi',
+                                  result['id'],
+                                  result)
             doc_list.append(doc)
             statuslog("\rIndexed Elements: %i" % int(counter))
             counter = counter + 1

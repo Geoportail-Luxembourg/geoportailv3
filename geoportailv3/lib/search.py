@@ -1,5 +1,4 @@
 from elasticsearch import Elasticsearch
-import json
 
 
 ES_ANALYSIS = {
@@ -59,9 +58,9 @@ ES_MAPPINGS = {
 
 
 def get_es(request):
-    elasticHost = \
+    elastichost = \
         request.registry.settings.get('elastic.servers', 'localhost:9200')
-    return Elasticsearch(hosts=elasticHost, timeout=60)
+    return Elasticsearch(hosts=elastichost, timeout=60)
 
 
 def get_index(request):

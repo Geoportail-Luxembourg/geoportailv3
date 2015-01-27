@@ -73,8 +73,9 @@ class FullTextSearchView(object):
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
+            role_id = self.request.user.role.id
             filters['should'].append({"term": {"public": True}})
-            filters['should'].append({"term": {"role_id": self.request.user.role.id}})
+            filters['should'].append({"term": {"role_id": role_id}})
 
         es = get_es(self.request)
         search = es.search(index=get_index(self.request),
@@ -102,5 +103,4 @@ class FullTextSearchView(object):
                                   properties=properties,
                                   bbox=bbox)
                 features.append(feature)
-        
         return FeatureCollection(features)
