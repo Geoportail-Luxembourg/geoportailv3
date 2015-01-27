@@ -5,53 +5,52 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"POT-Creation-Date: 2015-01-16 16:16+0100\n"
 "PO-Revision-Date: 2015-01-21 08:17+0000\n"
 "Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/"
-"language/de/)\n"
-"Language: de\n"
+"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.7\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geoportailv3/models.py:19
+#: ./geoportailv3/models.py:19
 msgid "Internal WMS layer"
 msgstr ""
 
-#: geoportailv3/models.py:20
+#: ./geoportailv3/models.py:20
 msgid "Internal WMS layers"
 msgstr ""
 
-#: geoportailv3/models.py:41
+#: ./geoportailv3/models.py:41
 msgid "External WMS layer"
 msgstr ""
 
-#: geoportailv3/models.py:42
+#: ./geoportailv3/models.py:42
 msgid "External WMS layers"
 msgstr ""
 
-#: geoportailv3/models.py:33
+#: ./geoportailv3/models.py:33
 msgid "Url"
 msgstr ""
 
-#: geoportailv3/models.py:34
+#: ./geoportailv3/models.py:34
 msgid "Layers"
 msgstr ""
 
-#: geoportailv3/models.py:35
+#: ./geoportailv3/models.py:35
 msgid "Is a POI"
 msgstr ""
 
-#: geoportailv3/models.py:36
+#: ./geoportailv3/models.py:36
 msgid "Collection ID"
 msgstr ""
 
-#: geoportailv3/models.py:37
+#: ./geoportailv3/models.py:37
 msgid "REST url"
 msgstr ""
 
-#: geoportailv3/models.py:55
+#: ./geoportailv3/models.py:55
 msgid "Category ID"
 msgstr ""
