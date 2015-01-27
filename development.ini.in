@@ -10,6 +10,14 @@ mako.directories = geoportailv3:templates
     c2cgeoportal:templates
 app.cfg = %(here)s/.build/config.yaml
 
+# pyramid_closure configuration
+pyramid_closure.roots =
+    ${closure_library_path}/closure/goog
+pyramid_closure.roots_with_prefix =
+    ../../../../../../../../../proj/js %(here)s/geoportailv3/static/js
+    ../../../../../../../../../node_modules/openlayers %(here)s/node_modules/openlayers
+    ../../../../../../../../../node_modules/ngeo %(here)s/node_modules/ngeo
+
 [filter:fanstatic]
 use = egg:fanstatic#fanstatic
 publisher_signature = fanstatic
