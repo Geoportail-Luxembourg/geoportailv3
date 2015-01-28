@@ -57,7 +57,7 @@ ES_MAPPINGS = {
 }
 
 
-def get_es(request):
+def get_elasticsearch(request):
     elastichost = \
         request.registry.settings.get('elastic.servers', 'localhost:9200')
     return Elasticsearch(hosts=elastichost, timeout=60)

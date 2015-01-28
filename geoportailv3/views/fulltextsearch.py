@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
-from geoportailv3.lib.search import get_es, get_index
+from geoportailv3.lib.search import get_elasticsearch, get_index
 
 
 class FullTextSearchView(object):
@@ -77,7 +77,7 @@ class FullTextSearchView(object):
             filters['should'].append({"term": {"public": True}})
             filters['should'].append({"term": {"role_id": role_id}})
 
-        es = get_es(self.request)
+        es = get_elasticsearch(self.request)
         search = es.search(index=get_index(self.request),
                            body=query_body,
                            size=limit)

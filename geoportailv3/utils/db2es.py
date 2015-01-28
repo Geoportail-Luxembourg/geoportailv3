@@ -8,7 +8,7 @@ import json
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
-from geoportailv3.lib.search import get_es, get_index, ensure_index
+from geoportailv3.lib.search import get_elasticsearch, get_index, ensure_index
 
 """
 Utility functions for importing data into Elasticsearch from database
@@ -56,7 +56,7 @@ def statuslog(text):
 
 
 if __name__ == '__main__':
-    ensure_index(get_es(request), get_index(request), False)
+    ensure_index(get_elasticsearch(request), get_index(request), False)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             statuslog("\rIndexed Elements: %i" % int(counter))
             counter = counter + 1
         try:
-            helpers.bulk(client=get_es(request),
+            helpers.bulk(client=get_elasticsearch(request),
                          actions=doc_list,
                          chunk_size=multiple,
                          raise_on_error=True)
