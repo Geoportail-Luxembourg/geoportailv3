@@ -1,6 +1,6 @@
+#!/usr/bin/env python
 from pyramid.paster import bootstrap
 env = bootstrap('development.ini')
-
 import psycopg2
 from psycopg2.extras import DictCursor
 import sys
@@ -10,6 +10,9 @@ from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
 from geoportailv3.lib.search import get_es, get_index, ensure_index
 
+"""
+Utility functions for importing data into Elasticsearch from database
+"""
 
 request = env['request']
 
