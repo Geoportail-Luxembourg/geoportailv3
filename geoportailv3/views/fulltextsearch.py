@@ -34,13 +34,6 @@ class FullTextSearchView(object):
             limit = maxlimit
 
         try:
-            partitionlimit = int(self.request.params.get('partitionlimit', 0))
-        except ValueError:
-            return HTTPBadRequest(detail='partitionlimit value is incorrect')
-        if partitionlimit > maxlimit:
-            partitionlimit = maxlimit
-
-        try:
             layer = self.request.params.get('layer')
         except:
             pass
