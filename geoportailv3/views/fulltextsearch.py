@@ -2,7 +2,6 @@
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
-from shapely.geometry import shape
 from geoportailv3.lib.search import get_elasticsearch, get_index
 
 
@@ -84,16 +83,9 @@ class FullTextSearchView(object):
                     "label": s['label'],
                     "layer_name": s['layer_name'],
                 }
-                bbox = {}
-                if not s['ts']['type'] == 'Point':
-                    try:
-                        geom = shape(s['ts'])
-                        bbox = geom.bounds
-                    except:
-                        pass
                 feature = Feature(id=s['object_id'],
                                   geometry=s['ts'],
                                   properties=properties,
-                                  bbox=bbox)
+                                  )
                 features.append(feature)
         return FeatureCollection(features)
