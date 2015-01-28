@@ -20,10 +20,10 @@ PRE_RULES = update-translations
 
 include CONST_Makefile
 
-DEV_REQUIREMENTS += transifex-client
+DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 
 .PHONY: update-translations
-update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot 
+update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot
 	.build/venv/bin/tx push -s
 	.build/venv/bin/tx pull -l en
 	.build/venv/bin/tx pull -l fr

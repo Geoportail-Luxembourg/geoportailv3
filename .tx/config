@@ -1,7 +1,6 @@
 [main]
 host = https://www.transifex.com
 
-
 [geoportailv3-lu.geoportailv3-client]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-client.po
 source_file = geoportailv3/locale/geoportailv3-client.pot
