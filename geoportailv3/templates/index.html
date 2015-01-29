@@ -143,11 +143,6 @@
     <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
     <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
 % else:
-    <script src="${request.static_url('%s/jquery/dist/jquery.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-animate/angular-animate.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>
