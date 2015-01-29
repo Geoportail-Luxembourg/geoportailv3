@@ -13,6 +13,8 @@ goog.require('app');
 goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control.FullScreen');
+goog.require('ol.control.ZoomToExtent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
@@ -25,11 +27,13 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angular.Scope} $scope Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} langUrlTemplate Language URL template.
+ * @param {Array.<number>} defaultExtent Default geographical extent.
  * @constructor
  * @export
  * @ngInject
  */
-app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
+app.MainController = function($scope, gettextCatalog, langUrlTemplate, 
+        defaultExtent) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -44,7 +48,13 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate) {
   this.langUrlTemplate_ = langUrlTemplate;
 
   /**
-   * @type {boolean}
+   * @type {Array.<number>}
+   * @private
+   */
+  this.defaultExtent_ = defaultExtent;
+
+  /**
+   * @type {Boolean}
    */
   this['drawOpen'] = false;
 
@@ -102,6 +112,11 @@ app.MainController.prototype.setMap_ = function() {
 
   /** @type {ol.Map} */
   this['map'] = new ol.Map({
+    controls: [
+      new ol.control.Zoom({zoomInLabel: '', zoomOutLabel: ''}),
+      new ol.control.ZoomToExtent({extent: this.defaultExtent_}),
+      new ol.control.FullScreen({className: 'hidden-xs ol-full-screen'})
+    ],
     view: new ol.View({
       center: ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857'),
       zoom: 8

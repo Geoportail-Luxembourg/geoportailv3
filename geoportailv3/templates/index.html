@@ -151,6 +151,7 @@
          appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop' })}");
          appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
+         appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');

@@ -90,3 +90,43 @@ body {
     bottom: 0;
   }
 }
+
+.ol-control {
+  &, &:hover {
+    background-color: transparent;
+  }
+  button {
+    width: 41px;
+    height: 41px;
+    font-size: 1.5em;
+    font-weight: normal;
+    text-align: center;
+    text-indent: 0;
+    border: 1px solid #8394a0;
+    font-family: "geoportail-icons" !important;
+    margin: -1px;
+  }
+}
+
+.ol-zoom-extent {
+  left: 0.5em;
+  top: 88px;
+}
+
+.ol-full-screen {
+  left: 0.5em;
+  right: auto;
+  top: 128px;
+}
+
+button.ol-full-screen-false:after {
+  font-size: 0.8em;
+}
+
+button.ol-full-screen-true:after {
+  font-size: 0.8em;
+}
+
+div.ol-zoom-extent > button {
+  text-indent: 4px;
+}
