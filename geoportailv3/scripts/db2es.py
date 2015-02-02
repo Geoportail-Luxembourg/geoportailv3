@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from pyramid.paster import bootstrap
-env = bootstrap('development.ini')
 import psycopg2
 from psycopg2.extras import DictCursor
 import sys
@@ -13,8 +13,6 @@ from geoportailv3.lib.search import get_elasticsearch, get_index, ensure_index
 """
 Utility functions for importing data into Elasticsearch from database
 """
-
-request = env['request']
 
 
 def get_cursor():
@@ -55,7 +53,10 @@ def statuslog(text):
     sys.stdout.flush()
 
 
-if __name__ == '__main__':
+def main():
+    env = bootstrap('development.ini')
+    request = env['request']
+
     ensure_index(get_elasticsearch(request), get_index(request), False)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
