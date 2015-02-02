@@ -37,30 +37,24 @@ header {
     /* force items to appear on the same line even for small screens */
     display: inline-block;
   }
-
-  .toolbox-panel {
-    display: none;
-    position: absolute;
-    top: auto;
-    bottom: 100%;
-    white-space: nowrap;
-    background-color: white;
-    border: 1px solid;
-  }
-
-  .toolbox-panel-top {
-    top: 100%;
-    bottom: auto;
-    right: 0px;
-  }
-
-  .active .toolbox-panel {
-    display: block;
-  }
 }
 
-.toolbox-top {
-  width: 128px;
+.toolbox-panel {
+  display: none;
+  position: absolute;
+  top: auto;
+  bottom: 100%;
+  white-space: nowrap;
+}
+
+.toolbox-panel-top {
+  top: 100%;
+  bottom: auto;
+  right: 0px;
+}
+
+.active .toolbox-panel {
+  display: block;
 }
 
 .sidebar-controls {
@@ -101,6 +95,10 @@ header {
   line-height: 18px;
 }
 
+.lang > ul.nav > li > a {
+  line-height: 63px;
+}
+
 @media (max-width: @screen-xs-max) {
   .navbar-brand,
   .navbar-nav,
@@ -120,18 +118,14 @@ header {
   .navbar-form {
     padding: 0;
   }
-  .navbar-nav {
-    li > a {
-      border-left: 1px solid @navbars-button-border-color;
-      text-indent: -9999px;
-    }
+  .navbar-nav > li > a {
+    border-left: 1px solid @navbars-button-border-color;
+    text-indent: -9999px;
   }
 }
 
-.toolbox {
-  li:first-child > a {
-    border-left: 1px solid @navbars-button-border-color;
-  }
+.toolbox > li:first-child > a {
+  border-left: 1px solid @navbars-button-border-color;
 }
 .toolbox,
 .sidebar-controls {

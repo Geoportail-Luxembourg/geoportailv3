@@ -26,17 +26,25 @@
           <a href class="navbar-brand" translate>logo</a>
         </div>
 
-        <ul class="nav navbar-nav pull-right toolbox toolbox-top" ngeo-btn-group>
+        <ul class="nav navbar-nav pull-right" ngeo-btn-group>
           <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
           <li class="user icon"><a href translate>user</a></li>
           <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.languageOpen">lang</a>
-            <div class="toolbox-panel toolbox-panel-top">
-                <span translate ng-click="mainCtrl.switchLanguage('lb')">lb</span>
-                <span translate ng-click="mainCtrl.switchLanguage('fr')">fr</span>
-                <span translate ng-click="mainCtrl.switchLanguage('de')">de</span>
-                <span translate ng-click="mainCtrl.switchLanguage('en')">en</span>
-            </div>
+            <ul class="nav toolbox-panel toolbox-panel-top">
+              <li translate ng-class="mainCtrl.lang == 'lb' ? 'active' : ''">
+                <a href ng-click="mainCtrl.switchLanguage('lb')">lb</a>
+              </li>
+              <li translate ng-class="mainCtrl.lang == 'fr' ? 'active' : ''">
+                <a href ng-click="mainCtrl.switchLanguage('fr')">fr</a>
+              </li>
+              <li translate ng-class="mainCtrl.lang == 'de' ? 'active' : ''">
+                <a href ng-click="mainCtrl.switchLanguage('de')">de</a>
+              </li>
+              <li translate ng-class="mainCtrl.lang == 'en' ? 'active' : ''">
+                <a href ng-click="mainCtrl.switchLanguage('en')">en</a>
+              </li>
+            </ul>
           </li>
         </ul>
         <form class="navbar-form pull-right hidden-xs" role="search">
