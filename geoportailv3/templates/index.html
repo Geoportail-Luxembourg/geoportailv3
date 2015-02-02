@@ -26,14 +26,14 @@
           <a href class="navbar-brand" translate>logo</a>
         </div>
 
-        <ul class="nav navbar-nav pull-right" ngeo-btn-group>
+        <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
           <li class="user icon"><a href translate>user</a></li>
           <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.languageOpen">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
               <li translate ng-class="mainCtrl.lang == 'lb' ? 'active' : ''">
-                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lb</a>
+                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
               </li>
               <li translate ng-class="mainCtrl.lang == 'fr' ? 'active' : ''">
                 <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
