@@ -16,8 +16,6 @@ PRINT3 = FALSE
 
 DISABLE_BUILD_RULES = test-packages test-packages-ngeo compile-py-catalog
 
-PRE_RULES = update-translations
-
 include CONST_Makefile
 
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
