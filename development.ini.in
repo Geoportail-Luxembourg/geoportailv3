@@ -11,6 +11,8 @@ mako.directories = geoportailv3:templates
 app.cfg = %(here)s/.build/config.yaml
 elastic.servers = ${search_host}
 elastic.index = ${search_index}
+authtkt_secret = ${authtkt_secret}
+authtkt_cookie_name = ${authtkt_cookie_name}
 
 # pyramid_closure configuration
 pyramid_closure.roots =
