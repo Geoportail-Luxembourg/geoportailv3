@@ -45,7 +45,7 @@ li.icon a {
 button.icon:after {
   top: -10px;
 }
-li.icon a {
+li.icon > a {
   padding-top: 32px;
   @media (max-width: @screen-xs-max) {
     padding-top: 30px;
@@ -57,9 +57,6 @@ header .navbar-nav li.icon a:after {
 
 button.icon.search:after,
 .icon.search a:after {
-  content: '\e00d';
-}
-.icon.lang a:after {
   content: '\e00d';
 }
 .icon.layers a:after {
@@ -86,7 +83,7 @@ button.icon.search:after,
 .icon.user a:after {
   content: '\e02d';
 }
-.icon.lang a:after {
+.icon.lang > a:after {
   content: '\e012';
 }
 
