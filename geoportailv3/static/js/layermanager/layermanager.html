@@ -1,6 +1,7 @@
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
 <ul id="layermanager-{{::ctrl.uid}}" class="layermanager">
   <li ng-repeat="layer in ctrl.layers" class="panel">
+    <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>
     {{layer.get('label') | translate}}
     <a data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
       <span class="collapsed fa fa-ellipsis-h"></span>

@@ -13,6 +13,7 @@ goog.require('app.MainController');
 goog.require('app.backgroundlayerDirective');
 goog.require('app.catalogDirective');
 goog.require('app.layermanagerDirective');
+goog.require('app.layerinfoDirective');
 goog.require('app.scalelineDirective');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.resizemapDirective');
