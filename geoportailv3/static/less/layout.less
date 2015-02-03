@@ -39,6 +39,23 @@ body {
   overflow: hidden;
   background-color: #dfdfdf;
   position: relative;
+
+  &:-moz-full-screen {
+    height: 100%;
+    width: 100%;
+  }
+  &:-webkit-full-screen {
+    height: 100%;
+    width: 100%;
+  }
+  &:-ms-fullscreen {
+    height: 100%;
+    width: 100%;
+  }
+  &:full-screen {
+    height: 100%;
+    width: 100%;
+  }
 }
 
 #sidebar {
