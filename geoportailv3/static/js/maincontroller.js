@@ -56,6 +56,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   /**
    * @type {Boolean}
    */
+  this['languageOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
   this['drawOpen'] = false;
 
   /**
