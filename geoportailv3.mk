@@ -14,7 +14,7 @@ NGEO = TRUE
 TILECLOUD_CHAIN = FALSE
 PRINT3 = FALSE
 
-DISABLE_BUILD_RULES = test-packages test-packages-ngeo compile-py-catalog
+DISABLE_BUILD_RULES = test-packages test-packages-ngeo
 
 include CONST_Makefile
 
