@@ -94,6 +94,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this['shareOpen'] = false;
 
   /**
+   * @type {Boolean}
+   */
+  this['userOpen'] = false;
+
+  /**
    * @type {Array}
    */
   this['selectedLayers'] = [];
