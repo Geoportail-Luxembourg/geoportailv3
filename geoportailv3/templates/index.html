@@ -60,11 +60,11 @@
 
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
-      <div id="sidebar" ng-class="mainCtrl.sidebarOpen ? 'open' : ''"
+      <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            ngeo-resizemap="mainCtrl.map">
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <h2 translate>layers</h2>
-          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
           <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
@@ -95,13 +95,13 @@
         </div>
         <div id="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
           <h2 translate>my_maps</h2>
-          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
         </div>
         <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
-          <button class="close-panel" ng-click="mainCtrl.sidebarOpen = false;">
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
         </div>
@@ -114,7 +114,7 @@
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
-          ng-class="mainCtrl.sidebarOpen ? 'open' : ''" ngeo-btn-group>
+          ng-class="{open: mainCtrl.sidebarOpen()}" ngeo-btn-group>
         <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
           <a href translate>layers</a>
         </li>

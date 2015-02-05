@@ -94,18 +94,12 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this['shareOpen'] = false;
 
   /**
-   * @type {boolean}
-   */
-  this['sidebarOpen'] = false;
-
-  /**
    * @type {Array}
    */
   this['selectedLayers'] = [];
 
   this.setMap_();
   this.switchLanguage('fr');
-  this.manageSidebar_($scope);
   this.manageSelectedLayers_($scope);
 };
 
@@ -156,6 +150,23 @@ app.MainController.prototype.manageSelectedLayers_ = function(scope) {
 
 
 /**
+ * @export
+ */
+app.MainController.prototype.closeSidebar = function() {
+  this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] = false;
+};
+
+
+/**
+ * @return {boolean} `true` if the sidebar should be open, otherwise `false`.
+ * @export
+ */
+app.MainController.prototype.sidebarOpen = function() {
+  return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'];
+};
+
+
+/**
  * @param {string} lang Language code.
  * @export
  */
@@ -164,41 +175,6 @@ app.MainController.prototype.switchLanguage = function(lang) {
   this.gettextCatalog_.loadRemote(
       this.langUrlTemplate_.replace('__lang__', lang));
   this['lang'] = lang;
-};
-
-
-/**
- * @param {angular.Scope} scope Scope.
- * @private
- */
-app.MainController.prototype.manageSidebar_ = function(scope) {
-
-  var toggleSidebar = goog.bind(function(newVal, oldVal) {
-    this['sidebarOpen'] = this['mymapsOpen'] || this['layersOpen'] ||
-        this['infosOpen'];
-  }, this);
-
-  scope.$watch(goog.bind(function() {
-    return this['mymapsOpen'];
-  }, this), toggleSidebar);
-
-  scope.$watch(goog.bind(function() {
-    return this['layersOpen'];
-  }, this), toggleSidebar);
-
-  scope.$watch(goog.bind(function() {
-    return this['infosOpen'];
-  }, this), toggleSidebar);
-
-  scope.$watch(goog.bind(function() {
-    return this['sidebarOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
-    if (!newVal) {
-      this['mymapsOpen'] = false;
-      this['layersOpen'] = false;
-      this['infosOpen'] = false;
-    }
-  }, this));
 };
 
 
