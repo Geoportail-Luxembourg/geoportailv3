@@ -32,16 +32,18 @@
           <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.languageOpen">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
-              <li ng-class="mainCtrl.lang == 'lb' ? 'active' : ''">
+              <li ng-class="{active: mainCtrl.lang == 'lb'}">
                 <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
               </li>
+              <li ng-class="{active: mainCtrl.lang == 'fr'}">
               <li ng-class="mainCtrl.lang == 'fr' ? 'active' : ''">
                 <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
               </li>
+              <li ng-class="{active: mainCtrl.lang == 'de'}">
               <li ng-class="mainCtrl.lang == 'de' ? 'active' : ''">
                 <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
               </li>
-              <li ng-class="mainCtrl.lang == 'en' ? 'active' : ''">
+              <li ng-class="{active: mainCtrl.lang == 'en'}">
                 <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
               </li>
             </ul>
