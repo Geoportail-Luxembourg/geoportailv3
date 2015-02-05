@@ -45,6 +45,16 @@ header {
   top: auto;
   bottom: 100%;
   white-space: nowrap;
+
+  li {
+    display: block;
+    float: left;
+    a {
+      padding: 0;
+      width: 63px;
+      text-align: center;
+    }
+  }
 }
 
 .toolbox-panel-top {
@@ -55,16 +65,7 @@ header {
   > li {
     display: block;
     float: right;
-    > a {
-      width: 62px !important;
-      margin-left: 1px;
-    }
   }
-}
-
-.lang .toolbox-panel-top {
-  /* 4 languages */
-  width: 4 * 63px;
 }
 
 .active .toolbox-panel {
@@ -109,8 +110,30 @@ header {
   line-height: 18px;
 }
 
-.lang > ul.nav > li > a {
+.toolbox-panel li > a {
   line-height: 63px;
+  width: 62px !important;
+}
+
+.toolbox-panel-bottom li > a {
+  margin-right: 1px;
+}
+
+.toolbox-panel-top li > a {
+  margin-left: 1px;
+}
+
+.measure .toolbox-panel {
+  /* 4 measure tools */
+  width: 4 * 63px;
+}
+
+.lang .toolbox-panel {
+  /* 4 languages */
+  width: 4 * 63px;
+  a {
+    text-transform: uppercase;
+  }
 }
 
 @media (max-width: @screen-xs-max) {
@@ -128,6 +151,7 @@ header {
 /* styling */
 /***********/
 
+
 header {
   .navbar-form {
     padding: 0;
@@ -137,13 +161,12 @@ header {
     text-indent: -9999px;
   }
 }
-
 .toolbox > li:first-child > a {
   border-left: 1px solid @navbars-button-border-color;
 }
 .toolbox,
 .sidebar-controls {
-  li > a {
+  > li > a {
     border-right: 1px solid @navbars-button-border-color;
   }
 }
