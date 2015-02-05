@@ -54,12 +54,12 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this.defaultExtent_ = defaultExtent;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['languageOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['drawOpen'] = false;
 
