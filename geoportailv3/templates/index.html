@@ -142,18 +142,21 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <ul class="nav toolbox-panel toolbox-panel-bottom">
-            <li translate>
-              <a href>Distance</a>
+          <ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom"
+              ng-controller="AppMeasureController as measureCtrl">
+            <li ng-class="{active: measureCtrl.measureDistance.active}">
+              <a href translate ngeo-btn
+                 ng-model="measureCtrl.measureDistance.active">Distance</a>
             </li>
-            <li translate>
-              <a href>Surface</a>
+            <li ng-class="{active: measureCtrl.measureArea.active}">
+              <a href translate ngeo-btn
+                 ng-model="measureCtrl.measureArea.active">Surface</a>
             </li>
-            <li translate>
-              <a href>Azimut</a>
+            <li>
+              <a href translate>Azimut</a>
             </li>
-            <li translate>
-              <a href>Profile</a>
+            <li>
+              <a href translate>Profile</a>
             </li>
           </ul>
         </li>
