@@ -16,28 +16,27 @@ goog.provide('app.infobarDirective');
 
 goog.require('app');
 goog.require('ngeo.controlDirective');
-goog.require('ol.control.Attribution');
+goog.require('ol.control.Control');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.infobarDirective = function() {
+app.infobarDirective = function(appInfobarTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appInfoBarMap'
+      'map': '=appInfobarMap'
     },
-    controller: 'AppInfoBarController',
+    controller: 'AppInfobarController',
     controllerAs: 'ctrl',
     bindToController: true,
-    template: '<div ngeo-control="ctrl.control"' +
-        'ngeo-control-map="ctrl.map">'
+    templateUrl: appInfobarTemplateUrl
   };
 };
 
 
-app.module.directive('appInfoBar', app.infobarDirective);
+app.module.directive('appInfobar', app.infobarDirective);
 
 
 
@@ -45,14 +44,9 @@ app.module.directive('appInfoBar', app.infobarDirective);
  * @ngInject
  * @constructor
  */
-app.InfoBarDirectiveController = function() {
-  /**
-   * @type {ol.control.Attribution}
-   */
-  this['control'] = new ol.control.Attribution();
-  console.log('infobardirective got executed!')
+app.InfobarDirectiveController = function($document, $element) {
 };
 
 
-app.module.controller('AppInfoBarController',
-    app.InfoBarDirectiveController);
+app.module.controller('AppInfobarController',
+    app.InfobarDirectiveController);

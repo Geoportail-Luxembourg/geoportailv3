@@ -124,6 +124,26 @@ body {
     font-family: "geoportail-icons" !important;
     margin: -1px;
   }
+  &.infobar {
+    z-index: 2;
+    bottom: 8px;
+    right: 8px;
+    .infobar-content {
+        float: left;
+        padding-top: 9px;
+        padding-right: 10px;
+    }
+    .infobar-content * {
+        display: inline-block;
+    }
+    button {
+        display: inline-block;
+        float: right;
+        padding-bottom: 15px;
+        font-size: 2.5em;
+    }
+  }
+
 }
 
 
