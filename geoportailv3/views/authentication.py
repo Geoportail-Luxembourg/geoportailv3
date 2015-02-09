@@ -2,7 +2,6 @@
 from pyramid.view import view_config
 from pyramid_ldap import get_ldap_connector
 from pyramid.security import unauthenticated_userid
-from c2cgeoportal.models import DBSession, Role
 import ldap
 
 """
@@ -25,6 +24,7 @@ but from ldap
 
 
 def get_user_from_request(request):
+    from c2cgeoportal.models import DBSession, Role
     class O(object):
         pass
     username = unauthenticated_userid(request)
