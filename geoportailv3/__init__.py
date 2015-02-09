@@ -8,8 +8,10 @@ from c2cgeoportal import locale_negotiator, \
 from c2cgeoportal.resources import FAModels
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
-from geoportailv3.views.authentication import ldap_user_validator
+from geoportailv3.views.authentication import ldap_user_validator, \
+    get_user_from_request
 import ldap
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -39,6 +41,9 @@ def main(global_config, **settings):
         filter_tmpl='(login=%(login)s)',
         scope = ldap.SCOPE_SUBTREE,
         )
+
+    config.set_request_property(get_user_from_request, name='user', reify=True)
+
     set_user_validator(config, ldap_user_validator)
 
     config.add_translation_dirs('geoportailv3:locale/')
@@ -68,5 +73,6 @@ def main(global_config, **settings):
     config.add_static_view('node_modules', settings.get('node_modules_path'))
     config.add_static_view('closure', settings.get('closure_library_path'))
 
+    config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/wms')
     return config.make_wsgi_app()

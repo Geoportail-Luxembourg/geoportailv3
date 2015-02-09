@@ -28,21 +28,37 @@
 
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
-          <li class="user-experience user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+          <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.userOpen">user</a>
-            <div class="navigation-account user-panel nav toolbox-panel toolbox-panel-top second-level">
-                <p class="menu-title">Mon compte</p>
-                <form id="navigation-login" action="login" method="POST">
+            <div ng-controller="UserController as userCtrl" class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
+                <p class="menu-title">Mon Compte</p>
+                <form ng-if="!userCtrl.isAuthenticated()" ng-submit="userCtrl.authenticate(userCtrl.credentials)">
                     <fieldset>
-                        <legend class="navigation-account tab tab-account active" >Login</legend>
+                        <legend class="tab tab-account active" >Login</legend>
+                        
                         <div class="account-content">
-                            <input type="text" name="login" id="login-name" placeholder="Nom" />
-                            <input type="password" name="password" id="login-password" placeholder="Mot de passe" />
-                            <input type="submit" value="Envoyer" />
+                            <input type="text" ng-model="userCtrl.credentials.login" placeholder="Nom" />
+                            <input type="password" ng-model="userCtrl.credentials.password" placeholder="Mot de passe" />
+                            <input type="submit" value="Envoyer"/>
                             <div class="clearfix">
-                                <p><a href="#" class="inline">Mot de passe oublié ?</a></p>
-                                <p><a href="#" class="inline">Pas encore membre ?</a></p>
+                                <div ng-if="userCtrl.hasError()"><p>La combinaison login mot de passe est invalide</p></div>
+                                <p><a href="#">Mot de passe oublié ?</a></p>
+                                <p><a href="#">Pas encore membre ?</a></p>
                             </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <form ng-if="userCtrl.isAuthenticated()" ng-submit="userCtrl.logout()">
+                    <fieldset>
+                        <legend class="tab tab-account active" >Login</legend>
+                        <div class="account-content">
+                            <ul>
+                                <li><p>{{userCtrl.login}}</p></li>
+                                <li><p>{{userCtrl.mail}}</p></li>
+                                <li><a>Mon compte</a></li>
+                                <li><a ng-click="userCtrl.logout()">Logout</a></li>
+                            </ul>
+                        
                         </div>
                     </fieldset>
                 </form>
