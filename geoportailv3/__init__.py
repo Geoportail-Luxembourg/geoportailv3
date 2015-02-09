@@ -35,11 +35,11 @@ def main(global_config, **settings):
         config.get_settings()['ldap_bind'],
         config.get_settings()['ldap_passwd'],
     )
-    
+
     config.ldap_set_login_query(
         config.get_settings()['ldap_base_dn'],
         filter_tmpl='(login=%(login)s)',
-        scope = ldap.SCOPE_SUBTREE,
+        scope=ldap.SCOPE_SUBTREE,
         )
 
     config.set_request_property(get_user_from_request, name='user', reify=True)
