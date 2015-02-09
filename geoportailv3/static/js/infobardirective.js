@@ -57,7 +57,7 @@ app.InfobarDirectiveController = function($scope, $document) {
         coordinateFormat: function(coord){
             if ($scope.projection.value === "EPSG:3263*"){
                 var projection = ol.proj.get(_utmZoneCheck(coord));
-                this['map'].setProjection(projection);
+                this['ctrl'].mouseposition.setProjection(projection);
                 return _coordFormat(coord, projection.getCode());
             };
             return _coordFormat(coord, $scope.projection.value)
@@ -67,7 +67,7 @@ app.InfobarDirectiveController = function($scope, $document) {
 
     function _utmZoneCheck(coord){
         var lonlat = ol.proj.transform(coord, $scope.projection.value, "EPSG:4326");
-        if (Math.floor(lonlat.lon) >= 6){
+        if (lonlat.lon && Math.floor(lonlat.lon) >= 6){
             return "EPSG:32632"
         } else {
             return "EPSG:32631";
