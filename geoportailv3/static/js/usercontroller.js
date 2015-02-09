@@ -69,7 +69,7 @@ app.UserController = function($http) {
 
 
 /**
- * @param {object} credentials Credentials.
+ * @param {Object} credentials Credentials.
  * @export
  */
 app.UserController.prototype.authenticate = function(credentials) {
@@ -172,11 +172,11 @@ app.UserController.prototype.hasError = function() {
 
 
 /**
- * @param {string} login Login.
- * @param {string} role Role.
- * @param {number} role_id Role id.
- * @param {string} mail Mail.
- * @param {string} name Name.
+ * @param {?string} login Login.
+ * @param {?string} role Role.
+ * @param {?number} role_id Role id.
+ * @param {?string} mail Mail.
+ * @param {?string} name Name.
  */
 app.UserController.prototype.setUserInfo = function(
     login, role, role_id, mail, name) {
