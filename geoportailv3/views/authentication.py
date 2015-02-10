@@ -25,6 +25,7 @@ but from ldap
 
 def get_user_from_request(request):
     from c2cgeoportal.models import DBSession, Role
+
     class O(object):
         pass
     username = unauthenticated_userid(request)

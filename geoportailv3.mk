@@ -16,7 +16,7 @@ PRINT3 = FALSE
 
 DISABLE_BUILD_RULES = test-packages test-packages-ngeo
 
-CONFIG_VARS += ldap_url ldap_bind ldap_passwd ldap_base_dn
+CONFIG_VARS += ldap
 
 include CONST_Makefile
 

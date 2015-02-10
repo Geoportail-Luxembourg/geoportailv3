@@ -30,14 +30,16 @@ def main(global_config, **settings):
 
     """Config the ldap connection.
     """
+    ldap_settings = config.get_settings()['ldap']
+
     config.ldap_setup(
-        config.get_settings()['ldap_url'],
-        config.get_settings()['ldap_bind'],
-        config.get_settings()['ldap_passwd'],
+        ldap_settings['url'],
+        ldap_settings['bind'],
+        ldap_settings['passwd'],
     )
 
     config.ldap_set_login_query(
-        config.get_settings()['ldap_base_dn'],
+        ldap_settings['base_dn'],
         filter_tmpl='(login=%(login)s)',
         scope=ldap.SCOPE_SUBTREE,
         )

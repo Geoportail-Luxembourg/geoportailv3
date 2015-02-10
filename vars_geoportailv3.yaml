@@ -34,7 +34,11 @@ vars:
       - de
       - fr
       - lb
-
+    ldap:
+      url: 'ldap://willie.geoportal.lu:3890'
+      bind: 'cn=system,dc=act,dc=lu'
+      passwd: 'to_be_defined'
+      base_dn: 'ou=portail,dc=act,dc=lu'
 interpreted:
     node:
         vars:
