@@ -130,18 +130,23 @@
         background-color: @primary-color; 
       }
     }
-    .account-content > ul li a{
+    .account-content > ul li a {
       background-color: @tertiary-color; 
+      &:hover {
+        background-color: @secondary-color;
+      }
     }
-    .account-content > ul li p{
+    .account-content > ul li p {
       background-color: @secondary-color; 
     }
-    .navbar-default .navbar-nav > .active > a{
+    .navbar-default .navbar-nav > .active > a {
       &:focus, & {
         background-color: @primary-color;
+        color: white;
       }
       &:hover {
         background-color: white;
+        color: @primary-color;
       }
     }
   }

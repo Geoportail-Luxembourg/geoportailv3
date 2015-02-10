@@ -29,7 +29,7 @@
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
           <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
-            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = !mainCtrl.userOpen">user</a>
+            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
             <div ng-controller="UserController as userCtrl" class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
                 <p class="menu-title">Mon Compte</p>
                 <form ng-if="!userCtrl.isAuthenticated()" ng-submit="userCtrl.authenticate(userCtrl.credentials)">
@@ -67,7 +67,7 @@
           
           
           <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
-            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = !mainCtrl.languageOpen">lang</a>
+            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
               <li ng-class="{active: mainCtrl.lang == 'lb'}">
                 <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
