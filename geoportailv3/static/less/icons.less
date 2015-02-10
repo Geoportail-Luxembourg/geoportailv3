@@ -28,7 +28,7 @@ li.icon a {
   }
 
   &:after {
-   font-family: "geoportail-icons" !important;
+    font-family: "geoportail-icons" !important;
     position: absolute;
     top: 8px;
     left: 0;
@@ -40,8 +40,8 @@ li.icon a {
       top: 10px;
     }
   }
-
 }
+
 button.icon:after {
   top: -10px;
 }
@@ -80,12 +80,17 @@ button.icon.search:after,
 .icon.share a:after {
   content: '\e02a';
 }
-.icon.user a:after {
+.icon.user > a:after {
   content: '\e02d';
 }
 .icon.lang > a:after {
   content: '\e012';
 }
+
+.icon.active > a:after {
+  content:'\e02b';
+}
+
 
 #catalog,
 #mylayers {

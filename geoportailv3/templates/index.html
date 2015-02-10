@@ -28,9 +28,46 @@
 
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
-          <li class="user icon"><a href translate>user</a></li>
+          <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
+            <div ng-controller="UserController as userCtrl" class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
+                <p class="menu-title">Mon Compte</p>
+                <form ng-if="!userCtrl.isAuthenticated()" ng-submit="userCtrl.authenticate(userCtrl.credentials)">
+                    <fieldset>
+                        <legend class="tab tab-account active" >Login</legend>
+                        
+                        <div class="account-content">
+                            <input type="text" ng-model="userCtrl.credentials.login" placeholder="Nom" />
+                            <input type="password" ng-model="userCtrl.credentials.password" placeholder="Mot de passe" />
+                            <input type="submit" value="Envoyer"/>
+                            <div class="clearfix">
+                                <div ng-if="userCtrl.hasError()"><p>La combinaison login mot de passe est invalide</p></div>
+                                <p><a href="#">Mot de passe oublié ?</a></p>
+                                <p><a href="#">Pas encore membre ?</a></p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <form ng-if="userCtrl.isAuthenticated()" ng-submit="userCtrl.logout()">
+                    <fieldset>
+                        <legend class="tab tab-account active" >Login</legend>
+                        <div class="account-content">
+                            <ul>
+                                <li><p>{{userCtrl.login}}</p></li>
+                                <li><p>{{userCtrl.mail}}</p></li>
+                                <li><a>Mon compte</a></li>
+                                <li><a ng-click="userCtrl.logout()">Logout</a></li>
+                            </ul>
+                        
+                        </div>
+                    </fieldset>
+                </form>
+            <div>
+          </li>
+          
+          
           <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
-            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen">lang</a>
+            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
               <li ng-class="{active: mainCtrl.lang == 'lb'}">
                 <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>

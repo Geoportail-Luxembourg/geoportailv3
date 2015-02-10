@@ -9,6 +9,8 @@ debug_templates = false
 mako.directories = geoportailv3:templates
     c2cgeoportal:templates
 app.cfg = %(here)s/.build/config.yaml
+authtkt_secret = ${authtkt_secret}
+authtkt_cookie_name = ${authtkt_cookie_name}
 
 [filter:weberror]
 use = egg:WebError#error_catcher

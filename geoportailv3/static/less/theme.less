@@ -43,14 +43,14 @@
       }
     }
     .nav {
-      li > a {
+      & > li > a {
         background-color: white;
         &:hover {
           color: white;
           background-color: @primary-color;
         }
       }
-      li.active > a {
+      & > li.active > a {
         color: white;
         background-color: @primary-color;
       }
@@ -115,6 +115,40 @@
       color: white;
     }
 
+    .navigation-account {
+      background-color: @secondary-color; 
+      .account-content { 
+        background-color: @primary-color; 
+      }
+      input[type=submit] {
+        background-color: @secondary-color; 
+      }
+      input[type=submit]:hover { 
+        color: @tertiary-color;
+      }
+      .tab {
+        background-color: @primary-color; 
+      }
+    }
+    .account-content > ul li a {
+      background-color: @tertiary-color; 
+      &:hover {
+        background-color: @secondary-color;
+      }
+    }
+    .account-content > ul li p {
+      background-color: @secondary-color; 
+    }
+    .navbar-default .navbar-nav > .active > a {
+      &:focus, & {
+        background-color: @primary-color;
+        color: white;
+      }
+      &:hover {
+        background-color: white;
+        color: @primary-color;
+      }
+    }
   }
 }
 

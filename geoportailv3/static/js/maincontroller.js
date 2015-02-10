@@ -94,6 +94,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this['shareOpen'] = false;
 
   /**
+   * @type {Boolean}
+   */
+  this['userOpen'] = false;
+
+  /**
    * @type {Array}
    */
   this['selectedLayers'] = [];
@@ -113,7 +118,8 @@ app.MainController.prototype.setMap_ = function() {
   this['map'] = new ol.Map({
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue031', zoomOutLabel: '\ue025'}),
-      new ol.control.ZoomToExtent({label: '\ue01b', extent: this.defaultExtent_}),
+      new ol.control.ZoomToExtent({label: '\ue01b',
+        extent: this.defaultExtent_}),
       new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02b'})
     ],
     view: new ol.View({
@@ -185,6 +191,5 @@ app.MainController.prototype.switchLanguage = function(lang) {
 app.MainController.prototype.showTab = function(selector) {
   $(selector).tab('show');
 };
-
 
 app.module.controller('MainController', app.MainController);
