@@ -136,7 +136,14 @@
     .account-content > ul li p{
       background-color: @secondary-color; 
     }
-
+    .navbar-default .navbar-nav > .active > a{
+      &:focus, & {
+        background-color: @primary-color;
+      }
+      &:hover {
+        background-color: white;
+      }
+    }
   }
 }
 
