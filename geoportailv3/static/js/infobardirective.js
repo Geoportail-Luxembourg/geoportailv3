@@ -17,6 +17,8 @@ goog.provide('app.infobarDirective');
 goog.require('app');
 goog.require('ol.control.MousePosition');
 goog.require('ol.control.Control');
+
+
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
@@ -55,17 +57,13 @@ app.InfobarDirectiveController = function($scope, $document) {
         target: $document.find('.mouse-coordinates')[0],
         projection: $scope.projection.value,
         coordinateFormat: function(coord){
-            if ($scope.projection.value === "EPSG:3263*"){
-                var projection = ol.proj.get(_utmZoneCheck(coord));
-                this['ctrl'].mouseposition.setProjection(projection);
-                return _coordFormat(coord, projection.getCode());
-            };
-            return _coordFormat(coord, $scope.projection.value)
+            return _coordFormat(coord, $scope.projection.value);
         }
     });
     this['map'].addControl(this.mouseposition);
 
     function _utmZoneCheck(coord){
+        proj4.defs("EPSG:32632","+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs");
         var lonlat = ol.proj.transform(coord, $scope.projection.value, "EPSG:4326");
         if (lonlat.lon && Math.floor(lonlat.lon) >= 6){
             return "EPSG:32632"
@@ -74,8 +72,13 @@ app.InfobarDirectiveController = function($scope, $document) {
         }
     }
     function _coordFormat(coord, epsg_code){
-       switch(epsg_code){
-        case "EPSG:2169":
+        if (epsg_code === "EPSG:3263*"){
+            var projection = ol.proj.get(_utmZoneCheck(coord));
+            this['ctrl'].mouseposition.setProjection(projection);
+            epsg_code = projection.getCode();
+        };
+        switch(epsg_code){
+            case "EPSG:2169":
             var template = '{x} E | {y} N';
             return ol.coordinate.format(coord, template, 0);
         case "EPSG:4326":
@@ -97,7 +100,7 @@ app.InfobarDirectiveController = function($scope, $document) {
         var widget = this['ctrl'].mouseposition;
         widget.setProjection(projection);
         widget.setCoordinateFormat = function(coord) {
-            return _coordFormat(coord, this.projection.value);
+            return _coordFormat(coord, $scope.projection.value);
         }
     }
 };
