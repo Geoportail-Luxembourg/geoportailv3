@@ -1,11 +1,9 @@
 /**
  * @fileoverview This file provides a "infobar" directive. This directive is
- * used to insert an OpenLayers Custom Control Info Bar into the HTML page. It is
- * based on the "ngeo-control" directive.
- *
+ * used to insert an Info Bar into the HTML page.
  * Example:
  *
- * <app-scaleline app-scaleline-map="::mainCtrl.map"map></app-scaleline>
+ * <app-infobar app-infobar-map="::mainCtrl.map"map></app-infobar>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -16,7 +14,6 @@ goog.provide('app.infobarDirective');
 
 goog.require('app');
 goog.require('ol.control.MousePosition');
-goog.require('ol.control.Control');
 
 
 /**
@@ -38,7 +35,6 @@ app.infobarDirective = function(appInfobarTemplateUrl) {
 
 
 app.module.directive('appInfobar', app.infobarDirective);
-
 
 
 /**
@@ -63,18 +59,20 @@ app.InfobarDirectiveController = function($scope, $document) {
     this['map'].addControl(this.mouseposition);
 
     function _utmZoneCheck(coord){
-        proj4.defs("EPSG:32632","+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs");
-        var lonlat = ol.proj.transform(coord, $scope.projection.value, "EPSG:4326");
-        if (lonlat.lon && Math.floor(lonlat.lon) >= 6){
-            return "EPSG:32632"
-        } else {
-            return "EPSG:32631";
-        }
-    }
+        //proj4.defs("EPSG:32632","+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs");
+        //var lonlat = ol.proj.transform(coord, this['map'].getView().getProjection() , "EPSG:4326");
+        return "EPSG:4326";
+       // if (lonlat.lon && Math.floor(lonlat.lon) >= 6){
+       //     return "EPSG:32632"
+       // } else {
+       //     return "EPSG:32631";
+       // }
+    };
+
     function _coordFormat(coord, epsg_code){
         if (epsg_code === "EPSG:3263*"){
             var projection = ol.proj.get(_utmZoneCheck(coord));
-            this['ctrl'].mouseposition.setProjection(projection);
+            $scope.ctrl.mouseposition.setProjection(projection);
             epsg_code = projection.getCode();
         };
         switch(epsg_code){
@@ -94,7 +92,8 @@ app.InfobarDirectiveController = function($scope, $document) {
             var template = '{x} | {y} (UTM31N)';
             return ol.coordinate.format(coord, template, 0);
        }
-    }
+    };
+
     $scope.switchProjection = function(){
         var projection = ol.proj.get(this.projection.value);
         var widget = this['ctrl'].mouseposition;
@@ -102,7 +101,7 @@ app.InfobarDirectiveController = function($scope, $document) {
         widget.setCoordinateFormat = function(coord) {
             return _coordFormat(coord, $scope.projection.value);
         }
-    }
+    };
 };
 
 
