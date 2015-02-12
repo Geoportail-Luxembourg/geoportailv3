@@ -144,16 +144,17 @@
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
           <ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom"
               ng-controller="AppMeasureController as measureCtrl">
-            <li ng-class="{active: measureCtrl.measureDistance.active}">
+            <li ng-class="{active: measureCtrl.measureLength.active}">
               <a href translate ngeo-btn
-                 ng-model="measureCtrl.measureDistance.active">Distance</a>
+                 ng-model="measureCtrl.measureLength.active">Length</a>
             </li>
             <li ng-class="{active: measureCtrl.measureArea.active}">
               <a href translate ngeo-btn
                  ng-model="measureCtrl.measureArea.active">Surface</a>
             </li>
-            <li>
-              <a href translate>Azimut</a>
+            <li ng-class="{active: measureCtrl.measureAzimut.active}">
+              <a href translate ngeo-btn
+                 ng-model="measureCtrl.measureAzimut.active">Azimut</a>
             </li>
             <li>
               <a href translate>Profile</a>
