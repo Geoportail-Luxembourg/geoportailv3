@@ -20,21 +20,24 @@ goog.require('app');
  */
 app.UserController = function($http, loginUrl, logoutUrl, getuserinfoUrl) {
 
-   /**
+  /**
    * @type {string}
+   * @private
    */
-   this.loginUrl_ = loginUrl;
+  this.loginUrl_ = loginUrl;
 
   /**
    * @type {string}
+   * @private
    */
-   this.getuserinfoUrl_ = getuserinfoUrl;
+  this.getuserinfoUrl_ = getuserinfoUrl;
 
-   /**
+  /**
    * @type {string}
+   * @private
    */
-   this.logoutUrl_ = logoutUrl;
-   
+  this.logoutUrl_ = logoutUrl;
+
   /**
    * @type {object}
    * @private
