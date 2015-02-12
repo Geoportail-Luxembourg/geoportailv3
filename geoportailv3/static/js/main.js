@@ -18,5 +18,6 @@ goog.require('app.layermanagerDirective');
 goog.require('app.measureDirective');
 goog.require('app.scalelineDirective');
 goog.require('app.infobarDirective');
+goog.require('app.projectionselectorDirective');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.resizemapDirective');
