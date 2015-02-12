@@ -11,12 +11,30 @@ goog.require('app');
 
 /**
  * @param {angular.$http} $http Htpp.
+ * @param {string} loginUrl the url to authenticate.
+ * @param {string} logoutUrl the url to logout.
+ * @param {string} getuserinfoUrl the url to get information about the user.
  * @constructor
  * @export
  * @ngInject
  */
-app.UserController = function($http) {
+app.UserController = function($http, loginUrl, logoutUrl, getuserinfoUrl) {
 
+   /**
+   * @type {string}
+   */
+   this.loginUrl_ = loginUrl;
+
+  /**
+   * @type {string}
+   */
+   this.getuserinfoUrl_ = getuserinfoUrl;
+
+   /**
+   * @type {string}
+   */
+   this.logoutUrl_ = logoutUrl;
+   
   /**
    * @type {object}
    * @private
@@ -77,7 +95,7 @@ app.UserController.prototype.authenticate = function(credentials) {
   var that = this;
   this['http_']({
     method: 'POST',
-    url: 'login',
+    url: this.loginUrl_,
     data: $.param({
       'login': credentials['login'],
       'password': credentials['password']
@@ -105,7 +123,7 @@ app.UserController.prototype.logout = function() {
   var that = this;
   this['http_']({
     method: 'POST',
-    url: 'logout',
+    url: this.logoutUrl_,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   }).success(function(data, status, headers, config) {
     if (status == 200) {
@@ -129,7 +147,7 @@ app.UserController.prototype.getUserInfo = function() {
   var that = this;
   this['http_']({
     method: 'POST',
-    url: 'getuserinfo'
+    url: this.getuserinfoUrl_
   }).success(function(data, status, headers, config) {
 
     if (status == 200) {
