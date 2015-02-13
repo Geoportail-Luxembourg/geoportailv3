@@ -12,6 +12,7 @@
  */
 goog.provide('app.projectionselectorDirective');
 goog.require('app');
+goog.require('app.projections');
 goog.require('ol.control.MousePosition');
 
 
@@ -43,8 +44,8 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
 app.ProjectionselectorDirectiveController = function($scope, $document) {
     $scope.projectionOptions = [
         {label: 'LUREF', value: 'EPSG:2169'},
-        {label: 'Long/Lat WGS84', value: 'EPSG:4326'}
-        //{label: 'WGS84 UTM 32|31', value: 'EPSG:3263*'}
+        {label: 'Long/Lat WGS84', value: 'EPSG:4326'},
+        {label: 'WGS84 UTM 32|31', value: 'EPSG:3263*'}
     ];
     $scope.projection = $scope.projectionOptions[0];
     this.mouseposition = new ol.control.MousePosition({
@@ -58,18 +59,12 @@ app.ProjectionselectorDirectiveController = function($scope, $document) {
     this['map'].addControl(this.mouseposition);
 
     function _utmZoneCheck(coord){
-        return "EPSG:4326";
-//        var projection = new ol.proj.Projection({
-//            code: 'EPSG:32632',
-//            units: 'm'
-//        });
-//        ol.proj.addProjection(projection);
-//        var lonlat = /** @type {ol.Coordinate} */ (ol.proj.transform(coord, this['map'].getView().getProjection() , "EPSG:4326"));
-//        if (lonlat[0] && Math.floor(lonlat[0]) >= 6){
-//            return "EPSG:32632"
-//        } else {
-//            return "EPSG:32631";
-//        }
+        var lonlat = /** @type {ol.Coordinate} */ (ol.proj.transform(coord, $scope['ctrl'].mouseposition.getProjection() , "EPSG:4326"));
+        if (Math.floor(lonlat[0]) >= 6){
+            return "EPSG:32632"
+        } else {
+            return "EPSG:32631";
+        }
     };
 
     function _coordFormat(coord, epsg_code){
@@ -80,25 +75,26 @@ app.ProjectionselectorDirectiveController = function($scope, $document) {
         };
         switch(epsg_code){
             case "EPSG:2169":
-            var template = '{x} E | {y} N';
-            return ol.coordinate.format(coord, template, 0);
+            return ol.coordinate.format(coord, '{x} E | {y} N', 0);
         case "EPSG:4326":
             var hdms = ol.coordinate.toStringHDMS(coord);
-            var xhdms = hdms.split(" ").slice(0,4).join(" ");
-            var yhdms = hdms.split(" ").slice(4,8).join(" ");
+            var yhdms = hdms.split(" ").slice(0,4).join(" ");
+            var xhdms = hdms.split(" ").slice(4,8).join(" ");
             var template = xhdms + ' ({x}) | ' +  yhdms +' ({y})';
             return ol.coordinate.format(coord, template, 5);
         case "EPSG:32632":
-            var template = '{x} | {y} (UTM32N)';
-            return ol.coordinate.format(coord, template, 0);
+            return ol.coordinate.format(coord, '{x} | {y} (UTM32N)', 0);
         case "EPSG:32631":
-            var template = '{x} | {y} (UTM31N)';
-            return ol.coordinate.format(coord, template, 0);
+            return ol.coordinate.format(coord, '{x} | {y} (UTM31N)', 0);
        }
     };
 
     $scope.switchProjection = function(){
-        var projection = ol.proj.get(this.projection.value);
+        if (this.projection.value === "EPSG:3263*"){
+            var projection = ol.proj.get("EPSG:32632");
+        } else {
+            var projection = ol.proj.get(this.projection.value);
+        };
         var widget = this['ctrl'].mouseposition;
         widget.setProjection(projection);
         widget.setCoordinateFormat = function(coord) {

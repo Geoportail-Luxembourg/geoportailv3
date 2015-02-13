@@ -21,3 +21,4 @@ goog.require('app.infobarDirective');
 goog.require('app.projectionselectorDirective');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.resizemapDirective');
+goog.require('app.projections');

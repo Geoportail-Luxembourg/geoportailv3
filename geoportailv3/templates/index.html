@@ -155,6 +155,7 @@
       </ul>
     </footer>
 % if debug:
+<<<<<<< HEAD
     <script>
       // We should really use the empty string for CLOSURE_BASE_PATH for there
       // is a bug in Closure Library preventing us from doing it. See
@@ -162,6 +163,9 @@
       window.CLOSURE_BASE_PATH = ' ';
       window.CLOSURE_NO_DEPS = true;
     </script>
+=======
+    <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
+>>>>>>> resolved proj4 library issues and small improvements of code
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
@@ -171,7 +175,9 @@
     <script src="${request.route_url('deps.js')}"></script>
     <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
     <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
 % else:
+    <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
     <script>
@@ -200,6 +206,7 @@
          appModule.value('appLayerinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/layerinfo.html')}');
          appModule.value('appAuthenticationTemplateUrl', '${request.static_url('geoportailv3:static/js/authentication/authentication.html')}');
          appModule.value('appInfobarTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/infobar.html')}');
+         appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
        })();
     </script>
   </body>
