@@ -36,6 +36,7 @@ app.infobarDirective = function(appInfobarTemplateUrl) {
 app.module.directive('appInfobar', app.infobarDirective);
 
 
+
 /**
  * @ngInject
  * @constructor

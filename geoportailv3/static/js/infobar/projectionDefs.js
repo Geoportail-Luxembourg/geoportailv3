@@ -3,10 +3,10 @@ goog.provide('app.projections');
 goog.require('ol.Map');
 goog.require('ol.proj');
 
-proj4.defs("EPSG:32632","+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs");
+proj4.defs('EPSG:32632', '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs');
 ol.proj.get('EPSG:32632').setExtent([166021.44, 0.00, 833978.55, 9329005.18]);
 
-proj4.defs("EPSG:32631","+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs");
+proj4.defs('EPSG:32631', '+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs');
 ol.proj.get('EPSG:32631').setExtent([166021.44, 0.00, 833978.55, 9329005.18]);
 
 proj4.defs('EPSG:2169',
