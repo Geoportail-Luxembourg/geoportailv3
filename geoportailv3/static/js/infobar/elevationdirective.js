@@ -13,6 +13,7 @@
 goog.provide('app.elevationDirective');
 
 goog.require('app');
+goog.require('app.projections');
 goog.require('ngeo.Debounce');
 
 
