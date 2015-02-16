@@ -39,6 +39,11 @@ vars:
       bind: 'cn=system,dc=act,dc=lu'
       passwd: 'to_be_defined'
       base_dn: 'ou=portail,dc=act,dc=lu'
+
+    raster:
+      dhm:
+        file: /var/sig/bt.shp
+        round: 1
 interpreted:
     node:
         vars:
