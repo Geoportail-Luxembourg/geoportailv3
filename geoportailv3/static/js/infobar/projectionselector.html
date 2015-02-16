@@ -1,3 +1,6 @@
  <select ng-model="projection" 
                 ng-options="opt as opt.label for opt in projectionOptions" ng-change="switchProjection()"></select>
 <div class="mouse-coordinates"></div>
+<div class="elevation-service">
+    <app-elevation app-elevation-map="::ctrl.map"></app-elevation>
+</div>
