@@ -15,13 +15,17 @@ app.ShowLayerinfo;
 
 
 /**
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {angular.$http} $http Angular $http service
  * @param {angular.$sce} $sce Angular $sce service
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
  * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
-app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
+app.showLayerinfoFactory = function(gettextCatalog,
+                                    $http,
+                                    $sce,
+                                    ngeoCreatePopup) {
 
   /**
    * @type {ngeo.Popup}
@@ -35,11 +39,12 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
         popup.setTitle(title);
+
         $http.jsonp(
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
             {params: {
               'uid': layer.get('metadata')['metadata_id'],
-              'lang': 'fr',
+              'lang': gettextCatalog.currentLanguage,
               'cb': 'JSON_CALLBACK'
             }
             }).success(function(data, status, headers, config) {
@@ -49,7 +54,8 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
                   data.root[0]['legend_name'] =
                       layer.get('metadata')['legend_name'];
                   data.root[0]['legend_url'] = $sce.trustAsResourceUrl(
-                      '//wiki.geoportail.lu/doku.php?id=fr:legend:' +
+                      '//wiki.geoportail.lu/doku.php?id=' +
+                          gettextCatalog.currentLanguage + ':legend:' +
                           data.root[0]['legend_name'] + '&do=export_html');
                   data.root[0]['has_legend'] = true;
                 }else {
