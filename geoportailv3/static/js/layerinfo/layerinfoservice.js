@@ -34,7 +34,7 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
        */
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
-
+        popup.setTitle(title);
         $http.jsonp(
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
             {params: {
@@ -44,7 +44,6 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
             }
             }).success(function(data, status, headers, config) {
               if (status == 200) {
-                popup.setTitle(title);
                 data.root[0]['uid'] = layer.get('metadata')['metadata_id'];
                 if ('legend_name' in layer.get('metadata')) {
                   data.root[0]['legend_name'] =
@@ -56,13 +55,16 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
                 }else {
                   data.root[0]['has_legend'] = false;
                 }
+                data.root[0]['is_error'] = false;
                 popup.setContent(data.root[0]);
                 popup.show();
           }else {
-                console.log(status);
+                popup.setContent({'is_error': true});
+                popup.show();
           }
         }). error(function(data, status, headers, config) {
-          console.log(status);
+          popup.setContent({'is_error': true});
+          popup.show();
         });
 
       });

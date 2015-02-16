@@ -4,12 +4,12 @@
 </h4>
 <div class="popover-content">
 
-  <dl>
-  <dt ng-if="content.name.length>0">Nom</dt><dd ng-bind="content.name"></dd>
-  <dt ng-if="content.description.length>0">Description</dt><dd ng-bind="content.description"></dd>
-  <dt ng-if="content.revisionDate.length>0">Date de révision</dt><dd ng-bind="content.revisionDate"></dd>
-  <dt ng-if="content.keywords.length>0">Mots clé</dt><dd ng-bind="content.keywords"></dd>
-  <dt ng-if="content.pocs.length>0">Contact</dt>
+<dl>
+  <dt ng-if="content.name.length>0" translate>Nom</dt><dd ng-bind="content.name"></dd>
+  <dt ng-if="content.description.length>0" translate>Description</dt><dd ng-bind="content.description"></dd>
+  <dt ng-if="content.revisionDate.length>0" translate>Date de révision</dt><dd ng-bind="content.revisionDate"></dd>
+  <dt ng-if="content.keywords.length>0" translate>Mots clé</dt><dd ng-bind="content.keywords"></dd>
+  <dt ng-if="content.pocs.length>0" translate>Contact</dt>
   <dd ng-repeat="poc in content.pocs">
     <p ng-if="poc.organisation.length>0" ng-bind="poc.organisation"></p>
     <p ng-if="poc.name.length>0" ng-bind="poc.name"></p>
@@ -18,14 +18,15 @@
     <p ng-if="poc.phone.length>0" ng-bind="poc.phone"></p>
     <a ng-if="poc.email.length>0" ng-href="mailto:{{poc.email}}">{{poc.email}}</a>
   </dd>
-  <dt ng-if="content.uid.length>0">Métadonnée complète</dt>
+  <dt ng-if="content.uid.length>0" translate>Métadonnée complète</dt>
   <dd ng-if="content.uid.length>0"><a target ="_blank" 
          href="https://www.geoportail.lu/Portail/menuAction.do?lang=fr&dispatch=load&menuToLoad=inspireViewMetadataExt&uid={{content.uid}}">
       link
       </a>
   </dd>
 </dl>
+<p ng-if="content.is_error" translate>La métadonnée de cette couche est momentanément indisponible</p>
 <iframe ng-if="content.has_legend" width="100%" height="300" frameborder="0" ng-src="{{content.legend_url}}">
 </iframe>
-<p ng-if="!content.has_legend">Il n'y a pas de légende pour cette couche</p>
+<p ng-if="!content.has_legend" translate>Il n'y a pas de légende pour cette couche</p>
 </div>
