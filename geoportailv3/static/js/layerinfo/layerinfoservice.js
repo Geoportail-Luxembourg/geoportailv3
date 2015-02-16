@@ -29,42 +29,41 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
   var popup = ngeoCreatePopup();
 
   return (
-
       /**
        * @param {ol.layer.Layer} layer The layer
        */
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
 
-
-        $http.jsonp("http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp",{params :{
-            'uid': layer.get('metadata')['metadata_id'],
-            'lang': 'fr',
-            'cb':'JSON_CALLBACK'
+        $http.jsonp(
+            'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
+            {params: {
+              'uid': layer.get('metadata')['metadata_id'],
+              'lang': 'fr',
+              'cb': 'JSON_CALLBACK'
             }
             }).success(function(data, status, headers, config) {
-            if (status == 200) {
-                
+              if (status == 200) {
                 popup.setTitle(title);
-
-                data.root[0]['uid']=layer.get('metadata')['metadata_id'];
+                data.root[0]['uid'] = layer.get('metadata')['metadata_id'];
                 if ('legend_name' in layer.get('metadata')) {
-                    data.root[0]['legend_name']=layer.get('metadata')['legend_name'];
-                    data.root[0]['legend_url']= $sce.trustAsResourceUrl("//wiki.geoportail.lu/doku.php?id=fr:legend:"+data.root[0]['legend_name']+"&do=export_html");
-                    data.root[0]['has_legend'] = true;
-                }else{
+                  data.root[0]['legend_name'] =
+                      layer.get('metadata')['legend_name'];
+                  data.root[0]['legend_url'] = $sce.trustAsResourceUrl(
+                      '//wiki.geoportail.lu/doku.php?id=fr:legend:' +
+                          data.root[0]['legend_name'] + '&do=export_html');
+                  data.root[0]['has_legend'] = true;
+                }else {
                   data.root[0]['has_legend'] = false;
                 }
-
                 popup.setContent(data.root[0]);
                 popup.show();
-
-            }else {
+          }else {
                 console.log(status);
-            }
-          }). error(function(data, status, headers, config) {
-            console.log(status);
-          });
+          }
+        }). error(function(data, status, headers, config) {
+          console.log(status);
+        });
 
       });
 };

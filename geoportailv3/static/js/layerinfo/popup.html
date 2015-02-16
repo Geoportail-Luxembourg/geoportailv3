@@ -18,8 +18,8 @@
     <p ng-if="poc.phone.length>0" ng-bind="poc.phone"></p>
     <a ng-if="poc.email.length>0" ng-href="mailto:{{poc.email}}">{{poc.email}}</a>
   </dd>
-  <dt  ng-if="content.uid && content.uid.length>0">Métadonnée complète</dt>
-  <dd><a target ="_blank" 
+  <dt ng-if="content.uid.length>0">Métadonnée complète</dt>
+  <dd ng-if="content.uid.length>0"><a target ="_blank" 
          href="https://www.geoportail.lu/Portail/menuAction.do?lang=fr&dispatch=load&menuToLoad=inspireViewMetadataExt&uid={{content.uid}}">
       link
       </a>
@@ -27,5 +27,5 @@
 </dl>
 <iframe ng-if="content.has_legend" width="100%" height="300" frameborder="0" ng-src="{{content.legend_url}}">
 </iframe>
-
+<p ng-if="!content.has_legend">Il n'y a pas de légende pour cette couche</p>
 </div>
