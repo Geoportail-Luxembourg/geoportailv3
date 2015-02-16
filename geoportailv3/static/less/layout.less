@@ -287,7 +287,7 @@ div.ol-zoom-extent > button {
 .popover{
   max-width: 500px;
   max-height: 500px;
-  overflow:scroll;
+  overflow: hidden;
   dl {
     width:100%;
     overflow:hidden;
@@ -307,4 +307,15 @@ div.ol-zoom-extent > button {
     margin-left: 0;
     margin-right: 0;
   }
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+*:before, *:after {
+    box-sizing: border-box;
+}
+.popover-content {
+    max-height: 490px;
+    overflow: auto;
 }
