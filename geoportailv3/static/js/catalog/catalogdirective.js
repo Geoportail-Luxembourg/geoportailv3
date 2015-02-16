@@ -87,6 +87,9 @@ app.CatalogController.prototype.getInfo = function(node, layer) {
  */
 app.CatalogController.prototype.getLayer = function(node) {
   var layer = this.getLayerFunc_(node);
+  if (layer){
+    layer.set('metadata', node['metadata']);
+  }
   return layer;
 };
 
