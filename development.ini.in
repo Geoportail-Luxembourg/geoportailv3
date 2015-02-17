@@ -14,14 +14,6 @@ elastic.index = ${search_index}
 authtkt_secret = ${authtkt_secret}
 authtkt_cookie_name = ${authtkt_cookie_name}
 
-# pyramid_closure configuration
-pyramid_closure.roots =
-    ${closure_library_path}/closure/goog
-pyramid_closure.roots_with_prefix =
-    ../../../../../../../../../proj/js %(here)s/geoportailv3/static/js
-    ../../../../../../../../../node_modules/openlayers %(here)s/node_modules/openlayers
-    ../../../../../../../../../node_modules/ngeo %(here)s/node_modules/ngeo
-
 [filter:fanstatic]
 use = egg:fanstatic#fanstatic
 publisher_signature = fanstatic
