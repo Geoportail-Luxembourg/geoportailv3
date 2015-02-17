@@ -9,7 +9,6 @@ var fse = require('fs-extra');
 var fs = require('openlayers/node_modules/graceful-fs');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
-var exec = require('child_process').exec;
 
 var generateExports = require('./generate-exports');
 
@@ -188,17 +187,6 @@ function build(config, paths, callback) {
 
 
 /**
- * Adds a file header with the most recent Git tag.
- * @param {string} compiledSource The compiled library.
- * @param {function(Error, string)} callback Called with output
- *     ready to be written into a file, or any error.
- */
-function addHeader(compiledSource, callback) {
-  var header = '// Application build\n';
-  callback(null, header + compiledSource);
-}
-
-/**
  * Generate a build of the library.
  * @param {Object} config Build configuration object.  Must have an "exports"
  *     array and a "compile" object with options for the compiler.
@@ -210,8 +198,7 @@ function main(config, callback) {
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config),
     getDependencies.bind(null, config),
-    build.bind(null, config),
-    addHeader
+    build.bind(null, config)
   ], callback);
 }
 
