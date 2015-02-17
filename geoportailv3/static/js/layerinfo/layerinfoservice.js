@@ -38,31 +38,34 @@ app.showLayerinfoFactory = function(gettextCatalog,
        */
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
+        var local_metadata = layer.get('metadata');
+
         popup.setTitle(title);
 
         $http.jsonp(
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
             {params: {
-              'uid': layer.get('metadata')['metadata_id'],
+              'uid': local_metadata['metadata_id'],
               'lang': gettextCatalog.currentLanguage,
               'cb': 'JSON_CALLBACK'
             }
             }).success(function(data, status, headers, config) {
               if (status == 200) {
-                data.root[0]['uid'] = layer.get('metadata')['metadata_id'];
-                if ('legend_name' in layer.get('metadata')) {
-                  data.root[0]['legend_name'] =
-                      layer.get('metadata')['legend_name'];
-                  data.root[0]['legend_url'] = $sce.trustAsResourceUrl(
+                var remote_metadata = data.root[0];
+                remote_metadata['uid'] = local_metadata['metadata_id'];
+                if ('legend_name' in local_metadata) {
+                  remote_metadata['legend_name'] =
+                      local_metadata['legend_name'];
+                  remote_metadata['legend_url'] = $sce.trustAsResourceUrl(
                       '//wiki.geoportail.lu/doku.php?id=' +
                           gettextCatalog.currentLanguage + ':legend:' +
-                          data.root[0]['legend_name'] + '&do=export_html');
-                  data.root[0]['has_legend'] = true;
+                          remote_metadata['legend_name'] + '&do=export_html');
+                  remote_metadata['has_legend'] = true;
                 }else {
-                  data.root[0]['has_legend'] = false;
+                  remote_metadata['has_legend'] = false;
                 }
-                data.root[0]['is_error'] = false;
-                popup.setContent(data.root[0]);
+                remote_metadata['is_error'] = false;
+                popup.setContent(remote_metadata);
                 popup.show();
           }else {
                 popup.setContent({'is_error': true});
