@@ -32,6 +32,7 @@ app.showLayerinfoFactory = function(gettextCatalog,
    */
   var popup = ngeoCreatePopup();
 
+
   return (
       /**
        * @param {ol.layer.Layer} layer The layer
@@ -65,16 +66,22 @@ app.showLayerinfoFactory = function(gettextCatalog,
                   remote_metadata['has_legend'] = false;
                 }
                 remote_metadata['is_error'] = false;
-                popup.setContent(remote_metadata);
-                popup.show();
+                remote_metadata['is_short_desc'] = true;
+                showPopup(remote_metadata);
           }else {
-                popup.setContent({'is_error': true});
-                popup.show();
+            showPopup({'is_error': true});
           }
         }). error(function(data, status, headers, config) {
-          popup.setContent({'is_error': true});
-          popup.show();
+          showPopup({'is_error': true});
         });
+
+        /**
+         * @param {Object} content Object with metadata information.
+         */
+        function showPopup(content) {
+          popup.setContent(content);
+          popup.show();
+        };
 
       });
 };
