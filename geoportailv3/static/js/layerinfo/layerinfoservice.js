@@ -32,7 +32,7 @@ app.showLayerinfoFactory = function(gettextCatalog,
    */
   var popup = ngeoCreatePopup();
   /**
-   * @type {Object.<string, !angular.$q.Promise>}
+   * @type {Object.<!string, Object.<string, !angular.$q.Promise>>}
    * @private
    */
   var promises_ = {};
@@ -48,13 +48,19 @@ app.showLayerinfoFactory = function(gettextCatalog,
         var metadata_uid = /** @type {string} */
             (local_metadata['metadata_id']);
         popup.setTitle(title);
+        var current_language = /** @type {string} */
+            (gettextCatalog.currentLanguage);
 
-        if (!(metadata_uid in promises_)) {
-          promises_[metadata_uid] = $http.jsonp(
+        if (!(current_language in promises_)) {
+          promises_[current_language] = {};
+        }
+
+        if (!(metadata_uid in promises_[current_language])) {
+          promises_[current_language][metadata_uid] = $http.jsonp(
               'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
               {params: {
                 'uid': metadata_uid,
-                'lang': gettextCatalog.currentLanguage,
+                'lang': current_language,
                 'cb': 'JSON_CALLBACK'
               }}).then(
                   angular.bind(this, function(resp) {
@@ -79,7 +85,7 @@ app.showLayerinfoFactory = function(gettextCatalog,
                   }));
         }
 
-        promises_[metadata_uid].then(
+        promises_[current_language][metadata_uid].then(
             function(remote_metadata) {
               showPopup(remote_metadata);
             },
