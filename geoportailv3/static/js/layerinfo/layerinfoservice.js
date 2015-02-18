@@ -43,51 +43,51 @@ app.showLayerinfoFactory = function(gettextCatalog,
        */
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
-        var local_metadata = /** @type {Object.<string>} */
+        var localMetadata = /** @type {Object.<string>} */
             (layer.get('metadata'));
-        var metadata_uid = /** @type {string} */
-            (local_metadata['metadata_id']);
+        var metadataUid = /** @type {string} */
+            (localMetadata['metadata_id']);
         popup.setTitle(title);
-        var current_language = /** @type {string} */
+        var currentLanguage = /** @type {string} */
             (gettextCatalog.currentLanguage);
 
-        if (!(current_language in promises_)) {
-          promises_[current_language] = {};
+        if (!(currentLanguage in promises_)) {
+          promises_[currentLanguage] = {};
         }
 
-        if (!(metadata_uid in promises_[current_language])) {
-          promises_[current_language][metadata_uid] = $http.jsonp(
+        if (!(metadataUid in promises_[currentLanguage])) {
+          promises_[currentLanguage][metadataUid] = $http.jsonp(
               'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
               {params: {
-                'uid': metadata_uid,
-                'lang': current_language,
+                'uid': metadataUid,
+                'lang': currentLanguage,
                 'cb': 'JSON_CALLBACK'
               }}).then(
                   angular.bind(this, function(resp) {
-                    var remote_metadata = resp.data.root[0];
-                    remote_metadata['uid'] = local_metadata['metadata_id'];
-                    if ('legend_name' in local_metadata) {
-                      remote_metadata['legend_name'] =
-                      local_metadata['legend_name'];
-                      remote_metadata['legend_url'] = $sce.trustAsResourceUrl(
+                    var remoteMetadata = resp.data.root[0];
+                    remoteMetadata['uid'] = localMetadata['metadata_id'];
+                    if ('legend_name' in localMetadata) {
+                      remoteMetadata['legend_name'] =
+                      localMetadata['legend_name'];
+                      remoteMetadata['legend_url'] = $sce.trustAsResourceUrl(
                           '//wiki.geoportail.lu/doku.php?id=' +
                           gettextCatalog.currentLanguage + ':legend:' +
-                          remote_metadata['legend_name'] + '&do=export_html'
+                          remoteMetadata['legend_name'] + '&do=export_html'
                       );
-                      remote_metadata['has_legend'] = true;
+                      remoteMetadata['has_legend'] = true;
                     }else {
-                      remote_metadata['has_legend'] = false;
+                      remoteMetadata['has_legend'] = false;
                     }
-                    remote_metadata['is_error'] = false;
-                    remote_metadata['is_short_desc'] = true;
-                    showPopup(remote_metadata);
-                    return remote_metadata;
+                    remoteMetadata['is_error'] = false;
+                    remoteMetadata['is_short_desc'] = true;
+                    showPopup(remoteMetadata);
+                    return remoteMetadata;
                   }));
         }
 
-        promises_[current_language][metadata_uid].then(
-            function(remote_metadata) {
-              showPopup(remote_metadata);
+        promises_[currentLanguage][metadataUid].then(
+            function(remoteMetadata) {
+              showPopup(remoteMetadata);
             },
             function(error) {
               showPopup({'is_error': true});
