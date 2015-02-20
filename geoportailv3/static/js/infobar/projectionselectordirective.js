@@ -43,67 +43,81 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @constructor
  */
 app.ProjectionselectorDirectiveController = function($scope, $document) {
-  $scope['projectionOptions'] = [
+  this['projectionOptions'] = [
     {'label': 'LUREF', 'value': 'EPSG:2169'},
     {'label': 'Long/Lat WGS84', 'value': 'EPSG:4326'},
     {'label': 'WGS84 UTM 32|31', 'value': 'EPSG:3263*'}
   ];
-  $scope['projection'] = $scope['projectionOptions'][0];
+  this['projection'] = this['projectionOptions'][0];
   this.mouseposition = new ol.control.MousePosition({
     className: 'custom-mouse-coordinates',
     target: $document.find('.mouse-coordinates')[0],
-    projection: $scope['projection']['value'],
-    coordinateFormat: function(coord) {
-      return _coordFormat(coord, $scope['projection']['value']);
-    }
+    projection: this.projection['value'],
+    coordinateFormat: /** @type {ol.CoordinateFormatType} */ (angular.bind(this, function(coord) {
+      return this.coordFormat_(coord, this['projection']['value']);
+    }))
   });
-  this['map'].addControl(this.mouseposition);
+  this.map.addControl(this.mouseposition) ;
+};
 
-  function _utmZoneCheck(coord) {
-    var lonlat = /** @type {ol.Coordinate} */ (ol.proj.transform(coord, $scope['ctrl']['mouseposition'].getProjection() , 'EPSG:4326'));
+
+/**
+ * @private
+ */
+app.ProjectionselectorDirectiveController.prototype.utmZoneCheck_ = function(coord) {
+    var lonlat = /** @type {ol.Coordinate} */ (ol.proj.transform(coord, this.mouseposition.getProjection() , 'EPSG:4326'));
     if (Math.floor(lonlat[0]) >= 6) {
       return 'EPSG:32632';
     } else {
       return 'EPSG:32631';
     }
-  };
-
-  function _coordFormat(coord, epsg_code) {
-    if (epsg_code === 'EPSG:3263*') {
-      var projection = ol.proj.get(_utmZoneCheck(coord));
-      $scope['ctrl']['mouseposition'].setProjection(projection);
-      epsg_code = projection.getCode();
-    }
-    switch (epsg_code) {
-      case 'EPSG:2169':
-        return ol.coordinate.format(coord, '{x} E | {y} N', 0);
-      case 'EPSG:4326':
-        var hdms = ol.coordinate.toStringHDMS(coord);
-        var yhdms = hdms.split(' ').slice(0, 4).join(' ');
-        var xhdms = hdms.split(' ').slice(4, 8).join(' ');
-        var template = xhdms + ' ({x}) | ' + yhdms + ' ({y})';
-        return ol.coordinate.format(coord, template, 5);
-      case 'EPSG:32632':
-        return ol.coordinate.format(coord, '{x} | {y} (UTM32N)', 0);
-      case 'EPSG:32631':
-        return ol.coordinate.format(coord, '{x} | {y} (UTM31N)', 0);
-    }
-  };
-
-  $scope.switchProjection = function() {
-    if (this['projection']['value'] === 'EPSG:3263*') {
-      var projection = ol.proj.get('EPSG:32632');
-    } else {
-      var projection = ol.proj.get(this['projection']['value']);
-    }
-    var widget = this['ctrl']['mouseposition'];
-    widget.setProjection(projection);
-    widget.setCoordinateFormat = function(coord) {
-      return _coordFormat(coord, this['projection']['value']);
-    };
-  };
 };
 
+/**
+ * @private
+ */
+app.ProjectionselectorDirectiveController.prototype.coordFormat_ = function(coord, epsg_code)
+{
+    if (epsg_code === 'EPSG:3263*') {
+        var projection = ol.proj.get(this.utmZoneCheck_(coord));
+        this.mouseposition.setProjection(projection);
+        epsg_code = projection.getCode();
+    }
+    console.log(epsg_code);
+    switch (epsg_code) {
+        case 'EPSG:2169':
+                   return ol.coordinate.format(coord, '{x} E | {y} N', 0);
+        case 'EPSG:4326':
+                   var hdms = ol.coordinate.toStringHDMS(coord);
+                   var yhdms = hdms.split(' ').slice(0, 4).join(' ');
+                   var xhdms = hdms.split(' ').slice(4, 8).join(' ');
+                   var template = xhdms + ' ({x}) | ' + yhdms + ' ({y})';
+                   return ol.coordinate.format(coord, template, 5);
+        case 'EPSG:32632':
+                   return ol.coordinate.format(coord, '{x} | {y} (UTM32N)', 0);
+        case 'EPSG:32631':
+                   return ol.coordinate.format(coord, '{x} | {y} (UTM31N)', 0);
+    }
+};
+/**
+ * @export
+ */
+app.ProjectionselectorDirectiveController.prototype.switchProjection = function() {
+    var projection = null;
+    if (this['projection']['value'] === 'EPSG:3263*') {
+        projection = ol.proj.get('EPSG:32632');
+    } else {
+        projection = ol.proj.get(this['projection']['value']);
+    }
+    var widget = this.mouseposition;
+    console.log(projection);
+    widget.setProjection(projection);
+    widget.setCoordinateFormat(
+       /** @type {ol.CoordinateFormatType} */ (angular.bind(this, function(coord) {
+      return this.coordFormat_(coord, this['projection']['value']);
+    }))
+    );
+};
 
 app.module.controller('AppProjectionselectorController',
     app.ProjectionselectorDirectiveController);
