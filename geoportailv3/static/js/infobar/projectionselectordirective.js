@@ -40,6 +40,7 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
 
 /**
  * @ngInject
+ * @export
  * @constructor
  */
 app.ProjectionselectorDirectiveController = function($scope, $document) {
