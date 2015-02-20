@@ -10,6 +10,7 @@
 goog.provide('app.MainController');
 
 goog.require('app');
+goog.require('app.LocationControl');
 goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -103,6 +104,8 @@ app.MainController = function($scope, gettextCatalog, langUrls,
    */
   this['selectedLayers'] = [];
 
+  
+  
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSelectedLayers_($scope);
@@ -120,7 +123,8 @@ app.MainController.prototype.setMap_ = function() {
       new ol.control.Zoom({zoomInLabel: '\ue031', zoomOutLabel: '\ue025'}),
       new ol.control.ZoomToExtent({label: '\ue01b',
         extent: this.defaultExtent_}),
-      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02b'})
+      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02b'}),
+      new app.LocationControl({label: '\ue800'})
     ],
     view: new ol.View({
       center: ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857'),
@@ -128,6 +132,7 @@ app.MainController.prototype.setMap_ = function() {
     })
   });
 };
+
 
 
 /**
