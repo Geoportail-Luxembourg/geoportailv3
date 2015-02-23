@@ -39,7 +39,7 @@ app.UserController = function($http, loginUrl, logoutUrl, getuserinfoUrl) {
   this.logoutUrl_ = logoutUrl;
 
   /**
-   * @type {object}
+   * @type {Object}
    * @private
    */
   this['credentials'] = {
