@@ -12,15 +12,26 @@ goog.require('ol.control.Control');
 goog.provide('app.LocationControl');
 
 
+/**
+ * @typedef {{className: (string|undefined),
+ *     label: (string|undefined),
+ *     tipLabel: (string|undefined),
+ *     target: (Element|undefined)
+ * }}
+ */
+app.LocationControlOptions;
+
+
 
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} opt_options Control options.
+ * @param {app.LocationControlOptions=} opt_options Location Control
+ * options.
  */
 app.LocationControl = function(opt_options) {
 
-  var options = opt_options || {};
+  var options = goog.isDef(opt_options) ? opt_options : {};
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
   /**
@@ -87,7 +98,7 @@ app.LocationControl.prototype.handleClick_ = function(event) {
  * @private
  */
 app.LocationControl.prototype.handleCenterToLocation_ = function() {
-  if (this.geolocation_ == null) {
+  if (goog.isNull(this.geolocation_)) {
     this.initGeoLocation_();
   }
 
