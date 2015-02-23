@@ -104,8 +104,6 @@ app.MainController = function($scope, gettextCatalog, langUrls,
    */
   this['selectedLayers'] = [];
 
-  
-  
   this.setMap_();
   this.switchLanguage('fr');
   this.manageSelectedLayers_($scope);
@@ -132,7 +130,6 @@ app.MainController.prototype.setMap_ = function() {
     })
   });
 };
-
 
 
 /**
