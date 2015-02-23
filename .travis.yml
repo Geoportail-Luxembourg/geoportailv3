@@ -17,7 +17,10 @@ install:
 - sudo -u postgres psql -d lux -c 'GRANT ALL ON SCHEMA geov3_static TO "www-data";'
 - sudo -u postgres psql -d lux -c 'GRANT ALL ON geometry_columns TO "www-data";'
 
-- make -f travis.mk .build/eggs.timestamp alembic.ini lux_alembic.ini
+- sudo mkdir -p /srv/tomcat/tomcat1/webapps
+- sudo chmod g+w,o+w /srv/tomcat/tomcat1/webapps
+
+- make -f travis.mk .build/requirements.timestamp alembic.ini lux_alembic.ini
 - .build/venv/bin/alembic upgrade head 
 - .build/venv/bin/alembic -c lux_alembic.ini upgrade head 
 - make -f travis.mk build

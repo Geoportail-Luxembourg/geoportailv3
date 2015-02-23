@@ -9,9 +9,7 @@ vars:
     # the Unix user under which the modwsgi daemon processes are executed.
     modwsgi_user: www-data
     # url-path where the instance must respond.
-    apache-entry-point: /{instanceid}/
-    # cookie session secret
-    authtkt_secret: __import__('uuid').uuid4().hex
+    apache_entry_point: /{instanceid}/
     # database user
     dbuser: www-data
     # database password
@@ -23,7 +21,7 @@ vars:
     # database name
     db: override_me
     # sqlalchemy schema
-    schema: webapp
+    schema: main
     # database parent schema
     parentschema: ""
     # apache/mapserver.conf "Allow" statement
@@ -63,7 +61,10 @@ vars:
     python_path: __import__('distutils').sysconfig.get_python_lib()
 
     # Authentication settings
-    authtkt_cookie_name: auth_tkt_{instanceid}
+    authtkt:
+        # Cookie session secret
+        secret: __import__('uuid').uuid4().hex
+        cookie_name: auth_tkt_{instanceid}
     # Database informations
     sqlalchemy:
         url: postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{db}
@@ -75,20 +76,21 @@ vars:
 
     # For debug mode
     jsbuild:
-        config: jsbuild/app.cfg
-        root_dir: {directory}
+        config: "{directory}/jsbuild/app.cfg"
+        root_dir: "{directory}"
 
     # pyramid_closure configuration
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
     pyramid_closure:
-        roots: '{closure_library_path}/closure/goog'
-        roots_with_prefix: '
-            ../../../../../../../../../proj/js {directory}/{package}/static/js
-            ../../../../../../../../../node_modules/openlayers {directory}/node_modules/openlayers
-            ../../../../../../../../../node_modules/ngeo/src {directory}/node_modules/ngeo/src'
+        roots:
+        - "{closure_library_path}/closure/goog"
+        roots_with_prefix:
+            ../../../../../../../../../proj/js: "{directory}/{package}/static/js"
+            ../../../../../../../../../node_modules/openlayers: "{directory}/node_modules/openlayers"
+            ../../../../../../../../../node_modules/ngeo/src: "{directory}/node_modules/ngeo/src"
 
     # used for the "node_modules" and "closure" static views
-    node_modules_path: '{directory}/node_modules'
+    node_modules_path: "{directory}/node_modules"
 
     # The application's default language. This is the language used by
     # the application if no specific language is specified in the URLs.
@@ -179,7 +181,7 @@ vars:
     # The shortner base configuration
     shortener:
       # The base of created URL
-      base_url:  http://{host}{apache-entry-point}s/
+      base_url:  http://{host}{apache_entry_point}s/
 
     # URL to internal MapServer instance
     mapserv_url: http://localhost/{instanceid}/mapserv
@@ -213,69 +215,6 @@ vars:
     # The used sub domain for the static resources
     #subdomains: [s1, s2, s3, s4]
 
-    # Checker configuration
-    checker:
-        print_template: 1 A4 portrait
-        print_center_lon: to be defined
-        print_center_lat: to be defined
-        print_scale: 10000
-        fulltextsearch: text to search
-
-    # Check collector configuration
-    check_collector:
-        check_type:
-            all:
-                - name: checker_main
-                  display: Main page
-                - name: checker_viewer
-                  display: Viewer script
-                - name: checker_edit
-                  display: Edit page
-                - name: checker_edit_js
-                  display: Edit script
-                - name: checker_api
-                  display: API
-                - name: checker_xapi
-                  display: Extended API
-                - name: checker_printcapabilities
-                  display: Print capabilities
-                - name: checker_pdf
-                  display: Print PDF
-                - name: checker_fts
-                  display: FullTextSearch
-                - name: checker_wmscapabilities
-                  display: WMS capabilities
-                - name: checker_wfscapabilities
-                  display: WFS capabilities
-            main:
-                - name: checker_main
-                  display: Main page
-                - name: checker_viewer
-                  display: Viewer script
-                - name: checker_printcapabilities
-                  display: Print capabilities
-                - name: checker_pdf
-                  display: Print PDF
-                - name: checker_api
-                  display: API
-                - name: checker_xapi
-                  display: Extended API
-                - name: checker_fts
-                  display: FullTextSearch
-                - name: checker_wmscapabilities
-                  display: WMS capabilities
-                - name: checker_wfscapabilities
-                  display: WFS capabilities
-            default: # for children
-                - name: checker_viewer
-                  display: Viewer script
-        hosts:
-            - display: geoportailv3
-              url: http://{host}/{instanceid}/wsgi
-              type: main
-    #        - display: Child:
-    #          url: http://{host}/child/wsgi
-
     #proxies:
     #    http: http://someproxy
 
@@ -286,9 +225,63 @@ vars:
         # Max number of features returned by a WFS GetFeature request:
         maxfeatures: 200
 
+    # Checker configuration
+    checker:
+        print_template: 1 A4 portrait
+        print_center_lon: to be defined
+        print_center_lat: to be defined
+        print_scale: 10000
+        fulltextsearch: text to search
+
+    # Check collector configuration
+    check_collector:
+        disabled: []
+        check_type:
+            all:
+            - name: checker_main
+              display: Main page
+            - name: checker_viewer
+              display: Viewer script
+            - name: checker_edit
+              display: Edit page
+            - name: checker_edit_js
+              display: Edit script
+            - name: checker_api
+              display: API
+            - name: checker_xapi
+              display: Extended API
+            - name: checker_printcapabilities
+              display: Print capabilities
+            - name: checker_pdf
+              display: Print PDF
+            - name: checker_fts
+              display: FullTextSearch
+            - name: checker_wmscapabilities
+              display: WMS capabilities
+            - name: checker_wfscapabilities
+              display: WFS capabilities
+            main:
+            - name: checker_main
+              display: Main page
+            - name: checker_viewer
+              display: Viewer script
+            - name: checker_api
+              display: API
+            - name: checker_printcapabilities
+              display: Print capabilities
+            - name: checker_fts
+              display: FullTextSearch
+            default: # for children
+            - name: checker_viewer
+              display: Viewer script
+        hosts:
+        - display: geoportailv3
+          url: http://{host}/{instanceid}/wsgi
+          type: main
+
 interpreted:
     python:
-    - authtkt_secret
+    - authtkt.secret
     - python_path
     environment:
     - instanceid

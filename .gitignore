@@ -13,9 +13,6 @@
 /project.yaml
 /*.egg-info/
 /geoportailv3/locale/*/LC_MESSAGES/*.mo
-/print/
-#/print/config.yaml
-#/print/templates/print.mako
 /geoportailv3/static/mobile/
 #/geoportailv3/static/mobile/resources/sass/.sass-cache
 #/geoportailv3/static/mobile/resources/css/app.css

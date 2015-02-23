@@ -4,11 +4,21 @@ This file includes migration steps for each release of c2cgeoportal.
 Version 1.6
 ===========
 
-1. Get the new files:
+1. Get the new and heavily modified files:
 
     .build/venv/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
 
     cp /tmp/geoportailv3/alembic.ini.in .
+    cp /tmp/geoportailv3/.jshintrc .
+    cp /tmp/geoportailv3/.gitignore .
+    cp /tmp/geoportailv3/geoportailv3.mk .
+    cp /tmp/geoportailv3/README.rst .
+    cp /tmp/geoportailv3/build.json .
+    cp /tmp/geoportailv3/lingua.cfg .
+    cp /tmp/geoportailv3/package.json .
+    cp /tmp/geoportailv3/development.ini.mako .
+    cp /tmp/geoportailv3/production.ini.mako .
+
     git add alembic.ini.in
 
     rm -rf /tmp/geoportailv3
@@ -16,37 +26,99 @@ Version 1.6
 2. Removes the deprecated files:
 
     git rm -r geoportailv3/CONST_migration
+    git rm -r geoportailv3/static/build
+    git rm config.yaml
+    git rm bootstrep.py
+    git rm -r *buildout*
+    git rm development.ini.in production.ini.in
+    git rm versions.cfg
 
-3. In the geoportailv3/__init__.py file do the following changes:
+3. Starting from version 1.6 we use a new build system based on Make that will change
+   many of your habits, information are given at:
+   http://docs.camptocamp.net/c2cgeoportal/1.6/integrator/make.html
+
+   Main things to do:
+   - Move your old `config.yaml` and your `vars` section of the old
+     `buildout.cfg` file to the new `geoportailv3.yaml` file.
+   - Move your special task from your old `buildout.cfg` file to your new
+     `geoportailv3.mk` file
+   - The `README.rst`, `.gitignore` files will be overwritten.
+     Please make sure to back your changes up before proceeding.
+   - The `development.ini.in`, `production.ini.in` files will be replaced by
+     the `development.ini.mako`, `production.ini.mako` files. If you lost
+     something it should probably be moved in the `geoportailv3.yaml` file.
+   - The `print/template/print.makoi.in` file should be moved to
+     `print.yaml.mako`.
+   - The build environments (`<user>.mk` files) must be recreated again.
+     For multi project mode have a look on the documentation:
+     http://docs.camptocamp.net/c2cgeoportal/master/integrator/create_application.html
+
+4. In the `setup.cfg` file you should remove all the `[compile_catalog]`,
+   `[extract_messages]`, `[init_catalog]`, `[update_catalog]` sections.
+
+5. In the `setup.py` file you should remove the `message_extractors`
+   argument.
+
+6. In the geoportailv3/__init__.py file do the following changes:
 
     -from c2cgeoportal import locale_negotiator
     +from c2cgeoportal import locale_negotiator, add_interface, INTERFACE_TYPE_SENCHA_TOUCH
 
-    -    mobile view configuration ...
-    +    add_interface(config)
-    +    add_interface(config, 'edit')
-    +    add_interface(config, 'routing')
-    +    add_interface(config, 'mobile', INTERFACE_TYPE_SENCHA_TOUCH)
+    - mobile view configuration ...
+    + add_interface(config)
+    + add_interface(config, 'edit')
+    + add_interface(config, 'routing')
+    + add_interface(config, 'mobile', INTERFACE_TYPE_SENCHA_TOUCH)
 
-4. In the mapfile add the following lines to all restricted layers:
+    Remove the activation of the static view (now done directly in c2cgeoportal):
+    - # add the main static view
+    - config.add_static_view(
+    -     name='proj',
+    -     path='geoportailv3:static',
+    -     cachebust=True,
+    - )
+
+    Remove the activation of the admin interface (now done directly in c2cgeoportal):
+    - if asbool(config.get_settings().get('enable_admin_interface')):
+    -   config.formalchemy_admin(
+    -     'admin', package='geoportailv3',
+    -     view='fa.jquery.pyramid.ModelView', factory=FAModels
+    -   )
+
+    Remove the activation of the checkers (now done directly in c2cgeoportal):
+    - config.add_route('checker_all', '/checker_all')
+
+7. In the `geoportailv3/templates/*.html` files you should do the following
+   changes:
+
+   - jsbuild_cfg = request.registry.settings.get('jsbuild_cfg')
+   - jsbuild_root_dir = request.registry.settings.get('jsbuild_root_dir')
+   + jsbuild_settings = request.registry.settings.get('jsbuild', {})
+   + jsbuild_cfg = jsbuild_settings.get('config')
+   + jsbuild_root_dir = jsbuild_settings.get('root_dir')
+
+   Remove the no more needed `_query=url_params` argument of the
+   `static_url` calls.
+
+8. In the mapfile add the following lines to all restricted layers:
 
     VALIDATION
         ${mapserver_layer_validation}
     END
 
-5. Remove the deprecated versioning table:
+9. Remove the deprecated versioning table:
 
     sudo -u postgres psql -c "DROP TABLE version_<schema>" <database>
 
-6. For non Apt/Dpkg based OS, disable the package checking:
-   In the ``buildout.cfg`` section ``[buildout]`` add:
+10. For non Apt/Dpkg based OS, disable the package checking:
+    In the ``buildout.cfg`` section ``[buildout]`` add:
 
         parts -=
             test-packages
             test-packages-mobile
             test-packages-tilecloud-chain
 
-7. In the `geoportailv3/templates/*.js` files do the following change:
+11. In the `geoportailv3/templates/*.js` files do the following change:
 
     -<% json_extent = user.role.json_extent if user else None %>
     -% if json_extent:
@@ -55,16 +127,31 @@ Version 1.6
     +% if bounds:
     +    var INITIAL_EXTENT = ${dumps(bounds)};
 
+12. In the `geoportailv3/static/mobile/config.js` add the following line at the top of the file:
+
+    +OpenLayers.ImgPath = "${request.static_url('geoportailv3:static/lib/cgxp/core/src/theme/img/ol/')}";
+
+Version 1.5.3
+=============
+
+1. At the end of the file `apache/frontend.conf.in` add:
+
+    <LocationMatch /${vars:instanceid}/tiles/>
+        Header add Access-Control-Allow-Origin "*"
+        Header merge Cache-Control "public"
+    </LocationMatch>
+
 
 Version 1.5.2
 =============
 
-1. In the geoportailv3/static/mobile/config.js file do the following change:
+1. In the ``geoportailv3/static/mobile/config.js`` file do the following change:
 
    -    App.WFSTypes = '${wfs_types | n}'.split(',');
    +    App.WFSTypes = jsonFormat.read('${dumps(wfs_types) | n}');
 
-2. In the <package>/templates/viewer.js and <package>/templates/edit.js files, for plugins ``cgxp_layertree`` and ``cgxp_login``,
+2. In the ``geoportailv3/templates/viewer.js`` and ``geoportailv3/templates/edit.js`` files,
+   for plugins ``cgxp_layertree`` and ``cgxp_login``, 
    add the ``events`` parameter:
 
         ...
@@ -89,7 +176,7 @@ Version 1.5.1
 
    cache_version = ${cache_version}
 
-2. In the ``viewer.js`` you should add the following configuration in the
+2. In the ``geoportailv3/templates/viewer.js`` you should add the following configuration in the
    ``cgxp_permalink`` plugin:
 
     shortenerCreateURL: "${request.route_url('shortener_create', path='')}",
