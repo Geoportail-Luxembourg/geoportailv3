@@ -19,6 +19,7 @@ The following must be installed on the system:
 * ``python-devel``
 * ``gcc``
 * ``npm``
+* ``openldap-devel`` (or ``libldap2-dev`` and ``libsasl2-dev`` on Debian)
 
 Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
 
