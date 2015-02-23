@@ -15,24 +15,22 @@ app.ShowLayerinfo;
 
 
 /**
- * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {angular.$http} $http Angular $http service
  * @param {angular.$sce} $sce Angular $sce service
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
  * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
-app.showLayerinfoFactory = function(gettextCatalog,
-                                    $http,
-                                    $sce,
-                                    ngeoCreatePopup) {
+app.showLayerinfoFactory = function($http, $sce, gettextCatalog,
+    ngeoCreatePopup) {
 
   /**
    * @type {ngeo.Popup}
    */
   var popup = ngeoCreatePopup();
   /**
-   * @type {Object.<!string, Object.<string, !angular.$q.Promise>>}
+   * @type {Object.<string, !angular.$q.Promise>}
    * @private
    */
   var promises_ = {};
@@ -50,13 +48,11 @@ app.showLayerinfoFactory = function(gettextCatalog,
         popup.setTitle(title);
         var currentLanguage = /** @type {string} */
             (gettextCatalog.currentLanguage);
+        var promiseKey = /** @type {string} */
+            (metadataUid + '##' + currentLanguage);
 
-        if (!(currentLanguage in promises_)) {
-          promises_[currentLanguage] = {};
-        }
-
-        if (!(metadataUid in promises_[currentLanguage])) {
-          promises_[currentLanguage][metadataUid] = $http.jsonp(
+        if (!(promiseKey in promises_)) {
+          promises_[promiseKey] = $http.jsonp(
               'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
               {params: {
                 'uid': metadataUid,
@@ -85,7 +81,7 @@ app.showLayerinfoFactory = function(gettextCatalog,
                   }));
         }
 
-        promises_[currentLanguage][metadataUid].then(
+        promises_[promiseKey].then(
             function(remoteMetadata) {
               showPopup(remoteMetadata);
             },
