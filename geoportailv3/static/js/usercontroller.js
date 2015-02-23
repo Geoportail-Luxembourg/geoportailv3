@@ -10,10 +10,10 @@ goog.require('app');
 
 
 /**
- * @param {angular.$http} $http Htpp.
- * @param {string} loginUrl the url to authenticate.
- * @param {string} logoutUrl the url to logout.
- * @param {string} getuserinfoUrl the url to get information about the user.
+ * @param {angular.$http} $http Angular http service.
+ * @param {string} loginUrl The application login URL.
+ * @param {string} logoutUrl The application logout URL.
+ * @param {string} getuserinfoUrl The url to get information about the user.
  * @constructor
  * @export
  * @ngInject
