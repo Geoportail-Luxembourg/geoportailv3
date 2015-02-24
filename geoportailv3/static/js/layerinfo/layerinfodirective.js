@@ -5,6 +5,7 @@ goog.require('app.ShowLayerinfo');
 
 
 /**
+ * @param {string} appLayerinfoTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
@@ -22,6 +23,7 @@ app.layerinfoDirective = function(appLayerinfoTemplateUrl) {
 };
 
 app.module.directive('appLayerinfo', app.layerinfoDirective);
+
 
 
 /**
