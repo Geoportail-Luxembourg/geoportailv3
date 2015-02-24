@@ -82,12 +82,15 @@ vars:
     # pyramid_closure configuration
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
     pyramid_closure:
+        global_prefix: ../../../../../../../../../../..
         roots:
         - "{closure_library_path}/closure/goog"
         roots_with_prefix:
-            ../../../../../../../../../proj/js: "{directory}/{package}/static/js"
-            ../../../../../../../../../node_modules/openlayers: "{directory}/node_modules/openlayers"
-            ../../../../../../../../../node_modules/ngeo/src: "{directory}/node_modules/ngeo/src"
+            geoportailv3:static/js:
+                root: "{directory}/{package}/static/js"
+                is_pyramid_static_view: true
+            /{instanceid}/wsgi/node_modules/openlayers: "{directory}/node_modules/openlayers"
+            /{instanceid}/wsgi/node_modules/ngeo/src: "{directory}/node_modules/ngeo/src"
 
     # used for the "node_modules" and "closure" static views
     node_modules_path: "{directory}/node_modules"
