@@ -7,6 +7,7 @@ goog.provide('app.ShowLayerinfo');
 
 goog.require('ngeo.CreatePopup');
 
+
 /**
  * @typedef {function(ol.layer.Layer)}
  */
@@ -17,6 +18,7 @@ app.ShowLayerinfo;
  * @param {angular.$http} $http Angular $http service
  * @param {angular.$sce} $sce Angular $sce service
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
+ * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
@@ -34,7 +36,7 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
       function(layer) {
         var title = /** @type {string} */ (layer.get('label'));
         popup.setTitle(title);
-        var content = $sce.trustAsHtml("<b>some</b> content");
+        var content = $sce.trustAsHtml('<b>some</b> content');
         popup.setContent(content);
         popup.setOpen(true);
       });
