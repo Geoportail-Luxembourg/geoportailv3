@@ -16,6 +16,7 @@ goog.provide('app.catalogDirective');
 
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
+goog.require('app.Themes');
 goog.require('ngeo.layertreeDirective');
 
 
@@ -44,20 +45,20 @@ app.module.directive('appCatalog', app.catalogDirective);
 
 /**
  * @constructor
- * @param {angular.$http} $http Angular http service.
- * @param {string} treeUrl Catalog tree URL.
+ * @param {app.Themes} appThemes Themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
  *     create layers from catalog nodes.
  * @export
  * @ngInject
  */
-app.CatalogController = function($http, treeUrl, appGetLayerForCatalogNode) {
-  $http.get(treeUrl).then(goog.bind(
+app.CatalogController = function(appThemes, appGetLayerForCatalogNode) {
+
+  appThemes.getThemeObject('main').then(goog.bind(
       /**
-       * @param {angular.$http.Response} resp Ajax response.
+       * @param {Object} tree Tree object for the theme.
        */
-      function(resp) {
-        this['tree'] = resp.data['items'][2];
+      function(tree) {
+        this['tree'] = tree;
       }, this));
 
   /**
