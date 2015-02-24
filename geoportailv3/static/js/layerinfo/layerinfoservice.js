@@ -36,7 +36,7 @@ app.showLayerinfoFactory = function($http, $sce, ngeoCreatePopup) {
         popup.setTitle(title);
         var content = $sce.trustAsHtml("<b>some</b> content");
         popup.setContent(content);
-        popup.show();
+        popup.setOpen(true);
       });
 };
 
