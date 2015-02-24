@@ -1,5 +1,6 @@
 INSTANCE_ID = pgiraud
 VARS_FILE = vars_${INSTANCE_ID}.yaml
+PRINT_OUTPUT = /tmp
 
 include geoportailv3.mk
 
