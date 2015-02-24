@@ -176,7 +176,7 @@ app.UserController.prototype.getUserInfo = function() {
  * @export
  */
 app.UserController.prototype.isAuthenticated = function() {
-  if (this['login'] != null && this['login'].length > 0) {
+  if (!goog.isNull(this['login']) && this['login'].length > 0) {
     return true;
   }
   return false;
