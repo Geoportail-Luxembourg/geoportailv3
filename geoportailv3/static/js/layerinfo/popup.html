@@ -5,18 +5,18 @@
 <div class="popover-content">
 
 <dl>
-  <dt ng-if="content.name.length>0" translate>Nom</dt><dd ng-bind="content.name"></dd>
-  <dt ng-if="content.description.length>0" translate>Description</dt>
+  <dt ng-if="content.layerMetadata.name.length>0" translate>Nom</dt><dd ng-bind="content.layerMetadata.name"></dd>
+  <dt ng-if="content.layerMetadata.description.length>0" translate>Description</dt>
   <dd>
-      <span ng-if="content.description.length>220 && content.is_short_desc == true" ng-bind="content.description | limitTo:220"></span><a ng-if="content.description.length>220 && content.is_short_desc" ng-click="content.is_short_desc=false">...</a>
-      <span ng-if="content.description.length<=220 || !content.is_short_desc" ng-bind="content.description"></span><a ng-if="content.description.length>220 && !content.is_short_desc" ng-click="content.is_short_desc=true">-</a>
+      <span ng-if="content.layerMetadata.description.length>220 && content.isShortDesc == true" ng-bind="content.layerMetadata.description | limitTo:220"></span><a ng-if="content.layerMetadata.description.length>220 && content.isShortDesc" ng-click="content.isShortDesc=false">...</a>
+      <span ng-if="content.layerMetadata.description.length<=220 || !content.isShortDesc" ng-bind="content.layerMetadata.description"></span><a ng-if="content.layerMetadata.description.length>220 && !content.isShortDesc" ng-click="content.isShortDesc=true">-</a>
   </dd>
-  
-  
-  <dt ng-if="content.revisionDate.length>0" translate>Date de révision</dt><dd ng-bind="content.revisionDate"></dd>
-  <dt ng-if="content.keywords.length>0" translate>Mots clé</dt><dd ng-bind="content.keywords"></dd>
-  <dt ng-if="content.pocs.length>0" translate>Contact</dt>
-  <dd ng-repeat="poc in content.pocs">
+
+
+  <dt ng-if="content.layerMetadata.revisionDate.length>0" translate>Date de révision</dt><dd ng-bind="content.layerMetadata.revisionDate"></dd>
+  <dt ng-if="content.layerMetadata.keywords.length>0" translate>Mots clé</dt><dd ng-bind="content.layerMetadata.keywords"></dd>
+  <dt ng-if="content.layerMetadata.pocs.length>0" translate>Contact</dt>
+  <dd ng-repeat="poc in content.layerMetadata.pocs">
     <p ng-if="poc.organisation.length>0" ng-bind="poc.organisation"></p>
     <p ng-if="poc.name.length>0" ng-bind="poc.name"></p>
     <p ng-if="poc.deliverypoint.length>0" ng-bind="poc.deliverypoint"></p>
@@ -31,9 +31,9 @@
       </a>
   </dd>
 </dl>
-<p ng-if="content.is_error" translate>La métadonnée de cette couche est momentanément indisponible</p>
+<p ng-if="content.isError" translate>La métadonnée de cette couche est momentanément indisponible</p>
 <h4 translate>Légende</h4>
-<iframe ng-if="content.has_legend" width="100%" height="300" frameborder="0" ng-src="{{content.legend_url}}">
+<iframe ng-if="content.hasLegend" width="100%" height="300" frameborder="0" ng-src="{{content.legendUrl}}">
 </iframe>
-<p ng-if="!content.has_legend" translate>Il n'y a pas de légende pour cette couche</p>
+<p ng-if="!content.hasLegend" translate>Il n'y a pas de légende pour cette couche</p>
 </div>
