@@ -51,7 +51,7 @@ app.UserController = function($http, loginUrl, logoutUrl, getuserinfoUrl) {
    * @type {angular.$http}
    * @private
    */
-  this['http_'] = $http;
+  this.http_ = $http;
 
   /**
    * @type {string}
@@ -96,24 +96,22 @@ app.UserController = function($http, loginUrl, logoutUrl, getuserinfoUrl) {
 app.UserController.prototype.authenticate = function(credentials) {
 
   var that = this;
-  this['http_']({
-    method: 'POST',
-    url: this.loginUrl_,
-    data: $.param({
-      'login': credentials['login'],
-      'password': credentials['password']
-    }),
+  var req = $.param({
+    'login': credentials['login'],
+    'password': credentials['password']
+  });
+  var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  }).success(function(data, status, headers, config) {
-
-    if (status == 200) {
-      that.getUserInfo();
-      that['isError'] = false;
-    }else {
-      that['isError'] = true;
-    }
-
-  }). error(function(data, status, headers, config) {
+  };
+  this.http_.post(this.loginUrl_, req, config).success(
+      function(data, status, headers, config) {
+        if (status == 200) {
+          that.getUserInfo();
+          that['isError'] = false;
+        }else {
+          that['isError'] = true;
+        }
+      }). error(function(data, status, headers, config) {
     that['isError'] = true;
   });
 };
@@ -124,19 +122,20 @@ app.UserController.prototype.authenticate = function(credentials) {
  */
 app.UserController.prototype.logout = function() {
   var that = this;
-  this['http_']({
-    method: 'POST',
-    url: this.logoutUrl_,
+  var req = {};
+  var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  }).success(function(data, status, headers, config) {
-    if (status == 200) {
-      that.getUserInfo();
-      that['isError'] = false;
-    }else {
-      that.getUserInfo();
-      that['isError'] = true;
-    }
-  }). error(function(data, status, headers, config) {
+  };
+  this.http_.post(this.logoutUrl_, req, config).success(
+      function(data, status, headers, config) {
+        if (status == 200) {
+          that.getUserInfo();
+          that['isError'] = false;
+        }else {
+          that.getUserInfo();
+          that['isError'] = true;
+        }
+      }). error(function(data, status, headers, config) {
     that.getUserInfo();
     that['isError'] = true;
   });
@@ -148,24 +147,26 @@ app.UserController.prototype.logout = function() {
  */
 app.UserController.prototype.getUserInfo = function() {
   var that = this;
-  this['http_']({
-    method: 'POST',
-    url: this.getuserinfoUrl_
-  }).success(function(data, status, headers, config) {
+  var req = {};
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
 
-    if (status == 200) {
-      that.setUserInfo(
-          data['login'],
-          data['role'],
-          data['role_id'],
-          data['mail'],
-          data['sn']
-      );
-    }else {
-      that.setUserInfo(null, null, null, null, null);
-    }
+  this.http_.post(this.getuserinfoUrl_, req, config).success(
+      function(data, status, headers, config) {
+        if (status == 200) {
+          that.setUserInfo(
+              data['login'],
+              data['role'],
+              data['role_id'],
+              data['mail'],
+              data['sn']
+          );
+        }else {
+          that.setUserInfo(null, null, null, null, null);
+        }
 
-  }).error(function(data, status, headers, config) {
+      }).error(function(data, status, headers, config) {
     that.setUserInfo(null, null, null, null, null);
   });
 };
