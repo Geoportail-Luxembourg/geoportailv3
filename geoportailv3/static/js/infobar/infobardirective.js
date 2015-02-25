@@ -41,7 +41,7 @@ app.module.directive('appInfobar', app.infobarDirective);
  * @ngInject
  * @constructor
  */
-app.InfobarDirectiveController = function($scope, $document) {
+app.InfobarDirectiveController = function() {
 };
 
 
