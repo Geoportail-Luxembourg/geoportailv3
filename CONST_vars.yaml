@@ -79,21 +79,18 @@ vars:
         config: "{directory}/jsbuild/app.cfg"
         root_dir: "{directory}"
 
+    # used for the "node_modules" and "closure" static views
+    node_modules_path: "{package}:node_modules"
     # pyramid_closure configuration
-    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
+    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath().replace(process.cwd() + "/", "{package}:"))'
     pyramid_closure:
-        global_prefix: ../../../../../../../../../../..
         roots:
         - "{closure_library_path}/closure/goog"
         roots_with_prefix:
-            geoportailv3:static/js:
-                root: "{directory}/{package}/static/js"
-                is_pyramid_static_view: true
-            /{instanceid}/wsgi/node_modules/openlayers: "{directory}/node_modules/openlayers"
-            /{instanceid}/wsgi/node_modules/ngeo/src: "{directory}/node_modules/ngeo/src"
+            ../../../../../../../../project/js: "{directory}/{package}/static/js"
+            ../../../../../../../../openlayers: "{directory}/node_modules/openlayers"
+            ../../../../../../../../ngeo/src: "{directory}/node_modules/ngeo/src"
 
-    # used for the "node_modules" and "closure" static views
-    node_modules_path: "{directory}/node_modules"
 
     # The application's default language. This is the language used by
     # the application if no specific language is specified in the URLs.
@@ -291,5 +288,9 @@ interpreted:
     - development
     bash:
     - directory
+    node:
+        vars:
+        - closure_library_path
+        cmd: ["node", "-e"]
     yaml:
     - directory # to trim

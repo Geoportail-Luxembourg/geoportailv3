@@ -26,9 +26,6 @@ vars:
     search_host: workshop3-local.geoportal.lu:9200
     search_index: index
 
-    # closure paths
-    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
-
     servers:
         my_maps: http://ws.geoportail.lu/mymaps
 
@@ -69,12 +66,6 @@ vars:
         - checker_wfscapabilities
         # actually don't works for MapFish Print v3
         - checker_printcapabilities
-
-interpreted:
-    node:
-        vars:
-        - closure_library_path
-        cmd: ["node", "-e"]
 
 update_paths:
 - check_collector.hosts

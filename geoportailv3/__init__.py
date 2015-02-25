@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.config import Configurator
-from c2cgeoportal import locale_negotiator, \
+from c2cgeoportal import locale_negotiator, add_static_view, \
     add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
     set_user_validator
 from c2cgeoportal.lib.authentication import create_authentication
@@ -54,4 +54,7 @@ def main(global_config, **settings):
 
     config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/wms')
+
+    add_static_view(config)
+
     return config.make_wsgi_app()
