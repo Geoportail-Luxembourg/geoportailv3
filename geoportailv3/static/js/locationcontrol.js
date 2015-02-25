@@ -34,13 +34,15 @@ app.LocationControl = function(opt_options) {
   var options = goog.isDef(opt_options) ? opt_options : {};
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
+
   /**
-   * @type {?ol.Geolocation}
+   * @type {ol.Geolocation}
    * @private
    */
   this.geolocation_ = null;
+
   /**
-   * @type {?ol.FeatureOverlay}
+   * @type {ol.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = null;
