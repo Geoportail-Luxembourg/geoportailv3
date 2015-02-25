@@ -43,7 +43,7 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @export
  * @constructor
  */
-app.ProjectionselectorDirectiveController = function($scope, $document) {
+app.ProjectionselectorDirectiveController = function($document) {
   this['projectionOptions'] = [
     {'label': 'LUREF', 'value': 'EPSG:2169'},
     {'label': 'Long/Lat WGS84', 'value': 'EPSG:4326'},
@@ -109,7 +109,6 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection = function(
     projection = ol.proj.get(this['projection']['value']);
   }
   var widget = this.mouseposition;
-  console.log(projection);
   widget.setProjection(projection);
   widget.setCoordinateFormat(
       /** @type {ol.CoordinateFormatType} */ (goog.bind(function(coord) {
