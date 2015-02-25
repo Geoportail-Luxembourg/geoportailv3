@@ -10,7 +10,6 @@
 goog.provide('app_main');
 
 goog.require('app.MainController');
-goog.require('app.UserController');
 goog.require('app.authenticationDirective');
 goog.require('app.backgroundlayerDirective');
 goog.require('app.catalogDirective');
