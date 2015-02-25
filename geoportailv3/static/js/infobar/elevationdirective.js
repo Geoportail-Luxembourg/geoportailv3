@@ -31,7 +31,7 @@ app.elevationDirective = function() {
     controllerAs: 'ctrl',
     bindToController: true,
     template: '<span class="elevation" translate>' +
-                'Elevation: {{elevation}} m</span>'
+        'Elevation: {{ctrl.elevation}} m</span>'
   };
 };
 
@@ -44,24 +44,22 @@ app.module.directive('appElevation', app.elevationDirective);
  * @ngInject
  * @constructor
  */
-app.ElevationDirectiveController = function($scope, $http, ngeoDebounce) {
+app.ElevationDirectiveController = function($http, ngeoDebounce) {
+  var that = this;
   this['map'].on('pointermove',
-      ngeoDebounce(function(e) {
+      ngeoDebounce(
+      function(e) {
         var lonlat = /** @type {ol.Coordinate} */
-            (ol.proj.transform(e.coordinate,
+                (ol.proj.transform(e.coordinate,
                    this.getView().getProjection(), 'EPSG:2169'));
-        $http({
-          url: 'raster',
-          method: 'GET',
-          params: {'lon': lonlat[0], 'lat': lonlat[1]}
-        }).
-            success(function(data) {
-              if (data['dhm'] > 0) {
-                $scope['elevation'] = parseInt(data['dhm'] / 100 , 0);
-              } else {
-                $scope['elevation'] = 'N/A';
-              }
-            });
+            $http({
+              url: 'raster',
+              method: 'GET',
+              params: {'lon': lonlat[0], 'lat': lonlat[1]}
+            }).
+            success(goog.bind(function(data) {
+              this['elevation'] = data['dhm'] > 0 ? parseInt(data['dhm'] / 100, 0) : 'N/A';
+            }, that));
       }, 300, true));
 };
 
