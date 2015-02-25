@@ -142,24 +142,7 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom"
-              ng-controller="AppMeasureController as measureCtrl">
-            <li ng-class="{active: measureCtrl.measureLength.active}">
-              <a href translate ngeo-btn
-                 ng-model="measureCtrl.measureLength.active">Length</a>
-            </li>
-            <li ng-class="{active: measureCtrl.measureArea.active}">
-              <a href translate ngeo-btn
-                 ng-model="measureCtrl.measureArea.active">Surface</a>
-            </li>
-            <li ng-class="{active: measureCtrl.measureAzimut.active}">
-              <a href translate ngeo-btn
-                 ng-model="measureCtrl.measureAzimut.active">Azimut</a>
-            </li>
-            <li>
-              <a href translate>Profile</a>
-            </li>
-          </ul>
+          <app-measure app-measure-map="::mainCtrl.map"></app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
@@ -213,6 +196,7 @@
 
          appModule.value('appBackgroundlayerTemplateUrl', '${request.static_url('geoportailv3:static/js/backgroundlayer/backgroundlayer.html')}');
          appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
+         appModule.value('appMeasureTemplateUrl', '${request.static_url('geoportailv3:static/js/measure/measure.html')}');
          appModule.value('appLayerinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/layerinfo.html')}');
          appModule.value('appAuthenticationTemplateUrl', '${request.static_url('geoportailv3:static/js/authentication/authentication.html')}');
        })();
