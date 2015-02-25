@@ -43,7 +43,7 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
   var currentLayer = null;
 
   $rootScope.$on('gettextLanguageChanged', function() {
-    if (!goog.isNull(currentLayer)) {
+    if (!goog.isNull(currentLayer) && popup.getOpen()) {
       showLayerInfo(currentLayer);
     }
   });
@@ -116,8 +116,8 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
      */
     function showPopup(content) {
       popup.setContent(content);
-      popup.show();
-    };
+      popup.setOpen(true);
+    }
 
   }
 };
