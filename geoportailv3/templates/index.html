@@ -209,7 +209,12 @@
     <script>
       (function() {
          var appModule = angular.module('app');
-         appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
+         appModule.constant('langUrls', {
+           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
+           'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
+           'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
+           'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
+         });
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop' })}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");

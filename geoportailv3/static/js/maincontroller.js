@@ -26,14 +26,14 @@ goog.require('ol.tilegrid.WMTS');
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {string} langUrlTemplate Language URL template.
+ * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @constructor
  * @export
  * @ngInject
  */
-app.MainController = function($scope, gettextCatalog, langUrlTemplate, 
-        defaultExtent) {
+app.MainController = function($scope, gettextCatalog, langUrls,
+    defaultExtent) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -42,10 +42,10 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   this.gettextCatalog_ = gettextCatalog;
 
   /**
-   * @type {string}
+   * @type {Object.<string, string>}
    * @private
    */
-  this.langUrlTemplate_ = langUrlTemplate;
+  this.langUrls_ = langUrls;
 
   /**
    * @type {Array.<number>}
@@ -177,9 +177,9 @@ app.MainController.prototype.sidebarOpen = function() {
  * @export
  */
 app.MainController.prototype.switchLanguage = function(lang) {
+  goog.asserts.assert(lang in this.langUrls_);
   this.gettextCatalog_.setCurrentLanguage(lang);
-  this.gettextCatalog_.loadRemote(
-      this.langUrlTemplate_.replace('__lang__', lang));
+  this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
 };
 
