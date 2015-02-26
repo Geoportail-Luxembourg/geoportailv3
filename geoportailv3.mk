@@ -17,6 +17,8 @@ DISABLE_BUILD_RULES = test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
 
+UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
+
 include CONST_Makefile
 
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
