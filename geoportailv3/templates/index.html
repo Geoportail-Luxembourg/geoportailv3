@@ -187,6 +187,13 @@
       </ul>
     </footer>
 % if debug:
+    <script>
+      // We should really use the empty string for CLOSURE_BASE_PATH for there
+      // is a bug in Closure Library preventing us from doing it. See
+      // <https://github.com/google/closure-library/pull/418>.
+      window.CLOSURE_BASE_PATH = ' ';
+      window.CLOSURE_NO_DEPS = true;
+    </script>
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
