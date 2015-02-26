@@ -43,6 +43,8 @@ app.module.directive('appElevation', app.elevationDirective);
 /**
  * @ngInject
  * @constructor
+ * @param {angular.$http} $http
+ * @param {ngeo.Debounce} ngeoDebounce
  */
 app.ElevationDirectiveController = function($http, ngeoDebounce) {
   var that = this;
@@ -58,7 +60,8 @@ app.ElevationDirectiveController = function($http, ngeoDebounce) {
               params: {'lon': lonlat[0], 'lat': lonlat[1]}
             }).
             success(goog.bind(function(data) {
-              this['elevation'] = data['dhm'] > 0 ? parseInt(data['dhm'] / 100, 0) : 'N/A';
+              this['elevation'] = data['dhm'] > 0 ?
+                  parseInt(data['dhm'] / 100, 0) : 'N/A';
             }, that));
       }, 300, true));
 };

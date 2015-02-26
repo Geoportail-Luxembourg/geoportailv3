@@ -18,8 +18,6 @@ goog.require('app.infobarDirective');
 goog.require('app.layerinfoDirective');
 goog.require('app.layermanagerDirective');
 goog.require('app.measureDirective');
-goog.require('app.scalelineDirective');
-goog.require('app.infobarDirective');
 goog.require('app.projections');
 goog.require('app.projectionselectorDirective');
 goog.require('app.scalelineDirective');

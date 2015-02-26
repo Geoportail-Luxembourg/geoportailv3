@@ -155,7 +155,6 @@
       </ul>
     </footer>
 % if debug:
-<<<<<<< HEAD
     <script>
       // We should really use the empty string for CLOSURE_BASE_PATH for there
       // is a bug in Closure Library preventing us from doing it. See
@@ -163,9 +162,7 @@
       window.CLOSURE_BASE_PATH = ' ';
       window.CLOSURE_NO_DEPS = true;
     </script>
-=======
     <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
->>>>>>> resolved proj4 library issues and small improvements of code
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>

@@ -1,9 +1,11 @@
 /**
- * @fileoverview This file provides a "projectionselector" directive. This directive is
- * used to insert an Projection Selector and Coordinate Display into the HTML page.
+ * @fileoverview This file provides a "projectionselector" directive
+ * This directive is used to insert an Projection Selector and
+ * Coordinate Display into the HTML page.
  * Example:
  *
- * <app-projectionselector app-projectionselector-map="::mainCtrl.map" ></app-projectionselector>
+ * <app-projectionselector app-projectionselector-map="::mainCtrl.map" >
+ * </app-projectionselector>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -18,6 +20,7 @@ goog.require('ol.control.MousePosition');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
+ * @param {string} appProjectionselectorTemplateUrl
  * @ngInject
  */
 app.projectionselectorDirective = function(appProjectionselectorTemplateUrl) {
@@ -42,6 +45,7 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @ngInject
  * @export
  * @constructor
+ * @param {Object} $document
  */
 app.ProjectionselectorDirectiveController = function($document) {
   this['projectionOptions'] = [
@@ -54,9 +58,11 @@ app.ProjectionselectorDirectiveController = function($document) {
     className: 'custom-mouse-coordinates',
     target: $document.find('.mouse-coordinates')[0],
     projection: this.projection['value'],
-    coordinateFormat: /** @type {ol.CoordinateFormatType} */ (goog.bind(function(coord) {
-      return this.coordFormat_(coord, this['projection']['value']);
-    }, this))
+    coordinateFormat: /** @type {ol.CoordinateFormatType} */
+        (goog.bind(function(coord) {
+          return this.coordFormat_(coord, this['projection']['value']);
+        }, this)
+        )
   });
   this.map.addControl(this.mouseposition);
 };
@@ -64,18 +70,29 @@ app.ProjectionselectorDirectiveController = function($document) {
 
 /**
  * @private
+ * @param {Array} coord
+ * @return {string}
  */
-app.ProjectionselectorDirectiveController.prototype.utmZoneCheck_ = function(coord) {
-  var lonlat = /** @type {ol.Coordinate} */ (ol.proj.transform(coord, this.mouseposition.getProjection() , 'EPSG:4326'));
+app.ProjectionselectorDirectiveController.prototype.utmZoneCheck_ =
+    function(coord) {
+  var lonlat = /** @type {ol.Coordinate} */
+      (ol.proj.transform(coord,
+                         this.mouseposition.getProjection() ,
+                         'EPSG:4326')
+      );
   return Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
 };
 
 
 /**
  * @private
+ * @param {Array} coord
+ * @param {string} epsg_code
+ * @return {string}
  */
-app.ProjectionselectorDirectiveController.prototype.coordFormat_ = function(coord, epsg_code)
-    {
+app.ProjectionselectorDirectiveController.prototype.coordFormat_ =
+    function(coord, epsg_code) {
+  var str = '';
   if (epsg_code === 'EPSG:3263*') {
     var projection = ol.proj.get(this.utmZoneCheck_(coord));
     this.mouseposition.setProjection(projection);
@@ -83,25 +100,31 @@ app.ProjectionselectorDirectiveController.prototype.coordFormat_ = function(coor
   }
   switch (epsg_code) {
     case 'EPSG:2169':
-      return ol.coordinate.format(coord, '{x} E | {y} N', 0);
+      str = ol.coordinate.format(coord, '{x} E | {y} N', 0);
+      break;
     case 'EPSG:4326':
       var hdms = ol.coordinate.toStringHDMS(coord);
       var yhdms = hdms.split(' ').slice(0, 4).join(' ');
       var xhdms = hdms.split(' ').slice(4, 8).join(' ');
       var template = xhdms + ' ({x}) | ' + yhdms + ' ({y})';
-      return ol.coordinate.format(coord, template, 5);
+      str = ol.coordinate.format(coord, template, 5);
+      break;
     case 'EPSG:32632':
-      return ol.coordinate.format(coord, '{x} | {y} (UTM32N)', 0);
+      str = ol.coordinate.format(coord, '{x} | {y} (UTM32N)', 0);
+      break;
     case 'EPSG:32631':
-      return ol.coordinate.format(coord, '{x} | {y} (UTM31N)', 0);
+      str = ol.coordinate.format(coord, '{x} | {y} (UTM31N)', 0);
+      break;
   }
+  return str;
 };
 
 
 /**
  * @export
  */
-app.ProjectionselectorDirectiveController.prototype.switchProjection = function() {
+app.ProjectionselectorDirectiveController.prototype.switchProjection =
+    function() {
   var projection = null;
   if (this['projection']['value'] === 'EPSG:3263*') {
     projection = ol.proj.get('EPSG:32632');

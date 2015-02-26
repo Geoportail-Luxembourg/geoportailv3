@@ -17,6 +17,7 @@ goog.require('ol.control.MousePosition');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
+ * @param { string } appInfobarTemplateUrl
  * @ngInject
  */
 app.infobarDirective = function(appInfobarTemplateUrl) {
