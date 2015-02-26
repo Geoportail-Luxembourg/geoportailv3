@@ -187,6 +187,13 @@
       </ul>
     </footer>
 % if debug:
+    <script>
+      // We should really use the empty string for CLOSURE_BASE_PATH for there
+      // is a bug in Closure Library preventing us from doing it. See
+      // <https://github.com/google/closure-library/pull/418>.
+      window.CLOSURE_BASE_PATH = ' ';
+      window.CLOSURE_NO_DEPS = true;
+    </script>
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
@@ -202,7 +209,12 @@
     <script>
       (function() {
          var appModule = angular.module('app');
-         appModule.constant('langUrlTemplate', '${request.static_url('geoportailv3:static/build/locale/__lang__/geoportailv3.json')}');
+         appModule.constant('langUrls', {
+           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
+           'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
+           'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
+           'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
+         });
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop' })}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
