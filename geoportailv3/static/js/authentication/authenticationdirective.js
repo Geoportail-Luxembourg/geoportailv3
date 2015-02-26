@@ -12,7 +12,7 @@ app.authenticationDirective = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
     controller: 'AppAuthenticationController',
-    controllerAs: 'userCtrl',
+    controllerAs: 'ctrl',
     bindToController: true,
     templateUrl: appAuthenticationTemplateUrl
   };
@@ -124,7 +124,7 @@ app.AuthenticationController.prototype.authenticate = function(credentials) {
         }else {
           that['isError'] = true;
         }
-      }). error(function(data, status, headers, config) {
+      }).error(function(data, status, headers, config) {
     that['isError'] = true;
   });
 };
@@ -148,7 +148,7 @@ app.AuthenticationController.prototype.logout = function() {
           that.getUserInfo();
           that['isError'] = true;
         }
-      }). error(function(data, status, headers, config) {
+      }).error(function(data, status, headers, config) {
     that.getUserInfo();
     that['isError'] = true;
   });
@@ -190,7 +190,7 @@ app.AuthenticationController.prototype.getUserInfo = function() {
  * @export
  */
 app.AuthenticationController.prototype.isAuthenticated = function() {
-  if (!goog.isNull(this['login']) && this['login'].length > 0) {
+  if (goog.isDefAndNotNull(this['login']) && this['login'].length > 0) {
     return true;
   }
   return false;

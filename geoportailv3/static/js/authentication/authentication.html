@@ -1,30 +1,30 @@
 ﻿<div class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
-    <p class="menu-title" translate>Mon Compte</p>
-    <form ng-if="!userCtrl.isAuthenticated()" ng-submit="userCtrl.authenticate(userCtrl.credentials)">
+    <p class="menu-title" translate>My account</p>
+    <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate(ctrl.credentials)">
         <fieldset>
             <legend class="tab tab-account active" >Login</legend>
             
             <div class="account-content">
-                <input type="text" ng-model="userCtrl.credentials.login" placeholder="Nom" />
-                <input type="password" ng-model="userCtrl.credentials.password" placeholder="Mot de passe" />
+                <input type="text" ng-model="ctrl.credentials.login" placeholder="Login" />
+                <input type="password" ng-model="ctrl.credentials.password" placeholder="Password" />
                 <input type="submit" value="Envoyer"/>
                 <div class="clearfix">
-                    <div ng-if="userCtrl.hasError()" translate><p>La combinaison login mot de passe est invalide</p></div>
-                    <p><a href="#" translate>Mot de passe oublié</a></p>
-                    <p><a href="#" translate>Pas encore membre ?</a></p>
+                    <div ng-if="ctrl.hasError()" translate><p>Invalid login or password</p></div>
+                    <p><a href="#" translate>I lost my password</a></p>
+                    <p><a href="#" translate>I want to create a new user account</a></p>
                 </div>
             </div>
         </fieldset>
     </form>
-    <form ng-if="userCtrl.isAuthenticated()" ng-submit="userCtrl.logout()">
+    <form ng-if="ctrl.isAuthenticated()" ng-submit="ctrl.logout()">
         <fieldset>
             <legend class="tab tab-account active" translate>Login</legend>
             <div class="account-content">
                 <ul>
-                    <li><p>{{userCtrl.login}}</p></li>
-                    <li><p>{{userCtrl.mail}}</p></li>
-                    <li><a translate>Mon compte</a></li>
-                    <li><a ng-click="userCtrl.logout()" translate>Logout</a></li>
+                    <li><p>{{ctrl.login}}</p></li>
+                    <li><p>{{ctrl.mail}}</p></li>
+                    <li><a translate>My account</a></li>
+                    <li><a ng-click="ctrl.logout()" translate>Logout</a></li>
                 </ul>
             </div>
         </fieldset>
