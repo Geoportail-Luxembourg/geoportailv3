@@ -170,9 +170,9 @@ app.LocationControl.prototype.initFeatureOverlay_ = function() {
  * @private
  */
 app.LocationControl.prototype.clearFeatureOverlay_ = function() {
-  if (this.featureOverlay_ != null) {
+  if (!goog.isNull(this.featureOverlay_)) {
     var features = this.featureOverlay_.getFeatures();
-    if (features != null) {
+    if (!goog.isNull(features)) {
       features.clear();
     }
   }
