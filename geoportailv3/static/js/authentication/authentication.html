@@ -1,0 +1,32 @@
+﻿<div class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
+    <p class="menu-title" translate>My account</p>
+    <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate(ctrl.credentials)">
+        <fieldset>
+            <legend class="tab tab-account active" >Login</legend>
+            
+            <div class="account-content">
+                <input type="text" ng-model="ctrl.credentials.login" placeholder="Login" />
+                <input type="password" ng-model="ctrl.credentials.password" placeholder="Password" />
+                <input type="submit" value="Envoyer"/>
+                <div class="clearfix">
+                    <div ng-if="ctrl.hasError()" translate><p>Invalid login or password</p></div>
+                    <p><a href="#" translate>I lost my password</a></p>
+                    <p><a href="#" translate>I want to create a new user account</a></p>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <form ng-if="ctrl.isAuthenticated()" ng-submit="ctrl.logout()">
+        <fieldset>
+            <legend class="tab tab-account active" translate>Login</legend>
+            <div class="account-content">
+                <ul>
+                    <li><p>{{ctrl.login}}</p></li>
+                    <li><p>{{ctrl.mail}}</p></li>
+                    <li><a translate>My account</a></li>
+                    <li><a ng-click="ctrl.logout()" translate>Logout</a></li>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
+<div>
