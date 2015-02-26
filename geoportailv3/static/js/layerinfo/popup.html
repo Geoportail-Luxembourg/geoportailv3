@@ -5,7 +5,7 @@
 <div class="popover-content">
 
 <dl>
-  <dt ng-if="content.layerMetadata.name.length>0" translate>Nom</dt><dd ng-bind="content.layerMetadata.name"></dd>
+  <dt ng-if="content.layerMetadata.name.length>0" translate>Name</dt><dd ng-bind="content.layerMetadata.name"></dd>
   <dt ng-if="content.layerMetadata.description.length>0" translate>Description</dt>
   <dd>
       <span ng-if="content.layerMetadata.description.length>220 && content.isShortDesc == true" ng-bind="content.layerMetadata.description | limitTo:220"></span><a ng-if="content.layerMetadata.description.length>220 && content.isShortDesc" ng-click="content.isShortDesc=false">...</a>
@@ -13,8 +13,8 @@
   </dd>
 
 
-  <dt ng-if="content.layerMetadata.revisionDate.length>0" translate>Date de révision</dt><dd ng-bind="content.layerMetadata.revisionDate"></dd>
-  <dt ng-if="content.layerMetadata.keywords.length>0" translate>Mots clé</dt><dd ng-bind="content.layerMetadata.keywords"></dd>
+  <dt ng-if="content.layerMetadata.revisionDate.length>0" translate>Revision date</dt><dd ng-bind="content.layerMetadata.revisionDate"></dd>
+  <dt ng-if="content.layerMetadata.keywords.length>0" translate>Keywords</dt><dd ng-bind="content.layerMetadata.keywords"></dd>
   <dt ng-if="content.layerMetadata.pocs.length>0" translate>Contact</dt>
   <dd ng-repeat="poc in content.layerMetadata.pocs">
     <p ng-if="poc.organisation.length>0" ng-bind="poc.organisation"></p>
@@ -24,16 +24,16 @@
     <p ng-if="poc.phone.length>0" ng-bind="poc.phone"></p>
     <a ng-if="poc.email.length>0" ng-href="mailto:{{poc.email}}">{{poc.email}}</a>
   </dd>
-  <dt ng-if="content.uid.length>0" translate>Métadonnée complète</dt>
+  <dt ng-if="content.uid.length>0" translate>Link to the metadata</dt>
   <dd ng-if="content.uid.length>0"><a target ="_blank" 
          href="https://www.geoportail.lu/Portail/menuAction.do?lang=fr&dispatch=load&menuToLoad=inspireViewMetadataExt&uid={{content.uid}}">
       link
       </a>
   </dd>
 </dl>
-<p ng-if="content.isError" translate>La métadonnée de cette couche est momentanément indisponible</p>
-<h4 translate>Légende</h4>
+<p ng-if="content.isError" translate>The metadata is right now not available</p>
+<h4 translate>Legend</h4>
 <iframe ng-if="content.hasLegend" width="100%" height="300" frameborder="0" ng-src="{{content.legendUrl}}">
 </iframe>
-<p ng-if="!content.hasLegend" translate>Il n'y a pas de légende pour cette couche</p>
+<p ng-if="!content.hasLegend" translate>The legend is not available for this layer</p>
 </div>
