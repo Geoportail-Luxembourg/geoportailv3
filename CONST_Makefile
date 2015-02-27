@@ -251,6 +251,9 @@ help:
 	@echo "- update					Update the project (GIT, node, pip)"
 	@echo "- update-git-submodules	Update the GIT submodules"
 	@echo "- update-node-modules	Update node modules (using --force)"
+ifdef UTILITY_HELP
+	@echo $(UTILITY_HELP)
+endif
 	@echo
 	@echo "Secondary targets:"
 	@echo
@@ -261,6 +264,9 @@ help:
 	@echo "- compile-py-catalog		Compile the angular translation catalog"
 	@echo "- flake8					Run flake8 checker on the Python code"
 	@echo "- lint-ngeo				Check the JavaScript code with linters for ngeo"
+ifdef SECONDARY_HELP
+	@echo $(SECONDARY_HELP)
+endif
 	@echo
 
 .PHONY: build
