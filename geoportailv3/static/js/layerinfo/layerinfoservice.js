@@ -14,14 +14,12 @@ goog.require('ngeo.CreatePopup');
 app.ShowLayerinfo;
 
 
-
 /**
  * @param {angular.$http} $http Angular $http service
  * @param {angular.$sce} $sce Angular $sce service
- * @param {angular.Scope} $rootScope The rootScope provider.
+ * @param {angular.Scope} $rootScope The root Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
- * @constructor
  * @ngInject
  */
 app.showLayerinfoFactory = function($http, $sce, $rootScope,
@@ -57,15 +55,12 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
   function showLayerInfo(layer) {
     currentLayer = layer;
     var title = /** @type {string} */ (layer.get('label'));
-    var localMetadata = /** @type {Object.<string>} */
+    var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
-    var metadataUid = /** @type {string} */
-        (localMetadata['metadata_id']);
+    var metadataUid = localMetadata['metadata_id'];
     popup.setTitle(title);
-    var currentLanguage = /** @type {string} */
-        (gettextCatalog.currentLanguage);
-    var promiseKey = /** @type {string} */
-        (metadataUid + '##' + currentLanguage);
+    var currentLanguage = gettextCatalog.currentLanguage;
+    var promiseKey = metadataUid + '##' + currentLanguage;
 
     if (!(promiseKey in promises_)) {
       promises_[promiseKey] = $http.jsonp(
@@ -86,7 +81,7 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
                   'layerMetadata' : null
                 };
 
-                var remoteMetadata = resp.data.root[0];
+                var remoteMetadata = resp.data['root'][0];
                 content['layerMetadata'] = remoteMetadata;
 
                 if ('legend_name' in localMetadata) {
@@ -98,9 +93,8 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
                   content['hasLegend'] = true;
                 }
 
-                showPopup(content);
                 return content;
-              },this));
+              }, this));
     }
 
     promises_[promiseKey].then(
@@ -122,4 +116,4 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
   }
 };
 
-app.module.service('appShowLayerinfo', app.showLayerinfoFactory);
+app.module.factory('appShowLayerinfo', app.showLayerinfoFactory);
