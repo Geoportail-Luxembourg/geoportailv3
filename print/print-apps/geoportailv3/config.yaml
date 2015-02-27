@@ -1,7 +1,7 @@
 pdfConfig: !pdfConfig
   compressed: false
-  author: "Mapfish Print"
-  subject: "Mapfish Print Verbose example"
+  author: "Jeff Konnen"
+  subject: "geoportailv3 print templates"
   creator: "Mapfish Print"
 
 throwErrorOnExtraParameters: true
