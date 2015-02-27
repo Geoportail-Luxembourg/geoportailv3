@@ -20,6 +20,7 @@ app.ShowLayerinfo;
  * @param {angular.Scope} $rootScope The root Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
+ * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 app.showLayerinfoFactory = function($http, $sce, $rootScope,
