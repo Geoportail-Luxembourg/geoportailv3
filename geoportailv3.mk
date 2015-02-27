@@ -22,6 +22,7 @@ UTILITY_HELP = "- update-translations		Synchronize the translations with Transif
 include CONST_Makefile
 
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
+PRINT_VERSION = NONE 
 
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot
