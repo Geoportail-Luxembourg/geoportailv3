@@ -1,7 +1,7 @@
 pdfConfig: !pdfConfig
   compressed: false
   author: "Jeff Konnen"
-  subject: "geoportailv3 print templates"
+  subject: "map.geoportail.lu Print"
   creator: "Mapfish Print"
 
 throwErrorOnExtraParameters: true
@@ -9,8 +9,8 @@ throwErrorOnExtraParameters: true
 templates:
   A4 portrait: !template
     pdfConfig: !pdfConfig
-      title: "a4_portrait"
-      keywords: ["legend", "map","validated"]
+      title: "A4 Portrait by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a4_portrait.jrxml
     attributes:
       name: !string {}
@@ -43,8 +43,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A4 landscape: !template
     pdfConfig: !pdfConfig
-      title: "a4_landscape"
-      keywords: ["legend", "map","validated"]
+      title: "A4 Landscape by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a4_landscape.jrxml
     attributes:
       name: !string {}
@@ -77,8 +77,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A3 portrait: !template
     pdfConfig: !pdfConfig
-      title: "a3_portrait"
-      keywords: ["legend", "map","validated"]
+      title: "A3 Portrait by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a3_portrait.jrxml
     attributes:
       name: !string {}
@@ -111,8 +111,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A3 landscape: !template
     pdfConfig: !pdfConfig
-      title: "a3_landscape"
-      keywords: ["legend", "map"]
+      title: "A3 Landscape by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a3_landscape.jrxml
     attributes:
       name: !string {}
@@ -145,8 +145,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A2 portrait: !template
     pdfConfig: !pdfConfig
-      title: "a2_portrait"
-      keywords: ["legend", "map","validated"]
+      title: "A2 Portrait by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a2_portrait.jrxml
     attributes:
       name: !string {}
@@ -179,8 +179,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A2 landscape: !template
     pdfConfig: !pdfConfig
-      title: "a2_landscape"
-      keywords: ["legend", "map","validated"]
+      title: "A2 Landscape by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a2_landscape.jrxml
     attributes:
       name: !string {}
@@ -213,8 +213,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A1 portrait: !template
     pdfConfig: !pdfConfig
-      title: "a1_portrait"
-      keywords: ["legend", "map","validated"]
+      title: "A1 Portrait by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a1_portrait.jrxml
     attributes:
       name: !string {}
@@ -247,8 +247,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A1 landscape: !template
     pdfConfig: !pdfConfig
-      title: "a1_landscape"
-      keywords: ["legend", "map","validated"]
+      title: "A1 Landscape by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a1_landscape.jrxml
     attributes:
       name: !string {}
@@ -281,8 +281,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A0 portrait: !template
     pdfConfig: !pdfConfig
-      title: "a0_portrait"
-      keywords: ["legend", "map","validated"]
+      title: "A0 Portrait by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a0_portrait.jrxml
     attributes:
       name: !string {}
@@ -315,8 +315,8 @@ templates:
         numberOfLegendRows: numberOfLegendRows
   A0 landscape: !template
     pdfConfig: !pdfConfig
-      title: "a0_landscape"
-      keywords: ["legend", "map","validated"]
+      title: "A0 Landscape by geoportail.lu"
+      keywords: ["map"]
     reportTemplate: a0_landscape.jrxml
     attributes:
       name: !string {}
