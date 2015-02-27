@@ -54,19 +54,32 @@
         color: white;
         background-color: @primary-color;
       }
-      .toolbox-panel-top > li > a {
-        background-color: @primary-color;
-        color: white;
-        &:hover {
-          color: @primary-color;
-          background-color: white;
-        }
-      }
-      .toolbox-panel-top > li.active > a {
+    }
+
+    .toolbox-panel-top > li > a {
+      background-color: @primary-color;
+      color: white;
+      &:hover {
         color: @primary-color;
         background-color: white;
       }
     }
+    .toolbox-panel-top > li.active > a {
+      color: @primary-color;
+      background-color: white;
+    }
+
+    .footer .toolbox-panel > li {
+      > a {
+        background-color: @tertiary-color;
+        color: white;
+      }
+      > a:hover,
+      &.active > a {
+        background-color: @primary-color;
+      }
+    }
+
     ul.catalog {
       ul {
         background-color: @secondary-color;
@@ -104,11 +117,12 @@
         background-color: @secondary-color;
       }
     }
-    
+
     .ol-control button {
       background-color: white;
       color: @primary-color;
     }
+
     .tracker-on button{
       background-color: @primary-color;
       color: white;

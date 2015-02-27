@@ -34,6 +34,7 @@
     "js": [
       "geoportailv3/static/js/main.js",
       "node_modules/openlayers/externs/olx.js",
+      "node_modules/ngeo/externs/ngeox.js",
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
