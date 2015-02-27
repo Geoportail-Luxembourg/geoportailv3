@@ -17,6 +17,7 @@ goog.provide('app.backgroundlayerDirective');
 
 goog.require('app');
 goog.require('app.GetWmtsLayer');
+goog.require('app.Themes');
 goog.require('ngeo.BackgroundLayerMgr');
 
 
@@ -48,11 +49,12 @@ app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
  * @constructor
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
+ * @param {app.Themes} appThemes Themes service.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @export
  * @ngInject
  */
-app.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
+app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes,
     appGetWmtsLayer) {
 
   /**
@@ -73,17 +75,15 @@ app.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
    */
   this.blankLayer_ = new ol.layer.Tile();
 
-  // FIXME the list of background layers will be provided by c2cgeoportal's
-  // "themes" web service.
-  this['bgLayers'] = [{
-    'name': 'blank'
-  }, {
-    'name': 'basemap_global'
-  }];
-
-  var bgLayer = this['bgLayer'] = this['bgLayers'][1];
-
-  this.setLayer(bgLayer);
+  appThemes.getBgLayers().then(goog.bind(
+      /**
+       * @param {Array.<Object>} bgLayers Array of background layer objects.
+       */
+      function(bgLayers) {
+        this['bgLayers'] = bgLayers;
+        this['bgLayer'] = this['bgLayers'][0];
+        this.setLayer(this['bgLayer']);
+      }, this));
 };
 
 

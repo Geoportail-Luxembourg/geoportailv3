@@ -183,7 +183,7 @@
            'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
            'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
          });
-         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop' })}");
+         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
          appModule.constant('getuserinfoUrl', "${request.route_url('getuserinfo')}");
