@@ -71,9 +71,9 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
-  var style = new ol.style.Style({
+  var sketchStyle = new ol.style.Style({
     fill: new ol.style.Fill({
-      color: 'rgba(255, 255, 255, 0.2)'
+      color: 'rgba(255, 255, 255, 0.4)'
     }),
     stroke: new ol.style.Stroke({
       color: 'rgba(0, 0, 0, 0.5)',
@@ -86,9 +86,27 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         color: 'rgba(0, 0, 0, 0.7)'
       }),
       fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.2)'
+        color: 'rgba(255, 255, 255, 0.4)'
       })
     })
+  });
+
+  var style = new ol.style.Style({
+
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 204, 51, 0.3)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(255, 204, 51, 1)',
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 204, 51, 0.3)'
+      })
+    })  
+
   });
 
   /**
@@ -98,7 +116,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   this.map_ = this['map'];
 
   var measureLength = new ngeo.interaction.MeasureLength({
-    sketchStyle: style
+    sketchStyle: sketchStyle
   });
 
   /**
@@ -111,7 +129,8 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   this.map_.addInteraction(measureLength);
 
   var measureArea = new ngeo.interaction.MeasureArea({
-    sketchStyle: style
+    sketchStyle: sketchStyle,
+    style: style
   });
 
   /**
@@ -125,7 +144,8 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
 
   /** @type {ngeo.interaction.MeasureAzimut} */
   var measureAzimut = new ngeo.interaction.MeasureAzimut({
-    sketchStyle: style
+    sketchStyle: sketchStyle,
+    style: style
   });
 
   /**
