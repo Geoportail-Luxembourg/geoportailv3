@@ -47,21 +47,21 @@ app.module.directive('appElevation', app.elevationDirective);
  * @param {ngeo.Debounce} ngeoDebounce
  */
 app.ElevationDirectiveController = function($http, ngeoDebounce) {
-  var that = this;
-  this['map'].on('pointermove',
+  var map = this['map'];
+  map.on('pointermove',
       ngeoDebounce(
       function(e) {
         var lonlat = /** @type {ol.Coordinate} */
                 (ol.proj.transform(e.coordinate,
-                   this.getView().getProjection(), 'EPSG:2169'));
+                   map.getView().getProjection(), 'EPSG:2169'));
             $http.get('raster', {
               params: {'lon': lonlat[0], 'lat': lonlat[1]}
             }).
             success(goog.bind(function(data) {
               this['elevation'] = data['dhm'] > 0 ?
                   parseInt(data['dhm'] / 100, 0) : 'N/A';
-            }, that));
-      }, 300, true));
+            }, this));
+      }, 300, true), this);
 };
 
 
