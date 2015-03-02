@@ -12,4 +12,4 @@ dbtunnel:
 .PHONY: watchless
 watchless:
 	@echo "Watching changes to less files…"
-	nosier -p less "make -f elemoine.mk geoportailv3/static/build/build.css"
+	nosier -p geoportailv3/static/less "make -f elemoine.mk geoportailv3/static/build/build.css"
