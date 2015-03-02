@@ -193,11 +193,11 @@
          appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
 
+% if debug:
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
          appModule.value('ngeoPopupTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/popup.html')}');
          appModule.value('ngeoScaleselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/scaleselector.html')}');
-
          appModule.value('appBackgroundlayerTemplateUrl', '${request.static_url('geoportailv3:static/js/backgroundlayer/backgroundlayer.html')}');
          appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
          appModule.value('appMeasureTemplateUrl', '${request.static_url('geoportailv3:static/js/measure/measure.html')}');
@@ -205,6 +205,19 @@
          appModule.value('appAuthenticationTemplateUrl', '${request.static_url('geoportailv3:static/js/authentication/authentication.html')}');
          appModule.value('appInfobarTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/infobar.html')}');
          appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
+% else:
+         appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
+         appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
+         appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
+         appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
+         appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
+         appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
+         appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
+         appModule.value('appLayerinfoTemplateUrl', 'layerinfo/layerinfo.html');
+         appModule.value('appAuthenticationTemplateUrl', 'authentication/authentication.html');
+         appModule.value('appInfobarTemplateUrl', 'infobar/infobar.html');
+         appModule.value('appProjectionselectorTemplateUrl', 'infobar/projectionselector.html');
+% endif
        })();
     </script>
   </body>
