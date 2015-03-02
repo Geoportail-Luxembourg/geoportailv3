@@ -19,6 +19,9 @@ CONFIG_VARS += ldap
 
 UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
 
+# Add rule that copies the font-awesome fonts to the static/build directory.
+POST_RULES = .build/fonts.timestamp
+
 include CONST_Makefile
 
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
@@ -31,3 +34,8 @@ update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$
 	.build/venv/bin/tx pull -l fr
 	.build/venv/bin/tx pull -l de
 	.build/venv/bin/tx pull -l lb
+
+.build/fonts.timestamp: .build/node_modules.timestamp
+	mkdir -p $(PACKAGE)/static/build/fonts
+	cp node_modules/font-awesome/fonts/* $(PACKAGE)/static/build/fonts/
+	touch $@
