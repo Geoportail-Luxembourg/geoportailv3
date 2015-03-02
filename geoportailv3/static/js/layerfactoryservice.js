@@ -22,7 +22,7 @@ app.GetWmtsLayer;
 
 
 /**
- * @typedef {function(string, string=):ol.layer.Image}
+ * @typedef {function(string, string, string=):ol.layer.Image}
  */
 app.GetWmsLayer;
 
@@ -105,17 +105,19 @@ app.getWmsLayer_ = function(ngeoDecorateLayer) {
 
   /**
    * @param {string} name WMS layer name.
+   * @param {string} layers Comma-separated list of layer names for that WMS
+   *     layer.
    * @param {string=} opt_url WMS URL.
    * @return {ol.layer.Image} The layer.
    */
-  function getWmsLayer(name, opt_url) {
+  function getWmsLayer(name, layers, opt_url) {
     var url = goog.isDef(opt_url) ?
         opt_url : 'http://devv3.geoportail.lu/main/wsgi/wms';
     var layer = new ol.layer.Image({
       source: new ol.source.ImageWMS({
         url: url,
         params: {
-          'LAYERS': name
+          'LAYERS': layers
         }
       })
     });
@@ -159,7 +161,9 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
       return app.layerCache_[layerCacheKey];
     }
     if (type.indexOf('WMS') != -1) {
-      layer = appGetWmsLayer(node['name'], node['url']);
+      goog.asserts.assert('name' in node);
+      goog.asserts.assert('layers' in node);
+      layer = appGetWmsLayer(node['name'], node['layers'], node['url']);
     } else if (type == 'WMTS') {
       layer = appGetWmtsLayer(node['name']);
     } else {
