@@ -17,7 +17,7 @@ goog.require('ol.control.MousePosition');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
- * @param { string } appInfobarTemplateUrl
+ * @param {string} appInfobarTemplateUrl
  * @ngInject
  */
 app.infobarDirective = function(appInfobarTemplateUrl) {
@@ -43,8 +43,16 @@ app.module.directive('appInfobar', app.infobarDirective);
  * @constructor
  */
 app.InfobarDirectiveController = function() {
+    this['infobarOpen'] = false;
 };
 
+app.InfobarDirectiveController.prototype.infobarSwitch = function(){
+    if (this['infobarOpen']){
+        this['infobarOpen'] = false;
+    } else {
+        this['infobarOpen'] = true;
+    };
+}
 
 app.module.controller('AppInfobarController',
     app.InfobarDirectiveController);

@@ -133,8 +133,11 @@ body {
     background-color: white;
     .infobar-content {
         float: left;
-        padding-top: 9px;
         padding-right: 10px;
+        display: none;
+    }
+    .infobar-content.active {
+        display: block;
     }
     .infobar-content * {
         display: inline-block;
@@ -168,6 +171,12 @@ body {
         font-weight: normal;
         text-align: center;
         border: 1px solid transparent;
+    }
+    .dropdown ul {
+        display: none;
+    }
+    .dropdown.open ul {
+        display: block;
     }
   }
 
