@@ -54,9 +54,7 @@ app.ElevationDirectiveController = function($http, ngeoDebounce) {
         var lonlat = /** @type {ol.Coordinate} */
                 (ol.proj.transform(e.coordinate,
                    this.getView().getProjection(), 'EPSG:2169'));
-            $http({
-              url: 'raster',
-              method: 'GET',
+            $http.get('raster', {
               params: {'lon': lonlat[0], 'lat': lonlat[1]}
             }).
             success(goog.bind(function(data) {
