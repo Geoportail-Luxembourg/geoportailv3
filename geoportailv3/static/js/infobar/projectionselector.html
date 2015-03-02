@@ -1,6 +1,11 @@
- <select ng-model="ctrl.projection" 
-                ng-options="opt as opt.label for opt in ::ctrl.projectionOptions" ng-change="ctrl.switchProjection()"></select>
-<div class="mouse-coordinates"></div>
-<div class="elevation-service">
-    <app-elevation app-elevation-map="::ctrl.map"></app-elevation>
+<div ng-class="::{'dropdown': true, 'dropup': true}">
+  <button type="button" class="btn btn-default projectionselector-button" data-toggle="dropdown">
+      {{ctrl.projection.label}} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li ng-repeat="projitem in ::ctrl.projectionOptions">
+        <a href ng-click="ctrl.switchProjection(projitem.value)" ng-bind-html="::projitem.label"></a>
+    </li>
+  </ul>
 </div>
+<div class="mouse-coordinates"></div>

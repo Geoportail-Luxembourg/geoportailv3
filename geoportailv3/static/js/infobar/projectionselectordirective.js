@@ -46,12 +46,13 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @export
  * @constructor
  * @param {Object} $document
+ * @param {angular.$sce} $sce Angular sce service.
  */
-app.ProjectionselectorDirectiveController = function($document) {
+app.ProjectionselectorDirectiveController = function($document, $sce) {
   this['projectionOptions'] = [
-    {'label': 'LUREF', 'value': 'EPSG:2169'},
-    {'label': 'Long/Lat WGS84', 'value': 'EPSG:4326'},
-    {'label': 'WGS84 UTM 32|31', 'value': 'EPSG:3263*'}
+    {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
+    {'label': $sce.trustAsHtml('Long/Lat WGS84'), 'value': 'EPSG:4326'},
+    {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
   ];
   this['projection'] = this['projectionOptions'][0];
   this.mouseposition = new ol.control.MousePosition({
@@ -122,20 +123,25 @@ app.ProjectionselectorDirectiveController.prototype.coordFormat_ =
 
 /**
  * @export
+ * @param {string} epsg_code
  */
 app.ProjectionselectorDirectiveController.prototype.switchProjection =
-    function() {
+    function(epsg_code) {
   var projection = null;
-  if (this['projection']['value'] === 'EPSG:3263*') {
+  if (epsg_code === 'EPSG:3263*') {
     projection = ol.proj.get('EPSG:32632');
   } else {
-    projection = ol.proj.get(this['projection']['value']);
+    projection = ol.proj.get(epsg_code);
   }
+  this['projection'] = goog.array.find(this['projectionOptions'],
+      function(obj) {
+        return obj.value == epsg_code;
+      });
   var widget = this.mouseposition;
   widget.setProjection(projection);
   widget.setCoordinateFormat(
       /** @type {ol.CoordinateFormatType} */ (goog.bind(function(coord) {
-        return this.coordFormat_(coord, this['projection']['value']);
+        return this.coordFormat_(coord, epsg_code);
       }, this))
   );
 };
