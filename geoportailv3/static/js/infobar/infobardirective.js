@@ -41,18 +41,26 @@ app.module.directive('appInfobar', app.infobarDirective);
 /**
  * @ngInject
  * @constructor
+ * @export
  */
 app.InfobarDirectiveController = function() {
-    this['infobarOpen'] = false;
+  /**
+     * @type {boolean}
+     */
+  this['infobarOpen'] = false;
 };
 
-app.InfobarDirectiveController.prototype.infobarSwitch = function(){
-    if (this['infobarOpen']){
-        this['infobarOpen'] = false;
-    } else {
-        this['infobarOpen'] = true;
-    };
-}
+
+/**
+ * @export
+ */
+app.InfobarDirectiveController.prototype.infobarSwitch = function() {
+  if (this['infobarOpen']) {
+    this['infobarOpen'] = false;
+  } else {
+    this['infobarOpen'] = true;
+  }
+};
 
 app.module.controller('AppInfobarController',
     app.InfobarDirectiveController);
