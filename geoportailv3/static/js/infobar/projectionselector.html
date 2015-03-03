@@ -1,6 +1,6 @@
-<div ng-class="::{'dropdown': true, 'dropup': true}">
+<div class="dropdown dropup"> 
   <button type="button" class="btn btn-default projectionselector-button" data-toggle="dropdown">
-      {{ctrl.projection.label}} <span class="caret"></span>
+     <span>{{ctrl.projection.label}}</span>&nbsp;<span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu">
     <li ng-repeat="projitem in ::ctrl.projectionOptions">
