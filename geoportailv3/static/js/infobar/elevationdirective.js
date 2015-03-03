@@ -47,7 +47,8 @@ app.module.directive('appElevation', app.elevationDirective);
  * @param {ngeo.Debounce} ngeoDebounce
  * @param {string} elevationServiceUrl
  */
-app.ElevationDirectiveController = function($http, ngeoDebounce, elevationServiceUrl) {
+app.ElevationDirectiveController =
+    function($http, ngeoDebounce, elevationServiceUrl) {
   var map = this['map'];
   map.on('pointermove',
       ngeoDebounce(
