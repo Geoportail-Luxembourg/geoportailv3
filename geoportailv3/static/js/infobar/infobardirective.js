@@ -55,11 +55,7 @@ app.InfobarDirectiveController = function() {
  * @export
  */
 app.InfobarDirectiveController.prototype.infobarSwitch = function() {
-  if (this['infobarOpen']) {
-    this['infobarOpen'] = false;
-  } else {
-    this['infobarOpen'] = true;
-  }
+    this['infobarOpen'] = !this['infobarOpen'];
 };
 
 app.module.controller('AppInfobarController',
