@@ -142,7 +142,7 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <app-measure app-measure-map="::mainCtrl.map"></app-measure>
+          <app-measure app-measure-map="::mainCtrl.map" app-measure-active="mainCtrl.measureOpen"></app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
