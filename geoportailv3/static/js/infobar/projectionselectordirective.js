@@ -88,18 +88,18 @@ app.ProjectionselectorDirectiveController.prototype.utmZoneCheck_ =
 /**
  * @private
  * @param {Array} coord
- * @param {string} epsg_code
+ * @param {string} epsgCode
  * @return {string}
  */
 app.ProjectionselectorDirectiveController.prototype.coordFormat_ =
-    function(coord, epsg_code) {
+    function(coord, epsgCode) {
   var str = '';
-  if (epsg_code === 'EPSG:3263*') {
+  if (epsgCode === 'EPSG:3263*') {
     var projection = ol.proj.get(this.utmZoneCheck_(coord));
     this.mouseposition.setProjection(projection);
-    epsg_code = projection.getCode();
+    epsgCode = projection.getCode();
   }
-  switch (epsg_code) {
+  switch (epsgCode) {
     case 'EPSG:2169':
       str = ol.coordinate.format(coord, '{x} E | {y} N', 0);
       break;
@@ -123,25 +123,25 @@ app.ProjectionselectorDirectiveController.prototype.coordFormat_ =
 
 /**
  * @export
- * @param {string} epsg_code
+ * @param {string} epsgCode
  */
 app.ProjectionselectorDirectiveController.prototype.switchProjection =
-    function(epsg_code) {
+    function(epsgCode) {
   var projection = null;
-  if (epsg_code === 'EPSG:3263*') {
+  if (epsgCode === 'EPSG:3263*') {
     projection = ol.proj.get('EPSG:32632');
   } else {
-    projection = ol.proj.get(epsg_code);
+    projection = ol.proj.get(epsgCode);
   }
   this['projection'] = goog.array.find(this['projectionOptions'],
       function(obj) {
-        return obj['value'] == epsg_code;
+        return obj['value'] == epsgCode;
       });
   var widget = this.mouseposition;
   widget.setProjection(projection);
   widget.setCoordinateFormat(
       /** @type {ol.CoordinateFormatType} */ (goog.bind(function(coord) {
-        return this.coordFormat_(coord, epsg_code);
+        return this.coordFormat_(coord, epsgCode);
       }, this))
   );
 };
