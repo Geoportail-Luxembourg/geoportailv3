@@ -135,7 +135,7 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection =
   }
   this['projection'] = goog.array.find(this['projectionOptions'],
       function(obj) {
-        return obj.value == epsg_code;
+        return obj['value'] == epsg_code;
       });
   var widget = this.mouseposition;
   widget.setProjection(projection);
