@@ -124,6 +124,66 @@ body {
     font-family: "geoportail-icons" !important;
     margin: -1px;
   }
+  &.infobar {
+    z-index: 2;
+    bottom: 8px;
+    right: 8px;
+    padding: 0px;
+    border: 1px solid #8394a0;
+    background-color: white;
+    .infobar-content {
+        float: left;
+        padding-right: 10px;
+        display: none;
+    }
+    .infobar-content.active {
+        display: block;
+    }
+    .infobar-content * {
+        display: inline-block;
+    }
+    .infobar-content .ol-scale-line {
+        position: inherit;
+        background: rgba(0,0,0,0);
+        padding: 0px 5px 0px 5px;
+        .ol-scale-line-inner {
+            border: 2px solid grey;
+            border-top: none;
+            color: black;
+            font-size: 12px;
+            text-align: center;
+            margin: 1px;
+        }
+    }
+    .mouse-coordinates {
+        width: 255px;
+    }
+    .infobar-button {
+        display: inline-block;
+        float: right;
+        padding-bottom: 15px;
+        font-size: 2.5em;
+    }
+    .btn {
+        border: 1px solid transparent;
+        height: 39px;
+        font-size: 16px;
+        min-width: 120px;
+        span {
+            font-size: 16px;
+            font-weight: normal;
+            text-align: center;
+            font-family:'DINNextLTPro-Condensed', Arial, sans-serif;
+        }
+    }
+    .dropdown ul {
+        display: none;
+    }
+    .dropdown.open ul {
+        display: block;
+    }
+  }
+
 }
 
 
