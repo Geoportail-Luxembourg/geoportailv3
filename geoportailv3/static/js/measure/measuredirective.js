@@ -30,7 +30,8 @@ app.measureDirective = function(appMeasureTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appMeasureMap'
+      'map': '=appMeasureMap',
+      'active': '=appMeasureActive'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -118,6 +119,18 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
   measureAzimut.setActive(false);
   ngeoDecorateInteraction(measureAzimut);
   map.addInteraction(measureAzimut);
+
+  // Watch the "active" property, and disable the measure interactions
+  // when "active" gets set to false.
+  $scope.$watch(goog.bind(function() {
+    return this['active'];
+  }, this), goog.bind(function(newVal) {
+    if (newVal === false) {
+      this['measureLength'].active = false;
+      this['measureArea'].active = false;
+      this['measureAzimut'].active = false;
+    }
+  }, this));
 };
 
 
