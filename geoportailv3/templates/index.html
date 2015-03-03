@@ -190,7 +190,8 @@
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
          appModule.constant('getuserinfoUrl', "${request.route_url('getuserinfo')}");
-         appModule.constant('internalWmsUrl', "${request.route_url('wms') })}");
+         appModule.constant('internalWmsUrl', "${request.route_url('wms')}");
+         appModule.constant('elevationServiceUrl', "${request.route_url('raster')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
 
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');

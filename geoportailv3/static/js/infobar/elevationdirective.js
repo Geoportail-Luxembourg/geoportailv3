@@ -45,8 +45,10 @@ app.module.directive('appElevation', app.elevationDirective);
  * @constructor
  * @param {angular.$http} $http
  * @param {ngeo.Debounce} ngeoDebounce
+ * @param {string} elevationServiceUrl
  */
-app.ElevationDirectiveController = function($http, ngeoDebounce) {
+app.ElevationDirectiveController =
+    function($http, ngeoDebounce, elevationServiceUrl) {
   var map = this['map'];
   map.on('pointermove',
       ngeoDebounce(
@@ -54,7 +56,7 @@ app.ElevationDirectiveController = function($http, ngeoDebounce) {
         var lonlat = /** @type {ol.Coordinate} */
                 (ol.proj.transform(e.coordinate,
                    map.getView().getProjection(), 'EPSG:2169'));
-            $http.get('raster', {
+            $http.get(elevationServiceUrl, {
               params: {'lon': lonlat[0], 'lat': lonlat[1]}
             }).
             success(goog.bind(function(data) {
