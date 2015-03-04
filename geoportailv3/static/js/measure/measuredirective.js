@@ -126,9 +126,9 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
     return this['active'];
   }, this), goog.bind(function(newVal) {
     if (newVal === false) {
-      this['measureLength'].active = false;
-      this['measureArea'].active = false;
-      this['measureAzimut'].active = false;
+      this['measureLength'].setActive(false);
+      this['measureArea'].setActive(false);
+      this['measureAzimut'].setActive(false);
     }
   }, this));
 };
