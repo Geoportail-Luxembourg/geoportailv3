@@ -3,7 +3,7 @@
  * used to insert Elevation information into the HTML page.
  * Example:
  *
- * <app-elevation app-visible="mainCtrl.infobarOpen"
+ * <app-elevation app-elevation-active="mainCtrl.infobarOpen"
  *     app-elevation-map="::mainCtrl.map"></app-elevation>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
@@ -27,7 +27,7 @@ app.elevationDirective = function() {
     restrict: 'E',
     scope: {
       'map': '=appElevationMap',
-      'visible': '=appVisible'
+      'active': '=appElevationActive'
     },
     controller: 'AppElevationController',
     controllerAs: 'ctrl',
@@ -55,7 +55,7 @@ app.ElevationDirectiveController =
   map.on('pointermove',
       ngeoDebounce(
       function(e) {
-        if (this['visible']) {
+        if (this['active']) {
           var lonlat = /** @type {ol.Coordinate} */
              (ol.proj.transform(e.coordinate,
              map.getView().getProjection(), 'EPSG:2169'));
