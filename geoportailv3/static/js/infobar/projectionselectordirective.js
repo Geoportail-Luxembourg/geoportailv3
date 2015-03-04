@@ -15,6 +15,7 @@
 goog.provide('app.projectionselectorDirective');
 goog.require('app');
 goog.require('app.projections');
+goog.require('ngeo.controlDirective');
 goog.require('ol.control.MousePosition');
 
 
@@ -55,9 +56,9 @@ app.ProjectionselectorDirectiveController = function($document, $sce) {
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
   ];
   this['projection'] = this['projectionOptions'][0];
-  this.mouseposition = new ol.control.MousePosition({
+  /** @type {ol.control.MousePostion} */
+  this['mousePositionControl'] = new ol.control.MousePosition({
     className: 'custom-mouse-coordinates',
-    target: $document.find('.mouse-coordinates')[0],
     projection: this.projection['value'],
     coordinateFormat: /** @type {ol.CoordinateFormatType} */
         (goog.bind(function(coord) {
@@ -65,7 +66,6 @@ app.ProjectionselectorDirectiveController = function($document, $sce) {
         }, this)
         )
   });
-  this.map.addControl(this.mouseposition);
 };
 
 
@@ -78,7 +78,7 @@ app.ProjectionselectorDirectiveController.prototype.utmZoneCheck_ =
     function(coord) {
   var lonlat = /** @type {ol.Coordinate} */
       (ol.proj.transform(coord,
-                         this.mouseposition.getProjection() ,
+                         this['mousePositionControl'].getProjection() ,
                          'EPSG:4326')
       );
   return Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
@@ -96,7 +96,7 @@ app.ProjectionselectorDirectiveController.prototype.coordFormat_ =
   var str = '';
   if (epsgCode === 'EPSG:3263*') {
     var projection = ol.proj.get(this.utmZoneCheck_(coord));
-    this.mouseposition.setProjection(projection);
+    this['mousePositionControl'].setProjection(projection);
     epsgCode = projection.getCode();
   }
   switch (epsgCode) {
@@ -137,7 +137,7 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection =
       function(obj) {
         return obj['value'] == epsgCode;
       });
-  var widget = this.mouseposition;
+  var widget = this['mousePositionControl'];
   widget.setProjection(projection);
   widget.setCoordinateFormat(
       /** @type {ol.CoordinateFormatType} */ (goog.bind(function(coord) {
