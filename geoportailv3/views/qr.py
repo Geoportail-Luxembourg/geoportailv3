@@ -13,14 +13,17 @@ class Qr(object):
 
     def __init__(self, request):
         self.request = request
-        self.regex=re.compile('^http[s]{0,1}://.*[g-o|geoportal|geoportail]{1}.lu.*$')
+        self.regex = re.compile(
+                '^http[s]{0,1}://.*[g-o|geoportal|geoportail]{1}.lu.*$')
+
     @view_config(route_name='qr')
-    def getQrCode(self):
+    def getqrcode(self):
         url = self.request.params.get('url', '')
         if len(url) == 0:
             return HTTPBadRequest()
         if not self.regex.match(url):
-            return HTTPNotAcceptable("not a valid url for this grcode generator")
+            return HTTPNotAcceptable(
+                    "not a valid url for this grcode generator")
         qr = qrcode.QRCode(
                  version=1,
                  error_correction=qrcode.constants.ERROR_CORRECT_L,
