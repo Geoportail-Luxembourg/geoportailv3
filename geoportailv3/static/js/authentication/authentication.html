@@ -1,9 +1,8 @@
-﻿<div class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
+<div class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
     <p class="menu-title" translate>My account</p>
     <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate(ctrl.credentials)">
         <fieldset>
             <legend class="tab tab-account active" >Login</legend>
-            
             <div class="account-content">
                 <input type="text" ng-model="ctrl.credentials.login" placeholder="Login" />
                 <input type="password" ng-model="ctrl.credentials.password" placeholder="Password" />
