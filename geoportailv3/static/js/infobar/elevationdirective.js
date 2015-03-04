@@ -25,7 +25,8 @@ app.elevationDirective = function() {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appElevationMap'
+      'map': '=appElevationMap',
+      'visible': '=appVisible'
     },
     controller: 'AppElevationController',
     controllerAs: 'ctrl',
@@ -53,16 +54,18 @@ app.ElevationDirectiveController =
   map.on('pointermove',
       ngeoDebounce(
       function(e) {
-        var lonlat = /** @type {ol.Coordinate} */
-                (ol.proj.transform(e.coordinate,
-                   map.getView().getProjection(), 'EPSG:2169'));
-            $http.get(elevationServiceUrl, {
-              params: {'lon': lonlat[0], 'lat': lonlat[1]}
-            }).
-            success(goog.bind(function(data) {
-              this['elevation'] = data['dhm'] > 0 ?
-                  parseInt(data['dhm'] / 100, 0) : 'N/A';
-            }, this));
+        if (this['visible']) {
+          var lonlat = /** @type {ol.Coordinate} */
+             (ol.proj.transform(e.coordinate,
+             map.getView().getProjection(), 'EPSG:2169'));
+          $http.get(elevationServiceUrl, {
+                params: {'lon': lonlat[0], 'lat': lonlat[1]}
+          }).
+             success(goog.bind(function(data) {
+                this['elevation'] = data['dhm'] > 0 ?
+               parseInt(data['dhm'] / 100, 0) : 'N/A';
+             }, this));
+        }
       }, 300, true), this);
 };
 
