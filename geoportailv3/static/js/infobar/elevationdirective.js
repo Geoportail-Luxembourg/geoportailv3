@@ -3,7 +3,8 @@
  * used to insert Elevation information into the HTML page.
  * Example:
  *
- * <app-elevation app-elevation-map="::mainCtrl.map"></app-elevation>
+ * <app-elevation app-visible="mainCtrl.infobarOpen"
+ *     app-elevation-map="::mainCtrl.map"></app-elevation>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
