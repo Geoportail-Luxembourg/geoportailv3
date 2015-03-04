@@ -3,7 +3,8 @@
  * used to insert Elevation information into the HTML page.
  * Example:
  *
- * <app-elevation app-elevation-map="::mainCtrl.map"></app-elevation>
+ * <app-elevation app-elevation-active="mainCtrl.infobarOpen"
+ *     app-elevation-map="::mainCtrl.map"></app-elevation>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -25,7 +26,8 @@ app.elevationDirective = function() {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appElevationMap'
+      'map': '=appElevationMap',
+      'active': '=appElevationActive'
     },
     controller: 'AppElevationController',
     controllerAs: 'ctrl',
@@ -53,16 +55,18 @@ app.ElevationDirectiveController =
   map.on('pointermove',
       ngeoDebounce(
       function(e) {
-        var lonlat = /** @type {ol.Coordinate} */
-                (ol.proj.transform(e.coordinate,
-                   map.getView().getProjection(), 'EPSG:2169'));
-            $http.get(elevationServiceUrl, {
-              params: {'lon': lonlat[0], 'lat': lonlat[1]}
-            }).
-            success(goog.bind(function(data) {
-              this['elevation'] = data['dhm'] > 0 ?
-                  parseInt(data['dhm'] / 100, 0) : 'N/A';
-            }, this));
+        if (this['active']) {
+          var lonlat = /** @type {ol.Coordinate} */
+             (ol.proj.transform(e.coordinate,
+             map.getView().getProjection(), 'EPSG:2169'));
+          $http.get(elevationServiceUrl, {
+                params: {'lon': lonlat[0], 'lat': lonlat[1]}
+          }).
+             success(goog.bind(function(data) {
+                this['elevation'] = data['dhm'] > 0 ?
+               parseInt(data['dhm'] / 100, 0) : 'N/A';
+             }, this));
+        }
       }, 300, true), this);
 };
 
