@@ -3,9 +3,6 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadRequest
 import logging
 import urllib2
-from urlparse import urljoin
-import html5lib
-
 log = logging.getLogger(__name__)
 
 
@@ -25,11 +22,8 @@ class LegendPreparer(object):
 
         response = urllib2.urlopen(url)
         html = response.read()
-        document = html5lib.parse(html)
-        for img in document.iter("{http://www.w3.org/1999/xhtml}img"):
-                img.set("src", urljoin(url, img.get("src")))
-        for link in document.iter("{http://www.w3.org/1999/xhtml}link"):
-                link.set("href", urljoin(url, link.get("href")))
+        html = html.replace("\"", "'")
+        html = html.replace("href='/", "href='http://wiki.geoportail.lu/")
+        html = html.replace("src='/", "src='http://wiki.geoportail.lu/")
         headers = {"Content-Type": 'text/html'}
-        output = html5lib.serialize(document)
-        return Response(output, headers=headers)
+        return Response(html, headers=headers)
