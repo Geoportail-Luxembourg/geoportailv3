@@ -23,7 +23,7 @@ class Qr(object):
             return HTTPBadRequest()
         if not self.regex.match(url):
             return HTTPNotAcceptable(
-                    "not a valid url for this grcode generator")
+                    "not a valid url for this QR code generator")
         qr = qrcode.QRCode(
                  version=1,
                  error_correction=qrcode.constants.ERROR_CORRECT_L,
