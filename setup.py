@@ -19,7 +19,7 @@ setup(
         'elasticsearch',
         'python-ldap',
         'pyramid_ldap',
-        'qrcode'
+        'qrcode==5.1'
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
