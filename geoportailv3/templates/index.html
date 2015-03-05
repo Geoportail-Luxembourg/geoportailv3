@@ -141,7 +141,8 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <app-measure app-measure-map="::mainCtrl.map" app-measure-active="mainCtrl.measureOpen"></app-measure>
+          <app-measure app-measure-map="::mainCtrl.map" app-measure-active="mainCtrl.measureOpen" app-profiledata="mainCtrl.profiledata">
+          </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
@@ -206,6 +207,7 @@
          appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
          appModule.value('appMapTemplateUrl', '${request.static_url('geoportailv3:static/js/map/map.html')}');
          appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
+         appModule.value('appProfileTemplateUrl', '${request.static_url('geoportailv3:static/js/profile/profile.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -220,7 +222,11 @@
          appModule.value('appProjectionselectorTemplateUrl', 'infobar/projectionselector.html');
          appModule.value('appMapTemplateUrl', 'map/map.html');
          appModule.value('appThemeswitcherTemplateUrl', 'themeswitcher/themes.html');
+         appModule.value('appProfileTemplateUrl', 'profile/profile.html');
 % endif
+
+
+
        })();
     </script>
   </body>

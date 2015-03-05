@@ -39,6 +39,8 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function($scope, gettextCatalog, appExclusionManager,
     langUrls, defaultExtent, ngeoSyncArrays) {
 
+  this['profiledata'] = null;
+
   /**
    * @type {angularGettext.Catalog}
    * @private

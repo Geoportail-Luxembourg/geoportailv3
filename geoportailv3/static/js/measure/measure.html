@@ -11,7 +11,8 @@
     <a href translate ngeo-btn
        ng-model="ctrl.measureAzimut.active">Azimut</a>
   </li>
-  <li>
-    <a href translate>Profile</a>
+  <li ng-class="{active: ctrl.measureProfile.active}">
+      <a href translate ngeo-btn
+       ng-model="ctrl.measureProfile.active">Profile</a>
   </li>
 </ul>
