@@ -18,6 +18,7 @@ setup(
         'c2cgeoportal>=1.6.0dev-20150217',
         'elasticsearch',
         'python-ldap',
+        'html5lib',
         'pyramid_ldap'
     ],
     packages=find_packages(exclude=['ez_setup']),
