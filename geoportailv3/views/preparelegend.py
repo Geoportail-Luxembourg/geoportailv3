@@ -32,8 +32,8 @@ class LegendPreparer(object):
                 link.set("href", urljoin(url, link.get("href")))
         headers = {"Content-Type": 'text/html'}
         output = html5lib.serialize(document,
-                quote_attr_values=True,
-                omit_optional_tags=False,
-                use_trailing_solidus=True,
-                quote_char=u"'")
+                                    quote_attr_values=True,
+                                    omit_optional_tags=False,
+                                    use_trailing_solidus=True,
+                                    quote_char=u"'")
         return Response(output, headers=headers)
