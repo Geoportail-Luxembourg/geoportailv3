@@ -54,4 +54,5 @@ def main(global_config, **settings):
 
     config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/wms')
+    config.add_route('qr', '/qr')
     return config.make_wsgi_app()
