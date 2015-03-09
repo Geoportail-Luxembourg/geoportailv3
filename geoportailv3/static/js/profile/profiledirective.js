@@ -49,6 +49,8 @@ app.module.directive('appProfile', app.profileDirective);
  * @ngInject
  */
 app.ProfileController = function($scope) {
+
+  
   /**
    * @param {Object} item
    * @return {number}
@@ -76,7 +78,6 @@ app.ProfileController = function($scope) {
    */
   var extractor = {z: z, dist: dist};
 
-
   // Using closures for hoverCallback and outCallback since
   // wrapping in angular.bind leads to a closure error.
   // See PR https://github.com/google/closure-compiler/pull/867
@@ -96,7 +97,7 @@ app.ProfileController = function($scope) {
 
 
   this['profileOptions'] = {
-    extractor: extractor,
+    elevationExtractor: extractor,
     hoverCallback: hoverCallback,
     outCallback: outCallback
   };
