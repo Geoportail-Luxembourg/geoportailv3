@@ -235,9 +235,6 @@ app.interaction.MeasureProfile.prototype.onDrawStart_ = function(evt) {
  * @private
  */
 app.interaction.MeasureProfile.prototype.onDrawEnd_ = function(evt) {
-  goog.dom.classlist.add(this.measureTooltipElement_, 'tooltip-static');
-  this.measureTooltip_.setOffset([0, -7]);
-
   this.sketchFeature = null;
   this.removeMeasureTooltip_();
 };

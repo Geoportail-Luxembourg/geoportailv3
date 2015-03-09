@@ -33,7 +33,8 @@ app.measureDirective = function(appMeasureTemplateUrl) {
     scope: {
       'map': '=appMeasureMap',
       'active': '=appMeasureActive',
-      'profiledata': '=appProfiledata'
+      'profiledata': '=appProfiledata',
+      'profileOpen': '=appProfileOpen'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -207,7 +208,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         var config = {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         };
-
+        this['profileOpen'] = true;
         $http.post('profile.json', req, config).then(
             angular.bind(this, function(resp) {
               this['profiledata'] = resp.data['profile'];
@@ -226,6 +227,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
       this['measureArea'].setActive(false);
       this['measureAzimut'].setActive(false);
       this['measureProfile'].setActive(false);
+      this['profileOpen'] = false;
     }
   }, this));
 };

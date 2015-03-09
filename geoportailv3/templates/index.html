@@ -113,8 +113,8 @@
         </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
+      <app-profile app-profiledata="mainCtrl.profiledata" app-profile-open="mainCtrl.profileOpen"></app-profile>
     </div>
-
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
@@ -141,7 +141,7 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <app-measure app-measure-map="::mainCtrl.map" app-measure-active="mainCtrl.measureOpen" app-profiledata="mainCtrl.profiledata">
+          <app-measure app-measure-map="::mainCtrl.map" app-measure-active="mainCtrl.measureOpen" app-profiledata="mainCtrl.profiledata"  app-profile-open="mainCtrl.profileOpen">
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
@@ -176,6 +176,7 @@
 % else:
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script>
       (function() {
          var appModule = angular.module('app');

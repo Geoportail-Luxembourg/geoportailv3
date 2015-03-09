@@ -28,7 +28,8 @@ app.profileDirective = function(appProfileTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'profiledata': '=appProfiledata'
+      'profiledata': '=appProfiledata',
+      'profileOpen': '=appProfileOpen'
     },
     controller: 'AppProfileController',
     controllerAs: 'ctrl',
@@ -48,15 +49,15 @@ app.module.directive('appProfile', app.profileDirective);
  * @ngInject
  */
 app.ProfileController = function($scope) {
-
   /**
    * @param {Object} item
    * @return {number}
    */
   var z = function(item) {
-    console.log('---->z');
-    console.log(item['values']['dhm']);
-    return item['values']['dhm'];
+    if ('values' in item && 'dhm' in item['values']) {
+      return item['values']['dhm'];
+    }
+    return 0;
   };
 
   /**
@@ -64,11 +65,14 @@ app.ProfileController = function($scope) {
     * @return {number}
     */
   var dist = function(item) {
-    return item['dist'];
+    if ('dist' in item) {
+      return item['dist'];
+    }
+    return 0;
   };
 
   /**
-   * @type {ngeox.profile.ProfileExtractor}
+   * @type {Object}
    */
   var extractor = {z: z, dist: dist};
 
@@ -83,13 +87,10 @@ app.ProfileController = function($scope) {
    */
   var hoverCallback = function(point) {
     // An item in the list of points given to the profile.
-    console.log('---->hiverCallback');
-    console.log(that['point']);
     that['point'] = point;
   };
 
   var outCallback = function() {
-    console.log('---->outCallback');
     that['point'] = null;
   };
 

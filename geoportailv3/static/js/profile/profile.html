@@ -1,10 +1,10 @@
-      <style>
-        .profile {
-            width: 450px;
-            height: 250px;
-            background-color: #FF0000;
-            }
-      </style>
-      <div class="profile" ngeo-profile="ctrl.profiledata"
-            ngeo-profile-options="ctrl.profileOptions">
-      </div>
+<div class="profile" ngeo-profile="ctrl.profiledata"
+    ngeo-profile-options="ctrl.profileOptions" ng-show="ctrl.profileOpen">
+</div>
+
+<ul ng-show="ctrl.point != null">
+  <li translate>Longitude: {{ctrl.point.x}}</li>
+  <li translate>Latitude: {{ctrl.point.y}}</li>
+  <li translate>Elevation: {{ctrl.point.values.mnt}}</li>
+  <li translate>Distance: {{ctrl.point.dist}}</li>
+</ul>

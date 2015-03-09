@@ -39,7 +39,10 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function($scope, gettextCatalog, appExclusionManager,
     langUrls, defaultExtent, ngeoSyncArrays) {
 
-  this['profiledata'] = null;
+  /**
+   * @type {Array.<Object>}
+   */
+  this['profiledata'] = [{'y': 0, 'values': {'dhm': 0}, 'dist': 0, 'x': 0}];
 
   /**
    * @type {angularGettext.Catalog}
@@ -103,6 +106,11 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
    * @type {boolean}
    */
   this['userOpen'] = false;
+
+  /**
+   * @type {Boolean}
+   */
+  this['profileOpen'] = false;
 
   /**
    * @type {Array}
