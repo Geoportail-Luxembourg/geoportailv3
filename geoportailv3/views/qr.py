@@ -14,7 +14,7 @@ class Qr(object):
     def __init__(self, request):
         self.request = request
         self.regex = re.compile(
-                '^http[s]{0,1}://.*[g-o|geoportal|geoportail]{1}.lu.*$')
+            '^http[s]{0,1}://.*[g-o|geoportal|geoportail]{1}.lu.*$')
 
     @view_config(route_name='qr')
     def getqrcode(self):
@@ -23,12 +23,12 @@ class Qr(object):
             return HTTPBadRequest()
         if not self.regex.match(url):
             return HTTPNotAcceptable(
-                    "not a valid url for this QR code generator")
+                "not a valid url for this QR code generator")
         qr = qrcode.QRCode(
-                 version=1,
-                 error_correction=qrcode.constants.ERROR_CORRECT_L,
-                 box_size=3,
-                 border=0
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=3,
+            border=0
         )
         qr.add_data(url)
         qr.make(fit=True)
