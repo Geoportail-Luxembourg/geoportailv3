@@ -70,16 +70,6 @@ app.CatalogController = function(appThemes, appGetLayerForCatalogNode) {
 
 
 /**
- * @param {Object} node Tree node.
- * @param {ol.layer.Layer} layer OpenLayers layer.
- * @export
- */
-app.CatalogController.prototype.getInfo = function(node, layer) {
-  window.alert(node['name']);
-};
-
-
-/**
  * Return the OpenLayers layer for this node. `null` is returned if the node
  * is not a leaf.
  * @param {Object} node Tree node.
