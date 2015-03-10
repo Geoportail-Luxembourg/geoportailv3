@@ -27,9 +27,9 @@ class LegendPreparer(object):
         html = response.read()
         document = html5lib.parse(html)
         for img in document.iter("{http://www.w3.org/1999/xhtml}img"):
-                img.set("src", urljoin(url, img.get("src")))
+            img.set("src", urljoin(url, img.get("src")))
         for link in document.iter("{http://www.w3.org/1999/xhtml}link"):
-                link.set("href", urljoin(url, link.get("href")))
+            link.set("href", urljoin(url, link.get("href")))
         headers = {"Content-Type": 'text/html'}
         output = html5lib.serialize(document,
                                     quote_attr_values=True,
