@@ -11,6 +11,7 @@ goog.provide('app.MainController');
 
 goog.require('app');
 goog.require('app.LocationControl');
+goog.require('ngeo.SyncArrays');
 goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -29,12 +30,13 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} defaultExtent Default geographical extent.
+ * @param {ngeo.SyncArrays} ngeoSyncArrays
  * @constructor
  * @export
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, langUrls,
-    defaultExtent) {
+    defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -106,7 +108,7 @@ app.MainController = function($scope, gettextCatalog, langUrls,
 
   this.setMap_();
   this.switchLanguage('fr');
-  this.manageSelectedLayers_($scope);
+  this.manageSelectedLayers_($scope, ngeoSyncArrays);
 };
 
 
@@ -133,27 +135,24 @@ app.MainController.prototype.setMap_ = function() {
 
 
 /**
- * @param {angular.Scope} scope Scope.
+ * @param {angular.Scope} scope Scope
+ * @param {ngeo.SyncArrays} ngeoSyncArrays
  * @private
  */
-app.MainController.prototype.manageSelectedLayers_ = function(scope) {
-
-  function updateSelectedLayers_() {
-    // empty the selectedLayers array
-    this['selectedLayers'].length = 0;
-
-    var i;
-    var layers = this['map'].getLayers().getArray();
-    var len = layers.length;
-    // Current background layer is excluded
-    for (i = len - 1; i >= 1; i--) {
-      this['selectedLayers'].push(layers[i]);
-    }
-  }
-
+app.MainController.prototype.manageSelectedLayers_ =
+    function(scope, ngeoSyncArrays) {
+  ngeoSyncArrays(this['map'].getLayers().getArray(),
+      this['selectedLayers'], true, scope,
+      goog.bind(function(layer) {
+        return goog.array.indexOf(
+            this['map'].getLayers().getArray(), layer) !== 0;
+      }, this)
+  );
   scope.$watchCollection(goog.bind(function() {
-    return this['map'].getLayers().getArray();
-  }, this), goog.bind(updateSelectedLayers_, this));
+    return this['selectedLayers'];
+  }, this), goog.bind(function() {
+    this['map'].render();
+  }, this));
 };
 
 

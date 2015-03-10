@@ -1,6 +1,7 @@
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
-<ul id="layermanager-{{::ctrl.uid}}" class="layermanager">
+<ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-options="{handleClassName: 'sortable-handle'}" >
   <li ng-repeat="layer in ctrl.layers" class="panel">
+  <span class="sortable-handle fa fa-reorder"></span>
     <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>
     {{layer.get('label') | translate}}
     <a data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
