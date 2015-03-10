@@ -15,7 +15,7 @@ setup(
     author_email='info@camptocamp.com',
     url='http://www.camptocamp.com/geospatial-solutions',
     install_requires=[
-        'c2cgeoportal>=1.6.0dev-20150217',
+        'c2cgeoportal==1.6.0.dev-20150303',
         'elasticsearch',
         'python-ldap',
         'pyramid_ldap',
