@@ -50,7 +50,7 @@ app.module.directive('appProfile', app.profileDirective);
  */
 app.ProfileController = function($scope) {
 
-  
+
   /**
    * @param {Object} item
    * @return {number}
