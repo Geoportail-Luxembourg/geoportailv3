@@ -217,6 +217,14 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
       false,
       this);
 
+  $scope.$watch(goog.bind(function() {
+    return this['measureProfile'].getActive();
+  }, this), goog.bind(function(newVal) {
+    if (newVal === false) {
+      this['profileOpen'] = false;
+    }
+  }, this));
+
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -227,7 +235,6 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
       this['measureArea'].setActive(false);
       this['measureAzimut'].setActive(false);
       this['measureProfile'].setActive(false);
-      this['profileOpen'] = false;
     }
   }, this));
 };
