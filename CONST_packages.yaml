@@ -7,10 +7,11 @@ main:
     python:
         cmd: /usr/bin/python --version 2>&1 | awk '{{print $2}}'
         version: 2.7
+    python-dev: 2.7
     postgres:
-        cmd: sudo -u postgres /usr/lib/postgresql/9.1/bin/postmaster --version | awk '{{print $3}}'
+        cmd: psql --version | awk '{{print $3}}'
         version: 9.1
-    postgis: 
+    postgis:
         cmd: sudo -u postgres psql template_postgis -c "select PostGIS_lib_version();" -At
         #cmd: dpkg -l | grep postgis | grep ^ii | awk '{{print $3}}' | head -n 1
         version: 2.0
@@ -39,7 +40,7 @@ main:
         version: 0.18
 
 mobile:
-    sencha: 
+    sencha:
         cmd: sencha help 2> /dev/null | grep 'Sencha Cmd' | head -n 1 | awk '{{print $3}}' | sed 's/^v//'
     ruby-compass: 0 # just present
 

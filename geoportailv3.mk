@@ -16,6 +16,7 @@ TILECLOUD_CHAIN = FALSE
 DISABLE_BUILD_RULES = test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
+APACHE_VHOST ?= luxembourg-geomapfish
 
 UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
 

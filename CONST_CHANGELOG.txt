@@ -8,18 +8,22 @@ Version 1.6
 
     .build/venv/bin/pcreate -s c2cgeoportal_create /tmp/geoportailv3 package=geoportailv3
 
-    cp /tmp/geoportailv3/alembic.ini.in .
-    cp /tmp/geoportailv3/.jshintrc .
     cp /tmp/geoportailv3/.gitignore .
+    cp /tmp/geoportailv3/.jshintrc .
+    cp /tmp/geoportailv3/.travis.yml .
+    cp /tmp/geoportailv3/travis.mk .
     cp /tmp/geoportailv3/geoportailv3.mk .
     cp /tmp/geoportailv3/README.rst .
+    cp /tmp/geoportailv3/alembic.ini.mako .
+    cp /tmp/geoportailv3/alembic_static.ini.mako .
     cp /tmp/geoportailv3/build.json .
+    cp /tmp/geoportailv3/development.ini.mako .
     cp /tmp/geoportailv3/lingua.cfg .
     cp /tmp/geoportailv3/package.json .
-    cp /tmp/geoportailv3/development.ini.mako .
     cp /tmp/geoportailv3/production.ini.mako .
-
-    git add alembic.ini.in
+    cp /tmp/geoportailv3/vars_geoportailv3.yaml .
+    cp /tmp/geoportailv3/deploy/hooks/post-restore-code deploy/hooks
+    chmod +x deploy/hooks/post-restore-code
 
     rm -rf /tmp/geoportailv3
 
@@ -131,6 +135,17 @@ Version 1.6
 
     +OpenLayers.ImgPath = "${request.static_url('geoportailv3:static/lib/cgxp/core/src/theme/img/ol/')}";
 
+13. Remove your Apache configuration file, probably in
+    `/var/www/vhost/geoportailv3/conf`. Now it will be automatically created.
+
+14. Notes on database changes:
+    * In prevision of GeoMapFish 2.0 some tables were added and some fields updated.
+    * Table ``user`` has been moved to schema ``main_static`` in order to store all
+      data modified by the web application in the same schema.
+      As a result the passwords no longer need to be synchronised among the various instances
+      of the application and the password replication tool has been removed.
+
+
 Version 1.5.3
 =============
 
@@ -151,7 +166,7 @@ Version 1.5.2
    +    App.WFSTypes = jsonFormat.read('${dumps(wfs_types) | n}');
 
 2. In the ``geoportailv3/templates/viewer.js`` and ``geoportailv3/templates/edit.js`` files,
-   for plugins ``cgxp_layertree`` and ``cgxp_login``, 
+   for plugins ``cgxp_layertree`` and ``cgxp_login``,
    add the ``events`` parameter:
 
         ...
@@ -2824,4 +2839,3 @@ Added a colorpicker to the redlining tool.
 In the jsbuild/app.cfg, CGXP/plugins/Redlining.js should be replaced by
 CGXP/widgets/RedliningColorPicker.js for the new colorpicker or by
 CGXP/widgets/RedliningCombo.js to have the old combobox.
-
