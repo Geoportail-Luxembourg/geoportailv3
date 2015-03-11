@@ -51,6 +51,7 @@ app.ScaleselectorController = function($sce) {
    * @const
    */
   this['scales'] = {
+    '8': $sce.trustAsHtml('1&nbsp;:&nbsp;2\'000\'000'),
     '9': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'000\'000'),
     '10': $sce.trustAsHtml('1&nbsp;:&nbsp;500\'000'),
     '11': $sce.trustAsHtml('1&nbsp;:&nbsp;250\'000'),
