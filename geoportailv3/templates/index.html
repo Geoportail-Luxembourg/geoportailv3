@@ -113,7 +113,7 @@
         </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
-      <app-profile app-profiledata="mainCtrl.profiledata" app-profile-open="mainCtrl.profileOpen" app-profile-map="mainCtrl.map"></app-profile>
+      <app-profile app-profiledata="mainCtrl.profiledata" app-profile-open="mainCtrl.profileOpen" app-profile-map="::mainCtrl.map"></app-profile>
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
@@ -192,6 +192,7 @@
          appModule.constant('getuserinfoUrl', "${request.route_url('getuserinfo')}");
          appModule.constant('internalWmsUrl', "${request.route_url('wms')}");
          appModule.constant('elevationServiceUrl', "${request.route_url('raster')}");
+         appModule.constant('profilejsonUrl', "${request.route_url('profile.json')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
 
 % if debug:

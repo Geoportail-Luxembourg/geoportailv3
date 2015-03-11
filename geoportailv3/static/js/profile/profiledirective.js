@@ -101,7 +101,7 @@ app.ProfileController = function($scope) {
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return parseFloat((item['values']['dhm'] / 100).toPrecision(3));
+      return parseFloat((item['values']['dhm'] / 100).toPrecision(5));
     }
     return 0;
   };
@@ -231,7 +231,7 @@ app.ProfileController.prototype.formatDistance_ = function(dist) {
  */
 app.ProfileController.prototype.formatElevation_ = function(elevation) {
 
-  return parseFloat((elevation / 100).toPrecision(3)) +
+  return parseFloat((elevation / 100).toPrecision(5)) +
       ' ' + 'm';
 };
 

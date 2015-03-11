@@ -55,12 +55,13 @@ app.module.directive('appMeasure', app.measureDirective);
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {string} elevationServiceUrl the url of the service
+ * @param {string} profilejsonUrl The URL to the profile webservice.
  * @constructor
  * @export
  * @ngInject
  */
 app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
-    elevationServiceUrl) {
+    elevationServiceUrl, profilejsonUrl) {
 
   /**
    * @type {angular.$http}
@@ -73,6 +74,12 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    * @private
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.profilejsonUrl_ = profilejsonUrl;
 
   var sketchStyle = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -209,10 +216,10 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         };
         this['profileOpen'] = true;
-        $http.post('profile.json', req, config).then(
-            angular.bind(this, function(resp) {
+        $http.post(this.profilejsonUrl_, req, config).then(
+            goog.bind(function(resp) {
               this['profiledata'] = resp.data['profile'];
-            }));
+            }, this));
       },
       false,
       this);
