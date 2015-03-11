@@ -14,9 +14,9 @@ goog.provide('app.profileDirective');
 
 goog.require('app');
 goog.require('app.interaction.MeasureProfile');
-
 goog.require('ngeo');
 goog.require('ngeo.profileDirective');
+goog.require('ol.FeatureOverlay');
 
 
 /**
@@ -29,7 +29,8 @@ app.profileDirective = function(appProfileTemplateUrl) {
     restrict: 'E',
     scope: {
       'profiledata': '=appProfiledata',
-      'profileOpen': '=appProfileOpen'
+      'profileOpen': '=appProfileOpen',
+      'map': '=appProfileMap'
     },
     controller: 'AppProfileController',
     controllerAs: 'ctrl',
@@ -49,6 +50,49 @@ app.module.directive('appProfile', app.profileDirective);
  * @ngInject
  */
 app.ProfileController = function($scope) {
+  /**
+   * @private
+   */
+  this.distanceLabel_ = 'Distance : ';
+
+  /**
+   * @private
+   */
+  this.elevationLabel_ = 'Elevation : ';
+  /**
+   * Overlay to show the measurement.
+   * @type {ol.Overlay}
+   * @private
+   */
+  this.measureTooltip_ = null;
+
+  /**
+   * The measure tooltip element.
+   * @type {Element}
+   * @private
+   */
+  this.measureTooltipElement_ = null;
+
+  /**
+   * @type {ol.style.Style}
+   * @private
+   */
+  this.style_ = new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 3,
+      fill: new ol.style.Fill({color: 'white'})
+    })
+  });
+
+  /**
+   * The draw overlay
+   * @type {ol.FeatureOverlay}
+   * @private
+   */
+  this.overlay_ = new ol.FeatureOverlay({
+    map: this['map'],
+    style: this.style_
+  });
 
 
   /**
@@ -57,7 +101,7 @@ app.ProfileController = function($scope) {
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return item['values']['dhm'];
+      return parseFloat((item['values']['dhm'] / 100).toPrecision(3));
     }
     return 0;
   };
@@ -89,10 +133,32 @@ app.ProfileController = function($scope) {
   var hoverCallback = function(point) {
     // An item in the list of points given to the profile.
     that['point'] = point;
+    var dist = point['dist'];
+    var dhm = point['values']['dhm'];
+    that.overlay_.getFeatures().clear();
+    var srcPoint = new ol.geom.Point([point['x'], point['y']]);
+    var curPoint = /** @type {ol.geom.Point} */
+        (srcPoint.transform(
+            'EPSG:2169', that['map'].getView().getProjection()));
+    var positionFeature = new ol.Feature({
+      geometry: curPoint
+    });
+    that.overlay_.addFeature(positionFeature);
+
+    that.createMeasureTooltip_();
+    that.measureTooltipElement_.innerHTML = that.distanceLabel_ +
+        that.formatDistance_(dist) +
+        '<br>' +
+        that.elevationLabel_ +
+        that.formatElevation_(dhm);
+    that.measureTooltip_.setPosition(curPoint.getCoordinates());
+
   };
 
   var outCallback = function() {
     that['point'] = null;
+    that.removeMeasureTooltip_();
+    that.overlay_.getFeatures().clear();
   };
 
 
@@ -105,4 +171,68 @@ app.ProfileController = function($scope) {
 
   this['point'] = null;
 };
+
+
+/**
+ * Creates a new measure tooltip
+ * @private
+ */
+app.ProfileController.prototype.createMeasureTooltip_ = function() {
+  this.removeMeasureTooltip_();
+  this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.classlist.addAll(this.measureTooltipElement_,
+      ['tooltip', 'tooltip-measure']);
+  this.measureTooltip_ = new ol.Overlay({
+    element: this.measureTooltipElement_,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  this['map'].addOverlay(this.measureTooltip_);
+};
+
+
+/**
+ * Destroy the help tooltip
+ * @private
+ */
+app.ProfileController.prototype.removeMeasureTooltip_ = function() {
+  if (!goog.isNull(this.measureTooltipElement_)) {
+    this.measureTooltipElement_.parentNode.removeChild(
+        this.measureTooltipElement_);
+    this.measureTooltipElement_ = null;
+    this.measureTooltip_ = null;
+  }
+};
+
+
+/**
+ * Format the distance text.
+ * @param {number} dist
+ * @return {string}
+ * @private
+ */
+app.ProfileController.prototype.formatDistance_ = function(dist) {
+
+  if (dist > 1000) {
+    return parseFloat((dist / 1000).toPrecision(3)) +
+        ' ' + 'km';
+  }
+
+  return parseFloat(dist.toPrecision(3)) +
+      ' ' + 'm';
+};
+
+
+/**
+ * Format the elevation text.
+ * @param {number} elevation
+ * @return {string}
+ * @private
+ */
+app.ProfileController.prototype.formatElevation_ = function(elevation) {
+
+  return parseFloat((elevation / 100).toPrecision(3)) +
+      ' ' + 'm';
+};
+
 app.module.controller('AppProfileController', app.ProfileController);
