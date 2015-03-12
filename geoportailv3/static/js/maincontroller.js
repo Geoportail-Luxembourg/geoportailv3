@@ -128,7 +128,13 @@ app.MainController.prototype.setMap_ = function() {
     ],
     view: new ol.View({
       center: ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 8
+      zoom: 8,
+      maxZoom: 19,
+      minZoom: 8,
+      extent: ol.extent.boundingExtent([
+        ol.proj.transform([2.6, 47.7], 'EPSG:4326', 'EPSG:3857'),
+        ol.proj.transform([8.6, 51], 'EPSG:4326', 'EPSG:3857')
+      ])
     })
   });
 };
