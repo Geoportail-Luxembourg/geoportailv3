@@ -14,8 +14,8 @@
  * The content of the array of layers may change, but not the array itself.
  */
 goog.provide('app.layermanagerDirective');
-
 goog.require('app');
+goog.require('ngeo.sortableDirective');
 
 
 /**
@@ -57,6 +57,7 @@ app.LayermanagerController = function() {
  */
 app.LayermanagerController.prototype.removeLayer = function(layer) {
   this['map'].removeLayer(layer);
+
 };
 
 
