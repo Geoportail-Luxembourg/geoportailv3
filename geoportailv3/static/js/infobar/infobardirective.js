@@ -12,7 +12,6 @@
  */
 goog.provide('app.infobarDirective');
 goog.require('app');
-goog.require('ol.control.MousePosition');
 
 
 /**
