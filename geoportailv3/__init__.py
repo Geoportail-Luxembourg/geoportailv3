@@ -22,27 +22,33 @@ def main(global_config, **settings):
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
-    config.include('pyramid_ldap')
 
-    """Config the ldap connection.
-    """
     ldap_settings = config.get_settings()['ldap']
+    if ldap_settings:
+        config.include('pyramid_ldap')
 
-    config.ldap_setup(
-        ldap_settings['url'],
-        ldap_settings['bind'],
-        ldap_settings['passwd'],
-    )
+        """Config the ldap connection.
+        """
 
-    config.ldap_set_login_query(
-        ldap_settings['base_dn'],
-        filter_tmpl='(login=%(login)s)',
-        scope=ldap.SCOPE_SUBTREE,
+        config.ldap_setup(
+            ldap_settings['url'],
+            ldap_settings['bind'],
+            ldap_settings['passwd'],
         )
 
-    config.set_request_property(get_user_from_request, name='user', reify=True)
+        config.ldap_set_login_query(
+            ldap_settings['base_dn'],
+            filter_tmpl='(login=%(login)s)',
+            scope=ldap.SCOPE_SUBTREE,
+            )
 
-    set_user_validator(config, ldap_user_validator)
+        config.set_request_property(
+            get_user_from_request,
+            name='user',
+            reify=True
+        )
+
+        set_user_validator(config, ldap_user_validator)
 
     config.add_translation_dirs('geoportailv3:locale/')
 

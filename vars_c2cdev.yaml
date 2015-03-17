@@ -1,4 +1,5 @@
 extends: vars_geoportailv3.yaml
 
 vars:
-  host: luxembourg-geomapfish.dev.sig.cloud.camptocamp.net
+    ldap: false
+    host: luxembourg-geomapfish.dev.sig.cloud.camptocamp.net
