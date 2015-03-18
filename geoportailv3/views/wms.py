@@ -6,6 +6,7 @@ from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -80,12 +81,14 @@ class Wms(object):
         if remote_host[:-1] != "?" and remote_host[:-1] != "&":
             separator = "&"
 
-        url = remote_host + separator + param_wms[:-1]
+        escaped_parameters = urllib2.quote((param_wms[:-1]).encode('utf-8'))
+        url = remote_host + separator + escaped_parameters
 
         try:
-            f = urllib2.urlopen(url)
+            f = urllib2.urlopen(url, None, 5)
             data = f.read()
         except:
+            log.error(sys.exc_info()[0])
             log.error(url)
             return HTTPBadGateway()
 
