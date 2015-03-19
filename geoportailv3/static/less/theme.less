@@ -167,9 +167,12 @@
         color: @primary-color;
       }
     }
-    .theme-selector a {
-      background-color: @secondary-color;
-      color: white;
+    .theme-selector {
+      background-color: @tertiary-color;
+      & a{
+        background-color: @secondary-color;
+        color: white;
+      }
     }
   }
   .theme-@{theme} {
