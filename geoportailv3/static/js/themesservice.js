@@ -124,6 +124,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
       });
 };
 
+
 /**
  * Get an array of themes object.
  * @return {angular.$q.Promise} Promise.

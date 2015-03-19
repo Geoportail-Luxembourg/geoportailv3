@@ -1,6 +1,6 @@
 /**
- * @fileoverview This file provides the "themeswitcher" directive. That directive is
- * used to create the theme switcher in the page.
+ * @fileoverview This file provides the "themeswitcher" directive.
+ * That directive is used to create the theme switcher in the page.
  *
  */
 goog.provide('app.themeswitcherDirective');
@@ -47,20 +47,24 @@ app.ThemeswitcherController = function(appThemes) {
        */
       function(themes) {
         this['themes'] = goog.array.filter(themes, function(object) {
-          return "true" == object['metadata']['display_in_switcher'];
+          return 'true' == object['metadata']['display_in_switcher'];
         });
       }, this));
 
 };
+
 
 /**
  * @param {string} themeId The id of the theme.
  * @export
  */
 app.ThemeswitcherController.prototype.switchTheme = function(themeId) {
-goog.dom.getElementsByTagNameAndClass ('body')[0].setAttribute('data-theme',themeId)
-this['currentTheme']=themeId;
-}
+  goog.dom.getElementsByTagNameAndClass('body')[0].
+      setAttribute('data-theme', themeId);
+
+  this['currentTheme'] = themeId;
+};
 
 
-app.module.controller('AppThemeswitcherController', app.ThemeswitcherController);
+app.module.controller('AppThemeswitcherController',
+    app.ThemeswitcherController);
