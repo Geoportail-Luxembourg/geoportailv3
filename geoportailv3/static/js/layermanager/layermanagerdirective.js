@@ -48,6 +48,13 @@ app.module.directive('appLayermanager', app.layermanagerDirective);
  */
 app.LayermanagerController = function() {
   this['uid'] = goog.getUid(this);
+
+  /**
+   * Hash array to keep track of opacities set on layers.
+   * @type {Object.<number, number>}
+   * @private
+   */
+  this.opacities_ = {};
 };
 
 
@@ -68,13 +75,17 @@ app.LayermanagerController.prototype.removeLayer = function(layer) {
 app.LayermanagerController.prototype.changeVisibility = function(layer) {
   var currentOpacity = layer.getOpacity();
   var newOpacity;
+  var uid = goog.getUid(layer);
   if (currentOpacity === 0) {
-    var oldOpacity = /** @type {number|undefined} */ (layer.get('oldOpacity'));
-    newOpacity = goog.isDef(oldOpacity) ? oldOpacity : 1;
-    // reset oldOpacity for later use
-    layer.set('oldOpacity', undefined);
+    if (goog.isDef(this.opacities_[uid])) {
+      newOpacity = this.opacities_[uid];
+    } else {
+      newOpacity = 1;
+    }
+    // reset old opacity for later use
+    delete this.opacities_[uid];
   } else {
-    layer.set('oldOpacity', currentOpacity);
+    this.opacities_[uid] = currentOpacity;
     newOpacity = 0;
   }
   layer.setOpacity(newOpacity);
