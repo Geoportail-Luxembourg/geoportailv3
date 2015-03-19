@@ -60,12 +60,12 @@ app.CatalogController = function($scope, appThemes,
     return this['currentTheme'];
   }, this), goog.bind(function(newVal, oldVal) {
     appThemes.getThemeObject(this['currentTheme']).then(goog.bind(
-        /**
-     * @param {Object} tree Tree object for the theme.
-     */
-        function(tree) {
-          this['tree'] = tree;
-        }, this));
+      /**
+       * @param {Object} tree Tree object for the theme.
+       */
+      function(tree) {
+        this['tree'] = tree;
+      }, this));
   }, this));
 
   /**
