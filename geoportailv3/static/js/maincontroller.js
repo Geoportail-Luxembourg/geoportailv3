@@ -107,6 +107,11 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
    */
   this['selectedLayers'] = [];
 
+  /**
+   * @type {string}
+   */
+  this['currentTheme'] = 'main';
+
   this.setMap_();
 
   this.switchLanguage('fr');

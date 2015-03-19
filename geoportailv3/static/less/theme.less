@@ -1,5 +1,5 @@
 /** Themes related styling (mainly colors) **/
-.theme(@theme, @primary-color) {
+.theme(@theme, @primary-color, @icon) {
   [data-theme="@{theme}"] {
     @secondary-color: desaturate(lighten(@primary-color, 30%), 5%);
     @tertiary-color: darken(@primary-color, 10%);
@@ -167,9 +167,22 @@
         color: @primary-color;
       }
     }
+    .theme-selector a {
+      background-color: @secondary-color;
+      color: white;
+    }
+  }
+  .theme-@{theme} {
+    background-color: @primary-color;
+    a:after{
+      content: '\@{icon}';
+    }
   }
 }
 
-.theme(eau, #03a2ac);
-.theme(agriculture, #f39c11);
-.theme(environnement, #879d31);
+.theme(eau, #03a2ac, e016);
+.theme(agriculture, #f39c11, e001);
+.theme(main, #2980b9, e02c);
+.theme(at, #ff6600, e018);
+.theme(tourisme, #e21127, e027);
+.theme(emwelt, #879d31, e015);

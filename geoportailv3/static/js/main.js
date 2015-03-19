@@ -22,5 +22,6 @@ goog.require('app.projections');
 goog.require('app.projectionselectorDirective');
 goog.require('app.scalelineDirective');
 goog.require('app.scaleselectorDirective');
+goog.require('app.themeswitcherDirective');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.resizemapDirective');
