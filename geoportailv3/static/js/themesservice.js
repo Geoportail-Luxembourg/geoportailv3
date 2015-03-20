@@ -95,7 +95,9 @@ app.Themes.prototype.getBgLayers = function() {
        */
       function(data) {
         var bgLayers = data['background_layers'].map(goog.bind(function(item) {
-          var layer = this.getWmtsLayer_(item['name']);
+          goog.asserts.assert('name' in item);
+          goog.asserts.assert('imageType' in item);
+          var layer = this.getWmtsLayer_(item['name'], item['imageType']);
           layer.set('metadata', item['metadata']);
           return layer;
         }, this));
