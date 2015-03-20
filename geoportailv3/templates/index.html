@@ -52,14 +52,7 @@
             </ul>
           </li>
         </ul>
-        <form class="navbar-form pull-right hidden-xs" role="search">
-          <div class="form-group">
-              <input type="text" class="form-control" placeholder="{{'search_key_words'|translate}}" />
-          </div>
-          <button type="submit" class="icon search">
-            Search
-          </button>
-        </form>
+        <app-search app-search-map="::mainCtrl.map"></app-search>
       </div>
     </header>
 
@@ -175,6 +168,7 @@
     <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/d3/d3.min.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/ngeo/externs/typeahead.js' % node_modules_path)}"></script>
 % else:
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
@@ -212,6 +206,7 @@
          appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
          appModule.value('appProfileTemplateUrl', '${request.static_url('geoportailv3:static/js/profile/profile.html')}');
          appModule.value('appPrintTemplateUrl', '${request.static_url('geoportailv3:static/js/print/print.html')}');
+         appModule.value('appSearchTemplateUrl', '${request.static_url('geoportailv3:static/js/search.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
