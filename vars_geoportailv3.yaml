@@ -59,6 +59,7 @@ vars:
         disabled:
         - checker_main
         - checker_viewer
+        - checker_theme_errors # TODO configure and enable it
         - checker_edit
         - checker_edit_js
         - checker_api

@@ -1,5 +1,0 @@
-http://closure-linter.googlecode.com/files/closure_linter-latest.tar.gz
-flake8==2.2.2
-pep8-naming==0.2.2
-c2c.template==1.0.0
-pyramid_debugtoolbar

@@ -1,6 +1,0 @@
---index-url http://pypi.camptocamp.net/pypi
---find-links http://pypi.camptocamp.net/internal-pypi/index/c2cgeoportal
-shapely==1.5.3
--e git+https://github.com/camptocamp/pyramid_closure#egg=pyramid_closure
--e git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
--e .
