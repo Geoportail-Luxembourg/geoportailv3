@@ -28,7 +28,7 @@ app.catalogDirective = function() {
     restrict: 'E',
     scope: {
       'map': '=appCatalogMap',
-      'currentTheme': '=appCurrentTheme'
+      'currentTheme': '=appCatalogCurrenttheme'
     },
     controller: 'AppCatalogController',
     controllerAs: 'catalogCtrl',
@@ -58,7 +58,7 @@ app.CatalogController = function($scope, appThemes,
 
   $scope.$watch(goog.bind(function() {
     return this['currentTheme'];
-  }, this), goog.bind(function(newVal, oldVal) {
+  }, this), goog.bind(function() {
     appThemes.getThemeObject(this['currentTheme']).then(goog.bind(
         /**
          * @param {Object} tree Tree object for the theme.

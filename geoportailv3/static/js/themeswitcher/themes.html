@@ -22,7 +22,7 @@
 <div id="themes-content" class="collapse">
     <div class="scrollable">
         <ul class="themes-list clearfix">
-            <li ng-repeat='theme in ctrl.themes' class="theme-{{theme.name}}">
+            <li ng-repeat='theme in ::ctrl.themes' class="theme-{{theme.name}}">
                 <a href="#themes-content" data-toggle="collapse" ng-click="ctrl.switchTheme(theme.name)">{{theme.name}}</a>
             </li>
         </ul>

@@ -19,7 +19,7 @@ app.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
     scope: {
-      'currentTheme': '=appCurrentTheme'
+      'currentTheme': '=appThemeswitcherCurrenttheme'
     },
     controllerAs: 'ctrl',
     bindToController: true,
@@ -59,9 +59,6 @@ app.ThemeswitcherController = function(appThemes) {
  * @export
  */
 app.ThemeswitcherController.prototype.switchTheme = function(themeId) {
-  goog.dom.getElementsByTagNameAndClass('body')[0].
-      setAttribute('data-theme', themeId);
-
   this['currentTheme'] = themeId;
 };
 
