@@ -13,7 +13,7 @@ MOBILE = FALSE
 NGEO = TRUE
 TILECLOUD_CHAIN = FALSE
 
-DISABLE_BUILD_RULES = test-packages test-packages-ngeo
+DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
 APACHE_VHOST ?= luxembourg-geomapfish
