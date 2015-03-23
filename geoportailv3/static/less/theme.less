@@ -173,12 +173,20 @@
         background-color: @secondary-color;
         color: white;
       }
+      &:hover {
+        background-color: white;
+        color: @primary-color;
+      }
     }
   }
   .theme-@{theme} {
     background-color: @primary-color;
     a:after{
       content: '\@{icon}';
+    }
+    a:hover {
+      background-color: white;
+      color: @primary-color;
     }
   }
 }

@@ -1,4 +1,4 @@
-<div class="theme-selector" href="#themes-content" data-toggle="collapse">
+<div class="theme-selector" href=".themes-switcher" data-toggle="collapse">
     Theme: <span>{{ctrl.currentTheme}}</span>
     <a href="#">
         Changer
@@ -19,12 +19,10 @@
     </a>
 </div>
 
-<div id="themes-content" class="collapse">
-    <div class="scrollable">
-        <ul class="themes-list clearfix">
-            <li ng-repeat='theme in ::ctrl.themes' class="theme-{{theme.name}}">
-                <a href="#themes-content" data-toggle="collapse" ng-click="ctrl.switchTheme(theme.name)">{{theme.name}}</a>
-            </li>
-        </ul>
-    </div>
+<div id="themes-content" class="collapse themes-switcher">
+    <ul class="themes-list clearfix">
+        <li ng-repeat='theme in ::ctrl.themes' class="theme-{{theme.name}}">
+            <a href=".themes-switcher" data-toggle="collapse" ng-click="ctrl.switchTheme(theme.name)">{{theme.name}}</a>
+        </li>
+    </ul>
 </div>

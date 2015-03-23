@@ -35,7 +35,8 @@ app.catalogDirective = function() {
     bindToController: true,
     template: '<div ngeo-layertree="catalogCtrl.tree" ' +
         'ngeo-layertree-map="catalogCtrl.map" ' +
-        'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)"></div>'
+        'ngeo-layertree-nodelayer="catalogCtrl.getLayer(node)" ' +
+        'class="themes-switcher collapse in"></div>'
   };
 };
 
