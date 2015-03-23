@@ -1,6 +1,7 @@
 INSTANCE_ID = pgiraud
 VARS_FILE = vars_${INSTANCE_ID}.yaml
 PRINT_OUTPUT = /tmp
+DISABLE_BUILD_RULES = apache
 
 include geoportailv3.mk
 
