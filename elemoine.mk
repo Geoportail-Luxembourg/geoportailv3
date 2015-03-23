@@ -1,7 +1,6 @@
 INSTANCE_ID = elemoine
 VARS_FILE = vars_${INSTANCE_ID}.yaml
-PRINT_OUTPUT = /tmp
-DISABLE_BUILD_RULES = apache
+DISABLE_BUILD_RULES = apache print
 
 include geoportailv3.mk
 
