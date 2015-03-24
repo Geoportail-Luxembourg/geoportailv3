@@ -20,6 +20,7 @@ app.ThemesResponse;
  * @constructor
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
+ * @ngInject
  */
 app.Themes = function($http, treeUrl) {
   /**
@@ -99,17 +100,4 @@ app.Themes.prototype.getThemeObject = function(themeName) {
 };
 
 
-/**
- * The factory function creating the appThemes service.
- * @param {angular.$http} $http Angular http service.
- * @param {string} treeUrl URL to "themes" web service.
- * @return {app.Themes} The themes service.
- * @private
- * @ngInject
- */
-app.ThemesFactory_ = function($http, treeUrl) {
-  return new app.Themes($http, treeUrl);
-};
-
-
-app.module.factory('appThemes', app.ThemesFactory_);
+app.module.service('appThemes', app.Themes);
