@@ -42,7 +42,7 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
   /**
    * @type {Array.<Object>}
    */
-  this['profiledata'] = [{'y': 0, 'values': {'dhm': 0}, 'dist': 0, 'x': 0}];
+  this['profileData'] = [{'y': 0, 'values': {'dhm': 0}, 'dist': 0, 'x': 0}];
 
   /**
    * @type {angularGettext.Catalog}
@@ -108,7 +108,7 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
   this['userOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['profileOpen'] = false;
 

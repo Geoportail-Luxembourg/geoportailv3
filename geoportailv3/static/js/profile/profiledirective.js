@@ -1,10 +1,12 @@
 /**
- * @fileoverview This file provides a measure directive. This directive is used
- * to create a measure panel in the page.
+ * @fileoverview This file provides a profile directive. This directive is used
+ * to create a profile panel in the page.
  *
  * Example:
  *
- * <app-measure app-measure-map="::mainCtrl.map"></app-measure>
+ * <app-profile app-profile-data="mainCtrl.profileData"
+ *   app-profile-open="mainCtrl.profileOpen" app-profile-map="::mainCtrl.map">
+ * </app-profile>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -27,7 +29,7 @@ app.profileDirective = function(appProfileTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'profiledata': '=appProfiledata',
+      'profileData': '=appProfileData',
       'profileOpen': '=appProfileOpen',
       'map': '=appProfileMap'
     },
@@ -58,6 +60,7 @@ app.ProfileController = function($scope) {
    * @private
    */
   this.elevationLabel_ = 'Elevation : ';
+
   /**
    * Overlay to show the measurement.
    * @type {ol.Overlay}
