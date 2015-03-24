@@ -1,0 +1,25 @@
+@notify-width-md: 500px;
+@notify-width-sm: 350px;
+.notify {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  right: 50%;
+  width: @notify-width-sm;
+  margin-left: ~"calc(-@{notify-width-sm} / 2)";
+  z-index: @zindex-popover;
+}
+
+@media (min-width: @screen-md-min) {
+  .notify {
+    width: @notify-width-md;
+    margin-left: ~"calc(-@{notify-width-md} / 2)";
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .notify {
+    max-width: 100%;
+    width: ~"calc(100% - 10px)";
+  }
+}
