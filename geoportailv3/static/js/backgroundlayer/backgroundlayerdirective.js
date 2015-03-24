@@ -16,8 +16,8 @@
 goog.provide('app.backgroundlayerDirective');
 
 goog.require('app');
-goog.require('app.GetWmtsLayer');
 goog.require('app.Themes');
+goog.require('ngeo.BackgroundEventType');
 goog.require('ngeo.BackgroundLayerMgr');
 
 
@@ -50,30 +50,16 @@ app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.Themes} appThemes Themes service.
- * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @export
  * @ngInject
  */
-app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes,
-    appGetWmtsLayer) {
+app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
 
   /**
    * @type {ngeo.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
-
-  /**
-   * @type {app.GetWmtsLayer}
-   * @private
-   */
-  this.getWmtsLayer_ = appGetWmtsLayer;
-
-  /**
-   * @type {ol.layer.Tile}
-   * @private
-   */
-  this.blankLayer_ = new ol.layer.Tile();
 
   appThemes.getBgLayers().then(goog.bind(
       /**
@@ -84,18 +70,20 @@ app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes,
         this['bgLayer'] = this['bgLayers'][0];
         this.setLayer(this['bgLayer']);
       }, this));
+
+  goog.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
+      function() {
+        this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
+      }, undefined, this);
 };
 
 
 /**
- * @param {Object} layerSpec Layer specificacion object.
+ * @param {ol.layer.Base} layer Layer.
  * @export
  */
-app.BackgroundlayerController.prototype.setLayer = function(layerSpec) {
-  this['bgLayer'] = layerSpec;
-  var layerName = layerSpec['name'];
-  var layer = layerName === 'blank' ?
-      this.blankLayer_ : this.getWmtsLayer_(layerName);
+app.BackgroundlayerController.prototype.setLayer = function(layer) {
+  this['bgLayer'] = layer;
   this.backgroundLayerMgr_.set(this['map'], layer);
 };
 

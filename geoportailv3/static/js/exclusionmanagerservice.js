@@ -1,0 +1,170 @@
+/**
+ * @fileoverview This file defines the Exclusion service. This service manages
+ * the exclusion between layers.
+ */
+goog.provide('app.ExclusionManager');
+
+goog.require('app');
+goog.require('app.BlankLayer');
+goog.require('app.Notify');
+goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ol.Object');
+
+
+
+/**
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
+ * @param {app.BlankLayer} appBlankLayer Blank layer service.
+ * @param {app.Notify} appNotify Notify service.
+ * @constructor
+ * @ngInject
+ */
+app.ExclusionManager = function(ngeoBackgroundLayerMgr, appBlankLayer,
+    appNotify) {
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type {app.BlankLayer}
+   * @private
+   */
+  this.blankLayer_ = appBlankLayer;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
+};
+
+
+/**
+ * @param {string} one The first list of exclusions.
+ * @param {string} two The second list of exclusions.
+ * @return {boolean} Whether the array intersect or not.
+ * @private
+ */
+app.ExclusionManager.prototype.intersects_ = function(one, two) {
+  var arr1 = /** @type {Array} */ (JSON.parse(one));
+  var arr2 = /** @type {Array} */ (JSON.parse(two));
+  var concat = arr1.concat(arr2);
+  goog.array.sort(concat);
+  var i;
+  var len = concat.length;
+  for (i = 1; i < len; i++) {
+    if (concat[i] == concat[i - 1]) {
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
+ * @param {ol.Map} map The OpenLayers Map.
+ * @param {ol.layer.Layer} layer1 The layer which was added or for which the
+ *     opacity property has changed.
+ * @private
+ */
+app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
+  var opacity = layer1.getOpacity();
+  // don't do anything if layer is not displayed on map
+  if (opacity === 0) {
+    return;
+  }
+
+  if (!goog.isDef(layer1.get('metadata'))) {
+    return;
+  }
+  var exclusion1 = layer1.get('metadata')['exclusion'];
+
+  if (!goog.isDef(exclusion1)) {
+    return;
+  }
+
+  var layers = map.getLayers().getArray();
+  var len = layers.length;
+  var i;
+  var layer2;
+  var msg;
+
+  var layersToHide = [];
+  for (i = 0; i < len; i++) {
+    layer2 = layers[i];
+    if (layer2 == layer1 || !goog.isDef(layer2.get('metadata')) ||
+        !goog.isDef(layer2.get('metadata')['exclusion'])) {
+      continue;
+    }
+
+    // check exclusion with current baselayer
+    var exclusion2 = layer2.get('metadata')['exclusion'];
+    opacity = layer2.getOpacity();
+    if (this.intersects_(exclusion1, exclusion2) && opacity > 0) {
+      // layer to exclude is not the current base layer
+      if (i !== 0) {
+        layersToHide.push(layer2.get('label'));
+        layer2.setOpacity(0);
+      } else {
+        this.backgroundLayerMgr_.set(map, this.blankLayer_);
+        msg = 'The background layer has been deactivated because the ' +
+            'layer <b>' + layer1.get('label') +
+            '</b> cannot be displayed on top of it';
+        this.notify_(msg);
+      }
+    }
+  }
+  if (layersToHide.length) {
+    msg = 'The layer(s) <b>' + layersToHide.join(',') +
+        '</b> have been deactivated because they cannot be displayed while ' +
+        ' the layer <b>' + layer1.get('label') +
+        '</b> is displayed';
+    this.notify_(msg);
+  }
+};
+
+
+/**
+ * @param {ol.Map} map The OpenLayers map.
+ */
+app.ExclusionManager.prototype.init = function(map) {
+  var layerOpacityListenerKeys = {};
+
+  // listen on layers being added to the map
+  // base layers switch should fire the event as well
+  goog.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} e Collection event.
+       */
+      function(e) {
+        var layer = /** @type {ol.layer.Layer} */ (e.element);
+        this.checkForLayerExclusion_(map, layer);
+
+        // listen on opacity change
+        var key = goog.events.listen(layer,
+            ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
+            function(e) {
+              this.checkForLayerExclusion_(map, layer);
+            }, undefined, this);
+        layerOpacityListenerKeys[goog.getUid(layer)] = key;
+      }, undefined, this);
+
+  // remove any listener on opacity change when layer is removed from map
+  goog.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} e Collection event.
+       */
+      function(e) {
+        var layer = /** @type {ol.layer.Layer} */ (e.element);
+        goog.asserts.assert(goog.getUid(layer) in layerOpacityListenerKeys);
+        goog.events.unlistenByKey(layerOpacityListenerKeys[goog.getUid(layer)]);
+      }, undefined, this);
+};
+
+app.module.service('appExclusionManager', app.ExclusionManager);
