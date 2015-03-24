@@ -12,7 +12,6 @@ goog.provide('app.MainController');
 goog.require('app');
 goog.require('app.LocationControl');
 goog.require('ngeo.SyncArrays');
-goog.require('ngeo.mapDirective');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.FullScreen');
@@ -127,8 +126,6 @@ app.MainController.prototype.setMap_ = function() {
       new app.LocationControl({label: '\ue800'})
     ],
     view: new ol.View({
-      center: ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 8,
       maxZoom: 19,
       minZoom: 8,
       extent: ol.extent.boundingExtent([

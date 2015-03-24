@@ -111,9 +111,7 @@
           </button>
         </div>
       </div>
-      <div id="map" ngeo-map="mainCtrl.map">
-        <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
-      </div>
+      <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
 
     <!-- Begin bottom bar -->
@@ -205,6 +203,7 @@
          appModule.value('appAuthenticationTemplateUrl', '${request.static_url('geoportailv3:static/js/authentication/authentication.html')}');
          appModule.value('appInfobarTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/infobar.html')}');
          appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
+         appModule.value('appMapTemplateUrl', '${request.static_url('geoportailv3:static/js/map/map.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -217,6 +216,7 @@
          appModule.value('appAuthenticationTemplateUrl', 'authentication/authentication.html');
          appModule.value('appInfobarTemplateUrl', 'infobar/infobar.html');
          appModule.value('appProjectionselectorTemplateUrl', 'infobar/projectionselector.html');
+         appModule.value('appMapTemplateUrl', 'map/map.html');
 % endif
        })();
     </script>
