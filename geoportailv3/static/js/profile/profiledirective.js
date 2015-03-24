@@ -13,7 +13,6 @@
 goog.provide('app.profileDirective');
 
 goog.require('app');
-goog.require('app.interaction.MeasureProfile');
 goog.require('ngeo');
 goog.require('ngeo.profileDirective');
 goog.require('ol.FeatureOverlay');

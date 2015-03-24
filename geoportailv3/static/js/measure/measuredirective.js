@@ -13,12 +13,12 @@
 goog.provide('app.measureDirective');
 
 goog.require('app');
-goog.require('app.interaction.MeasureProfile');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
 
 
@@ -123,7 +123,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    */
   this.map_ = this['map'];
 
-  var measureProfile = new app.interaction.MeasureProfile({
+  var measureProfile = new ngeo.interaction.MeasureLength({
     sketchStyle: sketchStyle
   });
 
@@ -199,30 +199,26 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         }, this));
       }, this));
 
-
-  goog.events.listen(measureProfile.drawInteraction, ol.DrawEventType.DRAWEND,
-      function(evt) {
-        var geom = /** @type {ol.geom.Geometry} */ (evt.feature.getGeometry());
-        var encOpt = {
-          dataProjection: 'EPSG:2169',
-          featureProjection: this['map'].getView().getProjection()
-        };
-        var req = $.param({
-          'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
-          'nbPoints': 100,
-          'layers': 'dhm'
-        });
-        var config = {
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        };
-        this['profileOpen'] = true;
-        $http.post(this.profilejsonUrl_, req, config).then(
-            goog.bind(function(resp) {
-              this['profiledata'] = resp.data['profile'];
-            }, this));
-      },
-      false,
-      this);
+  measureProfile.on(ngeo.MeasureEventType.MEASUREEND, goog.bind(function(evt) {
+    var geom = /** @type {ol.geom.Geometry} */ (evt.feature.getGeometry());
+    var encOpt = {
+      dataProjection: 'EPSG:2169',
+      featureProjection: this['map'].getView().getProjection()
+    };
+    var req = $.param({
+      'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
+      'nbPoints': 100,
+      'layers': 'dhm'
+    });
+    var config = {
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+    this['profileOpen'] = true;
+    $http.post(this.profilejsonUrl_, req, config).then(
+        goog.bind(function(resp) {
+          this['profiledata'] = resp.data['profile'];
+        }, this));
+  }, this));
 
   $scope.$watch(goog.bind(function() {
     return this['measureProfile'].getActive();
