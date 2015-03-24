@@ -6,6 +6,8 @@
 goog.provide('app.Themes');
 
 goog.require('app');
+goog.require('app.BlankLayer');
+goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
 
 
@@ -20,9 +22,24 @@ app.ThemesResponse;
  * @constructor
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
+ * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
+ * @param {app.BlankLayer} appBlankLayer Blank Layer service.
  * @ngInject
  */
-app.Themes = function($http, treeUrl) {
+app.Themes = function($http, treeUrl, appGetWmtsLayer, appBlankLayer) {
+
+  /**
+   * @type {app.GetWmtsLayer}
+   * @private
+   */
+  this.getWmtsLayer_ = appGetWmtsLayer;
+
+  /**
+   * @type {app.BlankLayer}
+   * @private
+   */
+  this.blankLayer_ = appBlankLayer;
+
   /**
    * @type {angular.$q.Promise}
    * @private
@@ -71,14 +88,22 @@ app.Themes.findTheme_ = function(themes, themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getBgLayers = function() {
-  return this.promise_.then(
+  return this.promise_.then(goog.bind(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
        * @return {Array.<Object>} Array of background layer objects.
        */
       function(data) {
-        return data['background_layers'];
-      });
+        var bgLayers = data['background_layers'].map(goog.bind(function(item) {
+          var layer = this.getWmtsLayer_(item['name']);
+          layer.set('metadata', item['metadata']);
+          return layer;
+        }, this));
+
+        // add the blank layer
+        bgLayers.push(this.blankLayer_);
+        return bgLayers;
+      }, this));
 };
 
 

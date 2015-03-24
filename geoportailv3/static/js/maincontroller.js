@@ -10,6 +10,7 @@
 goog.provide('app.MainController');
 
 goog.require('app');
+goog.require('app.ExclusionManager');
 goog.require('app.LocationControl');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
@@ -27,6 +28,7 @@ goog.require('ol.tilegrid.WMTS');
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+ * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
@@ -34,8 +36,8 @@ goog.require('ol.tilegrid.WMTS');
  * @export
  * @ngInject
  */
-app.MainController = function($scope, gettextCatalog, langUrls,
-    defaultExtent, ngeoSyncArrays) {
+app.MainController = function($scope, gettextCatalog, appExclusionManager,
+    langUrls, defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -106,8 +108,10 @@ app.MainController = function($scope, gettextCatalog, langUrls,
   this['selectedLayers'] = [];
 
   this.setMap_();
+
   this.switchLanguage('fr');
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
+  appExclusionManager.init(this.map_);
 };
 
 
@@ -117,7 +121,7 @@ app.MainController = function($scope, gettextCatalog, langUrls,
 app.MainController.prototype.setMap_ = function() {
 
   /** @type {ol.Map} */
-  this['map'] = new ol.Map({
+  this.map_ = this['map'] = new ol.Map({
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue031', zoomOutLabel: '\ue025'}),
       new ol.control.ZoomToExtent({label: '\ue01b',
@@ -144,17 +148,17 @@ app.MainController.prototype.setMap_ = function() {
  */
 app.MainController.prototype.manageSelectedLayers_ =
     function(scope, ngeoSyncArrays) {
-  ngeoSyncArrays(this['map'].getLayers().getArray(),
+  ngeoSyncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
         return goog.array.indexOf(
-            this['map'].getLayers().getArray(), layer) !== 0;
+            this.map_.getLayers().getArray(), layer) !== 0;
       }, this)
   );
   scope.$watchCollection(goog.bind(function() {
     return this['selectedLayers'];
   }, this), goog.bind(function() {
-    this['map'].render();
+    this.map_.render();
   }, this));
 };
 

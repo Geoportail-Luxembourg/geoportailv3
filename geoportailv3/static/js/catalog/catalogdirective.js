@@ -78,9 +78,6 @@ app.CatalogController = function(appThemes, appGetLayerForCatalogNode) {
  */
 app.CatalogController.prototype.getLayer = function(node) {
   var layer = this.getLayerFunc_(node);
-  if (!goog.isNull(layer)) {
-    layer.set('metadata', node['metadata']);
-  }
   return layer;
 };
 
