@@ -184,8 +184,13 @@
     a:after{
       content: '\@{icon}';
     }
-    a:hover {
+    a.active{
       background-color: white;
+    }
+    a:hover {
+      background-color: #ccc;
+    }
+    a:hover, a.active{
       color: @primary-color;
     }
   }
