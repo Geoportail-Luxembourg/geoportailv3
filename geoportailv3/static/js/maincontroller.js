@@ -96,7 +96,7 @@ app.MainController = function($scope, gettextCatalog, langUrls,
   this['shareOpen'] = false;
 
   /**
-   * @type {Boolean}
+   * @type {boolean}
    */
   this['userOpen'] = false;
 
