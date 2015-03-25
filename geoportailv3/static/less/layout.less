@@ -233,7 +233,7 @@ div.ol-zoom-extent > button {
     display: inline-block;
     float: left;
     background-repeat: no-repeat;
-    background-position: 1px top; 
+    background-position: 1px top;
   }
 }
 
@@ -245,7 +245,7 @@ div.ol-zoom-extent > button {
   z-index: 10;
   width: 320px;
   & .open {
-    display:block; 
+    display:block;
   }
 }
 
@@ -308,7 +308,7 @@ div.ol-zoom-extent > button {
   margin: 0px;
 }
 .navigation-account .tab:after {
-    font-family: "geoportail-icons"; 
+    font-family: "geoportail-icons";
     font-size:28px;
     line-height:41px;
     color:#fff;
@@ -403,4 +403,62 @@ div.ol-zoom-extent > button {
 }
 *:before, *:after {
     box-sizing: border-box;
+}
+/** Theme Switcher **/
+.theme-selector {
+  padding: 8px 6px;
+  color: white;
+  margin: 10px;
+  cursor: pointer;
+  span {
+    text-transform: uppercase;
+  }
+  a {
+    float: right;
+    font-size: 0.8em;
+    padding: 2px 4px;
+    text-decoration: none;
+    margin-top: -2px;
+  }
+  table {
+    border-collapse: separate;
+    border-spacing: 1px;
+    display: inline-block;
+    vertical-align: middle;
+    & tr > td {
+      height: 10px;
+      width: 10px;
+    }
+  }
+
+}
+.themes-list {
+  list-style-type: none;
+  margin: 0 0 0 10px;
+  padding: 0;
+  width: 300px;
+  li {
+      float: left;
+      width: 50%;
+  }
+  a {
+    color: rgba(255, 255, 255, 0.4);
+    display: block;
+    font-size: 24px;
+    height: 150px;
+    padding: 20px 10px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  a:focus {
+    color: #fff;
+  }
+  a:after {
+    bottom: 0px;
+    font-family: "geoportail-icons" !important;
+    font-size: 2.5em;
+    left: 10px;
+    position: absolute;
+  }
 }

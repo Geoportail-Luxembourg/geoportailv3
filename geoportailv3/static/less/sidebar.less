@@ -57,6 +57,16 @@
     //   tab font-size - tab padding*2;
     // FIXME: use variables for the calculation
     height: ~"calc(100% - 40px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
-    overflow: auto;
+    overflow: hidden;
+  }
+
+  .themes-switcher {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: ~"calc(100% - 105px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
+    position: absolute;
+    width:100%;
+    -webkit-transition: none;
+    transition: none;
   }
 }

@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
 % endif
   </head>
-  <body data-theme="environnement">
+  <body data-theme="{{mainCtrl.currentTheme}}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -94,7 +94,8 @@
               </div>
             </div>
             <div id="catalog" class="tab-pane">
-              <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
+              <app-themeswitcher app-themeswitcher-currenttheme="mainCtrl.currentTheme"></app-themeswitcher>
+              <app-catalog app-catalog-map="::mainCtrl.map" app-catalog-currenttheme="mainCtrl.currentTheme"></app-catalog>
             </div>
           </div>
         </div>
@@ -204,6 +205,7 @@
          appModule.value('appInfobarTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/infobar.html')}');
          appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
          appModule.value('appMapTemplateUrl', '${request.static_url('geoportailv3:static/js/map/map.html')}');
+         appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -217,6 +219,7 @@
          appModule.value('appInfobarTemplateUrl', 'infobar/infobar.html');
          appModule.value('appProjectionselectorTemplateUrl', 'infobar/projectionselector.html');
          appModule.value('appMapTemplateUrl', 'map/map.html');
+         appModule.value('appThemeswitcherTemplateUrl', 'themeswitcher/themes.html');
 % endif
        })();
     </script>

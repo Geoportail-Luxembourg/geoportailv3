@@ -125,4 +125,20 @@ app.Themes.prototype.getThemeObject = function(themeName) {
 };
 
 
+/**
+ * Get an array of theme objects.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Themes.prototype.getThemesObject = function() {
+  return this.promise_.then(
+      /**
+       * @param {app.ThemesResponse} data The "themes" web service response.
+       * @return {Array.<Object>} The themes object.
+       */
+      function(data) {
+        var themes = data['themes'];
+        return themes;
+      });
+};
+
 app.module.service('appThemes', app.Themes);

@@ -1,20 +1,20 @@
 <a data-toggle="collapse" data-parent="#catalog-{{::layertreenodeCtrl.parentUid}}"
    href="#catalog-{{::layertreenodeCtrl.uid}}"
-   ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
+   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
   {{layertreenodeCtrl.node.name | translate}}
 </a>
-<span ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
+<span ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
   {{layertreenodeCtrl.node.name | translate}}
 </span>
-<div ng-if="::!layertreenodeCtrl.node.children">
-  <app-layerinfo app-layerinfo-layer="::layertreenodeCtrl.layer"></app-layerinfo>
+<div ng-if="!layertreenodeCtrl.node.children">
+  <app-layerinfo app-layerinfo-layer="layertreenodeCtrl.layer"></app-layerinfo>
   {{layertreenodeCtrl.node.name | translate}}
-  <input type="checkbox" ng-if="::!layertreenodeCtrl.node.children"
+  <input type="checkbox" ng-if="!layertreenodeCtrl.node.children"
       ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
 </div>
-<ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="::layertreenodeCtrl.node.children"
+<ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="layertreenodeCtrl.node.children"
   ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
-  <li ng-repeat="node in ::layertreenodeCtrl.node.children"
+  <li ng-repeat="node in layertreenodeCtrl.node.children"
       ngeo-layertreenode="node" ngeo-layertreenode-map="layertreenodeCtrl.map"
       ngeo-layertreenode-layerexpr="layertreenodeCtrl.layerExpr"
       ng-class="(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''">

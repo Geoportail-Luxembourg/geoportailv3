@@ -1,5 +1,5 @@
 /** Themes related styling (mainly colors) **/
-.theme(@theme, @primary-color) {
+.theme(@theme, @primary-color, @icon) {
   [data-theme="@{theme}"] {
     @secondary-color: desaturate(lighten(@primary-color, 30%), 5%);
     @tertiary-color: darken(@primary-color, 10%);
@@ -30,7 +30,6 @@
           color: white;
         }
       }
-
       .tab-content {
         background-color: @primary-color;
       }
@@ -134,28 +133,28 @@
     }
 
     .navigation-account {
-      background-color: @secondary-color; 
-      .account-content { 
-        background-color: @primary-color; 
+      background-color: @secondary-color;
+      .account-content {
+        background-color: @primary-color;
       }
       input[type=submit] {
-        background-color: @secondary-color; 
+        background-color: @secondary-color;
       }
-      input[type=submit]:hover { 
+      input[type=submit]:hover {
         color: @tertiary-color;
       }
       .tab {
-        background-color: @primary-color; 
+        background-color: @primary-color;
       }
     }
     .account-content > ul li a {
-      background-color: @tertiary-color; 
+      background-color: @tertiary-color;
       &:hover {
         background-color: @secondary-color;
       }
     }
     .account-content > ul li p {
-      background-color: @secondary-color; 
+      background-color: @secondary-color;
     }
     .navbar-default .navbar-nav > .active > a {
       &:focus, & {
@@ -167,9 +166,38 @@
         color: @primary-color;
       }
     }
+    .theme-selector {
+      background-color: @tertiary-color;
+      & a{
+        background-color: @secondary-color;
+        color: white;
+      }
+      &:hover {
+        background-color: white;
+        color: @primary-color;
+      }
+    }
+  }
+  .theme-@{theme} {
+    background-color: @primary-color;
+    a:after{
+      content: '\@{icon}';
+    }
+    a.active{
+      background-color: white;
+    }
+    a:hover {
+      background-color: #ccc;
+    }
+    a:hover, a.active{
+      color: @primary-color;
+    }
   }
 }
 
-.theme(eau, #03a2ac);
-.theme(agriculture, #f39c11);
-.theme(environnement, #879d31);
+.theme(eau, #03a2ac, e016);
+.theme(agriculture, #f39c11, e001);
+.theme(main, #2980b9, e02c);
+.theme(at, #ff6600, e018);
+.theme(tourisme, #e21127, e027);
+.theme(emwelt, #879d31, e015);
