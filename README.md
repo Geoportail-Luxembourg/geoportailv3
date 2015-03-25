@@ -22,9 +22,14 @@ The following must be installed on the system:
 * ``npm``
 * ``openldap-devel`` (or ``libldap2-dev`` and ``libsasl2-dev`` on Debian)
 
-For the print to work, you wil need
+For the print to work, you will need
 * ``jdk`` (java-1.7.0-openjdk-devel)
 * ``tomcat``
+
+For the legend, we will need
+* ``libffl-devel``
+* ``libxml2-devel``
+* ``libxslt-devel``
 
 Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
 

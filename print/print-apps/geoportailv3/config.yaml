@@ -22,7 +22,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 470
         height: 650
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 150
         height: 30
@@ -33,13 +36,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A4 landscape: !template
     pdfConfig: !pdfConfig
       title: "A4 Landscape by geoportail.lu"
@@ -55,7 +51,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 715
         height: 395
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 150
         height: 30
@@ -66,13 +65,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A3 portrait: !template
     pdfConfig: !pdfConfig
       title: "A3 Portrait by geoportail.lu"
@@ -88,7 +80,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 715
         height: 975
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -99,13 +94,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A3 landscape: !template
     pdfConfig: !pdfConfig
       title: "A3 Landscape by geoportail.lu"
@@ -121,7 +109,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1064
         height: 640
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -132,13 +123,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A2 portrait: !template
     pdfConfig: !pdfConfig
       title: "A2 Portrait by geoportail.lu"
@@ -154,7 +138,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1064
         height: 1475
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -165,13 +152,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A2 landscape: !template
     pdfConfig: !pdfConfig
       title: "A2 Landscape by geoportail.lu"
@@ -187,7 +167,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1558
         height: 985
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -198,13 +181,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A1 portrait: !template
     pdfConfig: !pdfConfig
       title: "A1 Portrait by geoportail.lu"
@@ -220,7 +196,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1558
         height: 2175
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -231,13 +210,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A1 landscape: !template
     pdfConfig: !pdfConfig
       title: "A1 Landscape by geoportail.lu"
@@ -253,7 +225,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 2255
         height: 1482
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -264,13 +239,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A0 portrait: !template
     pdfConfig: !pdfConfig
       title: "A0 Portrait by geoportail.lu"
@@ -286,7 +254,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 2254
         height: 3155
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -297,13 +268,6 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows
   A0 landscape: !template
     pdfConfig: !pdfConfig
       title: "A0 Landscape by geoportail.lu"
@@ -319,7 +283,10 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 3241
         height: 2173
-      legend: !legend {}
+      lang: !string {}
+      legend: !datasource
+         attributes:
+            name: !string {}
       scalebar: !scalebar
         width: 230
         height: 40
@@ -330,10 +297,3 @@ templates:
       inputMapper: {map: map}
       outputMapper: {mapSubReport: mapSubReport}
     - !createScalebar {}
-    - !prepareLegend # create a datasource for the report with the 'legend' attribute
-      template: legend.jrxml
-      inputMapper: {legend: legend}
-      outputMapper:
-        legend: legend
-        legendSubReport: legendSubReport
-        numberOfLegendRows: numberOfLegendRows

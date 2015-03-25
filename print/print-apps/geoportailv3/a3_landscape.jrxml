@@ -12,8 +12,6 @@
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
 	<parameter name="name" class="java.lang.String"/>
-	<parameter name="legend" class="net.sf.jasperreports.engine.data.JRTableModelDataSource"/>
-	<parameter name="legendSubReport" class="java.lang.String"/>
 	<parameter name="scale" class="java.lang.String">
 		<defaultValueExpression><![CDATA[5000]]></defaultValueExpression>
 	</parameter>
@@ -109,20 +107,4 @@ Droits d'auteur: Administration du Cadastre et de la Topographie. http://wiki.ge
 			</textField>
 		</band>
 	</title>
-	<summary>
-		<band height="68" splitType="Stretch">
-			<textField>
-				<reportElement x="-1" y="3" width="555" height="23" uuid="d07b4b5c-e5f3-45ce-8c22-f020b1473383"/>
-				<textElement>
-					<font size="16" isBold="true" isItalic="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Legend"]]></textFieldExpression>
-			</textField>
-			<subreport>
-				<reportElement x="-1" y="26" width="555" height="42" uuid="b4cae0ad-a520-425e-b790-d6984af7ddc8"/>
-				<dataSourceExpression><![CDATA[$P{legend}]]></dataSourceExpression>
-				<subreportExpression><![CDATA[$P{legendSubReport}]]></subreportExpression>
-			</subreport>
-		</band>
-	</summary>
 </jasperReport>
