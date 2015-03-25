@@ -15,6 +15,7 @@ goog.require('ol.Object');
 
 
 /**
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.BlankLayer} appBlankLayer Blank layer service.
@@ -22,8 +23,8 @@ goog.require('ol.Object');
  * @constructor
  * @ngInject
  */
-app.ExclusionManager = function(ngeoBackgroundLayerMgr, appBlankLayer,
-    appNotify) {
+app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
+    appBlankLayer, appNotify) {
 
   /**
    * @type {ngeo.BackgroundLayerMgr}
@@ -42,6 +43,27 @@ app.ExclusionManager = function(ngeoBackgroundLayerMgr, appBlankLayer,
    * @private
    */
   this.notify_ = appNotify;
+
+  /**
+   * @type {function(string, Object<string, *>): string}
+   * @private
+   */
+  this.translate_ = goog.bind(gettextCatalog.getString, gettextCatalog);
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.exclusionMessage1_ = 'Background has been deactivated because the ' +
+      'layer {{layer}} cannot be displayed on top of it.';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.exclusionMessage2_ = 'The layer(s) <b>{{layersToHide}}</b> have been ' +
+      'deactivated because they cannot be displayed while the layer ' +
+      '<b>{{layer}}</b> is displayed';
 };
 
 
@@ -113,18 +135,18 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         layer2.setOpacity(0);
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_);
-        msg = 'The background layer has been deactivated because the ' +
-            'layer <b>' + layer1.get('label') +
-            '</b> cannot be displayed on top of it';
+        msg = this.translate_(this.exclusionMessage1_, {
+          'layer': '<b>' + layer1.get('label') + '</b>'
+        });
         this.notify_(msg);
       }
     }
   }
   if (layersToHide.length) {
-    msg = 'The layer(s) <b>' + layersToHide.join(',') +
-        '</b> have been deactivated because they cannot be displayed while ' +
-        ' the layer <b>' + layer1.get('label') +
-        '</b> is displayed';
+    msg = this.translate_(this.exclusionMessage2_, {
+      'layersToHide': '<b>' + layersToHide.join(', ') + '</b>',
+      'layer': '<b>' + layer1.get('label') + '</b>'
+    });
     this.notify_(msg);
   }
 };
