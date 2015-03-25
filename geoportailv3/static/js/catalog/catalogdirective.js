@@ -90,4 +90,20 @@ app.CatalogController.prototype.getLayer = function(node) {
 };
 
 
+/**
+ * Add or remove layer from map.
+ * @param {Object} node Tree node.
+ * @export
+ */
+app.CatalogController.prototype.toggle = function(node) {
+  var layer = this.getLayerFunc_(node);
+  var map = this['map'];
+  if (map.getLayers().getArray().indexOf(layer) >= 0) {
+    map.removeLayer(layer);
+  } else {
+    map.addLayer(layer);
+  }
+};
+
+
 app.module.controller('AppCatalogController', app.CatalogController);
