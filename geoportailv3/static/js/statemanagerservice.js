@@ -1,7 +1,7 @@
 /**
- * @fileoverview This files provides a service for managing application
- * states. States are written to both the URL (through the ngeoLocation
- * service) and the local storage.
+ * @fileoverview This files provides a service for managing the application
+ * state. The application state is written to both the URL and the local
+ * storage.
  */
 goog.provide('app.StateManager');
 
@@ -21,28 +21,60 @@ goog.require('ngeo.Location');
 app.StateManager = function(ngeoLocation) {
 
   /**
+   * Object representing the application's initial state.
+   * @type {Object.<string ,string>}
+   * @private
+   */
+  this.initialState_ = {};
+
+  /**
    * @type {ngeo.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
-
-  var version = ngeoLocation.getParam('version');
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.version_ = goog.isDef(version) ? goog.math.clamp(+version, 2, 3) : 2;
-
-  this.ngeoLocation_.updateParams({'version': 3});
 
   /**
    * @type {goog.storage.mechanism.HTML5LocalStorage}
    * @private
    */
   this.localStorage_ = new goog.storage.mechanism.HTML5LocalStorage();
-
   goog.asserts.assert(this.localStorage_.isAvailable());
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.version_ = -1;
+
+
+  // Populate initialState_ with the application's initial state. The initial
+  // state is read from the location URL, or from the local storage if there
+  // is no state in the location URL.
+
+  var paramKeys = ngeoLocation.getParamKeys();
+  var i, key;
+
+  if (paramKeys.length === 0 ||
+      (paramKeys.length === 1 && paramKeys[0] == 'debug')) {
+    var count = this.localStorage_.getCount();
+    for (i = 0; i < count; ++i) {
+      key = this.localStorage_.key(i);
+      goog.asserts.assert(!goog.isNull(key));
+      this.initialState_[key] = this.localStorage_.get(key);
+    }
+    this.version_ = 3;
+  } else {
+    var keys = ngeoLocation.getParamKeys();
+    for (i = 0; i < keys.length; ++i) {
+      key = keys[i];
+      this.initialState_[key] = ngeoLocation.getParam(key);
+    }
+    this.version_ = this.initialState_.hasOwnProperty('version') ?
+        goog.math.clamp(+this.initialState_['version'], 2, 3) : 2;
+  }
+  goog.asserts.assert(this.version_ != -1);
+
+  this.ngeoLocation_.updateParams({'version': 3});
 };
 
 
@@ -57,29 +89,24 @@ app.StateManager.prototype.getVersion = function() {
 
 
 /**
- * @param {string} key Param key.
- * @return {string|undefined} Param value.
+ * Get the state value for `key`.
+ * @param {string} key State key.
+ * @return {string|undefined} State value.
  */
-app.StateManager.prototype.getParam = function(key) {
-  var value = this.ngeoLocation_.getParam(key);
-  if (!goog.isDef(value)) {
-    value = this.localStorage_.get(key);
-    if (goog.isNull(value)) {
-      value = undefined;
-    }
-  }
-  return value;
+app.StateManager.prototype.getInitialValue = function(key) {
+  return this.initialState_[key];
 };
 
 
 /**
- * @param {Object.<string, string>} params Params to update.
+ * Update the application state with the values in `object`.
+ * @param {Object.<string, string>} object Object.
  */
-app.StateManager.prototype.updateParams = function(params) {
-  this.ngeoLocation_.updateParams(params);
-  var param;
-  for (param in params) {
-    this.localStorage_.set(param, params[param]);
+app.StateManager.prototype.updateState = function(object) {
+  this.ngeoLocation_.updateParams(object);
+  var key;
+  for (key in object) {
+    this.localStorage_.set(key, object[key]);
   }
 };
 
