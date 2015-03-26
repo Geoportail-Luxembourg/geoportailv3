@@ -47,13 +47,29 @@ app.module.directive('appMeasure', app.measureDirective);
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.$q} $q
+ * @param {angular.$http} $http
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
+ * @param {string} elevationServiceUrl the url of the service
  * @constructor
  * @export
  * @ngInject
  */
-app.MeasureController = function($scope, ngeoDecorateInteraction) {
+app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
+    elevationServiceUrl) {
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.$http_ = $http;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.elevationServiceUrl_ = elevationServiceUrl;
 
   var style = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -77,8 +93,9 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
 
   /**
    * @type {ol.Map}
+   * @private
    */
-  var map = this['map'];
+  this.map_ = this['map'];
 
   var measureLength = new ngeo.interaction.MeasureLength({
     sketchStyle: style
@@ -91,7 +108,7 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
 
   measureLength.setActive(false);
   ngeoDecorateInteraction(measureLength);
-  map.addInteraction(measureLength);
+  this.map_.addInteraction(measureLength);
 
   var measureArea = new ngeo.interaction.MeasureArea({
     sketchStyle: style
@@ -104,7 +121,7 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
 
   measureArea.setActive(false);
   ngeoDecorateInteraction(measureArea);
-  map.addInteraction(measureArea);
+  this.map_.addInteraction(measureArea);
 
   /** @type {ngeo.interaction.MeasureAzimut} */
   var measureAzimut = new ngeo.interaction.MeasureAzimut({
@@ -118,7 +135,29 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
 
   measureAzimut.setActive(false);
   ngeoDecorateInteraction(measureAzimut);
-  map.addInteraction(measureAzimut);
+  this.map_.addInteraction(measureAzimut);
+
+  goog.events.listen(measureAzimut, ngeo.MeasureEventType.MEASUREEND,
+      goog.bind(function(evt) {
+        var geometryCollection =
+            /** @type {ol.geom.GeometryCollection} */
+            (evt.feature.getGeometry());
+
+        var radius =
+            /** @type {ol.geom.LineString} */
+            (geometryCollection.getGeometries()[0]);
+        var radiusCoordinates = radius.getCoordinates();
+        $q.all([this.getElevation_(radiusCoordinates[0]),
+              this.getElevation_(radiusCoordinates[1])]
+        ).then(goog.bind(function(data) {
+          if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
+            var el = evt.target.getTooltipElement();
+            var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
+            el.innerHTML += '<br> &Delta;h : ' +
+                parseInt(elevationOffset / 100, 0) + 'm';
+          }
+        }, this));
+      }, this));
 
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.
@@ -133,5 +172,22 @@ app.MeasureController = function($scope, ngeoDecorateInteraction) {
   }, this));
 };
 
+
+/**
+ * @param {ol.Coordinate} coordinates
+ * @return {angular.$q.Promise}
+ * @private
+ */
+app.MeasureController.prototype.getElevation_ = function(coordinates) {
+  var eastnorth =
+      /** @type {ol.Coordinate} */ (ol.proj.transform(
+      coordinates,
+      this.map_.getView().getProjection(),
+      'EPSG:2169'));
+
+  return this.$http_.get(this.elevationServiceUrl_, {
+    params: {'lon': eastnorth[0], 'lat': eastnorth[1]}
+  });
+};
 
 app.module.controller('AppMeasureController', app.MeasureController);
