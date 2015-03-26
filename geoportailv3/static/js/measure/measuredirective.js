@@ -60,11 +60,13 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
     elevationServiceUrl) {
 
   /**
+   * @type {angular.$http}
    * @private
    */
-  this.http_ = $http;
+  this.$http_ = $http;
 
   /**
+   * @type {string}
    * @private
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
@@ -144,9 +146,9 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         var radius =
             /** @type {ol.geom.LineString} */
             (geometryCollection.getGeometries()[0]);
-
-        $q.all([this.getElevation_(radius.getCoordinates()[0]),
-              this.getElevation_(radius.getCoordinates()[1])]
+        var radiusCoordinates = radius.getCoordinates();
+        $q.all([this.getElevation_(radiusCoordinates[0]),
+              this.getElevation_(radiusCoordinates[1])]
         ).then(goog.bind(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
             var el = evt.target.getTooltipElement();
@@ -183,7 +185,7 @@ app.MeasureController.prototype.getElevation_ = function(coordinates) {
       this.map_.getView().getProjection(),
       'EPSG:2169'));
 
-  return this.http_.get(this.elevationServiceUrl_, {
+  return this.$http_.get(this.elevationServiceUrl_, {
     params: {'lon': lonlat[0], 'lat': lonlat[1]}
   });
 };
