@@ -59,9 +59,12 @@ class Wms(object):
 
             if param.lower() != 'layers':
                 param_wms = param_wms + param + "=" + \
-                    urllib2.quote(self.request.params.get(param, '').encode('utf-8')) + "&"
+                    urllib2.quote(
+                        self.request.params.get(param, '').encode('utf-8')
+                        ) + "&"
             else:
-                param_wms = param_wms + param + "=" + urllib2.quote(internal_wms.layers.encode('utf-8')) + "&"
+                param_wms = param_wms + param + "=" + \
+                    urllib2.quote(internal_wms.layers.encode('utf-8')) + "&"
 
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
@@ -80,7 +83,6 @@ class Wms(object):
         separator = ""
         if remote_host[:-1] != "?" and remote_host[:-1] != "&":
             separator = "&"
-
 
         url = remote_host + separator + param_wms[:-1]
 
