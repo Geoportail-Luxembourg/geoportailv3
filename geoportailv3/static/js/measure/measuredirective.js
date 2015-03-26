@@ -133,7 +133,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
   ngeoDecorateInteraction(measureProfile);
-  map.addInteraction(measureProfile);
+  this.map_.addInteraction(measureProfile);
 
   var measureLength = new ngeo.interaction.MeasureLength({
     sketchStyle: sketchStyle
