@@ -179,14 +179,14 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
  * @private
  */
 app.MeasureController.prototype.getElevation_ = function(coordinates) {
-  var lonlat =
+  var eastnorth =
       /** @type {ol.Coordinate} */ (ol.proj.transform(
       coordinates,
       this.map_.getView().getProjection(),
       'EPSG:2169'));
 
   return this.$http_.get(this.elevationServiceUrl_, {
-    params: {'lon': lonlat[0], 'lat': lonlat[1]}
+    params: {'lon': eastnorth[0], 'lat': eastnorth[1]}
   });
 };
 
