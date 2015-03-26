@@ -81,7 +81,7 @@ app.MapController = function(appStateManager, ngeoDebounce) {
   view.setCenter(viewCenter);
   view.setZoom(viewZoom);
 
-  app.MapController.updateStates_(appStateManager, view);
+  app.MapController.updateState_(appStateManager, view);
 
   view.on('propertychange',
       ngeoDebounce(
@@ -89,7 +89,7 @@ app.MapController = function(appStateManager, ngeoDebounce) {
            * @param {ol.ObjectEvent} e Object event.
            */
           function(e) {
-            app.MapController.updateStates_(appStateManager, view);
+            app.MapController.updateState_(appStateManager, view);
           }, 300, /* invokeApply */ true));
 };
 
@@ -120,7 +120,7 @@ app.MapController.V2_ZOOM_TO_V3_ZOOM_ = {
  * @param {ol.View} view Map view.
  * @private
  */
-app.MapController.updateStates_ = function(appStateManager, view) {
+app.MapController.updateState_ = function(appStateManager, view) {
   var viewZoom = view.getZoom();
   var viewCenter = view.getCenter();
   goog.asserts.assert(goog.isDef(viewCenter));
