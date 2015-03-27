@@ -14,6 +14,7 @@ goog.provide('app.searchDirective');
 
 goog.require('app');
 goog.require('ngeo.CreateGeoJSONBloodhound');
+goog.require('app.Themes');
 goog.require('ngeo.searchDirective');
 
 /**
@@ -55,24 +56,25 @@ app.module.directive('appSearch', app.searchDirective);
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope Angular root scope.
+ * @param {app.Themes} appThemes Themes service.
  * @param {angular.$compile} $compile Angular compile service.
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
- *     create GeoJSON Bloodhound service.
+ *     create GeoJSON Bloodhound service.o 
  * @export
  */
-app.SearchDirectiveController = function($scope, $compile, 
+app.SearchDirectiveController = function($scope, appThemes, $compile, 
   ngeoCreateGeoJSONBloodhound) {
-
-
   /**
    * @type {ol.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = this.createFeatureOverlay_();
+    
 
   /** @type {Bloodhound} */
-  var bloodhoundEngine = this.createAndInitBloodhound_(
+  var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       ngeoCreateGeoJSONBloodhound);
+  var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_($scope, appThemes)
 
   /** @type {TypeaheadOptions} */
   this['options'] = {
@@ -81,14 +83,14 @@ app.SearchDirectiveController = function($scope, $compile,
 
   /** @type {Array.<TypeaheadDataset>} */
   this['datasets'] = [{
-    source: bloodhoundEngine.ttAdapter(),
+    source: POIBloodhoundEngine.ttAdapter(),
     displayKey: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
     templates: {
       header: function() {
-        return '<div class="header">Addresses</div>';
+        return '<div class="header" translate>Addresses</div>';
       },
       suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
@@ -106,7 +108,20 @@ app.SearchDirectiveController = function($scope, $compile,
         return $compile(html)(scope);
       }
     }
-  }];
+  }
+  //,{
+  //  source: LayerBloodhoundEngine.ttAdapter(),
+  //  displayKey: 'value',
+  //  templates: {
+  //    header: function() {
+  //      return '<div class="header" translate>Layers</div>';
+  //    },
+  //    suggestion: function(suggestion){
+  //      return suggestion
+  //    }
+  //  }
+  //}
+];
 
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
     selected: goog.bind(app.SearchDirectiveController.selected_, this)
@@ -132,10 +147,28 @@ app.SearchDirectiveController.prototype.createFeatureOverlay_ = function() {
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
-app.SearchDirectiveController.prototype.createAndInitBloodhound_ =
+app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
     function(ngeoCreateGeoJSONBloodhound) {
   var url = 'fulltextsearch?query=%QUERY';
   var bloodhound = ngeoCreateGeoJSONBloodhound(url, ol.proj.get('EPSG:3857'));
+  bloodhound.initialize();
+  return bloodhound;
+};
+
+
+/**
+ * @param {angular.Scope} $scope Angular root scope.
+ * @param {app.Themes} appThemes Themes service.
+ * @return {Bloodhound} The bloodhound engine.
+ * @private
+ */
+app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
+    function($scope, appThemes) {
+  var bloodhound = new Bloodhound({
+    datumTokenizer: goog.nullFunction,
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: []
+  })
   bloodhound.initialize();
   return bloodhound;
 };
