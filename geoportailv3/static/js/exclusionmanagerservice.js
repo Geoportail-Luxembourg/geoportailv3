@@ -61,8 +61,8 @@ app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
    * @type {string}
    * @private
    */
-  this.exclusionMessage2_ = 'The layer(s) <b>{{layersToHide}}</b> have been ' +
-      'deactivated because they cannot be displayed while the layer ' +
+  this.exclusionMessage2_ = 'The layer(s) <b>{{layersToRemove}}</b> have ' +
+      ' been removed because they cannot be displayed while the layer ' +
       '<b>{{layer}}</b> is displayed';
 };
 
@@ -117,8 +117,8 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
   var layer2;
   var msg;
 
-  var layersToHide = [];
-  for (i = 0; i < len; i++) {
+  var layersToRemove = [];
+  for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
     if (layer2 == layer1 || !goog.isDef(layer2.get('metadata')) ||
         !goog.isDef(layer2.get('metadata')['exclusion'])) {
@@ -131,8 +131,8 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
     if (this.intersects_(exclusion1, exclusion2) && opacity > 0) {
       // layer to exclude is not the current base layer
       if (i !== 0) {
-        layersToHide.push(layer2.get('label'));
-        layer2.setOpacity(0);
+        layersToRemove.push(layer2.get('label'));
+        map.removeLayer(layer2);
       } else {
         this.backgroundLayerMgr_.set(map, this.blankLayer_);
         msg = this.translate_(this.exclusionMessage1_, {
@@ -142,9 +142,9 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
       }
     }
   }
-  if (layersToHide.length) {
+  if (layersToRemove.length) {
     msg = this.translate_(this.exclusionMessage2_, {
-      'layersToHide': '<b>' + layersToHide.join(', ') + '</b>',
+      'layersToRemove': '<b>' + layersToRemove.join(', ') + '</b>',
       'layer': '<b>' + layer1.get('label') + '</b>'
     });
     this.notify_(msg);
