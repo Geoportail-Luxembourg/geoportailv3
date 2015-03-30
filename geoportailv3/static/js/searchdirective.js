@@ -3,7 +3,8 @@
  * used to insert a Search bar into a HTML page.
  * Example:
  *
- * <app-search app-search-map="::mainCtrl.map"></app-search>
+ * <app-search app-search-map="::mainCtrl.map"
+ *   app-search-theme="mainCtrl.currentTheme"></app-search>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -13,9 +14,10 @@
 goog.provide('app.searchDirective');
 
 goog.require('app');
-goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('app.Themes');
+goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.searchDirective');
+
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
@@ -26,7 +28,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appSearchMap'
+      'map': '=appSearchMap',
+      'theme': '=appSearchTheme'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',
@@ -50,7 +53,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
 
 app.module.directive('appSearch', app.searchDirective);
 
- 
+
 
 /**
  * @ngInject
@@ -59,22 +62,37 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {app.Themes} appThemes Themes service.
  * @param {angular.$compile} $compile Angular compile service.
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
- *     create GeoJSON Bloodhound service.o 
+ *     create GeoJSON Bloodhound service.o
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @export
  */
 app.SearchDirectiveController = function($scope, appThemes, $compile, 
-  ngeoCreateGeoJSONBloodhound) {
+    ngeoCreateGeoJSONBloodhound, gettextCatalog) {
   /**
    * @type {ol.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = this.createFeatureOverlay_();
-    
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       ngeoCreateGeoJSONBloodhound);
-  var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_($scope, appThemes)
+  /** @type {Bloodhound} */
+  var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
+
+  //watch for theme & language change to update layer search
+  $scope.$watch(goog.bind(function() {
+    return this['theme'];
+  },this), goog.bind(function() {
+    this.createLocalLayerData_(
+        appThemes, LayerBloodhoundEngine, gettextCatalog);
+  }, this));
+
+  $scope.$on('gettextLanguageChanged', goog.bind(function(event, args) {
+    this.createLocalLayerData_(
+        appThemes, LayerBloodhoundEngine, gettextCatalog);
+  }, this));
+
 
   /** @type {TypeaheadOptions} */
   this['options'] = {
@@ -108,20 +126,28 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
         return $compile(html)(scope);
       }
     }
+  },{
+    source: LayerBloodhoundEngine.ttAdapter(),
+    displayKey: 'name',
+    templates: {
+      header: function() {
+        return '<div class="header" translate>Layers</div>';
+      },
+      suggestion: function(suggestion) {
+        var scope = $scope.$new(true);
+        scope['object'] = suggestion;
+        scope['click'] = function(event) {
+          window.alert(suggestion['name']);
+          event.stopPropagation();
+        };
+
+        var html = '<p>' + suggestion['name'] +
+            '<button ng-click="click($event)">i</button></p>';
+        return $compile(html)(scope);
+      }
+    }
   }
-  //,{
-  //  source: LayerBloodhoundEngine.ttAdapter(),
-  //  displayKey: 'value',
-  //  templates: {
-  //    header: function() {
-  //      return '<div class="header" translate>Layers</div>';
-  //    },
-  //    suggestion: function(suggestion){
-  //      return suggestion
-  //    }
-  //  }
-  //}
-];
+  ];
 
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
     selected: goog.bind(app.SearchDirectiveController.selected_, this)
@@ -157,20 +183,63 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
 
 
 /**
- * @param {angular.Scope} $scope Angular root scope.
- * @param {app.Themes} appThemes Themes service.
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
-    function($scope, appThemes) {
+    function() {
   var bloodhound = new Bloodhound({
-    datumTokenizer: goog.nullFunction,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     local: []
-  })
+  });
   bloodhound.initialize();
   return bloodhound;
+};
+
+
+/**
+ * @param {app.Themes} appThemes Themes Service
+ * @param {Bloodhound} bloodhound
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
+ * @private
+ */
+app.SearchDirectiveController.prototype.createLocalLayerData_ =
+    function(appThemes, bloodhound, gettextCatalog) {
+  appThemes.getThemeObject(this['theme']).then(
+      goog.bind(function(theme) {
+        var layers = app.SearchDirectiveController.getAllChildren_(
+            theme.children, gettextCatalog);
+        bloodhound.clear();
+        bloodhound.add(layers);
+      }, this)
+  );
+};
+
+
+/**
+ * @param {Array} element
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
+ * @return {Array} array
+ * @private
+ */
+app.SearchDirectiveController.getAllChildren_ =
+    function(element, gettextCatalog) {
+  var array = [];
+  for (var i = 0; i < element.length; i++) {
+    if (element[i].hasOwnProperty('children')) {
+      array = array.concat(app.SearchDirectiveController.getAllChildren_(
+          element[i].children, gettextCatalog));
+    } else {
+      array.push({
+        'name': gettextCatalog.getString(element[i].name),
+        'metadata': element[i].metadata,
+        'layer_name': element[i].name,
+        'id': element[i].id
+      });
+    }
+  }
+  return array;
 };
 
 
