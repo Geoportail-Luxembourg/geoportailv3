@@ -14,6 +14,9 @@
                 "icons": ["https://cdn.public.lu/pictures/logos/gov/gov-light.png"]
             }]
         },
+        "scalebar": {
+          "projection": "EPSG:2169"
+        },
         "map": {
           "bbox": [668126, 6368118, 689717, 6389761],
           "projection": "EPSG:3857",
@@ -46,7 +49,7 @@
                     "TRANSPARENT": "true"
                   }
                   },
-             /*     {
+                  {
                     "type":"WMTS",
                     "baseURL": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/basemap_global/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png",
                     "opacity": "0.5",
@@ -192,7 +195,7 @@
                               }
                             ],
                             "imageFormat": "png"
-                    },*/
+                    },
                   {
                   "baseURL": "http://wsinspire.geoportail.lu/oi",
                   "opacity": 1,
