@@ -8,9 +8,10 @@
 </span>
 <div ng-if="!layertreenodeCtrl.node.children">
   <app-layerinfo app-layerinfo-layer="layertreenodeCtrl.layer"></app-layerinfo>
-  {{layertreenodeCtrl.node.name | translate}}
-  <input type="checkbox" ng-if="!layertreenodeCtrl.node.children"
-      ng-model="layertreenodeCtrl.getSetActive" ng-model-options="{getterSetter: true}"/>
+  <a href ng-click="catalogCtrl.toggle(layertreenodeCtrl.node)">
+    <i class="fa" ng-class="(layertreenodeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
+    {{layertreenodeCtrl.node.name | translate}}
+  </a>
 </div>
 <ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="layertreenodeCtrl.node.children"
   ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
