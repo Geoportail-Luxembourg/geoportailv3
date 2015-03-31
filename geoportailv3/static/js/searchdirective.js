@@ -15,13 +15,14 @@ goog.provide('app.searchDirective');
 
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
+goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
 goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.searchDirective');
 
 
 /**
- * @return {angular.Directive} The Directive Object Definition.
+ * @return {angular.Directive} The Directive Object Definition
  * @param {string} appSearchTemplateUrl
  * @ngInject
  */
@@ -38,9 +39,9 @@ app.searchDirective = function(appSearchTemplateUrl) {
     templateUrl: appSearchTemplateUrl,
     link:
         /**
-         * @param {angular.Scope} scope Scope.
-         * @param {angular.JQLite} element Element.
-         * @param {angular.Attributes} attrs Atttributes.
+         * @param {angular.Scope} scope Scope
+         * @param {angular.JQLite} element Element
+         * @param {angular.Attributes} attrs Atttributes
          */
         function(scope, element, attrs) {
           // Empty the search field on focus and blur.
@@ -66,11 +67,13 @@ app.module.directive('appSearch', app.searchDirective);
  *     create GeoJSON Bloodhound service.o
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
+ * @param {app.ShowLayerinfo} appShowLayerinfo
  * @export
  */
-app.SearchDirectiveController = function($scope, appThemes, $compile, 
-    ngeoCreateGeoJSONBloodhound, gettextCatalog, appGetLayerForCatalogNode) {
-
+app.SearchDirectiveController =
+    function($scope, appThemes, $compile,
+        ngeoCreateGeoJSONBloodhound, gettextCatalog,
+        appGetLayerForCatalogNode, appShowLayerinfo) {
   /**
    * @type {Array}
    */
@@ -87,6 +90,12 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {app.ShowLayerinfo}
+   * @private
+   */
+  this.showLayerinfo_ = appShowLayerinfo;
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
@@ -131,12 +140,10 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
         var scope = $scope.$new(true);
         scope['feature'] = feature;
         scope['click'] = function(event) {
-          window.alert(feature.get('label'));
           event.stopPropagation();
         };
 
-        var html = '<p>' + feature.get('label') +
-            '<button ng-click="click($event)">i</button></p>';
+        var html = '<p>' + feature.get('label') + '</p>';
         return $compile(html)(scope);
       }
     }
@@ -147,18 +154,18 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
       header: function() {
         return '<div class="header" translate>Layers</div>';
       },
-      suggestion: function(suggestion) {
+      suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
-        scope['click'] = function(event) {
-          window.alert(suggestion['translated_name']);
+        scope['click'] = goog.bind(function(event) {
+          this.showLayerinfo_(this.getLayerFunc_(suggestion));
           event.stopPropagation();
-        };
+        }, this);
 
         var html = '<p>' + suggestion['translated_name'] +
             '<button ng-click="click($event)">i</button></p>';
         return $compile(html)(scope);
-      }
+      }, this)
     }
   }
   ];
