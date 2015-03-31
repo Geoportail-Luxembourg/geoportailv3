@@ -18,6 +18,7 @@ goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
 
 
@@ -31,7 +32,9 @@ app.measureDirective = function(appMeasureTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appMeasureMap',
-      'active': '=appMeasureActive'
+      'active': '=appMeasureActive',
+      'profileData': '=appProfileData',
+      'profileOpen': '=appProfileOpen'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -48,16 +51,17 @@ app.module.directive('appMeasure', app.measureDirective);
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$q} $q
- * @param {angular.$http} $http
+ * @param {angular.$http} $http Angular http service.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {string} elevationServiceUrl the url of the service
+ * @param {string} profilejsonUrl The URL to the profile webservice.
  * @constructor
  * @export
  * @ngInject
  */
 app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
-    elevationServiceUrl) {
+    elevationServiceUrl, profilejsonUrl) {
 
   /**
    * @type {angular.$http}
@@ -71,9 +75,15 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
-  var style = new ol.style.Style({
+  /**
+   * @type {string}
+   * @private
+   */
+  this.profilejsonUrl_ = profilejsonUrl;
+
+  var sketchStyle = new ol.style.Style({
     fill: new ol.style.Fill({
-      color: 'rgba(255, 255, 255, 0.2)'
+      color: 'rgba(255, 255, 255, 0.4)'
     }),
     stroke: new ol.style.Stroke({
       color: 'rgba(0, 0, 0, 0.5)',
@@ -86,7 +96,23 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         color: 'rgba(0, 0, 0, 0.7)'
       }),
       fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.2)'
+        color: 'rgba(255, 255, 255, 0.4)'
+      })
+    })
+  });
+
+  var style = new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 204, 51, 0.3)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(255, 204, 51, 1)',
+      width: 2
+    }),
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 204, 51, 0.3)'
       })
     })
   });
@@ -97,8 +123,20 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    */
   this.map_ = this['map'];
 
+  var measureProfile = new ngeo.interaction.MeasureLength({
+    sketchStyle: sketchStyle
+  });
+
+  /**
+   * @type {app.interaction.MeasureProfile}
+   */
+  this['measureProfile'] = measureProfile;
+  measureProfile.setActive(false);
+  ngeoDecorateInteraction(measureProfile);
+  this.map_.addInteraction(measureProfile);
+
   var measureLength = new ngeo.interaction.MeasureLength({
-    sketchStyle: style
+    sketchStyle: sketchStyle
   });
 
   /**
@@ -111,7 +149,8 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   this.map_.addInteraction(measureLength);
 
   var measureArea = new ngeo.interaction.MeasureArea({
-    sketchStyle: style
+    sketchStyle: sketchStyle,
+    style: style
   });
 
   /**
@@ -125,7 +164,8 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
 
   /** @type {ngeo.interaction.MeasureAzimut} */
   var measureAzimut = new ngeo.interaction.MeasureAzimut({
-    sketchStyle: style
+    sketchStyle: sketchStyle,
+    style: style
   });
 
   /**
@@ -159,6 +199,39 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         }, this));
       }, this));
 
+  goog.events.listen(measureProfile, ngeo.MeasureEventType.MEASUREEND,
+      /**
+       * @param {ngeo.MeasureEvent} evt Measure event.
+       */
+      function(evt) {
+        var geom = /** @type {ol.geom.Geometry} */ (evt.feature.getGeometry());
+        var encOpt = {
+          dataProjection: 'EPSG:2169',
+          featureProjection: this['map'].getView().getProjection()
+        };
+        var req = $.param({
+          'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
+          'nbPoints': 100,
+          'layers': 'dhm'
+        });
+        var config = {
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        };
+        this['profileOpen'] = true;
+        $http.post(this.profilejsonUrl_, req, config).then(
+            goog.bind(function(resp) {
+              this['profileData'] = resp.data['profile'];
+            }, this));
+      }, undefined, this);
+
+  $scope.$watch(goog.bind(function() {
+    return this['measureProfile'].getActive();
+  }, this), goog.bind(function(newVal) {
+    if (newVal === false) {
+      this['profileOpen'] = false;
+    }
+  }, this));
+
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -168,6 +241,7 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
       this['measureLength'].setActive(false);
       this['measureArea'].setActive(false);
       this['measureAzimut'].setActive(false);
+      this['measureProfile'].setActive(false);
     }
   }, this));
 };
