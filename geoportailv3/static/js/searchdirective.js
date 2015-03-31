@@ -14,6 +14,7 @@
 goog.provide('app.searchDirective');
 
 goog.require('app');
+goog.require('app.GetLayerForCatalogNode');
 goog.require('app.Themes');
 goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.searchDirective');
@@ -64,15 +65,28 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
  *     create GeoJSON Bloodhound service.o
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @export
  */
 app.SearchDirectiveController = function($scope, appThemes, $compile, 
-    ngeoCreateGeoJSONBloodhound, gettextCatalog) {
+    ngeoCreateGeoJSONBloodhound, gettextCatalog, appGetLayerForCatalogNode) {
+
+  /**
+   * @type {Array}
+   */
+  this.layers = [];
+
   /**
    * @type {ol.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = this.createFeatureOverlay_();
+
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
@@ -128,7 +142,7 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
     }
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
-    displayKey: 'name',
+    displayKey: 'translated_name',
     templates: {
       header: function() {
         return '<div class="header" translate>Layers</div>';
@@ -137,11 +151,11 @@ app.SearchDirectiveController = function($scope, appThemes, $compile,
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
         scope['click'] = function(event) {
-          window.alert(suggestion['name']);
+          window.alert(suggestion['translated_name']);
           event.stopPropagation();
         };
 
-        var html = '<p>' + suggestion['name'] +
+        var html = '<p>' + suggestion['translated_name'] +
             '<button ng-click="click($event)">i</button></p>';
         return $compile(html)(scope);
       }
@@ -189,7 +203,7 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
 app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
     function() {
   var bloodhound = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('translated_name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     local: []
   });
@@ -210,10 +224,33 @@ app.SearchDirectiveController.prototype.createLocalLayerData_ =
       goog.bind(function(theme) {
         var layers = app.SearchDirectiveController.getAllChildren_(
             theme.children, gettextCatalog);
+        this['layers'] = layers;
         bloodhound.clear();
         bloodhound.add(layers);
       }, this)
   );
+};
+
+
+/**
+ * @param {(Object|string)} layerInput
+ * @private
+ */
+app.SearchDirectiveController.prototype.addLayerToMap_ = function(layerInput) {
+  var layer = {};
+  if (typeof layerInput === 'string') {
+    layer = goog.array.find(this['layers'], function(element) {
+      return goog.object.containsKey(element, 'name') &&
+          goog.object.containsValue(element, layerInput);
+    });
+    if (!layer) return; //stop error propagating if layer name doesnt match
+  } else if (typeof layerInput === 'object') {
+    layer = this.getLayerFunc_(layerInput);
+  }
+  var map = this['map'];
+  if (map.getLayers().getArray().indexOf(layer) <= 0) {
+    map.addLayer(layer);
+  }
 };
 
 
@@ -231,12 +268,8 @@ app.SearchDirectiveController.getAllChildren_ =
       array = array.concat(app.SearchDirectiveController.getAllChildren_(
           element[i].children, gettextCatalog));
     } else {
-      array.push({
-        'name': gettextCatalog.getString(element[i].name),
-        'metadata': element[i].metadata,
-        'layer_name': element[i].name,
-        'id': element[i].id
-      });
+      element[i].translated_name = gettextCatalog.getString(element[i].name);
+      array.push(element[i]);
     }
   }
   return array;
@@ -250,18 +283,25 @@ app.SearchDirectiveController.getAllChildren_ =
  * @this {app.SearchDirectiveController}
  * @private
  */
-app.SearchDirectiveController.selected_ = function(event, suggestion, dataset) {
-  var map = /** @type {ol.Map} */ (this['map']);
-  var feature = /** @type {ol.Feature} */ (suggestion);
-  var features = this.featureOverlay_.getFeatures();
-  var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
-      (feature.getGeometry());
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
-  features.clear();
-  features.push(feature);
-  map.getView().fitGeometry(featureGeometry, mapSize,
-      /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 16}));
+app.SearchDirectiveController.selected_ =
+    function(event, suggestion, dataset) {
+  if (suggestion instanceof ol.Feature) {
+    var map = /** @type {ol.Map} */ (this['map']);
+    var feature = /** @type {ol.Feature} */ (suggestion);
+    var features = this.featureOverlay_.getFeatures();
+    var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
+        (feature.getGeometry());
+    var mapSize = /** @type {ol.Size} */ (map.getSize());
+    features.clear();
+    features.push(feature);
+    map.getView().fitGeometry(featureGeometry, mapSize,
+        /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 16}));
+    this.addLayerToMap_(/** @type {string} */(suggestion.get('layer_name')));
+  } else {
+    this.addLayerToMap_(suggestion);
+  }
 };
+
 
 app.module.controller('AppSearchController',
     app.SearchDirectiveController);
