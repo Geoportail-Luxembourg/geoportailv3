@@ -131,12 +131,14 @@ app.ProfileController = function($scope) {
 
   /**
    * @param {Object} point
+   * @param {number} dist
+   * @param {string} xUnits
+   * @param {number} elevation
+   * @param {string} yUnits
    */
-  var hoverCallback = function(point) {
+  var hoverCallback = function(point, dist, xUnits, elevation, yUnits) {
     // An item in the list of points given to the profile.
     that['point'] = point;
-    var dist = point['dist'];
-    var dhm = point['values']['dhm'];
     that.overlay_.getFeatures().clear();
     var srcPoint = new ol.geom.Point([point['x'], point['y']]);
     var curPoint = /** @type {ol.geom.Point} */
@@ -149,10 +151,10 @@ app.ProfileController = function($scope) {
 
     that.createMeasureTooltip_();
     that.measureTooltipElement_.innerHTML = that.distanceLabel_ +
-        that.formatDistance_(dist) +
+        that.formatDistance_(dist, xUnits) +
         '<br>' +
         that.elevationLabel_ +
-        that.formatElevation_(dhm);
+        that.formatElevation_(elevation, yUnits);
     that.measureTooltip_.setPosition(curPoint.getCoordinates());
 
   };
@@ -167,7 +169,11 @@ app.ProfileController = function($scope) {
   this['profileOptions'] = {
     elevationExtractor: extractor,
     hoverCallback: hoverCallback,
-    outCallback: outCallback
+    outCallback: outCallback,
+    formatter: {
+      xhover: this.formatDistance_,
+      yhover: this.formatElevation_
+    }
   };
 
 
@@ -210,31 +216,24 @@ app.ProfileController.prototype.removeMeasureTooltip_ = function() {
 /**
  * Format the distance text.
  * @param {number} dist
+ * @param {string} units
  * @return {string}
  * @private
  */
-app.ProfileController.prototype.formatDistance_ = function(dist) {
-
-  if (dist > 1000) {
-    return parseFloat((dist / 1000).toPrecision(3)) +
-        ' ' + 'km';
-  }
-
-  return parseFloat(dist.toPrecision(3)) +
-      ' ' + 'm';
+app.ProfileController.prototype.formatDistance_ = function(dist, units) {
+  return parseFloat(dist.toPrecision(3)) + ' ' + units;
 };
 
 
 /**
  * Format the elevation text.
  * @param {number} elevation
+ * @param {string} units
  * @return {string}
  * @private
  */
-app.ProfileController.prototype.formatElevation_ = function(elevation) {
-
-  return parseFloat((elevation / 100).toPrecision(5)) +
-      ' ' + 'm';
+app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
+  return parseFloat(elevation.toPrecision(4)) + ' ' + units;
 };
 
 app.module.controller('AppProfileController', app.ProfileController);
