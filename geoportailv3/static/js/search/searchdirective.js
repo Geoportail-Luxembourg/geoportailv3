@@ -303,7 +303,7 @@ app.SearchDirectiveController.selected_ =
     features.clear();
     features.push(feature);
     map.getView().fitGeometry(featureGeometry, mapSize,
-        /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 16}));
+        /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
     this.addLayerToMap_(/** @type {string} */(suggestion.get('layer_name')));
   } else {
     this.addLayerToMap_(suggestion);
