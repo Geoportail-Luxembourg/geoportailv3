@@ -3,8 +3,7 @@
  * used to insert a Search bar into a HTML page.
  * Example:
  *
- * <app-search app-search-map="::mainCtrl.map"
- *   app-search-theme="mainCtrl.currentTheme"></app-search>
+ * <app-search app-search-map="::mainCtrl.map"></app-search>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -30,8 +29,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appSearchMap',
-      'theme': '=appSearchTheme'
+      'map': '=appSearchMap'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',
@@ -103,16 +101,8 @@ app.SearchDirectiveController =
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
-  //watch for theme & language change to update layer search
-  $scope.$watch(goog.bind(function() {
-    return this['theme'];
-  },this), goog.bind(function() {
-    this.createLocalLayerData_(
-        appThemes, LayerBloodhoundEngine, gettextCatalog);
-  }, this));
-
   $scope.$on('gettextLanguageChanged', goog.bind(function(event, args) {
-    this.createLocalLayerData_(
+    this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
   }, this));
 
@@ -218,22 +208,29 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
   return bloodhound;
 };
 
-
 /**
  * @param {app.Themes} appThemes Themes Service
  * @param {Bloodhound} bloodhound
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @private
  */
-app.SearchDirectiveController.prototype.createLocalLayerData_ =
+app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
-  appThemes.getThemeObject(this['theme']).then(
-      goog.bind(function(theme) {
-        var layers = app.SearchDirectiveController.getAllChildren_(
-            theme.children, gettextCatalog);
-        this['layers'] = layers;
-        bloodhound.clear();
-        bloodhound.add(layers);
+  appThemes.getThemesObject().then(
+      goog.bind(function(themes) {
+          for (var i=0 ; i < themes.length ; i++){
+              var theme = themes[i];
+              this['layers'] = this['layers'].concat(
+                  app.SearchDirectiveController.getAllChildren_(
+                      theme.children, gettextCatalog));
+          };
+          var dedup = [];
+          goog.array.removeDuplicates(this['layers'], dedup, function(element){
+            return element['id'];
+          });
+          this['layers'] = dedup;
+          bloodhound.clear();
+          bloodhound.add(this['layers']);
       }, this)
   );
 };
