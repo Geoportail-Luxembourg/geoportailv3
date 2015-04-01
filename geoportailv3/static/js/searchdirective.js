@@ -133,7 +133,10 @@ app.SearchDirectiveController =
           event.stopPropagation();
         };
 
-        var html = '<p>' + feature.get('label') + '</p>';
+        var html = '<p>' + feature.get('label') +
+            ' <span>(' + gettextCatalog.getString(
+                /** @type {string} */ (feature.get('layer_name'))
+            ) + ')</span></p>';
         return $compile(html)(scope);
       }
     }
@@ -208,6 +211,7 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
   return bloodhound;
 };
 
+
 /**
  * @param {app.Themes} appThemes Themes Service
  * @param {Bloodhound} bloodhound
@@ -218,19 +222,19 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
   appThemes.getThemesObject().then(
       goog.bind(function(themes) {
-          for (var i=0 ; i < themes.length ; i++){
-              var theme = themes[i];
-              this['layers'] = this['layers'].concat(
-                  app.SearchDirectiveController.getAllChildren_(
-                      theme.children, gettextCatalog));
-          };
-          var dedup = [];
-          goog.array.removeDuplicates(this['layers'], dedup, function(element){
-            return element['id'];
-          });
-          this['layers'] = dedup;
-          bloodhound.clear();
-          bloodhound.add(this['layers']);
+        for (var i = 0; i < themes.length; i++) {
+          var theme = themes[i];
+          this['layers'] = this['layers'].concat(
+              app.SearchDirectiveController.getAllChildren_(
+              theme.children, gettextCatalog));
+        }
+        var dedup = [];
+        goog.array.removeDuplicates(this['layers'], dedup, function(element) {
+          return element['id'];
+        });
+        this['layers'] = dedup;
+        bloodhound.clear();
+        bloodhound.add(this['layers']);
       }, this)
   );
 };
