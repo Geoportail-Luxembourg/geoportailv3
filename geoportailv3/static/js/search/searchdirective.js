@@ -224,9 +224,11 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
       goog.bind(function(themes) {
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          this['layers'] = this['layers'].concat(
-              app.SearchDirectiveController.getAllChildren_(
-              theme.children, gettextCatalog));
+          goog.array.extend(this['layers'],
+            app.SearchDirectiveController.getAllChildren_(
+              theme.children, gettextCatalog
+            )
+          );
         }
         var dedup = [];
         goog.array.removeDuplicates(this['layers'], dedup, function(element) {
@@ -274,8 +276,9 @@ app.SearchDirectiveController.getAllChildren_ =
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      array = array.concat(app.SearchDirectiveController.getAllChildren_(
-          element[i].children, gettextCatalog));
+      goog.array.extend(array, app.SearchDirectiveController.getAllChildren_(
+        element[i].children, gettextCatalog)
+      );
     } else {
       element[i].translated_name = gettextCatalog.getString(element[i].name);
       array.push(element[i]);
