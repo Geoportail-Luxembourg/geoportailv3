@@ -87,7 +87,7 @@ class Wms(object):
         url = remote_host + separator + param_wms[:-1]
 
         try:
-            f = urllib2.urlopen(url, None, 5)
+            f = urllib2.urlopen(url, None, 15)
             data = f.read()
         except:
             log.error(sys.exc_info()[0])
