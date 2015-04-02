@@ -241,19 +241,20 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
 
 
 /**
- * @param {(Object|string)} layerInput
+ * @param {(Object|string)} input
  * @private
  */
-app.SearchDirectiveController.prototype.addLayerToMap_ = function(layerInput) {
+app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
   var layer = {};
-  if (typeof layerInput === 'string') {
-    layer = goog.array.find(this['layers'], function(element) {
+  if (typeof input === 'string') {
+    var node = goog.array.find(this['layers'], function(element) {
       return goog.object.containsKey(element, 'name') &&
-          goog.object.containsValue(element, layerInput);
+          goog.object.containsValue(element, input);
     });
-    if (!layer) return; //stop error propagating if layer name doesnt match
-  } else if (typeof layerInput === 'object') {
-    layer = this.getLayerFunc_(layerInput);
+    if (!node) return; //stop error propagating if no node is found
+    layer = this.getLayerFunc_(node);
+  } else if (typeof input === 'object') {
+    layer = this.getLayerFunc_(input);
   }
   var map = this['map'];
   if (map.getLayers().getArray().indexOf(layer) <= 0) {
@@ -294,17 +295,27 @@ app.SearchDirectiveController.getAllChildren_ =
 app.SearchDirectiveController.selected_ =
     function(event, suggestion, dataset) {
   if (suggestion instanceof ol.Feature) {
+    var layerLookup = {
+      'Adresse': 'addresses',
+      'Parcelle': 'parcels'
+    };
+    var showGeom = ['hydro', 'Adresse', 'FLIK', 'biotope',
+      'hydro_km', 'asta_esp', 'Parcelle'];
     var map = /** @type {ol.Map} */ (this['map']);
     var feature = /** @type {ol.Feature} */ (suggestion);
-    var features = this.featureOverlay_.getFeatures();
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
         (feature.getGeometry());
     var mapSize = /** @type {ol.Size} */ (map.getSize());
+    var features = this.featureOverlay_.getFeatures();
     features.clear();
-    features.push(feature);
+    if (goog.array.contains(showGeom, feature.get('layer_name'))) {
+      features.push(feature);
+    }
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
-    this.addLayerToMap_(/** @type {string} */(suggestion.get('layer_name')));
+    this.addLayerToMap_(
+        layerLookup[suggestion.get('layer_name')]
+    );
   } else {
     this.addLayerToMap_(suggestion);
   }
