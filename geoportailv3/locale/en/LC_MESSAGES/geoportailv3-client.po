@@ -1,11 +1,12 @@
 # 
 # Translators:
+# eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-01-21 08:17+0000\n"
-"Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>\n"
+"PO-Revision-Date: 2015-04-02 08:44+0000\n"
+"Last-Translator: Jeff Konnen <jeff.konnen@act.etat.lu>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,7 +88,7 @@ msgstr "Share"
 
 #: geoportailv3/templates/index.html
 msgid "user"
-msgstr "User"
+msgstr ""
 
 #: theme.101
 msgid "preemption"
@@ -113,7 +114,7 @@ msgstr "Environment"
 msgid "theme-test"
 msgstr "Spatial planning"
 
-#: theme.107 l_ext_wms.350
+#: theme.107 lu_ext_wms.296
 msgid "nordstad"
 msgstr ""
 
@@ -141,7 +142,7 @@ msgstr "camping place"
 msgid "arbed"
 msgstr ""
 
-#: theme.114 group.302
+#: theme.114 group.260
 msgid "commande"
 msgstr "Gemeng"
 
@@ -213,2352 +214,5795 @@ msgstr ""
 msgid "municipalities"
 msgstr ""
 
-#: group.132
-msgid "emwelt_biotop_kadaster_mobile"
-msgstr "Buffer"
+#: theme.132
+msgid "presidence2015"
+msgstr ""
 
-#: group.141
+#: group.133
+msgid "emwelt_biotop_kadaster_mobile"
+msgstr "Biotope cadaster of the open landscapes"
+
+#: lu_int_wms.134
+msgid "presidence_hotels_tous"
+msgstr ""
+
+#: lu_int_wms.135
+msgid "presidence_site_tous"
+msgstr ""
+
+#: lu_int_wms.136
+msgid "presidence_rest_tous"
+msgstr ""
+
+#: lu_int_wms.137
+msgid "aero_1963_20k"
+msgstr "Aerial images from 1963 (1:20k)"
+
+#: l_wmts.138
+msgid "emwelt_biotop_kadaster_f_mobile"
+msgstr "Biotope cadastre of the open landscapes: Surface elements without orchards"
+
+#: l_wmts.139
+msgid "emwelt_biotop_kadaster_b_mobile"
+msgstr "Biotope cadastre of the open landscapes: Buffer"
+
+#: l_wmts.140
+msgid "emwelt_biotop_kadaster_p_mobile"
+msgstr "Biotope cadastre of the open landscapes: Point elements"
+
+#: l_wmts.141
+msgid "emwelt_biotop_kadaster_s_mobile"
+msgstr "Biotope cadastre of the open landscapes: Orchards"
+
+#: group.142
 msgid "group_nordstad"
 msgstr ""
 
-#: group.142
+#: group.143
 msgid "env_natura2000"
 msgstr "Natura 2000"
 
-#: group.149
-msgid "eau_jaehrlichkeiten"
+#: lu_int_wms.144
+msgid "presidence_trajets"
 msgstr ""
 
-#: group.161
-msgid "eau_luft_sat_bilder"
-msgstr "Water portal"
+#: lu_int_wms.145
+msgid "arrets_bus"
+msgstr " Public Transport"
 
-#: group.162
-msgid "env_obs"
-msgstr "Landcover 1999"
-
-#: group.168
-msgid "mittal_bg"
-msgstr ""
-
-#: group.169
-msgid "eau_uesg"
-msgstr ""
-
-#: group.170
-msgid "adressen"
-msgstr "Addresses"
-
-#: group.171
-msgid "env_bruit"
-msgstr "Airport 2011 (LNGT)"
-
-#: group.176
-msgid "eau_zones_protegees"
-msgstr "Protected Areas"
-
-#: group.177
-msgid "mittal_group"
-msgstr "Spatial planning"
-
-#: group.178
-msgid "anf_data"
-msgstr "Local nature and forest districts"
-
-#: group.180
-msgid "oberflachendarstellung_mobile"
-msgstr "Land surface"
-
-#: group.186
-msgid "flurstucke_grundstucke_prof"
-msgstr "Cadastral data"
-
-#: group.191
-msgid "luft_und_satellitenbilder"
-msgstr "Orthophoto-images"
-
-#: group.192
-msgid "tour_sentiers_locaux"
-msgstr "Local Footpaths (not maintained by the DG Tourism)"
-
-#: group.193
-msgid "anf_secteurs_ecologiques_group"
-msgstr "Ecological sectors"
-
-#: group.196
-msgid "env_bruit_axes_ferroviaires"
-msgstr "Railroads 2011 (LDEN)"
-
-#: group.197
-msgid "eau_morphometrie"
-msgstr "Morphometric attributes"
-
-#: group.199
-msgid "eau_grenzen"
-msgstr "Boundaries"
-
-#: group.200
-msgid "unwelt_biologie_geologie"
-msgstr "Environment Biology and Geology"
-
-#: group.203
-msgid "env_bruit_air"
-msgstr "Airport 2011 (LNGT)"
-
-#: group.206
-msgid "hohe"
-msgstr ""
-
-#: group.209
-msgid "infrastrucktur_une_kommunikation"
-msgstr "Transport"
-
-#: group.212
-msgid "verkehrsnetze"
-msgstr "Transport networks"
-
-#: group.215
-msgid "eau_gewaessernetz"
-msgstr ""
-
-#: group.217
-msgid "asta_prof"
-msgstr "Ecological focus areas "
-
-#: group.222
-msgid "eau_bwp"
-msgstr ""
-
-#: group.225
-msgid "asta_meteo_group"
-msgstr "Ecological focus areas "
-
-#: group.231
-msgid "eau_zones_protegees_nationales"
-msgstr "National protected areas"
-
-#: group.232
-msgid "eau_zones_protegees_communautaires"
-msgstr "International protected areas"
-
-#: group.233
-msgid "eau_env_natura2000"
-msgstr "Natura 2000"
-
-#: l_ext_wms.144
+#: lu_ext_wms.146
 msgid "user_content_vtt"
 msgstr "Mountainbiking"
-
-#: l_ext_wms.148
-msgid "tour_nordic_walking"
-msgstr "Nordic Walking Parcs"
-
-#: l_ext_wms.154
-msgid "user_content_velo"
-msgstr "Cycling"
-
-#: l_ext_wms.159
-msgid "tour_cfl"
-msgstr "CFL: Rail, Walk, Cycle"
-
-#: l_ext_wms.160
-msgid "tour_pistes_velo"
-msgstr "Cycling Trails"
-
-#: l_ext_wms.175
-msgid "tour_quality_trails"
-msgstr "other quality trails"
-
-#: l_ext_wms.188
-msgid "tour_autopedestre"
-msgstr "Rambling routes"
-
-#: l_ext_wms.190
-msgid "tour_sentiers_communaux"
-msgstr "Municipality Trails"
-
-#: l_ext_wms.202
-msgid "tour_mullerthal_trail"
-msgstr "Mullerthal Trail"
-
-#: l_ext_wms.214
-msgid "tour_sentiers_ajl"
-msgstr "Youthhostel Trails"
-
-#: l_ext_wms.216
-msgid "tour_temp"
-msgstr "Temporary Layer"
-
-#: l_ext_wms.226
-msgid "tour_escape_ardenne"
-msgstr "EscapArdenne"
-
-#: l_wmts.137
-msgid "emwelt_biotop_kadaster_f_mobile"
-msgstr "Surface elements without orchards"
-
-#: l_wmts.138
-msgid "emwelt_biotop_kadaster_b_mobile"
-msgstr "Buffer"
-
-#: l_wmts.139
-msgid "emwelt_biotop_kadaster_p_mobile"
-msgstr "Point elements"
-
-#: l_wmts.140
-msgid "emwelt_biotop_kadaster_s_mobile"
-msgstr "Orchards"
-
-#: l_wmts.145
-msgid "wg_quellen"
-msgstr ""
-
-#: l_wmts.146
-msgid "wg_einzugsgebiete"
-msgstr ""
 
 #: l_wmts.147
 msgid "topo_tour_20k"
 msgstr "Regional tourist map 1:20000 R"
 
-#: l_wmts.151
-msgid "addresses"
-msgstr "Addresses"
-
-#: l_wmts.152
-msgid "communes_cadastrales"
-msgstr "Cadastral municipalities"
-
-#: l_wmts.155
-msgid "wg_durchgangigkeit"
-msgstr ""
-
-#: l_wmts.156
-msgid "topo_50k"
-msgstr "Topographical Map 1:50000"
-
-#: l_wmts.157
-msgid "TOPO_CARTESHISTO_1979"
-msgstr "Topographical Map 1:20k 1979 B/W"
-
-#: group.236
-msgid "eau_wassertiefe"
-msgstr ""
-
-#: group.237
-msgid "eau_hydrologische_ms"
-msgstr ""
-
-#: group.239
-msgid "verkehrsnetze_tourisme"
-msgstr "Transport networks"
-
-#: group.241
-msgid "eau_intensitaet"
-msgstr ""
-
-#: group.253
-msgid "eau_mod_uesg"
-msgstr ""
-
-#: group.254
-msgid "basisden_mobile"
-msgstr "General"
-
-#: group.266
-msgid "flurstucke_grundstucke_go"
-msgstr "Cadastral data"
-
-#: group.272
-msgid "env_bruit_axes_routiers"
-msgstr "Roads 2011 (LNGT)"
-
-#: group.273
-msgid "geologie_"
-msgstr "Geology"
-
-#: group.274
-msgid "eau_basisdaten"
-msgstr "Geographical location"
-
-#: group.277
-msgid "group_ac_remich_pag"
-msgstr "Land Use Plan Remich"
-
-#: group.281
-msgid "user_generated_content"
-msgstr "Not categorized content"
-
-#: group.285
-msgid "anf_forets"
-msgstr "Local nature and forest districts"
-
-#: group.287
-msgid "basisden"
-msgstr "Geographical location"
-
-#: group.289
-msgid "env_zones_protegees_nationales"
-msgstr "National protected areas"
-
-#: group.291
-msgid "env_zones_protegees"
-msgstr "Protected Areas"
-
-#: group.293
-msgid "infrastrucktur_une_kommunikation_prof"
-msgstr "Transport"
-
-#: group.295
-msgid "flurstucke_grundstucke"
-msgstr "Cadastral data"
-
-#: group.296
-msgid "eau_d_i_cr"
-msgstr ""
-
-#: group.297
-msgid "mymaps"
-msgstr "My maps"
-
-#: group.309
-msgid "tour_rando_v2"
-msgstr "Foot trails"
-
-#: group.310
-msgid "eau_messstationen_wrrl"
-msgstr ""
-
-#: group.324
-msgid "anf_data_map"
-msgstr ""
-
-#: group.327
-msgid "prof_daten"
-msgstr ""
-
-#: group.328
-msgid "env_sentiers"
-msgstr "Nature trails"
-
-#: group.329
-msgid "group_mobiliteit"
-msgstr "Park + Ride"
-
-#: group.333
-msgid "group_ac_wellenstein_pag"
-msgstr "Zones"
-
-#: group.334
-msgid "anf_unites_admin"
-msgstr "Municipality"
-
-#: group.335
-msgid "tour_velo_v2"
-msgstr "Cycling & Mountainbike Trails"
-
-#: group.338
-msgid "gebaude_prof"
-msgstr ""
-
-#: group.343
-msgid "group_ac_preizerdaul_pag"
-msgstr ""
-
-#: group.347
-msgid "eau_hist_uesg"
-msgstr ""
-
-#: group.348
-msgid "eau_weitere_ms"
-msgstr ""
-
-#: group.351
-msgid "flurstucke_grundstucke_mittal"
-msgstr "Cadastral data"
-
-#: group.352
-msgid "topographische_karten"
-msgstr "Topographical Maps"
-
-#: l_ext_wms.243
-msgid "tour_moto"
-msgstr "ADAC Motorbike Tour"
-
-#: l_ext_wms.247
-msgid "tour_saint_jacques"
-msgstr "Way of St. James"
-
-#: l_ext_wms.265
-msgid "tour_sentiers_nationaux"
-msgstr "National Footpaths"
-
-#: l_ext_wms.275
-msgid "tour_sentiers_gr"
-msgstr "Long distance footpaths"
-
-#: l_ext_wms.292
-msgid "tour_sentiers_syndicats"
-msgstr "Local Syndicate Trails"
-
-#: l_ext_wms.298
-msgid "tour_DeLux"
-msgstr "Naturwanderpark DeLux"
-
-#: l_ext_wms.320
-msgid "user_content"
-msgstr "Not categorized content"
-
-#: l_ext_wms.321
-msgid "user_content_poi"
-msgstr "Points of interest"
-
-#: l_ext_wms.356
-msgid "tour_pistes_vtt"
-msgstr "Mountainbike Trails"
-
-#: l_wmts.235
-msgid "ac_wellenstein_pag_complet"
-msgstr "Complete plan"
-
-#: l_wmts.238
-msgid "decoupage_geo25_50k"
-msgstr ""
-
-#: l_wmts.240
-msgid "wg_badegewasser"
-msgstr ""
-
-#: l_wmts.242
-msgid "wg_kanal__muhlgraben"
-msgstr ""
-
-#: l_wmts.245
-msgid "decoupage_communes"
-msgstr "Municipality code"
-
-#: l_wmts.246
-msgid "TOPO_CARTESHISTO_1966-74_50k"
-msgstr "Topographical Map 1:50k 1966"
-
-#: l_wmts.248
-msgid "topo_decoupage_50k"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.249
-msgid "TOPO_CARTES_1944"
-msgstr "German War map 1:25k 1939"
-
-#: l_wmts.250
-msgid "wg_grundwasser"
-msgstr ""
-
-#: l_wmts.251
-msgid "ivv_klimakarte"
-msgstr "Climate map"
-
-#: group.368
-msgid "anf_reserves"
-msgstr "Nature reserves (DIG)"
-
-#: group.370
-msgid "tour_quality"
-msgstr "Quality Label Trails"
-
-#: group.373
-msgid "asta"
-msgstr ""
-
-#: group.376
-msgid "administrative_einheiten"
-msgstr "Administrative units"
-
-#: group.377
-msgid "eau_stehende_gewaesser"
-msgstr ""
-
-#: group.381
-msgid "umweltuberwachung"
-msgstr "Environmental survey"
-
-#: group.382
-msgid "topo_carteshisto"
-msgstr "Historical topographical Maps"
-
-#: group.385
-msgid "tour_mymaps"
-msgstr "Temporary Layer"
-
-#: group.390
-msgid "eau_topographie"
-msgstr "Topography"
-
-#: group.391
-msgid "eau_d_i_in"
-msgstr ""
-
-#: group.392
-msgid "eau_landnutzung"
-msgstr "Land use"
-
-#: group.393
-msgid "eau_anf_reserves"
-msgstr "Nature reserves (DIG)"
-
-#: group.396
-msgid "pedologie"
-msgstr "Geology"
-
-#: group.397
-msgid "anf_chasse"
-msgstr "Hunting lots"
-
-#: group.398
-msgid "go_daten"
-msgstr ""
-
-#: group.399
-msgid "oberflachendarstellung"
-msgstr "Land surface"
-
-#: group.400
-msgid "unwelt_biologie_geologie_mobile"
-msgstr "Environment Biology and Geology"
-
-#: group.402
-msgid "eau_ns_ms"
-msgstr ""
-
-#: group.410
-msgid "geodesy"
-msgstr "Geodesy"
-
-#: group.411
-msgid "ign"
-msgstr "viticultural land"
-
-#: group.414
-msgid "bodennutzung"
-msgstr "Land use"
-
-#: group.415
-msgid "env_zones_protegees_communautaires"
-msgstr "International protected areas"
-
-#: group.417
-msgid "weinbau"
-msgstr ""
-
-#: group.418
-msgid "tour_auto_moto_v2"
-msgstr "Oldtimer- & Motorbike Trails"
-
-#: group.419
-msgid "group_preemption"
-msgstr ""
-
-#: group.422
-msgid "lebensraume_une_biotope"
-msgstr "Habitats and biotopes"
-
-#: group.423
-msgid "gebaude"
-msgstr ""
-
-#: group.424
-msgid "asta_zones_prot"
-msgstr "Ecological focus areas "
-
-#: group.426
-msgid "eau_monitoring"
-msgstr ""
-
-#: group.448
-msgid "natur_an_emwelt"
-msgstr "multiple usage"
-
-#: group.456
-msgid "emwelt_biotop_kadaster"
-msgstr "Biotope cadaster of the open landscapes"
-
-#: group.461
-msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
-msgstr "Drinking water protection Zones [ZPS]"
-
-#: group.473
-msgid "Archeo"
-msgstr ""
-
-#: group.489
-msgid "at_pst"
-msgstr "SP transport"
-
-#: group.490
-msgid "at_pszae"
-msgstr "SP economic activity zones"
-
-#: l_ext_wms.389
-msgid "env_sentiersnature"
-msgstr "Nature trails"
-
-#: l_ext_wms.443
-msgid "user_content_rando"
-msgstr "Rambling"
-
-#: l_ext_wms.444
-msgid "user_content_autre"
-msgstr "Others"
-
-#: l_ext_wms.450
-msgid "luxembourg_on_horse"
-msgstr "Luxemburg on horse"
-
-#: l_ext_wms.459
-msgid "tour_pistes_velo_mymaps"
-msgstr "Cycling Trails"
-
-#: l_ext_wms.472
-msgid "Merovingien"
-msgstr ""
-
-#: l_ext_wms.479
-msgid "Prehistoire"
-msgstr ""
-
-#: l_ext_wms.480
-msgid "Moyen Age"
-msgstr ""
-
-#: l_ext_wms.481
-msgid "Temps modernes"
-msgstr ""
-
-#: l_ext_wms.482
-msgid "Epoque indefinie"
-msgstr ""
-
-#: l_ext_wms.486
-msgid "Protohistoire"
-msgstr ""
-
-#: l_ext_wms.487
-msgid "Gallo-Romain"
-msgstr ""
-
-#: l_wmts.364
-msgid "TOPO_CARTESHISTO_1993_50k"
-msgstr "Topographical Map 1:50k 1993"
-
-#: l_wmts.365
-msgid "ac_wellenstein_pag_perimetres_zones"
-msgstr "Zone contours"
-
-#: l_wmts.366
-msgid "wg_landnutzung"
-msgstr "Land use"
-
-#: l_wmts.367
-msgid "communes"
-msgstr "Municipalities"
-
-#: l_wmts.369
-msgid "wg_timis_ueberflutungsflachen_hq10"
-msgstr ""
-
-#: l_wmts.371
-msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
-msgstr "Spaces to be saved"
-
-#: l_wmts.372
-msgid "decoupage_geo25k"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.374
-msgid "wg_cr_in10"
-msgstr ""
-
-#: l_wmts.375
-msgid "wg_versiegelungsklassen"
-msgstr "Sealing"
-
-#: l_wmts.379
-msgid "wg_hauptgewasser"
-msgstr ""
-
-#: l_wmts.380
-msgid "ortho_irc"
-msgstr "Orthophoto 2007 (infrared)"
-
-#: l_wmts.383
-msgid "wg_einschrankung_warmepumpe"
-msgstr ""
-
-#: l_wmts.384
-msgid "geologie_nouvelle_edition"
-msgstr "Geologocal Map, new edition"
-
-#: l_wmts.386
-msgid "wg_timis_hochwasser_gefahrdungen"
-msgstr ""
-
-#: l_wmts.387
-msgid "wg_trinkwasserbehalter"
-msgstr ""
-
-#: l_wmts.388
-msgid "wg_timis_hochwasser_intensitaten_hq10"
-msgstr ""
-
-#: l_wmts.395
-msgid "toponymes"
-msgstr "Cadastral region names"
-
-#: l_wmts.401
-msgid "wg_schneehohe"
-msgstr ""
-
-#: l_wmts.404
-msgid "wg_kunstliche_(bassin)"
-msgstr ""
-
-#: l_wmts.406
-msgid "1907_CAHANSEN"
-msgstr "Topographical Map 1907"
-
-#: l_wmts.407
-msgid "cantons"
-msgstr "Cantons"
-
-#: l_wmts.408
-msgid "wg_cr_in100"
-msgstr ""
-
-#: l_wmts.412
-msgid "wg_uesg_alzette_1995"
-msgstr ""
-
-#: group.491
-msgid "at_ps"
-msgstr "Sectoral plans (SP)"
-
-#: group.497
-msgid "at_psp"
-msgstr "SP landscapes"
-
-#: group.498
-msgid "at_psp_zm"
-msgstr "Multifunctional zones"
-
-#: group.499
-msgid "at_psl"
-msgstr "SP housing"
-
-#: group.504
-msgid "at_pst_prm"
-msgstr "Parking space management"
-
-#: group.516
-msgid "map_morphometrie"
-msgstr "Morphometric attributes"
-
-#: group.530
-msgid "eau_4_lintgen"
-msgstr "Water portal"
-
-#: group.531
-msgid "pag_lintgen"
-msgstr ""
-
-#: group.538
-msgid "eau_new_Projekt_TIMIS_(usage_interne)"
-msgstr "TIMIS Project"
-
-#: group.539
-msgid "group_lenoz"
-msgstr ""
-
-#: group.551
-msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
-msgstr "Project flood risk maps 2010"
-
-#: group.559
-msgid "eau_new_Grundwasser_2009"
-msgstr "Groundwater 2009"
-
-#: group.587
-msgid "flurstucke_grundstucke_eau"
-msgstr "Cadastral data"
-
-#: group.591
-msgid "eau_new_Risikobeurteilung_2021"
-msgstr "Risk assessment 2021"
-
-#: group.592
-msgid "eau_new_Trinkwasser"
-msgstr "Drinking water"
-
-#: group.705
-msgid "wrrl_intern_group"
-msgstr ""
-
-#: l_wmts.512
-msgid "wg_hangneigung_map"
-msgstr "Slope"
-
-#: l_wmts.513
-msgid "wg_relief_map"
-msgstr "Relief"
-
-#: l_wmts.514
-msgid "wg_exposition_map"
-msgstr "Exposition"
-
-#: l_wmts.515
-msgid "wg_hohenlinien_10m_map"
-msgstr "Contour 10 m"
-
-#: l_wmts.547
-msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
-msgstr "HQ10 [high probability]"
-
-#: l_wmts.558
-msgid "communes_cadastrales_labels_eau"
-msgstr "Cadastral municipalities (names)"
-
-#: l_wmts.567
-msgid "sections_cadastrales_labels_eau"
-msgstr "Cadastral sections  (names)"
-
-#: l_wmts.577
-msgid "feuilles_cadastrales_eau"
-msgstr "Historical cadastral sheets"
-
-#: l_wmts.580
-msgid "sections_cadastrales_eau"
-msgstr "Cadastral sections"
-
-#: l_wmts.581
-msgid "toponymes_eau"
-msgstr "Cadastral region names"
-
-#: l_wmts.588
-msgid "communes_cadastrales_eau"
-msgstr "Cadastral municipalities"
-
-#: l_wmts.595
-msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
-msgstr "HQ extreme [low probability]"
-
-#: group.601
-msgid "eau_new_Gewaessernetz"
-msgstr "Hydrography"
-
-#: group.602
-msgid "eau_new_Fischerei"
-msgstr "Fishing service"
-
-#: group.604
-msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
-msgstr "Project flood risk maps 2013"
-
-#: group.605
-msgid "eau_new_Oberflaechengewaesser_2021"
-msgstr "Surface waters 2021"
-
-#: group.606
-msgid "eau_new_Messstationen"
-msgstr "Gauging stations"
-
-#: group.609
-msgid "eau_new_Klimatologische_Messstationen"
-msgstr "Precipitation measurement"
-
-#: group.610
-msgid "eau_new_Historische_Ueberschwemmungsgebiete"
-msgstr "Historic floodplains"
-
-#: group.611
-msgid "eau_new_Projekt_Hochwassergefahrenkarten_2013"
-msgstr "Project flood hazard maps 2013"
-
-#: group.619
-msgid "eau_new_Zusaetzliche_Informationen"
-msgstr "Additional Informations"
-
-#: group.620
-msgid "eau_new_Oberflaechengewaesser_2009"
-msgstr "Surface waters 2009"
-
-#: group.624
-msgid "eau_new_Messstationen_(WRRL)"
-msgstr "Monitoring stations [WFD]"
-
-#: group.634
-msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
-msgstr "Quality elements of the ecological status 2015"
-
-#: group.635
-msgid "eau_new_Grundwasser_2021"
-msgstr "Groundwater 2021"
-
-#: group.642
-msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
-msgstr "Water bodies [WB] status 2009"
-
-#: group.649
-msgid "eau_new_Schutzgebiete"
-msgstr "Protected sites"
-
-#: group.650
-msgid "eau_new_Gewaesserschutz"
-msgstr "Prevention of water pollution"
-
-#: group.658
-msgid "eau_new_Grundwasser_2015"
-msgstr "Groundwater 2015"
-
-#: group.660
-msgid "eau_new_Oberflaechengewaesser_Messstationen"
-msgstr "Surface water stations"
-
-#: group.661
-msgid "eau_new_Grundwasser_Messstationen"
-msgstr "Groundwater monitoring stations"
-
-#: group.662
-msgid "eau_new_Wasserrahmenrichtlinie"
-msgstr "Water framework directive [WFD]"
-
-#: group.664
-msgid "eau_new_Bewirtschaftungsplan_2009"
-msgstr "River Basin Management Plan 2009"
-
-#: group.668
-msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
-msgstr "Water bodies  [WB] status 2015"
-
-#: group.669
-msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
-msgstr "Project flood hazard maps 2010"
-
-#: group.670
-msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
-msgstr "Water scarcity plan"
-
-#: group.672
-msgid "eau_new_Bewirtschaftungsplan_2015"
-msgstr "River Basin Management Plan 2015"
-
-#: group.674
-msgid "eau_new_Oberflaechengewaesser_2015"
-msgstr "Surface waters 2015"
-
-#: group.675
-msgid "eau_new_Nitratrichtlinie"
-msgstr "Nitrates directive"
-
-#: group.677
-msgid "eau_new_Grundwasser"
-msgstr "Groundwater"
-
-#: group.678
-msgid "eau_new_Gewaesser"
-msgstr "Watercourses"
-
-#: group.679
-msgid "eau_new_Hydrologische_Messstationen"
-msgstr "Hydrological stations"
-
-#: group.681
-msgid "eau_new_Ueberschwemmungsgebiete_(UESG)"
-msgstr "Floodplains"
-
-#: group.682
-msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
-msgstr "Standing waters"
-
-#: group.683
-msgid "eau_new_Historische_Karten_(usage_interne)"
-msgstr "Historic maps"
-
-#: group.688
-msgid "tourisme_poi"
-msgstr "Tourism"
-
-#: group.704
-msgid "wrrl_intern_hs"
-msgstr ""
-
-#: l_wmts.653
-msgid "eau_new_HQextrem_merged_2013"
-msgstr "HQ extreme (floods with a low probability)"
-
-#: l_wmts.657
-msgid "eau_new_HQ10_merged_2013"
-msgstr "HQ10 [floods with a high probability]"
-
-#: group.706
-msgid "asta_esp_group"
-msgstr "Ecological focus areas "
-
-#: group.716
-msgid "logt"
-msgstr ""
-
-#: group.717
-msgid "osm"
-msgstr "Name"
-
-#: l_int_wms.133
-msgid "mobiliteit_pr"
-msgstr "Park + Ride"
-
-#: l_int_wms.134
-msgid "mobiliteit_cfl"
-msgstr "CFL train stations"
-
-#: l_int_wms.135
-msgid "mobiliteit_bornes"
-msgstr "Electric charging points"
-
-#: l_int_wms.136
-msgid "aero_1963_20k"
-msgstr "Aerial images from 1963 (1:20k)"
-
-#: l_int_wms.143
-msgid "arrets_bus"
-msgstr " Public Transport"
-
-#: l_int_wms.150
+#: lu_ext_wms.148
+msgid "tour_nordic_walking"
+msgstr "Nordic Walking Parcs"
+
+#: lu_int_wms.149
 msgid "parcelles_preemption"
 msgstr ""
 
-#: l_int_wms.153
+#: l_wmts.150
+msgid "addresses"
+msgstr "Addresses"
+
+#: l_wmts.151
+msgid "communes_cadastrales"
+msgstr "Cadastral municipalities"
+
+#: lu_int_wms.152
 msgid "PAG"
 msgstr "Land use plan"
 
-#: l_int_wms.158
-msgid "env_bruit_air_lden"
-msgstr "Airport 2011 (LDEN)"
+#: lu_ext_wms.153
+msgid "user_content_velo"
+msgstr "Cycling"
 
-#: l_int_wms.166
+#: l_wmts.154
+msgid "topo_50k"
+msgstr "Topographical Map 1:50000"
+
+#: l_wmts.155
+msgid "TOPO_CARTESHISTO_1979"
+msgstr "Topographical Map 1:20k 1979 B/W"
+
+#: lu_int_wms.156
+msgid "env_bruit_air_lden"
+msgstr "Airport noise 2011 (LDEN)"
+
+#: lu_ext_wms.157
+msgid "tour_cfl"
+msgstr "CFL: Rail, Walk, Cycle"
+
+#: lu_ext_wms.158
+msgid "tour_pistes_velo"
+msgstr "Cycling Trails"
+
+#: group.159
+msgid "eau_luft_sat_bilder"
+msgstr "Aerial and satellite photographs"
+
+#: group.160
+msgid "env_obs"
+msgstr "Land use"
+
+#: l_wmts.161
+msgid "ac_wellenstein_pag_volumes_batiments"
+msgstr "Buildings"
+
+#: lu_int_wms.162
 msgid "env_obs1999"
 msgstr "Landcover 1999"
 
-#: l_int_wms.173
+#: group.163
+msgid "mittal_bg"
+msgstr "Geographical location"
+
+#: group.164
+msgid "adressen"
+msgstr "Addresses"
+
+#: group.165
+msgid "env_bruit"
+msgstr "Noise"
+
+#: lu_int_wms.166
 msgid "env_corine"
 msgstr "Corine Landcover 2006"
 
-#: l_int_wms.184
-msgid "natura2000_oiseaux"
-msgstr "Bird protection zones Natura 2000"
+#: lu_ext_wms.167
+msgid "tour_quality_trails"
+msgstr "other quality trails"
 
-#: l_int_wms.204
+#: group.168
+msgid "eau_zones_protegees"
+msgstr "Protected Areas"
+
+#: group.169
+msgid "mittal_group"
+msgstr "Spatial planning"
+
+#: lu_int_wms.170
+msgid "presidence_pharmacies_pharmacie_welschbillig"
+msgstr ""
+
+#: l_wmts.171
+msgid "blank"
+msgstr ""
+
+#: group.172
+msgid "anf_data"
+msgstr "Data of the nature and forest administration"
+
+#: group.173
+msgid "oberflachendarstellung_mobile"
+msgstr "Land surface"
+
+#: l_wmts.174
+msgid "TOPO_CARTESHISTO_1964_RGB"
+msgstr "Topographical Map 1:20k 1964"
+
+#: group.175
+msgid "presidence_musees_group"
+msgstr ""
+
+#: group.176
+msgid "flurstucke_grundstucke_prof"
+msgstr "Cadastral data"
+
+#: l_wmts.177
+msgid "ivv_grosslagen"
+msgstr "Winegrowing areas"
+
+#: lu_ext_wms.178
+msgid "tour_autopedestre"
+msgstr "Rambling routes"
+
+#: lu_ext_wms.179
+msgid "tour_sentiers_communaux"
+msgstr "Municipality Trails"
+
+#: group.180
+msgid "luft_und_satellitenbilder"
+msgstr "Orthophoto-images"
+
+#: group.181
+msgid "tour_sentiers_locaux"
+msgstr "Local Footpaths (not maintained by the DG Tourism)"
+
+#: group.182
+msgid "anf_secteurs_ecologiques_group"
+msgstr "Ecological sectors"
+
+#: l_wmts.183
+msgid "roads"
+msgstr "Road Network"
+
+#: l_wmts.184
+msgid "ac_wellenstein_pag_zones"
+msgstr "Zones"
+
+#: group.185
+msgid "env_bruit_axes_ferroviaires"
+msgstr "Railroads"
+
+#: group.186
+msgid "eau_morphometrie"
+msgstr "Morphometric attributes"
+
+#: l_wmts.187
+msgid "TOPO_CARTESHISTO_1990_50k"
+msgstr "Topographical Map 1:50k 1990"
+
+#: group.188
+msgid "eau_grenzen"
+msgstr "Boundaries"
+
+#: group.189
+msgid "unwelt_biologie_geologie"
+msgstr "Environment, Biology and Geology"
+
+#: l_wmts.190
+msgid "topo_decoupage_tc"
+msgstr "Regional Mapsheets"
+
+#: lu_ext_wms.191
+msgid "tour_mullerthal_trail"
+msgstr "Mullerthal Trail"
+
+#: group.192
+msgid "env_bruit_air"
+msgstr "Airport"
+
+#: lu_int_wms.193
 msgid "PRM_PCN"
 msgstr ""
 
-#: l_int_wms.207
+#: l_wmts.194
+msgid "TOPO_CARTESHISTO_1979_RGB"
+msgstr "Topographical Map 1:20k 1979"
+
+#: group.195
+msgid "hohe"
+msgstr "Height"
+
+#: lu_int_wms.196
 msgid "PRM"
 msgstr "PRE"
 
-#: l_int_wms.230
+#: l_wmts.197
+msgid "topo_decoupage_5000"
+msgstr "Regional Mapsheets"
+
+#: group.198
+msgid "infrastrucktur_une_kommunikation"
+msgstr "Transport"
+
+#: l_wmts.199
+msgid "topo_5k"
+msgstr "Topographical Map 1:5000"
+
+#: group.200
+msgid "verkehrsnetze"
+msgstr "Transport networks"
+
+#: lu_ext_wms.201
+msgid "tour_sentiers_ajl"
+msgstr "Youthhostel Trails"
+
+#: lu_ext_wms.202
+msgid "tour_temp"
+msgstr "Temporary Layer"
+
+#: group.203
+msgid "asta_prof"
+msgstr "Agricultural data"
+
+#: l_wmts.204
+msgid "buildings"
+msgstr "Buildings"
+
+#: l_wmts.205
+msgid "topo_decoupage_100k"
+msgstr "Regional Mapsheets"
+
+#: l_wmts.206
+msgid "TOPO_CARTESHISTO_1964"
+msgstr "Topographical Map 1:20k 1964 B/W"
+
+#: l_wmts.207
+msgid "wg_relief"
+msgstr "Relief"
+
+#: l_wmts.208
+msgid "wg_relief_dhm_2m"
+msgstr "Relief DEM 2"
+
+#: group.209
+msgid "asta_meteo_group"
+msgstr "Weather data"
+
+#: lu_ext_wms.210
+msgid "tour_escape_ardenne"
+msgstr "EscapArdenne"
+
+#: l_wmts.211
+msgid "topo_20k"
+msgstr "Topographical Map 1:20000"
+
+#: lu_int_wms.212
 msgid "eau_new_Provisorische_ZPS"
 msgstr "Provisional ZPS"
 
-#: l_int_wms.244
+#: group.213
+msgid "eau_zones_protegees_nationales"
+msgstr "National protected areas"
+
+#: group.214
+msgid "eau_zones_protegees_communautaires"
+msgstr "International protected areas"
+
+#: group.215
+msgid "eau_env_natura2000"
+msgstr "Natura 2000"
+
+#: l_wmts.216
+msgid "ac_wellenstein_pag_complet"
+msgstr "Complete plan"
+
+#: l_wmts.217
+msgid "decoupage_geo25_50k"
+msgstr ""
+
+#: group.218
+msgid "verkehrsnetze_tourisme"
+msgstr "Transport networks"
+
+#: lu_int_wms.219
+msgid "presidence_musees_ancient_cloth_factory__duch_vum_séi_"
+msgstr ""
+
+#: lu_ext_wms.220
+msgid "tour_moto"
+msgstr "ADAC Motorbike Tour"
+
+#: lu_int_wms.221
 msgid "env_obs2007"
 msgstr "Landcover 2007"
 
-#: l_int_wms.256
+#: l_wmts.222
+msgid "decoupage_communes"
+msgstr "Municipality code"
+
+#: l_wmts.223
+msgid "TOPO_CARTESHISTO_1966-74_50k"
+msgstr "Topographical Map 1:50k 1966"
+
+#: lu_ext_wms.224
+msgid "tour_saint_jacques"
+msgstr "Way of St. James"
+
+#: l_wmts.225
+msgid "topo_decoupage_50k"
+msgstr "Regional Mapsheets"
+
+#: l_wmts.226
+msgid "TOPO_CARTES_1944"
+msgstr "German War map 1:25k 1939"
+
+#: l_wmts.227
+msgid "ivv_klimakarte"
+msgstr "Climate map"
+
+#: group.228
+msgid "basisden_mobile"
+msgstr "Geographical location"
+
+#: l_wmts.229
+msgid "topo_250k"
+msgstr "Topographical Map 1:250000"
+
+#: lu_int_wms.230
 msgid "parcels_go"
 msgstr "Cadastral parcels"
 
-#: l_int_wms.264
-msgid "natura2000_habitats"
-msgstr "Habitats Natura 2000"
+#: l_wmts.231
+msgid "ortho_2004"
+msgstr "Orthophoto 2004"
 
-#: l_int_wms.268
+#: l_wmts.232
+msgid "ortho_2001"
+msgstr "Orthophoto 2001"
+
+#: lu_int_wms.233
+msgid "presidence_musees_bank_museum_luxembourg"
+msgstr ""
+
+#: lu_ext_wms.234
+msgid "tour_sentiers_nationaux"
+msgstr "National Footpaths"
+
+#: group.235
+msgid "flurstucke_grundstucke_go"
+msgstr "Cadastral data"
+
+#: lu_int_wms.236
 msgid "aero_1951_25k"
 msgstr "Aerial images from 1951 (1:25k)"
 
-#: l_int_wms.269
+#: lu_int_wms.237
 msgid "mittal"
 msgstr ""
 
-#: l_int_wms.303
+#: l_wmts.238
+msgid "ortho_2007"
+msgstr "Orthophoto 2007"
+
+#: group.239
+msgid "env_bruit_axes_routiers"
+msgstr "Roads"
+
+#: group.240
+msgid "geologie_"
+msgstr "Geology"
+
+#: group.241
+msgid "eau_basisdaten"
+msgstr "Geographical location"
+
+#: lu_ext_wms.242
+msgid "tour_sentiers_gr"
+msgstr "Long distance footpaths"
+
+#: group.243
+msgid "group_ac_remich_pag"
+msgstr "Land use plan"
+
+#: l_wmts.244
+msgid "TOPO_CARTESHISTO_2000"
+msgstr "Topographical Map 1:20k 2000"
+
+#: l_wmts.245
+msgid "ign_topo"
+msgstr "Automatical Topographical Map"
+
+#: group.246
+msgid "user_generated_content"
+msgstr "User generated public maps"
+
+#: l_wmts.247
+msgid "ivv_kleinlagen"
+msgstr "Small winegrowing areas"
+
+#: group.248
+msgid "anf_forets"
+msgstr "Forests"
+
+#: group.249
+msgid "basisden"
+msgstr "Geographical location"
+
+#: l_wmts.250
+msgid "geologie"
+msgstr "Geological Overview map"
+
+#: group.251
+msgid "env_zones_protegees_nationales"
+msgstr "National protected areas"
+
+#: group.252
+msgid "env_zones_protegees"
+msgstr "Protected Areas"
+
+#: lu_ext_wms.253
+msgid "tour_sentiers_syndicats"
+msgstr "Local Syndicate Trails"
+
+#: group.254
+msgid "infrastrucktur_une_kommunikation_prof"
+msgstr "Transport"
+
+#: group.255
+msgid "flurstucke_grundstucke"
+msgstr "Cadastral data"
+
+#: group.256
+msgid "mymaps"
+msgstr "My maps"
+
+#: lu_ext_wms.257
+msgid "tour_DeLux"
+msgstr "Naturwanderpark DeLux"
+
+#: l_wmts.258
+msgid "ign_ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.259
+msgid "1927_CAHANSEN"
+msgstr "Topographical Map 1927"
+
+#: lu_int_wms.261
 msgid "env_bruit_axes_routiers_lngt"
-msgstr "Roads 2011 (LNGT)"
+msgstr "Road noise 2011 (LNGT)"
 
-#: l_int_wms.308
+#: l_wmts.262
+msgid "feuilles_cadastrales"
+msgstr "Historical cadastral sheets"
+
+#: l_wmts.263
+msgid "ac_wellenstein_pag_limites"
+msgstr "Limits"
+
+#: l_wmts.264
+msgid "ac_wellenstein_pag_voies_acces"
+msgstr "Roads"
+
+#: lu_int_wms.265
 msgid "env_bruit_axes_ferroviaires_lngt"
-msgstr "Railroads 2011 (LNGT)"
+msgstr "Railroad noise 2011 (LNGT)"
 
-#: l_int_wms.314
+#: group.266
+msgid "tour_rando_v2"
+msgstr "Foot trails"
+
+#: l_wmts.267
+msgid "topo_100k"
+msgstr "Topographical Map 1:100000"
+
+#: l_wmts.268
+msgid "cadastre"
+msgstr "Cadastre plan"
+
+#: l_wmts.269
+msgid "wg_exposition"
+msgstr "Exposition"
+
+#: lu_int_wms.270
 msgid "PA"
 msgstr "Land use plan"
 
-#: l_int_wms.325
+#: l_wmts.271
+msgid "topo_decoupage_r"
+msgstr "Regional Mapsheets"
+
+#: l_wmts.272
+msgid "sections_cadastrales_labels"
+msgstr "Cadastral sections  (names)"
+
+#: l_wmts.273
+msgid "ac_remich_ortho"
+msgstr "Orthophoto Remich"
+
+#: l_wmts.274
+msgid "districts_labels"
+msgstr "Districts (names)"
+
+#: l_wmts.275
+msgid "communes_labels"
+msgstr "Municipalities (names)"
+
+#: lu_ext_wms.276
+msgid "user_content"
+msgstr "Not categorized content"
+
+#: lu_ext_wms.277
+msgid "user_content_poi"
+msgstr "Points of interest"
+
+#: l_wmts.278
+msgid "pedologie_100k"
+msgstr "Soil map 1:100'000"
+
+#: group.279
+msgid "anf_data_map"
+msgstr "Data of the nature and forest administration"
+
+#: lu_int_wms.280
 msgid "eau_new_Chemischer_Zustand_der_WK_2009"
 msgstr "Chemical status of the WB 2009"
 
-#: l_int_wms.360
-msgid "ac_preizerdaul_pag"
-msgstr "Land Use Plan Remich"
+#: l_wmts.281
+msgid "TOPO25K1954C24"
+msgstr "Topographical Map 1954"
 
-#: l_int_wms.361
+#: group.282
+msgid "prof_daten"
+msgstr "Geographical location"
+
+#: group.283
+msgid "env_sentiers"
+msgstr "Thematic trails"
+
+#: group.284
+msgid "group_mobiliteit"
+msgstr "Park + Ride"
+
+#: l_wmts.285
+msgid "TOPO_CARTESHISTO_2000_50k"
+msgstr "Topographical Map 1:50k 2000"
+
+#: group.286
+msgid "group_ac_wellenstein_pag"
+msgstr "Land use plan"
+
+#: group.287
+msgid "anf_unites_admin"
+msgstr "Administrative units of forest adminisration"
+
+#: group.288
+msgid "tour_velo_v2"
+msgstr "Cycling & Mountainbike Trails"
+
+#: l_wmts.289
+msgid "ac_wellenstein_pag_alignements_a_preserver"
+msgstr "Alignments to be saved"
+
+#: l_wmts.290
+msgid "asta_meteo"
+msgstr "Weather stations"
+
+#: group.291
+msgid "gebaude_prof"
+msgstr "Buildings"
+
+#: l_wmts.292
+msgid "TOPO_CARTESHISTO_1989"
+msgstr "Topographical Map 1:20k 1989"
+
+#: l_wmts.293
+msgid "wg_hohenlinien_10m"
+msgstr "Contour 10 m"
+
+#: group.294
+msgid "group_ac_preizerdaul_pag"
+msgstr ""
+
+#: l_wmts.295
+msgid "wg_hangneigung_"
+msgstr "Slope"
+
+#: group.297
+msgid "flurstucke_grundstucke_mittal"
+msgstr "Cadastral data"
+
+#: group.298
+msgid "topographische_karten"
+msgstr "Topographical Maps"
+
+#: l_wmts.299
+msgid "wg_ikonos_satellitendaten"
+msgstr "Satellite pcitures Ikonos"
+
+#: lu_ext_wms.300
+msgid "tour_pistes_vtt"
+msgstr "Mountainbike Trails"
+
+#: l_wmts.301
+msgid "geologie_ancienne_edition"
+msgstr "Geological Map, old edition"
+
+#: l_wmts.302
+msgid "topo"
+msgstr "Automatical Topographical Map"
+
+#: l_wmts.303
+msgid "ivv_flik_parcels"
+msgstr "FLIK reference parcels for Vineyards 2014"
+
+#: lu_int_wms.304
+msgid "ac_preizerdaul_pag"
+msgstr "Land use plan"
+
+#: lu_int_wms.305
 msgid "ac_preizerdaul_ortho_2009"
 msgstr "Orthophoto Remich"
 
-#: l_int_wms.378
+#: lu_int_wms.306
+msgid "presidence_musees_battle_of_the_bulge_museum_1944-45_wiltz"
+msgstr ""
+
+#: l_wmts.307
+msgid "TOPO_CARTESHISTO_1993_50k"
+msgstr "Topographical Map 1:50k 1993"
+
+#: l_wmts.308
+msgid "ac_wellenstein_pag_perimetres_zones"
+msgstr "Zone contours"
+
+#: l_wmts.309
+msgid "wg_landnutzung"
+msgstr "Land use"
+
+#: l_wmts.310
+msgid "communes"
+msgstr "Municipalities"
+
+#: group.311
+msgid "anf_reserves"
+msgstr "Reserves"
+
+#: group.312
+msgid "tour_quality"
+msgstr "Quality Label Trails"
+
+#: l_wmts.313
+msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
+msgstr "Spaces to be saved"
+
+#: l_wmts.314
+msgid "decoupage_geo25k"
+msgstr "Regional Mapsheets"
+
+#: group.315
+msgid "asta"
+msgstr "Agricultural data"
+
+#: l_wmts.316
+msgid "wg_versiegelungsklassen"
+msgstr "Sealing"
+
+#: group.317
+msgid "administrative_einheiten"
+msgstr "Administrative units"
+
+#: lu_int_wms.318
 msgid "env_bruit_axes_ferroviaires_lden"
-msgstr "Railroads 2011 (LDEN)"
+msgstr "Railroad noise 2011 (LDEN)"
 
-#: l_int_wms.394
-msgid "eau_natura2000_oiseaux"
-msgstr "Bird protection zones Natura 2000"
+#: l_wmts.319
+msgid "ortho_irc"
+msgstr "Orthophoto 2007 (infrared)"
 
-#: l_int_wms.403
+#: group.320
+msgid "umweltuberwachung"
+msgstr "Environmental survey"
+
+#: group.321
+msgid "topo_carteshisto"
+msgstr "Historical topographical Maps"
+
+#: l_wmts.322
+msgid "geologie_nouvelle_edition"
+msgstr "Geologocal Map, new edition"
+
+#: group.323
+msgid "tour_mymaps"
+msgstr "Foot trails"
+
+#: lu_ext_wms.324
+msgid "env_sentiersnature"
+msgstr "Nature trails"
+
+#: group.325
+msgid "eau_topographie"
+msgstr "Topography"
+
+#: group.326
+msgid "eau_landnutzung"
+msgstr "Land use after Corine"
+
+#: group.327
+msgid "eau_anf_reserves"
+msgstr "Reserves"
+
+#: l_wmts.328
+msgid "toponymes"
+msgstr "Cadastral region names"
+
+#: group.329
+msgid "pedologie"
+msgstr "Soil maps"
+
+#: group.330
+msgid "anf_chasse"
+msgstr "Hunting"
+
+#: group.331
+msgid "go_daten"
+msgstr "Geographical location"
+
+#: group.332
+msgid "oberflachendarstellung"
+msgstr "Land surface"
+
+#: group.333
+msgid "unwelt_biologie_geologie_mobile"
+msgstr "Environment, Biology and Geology"
+
+#: lu_int_wms.334
 msgid "env_bruit_axes_routiers_lden"
-msgstr "Roads 2011 (LDEN)"
+msgstr "Road noise 2011 (LDEN)"
 
-#: l_int_wms.405
+#: lu_int_wms.335
 msgid "env_bruit_air_lngt"
-msgstr "Airport 2011 (LNGT)"
+msgstr "Airport noise 2011 (LNGT)"
 
-#: l_int_wms.409
+#: l_wmts.336
+msgid "1907_CAHANSEN"
+msgstr "Topographical Map 1907"
+
+#: l_wmts.337
+msgid "cantons"
+msgstr "Cantons"
+
+#: lu_int_wms.338
 msgid "toponymes_go"
 msgstr "Cadastral region names"
 
-#: l_int_wms.425
-msgid "eau_natura2000_habitats"
-msgstr "Habitats Natura 2000"
+#: group.339
+msgid "geodesy"
+msgstr "Geodesy"
 
-#: l_int_wms.427
+#: group.340
+msgid "ign"
+msgstr "viticultural land"
+
+#: group.341
+msgid "bodennutzung"
+msgstr "Land use"
+
+#: group.342
+msgid "env_zones_protegees_communautaires"
+msgstr "International protected areas"
+
+#: group.343
+msgid "weinbau"
+msgstr "Viticulture"
+
+#: group.344
+msgid "tour_auto_moto_v2"
+msgstr "Oldtimer- & Motorbike Trails"
+
+#: group.345
+msgid "group_preemption"
+msgstr ""
+
+#: group.346
+msgid "lebensraume_une_biotope"
+msgstr "Habitats and biotopes"
+
+#: group.347
+msgid "gebaude"
+msgstr "Buildings"
+
+#: group.348
+msgid "asta_zones_prot"
+msgstr "Protected sites"
+
+#: lu_int_wms.349
 msgid "aero_1951_10k"
 msgstr "Aerial images from 1951 (1:10k)"
 
-#: l_int_wms.433
+#: l_wmts.350
+msgid "ortho_2010"
+msgstr "Orthophoto 2010"
+
+#: l_wmts.351
+msgid "ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.352
+msgid "ac_remich_pag"
+msgstr "Land Use Plan Remich"
+
+#: l_wmts.353
+msgid "topo_decoupage_ortho"
+msgstr "Orthophoto Grid"
+
+#: l_wmts.354
+msgid "cantons_labels"
+msgstr "Cantons (names)"
+
+#: lu_int_wms.355
 msgid "all_maps_root_account"
 msgstr "All public maps of my root account"
 
-#: l_int_wms.434
+#: lu_int_wms.356
 msgid "all_my_maps"
-msgstr ""
+msgstr "All my public maps"
 
-#: l_int_wms.438
+#: l_wmts.357
+msgid "country"
+msgstr "Country"
+
+#: l_wmts.358
+msgid "communes_cadastrales_labels"
+msgstr "Cadastral municipalities (names)"
+
+#: l_wmts.359
+msgid "roads_labels"
+msgstr "Road Names"
+
+#: lu_int_wms.360
 msgid "ac_preizerdaul_ortho"
 msgstr "Orthophoto Remich"
 
-#: l_int_wms.439
+#: lu_int_wms.361
 msgid "cfl_hecto"
 msgstr "Mileage of the CFL tracks"
 
-#: l_int_wms.445
+#: l_wmts.362
+msgid "parcels_labels"
+msgstr "Cadastral parcels (numbers)"
+
+#: l_wmts.363
+msgid "districts"
+msgstr "Districts"
+
+#: l_wmts.364
+msgid "sections_cadastrales"
+msgstr "Cadastral sections"
+
+#: lu_ext_wms.365
+msgid "user_content_rando"
+msgstr "Rambling"
+
+#: lu_ext_wms.366
+msgid "user_content_autre"
+msgstr "Others"
+
+#: lu_int_wms.367
 msgid "FERRARIS"
 msgstr "Ferraris Map 1:20k 1778"
 
-#: l_int_wms.449
+#: l_wmts.368
+msgid "parcels"
+msgstr "Cadastral parcels"
+
+#: l_wmts.369
+msgid "ortho_2013"
+msgstr "Orthophoto 2013"
+
+#: group.370
+msgid "natur_an_emwelt"
+msgstr "multiple usage"
+
+#: lu_int_wms.371
 msgid "affaires"
 msgstr ""
 
-#: l_int_wms.451
+#: lu_ext_wms.372
+msgid "luxembourg_on_horse"
+msgstr "Luxemburg on horse"
+
+#: lu_int_wms.373
 msgid "natur_an_emwelt_terrains"
 msgstr ""
 
-#: l_int_wms.452
+#: l_wmts.374
+msgid "emwelt_biotop_kadaster_f"
+msgstr "Surface elements without orchards"
+
+#: l_wmts.375
+msgid "emwelt_biotop_kadaster_b"
+msgstr "Buffer"
+
+#: group.376
+msgid "emwelt_biotop_kadaster"
+msgstr "Biotope cadaster of the open landscapes"
+
+#: lu_int_wms.377
+msgid "eau_natura2000_habitats"
+msgstr "Habitats Natura 2000"
+
+#: lu_int_wms.378
 msgid "mobiliteit_bikeshare"
 msgstr "Bike sharing "
 
-#: l_int_wms.453
-msgid "asta_flik_parcels_2014_prof"
-msgstr "FLIK Parcels 2014"
+#: l_wmts.379
+msgid "emwelt_biotop_kadaster_p"
+msgstr "Point elements"
 
-#: l_int_wms.462
+#: l_wmts.380
+msgid "emwelt_biotop_kadaster_s"
+msgstr "Orchards"
+
+#: lu_ext_wms.381
+msgid "tour_pistes_velo_mymaps"
+msgstr "National cycling paths"
+
+#: l_wmts.382
+msgid "eau_new_HQ100_merged_2013"
+msgstr "HQ100 [floods with medium probability]"
+
+#: group.383
+msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
+msgstr "Drinking water protection Zones [ZPS]"
+
+#: lu_int_wms.384
 msgid "topo_decoupage_ortho_2013"
 msgstr "Orthophoto Grid"
 
-#: l_int_wms.463
+#: lu_int_wms.385
 msgid "prpl_luref"
 msgstr "Geodetic network points : LUREF system"
 
-#: l_int_wms.464
+#: lu_int_wms.386
 msgid "prpl_ntl"
 msgstr "Geodetic network points : NTL system"
 
-#: l_int_wms.465
-msgid "parcels_prof"
-msgstr "Cadastral parcels"
-
-#: l_int_wms.466
+#: lu_int_wms.387
 msgid "buildings_go"
-msgstr ""
+msgstr "Buildings"
 
-#: l_int_wms.467
+#: lu_int_wms.388
 msgid "parcels_labels_go"
 msgstr "Cadastral parcels (numbers)"
 
-#: l_int_wms.468
+#: lu_int_wms.389
 msgid "eau_anf_reserves_naturelles"
 msgstr "Nature reserves"
 
-#: l_int_wms.469
+#: lu_int_wms.390
 msgid "eau_anf_reserves_forestieres"
 msgstr "Forest reserves"
 
-#: l_int_wms.470
+#: lu_int_wms.391
 msgid "eau_anf_reserves_naturelles_totalite"
-msgstr "Nature reserves (totality)"
+msgstr "Classified Nature reserves (totality)"
 
-#: l_int_wms.471
+#: lu_int_wms.392
 msgid "eau_anf_reserves_dig"
 msgstr "Nature reserves (DIG)"
 
-#: l_int_wms.474
+#: lu_ext_wms.393
+msgid "Merovingien"
+msgstr ""
+
+#: group.394
+msgid "Archeo"
+msgstr ""
+
+#: lu_int_wms.395
 msgid "anf_peuplements_semenciers"
 msgstr "Forests seed stands"
 
-#: l_int_wms.475
-msgid "anf_reserves_naturelles"
-msgstr "Nature reserves"
-
-#: l_int_wms.476
+#: lu_int_wms.396
 msgid "anf_proprietes_forestieres"
 msgstr "Public forests"
 
-#: l_int_wms.477
+#: lu_int_wms.397
 msgid "anf_stations_biologiques"
 msgstr "Regional biological stations"
 
-#: l_int_wms.478
+#: lu_int_wms.398
 msgid "anf_reserves_forestieres"
 msgstr "Forest reserves"
 
-#: l_int_wms.483
+#: lu_ext_wms.399
+msgid "Prehistoire"
+msgstr ""
+
+#: lu_ext_wms.400
+msgid "Moyen Age"
+msgstr ""
+
+#: lu_ext_wms.401
+msgid "Temps modernes"
+msgstr ""
+
+#: lu_ext_wms.402
+msgid "Epoque indefinie"
+msgstr ""
+
+#: lu_int_wms.403
 msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
 msgstr "Drinking water shortage at critical level (level \"red\")"
 
-#: l_int_wms.484
+#: lu_int_wms.404
 msgid "eau_new_Sanitaere_Schutzzonen_Stausee"
 msgstr "Sanitary protection zones reservoir"
 
-#: l_int_wms.488
+#: lu_int_wms.405
+msgid "parcels_prof"
+msgstr "Cadastral parcels"
+
+#: l_wmts.406
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
+msgstr "HQ100 [medium probability]"
+
+#: lu_ext_wms.407
+msgid "Protohistoire"
+msgstr ""
+
+#: lu_ext_wms.408
+msgid "Gallo-Romain"
+msgstr ""
+
+#: lu_int_wms.409
 msgid "anf_arbres_remarquables"
 msgstr "Remarkable trees ANF"
 
-#: l_int_wms.492
+#: group.410
+msgid "at_pst"
+msgstr "SP transport"
+
+#: group.411
+msgid "at_pszae"
+msgstr "SP economic activity zones"
+
+#: group.412
+msgid "at_ps"
+msgstr "Sectoral plans (SP)"
+
+#: lu_int_wms.413
 msgid "at_psp_gep"
 msgstr "Large landscape units"
 
-#: l_int_wms.493
+#: lu_int_wms.414
 msgid "at_psp_cv"
 msgstr "Green belts"
 
-#: l_int_wms.494
+#: lu_int_wms.415
 msgid "anf_secteurs_ecologiques"
 msgstr "Ecological sectors"
 
-#: l_int_wms.495
+#: lu_int_wms.416
 msgid "anf_lots_chasse"
 msgstr "Hunting lots"
 
-#: l_int_wms.496
+#: lu_int_wms.417
 msgid "at_psp_zm_tot"
 msgstr "Multifunctional zones (total)"
 
-#: l_int_wms.500
+#: group.418
+msgid "at_psp"
+msgstr "SP landscapes"
+
+#: group.419
+msgid "at_psp_zm"
+msgstr "Multifunctional zones"
+
+#: group.420
+msgid "at_psl"
+msgstr "SP housing"
+
+#: lu_int_wms.421
 msgid "at_psl1"
 msgstr "Zones for major housing projects"
 
-#: l_int_wms.501
+#: lu_int_wms.422
 msgid "at_pszae2"
 msgstr "New economic activity zones and extensions"
 
-#: l_int_wms.502
+#: lu_int_wms.423
 msgid "at_pszae3"
 msgstr "Existing economic activity zones to be reclassified"
 
-#: l_int_wms.503
+#: lu_int_wms.424
 msgid "at_pszae4"
 msgstr "Economic activity zones with transitional provisions"
 
-#: l_int_wms.505
+#: group.425
+msgid "at_pst_prm"
+msgstr "Parking space management"
+
+#: lu_int_wms.426
 msgid "at_psp_re"
 msgstr "Ecological network"
 
-#: l_int_wms.506
+#: lu_int_wms.427
 msgid "at_pszae1"
 msgstr "Existing economic activity zones"
 
-#: l_int_wms.507
+#: lu_int_wms.428
 msgid "at_pst2"
 msgstr "Reserved corridors"
 
-#: l_int_wms.508
+#: lu_int_wms.429
 msgid "at_psp_zvi"
 msgstr "Interurban green zone"
 
-#: l_int_wms.509
+#: lu_int_wms.430
 msgid "at_pst3"
 msgstr "Parking space categories"
 
-#: l_int_wms.510
+#: lu_int_wms.431
 msgid "at_pst1"
 msgstr "SPT projects"
 
-#: l_int_wms.511
+#: lu_int_wms.432
 msgid "ng"
-msgstr "Height reference points"
+msgstr "Height Reference Points"
 
-#: l_int_wms.517
+#: l_wmts.433
+msgid "wg_hangneigung_map"
+msgstr "Slope"
+
+#: l_wmts.434
+msgid "wg_relief_map"
+msgstr "Relief"
+
+#: l_wmts.435
+msgid "wg_exposition_map"
+msgstr "Exposition"
+
+#: l_wmts.436
+msgid "wg_hohenlinien_10m_map"
+msgstr "Contour 10 m"
+
+#: group.437
+msgid "map_morphometrie"
+msgstr "Morphometric attributes"
+
+#: lu_int_wms.438
 msgid "remembrements"
 msgstr "Land consolidation zones"
 
-#: l_int_wms.518
+#: lu_int_wms.439
+msgid "presidence_musees_beermuseum_of_the_diekirch_brewery"
+msgstr ""
+
+#: lu_int_wms.440
 msgid "repere_alti"
 msgstr ""
 
-#: l_int_wms.519
+#: lu_int_wms.441
 msgid "anf_arrondissements"
 msgstr "Regional nature and forest districts"
 
-#: l_int_wms.520
+#: lu_int_wms.442
 msgid "anf_triages"
 msgstr "Local nature and forest districts"
 
-#: l_int_wms.521
-msgid "anf_phytosociologie"
-msgstr ""
-
-#: l_int_wms.522
+#: lu_int_wms.443
 msgid "anf_reserves_naturelles_totalite"
-msgstr "Nature reserves (totality)"
+msgstr "Classified Nature reserves (totality)"
 
-#: l_int_wms.523
+#: lu_int_wms.444
 msgid "anf_reserves_dig"
 msgstr "Nature reserves (DIG)"
 
-#: l_int_wms.524
+#: lu_int_wms.445
 msgid "eau_new_Intensitaet_-_HQ_extrem_(usage_interne)"
 msgstr "Extreme flood intensity"
 
-#: l_int_wms.525
+#: lu_int_wms.446
 msgid "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)"
 msgstr "Vulnerable zones  [Nitrates directive]"
 
-#: l_int_wms.526
+#: lu_int_wms.447
 msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
 msgstr "Ecosystems dep. on SW"
 
-#: l_int_wms.527
+#: lu_int_wms.448
 msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
 msgstr "ZPS created by grand-ducal regulation"
 
-#: l_int_wms.528
+#: lu_int_wms.449
 msgid "eau_new_UeSG_100-jaehrlich_(usage_interne)"
 msgstr "Floodplain 100 year flood"
 
-#: l_int_wms.529
+#: lu_int_wms.450
 msgid "MO"
 msgstr ""
 
-#: l_int_wms.532
+#: group.451
+msgid "eau_4_lintgen"
+msgstr "Water data"
+
+#: group.452
+msgid "pag_lintgen"
+msgstr "Land use plan"
+
+#: lu_int_wms.453
 msgid "eau_new_Trinkwasserentnahmepunkte"
 msgstr "Drinking water abstraction points"
 
-#: l_int_wms.533
+#: lu_int_wms.454
 msgid "eau_new_Pumpstationen_(usage_interne)"
 msgstr "Pumping stations"
 
-#: l_int_wms.534
+#: lu_int_wms.455
 msgid "eau_new_Trinkwassersyndikate"
 msgstr "Drinking water syndicates"
 
-#: l_int_wms.535
+#: lu_int_wms.456
 msgid "pag_lintgen_layer"
 msgstr ""
 
-#: l_int_wms.536
+#: lu_int_wms.457
 msgid "eau_new_Gefahrenklassen_(usage_interne)"
 msgstr "Hazard classification"
 
-#: l_int_wms.537
+#: lu_int_wms.458
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
 msgstr "Artificial water bodies 2015"
 
-#: l_int_wms.540
+#: group.459
+msgid "eau_new_Projekt_TIMIS_(usage_interne)"
+msgstr "TIMIS Project"
+
+#: group.460
+msgid "group_lenoz"
+msgstr ""
+
+#: lu_int_wms.461
 msgid "eau_new_Stausee_Sauer"
 msgstr "Upper Sure Lake"
 
-#: l_int_wms.541
+#: lu_int_wms.462
 msgid "eau_new_Grundwasser_(Nitratrichtlinie)"
 msgstr "Groundwater [Nitrates directive]"
 
-#: l_int_wms.542
+#: lu_int_wms.463
 msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
 msgstr "Artificial basin"
 
-#: l_int_wms.543
+#: lu_int_wms.464
 msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
 msgstr "Restrictions geothermal heat pumps"
 
-#: l_int_wms.544
+#: lu_int_wms.465
 msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
 msgstr "100 year flood intensity"
 
-#: l_int_wms.545
+#: lu_int_wms.466
 msgid ""
 "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_chemischen_Zustandes"
 msgstr "Risk assessment of the WB to reach good chemical status "
 
-#: l_int_wms.546
+#: lu_int_wms.467
 msgid "eau_new_UeSG_extrem_(usage_interne)"
 msgstr "Floodplain extreme depth"
 
-#: l_int_wms.548
+#: l_wmts.468
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
+msgstr "HQ10 [high probability]"
+
+#: lu_int_wms.469
 msgid "eau_new_Einschraenkung_Waermepumpe"
 msgstr "Restrictions geothermal heat pumps"
 
-#: l_int_wms.549
+#: lu_int_wms.470
 msgid "eau_new_Intensitaet_-_HQ_10_(usage_interne)"
 msgstr "10 year flood intensity"
 
-#: l_wmts.719
-msgid "asta_flik_parcels_2015"
-msgstr "FLIK Parcels 2015 (prov)"
-
-#: l_int_wms.550
+#: lu_int_wms.471
 msgid "eau_new_Badegewaesser_-_Qualitaet"
 msgstr "Bathing Water Quality"
 
-#: l_int_wms.552
+#: group.472
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
+msgstr "Project flood risk maps 2010"
+
+#: lu_int_wms.473
 msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
 msgstr "Groundwater monitoring - Nitrates Directive"
 
-#: l_int_wms.553
+#: lu_int_wms.474
 msgid "eau_new_Physiko-Chemie_2015"
 msgstr "Physico-chemistry 2015"
 
-#: l_int_wms.554
+#: lu_int_wms.475
 msgid "eau_new_Querprofile"
 msgstr "Cross sections"
 
-#: l_int_wms.555
+#: lu_int_wms.476
 msgid "eau_new_Gesamtzustand_2009"
 msgstr "Global status 2009"
 
-#: l_int_wms.556
+#: lu_int_wms.477
 msgid "eau_new_Chemischer_Zustand_2009"
 msgstr "Chemical status 2009"
 
-#: l_int_wms.557
+#: lu_int_wms.478
 msgid "eau_new_Primaere_Gewaesser"
 msgstr "Main watercourses"
 
-#: l_int_wms.560
+#: l_wmts.479
+msgid "communes_cadastrales_labels_eau"
+msgstr "Cadastral municipalities (names)"
+
+#: group.480
+msgid "eau_new_Grundwasser_2009"
+msgstr "Groundwater 2009"
+
+#: lu_int_wms.481
 msgid "eau_new_Typologie_Gewaesser_2015"
 msgstr "Surface water typology 2015"
 
-#: l_int_wms.561
-msgid "eau_new_Oberflaechenwasserkoerper_2015"
-msgstr "Surface water bodies 2015"
+#: lu_int_wms.482
+msgid "presidence_musees_blast_furnace_belval"
+msgstr ""
 
-#: l_int_wms.562
+#: lu_int_wms.483
 msgid "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie"
 msgstr "Surface water monitoring - Nitrates Directive"
 
-#: l_int_wms.563
+#: lu_int_wms.484
 msgid "eau_new_Hydromorphologischer_Zustand_2015"
 msgstr "Hydromorphological status 2015"
 
-#: l_int_wms.564
+#: lu_int_wms.485
 msgid "eau_new_Phytobenthos_2015"
 msgstr "Phytobenthos 2015"
 
-#: l_int_wms.565
+#: lu_int_wms.486
 msgid "eau_new_Makro-Invertebraten_2015"
 msgstr "Macroinvertebrates 2015"
 
-#: l_int_wms.566
+#: lu_int_wms.487
 msgid "eau_new_Zustand_der_WK_2015"
 msgstr "Status of the WB 2015"
 
-#: l_int_wms.568
+#: l_wmts.488
+msgid "sections_cadastrales_labels_eau"
+msgstr "Cadastral sections  (names)"
+
+#: lu_int_wms.489
 msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
 msgstr "Quantitative status of the WB 2015"
 
-#: l_int_wms.569
+#: lu_int_wms.490
 msgid "eau_new_Einschaetzung_guter_Zustand_2021"
 msgstr "Assessement good status 2021"
 
-#: l_int_wms.570
-msgid "eau_new_Erheblich_veraenderte_WK_2015"
-msgstr "Heavily modified WB 2015"
+#: lu_int_wms.491
+msgid "presidence_musees_carriage_museum_peppange"
+msgstr ""
 
-#: l_int_wms.571
+#: lu_int_wms.492
 msgid "eau_new_Hydromorphologischer_Zustand_2009"
 msgstr "Hydromorphological status 2009"
 
-#: l_int_wms.572
+#: lu_int_wms.493
 msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)_2010"
 msgstr "HQ extreme [low probability] 2010"
 
-#: l_int_wms.573
+#: lu_int_wms.494
 msgid "eau_new_HQextrem_merged_2010"
 msgstr "HQ extreme [floods with a low probability] 2010"
 
-#: l_int_wms.574
+#: lu_int_wms.495
 msgid "eau_new_Lufttemperatur"
 msgstr "Air temperature"
 
-#: l_int_wms.575
+#: lu_int_wms.496
 msgid "eau_new_Wassertiefe_-_HQ_extrem_(usage_interne)"
 msgstr "Extreme flood event"
 
-#: l_int_wms.576
+#: lu_int_wms.497
 msgid "eau_new_UeSG_10-jaehrlich_(usage_interne)"
 msgstr "Floodplain 10 year flood"
 
-#: l_int_wms.578
+#: l_wmts.498
+msgid "feuilles_cadastrales_eau"
+msgstr "Historical cadastral sheets"
+
+#: lu_int_wms.499
 msgid "eau_new_Trinkwasserbehaelter"
 msgstr "Drinking water tanks"
 
-#: l_int_wms.579
+#: lu_int_wms.500
 msgid "eau_new_Kilometrierung_sekundaere_Gewaesser"
 msgstr "Measurement affluent watercourses"
 
-#: l_int_wms.582
+#: l_wmts.501
+msgid "sections_cadastrales_eau"
+msgstr "Cadastral sections"
+
+#: l_wmts.502
+msgid "toponymes_eau"
+msgstr "Cadastral region names"
+
+#: lu_int_wms.503
+msgid "presidence_musees_casino_luxembourg_-_forum_d___art_contemporain"
+msgstr ""
+
+#: lu_int_wms.504
 msgid "eau_new_Oberflaechenwasserkoerper_2009"
 msgstr "Surface water bodies 2009"
 
-#: l_int_wms.583
+#: lu_int_wms.505
 msgid "eau_new_Gewaesserentwicklungsfaehigkeit_2009_(usage_interne)"
 msgstr "Development capacity 2009"
 
-#: l_int_wms.584
+#: lu_int_wms.506
 msgid "eau_new_Grundwasserkoerper_2009"
 msgstr "Groundwater bodies 2009"
 
-#: l_int_wms.585
+#: lu_int_wms.507
 msgid "parcels_labels_eau"
 msgstr "Cadastral parcels (numbers)"
 
-#: l_int_wms.586
+#: lu_int_wms.508
 msgid ""
 "eau_new_Risikobeurteilung_des_WK_hinsichtlich_der_Verfehlung_des_guten_mengenmaessigen_Zustandes"
 msgstr "Risk assessment of the WB to reach good quantitative status "
 
-#: l_int_wms.589
+#: group.509
+msgid "flurstucke_grundstucke_eau"
+msgstr "Cadastral data"
+
+#: l_wmts.510
+msgid "communes_cadastrales_eau"
+msgstr "Cadastral municipalities"
+
+#: lu_int_wms.511
 msgid "parcels_eau"
 msgstr "Cadastral parcels"
 
-#: l_int_wms.590
+#: lu_int_wms.512
 msgid "buildings_eau"
-msgstr ""
+msgstr "Buildings"
 
-#: l_int_wms.593
+#: group.513
+msgid "eau_new_Risikobeurteilung_2021"
+msgstr "Risk assessment 2021"
+
+#: group.514
+msgid "eau_new_Trinkwasser"
+msgstr "Drinking water"
+
+#: lu_int_wms.515
 msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)_2010"
 msgstr "HQ10 [high probability] 2010"
 
-#: l_int_wms.594
+#: lu_int_wms.516
 msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
 msgstr "Quantitative status of the WB 2009"
 
-#: l_int_wms.596
+#: l_wmts.517
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
+msgstr "HQ extreme [low probability]"
+
+#: lu_int_wms.518
 msgid "eau_new_Typologie_Oberflaechengewasser_2009"
 msgstr "Surface water typology 2009"
 
-#: l_int_wms.597
-msgid "eau_new_Grundwasserkoerper_2015"
-msgstr "Ground water bodies 2015"
+#: lu_int_wms.519
+msgid "presidence_musees_contemporary_art_gallery__am_tunnel_"
+msgstr ""
 
-#: l_int_wms.598
+#: lu_int_wms.520
 msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)_2010"
 msgstr "HQ100 [medium probability] 2010"
 
-#: l_int_wms.599
+#: lu_int_wms.521
 msgid "eau_new_Niederschlag"
 msgstr "Precipitation"
 
-#: l_int_wms.600
+#: lu_int_wms.522
 msgid "eau_new_Schneehoehe"
 msgstr "Snow height"
 
-#: l_int_wms.603
+#: group.523
+msgid "eau_new_Gewaessernetz"
+msgstr "Hydrography"
+
+#: group.524
+msgid "eau_new_Fischerei"
+msgstr "Fishing service"
+
+#: lu_int_wms.525
 msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
 msgstr "Sensitive areas [Urban waste water treatment directive]"
 
-#: l_int_wms.607
+#: group.526
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
+msgstr "Flood risk maps"
+
+#: group.527
+msgid "eau_new_Oberflaechengewaesser_2021"
+msgstr "Surface waters 2021"
+
+#: group.528
+msgid "eau_new_Messstationen"
+msgstr "Gauging stations"
+
+#: lu_int_wms.529
 msgid "eau_new_Wassertiefe_-_HQ_10_(usage_interne)"
 msgstr "10 year flood depth"
 
-#: l_int_wms.608
+#: lu_int_wms.530
+msgid "presidence_musees_didactic_museum_on_the_life_of_the_romans"
+msgstr ""
+
+#: lu_int_wms.531
 msgid "eau_new_Oekologischer_Zustand_2009"
 msgstr "Ecological status 2009"
 
-#: l_int_wms.612
+#: group.532
+msgid "eau_new_Klimatologische_Messstationen"
+msgstr "Precipitation measurement"
+
+#: group.533
+msgid "eau_new_Historische_Ueberschwemmungsgebiete"
+msgstr "Historic floodplains"
+
+#: group.534
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2013"
+msgstr "Flood hazard maps"
+
+#: lu_int_wms.535
 msgid "eau_new_Luftfeucht"
 msgstr "Air humidity"
 
-#: l_int_wms.613
+#: lu_int_wms.536
 msgid "eau_new_Luftdruck"
 msgstr "Air pressure"
 
-#: l_int_wms.614
+#: lu_int_wms.537
 msgid "eau_new_Globalstrahlung"
 msgstr "Global radiation "
 
-#: l_int_wms.615
+#: lu_int_wms.538
 msgid "eau_new_Trinkwasserknappheit_(Zustand_orange)"
 msgstr "Drinking water shortage (level \"orange\")"
 
-#: l_int_wms.616
+#: lu_int_wms.539
 msgid "eau_new_Wassertiefe_-_HQ_100_(usage_interne)"
 msgstr "100 year flood depth"
 
-#: l_int_wms.617
+#: lu_int_wms.540
 msgid "eau_new_Betrachtungsraeume_2015"
 msgstr "Catchment areas 2015"
 
-#: l_int_wms.618
+#: lu_int_wms.541
 msgid "eau_new_Bodentemperatur"
 msgstr "Soil temperature"
 
-#: l_int_wms.621
+#: group.542
+msgid "eau_new_Zusaetzliche_Informationen"
+msgstr "Additional Informations"
+
+#: group.543
+msgid "eau_new_Oberflaechengewaesser_2009"
+msgstr "Surface waters 2009"
+
+#: lu_int_wms.544
 msgid "eau_new_Chemischer_Zustand_2015"
 msgstr "Chemical status 2015"
 
-#: l_int_wms.622
+#: lu_int_wms.545
 msgid "eau_new_Oekologischer_Zustand_2015"
 msgstr "Ecological status 2015"
 
-#: l_int_wms.623
+#: lu_int_wms.546
 msgid "eau_new_Temporaer_fliessende_Baeche"
 msgstr "Temporary watercourses"
 
-#: l_int_wms.625
+#: group.547
+msgid "eau_new_Messstationen_(WRRL)"
+msgstr "Monitoring stations [WFD]"
+
+#: lu_int_wms.548
 msgid "eau_new_HQ10_merged_2010"
 msgstr "HQ10 [floods with a high probability] 2010"
 
-#: l_int_wms.626
+#: lu_int_wms.549
 msgid "eau_new_Kilometrierung_primaere_Gewaesser"
 msgstr "Measurement main watercourses"
 
-#: l_int_wms.627
+#: lu_int_wms.550
 msgid "eau_new_Sekundaere_Gewaesser"
 msgstr "Affluent watercourses"
 
-#: l_int_wms.628
+#: lu_int_wms.551
 msgid "eau_new_Fischereiabschnitte"
 msgstr "Fishing sections"
 
-#: l_int_wms.629
+#: lu_int_wms.552
 msgid "eau_new_WRRL_-_Ueberblicksueberwachung"
 msgstr "WFD  - surveillance monitoring"
 
-#: l_int_wms.630
+#: lu_int_wms.553
 msgid "eau_new_Bohrungen"
 msgstr "Drills"
 
-#: l_int_wms.631
+#: lu_int_wms.554
 msgid "eau_new_Quellen"
 msgstr "Springs"
 
-#: l_int_wms.632
+#: lu_int_wms.555
 msgid "eau_new_HQ100_merged_2010"
 msgstr "HQ100 [floods with medium probability] 2010"
 
-#: l_int_wms.633
+#: lu_int_wms.556
 msgid "eau_new_Online_Messstationen"
 msgstr "Online stations"
 
-#: l_int_wms.636
+#: group.557
+msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
+msgstr "Quality elements of the ecological status 2015"
+
+#: group.558
+msgid "eau_new_Grundwasser_2021"
+msgstr "Groundwater 2021"
+
+#: lu_int_wms.559
 msgid "eau_new_Grundwasserleiter"
 msgstr "Aquifers"
 
-#: l_int_wms.637
+#: lu_int_wms.560
 msgid "eau_new_Chemischer_Zustand_der_WK_2015"
 msgstr "Chemical status of the WB 2015"
 
-#: l_int_wms.638
+#: lu_int_wms.561
 msgid "eau_new_UESG_Sauer_1995"
 msgstr "Floodplain Sauer 1995"
 
-#: l_int_wms.639
+#: lu_int_wms.562
 msgid "eau_new_Erheblich_veraenderte_OWK_2009"
 msgstr "Heavily modified SWB 2009"
 
-#: l_int_wms.640
+#: lu_int_wms.563
 msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
 msgstr "Natural basin"
 
-#: l_int_wms.641
+#: lu_int_wms.564
 msgid "eau_new_Einzugsgebiete"
 msgstr "Catchment areas"
 
-#: l_int_wms.643
+#: group.565
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
+msgstr "Water bodies [WB] status 2009"
+
+#: lu_int_wms.566
 msgid "eau_new_UESG_1983_-_Mosel"
 msgstr "Floodplain 1983 - Mosel"
 
-#: l_int_wms.644
+#: lu_int_wms.567
 msgid "eau_new_Feuchtgebiete_(usage_interne)"
 msgstr "Wetlands"
 
-#: l_int_wms.645
+#: lu_int_wms.568
 msgid "eau_new_Durchgaengigkeit"
 msgstr "Continuity"
 
-#: l_int_wms.646
+#: lu_int_wms.569
 msgid "eau_new_Kontrollpunkte_(usage_interne)"
 msgstr "Monitoring points"
 
-#: l_int_wms.647
+#: lu_int_wms.570
 msgid "eau_new_UESG_1993_(ausser_Mosel)"
 msgstr "Floodplain 1993 [without Mosel]"
 
-#: l_int_wms.648
+#: lu_int_wms.571
 msgid "eau_new_UESG_Alzette_1995"
 msgstr "Floodplain Alzette 1995"
 
-#: l_int_wms.651
+#: group.572
+msgid "eau_new_Schutzgebiete"
+msgstr "Protected sites"
+
+#: group.573
+msgid "eau_new_Gewaesserschutz"
+msgstr "Prevention of water pollution"
+
+#: lu_int_wms.574
 msgid "eau_new_Abwassersyndikate"
 msgstr "Waste water syndicats"
 
-#: l_int_wms.652
+#: lu_int_wms.575
 msgid "eau_new_Betrachtungsraeume_2009"
 msgstr "Catchment areas 2009"
 
-#: l_int_wms.654
+#: l_wmts.576
+msgid "eau_new_HQextrem_merged_2013"
+msgstr "HQ extreme (floods with a low probability)"
+
+#: lu_int_wms.577
 msgid "eau_new_Klaeranlagen"
 msgstr "Waste water treatment plants"
 
-#: l_int_wms.655
+#: lu_int_wms.578
 msgid "eau_new_Makrophyten_2015"
 msgstr "Macrophytes 2015"
 
-#: l_int_wms.656
+#: lu_int_wms.579
 msgid "eau_new_Fische_2015"
 msgstr "Fish 2015"
 
-#: l_int_wms.659
+#: l_wmts.580
+msgid "eau_new_HQ10_merged_2013"
+msgstr "HQ10 [floods with a high probability]"
+
+#: group.581
+msgid "eau_new_Grundwasser_2015"
+msgstr "Groundwater 2015"
+
+#: lu_int_wms.582
 msgid "eau_new_Bauwerke"
 msgstr "Buildings"
 
-#: l_int_wms.663
+#: group.583
+msgid "eau_new_Oberflaechengewaesser_Messstationen"
+msgstr "Surface water stations"
+
+#: group.584
+msgid "eau_new_Grundwasser_Messstationen"
+msgstr "Groundwater monitoring stations"
+
+#: group.585
+msgid "eau_new_Wasserrahmenrichtlinie"
+msgstr "Water framework directive [WFD]"
+
+#: lu_int_wms.586
 msgid "eau_new_Grundwasserabhaengige_terrestriche_Oekosysteme"
 msgstr "Groundwater Dependent Terrestrial Ecosystems"
 
-#: l_int_wms.665
+#: group.587
+msgid "eau_new_Bewirtschaftungsplan_2009"
+msgstr "River Basin Management Plan 2009"
+
+#: lu_int_wms.588
 msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet"
 msgstr "Groundwater [WFD] - Quantitative monitoring"
 
-#: l_int_wms.666
+#: lu_int_wms.589
 msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet"
 msgstr "Groundwater [WFD] - Qualitative monitoring"
 
-#: l_int_wms.667
+#: lu_int_wms.590
 msgid "eau_new_Kanal_-__Muehlgraben"
 msgstr "Channel - Millchannel"
 
-#: l_int_wms.671
+#: group.591
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
+msgstr "Water bodies  [WB] status 2015"
+
+#: group.592
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
+msgstr "Project flood hazard maps 2010"
+
+#: group.593
+msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
+msgstr "Water scarcity plan"
+
+#: lu_int_wms.594
 msgid "eau_new_Waermepumpe_(usage_interne)"
 msgstr ""
 
-#: l_int_wms.673
+#: lu_int_wms.595
 msgid "eau_new_Alluvialer_Grundwasserspiegel"
 msgstr "Alluvial groundwater level"
 
-#: l_int_wms.676
+#: group.596
+msgid "eau_new_Oberflaechengewaesser_2015"
+msgstr "Surface waters 2015"
+
+#: group.597
+msgid "eau_new_Nitratrichtlinie"
+msgstr "Nitrates directive"
+
+#: group.598
+msgid "eau_new_Bewirtschaftungsplan_2015"
+msgstr "River Basin Management Plan 2015"
+
+#: lu_int_wms.599
 msgid "eau_new_Nitratrichtlinie_Messstationen"
 msgstr "Nitrates Directive"
 
-#: l_int_wms.680
+#: group.600
+msgid "eau_new_Grundwasser"
+msgstr "Groundwater"
+
+#: group.601
+msgid "eau_new_Gewaesser"
+msgstr "Watercourses"
+
+#: group.602
+msgid "eau_new_Hydrologische_Messstationen"
+msgstr "Hydrological stations"
+
+#: lu_int_wms.603
 msgid "eau_new_Wasserstand"
 msgstr "Water level"
 
-#: l_int_wms.684
+#: group.604
+msgid "eau_new_Ueberschwemmungsgebiete_(UESG)"
+msgstr "Floodplains"
+
+#: group.605
+msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
+msgstr "Standing waters"
+
+#: group.606
+msgid "eau_new_Historische_Karten_(usage_interne)"
+msgstr "Historic maps"
+
+#: lu_int_wms.607
 msgid "eau_new_Gesamtzustand_2015"
 msgstr "Global status 2015"
 
-#: l_int_wms.685
+#: lu_int_wms.608
 msgid "eau_new_Badegewaesser"
 msgstr "Bathing Waters"
 
-#: l_int_wms.686
+#: lu_int_wms.609
 msgid "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise"
 msgstr " ZPS ongoing public procedure"
 
-#: l_int_wms.687
+#: lu_int_wms.610
 msgid "eau_new_Zustand_der_WK_2009"
 msgstr "Status of the WB 2009"
 
-#: l_int_wms.689
-msgid "ont_poi_5"
-msgstr "Sports & leisure"
+#: lu_int_wms.611
+msgid "presidence_musees_documentation_centre_for_human_migrations"
+msgstr ""
 
-#: l_int_wms.690
-msgid "ont_poi_7"
-msgstr "Shopping"
+#: group.612
+msgid "tourisme_poi"
+msgstr "Points of interest by ONT"
 
-#: l_int_wms.691
-msgid "ont_poi"
-msgstr "Eat & Sleep"
+#: lu_int_wms.613
+msgid "presidence_musees_eugène_pesch_museum_lasauvage"
+msgstr ""
 
-#: l_int_wms.692
-msgid "ont_poi_2"
-msgstr "Art & culture"
+#: lu_int_wms.614
+msgid "presidence_musees_european_museum_schengen"
+msgstr ""
 
-#: l_int_wms.693
+#: lu_int_wms.615
+msgid "presidence_musees_exhibition_of_models_of_ancient_castles_clervaux"
+msgstr ""
+
+#: lu_int_wms.616
+msgid ""
+"presidence_musees_exhibition__the_bitter_years__-_water_tower__waassertuerm_"
+msgstr ""
+
+#: lu_int_wms.617
+msgid "presidence_musees_former_slate_quarries_haut-martelange"
+msgstr ""
+
+#: lu_int_wms.618
+msgid "presidence_musees_general_patton_memorial_museum_ettelbruck"
+msgstr ""
+
+#: lu_int_wms.619
+msgid "presidence_musees_henri_tudor_museum"
+msgstr ""
+
+#: lu_int_wms.620
 msgid "ont_poi_3"
 msgstr "Nature & excursions"
 
-#: l_int_wms.694
-msgid "ont_poi_6"
-msgstr "Family & Kids"
-
-#: l_int_wms.695
-msgid "ont_poi_4"
-msgstr "Go out"
-
-#: l_int_wms.696
+#: lu_int_wms.621
 msgid "lenoz_lmg"
 msgstr ""
 
-#: l_int_wms.697
+#: lu_int_wms.622
 msgid "lenoz_ecoles_old"
 msgstr ""
 
-#: l_int_wms.698
+#: lu_int_wms.623
+msgid "ont_poi_5"
+msgstr "Sports & leisure"
+
+#: lu_int_wms.624
 msgid "lenoz_creches"
 msgstr ""
 
-#: l_int_wms.699
+#: lu_int_wms.625
+msgid "ont_poi_7"
+msgstr "Shopping"
+
+#: lu_int_wms.626
+msgid "ont_poi_6"
+msgstr "Family & Kids"
+
+#: lu_int_wms.627
 msgid "lenoz_Banken"
 msgstr ""
 
-#: l_int_wms.700
+#: lu_int_wms.628
 msgid "wrrl_intern_mn"
 msgstr ""
 
-#: l_int_wms.701
+#: lu_int_wms.629
 msgid "wrrl_intern_gb_k7"
 msgstr ""
 
-#: l_int_wms.702
+#: lu_int_wms.630
 msgid "lenoz_Tankstelle"
 msgstr ""
 
-#: l_int_wms.703
+#: lu_int_wms.631
 msgid "wrrl_intern_5b_sk"
 msgstr ""
 
-#: l_int_wms.707
+#: group.632
+msgid "wrrl_intern_hs"
+msgstr ""
+
+#: group.633
+msgid "wrrl_intern_group"
+msgstr ""
+
+#: group.634
+msgid "asta_esp_group"
+msgstr "Ecological focus areas "
+
+#: lu_int_wms.635
 msgid "lenoz_Ärzte"
 msgstr ""
 
-#: l_int_wms.708
+#: lu_int_wms.636
 msgid "lenoz_Post"
 msgstr ""
 
-#: l_int_wms.709
-msgid "anf_carte_simpl_forets"
-msgstr "simplified map of the natural forests"
-
-#: l_int_wms.710
+#: lu_int_wms.637
 msgid "lenoz_Lycees"
 msgstr ""
 
-#: l_int_wms.711
+#: lu_int_wms.638
 msgid "lenoz_Restaurants"
 msgstr ""
 
-#: l_int_wms.712
+#: lu_int_wms.639
 msgid "asta_esp_lisiere"
 msgstr "forest edges"
 
-#: l_int_wms.713
+#: lu_int_wms.640
 msgid "asta_esp_esp"
 msgstr "landscape features"
 
-#: l_int_wms.714
+#: lu_int_wms.641
+msgid "ont_poi"
+msgstr "Eat & Sleep"
+
+#: lu_int_wms.642
+msgid "ont_poi_2"
+msgstr "Art & culture"
+
+#: lu_int_wms.643
 msgid "parcelles_etat"
 msgstr "Cadastral parcels"
 
-#: l_int_wms.715
+#: lu_int_wms.644
 msgid "mobi_pickup"
 msgstr "«Pickup» stations"
 
-#: l_int_wms.718
+#: group.645
+msgid "logt"
+msgstr "Logement"
+
+#: group.646
+msgid "osm"
+msgstr "Name"
+
+#: lu_int_wms.647
 msgid "osm_mq"
 msgstr ""
 
-#: l_int_wms.720
+#: lu_int_wms.648
+msgid "asta_flik_parcels_2015_prof"
+msgstr ""
+
+#: lu_int_wms.649
+msgid "ont_poi_4"
+msgstr "Go out"
+
+#: lu_int_wms.650
+msgid "anf_carte_simpl_forets"
+msgstr "simplified map of the natural forests"
+
+#: lu_int_wms.651
 msgid "logt_bauluecken"
 msgstr "Baulücken"
 
-#: l_wmts.163
-msgid "wg_oberflachenwasserkorper"
-msgstr ""
-
-#: l_wmts.164
-msgid "rivers"
-msgstr ""
-
-#: l_wmts.165
-msgid "ac_wellenstein_pag_volumes_batiments"
-msgstr "Buildings"
-
-#: l_wmts.167
-msgid "wg_feuchtgebiete"
-msgstr ""
-
-#: l_wmts.172
-msgid "wg_bauwerke"
-msgstr ""
-
-#: l_wmts.174
-msgid "wg_sanitare_schutzzonen_stausee"
-msgstr ""
-
-#: l_wmts.179
-msgid "wg_pumpstationen"
-msgstr ""
-
-#: l_wmts.181
-msgid "TOPO_CARTESHISTO_1964_RGB"
-msgstr "Topographical Map 1:20k 1964"
-
-#: l_wmts.182
-msgid "wg_bohrungen"
-msgstr ""
-
-#: l_wmts.183
-msgid "wg_hmwb_(stark_modifizierte_wasserkorper)"
-msgstr ""
-
-#: l_wmts.185
-msgid "wg_cr_ext"
-msgstr ""
-
-#: l_wmts.187
-msgid "ivv_grosslagen"
-msgstr "Winegrowing areas"
-
-#: l_wmts.189
-msgid "wg_gewasserentwicklungsfahigkeit"
-msgstr ""
-
-#: l_wmts.194
-msgid "roads"
+#: l_wmts.652
+msgid "streets_jpeg"
 msgstr "Road Network"
 
-#: l_wmts.195
-msgid "ac_wellenstein_pag_zones"
-msgstr "Zones"
+#: l_wmts.653
+msgid "topo_bw_jpeg"
+msgstr "Topographic map B/W"
 
-#: l_wmts.198
-msgid "TOPO_CARTESHISTO_1990_50k"
-msgstr "Topographical Map 1:50k 1990"
-
-#: l_wmts.201
-msgid "topo_decoupage_tc"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.205
-msgid "TOPO_CARTESHISTO_1979_RGB"
-msgstr "Topographical Map 1:20k 1979"
-
-#: l_wmts.208
-msgid "topo_decoupage_5000"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.210
-msgid "topo_5k"
-msgstr "Topographical Map 1:5000"
-
-#: l_wmts.211
-msgid "wg_niederschlag"
+#: group.654
+msgid "bglayers"
 msgstr ""
 
-#: l_wmts.213
-msgid "wg_trinkwasserentnahmepunkte"
+#: l_wmts.655
+msgid "topogr_global"
+msgstr "Topographic map"
+
+#: l_wmts.656
+msgid "orthogr_2013_global"
 msgstr ""
 
-#: l_wmts.218
-msgid "buildings"
+#: l_wmts.657
+msgid "basemap_global"
+msgstr "Base map"
+
+#: lu_ext_wms.658
+msgid "operations_archeo"
 msgstr ""
 
-#: l_wmts.219
-msgid "wg_lufttemperatur"
+#: lu_ext_wms.659
+msgid "tour_pistes_velo_mymaps2"
+msgstr "Regional cycling paths"
+
+#: lu_ext_wms.660
+msgid "projets_amen"
 msgstr ""
 
-#: l_wmts.220
-msgid "topo_decoupage_100k"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.221
-msgid "TOPO_CARTESHISTO_1964"
-msgstr "Topographical Map 1:20k 1964 B/W"
-
-#: l_wmts.223
-msgid "wg_relief"
-msgstr "Relief"
-
-#: l_wmts.224
-msgid "wg_relief_dhm_2m"
-msgstr "Relief DEM 2"
-
-#: l_wmts.227
-msgid "topo_20k"
-msgstr "Topographical Map 1:20000"
-
-#: l_wmts.228
-msgid "wg_uesg_1993_(ausser_mosel)"
-msgstr ""
-
-#: l_wmts.229
-msgid "wg_nitratbelastung"
-msgstr ""
-
-#: l_wmts.234
-msgid "wg_messstationen_oberflachenwasser"
-msgstr ""
-
-#: l_wmts.252
-msgid "wg_oberflachenwasser_wrrl"
-msgstr ""
-
-#: l_wmts.255
-msgid "topo_250k"
-msgstr "Topographical Map 1:250000"
-
-#: l_wmts.257
-msgid "wg_timis_ueberflutungsflachen_hq100"
-msgstr ""
-
-#: l_wmts.258
-msgid "wg_bodentemperatur"
-msgstr ""
-
-#: l_wmts.259
-msgid "wg_uesg_1983___mosel"
-msgstr ""
-
-#: l_wmts.260
-msgid "wg_timis_wassertiefe_hq10"
-msgstr ""
-
-#: l_wmts.261
-msgid "ortho_2004"
-msgstr "Orthophoto 2004"
-
-#: l_wmts.262
-msgid "ortho_2001"
-msgstr "Orthophoto 2001"
-
-#: l_wmts.263
-msgid "wg_fischereiabschnitte"
-msgstr ""
-
-#: l_wmts.267
-msgid "wg_nitrat_ober"
-msgstr ""
-
-#: l_wmts.270
-msgid "ortho_2007"
-msgstr "Orthophoto 2007"
-
-#: l_wmts.271
-msgid "wg_wasserspiegel"
-msgstr ""
-
-#: l_wmts.276
-msgid "wg_querprofile"
-msgstr ""
-
-#: l_wmts.278
-msgid "TOPO_CARTESHISTO_2000"
-msgstr "Topographical Map 1:20k 2000"
-
-#: l_wmts.279
-msgid "wg_nebengewasser"
-msgstr ""
-
-#: l_wmts.280
-msgid "ign_topo"
-msgstr "Automatical Topographical Map"
-
-#: l_wmts.282
-msgid "wg_naturliche_(bassin)"
-msgstr ""
-
-#: l_wmts.283
-msgid "wg_timis_hochwasser_intensitaten_hq100"
-msgstr ""
-
-#: l_wmts.284
-msgid "ivv_kleinlagen"
-msgstr "Small winegrowing areas"
-
-#: l_wmts.286
-msgid "wg_provisorische_trinkwasser_schutzzonen"
-msgstr ""
-
-#: l_wmts.288
-msgid "geologie"
-msgstr "Geology"
-
-#: l_wmts.290
-msgid "wg_uesg_sure_1995"
-msgstr ""
-
-#: l_wmts.294
-msgid "wg_wrrl_oberflachenwasserkorper"
-msgstr ""
-
-#: l_wmts.299
-msgid "ign_ortho"
-msgstr "Orthophoto 2013"
-
-#: l_wmts.300
-msgid "wg_timis_wassertiefe_hq100"
-msgstr ""
-
-#: l_wmts.301
-msgid "1927_CAHANSEN"
-msgstr "Topographical Map 1927"
-
-#: l_wmts.304
-msgid "feuilles_cadastrales"
-msgstr "Historical cadastral sheets"
-
-#: l_wmts.305
-msgid "wg_cr_100"
-msgstr ""
-
-#: l_wmts.306
-msgid "ac_wellenstein_pag_limites"
-msgstr "Limits"
-
-#: l_wmts.307
-msgid "ac_wellenstein_pag_voies_acces"
-msgstr "Roads"
-
-#: l_wmts.311
-msgid "topo_100k"
-msgstr "Topographical Map 1:100000"
-
-#: l_wmts.312
-msgid "cadastre"
-msgstr "Cadastre plan"
-
-#: l_wmts.313
-msgid "wg_exposition"
-msgstr "Exposition"
-
-#: l_wmts.315
-msgid "topo_decoupage_r"
-msgstr "Regional Mapsheets"
-
-#: l_wmts.316
-msgid "sections_cadastrales_labels"
-msgstr "Cadastral sections  (names)"
-
-#: l_wmts.317
-msgid "ac_remich_ortho"
-msgstr "Orthophoto Remich"
-
-#: l_wmts.318
-msgid "districts_labels"
-msgstr "Districts (names)"
-
-#: l_wmts.319
-msgid "communes_labels"
-msgstr "Cantons (names)"
-
-#: l_wmts.322
-msgid "ivv_flik_parcels"
-msgstr "FLIK reference parcels for Vineyards 2013"
-
-#: l_wmts.323
-msgid "pedologie_100k"
-msgstr "Geology"
-
-#: l_wmts.326
-msgid "TOPO25K1954C24"
-msgstr "Topographical Map 1954"
-
-#: l_wmts.330
-msgid "TOPO_CARTESHISTO_2000_50k"
-msgstr "Topographical Map 1:50k 2000"
-
-#: l_wmts.331
-msgid "wg_trinkwassersyndikate"
-msgstr ""
-
-#: l_wmts.332
-msgid "wg_kilometrierung_hauptgewasser"
-msgstr ""
-
-#: l_wmts.336
-msgid "ac_wellenstein_pag_alignements_a_preserver"
-msgstr "Alignments to be saved"
-
-#: l_wmts.337
-msgid "asta_meteo"
-msgstr "Weatherstations"
-
-#: l_wmts.339
-msgid "wg_timis_ueberflutungsflachen_ehq"
-msgstr ""
-
-#: l_wmts.340
-msgid "wg_kontrollpunkte"
-msgstr ""
-
-#: l_wmts.341
-msgid "TOPO_CARTESHISTO_1989"
-msgstr "Topographical Map 1:20k 1989"
-
-#: l_wmts.342
-msgid "wg_hohenlinien_10m"
-msgstr "Contour 10 m"
-
-#: l_wmts.344
-msgid "wg_abwasser_syndikate"
-msgstr ""
-
-#: l_wmts.345
-msgid "wg_hangneigung_"
-msgstr "Slope"
-
-#: l_wmts.346
-msgid "eau_phase_orange"
-msgstr ""
-
-#: l_wmts.349
-msgid "wg_grundwasserleiter"
-msgstr ""
-
-#: l_wmts.353
-msgid "wg_ikonos_satellitendaten"
-msgstr "Satellite pcitures Ikonos"
-
-#: l_wmts.354
-msgid "wg_stausee_sauer"
-msgstr ""
-
-#: l_wmts.355
-msgid "wg_cr_inext"
-msgstr ""
-
-#: l_wmts.357
-msgid "geologie_ancienne_edition"
-msgstr "Geological Map, old edition"
-
-#: l_wmts.358
-msgid "wg_klaranlagen"
-msgstr ""
-
-#: l_wmts.359
-msgid "topo"
-msgstr "Automatical Topographical Map"
-
-#: l_wmts.362
+#: l_wmts.661
 msgid "ivv_parcels"
-msgstr "Vineyards 2013"
+msgstr "Vineyards 2014"
 
-#: l_wmts.363
-msgid "wg_kilometrierung_nebengewasser"
+#: l_wmts.662
+msgid "asta_flik_parcels_2015"
+msgstr "FLIK Parcels 2015"
+
+#: lu_int_wms.663
+msgid "presidence_suitenovotel"
 msgstr ""
 
-#: l_wmts.413
-msgid "wg_timis_hochwasser_intensitaten_ehq"
+#: lu_int_wms.664
+msgid "eau_new_Oberflaechenwasserkoerper_2015"
+msgstr "Surface water bodies 2015"
+
+#: lu_int_wms.665
+msgid "eau_new_Erheblich_veraenderte_WK_2015"
+msgstr "Heavily modified WB 2015"
+
+#: lu_int_wms.666
+msgid "eau_new_Grundwasserkoerper_2015"
+msgstr "Ground water bodies 2015"
+
+#: lu_int_wms.667
+msgid "natura2000_oiseaux"
+msgstr "Bird protection zones Natura 2000"
+
+#: lu_int_wms.668
+msgid "natura2000_habitats"
+msgstr "Habitats Natura 2000"
+
+#: lu_int_wms.669
+msgid "eau_natura2000_oiseaux"
+msgstr "Bird protection zones Natura 2000"
+
+#: lu_int_wms.670
+msgid "presidence_musees_history_museum_diekirch_-_mh_s_d"
 msgstr ""
 
-#: l_wmts.416
-msgid "wg_grundwasser_wrrl"
+#: lu_int_wms.671
+msgid "natura2000_oiseaux_sup"
+msgstr "Additional Bird protection zones Natura 2000"
+
+#: lu_int_wms.672
+msgid "presidence_musees_house_of_culture_and_history__a_gadder_"
 msgstr ""
 
-#: l_wmts.420
-msgid "wg_timis_wassertiefe_ehq"
+#: lu_int_wms.673
+msgid "presidence_musees_industry_and_railwaypark_fond-de-gras"
 msgstr ""
 
-#: l_wmts.421
-msgid "wg_cr_10"
+#: lu_int_wms.674
+msgid "presidence_musees_international_museum_of_the_police_and_gendarmerie"
 msgstr ""
 
-#: l_wmts.428
-msgid "ortho_2010"
-msgstr "Orthophoto 2010"
+#: lu_int_wms.675
+msgid "presidence_musees_le_fonds_belval_-__massenoire__building"
+msgstr ""
 
-#: l_wmts.429
-msgid "ortho"
-msgstr "Orthophoto 2013"
+#: lu_int_wms.676
+msgid "presidence_musees_living_rural_museum_thillenvogtei"
+msgstr ""
 
-#: l_wmts.430
-msgid "ac_remich_pag"
-msgstr "Land Use Plan Remich"
+#: lu_int_wms.677
+msgid ""
+"presidence_musees_local_museum_dudelange__archeology__paleontology_and_history_"
+msgstr ""
 
-#: l_wmts.431
-msgid "topo_decoupage_ortho"
-msgstr "Orthophoto Grid"
+#: lu_int_wms.678
+msgid "presidence_musees_musée_d___art_moderne_grand-duc_jean__mudam_"
+msgstr ""
 
-#: l_wmts.432
-msgid "cantons_labels"
-msgstr "Cantons (names)"
+#: lu_int_wms.679
+msgid "presidence_musees_musée_de_l___aviation_luxembourgeoise"
+msgstr ""
 
-#: l_wmts.435
-msgid "country"
-msgstr "Country"
+#: lu_int_wms.680
+msgid "presidence_musees_musée_d___histoire_de_la_ville_de_luxembourg"
+msgstr ""
 
-#: l_wmts.436
-msgid "communes_cadastrales_labels"
-msgstr "Cadastral municipalities (names)"
+#: lu_int_wms.681
+msgid "presidence_musees_musée_national_d___histoire_et_d___art"
+msgstr ""
 
-#: l_wmts.437
-msgid "roads_labels"
-msgstr "Road Names"
+#: lu_int_wms.682
+msgid "presidence_musees_musée_national_d___histoire_naturelle__natur_musée_"
+msgstr ""
 
-#: l_wmts.440
-msgid "parcels_labels"
-msgstr "Cadastral parcels (numbers)"
+#: lu_int_wms.683
+msgid "presidence_musees_museum_dräi_eechelen_-_fortress__history__identities"
+msgstr ""
 
-#: l_wmts.441
-msgid "districts"
-msgstr "Districts"
+#: lu_int_wms.684
+msgid "presidence_musees_museum-memorial_of_deportation"
+msgstr ""
 
-#: l_wmts.442
-msgid "sections_cadastrales"
-msgstr "Cadastral sections"
+#: lu_int_wms.685
+msgid "presidence_musees_museum_of_customs_and_excise_esch-sur-alzette"
+msgstr ""
 
-#: l_wmts.446
-msgid "parcels"
-msgstr "Cadastral parcels"
+#: lu_int_wms.686
+msgid "presidence_musees_museum_of_playing_cards__jean_dieudonné_"
+msgstr ""
 
-#: l_wmts.447
-msgid "ortho_2013"
-msgstr "Orthophoto 2013"
+#: lu_int_wms.687
+msgid "presidence_musees_museum_of_prehistory_echternach"
+msgstr ""
 
-#: l_wmts.454
-msgid "emwelt_biotop_kadaster_f"
-msgstr "Surface elements without orchards"
+#: lu_int_wms.688
+msgid "presidence_musees_museum_of_the_abbey_echternach"
+msgstr ""
 
-#: l_wmts.455
-msgid "emwelt_biotop_kadaster_b"
-msgstr "Buffer"
+#: group.689
+msgid "presidence_hotels"
+msgstr ""
 
-#: l_wmts.457
-msgid "emwelt_biotop_kadaster_p"
-msgstr "Point elements"
+#: lu_int_wms.690
+msgid "presidence_sofitelkirchberg"
+msgstr ""
 
-#: l_wmts.458
-msgid "emwelt_biotop_kadaster_s"
-msgstr "Orchards"
+#: lu_int_wms.691
+msgid "mobiliteit_pr"
+msgstr "Park + Ride"
 
-#: l_wmts.460
-msgid "eau_new_HQ100_merged_2013"
-msgstr "HQ100 [floods with medium probability]"
+#: lu_int_wms.692
+msgid "mobiliteit_bornes"
+msgstr "Electric charging points"
 
-#: l_wmts.485
-msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
-msgstr "HQ100 [medium probability]"
+#: lu_int_wms.693
+msgid "mobiliteit_cfl"
+msgstr "CFL train stations"
+
+#: lu_int_wms.694
+msgid "eau_new_Zones_interdiction_utilisation_metazachlore"
+msgstr "Areas in which the application of Metazachlor is forbidden"
+
+#: lu_int_wms.695
+msgid "presidence_musees_museum_of_the_battle_of_the_bulge_clervaux"
+msgstr ""
+
+#: lu_int_wms.696
+msgid "presidence_musees_museum_of_the_cockerill_mine_at_ellergronn"
+msgstr ""
+
+#: lu_int_wms.697
+msgid "presidence_musees_museum_of_the_copper_mine_stolzembourg"
+msgstr ""
+
+#: lu_int_wms.698
+msgid "presidence_musees_museum_of_the_old_mill_asselborn"
+msgstr ""
+
+#: lu_int_wms.699
+msgid "presidence_musees_museum_of_the_resistance_schifflange"
+msgstr ""
+
+#: lu_int_wms.700
+msgid "presidence_musees_national_brewery_museum_and_tannery_museum"
+msgstr ""
+
+#: lu_int_wms.701
+msgid "presidence_musees_national_mining_museum"
+msgstr ""
+
+#: lu_int_wms.702
+msgid "presidence_musees_national_museum_for_historical_vehicle_diekirch"
+msgstr ""
+
+#: lu_int_wms.703
+msgid "presidence_musees_national_museum_of_military_history_diekirch"
+msgstr ""
+
+#: lu_int_wms.704
+msgid "presidence_musees_national_museum_of_the_resistance_esch-sur-alzette"
+msgstr ""
+
+#: lu_int_wms.705
+msgid "presidence_musees_open-air_railway_museum"
+msgstr ""
+
+#: lu_int_wms.706
+msgid "presidence_musees_postal_museum_luxembourg"
+msgstr ""
+
+#: lu_int_wms.707
+msgid "presidence_musees_postrelais_asselborn"
+msgstr ""
+
+#: lu_int_wms.708
+msgid "presidence_musees_pottery_museum_nospelt"
+msgstr ""
+
+#: lu_int_wms.709
+msgid "presidence_musees_printing_museum_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.710
+msgid "presidence_musees_regional_museum_of_forced_conscription"
+msgstr ""
+
+#: lu_int_wms.711
+msgid "presidence_musees_rural_museum__a_schiewesch_"
+msgstr ""
+
+#: group.712
+msgid "presidence_restos"
+msgstr ""
+
+#: group.713
+msgid "presidence_conf"
+msgstr ""
+
+#: group.714
+msgid "presidence_misc"
+msgstr ""
+
+#: lu_int_wms.715
+msgid "presidence_site_aalt_ww"
+msgstr ""
+
+#: lu_int_wms.716
+msgid "presidence_site_bei"
+msgstr ""
+
+#: lu_int_wms.717
+msgid "presidence_site_cape"
+msgstr ""
+
+#: lu_int_wms.718
+msgid "presidence_site_brs"
+msgstr ""
+
+#: lu_int_wms.719
+msgid "presidence_parcbelair"
+msgstr ""
+
+#: group.720
+msgid "presidence_art"
+msgstr ""
+
+#: lu_int_wms.721
+msgid "presidence_musees_rural_museum_peppange"
+msgstr ""
+
+#: lu_int_wms.722
+msgid "presidence_musees_the_family_of_man"
+msgstr ""
+
+#: lu_int_wms.723
+msgid "presidence_musees_the_museum_of_rural_architecture"
+msgstr ""
+
+#: lu_int_wms.724
+msgid "presidence_musees_tram_and_bus_museum"
+msgstr ""
+
+#: lu_int_wms.725
+msgid "presidence_musees_victor_hugo_house_-_literary_museum"
+msgstr ""
+
+#: lu_int_wms.726
+msgid "presidence_musees_villa_vauban_–_luxembourg_city_art_museum"
+msgstr ""
+
+#: lu_int_wms.727
+msgid "presidence_musees_wine_and_folklore_museum__a_possen_"
+msgstr ""
+
+#: lu_int_wms.728
+msgid "presidence_musees_wine_museum_ehnen"
+msgstr ""
+
+#: lu_int_wms.729
+msgid "presidence_musees_w.w.ii_385th_bomb_group_museum_perlé"
+msgstr ""
+
+#: group.730
+msgid "presidence_reunions_group"
+msgstr ""
+
+#: lu_int_wms.731
+msgid "presidence_reunions_002"
+msgstr ""
+
+#: lu_int_wms.732
+msgid "presidence_reunions_006"
+msgstr ""
+
+#: lu_int_wms.733
+msgid "presidence_reunions_007"
+msgstr ""
+
+#: lu_int_wms.734
+msgid "presidence_reunions_008"
+msgstr ""
+
+#: lu_int_wms.735
+msgid "presidence_site_ccg"
+msgstr ""
+
+#: lu_int_wms.736
+msgid "presidence_site_cck"
+msgstr ""
+
+#: lu_int_wms.737
+msgid "presidence_site_cc"
+msgstr ""
+
+#: lu_int_wms.738
+msgid "presidence_site_ccrn"
+msgstr ""
+
+#: lu_int_wms.739
+msgid "presidence_reunions_009"
+msgstr ""
+
+#: lu_int_wms.740
+msgid "presidence_reunions_010"
+msgstr ""
+
+#: lu_int_wms.741
+msgid "presidence_reunions_011"
+msgstr ""
+
+#: lu_int_wms.742
+msgid "presidence_reunions_012"
+msgstr ""
+
+#: lu_int_wms.743
+msgid "presidence_reunions_013"
+msgstr ""
+
+#: lu_int_wms.744
+msgid "presidence_reunions_014"
+msgstr ""
+
+#: lu_int_wms.745
+msgid "presidence_reunions_015"
+msgstr ""
+
+#: lu_int_wms.746
+msgid "presidence_reunions_016"
+msgstr ""
+
+#: lu_int_wms.747
+msgid "presidence_reunions_018"
+msgstr ""
+
+#: lu_int_wms.748
+msgid "presidence_reunions_019"
+msgstr ""
+
+#: lu_int_wms.749
+msgid "presidence_reunions_020"
+msgstr ""
+
+#: lu_int_wms.750
+msgid "presidence_reunions_021"
+msgstr ""
+
+#: lu_int_wms.751
+msgid "presidence_reunions_022"
+msgstr ""
+
+#: lu_int_wms.752
+msgid "presidence_reunions_023"
+msgstr ""
+
+#: lu_int_wms.753
+msgid "presidence_reunions_025"
+msgstr ""
+
+#: lu_int_wms.754
+msgid "presidence_reunions_026"
+msgstr ""
+
+#: lu_int_wms.755
+msgid "presidence_reunions_027"
+msgstr ""
+
+#: lu_int_wms.756
+msgid "presidence_reunions_028"
+msgstr ""
+
+#: lu_int_wms.757
+msgid "presidence_reunions_029"
+msgstr ""
+
+#: lu_int_wms.758
+msgid "presidence_reunions_031"
+msgstr ""
+
+#: lu_int_wms.759
+msgid "presidence_reunions_032"
+msgstr ""
+
+#: lu_int_wms.760
+msgid "presidence_reunions_034"
+msgstr ""
+
+#: lu_int_wms.761
+msgid "presidence_reunions_036"
+msgstr ""
+
+#: lu_int_wms.762
+msgid "presidence_reunions_039"
+msgstr ""
+
+#: lu_int_wms.763
+msgid "presidence_reunions_040"
+msgstr ""
+
+#: lu_int_wms.764
+msgid "presidence_reunions_041"
+msgstr ""
+
+#: lu_int_wms.765
+msgid "presidence_reunions_042"
+msgstr ""
+
+#: lu_int_wms.766
+msgid "presidence_reunions_043"
+msgstr ""
+
+#: lu_int_wms.767
+msgid "presidence_reunions_044"
+msgstr ""
+
+#: lu_int_wms.768
+msgid "presidence_reunions_045"
+msgstr ""
+
+#: lu_int_wms.769
+msgid "presidence_novotelkirchberg"
+msgstr ""
+
+#: lu_int_wms.770
+msgid "presidence_reunions_046"
+msgstr ""
+
+#: lu_int_wms.771
+msgid "presidence_reunions_047"
+msgstr ""
+
+#: lu_int_wms.772
+msgid "presidence_reunions_048"
+msgstr ""
+
+#: lu_int_wms.773
+msgid "presidence_reunions_049"
+msgstr ""
+
+#: lu_int_wms.774
+msgid "presidence_reunions_050"
+msgstr ""
+
+#: lu_int_wms.775
+msgid "presidence_reunions_051"
+msgstr ""
+
+#: lu_int_wms.776
+msgid "presidence_reunions_052"
+msgstr ""
+
+#: lu_int_wms.777
+msgid "presidence_reunions_053"
+msgstr ""
+
+#: lu_int_wms.778
+msgid "presidence_reunions_054"
+msgstr ""
+
+#: lu_int_wms.779
+msgid "presidence_reunions_055"
+msgstr ""
+
+#: lu_int_wms.780
+msgid "presidence_reunions_057"
+msgstr ""
+
+#: lu_int_wms.781
+msgid "presidence_site_ph"
+msgstr ""
+
+#: lu_int_wms.782
+msgid "presidence_site_pgd"
+msgstr ""
+
+#: lu_int_wms.783
+msgid "presidence_site_ses"
+msgstr ""
+
+#: lu_int_wms.784
+msgid "presidence_site_tadg"
+msgstr ""
+
+#: lu_int_wms.785
+msgid "presidence_reunions_058"
+msgstr ""
+
+#: lu_int_wms.786
+msgid "presidence_novotelcentre"
+msgstr ""
+
+#: lu_int_wms.787
+msgid "presidence_melia"
+msgstr ""
+
+#: lu_int_wms.788
+msgid "presidence_leroyal"
+msgstr ""
+
+#: lu_int_wms.789
+msgid "presidence_alvisse"
+msgstr ""
+
+#: lu_int_wms.790
+msgid "presidence_reunions_060"
+msgstr ""
+
+#: lu_int_wms.791
+msgid "presidence_reunions_061"
+msgstr ""
+
+#: lu_int_wms.792
+msgid "presidence_reunions_062"
+msgstr ""
+
+#: lu_int_wms.793
+msgid "presidence_reunions_063"
+msgstr ""
+
+#: lu_int_wms.794
+msgid "presidence_reunions_064"
+msgstr ""
+
+#: lu_int_wms.795
+msgid "presidence_reunions_065"
+msgstr ""
+
+#: lu_int_wms.796
+msgid "presidence_reunions_067"
+msgstr ""
+
+#: lu_int_wms.797
+msgid "presidence_reunions_068"
+msgstr ""
+
+#: lu_int_wms.798
+msgid "presidence_reunions_069"
+msgstr ""
+
+#: lu_int_wms.799
+msgid "presidence_reunions_070"
+msgstr ""
+
+#: lu_int_wms.800
+msgid "presidence_reunions_071"
+msgstr ""
+
+#: lu_int_wms.801
+msgid "presidence_leclervaux"
+msgstr ""
+
+#: lu_int_wms.802
+msgid "presidence_reunions_072"
+msgstr ""
+
+#: lu_int_wms.803
+msgid "presidence_reunions_073"
+msgstr ""
+
+#: lu_int_wms.804
+msgid "presidence_reunions_074"
+msgstr ""
+
+#: lu_int_wms.805
+msgid "presidence_reunions_075"
+msgstr ""
+
+#: lu_int_wms.806
+msgid "presidence_reunions_076"
+msgstr ""
+
+#: lu_int_wms.807
+msgid "presidence_reunions_077"
+msgstr ""
+
+#: lu_int_wms.808
+msgid "presidence_reunions_078"
+msgstr ""
+
+#: lu_int_wms.809
+msgid "presidence_reunions_079"
+msgstr ""
+
+#: lu_int_wms.810
+msgid "presidence_reunions_080"
+msgstr ""
+
+#: lu_int_wms.811
+msgid "presidence_reunions_081"
+msgstr ""
+
+#: lu_int_wms.812
+msgid "presidence_kikuoka"
+msgstr ""
+
+#: lu_int_wms.813
+msgid "presidence_legere"
+msgstr ""
+
+#: lu_int_wms.814
+msgid "presidence_mondorfparc"
+msgstr ""
+
+#: lu_int_wms.815
+msgid "presidence_victorhugo"
+msgstr ""
+
+#: lu_int_wms.816
+msgid "presidence_goldentulip"
+msgstr ""
+
+#: lu_int_wms.817
+msgid "presidence_parcinn"
+msgstr ""
+
+#: lu_int_wms.818
+msgid "presidence_parcbellevue"
+msgstr ""
+
+#: lu_int_wms.819
+msgid "presidence_parcplaza"
+msgstr ""
+
+#: lu_int_wms.820
+msgid "presidence_sofitelcentre"
+msgstr ""
+
+#: lu_int_wms.821
+msgid "presidence_reunions_082"
+msgstr ""
+
+#: lu_int_wms.822
+msgid "presidence_reunions_083"
+msgstr ""
+
+#: lu_int_wms.823
+msgid "presidence_reunions_084"
+msgstr ""
+
+#: lu_int_wms.824
+msgid "presidence_reunions_085"
+msgstr ""
+
+#: lu_int_wms.825
+msgid "presidence_rest_ma"
+msgstr ""
+
+#: lu_int_wms.826
+msgid "presidence_doubletreehilton"
+msgstr ""
+
+#: lu_int_wms.827
+msgid "presidence_chateaudurspelt"
+msgstr ""
+
+#: lu_int_wms.828
+msgid "presidence_ecluse"
+msgstr ""
+
+#: lu_int_wms.829
+msgid "presidence_site_cdc"
+msgstr ""
+
+#: lu_int_wms.830
+msgid "presidence_reunions_086"
+msgstr ""
+
+#: lu_int_wms.831
+msgid "presidence_site_cjue"
+msgstr ""
+
+#: lu_int_wms.832
+msgid "presidence_site_cdcpt"
+msgstr ""
+
+#: lu_int_wms.833
+msgid "presidence_site_fh"
+msgstr ""
+
+#: lu_int_wms.834
+msgid "presidence_site_fg"
+msgstr ""
+
+#: lu_int_wms.835
+msgid "presidence_site_ks"
+msgstr ""
+
+#: lu_int_wms.836
+msgid "presidence_reunions_088"
+msgstr ""
+
+#: lu_int_wms.837
+msgid "presidence_site_mondorf"
+msgstr ""
+
+#: lu_int_wms.838
+msgid "presidence_site_musee3e"
+msgstr ""
+
+#: lu_int_wms.839
+msgid "presidence_alfa"
+msgstr ""
+
+#: lu_int_wms.840
+msgid "presidence_site_uni"
+msgstr ""
+
+#: lu_int_wms.841
+msgid "presidence_site_men"
+msgstr ""
+
+#: lu_int_wms.842
+msgid "presidence_reunions_090"
+msgstr ""
+
+#: lu_int_wms.843
+msgid "presidence_rest_bmds"
+msgstr ""
+
+#: lu_int_wms.844
+msgid "presidence_rest_cc"
+msgstr ""
+
+#: lu_int_wms.845
+msgid "presidence_reunions_089"
+msgstr ""
+
+#: lu_int_wms.846
+msgid "presidence_reunions_091"
+msgstr ""
+
+#: lu_int_wms.847
+msgid "presidence_reunions_092"
+msgstr ""
+
+#: lu_int_wms.848
+msgid "presidence_reunions_093"
+msgstr ""
+
+#: lu_int_wms.849
+msgid "presidence_rest_cdu"
+msgstr ""
+
+#: lu_int_wms.850
+msgid "presidence_rest_dtm"
+msgstr ""
+
+#: lu_int_wms.851
+msgid "presidence_rest_gh"
+msgstr ""
+
+#: lu_int_wms.852
+msgid "presidence_rest_pda"
+msgstr ""
+
+#: lu_int_wms.853
+msgid "presidence_rest_hk"
+msgstr ""
+
+#: lu_int_wms.854
+msgid "presidence_rest_kg"
+msgstr ""
+
+#: lu_int_wms.855
+msgid "presidence_rest_os"
+msgstr ""
+
+#: lu_int_wms.856
+msgid "presidence_rest_nm"
+msgstr ""
+
+#: lu_int_wms.857
+msgid "presidence_rest_ph"
+msgstr ""
+
+#: lu_int_wms.858
+msgid "presidence_rest_sch"
+msgstr ""
+
+#: lu_int_wms.859
+msgid "presidence_rest_ts"
+msgstr ""
+
+#: lu_int_wms.860
+msgid "presidence_rest_tf"
+msgstr ""
+
+#: lu_int_wms.861
+msgid "presidence_pharmacies"
+msgstr ""
+
+#: lu_int_wms.862
+msgid "presidence_hopitaux"
+msgstr ""
+
+#: lu_int_wms.863
+msgid "presidence_police"
+msgstr ""
+
+#: lu_int_wms.864
+msgid "presidence_sapeurs"
+msgstr ""
+
+#: lu_int_wms.865
+msgid "presidence_musees"
+msgstr ""
+
+#: lu_int_wms.866
+msgid "presidence_misc_bnl"
+msgstr ""
+
+#: lu_int_wms.867
+msgid "presidence_misc_anl"
+msgstr ""
+
+#: lu_int_wms.868
+msgid "presidence_misc_adl"
+msgstr ""
+
+#: lu_int_wms.869
+msgid "presidence_misc_wsa"
+msgstr ""
+
+#: lu_int_wms.870
+msgid "presidence_stationsservice"
+msgstr ""
+
+#: group.871
+msgid "presidence_infos"
+msgstr ""
+
+#: lu_int_wms.872
+msgid "presidence_reunions_102"
+msgstr ""
+
+#: lu_int_wms.873
+msgid "presidence_reunions"
+msgstr ""
+
+#: lu_int_wms.874
+msgid "presidence_reunions_094"
+msgstr ""
+
+#: lu_int_wms.875
+msgid "presidence_reunions_095"
+msgstr ""
+
+#: lu_int_wms.876
+msgid "presidence_reunions_096"
+msgstr ""
+
+#: lu_int_wms.877
+msgid "presidence_reunions_097"
+msgstr ""
+
+#: lu_int_wms.878
+msgid "presidence_reunions_099"
+msgstr ""
+
+#: lu_int_wms.879
+msgid "presidence_reunions_100"
+msgstr ""
+
+#: lu_int_wms.880
+msgid "presidence_reunions_101"
+msgstr ""
+
+#: lu_int_wms.881
+msgid "presidence_reunions_103"
+msgstr ""
+
+#: lu_int_wms.882
+msgid "presidence_reunions_104"
+msgstr ""
+
+#: lu_int_wms.883
+msgid "presidence_reunions_105"
+msgstr ""
+
+#: lu_int_wms.884
+msgid "presidence_reunions_106"
+msgstr ""
+
+#: lu_int_wms.885
+msgid "presidence_reunions_107"
+msgstr ""
+
+#: lu_int_wms.886
+msgid "presidence_reunions_108"
+msgstr ""
+
+#: lu_int_wms.887
+msgid "presidence_reunions_109"
+msgstr ""
+
+#: lu_int_wms.888
+msgid "presidence_reunions_110"
+msgstr ""
+
+#: lu_int_wms.889
+msgid "presidence_reunions_111"
+msgstr ""
+
+#: lu_int_wms.890
+msgid "presidence_reunions_112"
+msgstr ""
+
+#: lu_int_wms.891
+msgid "presidence_reunions_113"
+msgstr ""
+
+#: lu_int_wms.892
+msgid "presidence_reunions_114"
+msgstr ""
+
+#: lu_int_wms.893
+msgid "presidence_reunions_115"
+msgstr ""
+
+#: lu_int_wms.894
+msgid "presidence_reunions_116"
+msgstr ""
+
+#: lu_int_wms.895
+msgid "presidence_reunions_117"
+msgstr ""
+
+#: lu_int_wms.896
+msgid "presidence_reunions_118"
+msgstr ""
+
+#: lu_int_wms.897
+msgid "presidence_reunions_119"
+msgstr ""
+
+#: lu_int_wms.898
+msgid "presidence_reunions_121"
+msgstr ""
+
+#: lu_int_wms.899
+msgid "presidence_reunions_122"
+msgstr ""
+
+#: lu_int_wms.900
+msgid "presidence_reunions_125"
+msgstr ""
+
+#: lu_int_wms.901
+msgid "presidence_reunions_126"
+msgstr ""
+
+#: lu_int_wms.902
+msgid "presidence_reunions_127"
+msgstr ""
+
+#: lu_int_wms.903
+msgid "presidence_reunions_129"
+msgstr ""
+
+#: lu_int_wms.904
+msgid "presidence_reunions_130"
+msgstr ""
+
+#: lu_int_wms.905
+msgid "presidence_reunions_131"
+msgstr ""
+
+#: lu_int_wms.906
+msgid "presidence_reunions_132"
+msgstr ""
+
+#: lu_int_wms.907
+msgid "presidence_reunions_135"
+msgstr ""
+
+#: lu_int_wms.908
+msgid "presidence_reunions_137"
+msgstr ""
+
+#: lu_int_wms.909
+msgid "presidence_reunions_140"
+msgstr ""
+
+#: lu_int_wms.910
+msgid "presidence_reunions_141"
+msgstr ""
+
+#: lu_int_wms.911
+msgid "presidence_reunions_142"
+msgstr ""
+
+#: lu_int_wms.912
+msgid "presidence_reunions_143"
+msgstr ""
+
+#: lu_int_wms.913
+msgid "presidence_reunions_144"
+msgstr ""
+
+#: lu_int_wms.914
+msgid "presidence_reunions_146"
+msgstr ""
+
+#: lu_int_wms.915
+msgid "presidence_reunions_147"
+msgstr ""
+
+#: lu_int_wms.916
+msgid "presidence_reunions_148"
+msgstr ""
+
+#: lu_int_wms.917
+msgid "presidence_reunions_150"
+msgstr ""
+
+#: lu_int_wms.918
+msgid "presidence_reunions_151"
+msgstr ""
+
+#: lu_int_wms.919
+msgid "presidence_reunions_152"
+msgstr ""
+
+#: lu_int_wms.920
+msgid "presidence_reunions_153"
+msgstr ""
+
+#: lu_int_wms.921
+msgid "presidence_reunions_154"
+msgstr ""
+
+#: lu_int_wms.922
+msgid "presidence_reunions_155"
+msgstr ""
+
+#: lu_int_wms.923
+msgid "presidence_reunions_156"
+msgstr ""
+
+#: lu_int_wms.924
+msgid "presidence_reunions_157"
+msgstr ""
+
+#: lu_int_wms.925
+msgid "presidence_reunions_158"
+msgstr ""
+
+#: lu_int_wms.926
+msgid "presidence_reunions_159"
+msgstr ""
+
+#: lu_int_wms.927
+msgid "presidence_reunions_160"
+msgstr ""
+
+#: lu_int_wms.928
+msgid "presidence_reunions_161"
+msgstr ""
+
+#: lu_int_wms.929
+msgid "presidence_reunions_162"
+msgstr ""
+
+#: lu_int_wms.930
+msgid "presidence_reunions_165"
+msgstr ""
+
+#: lu_int_wms.931
+msgid "presidence_reunions_167"
+msgstr ""
+
+#: lu_int_wms.932
+msgid "presidence_reunions_168"
+msgstr ""
+
+#: lu_int_wms.933
+msgid "presidence_reunions_169"
+msgstr ""
+
+#: lu_int_wms.934
+msgid "presidence_reunions_170"
+msgstr ""
+
+#: lu_int_wms.935
+msgid "presidence_reunions_171"
+msgstr ""
+
+#: lu_int_wms.936
+msgid "presidence_reunions_174"
+msgstr ""
+
+#: lu_int_wms.937
+msgid "presidence_reunions_180"
+msgstr ""
+
+#: lu_int_wms.938
+msgid "presidence_reunions_181"
+msgstr ""
+
+#: lu_int_wms.939
+msgid "presidence_reunions_182"
+msgstr ""
+
+#: lu_int_wms.940
+msgid "presidence_reunions_183"
+msgstr ""
+
+#: lu_int_wms.941
+msgid "presidence_reunions_184"
+msgstr ""
+
+#: lu_int_wms.942
+msgid "presidence_reunions_185"
+msgstr ""
+
+#: lu_int_wms.943
+msgid "presidence_reunions_186"
+msgstr ""
+
+#: lu_int_wms.944
+msgid "presidence_reunions_187"
+msgstr ""
+
+#: lu_int_wms.945
+msgid "presidence_reunions_189"
+msgstr ""
+
+#: lu_int_wms.946
+msgid "presidence_reunions_190"
+msgstr ""
+
+#: lu_int_wms.947
+msgid "presidence_reunions_193"
+msgstr ""
+
+#: lu_int_wms.948
+msgid "presidence_reunions_195"
+msgstr ""
+
+#: lu_int_wms.949
+msgid "presidence_reunions_196"
+msgstr ""
+
+#: lu_int_wms.950
+msgid "presidence_reunions_197"
+msgstr ""
+
+#: lu_int_wms.951
+msgid "presidence_reunions_198"
+msgstr ""
+
+#: lu_int_wms.952
+msgid "presidence_reunions_200"
+msgstr ""
+
+#: lu_int_wms.953
+msgid "presidence_reunions_201"
+msgstr ""
+
+#: lu_int_wms.954
+msgid "presidence_reunions_204"
+msgstr ""
+
+#: lu_int_wms.955
+msgid "presidence_reunions_208"
+msgstr ""
+
+#: lu_int_wms.956
+msgid "presidence_reunions_209"
+msgstr ""
+
+#: lu_int_wms.957
+msgid "presidence_reunions_210"
+msgstr ""
+
+#: lu_int_wms.958
+msgid "presidence_reunions_211"
+msgstr ""
+
+#: lu_int_wms.959
+msgid "presidence_reunions_215"
+msgstr ""
+
+#: lu_int_wms.960
+msgid "presidence_reunions_216"
+msgstr ""
+
+#: lu_int_wms.961
+msgid "presidence_reunions_217"
+msgstr ""
+
+#: lu_int_wms.962
+msgid "presidence_reunions_220"
+msgstr ""
+
+#: lu_int_wms.963
+msgid "presidence_reunions_221"
+msgstr ""
+
+#: lu_int_wms.964
+msgid "presidence_reunions_223"
+msgstr ""
+
+#: lu_int_wms.965
+msgid "presidence_reunions_224"
+msgstr ""
+
+#: lu_int_wms.966
+msgid "presidence_reunions_225"
+msgstr ""
+
+#: lu_int_wms.967
+msgid "presidence_reunions_226"
+msgstr ""
+
+#: lu_int_wms.968
+msgid "presidence_reunions_227"
+msgstr ""
+
+#: lu_int_wms.969
+msgid "presidence_reunions_234"
+msgstr ""
+
+#: lu_int_wms.970
+msgid "presidence_reunions_236"
+msgstr ""
+
+#: lu_int_wms.971
+msgid "presidence_reunions_238"
+msgstr ""
+
+#: lu_int_wms.972
+msgid "presidence_reunions_239"
+msgstr ""
+
+#: lu_int_wms.973
+msgid "presidence_reunions_244"
+msgstr ""
+
+#: lu_int_wms.974
+msgid "presidence_reunions_246"
+msgstr ""
+
+#: lu_int_wms.975
+msgid "presidence_reunions_248"
+msgstr ""
+
+#: group.976
+msgid "presidence_police_group"
+msgstr ""
+
+#: lu_int_wms.977
+msgid "presidence_police_ci_capellen"
+msgstr ""
+
+#: lu_int_wms.978
+msgid "presidence_police_ci_de_luxembourg"
+msgstr ""
+
+#: lu_int_wms.979
+msgid "presidence_police_ci_luxembourg_-groupe_gare-"
+msgstr ""
+
+#: lu_int_wms.980
+msgid "presidence_police_ci_mersch"
+msgstr ""
+
+#: lu_int_wms.981
+msgid "presidence_police_ci_principal_d___esch-alzette"
+msgstr ""
+
+#: lu_int_wms.982
+msgid "presidence_police_ci_principal_diekirch"
+msgstr ""
+
+#: lu_int_wms.983
+msgid "presidence_police_ci_principal_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.984
+msgid "presidence_police_ci_secondaire_differdange"
+msgstr ""
+
+#: lu_int_wms.985
+msgid "presidence_police_ci_secondaire_dudelange"
+msgstr ""
+
+#: lu_int_wms.986
+msgid "presidence_police_ci_secondaire_echternach"
+msgstr ""
+
+#: lu_int_wms.987
+msgid "presidence_police_ci_secondaire_rédange-attert"
+msgstr ""
+
+#: lu_int_wms.988
+msgid "presidence_police_ci_secondaire_remich"
+msgstr ""
+
+#: lu_int_wms.989
+msgid "presidence_police_ci_secondaire_troisvierges"
+msgstr ""
+
+#: lu_int_wms.990
+msgid "presidence_police_ci_secondaire_wiltz"
+msgstr ""
+
+#: lu_int_wms.991
+msgid "presidence_police_cp_bascharage"
+msgstr ""
+
+#: lu_int_wms.992
+msgid "presidence_police_cp_bavigne"
+msgstr ""
+
+#: lu_int_wms.993
+msgid "presidence_police_cp_belvaux-sanem"
+msgstr ""
+
+#: lu_int_wms.994
+msgid "presidence_police_cp_bertrange"
+msgstr ""
+
+#: lu_int_wms.995
+msgid "presidence_police_cp_bettembourg"
+msgstr ""
+
+#: lu_int_wms.996
+msgid "presidence_police_cp_bonnevoie"
+msgstr ""
+
+#: lu_int_wms.997
+msgid "presidence_police_cp_capellen"
+msgstr ""
+
+#: lu_int_wms.998
+msgid "presidence_police_cp_cents"
+msgstr ""
+
+#: lu_int_wms.999
+msgid "presidence_police_cp_clervaux"
+msgstr ""
+
+#: lu_int_wms.1000
+msgid "presidence_police_cp_diekirch"
+msgstr ""
+
+#: lu_int_wms.1001
+msgid "presidence_police_cp_differdange"
+msgstr ""
+
+#: lu_int_wms.1002
+msgid "presidence_police_cp_dudelange"
+msgstr ""
+
+#: lu_int_wms.1003
+msgid "presidence_police_cp_echternach"
+msgstr ""
+
+#: lu_int_wms.1004
+msgid "presidence_police_cp_eich"
+msgstr ""
+
+#: lu_int_wms.1005
+msgid "presidence_police_cp_esch-nord"
+msgstr ""
+
+#: lu_int_wms.1006
+msgid "presidence_police_cp_esch-sud"
+msgstr ""
+
+#: lu_int_wms.1007
+msgid "presidence_police_cp_ettelbruck"
+msgstr ""
+
+#: lu_int_wms.1008
+msgid "presidence_police_cp_gare-hollerich"
+msgstr ""
+
+#: lu_int_wms.1009
+msgid "presidence_police_cp_gasperich"
+msgstr ""
+
+#: lu_int_wms.1010
+msgid "presidence_police_cp_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.1011
+msgid "presidence_police_cp_grosbous"
+msgstr ""
+
+#: lu_int_wms.1012
+msgid "presidence_police_cp_heiderscheid"
+msgstr ""
+
+#: lu_int_wms.1013
+msgid "presidence_police_cp_hesperange"
+msgstr ""
+
+#: lu_int_wms.1014
+msgid "presidence_police_cp_hosingen"
+msgstr ""
+
+#: lu_int_wms.1015
+msgid "presidence_police_cp_junglinster"
+msgstr ""
+
+#: lu_int_wms.1016
+msgid "presidence_police_cp_kayldall_-_antenne_kayl"
+msgstr ""
+
+#: lu_int_wms.1017
+msgid "presidence_police_cp_kayldall_-_antenne_rumelange"
+msgstr ""
+
+#: lu_int_wms.1018
+msgid "presidence_police_cp_kirchberg"
+msgstr ""
+
+#: lu_int_wms.1019
+msgid "presidence_police_cp_larochette"
+msgstr ""
+
+#: lu_int_wms.1020
+msgid "presidence_police_cp_limpertsberg"
+msgstr ""
+
+#: lu_int_wms.1021
+msgid "presidence_police_cp_merl-belair"
+msgstr ""
+
+#: lu_int_wms.1022
+msgid "presidence_police_cp_mersch"
+msgstr ""
+
+#: lu_int_wms.1023
+msgid "presidence_police_cp_mondercange"
+msgstr ""
+
+#: lu_int_wms.1024
+msgid "presidence_police_cp_mondorf"
+msgstr ""
+
+#: lu_int_wms.1025
+msgid "presidence_police_cp_moutfort"
+msgstr ""
+
+#: lu_int_wms.1026
+msgid "presidence_police_cp_pétange"
+msgstr ""
+
+#: lu_int_wms.1027
+msgid "presidence_police_cp_rambrouch"
+msgstr ""
+
+#: lu_int_wms.1028
+msgid "presidence_police_cp_rédange-attert"
+msgstr ""
+
+#: lu_int_wms.1029
+msgid "presidence_police_cp_remich"
+msgstr ""
+
+#: lu_int_wms.1030
+msgid "presidence_police_cp_roeser"
+msgstr ""
+
+#: lu_int_wms.1031
+msgid "presidence_police_cp_schifflange"
+msgstr ""
+
+#: lu_int_wms.1032
+msgid "presidence_police_cp_steinfort"
+msgstr ""
+
+#: lu_int_wms.1033
+msgid "presidence_police_cp_strassen"
+msgstr ""
+
+#: lu_int_wms.1034
+msgid "presidence_police_cp_syrdall_niederanven"
+msgstr ""
+
+#: lu_int_wms.1035
+msgid "presidence_police_cp_syrdall_roodt-syre"
+msgstr ""
+
+#: lu_int_wms.1036
+msgid "presidence_police_cp_troisvierges"
+msgstr ""
+
+#: lu_int_wms.1037
+msgid "presidence_police_cp_vianden"
+msgstr ""
+
+#: lu_int_wms.1038
+msgid "presidence_police_cp_ville-haute"
+msgstr ""
+
+#: lu_int_wms.1039
+msgid "presidence_police_cp_walferdange"
+msgstr ""
+
+#: lu_int_wms.1040
+msgid "presidence_police_cp_wasserbillig"
+msgstr ""
+
+#: lu_int_wms.1041
+msgid "presidence_police_cp_wiltz"
+msgstr ""
+
+#: lu_int_wms.1042
+msgid "presidence_police_cp_wormeldange"
+msgstr ""
+
+#: lu_int_wms.1043
+msgid "presidence_police_unité_centrale_de_police_à_l___aéroport"
+msgstr ""
+
+#: lu_int_wms.1044
+msgid "presidence_police_unité_centrale_de_police_de_la_route"
+msgstr ""
+
+#: group.1045
+msgid "presidence_pompiers_group"
+msgstr ""
+
+#: lu_int_wms.1046
+msgid "presidence_pompiers_arsdorf"
+msgstr ""
+
+#: lu_int_wms.1047
+msgid "presidence_pompiers_bascharage"
+msgstr ""
+
+#: lu_int_wms.1048
+msgid "presidence_pompiers_baschleiden"
+msgstr ""
+
+#: lu_int_wms.1049
+msgid "presidence_pompiers_beaufort"
+msgstr ""
+
+#: lu_int_wms.1050
+msgid "presidence_pompiers_bech"
+msgstr ""
+
+#: lu_int_wms.1051
+msgid "presidence_pompiers_berdorf"
+msgstr ""
+
+#: lu_int_wms.1052
+msgid "presidence_pompiers_bertrange"
+msgstr ""
+
+#: lu_int_wms.1053
+msgid "presidence_pompiers_bettange-sur-mess"
+msgstr ""
+
+#: lu_int_wms.1054
+msgid "presidence_pompiers_bettel"
+msgstr ""
+
+#: lu_int_wms.1055
+msgid "presidence_pompiers_bettembourg"
+msgstr ""
+
+#: lu_int_wms.1056
+msgid "presidence_pompiers_bettendorf"
+msgstr ""
+
+#: lu_int_wms.1057
+msgid "presidence_pompiers_bilsdorf"
+msgstr ""
+
+#: lu_int_wms.1058
+msgid "presidence_pompiers_bissen"
+msgstr ""
+
+#: lu_int_wms.1059
+msgid "presidence_pompiers_boevange__clervaux_"
+msgstr ""
+
+#: lu_int_wms.1060
+msgid "presidence_pompiers_boevange-sur-attert"
+msgstr ""
+
+#: lu_int_wms.1061
+msgid "presidence_pompiers_born"
+msgstr ""
+
+#: lu_int_wms.1062
+msgid "presidence_pompiers_bourscheid"
+msgstr ""
+
+#: lu_int_wms.1063
+msgid "presidence_pompiers_bous"
+msgstr ""
+
+#: lu_int_wms.1064
+msgid "presidence_pompiers_boxhorn"
+msgstr ""
+
+#: lu_int_wms.1065
+msgid "presidence_pompiers_brouch__mersch_"
+msgstr ""
+
+#: lu_int_wms.1066
+msgid "presidence_pompiers_christnach"
+msgstr ""
+
+#: lu_int_wms.1067
+msgid "presidence_pompiers_clemency"
+msgstr ""
+
+#: lu_int_wms.1068
+msgid "presidence_pompiers_clervaux"
+msgstr ""
+
+#: lu_int_wms.1069
+msgid "presidence_pompiers_colmar-berg"
+msgstr ""
+
+#: lu_int_wms.1070
+msgid "presidence_pompiers_colpach-haut"
+msgstr ""
+
+#: lu_int_wms.1071
+msgid "presidence_pompiers_consdorf"
+msgstr ""
+
+#: lu_int_wms.1072
+msgid "presidence_pompiers_consthum"
+msgstr ""
+
+#: lu_int_wms.1073
+msgid "presidence_pompiers_contern"
+msgstr ""
+
+#: lu_int_wms.1074
+msgid "presidence_pompiers_dahl"
+msgstr ""
+
+#: lu_int_wms.1075
+msgid "presidence_pompiers_dalheim"
+msgstr ""
+
+#: lu_int_wms.1076
+msgid "presidence_pompiers_diekirch"
+msgstr ""
+
+#: lu_int_wms.1077
+msgid "presidence_pompiers_dippach"
+msgstr ""
+
+#: lu_int_wms.1078
+msgid "presidence_pompiers_doennange"
+msgstr ""
+
+#: lu_int_wms.1079
+msgid "presidence_pompiers_doncols"
+msgstr ""
+
+#: lu_int_wms.1080
+msgid "presidence_pompiers_dudelange"
+msgstr ""
+
+#: lu_int_wms.1081
+msgid "presidence_pompiers_echternach"
+msgstr ""
+
+#: lu_int_wms.1082
+msgid "presidence_pompiers_ehlerange"
+msgstr ""
+
+#: lu_int_wms.1083
+msgid "presidence_pompiers_eischen"
+msgstr ""
+
+#: lu_int_wms.1084
+msgid "presidence_pompiers_ellange"
+msgstr ""
+
+#: lu_int_wms.1085
+msgid "presidence_pompiers_elvange__schengen_"
+msgstr ""
+
+#: lu_int_wms.1086
+msgid "presidence_pompiers_enscherange"
+msgstr ""
+
+#: lu_int_wms.1087
+msgid "presidence_pompiers_eppeldorf"
+msgstr ""
+
+#: lu_int_wms.1088
+msgid "presidence_pompiers_esch-sur-alzette"
+msgstr ""
+
+#: lu_int_wms.1089
+msgid "presidence_pompiers_esch-sur-sûre"
+msgstr ""
+
+#: lu_int_wms.1090
+msgid "presidence_pompiers_ettelbruck"
+msgstr ""
+
+#: lu_int_wms.1091
+msgid "presidence_pompiers_everlange"
+msgstr ""
+
+#: lu_int_wms.1092
+msgid "presidence_pompiers_filsdorf"
+msgstr ""
+
+#: lu_int_wms.1093
+msgid "presidence_pompiers_frisange"
+msgstr ""
+
+#: lu_int_wms.1094
+msgid "presidence_pompiers_garnich"
+msgstr ""
+
+#: lu_int_wms.1095
+msgid "presidence_pompiers_gilsdorf"
+msgstr ""
+
+#: lu_int_wms.1096
+msgid "presidence_pompiers_greiveldange"
+msgstr ""
+
+#: lu_int_wms.1097
+msgid "presidence_pompiers_grevels"
+msgstr ""
+
+#: lu_int_wms.1098
+msgid "presidence_pompiers_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.1099
+msgid "presidence_pompiers_grosbous"
+msgstr ""
+
+#: lu_int_wms.1100
+msgid "presidence_pompiers_grund"
+msgstr ""
+
+#: lu_int_wms.1101
+msgid "presidence_pompiers_hagen"
+msgstr ""
+
+#: lu_int_wms.1102
+msgid "presidence_pompiers_hamiville"
+msgstr ""
+
+#: lu_int_wms.1103
+msgid "presidence_pompiers_harlange"
+msgstr ""
+
+#: lu_int_wms.1104
+msgid "presidence_pompiers_hassel"
+msgstr ""
+
+#: lu_int_wms.1105
+msgid "presidence_pompiers_heinerscheid"
+msgstr ""
+
+#: lu_int_wms.1106
+msgid "presidence_pompiers_helmsange"
+msgstr ""
+
+#: lu_int_wms.1107
+msgid "presidence_pompiers_herborn"
+msgstr ""
+
+#: lu_int_wms.1108
+msgid "presidence_pompiers_holtz"
+msgstr ""
+
+#: lu_int_wms.1109
+msgid "presidence_pompiers_hosingen"
+msgstr ""
+
+#: lu_int_wms.1110
+msgid "presidence_pompiers_huncherange"
+msgstr ""
+
+#: lu_int_wms.1111
+msgid "presidence_pompiers_ingeldorf"
+msgstr ""
+
+#: lu_int_wms.1112
+msgid "presidence_pompiers_itzig"
+msgstr ""
+
+#: lu_int_wms.1113
+msgid "presidence_pompiers_junglinster"
+msgstr ""
+
+#: lu_int_wms.1114
+msgid "presidence_pompiers_kahler"
+msgstr ""
+
+#: lu_int_wms.1115
+msgid "presidence_pompiers_kayl"
+msgstr ""
+
+#: lu_int_wms.1116
+msgid "presidence_pompiers_kehlen"
+msgstr ""
+
+#: lu_int_wms.1117
+msgid "presidence_pompiers_kehmen"
+msgstr ""
+
+#: lu_int_wms.1118
+msgid "presidence_pompiers_kirchberg"
+msgstr ""
+
+#: lu_int_wms.1119
+msgid "presidence_pompiers_kleinbettingen"
+msgstr ""
+
+#: lu_int_wms.1120
+msgid "presidence_pompiers_koerich"
+msgstr ""
+
+#: lu_int_wms.1121
+msgid "presidence_pompiers_kopstal"
+msgstr ""
+
+#: lu_int_wms.1122
+msgid "presidence_pompiers_lannen"
+msgstr ""
+
+#: lu_int_wms.1123
+msgid "presidence_pompiers_larochette"
+msgstr ""
+
+#: lu_int_wms.1124
+msgid "presidence_pompiers_leudelange"
+msgstr ""
+
+#: lu_int_wms.1125
+msgid "presidence_pompiers_lieler"
+msgstr ""
+
+#: lu_int_wms.1126
+msgid "presidence_pompiers_limpertsberg"
+msgstr ""
+
+#: lu_int_wms.1127
+msgid "presidence_pompiers_linger"
+msgstr ""
+
+#: lu_int_wms.1128
+msgid "presidence_pompiers_lintgen"
+msgstr ""
+
+#: lu_int_wms.1129
+msgid "presidence_pompiers_luxembourg_cessange"
+msgstr ""
+
+#: lu_int_wms.1130
+msgid "presidence_pompiers_luxembourg_hamm"
+msgstr ""
+
+#: lu_int_wms.1131
+msgid "presidence_pompiers_machtum"
+msgstr ""
+
+#: lu_int_wms.1132
+msgid "presidence_pompiers_mamer"
+msgstr ""
+
+#: lu_int_wms.1133
+msgid "presidence_pompiers_marnach"
+msgstr ""
+
+#: lu_int_wms.1134
+msgid "presidence_pompiers_medernach"
+msgstr ""
+
+#: lu_int_wms.1135
+msgid "presidence_pompiers_meispelt"
+msgstr ""
+
+#: lu_int_wms.1136
+msgid "presidence_pompiers_mensdorf"
+msgstr ""
+
+#: lu_int_wms.1137
+msgid "presidence_pompiers_mersch"
+msgstr ""
+
+#: lu_int_wms.1138
+msgid "presidence_pompiers_merscheid"
+msgstr ""
+
+#: lu_int_wms.1139
+msgid "presidence_pompiers_mertert"
+msgstr ""
+
+#: lu_int_wms.1140
+msgid "presidence_pompiers_mertzig"
+msgstr ""
+
+#: lu_int_wms.1141
+msgid "presidence_pompiers_moersdorf"
+msgstr ""
+
+#: lu_int_wms.1142
+msgid "presidence_pompiers_moesdorf__mersch_"
+msgstr ""
+
+#: lu_int_wms.1143
+msgid "presidence_pompiers_mondorf-les-bains"
+msgstr ""
+
+#: lu_int_wms.1144
+msgid "presidence_pompiers_moutfort"
+msgstr ""
+
+#: lu_int_wms.1145
+msgid "presidence_pompiers_mullendorf"
+msgstr ""
+
+#: lu_int_wms.1146
+msgid "presidence_pompiers_niederanven"
+msgstr ""
+
+#: lu_int_wms.1147
+msgid "presidence_pompiers_niederfeulen"
+msgstr ""
+
+#: lu_int_wms.1148
+msgid "presidence_pompiers_niederwampach"
+msgstr ""
+
+#: lu_int_wms.1149
+msgid "presidence_pompiers_noertrange"
+msgstr ""
+
+#: lu_int_wms.1150
+msgid "presidence_pompiers_nospelt"
+msgstr ""
+
+#: lu_int_wms.1151
+msgid "presidence_pompiers_oberfeulen"
+msgstr ""
+
+#: lu_int_wms.1152
+msgid "presidence_pompiers_oberkorn"
+msgstr ""
+
+#: lu_int_wms.1153
+msgid "presidence_pompiers_osweiler"
+msgstr ""
+
+#: lu_int_wms.1154
+msgid "presidence_pompiers_pafendall"
+msgstr ""
+
+#: lu_int_wms.1155
+msgid "presidence_pompiers_perlé"
+msgstr ""
+
+#: lu_int_wms.1156
+msgid "presidence_pompiers_pétange"
+msgstr ""
+
+#: lu_int_wms.1157
+msgid "presidence_pompiers_platen"
+msgstr ""
+
+#: lu_int_wms.1158
+msgid "presidence_pompiers_pontpierre"
+msgstr ""
+
+#: lu_int_wms.1159
+msgid "presidence_pompiers_rambrouch"
+msgstr ""
+
+#: lu_int_wms.1160
+msgid "presidence_pompiers_reckange__mersch_"
+msgstr ""
+
+#: lu_int_wms.1161
+msgid "presidence_pompiers_reckange-sur-mess"
+msgstr ""
+
+#: lu_int_wms.1162
+msgid "presidence_pompiers_remerschen"
+msgstr ""
+
+#: lu_int_wms.1163
+msgid "presidence_pompiers_remich"
+msgstr ""
+
+#: lu_int_wms.1164
+msgid "presidence_pompiers_reuland"
+msgstr ""
+
+#: lu_int_wms.1165
+msgid "presidence_pompiers_rippig"
+msgstr ""
+
+#: lu_int_wms.1166
+msgid "presidence_pompiers_roeser"
+msgstr ""
+
+#: lu_int_wms.1167
+msgid "presidence_pompiers_rollingen"
+msgstr ""
+
+#: lu_int_wms.1168
+msgid "presidence_pompiers_rollingergrund"
+msgstr ""
+
+#: lu_int_wms.1169
+msgid "presidence_pompiers_rosport"
+msgstr ""
+
+#: lu_int_wms.1170
+msgid "presidence_pompiers_rumelange"
+msgstr ""
+
+#: lu_int_wms.1171
+msgid "presidence_pompiers_saeul"
+msgstr ""
+
+#: lu_int_wms.1172
+msgid "presidence_pompiers_sandweiler"
+msgstr ""
+
+#: lu_int_wms.1173
+msgid "presidence_pompiers_schengen"
+msgstr ""
+
+#: lu_int_wms.1174
+msgid "presidence_pompiers_schieren"
+msgstr ""
+
+#: lu_int_wms.1175
+msgid "presidence_pompiers_schifflange"
+msgstr ""
+
+#: lu_int_wms.1176
+msgid "presidence_pompiers_schoenfels"
+msgstr ""
+
+#: lu_int_wms.1177
+msgid "presidence_pompiers_schoos"
+msgstr ""
+
+#: lu_int_wms.1178
+msgid "presidence_pompiers_schuttrange"
+msgstr ""
+
+#: lu_int_wms.1179
+msgid "presidence_pompiers_schwebsingen"
+msgstr ""
+
+#: lu_int_wms.1180
+msgid "presidence_pompiers_stadtbredimus"
+msgstr ""
+
+#: lu_int_wms.1181
+msgid "presidence_pompiers_steinfort"
+msgstr ""
+
+#: lu_int_wms.1182
+msgid "presidence_pompiers_steinheim"
+msgstr ""
+
+#: lu_int_wms.1183
+msgid "presidence_pompiers_strassen"
+msgstr ""
+
+#: lu_int_wms.1184
+msgid "presidence_pompiers_surré"
+msgstr ""
+
+#: lu_int_wms.1185
+msgid "presidence_pompiers_troisvierges"
+msgstr ""
+
+#: lu_int_wms.1186
+msgid "presidence_pompiers_useldange"
+msgstr ""
+
+#: lu_int_wms.1187
+msgid "presidence_pompiers_vichten"
+msgstr ""
+
+#: lu_int_wms.1188
+msgid "presidence_pompiers_ville_de_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1189
+msgid "presidence_pompiers_waldbillig"
+msgstr ""
+
+#: lu_int_wms.1190
+msgid "presidence_pompiers_waldbredimus"
+msgstr ""
+
+#: lu_int_wms.1191
+msgid "presidence_pompiers_walferdange"
+msgstr ""
+
+#: lu_int_wms.1192
+msgid "presidence_pompiers_weiler__pütscheid_"
+msgstr ""
+
+#: lu_int_wms.1193
+msgid "presidence_pompiers_wellenstein"
+msgstr ""
+
+#: lu_int_wms.1194
+msgid "presidence_pompiers_welscheid"
+msgstr ""
+
+#: lu_int_wms.1195
+msgid "presidence_pompiers_wiltz"
+msgstr ""
+
+#: lu_int_wms.1196
+msgid "presidence_pompiers_wintrange"
+msgstr ""
+
+#: lu_int_wms.1197
+msgid "presidence_pompiers_wolwelange"
+msgstr ""
+
+#: group.1198
+msgid "presidence_stationsservice_group"
+msgstr ""
+
+#: lu_int_wms.1199
+msgid "presidence_stationsservice_aral_hierheck_shopping"
+msgstr ""
+
+#: lu_int_wms.1200
+msgid "presidence_stationsservice_aral_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1201
+msgid "presidence_stationsservice_aral_station"
+msgstr ""
+
+#: lu_int_wms.1202
+msgid "presidence_stationsservice_ars_exploitation"
+msgstr ""
+
+#: lu_int_wms.1203
+msgid "presidence_stationsservice_autocenter_goedert_-_frisange"
+msgstr ""
+
+#: lu_int_wms.1204
+msgid "presidence_stationsservice_autocenter_goedert_-_remich"
+msgstr ""
+
+#: lu_int_wms.1205
+msgid "presidence_stationsservice_bp_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1206
+msgid "presidence_stationsservice_calderon_&_ribeiro"
+msgstr ""
+
+#: lu_int_wms.1207
+msgid "presidence_stationsservice_capellen_services"
+msgstr ""
+
+#: lu_int_wms.1208
+msgid "presidence_stationsservice_delek_luxembourg__texaco_"
+msgstr ""
+
+#: lu_int_wms.1209
+msgid "presidence_stationsservice_esso-proxycenter_larochette"
+msgstr ""
+
+#: lu_int_wms.1210
+msgid "presidence_stationsservice_ewald_wolter"
+msgstr ""
+
+#: lu_int_wms.1211
+msgid "presidence_stationsservice_grenztankstelle_wasserbillig-mertert_"
+msgstr ""
+
+#: lu_int_wms.1212
+msgid "presidence_stationsservice_gulf_frisange"
+msgstr ""
+
+#: lu_int_wms.1213
+msgid ""
+"presidence_stationsservice_gulf_produits_pétroliers_-"
+"_petroleum__luxembourg__s.a."
+msgstr ""
+
+#: lu_int_wms.1214
+msgid "presidence_stationsservice_gulf_station-service_bascharage"
+msgstr ""
+
+#: lu_int_wms.1215
+msgid "presidence_stationsservice_gulf_station-service_differdange"
+msgstr ""
+
+#: lu_int_wms.1216
+msgid "presidence_stationsservice_gulf_station-service_esch"
+msgstr ""
+
+#: lu_int_wms.1217
+msgid "presidence_stationsservice_gulf_station-service_ettelbruck"
+msgstr ""
+
+#: lu_int_wms.1218
+msgid "presidence_stationsservice_gulf_station-service_hosingen"
+msgstr ""
+
+#: lu_int_wms.1219
+msgid "presidence_stationsservice_gulf_station-service_kayl"
+msgstr ""
+
+#: lu_int_wms.1220
+msgid "presidence_stationsservice_gulf_station-service_marnach"
+msgstr ""
+
+#: lu_int_wms.1221
+msgid "presidence_stationsservice_gulf_station-service_martelange"
+msgstr ""
+
+#: lu_int_wms.1222
+msgid "presidence_stationsservice_gulf_station-service_mertert"
+msgstr ""
+
+#: lu_int_wms.1223
+msgid "presidence_stationsservice_gulf_station-service_mertzig"
+msgstr ""
+
+#: lu_int_wms.1224
+msgid "presidence_stationsservice_gulf_station-service_weiswampach"
+msgstr ""
+
+#: lu_int_wms.1225
+msgid "presidence_stationsservice_gulf_station-service_wiltz"
+msgstr ""
+
+#: lu_int_wms.1226
+msgid "presidence_pharmacies_schëfflenger_apdikt"
+msgstr ""
+
+#: lu_int_wms.1227
+msgid "presidence_stationsservice_koepfler__aral_tankcenter_"
+msgstr ""
+
+#: lu_int_wms.1228
+msgid "presidence_stationsservice_le_griffon"
+msgstr ""
+
+#: lu_int_wms.1229
+msgid "presidence_stationsservice_lukoil"
+msgstr ""
+
+#: lu_int_wms.1230
+msgid "presidence_stationsservice_orly_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1231
+msgid "presidence_stationsservice_pc_tank"
+msgstr ""
+
+#: lu_int_wms.1232
+msgid "presidence_stationsservice_petroliana__luxembourg_"
+msgstr ""
+
+#: lu_int_wms.1233
+msgid "presidence_stationsservice_q8_-_esch-sur-alzette"
+msgstr ""
+
+#: lu_int_wms.1234
+msgid "presidence_stationsservice_q8_station-service"
+msgstr ""
+
+#: lu_int_wms.1235
+msgid "presidence_stationsservice_q8_station-service_"
+msgstr ""
+
+#: lu_int_wms.1236
+msgid ""
+"presidence_stationsservice_q8_station-service_shop_siedler-thill_&_fils"
+msgstr ""
+
+#: lu_int_wms.1237
+msgid "presidence_stationsservice_rodange_première_station_q8"
+msgstr ""
+
+#: lu_int_wms.1238
+msgid "presidence_stationsservice_schmierstoffcenter"
+msgstr ""
+
+#: lu_int_wms.1239
+msgid "presidence_stationsservice_seca_rodange"
+msgstr ""
+
+#: lu_int_wms.1240
+msgid "presidence_stationsservice_seca_rombach"
+msgstr ""
+
+#: lu_int_wms.1241
+msgid "presidence_stationsservice_shell_luxembourgeoise"
+msgstr ""
+
+#: lu_int_wms.1242
+msgid "presidence_stationsservice_shell_station-service"
+msgstr ""
+
+#: lu_int_wms.1243
+msgid "presidence_stationsservice_station_aral_bascharge"
+msgstr ""
+
+#: lu_int_wms.1244
+msgid "presidence_stationsservice_station_aral_berchem"
+msgstr ""
+
+#: lu_int_wms.1245
+msgid "presidence_stationsservice_station_aral_bettembourg"
+msgstr ""
+
+#: lu_int_wms.1246
+msgid "presidence_stationsservice_station_aral_bour"
+msgstr ""
+
+#: lu_int_wms.1247
+msgid "presidence_stationsservice_station_aral_diekirch"
+msgstr ""
+
+#: lu_int_wms.1248
+msgid "presidence_stationsservice_station_aral_differdange"
+msgstr ""
+
+#: lu_int_wms.1249
+msgid "presidence_stationsservice_station_aral_dudelange"
+msgstr ""
+
+#: lu_int_wms.1250
+msgid "presidence_stationsservice_station_aral_echternach"
+msgstr ""
+
+#: lu_int_wms.1251
+msgid "presidence_stationsservice_station_aral_esch"
+msgstr ""
+
+#: lu_int_wms.1252
+msgid "presidence_stationsservice_station_aral_ettelbruck"
+msgstr ""
+
+#: lu_int_wms.1253
+msgid "presidence_stationsservice_station_aral_findel"
+msgstr ""
+
+#: lu_int_wms.1254
+msgid "presidence_stationsservice_station_aral_foetz"
+msgstr ""
+
+#: lu_int_wms.1255
+msgid "presidence_stationsservice_station_aral_frisange"
+msgstr ""
+
+#: lu_int_wms.1256
+msgid "presidence_stationsservice_station_aral_gonderange"
+msgstr ""
+
+#: lu_int_wms.1257
+msgid "presidence_stationsservice_station_aral_hoscheid-dickt"
+msgstr ""
+
+#: lu_int_wms.1258
+msgid "presidence_stationsservice_station_aral_howald"
+msgstr ""
+
+#: lu_int_wms.1259
+msgid "presidence_stationsservice_station_aral_junglinster"
+msgstr ""
+
+#: lu_int_wms.1260
+msgid "presidence_stationsservice_station_aral_kurek"
+msgstr ""
+
+#: lu_int_wms.1261
+msgid "presidence_stationsservice_station_aral_lintgen"
+msgstr ""
+
+#: lu_int_wms.1262
+msgid "presidence_stationsservice_station_aral_merl"
+msgstr ""
+
+#: lu_int_wms.1263
+msgid "presidence_stationsservice_station_aral_mertert"
+msgstr ""
+
+#: lu_int_wms.1264
+msgid "presidence_stationsservice_station_aral_mondorf"
+msgstr ""
+
+#: lu_int_wms.1265
+msgid "presidence_stationsservice_station_aral_niderfeulen"
+msgstr ""
+
+#: lu_int_wms.1266
+msgid "presidence_stationsservice_station_aral_niederkorn"
+msgstr ""
+
+#: lu_int_wms.1267
+msgid "presidence_stationsservice_station_aral_petange"
+msgstr ""
+
+#: lu_int_wms.1268
+msgid "presidence_stationsservice_station_aral_-_petrovan"
+msgstr ""
+
+#: lu_int_wms.1269
+msgid "presidence_stationsservice_station_aral_pommerloch"
+msgstr ""
+
+#: lu_int_wms.1270
+msgid "presidence_stationsservice_station_aral_redange-attert"
+msgstr ""
+
+#: lu_int_wms.1271
+msgid "presidence_stationsservice_station_aral_remerschen"
+msgstr ""
+
+#: lu_int_wms.1272
+msgid "presidence_stationsservice_station_aral_remich_i"
+msgstr ""
+
+#: lu_int_wms.1273
+msgid "presidence_stationsservice_station_aral_remich_ii"
+msgstr ""
+
+#: lu_int_wms.1274
+msgid "presidence_stationsservice_station_aral_rodange"
+msgstr ""
+
+#: lu_int_wms.1275
+msgid "presidence_stationsservice_station_aral_rollingergrund"
+msgstr ""
+
+#: lu_int_wms.1276
+msgid "presidence_stationsservice_station_aral_schengen"
+msgstr ""
+
+#: lu_int_wms.1277
+msgid "presidence_stationsservice_station_aral_schifflange"
+msgstr ""
+
+#: lu_int_wms.1278
+msgid "presidence_stationsservice_station_aral_steinfort"
+msgstr ""
+
+#: lu_int_wms.1279
+msgid "presidence_stationsservice_station_aral_vianden"
+msgstr ""
+
+#: lu_int_wms.1280
+msgid "presidence_stationsservice_station_aral_wemperhardt"
+msgstr ""
+
+#: lu_int_wms.1281
+msgid "presidence_stationsservice_station_aral_wiltz"
+msgstr ""
+
+#: lu_int_wms.1282
+msgid "presidence_stationsservice_station_bereldange"
+msgstr ""
+
+#: lu_int_wms.1283
+msgid "presidence_stationsservice_station_bp_foetz"
+msgstr ""
+
+#: lu_int_wms.1284
+msgid "presidence_stationsservice_station_bp_koetschette"
+msgstr ""
+
+#: lu_int_wms.1285
+msgid "presidence_stationsservice_station_bp_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1286
+msgid "presidence_stationsservice_station_bp_rombach_martelange"
+msgstr ""
+
+#: lu_int_wms.1287
+msgid "presidence_stationsservice_station_bp_wemperhardt"
+msgstr ""
+
+#: lu_int_wms.1288
+msgid "presidence_trajets_wsa_-_légère"
+msgstr ""
+
+#: lu_int_wms.1289
+msgid "presidence_stationsservice_station_esso_-_allerborn"
+msgstr ""
+
+#: lu_int_wms.1290
+msgid "presidence_stationsservice_station_esso_-_bascharage"
+msgstr ""
+
+#: lu_int_wms.1291
+msgid "presidence_stationsservice_station_esso_-_differdange"
+msgstr ""
+
+#: lu_int_wms.1292
+msgid "presidence_stationsservice_station_esso_-_dudelange"
+msgstr ""
+
+#: lu_int_wms.1293
+msgid "presidence_stationsservice_station_esso_-_echternach"
+msgstr ""
+
+#: lu_int_wms.1294
+msgid "presidence_stationsservice_station_esso_-_esch-sur-alzette"
+msgstr ""
+
+#: lu_int_wms.1295
+msgid "presidence_stationsservice_station_esso_-_frisange"
+msgstr ""
+
+#: lu_int_wms.1296
+msgid "presidence_stationsservice_station_esso_-_gaichel"
+msgstr ""
+
+#: lu_int_wms.1297
+msgid "presidence_stationsservice_station_esso_-_hellange"
+msgstr ""
+
+#: lu_int_wms.1298
+msgid "presidence_stationsservice_station_esso_-_huldange"
+msgstr ""
+
+#: lu_int_wms.1299
+msgid "presidence_stationsservice_station_esso_-_ingeldorf"
+msgstr ""
+
+#: lu_int_wms.1300
+msgid "presidence_stationsservice_station_esso_-_kummert"
+msgstr ""
+
+#: lu_int_wms.1301
+msgid "presidence_stationsservice_station_esso_-_larochette"
+msgstr ""
+
+#: lu_int_wms.1302
+msgid "presidence_stationsservice_station_esso_-_martelange"
+msgstr ""
+
+#: lu_int_wms.1303
+msgid "presidence_stationsservice_station_esso_-_mertert"
+msgstr ""
+
+#: lu_int_wms.1304
+msgid "presidence_stationsservice_station_esso_-_niederanven"
+msgstr ""
+
+#: lu_int_wms.1305
+msgid "presidence_stationsservice_station_esso_-_pb2"
+msgstr ""
+
+#: lu_int_wms.1306
+msgid "presidence_stationsservice_station_esso_-_potaschbierg"
+msgstr ""
+
+#: lu_int_wms.1307
+msgid "presidence_stationsservice_station_esso_-_remerschen"
+msgstr ""
+
+#: lu_int_wms.1308
+msgid "presidence_stationsservice_station_esso_-_remich"
+msgstr ""
+
+#: lu_int_wms.1309
+msgid "presidence_stationsservice_station_esso_-_rodange"
+msgstr ""
+
+#: lu_int_wms.1310
+msgid "presidence_stationsservice_station_esso_-_rond-point"
+msgstr ""
+
+#: lu_int_wms.1311
+msgid "presidence_stationsservice_station_esso_-_sandweiler"
+msgstr ""
+
+#: lu_int_wms.1312
+msgid "presidence_stationsservice_station_esso_-_senningerberg"
+msgstr ""
+
+#: lu_int_wms.1313
+msgid "presidence_stationsservice_station_esso_-_steinfort"
+msgstr ""
+
+#: lu_int_wms.1314
+msgid "presidence_stationsservice_station_esso_-_strassen"
+msgstr ""
+
+#: lu_int_wms.1315
+msgid ""
+"presidence_stationsservice_station_esso_terre_rouge_-_esch-_sur-_alzette"
+msgstr ""
+
+#: lu_int_wms.1316
+msgid "presidence_stationsservice_station_esso_-_wasserbillig"
+msgstr ""
+
+#: lu_int_wms.1317
+msgid "presidence_stationsservice_station_hollerich-luxembourg"
+msgstr ""
+
+#: lu_int_wms.1318
+msgid "presidence_stationsservice_station_les_tigres"
+msgstr ""
+
+#: lu_int_wms.1319
+msgid "presidence_stationsservice_station_q8_fumanti"
+msgstr ""
+
+#: lu_int_wms.1320
+msgid "presidence_stationsservice_station_rodange"
+msgstr ""
+
+#: lu_int_wms.1321
+msgid "presidence_stationsservice_station-service_lukoil__room_-_klein_"
+msgstr ""
+
+#: lu_int_wms.1322
+msgid "presidence_stationsservice_station_service_q8"
+msgstr ""
+
+#: lu_int_wms.1323
+msgid "presidence_stationsservice_station-service_q8_belvaux"
+msgstr ""
+
+#: lu_int_wms.1324
+msgid "presidence_stationsservice_station-service_q8_bereldange"
+msgstr ""
+
+#: lu_int_wms.1325
+msgid "presidence_stationsservice_station-service_q8_bettembourg"
+msgstr ""
+
+#: lu_int_wms.1326
+msgid "presidence_stationsservice_station-service_q8_bollendorf"
+msgstr ""
+
+#: lu_int_wms.1327
+msgid "presidence_stationsservice_station-service_q8_bonnevoie"
+msgstr ""
+
+#: lu_int_wms.1328
+msgid "presidence_stationsservice_station-service_q8_bridel"
+msgstr ""
+
+#: lu_int_wms.1329
+msgid "presidence_stationsservice_station-service_q8_concorde"
+msgstr ""
+
+#: lu_int_wms.1330
+msgid "presidence_stationsservice_station-service_q8_-_dasbourg-pont"
+msgstr ""
+
+#: lu_int_wms.1331
+msgid "presidence_stationsservice_station-service_q8_dudelange"
+msgstr ""
+
+#: lu_int_wms.1332
+msgid "presidence_stationsservice_station-service_q8_echternach"
+msgstr ""
+
+#: lu_int_wms.1333
+msgid "presidence_stationsservice_station-service_q8_eich"
+msgstr ""
+
+#: lu_int_wms.1334
+msgid "presidence_stationsservice_station-service_q8_gasperich"
+msgstr ""
+
+#: lu_int_wms.1335
+msgid "presidence_stationsservice_station-service_q8_hesperange"
+msgstr ""
+
+#: lu_int_wms.1336
+msgid "presidence_stationsservice_station-service_q8_huldange"
+msgstr ""
+
+#: lu_int_wms.1337
+msgid "presidence_stationsservice_station-service_q8_junglinster"
+msgstr ""
+
+#: lu_int_wms.1338
+msgid "presidence_stationsservice_station-service_q8_merl"
+msgstr ""
+
+#: lu_int_wms.1339
+msgid "presidence_stationsservice_station-service_q8_mertert"
+msgstr ""
+
+#: lu_int_wms.1340
+msgid "presidence_stationsservice_station-service_q8_mondorf"
+msgstr ""
+
+#: lu_int_wms.1341
+msgid "presidence_stationsservice_station-service_q8_oberpallen"
+msgstr ""
+
+#: lu_int_wms.1342
+msgid "presidence_stationsservice_station-service_q8_pommerloch_17"
+msgstr ""
+
+#: lu_int_wms.1343
+msgid "presidence_stationsservice_station-service_q8_pommerloch_26"
+msgstr ""
+
+#: lu_int_wms.1344
+msgid "presidence_stationsservice_station-service_q8_pulvermuehl"
+msgstr ""
+
+#: lu_int_wms.1345
+msgid "presidence_stationsservice_station-service_q8_remerschen"
+msgstr ""
+
+#: lu_int_wms.1346
+msgid "presidence_stationsservice_station-service_q8_remich"
+msgstr ""
+
+#: lu_int_wms.1347
+msgid "presidence_stationsservice_station-service_q8_rodange"
+msgstr ""
+
+#: lu_int_wms.1348
+msgid "presidence_stationsservice_station-service_q8_rombach_13"
+msgstr ""
+
+#: lu_int_wms.1349
+msgid "presidence_stationsservice_station-service_q8_rombach_6"
+msgstr ""
+
+#: lu_int_wms.1350
+msgid "presidence_stationsservice_station-service_q8_rosport"
+msgstr ""
+
+#: lu_int_wms.1351
+msgid "presidence_stationsservice_station-service_q8_saeul"
+msgstr ""
+
+#: lu_int_wms.1352
+msgid "presidence_stationsservice_station-service_q8_schengen"
+msgstr ""
+
+#: lu_int_wms.1353
+msgid "presidence_stationsservice_station-service_q8_schouweiler"
+msgstr ""
+
+#: lu_int_wms.1354
+msgid "presidence_stationsservice_station-service_q8_steinfort"
+msgstr ""
+
+#: lu_int_wms.1355
+msgid "presidence_stationsservice_station-service_q8_strassen"
+msgstr ""
+
+#: lu_int_wms.1356
+msgid "presidence_stationsservice_station_service_total"
+msgstr ""
+
+#: lu_int_wms.1357
+msgid "presidence_stationsservice_station-service_total_sa_-_pall_center"
+msgstr ""
+
+#: lu_int_wms.1358
+msgid "presidence_stationsservice_station_shell_alzingen"
+msgstr ""
+
+#: lu_int_wms.1359
+msgid ""
+"presidence_stationsservice_station_shell_autocenter_goedert_belle-etoile"
+msgstr ""
+
+#: lu_int_wms.1360
+msgid "presidence_stationsservice_station_shell_beggen"
+msgstr ""
+
+#: lu_int_wms.1361
+msgid "presidence_stationsservice_station_shell_berchem"
+msgstr ""
+
+#: lu_int_wms.1362
+msgid "presidence_stationsservice_station_shell_bertrange"
+msgstr ""
+
+#: lu_int_wms.1363
+msgid "presidence_stationsservice_station_shell_bridel"
+msgstr ""
+
+#: lu_int_wms.1364
+msgid "presidence_stationsservice_station_shell_colmar_pont"
+msgstr ""
+
+#: lu_int_wms.1365
+msgid "presidence_stationsservice_station_shell_diekirch"
+msgstr ""
+
+#: lu_int_wms.1366
+msgid "presidence_stationsservice_station_shell_differdange"
+msgstr ""
+
+#: lu_int_wms.1367
+msgid "presidence_stationsservice_station_shell_dommeldange"
+msgstr ""
+
+#: lu_int_wms.1368
+msgid "presidence_stationsservice_station_shell_echternach"
+msgstr ""
+
+#: lu_int_wms.1369
+msgid "presidence_stationsservice_station_shell_esch"
+msgstr ""
+
+#: lu_int_wms.1370
+msgid "presidence_stationsservice_station_shell_frisange"
+msgstr ""
+
+#: lu_int_wms.1371
+msgid "presidence_stationsservice_station_shell_gasperich"
+msgstr ""
+
+#: lu_int_wms.1372
+msgid "presidence_stationsservice_station_shell_hachiville"
+msgstr ""
+
+#: lu_int_wms.1373
+msgid "presidence_stationsservice_station_shell_hollerich"
+msgstr ""
+
+#: lu_int_wms.1374
+msgid "presidence_stationsservice_station_shell_holzthum"
+msgstr ""
+
+#: lu_int_wms.1375
+msgid "presidence_stationsservice_station_shell_junglinster"
+msgstr ""
+
+#: lu_int_wms.1376
+msgid "presidence_stationsservice_station_shell_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1377
+msgid "presidence_stationsservice_station_shell_martelange"
+msgstr ""
+
+#: lu_int_wms.1378
+msgid "presidence_stationsservice_station_shell_merl"
+msgstr ""
+
+#: lu_int_wms.1379
+msgid "presidence_stationsservice_station_shell_mertert"
+msgstr ""
+
+#: lu_int_wms.1380
+msgid "presidence_stationsservice_station_shell_mondorf"
+msgstr ""
+
+#: lu_int_wms.1381
+msgid "presidence_stationsservice_station_shell_neudorf"
+msgstr ""
+
+#: lu_int_wms.1382
+msgid "presidence_stationsservice_station_shell_-_oberpallen"
+msgstr ""
+
+#: lu_int_wms.1383
+msgid "presidence_stationsservice_station_shell_petange"
+msgstr ""
+
+#: lu_int_wms.1384
+msgid "presidence_stationsservice_station_shell_pommerloch"
+msgstr ""
+
+#: lu_int_wms.1385
+msgid "presidence_stationsservice_station_shell_pontpierre"
+msgstr ""
+
+#: lu_int_wms.1386
+msgid "presidence_stationsservice_station_shell_rangwee"
+msgstr ""
+
+#: lu_int_wms.1387
+msgid "presidence_stationsservice_station_shell_remich"
+msgstr ""
+
+#: lu_int_wms.1388
+msgid "presidence_stationsservice_station_shell_rodange"
+msgstr ""
+
+#: lu_int_wms.1389
+msgid "presidence_stationsservice_station_shell_rombach_i"
+msgstr ""
+
+#: lu_int_wms.1390
+msgid "presidence_stationsservice_station_shell_rombach_ii"
+msgstr ""
+
+#: lu_int_wms.1391
+msgid "presidence_stationsservice_station_shell_rosport"
+msgstr ""
+
+#: lu_int_wms.1392
+msgid "presidence_stationsservice_station_shell_rumelange"
+msgstr ""
+
+#: lu_int_wms.1393
+msgid "presidence_stationsservice_station_shell_sandweiler"
+msgstr ""
+
+#: lu_int_wms.1394
+msgid "presidence_stationsservice_station_shell_sanem"
+msgstr ""
+
+#: lu_int_wms.1395
+msgid "presidence_stationsservice_station_shell_schengen"
+msgstr ""
+
+#: lu_int_wms.1396
+msgid "presidence_stationsservice_station_shell_steinfort"
+msgstr ""
+
+#: lu_int_wms.1397
+msgid "presidence_stationsservice_station_shell_weiswampach"
+msgstr ""
+
+#: lu_int_wms.1398
+msgid "presidence_stationsservice_station_shopping_shell"
+msgstr ""
+
+#: lu_int_wms.1399
+msgid "presidence_stationsservice_station_texaco_beggen"
+msgstr ""
+
+#: lu_int_wms.1400
+msgid "presidence_stationsservice_station_texaco_capellen"
+msgstr ""
+
+#: lu_int_wms.1401
+msgid "presidence_stationsservice_station_texaco_dudelange"
+msgstr ""
+
+#: lu_int_wms.1402
+msgid "presidence_stationsservice_station_texaco_echternach"
+msgstr ""
+
+#: lu_int_wms.1403
+msgid "presidence_stationsservice_station_texaco_frisange"
+msgstr ""
+
+#: lu_int_wms.1404
+msgid "presidence_stationsservice_station_texaco_gare"
+msgstr ""
+
+#: lu_int_wms.1405
+msgid "presidence_stationsservice_station_texaco_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.1406
+msgid "presidence_stationsservice_station_texaco_merl"
+msgstr ""
+
+#: lu_int_wms.1407
+msgid "presidence_stationsservice_station_texaco_petange"
+msgstr ""
+
+#: lu_int_wms.1408
+msgid "presidence_stationsservice_station_texaco_pontpierre"
+msgstr ""
+
+#: lu_int_wms.1409
+msgid "presidence_stationsservice_station_texaco_rodange"
+msgstr ""
+
+#: lu_int_wms.1410
+msgid "presidence_stationsservice_station_texaco_rollingen"
+msgstr ""
+
+#: lu_int_wms.1411
+msgid "presidence_stationsservice_station_texaco_rombach"
+msgstr ""
+
+#: lu_int_wms.1412
+msgid "presidence_stationsservice_station_texaco_wormeldange"
+msgstr ""
+
+#: lu_int_wms.1413
+msgid "presidence_stationsservice_station_total_-_aire_de_wasserbillig"
+msgstr ""
+
+#: lu_int_wms.1414
+msgid "presidence_stationsservice_station_total_bascharage"
+msgstr ""
+
+#: lu_int_wms.1415
+msgid "presidence_stationsservice_station_total_bereldange"
+msgstr ""
+
+#: lu_int_wms.1416
+msgid "presidence_stationsservice_station_total_bertrange"
+msgstr ""
+
+#: lu_int_wms.1417
+msgid "presidence_stationsservice_station_total_doncols"
+msgstr ""
+
+#: lu_int_wms.1418
+msgid "presidence_stationsservice_station_total_dudelange"
+msgstr ""
+
+#: lu_int_wms.1419
+msgid "presidence_stationsservice_station_total_echternach"
+msgstr ""
+
+#: lu_int_wms.1420
+msgid "presidence_stationsservice_station_total_esch"
+msgstr ""
+
+#: lu_int_wms.1421
+msgid "presidence_stationsservice_station_total_frisange"
+msgstr ""
+
+#: lu_int_wms.1422
+msgid "presidence_stationsservice_station_total_gasperich"
+msgstr ""
+
+#: lu_int_wms.1423
+msgid "presidence_stationsservice_station_total_howald"
+msgstr ""
+
+#: lu_int_wms.1424
+msgid "presidence_stationsservice_station_total_huldange"
+msgstr ""
+
+#: lu_int_wms.1425
+msgid "presidence_stationsservice_station_total_ingeldorf"
+msgstr ""
+
+#: lu_int_wms.1426
+msgid "presidence_stationsservice_station_total_livange"
+msgstr ""
+
+#: lu_int_wms.1427
+msgid "presidence_stationsservice_station_total_mertert"
+msgstr ""
+
+#: lu_int_wms.1428
+msgid "presidence_stationsservice_station_total_mondorf"
+msgstr ""
+
+#: lu_int_wms.1429
+msgid "presidence_stationsservice_station_total_oberpallen"
+msgstr ""
+
+#: lu_int_wms.1430
+msgid "presidence_stationsservice_station_total_pulvermühl"
+msgstr ""
+
+#: lu_int_wms.1431
+msgid "presidence_stationsservice_station_total_remich_11"
+msgstr ""
+
+#: lu_int_wms.1432
+msgid "presidence_stationsservice_station_total_reuland"
+msgstr ""
+
+#: lu_int_wms.1433
+msgid "presidence_stationsservice_station_total_rodange"
+msgstr ""
+
+#: lu_int_wms.1434
+msgid "presidence_stationsservice_station_total_rombach_10"
+msgstr ""
+
+#: lu_int_wms.1435
+msgid "presidence_stationsservice_station_total_rombach_24"
+msgstr ""
+
+#: lu_int_wms.1436
+msgid "presidence_stationsservice_station_total_rosport"
+msgstr ""
+
+#: lu_int_wms.1437
+msgid "presidence_stationsservice_station_total_rumelange_i"
+msgstr ""
+
+#: lu_int_wms.1438
+msgid "presidence_stationsservice_station_total_rumelange_ii"
+msgstr ""
+
+#: lu_int_wms.1439
+msgid "presidence_stationsservice_station_total_schengen_102"
+msgstr ""
+
+#: lu_int_wms.1440
+msgid "presidence_stationsservice_station_total_schengen_76"
+msgstr ""
+
+#: lu_int_wms.1441
+msgid "presidence_stationsservice_station_total_strassen"
+msgstr ""
+
+#: lu_int_wms.1442
+msgid "presidence_stationsservice_station_total_wemperhardt"
+msgstr ""
+
+#: lu_int_wms.1443
+msgid "presidence_stationsservice_station_total_wincrange"
+msgstr ""
+
+#: lu_int_wms.1444
+msgid "presidence_stationsservice_station_total_windhof"
+msgstr ""
+
+#: lu_int_wms.1445
+msgid "presidence_stationsservice_texaco_-_wormer_services"
+msgstr ""
+
+#: lu_int_wms.1446
+msgid "presidence_stationsservice_total__station__lorentzweiler"
+msgstr ""
+
+#: lu_int_wms.1447
+msgid "presidence_stationsservice_total__station__remich_17"
+msgstr ""
+
+#: lu_int_wms.1448
+msgid "presidence_stationsservice_total_station-service"
+msgstr ""
+
+#: lu_int_wms.1449
+msgid "presidence_stationsservice_total_station-service_mersch"
+msgstr ""
+
+#: lu_int_wms.1450
+msgid "presidence_stationsservice_wolter___s_discount_tankstelle"
+msgstr ""
+
+#: group.1451
+msgid "presidence_pharmacies_group"
+msgstr ""
+
+#: lu_int_wms.1452
+msgid "presidence_pharmacies_fréisenger_apdikt"
+msgstr ""
+
+#: lu_int_wms.1453
+msgid "presidence_pharmacies_pharmacie_bouchard"
+msgstr ""
+
+#: lu_int_wms.1454
+msgid "presidence_pharmacies_pharmacie_centrale_de_mersch"
+msgstr ""
+
+#: lu_int_wms.1455
+msgid "presidence_pharmacies_pharmacie_christnacht"
+msgstr ""
+
+#: lu_int_wms.1456
+msgid "presidence_pharmacies_pharmacie_de_beaufort"
+msgstr ""
+
+#: lu_int_wms.1457
+msgid "presidence_pharmacies_pharmacie_de_belair"
+msgstr ""
+
+#: lu_int_wms.1458
+msgid "presidence_pharmacies_pharmacie_de_belvaux"
+msgstr ""
+
+#: lu_int_wms.1459
+msgid "presidence_pharmacies_pharmacie_de_bertrange"
+msgstr ""
+
+#: lu_int_wms.1460
+msgid "presidence_pharmacies_pharmacie_de_bonnevoie"
+msgstr ""
+
+#: lu_int_wms.1461
+msgid "presidence_pharmacies_pharmacie_de_capellen"
+msgstr ""
+
+#: lu_int_wms.1462
+msgid "presidence_pharmacies_pharmacie_de_clausen"
+msgstr ""
+
+#: lu_int_wms.1463
+msgid "presidence_pharmacies_pharmacie_de_clervaux"
+msgstr ""
+
+#: lu_int_wms.1464
+msgid "presidence_pharmacies_pharmacie_de_colmar-berg"
+msgstr ""
+
+#: lu_int_wms.1465
+msgid "presidence_pharmacies_pharmacie_de_gasperich"
+msgstr ""
+
+#: lu_int_wms.1466
+msgid "presidence_pharmacies_pharmacie_de_grevenmacher"
+msgstr ""
+
+#: lu_int_wms.1467
+msgid "presidence_pharmacies_pharmacie_de_grosbous"
+msgstr ""
+
+#: lu_int_wms.1468
+msgid "presidence_pharmacies_pharmacie_de_hosingen"
+msgstr ""
+
+#: lu_int_wms.1469
+msgid "presidence_pharmacies_pharmacie_d___eich"
+msgstr ""
+
+#: lu_int_wms.1470
+msgid "presidence_pharmacies_pharmacie_de_junglinster"
+msgstr ""
+
+#: lu_int_wms.1471
+msgid "presidence_pharmacies_pharmacie_de_kayl"
+msgstr ""
+
+#: lu_int_wms.1472
+msgid "presidence_pharmacies_pharmacie_de_kehlen"
+msgstr ""
+
+#: lu_int_wms.1473
+msgid "presidence_pharmacies_pharmacie_de_l___aigle"
+msgstr ""
+
+#: lu_int_wms.1474
+msgid "presidence_pharmacies_pharmacie_de_lallange"
+msgstr ""
+
+#: lu_int_wms.1475
+msgid "presidence_pharmacies_pharmacie_de_lamadelaine"
+msgstr ""
+
+#: lu_int_wms.1476
+msgid "presidence_pharmacies_pharmacie_de_la_moselle"
+msgstr ""
+
+#: lu_int_wms.1477
+msgid "presidence_pharmacies_pharmacie_de_larochette"
+msgstr ""
+
+#: lu_int_wms.1478
+msgid "presidence_pharmacies_pharmacie_de_l___eléphant"
+msgstr ""
+
+#: lu_int_wms.1479
+msgid "presidence_pharmacies_pharmacie_de_mondercange"
+msgstr ""
+
+#: lu_int_wms.1480
+msgid "presidence_pharmacies_pharmacie_de_mondorf"
+msgstr ""
+
+#: lu_int_wms.1481
+msgid "presidence_pharmacies_pharmacie_de_niederanven"
+msgstr ""
+
+#: lu_int_wms.1482
+msgid "presidence_pharmacies_pharmacie_de_niederkorn"
+msgstr ""
+
+#: lu_int_wms.1483
+msgid "presidence_pharmacies_pharmacie_de_pétange"
+msgstr ""
+
+#: lu_int_wms.1484
+msgid "presidence_pharmacies_pharmacie_de_rambrouch"
+msgstr ""
+
+#: lu_int_wms.1485
+msgid "presidence_pharmacies_pharmacie_de_rédange"
+msgstr ""
+
+#: lu_int_wms.1486
+msgid "presidence_pharmacies_pharmacie_de_rumelange"
+msgstr ""
+
+#: lu_int_wms.1487
+msgid "presidence_pharmacies_pharmacie_des_3_cantons"
+msgstr ""
+
+#: lu_int_wms.1488
+msgid "presidence_pharmacies_pharmacie_de_sandweiler"
+msgstr ""
+
+#: lu_int_wms.1489
+msgid "presidence_pharmacies_pharmacie_de_soleuvre"
+msgstr ""
+
+#: lu_int_wms.1490
+msgid "presidence_pharmacies_pharmacie_de_steinfort"
+msgstr ""
+
+#: lu_int_wms.1491
+msgid "presidence_pharmacies_pharmacie_de_steinsel"
+msgstr ""
+
+#: lu_int_wms.1492
+msgid "presidence_pharmacies_pharmacie_des_thermes"
+msgstr ""
+
+#: lu_int_wms.1493
+msgid "presidence_pharmacies_pharmacie_de_strassen"
+msgstr ""
+
+#: lu_int_wms.1494
+msgid "presidence_pharmacies_pharmacie_des_vignerons"
+msgstr ""
+
+#: lu_int_wms.1495
+msgid "presidence_pharmacies_pharmacie_de_troisvierges"
+msgstr ""
+
+#: lu_int_wms.1496
+msgid "presidence_pharmacies_pharmacie_de_vianden"
+msgstr ""
+
+#: lu_int_wms.1497
+msgid "presidence_pharmacies_pharmacie_de_walferdange"
+msgstr ""
+
+#: lu_int_wms.1498
+msgid "presidence_pharmacies_pharmacie_de_wasserbillig"
+msgstr ""
+
+#: lu_int_wms.1499
+msgid "presidence_pharmacies_pharmacie_de_wincrange"
+msgstr ""
+
+#: lu_int_wms.1500
+msgid "presidence_pharmacies_pharmacie_de_wormeldange"
+msgstr ""
+
+#: lu_int_wms.1501
+msgid "presidence_pharmacies_pharmacie_du_benelux"
+msgstr ""
+
+#: lu_int_wms.1502
+msgid "presidence_pharmacies_pharmacie_du_bridel"
+msgstr ""
+
+#: lu_int_wms.1503
+msgid "presidence_pharmacies_pharmacie_du_cèdre"
+msgstr ""
+
+#: lu_int_wms.1504
+msgid "presidence_pharmacies_pharmacie_du_centre"
+msgstr ""
+
+#: lu_int_wms.1505
+msgid "presidence_pharmacies_pharmacie_du_cents"
+msgstr ""
+
+#: lu_int_wms.1506
+msgid "presidence_pharmacies_pharmacie_du_cerf"
+msgstr ""
+
+#: lu_int_wms.1507
+msgid "presidence_pharmacies_pharmacie_du_château"
+msgstr ""
+
+#: lu_int_wms.1508
+msgid "presidence_pharmacies_pharmacie_du_cygne"
+msgstr ""
+
+#: lu_int_wms.1509
+msgid "presidence_pharmacies_pharmacie_du_ginkgo"
+msgstr ""
+
+#: lu_int_wms.1510
+msgid "presidence_pharmacies_pharmacie_du_globe"
+msgstr ""
+
+#: lu_int_wms.1511
+msgid "presidence_pharmacies_pharmacie_du_kirchberg"
+msgstr ""
+
+#: lu_int_wms.1512
+msgid "presidence_pharmacies_pharmacie_du_limpertsberg"
+msgstr ""
+
+#: lu_int_wms.1513
+msgid "presidence_pharmacies_pharmacie_du_lion_-_echternach"
+msgstr ""
+
+#: lu_int_wms.1514
+msgid "presidence_pharmacies_pharmacie_du_lion_-_luxembourg"
+msgstr ""
+
+#: lu_int_wms.1515
+msgid "presidence_pharmacies_pharmacie_du_nord"
+msgstr ""
+
+#: lu_int_wms.1516
+msgid "presidence_pharmacies_pharmacie_du_parc"
+msgstr ""
+
+#: lu_int_wms.1517
+msgid "presidence_pharmacies_pharmacie_du_réiserbann"
+msgstr ""
+
+#: lu_int_wms.1518
+msgid "presidence_pharmacies_pharmacie_du_soleil"
+msgstr ""
+
+#: lu_int_wms.1519
+msgid "presidence_pharmacies_pharmacie_du_trèfle"
+msgstr ""
+
+#: lu_int_wms.1520
+msgid "presidence_pharmacies_pharmacie_faltz"
+msgstr ""
+
+#: lu_int_wms.1521
+msgid "presidence_pharmacies_pharmacie_fleur_de_vie"
+msgstr ""
+
+#: lu_int_wms.1522
+msgid "presidence_pharmacies_pharmacie_gillain"
+msgstr ""
+
+#: lu_int_wms.1523
+msgid "presidence_pharmacies_pharmacie_goedert"
+msgstr ""
+
+#: lu_int_wms.1524
+msgid "presidence_pharmacies_pharmacie_grotenrath"
+msgstr ""
+
+#: lu_int_wms.1525
+msgid "presidence_pharmacies_pharmacie_lugen"
+msgstr ""
+
+#: lu_int_wms.1526
+msgid "presidence_pharmacies_pharmacie_maitry"
+msgstr ""
+
+#: lu_int_wms.1527
+msgid "presidence_pharmacies_pharmacie_martens"
+msgstr ""
+
+#: lu_int_wms.1528
+msgid "presidence_pharmacies_pharmacie_m._jadalla"
+msgstr ""
+
+#: lu_int_wms.1529
+msgid "presidence_pharmacies_pharmacie_neiens"
+msgstr ""
+
+#: lu_int_wms.1530
+msgid "presidence_pharmacies_pharmacie_nordstad"
+msgstr ""
+
+#: lu_int_wms.1531
+msgid "presidence_pharmacies_pharmacie_petry"
+msgstr ""
+
+#: lu_int_wms.1532
+msgid "presidence_pharmacies_pharmacie_rommes"
+msgstr ""
+
+#: lu_int_wms.1533
+msgid "presidence_pharmacies_pharmacie_saint-laurent_"
+msgstr ""
+
+#: lu_int_wms.1534
+msgid "presidence_pharmacies_pharmacie_schambourg"
+msgstr ""
+
+#: lu_int_wms.1535
+msgid "presidence_pharmacies_pharmacie_schon-tanson"
+msgstr ""
+
+#: lu_int_wms.1536
+msgid "presidence_pharmacies_pharmacie_stumper"
+msgstr ""
+
+#: lu_int_wms.1537
+msgid "presidence_pharmacies_pharmacie_syrdall"
+msgstr ""
+
+#: lu_int_wms.1538
+msgid "presidence_pharmacies_pharmacie_thilges"
+msgstr ""
+
+#: lu_int_wms.1539
+msgid "presidence_pharmacies_pharmacie_thill_fons"
+msgstr ""
+
+#: lu_int_wms.1540
+msgid "presidence_pharmacies_pharmacie_thiry"
+msgstr ""
+
+#: lu_int_wms.1541
+msgid "presidence_pharmacies_pharmacie_trierweiler"
+msgstr ""
+
+#: lu_int_wms.1542
+msgid "presidence_pharmacies_pharmacie_um_bechel"
+msgstr ""
+
+#: lu_int_wms.1543
+msgid "presidence_pharmacies_pharmacie_um_piquet"
+msgstr ""
+
+#: lu_int_wms.1544
+msgid "presidence_pharmacies_uelzechtdallapdikt"
+msgstr ""
+
+#: group.1545
+msgid "presidence_hopitaux_group"
+msgstr ""
+
+#: lu_int_wms.1546
+msgid "presidence_hopitaux_centre_hospitalier_du_nord__chdn__ettelbrück"
+msgstr ""
+
+#: lu_int_wms.1547
+msgid "presidence_hopitaux__centre_hospitalier_du_nord__chdn__wiltz"
+msgstr ""
+
+#: lu_int_wms.1548
+msgid "presidence_hopitaux_centre_hospitalier_emile_mayrisch_-_dudelange"
+msgstr ""
+
+#: lu_int_wms.1549
+msgid "presidence_hopitaux_centre_hospitalier_emile_mayrisch_-_esch"
+msgstr ""
+
+#: lu_int_wms.1550
+msgid "presidence_hopitaux_centre_hospitalier_emile_mayrisch_-_niederkorn"
+msgstr ""
+
+#: lu_int_wms.1551
+msgid "presidence_hopitaux_centre_hospitalier_neuro-psychiatrique_"
+msgstr ""
+
+#: lu_int_wms.1552
+msgid "presidence_hopitaux_centre_theurapeutique_useldange"
+msgstr ""
+
+#: lu_int_wms.1553
+msgid "presidence_hopitaux_chl_-_centre_hospitalier_de_luxembourg_"
+msgstr ""
+
+#: lu_int_wms.1554
+msgid "presidence_hopitaux_chl_-_clinique_d___eich_"
+msgstr ""
+
+#: lu_int_wms.1555
+msgid "presidence_hopitaux_chl_-_maternité"
+msgstr ""
+
+#: lu_int_wms.1556
+msgid "presidence_hopitaux_clinique_bohler"
+msgstr ""
+
+#: lu_int_wms.1557
+msgid "presidence_hopitaux_clinique_sainte-marie_"
+msgstr ""
+
+#: lu_int_wms.1558
+msgid "presidence_hopitaux_hôpital_intercommunal_de_steinfort"
+msgstr ""
+
+#: lu_int_wms.1559
+msgid "presidence_hopitaux_hôpital_kirchberg_"
+msgstr ""
+
+#: lu_int_wms.1560
+msgid "presidence_hopitaux_hospice_civil_echternach"
+msgstr ""
+
+#: lu_int_wms.1561
+msgid "presidence_hopitaux_rehazenter"
+msgstr ""
+
+#: lu_int_wms.1562
+msgid "presidence_hopitaux_zithaklinik"
+msgstr ""
+
+#: group.1563
+msgid "presidence_trajets_group"
+msgstr ""
+
+#: lu_int_wms.1564
+msgid "presidence_trajets_bei_-_findel"
+msgstr ""
+
+#: lu_int_wms.1565
+msgid "presidence_trajets_belval_-_mondorf"
+msgstr ""
+
+#: lu_int_wms.1566
+msgid "presidence_trajets_cck_-_double_tree"
+msgstr ""
+
+#: lu_int_wms.1567
+msgid "presidence_trajets_clervaux_-_cck"
+msgstr ""
+
+#: lu_int_wms.1568
+msgid "presidence_trajets_clervaux_-_urspelt"
+msgstr ""
+
+#: lu_int_wms.1569
+msgid "presidence_trajets_findel_-_royal"
+msgstr ""
+
+#: lu_int_wms.1570
+msgid "presidence_trajets_gare_-_cck"
+msgstr ""
+
+#: lu_int_wms.1571
+msgid "presidence_trajets_gare_-_centre"
+msgstr ""
+
+#: lu_int_wms.1572
+msgid "presidence_trajets_mondorf_-_schengen"
+msgstr ""
+
+#: lu_int_wms.1573
+msgid "presidence_trajets_royal_-_bei"
+msgstr ""
+
+#: lu_int_wms.1574
+msgid "presidence_trajets_royal_-_bourglinster"
+msgstr ""
+
+#: lu_int_wms.1575
+msgid "presidence_trajets_schéiss_-_boulevard_royal"
+msgstr ""
+
+#: lu_int_wms.1576
+msgid "presidence_trajets_senningen_-_jfk_-_thüngen"
+msgstr ""
+
+#: lu_int_wms.1577
+msgid "presidence_trajets_wsa_-_belval"
+msgstr ""
+
+#: lu_int_wms.1578
+msgid "presidence_trajets_wsa_-_findel"
+msgstr ""
+
+#: lu_int_wms.1579
+msgid "presidence_trajets_wsa_-_gare"
+msgstr ""
