@@ -124,10 +124,6 @@ app.ProfileController = function($scope) {
    */
   var extractor = {z: z, dist: dist};
 
-  // Using closures for hoverCallback and outCallback since
-  // wrapping in angular.bind leads to a closure error.
-  // See PR https://github.com/google/closure-compiler/pull/867
-  var that = this;
 
   /**
    * @param {Object} point
@@ -136,34 +132,35 @@ app.ProfileController = function($scope) {
    * @param {number} elevation
    * @param {string} yUnits
    */
-  var hoverCallback = function(point, dist, xUnits, elevation, yUnits) {
-    // An item in the list of points given to the profile.
-    that['point'] = point;
-    that.overlay_.getFeatures().clear();
-    var srcPoint = new ol.geom.Point([point['x'], point['y']]);
-    var curPoint = /** @type {ol.geom.Point} */
-        (srcPoint.transform(
-            'EPSG:2169', that['map'].getView().getProjection()));
-    var positionFeature = new ol.Feature({
-      geometry: curPoint
-    });
-    that.overlay_.addFeature(positionFeature);
+  var hoverCallback = goog.bind(
+      function(point, dist, xUnits, elevation, yUnits) {
+        // An item in the list of points given to the profile.
+        this['point'] = point;
+        this.overlay_.getFeatures().clear();
+        var srcPoint = new ol.geom.Point([point['x'], point['y']]);
+        var curPoint = /** @type {ol.geom.Point} */
+            (srcPoint.transform(
+                'EPSG:2169', this['map'].getView().getProjection()));
+        var positionFeature = new ol.Feature({
+          geometry: curPoint
+        });
+        this.overlay_.addFeature(positionFeature);
 
-    that.createMeasureTooltip_();
-    that.measureTooltipElement_.innerHTML = that.distanceLabel_ +
-        that.formatDistance_(dist, xUnits) +
-        '<br>' +
-        that.elevationLabel_ +
-        that.formatElevation_(elevation, yUnits);
-    that.measureTooltip_.setPosition(curPoint.getCoordinates());
+        this.createMeasureTooltip_();
+        this.measureTooltipElement_.innerHTML = this.distanceLabel_ +
+            this.formatDistance_(dist, xUnits) +
+            '<br>' +
+            this.elevationLabel_ +
+            this.formatElevation_(elevation, yUnits);
+        this.measureTooltip_.setPosition(curPoint.getCoordinates());
 
-  };
+      }, this);
 
-  var outCallback = function() {
-    that['point'] = null;
-    that.removeMeasureTooltip_();
-    that.overlay_.getFeatures().clear();
-  };
+  var outCallback = goog.bind(function() {
+    this['point'] = null;
+    this.removeMeasureTooltip_();
+    this.overlay_.getFeatures().clear();
+  }, this);
 
 
   this['profileOptions'] = {
