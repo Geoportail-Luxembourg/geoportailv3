@@ -299,8 +299,11 @@ app.SearchDirectiveController.selected_ =
     function(event, suggestion, dataset) {
   if (suggestion instanceof ol.Feature) {
     var layerLookup = {
-      'Adresse': 'addresses',
-      'Parcelle': 'parcels'
+      'Adresse': ['addresses'],
+      'Parcelle': ['parcels', 'parcels_labels'],
+      'lieu_dit': ['toponymes'],
+      'FLIK': ['asta_flik_parcels_2015'],
+      'asta_esp': ['asta_esp_esp']
     };
     var showGeom = ['hydro', 'Adresse', 'FLIK', 'biotope',
       'hydro_km', 'asta_esp', 'Parcelle'];
@@ -316,9 +319,10 @@ app.SearchDirectiveController.selected_ =
     }
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
-    this.addLayerToMap_(
-        layerLookup[suggestion.get('layer_name')]
-    );
+    var layers = layerLookup[suggestion.get('layer_name')];
+    goog.array.forEach(layers, goog.bind(function(layer) {
+      this.addLayerToMap_(layer);
+    }, this));
   } else {
     this.addLayerToMap_(suggestion);
   }
