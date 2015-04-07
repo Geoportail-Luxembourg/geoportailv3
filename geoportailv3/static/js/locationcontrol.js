@@ -7,6 +7,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
 goog.require('ol.control.Control');
+goog.require('ol.geom.Point');
 
 
 goog.provide('app.LocationControl');
