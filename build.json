@@ -63,7 +63,6 @@
       "missingGetCssName",
       "missingProperties",
       "missingProvide",
-      "missingRequire",
       "missingReturn",
       "newCheckTypes",
       "nonStandardJsDocs",
@@ -76,7 +75,8 @@
       "visibility"
     ],
     "jscomp_off": [
-      "unknownDefines"
+      "unknownDefines",
+      "missingRequire"
     ],
     "extra_annotation_name": [
       "api", "observable"
