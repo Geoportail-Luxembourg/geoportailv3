@@ -1,44 +1,42 @@
 /** Themes related styling (mainly colors) **/
-.theme(@theme, @primary-color, @icon) {
+.theme(@theme, @primary, @secondary, @tertiary, @icon) {
   [data-theme="@{theme}"] {
-    @secondary-color: desaturate(lighten(@primary-color, 30%), 5%);
-    @tertiary-color: darken(@primary-color, 10%);
     .form-control {
-      background-color: @secondary-color;
+      background-color: @secondary;
       .placeholder(white);
       color: white;
     }
 
     .btn {
-      color: @primary-color;
+      color: @primary;
       &:hover {
         color: white;
-        background-color: @primary-color;
+        background-color: @primary;
       }
     }
 
     #sidebar {
-      background-color: @secondary-color;
+      background-color: @secondary;
       .nav-tabs li {
         a {
-          background-color: @tertiary-color;
-          color: @primary-color;
+          background-color: @tertiary;
+          color: @secondary;
         }
         &> a:hover,
         &.active > a {
-          background-color: @primary-color;
+          background-color: @primary;
           color: white;
         }
       }
       .tab-content {
-        background-color: @primary-color;
+        background-color: @primary;
       }
     }
 
     .sidebar-controls,
     .toolbox {
       li > a {
-        color: @primary-color;
+        color: @primary;
       }
     }
     .nav {
@@ -46,63 +44,63 @@
         background-color: white;
         &:hover {
           color: white;
-          background-color: @primary-color;
+          background-color: @primary;
         }
       }
       & > li.active > a {
         color: white;
-        background-color: @primary-color;
+        background-color: @primary;
       }
     }
 
     .toolbox-panel-top > li > a {
-      background-color: @primary-color;
+      background-color: @primary;
       color: white;
       &:hover {
-        color: @primary-color;
+        color: @primary;
         background-color: white;
       }
     }
     .toolbox-panel-top > li.active > a {
-      color: @primary-color;
+      color: @primary;
       background-color: white;
     }
 
     .footer .toolbox-panel > li {
       > a {
-        background-color: @tertiary-color;
+        background-color: @tertiary;
         color: white;
       }
       > a:hover,
       &.active > a {
-        background-color: @primary-color;
+        background-color: @primary;
       }
     }
 
     ul.catalog {
       ul {
-        background-color: @secondary-color;
+        background-color: @secondary;
       }
-      color: @tertiary-color;
+      color: @tertiary;
       a {
-        color: @tertiary-color;
+        color: @tertiary;
       }
       > .panel {
         > a {
-          color: @primary-color;
-          background-color: @tertiary-color;
+          color: @secondary;
+          background-color: @tertiary;
           &:after {
-            border-top-color: @primary-color;
+            border-top-color: @primary;
           }
         }
         > ul > li.panel > a {
           &:before,
           &:after {
-            background-color: @tertiary-color;
+            background-color: @tertiary;
           }
-          background-color: lighten(@secondary-color, 20%);
+          background-color: lighten(@secondary, 20%);
           &[aria-expanded=true] {
-            background-color: @secondary-color;
+            background-color: @secondary;
           }
         }
       }
@@ -110,76 +108,76 @@
 
     ul.layermanager {
       &, a {
-        color: @primary-color;
+        color: @tertiary;
       }
       li {
-        background-color: @secondary-color;
+        background-color: @secondary;
       }
     }
 
     .ol-control button {
       background-color: white;
-      color: @primary-color;
+      color: @primary;
     }
 
     .tracker-on button{
-      background-color: @primary-color;
+      background-color: @primary;
       color: white;
     }
 
     .ol-control button:hover,.ol-control button:focus {
-      background-color: @primary-color;
+      background-color: @primary;
       color: white;
     }
 
     .navigation-account {
-      background-color: @secondary-color;
+      background-color: @secondary;
       .account-content {
-        background-color: @primary-color;
+        background-color: @primary;
       }
       input[type=submit] {
-        background-color: @secondary-color;
+        background-color: @secondary;
       }
       input[type=submit]:hover {
-        color: @tertiary-color;
+        color: @tertiary;
       }
       .tab {
-        background-color: @primary-color;
+        background-color: @primary;
       }
     }
     .account-content > ul li a {
-      background-color: @tertiary-color;
+      background-color: @tertiary;
       &:hover {
-        background-color: @secondary-color;
+        background-color: @secondary;
       }
     }
     .account-content > ul li p {
-      background-color: @secondary-color;
+      background-color: @secondary;
     }
     .navbar-default .navbar-nav > .active > a {
       &:focus, & {
-        background-color: @primary-color;
+        background-color: @primary;
         color: white;
       }
       &:hover {
         background-color: white;
-        color: @primary-color;
+        color: @primary;
       }
     }
     .theme-selector {
-      background-color: @tertiary-color;
+      background-color: @tertiary;
       & a{
-        background-color: @secondary-color;
+        background-color: @secondary;
         color: white;
       }
       &:hover {
         background-color: white;
-        color: @primary-color;
+        color: @primary;
       }
     }
   }
   .theme-@{theme} {
-    background-color: @primary-color;
+    background-color: @primary;
     a:after{
       content: '\@{icon}';
     }
@@ -190,14 +188,14 @@
       background-color: #ccc;
     }
     a:hover, a.active{
-      color: @primary-color;
+      color: @primary;
     }
   }
 }
 
-.theme(eau, #03a2ac, e016);
-.theme(agriculture, #f39c11, e001);
-.theme(main, #2980b9, e02c);
-.theme(at, #ff6600, e018);
-.theme(tourisme, #e21127, e027);
-.theme(emwelt, #879d31, e015);
+.theme(eau, #03a2ac, #45cdd6, #078f98, e016);
+.theme(agriculture, #f39c11, #ffc363, #9c6101, e001);
+.theme(main, #2980b9, #97bbd3, #1f5d87, e02c);
+.theme(at, #be8541, #ffb257, #7f6b52, e018);
+.theme(tourisme, #e84c3d, #e88c83, #943d3d, e027);
+.theme(emwelt, #879d31, #bacd81, #627529, e015);
