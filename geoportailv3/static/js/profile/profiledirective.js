@@ -17,7 +17,13 @@ goog.provide('app.profileDirective');
 goog.require('app');
 goog.require('ngeo');
 goog.require('ngeo.profileDirective');
+goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
+goog.require('ol.Overlay');
+goog.require('ol.geom.Point');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
 
 
 /**
