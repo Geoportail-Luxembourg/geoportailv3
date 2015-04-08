@@ -157,7 +157,9 @@ app.LocationControl.prototype.initFeatureOverlay_ = function() {
   var positionFeature = new ol.Feature(this.positionPoint_);
 
   var accuracyFeature = new ol.Feature();
-  accuracyFeature.bindTo('geometry', this.geolocation_, 'accuracyGeometry');
+  this.geolocation_.on('change:accuracyGeometry', goog.bind(function() {
+    accuracyFeature.setGeometry(this.geolocation_.getAccuracyGeometry());
+  }, this));
 
   this.featureOverlay_ = new ol.FeatureOverlay({
     features: [positionFeature, accuracyFeature]
