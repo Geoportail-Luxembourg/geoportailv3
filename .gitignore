@@ -13,6 +13,7 @@
 /production.ini
 /project.yaml
 /*.egg-info/
+/print/WEB-INF/classes/logback.xml
 /geoportailv3/locale/*/LC_MESSAGES/*.mo
 /geoportailv3/static/mobile/
 #/geoportailv3/static/mobile/resources/sass/.sass-cache

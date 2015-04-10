@@ -53,7 +53,7 @@ BUILD_RULES ?= $(PRE_RULES) $(filter-out $(DISABLE_BUILD_RULES),$(DEFAULT_BUILD_
 
 # Requirements
 
-EGGS_DEPENDENTIES += .build/venv.timestamp-noclean setup.py CONST_versions.txt CONST_requirements.txt
+EGGS_DEPENDENCIES += .build/venv.timestamp-noclean setup.py CONST_versions.txt CONST_requirements.txt
 REQUIREMENTS += -r CONST_requirements.txt
 DEV_REQUIREMENTS += -r CONST_dev-requirements.txt
 ifeq ($(TILECLOUD_CHAIN), TRUE)
@@ -204,12 +204,16 @@ PRINT_WAR ?= print-$(INSTANCE_ID).war
 PRINT_OUTPUT ?= /srv/tomcat/tomcat1/webapps
 ifeq ($(PRINT_VERSION), 3)
 PRINT_BASE_WAR ?= print-servlet.war
-PRINT_INPUT += print-apps
+PRINT_INPUT += print-apps WEB-INF
 PRINT_REQUIREMENT += \
 	$(PRINT_BASE_DIR)/WEB-INF/lib/jasperreports-functions-5.5.0.jar \
 	$(PRINT_BASE_DIR)/WEB-INF/lib/joda-time-1.6.jar \
 	$(PRINT_BASE_DIR)/WEB-INF/lib/jasperreports-fonts-5.5.0.jar \
-	$(PRINT_BASE_DIR)/WEB-INF/lib/postgresql-9.3-1102.jdbc41.jar
+	$(PRINT_BASE_DIR)/WEB-INF/lib/postgresql-9.3-1102.jdbc41.jar \
+	$(PRINT_BASE_DIR)/WEB-INF/classes/logback.xml \
+	$(PRINT_BASE_DIR)/WEB-INF/classes/mapfish-spring-application-context-override.xml
+TOMCAT_SERVICE_COMMAND ?= sudo /etc/init.d/tomcat-tomcat1
+
 PRINT_REQUIREMENT += $(shell find $(PRINT_BASE_DIR)/print-apps 2> /dev/null)
 endif
 ifeq ($(PRINT_VERSION), 2)
@@ -246,10 +250,10 @@ CONFIG_VARS += sqlalchemy.url schema parentschema enable_admin_interface pyramid
 	available_locale_names cache admin_interface functionalities external_themes_url \
 	raster shortener hide_capabilities use_security_metadata mapserverproxy \
 	print_url tiles_url checker check_collector default_max_age jsbuild package srid
-ENVIRONMENT_VARS += INSTANCE_ID=$(INSTANCE_ID) \
+ENVIRONMENT_VARS += INSTANCE_ID=${INSTANCE_ID} \
 	APACHE_ENTRY_POINT=$(APACHE_ENTRY_POINT) \
-	DEVELOPMENT=$(DEVELOPMENT) \
-	PACKAGE=$(PACKAGE)
+	DEVELOPMENT=${DEVELOPMENT} \
+	PACKAGE=${PACKAGE}
 C2C_TEMPLATE_CMD = $(ENVIRONMENT_VARS) .build/venv/bin/c2c-template --vars $(VARS_FILE)
 MAKE_FILES = $(shell ls -1 *.mk) CONST_Makefile
 
@@ -445,9 +449,14 @@ $(PACKAGE)/locale/%/LC_MESSAGES/%/$(PACKAGE)-client.po: $(PACKAGE)/locale/$(PACK
 $(OUTPUT_DIR)/build.js: .build/node_modules.timestamp .build/build.js
 	mkdir -p $(dir $@)
 	awk 'FNR==1{print ""}1' $(addprefix node_modules/, \
-		jquery/dist/jquery.min.js angular/angular.min.js angular-gettext/dist/angular-gettext.min.js \
-		angular-animate/angular-animate.min.js bootstrap/dist/js/bootstrap.min.js proj4/dist/proj4.js \
-		d3/d3.min.js) .build/build.js > $@
+		jquery/dist/jquery.min.js \
+		angular/angular.min.js \
+		angular-gettext/dist/angular-gettext.min.js \
+		angular-animate/angular-animate.min.js \
+		bootstrap/dist/js/bootstrap.min.js \
+		proj4/dist/proj4.js \
+		d3/d3.min.js \
+		) .build/build.js > $@
 	sed -i '/^\/\/# sourceMappingURL=.*\.map$$/d' $@
 
 $(OUTPUT_DIR)/build.min.css: $(LESS_FILES) .build/node_modules.timestamp
@@ -467,7 +476,7 @@ $(OUTPUT_DIR)/build.css: $(LESS_FILES) .build/node_modules.timestamp
 		.build/node_modules.timestamp
 	node tasks/build.js $< $@
 
-.build/templatecache.js: templatecache.mako.js $(APP_PARTIALS_FILES)
+.build/templatecache.js: templatecache.mako.js
 	.build/venv/bin/mako-render --var "partials=$(APP_PARTIALS_FILES)" $< > $@
 
 .build/externs/angular-1.3.js:
@@ -642,7 +651,7 @@ test-packages-ngeo: .build/test-packages-ngeo.timestamp
 		'pip>=6' 'setuptools>=12'
 	touch $@
 
-.build/requirements.timestamp: $(EGGS_DEPENDENTIES)
+.build/requirements.timestamp: $(EGGS_DEPENDENCIES)
 	$(PIP_CMD) $(PIP_INSTALL_ARGS) $(REQUIREMENTS) $(PIP_REDIRECT)
 	touch $@
 
@@ -655,7 +664,13 @@ $(PRINT_OUTPUT)/$(PRINT_WAR): $(PRINT_REQUIREMENT)
 	cp $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) /tmp/$(PRINT_WAR)
 	cd $(PRINT_BASE_DIR) && jar -uf /tmp/$(PRINT_WAR) $(PRINT_INPUT)
 	chmod g+r,o+r /tmp/$(PRINT_WAR)
+ifneq ($(TOMCAT_SERVICE_COMMAND),)
+	$(TOMCAT_SERVICE_COMMAND) stop
+endif
 	mv /tmp/$(PRINT_WAR) $(PRINT_OUTPUT)
+ifneq ($(TOMCAT_SERVICE_COMMAND),)
+	$(TOMCAT_SERVICE_COMMAND) start
+endif
 
 print/WEB-INF/lib/jasperreports-functions-5.5.0.jar:
 	mkdir -p $(dir $@)
@@ -684,6 +699,6 @@ apache: .build/apache.timestamp
 $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf:
 	echo "Include $(shell pwd)/apache/*.conf" > $@
 
-.build/apache.timestamp: $(CONF_FILES) $(PY_FILES) $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf .build/requirements.timestamp
+.build/apache.timestamp: .build/config-$(INSTANCE_ID).timestamp $(CONF_FILES) $(PY_FILES) $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf .build/requirements.timestamp
 	sudo /usr/sbin/apache2ctl graceful
 	touch $@

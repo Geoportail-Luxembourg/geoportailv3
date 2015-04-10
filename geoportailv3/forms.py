@@ -8,5 +8,5 @@ from formalchemy import FieldSet, Grid  # noqa
 
 from c2cgeoportal.forms import *  # noqa
 
-_ = TranslationStringFactory('geoportailv3')
+_ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
