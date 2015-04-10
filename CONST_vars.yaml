@@ -84,8 +84,6 @@ vars:
         - ["{node_modules_path}/openlayers", "{node_modules_path}/openlayers"]
         - ["{node_modules_path}/ngeo/src", "{node_modules_path}/ngeo/src"]
 
-    layers: {}
-
     # The application's default language. This is the language used by
     # the application if no specific language is specified in the URLs.
     # This also defines the language used for the text search.
@@ -223,6 +221,10 @@ vars:
         print_scale: 10000
         fulltextsearch: text to search
         lang_files: [ngeo, cgxp, cgxp-api]
+        themes:
+            default:
+                params:
+                    version: 2
 
     # Check collector configuration
     check_collector:

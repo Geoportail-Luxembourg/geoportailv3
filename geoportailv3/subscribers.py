@@ -6,14 +6,14 @@ from pyramid.events import subscriber, BeforeRender, NewRequest
 
 @subscriber(BeforeRender)
 def add_renderer_globals(event):
-    request = event.get('request')
+    request = event.get("request")
     if request:
-        event['_'] = request.translate
-        event['localizer'] = request.localizer
+        event["_"] = request.translate
+        event["localizer"] = request.localizer
 
 # use two translator to tranlate each strings in Make
-tsf1 = TranslationStringFactory('geoportailv3')
-tsf2 = TranslationStringFactory('c2cgeoportal')
+tsf1 = TranslationStringFactory("geoportailv3-server")
+tsf2 = TranslationStringFactory("c2cgeoportal")
 
 
 @subscriber(NewRequest)
