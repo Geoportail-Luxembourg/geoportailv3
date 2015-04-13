@@ -19,7 +19,9 @@ goog.require('ngeo');
 goog.require('ngeo.profileDirective');
 goog.require('ol.Feature');
 goog.require('ol.FeatureOverlay');
+goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Overlay');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -57,6 +59,13 @@ app.module.directive('appProfile', app.profileDirective);
  * @ngInject
  */
 app.ProfileController = function($scope) {
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $scope;
+
   /**
    * @private
    */
@@ -130,6 +139,26 @@ app.ProfileController = function($scope) {
    */
   var extractor = {z: z, dist: dist};
 
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.snappedPoint_ = new ol.Feature();
+  this.overlay_.addFeature(this.snappedPoint_);
+
+
+  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+      /**
+       * @param {ol.MapBrowserPointerEvent} evt Map browser event.
+       */
+      function(evt) {
+        if (evt.dragging || !goog.isDef(this.line_)) {
+          return;
+        }
+        var coordinate = this['map'].getEventCoordinate(evt.originalEvent);
+        this.snapToGeometry(coordinate, this.line_);
+      }, undefined, this);
+
 
   /**
    * @param {Object} point
@@ -143,10 +172,8 @@ app.ProfileController = function($scope) {
         // An item in the list of points given to the profile.
         this['point'] = point;
         this.overlay_.getFeatures().clear();
-        var srcPoint = new ol.geom.Point([point['x'], point['y']]);
-        var curPoint = /** @type {ol.geom.Point} */
-            (srcPoint.transform(
-                'EPSG:2169', this['map'].getView().getProjection()));
+        var curPoint = new ol.geom.Point([point['x'], point['y']]);
+        curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
         var positionFeature = new ol.Feature({
           geometry: curPoint
         });
@@ -160,14 +187,16 @@ app.ProfileController = function($scope) {
             this.formatElevation_(elevation, yUnits);
         this.measureTooltip_.setPosition(curPoint.getCoordinates());
 
+        this.snappedPoint_.setGeometry(new ol.geom.Point([point.x, point.y]));
+
       }, this);
 
   var outCallback = goog.bind(function() {
     this['point'] = null;
     this.removeMeasureTooltip_();
     this.overlay_.getFeatures().clear();
+    this.snappedPoint_.setGeometry(null);
   }, this);
-
 
   this['profileOptions'] = {
     elevationExtractor: extractor,
@@ -181,6 +210,24 @@ app.ProfileController = function($scope) {
 
 
   this['point'] = null;
+
+  $scope.$watch(goog.bind(function() {
+    return this['profileData'];
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (goog.isDef(newVal)) {
+      var i;
+      var len = newVal.length;
+      var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
+      for (i = 0; i < len; i++) {
+        var p = newVal[i];
+        p = new ol.geom.Point([p['x'], p['y']]);
+        p.transform('EPSG:2169', this['map'].getView().getProjection());
+        lineString.appendCoordinate(
+            p.getCoordinates().concat(newVal[i]['dist']));
+      }
+      this.line_ = lineString;
+    }
+  }, this));
 };
 
 
@@ -237,6 +284,25 @@ app.ProfileController.prototype.formatDistance_ = function(dist, units) {
  */
 app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
   return parseFloat(elevation.toPrecision(4)) + ' ' + units;
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate The current pointer coordinate.
+ * @param {ol.geom.Geometry|undefined} geom The geometry to snap to.
+ */
+app.ProfileController.prototype.snapToGeometry = function(coordinate, geom) {
+  var closestPoint = geom.getClosestPoint(coordinate);
+  // compute distance to line in pixels
+  var dx = closestPoint[0] - coordinate[0];
+  var dy = closestPoint[1] - coordinate[1];
+  var viewResolution = this['map'].getView().getResolution();
+  var distSqr = dx * dx + dy * dy;
+  var pixelDistSqr = distSqr / (viewResolution * viewResolution);
+  // Check whether dist is lower than 8 pixels
+  this['profileHighlight'] = pixelDistSqr < 64 ? closestPoint[2] : -1;
+
+  this.scope_.$apply();
 };
 
 app.module.controller('AppProfileController', app.ProfileController);
