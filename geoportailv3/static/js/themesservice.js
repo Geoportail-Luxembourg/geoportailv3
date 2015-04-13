@@ -75,7 +75,7 @@ goog.inherits(app.Themes, goog.events.EventTarget);
 
 
 /**
- * Find an object by its name.
+ * Find an object by its name. Return null if not found.
  * @param {Array.<Object>} objects Array of objects.
  * @param {string} objectName The object name.
  * @return {Object} The object.
@@ -89,7 +89,7 @@ app.Themes.findObjectByName_ = function(objects, objectName) {
 
 
 /**
- * Find a theme object by its name.
+ * Find a theme object by its name. Return null if not found.
  * @param {Array.<Object>} themes Array of "theme" objects.
  * @param {string} themeName The theme name.
  * @return {Object} The theme object.
@@ -97,7 +97,6 @@ app.Themes.findObjectByName_ = function(objects, objectName) {
  */
 app.Themes.findTheme_ = function(themes, themeName) {
   var theme = app.Themes.findObjectByName_(themes, themeName);
-  goog.asserts.assert(!goog.isNull(theme));
   return theme;
 };
 
@@ -139,7 +138,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
-       * @return {Object} The theme object for themeName.
+       * @return {Object} The theme object for themeName, or null if not found.
        */
       function(data) {
         var themes = data['themes'];

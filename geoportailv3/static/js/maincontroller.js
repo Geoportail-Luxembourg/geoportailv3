@@ -121,9 +121,9 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
   this['selectedLayers'] = [];
 
   /**
-   * @type {string}
+   * @type {string|undefined}
    */
-  this['currentTheme'] = 'main';
+  this['currentTheme'] = undefined;
 
   /**
    * @type {ol.Map}

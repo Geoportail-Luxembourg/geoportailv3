@@ -6,7 +6,9 @@
  *
  * Example:
  *
- * <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
+ * <app-catalog app-catalog-map="::mainCtrl.map"
+ *              app-catalog-currenttheme="mainCtrl.currentTheme">
+ * </app-catalog>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -112,7 +114,9 @@ app.CatalogController.prototype.setTree_ = function() {
        * @param {Object} tree Tree object for the theme.
        */
       function(tree) {
-        this['tree'] = tree;
+        if (!goog.isNull(tree)) {
+          this['tree'] = tree;
+        }
       }, this));
 };
 
