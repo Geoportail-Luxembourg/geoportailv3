@@ -123,8 +123,8 @@ app.SearchDirectiveController =
     templates: {
       header: function() {
         return '<div class="header">' +
-          gettextCatalog.getString('Addresses') +
-          '</div>';
+            gettextCatalog.getString('Addresses') +
+            '</div>';
       },
       suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
@@ -149,8 +149,8 @@ app.SearchDirectiveController =
     templates: {
       header: function() {
         return '<div class="header">' +
-          gettextCatalog.getString('Layers') +
-          '</div>';
+            gettextCatalog.getString('Layers') +
+            '</div>';
       },
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
