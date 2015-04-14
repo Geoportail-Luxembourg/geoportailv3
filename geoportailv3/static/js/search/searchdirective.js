@@ -66,12 +66,13 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
+ * @param {string} searchServiceUrl
  * @export
  */
 app.SearchDirectiveController =
     function($scope, appThemes, $compile,
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
-        appGetLayerForCatalogNode, appShowLayerinfo) {
+        appGetLayerForCatalogNode, appShowLayerinfo, searchServiceUrl) {
   /**
    * @type {Array}
    */
@@ -97,7 +98,7 @@ app.SearchDirectiveController =
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      ngeoCreateGeoJSONBloodhound);
+      ngeoCreateGeoJSONBloodhound, searchServiceUrl);
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
@@ -184,11 +185,12 @@ app.SearchDirectiveController.prototype.createFeatureOverlay_ = function() {
 /**
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
  *     create GeoJSON Bloodhound service.
+ * @param {string} searchServiceUrl
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
-    function(ngeoCreateGeoJSONBloodhound) {
+    function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
   var url = 'fulltextsearch?query=%QUERY';
   var bloodhound = ngeoCreateGeoJSONBloodhound(url, ol.proj.get('EPSG:3857'));
   bloodhound.initialize();
