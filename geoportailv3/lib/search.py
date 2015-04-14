@@ -3,32 +3,29 @@ from elasticsearch import Elasticsearch
 
 ES_ANALYSIS = {
     'analysis': {
-        'filter': {
-            'ngram_filter': {
-                'type': 'nGram',
-                'min_gram': 2,
+        'tokenizer': {
+            'search_tokenizer': {
+                'type': 'edgeNGram',
+                'min_gram': 1,
                 'max_gram': 20,
                 'token_chars': [
                     'letter',
-                    'digit',
-                    'punctuation',
-                    'symbol'
+                    'digit'
                 ]
             }
         },
         'analyzer': {
             'ngram_analyzer': {
                 'type': 'custom',
-                'tokenizer': 'whitespace',
+                'tokenizer': 'search_tokenizer',
                 'filter': [
                     'lowercase',
                     'asciifolding',
-                    'ngram_filter'
                 ]
             },
             'whitespace_analyzer': {
                 'type': 'custom',
-                'tokenizer': 'whitespace',
+                'tokenizer': 'standard',
                 'filter': [
                     'lowercase',
                     'asciifolding'

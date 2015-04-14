@@ -57,7 +57,7 @@ def main():
     env = bootstrap('development.ini')
     request = env['request']
 
-    ensure_index(get_elasticsearch(request), get_index(request), False)
+    ensure_index(get_elasticsearch(request), get_index(request), True)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1

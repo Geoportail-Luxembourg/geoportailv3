@@ -45,7 +45,8 @@ class FullTextSearchView(object):
                         "match": {
                             "label": {
                                 "query": query,
-                                "operator": "and"
+                                "operator": "and",
+                                "fuzziness": 0.8
                             }
                         }
                     },
