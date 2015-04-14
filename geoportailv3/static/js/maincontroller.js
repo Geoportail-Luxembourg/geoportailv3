@@ -11,6 +11,7 @@ goog.provide('app.MainController');
 
 goog.require('app');
 goog.require('app.ExclusionManager');
+goog.require('app.LayerOpacityManager');
 goog.require('app.LocationControl');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
@@ -30,6 +31,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angular.Scope} $scope Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
+ * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
+ *     manager.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
@@ -38,7 +41,7 @@ goog.require('ol.tilegrid.WMTS');
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, appExclusionManager,
-    langUrls, defaultExtent, ngeoSyncArrays) {
+    appLayerOpacityManager, langUrls, defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {Array.<Object>}
@@ -123,11 +126,20 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
    */
   this['currentTheme'] = 'main';
 
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = null;
+
   this.setMap_();
 
   this.switchLanguage('fr');
+
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
+
   appExclusionManager.init(this.map_);
+  appLayerOpacityManager.init(this.map_);
 };
 
 
@@ -136,7 +148,6 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
  */
 app.MainController.prototype.setMap_ = function() {
 
-  /** @type {ol.Map} */
   this.map_ = this['map'] = new ol.Map({
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue031', zoomOutLabel: '\ue025'}),
