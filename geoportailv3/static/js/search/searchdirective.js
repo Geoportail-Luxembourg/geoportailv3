@@ -195,7 +195,7 @@ app.SearchDirectiveController.prototype.createFeatureOverlay_ = function() {
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
     function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
-  var url = 'fulltextsearch?query=%QUERY';
+  var url = searchServiceUrl + '?limit=5&query=%QUERY';
   var bloodhound = ngeoCreateGeoJSONBloodhound(url, ol.proj.get('EPSG:3857'));
   bloodhound.initialize();
   return bloodhound;
