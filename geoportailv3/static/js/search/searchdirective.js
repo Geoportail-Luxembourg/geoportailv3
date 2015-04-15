@@ -325,7 +325,7 @@ app.SearchDirectiveController.selected_ =
     }
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
-    var layers = layerLookup[suggestion.get('layer_name')];
+    var layers = layerLookup[suggestion.get('layer_name')] || [];
     goog.array.forEach(layers, goog.bind(function(layer) {
       this.addLayerToMap_(layer);
     }, this));
