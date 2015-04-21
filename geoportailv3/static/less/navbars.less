@@ -52,7 +52,7 @@ header {
     float: left;
     a {
       padding: 0;
-      width: 63px;
+      width: @icon-width;
       text-align: center;
     }
   }
@@ -112,7 +112,7 @@ header {
 }
 
 .toolbox-panel li > a {
-  line-height: 63px;
+  line-height: @icon-width;
   width: 62px !important;
 }
 
@@ -126,12 +126,12 @@ header {
 
 .measure .toolbox-panel {
   /* 4 measure tools */
-  width: 4 * 63px;
+  width: 4 * @icon-width;
 }
 
 .lang .toolbox-panel {
   /* 4 languages */
-  width: 4 * 63px;
+  width: 4 * @icon-width;
   a {
     text-transform: uppercase;
   }
