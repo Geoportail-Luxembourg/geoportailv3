@@ -13,6 +13,7 @@ goog.require('app');
 goog.require('app.ExclusionManager');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LocationControl');
+goog.require('app.Themes');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -33,6 +34,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
  *     manager.
+ * @param {app.Themes} appThemes Themes service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
@@ -41,7 +43,14 @@ goog.require('ol.tilegrid.WMTS');
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, appExclusionManager,
-    appLayerOpacityManager, langUrls, defaultExtent, ngeoSyncArrays) {
+    appLayerOpacityManager, appThemes, langUrls, defaultExtent,
+    ngeoSyncArrays) {
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
 
   /**
    * @type {angularGettext.Catalog}
@@ -122,6 +131,13 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
    */
   this.map_ = null;
 
+  /**
+   * The role id of the authenticated user, or `undefined` if the user
+   * is anonymous, or if we don't yet kno if the user is authenticated.
+   * @type {number|undefined}
+   */
+  this['roleId'] = undefined;
+
   this.setMap_();
 
   this.switchLanguage('fr');
@@ -130,6 +146,10 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
+
+  this.manageUserRoleChange_($scope);
+
+  this.loadThemes_();
 };
 
 
@@ -155,6 +175,34 @@ app.MainController.prototype.setMap_ = function() {
       ])
     })
   });
+};
+
+
+/**
+ * Register a watcher on "roleId" to reload the themes when the role id
+ * changes.
+ * @param {angular.Scope} scope Scope.
+ * @private
+ */
+app.MainController.prototype.manageUserRoleChange_ = function(scope) {
+  scope.$watch(goog.bind(function() {
+    return this['roleId'];
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (!goog.isDef(oldVal) && !goog.isDef(newVal)) {
+      // This happens at init time. We don't want to reload the themes
+      // at this point, as the constructor already loaded them.
+      return;
+    }
+    this.loadThemes_();
+  }, this));
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.loadThemes_ = function() {
+  this.appThemes_.loadThemes(this['roleId']);
 };
 
 
