@@ -232,6 +232,7 @@ PRINT_REQUIREMENT += $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR)
 APACHE_ENTRY_POINT ?= /$(INSTANCE_ID)/
 APACHE_VHOST ?= $(PACKAGE)
 APACHE_CONF_DIR ?= /var/www/vhosts/$(APACHE_VHOST)/conf
+APACHE_GRACEFUL ?= sudo /usr/sbin/apache2ctl graceful
 CONF_FILES_IN = $(shell ls -1 apache/*.conf.in 2> /dev/null)
 CONF_FILES_MAKO = $(shell ls -1 apache/*.conf.mako 2> /dev/null)
 CONF_FILES_JINJA = $(shell ls -1 apache/*.conf.jinja 2> /dev/null)
@@ -702,5 +703,5 @@ $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf:
 	echo "Include $(shell pwd)/apache/*.conf" > $@
 
 .build/apache.timestamp: .build/config-$(INSTANCE_ID).timestamp $(CONF_FILES) $(PY_FILES) $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf .build/requirements.timestamp
-	sudo /usr/sbin/apache2ctl graceful
+	$(APACHE_GRACEFUL)
 	touch $@
