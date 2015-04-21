@@ -27,7 +27,7 @@ goog.require('ol.style.Style');
 
 
 /**
- * @param {string} appMeasureTemplateUrl Url to layermanager template
+ * @param {string} appMeasureTemplateUrl Url to measure template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
