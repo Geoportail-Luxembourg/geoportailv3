@@ -16,13 +16,13 @@ goog.require('ol.tilegrid.WMTS');
 
 
 /**
- * @typedef {function(string):ol.layer.Tile}
+ * @typedef {function(string, string):ol.layer.Tile}
  */
 app.GetWmtsLayer;
 
 
 /**
- * @typedef {function(string, string, string=):ol.layer.Image}
+ * @typedef {function(string, string, string, string=):ol.layer.Image}
  */
 app.GetWmsLayer;
 
@@ -42,6 +42,19 @@ app.layerCache_ = {};
 
 
 /**
+ * @param {string} imageType Image type (e.g. "image/png").
+ * @return {string} Image extensino (e.g. "png").
+ * @private
+ */
+app.getImageExtension_ = function(imageType) {
+  goog.asserts.assert(imageType.indexOf('/'));
+  var imageExt = imageType.split('/')[1];
+  goog.asserts.assert(imageExt == 'png' || imageExt == 'jpeg');
+  return imageExt;
+};
+
+
+/**
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
@@ -52,18 +65,21 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
 
   /**
    * @param {string} name WMTS layer name.
+   * @param {string} imageType Image type (e.g. "image/png").
    * @return {ol.layer.Tile} The layer.
    */
-  function getWmtsLayer(name) {
+  function getWmtsLayer(name, imageType) {
+
+    var imageExt = app.getImageExtension_(imageType);
+    var url = 'http://wmts.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
+        '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
     var layer = new ol.layer.Tile({
       source: new ol.source.WMTS({
-        url: 'http://wmts.geoportail.lu/mapproxy_4_v3/' +
-            'wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+        url: url,
         layer: name,
         matrixSet: 'GLOBAL_WEBMERCATOR',
         requestEncoding: ol.source.WMTSRequestEncoding.REST,
-        format: 'image/png',
         projection: ol.proj.get('EPSG:3857'),
         tileGrid: new ol.tilegrid.WMTS({
           origin: [-20037508.3428, 20037508.3428],
@@ -107,16 +123,19 @@ app.getWmsLayer_ = function(ngeoDecorateLayer) {
    * @param {string} name WMS layer name.
    * @param {string} layers Comma-separated list of layer names for that WMS
    *     layer.
+   * @param {string} imageType Image type (e.g. "image/png").
    * @param {string=} opt_url WMS URL.
    * @return {ol.layer.Image} The layer.
    */
-  function getWmsLayer(name, layers, opt_url) {
+  function getWmsLayer(name, layers, imageType, opt_url) {
     var url = goog.isDef(opt_url) ?
         opt_url : 'http://devv3.geoportail.lu/main/wsgi/wms';
+    var imageExt = app.getImageExtension_(imageType);
     var layer = new ol.layer.Image({
       source: new ol.source.ImageWMS({
         url: url,
         params: {
+          'FORMAT': imageExt,
           'LAYERS': layers
         }
       })
@@ -163,9 +182,13 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     if (type.indexOf('WMS') != -1) {
       goog.asserts.assert('name' in node);
       goog.asserts.assert('layers' in node);
-      layer = appGetWmsLayer(node['name'], node['layers'], node['url']);
+      goog.asserts.assert('imageType' in node);
+      layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'],
+          node['url']);
     } else if (type == 'WMTS') {
-      layer = appGetWmtsLayer(node['name']);
+      goog.asserts.assert('name' in node);
+      goog.asserts.assert('imageType' in node);
+      layer = appGetWmtsLayer(node['name'], node['imageType']);
     } else {
       return null;
     }
