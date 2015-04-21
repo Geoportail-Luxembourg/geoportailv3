@@ -180,7 +180,24 @@ app.SearchDirectiveController =
  * @private
  */
 app.SearchDirectiveController.prototype.createFeatureOverlay_ = function() {
-  var featureOverlay = new ol.FeatureOverlay();
+  var featureFill = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+  var featureStroke = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+  var featureOverlay = new ol.FeatureOverlay({
+    style: new ol.style.Style({
+      fill: featureFill,
+      stroke: featureStroke,
+      image: new ol.style.Circle({
+        radius: 10,
+        fill: featureFill,
+        stroke: featureStroke
+      })
+    })
+  });
   featureOverlay.setMap(this['map']);
   return featureOverlay;
 };
