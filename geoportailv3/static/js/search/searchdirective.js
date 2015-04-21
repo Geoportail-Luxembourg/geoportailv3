@@ -74,7 +74,7 @@ app.SearchDirectiveController =
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
         appGetLayerForCatalogNode, appShowLayerinfo, searchServiceUrl) {
   /**
-   * @type {Array}
+   * @type {Array<ol.layer.Layer>}
    */
   this.layers = [];
 
