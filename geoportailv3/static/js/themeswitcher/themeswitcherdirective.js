@@ -7,6 +7,8 @@ goog.provide('app.themeswitcherDirective');
 
 goog.require('app');
 goog.require('app.Themes');
+goog.require('app.ThemesEventType');
+goog.require('goog.events');
 
 
 /**
@@ -40,7 +42,28 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
  */
 app.ThemeswitcherController = function(appThemes) {
 
-  appThemes.getThemesObject().then(goog.bind(
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
+  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+      /**
+       * @param {goog.events.Event} evt Event.
+       */
+      function(evt) {
+        this.setThemes_();
+      }, undefined, this);
+
+};
+
+
+/**
+ * @private
+ */
+app.ThemeswitcherController.prototype.setThemes_ = function() {
+  this.appThemes_.getThemesObject().then(goog.bind(
       /**
        * Keep only the themes dedicated to the theme switcher
        * @param {Array.<Object>} themes Array of theme objects.
@@ -50,7 +73,6 @@ app.ThemeswitcherController = function(appThemes) {
           return 'true' == object['metadata']['display_in_switcher'];
         });
       }, this));
-
 };
 
 
