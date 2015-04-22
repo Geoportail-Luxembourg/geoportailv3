@@ -179,6 +179,18 @@
     app-print>div {
       background-color: @primary;
     }
+
+    .profile {
+      border-color: @primary;
+      .close {
+        color: @secondary;
+
+        &:hover {
+          color: @primary;
+        }
+        opacity: 1;
+      }
+    }
   }
   .theme-@{theme} {
     background-color: @primary;

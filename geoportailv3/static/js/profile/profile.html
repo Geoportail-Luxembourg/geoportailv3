@@ -1,4 +1,8 @@
 <div class="profile" ngeo-profile="ctrl.profileData"
     ngeo-profile-highlight="ctrl.profileHighlight"
-    ngeo-profile-options="ctrl.profileOptions" ng-show="ctrl.profileOpen">
+    ngeo-profile-options="ctrl.profileOptions" ng-show="ctrl.profileInteraction.active">
+    <a href class="close" ng-click="ctrl.profileInteraction.setActive(false)"><i class="fa fa-close"></i></a>
+    <div translate ng-hide="ctrl.profileData.length > 0">
+      Draw a line on the map to display an elevation profile.
+    </div>
 </div>

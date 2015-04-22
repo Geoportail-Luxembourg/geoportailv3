@@ -401,13 +401,30 @@ div.ol-zoom-extent > button {
   max-height: 460px;
   overflow: auto;
 }
+@profile_height: 250px;
 .profile {
   width: 450px;
-  height: 250px;
-  position: absolute;
+  height: @profile_height;
   background-color: white;
-  top: 10px;
-  left: 200px;
+  border: 1px solid;
+
+  background: url(../images/profile.png) no-repeat white;
+  background-position-x: 10px;
+  background-position-y: 10px;
+
+  svg {
+    background-color: white;
+  }
+
+  > div {
+    display: table;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: @profile_height / 2;
+    background-color: rgba(120, 120, 120, 0.5);
+    border-radius: 5px;
+  }
 }
 
 *:before, *:after {
