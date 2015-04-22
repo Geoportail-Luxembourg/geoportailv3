@@ -75,8 +75,9 @@ app.SearchDirectiveController =
         appGetLayerForCatalogNode, appShowLayerinfo, searchServiceUrl) {
   /**
    * @type {Array<ol.layer.Layer>}
+   * @private
    */
-  this.layers = [];
+  this.layers_ = [];
 
   /**
    * @type {ol.FeatureOverlay}
@@ -247,19 +248,24 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
       goog.bind(function(themes) {
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          goog.array.extend(this['layers'],
+          goog.array.extend(this.layers_,
               app.SearchDirectiveController.getAllChildren_(
               theme.children, gettextCatalog
               )
           );
         }
         var dedup = [];
-        goog.array.removeDuplicates(this['layers'], dedup, function(element) {
-          return element['id'];
-        });
-        this['layers'] = dedup;
+        goog.array.removeDuplicates(this.layers_, dedup,
+            /**
+         * @constructor
+         * @dict
+         */
+            (function(element) {
+              return element['id'];
+            }));
+        this.layers_ = dedup;
         bloodhound.clear();
-        bloodhound.add(this['layers']);
+        bloodhound.add(this.layers_);
       }, this)
   );
 };
@@ -272,7 +278,7 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
 app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
   var layer = {};
   if (typeof input === 'string') {
-    var node = goog.array.find(this['layers'], function(element) {
+    var node = goog.array.find(this.layers_, function(element) {
       return goog.object.containsKey(element, 'name') &&
           goog.object.containsValue(element, input);
     });
