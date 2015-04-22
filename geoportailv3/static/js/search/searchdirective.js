@@ -120,7 +120,7 @@ app.SearchDirectiveController =
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
-    templates: {
+    templates: /** @type {TypeaheadTemplates} */({
       header: function() {
         return '<div class="header">' +
             gettextCatalog.getString('Addresses') +
@@ -142,11 +142,11 @@ app.SearchDirectiveController =
             ) + ')</span></p>';
         return $compile(html)(scope);
       }
-    }
+    })
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
     displayKey: 'translated_name',
-    templates: {
+    templates: /** @type {TypeaheadTemplates} */({
       header: function() {
         return '<div class="header">' +
             gettextCatalog.getString('Layers') +
@@ -164,7 +164,7 @@ app.SearchDirectiveController =
             '<button ng-click="click($event)">i</button></p>';
         return $compile(html)(scope);
       }, this)
-    }
+    })
   }
   ];
 
@@ -313,7 +313,7 @@ app.SearchDirectiveController.getAllChildren_ =
 
 /**
  * @param {jQuery.event} event Event.
- * @param {Object} suggestion Suggestion.
+ * @param {(ol.Feature|Object)} suggestion Suggestion.
  * @param {TypeaheadDataset} dataset Dataset.
  * @this {app.SearchDirectiveController}
  * @private
@@ -342,7 +342,8 @@ app.SearchDirectiveController.selected_ =
     }
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
-    var layers = layerLookup[suggestion.get('layer_name')] || [];
+    var layers = /** @type {Array<string>} */
+        (layerLookup[suggestion.get('layer_name')] || []);
     goog.array.forEach(layers, goog.bind(function(layer) {
       this.addLayerToMap_(layer);
     }, this));
