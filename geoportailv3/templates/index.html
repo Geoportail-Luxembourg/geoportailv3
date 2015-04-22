@@ -141,14 +141,14 @@
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
-          <app-measure app-measure-map="::mainCtrl.map" 
-            app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"  
+          <app-measure app-measure-map="::mainCtrl.map"
+            app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
             app-profile-open="mainCtrl.profileOpen">
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
-          <div class="toolbox-panel">The panel for print tools</div>
+          <app-print app-print-map="mainCtrl.map"></app-print>
         </li>
         <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">share</a>
@@ -212,6 +212,7 @@
          appModule.value('appMapTemplateUrl', '${request.static_url('geoportailv3:static/js/map/map.html')}');
          appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
          appModule.value('appProfileTemplateUrl', '${request.static_url('geoportailv3:static/js/profile/profile.html')}');
+         appModule.value('appPrintTemplateUrl', '${request.static_url('geoportailv3:static/js/print/print.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -227,6 +228,7 @@
          appModule.value('appMapTemplateUrl', 'map/map.html');
          appModule.value('appThemeswitcherTemplateUrl', 'themeswitcher/themes.html');
          appModule.value('appProfileTemplateUrl', 'profile/profile.html');
+         appModule.value('appPrintTemplateUrl', 'print/print.html');
 % endif
 
 
