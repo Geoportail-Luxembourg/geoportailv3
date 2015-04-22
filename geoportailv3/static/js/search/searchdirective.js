@@ -45,6 +45,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
           // Empty the search field on focus and blur.
           element.find('input').on('focus blur', function() {
             $(this).val('');
+            $(this).addClass('placeholder-text');
           });
         }
   };
@@ -74,7 +75,7 @@ app.SearchDirectiveController =
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
         appGetLayerForCatalogNode, appShowLayerinfo, searchServiceUrl) {
   /**
-   * @type {Array<ol.layer.Layer>}
+   * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers_ = [];
