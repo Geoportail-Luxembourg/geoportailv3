@@ -174,7 +174,7 @@ app.SearchDirectiveController =
           }, this);
           html += '<button ng-click="click($event)">i</button>';
         } else {
-        html += ' (' + gettextCatalog.getString('Background') + ') ';
+          html += ' (' + gettextCatalog.getString('Background') + ') ';
         }
         html += '</p>';
         return $compile(html)(scope);
@@ -314,8 +314,8 @@ app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
     layer = this.getLayerFunc_(node);
   } else if (typeof input === 'object') {
     if (goog.object.containsKey(input, 'bglayer')) {
-     this.backgroundLayerMgr_.set(this['map'], input['bglayer']);
-     return;
+      this.backgroundLayerMgr_.set(this['map'], input['bglayer']);
+      return;
     } else {
       layer = this.getLayerFunc_(input);
     }
