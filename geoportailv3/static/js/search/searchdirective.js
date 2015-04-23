@@ -16,6 +16,7 @@ goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
+goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.searchDirective');
 
@@ -67,18 +68,26 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @param {string} searchServiceUrl
  * @export
  */
 app.SearchDirectiveController =
     function($scope, appThemes, $compile,
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
-        appGetLayerForCatalogNode, appShowLayerinfo, searchServiceUrl) {
+        appGetLayerForCatalogNode, appShowLayerinfo, 
+        ngeoBackgroundLayerMgr, searchServiceUrl) {
   /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers_ = [];
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {ol.FeatureOverlay}
@@ -157,13 +166,17 @@ app.SearchDirectiveController =
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
-        scope['click'] = goog.bind(function(event) {
-          this.showLayerinfo_(this.getLayerFunc_(suggestion));
-          event.stopPropagation();
-        }, this);
-
-        var html = '<p>' + suggestion['translated_name'] +
-            '<button ng-click="click($event)">i</button></p>';
+        var html = '<p>' + suggestion['translated_name'];
+        if (!goog.object.containsKey(suggestion, 'bglayer')) {
+          scope['click'] = goog.bind(function(event) {
+            this.showLayerinfo_(this.getLayerFunc_(suggestion));
+            event.stopPropagation();
+          }, this);
+          html += '<button ng-click="click($event)">i</button>';
+        } else {
+        html += ' (' + gettextCatalog.getString('Background') + ') ';
+        }
+        html += '</p>';
         return $compile(html)(scope);
       }, this)
     })
@@ -245,27 +258,41 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
  */
 app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
+  bloodhound.clear();
+  this.layers_ = [];
+  appThemes.getBgLayers().then(
+      goog.bind(function(bgLayers) {
+        goog.array.forEach(bgLayers, function(bgLayer) {
+          var bgLayerObj = {};
+          bgLayerObj.bglayer = bgLayer;
+          bgLayerObj.translated_name =
+              gettextCatalog.getString(bgLayer.values_.label);
+          bloodhound.add([bgLayerObj]);
+        }, this);
+      }, this)
+  );
   appThemes.getThemesObject().then(
       goog.bind(function(themes) {
+        var dedup = [];
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          goog.array.extend(this.layers_,
+          goog.array.extend(dedup,
               app.SearchDirectiveController.getAllChildren_(
               theme.children, gettextCatalog
               )
           );
         }
-        var dedup = [];
-        goog.array.removeDuplicates(this.layers_, dedup,
+        var dedup2 = [];
+        goog.array.removeDuplicates(dedup, dedup2,
             /**
          * @constructor
          * @dict
          */
             (function(element) {
               return element['id'];
-            }));
-        this.layers_ = dedup;
-        bloodhound.clear();
+            })
+        );
+        goog.array.extend(this.layers_, dedup2);
         bloodhound.add(this.layers_);
       }, this)
   );
@@ -286,7 +313,12 @@ app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
     if (!node) return; //stop error propagating if no node is found
     layer = this.getLayerFunc_(node);
   } else if (typeof input === 'object') {
-    layer = this.getLayerFunc_(input);
+    if (goog.object.containsKey(input, 'bglayer')) {
+     this.backgroundLayerMgr_.set(this['map'], input['bglayer']);
+     return;
+    } else {
+      layer = this.getLayerFunc_(input);
+    }
   }
   var map = this['map'];
   if (map.getLayers().getArray().indexOf(layer) <= 0) {
