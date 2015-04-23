@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-04-22 09:10+0000\n"
+"PO-Revision-Date: 2015-04-22 09:19+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -176,7 +176,7 @@ msgstr "Recherche"
 
 #: geoportailv3/static/js/search/search.html
 msgid "search_key_words"
-msgstr ""
+msgstr "Recherche adresse, parcelles, cartes ..."
 
 #: geoportailv3/templates/index.html
 msgid "share"
