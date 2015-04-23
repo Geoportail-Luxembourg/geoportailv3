@@ -1,3 +1,16 @@
+#clear-button {
+    position: absolute;
+    top: 0;
+    margin: 15px 0px 0px 225px;
+    display: none;
+    cursor: pointer; 
+    cursor: hand;
+    color: white;
+    opacity: 0.5;
+    &:hover {
+        opacity: 1;
+    }
+}
 span.twitter-typeahead {
     .placeholder-text:-moz-placeholder {
         opacity: 0.5;
@@ -13,6 +26,7 @@ span.twitter-typeahead {
     }
     .form-control {
         min-width: 250px;
+        position: relative;
     }
     .tt-dropdown-menu {
         position: absolute;

@@ -43,11 +43,26 @@ app.searchDirective = function(appSearchTemplateUrl) {
          * @param {angular.Attributes} attrs Atttributes
          */
         function(scope, element, attrs) {
-          // Empty the search field on focus and blur.
-          element.find('input').on('focus blur', function() {
+          // Empty the search field on focus
+          element.find('input').on('focus', function() {
             $(this).val('');
             $(this).addClass('placeholder-text');
           });
+          $('#clear-button').on('click',
+              goog.bind(function(scope) {
+                $(this).find('input').val('').trigger('input');
+                scope['ctrl'].featureOverlay_.getFeatures().clear();
+              },element, scope));
+
+          element.find('input').on(
+              'input propertyChange focus blur', function() {
+                var clearButton = $('#clear-button');
+                if ($(this).val() === '') {
+                  clearButton.css('display', 'none');
+                } else {
+                  clearButton.css('display', 'block');
+                }
+              });
         }
   };
 };
