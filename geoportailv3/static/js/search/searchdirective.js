@@ -57,7 +57,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
           element.find('input').on(
               'input propertyChange focus blur', function() {
                 var clearButton =
-                  $(this).parents('.form-group').find('span.clear-button');
+                    $(this).parents('.form-group').find('span.clear-button');
                 if ($(this).val() === '') {
                   clearButton.css('display', 'none');
                 } else {
@@ -301,9 +301,9 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
         var dedup2 = [];
         goog.array.removeDuplicates(dedup, dedup2,
             /**
-         * @constructor
-         * @dict
-         */
+            * @constructor
+            * @dict
+            */
             (function(element) {
               return element['id'];
             })
