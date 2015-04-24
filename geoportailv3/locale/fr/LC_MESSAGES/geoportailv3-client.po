@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-04-22 09:19+0000\n"
+"PO-Revision-Date: 2015-04-24 13:14+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr ""
 
 #: geoportailv3/static/js/backgroundlayer/backgroundlayer.html
 msgid "Background layer:"
-msgstr ""
+msgstr "Couche de fond:"
 
 #: geoportailv3/templates/index.html
 msgid "Catalog"
@@ -173,6 +173,38 @@ msgstr "Imprimer"
 #: geoportailv3/templates/index.html
 msgid "search"
 msgstr "Recherche"
+
+#: geoportailv3/static/js/search/search.html
+msgid "hydro_km"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html
+msgid "biotope"
+msgstr "Biotope"
+
+#: geoportailv3/static/js/search/search.html
+msgid "hydro"
+msgstr "Cours d'eau"
+
+#: geoportailv3/static/js/search/search.html
+msgid "asta_esp"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html
+msgid "Parcelle"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html
+msgid "Adresse"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html
+msgid "FLIK"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html
+msgid "lieu_dit"
+msgstr "Lieu-dit"
 
 #: geoportailv3/static/js/search/search.html
 msgid "search_key_words"
@@ -2403,7 +2435,7 @@ msgstr "Carte topographique"
 
 #: l_wmts.656
 msgid "orthogr_2013_global"
-msgstr ""
+msgstr "Images aériennes"
 
 #: l_wmts.657
 msgid "basemap_global"
