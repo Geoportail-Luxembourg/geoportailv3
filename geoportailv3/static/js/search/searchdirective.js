@@ -174,7 +174,7 @@ app.SearchDirectiveController =
     })
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
-    displayKey: 'translated_name',
+    displayKey: 'translatedName',
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
         return '<div class="header">' +
@@ -184,7 +184,7 @@ app.SearchDirectiveController =
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
-        var html = '<p>' + suggestion['translated_name'];
+        var html = '<p>' + suggestion.translatedName;
         if (!goog.object.containsKey(suggestion, 'bglayer')) {
           scope['click'] = goog.bind(function(event) {
             this.showLayerinfo_(this.getLayerFunc_(suggestion));
@@ -259,7 +259,7 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
 app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
     function() {
   var bloodhound = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('translated_name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('translatedName'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     local: []
   });
@@ -283,7 +283,7 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
         goog.array.forEach(bgLayers, function(bgLayer) {
           var bgLayerObj = {};
           bgLayerObj.bglayer = bgLayer;
-          bgLayerObj.translated_name =
+          bgLayerObj.translatedName =
               gettextCatalog.getString(bgLayer.values_.label);
           bloodhound.add([bgLayerObj]);
         }, this);
@@ -328,11 +328,10 @@ app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
       return goog.object.containsKey(element, 'name') &&
           goog.object.containsValue(element, input);
     });
-    if (!node) return; //stop error propagating if no node is found
     layer = this.getLayerFunc_(node);
   } else if (typeof input === 'object') {
     if (goog.object.containsKey(input, 'bglayer')) {
-      this.backgroundLayerMgr_.set(this['map'], input['bglayer']);
+      this.backgroundLayerMgr_.set(this['map'], input.bglayer);
       return;
     } else {
       layer = this.getLayerFunc_(input);
@@ -360,7 +359,7 @@ app.SearchDirectiveController.getAllChildren_ =
           element[i].children, gettextCatalog)
       );
     } else {
-      element[i].translated_name = gettextCatalog.getString(element[i].name);
+      element[i].translatedName = gettextCatalog.getString(element[i].name);
       array.push(element[i]);
     }
   }
