@@ -48,7 +48,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
             $(this).val('');
             $(this).addClass('placeholder-text');
           });
-          $('#clear-button').on('click',
+          element.find('span.clear-button').on('click',
               goog.bind(function(scope) {
                 $(this).find('input').val('').trigger('input');
                 scope['ctrl'].featureOverlay_.getFeatures().clear();
@@ -56,7 +56,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
 
           element.find('input').on(
               'input propertyChange focus blur', function() {
-                var clearButton = $('#clear-button');
+                var clearButton =
+                  $(this).parents('.form-group').find('span.clear-button');
                 if ($(this).val() === '') {
                   clearButton.css('display', 'none');
                 } else {
