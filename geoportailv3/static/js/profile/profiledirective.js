@@ -38,7 +38,7 @@ app.profileDirective = function(appProfileTemplateUrl) {
     restrict: 'E',
     scope: {
       'profileData': '=appProfileData',
-      'profileOpen': '=appProfileOpen',
+      'profileInteraction': '=appProfileInteraction',
       'map': '=appProfileMap'
     },
     controller: 'AppProfileController',
@@ -111,6 +111,11 @@ app.ProfileController = function($scope) {
     style: this.style_
   });
 
+  /**
+   * @type {ol.geom.LineString}
+   * @private
+   */
+  this.line_ = null;
 
   /**
    * @param {Object} item
@@ -152,7 +157,7 @@ app.ProfileController = function($scope) {
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
       function(evt) {
-        if (evt.dragging || !goog.isDef(this.line_)) {
+        if (evt.dragging || goog.isNull(this.line_)) {
           return;
         }
         var coordinate = this['map'].getEventCoordinate(evt.originalEvent);
@@ -226,6 +231,8 @@ app.ProfileController = function($scope) {
             p.getCoordinates().concat(newVal[i]['dist']));
       }
       this.line_ = lineString;
+    } else {
+      this.line_ = null;
     }
   }, this));
 };

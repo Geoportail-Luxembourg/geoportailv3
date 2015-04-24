@@ -13,11 +13,13 @@
 goog.provide('app.measureDirective');
 
 goog.require('app');
+goog.require('app.profileDirective');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
+goog.require('ol.Object');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
@@ -27,18 +29,17 @@ goog.require('ol.style.Style');
 
 
 /**
+ * @param {angular.$compile} $compile The compile provider.
  * @param {string} appMeasureTemplateUrl Url to measure template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.measureDirective = function(appMeasureTemplateUrl) {
+app.measureDirective = function($compile, appMeasureTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
       'map': '=appMeasureMap',
-      'active': '=appMeasureActive',
-      'profileData': '=appProfileData',
-      'profileOpen': '=appProfileOpen'
+      'active': '=appMeasureActive'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -144,6 +145,11 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   });
 
   /**
+   * @type {array<object>}
+   */
+  this['profileData'] = undefined;
+
+  /**
    * @type {ngeo.interaction.MeasureLength}
    */
   this['measureLength'] = measureLength;
@@ -221,20 +227,22 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
         var config = {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         };
-        this['profileOpen'] = true;
         $http.post(this.profilejsonUrl_, req, config).then(
             goog.bind(function(resp) {
               this['profileData'] = resp.data['profile'];
             }, this));
       }, undefined, this);
 
-  $scope.$watch(goog.bind(function() {
-    return this['measureProfile'].getActive();
-  }, this), goog.bind(function(newVal) {
-    if (newVal === false) {
-      this['profileOpen'] = false;
-    }
-  }, this));
+  goog.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
+      /**
+       * @param {ol.ObjectEvent} evt Change active event.
+       */
+      function(evt) {
+        if (!measureProfile.getActive()) {
+          this['profileData'] = undefined;
+          $scope.$applyAsync();
+        }
+      }, undefined, this);
 
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.

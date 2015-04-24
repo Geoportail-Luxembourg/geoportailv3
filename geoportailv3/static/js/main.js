@@ -19,7 +19,6 @@ goog.require('app.layermanagerDirective');
 goog.require('app.mapDirective');
 goog.require('app.measureDirective');
 goog.require('app.printDirective');
-goog.require('app.profileDirective');
 goog.require('app.projections');
 goog.require('app.projectionselectorDirective');
 goog.require('app.scalelineDirective');

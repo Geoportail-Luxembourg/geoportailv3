@@ -44,11 +44,6 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
     appLayerOpacityManager, langUrls, defaultExtent, ngeoSyncArrays) {
 
   /**
-   * @type {Array.<Object>}
-   */
-  this['profileData'] = [{'y': 0, 'values': {'dhm': 0}, 'dist': 0, 'x': 0}];
-
-  /**
    * @type {angularGettext.Catalog}
    * @private
    */
@@ -110,11 +105,6 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
    * @type {boolean}
    */
   this['userOpen'] = false;
-
-  /**
-   * @type {boolean}
-   */
-  this['profileOpen'] = false;
 
   /**
    * @type {Array}
