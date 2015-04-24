@@ -16,6 +16,8 @@ goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
+goog.require('goog.array');
+goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.searchDirective');
