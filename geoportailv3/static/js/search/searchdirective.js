@@ -80,7 +80,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {app.Themes} appThemes Themes service.
  * @param {angular.$compile} $compile Angular compile service.
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
- *     create GeoJSON Bloodhound service.o
+ *     create GeoJSON Bloodhound service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
