@@ -172,7 +172,8 @@ app.Themes.prototype.getThemesObject = function() {
  */
 app.Themes.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(this.treeUrl_, {
-    params: goog.isDef(roleId) ? {'role': roleId} : {}
+    params: goog.isDef(roleId) ? {'role': roleId} : {},
+    cache: false
   }).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
