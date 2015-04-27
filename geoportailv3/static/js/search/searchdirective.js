@@ -382,10 +382,45 @@ app.SearchDirectiveController.selected_ =
       'Parcelle': ['parcels', 'parcels_labels'],
       'lieu_dit': ['toponymes'],
       'FLIK': ['asta_flik_parcels_2015'],
-      'asta_esp': ['asta_esp_esp']
+      'asta_esp': ['asta_esp_esp'],
+      'editus_poi_285': ['editus_poi_285'],
+      'editus_poi_286': ['editus_poi_286'],
+      'editus_poi_287': ['editus_poi_287'],
+      'editus_poi_289': ['editus_poi_289'],
+      'editus_poi_290': ['editus_poi_290'],
+      'editus_poi_291': ['editus_poi_291'],
+      'editus_poi_292': ['editus_poi_292'],
+      'editus_poi_293': ['editus_poi_293'],
+      'editus_poi_294': ['editus_poi_294'],
+      'editus_poi_295': ['editus_poi_295'],
+      'editus_poi_296': ['editus_poi_296'],
+      'editus_poi_297': ['editus_poi_297'],
+      'editus_poi_298': ['editus_poi_298'],
+      'editus_poi_299': ['editus_poi_299']
     };
-    var showGeom = ['hydro', 'Adresse', 'FLIK', 'biotope',
-      'hydro_km', 'asta_esp', 'Parcelle'];
+    var showGeom = [
+      'hydro',
+      'Adresse',
+      'FLIK',
+      'biotope',
+      'editus_poi_285',
+      'editus_poi_286',
+      'editus_poi_287',
+      'editus_poi_289',
+      'editus_poi_290',
+      'editus_poi_291',
+      'editus_poi_292',
+      'editus_poi_293',
+      'editus_poi_294',
+      'editus_poi_295',
+      'editus_poi_296',
+      'editus_poi_297',
+      'editus_poi_298',
+      'editus_poi_299',
+      'hydro_km',
+      'asta_esp',
+      'Parcelle'
+    ];
     var map = /** @type {ol.Map} */ (this['map']);
     var feature = /** @type {ol.Feature} */ (suggestion);
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
