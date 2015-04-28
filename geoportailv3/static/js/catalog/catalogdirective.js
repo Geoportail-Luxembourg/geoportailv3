@@ -17,6 +17,8 @@ goog.provide('app.catalogDirective');
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.Themes');
+goog.require('app.ThemesEventType');
+goog.require('goog.events');
 goog.require('ngeo.layertreeDirective');
 
 
@@ -57,23 +59,34 @@ app.module.directive('appCatalog', app.catalogDirective);
 app.CatalogController = function($scope, appThemes,
     appGetLayerForCatalogNode) {
 
-  $scope.$watch(goog.bind(function() {
-    return this['currentTheme'];
-  }, this), goog.bind(function() {
-    appThemes.getThemeObject(this['currentTheme']).then(goog.bind(
-        /**
-         * @param {Object} tree Tree object for the theme.
-         */
-        function(tree) {
-          this['tree'] = tree;
-        }, this));
-  }, this));
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
 
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+      /**
+       * @param {goog.events.Event} evt Event.
+       */
+      function(evt) {
+        this.setTree_();
+      }, undefined, this);
+
+  $scope.$watch(goog.bind(function() {
+    return this['currentTheme'];
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      this.setTree_();
+    }
+  }, this));
+
 };
 
 
@@ -87,6 +100,20 @@ app.CatalogController = function($scope, appThemes,
 app.CatalogController.prototype.getLayer = function(node) {
   var layer = this.getLayerFunc_(node);
   return layer;
+};
+
+
+/**
+ * @private
+ */
+app.CatalogController.prototype.setTree_ = function() {
+  this.appThemes_.getThemeObject(this['currentTheme']).then(goog.bind(
+      /**
+       * @param {Object} tree Tree object for the theme.
+       */
+      function(tree) {
+        this['tree'] = tree;
+      }, this));
 };
 
 

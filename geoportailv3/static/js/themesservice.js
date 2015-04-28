@@ -4,11 +4,13 @@
  * objects in the tree returned by the "themes" web service.
  */
 goog.provide('app.Themes');
+goog.provide('app.ThemesEventType');
 
 goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
+goog.require('goog.events.EventTarget');
 
 
 /**
@@ -17,9 +19,18 @@ goog.require('goog.asserts');
 app.ThemesResponse;
 
 
+/**
+ * @enum {string}
+ */
+app.ThemesEventType = {
+  LOAD: 'load'
+};
+
+
 
 /**
  * @constructor
+ * @extends {goog.events.EventTarget}
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
@@ -27,6 +38,14 @@ app.ThemesResponse;
  * @ngInject
  */
 app.Themes = function($http, treeUrl, appGetWmtsLayer, appBlankLayer) {
+
+  goog.base(this);
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.$http_ = $http;
 
   /**
    * @type {app.GetWmtsLayer}
@@ -41,18 +60,18 @@ app.Themes = function($http, treeUrl, appGetWmtsLayer, appBlankLayer) {
   this.blankLayer_ = appBlankLayer;
 
   /**
-   * @type {angular.$q.Promise}
+   * @type {string}
    * @private
    */
-  this.promise_ = $http.get(treeUrl).then(
-      /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {Object} The "themes" web service response.
-       */
-      function(resp) {
-        return /** @type {app.ThemesResponse} */ (resp.data);
-      });
+  this.treeUrl_ = treeUrl;
+
+  /**
+   * @type {?angular.$q.Promise}
+   * @private
+   */
+  this.promise_ = null;
 };
+goog.inherits(app.Themes, goog.events.EventTarget);
 
 
 /**
@@ -88,6 +107,7 @@ app.Themes.findTheme_ = function(themes, themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getBgLayers = function() {
+  goog.asserts.assert(!goog.isNull(this.promise_));
   return this.promise_.then(goog.bind(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -115,6 +135,7 @@ app.Themes.prototype.getBgLayers = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemeObject = function(themeName) {
+  goog.asserts.assert(!goog.isNull(this.promise_));
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -132,6 +153,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemesObject = function() {
+  goog.asserts.assert(!goog.isNull(this.promise_));
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -142,5 +164,26 @@ app.Themes.prototype.getThemesObject = function() {
         return themes;
       });
 };
+
+
+/**
+ * @param {number|undefined} roleId The role id to send in the request.
+ * Load themes from the "themes" service.
+ */
+app.Themes.prototype.loadThemes = function(roleId) {
+  this.promise_ = this.$http_.get(this.treeUrl_, {
+    params: goog.isDef(roleId) ? {'role': roleId} : {},
+    cache: false
+  }).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {Object} The "themes" web service response.
+       */
+      function(resp) {
+        this.dispatchEvent(app.ThemesEventType.LOAD);
+        return /** @type {app.ThemesResponse} */ (resp.data);
+      }, this));
+};
+
 
 app.module.service('appThemes', app.Themes);

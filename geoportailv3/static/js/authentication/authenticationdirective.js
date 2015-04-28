@@ -11,6 +11,9 @@ goog.require('app');
 app.authenticationDirective = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
+    scope: {
+      'roleId': '=appAuthenticationRoleid'
+    },
     controller: 'AppAuthenticationController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -66,32 +69,33 @@ app.AuthenticationController = function($http, loginUrl, logoutUrl,
    */
   this.http_ = $http;
 
-  /**
-   * @type {string}
-   */
-  this['login'] = null;
-
 
   /**
-   * @type {string}
+   * @type {string|undefined}
    */
-  this['email'] = null;
+  this['login'] = undefined;
 
 
   /**
-   * @type {string}
+   * @type {string|undefined}
    */
-  this['role'] = null;
+  this['email'] = undefined;
+
 
   /**
-   * @type {number}
+   * @type {string|undefined}
    */
-  this['role_id'] = 0;
+  this['role'] = undefined;
 
   /**
-   * @type {string}
+   * @type {number|undefined}
    */
-  this['name'] = null;
+  this['roleId'] = undefined;
+
+  /**
+   * @type {string|undefined}
+   */
+  this['name'] = undefined;
 
   /**
    * @type {boolean}
@@ -121,12 +125,13 @@ app.AuthenticationController.prototype.authenticate = function(credentials) {
         if (status == 200) {
           that.getUserInfo();
           that['isError'] = false;
-        }else {
+        } else {
           that['isError'] = true;
         }
-      }).error(function(data, status, headers, config) {
-    that['isError'] = true;
-  });
+      }).error(
+      function(data, status, headers, config) {
+        that['isError'] = true;
+      });
 };
 
 
@@ -144,14 +149,15 @@ app.AuthenticationController.prototype.logout = function() {
         if (status == 200) {
           that.getUserInfo();
           that['isError'] = false;
-        }else {
+        } else {
           that.getUserInfo();
           that['isError'] = true;
         }
-      }).error(function(data, status, headers, config) {
-    that.getUserInfo();
-    that['isError'] = true;
-  });
+      }).error(
+      function(data, status, headers, config) {
+        that.getUserInfo();
+        that['isError'] = true;
+      });
 };
 
 
@@ -175,13 +181,13 @@ app.AuthenticationController.prototype.getUserInfo = function() {
               data['mail'],
               data['sn']
           );
-        }else {
-          that.setUserInfo(null, null, null, null, null);
+        } else {
+          that.clearUserInfo();
         }
-
-      }).error(function(data, status, headers, config) {
-    that.setUserInfo(null, null, null, null, null);
-  });
+      }).error(
+      function(data, status, headers, config) {
+        that.clearUserInfo();
+      });
 };
 
 
@@ -190,7 +196,7 @@ app.AuthenticationController.prototype.getUserInfo = function() {
  * @export
  */
 app.AuthenticationController.prototype.isAuthenticated = function() {
-  if (goog.isDefAndNotNull(this['login']) && this['login'].length > 0) {
+  if (goog.isDef(this['login']) && this['login'].length > 0) {
     return true;
   }
   return false;
@@ -207,17 +213,26 @@ app.AuthenticationController.prototype.hasError = function() {
 
 
 /**
- * @param {?string} login Login.
- * @param {?string} role Role.
- * @param {?number} role_id Role id.
- * @param {?string} mail Mail.
- * @param {?string} name Name.
+ * Clear the user information. This happens when logging out and in case
+ * of error.
+ */
+app.AuthenticationController.prototype.clearUserInfo = function() {
+  this.setUserInfo(undefined, undefined, undefined, undefined, undefined);
+};
+
+
+/**
+ * @param {string|undefined} login Login.
+ * @param {string|undefined} role Role.
+ * @param {number|undefined} roleId Role id.
+ * @param {string|undefined} mail Mail.
+ * @param {string|undefined} name Name.
  */
 app.AuthenticationController.prototype.setUserInfo = function(
-    login, role, role_id, mail, name) {
+    login, role, roleId, mail, name) {
   this['login'] = login;
   this['role'] = role;
-  this['role_id'] = role_id;
+  this['roleId'] = roleId;
   this['mail'] = mail;
   this['name'] = name;
 };
