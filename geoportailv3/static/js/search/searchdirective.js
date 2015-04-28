@@ -26,7 +26,7 @@ goog.require('ngeo.searchDirective');
 /**
  * @typedef {{bgLayer: ol.layer.Layer, translatedName: string}}
  */
-app.BaseLayerSuggestion;
+app.BackgroundLayerSuggestion;
 
 
 /**
@@ -193,13 +193,13 @@ app.SearchDirectiveController =
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
   /** @type {Bloodhound} */
-  var BaseLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
+  var BackgroundLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
   $scope.$on('gettextLanguageChanged', goog.bind(function(event, args) {
     this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
-    this.createLocalBaseLayerData_(
-        appThemes, BaseLayerBloodhoundEngine, gettextCatalog);
+    this.createLocalBackgroundLayerData_(
+        appThemes, BackgroundLayerBloodhoundEngine, gettextCatalog);
   }, this));
 
 
@@ -223,8 +223,6 @@ app.SearchDirectiveController =
       },
       suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
-
-        // A scope for the ng-click on the suggestion's « i » button.
         var scope = $scope.$new(true);
         scope['feature'] = feature;
         scope['click'] = function(event) {
@@ -240,6 +238,10 @@ app.SearchDirectiveController =
     })
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
+    /**
+     * @constructor
+     * @param {Object} suggestion
+     */
     displayKey: function(suggestion) {
       return suggestion.translatedName;
     },
@@ -263,7 +265,11 @@ app.SearchDirectiveController =
       }, this)
     })
   },{
-    source: BaseLayerBloodhoundEngine.ttAdapter(),
+    source: BackgroundLayerBloodhoundEngine.ttAdapter(),
+    /**
+     * @constructor
+     * @param {app.BackgroundLayerSuggestion} suggestion
+     */
     displayKey: function(suggestion) {
       return suggestion.translatedName;
     },
@@ -273,14 +279,19 @@ app.SearchDirectiveController =
             gettextCatalog.getString('Background Layers') +
             '</div>';
       },
-      suggestion: goog.bind(function(suggestion) {
-        var scope = $scope.$new(true);
-        scope['object'] = suggestion;
-        var html = '<p>' + suggestion.translatedName;
-        html += ' (' + gettextCatalog.getString('Background') + ') ';
-        html += '</p>';
-        return $compile(html)(scope);
-      }, this)
+      suggestion: goog.bind(
+          /**
+          * @constructor
+          * @param {app.BackgroundLayerSuggestion} suggestion
+          */
+          function(suggestion) {
+            var scope = $scope.$new(true);
+            scope['object'] = suggestion;
+            var html = '<p>' + suggestion.translatedName;
+            html += ' (' + gettextCatalog.getString('Background') + ') ';
+            html += '</p>';
+            return $compile(html)(scope);
+          }, this)
     })
   }
   ];
@@ -361,7 +372,7 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @private
  */
-app.SearchDirectiveController.prototype.createLocalBaseLayerData_ =
+app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
   bloodhound.clear();
   appThemes.getBgLayers().then(
@@ -369,7 +380,7 @@ app.SearchDirectiveController.prototype.createLocalBaseLayerData_ =
         var suggestions = goog.array.map(bgLayers,
             /**
            * @param {ol.layer.Layer} bgLayer
-           * @return {app.BaseLayerSuggestion}
+           * @return {app.BackgroundLayerSuggestion}
            */
             function(bgLayer) {
               return {
@@ -409,9 +420,9 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
         var dedup2 = [];
         goog.array.removeDuplicates(dedup, dedup2,
             /**
-            * @constructor
-            * @dict
-            */
+           * @constructor
+           * @dict
+           */
             (function(element) {
               return element['id'];
             })
@@ -424,10 +435,10 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
 
 
 /**
- * @param {(app.BaseLayerSuggestion)} input
+ * @param {(app.BackgroundLayerSuggestion)} input
  * @private
  */
-app.SearchDirectiveController.prototype.setBaseLayer_ = function(input) {
+app.SearchDirectiveController.prototype.setBackgroundLayer_ = function(input) {
   this.backgroundLayerMgr_.set(this['map'], input.bgLayer);
 };
 
@@ -479,7 +490,7 @@ app.SearchDirectiveController.getAllChildren_ =
 
 /**
  * @param {jQuery.event} event
- * @param {(ol.Feature|Object|app.BaseLayerSuggestion)} suggestion
+ * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
  * @param {number} dataset Typeahead dataset ID.
  * @this {app.SearchDirectiveController}
  * @private
@@ -506,8 +517,9 @@ app.SearchDirectiveController.selected_ =
     }, this));
   } else if (dataset === 1) { //Layer
     this.addLayerToMap_(/** @type {Object} */ (suggestion));
-  } else if (dataset === 2) { //BaseLayer
-    this.setBaseLayer_(/** @type {app.BaseLayerSuggestion} */ (suggestion));
+  } else if (dataset === 2) { //BackgroundLayer
+    this.setBackgroundLayer_(
+        /** @type {app.BackgroundLayerSuggestion} */ (suggestion));
   }
 };
 
