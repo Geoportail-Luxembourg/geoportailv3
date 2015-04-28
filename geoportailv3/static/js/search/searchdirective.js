@@ -24,6 +24,12 @@ goog.require('ngeo.searchDirective');
 
 
 /**
+ * @typedef {{bgLayer: ol.layer.Layer, translatedName: string}}
+ */
+app.BaseLayerSuggestion;
+
+
+/**
  * @return {angular.Directive} The Directive Object Definition
  * @param {string} appSearchTemplateUrl
  * @ngInject
@@ -95,6 +101,60 @@ app.SearchDirectiveController =
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
         appGetLayerForCatalogNode, appShowLayerinfo, 
         ngeoBackgroundLayerMgr, searchServiceUrl) {
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.layerLookup_ = {
+    'Adresse': ['addresses'],
+    'Parcelle': ['parcels', 'parcels_labels'],
+    'lieu_dit': ['toponymes'],
+    'FLIK': ['asta_flik_parcels_2015'],
+    'asta_esp': ['asta_esp_esp'],
+    'editus_poi_285': ['editus_poi_285'],
+    'editus_poi_286': ['editus_poi_286'],
+    'editus_poi_287': ['editus_poi_287'],
+    'editus_poi_289': ['editus_poi_289'],
+    'editus_poi_290': ['editus_poi_290'],
+    'editus_poi_291': ['editus_poi_291'],
+    'editus_poi_292': ['editus_poi_292'],
+    'editus_poi_293': ['editus_poi_293'],
+    'editus_poi_294': ['editus_poi_294'],
+    'editus_poi_295': ['editus_poi_295'],
+    'editus_poi_296': ['editus_poi_296'],
+    'editus_poi_297': ['editus_poi_297'],
+    'editus_poi_298': ['editus_poi_298'],
+    'editus_poi_299': ['editus_poi_299']
+  };
+
+  /**
+   * @type {Array.<string>}
+   * @private
+   */
+  this.showGeom_ = [
+    'hydro',
+    'Adresse',
+    'FLIK',
+    'biotope',
+    'editus_poi_285',
+    'editus_poi_286',
+    'editus_poi_287',
+    'editus_poi_289',
+    'editus_poi_290',
+    'editus_poi_291',
+    'editus_poi_292',
+    'editus_poi_293',
+    'editus_poi_294',
+    'editus_poi_295',
+    'editus_poi_296',
+    'editus_poi_297',
+    'editus_poi_298',
+    'editus_poi_299',
+    'hydro_km',
+    'asta_esp',
+    'Parcelle'
+  ];
   /**
    * @type {Array.<ol.layer.Layer>}
    * @private
@@ -128,12 +188,18 @@ app.SearchDirectiveController =
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       ngeoCreateGeoJSONBloodhound, searchServiceUrl);
+
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
+
+  /** @type {Bloodhound} */
+  var BaseLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
   $scope.$on('gettextLanguageChanged', goog.bind(function(event, args) {
     this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
+    this.createLocalBaseLayerData_(
+        appThemes, BaseLayerBloodhoundEngine, gettextCatalog);
   }, this));
 
 
@@ -174,7 +240,9 @@ app.SearchDirectiveController =
     })
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
-    displayKey: 'translatedName',
+    displayKey: function(suggestion) {
+      return suggestion.translatedName;
+    },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
         return '<div class="header">' +
@@ -185,15 +253,31 @@ app.SearchDirectiveController =
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
         var html = '<p>' + suggestion.translatedName;
-        if (!goog.object.containsKey(suggestion, 'bglayer')) {
-          scope['click'] = goog.bind(function(event) {
-            this.showLayerinfo_(this.getLayerFunc_(suggestion));
-            event.stopPropagation();
-          }, this);
-          html += '<button ng-click="click($event)">i</button>';
-        } else {
-          html += ' (' + gettextCatalog.getString('Background') + ') ';
-        }
+        scope['click'] = goog.bind(function(event) {
+          this.showLayerinfo_(this.getLayerFunc_(suggestion));
+          event.stopPropagation();
+        }, this);
+        html += '<button ng-click="click($event)">i</button>';
+        html += '</p>';
+        return $compile(html)(scope);
+      }, this)
+    })
+  },{
+    source: BaseLayerBloodhoundEngine.ttAdapter(),
+    displayKey: function(suggestion) {
+      return suggestion.translatedName;
+    },
+    templates: /** @type {TypeaheadTemplates} */({
+      header: function() {
+        return '<div class="header">' +
+            gettextCatalog.getString('Background Layers') +
+            '</div>';
+      },
+      suggestion: goog.bind(function(suggestion) {
+        var scope = $scope.$new(true);
+        scope['object'] = suggestion;
+        var html = '<p>' + suggestion.translatedName;
+        html += ' (' + gettextCatalog.getString('Background') + ') ';
         html += '</p>';
         return $compile(html)(scope);
       }, this)
@@ -212,7 +296,8 @@ app.SearchDirectiveController =
  * @return {ol.FeatureOverlay} The feature overlay.
  * @private
  */
-app.SearchDirectiveController.prototype.createFeatureOverlay_ = function() {
+app.SearchDirectiveController.prototype.createFeatureOverlay_ =
+    function() {
   var featureFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
@@ -259,7 +344,9 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
 app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
     function() {
   var bloodhound = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('translatedName'),
+    datumTokenizer: function(datum) {
+      return Bloodhound.tokenizers.whitespace(datum.translatedName);
+    },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     local: []
   });
@@ -274,21 +361,40 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @private
  */
+app.SearchDirectiveController.prototype.createLocalBaseLayerData_ =
+    function(appThemes, bloodhound, gettextCatalog) {
+  bloodhound.clear();
+  appThemes.getBgLayers().then(
+      goog.bind(function(bgLayers) {
+        var suggestions = goog.array.map(bgLayers,
+            /**
+           * @param {ol.layer.Layer} bgLayer
+           * @return {app.BaseLayerSuggestion}
+           */
+            function(bgLayer) {
+              return {
+                bgLayer: bgLayer,
+                translatedName: gettextCatalog.getString(
+                    /** @type {string} */ (bgLayer.get('label')))
+              };
+            }
+            );
+        bloodhound.add(suggestions);
+      }, this)
+  );
+};
+
+
+/**
+ * @param {app.Themes} appThemes Themes Service
+ * @param {Bloodhound} bloodhound
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
+ * @private
+ */
 app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
   bloodhound.clear();
   this.layers_ = [];
-  appThemes.getBgLayers().then(
-      goog.bind(function(bgLayers) {
-        goog.array.forEach(bgLayers, function(bgLayer) {
-          var bgLayerObj = {};
-          bgLayerObj.bglayer = bgLayer;
-          bgLayerObj.translatedName =
-              gettextCatalog.getString(bgLayer.values_.label);
-          bloodhound.add([bgLayerObj]);
-        }, this);
-      }, this)
-  );
   appThemes.getThemesObject().then(
       goog.bind(function(themes) {
         var dedup = [];
@@ -318,6 +424,15 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
 
 
 /**
+ * @param {(app.BaseLayerSuggestion)} input
+ * @private
+ */
+app.SearchDirectiveController.prototype.setBaseLayer_ = function(input) {
+  this.backgroundLayerMgr_.set(this['map'], input.bgLayer);
+};
+
+
+/**
  * @param {(Object|string)} input
  * @private
  */
@@ -330,12 +445,7 @@ app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
     });
     layer = this.getLayerFunc_(node);
   } else if (typeof input === 'object') {
-    if (goog.object.containsKey(input, 'bglayer')) {
-      this.backgroundLayerMgr_.set(this['map'], input.bglayer);
-      return;
-    } else {
-      layer = this.getLayerFunc_(input);
-    }
+    layer = this.getLayerFunc_(input);
   }
   var map = this['map'];
   if (map.getLayers().getArray().indexOf(layer) <= 0) {
@@ -368,78 +478,36 @@ app.SearchDirectiveController.getAllChildren_ =
 
 
 /**
- * @param {jQuery.event} event Event.
- * @param {(ol.Feature|Object)} suggestion Suggestion.
- * @param {TypeaheadDataset} dataset Dataset.
+ * @param {jQuery.event} event
+ * @param {(ol.Feature|Object|app.BaseLayerSuggestion)} suggestion
+ * @param {number} dataset Typeahead dataset ID.
  * @this {app.SearchDirectiveController}
  * @private
  */
 app.SearchDirectiveController.selected_ =
     function(event, suggestion, dataset) {
-  if (suggestion instanceof ol.Feature) {
-    var layerLookup = {
-      'Adresse': ['addresses'],
-      'Parcelle': ['parcels', 'parcels_labels'],
-      'lieu_dit': ['toponymes'],
-      'FLIK': ['asta_flik_parcels_2015'],
-      'asta_esp': ['asta_esp_esp'],
-      'editus_poi_285': ['editus_poi_285'],
-      'editus_poi_286': ['editus_poi_286'],
-      'editus_poi_287': ['editus_poi_287'],
-      'editus_poi_289': ['editus_poi_289'],
-      'editus_poi_290': ['editus_poi_290'],
-      'editus_poi_291': ['editus_poi_291'],
-      'editus_poi_292': ['editus_poi_292'],
-      'editus_poi_293': ['editus_poi_293'],
-      'editus_poi_294': ['editus_poi_294'],
-      'editus_poi_295': ['editus_poi_295'],
-      'editus_poi_296': ['editus_poi_296'],
-      'editus_poi_297': ['editus_poi_297'],
-      'editus_poi_298': ['editus_poi_298'],
-      'editus_poi_299': ['editus_poi_299']
-    };
-    var showGeom = [
-      'hydro',
-      'Adresse',
-      'FLIK',
-      'biotope',
-      'editus_poi_285',
-      'editus_poi_286',
-      'editus_poi_287',
-      'editus_poi_289',
-      'editus_poi_290',
-      'editus_poi_291',
-      'editus_poi_292',
-      'editus_poi_293',
-      'editus_poi_294',
-      'editus_poi_295',
-      'editus_poi_296',
-      'editus_poi_297',
-      'editus_poi_298',
-      'editus_poi_299',
-      'hydro_km',
-      'asta_esp',
-      'Parcelle'
-    ];
-    var map = /** @type {ol.Map} */ (this['map']);
+  var map = /** @type {ol.Map} */ (this['map']);
+  if (dataset === 0) { //POIs
     var feature = /** @type {ol.Feature} */ (suggestion);
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
         (feature.getGeometry());
     var mapSize = /** @type {ol.Size} */ (map.getSize());
     var features = this.featureOverlay_.getFeatures();
     features.clear();
-    if (goog.array.contains(showGeom, feature.get('layer_name'))) {
+    if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
       features.push(feature);
     }
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
     var layers = /** @type {Array<string>} */
-        (layerLookup[suggestion.get('layer_name')] || []);
+        (this.layerLookup_[suggestion.get('layer_name')] || []);
     goog.array.forEach(layers, goog.bind(function(layer) {
-      this.addLayerToMap_(layer);
+      this.addLayerToMap_(/** @type {string} */ (layer));
     }, this));
-  } else {
-    this.addLayerToMap_(suggestion);
+  } else if (dataset === 1) { //Layer
+    this.addLayerToMap_(/** @type {Object} */ (suggestion));
+  } else if (dataset === 2) { //BaseLayer
+    this.setBaseLayer_(/** @type {app.BaseLayerSuggestion} */ (suggestion));
   }
 };
 
