@@ -239,8 +239,8 @@ app.SearchDirectiveController =
   },{
     source: LayerBloodhoundEngine.ttAdapter(),
     /**
-     * @constructor
      * @param {Object} suggestion
+     * @return {string}
      */
     displayKey: function(suggestion) {
       return suggestion.translatedName;
@@ -267,8 +267,8 @@ app.SearchDirectiveController =
   },{
     source: BackgroundLayerBloodhoundEngine.ttAdapter(),
     /**
-     * @constructor
      * @param {app.BackgroundLayerSuggestion} suggestion
+     * @return {string}
      */
     displayKey: function(suggestion) {
       return suggestion.translatedName;
@@ -281,7 +281,6 @@ app.SearchDirectiveController =
       },
       suggestion: goog.bind(
           /**
-          * @constructor
           * @param {app.BackgroundLayerSuggestion} suggestion
           */
           function(suggestion) {
