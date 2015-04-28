@@ -2,7 +2,9 @@
   <form>
     <div class="col-md-12">
       <div class="form-group">
-        <input type="text" class="form-control" name="title" placeholder="{{'Title'|translate}}">
+        <input type="text" class="form-control" name="title"
+               placeholder="{{'Title'|translate}}"
+               ng-model="ctrl.title">
       </div>
     </div>
     <div class="col-md-12">
@@ -16,18 +18,23 @@
       <div class="form-group">
         <select name="layout" class="form-control"
                 ng-model="ctrl.layout"
-                ng-options="layout as layout[0] | translate for layout in ctrl.layouts"></select>
+                ng-options="layout | translate for layout in ::ctrl.layouts"
+                ng-change="ctrl.changeLayout()">
+        </select>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <select name="scale" class="form-control"
                 ng-model="ctrl.scale"
-                ng-options="scale as scale | translate for scale in ctrl.scales"></select>
+                ng-options="scale | translate for scale in ::ctrl.scales"
+                ng-change="ctrl.changeScale()">
+        </select>
       </div>
     </div>
     <div class="col-md-12">
-      <button type="submit" class="btn btn-default pull-right">PDF</button>
+      <button type="submit" class="btn btn-default pull-right"
+              ng-click="ctrl.print()">PDF</button>
     </div>
   </form>
 </div>

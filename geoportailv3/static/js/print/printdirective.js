@@ -4,9 +4,17 @@
  *
  * Example:
  *
- * <app-print></app-print>
+ * <app-print app-print-map="::mainCtrl.map"></app-print>
  */
 goog.provide('app.printDirective');
+
+
+goog.require('goog.events');
+goog.require('ngeo.CreatePrint');
+goog.require('ngeo.Print');
+goog.require('ngeo.PrintUtils');
+goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 
 
 /**
@@ -18,7 +26,8 @@ app.printDirective = function(appPrintTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appPrintMap'
+      'map': '=appPrintMap',
+      'open': '=appPrintOpen'
     },
     controller: 'AppPrintController',
     controllerAs: 'ctrl',
@@ -31,145 +40,284 @@ app.printDirective = function(appPrintTemplateUrl) {
 app.module.directive('appPrint', app.printDirective);
 
 
-/**
- * @const
- * @private
- */
-app.DOTS_PER_INCH_ = 72;
-
-
-/**
- * @const
- * @private
- */
-app.INCHES_PER_METER_ = 39.37;
-
-
-/**
- * @const
- * @private
- */
-app.PRINT_SCALES_ = [100, 250, 500, 2500, 5000, 10000, 25000, 50000,
-  100000, 500000];
-
-
-/**
- * @const
- * @private
- */
-app.PRINT_DPI_ = 72;
-
-
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.$timeout} $timeout The Angular $timeout service.
+ * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
+ * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
+ * @param {string} printServiceUrl URL to print service.
  * @constructor
  * @export
  * @ngInject
  */
-app.PrintController = function($scope) {
-
-  this['layouts'] = [
-    ['A4 portrait', [550, 760]],
-    ['A4 landscape', [802, 530]],
-    ['A3 portrait', [802, 1108]],
-    ['A3 landscape', [1150, 777]]
-  ];
-
-  this['layout'] = this['layouts'][0];
-
-  this['scales'] = app.PRINT_SCALES_;
+app.PrintController = function($scope, $timeout, ngeoCreatePrint,
+    ngeoPrintUtils, printServiceUrl) {
 
   /**
-   * Draw the print window in a map postcompose listener.
+   * @type {ol.Map}
+   * @private
    */
-  //this['map'].on('postcompose', this.handlePostcompose_, this);
-};
+  this.map_ = this['map'];
+  goog.asserts.assert(goog.isDefAndNotNull(this.map_));
 
+  /**
+   * @type {angular.$timeout}
+   * @private
+   */
+  this.$timeout_ = $timeout;
 
-/**
- * @param {ol.render.Event} evt Postcompose event.
- * @private
- */
-app.PrintController.prototype.handlePostcompose_ = function(evt) {
-  var context = evt.context;
-  var frameState = evt.frameState;
+  /**
+   * @type {ngeo.Print}
+   * @private
+   */
+  this.print_ = ngeoCreatePrint(printServiceUrl);
 
-  var resolution = frameState.viewState.resolution;
+  /**
+   * @type {ngeo.PrintUtils}
+   * @private
+   */
+  this.printUtils_ = ngeoPrintUtils;
 
-  var viewportWidth = frameState.size[0] * frameState.pixelRatio;
-  var viewportHeight = frameState.size[1] * frameState.pixelRatio;
+  /**
+   * @type {Array.<string>}
+   */
+  this['layouts'] = app.PrintController.LAYOUTS_;
 
-  var centerX = viewportWidth / 2;
-  var centerY = viewportHeight / 2;
+  /**
+   * @type {string}
+   */
+  this['layout'] = this['layouts'][0];
 
-  var paperSize = this['layout'][1];
+  /**
+   * @type {Array.<number>}
+   */
+  this['scales'] = app.PrintController.MAP_SCALES_;
 
-  var scale = this.getOptimalScale_(
-      frameState.size, resolution);
+  /**
+   * @type {number}
+   */
+  this['scale'] = -1;
 
-  var ppi = app.DOTS_PER_INCH_;
-  var ipm = app.INCHES_PER_METER_;
+  /**
+   * @type {boolean|undefined}
+   */
+  this['open'] = undefined;
 
-  var extentHalfWidth =
-      (((paperSize[0] / ppi) / ipm) * scale / resolution) / 2;
+  /**
+   * @type {string|undefined}
+   */
+  this['title'] = '';
 
-  var extentHalfHeight =
-      (((paperSize[1] / ppi) / ipm) * scale / resolution) / 2;
+  /**
+   * @type {goog.events.Key}
+   */
+  var postcomposeListenerKey = null;
 
-  var minx = centerX - extentHalfWidth;
-  var miny = centerY - extentHalfHeight;
-  var maxx = centerX + extentHalfWidth;
-  var maxy = centerY + extentHalfHeight;
+  /**
+   * @type {function(ol.render.Event)}
+   */
+  var postcomposeListener = ngeoPrintUtils.createPrintMaskPostcompose(
+      goog.bind(
+          /**
+           * Return the size in dots of the map to print. Depends on
+           * the selected layout.
+           * @return {ol.Size} Size.
+           */
+          function() {
+            var idx = this['layouts'].indexOf(this['layout']);
+            goog.asserts.assert(idx >= 0);
+            return app.PrintController.MAP_SIZES_[idx];
+          }, this),
+      goog.bind(
+          /**
+           * Return the scale of the map to print.
+           * @param {olx.FrameState} frameState Frame state.
+           * @return {number} Scale.
+           */
+          function(frameState) {
+            return this['scale'];
+          }, this));
 
-  context.beginPath();
-  context.moveTo(0, 0);
-  context.lineTo(viewportWidth, 0);
-  context.lineTo(viewportWidth, viewportHeight);
-  context.lineTo(0, viewportHeight);
-  context.lineTo(0, 0);
-  context.closePath();
-
-  context.moveTo(minx, miny);
-  context.lineTo(minx, maxy);
-  context.lineTo(maxx, maxy);
-  context.lineTo(maxx, miny);
-  context.lineTo(minx, miny);
-  context.closePath();
-
-  context.fillStyle = 'rgba(0, 5, 25, 0.5)';
-  context.fill();
-};
-
-
-/**
- * Get the optimal print scale for a size and a resolution.
- * @param {ol.Size} size Size.
- * @param {number} resolution Resolution.
- * @return {number} The optimal scale.
- * @private
- */
-app.PrintController.prototype.getOptimalScale_ = function(size, resolution) {
-  var mapWidth = size[0] * resolution;
-  var mapHeight = size[1] * resolution;
-
-  var paperSize = this['layout'][1];
-  var scaleWidth = mapWidth * app.INCHES_PER_METER_ *
-      app.DOTS_PER_INCH_ / paperSize[0];
-  var scaleHeight = mapHeight * app.INCHES_PER_METER_ *
-      app.DOTS_PER_INCH_ / paperSize[1];
-
-  var pageScale = Math.min(scaleWidth, scaleHeight);
-  var optimal = Infinity;
-
-  var i, ii;
-  for (i = 0, ii = app.PRINT_SCALES_.length; i < ii; i++) {
-    if (pageScale > app.PRINT_SCALES_[i]) {
-      optimal = app.PRINT_SCALES_[i];
+  // Show/hide the print mask based on the value of the "open" property.
+  $scope.$watch(goog.bind(function() {
+    return this['open'];
+  }, this), goog.bind(function(newVal) {
+    if (!goog.isDef(newVal)) {
+      return;
     }
-  }
+    var open = /** @type {boolean} */ (newVal);
+    if (open) {
+      this.useOptimalScale_();
+      goog.asserts.assert(goog.isNull(postcomposeListenerKey));
+      postcomposeListenerKey = goog.events.listen(this.map_,
+          ol.render.EventType.POSTCOMPOSE, postcomposeListener);
+    } else {
+      goog.asserts.assert(!goog.isNull(postcomposeListenerKey));
+      goog.events.unlistenByKey(postcomposeListenerKey);
+      postcomposeListenerKey = null;
+    }
+    this.map_.render();
+  }, this));
 
-  return optimal;
 };
+
+
+/**
+ * @const
+ * @type {Array.<string>}
+ * @private
+ */
+app.PrintController.LAYOUTS_ = [
+  'A4 portrait', 'A4 landscape', 'A3 portrait', 'A3 landscape'
+];
+
+
+/**
+ * @const
+ * @type {Array.<number>}
+ * @private
+ */
+app.PrintController.MAP_SCALES_ = [100, 250, 500, 2500, 5000, 10000,
+  25000, 50000, 100000, 500000];
+
+
+/**
+ * @const
+ * @type {Array.<ol.Size>}
+ * @private
+ */
+app.PrintController.MAP_SIZES_ = [
+  [470, 650], [715, 395], [715, 975], [1065, 640]
+];
+
+
+/**
+ * @const
+ * @type {number}
+ * @private
+ */
+app.PrintController.DPI_ = 72;
+
+
+/**
+ * @export
+ */
+app.PrintController.prototype.changeLayout = function() {
+  this.map_.render();
+};
+
+
+/**
+ * @export
+ */
+app.PrintController.prototype.changeScale = function() {
+  this.map_.render();
+};
+
+
+/**
+ * @export
+ */
+app.PrintController.prototype.print = function() {
+  var map = this.map_;
+
+  var dpi = app.PrintController.DPI_;
+  var scale = this['scale'];
+  var layout = this['layout'];
+
+  // FIXME "description", "name", "url" and "qrimage" are harcoded at
+  // this point.
+
+  var spec = this.print_.createSpec(map, scale, dpi, layout, {
+    'scale': scale,
+    'description': 'Description',
+    'name': this['title'],
+    'url': 'http://g-o.lu/0mf4r',
+    'qrimage': 'http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r'
+  });
+
+  this.print_.createReport(spec).then(
+      angular.bind(this, this.handleCreateReportSuccess_),
+      angular.bind(this, this.handleCreateReportError_));
+};
+
+
+/**
+ * @param {MapFishPrintReportResponse} resp Response.
+ * @private
+ */
+app.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
+  this.getStatus_(resp.ref);
+};
+
+
+/**
+ * @param {string} ref Ref.
+ * @private
+ */
+app.PrintController.prototype.getStatus_ = function(ref) {
+  this.print_.getStatus(ref).then(
+      angular.bind(this, this.handleGetStatusSuccess_, ref),
+      angular.bind(this, this.handleGetStatusError_));
+};
+
+
+/**
+ * @param {MapFishPrintReportResponse} resp Response.
+ * @private
+ */
+app.PrintController.prototype.handleCreateReportError_ = function(resp) {
+  // FIXME
+};
+
+
+/**
+ * @param {string} ref Ref.
+ * @param {MapFishPrintStatusResponse} resp Response.
+ * @private
+ */
+app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
+  var done = resp.done;
+  if (done) {
+    // The report is ready. Open it by changing the window location.
+    window.location.href = this.print_.getReportUrl(ref);
+  } else {
+    // The report is not ready yet. Check again in 1s.
+    var that = this;
+    this.$timeout_(function() {
+      that.getStatus_(ref);
+    }, 1000, false);
+  }
+};
+
+
+/**
+ * @param {Object} data Data.
+ * @private
+ */
+app.PrintController.prototype.handleGetStatusError_ = function(data) {
+  // FIXME
+};
+
+
+/**
+ * Get the optimal print scale for the current map size and resolution,
+ * and for the selected print layout.
+ * @private
+ */
+app.PrintController.prototype.useOptimalScale_ = function() {
+  var mapSize = this.map_.getSize();
+  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+  var mapResolution = this.map_.getView().getResolution();
+  goog.asserts.assert(goog.isDef(mapResolution));
+
+  var idx = this['layouts'].indexOf(this['layout']);
+  goog.asserts.assert(idx >= 0);
+
+  this['scale'] = this.printUtils_.getOptimalScale(mapSize, mapResolution,
+      app.PrintController.MAP_SIZES_[idx], this['scales']);
+};
+
 
 app.module.controller('AppPrintController', app.PrintController);
