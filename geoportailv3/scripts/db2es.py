@@ -20,7 +20,7 @@ def get_cursor():
         'database': 'search',
         'user': 'postgres',
         'password': '',
-        'host': 'luigipw',
+        'host': 'luigi11',
         'port': '5432'
     }
     conn = psycopg2.connect(**source_conf)
@@ -57,7 +57,7 @@ def main():
     env = bootstrap('development.ini')
     request = env['request']
 
-    ensure_index(get_elasticsearch(request), get_index(request), False)
+    ensure_index(get_elasticsearch(request), get_index(request), True)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1

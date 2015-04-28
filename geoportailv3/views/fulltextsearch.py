@@ -42,11 +42,15 @@ class FullTextSearchView(object):
             "query": {
                 "filtered": {
                     "query": {
-                        "match": {
-                            "label": {
-                                "query": query,
-                                "operator": "and"
-                            }
+                        "multi_match": {
+                            "type": "most_fields",
+                            "fields": [
+                                "label.ngram",
+                                "label.exact^2"  # boost exact match
+                            ],
+                            "fuzziness": 0.7,
+                            "operator": "and",
+                            "query": query
                         }
                     },
                     "filter": {

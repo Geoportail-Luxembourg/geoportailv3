@@ -3,36 +3,28 @@ from elasticsearch import Elasticsearch
 
 ES_ANALYSIS = {
     'analysis': {
-        'filter': {
-            'ngram_filter': {
-                'type': 'nGram',
-                'min_gram': 2,
+        'tokenizer': {
+            'ngram_tokenizer': {
+                'type': 'edgeNGram',
+                'min_gram': 1,
                 'max_gram': 20,
                 'token_chars': [
                     'letter',
-                    'digit',
-                    'punctuation',
-                    'symbol'
+                    'digit'
                 ]
             }
         },
         'analyzer': {
             'ngram_analyzer': {
                 'type': 'custom',
-                'tokenizer': 'whitespace',
+                'tokenizer': 'ngram_tokenizer',
                 'filter': [
                     'lowercase',
                     'asciifolding',
-                    'ngram_filter'
                 ]
             },
             'whitespace_analyzer': {
-                'type': 'custom',
-                'tokenizer': 'whitespace',
-                'filter': [
-                    'lowercase',
-                    'asciifolding'
-                ]
+                'type': 'standard',
             }
         }
     }
@@ -45,9 +37,19 @@ ES_MAPPINGS = {
             'layer_name': {'type': 'string', 'index': 'not_analyzed'},
             'label': {
                 'type': 'string',
-                'index_analyzer': 'ngram_analyzer',
-                'search_analyzer': 'whitespace_analyzer'
-                },
+                'fields': {
+                    'ngram': {
+                        'type': 'string',
+                        'index_analyzer': 'ngram_analyzer',
+                        'search_analyzer': 'whitespace_analyzer'
+                    },
+                    'exact': {
+                        'type': 'string',
+                        'index_analyzer': 'whitespace_analyzer',
+                        'search_analyzer': 'whitespace_analyzer'
+                    }
+                }
+            },
             'public': {'type': 'boolean', 'index': 'not_analyzed'},
             'params': {'type': 'string', 'index': 'not_analyzed'},
             'role_id': {'type': 'integer', 'index': 'not_analyzed'},
