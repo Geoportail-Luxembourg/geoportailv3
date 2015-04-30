@@ -3,76 +3,78 @@
     settings = request.registry.settings
     node_modules_path = settings.get('node_modules_path')
     closure_library_path = settings.get('closure_library_path')
-    %>\
-    <!DOCTYPE html>
-    <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
-    <head>
+%>\
+<!DOCTYPE html>
+<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
+  <head>
     <title translate>map_title</title>
     <meta charset="utf-8">
     <meta name="viewport"
-    content="initial-scale=1.0, user-scalable=no, width=device-width">
+          content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    % if debug:
+% if debug:
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
-    % else:
+% else:
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
-    % endif
-    </head>
-    <body data-theme="{{mainCtrl.currentTheme}}">
+% endif
+  </head>
+  <body data-theme="{{mainCtrl.currentTheme}}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="navbar-inner container-fluid">
-            <a href class="pull-left brand" translate>
-                <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
-            </a>
-
-            <ul class="nav navbar-nav pull-right">
-                <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
-                <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
-                <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
-                <app-authentication app-authentication-roleid="mainCtrl.roleId"></app-authentication>
-                </li>
-
-
-                <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
-                <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
-                <ul class="nav toolbox-panel toolbox-panel-top">
-                    <li ng-class="{active: mainCtrl.lang == 'lb'}">
-                    <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
-                    </li>
-                    <li ng-class="{active: mainCtrl.lang == 'fr'}">
-                    <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
-                    </li>
-                    <li ng-class="{active: mainCtrl.lang == 'de'}">
-                    <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
-                    </li>
-                    <li ng-class="{active: mainCtrl.lang == 'en'}">
-                    <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
-                    </li>
-                </ul>
-                </li>
-            </ul>
-            <app-search app-search-map="::mainCtrl.map"></app-search>
+      <div class="container-fluid">
+        <div class="navbar-inner">
+          <a href class="pull-left brand" translate>
+            <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
+          </a>
         </div>
+
+        <ul class="nav navbar-nav pull-right">
+          <li class="visible-xs-inline-block search icon"><a href translate>search</a></li>
+          <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
+            <app-authentication app-authentication-roleid="mainCtrl.roleId"></app-authentication>
+          </li>
+
+
+          <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
+            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
+            <ul class="nav toolbox-panel toolbox-panel-top">
+              <li ng-class="{active: mainCtrl.lang == 'lb'}">
+                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'fr'}">
+                <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'de'}">
+                <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'en'}">
+                <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <app-search app-search-map="::mainCtrl.map"></app-search>
+      </div>
     </header>
 
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
-        <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-            ngeo-resizemap="mainCtrl.map">
-            <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
-                <h2 translate>layers</h2>
-                <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
-                    ✕
-                </button>
-                <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                    <a href="#mylayers" data-toggle="tab">
-                        <span translate>my_layers</span>
-                        <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
-                    </a>
-                    </li>
+      <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
+           ngeo-resizemap="mainCtrl.map">
+        <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
+          <h2 translate>layers</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+            <a href="#mylayers" data-toggle="tab">
+              <span translate>my_layers</span>
+              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+              </a>
+            </li>
             <li role="presentation">
               <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
