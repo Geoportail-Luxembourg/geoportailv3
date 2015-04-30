@@ -143,13 +143,19 @@ header {
   }
 }
 
+@media (min-width: @screen-xs-max){
+  .brand > img {
+    margin: 5px;
+  }
+}
+
 @media (max-width: @screen-xs-max) {
-  .navbar-brand,
+  .brand,
   .navbar-nav,
   .navbar-nav > li > a {
     line-height: 10px;
   }
-  .navbar-brand {
+  > .brand {
     height: 40px;
   }
 }
