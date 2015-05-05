@@ -38,7 +38,6 @@ app.StateManager = function(ngeoLocation) {
    * @private
    */
   this.localStorage_ = new goog.storage.mechanism.HTML5LocalStorage();
-  goog.asserts.assert(this.localStorage_.isAvailable());
 
   /**
    * @type {number}
@@ -56,11 +55,13 @@ app.StateManager = function(ngeoLocation) {
 
   if (paramKeys.length === 0 ||
       (paramKeys.length === 1 && paramKeys[0] == 'debug')) {
-    var count = this.localStorage_.getCount();
-    for (i = 0; i < count; ++i) {
-      key = this.localStorage_.key(i);
-      goog.asserts.assert(!goog.isNull(key));
-      this.initialState_[key] = this.localStorage_.get(key);
+    if (this.localStorage_.isAvailable()) {
+      var count = this.localStorage_.getCount();
+      for (i = 0; i < count; ++i) {
+        key = this.localStorage_.key(i);
+        goog.asserts.assert(!goog.isNull(key));
+        this.initialState_[key] = this.localStorage_.get(key);
+      }
     }
     this.version_ = 3;
   } else {
@@ -104,9 +105,11 @@ app.StateManager.prototype.getInitialValue = function(key) {
  */
 app.StateManager.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
-  var key;
-  for (key in object) {
-    this.localStorage_.set(key, object[key]);
+  if (this.localStorage_.isAvailable()) {
+    var key;
+    for (key in object) {
+      this.localStorage_.set(key, object[key]);
+    }
   }
 };
 
