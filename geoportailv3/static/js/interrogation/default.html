@@ -1,0 +1,16 @@
+<div ng-repeat="layers in ctrl.content">
+  <ul>
+  <li ng-repeat="(layername, layer) in layers">
+    {{layername}}
+    <div ng-repeat="objects in layer">
+        <ul>
+            <li ng-repeat="(key,data) in objects">
+            {{key}} : {{data}}
+            </li>
+        </ul>
+        <br><br><br>
+    </div>
+  </li>
+  </ul>
+  
+</div>

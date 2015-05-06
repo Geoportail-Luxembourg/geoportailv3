@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import sqlahelper
 
 from pyramid.i18n import TranslationStringFactory
 
@@ -15,6 +16,7 @@ _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 
 
+Base = sqlahelper.get_base()
 class LuxLayerInternalWMS(LayerInternalWMS):
     __label__ = _(u"Internal WMS layer")
     __plural__ = _(u"Internal WMS layers")
@@ -52,4 +54,16 @@ class LuxLayerExternalWMS(LayerExternalWMS):
         ForeignKey(_schema + ".layer_external_wms.id"),
         primary_key=True
     )
-    category_id = Column(Integer, label=_(u"Category ID"))
+    category_id = Column(Integer, label=_(u'Category ID'))
+
+class LuxGetfeatureDefinition(Base):
+    __tablename__ = 'lux_getfeature_definition'
+    __table_args__ = {'schema': _schema}
+    
+    id = Column(
+        Integer,
+        primary_key=True
+    )
+    query = Column(Unicode, label=_(u'Table name'))
+    engine = Column(Unicode, label=_(u'Engine'))
+    layer = Column(Unicode, label=_(u'Layer'))

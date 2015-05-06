@@ -9,6 +9,7 @@ from geoportailv3.resources import Root
 from geoportailv3.views.authentication import ldap_user_validator, \
     get_user_from_request
 import ldap
+import sqlalchemy, sqlahelper
 
 
 def main(global_config, **settings):
@@ -52,6 +53,15 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('geoportailv3:locale/')
 
+    # initialize database
+    engines = config.get_settings()['sqlalchemy_engines']
+    if engines:
+        for engine in engines:
+            sqlahelper.add_engine(
+                sqlalchemy.create_engine(engines[engine]), name=engine)
+        
+        
+
     # scan view decorator for adding routes
     config.scan()
 
@@ -61,4 +71,5 @@ def main(global_config, **settings):
     config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/wms')
     config.add_route('qr', '/qr')
+    config.add_route('getfeatureinfo', '/getfeatureinfo')
     return config.make_wsgi_app()
