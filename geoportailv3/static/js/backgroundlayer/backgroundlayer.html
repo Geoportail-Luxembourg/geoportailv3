@@ -6,7 +6,7 @@
     </button>
     <ul class="dropdown-menu" role="menu">
       <li ng-repeat="layer in ::ctrl.bgLayers">
-        <a href ng-click="ctrl.setLayer(layer)">{{::layer.get('label')|translate}}</a>
+        <a href ng-click="ctrl.setLayer(layer)">{{layer.get('label')|translate}}</a>
       </li>
     </ul>
   </div>
