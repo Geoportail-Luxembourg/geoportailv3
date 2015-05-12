@@ -14,6 +14,7 @@
 goog.provide('app.shareDirective');
 
 goog.require('app');
+goog.require('goog.Uri');
 
 
 /**
