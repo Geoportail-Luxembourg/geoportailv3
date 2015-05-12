@@ -38,6 +38,7 @@ app.shareDirective = function(appShareTemplateUrl) {
 app.module.directive('appShare', app.shareDirective);
 
 
+
 /**
  * @ngInject
  * @constructor
@@ -58,7 +59,7 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
    * @type {string}
    */
   this.windowOptions =
-    'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600';
+      'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600';
   /**
    * @type {angular.$window}
    * @private
@@ -71,6 +72,7 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
   this.translate_ = gettextCatalog;
 };
 
+
 /**
  * @export
  * @param {string} service Sharing Service Url.
@@ -78,7 +80,7 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
  */
 app.ShareDirectiveController.prototype.openShareLink = function(service) {
   var serviceUrl = goog.object.containsKey(this.services, service) ?
-    this.services[service].url : false;
+      this.services[service].url : false;
   if (serviceUrl) {
     var googUri = new goog.Uri(serviceUrl);
     googUri.setQueryData(goog.Uri.QueryData.createFromMap({
@@ -88,11 +90,12 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
       'url': this.window_.location.href
     }));
     var popup =
-      this.window_.open(googUri.toString(), '_blank', this.windowOptions);
+        this.window_.open(googUri.toString(), '_blank', this.windowOptions);
     popup.focus();
   }
   return false;
 };
+
 
 /**
  * @export
@@ -103,7 +106,7 @@ app.ShareDirectiveController.prototype.openMailLink = function() {
   googUri.setScheme('mailto');
   googUri.setQueryData(goog.Uri.QueryData.createFromMap({
     'subject': this.window_.document.title +
-      this.translate_.getString(' - link from geoportail.lu'),
+        this.translate_.getString(' - link from geoportail.lu'),
     'body': this.window_.location.href
   }));
   this.window_.open(googUri.toString(), '_self', this.windowOptions);
