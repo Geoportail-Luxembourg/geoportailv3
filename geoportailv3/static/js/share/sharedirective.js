@@ -5,11 +5,8 @@
  *
  * Example:
  *
- * <app-share app-share-map="::mainCtrl.map"></app-share>
+ * <app-share></app-share>
  *
- * Note the use of the one-time binding operator (::) in the map expression.
- * One-time binding is used because we know the map is not going to change
- * during the lifetime of the application.
  */
 goog.provide('app.shareDirective');
 
@@ -26,7 +23,7 @@ app.shareDirective = function(appShareTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appShareMap'
+      'visible': '=appShareVisible'
     },
     controller: 'AppShareController',
     controllerAs: 'ctrl',
