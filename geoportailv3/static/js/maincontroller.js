@@ -143,14 +143,10 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
 
   this.setMap_();
 
-  /**
-   * @type {string}
-   * @private
-   */
-  this.browserLanguage_ =
+  var browserLanguage =
       ngeoGetBrowserLanguage(goog.object.getKeys(this.langUrls_));
 
-  this.switchLanguage(this.browserLanguage_);
+  this.switchLanguage(browserLanguage);
 
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
