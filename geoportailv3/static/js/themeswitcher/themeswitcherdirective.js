@@ -133,11 +133,12 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
           return 'true' == object['metadata']['display_in_switcher'];
         });
         // Check whether the current theme is valid; and if it's not,
-        // use the default theme.
-        var currentTheme = goog.array.find(this['themes'], function(theme) {
+        // use the default theme. A theme is valid if it is present in
+        // the list of themes.
+        var themeIndex = goog.array.findIndex(themes, function(theme) {
           return theme['name'] == this['currentTheme'];
         }, this);
-        if (goog.isNull(currentTheme)) {
+        if (themeIndex < 0) {
           this.switchTheme(app.ThemeswitcherController.DEFAULT_THEME_);
         }
       }, this));
