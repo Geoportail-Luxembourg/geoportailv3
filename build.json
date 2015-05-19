@@ -18,6 +18,7 @@
       "node_modules/openlayers/externs/topojson.js",
       "node_modules/ngeo/externs/angular-gettext.js",
       "node_modules/ngeo/externs/d3.js",
+      "node_modules/ngeo/externs/mapfish-print-v3.js",
       "node_modules/ngeo/externs/twbootstrap.js",
       "node_modules/ngeo/externs/typeahead.js",
       "node_modules/ngeo/externs/closure-compiler.js",
