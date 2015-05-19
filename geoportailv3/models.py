@@ -14,9 +14,9 @@ from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
-
-
 Base = sqlahelper.get_base()
+
+
 class LuxLayerInternalWMS(LayerInternalWMS):
     __label__ = _(u"Internal WMS layer")
     __plural__ = _(u"Internal WMS layers")
@@ -56,14 +56,19 @@ class LuxLayerExternalWMS(LayerExternalWMS):
     )
     category_id = Column(Integer, label=_(u'Category ID'))
 
+
 class LuxGetfeatureDefinition(Base):
     __tablename__ = 'lux_getfeature_definition'
     __table_args__ = {'schema': _schema}
-    
+
     id = Column(
         Integer,
         primary_key=True
     )
     query = Column(Unicode, label=_(u'Table name'))
+    rest_url = Column(Unicode, label=_(u'URL Rest'))
     engine = Column(Unicode, label=_(u'Engine'))
     layer = Column(Unicode, label=_(u'Layer'))
+    template = Column(Unicode, label=_(u'Template'))
+    additional_info_function = Column(Unicode, label=_(u'Python function'))
+    role = Column(Integer, label=_(u'Role'))
