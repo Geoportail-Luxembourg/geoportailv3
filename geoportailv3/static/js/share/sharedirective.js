@@ -5,7 +5,7 @@
  *
  * Example:
  *
- * <app-share></app-share>
+ * <app-share app-share-active=":mainCtrl.active"></app-share>
  *
  */
 goog.provide('app.shareDirective');
@@ -23,7 +23,7 @@ app.shareDirective = function(appShareTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'visible': '=appShareVisible'
+      'active': '=appShareActive'
     },
     controller: 'AppShareController',
     controllerAs: 'ctrl',
@@ -52,16 +52,19 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
     'twitter': {'url': 'https://www.twitter.com/intent/tweet'},
     'googlePlus': {'url': 'https://plus.google.com/share'}
   };
+
   /**
    * @type {string}
    */
   this.windowOptions =
       'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600';
+
   /**
    * @type {angular.$window}
    * @private
    */
   this.window_ = $window;
+
   /**
    * @type {angularGettext.Catalog}
    * @private

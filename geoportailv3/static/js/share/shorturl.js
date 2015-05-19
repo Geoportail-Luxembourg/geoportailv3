@@ -5,7 +5,7 @@
  *
  * Example:
  *
- * <app-shorturl app-shorturl-visible="::mainCtrl.visible"></app-shorturl>
+ * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
 goog.provide('app.shorturlDirective');
@@ -23,7 +23,7 @@ app.shorturlDirective = function(appShorturlTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'visible': '=appShorturlVisible'
+      'active': '=appShorturlActive'
     },
     controller: 'AppShorturlController',
     controllerAs: 'ctrl',
@@ -41,12 +41,12 @@ app.module.directive('appShorturl', app.shorturlDirective);
  * @constructor
  * @param {ngeo.Location} ngeoLocation
  * @param {angular.$http} $http
- * @param {angular.Scope} $rootScope
+ * @param {angular.Scope} $scope
  * @param {string} shorturlServiceUrl
  * @export
  */
 app.ShorturlDirectiveController =
-    function(ngeoLocation, $http, $rootScope, shorturlServiceUrl) {
+    function(ngeoLocation, $http, $scope, shorturlServiceUrl) {
   /**
    * @type {ngeo.Location}
    * @private
@@ -55,9 +55,8 @@ app.ShorturlDirectiveController =
 
   /**
    * @type {string}
-   * @export
    */
-  this.url = '';
+  this['url'] = '';
 
   /**
    * @type {string}
@@ -71,14 +70,14 @@ app.ShorturlDirectiveController =
    */
   this.http_ = $http;
 
-  $rootScope.$watch(goog.bind(function() {
-    return this['visible'];
+  $scope.$watch(goog.bind(function() {
+    return this['active'];
   }, this), goog.bind(function(newVal) {
     if (newVal === true) {
-      this.setUrl();
+      this.setUrl_();
       this.removeListener =
-          $rootScope.$on('ngeoLocationChange', goog.bind(function(event) {
-        this.setUrl();
+          $scope.$on('ngeoLocationChange', goog.bind(function(event) {
+        this.setUrl_();
       }, this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
@@ -88,17 +87,17 @@ app.ShorturlDirectiveController =
 
 
 /**
- * @export
+ * @private
  */
-app.ShorturlDirectiveController.prototype.setUrl =
+app.ShorturlDirectiveController.prototype.setUrl_ =
     function() {
-  this.url = this.ngeoLocation_.getUriString();
+  this['url'] = this.ngeoLocation_.getUriString();
   this.http_.get(this.serviceUrl_, {
     params: {
-      'url': this.url
+      'url': this['url']
     }
   }).success(goog.bind(function(data) {
-    this.url = data['short_url'];
+    this['url'] = data['short_url'];
   }, this));
 };
 
