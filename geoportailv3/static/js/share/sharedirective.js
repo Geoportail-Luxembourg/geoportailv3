@@ -46,17 +46,19 @@ app.module.directive('appShare', app.shareDirective);
 app.ShareDirectiveController = function($window, gettextCatalog) {
   /**
    * @type {Object}
+   * @private
    */
-  this.services = {
-    'facebook': {'url': 'https://www.facebook.com/sharer/sharer.php'},
-    'twitter': {'url': 'https://www.twitter.com/intent/tweet'},
-    'googlePlus': {'url': 'https://plus.google.com/share'}
+  this.services_ = {
+    'facebook': {url: 'https://www.facebook.com/sharer/sharer.php'},
+    'twitter': {url: 'https://www.twitter.com/intent/tweet'},
+    'googlePlus': {url: 'https://plus.google.com/share'}
   };
 
   /**
    * @type {string}
+   * @private
    */
-  this.windowOptions =
+  this.windowOptions_ =
       'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600';
 
   /**
@@ -79,8 +81,8 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
  * @return {boolean}
  */
 app.ShareDirectiveController.prototype.openShareLink = function(service) {
-  var serviceUrl = goog.object.containsKey(this.services, service) ?
-      this.services[service].url : false;
+  var serviceUrl = goog.object.containsKey(this.services_, service) ?
+      this.services_[service].url : false;
   if (serviceUrl) {
     var googUri = new goog.Uri(serviceUrl);
     googUri.setQueryData(goog.Uri.QueryData.createFromMap({
@@ -90,7 +92,7 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
       'url': this.window_.location.href
     }));
     var popup =
-        this.window_.open(googUri.toString(), '_blank', this.windowOptions);
+        this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
     popup.focus();
   }
   return false;
@@ -109,7 +111,7 @@ app.ShareDirectiveController.prototype.openMailLink = function() {
         this.translate_.getString(' - link from geoportail.lu'),
     'body': this.window_.location.href
   }));
-  this.window_.open(googUri.toString(), '_self', this.windowOptions);
+  this.window_.open(googUri.toString(), '_self', this.windowOptions_);
   return false;
 };
 
