@@ -14,6 +14,8 @@ goog.require('app.ExclusionManager');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LocationControl');
 goog.require('app.Themes');
+goog.require('goog.object');
+goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -30,6 +32,7 @@ goog.require('ol.tilegrid.WMTS');
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
@@ -42,9 +45,9 @@ goog.require('ol.tilegrid.WMTS');
  * @export
  * @ngInject
  */
-app.MainController = function($scope, gettextCatalog, appExclusionManager,
-    appLayerOpacityManager, appThemes, langUrls, defaultExtent,
-    ngeoSyncArrays) {
+app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
+    appExclusionManager, appLayerOpacityManager, appThemes, langUrls,
+    defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {app.Themes}
@@ -140,7 +143,14 @@ app.MainController = function($scope, gettextCatalog, appExclusionManager,
 
   this.setMap_();
 
-  this.switchLanguage('fr');
+  /**
+   * @type {string}
+   * @private
+   */
+  this.browserLanguage_ =
+      ngeoGetBrowserLanguage(goog.object.getKeys(this.langUrls_));
+
+  this.switchLanguage(this.browserLanguage_);
 
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
