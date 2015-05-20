@@ -1,4 +1,3 @@
-
 /**
  * @fileoverview This file provides a shorturl directive
  * This directive is used to create a short url panel in the page.
@@ -11,6 +10,7 @@
 goog.provide('app.shorturlDirective');
 
 goog.require('app');
+goog.require('app.GetShorturl');
 goog.require('ngeo.Location');
 
 
@@ -39,14 +39,13 @@ app.module.directive('appShorturl', app.shorturlDirective);
 /**
  * @ngInject
  * @constructor
- * @param {ngeo.Location} ngeoLocation
- * @param {angular.$http} $http
  * @param {angular.Scope} $scope
- * @param {string} shorturlServiceUrl
+ * @param {ngeo.Location} ngeoLocation
+ * @param {app.GetShorturl} appGetShorturl
  * @export
  */
 app.ShorturlDirectiveController =
-    function(ngeoLocation, $http, $scope, shorturlServiceUrl) {
+    function($scope, ngeoLocation, appGetShorturl) {
   /**
    * @type {ngeo.Location}
    * @private
@@ -59,16 +58,10 @@ app.ShorturlDirectiveController =
   this['url'] = '';
 
   /**
-   * @type {string}
+   * @type {app.GetShorturl}
    * @private
    */
-  this.serviceUrl_ = shorturlServiceUrl;
-
-  /**
-   * @type {angular.$http} $http
-   * @private
-   */
-  this.http_ = $http;
+  this.getShorturl_ = appGetShorturl;
 
   $scope.$watch(goog.bind(function() {
     return this['active'];
@@ -92,13 +85,13 @@ app.ShorturlDirectiveController =
 app.ShorturlDirectiveController.prototype.setUrl_ =
     function() {
   this['url'] = this.ngeoLocation_.getUriString();
-  this.http_.get(this.serviceUrl_, {
-    params: {
-      'url': this['url']
-    }
-  }).success(goog.bind(function(data) {
-    this['url'] = data['short_url'];
-  }, this));
+  this.getShorturl_().then(goog.bind(
+      /**
+       * @param {string} shorturl The short URL.
+       */
+      function(shorturl) {
+        this['url'] = shorturl;
+      }, this));
 };
 
 app.module.controller('AppShorturlController', app.ShorturlDirectiveController);
