@@ -32,8 +32,13 @@
         </select>
       </div>
     </div>
-    <div class="col-md-12">
-      <button type="submit" class="btn btn-default pull-right"
+    <div class="col-md-12 text-right">
+      <span ng-if="ctrl.printing">
+      <i class="fa fa-refresh fa-spin"></i> {{'generating'|translate}}
+      &nbsp;
+      </span>
+      <button type="submit" class="btn btn-default"
+              ng-disabled="ctrl.printing"
               ng-click="ctrl.print()">PDF</button>
     </div>
   </form>
