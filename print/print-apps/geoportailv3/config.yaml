@@ -14,7 +14,6 @@ templates:
     reportTemplate: a4_portrait.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -48,7 +47,6 @@ templates:
     reportTemplate: a4_landscape.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -82,7 +80,6 @@ templates:
     reportTemplate: a3_portrait.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -116,7 +113,6 @@ templates:
     reportTemplate: a3_landscape.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -150,7 +146,6 @@ templates:
     reportTemplate: a2_portrait.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -184,7 +179,6 @@ templates:
     reportTemplate: a2_landscape.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -218,7 +212,6 @@ templates:
     reportTemplate: a1_portrait.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -252,7 +245,6 @@ templates:
     reportTemplate: a1_landscape.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -286,7 +278,6 @@ templates:
     reportTemplate: a0_portrait.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
@@ -320,7 +311,6 @@ templates:
     reportTemplate: a0_landscape.jrxml
     attributes:
       name: !string {}
-      description: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
