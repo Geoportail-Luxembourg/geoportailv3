@@ -9,6 +9,7 @@
 goog.provide('app.printDirective');
 
 
+goog.require('app.GetShorturl');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -52,13 +53,15 @@ app.module.directive('appPrint', app.printDirective);
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.GetShorturl} appGetShorturl The getShorturl function.
  * @param {string} printServiceUrl URL to print service.
+ * @param {string} qrServiceUrl URL to qr generator service.
  * @constructor
  * @export
  * @ngInject
  */
 app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
-    ngeoPrintUtils, appThemes, printServiceUrl) {
+    ngeoPrintUtils, appThemes, appGetShorturl, printServiceUrl, qrServiceUrl) {
 
   /**
    * @type {ol.Map}
@@ -108,6 +111,18 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.GetShorturl}
+   * @private
+   */
+  this.getShorturl_ = appGetShorturl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.qrServiceUrl_ = qrServiceUrl;
 
   /**
    * @type {Array.<string>}
@@ -330,23 +345,25 @@ app.PrintController.prototype.print = function() {
   var scale = this['scale'];
   var layout = this['layout'];
 
-  // FIXME "url" and "qrimage" are harcoded at this point.
-
-  var spec = this.print_.createSpec(map, scale, dpi, layout, {
-    'scale': scale,
-    'name': this['title'],
-    'url': 'http://g-o.lu/0mf4r',
-    'qrimage': 'http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r'
-  });
-
-  this.requestCanceler_ = this.$q_.defer();
-  this['printing'] = true;
-
-  this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
-    timeout: this.requestCanceler_.promise
-  })).then(
-      angular.bind(this, this.handleCreateReportSuccess_),
-      angular.bind(this, this.handleCreateReportError_));
+  this.getShorturl_().then(goog.bind(
+      /**
+       * @param {string} shorturl The short URL.
+       */
+      function(shorturl) {
+        this.requestCanceler_ = this.$q_.defer();
+        this['printing'] = true;
+        var spec = this.print_.createSpec(map, scale, dpi, layout, {
+          'scale': scale,
+          'name': this['title'],
+          'url': shorturl,
+          'qrimage': this.qrServiceUrl_ + '?url=' + shorturl
+        });
+        this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
+          timeout: this.requestCanceler_.promise
+        })).then(
+            angular.bind(this, this.handleCreateReportSuccess_),
+            angular.bind(this, this.handleCreateReportError_));
+      }, this));
 };
 
 
