@@ -238,12 +238,10 @@ app.PrintController.prototype.print = function() {
   var scale = this['scale'];
   var layout = this['layout'];
 
-  // FIXME "description", "name", "url" and "qrimage" are harcoded at
-  // this point.
+  // FIXME "url" and "qrimage" are harcoded at this point.
 
   var spec = this.print_.createSpec(map, scale, dpi, layout, {
     'scale': scale,
-    'description': 'Description',
     'name': this['title'],
     'url': 'http://g-o.lu/0mf4r',
     'qrimage': 'http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r'

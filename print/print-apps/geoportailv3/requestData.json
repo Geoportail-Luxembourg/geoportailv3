@@ -3,7 +3,6 @@
     "outputFormat": "pdf",
     "attributes": {
         "name": "Carte vélo exemple",
-        "description": "webmercator 668126, 6368118, 689717, 6389761 ",
         "scale": "60000",
         "url":"http://g-o.lu/0mf4r",
         "qrimage":"http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r",

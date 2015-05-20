@@ -12,7 +12,6 @@
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
 	<parameter name="name" class="java.lang.String"/>
-	<parameter name="description" class="java.lang.String"/>
 	<parameter name="legend" class="net.sf.jasperreports.engine.data.JRTableModelDataSource"/>
 	<parameter name="legendSubReport" class="java.lang.String"/>
 	<parameter name="scale" class="java.lang.String">
@@ -61,13 +60,6 @@
 					<font fontName="DejaVu Sans" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="250" y="14" width="219" height="20" uuid="5b59bca0-4d72-4f52-889c-833479a3edc2"/>
-				<textElement textAlignment="Right">
-					<font fontName="DejaVu Sans" size="8" isBold="false" isItalic="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="-21" y="55" width="21" height="347" forecolor="#E40520" uuid="f8a42822-0e3d-4802-ad70-024f9cc6677c"/>
