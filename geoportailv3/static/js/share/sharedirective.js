@@ -81,10 +81,8 @@ app.ShareDirectiveController = function($window, gettextCatalog) {
  * @return {boolean}
  */
 app.ShareDirectiveController.prototype.openShareLink = function(service) {
-  var serviceUrl = goog.object.containsKey(this.services_, service) ?
-      this.services_[service].url : false;
-  if (serviceUrl) {
-    var googUri = new goog.Uri(serviceUrl);
+  if (service in this.services_) {
+    var googUri = new goog.Uri(this.services_[service].url);
     googUri.setQueryData(goog.Uri.QueryData.createFromMap({
       //twitter params
       'text': this.window_.document.title,
