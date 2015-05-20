@@ -9,7 +9,7 @@ from urllib import urlencode
 from pyramid.view import view_config
 from geoportailv3.models import LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
-from geojson import loads as geojson_loads
+from geojson import loads as geojson_loads, dumps as geojson_dumps
 
 log = logging.getLogger(__name__)
 
@@ -83,11 +83,11 @@ class Getfeatureinfo(object):
                          "layer": luxgetfeaturedefinition.layer,
                          "values": [dict(r) for r in rows]})
             if luxgetfeaturedefinition.rest_url is not None:
-                self._get_external_data(luxgetfeaturedefinition.rest_url, box)
+
                 results.append(
                     {"template": luxgetfeaturedefinition.template,
                      "layer": luxgetfeaturedefinition.layer,
-                     "values": []})
+                     "features": self._get_external_data(luxgetfeaturedefinition.rest_url, box)})
         return results
 
     def get_info_from_pf(self, rows):
@@ -166,8 +166,6 @@ class Getfeatureinfo(object):
             esricoll = geojson_loads(content)
         except:
             raise
-        print esricoll
-        return esricoll
         # find the esriFieldTypeOID field name (to recover the feature id)
         esri_id_field_name = None
         # if 'fields' in esricoll:
@@ -180,29 +178,35 @@ class Getfeatureinfo(object):
                     f = {
                         'type': 'Feature',
                         'geometry': {'type': 'Point',
-                                     'coordinates': [rawfeature['geometry']['x'], rawfeature['geometry']['y']]}
+                                     'coordinates': [rawfeature['geometry']['x'], rawfeature['geometry']['y']]},
+                        'attributes': rawfeature['attributes']
                     }
                 elif rawfeature['geometry'] and 'x' in rawfeature['geometry'] and 'Y' in rawfeature['geometry']:
                     f = {
                         'type': 'Feature',
-                        'geometry': {'type': 'Point', 'coordinates': [rawfeature['geometry']['x'], rawfeature['geometry']['Y']]}
+                        'geometry': {'type': 'Point', 'coordinates': [rawfeature['geometry']['x'], rawfeature['geometry']['Y']]},
+                        'attributes': rawfeature['attributes']
                     }
                 elif rawfeature['geometry'] and 'paths' in rawfeature['geometry'] and len(rawfeature['geometry']['paths']) > 0:
                     f = {
                         'type': 'Feature',
-                        'geometry': {'type': 'MultiLineString', 'coordinates': rawfeature['geometry']['paths']}
+                        'geometry': {'type': 'MultiLineString', 'coordinates': rawfeature['geometry']['paths']},
+                        'attributes': rawfeature['attributes']
                     }
                 elif rawfeature['geometry'] and 'rings' in rawfeature['geometry'] and len(rawfeature['geometry']['rings']) > 0:
                     f = {
                         'type': 'Feature',
-                        'geometry': {'type': 'Polygon', 'coordinates': rawfeature['geometry']['rings']}
+                        'geometry': {'type': 'Polygon', 'coordinates': rawfeature['geometry']['rings']},
+                        'attributes': rawfeature['attributes']
                     }
 
                 if f != '':
-                    pass
                     # store attribute in c for template generation
                     # id = rawfeature['attributes']['_f_id_'] = self._get_feature_id(esri_id_field_name, rawfeature)
                     # c.feature = rawfeature['attributes']
-                    # features.append(c.feature)
+                    feature = geojson_dumps(f)
+
+                    # self._geojson_to_esri_feature(f, id, html)
+                    features.append(feature)
 
         return features
