@@ -2,6 +2,10 @@
 .theme(@theme, @primary, @secondary, @tertiary, @icon) {
   [data-theme="@{theme}"] {
     .theme_(@primary, @secondary, @tertiary);
+    .theme-icon:after {
+      color: @primary;
+      content: '\@{icon}';
+    }
   }
 
   .theme-@{theme} {
@@ -170,10 +174,6 @@
     background-color: @tertiary;
     &:hover {
       background-color: @secondary;
-    }
-    .theme-icon:after {
-      color: @primary;
-      content: '\@{icon}';
     }
   }
   .account-content > ul li p {
