@@ -169,7 +169,9 @@ app.PrintController = function($scope, $timeout, ngeoCreatePrint,
  * @private
  */
 app.PrintController.LAYOUTS_ = [
-  'A4 portrait', 'A4 landscape', 'A3 portrait', 'A3 landscape'
+  'A4 portrait', 'A4 landscape', 'A3 portrait', 'A3 landscape',
+  'A2 portrait', 'A2 landscape', 'A1 portrait', 'A1 landscape',
+  'A0 portrait', 'A0 landscape'
 ];
 
 
@@ -183,12 +185,22 @@ app.PrintController.MAP_SCALES_ = [100, 250, 500, 2500, 5000, 10000,
 
 
 /**
+ * These values should match those set in the jrxml print templates.
  * @const
  * @type {Array.<ol.Size>}
  * @private
  */
 app.PrintController.MAP_SIZES_ = [
-  [470, 650], [715, 395], [715, 975], [1065, 640]
+  // A4 portrait and landscape
+  [470, 650], [715, 395],
+  // A3 portrait and landscape
+  [715, 975], [1065, 640],
+  // A2 portrait and landscape
+  [1064, 1475], [1558, 985],
+  // A1 portrait and landscape
+  [1558, 2175], [2255, 1482],
+  // A0 portrait and landscape
+  [2254, 3155], [3241, 2173]
 ];
 
 
