@@ -26,6 +26,16 @@ button.icon {
   border: 0;
   text-indent: -9999px;
 }
+.theme-icon,
+button.icon,
+li.icon > a {
+  &:after {
+    font-family: "geoportail-icons" !important;
+  }
+}
+.theme-icon {
+  font-size: 1.8em;
+}
 button.icon,
 li.icon > a {
   padding: 0;
@@ -40,7 +50,6 @@ li.icon > a {
   }
 
   &:after {
-    font-family: "geoportail-icons" !important;
     position: absolute;
     top: 8px;
     left: 0;
