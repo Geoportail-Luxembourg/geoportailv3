@@ -1,197 +1,9 @@
 /** Themes related styling (mainly colors) **/
 .theme(@theme, @primary, @secondary, @tertiary, @icon) {
   [data-theme="@{theme}"] {
-    .form-control {
-      background-color: @secondary !important;
-      .placeholder(white);
-      color: white;
-    }
-
-    .btn {
-      color: @primary;
-      &:hover {
-        color: white;
-        background-color: @primary;
-      }
-    }
-
-    #sidebar {
-      background-color: @secondary;
-      .nav-tabs li {
-        a {
-          background-color: @tertiary;
-          color: @secondary;
-        }
-        &> a:hover,
-        &.active > a {
-          background-color: @primary;
-          color: white;
-        }
-      }
-      .tab-content {
-        background-color: @primary;
-      }
-    }
-
-    .sidebar-controls,
-    .toolbox {
-      li > a {
-        color: @primary;
-      }
-    }
-    .nav {
-      & > li > a {
-        background-color: white;
-        &:hover {
-          color: white;
-          background-color: @primary;
-        }
-      }
-      & > li.active > a {
-        color: white;
-        background-color: @primary;
-      }
-    }
-
-    .toolbox-panel-top > li > a {
-      background-color: @primary;
-      color: white;
-      &:hover {
-        color: @primary;
-        background-color: white;
-      }
-    }
-    .toolbox-panel-top > li.active > a {
-      color: @primary;
-      background-color: white;
-    }
-
-    .footer .toolbox-panel > li {
-      > a {
-        background-color: @tertiary;
-        color: white;
-      }
-      > a:hover,
-      &.active > a {
-        background-color: @primary;
-      }
-    }
-
-    ul.catalog {
-      ul {
-        background-color: @secondary;
-      }
-      color: @tertiary;
-      a {
-        color: @tertiary;
-      }
-      > .panel {
-        > a {
-          color: @secondary;
-          background-color: @tertiary;
-          &:after {
-            border-top-color: @primary;
-          }
-        }
-        > ul > li.panel > a {
-          &:before,
-          &:after {
-            background-color: @tertiary;
-          }
-          background-color: lighten(@secondary, 20%);
-          &[aria-expanded=true] {
-            background-color: @secondary;
-          }
-        }
-      }
-    }
-
-    ul.layermanager {
-      &, a {
-        color: @tertiary;
-      }
-      li {
-        background-color: @secondary;
-      }
-    }
-
-    .ol-control button {
-      background-color: white;
-      color: @primary;
-    }
-
-    .tracker-on button{
-      background-color: @primary;
-      color: white;
-    }
-
-    .ol-control button:hover,.ol-control button:focus {
-      background-color: @primary;
-      color: white;
-    }
-
-    .navigation-account {
-      background-color: @secondary;
-      .account-content {
-        background-color: @primary;
-      }
-      input[type=submit] {
-        background-color: @secondary;
-      }
-      input[type=submit]:hover {
-        color: @tertiary;
-      }
-      .tab {
-        background-color: @primary;
-      }
-    }
-    .account-content > ul li a {
-      background-color: @tertiary;
-      &:hover {
-        background-color: @secondary;
-      }
-    }
-    .account-content > ul li p {
-      background-color: @secondary;
-    }
-    .navbar-default .navbar-nav > .active > a {
-      &:focus, & {
-        background-color: @primary;
-        color: white;
-      }
-      &:hover {
-        background-color: white;
-        color: @primary;
-      }
-    }
-    .theme-selector {
-      background-color: @tertiary;
-      & a{
-        background-color: @secondary;
-        color: white;
-      }
-      &:hover {
-        background-color: white;
-        color: @primary;
-      }
-    }
-
-    app-print>div {
-      background-color: @primary;
-    }
-
-    .profile {
-      border-color: @primary;
-      .close {
-        color: @secondary;
-
-        &:hover {
-          color: @primary;
-        }
-        opacity: 1;
-      }
-    }
+    .theme_(@primary, @secondary, @tertiary);
   }
+
   .theme-@{theme} {
     background-color: @primary;
     a:after{
@@ -207,7 +19,199 @@
       color: @primary;
     }
   }
+}
 
+.theme_(@primary, @secondary, @tertiary) {
+  .form-control {
+    background-color: @secondary !important;
+    .placeholder(white);
+    color: white;
+  }
+
+  .btn {
+    color: @primary;
+    &:hover {
+      color: white;
+      background-color: @primary;
+    }
+  }
+
+  #sidebar {
+    background-color: @secondary;
+    .nav-tabs li {
+      a {
+        background-color: @tertiary;
+        color: @secondary;
+      }
+      &> a:hover,
+      &.active > a {
+        background-color: @primary;
+        color: white;
+      }
+    }
+    .tab-content {
+      background-color: @primary;
+    }
+  }
+
+  .sidebar-controls,
+  .toolbox {
+    li > a {
+      color: @primary;
+    }
+  }
+  .nav {
+    & > li > a {
+      background-color: white;
+      &:hover {
+        color: white;
+        background-color: @primary;
+      }
+    }
+    & > li.active > a {
+      color: white;
+      background-color: @primary;
+    }
+  }
+
+  .toolbox-panel-top > li > a {
+    background-color: @primary;
+    color: white;
+    &:hover {
+      color: @primary;
+      background-color: white;
+    }
+  }
+  .toolbox-panel-top > li.active > a {
+    color: @primary;
+    background-color: white;
+  }
+
+  .footer .toolbox-panel > li {
+    > a {
+      background-color: @tertiary;
+      color: white;
+    }
+    > a:hover,
+    &.active > a {
+      background-color: @primary;
+    }
+  }
+
+  ul.catalog {
+    ul {
+      background-color: @secondary;
+    }
+    color: @tertiary;
+    a {
+      color: @tertiary;
+    }
+    > li.panel {
+      > a {
+        color: @secondary;
+        background-color: @tertiary;
+        &:after {
+          border-top-color: @primary;
+        }
+      }
+      > ul > li.panel > a {
+        &:before,
+        &:after {
+          background-color: @tertiary;
+        }
+        background-color: lighten(@secondary, 20%);
+        &[aria-expanded=true] {
+          background-color: @secondary;
+        }
+      }
+    }
+  }
+
+  ul.layermanager {
+    &, a {
+      color: @tertiary;
+    }
+    li {
+      background-color: @secondary;
+    }
+  }
+
+  .ol-control button {
+    background-color: white;
+    color: @primary;
+  }
+
+  .tracker-on button{
+    background-color: @primary;
+    color: white;
+  }
+
+  .ol-control button:hover,.ol-control button:focus {
+    background-color: @primary;
+    color: white;
+  }
+
+  .navigation-account {
+    background-color: @secondary;
+    .account-content {
+      background-color: @primary;
+    }
+    input[type=submit] {
+      background-color: @secondary;
+    }
+    input[type=submit]:hover {
+      color: @tertiary;
+    }
+    .tab {
+      background-color: @primary;
+    }
+  }
+  .account-content > ul li a {
+    background-color: @tertiary;
+    &:hover {
+      background-color: @secondary;
+    }
+  }
+  .account-content > ul li p {
+    background-color: @secondary;
+  }
+  .navbar-default .navbar-nav > .active > a {
+    &:focus, & {
+      background-color: @primary;
+      color: white;
+    }
+    &:hover {
+      background-color: white;
+      color: @primary;
+    }
+  }
+  .theme-selector {
+    background-color: @tertiary;
+    & a{
+      background-color: @secondary;
+      color: white;
+    }
+    &:hover {
+      background-color: white;
+      color: @primary;
+    }
+  }
+
+  app-print>div {
+    background-color: @primary;
+  }
+
+  .profile {
+    border-color: @primary;
+    .close {
+      color: @secondary;
+
+      &:hover {
+        color: @primary;
+      }
+      opacity: 1;
+    }
+  }
 }
 
 .theme(eau, #03a2ac, #45cdd6, #078f98, e016);
@@ -216,3 +220,4 @@
 .theme(at, #be8541, #ffb257, #7f6b52, e018);
 .theme(tourisme, #e84c3d, #e88c83, #943d3d, e027);
 .theme(emwelt, #879d31, #bacd81, #627529, e015);
+.theme_(#777, #ddd, #999);
