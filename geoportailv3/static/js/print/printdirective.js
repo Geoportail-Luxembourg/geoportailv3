@@ -152,8 +152,7 @@ app.PrintController = function($scope, $timeout, ngeoCreatePrint,
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
       postcomposeListenerKey = goog.events.listen(this.map_,
           ol.render.EventType.POSTCOMPOSE, postcomposeListener);
-    } else {
-      goog.asserts.assert(!goog.isNull(postcomposeListenerKey));
+    } else if (!goog.isNull(postcomposeListenerKey)) {
       goog.events.unlistenByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
     }
