@@ -144,9 +144,9 @@
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
           <app-print app-print-map="::mainCtrl.map" app-print-open="mainCtrl.printOpen"></app-print>
         </li>
-        <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
+        <li class="hidden-xs share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">share</a>
-          <div class="toolbox-panel">The panel for share tools</div>
+          <app-share app-share-active="mainCtrl.shareOpen"></app-share>
         </li>
       </ul>
     </footer>
@@ -193,6 +193,7 @@
          appModule.constant('profilejsonUrl', "${request.route_url('profile.json')}");
          appModule.constant('searchServiceUrl', "${request.route_url('fulltextsearch')}");
          appModule.constant('printServiceUrl', "${request.route_url('printproxy')}");
+         appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
 
 % if debug:
@@ -211,8 +212,9 @@
          appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
          appModule.value('appProfileTemplateUrl', '${request.static_url('geoportailv3:static/js/profile/profile.html')}');
          appModule.value('appPrintTemplateUrl', '${request.static_url('geoportailv3:static/js/print/print.html')}');
-         appModule.value('appSearchTemplateUrl', '${request.static_url('geoportailv3:static/js/search.html')}');
          appModule.value('appSearchTemplateUrl', '${request.static_url('geoportailv3:static/js/search/search.html')}');
+         appModule.value('appShareTemplateUrl', '${request.static_url('geoportailv3:static/js/share/share.html')}');
+         appModule.value('appShorturlTemplateUrl', '${request.static_url('geoportailv3:static/js/share/shorturl.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -230,6 +232,8 @@
          appModule.value('appProfileTemplateUrl', 'profile/profile.html');
          appModule.value('appPrintTemplateUrl', 'print/print.html');
          appModule.value('appSearchTemplateUrl', 'search/search.html');
+         appModule.value('appShareTemplateUrl', 'share/share.html');
+         appModule.value('appShorturlTemplateUrl', 'share/shorturl.html');
 % endif
 
 
