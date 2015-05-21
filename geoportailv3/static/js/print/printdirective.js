@@ -262,6 +262,7 @@ app.PrintController.prototype.cancel = function() {
  * @export
  */
 app.PrintController.prototype.changeLayout = function() {
+  this.useOptimalScale_();
   this.map_.render();
 };
 
