@@ -1,23 +1,23 @@
 <a data-toggle="collapse" data-parent="#catalog-{{::layertreenodeCtrl.parentUid}}"
    href="#catalog-{{::layertreenodeCtrl.uid}}"
-   ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
+   ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3">
   {{layertreenodeCtrl.node.name | translate}}
 </a>
-<span ng-if="layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
+<span ng-if="::layertreenodeCtrl.node.children && layertreenodeCtrl.depth >= 3">
   {{layertreenodeCtrl.node.name | translate}}
 </span>
-<div ng-if="!layertreenodeCtrl.node.children">
-  <app-layerinfo app-layerinfo-layer="layertreenodeCtrl.layer"></app-layerinfo>
+<div ng-if="::!layertreenodeCtrl.node.children">
+  <app-layerinfo app-layerinfo-layer="::layertreenodeCtrl.layer"></app-layerinfo>
   <a href ng-click="catalogCtrl.toggle(layertreenodeCtrl.node)">
     <i class="fa" ng-class="(layertreenodeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
     {{layertreenodeCtrl.node.name | translate}}
   </a>
 </div>
-<ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="layertreenodeCtrl.node.children"
+<ul id="catalog-{{::layertreenodeCtrl.uid}}" ng-if="::layertreenodeCtrl.node.children"
   ng-class="(layertreenodeCtrl.depth < 3) ? 'collapse' : ''">
-  <li ng-repeat="node in layertreenodeCtrl.node.children"
+  <li ng-repeat="node in ::layertreenodeCtrl.node.children"
       ngeo-layertreenode="node" ngeo-layertreenode-map="layertreenodeCtrl.map"
       ngeo-layertreenode-layerexpr="layertreenodeCtrl.layerExpr"
-      ng-class="(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''">
+      ng-class="::(layertreenodeCtrl.node.children && layertreenodeCtrl.depth < 3) ? 'panel' : ''">
   </li>
 </ul>
