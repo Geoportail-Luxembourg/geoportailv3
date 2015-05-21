@@ -44,6 +44,7 @@ app.module.directive('appPrint', app.printDirective);
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$timeout} $timeout The Angular $timeout service.
+ * @param {angular.$q} $q The Angular $q service.
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {string} printServiceUrl URL to print service.
@@ -51,7 +52,7 @@ app.module.directive('appPrint', app.printDirective);
  * @export
  * @ngInject
  */
-app.PrintController = function($scope, $timeout, ngeoCreatePrint,
+app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
     ngeoPrintUtils, printServiceUrl) {
 
   /**
@@ -66,6 +67,24 @@ app.PrintController = function($scope, $timeout, ngeoCreatePrint,
    * @private
    */
   this.$timeout_ = $timeout;
+
+  /**
+   * @type {?angular.$q.Promise}
+   * @private
+   */
+  this.statusTimeoutPromise_ = null;
+
+  /**
+   * @type {angular.$q}
+   * @private
+   */
+  this.$q_ = $q;
+
+  /**
+   * @type {?angular.$q.Deferred}
+   * @private
+   */
+  this.requestCanceler_ = null;
 
   /**
    * @type {ngeo.Print}
@@ -219,6 +238,29 @@ app.PrintController.DPI_ = 72;
 /**
  * @export
  */
+app.PrintController.prototype.cancel = function() {
+  // Cancel the latest request, if it's not finished yet.
+  goog.asserts.assert(!goog.isNull(this.requestCanceler_));
+  this.requestCanceler_.resolve();
+
+  // Cancel the status timeout if there's one set, to make no other status
+  // request is sent.
+  if (!goog.isNull(this.statusTimeoutPromise_)) {
+    this.$timeout_.cancel(this.statusTimeoutPromise_);
+  }
+
+  this['printing'] = false;
+
+  // FIXME
+  // We should also set a "cancel" request to the print web service, but
+  // c2cgeoportal's printproxy does not have a cancel operation at this
+  // stage.
+};
+
+
+/**
+ * @export
+ */
 app.PrintController.prototype.changeLayout = function() {
   this.map_.render();
 };
@@ -251,19 +293,24 @@ app.PrintController.prototype.print = function() {
     'qrimage': 'http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r'
   });
 
+  this.requestCanceler_ = this.$q_.defer();
   this['printing'] = true;
-  this.print_.createReport(spec).then(
+
+  this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
+    timeout: this.requestCanceler_.promise
+  })).then(
       angular.bind(this, this.handleCreateReportSuccess_),
       angular.bind(this, this.handleCreateReportError_));
 };
 
 
 /**
- * @param {MapFishPrintReportResponse} resp Response.
+ * @param {!angular.$http.Response} resp Response.
  * @private
  */
 app.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
-  this.getStatus_(resp.ref);
+  var mfResp = /** @type {MapFishPrintReportResponse} */ (resp.data);
+  this.getStatus_(mfResp.ref);
 };
 
 
@@ -272,14 +319,17 @@ app.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
  * @private
  */
 app.PrintController.prototype.getStatus_ = function(ref) {
-  this.print_.getStatus(ref).then(
+  this.requestCanceler_ = this.$q_.defer();
+  this.print_.getStatus(ref, /** @type {angular.$http.Config} */ ({
+    timeout: this.requestCanceler_.promise
+  })).then(
       angular.bind(this, this.handleGetStatusSuccess_, ref),
       angular.bind(this, this.handleGetStatusError_));
 };
 
 
 /**
- * @param {MapFishPrintReportResponse} resp Response.
+ * @param {!angular.$http.Response} resp Response.
  * @private
  */
 app.PrintController.prototype.handleCreateReportError_ = function(resp) {
@@ -290,11 +340,12 @@ app.PrintController.prototype.handleCreateReportError_ = function(resp) {
 
 /**
  * @param {string} ref Ref.
- * @param {MapFishPrintStatusResponse} resp Response.
+ * @param {!angular.$http.Response} resp Response.
  * @private
  */
 app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
-  var done = resp.done;
+  var mfResp = /** @type {MapFishPrintStatusResponse} */ (resp.data);
+  var done = mfResp.done;
   if (done) {
     // The report is ready. Open it by changing the window location.
     window.location.href = this.print_.getReportUrl(ref);
@@ -302,7 +353,7 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
   } else {
     // The report is not ready yet. Check again in 1s.
     var that = this;
-    this.$timeout_(function() {
+    this.statusTimeoutPromise_ = this.$timeout_(function() {
       that.getStatus_(ref);
     }, 1000, false);
   }
@@ -310,10 +361,10 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
 
 
 /**
- * @param {Object} data Data.
+ * @param {!angular.$http.Response} resp Response.
  * @private
  */
-app.PrintController.prototype.handleGetStatusError_ = function(data) {
+app.PrintController.prototype.handleGetStatusError_ = function(resp) {
   this['printing'] = false;
   // FIXME
 };
