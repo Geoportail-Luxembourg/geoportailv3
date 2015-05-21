@@ -110,6 +110,11 @@ app.PrintController = function($scope, $timeout, ngeoCreatePrint,
   this['title'] = '';
 
   /**
+   * @type {boolean}
+   */
+  this['printing'] = false;
+
+  /**
    * @type {goog.events.Key}
    */
   var postcomposeListenerKey = null;
@@ -246,6 +251,7 @@ app.PrintController.prototype.print = function() {
     'qrimage': 'http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r'
   });
 
+  this['printing'] = true;
   this.print_.createReport(spec).then(
       angular.bind(this, this.handleCreateReportSuccess_),
       angular.bind(this, this.handleCreateReportError_));
@@ -277,6 +283,7 @@ app.PrintController.prototype.getStatus_ = function(ref) {
  * @private
  */
 app.PrintController.prototype.handleCreateReportError_ = function(resp) {
+  this['printing'] = false;
   // FIXME
 };
 
@@ -291,6 +298,7 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
   if (done) {
     // The report is ready. Open it by changing the window location.
     window.location.href = this.print_.getReportUrl(ref);
+    this['printing'] = false;
   } else {
     // The report is not ready yet. Check again in 1s.
     var that = this;
@@ -306,6 +314,7 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
  * @private
  */
 app.PrintController.prototype.handleGetStatusError_ = function(data) {
+  this['printing'] = false;
   // FIXME
 };
 
