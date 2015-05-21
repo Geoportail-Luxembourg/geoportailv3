@@ -34,8 +34,10 @@
     </div>
     <div class="col-md-12 text-right">
       <span ng-if="ctrl.printing">
-      <i class="fa fa-refresh fa-spin"></i> {{'generating'|translate}}
-      &nbsp;
+        <i class="fa fa-refresh fa-spin"></i> {{'generating'|translate}}
+        &nbsp;
+        <a class="btn btn-link" ng-click="ctrl.cancel()" translate>Abort</a>
+        &nbsp;
       </span>
       <button type="submit" class="btn btn-default"
               ng-disabled="ctrl.printing"
