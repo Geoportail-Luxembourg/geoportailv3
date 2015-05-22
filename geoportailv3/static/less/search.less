@@ -28,6 +28,7 @@ span.twitter-typeahead {
         min-width: 250px;
         position: relative;
         padding-right: 32px;
+        padding-left: 32px;
     }
     .tt-dropdown-menu {
         position: absolute;
@@ -78,4 +79,18 @@ span.twitter-typeahead {
         border: 0;
         float: right;
     }
+
+  &:after {
+    content: '\f002';
+    font-family: FontAwesome;
+    position: absolute;
+    top: 0;
+    left: .5em;
+    height: 36px;
+    line-height: 36px;
+    color: white;
+  }
+
+  padding-right: 15px;
 }
+
