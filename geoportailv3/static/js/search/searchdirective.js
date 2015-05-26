@@ -210,33 +210,33 @@ app.SearchDirectiveController =
 
   /** @type {Array.<TypeaheadDataset>} */
   this['datasets'] = [{
-    source: POIBloodhoundEngine.ttAdapter(),
+    name: 'coordinates',
+    /**
+     * @param {Object} query
+     * @param {function(Array<string>)} syncResults
+     * @return {Object}
+     */
+    source: goog.bind(function(query, syncResults) {
+      return syncResults(this.matchCoordinate_(query));
+    }, this),
     displayKey: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
-    templates: /** @type {TypeaheadTemplates} */({
-      header: function() {
-        return '<div class="header">' +
-            gettextCatalog.getString('Addresses') +
-            '</div>';
-      },
-      suggestion: function(suggestion) {
-        var feature = /** @type {ol.Feature} */ (suggestion);
+    templates: /** @type {TypeaheadTemplates} */ ({
+      suggestion: goog.bind(function(feature) {
         var scope = $scope.$new(true);
-        scope['feature'] = feature;
+        scope['object'] = feature;
         scope['click'] = function(event) {
           event.stopPropagation();
         };
-
         var html = '<p>' + feature.get('label') +
-            ' <span>(' + gettextCatalog.getString(
-                /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span></p>';
+            ' (' + gettextCatalog.getString('LUREF Coordinate') + ')</p>';
         return $compile(html)(scope);
-      }
+      }, this)
     })
   },{
+    name: 'layers',
     source: LayerBloodhoundEngine.ttAdapter(),
     /**
      * @param {Object} suggestion
@@ -265,6 +265,7 @@ app.SearchDirectiveController =
       }, this)
     })
   },{
+    name: 'backgroundLayers',
     source: BackgroundLayerBloodhoundEngine.ttAdapter(),
     /**
      * @param {app.BackgroundLayerSuggestion} suggestion
@@ -292,6 +293,34 @@ app.SearchDirectiveController =
             return $compile(html)(scope);
           }, this)
     })
+  },{
+    name: 'pois',
+    source: POIBloodhoundEngine.ttAdapter(),
+    displayKey: function(suggestion) {
+      var feature = /** @type {ol.Feature} */ (suggestion);
+      return feature.get('label');
+    },
+    templates: /** @type {TypeaheadTemplates} */({
+      header: function() {
+        return '<div class="header">' +
+            gettextCatalog.getString('Addresses') +
+            '</div>';
+      },
+      suggestion: function(suggestion) {
+        var feature = /** @type {ol.Feature} */ (suggestion);
+        var scope = $scope.$new(true);
+        scope['feature'] = feature;
+        scope['click'] = function(event) {
+          event.stopPropagation();
+        };
+
+        var html = '<p>' + feature.get('label') +
+            ' <span>(' + gettextCatalog.getString(
+                /** @type {string} */ (feature.get('layer_name'))
+            ) + ')</span></p>';
+        return $compile(html)(scope);
+      }
+    })
   }
   ];
 
@@ -299,6 +328,29 @@ app.SearchDirectiveController =
     selected: goog.bind(app.SearchDirectiveController.selected_, this)
   });
 
+};
+
+
+/**
+ * @param {string} searchString
+ * @return {Array<string>}
+ * @private
+ */
+app.SearchDirectiveController.prototype.matchCoordinate_ =
+    function(searchString) {
+  var results = [];
+  var re = /([0-9]{4,5})\s*[E]?\W*([0-9]{4,5})\s*[N]?/;
+  var m;
+  if ((m = re.exec(searchString)) !== null) {
+    var point = new ol.geom.Point([m[1], m[2]])
+      .transform('EPSG:2169', 'EPSG:3857');
+    var feature = new ol.Feature({
+      geometry: point,
+      'label': m[1] + 'E ' + m[2] + 'N '
+    });
+    results.push(feature);
+  }
+  return results;
 };
 
 
@@ -490,33 +542,37 @@ app.SearchDirectiveController.getAllChildren_ =
 /**
  * @param {jQuery.event} event
  * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
- * @param {number} dataset Typeahead dataset ID.
+ * @param {string} dataset Typeahead dataset ID.
  * @this {app.SearchDirectiveController}
  * @private
  */
 app.SearchDirectiveController.selected_ =
     function(event, suggestion, dataset) {
   var map = /** @type {ol.Map} */ (this['map']);
-  if (dataset === 0) { //POIs
+  if (dataset === 'pois' || dataset === 'coordinates') { //POIs
     var feature = /** @type {ol.Feature} */ (suggestion);
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
         (feature.getGeometry());
     var mapSize = /** @type {ol.Size} */ (map.getSize());
     var features = this.featureOverlay_.getFeatures();
-    features.clear();
-    if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
-      features.push(feature);
-    }
     map.getView().fitGeometry(featureGeometry, mapSize,
-        /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 18}));
-    var layers = /** @type {Array<string>} */
-        (this.layerLookup_[suggestion.get('layer_name')] || []);
-    goog.array.forEach(layers, goog.bind(function(layer) {
-      this.addLayerToMap_(/** @type {string} */ (layer));
-    }, this));
-  } else if (dataset === 1) { //Layer
+        /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 17}));
+    features.clear();
+    if (dataset === 'coordinates') {
+      features.push(feature);
+    } else if (dataset === 'pois') {
+      if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+        features.push(feature);
+      }
+      var layers = /** @type {Array<string>} */
+          (this.layerLookup_[suggestion.get('layer_name')] || []);
+      goog.array.forEach(layers, goog.bind(function(layer) {
+        this.addLayerToMap_(/** @type {string} */ (layer));
+      }, this));
+    }
+  } else if (dataset === 'layers') { //Layer
     this.addLayerToMap_(/** @type {Object} */ (suggestion));
-  } else if (dataset === 2) { //BackgroundLayer
+  } else if (dataset === 'backgroundLayers') { //BackgroundLayer
     this.setBackgroundLayer_(
         /** @type {app.BackgroundLayerSuggestion} */ (suggestion));
   }
