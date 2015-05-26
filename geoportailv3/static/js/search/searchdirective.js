@@ -333,24 +333,25 @@ app.SearchDirectiveController =
 
 /**
  * @param {string} searchString
- * @return {Array<string>}
+ * @return {Array<ol.Feature>}
  * @private
  */
 app.SearchDirectiveController.prototype.matchCoordinate_ =
     function(searchString) {
-  var results = [];
   var re = /([0-9]{4,5})\s*[E]?\W*([0-9]{4,5})\s*[N]?/;
   var m;
   if ((m = re.exec(searchString)) !== null) {
-    var point = new ol.geom.Point([m[1], m[2]])
-      .transform('EPSG:2169', 'EPSG:3857');
-    var feature = new ol.Feature({
-      geometry: point,
-      'label': m[1] + 'E ' + m[2] + 'N '
-    });
-    results.push(feature);
+    var point = /** @type {ol.geom.Point} */
+        (new ol.geom.Point([m[1], m[2]])
+      .transform('EPSG:2169', 'EPSG:3857'));
+    var feature = /** @type {ol.Feature} */
+        (new ol.Feature({
+          geometry: point,
+          label: m[1] + 'E ' + m[2] + 'N '
+        }));
+    return [feature];
   }
-  return results;
+  return []; //return empty array if no match
 };
 
 
