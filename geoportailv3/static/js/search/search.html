@@ -1,4 +1,7 @@
-<form class="navbar-form pull-right hidden-xs" role="search">
+<button class="close-panel pull-right" ng-click="ctrl.mobileActive = false" ng-show="ctrl.mobileActive">
+  &#10005;
+</button>
+<form class="navbar-form" role="search">
     <div class="form-group">
         <input type="text" class="form-control" placeholder="{{'search_key_words'|translate}}"
             ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
