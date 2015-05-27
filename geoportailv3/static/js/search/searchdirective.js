@@ -86,6 +86,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @constructor
  * @param {angular.Scope} $scope Angular root scope.
  * @param {app.Themes} appThemes Themes service.
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @param {angular.$compile} $compile Angular compile service.
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
  *     create GeoJSON Bloodhound service
@@ -97,7 +98,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @export
  */
 app.SearchDirectiveController =
-    function($scope, appThemes, $compile,
+    function($scope, appThemes, maxExtent, $compile,
         ngeoCreateGeoJSONBloodhound, gettextCatalog,
         appGetLayerForCatalogNode, appShowLayerinfo, 
         ngeoBackgroundLayerMgr, searchServiceUrl) {
@@ -155,6 +156,14 @@ app.SearchDirectiveController =
     'asta_esp',
     'Parcelle'
   ];
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ =
+      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+
   /**
    * @type {Array.<ol.layer.Layer>}
    * @private
@@ -358,13 +367,16 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       var point = /** @type {ol.geom.Point} */
           (new ol.geom.Point([easting, northing])
          .transform(epsgCode, 'EPSG:3857'));
-      var feature = /** @type {ol.Feature} */
-          (new ol.Feature({
-            geometry: point,
-            'label': easting + 'E ' + northing + 'N ',
-            'epsgLabel': re[epsgCode].label
-          }));
-      results.push(feature);
+      if (ol.extent.containsCoordinate(
+          this.maxExtent_, point.getCoordinates())) {
+        var feature = /** @type {ol.Feature} */
+            (new ol.Feature({
+              geometry: point,
+              'label': easting + 'E ' + northing + 'N ',
+              'epsgLabel': re[epsgCode].label
+            }));
+        results.push(feature);
+      }
     }
   }
   return results; //return empty array if no match
