@@ -25,6 +25,7 @@
       ".build/externs/angular-1.4.js",
       ".build/externs/angular-1.4-q_templated.js",
       ".build/externs/angular-1.4-http-promise_templated.js",
+      "geoportailv3/externs/fuse.js",
       ".build/externs/jquery-1.9.js"
     ],
     "define": [

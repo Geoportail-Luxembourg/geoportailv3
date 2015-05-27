@@ -20,6 +20,8 @@ CONFIG_VARS += sqlalchemy_engines
 CONFIG_VARS += proxy_wms_url
 APACHE_VHOST ?= luxembourg-geomapfish
 
+NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
+
 UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
 
 # Add rule that copies the font-awesome fonts to the static/build directory.

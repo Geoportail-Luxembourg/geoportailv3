@@ -33,6 +33,18 @@ app.BackgroundLayerSuggestion;
 
 
 /**
+ * @type {ol.layer.Layer}
+ */
+app.BackgroundLayerSuggestion.bgLayer;
+
+
+/**
+ * @type {string}
+ */
+app.BackgroundLayerSuggestion.translatedName;
+
+
+/**
  * @return {angular.Directive} The Directive Object Definition
  * @param {string} appSearchTemplateUrl
  * @ngInject
@@ -232,17 +244,29 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       ngeoCreateGeoJSONBloodhound, searchServiceUrl);
 
-  /** @type {Bloodhound} */
-  var LayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
+  /** @type {Fuse} */
+  var layerFuseEngine =
+      new Fuse(this.layers_, {
+        keys: ['translatedName'],
+        threshold: 0.4,
+        distance: 100,
+        includeScore: true
+      });
 
-  /** @type {Bloodhound} */
-  var BackgroundLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
+  /** @type {Fuse} */
+  var backgroundLayerEngine =
+      new Fuse([], {
+        keys: ['translatedName'],
+        threshold: 0.4,
+        distance: 100,
+        includeScore: true
+      });
 
   $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
     this.createLocalAllLayerData_(
-        appThemes, LayerBloodhoundEngine, gettextCatalog);
+        appThemes, layerFuseEngine, gettextCatalog);
     this.createLocalBackgroundLayerData_(
-        appThemes, BackgroundLayerBloodhoundEngine, gettextCatalog);
+        appThemes, backgroundLayerEngine, gettextCatalog);
   }, this));
 
   goog.events.listen(appThemes, app.ThemesEventType.LOAD,
@@ -251,9 +275,9 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      */
       function(evt) {
         this.createLocalAllLayerData_(
-            appThemes, LayerBloodhoundEngine, gettextCatalog);
+            appThemes, layerFuseEngine, gettextCatalog);
         this.createLocalBackgroundLayerData_(
-            appThemes, BackgroundLayerBloodhoundEngine, gettextCatalog);
+            appThemes, backgroundLayerEngine, gettextCatalog);
       }, undefined, this);
 
   /** @type {TypeaheadOptions} */
@@ -290,13 +314,20 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     })
   },{
     name: 'layers',
-    source: LayerBloodhoundEngine.ttAdapter(),
+    /**
+     * @param {Object} query
+     * @param {function(Array<string>)} syncResults
+     * @return {Object}
+     */
+    source: goog.bind(function(query, syncResults) {
+      return syncResults(this.matchLayers_(layerFuseEngine, query));
+    }, this),
     /**
      * @param {Object} suggestion
      * @return {string}
      */
     displayKey: function(suggestion) {
-      return suggestion.translatedName;
+      return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -307,7 +338,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
-        var html = '<p>' + suggestion.translatedName;
+        var html = '<p>' + suggestion['translatedName'];
         scope['click'] = goog.bind(function(event) {
           this.showLayerinfo_(this.getLayerFunc_(suggestion));
           event.stopPropagation();
@@ -319,13 +350,20 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     })
   },{
     name: 'backgroundLayers',
-    source: BackgroundLayerBloodhoundEngine.ttAdapter(),
+    /**
+     * @param {Object} query
+     * @param {function(Array<string>)} syncResults
+     * @return {Object}
+     */
+    source: goog.bind(function(query, syncResults) {
+      return syncResults(this.matchLayers_(backgroundLayerEngine, query));
+    }, this),
     /**
      * @param {app.BackgroundLayerSuggestion} suggestion
      * @return {string}
      */
     displayKey: function(suggestion) {
-      return suggestion.translatedName;
+      return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -340,7 +378,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
           function(suggestion) {
             var scope = $scope.$new(true);
             scope['object'] = suggestion;
-            var html = '<p>' + suggestion.translatedName;
+            var html = '<p>' + suggestion['translatedName'];
             html += ' (' + gettextCatalog.getString('Background') + ') ';
             html += '</p>';
             return $compile(html)(scope);
@@ -389,6 +427,26 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       function(e) {
         this.vectorOverlay_.clear();
       }, undefined, this);
+};
+
+
+/**
+ * @param {Fuse} fuseEngine
+ * @param {string} searchString
+ * @return {Array.<string>}
+ * @private
+ */
+app.SearchDirectiveController.prototype.matchLayers_ =
+    function(fuseEngine, searchString) {
+  var fuseResults = /** @type {Array.<FuseResult>} */
+      (fuseEngine.search(searchString).slice(0, 5));
+  return goog.array.map(fuseResults,
+      /**
+       * @param {FuseResult} r
+       */
+      function(r) {
+        return r.item;
+      });
 };
 
 
@@ -486,31 +544,13 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
 
 
 /**
- * @return {Bloodhound} The bloodhound engine.
- * @private
- */
-app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
-    function() {
-  var bloodhound = new Bloodhound({
-    datumTokenizer: function(datum) {
-      return Bloodhound.tokenizers.whitespace(datum.translatedName);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: []
-  });
-  bloodhound.initialize();
-  return bloodhound;
-};
-
-
-/**
  * @param {app.Themes} appThemes Themes Service
- * @param {Bloodhound} bloodhound
+ * @param {Fuse} fuse
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @private
  */
 app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
-    function(appThemes, bloodhound, gettextCatalog) {
+    function(appThemes, fuse, gettextCatalog) {
   appThemes.getBgLayers().then(
       goog.bind(function(bgLayers) {
         var suggestions = goog.array.map(bgLayers,
@@ -520,14 +560,13 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
            */
             function(bgLayer) {
               return {
-                bgLayer: bgLayer,
-                translatedName: gettextCatalog.getString(
+                'bgLayer': bgLayer,
+                'translatedName': gettextCatalog.getString(
                     /** @type {string} */ (bgLayer.get('label')))
               };
             }
             );
-        bloodhound.clear();
-        bloodhound.add(suggestions);
+        fuse.set(suggestions);
       }, this)
   );
 };
@@ -535,12 +574,13 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
 
 /**
  * @param {app.Themes} appThemes Themes Service
- * @param {Bloodhound} bloodhound
+ * @param {Fuse} fuse
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @private
  */
 app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
-    function(appThemes, bloodhound, gettextCatalog) {
+    function(appThemes, fuse, gettextCatalog) {
+  this.layers_ = [];
   appThemes.getThemesObject().then(
       goog.bind(function(themes) {
         var dedup = [];
@@ -562,10 +602,9 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
               return element['id'];
             })
         );
-        bloodhound.clear();
         this.layers_ = [];
         goog.array.extend(this.layers_, dedup2);
-        bloodhound.add(this.layers_);
+        fuse.set(this.layers_);
       }, this)
   );
 };
@@ -576,7 +615,7 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
  * @private
  */
 app.SearchDirectiveController.prototype.setBackgroundLayer_ = function(input) {
-  this.backgroundLayerMgr_.set(this['map'], input.bgLayer);
+  this.backgroundLayerMgr_.set(this['map'], input['bgLayer']);
 };
 
 
@@ -617,7 +656,7 @@ app.SearchDirectiveController.getAllChildren_ =
           element[i].children, gettextCatalog)
       );
     } else {
-      element[i].translatedName = gettextCatalog.getString(element[i].name);
+      element[i]['translatedName'] = gettextCatalog.getString(element[i].name);
       array.push(element[i]);
     }
   }
