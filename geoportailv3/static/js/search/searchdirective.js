@@ -231,7 +231,7 @@ app.SearchDirectiveController =
           event.stopPropagation();
         };
         var html = '<p>' + feature.get('label') +
-            ' (' + gettextCatalog.getString('LUREF Coordinate') + ')</p>';
+            ' (' + feature.get('epsgLabel') + ')</p>';
         return $compile(html)(scope);
       }, this)
     })
@@ -338,20 +338,36 @@ app.SearchDirectiveController =
  */
 app.SearchDirectiveController.prototype.matchCoordinate_ =
     function(searchString) {
-  var re = /([0-9]{4,5})\s*[E]?\W*([0-9]{4,5})\s*[N]?/;
+  var results = [];
+  var re = {
+    'EPSG:2169': {
+      regex: /(\d{4,5})\s*[E]?\W*(\d{4,5})\s*[N]?/,
+      label: 'LUREF'
+    },
+    'EPSG:4326': {
+      regex:
+          /(\d{1,2}[\,\.]\d{4,5})\d*\s?[E]?\W*(\d{1,2}[\,\.]\d{4,5})\d*\s?[N]?/,
+      label: 'long/lat WGS84'
+    }
+  };
   var m;
-  if ((m = re.exec(searchString)) !== null) {
-    var point = /** @type {ol.geom.Point} */
-        (new ol.geom.Point([m[1], m[2]])
-      .transform('EPSG:2169', 'EPSG:3857'));
-    var feature = /** @type {ol.Feature} */
-        (new ol.Feature({
-          geometry: point,
-          label: m[1] + 'E ' + m[2] + 'N '
-        }));
-    return [feature];
+  for (var epsgCode in re) {
+    if ((m = re[epsgCode].regex.exec(searchString)) !== null) {
+      var easting = parseFloat(m[1]);
+      var northing = parseFloat(m[2]);
+      var point = /** @type {ol.geom.Point} */
+          (new ol.geom.Point([easting, northing])
+         .transform(epsgCode, 'EPSG:3857'));
+      var feature = /** @type {ol.Feature} */
+          (new ol.Feature({
+            geometry: point,
+            'label': easting + 'E ' + northing + 'N ',
+            'epsgLabel': re[epsgCode].label
+          }));
+      results.push(feature);
+    }
   }
-  return []; //return empty array if no match
+  return results; //return empty array if no match
 };
 
 
