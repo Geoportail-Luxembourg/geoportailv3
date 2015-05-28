@@ -161,7 +161,8 @@ app.SearchDirectiveController =
    * @type {ol.Extent}
    * @private
    */
-  this.maxExtent_ = maxExtent;
+  this.maxExtent_ =
+      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {Array.<ol.layer.Layer>}
