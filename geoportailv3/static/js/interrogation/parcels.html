@@ -1,12 +1,11 @@
-<h1>{{layers['layer']}}</h1>
-<div ng-repeat="feature in layers['values']">
-    <span>Commune</span> : {{feature['PF']['townName']}}<br>
-    <span>Section</span> : {{feature['PF']['sectionDesignation']}}<br>
-    <span>Numero cadastral</span> : {{feature['PF']['mainNumber']}}/{{feature['PF']['additionalNumber']}}<br>
-    <span>Contenance</span> : {{feature['PF']['capacity']}}<br>
-    <span>Nature</span> : {{feature['PF']['farmingTypes'][0]}}<br>
-    <span>Dernier mesurage</span> : {{feature['PF']['measurementNumber']}}<br>
-    <a href="http://shop.geoportail.lu/Portail/express/?lang=${c.lang}&ids=['{{feature['textstring']}}']&camefrom=mapv3" target="_blank">Commander un extrait</a>
-    <br>
-    <br>
+<h1>{{layers['layerLabel'] | translate}}</h1>
+<div ng-repeat="feature in layers['features']">
+    <h2>{{feature['attributes']['PF']['mainNumber']}}/{{feature['attributes']['PF']['additionalNumber']}}</h2>
+    <span translate>Commune</span> : {{feature['attributes']['PF']['townName']}}<br>
+    <span translate>Section</span> : {{feature['attributes']['PF']['sectionDesignation']}}<br>
+    <span translate>Numero cadastral</span> : {{feature['attributes']['PF']['mainNumber']}}/{{feature['attributes']['PF']['additionalNumber']}}<br>
+    <span translate>Contenance</span> : {{feature['attributes']['PF']['capacity']}}<br>
+    <span translate>Nature</span> : {{feature['attributes']['PF']['farmingTypes'][0]}}<br>
+    <span translate>Dernier mesurage</span> : {{feature['attributes']['PF']['measurementNumber']}}<br>
+    <a href="http://shop.geoportail.lu/Portail/express/?ids=['{{feature['attributes']['textstring']}}']&camefrom=mapv3" target="_blank">Commander un extrait</a>
 </div>

@@ -69,6 +69,11 @@ class LuxGetfeatureDefinition(Base):
     rest_url = Column(Unicode, label=_(u'URL Rest'))
     engine = Column(Unicode, label=_(u'Engine'))
     layer = Column(Unicode, label=_(u'Layer'))
-    template = Column(Unicode, label=_(u'Template'))
+    template = Column(Unicode, label=_(u'Template file name'))
+    remote_template = Column(Boolean,
+                             label=_(u"Is the template local or remote"))
     additional_info_function = Column(Unicode, label=_(u'Python function'))
     role = Column(Integer, label=_(u'Role'))
+    attributes_to_remove = Column(Unicode, label=_(u'Attributes to keep'))
+    poi_id_collection = Column(Unicode, label=_(u'Id of the poi collection'))
+    geometry_column = Column(Unicode, label=_(u'Geometry column name'))
