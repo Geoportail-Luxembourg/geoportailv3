@@ -369,12 +369,9 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
          .transform(epsgCode, 'EPSG:3857'));
       if (ol.extent.containsCoordinate(
           this.maxExtent_, point.getCoordinates())) {
-        var feature = /** @type {ol.Feature} */
-            (new ol.Feature({
-              geometry: point,
-              'label': easting + 'E ' + northing + 'N ',
-              'epsgLabel': re[epsgCode].label
-            }));
+        var feature = new ol.Feature(point);
+        feature.set('label', easting + 'E ' + northing + 'N ');
+        feature.set('epsgLabel', re[epsgCode].label);
         results.push(feature);
       }
     }
