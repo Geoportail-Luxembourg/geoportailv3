@@ -196,7 +196,7 @@
          appModule.constant('printServiceUrl', "${request.route_url('printproxy')}");
          appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
-         appModule.constant('maxExtent', ol.proj.transformExtent([2.6, 47.7, 8.6, 51], 'EPSG:4326', 'EPSG:3857'));
+         appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
 
 % if debug:
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
