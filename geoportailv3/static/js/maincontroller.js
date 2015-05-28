@@ -39,6 +39,7 @@ goog.require('ol.tilegrid.WMTS');
  *     manager.
  * @param {app.Themes} appThemes Themes service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
  * @constructor
@@ -47,13 +48,19 @@ goog.require('ol.tilegrid.WMTS');
  */
 app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appThemes, langUrls,
-    defaultExtent, ngeoSyncArrays) {
+    maxExtent, defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {app.Themes}
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ = maxExtent;
 
   /**
    * @type {angularGettext.Catalog}
@@ -175,10 +182,7 @@ app.MainController.prototype.setMap_ = function() {
     view: new ol.View({
       maxZoom: 19,
       minZoom: 8,
-      extent: ol.extent.boundingExtent([
-        ol.proj.transform([2.6, 47.7], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([8.6, 51], 'EPSG:4326', 'EPSG:3857')
-      ])
+      extent: this.maxExtent_
     })
   });
 };
