@@ -196,6 +196,7 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     goog.asserts.assert(goog.isDefAndNotNull(layer));
     app.layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
+    layer.set('queryable_id', node['id']);
     return layer;
   }
 };
