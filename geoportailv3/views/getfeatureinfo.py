@@ -105,7 +105,7 @@ class Getfeatureinfo(object):
                     query = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
                             % {'geom': luxgetfeaturedefinition.
                                geometry_column} + query
-
+                query = query + " LIMIT 20"
                 res = engine.execute(query)
                 rows = res.fetchall()
                 if (luxgetfeaturedefinition.additional_info_function
