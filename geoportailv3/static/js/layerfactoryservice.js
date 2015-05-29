@@ -96,7 +96,8 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
             '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'
           ]
         }),
-        style: 'default'
+        style: 'default',
+        crossOrigin: 'anonymous'
       })
     });
 
@@ -134,6 +135,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer) {
     var imageExt = app.getImageExtension_(imageType);
     var layer = new ol.layer.Image({
       source: new ol.source.ImageWMS({
+        crossOrigin: 'anonymous',
         url: url,
         params: {
           'FORMAT': imageExt,
