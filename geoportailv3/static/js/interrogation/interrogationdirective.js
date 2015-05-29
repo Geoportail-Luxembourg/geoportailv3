@@ -191,6 +191,7 @@ app.InterrogationController.prototype.clearFeatures_ = function() {
  * that the template for the current layer is remote or not
  * @param {{remote_template: boolean, template: string}} layer
  * @return {string} the template path.
+ * @export
  */
 app.InterrogationController.prototype.getTemplatePath = function(layer) {
   if (layer['remote_template'] === true) {
