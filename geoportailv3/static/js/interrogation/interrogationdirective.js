@@ -160,21 +160,26 @@ app.InterrogationController = function($scope, $http,
     }
   },this));
 
-  /*TODO : should implement CORS header before using it*/
-  /*
+
   map.on('pointermove', goog.bind(function(evt) {
     if (evt.dragging) {
       return;
     }
-
-
     var pixel = map.getEventPixel(evt.originalEvent);
     var hit = map.forEachLayerAtPixel(pixel, function(layer) {
-      return true;
+      if (goog.isDefAndNotNull(layer)) {
+        var metadata = layer.get('metadata');
+        if (goog.isDefAndNotNull(metadata)) {
+          if (goog.isDefAndNotNull(metadata['is_queryable']) &&
+              metadata['is_queryable']) {
+            return true;
+          }
+        }
+      }
+      return false;
     });
     map.getTargetElement().style.cursor = hit ? 'pointer' : '';
   },this));
-  */
 };
 
 
