@@ -23,16 +23,16 @@ app.GetShorturl;
  */
 app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
   return (
-     /**
-     * @param {ol.Coordinate=} coordinate
+      /**
+     * @param {ol.Coordinate=} opt_coordinate
      * @return {!angular.$q.Promise} Promise providing the short URL.
      */
-      function getShorturl(coordinate) {
+      function getShorturl(opt_coordinate) {
         var location = ngeoLocation;
-        if (coordinate) {
+        if (opt_coordinate) {
           location.updateParams({
-            'x': coordinate[0],
-            'y': coordinate[1]
+            'X': Math.round(opt_coordinate[0]),
+            'Y': Math.round(opt_coordinate[1])
           });
         }
         var url = location.getUriString();
