@@ -5,6 +5,7 @@
 goog.provide('app.locationinfoDirective');
 
 goog.require('app');
+goog.require('app.GetShorturl');
 
 
 /**
@@ -33,18 +34,36 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
 /**
  * @constructor
  * @param {angular.$http} $http
+ * @param {app.GetShorturl} appGetShorturl
  * @param {string} appLocationinfoTemplateUrl
  */
-app.LocationinfoController = function($http, appLocationinfoTemplateUrl) {
+app.LocationinfoController =
+    function($http, appGetShorturl, appLocationinfoTemplateUrl) {
 
   var map = this['map'];
+
+  /**
+   * @type {string}
+   */
+  this['url'] = '';
+
+  /**
+   * @type {app.GetShorturl}
+   * @private
+   */
+  this.getShorturl_ = appGetShorturl;
 
   map.getViewport().addEventListener('contextmenu', goog.bind(function(event) {
     event.preventDefault();
     this['infoOpen'] = true;
-    var clickLocation = this.map.getEventCoordinate(event);
-    var lurefCoordinate =
-      ol.proj.transform(clickLocation, 'EPSG:3857', 'EPSG:2169');
+    var clickCoordinate = this.map.getEventCoordinate(event);
+    this.getShorturl_(clickCoordinate).then(goog.bind(
+        /**
+       * @param {string} shorturl The short URL.
+       */
+        function(shorturl) {
+          this['url'] = shorturl;
+        }, this));
   }, this));
 };
 

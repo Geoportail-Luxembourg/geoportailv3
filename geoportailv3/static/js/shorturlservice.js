@@ -8,7 +8,7 @@ goog.require('app');
 
 
 /**
- * @typedef {function():!angular.$q.Promise}
+ * @typedef {function(ol.Coordinate=):!angular.$q.Promise}
  */
 app.GetShorturl;
 
@@ -22,26 +22,33 @@ app.GetShorturl;
  * @ngInject
  */
 app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
-  return getShorturl;
-
-  /**
-   * @return {!angular.$q.Promise} Promise providing the short URL.
-   */
-  function getShorturl() {
-    var url = ngeoLocation.getUriString();
-    return $http.get(shorturlServiceUrl, {
-      params: {
-        'url': url
-      }
-    }).then(
-        /**
+  return (
+     /**
+     * @param {ol.Coordinate=} coordinate
+     * @return {!angular.$q.Promise} Promise providing the short URL.
+     */
+      function getShorturl(coordinate) {
+        var location = ngeoLocation;
+        if (coordinate) {
+          location.updateParams({
+            'x': coordinate[0],
+            'y': coordinate[1]
+          });
+        }
+        var url = location.getUriString();
+        return $http.get(shorturlServiceUrl, {
+          params: {
+            'url': url
+          }
+        }).then(
+            /**
          * @param {angular.$http.Response} resp Ajax response.
          * @return {string} The short URL.
          */
-        function(resp) {
-          return resp.data['short_url'];
-        });
-  }
+            function(resp) {
+              return resp.data['short_url'];
+            });
+      });
 };
 
 
