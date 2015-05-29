@@ -194,11 +194,11 @@ class Getfeatureinfo(object):
                         else:
                             luxgetfeaturedefinitions.append(query.filter(
                                 LuxGetfeatureDefinition.role == None
-                                ).first())
+                                ).first())  # noqa
                     else:
                         luxgetfeaturedefinitions.append(query.filter(
                             LuxGetfeatureDefinition.role == None
-                            ).first())
+                            ).first())  # noqa
         except:
             traceback.print_exc(file=sys.stdout)
             return HTTPBadRequest()
