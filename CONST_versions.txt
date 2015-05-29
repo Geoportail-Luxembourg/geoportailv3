@@ -62,7 +62,6 @@ socketpool==0.5.3
 SQLAHelper==1.0
 SQLAlchemy==0.9.8
 Tempita==0.5.2
-suds>=0.4
 textile==2.2.2
 tilecloud==0.2.dev20150115
 tilecloud-chain==1.0.0.dev1

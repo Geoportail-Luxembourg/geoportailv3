@@ -26,6 +26,7 @@ POST_RULES = .build/fonts.timestamp
 
 include CONST_Makefile
 
+REQUIREMENTS += suds>=0.4
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 PRINT_VERSION = NONE 
 
