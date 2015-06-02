@@ -1,26 +1,26 @@
-goog.provide('app.interrogationDirective');
+goog.provide('app.queryDirective');
 
 
 /**
- * @param {string} appInterrogationTemplateUrl URL to directive template.
+ * @param {string} appQueryTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.interrogationDirective = function(appInterrogationTemplateUrl) {
+app.queryDirective = function(appQueryTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appInterrogationMap',
-      'selectedLayers': '=appInterrogationSelectedlayers',
-      'infoOpen': '=appInterrogationOpen'
+      'map': '=appQueryMap',
+      'selectedLayers': '=appQuerySelectedlayers',
+      'infoOpen': '=appQueryOpen'
     },
-    controller: 'AppInterrogationController',
+    controller: 'AppQueryController',
     controllerAs: 'ctrl',
     bindToController: true,
-    templateUrl: appInterrogationTemplateUrl
+    templateUrl: appQueryTemplateUrl
   };
 };
-app.module.directive('appInterrogation', app.interrogationDirective);
+app.module.directive('appQuery', app.queryDirective);
 
 
 
@@ -28,19 +28,19 @@ app.module.directive('appInterrogation', app.interrogationDirective);
  * @constructor
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service
- * @param {string} appInterrogationTemplatesPath Path
+ * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
  * @param {string} getRemoteTemplateServiceUrl
  * @export
  * @ngInject
  */
-app.InterrogationController = function($scope, $http,
-    appInterrogationTemplatesPath, getInfoServiceUrl,
+app.QueryController = function($scope, $http,
+    appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
 
   this['content'] = [];
-  this.templatePath = appInterrogationTemplatesPath;
+  this.templatePath = appQueryTemplatesPath;
   this.remoteTemplateUrl = getRemoteTemplateServiceUrl;
   var map = this['map'];
 
@@ -189,7 +189,7 @@ app.InterrogationController = function($scope, $http,
 /**
  * @private
  */
-app.InterrogationController.prototype.clearFeatures_ = function() {
+app.QueryController.prototype.clearFeatures_ = function() {
   this.overlay_.getFeatures().clear();
 };
 
@@ -201,7 +201,7 @@ app.InterrogationController.prototype.clearFeatures_ = function() {
  * @return {string} the template path.
  * @export
  */
-app.InterrogationController.prototype.getTemplatePath = function(layer) {
+app.QueryController.prototype.getTemplatePath = function(layer) {
   if (layer['remote_template'] === true) {
     return (this.remoteTemplateUrl + '?layer=' + layer['layer']);
   }
@@ -213,7 +213,7 @@ app.InterrogationController.prototype.getTemplatePath = function(layer) {
  * @param {Array<string>} features the features to highlight
  * @private
  */
-app.InterrogationController.prototype.highlightFeatures_ = function(features) {
+app.QueryController.prototype.highlightFeatures_ = function(features) {
 
   var encOpt = {
     dataProjection: 'EPSG:2169',
@@ -229,6 +229,6 @@ app.InterrogationController.prototype.highlightFeatures_ = function(features) {
 
   this.overlay_.setFeatures(currentFeatures.extend(jsonFeatures));
 };
-app.module.controller('AppInterrogationController',
-                      app.InterrogationController);
+app.module.controller('AppQueryController',
+                      app.QueryController);
 

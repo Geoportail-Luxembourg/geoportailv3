@@ -106,7 +106,7 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-interrogation app-interrogation-map="::mainCtrl.map" app-interrogation-selectedlayers="mainCtrl.selectedLayers" app-interrogation-open="mainCtrl.infosOpen"><app-interrogation>
+          <app-query app-query-map="::mainCtrl.map" app-query-selectedlayers="mainCtrl.selectedLayers" app-query-open="mainCtrl.infosOpen"><app-query>
         </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
@@ -200,7 +200,7 @@
          appModule.constant('getRemoteTemplateServiceUrl', "${request.route_url('getremotetemplate')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
-         appModule.value('appInterrogationTemplatesPath', '${request.static_url('geoportailv3:static/js/interrogation/')}');
+         appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
 % if debug:
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
          appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
@@ -220,7 +220,7 @@
          appModule.value('appSearchTemplateUrl', '${request.static_url('geoportailv3:static/js/search/search.html')}');
          appModule.value('appShareTemplateUrl', '${request.static_url('geoportailv3:static/js/share/share.html')}');
          appModule.value('appShorturlTemplateUrl', '${request.static_url('geoportailv3:static/js/share/shorturl.html')}');
-         appModule.value('appInterrogationTemplateUrl', '${request.static_url('geoportailv3:static/js/interrogation/info.html')}');
+         appModule.value('appQueryTemplateUrl', '${request.static_url('geoportailv3:static/js/query/info.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -240,7 +240,7 @@
          appModule.value('appSearchTemplateUrl', 'search/search.html');
          appModule.value('appShareTemplateUrl', 'share/share.html');
          appModule.value('appShorturlTemplateUrl', 'share/shorturl.html');
-         appModule.value('appInterrogationTemplateUrl', 'interrogation/info.html');
+         appModule.value('appQueryTemplateUrl', 'query/info.html');
 % endif
 
 
