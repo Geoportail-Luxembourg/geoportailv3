@@ -84,4 +84,5 @@ def main(global_config, **settings):
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')
     config.add_route('getpoitemplate', '/getpoitemplate')
+    config.add_route('getremotetemplate', '/getremotetemplate')
     return config.make_wsgi_app()

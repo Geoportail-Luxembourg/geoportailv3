@@ -21,6 +21,24 @@ class Getfeatureinfo(object):
         self.request = request
         self.dbsession = sqlahelper.get_session()
 
+    # Get the remote template
+    @view_config(route_name='getremotetemplate')
+    def get_remote_template(self):
+        layer = self.request.params.get('layer', None)
+        if layer is None:
+            return HTTPBadRequest()
+
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layer)
+        if len(luxgetfeaturedefinitions) is not 1:
+            return HTTPBadRequest()
+
+        if (luxgetfeaturedefinitions[0].template is not None and
+                len(luxgetfeaturedefinitions[0].template) > 0):
+            f = urllib2.urlopen(luxgetfeaturedefinitions[0].template, None, 15)
+            return Response(f.read())
+
+        return HTTPBadRequest()
+
     # Get the tooltip template from the poi manager database
     # and replace each poi placeholder by the angular notation
     @view_config(route_name='getpoitemplate')

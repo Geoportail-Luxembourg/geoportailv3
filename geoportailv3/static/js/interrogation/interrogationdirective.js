@@ -31,14 +31,17 @@ app.module.directive('appInterrogation', app.interrogationDirective);
  * @param {string} appInterrogationTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
+ * @param {string} getRemoteTemplateServiceUrl
  * @export
  * @ngInject
  */
 app.InterrogationController = function($scope, $http,
-    appInterrogationTemplatesPath, getInfoServiceUrl) {
+    appInterrogationTemplatesPath, getInfoServiceUrl,
+    getRemoteTemplateServiceUrl) {
 
   this['content'] = [];
   this.templatePath = appInterrogationTemplatesPath;
+  this.remoteTemplateUrl = getRemoteTemplateServiceUrl;
   var map = this['map'];
 
   var defaultFill = new ol.style.Fill({
@@ -194,13 +197,13 @@ app.InterrogationController.prototype.clearFeatures_ = function() {
 /**
  * provides the template path according with the fact
  * that the template for the current layer is remote or not
- * @param {{remote_template: boolean, template: string}} layer
+ * @param {{remote_template: boolean, template: string, layer: string}} layer
  * @return {string} the template path.
  * @export
  */
 app.InterrogationController.prototype.getTemplatePath = function(layer) {
   if (layer['remote_template'] === true) {
-    return layer['template'];
+    return (this.remoteTemplateUrl + '?layer=' + layer['layer']);
   }
   return (this.templatePath + '/' + layer['template']);
 };
