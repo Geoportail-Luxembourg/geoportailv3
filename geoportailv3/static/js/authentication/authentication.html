@@ -9,8 +9,8 @@
                 <input type="submit" value="Envoyer"/>
                 <div class="clearfix">
                     <div ng-if="ctrl.hasError()" translate><p>Invalid login or password</p></div>
-                    <p><a href="#" translate>I lost my password</a></p>
-                    <p><a href="#" translate>I want to create a new user account</a></p>
+                    <p><a target="_blank" href="https://myaccount.geoportail.lu/lostpassword?lang={{ctrl.lang}}" translate>I lost my password</a></p>
+                    <p><a target="_blank" href="https://myaccount.geoportail.lu/newaccount?lang={{ctrl.lang}}" translate>I want to create a new user account</a></p>
                 </div>
             </form>
             <div ng-if="ctrl.isAuthenticated()">
@@ -19,7 +19,7 @@
                     <li><p>{{ctrl.mail}}</p></li>
                 </ul>
                 <div class="pull-right">
-                  <a class="btn btn-link" translate>My account</a>
+                  <a target="_blank" href="https://myaccount.geoportail.lu?lang={{ctrl.lang}}" class="btn btn-link" translate>My account</a>
                   <button class="btn btn-default" ng-click="ctrl.logout()" translate>Logout</button>
                 </div>
                 <div class="clearfix"></div>

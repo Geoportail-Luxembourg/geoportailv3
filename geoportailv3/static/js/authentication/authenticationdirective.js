@@ -12,7 +12,8 @@ app.authenticationDirective = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'roleId': '=appAuthenticationRoleid'
+      'roleId': '=appAuthenticationRoleid',
+      'lang': '=appAuthenticationLang'
     },
     controller: 'AppAuthenticationController',
     controllerAs: 'ctrl',
