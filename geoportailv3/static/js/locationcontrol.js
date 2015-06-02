@@ -126,7 +126,12 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
   var map = this.getMap();
   var view = map.getView();
   this.geolocation_ = /** @type {ol.Geolocation} */ (new ol.Geolocation({
-    projection: view.getProjection()
+    projection: view.getProjection(),
+    trackingOptions: /** @type {GeolocationPositionOptions} */ ({
+      enableHighAccuracy: true,
+      maximumAge: 60000,
+      timeout: 7000
+    })
   }));
 
   this.geolocation_.on('change:tracking', goog.bind(function(e) {
