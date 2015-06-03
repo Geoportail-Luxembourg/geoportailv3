@@ -5,6 +5,7 @@
 goog.provide('app.locationinfoDirective');
 
 goog.require('app');
+goog.require('app.CoordinateString');
 goog.require('app.GetShorturl');
 
 
@@ -18,7 +19,7 @@ app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appLocationinfoMap',
-      'infoOpen': '=appLocationinfoOpen'
+      'open': '=appLocationinfoOpen'
     },
     controller: 'AppLocationinfoController',
     controllerAs: 'ctrl',
@@ -33,15 +34,22 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
 
 /**
  * @constructor
- * @param {angular.$http} $http
  * @param {angular.Scope} $scope
  * @param {app.GetShorturl} appGetShorturl
+ * @param {app.CoordinateString} appCoordinateString
+ * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
+ * @ngInject
  */
 app.LocationinfoController =
-    function($http, $scope, appGetShorturl, appLocationinfoTemplateUrl) {
+    function($scope, appGetShorturl, appCoordinateString,
+        qrServiceUrl, appLocationinfoTemplateUrl) {
 
-  var map = this['map'];
+  /**
+   * @type {app.CoordinateString}
+   * @private
+   */
+  this.coordinateString_ = appCoordinateString;
 
   /**
    * @type {ol.FeatureOverlay}
@@ -49,12 +57,20 @@ app.LocationinfoController =
    */
   this.featureOverlay_ = this.createFeatureOverlay_();
 
+  /**
+   * @type {boolean}
+   */
+  this['featureOverlayItemExists'] = false;
+
   $scope.$watch(goog.bind(function() {
-    return this['infoOpen'];
+    return this['open'];
   }, this), goog.bind(function(newVal) {
+    var features = this.featureOverlay_.getFeatures();
     if (newVal === false) {
-      var features = this.featureOverlay_.getFeatures();
       features.clear();
+      this['featureOverlayItemExists'] = false;
+    } else if (newVal === true && features.getLength() >= 1) {
+      this['featureOverlayItemExists'] = true;
     }
   }, this));
 
@@ -64,28 +80,74 @@ app.LocationinfoController =
   this['url'] = '';
 
   /**
+   * @type {string}
+   */
+  this['qrUrl'] = '';
+
+  /**
    * @type {app.GetShorturl}
    * @private
    */
   this.getShorturl_ = appGetShorturl;
 
-  map.getViewport().addEventListener('contextmenu', goog.bind(function(event) {
-    event.preventDefault();
-    this['infoOpen'] = true;
-    var clickCoordinate = this.map.getEventCoordinate(event);
-    var feature = /** @type {ol.Feature} */
-        (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-    var features = this.featureOverlay_.getFeatures();
-    features.clear();
-    features.push(feature);
-    this.getShorturl_(clickCoordinate).then(goog.bind(
-        /**
-       * @param {string} shorturl The short URL.
-       */
-        function(shorturl) {
-          this['url'] = shorturl;
-        }, this));
+  /**
+   * @type {string}
+   * @private
+   */
+  this.qrServiceUrl_ = qrServiceUrl;
+
+  /**
+   * @type {Object}
+   * @private
+   */
+  this.projections_ = {
+    'EPSG:2169': 'Luref',
+    'EPSG:4326': 'Lon/Lat WGS84',
+    'EPSG:3263*': 'WGS84 UTM'
+  };
+
+  /**
+   * @type {ol.Coordinate|undefined}
+   */
+  this['coordinate'] = undefined;
+
+  /**
+   * @type {Object}
+   */
+  this['location'] = {};
+
+  $scope.$watch(goog.bind(function() {
+    return this['coordinate'];
+  }, this), goog.bind(function(newVal) {
+    if (goog.isDef(newVal)) {
+      this['location'] = {};
+      goog.object.forEach(this.projections_, function(value, key) {
+        var sourceEpsgCode = this['map'].getView().getProjection().getCode();
+        this['location'][value] = this.coordinateString_(
+            this['coordinate'], sourceEpsgCode, key
+            );
+      }, this);
+    }
   }, this));
+
+  this['map'].getViewport()
+    .addEventListener('contextmenu', goog.bind(function(event) {
+        event.preventDefault();
+        this['open'] = true;
+        var clickCoordinate = this.map.getEventCoordinate(event);
+        this['coordinate'] = clickCoordinate;
+        var feature = /** @type {ol.Feature} */
+            (new ol.Feature(new ol.geom.Point(clickCoordinate)));
+        var features = this.featureOverlay_.getFeatures();
+        features.clear();
+        features.push(feature);
+        this['featureOverlayItemExists'] = true;
+        this.getShorturl_(clickCoordinate).then(goog.bind(
+            function(shorturl) {
+              this['url'] = shorturl;
+              this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
+            }, this));
+      }, this));
 };
 
 
@@ -116,5 +178,6 @@ app.LocationinfoController.prototype.createFeatureOverlay_ =
   featureOverlay.setMap(this['map']);
   return featureOverlay;
 };
+
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);
