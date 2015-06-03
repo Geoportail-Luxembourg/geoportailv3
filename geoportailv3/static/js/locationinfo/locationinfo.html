@@ -1,3 +1,28 @@
-<p>
-{{ ctrl.url }}
-</p>
+<div class='container-fluid'>
+  <div class='row' ng-show="ctrl.featureOverlayItemExists">
+    <div class='col-xs-8'>
+      <h3 translate>Short Url</h3>
+      <input onclick="this.select()" type="text" class="form-control" name="shorturl" ng-model="ctrl.url">
+    </div>
+    <div class='col-xs-4'>
+      <img class="img-responsive center-block" src="{{ ctrl.qrUrl }}"></img>
+    </div>
+  </div>
+  <div class='row' ng-show="ctrl.featureOverlayItemExists">
+    <div class='col-xs-12'>
+      <h3 translate>Location Coordinates</h3>
+      <table>
+        <tr ng-repeat="(key, value) in ctrl.location">
+          <th>{{key | translate}} </th> <td>{{ value }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row" ng-hide="ctrl.featureOverlayItemExists">
+    <div class="col-xs-12">
+      <p>
+      Please do a right-click in the map window to get information about the location.
+      </p>
+    </div>
+  </div>
+</div>
