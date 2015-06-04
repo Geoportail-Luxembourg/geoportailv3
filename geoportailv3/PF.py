@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from suds.client import Client
 import logging
 import os
@@ -7,9 +7,9 @@ import sys
 # from geoadmin.model.portail import UtiMesurageCommune
 
 
-# Classe pour acc?der aux attributs de la publicit? fonci?re##
-# Les classes import?es en haut ont ?t? g?n?r?es par wsdl2py
-# d?pendances: pyxml,fpconst,ZSI
+# Classe pour accéder aux attributs de la publicité foncière##
+# Les classes importées en haut ont été générées par wsdl2py
+# dépendances: pyxml,fpconst,ZSI
 
 class PF():
     def __init__(self):
