@@ -11,7 +11,6 @@ app.queryDirective = function(appQueryTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appQueryMap',
-      'selectedLayers': '=appQuerySelectedlayers',
       'infoOpen': '=appQueryOpen'
     },
     controller: 'AppQueryController',
@@ -40,8 +39,20 @@ app.QueryController = function($scope, $http,
     getRemoteTemplateServiceUrl) {
 
   this['content'] = [];
-  this.templatePath = appQueryTemplatesPath;
-  this.remoteTemplateUrl = getRemoteTemplateServiceUrl;
+  /**
+   * @type {string}
+   * @private
+   */
+  this.templatePath_ = appQueryTemplatesPath;
+  /**
+   * @type {string}
+   * @private
+   */
+  this.remoteTemplateUrl_ = getRemoteTemplateServiceUrl;
+
+  /**
+   * @type {ol.Map}
+   */
   var map = this['map'];
 
   var defaultFill = new ol.style.Fill({
@@ -79,7 +90,7 @@ app.QueryController = function($scope, $http,
   ];
 
   var styles = {
-    Point: [new ol.style.Style({
+    point: [new ol.style.Style({
       image: image
     })],
     default: defaultStyle
@@ -92,9 +103,9 @@ app.QueryController = function($scope, $http,
    */
   this.overlay_ = new ol.FeatureOverlay({map: map,
     style: function(feature, resolution) {
-      if (feature.getGeometry().getType() == 'Point' ||
-          feature.getGeometry().getType() == 'MultiPoint') {
-        return styles.Point;
+      if (feature.getGeometry().getType() == ol.geom.GeometryType.POINT ||
+          feature.getGeometry().getType() == ol.geom.GeometryType.MULTI_POINT) {
+        return styles.point;
       }
       return styles.default;
     }});
@@ -109,12 +120,9 @@ app.QueryController = function($scope, $http,
     }
   }, this));
 
-  var layers = map.getLayers().getArray();
-
-  var layersList = [];
-  var box = [];
   map.on('singleclick', goog.bind(function(evt) {
-    layersList = [];
+    var layers = map.getLayers().getArray();
+    var layersList = [];
     var layerLabel = {};
     for (var i = 0; i < layers.length; i++) {
       var metadata = layers[i].get('metadata');
@@ -136,7 +144,7 @@ app.QueryController = function($scope, $http,
           map.getCoordinateFromPixel(
           [evt.pixel[0] + buffer, evt.pixel[1] + buffer]),
           map.getView().getProjection(), 'EPSG:2169');
-      box = ll.concat(ur);
+      var box = ll.concat(ur);
 
       $http.get(
           getInfoServiceUrl,
@@ -203,9 +211,9 @@ app.QueryController.prototype.clearFeatures_ = function() {
  */
 app.QueryController.prototype.getTemplatePath = function(layer) {
   if (layer['remote_template'] === true) {
-    return (this.remoteTemplateUrl + '?layer=' + layer['layer']);
+    return (this.remoteTemplateUrl_ + '?layer=' + layer['layer']);
   }
-  return (this.templatePath + '/' + layer['template']);
+  return (this.templatePath_ + '/' + layer['template']);
 };
 
 
