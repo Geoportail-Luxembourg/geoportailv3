@@ -9,6 +9,9 @@
 goog.provide('app.printDirective');
 
 
+goog.require('app.Themes');
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ngeo.CreatePrint');
 goog.require('ngeo.Print');
@@ -27,7 +30,8 @@ app.printDirective = function(appPrintTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appPrintMap',
-      'open': '=appPrintOpen'
+      'open': '=appPrintOpen',
+      'currentTheme': '=appPrintCurrenttheme'
     },
     controller: 'AppPrintController',
     controllerAs: 'ctrl',
@@ -47,13 +51,14 @@ app.module.directive('appPrint', app.printDirective);
  * @param {angular.$q} $q The Angular $q service.
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
+ * @param {app.Themes} appThemes Themes service.
  * @param {string} printServiceUrl URL to print service.
  * @constructor
  * @export
  * @ngInject
  */
 app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
-    ngeoPrintUtils, printServiceUrl) {
+    ngeoPrintUtils, appThemes, printServiceUrl) {
 
   /**
    * @type {ol.Map}
@@ -99,6 +104,12 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
   this.printUtils_ = ngeoPrintUtils;
 
   /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
+  /**
    * @type {Array.<string>}
    */
   this['layouts'] = app.PrintController.LAYOUTS_;
@@ -111,7 +122,7 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
   /**
    * @type {Array.<number>}
    */
-  this['scales'] = app.PrintController.MAP_SCALES_;
+  this['scales'] = [];
 
   /**
    * @type {number}
@@ -183,6 +194,12 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
     this.map_.render();
   }, this));
 
+  // Set the possible print scales based on the current theme.
+  $scope.$watch(goog.bind(function() {
+    return this['currentTheme'];
+  }, this), goog.bind(function() {
+    this.setScales_();
+  }, this));
 };
 
 
@@ -196,15 +213,6 @@ app.PrintController.LAYOUTS_ = [
   'A2 portrait', 'A2 landscape', 'A1 portrait', 'A1 landscape',
   'A0 portrait', 'A0 landscape'
 ];
-
-
-/**
- * @const
- * @type {Array.<number>}
- * @private
- */
-app.PrintController.MAP_SCALES_ = [100, 250, 500, 2500, 5000, 10000,
-  25000, 50000, 100000, 500000];
 
 
 /**
@@ -233,6 +241,34 @@ app.PrintController.MAP_SIZES_ = [
  * @private
  */
 app.PrintController.DPI_ = 300;
+
+
+/**
+ * @param {Array.<number>} scales Sorted array of scales (ascending).
+ * @param {number} scale Current scale.
+ * @return {number} The nearest scale.
+ * @private
+ */
+app.PrintController.findNearestScale_ = function(scales, scale) {
+  if (scale <= scales[0]) {
+    scale = scales[0];
+  } else if (scale >= scales[scales.length - 1]) {
+    scale = scales[scales.length - 1];
+  } else {
+    for (var i = 1, l = scales.length; i < l; ++i) {
+      if (scales[i] >= scale) {
+        if (scales[i] - scale < scale - scales[i - 1]) {
+          scale = scales[i];
+        } else {
+          scale = scales[i - 1];
+        }
+        break;
+      }
+    }
+    goog.asserts.assert(i < l);
+  }
+  return scale;
+};
 
 
 /**
@@ -367,6 +403,46 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
 app.PrintController.prototype.handleGetStatusError_ = function(resp) {
   this['printing'] = false;
   // FIXME
+};
+
+
+/**
+ * Set possible print scales based on the current theme.
+ * @private
+ */
+app.PrintController.prototype.setScales_ = function() {
+  var currentTheme = this['currentTheme'];
+  this.appThemes_.getThemeObject(currentTheme).then(goog.bind(
+      /**
+       * @param {Object} tree Tree object for the theme.
+       */
+      function(tree) {
+        if (!goog.isNull(tree)) {
+          goog.asserts.assert('metadata' in tree);
+          goog.asserts.assert('print_scales' in tree['metadata']);
+          var printScalesStr = tree['metadata']['print_scales'];
+          var scales = goog.array.map(
+              printScalesStr.trim().split(','),
+              /**
+               * @param {string} scale Scale value as a string.
+               * @return {number} Scale value as a number.
+               */
+              function(scale) {
+                return +scale;
+              });
+          goog.array.sort(scales);
+          this['scales'] = scales;
+          var scale = this['scale'];
+          if (scale != -1) {
+            // find nearest scale to current scale
+            scale = app.PrintController.findNearestScale_(scales, scale);
+            if (scale != this['scale']) {
+              this['scale'] = scale;
+              this.map_.render();
+            }
+          }
+        }
+      }, this));
 };
 
 
