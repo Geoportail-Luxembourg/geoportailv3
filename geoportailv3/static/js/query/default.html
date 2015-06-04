@@ -1,9 +1,8 @@
-<h1>{{layers['layerLabel'] | translate}}</h1>
-<div ng-repeat="feature in layers['features']">
-    <table>
-      <tr ng-repeat="(key, value) in feature['attributes']">
-        <th>{{key | translate}} </th> <td>{{value}}</td>
-      </tr>
-    </table>
-
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features">
+  <table>
+    <tr ng-repeat="(key, value) in feature.attributes">
+      <th>{{key | translate}}</th> <td>{{value}}</td>
+    </tr>
+  </table>
 </div>
