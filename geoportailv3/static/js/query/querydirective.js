@@ -79,10 +79,10 @@ app.QueryController = function($scope, $http,
   ];
 
   var styles = {
-    'Point': [new ol.style.Style({
+    Point: [new ol.style.Style({
       image: image
     })],
-    'default': defaultStyle
+    default: defaultStyle
   };
 
   /**
@@ -94,9 +94,9 @@ app.QueryController = function($scope, $http,
     style: function(feature, resolution) {
       if (feature.getGeometry().getType() == 'Point' ||
           feature.getGeometry().getType() == 'MultiPoint') {
-        return styles['Point'];
+        return styles.Point;
       }
-      return styles['default'];
+      return styles.default;
     }});
 
   $scope.$watch(goog.bind(function() {
