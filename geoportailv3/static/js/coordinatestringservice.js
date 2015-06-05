@@ -50,11 +50,9 @@ app.coordinateString_ = function() {
           var hdms = ol.coordinate.toStringHDMS(coordinate);
           var yhdms = hdms.split(' ').slice(0, 4).join(' ');
           var xhdms = hdms.split(' ').slice(4, 8).join(' ');
-          var template = xhdms + ' | ' + yhdms;
-          str = ol.coordinate.format(coordinate, template, 5);
+          str = xhdms + ' | ' + yhdms;
         } else {
-          var template = ' {x} E | {y} N';
-          str = ol.coordinate.format(coordinate, template, 5);
+          str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
         }
         break;
       case 'EPSG:32632':
