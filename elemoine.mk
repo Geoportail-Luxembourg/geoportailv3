@@ -22,4 +22,4 @@ watchless:
 .PHONY: tomcat
 tomcat:
 	@echo "Running Tomcat…"
-	docker run --rm -it -p 8080:8080 -e Xmx=2048m -v /home/elemoine/src/geoportailv3/tomcat:/deployment maluuba/tomcat7
+	docker run --rm -it --net="host" -e Xmx=2048m -v /home/elemoine/src/geoportailv3/tomcat:/deployment maluuba/tomcat7

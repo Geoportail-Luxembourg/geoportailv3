@@ -6,3 +6,6 @@ vars:
 
     # overwrite print_url for using a local install of Tomcat
     print_url: http://localhost:8080/print-{instanceid}/print/{package}
+
+    shortener:
+        base_url: http://localhost:5000/short/

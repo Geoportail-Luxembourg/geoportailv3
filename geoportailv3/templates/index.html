@@ -199,7 +199,8 @@
          appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
          appModule.constant('getInfoServiceUrl', "${request.route_url('getfeatureinfo')}");
          appModule.constant('getRemoteTemplateServiceUrl', "${request.route_url('getremotetemplate')}");
-         appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
+         appModule.constant('qrServiceUrl', "${request.route_url('qr')}");
+        appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
 % if debug:
