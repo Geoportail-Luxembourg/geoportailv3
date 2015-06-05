@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import sqlahelper
 
 from pyramid.i18n import TranslationStringFactory
 
@@ -13,6 +14,7 @@ from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
+Base = sqlahelper.get_base()
 
 
 class LuxLayerInternalWMS(LayerInternalWMS):
@@ -52,4 +54,26 @@ class LuxLayerExternalWMS(LayerExternalWMS):
         ForeignKey(_schema + ".layer_external_wms.id"),
         primary_key=True
     )
-    category_id = Column(Integer, label=_(u"Category ID"))
+    category_id = Column(Integer, label=_(u'Category ID'))
+
+
+class LuxGetfeatureDefinition(Base):
+    __tablename__ = 'lux_getfeature_definition'
+    __table_args__ = {'schema': _schema}
+
+    id = Column(
+        Integer,
+        primary_key=True
+    )
+    query = Column(Unicode, label=_(u'Table name'))
+    rest_url = Column(Unicode, label=_(u'URL Rest'))
+    engine = Column(Unicode, label=_(u'Engine'))
+    layer = Column(Unicode, label=_(u'Layer'))
+    template = Column(Unicode, label=_(u'Template file name'))
+    remote_template = Column(Boolean,
+                             label=_(u"Is the template local or remote"))
+    additional_info_function = Column(Unicode, label=_(u'Python function'))
+    role = Column(Integer, label=_(u'Role'))
+    attributes_to_remove = Column(Unicode, label=_(u'Attributes to keep'))
+    poi_id_collection = Column(Unicode, label=_(u'Id of the poi collection'))
+    geometry_column = Column(Unicode, label=_(u'Geometry column name'))

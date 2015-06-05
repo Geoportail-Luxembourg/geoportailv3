@@ -16,6 +16,7 @@ TILECLOUD_CHAIN = FALSE
 DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
+CONFIG_VARS += sqlalchemy_engines
 APACHE_VHOST ?= luxembourg-geomapfish
 
 UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
@@ -25,6 +26,7 @@ POST_RULES = .build/fonts.timestamp
 
 include CONST_Makefile
 
+REQUIREMENTS += "suds>=0.4"
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 PRINT_VERSION = NONE 
 

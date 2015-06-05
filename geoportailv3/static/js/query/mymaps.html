@@ -1,0 +1,9 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features">
+  <h2>{{feature.attributes.name}}</h2>
+  <a href="http://map.geoportail.lu/{{feature.attributes.image}}" target="_blank"><img src="http://map.geoportail.lu/{{feature.attributes.thumbnail}}"></a><br>
+  <span translate>Nom</span> : {{feature.attributes.label}}<br>
+  <span translate>Description</span> : {{feature.attributes.description}}<br>
+  <span translate>Longeueur</span> : {{feature.attributes.length}} Km<br>
+  <span translate>Rating</span> : {{feature.attributes.rating}}/5<br>
+</div>

@@ -8,7 +8,15 @@ from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
 from geoportailv3.views.authentication import ldap_user_validator, \
     get_user_from_request
+from pyramid.renderers import JSON
+from decimal import Decimal
+
+from geoportailv3.adapters import datetime_adapter, decimal_adapter
+
+import datetime
 import ldap
+import sqlalchemy
+import sqlahelper
 
 
 def main(global_config, **settings):
@@ -52,6 +60,19 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('geoportailv3:locale/')
 
+    # initialize database
+    engines = config.get_settings()['sqlalchemy_engines']
+    if engines:
+        for engine in engines:
+            sqlahelper.add_engine(
+                sqlalchemy.create_engine(engines[engine]), name=engine)
+
+    json_renderer = JSON()
+
+    json_renderer.add_adapter(datetime.datetime, datetime_adapter)
+    json_renderer.add_adapter(Decimal, decimal_adapter)
+    config.add_renderer('json', json_renderer)
+
     # scan view decorator for adding routes
     config.scan()
 
@@ -61,4 +82,7 @@ def main(global_config, **settings):
     config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/wms')
     config.add_route('qr', '/qr')
+    config.add_route('getfeatureinfo', '/getfeatureinfo')
+    config.add_route('getpoitemplate', '/getpoitemplate')
+    config.add_route('getremotetemplate', '/getremotetemplate')
     return config.make_wsgi_app()
