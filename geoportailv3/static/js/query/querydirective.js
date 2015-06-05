@@ -8,17 +8,6 @@ app.QueryStyles;
 
 
 /**
- * @typedef {Array.<{layer: string,
- *                   remote_template: boolean,
- *                   features: Array.<{geometry: ol.geom.Geometry,
- *                                     attributes: Array.<Object>,
- *                                     type: string}>,
- *                   template: string}>}
- */
-app.GetfeatureinfoResponse;
-
-
-/**
  * @param {string} appQueryTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
@@ -55,8 +44,9 @@ app.QueryController = function($scope, $http,
     appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
 
-  /** @type {app.GetfeatureinfoResponse} */
+  /** @type {Array.<Object>} */
   this['content'] = [];
+
   /**
    * @type {string}
    * @private
@@ -177,8 +167,7 @@ app.QueryController = function($scope, $http,
                 goog.array.forEach(resp.data, function(item) {
                   item['layerLabel'] = layerLabel[item.layer];
                 });
-                this['content'] =
-                    /** @type {app.GetfeatureinfoResponse} */(resp.data);
+                this['content'] = resp.data;
                 this['infoOpen'] = true;
                 this.clearFeatures_();
                 this.lastHighlightedFeatures_ = [];
