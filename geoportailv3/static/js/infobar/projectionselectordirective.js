@@ -64,7 +64,8 @@ app.ProjectionselectorDirectiveController =
    */
   this['projectionOptions'] = [
     {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
-    {'label': $sce.trustAsHtml('Long/Lat WGS84'), 'value': 'EPSG:4326'},
+    {'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
+    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
   ];
   this['projection'] = this['projectionOptions'][0];
@@ -86,8 +87,13 @@ app.ProjectionselectorDirectiveController.prototype.mouseCoordinateFormat_ =
     function(coord) {
   var mapEpsgCode =
       this['map'].getView().getProjection().getCode();
-  return this.coordinateString_(
-      coord, mapEpsgCode, this['projection']['value']);
+  if (this['projection']['value'] === 'EPSG:4326:DMS') {
+    var epsgCode = goog.string.remove(this['projection']['value'], ':DMS');
+    return this.coordinateString_(coord, mapEpsgCode, epsgCode, true);
+  } else {
+    return this.coordinateString_(
+        coord, mapEpsgCode, this['projection']['value']);
+  }
 };
 
 
