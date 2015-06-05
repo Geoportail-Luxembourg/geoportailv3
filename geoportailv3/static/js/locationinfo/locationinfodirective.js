@@ -103,6 +103,7 @@ app.LocationinfoController =
   this.projections_ = {
     'EPSG:2169': 'Luref',
     'EPSG:4326': 'Lon/Lat WGS84',
+    'EPSG:4326:DMS': 'Lon/Lat WGS84 DMS',
     'EPSG:3263*': 'WGS84 UTM'
   };
 
@@ -123,9 +124,14 @@ app.LocationinfoController =
       this['location'] = {};
       goog.object.forEach(this.projections_, function(value, key) {
         var sourceEpsgCode = this['map'].getView().getProjection().getCode();
-        this['location'][value] = this.coordinateString_(
-            this['coordinate'], sourceEpsgCode, key
-            );
+        if (key === 'EPSG:4326:DMS') {
+          var epsgCode = goog.string.remove(key, ':DMS');
+          this['location'][value] = this.coordinateString_(
+              this['coordinate'], sourceEpsgCode, epsgCode, true);
+        } else {
+          this['location'][value] = this.coordinateString_(
+              this['coordinate'], sourceEpsgCode, key);
+        }
       }, this);
     }
   }, this));

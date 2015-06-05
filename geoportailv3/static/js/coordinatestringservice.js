@@ -10,7 +10,7 @@ goog.require('ol.proj');
 
 
 /**
- * @typedef {function(ol.Coordinate, string, string):string}
+ * @typedef {function(ol.Coordinate, string, string, boolean=):string}
  */
 app.CoordinateString;
 
@@ -27,9 +27,11 @@ app.coordinateString_ = function() {
    * @param {ol.Coordinate} coordinate
    * @param {string} sourceEpsgCode
    * @param {string} targetEpsgCode
+   * @param {boolean=} opt_DMS
    * @return {string}
    */
-  function coordinateString(coordinate, sourceEpsgCode, targetEpsgCode) {
+  function coordinateString(coordinate, sourceEpsgCode,
+      targetEpsgCode, opt_DMS) {
     var str = '';
     if (targetEpsgCode === 'EPSG:3263*') {
       var lonlat = /** @type {ol.Coordinate} */
@@ -44,11 +46,16 @@ app.coordinateString_ = function() {
         str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
         break;
       case 'EPSG:4326':
-        var hdms = ol.coordinate.toStringHDMS(coordinate);
-        var yhdms = hdms.split(' ').slice(0, 4).join(' ');
-        var xhdms = hdms.split(' ').slice(4, 8).join(' ');
-        var template = xhdms + ' ({x}) | ' + yhdms + ' ({y})';
-        str = ol.coordinate.format(coordinate, template, 5);
+        if (goog.isDef(opt_DMS) && opt_DMS === true) {
+          var hdms = ol.coordinate.toStringHDMS(coordinate);
+          var yhdms = hdms.split(' ').slice(0, 4).join(' ');
+          var xhdms = hdms.split(' ').slice(4, 8).join(' ');
+          var template = xhdms + ' | ' + yhdms;
+          str = ol.coordinate.format(coordinate, template, 5);
+        } else {
+          var template = ' {x} E | {y} N';
+          str = ol.coordinate.format(coordinate, template, 5);
+        }
         break;
       case 'EPSG:32632':
         str = ol.coordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
