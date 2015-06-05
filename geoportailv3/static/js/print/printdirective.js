@@ -216,6 +216,15 @@ app.PrintController.LAYOUTS_ = [
 
 
 /**
+ * @const
+ * @type {Array.<number>}
+ * @private
+ */
+app.PrintController.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
+  20000, 25000, 50000, 80000, 100000, 125000, 200000, 250000, 400000];
+
+
+/**
  * These values should match those set in the jrxml print templates.
  * @const
  * @type {Array.<ol.Size>}
@@ -419,18 +428,22 @@ app.PrintController.prototype.setScales_ = function() {
       function(tree) {
         if (!goog.isNull(tree)) {
           goog.asserts.assert('metadata' in tree);
-          goog.asserts.assert('print_scales' in tree['metadata']);
-          var printScalesStr = tree['metadata']['print_scales'];
-          var scales = goog.array.map(
-              printScalesStr.trim().split(','),
-              /**
-               * @param {string} scale Scale value as a string.
-               * @return {number} Scale value as a number.
-               */
-              function(scale) {
-                return +scale;
-              });
-          goog.array.sort(scales);
+          var scales;
+          if ('print_scales' in tree['metadata']) {
+            var printScalesStr = tree['metadata']['print_scales'];
+            scales = goog.array.map(
+                printScalesStr.trim().split(','),
+                /**
+                 * @param {string} scale Scale value as a string.
+                 * @return {number} Scale value as a number.
+                 */
+                function(scale) {
+                  return +scale;
+                });
+            goog.array.sort(scales);
+          } else {
+            scales = app.PrintController.DEFAULT_MAP_SCALES_;
+          }
           this['scales'] = scales;
           var scale = this['scale'];
           if (scale != -1) {
