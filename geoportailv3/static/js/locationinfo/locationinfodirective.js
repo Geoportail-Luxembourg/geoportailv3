@@ -6,6 +6,7 @@ goog.provide('app.locationinfoDirective');
 
 goog.require('app');
 goog.require('app.CoordinateString');
+goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 
 
@@ -36,14 +37,15 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope
  * @param {app.GetShorturl} appGetShorturl
+ * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
  * @ngInject
  */
 app.LocationinfoController =
-    function($scope, appGetShorturl, appCoordinateString,
-        qrServiceUrl, appLocationinfoTemplateUrl) {
+    function($scope, appGetShorturl, appGetElevation, 
+        appCoordinateString, qrServiceUrl, appLocationinfoTemplateUrl) {
 
   /**
    * @type {app.CoordinateString}
@@ -83,6 +85,17 @@ app.LocationinfoController =
    * @type {string}
    */
   this['qrUrl'] = '';
+
+  /**
+   * @type {string}
+   */
+  this['elevation'] = '';
+
+  /**
+   * @type {app.GetElevation}
+   * @private
+   */
+  this.getElevation_ = appGetElevation;
 
   /**
    * @type {app.GetShorturl}
@@ -148,6 +161,11 @@ app.LocationinfoController =
         features.clear();
         features.push(feature);
         this['featureOverlayItemExists'] = true;
+        this.getElevation_(clickCoordinate).then(goog.bind(
+            function(elevation) {
+              this['elevation'] = elevation;
+            }, this
+            ));
         this.getShorturl_(clickCoordinate).then(goog.bind(
             function(shorturl) {
               this['url'] = shorturl;

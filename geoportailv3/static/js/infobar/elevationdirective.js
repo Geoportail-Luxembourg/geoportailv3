@@ -14,6 +14,7 @@
 goog.provide('app.elevationDirective');
 
 goog.require('app');
+goog.require('app.GetElevation');
 goog.require('app.projections');
 goog.require('ngeo.Debounce');
 
@@ -33,7 +34,7 @@ app.elevationDirective = function() {
     controllerAs: 'ctrl',
     bindToController: true,
     template: '<span class="elevation" translate>' +
-        'Elevation: {{ctrl.elevation}} m</span>'
+        'Elevation: {{ctrl.elevation}}</span>'
   };
 };
 
@@ -46,26 +47,33 @@ app.module.directive('appElevation', app.elevationDirective);
  * @ngInject
  * @constructor
  * @param {angular.$http} $http
+ * @param {app.GetElevation} appGetElevation
  * @param {ngeo.Debounce} ngeoDebounce
- * @param {string} elevationServiceUrl
  */
 app.ElevationDirectiveController =
-    function($http, ngeoDebounce, elevationServiceUrl) {
+    function($http, appGetElevation, ngeoDebounce) {
   var map = this['map'];
+
+  /**
+   * @type {app.GetElevation}
+   * @private
+   */
+  this.getElevation_ = appGetElevation;
+
+  /**
+   * @type {string}
+   */
+  this['elevation'] = '';
+
   map.on('pointermove',
       ngeoDebounce(
       function(e) {
         if (this['active']) {
-          var lonlat = /** @type {ol.Coordinate} */
-             (ol.proj.transform(e.coordinate,
-             map.getView().getProjection(), 'EPSG:2169'));
-          $http.get(elevationServiceUrl, {
-                params: {'lon': lonlat[0], 'lat': lonlat[1]}
-          }).
-             success(goog.bind(function(data) {
-                this['elevation'] = data['dhm'] > 0 ?
-               parseInt(data['dhm'] / 100, 0) : 'N/A';
-             }, this));
+          this.getElevation_(e.coordinate).then(goog.bind(
+             function(elevation) {
+               this['elevation'] = elevation;
+             }, this
+             ));
         }
       }, 300, true), this);
 };
