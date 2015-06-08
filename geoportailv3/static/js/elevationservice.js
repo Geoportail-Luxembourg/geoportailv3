@@ -37,7 +37,7 @@ app.getElevation_ = function($http, elevationServiceUrl) {
         'lat': lonlat[1]
       }
     }).then(
-           /**
+        /**
            * @param {angular.$http.Response} resp Ajax response.
            * @return {string} The elevation
            */
