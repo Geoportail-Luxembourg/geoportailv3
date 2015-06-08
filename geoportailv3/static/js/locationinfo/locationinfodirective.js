@@ -36,6 +36,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope
+ * @param {angular.$timeout} $timeout
  * @param {app.GetShorturl} appGetShorturl
  * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
@@ -44,7 +45,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @ngInject
  */
 app.LocationinfoController =
-    function($scope, appGetShorturl, appGetElevation, 
+    function($scope, $timeout, appGetShorturl, appGetElevation, 
         appCoordinateString, qrServiceUrl, appLocationinfoTemplateUrl) {
 
   /**
@@ -151,27 +152,85 @@ app.LocationinfoController =
 
   this['map'].getViewport()
     .addEventListener('contextmenu', goog.bind(function(event) {
-        event.preventDefault();
-        this['open'] = true;
-        var clickCoordinate = this.map.getEventCoordinate(event);
-        this['coordinate'] = clickCoordinate;
-        var feature = /** @type {ol.Feature} */
-            (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-        var features = this.featureOverlay_.getFeatures();
-        features.clear();
-        features.push(feature);
-        this['featureOverlayItemExists'] = true;
-        this.getElevation_(clickCoordinate).then(goog.bind(
-            function(elevation) {
-              this['elevation'] = elevation;
-            }, this
-            ));
-        this.getShorturl_(clickCoordinate).then(goog.bind(
-            function(shorturl) {
-              this['url'] = shorturl;
-              this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
-            }, this));
+        event.preventDefault(); // disable right-click menu on browsers
       }, this));
+
+  /**
+   * @type {angular.$timeout}
+   * @private
+   */
+  this.$timeout_ = $timeout;
+
+  /**
+   * @type {?Object<number, number>}
+   * @private
+   */
+  this.startPixel_ = null;
+
+  /**
+   * @type {angular.$q.Promise|undefined}
+   * @private
+   */
+  this.holdPromise_ = undefined;
+
+  this['map'].on('pointerdown', goog.bind(function(event) {
+    if (event.originalEvent.which === 3) { // if left mouse click
+      this.showInfoPane_(event.originalEvent);
+    } else if (event.originalEvent instanceof TouchEvent) {
+      // if touch input device
+      this.$timeout_.cancel(this.holdPromise_);
+      this.startPixel_ = event.pixel;
+      var that = this;
+      this.holdPromise_ = this.$timeout_(function() {
+        that.showInfoPane_(event.originalEvent);
+      }, 300, false);
+    }
+  }, this));
+  this['map'].on('pointerup', goog.bind(function(event) {
+    this.$timeout_.cancel(this.holdPromise_);
+    this.startPixel_ = null;
+  }, this));
+  this['map'].on('pointermove', goog.bind(function(event) {
+    if (this.startPixel_) {
+      var pixel = event.pixel;
+      var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
+      var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
+      if (deltaX + deltaY > 6) {
+        this.$timeout_.cancel(this.holdPromise_);
+        this.startPixel_ = null;
+      }
+    }
+  }, this));
+};
+
+
+/**
+ * @param {MouseEvent|TouchEvent} event
+ * @private
+ */
+app.LocationinfoController.prototype.showInfoPane_ =
+    function(event) {
+  event.preventDefault();
+  this['open'] = true;
+  var clickCoordinate = this.map.getEventCoordinate(event);
+  this['coordinate'] = clickCoordinate;
+  var feature = /** @type {ol.Feature} */
+      (new ol.Feature(new ol.geom.Point(clickCoordinate)));
+  var features = this.featureOverlay_.getFeatures();
+  features.clear();
+  features.push(feature);
+  this['featureOverlayItemExists'] = true;
+  this.getElevation_(clickCoordinate).then(goog.bind(
+      function(elevation) {
+        this['elevation'] = elevation;
+      }, this
+      ));
+  this.getShorturl_(clickCoordinate).then(goog.bind(
+      function(shorturl) {
+        this['url'] = shorturl;
+        this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
+      }, this));
+
 };
 
 
