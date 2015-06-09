@@ -17,6 +17,7 @@ DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
 CONFIG_VARS += sqlalchemy_engines
+CONFIG_VARS += proxy_wms_url
 APACHE_VHOST ?= luxembourg-geomapfish
 
 UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"

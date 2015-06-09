@@ -44,6 +44,8 @@ vars:
       passwd: 'to_be_defined'
       base_dn: 'ou=portail,dc=act,dc=lu'
 
+    proxy_wms_url:
+
     sqlalchemy_engines:
 
     raster:
