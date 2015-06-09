@@ -231,20 +231,21 @@ app.QueryController.prototype.getTemplatePath = function(layer) {
  * @private
  */
 app.QueryController.prototype.highlightFeatures_ = function(features) {
+  if (goog.isDefAndNotNull(features)) {
+    var encOpt = /** @type {olx.format.ReadOptions} */ ({
+      dataProjection: 'EPSG:2169',
+      featureProjection: this['map'].getView().getProjection()
+    });
 
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this['map'].getView().getProjection()
-  });
+    var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
+      'type': 'FeatureCollection',
+      'features': features},
+    encOpt
+    );
+    var currentFeatures = this.overlay_.getFeatures();
 
-  var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
-    'type': 'FeatureCollection',
-    'features': features},
-  encOpt
-  );
-  var currentFeatures = this.overlay_.getFeatures();
-
-  this.overlay_.setFeatures(currentFeatures.extend(jsonFeatures));
+    this.overlay_.setFeatures(currentFeatures.extend(jsonFeatures));
+  }
 };
 app.module.controller('AppQueryController',
                       app.QueryController);
