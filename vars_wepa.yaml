@@ -8,4 +8,7 @@ vars:
     search_index: index
     shortener:
       base_url: http://{host}/short/
-
+    sqlalchemy_engines:
+      ecadastre: 'postgresql://ecadastre:ecadastre0@homer1.geoportal.lu:5432/ecadastre'
+      poi: 'postgresql://poi:poi@ned1.geoportal.lu:5432/db_poi'
+      mymaps: 'postgresql://mymaps:wz1x2ycjs8b@homer1:5432/db_mymaps'
