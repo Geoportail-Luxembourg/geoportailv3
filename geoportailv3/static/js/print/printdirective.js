@@ -4,7 +4,10 @@
  *
  * Example:
  *
- * <app-print app-print-map="::mainCtrl.map"></app-print>
+ * <app-print app-print-map="::mainCtrl.map"
+ *            app-print-open="mainCtrl.printOpen"
+ *            app-print-currenttheme="mainCtrl.currentTheme">
+ * </app-print>
  */
 goog.provide('app.printDirective');
 
