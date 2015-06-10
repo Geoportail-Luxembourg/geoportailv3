@@ -35,6 +35,7 @@ app.module.directive('appQuery', app.queryDirective);
 
 /**
  * @constructor
+ * @param {angular.$timeout} $timeout
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service
  * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
@@ -45,12 +46,49 @@ app.module.directive('appQuery', app.queryDirective);
  * @export
  * @ngInject
  */
-app.QueryController = function($scope, $http,
+app.QueryController = function($timeout, $scope, $http,
     appVectorOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
 
+  /**
+   * @type {?Object<number, number>}
+   * @private
+   */
+  this.stopPixel_ = null;
+
+  /**
+   * @type {?Object<number, number>}
+   * @private
+   */
+  this.startPixel_ = null;
+
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.pointerDownTime_ = 0;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.pointerUpTime_ = 0;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.getInfoServiceUrl_ = getInfoServiceUrl;
+
   /** @type {Array.<Object>} */
   this['content'] = [];
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.http_ = $http;
 
   /**
    * @type {string}
@@ -65,8 +103,9 @@ app.QueryController = function($scope, $http,
 
   /**
    * @type {ol.Map}
+   * @private
    */
-  var map = this['map'];
+  this.map_ = this['map'];
 
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
@@ -130,7 +169,6 @@ app.QueryController = function($scope, $http,
             styles.point : styles.default;
       });
 
-
   $scope.$watch(goog.bind(function() {
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
@@ -150,65 +188,43 @@ app.QueryController = function($scope, $http,
     }
   }, this));
 
-
-  goog.events.listen(map,
+  goog.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
-        var layers = map.getLayers().getArray();
-        var layersList = [];
-        var layerLabel = {};
-        for (var i = 0; i < layers.length; i++) {
-          var metadata = layers[i].get('metadata');
-          if (goog.isDefAndNotNull(metadata)) {
-            if (metadata['is_queryable'] == 'true') {
-              var queryableId = layers[i].get('queryable_id');
-              layersList.push(queryableId);
-              layerLabel[queryableId] = layers[i].get('label');
+        if (evt.originalEvent instanceof MouseEvent) {
+          this.singleclickEvent_.apply(this, [evt]);
+        } else {
+          if (this.pointerUpTime_ - this.pointerDownTime_ < 500) {
+            var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
+            var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
+            if (deltaX + deltaY < 6) {
+              this.singleclickEvent_.apply(this, [evt]);
+              this.startPixel_ = null;
+              this.stopPixel_ = null;
             }
           }
         }
-        if (layersList.length > 0) {
-          var buffer = 5;
-          var ll = ol.proj.transform(
-              map.getCoordinateFromPixel(
-              [evt.pixel[0] - buffer, evt.pixel[1] - buffer]),
-              map.getView().getProjection(), 'EPSG:2169');
-          var ur = ol.proj.transform(
-              map.getCoordinateFromPixel(
-              [evt.pixel[0] + buffer, evt.pixel[1] + buffer]),
-              map.getView().getProjection(), 'EPSG:2169');
-          var box = ll.concat(ur);
+      }, false, this);
 
-          $http.get(
-              getInfoServiceUrl,
-              {params: {
-                'layers': layersList.join(),
-                'box': box.join()
-              }}).then(
-              goog.bind(function(resp) {
-                goog.array.forEach(resp.data, function(item) {
-                  item['layerLabel'] = layerLabel[item.layer];
-                });
-                this['content'] = resp.data;
-                this['infoOpen'] = true;
-                this['appSelector'] = 'query';
-                this.clearFeatures_();
-                this.lastHighlightedFeatures_ = [];
-                for (var i = 0; i < resp.data.length; i++) {
-                  this.lastHighlightedFeatures_.push.apply(
-                      this.lastHighlightedFeatures_,
-                      resp.data[i].features
-                  );
-                }
-                this.highlightFeatures_(this.lastHighlightedFeatures_);
-              }, this));
+  goog.events.listen(this.map_,
+      ol.MapBrowserEvent.EventType.POINTERDOWN, function(evt) {
+        if (!(evt.originalEvent instanceof MouseEvent)) {
+          this.pointerDownTime_ = new Date().getTime();
+          this.startPixel_ = evt.pixel;
         }
       }, false, this);
 
+  goog.events.listen(this.map_,
+      ol.MapBrowserEvent.EventType.POINTERUP, function(evt) {
+        if (!(evt.originalEvent instanceof MouseEvent)) {
+          this.pointerUpTime_ = new Date().getTime();
+          this.stopPixel_ = evt.pixel;
+        }
+      }, false, this);
 
-  goog.events.listen(map, ol.MapBrowserEvent.EventType.POINTERMOVE,
+  goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
-        var pixel = map.getEventPixel(evt.originalEvent);
-        var hit = map.forEachLayerAtPixel(pixel, function(layer) {
+        var pixel = this.map_.getEventPixel(evt.originalEvent);
+        var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
           if (goog.isDefAndNotNull(layer)) {
             var metadata = layer.get('metadata');
             if (goog.isDefAndNotNull(metadata)) {
@@ -220,8 +236,65 @@ app.QueryController = function($scope, $http,
           }
           return false;
         });
-        map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        this.map_.getTargetElement().style.cursor = hit ? 'pointer' : '';
       }, false, this);
+};
+
+
+/**
+ * @param {goog.events.Event} evt The map event
+ * @private
+ */
+app.QueryController.prototype.singleclickEvent_ = function(evt) {
+  var layers = this.map_.getLayers().getArray();
+  var layersList = [];
+  var layerLabel = {};
+  for (var i = 0; i < layers.length; i++) {
+    var metadata = layers[i].get('metadata');
+    if (goog.isDefAndNotNull(metadata)) {
+      if (metadata['is_queryable'] == 'true') {
+        var queryableId = layers[i].get('queryable_id');
+        layersList.push(queryableId);
+        layerLabel[queryableId] = layers[i].get('label');
+      }
+    }
+  }
+  if (layersList.length > 0) {
+    var buffer = 5;
+    var ll = ol.proj.transform(
+        this.map_.getCoordinateFromPixel(
+        [evt.pixel[0] - buffer, evt.pixel[1] - buffer]),
+        this.map_.getView().getProjection(), 'EPSG:2169');
+    var ur = ol.proj.transform(
+        this.map_.getCoordinateFromPixel(
+        [evt.pixel[0] + buffer, evt.pixel[1] + buffer]),
+        this.map_.getView().getProjection(), 'EPSG:2169');
+    var box = ll.concat(ur);
+
+    this.http_.get(
+        this.getInfoServiceUrl_,
+        {params: {
+          'layers': layersList.join(),
+          'box': box.join()
+        }}).then(
+        goog.bind(function(resp) {
+          goog.array.forEach(resp.data, function(item) {
+            item['layerLabel'] = layerLabel[item.layer];
+          });
+          this['content'] = resp.data;
+          this['infoOpen'] = true;
+          this['appSelector'] = 'query';
+          this.clearFeatures_();
+          this.lastHighlightedFeatures_ = [];
+          for (var i = 0; i < resp.data.length; i++) {
+            this.lastHighlightedFeatures_.push.apply(
+                this.lastHighlightedFeatures_,
+                resp.data[i].features
+            );
+          }
+          this.highlightFeatures_(this.lastHighlightedFeatures_);
+        }, this));
+  }
 };
 
 
@@ -256,7 +329,7 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
   if (goog.isDefAndNotNull(features)) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
-      featureProjection: this['map'].getView().getProjection()
+      featureProjection: this.map_.getView().getProjection()
     });
     var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
       'type': 'FeatureCollection',
