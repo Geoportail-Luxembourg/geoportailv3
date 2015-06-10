@@ -130,6 +130,11 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
   this['userOpen'] = false;
 
   /**
+   * @type {string|undefined}
+   */
+  this['infosAppSelector'] = undefined;
+
+  /**
    * @type {Array}
    */
   this['selectedLayers'] = [];

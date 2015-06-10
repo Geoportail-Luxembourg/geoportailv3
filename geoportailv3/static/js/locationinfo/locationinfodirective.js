@@ -20,7 +20,8 @@ app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appLocationinfoMap',
-      'open': '=appLocationinfoOpen'
+      'open': '=appLocationinfoOpen',
+      'appSelector': '=appLocationinfoAppselector'
     },
     controller: 'AppLocationinfoController',
     controllerAs: 'ctrl',
@@ -66,10 +67,20 @@ app.LocationinfoController =
   this['featureOverlayItemExists'] = false;
 
   $scope.$watch(goog.bind(function() {
+    return this['appSelector'];
+  }, this), goog.bind(function(newVal) {
+    if (newVal != 'locationinfo') {
+      var features = this.featureOverlay_.getFeatures();
+      features.clear();
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
     return this['open'];
   }, this), goog.bind(function(newVal) {
     var features = this.featureOverlay_.getFeatures();
     if (newVal === false) {
+      this['appSelector'] = undefined;
       features.clear();
       this['featureOverlayItemExists'] = false;
     } else if (newVal === true && features.getLength() >= 1) {
@@ -212,6 +223,7 @@ app.LocationinfoController.prototype.showInfoPane_ =
     function(event) {
   event.preventDefault();
   this['open'] = true;
+  this['appSelector'] = 'locationinfo';
   var clickCoordinate = this.map.getEventCoordinate(event);
   this['coordinate'] = clickCoordinate;
   var feature = /** @type {ol.Feature} */
