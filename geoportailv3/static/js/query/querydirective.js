@@ -193,7 +193,7 @@ app.QueryController = function($timeout, $scope, $http,
         if (evt.originalEvent instanceof MouseEvent) {
           this.singleclickEvent_.apply(this, [evt]);
         } else {
-          if (this.pointerUpTime_ - this.pointerDownTime_ < 500) {
+          if (this.pointerUpTime_ - this.pointerDownTime_ < 499) {
             var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
             var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
             if (deltaX + deltaY < 6) {
@@ -260,7 +260,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
     }
   }
   if (layersList.length > 0) {
-    var buffer = 5;
+    var buffer = 10;
     var ll = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
         [evt.pixel[0] - buffer, evt.pixel[1] - buffer]),
