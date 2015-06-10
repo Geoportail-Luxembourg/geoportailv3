@@ -116,6 +116,18 @@
                               app-locationinfo-open="mainCtrl.infosOpen"
                               app-locationinfo-appselector="mainCtrl.infosAppSelector">
             </app-locationinfo>
+            <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
+              <div class="col-xs-12">
+                <ul>
+                  <li>
+                  A <em>right click</em> (tap and hold on mobile) will display information about the current location.
+                  </li>
+                  <li>
+                  A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information.
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
