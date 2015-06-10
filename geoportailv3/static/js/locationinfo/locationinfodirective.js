@@ -194,7 +194,7 @@ app.LocationinfoController =
       var that = this;
       this.holdPromise_ = this.$timeout_(function() {
         that.showInfoPane_(event.originalEvent);
-      }, 300, false);
+      }, 500, false);
     }
   }, this));
   this['map'].on('pointerup', goog.bind(function(event) {
