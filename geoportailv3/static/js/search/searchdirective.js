@@ -38,7 +38,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appSearchMap'
+      'map': '=appSearchMap',
+      'mobileActive': '=appSearchMobileactive'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',

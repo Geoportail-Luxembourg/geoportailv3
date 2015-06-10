@@ -1,13 +1,17 @@
+@clear-button-width: 15px;
 span.twitter-typeahead {
     & + span.clear-button {
         position: absolute;
         top: 0;
-        margin: 15px 0px 0px 225px;
+        right: 0;
         display: none;
-        cursor: pointer; 
+        cursor: pointer;
         cursor: hand;
         color: white;
         opacity: 0.5;
+        padding: @padding-base-vertical 5px;
+        vertical-align: middle;
+        border: 1px solid transparent;
         &:hover {
             opacity: 1;
         }
@@ -27,8 +31,9 @@ span.twitter-typeahead {
     .form-control {
         min-width: 250px;
         position: relative;
-        padding-right: 32px;
+        padding-right: @clear-button-width;
         padding-left: 32px;
+        width: auto;
     }
     .tt-dropdown-menu {
         position: absolute;
@@ -91,6 +96,47 @@ span.twitter-typeahead {
     color: white;
   }
 
-  padding-right: 15px;
 }
 
+@media (min-width: @screen-sm-min) {
+  header .navbar-form {
+    float: right;
+    padding-right: 15px;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .navbar-form {
+    border: 0;
+  }
+
+  body:not(.search-mobile) app-search {
+    display: none;
+  }
+
+  /* Class search is added to body when on mobile && search button has been
+   * clicked */
+  .search-mobile {
+    header {
+      .navbar-nav,
+      .brand {
+        display: none;
+      }
+    }
+  }
+
+  app-search {
+    .navbar-form {
+      margin: 2px 40px 0 2px;
+
+      span.twitter-typeahead,
+      .form-control {
+        width: 100%;
+      }
+
+      span.twitter-typeahead .tt-dropdown-menu {
+        width: 100%;
+      }
+    }
+  }
+}

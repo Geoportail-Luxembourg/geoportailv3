@@ -62,6 +62,19 @@ app-map > div {
   }
 }
 
+.close-panel {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: none;
+  border: 0;
+  font-size: 36px;
+  padding: 2px;
+  line-height: 1;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
 #sidebar {
   display: block;
   width: @leftbar-width;
@@ -114,6 +127,10 @@ app-map > div {
     position: absolute;
     height: 0;
     bottom: 0;
+  }
+
+  .theme-icon {
+    display: none;
   }
 }
 
@@ -493,4 +510,8 @@ div.ol-zoom-extent > button {
     left: 10px;
     position: absolute;
   }
+}
+
+.navbar-form .form-group {
+  position: relative;
 }
