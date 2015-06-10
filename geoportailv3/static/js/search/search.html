@@ -3,7 +3,7 @@
 </button>
 <form class="navbar-form" role="search">
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="{{'search_key_words'|translate}}"
+        <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'search_key_words'|translate}}"
             ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
             <span class="clear-button" ng-click="click($event)">&#10005;</span>
         </input>
