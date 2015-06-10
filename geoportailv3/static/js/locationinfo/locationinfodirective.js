@@ -176,7 +176,7 @@ app.LocationinfoController =
   this['map'].on('pointerdown', goog.bind(function(event) {
     if (event.originalEvent.which === 3) { // if left mouse click
       this.showInfoPane_(event.originalEvent);
-    } else if (event.originalEvent instanceof TouchEvent) {
+    } else if (!(event.originalEvent instanceof MouseEvent)) {
       // if touch input device
       this.$timeout_.cancel(this.holdPromise_);
       this.startPixel_ = event.pixel;
