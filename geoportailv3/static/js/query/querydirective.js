@@ -20,7 +20,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appQueryMap',
-      'infoOpen': '=appQueryOpen'
+      'infoOpen': '=appQueryOpen',
+      'appSelector': '=appQueryAppselector'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -131,12 +132,21 @@ app.QueryController = function($scope, $http,
 
 
   $scope.$watch(goog.bind(function() {
+    return this['appSelector'];
+  }, this), goog.bind(function(newVal) {
+    if (newVal != 'query') {
+      this['content'] = [];
+      this.clearFeatures_();
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
     return this['infoOpen'];
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal === false) {
+      this['appSelector'] = undefined;
+      this['content'] = [];
       this.clearFeatures_();
-    }else {
-      this.highlightFeatures_(this.lastHighlightedFeatures_);
     }
   }, this));
 
@@ -180,6 +190,7 @@ app.QueryController = function($scope, $http,
                 });
                 this['content'] = resp.data;
                 this['infoOpen'] = true;
+                this['appSelector'] = 'query';
                 this.clearFeatures_();
                 this.lastHighlightedFeatures_ = [];
                 for (var i = 0; i < resp.data.length; i++) {
