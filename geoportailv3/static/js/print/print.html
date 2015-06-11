@@ -29,7 +29,7 @@
     <div class="col-md-6">
       <div class="form-group dropup">
         <button type="button" class="btn btn-default" data-toggle="dropdown">
-         1:&nbsp;{{scale | number : fractionSize}}&nbsp;<span class="caret"></span>
+         1:&nbsp;{{ctrl.scale | number : fractionSize}}&nbsp;<span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
           <li ng-repeat="scale in ctrl.scales">
