@@ -33,11 +33,13 @@ app.ThemesEventType = {
  * @extends {goog.events.EventTarget}
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
+ * @param {string} isThemePrivateUrl URL to check if theme is public.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.BlankLayer} appBlankLayer Blank Layer service.
  * @ngInject
  */
-app.Themes = function($http, treeUrl, appGetWmtsLayer, appBlankLayer) {
+app.Themes = function($http, treeUrl, isThemePrivateUrl,
+    appGetWmtsLayer, appBlankLayer) {
 
   goog.base(this);
 
@@ -64,6 +66,12 @@ app.Themes = function($http, treeUrl, appGetWmtsLayer, appBlankLayer) {
    * @private
    */
   this.treeUrl_ = treeUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.isThemePrivateUrl_ = isThemePrivateUrl;
 
   /**
    * @type {?angular.$q.Promise}
@@ -184,5 +192,17 @@ app.Themes.prototype.loadThemes = function(roleId) {
       }, this));
 };
 
+
+/**
+ * @param {string} themeId The theme id to send in the request.
+ * checks if the theme is protected or not.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Themes.prototype.isThemePrivate = function(themeId) {
+  return this.$http_.get(this.isThemePrivateUrl_, {
+    params: {'theme': themeId},
+    cache: false
+  });
+};
 
 app.module.service('appThemes', app.Themes);

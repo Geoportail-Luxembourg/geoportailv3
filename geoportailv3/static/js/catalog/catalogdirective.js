@@ -114,9 +114,7 @@ app.CatalogController.prototype.setTree_ = function() {
        * @param {Object} tree Tree object for the theme.
        */
       function(tree) {
-        if (!goog.isNull(tree)) {
-          this['tree'] = tree;
-        }
+        this['tree'] = tree;
       }, this));
 };
 

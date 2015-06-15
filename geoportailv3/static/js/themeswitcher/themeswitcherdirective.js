@@ -6,6 +6,7 @@
 goog.provide('app.themeswitcherDirective');
 
 goog.require('app');
+goog.require('app.Notify');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
 goog.require('goog.events');
@@ -22,7 +23,8 @@ app.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
     scope: {
-      'currentTheme': '=appThemeswitcherCurrenttheme'
+      'currentTheme': '=appThemeswitcherCurrenttheme',
+      'userOpen': '=appThemeswitcherUseropen'
     },
     controllerAs: 'ctrl',
     bindToController: true,
@@ -37,12 +39,27 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
 
 /**
  * @constructor
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Notify} appNotify Notify service.
  * @export
  * @ngInject
  */
-app.ThemeswitcherController = function(ngeoLocation, appThemes) {
+app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
+    appThemes, appNotify) {
+
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.translate_ = gettextCatalog;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.privateThemeMsg_ = 'Ce thème est protégé. Veuillez vous connecter.';
 
   /**
    * @type {string}
@@ -60,6 +77,12 @@ app.ThemeswitcherController = function(ngeoLocation, appThemes) {
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.appNotify_ = appNotify;
 
   goog.events.listen(appThemes, app.ThemesEventType.LOAD,
       /**
@@ -132,14 +155,27 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
         this['themes'] = goog.array.filter(themes, function(object) {
           return 'true' == object['metadata']['display_in_switcher'];
         });
-        // Check whether the current theme is valid; and if it's not,
-        // use the default theme. A theme is valid if it is present in
-        // the list of themes.
+        // Check whether the current theme is valid or is protected;
+        // and if it's not, use the default theme.
+        // A theme is valid if it is present in the list of themes.
+        // A theme is protected if the related WS returns true
         var themeIndex = goog.array.findIndex(themes, function(theme) {
           return theme['name'] == this['currentTheme'];
         }, this);
         if (themeIndex < 0) {
-          this.switchTheme(app.ThemeswitcherController.DEFAULT_THEME_);
+          this.appThemes_.isThemePrivate(this['currentTheme']).then(goog.bind(
+              /**
+               * @param {angular.$http.Response} resp Ajax response.
+               */
+              function(resp) {
+                if (resp.data['is_private'] === true) {
+                  this.appNotify_(this.translate_.
+                      getString(this.privateThemeMsg_, {}));
+                  this['userOpen'] = true;
+                } else {
+                  this.switchTheme(app.ThemeswitcherController.DEFAULT_THEME_);
+                }
+              }, this));
         }
       }, this));
 };

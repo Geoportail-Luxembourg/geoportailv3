@@ -85,4 +85,5 @@ def main(global_config, **settings):
     config.add_route('getfeatureinfo', '/getfeatureinfo')
     config.add_route('getpoitemplate', '/getpoitemplate')
     config.add_route('getremotetemplate', '/getremotetemplate')
+    config.add_route('isthemeprivate', '/isthemeprivate')
     return config.make_wsgi_app()
