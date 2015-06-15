@@ -567,7 +567,7 @@ app.SearchDirectiveController.getAllChildren_ =
 
 
 /**
- * @param {jQuery.event} event
+ * @param {jQuery.Event} event
  * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
  * @param {string} dataset Typeahead dataset ID.
  * @this {app.SearchDirectiveController}
