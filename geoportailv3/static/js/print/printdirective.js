@@ -322,18 +322,22 @@ app.PrintController.prototype.cancel = function() {
 
 
 /**
+ * @param {string} newLayout The name of the selected layout
  * @export
  */
-app.PrintController.prototype.changeLayout = function() {
+app.PrintController.prototype.changeLayout = function(newLayout) {
+  this.layout = newLayout;
   this.useOptimalScale_();
   this.map_.render();
 };
 
 
 /**
+ * @param {string} newScale The name of the selected scale
  * @export
  */
-app.PrintController.prototype.changeScale = function() {
+app.PrintController.prototype.changeScale = function(newScale) {
+  this.scale = newScale;
   this.map_.render();
 };
 
