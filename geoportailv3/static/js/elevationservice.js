@@ -5,6 +5,7 @@
 goog.provide('app.GetElevation');
 
 goog.require('app');
+goog.require('ol.proj');
 
 
 /**
@@ -15,12 +16,13 @@ app.GetElevation;
 
 /**
  * @param {angular.$http} $http The Angular $http service.
+ * @param {angularGettext.Catalog} gettextCatalog
  * @param {string} elevationServiceUrl The URL to the "elevation" service.
  * @return {app.GetElevation} The getElevation function.
  * @private
  * @ngInject
  */
-app.getElevation_ = function($http, elevationServiceUrl) {
+app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
   return getElevation;
 
   /**
@@ -45,7 +47,7 @@ app.getElevation_ = function($http, elevationServiceUrl) {
               if (resp.data['dhm'] > 0) {
                 return parseInt(resp.data['dhm'] / 100, 0).toString() + ' m';
               } else {
-                return 'N/A';
+                return gettextCatalog.getString('N/A');
               }
             });
   }
