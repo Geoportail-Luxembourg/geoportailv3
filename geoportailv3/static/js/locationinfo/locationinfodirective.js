@@ -122,8 +122,9 @@ app.LocationinfoController =
   this.qrServiceUrl_ = qrServiceUrl;
 
   /**
-   * @type {Object}
+   * @type {Object.<string, string>}
    * @private
+   * @const
    */
   this.projections_ = {
     'EPSG:2169': 'Luref',
@@ -173,7 +174,7 @@ app.LocationinfoController =
   this.$timeout_ = $timeout;
 
   /**
-   * @type {?Object<number, number>}
+   * @type {Object<number, number>}
    * @private
    */
   this.startPixel_ = null;
@@ -184,34 +185,39 @@ app.LocationinfoController =
    */
   this.holdPromise_ = undefined;
 
-  this['map'].on('pointerdown', goog.bind(function(event) {
-    if (event.originalEvent.which === 3) { // if left mouse click
-      this.showInfoPane_(event.originalEvent);
-    } else if (!(event.originalEvent instanceof MouseEvent)) {
-      // if touch input device
-      this.$timeout_.cancel(this.holdPromise_);
-      this.startPixel_ = event.pixel;
-      var that = this;
-      this.holdPromise_ = this.$timeout_(function() {
-        that.showInfoPane_(event.originalEvent);
-      }, 500, false);
-    }
-  }, this));
-  this['map'].on('pointerup', goog.bind(function(event) {
-    this.$timeout_.cancel(this.holdPromise_);
-    this.startPixel_ = null;
-  }, this));
-  this['map'].on('pointermove', goog.bind(function(event) {
-    if (this.startPixel_) {
-      var pixel = event.pixel;
-      var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
-      var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
-      if (deltaX + deltaY > 6) {
+  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
+      goog.bind(function(event) {
+        if (event.originalEvent.which === 3) { // if left mouse click
+          this.showInfoPane_(event.originalEvent);
+        } else if (!(event.originalEvent instanceof MouseEvent)) {
+          // if touch input device
+          this.$timeout_.cancel(this.holdPromise_);
+          this.startPixel_ = event.pixel;
+          var that = this;
+          this.holdPromise_ = this.$timeout_(function() {
+            that.showInfoPane_(event.originalEvent);
+          }, 500, false);
+        }
+      }, this), false, this);
+
+  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
+      goog.bind(function(event) {
         this.$timeout_.cancel(this.holdPromise_);
         this.startPixel_ = null;
-      }
-    }
-  }, this));
+      }, this), false, this);
+
+  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+      goog.bind(function(event) {
+        if (this.startPixel_) {
+          var pixel = event.pixel;
+          var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
+          var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
+          if (deltaX + deltaY > 6) {
+            this.$timeout_.cancel(this.holdPromise_);
+            this.startPixel_ = null;
+          }
+        }
+      }, this), false, this);
 };
 
 

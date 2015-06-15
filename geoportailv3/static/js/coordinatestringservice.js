@@ -6,6 +6,7 @@
 goog.provide('app.CoordinateString');
 
 goog.require('app.projections');
+goog.require('ol.coordinate');
 goog.require('ol.proj');
 
 
