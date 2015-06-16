@@ -8,6 +8,8 @@ goog.require('app');
 goog.require('app.CoordinateString');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
+goog.require('app.StateManager');
+goog.require('ol.proj');
 
 
 /**
@@ -41,13 +43,15 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.GetShorturl} appGetShorturl
  * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
+ * @param {app.StateManager} appStateManager
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
  * @ngInject
  */
 app.LocationinfoController =
     function($scope, $timeout, appGetShorturl, appGetElevation, 
-        appCoordinateString, qrServiceUrl, appLocationinfoTemplateUrl) {
+        appCoordinateString, appStateManager, qrServiceUrl,
+        appLocationinfoTemplateUrl) {
 
   /**
    * @type {app.CoordinateString}
@@ -80,10 +84,12 @@ app.LocationinfoController =
   }, this), goog.bind(function(newVal) {
     var features = this.featureOverlay_.getFeatures();
     if (newVal === false) {
+      this.stateManager_.updateState({'crosshair': false});
       this['appSelector'] = undefined;
       features.clear();
       this['featureOverlayItemExists'] = false;
     } else if (newVal === true && features.getLength() >= 1) {
+      this.stateManager_.updateState({'crosshair': true});
       this['featureOverlayItemExists'] = true;
     }
   }, this));
@@ -115,6 +121,7 @@ app.LocationinfoController =
    */
   this.getShorturl_ = appGetShorturl;
 
+
   /**
    * @type {string}
    * @private
@@ -143,6 +150,12 @@ app.LocationinfoController =
    */
   this['location'] = {};
 
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.stateManager_ = appStateManager;
+
   $scope.$watch(goog.bind(function() {
     return this['coordinate'];
   }, this), goog.bind(function(newVal) {
@@ -167,6 +180,7 @@ app.LocationinfoController =
         event.preventDefault(); // disable right-click menu on browsers
       }, this));
 
+
   /**
    * @type {angular.$timeout}
    * @private
@@ -184,6 +198,18 @@ app.LocationinfoController =
    * @private
    */
   this.holdPromise_ = undefined;
+
+  // Load infowindow if crosshair variable is set
+  var urlLocationInfo = appStateManager.getInitialValue('crosshair');
+  if (goog.isDefAndNotNull(urlLocationInfo) &&
+      urlLocationInfo === 'true') {
+    var x = parseInt(appStateManager.getInitialValue('X'), 0);
+    var y = parseInt(appStateManager.getInitialValue('Y'), 0);
+    var coordinate = /** @type {ol.Coordinate} */ ([x, y]);
+    if (goog.isDef(x) && goog.isDef(y)) {
+      this.showInfoPane_(coordinate);
+    }
+  }
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
       goog.bind(function(event) {
@@ -222,15 +248,19 @@ app.LocationinfoController =
 
 
 /**
- * @param {MouseEvent|TouchEvent} event
+ * @param {MouseEvent|TouchEvent|ol.Coordinate} event
  * @private
  */
 app.LocationinfoController.prototype.showInfoPane_ =
     function(event) {
-  event.preventDefault();
+  if (event instanceof MouseEvent || event instanceof TouchEvent) {
+    event.preventDefault();
+    var clickCoordinate = this.map.getEventCoordinate(event);
+  } else {
+    var clickCoordinate = event;
+  }
   this['open'] = true;
   this['appSelector'] = 'locationinfo';
-  var clickCoordinate = this.map.getEventCoordinate(event);
   this['coordinate'] = clickCoordinate;
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
