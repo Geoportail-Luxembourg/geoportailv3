@@ -29,6 +29,40 @@ vars:
     # closure paths
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
 
+    themes:
+    - preemption
+    - mobiliteit
+    - tourisme_mobile
+    - topo_mobile
+    - emwelt
+    - theme-test
+    - nordstad
+    - go
+    - prof
+    - main_mobile
+    - user_content_mobile
+    - api
+    - arbed
+    - commande
+    - ortho_mobile
+    - tourisme
+    - main
+    - cadastre_mobile
+    - emwelt_mobile
+    - eau_mobile
+    - remich
+    - test
+    - at
+    - agriculture
+    - preizerdaul
+    - wellenstein
+    - at_mobile
+    - eau
+    - lintgen
+    - lenoz
+    - municipalities
+    - presidence2015
+
     servers:
         my_maps: http://ws.geoportail.lu/mymaps
 

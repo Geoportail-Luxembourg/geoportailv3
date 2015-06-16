@@ -32,6 +32,10 @@ RewriteRule ^${apache_entry_point}admin/?$ /${instanceid}/wsgi/admin/ [PT]
 RewriteRule ^${apache_entry_point}search$ /${instanceid}/wsgi/fulltextsearch [PT]
 RewriteRule ^${apache_entry_point}s/(.*)$ /${instanceid}/wsgi/short/$1 [PT]
 
+% for theme in themes:
+RewriteRule /${instanceid}/wsgi/${theme}$ /${instanceid}/wsgi/theme/${theme} [PT]
+% endfor
+
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
 WSGIDaemonProcess c2cgeoportal:${instanceid} display-name=%{GROUP} user=${modwsgi_user} python-path=${python_path}
