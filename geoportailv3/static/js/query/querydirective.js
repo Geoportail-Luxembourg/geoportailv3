@@ -1,5 +1,8 @@
 goog.provide('app.queryDirective');
 
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
+
 
 /**
  * @typedef {{point: Array.<ol.style.Style>, default: Array.<ol.style.Style>}}
@@ -33,6 +36,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @constructor
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
@@ -41,7 +45,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @ngInject
  */
 app.QueryController = function($scope, $http,
-    appQueryTemplatesPath, getInfoServiceUrl,
+    appVectorOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
 
   /** @type {Array.<Object>} */
@@ -107,17 +111,24 @@ app.QueryController = function($scope, $http,
 
   /**
    * The draw overlay
-   * @type {ol.FeatureOverlay}
+   * @type {app.VectorOverlay}
    * @private
    */
-  this.overlay_ = new ol.FeatureOverlay({map: map,
-    style: function(feature, resolution) {
-      if (feature.getGeometry().getType() == ol.geom.GeometryType.POINT ||
-          feature.getGeometry().getType() == ol.geom.GeometryType.MULTI_POINT) {
-        return styles.point;
-      }
-      return styles.default;
-    }});
+  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+
+  this.vectorOverlay_.setStyle(
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @param {number} resolution Resolution.
+       * @return {Array.<ol.style.Style>} Array of styles.
+       */
+      function(feature, resolution) {
+        var geometryType = feature.getGeometry().getType();
+        return geometryType == ol.geom.GeometryType.POINT ||
+            geometryType == ol.geom.GeometryType.MULTI_POINT ?
+            styles.point : styles.default;
+      });
+
 
   $scope.$watch(goog.bind(function() {
     return this['infoOpen'];
@@ -207,7 +218,7 @@ app.QueryController = function($scope, $http,
  * @private
  */
 app.QueryController.prototype.clearFeatures_ = function() {
-  this.overlay_.getFeatures().clear();
+  this.vectorOverlay_.clear();
 };
 
 
@@ -236,15 +247,12 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
       dataProjection: 'EPSG:2169',
       featureProjection: this['map'].getView().getProjection()
     });
-
     var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
       'type': 'FeatureCollection',
-      'features': features},
-    encOpt
-    );
-    var currentFeatures = this.overlay_.getFeatures();
-
-    this.overlay_.setFeatures(currentFeatures.extend(jsonFeatures));
+      'features': features}, encOpt);
+    for (var i = 0; i < jsonFeatures.length; ++i) {
+      this.vectorOverlay_.addFeature(jsonFeatures[i]);
+    }
   }
 };
 app.module.controller('AppQueryController',
