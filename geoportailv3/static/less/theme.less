@@ -13,7 +13,8 @@
     a:after{
       content: '\@{icon}';
     }
-    a:hover, a.active{
+    a:hover,
+    a.active{
       color: @primary !important;
     }
   }
@@ -28,10 +29,10 @@
 
   .btn {
     color: @primary;
-    &:hover {
-      color: white;
-      background-color: @primary;
-    }
+  }
+  &.no-touch .btn:hover {
+    color: white;
+    background-color: @primary;
   }
 
   #sidebar {
@@ -66,10 +67,6 @@
   .nav {
     & > li > a {
       background-color: white;
-      &:hover {
-        color: white;
-        background-color: @primary;
-      }
     }
     & > li.active > a {
       color: white;
@@ -77,13 +74,18 @@
     }
   }
 
+  &.no-touch .nav > li > a:hover {
+    color: white;
+    background-color: @primary;
+  }
+
   .toolbox-panel-top > li > a {
     background-color: @primary;
     color: white;
-    &:hover {
-      color: @primary;
-      background-color: white;
-    }
+  }
+  &.no-touch .toolbox-panel-top > li > a:hover {
+    color: @primary;
+    background-color: white;
   }
   .toolbox-panel-top > li.active > a {
     color: @primary;
@@ -95,10 +97,13 @@
       background-color: @tertiary;
       color: white;
     }
-    > a:hover,
     &.active > a {
       background-color: @primary;
     }
+  }
+
+  &.no-touch .footer .toolbox-panel > li > a:hover {
+    background-color: @primary;
   }
 
   ul.catalog {
@@ -149,7 +154,8 @@
     color: white;
   }
 
-  .ol-control button:hover,.ol-control button:focus {
+  &.no-touch .ol-control button:hover,
+  .ol-control button:active {
     background-color: @primary;
     color: white;
   }
@@ -179,14 +185,14 @@
     background-color: @secondary;
   }
   .navbar-default .navbar-nav > .active > a {
-    &:focus, & {
+    &:active, & {
       background-color: @primary;
       color: white;
     }
-    &:hover {
-      background-color: white;
-      color: @primary;
-    }
+  }
+  &.no-touch .navbar-default .navbar-nav > .active > a:hover {
+    background-color: white;
+    color: @primary;
   }
   .theme-selector {
     background-color: @tertiary;
@@ -194,10 +200,10 @@
       background-color: @secondary;
       color: white;
     }
-    &:hover {
-      background-color: white;
-      color: @primary;
-    }
+  }
+  &.no-touch .theme-selector:hover {
+    background-color: white;
+    color: @primary;
   }
 
   app-share>div {
@@ -212,11 +218,11 @@
     .close {
       color: @secondary;
 
-      &:hover {
-        color: @primary;
-      }
       opacity: 1;
     }
+  }
+  &.no-touch .profile:hover {
+    color: @primary;
   }
 }
 
