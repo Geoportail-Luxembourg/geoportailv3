@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-04-24 12:39+0000\n"
-"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"PO-Revision-Date: 2015-06-16 09:34+0000\n"
+"Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,13 +22,25 @@ msgstr ""
 msgid "<p>Invalid login or password</p>"
 msgstr ""
 
+#: geoportailv3/static/js/print/print.html
+msgid "Abort"
+msgstr "Abort"
+
 #: geoportailv3/static/js/search/searchdirective.js
 msgid "Addresses"
 msgstr "Addresses"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Azimut"
-msgstr ""
+msgstr "Azimut"
+
+#: geoportailv3/static/js/search/searchdirective.js
+msgid "Background"
+msgstr "Background"
+
+#: geoportailv3/static/js/search/searchdirective.js
+msgid "Background Layers"
+msgstr "Background Layers"
 
 #: geoportailv3/static/js/backgroundlayer/backgroundlayer.html
 msgid "Background layer:"
@@ -38,12 +50,45 @@ msgstr "Background layer"
 msgid "Catalog"
 msgstr "Catalog"
 
+#: geoportailv3/static/js/query/parcels.html
+msgid "Commander un extrait"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Commune"
+msgstr ""
+
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Contact"
 msgstr ""
 
+#: geoportailv3/static/js/query/parcels.html
+msgid "Contenance"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Dernier mesurage"
+msgstr ""
+
+#: geoportailv3/static/js/query/mymaps.html
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Description"
+msgstr ""
+
+#: geoportailv3/static/js/profile/profile.html
+msgid "Draw a line on the map to display an elevation profile."
+msgstr ""
+
+#: geoportailv3/static/js/share/share.html
+msgid "Email"
+msgstr ""
+
+#: geoportailv3/static/js/share/share.html
+msgid "Facebook"
+msgstr ""
+
+#: geoportailv3/static/js/share/share.html
+msgid "Google Plus"
 msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
@@ -75,11 +120,11 @@ msgid "Link to the metadata"
 msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
-msgid "Login"
+msgid "Logout"
 msgstr ""
 
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "Logout"
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Longeueur"
 msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
@@ -90,20 +135,40 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#: geoportailv3/static/js/query/parcels.html
+msgid "Nature"
+msgstr ""
+
 #: geoportailv3/static/js/layermanager/layermanager.html
 msgid "No layer selected"
+msgstr ""
+
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Nom"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Numero cadastral"
 msgstr ""
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Profile"
 msgstr ""
 
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Rating"
+msgstr ""
+
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Revision date"
 msgstr ""
 
-#: geoportailv3/static/js/search/search.html
-msgid "Search"
+#: geoportailv3/static/js/query/parcels.html
+msgid "Section"
+msgstr ""
+
+#: geoportailv3/static/js/share/shorturl.html
+msgid "Short Url"
 msgstr ""
 
 #: geoportailv3/static/js/measure/measure.html
@@ -118,9 +183,25 @@ msgstr ""
 msgid "The metadata is right now not available"
 msgstr ""
 
+#: geoportailv3/static/js/print/print.html
+msgid "Title"
+msgstr ""
+
+#: geoportailv3/static/js/share/share.html
+msgid "Twitter"
+msgstr ""
+
+#: geoportailv3/static/js/print/print.html
+msgid "With legend"
+msgstr ""
+
 #: geoportailv3/templates/index.html
 msgid "draw"
 msgstr "Draw"
+
+#: geoportailv3/static/js/print/print.html
+msgid "generating"
+msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "infos"
@@ -147,10 +228,6 @@ msgid "layers"
 msgstr ""
 
 #: geoportailv3/templates/index.html
-msgid "logo"
-msgstr ""
-
-#: geoportailv3/templates/index.html
 msgid "map_title"
 msgstr ""
 
@@ -173,38 +250,6 @@ msgstr ""
 #: geoportailv3/templates/index.html
 msgid "search"
 msgstr "Search"
-
-#: geoportailv3/static/js/search/search.html
-msgid "hydro_km"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "biotope"
-msgstr "Biotope"
-
-#: geoportailv3/static/js/search/search.html
-msgid "hydro"
-msgstr "Waterway"
-
-#: geoportailv3/static/js/search/search.html
-msgid "asta_esp"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "Parcelle"
-msgstr "Parcel"
-
-#: geoportailv3/static/js/search/search.html
-msgid "Adresse"
-msgstr "Address"
-
-#: geoportailv3/static/js/search/search.html
-msgid "FLIK"
-msgstr "FLIK"
-
-#: geoportailv3/static/js/search/search.html
-msgid "lieu_dit"
-msgstr "place name"
 
 #: geoportailv3/static/js/search/search.html
 msgid "search_key_words"
@@ -496,10 +541,6 @@ msgstr "Spatial planning"
 
 #: lu_int_wms.170
 msgid "presidence_pharmacies_pharmacie_welschbillig"
-msgstr ""
-
-#: l_wmts.171
-msgid "blank"
 msgstr ""
 
 #: group.172
