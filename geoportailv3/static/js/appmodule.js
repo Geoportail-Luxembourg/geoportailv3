@@ -5,14 +5,21 @@
  */
 goog.provide('app');
 
+goog.require('goog.dom.classlist');
 goog.require('ngeo');
 goog.require('ngeo.MockLocationProvider');
+goog.require('ol.has');
 
 
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeoModule.name, 'gettext', 'ngAnimate']);
+app.module = angular.module('app', [ngeoModule.name, 'gettext', 'ngAnimate'])
+    .run(function() {
+      if (!ol.has.TOUCH) {
+        goog.dom.classlist.add(document.body, 'no-touch');
+      }
+    });
 
 
 // Use ngeo's mockLocationProvider to work around a problem in Angular
