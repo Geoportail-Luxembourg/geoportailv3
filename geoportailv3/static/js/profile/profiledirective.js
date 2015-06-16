@@ -15,10 +15,11 @@
 goog.provide('app.profileDirective');
 
 goog.require('app');
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
 goog.require('ngeo');
 goog.require('ngeo.profileDirective');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Overlay');
 goog.require('ol.geom.GeometryLayout');
@@ -55,10 +56,11 @@ app.module.directive('appProfile', app.profileDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @export
  * @ngInject
  */
-app.ProfileController = function($scope) {
+app.ProfileController = function($scope, appVectorOverlayMgr) {
 
   /**
    * @type {angular.Scope}
@@ -91,25 +93,19 @@ app.ProfileController = function($scope) {
   this.measureTooltipElement_ = null;
 
   /**
-   * @type {ol.style.Style}
-   * @private
-   */
-  this.style_ = new ol.style.Style({
-    image: new ol.style.Circle({
-      radius: 3,
-      fill: new ol.style.Fill({color: 'white'})
-    })
-  });
-
-  /**
    * The draw overlay
-   * @type {ol.FeatureOverlay}
+   * @type {app.VectorOverlay}
    * @private
    */
-  this.overlay_ = new ol.FeatureOverlay({
-    map: this['map'],
-    style: this.style_
-  });
+  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+
+  this.vectorOverlay_.setStyle(
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 3,
+          fill: new ol.style.Fill({color: 'white'})
+        })
+      }));
 
   /**
    * @type {ol.geom.LineString}
@@ -149,7 +145,7 @@ app.ProfileController = function($scope) {
    * @private
    */
   this.snappedPoint_ = new ol.Feature();
-  this.overlay_.addFeature(this.snappedPoint_);
+  this.vectorOverlay_.addFeature(this.snappedPoint_);
 
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
@@ -176,13 +172,13 @@ app.ProfileController = function($scope) {
       function(point, dist, xUnits, elevation, yUnits) {
         // An item in the list of points given to the profile.
         this['point'] = point;
-        this.overlay_.getFeatures().clear();
+        this.vectorOverlay_.clear();
         var curPoint = new ol.geom.Point([point['x'], point['y']]);
         curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
         var positionFeature = new ol.Feature({
           geometry: curPoint
         });
-        this.overlay_.addFeature(positionFeature);
+        this.vectorOverlay_.addFeature(positionFeature);
 
         this.createMeasureTooltip_();
         this.measureTooltipElement_.innerHTML = this.distanceLabel_ +
@@ -199,7 +195,7 @@ app.ProfileController = function($scope) {
   var outCallback = goog.bind(function() {
     this['point'] = null;
     this.removeMeasureTooltip_();
-    this.overlay_.getFeatures().clear();
+    this.vectorOverlay_.clear();
     this.snappedPoint_.setGeometry(null);
   }, this);
 
