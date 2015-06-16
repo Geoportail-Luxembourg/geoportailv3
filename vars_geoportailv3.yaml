@@ -53,10 +53,24 @@ vars:
 
     # Checker configuration
     checker:
-        print_template: 1 A4 portrait
-        print_center_lon: to be defined
-        print_center_lat: to be defined
-        print_scale: 10000
+        print_spec: 
+            layout: A4 portrait
+            outputFormat: pdf
+            attributes:
+                name: Exemple
+                description: Carte exemple
+                scale: 60000
+                url: "http://g-o.lu/0mf4r"
+                qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
+                legend: {}
+                scalebar:
+                  projection: EPSG:2169
+                map:
+                  bbox: [668126, 6368118, 689717, 6389761]
+                  projection: EPSG:3857
+                  dpi: 128
+                  rotation: 0
+                  layers: []
 
     check_collector:
         disabled:
