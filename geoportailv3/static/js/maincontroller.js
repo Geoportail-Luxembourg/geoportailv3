@@ -14,6 +14,8 @@ goog.require('app.ExclusionManager');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LocationControl');
 goog.require('app.Themes');
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
 goog.require('goog.object');
 goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.SyncArrays');
@@ -38,6 +40,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
  *     manager.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -47,8 +50,8 @@ goog.require('ol.tilegrid.WMTS');
  * @ngInject
  */
 app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
-    appExclusionManager, appLayerOpacityManager, appThemes, langUrls,
-    maxExtent, defaultExtent, ngeoSyncArrays) {
+    appExclusionManager, appLayerOpacityManager, appThemes, appVectorOverlayMgr,
+    langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {app.Themes}
@@ -160,6 +163,7 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
+  appVectorOverlayMgr.init(this.map_);
 
   this.manageUserRoleChange_($scope);
 
