@@ -174,7 +174,7 @@ app.MainController.prototype.setMap_ = function() {
 
   this.map_ = this['map'] = new ol.Map({
     controls: [
-      new ol.control.Zoom({zoomInLabel: '\ue031', zoomOutLabel: '\ue025'}),
+      new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
       new ol.control.ZoomToExtent({label: '\ue01b',
         extent: this.defaultExtent_}),
       new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02b'}),
