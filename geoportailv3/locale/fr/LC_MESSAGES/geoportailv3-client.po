@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-04-24 13:14+0000\n"
-"Last-Translator: patrick weber <pweber@spatialbit.com>\n"
+"PO-Revision-Date: 2015-06-16 09:34+0000\n"
+"Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,11 @@ msgstr "+ Ajouter une couche"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "<p>Invalid login or password</p>"
-msgstr ""
+msgstr "Login ou mot de passe invalide"
+
+#: geoportailv3/static/js/print/print.html
+msgid "Abort"
+msgstr "Abandonner"
 
 #: geoportailv3/static/js/search/searchdirective.js
 msgid "Addresses"
@@ -28,7 +32,15 @@ msgstr "Adresses"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Azimut"
-msgstr ""
+msgstr "Azimut"
+
+#: geoportailv3/static/js/search/searchdirective.js
+msgid "Background"
+msgstr "Fond"
+
+#: geoportailv3/static/js/search/searchdirective.js
+msgid "Background Layers"
+msgstr "Couche de Fond"
 
 #: geoportailv3/static/js/backgroundlayer/backgroundlayer.html
 msgid "Background layer:"
@@ -38,25 +50,58 @@ msgstr "Couche de fond:"
 msgid "Catalog"
 msgstr "Catalogue"
 
-#: geoportailv3/static/js/layerinfo/popup.html
-msgid "Contact"
+#: geoportailv3/static/js/query/parcels.html
+msgid "Commander un extrait"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Commune"
 msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html
-msgid "Description"
+msgid "Contact"
+msgstr "Contact"
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Contenance"
 msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Dernier mesurage"
+msgstr ""
+
+#: geoportailv3/static/js/query/mymaps.html
+#: geoportailv3/static/js/layerinfo/popup.html
+msgid "Description"
+msgstr "Description"
+
+#: geoportailv3/static/js/profile/profile.html
+msgid "Draw a line on the map to display an elevation profile."
+msgstr "Tracez une ligne sur la carte pour afficher le profile d'élévation"
+
+#: geoportailv3/static/js/share/share.html
+msgid "Email"
+msgstr "Email"
+
+#: geoportailv3/static/js/share/share.html
+msgid "Facebook"
+msgstr "Facebook"
+
+#: geoportailv3/static/js/share/share.html
+msgid "Google Plus"
+msgstr "Google Plus"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "I lost my password"
-msgstr ""
+msgstr "J'ai perdu mon mot de passe"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "I want to create a new user account"
-msgstr ""
+msgstr "Créer un compte utilisateur"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Keywords"
-msgstr ""
+msgstr "Mots clés"
 
 #: geoportailv3/static/js/search/searchdirective.js
 msgid "Layers"
@@ -64,63 +109,99 @@ msgstr "Couches"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Legend"
-msgstr ""
+msgstr "Légende"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Length"
-msgstr ""
+msgstr "Longeur"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Link to the metadata"
-msgstr ""
-
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "Login"
-msgstr ""
+msgstr "Lien vers les metadonnées"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "Logout"
+msgstr "Déconnecter"
+
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Longeueur"
 msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "My account"
-msgstr ""
+msgstr "Mon compte"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Name"
+msgstr "Nom"
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Nature"
 msgstr ""
 
 #: geoportailv3/static/js/layermanager/layermanager.html
 msgid "No layer selected"
+msgstr "Pas de couche sélectionnée"
+
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Nom"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Numero cadastral"
 msgstr ""
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Profile"
+msgstr "Profile"
+
+#: geoportailv3/static/js/query/mymaps.html
+msgid "Rating"
 msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Revision date"
+msgstr "Date de révision"
+
+#: geoportailv3/static/js/query/parcels.html
+msgid "Section"
 msgstr ""
 
-#: geoportailv3/static/js/search/search.html
-msgid "Search"
-msgstr ""
+#: geoportailv3/static/js/share/shorturl.html
+msgid "Short Url"
+msgstr "Url courte"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Surface"
-msgstr ""
+msgstr "Surface"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "The legend is not available for this layer"
-msgstr ""
+msgstr "Pas de légende disponible pour cette couche"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "The metadata is right now not available"
-msgstr ""
+msgstr "Les métadonnées ne sont pas accessibles pour le moment"
+
+#: geoportailv3/static/js/print/print.html
+msgid "Title"
+msgstr "Titre"
+
+#: geoportailv3/static/js/share/share.html
+msgid "Twitter"
+msgstr "Twitter"
+
+#: geoportailv3/static/js/print/print.html
+msgid "With legend"
+msgstr "Avec légende"
 
 #: geoportailv3/templates/index.html
 msgid "draw"
 msgstr "dessiner"
+
+#: geoportailv3/static/js/print/print.html
+msgid "generating"
+msgstr "en cours de traitement"
 
 #: geoportailv3/templates/index.html
 msgid "infos"
@@ -140,15 +221,11 @@ msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "lang"
-msgstr ""
+msgstr "Language"
 
 #: geoportailv3/templates/index.html
 msgid "layers"
 msgstr "Couches"
-
-#: geoportailv3/templates/index.html
-msgid "logo"
-msgstr ""
 
 #: geoportailv3/templates/index.html
 msgid "map_title"
@@ -156,7 +233,7 @@ msgstr "Titre de Carte"
 
 #: geoportailv3/templates/index.html
 msgid "measure"
-msgstr ""
+msgstr "Mesurer"
 
 #: geoportailv3/templates/index.html
 msgid "my_layers"
@@ -175,48 +252,16 @@ msgid "search"
 msgstr "Recherche"
 
 #: geoportailv3/static/js/search/search.html
-msgid "hydro_km"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "biotope"
-msgstr "Biotope"
-
-#: geoportailv3/static/js/search/search.html
-msgid "hydro"
-msgstr "Cours d'eau"
-
-#: geoportailv3/static/js/search/search.html
-msgid "asta_esp"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "Parcelle"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "Adresse"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "FLIK"
-msgstr ""
-
-#: geoportailv3/static/js/search/search.html
-msgid "lieu_dit"
-msgstr "Lieu-dit"
-
-#: geoportailv3/static/js/search/search.html
 msgid "search_key_words"
 msgstr "Recherche adresse, parcelles, cartes ..."
 
 #: geoportailv3/templates/index.html
 msgid "share"
-msgstr ""
+msgstr "Partager"
 
 #: geoportailv3/templates/index.html
 msgid "user"
-msgstr ""
+msgstr "Utilisateur"
 
 #: theme.101
 msgid "preemption"
@@ -496,10 +541,6 @@ msgstr "Aménagement du territoire"
 
 #: lu_int_wms.170
 msgid "presidence_pharmacies_pharmacie_welschbillig"
-msgstr ""
-
-#: l_wmts.171
-msgid "blank"
 msgstr ""
 
 #: group.172
