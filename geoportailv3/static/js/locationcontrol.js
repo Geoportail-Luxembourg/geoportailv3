@@ -3,9 +3,14 @@
  *
  */
 
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
+goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Geolocation');
+goog.require('ol.GeolocationProperty');
+goog.require('ol.Object');
 goog.require('ol.control.Control');
 goog.require('ol.geom.Point');
 
@@ -17,7 +22,8 @@ goog.provide('app.LocationControl');
  * @typedef {{className: (string|undefined),
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
- *     target: (Element|undefined)
+ *     target: (Element|undefined),
+ *     vectorOverlayMgr: app.VectorOverlayMgr
  * }}
  */
 app.LocationControlOptions;
@@ -27,14 +33,25 @@ app.LocationControlOptions;
 /**
  * @constructor
  * @extends {ol.control.Control}
- * @param {app.LocationControlOptions=} opt_options Location Control
+ * @param {app.LocationControlOptions} options Location Control
  * options.
  */
-app.LocationControl = function(opt_options) {
+app.LocationControl = function(options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.accuracyFeature_ = new ol.Feature();
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.positionFeature_ = new ol.Feature();
 
   /**
    * @type {ol.Geolocation}
@@ -43,11 +60,10 @@ app.LocationControl = function(opt_options) {
   this.geolocation_ = null;
 
   /**
-   * @type {ol.FeatureOverlay}
+   * @type {app.VectorOverlay}
    * @private
    */
-  this.featureOverlay_ = null;
-  this.positionPoint_ = new ol.geom.Point([0, 0]);
+  this.vectorOverlay_ = options.vectorOverlayMgr.getVectorOverlay();
 
   var label = goog.isDef(options.label) ? options.label : 'L';
   var tipLabel = goog.isDef(options.tipLabel) ?
@@ -56,8 +72,6 @@ app.LocationControl = function(opt_options) {
     'type': 'button',
     'title': tipLabel
   }, label);
-
-
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL + ' ' + 'tracker-off';
@@ -82,7 +96,6 @@ app.LocationControl = function(opt_options) {
     target: options.target
   });
 
-
 };
 goog.inherits(app.LocationControl, ol.control.Control);
 
@@ -104,15 +117,13 @@ app.LocationControl.prototype.handleCenterToLocation_ = function() {
   if (goog.isNull(this.geolocation_)) {
     this.initGeoLocation_();
   }
-
   if (!this.geolocation_.getTracking()) {
-    this.initFeatureOverlay_();
+    this.initVectorOverlay_();
     this.getMap().getView().setZoom(17);
     this.geolocation_.setTracking(true);
-  }else {
-    this.clearFeatureOverlay_();
+  } else {
+    this.clearVectorOverlay_();
     this.geolocation_.setTracking(false);
-
   }
 };
 
@@ -123,65 +134,67 @@ app.LocationControl.prototype.handleCenterToLocation_ = function() {
  */
 app.LocationControl.prototype.initGeoLocation_ = function() {
 
-  var map = this.getMap();
-  var view = map.getView();
-  this.geolocation_ = /** @type {ol.Geolocation} */ (new ol.Geolocation({
-    projection: view.getProjection(),
+  this.geolocation_ = new ol.Geolocation({
+    projection: this.getMap().getView().getProjection(),
     trackingOptions: /** @type {GeolocationPositionOptions} */ ({
       enableHighAccuracy: true,
       maximumAge: 60000,
       timeout: 7000
     })
-  }));
-
-  this.geolocation_.on('change:tracking', goog.bind(function(e) {
-
-    if (this.geolocation_.getTracking()) {
-      goog.dom.classlist.swap(this.element, 'tracker-off', 'tracker-on');
-    }else {
-      goog.dom.classlist.swap(this.element, 'tracker-on', 'tracker-off');
-    }
-  },this));
-  this.geolocation_.on('change:position', goog.bind(function(e) {
-    var position = /** @type {ol.Coordinate} */
-        (this.geolocation_.getPosition());
-
-    this.positionPoint_.setCoordinates(position);
-    view.setCenter(position);
-  },this));
-};
-
-
-/**
- *
- * @private
- */
-app.LocationControl.prototype.initFeatureOverlay_ = function() {
-
-  var map = this.getMap();
-  var positionFeature = new ol.Feature(this.positionPoint_);
-
-  var accuracyFeature = new ol.Feature();
-  this.geolocation_.on('change:accuracyGeometry', goog.bind(function() {
-    accuracyFeature.setGeometry(this.geolocation_.getAccuracyGeometry());
-  }, this));
-
-  this.featureOverlay_ = new ol.FeatureOverlay({
-    features: [positionFeature, accuracyFeature]
   });
-  this.featureOverlay_.setMap(map);
+
+  goog.events.listen(this.geolocation_,
+      ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
+      /**
+       * @param {ol.ObjectEvent} e Object event.
+       */
+      function(e) {
+        if (this.geolocation_.getTracking()) {
+          goog.dom.classlist.swap(this.element, 'tracker-off', 'tracker-on');
+        } else {
+          goog.dom.classlist.swap(this.element, 'tracker-on', 'tracker-off');
+        }
+      }, false, this);
+
+  goog.events.listen(this.geolocation_,
+      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+      /**
+       * @param {ol.ObjectEvent} e Object event.
+       */
+      function(e) {
+        var position = /** @type {ol.Coordinate} */
+            (this.geolocation_.getPosition());
+        this.positionFeature_.setGeometry(new ol.geom.Point(position));
+        this.getMap().getView().setCenter(position);
+      }, false, this);
+
+  goog.events.listen(this.geolocation_,
+      ol.Object.getChangeEventType(ol.GeolocationProperty.ACCURACY_GEOMETRY),
+      /**
+       * @param {ol.ObjectEvent} e Object event.
+       */
+      function(e) {
+        this.accuracyFeature_.setGeometry(
+            this.geolocation_.getAccuracyGeometry());
+      }, false, this);
+
 };
 
 
 /**
- *
  * @private
  */
-app.LocationControl.prototype.clearFeatureOverlay_ = function() {
-  if (!goog.isNull(this.featureOverlay_)) {
-    var features = this.featureOverlay_.getFeatures();
-    if (!goog.isNull(features)) {
-      features.clear();
-    }
-  }
+app.LocationControl.prototype.initVectorOverlay_ = function() {
+  this.accuracyFeature_.setGeometry(null);
+  this.positionFeature_.setGeometry(null);
+  this.vectorOverlay_.addFeature(this.accuracyFeature_);
+  this.vectorOverlay_.addFeature(this.positionFeature_);
+};
+
+
+/**
+ * @private
+ */
+app.LocationControl.prototype.clearVectorOverlay_ = function() {
+  this.vectorOverlay_.clear();
 };
