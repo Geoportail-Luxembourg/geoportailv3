@@ -165,9 +165,24 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
   appLayerOpacityManager.init(this.map_);
   appVectorOverlayMgr.init(this.map_);
 
+  this.addLocationControl_(appVectorOverlayMgr);
+
   this.manageUserRoleChange_($scope);
 
   this.loadThemes_();
+};
+
+
+/**
+ * @param {app.VectorOverlayMgr} vectorOverlayMgr Vector overlay manager.
+ * @private
+ */
+app.MainController.prototype.addLocationControl_ = function(vectorOverlayMgr) {
+  this.map_.addControl(
+      new app.LocationControl({
+        label: '\ue800',
+        vectorOverlayMgr: vectorOverlayMgr
+      }));
 };
 
 
@@ -181,8 +196,7 @@ app.MainController.prototype.setMap_ = function() {
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
       new ol.control.ZoomToExtent({label: '\ue01b',
         extent: this.defaultExtent_}),
-      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'}),
-      new app.LocationControl({label: '\ue800'})
+      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'})
     ],
     view: new ol.View({
       maxZoom: 19,
