@@ -16,6 +16,8 @@ goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
@@ -60,8 +62,10 @@ app.searchDirective = function(appSearchTemplateUrl) {
           element.find('span.clear-button').on('click',
               goog.bind(function(scope) {
                 $(this).find('input').val('').trigger('input');
-                scope['ctrl'].featureOverlay_.getFeatures().clear();
-              },element, scope));
+                var ctrl = /** @type {app.SearchDirectiveController} */
+                    (scope['ctrl']);
+                ctrl.vectorOverlay_.clear();
+              }, element, scope));
 
           element.find('input').on(
               'input propertyChange focus blur', function() {
@@ -86,23 +90,23 @@ app.module.directive('appSearch', app.searchDirective);
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope Angular root scope.
- * @param {app.Themes} appThemes Themes service.
- * @param {Array.<number>} maxExtent Constraining extent.
  * @param {angular.$compile} $compile Angular compile service.
- * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
  *     create GeoJSON Bloodhound service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
+ * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
+ * @param {app.Themes} appThemes Themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @param {string} searchServiceUrl
  * @export
  */
-app.SearchDirectiveController =
-    function($scope, appThemes, maxExtent, $compile,
-        ngeoCreateGeoJSONBloodhound, gettextCatalog,
-        appGetLayerForCatalogNode, appShowLayerinfo, 
-        ngeoBackgroundLayerMgr, searchServiceUrl) {
+app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
+    ngeoBackgroundLayerMgr, ngeoCreateGeoJSONBloodhound, appThemes,
+    appGetLayerForCatalogNode, appShowLayerinfo, appVectorOverlayMgr,
+    maxExtent, searchServiceUrl) {
 
   /**
    * @type {Object}
@@ -178,10 +182,30 @@ app.SearchDirectiveController =
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {ol.FeatureOverlay}
+   * @type {app.VectorOverlay}
    * @private
    */
-  this.featureOverlay_ = this.createFeatureOverlay_();
+  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+
+  var fillStyle = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+
+  var strokeStyle = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+
+  this.vectorOverlay_.setStyle(
+      new ol.style.Style({
+        fill: fillStyle,
+        stroke: strokeStyle,
+        image: new ol.style.Circle({
+          radius: 10,
+          fill: fillStyle,
+          stroke: strokeStyle
+        })
+      }));
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -382,35 +406,6 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
 
 
 /**
- * @return {ol.FeatureOverlay} The feature overlay.
- * @private
- */
-app.SearchDirectiveController.prototype.createFeatureOverlay_ =
-    function() {
-  var featureFill = new ol.style.Fill({
-    color: [255, 255, 0, 0.6]
-  });
-  var featureStroke = new ol.style.Stroke({
-    color: [255, 155, 55, 1],
-    width: 3
-  });
-  var featureOverlay = new ol.FeatureOverlay({
-    style: new ol.style.Style({
-      fill: featureFill,
-      stroke: featureStroke,
-      image: new ol.style.Circle({
-        radius: 10,
-        fill: featureFill,
-        stroke: featureStroke
-      })
-    })
-  });
-  featureOverlay.setMap(this['map']);
-  return featureOverlay;
-};
-
-
-/**
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
  *     create GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl
@@ -581,10 +576,10 @@ app.SearchDirectiveController.selected_ =
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
         (feature.getGeometry());
     var mapSize = /** @type {ol.Size} */ (map.getSize());
-    var features = this.featureOverlay_.getFeatures();
     map.getView().fitGeometry(featureGeometry, mapSize,
         /** @type {olx.view.FitGeometryOptions} */ ({maxZoom: 17}));
-    features.clear();
+    this.vectorOverlay_.clear();
+    var features = [];
     if (dataset === 'coordinates') {
       features.push(feature);
     } else if (dataset === 'pois') {
@@ -596,6 +591,9 @@ app.SearchDirectiveController.selected_ =
       goog.array.forEach(layers, goog.bind(function(layer) {
         this.addLayerToMap_(/** @type {string} */ (layer));
       }, this));
+    }
+    for (var i = 0; i < features.length; ++i) {
+      this.vectorOverlay_.addFeature(features[i]);
     }
   } else if (dataset === 'layers') { //Layer
     this.addLayerToMap_(/** @type {Object} */ (suggestion));
