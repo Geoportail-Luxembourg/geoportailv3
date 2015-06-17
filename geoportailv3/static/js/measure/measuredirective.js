@@ -14,6 +14,7 @@ goog.provide('app.measureDirective');
 
 goog.require('app');
 goog.require('app.profileDirective');
+goog.require('goog.dom');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.interaction.MeasureArea');
@@ -57,6 +58,8 @@ app.module.directive('appMeasure', app.measureDirective);
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$q} $q
  * @param {angular.$http} $http Angular http service.
+ * @param {angular.$compile} $compile The compile provider.
+ * @param {gettext} gettext Gettext service.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {string} elevationServiceUrl the url of the service
@@ -65,8 +68,8 @@ app.module.directive('appMeasure', app.measureDirective);
  * @export
  * @ngInject
  */
-app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
-    elevationServiceUrl, profilejsonUrl) {
+app.MeasureController = function($scope, $q, $http, $compile, gettext,
+    ngeoDecorateInteraction, elevationServiceUrl, profilejsonUrl) {
 
   /**
    * @type {angular.$http}
@@ -128,7 +131,13 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
    */
   this.map_ = this['map'];
 
+
+  var helpMsg = gettext('Click to start drawing profile');
+  var contMsg = gettext('Click to continue drawing the line<br>' +
+      'Double-click or click last point to finish');
   var measureProfile = new ngeo.interaction.MeasureLength({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
     sketchStyle: sketchStyle
   });
 
@@ -140,7 +149,10 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   ngeoDecorateInteraction(measureProfile);
   this.map_.addInteraction(measureProfile);
 
+  helpMsg = gettext('Click to start drawing length');
   var measureLength = new ngeo.interaction.MeasureLength({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
     sketchStyle: sketchStyle
   });
 
@@ -158,7 +170,12 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   ngeoDecorateInteraction(measureLength);
   this.map_.addInteraction(measureLength);
 
+  helpMsg = gettext('Click to start drawing area');
+  contMsg = gettext('Click to continue drawing the polygon<br>' +
+      'Double-click or click last point to finish');
   var measureArea = new ngeo.interaction.MeasureArea({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
     sketchStyle: sketchStyle,
     style: style
   });
@@ -172,8 +189,12 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
   ngeoDecorateInteraction(measureArea);
   this.map_.addInteraction(measureArea);
 
+  helpMsg = gettext('Click to start drawing azimut');
+  contMsg = gettext('Click to finish');
   /** @type {ngeo.interaction.MeasureAzimut} */
   var measureAzimut = new ngeo.interaction.MeasureAzimut({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
     sketchStyle: sketchStyle,
     style: style
   });
