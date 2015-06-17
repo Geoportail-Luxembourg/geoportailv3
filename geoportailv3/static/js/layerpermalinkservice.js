@@ -78,13 +78,13 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
 
 
 /**
- * @param {Array.<number>} layerIds
+ * @param {Array.<number>} ids
  * @param {Array.<Object>} themes
  * @private
  */
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
-    function(layerIds, themes) {
-  var layerIds = layerIds.reverse();
+    function(ids, themes) {
+  var layerIds = ids.reverse();
   var opacities = this.getStateValue_('opacities').reverse();
   var flatCatalogue = [];
   for (var i = 0; i < themes.length; i++) {
