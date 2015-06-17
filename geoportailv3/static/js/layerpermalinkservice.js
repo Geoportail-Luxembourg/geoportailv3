@@ -109,7 +109,7 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
   var result = '';
   var response = this.stateManager_.getInitialValue(parameter);
   if (goog.isDef(response) && response.length > 0) {
-    result = this.stateManager_.getInitialValue(parameter);
+    result = response;
   } else {
     return undefined;
   }
@@ -120,11 +120,7 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
       items.push(value);
     }
   });
-  if (items.length === 0) {
-    return undefined;
-  } else {
-    return items;
-  }
+  return items.length === 0 ? undefined : items;
 };
 
 
@@ -152,28 +148,25 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
   // Add event listeners to existing selected layers
   goog.array.forEach(layers.getArray(), function(layer) {
     goog.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-        goog.bind(function() {
+        function() {
           this.setLayerState_(selectedLayers);
-        }, this));
+        }, undefined, this);
   }, this);
   // Add event listener to all future selected layers
   goog.events.listen(layers, ol.CollectionEventType.ADD,
-      goog.bind(
       /**
        * @param {ol.CollectionEventType} collEvt Collection event.
        */
       function(collEvt) {
         var layer = /** @type {ol.layer.Layer} */ (collEvt.element);
         goog.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-            goog.bind(
             /**
              * @param {ol.ObjectEventType} layerEvt Layer event
              */
             function(layerEvt) {
               this.setLayerState_(selectedLayers);
-            }, this));
-      }, this)
-  );
+            }, undefined, this);
+      }, undefined, this);
 };
 
 

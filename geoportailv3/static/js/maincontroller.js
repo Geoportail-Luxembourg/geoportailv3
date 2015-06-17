@@ -320,7 +320,7 @@ app.MainController.prototype.switchLanguage = function(lang) {
  * @private
  */
 app.MainController.prototype.initLanguage_ = function() {
-  this.scope_.$watchCollection(goog.bind(function() {
+  this.scope_.$watch(goog.bind(function() {
     return this['lang'];
   }, this), goog.bind(function(newValue) {
     this.stateManager_.updateState({
