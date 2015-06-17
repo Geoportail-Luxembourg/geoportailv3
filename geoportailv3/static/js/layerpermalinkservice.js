@@ -83,6 +83,8 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
  */
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
     function(layerIds, themes) {
+  var layerIds = layerIds.reverse();
+  var opacities = this.getStateValue_('opacities').reverse();
   var flatCatalogue = [];
   for (var i = 0; i < themes.length; i++) {
     var theme = themes[i];
@@ -90,7 +92,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         app.LayerPermalinkManager.getAllChildren_(theme.children)
     );
   }
-  goog.array.forEach(layerIds.reverse(),
+  goog.array.forEach(layerIds,
       function(layerId, layerIndex) {
         var node = goog.array.find(flatCatalogue, function(catItem) {
           return catItem.id === layerId;
@@ -99,7 +101,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         // set opacity trough metadata to not interfere
         // with the layer opacity manager service
         layer.get('metadata')['start_opacity'] =
-            this.getStateValue_('opacities').reverse()[layerIndex];
+            opacities[layerIndex];
         this.map_.addLayer(layer);
       }, this
   );
