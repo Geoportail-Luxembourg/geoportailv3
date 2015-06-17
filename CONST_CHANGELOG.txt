@@ -202,7 +202,28 @@ Version 1.6
     -... = TranslationStringFactory('geoportailv3')
     +... = TranslationStringFactory("geoportailv3-server")
 
-20. Remove the deprecated files:
+20. Add the `print_spec` in the `checker` config `vars_geoportailv3.yaml` file:
+
+    checker:
+        ...
+        print_spec:
+            layout: "A4 portrait"
+            outputFormat: "pdf"
+            attributes:
+                title: ""
+                comments: ""
+                datasource: []
+                map:
+                    projection: "EPSG:21781"
+                    dpi: 254
+                    rotation: 0
+                    center: [600000, 200000]
+                    scale: 100000
+                    longitudeFirst: true
+                    layers: []
+                legend: {}
+
+21. Remove the deprecated files:
 
     git rm -r geoportailv3/CONST_migration
     git rm -r geoportailv3/static/build
