@@ -31,17 +31,14 @@ Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
 Checkout
 --------
 
-.. code:: bash
-
-   git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
+```bash
+git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
+```
 
 Build
 -----
 
-.. code:: bash
-
-  cd geoportailv3
-
-  make -f <user>.mk build
-
-.. Feel free to add project-specific things.
+```bash
+cd geoportailv3
+make -f <user>.mk build
+```
