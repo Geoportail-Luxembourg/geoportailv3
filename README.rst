@@ -1,5 +1,6 @@
 geoportailv3 project
 ===================
+[![Build Status](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3.svg?branch=master)](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3)
 
 geoportailv3 is the implementation of the v3 of the map viewer of the luxembourgish geoportal.
 
