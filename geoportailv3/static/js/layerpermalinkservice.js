@@ -47,6 +47,12 @@ app.LayerPermalinkManager =
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {function()|undefined}
+   * @private
+   */
+  this.scopeWatcher_ = undefined;
 };
 
 
@@ -138,7 +144,10 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
         });
       }, undefined, this);
 
-  this.scope_.$watchCollection(goog.bind(function() {
+  if (goog.isFunction(this.scopeWatcher_)) {
+    this.scopeWatcher_(); // destroy previous watcher
+  }
+  this.scopeWatcher_ = this.scope_.$watchCollection(goog.bind(function() {
     return selectedLayers;
   }, this), goog.bind(function() {
     this.setLayerState_(selectedLayers);
