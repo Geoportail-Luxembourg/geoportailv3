@@ -9,6 +9,7 @@ goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.StateManager');
 goog.require('app.Themes');
+goog.require('goog.array');
 goog.require('ngeo.BackgroundLayerMgr');
 
 
