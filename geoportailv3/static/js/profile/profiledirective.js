@@ -17,6 +17,8 @@ goog.provide('app.profileDirective');
 goog.require('app');
 goog.require('app.VectorOverlay');
 goog.require('app.VectorOverlayMgr');
+goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('ngeo');
 goog.require('ngeo.profileDirective');
 goog.require('ol.Feature');

@@ -6,6 +6,8 @@
 goog.require('app.VectorOverlay');
 goog.require('app.VectorOverlayMgr');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('ol.Feature');
 goog.require('ol.Geolocation');
