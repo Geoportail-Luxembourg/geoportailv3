@@ -1,5 +1,6 @@
 geoportailv3 project
 ===================
+[![Build Status](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3.svg?branch=master)](https://travis-ci.org/Geoportail-Luxembourg/geoportailv3)
 
 geoportailv3 is the implementation of the v3 of the map viewer of the luxembourgish geoportal.
 
@@ -30,17 +31,14 @@ Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
 Checkout
 --------
 
-.. code:: bash
-
-   git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
+```bash
+git clone git@github.com:Geoportail-Luxembourg/geoportailv3.git
+```
 
 Build
 -----
 
-.. code:: bash
-
-  cd geoportailv3
-
-  make -f <user>.mk build
-
-.. Feel free to add project-specific things.
+```bash
+cd geoportailv3
+make -f <user>.mk build
+```
