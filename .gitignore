@@ -28,3 +28,4 @@
 /.eggs
 /.build
 /node_modules
+vars_wepa.yaml
