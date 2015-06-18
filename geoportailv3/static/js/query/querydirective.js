@@ -188,6 +188,17 @@ app.QueryController = function($timeout, $scope, $http,
     }
   }, this));
 
+  goog.events.listen(this.map_.getLayers(),
+      ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} e Collection event.
+       */
+      function(e) {
+        this['appSelector'] = undefined;
+        this['content'] = [];
+        this.clearFeatures_();
+      }, undefined, this);
+
   goog.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
         if (evt.originalEvent instanceof MouseEvent) {
