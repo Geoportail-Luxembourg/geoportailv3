@@ -108,7 +108,27 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-query app-query-map="::mainCtrl.map" app-query-open="mainCtrl.infosOpen"></app-query>
+          <div class="container-fluid">
+            <app-query app-query-map="::mainCtrl.map"
+                       app-query-open="mainCtrl.infosOpen"
+                       app-query-appselector="mainCtrl.infosAppSelector"></app-query>
+            <app-locationinfo app-locationinfo-map="::mainCtrl.map"
+                              app-locationinfo-open="mainCtrl.infosOpen"
+                              app-locationinfo-appselector="mainCtrl.infosAppSelector">
+            </app-locationinfo>
+            <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
+              <div class="col-xs-12">
+                <ul>
+                  <li>
+                  A <em>right click</em> (tap and hold on mobile) will display information about the current location.
+                  </li>
+                  <li>
+                  A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
@@ -226,6 +246,7 @@
          appModule.value('appShareTemplateUrl', '${request.static_url('geoportailv3:static/js/share/share.html')}');
          appModule.value('appShorturlTemplateUrl', '${request.static_url('geoportailv3:static/js/share/shorturl.html')}');
          appModule.value('appQueryTemplateUrl', '${request.static_url('geoportailv3:static/js/query/info.html')}');
+         appModule.value('appLocationinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/locationinfo/locationinfo.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
@@ -246,6 +267,7 @@
          appModule.value('appShareTemplateUrl', 'share/share.html');
          appModule.value('appShorturlTemplateUrl', 'share/shorturl.html');
          appModule.value('appQueryTemplateUrl', 'query/info.html');
+         appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
 % endif
 
 

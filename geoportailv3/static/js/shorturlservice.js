@@ -8,7 +8,7 @@ goog.require('app');
 
 
 /**
- * @typedef {function():!angular.$q.Promise}
+ * @typedef {function(ol.Coordinate=):!angular.$q.Promise}
  */
 app.GetShorturl;
 
@@ -22,26 +22,31 @@ app.GetShorturl;
  * @ngInject
  */
 app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
-  return getShorturl;
-
-  /**
-   * @return {!angular.$q.Promise} Promise providing the short URL.
-   */
-  function getShorturl() {
-    var url = ngeoLocation.getUriString();
-    return $http.get(shorturlServiceUrl, {
-      params: {
-        'url': url
-      }
-    }).then(
-        /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {string} The short URL.
-         */
-        function(resp) {
-          return resp.data['short_url'];
-        });
-  }
+  return (
+      /**
+       * @param {ol.Coordinate=} opt_coordinate
+       * @return {!angular.$q.Promise} Promise providing the short URL.
+       */
+      function getShorturl(opt_coordinate) {
+        if (goog.isDef(opt_coordinate)) {
+          ngeoLocation.updateParams({
+            'X': Math.round(opt_coordinate[0]),
+            'Y': Math.round(opt_coordinate[1])
+          });
+        }
+        return $http.get(shorturlServiceUrl, {
+          params: {
+            'url': ngeoLocation.getUriString()
+          }
+        }).then(
+            /**
+           * @param {angular.$http.Response} resp Ajax response.
+           * @return {string} The short URL.
+           */
+            function(resp) {
+              return resp.data['short_url'];
+            });
+      });
 };
 
 
