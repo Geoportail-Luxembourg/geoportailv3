@@ -2,9 +2,11 @@
     <div class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
         <div class="scale-select">
             <app-scaleselector app-scaleselector-map="::ctrl.map"></app-scaleselector>
+        </div>
+        <div class="scaleline-select">
             <app-scaleline app-scaleline-map="::ctrl.map"></app-scaleline>
         </div>
-        <div class="projection-select hidden-xs hidden-sm">
+        <div class="hidden-xs hidden-sm">
             <app-projectionselector app-projectionselector-map="::ctrl.map" ></app-projectionselector>
         </div>
         <div class="elevation-service hidden-xs hidden-sm">

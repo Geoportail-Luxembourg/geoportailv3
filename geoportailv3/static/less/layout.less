@@ -162,12 +162,13 @@ app-map > div {
         display: none;
     }
     .infobar-content.active {
-        display: block;
+      display: flex;
     }
-    .infobar-content * {
-        display: inline-block;
+    .infobar-content .projection-select {
+      display: inline-block;
     }
     .infobar-content .ol-scale-line {
+        display: inline-block;
         position: inherit;
         background: rgba(0,0,0,0);
         padding: 0px 5px 0px 5px;
@@ -181,10 +182,13 @@ app-map > div {
         }
     }
     .mouse-coordinates {
+        display: inline-block;
+        height: 19px;
+        margin-top: -28px;
+        vertical-align: middle;
         width: 255px;
     }
     .infobar-button {
-        display: inline-block;
         float: right;
     }
     .btn {
@@ -206,7 +210,6 @@ app-map > div {
         display: block;
     }
   }
-
 }
 
 .location-button {
