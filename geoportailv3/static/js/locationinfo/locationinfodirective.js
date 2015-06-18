@@ -9,6 +9,8 @@ goog.require('app.CoordinateString');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
+goog.require('app.VectorOverlay');
+goog.require('app.VectorOverlayMgr');
 goog.require('ol.proj');
 
 
@@ -44,14 +46,15 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
  * @param {app.StateManager} appStateManager
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
  * @ngInject
  */
 app.LocationinfoController =
     function($scope, $timeout, appGetShorturl, appGetElevation, 
-        appCoordinateString, appStateManager, qrServiceUrl,
-        appLocationinfoTemplateUrl) {
+        appCoordinateString, appStateManager, appVectorOverlayMgr,
+        qrServiceUrl, appLocationinfoTemplateUrl) {
 
   /**
    * @type {app.CoordinateString}
@@ -60,10 +63,36 @@ app.LocationinfoController =
   this.coordinateString_ = appCoordinateString;
 
   /**
-   * @type {ol.FeatureOverlay}
+   * @type {app.VectorOverlay}
    * @private
    */
-  this.featureOverlay_ = this.createFeatureOverlay_();
+  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+
+  var defaultFill = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+  var circleStroke = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+
+  var pointStyle = new ol.style.Circle({
+    radius: 10,
+    fill: defaultFill,
+    stroke: circleStroke
+  });
+
+  this.vectorOverlay_.setStyle(
+      /**
+       * @param {ol.Feature} feature Feature.
+       * @param {number} resolution Resolution.
+       * @return {Array.<ol.style.Style>} Array of styles.
+       */
+      function(feature, resolution) {
+        return [new ol.style.Style({
+          image: pointStyle
+        })];
+      });
 
   /**
    * @type {boolean}
@@ -74,21 +103,19 @@ app.LocationinfoController =
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
     if (newVal != 'locationinfo') {
-      var features = this.featureOverlay_.getFeatures();
-      features.clear();
+      this.vectorOverlay_.clear();
     }
   }, this));
 
   $scope.$watch(goog.bind(function() {
     return this['open'];
   }, this), goog.bind(function(newVal) {
-    var features = this.featureOverlay_.getFeatures();
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
       this['appSelector'] = undefined;
-      features.clear();
       this['featureOverlayItemExists'] = false;
-    } else if (newVal === true && features.getLength() >= 1) {
+      this.vectorOverlay_.clear();
+    } else if (newVal === true) {
       this.stateManager_.updateState({'crosshair': true});
       this['featureOverlayItemExists'] = true;
     }
@@ -248,25 +275,26 @@ app.LocationinfoController =
 
 
 /**
- * @param {MouseEvent|TouchEvent|ol.Coordinate} event
+ * @param {MouseEvent|TouchEvent|ol.Coordinate} eventOrCoordinate
  * @private
  */
 app.LocationinfoController.prototype.showInfoPane_ =
-    function(event) {
-  if (event instanceof MouseEvent || event instanceof TouchEvent) {
-    event.preventDefault();
-    var clickCoordinate = this.map.getEventCoordinate(event);
+    function(eventOrCoordinate) {
+  var clickCoordinate;
+  if (eventOrCoordinate instanceof MouseEvent ||
+      eventOrCoordinate instanceof TouchEvent) {
+    eventOrCoordinate.preventDefault();
+    clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   } else {
-    var clickCoordinate = event;
+    clickCoordinate = eventOrCoordinate;
   }
   this['open'] = true;
   this['appSelector'] = 'locationinfo';
   this['coordinate'] = clickCoordinate;
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-  var features = this.featureOverlay_.getFeatures();
-  features.clear();
-  features.push(feature);
+  this.vectorOverlay_.clear();
+  this.vectorOverlay_.addFeature(feature);
   this['featureOverlayItemExists'] = true;
   this.getElevation_(clickCoordinate).then(goog.bind(
       function(elevation) {
@@ -279,35 +307,6 @@ app.LocationinfoController.prototype.showInfoPane_ =
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
       }, this));
 
-};
-
-
-/**
- * @return {ol.FeatureOverlay} The feature overlay.
- * @private
- */
-app.LocationinfoController.prototype.createFeatureOverlay_ =
-    function() {
-  var featureFill = new ol.style.Fill({
-    color: [255, 255, 0, 0.6]
-  });
-  var featureStroke = new ol.style.Stroke({
-    color: [255, 155, 55, 1],
-    width: 3
-  });
-  var featureOverlay = new ol.FeatureOverlay({
-    style: new ol.style.Style({
-      fill: featureFill,
-      stroke: featureStroke,
-      image: new ol.style.Circle({
-        radius: 10,
-        fill: featureFill,
-        stroke: featureStroke
-      })
-    })
-  });
-  featureOverlay.setMap(this['map']);
-  return featureOverlay;
 };
 
 
