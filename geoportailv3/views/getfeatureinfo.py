@@ -11,6 +11,7 @@ from geoportailv3.models import LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from geojson import loads as geojson_loads
+from shapely.geometry import asShape, box
 
 log = logging.getLogger(__name__)
 
@@ -88,11 +89,14 @@ class Getfeatureinfo(object):
         layers = self.request.params.get('layers', None)
         if layers is None:
             return HTTPBadRequest()
-        box = self.request.params.get('box', None)
-        if box is None:
+        big_box = self.request.params.get('box1', None)
+        small_box = self.request.params.get('box2', None)
+        if big_box is None or small_box is None:
             return HTTPBadRequest()
 
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
+        coordinates_big_box = big_box.split(',')
+        coordinates_small_box = small_box.split(',')
 
         results = []
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
@@ -102,30 +106,49 @@ class Getfeatureinfo(object):
                     len(luxgetfeaturedefinition.query) > 0):
                 engine = sqlahelper.get_engine(luxgetfeaturedefinition.engine)
 
-                coordinates = box.split(',')
-                query = luxgetfeaturedefinition.query
-                if "WHERE" in query.upper():
-                    query = query + " AND "
+                query_1 = luxgetfeaturedefinition.query
+                if "WHERE" in query_1.upper():
+                    query_1 = query_1 + " AND "
                 else:
-                    query = query + " WHERE "
-                query = query + "ST_Intersects( %(geom)s, ST_MakeEnvelope \
-                    (%(left)s, %(bottom)s, %(right)s, %(top)s, 2169) )"\
-                    % {'left': coordinates[0], 'bottom': coordinates[1],
-                       'right': coordinates[2], 'top': coordinates[3],
+                    query_1 = query_1 + " WHERE "
+
+                if "SELECT" in query_1.upper():
+                    query_1 = query_1.replace(
+                        "SELECT",
+                        "SELECT ST_AsGeoJSON (%(geom)s), "
+                        % {'geom': luxgetfeaturedefinition.geometry_column}, 1)
+
+                else:
+                    query_1 = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
+                        % {'geom': luxgetfeaturedefinition.geometry_column} +\
+                        query_1
+
+                query_point = query_1 + "ST_Intersects( %(geom)s, "\
+                    "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
+                    "%(top)s, 2169) ) AND upper(ST_GeometryType(%(geom)s))"\
+                    " = 'ST_POINT' "\
+                    % {'left': coordinates_big_box[0],
+                       'bottom': coordinates_big_box[1],
+                       'right': coordinates_big_box[2],
+                       'top': coordinates_big_box[3],
                        'geom': luxgetfeaturedefinition.geometry_column}
 
-                if "SELECT" in query.upper():
-                    query = query.replace("SELECT",
-                                          "SELECT ST_AsGeoJSON (%(geom)s), "
-                                          % {'geom': luxgetfeaturedefinition.
-                                             geometry_column}, 1)
-                else:
-                    query = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
-                            % {'geom': luxgetfeaturedefinition.
-                               geometry_column} + query
-                query = query + " LIMIT 20"
+                query_others = query_1 + "ST_Intersects( %(geom)s,"\
+                    " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
+                    " %(top)s, 2169) ) AND upper(ST_GeometryType(%(geom)s))"\
+                    " != 'ST_POINT' "\
+                    % {'left': coordinates_small_box[0],
+                       'bottom': coordinates_small_box[1],
+                       'right': coordinates_small_box[2],
+                       'top': coordinates_small_box[3],
+                       'geom': luxgetfeaturedefinition.geometry_column}
+
+                query = query_point + " UNION ALL " + query_others +\
+                    " LIMIT 20"
+
                 res = engine.execute(query)
                 rows = res.fetchall()
+
                 if (luxgetfeaturedefinition.additional_info_function
                     is not None and
                     len(luxgetfeaturedefinition.additional_info_function)
@@ -155,7 +178,8 @@ class Getfeatureinfo(object):
                     if len(features) > 0:
                         results.append(
                             self.to_featureinfo(
-                                features,
+                                self.remove_features_outside_tolerance(
+                                    features, coordinates_small_box),
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
                                 luxgetfeaturedefinition.remote_template))
@@ -165,16 +189,32 @@ class Getfeatureinfo(object):
                     len(luxgetfeaturedefinition.rest_url) > 0):
                 features = self._get_external_data(
                     luxgetfeaturedefinition.rest_url,
-                    box, None, None,
+                    big_box, None, None,
                     luxgetfeaturedefinition.attributes_to_remove)
                 if len(features) > 0:
                     results.append(
                         self.to_featureinfo(
-                            features,
+                            self.remove_features_outside_tolerance(
+                                features, coordinates_small_box),
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.template,
                             luxgetfeaturedefinition.remote_template))
         return results
+
+    def remove_features_outside_tolerance(self, features, coords):
+        features_to_keep = []
+
+        the_box = box(float(coords[0]), float(coords[1]),
+                      float(coords[2]), float(coords[3]))
+
+        for feature in features:
+            s = asShape(feature['geometry'])
+            if s.geom_type.upper() != 'POINT':
+                if the_box.intersects(s):
+                    features_to_keep.append(feature)
+            else:
+                features_to_keep.append(feature)
+        return features_to_keep
 
     def to_feature(self, geometry, attributes, attributes_to_remove,
                    geometry_column='geom'):
@@ -327,7 +367,7 @@ class Getfeatureinfo(object):
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
-            body['spatialRel'] = 'esriSpatialRelIntersects'
+            body['spatialRel'] = 'esriSpatialRelEnvelopeIntersects'
         else:
             return []
 
@@ -336,6 +376,7 @@ class Getfeatureinfo(object):
         if url.find('?'):
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
+
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()
