@@ -167,7 +167,6 @@ app-map > div {
       display: flex;
     }
     .infobar-content .projection-select {
-      display: inline-block;
       margin-top: 1px;
     }
     .infobar-content .scale-select {
@@ -188,15 +187,17 @@ app-map > div {
         margin: 1px;
       }
     }
+    .projection-container {
+      display: flex;
+    }
     .elevation-service {
       height: 19px;
       margin-top: 10px;
     }
     .mouse-coordinates {
-      display: inline-block;
       height: 19px;
-      margin-top: -29px;
-      vertical-align: middle;
+      margin-top: 10px;
+      margin-left: 3px;
       width: 255px;
     }
     .infobar-button {
