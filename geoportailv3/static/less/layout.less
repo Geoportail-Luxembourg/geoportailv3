@@ -160,14 +160,21 @@ app-map > div {
         float: left;
         padding-right: 10px;
         display: none;
+        height: 39px;
+        margin-left: 2px;
     }
     .infobar-content.active {
       display: flex;
     }
     .infobar-content .projection-select {
       display: inline-block;
+      margin-top: 1px;
+    }
+    .infobar-content .scale-select {
+      margin-top: 1px;
     }
     .infobar-content .ol-scale-line {
+        margin-top: 10px;
         display: inline-block;
         position: inherit;
         background: rgba(0,0,0,0);
@@ -181,10 +188,14 @@ app-map > div {
             margin: 1px;
         }
     }
+    .elevation-service {
+      height: 19px;
+      margin-top: 10px;
+    }
     .mouse-coordinates {
         display: inline-block;
         height: 19px;
-        margin-top: -28px;
+        margin-top: -29px;
         vertical-align: middle;
         width: 255px;
     }
