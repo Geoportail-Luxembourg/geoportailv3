@@ -1,5 +1,5 @@
 <div class="ol-control infobar">
-  <div class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
+  <span class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
     <div class="scale-select">
       <app-scaleselector app-scaleselector-map="::ctrl.map"></app-scaleselector>
     </div>
@@ -12,4 +12,5 @@
     </div>
   </div>
   <button class='infobar-button' ng-click="ctrl.infobarSwitch()"></button>
+  </span>
 </div>

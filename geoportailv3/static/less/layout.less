@@ -164,13 +164,20 @@ app-map > div {
       margin-left: 2px;
     }
     .infobar-content.active {
-      display: flex;
+      display: block;
     }
     .infobar-content .projection-select {
+      float: left;
       margin-top: 1px;
     }
     .infobar-content .scale-select {
+      display: block;
+      float: left;
       margin-top: 1px;
+    }
+    .infobar-content .scaleline-select {
+      display: block;
+      float: left;
     }
     .infobar-content .ol-scale-line {
       margin-top: 10px;
@@ -188,17 +195,20 @@ app-map > div {
       }
     }
     .projection-container {
-      display: flex;
+      display: block;
+      float: left;
     }
     .elevation-service {
       height: 19px;
       margin-top: 10px;
+      float: left;
     }
     .mouse-coordinates {
       height: 19px;
       margin-top: 10px;
       margin-left: 3px;
-      width: 255px;
+      width: 150px;
+      float: left;
     }
     .infobar-button {
       float: right;
