@@ -1,6 +1,7 @@
 ## -*- coding: utf-8 -*-
 <%
     settings = request.registry.settings
+    proxy_wms_url = settings.get('proxy_wms_url')
     node_modules_path = settings.get('node_modules_path')
     closure_library_path = settings.get('closure_library_path')
 %>\
@@ -209,11 +210,15 @@
            'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
            'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
          });
+% if proxy_wms_url:
+         appModule.constant('proxyWmsUrl', "${proxy_wms_url}");
+% else:
+         appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
+% endif
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
          appModule.constant('getuserinfoUrl', "${request.route_url('getuserinfo')}");
-         appModule.constant('internalWmsUrl', "${request.route_url('wms')}");
          appModule.constant('elevationServiceUrl', "${request.route_url('raster')}");
          appModule.constant('profilejsonUrl', "${request.route_url('profile.json')}");
          appModule.constant('searchServiceUrl', "${request.route_url('fulltextsearch')}");

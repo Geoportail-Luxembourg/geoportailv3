@@ -114,11 +114,12 @@ app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
 
 /**
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
+ * @param {string} proxyWmsUrl URL to the proxy wms.
  * @return {app.GetWmsLayer} The getWmsLayer function.
  * @private
  * @ngInject
  */
-app.getWmsLayer_ = function(ngeoDecorateLayer) {
+app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl) {
   return getWmsLayer;
 
   /**
@@ -131,7 +132,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer) {
    */
   function getWmsLayer(name, layers, imageType, opt_url) {
     var url = goog.isDef(opt_url) ?
-        opt_url : 'http://devv3.geoportail.lu/main/wsgi/wms';
+        opt_url : proxyWmsUrl;
     var imageExt = app.getImageExtension_(imageType);
     var layer = new ol.layer.Image({
       source: new ol.source.ImageWMS({
