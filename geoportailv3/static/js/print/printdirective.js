@@ -189,7 +189,8 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
            * @return {number} Scale.
            */
           function(frameState) {
-            return this['scale'];
+            return app.PrintController.adjustScale_(
+                this.map_.getView(), this['scale']);
           }, this));
 
   // Show/hide the print mask based on the value of the "open" property.
@@ -271,6 +272,38 @@ app.PrintController.DPI_ = 300;
 
 
 /**
+ * Get the center resolution for the current view state.
+ * @param {ol.View} view The view.
+ * @return {number} The point resolution.
+ * @private
+ */
+app.PrintController.getViewCenterResolution_ = function(view) {
+  var viewCenter = view.getCenter();
+  var viewProjection = view.getProjection();
+  var viewResolution = view.getResolution();
+  goog.asserts.assert(goog.isDef(viewCenter));
+  goog.asserts.assert(!goog.isNull(viewProjection));
+  goog.asserts.assert(goog.isDef(viewResolution));
+  return viewProjection.getPointResolution(viewResolution, viewCenter);
+};
+
+
+/**
+ * @param {ol.View} view The view.
+ * @param {number} scale The non-adjusted scale.
+ * @return {number} The adjusted scale.
+ * @private
+ */
+app.PrintController.adjustScale_ = function(view, scale) {
+  var viewResolution = view.getResolution();
+  var viewCenterResolution = app.PrintController.getViewCenterResolution_(view);
+  goog.asserts.assert(goog.isDef(viewResolution));
+  var factor = viewResolution / viewCenterResolution;
+  return scale * factor;
+};
+
+
+/**
  * @param {Array.<number>} scales Sorted array of scales (ascending).
  * @param {number} scale Current scale.
  * @return {number} The nearest scale.
@@ -349,7 +382,7 @@ app.PrintController.prototype.print = function() {
   var map = this.map_;
 
   var dpi = app.PrintController.DPI_;
-  var scale = this['scale'];
+  var scale = app.PrintController.adjustScale_(map.getView(), this['scale']);
   var layout = this['layout'];
 
   this.getShorturl_().then(goog.bind(
@@ -360,7 +393,7 @@ app.PrintController.prototype.print = function() {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
         var spec = this.print_.createSpec(map, scale, dpi, layout, {
-          'scale': scale,
+          'scale': this['scale'],
           'name': this['title'],
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl
@@ -490,16 +523,20 @@ app.PrintController.prototype.setScales_ = function() {
  * @private
  */
 app.PrintController.prototype.useOptimalScale_ = function() {
-  var mapSize = this.map_.getSize();
+  var map = this.map_;
+
+  var mapSize = map.getSize();
   goog.asserts.assert(goog.isDefAndNotNull(mapSize));
-  var mapResolution = this.map_.getView().getResolution();
-  goog.asserts.assert(goog.isDef(mapResolution));
+
+  var viewCenterResolution = app.PrintController.getViewCenterResolution_(
+      map.getView());
 
   var idx = this['layouts'].indexOf(this['layout']);
   goog.asserts.assert(idx >= 0);
 
-  this['scale'] = this.printUtils_.getOptimalScale(mapSize, mapResolution,
-      app.PrintController.MAP_SIZES_[idx], this['scales']);
+  this['scale'] = this.printUtils_.getOptimalScale(mapSize,
+      viewCenterResolution, app.PrintController.MAP_SIZES_[idx],
+      this['scales']);
 };
 
 
