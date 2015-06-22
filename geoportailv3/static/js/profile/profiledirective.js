@@ -308,7 +308,7 @@ app.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
   // Check whether dist is lower than 8 pixels
   this['profileHighlight'] = pixelDistSqr < 64 ? closestPoint[2] : -1;
 
-  this.scope_.$apply();
+  this.scope_.$digest();
 };
 
 app.module.controller('AppProfileController', app.ProfileController);
