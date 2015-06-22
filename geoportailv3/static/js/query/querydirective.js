@@ -260,26 +260,26 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
     }
   }
   if (layersList.length > 0) {
-    var big_buffer = 20;
-    var small_buffer = 1;
+    var bigBuffer = 20;
+    var smallBuffer = 1;
 
     var lb = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] - big_buffer, evt.pixel[1] + big_buffer]),
+        [evt.pixel[0] - bigBuffer, evt.pixel[1] + bigBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
     var rt = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] + big_buffer, evt.pixel[1] - big_buffer]),
+        [evt.pixel[0] + bigBuffer, evt.pixel[1] - bigBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
     var big_box = lb.concat(rt);
 
     lb = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] - small_buffer, evt.pixel[1] + small_buffer]),
+        [evt.pixel[0] - smallBuffer, evt.pixel[1] + smallBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
     rt = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] + small_buffer, evt.pixel[1] - small_buffer]),
+        [evt.pixel[0] + smallBuffer, evt.pixel[1] - smallBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
     var small_box = lb.concat(rt);
 
