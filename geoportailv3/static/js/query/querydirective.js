@@ -51,6 +51,13 @@ app.QueryController = function($timeout, $scope, $http,
     getRemoteTemplateServiceUrl) {
 
   /**
+   * @const
+   * @type {string}
+   * @private
+   */
+  this.QUERYPANEL_ = 'query';
+
+  /**
    * @type {?Object<number, number>}
    * @private
    */
@@ -172,9 +179,8 @@ app.QueryController = function($timeout, $scope, $http,
   $scope.$watch(goog.bind(function() {
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
-    if (newVal != 'query') {
-      this['content'] = [];
-      this.clearFeatures_();
+    if (newVal != this.QUERYPANEL_) {
+      this.clearQueryResult_(newVal);
     }
   }, this));
 
@@ -182,9 +188,7 @@ app.QueryController = function($timeout, $scope, $http,
     return this['infoOpen'];
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal === false) {
-      this['appSelector'] = undefined;
-      this['content'] = [];
-      this.clearFeatures_();
+      this.clearQueryResult_(undefined);
     }
   }, this));
 
@@ -194,9 +198,9 @@ app.QueryController = function($timeout, $scope, $http,
        * @param {ol.CollectionEvent} e Collection event.
        */
       function(e) {
-        this['appSelector'] = undefined;
-        this['content'] = [];
-        this.clearFeatures_();
+        if (this['appSelector'] == this.QUERYPANEL_) {
+          this.clearQueryResult_(undefined);
+        }
       }, undefined, this);
 
   goog.events.listen(this.map_,
@@ -253,6 +257,17 @@ app.QueryController = function($timeout, $scope, $http,
 
 
 /**
+ * @param {string | undefined} appSelector the current app using the info panel
+ * @private
+ */
+app.QueryController.prototype.clearQueryResult_ = function(appSelector) {
+  this['appSelector'] = appSelector;
+  this['content'] = [];
+  this.clearFeatures_();
+};
+
+
+/**
  * @param {goog.events.Event} evt The map event
  * @private
  */
@@ -292,10 +307,10 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           goog.array.forEach(resp.data, function(item) {
             item['layerLabel'] = layerLabel[item.layer];
           });
+
+          this.clearQueryResult_(this.QUERYPANEL_);
           this['content'] = resp.data;
           this['infoOpen'] = true;
-          this['appSelector'] = 'query';
-          this.clearFeatures_();
           this.lastHighlightedFeatures_ = [];
           for (var i = 0; i < resp.data.length; i++) {
             this.lastHighlightedFeatures_.push.apply(
