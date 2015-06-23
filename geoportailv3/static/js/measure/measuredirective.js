@@ -39,7 +39,8 @@ app.measureDirective = function($compile, appMeasureTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appMeasureMap',
-      'active': '=appMeasureActive'
+      'active': '=appMeasureActive',
+      'queryActive': '=appMeasureQueryactive'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -254,6 +255,9 @@ app.MeasureController = function($scope, $q, $http, ngeoDecorateInteraction,
       this['measureArea'].setActive(false);
       this['measureAzimut'].setActive(false);
       this['measureProfile'].setActive(false);
+      this['queryActive'] = true;
+    } else {
+      this['queryActive'] = false;
     }
   }, this));
 };

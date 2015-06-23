@@ -22,7 +22,7 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
       'appSelector': '=appQueryAppselector',
-      'measureOpen': '=appQueryMeasureopen'
+      'queryActive': '=appQueryActive'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -191,7 +191,7 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
-        if (this['measureOpen']) return;
+        if (!this['queryActive']) return;
 
         if (evt.originalEvent instanceof MouseEvent) {
           this.singleclickEvent_.apply(this, [evt]);
@@ -226,7 +226,7 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
-        if (this['measureOpen']) {
+        if (!this['queryActive']) {
           this.map_.getTargetElement().style.cursor = '';
         } else {
           var pixel = this.map_.getEventPixel(evt.originalEvent);
