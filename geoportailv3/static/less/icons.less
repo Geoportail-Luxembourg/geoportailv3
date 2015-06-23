@@ -18,6 +18,7 @@ button.icon {
 }
 .theme-icon,
 button.icon,
+.infobar-button,
 li.icon > a {
   &:after {
     font-family: "geoportail-icons" !important;
@@ -98,9 +99,12 @@ button.icon.search:after,
   content: '\e012';
 }
 .icon.active > a:after {
-  content:'\e02c';
+  content: '\e02c';
 }
 
+.infobar-button:after {
+  content: '\e600';
+}
 
 #catalog,
 #mylayers {
