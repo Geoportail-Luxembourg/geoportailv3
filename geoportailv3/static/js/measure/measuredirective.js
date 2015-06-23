@@ -30,12 +30,11 @@ goog.require('ol.style.Style');
 
 
 /**
- * @param {angular.$compile} $compile The compile provider.
  * @param {string} appMeasureTemplateUrl Url to measure template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.measureDirective = function($compile, appMeasureTemplateUrl) {
+app.measureDirective = function(appMeasureTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
