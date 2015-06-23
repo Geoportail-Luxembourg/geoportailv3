@@ -159,7 +159,7 @@ app.ProfileController = function($scope, appVectorOverlayMgr) {
           return;
         }
         var coordinate = this['map'].getEventCoordinate(evt.originalEvent);
-        this.snapToGeometry(coordinate, this.line_);
+        this.snapToGeometry_(coordinate, this.line_);
       }, undefined, this);
 
 
@@ -295,8 +295,9 @@ app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
 /**
  * @param {ol.Coordinate} coordinate The current pointer coordinate.
  * @param {ol.geom.Geometry|undefined} geom The geometry to snap to.
+ * @private
  */
-app.ProfileController.prototype.snapToGeometry = function(coordinate, geom) {
+app.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
   var closestPoint = geom.getClosestPoint(coordinate);
   // compute distance to line in pixels
   var dx = closestPoint[0] - coordinate[0];
@@ -307,7 +308,7 @@ app.ProfileController.prototype.snapToGeometry = function(coordinate, geom) {
   // Check whether dist is lower than 8 pixels
   this['profileHighlight'] = pixelDistSqr < 64 ? closestPoint[2] : -1;
 
-  this.scope_.$apply();
+  this.scope_.$digest();
 };
 
 app.module.controller('AppProfileController', app.ProfileController);
