@@ -141,11 +141,7 @@ app.AuthenticationController.prototype.authenticate = function(credentials) {
  */
 app.AuthenticationController.prototype.logout = function() {
   var that = this;
-  var req = {};
-  var config = {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  };
-  this.http_.post(this.logoutUrl_, req, config).success(
+  this.http_.get(this.logoutUrl_).success(
       function(data, status, headers, config) {
         if (status == 200) {
           that.getUserInfo();
