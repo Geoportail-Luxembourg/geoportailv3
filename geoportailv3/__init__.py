@@ -28,6 +28,23 @@ def main(global_config, **settings):
         authentication_policy=create_authentication(settings)
     )
 
+    # overwrite print routes
+    config.add_route(
+        "lux_printproxy_report_create",
+        "/printproxy/report.{format}",
+        request_method="POST"
+    )
+    config.add_route(
+        "lux_printproxy_report_get",
+        "/printproxy/report/{ref}",
+        request_method="GET"
+    )
+    config.add_route(
+        "lux_printproxy_report_cancel",
+        "/printproxy/cancel/{ref}",
+        request_method="DELETE"
+    )
+
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 

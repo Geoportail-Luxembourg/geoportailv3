@@ -396,7 +396,10 @@ app.PrintController.prototype.print = function() {
           'scale': this['scale'],
           'name': this['title'],
           'url': shorturl,
-          'qrimage': this.qrServiceUrl_ + '?url=' + shorturl
+          'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
+          'lang': 'fr',
+          'legend': [{'name':
+                'tour_velo_national'}, {'name': 'tour_velo_national'}]
         });
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise

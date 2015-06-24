@@ -19,7 +19,9 @@ setup(
         'elasticsearch',
         'python-ldap',
         'pyramid_ldap',
-        'qrcode==5.1'
+        'qrcode==5.1',
+        "weasyprint==0.23",
+        "PyPDF2==1.24"
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
