@@ -207,9 +207,9 @@
       (function() {
          var appModule = angular.module('app');
          appModule.constant('langUrls', {
-           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
-           'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
            'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
+           'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
+           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
            'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
          });
 % if proxy_wms_url:

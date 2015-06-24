@@ -12,7 +12,9 @@ goog.provide('app.MainController');
 goog.require('app');
 goog.require('app.ExclusionManager');
 goog.require('app.LayerOpacityManager');
+goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
+goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.VectorOverlay');
 goog.require('app.VectorOverlayMgr');
@@ -38,7 +40,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
- *     manager.
+ * @param {app.LayerPermalinkManager} appLayerPermalinkManager
+ * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
  * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {Object.<string, string>} langUrls URLs to translation files.
@@ -50,8 +53,27 @@ goog.require('ol.tilegrid.WMTS');
  * @ngInject
  */
 app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
-    appExclusionManager, appLayerOpacityManager, appThemes, appVectorOverlayMgr,
-    langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+    appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
+    appStateManager, appThemes, appVectorOverlayMgr, langUrls, maxExtent,
+    defaultExtent, ngeoSyncArrays) {
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $scope;
+
+  /**
+   * @type {ngeo.GetBrowserLanguage}
+   * @private
+   */
+  this.getBrowserLanguage_ = ngeoGetBrowserLanguage;
+
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.stateManager_ = appStateManager;
 
   /**
    * @type {app.Themes}
@@ -164,16 +186,14 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
 
   this.setMap_();
 
-  var browserLanguage =
-      ngeoGetBrowserLanguage(goog.object.getKeys(this.langUrls_));
-
-  this.switchLanguage(browserLanguage);
+  this.initLanguage_();
 
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
   appVectorOverlayMgr.init(this.map_);
+  appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
 
   this.addLocationControl_(appVectorOverlayMgr);
 
@@ -293,6 +313,40 @@ app.MainController.prototype.switchLanguage = function(lang) {
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.initLanguage_ = function() {
+  this.scope_.$watch(goog.bind(function() {
+    return this['lang'];
+  }, this), goog.bind(function(newValue) {
+    this.stateManager_.updateState({
+      'lang': newValue
+    });
+  }, this));
+
+  var browserLanguage = /** @type {string|undefined} */
+      (this.getBrowserLanguage_(goog.object.getKeys(this.langUrls_)));
+  var urlLanguage = /** @type {string|undefined} */
+      (this.stateManager_.getInitialValue('lang'));
+
+  if (goog.isDef(urlLanguage) &&
+      goog.object.containsKey(this.langUrls_, urlLanguage)) {
+    this.switchLanguage(urlLanguage);
+    return;
+  } else if (goog.isDef(browserLanguage) &&
+      goog.object.containsKey(this.langUrls_, browserLanguage)) {
+    this.switchLanguage(browserLanguage);
+    return;
+  } else {
+    // if there is no information about language preference,
+    // fallback to french
+    this.switchLanguage('fr');
+    return;
+  }
 };
 
 
