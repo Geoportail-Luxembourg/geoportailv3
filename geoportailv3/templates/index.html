@@ -140,27 +140,27 @@
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}" ngeo-btn-group>
         <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
-          <a href translate>layers</a>
+          <a href translate>Couches</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
-          <a href translate>my_maps</a>
+          <a href translate>Mes Cartes</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
-          <a href translate>infos</a>
+          <a href translate>Infos</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
-        <li><a href translate>item1</a></li>
-        <li><a href translate>item2</a></li>
-        <li><a href translate>item3</a></li>
+        <li><a href translate>Lien 1</a></li>
+        <li><a href translate>Lien 2</a></li>
+        <li><a href translate>Lien 3</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
         <li class="hidden-xs draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">draw</a>
+          <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <div class="toolbox-panel">The panel for draw tools</div>
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
+          <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
             app-profile-open="mainCtrl.profileOpen"
@@ -168,12 +168,12 @@
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.printOpen">print</a>
+          <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map" app-print-currenttheme="mainCtrl.currentTheme"
             app-print-open="mainCtrl.printOpen"></app-print>
         </li>
         <li class="hidden-xs share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">share</a>
+          <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
           <app-share app-share-active="mainCtrl.shareOpen"></app-share>
         </li>
       </ul>
