@@ -112,7 +112,8 @@
           <div class="container-fluid">
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
-                       app-query-appselector="mainCtrl.infosAppSelector"></app-query>
+                       app-query-appselector="mainCtrl.infosAppSelector"
+                       app-query-Active="mainCtrl.queryActive"></app-query>
             <app-locationinfo app-locationinfo-map="::mainCtrl.map"
                               app-locationinfo-open="mainCtrl.infosOpen"
                               app-locationinfo-appselector="mainCtrl.infosAppSelector">
@@ -162,7 +163,8 @@
           <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">measure</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
-            app-profile-open="mainCtrl.profileOpen">
+            app-profile-open="mainCtrl.profileOpen"
+            app-measure-queryactive="mainCtrl.queryActive">
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">

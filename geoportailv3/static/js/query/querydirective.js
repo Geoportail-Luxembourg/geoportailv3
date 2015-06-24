@@ -21,7 +21,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
     scope: {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
-      'appSelector': '=appQueryAppselector'
+      'appSelector': '=appQueryAppselector',
+      'queryActive': '=appQueryActive'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -190,6 +191,8 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
+        if (!this['queryActive']) return;
+
         if (evt.originalEvent instanceof MouseEvent) {
           this.singleclickEvent_.apply(this, [evt]);
         } else {
@@ -223,20 +226,24 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
-        var pixel = this.map_.getEventPixel(evt.originalEvent);
-        var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
-          if (goog.isDefAndNotNull(layer)) {
-            var metadata = layer.get('metadata');
-            if (goog.isDefAndNotNull(metadata)) {
-              if (goog.isDefAndNotNull(metadata['is_queryable']) &&
-                  metadata['is_queryable']) {
-                return true;
+        if (!this['queryActive']) {
+          this.map_.getTargetElement().style.cursor = '';
+        } else {
+          var pixel = this.map_.getEventPixel(evt.originalEvent);
+          var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
+            if (goog.isDefAndNotNull(layer)) {
+              var metadata = layer.get('metadata');
+              if (goog.isDefAndNotNull(metadata)) {
+                if (goog.isDefAndNotNull(metadata['is_queryable']) &&
+                    metadata['is_queryable']) {
+                  return true;
+                }
               }
             }
-          }
-          return false;
-        });
-        this.map_.getTargetElement().style.cursor = hit ? 'pointer' : '';
+            return false;
+          });
+          this.map_.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        }
       }, false, this);
 };
 

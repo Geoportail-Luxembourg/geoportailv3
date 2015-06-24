@@ -130,6 +130,11 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
   this['userOpen'] = false;
 
   /**
+   * @type {boolean}
+   */
+  this['queryActive'] = true;
+
+  /**
    * @type {string|undefined}
    */
   this['infosAppSelector'] = undefined;
