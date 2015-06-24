@@ -85,7 +85,12 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
     function(ids, themes) {
   var layerIds = ids.reverse();
-  var opacities = this.getStateValue_('opacities').reverse();
+  var opacitiesReturnValue = this.getStateValue_('opacities');
+  var opacities;
+  if (goog.isDef(opacitiesReturnValue) &&
+      opacitiesReturnValue.length === layerIds.length) {
+    opacities = opacitiesReturnValue.reverse();
+  }
   var flatCatalogue = [];
   for (var i = 0; i < themes.length; i++) {
     var theme = themes[i];
@@ -93,17 +98,34 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         app.LayerPermalinkManager.getAllChildren_(theme.children)
     );
   }
+  var addedLayers = this.map_.getLayers().getArray();
   goog.array.forEach(layerIds,
       function(layerId, layerIndex) {
+        /**
+         * @type {ol.layer.Layer}
+         */
+        var layer = null;
         var node = goog.array.find(flatCatalogue, function(catItem) {
           return catItem.id === layerId;
         });
-        var layer = this.getLayerFunc_(node);
-        // set opacity trough metadata to not interfere
-        // with the layer opacity manager service
-        layer.get('metadata')['start_opacity'] =
-            opacities[layerIndex];
-        this.map_.addLayer(layer);
+        if (goog.isDefAndNotNull(node)) {
+          layer = this.getLayerFunc_(node);
+        } else {
+          return;
+        }
+        if (goog.isDef(opacities)) {
+          // set opacity trough metadata to not interfere
+          // with the layer opacity manager service
+          layer.get('metadata')['start_opacity'] =
+              opacities[layerIndex];
+        }
+        // Skip layers that have already been added
+        if (goog.array.every(addedLayers, function(addedLayer) {
+          return addedLayer.get('queryable_id') !==
+              layer.get('queryable_id');
+        }, this)) {
+          this.map_.addLayer(layer);
+        }
       }, this
   );
 };
