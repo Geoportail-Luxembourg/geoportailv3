@@ -362,6 +362,14 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     selected: goog.bind(app.SearchDirectiveController.selected_, this)
   });
 
+  goog.events.listen(this['map'].getLayers(),
+      ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} e Collection event.
+       */
+      function(e) {
+        this.vectorOverlay_.clear();
+      }, undefined, this);
 };
 
 
