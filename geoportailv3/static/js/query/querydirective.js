@@ -267,22 +267,35 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
     }
   }
   if (layersList.length > 0) {
-    var buffer = 10;
-    var ll = ol.proj.transform(
+    var bigBuffer = 20;
+    var smallBuffer = 1;
+
+    var lb = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] - buffer, evt.pixel[1] - buffer]),
+        [evt.pixel[0] - bigBuffer, evt.pixel[1] + bigBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
-    var ur = ol.proj.transform(
+    var rt = ol.proj.transform(
         this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] + buffer, evt.pixel[1] + buffer]),
+        [evt.pixel[0] + bigBuffer, evt.pixel[1] - bigBuffer]),
         this.map_.getView().getProjection(), 'EPSG:2169');
-    var box = ll.concat(ur);
+    var big_box = lb.concat(rt);
+
+    lb = ol.proj.transform(
+        this.map_.getCoordinateFromPixel(
+        [evt.pixel[0] - smallBuffer, evt.pixel[1] + smallBuffer]),
+        this.map_.getView().getProjection(), 'EPSG:2169');
+    rt = ol.proj.transform(
+        this.map_.getCoordinateFromPixel(
+        [evt.pixel[0] + smallBuffer, evt.pixel[1] - smallBuffer]),
+        this.map_.getView().getProjection(), 'EPSG:2169');
+    var small_box = lb.concat(rt);
 
     this.http_.get(
         this.getInfoServiceUrl_,
         {params: {
           'layers': layersList.join(),
-          'box': box.join()
+          'box1': big_box.join(),
+          'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
           goog.array.forEach(resp.data, function(item) {
