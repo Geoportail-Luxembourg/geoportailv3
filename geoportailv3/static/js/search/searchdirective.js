@@ -394,20 +394,43 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
   var results = [];
   var re = {
     'EPSG:2169': {
-      regex: /(\d{4,5})\s*[E]?\W*(\d{4,5})\s*[N]?/,
+      regex: /(\d{4,5})\s*([E|N])?\W*(\d{4,5})\s*([E|N])?/,
       label: 'LUREF'
     },
     'EPSG:4326': {
       regex:
-          /(\d{1,2}[\,\.]\d{4,5})\d*\s?[E]?\W*(\d{1,2}[\,\.]\d{4,5})\d*\s?[N]?/,
+          /(\d{1,2}[\,\.]\d{4,5})\d*\s?(latitude|lat|N|longitude|long|lon|E)?\W*(\d{1,2}[\,\.]\d{4,5})\d*\s?(longitude|long|lon|E|latitude|lat|N)?/,
       label: 'long/lat WGS84'
     }
   };
-  var m;
   for (var epsgCode in re) {
-    if ((m = re[epsgCode].regex.exec(searchString)) !== null) {
-      var easting = parseFloat(m[1]);
-      var northing = parseFloat(m[2]);
+    /**
+     * @type {Array.<string>}
+     */
+    var m = re[epsgCode].regex.exec(searchString);
+    if (goog.isDefAndNotNull(m)) {
+      /**
+       * @type {number}
+       */
+      var easting;
+      /**
+       * @type {number}
+       */
+      var northing;
+      if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
+        if (goog.array.contains(['latitude', 'lat', 'N'], m[2]) &&
+            goog.array.contains(['longitude', 'long', 'lon', 'E'], m[4])) {
+          easting = parseFloat(m[3]);
+          northing = parseFloat(m[1]);
+        } else if (goog.array.contains(['latitude', 'lat', 'N'], m[4]) &&
+            goog.array.contains(['longitude', 'long', 'lon', 'E'], m[2])) {
+          easting = parseFloat(m[1]);
+          northing = parseFloat(m[3]);
+        }
+      } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+        easting = parseFloat(m[1]);
+        northing = parseFloat(m[3]);
+      }
       var point = /** @type {ol.geom.Point} */
           (new ol.geom.Point([easting, northing])
          .transform(epsgCode, 'EPSG:3857'));
