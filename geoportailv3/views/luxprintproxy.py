@@ -50,13 +50,12 @@ import logging
 from cStringIO import StringIO
 
 from pyramid.view import view_config
-from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
 
 from c2cgeoportal.views.printproxy import PrintProxy
-from c2cgeoportal.lib.caching import init_cache_control, get_region
+from c2cgeoportal.lib.caching import NO_CACHE, get_region
 
 log = logging.getLogger(__name__)
 cache_region = get_region()
@@ -132,18 +131,6 @@ class LuxPrintProxy(PrintProxy):
 
         del self.ref_spec[ref]
 
-        headers = dict(resp)
-        if "content-length" in headers:
-            del headers["content-length"]
-        if "transfer-encoding" in headers:
-            del headers["transfer-encoding"]
-        if "content-location" in headers:
-            del headers["content-location"]
-
-        self._add_cors(headers)
-
-        response = Response(
-            content, status=resp.status, headers=headers,
+        return self._build_response(
+            resp, content, NO_CACHE, "print"
         )
-        init_cache_control(self.request, "print")
-        return response
