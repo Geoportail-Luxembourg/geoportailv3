@@ -105,7 +105,7 @@ Responsabilité: Malgré la grande attention qu’elles portent à la justesse d
 Droits d'auteur: Administration du Cadastre et de la Topographie. http://wiki.geoportal.lu/doku.php?id=fr:mcg_1]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="470" y="629" width="10" height="76" backcolor="#FFFFFF" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
+				<reportElement mode="Transparent" x="470" y="601" width="10" height="104" backcolor="#FFFFFF" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
 				<textElement textAlignment="Left" rotation="Left">
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
