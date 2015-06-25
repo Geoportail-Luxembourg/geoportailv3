@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-06-24 14:42+0000\n"
+"PO-Revision-Date: 2015-06-25 08:23+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,46 @@ msgstr "+ Ajouter une couche"
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "<p>Invalid login or password</p>"
 msgstr "Login ou mot de passe invalide"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A0 landscape"
+msgstr "A0 paysage"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A0 portrait"
+msgstr "A0 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A1 landscape"
+msgstr "A1 paysage"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A1 portrait"
+msgstr "A1 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A2 landscape"
+msgstr "A2 paysage"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A2 portrait"
+msgstr "A2 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A3 landscape"
+msgstr "A3 paysage"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A3 portrait"
+msgstr "A3 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A4 landscape"
+msgstr "A4 paysage"
+
+#: geoportailv3/static/js/print/printdirective.js
+msgid "A4 portrait"
+msgstr "A4 portrait"
 
 #: geoportailv3/static/js/print/print.html
 msgid "Abort"
