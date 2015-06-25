@@ -141,7 +141,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms) {
         'LAYERS': layers
       }
     };
-    if (goog.isDef(opt_url) || remoteProxyWms){
+    if (goog.isDef(opt_url) || remoteProxyWms) {
       optSource.crossOrigin = 'anonymous';
     }
     var layer = new ol.layer.Image({
