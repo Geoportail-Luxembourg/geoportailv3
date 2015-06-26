@@ -214,8 +214,10 @@
          });
 % if proxy_wms_url:
          appModule.constant('proxyWmsUrl', "${proxy_wms_url}");
+         appModule.constant('remoteProxyWms', true);
 % else:
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
+         appModule.constant('remoteProxyWms', false);
 % endif
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");

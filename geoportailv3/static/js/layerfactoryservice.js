@@ -115,11 +115,12 @@ app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
 /**
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @param {string} proxyWmsUrl URL to the proxy wms.
+ * @param {boolean} remoteProxyWms is the proxy wms remote or local.
  * @return {app.GetWmsLayer} The getWmsLayer function.
  * @private
  * @ngInject
  */
-app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl) {
+app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms) {
   return getWmsLayer;
 
   /**
@@ -133,16 +134,18 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl) {
   function getWmsLayer(name, layers, imageType, opt_url) {
     var url = goog.isDef(opt_url) ?
         opt_url : proxyWmsUrl;
-    var imageExt = app.getImageExtension_(imageType);
+    var optSource = {
+      url: url,
+      params: {
+        'FORMAT': app.getImageExtension_(imageType),
+        'LAYERS': layers
+      }
+    };
+    if (goog.isDef(opt_url) || remoteProxyWms) {
+      optSource.crossOrigin = 'anonymous';
+    }
     var layer = new ol.layer.Image({
-      source: new ol.source.ImageWMS({
-        crossOrigin: 'anonymous',
-        url: url,
-        params: {
-          'FORMAT': imageExt,
-          'LAYERS': layers
-        }
-      })
+      source: new ol.source.ImageWMS(optSource)
     });
 
     layer.set('label', name);
