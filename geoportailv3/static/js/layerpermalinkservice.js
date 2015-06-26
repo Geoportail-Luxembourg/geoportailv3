@@ -314,7 +314,7 @@ app.LayerPermalinkManager.prototype.init =
                 var opacitiesString =
                     this.stateManager_.getInitialValue('layers_opacity');
                 var visibilitiesString =
-                  this.stateManager_.getInitialValue('layers_visibility');
+                    this.stateManager_.getInitialValue('layers_visibility');
                 if (goog.isDefAndNotNull(opacitiesString) &&
                     goog.isDefAndNotNull(visibilitiesString) &&
                     !goog.string.isEmpty(visibilitiesString) &&
@@ -332,6 +332,11 @@ app.LayerPermalinkManager.prototype.init =
                 }
                 layerIds.reverse();
                 opacities.reverse();
+
+                this.stateManager_.deleteParam('layers_indices');
+                this.stateManager_.deleteParam('layers_opacity');
+                this.stateManager_.deleteParam('layers_visibility');
+
               } else {
                 layerIds = this.getStateValue_('layers');
                 opacities = this.getStateValue_('opacities');

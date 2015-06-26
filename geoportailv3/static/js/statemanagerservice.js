@@ -114,4 +114,15 @@ app.StateManager.prototype.updateState = function(object) {
 };
 
 
+/**
+ * Delete a parameter
+ * @param {string} key
+ */
+app.StateManager.prototype.deleteParam = function(key) {
+  this.ngeoLocation_.deleteParam(key);
+  if (this.localStorage_.isAvailable()) {
+    this.localStorage_.remove(key);
+  }
+};
+
 app.module.service('appStateManager', app.StateManager);
