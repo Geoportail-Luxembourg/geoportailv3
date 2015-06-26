@@ -250,7 +250,8 @@ app.QueryController = function($timeout, $scope, $http,
               var metadata = layer.get('metadata');
               if (goog.isDefAndNotNull(metadata)) {
                 if (goog.isDefAndNotNull(metadata['is_queryable']) &&
-                    metadata['is_queryable']) {
+                    metadata['is_queryable'] &&
+                    layer.getVisible() && layer.getOpacity() > 0) {
                   return true;
                 }
               }
@@ -285,7 +286,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
   for (var i = 0; i < layers.length; i++) {
     var metadata = layers[i].get('metadata');
     if (goog.isDefAndNotNull(metadata)) {
-      if (metadata['is_queryable'] == 'true') {
+      if (metadata['is_queryable'] == 'true' &&
+          layers[i].getVisible() && layers[i].getOpacity() > 0) {
         var queryableId = layers[i].get('queryable_id');
         layersList.push(queryableId);
         layerLabel[queryableId] = layers[i].get('label');
