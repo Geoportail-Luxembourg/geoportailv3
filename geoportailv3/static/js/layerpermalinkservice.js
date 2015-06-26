@@ -58,6 +58,19 @@ app.LayerPermalinkManager =
 
 
 /**
+ * @const
+ * @private
+ */
+app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
+  'webbasemap' : 'basemap_2015_global',
+  'topogr': 'topogr_global',
+  'pixelmaps-gray': 'topo_bw_jpeg',
+  'streets': 'streets_jpeg',
+  'voidlayer': 'blank'
+};
+
+
+/**
  * @param {Array.<ol.layer.Layer>} layers
  * @private
  */
@@ -252,6 +265,11 @@ app.LayerPermalinkManager.prototype.init =
               var stateLayerLabel =
                   this.stateManager_.getInitialValue('bgLayer');
               if (goog.isDefAndNotNull(stateLayerLabel)) {
+                if (this.initialVersion_ === 2) {
+                  stateLayerLabel =
+                      app.LayerPermalinkManager.
+                      V2_BGLAYER_TO_V3_[stateLayerLabel];
+                }
                 var layer = /** @type {ol.layer.Base} */
                     (goog.array.find(bgLayers, function(layer) {
                   return layer.get('label') === stateLayerLabel;
