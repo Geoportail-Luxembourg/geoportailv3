@@ -125,8 +125,7 @@ class Getfeatureinfo(object):
 
                 query_point = query_1 + "ST_Intersects( %(geom)s, "\
                     "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
-                    "%(top)s, 2169) ) AND upper(ST_GeometryType(%(geom)s))"\
-                    " = 'ST_POINT' "\
+                    "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
                     % {'left': coordinates_big_box[0],
                        'bottom': coordinates_big_box[1],
                        'right': coordinates_big_box[2],
@@ -135,8 +134,7 @@ class Getfeatureinfo(object):
 
                 query_others = query_1 + "ST_Intersects( %(geom)s,"\
                     " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
-                    " %(top)s, 2169) ) AND upper(ST_GeometryType(%(geom)s))"\
-                    " != 'ST_POINT' "\
+                    " %(top)s, 2169) ) AND  ST_NRings(%(geom)s) > 0"\
                     % {'left': coordinates_small_box[0],
                        'bottom': coordinates_small_box[1],
                        'right': coordinates_small_box[2],
@@ -209,7 +207,8 @@ class Getfeatureinfo(object):
 
         for feature in features:
             s = asShape(feature['geometry'])
-            if s.geom_type.upper() != 'POINT':
+
+            if s.area > 0:
                 if the_box.intersects(s):
                     features_to_keep.append(feature)
             else:
