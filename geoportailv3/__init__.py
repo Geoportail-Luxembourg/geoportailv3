@@ -97,7 +97,7 @@ def main(global_config, **settings):
     add_interface(config, interface_type=INTERFACE_TYPE_NGEO_CATALOGUE)
 
     config.add_route('getuserinfo', '/getuserinfo')
-    config.add_route('wms', '/wms')
+    config.add_route('wms', '/ogcproxywms')
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')
     config.add_route('getpoitemplate', '/getpoitemplate')
