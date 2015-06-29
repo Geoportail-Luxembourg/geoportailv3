@@ -53,6 +53,7 @@ app.module.directive('appPrint', app.printDirective);
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$timeout} $timeout The Angular $timeout service.
  * @param {angular.$q} $q The Angular $q service.
+ * @param {angularGettext.Catalog} gettextCatalog
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
@@ -63,8 +64,10 @@ app.module.directive('appPrint', app.printDirective);
  * @export
  * @ngInject
  */
-app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
-    ngeoPrintUtils, appThemes, appGetShorturl, printServiceUrl, qrServiceUrl) {
+app.PrintController = function($scope, $timeout, $q, gettextCatalog,
+    ngeoCreatePrint, ngeoPrintUtils, appThemes, appGetShorturl,
+    printServiceUrl, qrServiceUrl) {
+
 
   /**
    * @type {ol.Map}
@@ -130,7 +133,18 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
   /**
    * @type {Array.<string>}
    */
-  this['layouts'] = app.PrintController.LAYOUTS_;
+  this['layouts'] = [
+    gettextCatalog.getString('A4 portrait'),
+    gettextCatalog.getString('A4 landscape'),
+    gettextCatalog.getString('A3 portrait'),
+    gettextCatalog.getString('A3 landscape'),
+    gettextCatalog.getString('A2 portrait'),
+    gettextCatalog.getString('A2 landscape'),
+    gettextCatalog.getString('A1 portrait'),
+    gettextCatalog.getString('A1 landscape'),
+    gettextCatalog.getString('A0 portrait'),
+    gettextCatalog.getString('A0 landscape')
+  ];
 
   /**
    * @type {string}
@@ -220,18 +234,6 @@ app.PrintController = function($scope, $timeout, $q, ngeoCreatePrint,
     this.setScales_();
   }, this));
 };
-
-
-/**
- * @const
- * @type {Array.<string>}
- * @private
- */
-app.PrintController.LAYOUTS_ = [
-  'A4 portrait', 'A4 landscape', 'A3 portrait', 'A3 landscape',
-  'A2 portrait', 'A2 landscape', 'A1 portrait', 'A1 landscape',
-  'A0 portrait', 'A0 landscape'
-];
 
 
 /**
