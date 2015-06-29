@@ -281,12 +281,11 @@ app.LocationinfoController =
 app.LocationinfoController.prototype.showInfoPane_ =
     function(eventOrCoordinate) {
   var clickCoordinate;
-  if (eventOrCoordinate instanceof MouseEvent ||
-      eventOrCoordinate instanceof TouchEvent) {
+  if (eventOrCoordinate instanceof Array) {
+    clickCoordinate = eventOrCoordinate;
+  } else {
     eventOrCoordinate.preventDefault();
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
-  } else {
-    clickCoordinate = eventOrCoordinate;
   }
   this['open'] = true;
   this['appSelector'] = 'locationinfo';
