@@ -51,18 +51,18 @@ app.ScaleselectorController = function($sce) {
    * @const
    */
   this['scales'] = {
-    '8': $sce.trustAsHtml('1&nbsp;:&nbsp;2\'000\'000'),
-    '9': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'000\'000'),
-    '10': $sce.trustAsHtml('1&nbsp;:&nbsp;500\'000'),
-    '11': $sce.trustAsHtml('1&nbsp;:&nbsp;250\'000'),
-    '12': $sce.trustAsHtml('1&nbsp;:&nbsp;150\'000'),
-    '13': $sce.trustAsHtml('1&nbsp;:&nbsp;70\'000'),
-    '14': $sce.trustAsHtml('1&nbsp;:&nbsp;35\'000'),
-    '15': $sce.trustAsHtml('1&nbsp;:&nbsp;15\'000'),
-    '16': $sce.trustAsHtml('1&nbsp;:&nbsp;8\'000'),
-    '17': $sce.trustAsHtml('1&nbsp;:&nbsp;4\'000'),
-    '18': $sce.trustAsHtml('1&nbsp;:&nbsp;2\'000'),
-    '19': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'000')
+    '8': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'500\'000'),
+    '9': $sce.trustAsHtml('1&nbsp;:&nbsp;750\'000'),
+    '10': $sce.trustAsHtml('1&nbsp;:&nbsp;400\'000'),
+    '11': $sce.trustAsHtml('1&nbsp;:&nbsp;200\'000'),
+    '12': $sce.trustAsHtml('1&nbsp;:&nbsp;100\'000'),
+    '13': $sce.trustAsHtml('1&nbsp;:&nbsp;50\'000'),
+    '14': $sce.trustAsHtml('1&nbsp;:&nbsp;25\'000'),
+    '15': $sce.trustAsHtml('1&nbsp;:&nbsp;12\'000'),
+    '16': $sce.trustAsHtml('1&nbsp;:&nbsp;6\'000'),
+    '17': $sce.trustAsHtml('1&nbsp;:&nbsp;3\'000'),
+    '18': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'500'),
+    '19': $sce.trustAsHtml('1&nbsp;:&nbsp;750')
   };
 
   /**
