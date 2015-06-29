@@ -1,15 +1,15 @@
 <div class="ol-control infobar">
-    <div class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
-        <div class="scale-select">
-            <app-scaleselector app-scaleselector-map="::ctrl.map"></app-scaleselector>
-            <app-scaleline app-scaleline-map="::ctrl.map"></app-scaleline>
-        </div>
-        <div class="projection-select hidden-xs hidden-sm">
-            <app-projectionselector app-projectionselector-map="::ctrl.map" ></app-projectionselector>
-        </div>
-        <div class="elevation-service hidden-xs hidden-sm">
-            <app-elevation app-elevation-map="::ctrl.map" app-elevation-active="ctrl.infobarOpen"></app-elevation>
-        </div>
+  <span class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
+    <div class="scale-select">
+      <app-scaleselector app-scaleselector-map="::ctrl.map"></app-scaleselector>
     </div>
-    <button class='infobar-button' ng-click="ctrl.infobarSwitch()"></button>
+    <div class="scaleline-select">
+      <app-scaleline app-scaleline-map="::ctrl.map"></app-scaleline>
+    </div>
+    <app-projectionselector app-projectionselector-map="::ctrl.map" ></app-projectionselector>
+    <div class="elevation-service hidden-xs hidden-sm">
+      <app-elevation app-elevation-map="::ctrl.map" app-elevation-active="ctrl.infobarOpen"></app-elevation>
+    </div>
+  </span>
+  <button class='infobar-button' ng-click="ctrl.infobarSwitch()"></button>
 </div>
