@@ -177,6 +177,11 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
   /**
    * @type {boolean}
    */
+  this['legend'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['printing'] = false;
 
   /**
@@ -417,7 +422,7 @@ app.PrintController.prototype.print = function() {
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': 'fr',
-          'legend': legend
+          'legend': this['legend'] ? legend : null
         });
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise
