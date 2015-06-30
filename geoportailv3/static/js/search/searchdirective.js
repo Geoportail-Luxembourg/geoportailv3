@@ -41,6 +41,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appSearchMap',
+      'language': '=appSearchLanguage',
       'mobileActive': '=appSearchMobileactive'
     },
     controller: 'AppSearchController',
@@ -229,13 +230,25 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   /** @type {Bloodhound} */
   var BackgroundLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
-  $scope.$on('gettextLanguageChanged', goog.bind(function(event, args) {
+  $scope.$watch(goog.bind(function() {
+    return this['language'];
+  }, this), goog.bind(function() {
     this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
     this.createLocalBackgroundLayerData_(
         appThemes, BackgroundLayerBloodhoundEngine, gettextCatalog);
   }, this));
 
+  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+      /**
+     * @param {goog.events.Event} evt Event
+     */
+      function(evt) {
+        this.createLocalAllLayerData_(
+            appThemes, LayerBloodhoundEngine, gettextCatalog);
+        this.createLocalBackgroundLayerData_(
+            appThemes, BackgroundLayerBloodhoundEngine, gettextCatalog);
+      }, undefined, this);
 
   /** @type {TypeaheadOptions} */
   this['options'] = {
@@ -485,8 +498,6 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
  */
 app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
-  bloodhound.clear();
-  this.layers_ = [];
   appThemes.getThemesObject().then(
       goog.bind(function(themes) {
         var dedup = [];
@@ -508,6 +519,8 @@ app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
               return element['id'];
             })
         );
+        bloodhound.clear();
+        this.layers_ = [];
         goog.array.extend(this.layers_, dedup2);
         bloodhound.add(this.layers_);
       }, this)
