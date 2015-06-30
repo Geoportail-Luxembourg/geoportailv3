@@ -111,6 +111,14 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         if (goog.isDefAndNotNull(node)) {
           layer = this.getLayerFunc_(node);
         } else {
+          var layerToRemove =
+              goog.array.find(addedLayers, function(addedLayer) {
+            if (addedLayer.get('queryable_id') === layerId) {
+              return true;
+            }
+            return false;
+          }, this);
+          this.map_.removeLayer(layerToRemove);
           return;
         }
         if (goog.isDef(opacities)) {
