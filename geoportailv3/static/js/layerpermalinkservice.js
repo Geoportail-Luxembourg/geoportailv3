@@ -262,17 +262,25 @@ app.LayerPermalinkManager.prototype.init =
              * @param {Array.<ol.layer.Base>} bgLayers
              */
             function(bgLayers) {
-              var stateLayerLabel =
+              var stateBgLayerLabel =
                   this.stateManager_.getInitialValue('bgLayer');
-              if (goog.isDefAndNotNull(stateLayerLabel)) {
-                if (this.initialVersion_ === 2) {
-                  stateLayerLabel =
+              var stateBgLayerOpacity =
+                  this.stateManager_.getInitialValue('bgOpacity');
+              if (goog.isDefAndNotNull(stateBgLayerLabel) ||
+                  (goog.isDefAndNotNull(stateBgLayerOpacity) &&
+                  parseInt(stateBgLayerOpacity, 0) === 0)) {
+                if (this.initialVersion_ === 2 &&
+                    goog.isDefAndNotNull(stateBgLayerLabel)) {
+                  stateBgLayerLabel =
                       app.LayerPermalinkManager.
-                      V2_BGLAYER_TO_V3_[stateLayerLabel];
+                      V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+                } else if (this.initialVersion_ === 2 &&
+                    parseInt(stateBgLayerOpacity, 0) === 0) {
+                  stateBgLayerLabel = 'orthogr_2013_global';
                 }
                 var layer = /** @type {ol.layer.Base} */
                     (goog.array.find(bgLayers, function(layer) {
-                  return layer.get('label') === stateLayerLabel;
+                  return layer.get('label') === stateBgLayerLabel;
                 }));
                 this.backgroundLayerMgr_.set(this.map_, layer);
               }
@@ -336,6 +344,7 @@ app.LayerPermalinkManager.prototype.init =
                 this.stateManager_.deleteParam('layers_indices');
                 this.stateManager_.deleteParam('layers_opacity');
                 this.stateManager_.deleteParam('layers_visibility');
+                this.stateManager_.deleteParam('bgOpacity');
 
               } else {
                 layerIds = this.getStateValue_('layers');
