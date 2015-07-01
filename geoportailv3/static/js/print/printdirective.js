@@ -6,7 +6,8 @@
  *
  * <app-print app-print-map="::mainCtrl.map"
  *            app-print-open="mainCtrl.printOpen"
- *            app-print-currenttheme="mainCtrl.currentTheme">
+ *            app-print-currenttheme="mainCtrl.currentTheme"
+ *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
 goog.provide('app.printDirective');
@@ -20,6 +21,7 @@ goog.require('goog.events');
 goog.require('ngeo.CreatePrint');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
+goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 
@@ -35,7 +37,8 @@ app.printDirective = function(appPrintTemplateUrl) {
     scope: {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
-      'currentTheme': '=appPrintCurrenttheme'
+      'currentTheme': '=appPrintCurrenttheme',
+      'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
     controllerAs: 'ctrl',
@@ -174,12 +177,23 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
   /**
    * @type {boolean}
    */
+  this['legend'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['printing'] = false;
 
   /**
    * @type {goog.events.Key}
    */
   var postcomposeListenerKey = null;
+
+  /**
+   * @type {Array.<ol.layer.Layer>}
+   * @private
+   */
+  this.layers_ = this['layers'];
 
   /**
    * @type {function(ol.render.Event)}
@@ -387,6 +401,14 @@ app.PrintController.prototype.print = function() {
   var scale = app.PrintController.adjustScale_(map.getView(), this['scale']);
   var layout = this['layout'];
 
+  var legend = [];
+  this.layers_.forEach(function(layer) {
+    var name = layer.get('metadata')['legend_name'];
+    if (goog.isDef(name)) {
+      legend.push({'name': name});
+    }
+  });
+
   this.getShorturl_().then(goog.bind(
       /**
        * @param {string} shorturl The short URL.
@@ -400,8 +422,7 @@ app.PrintController.prototype.print = function() {
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': 'fr',
-          'legend': [{'name':
-                'tour_velo_national'}, {'name': 'tour_velo_national'}]
+          'legend': this['legend'] ? legend : null
         });
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise
