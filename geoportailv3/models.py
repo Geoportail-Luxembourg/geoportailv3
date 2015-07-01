@@ -9,7 +9,7 @@ from c2cgeoportal.models import *  # noqa
 from pyramid.security import Allow, ALL_PERMISSIONS
 from formalchemy import Column
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Integer, Boolean, Unicode
+from sqlalchemy.types import Integer, Boolean, Unicode, String, DateTime
 from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 
 _ = TranslationStringFactory("geoportailv3-server")
@@ -77,3 +77,12 @@ class LuxGetfeatureDefinition(Base):
     attributes_to_remove = Column(Unicode, label=_(u'Attributes to keep'))
     poi_id_collection = Column(Unicode, label=_(u'Id of the poi collection'))
     geometry_column = Column(Unicode, label=_(u'Geometry column name'))
+
+
+class LuxPrintJob(Base):
+    __tablename__ = 'lux_print_job'
+    __table_args__ = {'schema': _schema}
+
+    id = Column(String, primary_key=True)
+    spec = Column(Unicode)
+    creation = Column(DateTime)
