@@ -94,11 +94,6 @@ app.LocationinfoController =
         })];
       });
 
-  /**
-   * @type {boolean}
-   */
-  this['featureOverlayItemExists'] = false;
-
   $scope.$watch(goog.bind(function() {
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
@@ -113,11 +108,9 @@ app.LocationinfoController =
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
       this['appSelector'] = undefined;
-      this['featureOverlayItemExists'] = false;
       this.vectorOverlay_.clear();
     } else if (newVal === true) {
       this.stateManager_.updateState({'crosshair': true});
-      this['featureOverlayItemExists'] = true;
     }
   }, this));
 
@@ -294,7 +287,6 @@ app.LocationinfoController.prototype.showInfoPane_ =
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
   this.vectorOverlay_.clear();
   this.vectorOverlay_.addFeature(feature);
-  this['featureOverlayItemExists'] = true;
   this.getElevation_(clickCoordinate).then(goog.bind(
       function(elevation) {
         this['elevation'] = elevation;
