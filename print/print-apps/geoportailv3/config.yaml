@@ -24,8 +24,9 @@ templates:
         height: 650
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 150
         height: 30
@@ -53,8 +54,9 @@ templates:
         height: 395
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 150
         height: 30
@@ -82,8 +84,9 @@ templates:
         height: 975
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -111,8 +114,9 @@ templates:
         height: 640
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -140,8 +144,9 @@ templates:
         height: 1475
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -169,8 +174,9 @@ templates:
         height: 985
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -198,8 +204,9 @@ templates:
         height: 2175
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -227,8 +234,9 @@ templates:
         height: 1482
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -256,8 +264,9 @@ templates:
         height: 3155
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
@@ -285,8 +294,9 @@ templates:
         height: 2173
       lang: !string {}
       legend: !datasource
-         attributes:
+        attributes:
             name: !string {}
+        default: []
       scalebar: !scalebar
         width: 230
         height: 40
