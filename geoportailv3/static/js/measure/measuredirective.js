@@ -55,7 +55,7 @@ app.module.directive('appMeasure', app.measureDirective);
 
 
 /**
- * @param {angular.Scope} $scope Scope.
+ * @param {!angular.Scope} $scope Scope.
  * @param {angular.$q} $q
  * @param {angular.$http} $http Angular http service.
  * @param {angular.$compile} $compile The compile provider.
