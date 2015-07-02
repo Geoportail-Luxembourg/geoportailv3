@@ -1,5 +1,5 @@
 <div class="container-fluid" ng-show="ctrl.appSelector == 'locationinfo'">
-  <div class="row" ng-show="ctrl.featureOverlayItemExists">
+  <div class="row">
     <div class="col-xs-8">
       <h3 translate>Short Url</h3>
       <input onclick="this.select();" type="text" class="form-control" name="shorturl" ng-model="ctrl.url" readonly="readonly" />
@@ -8,7 +8,7 @@
       <img class="img-responsive" style="margin-top: 22px;" src="{{ ctrl.qrUrl }}"></img>
     </div>
   </div>
-  <div class="row" ng-show="ctrl.featureOverlayItemExists">
+  <div class="row">
     <div class="col-xs-12">
       <h3 translate>Location Coordinates</h3>
       <table class="table-condensed">
