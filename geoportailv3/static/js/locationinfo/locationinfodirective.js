@@ -112,8 +112,9 @@ app.LocationinfoController =
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
       this['appSelector'] = undefined;
+      this.coordinate_ = null;
       this.vectorOverlay_.clear();
-    } else if (newVal === true) {
+    } else if (newVal === true && goog.isDefAndNotNull(this.coordinate_)) {
       this.stateManager_.updateState({'crosshair': true});
     }
   }, this));
@@ -165,9 +166,10 @@ app.LocationinfoController =
   };
 
   /**
-   * @type {ol.Coordinate|undefined}
+   * @type {ol.Coordinate}
+   * @private
    */
-  this['coordinate'] = undefined;
+  this.coordinate_ = null;
 
   /**
    * @type {Object}
@@ -187,19 +189,19 @@ app.LocationinfoController =
   this.scope_ = $scope;
 
   $scope.$watch(goog.bind(function() {
-    return this['coordinate'];
+    return this.coordinate_;
   }, this), goog.bind(function(newVal) {
-    if (goog.isDef(newVal)) {
+    if (goog.isDefAndNotNull(newVal)) {
       this['location'] = {};
       goog.object.forEach(this.projections_, function(value, key) {
         var sourceEpsgCode = this['map'].getView().getProjection().getCode();
         if (key === 'EPSG:4326:DMS') {
           var epsgCode = goog.string.remove(key, ':DMS');
           this['location'][value] = this.coordinateString_(
-              this['coordinate'], sourceEpsgCode, epsgCode, true);
+              this.coordinate_, sourceEpsgCode, epsgCode, true);
         } else {
           this['location'][value] = this.coordinateString_(
-              this['coordinate'], sourceEpsgCode, key);
+              this.coordinate_, sourceEpsgCode, key);
         }
       }, this);
     }
@@ -297,7 +299,7 @@ app.LocationinfoController.prototype.showInfoPane_ =
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   }
   this['appSelector'] = 'locationinfo';
-  this['coordinate'] = clickCoordinate;
+  this.coordinate_ = clickCoordinate;
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
   this.vectorOverlay_.clear();
