@@ -111,6 +111,13 @@ app.LocationinfoController =
     }
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
+      var mapCenterCoordinate = this['map'].getView().getCenter();
+      if (goog.isDefAndNotNull(mapCenterCoordinate)) {
+        this.stateManager_.updateState({
+          'X': parseInt(mapCenterCoordinate[0], 0),
+          'Y': parseInt(mapCenterCoordinate[1], 0)
+        });
+      }
       this['appSelector'] = undefined;
       this.coordinate_ = null;
       this.vectorOverlay_.clear();
