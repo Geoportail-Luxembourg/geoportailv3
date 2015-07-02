@@ -304,6 +304,7 @@ app.LocationinfoController.prototype.showInfoPane_ =
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   }
   this['appSelector'] = 'locationinfo';
+  this.stateManager_.updateState({'crosshair': true});
   this.coordinate_ = clickCoordinate;
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
