@@ -59,9 +59,11 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
     var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
     var metadataUid = localMetadata['metadata_id'];
+    var legend_name = ('legend_name' in localMetadata) ?
+        localMetadata['legend_name'] : '';
     popup.setTitle(title);
     var currentLanguage = gettextCatalog.currentLanguage;
-    var promiseKey = metadataUid + '##' + currentLanguage;
+    var promiseKey = metadataUid + '##' + currentLanguage + '##' + legend_name;
 
     if (!(promiseKey in promises_)) {
       promises_[promiseKey] = $http.jsonp(
