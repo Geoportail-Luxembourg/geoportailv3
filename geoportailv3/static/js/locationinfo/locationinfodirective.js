@@ -121,8 +121,6 @@ app.LocationinfoController =
       this['appSelector'] = undefined;
       this.coordinate_ = null;
       this.vectorOverlay_.clear();
-    } else if (newVal === true && goog.isDefAndNotNull(this.coordinate_)) {
-      this.stateManager_.updateState({'crosshair': true});
     }
   }, this));
 
