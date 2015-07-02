@@ -58,6 +58,19 @@ app.LayerPermalinkManager =
 
 
 /**
+ * @const
+ * @private
+ */
+app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
+  'webbasemap' : 'basemap_2015_global',
+  'topogr': 'topogr_global',
+  'pixelmaps-gray': 'topo_bw_jpeg',
+  'streets': 'streets_jpeg',
+  'voidlayer': 'blank'
+};
+
+
+/**
  * @param {Array.<ol.layer.Layer>} layers
  * @private
  */
@@ -78,26 +91,15 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
 
 
 /**
- * @param {Array.<number>} ids
- * @param {Array.<Object>} themes
+ * @param {Array.<number>} layerIds
+ * @param {Array.<number>} opacities
+ * @param {Array.<Object>} flatCatalogue
  * @private
  */
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
-    function(ids, themes) {
-  var layerIds = ids.reverse();
-  var opacitiesReturnValue = this.getStateValue_('opacities');
-  var opacities;
-  if (goog.isDef(opacitiesReturnValue) &&
-      opacitiesReturnValue.length === layerIds.length) {
-    opacities = opacitiesReturnValue.reverse();
-  }
-  var flatCatalogue = [];
-  for (var i = 0; i < themes.length; i++) {
-    var theme = themes[i];
-    goog.array.extend(flatCatalogue,
-        app.LayerPermalinkManager.getAllChildren_(theme.children)
-    );
-  }
+    function(layerIds, opacities, flatCatalogue) {
+  layerIds.reverse();
+  opacities.reverse();
   var addedLayers = this.map_.getLayers().getArray();
   goog.array.forEach(layerIds,
       function(layerId, layerIndex) {
@@ -251,8 +253,11 @@ app.LayerPermalinkManager.prototype.init =
    */
   this.map_ = map;
 
-  var layerIds = /** @type {Array.<number>} */
-      (this.getStateValue_('layers'));
+  /**
+   * @type {number}
+   * @private
+   */
+  this.initialVersion_ = this.stateManager_.getVersion();
 
   // Wait for themes to load before adding layers from state
   goog.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
@@ -265,12 +270,25 @@ app.LayerPermalinkManager.prototype.init =
              * @param {Array.<ol.layer.Base>} bgLayers
              */
             function(bgLayers) {
-              var stateLayerLabel =
+              var stateBgLayerLabel =
                   this.stateManager_.getInitialValue('bgLayer');
-              if (goog.isDefAndNotNull(stateLayerLabel)) {
+              var stateBgLayerOpacity =
+                  this.stateManager_.getInitialValue('bgOpacity');
+              if (goog.isDefAndNotNull(stateBgLayerLabel) ||
+                  (goog.isDefAndNotNull(stateBgLayerOpacity) &&
+                  parseInt(stateBgLayerOpacity, 0) === 0)) {
+                if (this.initialVersion_ === 2 &&
+                    goog.isDefAndNotNull(stateBgLayerLabel)) {
+                  stateBgLayerLabel =
+                      app.LayerPermalinkManager.
+                      V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+                } else if (this.initialVersion_ === 2 &&
+                    parseInt(stateBgLayerOpacity, 0) === 0) {
+                  stateBgLayerLabel = 'orthogr_2013_global';
+                }
                 var layer = /** @type {ol.layer.Base} */
                     (goog.array.find(bgLayers, function(layer) {
-                  return layer.get('label') === stateLayerLabel;
+                  return layer.get('label') === stateBgLayerLabel;
                 }));
                 this.backgroundLayerMgr_.set(this.map_, layer);
               }
@@ -278,8 +296,71 @@ app.LayerPermalinkManager.prototype.init =
 
         this.appThemes_.getThemesObject().then(
             goog.bind(function(themes) {
-              if (goog.isDef(layerIds)) {
-                this.applyLayerStateToMap_(layerIds, themes);
+              var flatCatalogue = [];
+              for (var i = 0; i < themes.length; i++) {
+                var theme = themes[i];
+                goog.array.extend(flatCatalogue,
+                    app.LayerPermalinkManager.getAllChildren_(theme.children)
+                );
+              }
+
+              /**
+               * @type {Array.<number>|undefined}
+               */
+              var layerIds = [];
+              /**
+               * @type {Array.<number>|undefined}
+               */
+              var opacities = [];
+
+              if (this.initialVersion_ === 2) {
+                var layerString = this.stateManager_.getInitialValue('layers');
+                if (goog.isDefAndNotNull(layerString) &&
+                    !goog.string.isEmpty(layerString)) {
+                  var layers = layerString.split(',');
+                  goog.array.forEach(layers,
+                      function(stateLayerLabel) {
+                        var layer = goog.array.find(flatCatalogue,
+                            function(catalogueLayer) {
+                              return catalogueLayer['name'] === stateLayerLabel;
+                            }, this);
+                        layerIds.push(layer['id']);
+                      }, this);
+                }
+                var opacitiesString =
+                    this.stateManager_.getInitialValue('layers_opacity');
+                var visibilitiesString =
+                    this.stateManager_.getInitialValue('layers_visibility');
+                if (goog.isDefAndNotNull(opacitiesString) &&
+                    goog.isDefAndNotNull(visibilitiesString) &&
+                    !goog.string.isEmpty(visibilitiesString) &&
+                    !goog.string.isEmpty(opacitiesString)) {
+                  var visibilities = visibilitiesString.split(',');
+                  goog.array.forEach(
+                      opacitiesString.split(','),
+                      function(opacity, index) {
+                        if (visibilities[index] === 'true') {
+                          opacities.push(parseFloat(opacity));
+                        } else {
+                          opacities.push(0);
+                        }
+                      });
+                }
+                layerIds.reverse();
+                opacities.reverse();
+
+                this.stateManager_.deleteParam('layers_indices');
+                this.stateManager_.deleteParam('layers_opacity');
+                this.stateManager_.deleteParam('layers_visibility');
+                this.stateManager_.deleteParam('bgOpacity');
+
+              } else {
+                layerIds = this.getStateValue_('layers');
+                opacities = this.getStateValue_('opacities');
+              }
+              if (goog.isDef(layerIds) && goog.isDef(opacities) &&
+                  layerIds.length > 0 && layerIds.length === opacities.length) {
+                this.applyLayerStateToMap_(layerIds, opacities, flatCatalogue);
               }
               this.setupWatchers_(selectedLayers);
             }, this));

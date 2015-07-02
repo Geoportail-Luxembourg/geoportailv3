@@ -95,23 +95,24 @@ app.MapController = function(appStateManager, ngeoDebounce) {
 
 
 /**
- * FIXME we don't have a view zoom for url zoom 11.
  * @const
  * @private
  */
 app.MapController.V2_ZOOM_TO_V3_ZOOM_ = {
-  '0': 9,
-  '1': 10,
-  '2': 11,
-  '3': 12,
-  '4': 13,
-  '5': 14,
-  '6': 15,
-  '7': 16,
-  '8': 17,
-  '9': 18,
-  '10': 19,
-  '11': 19
+  '0': 8,
+  '1': 9,
+  '2': 9,
+  '3': 10,
+  '4': 11,
+  '5': 12,
+  '6': 13,
+  '7': 14,
+  '8': 16,
+  '9': 17,
+  '10': 18,
+  '11': 19,
+  '12': 19,
+  '13': 19
 };
 
 
