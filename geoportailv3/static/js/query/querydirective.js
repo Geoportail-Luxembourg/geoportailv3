@@ -332,7 +332,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
 
           this.clearQueryResult_(this.QUERYPANEL_);
           this['content'] = resp.data;
-          this['infoOpen'] = true;
+          if (resp.data.length > 0) this['infoOpen'] = true;
+          else this['infoOpen'] = false;
           this.lastHighlightedFeatures_ = [];
           for (var i = 0; i < resp.data.length; i++) {
             this.lastHighlightedFeatures_.push.apply(
