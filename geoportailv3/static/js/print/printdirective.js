@@ -422,7 +422,7 @@ app.PrintController.prototype.print = function() {
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': 'fr',
-          'legend': this['legend'] ? legend : null
+          'legend': this['legend'] ? legend : []
         });
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise
