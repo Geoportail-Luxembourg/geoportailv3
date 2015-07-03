@@ -42,6 +42,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope
  * @param {angular.$timeout} $timeout
+ * @param {angular.$animate} $animate Angular animate service.
  * @param {app.GetShorturl} appGetShorturl
  * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
@@ -52,7 +53,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @ngInject
  */
 app.LocationinfoController =
-    function($scope, $timeout, appGetShorturl, appGetElevation, 
+    function($scope, $timeout, $animate, appGetShorturl, appGetElevation,
         appCoordinateString, appStateManager, appVectorOverlayMgr,
         qrServiceUrl, appLocationinfoTemplateUrl) {
 
@@ -104,7 +105,10 @@ app.LocationinfoController =
 
   $scope.$watch(goog.bind(function() {
     return this['open'];
-  }, this), goog.bind(function(newVal) {
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal == oldVal) {
+      return;
+    }
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
       this['appSelector'] = undefined;
@@ -176,6 +180,12 @@ app.LocationinfoController =
    */
   this.stateManager_ = appStateManager;
 
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $scope;
+
   $scope.$watch(goog.bind(function() {
     return this['coordinate'];
   }, this), goog.bind(function(newVal) {
@@ -206,6 +216,12 @@ app.LocationinfoController =
    * @private
    */
   this.$timeout_ = $timeout;
+
+  /**
+   * @type {angular.$animate}
+   * @private
+   */
+  this.$animate_ = $animate;
 
   /**
    * @type {Object<number, number>}
@@ -280,7 +296,6 @@ app.LocationinfoController.prototype.showInfoPane_ =
     eventOrCoordinate.preventDefault();
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   }
-  this['open'] = true;
   this['appSelector'] = 'locationinfo';
   this['coordinate'] = clickCoordinate;
   var feature = /** @type {ol.Feature} */
@@ -298,6 +313,22 @@ app.LocationinfoController.prototype.showInfoPane_ =
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
       }, this));
 
+  // we need to wait for angular to be ready to manage animations
+  var dereg = this.scope_.$watch(goog.bind(function() {
+    return this.$animate_.enabled();
+  }, this), goog.bind(function(newVal) {
+    if (newVal) {
+      // Using timeout here ensures that 'open' has already been set and that
+      // the new value used within the ngClass directive will fire $animate
+      // events correctly.
+      // Note: for an unknown reason, $scope.$applyAsync doesn't do the job
+      // even if it would be more elegant
+      this.$timeout_(goog.bind(function() {
+        this['open'] = true;
+      }, this), 0);
+      dereg();
+    }
+  }, this));
 };
 
 
