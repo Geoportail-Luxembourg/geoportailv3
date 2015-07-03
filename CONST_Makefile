@@ -77,20 +77,19 @@ GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 # ngeo
 OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
 NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
-NGEO_JS_LIBS_FILES += \
-		node_modules/jquery/dist/jquery.min.js \
-		node_modules/angular/angular.min.js \
-		node_modules/angular-gettext/dist/angular-gettext.min.js \
-		node_modules/bootstrap/dist/js/bootstrap.min.js \
-		node_modules/proj4/dist/proj4.js \
-		node_modules/d3/d3.min.js \
-		node_modules/typeahead.js/dist/typeahead.bundle.min.js
-NGEO_JS_LIBS_POST_FILES ?=
 APP_JS_FILES = $(shell find $(PACKAGE)/static/js -type f -name '*.js')
 APP_HTML_FILES = $(shell find $(PACKAGE)/templates -type f -name '*.html')
 APP_PARTIALS_FILES := $(shell find $(PACKAGE)/static/js -type f -name '*.html')
 LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.less' 2> /dev/null)
 JSON_CLIENT_LOCALISATION_FILES = $(addprefix $(OUTPUT_DIR)/locale/, $(addsuffix /$(PACKAGE).json, $(LANGUAGES)))
+NGEO_LIBS_JS_FILES += \
+	node_modules/jquery/dist/jquery.min.js \
+	node_modules/angular/angular.min.js \
+	node_modules/angular-gettext/dist/angular-gettext.min.js \
+	node_modules/bootstrap/dist/js/bootstrap.min.js \
+	node_modules/proj4/dist/proj4.js \
+	node_modules/d3/d3.min.js \
+	node_modules/typeahead.js/dist/typeahead.bundle.min.js
 
 # CGXP
 JSBUILD_MAIN_FILES = $(shell find $(PACKAGE)/static/lib/cgxp $(PACKAGE)/static/js -name "*.js" -print 2> /dev/null)
@@ -104,7 +103,7 @@ JSBUILD_ARGS = $(if ifeq($(DEVELOPMENT), ‘TRUE’),-u,)
 ifeq ($(DEVELOPMENT), FALSE)
 	CSSMIN_ARGS += --compress
 endif
-CSS_BASE_FILES += \
+DEFAULT_CSS_BASE_FILES += \
 	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/ext-all.css \
 	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css \
 	$(PACKAGE)/static/lib/cgxp/openlayers/theme/default/style.css \
@@ -120,14 +119,24 @@ CSS_BASE_FILES += \
 	$(PACKAGE)/static/css/proj.css \
 	$(PACKAGE)/static/css/proj-map.css \
 	$(PACKAGE)/static/css/proj-widgets.css
+ifdef CSS_BASE_FILES
+CSS_BASE_FILES := $(DEFAULT_CSS_BASE_FILES) $(CSS_BASE_FILES)
+else
+CSS_BASE_FILES := $(DEFAULT_CSS_BASE_FILES)
+endif
 CSS_BASE_OUTPUT = $(OUTPUT_DIR)/app.css
 
-CSS_API_FILES += \
+DEFAULT_CSS_API_FILES += \
 	$(PACKAGE)/static/lib/cgxp/openlayers/theme/default/style.css \
 	$(PACKAGE)/static/css/proj-map.css
+ifdef CSS_API_FILES
+CSS_API_FILES := $(DEFAULT_CSS_API_FILES) $(CSS_API_FILES)
+else
+CSS_API_FILES := $(DEFAULT_CSS_API_FILES)
+endif
 CSS_API_OUTPUT = $(OUTPUT_DIR)/api.css
 
-CSS_XAPI_FILES += \
+DEFAULT_CSS_XAPI_FILES += \
 	$(PACKAGE)/static/lib/cgxp/core/src/theme/reset.css \
 	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/editor.css \
 	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/pivotgrid.css \
@@ -188,6 +197,11 @@ CSS_XAPI_FILES += \
 	$(PACKAGE)/static/lib/cgxp/core/src/theme/all.css \
 	$(PACKAGE)/static/css/proj-map.css \
 	$(PACKAGE)/static/css/proj-widgets.css
+ifdef CSS_XAPI_FILES
+CSS_XAPI_FILES := $(DEFAULT_CSS_XAPI_FILES) $(CSS_XAPI_FILES)
+else
+CSS_XAPI_FILES := $(DEFAULT_CSS_XAPI_FILES)
+endif
 CSS_XAPI_OUTPUT = $(OUTPUT_DIR)/xapi.css
 
 VALIDATE_PY_FOLDERS = $(PACKAGE)/*.py $(PACKAGE)/lib $(PACKAGE)/scripts $(PACKAGE)/views
@@ -200,7 +214,7 @@ SENCHA_CMD ?= sencha-cmd
 JSBUILD_MOBILE_CONFIG = jsbuild/mobile.cfg
 JSBUILD_MOBILE_OUTPUT_DIR = $(PACKAGE)/static/mobile/
 JSBUILD_MOBILE_OUTPUT_FILES = $(addprefix $(JSBUILD_MOBILE_OUTPUT_DIR), openlayers-mobile.js)
-MOBILE_APP_JS_FILES = $(PACKAGE)/static/mobile/config.js $(PACKAGE)/static/mobile/app.js $(shell find $(PACKAGE)/static/mobile/app -type f -name '*.js')
+MOBILE_APP_JS_FILES = $(PACKAGE)/static/mobile/config.js $(PACKAGE)/static/mobile/app.js $(shell find $(PACKAGE)/static/mobile/app -type f -name '*.js' 2> /dev/null)
 
 # Documentation
 SPHINX_FILES = $(shell find doc -name "*.rst" -print)
@@ -256,7 +270,9 @@ TEMPLATES_FILES = $(shell find $(PACKAGE)/templates -type f -print)
 
 # Templates
 TEMPLATE_EXCLUDE += .build print/templates \
-	CONST_alembic/main/script.py.mako CONST_alembic/static/script.py.mako
+	CONST_alembic/main/script.py.mako \
+	CONST_alembic/static/script.py.mako \
+	$(PACKAGE)/static/lib
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
 TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print)
 MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print)
@@ -279,36 +295,36 @@ MAKE_FILES = $(shell ls -1 *.mk) CONST_Makefile
 
 .PHONY: help
 help:
-	@echo "Usage: make <target>"
+	@echo  "Usage: make <target>"
 	@echo
-	@echo "Main targets:"
+	@echo  "Main targets:"
 	@echo
-	@echo "- build			Build and configure the project"
-	@echo "- checks			Perform a number of checks on the code"
-	@echo "- serve			Run the development server (Pserve)"
-	@echo "- clean			Remove generated files"
-	@echo "- cleanall		Remove all the build artefacts"
+	@echo  "- build			Build and configure the project"
+	@echo  "- checks		Perform a number of checks on the code"
+	@echo  "- serve			Run the development server (Pserve)"
+	@echo  "- clean			Remove generated files"
+	@echo  "- cleanall		Remove all the build artefacts"
 	@echo
 	@echo "Utility targets:"
 	@echo
-	@echo "- update			Update the project (Git, Node, Pip)"
-	@echo "- update-git-submodules	Update the Git submodules"
-	@echo "- update-node-modules	Update node modules (using --force)"
+	@echo  "- update		Update the project (Git, Node, Pip)"
+	@echo  "- update-git-submodules	Update the Git submodules"
+	@echo  "- update-node-modules	Update node modules (using --force)"
 ifdef UTILITY_HELP
 	@echo $(UTILITY_HELP)
 endif
 	@echo
-	@echo "Secondary targets:"
+	@echo  "Secondary targets:"
 	@echo
-	@echo "- build-cgxp		Build the javascript and the css for cgxp"
-	@echo "- build-ngeo		Build the javascript and the css for ngeo"
-	@echo "- build-server		Build the files required by the server"
-	@echo "- compile-js-catalog	Compile the Angular translation catalog"
-	@echo "- compile-py-catalog	Compile the Python translation catalog"
-	@echo "- flake8			Run Flake8 checker on the Python code"
-	@echo "- lint-ngeo		Check the JavaScript code with linters for ngeo"
-	@echo "- template-clean	 	Clean the template file"
-	@echo "- template-generate	Generate the template file"
+	@echo  "- build-cgxp		Build the javascript and the css for cgxp"
+	@echo  "- build-ngeo		Build the javascript and the css for ngeo"
+	@echo  "- build-server		Build the files required by the server"
+	@echo  "- compile-js-catalog	Compile the Angular translation catalog"
+	@echo  "- compile-py-catalog	Compile the Python translation catalog"
+	@echo  "- flake8		Run Flake8 checker on the Python code"
+	@echo  "- lint-ngeo		Check the JavaScript code with linters for ngeo"
+	@echo  "- template-clean	Clean the template file"
+	@echo  "- template-generate	Generate the template file"
 ifdef SECONDARY_HELP
 	@echo $(SECONDARY_HELP)
 endif
@@ -465,9 +481,9 @@ $(PACKAGE)/locale/%/LC_MESSAGES/%/$(PACKAGE)-client.po: $(PACKAGE)/locale/$(PACK
 	touch $@
 	msgmerge --update $@ $<
 
-$(OUTPUT_DIR)/build.js: .build/node_modules.timestamp .build/build.js $(NGEO_JS_LIBS_FILES) $(NGEO_JS_LIBS_POST_FILES)
+$(OUTPUT_DIR)/build.js: .build/node_modules.timestamp .build/build.js $(NGEO_LIBS_JS_FILES) $(NGEO_PROJECT_LIBS_JS_FILES)
 	mkdir -p $(dir $@)
-	awk 'FNR==1{print ""}1' $(NGEO_JS_LIBS_FILES) $(NGEO_JS_LIBS_POST_FILES) .build/build.js > $@
+	awk 'FNR==1{print ""}1' $(NGEO_LIBS_JS_FILES) $(NGEO_PROJECT_LIBS_JS_FILES) .build/build.js > $@
 	sed -i '/^\/\/# sourceMappingURL=.*\.map$$/d' $@
 
 $(OUTPUT_DIR)/build.min.css: $(LESS_FILES) .build/node_modules.timestamp
@@ -673,14 +689,26 @@ $(VENV_BIN)/flake8: .build/dev-requirements.timestamp
 print: $(PRINT_OUTPUT)/$(PRINT_WAR)
 
 $(PRINT_OUTPUT)/$(PRINT_WAR): $(PRINT_REQUIREMENT)
+ifeq ($(VENV_BIN), .build/venv/bin)
 	cp $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) $(PRINT_TMP)/$(PRINT_WAR)
 	cd $(PRINT_BASE_DIR) && jar -uf $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_INPUT)
 	chmod g+r,o+r $(PRINT_TMP)/$(PRINT_WAR)
+else
+	mkdir -p $(PRINT_BASE_DIR)/$(PRINT_TMP)
+	cp $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) $(PRINT_BASE_DIR)/$(PRINT_TMP)/$(PRINT_WAR)
+	cd $(PRINT_BASE_DIR) && jar -uf $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_INPUT)
+endif
+
 ifneq ($(TOMCAT_STOP_COMMAND),)
 	$(TOMCAT_STOP_COMMAND)
 endif
 	rm -rf $(PRINT_OUTPUT)/$(PRINT_WAR:.war=)
-	mv /tmp/$(PRINT_WAR) $(PRINT_OUTPUT)
+ifeq ($(VENV_BIN), .build/venv/bin)
+	mv $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_OUTPUT)
+else
+	mv $(PRINT_BASE_DIR)/$(PRINT_TMP)/$(PRINT_WAR) $(PRINT_OUTPUT)
+	cd $(PRINT_BASE_DIR) && rm -fd $(PRINT_TMP)
+endif
 ifneq ($(TOMCAT_START_COMMAND),)
 	$(TOMCAT_START_COMMAND)
 endif

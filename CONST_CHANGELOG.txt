@@ -108,27 +108,27 @@ Version 1.6
     +     return url + "?${"&".join(["%s=%s" % p for p in version_params.items()]) | }";
     + },
 
-9. In the `geoportailv3/templates/*.js`, `geoportailv3/templates/api/*.js`,
+8. In the `geoportailv3/templates/*.js`, `geoportailv3/templates/api/*.js`,
     `geoportailv3/static/mobile/config.js`, `geoportailv3/static/mobile/index.html`
     files add ` | n` after all the `static_url` and `route_url` call, like:
     - "${request.static_url('...')}"
     + "${request.static_url('...') | n}"
 
-10. In the `geoportailv3/templates/edit.js` file
+9. In the `geoportailv3/templates/edit.js` file
     add the following attribute to the `cgxp_editing` plugin:
     + metadataParams: ${dumps(version_role_params) | n}
 
-11. In the mapfile add the following lines to all restricted layers:
+10. In the mapfile add the following lines to all restricted layers:
 
     VALIDATION
         ${mapserver_layer_validation}
     END
 
-12. Remove the deprecated versioning table:
+11. Remove the deprecated versioning table:
 
     sudo -u postgres psql -c "DROP TABLE version_<schema>" <database>
 
-13. For non Apt/Dpkg based OS, disable the package checking:
+12. For non Apt/Dpkg based OS, disable the package checking:
     In the ``buildout.cfg`` section ``[buildout]`` add:
 
         parts -=
@@ -136,11 +136,11 @@ Version 1.6
             test-packages-mobile
             test-packages-tilecloud-chain
 
-14. In the `geoportailv3/static/mobile/config.js` add the following line at the top of the file:
+13. In the `geoportailv3/static/mobile/config.js` add the following line at the top of the file:
 
     +OpenLayers.ImgPath = "${request.static_url('geoportailv3:static/lib/cgxp/core/src/theme/img/ol/')}";
 
-15. Move the `jsbuild/app.cfg` file to `jsbuild/app.cfg.mako`.
+14. Move the `jsbuild/app.cfg` file to `jsbuild/app.cfg.mako`.
 
     Add the following lines in the start of the file:
         <%
@@ -180,29 +180,47 @@ Version 1.6
         root =
             ${"\n    ".join(root)}
 
-16. Remove your Apache configuration file, probably in
+15. Remove your Apache configuration file, probably in
     `/var/www/vhost/geoportailv3/conf`. Now it will be automatically created.
 
-17. Notes on database changes:
+16. Notes on database changes:
     * In prevision of GeoMapFish 2.0 some tables were added and some fields updated.
     * Table ``user`` has been moved to schema ``main_static`` in order to store all
       data modified by the web application in the same schema.
       As a result the passwords no longer need to be synchronised among the various instances
       of the application and the password replication tool has been removed.
 
-18. Add at the end of the `deploy/hooks/post-restore-database.mako` file the following line:
+17. Add at the end of the `deploy/hooks/post-restore-database.mako` file the following line:
 
     + .build/venv/bin/alembic -c alembic_static.ini upgrade head
 
 18. In your `apache/wsgi.conf.mako` or `apache/wsgi.conf.in` file replace all the
     `apache-entry-point` by `apache_entry_point`
 
-19. In the `geoportailv3/subscribers.py`, `geoportailv3/model.py`, `geoportailv3/form.py` do the following changes:
+19. In your `apache/frontend.conf.mako` or `apache/frontend.conf.in` file in the
+    `<LocationMatch /${instanceid}/wsgi/>` section,
+    add the following  mimetypes to the existing list:
+
+    ... application/vnd.ogc.wms_xml application/vnd.ogc.gml application/vnd.ogc.se_xml
+
+    and in the `<LocationMatch /${vars:instanceid}/tiles/>` section,
+    add the following lines:
+
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/x-javascript text/javascript application/javascript application/xml
+    Header add Access-Control-Allow-Headers "X-Requested-With, Content-Type"
+
+20. In the `geoportailv3/subscribers.py`, `geoportailv3/model.py`, `geoportailv3/form.py` files do the following changes:
 
     -... = TranslationStringFactory('geoportailv3')
     +... = TranslationStringFactory("geoportailv3-server")
 
-20. Add the `print_spec` in the `checker` config `vars_geoportailv3.yaml` file:
+21. In the `geoportailv3/subscribers.py` file do the following change:
+
+    - return localizer.translate(tsf2(localizer.translate(tsf1(string))))
+    + result = localizer.translate(tsf1(string))
+    + return localizer.translate(tsf2(string)) if result == string else result
+
+22. Add the `print_spec` in the `checker` config `vars_geoportailv3.yaml` file:
 
     checker:
         ...
@@ -223,7 +241,7 @@ Version 1.6
                     layers: []
                 legend: {}
 
-21. Remove the deprecated files:
+23. Remove the deprecated files:
 
     git rm -r geoportailv3/CONST_migration
     git rm -r geoportailv3/static/build
