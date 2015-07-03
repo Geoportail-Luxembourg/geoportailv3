@@ -47,7 +47,7 @@ header {
   bottom: 100%;
   white-space: nowrap;
 
-  li {
+  > li {
     display: block;
     float: left;
     > a {
@@ -110,17 +110,17 @@ header {
   line-height: 17px;
 }
 
-.toolbox-panel li > a {
+.toolbox-panel > li > a {
   width: @icon-width;
   line-height: @icon-width;
   width: 62px;
 }
 
-.toolbox-panel-bottom li > a {
+.toolbox-panel-bottom > li > a {
   margin-right: 1px;
 }
 
-.toolbox-panel-top li > a {
+.toolbox-panel-top > li > a {
   margin-left: 1px;
 }
 
@@ -139,22 +139,6 @@ header {
   }
 }
 
-
-
-.print-panel{
-  .btn {
-    min-width: 120px;
-  }
-  li {
-    float: none;
-    > a {
-      padding: 3px 20px;
-      line-height: inherit;
-      width: inherit;
-      text-align: left;
-    }
-  }
-}
 .lang .toolbox-panel {
   /* 4 languages */
   width: 4 * @icon-width;
