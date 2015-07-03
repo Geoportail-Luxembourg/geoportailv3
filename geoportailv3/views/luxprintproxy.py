@@ -48,6 +48,7 @@
 import json
 import logging
 from cStringIO import StringIO
+from datetime import datetime
 
 from pyramid.view import view_config
 
@@ -57,13 +58,13 @@ import weasyprint
 from c2cgeoportal.views.printproxy import PrintProxy
 from c2cgeoportal.lib.caching import NO_CACHE, get_region
 
+from geoportailv3.models import DBSession, LuxPrintJob
+
 log = logging.getLogger(__name__)
 cache_region = get_region()
 
 
 class LuxPrintProxy(PrintProxy):
-
-    ref_spec = {}
 
     @view_config(route_name="lux_printproxy_report_create")
     def lux_report_create(self):
@@ -72,10 +73,11 @@ class LuxPrintProxy(PrintProxy):
             self.request.matchdict.get("format")
         ))
 
-        job = json.loads(content)
-        self.ref_spec[job["ref"]] = json.loads(
-            self.request.body
-        )["attributes"]
+        job = LuxPrintJob()
+        job.id = json.loads(content)["ref"]
+        job.spec = self.request.body
+        job.creation = datetime.now()
+        DBSession.add(job)
 
         return self._build_response(
             resp, content, False, "print"
@@ -83,8 +85,9 @@ class LuxPrintProxy(PrintProxy):
 
     @view_config(route_name="lux_printproxy_report_cancel")
     def lux_cancel(self):
-        ref = self.request.matchdict.get("ref")
-        del self.ref_spec[ref]
+        DBSession.query(LuxPrintJob).get(
+            self.request.matchdict.get("ref")
+        ).delete()
         return self.cancel()
 
     @cache_region.cache_on_arguments()
@@ -114,9 +117,12 @@ class LuxPrintProxy(PrintProxy):
             self.config["print_url"], ref
         ))
 
-        attributes = self.ref_spec[ref]
+        job = DBSession.query(LuxPrintJob).get(
+            self.request.matchdict.get("ref")
+        )
+        attributes = json.loads(job.spec)["attributes"]
 
-        if "legend" in attributes:
+        if "legend" in attributes and attributes["legend"] is not None:
             merger = PdfFileMerger()
             merger.append(StringIO(content))
 
@@ -129,7 +135,7 @@ class LuxPrintProxy(PrintProxy):
             merger.write(content)
             content = content.getvalue()
 
-        del self.ref_spec[ref]
+        DBSession.delete(job)
 
         return self._build_response(
             resp, content, NO_CACHE, "print"
