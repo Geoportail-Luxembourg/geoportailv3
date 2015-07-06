@@ -230,9 +230,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   /** @type {Bloodhound} */
   var BackgroundLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
-  $scope.$watch(goog.bind(function() {
-    return this['language'];
-  }, this), goog.bind(function() {
+  $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
     this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
     this.createLocalBackgroundLayerData_(
