@@ -582,9 +582,11 @@ app.PrintController.prototype.useOptimalScale_ = function() {
   var idx = this['layouts'].indexOf(this['layout']);
   goog.asserts.assert(idx >= 0);
 
-  this['scale'] = this.printUtils_.getOptimalScale(mapSize,
+  var scale = this.printUtils_.getOptimalScale(mapSize,
       viewCenterResolution, app.PrintController.MAP_SIZES_[idx],
       this['scales']);
+
+  this['scale'] = scale != -1 ? scale : this['scales'][0];
 };
 
 
