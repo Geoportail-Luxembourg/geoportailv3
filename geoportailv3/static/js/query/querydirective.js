@@ -137,7 +137,7 @@ app.QueryController = function($timeout, $scope, $http,
     }),
     new ol.style.Style({
       stroke: new ol.style.Stroke({
-        color: 'white',
+        color: '#ffffff',
         width: 5
       })
     }),

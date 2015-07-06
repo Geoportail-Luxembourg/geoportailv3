@@ -105,7 +105,7 @@ app.ProfileController = function($scope, appVectorOverlayMgr) {
       new ol.style.Style({
         image: new ol.style.Circle({
           radius: 3,
-          fill: new ol.style.Fill({color: 'white'})
+          fill: new ol.style.Fill({color: '#ffffff'})
         })
       }));
 

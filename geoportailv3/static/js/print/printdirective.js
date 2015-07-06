@@ -15,6 +15,7 @@ goog.provide('app.printDirective');
 
 goog.require('app.GetShorturl');
 goog.require('app.Themes');
+goog.require('app.VectorOverlayMgr');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
@@ -22,6 +23,7 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 
@@ -61,6 +63,7 @@ app.module.directive('appPrint', app.printDirective);
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
+ * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
  * @constructor
@@ -69,7 +72,7 @@ app.module.directive('appPrint', app.printDirective);
  */
 app.PrintController = function($scope, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoPrintUtils, appThemes, appGetShorturl,
-    printServiceUrl, qrServiceUrl) {
+    appVectorOverlayMgr, printServiceUrl, qrServiceUrl) {
 
 
   /**
@@ -120,6 +123,13 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * A reference to the vector layer used by vector overlays.
+   * @type {ol.layer.Vector}
+   * @private
+   */
+  this.vectorOverlayLayer_ = appVectorOverlayMgr.getLayer();
 
   /**
    * @type {app.GetShorturl}
@@ -416,6 +426,8 @@ app.PrintController.prototype.print = function() {
       function(shorturl) {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
+
+        // create print spec object
         var spec = this.print_.createSpec(map, scale, dpi, layout, {
           'scale': this['scale'],
           'name': this['title'],
@@ -424,11 +436,21 @@ app.PrintController.prototype.print = function() {
           'lang': 'fr',
           'legend': this['legend'] ? legend : null
         });
+
+        // add vector overlay layer to print spec
+        var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
+        var resolution = map.getView().getResolution();
+        goog.asserts.assert(goog.isDef(resolution));
+        this.print_.encodeLayer(layers, this.vectorOverlayLayer_, resolution);
+        spec.attributes.map.layers.unshift(layers[0]);
+
+        // create print report
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise
         })).then(
             angular.bind(this, this.handleCreateReportSuccess_),
             angular.bind(this, this.handleCreateReportError_));
+
       }, this));
 };
 

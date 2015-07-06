@@ -106,6 +106,14 @@ app.VectorOverlayMgr.prototype.clear = function(groupIndex) {
 
 
 /**
+ * @return {ol.layer.Vector} The vector layer used internally.
+ */
+app.VectorOverlayMgr.prototype.getLayer = function() {
+  return this.layer_;
+};
+
+
+/**
  * @return {app.VectorOverlay} Vector overlay.
  */
 app.VectorOverlayMgr.prototype.getVectorOverlay = function() {
