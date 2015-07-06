@@ -468,7 +468,6 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
  */
 app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
-  bloodhound.clear();
   appThemes.getBgLayers().then(
       goog.bind(function(bgLayers) {
         var suggestions = goog.array.map(bgLayers,
@@ -484,6 +483,7 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
               };
             }
             );
+        bloodhound.clear();
         bloodhound.add(suggestions);
       }, this)
   );
