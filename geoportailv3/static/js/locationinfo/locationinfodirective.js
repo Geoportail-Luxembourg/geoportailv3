@@ -111,10 +111,14 @@ app.LocationinfoController =
     }
     if (newVal === false) {
       this.stateManager_.updateState({'crosshair': false});
+      var mapCenterCoordinate = this['map'].getView().getCenter();
+      this.stateManager_.updateState({
+        'X': parseInt(mapCenterCoordinate[0], 0),
+        'Y': parseInt(mapCenterCoordinate[1], 0)
+      });
       this['appSelector'] = undefined;
+      this['location'] = {};
       this.vectorOverlay_.clear();
-    } else if (newVal === true) {
-      this.stateManager_.updateState({'crosshair': true});
     }
   }, this));
 
@@ -145,7 +149,6 @@ app.LocationinfoController =
    */
   this.getShorturl_ = appGetShorturl;
 
-
   /**
    * @type {string}
    * @private
@@ -165,11 +168,6 @@ app.LocationinfoController =
   };
 
   /**
-   * @type {ol.Coordinate|undefined}
-   */
-  this['coordinate'] = undefined;
-
-  /**
    * @type {Object}
    */
   this['location'] = {};
@@ -185,31 +183,6 @@ app.LocationinfoController =
    * @private
    */
   this.scope_ = $scope;
-
-  $scope.$watch(goog.bind(function() {
-    return this['coordinate'];
-  }, this), goog.bind(function(newVal) {
-    if (goog.isDef(newVal)) {
-      this['location'] = {};
-      goog.object.forEach(this.projections_, function(value, key) {
-        var sourceEpsgCode = this['map'].getView().getProjection().getCode();
-        if (key === 'EPSG:4326:DMS') {
-          var epsgCode = goog.string.remove(key, ':DMS');
-          this['location'][value] = this.coordinateString_(
-              this['coordinate'], sourceEpsgCode, epsgCode, true);
-        } else {
-          this['location'][value] = this.coordinateString_(
-              this['coordinate'], sourceEpsgCode, key);
-        }
-      }, this);
-    }
-  }, this));
-
-  this['map'].getViewport()
-    .addEventListener('contextmenu', goog.bind(function(event) {
-        event.preventDefault(); // disable right-click menu on browsers
-      }, this));
-
 
   /**
    * @type {angular.$timeout}
@@ -280,6 +253,32 @@ app.LocationinfoController =
           }
         }
       }, this), false, this);
+
+  this['map'].getViewport()
+    .addEventListener('contextmenu', goog.bind(function(event) {
+        event.preventDefault(); // disable right-click menu on browsers
+      }, this));
+
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate
+ * @private
+ */
+app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
+  this['location'] = {};
+  goog.object.forEach(this.projections_, function(value, key) {
+    var sourceEpsgCode = this['map'].getView().getProjection().getCode();
+    if (key === 'EPSG:4326:DMS') {
+      var epsgCode = goog.string.remove(key, ':DMS');
+      this['location'][value] = this.coordinateString_(
+          coordinate, sourceEpsgCode, epsgCode, true);
+    } else {
+      this['location'][value] = this.coordinateString_(
+          coordinate, sourceEpsgCode, key);
+    }
+  }, this);
 };
 
 
@@ -297,7 +296,8 @@ app.LocationinfoController.prototype.showInfoPane_ =
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   }
   this['appSelector'] = 'locationinfo';
-  this['coordinate'] = clickCoordinate;
+  this.stateManager_.updateState({'crosshair': true});
+  this.updateLocation_(clickCoordinate);
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
   this.vectorOverlay_.clear();
