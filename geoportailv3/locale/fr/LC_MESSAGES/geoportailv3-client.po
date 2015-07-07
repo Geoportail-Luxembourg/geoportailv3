@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Andre aDonno <andrea.donno@me.com>, 2015
 # Jeff Konnen <jeff.konnen@act.etat.lu>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-06-25 08:23+0000\n"
+"PO-Revision-Date: 2015-07-08 07:13+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -237,7 +238,7 @@ msgstr "Longeur"
 
 #: geoportailv3/templates/index.html
 msgid "Mes Cartes"
-msgstr "Mes Cartes"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html
 msgid "Mesurer"
@@ -324,10 +325,6 @@ msgstr "Twitter"
 msgid "With legend"
 msgstr "Avec légende"
 
-#: geoportailv3/static/js/print/print.html
-msgid "generating"
-msgstr "en cours de traitement"
-
 #: geoportailv3/templates/index.html
 msgid "infos"
 msgstr "Infos"
@@ -350,7 +347,7 @@ msgstr "Mes couches"
 
 #: geoportailv3/templates/index.html
 msgid "my_maps"
-msgstr "Mes Cartes"
+msgstr "My maps"
 
 #: geoportailv3/templates/index.html
 msgid "search"
@@ -970,7 +967,7 @@ msgstr "Parcelles cadastrales"
 
 #: group.253
 msgid "mymaps"
-msgstr "Mes cartes"
+msgstr "My maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1998,11 +1995,11 @@ msgstr "Parcelles cadastrales (Numéros)"
 
 #: l_wmts.513
 msgid "streets_jpeg"
-msgstr "Réseau routier"
+msgstr "Carte hybride"
 
 #: l_wmts.514
 msgid "topo_bw_jpeg"
-msgstr "Cartes topographique N/B"
+msgstr "Carte topographique N/B"
 
 #: lu_int_wms.515
 msgid "mobi_pickup"
@@ -2098,7 +2095,7 @@ msgstr "Images aériennes"
 
 #: l_wmts.538
 msgid "basemap_global"
-msgstr "Carte de base"
+msgstr "Carte routière"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
@@ -2166,63 +2163,63 @@ msgstr "Zones dans lesquelles une application du métazachlore est interdite"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
-msgstr ""
+msgstr "Administration et autres services"
 
 #: lu_int_wms.556
 msgid "editus_poi_286"
-msgstr ""
+msgstr "Banque, finance, assurance"
 
 #: lu_int_wms.557
 msgid "editus_poi_285"
-msgstr ""
+msgstr "Beauté, sport et wellness"
 
 #: lu_int_wms.558
 msgid "editus_poi_287"
-msgstr ""
+msgstr "Commerce"
 
 #: lu_int_wms.559
 msgid "editus_poi_289"
-msgstr ""
+msgstr "Communication et multimédia"
 
 #: lu_int_wms.560
 msgid "editus_poi_290"
-msgstr ""
+msgstr "Culture, loisirs et tourisme"
 
 #: lu_int_wms.561
 msgid "editus_poi_294"
-msgstr ""
+msgstr "Hôtel, restaurant, café"
 
 #: lu_int_wms.562
 msgid "editus_poi_291"
-msgstr ""
+msgstr "Enseignement, formation et emploi"
 
 #: lu_int_wms.563
 msgid "editus_poi_292"
-msgstr ""
+msgstr "Garage, transport et mobilité"
 
 #: lu_int_wms.564
 msgid "editus_poi_293"
-msgstr ""
+msgstr "Habitat"
 
 #: lu_int_wms.565
 msgid "editus_poi_295"
-msgstr ""
+msgstr "Industrie"
 
 #: lu_int_wms.566
 msgid "editus_poi_296"
-msgstr ""
+msgstr "Médecine et santé"
 
 #: lu_int_wms.567
 msgid "editus_poi_298"
-msgstr ""
+msgstr "Service aux professionnels"
 
 #: group.568
 msgid "editus_pois"
-msgstr ""
+msgstr "Points d'intérêt (editus)"
 
 #: l_wmts.569
 msgid "basemap_2015_global"
-msgstr ""
+msgstr "Carte routière"
 
 #: lu_int_wms.570
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"

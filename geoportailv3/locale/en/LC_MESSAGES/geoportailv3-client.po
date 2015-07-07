@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Andre aDonno <andrea.donno@me.com>, 2015
 # eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-06-25 08:24+0000\n"
+"PO-Revision-Date: 2015-07-08 06:39+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: English (http://www.transifex.com/projects/p/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -323,10 +324,6 @@ msgstr "Twitter"
 #: geoportailv3/static/js/print/print.html
 msgid "With legend"
 msgstr "With legend"
-
-#: geoportailv3/static/js/print/print.html
-msgid "generating"
-msgstr "generating"
 
 #: geoportailv3/templates/index.html
 msgid "infos"
@@ -694,7 +691,7 @@ msgstr "Ecological sectors"
 
 #: l_wmts.184
 msgid "roads"
-msgstr "Road Network"
+msgstr "Hybrid"
 
 #: l_wmts.185
 msgid "ac_wellenstein_pag_zones"
@@ -746,7 +743,7 @@ msgstr "Regional Mapsheets"
 
 #: group.197
 msgid "infrastrucktur_une_kommunikation"
-msgstr "Transport"
+msgstr "Infrastructure and communication"
 
 #: l_wmts.198
 msgid "topo_5k"
@@ -962,7 +959,7 @@ msgstr "Local Syndicate Trails"
 
 #: group.251
 msgid "infrastrucktur_une_kommunikation_prof"
-msgstr "Transport"
+msgstr "Infrastructure and communication"
 
 #: group.252
 msgid "flurstucke_grundstucke"
@@ -1998,7 +1995,7 @@ msgstr "Cadastral parcels (numbers)"
 
 #: l_wmts.513
 msgid "streets_jpeg"
-msgstr "Road Network"
+msgstr "Hybrid map"
 
 #: l_wmts.514
 msgid "topo_bw_jpeg"
@@ -2098,7 +2095,7 @@ msgstr "Aerial Imagery"
 
 #: l_wmts.538
 msgid "basemap_global"
-msgstr "Base map"
+msgstr "Road map"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
@@ -2166,63 +2163,63 @@ msgstr "Areas in which the application of Metazachlor is forbidden"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
-msgstr ""
+msgstr "Administration and other services"
 
 #: lu_int_wms.556
 msgid "editus_poi_286"
-msgstr ""
+msgstr "Bank, finance, insurance"
 
 #: lu_int_wms.557
 msgid "editus_poi_285"
-msgstr ""
+msgstr "Beauty, sports and wellness"
 
 #: lu_int_wms.558
 msgid "editus_poi_287"
-msgstr ""
+msgstr "Trading"
 
 #: lu_int_wms.559
 msgid "editus_poi_289"
-msgstr ""
+msgstr "Communication and multimedia"
 
 #: lu_int_wms.560
 msgid "editus_poi_290"
-msgstr ""
+msgstr "Culture, leisure and tourism"
 
 #: lu_int_wms.561
 msgid "editus_poi_294"
-msgstr ""
+msgstr "Hotel, restaurant, tavern"
 
 #: lu_int_wms.562
 msgid "editus_poi_291"
-msgstr ""
+msgstr "Education, training and employment"
 
 #: lu_int_wms.563
 msgid "editus_poi_292"
-msgstr ""
+msgstr "Garage, transport and mobility"
 
 #: lu_int_wms.564
 msgid "editus_poi_293"
-msgstr ""
+msgstr "Living"
 
 #: lu_int_wms.565
 msgid "editus_poi_295"
-msgstr ""
+msgstr "Industrial"
 
 #: lu_int_wms.566
 msgid "editus_poi_296"
-msgstr ""
+msgstr "Medicine and health"
 
 #: lu_int_wms.567
 msgid "editus_poi_298"
-msgstr ""
+msgstr "Services at the specialists"
 
 #: group.568
 msgid "editus_pois"
-msgstr ""
+msgstr "Points of interest (editus)"
 
 #: l_wmts.569
 msgid "basemap_2015_global"
-msgstr ""
+msgstr "Road map"
 
 #: lu_int_wms.570
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"

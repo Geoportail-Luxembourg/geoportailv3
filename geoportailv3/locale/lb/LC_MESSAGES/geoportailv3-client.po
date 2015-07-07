@@ -1,10 +1,11 @@
 # 
 # Translators:
+# Andre aDonno <andrea.donno@me.com>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-06-25 08:42+0000\n"
+"PO-Revision-Date: 2015-07-08 07:13+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/projects/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
@@ -19,47 +20,47 @@ msgstr "+ Layeren beisetzen"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "<p>Invalid login or password</p>"
-msgstr ""
+msgstr "<p>Ongültegen Login oder Passwuert</p>"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A0 landscape"
-msgstr ""
+msgstr "A0 Landscape"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A0 portrait"
-msgstr ""
+msgstr "A0 Portrait"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A1 landscape"
-msgstr ""
+msgstr "A1 Landscape"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A1 portrait"
-msgstr ""
+msgstr "A1 Portrait"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A2 landscape"
-msgstr ""
+msgstr "A2 Landscape"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A2 portrait"
-msgstr ""
+msgstr "A2 Portrait"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A3 landscape"
-msgstr ""
+msgstr "A3 Landscape"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A3 portrait"
-msgstr ""
+msgstr "A3 Portrait"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A4 landscape"
-msgstr ""
+msgstr "A4 Landscape"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A4 portrait"
-msgstr ""
+msgstr "A4 Portrait"
 
 #: geoportailv3/static/js/print/print.html
 msgid "Abort"
@@ -123,7 +124,7 @@ msgstr ""
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Commander un extrait"
-msgstr ""
+msgstr "Extrait bestellen"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Commune"
@@ -135,7 +136,7 @@ msgstr "Kontakt"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Contenance"
-msgstr ""
+msgstr "Flächeninhalt"
 
 #: geoportailv3/templates/index.html
 msgid "Couches"
@@ -143,7 +144,7 @@ msgstr "Layeren"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Dernier mesurage"
-msgstr ""
+msgstr "Leschten Mesurage"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 #: geoportailv3/static/js/query/mymaps.html
@@ -156,7 +157,7 @@ msgstr "Zeechnen"
 
 #: geoportailv3/static/js/profile/profile.html
 msgid "Draw a line on the map to display an elevation profile."
-msgstr ""
+msgstr "Zeechent eng Linn ob der Kaart fir den Héichtenprofil unzeweisen"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html
 msgid "Elevation"
@@ -176,11 +177,11 @@ msgstr "Google Plus"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "I lost my password"
-msgstr ""
+msgstr "Ech hu mäin Passwuert verluer"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "I want to create a new user account"
-msgstr ""
+msgstr "Ech well en neien Benotzerkonto erstellen"
 
 #: geoportailv3/templates/index.html
 msgid "Imprimer"
@@ -228,15 +229,15 @@ msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "Logout"
-msgstr ""
+msgstr "Ausloggen"
 
 #: geoportailv3/static/js/query/mymaps.html
 msgid "Longeueur"
-msgstr ""
+msgstr "Längt"
 
 #: geoportailv3/templates/index.html
 msgid "Mes Cartes"
-msgstr "Meng Kaarten"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html
 msgid "Mesurer"
@@ -260,7 +261,7 @@ msgstr ""
 
 #: geoportailv3/static/js/layermanager/layermanager.html
 msgid "No layer selected"
-msgstr ""
+msgstr "Keen Layer ausgewielt"
 
 #: geoportailv3/static/js/query/mymaps.html
 msgid "Nom"
@@ -268,7 +269,7 @@ msgstr "Numm"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Numero cadastral"
-msgstr ""
+msgstr "Kadasternummer"
 
 #: geoportailv3/templates/index.html
 msgid "Partager"
@@ -276,11 +277,11 @@ msgstr "Deelen"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: geoportailv3/static/js/query/mymaps.html
 msgid "Rating"
-msgstr ""
+msgstr "Bewäertung"
 
 #: geoportailv3/static/js/search/search.html
 msgid "Recherche adresse, parcelles, couches ..."
@@ -301,15 +302,15 @@ msgstr "Kuerz Adress"
 
 #: geoportailv3/static/js/measure/measure.html
 msgid "Surface"
-msgstr ""
+msgstr "Fäch"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "The legend is not available for this layer"
-msgstr ""
+msgstr "Keng spezifësch Legend fier dese Layer"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "The metadata is right now not available"
-msgstr ""
+msgstr "Et si keng Metadaten fir dëse Layer verfügbar"
 
 #: geoportailv3/static/js/print/print.html
 msgid "Title"
@@ -322,10 +323,6 @@ msgstr "Twitter"
 #: geoportailv3/static/js/print/print.html
 msgid "With legend"
 msgstr "Mat Legende"
-
-#: geoportailv3/static/js/print/print.html
-msgid "generating"
-msgstr "generéieren"
 
 #: geoportailv3/templates/index.html
 msgid "infos"
@@ -349,7 +346,7 @@ msgstr "Meng Layeren"
 
 #: geoportailv3/templates/index.html
 msgid "my_maps"
-msgstr "Meng Kaarten"
+msgstr "My maps"
 
 #: geoportailv3/templates/index.html
 msgid "search"
@@ -969,7 +966,7 @@ msgstr "Kadasterparzellen"
 
 #: group.253
 msgid "mymaps"
-msgstr "Méng Kaarten"
+msgstr "My maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1761,7 +1758,7 @@ msgstr ""
 
 #: lu_int_wms.453
 msgid "anf_dates_battues"
-msgstr ""
+msgstr "Klappjuechten"
 
 #: l_wmts.454
 msgid "eau_new_HQ100_merged_2013"
@@ -1969,7 +1966,7 @@ msgstr ""
 
 #: lu_int_wms.506
 msgid "lenoz_ecoles_old"
-msgstr ""
+msgstr "Schoulen"
 
 #: lu_int_wms.507
 msgid "ont_poi_5"
@@ -1977,7 +1974,7 @@ msgstr "Sport & Fräizäit"
 
 #: lu_int_wms.508
 msgid "lenoz_creches"
-msgstr ""
+msgstr "Crèchen"
 
 #: lu_int_wms.509
 msgid "ont_poi_7"
@@ -1997,7 +1994,7 @@ msgstr "Kadasterparzellen (Nummeren)"
 
 #: l_wmts.513
 msgid "streets_jpeg"
-msgstr "Stroossennnetz"
+msgstr "Hybrid Kaart"
 
 #: l_wmts.514
 msgid "topo_bw_jpeg"
@@ -2009,15 +2006,15 @@ msgstr "«Pickup»-Statiounen"
 
 #: lu_int_wms.516
 msgid "asta_flik_parcels_2015_prof"
-msgstr ""
+msgstr "Map Quest"
 
 #: lu_int_wms.517
 msgid "lenoz_Banken"
-msgstr ""
+msgstr "Banken"
 
 #: lu_int_wms.518
 msgid "lenoz_Tankstelle"
-msgstr ""
+msgstr "Tankstellen"
 
 #: group.519
 msgid "wrrl_intern_hs"
@@ -2033,19 +2030,19 @@ msgstr "Ökologisch wertvolle Flächen "
 
 #: lu_int_wms.522
 msgid "lenoz_Ärzte"
-msgstr ""
+msgstr "Dokteren"
 
 #: lu_int_wms.523
 msgid "lenoz_Post"
-msgstr ""
+msgstr "Post"
 
 #: lu_int_wms.524
 msgid "lenoz_Lycees"
-msgstr ""
+msgstr "Lycéeën"
 
 #: lu_int_wms.525
 msgid "lenoz_Restaurants"
-msgstr ""
+msgstr "Restauranten"
 
 #: lu_int_wms.526
 msgid "ont_poi"
@@ -2073,7 +2070,7 @@ msgstr "Numm"
 
 #: lu_int_wms.532
 msgid "osm_mq"
-msgstr ""
+msgstr "Mapquest"
 
 #: lu_int_wms.533
 msgid "ont_poi_4"
@@ -2085,7 +2082,7 @@ msgstr "Vereinfacht Kaart vun den natiirlechen Bëscher"
 
 #: group.535
 msgid "bglayers"
-msgstr ""
+msgstr "Hannergrond Layer"
 
 #: l_wmts.536
 msgid "topogr_global"
@@ -2097,7 +2094,7 @@ msgstr "Loftbild"
 
 #: l_wmts.538
 msgid "basemap_global"
-msgstr "Basiskaart"
+msgstr "Stroossekaart"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
@@ -2165,63 +2162,63 @@ msgstr "Gebidder an deenen et verbueden ass Metazachlor auszebréngen"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
-msgstr ""
+msgstr "Administratioun an aner Déngschtleeschtungen"
 
 #: lu_int_wms.556
 msgid "editus_poi_286"
-msgstr ""
+msgstr "Bank, Finanz, Versécherung"
 
 #: lu_int_wms.557
 msgid "editus_poi_285"
-msgstr ""
+msgstr "Schéinheet, Sport a Wellness"
 
 #: lu_int_wms.558
 msgid "editus_poi_287"
-msgstr ""
+msgstr "Handel"
 
 #: lu_int_wms.559
 msgid "editus_poi_289"
-msgstr ""
+msgstr "Kommunikatioun an Multimedia"
 
 #: lu_int_wms.560
 msgid "editus_poi_290"
-msgstr ""
+msgstr "Kultur, Fräizäit a Turissem"
 
 #: lu_int_wms.561
 msgid "editus_poi_294"
-msgstr ""
+msgstr "Hotel, Restaurant, Wiertschaft"
 
 #: lu_int_wms.562
 msgid "editus_poi_291"
-msgstr ""
+msgstr "Unterricht, Formatioun an Aarbecht"
 
 #: lu_int_wms.563
 msgid "editus_poi_292"
-msgstr ""
+msgstr "Garage, transport an mobilitéit"
 
 #: lu_int_wms.564
 msgid "editus_poi_293"
-msgstr ""
+msgstr "Wunnéng"
 
 #: lu_int_wms.565
 msgid "editus_poi_295"
-msgstr ""
+msgstr "Industrie"
 
 #: lu_int_wms.566
 msgid "editus_poi_296"
-msgstr ""
+msgstr "Medezin an Gesondheet"
 
 #: lu_int_wms.567
 msgid "editus_poi_298"
-msgstr ""
+msgstr "Déngschtleeschtung fir Professionneller"
 
 #: group.568
 msgid "editus_pois"
-msgstr ""
+msgstr "Points d'intérêt Editus"
 
 #: l_wmts.569
 msgid "basemap_2015_global"
-msgstr ""
+msgstr "Stroossekaart"
 
 #: lu_int_wms.570
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
