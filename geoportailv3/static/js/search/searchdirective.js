@@ -13,6 +13,7 @@
 goog.provide('app.searchDirective');
 
 goog.require('app');
+goog.require('app.CoordinateString');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
@@ -96,6 +97,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
+ * @param {app.CoordinateString} appCoordinateString
  * @param {app.Themes} appThemes Themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
@@ -105,8 +107,8 @@ app.module.directive('appSearch', app.searchDirective);
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
-    ngeoBackgroundLayerMgr, ngeoCreateGeoJSONBloodhound, appThemes,
-    appGetLayerForCatalogNode, appShowLayerinfo, appVectorOverlayMgr,
+    ngeoBackgroundLayerMgr, ngeoCreateGeoJSONBloodhound, appCoordinateString,
+    appThemes, appGetLayerForCatalogNode, appShowLayerinfo, appVectorOverlayMgr,
     maxExtent, searchServiceUrl) {
 
   /**
@@ -207,6 +209,12 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
           stroke: strokeStyle
         })
       }));
+
+  /**
+   * @type {app.CoordinateString}
+   * @private
+   */
+  this.coordinateString_ = appCoordinateString;
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -434,10 +442,24 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       var point = /** @type {ol.geom.Point} */
           (new ol.geom.Point([easting, northing])
          .transform(epsgCode, 'EPSG:3857'));
+      var flippedPoint = /** @type {ol.geom.Point} */
+          (new ol.geom.Point([northing, easting])
+         .transform(epsgCode, 'EPSG:3857'));
+      var feature = /** @type {ol.Feature|undefined} */ (undefined);
       if (ol.extent.containsCoordinate(
           this.maxExtent_, point.getCoordinates())) {
-        var feature = new ol.Feature(point);
-        feature.set('label', easting + 'E ' + northing + 'N ');
+        feature = new ol.Feature(point);
+      } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+          this.maxExtent_, flippedPoint.getCoordinates())) {
+        feature = new ol.Feature(flippedPoint);
+      }
+      if (goog.isDefAndNotNull(feature)) {
+        var resultPoint = /** @type {ol.geom.Point} */ (feature.getGeometry());
+        var mapEpsgCode =
+            this['map'].getView().getProjection().getCode();
+        var resultString = this.coordinateString_(
+            resultPoint.getCoordinates(), mapEpsgCode, epsgCode);
+        feature.set('label', resultString);
         feature.set('epsgLabel', re[epsgCode].label);
         results.push(feature);
       }
