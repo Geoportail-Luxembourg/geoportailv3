@@ -434,7 +434,10 @@ app.PrintController.prototype.print = function() {
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': 'fr',
-          'legend': this['legend'] ? legend : null
+          'legend': this['legend'] ? legend : null,
+          'scalebar' : {
+            'projection': 'EPSG:2169'
+          }
         });
 
         // add vector overlay layer to print spec
