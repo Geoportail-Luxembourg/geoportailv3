@@ -294,7 +294,7 @@ app.PrintController.MAP_SIZES_ = [
  * @type {number}
  * @private
  */
-app.PrintController.DPI_ = 300;
+app.PrintController.DPI_ = 96;
 
 
 /**
