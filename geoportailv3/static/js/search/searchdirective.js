@@ -230,9 +230,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   /** @type {Bloodhound} */
   var BackgroundLayerBloodhoundEngine = this.createAndInitLayerBloodhound_();
 
-  $scope.$watch(goog.bind(function() {
-    return this['language'];
-  }, this), goog.bind(function() {
+  $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
     this.createLocalAllLayerData_(
         appThemes, LayerBloodhoundEngine, gettextCatalog);
     this.createLocalBackgroundLayerData_(
@@ -468,7 +466,6 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhound_ =
  */
 app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, bloodhound, gettextCatalog) {
-  bloodhound.clear();
   appThemes.getBgLayers().then(
       goog.bind(function(bgLayers) {
         var suggestions = goog.array.map(bgLayers,
@@ -484,6 +481,7 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
               };
             }
             );
+        bloodhound.clear();
         bloodhound.add(suggestions);
       }, this)
   );
