@@ -21,9 +21,12 @@ install:
 - sudo mkdir -p /srv/tomcat/tomcat1/webapps /var/www/vhosts/luxembourg-geomapfish/conf
 - sudo chmod g+w,o+w /srv/tomcat/tomcat1/webapps /var/www/vhosts/luxembourg-geomapfish/conf
 
-- make -f travis.mk .build/requirements.timestamp alembic.ini lux_alembic.ini
+- make -f travis.mk .build/requirements.timestamp || make -f travis.mk .build/requirements.timestamp
+- make -f travis.mk .build/dev-requirements.timestamp || make -f travis.mk .build/dev-requirements.timestamp
+- make -f travis.mk alembic.ini lux_alembic.ini
 - .build/venv/bin/alembic upgrade head
 - .build/venv/bin/alembic -c lux_alembic.ini upgrade head
+- make -f travis.mk .build/build.js || make -f travis.mk .build/build.js
 - make -f travis.mk build
 
 script:
