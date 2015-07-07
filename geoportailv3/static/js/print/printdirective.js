@@ -442,7 +442,9 @@ app.PrintController.prototype.print = function() {
         var resolution = map.getView().getResolution();
         goog.asserts.assert(goog.isDef(resolution));
         this.print_.encodeLayer(layers, this.vectorOverlayLayer_, resolution);
-        spec.attributes.map.layers.unshift(layers[0]);
+        if (layers.length > 0) {
+          spec.attributes.map.layers.unshift(layers[0]);
+        }
 
         // create print report
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
