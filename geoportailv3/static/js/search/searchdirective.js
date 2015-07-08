@@ -441,10 +441,12 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       }
       var mapEpsgCode =
           this['map'].getView().getProjection().getCode();
-      var point = new ol.geom.Point([easting, northing])
-         .transform(epsgCode, mapEpsgCode);
-      var flippedPoint = new ol.geom.Point([northing, easting])
-         .transform(epsgCode, mapEpsgCode);
+      var point = /** @type {ol.geom.Point} */
+          (new ol.geom.Point([easting, northing])
+         .transform(epsgCode, mapEpsgCode));
+      var flippedPoint =  /** @type {ol.geom.Point} */
+          (new ol.geom.Point([northing, easting])
+         .transform(epsgCode, mapEpsgCode));
       var feature = /** @type {ol.Feature} */ (null);
       if (ol.extent.containsCoordinate(
           this.maxExtent_, point.getCoordinates())) {
