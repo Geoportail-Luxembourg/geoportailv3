@@ -439,13 +439,13 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
         easting = parseFloat(m[1]);
         northing = parseFloat(m[3]);
       }
-      var point = /** @type {ol.geom.Point} */
-          (new ol.geom.Point([easting, northing])
-         .transform(epsgCode, 'EPSG:3857'));
-      var flippedPoint = /** @type {ol.geom.Point} */
-          (new ol.geom.Point([northing, easting])
-         .transform(epsgCode, 'EPSG:3857'));
-      var feature = /** @type {ol.Feature|undefined} */ (undefined);
+      var mapEpsgCode =
+          this['map'].getView().getProjection().getCode();
+      var point = new ol.geom.Point([easting, northing])
+         .transform(epsgCode, mapEpsgCode);
+      var flippedPoint = new ol.geom.Point([northing, easting])
+         .transform(epsgCode, mapEpsgCode);
+      var feature = /** @type {ol.Feature} */ (null);
       if (ol.extent.containsCoordinate(
           this.maxExtent_, point.getCoordinates())) {
         feature = new ol.Feature(point);
@@ -453,10 +453,8 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
           this.maxExtent_, flippedPoint.getCoordinates())) {
         feature = new ol.Feature(flippedPoint);
       }
-      if (goog.isDefAndNotNull(feature)) {
+      if (!goog.isNull(feature)) {
         var resultPoint = /** @type {ol.geom.Point} */ (feature.getGeometry());
-        var mapEpsgCode =
-            this['map'].getView().getProjection().getCode();
         var resultString = this.coordinateString_(
             resultPoint.getCoordinates(), mapEpsgCode, epsgCode);
         feature.set('label', resultString);
