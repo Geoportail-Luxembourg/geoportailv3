@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-08 07:13+0000\n"
+"PO-Revision-Date: 2015-07-08 07:33+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -89,6 +89,10 @@ msgstr "Hinterground Karte:"
 #: geoportailv3/templates/index.html
 msgid "Catalog"
 msgstr "Katalog"
+
+#: geoportailv3/static/js/themeswitcher/themes.html
+msgid "Changer"
+msgstr "Wechseln"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid ""
@@ -311,6 +315,10 @@ msgstr "Keine Legende für diesen Layer"
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "The metadata is right now not available"
 msgstr "Die Metadaten sind momentan nicht erhältlich"
+
+#: geoportailv3/static/js/themeswitcher/themes.html
+msgid "Theme"
+msgstr "Thema"
 
 #: geoportailv3/static/js/print/print.html
 msgid "Title"
