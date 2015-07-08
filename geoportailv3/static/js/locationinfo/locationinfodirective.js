@@ -178,22 +178,14 @@ app.LocationinfoController =
   this.stateManager_ = appStateManager;
 
   /**
-   * @type {angular.$timeout}
-   * @private
-   */
-  this.$timeout_ = $timeout;
-
-  /**
    * @type {Object<number, number>}
-   * @private
    */
-  this.startPixel_ = null;
+  var startPixel = null;
 
   /**
    * @type {angular.$q.Promise|undefined}
-   * @private
    */
-  this.holdPromise_ = undefined;
+  var holdPromise;
 
   // Load infowindow if crosshair variable is set
   var urlLocationInfo = appStateManager.getInitialValue('crosshair');
@@ -213,10 +205,10 @@ app.LocationinfoController =
           this.showInfoPane_(event.originalEvent);
         } else if (!(event.originalEvent instanceof MouseEvent)) {
           // if touch input device
-          this.$timeout_.cancel(this.holdPromise_);
-          this.startPixel_ = event.pixel;
+          $timeout.cancel(holdPromise);
+          startPixel = event.pixel;
           var that = this;
-          this.holdPromise_ = this.$timeout_(function() {
+          holdPromise = $timeout(function() {
             that.showInfoPane_(event.originalEvent);
           }, 500, false);
         }
@@ -224,19 +216,19 @@ app.LocationinfoController =
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
       goog.bind(function(event) {
-        this.$timeout_.cancel(this.holdPromise_);
-        this.startPixel_ = null;
+        $timeout.cancel(holdPromise);
+        startPixel = null;
       }, this), false, this);
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       goog.bind(function(event) {
-        if (this.startPixel_) {
+        if (startPixel) {
           var pixel = event.pixel;
-          var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
-          var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
+          var deltaX = Math.abs(startPixel[0] - pixel[0]);
+          var deltaY = Math.abs(startPixel[1] - pixel[1]);
           if (deltaX + deltaY > 6) {
-            this.$timeout_.cancel(this.holdPromise_);
-            this.startPixel_ = null;
+            $timeout.cancel(holdPromise);
+            startPixel = null;
           }
         }
       }, this), false, this);
