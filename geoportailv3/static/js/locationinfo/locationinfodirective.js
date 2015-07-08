@@ -179,9 +179,8 @@ app.LocationinfoController =
 
   /**
    * @type {Object<number, number>}
-   * @private
    */
-  this.startPixel_ = null;
+  var startPixel = null;
 
   /**
    * @type {angular.$q.Promise|undefined}
@@ -207,7 +206,7 @@ app.LocationinfoController =
         } else if (!(event.originalEvent instanceof MouseEvent)) {
           // if touch input device
           $timeout.cancel(holdPromise);
-          this.startPixel_ = event.pixel;
+          startPixel = event.pixel;
           var that = this;
           holdPromise = $timeout(function() {
             that.showInfoPane_(event.originalEvent);
@@ -218,18 +217,18 @@ app.LocationinfoController =
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
       goog.bind(function(event) {
         $timeout.cancel(holdPromise);
-        this.startPixel_ = null;
+        startPixel = null;
       }, this), false, this);
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       goog.bind(function(event) {
-        if (this.startPixel_) {
+        if (startPixel) {
           var pixel = event.pixel;
-          var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
-          var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
+          var deltaX = Math.abs(startPixel[0] - pixel[0]);
+          var deltaY = Math.abs(startPixel[1] - pixel[1]);
           if (deltaX + deltaY > 6) {
             $timeout.cancel(holdPromise);
-            this.startPixel_ = null;
+            startPixel = null;
           }
         }
       }, this), false, this);
