@@ -64,7 +64,7 @@
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-           ngeo-resizemap="mainCtrl.map">
+           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <h2 translate>layers</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
