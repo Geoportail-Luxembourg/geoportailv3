@@ -144,6 +144,12 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
   this.qrServiceUrl_ = qrServiceUrl;
 
   /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.gettextCatalog_ = gettextCatalog;
+
+  /**
    * @type {Array.<string>}
    */
   this['layouts'] = [
@@ -433,7 +439,7 @@ app.PrintController.prototype.print = function() {
           'name': this['title'],
           'url': shorturl,
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
-          'lang': 'fr',
+          'lang': this.gettextCatalog_.currentLanguage,
           'legend': this['legend'] ? legend : null,
           'scalebar' : {
             'projection': 'EPSG:2169'
