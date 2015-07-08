@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-08 08:10+0000\n"
+"PO-Revision-Date: 2015-07-08 14:07+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/p/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,6 +17,18 @@ msgstr ""
 #: geoportailv3/templates/index.html
 msgid "+ Add layers"
 msgstr "+ Layer hinzufügen"
+
+#: geoportailv3/templates/index.html
+msgid ""
+"A <em>right click</em> (tap and hold on mobile) will display information "
+"about the current location."
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid ""
+"A <em>short click</em> (tap on mobile) on a map feature will select the "
+"feature and show more information."
+msgstr ""
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A0 landscape"
@@ -94,33 +106,33 @@ msgstr "Wechseln"
 msgid ""
 "Click to continue drawing the line<br>Double-click or click last point to "
 "finish"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen der Linie fortzufahren <br> Doppelklick zum Abschließen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid ""
 "Click to continue drawing the polygon<br>Double-click or click last point to"
 " finish"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen des Polygons fortzufahren <br> Doppelklick zum Abschließen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to finish"
-msgstr ""
+msgstr "Klicken Sie zum Abschließen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing area"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen der Fläche anzufangen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing azimut"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen des Azimuts anzufangen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing length"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen der Länge anzufangen"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing profile"
-msgstr ""
+msgstr "Klicken Sie um mit dem zeichnen des Profils anzufangen"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Commander un extrait"
