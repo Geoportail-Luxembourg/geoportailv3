@@ -60,10 +60,16 @@
     -webkit-transition: none;
     transition: none;
   }
+  .layer-info-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 80%; //fallback for browsers without calc support
+    max-height: ~"calc(100% - 80px)";
+  }
+
   #infos .container-fluid {
     overflow-y: auto;
     max-height: 80%; //fallback for browsers without calc support
     max-height: ~"calc(100% - 80px)";
-    
   }
 }
