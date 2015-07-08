@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-08 07:33+0000\n"
+"PO-Revision-Date: 2015-07-08 08:09+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/projects/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
@@ -17,10 +17,6 @@ msgstr ""
 #: geoportailv3/templates/index.html
 msgid "+ Add layers"
 msgstr "+ Layeren beisetzen"
-
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "<p>Invalid login or password</p>"
-msgstr "<p>Ongültegen Login oder Passwuert</p>"
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A0 landscape"
@@ -146,6 +142,10 @@ msgstr "Flächeninhalt"
 msgid "Couches"
 msgstr "Layeren"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Create a new user account"
+msgstr "E neien Benotzerkont Erstellen"
+
 #: geoportailv3/static/js/query/parcels.html
 msgid "Dernier mesurage"
 msgstr "Leschten Mesurage"
@@ -183,10 +183,6 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "Ech hu mäin Passwuert verluer"
 
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "I want to create a new user account"
-msgstr "Ech well en neien Benotzerkonto erstellen"
-
 #: geoportailv3/templates/index.html
 msgid "Imprimer"
 msgstr "Drécken"
@@ -194,6 +190,10 @@ msgstr "Drécken"
 #: geoportailv3/templates/index.html
 msgid "Infos"
 msgstr "Infos"
+
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Invalid username or password"
+msgstr "Ongültegen Benotzernumm oder Passwuert"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Keywords"
@@ -230,6 +230,10 @@ msgstr "Link op d'Metadaten"
 #: geoportailv3/static/js/locationinfo/locationinfo.html
 msgid "Location Coordinates"
 msgstr ""
+
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Login"
+msgstr "Aloggen"
 
 #: geoportailv3/static/js/authentication/authentication.html
 msgid "Logout"
@@ -279,6 +283,10 @@ msgstr "Kadasternummer"
 msgid "Partager"
 msgstr "Deelen"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Password"
+msgstr "Passwuert"
+
 #: geoportailv3/static/js/measure/measure.html
 msgid "Profile"
 msgstr "Profil"
@@ -304,6 +312,10 @@ msgstr ""
 msgid "Short Url"
 msgstr "Kuerz Adress"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Submit"
+msgstr "Aloggen"
+
 #: geoportailv3/static/js/measure/measure.html
 msgid "Surface"
 msgstr "Fäch"
@@ -327,6 +339,10 @@ msgstr "Titel"
 #: geoportailv3/static/js/share/share.html
 msgid "Twitter"
 msgstr "Twitter"
+
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Username"
+msgstr "Benotzernumm"
 
 #: geoportailv3/static/js/print/print.html
 msgid "With legend"
