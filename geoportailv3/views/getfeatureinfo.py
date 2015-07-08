@@ -295,24 +295,29 @@ class Getfeatureinfo(object):
 
     def get_info_from_mymaps(self, rows, attributes_to_remove):
         features = []
+        ids = []
+
         for row in rows:
             category_id = row['category_id']
             map_id = row['map_id']
-            engine = sqlahelper.get_engine("mymaps")
-            query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
-                    , sum(ST_Length(geometry)) as length FROM\
-                     public.feature_with_map_with_colors where\
-                     category_id = %(category_id)d and map_id = '%(map_id)s'"\
-                    % {'category_id': category_id, 'map_id': map_id}
-            res = engine.execute(query)
-            for feature in res.fetchall():
-                geometry = geojson_loads(feature['geometry'])
-                attributes = dict(row)
-                attributes['length'] = round(feature['length'] / 1000, 2)
-                self.remove_attributes(attributes,
-                                       attributes_to_remove,
-                                       "geometry")
-                features.append(self.to_feature(geometry, attributes, ""))
+            cur_id = str(map_id) + "--" + str(category_id)
+            if cur_id not in ids:
+                ids.append(cur_id)
+                engine = sqlahelper.get_engine("mymaps")
+                query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
+                        , sum(ST_Length(geometry)) as length FROM\
+                         public.feature_with_map_with_colors where\
+                         category_id = %(category_id)d and map_id = '%(map_id)s'"\
+                        % {'category_id': category_id, 'map_id': map_id}
+                res = engine.execute(query)
+                for feature in res.fetchall():
+                    geometry = geojson_loads(feature['geometry'])
+                    attributes = dict(row)
+                    attributes['length'] = round(feature['length'] / 1000, 2)
+                    self.remove_attributes(attributes,
+                                           attributes_to_remove,
+                                           "geometry")
+                    features.append(self.to_feature(geometry, attributes, ""))
 
         return features
 
