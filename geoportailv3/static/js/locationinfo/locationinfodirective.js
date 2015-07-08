@@ -185,9 +185,8 @@ app.LocationinfoController =
 
   /**
    * @type {angular.$q.Promise|undefined}
-   * @private
    */
-  this.holdPromise_ = undefined;
+  var holdPromise;
 
   // Load infowindow if crosshair variable is set
   var urlLocationInfo = appStateManager.getInitialValue('crosshair');
@@ -207,10 +206,10 @@ app.LocationinfoController =
           this.showInfoPane_(event.originalEvent);
         } else if (!(event.originalEvent instanceof MouseEvent)) {
           // if touch input device
-          $timeout.cancel(this.holdPromise_);
+          $timeout.cancel(holdPromise);
           this.startPixel_ = event.pixel;
           var that = this;
-          this.holdPromise_ = $timeout(function() {
+          holdPromise = $timeout(function() {
             that.showInfoPane_(event.originalEvent);
           }, 500, false);
         }
@@ -218,7 +217,7 @@ app.LocationinfoController =
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
       goog.bind(function(event) {
-        $timeout.cancel(this.holdPromise_);
+        $timeout.cancel(holdPromise);
         this.startPixel_ = null;
       }, this), false, this);
 
@@ -229,7 +228,7 @@ app.LocationinfoController =
           var deltaX = Math.abs(this.startPixel_[0] - pixel[0]);
           var deltaY = Math.abs(this.startPixel_[1] - pixel[1]);
           if (deltaX + deltaY > 6) {
-            $timeout.cancel(this.holdPromise_);
+            $timeout.cancel(holdPromise);
             this.startPixel_ = null;
           }
         }
