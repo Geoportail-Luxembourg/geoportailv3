@@ -64,7 +64,7 @@
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-           ngeo-resizemap="mainCtrl.map">
+           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
           <h2 translate>layers</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
@@ -190,7 +190,6 @@
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-animate/angular-animate.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
     <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.js' % node_modules_path)}"></script>
     <script src="${request.route_url('deps.js')}"></script>
@@ -198,7 +197,6 @@
     <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/d3/d3.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/ngeo/externs/typeahead.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/typeahead.js/dist/typeahead.bundle.min.js' % node_modules_path)}"></script>
 % else:
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
