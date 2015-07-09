@@ -79,7 +79,8 @@ class Getfeatureinfo(object):
                                           ['%(field)s']}}"
                                           % ({'field': field}))
             response = "<h1>{{layers['layerLabel'] | translate}}</h1>\
-                       <div ng-repeat=\"feature in layers['features']\">%s\
+                       <div class=\"poi-feature\"\
+                       ng-repeat=\"feature in layers['features']\">%s\
                        </div>" % (content)
             return Response(response)
         return HTTPBadRequest()
