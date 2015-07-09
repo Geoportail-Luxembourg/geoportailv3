@@ -1,13 +1,14 @@
 # 
 # Translators:
+# Andre aDonno <andrea.donno@me.com>, 2015
 # Jeff Konnen <jeff.konnen@act.etat.lu>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-06-25 08:23+0000\n"
+"PO-Revision-Date: 2015-07-08 14:18+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/geoportailv3-lu/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/p/geoportailv3-lu/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,9 +19,17 @@ msgstr ""
 msgid "+ Add layers"
 msgstr "+ Ajouter une couche"
 
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "<p>Invalid login or password</p>"
-msgstr "Login ou mot de passe invalide"
+#: geoportailv3/templates/index.html
+msgid ""
+"A <em>right click</em> (tap and hold on mobile) will display information "
+"about the current location."
+msgstr ""
+
+#: geoportailv3/templates/index.html
+msgid ""
+"A <em>short click</em> (tap on mobile) on a map feature will select the "
+"feature and show more information."
+msgstr ""
 
 #: geoportailv3/static/js/print/printdirective.js
 msgid "A0 landscape"
@@ -90,37 +99,41 @@ msgstr "Couche de fond:"
 msgid "Catalog"
 msgstr "Catalogue"
 
+#: geoportailv3/static/js/themeswitcher/themes.html
+msgid "Changer"
+msgstr "Changer"
+
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid ""
 "Click to continue drawing the line<br>Double-click or click last point to "
 "finish"
-msgstr ""
+msgstr "Cliquez pour continuer à tracer la ligne<br>Double cliquez pour finaliser"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid ""
 "Click to continue drawing the polygon<br>Double-click or click last point to"
 " finish"
-msgstr ""
+msgstr "Cliquez pour continuer à tracer le polygone<br>Double cliquez pour finaliser"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to finish"
-msgstr ""
+msgstr "Cliquez pour finir"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing area"
-msgstr ""
+msgstr "Cliquez pour commencer à tracer une aire"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing azimut"
-msgstr ""
+msgstr "Cliquez pour commencer à tracer un azimut"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing length"
-msgstr ""
+msgstr "Cliquez pour commencer à tracer une longeur"
 
 #: geoportailv3/static/js/measure/measuredirective.js
 msgid "Click to start drawing profile"
-msgstr ""
+msgstr "Cliquez pour commencer à tracer un profil"
 
 #: geoportailv3/static/js/query/parcels.html
 msgid "Commander un extrait"
@@ -142,6 +155,10 @@ msgstr "Contenance"
 msgid "Couches"
 msgstr "Couches"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Create a new user account"
+msgstr "Créer un nouvel utilisateur "
+
 #: geoportailv3/static/js/query/parcels.html
 msgid "Dernier mesurage"
 msgstr "Dernier mesurage"
@@ -157,7 +174,7 @@ msgstr "Dessin"
 
 #: geoportailv3/static/js/profile/profile.html
 msgid "Draw a line on the map to display an elevation profile."
-msgstr "Tracez une ligne sur la carte pour afficher le profile d'élévation"
+msgstr "Tracez une ligne sur la carte pour afficher le profil d'élévation"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html
 msgid "Elevation"
@@ -179,10 +196,6 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "J'ai perdu mon mot de passe"
 
-#: geoportailv3/static/js/authentication/authentication.html
-msgid "I want to create a new user account"
-msgstr "Créer un compte utilisateur"
-
 #: geoportailv3/templates/index.html
 msgid "Imprimer"
 msgstr "Imprimer"
@@ -190,6 +203,10 @@ msgstr "Imprimer"
 #: geoportailv3/templates/index.html
 msgid "Infos"
 msgstr "Infos"
+
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Invalid username or password"
+msgstr "Nom d'utilisateur ou mot de passe invalide"
 
 #: geoportailv3/static/js/layerinfo/popup.html
 msgid "Keywords"
@@ -228,6 +245,10 @@ msgid "Location Coordinates"
 msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html
+msgid "Login"
+msgstr "Se Connecter"
+
+#: geoportailv3/static/js/authentication/authentication.html
 msgid "Logout"
 msgstr "Déconnecter"
 
@@ -237,7 +258,7 @@ msgstr "Longeur"
 
 #: geoportailv3/templates/index.html
 msgid "Mes Cartes"
-msgstr "Mes Cartes"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html
 msgid "Mesurer"
@@ -275,9 +296,13 @@ msgstr "Numéro cadastral"
 msgid "Partager"
 msgstr "Partager"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Password"
+msgstr "Mot de passe"
+
 #: geoportailv3/static/js/measure/measure.html
 msgid "Profile"
-msgstr "Profile"
+msgstr "Profil"
 
 #: geoportailv3/static/js/query/mymaps.html
 msgid "Rating"
@@ -300,6 +325,10 @@ msgstr "Section"
 msgid "Short Url"
 msgstr "Url courte"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Submit"
+msgstr "Soumettre"
+
 #: geoportailv3/static/js/measure/measure.html
 msgid "Surface"
 msgstr "Surface"
@@ -312,6 +341,10 @@ msgstr "Pas de légende disponible pour cette couche"
 msgid "The metadata is right now not available"
 msgstr "Les métadonnées ne sont pas accessibles pour le moment"
 
+#: geoportailv3/static/js/themeswitcher/themes.html
+msgid "Theme"
+msgstr "Thème"
+
 #: geoportailv3/static/js/print/print.html
 msgid "Title"
 msgstr "Titre"
@@ -320,13 +353,13 @@ msgstr "Titre"
 msgid "Twitter"
 msgstr "Twitter"
 
+#: geoportailv3/static/js/authentication/authentication.html
+msgid "Username"
+msgstr "Nom d'utilisatuer"
+
 #: geoportailv3/static/js/print/print.html
 msgid "With legend"
 msgstr "Avec légende"
-
-#: geoportailv3/static/js/print/print.html
-msgid "generating"
-msgstr "en cours de traitement"
 
 #: geoportailv3/templates/index.html
 msgid "infos"
@@ -350,7 +383,7 @@ msgstr "Mes couches"
 
 #: geoportailv3/templates/index.html
 msgid "my_maps"
-msgstr "Mes Cartes"
+msgstr "My maps"
 
 #: geoportailv3/templates/index.html
 msgid "search"
@@ -970,7 +1003,7 @@ msgstr "Parcelles cadastrales"
 
 #: group.253
 msgid "mymaps"
-msgstr "Mes cartes"
+msgstr "My maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1998,11 +2031,11 @@ msgstr "Parcelles cadastrales (Numéros)"
 
 #: l_wmts.513
 msgid "streets_jpeg"
-msgstr "Réseau routier"
+msgstr "Carte hybride"
 
 #: l_wmts.514
 msgid "topo_bw_jpeg"
-msgstr "Cartes topographique N/B"
+msgstr "Carte topographique N/B"
 
 #: lu_int_wms.515
 msgid "mobi_pickup"
@@ -2098,7 +2131,7 @@ msgstr "Images aériennes"
 
 #: l_wmts.538
 msgid "basemap_global"
-msgstr "Carte de base"
+msgstr "Carte routière"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
@@ -2166,63 +2199,63 @@ msgstr "Zones dans lesquelles une application du métazachlore est interdite"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
-msgstr ""
+msgstr "Administration et autres services"
 
 #: lu_int_wms.556
 msgid "editus_poi_286"
-msgstr ""
+msgstr "Banque, finance, assurance"
 
 #: lu_int_wms.557
 msgid "editus_poi_285"
-msgstr ""
+msgstr "Beauté, sport et wellness"
 
 #: lu_int_wms.558
 msgid "editus_poi_287"
-msgstr ""
+msgstr "Commerce"
 
 #: lu_int_wms.559
 msgid "editus_poi_289"
-msgstr ""
+msgstr "Communication et multimédia"
 
 #: lu_int_wms.560
 msgid "editus_poi_290"
-msgstr ""
+msgstr "Culture, loisirs et tourisme"
 
 #: lu_int_wms.561
 msgid "editus_poi_294"
-msgstr ""
+msgstr "Hôtel, restaurant, café"
 
 #: lu_int_wms.562
 msgid "editus_poi_291"
-msgstr ""
+msgstr "Enseignement, formation et emploi"
 
 #: lu_int_wms.563
 msgid "editus_poi_292"
-msgstr ""
+msgstr "Garage, transport et mobilité"
 
 #: lu_int_wms.564
 msgid "editus_poi_293"
-msgstr ""
+msgstr "Habitat"
 
 #: lu_int_wms.565
 msgid "editus_poi_295"
-msgstr ""
+msgstr "Industrie"
 
 #: lu_int_wms.566
 msgid "editus_poi_296"
-msgstr ""
+msgstr "Médecine et santé"
 
 #: lu_int_wms.567
 msgid "editus_poi_298"
-msgstr ""
+msgstr "Service aux professionnels"
 
 #: group.568
 msgid "editus_pois"
-msgstr ""
+msgstr "Points d'intérêt (editus)"
 
 #: l_wmts.569
 msgid "basemap_2015_global"
-msgstr ""
+msgstr "Carte routière"
 
 #: lu_int_wms.570
 msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
