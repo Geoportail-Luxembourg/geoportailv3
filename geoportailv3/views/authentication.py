@@ -33,6 +33,7 @@ def get_user_from_request(request):
         user = O()
         user.id = 0
         user.username = username
+        user.email = None
         connector = get_ldap_connector(request)
         cm = connector.manager
 
