@@ -8,8 +8,8 @@
   <dt ng-if="content.layerMetadata.name.length>0" translate>Name</dt><dd ng-bind="content.layerMetadata.name"></dd>
   <dt ng-if="content.layerMetadata.description.length>0" translate>Description</dt>
   <dd>
-      <span ng-if="content.layerMetadata.description.length>220 && content.isShortDesc == true" ng-bind="content.layerMetadata.description | limitTo:220"></span><a ng-if="content.layerMetadata.description.length>220 && content.isShortDesc" ng-click="content.isShortDesc=false">&#8230;</a>
-      <span ng-if="content.layerMetadata.description.length<=220 || !content.isShortDesc" ng-bind="content.layerMetadata.description"></span><a ng-if="content.layerMetadata.description.length>220 && !content.isShortDesc" ng-click="content.isShortDesc=true">-</a>
+      <span ng-if="content.layerMetadata.description.length>220 && content.isShortDesc == true" ng-bind-html="content.layerMetadata.trusted_description | limitTo:220"></span><a ng-if="content.layerMetadata.description.length>220 && content.isShortDesc" ng-click="content.isShortDesc=false">&#8230;</a>
+      <span ng-if="content.layerMetadata.description.length<=220 || !content.isShortDesc" ng-bind-html="content.layerMetadata.trusted_description"></span><a ng-if="content.layerMetadata.description.length>220 && !content.isShortDesc" ng-click="content.isShortDesc=true">-</a>
   </dd>
 
 

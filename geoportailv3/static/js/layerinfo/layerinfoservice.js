@@ -86,7 +86,10 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
 
                 var remoteMetadata = resp.data['root'][0];
                 content['layerMetadata'] = remoteMetadata;
-
+                if ('description' in content['layerMetadata']) {
+                  content['layerMetadata']['trusted_description'] =
+                  $sce.trustAsHtml(content['layerMetadata']['description']);
+                }
                 if ('legend_name' in localMetadata) {
                   content['legendUrl'] = $sce.trustAsResourceUrl(
                       '//wiki.geoportail.lu/doku.php?id=' +
