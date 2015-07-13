@@ -1,5 +1,5 @@
 <h1>{{layers.layerLabel | translate}}</h1>
-<div ng-repeat="feature in layers.features">
+<div ng-repeat="feature in layers.features" class="poi-feature">
   <h2>{{feature.attributes.name}}</h2>
   <a ng-if="feature.attributes.image" href="http://map.geoportail.lu/{{feature.attributes.image}}" target="_blank"><img src="http://map.geoportail.lu/{{feature.attributes.thumbnail}}"></a><br>
   <span translate>Nom</span> : {{feature.attributes.label}}<br>

@@ -1,5 +1,5 @@
 <h1>{{layers.layerLabel | translate}}</h1>
-<div ng-repeat="feature in layers.features">
+<div ng-repeat="feature in layers.features" class="poi-feature">
   <h2>{{feature.attributes.PF.mainNumber}}/{{feature.attributes.PF.additionalNumber}}</h2>
   <span translate>Commune</span> : {{feature.attributes.PF.townName}}<br>
   <span translate>Section</span> : {{feature.attributes.PF.sectionDesignation}}<br>
