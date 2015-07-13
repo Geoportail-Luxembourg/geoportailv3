@@ -115,6 +115,12 @@ app.QueryController = function($timeout, $scope, $http,
    */
   this.map_ = this['map'];
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.isQuerying_ = false;
+
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
@@ -206,7 +212,7 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
-        if (!this['queryActive']) return;
+        if (!this['queryActive'] || this.isQuerying_) return;
 
         if (evt.originalEvent instanceof MouseEvent) {
           this.singleclickEvent_.apply(this, [evt]);
@@ -241,6 +247,9 @@ app.QueryController = function($timeout, $scope, $http,
 
   goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
+        if (this.isQuerying_) {
+          return false;
+        }
         if (!this['queryActive']) {
           this.map_.getTargetElement().style.cursor = '';
         } else {
@@ -318,6 +327,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
         this.map_.getView().getProjection(), 'EPSG:2169');
     var small_box = lb.concat(rt);
 
+    this.isQuerying_ = true;
+    this.map_.getTargetElement().style.cursor = 'wait';
     this.http_.get(
         this.getInfoServiceUrl_,
         {params: {
@@ -342,6 +353,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
             );
           }
           this.highlightFeatures_(this.lastHighlightedFeatures_);
+          this.isQuerying_ = false;
+          this.map_.getTargetElement().style.cursor = '';
         }, this));
   }
 };
