@@ -372,7 +372,7 @@ class Getfeatureinfo(object):
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
-            body['spatialRel'] = 'esriSpatialRelEnvelopeIntersects'
+            body['spatialRel'] = 'esriSpatialRelIntersects'
         else:
             return []
 
