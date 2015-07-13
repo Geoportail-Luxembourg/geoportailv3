@@ -32,7 +32,7 @@ app.notifyFactory = function() {
 
     window.setTimeout(function() {
       el.alert('close');
-    }, 5000);
+    }, 7000);
   }
 };
 

@@ -40,10 +40,11 @@ app.module.directive('appShare', app.shareDirective);
  * @ngInject
  * @constructor
  * @param {angular.$window} $window
+ * @param {gettext} gettext
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  */
-app.ShareDirectiveController = function($window, gettextCatalog) {
+app.ShareDirectiveController = function($window, gettext, gettextCatalog) {
   /**
    * @type {Object}
    * @private
@@ -106,7 +107,7 @@ app.ShareDirectiveController.prototype.openMailLink = function() {
   googUri.setScheme('mailto');
   googUri.setQueryData(goog.Uri.QueryData.createFromMap({
     'subject': this.window_.document.title +
-        this.translate_.getString(' - link from geoportail.lu'),
+        this.translate_.getString(gettext(' - link from geoportail.lu')),
     'body': this.window_.location.href
   }));
   this.window_.open(googUri.toString(), '_self', this.windowOptions_);

@@ -1,11 +1,12 @@
 # 
 # Translators:
 # Andre aDonno <andrea.donno@me.com>, 2015
+# Francis Kaell <francis.kaell@act.etat.lu>, 2015
 # patrick weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-08 14:48+0000\n"
+"PO-Revision-Date: 2015-07-10 14:04+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
@@ -14,383 +15,408 @@ msgstr ""
 "Language: lb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:91
 msgid "+ Add layers"
 msgstr "+ Layeren beisetzen"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/static/js/share/sharedirective.js:110
+msgid "- link from geoportail.lu"
+msgstr "Kaart aus geoportail.lu"
+
+#: geoportailv3/templates/index.html:124
 msgid ""
 "A <em>right click</em> (tap and hold on mobile) will display information "
 "about the current location."
-msgstr ""
+msgstr "Duerch <em>Rietsklick</em> (tippen an gedréckt haalen op mobil) ginn d'Informatiounen iwwert déi aktuell Positioun ugewisen"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:127
 msgid ""
 "A <em>short click</em> (tap on mobile) on a map feature will select the "
 "feature and show more information."
-msgstr ""
+msgstr "Duerch <em>Klick</em> (tippen op mobil) op eng Funktioun gëtt dës ausgewielt an méi Informatiounen ugewisen"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:165
 msgid "A0 landscape"
-msgstr "A0 Landscape"
+msgstr "A0 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:164
 msgid "A0 portrait"
 msgstr "A0 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:163
 msgid "A1 landscape"
-msgstr "A1 Landscape"
+msgstr "A1 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:162
 msgid "A1 portrait"
 msgstr "A1 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:161
 msgid "A2 landscape"
-msgstr "A2 Landscape"
+msgstr "A2 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:160
 msgid "A2 portrait"
 msgstr "A2 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:159
 msgid "A3 landscape"
-msgstr "A3 Landscape"
+msgstr "A3 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:158
 msgid "A3 portrait"
 msgstr "A3 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:157
 msgid "A4 landscape"
-msgstr "A4 Landscape"
+msgstr "A4 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js
+#: geoportailv3/static/js/print/printdirective.js:156
 msgid "A4 portrait"
 msgstr "A4 Portrait"
 
-#: geoportailv3/static/js/print/print.html
+#: geoportailv3/static/js/print/print.html:45
 msgid "Abort"
-msgstr "Ophaalen"
+msgstr "Ënnerbriechen"
 
-#: geoportailv3/static/js/search/searchdirective.js
+#: geoportailv3/static/js/search/searchdirective.js:359
 msgid "Addresses"
 msgstr "Adressen"
 
-#: geoportailv3/static/js/measure/measure.html
+#: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
 msgstr "Azimut"
 
-#: geoportailv3/static/js/search/searchdirective.js
+#: geoportailv3/static/js/search/searchdirective.js:344
 msgid "Background"
 msgstr "Hannergrond"
 
-#: geoportailv3/static/js/search/searchdirective.js
+#: geoportailv3/static/js/search/searchdirective.js:333
 msgid "Background Layers"
 msgstr "Hannergrondlayeren"
 
-#: geoportailv3/static/js/backgroundlayer/backgroundlayer.html
+#: geoportailv3/static/js/exclusionmanagerservice.js:126
+msgid ""
+"Background has been deactivated because the layer {{layer}} cannot be "
+"displayed on top of it."
+msgstr "D' Hannergrondkaart gouf ausgeschalt well se net mam Layer {{layer}} kann ugewise ginn"
+
+#: geoportailv3/static/js/backgroundlayer/backgroundlayer.html:2
 msgid "Background layer:"
 msgstr "Hannergrondlayer:"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:82
 msgid "Catalog"
 msgstr "Katalog"
 
-#: geoportailv3/static/js/themeswitcher/themes.html
+#: geoportailv3/static/js/themeswitcher/themes.html:4
 msgid "Changer"
 msgstr "Wiesselen"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:136
 msgid ""
 "Click to continue drawing the line<br>Double-click or click last point to "
 "finish"
-msgstr "Klickt fir mam zeechnen vun der Linn weiderzefueren <br> Duebelklick fir ofzeschléissen"
+msgstr "Klickt fir mam Zeechnen vun der Linn weiderzefueren <br> Duebelklick fir ofzeschléissen"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:174
 msgid ""
 "Click to continue drawing the polygon<br>Double-click or click last point to"
 " finish"
-msgstr "Klickt fir mam zeechnen vum Polygon weiderzefueren <br> Duebelklick fir ofzeschléissen"
+msgstr "Klickt fir mam Zeechnen vum Polygon weiderzefueren <br> Duebelklick fir ofzeschléissen"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:193
 msgid "Click to finish"
 msgstr "Klickt fir ofzeschléissen"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:173
 msgid "Click to start drawing area"
-msgstr "Klickt fir mam zeechnen vun enger Fläch unzefänken"
+msgstr "Klickt fir mam Moossen vun enger Fläch unzefänken"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:192
 msgid "Click to start drawing azimut"
-msgstr "Klickt fir mam zeechnen vun engem Azimut unzefänken"
+msgstr "Klickt fir mam Moossen vun engem Azimut unzefänken"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:152
 msgid "Click to start drawing length"
-msgstr "Klickt fir mam zeechnen vun enger Längt unzefänken"
+msgstr "Klickt fir mam Moossen vun enger Längt unzefänken"
 
-#: geoportailv3/static/js/measure/measuredirective.js
+#: geoportailv3/static/js/measure/measuredirective.js:135
 msgid "Click to start drawing profile"
-msgstr "Klickt fir mam zeechnen vun engem Profil unzefänken"
+msgstr "Klickt fir mam Moossen vun engem Profil unzefänken"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/urplang.html:7
+msgid "Cliquez dans l'image pour agrandir"
+msgstr ""
+
+#: geoportailv3/static/js/query/parcels.html:10
 msgid "Commander un extrait"
 msgstr "Extrait bestellen"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:4
 msgid "Commune"
 msgstr "Gemeng"
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:18
 msgid "Contact"
 msgstr "Kontakt"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:7
 msgid "Contenance"
 msgstr "Flächeninhalt"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:143
 msgid "Couches"
 msgstr "Layeren"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:13
 msgid "Create a new user account"
-msgstr "E neien Benotzerkont Erstellen"
+msgstr "E neien Benotzerkont opmaachen"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:9
 msgid "Dernier mesurage"
 msgstr "Leschten Mesurage"
 
-#: geoportailv3/static/js/layerinfo/popup.html
-#: geoportailv3/static/js/query/mymaps.html
+#: geoportailv3/static/js/layerinfo/popup.html:9
+#: geoportailv3/static/js/query/mymaps.html:6
 msgid "Description"
 msgstr "Beschreiwung"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:159
 msgid "Dessin"
 msgstr "Zeechnen"
 
-#: geoportailv3/static/js/profile/profile.html
+#: geoportailv3/static/js/profile/profile.html:5
 msgid "Draw a line on the map to display an elevation profile."
-msgstr "Zeechent eng Linn ob der Kaart fir den Héichtenprofil unzeweisen"
+msgstr "Zeechent eng Linn op der Kaart fir den Héichtenprofil unzeweisen"
 
-#: geoportailv3/static/js/locationinfo/locationinfo.html
+#: geoportailv3/static/js/locationinfo/locationinfo.html:19
 msgid "Elevation"
-msgstr "Héichten"
+msgstr "Héicht"
 
-#: geoportailv3/static/js/share/share.html
+#: geoportailv3/static/js/share/share.html:13
 msgid "Email"
 msgstr "Email"
 
-#: geoportailv3/static/js/share/share.html
+#: geoportailv3/static/js/share/share.html:4
 msgid "Facebook"
 msgstr "Facebook"
 
-#: geoportailv3/static/js/share/share.html
+#: geoportailv3/static/js/share/share.html:10
 msgid "Google Plus"
 msgstr "Google Plus"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:12
 msgid "I lost my password"
-msgstr "Ech hu mäin Passwuert verluer"
+msgstr "Ech hu mäi Passwuert verluer"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:171
 msgid "Imprimer"
 msgstr "Drécken"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:149
 msgid "Infos"
 msgstr "Infos"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:11
 msgid "Invalid username or password"
 msgstr "Ongültegen Benotzernumm oder Passwuert"
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:17
 msgid "Keywords"
 msgstr "Wichteg Wierder"
 
-#: geoportailv3/static/js/search/searchdirective.js
+#: geoportailv3/static/js/search/searchdirective.js:304
 msgid "Layers"
 msgstr "Layeren"
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:35
 msgid "Legend"
-msgstr "Legende"
+msgstr "Legend"
 
-#: geoportailv3/static/js/measure/measure.html
+#: geoportailv3/static/js/measure/measure.html:3
 msgid "Length"
 msgstr "Längt"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:153
 msgid "Lien 1"
 msgstr ""
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:154
 msgid "Lien 2"
 msgstr ""
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:155
 msgid "Lien 3"
 msgstr ""
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:27
 msgid "Link to the metadata"
 msgstr "Link op d'Metadaten"
 
-#: geoportailv3/static/js/locationinfo/locationinfo.html
+#: geoportailv3/static/js/locationinfo/locationinfo.html:13
 msgid "Location Coordinates"
-msgstr ""
+msgstr "Positiounskoordinaten"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:4
 msgid "Login"
 msgstr "Aloggen"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:23
 msgid "Logout"
 msgstr "Ausloggen"
 
-#: geoportailv3/static/js/query/mymaps.html
+#: geoportailv3/static/js/query/mymaps.html:7
 msgid "Longeueur"
 msgstr "Längt"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:146
 msgid "Mes Cartes"
 msgstr "My Maps"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:163
 msgid "Mesurer"
-msgstr "Moosen"
+msgstr "Moossen"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:2
+#: geoportailv3/static/js/authentication/authentication.html:22
 msgid "My account"
-msgstr "Mein Konto"
+msgstr "Mäi Konto"
 
-#: geoportailv3/static/js/elevationservice.js
+#: geoportailv3/static/js/elevationservice.js:50
 msgid "N/A"
 msgstr ""
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:8
 msgid "Name"
 msgstr "Numm"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:8
 msgid "Nature"
-msgstr ""
+msgstr "Notzung"
 
-#: geoportailv3/static/js/layermanager/layermanager.html
+#: geoportailv3/static/js/layermanager/layermanager.html:1
 msgid "No layer selected"
 msgstr "Keen Layer ausgewielt"
 
-#: geoportailv3/static/js/query/mymaps.html
+#: geoportailv3/static/js/query/mymaps.html:5
 msgid "Nom"
 msgstr "Numm"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:6
 msgid "Numero cadastral"
 msgstr "Kadasternummer"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:176
 msgid "Partager"
 msgstr "Deelen"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:8
 msgid "Password"
 msgstr "Passwuert"
 
-#: geoportailv3/static/js/measure/measure.html
+#: geoportailv3/static/js/measure/measure.html:15
 msgid "Profile"
 msgstr "Profil"
 
-#: geoportailv3/static/js/query/mymaps.html
+#: geoportailv3/static/js/query/mymaps.html:8
 msgid "Rating"
 msgstr "Bewäertung"
 
-#: geoportailv3/static/js/search/search.html
+#: geoportailv3/static/js/search/search.html:6
 msgid "Recherche adresse, parcelles, couches ..."
-msgstr "SIch Adressen, Parzellen, Layeren ... "
+msgstr "Sich Adressen, Parzellen, Layeren ... "
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:16
 msgid "Revision date"
-msgstr ""
+msgstr "Revisiounsdatum"
 
-#: geoportailv3/static/js/query/parcels.html
+#: geoportailv3/static/js/query/parcels.html:5
 msgid "Section"
-msgstr ""
+msgstr "Sectioun"
 
-#: geoportailv3/static/js/share/shorturl.html
-#: geoportailv3/static/js/locationinfo/locationinfo.html
+#: geoportailv3/static/js/locationinfo/locationinfo.html:4
+#: geoportailv3/static/js/share/shorturl.html:4
 msgid "Short Url"
-msgstr "Kuerz Adress"
+msgstr "Url"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:9
 msgid "Submit"
 msgstr "Aloggen"
 
-#: geoportailv3/static/js/measure/measure.html
+#: geoportailv3/static/js/measure/measure.html:7
 msgid "Surface"
 msgstr "Fläch"
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/exclusionmanagerservice.js:139
+msgid ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+msgid_plural ""
+"The layers <b>{{layersToRemove}}</b> have been removed because they cannot "
+"be displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr[0] "De Layer <b>{{layersToRemove}}</b> gouf ewechgehol, well en net dierf mam Layer <b>{{layer}}</b> ugewisen gin"
+msgstr[1] "D'Layeren <b>{{layersToRemove}}</b> goufen ewechgeholl, well se net dierfen mam Layer <b>{{layer}}</b> ugewisen ginn"
+
+#: geoportailv3/static/js/layerinfo/popup.html:38
 msgid "The legend is not available for this layer"
-msgstr "Keng spezifësch Legend fier dese Layer"
+msgstr "Keng spezifesch Legend fir dëse Layer"
 
-#: geoportailv3/static/js/layerinfo/popup.html
+#: geoportailv3/static/js/layerinfo/popup.html:34
 msgid "The metadata is right now not available"
-msgstr "Et si keng Metadaten fir dëse Layer verfügbar"
+msgstr "Et gi keng Metadaten fir dëse Layer"
 
-#: geoportailv3/static/js/themeswitcher/themes.html
+#: geoportailv3/static/js/themeswitcher/themes.html:2
 msgid "Theme"
 msgstr "Thema"
 
-#: geoportailv3/static/js/print/print.html
+#: geoportailv3/static/js/print/print.html:6
 msgid "Title"
 msgstr "Titel"
 
-#: geoportailv3/static/js/share/share.html
+#: geoportailv3/static/js/share/share.html:7
 msgid "Twitter"
 msgstr "Twitter"
 
-#: geoportailv3/static/js/authentication/authentication.html
+#: geoportailv3/static/js/authentication/authentication.html:7
 msgid "Username"
 msgstr "Benotzernumm"
 
-#: geoportailv3/static/js/print/print.html
+#: geoportailv3/static/js/print/print.html:13
 msgid "With legend"
-msgstr "Mat Legende"
+msgstr "Mat Legend"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:108
 msgid "infos"
-msgstr ""
+msgstr "Informatiounen"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:42
 msgid "lang"
-msgstr ""
+msgstr "Sprooch"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:69
 msgid "layers"
-msgstr ""
+msgstr "Layeren"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:11
 msgid "map_title"
-msgstr ""
+msgstr "Kaartennumm"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:77
 msgid "my_layers"
-msgstr "Meng Layeren"
+msgstr "Méng Layeren"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:102
 msgid "my_maps"
 msgstr "My maps"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:34
 msgid "search"
 msgstr "Sich"
 
-#: geoportailv3/templates/index.html
+#: geoportailv3/templates/index.html:36
 msgid "user"
-msgstr ""
+msgstr "Benotzer"
 
 #: theme.101
 msgid "preemption"
@@ -418,15 +444,15 @@ msgstr "Landesplanung"
 
 #: theme.107 lu_ext_wms.292
 msgid "nordstad"
-msgstr ""
+msgstr "Nordstad"
 
 #: theme.108
 msgid "go"
-msgstr ""
+msgstr "Géomètres officiels"
 
 #: theme.109
 msgid "prof"
-msgstr ""
+msgstr "Professionell Notzer"
 
 #: theme.110
 msgid "main_mobile"
@@ -434,7 +460,7 @@ msgstr "Allgemeng"
 
 #: theme.111
 msgid "user_content_mobile"
-msgstr "Kaarten vun Benotzer"
+msgstr "Kaarten vu Benotzer"
 
 #: theme.112
 msgid "api"
@@ -442,11 +468,11 @@ msgstr "Camping"
 
 #: theme.113
 msgid "arbed"
-msgstr ""
+msgstr "ARBED"
 
 #: theme.114 group.257
 msgid "commande"
-msgstr "Municipality"
+msgstr "Bestellung"
 
 #: theme.115
 msgid "ortho_mobile"
@@ -458,7 +484,7 @@ msgstr "Tourismus"
 
 #: theme.117
 msgid "main"
-msgstr ""
+msgstr "Haaptthema"
 
 #: theme.118
 msgid "cadastre_mobile"
@@ -474,7 +500,7 @@ msgstr "Waasser"
 
 #: theme.121
 msgid "remich"
-msgstr "PAG Remich"
+msgstr "Remich"
 
 #: theme.122
 msgid "test"
@@ -490,11 +516,11 @@ msgstr "Landwirtschaft"
 
 #: theme.125
 msgid "preizerdaul"
-msgstr ""
+msgstr "Preizerdaul"
 
 #: theme.126
 msgid "wellenstein"
-msgstr "wellenstein_link_title"
+msgstr "Wellesteen"
 
 #: theme.127
 msgid "at_mobile"
@@ -502,19 +528,19 @@ msgstr "Raumplanung"
 
 #: theme.128
 msgid "eau"
-msgstr "Moossen"
+msgstr "Wasser"
 
 #: theme.129
 msgid "lintgen"
-msgstr ""
+msgstr "Lëntgen"
 
 #: theme.130
 msgid "lenoz"
-msgstr ""
+msgstr "Lenoz"
 
 #: theme.131
 msgid "municipalities"
-msgstr ""
+msgstr "Gemengen"
 
 #: theme.132
 msgid "presidence2015"
@@ -522,7 +548,7 @@ msgstr ""
 
 #: theme.133 lu_int_wms.465
 msgid "olos"
-msgstr ""
+msgstr "Parcelles OLOS"
 
 #: group.134
 msgid "emwelt_biotop_kadaster_mobile"
@@ -530,7 +556,7 @@ msgstr "Offeland-Biotopkadaster"
 
 #: lu_int_wms.135
 msgid "ac_preizerdaul_ortho_2009"
-msgstr "Orthophoto Remich"
+msgstr "Orthophoto Preizerdaul"
 
 #: lu_int_wms.136
 msgid "asta_esp_lisiere"
@@ -550,7 +576,7 @@ msgstr "Offeland-Biotopkadaster: Flächenelementer ouni Bongerten"
 
 #: l_wmts.140
 msgid "emwelt_biotop_kadaster_b_mobile"
-msgstr "Offeland-Biotopkadaster: Pufferzone"
+msgstr "Offeland-Biotopkadaster: Pufferzonen"
 
 #: l_wmts.141
 msgid "emwelt_biotop_kadaster_p_mobile"
@@ -562,7 +588,7 @@ msgstr "Offeland-Biotopkadaster: Bongerten"
 
 #: group.143
 msgid "group_nordstad"
-msgstr ""
+msgstr "Nordstad"
 
 #: group.144
 msgid "env_natura2000"
@@ -586,11 +612,11 @@ msgstr "Regional touristesch Kaart 1:20000 R"
 
 #: lu_ext_wms.149
 msgid "tour_nordic_walking"
-msgstr "Nordic Walking Parcs"
+msgstr "Nordic Walking"
 
 #: lu_int_wms.150
 msgid "parcelles_preemption"
-msgstr ""
+msgstr "Parzellen Virkafsrecht"
 
 #: l_wmts.151
 msgid "addresses"
@@ -622,11 +648,11 @@ msgstr "Fluchhafekaméidi 2011 (LDEN)"
 
 #: lu_ext_wms.158
 msgid "tour_cfl"
-msgstr "CFL: Bunn, Wanderen, Velo"
+msgstr "CFL: Bunn, Wanderen, Vëlo"
 
 #: lu_ext_wms.159
 msgid "tour_pistes_velo"
-msgstr "Velosweeër"
+msgstr "Vëlosweeër"
 
 #: group.160
 msgid "eau_luft_sat_bilder"
@@ -662,7 +688,7 @@ msgstr "Corine Landcover 2006"
 
 #: lu_ext_wms.168
 msgid "tour_quality_trails"
-msgstr "aner Qualitéitswéër"
+msgstr "Aner Qualitéitsweeër"
 
 #: group.169
 msgid "eau_zones_protegees"
@@ -670,7 +696,7 @@ msgstr "Schutzgebidder"
 
 #: group.170
 msgid "mittal_group"
-msgstr "Landesplanung"
+msgstr "Parzellen vum Grupp Mittal "
 
 #: group.171
 msgid "presidence_restos"
@@ -702,7 +728,7 @@ msgstr "Kadasterparzellen"
 
 #: l_wmts.178
 msgid "ivv_grosslagen"
-msgstr "Lagen am Weibau"
+msgstr "Lagen am Wäibau"
 
 #: lu_ext_wms.179
 msgid "tour_autopedestre"
@@ -714,11 +740,11 @@ msgstr "Gememgeweeër"
 
 #: group.181
 msgid "luft_und_satellitenbilder"
-msgstr "Loft a Satellitebilder"
+msgstr "Loft- a Satellitebiller"
 
 #: group.182
 msgid "tour_sentiers_locaux"
-msgstr "Lokal Wanderweeër (nët vun der DG Tourismus ënnerhalen)"
+msgstr "Lokal Wanderweeër (nët vun der DG Tourismus ënnerhal)"
 
 #: group.183
 msgid "anf_secteurs_ecologiques_group"
@@ -754,7 +780,7 @@ msgstr "Ëmwelt, Biologie a Geologie"
 
 #: l_wmts.191
 msgid "topo_decoupage_tc"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regional Kaart"
 
 #: lu_ext_wms.192
 msgid "tour_mullerthal_trail"
@@ -774,7 +800,7 @@ msgstr "Héicht"
 
 #: l_wmts.196
 msgid "topo_decoupage_5000"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regionalkaart"
 
 #: group.197
 msgid "infrastrucktur_une_kommunikation"
@@ -790,7 +816,7 @@ msgstr "Verkéiersnetzer"
 
 #: lu_ext_wms.200
 msgid "tour_sentiers_ajl"
-msgstr "Jugendherbergs Weeër"
+msgstr "Jugendherbergs-Weeër"
 
 #: lu_ext_wms.201
 msgid "tour_temp"
@@ -802,11 +828,11 @@ msgstr "Agrikulturdaten"
 
 #: l_wmts.203
 msgid "buildings"
-msgstr "Gebeier"
+msgstr "Gebaier"
 
 #: l_wmts.204
 msgid "topo_decoupage_100k"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regional Kaart"
 
 #: l_wmts.205
 msgid "TOPO_CARTESHISTO_1964"
@@ -850,7 +876,7 @@ msgstr "Komplettiwersiicht"
 
 #: l_wmts.215
 msgid "decoupage_geo25_50k"
-msgstr ""
+msgstr "Blatschnëtt Geologesch Kaart"
 
 #: group.216
 msgid "verkehrsnetze_tourisme"
@@ -882,7 +908,7 @@ msgstr "Saint Jacques Wee"
 
 #: l_wmts.223
 msgid "topo_decoupage_50k"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regionalkaart"
 
 #: l_wmts.224
 msgid "TOPO_CARTES_1944"
@@ -926,7 +952,7 @@ msgstr "Loftbiller vun 1951 (1:25k)"
 
 #: lu_int_wms.234
 msgid "mittal"
-msgstr ""
+msgstr "Parzellen vum Grupp Mittal "
 
 #: l_wmts.235
 msgid "ortho_2007"
@@ -966,7 +992,7 @@ msgstr "Vu Benotzer publizéierte Contenu"
 
 #: l_wmts.244
 msgid "ivv_kleinlagen"
-msgstr "Klenglagen am Weibau"
+msgstr "Klenglagen am Wäibau"
 
 #: group.245
 msgid "anf_forets"
@@ -1026,7 +1052,7 @@ msgstr "Kadaster Urpläng"
 
 #: l_wmts.260
 msgid "ac_wellenstein_pag_limites"
-msgstr "Limitem"
+msgstr "Limiten"
 
 #: l_wmts.261
 msgid "ac_wellenstein_pag_voies_acces"
@@ -1058,7 +1084,7 @@ msgstr "PAG"
 
 #: l_wmts.268
 msgid "topo_decoupage_r"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regional Kaart"
 
 #: l_wmts.269
 msgid "sections_cadastrales_labels"
@@ -1082,7 +1108,7 @@ msgstr "Net kategoriséiert"
 
 #: lu_ext_wms.274
 msgid "user_content_poi"
-msgstr "Points of interest"
+msgstr "Interessant Punkten"
 
 #: l_wmts.275
 msgid "pedologie_100k"
@@ -1122,7 +1148,7 @@ msgstr "Verwaltungseenheeten vun der Naturverwaltung"
 
 #: group.284
 msgid "tour_velo_v2"
-msgstr "Velos- & Mountainbike Weeër"
+msgstr "Vëlos- & Mountainbike Weeër"
 
 #: l_wmts.285
 msgid "ac_wellenstein_pag_alignements_a_preserver"
@@ -1134,7 +1160,7 @@ msgstr "Wiederstatiounen"
 
 #: group.287
 msgid "gebaude_prof"
-msgstr "Gebeier"
+msgstr "Gebaier"
 
 #: l_wmts.288
 msgid "TOPO_CARTESHISTO_1989"
@@ -1146,7 +1172,7 @@ msgstr "Héichtelinnen 10m"
 
 #: group.290
 msgid "group_ac_preizerdaul_pag"
-msgstr ""
+msgstr "PAG Preizerdaul"
 
 #: l_wmts.291
 msgid "wg_hangneigung_"
@@ -1162,7 +1188,7 @@ msgstr "Topografesch Kaarten"
 
 #: l_wmts.295
 msgid "wg_ikonos_satellitendaten"
-msgstr "Satellitendonnée Ikonos"
+msgstr "Ikonos Satellitendaten "
 
 #: lu_ext_wms.296
 msgid "tour_pistes_vtt"
@@ -1182,7 +1208,7 @@ msgstr "FLIK Referenzparzellen Wéngerten 2014"
 
 #: lu_int_wms.300
 msgid "buildings_eau"
-msgstr "Gebeier"
+msgstr "Gebaier"
 
 #: lu_int_wms.301
 msgid "toponymes_go"
@@ -1218,7 +1244,7 @@ msgstr "Ze erhale Flächen"
 
 #: l_wmts.309
 msgid "decoupage_geo25k"
-msgstr "Blaatschnett Regional Kaart"
+msgstr "Blatschnëtt Regionalkaart"
 
 #: group.310
 msgid "asta"
@@ -1334,7 +1360,7 @@ msgstr "International Schutzgebidder"
 
 #: group.338
 msgid "weinbau"
-msgstr "Weibau"
+msgstr "Wäibau"
 
 #: group.339
 msgid "tour_auto_moto_v2"
@@ -1342,7 +1368,7 @@ msgstr "Oldtimer- & Moto Touren"
 
 #: group.340
 msgid "group_preemption"
-msgstr ""
+msgstr "Virkafsrecht"
 
 #: group.341
 msgid "lebensraume_une_biotope"
@@ -1350,7 +1376,7 @@ msgstr "Liewensraim a Biotoper"
 
 #: group.342
 msgid "gebaude"
-msgstr "Gebeier"
+msgstr "Gebaier"
 
 #: group.343
 msgid "asta_zones_prot"
@@ -1374,7 +1400,7 @@ msgstr "PAG Remich"
 
 #: l_wmts.348
 msgid "topo_decoupage_ortho"
-msgstr "Bladschnëtt Orthophotos"
+msgstr "Blatschnëtt Orthophotos"
 
 #: l_wmts.349
 msgid "cantons_labels"
@@ -1382,7 +1408,7 @@ msgstr "Kantoner (Nimm)"
 
 #: lu_int_wms.350
 msgid "all_maps_root_account"
-msgstr "All ëffentlech Kaarten vun mengem Haptkont"
+msgstr "All ëffentlech Kaarten vun méngem Haaptkont"
 
 #: lu_int_wms.351
 msgid "all_my_maps"
@@ -1442,7 +1468,7 @@ msgstr "Mehrfachnotzung"
 
 #: lu_int_wms.365
 msgid "affaires"
-msgstr ""
+msgstr "Affairen"
 
 #: lu_ext_wms.366
 msgid "luxembourg_on_horse"
@@ -1450,7 +1476,7 @@ msgstr "Lëtzebuerg zu Päerd"
 
 #: lu_int_wms.367
 msgid "ac_preizerdaul_ortho"
-msgstr "Orthophoto Remich"
+msgstr "Orthophoto Preizerdaul"
 
 #: l_wmts.368
 msgid "emwelt_biotop_kadaster_f"
@@ -1458,7 +1484,7 @@ msgstr "Flächenelementer ouni Bongerten"
 
 #: l_wmts.369
 msgid "emwelt_biotop_kadaster_b"
-msgstr "Pufferzone"
+msgstr "Pufferzonen"
 
 #: group.370
 msgid "emwelt_biotop_kadaster"
@@ -1470,7 +1496,7 @@ msgstr "Habitater Natura 2000"
 
 #: lu_int_wms.372
 msgid "natur_an_emwelt_terrains"
-msgstr ""
+msgstr "Natur & Ëmwelt"
 
 #: lu_int_wms.373
 msgid "mobiliteit_bikeshare"
@@ -1486,7 +1512,7 @@ msgstr "Bongerten"
 
 #: lu_ext_wms.376
 msgid "tour_pistes_velo_mymaps"
-msgstr "National Velosweeër"
+msgstr "National Vëlosweeër"
 
 #: group.377
 msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
@@ -1494,7 +1520,7 @@ msgstr "Drénkwaasserschutzgebidder [ZPS]"
 
 #: lu_int_wms.378
 msgid "topo_decoupage_ortho_2013"
-msgstr "Bladschnëtt Orthophotos"
+msgstr "Blatschnëtt Orthophotos"
 
 #: lu_int_wms.379
 msgid "prpl_luref"
@@ -1530,11 +1556,11 @@ msgstr "Naturschutzgebidder (DIG)"
 
 #: lu_ext_wms.387
 msgid "Merovingien"
-msgstr ""
+msgstr "Merovingien"
 
 #: group.388
 msgid "Archeo"
-msgstr ""
+msgstr "Archéologie"
 
 #: lu_int_wms.389
 msgid "anf_peuplements_semenciers"
@@ -1562,19 +1588,19 @@ msgstr "Mëttelalter"
 
 #: lu_ext_wms.395
 msgid "Temps modernes"
-msgstr ""
+msgstr "Temps modernes"
 
 #: lu_ext_wms.396
 msgid "Epoque indefinie"
-msgstr ""
+msgstr "Epoque indéfinie"
 
 #: lu_ext_wms.397
 msgid "Protohistoire"
-msgstr ""
+msgstr "Protohistoire"
 
 #: lu_ext_wms.398
 msgid "Gallo-Romain"
-msgstr ""
+msgstr "Gallo-Romain"
 
 #: lu_int_wms.399
 msgid "anf_arbres_remarquables"
@@ -1626,7 +1652,7 @@ msgstr "SP Logement"
 
 #: lu_int_wms.411
 msgid "at_psl1"
-msgstr "Zonen fir gréisser Wunnengsbauprojeten"
+msgstr "Zonen fir gréisser Wunnéngsbauprojeten"
 
 #: lu_int_wms.412
 msgid "at_pszae2"
@@ -1634,7 +1660,7 @@ msgstr "Nei Aktivitéitszonen an Erweiderungen"
 
 #: lu_int_wms.413
 msgid "at_pszae3"
-msgstr "Bestehend Aktivitéitszonen fir Emzeklasséieren"
+msgstr "Bestehend Aktivitéitszonen fir ëmzeklasséieren"
 
 #: lu_int_wms.414
 msgid "at_pszae4"
@@ -1694,7 +1720,7 @@ msgstr "Remembrementsperimeter"
 
 #: lu_int_wms.428
 msgid "repere_alti"
-msgstr ""
+msgstr "Héichtebolzen"
 
 #: l_wmts.429
 msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
@@ -1734,7 +1760,7 @@ msgstr "PRE"
 
 #: lu_int_wms.438
 msgid "pag_lintgen_layer"
-msgstr ""
+msgstr "Plan d'aménagement vun der Gemeng Lëntgen"
 
 #: group.439
 msgid "eau_new_Projekt_TIMIS_(usage_interne)"
@@ -1742,7 +1768,7 @@ msgstr "Projet TIMIS"
 
 #: group.440
 msgid "group_lenoz"
-msgstr ""
+msgstr "Lenoz"
 
 #: lu_int_wms.441
 msgid "at_pst3"
@@ -1762,7 +1788,7 @@ msgstr "Grondwaasser 2009"
 
 #: lu_int_wms.445
 msgid "MO"
-msgstr ""
+msgstr "Mensuration Officielle"
 
 #: l_wmts.446
 msgid "sections_cadastrales_labels_eau"
@@ -1786,7 +1812,7 @@ msgstr "Chemeschen Zoustand vun de WK 2009"
 
 #: lu_int_wms.451
 msgid "env_corridors"
-msgstr ""
+msgstr "Corridors"
 
 #: lu_int_wms.452
 msgid "env_iba"
@@ -1822,7 +1848,7 @@ msgstr "Gewässernetz"
 
 #: group.460
 msgid "eau_new_Fischerei"
-msgstr "Fëschereidëngscht"
+msgstr "Fëschereidéngscht"
 
 #: group.461
 msgid "eau_new_Projekt_Hochwasserrisikokarten_2013"
@@ -1838,11 +1864,11 @@ msgstr "Kadasterparzellen"
 
 #: group.464
 msgid "olos_group"
-msgstr ""
+msgstr "Parcelles OLOS"
 
 #: lu_int_wms.466
 msgid "topo_decoupage_5000_ed2015"
-msgstr ""
+msgstr "Blatschnëtt topographesche Plang 1:5000 Editioun 2015"
 
 #: group.467
 msgid "eau_new_Risikobeurteilung_2021"
@@ -1878,7 +1904,7 @@ msgstr "Miessstatiounen [WRRL]"
 
 #: group.475
 msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
-msgstr "Qualitéitskomponente vum ökologeschen Zustandes 2015"
+msgstr "Qualitéitskomponente vum ökologeschen Zoustand 2015"
 
 #: group.476
 msgid "eau_new_Grundwasser_2021"
@@ -1902,7 +1928,7 @@ msgstr "Grondwaasser 2015"
 
 #: group.481
 msgid "eau_new_Oberflaechengewaesser_Messstationen"
-msgstr "Messstatiounen Iwwerflächegewässer"
+msgstr "Miessstatiounen Iwwerflächegewässer"
 
 #: group.482
 msgid "eau_new_Grundwasser_Messstationen"
@@ -1998,7 +2024,7 @@ msgstr "Natur & Ausflich"
 
 #: lu_int_wms.505
 msgid "lenoz_lmg"
-msgstr ""
+msgstr "Liewensmëttelgeschäfter"
 
 #: lu_int_wms.506
 msgid "lenoz_ecoles_old"
@@ -2022,7 +2048,7 @@ msgstr "Family & Kids"
 
 #: lu_int_wms.511
 msgid "buildings_go"
-msgstr "Gebeier"
+msgstr "Gebaier"
 
 #: lu_int_wms.512
 msgid "parcels_labels_go"
@@ -2042,7 +2068,7 @@ msgstr "«Pickup»-Statiounen"
 
 #: lu_int_wms.516
 msgid "asta_flik_parcels_2015_prof"
-msgstr "Map Quest"
+msgstr "FLIK Parzellen vun der ASTA Versioun 2015"
 
 #: lu_int_wms.517
 msgid "lenoz_Banken"
@@ -2062,7 +2088,7 @@ msgstr ""
 
 #: group.521
 msgid "asta_esp_group"
-msgstr "Ökologisch wertvolle Flächen "
+msgstr "Ökologesch wäertvoll Flächen "
 
 #: lu_int_wms.522
 msgid "lenoz_Ärzte"
@@ -2118,7 +2144,7 @@ msgstr "Vereinfacht Kaart vun den natiirlechen Bëscher"
 
 #: group.535
 msgid "bglayers"
-msgstr "Hannergrond Layer"
+msgstr "Hannergrondlayer"
 
 #: l_wmts.536
 msgid "topogr_global"
@@ -2138,7 +2164,7 @@ msgstr ""
 
 #: lu_ext_wms.540
 msgid "tour_pistes_velo_mymaps2"
-msgstr "Regional Velosweeër"
+msgstr "Regional Vëlosweeër"
 
 #: lu_ext_wms.541
 msgid "projets_amen"
@@ -2194,7 +2220,7 @@ msgstr "Drénkwaassersyndikater"
 
 #: lu_int_wms.554
 msgid "eau_new_Zones_interdiction_utilisation_metazachlore"
-msgstr "Gebidder an deenen et verbueden ass Metazachlor auszebréngen"
+msgstr "Gebidder an denen et verbueden ass Metazachlor auszebréngen"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
@@ -2214,11 +2240,11 @@ msgstr "Handel"
 
 #: lu_int_wms.559
 msgid "editus_poi_289"
-msgstr "Kommunikatioun an Multimedia"
+msgstr "Kommunikatioun a Multimedia"
 
 #: lu_int_wms.560
 msgid "editus_poi_290"
-msgstr "Kultur, Fräizäit a Turissem"
+msgstr "Kultur, Fräizäit an Turissem"
 
 #: lu_int_wms.561
 msgid "editus_poi_294"
@@ -2250,7 +2276,7 @@ msgstr "Déngschtleeschtung fir Professionneller"
 
 #: group.568
 msgid "editus_pois"
-msgstr "Points d'intérêt Editus"
+msgstr "Editus Punkten"
 
 #: l_wmts.569
 msgid "basemap_2015_global"
@@ -4346,7 +4372,7 @@ msgstr "Geforeklassen"
 
 #: lu_int_wms.1090
 msgid "eau_new_Stausee_Sauer"
-msgstr "Öewersauer-Stauséi"
+msgstr "Uewersauer-Stauséi"
 
 #: lu_int_wms.1091
 msgid "eau_new_Grundwasser_(Nitratrichtlinie)"
@@ -4362,7 +4388,7 @@ msgstr "Aschränkungen Wärmepompelen"
 
 #: lu_int_wms.1094
 msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
-msgstr "ZPS duerch grousshrzgl. reglement festgeluecht"
+msgstr "ZPS duerch grousshrzgl. Reglement festgeluecht"
 
 #: lu_int_wms.1095
 msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
@@ -5827,7 +5853,7 @@ msgstr "Staark modifizéiert OWK 2009"
 
 #: lu_int_wms.1459
 msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
-msgstr "Natierleche Baseng"
+msgstr "Natierleche Baséng"
 
 #: lu_int_wms.1460
 msgid "eau_new_Einzugsgebiete"
@@ -5899,7 +5925,7 @@ msgstr ""
 
 #: lu_int_wms.1477
 msgid "eau_new_Alluvialer_Grundwasserspiegel"
-msgstr "Alluvialen Grondwaasserspigel"
+msgstr "Alluvialen Grondwaasserspijel"
 
 #: lu_int_wms.1478
 msgid "eau_new_Nitratrichtlinie_Messstationen"
