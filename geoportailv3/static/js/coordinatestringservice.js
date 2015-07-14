@@ -6,6 +6,8 @@
 goog.provide('app.CoordinateString');
 
 goog.require('app.projections');
+goog.require('goog.math');
+goog.require('goog.string');
 goog.require('ol.coordinate');
 goog.require('ol.proj');
 
@@ -64,6 +66,36 @@ app.coordinateString_ = function() {
         break;
     }
     return str;
+  }
+
+  /**
+   * @private
+   * @param {ol.Coordinate|undefined} coordinate Coordinate.
+   * @return {string} Hemisphere, degrees, minutes and seconds.
+   */
+  function toStringHDMS_(coordinate) {
+    if (goog.isDef(coordinate)) {
+      return degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
+          degreesToStringHDMS_(coordinate[0], 'EW');
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * @private
+   * @param {number} degrees Degrees.
+   * @param {string} hemispheres Hemispheres.
+   * @return {string} String.
+   */
+  function degreesToStringHDMS_(degrees, hemispheres) {
+    var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+    var x = Math.abs(3600 * normalizedDegrees);
+    return Math.floor(x / 3600) + '\u00b0 ' +
+        goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+        goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
+        Math.floor((x - Math.trunc(x)) * 10) + '\u2033 ' +
+        hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
 };
 
