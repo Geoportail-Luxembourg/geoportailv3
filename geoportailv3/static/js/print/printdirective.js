@@ -149,6 +149,14 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
    */
   this.gettextCatalog_ = gettextCatalog;
 
+
+  /**
+   * Current report reference id.
+   * @type {string}
+   * @private
+   */
+  this.curRef_ = '';
+
   /**
    * @type {Array.<string>}
    */
@@ -371,18 +379,17 @@ app.PrintController.prototype.cancel = function() {
   goog.asserts.assert(!goog.isNull(this.requestCanceler_));
   this.requestCanceler_.resolve();
 
-  // Cancel the status timeout if there's one set, to make no other status
-  // request is sent.
+  // Cancel the status timeout if there's one set, to make sure no other
+  // status request is sent.
   if (!goog.isNull(this.statusTimeoutPromise_)) {
     this.$timeout_.cancel(this.statusTimeoutPromise_);
   }
 
-  this['printing'] = false;
+  goog.asserts.assert(this.curRef_.length > 0);
 
-  // FIXME
-  // We should also set a "cancel" request to the print web service, but
-  // c2cgeoportal's printproxy does not have a cancel operation at this
-  // stage.
+  this.print_.cancel(this.curRef_);
+
+  this.resetPrintStates_();
 };
 
 
@@ -472,7 +479,10 @@ app.PrintController.prototype.print = function() {
  */
 app.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
   var mfResp = /** @type {MapFishPrintReportResponse} */ (resp.data);
-  this.getStatus_(mfResp.ref);
+  var ref = mfResp.ref;
+  goog.asserts.assert(ref.length > 0);
+  this.curRef_ = ref;
+  this.getStatus_(ref);
 };
 
 
@@ -495,8 +505,9 @@ app.PrintController.prototype.getStatus_ = function(ref) {
  * @private
  */
 app.PrintController.prototype.handleCreateReportError_ = function(resp) {
-  this['printing'] = false;
-  // FIXME
+  this.resetPrintStates_();
+
+  // FIXME display error message?
 };
 
 
@@ -511,7 +522,7 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
   if (done) {
     // The report is ready. Open it by changing the window location.
     window.location.href = this.print_.getReportUrl(ref);
-    this['printing'] = false;
+    this.resetPrintStates_();
   } else {
     // The report is not ready yet. Check again in 1s.
     var that = this;
@@ -527,8 +538,18 @@ app.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
  * @private
  */
 app.PrintController.prototype.handleGetStatusError_ = function(resp) {
+  this.resetPrintStates_();
+
+  // FIXME display error message?
+};
+
+
+/**
+ * @private
+ */
+app.PrintController.prototype.resetPrintStates_ = function() {
   this['printing'] = false;
-  // FIXME
+  this.curRef_ = '';
 };
 
 
