@@ -1,6 +1,6 @@
 <div class="container-fluid" ng-show="ctrl.appSelector == 'locationinfo'">
   <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-8" style="padding-left: 0px;">
       <h3 translate>Short Url</h3>
       <input onclick="this.select();" type="text" class="form-control" name="shorturl" ng-model="ctrl.url" readonly="readonly" />
     </div>
@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-14">
       <h3 translate>Location Coordinates</h3>
       <table class="table-condensed">
         <tr ng-repeat="(key, value) in ctrl.location">
