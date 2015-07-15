@@ -79,6 +79,99 @@
     margin-bottom: 20px;
     padding: 10px 0px 10px 10px;
   }
+
+  @range-width: 70px;
+  @range-track-color: #fff;
+  input[type=range] {
+    /*removes default webkit styles*/
+    -webkit-appearance: none;
+    
+    /*fix for FF unable to apply focus style bug */
+    border: 0 solid white;
+    padding: 0 0 0 0;
+    /*required for proper track sizing in FF*/
+    width: @range-width;
+    margin-left: 10px;
+    float:none;
+    vertical-align: middle;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: @range-width;
+    height: 5px;
+    background: @range-track-color;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    margin-top: -4px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: @range-track-color;
+  }
+
+  input[type=range]::-moz-range-track {
+    width: @range-width;
+    height: 5px;
+    background: @range-track-color;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+
+  input[type=range]::-ms-track {
+    width: @range-width;
+    height: 5px;
+    padding: 0 0 0 0;
+    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+    background: transparent;
+
+    /*leave room for the larger thumb to overflow with a transparent border */
+    border-color: transparent;
+    border-width: 6px 0;
+
+    /*remove default tick marks*/
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: @range-track-color;
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-fill-upper {
+    background: @range-track-color;
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: @range-track-color;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: @range-track-color;
+  }
+  input[type=range]::-ms-tooltip {
+    display: none;
+  }
 }
 
 app-locationinfo {
