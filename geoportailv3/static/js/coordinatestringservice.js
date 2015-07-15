@@ -50,7 +50,7 @@ app.coordinateString_ = function() {
         break;
       case 'EPSG:4326':
         if (goog.isDef(opt_DMS) && opt_DMS === true) {
-          var hdms = ol.coordinate.toStringHDMS(coordinate);
+          var hdms = toStringHDMS_(coordinate);
           var yhdms = hdms.split(' ').slice(0, 4).join(' ');
           var xhdms = hdms.split(' ').slice(4, 8).join(' ');
           str = xhdms + ' | ' + yhdms;
