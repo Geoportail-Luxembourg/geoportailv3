@@ -34,11 +34,8 @@ app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
             'Y': Math.round(opt_coordinate[1])
           });
         }
-        return $http.get(shorturlServiceUrl, {
-          params: {
-            'url': ngeoLocation.getUriString()
-          }
-        }).then(
+        return $http.post(shorturlServiceUrl + '?url=' +
+                encodeURIComponent(ngeoLocation.getUriString()), {}).then(
             /**
            * @param {angular.$http.Response} resp Ajax response.
            * @return {string} The short URL.
