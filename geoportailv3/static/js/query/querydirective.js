@@ -329,6 +329,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
 
     this.isQuerying_ = true;
     this.map_.getTargetElement().style.cursor = 'wait';
+    this['content'] = '';
     this.http_.get(
         this.getInfoServiceUrl_,
         {params: {
