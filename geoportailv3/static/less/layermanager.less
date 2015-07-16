@@ -1,16 +1,16 @@
 #mylayers {
   padding: 10px;
+  margin-top: 5px;
 }
 ul.layermanager {
-  margin: 0;
+  margin: 0 0 10px 0;
   padding: 0;
 }
 
 .layer-label {
   display: inline-block;
   cursor: pointer;
-  width: 80%;
-  white-space: nowrap;
+  width: 70%;
   overflow: hidden;
   vertical-align: top;
 }
@@ -19,6 +19,12 @@ li.layermanager-panel {
   list-style-type: none;
   margin-bottom: 1px;
   padding: 5px 10px;
+
+  .delete {
+    cursor: pointer;
+    float: right;
+    margin-left: 5px;
+  }
 
   a[data-toggle=collapse] .expanded,
   a[data-toggle=collapse] .collapsed {
@@ -42,10 +48,6 @@ li.layermanager-panel {
   input.opacity {
     width: 50px;
     display: inline-block;
-  }
-  .delete {
-    cursor: pointer;
-    float: right;
   }
 }
 
