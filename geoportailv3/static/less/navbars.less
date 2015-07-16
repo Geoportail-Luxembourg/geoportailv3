@@ -114,7 +114,6 @@ header {
 .toolbox-panel > li > a {
   width: @icon-width;
   line-height: @icon-width;
-  width: 62px;
 }
 
 .toolbox-panel-bottom > li > a {
@@ -122,16 +121,16 @@ header {
 }
 
 .toolbox-panel-top > li > a {
-  margin-left: 1px;
+  margin-right: 1px;
 }
 
 .measure .toolbox-panel {
   /* 4 measure tools */
-  width: 4 * @icon-width;
+  width: 4 + (4 * @icon-width);
 }
 
 .share .toolbox-panel {
-  width: 4 * @icon-width;
+  width: 4 + (4 * @icon-width);
 }
 
 .measure .profile-open {
@@ -142,7 +141,7 @@ header {
 
 .lang .toolbox-panel {
   /* 4 languages */
-  width: 4 * @icon-width;
+  width: 4 + (4 * @icon-width);
   a {
     text-transform: uppercase;
   }
