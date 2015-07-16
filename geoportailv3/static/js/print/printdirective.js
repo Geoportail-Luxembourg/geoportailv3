@@ -448,8 +448,8 @@ app.PrintController.prototype.print = function() {
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': this.gettextCatalog_.currentLanguage,
           'legend': this['legend'] ? legend : null,
-          'scalebar' : {
-            'projection': 'EPSG:2169'
+          'scalebar': {
+                       'geodetic': true
           }
         });
 
