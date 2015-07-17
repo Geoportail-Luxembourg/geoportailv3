@@ -24,6 +24,7 @@
     "typeahead.js": "~0.10.5",
     "temp": "~0.7.0",
     "walk": "~2.3.3",
-    "d3": "3.5.5"
+    "d3": "3.5.5",
+    "fuse": "petzlux/Fuse#master"
   }
 }
