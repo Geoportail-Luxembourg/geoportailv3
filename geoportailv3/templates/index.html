@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
   <head>
-    <title translate>map_title</title>
+  <title ng-bind-template="{{ mainCtrl.currentTheme|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
@@ -25,9 +25,9 @@
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-inner">
-          <a href class="pull-left brand">
+          <div class="pull-left brand">
             <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
-          </a>
+          </div>
         </div>
 
         <ul class="nav navbar-nav pull-right">
@@ -38,7 +38,7 @@
           </li>
 
 
-          <li class="lang icon hidden-xs" ng-class="mainCtrl.languageOpen ? 'active': ''">
+          <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
               <li ng-class="{active: mainCtrl.lang == 'lb'}">
@@ -57,7 +57,7 @@
           </li>
         </ul>
         <app-search app-search-map="::mainCtrl.map" app-search-language="mainCtrl.lang" app-search-mobileactive="mainCtrl.mobileSearchActive"></app-search>
-        <button class="icon theme-icon pull-right"></button>
+        <div class="icon theme-icon pull-right"></div>
       </div>
     </header>
 
