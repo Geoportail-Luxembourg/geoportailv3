@@ -89,6 +89,9 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
                 if ('description' in content['layerMetadata']) {
                   content['layerMetadata']['trusted_description'] =
                   $sce.trustAsHtml(content['layerMetadata']['description']);
+                  content['layerMetadata']['short_trusted_description'] =
+                  $sce.trustAsHtml(content['layerMetadata']['description'].
+                  substring(0, 220));
                 }
                 if ('legend_name' in localMetadata) {
                   content['legendUrl'] = $sce.trustAsResourceUrl(
