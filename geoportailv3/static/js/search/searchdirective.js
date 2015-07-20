@@ -33,18 +33,6 @@ app.BackgroundLayerSuggestion;
 
 
 /**
- * @type {ol.layer.Layer}
- */
-app.BackgroundLayerSuggestion.bgLayer;
-
-
-/**
- * @type {string}
- */
-app.BackgroundLayerSuggestion.translatedName;
-
-
-/**
  * @return {angular.Directive} The Directive Object Definition
  * @param {string} appSearchTemplateUrl
  * @ngInject
