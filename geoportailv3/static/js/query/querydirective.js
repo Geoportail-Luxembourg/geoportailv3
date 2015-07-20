@@ -36,6 +36,7 @@ app.module.directive('appQuery', app.queryDirective);
 
 /**
  * @constructor
+ * @param {angular.$sce} $sce Angular $sce service
  * @param {angular.$timeout} $timeout
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service
@@ -47,9 +48,15 @@ app.module.directive('appQuery', app.queryDirective);
  * @export
  * @ngInject
  */
-app.QueryController = function($timeout, $scope, $http,
+app.QueryController = function($sce, $timeout, $scope, $http,
     appVectorOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
+
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.sce_ = $sce;
 
   /**
    * @const
@@ -356,6 +363,12 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           this.highlightFeatures_(this.lastHighlightedFeatures_);
           this.isQuerying_ = false;
           this.map_.getTargetElement().style.cursor = '';
+        }, this),
+        goog.bind(function(error) {
+          this.clearQueryResult_(this.QUERYPANEL_);
+          this['infoOpen'] = false;
+          this.map_.getTargetElement().style.cursor = '';
+          this.isQuerying_ = false;
         }, this));
   }
 };
@@ -381,6 +394,17 @@ app.QueryController.prototype.getTemplatePath = function(layer) {
     return this.remoteTemplateUrl_ + '?layer=' + layer['layer'];
   }
   return this.templatePath_ + '/' + layer['template'];
+};
+
+
+/**
+ * trust an url
+ * @param {string} url url to be trusted
+ * @return {*} the trusted url.
+ * @export
+ */
+app.QueryController.prototype.getTrustedUrl = function(url) {
+  return this.sce_.trustAsResourceUrl(url);
 };
 
 
