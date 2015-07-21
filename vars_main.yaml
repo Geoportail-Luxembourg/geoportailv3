@@ -5,3 +5,7 @@ vars:
   db: mapv3
   http_proxy: http://proxy:3128
   print_url: http://localhost:8083/print-c2cgeoportal-{instanceid}/pdf/ 
+
+  #elasticsearch settings
+  search_host: workshop3-local.geoportal.lu:9200
+  search_index: main-index
