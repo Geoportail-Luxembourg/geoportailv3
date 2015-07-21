@@ -45,11 +45,12 @@ class FullTextSearchView(object):
                         "multi_match": {
                             "type": "most_fields",
                             "fields": [
+                                "label^2",
                                 "label.ngram",
-                                "label.exact^2"  # boost exact match
+                                "label.simplified"
                             ],
-                            "fuzziness": 0.7,
                             "operator": "and",
+                            "fuzziness": 0.8,
                             "query": query
                         }
                     },

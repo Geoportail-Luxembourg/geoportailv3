@@ -7,7 +7,7 @@ ES_ANALYSIS = {
             'ngram_tokenizer': {
                 'type': 'edgeNGram',
                 'min_gram': 1,
-                'max_gram': 20,
+                'max_gram': 12,
                 'token_chars': [
                     'letter',
                     'digit'
@@ -23,8 +23,21 @@ ES_ANALYSIS = {
                     'asciifolding',
                 ]
             },
-            'whitespace_analyzer': {
-                'type': 'standard',
+            'simplified_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'standard',
+                'filter': [
+                    'lowercase',
+                    'asciifolding',
+                    'elision'
+                ]
+            },
+            'standard_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'whitespace',
+                'filter':  [
+                    'lowercase'
+                ]
             }
         }
     }
@@ -37,16 +50,17 @@ ES_MAPPINGS = {
             'layer_name': {'type': 'string', 'index': 'not_analyzed'},
             'label': {
                 'type': 'string',
+                'analyzer': 'standard_analyzer',
                 'fields': {
                     'ngram': {
                         'type': 'string',
                         'index_analyzer': 'ngram_analyzer',
-                        'search_analyzer': 'whitespace_analyzer'
+                        'search_analyzer': 'simplified_analyzer'
                     },
-                    'exact': {
+                    'simplified': {
                         'type': 'string',
-                        'index_analyzer': 'whitespace_analyzer',
-                        'search_analyzer': 'whitespace_analyzer'
+                        'index_analyzer': 'simplified_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
                     }
                 }
             },
