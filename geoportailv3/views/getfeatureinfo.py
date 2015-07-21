@@ -276,6 +276,35 @@ class Getfeatureinfo(object):
                 pass
         return attributes
 
+    def get_additional_info_for_ng95(self, rows):
+        features = []
+        dirname = "/sketch"
+
+        for row in rows:
+            geometry = geojson_loads(row['st_asgeojson'])
+
+            feature = self.to_feature(geometry, dict(row), "")
+
+            feature['attributes']['has_sketch'] = False
+            nom_croq = feature['attributes']['nom_croq']
+            if nom_croq is not None:
+                sketch_filepath = dirname + "/" + nom_croq + ".pdf"
+                f = None
+                try:
+                    f = open(sketch_filepath, 'r')
+                except:
+                    try:
+                        sketch_filepath = dirname + "/" + nom_croq + ".PDF"
+                        f = open(sketch_filepath, 'r')
+                    except:
+                        f = None
+                if f is not None:
+                    feature['attributes']['has_sketch'] = True
+
+                features.append(feature)
+
+        return features
+
     def get_info_from_pf(self, rows):
         import geoportailv3.PF
         pf = geoportailv3.PF.PF()
