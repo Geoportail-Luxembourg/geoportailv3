@@ -245,18 +245,20 @@ class Getfeatureinfo(object):
                                 LuxGetfeatureDefinition.role ==
                                 self.request.user.role.id
                                 ).count() > 0:
-                            luxgetfeaturedefinitions.append(query.filter(
+                            for res in query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                self.request.user.role.id
-                                ).first())
+                                    self.request.user.role.id).all():
+                                luxgetfeaturedefinitions.append(res)
                         else:
-                            luxgetfeaturedefinitions.append(query.filter(
+                            for res in query.filter(
                                 LuxGetfeatureDefinition.role == None
-                                ).first())  # noqa
+                                    ).all():  # noqa
+                                luxgetfeaturedefinitions.append(res)
                     else:
-                        luxgetfeaturedefinitions.append(query.filter(
+                        for res in query.filter(
                             LuxGetfeatureDefinition.role == None
-                            ).first())  # noqa
+                                ).all():  # noqa
+                            luxgetfeaturedefinitions.append(res)
         except:
             traceback.print_exc(file=sys.stdout)
             return HTTPBadRequest()
@@ -275,6 +277,35 @@ class Getfeatureinfo(object):
             except:
                 pass
         return attributes
+
+    def get_additional_info_for_ng95(self, rows):
+        features = []
+        dirname = "/sketch"
+
+        for row in rows:
+            geometry = geojson_loads(row['st_asgeojson'])
+
+            feature = self.to_feature(geometry, dict(row), "")
+
+            feature['attributes']['has_sketch'] = False
+            nom_croq = feature['attributes']['nom_croq']
+            if nom_croq is not None:
+                sketch_filepath = dirname + "/" + nom_croq + ".pdf"
+                f = None
+                try:
+                    f = open(sketch_filepath, 'r')
+                except:
+                    try:
+                        sketch_filepath = dirname + "/" + nom_croq + ".PDF"
+                        f = open(sketch_filepath, 'r')
+                    except:
+                        f = None
+                if f is not None:
+                    feature['attributes']['has_sketch'] = True
+
+                features.append(feature)
+
+        return features
 
     def get_info_from_pf(self, rows):
         import geoportailv3.PF
@@ -381,7 +412,7 @@ class Getfeatureinfo(object):
         if url.find('?'):
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
-
+        print query
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()

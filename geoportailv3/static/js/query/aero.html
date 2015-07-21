@@ -1,8 +1,8 @@
 <h1>{{layers.layerLabel | translate}}</h1>
 <div ng-repeat="feature in layers.features" class="poi-feature">
-  <h2>{{feature.attributes.nom_commune}} {{feature.attributes.section}} {{feature.attributes.feuille}}</h2>
+  <h3>{{feature.attributes.name}}</h3>
   <a href="{{feature.attributes.path}}" target="_blank">
-    <img src="{{feature.attributes.thumb}}" width="400">
+    <img src="{{feature.attributes.thumbnail_path}}" width="400">
   </a>
   <span translate>Cliquez dans l'image pour agrandir</span>
 </div>

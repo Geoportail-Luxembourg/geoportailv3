@@ -1,0 +1,5 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3>{{feature.attributes.name}}</h3>
+  <iframe height=260 width=500 frameborder=0 src={{ctrl.getTrustedUrl(feature.attributes.url)}}></iframe>
+</div>
