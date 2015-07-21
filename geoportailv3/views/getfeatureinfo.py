@@ -247,19 +247,18 @@ class Getfeatureinfo(object):
                                 ).count() > 0:
                             for res in query.filter(
                                 LuxGetfeatureDefinition.role ==
-                                self.request.user.role.id
-                                ).all():
+                                    self.request.user.role.id).all():
                                 luxgetfeaturedefinitions.append(res)
                         else:
                             for res in query.filter(
                                 LuxGetfeatureDefinition.role == None
-                                ).all():
-                                luxgetfeaturedefinitions.append(res)  # noqa
+                                    ).all():  # noqa
+                                luxgetfeaturedefinitions.append(res)
                     else:
                         for res in query.filter(
                             LuxGetfeatureDefinition.role == None
-                            ).all():
-                            luxgetfeaturedefinitions.append(res)  # noqa
+                                ).all():  # noqa
+                            luxgetfeaturedefinitions.append(res)
         except:
             traceback.print_exc(file=sys.stdout)
             return HTTPBadRequest()
