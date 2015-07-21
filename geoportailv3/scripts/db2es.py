@@ -4,6 +4,7 @@ from pyramid.paster import bootstrap
 import psycopg2
 from psycopg2.extras import DictCursor
 import sys
+import getopt
 import json
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
@@ -56,8 +57,16 @@ def statuslog(text):
 def main():
     env = bootstrap('development.ini')
     request = env['request']
-
-    ensure_index(get_elasticsearch(request), get_index(request), True)
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], '', ['recreate'])
+    except getopt.GetoptError as err:
+        print str(err)
+        sys.exit(2)
+    recreate = False
+    for o, a in opts:
+        if o == '--recreate':
+            recreate = True
+    ensure_index(get_elasticsearch(request), get_index(request), recreate)
     statuslog("\rCreating Database Query ")
     c = get_cursor()
     counter = 1
@@ -83,3 +92,6 @@ def main():
         if not results:
             statuslog("\n")
             break
+
+if __name__ == '__main__':
+    main()

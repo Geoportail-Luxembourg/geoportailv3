@@ -22,7 +22,8 @@ APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 
-UTILITY_HELP = "- update-translations		Synchronize the translations with Transifex"
+UTILITY_HELP = 	"- update-translations	Synchronize the translations with Transifex" \
+		"- update-search	Update the ElasticSearch Database"
 
 # Add rule that copies the font-awesome fonts to the static/build directory.
 POST_RULES = .build/fonts.timestamp
@@ -45,3 +46,11 @@ update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$
 	mkdir -p $(PACKAGE)/static/build/fonts
 	cp node_modules/font-awesome/fonts/* $(PACKAGE)/static/build/fonts/
 	touch $@
+
+.PHONY: update-search
+update-search:
+	.build/venv/bin/db2es
+
+.PHONY: recreate-search
+recreate-search:
+	.build/venv/bin/db2es --recreate
