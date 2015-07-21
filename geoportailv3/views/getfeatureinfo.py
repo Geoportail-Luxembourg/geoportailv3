@@ -245,18 +245,21 @@ class Getfeatureinfo(object):
                                 LuxGetfeatureDefinition.role ==
                                 self.request.user.role.id
                                 ).count() > 0:
-                            luxgetfeaturedefinitions.append(query.filter(
+                            for res in query.filter(
                                 LuxGetfeatureDefinition.role ==
                                 self.request.user.role.id
-                                ).first())
+                                ).all():
+                                luxgetfeaturedefinitions.append(res)
                         else:
-                            luxgetfeaturedefinitions.append(query.filter(
+                            for res in query.filter(
                                 LuxGetfeatureDefinition.role == None
-                                ).first())  # noqa
+                                ).all():
+                                luxgetfeaturedefinitions.append(res)  # noqa
                     else:
-                        luxgetfeaturedefinitions.append(query.filter(
+                        for res in query.filter(
                             LuxGetfeatureDefinition.role == None
-                            ).first())  # noqa
+                            ).all():
+                            luxgetfeaturedefinitions.append(res)  # noqa
         except:
             traceback.print_exc(file=sys.stdout)
             return HTTPBadRequest()
@@ -410,7 +413,7 @@ class Getfeatureinfo(object):
         if url.find('?'):
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
-
+        print query
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()
