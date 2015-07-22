@@ -57,7 +57,7 @@
           </li>
         </ul>
         <app-search app-search-map="::mainCtrl.map" app-search-language="mainCtrl.lang" app-search-mobileactive="mainCtrl.mobileSearchActive"></app-search>
-        <div class="icon theme-icon pull-right"></div>
+        <div ngeo-btn ng-model="mainCtrl.layersOpen" class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
       </div>
     </header>
 
