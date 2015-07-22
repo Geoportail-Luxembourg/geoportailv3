@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-14 13:09+0000\n"
+"PO-Revision-Date: 2015-07-22 14:31+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: English (http://www.transifex.com/p/geoportailv3-lu/language/en/)\n"
+"Language-Team: English (http://www.transifex.com/projects/p/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,6 +19,10 @@ msgstr ""
 #: geoportailv3/templates/index.html:91
 msgid "+ Add layers"
 msgstr "+ Add layers"
+
+#: geoportailv3/templates/index.html:11
+msgid "- Geoportal Luxembourg"
+msgstr "- Geoportal Luxembourg"
 
 #: geoportailv3/static/js/share/sharedirective.js:110
 msgid "- link from geoportail.lu"
@@ -36,43 +40,47 @@ msgid ""
 "feature and show more information."
 msgstr "A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information."
 
-#: geoportailv3/static/js/print/printdirective.js:165
+#: geoportailv3/templates/index.html:153
+msgid "A Propos"
+msgstr "About Us"
+
+#: geoportailv3/static/js/print/printdirective.js:173
 msgid "A0 landscape"
 msgstr "A0 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:164
+#: geoportailv3/static/js/print/printdirective.js:172
 msgid "A0 portrait"
 msgstr "A0 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:163
+#: geoportailv3/static/js/print/printdirective.js:171
 msgid "A1 landscape"
 msgstr "A1 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:162
+#: geoportailv3/static/js/print/printdirective.js:170
 msgid "A1 portrait"
 msgstr "A1 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:161
+#: geoportailv3/static/js/print/printdirective.js:169
 msgid "A2 landscape"
 msgstr "A2 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:160
+#: geoportailv3/static/js/print/printdirective.js:168
 msgid "A2 portrait"
 msgstr "A2 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:159
+#: geoportailv3/static/js/print/printdirective.js:167
 msgid "A3 landscape"
 msgstr "A3 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:158
+#: geoportailv3/static/js/print/printdirective.js:166
 msgid "A3 portrait"
 msgstr "A3 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:157
+#: geoportailv3/static/js/print/printdirective.js:165
 msgid "A4 landscape"
 msgstr "A4 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:156
+#: geoportailv3/static/js/print/printdirective.js:164
 msgid "A4 portrait"
 msgstr "A4 portrait"
 
@@ -80,19 +88,23 @@ msgstr "A4 portrait"
 msgid "Abort"
 msgstr "Abort"
 
-#: geoportailv3/static/js/search/searchdirective.js:359
+#: geoportailv3/static/js/search/searchdirective.js:385
 msgid "Addresses"
 msgstr "Addresses"
+
+#: geoportailv3/templates/index.html:154
+msgid "Aide"
+msgstr "Help"
 
 #: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
 msgstr "Azimut"
 
-#: geoportailv3/static/js/search/searchdirective.js:344
+#: geoportailv3/static/js/search/searchdirective.js:370
 msgid "Background"
 msgstr "Background"
 
-#: geoportailv3/static/js/search/searchdirective.js:333
+#: geoportailv3/static/js/search/searchdirective.js:359
 msgid "Background Layers"
 msgstr "Background Layers"
 
@@ -146,6 +158,7 @@ msgstr "Click to start measuring a distance"
 msgid "Click to start drawing profile"
 msgstr "Click to start measuring a profile"
 
+#: geoportailv3/static/js/query/aero.html:7
 #: geoportailv3/static/js/query/urplang.html:7
 msgid "Cliquez dans l'image pour agrandir"
 msgstr "Click the picture to enlarge"
@@ -159,12 +172,13 @@ msgid "Commune"
 msgstr "Commune"
 
 #: geoportailv3/static/js/layerinfo/popup.html:18
+#: geoportailv3/templates/index.html:155
 msgid "Contact"
 msgstr "Contact"
 
 #: geoportailv3/static/js/query/parcels.html:7
 msgid "Contenance"
-msgstr "capacity"
+msgstr "Capacity"
 
 #: geoportailv3/templates/index.html:143
 msgid "Couches"
@@ -173,6 +187,18 @@ msgstr "Layers"
 #: geoportailv3/static/js/authentication/authentication.html:13
 msgid "Create a new user account"
 msgstr "Create a new user account"
+
+#: geoportailv3/static/js/query/ng95.html:6
+msgid "Croquis"
+msgstr ""
+
+#: geoportailv3/static/js/query/ng95.html:8
+msgid "Croquis indisponible"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:10
+msgid "Date"
+msgstr "Date"
 
 #: geoportailv3/static/js/query/parcels.html:9
 msgid "Dernier mesurage"
@@ -183,7 +209,7 @@ msgstr "Last measurement"
 msgid "Description"
 msgstr "Description"
 
-#: geoportailv3/templates/index.html:159
+#: geoportailv3/templates/index.html:161
 msgid "Dessin"
 msgstr "Draw"
 
@@ -192,6 +218,7 @@ msgid "Draw a line on the map to display an elevation profile."
 msgstr "Draw a line on the map to display an elevation profile."
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:19
+#: geoportailv3/static/js/query/ng95.html:4
 msgid "Elevation"
 msgstr "Elevation"
 
@@ -203,6 +230,10 @@ msgstr "Email"
 msgid "Facebook"
 msgstr "Facebook"
 
+#: geoportailv3/static/js/query/affaires.html:6
+msgid "Geometre"
+msgstr ""
+
 #: geoportailv3/static/js/share/share.html:10
 msgid "Google Plus"
 msgstr "Google Plus"
@@ -211,7 +242,7 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "I lost my password"
 
-#: geoportailv3/templates/index.html:171
+#: geoportailv3/templates/index.html:173
 msgid "Imprimer"
 msgstr "Print"
 
@@ -227,7 +258,7 @@ msgstr "Invalid username or password"
 msgid "Keywords"
 msgstr "Keywords"
 
-#: geoportailv3/static/js/search/searchdirective.js:304
+#: geoportailv3/static/js/search/searchdirective.js:323
 msgid "Layers"
 msgstr "Layers"
 
@@ -239,25 +270,13 @@ msgstr "Legend"
 msgid "Length"
 msgstr "Length"
 
-#: geoportailv3/templates/index.html:153
-msgid "Lien 1"
-msgstr ""
-
-#: geoportailv3/templates/index.html:154
-msgid "Lien 2"
-msgstr ""
-
-#: geoportailv3/templates/index.html:155
-msgid "Lien 3"
-msgstr ""
-
 #: geoportailv3/static/js/layerinfo/popup.html:27
 msgid "Link to the metadata"
 msgstr "Link to the metadata"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:13
 msgid "Location Coordinates"
-msgstr "Location Coordinates"
+msgstr "Location coordinates"
 
 #: geoportailv3/static/js/authentication/authentication.html:4
 msgid "Login"
@@ -269,9 +288,13 @@ msgstr "Logout"
 
 #: geoportailv3/static/js/query/mymaps.html:7
 msgid "Longeueur"
-msgstr "length"
+msgstr "Length"
 
-#: geoportailv3/templates/index.html:163
+#: geoportailv3/templates/index.html:156
+msgid "Légalités"
+msgstr "T & C"
+
+#: geoportailv3/templates/index.html:165
 msgid "Mesurer"
 msgstr "Measure"
 
@@ -300,15 +323,25 @@ msgstr "Nature"
 msgid "No layer selected"
 msgstr "No layer selected"
 
+#: geoportailv3/static/js/query/cfl_hecto.html:3
 #: geoportailv3/static/js/query/mymaps.html:5
 msgid "Nom"
 msgstr "Name"
 
+#: geoportailv3/static/js/query/affaires.html:4
+msgid "Numero"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:5
 #: geoportailv3/static/js/query/parcels.html:6
 msgid "Numero cadastral"
-msgstr "Cadastral Number"
+msgstr "Cadastral number"
 
-#: geoportailv3/templates/index.html:176
+#: geoportailv3/static/js/query/ng95.html:7
+msgid "Obtenir le fichier sous format pdf"
+msgstr ""
+
+#: geoportailv3/templates/index.html:178
 msgid "Partager"
 msgstr "Share"
 
@@ -320,6 +353,10 @@ msgstr "Password"
 msgid "Profile"
 msgstr "Profile"
 
+#: geoportailv3/static/js/query/inst_pub.html:4
+msgid "Proprietaire"
+msgstr ""
+
 #: geoportailv3/static/js/query/mymaps.html:8
 msgid "Rating"
 msgstr "Rating"
@@ -328,9 +365,13 @@ msgstr "Rating"
 msgid "Recherche adresse, parcelles, couches ..."
 msgstr "Search addresses, parcels, layers ... "
 
+#: geoportailv3/static/js/query/affaires.html:7
+msgid "Region"
+msgstr ""
+
 #: geoportailv3/static/js/layerinfo/popup.html:16
 msgid "Revision date"
-msgstr "Revision Date"
+msgstr "Revision date"
 
 #: geoportailv3/static/js/query/parcels.html:5
 msgid "Section"
@@ -340,6 +381,10 @@ msgstr "Section"
 #: geoportailv3/static/js/share/shorturl.html:4
 msgid "Short Url"
 msgstr "Url"
+
+#: geoportailv3/static/js/query/affaires.html:9
+msgid "Statut"
+msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html:9
 msgid "Submit"
@@ -361,11 +406,11 @@ msgstr[1] "The layers <b>{{layersToRemove}}</b> have been removed because they c
 
 #: geoportailv3/static/js/layerinfo/popup.html:38
 msgid "The legend is not available for this layer"
-msgstr "The legend is not available for this layer"
+msgstr "The legend is not available for this layer."
 
 #: geoportailv3/static/js/layerinfo/popup.html:34
 msgid "The metadata is right now not available"
-msgstr "The metadata is right now not available"
+msgstr "The metadata is actually not available."
 
 #: geoportailv3/static/js/themeswitcher/themes.html:2
 msgid "Theme"
@@ -378,6 +423,12 @@ msgstr "Title"
 #: geoportailv3/static/js/share/share.html:7
 msgid "Twitter"
 msgstr "Twitter"
+
+#: geoportailv3/static/js/query/affaires.html:8
+#: geoportailv3/static/js/query/batiments.html:3
+#: geoportailv3/static/js/query/ng95.html:5
+msgid "Type"
+msgstr "Type"
 
 #: geoportailv3/static/js/authentication/authentication.html:7
 msgid "Username"
@@ -399,17 +450,13 @@ msgstr "Language"
 msgid "layers"
 msgstr "Layers"
 
-#: geoportailv3/templates/index.html:11
-msgid "map_title"
-msgstr "Map Title"
-
 #: geoportailv3/templates/index.html:77
 msgid "my_layers"
-msgstr "My Layers"
+msgstr "My layers"
 
 #: geoportailv3/templates/index.html:102
 msgid "my_maps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html:34
 msgid "search"
@@ -465,7 +512,7 @@ msgstr "User maps"
 
 #: theme.112
 msgid "api"
-msgstr "camping place"
+msgstr "Camping place"
 
 #: theme.113
 msgid "arbed"
@@ -477,7 +524,7 @@ msgstr "Gemeng"
 
 #: theme.115
 msgid "ortho_mobile"
-msgstr "Aerial Images"
+msgstr "Aerial images"
 
 #: theme.116
 msgid "tourisme"
@@ -509,7 +556,7 @@ msgstr ""
 
 #: theme.123
 msgid "at"
-msgstr "Spatial Planning"
+msgstr "Urban planning"
 
 #: theme.124
 msgid "agriculture"
@@ -517,7 +564,7 @@ msgstr "Agriculture"
 
 #: theme.125
 msgid "preizerdaul"
-msgstr "Preizerdaul"
+msgstr "Préizerdaul"
 
 #: theme.126
 msgid "wellenstein"
@@ -543,6 +590,10 @@ msgstr "Lenoz"
 msgid "municipalities"
 msgstr "Municipalities"
 
+#: lu_int_wms.1590
+msgid "aero_1977_30k"
+msgstr "Aerial images from 1977 (1:30k)"
+
 #: theme.133 lu_int_wms.465
 msgid "olos"
 msgstr "Parcelles OLOS"
@@ -553,15 +604,15 @@ msgstr "Biotope cadaster of the open landscapes"
 
 #: lu_int_wms.135
 msgid "ac_preizerdaul_ortho_2009"
-msgstr "Orthophoto Preizerdaul"
+msgstr "Orthophoto Préizerdaul"
 
 #: lu_int_wms.136
 msgid "asta_esp_lisiere"
-msgstr "forest edges"
+msgstr "Forest edges"
 
 #: lu_int_wms.137
 msgid "asta_esp_esp"
-msgstr "landscape features"
+msgstr "Landscape features"
 
 #: lu_int_wms.138
 msgid "aero_1963_20k"
@@ -609,7 +660,7 @@ msgstr "Nordic Walking Parcs"
 
 #: lu_int_wms.150
 msgid "parcelles_preemption"
-msgstr "parcels preemption"
+msgstr "Parcels preemption"
 
 #: l_wmts.151
 msgid "addresses"
@@ -629,11 +680,11 @@ msgstr "Cycling"
 
 #: l_wmts.155
 msgid "topo_50k"
-msgstr "Topographical Map 1:50000"
+msgstr "Topographical map 1:50000"
 
 #: l_wmts.156
 msgid "TOPO_CARTESHISTO_1979"
-msgstr "Topographical Map 1:20k 1979 B/W"
+msgstr "Topographical map 1:20k 1979 B/W"
 
 #: lu_int_wms.157
 msgid "env_bruit_air_lden"
@@ -681,7 +732,7 @@ msgstr "Corine Landcover 2006"
 
 #: lu_ext_wms.168
 msgid "tour_quality_trails"
-msgstr "other quality trails"
+msgstr "Other quality trails"
 
 #: group.169
 msgid "eau_zones_protegees"
@@ -765,7 +816,7 @@ msgstr "Environment, Biology and Geology"
 
 #: l_wmts.191
 msgid "topo_decoupage_tc"
-msgstr "Regional Mapsheets"
+msgstr "Regional mapsheets"
 
 #: lu_ext_wms.192
 msgid "tour_mullerthal_trail"
@@ -805,7 +856,7 @@ msgstr "Youthhostel Trails"
 
 #: lu_ext_wms.201
 msgid "tour_temp"
-msgstr "Temporary Layer"
+msgstr "Temporary layer"
 
 #: group.202
 msgid "asta_prof"
@@ -817,11 +868,11 @@ msgstr "Buildings"
 
 #: l_wmts.204
 msgid "topo_decoupage_100k"
-msgstr "Regional Mapsheets"
+msgstr "Regional mapsheets"
 
 #: l_wmts.205
 msgid "TOPO_CARTESHISTO_1964"
-msgstr "Topographical Map 1:20k 1964 B/W"
+msgstr "Topographical map 1:20k 1964 B/W"
 
 #: l_wmts.206
 msgid "wg_relief"
@@ -841,7 +892,7 @@ msgstr "EscapArdenne"
 
 #: l_wmts.210
 msgid "topo_20k"
-msgstr "Topographical Map 1:20000"
+msgstr "Topographical map 1:20000"
 
 #: group.211
 msgid "eau_zones_protegees_nationales"
@@ -861,7 +912,7 @@ msgstr "Complete plan"
 
 #: l_wmts.215
 msgid "decoupage_geo25_50k"
-msgstr ""
+msgstr "Mapsheets  geological plan 1:25.000 / 1:50.000"
 
 #: group.216
 msgid "verkehrsnetze_tourisme"
@@ -885,7 +936,7 @@ msgstr "Municipality code"
 
 #: l_wmts.221
 msgid "TOPO_CARTESHISTO_1966-74_50k"
-msgstr "Topographical Map 1:50k 1966"
+msgstr "Topographical map 1:50k 1966"
 
 #: lu_ext_wms.222
 msgid "tour_saint_jacques"
@@ -893,7 +944,7 @@ msgstr "Way of St. James"
 
 #: l_wmts.223
 msgid "topo_decoupage_50k"
-msgstr "Regional Mapsheets"
+msgstr "Regional mapsheets"
 
 #: l_wmts.224
 msgid "TOPO_CARTES_1944"
@@ -909,7 +960,7 @@ msgstr "Geographical location"
 
 #: l_wmts.227
 msgid "topo_250k"
-msgstr "Topographical Map 1:250000"
+msgstr "Topographical map 1:250000"
 
 #: l_wmts.228
 msgid "ortho_2004"
@@ -965,11 +1016,11 @@ msgstr "Land use plan"
 
 #: l_wmts.241
 msgid "TOPO_CARTESHISTO_2000"
-msgstr "Topographical Map 1:20k 2000"
+msgstr "Topographical map 1:20k 2000"
 
 #: l_wmts.242
 msgid "ign_topo"
-msgstr "Automatical Topographical Map"
+msgstr "Automatical topographical map"
 
 #: group.243
 msgid "user_generated_content"
@@ -989,7 +1040,7 @@ msgstr "Geographical location"
 
 #: l_wmts.247
 msgid "geologie"
-msgstr "Geological Overview map"
+msgstr "Geological overview map"
 
 #: group.248
 msgid "env_zones_protegees_nationales"
@@ -997,7 +1048,7 @@ msgstr "National protected areas"
 
 #: group.249
 msgid "env_zones_protegees"
-msgstr "Protected Areas"
+msgstr "Protected areas"
 
 #: lu_ext_wms.250
 msgid "tour_sentiers_syndicats"
@@ -1013,7 +1064,7 @@ msgstr "Cadastral data"
 
 #: group.253
 msgid "mymaps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1025,7 +1076,7 @@ msgstr "Orthophoto 2013"
 
 #: l_wmts.256
 msgid "1927_CAHANSEN"
-msgstr "Topographical Map 1927"
+msgstr "Topographical map 1927"
 
 #: lu_int_wms.258
 msgid "env_bruit_axes_routiers_lngt"
@@ -1053,7 +1104,7 @@ msgstr "Foot trails"
 
 #: l_wmts.264
 msgid "topo_100k"
-msgstr "Topographical Map 1:100000"
+msgstr "Topographical map 1:100000"
 
 #: l_wmts.265
 msgid "cadastre"
@@ -1105,7 +1156,7 @@ msgstr "Data of the nature and forest administration"
 
 #: l_wmts.277
 msgid "TOPO25K1954C24"
-msgstr "Topographical Map 1954"
+msgstr "Topographical map 1954"
 
 #: group.278
 msgid "prof_daten"
@@ -1121,7 +1172,7 @@ msgstr "Park + Ride"
 
 #: l_wmts.281
 msgid "TOPO_CARTESHISTO_2000_50k"
-msgstr "Topographical Map 1:50k 2000"
+msgstr "Topographical map 1:50k 2000"
 
 #: group.282
 msgid "group_ac_wellenstein_pag"
@@ -1149,7 +1200,7 @@ msgstr "Buildings"
 
 #: l_wmts.288
 msgid "TOPO_CARTESHISTO_1989"
-msgstr "Topographical Map 1:20k 1989"
+msgstr "Topographical map 1:20k 1989"
 
 #: l_wmts.289
 msgid "wg_hohenlinien_10m"
@@ -1157,7 +1208,7 @@ msgstr "Contour 10 m"
 
 #: group.290
 msgid "group_ac_preizerdaul_pag"
-msgstr "LUP Preizerdaul"
+msgstr "LUP Préizerdaul"
 
 #: l_wmts.291
 msgid "wg_hangneigung_"
@@ -1169,7 +1220,7 @@ msgstr "Cadastral data"
 
 #: group.294
 msgid "topographische_karten"
-msgstr "Topographical Maps"
+msgstr "Topographical maps"
 
 #: l_wmts.295
 msgid "wg_ikonos_satellitendaten"
@@ -1177,11 +1228,11 @@ msgstr "Satellite pcitures Ikonos"
 
 #: lu_ext_wms.296
 msgid "tour_pistes_vtt"
-msgstr "Mountainbike Trails"
+msgstr "Mountainbike trails"
 
 #: l_wmts.297
 msgid "geologie_ancienne_edition"
-msgstr "Geological Map, old edition"
+msgstr "Geological map, old edition"
 
 #: l_wmts.298
 msgid "topo"
@@ -1189,7 +1240,7 @@ msgstr "Automatical Topographical Map"
 
 #: l_wmts.299
 msgid "ivv_flik_parcels"
-msgstr "FLIK reference parcels for Vineyards 2014"
+msgstr "FLIK reference parcels for vineyards 2014"
 
 #: lu_int_wms.300
 msgid "buildings_eau"
@@ -1201,7 +1252,7 @@ msgstr "Cadastral region names"
 
 #: l_wmts.302
 msgid "TOPO_CARTESHISTO_1993_50k"
-msgstr "Topographical Map 1:50k 1993"
+msgstr "Topographical map 1:50k 1993"
 
 #: l_wmts.303
 msgid "ac_wellenstein_pag_perimetres_zones"
@@ -1229,7 +1280,7 @@ msgstr "Spaces to be saved"
 
 #: l_wmts.309
 msgid "decoupage_geo25k"
-msgstr "Regional Mapsheets"
+msgstr "Regional mapsheets"
 
 #: group.310
 msgid "asta"
@@ -1261,7 +1312,7 @@ msgstr "Historical topographical Maps"
 
 #: l_wmts.317
 msgid "geologie_nouvelle_edition"
-msgstr "Geologocal Map, new edition"
+msgstr "Geological map, new edition"
 
 #: group.318
 msgid "tour_mymaps"
@@ -1317,7 +1368,7 @@ msgstr "Airport noise 2011 (LNGT)"
 
 #: l_wmts.331
 msgid "1907_CAHANSEN"
-msgstr "Topographical Map 1907"
+msgstr "Topographical map 1907"
 
 #: l_wmts.332
 msgid "cantons"
@@ -1333,7 +1384,7 @@ msgstr "Land use plan"
 
 #: group.335
 msgid "ign"
-msgstr "viticultural land"
+msgstr "Viticultural land"
 
 #: group.336
 msgid "bodennutzung"
@@ -1409,7 +1460,7 @@ msgstr "Cadastral municipalities (names)"
 
 #: l_wmts.354
 msgid "roads_labels"
-msgstr "Road Names"
+msgstr "Road names"
 
 #: lu_int_wms.355
 msgid "cfl_hecto"
@@ -1449,11 +1500,11 @@ msgstr "Orthophoto 2013"
 
 #: group.364
 msgid "natur_an_emwelt"
-msgstr "multiple usage"
+msgstr "Multiple usage"
 
 #: lu_int_wms.365
 msgid "affaires"
-msgstr "Measuring Affairs"
+msgstr "Surveying dossiers"
 
 #: lu_ext_wms.366
 msgid "luxembourg_on_horse"
@@ -1461,7 +1512,7 @@ msgstr "Luxemburg on horse"
 
 #: lu_int_wms.367
 msgid "ac_preizerdaul_ortho"
-msgstr "Orthophoto Preizerdaul"
+msgstr "Orthophoto Préizerdaul"
 
 #: l_wmts.368
 msgid "emwelt_biotop_kadaster_f"
@@ -1501,11 +1552,11 @@ msgstr "National cycling paths"
 
 #: group.377
 msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
-msgstr "Drinking water protection Zones [ZPS]"
+msgstr "Drinking water protection zones [ZPS]"
 
 #: lu_int_wms.378
 msgid "topo_decoupage_ortho_2013"
-msgstr "Orthophoto Grid"
+msgstr "Orthophoto grid"
 
 #: lu_int_wms.379
 msgid "prpl_luref"
@@ -1533,7 +1584,7 @@ msgstr "Forest reserves"
 
 #: lu_int_wms.385
 msgid "eau_anf_reserves_naturelles_totalite"
-msgstr "Classified Nature reserves (totality)"
+msgstr "Classified nature reserves (complete)"
 
 #: lu_int_wms.386
 msgid "eau_anf_reserves_dig"
@@ -1677,7 +1728,7 @@ msgstr "SPT projects"
 
 #: lu_int_wms.421
 msgid "ng"
-msgstr "Height Reference Points"
+msgstr "Height reference points"
 
 #: l_wmts.422
 msgid "wg_hangneigung_map"
@@ -1705,11 +1756,7 @@ msgstr "Land consolidation zones"
 
 #: lu_int_wms.428
 msgid "repere_alti"
-msgstr ""
-
-#: l_wmts.429
-msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
-msgstr "HQ100 [medium probability]"
+msgstr "Height bolts"
 
 #: lu_int_wms.430
 msgid "anf_arrondissements"
@@ -1721,7 +1768,7 @@ msgstr "Local nature and forest districts"
 
 #: lu_int_wms.432
 msgid "anf_reserves_naturelles_totalite"
-msgstr "Classified Nature reserves (totality)"
+msgstr "Classified nature reserves (complete)"
 
 #: lu_int_wms.433
 msgid "anf_reserves_dig"
@@ -1773,7 +1820,7 @@ msgstr "Groundwater 2009"
 
 #: lu_int_wms.445
 msgid "MO"
-msgstr ""
+msgstr "Official Surveying Data"
 
 #: l_wmts.446
 msgid "sections_cadastrales_labels_eau"
@@ -1801,11 +1848,11 @@ msgstr "Corridors"
 
 #: lu_int_wms.452
 msgid "env_iba"
-msgstr ""
+msgstr "Important Bird Areas"
 
 #: lu_int_wms.453
 msgid "anf_dates_battues"
-msgstr ""
+msgstr "Battue hunts"
 
 #: l_wmts.454
 msgid "eau_new_HQ100_merged_2013"
@@ -1945,7 +1992,7 @@ msgstr "Surface waters 2015"
 
 #: group.489
 msgid "eau_new_Bewirtschaftungsplan_2015"
-msgstr "River Basin Management Plan 2015"
+msgstr "River basin management plan 2015"
 
 #: lu_int_wms.490
 msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
@@ -1998,6 +2045,10 @@ msgstr "Vulnerable zones  [Nitrates directive]"
 #: lu_int_wms.502
 msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
 msgstr "Ecosystems dep. on SW"
+
+#: lu_ext_wms.1591
+msgid "tour_velo_route"
+msgstr "Road bike routes"
 
 #: lu_int_wms.504
 msgid "ont_poi_3"
@@ -2113,7 +2164,7 @@ msgstr "Name"
 
 #: lu_int_wms.532
 msgid "osm_mq"
-msgstr ""
+msgstr "OSM Mapquest"
 
 #: lu_int_wms.533
 msgid "ont_poi_4"
@@ -2121,11 +2172,11 @@ msgstr "Go out"
 
 #: lu_int_wms.534
 msgid "anf_carte_simpl_forets"
-msgstr "simplified map of the natural forests"
+msgstr "Simplified map of the natural forests"
 
 #: group.535
 msgid "bglayers"
-msgstr ""
+msgstr "Background layers"
 
 #: l_wmts.536
 msgid "topogr_global"
@@ -2141,7 +2192,7 @@ msgstr "Road map"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
-msgstr ""
+msgstr "Archeological operations"
 
 #: lu_ext_wms.540
 msgid "tour_pistes_velo_mymaps2"
@@ -2149,7 +2200,7 @@ msgstr "Regional cycling paths"
 
 #: lu_ext_wms.541
 msgid "projets_amen"
-msgstr ""
+msgstr "Urban planning projects"
 
 #: l_wmts.542
 msgid "ivv_parcels"
@@ -2177,15 +2228,15 @@ msgstr "Cadastral parcels"
 
 #: lu_int_wms.548
 msgid "natura2000_oiseaux_sup"
-msgstr "Additional Bird protection zones Natura 2000"
+msgstr "Additional bird protection zones Natura 2000"
 
 #: lu_int_wms.549
 msgid "parcelles_etat"
-msgstr "Cadastral parcels"
+msgstr "Parcels belonging to public authorities"
 
 #: lu_int_wms.550
 msgid "mobi_avm"
-msgstr ""
+msgstr "Vending stations"
 
 #: lu_int_wms.551
 msgid "eau_new_Oberflaechenwasserkoerper_2015"
@@ -2201,7 +2252,7 @@ msgstr "Drinking water syndicates"
 
 #: lu_int_wms.554
 msgid "eau_new_Zones_interdiction_utilisation_metazachlore"
-msgstr "Areas in which the application of Metazachlor is forbidden"
+msgstr "Areas where the application of metazachlor is forbidden"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
@@ -2272,8 +2323,12 @@ msgid "eau_new_Einschaetzung_guter_Zustand_2021"
 msgstr "Assessement good status 2021"
 
 #: l_wmts.574
-msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
+msgid "eau_new_HQ10_hohe_Wahrscheinlichkeit"
 msgstr "HQ10 [high probability]"
+
+#: l_wmts.429
+msgid "eau_new_HQ100_mittlere_Wahrscheinlichkeit"
+msgstr "HQ100 [medium probability]"
 
 #: lu_int_wms.766
 msgid "eau_new_HQextrem_merged_2010"
@@ -2357,7 +2412,7 @@ msgstr "10 year flood intensity"
 
 #: lu_int_wms.1099
 msgid "eau_new_Badegewaesser_-_Qualitaet"
-msgstr "Bathing Water Quality"
+msgstr "Bathing water quality"
 
 #: lu_int_wms.1100
 msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
@@ -2459,10 +2514,6 @@ msgstr "HQ10 [high probability] 2010"
 msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
 msgstr "Quantitative status of the WB 2009"
 
-#: l_wmts.1125
-msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
-msgstr "HQ extreme [low probability]"
-
 #: lu_int_wms.1126
 msgid "eau_new_Typologie_Oberflaechengewasser_2009"
 msgstr "Surface water typology 2009"
@@ -2478,6 +2529,10 @@ msgstr "Precipitation"
 #: lu_int_wms.1129
 msgid "eau_new_Schneehoehe"
 msgstr "Snow height"
+
+#: l_wmts.1125
+msgid "eau_new_HQ_extrem_niedrige_Wahrscheinlichkeit"
+msgstr "HQ extreme [low probability]"
 
 #: lu_int_wms.1285
 msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
@@ -2641,7 +2696,7 @@ msgstr "Channel - Millchannel"
 
 #: lu_int_wms.1476
 msgid "eau_new_Waermepumpe_(usage_interne)"
-msgstr ""
+msgstr "Heat pumps"
 
 #: lu_int_wms.1477
 msgid "eau_new_Alluvialer_Grundwasserspiegel"

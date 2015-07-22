@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-14 13:10+0000\n"
+"PO-Revision-Date: 2015-07-22 14:30+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: Luxembourgish (http://www.transifex.com/p/geoportailv3-lu/language/lb/)\n"
+"Language-Team: Luxembourgish (http://www.transifex.com/projects/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,9 +19,13 @@ msgstr ""
 msgid "+ Add layers"
 msgstr "+ Layeren beisetzen"
 
+#: geoportailv3/templates/index.html:11
+msgid "- Geoportal Luxembourg"
+msgstr "- Geoportail Letzebuerg"
+
 #: geoportailv3/static/js/share/sharedirective.js:110
 msgid "- link from geoportail.lu"
-msgstr "Kaart aus geoportail.lu"
+msgstr "link aus dem geoportail.lu"
 
 #: geoportailv3/templates/index.html:124
 msgid ""
@@ -35,43 +39,47 @@ msgid ""
 "feature and show more information."
 msgstr "Duerch <em>Klick</em> (tippen op mobil) op eng Funktioun gëtt dës ausgewielt an méi Informatiounen ugewisen"
 
-#: geoportailv3/static/js/print/printdirective.js:165
+#: geoportailv3/templates/index.html:153
+msgid "A Propos"
+msgstr "Iwwert eis"
+
+#: geoportailv3/static/js/print/printdirective.js:173
 msgid "A0 landscape"
 msgstr "A0 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:164
+#: geoportailv3/static/js/print/printdirective.js:172
 msgid "A0 portrait"
 msgstr "A0 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:163
+#: geoportailv3/static/js/print/printdirective.js:171
 msgid "A1 landscape"
 msgstr "A1 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:162
+#: geoportailv3/static/js/print/printdirective.js:170
 msgid "A1 portrait"
 msgstr "A1 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:161
+#: geoportailv3/static/js/print/printdirective.js:169
 msgid "A2 landscape"
 msgstr "A2 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:160
+#: geoportailv3/static/js/print/printdirective.js:168
 msgid "A2 portrait"
 msgstr "A2 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:159
+#: geoportailv3/static/js/print/printdirective.js:167
 msgid "A3 landscape"
 msgstr "A3 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:158
+#: geoportailv3/static/js/print/printdirective.js:166
 msgid "A3 portrait"
 msgstr "A3 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:157
+#: geoportailv3/static/js/print/printdirective.js:165
 msgid "A4 landscape"
 msgstr "A4 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:156
+#: geoportailv3/static/js/print/printdirective.js:164
 msgid "A4 portrait"
 msgstr "A4 Portrait"
 
@@ -79,19 +87,23 @@ msgstr "A4 Portrait"
 msgid "Abort"
 msgstr "Ënnerbriechen"
 
-#: geoportailv3/static/js/search/searchdirective.js:359
+#: geoportailv3/static/js/search/searchdirective.js:385
 msgid "Addresses"
 msgstr "Adressen"
+
+#: geoportailv3/templates/index.html:154
+msgid "Aide"
+msgstr "Hëllef"
 
 #: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
 msgstr "Azimut"
 
-#: geoportailv3/static/js/search/searchdirective.js:344
+#: geoportailv3/static/js/search/searchdirective.js:370
 msgid "Background"
 msgstr "Hannergrond"
 
-#: geoportailv3/static/js/search/searchdirective.js:333
+#: geoportailv3/static/js/search/searchdirective.js:359
 msgid "Background Layers"
 msgstr "Hannergrondlayeren"
 
@@ -145,9 +157,10 @@ msgstr "Klickt fir mam Moossen vun enger Längt unzefänken"
 msgid "Click to start drawing profile"
 msgstr "Klickt fir mam Moossen vun engem Profil unzefänken"
 
+#: geoportailv3/static/js/query/aero.html:7
 #: geoportailv3/static/js/query/urplang.html:7
 msgid "Cliquez dans l'image pour agrandir"
-msgstr ""
+msgstr "Klickt op d'Bild fir et ze vergréisseren"
 
 #: geoportailv3/static/js/query/parcels.html:10
 msgid "Commander un extrait"
@@ -158,6 +171,7 @@ msgid "Commune"
 msgstr "Gemeng"
 
 #: geoportailv3/static/js/layerinfo/popup.html:18
+#: geoportailv3/templates/index.html:155
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -173,6 +187,18 @@ msgstr "Layeren"
 msgid "Create a new user account"
 msgstr "E neien Benotzerkont opmaachen"
 
+#: geoportailv3/static/js/query/ng95.html:6
+msgid "Croquis"
+msgstr ""
+
+#: geoportailv3/static/js/query/ng95.html:8
+msgid "Croquis indisponible"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:10
+msgid "Date"
+msgstr "Datum"
+
 #: geoportailv3/static/js/query/parcels.html:9
 msgid "Dernier mesurage"
 msgstr "Leschten Mesurage"
@@ -182,7 +208,7 @@ msgstr "Leschten Mesurage"
 msgid "Description"
 msgstr "Beschreiwung"
 
-#: geoportailv3/templates/index.html:159
+#: geoportailv3/templates/index.html:161
 msgid "Dessin"
 msgstr "Zeechnen"
 
@@ -191,6 +217,7 @@ msgid "Draw a line on the map to display an elevation profile."
 msgstr "Zeechent eng Linn op der Kaart fir den Héichtenprofil unzeweisen"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:19
+#: geoportailv3/static/js/query/ng95.html:4
 msgid "Elevation"
 msgstr "Héicht"
 
@@ -202,6 +229,10 @@ msgstr "Email"
 msgid "Facebook"
 msgstr "Facebook"
 
+#: geoportailv3/static/js/query/affaires.html:6
+msgid "Geometre"
+msgstr ""
+
 #: geoportailv3/static/js/share/share.html:10
 msgid "Google Plus"
 msgstr "Google Plus"
@@ -210,7 +241,7 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "Ech hu mäi Passwuert verluer"
 
-#: geoportailv3/templates/index.html:171
+#: geoportailv3/templates/index.html:173
 msgid "Imprimer"
 msgstr "Drécken"
 
@@ -226,7 +257,7 @@ msgstr "Ongültegen Benotzernumm oder Passwuert"
 msgid "Keywords"
 msgstr "Wichteg Wierder"
 
-#: geoportailv3/static/js/search/searchdirective.js:304
+#: geoportailv3/static/js/search/searchdirective.js:323
 msgid "Layers"
 msgstr "Layeren"
 
@@ -237,18 +268,6 @@ msgstr "Legend"
 #: geoportailv3/static/js/measure/measure.html:3
 msgid "Length"
 msgstr "Längt"
-
-#: geoportailv3/templates/index.html:153
-msgid "Lien 1"
-msgstr ""
-
-#: geoportailv3/templates/index.html:154
-msgid "Lien 2"
-msgstr ""
-
-#: geoportailv3/templates/index.html:155
-msgid "Lien 3"
-msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html:27
 msgid "Link to the metadata"
@@ -270,13 +289,17 @@ msgstr "Ausloggen"
 msgid "Longeueur"
 msgstr "Längt"
 
-#: geoportailv3/templates/index.html:163
+#: geoportailv3/templates/index.html:156
+msgid "Légalités"
+msgstr "Legales"
+
+#: geoportailv3/templates/index.html:165
 msgid "Mesurer"
 msgstr "Moossen"
 
 #: geoportailv3/templates/index.html:146
 msgid "My Maps"
-msgstr "My Maps"
+msgstr "My maps"
 
 #: geoportailv3/static/js/authentication/authentication.html:2
 #: geoportailv3/static/js/authentication/authentication.html:22
@@ -299,15 +322,25 @@ msgstr "Notzung"
 msgid "No layer selected"
 msgstr "Keen Layer ausgewielt"
 
+#: geoportailv3/static/js/query/cfl_hecto.html:3
 #: geoportailv3/static/js/query/mymaps.html:5
 msgid "Nom"
 msgstr "Numm"
 
+#: geoportailv3/static/js/query/affaires.html:4
+msgid "Numero"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:5
 #: geoportailv3/static/js/query/parcels.html:6
 msgid "Numero cadastral"
 msgstr "Kadasternummer"
 
-#: geoportailv3/templates/index.html:176
+#: geoportailv3/static/js/query/ng95.html:7
+msgid "Obtenir le fichier sous format pdf"
+msgstr ""
+
+#: geoportailv3/templates/index.html:178
 msgid "Partager"
 msgstr "Deelen"
 
@@ -319,6 +352,10 @@ msgstr "Passwuert"
 msgid "Profile"
 msgstr "Profil"
 
+#: geoportailv3/static/js/query/inst_pub.html:4
+msgid "Proprietaire"
+msgstr ""
+
 #: geoportailv3/static/js/query/mymaps.html:8
 msgid "Rating"
 msgstr "Bewäertung"
@@ -326,6 +363,10 @@ msgstr "Bewäertung"
 #: geoportailv3/static/js/search/search.html:6
 msgid "Recherche adresse, parcelles, couches ..."
 msgstr "Sich Adressen, Parzellen, Layeren ... "
+
+#: geoportailv3/static/js/query/affaires.html:7
+msgid "Region"
+msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html:16
 msgid "Revision date"
@@ -339,6 +380,10 @@ msgstr "Sectioun"
 #: geoportailv3/static/js/share/shorturl.html:4
 msgid "Short Url"
 msgstr "Url"
+
+#: geoportailv3/static/js/query/affaires.html:9
+msgid "Statut"
+msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html:9
 msgid "Submit"
@@ -378,6 +423,12 @@ msgstr "Titel"
 msgid "Twitter"
 msgstr "Twitter"
 
+#: geoportailv3/static/js/query/affaires.html:8
+#: geoportailv3/static/js/query/batiments.html:3
+#: geoportailv3/static/js/query/ng95.html:5
+msgid "Type"
+msgstr "Typ"
+
 #: geoportailv3/static/js/authentication/authentication.html:7
 msgid "Username"
 msgstr "Benotzernumm"
@@ -398,17 +449,13 @@ msgstr "Sprooch"
 msgid "layers"
 msgstr "Layeren"
 
-#: geoportailv3/templates/index.html:11
-msgid "map_title"
-msgstr "Kaartennumm"
-
 #: geoportailv3/templates/index.html:77
 msgid "my_layers"
 msgstr "Méng Layeren"
 
 #: geoportailv3/templates/index.html:102
 msgid "my_maps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html:34
 msgid "search"
@@ -484,7 +531,7 @@ msgstr "Tourismus"
 
 #: theme.117
 msgid "main"
-msgstr "Haaptthema"
+msgstr "Allgemeng"
 
 #: theme.118
 msgid "cadastre_mobile"
@@ -508,7 +555,7 @@ msgstr ""
 
 #: theme.123
 msgid "at"
-msgstr ""
+msgstr "Landesplannung"
 
 #: theme.124
 msgid "agriculture"
@@ -541,6 +588,10 @@ msgstr "Lenoz"
 #: theme.131
 msgid "municipalities"
 msgstr "Gemengen"
+
+#: lu_int_wms.1590
+msgid "aero_1977_30k"
+msgstr "Loftbiller vun 1977 (1:30k)"
 
 #: theme.133 lu_int_wms.465
 msgid "olos"
@@ -860,7 +911,7 @@ msgstr "Komplettiwersiicht"
 
 #: l_wmts.215
 msgid "decoupage_geo25_50k"
-msgstr "Blatschnëtt Geologesch Kaart"
+msgstr "Blatschnëtt Geologesch Kaart 1:25.000 / 1:50.000"
 
 #: group.216
 msgid "verkehrsnetze_tourisme"
@@ -1012,7 +1063,7 @@ msgstr "Kadasterparzellen"
 
 #: group.253
 msgid "mymaps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1706,10 +1757,6 @@ msgstr "Remembrementsperimeter"
 msgid "repere_alti"
 msgstr "Héichtebolzen"
 
-#: l_wmts.429
-msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
-msgstr "HQ100 [mëttel Probabilitéit]"
-
 #: lu_int_wms.430
 msgid "anf_arrondissements"
 msgstr "Arrondissementer vun der Naturverwaltung"
@@ -1800,7 +1847,7 @@ msgstr "Corridors"
 
 #: lu_int_wms.452
 msgid "env_iba"
-msgstr ""
+msgstr "Important Bird Areas"
 
 #: lu_int_wms.453
 msgid "anf_dates_battues"
@@ -1998,6 +2045,10 @@ msgstr "Vulnérabel Gebidder [Nitratdirective]"
 msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
 msgstr "UW ofhängeg Ökosystemer"
 
+#: lu_ext_wms.1591
+msgid "tour_velo_route"
+msgstr "Course-Velo Circuiten"
+
 #: lu_int_wms.504
 msgid "ont_poi_3"
 msgstr "Natur & Ausflich"
@@ -2140,7 +2191,7 @@ msgstr "Stroossekaart"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
-msgstr ""
+msgstr "Opérations archéologiques"
 
 #: lu_ext_wms.540
 msgid "tour_pistes_velo_mymaps2"
@@ -2148,7 +2199,7 @@ msgstr "Regional Vëlosweeër"
 
 #: lu_ext_wms.541
 msgid "projets_amen"
-msgstr ""
+msgstr "Raumplanungs Projeten"
 
 #: l_wmts.542
 msgid "ivv_parcels"
@@ -2180,11 +2231,11 @@ msgstr "Zousätzlech Vulleschutzgebidder Natura 2000"
 
 #: lu_int_wms.549
 msgid "parcelles_etat"
-msgstr "Kadasterparzellen"
+msgstr "Parcelles des instances publiques"
 
 #: lu_int_wms.550
 msgid "mobi_avm"
-msgstr ""
+msgstr "Verkaafsautomaten"
 
 #: lu_int_wms.551
 msgid "eau_new_Oberflaechenwasserkoerper_2015"
@@ -2271,8 +2322,12 @@ msgid "eau_new_Einschaetzung_guter_Zustand_2021"
 msgstr "Aschätzung gudden Zoustand 2021"
 
 #: l_wmts.574
-msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
-msgstr "HQ10 [héich Probabilitéit]"
+msgid "eau_new_HQ10_hohe_Wahrscheinlichkeit"
+msgstr "HQ10 [Hiegh Probabilitéit]"
+
+#: l_wmts.429
+msgid "eau_new_HQ100_mittlere_Wahrscheinlichkeit"
+msgstr "HQ100 [mëttel Probabilitéit]"
 
 #: lu_int_wms.766
 msgid "eau_new_HQextrem_merged_2010"
@@ -2458,10 +2513,6 @@ msgstr "HQ10 [héich Probabilitéit] 2010"
 msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
 msgstr "Quantitativen Zoustand vun den WK 2009"
 
-#: l_wmts.1125
-msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
-msgstr "HQ extrem [niddereg Probabilitéit]"
-
 #: lu_int_wms.1126
 msgid "eau_new_Typologie_Oberflaechengewasser_2009"
 msgstr "Typologie Uewerflächegewässer 2009"
@@ -2477,6 +2528,10 @@ msgstr "Nidderschlag"
 #: lu_int_wms.1129
 msgid "eau_new_Schneehoehe"
 msgstr "Schnéihéicht"
+
+#: l_wmts.1125
+msgid "eau_new_HQ_extrem_niedrige_Wahrscheinlichkeit"
+msgstr "HQ extrem [niddereg Probabilitéit]"
 
 #: lu_int_wms.1285
 msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
@@ -2640,7 +2695,7 @@ msgstr "Kanal - Millekanal"
 
 #: lu_int_wms.1476
 msgid "eau_new_Waermepumpe_(usage_interne)"
-msgstr ""
+msgstr "Wärmepompel"
 
 #: lu_int_wms.1477
 msgid "eau_new_Alluvialer_Grundwasserspiegel"
