@@ -412,7 +412,7 @@ class Getfeatureinfo(object):
         if url.find('?'):
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
-        print query
+
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()
