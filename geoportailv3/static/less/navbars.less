@@ -108,6 +108,10 @@ header {
   float: right;
 }
 
+/* Keep items in one line, even with not enough room for links */
+.footer-navigation {
+  margin-left: -125px;
+}
 /***********/
 /* Sizing  */
 /***********/
@@ -116,6 +120,10 @@ header {
   line-height: 17px;
 }
 
+.footer-navigation > li > a {
+  padding-right: 7px;
+  padding-left: 7px;
+}
 .toolbox-panel > li > a {
   width: @icon-width;
   line-height: @icon-width;
