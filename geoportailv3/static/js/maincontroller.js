@@ -200,6 +200,15 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
   this.manageUserRoleChange_($scope);
 
   this.loadThemes_();
+
+  $scope.$watch(goog.bind(function() {
+    return this['layersOpen'];
+  }, this), goog.bind(function(newVal) {
+    if (newVal === false) {
+      $('app-catalog .themes-switcher').collapse('show');
+      $('app-themeswitcher #themes-content').collapse('hide');
+    }
+  }, this));
 };
 
 
@@ -363,15 +372,22 @@ app.MainController.prototype.showTab = function(selector) {
  * @export
  */
 app.MainController.prototype.toggleThemeSelector = function() {
-  this.showTab('a[href=#catalog]');
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
-  if (!themesSwitcher.hasClass('in') && this['layersOpen']) {
+  var themeTab = $('#catalog');
+  if (this['layersOpen']) {
+    if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
+      this['layersOpen'] = false;
+    } else {
+      this.showTab('a[href=#catalog]');
+      themesSwitcher.collapse('show');
+      layerTree.collapse('hide');
+    }
+  } else {
+    this['layersOpen'] = true;
+    this.showTab('a[href=#catalog]');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
-  } else if (themesSwitcher.hasClass('in') && !this['layersOpen']) {
-    themesSwitcher.collapse('hide');
-    layerTree.collapse('show');
   }
 };
 
