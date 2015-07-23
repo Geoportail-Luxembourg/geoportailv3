@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-22 14:30+0000\n"
+"PO-Revision-Date: 2015-07-23 11:30+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/projects/p/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "+ Layeren beisetzen"
 msgid "- Geoportal Luxembourg"
 msgstr "- Geoportail Letzebuerg"
 
-#: geoportailv3/static/js/share/sharedirective.js:110
+#: geoportailv3/static/js/share/sharedirective.js:81
 msgid "- link from geoportail.lu"
 msgstr "link aus dem geoportail.lu"
 
@@ -2111,7 +2111,7 @@ msgstr "Tankstellen"
 
 #: group.519
 msgid "wrrl_intern_hs"
-msgstr ""
+msgstr "Hydromorphologische Strukturkartierung"
 
 #: group.520
 msgid "wrrl_intern_group"
