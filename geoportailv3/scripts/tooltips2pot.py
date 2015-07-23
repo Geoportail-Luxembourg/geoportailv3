@@ -49,7 +49,8 @@ def _get_external_data(url, bbox=None, layer=None):
               % (layer, query, esricoll))
         return []
     else:
-        return esricoll['fieldAliases']
+        return dict((value, key)
+                    for key, value in esricoll['fieldAliases'].iteritems())
 
 
 def remove_attributes(attributes, attributes_to_remove,
