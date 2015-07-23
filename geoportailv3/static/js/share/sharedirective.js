@@ -73,6 +73,12 @@ app.ShareDirectiveController = function($window, gettext, gettextCatalog) {
    * @private
    */
   this.translate_ = gettextCatalog;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.emailString_ = gettext(' - link from geoportail.lu');
 };
 
 
@@ -88,7 +94,7 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
       //twitter params
       'text': this.window_.document.title,
       'via': 'geoportal_lux',
-      'url': this.window_.location.href
+      'url': $('app-shorturl input').val()
     }));
     var popup =
         this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
@@ -107,8 +113,8 @@ app.ShareDirectiveController.prototype.openMailLink = function() {
   googUri.setScheme('mailto');
   googUri.setQueryData(goog.Uri.QueryData.createFromMap({
     'subject': this.window_.document.title +
-        this.translate_.getString(gettext(' - link from geoportail.lu')),
-    'body': this.window_.location.href
+        this.translate_.getString(this.emailString_),
+    'body': $('app-shorturl input').val()
   }));
   this.window_.open(googUri.toString(), '_self', this.windowOptions_);
   return false;
