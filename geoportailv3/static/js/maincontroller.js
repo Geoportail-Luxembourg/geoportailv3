@@ -358,4 +358,21 @@ app.MainController.prototype.showTab = function(selector) {
   $(selector).tab('show');
 };
 
+
+/**
+ * @export
+ */
+app.MainController.prototype.toggleThemeSelector = function() {
+  this.showTab('a[href=#catalog]');
+  var layerTree = $('app-catalog .themes-switcher');
+  var themesSwitcher = $('app-themeswitcher #themes-content');
+  if (!themesSwitcher.hasClass('in') && this['layersOpen']) {
+    themesSwitcher.collapse('show');
+    layerTree.collapse('hide');
+  } else if (themesSwitcher.hasClass('in') && !this['layersOpen']) {
+    themesSwitcher.collapse('hide');
+    layerTree.collapse('show');
+  }
+};
+
 app.module.controller('MainController', app.MainController);

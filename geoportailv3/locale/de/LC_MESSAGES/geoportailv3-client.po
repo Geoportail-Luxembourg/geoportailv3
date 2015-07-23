@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-07-14 13:09+0000\n"
+"PO-Revision-Date: 2015-07-22 14:30+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
-"Language-Team: German (http://www.transifex.com/p/geoportailv3-lu/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/projects/p/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,6 +18,10 @@ msgstr ""
 #: geoportailv3/templates/index.html:91
 msgid "+ Add layers"
 msgstr "+ Layer hinzufügen"
+
+#: geoportailv3/templates/index.html:11
+msgid "- Geoportal Luxembourg"
+msgstr "- Geoportal Luxemburg"
 
 #: geoportailv3/static/js/share/sharedirective.js:110
 msgid "- link from geoportail.lu"
@@ -35,43 +39,47 @@ msgid ""
 "feature and show more information."
 msgstr "Durch <em>Klick</em> (tippen auf Mobil) auf einer Funktion wir diese Augewählt und weitere Informationen angezeigt"
 
-#: geoportailv3/static/js/print/printdirective.js:165
+#: geoportailv3/templates/index.html:153
+msgid "A Propos"
+msgstr "Über uns"
+
+#: geoportailv3/static/js/print/printdirective.js:173
 msgid "A0 landscape"
 msgstr "A0 quer"
 
-#: geoportailv3/static/js/print/printdirective.js:164
+#: geoportailv3/static/js/print/printdirective.js:172
 msgid "A0 portrait"
 msgstr "A0 hoch"
 
-#: geoportailv3/static/js/print/printdirective.js:163
+#: geoportailv3/static/js/print/printdirective.js:171
 msgid "A1 landscape"
 msgstr "A1 quer"
 
-#: geoportailv3/static/js/print/printdirective.js:162
+#: geoportailv3/static/js/print/printdirective.js:170
 msgid "A1 portrait"
 msgstr "A1 hoch"
 
-#: geoportailv3/static/js/print/printdirective.js:161
+#: geoportailv3/static/js/print/printdirective.js:169
 msgid "A2 landscape"
 msgstr "A2 quer"
 
-#: geoportailv3/static/js/print/printdirective.js:160
+#: geoportailv3/static/js/print/printdirective.js:168
 msgid "A2 portrait"
 msgstr "A2 hoch"
 
-#: geoportailv3/static/js/print/printdirective.js:159
+#: geoportailv3/static/js/print/printdirective.js:167
 msgid "A3 landscape"
 msgstr "A3 quer"
 
-#: geoportailv3/static/js/print/printdirective.js:158
+#: geoportailv3/static/js/print/printdirective.js:166
 msgid "A3 portrait"
 msgstr "A3 hoch"
 
-#: geoportailv3/static/js/print/printdirective.js:157
+#: geoportailv3/static/js/print/printdirective.js:165
 msgid "A4 landscape"
 msgstr "A4 quer"
 
-#: geoportailv3/static/js/print/printdirective.js:156
+#: geoportailv3/static/js/print/printdirective.js:164
 msgid "A4 portrait"
 msgstr "A4 hoch "
 
@@ -79,19 +87,23 @@ msgstr "A4 hoch "
 msgid "Abort"
 msgstr "Abbrechen"
 
-#: geoportailv3/static/js/search/searchdirective.js:359
+#: geoportailv3/static/js/search/searchdirective.js:385
 msgid "Addresses"
 msgstr "Adressen"
+
+#: geoportailv3/templates/index.html:154
+msgid "Aide"
+msgstr "Hilfe"
 
 #: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
 msgstr "Azimut"
 
-#: geoportailv3/static/js/search/searchdirective.js:344
+#: geoportailv3/static/js/search/searchdirective.js:370
 msgid "Background"
 msgstr "Hintergrund"
 
-#: geoportailv3/static/js/search/searchdirective.js:333
+#: geoportailv3/static/js/search/searchdirective.js:359
 msgid "Background Layers"
 msgstr "Hintergrundkarten"
 
@@ -117,7 +129,7 @@ msgstr "Wechseln"
 msgid ""
 "Click to continue drawing the line<br>Double-click or click last point to "
 "finish"
-msgstr "Klicken Sie um mit dem zeichnen der Linie fortzufahren <br> Doppelklick zum Abschließen"
+msgstr "Klicken Sie um mit dem Zeichnen der Linie fortzufahren <br> Doppelklick zum Abschließen"
 
 #: geoportailv3/static/js/measure/measuredirective.js:174
 msgid ""
@@ -145,6 +157,7 @@ msgstr "Klicken Sie um mit dem Messen der Länge anzufangen"
 msgid "Click to start drawing profile"
 msgstr "Klicken Sie um mit dem Messen des Profils anzufangen"
 
+#: geoportailv3/static/js/query/aero.html:7
 #: geoportailv3/static/js/query/urplang.html:7
 msgid "Cliquez dans l'image pour agrandir"
 msgstr "Zum Vergrößern in das Bild klicken"
@@ -158,6 +171,7 @@ msgid "Commune"
 msgstr "Gemeinde"
 
 #: geoportailv3/static/js/layerinfo/popup.html:18
+#: geoportailv3/templates/index.html:155
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -167,11 +181,23 @@ msgstr "Kapazität"
 
 #: geoportailv3/templates/index.html:143
 msgid "Couches"
-msgstr "Ebenen"
+msgstr "Layer"
 
 #: geoportailv3/static/js/authentication/authentication.html:13
 msgid "Create a new user account"
 msgstr "Ein neues Benutzerkonto erstellen"
+
+#: geoportailv3/static/js/query/ng95.html:6
+msgid "Croquis"
+msgstr ""
+
+#: geoportailv3/static/js/query/ng95.html:8
+msgid "Croquis indisponible"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:10
+msgid "Date"
+msgstr "Datum"
 
 #: geoportailv3/static/js/query/parcels.html:9
 msgid "Dernier mesurage"
@@ -182,7 +208,7 @@ msgstr "Letze Messung"
 msgid "Description"
 msgstr "Beschreibung"
 
-#: geoportailv3/templates/index.html:159
+#: geoportailv3/templates/index.html:161
 msgid "Dessin"
 msgstr "Zeichnen"
 
@@ -191,6 +217,7 @@ msgid "Draw a line on the map to display an elevation profile."
 msgstr "Zeichnen Sie eine Linie auf der Karte um ein Höhenprofil zu erhalten."
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:19
+#: geoportailv3/static/js/query/ng95.html:4
 msgid "Elevation"
 msgstr "Höhe"
 
@@ -202,6 +229,10 @@ msgstr "Email"
 msgid "Facebook"
 msgstr "Facebook"
 
+#: geoportailv3/static/js/query/affaires.html:6
+msgid "Geometre"
+msgstr ""
+
 #: geoportailv3/static/js/share/share.html:10
 msgid "Google Plus"
 msgstr "Google Plus"
@@ -210,7 +241,7 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "Ich habe mein Passwort vergessen"
 
-#: geoportailv3/templates/index.html:171
+#: geoportailv3/templates/index.html:173
 msgid "Imprimer"
 msgstr "Drucken"
 
@@ -226,9 +257,9 @@ msgstr "Ungültiger Benutzername oder Passwort"
 msgid "Keywords"
 msgstr "Schlüsselwörter"
 
-#: geoportailv3/static/js/search/searchdirective.js:304
+#: geoportailv3/static/js/search/searchdirective.js:323
 msgid "Layers"
-msgstr "Layers"
+msgstr "Layer"
 
 #: geoportailv3/static/js/layerinfo/popup.html:35
 msgid "Legend"
@@ -237,18 +268,6 @@ msgstr "Legende"
 #: geoportailv3/static/js/measure/measure.html:3
 msgid "Length"
 msgstr "Länge"
-
-#: geoportailv3/templates/index.html:153
-msgid "Lien 1"
-msgstr ""
-
-#: geoportailv3/templates/index.html:154
-msgid "Lien 2"
-msgstr ""
-
-#: geoportailv3/templates/index.html:155
-msgid "Lien 3"
-msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html:27
 msgid "Link to the metadata"
@@ -270,13 +289,17 @@ msgstr "Abmelden"
 msgid "Longeueur"
 msgstr "Länge"
 
-#: geoportailv3/templates/index.html:163
+#: geoportailv3/templates/index.html:156
+msgid "Légalités"
+msgstr "Geschäftsbedingungen"
+
+#: geoportailv3/templates/index.html:165
 msgid "Mesurer"
 msgstr "Messen"
 
 #: geoportailv3/templates/index.html:146
 msgid "My Maps"
-msgstr "My Maps"
+msgstr "My maps"
 
 #: geoportailv3/static/js/authentication/authentication.html:2
 #: geoportailv3/static/js/authentication/authentication.html:22
@@ -299,15 +322,25 @@ msgstr "Natur"
 msgid "No layer selected"
 msgstr "Kein Layer ausgewählt"
 
+#: geoportailv3/static/js/query/cfl_hecto.html:3
 #: geoportailv3/static/js/query/mymaps.html:5
 msgid "Nom"
 msgstr "Name"
 
+#: geoportailv3/static/js/query/affaires.html:4
+msgid "Numero"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:5
 #: geoportailv3/static/js/query/parcels.html:6
 msgid "Numero cadastral"
 msgstr "Katasternummer"
 
-#: geoportailv3/templates/index.html:176
+#: geoportailv3/static/js/query/ng95.html:7
+msgid "Obtenir le fichier sous format pdf"
+msgstr ""
+
+#: geoportailv3/templates/index.html:178
 msgid "Partager"
 msgstr "Teilen"
 
@@ -319,13 +352,21 @@ msgstr "Passwort"
 msgid "Profile"
 msgstr "Profil"
 
+#: geoportailv3/static/js/query/inst_pub.html:4
+msgid "Proprietaire"
+msgstr ""
+
 #: geoportailv3/static/js/query/mymaps.html:8
 msgid "Rating"
 msgstr "Wertung"
 
 #: geoportailv3/static/js/search/search.html:6
 msgid "Recherche adresse, parcelles, couches ..."
-msgstr "Suche Adressen, Parzellen, Layers ..."
+msgstr "Suche Adressen, Parzellen, Layer ..."
+
+#: geoportailv3/static/js/query/affaires.html:7
+msgid "Region"
+msgstr ""
 
 #: geoportailv3/static/js/layerinfo/popup.html:16
 msgid "Revision date"
@@ -339,6 +380,10 @@ msgstr "Sektion"
 #: geoportailv3/static/js/share/shorturl.html:4
 msgid "Short Url"
 msgstr "Url"
+
+#: geoportailv3/static/js/query/affaires.html:9
+msgid "Statut"
+msgstr ""
 
 #: geoportailv3/static/js/authentication/authentication.html:9
 msgid "Submit"
@@ -378,6 +423,12 @@ msgstr "Titel"
 msgid "Twitter"
 msgstr "Twitter"
 
+#: geoportailv3/static/js/query/affaires.html:8
+#: geoportailv3/static/js/query/batiments.html:3
+#: geoportailv3/static/js/query/ng95.html:5
+msgid "Type"
+msgstr "Typ"
+
 #: geoportailv3/static/js/authentication/authentication.html:7
 msgid "Username"
 msgstr "Benutzername"
@@ -396,19 +447,15 @@ msgstr "Sprache"
 
 #: geoportailv3/templates/index.html:69
 msgid "layers"
-msgstr "Layers"
-
-#: geoportailv3/templates/index.html:11
-msgid "map_title"
-msgstr "Kartentitel"
+msgstr "Layer"
 
 #: geoportailv3/templates/index.html:77
 msgid "my_layers"
-msgstr "Meine Layers"
+msgstr "Meine Layer"
 
 #: geoportailv3/templates/index.html:102
 msgid "my_maps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: geoportailv3/templates/index.html:34
 msgid "search"
@@ -484,7 +531,7 @@ msgstr "Tourismus"
 
 #: theme.117
 msgid "main"
-msgstr "Hauptthema"
+msgstr "Allgemein"
 
 #: theme.118
 msgid "cadastre_mobile"
@@ -542,6 +589,10 @@ msgstr "Lenoz"
 msgid "municipalities"
 msgstr "Gemeinden"
 
+#: lu_int_wms.1590
+msgid "aero_1977_30k"
+msgstr "Luftbilder von 1977 (1:30k)"
+
 #: theme.133 lu_int_wms.465
 msgid "olos"
 msgstr "OLOS Parzellen"
@@ -552,7 +603,7 @@ msgstr "Offenland-Biotopkataster"
 
 #: lu_int_wms.135
 msgid "ac_preizerdaul_ortho_2009"
-msgstr "Orthophoto Preizerdaul"
+msgstr "Orthophoto Préizerdaul 2009"
 
 #: lu_int_wms.136
 msgid "asta_esp_lisiere"
@@ -608,7 +659,7 @@ msgstr "Nordic Walking Parcs"
 
 #: lu_int_wms.150
 msgid "parcelles_preemption"
-msgstr "Parzellen Vorkaufsrecht"
+msgstr "Parzellen mit Vorkaufsrecht"
 
 #: l_wmts.151
 msgid "addresses"
@@ -860,7 +911,7 @@ msgstr "Komplettübersicht"
 
 #: l_wmts.215
 msgid "decoupage_geo25_50k"
-msgstr "Blattschnit Geologische Karte 1:25.000 / 1:50.000"
+msgstr "Blattschnitt Geologische Karte 1:25.000 / 1:50.000"
 
 #: group.216
 msgid "verkehrsnetze_tourisme"
@@ -972,7 +1023,7 @@ msgstr "Automatische topographische Karte"
 
 #: group.243
 msgid "user_generated_content"
-msgstr "Von Benutzern publizierter Inhalt"
+msgstr "Von Nutzern erstellter Inhalt"
 
 #: l_wmts.244
 msgid "ivv_kleinlagen"
@@ -1012,7 +1063,7 @@ msgstr "Katasterparzellen"
 
 #: group.253
 msgid "mymaps"
-msgstr "My maps"
+msgstr "My Maps"
 
 #: lu_ext_wms.254
 msgid "tour_DeLux"
@@ -1156,7 +1207,7 @@ msgstr "Höhenlinien 10m"
 
 #: group.290
 msgid "group_ac_preizerdaul_pag"
-msgstr "FNP Preizerdaul"
+msgstr "FNP Préizerdaul"
 
 #: l_wmts.291
 msgid "wg_hangneigung_"
@@ -1176,7 +1227,7 @@ msgstr "Ikonos Satellitendaten"
 
 #: lu_ext_wms.296
 msgid "tour_pistes_vtt"
-msgstr "Moutainbike-Wege"
+msgstr "Mountainbike-Wege"
 
 #: l_wmts.297
 msgid "geologie_ancienne_edition"
@@ -1452,7 +1503,7 @@ msgstr "Mehrfachnutzung"
 
 #: lu_int_wms.365
 msgid "affaires"
-msgstr "Mess Angelegenheiten"
+msgstr "Vermessungen"
 
 #: lu_ext_wms.366
 msgid "luxembourg_on_horse"
@@ -1460,11 +1511,11 @@ msgstr "Luxemburg zu Pferd"
 
 #: lu_int_wms.367
 msgid "ac_preizerdaul_ortho"
-msgstr "Orthophoto Preizerdaul"
+msgstr "Orthophoto Préizerdaul"
 
 #: l_wmts.368
 msgid "emwelt_biotop_kadaster_f"
-msgstr "Flächige Objekte mit Ausnahme der Streuobstwiesen"
+msgstr "Flächenobjekte m. Ausn. d. Streuobstwiesen"
 
 #: l_wmts.369
 msgid "emwelt_biotop_kadaster_b"
@@ -1568,7 +1619,7 @@ msgstr "Préhistoire"
 
 #: lu_ext_wms.394
 msgid "Moyen Age"
-msgstr ""
+msgstr "Mittelalter"
 
 #: lu_ext_wms.395
 msgid "Temps modernes"
@@ -1704,11 +1755,7 @@ msgstr "Flurbereinigungsperimeter"
 
 #: lu_int_wms.428
 msgid "repere_alti"
-msgstr ""
-
-#: l_wmts.429
-msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)"
-msgstr "HQ100 [mittlere Wahrscheinlichkeit]"
+msgstr "Höhenbolzen"
 
 #: lu_int_wms.430
 msgid "anf_arrondissements"
@@ -1772,7 +1819,7 @@ msgstr "Grundwasser 2009"
 
 #: lu_int_wms.445
 msgid "MO"
-msgstr ""
+msgstr "Offizielle Messung"
 
 #: l_wmts.446
 msgid "sections_cadastrales_labels_eau"
@@ -1800,11 +1847,11 @@ msgstr "Corridors"
 
 #: lu_int_wms.452
 msgid "env_iba"
-msgstr ""
+msgstr "Important Bird Areas"
 
 #: lu_int_wms.453
 msgid "anf_dates_battues"
-msgstr ""
+msgstr "Bewegungsjagden"
 
 #: l_wmts.454
 msgid "eau_new_HQ100_merged_2013"
@@ -1998,6 +2045,10 @@ msgstr "Gefährdete Gebiete [Nitratrichtlinie]"
 msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
 msgstr "Oberflächenwasserabhängige Ökosysteme"
 
+#: lu_ext_wms.1591
+msgid "tour_velo_route"
+msgstr "Rennradrouten"
+
 #: lu_int_wms.504
 msgid "ont_poi_3"
 msgstr "Natur & Ausflüge"
@@ -2104,7 +2155,7 @@ msgstr "Baulücken"
 
 #: group.530
 msgid "logt"
-msgstr "Logement"
+msgstr "Wohnen"
 
 #: group.531
 msgid "osm"
@@ -2112,7 +2163,7 @@ msgstr "Name"
 
 #: lu_int_wms.532
 msgid "osm_mq"
-msgstr ""
+msgstr "OSM Mapquest"
 
 #: lu_int_wms.533
 msgid "ont_poi_4"
@@ -2124,7 +2175,7 @@ msgstr "Vereinfachte Karte der natürlichen Waldgesellschaften"
 
 #: group.535
 msgid "bglayers"
-msgstr ""
+msgstr "Hintergrundlayer"
 
 #: l_wmts.536
 msgid "topogr_global"
@@ -2140,7 +2191,7 @@ msgstr "Straßenkarte"
 
 #: lu_ext_wms.539
 msgid "operations_archeo"
-msgstr ""
+msgstr "Archäologische Operationen"
 
 #: lu_ext_wms.540
 msgid "tour_pistes_velo_mymaps2"
@@ -2148,7 +2199,7 @@ msgstr "Regionale Radwege"
 
 #: lu_ext_wms.541
 msgid "projets_amen"
-msgstr ""
+msgstr "Raumplanungs Projekte"
 
 #: l_wmts.542
 msgid "ivv_parcels"
@@ -2180,11 +2231,11 @@ msgstr "Zusätzliche Vogelschutzgebiete Natura 2000"
 
 #: lu_int_wms.549
 msgid "parcelles_etat"
-msgstr "Katasterparzellen"
+msgstr "Parzellen der öffentlichen Körperschaften"
 
 #: lu_int_wms.550
 msgid "mobi_avm"
-msgstr ""
+msgstr "Verkaufsautomaten"
 
 #: lu_int_wms.551
 msgid "eau_new_Oberflaechenwasserkoerper_2015"
@@ -2200,7 +2251,7 @@ msgstr "Trinkwassersyndikate"
 
 #: lu_int_wms.554
 msgid "eau_new_Zones_interdiction_utilisation_metazachlore"
-msgstr "Gebieten in welchen das Ausbringen von Metazachlor verboten ist"
+msgstr "Gebiete in denen das Ausbringen von Metazachlor verboten ist"
 
 #: lu_int_wms.555
 msgid "editus_poi_299"
@@ -2252,7 +2303,7 @@ msgstr "Medizin und Gesundheit"
 
 #: lu_int_wms.567
 msgid "editus_poi_298"
-msgstr "Dienste an Fachleute"
+msgstr "Dienste für Fachleute"
 
 #: group.568
 msgid "editus_pois"
@@ -2271,8 +2322,12 @@ msgid "eau_new_Einschaetzung_guter_Zustand_2021"
 msgstr "Einschätzung guter Zustand 2021"
 
 #: l_wmts.574
-msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)"
-msgstr "HQ10 [hohe Wahrscheinlichkeit]"
+msgid "eau_new_HQ10_hohe_Wahrscheinlichkeit"
+msgstr "HQ10 [hoheWahrscheinlichkeit]"
+
+#: l_wmts.429
+msgid "eau_new_HQ100_mittlere_Wahrscheinlichkeit"
+msgstr "HQ100 [mittlere Wahrscheinlichkeit]"
 
 #: lu_int_wms.766
 msgid "eau_new_HQextrem_merged_2010"
@@ -2328,7 +2383,7 @@ msgstr "Grundwasser [Nitratrichtlinie]"
 
 #: lu_int_wms.1092
 msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
-msgstr "Künstliche [Bassin]"
+msgstr "Künstliche Gewässer [Bassin]"
 
 #: lu_int_wms.1093
 msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
@@ -2458,10 +2513,6 @@ msgstr "HQ10 [hohe Wahrscheinlichkeit] 2010"
 msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
 msgstr "Quantitativer Zustand der WK 2009"
 
-#: l_wmts.1125
-msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)"
-msgstr "HQ extrem [niedrige Wahrscheinlichkeit]"
-
 #: lu_int_wms.1126
 msgid "eau_new_Typologie_Oberflaechengewasser_2009"
 msgstr "Typologie Oberflächengewässer 2009"
@@ -2477,6 +2528,10 @@ msgstr "Niederschlag"
 #: lu_int_wms.1129
 msgid "eau_new_Schneehoehe"
 msgstr "Schneehöhe"
+
+#: l_wmts.1125
+msgid "eau_new_HQ_extrem_niedrige_Wahrscheinlichkeit"
+msgstr "HQ extrem [niedrige Wahrscheinlichkeit]"
 
 #: lu_int_wms.1285
 msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
@@ -2572,7 +2627,7 @@ msgstr "Erheblich veränderte OWK 2009"
 
 #: lu_int_wms.1459
 msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
-msgstr "Natürliche [Bassin]"
+msgstr "Natürliche Gewässer [Bassin]"
 
 #: lu_int_wms.1460
 msgid "eau_new_Einzugsgebiete"
