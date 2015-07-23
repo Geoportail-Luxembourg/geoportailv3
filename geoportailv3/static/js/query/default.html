@@ -5,7 +5,7 @@
       <h4>{{feature.attributes.label | translate }}</h4>
       <table class="table table-condensed">
         <tr ng-repeat="(key, value) in feature.attributes">
-          <th>{{key | translate}}</th> <td>{{value}}</td>
+          <th>{{("f_" + key) | translate}}</th> <td>{{value}}</td>
         </tr>
       </table>
     </div>
