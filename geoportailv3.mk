@@ -37,7 +37,7 @@ PRINT_VERSION = NONE
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot
 	.build/venv/bin/tx push -s
-	.build/venv/bin/tx pull -f
+	.build/venv/bin/tx pull
 
 .build/fonts.timestamp: .build/node_modules.timestamp
 	mkdir -p $(PACKAGE)/static/build/fonts
