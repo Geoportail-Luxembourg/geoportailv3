@@ -84,6 +84,10 @@ class FullTextSearchView(object):
 
         for o in objs:
             s = o['_source']
+            try:
+                id = s['object_id']
+            except:
+                id = o['_id']
             if s['ts'] is not None:
                 properties = {
                     "label": s['label'],
@@ -96,7 +100,7 @@ class FullTextSearchView(object):
                         bbox = geom.bounds
                     except:
                         pass
-                feature = Feature(id=s['object_id'],
+                feature = Feature(id=id,
                                   geometry=s['ts'],
                                   properties=properties,
                                   bbox=bbox)
