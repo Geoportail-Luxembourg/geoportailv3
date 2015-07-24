@@ -476,6 +476,7 @@ $(OUTPUT_DIR)/locale/%/$(PACKAGE).json: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAG
 	mkdir -p $(dir $@)
 	node tools/compile-catalog $< > $@
 
+.INTERMEDIATE:$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client-tooltips.po
 $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client-tooltips.po: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client.po $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-tooltips.po
 	msgcat $^ > $@
 
