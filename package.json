@@ -16,15 +16,15 @@
     "jquery": "^1.9.1",
     "jshint": "2.7.0",
     "less": "~1.7.5",
-    "ngeo": "camptocamp/ngeo#master",
+    "ngeo": "git+https://github.com/camptocamp/ngeo#master",
     "nomnom": "~1.6.2",
-    "openlayers": "openlayers/ol3#master",
+    "openlayers": "git+https://github.com/openlayers/ol3#master",
     "proj4": "2.3.3",
     "phantomjs": "~1.9.7-5",
     "typeahead.js": "~0.10.5",
     "temp": "~0.7.0",
     "walk": "~2.3.3",
     "d3": "3.5.5",
-    "fuse": "petzlux/Fuse#master"
+    "fuse": "git+https://github.com/petzlux/Fuse#master"
   }
 }
