@@ -425,6 +425,7 @@ class Getfeatureinfo(object):
             esricoll = geojson_loads(content)
         except:
             raise
+        fields = esricoll['fields']
         if 'features' in esricoll:
             for rawfeature in esricoll['features']:
                 geometry = ''
@@ -452,6 +453,14 @@ class Getfeatureinfo(object):
                                 'coordinates': rawfeature['geometry']['rings']}
 
                 if geometry != '':
+                    for attribute in rawfeature['attributes']:
+                        for field in fields:
+                            if (field['name'] == attribute and
+                                field['alias'] is not None and
+                                    len(field['alias']) > 0):
+                                rawfeature['attributes'][field['alias']] =\
+                                    rawfeature['attributes'].pop(field['name'])
+                                break
                     f = self.to_feature(geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove)

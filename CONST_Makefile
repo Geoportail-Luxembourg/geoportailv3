@@ -472,11 +472,15 @@ $(PACKAGE)/locale/$(PACKAGE)-client.pot: $(PACKAGE)/locale/$(PACKAGE)-js.pot $(P
 
 $(JSON_CLIENT_LOCALISATION_FILES): .build/node_modules.timestamp
 
-$(OUTPUT_DIR)/locale/%/$(PACKAGE).json: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client.po .build/node_modules.timestamp
+$(OUTPUT_DIR)/locale/%/$(PACKAGE).json: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client-tooltips.po .build/node_modules.timestamp
 	mkdir -p $(dir $@)
 	node tools/compile-catalog $< > $@
 
-$(PACKAGE)/locale/%/LC_MESSAGES/%/$(PACKAGE)-client.po: $(PACKAGE)/locale/$(PACKAGE)-client.pot
+.INTERMEDIATE:$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client-tooltips.po
+$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client-tooltips.po: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client.po $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-tooltips.po
+	msgcat $^ > $@
+
+$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-client.po: $(PACKAGE)/locale/$(PACKAGE)-client.pot
 	mkdir -p $(dir $@)
 	touch $@
 	msgmerge --update $@ $<
