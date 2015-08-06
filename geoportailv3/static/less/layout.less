@@ -532,3 +532,18 @@ div.ol-zoom-extent > button {
 .navbar-form .form-group {
   position: relative;
 }
+
+
+@drawing-panel-width: 300px;
+.drawing-panel {
+  white-space: normal;
+  width: @drawing-panel-width;
+  padding: 10px 0;
+  margin-left: -(@drawing-panel-width / 2) + (@icon-width / 2);
+  >div {
+    height: @icon-width;
+    p {
+      margin-top: 10px;
+    }
+  }
+}

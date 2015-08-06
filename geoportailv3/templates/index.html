@@ -140,6 +140,11 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
+          <div class="col-xs-12">
+            <p translate>
+              The MyMaps functionality is currently not available in this preview.
+            </p>
+          </div>
         </div>
         <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
@@ -195,11 +200,17 @@
       </ul>
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
         <li class="hidden-xs draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
-          <div class="toolbox-panel">The panel for draw tools</div>
+        <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
+        <div class="toolbox-panel">
+          <div class="drawing-panel">
+              <div class="col-xs-12">
+              <p translate>The drawing tools are currently not available in this preview</p>
+            </div>
+          </div>
+        </div>
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
+        <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
             app-profile-open="mainCtrl.profileOpen"
