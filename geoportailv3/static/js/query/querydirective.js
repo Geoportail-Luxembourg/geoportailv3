@@ -383,6 +383,20 @@ app.QueryController.prototype.clearFeatures_ = function() {
 
 
 /**
+ * has the object at least one attribute
+ * @param {Object} feature
+ * @return {boolean} true if attribute is present.
+ * @export
+ */
+app.QueryController.prototype.hasAttributes = function(feature) {
+  if (feature['attributes'] && Object.keys(feature['attributes']).length > 0) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
  * provides the template path according to the fact
  * that the template for the current layer is remote or not
  * @param {{remote_template: boolean, template: string, layer: string}} layer

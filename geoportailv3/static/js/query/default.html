@@ -4,8 +4,11 @@
     <div ng-repeat="feature in layers.features" class="poi-feature">
       <h4>{{feature.attributes.label | translate }}</h4>
       <table class="table table-condensed">
-        <tr ng-repeat="(key, value) in feature.attributes">
+        <tr ng-if="ctrl.hasAttributes(feature)" ng-repeat="(key, value) in feature.attributes">
           <th>{{("f_" + key) | translate}}</th> <td>{{value}}</td>
+        </tr>
+        <tr ng-if="!ctrl.hasAttributes(feature)">
+          <td translate>Aucune information disponible pour cette couche</td>
         </tr>
       </table>
     </div>
