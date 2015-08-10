@@ -94,9 +94,12 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
                   substring(0, 220));
                 }
                 if ('legend_name' in localMetadata) {
+                  var currentLanguage = gettextCatalog.currentLanguage;
+                  currentLanguage =
+                  currentLanguage === 'lb' ? 'lu' : currentLanguage;
                   content['legendUrl'] = $sce.trustAsResourceUrl(
                       '//wiki.geoportail.lu/doku.php?id=' +
-                      gettextCatalog.currentLanguage + ':legend:' +
+                      currentLanguage + ':legend:' +
                       localMetadata['legend_name'] + '&do=export_html'
                   );
                   content['hasLegend'] = true;
