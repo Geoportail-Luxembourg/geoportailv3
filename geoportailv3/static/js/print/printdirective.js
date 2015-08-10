@@ -19,6 +19,7 @@ goog.require('app.VectorOverlayMgr');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.string');
 goog.require('ngeo.CreatePrint');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
@@ -567,7 +568,7 @@ app.PrintController.prototype.setScales_ = function() {
         if (!goog.isNull(tree)) {
           goog.asserts.assert('metadata' in tree);
           var scales;
-          if ('print_scales' in tree['metadata']) {
+          if (!goog.string.isEmptySafe(tree['metadata']['print_scales'])) {
             var printScalesStr = tree['metadata']['print_scales'];
             scales = goog.array.map(
                 printScalesStr.trim().split(','),
