@@ -1,0 +1,6 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Numero FLIK</span> : {{feature.attributes.code_elem}}{{feature.attributes.flik}}<br>
+  <span translate>Surface</span> : {{(feature.attributes.surface/100) | number:0}} a<br>
+  <span translate>Perimetre</span> : {{feature.attributes.perimetre | number:1}} m<br>
+</div>
