@@ -453,14 +453,18 @@ class Getfeatureinfo(object):
                                 'coordinates': rawfeature['geometry']['rings']}
 
                 if geometry != '':
+                    alias = {}
                     for attribute in rawfeature['attributes']:
                         for field in fields:
                             if (field['name'] == attribute and
                                 field['alias'] is not None and
                                     len(field['alias']) > 0):
-                                rawfeature['attributes'][field['alias']] =\
-                                    rawfeature['attributes'].pop(field['name'])
+                                alias[field['alias']] = field['name']
                                 break
+                    for key, value in alias.items():
+                        rawfeature['attributes'][key] =\
+                            rawfeature['attributes'].pop(value)
+
                     f = self.to_feature(geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove)
