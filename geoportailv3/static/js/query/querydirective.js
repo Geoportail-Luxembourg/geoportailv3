@@ -430,7 +430,7 @@ app.QueryController.prototype.getTrustedUrl = function(url) {
  * @export
  */
 app.QueryController.prototype.trustAsHtml = function(content){
-  return this.sce_.trustAsHtml(content);
+  return this.sce_.trustAsHtml("" + content);
 }
 
 /**
