@@ -194,7 +194,7 @@ class Getfeatureinfo(object):
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
                         len(luxgetfeaturedefinition.additional_info_function)
-                         > 0):
+                            > 0):
                         features = eval(luxgetfeaturedefinition.
                                         additional_info_function)
 
@@ -295,14 +295,14 @@ class Getfeatureinfo(object):
                 if 'hyperlin' in key.lower():
                     feature['attributes'][key] =\
                         "<a href='%s' target='_blank'>%s</a>"\
-                        %(value, value.rsplit("/",1)[1])
+                        % (value, value.rsplit("/", 1)[1])
                 if 'Fiche station' in key:
                     feature['attributes'][key] =\
                         "<a href='%s' target='_blank'>%s</a>"\
-                        %(value, value.rsplit("/",1)[1])
+                        % (value, value.rsplit("/", 1)[1])
                 if 'Photo station' in key:
                     feature['attributes'][key] =\
-                        "<img src='%s' width='300px'/>" %(value)
+                        "<img src='%s' width='300px'/>" % (value)
 
             modified_features.append(feature)
         return modified_features
