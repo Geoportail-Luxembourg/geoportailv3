@@ -50,7 +50,7 @@ app.ShareDirectiveController = function($window, gettext, gettextCatalog) {
    * @private
    */
   this.services_ = {
-    'facebook': {url: 'https://www.facebook.com/sharer/sharer.php'},
+    'facebook': {url: 'https://www.facebook.com/dialog/feed'},
     'twitter': {url: 'https://www.twitter.com/intent/tweet'},
     'googlePlus': {url: 'https://plus.google.com/share'}
   };
@@ -100,6 +100,27 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
         this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
     popup.focus();
   }
+  return false;
+};
+
+
+/**
+ * @export
+ * @return {boolean}
+ */
+app.ShareDirectiveController.prototype.openFbLink = function() {
+  var googUri = new goog.Uri(this.services_['facebook'].url);
+  googUri.setQueryData(goog.Uri.QueryData.createFromMap({
+    //fb params
+    'app_id': '162604997404468',
+    'caption': this.window_.document.title,
+    'display': 'popup',
+    'link': $('app-shorturl input').val(),
+    'redirect_uri': 'https://www.facebook.com'
+  }));
+  var popup =
+      this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
+  popup.focus();
   return false;
 };
 
