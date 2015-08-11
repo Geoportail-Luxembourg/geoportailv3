@@ -22,7 +22,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
       'appSelector': '=appQueryAppselector',
-      'queryActive': '=appQueryActive'
+      'queryActive': '=appQueryActive',
+      'language': '=appQueryLanguage'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -383,6 +384,20 @@ app.QueryController.prototype.clearFeatures_ = function() {
 
 
 /**
+ * has the object at least one attribute
+ * @param {Object} feature
+ * @return {boolean} true if attribute is present.
+ * @export
+ */
+app.QueryController.prototype.hasAttributes = function(feature) {
+  if (feature['attributes'] && Object.keys(feature['attributes']).length > 0) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
  * provides the template path according to the fact
  * that the template for the current layer is remote or not
  * @param {{remote_template: boolean, template: string, layer: string}} layer
@@ -405,6 +420,41 @@ app.QueryController.prototype.getTemplatePath = function(layer) {
  */
 app.QueryController.prototype.getTrustedUrl = function(url) {
   return this.sce_.trustAsResourceUrl(url);
+};
+
+
+/**
+ * returns a trusted html content
+ * @param {string} content content to be trusted
+ * @return {*} the trusted content.
+ * @export
+ */
+app.QueryController.prototype.trustAsHtml = function(content) {
+  return this.sce_.trustAsHtml('' + content);
+};
+
+
+/**
+ * returns a trusted url according to the current language
+ * @param {string} urlFr French url to be trusted
+ * @param {string} urlDe German url to be trusted
+ * @param {string} urlEn English url to be trusted
+ * @param {string} urlLb Luxembourgish url to be trusted
+ * @return {*} the trusted url.
+ * @export
+ */
+app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
+    urlDe, urlEn, urlLb) {
+  if (this['language'] == 'fr') {
+    return this.sce_.trustAsResourceUrl(urlFr);
+  } else if (this['language'] == 'de') {
+    return this.sce_.trustAsResourceUrl(urlDe);
+  } else if (this['language'] == 'en') {
+    return this.sce_.trustAsResourceUrl(urlEn);
+  } else if (this['language'] == 'lb') {
+    return this.sce_.trustAsResourceUrl(urlLb);
+  }
+  return this.sce_.trustAsResourceUrl(urlFr);
 };
 
 

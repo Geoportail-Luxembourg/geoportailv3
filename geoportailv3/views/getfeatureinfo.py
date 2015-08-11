@@ -191,6 +191,13 @@ class Getfeatureinfo(object):
                     big_box, None, None,
                     luxgetfeaturedefinition.attributes_to_remove)
                 if len(features) > 0:
+                    if (luxgetfeaturedefinition.additional_info_function
+                        is not None and
+                        len(luxgetfeaturedefinition.additional_info_function)
+                            > 0):
+                        features = eval(luxgetfeaturedefinition.
+                                        additional_info_function)
+
                     results.append(
                         self.to_featureinfo(
                             self.remove_features_outside_tolerance(
@@ -198,6 +205,7 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.template,
                             luxgetfeaturedefinition.remote_template))
+
         return results
 
     def remove_features_outside_tolerance(self, features, coords):
@@ -277,6 +285,27 @@ class Getfeatureinfo(object):
             except:
                 pass
         return attributes
+
+    def replace_resource_by_html_link(self, features, attributes_to_remove):
+        modified_features = []
+
+        for feature in features:
+            for key in feature['attributes']:
+                value = feature['attributes'][key]
+                if 'hyperlin' in key.lower():
+                    feature['attributes'][key] =\
+                        "<a href='%s' target='_blank'>%s</a>"\
+                        % (value, value.rsplit("/", 1)[1])
+                if 'Fiche station' in key:
+                    feature['attributes'][key] =\
+                        "<a href='%s' target='_blank'>%s</a>"\
+                        % (value, value.rsplit("/", 1)[1])
+                if 'Photo station' in key:
+                    feature['attributes'][key] =\
+                        "<img src='%s' width='300px'/>" % (value)
+
+            modified_features.append(feature)
+        return modified_features
 
     def get_additional_info_for_ng95(self, rows):
         features = []
@@ -453,14 +482,18 @@ class Getfeatureinfo(object):
                                 'coordinates': rawfeature['geometry']['rings']}
 
                 if geometry != '':
+                    alias = {}
                     for attribute in rawfeature['attributes']:
                         for field in fields:
                             if (field['name'] == attribute and
                                 field['alias'] is not None and
                                     len(field['alias']) > 0):
-                                rawfeature['attributes'][field['alias']] =\
-                                    rawfeature['attributes'].pop(field['name'])
+                                alias[field['alias']] = field['name']
                                 break
+                    for key, value in alias.items():
+                        rawfeature['attributes'][key] =\
+                            rawfeature['attributes'].pop(value)
+
                     f = self.to_feature(geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove)
