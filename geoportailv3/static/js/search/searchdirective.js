@@ -284,7 +284,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     source: goog.bind(function(query, syncResults) {
       return syncResults(this.matchCoordinate_(query));
     }, this),
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
@@ -314,7 +314,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      * @param {Object} suggestion
      * @return {string}
      */
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
@@ -350,7 +350,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      * @param {app.BackgroundLayerSuggestion} suggestion
      * @return {string}
      */
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
@@ -375,7 +375,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   },{
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
