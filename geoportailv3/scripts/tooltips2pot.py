@@ -89,7 +89,9 @@ def main():  # pragma: nocover
 
     dbsession = sqlahelper.get_session()
     results = dbsession.query(LuxGetfeatureDefinition).\
-        filter(LuxGetfeatureDefinition.remote_template == False).all()  # noqa
+        filter(LuxGetfeatureDefinition.remote_template == False).\
+        filter(LuxGetfeatureDefinition.template == 'default.html').all()  # noqa
+
     fields = []
     for result in results:
         engine = sqlahelper.get_engine(result.engine)
