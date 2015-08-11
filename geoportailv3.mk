@@ -50,13 +50,13 @@ update-search:
 
 update-tooltips:
 	$(VENV_BIN)/tooltips2pot
-	msguniq $@ -o $@
 
 .PHONY: recreate-search
 recreate-search:
 	$(VENV_BIN)/db2es --recreate
 
-$(PACKAGE)/locale/$(PACKAGE)-tooltips.pot: $(VENV_BIN)/tooltips2pot .build/config-$(INSTANCE_ID).timestamp
+.PHONY: $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
+$(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 	mkdir -p $(dir $@)
 	$(VENV_BIN)/tooltips2pot
 	msguniq $@ -o $@
