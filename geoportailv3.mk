@@ -20,7 +20,9 @@ CONFIG_VARS += sqlalchemy_engines
 CONFIG_VARS += proxy_wms_url
 APACHE_VHOST ?= luxembourg-geomapfish
 
-NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
+NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js \
+		      node_modules/angulartics/dist/angulartics.min.js \
+		      node_modules/angulartics/dist/angulartics-piwik.min.js
 
 UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Transifex" \
         "\n- update-search	Update the ElasticSearch Database" \
