@@ -424,6 +424,16 @@ app.QueryController.prototype.getTrustedUrl = function(url) {
 
 
 /**
+ * returns a trusted html content
+ * @param {string} content content to be trusted
+ * @return {*} the trusted content.
+ * @export
+ */
+app.QueryController.prototype.trustAsHtml = function(content){
+  return this.sce_.trustAsHtml(content);
+}
+
+/**
  * returns a trusted url according to the current language
  * @param {string} urlFr French url to be trusted
  * @param {string} urlDe German url to be trusted
