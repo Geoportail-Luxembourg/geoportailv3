@@ -22,7 +22,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
       'appSelector': '=appQueryAppselector',
-      'queryActive': '=appQueryActive'
+      'queryActive': '=appQueryActive',
+      'language': '=appQueryLanguage'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -419,6 +420,30 @@ app.QueryController.prototype.getTemplatePath = function(layer) {
  */
 app.QueryController.prototype.getTrustedUrl = function(url) {
   return this.sce_.trustAsResourceUrl(url);
+};
+
+
+/**
+ * returns a trusted url according to the current language
+ * @param {string} urlFr French url to be trusted
+ * @param {string} urlDe German url to be trusted
+ * @param {string} urlEn English url to be trusted
+ * @param {string} urlLb Luxembourgish url to be trusted
+ * @return {*} the trusted url.
+ * @export
+ */
+app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
+    urlDe, urlEn, urlLb) {
+  if (this['language'] == 'fr') {
+    return this.sce_.trustAsResourceUrl(urlFr);
+  } else if (this['language'] == 'de') {
+    return this.sce_.trustAsResourceUrl(urlDe);
+  } else if (this['language'] == 'en') {
+    return this.sce_.trustAsResourceUrl(urlEn);
+  } else if (this['language'] == 'lb') {
+    return this.sce_.trustAsResourceUrl(urlLb);
+  }
+  return this.sce_.trustAsResourceUrl(urlFr);
 };
 
 
