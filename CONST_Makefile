@@ -462,6 +462,7 @@ $(PACKAGE)/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 $(PACKAGE)/locale/$(PACKAGE)-js.pot: $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) .build/node_modules.timestamp
 	node tools/extract-messages.js $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) > $@
 
+.INTERMEDIATE:$(PACKAGE)/locale/$(PACKAGE)-db.pot
 $(PACKAGE)/locale/$(PACKAGE)-db.pot: $(VENV_BIN)/db2pot development.ini .build/config-$(INSTANCE_ID).timestamp
 	mkdir -p $(dir $@)
 	$(VENV_BIN)/db2pot
