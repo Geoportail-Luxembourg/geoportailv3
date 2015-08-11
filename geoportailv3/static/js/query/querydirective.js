@@ -254,8 +254,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
   goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
-        if (this.isQuerying_) {
-          return false;
+        if (evt.dragging || this.isQuerying_) {
+          return;
         }
         if (!this['queryActive']) {
           this.map_.getTargetElement().style.cursor = '';
