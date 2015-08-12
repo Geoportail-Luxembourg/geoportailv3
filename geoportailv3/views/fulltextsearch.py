@@ -42,16 +42,33 @@ class FullTextSearchView(object):
             "query": {
                 "filtered": {
                     "query": {
-                        "multi_match": {
-                            "type": "most_fields",
-                            "fields": [
-                                "label^2",
-                                "label.ngram",
-                                "label.simplified"
-                            ],
-                            "operator": "and",
-                            "fuzziness": 0.8,
-                            "query": query
+                        "bool": {
+                            "should": [
+                                {
+                                    "multi_match": {
+                                        "type": "most_fields",
+                                        "fields": [
+                                            "label^3",
+                                            "label.ngram^2",
+                                            "label.simplified^2"
+                                        ],
+                                        "operator": "and",
+                                        "query": query
+                                    }
+                                },
+                                {
+                                    "multi_match": {
+                                        "type": "most_fields",
+                                        "fields": [
+                                            "label.ngram",
+                                            "label.simplified"
+                                        ],
+                                        "fuzziness": 0.8,
+                                        "operator": "and",
+                                        "query": query
+                                    }
+                                }
+                            ]
                         }
                     },
                     "filter": {
