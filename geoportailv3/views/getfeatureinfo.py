@@ -12,6 +12,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
+from shapely.geometry.polygon import LinearRing
 
 log = logging.getLogger(__name__)
 
@@ -216,7 +217,6 @@ class Getfeatureinfo(object):
 
         for feature in features:
             s = asShape(feature['geometry'])
-
             if s.area > 0:
                 if the_box.intersects(s):
                     features_to_keep.append(feature)
@@ -478,8 +478,25 @@ class Getfeatureinfo(object):
                 elif (rawfeature['geometry'] and
                       'rings' in rawfeature['geometry'] and
                       len(rawfeature['geometry']['rings']) > 0):
-                    geometry = {'type': 'Polygon',
-                                'coordinates': rawfeature['geometry']['rings']}
+                        if len(rawfeature['geometry']['rings']) == 1:
+                            geometry = {'type': 'Polygon',
+                                        'coordinates':
+                                            rawfeature['geometry']['rings']}
+                        else:
+                            coordinates = []
+                            curpolygon = []
+                            for ring in rawfeature['geometry']['rings']:
+                                if not LinearRing(ring).is_ccw:
+                                    if len(curpolygon) > 0:
+                                        coordinates.append(curpolygon)
+                                        curpolygon = []
+                                curpolygon.append(ring)
+
+                            if len(curpolygon) > 0:
+                                coordinates.append(curpolygon)
+
+                            geometry = {'type': 'MultiPolygon',
+                                        'coordinates': coordinates}
 
                 if geometry != '':
                     alias = {}
@@ -498,5 +515,4 @@ class Getfeatureinfo(object):
                                         rawfeature['attributes'],
                                         attributes_to_remove)
                     features.append(f)
-
         return features
