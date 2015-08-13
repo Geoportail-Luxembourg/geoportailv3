@@ -415,7 +415,7 @@ class Getfeatureinfo(object):
         # example:
         # http://ws.geoportail.lu/ArcGIS/rest/services/wassergis/waassergis_mxd/MapServer/45/query?text=&geometry=69000%2C124000%2C70000%2C125000&geometryType=esriGeometryEnvelope&inSR=2169&spatialRel=esriSpatialRelIntersects&where=&returnGeometry=true&outSR=&outFields=&f=pjson
 
-        body = {'f': 'pjson',
+        body = {'f': 'json',
                 'geometry': '',
                 'geometryType': '',
                 'inSR': '2169',
