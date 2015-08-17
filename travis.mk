@@ -1,5 +1,5 @@
 INSTANCE_ID = travis
 
-DISABLE_BUILD_RULES += print
+DISABLE_BUILD_RULES += apache print
 
 include geoportailv3.mk
