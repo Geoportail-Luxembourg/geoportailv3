@@ -1,6 +1,25 @@
-<ul id="catalog-{{::layertreeCtrl.uid}}" class="catalog">
-  <li ng-repeat="node in layertreeCtrl.tree.children"
-      ngeo-layertreenode="node" ngeo-layertreenode-map="layertreeCtrl.map"
-      ngeo-layertreenode-layerexpr="layertreeCtrl.layerExpr" class="panel">
+<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parentUid}}"
+   href="#catalog-{{::layertreeCtrl.uid}}"
+   ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth < 3">
+  {{layertreeCtrl.node.name | translate}}
+</a>
+<span ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth >= 3">
+  {{layertreeCtrl.node.name | translate}}
+</span>
+<div ng-if="::!layertreeCtrl.isRoot && !layertreeCtrl.node.children">
+  <app-layerinfo app-layerinfo-layer="::layertreeCtrl.layer"></app-layerinfo>
+  <a href ng-click="catalogCtrl.toggle(layertreeCtrl.node)">
+    <i class="fa" ng-class="(layertreeCtrl.getSetActive()) ? 'fa-check-square' : 'fa-square'"></i>
+    {{layertreeCtrl.node.name | translate}}
+  </a>
+</div>
+<ul id="catalog-{{::layertreeCtrl.uid}}" ng-if="::layertreeCtrl.node.children"
+  ng-class="{collapse: !layertreeCtrl.isRoot && layertreeCtrl.depth < 3, catalog: layertreeCtrl.isRoot}">
+  <li ng-repeat="node in ::layertreeCtrl.node.children"
+      ngeo-layertree="node"
+      ngeo-layertree-notroot
+      ngeo-layertree-map="layertreeCtrl.map"
+      ngeo-layertree-nodelayerexpr="layertreeCtrl.nodelayerExpr"
+      ng-class="::(layertreeCtrl.isRoot || (layertreeCtrl.node.children && layertreeCtrl.depth < 3)) ? 'panel' : ''">
   </li>
 </ul>

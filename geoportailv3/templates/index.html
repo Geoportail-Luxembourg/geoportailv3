@@ -287,7 +287,6 @@
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
 % if debug:
          appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
-         appModule.value('ngeoLayertreenodeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertreenode.html')}');
          appModule.value('ngeoPopupTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/popup.html')}');
          appModule.value('ngeoScaleselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/scaleselector.html')}');
          appModule.value('appBackgroundlayerTemplateUrl', '${request.static_url('geoportailv3:static/js/backgroundlayer/backgroundlayer.html')}');
@@ -308,7 +307,6 @@
          appModule.value('appLocationinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/locationinfo/locationinfo.html')}');
 % else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
-         appModule.value('ngeoLayertreenodeTemplateUrl', 'catalog/layertreenode.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
