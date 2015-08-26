@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2015-08-11 07:59+0000\n"
+"PO-Revision-Date: 2015-08-26 09:50+0000\n"
 "Last-Translator: patrick weber <pweber@spatialbit.com>\n"
 "Language-Team: German (http://www.transifex.com/geoportail/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -28,19 +28,19 @@ msgstr "- Geoportal Luxemburg"
 msgid "- link from geoportail.lu"
 msgstr "Karte aus geoportal.lu"
 
-#: geoportailv3/templates/index.html:166
+#: geoportailv3/templates/index.html:167
 msgid ""
 "A <em>right click</em> (tap and hold on mobile) will display information "
 "about the current location."
 msgstr "Durch <em>Rechtsklick</em> (tippen und halten auf Mobil) werden Informationen über den aktuellen Standort angezeigt"
 
-#: geoportailv3/templates/index.html:169
+#: geoportailv3/templates/index.html:170
 msgid ""
 "A <em>short click</em> (tap on mobile) on a map feature will select the "
 "feature and show more information."
 msgstr "Durch <em>Klick</em> (tippen auf Mobil) auf einer Funktion wir diese Augewählt und weitere Informationen angezeigt"
 
-#: geoportailv3/templates/index.html:195
+#: geoportailv3/templates/index.html:196
 msgid "A Propos"
 msgstr "Über uns"
 
@@ -88,13 +88,21 @@ msgstr "A4 hoch "
 msgid "Abort"
 msgstr "Abbrechen"
 
-#: geoportailv3/static/js/search/searchdirective.js:385
+#: geoportailv3/static/js/search/searchdirective.js:388
 msgid "Addresses"
 msgstr "Adressen"
 
-#: geoportailv3/templates/index.html:196
+#: geoportailv3/static/js/query/mo.html:6
+msgid "Affaire"
+msgstr "Fall"
+
+#: geoportailv3/templates/index.html:197
 msgid "Aide"
 msgstr "Hilfe"
+
+#: geoportailv3/static/js/query/default.html:11
+msgid "Aucune information disponible pour cette couche"
+msgstr "Keine Informationen zu diesem Layer verfügbar"
 
 #: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
@@ -163,16 +171,30 @@ msgstr "Klicken Sie um mit dem Messen des Profils anzufangen"
 msgid "Cliquez dans l'image pour agrandir"
 msgstr "Zum Vergrößern in das Bild klicken"
 
+#: geoportailv3/static/js/query/mo.html:11
+msgid "Commander fichier GML"
+msgstr "GML Datei bestellen"
+
 #: geoportailv3/static/js/query/parcels.html:10
 msgid "Commander un extrait"
 msgstr "Einen Kadasterauszug bestellen"
 
 #: geoportailv3/static/js/query/parcels.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:4
 msgid "Commune"
 msgstr "Gemeinde"
 
+#: geoportailv3/static/js/query/mo.html:7
+msgid "Commune administrative"
+msgstr "Administrative Gemeinde"
+
+#: geoportailv3/static/js/query/mo.html:8
+#: geoportailv3/static/js/query/viti_flik.html:4
+msgid "Commune cadastrale"
+msgstr "Kadastergemeinde"
+
 #: geoportailv3/static/js/layerinfo/popup.html:18
-#: geoportailv3/templates/index.html:197
+#: geoportailv3/templates/index.html:198
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -180,7 +202,7 @@ msgstr "Kontakt"
 msgid "Contenance"
 msgstr "Kapazität"
 
-#: geoportailv3/templates/index.html:185
+#: geoportailv3/templates/index.html:186
 msgid "Couches"
 msgstr "Layer"
 
@@ -190,11 +212,11 @@ msgstr "Ein neues Benutzerkonto erstellen"
 
 #: geoportailv3/static/js/query/ng95.html:6
 msgid "Croquis"
-msgstr ""
+msgstr "Skizze"
 
 #: geoportailv3/static/js/query/ng95.html:8
 msgid "Croquis indisponible"
-msgstr ""
+msgstr "Skizze nicht verfügbar"
 
 #: geoportailv3/static/js/query/affaires.html:10
 msgid "Date"
@@ -209,7 +231,7 @@ msgstr "Letze Messung"
 msgid "Description"
 msgstr "Beschreibung"
 
-#: geoportailv3/templates/index.html:203
+#: geoportailv3/templates/index.html:204
 msgid "Dessin"
 msgstr "Zeichnen"
 
@@ -242,11 +264,11 @@ msgstr "Google Plus"
 msgid "I lost my password"
 msgstr "Ich habe mein Passwort vergessen"
 
-#: geoportailv3/templates/index.html:221
+#: geoportailv3/templates/index.html:222
 msgid "Imprimer"
 msgstr "Drucken"
 
-#: geoportailv3/templates/index.html:191
+#: geoportailv3/templates/index.html:192
 msgid "Infos"
 msgstr "Infos"
 
@@ -262,7 +284,7 @@ msgstr "Schlüsselwörter"
 msgid "Layers"
 msgstr "Layer"
 
-#: geoportailv3/templates/index.html:198
+#: geoportailv3/templates/index.html:199
 msgid "Legalites"
 msgstr "Legales"
 
@@ -294,11 +316,15 @@ msgstr "Abmelden"
 msgid "Longeueur"
 msgstr "Länge"
 
-#: geoportailv3/templates/index.html:213
+#: geoportailv3/static/js/query/mo.html:9
+msgid "Mesurage"
+msgstr "Vermessungsakte"
+
+#: geoportailv3/templates/index.html:214
 msgid "Mesurer"
 msgstr "Messen"
 
-#: geoportailv3/templates/index.html:188
+#: geoportailv3/templates/index.html:189
 msgid "My Maps"
 msgstr "My maps"
 
@@ -325,12 +351,20 @@ msgstr "Kein Layer ausgewählt"
 
 #: geoportailv3/static/js/query/cfl_hecto.html:3
 #: geoportailv3/static/js/query/mymaps.html:5
+#: geoportailv3/static/js/query/viti_kleinlage.html:3
+#: geoportailv3/static/js/query/viti_name.html:3
 msgid "Nom"
 msgstr "Name"
 
 #: geoportailv3/static/js/query/affaires.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:3
 msgid "Numero"
 msgstr "Nummer"
+
+#: geoportailv3/static/js/query/flik.html:3
+#: geoportailv3/static/js/query/viti_flik.html:3
+msgid "Numero FLIK"
+msgstr "FLIK Nummer"
 
 #: geoportailv3/static/js/query/affaires.html:5
 #: geoportailv3/static/js/query/parcels.html:6
@@ -341,13 +375,17 @@ msgstr "Katasternummer"
 msgid "Obtenir le fichier sous format pdf"
 msgstr "Die Datei als PDF erhalten"
 
-#: geoportailv3/templates/index.html:226
+#: geoportailv3/templates/index.html:227
 msgid "Partager"
 msgstr "Teilen"
 
 #: geoportailv3/static/js/authentication/authentication.html:8
 msgid "Password"
 msgstr "Passwort"
+
+#: geoportailv3/static/js/query/flik.html:5
+msgid "Perimetre"
+msgstr "Perimeter"
 
 #: geoportailv3/templates/index.html:63
 msgid "Preview"
@@ -375,11 +413,16 @@ msgstr "Region"
 
 #: geoportailv3/static/js/layerinfo/popup.html:16
 msgid "Revision date"
-msgstr "Überarbeitungsdatum"
+msgstr "Letzte Aktualisierung"
 
 #: geoportailv3/static/js/query/parcels.html:5
+#: geoportailv3/static/js/query/viti_parcels.html:5
 msgid "Section"
 msgstr "Sektion"
+
+#: geoportailv3/static/js/query/viti_flik.html:5
+msgid "Section cadastrale"
+msgstr "Kadastersektion"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:4
 #: geoportailv3/static/js/share/shorturl.html:4
@@ -395,6 +438,8 @@ msgid "Submit"
 msgstr "Einloggen"
 
 #: geoportailv3/static/js/measure/measure.html:7
+#: geoportailv3/static/js/query/flik.html:4
+#: geoportailv3/static/js/query/viti_flik.html:6
 msgid "Surface"
 msgstr "Fläche"
 
@@ -402,7 +447,7 @@ msgstr "Fläche"
 msgid "The MyMaps functionality is currently not available in this preview."
 msgstr "Die MyMaps Funktionalität ist derzeit nicht verfügbar."
 
-#: geoportailv3/templates/index.html:207
+#: geoportailv3/templates/index.html:208
 msgid "The drawing tools are currently not available in this preview"
 msgstr "Die Zeichnen Funktionalität ist derzeit nicht verfügbar."
 
