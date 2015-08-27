@@ -528,7 +528,8 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
     function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
   var url = searchServiceUrl + '?limit=5&query=%QUERY';
-  var bloodhound = ngeoCreateGeoJSONBloodhound(url, ol.proj.get('EPSG:3857'));
+  var bloodhound = ngeoCreateGeoJSONBloodhound(
+      url, undefined, ol.proj.get('EPSG:3857'));
   bloodhound.initialize();
   return bloodhound;
 };
