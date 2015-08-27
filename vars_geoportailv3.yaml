@@ -44,6 +44,12 @@ vars:
       passwd: 'to_be_defined'
       base_dn: 'ou=portail,dc=act,dc=lu'
 
+    turbomail:
+      mail.on: True
+      mail.transport: smtp
+      mail.smtp.server: keendo
+      mail.message.encoding: UTF-8
+
     proxy_wms_url:
 
     sqlalchemy_engines:
