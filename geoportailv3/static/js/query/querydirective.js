@@ -56,6 +56,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     getRemoteTemplateServiceUrl) {
 
   /**
+   * @type {Array}
+   * @private
+   */
+  this.responses_ = [];
+
+  /**
    * @type {angular.$sce}
    * @private
    */
@@ -348,19 +354,37 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          goog.array.forEach(resp.data, function(item) {
-            item['layerLabel'] = layerLabel[item.layer];
-          });
-
+          if (evt.originalEvent.ctrlKey) {
+            goog.array.forEach(resp.data, function(item) {
+              item['layerLabel'] = layerLabel[item.layer];
+              var found = false;
+              for (var i = 0; i < this.responses_.length; i++) {
+                if (this.responses_[i].layer == item.layer) {
+                  found = true;
+                  this.responses_[i].features =
+                      this.responses_[i].features.concat(item.features);
+                  break;
+                }
+              }
+              if (!found) {
+                this.responses_.push(item);
+              }
+            },this);
+          }else {
+            this.responses_ = resp.data;
+            goog.array.forEach(resp.data, function(item) {
+              item['layerLabel'] = layerLabel[item.layer];
+            });
+          }
           this.clearQueryResult_(this.QUERYPANEL_);
-          this['content'] = resp.data;
-          if (resp.data.length > 0) this['infoOpen'] = true;
+          this['content'] = this.responses_;
+          if (this.responses_.length > 0) this['infoOpen'] = true;
           else this['infoOpen'] = false;
           this.lastHighlightedFeatures_ = [];
-          for (var i = 0; i < resp.data.length; i++) {
+          for (var i = 0; i < this.responses_.length; i++) {
             this.lastHighlightedFeatures_.push.apply(
                 this.lastHighlightedFeatures_,
-                resp.data[i].features
+                this.responses_[i].features
             );
           }
           this.highlightFeatures_(this.lastHighlightedFeatures_);
@@ -396,6 +420,23 @@ app.QueryController.prototype.hasAttributes = function(feature) {
     return true;
   }
   return false;
+};
+
+
+/**
+ * has the object at least one attribute
+ * @param {Array} features
+ * @param {string} attr Attribute to join
+ * @param {string} sep the join separator
+ * @return {string} the string with joined attributes
+ * @export
+ */
+app.QueryController.prototype.joinAttributes = function(features, attr, sep) {
+  var attributes = [];
+  for (var i = 0; i < features.length; i++) {
+    attributes.push(features[i].attributes[attr]);
+  }
+  return attributes.join(sep);
 };
 
 
