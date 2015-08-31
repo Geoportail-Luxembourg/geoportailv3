@@ -4,6 +4,7 @@ import logging
 import sys
 import traceback
 import urllib2
+import hashlib
 
 from urllib import urlencode
 from pyramid.view import view_config
@@ -11,6 +12,7 @@ from geoportailv3.models import LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from geojson import loads as geojson_loads
+from geojson import dumps as geojson_dumps
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 
@@ -226,8 +228,11 @@ class Getfeatureinfo(object):
 
     def to_feature(self, geometry, attributes, attributes_to_remove,
                    geometry_column='geom'):
+        fid = hashlib.md5(geojson_dumps(geometry)).hexdigest()
+
         return {'type': 'Feature',
                 'geometry': geometry,
+                'fid': fid,
                 'attributes': self.remove_attributes(
                     attributes,
                     attributes_to_remove,

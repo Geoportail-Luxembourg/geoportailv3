@@ -358,11 +358,27 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
             goog.array.forEach(resp.data, function(item) {
               item['layerLabel'] = layerLabel[item.layer];
               var found = false;
-              for (var i = 0; i < this.responses_.length; i++) {
-                if (this.responses_[i].layer == item.layer) {
+              for (var iLayer = 0; iLayer < this.responses_.length; iLayer++) {
+                if (this.responses_[iLayer].layer == item.layer) {
                   found = true;
-                  this.responses_[i].features =
-                      this.responses_[i].features.concat(item.features);
+                  var removed = false;
+                  for (var iItem = 0; iItem < item.features.length; iItem++) {
+                    for (var iFeatures = 0;
+                         iFeatures < this.responses_[iLayer].features.length;
+                         iFeatures++) {
+                      if (this.responses_[iLayer].features[iFeatures]['fid'] ==
+                          item.features[iItem]['fid']) {
+                        removed = true;
+                        this.responses_[iLayer].features.splice(iFeatures, 1);
+                        break;
+                      }
+                    }
+                    if (!removed) {
+                      this.responses_[iLayer].features =
+                          this.responses_[iLayer].features.concat(
+                          item.features[iItem]);
+                    }
+                  }
                   break;
                 }
               }
