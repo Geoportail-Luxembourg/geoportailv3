@@ -354,7 +354,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          if (evt.originalEvent.altKey) {
+          if (evt.originalEvent.shiftKey) {
             goog.array.forEach(resp.data, function(item) {
               item['layerLabel'] = layerLabel[item.layer];
               var found = false;
