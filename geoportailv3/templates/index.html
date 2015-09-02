@@ -250,6 +250,7 @@
     <script src="${request.static_url('%s/d3/d3.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/typeahead.js/dist/typeahead.bundle.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/fuse.js/src/fuse.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('geoportailv3:static/build/templatecache.js')}"></script>
 % else:
     <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
 % endif
@@ -285,27 +286,6 @@
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
-% if debug:
-         appModule.value('ngeoLayertreeTemplateUrl', '${request.static_url('geoportailv3:static/js/catalog/layertree.html')}');
-         appModule.value('ngeoPopupTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/popup.html')}');
-         appModule.value('ngeoScaleselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/scaleselector.html')}');
-         appModule.value('appBackgroundlayerTemplateUrl', '${request.static_url('geoportailv3:static/js/backgroundlayer/backgroundlayer.html')}');
-         appModule.value('appLayermanagerTemplateUrl', '${request.static_url('geoportailv3:static/js/layermanager/layermanager.html')}');
-         appModule.value('appMeasureTemplateUrl', '${request.static_url('geoportailv3:static/js/measure/measure.html')}');
-         appModule.value('appLayerinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/layerinfo/layerinfo.html')}');
-         appModule.value('appAuthenticationTemplateUrl', '${request.static_url('geoportailv3:static/js/authentication/authentication.html')}');
-         appModule.value('appInfobarTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/infobar.html')}');
-         appModule.value('appProjectionselectorTemplateUrl', '${request.static_url('geoportailv3:static/js/infobar/projectionselector.html')}');
-         appModule.value('appMapTemplateUrl', '${request.static_url('geoportailv3:static/js/map/map.html')}');
-         appModule.value('appThemeswitcherTemplateUrl', '${request.static_url('geoportailv3:static/js/themeswitcher/themes.html')}');
-         appModule.value('appProfileTemplateUrl', '${request.static_url('geoportailv3:static/js/profile/profile.html')}');
-         appModule.value('appPrintTemplateUrl', '${request.static_url('geoportailv3:static/js/print/print.html')}');
-         appModule.value('appSearchTemplateUrl', '${request.static_url('geoportailv3:static/js/search/search.html')}');
-         appModule.value('appShareTemplateUrl', '${request.static_url('geoportailv3:static/js/share/share.html')}');
-         appModule.value('appShorturlTemplateUrl', '${request.static_url('geoportailv3:static/js/share/shorturl.html')}');
-         appModule.value('appQueryTemplateUrl', '${request.static_url('geoportailv3:static/js/query/info.html')}');
-         appModule.value('appLocationinfoTemplateUrl', '${request.static_url('geoportailv3:static/js/locationinfo/locationinfo.html')}');
-% else:
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
@@ -325,10 +305,6 @@
          appModule.value('appShorturlTemplateUrl', 'share/shorturl.html');
          appModule.value('appQueryTemplateUrl', 'query/info.html');
          appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
-% endif
-
-
-
        })();
     </script>
     <!-- Piwik -->
