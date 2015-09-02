@@ -1,8 +1,8 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
 
-goog.require('app.VectorOverlay');
-goog.require('app.VectorOverlayMgr');
+goog.require('ngeo.FeatureOverlay');
+goog.require('ngeo.FeatureOverlayMgr');
 
 
 /**
@@ -42,7 +42,8 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$timeout} $timeout
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service
- * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
@@ -51,7 +52,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
-    appVectorOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
+    ngeoFeatureOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
     getRemoteTemplateServiceUrl) {
 
   /**
@@ -174,12 +175,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
   /**
    * The draw overlay
-   * @type {app.VectorOverlay}
+   * @type {ngeo.FeatureOverlay}
    * @private
    */
-  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
-  this.vectorOverlay_.setStyle(
+  this.featureOverlay_.setStyle(
       /**
        * @param {ol.Feature} feature Feature.
        * @param {number} resolution Resolution.
@@ -380,7 +381,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
  * @private
  */
 app.QueryController.prototype.clearFeatures_ = function() {
-  this.vectorOverlay_.clear();
+  this.featureOverlay_.clear();
 };
 
 
@@ -473,7 +474,7 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
       'type': 'FeatureCollection',
       'features': features}, encOpt);
     for (var i = 0; i < jsonFeatures.length; ++i) {
-      this.vectorOverlay_.addFeature(jsonFeatures[i]);
+      this.featureOverlay_.addFeature(jsonFeatures[i]);
     }
   }
 };

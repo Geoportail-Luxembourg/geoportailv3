@@ -16,12 +16,12 @@ goog.provide('app.printDirective');
 
 goog.require('app.GetShorturl');
 goog.require('app.Themes');
-goog.require('app.VectorOverlayMgr');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.string');
 goog.require('ngeo.CreatePrint');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
 goog.require('ol.layer.Layer');
@@ -62,10 +62,11 @@ app.module.directive('appPrint', app.printDirective);
  * @param {angular.$q} $q The Angular $q service.
  * @param {angularGettext.Catalog} gettextCatalog
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
- * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
  * @constructor
@@ -73,8 +74,8 @@ app.module.directive('appPrint', app.printDirective);
  * @ngInject
  */
 app.PrintController = function($scope, $timeout, $q, gettextCatalog,
-    ngeoCreatePrint, ngeoPrintUtils, appThemes, appGetShorturl,
-    appVectorOverlayMgr, printServiceUrl, qrServiceUrl) {
+    ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
+    appThemes, appGetShorturl, printServiceUrl, qrServiceUrl) {
 
 
   /**
@@ -127,11 +128,11 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
   this.appThemes_ = appThemes;
 
   /**
-   * A reference to the vector layer used by vector overlays.
+   * A reference to the vector layer used by feature overlays.
    * @type {ol.layer.Vector}
    * @private
    */
-  this.vectorOverlayLayer_ = appVectorOverlayMgr.getLayer();
+  this.featureOverlayLayer_ = ngeoFeatureOverlayMgr.getLayer();
 
   /**
    * @type {app.GetShorturl}
@@ -455,11 +456,11 @@ app.PrintController.prototype.print = function() {
           }
         });
 
-        // add vector overlay layer to print spec
+        // add feature overlay layer to print spec
         var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
         var resolution = map.getView().getResolution();
         goog.asserts.assert(goog.isDef(resolution));
-        this.print_.encodeLayer(layers, this.vectorOverlayLayer_, resolution);
+        this.print_.encodeLayer(layers, this.featureOverlayLayer_, resolution);
         if (layers.length > 0) {
           spec.attributes.map.layers.unshift(layers[0]);
         }

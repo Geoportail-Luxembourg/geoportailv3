@@ -10,8 +10,8 @@ goog.require('app.CoordinateString');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
-goog.require('app.VectorOverlay');
-goog.require('app.VectorOverlayMgr');
+goog.require('ngeo.FeatureOverlay');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.proj');
 
 
@@ -43,18 +43,19 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope
  * @param {angular.$timeout} $timeout
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {app.GetShorturl} appGetShorturl
  * @param {app.GetElevation} appGetElevation
  * @param {app.CoordinateString} appCoordinateString
  * @param {app.StateManager} appStateManager
- * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
  * @ngInject
  */
-app.LocationinfoController =
-    function($scope, $timeout, appGetShorturl, appGetElevation,
-        appCoordinateString, appStateManager, appVectorOverlayMgr,
+app.LocationinfoController = function(
+        $scope, $timeout, ngeoFeatureOverlayMgr,
+        appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl) {
 
   /**
@@ -64,10 +65,10 @@ app.LocationinfoController =
   this.coordinateString_ = appCoordinateString;
 
   /**
-   * @type {app.VectorOverlay}
+   * @type {ngeo.FeatureOverlay}
    * @private
    */
-  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
@@ -83,7 +84,7 @@ app.LocationinfoController =
     stroke: circleStroke
   });
 
-  this.vectorOverlay_.setStyle(
+  this.featureOverlay_.setStyle(
       /**
        * @param {ol.Feature} feature Feature.
        * @param {number} resolution Resolution.
@@ -99,7 +100,7 @@ app.LocationinfoController =
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
     if (newVal != 'locationinfo') {
-      this.vectorOverlay_.clear();
+      this.featureOverlay_.clear();
     }
   }, this));
 
@@ -118,7 +119,7 @@ app.LocationinfoController =
       });
       this['appSelector'] = undefined;
       this['location'] = {};
-      this.vectorOverlay_.clear();
+      this.featureOverlay_.clear();
     }
   }, this));
 
@@ -281,8 +282,8 @@ app.LocationinfoController.prototype.showInfoPane_ =
   this.updateLocation_(clickCoordinate);
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-  this.vectorOverlay_.clear();
-  this.vectorOverlay_.addFeature(feature);
+  this.featureOverlay_.clear();
+  this.featureOverlay_.addFeature(feature);
   this.getElevation_(clickCoordinate).then(goog.bind(
       function(elevation) {
         this['elevation'] = elevation;

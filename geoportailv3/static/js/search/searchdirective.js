@@ -18,12 +18,12 @@ goog.require('app.CoordinateString');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
-goog.require('app.VectorOverlay');
-goog.require('app.VectorOverlayMgr');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.CreateGeoJSONBloodhound');
+goog.require('ngeo.FeatureOverlay');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.searchDirective');
 
 
@@ -67,7 +67,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
                 $(this).find('input').val('').trigger('input');
                 var ctrl = /** @type {app.SearchDirectiveController} */
                     (scope['ctrl']);
-                ctrl.vectorOverlay_.clear();
+                ctrl.featureOverlay_.clear();
               }, element, scope));
 
           element.find('input').on(
@@ -98,19 +98,20 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The ngeo
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {app.CoordinateString} appCoordinateString
  * @param {app.Themes} appThemes Themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.ShowLayerinfo} appShowLayerinfo
- * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {string} searchServiceUrl
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
-    ngeoBackgroundLayerMgr, ngeoCreateGeoJSONBloodhound, appCoordinateString,
-    appThemes, appGetLayerForCatalogNode, appShowLayerinfo, appVectorOverlayMgr,
-    maxExtent, searchServiceUrl) {
+    ngeoBackgroundLayerMgr, ngeoCreateGeoJSONBloodhound, ngeoFeatureOverlayMgr,
+    appCoordinateString, appThemes, appGetLayerForCatalogNode,
+    appShowLayerinfo, maxExtent, searchServiceUrl) {
 
   /**
    * @type {Object}
@@ -186,10 +187,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {app.VectorOverlay}
+   * @type {ngeo.FeatureOverlay}
    * @private
    */
-  this.vectorOverlay_ = appVectorOverlayMgr.getVectorOverlay();
+  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   var fillStyle = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
@@ -200,7 +201,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     width: 3
   });
 
-  this.vectorOverlay_.setStyle(
+  this.featureOverlay_.setStyle(
       new ol.style.Style({
         fill: fillStyle,
         stroke: strokeStyle,
@@ -417,7 +418,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
        * @param {ol.CollectionEvent} e Collection event.
        */
       function(e) {
-        this.vectorOverlay_.clear();
+        this.featureOverlay_.clear();
       }, undefined, this);
 };
 
@@ -674,7 +675,7 @@ app.SearchDirectiveController.selected_ =
     var mapSize = /** @type {ol.Size} */ (map.getSize());
     map.getView().fit(featureGeometry, mapSize,
         /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
-    this.vectorOverlay_.clear();
+    this.featureOverlay_.clear();
     var features = [];
     if (dataset === 'coordinates') {
       features.push(feature);
@@ -689,7 +690,7 @@ app.SearchDirectiveController.selected_ =
       }, this));
     }
     for (var i = 0; i < features.length; ++i) {
-      this.vectorOverlay_.addFeature(features[i]);
+      this.featureOverlay_.addFeature(features[i]);
     }
   } else if (dataset === 'layers') { //Layer
     this.addLayerToMap_(/** @type {Object} */ (suggestion));
