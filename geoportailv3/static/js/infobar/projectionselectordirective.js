@@ -12,7 +12,9 @@
  * during the lifetime of the application.
  *
  */
+goog.provide('app.ProjectionselectorDirectiveController');
 goog.provide('app.projectionselectorDirective');
+
 goog.require('app');
 goog.require('app.CoordinateString');
 goog.require('app.projections');

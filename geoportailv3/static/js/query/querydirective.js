@@ -1,3 +1,4 @@
+goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
 
 goog.require('app.VectorOverlay');

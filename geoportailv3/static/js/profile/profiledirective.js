@@ -12,6 +12,7 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
+goog.provide('app.ProfileController');
 goog.provide('app.profileDirective');
 
 goog.require('app');

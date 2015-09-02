@@ -10,6 +10,7 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
+goog.provide('app.MeasureController');
 goog.provide('app.measureDirective');
 
 goog.require('app');

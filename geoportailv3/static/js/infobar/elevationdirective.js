@@ -11,6 +11,7 @@
  * during the lifetime of the application.
  *
  */
+goog.provide('app.ElevationDirectiveController');
 goog.provide('app.elevationDirective');
 
 goog.require('app');

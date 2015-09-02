@@ -8,6 +8,7 @@
  * <app-share app-share-active=":mainCtrl.active"></app-share>
  *
  */
+goog.provide('app.ShareDirectiveController');
 goog.provide('app.shareDirective');
 
 goog.require('app');

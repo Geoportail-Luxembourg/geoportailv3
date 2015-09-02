@@ -10,7 +10,9 @@
  * during the lifetime of the application.
  *
  */
+goog.provide('app.InfobarDirectiveController');
 goog.provide('app.infobarDirective');
+
 goog.require('app');
 
 

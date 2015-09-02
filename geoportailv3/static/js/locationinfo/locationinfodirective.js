@@ -2,6 +2,7 @@
  * @fileoverview This file provides a "location information" directive.
  */
 
+goog.provide('app.LocationinfoController');
 goog.provide('app.locationinfoDirective');
 
 goog.require('app');

@@ -1,3 +1,4 @@
+goog.provide('app.ScaleselectorController');
 goog.provide('app.scaleselectorDirective');
 
 goog.require('app');

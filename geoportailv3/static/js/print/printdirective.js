@@ -10,6 +10,7 @@
  *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
+goog.provide('app.PrintController');
 goog.provide('app.printDirective');
 
 
