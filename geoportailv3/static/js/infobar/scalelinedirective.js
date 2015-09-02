@@ -12,6 +12,7 @@
  * during the lifetime of the application.
  *
  */
+goog.provide('app.ScalelineDirectiveController');
 goog.provide('app.scalelineDirective');
 
 goog.require('app');

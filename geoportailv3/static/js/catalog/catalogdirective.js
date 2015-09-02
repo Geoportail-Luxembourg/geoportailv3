@@ -14,6 +14,7 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
+goog.provide('app.CatalogController');
 goog.provide('app.catalogDirective');
 
 goog.require('app');

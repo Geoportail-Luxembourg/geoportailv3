@@ -10,6 +10,7 @@
  * during the lifetime of the application.
  *
  */
+goog.provide('app.SearchDirectiveController');
 goog.provide('app.searchDirective');
 
 goog.require('app');

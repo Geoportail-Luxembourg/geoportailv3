@@ -13,7 +13,9 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
+goog.provide('app.LayermanagerController');
 goog.provide('app.layermanagerDirective');
+
 goog.require('app');
 goog.require('ngeo.sortableDirective');
 

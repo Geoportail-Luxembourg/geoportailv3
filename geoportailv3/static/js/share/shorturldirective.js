@@ -7,6 +7,7 @@
  * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
+goog.provide('app.ShorturlDirectiveController');
 goog.provide('app.shorturlDirective');
 
 goog.require('app');

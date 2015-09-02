@@ -3,6 +3,7 @@
  * That directive is used to create the theme switcher in the page.
  *
  */
+goog.provide('app.ThemeswitcherController');
 goog.provide('app.themeswitcherDirective');
 
 goog.require('app');
