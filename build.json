@@ -27,6 +27,7 @@
       ".build/externs/angular-1.4-http-promise_templated.js",
       "geoportailv3/externs/fuse.js",
       "geoportailv3/externs/twbootstrap.js",
+      "geoportailv3/externs/typeahead.js",
       ".build/externs/jquery-1.9.js"
     ],
     "define": [
