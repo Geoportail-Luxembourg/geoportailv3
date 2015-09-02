@@ -376,9 +376,6 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   },{
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
-    // Use a large number for "limit" here. This is to work around a bug
-    // in typeahead.js: https://github.com/twitter/typeahead.js/pull/1319
-    limit: 50,
     display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
