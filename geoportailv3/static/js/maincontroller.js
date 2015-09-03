@@ -16,9 +16,9 @@ goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
 goog.require('app.StateManager');
 goog.require('app.Themes');
-goog.require('app.VectorOverlay');
-goog.require('app.VectorOverlayMgr');
 goog.require('goog.object');
+goog.require('ngeo.FeatureOverlay');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
@@ -36,6 +36,8 @@ goog.require('ol.tilegrid.WMTS');
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
@@ -43,7 +45,6 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
- * @param {app.VectorOverlayMgr} appVectorOverlayMgr Vector overlay manager.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -52,10 +53,11 @@ goog.require('ol.tilegrid.WMTS');
  * @export
  * @ngInject
  */
-app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
+app.MainController = function(
+    $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appStateManager, appThemes, appVectorOverlayMgr, langUrls, maxExtent,
-    defaultExtent, ngeoSyncArrays) {
+    appStateManager, appThemes, langUrls, maxExtent, defaultExtent,
+    ngeoSyncArrays) {
 
   /**
    * @type {angular.Scope}
@@ -192,10 +194,10 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
-  appVectorOverlayMgr.init(this.map_);
+  ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
 
-  this.addLocationControl_(appVectorOverlayMgr);
+  this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
 
@@ -213,14 +215,15 @@ app.MainController = function($scope, ngeoGetBrowserLanguage, gettextCatalog,
 
 
 /**
- * @param {app.VectorOverlayMgr} vectorOverlayMgr Vector overlay manager.
+ * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
-app.MainController.prototype.addLocationControl_ = function(vectorOverlayMgr) {
+app.MainController.prototype.addLocationControl_ =
+    function(featureOverlayMgr) {
   this.map_.addControl(
       new app.LocationControl({
         label: '\ue800',
-        vectorOverlayMgr: vectorOverlayMgr
+        featureOverlayMgr: featureOverlayMgr
       }));
 };
 

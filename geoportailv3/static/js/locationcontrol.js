@@ -2,13 +2,14 @@
  * @fileoverview This file defines the geolocation control.
  *
  */
+goog.provide('app.LocationControl');
 
-goog.require('app.VectorOverlay');
-goog.require('app.VectorOverlayMgr');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
+goog.require('ngeo.FeatureOverlay');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
 goog.require('ol.Geolocation');
 goog.require('ol.GeolocationProperty');
@@ -17,15 +18,12 @@ goog.require('ol.control.Control');
 goog.require('ol.geom.Point');
 
 
-goog.provide('app.LocationControl');
-
-
 /**
  * @typedef {{className: (string|undefined),
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
- *     vectorOverlayMgr: app.VectorOverlayMgr
+ *     featureOverlayMgr: ngeo.FeatureOverlayMgr
  * }}
  */
 app.LocationControlOptions;
@@ -62,10 +60,10 @@ app.LocationControl = function(options) {
   this.geolocation_ = null;
 
   /**
-   * @type {app.VectorOverlay}
+   * @type {ngeo.FeatureOverlay}
    * @private
    */
-  this.vectorOverlay_ = options.vectorOverlayMgr.getVectorOverlay();
+  this.featureOverlay_ = options.featureOverlayMgr.getFeatureOverlay();
 
   var label = goog.isDef(options.label) ? options.label : 'L';
   var tipLabel = goog.isDef(options.tipLabel) ?
@@ -120,11 +118,11 @@ app.LocationControl.prototype.handleCenterToLocation_ = function() {
     this.initGeoLocation_();
   }
   if (!this.geolocation_.getTracking()) {
-    this.initVectorOverlay_();
+    this.initFeatureOverlay_();
     this.getMap().getView().setZoom(17);
     this.geolocation_.setTracking(true);
   } else {
-    this.clearVectorOverlay_();
+    this.clearFeatureOverlay_();
     this.geolocation_.setTracking(false);
   }
 };
@@ -186,17 +184,17 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
 /**
  * @private
  */
-app.LocationControl.prototype.initVectorOverlay_ = function() {
+app.LocationControl.prototype.initFeatureOverlay_ = function() {
   this.accuracyFeature_.setGeometry(null);
   this.positionFeature_.setGeometry(null);
-  this.vectorOverlay_.addFeature(this.accuracyFeature_);
-  this.vectorOverlay_.addFeature(this.positionFeature_);
+  this.featureOverlay_.addFeature(this.accuracyFeature_);
+  this.featureOverlay_.addFeature(this.positionFeature_);
 };
 
 
 /**
  * @private
  */
-app.LocationControl.prototype.clearVectorOverlay_ = function() {
-  this.vectorOverlay_.clear();
+app.LocationControl.prototype.clearFeatureOverlay_ = function() {
+  this.featureOverlay_.clear();
 };
