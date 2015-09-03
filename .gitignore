@@ -15,6 +15,7 @@
 /*.egg-info/
 /print/WEB-INF/classes/logback.xml
 /geoportailv3/locale/*/LC_MESSAGES/*.mo
+/geoportailv3/locale/*/LC_MESSAGES/*-client.po
 /geoportailv3/locale/*/LC_MESSAGES/*-client-tooltips.po
 /geoportailv3/static/mobile/
 #/geoportailv3/static/mobile/resources/sass/.sass-cache
