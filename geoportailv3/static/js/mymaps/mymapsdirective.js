@@ -10,6 +10,7 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
+goog.require('ngeo.modalDirective');
 
 
 /**
@@ -34,10 +35,139 @@ app.module.directive('appMymaps', app.mymapsDirective);
 
 
 /**
- * @ngInject
+ * @param {!angular.Scope} $scope Scope.
+ * @param {angular.$compile} $compile The compile provider.
+ * @param {gettext} gettext Gettext service.
  * @constructor
  * @export
+ * @ngInject
  */
-app.MymapsDirectiveController = function() {};
+app.MymapsDirectiveController = function($scope, $compile, gettext) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.defaultTitle_ = $compile('<div translate>' +
+      gettext('Map without title') + '</div>')($scope)[0];
+
+  /**
+   * Tells whether the 'modifying' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.modifying = false;
+
+  /**
+   * Tells whether the 'choosing a map' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.choosing = false;
+
+  /**
+   * The currently displayed map id.
+   * @type {?string}
+   * @export
+   */
+  this.mapId = null;
+
+  /**
+   * The currently displayed map title.
+   * @type {string}
+   * @export
+   */
+  this.mapTitle = '';
+
+  /**
+   * The currently displayed map description.
+   * @type {string}
+   * @export
+   */
+  this.mapDescription = '';
+
+  /**
+   * String to be used in the title field in the modifying window.
+   * Helps canceling modifications.
+   * @type {string}
+   * @export
+   */
+  this.newTitle = '';
+
+  /**
+   * String to be used in the description field in the modifying window.
+   * Helps canceling modifications.
+   * @type {string}
+   * @export
+   */
+  this.newDescription = '';
+};
+
+
+/**
+ * Closes the current map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.closeMap = function() {
+  // TODO ensure that modifications are saved.
+  this.mapId = null;
+  this.mapTitle = '';
+  this.mapDescription = '';
+};
+
+
+/**
+ * Creates a new map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.createMap = function() {
+  this.onChosen();
+};
+
+
+/**
+ * Open a map. Actually opens the map selector.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.chooseMap = function() {
+  this.choosing = true;
+};
+
+
+/**
+ * Called when a map is choosen.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.onChosen = function() {
+  this.mapId = 'mymap-987654321';
+  this.mapTitle = $(this.defaultTitle_).children().html().toString();
+  this.choosing = false;
+};
+
+
+/**
+ * Start the modification:
+ *  - opens the modification modal,
+ *  - set the values to form inputs.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.modifyMap = function() {
+  this.newTitle = this.mapTitle;
+  this.newDescription = this.mapDescription;
+  this.modifying = true;
+};
+
+
+/**
+ * Saves the modifications made using the modification modal.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.saveModifications = function() {
+  this.mapTitle = this.newTitle;
+  this.mapDescription = this.newDescription;
+  // TODO the modifications need to be saved on server before we close the
+  // modal window
+  this.modifying = false;
+};
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
