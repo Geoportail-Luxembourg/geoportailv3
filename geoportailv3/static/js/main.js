@@ -19,6 +19,7 @@ goog.require('app.layermanagerDirective');
 goog.require('app.locationinfoDirective');
 goog.require('app.mapDirective');
 goog.require('app.measureDirective');
+goog.require('app.mymapsDirective');
 goog.require('app.printDirective');
 goog.require('app.projections');
 goog.require('app.projectionselectorDirective');
