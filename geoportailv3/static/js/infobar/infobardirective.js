@@ -3,7 +3,7 @@
  * used to insert an Info Bar into the HTML page.
  * Example:
  *
- * <app-infobar app-infobar-map="::mainCtrl.map"map></app-infobar>
+ * <app-infobar app-infobar-map="::mainCtrl.map"></app-infobar>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
