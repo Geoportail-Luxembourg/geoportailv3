@@ -14,3 +14,8 @@ dbtunnel:
 watchless:
 	@echo "Watching changes to less files…"
 	watchmedo shell-command --patterns="*.less" --recursive --command="make -f pgiraud.mk geoportailv3/static/build/build.css"
+
+.PHONY: watchtemplates
+watchtemplates:
+	@echo "Watching changes to template files…"
+	watchmedo shell-command --patterns="*.html" --recursive --command="make -f pgiraud.mk geoportailv3/static/build/templatecache.js"
