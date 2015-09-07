@@ -336,7 +336,7 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_pf(self, rows):
+    def get_info_from_pf(self, rows, measurements=False):
         import geoportailv3.PF
         pf = geoportailv3.PF.PF()
         features = []
@@ -345,11 +345,22 @@ class Getfeatureinfo(object):
 
             f = self.to_feature(geometry, dict(row), "")
 
-            d = f['attributes']
-            d['PF'] = dict(pf.get_detail(d['code_commu'],
-                                         d['code_secti'],
-                                         int(d['num_cadast']),
-                                         int(d['code_sup'])))
+            attributes = f['attributes']
+            attributes['PF'] = dict(pf.get_detail(
+                attributes['code_commu'],
+                attributes['code_secti'],
+                int(attributes['num_cadast']),
+                int(attributes['code_sup'])))
+
+            if measurements:
+                attributes['measurements'] = pf.get_measurement_list(
+                    attributes['num_cadast'],
+                    attributes['code_sup'],
+                    attributes['code_secti'],
+                    attributes['code_commu'],
+                    self.request.user,
+                    self.request.referer)
+
             features.append(f)
 
         return features
