@@ -448,11 +448,9 @@ app.QueryController.prototype.hasAttributes = function(feature) {
  * @export
  */
 app.QueryController.prototype.joinAttributes = function(features, attr, sep) {
-  var attributes = [];
-  for (var i = 0; i < features.length; i++) {
-    attributes.push(features[i].attributes[attr]);
-  }
-  return attributes.join(sep);
+  return goog.array.map(features, function(feature) {
+    return feature.attributes[attr];
+  }).join(sep);
 };
 
 
