@@ -180,6 +180,14 @@ app.MainController = function(
   this.map_ = null;
 
   /**
+   * The list of features that were drawn (either using the drawing tools or by
+   * loading a mymap map).
+   * @type {ol.Collection.<ol.Feature>}
+   * @export
+   */
+  this.drawnFeatures = new ol.Collection();
+
+  /**
    * The role id of the authenticated user, or `undefined` if the user
    * is anonymous, or if we don't yet kno if the user is authenticated.
    * @type {number|undefined}
@@ -211,6 +219,24 @@ app.MainController = function(
       $('app-themeswitcher #themes-content').collapse('hide');
     }
   }, this));
+
+  var selectInteraction = new ol.interaction.Select({
+    filter: goog.bind(function(feature, layer) {
+      return this.drawnFeatures.getArray().indexOf(feature) != -1;
+    }, this)
+  });
+  goog.events.listen(selectInteraction, ol.interaction.SelectEventType.SELECT,
+      function() {$scope.$apply();});
+  this.map_.addInteraction(selectInteraction);
+
+  /**
+   * @type {ol.interaction.Select}
+   * @export
+   */
+  this.selectInteraction = selectInteraction;
+
+  var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  drawOverlay.setFeatures(this.drawnFeatures);
 };
 
 

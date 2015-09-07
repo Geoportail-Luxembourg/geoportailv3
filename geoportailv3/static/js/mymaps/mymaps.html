@@ -20,6 +20,17 @@
   <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.mapDescription" translate><em>No description</em></p>
 </div>
 
+<div>
+  <ul class="features">
+    <li ng-repeat="feature in ctrl.featuresList"
+      class="feature"
+      ng-click="ctrl.selectFeature(feature)"
+      ng-class="{'selected': ctrl.selectedFeatures.indexOf(feature) != -1}">
+      {{ feature.get('name') }}
+    </li>
+  </ul>
+</div>
+
 <!-- Modification Modal -->
 <ngeo-modal ngeo-modal-shown="ctrl.modifying">
   <div class="modal-header">

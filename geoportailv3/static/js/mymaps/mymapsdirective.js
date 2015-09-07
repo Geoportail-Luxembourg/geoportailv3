@@ -21,7 +21,10 @@ goog.require('ngeo.modalDirective');
 app.mymapsDirective = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
-    scope: true,
+    scope: {
+      'features': '=appMymapsFeatures',
+      'selectInteraction': '=appMymapsSelectinteraction'
+    },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -43,6 +46,12 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @ngInject
  */
 app.MymapsDirectiveController = function($scope, $compile, gettext) {
+
+  /**
+   * @type {ol.interaction.Select}
+   *  @export
+   */
+  this.selectInteraction;
 
   /**
    * @type {string}
@@ -101,6 +110,24 @@ app.MymapsDirectiveController = function($scope, $compile, gettext) {
    * @export
    */
   this.newDescription = '';
+
+  /**
+   * @type {ol.Collection.<ol.Feature>}
+   * @export
+   */
+  this.features;
+
+  /**
+   * @type {Array.<ol.Feature>}
+   * @export
+   */
+  this.featuresList = this.features.getArray();
+
+  /**
+   * @type {Array.<ol.Feature>}
+   * @export
+   */
+  this.selectedFeatures = this.selectInteraction.getFeatures().getArray();
 };
 
 
@@ -168,6 +195,17 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
   // TODO the modifications need to be saved on server before we close the
   // modal window
   this.modifying = false;
+};
+
+
+/**
+ * Selects feature.
+ * @param {ol.Feature} feature
+ * @export
+ */
+app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
+  this.selectInteraction.getFeatures().clear();
+  this.selectInteraction.getFeatures().push(feature);
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
