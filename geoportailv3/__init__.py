@@ -48,15 +48,18 @@ def main(global_config, **settings):
     # mymaps routes
     config.add_route(
         "mymaps_getmaps",
-        "/mymaps/getmaps"
+        "/mymaps/maps",
+        request_method="GET"
     )
     config.add_route(
         "mymaps_features",
-        "/mymaps/features/{map_id}"
+        "/mymaps/features/{map_id}",
+        request_method="GET"
     )
     config.add_route(
         "mymaps_map_info",
-        "/mymaps/map_info/{map_id}"
+        "/mymaps/map_info/{map_id}",
+        request_method="GET"
     )
 
     config.add_route(

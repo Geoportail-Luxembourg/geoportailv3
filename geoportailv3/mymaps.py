@@ -132,30 +132,20 @@ class Feature(Base):
         self.is_label = feature.properties.get('isLabel')
         self.show_orientation = feature.properties.get('showOrientation')
         self.linestyle = feature.properties.get('linestyle')
-
-        if (feature.properties.get('size') is not None and
-                unicode(feature.properties.get('size')).isnumeric()):
-            self.size = feature.properties.get('size')
-        else:
-            self.size = 40
-
-        if (feature.properties.get('angle') is not None and
-                unicode(feature.properties.get('angle')).isnumeric()):
-            self.angle = feature.properties.get('angle')
-        else:
-            self.angle = 0
-
-        if (feature.properties.get('font_size') is not None and
-                unicode(feature.properties.get('font_size')).isnumeric()):
-            self.font_size = feature.properties.get('font_size')
-        else:
-            self.font_size = 15
-
-        if (feature.properties.get('symbol_id') is not None and
-                len(str(feature.properties.get('symbol_id'))) == 0):
-            self.symbol_id = None
-        else:
-            self.symbol_id = feature.properties.get('symbol_id')
+        size = feature.properties.get('size')
+        self.size = size if size is not None and unicode(size).isnumeric()\
+            else 40
+        angle = feature.properties.get('angle')
+        self.angle = angle if angle is not None and unicode(angle).isnumeric()\
+            else 0
+        font_size = feature.properties.get('font_size')
+        self.font_size = font_size if font_size is not None and\
+            unicode(font_size).isnumeric() else 15
+        symbol_id = feature.properties.get('symbol_id')
+        self.symbol_id = None if feature.properties.get('symbol_id')\
+            is not None and\
+            len(unicode(feature.properties.get('symbol_id'))) == 0\
+            else symbol_id
 
         if hasattr(feature.geometry, "__geo_interface__"):
             ob = feature.geometry.__geo_interface__
@@ -179,11 +169,10 @@ class Feature(Base):
                 if types is None:
                     types = geom_type
                 else:
-                    if types == geom_type:
-                        is_transformable = True
-                    else:
-                        is_transformable = False
+                    is_transformable = types == geom_type
+                    if not is_transformable:
                         break
+
                 geoms.append(asShape(geom))
             if is_transformable:
                 if types == "point":
@@ -195,7 +184,8 @@ class Feature(Base):
             else:
                 shape = None
 
-        self.geometry = from_shape(shape, srid=2169)
+        self.geometry = from_shape(shape, srid=2169) if shape is not None\
+            else None
 
     @property
     def __geo_interface__(self):
@@ -250,16 +240,10 @@ class Category(Base):
     def __init__(self, name):
         self.name = name
 
-    def __allow_labeling__(self):
-        if (self.allow_labeling):
-            return True
-        else:
-            return False
-
     def todict(self):
         return {'id': self.id,
                 'name': self.name,
-                'allow_labeling': self.__allow_labeling__()}
+                'allow_labeling': self.allow_labeling}
 
 
 class Role(Base):
