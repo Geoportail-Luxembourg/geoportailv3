@@ -12,10 +12,10 @@
 
 <!-- Map displayed -->
 <div ng-show="ctrl.mapId">
-  <div class="panel-header">
-    <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap()"><span aria-hidden="true">&times;</span></button>
+  <div class="mymap-header">
+    <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
+    <div class="title" ng-click="ctrl.modifyMap()">{{ctrl.mapTitle}}</div>
   </div>
-  <p class="title" ng-click="ctrl.modifyMap()">{{ctrl.mapTitle}}</p>
   <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.mapDescription">{{ctrl.mapDescription}}</p>
   <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.mapDescription" translate><em>No description</em></p>
 </div>
