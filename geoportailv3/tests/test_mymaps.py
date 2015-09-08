@@ -18,10 +18,10 @@ class TestMymaps(unittest.TestCase):
     def test_maps(self):
         testapp = TestApp(self.app)
 
-        testapp.get('/mymaps/getmaps', status=401)
+        testapp.get('/mymaps/maps', status=401)
         testapp.post('/login?login=%s&password=%s'
                      % (self.user_login, self.user_password), status=200)
-        resp = testapp.get('/mymaps/getmaps', status=200)
+        resp = testapp.get('/mymaps/maps', status=200)
         assert resp.content_type == 'application/json'
         assert len(resp.json) >= 0
 
