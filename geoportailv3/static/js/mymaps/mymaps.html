@@ -1,11 +1,63 @@
-<div><!-- TODO block to be shown only in cases where no map is selected -->
+<div ng-show="!ctrl.mapId">
   <p translate>
     Create, save and share your own maps.
   </p>
-  <p class="text-center" ng-if="mainCtrl.loggedin">
-    <button class="btn btn-default" translate>Open a map</button>
+  <p class="text-center"><!-- Show only when logged in -->
+    <button class="btn btn-default" ng-click="ctrl.chooseMap()" translate>Open a map</button>
   </p>
   <p class="text-center">
-    <button class="btn btn-default" translate>Create new map</button>
+    <button class="btn btn-default" ng-click="ctrl.createMap()" translate>Create new map</button>
   </p>
 </div>
+
+<!-- Map displayed -->
+<div ng-show="ctrl.mapId">
+  <div class="panel-header">
+    <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap()"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <p class="title" ng-click="ctrl.modifyMap()">{{ctrl.mapTitle}}</p>
+  <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.mapDescription">{{ctrl.mapDescription}}</p>
+  <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.mapDescription" translate><em>No description</em></p>
+</div>
+
+<!-- Modification Modal -->
+<ngeo-modal ngeo-modal-shown="ctrl.modifying">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" translate>Modify title and description of the map</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+    <div class="form-group">
+      <label translate>Title of the map</label>
+      <input type="text" class="form-control" ng-model="ctrl.newTitle">
+    </div>
+    <div class="form-group">
+      <label translate>Description</label>
+      <textarea class="form-control" rows="3" ng-model="ctrl.newDescription"></textarea>
+    </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="ctrl.saveModifications()" translate>Save changes</button>
+  </div>
+</ngeo-modal>
+
+<!-- Map Chooser Modal -->
+<ngeo-modal ngeo-modal-shown="ctrl.choosing">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" translate>Open a map</h4>
+  </div>
+  <div class="modal-body">
+    <ul>
+      <li>
+        <a href ng-click="ctrl.onChosen()">Une carte</a>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
+  </div>
+</ngeo-modal>
