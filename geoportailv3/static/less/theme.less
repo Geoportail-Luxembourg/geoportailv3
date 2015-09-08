@@ -30,9 +30,17 @@
   .btn {
     color: @primary;
   }
+  .btn-primary {
+    background-color: @primary;
+    border-color: darken(@primary, 10%);
+    color: white;
+  }
   &.no-touch .btn:hover {
     color: white;
     background-color: @primary;
+  }
+  &.no-touch .btn-primary:hover {
+    background-color: darken(@primary, 10%);
   }
 
   #sidebar {
