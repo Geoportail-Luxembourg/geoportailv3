@@ -56,6 +56,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     getRemoteTemplateServiceUrl) {
 
   /**
+   * @type {Array}
+   * @private
+   */
+  this.responses_ = [];
+
+  /**
    * @type {angular.$sce}
    * @private
    */
@@ -348,19 +354,53 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          goog.array.forEach(resp.data, function(item) {
-            item['layerLabel'] = layerLabel[item.layer];
-          });
-
+          if (evt.originalEvent.shiftKey) {
+            goog.array.forEach(resp.data, function(item) {
+              item['layerLabel'] = layerLabel[item.layer];
+              var found = false;
+              for (var iLayer = 0; iLayer < this.responses_.length; iLayer++) {
+                if (this.responses_[iLayer].layer == item.layer) {
+                  found = true;
+                  var removed = false;
+                  for (var iItem = 0; iItem < item.features.length; iItem++) {
+                    for (var iFeatures = 0;
+                         iFeatures < this.responses_[iLayer].features.length;
+                         iFeatures++) {
+                      if (this.responses_[iLayer].features[iFeatures]['fid'] ==
+                          item.features[iItem]['fid']) {
+                        removed = true;
+                        this.responses_[iLayer].features.splice(iFeatures, 1);
+                        break;
+                      }
+                    }
+                    if (!removed) {
+                      this.responses_[iLayer].features =
+                          this.responses_[iLayer].features.concat(
+                          item.features[iItem]);
+                    }
+                  }
+                  break;
+                }
+              }
+              if (!found) {
+                this.responses_.push(item);
+              }
+            },this);
+          }else {
+            this.responses_ = resp.data;
+            goog.array.forEach(resp.data, function(item) {
+              item['layerLabel'] = layerLabel[item.layer];
+            });
+          }
           this.clearQueryResult_(this.QUERYPANEL_);
-          this['content'] = resp.data;
-          if (resp.data.length > 0) this['infoOpen'] = true;
+          this['content'] = this.responses_;
+          if (this.responses_.length > 0) this['infoOpen'] = true;
           else this['infoOpen'] = false;
           this.lastHighlightedFeatures_ = [];
-          for (var i = 0; i < resp.data.length; i++) {
+          for (var i = 0; i < this.responses_.length; i++) {
             this.lastHighlightedFeatures_.push.apply(
                 this.lastHighlightedFeatures_,
-                resp.data[i].features
+                this.responses_[i].features
             );
           }
           this.highlightFeatures_(this.lastHighlightedFeatures_);
@@ -396,6 +436,21 @@ app.QueryController.prototype.hasAttributes = function(feature) {
     return true;
   }
   return false;
+};
+
+
+/**
+ * has the object at least one attribute
+ * @param {Array} features
+ * @param {string} attr Attribute to join
+ * @param {string} sep the join separator
+ * @return {string} the string with joined attributes
+ * @export
+ */
+app.QueryController.prototype.joinAttributes = function(features, attr, sep) {
+  return goog.array.map(features, function(feature) {
+    return feature.attributes[attr];
+  }).join(sep);
 };
 
 
