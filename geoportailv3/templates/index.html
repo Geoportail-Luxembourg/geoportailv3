@@ -145,7 +145,9 @@
             ✕
           </button>
           <div class="col-xs-12">
-            <app-mymaps><app-mymaps>
+            <app-mymaps app-mymaps-selectinteraction="::mainCtrl.selectInteraction"
+              app-mymaps-features="::mainCtrl.drawnFeatures">
+            <app-mymaps>
           </div>
         </div>
 
@@ -206,13 +208,10 @@
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
         <li class="hidden-xs draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
-        <div class="toolbox-panel">
-          <div class="drawing-panel">
-              <div class="col-xs-12">
-              <p translate>The drawing tools are currently not available in this preview</p>
-            </div>
-          </div>
-        </div>
+          <app-draw app-draw-map="::mainCtrl.map"
+            app-draw-active="mainCtrl.drawOpen"
+            app-draw-features="::mainCtrl.drawnFeatures">
+          </app-draw>
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
@@ -296,6 +295,7 @@
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
+         appModule.value('appDrawTemplateUrl', 'draw/draw.html');
          appModule.value('appLayerinfoTemplateUrl', 'layerinfo/layerinfo.html');
          appModule.value('appAuthenticationTemplateUrl', 'authentication/authentication.html');
          appModule.value('appInfobarTemplateUrl', 'infobar/infobar.html');

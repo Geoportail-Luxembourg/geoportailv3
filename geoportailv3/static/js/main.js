@@ -13,6 +13,7 @@ goog.require('app.MainController');
 goog.require('app.authenticationDirective');
 goog.require('app.backgroundlayerDirective');
 goog.require('app.catalogDirective');
+goog.require('app.drawDirective');
 goog.require('app.elevationDirective');
 goog.require('app.layerinfoDirective');
 goog.require('app.layermanagerDirective');
