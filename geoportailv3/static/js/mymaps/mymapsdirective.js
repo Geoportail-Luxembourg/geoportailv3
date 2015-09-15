@@ -23,7 +23,7 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
     restrict: 'E',
     scope: {
       'features': '=appMymapsFeatures',
-      'selectInteraction': '=appMymapsSelectinteraction'
+      'selectedFeatures': '=appMymapsSelectedfeatures'
     },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
@@ -41,17 +41,19 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @constructor
  * @export
  * @ngInject
  */
-app.MymapsDirectiveController = function($scope, $compile, gettext) {
+app.MymapsDirectiveController = function($scope, $compile, gettext,
+    appFeaturePopup) {
 
   /**
-   * @type {ol.interaction.Select}
+   * @type {ol.Collection<ol.Feature>}
    *  @export
    */
-  this.selectInteraction;
+  this.selectedFeatures;
 
   /**
    * @type {string}
@@ -127,7 +129,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext) {
    * @type {Array.<ol.Feature>}
    * @export
    */
-  this.selectedFeatures = this.selectInteraction.getFeatures().getArray();
+  this.selectedFeaturesList = this.selectedFeatures.getArray();
+
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 };
 
 
@@ -204,8 +212,10 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
-  this.selectInteraction.getFeatures().clear();
-  this.selectInteraction.getFeatures().push(feature);
+  this.selectedFeatures.clear();
+  this.selectedFeatures.push(feature);
+
+  this.featurePopup_.show(feature);
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

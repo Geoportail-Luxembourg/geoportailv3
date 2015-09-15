@@ -11,6 +11,7 @@ goog.provide('app.MainController');
 
 goog.require('app');
 goog.require('app.ExclusionManager');
+goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
@@ -26,6 +27,7 @@ goog.require('ol.View');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
+goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
@@ -45,6 +47,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.FeaturePopup} appFeaturePopup Feature info service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -56,8 +59,8 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appStateManager, appThemes, langUrls, maxExtent, defaultExtent,
-    ngeoSyncArrays) {
+    appStateManager, appThemes, appFeaturePopup, langUrls, maxExtent,
+    defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {angular.Scope}
@@ -235,8 +238,17 @@ app.MainController = function(
    */
   this.selectInteraction = selectInteraction;
 
+  /**
+   * The selected features.
+   * @type {ol.Collection.<ol.Feature>}
+   * @export
+   */
+  this.selectedFeatures = selectInteraction.getFeatures();
+
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures);
+
+  appFeaturePopup.init(this.map_);
 };
 
 

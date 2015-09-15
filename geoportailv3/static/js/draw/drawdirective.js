@@ -20,10 +20,10 @@ goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.Location');
 goog.require('ngeo.format.FeatureHash');
+goog.require('ol.CollectionEventType');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Select');
 
 
 /**
@@ -37,7 +37,8 @@ app.drawDirective = function(appDrawTemplateUrl) {
     scope: {
       'map': '=appDrawMap',
       'features': '=appDrawFeatures',
-      'active': '=appDrawActive'
+      'active': '=appDrawActive',
+      'selectedFeatures': '=appDrawSelectedfeatures'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -56,11 +57,13 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {ngeo.Location} ngeoLocation Location service.
+ * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @constructor
  * @export
  * @ngInject
  */
-app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation) {
+app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
+    appFeaturePopup) {
 
   /**
    * @type {ol.Map}
@@ -85,6 +88,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation) {
    * @export
    */
   this.features;
+
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   *  @export
+   */
+  this.selectedFeatures;
 
   /**
    * @type {angular.Scope}
@@ -157,6 +166,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation) {
     goog.asserts.assert(!goog.isNull(features));
     this.features.extend(features);
   }
+
+  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.REMOVE,
+      function() {
+        appFeaturePopup.hide();
+      });
 };
 
 
