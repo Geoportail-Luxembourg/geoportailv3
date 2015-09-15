@@ -179,14 +179,18 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
        * @param {ol.interaction.SelectEvent} evt
        */
       function(evt) {
-        $scope.$apply();
         if (evt.selected.length > 0) {
           this.featurePopup_.show(evt.selected[0],
               evt.mapBrowserEvent.coordinate);
         } else {
           this.featurePopup_.hide();
         }
+        $scope.$apply();
       }, true, this);
+
+  $scope.$on('featurePopupClosed', goog.bind(function() {
+    this.selectInteraction.getFeatures().clear();
+  }, this));
 };
 
 

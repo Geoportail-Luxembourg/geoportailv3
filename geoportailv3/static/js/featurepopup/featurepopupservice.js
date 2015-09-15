@@ -1,9 +1,10 @@
 /**
- * @fileoverview Provides a feature info service.
+ * @fileoverview Provides a feature popup service.
  */
 
 goog.provide('app.FeaturePopup');
 
+goog.require('app.featurePopupDirective');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('ol.Coordinate');
@@ -13,18 +14,43 @@ goog.require('ol.Overlay');
 
 
 /**
+ * @param {angular.$compile} $compile The compile provider.
+ * @param {angular.Scope} $rootScope The rootScope provider.
  * @constructor
+ * @ngInject
  */
-app.FeaturePopup = function() {
+app.FeaturePopup = function($compile, $rootScope) {
+
+  /**
+   * The root scope.
+   * @type {angular.Scope}
+   * @private
+   */
+  this.rootScope_ = $rootScope;
+
+  /**
+   * The scope the compiled element is link to.
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $rootScope.$new(true);
+
+  var element = angular.element('<div app-feature-popup></div>');
+  element.addClass('feature-popup');
+
+  // Compile the element, link it to the scope
+  $compile(element)(this.scope_);
 
   /**
    * @type {ol.Overlay?}
    * @private
    */
   this.overlay_ = new ol.Overlay({
-    element: goog.dom.createDom(goog.dom.TagName.DIV, 'feature-popup',
-        'something'),
-    autoPan: true
+    element: element[0],
+    autoPan: true,
+    autoPanAnimation: /** @type {olx.animation.PanOptions} */ ({
+      duration: 250
+    })
   });
 };
 
@@ -42,6 +68,7 @@ app.FeaturePopup.prototype.init = function(map) {
  * @param {ol.Coordinate=} opt_anchor
  */
 app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
+  this.scope_['feature'] = feature;
   var anchor = goog.isDef(opt_anchor) ? opt_anchor : this.getAnchor(feature);
   this.overlay_.setPosition(anchor);
 };
@@ -50,7 +77,9 @@ app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
 /**
  */
 app.FeaturePopup.prototype.hide = function() {
+  this.scope_['feature'] = null;
   this.overlay_.setPosition(undefined);
+  this.rootScope_.$broadcast('featurePopupClosed');
 };
 
 
