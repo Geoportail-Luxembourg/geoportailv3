@@ -38,7 +38,7 @@ app.drawDirective = function(appDrawTemplateUrl) {
       'map': '=appDrawMap',
       'features': '=appDrawFeatures',
       'active': '=appDrawActive',
-      'selectedFeatures': '=appDrawSelectedfeatures'
+      'selectInteraction': '=appDrawSelectinteraction'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -90,10 +90,16 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.features;
 
   /**
-   * @type {ol.Collection<ol.Feature>}
+   * @type {ol.interaction.Select}
    *  @export
    */
-  this.selectedFeatures;
+  this.selectInteraction;
+
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 
   /**
    * @type {angular.Scope}
@@ -167,10 +173,20 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     this.features.extend(features);
   }
 
-  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.REMOVE,
-      function() {
-        appFeaturePopup.hide();
-      });
+  goog.events.listen(this.selectInteraction,
+      ol.interaction.SelectEventType.SELECT,
+      /**
+       * @param {ol.interaction.SelectEvent} evt
+       */
+      function(evt) {
+        $scope.$apply();
+        if (evt.selected.length > 0) {
+          this.featurePopup_.show(evt.selected[0],
+              evt.mapBrowserEvent.coordinate);
+        } else {
+          this.featurePopup_.hide();
+        }
+      }, true, this);
 };
 
 

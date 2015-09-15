@@ -228,8 +228,6 @@ app.MainController = function(
       return this.drawnFeatures.getArray().indexOf(feature) != -1;
     }, this)
   });
-  goog.events.listen(selectInteraction, ol.interaction.SelectEventType.SELECT,
-      function() {$scope.$apply();});
   this.map_.addInteraction(selectInteraction);
 
   /**
