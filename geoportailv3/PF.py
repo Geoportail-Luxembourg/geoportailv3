@@ -1,14 +1,11 @@
 ﻿# -*- coding: utf-8 -*-
 from suds.client import Client
+from geoportailv3.models import LuxMeasurementLoginCommune
+import sqlahelper
 import logging
 import os
 import sys
 import traceback
-from geoportailv3.portail import DBSession
-from geoportailv3.portail import UtiMesurageCommune
-
-# from geoadmin.model.meta import Session
-# from geoadmin.model.portail import UtiMesurageCommune
 
 
 # Classe pour accéder aux attributs de la publicité foncière##
@@ -24,6 +21,7 @@ class PF():
             Client('https://titan.etat.lu/xxpfoWS/Measure' +
                    'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
         self.log = logging.getLogger(__name__)
+        self.dbsession = sqlahelper.get_session()
 
     def get_client(self):
         return self.client
@@ -416,9 +414,9 @@ class PF():
         if (town_info is None or user is None or user.username is None):
             return False
 
-        if (DBSession.query(UtiMesurageCommune).
-                filter(UtiMesurageCommune.login == user.username).
-                filter(UtiMesurageCommune.num_commune ==
+        if (self.dbsession.query(LuxMeasurementLoginCommune).
+                filter(LuxMeasurementLoginCommune.login == user.username).
+                filter(LuxMeasurementLoginCommune.num_commune ==
                        town_info.get("townNum")).count() > 0):
             return True
 

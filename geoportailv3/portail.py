@@ -45,10 +45,3 @@ class SketchDownload(Base):
     download_date = Column(DateTime, default=datetime.datetime.now)
     application = Column(String)
     directory = Column(String)
-
-
-class UtiMesurageCommune(Base):
-    __table_args__ = ({'schema': 'geov3_stats'})
-    __tablename__ = 'lux_uti_mesurage_commune'
-    login = Column(String, primary_key=True)
-    num_commune = Column(String, primary_key=True)
