@@ -15,7 +15,9 @@ goog.require('app');
 app.featurePopupDirective = function(appFeaturePopupTemplateUrl) {
   return {
     restrict: 'A',
-    scope: true,
+    scope: {
+      'feature': '=appFeaturePopupFeature'
+    },
     controller: 'AppFeaturePopupController',
     controllerAs: 'ctrl',
     bindToController: true,

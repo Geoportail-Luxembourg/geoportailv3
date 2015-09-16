@@ -29,7 +29,7 @@ app.FeaturePopup = function($compile, $rootScope) {
   this.rootScope_ = $rootScope;
 
   /**
-   * The scope the compiled element is link to.
+   * The scope the compiled element is linked to.
    * @type {angular.Scope}
    * @private
    */
@@ -37,6 +37,7 @@ app.FeaturePopup = function($compile, $rootScope) {
 
   var element = angular.element('<div app-feature-popup></div>');
   element.addClass('feature-popup');
+  element.attr('app-feature-popup-feature', 'feature');
 
   // Compile the element, link it to the scope
   $compile(element)(this.scope_);
