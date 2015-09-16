@@ -22,11 +22,10 @@ goog.require('ol.Overlay');
 app.FeaturePopup = function($compile, $rootScope) {
 
   /**
-   * The root scope.
-   * @type {angular.Scope}
+   * @type {ol.Collection<ol.Feature>?}
    * @private
    */
-  this.rootScope_ = $rootScope;
+  this.features_;
 
   /**
    * The scope the compiled element is linked to.
@@ -58,9 +57,11 @@ app.FeaturePopup = function($compile, $rootScope) {
 
 /**
  * @param {ol.Map} map Map.
+ * @param {ol.Collection<ol.Feature>} features Features.
  */
-app.FeaturePopup.prototype.init = function(map) {
+app.FeaturePopup.prototype.init = function(map, features) {
   map.addOverlay(this.overlay_);
+  this.features_ = features;
 };
 
 
@@ -80,7 +81,7 @@ app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
 app.FeaturePopup.prototype.hide = function() {
   this.scope_['feature'] = null;
   this.overlay_.setPosition(undefined);
-  this.rootScope_.$broadcast('featurePopupClosed');
+  this.features_.clear();
 };
 
 

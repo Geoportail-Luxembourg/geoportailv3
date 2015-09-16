@@ -246,7 +246,7 @@ app.MainController = function(
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures);
 
-  appFeaturePopup.init(this.map_);
+  appFeaturePopup.init(this.map_, selectInteraction.getFeatures());
 };
 
 

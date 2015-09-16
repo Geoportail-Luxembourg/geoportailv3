@@ -187,10 +187,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         }
         $scope.$apply();
       }, true, this);
-
-  $scope.$on('featurePopupClosed', goog.bind(function() {
-    this.selectInteraction.getFeatures().clear();
-  }, this));
 };
 
 
