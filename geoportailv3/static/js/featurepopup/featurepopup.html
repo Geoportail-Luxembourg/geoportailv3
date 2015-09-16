@@ -1,2 +1,58 @@
-<a href class="close" ng-click="ctrl.close()">&times;</a>
-{{ ctrl.feature.get('name') }}
+<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle">
+  <div class="feature-popup-heading">
+    <a href class="close" ng-click="ctrl.close()">&times;</a>
+    {{ ctrl.feature.get('name') }}
+  </div>
+  <div class="feature-popup-body description">
+    {{ ctrl.feature.get('description') }}
+  </div>
+  <div class="feature-popup-footer">
+    <ul class="nav navbar-nav pull-right">
+      <li ng-show="ctrl.feature.get('__editable__')">
+        <a href ng-click="ctrl.editingAttributes = true">
+          <span class="fa fa-pencil"></span>
+        </a>
+      </li>
+      <li ng-show="ctrl.feature.get('__editable__')">
+        <a href ng-click="ctrl.editingStyle = true">
+          <span class="fa fa-paint-brush"></span>
+        </a>
+      </li>
+      <li ng-show="ctrl.feature.get('__editable__')">
+        <a href><span class="fa fa-trash"></span></a>
+      </li>
+      <li>
+        <a href><span class="fa fa-caret-square-o-down"></span></a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div ng-show="ctrl.editingAttributes">
+  <div class="feature-popup-body">
+    <a href class="close" ng-click="ctrl.close()">&times;</a>
+    <div class="row">
+      <div class="col-xs-8 form-group">
+        <input type="text" class="form-control" ng-model="ctrl.tempName">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 form-group">
+        <textarea class="form-control" rows="3" ng-model="ctrl.tempDesc"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-default" ng-click="ctrl.editingAttributes = false" translate>
+      Cancel
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.validateModifications()" translate>
+      Validate
+    </button>
+  </div>
+</div>
+<div ng-show="ctrl.editingStyle">
+  <div class="feature-popup-body">
+    <a href class="close" ng-click="ctrl.close()">&times;</a>
+    editing style
+  </div>
+</div>

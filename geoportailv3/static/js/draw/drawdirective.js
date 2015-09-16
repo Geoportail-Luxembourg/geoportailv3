@@ -197,6 +197,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   feature.set('name', 'element ' + (++this.featureSeq_));
+  feature.set('__editable__', true);
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
