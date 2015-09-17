@@ -153,6 +153,24 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   goog.events.listen(drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
+  var drawPolygon = new ol.interaction.Draw({
+    features: this.features,
+    type: ol.geom.GeometryType.POLYGON
+  });
+
+  /**
+   * @type {ol.interaction.Draw}
+   * @export
+   */
+  this.drawPolygon = drawPolygon;
+
+  drawPolygon.setActive(false);
+  ngeoDecorateInteraction(drawPolygon);
+  this.map.addInteraction(drawPolygon);
+  goog.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
+      this.onDrawEnd_, false, this);
+
+
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
