@@ -17,26 +17,20 @@ goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
 goog.require('app.StateManager');
 goog.require('app.Themes');
-goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.SyncArrays');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
-goog.require('ol.FeatureStyleFunction');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
-goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
-goog.require('ol.style.RegularShape');
 goog.require('ol.tilegrid.WMTS');
 
 
@@ -196,6 +190,13 @@ app.MainController = function(
   this.drawnFeatures = new ol.Collection();
 
   /**
+   * The selected features.
+   * @type {ol.Collection.<ol.Feature>?}
+   * @export
+   */
+  this.selectedFeatures;
+
+  /**
    * The role id of the authenticated user, or `undefined` if the user
    * is anonymous, or if we don't yet kno if the user is authenticated.
    * @type {number|undefined}
@@ -228,92 +229,8 @@ app.MainController = function(
     }
   }, this));
 
-  var selectStyleFunction = function(feature, resolution) {
-    // The vertex style display a black and white circle on the existing
-    // vertices, and also when the user can add a new vertices.
-    var vertexStyle = new ol.style.Style({
-      image: new ol.style.RegularShape({
-        radius: 6,
-        points: 4,
-        angle: Math.PI / 4,
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: 'rgba(0, 0, 0, 1)'
-        })
-      }),
-      geometry: function(feature) {
-        var geom = feature.getGeometry();
-        var coordinates;
-        if (geom instanceof ol.geom.LineString) {
-          coordinates = feature.getGeometry().getCoordinates();
-          return new ol.geom.MultiPoint(coordinates);
-        } else if (geom instanceof ol.geom.Polygon) {
-          coordinates = feature.getGeometry().getCoordinates()[0];
-          return new ol.geom.MultiPoint(coordinates);
-        } else {
-          return feature.getGeometry();
-        }
-      }
-    });
-    //var styleFunction = [>* @type {ol.FeatureStyleFunction} <]
-    //(feature.get('__style__'));
-    //var styles = styleFunction.call(feature, resolution);
-    return feature.get('__style__').concat([vertexStyle]);
-  };
-
-  var selectInteraction = new ol.interaction.Select({
-    filter: goog.bind(function(feature, layer) {
-      return this.drawnFeatures.getArray().indexOf(feature) != -1;
-    }, this),
-    style: selectStyleFunction
-  });
-  this.map_.addInteraction(selectInteraction);
-
-  /**
-   * @type {ol.interaction.Select}
-   * @export
-   */
-  this.selectInteraction = selectInteraction;
-
-  /**
-   * The selected features.
-   * @type {ol.Collection.<ol.Feature>}
-   * @export
-   */
-  this.selectedFeatures = selectInteraction.getFeatures();
-
-  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.CollectionEvent} evt
-       */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
-        var feature = evt.element;
-        // store the style temporarily in feature attributes
-        feature.set('__style__', feature.getStyle());
-        feature.setStyle(null);
-      });
-
-  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.REMOVE,
-      /**
-       * @param {ol.CollectionEvent} evt
-       */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
-        var feature = evt.element;
-        // restore the feature style (back from attributes)
-        var styleFunction = /** @type {ol.FeatureStyleFunction} */
-            (feature.get('__style__'));
-        feature.setStyle(styleFunction);
-        feature.set('__style__', null);
-      });
-
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures);
-
-  appFeaturePopup.init(this.map_, selectInteraction.getFeatures());
 };
 
 

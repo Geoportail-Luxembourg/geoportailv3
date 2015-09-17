@@ -126,10 +126,18 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.featuresList = this.features.getArray();
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<ol.Feature>?}
    * @export
    */
-  this.selectedFeaturesList = this.selectedFeatures.getArray();
+  this.selectedFeaturesList;
+
+  $scope.$watch(goog.bind(function() {
+    return this.selectedFeatures;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal != oldVal) {
+      this.selectedFeaturesList = newVal.getArray();
+    }
+  }, this));
 
   /**
    * @type {app.FeaturePopup}

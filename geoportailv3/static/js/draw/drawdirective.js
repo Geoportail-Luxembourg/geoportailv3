@@ -25,6 +25,8 @@ goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.Select');
+goog.require('ol.style.RegularShape');
 
 
 /**
@@ -39,7 +41,7 @@ app.drawDirective = function(appDrawTemplateUrl) {
       'map': '=appDrawMap',
       'features': '=appDrawFeatures',
       'active': '=appDrawActive',
-      'selectInteraction': '=appDrawSelectinteraction'
+      'selectedFeatures': '=appDrawSelectedfeatures'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -191,6 +193,88 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     goog.asserts.assert(!goog.isNull(features));
     this.features.extend(features);
   }
+
+  var selectStyleFunction = function(feature, resolution) {
+    // The vertex style display a black and white circle on the existing
+    // vertices, and also when the user can add a new vertices.
+    var vertexStyle = new ol.style.Style({
+      image: new ol.style.RegularShape({
+        radius: 6,
+        points: 4,
+        angle: Math.PI / 4,
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.5)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: 'rgba(0, 0, 0, 1)'
+        })
+      }),
+      geometry: function(feature) {
+        var geom = feature.getGeometry();
+        var coordinates;
+        if (geom instanceof ol.geom.LineString) {
+          coordinates = feature.getGeometry().getCoordinates();
+          return new ol.geom.MultiPoint(coordinates);
+        } else if (geom instanceof ol.geom.Polygon) {
+          coordinates = feature.getGeometry().getCoordinates()[0];
+          return new ol.geom.MultiPoint(coordinates);
+        } else {
+          return feature.getGeometry();
+        }
+      }
+    });
+    return feature.get('__style__').concat([vertexStyle]);
+  };
+
+  var selectInteraction = new ol.interaction.Select({
+    features: this.selectedFeatures,
+    filter: goog.bind(function(feature, layer) {
+      return this.features.getArray().indexOf(feature) != -1;
+    }, this),
+    style: selectStyleFunction
+  });
+  this.map.addInteraction(selectInteraction);
+
+  /**
+   * @type {ol.interaction.Select}
+   * @export
+   */
+  this.selectInteraction = selectInteraction;
+
+  appFeaturePopup.init(this.map, selectInteraction.getFeatures());
+
+  /**
+   * The selected features.
+   * @type {ol.Collection.<ol.Feature>}
+   * @export
+   */
+  this.selectedFeatures = selectInteraction.getFeatures();
+
+  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        // store the style temporarily in feature attributes
+        feature.set('__style__', feature.getStyle());
+        feature.setStyle(null);
+      });
+
+  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        // restore the feature style (back from attributes)
+        var styleFunction = /** @type {ol.FeatureStyleFunction} */
+            (feature.get('__style__'));
+        feature.setStyle(styleFunction);
+        feature.set('__style__', null);
+      });
 
   goog.events.listen(this.selectInteraction,
       ol.interaction.SelectEventType.SELECT,
