@@ -25,6 +25,7 @@ goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.style.RegularShape');
 
@@ -290,6 +291,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         }
         $scope.$apply();
       }, true, this);
+
+  var modifyInteraction = new ol.interaction.Modify({
+    features: this.selectedFeatures
+  });
+  this.map.addInteraction(modifyInteraction);
 };
 
 
