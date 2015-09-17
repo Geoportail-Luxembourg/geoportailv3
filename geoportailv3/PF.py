@@ -1,10 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
 from suds.client import Client
+from geoportailv3.models import LuxMeasurementLoginCommune
+from sqlalchemy import func
+import sqlahelper
 import logging
 import os
 import sys
-# from geoadmin.model.meta import Session
-# from geoadmin.model.portail import UtiMesurageCommune
+import traceback
 
 
 # Classe pour accéder aux attributs de la publicité foncière##
@@ -20,6 +22,7 @@ class PF():
             Client('https://titan.etat.lu/xxpfoWS/Measure' +
                    'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
         self.log = logging.getLogger(__name__)
+        self.dbsession = sqlahelper.get_session()
 
     def get_client(self):
         return self.client
@@ -40,26 +43,25 @@ class PF():
         return d
 
     def get_measurement_list(self, number_prim, number_sec,
-                             section_code, town_code):
+                             section_code, town_code, user, referer):
 
-        req = self.clientMesurage.factory.create('measurementRequestVer1')
+        req = self.client_mesurage.factory.create('measurementRequestVer1')
         req.numberFrom = number_prim
         req.numberTo = number_prim
         req.numberSuppFrom = number_sec
         req.numberSuppTo = number_sec
         req.sectionCode = section_code
         req.townCode = town_code
-
         try:
-            resp = self.clientMesurage.service.searchMeasurement(req)
+            resp = self.client_mesurage.service.searchMeasurement(req)
         except:
-            self.log.debug("Unexpected error: " + str(sys.exc_info()[0]))
+            traceback.print_exc(file=sys.stdout)
             return []
 
-        if not hasattr(resp, 'measurement_list'):
+        if not hasattr(resp, 'measurementList'):
                 return []
 
-        measurements = resp.measurement_list
+        measurements = resp.measurementList
 
         if len(town_code) == 0:
             self.log.debug("Erreur le town code ne peut pas �tre vide")
@@ -74,37 +76,48 @@ class PF():
 
         for measurement in measurements:
             if measurement.parcelId == parc_id:
-                if measurement.measurement_number > 0:
+                if measurement.measurementNumber > 0:
                     measurement_files = \
                         self._get_pdf_file_path(town_code,
-                                                measurement.measurement_number)
-                    measurement.measurement_files = measurement_files
-                    measurement_list.append(measurement)
+                                                measurement.measurementNumber,
+                                                user, referer)
+
+                    measurement.files = measurement_files['files'] if 'files' \
+                        in measurement_files else None
+                    measurement.town_info = measurement_files['town_info'] \
+                        if 'town_info' in measurement_files else None
+                    measurement_list.append(dict(measurement))
 
         return measurement_list
 
-    def _get_pdf_file_path(self, town_code, measurement_number):
+    def _get_pdf_file_path(self, town_code, measurement_number, user, referer):
         try:
             town_info = self._get_town_by_code(int(town_code))
             if town_info.get('inDirectory') is not None and \
                len(town_info.get('inDirectory')) > 0:
-                path = "/mesurage/pdf/" + town_info.get('inDirectory') + \
-                    "/" + town_info.get('name') + "/"
+                path = "/mesurage/pdf/%s/%s/" % (town_info.get('inDirectory'),
+                                                 town_info.get('name'))
 
             else:
-                path = "/mesurage/pdf/"+town_info.get('name')+"/"
+                path = "/mesurage/pdf/%s/" % (town_info.get('name'))
             files = os.listdir(path)
 
             mes = self._add_char_before(5, measurement_number)
             files_list = []
             for curFile in files:
                 if curFile.startswith(mes):
-                    files_list.append(curFile)
+                    files_list.append({'filename': curFile,
+                                       'is_downloadable':
+                                       self._is_download_authorized(
+                                           town_info.get('name'),
+                                           user, referer)
+                                       })
 
             if len(files_list) == 0:
                 return {}
 
-            return {"town_info": town_info, "filenames": files_list}
+            return {"town_info": town_info,
+                    "files": files_list}
         except:
             print sys.exc_info()
             return {}
@@ -390,27 +403,23 @@ class PF():
                   "townNum": "130", "inDirectory": ""}
             }
         return town_codes
-"""
-    def _is_download_authorized(self, town_name, user, referer):
 
+    def _is_download_authorized(self, town_name, user, referer):
         if referer is not None:
             if "bodfeature" in referer and "search4naila" in referer:
                 return True
             if "weboffice_um" in referer:
                 return True
-
         town_info = self._get_town_by_name(town_name)
 
-        if town_info is None:
+        if (town_info is None or user is None or user.username is None):
             return False
 
-        if Session.query(UtiMesurageCommune). \
-                filter(" login = portail.getCompteRacine('" +
-                       user +
-                       "') AND num_commune ='" +
-                       town_info.get("townNum") +
-                       "'").count() > 0:
+        if (self.dbsession.query(LuxMeasurementLoginCommune).
+                filter(LuxMeasurementLoginCommune.login ==
+                       func.geov3.getMainAccount(user.username)).
+                filter(LuxMeasurementLoginCommune.num_commune ==
+                       town_info.get("townNum")).count() > 0):
             return True
 
         return False
-"""

@@ -17,6 +17,17 @@ log = logging.getLogger(__name__)
 Base = sqlahelper.get_base()
 
 
+class LuxMeasurementLoginCommune(Base):
+    __label__ = _(u"Allowed measurement for a user")
+    __tablename__ = "lux_measurement_login_commune"
+    __table_args__ = {"schema": _schema}
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
+    login = Column(String, primary_key=True)
+    num_commune = Column(String, primary_key=True)
+
+
 class LuxLayerInternalWMS(LayerInternalWMS):
     __label__ = _(u"Internal WMS layer")
     __plural__ = _(u"Internal WMS layers")
