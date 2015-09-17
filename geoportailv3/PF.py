@@ -1,6 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 from suds.client import Client
 from geoportailv3.models import LuxMeasurementLoginCommune
+from sqlalchemy import func
 import sqlahelper
 import logging
 import os
@@ -415,7 +416,8 @@ class PF():
             return False
 
         if (self.dbsession.query(LuxMeasurementLoginCommune).
-                filter(LuxMeasurementLoginCommune.login == user.username).
+                filter(LuxMeasurementLoginCommune.login ==
+                       func.geov3.getMainAccount(user.username)).
                 filter(LuxMeasurementLoginCommune.num_commune ==
                        town_info.get("townNum")).count() > 0):
             return True
