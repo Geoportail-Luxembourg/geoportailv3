@@ -21,6 +21,7 @@ goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.Location');
 goog.require('ngeo.format.FeatureHash');
 goog.require('ol.CollectionEventType');
+goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
@@ -216,6 +217,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   feature.set('name', 'element ' + (++this.featureSeq_));
   feature.set('__editable__', true);
+  feature.setStyle(ol.style.defaultStyleFunction(feature, 0));
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
