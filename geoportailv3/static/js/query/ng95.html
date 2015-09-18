@@ -4,6 +4,6 @@
   <span translate>Elevation</span> : {{feature.attributes.coordonnee}}<br>
   <span translate>Type</span> : {{feature.attributes.type_rivet}}<br>
   <span translate>Croquis</span> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
-  <a target='_PDF' href='/downloadsketch?name={{feature.attributes.nom_croq}}' translate>Obtenir le fichier sous format pdf</a></span>
+  <a target='_blank' href='{{ctrl.getDownloadsketchUrl()}}?name={{feature.attributes.nom_croq}}' translate>Obtenir le fichier sous format pdf</a></span>
   <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Croquis indisponible</span><br>
 </div>
