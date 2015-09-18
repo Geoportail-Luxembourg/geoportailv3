@@ -48,12 +48,14 @@ app.module.directive('appQuery', app.queryDirective);
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
  * @param {string} getRemoteTemplateServiceUrl
+ * @param {string} downloadmeasurementUrl
+ * @param {string} downloadsketchUrl
  * @export
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
-    getRemoteTemplateServiceUrl) {
+    getRemoteTemplateServiceUrl, downloadmeasurementUrl, downloadsketchUrl) {
 
   /**
    * @type {Array}
@@ -119,11 +121,24 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @private
    */
   this.templatePath_ = appQueryTemplatesPath;
+
   /**
    * @type {string}
    * @private
    */
   this.remoteTemplateUrl_ = getRemoteTemplateServiceUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.downloadmeasurementUrl_ = downloadmeasurementUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.downloadsketchUrl_ = downloadsketchUrl;
 
   /**
    * @type {ol.Map}
@@ -533,5 +548,24 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
     }
   }
 };
+
+
+/**
+ * @return {string} get the URL.
+ * @export
+ */
+app.QueryController.prototype.getDownloadMeasurementUrl = function() {
+  return this.downloadmeasurementUrl_;
+};
+
+
+/**
+ * @return {string} get the URL.
+ * @export
+ */
+app.QueryController.prototype.getDownloadsketchUrl = function() {
+  return this.downloadsketchUrl_;
+};
+
 app.module.controller('AppQueryController',
                       app.QueryController);
