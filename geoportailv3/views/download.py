@@ -41,7 +41,7 @@ class Download(object):
         if f is None:
                 return HTTPBadRequest()
 
-        self._log_download_stats(filename, dirname)
+        self._log_download_sketch_stats(filename, dirname)
 
         headers = {"Content-Type": "application/pdf",
                    "Content-Disposition": "attachment; filename=\"" +
