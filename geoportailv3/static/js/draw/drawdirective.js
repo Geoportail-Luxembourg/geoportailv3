@@ -16,7 +16,10 @@ goog.provide('app.DrawController');
 goog.provide('app.drawDirective');
 
 goog.require('app');
+goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
+goog.require('ngeo.Location');
+goog.require('ngeo.format.FeatureHash');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
@@ -52,11 +55,12 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
+ * @param {ngeo.Location} ngeoLocation Location service.
  * @constructor
  * @export
  * @ngInject
  */
-app.DrawController = function($scope, ngeoDecorateInteraction) {
+app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation) {
 
   /**
    * @type {ol.Map}
@@ -87,6 +91,18 @@ app.DrawController = function($scope, ngeoDecorateInteraction) {
    * @private
    */
   this.scope_ = $scope;
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
+
+  /**
+   * @type {ngeo.format.FeatureHash}
+   * @private
+   */
+  this.fhFormat_ = new ngeo.format.FeatureHash();
 
   var drawPoint = new ol.interaction.Draw({
     features: this.features,
@@ -122,7 +138,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction) {
   goog.events.listen(drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
-
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -133,6 +148,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction) {
       this.drawLine.setActive(false);
     }
   }, this));
+
+  // Decode the features encoded in the URL and add them to the collection
+  // of drawn features.
+  var encodedFeatures = ngeoLocation.getParam('features');
+  if (goog.isDef(encodedFeatures)) {
+    var features = this.fhFormat_.readFeatures(encodedFeatures);
+    goog.asserts.assert(!goog.isNull(features));
+    this.features.extend(features);
+  }
 };
 
 
@@ -141,7 +165,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction) {
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
-  event.feature.set('name', 'element ' + (++this.featureSeq_));
+  var feature = event.feature;
+  feature.set('name', 'element ' + (++this.featureSeq_));
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
@@ -149,6 +174,16 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       event.target.setActive(false);
     });
   }, this), 0);
+
+  // Encode the features in the URL.
+  // warning: the drawn feature is not yet in the collection when the
+  // "drawend" event is triggered. So we create a new array and append
+  // the drawn feature to that array.
+  var features = this.features.getArray().slice();
+  features.push(feature);
+  this.ngeoLocation_.updateParams({
+    'features': this.fhFormat_.writeFeatures(features)
+  });
 };
 
 app.module.controller('AppDrawController', app.DrawController);
