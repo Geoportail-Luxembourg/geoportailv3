@@ -28,7 +28,9 @@ goog.require('ngeo.searchDirective');
 
 
 /**
- * @typedef {{bgLayer: ol.layer.Layer, translatedName: string}}
+ * @typedef {{
+ *  dataset: string,
+ *  result: {bgLayer: ol.layer.Layer, translatedName: string}}}
  */
 app.BackgroundLayerSuggestion;
 
@@ -286,12 +288,13 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     source: goog.bind(function(query, syncResults) {
       return syncResults(this.matchCoordinate_(query));
     }, this),
-    displayKey: function(suggestion) {
-      var feature = /** @type {ol.Feature} */ (suggestion);
+    display: function(suggestion) {
+      var feature = /** @type {ol.Feature} */ (suggestion['result']);
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */ ({
-      suggestion: goog.bind(function(feature) {
+      suggestion: goog.bind(function(suggestion) {
+        var feature = suggestion['result'];
         var scope = $scope.$new(true);
         scope['object'] = feature;
         scope['click'] = function(event) {
@@ -310,14 +313,14 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      * @return {Object}
      */
     source: goog.bind(function(query, syncResults) {
-      return syncResults(this.matchLayers_(layerFuseEngine, query));
+      return syncResults(this.matchLayers_(layerFuseEngine, query, 'layers'));
     }, this),
     /**
      * @param {Object} suggestion
      * @return {string}
      */
-    displayKey: function(suggestion) {
-      return suggestion['translatedName'];
+    display: function(suggestion) {
+      return suggestion['result']['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -327,10 +330,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       },
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
-        scope['object'] = suggestion;
-        var html = '<p>' + suggestion['translatedName'];
+        scope['object'] = suggestion['result'];
+        var html = '<p>' + suggestion['result']['translatedName'];
         scope['click'] = goog.bind(function(event) {
-          this.showLayerinfo_(this.getLayerFunc_(suggestion));
+          this.showLayerinfo_(this.getLayerFunc_(suggestion['result']));
           event.stopPropagation();
         }, this);
         html += '<button ng-click="click($event)">i</button>';
@@ -346,14 +349,15 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      * @return {Object}
      */
     source: goog.bind(function(query, syncResults) {
-      return syncResults(this.matchLayers_(backgroundLayerEngine, query));
+      return syncResults(this.matchLayers_(backgroundLayerEngine, query,
+          'backgroundLayers'));
     }, this),
     /**
      * @param {app.BackgroundLayerSuggestion} suggestion
      * @return {string}
      */
-    displayKey: function(suggestion) {
-      return suggestion['translatedName'];
+    display: function(suggestion) {
+      return suggestion['result']['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -367,8 +371,8 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
           */
           function(suggestion) {
             var scope = $scope.$new(true);
-            scope['object'] = suggestion;
-            var html = '<p>' + suggestion['translatedName'];
+            scope['object'] = suggestion['result'];
+            var html = '<p>' + suggestion['result']['translatedName'];
             html += ' (' + gettextCatalog.getString('Background') + ') ';
             html += '</p>';
             return $compile(html)(scope);
@@ -377,7 +381,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   },{
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
-    displayKey: function(suggestion) {
+    // Use a large number for "limit" here. This is to work around a bug
+    // in typeahead.js: https://github.com/twitter/typeahead.js/pull/1319
+    limit: 50,
+    display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       return feature.get('label');
     },
@@ -423,11 +430,12 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 /**
  * @param {Fuse} fuseEngine
  * @param {string} searchString
- * @return {Array.<string>}
+ * @param {string} dataset
+ * @return {Array.<Object<string, Object>>}
  * @private
  */
 app.SearchDirectiveController.prototype.matchLayers_ =
-    function(fuseEngine, searchString) {
+    function(fuseEngine, searchString, dataset) {
   var fuseResults = /** @type {Array.<FuseResult>} */
       (fuseEngine.search(searchString).slice(0, 5));
   return goog.array.map(fuseResults,
@@ -435,14 +443,14 @@ app.SearchDirectiveController.prototype.matchLayers_ =
        * @param {FuseResult} r
        */
       function(r) {
-        return r.item;
+        return {'dataset': dataset, 'result': r.item};
       });
 };
 
 
 /**
  * @param {string} searchString
- * @return {Array<ol.Feature>}
+ * @return {Array<string, ol.Feature>}
  * @private
  */
 app.SearchDirectiveController.prototype.matchCoordinate_ =
@@ -509,11 +517,12 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
             resultPoint.getCoordinates(), mapEpsgCode, epsgCode);
         feature.set('label', resultString);
         feature.set('epsgLabel', re[epsgCode].label);
-        results.push(feature);
+        results.push({'dataset': 'coordinates', 'result': feature});
       }
     }
   }
-  return results; //return empty array if no match
+  //return empty array if no match
+  return results;
 };
 
 
@@ -547,15 +556,14 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
         var suggestions = goog.array.map(bgLayers,
             /**
            * @param {ol.layer.Layer} bgLayer
-           * @return {app.BackgroundLayerSuggestion}
+           * @return {Object}
            */
             function(bgLayer) {
               return {
                 'bgLayer': bgLayer,
                 'translatedName': gettextCatalog.getString(
                     /** @type {string} */ (bgLayer.get('label')))
-              };
-            }
+              };}
             );
         fuse.set(suggestions);
       }, this)
@@ -656,17 +664,23 @@ app.SearchDirectiveController.getAllChildren_ =
 
 
 /**
- * @param {jQuery.Event} event
- * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
- * @param {string} dataset Typeahead dataset ID.
+ * @param {jQuery.Event} event Event.
+ * @param {Object} suggestion Suggestion.
  * @this {app.SearchDirectiveController}
  * @private
  */
 app.SearchDirectiveController.selected_ =
-    function(event, suggestion, dataset) {
+    function(event, suggestion) {
+  var dataset = suggestion['dataset'];
+  var result = suggestion['result'];
+  if (!goog.isDefAndNotNull(suggestion['dataset'])) {
+    dataset = 'pois';
+    result = suggestion;
+  }
+
   var map = /** @type {ol.Map} */ (this['map']);
   if (dataset === 'pois' || dataset === 'coordinates') { //POIs
-    var feature = /** @type {ol.Feature} */ (suggestion);
+    var feature = /** @type {ol.Feature} */ (result);
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
         (feature.getGeometry());
     var mapSize = /** @type {ol.Size} */ (map.getSize());
@@ -676,12 +690,12 @@ app.SearchDirectiveController.selected_ =
     var features = [];
     if (dataset === 'coordinates') {
       features.push(feature);
-    } else if (dataset === 'pois') {
+    } else {
       if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
         features.push(feature);
       }
       var layers = /** @type {Array<string>} */
-          (this.layerLookup_[suggestion.get('layer_name')] || []);
+          (this.layerLookup_[result.get('layer_name')] || []);
       goog.array.forEach(layers, goog.bind(function(layer) {
         this.addLayerToMap_(/** @type {string} */ (layer));
       }, this));
@@ -690,10 +704,10 @@ app.SearchDirectiveController.selected_ =
       this.featureOverlay_.addFeature(features[i]);
     }
   } else if (dataset === 'layers') { //Layer
-    this.addLayerToMap_(/** @type {Object} */ (suggestion));
+    this.addLayerToMap_(/** @type {Object} */ (result));
   } else if (dataset === 'backgroundLayers') { //BackgroundLayer
     this.setBackgroundLayer_(
-        /** @type {app.BackgroundLayerSuggestion} */ (suggestion));
+        /** @type {app.BackgroundLayerSuggestion} */ (result));
   }
 };
 
