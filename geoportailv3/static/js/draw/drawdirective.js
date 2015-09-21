@@ -16,6 +16,7 @@ goog.provide('app.DrawController');
 goog.provide('app.drawDirective');
 
 goog.require('app');
+goog.require('ngeo.DecorateInteraction');
 goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
