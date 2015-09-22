@@ -529,7 +529,7 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
     function(appCreateGeoJSONBloodhound, searchServiceUrl) {
   var url = searchServiceUrl + '?limit=5&query=%QUERY';
   var bloodhound = appCreateGeoJSONBloodhound(
-      url, undefined, ol.proj.get('EPSG:3857'));
+      url, ol.proj.get('EPSG:3857'));
   bloodhound.initialize();
   return bloodhound;
 };
