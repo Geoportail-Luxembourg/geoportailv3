@@ -195,125 +195,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     this.features.extend(features);
   }
 
-  /**
-   * @param {number} resolution The map resolution.
-   * @this {ol.Feature}
-   * @return {Array<ol.style.Style>}
-   * @private
-   */
-  this.styleFunction_ = function(resolution) {
-    var styles = [];
-
-    if (this.get('__editable__') && this.get('__selected__')) {
-      // The vertex style display a black and white circle on the existing
-      // vertices, and also when the user can add a new vertices.
-      styles.push(new ol.style.Style({
-        image: new ol.style.RegularShape(
-            /** @type {olx.style.RegularShapeOptions} */ ({
-              radius: 6,
-              points: 4,
-              angle: Math.PI / 4,
-              fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.5)'
-              }),
-              stroke: new ol.style.Stroke({
-                color: 'rgba(0, 0, 0, 1)'
-              })
-            })
-        ),
-        geometry: function(feature) {
-          var geom = feature.getGeometry();
-          var coordinates;
-          if (geom instanceof ol.geom.LineString) {
-            coordinates = feature.getGeometry().getCoordinates();
-            return new ol.geom.MultiPoint(coordinates);
-          } else if (geom instanceof ol.geom.Polygon) {
-            coordinates = feature.getGeometry().getCoordinates()[0];
-            return new ol.geom.MultiPoint(coordinates);
-          } else {
-            return feature.getGeometry();
-          }
-        }
-      }));
-    }
-
-    // goog.asserts.assert(goog.isDef(this.get('__style__'));
-    var style = this.get('__style__');
-    var color = style['color'];
-    var rgb = goog.color.hexToRgb(color);
-    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        style['opacity']);
-    var fill = new ol.style.Fill({
-      color: fillColor
-    });
-
-    var lineDash;
-    if (style['lineDash']) {
-      switch (style['lineDash']) {
-        case 'dashed':
-          lineDash = [10, 10];
-          break;
-        case 'dotted':
-          lineDash = [1, 6];
-          break;
-      }
-    }
-
-    var stroke;
-
-    if (style['size'] > 0) {
-      stroke = new ol.style.Stroke({
-        color: color,
-        width: style['size'],
-        lineDash: lineDash
-      });
-    }
-    var imageOptions = {
-      fill: fill,
-      stroke: new ol.style.Stroke({
-        color: color,
-        width: style['size'] / 7
-      }),
-      radius: style['size']
-    };
-    var image = new ol.style.Circle(imageOptions);
-    if (style['shape'] && style['shape'] != 'circle') {
-      goog.object.extend(imageOptions, ({
-        points: 4,
-        angle: Math.PI / 4,
-        rotation: style['rotation']
-      }));
-      image = new ol.style.RegularShape(
-          /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
-    }
-
-    if (style['text']) {
-      styles = [new ol.style.Style({
-        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
-          text: this.get('name'),
-          font: style['size'] + 'px Sans-serif',
-          rotation: style['rotation'],
-          fill: new ol.style.Fill({
-            color: color
-          }),
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 2
-          })
-        }))
-      })];
-    } else {
-      styles.push(new ol.style.Style({
-        image: image,
-        fill: fill,
-        stroke: stroke
-      }));
-    }
-
-    return styles;
-  };
-
-
   var selectInteraction = new ol.interaction.Select({
     features: this.selectedFeatures,
     filter: goog.bind(function(feature, layer) {
@@ -396,7 +277,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     rotation: 0,
     lineDash: 'plain'
   });
-  feature.setStyle(this.styleFunction_);
+  feature.setStyle(app.DrawController.createStyleFunction_());
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
@@ -414,6 +295,128 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.ngeoLocation_.updateParams({
     'features': this.fhFormat_.writeFeatures(features)
   });
+};
+
+
+/**
+ * @return {ol.FeatureStyleFunction}
+ * @private
+ */
+app.DrawController.createStyleFunction_ = function() {
+
+  var styles = [];
+
+  var vertexStyle = new ol.style.Style({
+    image: new ol.style.RegularShape({
+      radius: 6,
+      points: 4,
+      angle: Math.PI / 4,
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.5)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0, 0, 0, 1)'
+      })
+    }),
+    geometry: function(feature) {
+      var geom = feature.getGeometry();
+      var coordinates;
+      if (geom instanceof ol.geom.LineString) {
+        coordinates = feature.getGeometry().getCoordinates();
+        return new ol.geom.MultiPoint(coordinates);
+      } else if (geom instanceof ol.geom.Polygon) {
+        coordinates = feature.getGeometry().getCoordinates()[0];
+        return new ol.geom.MultiPoint(coordinates);
+      } else {
+        return feature.getGeometry();
+      }
+    }
+  });
+
+  var fillStyle = new ol.style.Fill();
+
+  return function(resolution) {
+
+    // clear the styles
+    styles.length = 0;
+
+    if (this.get('__editable__') && this.get('__selected__')) {
+      styles.push(vertexStyle);
+    }
+
+    // goog.asserts.assert(goog.isDef(this.get('__style__'));
+    var style = this.get('__style__');
+    var color = style['color'];
+    var rgb = goog.color.hexToRgb(color);
+    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
+        style['opacity']);
+    fillStyle.setColor(fillColor);
+
+    var lineDash;
+    if (style['lineDash']) {
+      switch (style['lineDash']) {
+        case 'dashed':
+          lineDash = [10, 10];
+          break;
+        case 'dotted':
+          lineDash = [1, 6];
+          break;
+      }
+    }
+
+    var stroke;
+
+    if (style['size'] > 0) {
+      stroke = new ol.style.Stroke({
+        color: color,
+        width: style['size'],
+        lineDash: lineDash
+      });
+    }
+    var imageOptions = {
+      fill: fillStyle,
+      stroke: new ol.style.Stroke({
+        color: color,
+        width: style['size'] / 7
+      }),
+      radius: style['size']
+    };
+    var image = new ol.style.Circle(imageOptions);
+    if (style['shape'] && style['shape'] != 'circle') {
+      goog.object.extend(imageOptions, ({
+        points: 4,
+        angle: Math.PI / 4,
+        rotation: style['rotation']
+      }));
+      image = new ol.style.RegularShape(
+          /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+    }
+
+    if (style['text']) {
+      return [new ol.style.Style({
+        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
+          text: this.get('name'),
+          font: style['size'] + 'px Sans-serif',
+          rotation: style['rotation'],
+          fill: new ol.style.Fill({
+            color: color
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'white',
+            width: 2
+          })
+        }))
+      })];
+    } else {
+      styles.push(new ol.style.Style({
+        image: image,
+        fill: fillStyle,
+        stroke: stroke
+      }));
+    }
+
+    return styles;
+  };
 };
 
 app.module.controller('AppDrawController', app.DrawController);
