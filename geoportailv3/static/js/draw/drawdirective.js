@@ -245,8 +245,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
        */
       function(evt) {
         if (evt.selected.length > 0) {
-          this.featurePopup_.show(evt.selected[0],
-              evt.mapBrowserEvent.coordinate);
+          var feature = evt.selected[0];
+          this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
         } else {
           this.featurePopup_.hide();
         }
