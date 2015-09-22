@@ -52,7 +52,13 @@
 </div>
 <div ng-show="ctrl.editingStyle">
   <div class="feature-popup-body">
-    <a href class="close" ng-click="ctrl.close()">&times;</a>
-    editing style
+    <a href class="close" ng-click="ctrl.editingStyle = false">&times;</a>
+    <app-style-editing app-style-editing-feature="ctrl.feature">
+    </app-style-editing>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-primary" ng-click="ctrl.editingStyle = false" translate>
+      OK
+    </button>
   </div>
 </div>

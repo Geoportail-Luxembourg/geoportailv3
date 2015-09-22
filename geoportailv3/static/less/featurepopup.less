@@ -8,7 +8,7 @@
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
-  min-width: 280px;
+  min-width: 340px;
 
   &:after,
   &:before {
@@ -39,6 +39,14 @@
   .description {
     color: #777;
   }
+
+  button.selected {
+    color: red;
+  }
+
+  input[type="range"] {
+    width: 70px;
+  }
 }
 
 
@@ -46,4 +54,19 @@
 .feature-popup-body,
 .feature-popup-footer {
   clear: both;
+}
+
+.palette {
+  border-collapse: collapse;
+}
+.palette td {
+  height: 14px;
+  width: 14px;
+  cursor: pointer;
+}
+.palette td.selected {
+  background: transparent;
+  -webkit-box-shadow: 0 1px 4px #000,inset 0 0 3px #fff;
+  box-shadow: 0 1px 4px #000,inset 0 0 3px #fff;
+  position: relative;
 }

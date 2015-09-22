@@ -5,6 +5,7 @@
 goog.provide('app.FeaturePopup');
 
 goog.require('app.featurePopupDirective');
+goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('ol.Coordinate');
