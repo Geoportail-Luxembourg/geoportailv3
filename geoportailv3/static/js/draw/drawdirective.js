@@ -320,6 +320,11 @@ app.DrawController.createStyleFunction_ = function() {
     }),
     geometry: function(feature) {
       var geom = feature.getGeometry();
+
+      if (geom.getType() == ol.geom.GeometryType.POINT) {
+        return;
+      }
+
       var coordinates;
       if (geom instanceof ol.geom.LineString) {
         coordinates = feature.getGeometry().getCoordinates();
