@@ -5,6 +5,7 @@ import sys
 import traceback
 import urllib2
 import hashlib
+import unicodedata
 
 from urllib import urlencode
 from pyramid.view import view_config
@@ -398,6 +399,10 @@ class Getfeatureinfo(object):
 
         return features
 
+    def remove_accents(self, input_str):
+        nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
+        return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+
     def _get_external_data(self, url, bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None):
         # ArcGIS Server REST API:
@@ -518,10 +523,11 @@ class Getfeatureinfo(object):
                     alias = {}
                     for attribute in rawfeature['attributes']:
                         for field in fields:
+                            field_alias = self.remove_accents(field['alias'])
                             if (field['name'] == attribute and
-                                field['alias'] is not None and
-                                    len(field['alias']) > 0):
-                                alias[field['alias']] = field['name']
+                                field_alias is not None and
+                                    len(field_alias) > 0):
+                                alias[field_alias] = field['name']
                                 break
                     for key, value in alias.items():
                         rawfeature['attributes'][key] =\
