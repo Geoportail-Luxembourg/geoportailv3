@@ -79,13 +79,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   /**
    * @type {ol.Map}
-   *  @export
+   * @export
    */
   this.map;
 
   /**
    * @type {boolean}
-   *  @export
+   * @export
    */
   this.active;
 
