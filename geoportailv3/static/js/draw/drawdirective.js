@@ -130,7 +130,19 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @private
    */
   this.fhFormat_ = new ngeo.format.FeatureHash({
-    encodeStyles: false
+    encodeStyles: false,
+    properties: (
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @return {Object.<string, (string|number)>} Properties to encode.
+         */
+        function(feature) {
+          // Do not encode the __editable__ and __selected__ properties.
+          var properties = feature.getProperties();
+          delete properties['__editable__'];
+          delete properties['__selected__'];
+          return properties;
+        })
   });
 
   /**
