@@ -10,6 +10,9 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
+goog.require('app.DrawnFeatures');
+goog.require('app.FeaturePopup');
+goog.require('app.SelectedFeatures');
 goog.require('ngeo.modalDirective');
 
 
@@ -21,10 +24,7 @@ goog.require('ngeo.modalDirective');
 app.mymapsDirective = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
-    scope: {
-      'features': '=appMymapsFeatures',
-      'selectInteraction': '=appMymapsSelectinteraction'
-    },
+    scope: {},
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -41,17 +41,15 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @export
  * @ngInject
  */
-app.MymapsDirectiveController = function($scope, $compile, gettext) {
-
-  /**
-   * @type {ol.interaction.Select}
-   *  @export
-   */
-  this.selectInteraction;
+app.MymapsDirectiveController = function($scope, $compile, gettext,
+    appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
 
   /**
    * @type {string}
@@ -112,22 +110,28 @@ app.MymapsDirectiveController = function($scope, $compile, gettext) {
   this.newDescription = '';
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
-   * @export
-   */
-  this.features;
-
-  /**
    * @type {Array.<ol.Feature>}
    * @export
    */
-  this.featuresList = this.features.getArray();
+  this.featuresList = appDrawnFeatures.getArray();
 
   /**
-   * @type {Array.<ol.Feature>}
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
+
+  /**
+   * @type {Array.<ol.Feature>?}
    * @export
    */
-  this.selectedFeatures = this.selectInteraction.getFeatures().getArray();
+  this.selectedFeaturesList = this.selectedFeatures_.getArray();
+
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 };
 
 
@@ -204,8 +208,10 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
-  this.selectInteraction.getFeatures().clear();
-  this.selectInteraction.getFeatures().push(feature);
+  this.selectedFeatures_.clear();
+  this.selectedFeatures_.push(feature);
+
+  this.featurePopup_.show(feature);
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
