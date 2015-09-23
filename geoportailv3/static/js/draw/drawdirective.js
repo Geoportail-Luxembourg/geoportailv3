@@ -99,7 +99,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = appDrawnFeatures;
+  this.drawnFeatures_ = appDrawnFeatures;
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -132,7 +132,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.fhFormat_ = new ngeo.format.FeatureHash();
 
   var drawPoint = new ol.interaction.Draw({
-    features: this.features_,
+    features: this.drawnFeatures_,
     type: ol.geom.GeometryType.POINT
   });
 
@@ -152,7 +152,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawLine = new ol.interaction.Draw({
-    features: this.features_,
+    features: this.drawnFeatures_,
     type: ol.geom.GeometryType.LINE_STRING
   });
 
@@ -172,7 +172,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawPolygon = new ol.interaction.Draw({
-    features: this.features_,
+    features: this.drawnFeatures_,
     type: ol.geom.GeometryType.POLYGON
   });
 
@@ -213,13 +213,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   if (goog.isDef(encodedFeatures)) {
     var features = this.fhFormat_.readFeatures(encodedFeatures);
     goog.asserts.assert(!goog.isNull(features));
-    this.features_.extend(features);
+    this.drawnFeatures_.extend(features);
   }
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
     filter: goog.bind(function(feature, layer) {
-      return this.features_.getArray().indexOf(feature) != -1;
+      return this.drawnFeatures_.getArray().indexOf(feature) != -1;
     }, this)
   });
   this.map.addInteraction(selectInteraction);
@@ -317,7 +317,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   // warning: the drawn feature is not yet in the collection when the
   // "drawend" event is triggered. So we create a new array and append
   // the drawn feature to that array.
-  var features = this.features_.getArray().slice();
+  var features = this.drawnFeatures_.getArray().slice();
   features.push(feature);
   this.ngeoLocation_.updateParams({
     'features': this.fhFormat_.writeFeatures(features)
