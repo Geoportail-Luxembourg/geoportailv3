@@ -42,7 +42,8 @@ app.drawDirective = function(appDrawTemplateUrl) {
       'map': '=appDrawMap',
       'features': '=appDrawFeatures',
       'active': '=appDrawActive',
-      'selectedFeatures': '=appDrawSelectedfeatures'
+      'selectedFeatures': '=appDrawSelectedfeatures',
+      'queryActive': '=appDrawQueryactive'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -183,6 +184,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     if (newVal === false) {
       this.drawPoint.setActive(false);
       this.drawLine.setActive(false);
+      this.drawPolygon.setActive(false);
+      this['queryActive'] = true;
+    } else {
+      this['queryActive'] = false;
     }
   }, this));
 
