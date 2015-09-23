@@ -3,7 +3,9 @@ import codecs
 import sqlahelper
 import traceback
 import sys
+import unicodedata
 import urllib2
+
 from os import path
 from pyramid.paster import bootstrap
 from urllib import urlencode
@@ -51,6 +53,11 @@ def _get_external_data(url, bbox=None, layer=None):
     else:
         return dict((value, key)
                     for key, value in esricoll['fieldAliases'].iteritems())
+
+
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
 def remove_attributes(attributes, attributes_to_remove,
@@ -122,7 +129,7 @@ def main():  # pragma: nocover
                             "engine": result.engine,
                             "layer": result.layer,
                             "role": result.role,
-                            "name": attribute,
+                            "name": remove_accents(attribute),
                         }
                     )
     print("tooltips Pot file updated: %s" % destination)
