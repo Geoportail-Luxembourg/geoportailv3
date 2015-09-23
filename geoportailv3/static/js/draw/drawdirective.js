@@ -129,7 +129,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @type {ngeo.format.FeatureHash}
    * @private
    */
-  this.fhFormat_ = new ngeo.format.FeatureHash();
+  this.fhFormat_ = new ngeo.format.FeatureHash({
+    encodeStyles: false
+  });
 
   /**
    * @type {ol.FeatureStyleFunction}
