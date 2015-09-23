@@ -268,15 +268,14 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   feature.set('name', 'element ' + (++this.featureSeq_));
   feature.set('__editable__', true);
-  feature.set('__style__', {
-    color: '#ed1c24',
-    opacity: 0.2,
-    size: feature.getGeometry().getType() == ol.geom.GeometryType.POINT ?
-        10 : 1.25,
-    shape: 'circle',
-    rotation: 0,
-    lineDash: 'plain'
-  });
+  feature.set('color', '#ed1c24');
+  feature.set('opacity', 0.2);
+  feature.set('stroke', 1.25);
+  feature.set('size', 10);
+  feature.set('angle', 0);
+  feature.set('is_label', false);
+  feature.set('linestyle', 'plain');
+  feature.set('symbol_id', 'circle');
   feature.setStyle(app.DrawController.createStyleFunction_());
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
@@ -350,16 +349,15 @@ app.DrawController.createStyleFunction_ = function() {
     }
 
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
-    var style = this.get('__style__');
-    var color = style['color'];
+    var color = this.get('color');
     var rgb = goog.color.hexToRgb(color);
     var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        style['opacity']);
+        this.get('opacity'));
     fillStyle.setColor(fillColor);
 
     var lineDash;
-    if (style['lineDash']) {
-      switch (style['lineDash']) {
+    if (this.get('linestyle')) {
+      switch (this.get('linestyle')) {
         case 'dashed':
           lineDash = [10, 10];
           break;
@@ -371,10 +369,10 @@ app.DrawController.createStyleFunction_ = function() {
 
     var stroke;
 
-    if (style['size'] > 0) {
+    if (this.get('stroke') > 0) {
       stroke = new ol.style.Stroke({
         color: color,
-        width: style['size'],
+        width: this.get('stroke'),
         lineDash: lineDash
       });
     }
@@ -382,27 +380,27 @@ app.DrawController.createStyleFunction_ = function() {
       fill: fillStyle,
       stroke: new ol.style.Stroke({
         color: color,
-        width: style['size'] / 7
+        width: this.get('size') / 7
       }),
-      radius: style['size']
+      radius: this.get('size')
     };
     var image = new ol.style.Circle(imageOptions);
-    if (style['shape'] && style['shape'] != 'circle') {
+    if (this.get('symbol_id') && this.get('symbol_id') != 'circle') {
       goog.object.extend(imageOptions, ({
         points: 4,
         angle: Math.PI / 4,
-        rotation: style['rotation']
+        rotation: this.get('angle')
       }));
       image = new ol.style.RegularShape(
           /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
     }
 
-    if (style['text']) {
+    if (this.get('text')) {
       return [new ol.style.Style({
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
-          font: style['size'] + 'px Sans-serif',
-          rotation: style['rotation'],
+          font: this.get('size') + 'px Sans-serif',
+          rotation: this.get('angle'),
           fill: new ol.style.Fill({
             color: color
           }),

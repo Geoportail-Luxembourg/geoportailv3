@@ -80,7 +80,7 @@ app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
 /**
  */
 app.FeaturePopup.prototype.hide = function() {
-  this.scope_['feature'] = null;
+  delete this.scope_['feature'];
   this.overlay_.setPosition(undefined);
   this.features_.clear();
 };

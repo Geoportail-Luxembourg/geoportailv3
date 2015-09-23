@@ -54,28 +54,7 @@ app.StyleEditingController = function($scope) {
    * @type {string}
    * @export
    */
-  this.type;
-
-
-  /**
-   * @type {string}
-   * @export
-   */
-  this.color;
-
-
-  /**
-   * @type {number}
-   * @export
-   */
-  this.opacity;
-
-
-  /**
-   * @type {string}
-   * @export
-   */
-  this.shape;
+  this.type = '';
 
 
   /**
@@ -93,48 +72,39 @@ app.StyleEditingController = function($scope) {
   $scope.$watch(goog.bind(function() {
     return this.feature;
   }, this), goog.bind(function() {
-    if (!goog.isDefAndNotNull(this.feature)) {
+    if (!goog.isDef(this.feature)) {
       return;
     }
-    var style = this.feature.get('__style__');
     this.type = this.feature.getGeometry().getType().toLowerCase();
-    if (this.type == 'point' && style['text']) {
+    if (this.type == 'point' && this.feature.get('is_label')) {
       this.type = 'text';
     }
-    this.color = style['color'];
-    this.opacity = style['opacity'];
-    this.shape = style['shape'];
-    this.lineDash = style['lineDash'];
   }, this));
 };
 
 
 /**
- * @param {string} lineDash
+ * @param {string} lineStyle
  * @export
  */
-app.StyleEditingController.prototype.setLineDash = function(lineDash) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+app.StyleEditingController.prototype.setLineDash = function(lineStyle) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
-  style['lineDash'] = lineDash;
-  this.lineDash = lineDash;
+  this.feature.set('linestyle', lineStyle);
   this.feature.changed();
 };
 
 
 /**
- * @param {string} shape
+ * @param {string} symbol
  * @export
  */
-app.StyleEditingController.prototype.setShape = function(shape) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+app.StyleEditingController.prototype.setShape = function(symbol) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
-  style['shape'] = shape;
-  this.shape = shape;
+  this.feature.set('symbol_id', symbol);
   this.feature.changed();
 };
 
@@ -144,17 +114,35 @@ app.StyleEditingController.prototype.setShape = function(shape) {
  * @return {*}
  * @export
  */
-app.StyleEditingController.prototype.getSetSize = function(val) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+app.StyleEditingController.prototype.getSetStroke = function(val) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
   if (arguments.length) {
-    style['size'] = parseFloat(val);
+    this.feature.set('stroke', parseFloat(val));
     this.feature.changed();
     return;
   } else {
-    return style['size'];
+    return this.feature.get('stroke');
+  }
+};
+
+
+/**
+ * @param {number} val
+ * @return {*}
+ * @export
+ */
+app.StyleEditingController.prototype.getSetSize = function(val) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('size', parseFloat(val));
+    this.feature.changed();
+    return;
+  } else {
+    return this.feature.get('size');
   }
 };
 
@@ -165,16 +153,16 @@ app.StyleEditingController.prototype.getSetSize = function(val) {
  * @export
  */
 app.StyleEditingController.prototype.getSetRotation = function(val) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
   if (arguments.length) {
-    style['rotation'] = parseFloat(val) / 360 * Math.PI * 2;
+    this.feature.set('angle', parseFloat(val) / 360 * Math.PI * 2);
     this.feature.changed();
     return;
   } else {
-    return style['rotation'] * 360 / Math.PI / 2;
+    var angle = /** @type {number} */ (this.feature.get('angle'));
+    return angle * 360 / Math.PI / 2;
   }
 };
 
@@ -185,17 +173,16 @@ app.StyleEditingController.prototype.getSetRotation = function(val) {
  * @export
  */
 app.StyleEditingController.prototype.getSetOpacity = function(val) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
   if (arguments.length) {
-    this.opacity = 1 - (parseFloat(val) / 100);
-    style['opacity'] = this.opacity;
+    this.feature.set('opacity', 1 - (parseFloat(val) / 100));
     this.feature.changed();
     return;
   } else {
-    return (1 - this.opacity) * 100;
+    var opacity = /** @type {number} */ (this.feature.get('opacity'));
+    return (1 - opacity) * 100;
   }
 };
 
@@ -206,17 +193,16 @@ app.StyleEditingController.prototype.getSetOpacity = function(val) {
  * @export
  */
 app.StyleEditingController.prototype.setColor = function(val) {
-  if (!goog.isDefAndNotNull(this.feature)) {
+  if (!goog.isDef(this.feature)) {
     return;
   }
-  var style = this.feature.get('__style__');
   if (arguments.length) {
-    style['color'] = val;
+    this.feature.set('color', val);
     this.feature.changed();
-    this.color = val;
     return;
   } else {
-    return goog.color.parseRgb(style['color']);
+    var color = /** @type {string} */ (this.feature.get('color'));
+    return goog.color.parseRgb(color);
   }
 };
 
