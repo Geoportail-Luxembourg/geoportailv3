@@ -131,6 +131,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    */
   this.fhFormat_ = new ngeo.format.FeatureHash();
 
+  /**
+   * @type {ol.FeatureStyleFunction}
+   * @private
+   */
+  this.featureStyleFunction_ = app.DrawController.createStyleFunction_();
+
   var drawPoint = new ol.interaction.Draw({
     features: this.drawnFeatures_,
     type: ol.geom.GeometryType.POINT
@@ -304,7 +310,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('is_label', false);
   feature.set('linestyle', 'plain');
   feature.set('symbol_id', 'circle');
-  feature.setStyle(app.DrawController.createStyleFunction_());
+  feature.setStyle(this.featureStyleFunction_);
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
@@ -322,6 +328,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.ngeoLocation_.updateParams({
     'features': this.fhFormat_.writeFeatures(features)
   });
+
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
