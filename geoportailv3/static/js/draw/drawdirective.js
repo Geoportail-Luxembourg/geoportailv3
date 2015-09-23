@@ -101,10 +101,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.features_ = appDrawnFeatures;
 
   /**
-   * @type {ol.interaction.Select}
-   *  @export
+   * @type {ol.Collection<ol.Feature>}
+   * @private
    */
-  this.selectInteraction;
+  this.selectedFeatures_ = appSelectedFeatures;
 
   /**
    * @type {app.FeaturePopup}
@@ -144,6 +144,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   drawPoint.setActive(false);
   ngeoDecorateInteraction(drawPoint);
   this.map.addInteraction(drawPoint);
+  goog.events.listen(drawPoint, ol.Object.getChangeEventType(
+      ol.interaction.InteractionProperty.ACTIVE),
+      this.onChangeActive_, false, this);
   goog.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
@@ -161,6 +164,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   drawLine.setActive(false);
   ngeoDecorateInteraction(drawLine);
   this.map.addInteraction(drawLine);
+  goog.events.listen(drawLine, ol.Object.getChangeEventType(
+      ol.interaction.InteractionProperty.ACTIVE),
+      this.onChangeActive_, false, this);
   goog.events.listen(drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
@@ -178,6 +184,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   drawPolygon.setActive(false);
   ngeoDecorateInteraction(drawPolygon);
   this.map.addInteraction(drawPolygon);
+  goog.events.listen(drawPolygon, ol.Object.getChangeEventType(
+      ol.interaction.InteractionProperty.ACTIVE),
+      this.onChangeActive_, false, this);
   goog.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
@@ -216,9 +225,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   /**
    * @type {ol.interaction.Select}
-   * @export
+   * @private
    */
-  this.selectInteraction = selectInteraction;
+  this.selectInteraction_ = selectInteraction;
 
   appFeaturePopup.init(this.map, selectInteraction.getFeatures());
 
@@ -242,7 +251,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         feature.set('__selected__', false);
       });
 
-  goog.events.listen(this.selectInteraction,
+  goog.events.listen(selectInteraction,
       ol.interaction.SelectEventType.SELECT,
       /**
        * @param {ol.interaction.SelectEvent} evt
@@ -264,6 +273,17 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(appDrawnFeatures);
+};
+
+
+/**
+ * @param {ol.ObjectEvent} event
+ * @private
+ */
+app.DrawController.prototype.onChangeActive_ = function(event) {
+  var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
+      this.drawPolygon.getActive();
+  this.selectInteraction_.setActive(!active);
 };
 
 
@@ -301,6 +321,9 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.ngeoLocation_.updateParams({
     'features': this.fhFormat_.writeFeatures(features)
   });
+  this.selectedFeatures_.clear();
+  this.selectedFeatures_.push(feature);
+  this.featurePopup_.show(feature);
 };
 
 
