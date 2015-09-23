@@ -3,22 +3,13 @@ goog.provide('app.styleEditingDirective');
 
 goog.require('app');
 goog.require('goog.color.alpha');
-goog.require('ngeo.mapDirective');
 goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Text');
 
 
 /**
  * @param {string} appStyleEditingTemplateUrl Url to style editing partial.
  * @return {angular.Directive} Directive Definition Object.
+ * @ngInject
  */
 app.styleEditingDirective = function(appStyleEditingTemplateUrl) {
   return {
@@ -40,6 +31,7 @@ app.module.directive('appStyleEditing', app.styleEditingDirective);
 /**
  * @param {angular.Scope} $scope The scope.
  * @constructor
+ * @ngInject
  */
 app.StyleEditingController = function($scope) {
 
