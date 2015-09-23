@@ -435,7 +435,7 @@ class Getfeatureinfo(object):
                 'geometry': '',
                 'geometryType': '',
                 'inSR': '2169',
-                'outSR': '',
+                'outSR': '2169',
                 'returnGeometry': 'true',
                 'spatialRel': '',
                 'text': '',
