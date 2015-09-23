@@ -142,9 +142,8 @@ class Feature(Base):
         self.font_size = font_size if font_size is not None and\
             unicode(font_size).isnumeric() else 15
         symbol_id = feature.properties.get('symbol_id')
-        self.symbol_id = None if feature.properties.get('symbol_id')\
-            is not None and\
-            len(unicode(feature.properties.get('symbol_id'))) == 0\
+        self.symbol_id = None if symbol_id is not None and\
+            len(unicode(symbol_id)) == 0\
             else symbol_id
 
         if hasattr(feature.geometry, "__geo_interface__"):
@@ -200,10 +199,10 @@ class Feature(Base):
                           showOrientation=self.show_orientation,
                           linestyle=self.linestyle,
                           id=self.id,
-                          symbol_id=self.symbol_id,
+                          symbolId=self.symbol_id,
                           angle=self.angle,
                           size=self.size,
-                          font_size=self.font_size
+                          fontSize=self.font_size
                           )
         return geojson.Feature(id=self.id,
                                geometry=geometry,
