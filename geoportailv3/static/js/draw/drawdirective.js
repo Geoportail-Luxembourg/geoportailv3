@@ -227,15 +227,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     }
   }, this));
 
-  // Decode the features encoded in the URL and add them to the collection
-  // of drawn features.
-  var encodedFeatures = ngeoLocation.getParam('features');
-  if (goog.isDef(encodedFeatures)) {
-    var features = this.fhFormat_.readFeatures(encodedFeatures);
-    goog.asserts.assert(!goog.isNull(features));
-    this.drawnFeatures_.extend(features);
-  }
-
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
     filter: goog.bind(function(feature, layer) {
@@ -294,6 +285,38 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(appDrawnFeatures);
+
+  this.drawFeaturesInUrl_();
+};
+
+
+/**
+ * Decode the features encoded in the URL and add them to the collection
+ * of drawn features.
+ * @private
+ */
+app.DrawController.prototype.drawFeaturesInUrl_ = function() {
+  var encodedFeatures = this.ngeoLocation_.getParam('features');
+  if (goog.isDef(encodedFeatures)) {
+    var features = this.fhFormat_.readFeatures(encodedFeatures);
+    goog.asserts.assert(!goog.isNull(features));
+    for (var i = 0; i < features.length; ++i) {
+      var feature = features[i];
+      var opacity = /** @type {string} */ (feature.get('opacity'));
+      feature.set('opacity', +opacity);
+      var stroke = /** @type {string} */ (feature.get('stroke'));
+      feature.set('stroke', +stroke);
+      var size = /** @type {string} */ (feature.get('size'));
+      feature.set('size', +size);
+      var angle = /** @type {string} */ (feature.get('angle'));
+      feature.set('angle', +angle);
+      var isLabel = /** @type {string} */ (feature.get('is_label'));
+      feature.set('is_label', isLabel === 'true');
+      feature.set('__editable__', true);
+      feature.setStyle(this.featureStyleFunction_);
+    }
+    this.drawnFeatures_.extend(features);
+  }
 };
 
 
