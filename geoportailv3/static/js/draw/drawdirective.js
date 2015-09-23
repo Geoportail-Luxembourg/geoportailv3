@@ -5,6 +5,7 @@
  * Example:
  *
  * <app-draw app-draw-map="::mainCtrl.map"
+ *           app-draw-queryactive="mainCtrl.queryActive"
  *           app-draw-active="mainCtrl.drawOpen"></app-draw>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
