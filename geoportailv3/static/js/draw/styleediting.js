@@ -113,7 +113,6 @@ app.StyleEditingController.prototype.getSetStroke = function(val) {
   if (arguments.length) {
     this.feature.set('stroke', parseFloat(val));
     this.feature.changed();
-    return;
   } else {
     return this.feature.get('stroke');
   }
@@ -132,7 +131,6 @@ app.StyleEditingController.prototype.getSetSize = function(val) {
   if (arguments.length) {
     this.feature.set('size', parseFloat(val));
     this.feature.changed();
-    return;
   } else {
     return this.feature.get('size');
   }
@@ -151,7 +149,6 @@ app.StyleEditingController.prototype.getSetRotation = function(val) {
   if (arguments.length) {
     this.feature.set('angle', parseFloat(val) / 360 * Math.PI * 2);
     this.feature.changed();
-    return;
   } else {
     var angle = /** @type {number} */ (this.feature.get('angle'));
     return angle * 360 / Math.PI / 2;
@@ -171,7 +168,6 @@ app.StyleEditingController.prototype.getSetOpacity = function(val) {
   if (arguments.length) {
     this.feature.set('opacity', 1 - (parseFloat(val) / 100));
     this.feature.changed();
-    return;
   } else {
     var opacity = /** @type {number} */ (this.feature.get('opacity'));
     return (1 - opacity) * 100;
@@ -191,7 +187,6 @@ app.StyleEditingController.prototype.setColor = function(val) {
   if (arguments.length) {
     this.feature.set('color', val);
     this.feature.changed();
-    return;
   } else {
     var color = /** @type {string} */ (this.feature.get('color'));
     return goog.color.parseRgb(color);
