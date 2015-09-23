@@ -17,6 +17,8 @@ app.DrawnFeatures;
 
 /**
  * The selected features collection.
+ * @type {app.DrawnFeatures}
+ * @const
  * @private
  */
 app.drawnFeatures_ = new ol.Collection();
