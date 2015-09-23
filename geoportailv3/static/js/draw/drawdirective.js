@@ -79,13 +79,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   /**
    * @type {ol.Map}
-   *  @export
+   * @export
    */
   this.map;
 
   /**
    * @type {boolean}
-   *  @export
+   * @export
    */
   this.active;
 
@@ -129,7 +129,27 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @type {ngeo.format.FeatureHash}
    * @private
    */
-  this.fhFormat_ = new ngeo.format.FeatureHash();
+  this.fhFormat_ = new ngeo.format.FeatureHash({
+    encodeStyles: false,
+    properties: (
+        /**
+         * @param {ol.Feature} feature Feature.
+         * @return {Object.<string, (string|number)>} Properties to encode.
+         */
+        function(feature) {
+          // Do not encode the __editable__ and __selected__ properties.
+          var properties = feature.getProperties();
+          delete properties['__editable__'];
+          delete properties['__selected__'];
+          return properties;
+        })
+  });
+
+  /**
+   * @type {ol.FeatureStyleFunction}
+   * @private
+   */
+  this.featureStyleFunction_ = app.DrawController.createStyleFunction_();
 
   var drawPoint = new ol.interaction.Draw({
     features: this.drawnFeatures_,
@@ -207,14 +227,27 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     }
   }, this));
 
-  // Decode the features encoded in the URL and add them to the collection
-  // of drawn features.
-  var encodedFeatures = ngeoLocation.getParam('features');
-  if (goog.isDef(encodedFeatures)) {
-    var features = this.fhFormat_.readFeatures(encodedFeatures);
-    goog.asserts.assert(!goog.isNull(features));
-    this.drawnFeatures_.extend(features);
-  }
+  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        goog.events.listen(feature, goog.events.EventType.CHANGE,
+            this.onFeatureChange_, undefined, this);
+      }, undefined, this);
+
+  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        goog.events.unlisten(feature, goog.events.EventType.CHANGE,
+            this.onFeatureChange_, undefined, this);
+      }, undefined, this);
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
@@ -274,6 +307,38 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(appDrawnFeatures);
+
+  this.drawFeaturesInUrl_();
+};
+
+
+/**
+ * Decode the features encoded in the URL and add them to the collection
+ * of drawn features.
+ * @private
+ */
+app.DrawController.prototype.drawFeaturesInUrl_ = function() {
+  var encodedFeatures = this.ngeoLocation_.getParam('features');
+  if (goog.isDef(encodedFeatures)) {
+    var features = this.fhFormat_.readFeatures(encodedFeatures);
+    goog.asserts.assert(!goog.isNull(features));
+    for (var i = 0; i < features.length; ++i) {
+      var feature = features[i];
+      var opacity = /** @type {string} */ (feature.get('opacity'));
+      feature.set('opacity', +opacity);
+      var stroke = /** @type {string} */ (feature.get('stroke'));
+      feature.set('stroke', +stroke);
+      var size = /** @type {string} */ (feature.get('size'));
+      feature.set('size', +size);
+      var angle = /** @type {string} */ (feature.get('angle'));
+      feature.set('angle', +angle);
+      var isLabel = /** @type {string} */ (feature.get('is_label'));
+      feature.set('is_label', isLabel === 'true');
+      feature.set('__editable__', true);
+      feature.setStyle(this.featureStyleFunction_);
+    }
+    this.drawnFeatures_.extend(features);
+  }
 };
 
 
@@ -304,7 +369,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('is_label', false);
   feature.set('linestyle', 'plain');
   feature.set('symbol_id', 'circle');
-  feature.setStyle(app.DrawController.createStyleFunction_());
+  feature.setStyle(this.featureStyleFunction_);
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
@@ -319,12 +384,34 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   // the drawn feature to that array.
   var features = this.drawnFeatures_.getArray().slice();
   features.push(feature);
-  this.ngeoLocation_.updateParams({
-    'features': this.fhFormat_.writeFeatures(features)
-  });
+  this.encodeFeaturesInUrl_(features);
+
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+app.DrawController.prototype.onFeatureChange_ = function(event) {
+  this.scope_.$applyAsync(goog.bind(function() {
+    var features = this.drawnFeatures_.getArray();
+    this.encodeFeaturesInUrl_(features);
+  }, this));
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Features to encode in the URL.
+ * @private
+ */
+app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
+  this.ngeoLocation_.updateParams({
+    'features': this.fhFormat_.writeFeatures(features)
+  });
 };
 
 
