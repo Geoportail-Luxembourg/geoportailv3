@@ -5,8 +5,7 @@
  * Example:
  *
  * <app-draw app-draw-map="::mainCtrl.map"
- *           app-draw-active="mainCtrl.drawOpen"
- *           app-draw-features="mainCtrl.drawnFeatures"></app-draw>
+ *           app-draw-active="mainCtrl.drawOpen"></app-draw>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
  * One-time binding is used because we know the map is not going to change
@@ -16,8 +15,12 @@ goog.provide('app.DrawController');
 goog.provide('app.drawDirective');
 
 goog.require('app');
+goog.require('app.DrawnFeatures');
+goog.require('app.FeaturePopup');
+goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
+goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Location');
 goog.require('ngeo.format.FeatureHash');
 goog.require('ol.CollectionEventType');
@@ -40,9 +43,7 @@ app.drawDirective = function(appDrawTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appDrawMap',
-      'features': '=appDrawFeatures',
       'active': '=appDrawActive',
-      'selectedFeatures': '=appDrawSelectedfeatures',
       'queryActive': '=appDrawQueryactive'
     },
     controller: 'AppDrawController',
@@ -62,13 +63,18 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {ngeo.Location} ngeoLocation Location service.
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
-    appFeaturePopup) {
+    ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
+    appSelectedFeatures) {
 
   /**
    * @type {ol.Map}
@@ -90,9 +96,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   /**
    * @type {ol.Collection.<ol.Feature>}
-   * @export
+   * @private
    */
-  this.features;
+  this.features_ = appDrawnFeatures;
 
   /**
    * @type {ol.interaction.Select}
@@ -125,7 +131,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.fhFormat_ = new ngeo.format.FeatureHash();
 
   var drawPoint = new ol.interaction.Draw({
-    features: this.features,
+    features: this.features_,
     type: ol.geom.GeometryType.POINT
   });
 
@@ -142,7 +148,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawLine = new ol.interaction.Draw({
-    features: this.features,
+    features: this.features_,
     type: ol.geom.GeometryType.LINE_STRING
   });
 
@@ -159,7 +165,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawPolygon = new ol.interaction.Draw({
-    features: this.features,
+    features: this.features_,
     type: ol.geom.GeometryType.POLYGON
   });
 
@@ -197,13 +203,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   if (goog.isDef(encodedFeatures)) {
     var features = this.fhFormat_.readFeatures(encodedFeatures);
     goog.asserts.assert(!goog.isNull(features));
-    this.features.extend(features);
+    this.features_.extend(features);
   }
 
   var selectInteraction = new ol.interaction.Select({
-    features: this.selectedFeatures,
+    features: appSelectedFeatures,
     filter: goog.bind(function(feature, layer) {
-      return this.features.getArray().indexOf(feature) != -1;
+      return this.features_.getArray().indexOf(feature) != -1;
     }, this)
   });
   this.map.addInteraction(selectInteraction);
@@ -216,14 +222,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
 
   appFeaturePopup.init(this.map, selectInteraction.getFeatures());
 
-  /**
-   * The selected features.
-   * @type {ol.Collection.<ol.Feature>}
-   * @export
-   */
-  this.selectedFeatures = selectInteraction.getFeatures();
-
-  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.ADD,
+  goog.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEvent} evt
        */
@@ -233,7 +232,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         feature.set('__selected__', true);
       });
 
-  goog.events.listen(this.selectedFeatures, ol.CollectionEventType.REMOVE,
+  goog.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.CollectionEvent} evt
        */
@@ -259,9 +258,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       }, true, this);
 
   var modifyInteraction = new ol.interaction.Modify({
-    features: this.selectedFeatures
+    features: appSelectedFeatures
   });
   this.map.addInteraction(modifyInteraction);
+
+  var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  drawOverlay.setFeatures(appDrawnFeatures);
 };
 
 
@@ -294,7 +296,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   // warning: the drawn feature is not yet in the collection when the
   // "drawend" event is triggered. So we create a new array and append
   // the drawn feature to that array.
-  var features = this.features.getArray().slice();
+  var features = this.features_.getArray().slice();
   features.push(feature);
   this.ngeoLocation_.updateParams({
     'features': this.fhFormat_.writeFeatures(features)

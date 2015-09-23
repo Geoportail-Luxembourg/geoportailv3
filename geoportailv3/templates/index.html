@@ -145,9 +145,7 @@
             ✕
           </button>
           <div class="col-xs-12">
-            <app-mymaps app-mymaps-selectedfeatures="::mainCtrl.selectedFeatures"
-              app-mymaps-features="::mainCtrl.drawnFeatures">
-            </app-mymaps>
+            <app-mymaps></app-mymaps>
           </div>
         </div>
 
@@ -210,8 +208,6 @@
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
-            app-draw-features="::mainCtrl.drawnFeatures"
-            app-draw-selectedfeatures="::mainCtrl.selectedFeatures"
             app-draw-queryactive="mainCtrl.queryActive">
           </app-draw>
         </li>

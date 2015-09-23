@@ -182,21 +182,6 @@ app.MainController = function(
   this.map_ = null;
 
   /**
-   * The list of features that were drawn (either using the drawing tools or by
-   * loading a mymap map).
-   * @type {ol.Collection.<ol.Feature>}
-   * @export
-   */
-  this.drawnFeatures = new ol.Collection();
-
-  /**
-   * The selected features.
-   * @type {ol.Collection.<ol.Feature>?}
-   * @export
-   */
-  this.selectedFeatures;
-
-  /**
    * The role id of the authenticated user, or `undefined` if the user
    * is anonymous, or if we don't yet kno if the user is authenticated.
    * @type {number|undefined}
@@ -228,9 +213,6 @@ app.MainController = function(
       $('app-themeswitcher #themes-content').collapse('hide');
     }
   }, this));
-
-  var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  drawOverlay.setFeatures(this.drawnFeatures);
 };
 
 

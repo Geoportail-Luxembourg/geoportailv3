@@ -10,6 +10,9 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
+goog.require('app.DrawnFeatures');
+goog.require('app.FeaturePopup');
+goog.require('app.SelectedFeatures');
 goog.require('ngeo.modalDirective');
 
 
@@ -21,10 +24,7 @@ goog.require('ngeo.modalDirective');
 app.mymapsDirective = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
-    scope: {
-      'features': '=appMymapsFeatures',
-      'selectedFeatures': '=appMymapsSelectedfeatures'
-    },
+    scope: {},
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -42,18 +42,14 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @export
  * @ngInject
  */
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appFeaturePopup) {
-
-  /**
-   * @type {ol.Collection<ol.Feature>}
-   *  @export
-   */
-  this.selectedFeatures;
+    appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
 
   /**
    * @type {string}
@@ -114,30 +110,22 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.newDescription = '';
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
-   * @export
-   */
-  this.features;
-
-  /**
    * @type {Array.<ol.Feature>}
    * @export
    */
-  this.featuresList = this.features.getArray();
+  this.featuresList = appDrawnFeatures.getArray();
+
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
 
   /**
    * @type {Array.<ol.Feature>?}
    * @export
    */
-  this.selectedFeaturesList;
-
-  $scope.$watch(goog.bind(function() {
-    return this.selectedFeatures;
-  }, this), goog.bind(function(newVal, oldVal) {
-    if (newVal != oldVal) {
-      this.selectedFeaturesList = newVal.getArray();
-    }
-  }, this));
+  this.selectedFeaturesList = this.selectedFeatures_.getArray();
 
   /**
    * @type {app.FeaturePopup}
@@ -220,8 +208,8 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
-  this.selectedFeatures.clear();
-  this.selectedFeatures.push(feature);
+  this.selectedFeatures_.clear();
+  this.selectedFeatures_.push(feature);
 
   this.featurePopup_.show(feature);
 };
