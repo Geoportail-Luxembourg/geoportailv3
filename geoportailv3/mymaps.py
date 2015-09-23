@@ -138,10 +138,10 @@ class Feature(Base):
         angle = feature.properties.get('angle')
         self.angle = angle if angle is not None and unicode(angle).isnumeric()\
             else 0
-        font_size = feature.properties.get('font_size')
+        font_size = feature.properties.get('fontSize')
         self.font_size = font_size if font_size is not None and\
             unicode(font_size).isnumeric() else 15
-        symbol_id = feature.properties.get('symbol_id')
+        symbol_id = feature.properties.get('symbolId')
         self.symbol_id = None if symbol_id is not None and\
             len(unicode(symbol_id)) == 0\
             else symbol_id
