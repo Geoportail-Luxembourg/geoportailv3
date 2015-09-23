@@ -227,6 +227,28 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     }
   }, this));
 
+  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.ADD,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        goog.events.listen(feature, goog.events.EventType.CHANGE,
+            this.onFeatureChange_, undefined, this);
+      }, undefined, this);
+
+  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.REMOVE,
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
+        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+        var feature = evt.element;
+        goog.events.unlisten(feature, goog.events.EventType.CHANGE,
+            this.onFeatureChange_, undefined, this);
+      }, undefined, this);
+
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
     filter: goog.bind(function(feature, layer) {
@@ -362,13 +384,34 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   // the drawn feature to that array.
   var features = this.drawnFeatures_.getArray().slice();
   features.push(feature);
-  this.ngeoLocation_.updateParams({
-    'features': this.fhFormat_.writeFeatures(features)
-  });
+  this.encodeFeaturesInUrl_(features);
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+app.DrawController.prototype.onFeatureChange_ = function(event) {
+  this.scope_.$applyAsync(goog.bind(function() {
+    var features = this.drawnFeatures_.getArray();
+    this.encodeFeaturesInUrl_(features);
+  }, this));
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features Features to encode in the URL.
+ * @private
+ */
+app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
+  this.ngeoLocation_.updateParams({
+    'features': this.fhFormat_.writeFeatures(features)
+  });
 };
 
 
