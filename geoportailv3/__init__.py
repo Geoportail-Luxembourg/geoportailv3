@@ -10,6 +10,7 @@ from geoportailv3.views.authentication import ldap_user_validator, \
     get_user_from_request
 from pyramid.renderers import JSON
 from decimal import Decimal
+from turbomail.control import interface
 
 from geoportailv3.adapters import datetime_adapter, decimal_adapter
 
@@ -42,6 +43,62 @@ def main(global_config, **settings):
     config.add_route(
         "lux_printproxy_report_cancel",
         "/printproxy/cancel/{ref}",
+        request_method="DELETE"
+    )
+    # mymaps routes
+    config.add_route(
+        "mymaps_getmaps",
+        "/mymaps/maps",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_features",
+        "/mymaps/features/{map_id}",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_map_info",
+        "/mymaps/map_info/{map_id}",
+        request_method="GET"
+    )
+
+    config.add_route(
+        "mymaps_create",
+        "/mymaps/create",
+        request_method="POST"
+    )
+    config.add_route(
+        "mymaps_rate",
+        "/mymaps/rate/{map_id}"
+    )
+    config.add_route(
+        "mymaps_update",
+        "/mymaps/update/{map_id}",
+        request_method="PUT"
+    )
+    config.add_route(
+        "mymaps_map",
+        "/mymaps/map/{map_id}",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_comment",
+        "/mymaps/comment/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
+        "mymaps_upload_image",
+        "/mymaps/upload_image",
+        request_method="POST"
+    )
+    config.add_route(
+        "mymaps_get_image",
+        "/mymaps/image/{filename}",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_delete",
+        "/mymaps/delete/{map_id}",
         request_method="DELETE"
     )
 
@@ -90,6 +147,10 @@ def main(global_config, **settings):
     json_renderer.add_adapter(datetime.datetime, datetime_adapter)
     json_renderer.add_adapter(Decimal, decimal_adapter)
     config.add_renderer('json', json_renderer)
+
+    mail_config = config.get_settings()['turbomail']
+    if mail_config:
+        interface.start(mail_config)
 
     # scan view decorator for adding routes
     config.scan()

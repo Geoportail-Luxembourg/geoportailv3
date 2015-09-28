@@ -18,6 +18,8 @@ DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 CONFIG_VARS += ldap
 CONFIG_VARS += sqlalchemy_engines
 CONFIG_VARS += proxy_wms_url
+CONFIG_VARS += turbomail
+
 APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js

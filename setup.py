@@ -21,7 +21,9 @@ setup(
         'pyramid_ldap',
         'qrcode==5.1',
         "weasyprint==0.23",
-        "PyPDF2==1.24"
+        "PyPDF2==1.24",
+        "turbomail",
+        "webtest"
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
