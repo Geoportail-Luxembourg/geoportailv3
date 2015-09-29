@@ -12,6 +12,7 @@ goog.provide('app.mymapsDirective');
 goog.require('app');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
+goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('ngeo.modalDirective');
 
@@ -41,6 +42,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
@@ -49,7 +51,13 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @ngInject
  */
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
+    appMymaps, appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {string}
@@ -71,6 +79,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @export
    */
   this.choosing = false;
+
+  /**
+   * List of Mymaps
+   * @type {app.MapsResponse}
+   * @export
+   */
+  this.maps = [];
 
   /**
    * The currently displayed map id.
@@ -162,6 +177,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  */
 app.MymapsDirectiveController.prototype.chooseMap = function() {
   this.choosing = true;
+  this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
+    this.maps = mymaps;
+  }, this));
 };
 
 
