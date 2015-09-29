@@ -247,12 +247,27 @@
   input[type=range]::-ms-thumb {
     background: @tertiary;
   }
-  
+
   .query-box{
     background-color: @tertiary;
     padding: 5px 5px 5px 5px;
   }
 
+  .mymaps {
+    .mymap-header,
+    .mymap-footer {
+      background-color: @primary;
+      color: white;
+    }
+    .features {
+      .feature {
+        &.selected {
+          background-color: @tertiary;
+          color: white;
+        }
+      }
+    }
+  }
 }
 
 .themes-list a {

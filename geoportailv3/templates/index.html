@@ -122,7 +122,7 @@
             </li>
           </ul>
           <div class="tab-content">
-            <div id="mylayers" class="tab-pane active">
+            <div id="mylayers" class="tab-pane active col-xs-12">
               <app-layermanager app-layermanager-map="::mainCtrl.map"
                 app-layermanager-layers="::mainCtrl.selectedLayers">
               </app-layermanager>
@@ -144,9 +144,7 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <div class="col-xs-12">
-            <app-mymaps></app-mymaps>
-          </div>
+          <app-mymaps></app-mymaps>
         </div>
 
         <!-- Infos -->
