@@ -16,86 +16,90 @@ msgstr ""
 "Generated-By: Lingua 3.8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geoportailv3/models.py:21
-msgid "Internal WMS layer"
-msgstr ""
-
-#: geoportailv3/models.py:22
-msgid "Internal WMS layers"
-msgstr ""
-
-#: geoportailv3/models.py:43
-msgid "External WMS layer"
-msgstr ""
-
-#: geoportailv3/models.py:44
-msgid "External WMS layers"
-msgstr ""
-
-#: geoportailv3/models.py:35
-msgid "Url"
+#: geoportailv3/models.py:25
+msgid "Allowed measurement for a user"
 msgstr ""
 
 #: geoportailv3/models.py:36
-msgid "Layers"
+msgid "Internal WMS layer"
 msgstr ""
 
 #: geoportailv3/models.py:37
+msgid "Internal WMS layers"
+msgstr ""
+
+#: geoportailv3/models.py:58
+msgid "External WMS layer"
+msgstr ""
+
+#: geoportailv3/models.py:59
+msgid "External WMS layers"
+msgstr ""
+
+#: geoportailv3/models.py:50
+msgid "Url"
+msgstr ""
+
+#: geoportailv3/models.py:51
+msgid "Layers"
+msgstr ""
+
+#: geoportailv3/models.py:52
 msgid "Is a POI"
 msgstr ""
 
-#: geoportailv3/models.py:38
+#: geoportailv3/models.py:53
 msgid "Collection ID"
 msgstr ""
 
-#: geoportailv3/models.py:39
+#: geoportailv3/models.py:54
 msgid "REST url"
 msgstr ""
 
-#: geoportailv3/models.py:57
+#: geoportailv3/models.py:72
 msgid "Category ID"
 msgstr ""
 
-#: geoportailv3/models.py:68
+#: geoportailv3/models.py:83
 msgid "Table name"
 msgstr ""
 
-#: geoportailv3/models.py:69
+#: geoportailv3/models.py:84
 msgid "URL Rest"
 msgstr ""
 
-#: geoportailv3/models.py:70
+#: geoportailv3/models.py:85
 msgid "Engine"
 msgstr ""
 
-#: geoportailv3/models.py:71
+#: geoportailv3/models.py:86
 msgid "Layer"
 msgstr ""
 
-#: geoportailv3/models.py:72
+#: geoportailv3/models.py:87
 msgid "Template file name"
 msgstr ""
 
-#: geoportailv3/models.py:74
+#: geoportailv3/models.py:89
 msgid "Is the template local or remote"
 msgstr ""
 
-#: geoportailv3/models.py:75
+#: geoportailv3/models.py:90
 msgid "Python function"
 msgstr ""
 
-#: geoportailv3/models.py:76
+#: geoportailv3/models.py:91
 msgid "Role"
 msgstr ""
 
-#: geoportailv3/models.py:77
+#: geoportailv3/models.py:92
 msgid "Attributes to keep"
 msgstr ""
 
-#: geoportailv3/models.py:78
+#: geoportailv3/models.py:93
 msgid "Id of the poi collection"
 msgstr ""
 
-#: geoportailv3/models.py:79
+#: geoportailv3/models.py:94
 msgid "Geometry column name"
 msgstr ""

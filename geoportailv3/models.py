@@ -6,7 +6,7 @@ import sqlahelper
 from pyramid.i18n import TranslationStringFactory
 
 from c2cgeoportal.models import *  # noqa
-from pyramid.security import Allow, ALL_PERMISSIONS
+from pyramid.security import Allow, ALL_PERMISSIONS, DENY_ALL
 from formalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy.types import Integer, Boolean, Unicode, String, DateTime
@@ -15,6 +15,10 @@ from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 Base = sqlahelper.get_base()
+
+
+LayerInternalWMS.__acl__ = [DENY_ALL]
+LayerExternalWMS.__acl__ = [DENY_ALL]
 
 
 class LuxMeasurementLoginCommune(Base):

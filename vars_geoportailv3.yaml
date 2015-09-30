@@ -104,4 +104,6 @@ interpreted:
         cmd: ["node", "-e"]
 
 update_paths:
+- checker
 - check_collector.hosts
+- admin_interface
