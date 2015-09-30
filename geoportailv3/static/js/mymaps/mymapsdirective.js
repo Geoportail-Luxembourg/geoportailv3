@@ -176,9 +176,11 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.chooseMap = function() {
-  this.choosing = true;
   this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-    this.maps = mymaps;
+    if (!goog.array.isEmpty(mymaps)) {
+      this.choosing = true;
+      this.maps = mymaps;
+    }
   }, this));
 };
 

@@ -46,12 +46,16 @@ app.Mymaps = function($http, mymapsUrl) {
 app.Mymaps.prototype.getMaps = function() {
   return this.$http_.get(this.mymapsUrl_).then(goog.bind(
       /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
-       */
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
       function(resp) {
         return resp.data;
-      }, this));
+      }, this), goog.bind(
+      function(error) {
+        return [];
+      }, this)
+  );
 };
 
 

@@ -81,8 +81,8 @@
   </div>
   <div class="modal-body">
     <ul>
-      <li>
-        <a href ng-click="ctrl.onChosen()">Une carte</a>
+      <li ng-repeat="map in ctrl.maps">
+      <a href ng-click="ctrl.onChosen()">{{ map.title }}</a>
       </li>
     </ul>
   </div>
