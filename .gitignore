@@ -4,7 +4,7 @@
 /apache/frontend.conf
 /apache/mapserver.conf
 /apache/wsgi.conf
-/apache/geoportailv3.wsgi
+/apache/application.wsgi
 /deploy/deploy.cfg
 /alembic.ini
 /alembic_static.ini
