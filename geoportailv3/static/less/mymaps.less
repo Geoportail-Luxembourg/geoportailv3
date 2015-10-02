@@ -1,6 +1,5 @@
 .mymaps {
   .mymap-header .title {
-    display: inline-block;
     width: auto;
     max-width: ~"calc(100% - 15px)";
     overflow: hidden;
@@ -18,9 +17,10 @@
   .features {
     .feature {
       cursor: pointer;
-      &.selected {
-        background-color: #dfdfdf;
-      }
     }
+  }
+  .navbar-nav > li > a {
+    padding: 3px;
+    background-color: transparent;
   }
 }

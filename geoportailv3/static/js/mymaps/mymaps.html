@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.mapId">
+<div ng-show="!ctrl.mapId" class="col-xs-12">
   <p translate>
     Create, save and share your own maps.
   </p>
@@ -11,16 +11,34 @@
 </div>
 
 <!-- Map displayed -->
-<div ng-show="ctrl.mapId">
-  <div class="mymap-header">
+<div ng-show="ctrl.mapId" class="clearfix">
+  <div class="mymap-header col-xs-12">
     <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
     <div class="title" ng-click="ctrl.modifyMap()">{{ctrl.mapTitle}}</div>
   </div>
-  <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.mapDescription">{{ctrl.mapDescription}}</p>
-  <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.mapDescription" translate><em>No description</em></p>
+  <div class="col-xs-12">
+    <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.mapDescription">{{ctrl.mapDescription}}</p>
+    <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.mapDescription" translate><em>No description</em></p>
+  </div>
+  <div class="mymap-footer col-xs-12">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href class="dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-caret-square-o-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href translate>Create copy</a></li>
+          <li><a href translate>Delete</a></li>
+          <li class="divider"></li>
+          <li ng-click="ctrl.createMap()"><a href translate>Create new map</a></li>
+          <li ng-click="ctrl.chooseMap()"><a href translate>Open an other map</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 </div>
 
-<div>
+<div class="col-xs-12">
   <ul class="features">
     <li ng-repeat="feature in ctrl.featuresList"
       class="feature"
