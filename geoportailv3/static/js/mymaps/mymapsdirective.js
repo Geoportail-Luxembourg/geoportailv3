@@ -190,6 +190,12 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.onChosen = function() {
+  this.appMymaps_.loadFeatures(
+      '5bdb79809cba46a98ebab6f1b13c9116').then(goog.bind(function(features) {
+    if (!goog.array.isEmpty(features)) {
+      console.log(features);
+    }
+  }, this));
   this.mapId = 'mymap-987654321';
   this.mapTitle = $(this.defaultTitle_).children().html().toString();
   this.choosing = false;

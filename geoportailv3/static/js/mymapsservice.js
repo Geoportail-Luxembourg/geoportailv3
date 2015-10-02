@@ -19,10 +19,11 @@ app.MapsResponse;
 /**
  * @constructor
  * @param {angular.$http} $http
- * @param {string} mymapsUrl URL to "mymaps" service.
+ * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
+ * @param {string} mymapsFeaturesUrl URL to "mymaps" Features service.
  * @ngInject
  */
-app.Mymaps = function($http, mymapsUrl) {
+app.Mymaps = function($http, mymapsMapsUrl, mymapsFeaturesUrl) {
 
   /**
    * @type {angular.$http}
@@ -34,7 +35,13 @@ app.Mymaps = function($http, mymapsUrl) {
    * @type {string}
    * @private
    */
-  this.mymapsUrl_ = mymapsUrl;
+  this.mymapsMapsUrl_ = mymapsMapsUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsFeaturesUrl_ = mymapsFeaturesUrl;
 
 };
 
@@ -44,7 +51,30 @@ app.Mymaps = function($http, mymapsUrl) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMaps = function() {
-  return this.$http_.get(this.mymapsUrl_).then(goog.bind(
+  return this.$http_.get(this.mymapsMapsUrl_).then(goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Load map features
+ * @param {string} mapId the mymaps Map Id.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.loadFeatures = function(mapId) {
+  return this.$http_.get(this.mymapsFeaturesUrl_, {
+    params: {'map_id': mapId}
+  }).then(goog.bind(
       /**
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.

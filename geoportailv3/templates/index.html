@@ -269,7 +269,8 @@
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
          appModule.constant('remoteProxyWms', false);
 % endif
-         appModule.constant('mymapsUrl', "${request.route_url('mymaps_getmaps')}")
+         appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
+         appModule.constant('mymapsFeaturesUrl', "${request.route_url('mymaps_features')}");
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
