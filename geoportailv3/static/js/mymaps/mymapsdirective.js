@@ -10,11 +10,14 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
+goog.require('app.DrawController');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
 goog.require('app.Mymaps');
+goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
 goog.require('ngeo.modalDirective');
+goog.require('ol.format.GeoJSON');
 
 
 /**
@@ -25,7 +28,11 @@ goog.require('ngeo.modalDirective');
 app.mymapsDirective = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
-    scope: {},
+    scope: {
+      'map': '=appMymapsMap',
+      'useropen': '=appMymapsUseropen',
+      'drawopen': '=appMymapsDrawopen'
+    },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -43,6 +50,8 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
  * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+ * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
@@ -50,8 +59,10 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @export
  * @ngInject
  */
+
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appMymaps, appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
+    appMymaps, gettextCatalog, appNotify, appFeaturePopup,
+    appDrawnFeatures, appSelectedFeatures) {
 
   /**
    * @type {app.Mymaps}
@@ -60,11 +71,16 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.appMymaps_ = appMymaps;
 
   /**
-   * @type {string}
+   * @type {angularGettext.Catalog}
    * @private
    */
-  this.defaultTitle_ = $compile('<div translate>' +
-      gettext('Map without title') + '</div>')($scope)[0];
+  this.gettextCatalog_ = gettextCatalog;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * Tells whether the 'modifying' modal window is open or not.
@@ -131,6 +147,12 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.featuresList = appDrawnFeatures.getArray();
 
   /**
+   * @type {ol.Collection.<ol.Feature>}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
+
+  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -147,6 +169,12 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @private
    */
   this.featurePopup_ = appFeaturePopup;
+
+  /**
+   * @type {ol.FeatureStyleFunction}
+   * @private
+   */
+  this.featureStyleFunction_ = app.DrawController.createStyleFunction();
 };
 
 
@@ -167,7 +195,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
-  this.onChosen();
+  //this.onChosen();
 };
 
 
@@ -177,7 +205,13 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  */
 app.MymapsDirectiveController.prototype.chooseMap = function() {
   this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-    if (!goog.array.isEmpty(mymaps)) {
+    if (mymaps === null) {
+      var msg = this.gettextCatalog_.getString(
+          'Veuillez vous identifier afin d\'accéder à vos cartes'
+          );
+      this.notify_(msg);
+      this['useropen'] = true;
+    } else if (!goog.array.isEmpty(mymaps)) {
       this.choosing = true;
       this.maps = mymaps;
     }
@@ -187,17 +221,37 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
 
 /**
  * Called when a map is choosen.
+ * @param {Object} map The selected map.
  * @export
  */
-app.MymapsDirectiveController.prototype.onChosen = function() {
-  this.appMymaps_.loadFeatures(
-      '5bdb79809cba46a98ebab6f1b13c9116').then(goog.bind(function(features) {
-    if (!goog.array.isEmpty(features)) {
-      console.log(features);
-    }
+app.MymapsDirectiveController.prototype.onChosen = function(map) {
+
+  this.appMymaps_.loadMapInformation(
+      map['uuid']).then(goog.bind(function(mapinformation) {
+    this.mapDescription = mapinformation['description'];
   }, this));
-  this.mapId = 'mymap-987654321';
-  this.mapTitle = $(this.defaultTitle_).children().html().toString();
+
+  this.appMymaps_.loadFeatures(
+      map['uuid']).then(goog.bind(function(features) {
+    var encOpt = /** @type {olx.format.ReadOptions} */ ({
+      dataProjection: 'EPSG:2169',
+      featureProjection: this['map'].getView().getProjection()
+    });
+    var jsonFeatures = ((new ol.format.GeoJSON()).
+        readFeatures(features, encOpt));
+    for (var i in jsonFeatures) {
+      jsonFeatures[i].set('__mymaps__', true);
+      jsonFeatures[i].set('__editable__', true);
+      jsonFeatures[i].setStyle(this.featureStyleFunction_);
+    }
+    this.drawnFeatures_.extend(/** @type {!Array<(null|ol.Feature)>} */
+        (jsonFeatures));
+    this['drawopen'] = true;
+  }, this));
+
+  this.mapId = map['uuid'];
+  //this.mapTitle = $(this.defaultTitle_).children().html().toString();
+  this.mapTitle = map['title'];
   this.choosing = false;
 };
 

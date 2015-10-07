@@ -141,6 +141,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
           var properties = feature.getProperties();
           delete properties['__editable__'];
           delete properties['__selected__'];
+          for (var key in properties) {
+            if (properties[key] === null) {
+              delete properties[key];
+            }
+          }
           return properties;
         })
   });
@@ -149,7 +154,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @type {ol.FeatureStyleFunction}
    * @private
    */
-  this.featureStyleFunction_ = app.DrawController.createStyleFunction_();
+  this.featureStyleFunction_ = app.DrawController.createStyleFunction();
 
   var drawPoint = new ol.interaction.Draw({
     features: this.drawnFeatures_,
@@ -417,9 +422,9 @@ app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
 
 /**
  * @return {ol.FeatureStyleFunction}
- * @private
+ * @export
  */
-app.DrawController.createStyleFunction_ = function() {
+app.DrawController.createStyleFunction = function() {
 
   var styles = [];
 
@@ -467,10 +472,11 @@ app.DrawController.createStyleFunction_ = function() {
     }
 
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
-    var color = this.get('color');
+    var color = this.get('color') ? this.get('color') : '#FF0000';
     var rgb = goog.color.hexToRgb(color);
+    var opacity = this.get('opacity');
     var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        this.get('opacity'));
+        opacity ? opacity : 1);
     fillStyle.setColor(fillColor);
 
     var lineDash;

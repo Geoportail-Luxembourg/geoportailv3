@@ -144,7 +144,9 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-mymaps></app-mymaps>
+          <app-mymaps app-mymaps-map="::mainCtrl.map" 
+                      app-mymaps-useropen="mainCtrl.userOpen"
+                      app-mymaps-drawopen="mainCtrl.drawOpen"></app-mymaps>
         </div>
 
         <!-- Infos -->
@@ -270,7 +272,7 @@
          appModule.constant('remoteProxyWms', false);
 % endif
          appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
-         appModule.constant('mymapsFeaturesUrl', "${request.route_url('mymaps_features')}");
+         appModule.constant('mymapsUrl', "${request.route_url('mymaps')}");
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");
