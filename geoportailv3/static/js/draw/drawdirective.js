@@ -448,9 +448,15 @@ app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
       featuresToEncode.push(features[i]);
     }
   }
-  this.ngeoLocation_.updateParams({
-    'features': this.fhFormat_.writeFeatures(featuresToEncode)
-  });
+
+  if (featuresToEncode.length > 0) {
+    this.ngeoLocation_.updateParams({
+      'features': this.fhFormat_.writeFeatures(featuresToEncode)
+    });
+  } else {
+    this.ngeoLocation_.deleteParam('features');
+  }
+
 };
 
 
