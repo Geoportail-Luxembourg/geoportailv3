@@ -240,7 +240,7 @@ app.MymapsDirectiveController.prototype.onChosen = function(map) {
     var jsonFeatures = ((new ol.format.GeoJSON()).
         readFeatures(features, encOpt));
     for (var i in jsonFeatures) {
-      jsonFeatures[i].set('__mymaps__', true);
+      jsonFeatures[i].set('__source__', 'mymaps');
       jsonFeatures[i].set('__editable__', true);
       jsonFeatures[i].setStyle(this.featureStyleFunction_);
     }

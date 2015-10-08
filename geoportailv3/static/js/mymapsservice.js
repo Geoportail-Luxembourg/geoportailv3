@@ -110,7 +110,6 @@ app.Mymaps.prototype.loadMapInformation = function(mapId) {
         return resp.data;
       }, this), goog.bind(
       function(error) {
-        console.log(error);
         return [];
       }, this)
   );

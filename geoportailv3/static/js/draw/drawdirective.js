@@ -414,8 +414,16 @@ app.DrawController.prototype.onFeatureChange_ = function(event) {
  * @private
  */
 app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
+  var featuresToEncode = [];
+  for (var i in features) {
+    var source = features[i].get('__source__');
+    if (!goog.isDefAndNotNull(source) ||
+        (goog.isDefAndNotNull(source) && source != 'mymaps')) {
+      featuresToEncode.push(features[i]);
+    }
+  }
   this.ngeoLocation_.updateParams({
-    'features': this.fhFormat_.writeFeatures(features)
+    'features': this.fhFormat_.writeFeatures(featuresToEncode)
   });
 };
 
