@@ -136,6 +136,39 @@ class Mymaps(object):
         except Exception:
             return {'success': False}
 
+    @view_config(route_name="mymaps_delete_feature", renderer='json')
+    def delete_feature(self):
+        id = self.request.matchdict.get("feature_id")
+        user = self.request.user
+        if user is None:
+            return HTTPUnauthorized()
+        feature = DBSession.query(Feature).get(id)
+        if feature is None:
+            return HTTPNotFound()
+
+        map = DBSession.query(Map).get(feature.map_id)
+        if map is None:
+            return HTTPNotFound()
+
+        if not self.has_permission(user, map):
+            return HTTPUnauthorized()
+
+        DBSession.delete(feature)
+        DBSession.commit()
+
+        return {'success': True}
+
+    def has_permission(self, user, map):
+        if map.user_login != user.username:
+            user = self.request.user
+            if user.uti_is_admin is False:
+                return False
+            user_role = DBSession.query(Role).get(user.uti_rmy_id)
+            if map.category is None or map.category.id not in\
+                    [cat.id for cat in user_role.categories]:
+                return False
+        return True
+
     @view_config(route_name="mymaps_delete", renderer='json')
     def delete(self):
         id = self.request.matchdict.get("map_id")
@@ -145,14 +178,9 @@ class Mymaps(object):
         map = DBSession.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
-        if map.user_login != user.username:
-            user = self.request.user
-            if user.uti_is_admin is False:
-                return HTTPUnauthorized()
-            user_role = DBSession.query(Role).get(user.uti_rmy_id)
-            if map.category is None or map.category.id not in\
-                    [cat.id for cat in user_role.categories]:
-                return HTTPUnauthorized()
+        if not self.has_permission(user, map):
+            return HTTPUnauthorized()
+
         # remove the features associated to the map
         features = DBSession.query(Feature).filter(
             Feature.map_id == map.uuid).all()

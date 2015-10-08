@@ -18,6 +18,7 @@ goog.provide('app.drawDirective');
 goog.require('app');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
+goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
@@ -69,13 +70,14 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures) {
+    appSelectedFeatures, appMymaps) {
 
   /**
    * @type {ol.Map}
@@ -124,6 +126,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {ngeo.format.FeatureHash}
@@ -250,6 +258,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
+        if (goog.isDefAndNotNull(feature.get('__source__')) &&
+            feature.get('__source__') == 'mymaps') {
+          this.appMymaps_.deleteFeature(feature);
+        }else {
+          this.onFeatureDelete_(evt);
+        }
         goog.events.unlisten(feature, goog.events.EventType.CHANGE,
             this.onFeatureChange_, undefined, this);
       }, undefined, this);
@@ -402,6 +416,18 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
  * @private
  */
 app.DrawController.prototype.onFeatureChange_ = function(event) {
+  this.scope_.$applyAsync(goog.bind(function() {
+    var features = this.drawnFeatures_.getArray();
+    this.encodeFeaturesInUrl_(features);
+  }, this));
+};
+
+
+/**
+ * @param {goog.events.Event} event Event.
+ * @private
+ */
+app.DrawController.prototype.onFeatureDelete_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var features = this.drawnFeatures_.getArray();
     this.encodeFeaturesInUrl_(features);

@@ -33,10 +33,12 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @constructor
  * @param {angular.Scope} $scope Scope.
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @export
  * @ngInject
  */
-app.FeaturePopupController = function($scope, appFeaturePopup) {
+app.FeaturePopupController = function($scope, appFeaturePopup,
+    appDrawnFeatures) {
 
   /**
    * @type {ol.Feature}
@@ -57,6 +59,12 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
   this.editingStyle = false;
 
   /**
+   * @type {boolean}
+   * @export
+   */
+  this.deletingFeature = false;
+
+  /**
    * @type {string}
    * @export
    */
@@ -67,6 +75,12 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
    * @export
    */
   this.tempDesc = '';
+
+  /**
+   * @type {ol.Collection.<ol.Feature>}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
 
   this.appFeaturePopup_ = appFeaturePopup;
 
@@ -83,6 +97,7 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
   }, this), goog.bind(function(newVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
+    this.deletingFeature = false;
   }, this));
 };
 
@@ -114,5 +129,15 @@ app.FeaturePopupController.prototype.validateModifications = function() {
   this.editingAttributes = false;
 };
 
+
+/**
+ * Puts the temporary edited name and description back to the feature.
+ * @export
+ */
+app.FeaturePopupController.prototype.deleteFeature = function() {
+  this.appFeaturePopup_.hide();
+  this.drawnFeatures_.remove(this.feature);
+  this.deletingFeature = false;
+};
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

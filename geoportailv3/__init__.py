@@ -107,6 +107,11 @@ def main(global_config, **settings):
         "/mymaps/delete/{map_id}",
         request_method="DELETE"
     )
+    config.add_route(
+        "mymaps_delete_feature",
+        "/mymaps/delete_feature/{feature_id}",
+        request_method="DELETE"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')

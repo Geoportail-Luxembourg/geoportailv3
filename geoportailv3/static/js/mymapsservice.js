@@ -48,6 +48,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
    * @private
    */
   this.mymapsMapInfoUrl_ = mymapsUrl + '/map/';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsMapDeleteFeatureUrl_ = mymapsUrl + '/delete_feature/';
 };
 
 
@@ -115,5 +121,26 @@ app.Mymaps.prototype.loadMapInformation = function(mapId) {
   );
 };
 
+
+/**
+ * Load map information
+ * @param {ol.Feature} feature the feature to delete.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.deleteFeature = function(feature) {
+  return this.$http_.delete(this.mymapsMapDeleteFeatureUrl_ +
+      feature.get('id')).then(goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        return [];
+      }, this)
+  );
+};
 
 app.module.service('appMymaps', app.Mymaps);
