@@ -74,6 +74,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
   this.mymapsUpdateMapUrl_ = mymapsUrl + '/update/';
 
   /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsSaveFeatureUrl_ = mymapsUrl + '/save_feature/';
+
+  /**
    * @type {?string}
    * @private
    */
@@ -86,6 +92,14 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId) {
   this.mapId_ = mapId;
+};
+
+
+/**
+ * @return {?string} mapId the map id.
+ */
+app.Mymaps.prototype.getCurrentMapId = function() {
+  return this.mapId_;
 };
 
 
@@ -240,6 +254,39 @@ app.Mymaps.prototype.updateMap = function(title, description) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Save the map
+ * @param {ol.Feature} feature the feature to save
+ * @param {?ol.proj.Projection} featureProjection
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.saveFeature = function(feature, featureProjection) {
+  var encOpt = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: featureProjection
+  });
+  var req = $.param({
+    'feature': (new ol.format.GeoJSON()).writeFeature(feature, encOpt)
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsSaveFeatureUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
          * @param {angular.$http.Response} resp Ajax response.

@@ -390,12 +390,19 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('symbol_id', 'circle');
   feature.setStyle(this.featureStyleFunction_);
 
+  var map_id = this.appMymaps_.getCurrentMapId();
+  if (goog.isDefAndNotNull(map_id)) {
+    feature.set('__source__', 'mymaps');
+    this.saveFeatureInMymaps_(feature);
+  }
+
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {
       event.target.setActive(false);
     });
   }, this), 0);
+
 
   // Encode the features in the URL.
   // warning: the drawn feature is not yet in the collection when the
@@ -418,6 +425,15 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 app.DrawController.prototype.onFeatureChange_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var features = this.drawnFeatures_.getArray();
+    var map_id = this.appMymaps_.getCurrentMapId();
+    if (goog.isDefAndNotNull(map_id)) {
+      var feature = event.feature;
+      if (!goog.isDefAndNotNull(feature)) {
+        feature = event.target;
+      }
+      feature.set('__source__', 'mymaps');
+      this.saveFeatureInMymaps_(feature);
+    }
     this.encodeFeaturesInUrl_(features);
   }, this));
 };
@@ -432,6 +448,23 @@ app.DrawController.prototype.onFeatureDelete_ = function(event) {
     var features = this.drawnFeatures_.getArray();
     this.encodeFeaturesInUrl_(features);
   }, this));
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature to encode in the URL.
+ * @private
+ */
+app.DrawController.prototype.saveFeatureInMymaps_ = function(feature) {
+  var map_id = this.appMymaps_.getCurrentMapId();
+  var currentFeature = feature;
+  if (goog.isDefAndNotNull(map_id)) {
+    this.appMymaps_.saveFeature(feature, this.map.getView().getProjection())
+      .then(goog.bind(function(resp) {
+          var featureId = resp['id'];
+          currentFeature.set('id', featureId);
+        }, this));
+  }
 };
 
 

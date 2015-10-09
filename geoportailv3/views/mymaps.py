@@ -128,27 +128,37 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_save_feature", renderer='json')
     def save_feature(self):
-        map_id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).get(map_id)
-        if map is None:
-            return HTTPNotFound()
+        try:
+            map_id = self.request.matchdict.get("map_id")
+            map = DBSession.query(Map).get(map_id)
+            if map is None:
+                return HTTPNotFound()
 
-        if not self.has_permission(self.request.user, map):
-            return HTTPUnauthorized()
+            if not self.has_permission(self.request.user, map):
+                return HTTPUnauthorized()
 
-        if 'feature' not in self.request.params:
-            return HTTPBadRequest()
-        # else:
-            # features = self.request.params.get('features').\
-            #   replace(u'\ufffd', '?')
-            # collection = geojson.loads(
-            #    features, object_hook=geojson.GeoJSON.to_instance)
+            if 'feature' not in self.request.params:
+                return HTTPBadRequest()
 
-        # obj = Feature(feature)
-        # map.features.append(obj)
-        # DBSession.commit()
+            feature = self.request.params.get('feature').\
+                replace(u'\ufffd', '?')
+            feature = geojson.loads(feature,
+                                    object_hook=geojson.GeoJSON.to_instance)
+            feature_id = feature.properties.get('id')
 
-        return {'success': True}
+            if feature_id:
+                cur_feature = DBSession.query(Feature).get(feature_id)
+                DBSession.delete(cur_feature)
+
+            obj = Feature(feature)
+
+            map.features.append(obj)
+            DBSession.commit()
+            return {'success': True, 'id': obj.id}
+        except:
+            DBSession.rollback()
+            traceback.print_exc(file=sys.stdout)
+            return {'success': False, 'id': obj.id}
 
     @view_config(route_name="mymaps_delete_feature", renderer='json')
     def delete_feature(self):

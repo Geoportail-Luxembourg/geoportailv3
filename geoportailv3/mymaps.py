@@ -131,7 +131,12 @@ class Feature(Base):
         self.stroke = feature.properties.get('stroke')
         self.is_label = feature.properties.get('isLabel')
         self.show_orientation = feature.properties.get('showOrientation')
-        self.linestyle = feature.properties.get('linestyle')
+        linestyle = feature.properties.get('linestyle')
+        if linestyle == 'plain':
+            self.linestyle = 0
+        else:
+            self.linestyle = 1
+
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
             else 40

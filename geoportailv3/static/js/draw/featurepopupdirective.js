@@ -126,6 +126,7 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
+  this.feature.changed();
   this.editingAttributes = false;
 };
 
