@@ -98,9 +98,6 @@ class Mymaps(object):
         if not self.has_permission(self.request.user, map):
             return HTTPUnauthorized()
 
-        if map.category is None:
-            map.category.id = 999
-
         return self.save(map, id)
 
     @view_config(route_name="mymaps_rate", renderer='json')
@@ -259,21 +256,21 @@ class Mymaps(object):
         # deal with the features
         #
         # delete all features for the given map
-        if id:
-            DBSession.query(Feature).filter(Feature.map_id == id).delete()
-        if 'features' in params:
-            features = params.get('features').replace(u'\ufffd', '?')
-            collection = geojson.loads(
-                features, object_hook=geojson.GeoJSON.to_instance)
-
-            if not isinstance(collection, geojson.FeatureCollection):
-                return HTTPBadRequest()
-
-            for feature in collection.features:
-                if not isinstance(feature, geojson.Feature):
-                    return HTTPBadRequest()
-                obj = Feature(feature)
-                map.features.append(obj)
+        # if id:
+        #    DBSession.query(Feature).filter(Feature.map_id == id).delete()
+        # if 'features' in params:
+        #    features = params.get('features').replace(u'\ufffd', '?')
+        #    collection = geojson.loads(
+        #        features, object_hook=geojson.GeoJSON.to_instance)
+        #
+        #    if not isinstance(collection, geojson.FeatureCollection):
+        #        return HTTPBadRequest()
+        #
+        #    for feature in collection.features:
+        #        if not isinstance(feature, geojson.Feature):
+        #            return HTTPBadRequest()
+        #        obj = Feature(feature)
+        #        map.features.append(obj)
 
         #
         # send everything to the DB

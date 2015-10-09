@@ -68,6 +68,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
   this.mymapsCreateMapUrl_ = mymapsUrl + '/create';
 
   /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsUpdateMapUrl_ = mymapsUrl + '/update/';
+
+  /**
    * @type {?string}
    * @private
    */
@@ -205,6 +211,36 @@ app.Mymaps.prototype.createMap = function(title, description) {
 app.Mymaps.prototype.deleteMap = function() {
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + this.mapId_).then(
       goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Save the map
+ * @param {string} title the title of the map.
+ * @param {string} description a description about the map.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.updateMap = function(title, description) {
+  var req = $.param({
+    'title': title,
+    'description': description
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      req, config).then(goog.bind(
       /**
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.

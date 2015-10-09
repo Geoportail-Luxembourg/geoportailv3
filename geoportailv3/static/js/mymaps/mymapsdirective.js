@@ -306,6 +306,7 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
 app.MymapsDirectiveController.prototype.saveModifications = function() {
   this.mapTitle = this.newTitle;
   this.mapDescription = this.newDescription;
+  this.appMymaps_.updateMap(this.mapTitle, this.mapDescription);
   // TODO the modifications need to be saved on server before we close the
   // modal window
   this.modifying = false;
