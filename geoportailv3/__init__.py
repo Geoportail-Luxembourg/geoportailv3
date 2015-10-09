@@ -112,6 +112,11 @@ def main(global_config, **settings):
         "/mymaps/delete_feature/{feature_id}",
         request_method="DELETE"
     )
+    config.add_route(
+        "mymaps_save_feature",
+        "/mymaps/save_feature/{map_id}",
+        request_method="POST"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')

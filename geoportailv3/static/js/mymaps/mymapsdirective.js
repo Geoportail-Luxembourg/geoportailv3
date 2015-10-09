@@ -50,7 +50,6 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
  * @param {app.Mymaps} appMymaps Mymaps service.
- * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
@@ -61,7 +60,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  */
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appMymaps, gettextCatalog, appNotify, appFeaturePopup,
+    appMymaps, appNotify, appFeaturePopup,
     appDrawnFeatures, appSelectedFeatures) {
 
   /**
@@ -71,10 +70,10 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.appMymaps_ = appMymaps;
 
   /**
-   * @type {angularGettext.Catalog}
+   * @type {gettext}
    * @private
    */
-  this.gettextCatalog_ = gettextCatalog;
+  this.gettext_ = gettext;
 
   /**
    * @type {app.Notify}
@@ -184,6 +183,7 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
   // TODO ensure that modifications are saved.
+  this.appMymaps_.setCurrentMapId(null);
   this.mapId = null;
   this.mapTitle = '';
   this.mapDescription = '';
@@ -191,11 +191,32 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
 
 
 /**
- * Creates a new map.
+ * Creates and load a new map.
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
-  //this.onChosen();
+  this.mapTitle = this.gettext_('Map without title');
+  this.appMymaps_.createMap(this.mapTitle, this.mapDescription)
+    .then(goog.bind(function(resp) {
+        var mapId = resp['uuid'];
+        if (mapId === null) {
+          this.askToConnect();
+        } else {
+          var map = {'uuid': mapId};
+          this.onChosen(map);
+        }}, this));
+};
+
+
+/**
+ * Delete the current map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.deleteMap = function() {
+
+  this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
+    this.closeMap();
+  }, this));
 };
 
 
@@ -206,16 +227,25 @@ app.MymapsDirectiveController.prototype.createMap = function() {
 app.MymapsDirectiveController.prototype.chooseMap = function() {
   this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
     if (mymaps === null) {
-      var msg = this.gettextCatalog_.getString(
-          'Veuillez vous identifier afin d\'accéder à vos cartes'
-          );
-      this.notify_(msg);
-      this['useropen'] = true;
+      this.askToConnect();
     } else if (!goog.array.isEmpty(mymaps)) {
       this.choosing = true;
       this.maps = mymaps;
     }
   }, this));
+};
+
+
+/**
+ * Notify the user he has to connect
+ * @export
+ */
+app.MymapsDirectiveController.prototype.askToConnect = function() {
+  var msg = this.gettext_(
+      'Veuillez vous identifier afin d\'accéder à vos cartes'
+      );
+  this.notify_(msg);
+  this['useropen'] = true;
 };
 
 
@@ -226,13 +256,14 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
  */
 app.MymapsDirectiveController.prototype.onChosen = function(map) {
 
-  this.appMymaps_.loadMapInformation(
-      map['uuid']).then(goog.bind(function(mapinformation) {
-    this.mapDescription = mapinformation['description'];
-  }, this));
+  this.appMymaps_.setCurrentMapId(map['uuid']);
+  this.appMymaps_.loadMapInformation().then(
+      goog.bind(function(mapinformation) {
+        this.mapDescription = mapinformation['description'];
+        this.mapTitle = mapinformation['title'];
+      }, this));
 
-  this.appMymaps_.loadFeatures(
-      map['uuid']).then(goog.bind(function(features) {
+  this.appMymaps_.loadFeatures().then(goog.bind(function(features) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
       featureProjection: this['map'].getView().getProjection()
@@ -249,9 +280,8 @@ app.MymapsDirectiveController.prototype.onChosen = function(map) {
     this['drawopen'] = true;
   }, this));
 
+
   this.mapId = map['uuid'];
-  //this.mapTitle = $(this.defaultTitle_).children().html().toString();
-  this.mapTitle = map['title'];
   this.choosing = false;
 };
 
