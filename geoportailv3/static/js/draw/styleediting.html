@@ -1,4 +1,5 @@
 <!-- Color (for both stroke and fill) -->
+<a href class="close" ng-click="ctrl.close()">&times;</a>
 <div>
   <div class="form-group">
     <label translate>Color</label>
@@ -71,4 +72,12 @@
     <label translate>Angle</label>
     <input type="range" min="-90" max="90" class="form-control" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
   </div>
+</div>
+<div class="feature-popup-footer pull-right">
+<button href class="btn btn-default" ng-click="ctrl.close()" translate>
+  Cancel
+</button>
+<button href class="btn btn-primary" ng-click="ctrl.saveFeature()" translate>
+  OK
+</button>
 </div>

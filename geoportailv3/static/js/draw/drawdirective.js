@@ -260,7 +260,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         var feature = evt.element;
         if (goog.isDefAndNotNull(feature.get('__source__')) &&
             feature.get('__source__') == 'mymaps') {
-          this.appMymaps_.deleteFeature(feature);
+          var map_id = this.appMymaps_.getCurrentMapId();
+          if (goog.isDefAndNotNull(map_id)) {
+            this.appMymaps_.deleteFeature(feature);
+          }
         }else {
           this.onFeatureDelete_(evt);
         }

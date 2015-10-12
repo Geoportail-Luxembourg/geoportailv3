@@ -187,6 +187,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
   this.mapId = null;
   this.mapTitle = '';
   this.mapDescription = '';
+  this.drawnFeatures_.clear();
 };
 
 
