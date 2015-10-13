@@ -3,8 +3,7 @@
     <a href class="close" ng-click="ctrl.close()">&times;</a>
     {{ ctrl.feature.get('name') }}
   </div>
-  <div class="feature-popup-body description">
-    {{ ctrl.feature.get('description') }}
+  <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
   <div class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">

@@ -32,12 +32,13 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.$sce} $sce Angular $sce service
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @export
  * @ngInject
  */
-app.FeaturePopupController = function($scope, appFeaturePopup,
+app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures) {
 
   /**
@@ -45,6 +46,12 @@ app.FeaturePopupController = function($scope, appFeaturePopup,
    * @export
    */
   this.feature;
+
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.sce_ = $sce;
 
   /**
    * @type {boolean}
@@ -139,6 +146,20 @@ app.FeaturePopupController.prototype.deleteFeature = function() {
   this.appFeaturePopup_.hide();
   this.drawnFeatures_.remove(this.feature);
   this.deletingFeature = false;
+};
+
+
+/**
+ * returns a trusted html content
+ * @param {string} content content to be trusted
+ * @return {*} the trusted content.
+ * @export
+ */
+app.FeaturePopupController.prototype.trustAsHtml = function(content) {
+  if (!goog.isDefAndNotNull(content)) {
+    content = '';
+  }
+  return this.sce_.trustAsHtml('' + content);
 };
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);
