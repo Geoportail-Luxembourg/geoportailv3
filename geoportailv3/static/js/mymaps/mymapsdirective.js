@@ -256,7 +256,7 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.onChosen = function(map) {
-
+  this.closeMap();
   this.appMymaps_.setCurrentMapId(map['uuid']);
   this.appMymaps_.loadMapInformation().then(
       goog.bind(function(mapinformation) {
