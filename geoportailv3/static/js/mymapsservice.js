@@ -21,9 +21,24 @@ app.MapsResponse;
  * @param {angular.$http} $http
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.StateManager} appStateManager
  * @ngInject
  */
-app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
+app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
+    appStateManager) {
+
+  /**
+   * @type {ol.Collection.<ol.Feature>}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
+
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.stateManager_ = appStateManager;
 
   /**
    * @type {angular.$http}
@@ -84,6 +99,32 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
    * @private
    */
   this.mapId_ = null;
+
+  /**
+   * The currently displayed map title.
+   * @type {string}
+   * @export
+   */
+  this.mapTitle = '';
+
+  /**
+   * The currently displayed map description.
+   * @type {string}
+   * @export
+   */
+  this.mapDescription = '';
+
+  /**
+   * @type {ol.FeatureStyleFunction}
+   * @private
+   */
+  this.featureStyleFunction_ = app.DrawController.createStyleFunction();
+
+  /**
+   * @type {ol.proj.Projection}
+   * @export
+   */
+  this.mapProjection;
 };
 
 
@@ -92,6 +133,37 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl) {
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId) {
   this.mapId_ = mapId;
+  if (goog.isDefAndNotNull(this.mapId_)) {
+    this.stateManager_.updateState({
+      'map_id': this.mapId_
+    });
+    this.loadMapInformation_().then(
+        goog.bind(function(mapinformation) {
+          this.mapDescription = mapinformation['description'];
+          this.mapTitle = mapinformation['title'];
+        }, this));
+    this.loadFeatures_().then(goog.bind(function(features) {
+      var encOpt = /** @type {olx.format.ReadOptions} */ ({
+        dataProjection: 'EPSG:2169',
+        featureProjection: this.mapProjection
+      });
+      var jsonFeatures = ((new ol.format.GeoJSON()).
+          readFeatures(features, encOpt));
+      for (var i in jsonFeatures) {
+        jsonFeatures[i].set('__source__', 'mymaps');
+        jsonFeatures[i].set('__editable__', true);
+        jsonFeatures[i].setStyle(this.featureStyleFunction_);
+      }
+      this.drawnFeatures_.extend(/** @type {!Array<(null|ol.Feature)>} */
+          (jsonFeatures));
+    }, this));
+  }else {
+    this.stateManager_.deleteParam('map_id');
+    this.mapId_ = null;
+    this.mapTitle = '';
+    this.mapDescription = '';
+    this.drawnFeatures_.clear();
+  }
 };
 
 
@@ -129,8 +201,9 @@ app.Mymaps.prototype.getMaps = function() {
 /**
  * Load map features
  * @return {angular.$q.Promise} Promise.
+ * @private
  */
-app.Mymaps.prototype.loadFeatures = function() {
+app.Mymaps.prototype.loadFeatures_ = function() {
   return this.$http_.get(this.mymapsFeaturesUrl_ + this.mapId_).then(goog.bind(
       /**
          * @param {angular.$http.Response} resp Ajax response.
@@ -149,8 +222,9 @@ app.Mymaps.prototype.loadFeatures = function() {
 /**
  * Load map information
  * @return {angular.$q.Promise} Promise.
+ * @private
  */
-app.Mymaps.prototype.loadMapInformation = function() {
+app.Mymaps.prototype.loadMapInformation_ = function() {
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
       /**
          * @param {angular.$http.Response} resp Ajax response.
@@ -167,7 +241,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
 
 
 /**
- * Load map information
+ * Delete a map
  * @param {ol.Feature} feature the feature to delete.
  * @return {angular.$q.Promise} Promise.
  */
@@ -246,6 +320,10 @@ app.Mymaps.prototype.deleteMap = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.updateMap = function(title, description) {
+
+  this.mapTitle = title;
+  this.mapDescription = description;
+
   var req = $.param({
     'title': title,
     'description': description

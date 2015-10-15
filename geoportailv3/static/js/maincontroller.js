@@ -15,6 +15,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
+goog.require('app.Mymaps');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('goog.object');
@@ -44,6 +45,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
@@ -58,8 +60,8 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appStateManager, appThemes, appFeaturePopup, langUrls, maxExtent,
-    defaultExtent, ngeoSyncArrays) {
+    appMymaps, appStateManager, appThemes, appFeaturePopup, langUrls,
+    maxExtent, defaultExtent, ngeoSyncArrays) {
 
   /**
    * @type {angular.Scope}
@@ -182,6 +184,12 @@ app.MainController = function(
   this.map_ = null;
 
   /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
+
+  /**
    * The role id of the authenticated user, or `undefined` if the user
    * is anonymous, or if we don't yet kno if the user is authenticated.
    * @type {number|undefined}
@@ -191,6 +199,8 @@ app.MainController = function(
   this.setMap_();
 
   this.initLanguage_();
+
+  this.initMymaps_();
 
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
@@ -360,6 +370,18 @@ app.MainController.prototype.initLanguage_ = function() {
     // fallback to french
     this.switchLanguage('fr');
     return;
+  }
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.initMymaps_ = function() {
+  var mapId = this.stateManager_.getInitialValue('map_id');
+  this.appMymaps_.mapProjection = this['map'].getView().getProjection();
+  if (goog.isDefAndNotNull(mapId)) {
+    this.appMymaps_.setCurrentMapId(mapId);
   }
 };
 
