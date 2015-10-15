@@ -551,8 +551,11 @@ app.DrawController.createStyleFunction = function() {
     var color = this.get('color') ? this.get('color') : '#FF0000';
     var rgb = goog.color.hexToRgb(color);
     var opacity = this.get('opacity');
+    if (!goog.isDefAndNotNull(opacity)) {
+      opacity = 1;
+    }
     var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        opacity ? opacity : 1);
+        opacity);
     fillStyle.setColor(fillColor);
 
     var lineDash;
