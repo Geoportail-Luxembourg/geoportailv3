@@ -18,6 +18,7 @@ goog.require('app.LocationControl');
 goog.require('app.Mymaps');
 goog.require('app.StateManager');
 goog.require('app.Themes');
+goog.require('app.UserManager');
 goog.require('goog.object');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
@@ -49,6 +50,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
+ * @param {app.UserManager} appUserManager
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -60,8 +62,14 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appMymaps, appStateManager, appThemes, appFeaturePopup, langUrls,
-    maxExtent, defaultExtent, ngeoSyncArrays) {
+    appMymaps, appStateManager, appThemes, appFeaturePopup, appUserManager,
+    langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {angular.Scope}
@@ -189,13 +197,6 @@ app.MainController = function(
    */
   this.appMymaps_ = appMymaps;
 
-  /**
-   * The role id of the authenticated user, or `undefined` if the user
-   * is anonymous, or if we don't yet kno if the user is authenticated.
-   * @type {number|undefined}
-   */
-  this['roleId'] = undefined;
-
   this.setMap_();
 
   this.initLanguage_();
@@ -269,7 +270,7 @@ app.MainController.prototype.setMap_ = function() {
  */
 app.MainController.prototype.manageUserRoleChange_ = function(scope) {
   scope.$watch(goog.bind(function() {
-    return this['roleId'];
+    return this.appUserManager_['roleId'];
   }, this), goog.bind(function(newVal, oldVal) {
     if (!goog.isDef(oldVal) && !goog.isDef(newVal)) {
       // This happens at init time. We don't want to reload the themes
@@ -285,7 +286,7 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
  * @private
  */
 app.MainController.prototype.loadThemes_ = function() {
-  this.appThemes_.loadThemes(this['roleId']);
+  this.appThemes_.loadThemes(this.appUserManager_['roleId']);
 };
 
 

@@ -3,7 +3,7 @@
     <fieldset>
         <legend class="tab tab-account active" translate>Login</legend>
         <div class="account-content">
-            <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate(ctrl.credentials)">
+            <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate()">
               <input type="text" ng-model="ctrl.credentials.login" placeholder="{{'Username'| translate}}" />
               <input type="password" ng-model="ctrl.credentials.password" placeholder="{{'Password'| translate}}" />
               <input type="submit" value="{{'Submit'| translate}}" />
@@ -15,8 +15,8 @@
             </form>
             <div ng-if="ctrl.isAuthenticated()">
                 <ul>
-                    <li><p>{{ctrl.login}}</p></li>
-                    <li><p>{{ctrl.mail}}</p></li>
+                    <li><p>{{ctrl.getLogin()}}</p></li>
+                    <li><p>{{ctrl.getMail()}}</p></li>
                 </ul>
                 <div class="pull-right">
                   <a target="_blank" href="https://myaccount.geoportail.lu?lang={{ctrl.lang}}" class="btn btn-link" translate>My account</a>
