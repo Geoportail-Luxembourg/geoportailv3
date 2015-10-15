@@ -5,7 +5,7 @@
   </div>
   <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
-  <div class="feature-popup-footer">
+  <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
       <li ng-show="ctrl.feature.get('__editable__')">
         <a href ng-click="ctrl.editingAttributes = true">

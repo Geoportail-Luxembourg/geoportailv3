@@ -2,7 +2,7 @@
   <p translate>
     Create, save and share your own maps.
   </p>
-  <p class="text-center"><!-- Show only when logged in -->
+  <p class="text-center">
     <button class="btn btn-default" ng-click="ctrl.chooseMap()" translate>Open a map</button>
   </p>
   <p class="text-center">
@@ -20,7 +20,7 @@
     <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
     <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.getMapDescription()" translate><em>No description</em></p>
   </div>
-  <div class="mymap-footer col-xs-12">
+  <div ng-show="ctrl.isEditable()" class="mymap-footer col-xs-12">
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
         <a href class="dropdown-toggle" data-toggle="dropdown">

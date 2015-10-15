@@ -7,6 +7,7 @@
 goog.provide('app.Mymaps');
 
 goog.require('app');
+goog.require('app.UserManager');
 
 
 /**
@@ -23,10 +24,17 @@ app.MapsResponse;
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.StateManager} appStateManager
+ * @param {app.UserManager} appUserManager
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
-    appStateManager) {
+    appStateManager, appUserManager) {
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {ol.Collection.<ol.Feature>}
@@ -108,6 +116,13 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
   this.mapTitle = '';
 
   /**
+   * The currently displayed map title.
+   * @type {string}
+   * @export
+   */
+  this.mapOwner = '';
+
+  /**
    * The currently displayed map description.
    * @type {string}
    * @export
@@ -141,6 +156,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
         goog.bind(function(mapinformation) {
           this.mapDescription = mapinformation['description'];
           this.mapTitle = mapinformation['title'];
+          this.mapOwner = mapinformation['user_login'];
         }, this));
     this.loadFeatures_().then(goog.bind(function(features) {
       var encOpt = /** @type {olx.format.ReadOptions} */ ({
@@ -162,6 +178,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
     this.mapId_ = null;
     this.mapTitle = '';
     this.mapDescription = '';
+    this.mapOwner = '';
     this.drawnFeatures_.clear();
   }
 };
@@ -172,6 +189,19 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
  */
 app.Mymaps.prototype.getCurrentMapId = function() {
   return this.mapId_;
+};
+
+
+/**
+ * @return {boolean} return true if is editable by the user
+ */
+app.Mymaps.prototype.isEditable = function() {
+  if (this.appUserManager_.isAuthenticated() &&
+      (this.appUserManager_['isAdmin'] == 'TRUE' ||
+       this.appUserManager_['login'] == this.mapOwner)) {
+    return true;
+  }
+  return false;
 };
 
 

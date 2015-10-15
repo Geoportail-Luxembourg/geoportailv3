@@ -261,7 +261,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         if (goog.isDefAndNotNull(feature.get('__source__')) &&
             feature.get('__source__') == 'mymaps') {
           var map_id = this.appMymaps_.getCurrentMapId();
-          if (goog.isDefAndNotNull(map_id)) {
+          if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
             this.appMymaps_.deleteFeature(feature);
           }
         }else {
@@ -394,7 +394,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.setStyle(this.featureStyleFunction_);
 
   var map_id = this.appMymaps_.getCurrentMapId();
-  if (goog.isDefAndNotNull(map_id)) {
+  if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
     feature.set('__source__', 'mymaps');
     this.saveFeatureInMymaps_(feature);
   }
@@ -429,7 +429,7 @@ app.DrawController.prototype.onFeatureChange_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var features = this.drawnFeatures_.getArray();
     var map_id = this.appMymaps_.getCurrentMapId();
-    if (goog.isDefAndNotNull(map_id)) {
+    if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
       var feature = event.feature;
       if (!goog.isDefAndNotNull(feature)) {
         feature = event.target;
@@ -461,7 +461,7 @@ app.DrawController.prototype.onFeatureDelete_ = function(event) {
 app.DrawController.prototype.saveFeatureInMymaps_ = function(feature) {
   var map_id = this.appMymaps_.getCurrentMapId();
   var currentFeature = feature;
-  if (goog.isDefAndNotNull(map_id)) {
+  if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
     this.appMymaps_.saveFeature(feature, this.map.getView().getProjection())
       .then(goog.bind(function(resp) {
           var featureId = resp['id'];

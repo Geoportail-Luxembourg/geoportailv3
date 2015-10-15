@@ -16,6 +16,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
+goog.require('app.UserManager');
 goog.require('ngeo.modalDirective');
 goog.require('ol.format.GeoJSON');
 
@@ -53,6 +54,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.UserManager} appUserManager
  * @constructor
  * @export
  * @ngInject
@@ -60,7 +62,12 @@ app.module.directive('appMymaps', app.mymapsDirective);
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
     appMymaps, appNotify, appFeaturePopup,
-    appDrawnFeatures, appSelectedFeatures) {
+    appDrawnFeatures, appSelectedFeatures, appUserManager) {
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {app.Mymaps}
@@ -188,15 +195,17 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
-  this.appMymaps_.createMap(this.gettext_('Map without title'), '')
-    .then(goog.bind(function(resp) {
-        var mapId = resp['uuid'];
-        if (mapId === null) {
-          this.askToConnect();
-        } else {
-          var map = {'uuid': mapId};
-          this.onChosen(map);
-        }}, this));
+  if (this.appMymaps_.isEditable()) {
+    this.appMymaps_.createMap(this.gettext_('Map without title'), '')
+      .then(goog.bind(function(resp) {
+          var mapId = resp['uuid'];
+          if (mapId === null) {
+            this.askToConnect();
+          } else {
+            var map = {'uuid': mapId};
+            this.onChosen(map);
+          }}, this));
+  }
 };
 
 
@@ -205,10 +214,11 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.deleteMap = function() {
-
-  this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
-    this.closeMap();
-  }, this));
+  if (this.appMymaps_.isEditable()) {
+    this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
+      this.closeMap();
+    }, this));
+  }
 };
 
 
@@ -217,14 +227,18 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.chooseMap = function() {
-  this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-    if (mymaps === null) {
-      this.askToConnect();
-    } else if (!goog.array.isEmpty(mymaps)) {
-      this.choosing = true;
-      this.maps = mymaps;
-    }
-  }, this));
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  }else {
+    this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
+      if (mymaps === null) {
+        this.askToConnect();
+      } else if (!goog.array.isEmpty(mymaps)) {
+        this.choosing = true;
+        this.maps = mymaps;
+      }
+    }, this));
+  }
 };
 
 
@@ -261,9 +275,23 @@ app.MymapsDirectiveController.prototype.onChosen = function(map) {
  * @export
  */
 app.MymapsDirectiveController.prototype.modifyMap = function() {
-  this.newTitle = this.appMymaps_.mapTitle;
-  this.newDescription = this.appMymaps_.mapDescription;
-  this.modifying = true;
+  if (this.appMymaps_.isEditable()) {
+    this.newTitle = this.appMymaps_.mapTitle;
+    this.newDescription = this.appMymaps_.mapDescription;
+    if (this.appMymaps_.isEditable()) {
+      this.modifying = true;
+    }
+  }
+};
+
+
+/**
+ * Is the map editable
+ * @return {boolean}
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isEditable = function() {
+  return this.appMymaps_.isEditable();
 };
 
 
@@ -272,10 +300,12 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.saveModifications = function() {
-  this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
-      goog.bind(function(mymaps) {
-        this.modifying = false;
-      }, this));
+  if (this.appMymaps_.isEditable()) {
+    this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
+        goog.bind(function(mymaps) {
+          this.modifying = false;
+        }, this));
+  }
 };
 
 

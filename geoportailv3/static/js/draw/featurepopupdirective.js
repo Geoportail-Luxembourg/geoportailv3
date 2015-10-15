@@ -5,6 +5,7 @@ goog.provide('app.FeaturePopupController');
 goog.provide('app.featurePopupDirective');
 
 goog.require('app');
+goog.require('app.Mymaps');
 
 
 /**
@@ -35,11 +36,18 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {angular.$sce} $sce Angular $sce service
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
-    appDrawnFeatures) {
+    appDrawnFeatures, appMymaps) {
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {ol.Feature}
@@ -113,6 +121,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
  */
 app.FeaturePopupController.prototype.close = function() {
   this.appFeaturePopup_.hide();
+};
+
+
+/**
+ * @return {boolean} return true if is editable by the user
+ * @export
+ */
+app.FeaturePopupController.prototype.isEditable = function() {
+  return this.appMymaps_.isEditable();
 };
 
 
