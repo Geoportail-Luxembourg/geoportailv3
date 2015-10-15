@@ -91,6 +91,11 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   this['name'] = undefined;
 
   /**
+   * @type {boolean}
+   */
+  this['isAdmin'] = false;
+
+  /**
    * @type {gettext}
    * @private
    */
@@ -173,7 +178,8 @@ app.UserManager.prototype.getUserInfo = function() {
               data['role'],
               data['role_id'],
               data['mail'],
-              data['sn']
+              data['sn'],
+              data['is_admin']
           );
         } else {
           this.clearUserInfo();
@@ -211,7 +217,8 @@ app.UserManager.prototype.hasError = function() {
  * of error.
  */
 app.UserManager.prototype.clearUserInfo = function() {
-  this.setUserInfo(undefined, undefined, undefined, undefined, undefined);
+  this.setUserInfo(undefined, undefined, undefined, undefined, undefined,
+      false);
 };
 
 
@@ -221,14 +228,16 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {number|undefined} roleId Role id.
  * @param {string|undefined} mail Mail.
  * @param {string|undefined} name Name.
+ * @param {boolean} isAdmin
  */
 app.UserManager.prototype.setUserInfo = function(
-    login, role, roleId, mail, name) {
+    login, role, roleId, mail, name, isAdmin) {
   this['login'] = login;
   this['role'] = role;
   this['roleId'] = roleId;
   this['mail'] = mail;
   this['name'] = name;
+  this['isAdmin'] = isAdmin;
 };
 
 app.module.service('appUserManager', app.UserManager);

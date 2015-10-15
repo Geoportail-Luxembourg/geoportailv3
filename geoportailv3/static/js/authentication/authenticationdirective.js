@@ -86,38 +86,6 @@ app.AuthenticationController.prototype.isAuthenticated = function() {
 
 
 /**
- * @return {boolean}
- * @export
- */
-app.AuthenticationController.prototype.hasError = function() {
-  return this['isError'];
-};
-
-
-/**
- * Clear the user information. This happens when logging out and in case
- * of error.
- */
-app.AuthenticationController.prototype.clearUserInfo = function() {
-  this.appUserManager_.setUserInfo(undefined, undefined, undefined,
-      undefined, undefined);
-};
-
-
-/**
- * @param {string|undefined} login Login.
- * @param {string|undefined} role Role.
- * @param {number|undefined} roleId Role id.
- * @param {string|undefined} mail Mail.
- * @param {string|undefined} name Name.
- */
-app.AuthenticationController.prototype.setUserInfo = function(
-    login, role, roleId, mail, name) {
-  this.appUserManager_.setUserInfo(login, role, roleId, mail, name);
-};
-
-
-/**
  * @return {string}
  * @export
  */

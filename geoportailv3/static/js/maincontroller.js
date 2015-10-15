@@ -197,6 +197,8 @@ app.MainController = function(
    */
   this.appMymaps_ = appMymaps;
 
+  this.appUserManager_.getUserInfo();
+
   this.setMap_();
 
   this.initLanguage_();
