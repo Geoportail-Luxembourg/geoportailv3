@@ -13,7 +13,9 @@
  * during the lifetime of the application.
  */
 goog.provide('app.DrawController');
+goog.provide('app.DrawEventType');
 goog.provide('app.drawDirective');
+
 
 goog.require('app');
 goog.require('app.DrawnFeatures');
@@ -33,6 +35,14 @@ goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.style.RegularShape');
+
+
+/**
+ * @enum {string}
+ */
+app.DrawEventType = {
+  PROPERTYMODIFYEND: 'propertymodifyend'
+};
 
 
 /**
@@ -247,8 +257,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
-        goog.events.listen(feature, goog.events.EventType.CHANGE,
-            this.onFeatureChange_, undefined, this);
+        goog.events.listen(feature, app.DrawEventType.PROPERTYMODIFYEND,
+            this.onFeaturePropertyChange_, undefined, this);
       }, undefined, this);
 
   goog.events.listen(appDrawnFeatures, ol.CollectionEventType.REMOVE,
@@ -267,8 +277,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
         }else {
           this.onFeatureDelete_(evt);
         }
-        goog.events.unlisten(feature, goog.events.EventType.CHANGE,
-            this.onFeatureChange_, undefined, this);
+        goog.events.unlisten(feature, app.DrawEventType.PROPERTYMODIFYEND,
+            this.onFeaturePropertyChange_, undefined, this);
       }, undefined, this);
 
   var selectInteraction = new ol.interaction.Select({
@@ -315,6 +325,18 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
+
+          if (goog.isDefAndNotNull(feature.get('__source__')) &&
+              feature.get('__source__') == 'mymaps') {
+            var map_id = this.appMymaps_.getCurrentMapId();
+            if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
+              this.modifyInteraction_.setActive(true);
+            }else {
+              this.modifyInteraction_.setActive(false);
+            }
+          }else {
+            this.modifyInteraction_.setActive(true);
+          }
           this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
         } else {
           this.featurePopup_.hide();
@@ -326,6 +348,14 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     features: appSelectedFeatures
   });
   this.map.addInteraction(modifyInteraction);
+  goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
+      this.onFeaturePropertyChange_, false, this);
+
+  /**
+   * @type {ol.interaction.Modify}
+   * @private
+   */
+  this.modifyInteraction_ = modifyInteraction;
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(appDrawnFeatures);
@@ -357,6 +387,7 @@ app.DrawController.prototype.drawFeaturesInUrl_ = function() {
       var isLabel = /** @type {string} */ (feature.get('is_label'));
       feature.set('is_label', isLabel === 'true');
       feature.set('__editable__', true);
+      feature.set('__SOURCE__', 'url');
       feature.setStyle(this.featureStyleFunction_);
     }
     this.drawnFeatures_.extend(features);
@@ -425,12 +456,15 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
  * @param {goog.events.Event} event Event.
  * @private
  */
-app.DrawController.prototype.onFeatureChange_ = function(event) {
+app.DrawController.prototype.onFeaturePropertyChange_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var features = this.drawnFeatures_.getArray();
     var map_id = this.appMymaps_.getCurrentMapId();
     if (goog.isDefAndNotNull(map_id) && this.appMymaps_.isEditable()) {
       var feature = event.feature;
+      if (!goog.isDef(feature) && goog.isDef(event.features)) {
+        feature = event.features.getArray()[0];
+      }
       if (!goog.isDefAndNotNull(feature)) {
         feature = event.target;
       }

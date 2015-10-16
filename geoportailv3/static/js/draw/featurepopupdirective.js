@@ -43,6 +43,7 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps) {
 
+
   /**
    * @type {app.Mymaps}
    * @private
@@ -150,7 +151,7 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
-  this.feature.changed();
+  this.feature.dispatchEvent(app.DrawEventType.PROPERTYMODIFYEND);
   this.editingAttributes = false;
 };
 
@@ -178,5 +179,6 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
   }
   return this.sce_.trustAsHtml('' + content);
 };
+
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

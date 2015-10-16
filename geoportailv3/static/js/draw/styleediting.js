@@ -198,7 +198,7 @@ app.StyleEditingController.prototype.setColor = function(val) {
  * @export
  */
 app.StyleEditingController.prototype.saveFeature = function() {
-  this.feature.changed();
+  this.feature.dispatchEvent(app.DrawEventType.PROPERTYMODIFYEND);
   this.editingStyle = false;
 };
 
