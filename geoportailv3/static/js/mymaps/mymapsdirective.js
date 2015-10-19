@@ -195,7 +195,9 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
-  if (this.appMymaps_.isEditable()) {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  }else {
     this.appMymaps_.createMap(this.gettext_('Map without title'), '')
       .then(goog.bind(function(resp) {
           var mapId = resp['uuid'];
@@ -204,6 +206,8 @@ app.MymapsDirectiveController.prototype.createMap = function() {
           } else {
             var map = {'uuid': mapId};
             this.onChosen(map);
+            var msg = this.gettext_('Nouvelle carte créée');
+            this.notify_(msg);
           }}, this));
   }
 };
