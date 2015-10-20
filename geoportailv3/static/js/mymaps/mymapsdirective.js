@@ -155,7 +155,7 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
-  this.appMymaps_.setCurrentMapId(null);
+  this.appMymaps_.setCurrentMapId('');
 };
 
 
@@ -165,10 +165,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
-  if (goog.isDefAndNotNull(this.appMymaps_.getCurrentMapId())) {
-    return true;
-  }
-  return false;
+  return this.appMymaps_.isMymapsSelected();
 };
 
 

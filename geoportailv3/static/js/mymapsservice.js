@@ -103,10 +103,10 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
   this.mymapsSaveFeatureUrl_ = mymapsUrl + '/save_feature/';
 
   /**
-   * @type {?string}
+   * @type {string}
    * @private
    */
-  this.mapId_ = null;
+  this.mapId_ = '';
 
   /**
    * The currently displayed map title.
@@ -144,11 +144,11 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
 
 
 /**
- * @param {?string} mapId the map id.
+ * @param {string} mapId the map id.
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId) {
   this.mapId_ = mapId;
-  if (goog.isDefAndNotNull(this.mapId_)) {
+  if (this.isMymapsSelected()) {
     this.stateManager_.updateState({
       'map_id': this.mapId_
     });
@@ -175,7 +175,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
     }, this));
   }else {
     this.stateManager_.deleteParam('map_id');
-    this.mapId_ = null;
+    this.mapId_ = '';
     this.mapTitle = '';
     this.mapDescription = '';
     this.mapOwner = '';
@@ -185,18 +185,10 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
 
 
 /**
- * @return {?string} mapId the map id.
- */
-app.Mymaps.prototype.getCurrentMapId = function() {
-  return this.mapId_;
-};
-
-
-/**
  * @return {boolean} return true if is editable by the user
  */
 app.Mymaps.prototype.isEditable = function() {
-  if (this.appUserManager_.isAuthenticated() &&
+  if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
       (this.appUserManager_['isAdmin'] == 'TRUE' ||
        this.appUserManager_['login'] == this.mapOwner)) {
     return true;
@@ -407,6 +399,14 @@ app.Mymaps.prototype.saveFeature = function(feature, featureProjection) {
         return [];
       }, this)
   );
+};
+
+
+/**
+ * @return {boolean} return true if a map is selected
+ */
+app.Mymaps.prototype.isMymapsSelected = function() {
+  return !goog.string.isEmpty(this.mapId_);
 };
 
 app.module.service('appMymaps', app.Mymaps);
