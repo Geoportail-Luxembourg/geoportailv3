@@ -571,7 +571,7 @@ app.DrawController.createStyleFunction = function() {
     }
 
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
-    var color = this.get('color') ? this.get('color') : '#FF0000';
+    var color = this.get('color') || '#FF0000';
     var rgb = goog.color.hexToRgb(color);
     var opacity = this.get('opacity');
     if (!goog.isDefAndNotNull(opacity)) {
