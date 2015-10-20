@@ -505,13 +505,13 @@ app.DrawController.prototype.saveFeatureInMymaps_ = function(feature) {
  */
 app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = [];
-  for (var i in features) {
-    var source = features[i].get('__source__');
+  goog.array.forEach(features, function(feature) {
+    var source = feature.get('__source__');
     if (!goog.isDefAndNotNull(source) ||
         (goog.isDefAndNotNull(source) && source != 'mymaps')) {
-      featuresToEncode.push(features[i]);
+      featuresToEncode.push(feature);
     }
-  }
+  }, this);
 
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
