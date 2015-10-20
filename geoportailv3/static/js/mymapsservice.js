@@ -161,11 +161,11 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
       });
       var jsonFeatures = (new ol.format.GeoJSON()).
           readFeatures(features, encOpt);
-      for (var i in jsonFeatures) {
-        jsonFeatures[i].set('__source__', 'mymaps');
-        jsonFeatures[i].set('__editable__', true);
-        jsonFeatures[i].setStyle(this.featureStyleFunction_);
-      }
+      goog.array.forEach(jsonFeatures, function(feature) {
+        feature.set('__source__', 'mymaps');
+        feature.set('__editable__', true);
+        feature.setStyle(this.featureStyleFunction_);
+      }, this);
       this.drawnFeatures_.extend(/** @type {!Array<(null|ol.Feature)>} */
           (jsonFeatures));
     }, this));
