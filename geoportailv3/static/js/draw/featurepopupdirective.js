@@ -130,7 +130,11 @@ app.FeaturePopupController.prototype.close = function() {
  * @export
  */
 app.FeaturePopupController.prototype.isEditable = function() {
-  return this.appMymaps_.isEditable();
+  if (goog.isDefAndNotNull(this.feature) &&
+      this.feature.get('__source__') == 'mymaps') {
+    return this.appMymaps_.isEditable();
+  }
+  return true;
 };
 
 

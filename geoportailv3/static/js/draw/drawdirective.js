@@ -387,7 +387,7 @@ app.DrawController.prototype.drawFeaturesInUrl_ = function() {
       var isLabel = /** @type {string} */ (feature.get('is_label'));
       feature.set('is_label', isLabel === 'true');
       feature.set('__editable__', true);
-      feature.set('__SOURCE__', 'url');
+      feature.set('__source__', 'url');
       feature.setStyle(this.featureStyleFunction_);
     }
     this.drawnFeatures_.extend(features);
