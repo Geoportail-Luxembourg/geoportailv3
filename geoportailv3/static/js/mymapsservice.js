@@ -111,21 +111,18 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
   /**
    * The currently displayed map title.
    * @type {string}
-   * @export
    */
   this.mapTitle = '';
 
   /**
    * The currently displayed map title.
    * @type {string}
-   * @export
    */
   this.mapOwner = '';
 
   /**
    * The currently displayed map description.
    * @type {string}
-   * @export
    */
   this.mapDescription = '';
 
@@ -137,7 +134,6 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
 
   /**
    * @type {ol.proj.Projection}
-   * @export
    */
   this.mapProjection;
 };
