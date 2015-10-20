@@ -130,7 +130,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
    * @type {ol.FeatureStyleFunction}
    * @private
    */
-  this.featureStyleFunction_ = app.DrawController.createStyleFunction();
+  this.featureStyleFunction_ = this.createStyleFunction();
 
   /**
    * @type {ol.proj.Projection}
@@ -403,6 +403,136 @@ app.Mymaps.prototype.saveFeature = function(feature, featureProjection) {
  */
 app.Mymaps.prototype.isMymapsSelected = function() {
   return !goog.string.isEmpty(this.mapId_);
+};
+
+
+/**
+ * @return {ol.FeatureStyleFunction}
+ * @export
+ */
+app.Mymaps.prototype.createStyleFunction = function() {
+
+  var styles = [];
+
+  var vertexStyle = new ol.style.Style({
+    image: new ol.style.RegularShape({
+      radius: 6,
+      points: 4,
+      angle: Math.PI / 4,
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.5)'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(0, 0, 0, 1)'
+      })
+    }),
+    geometry: function(feature) {
+      var geom = feature.getGeometry();
+
+      if (geom.getType() == ol.geom.GeometryType.POINT) {
+        return;
+      }
+
+      var coordinates;
+      if (geom instanceof ol.geom.LineString) {
+        coordinates = feature.getGeometry().getCoordinates();
+        return new ol.geom.MultiPoint(coordinates);
+      } else if (geom instanceof ol.geom.Polygon) {
+        coordinates = feature.getGeometry().getCoordinates()[0];
+        return new ol.geom.MultiPoint(coordinates);
+      } else {
+        return feature.getGeometry();
+      }
+    }
+  });
+
+  var fillStyle = new ol.style.Fill();
+
+  return function(resolution) {
+
+    // clear the styles
+    styles.length = 0;
+
+    if (this.get('__editable__') && this.get('__selected__')) {
+      styles.push(vertexStyle);
+    }
+
+    // goog.asserts.assert(goog.isDef(this.get('__style__'));
+    var color = this.get('color') || '#FF0000';
+    var rgb = goog.color.hexToRgb(color);
+    var opacity = this.get('opacity');
+    if (!goog.isDef(opacity)) {
+      opacity = 1;
+    }
+    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
+        opacity);
+    fillStyle.setColor(fillColor);
+
+    var lineDash;
+    if (this.get('linestyle')) {
+      switch (this.get('linestyle')) {
+        case 'dashed':
+          lineDash = [10, 10];
+          break;
+        case 'dotted':
+          lineDash = [1, 6];
+          break;
+      }
+    }
+
+    var stroke;
+
+    if (this.get('stroke') > 0) {
+      stroke = new ol.style.Stroke({
+        color: color,
+        width: this.get('stroke'),
+        lineDash: lineDash
+      });
+    }
+    var imageOptions = {
+      fill: fillStyle,
+      stroke: new ol.style.Stroke({
+        color: color,
+        width: this.get('size') / 7
+      }),
+      radius: this.get('size')
+    };
+    var image = new ol.style.Circle(imageOptions);
+    if (this.get('symbol_id') && this.get('symbol_id') != 'circle') {
+      goog.object.extend(imageOptions, ({
+        points: 4,
+        angle: Math.PI / 4,
+        rotation: this.get('angle')
+      }));
+      image = new ol.style.RegularShape(
+          /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+    }
+
+    if (this.get('text')) {
+      return [new ol.style.Style({
+        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
+          text: this.get('name'),
+          font: this.get('size') + 'px Sans-serif',
+          rotation: this.get('angle'),
+          fill: new ol.style.Fill({
+            color: color
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'white',
+            width: 2
+          })
+        }))
+      })];
+    } else {
+      styles.push(new ol.style.Style({
+        image: image,
+        fill: fillStyle,
+        stroke: stroke
+      }));
+    }
+
+    return styles;
+  };
 };
 
 app.module.service('appMymaps', app.Mymaps);
