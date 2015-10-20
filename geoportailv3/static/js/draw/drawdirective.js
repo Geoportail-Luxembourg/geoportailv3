@@ -268,8 +268,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
-        if (goog.isDefAndNotNull(feature.get('__source__')) &&
-            feature.get('__source__') == 'mymaps') {
+        if (feature.get('__source__') == 'mymaps') {
           var mapId = this.appMymaps_.getCurrentMapId();
           if (goog.isDefAndNotNull(mapId) && this.appMymaps_.isEditable()) {
             this.appMymaps_.deleteFeature(feature);
