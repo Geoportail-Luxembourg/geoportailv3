@@ -274,7 +274,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
           if (goog.isDefAndNotNull(mapId) && this.appMymaps_.isEditable()) {
             this.appMymaps_.deleteFeature(feature);
           }
-        }else {
+        } else {
           this.onFeatureDelete_(evt);
         }
         goog.events.unlisten(feature, app.DrawEventType.PROPERTYMODIFYEND,
@@ -331,10 +331,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
             var mapId = this.appMymaps_.getCurrentMapId();
             if (goog.isDefAndNotNull(mapId) && this.appMymaps_.isEditable()) {
               this.modifyInteraction_.setActive(true);
-            }else {
+            } else {
               this.modifyInteraction_.setActive(false);
             }
-          }else {
+          } else {
             this.modifyInteraction_.setActive(true);
           }
           this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
