@@ -200,9 +200,9 @@ app.Mymaps.prototype.isEditable = function() {
 app.Mymaps.prototype.getMaps = function() {
   return this.$http_.get(this.mymapsMapsUrl_).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
