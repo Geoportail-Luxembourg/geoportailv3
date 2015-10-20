@@ -159,8 +159,8 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
         dataProjection: 'EPSG:2169',
         featureProjection: this.mapProjection
       });
-      var jsonFeatures = ((new ol.format.GeoJSON()).
-          readFeatures(features, encOpt));
+      var jsonFeatures = (new ol.format.GeoJSON()).
+          readFeatures(features, encOpt);
       for (var i in jsonFeatures) {
         jsonFeatures[i].set('__source__', 'mymaps');
         jsonFeatures[i].set('__editable__', true);
