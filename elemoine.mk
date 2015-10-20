@@ -7,6 +7,8 @@ PRINT_OUTPUT = tomcat
 TOMCAT_STOP_COMMAND =
 TOMCAT_START_COMMAND =
 
+TEMPLATE_EXCLUDE = $(PRINT_OUTPUT)
+
 include geoportailv3.mk
 
 .PHONY: dbtunnel
