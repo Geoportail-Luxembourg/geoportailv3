@@ -201,7 +201,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
     this.appMymaps_.createMap(this.gettext_('Map without title'), '')
       .then(goog.bind(function(resp) {
           var mapId = resp['uuid'];
-          if (mapId === null) {
+          if (goog.isNull(mapId)) {
             this.askToConnect();
           } else {
             var map = {'uuid': mapId};

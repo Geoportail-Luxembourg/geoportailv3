@@ -160,7 +160,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
           delete properties['__editable__'];
           delete properties['__selected__'];
           for (var key in properties) {
-            if (properties[key] === null) {
+            if (goog.isNull(properties[key])) {
               delete properties[key];
             }
           }
