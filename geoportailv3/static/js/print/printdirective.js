@@ -401,7 +401,7 @@ app.PrintController.prototype.cancel = function() {
  * @export
  */
 app.PrintController.prototype.changeLayout = function(newLayout) {
-  this.layout = newLayout;
+  this['layout'] = newLayout;
   this.useOptimalScale_();
   this.map_.render();
 };
@@ -412,7 +412,7 @@ app.PrintController.prototype.changeLayout = function(newLayout) {
  * @export
  */
 app.PrintController.prototype.changeScale = function(newScale) {
-  this.scale = newScale;
+  this['scale'] = newScale;
   this.map_.render();
 };
 
