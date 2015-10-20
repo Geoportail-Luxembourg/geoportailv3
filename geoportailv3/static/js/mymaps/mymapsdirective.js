@@ -235,7 +235,7 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
     this.askToConnect();
   }else {
     this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-      if (mymaps === null) {
+      if (goog.isNull(mymaps)) {
         this.askToConnect();
       } else if (!goog.array.isEmpty(mymaps)) {
         this.choosing = true;
