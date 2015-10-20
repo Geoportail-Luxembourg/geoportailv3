@@ -233,9 +233,9 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
            * @return {ol.Size} Size.
            */
           function() {
-            var idx = this['layouts'].indexOf(this['layout']);
-            goog.asserts.assert(idx >= 0);
-            return app.PrintController.MAP_SIZES_[idx];
+            var layoutIdx = this['layouts'].indexOf(this['layout']);
+            goog.asserts.assert(layoutIdx >= 0);
+            return app.PrintController.MAP_SIZES_[layoutIdx];
           }, this),
       goog.bind(
           /**
@@ -614,11 +614,11 @@ app.PrintController.prototype.useOptimalScale_ = function() {
   var viewCenterResolution = app.PrintController.getViewCenterResolution_(
       map.getView());
 
-  var idx = this['layouts'].indexOf(this['layout']);
-  goog.asserts.assert(idx >= 0);
+  var layoutIdx = this['layouts'].indexOf(this['layout']);
+  goog.asserts.assert(layoutIdx >= 0);
 
   var scale = this.printUtils_.getOptimalScale(mapSize,
-      viewCenterResolution, app.PrintController.MAP_SIZES_[idx],
+      viewCenterResolution, app.PrintController.MAP_SIZES_[layoutIdx],
       this['scales']);
 
   this['scale'] = scale != -1 ? scale : this['scales'][0];
