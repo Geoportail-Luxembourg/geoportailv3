@@ -504,14 +504,9 @@ app.DrawController.prototype.saveFeatureInMymaps_ = function(feature) {
  * @private
  */
 app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
-  var featuresToEncode = [];
-  goog.array.forEach(features, function(feature) {
-    var source = feature.get('__source__');
-    if (!goog.isDefAndNotNull(source) ||
-        (goog.isDefAndNotNull(source) && source != 'mymaps')) {
-      featuresToEncode.push(feature);
-    }
-  }, this);
+  var featuresToEncode = features.filter(function(feature) {
+    return feature.get('__source__') != 'mymaps';
+  });
 
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
