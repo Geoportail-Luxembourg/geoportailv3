@@ -41,13 +41,17 @@ app.AuthenticationController = function(appUserManager) {
   this.appUserManager_ = appUserManager;
 
   /**
-   * @type {Object}
-   * @private
+   * @type {string}
+   * @export
    */
-  this['credentials'] = {
-    'login' : null,
-    'password' : null
-  };
+  this.username = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.password = '';
+
 };
 
 
@@ -56,7 +60,7 @@ app.AuthenticationController = function(appUserManager) {
  */
 app.AuthenticationController.prototype.authenticate = function() {
 
-  this.appUserManager_.authenticate(this['credentials']);
+  this.appUserManager_.authenticate(this.username, this.password);
 };
 
 
@@ -89,8 +93,8 @@ app.AuthenticationController.prototype.isAuthenticated = function() {
  * @return {string}
  * @export
  */
-app.AuthenticationController.prototype.getMail = function() {
-  return this.appUserManager_['mail'];
+app.AuthenticationController.prototype.getEmail = function() {
+  return this.appUserManager_.getEmail();
 };
 
 
@@ -98,8 +102,8 @@ app.AuthenticationController.prototype.getMail = function() {
  * @return {string}
  * @export
  */
-app.AuthenticationController.prototype.getLogin = function() {
-  return this.appUserManager_['login'];
+app.AuthenticationController.prototype.getUsername = function() {
+  return this.appUserManager_.getUsername();
 };
 
 

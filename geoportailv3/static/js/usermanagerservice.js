@@ -48,15 +48,6 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   this.logoutUrl_ = logoutUrl;
 
   /**
-   * @type {Object}
-   * @private
-   */
-  this['credentials'] = {
-    'login' : null,
-    'password' : null
-  };
-
-  /**
    * @type {angular.$http}
    * @private
    */
@@ -104,14 +95,15 @@ app.UserManager = function($http, loginUrl, logoutUrl,
 
 
 /**
- * @param {Object} credentials Credentials.
+ * @param {string} username
+ * @param {string} password
  * @export
  */
-app.UserManager.prototype.authenticate = function(credentials) {
+app.UserManager.prototype.authenticate = function(username, password) {
 
   var req = $.param({
-    'login': credentials['login'],
-    'password': credentials['password']
+    'login': username,
+    'password': password
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -238,6 +230,22 @@ app.UserManager.prototype.setUserInfo = function(
   this['mail'] = mail;
   this['name'] = name;
   this['isAdmin'] = isAdmin;
+};
+
+
+/**
+ * @return {string} The username.
+ */
+app.UserManager.prototype.getUsername = function() {
+  return this['login'];
+};
+
+
+/**
+ * @return {string} The Email.
+ */
+app.UserManager.prototype.getEmail = function() {
+  return this['mail'];
 };
 
 app.module.service('appUserManager', app.UserManager);
