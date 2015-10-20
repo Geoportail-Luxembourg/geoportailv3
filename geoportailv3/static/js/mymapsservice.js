@@ -185,8 +185,8 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId) {
  */
 app.Mymaps.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      (this.appUserManager_['isAdmin'] == 'TRUE' ||
-       this.appUserManager_['login'] == this.mapOwner)) {
+      (this.appUserManager_.isAdmin == 'TRUE' ||
+       this.appUserManager_.getUsername() == this.mapOwner)) {
     return true;
   }
   return false;

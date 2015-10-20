@@ -272,7 +272,7 @@ app.MainController.prototype.setMap_ = function() {
  */
 app.MainController.prototype.manageUserRoleChange_ = function(scope) {
   scope.$watch(goog.bind(function() {
-    return this.appUserManager_['roleId'];
+    return this.appUserManager_.roleId;
   }, this), goog.bind(function(newVal, oldVal) {
     if (!goog.isDef(oldVal) && !goog.isDef(newVal)) {
       // This happens at init time. We don't want to reload the themes
@@ -288,7 +288,7 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
  * @private
  */
 app.MainController.prototype.loadThemes_ = function() {
-  this.appThemes_.loadThemes(this.appUserManager_['roleId']);
+  this.appThemes_.loadThemes(this.appUserManager_.roleId);
 };
 
 

@@ -90,7 +90,7 @@ app.AuthenticationController.prototype.isAuthenticated = function() {
 
 
 /**
- * @return {string}
+ * @return {string|undefined}
  * @export
  */
 app.AuthenticationController.prototype.getEmail = function() {
@@ -99,7 +99,7 @@ app.AuthenticationController.prototype.getEmail = function() {
 
 
 /**
- * @return {string}
+ * @return {string|undefined}
  * @export
  */
 app.AuthenticationController.prototype.getUsername = function() {

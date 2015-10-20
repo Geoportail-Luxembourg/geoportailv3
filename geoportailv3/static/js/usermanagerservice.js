@@ -57,34 +57,34 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   /**
    * @type {string|undefined}
    */
-  this['login'] = undefined;
+  this.login = undefined;
 
 
   /**
    * @type {string|undefined}
    */
-  this['email'] = undefined;
+  this.email = undefined;
 
 
   /**
    * @type {string|undefined}
    */
-  this['role'] = undefined;
+  this.role = undefined;
 
   /**
    * @type {number|undefined}
    */
-  this['roleId'] = undefined;
+  this.roleId = undefined;
 
   /**
    * @type {string|undefined}
    */
-  this['name'] = undefined;
+  this.name = undefined;
 
   /**
    * @type {boolean}
    */
-  this['isAdmin'] = false;
+  this.isAdmin = false;
 
   /**
    * @type {gettext}
@@ -188,19 +188,10 @@ app.UserManager.prototype.getUserInfo = function() {
  * @export
  */
 app.UserManager.prototype.isAuthenticated = function() {
-  if (goog.isDef(this['login']) && this['login'].length > 0) {
+  if (goog.isDef(this.login) && this.login.length > 0) {
     return true;
   }
   return false;
-};
-
-
-/**
- * @return {boolean}
- * @export
- */
-app.UserManager.prototype.hasError = function() {
-  return this['isError'];
 };
 
 
@@ -224,28 +215,28 @@ app.UserManager.prototype.clearUserInfo = function() {
  */
 app.UserManager.prototype.setUserInfo = function(
     login, role, roleId, mail, name, isAdmin) {
-  this['login'] = login;
-  this['role'] = role;
-  this['roleId'] = roleId;
-  this['mail'] = mail;
-  this['name'] = name;
-  this['isAdmin'] = isAdmin;
+  this.login = login;
+  this.role = role;
+  this.roleId = roleId;
+  this.email = mail;
+  this.name = name;
+  this.isAdmin = isAdmin;
 };
 
 
 /**
- * @return {string} The username.
+ * @return {string|undefined} The username.
  */
 app.UserManager.prototype.getUsername = function() {
-  return this['login'];
+  return this.login;
 };
 
 
 /**
- * @return {string} The Email.
+ * @return {string|undefined} The Email.
  */
 app.UserManager.prototype.getEmail = function() {
-  return this['mail'];
+  return this.email;
 };
 
 app.module.service('appUserManager', app.UserManager);
