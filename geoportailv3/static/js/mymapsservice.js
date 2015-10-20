@@ -224,9 +224,9 @@ app.Mymaps.prototype.getMaps = function() {
 app.Mymaps.prototype.loadFeatures_ = function() {
   return this.$http_.get(this.mymapsFeaturesUrl_ + this.mapId_).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -245,9 +245,9 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 app.Mymaps.prototype.loadMapInformation_ = function() {
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -267,9 +267,9 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
       feature.get('id')).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -297,9 +297,9 @@ app.Mymaps.prototype.createMap = function(title, description) {
   return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
       goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -318,9 +318,9 @@ app.Mymaps.prototype.deleteMap = function() {
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + this.mapId_).then(
       goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -352,9 +352,9 @@ app.Mymaps.prototype.updateMap = function(title, description) {
   return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
@@ -385,9 +385,9 @@ app.Mymaps.prototype.saveFeature = function(feature, featureProjection) {
   return this.$http_.post(this.mymapsSaveFeatureUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {app.MapsResponse} The "mymaps" web service response.
-         */
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
       function(resp) {
         return resp.data;
       }, this), goog.bind(
