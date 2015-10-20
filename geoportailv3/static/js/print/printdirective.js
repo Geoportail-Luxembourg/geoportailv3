@@ -451,9 +451,7 @@ app.PrintController.prototype.print = function() {
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': this.gettextCatalog_.currentLanguage,
           'legend': this['legend'] ? legend : null,
-          'scalebar': {
-                       'geodetic': true
-          }
+          'scalebar': {'geodetic': true}
         });
 
         // add feature overlay layer to print spec
