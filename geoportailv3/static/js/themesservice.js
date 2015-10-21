@@ -174,7 +174,7 @@ app.Themes.prototype.getThemesObject = function() {
 
 
 /**
- * @param {number|undefined} roleId The role id to send in the request.
+ * @param {?number} roleId The role id to send in the request.
  * Load themes from the "themes" service.
  */
 app.Themes.prototype.loadThemes = function(roleId) {

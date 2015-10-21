@@ -72,9 +72,9 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   this.role = undefined;
 
   /**
-   * @type {number|undefined}
+   * @type {?number}
    */
-  this.roleId = undefined;
+  this.roleId = null;
 
   /**
    * @type {string|undefined}
@@ -197,14 +197,14 @@ app.UserManager.prototype.isAuthenticated = function() {
  * of error.
  */
 app.UserManager.prototype.clearUserInfo = function() {
-  this.setUserInfo('', undefined, undefined, undefined, undefined, false);
+  this.setUserInfo('', undefined, null, undefined, undefined, false);
 };
 
 
 /**
  * @param {string|undefined} username The username.
  * @param {string|undefined} role Role.
- * @param {number|undefined} roleId Role id.
+ * @param {?number} roleId Role id.
  * @param {string|undefined} mail Mail.
  * @param {string|undefined} name Name.
  * @param {boolean} isAdmin
@@ -237,6 +237,14 @@ app.UserManager.prototype.getUsername = function() {
  */
 app.UserManager.prototype.getEmail = function() {
   return this.email;
+};
+
+
+/**
+ * @return {?number} The Role Id.
+ */
+app.UserManager.prototype.getRoleId = function() {
+  return this.roleId;
 };
 
 app.module.service('appUserManager', app.UserManager);
