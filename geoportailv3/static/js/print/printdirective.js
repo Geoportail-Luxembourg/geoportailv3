@@ -397,7 +397,7 @@ app.PrintController.prototype.cancel = function() {
 
 
 /**
- * @param {string} newLayout The name of the selected layout
+ * @param {string} newLayout The name of the selected layout.
  * @export
  */
 app.PrintController.prototype.changeLayout = function(newLayout) {
