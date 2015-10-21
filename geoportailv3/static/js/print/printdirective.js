@@ -24,6 +24,8 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
@@ -408,12 +410,38 @@ app.PrintController.prototype.changeLayout = function(newLayout) {
 
 
 /**
- * @param {string} newScale The name of the selected scale
+ * @param {number} newScale The new scale.
  * @export
  */
 app.PrintController.prototype.changeScale = function(newScale) {
   this['scale'] = newScale;
-  this.map_.render();
+
+  var map = this.map_;
+
+  var mapSize = map.getSize();
+  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+
+  var layoutIdx = this['layouts'].indexOf(this['layout']);
+  goog.asserts.assert(layoutIdx >= 0);
+
+  var optimalResolution = this.printUtils_.getOptimalResolution(
+      mapSize, app.PrintController.MAP_SIZES_[layoutIdx], newScale);
+
+  var view = map.getView();
+  var currentResolution = view.getResolution();
+
+  if (currentResolution < optimalResolution) {
+    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
+    goog.asserts.assert(newResolution >= optimalResolution);
+    map.beforeRender(ol.animation.zoom({
+      duration: 250,
+      easing: ol.easing.easeOut,
+      resolution: currentResolution
+    }));
+    view.setResolution(newResolution);
+  }
+
+  map.render();
 };
 
 
