@@ -24,6 +24,8 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
@@ -233,9 +235,9 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
            * @return {ol.Size} Size.
            */
           function() {
-            var idx = this['layouts'].indexOf(this['layout']);
-            goog.asserts.assert(idx >= 0);
-            return app.PrintController.MAP_SIZES_[idx];
+            var layoutIdx = this['layouts'].indexOf(this['layout']);
+            goog.asserts.assert(layoutIdx >= 0);
+            return app.PrintController.MAP_SIZES_[layoutIdx];
           }, this),
       goog.bind(
           /**
@@ -397,7 +399,7 @@ app.PrintController.prototype.cancel = function() {
 
 
 /**
- * @param {string} newLayout The name of the selected layout
+ * @param {string} newLayout The name of the selected layout.
  * @export
  */
 app.PrintController.prototype.changeLayout = function(newLayout) {
@@ -408,12 +410,38 @@ app.PrintController.prototype.changeLayout = function(newLayout) {
 
 
 /**
- * @param {string} newScale The name of the selected scale
+ * @param {number} newScale The new scale.
  * @export
  */
 app.PrintController.prototype.changeScale = function(newScale) {
   this['scale'] = newScale;
-  this.map_.render();
+
+  var map = this.map_;
+
+  var mapSize = map.getSize();
+  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+
+  var layoutIdx = this['layouts'].indexOf(this['layout']);
+  goog.asserts.assert(layoutIdx >= 0);
+
+  var optimalResolution = this.printUtils_.getOptimalResolution(
+      mapSize, app.PrintController.MAP_SIZES_[layoutIdx], newScale);
+
+  var view = map.getView();
+  var currentResolution = view.getResolution();
+
+  if (currentResolution < optimalResolution) {
+    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
+    goog.asserts.assert(newResolution >= optimalResolution);
+    map.beforeRender(ol.animation.zoom({
+      duration: 250,
+      easing: ol.easing.easeOut,
+      resolution: currentResolution
+    }));
+    view.setResolution(newResolution);
+  }
+
+  map.render();
 };
 
 
@@ -451,9 +479,7 @@ app.PrintController.prototype.print = function() {
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': this.gettextCatalog_.currentLanguage,
           'legend': this['legend'] ? legend : null,
-          'scalebar': {
-                       'geodetic': true
-          }
+          'scalebar': {'geodetic': true}
         });
 
         // add feature overlay layer to print spec
@@ -614,11 +640,11 @@ app.PrintController.prototype.useOptimalScale_ = function() {
   var viewCenterResolution = app.PrintController.getViewCenterResolution_(
       map.getView());
 
-  var idx = this['layouts'].indexOf(this['layout']);
-  goog.asserts.assert(idx >= 0);
+  var layoutIdx = this['layouts'].indexOf(this['layout']);
+  goog.asserts.assert(layoutIdx >= 0);
 
   var scale = this.printUtils_.getOptimalScale(mapSize,
-      viewCenterResolution, app.PrintController.MAP_SIZES_[idx],
+      viewCenterResolution, app.PrintController.MAP_SIZES_[layoutIdx],
       this['scales']);
 
   this['scale'] = scale != -1 ? scale : this['scales'][0];
