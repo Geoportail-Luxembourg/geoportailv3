@@ -93,7 +93,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.tempDesc = '';
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {app.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -155,7 +155,7 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
-  this.feature.dispatchEvent(app.DrawEventType.PROPERTYMODIFYEND);
+  this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;
 };
 

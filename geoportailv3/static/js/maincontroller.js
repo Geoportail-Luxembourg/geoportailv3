@@ -51,6 +51,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.Themes} appThemes Themes service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
  * @param {app.UserManager} appUserManager
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -63,7 +64,13 @@ app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
     appMymaps, appStateManager, appThemes, appFeaturePopup, appUserManager,
-    langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
 
   /**
    * @type {app.UserManager}
@@ -384,7 +391,10 @@ app.MainController.prototype.initMymaps_ = function() {
   var mapId = this.stateManager_.getInitialValue('map_id');
   this.appMymaps_.mapProjection = this['map'].getView().getProjection();
   if (goog.isDefAndNotNull(mapId)) {
-    this.appMymaps_.setCurrentMapId(mapId);
+    this.appMymaps_.setCurrentMapId(mapId,
+        this.drawnFeatures_.getCollection());
+  } else {
+    this.appMymaps_.clear();
   }
 };
 

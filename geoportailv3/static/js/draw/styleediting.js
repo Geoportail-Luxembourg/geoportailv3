@@ -31,10 +31,17 @@ app.module.directive('appStyleEditing', app.styleEditingDirective);
 
 /**
  * @param {angular.Scope} $scope The scope.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
  * @ngInject
  */
-app.StyleEditingController = function($scope) {
+app.StyleEditingController = function($scope, appDrawnFeatures) {
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
 
   /**
    * @type {ol.Feature}
@@ -198,7 +205,7 @@ app.StyleEditingController.prototype.setColor = function(val) {
  * @export
  */
 app.StyleEditingController.prototype.saveFeature = function() {
-  this.feature.dispatchEvent(app.DrawEventType.PROPERTYMODIFYEND);
+  this.drawnFeatures_.saveFeature(this.feature);
   this.editingStyle = false;
 };
 

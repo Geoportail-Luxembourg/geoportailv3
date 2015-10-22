@@ -10,8 +10,6 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
-goog.require('app.DrawController');
-goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
@@ -52,17 +50,30 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.UserManager} appUserManager
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
  * @export
  * @ngInject
  */
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appMymaps, appNotify, appFeaturePopup,
-    appDrawnFeatures, appSelectedFeatures, appUserManager) {
+    appMymaps, appNotify, appFeaturePopup, appSelectedFeatures,
+    appUserManager, appDrawnFeatures) {
+
+  /**
+   * @type {Array.<ol.Feature>}
+   * @export
+   */
+  this.featuresList = appDrawnFeatures.getArray();
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
+
   /**
    * @type {app.UserManager}
    * @private
@@ -125,12 +136,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.newDescription = '';
 
   /**
-   * @type {Array.<ol.Feature>}
-   * @export
-   */
-  this.featuresList = appDrawnFeatures.getArray();
-
-  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -155,7 +160,8 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
-  this.appMymaps_.setCurrentMapId('');
+  this.drawnFeatures_.clear();
+  this.selectedFeatures_.clear();
 };
 
 
@@ -263,7 +269,9 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
  */
 app.MymapsDirectiveController.prototype.onChosen = function(map) {
   this.closeMap();
-  this.appMymaps_.setCurrentMapId(map['uuid']);
+  this.appMymaps_.setCurrentMapId(map['uuid'],
+      this.drawnFeatures_.getCollection());
+
   this['drawopen'] = true;
   this.choosing = false;
 };

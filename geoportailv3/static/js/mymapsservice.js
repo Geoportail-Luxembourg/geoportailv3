@@ -22,25 +22,18 @@ app.MapsResponse;
  * @param {angular.$http} $http
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.StateManager} appStateManager
  * @param {app.UserManager} appUserManager
  * @ngInject
  */
-app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
-    appStateManager, appUserManager) {
+app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+    appUserManager) {
 
   /**
    * @type {app.UserManager}
    * @private
    */
   this.appUserManager_ = appUserManager;
-
-  /**
-   * @type {ol.Collection.<ol.Feature>}
-   * @private
-   */
-  this.drawnFeatures_ = appDrawnFeatures;
 
   /**
    * @type {app.StateManager}
@@ -141,42 +134,48 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appDrawnFeatures,
 
 /**
  * @param {string} mapId the map id.
+ * @param {ol.Collection} collection
  */
-app.Mymaps.prototype.setCurrentMapId = function(mapId) {
+app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.mapId_ = mapId;
-  if (this.isMymapsSelected()) {
-    this.stateManager_.updateState({
-      'map_id': this.mapId_
+
+  this.stateManager_.updateState({
+    'map_id': this.mapId_
+  });
+  this.loadMapInformation_().then(
+      goog.bind(function(mapinformation) {
+        this.mapDescription = mapinformation['description'];
+        this.mapTitle = mapinformation['title'];
+        this.mapOwner = mapinformation['user_login'];
+      }, this));
+  this.loadFeatures_().then(goog.bind(function(features) {
+    var encOpt = /** @type {olx.format.ReadOptions} */ ({
+      dataProjection: 'EPSG:2169',
+      featureProjection: this.mapProjection
     });
-    this.loadMapInformation_().then(
-        goog.bind(function(mapinformation) {
-          this.mapDescription = mapinformation['description'];
-          this.mapTitle = mapinformation['title'];
-          this.mapOwner = mapinformation['user_login'];
-        }, this));
-    this.loadFeatures_().then(goog.bind(function(features) {
-      var encOpt = /** @type {olx.format.ReadOptions} */ ({
-        dataProjection: 'EPSG:2169',
-        featureProjection: this.mapProjection
-      });
-      var jsonFeatures = (new ol.format.GeoJSON()).
-          readFeatures(features, encOpt);
-      goog.array.forEach(jsonFeatures, function(feature) {
-        feature.set('__source__', 'mymaps');
-        feature.set('__editable__', true);
-        feature.setStyle(this.featureStyleFunction_);
-      }, this);
-      this.drawnFeatures_.extend(/** @type {!Array<(null|ol.Feature)>} */
-          (jsonFeatures));
-    }, this));
-  }else {
-    this.stateManager_.deleteParam('map_id');
-    this.mapId_ = '';
-    this.mapTitle = '';
-    this.mapDescription = '';
-    this.mapOwner = '';
-    this.drawnFeatures_.clear();
-  }
+    var jsonFeatures = (new ol.format.GeoJSON()).
+        readFeatures(features, encOpt);
+    goog.array.forEach(jsonFeatures, function(feature) {
+      feature.set('__source__', 'mymaps');
+      feature.set('__editable__', true);
+      feature.setStyle(this.featureStyleFunction_);
+    }, this);
+
+    collection.extend(
+        /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
+  }, this));
+};
+
+
+/**
+ * clear the mymaps service
+ */
+app.Mymaps.prototype.clear = function() {
+  this.stateManager_.deleteParam('map_id');
+  this.mapId_ = '';
+  this.mapTitle = '';
+  this.mapDescription = '';
+  this.mapOwner = '';
 };
 
 
@@ -368,13 +367,12 @@ app.Mymaps.prototype.updateMap = function(title, description) {
 /**
  * Save the map
  * @param {ol.Feature} feature the feature to save
- * @param {?ol.proj.Projection} featureProjection
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.saveFeature = function(feature, featureProjection) {
+app.Mymaps.prototype.saveFeature = function(feature) {
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
-    featureProjection: featureProjection
+    featureProjection: this.mapProjection
   });
   var req = $.param({
     'feature': (new ol.format.GeoJSON()).writeFeature(feature, encOpt)
