@@ -91,8 +91,8 @@ app.DrawnFeatures.prototype.remove = function(feature) {
 app.DrawnFeatures.prototype.add = function(feature) {
   var features = this.features.getArray().slice();
   features.push(feature);
-
   this.saveFeature(feature);
+  this.encodeFeaturesInUrl_(features);
 };
 
 

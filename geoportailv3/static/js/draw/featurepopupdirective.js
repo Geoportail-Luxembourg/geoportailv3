@@ -37,12 +37,18 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
-    appDrawnFeatures, appMymaps) {
+    appDrawnFeatures, appMymaps, appSelectedFeatures) {
 
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
 
   /**
    * @type {app.Mymaps}
@@ -166,6 +172,7 @@ app.FeaturePopupController.prototype.validateModifications = function() {
  */
 app.FeaturePopupController.prototype.deleteFeature = function() {
   this.appFeaturePopup_.hide();
+  this.selectedFeatures_.remove(this.feature);
   this.drawnFeatures_.remove(this.feature);
   this.deletingFeature = false;
 };
