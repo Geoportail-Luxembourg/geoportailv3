@@ -114,6 +114,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsCopyMapUrl_ = mymapsUrl + '/copy/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -354,6 +360,42 @@ app.Mymaps.prototype.createMap = function(title, description) {
         return [];
       }, this)
   );
+};
+
+
+/**
+ * copy a new map
+ * @param {string} title the title of the map.
+ * @param {string} description a description about the map.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.copyMap = function(title, description) {
+  var req = $.param({
+    'title': title,
+    'description': description
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsCopyMapUrl_ + this.mapId_, req, config).
+      then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la copie de votre carte.');
+        this.notify_(msg);
+        return [];
+      }, this));
 };
 
 

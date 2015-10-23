@@ -107,6 +107,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.modifying = false;
 
   /**
+   * Tells whether the 'copying' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.copying = false;
+
+  /**
    * Tells whether the 'choosing a map' modal window is open or not.
    * @type {boolean}
    * @export
@@ -160,8 +167,35 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  * Copy the map.
  * @export
  */
+app.MymapsDirectiveController.prototype.openCopyPanel = function() {
+  this.newTitle = this.appMymaps_.mapTitle;
+  this.newDescription = this.appMymaps_.mapDescription;
+  this.copying = true;
+};
+
+
+/**
+ * Copy the map.
+ * @export
+ */
 app.MymapsDirectiveController.prototype.copyMap = function() {
-  console.log('Copy the map');
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  }else {
+    this.appMymaps_.copyMap(this.newTitle, this.newDescription).
+        then(goog.bind(function(resp) {
+          if (goog.isNull(resp)) {
+            this.askToConnect();
+          } else {
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              var map = {'uuid': mapId};
+              this.onChosen(map);
+              var msg = this.gettext_('Carte copiée');
+              this.notify_(msg);
+              this.copying = false;
+            }}}, this));
+  }
 };
 
 
@@ -360,9 +394,7 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
   if (this.appMymaps_.isEditable()) {
     this.newTitle = this.appMymaps_.mapTitle;
     this.newDescription = this.appMymaps_.mapDescription;
-    if (this.appMymaps_.isEditable()) {
-      this.modifying = true;
-    }
+    this.modifying = true;
   }
 };
 

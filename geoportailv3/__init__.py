@@ -117,6 +117,11 @@ def main(global_config, **settings):
         "/mymaps/save_feature/{map_id}",
         request_method="POST"
     )
+    config.add_route(
+        "mymaps_copy",
+        "/mymaps/copy/{map_id}",
+        request_method="POST"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
