@@ -7,6 +7,7 @@
 goog.provide('app.Mymaps');
 
 goog.require('app');
+goog.require('app.Notify');
 goog.require('app.UserManager');
 
 
@@ -24,10 +25,24 @@ app.MapsResponse;
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.StateManager} appStateManager
  * @param {app.UserManager} appUserManager
+ * @param {app.Notify} appNotify Notify service.
+ * @param {gettext} gettext Gettext service.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
-    appUserManager) {
+    appUserManager, appNotify, gettext) {
+
+  /**
+   * @type {gettext}
+   * @private
+   */
+  this.gettext_ = gettext;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * @type {app.UserManager}
@@ -207,8 +222,12 @@ app.Mymaps.prototype.getMaps = function() {
       }, this), goog.bind(
       function(error) {
         if (error.status == 401) {
+          this.notifyUnauthorized();
           return null;
         }
+        var msg = this.gettext_(
+           'Erreur inattendue lors du chargement de vos cartes.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -230,6 +249,13 @@ app.Mymaps.prototype.loadFeatures_ = function() {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors du chargement de votre carte.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -251,6 +277,13 @@ app.Mymaps.prototype.loadMapInformation_ = function() {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors du chargement de votre carte.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -273,6 +306,14 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la suppression d\'un élement.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -303,6 +344,13 @@ app.Mymaps.prototype.createMap = function(title, description) {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la création de votre carte.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -324,6 +372,13 @@ app.Mymaps.prototype.deleteMap = function() {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la suppression de votre carte.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -358,6 +413,13 @@ app.Mymaps.prototype.updateMap = function(title, description) {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la mise à jour de votre carte.');
+        this.notify_(msg);
         return [];
       }, this)
   );
@@ -390,9 +452,27 @@ app.Mymaps.prototype.saveFeature = function(feature) {
         return resp.data;
       }, this), goog.bind(
       function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la sauvegarde de votre modification.');
+        this.notify_(msg);
         return [];
       }, this)
   );
+};
+
+
+/**
+ * Notify the user he has to connect
+ * @export
+ */
+app.Mymaps.prototype.notifyUnauthorized = function() {
+  var msg = this.gettext_(
+      'Votre utilisateur n\'a pas les autorisations suffisantes.');
+  this.notify_(msg);
 };
 
 

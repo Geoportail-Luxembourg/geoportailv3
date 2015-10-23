@@ -203,14 +203,16 @@ app.MymapsDirectiveController.prototype.createMap = function() {
   }else {
     this.appMymaps_.createMap(this.gettext_('Map without title'), '')
       .then(goog.bind(function(resp) {
-          var mapId = resp['uuid'];
-          if (goog.isNull(mapId)) {
+          if (goog.isNull(resp)) {
             this.askToConnect();
           } else {
-            var map = {'uuid': mapId};
-            this.onChosen(map);
-            var msg = this.gettext_('Nouvelle carte créée');
-            this.notify_(msg);
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              var map = {'uuid': mapId};
+              this.onChosen(map);
+              var msg = this.gettext_('Nouvelle carte créée');
+              this.notify_(msg);
+            }
           }}, this));
   }
 };
@@ -222,9 +224,17 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  */
 app.MymapsDirectiveController.prototype.deleteMap = function() {
   if (this.appMymaps_.isEditable()) {
-    this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
-      this.closeMap();
-    }, this));
+    if (!this.appUserManager_.isAuthenticated()) {
+      this.askToConnect();
+    }else {
+      this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
+        if (goog.isNull(resp)) {
+          this.askToConnect();
+        } else {
+          this.closeMap();
+        }
+      }, this));
+    }
   }
 };
 
@@ -310,10 +320,18 @@ app.MymapsDirectiveController.prototype.isEditable = function() {
  */
 app.MymapsDirectiveController.prototype.saveModifications = function() {
   if (this.appMymaps_.isEditable()) {
-    this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
-        goog.bind(function(mymaps) {
-          this.modifying = false;
-        }, this));
+    if (!this.appUserManager_.isAuthenticated()) {
+      this.askToConnect();
+    }else {
+      this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
+          goog.bind(function(mymaps) {
+            if (goog.isNull(mymaps)) {
+              this.askToConnect();
+            } else {
+              this.modifying = false;
+            }
+          }, this));
+    }
   }
 };
 
