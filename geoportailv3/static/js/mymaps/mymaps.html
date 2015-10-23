@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.mapId" class="col-xs-12">
+<div ng-show="!ctrl.isMymapsSelected()" class="col-xs-12">
   <p translate>
     Create, save and share your own maps.
   </p>
@@ -37,6 +37,15 @@
           <li class="divider"></li>
           <li ng-click="ctrl.createMap()"><a href translate>Create new map</a></li>
           <li ng-click="ctrl.chooseMap()"><a href translate>Open an other map</a></li>
+          <li class="divider"></li>
+          <li ng-click="ctrl.copyMap()"><a href translate>Copy the map</a></li>
+          <li ng-click="ctrl.closeMap()"><a href translate>Close the map</a></li>
+          <li ng-click="ctrl.shareMap()"><a href translate>Share the map</a></li>
+          <li class="divider"></li>
+          <li ng-click="ctrl.exportGpx()"><a href translate>Export as GPX</a></li>
+          <li ng-click="ctrl.exportKml()"><a href translate>Export as KML</a></li>
+          <li ng-click="ctrl.importGpx()"><a href translate>Import GPX</a></li>
+          <li ng-click="ctrl.importKml()"><a href translate>Import KML</a></li>
         </ul>
       </li>
     </ul>

@@ -157,6 +157,60 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
 
 
 /**
+ * Copy the map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.copyMap = function() {
+  console.log('Copy the map');
+};
+
+
+/**
+ * Export a Gpx file
+ * @export
+ */
+app.MymapsDirectiveController.prototype.exportGpx = function() {
+  console.log('exportGpx');
+};
+
+
+/**
+ * Import a GPX file
+ * @export
+ */
+app.MymapsDirectiveController.prototype.importGpx = function() {
+  console.log('importGpx');
+};
+
+
+/**
+ * Export a KML file
+ * @export
+ */
+app.MymapsDirectiveController.prototype.exportKml = function() {
+  console.log('exportKml');
+};
+
+
+/**
+ * Import a KML file
+ * @export
+ */
+app.MymapsDirectiveController.prototype.importKml = function() {
+  console.log('importKml');
+};
+
+
+/**
+ * share the current map
+ * @export
+ */
+app.MymapsDirectiveController.prototype.shareMap = function() {
+  console.log('shareMap');
+};
+
+
+/**
  * Closes the current map.
  * @export
  */
