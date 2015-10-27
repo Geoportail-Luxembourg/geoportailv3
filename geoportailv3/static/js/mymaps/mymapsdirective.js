@@ -166,7 +166,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
 
 
 /**
- * Export a Gpx file
+ * Export a Gpx file.
  * @export
  */
 app.MymapsDirectiveController.prototype.exportGpx = function() {
@@ -175,7 +175,7 @@ app.MymapsDirectiveController.prototype.exportGpx = function() {
 
 
 /**
- * Import a GPX file
+ * Import a GPX file.
  * @export
  */
 app.MymapsDirectiveController.prototype.importGpx = function() {
@@ -184,7 +184,7 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
 
 
 /**
- * Export a KML file
+ * Export a KML file.
  * @export
  */
 app.MymapsDirectiveController.prototype.exportKml = function() {
@@ -193,7 +193,7 @@ app.MymapsDirectiveController.prototype.exportKml = function() {
 
 
 /**
- * Import a KML file
+ * Import a KML file.
  * @export
  */
 app.MymapsDirectiveController.prototype.importKml = function() {
@@ -202,7 +202,7 @@ app.MymapsDirectiveController.prototype.importKml = function() {
 
 
 /**
- * share the current map
+ * Share the current map.
  * @export
  */
 app.MymapsDirectiveController.prototype.shareMap = function() {
@@ -211,7 +211,7 @@ app.MymapsDirectiveController.prototype.shareMap = function() {
 
 
 /**
- * Closes the current map.
+ * Close the current map.
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
