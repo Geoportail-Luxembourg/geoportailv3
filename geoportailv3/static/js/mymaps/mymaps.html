@@ -1,12 +1,12 @@
-<div ng-show="!ctrl.mapId" class="col-xs-12">
+<div ng-show="!ctrl.isMymapsSelected()" class="col-xs-12">
   <p translate>
     Create, save and share your own maps.
   </p>
   <p class="text-center">
-    <button class="btn btn-default" ng-click="ctrl.chooseMap()" translate>Open a map</button>
+    <button class="btn btn-default" ng-click="ctrl.chooseMap()" translate>Ouvrir une carte</button>
   </p>
   <p class="text-center">
-    <button class="btn btn-default" ng-click="ctrl.createMap()" translate>Create new map</button>
+    <button class="btn btn-default" ng-click="ctrl.createMap()" translate>Créer une nouvelle carte</button>
   </p>
 </div>
 
@@ -22,7 +22,7 @@
   </div>
   <div class="col-xs-12">
     <p class="description" ng-click="ctrl.modifyMap()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
-    <p class="no-description" ng-click="ctrl.modifyMap()" ng-show="!ctrl.getMapDescription()" translate><em>No description</em></p>
+    <p class="no-description" ng-click="ctrl.modifyMap()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
   </div>
 
   <div ng-show="ctrl.isEditable()" class="mymap-footer col-xs-12">
@@ -32,11 +32,19 @@
           <span class="fa fa-caret-square-o-down"></span>
         </a>
         <ul class="dropdown-menu">
-          <li><a href translate>Create copy</a></li>
-          <li ng-click="ctrl.deleteMap()"><a href translate>Delete</a></li>
+          <li ng-click="ctrl.createMap()"><a href translate>Créer une nouvelle carte</a></li>
+          <li ng-click="ctrl.chooseMap()"><a href translate>Ouvrir une carte existante</a></li>
+          <li ng-click="ctrl.copyMap()"><a href translate>Créer une copie</a></li>
           <li class="divider"></li>
-          <li ng-click="ctrl.createMap()"><a href translate>Create new map</a></li>
-          <li ng-click="ctrl.chooseMap()"><a href translate>Open an other map</a></li>
+          <li ng-click="ctrl.deleteMap()"><a href translate>Supprimer</a></li>
+          <li class="divider"></li>
+          <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
+          <li ng-click="ctrl.shareMap()"><a href translate>Partager</a></li>
+          <li class="divider"></li>
+          <li ng-click="ctrl.exportGpx()"><a href translate>Exporter un GPX</a></li>
+          <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+          <li ng-click="ctrl.importGpx()"><a href translate>Importer un GPX</a></li>
+          <li ng-click="ctrl.importKml()"><a href translate>Importer un KML</a></li>
         </ul>
       </li>
     </ul>

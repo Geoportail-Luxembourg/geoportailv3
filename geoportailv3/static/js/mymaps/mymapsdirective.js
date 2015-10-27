@@ -157,7 +157,61 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
 
 
 /**
- * Closes the current map.
+ * Copy the map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.copyMap = function() {
+  console.log('Copy the map');
+};
+
+
+/**
+ * Export a Gpx file.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.exportGpx = function() {
+  console.log('exportGpx');
+};
+
+
+/**
+ * Import a GPX file.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.importGpx = function() {
+  console.log('importGpx');
+};
+
+
+/**
+ * Export a KML file.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.exportKml = function() {
+  console.log('exportKml');
+};
+
+
+/**
+ * Import a KML file.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.importKml = function() {
+  console.log('importKml');
+};
+
+
+/**
+ * Share the current map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.shareMap = function() {
+  console.log('shareMap');
+};
+
+
+/**
+ * Close the current map.
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
@@ -168,7 +222,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
 
 /**
  * Returns if a mymaps is selected or not.
- * @return {boolean} returns true if a mymaps is selected.
+ * @return {boolean} Returns true if a mymaps is selected.
  * @export
  */
 app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
@@ -177,7 +231,7 @@ app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
 
 
 /**
- * @return {string} returns the description
+ * @return {string} Returns the description.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapDescription = function() {
@@ -186,7 +240,7 @@ app.MymapsDirectiveController.prototype.getMapDescription = function() {
 
 
 /**
- * @return {string} returns the title
+ * @return {string} Returns the title.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapTitle = function() {
@@ -195,7 +249,7 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
 
 
 /**
- * @return {string} returns the title
+ * @return {string} Returns the map owner.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapOwner = function() {
