@@ -168,7 +168,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
 
 /**
  * Returns if a mymaps is selected or not.
- * @return {boolean} returns true if a mymaps is selected.
+ * @return {boolean} Returns true if a mymaps is selected.
  * @export
  */
 app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
@@ -177,7 +177,7 @@ app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
 
 
 /**
- * @return {string} returns the description
+ * @return {string} Returns the description.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapDescription = function() {
@@ -186,7 +186,7 @@ app.MymapsDirectiveController.prototype.getMapDescription = function() {
 
 
 /**
- * @return {string} returns the title
+ * @return {string} Returns the title.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapTitle = function() {
@@ -195,7 +195,7 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
 
 
 /**
- * @return {string} returns the title
+ * @return {string} Returns the map owner.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapOwner = function() {
