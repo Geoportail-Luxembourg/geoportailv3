@@ -195,6 +195,15 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
 
 
 /**
+ * @return {string} returns the title
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapOwner = function() {
+  return this.appMymaps_.mapOwner;
+};
+
+
+/**
  * Creates and load a new map.
  * @export
  */
