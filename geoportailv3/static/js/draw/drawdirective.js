@@ -15,15 +15,15 @@
 goog.provide('app.DrawController');
 goog.provide('app.drawDirective');
 
+
 goog.require('app');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
+goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.Location');
-goog.require('ngeo.format.FeatureHash');
 goog.require('ol.CollectionEventType');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
@@ -63,19 +63,19 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
- * @param {ngeo.Location} ngeoLocation Location service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @constructor
  * @export
  * @ngInject
  */
-app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
+app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures) {
+    appSelectedFeatures, appMymaps) {
 
   /**
    * @type {ol.Map}
@@ -96,7 +96,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.featureSeq_ = 0;
 
   /**
-   * @type {ol.Collection.<ol.Feature>}
+   * @type {app.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -120,39 +120,19 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
   this.scope_ = $scope;
 
   /**
-   * @type {ngeo.Location}
+   * @type {app.Mymaps}
    * @private
    */
-  this.ngeoLocation_ = ngeoLocation;
-
-  /**
-   * @type {ngeo.format.FeatureHash}
-   * @private
-   */
-  this.fhFormat_ = new ngeo.format.FeatureHash({
-    encodeStyles: false,
-    properties: (
-        /**
-         * @param {ol.Feature} feature Feature.
-         * @return {Object.<string, (string|number)>} Properties to encode.
-         */
-        function(feature) {
-          // Do not encode the __editable__ and __selected__ properties.
-          var properties = feature.getProperties();
-          delete properties['__editable__'];
-          delete properties['__selected__'];
-          return properties;
-        })
-  });
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {ol.FeatureStyleFunction}
    * @private
    */
-  this.featureStyleFunction_ = app.DrawController.createStyleFunction_();
+  this.featureStyleFunction_ = this.appMymaps_.createStyleFunction();
 
   var drawPoint = new ol.interaction.Draw({
-    features: this.drawnFeatures_,
+    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POINT
   });
 
@@ -172,7 +152,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawLine = new ol.interaction.Draw({
-    features: this.drawnFeatures_,
+    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.LINE_STRING
   });
 
@@ -192,7 +172,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this.onDrawEnd_, false, this);
 
   var drawPolygon = new ol.interaction.Draw({
-    features: this.drawnFeatures_,
+    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POLYGON
   });
 
@@ -226,28 +206,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       this['queryActive'] = false;
     }
   }, this));
-
-  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.CollectionEvent} evt
-       */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
-        var feature = evt.element;
-        goog.events.listen(feature, goog.events.EventType.CHANGE,
-            this.onFeatureChange_, undefined, this);
-      }, undefined, this);
-
-  goog.events.listen(appDrawnFeatures, ol.CollectionEventType.REMOVE,
-      /**
-       * @param {ol.CollectionEvent} evt
-       */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
-        var feature = evt.element;
-        goog.events.unlisten(feature, goog.events.EventType.CHANGE,
-            this.onFeatureChange_, undefined, this);
-      }, undefined, this);
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
@@ -293,6 +251,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
+
+          if (feature.get('__source__') == 'mymaps') {
+            this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
+          } else {
+            this.modifyInteraction_.setActive(true);
+          }
           this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
         } else {
           this.featurePopup_.hide();
@@ -304,41 +268,31 @@ app.DrawController = function($scope, ngeoDecorateInteraction, ngeoLocation,
     features: appSelectedFeatures
   });
   this.map.addInteraction(modifyInteraction);
+  goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
+      this.onFeatureModifyEnd_, false, this);
+
+  /**
+   * @type {ol.interaction.Modify}
+   * @private
+   */
+  this.modifyInteraction_ = modifyInteraction;
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  drawOverlay.setFeatures(appDrawnFeatures);
+  drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
 
-  this.drawFeaturesInUrl_();
+  this.drawnFeatures_.drawFeaturesInUrl();
 };
 
 
 /**
- * Decode the features encoded in the URL and add them to the collection
- * of drawn features.
+ * @param {goog.events.Event} event Event.
  * @private
  */
-app.DrawController.prototype.drawFeaturesInUrl_ = function() {
-  var encodedFeatures = this.ngeoLocation_.getParam('features');
-  if (goog.isDef(encodedFeatures)) {
-    var features = this.fhFormat_.readFeatures(encodedFeatures);
-    goog.asserts.assert(!goog.isNull(features));
-    for (var i = 0; i < features.length; ++i) {
-      var feature = features[i];
-      var opacity = /** @type {string} */ (feature.get('opacity'));
-      feature.set('opacity', +opacity);
-      var stroke = /** @type {string} */ (feature.get('stroke'));
-      feature.set('stroke', +stroke);
-      var size = /** @type {string} */ (feature.get('size'));
-      feature.set('size', +size);
-      var angle = /** @type {string} */ (feature.get('angle'));
-      feature.set('angle', +angle);
-      var isLabel = /** @type {string} */ (feature.get('is_label'));
-      feature.set('is_label', isLabel === 'true');
-      feature.set('__editable__', true);
-      feature.setStyle(this.featureStyleFunction_);
-    }
-    this.drawnFeatures_.extend(features);
-  }
+app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
+  this.scope_.$applyAsync(goog.bind(function() {
+    var feature = event.features.getArray()[0];
+    this.drawnFeatures_.saveFeature(feature);
+  }, this));
 };
 
 
@@ -378,166 +332,11 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     });
   }, this), 0);
 
-  // Encode the features in the URL.
-  // warning: the drawn feature is not yet in the collection when the
-  // "drawend" event is triggered. So we create a new array and append
-  // the drawn feature to that array.
-  var features = this.drawnFeatures_.getArray().slice();
-  features.push(feature);
-  this.encodeFeaturesInUrl_(features);
+  this.drawnFeatures_.add(feature);
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
-};
-
-
-/**
- * @param {goog.events.Event} event Event.
- * @private
- */
-app.DrawController.prototype.onFeatureChange_ = function(event) {
-  this.scope_.$applyAsync(goog.bind(function() {
-    var features = this.drawnFeatures_.getArray();
-    this.encodeFeaturesInUrl_(features);
-  }, this));
-};
-
-
-/**
- * @param {Array.<ol.Feature>} features Features to encode in the URL.
- * @private
- */
-app.DrawController.prototype.encodeFeaturesInUrl_ = function(features) {
-  this.ngeoLocation_.updateParams({
-    'features': this.fhFormat_.writeFeatures(features)
-  });
-};
-
-
-/**
- * @return {ol.FeatureStyleFunction}
- * @private
- */
-app.DrawController.createStyleFunction_ = function() {
-
-  var styles = [];
-
-  var vertexStyle = new ol.style.Style({
-    image: new ol.style.RegularShape({
-      radius: 6,
-      points: 4,
-      angle: Math.PI / 4,
-      fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.5)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(0, 0, 0, 1)'
-      })
-    }),
-    geometry: function(feature) {
-      var geom = feature.getGeometry();
-
-      if (geom.getType() == ol.geom.GeometryType.POINT) {
-        return;
-      }
-
-      var coordinates;
-      if (geom instanceof ol.geom.LineString) {
-        coordinates = feature.getGeometry().getCoordinates();
-        return new ol.geom.MultiPoint(coordinates);
-      } else if (geom instanceof ol.geom.Polygon) {
-        coordinates = feature.getGeometry().getCoordinates()[0];
-        return new ol.geom.MultiPoint(coordinates);
-      } else {
-        return feature.getGeometry();
-      }
-    }
-  });
-
-  var fillStyle = new ol.style.Fill();
-
-  return function(resolution) {
-
-    // clear the styles
-    styles.length = 0;
-
-    if (this.get('__editable__') && this.get('__selected__')) {
-      styles.push(vertexStyle);
-    }
-
-    // goog.asserts.assert(goog.isDef(this.get('__style__'));
-    var color = this.get('color');
-    var rgb = goog.color.hexToRgb(color);
-    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        this.get('opacity'));
-    fillStyle.setColor(fillColor);
-
-    var lineDash;
-    if (this.get('linestyle')) {
-      switch (this.get('linestyle')) {
-        case 'dashed':
-          lineDash = [10, 10];
-          break;
-        case 'dotted':
-          lineDash = [1, 6];
-          break;
-      }
-    }
-
-    var stroke;
-
-    if (this.get('stroke') > 0) {
-      stroke = new ol.style.Stroke({
-        color: color,
-        width: this.get('stroke'),
-        lineDash: lineDash
-      });
-    }
-    var imageOptions = {
-      fill: fillStyle,
-      stroke: new ol.style.Stroke({
-        color: color,
-        width: this.get('size') / 7
-      }),
-      radius: this.get('size')
-    };
-    var image = new ol.style.Circle(imageOptions);
-    if (this.get('symbol_id') && this.get('symbol_id') != 'circle') {
-      goog.object.extend(imageOptions, ({
-        points: 4,
-        angle: Math.PI / 4,
-        rotation: this.get('angle')
-      }));
-      image = new ol.style.RegularShape(
-          /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
-    }
-
-    if (this.get('text')) {
-      return [new ol.style.Style({
-        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
-          text: this.get('name'),
-          font: this.get('size') + 'px Sans-serif',
-          rotation: this.get('angle'),
-          fill: new ol.style.Fill({
-            color: color
-          }),
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 2
-          })
-        }))
-      })];
-    } else {
-      styles.push(new ol.style.Style({
-        image: image,
-        fill: fillStyle,
-        stroke: stroke
-      }));
-    }
-
-    return styles;
-  };
 };
 
 app.module.controller('AppDrawController', app.DrawController);

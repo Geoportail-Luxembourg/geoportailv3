@@ -47,6 +47,12 @@ def main(global_config, **settings):
     )
     # mymaps routes
     config.add_route(
+        "mymaps",
+        "/mymaps",
+        request_method="HEAD"
+    )
+
+    config.add_route(
         "mymaps_getmaps",
         "/mymaps/maps",
         request_method="GET"
@@ -100,6 +106,16 @@ def main(global_config, **settings):
         "mymaps_delete",
         "/mymaps/delete/{map_id}",
         request_method="DELETE"
+    )
+    config.add_route(
+        "mymaps_delete_feature",
+        "/mymaps/delete_feature/{feature_id}",
+        request_method="DELETE"
+    )
+    config.add_route(
+        "mymaps_save_feature",
+        "/mymaps/save_feature/{map_id}",
+        request_method="POST"
     )
 
     config.include('c2cgeoportal')

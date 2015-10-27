@@ -32,7 +32,6 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):
-
         if self.request.user is None:
             return HTTPUnauthorized()
 
@@ -63,6 +62,7 @@ class Mymaps(object):
     def map_info(self):
         id = self.request.matchdict.get("map_id")
         map = DBSession.query(Map).filter(Map.uuid == id).first()
+
         if map is None:
             return HTTPNotFound()
         if 'cb' in self.request.params:
@@ -89,25 +89,15 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_update", renderer='json')
     def update(self):
-        user = self.request.user
         id = self.request.matchdict.get("map_id")
-        if user is None:
-            return HTTPUnauthorized()
         map = DBSession.query(Map).get(id)
-        if map.category is None:
-            category_id = 999
-        else:
-            category_id = map.category.id
+
         if map is None:
             return HTTPNotFound()
-        if map.user_login != user.username:
-            user = self.request.user
-            if user.uti_is_admin is False:
-                return HTTPUnauthorized()
-            user_role = DBSession.query(Role).get(user.uti_rmy_id)
-            if category_id not in \
-                    [cat.id for cat in user_role.categories]:
-                return HTTPUnauthorized()
+
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
         return self.save(map, id)
 
     @view_config(route_name="mymaps_rate", renderer='json')
@@ -136,23 +126,83 @@ class Mymaps(object):
         except Exception:
             return {'success': False}
 
-    @view_config(route_name="mymaps_delete", renderer='json')
-    def delete(self):
-        id = self.request.matchdict.get("map_id")
-        user = self.request.user
-        if user is None:
-            return HTTPUnauthorized()
-        map = DBSession.query(Map).get(id)
+    @view_config(route_name="mymaps_save_feature", renderer='json')
+    def save_feature(self):
+        try:
+            map_id = self.request.matchdict.get("map_id")
+            map = DBSession.query(Map).get(map_id)
+            if map is None:
+                return HTTPNotFound()
+
+            if not self.has_permission(self.request.user, map):
+                return HTTPUnauthorized()
+
+            if 'feature' not in self.request.params:
+                return HTTPBadRequest()
+
+            feature = self.request.params.get('feature').\
+                replace(u'\ufffd', '?')
+            feature = geojson.loads(feature,
+                                    object_hook=geojson.GeoJSON.to_instance)
+            feature_id = feature.properties.get('id')
+
+            if feature_id:
+                cur_feature = DBSession.query(Feature).get(feature_id)
+                DBSession.delete(cur_feature)
+
+            obj = Feature(feature)
+
+            map.features.append(obj)
+            DBSession.commit()
+            return {'success': True, 'id': obj.id}
+        except:
+            DBSession.rollback()
+            traceback.print_exc(file=sys.stdout)
+            return {'success': False, 'id': obj.id}
+
+    @view_config(route_name="mymaps_delete_feature", renderer='json')
+    def delete_feature(self):
+        id = self.request.matchdict.get("feature_id")
+
+        feature = DBSession.query(Feature).get(id)
+        if feature is None:
+            return HTTPNotFound()
+
+        map = DBSession.query(Map).get(feature.map_id)
         if map is None:
             return HTTPNotFound()
+
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
+        DBSession.delete(feature)
+        DBSession.commit()
+
+        return {'success': True}
+
+    def has_permission(self, user, map):
+        if user is None:
+            return False
         if map.user_login != user.username:
             user = self.request.user
             if user.uti_is_admin is False:
-                return HTTPUnauthorized()
+                return False
             user_role = DBSession.query(Role).get(user.uti_rmy_id)
             if map.category is None or map.category.id not in\
                     [cat.id for cat in user_role.categories]:
-                return HTTPUnauthorized()
+                return False
+        return True
+
+    @view_config(route_name="mymaps_delete", renderer='json')
+    def delete(self):
+        id = self.request.matchdict.get("map_id")
+
+        map = DBSession.query(Map).get(id)
+        if map is None:
+            return HTTPNotFound()
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
         # remove the features associated to the map
         features = DBSession.query(Feature).filter(
             Feature.map_id == map.uuid).all()
@@ -216,21 +266,21 @@ class Mymaps(object):
         # deal with the features
         #
         # delete all features for the given map
-        if id:
-            DBSession.query(Feature).filter(Feature.map_id == id).delete()
-        if 'features' in params:
-            features = params.get('features').replace(u'\ufffd', '?')
-            collection = geojson.loads(
-                features, object_hook=geojson.GeoJSON.to_instance)
-
-            if not isinstance(collection, geojson.FeatureCollection):
-                return HTTPBadRequest()
-
-            for feature in collection.features:
-                if not isinstance(feature, geojson.Feature):
-                    return HTTPBadRequest()
-                obj = Feature(feature)
-                map.features.append(obj)
+        # if id:
+        #    DBSession.query(Feature).filter(Feature.map_id == id).delete()
+        # if 'features' in params:
+        #    features = params.get('features').replace(u'\ufffd', '?')
+        #    collection = geojson.loads(
+        #        features, object_hook=geojson.GeoJSON.to_instance)
+        #
+        #    if not isinstance(collection, geojson.FeatureCollection):
+        #        return HTTPBadRequest()
+        #
+        #    for feature in collection.features:
+        #        if not isinstance(feature, geojson.Feature):
+        #            return HTTPBadRequest()
+        #        obj = Feature(feature)
+        #        map.features.append(obj)
 
         #
         # send everything to the DB

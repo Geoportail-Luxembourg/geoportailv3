@@ -1,12 +1,11 @@
-<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle">
+<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature">
   <div class="feature-popup-heading">
     <a href class="close" ng-click="ctrl.close()">&times;</a>
     {{ ctrl.feature.get('name') }}
   </div>
-  <div class="feature-popup-body description">
-    {{ ctrl.feature.get('description') }}
+  <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
-  <div class="feature-popup-footer">
+  <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
       <li ng-show="ctrl.feature.get('__editable__')">
         <a href ng-click="ctrl.editingAttributes = true">
@@ -19,7 +18,8 @@
         </a>
       </li>
       <li ng-show="ctrl.feature.get('__editable__')">
-        <a href><span class="fa fa-trash"></span></a>
+        <a href href ng-click="ctrl.deletingFeature = true">
+          <span class="fa fa-trash"></span></a>
       </li>
       <li>
         <a href><span class="fa fa-caret-square-o-down"></span></a>
@@ -52,12 +52,20 @@
 </div>
 <div ng-show="ctrl.editingStyle">
   <div class="feature-popup-body">
-    <a href class="close" ng-click="ctrl.editingStyle = false">&times;</a>
-    <app-style-editing app-style-editing-feature="ctrl.feature">
-    </app-style-editing>
+    <app-styleediting app-style-editing-feature="ctrl.feature"
+                       app-style-editing-style="ctrl.editingStyle">
+    </app-styleediting>
+  </div>
+</div>
+<div ng-show="ctrl.deletingFeature">
+  <div class="feature-popup-body">
+    <span translate>Êtes-vous certain de vouloir effacer cet élément de la carte ?</span>
   </div>
   <div class="feature-popup-footer pull-right">
-    <button href class="btn btn-primary" ng-click="ctrl.editingStyle = false" translate>
+    <button href class="btn btn-primary" ng-click="ctrl.deletingFeature = false" translate>
+      Annuler
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.deleteFeature()" translate>
       OK
     </button>
   </div>

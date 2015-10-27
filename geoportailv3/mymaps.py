@@ -114,9 +114,10 @@ class Feature(Base):
     geometry = Column(Geometry(srid=2169))
     map_id = Column(Unicode, ForeignKey('map.uuid'))
     symbol_id = Column(Integer)
-    size = Column(Float, default=40)
+    size = Column(Float, default=15)
     angle = Column(Float, default=0)
     font_size = Column(Integer, default=15)
+    opacity = Column(Float, default=0.5)
 
     def __init__(self, feature=None):
         if feature:
@@ -131,7 +132,9 @@ class Feature(Base):
         self.stroke = feature.properties.get('stroke')
         self.is_label = feature.properties.get('isLabel')
         self.show_orientation = feature.properties.get('showOrientation')
-        self.linestyle = feature.properties.get('linestyle')
+        linestyle = feature.properties.get('linestyle')
+        self.linestyle = 0 if linestyle == 'plain' else 1
+
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
             else 40
@@ -145,6 +148,10 @@ class Feature(Base):
         self.symbol_id = None if symbol_id is not None and\
             len(unicode(symbol_id)) == 0\
             else symbol_id
+
+        opacity = feature.properties.get('opacity')
+        self.opacity = opacity if opacity is not None and\
+            unicode(opacity).isnumeric() else 0.5
 
         if hasattr(feature.geometry, "__geo_interface__"):
             ob = feature.geometry.__geo_interface__
@@ -202,7 +209,8 @@ class Feature(Base):
                           symbolId=self.symbol_id,
                           angle=self.angle,
                           size=self.size,
-                          fontSize=self.font_size
+                          fontSize=self.font_size,
+                          opacity=self.opacity
                           )
         return geojson.Feature(id=self.id,
                                geometry=geometry,

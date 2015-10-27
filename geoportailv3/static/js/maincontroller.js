@@ -15,8 +15,10 @@ goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
+goog.require('app.Mymaps');
 goog.require('app.StateManager');
 goog.require('app.Themes');
+goog.require('app.UserManager');
 goog.require('goog.object');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
@@ -44,9 +46,12 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
  * @param {app.LayerPermalinkManager} appLayerPermalinkManager
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
+ * @param {app.UserManager} appUserManager
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -58,8 +63,20 @@ goog.require('ol.tilegrid.WMTS');
 app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
     appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appStateManager, appThemes, appFeaturePopup, langUrls, maxExtent,
-    defaultExtent, ngeoSyncArrays) {
+    appMymaps, appStateManager, appThemes, appFeaturePopup, appUserManager,
+    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {angular.Scope}
@@ -182,15 +199,18 @@ app.MainController = function(
   this.map_ = null;
 
   /**
-   * The role id of the authenticated user, or `undefined` if the user
-   * is anonymous, or if we don't yet kno if the user is authenticated.
-   * @type {number|undefined}
+   * @type {app.Mymaps}
+   * @private
    */
-  this['roleId'] = undefined;
+  this.appMymaps_ = appMymaps;
+
+  this.appUserManager_.getUserInfo();
 
   this.setMap_();
 
   this.initLanguage_();
+
+  this.initMymaps_();
 
   this.manageSelectedLayers_($scope, ngeoSyncArrays);
 
@@ -259,7 +279,7 @@ app.MainController.prototype.setMap_ = function() {
  */
 app.MainController.prototype.manageUserRoleChange_ = function(scope) {
   scope.$watch(goog.bind(function() {
-    return this['roleId'];
+    return this.appUserManager_.roleId;
   }, this), goog.bind(function(newVal, oldVal) {
     if (!goog.isDef(oldVal) && !goog.isDef(newVal)) {
       // This happens at init time. We don't want to reload the themes
@@ -275,7 +295,7 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
  * @private
  */
 app.MainController.prototype.loadThemes_ = function() {
-  this.appThemes_.loadThemes(this['roleId']);
+  this.appThemes_.loadThemes(this.appUserManager_.roleId);
 };
 
 
@@ -360,6 +380,21 @@ app.MainController.prototype.initLanguage_ = function() {
     // fallback to french
     this.switchLanguage('fr');
     return;
+  }
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.initMymaps_ = function() {
+  var mapId = this.stateManager_.getInitialValue('map_id');
+  this.appMymaps_.mapProjection = this['map'].getView().getProjection();
+  if (goog.isDef(mapId)) {
+    this.appMymaps_.setCurrentMapId(mapId,
+        this.drawnFeatures_.getCollection());
+  } else {
+    this.appMymaps_.clear();
   }
 };
 

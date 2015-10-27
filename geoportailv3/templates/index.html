@@ -71,7 +71,7 @@
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
           <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
-            <app-authentication app-authentication-roleid="mainCtrl.roleId" app-authentication-lang="mainCtrl.lang"></app-authentication>
+            <app-authentication app-authentication-lang="mainCtrl.lang"></app-authentication>
           </li>
 
 
@@ -144,7 +144,8 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-mymaps></app-mymaps>
+          <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
+                      app-mymaps-drawopen="mainCtrl.drawOpen"></app-mymaps>
         </div>
 
         <!-- Infos -->
@@ -269,6 +270,8 @@
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
          appModule.constant('remoteProxyWms', false);
 % endif
+         appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
+         appModule.constant('mymapsUrl', "${request.route_url('mymaps')}");
          appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
          appModule.constant('loginUrl', "${request.route_url('login')}");
          appModule.constant('logoutUrl', "${request.route_url('logout')}");

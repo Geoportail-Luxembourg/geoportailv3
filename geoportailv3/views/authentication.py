@@ -34,6 +34,7 @@ def get_user_from_request(request):
         user.id = 0
         user.username = username
         user.email = None
+        user.is_admin = False
         connector = get_ldap_connector(request)
         cm = connector.manager
 
@@ -49,7 +50,8 @@ def get_user_from_request(request):
                     user.mail = result[0][1]['mail'][0]
                 if 'sn' in result[0][1]:
                     user.sn = result[0][1]['sn'][0]
-
+                if 'adm' in result[0][1]:
+                    user.is_admin = result[0][1]['adm'][0]
         user.role = DBSession.query(Role).filter_by(id=roletheme).one()
 
         user.functionalities = []
@@ -67,5 +69,6 @@ class Authentication(object):
                     "role": self.request.user.role.name,
                     "role_id": self.request.user.role.id,
                     "mail": self.request.user.mail,
-                    "sn": self.request.user.sn}
+                    "sn": self.request.user.sn,
+                    "is_admin": self.request.user.is_admin}
         return {}

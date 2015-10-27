@@ -5,6 +5,7 @@ goog.provide('app.FeaturePopupController');
 goog.provide('app.featurePopupDirective');
 
 goog.require('app');
+goog.require('app.Mymaps');
 
 
 /**
@@ -32,17 +33,40 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.$sce} $sce Angular $sce service.
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @export
  * @ngInject
  */
-app.FeaturePopupController = function($scope, appFeaturePopup) {
+app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
+    appDrawnFeatures, appMymaps, appSelectedFeatures) {
+
+  /**
+   * @type {ol.Collection.<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {ol.Feature}
    * @export
    */
   this.feature;
+
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.sce_ = $sce;
 
   /**
    * @type {boolean}
@@ -57,6 +81,12 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
   this.editingStyle = false;
 
   /**
+   * @type {boolean}
+   * @export
+   */
+  this.deletingFeature = false;
+
+  /**
    * @type {string}
    * @export
    */
@@ -67,6 +97,12 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
    * @export
    */
   this.tempDesc = '';
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
 
   this.appFeaturePopup_ = appFeaturePopup;
 
@@ -83,6 +119,7 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
   }, this), goog.bind(function(newVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
+    this.deletingFeature = false;
   }, this));
 };
 
@@ -91,6 +128,19 @@ app.FeaturePopupController = function($scope, appFeaturePopup) {
  */
 app.FeaturePopupController.prototype.close = function() {
   this.appFeaturePopup_.hide();
+};
+
+
+/**
+ * @return {boolean} return true if is editable by the user.
+ * @export
+ */
+app.FeaturePopupController.prototype.isEditable = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.get('__source__') == 'mymaps') {
+    return this.appMymaps_.isEditable();
+  }
+  return true;
 };
 
 
@@ -111,7 +161,34 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
+  this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;
+};
+
+
+/**
+ * Puts the temporary edited name and description back to the feature.
+ * @export
+ */
+app.FeaturePopupController.prototype.deleteFeature = function() {
+  this.appFeaturePopup_.hide();
+  this.selectedFeatures_.remove(this.feature);
+  this.drawnFeatures_.remove(this.feature);
+  this.deletingFeature = false;
+};
+
+
+/**
+ * Returns a trusted html content.
+ * @param {?string|undefined} content content to be trusted.
+ * @return {*} the trusted content.
+ * @export
+ */
+app.FeaturePopupController.prototype.trustAsHtml = function(content) {
+  if (!goog.isDefAndNotNull(content)) {
+    content = '';
+  }
+  return this.sce_.trustAsHtml(content);
 };
 
 

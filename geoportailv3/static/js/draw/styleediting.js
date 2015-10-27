@@ -15,7 +15,8 @@ app.styleEditingDirective = function(appStyleEditingTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'feature': '=appStyleEditingFeature'
+      'feature': '=appStyleEditingFeature',
+      'editingStyle': '=appStyleEditingStyle'
     },
     controller: 'AppStyleEditingController',
     bindToController: true,
@@ -24,16 +25,23 @@ app.styleEditingDirective = function(appStyleEditingTemplateUrl) {
   };
 };
 
-app.module.directive('appStyleEditing', app.styleEditingDirective);
+app.module.directive('appStyleediting', app.styleEditingDirective);
 
 
 
 /**
  * @param {angular.Scope} $scope The scope.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
  * @ngInject
  */
-app.StyleEditingController = function($scope) {
+app.StyleEditingController = function($scope, appDrawnFeatures) {
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
 
   /**
    * @type {ol.Feature}
@@ -41,6 +49,11 @@ app.StyleEditingController = function($scope) {
    */
   this.feature;
 
+  /**
+   * @type {ol.Feature}
+   * @export
+   */
+  this.featureOrig;
 
   /**
    * @type {string}
@@ -71,6 +84,7 @@ app.StyleEditingController = function($scope) {
     if (this.type == 'point' && this.feature.get('is_label')) {
       this.type = 'text';
     }
+    this.featureOrig = this.feature.clone();
   }, this));
 };
 
@@ -84,7 +98,6 @@ app.StyleEditingController.prototype.setLineDash = function(lineStyle) {
     return;
   }
   this.feature.set('linestyle', lineStyle);
-  this.feature.changed();
 };
 
 
@@ -97,7 +110,6 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
     return;
   }
   this.feature.set('symbol_id', symbol);
-  this.feature.changed();
 };
 
 
@@ -112,7 +124,6 @@ app.StyleEditingController.prototype.getSetStroke = function(val) {
   }
   if (arguments.length) {
     this.feature.set('stroke', parseFloat(val));
-    this.feature.changed();
   } else {
     return this.feature.get('stroke');
   }
@@ -130,7 +141,6 @@ app.StyleEditingController.prototype.getSetSize = function(val) {
   }
   if (arguments.length) {
     this.feature.set('size', parseFloat(val));
-    this.feature.changed();
   } else {
     return this.feature.get('size');
   }
@@ -148,7 +158,6 @@ app.StyleEditingController.prototype.getSetRotation = function(val) {
   }
   if (arguments.length) {
     this.feature.set('angle', parseFloat(val) / 360 * Math.PI * 2);
-    this.feature.changed();
   } else {
     var angle = /** @type {number} */ (this.feature.get('angle'));
     return angle * 360 / Math.PI / 2;
@@ -167,7 +176,6 @@ app.StyleEditingController.prototype.getSetOpacity = function(val) {
   }
   if (arguments.length) {
     this.feature.set('opacity', 1 - (parseFloat(val) / 100));
-    this.feature.changed();
   } else {
     var opacity = /** @type {number} */ (this.feature.get('opacity'));
     return (1 - opacity) * 100;
@@ -186,12 +194,35 @@ app.StyleEditingController.prototype.setColor = function(val) {
   }
   if (arguments.length) {
     this.feature.set('color', val);
-    this.feature.changed();
   } else {
     var color = /** @type {string} */ (this.feature.get('color'));
     return goog.color.parseRgb(color);
   }
 };
 
+
+/**
+ * @export
+ */
+app.StyleEditingController.prototype.saveFeature = function() {
+  this.drawnFeatures_.saveFeature(this.feature);
+  this.editingStyle = false;
+};
+
+
+/**
+ * @export
+ */
+app.StyleEditingController.prototype.close = function() {
+  this.feature.set('color', this.featureOrig.get('color'));
+  this.feature.set('opacity', this.featureOrig.get('opacity'));
+  this.feature.set('angle', this.featureOrig.get('angle'));
+  this.feature.set('size', this.featureOrig.get('size'));
+  this.feature.set('symbol_id', this.featureOrig.get('symbol_id'));
+  this.feature.set('stroke', this.featureOrig.get('stroke'));
+  this.feature.set('linestyle', this.featureOrig.get('linestyle'));
+
+  this.editingStyle = false;
+};
 
 app.module.controller('AppStyleEditingController', app.StyleEditingController);

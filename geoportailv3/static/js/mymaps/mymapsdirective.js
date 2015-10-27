@@ -10,10 +10,14 @@ goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
 goog.require('app');
-goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
+goog.require('app.Mymaps');
+goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
+goog.require('app.UserManager');
+goog.require('goog.array');
 goog.require('ngeo.modalDirective');
+goog.require('ol.format.GeoJSON');
 
 
 /**
@@ -24,7 +28,10 @@ goog.require('ngeo.modalDirective');
 app.mymapsDirective = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
-    scope: {},
+    scope: {
+      'useropen': '=appMymapsUseropen',
+      'drawopen': '=appMymapsDrawopen'
+    },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
     bindToController: true,
@@ -41,22 +48,56 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.UserManager} appUserManager
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
  * @export
  * @ngInject
  */
+
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appFeaturePopup, appDrawnFeatures, appSelectedFeatures) {
+    appMymaps, appNotify, appFeaturePopup, appSelectedFeatures,
+    appUserManager, appDrawnFeatures) {
 
   /**
-   * @type {string}
+   * @type {Array.<ol.Feature>}
+   * @export
+   */
+  this.featuresList = appDrawnFeatures.getArray();
+
+  /**
+   * @type {app.DrawnFeatures}
    * @private
    */
-  this.defaultTitle_ = $compile('<div translate>' +
-      gettext('Map without title') + '</div>')($scope)[0];
+  this.drawnFeatures_ = appDrawnFeatures;
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
+
+  /**
+   * @type {gettext}
+   * @private
+   */
+  this.gettext_ = gettext;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * Tells whether the 'modifying' modal window is open or not.
@@ -73,25 +114,11 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.choosing = false;
 
   /**
-   * The currently displayed map id.
-   * @type {?string}
+   * List of Mymaps
+   * @type {app.MapsResponse}
    * @export
    */
-  this.mapId = null;
-
-  /**
-   * The currently displayed map title.
-   * @type {string}
-   * @export
-   */
-  this.mapTitle = '';
-
-  /**
-   * The currently displayed map description.
-   * @type {string}
-   * @export
-   */
-  this.mapDescription = '';
+  this.maps = [];
 
   /**
    * String to be used in the title field in the modifying window.
@@ -108,12 +135,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @export
    */
   this.newDescription = '';
-
-  /**
-   * @type {Array.<ol.Feature>}
-   * @export
-   */
-  this.featuresList = appDrawnFeatures.getArray();
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -140,19 +161,82 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
-  // TODO ensure that modifications are saved.
-  this.mapId = null;
-  this.mapTitle = '';
-  this.mapDescription = '';
+  this.drawnFeatures_.clear();
+  this.selectedFeatures_.clear();
 };
 
 
 /**
- * Creates a new map.
+ * Returns if a mymaps is selected or not.
+ * @return {boolean} returns true if a mymaps is selected.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isMymapsSelected = function() {
+  return this.appMymaps_.isMymapsSelected();
+};
+
+
+/**
+ * @return {string} returns the description
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapDescription = function() {
+  return this.appMymaps_.mapDescription;
+};
+
+
+/**
+ * @return {string} returns the title
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapTitle = function() {
+  return this.appMymaps_.mapTitle;
+};
+
+
+/**
+ * Creates and load a new map.
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
-  this.onChosen();
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.appMymaps_.createMap(this.gettext_('Sans titre'), '')
+      .then(goog.bind(function(resp) {
+          if (goog.isNull(resp)) {
+            this.askToConnect();
+          } else {
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              var map = {'uuid': mapId};
+              this.onChosen(map);
+              var msg = this.gettext_('Nouvelle carte créée');
+              this.notify_(msg);
+            }
+          }}, this));
+  }
+};
+
+
+/**
+ * Delete the current map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.deleteMap = function() {
+  if (this.appMymaps_.isEditable()) {
+    if (!this.appUserManager_.isAuthenticated()) {
+      this.askToConnect();
+    }else {
+      this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
+        if (goog.isNull(resp)) {
+          this.askToConnect();
+        } else {
+          this.closeMap();
+        }
+      }, this));
+    }
+  }
 };
 
 
@@ -161,17 +245,44 @@ app.MymapsDirectiveController.prototype.createMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.chooseMap = function() {
-  this.choosing = true;
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  }else {
+    this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
+      if (goog.isNull(mymaps)) {
+        this.askToConnect();
+      } else if (!goog.array.isEmpty(mymaps)) {
+        this.choosing = true;
+        this.maps = mymaps;
+      }
+    }, this));
+  }
+};
+
+
+/**
+ * Notify the user he has to connect
+ * @export
+ */
+app.MymapsDirectiveController.prototype.askToConnect = function() {
+  var msg = this.gettext_(
+      'Veuillez vous identifier afin d\'accéder à vos cartes'
+      );
+  this.notify_(msg);
+  this['useropen'] = true;
 };
 
 
 /**
  * Called when a map is choosen.
+ * @param {Object} map The selected map.
  * @export
  */
-app.MymapsDirectiveController.prototype.onChosen = function() {
-  this.mapId = 'mymap-987654321';
-  this.mapTitle = $(this.defaultTitle_).children().html().toString();
+app.MymapsDirectiveController.prototype.onChosen = function(map) {
+  this.closeMap();
+  this.appMymaps_.setCurrentMapId(map['uuid'],
+      this.drawnFeatures_.getCollection());
+  this['drawopen'] = true;
   this.choosing = false;
 };
 
@@ -183,9 +294,23 @@ app.MymapsDirectiveController.prototype.onChosen = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.modifyMap = function() {
-  this.newTitle = this.mapTitle;
-  this.newDescription = this.mapDescription;
-  this.modifying = true;
+  if (this.appMymaps_.isEditable()) {
+    this.newTitle = this.appMymaps_.mapTitle;
+    this.newDescription = this.appMymaps_.mapDescription;
+    if (this.appMymaps_.isEditable()) {
+      this.modifying = true;
+    }
+  }
+};
+
+
+/**
+ * Is the map editable
+ * @return {boolean}
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isEditable = function() {
+  return this.appMymaps_.isEditable();
 };
 
 
@@ -194,11 +319,20 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.saveModifications = function() {
-  this.mapTitle = this.newTitle;
-  this.mapDescription = this.newDescription;
-  // TODO the modifications need to be saved on server before we close the
-  // modal window
-  this.modifying = false;
+  if (this.appMymaps_.isEditable()) {
+    if (!this.appUserManager_.isAuthenticated()) {
+      this.askToConnect();
+    }else {
+      this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
+          goog.bind(function(mymaps) {
+            if (goog.isNull(mymaps)) {
+              this.askToConnect();
+            } else {
+              this.modifying = false;
+            }
+          }, this));
+    }
+  }
 };
 
 
