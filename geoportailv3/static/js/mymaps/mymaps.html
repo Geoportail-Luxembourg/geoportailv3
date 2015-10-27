@@ -13,7 +13,7 @@
 <!-- Map displayed -->
 <div ng-show="ctrl.isMymapsSelected()" class="clearfix">
   <div class="col-xs-12">
-    <div class="map-owner" ng-if="ctrl.getMapOwner()">{{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}</div>
+    <div class="map-owner" ng-show="ctrl.getMapOwner()">{{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}</div>
   </div>
   
   <div class="mymap-header col-xs-12">
@@ -21,8 +21,8 @@
     <div class="title" ng-click="ctrl.modifyMap()">{{ctrl.getMapTitle()}}</div>
   </div>
   <div class="col-xs-12">
-    <p class="description" ng-click="ctrl.modifyMap()" ng-if="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
-    <p class="no-description" ng-click="ctrl.modifyMap()" ng-if="!ctrl.getMapDescription()" translate><em>No description</em></p>
+    <p class="description" ng-click="ctrl.modifyMap()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
+    <p class="no-description" ng-click="ctrl.modifyMap()" ng-show="!ctrl.getMapDescription()" translate><em>No description</em></p>
   </div>
 
   <div ng-show="ctrl.isEditable()" class="mymap-footer col-xs-12">
