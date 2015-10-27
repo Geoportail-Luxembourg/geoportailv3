@@ -181,7 +181,7 @@ app.MymapsDirectiveController.prototype.openCopyPanel = function() {
 app.MymapsDirectiveController.prototype.copyMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  }else {
+  } else {
     this.appMymaps_.copyMap(this.newTitle, this.newDescription).
         then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
@@ -324,7 +324,7 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
-    }else {
+    } else {
       this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
         if (goog.isNull(resp)) {
           this.askToConnect();
@@ -344,7 +344,7 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
 app.MymapsDirectiveController.prototype.chooseMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  }else {
+  } else {
     this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
       if (goog.isNull(mymaps)) {
         this.askToConnect();
@@ -417,7 +417,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
-    }else {
+    } else {
       this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
           goog.bind(function(mymaps) {
             if (goog.isNull(mymaps)) {
