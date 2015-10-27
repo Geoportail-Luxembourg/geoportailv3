@@ -1,7 +1,7 @@
 /**
- * @fileoverview this file defines the user managerservice. this service
+ * @fileoverview This file defines the user manager service. this service
  * interacts with the Geoportail webservice to login logout and keep the state
- * of the user
+ * of the user.
  */
 
 goog.provide('app.UserManager');
@@ -55,9 +55,9 @@ app.UserManager = function($http, loginUrl, logoutUrl,
 
 
   /**
-   * @type {string|undefined}
+   * @type {string}
    */
-  this.login = undefined;
+  this.username = '';
 
 
   /**
@@ -188,10 +188,7 @@ app.UserManager.prototype.getUserInfo = function() {
  * @export
  */
 app.UserManager.prototype.isAuthenticated = function() {
-  if (goog.isDef(this.login) && this.login.length > 0) {
-    return true;
-  }
-  return false;
+  return (this.username.length > 0);
 };
 
 
@@ -200,13 +197,12 @@ app.UserManager.prototype.isAuthenticated = function() {
  * of error.
  */
 app.UserManager.prototype.clearUserInfo = function() {
-  this.setUserInfo(undefined, undefined, undefined, undefined, undefined,
-      false);
+  this.setUserInfo('', undefined, undefined, undefined, undefined, false);
 };
 
 
 /**
- * @param {string|undefined} login Login.
+ * @param {string|undefined} username The username.
  * @param {string|undefined} role Role.
  * @param {number|undefined} roleId Role id.
  * @param {string|undefined} mail Mail.
@@ -214,21 +210,25 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {boolean} isAdmin
  */
 app.UserManager.prototype.setUserInfo = function(
-    login, role, roleId, mail, name, isAdmin) {
-  this.login = login;
-  this.role = role;
-  this.roleId = roleId;
-  this.email = mail;
-  this.name = name;
-  this.isAdmin = isAdmin;
+    username, role, roleId, mail, name, isAdmin) {
+  if (goog.isDef(username)) {
+    this.username = username;
+    this.role = role;
+    this.roleId = roleId;
+    this.email = mail;
+    this.name = name;
+    this.isAdmin = isAdmin;
+  } else {
+    this.clearUserInfo();
+  }
 };
 
 
 /**
- * @return {string|undefined} The username.
+ * @return {string} The username.
  */
 app.UserManager.prototype.getUsername = function() {
-  return this.login;
+  return this.username;
 };
 
 

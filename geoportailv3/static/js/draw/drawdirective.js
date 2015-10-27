@@ -252,13 +252,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
 
-          if (goog.isDefAndNotNull(feature.get('__source__')) &&
-              feature.get('__source__') == 'mymaps') {
-            if (this.appMymaps_.isEditable()) {
-              this.modifyInteraction_.setActive(true);
-            } else {
-              this.modifyInteraction_.setActive(false);
-            }
+          if (feature.get('__source__') == 'mymaps') {
+            this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
           } else {
             this.modifyInteraction_.setActive(true);
           }
@@ -274,7 +269,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   });
   this.map.addInteraction(modifyInteraction);
   goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
-      this.onFeatureGeometryChange_, false, this);
+      this.onFeatureModifyEnd_, false, this);
 
   /**
    * @type {ol.interaction.Modify}
@@ -293,7 +288,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
  * @param {goog.events.Event} event Event.
  * @private
  */
-app.DrawController.prototype.onFeatureGeometryChange_ = function(event) {
+app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var feature = event.features.getArray()[0];
     this.drawnFeatures_.saveFeature(feature);

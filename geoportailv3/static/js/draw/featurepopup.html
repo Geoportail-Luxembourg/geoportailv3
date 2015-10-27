@@ -52,18 +52,18 @@
 </div>
 <div ng-show="ctrl.editingStyle">
   <div class="feature-popup-body">
-    <app-style-editing app-style-editing-feature="ctrl.feature"
+    <app-styleediting app-style-editing-feature="ctrl.feature"
                        app-style-editing-style="ctrl.editingStyle">
-    </app-style-editing>
+    </app-styleediting>
   </div>
 </div>
 <div ng-show="ctrl.deletingFeature">
   <div class="feature-popup-body">
-    <span translate>Etes-vous certain de vouloir effacer cet élément de la carte ?</span>
+    <span translate>Êtes-vous certain de vouloir effacer cet élément de la carte ?</span>
   </div>
   <div class="feature-popup-footer pull-right">
     <button href class="btn btn-primary" ng-click="ctrl.deletingFeature = false" translate>
-      Cancel
+      Annuler
     </button>
     <button href class="btn btn-primary" ng-click="ctrl.deleteFeature()" translate>
       OK

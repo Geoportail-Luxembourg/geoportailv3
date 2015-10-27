@@ -45,7 +45,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures) {
 
   /**
-   * @type {ol.Collection<ol.Feature>}
+   * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.selectedFeatures_ = appSelectedFeatures;
@@ -132,11 +132,11 @@ app.FeaturePopupController.prototype.close = function() {
 
 
 /**
- * @return {boolean} return true if is editable by the user
+ * @return {boolean} return true if is editable by the user.
  * @export
  */
 app.FeaturePopupController.prototype.isEditable = function() {
-  if (goog.isDefAndNotNull(this.feature) &&
+  if (goog.isDef(this.feature) &&
       this.feature.get('__source__') == 'mymaps') {
     return this.appMymaps_.isEditable();
   }
@@ -179,8 +179,8 @@ app.FeaturePopupController.prototype.deleteFeature = function() {
 
 
 /**
- * returns a trusted html content
- * @param {string} content content to be trusted
+ * Returns a trusted html content.
+ * @param {?string|undefined} content content to be trusted.
  * @return {*} the trusted content.
  * @export
  */
@@ -188,7 +188,7 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
   if (!goog.isDefAndNotNull(content)) {
     content = '';
   }
-  return this.sce_.trustAsHtml('' + content);
+  return this.sce_.trustAsHtml(content);
 };
 
 

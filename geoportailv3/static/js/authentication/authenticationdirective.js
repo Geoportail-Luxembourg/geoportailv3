@@ -59,7 +59,6 @@ app.AuthenticationController = function(appUserManager) {
  * @export
  */
 app.AuthenticationController.prototype.authenticate = function() {
-
   this.appUserManager_.authenticate(this.username, this.password);
 };
 

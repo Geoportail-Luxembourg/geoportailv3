@@ -15,6 +15,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
 goog.require('app.UserManager');
+goog.require('goog.array');
 goog.require('ngeo.modalDirective');
 goog.require('ol.format.GeoJSON');
 
@@ -166,7 +167,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
 
 
 /**
- * Returns if a mymapsis selected ornot.
+ * Returns if a mymaps is selected or not.
  * @return {boolean} returns true if a mymaps is selected.
  * @export
  */
@@ -200,8 +201,8 @@ app.MymapsDirectiveController.prototype.getMapTitle = function() {
 app.MymapsDirectiveController.prototype.createMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  }else {
-    this.appMymaps_.createMap(this.gettext_('Map without title'), '')
+  } else {
+    this.appMymaps_.createMap(this.gettext_('Sans titre'), '')
       .then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
             this.askToConnect();
@@ -281,7 +282,6 @@ app.MymapsDirectiveController.prototype.onChosen = function(map) {
   this.closeMap();
   this.appMymaps_.setCurrentMapId(map['uuid'],
       this.drawnFeatures_.getCollection());
-
   this['drawopen'] = true;
   this.choosing = false;
 };

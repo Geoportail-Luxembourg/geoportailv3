@@ -390,7 +390,7 @@ app.MainController.prototype.initLanguage_ = function() {
 app.MainController.prototype.initMymaps_ = function() {
   var mapId = this.stateManager_.getInitialValue('map_id');
   this.appMymaps_.mapProjection = this['map'].getView().getProjection();
-  if (goog.isDefAndNotNull(mapId)) {
+  if (goog.isDef(mapId)) {
     this.appMymaps_.setCurrentMapId(mapId,
         this.drawnFeatures_.getCollection());
   } else {

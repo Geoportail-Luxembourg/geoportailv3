@@ -1,6 +1,6 @@
 /**
- * @fileoverview Provides a dranw features service useful to share
- * information about the selected feature throughout the application.
+ * @fileoverview Provides a drawn features service useful to share
+ * information about the drawn features throughout the application.
  */
 
 goog.provide('app.DrawnFeatures');
@@ -71,7 +71,10 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
 
 
 /**
- * @param {ol.Feature} feature
+ * Remove the feature from the drawn list.
+ * If the feature is a mymaps feature then delete it from mymaps and
+ * then rewrite the url.
+ * @param {ol.Feature} feature The feature to remove.
  */
 app.DrawnFeatures.prototype.remove = function(feature) {
   this.features.remove(feature);
@@ -80,13 +83,14 @@ app.DrawnFeatures.prototype.remove = function(feature) {
       this.appMymaps_.deleteFeature(feature);
     }
   }
-
   this.encodeFeaturesInUrl_(this.features.getArray());
 };
 
 
 /**
- * @param {ol.Feature} feature
+ * Add a feature in the drawn feature list.
+ * Save it into mymaps and rewrite the url.
+ * @param {ol.Feature} feature The feature to add.
  */
 app.DrawnFeatures.prototype.add = function(feature) {
   var features = this.features.getArray().slice();
@@ -104,7 +108,6 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = features.filter(function(feature) {
     return feature.get('__source__') != 'mymaps';
   });
-
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
       'features': this.fhFormat_.writeFeatures(featuresToEncode)
@@ -116,10 +119,11 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
 
 
 /**
+ * Save the feature either in url or in mymaps if the current user
+ * has the permissions.
  * @param {ol.Feature} feature the feature to save.
  */
 app.DrawnFeatures.prototype.saveFeature = function(feature) {
-
   if (this.appMymaps_.isEditable()) {
     feature.set('__source__', 'mymaps');
     this.saveFeatureInMymaps_(feature);
@@ -184,8 +188,8 @@ app.DrawnFeatures.prototype.clear = function() {
 
 
 /**
- * get an Array
- * @return {Array.<ol.Feature>?} The features array
+ * Get the current drawn features as an array.
+ * @return {Array.<ol.Feature>?} The features array.
  */
 app.DrawnFeatures.prototype.getArray = function() {
   return this.features.getArray();
@@ -193,8 +197,8 @@ app.DrawnFeatures.prototype.getArray = function() {
 
 
 /**
- * get an Array
- * @return {ol.Collection} The ollection of drawn features
+ * Get the current drawn features as a Collection.
+ * @return {ol.Collection} The collection of drawn features.
  */
 app.DrawnFeatures.prototype.getCollection = function() {
   return this.features;

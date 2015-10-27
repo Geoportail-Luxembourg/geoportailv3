@@ -25,7 +25,7 @@ app.styleEditingDirective = function(appStyleEditingTemplateUrl) {
   };
 };
 
-app.module.directive('appStyleEditing', app.styleEditingDirective);
+app.module.directive('appStyleediting', app.styleEditingDirective);
 
 
 

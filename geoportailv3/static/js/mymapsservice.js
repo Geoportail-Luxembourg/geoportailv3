@@ -1,5 +1,5 @@
 /**
- * @fileoverview this file defines the mymaps webservice. this service
+ * @fileoverview This file defines the mymaps webservice. this service
  * interacts with the Geoportail MyMaps webservice and exposes functions that
  * return objects representing maps and features.
  */
