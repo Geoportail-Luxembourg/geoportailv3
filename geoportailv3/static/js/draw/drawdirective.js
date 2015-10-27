@@ -224,15 +224,17 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   appFeaturePopup.init(this.map, selectInteraction.getFeatures());
 
   goog.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
-      goog.bind(function(evt) {
+      goog.bind(
+      /**
+       * @param {ol.CollectionEvent} evt
+       */
+      function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        if (feature.get('__source__') == 'mymaps') {
-          feature.set('__editable__', this.appMymaps_.isEditable());
-        } else {
-          feature.set('__editable__', true);
-        }
+        var editable = feature.get('__source__') !== 'mymaps' ||
+            this.appMymaps_.isEditable();
+        feature.set('__editable__', editable);
       }, this));
 
   goog.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
