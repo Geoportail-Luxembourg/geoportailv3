@@ -33,7 +33,7 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
- * @param {angular.$sce} $sce Angular $sce service
+ * @param {angular.$sce} $sce Angular $sce service.
  * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
