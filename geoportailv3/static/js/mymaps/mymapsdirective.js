@@ -412,7 +412,7 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
 
 
 /**
- * Notify the user he has to connect
+ * Notify the user that he has to connect before going ahead.
  * @export
  */
 app.MymapsDirectiveController.prototype.askToConnect = function() {
@@ -455,7 +455,7 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
 
 
 /**
- * Is the map editable
+ * Returns true if the map is editable.
  * @return {boolean}
  * @export
  */
@@ -492,7 +492,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
 
 /**
  * Get a features Array with the Mymaps features.
- * @return {Array.<ol.Feature>?} The features array
+ * @return {Array.<ol.Feature>?} The features array.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
@@ -504,7 +504,7 @@ app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
 
 /**
  * Get a features Array with the anonymous features.
- * @return {Array.<ol.Feature>?} The features array
+ * @return {Array.<ol.Feature>?} The features array.
  * @export
  */
 app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
