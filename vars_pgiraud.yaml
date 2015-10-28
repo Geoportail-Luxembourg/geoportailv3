@@ -3,3 +3,6 @@ extends: vars_geoportailv3.yaml
 vars:
     # overwrite dbport for the ssh tunnel to the db
     dbport: 9999
+
+    sqlalchemy_engines:
+      mymaps: 'postgresql://www-data:www-data@localhost:5432/mymaps'
