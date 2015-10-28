@@ -86,7 +86,7 @@ app.LocationinfoController = function(
 
   this.featureOverlay_.setStyle(
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @param {number} resolution Resolution.
        * @return {Array.<ol.style.Style>} Array of styles.
        */
