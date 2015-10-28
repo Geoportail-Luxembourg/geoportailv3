@@ -106,7 +106,7 @@ app.DrawnFeatures.prototype.add = function(feature) {
  */
 app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = features.filter(function(feature) {
-    return feature.get('__source__') != 'mymaps';
+    return feature.get('__source__') !== 'mymaps';
   });
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
@@ -121,7 +121,7 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
 /**
  * Save the feature either in url or in mymaps if the current user
  * has the permissions.
- * @param {ol.Feature} feature the feature to save.
+ * @param {ol.Feature} feature The feature to save.
  */
 app.DrawnFeatures.prototype.saveFeature = function(feature) {
   if (this.appMymaps_.isEditable() && feature.get('__source__') == 'mymaps') {
@@ -178,7 +178,7 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
 
 
 /**
- * clear
+ * Clear the drawn features.
  */
 app.DrawnFeatures.prototype.clear = function() {
   this.features.clear();
@@ -187,7 +187,7 @@ app.DrawnFeatures.prototype.clear = function() {
 
 
 /**
- * clear the features belonging to mymaps
+ * Clear the features belonging to mymaps.
  */
 app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
   var mymapsFeatures = this.features.getArray().filter(function(feature) {
@@ -203,7 +203,7 @@ app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
 
 
 /**
- * clear the features belonging to nobody
+ * Clear the anonymous features.
  */
 app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
   var anonymousFeatures = this.features.getArray().filter(function(feature) {
