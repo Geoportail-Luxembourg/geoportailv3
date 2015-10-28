@@ -23,6 +23,7 @@ from PIL import Image
 import sys
 import traceback
 from geoportailv3.mymaps import DBSession
+from sqlalchemy.orm import make_transient
 
 
 class Mymaps(object):
@@ -86,6 +87,39 @@ class Mymaps(object):
         map.user_login = user.username
 
         return self.save(map)
+
+    @view_config(route_name="mymaps_copy", renderer='json')
+    def copy(self):
+        id = self.request.matchdict.get("map_id")
+        map = DBSession.query(Map).get(id)
+
+        if map is None:
+            return HTTPNotFound()
+
+        DBSession.expunge(map)
+
+        make_transient(map)
+        map.uuid = None
+        params = self.request.params
+        if 'title' in params:
+            map.title = unicode(params.get('title'))
+        if 'description' in params:
+            map.description = unicode(params.get('description'))
+
+        DBSession.add(map)
+        DBSession.commit()
+
+        if map.uuid is not None:
+            features = DBSession.query(Feature).filter(
+                Feature.map_id == id).all()
+            for f in features:
+                DBSession.expunge(f)
+                make_transient(f)
+                f.id = None
+                map.features.append(f)
+            DBSession.commit()
+
+        return {'success': map.uuid is not None, 'uuid': map.uuid}
 
     @view_config(route_name="mymaps_update", renderer='json')
     def update(self):

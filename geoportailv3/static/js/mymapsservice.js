@@ -114,6 +114,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsCopyMapUrl_ = mymapsUrl + '/copy/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -358,7 +364,43 @@ app.Mymaps.prototype.createMap = function(title, description) {
 
 
 /**
- * delete a new map
+ * Copy the current map inside a new map.
+ * @param {string} title The title of the map.
+ * @param {string} description The description about the map.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.copyMap = function(title, description) {
+  var req = $.param({
+    'title': title,
+    'description': description
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsCopyMapUrl_ + this.mapId_, req, config).
+      then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la copie de votre carte.');
+        this.notify_(msg);
+        return [];
+      }, this));
+};
+
+
+/**
+ * Delete a map.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.deleteMap = function() {
@@ -386,9 +428,9 @@ app.Mymaps.prototype.deleteMap = function() {
 
 
 /**
- * Save the map
- * @param {string} title the title of the map.
- * @param {string} description a description about the map.
+ * Save the map.
+ * @param {string} title The title of the map.
+ * @param {string} description The description about the map.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.updateMap = function(title, description) {
@@ -427,8 +469,8 @@ app.Mymaps.prototype.updateMap = function(title, description) {
 
 
 /**
- * Save the map
- * @param {ol.Feature} feature the feature to save
+ * Save the map.
+ * @param {ol.Feature} feature The feature to save
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
@@ -466,7 +508,7 @@ app.Mymaps.prototype.saveFeature = function(feature) {
 
 
 /**
- * Notify the user he has to connect
+ * Notify the user he has to connect.
  * @export
  */
 app.Mymaps.prototype.notifyUnauthorized = function() {
@@ -477,7 +519,7 @@ app.Mymaps.prototype.notifyUnauthorized = function() {
 
 
 /**
- * @return {boolean} return true if a map is selected
+ * @return {boolean} Return true if a map is selected.
  */
 app.Mymaps.prototype.isMymapsSelected = function() {
   return !goog.string.isEmpty(this.mapId_);
