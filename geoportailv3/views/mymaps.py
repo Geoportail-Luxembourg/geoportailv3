@@ -13,7 +13,7 @@ except:
     from simplejson import dumps as json_dumps
 
 from turbomail import Message
-from geoportailv3.mymaps import Map, Feature, Role, Symbols, Images
+from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 from pyramid_ldap import get_ldap_connector
@@ -30,6 +30,13 @@ class Mymaps(object):
 
     def __init__(self, request):
         self.request = request
+
+    @view_config(route_name="mymaps_getcategories", renderer="json")
+    def categories(self):
+        if self.request.user is None:
+            return HTTPUnauthorized()
+
+        return Category.belonging_to(self.request.user)
 
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):

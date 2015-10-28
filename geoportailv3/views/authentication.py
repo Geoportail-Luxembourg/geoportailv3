@@ -52,6 +52,8 @@ def get_user_from_request(request):
                     user.sn = result[0][1]['sn'][0]
                 if 'adm' in result[0][1]:
                     user.is_admin = result[0][1]['adm'][0]
+                if 'roleMymaps' in result[0][1]:
+                    user.mymaps_role = result[0][1]['roleMymaps'][0]
         user.role = DBSession.query(Role).filter_by(id=roletheme).one()
 
         user.functionalities = []

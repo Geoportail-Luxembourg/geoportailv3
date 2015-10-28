@@ -72,6 +72,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsCategoriesUrl_ = mymapsUrl + '/categories';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsFeaturesUrl_ = mymapsUrl + '/features/';
 
   /**
@@ -129,6 +135,13 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapTitle = '';
 
   /**
+   * The currently displayed map category id.
+   * @type {?number}
+   * @export
+   */
+  this.mapCategoryId = null;
+
+  /**
    * The currently displayed map title.
    * @type {string}
    */
@@ -150,6 +163,29 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {ol.proj.Projection}
    */
   this.mapProjection;
+
+  /**
+   * The list of categories objects, depending on user role.
+   * @type {?Array.<Object>}
+   * @export
+   */
+  this.categories = null;
+
+};
+
+
+/**
+ * @param {?number} categoryId the category id to get a category for
+ * @return {?Object}
+ */
+app.Mymaps.prototype.getCategory = function(categoryId) {
+  if (goog.isDefAndNotNull(categoryId)) {
+    return goog.array.find(this.categories, function(category) {
+      return category.id === categoryId;
+    });
+  } else {
+    return null;
+  }
 };
 
 
@@ -168,6 +204,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
         this.mapDescription = mapinformation['description'];
         this.mapTitle = mapinformation['title'];
         this.mapOwner = mapinformation['user_login'];
+        this.mapCategoryId = mapinformation['category_id'];
       }, this));
   this.loadFeatures_().then(goog.bind(function(features) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
@@ -234,6 +271,30 @@ app.Mymaps.prototype.getMaps = function() {
         var msg = this.gettext_(
            'Erreur inattendue lors du chargement de vos cartes.');
         this.notify_(msg);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Load the permissible categories from the webservice.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.loadCategories = function() {
+  return this.$http_.get(this.mymapsCategoriesUrl_).then(goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        this.categories = resp.data;
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          return null;
+        }
         return [];
       }, this)
   );
@@ -330,12 +391,14 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  * create a new map
  * @param {string} title the title of the map.
  * @param {string} description a description about the map.
+ * @param {?number} categoryId the category id of the map.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.createMap = function(title, description) {
+app.Mymaps.prototype.createMap = function(title, description, categoryId) {
   var req = $.param({
     'title': title,
-    'description': description
+    'description': description,
+    'category_id': categoryId
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -428,19 +491,22 @@ app.Mymaps.prototype.deleteMap = function() {
 
 
 /**
- * Save the map.
- * @param {string} title The title of the map.
- * @param {string} description The description about the map.
+ * Save the map
+ * @param {string} title the title of the map.
+ * @param {string} description a description about the map.
+ * @param {?number} categoryId the category of the map.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.updateMap = function(title, description) {
+app.Mymaps.prototype.updateMap = function(title, description, categoryId) {
 
   this.mapTitle = title;
   this.mapDescription = description;
+  this.mapCategoryId = categoryId;
 
   var req = $.param({
     'title': title,
-    'description': description
+    'description': description,
+    'category_id': categoryId
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}

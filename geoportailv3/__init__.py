@@ -53,6 +53,11 @@ def main(global_config, **settings):
     )
 
     config.add_route(
+        "mymaps_getcategories",
+        "mymaps/categories",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_getmaps",
         "/mymaps/maps",
         request_method="GET"

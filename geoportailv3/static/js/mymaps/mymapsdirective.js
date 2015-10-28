@@ -144,6 +144,14 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.newDescription = '';
 
   /**
+   * ID to be used in the category field in the modifying window.
+   * Helps canceling modifications.
+   * @type {?number}
+   * @export
+   */
+  this.newCategoryId = null;
+
+  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -160,6 +168,15 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @private
    */
   this.featurePopup_ = appFeaturePopup;
+
+  $scope.$watch(goog.bind(function() {
+    return this.appUserManager_.getRoleId();
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (goog.isDefAndNotNull(newVal)) {
+      this.appMymaps_.loadCategories();
+    }
+  }, this));
+
 };
 
 
@@ -292,14 +309,41 @@ app.MymapsDirectiveController.prototype.getMapOwner = function() {
 
 
 /**
+ * @param {?number} id
+ * @return {Object} returns the category name
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapCategory = function(id) {
+  var category = this.appMymaps_.getCategory(id);
+  if (goog.isDefAndNotNull(category)) {
+    return category;
+  } else {
+    return {
+      'id': null,
+      'name': this.gettext_('Please select a Category')
+    };
+  }
+};
+
+
+/**
+ * @return {Object} returns the categories object
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getCategories = function() {
+  return this.appMymaps_.categories;
+};
+
+
+/**
  * Creates and load a new map.
  * @export
  */
 app.MymapsDirectiveController.prototype.createMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  } else {
-    this.appMymaps_.createMap(this.gettext_('Sans titre'), '')
+  }else {
+    this.appMymaps_.createMap(this.gettext_('Map without title'), '', null)
       .then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
             this.askToConnect();
@@ -395,6 +439,7 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
     this.newTitle = this.appMymaps_.mapTitle;
     this.newDescription = this.appMymaps_.mapDescription;
     this.modifying = true;
+    this.newCategoryId = this.appMymaps_.mapCategoryId;
   }
 };
 
@@ -417,8 +462,12 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
-    } else {
-      this.appMymaps_.updateMap(this.newTitle, this.newDescription).then(
+    }else {
+      this.appMymaps_.updateMap(
+          this.newTitle,
+          this.newDescription,
+          this.newCategoryId)
+        .then(
           goog.bind(function(mymaps) {
             if (goog.isNull(mymaps)) {
               this.askToConnect();

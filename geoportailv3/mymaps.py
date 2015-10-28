@@ -252,6 +252,13 @@ class Category(Base):
                 'name': self.name,
                 'allow_labeling': self.allow_labeling}
 
+    @staticmethod
+    def belonging_to(user):
+        user_role = DBSession.query(Role).get(user.mymaps_role)
+        categories = user_role.categories\
+            if user_role.categories is not None else []
+        return [category.todict() for category in categories]
+
 
 class Role(Base):
     __tablename__ = 'role'
