@@ -336,6 +336,12 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     });
   }, this), 0);
 
+  if (this.appMymaps_.isEditable()) {
+    feature.set('__source__', 'mymaps');
+  } else {
+    feature.set('__source__', 'url');
+  }
+
   this.drawnFeatures_.add(feature);
 
   this.selectedFeatures_.clear();

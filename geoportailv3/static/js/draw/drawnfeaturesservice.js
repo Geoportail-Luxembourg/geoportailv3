@@ -124,8 +124,7 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
  * @param {ol.Feature} feature the feature to save.
  */
 app.DrawnFeatures.prototype.saveFeature = function(feature) {
-  if (this.appMymaps_.isEditable()) {
-    feature.set('__source__', 'mymaps');
+  if (this.appMymaps_.isEditable() && feature.get('__source__') == 'mymaps') {
     this.saveFeatureInMymaps_(feature);
   }
   this.encodeFeaturesInUrl_(this.features.getArray());
@@ -184,6 +183,37 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
 app.DrawnFeatures.prototype.clear = function() {
   this.features.clear();
   this.appMymaps_.clear();
+};
+
+
+/**
+ * clear the features belonging to mymaps
+ */
+app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
+  var mymapsFeatures = this.features.getArray().filter(function(feature) {
+    return feature.get('__source__') == 'mymaps';
+  });
+
+  mymapsFeatures.forEach(goog.bind(function(feature) {
+    this.features.remove(feature);
+  }, this));
+  this.appMymaps_.clear();
+  this.encodeFeaturesInUrl_(this.features.getArray());
+};
+
+
+/**
+ * clear the features belonging to nobody
+ */
+app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
+  var anonymousFeatures = this.features.getArray().filter(function(feature) {
+    return feature.get('__source__') != 'mymaps';
+  });
+
+  anonymousFeatures.forEach(goog.bind(function(feature) {
+    this.features.remove(feature);
+  }, this));
+  this.encodeFeaturesInUrl_(this.features.getArray());
 };
 
 

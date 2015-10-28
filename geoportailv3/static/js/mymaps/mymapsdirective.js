@@ -266,7 +266,17 @@ app.MymapsDirectiveController.prototype.shareMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
-  this.drawnFeatures_.clear();
+  this.drawnFeatures_.clearMymapsFeatures();
+  this.selectedFeatures_.clear();
+};
+
+
+/**
+ * Closes the current anonymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.closeAnonymous = function() {
+  this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
 };
 
@@ -477,6 +487,30 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
           }, this));
     }
   }
+};
+
+
+/**
+ * Get a features Array with the Mymaps features.
+ * @return {Array.<ol.Feature>?} The features array
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
+  return this.featuresList.filter(function(feature) {
+    return feature.get('__source__') == 'mymaps';
+  });
+};
+
+
+/**
+ * Get a features Array with the anonymous features.
+ * @return {Array.<ol.Feature>?} The features array
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
+  return this.featuresList.filter(function(feature) {
+    return feature.get('__source__') != 'mymaps';
+  });
 };
 
 
