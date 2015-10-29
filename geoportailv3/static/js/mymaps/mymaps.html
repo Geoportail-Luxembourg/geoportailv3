@@ -105,7 +105,7 @@
           {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li ng-repeat="category in ctrl.getCategories()"><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name }}</a></li>
+          <li ng-repeat="category in ctrl.getCategories()"><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
         </ul>
       </div>
     </div>
@@ -132,6 +132,14 @@
     <div class="form-group">
       <label translate>Titre de la carte</label>
       <input type="text" class="form-control" ng-model="ctrl.newTitle">
+      <div class="dropdown">
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li ng-repeat="category in ctrl.getCategories()"><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+        </ul>
+      </div>
     </div>
     <div class="form-group">
       <label translate>Description</label>
@@ -156,6 +164,14 @@
     <div class="form-group">
       <label translate>Titre de la carte</label>
       <input type="text" class="form-control" ng-model="ctrl.newTitle">
+      <div class="dropdown">
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li ng-repeat="category in ctrl.getCategories()"><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+        </ul>
+      </div>
     </div>
     <div class="form-group">
       <label translate>Description</label>

@@ -329,7 +329,8 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
-    this.appMymaps_.createMap(this.newTitle, this.newDescription).
+    this.appMymaps_.createMap(this.newTitle, this.newDescription,
+        this.newCategoryId).
         then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
             this.askToConnect();
