@@ -293,7 +293,11 @@ app.MymapsDirectiveController.prototype.closeAnonymous = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.openNewMapFromAnonymous = function() {
-  this.creatingFromAnonymous = true;
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.creatingFromAnonymous = true;
+  }
 };
 
 
