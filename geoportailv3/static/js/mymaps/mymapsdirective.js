@@ -302,6 +302,26 @@ app.MymapsDirectiveController.prototype.openNewMapFromAnonymous = function() {
 
 
 /**
+ * Add the anonymous drawing into the current map
+ * @export
+ */
+app.MymapsDirectiveController.prototype.addInMymaps = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    if (this.isMymapsSelected()) {
+      this.drawnFeatures_.copyAnonymousFeaturesToMymaps().then(
+          goog.bind(function(mapinformation) {
+            var mapId = this.appMymaps_.getMapId();
+            var map = {'uuid': mapId};
+            this.onChosen(map);
+          }, this));
+    }
+  }
+};
+
+
+/**
  * Create a map from an anonymous drawing.
  * @export
  */

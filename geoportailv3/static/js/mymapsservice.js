@@ -196,7 +196,7 @@ app.Mymaps.prototype.getCategory = function(categoryId) {
 
 
 /**
- * Set the mapId;
+ * Set the mapId.
  * @param {string} mapId The map id.
  */
 app.Mymaps.prototype.setMapId = function(mapId) {
@@ -204,6 +204,15 @@ app.Mymaps.prototype.setMapId = function(mapId) {
   this.stateManager_.updateState({
     'map_id': this.mapId_
   });
+};
+
+
+/**
+ * Get the mapId.
+ * @return {string} The map id.
+ */
+app.Mymaps.prototype.getMapId = function() {
+  return this.mapId_;
 };
 
 
