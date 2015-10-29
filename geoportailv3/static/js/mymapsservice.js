@@ -120,6 +120,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSaveFeaturesUrl_ = mymapsUrl + '/save_features/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsCopyMapUrl_ = mymapsUrl + '/copy/';
 
   /**
@@ -190,22 +196,26 @@ app.Mymaps.prototype.getCategory = function(categoryId) {
 
 
 /**
- * @param {string} mapId the map id.
- * @param {ol.Collection} collection
+ * Set the mapId;
+ * @param {string} mapId The map id.
  */
-app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
+app.Mymaps.prototype.setMapId = function(mapId) {
   this.mapId_ = mapId;
-
   this.stateManager_.updateState({
     'map_id': this.mapId_
   });
-  this.loadMapInformation_().then(
-      goog.bind(function(mapinformation) {
-        this.mapDescription = mapinformation['description'];
-        this.mapTitle = mapinformation['title'];
-        this.mapOwner = mapinformation['user_login'];
-        this.mapCategoryId = mapinformation['category_id'];
-      }, this));
+};
+
+
+/**
+ * Set the mapId and load map information.
+ * @param {string} mapId The map id.
+ * @param {ol.Collection} collection
+ */
+app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
+  this.setMapId(mapId);
+
+  this.loadMapInformation();
   this.loadFeatures_().then(goog.bind(function(features) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
@@ -330,11 +340,25 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 
 
 /**
- * Load map information
+ * Load the map information.
  * @return {angular.$q.Promise} Promise.
- * @private
  */
-app.Mymaps.prototype.loadMapInformation_ = function() {
+app.Mymaps.prototype.loadMapInformation = function() {
+  return this.getMapInformation().then(
+      goog.bind(function(mapinformation) {
+        this.mapDescription = mapinformation['description'];
+        this.mapTitle = mapinformation['title'];
+        this.mapOwner = mapinformation['user_login'];
+        return mapinformation;
+      }, this));
+};
+
+
+/**
+ * Get the map information.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.getMapInformation = function() {
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -535,7 +559,7 @@ app.Mymaps.prototype.updateMap = function(title, description, categoryId) {
 
 
 /**
- * Save the map.
+ * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
  * @return {angular.$q.Promise} Promise.
  */
@@ -551,6 +575,45 @@ app.Mymaps.prototype.saveFeature = function(feature) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.$http_.post(this.mymapsSaveFeatureUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la sauvegarde de votre modification.');
+        this.notify_(msg);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Save an array of features into the current map.
+ * @param {Array.<ol.Feature>} features The features to save
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.saveFeatures = function(features) {
+  var encOpt = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.mapProjection
+  });
+  var req = $.param({
+    'features': (new ol.format.GeoJSON()).writeFeatures(features, encOpt)
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsSaveFeaturesUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.

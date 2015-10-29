@@ -70,8 +70,9 @@
         <span class="fa fa-caret-square-o-down"></span>
       </a>
       <ul class="dropdown-menu">
-        <li ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
+        <li ng-show="!ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
         <li ng-click="ctrl.closeAnonymous()"><a href translate>Supprimer les éléments de la carte</a></li>
+        <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces éléments</a></li>
       </ul>
     </li>
   </ul>
@@ -141,6 +142,30 @@
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
   <button type="button" class="btn btn-primary" ng-click="ctrl.copyMap()" translate>Copier la carte</button>
+</div>
+</ngeo-modal>
+
+<!-- Create a map for Modal -->
+<ngeo-modal ngeo-modal-shown="ctrl.creatingFromAnonymous">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" translate>Titre et de descritpion de votre nouvelle carte</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+    <div class="form-group">
+      <label translate>Titre de la carte</label>
+      <input type="text" class="form-control" ng-model="ctrl.newTitle">
+    </div>
+    <div class="form-group">
+      <label translate>Description</label>
+      <textarea class="form-control" rows="3" ng-model="ctrl.newDescription"></textarea>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-primary" ng-click="ctrl.createMapFromAnonymous()" translate>Créer la nouvelle carte</button>
 </div>
 </ngeo-modal>
 

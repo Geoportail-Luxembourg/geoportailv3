@@ -114,6 +114,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.copying = false;
 
   /**
+   * Tells whether the 'creatingFromAnonymous' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.creatingFromAnonymous = false;
+
+  /**
    * Tells whether the 'choosing a map' modal window is open or not.
    * @type {boolean}
    * @export
@@ -278,6 +285,48 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
 app.MymapsDirectiveController.prototype.closeAnonymous = function() {
   this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
+};
+
+
+/**
+ * Open the dialog to create a new new map from an anoymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openNewMapFromAnonymous = function() {
+  this.creatingFromAnonymous = true;
+};
+
+
+/**
+ * Create a map from an anonymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.appMymaps_.createMap(this.newTitle, this.newDescription).
+        then(goog.bind(function(resp) {
+          if (goog.isNull(resp)) {
+            this.askToConnect();
+          } else {
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              var map = {'uuid': mapId};
+              this['drawopen'] = true;
+              this.appMymaps_.setMapId(map['uuid']);
+              this.appMymaps_.loadMapInformation().then(
+                  goog.bind(function(mapinformation) {
+                    this.drawnFeatures_.copyAnonymousFeaturesToMymaps().then(
+                        goog.bind(function(mapinformation) {
+                          this.onChosen(map);
+                          var msg = this.gettext_('Carte créée');
+                          this.notify_(msg);
+                          this.creatingFromAnonymous = false;
+                        }, this));
+                  }, this));
+            }}}, this));
+  }
 };
 
 

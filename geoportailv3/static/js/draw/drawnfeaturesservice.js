@@ -132,6 +132,26 @@ app.DrawnFeatures.prototype.saveFeature = function(feature) {
 
 
 /**
+ * Copy anonymous features to mymaps
+ * @return {angular.$q.Promise} Promise.
+ */
+app.DrawnFeatures.prototype.copyAnonymousFeaturesToMymaps = function() {
+  var anonymousFeatures = this.features.getArray().
+      filter(function(feature) {
+        return feature.get('__source__') !== 'mymaps';
+      });
+  anonymousFeatures.forEach(goog.bind(function(feature) {
+    feature.set('__source__', 'mymaps');
+  },this));
+
+  return this.saveFeaturesInMymaps_(anonymousFeatures).then(
+      goog.bind(function(resp) {
+        return resp;
+      }, this));
+};
+
+
+/**
  * Decode the features encoded in the URL and add them to the collection
  * of drawn features.
  */
@@ -162,7 +182,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
 
 
 /**
- * @param {ol.Feature} feature Feature to encode in the URL.
+ * @param {ol.Feature} feature Feature to save in mymaps.
  * @private
  */
 app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
@@ -174,6 +194,19 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
           currentFeature.set('id', featureId);
         }, this));
   }
+};
+
+
+/**
+ * @param {Array.<ol.Feature>} features An array of features to save in mymaps.
+ * @return {angular.$q.Promise} Promise.
+ * @private
+ */
+app.DrawnFeatures.prototype.saveFeaturesInMymaps_ = function(features) {
+  return this.appMymaps_.saveFeatures(features).then(
+      goog.bind(function(resp) {
+        return resp;
+      }, this));
 };
 
 

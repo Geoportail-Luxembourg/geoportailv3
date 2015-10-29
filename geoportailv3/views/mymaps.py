@@ -201,6 +201,42 @@ class Mymaps(object):
             traceback.print_exc(file=sys.stdout)
             return {'success': False, 'id': obj.id}
 
+    @view_config(route_name="mymaps_save_features", renderer='json')
+    def save_features(self):
+        try:
+            map_id = self.request.matchdict.get("map_id")
+            map = DBSession.query(Map).get(map_id)
+            if map is None:
+                return HTTPNotFound()
+
+            if not self.has_permission(self.request.user, map):
+                return HTTPUnauthorized()
+
+            if 'features' not in self.request.params:
+                return HTTPBadRequest()
+
+            features = self.request.params.get('features').\
+                replace(u'\ufffd', '?')
+            feature_collection = geojson.\
+                loads(features, object_hook=geojson.GeoJSON.to_instance)
+
+            for feature in feature_collection['features']:
+                feature_id = feature.properties.get('id')
+
+                if feature_id:
+                    cur_feature = DBSession.query(Feature).get(feature_id)
+                    DBSession.delete(cur_feature)
+
+                obj = Feature(feature)
+                map.features.append(obj)
+
+            DBSession.commit()
+            return {'success': True}
+        except:
+            DBSession.rollback()
+            traceback.print_exc(file=sys.stdout)
+            return {'success': False}
+
     @view_config(route_name="mymaps_delete_feature", renderer='json')
     def delete_feature(self):
         id = self.request.matchdict.get("feature_id")
