@@ -81,7 +81,7 @@ app.StyleEditingController = function($scope, appDrawnFeatures) {
       return;
     }
     this.type = this.feature.getGeometry().getType().toLowerCase();
-    if (this.type == 'point' && this.feature.get('is_label')) {
+    if (this.type == 'point' && this.feature.get('isLabel')) {
       this.type = 'text';
     }
     this.featureOrig = this.feature.clone();

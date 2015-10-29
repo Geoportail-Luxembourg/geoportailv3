@@ -151,6 +151,26 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
+  var drawLabel = new ol.interaction.Draw({
+    features: this.drawnFeatures_.getCollection(),
+    type: ol.geom.GeometryType.POINT
+  });
+
+  /**
+   * @type {ol.interaction.Draw}
+   * @export
+   */
+  this.drawLabel = drawLabel;
+
+  drawLabel.setActive(false);
+  ngeoDecorateInteraction(drawLabel);
+  this.map.addInteraction(drawLabel);
+  goog.events.listen(drawLabel, ol.Object.getChangeEventType(
+      ol.interaction.InteractionProperty.ACTIVE),
+      this.onChangeActive_, false, this);
+  goog.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
+      this.onDrawEnd_, false, this);
+
   var drawLine = new ol.interaction.Draw({
     features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.LINE_STRING
@@ -199,6 +219,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   }, this), goog.bind(function(newVal) {
     if (newVal === false) {
       this.drawPoint.setActive(false);
+      this.drawLabel.setActive(false);
       this.drawLine.setActive(false);
       this.drawPolygon.setActive(false);
       this['queryActive'] = true;
@@ -319,15 +340,16 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   feature.set('name', 'element ' + (++this.featureSeq_));
+  feature.set('description', '');
   feature.set('__editable__', true);
   feature.set('color', '#ed1c24');
   feature.set('opacity', 0.2);
   feature.set('stroke', 1.25);
   feature.set('size', 10);
   feature.set('angle', 0);
-  feature.set('is_label', false);
   feature.set('linestyle', 'plain');
   feature.set('symbol_id', 'circle');
+  feature.set('isLabel', this.drawLabel.getActive());
   feature.setStyle(this.featureStyleFunction_);
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
