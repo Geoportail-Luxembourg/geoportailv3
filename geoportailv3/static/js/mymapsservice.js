@@ -148,6 +148,13 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapCategoryId = null;
 
   /**
+   * Is the current map public.
+   * @type {boolean}
+   * @export
+   */
+  this.mapIsPublic = false;
+
+  /**
    * The currently displayed map title.
    * @type {string}
    */
@@ -253,6 +260,8 @@ app.Mymaps.prototype.clear = function() {
   this.mapTitle = '';
   this.mapDescription = '';
   this.mapOwner = '';
+  this.mapCategoryId = null;
+  this.mapIsPublic = false;
 };
 
 
@@ -358,6 +367,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.mapDescription = mapinformation['description'];
         this.mapTitle = mapinformation['title'];
         this.mapOwner = mapinformation['user_login'];
+        this.mapIsPublic = mapinformation['public'];
         return mapinformation;
       }, this));
 };
@@ -425,13 +435,16 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  * @param {string} title the title of the map.
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category id of the map.
+ * @param {boolean} isPublic if the map is public or not.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.createMap = function(title, description, categoryId) {
+app.Mymaps.prototype.createMap =
+    function(title, description, categoryId, isPublic) {
   var req = $.param({
     'title': title,
     'description': description,
-    'category_id': categoryId
+    'category_id': categoryId,
+    'public': isPublic
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -463,12 +476,17 @@ app.Mymaps.prototype.createMap = function(title, description, categoryId) {
  * Copy the current map inside a new map.
  * @param {string} title The title of the map.
  * @param {string} description The description about the map.
+ * @param {?number} categoryId the category id of the map.
+ * @param {boolean} isPublic if the map is public or not.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.copyMap = function(title, description) {
+app.Mymaps.prototype.copyMap =
+    function(title, description, categoryId, isPublic) {
   var req = $.param({
     'title': title,
-    'description': description
+    'description': description,
+    'category_id': categoryId,
+    'public': isPublic
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -528,18 +546,22 @@ app.Mymaps.prototype.deleteMap = function() {
  * @param {string} title the title of the map.
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category of the map.
+ * @param {boolean} isPublic is the map public.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.updateMap = function(title, description, categoryId) {
+app.Mymaps.prototype.updateMap =
+    function(title, description, categoryId, isPublic) {
 
   this.mapTitle = title;
   this.mapDescription = description;
   this.mapCategoryId = categoryId;
+  this.mapIsPublic = isPublic;
 
   var req = $.param({
     'title': title,
     'description': description,
-    'category_id': categoryId
+    'category_id': categoryId,
+    'public': isPublic
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}

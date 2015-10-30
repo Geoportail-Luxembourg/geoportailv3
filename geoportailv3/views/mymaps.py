@@ -330,14 +330,20 @@ class Mymaps(object):
             map.layers_visibility = unicode(params.get('layers_visibility'))
         if 'selectedNode' in params:
             map.selected_node =\
-                unicode(self.request.params.get('selectedNode'))
+                unicode(params.get('selectedNode'))
         if 'category_id' in params:
-            cat = self.request.params.get('category_id')
+            cat = params.get('category_id')
             map.category_id = None if cat == '' else cat
+        if 'public' in params:
+            str = unicode(params.get('public'))
+            if str == u'true':
+                map.public = True
+            elif str == u'false':
+                map.public = False
         if 'label' in params:
-            map.label = unicode(self.request.params.get('label'))
-        if '_dc' not in params:
-            map.public = self.request.params.get('public') == 'on'
+            map.label = unicode(params.get('label'))
+        # if '_dc' not in params:
+        #     map.public = params.get('public') == 'on'
 
         #
         # deal with the features

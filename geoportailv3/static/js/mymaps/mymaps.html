@@ -102,6 +102,12 @@
     <div class="form-group">
       <label translate>Titre de la carte</label>
       <input type="text" class="form-control" ng-model="ctrl.newTitle">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="ctrl.newIsPublic">
+          <span translate>Make Map Public</span>
+        </label>
+      </div>
       <div class="dropdown">
         <button type="button" class="btn btn-default" data-toggle="dropdown">
           {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>

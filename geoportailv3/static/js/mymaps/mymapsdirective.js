@@ -151,6 +151,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.newCategoryId = null;
 
   /**
+   * Is Map public?
+   * @type {boolean}
+   * @export
+   */
+  this.newIsPublic = false;
+
+  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -212,19 +219,23 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
-    this.appMymaps_.copyMap(this.newTitle, this.newDescription).
-        then(goog.bind(function(resp) {
-          if (goog.isNull(resp)) {
-            this.askToConnect();
-          } else {
-            var mapId = resp['uuid'];
-            if (goog.isDef(mapId)) {
-              var map = {'uuid': mapId};
-              this.onChosen(map);
-              var msg = this.gettext_('Carte copiée');
-              this.notify_(msg);
-              this.modal = undefined;
-            }}}, this));
+    this.appMymaps_.copyMap(
+        this.newTitle,
+        this.newDescription,
+        this.newCategoryId,
+        this.newIsPublic
+    ).then(goog.bind(function(resp) {
+      if (goog.isNull(resp)) {
+        this.askToConnect();
+      } else {
+        var mapId = resp['uuid'];
+        if (goog.isDef(mapId)) {
+          var map = {'uuid': mapId};
+          this.onChosen(map);
+          var msg = this.gettext_('Carte copiée');
+          this.notify_(msg);
+          this.modal = undefined;
+        }}}, this));
   }
 };
 
@@ -336,7 +347,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
     this.askToConnect();
   } else {
     this.appMymaps_.createMap(this.newTitle, this.newDescription,
-        this.newCategoryId)
+        this.newCategoryId, this.newIsPublic)
         .then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
             this.askToConnect();
@@ -457,6 +468,7 @@ app.MymapsDirectiveController.prototype.openCreateMapModal = function() {
     this.newTitle = this.gettext_('Map without Title');
     this.newDescription = '';
     this.newCategoryId = null;
+    this.newIsPublic = false;
   }
 };
 
@@ -469,8 +481,9 @@ app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
   if (this.appMymaps_.isEditable()) {
     this.newTitle = this.appMymaps_.mapTitle;
     this.newDescription = this.appMymaps_.mapDescription;
-    this.modal = 'MODIFY';
     this.newCategoryId = this.appMymaps_.mapCategoryId;
+    this.newIsPublic = this.appMymaps_.mapIsPublic;
+    this.modal = 'MODIFY';
   }
 };
 
@@ -486,7 +499,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
     this.appMymaps_.createMap(
         this.newTitle,
         this.newDescription,
-        this.newCategoryId)
+        this.newCategoryId,
+        this.newIsPublic
+    )
       .then(goog.bind(function(resp) {
           this.modal = 'CREATE';
           if (goog.isNull(resp)) {
@@ -575,7 +590,9 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
       this.appMymaps_.updateMap(
           this.newTitle,
           this.newDescription,
-          this.newCategoryId)
+          this.newCategoryId,
+          this.newIsPublic
+      )
         .then(
           goog.bind(function(mymaps) {
             if (goog.isNull(mymaps)) {
