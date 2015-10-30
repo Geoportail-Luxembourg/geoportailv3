@@ -43,7 +43,6 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
 app.module.directive('appMymaps', app.mymapsDirective);
 
 
-
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
@@ -100,18 +99,11 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.notify_ = appNotify;
 
   /**
-   * Tells whether the 'modifying' modal window is open or not.
-   * @type {boolean}
+   * If modal is open and what type it is
+   * @type {string|undefined}
    * @export
    */
-  this.modifying = false;
-
-  /**
-   * Tells whether the 'copying' modal window is open or not.
-   * @type {boolean}
-   * @export
-   */
-  this.copying = false;
+  this.modal = undefined;
 
   /**
    * Tells whether the 'creatingFromAnonymous' modal window is open or not.
@@ -183,7 +175,21 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
       this.appMymaps_.loadCategories();
     }
   }, this));
+};
 
+
+/**
+ * @param {boolean|undefined} value
+ * @return {boolean|undefined}
+ * @export
+ */
+app.MymapsDirectiveController.prototype.modalShownHidden = function(value) {
+  if (goog.isDef(value) && value === false) {
+    this.modal = undefined;
+    return false;
+  } else if (goog.isDef(this.modal)) {
+    return true;
+  }
 };
 
 
@@ -191,10 +197,10 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
  * Copy the map.
  * @export
  */
-app.MymapsDirectiveController.prototype.openCopyPanel = function() {
+app.MymapsDirectiveController.prototype.openCopyMapModal = function() {
   this.newTitle = this.appMymaps_.mapTitle;
   this.newDescription = this.appMymaps_.mapDescription;
-  this.copying = true;
+  this.modal = 'COPYING';
 };
 
 
@@ -217,7 +223,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
               this.onChosen(map);
               var msg = this.gettext_('Carte copiée');
               this.notify_(msg);
-              this.copying = false;
+              this.modal = undefined;
             }}}, this));
   }
 };
@@ -420,6 +426,56 @@ app.MymapsDirectiveController.prototype.getCategories = function() {
 
 
 /**
+ * Open a map. Actually opens the map selector.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
+      if (goog.isNull(mymaps)) {
+        this.askToConnect();
+      } else if (!goog.array.isEmpty(mymaps)) {
+        this.choosing = true;
+        this.maps = mymaps;
+      }
+    }, this));
+  }
+};
+
+
+/**
+ * Opens Create Map Dialog
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openCreateMapModal = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  }else {
+    this.modal = 'CREATE';
+    this.newTitle = this.gettext_('Map without Title');
+    this.newDescription = '';
+    this.newCategoryId = null;
+  }
+};
+
+
+/**
+ *  Open the modification modal
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
+  if (this.appMymaps_.isEditable()) {
+    this.newTitle = this.appMymaps_.mapTitle;
+    this.newDescription = this.appMymaps_.mapDescription;
+    this.modal = 'MODIFY';
+    this.newCategoryId = this.appMymaps_.mapCategoryId;
+  }
+};
+
+
+/**
  * Creates and load a new map.
  * @export
  */
@@ -427,8 +483,12 @@ app.MymapsDirectiveController.prototype.createMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   }else {
-    this.appMymaps_.createMap(this.gettext_('Map without title'), '', null)
+    this.appMymaps_.createMap(
+        this.newTitle,
+        this.newDescription,
+        this.newCategoryId)
       .then(goog.bind(function(resp) {
+          this.modal = 'CREATE';
           if (goog.isNull(resp)) {
             this.askToConnect();
           } else {
@@ -438,6 +498,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
               this.onChosen(map);
               var msg = this.gettext_('Nouvelle carte créée');
               this.notify_(msg);
+              this.modal = undefined;
             }
           }}, this));
   }
@@ -466,27 +527,7 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
 
 
 /**
- * Open a map. Actually opens the map selector.
- * @export
- */
-app.MymapsDirectiveController.prototype.chooseMap = function() {
-  if (!this.appUserManager_.isAuthenticated()) {
-    this.askToConnect();
-  } else {
-    this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-      if (goog.isNull(mymaps)) {
-        this.askToConnect();
-      } else if (!goog.array.isEmpty(mymaps)) {
-        this.choosing = true;
-        this.maps = mymaps;
-      }
-    }, this));
-  }
-};
-
-
-/**
- * Notify the user that he has to connect before going ahead.
+ * Notify the user he has to connect
  * @export
  */
 app.MymapsDirectiveController.prototype.askToConnect = function() {
@@ -513,23 +554,7 @@ app.MymapsDirectiveController.prototype.onChosen = function(map) {
 
 
 /**
- * Start the modification:
- *  - opens the modification modal,
- *  - set the values to form inputs.
- * @export
- */
-app.MymapsDirectiveController.prototype.modifyMap = function() {
-  if (this.appMymaps_.isEditable()) {
-    this.newTitle = this.appMymaps_.mapTitle;
-    this.newDescription = this.appMymaps_.mapDescription;
-    this.modifying = true;
-    this.newCategoryId = this.appMymaps_.mapCategoryId;
-  }
-};
-
-
-/**
- * Returns true if the map is editable.
+ * Is the map editable
  * @return {boolean}
  * @export
  */
@@ -556,7 +581,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
             if (goog.isNull(mymaps)) {
               this.askToConnect();
             } else {
-              this.modifying = false;
+              this.modal = undefined;
             }
           }, this));
     }
