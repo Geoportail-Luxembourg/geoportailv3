@@ -71,6 +71,9 @@ vars:
     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
     node_modules_path: "{directory}/node_modules"
 
+    layers: {}
+    reset_password: {}
+
     # pyramid_closure configuration
     # Each item in the roots_with_prefix array is an array with two elements. The
     # first element is the path pyramid_closure passed to request.static_url. The
