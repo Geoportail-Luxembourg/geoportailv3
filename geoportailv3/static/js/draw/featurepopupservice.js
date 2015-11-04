@@ -42,6 +42,12 @@ app.FeaturePopup = function($compile, $rootScope, $document) {
   this.features_;
 
   /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_;
+
+  /**
    * The scope the compiled element is linked to.
    * @type {angular.Scope}
    * @private
@@ -210,6 +216,32 @@ app.FeaturePopup.prototype.getAnchor = function(feature) {
       goog.asserts.fail('Unsupported geometry type');
       return null;
   }
+};
+
+
+/**
+ * @param {ol.geom.Polygon} polygon
+ * @return {string}
+ */
+app.FeaturePopup.prototype.formatArea = function(polygon) {
+  return ngeo.interaction.Measure.getFormattedArea(
+      polygon,
+      this.map_.getView().getProjection()
+  );
+};
+
+
+/**
+ * @param {(ol.geom.LineString|ol.geom.Polygon)} line
+ * @return {string}
+ */
+app.FeaturePopup.prototype.formatLength = function(line) {
+  var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
+      line.getCoordinates()[0] : line.getCoordinates();
+  return ngeo.interaction.Measure.getFormattedLength(
+      new ol.geom.LineString(coordinates),
+      this.map_.getView().getProjection()
+  );
 };
 
 

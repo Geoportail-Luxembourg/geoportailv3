@@ -298,6 +298,42 @@ app.FeaturePopupController.prototype.close = function() {
 
 
 /**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getArea = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    return this.appFeaturePopup_.formatArea(geom);
+  } else {
+    return '';
+  }
+
+
+};
+
+
+/**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getLength = function() {
+  if (goog.isDef(this.feature) &&
+      (this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON ||
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
+  )
+  {
+    var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
+        (this.feature.getGeometry());
+    return this.appFeaturePopup_.formatLength(geom);
+  } else {
+    return '';
+  }
+};
+
+
+/**
  * @return {boolean} return true if is editable by the user.
  * @export
  */
