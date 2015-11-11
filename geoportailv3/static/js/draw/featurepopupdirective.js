@@ -137,7 +137,7 @@ app.FeaturePopupController.prototype.close = function() {
  */
 app.FeaturePopupController.prototype.isEditable = function() {
   if (goog.isDef(this.feature) &&
-      this.feature.get('__source__') == 'mymaps') {
+      !goog.string.isEmptySafe(this.feature.get('__map_id__'))) {
     return this.appMymaps_.isEditable();
   }
   return true;

@@ -233,7 +233,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
     var jsonFeatures = (new ol.format.GeoJSON()).
         readFeatures(features, encOpt);
     goog.array.forEach(jsonFeatures, function(feature) {
-      feature.set('__source__', 'mymaps');
+      feature.set('__map_id__', this.getMapId());
       feature.set('__editable__', this.isEditable());
       feature.setStyle(this.featureStyleFunction_);
     }, this);

@@ -310,7 +310,7 @@ app.MymapsDirectiveController.prototype.addInMymaps = function() {
     this.askToConnect();
   } else {
     if (this.isMymapsSelected()) {
-      this.drawnFeatures_.copyAnonymousFeaturesToMymaps().then(
+      this.drawnFeatures_.moveAnonymousFeaturesToMymaps().then(
           goog.bind(function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
@@ -342,7 +342,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
               this.appMymaps_.setMapId(map['uuid']);
               this.appMymaps_.loadMapInformation().then(
                   goog.bind(function(mapinformation) {
-                    this.drawnFeatures_.copyAnonymousFeaturesToMymaps().then(
+                    this.drawnFeatures_.moveAnonymousFeaturesToMymaps().then(
                         goog.bind(function(mapinformation) {
                           this.onChosen(map);
                           var msg = this.gettext_('Carte créée');
@@ -571,7 +571,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
  */
 app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
   return this.featuresList.filter(function(feature) {
-    return feature.get('__source__') == 'mymaps';
+    return !goog.string.isEmptySafe(feature.get('__map_id__'));
   });
 };
 
@@ -583,7 +583,7 @@ app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
  */
 app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
   return this.featuresList.filter(function(feature) {
-    return feature.get('__source__') != 'mymaps';
+    return goog.string.isEmptySafe(feature.get('__map_id__'));
   });
 };
 
