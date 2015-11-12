@@ -330,27 +330,27 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
     this.askToConnect();
   } else {
     this.appMymaps_.createMap(this.newTitle, this.newDescription,
-        this.newCategoryId).
-        then(goog.bind(function(resp) {
+        this.newCategoryId)
+        .then(goog.bind(function(resp) {
           if (goog.isNull(resp)) {
             this.askToConnect();
           } else {
             var mapId = resp['uuid'];
             if (goog.isDef(mapId)) {
-              var map = {'uuid': mapId};
               this['drawopen'] = true;
-              this.appMymaps_.setMapId(map['uuid']);
-              this.appMymaps_.loadMapInformation().then(
-                  goog.bind(function(mapinformation) {
-                    this.drawnFeatures_.moveAnonymousFeaturesToMymaps().then(
-                        goog.bind(function(mapinformation) {
-                          this.onChosen(map);
-                          var msg = this.gettext_('Carte créée');
-                          this.notify_(msg);
-                          this.creatingFromAnonymous = false;
-                        }, this));
-                  }, this));
-            }}}, this));
+              this.appMymaps_.setMapId(mapId);
+              return this.appMymaps_.loadMapInformation();
+            }}}, this))
+        .then(goog.bind(function(mapinformation) {
+          return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
+        }, this))
+        .then(goog.bind(function(mapinformation) {
+          var map = {'uuid': this.appMymaps_.getMapId()};
+          this.onChosen(map);
+          var msg = this.gettext_('Carte créée');
+          this.notify_(msg);
+          this.creatingFromAnonymous = false;
+        }, this));
   }
 };
 
