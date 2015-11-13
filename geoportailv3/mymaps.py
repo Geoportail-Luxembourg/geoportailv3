@@ -114,7 +114,7 @@ class Feature(Base):
     geometry = Column(Geometry(srid=2169))
     map_id = Column(Unicode, ForeignKey('map.uuid'))
     symbol_id = Column(Integer)
-    size = Column(Float, default=15)
+    size = Column(Float, default=10)
     angle = Column(Float, default=0)
     font_size = Column(Integer, default=15)
     opacity = Column(Float, default=0.5)
@@ -137,7 +137,7 @@ class Feature(Base):
 
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
-            else 40
+            else 10
         angle = feature.properties.get('angle')
         self.angle = angle if angle is not None and unicode(angle).isnumeric()\
             else 0
@@ -207,10 +207,12 @@ class Feature(Base):
                           linestyle=self.linestyle,
                           id=self.id,
                           symbolId=self.symbol_id,
-                          angle=self.angle,
-                          size=self.size,
-                          fontSize=self.font_size,
+                          angle=self.angle if self.angle is not None else 0,
+                          size=self.size if self.size is not None else 10,
+                          fontSize=self.font_size
+                          if self.font_size is not None else 15,
                           opacity=self.opacity
+                          if self.opacity is not None else 0.5,
                           )
         return geojson.Feature(id=self.id,
                                geometry=geometry,
