@@ -233,7 +233,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         var feature = evt.element;
         feature.set('__selected__', true);
 
-        var editable = goog.string.isEmptySafe(feature.get('__map_id__')) ||
+        var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
       }, this));
@@ -257,7 +257,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
 
-          if (!goog.string.isEmptySafe(feature.get('__map_id__'))) {
+          if (!!feature.get('__map_id__')) {
             this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
           } else {
             this.modifyInteraction_.setActive(true);

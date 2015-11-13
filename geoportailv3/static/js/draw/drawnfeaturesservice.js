@@ -79,7 +79,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
  */
 app.DrawnFeatures.prototype.remove = function(feature) {
   this.features.remove(feature);
-  if (!goog.string.isEmptySafe(feature.get('__map_id__'))) {
+  if (!!feature.get('__map_id__')) {
     if (this.appMymaps_.isEditable()) {
       this.appMymaps_.deleteFeature(feature);
     }
@@ -107,7 +107,7 @@ app.DrawnFeatures.prototype.add = function(feature) {
  */
 app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = features.filter(function(feature) {
-    return goog.string.isEmptySafe(feature.get('__map_id__'));
+    return !feature.get('__map_id__');
   });
   if (featuresToEncode.length > 0) {
     this.ngeoLocation_.updateParams({
@@ -126,7 +126,7 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
  */
 app.DrawnFeatures.prototype.saveFeature = function(feature) {
   if (this.appMymaps_.isEditable() &&
-      !goog.string.isEmptySafe(feature.get('__map_id__'))) {
+      !!feature.get('__map_id__')) {
     this.saveFeatureInMymaps_(feature);
   }
   this.encodeFeaturesInUrl_(this.features.getArray());
@@ -140,7 +140,7 @@ app.DrawnFeatures.prototype.saveFeature = function(feature) {
 app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
   var newMymapsFeatures = [];
   this.features.getArray().map(goog.bind(function(feature) {
-    if (goog.string.isEmptySafe(feature.get('__map_id__'))) {
+    if (!feature.get('__map_id__')) {
       feature.set('__map_id__', this.appMymaps_.getMapId());
       newMymapsFeatures.push(feature);
     }
@@ -220,7 +220,7 @@ app.DrawnFeatures.prototype.clear = function() {
  */
 app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
   var mymapsFeatures = this.features.getArray().filter(function(feature) {
-    return !goog.string.isEmptySafe(feature.get('__map_id__'));
+    return !!feature.get('__map_id__');
   });
 
   mymapsFeatures.forEach(goog.bind(function(feature) {
@@ -236,7 +236,7 @@ app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
  */
 app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
   var anonymousFeatures = this.features.getArray().filter(function(feature) {
-    return goog.string.isEmptySafe(feature.get('__map_id__'));
+    return !feature.get('__map_id__');
   });
 
   anonymousFeatures.forEach(goog.bind(function(feature) {

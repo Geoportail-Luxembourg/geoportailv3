@@ -571,7 +571,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
  */
 app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
   return this.featuresList.filter(function(feature) {
-    return !goog.string.isEmptySafe(feature.get('__map_id__'));
+    return !!feature.get('__map_id__');
   });
 };
 
@@ -583,7 +583,7 @@ app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
  */
 app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
   return this.featuresList.filter(function(feature) {
-    return goog.string.isEmptySafe(feature.get('__map_id__'));
+    return !feature.get('__map_id__');
   });
 };
 
