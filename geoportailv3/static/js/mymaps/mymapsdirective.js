@@ -114,6 +114,13 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.copying = false;
 
   /**
+   * Tells whether the 'creatingFromAnonymous' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.creatingFromAnonymous = false;
+
+  /**
    * Tells whether the 'choosing a map' modal window is open or not.
    * @type {boolean}
    * @export
@@ -266,8 +273,85 @@ app.MymapsDirectiveController.prototype.shareMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.closeMap = function() {
-  this.drawnFeatures_.clear();
+  this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
+};
+
+
+/**
+ * Closes the current anonymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.closeAnonymous = function() {
+  this.drawnFeatures_.clearAnonymousFeatures();
+  this.selectedFeatures_.clear();
+};
+
+
+/**
+ * Open the dialog to create a new new map from an anoymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openNewMapFromAnonymous = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.creatingFromAnonymous = true;
+  }
+};
+
+
+/**
+ * Add the anonymous drawing into the current map
+ * @export
+ */
+app.MymapsDirectiveController.prototype.addInMymaps = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    if (this.isMymapsSelected()) {
+      this.drawnFeatures_.moveAnonymousFeaturesToMymaps().then(
+          goog.bind(function(mapinformation) {
+            var mapId = this.appMymaps_.getMapId();
+            var map = {'uuid': mapId};
+            this.onChosen(map);
+          }, this));
+    }
+  }
+};
+
+
+/**
+ * Create a map from an anonymous drawing.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    this.appMymaps_.createMap(this.newTitle, this.newDescription,
+        this.newCategoryId)
+        .then(goog.bind(function(resp) {
+          if (goog.isNull(resp)) {
+            this.askToConnect();
+          } else {
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              this['drawopen'] = true;
+              this.appMymaps_.setMapId(mapId);
+              return this.appMymaps_.loadMapInformation();
+            }}}, this))
+        .then(goog.bind(function(mapinformation) {
+          return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
+        }, this))
+        .then(goog.bind(function(mapinformation) {
+          var map = {'uuid': this.appMymaps_.getMapId()};
+          this.onChosen(map);
+          var msg = this.gettext_('Carte créée');
+          this.notify_(msg);
+          this.creatingFromAnonymous = false;
+        }, this));
+  }
 };
 
 
@@ -402,7 +486,7 @@ app.MymapsDirectiveController.prototype.chooseMap = function() {
 
 
 /**
- * Notify the user he has to connect
+ * Notify the user that he has to connect before going ahead.
  * @export
  */
 app.MymapsDirectiveController.prototype.askToConnect = function() {
@@ -445,7 +529,7 @@ app.MymapsDirectiveController.prototype.modifyMap = function() {
 
 
 /**
- * Is the map editable
+ * Returns true if the map is editable.
  * @return {boolean}
  * @export
  */
@@ -477,6 +561,30 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
           }, this));
     }
   }
+};
+
+
+/**
+ * Get a features Array with the Mymaps features.
+ * @return {Array.<ol.Feature>?} The features array.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
+  return this.featuresList.filter(function(feature) {
+    return !!feature.get('__map_id__');
+  });
+};
+
+
+/**
+ * Get a features Array with the anonymous features.
+ * @return {Array.<ol.Feature>?} The features array.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
+  return this.featuresList.filter(function(feature) {
+    return !feature.get('__map_id__');
+  });
 };
 
 

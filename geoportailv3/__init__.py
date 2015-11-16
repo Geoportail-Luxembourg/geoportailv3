@@ -123,6 +123,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "mymaps_save_features",
+        "/mymaps/save_features/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
         "mymaps_copy",
         "/mymaps/copy/{map_id}",
         request_method="POST"

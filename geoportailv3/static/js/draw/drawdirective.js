@@ -232,7 +232,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        var editable = feature.get('__source__') !== 'mymaps' ||
+
+        var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
       }, this));
@@ -256,7 +257,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
 
-          if (feature.get('__source__') == 'mymaps') {
+          if (!!feature.get('__map_id__')) {
             this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
           } else {
             this.modifyInteraction_.setActive(true);
@@ -335,6 +336,12 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       event.target.setActive(false);
     });
   }, this), 0);
+
+  if (this.appMymaps_.isEditable()) {
+    feature.set('__map_id__', this.appMymaps_.getMapId());
+  } else {
+    feature.set('__map_id__', undefined);
+  }
 
   this.drawnFeatures_.add(feature);
 
