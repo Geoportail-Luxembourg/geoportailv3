@@ -211,6 +211,26 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
+  var drawCircle = new ol.interaction.Draw({
+    features: this.drawnFeatures_.getCollection(),
+    type: ol.geom.GeometryType.CIRCLE
+  });
+
+  /**
+   * @type {ol.interaction.Draw}
+   * @export
+   */
+  this.drawCircle = drawCircle;
+
+  drawCircle.setActive(false);
+  ngeoDecorateInteraction(drawCircle);
+  this.map.addInteraction(drawCircle);
+  goog.events.listen(drawCircle, ol.Object.getChangeEventType(
+      ol.interaction.InteractionProperty.ACTIVE),
+      this.onChangeActive_, false, this);
+  goog.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
+      this.onDrawEnd_, false, this);
+
 
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
@@ -222,6 +242,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawLabel.setActive(false);
       this.drawLine.setActive(false);
       this.drawPolygon.setActive(false);
+      this.drawCircle.setActive(false);
       this['queryActive'] = true;
     } else {
       this['queryActive'] = false;
@@ -328,7 +349,7 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
-      this.drawPolygon.getActive();
+      this.drawPolygon.getActive() || this.drawCircle.getActive();
   this.selectInteraction_.setActive(!active);
 };
 
@@ -339,6 +360,12 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
+  if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
+    var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
+    feature.setGeometry(
+        ol.geom.Polygon.fromCircle(featureGeom)
+    );
+  }
   feature.set('name', 'element ' + (++this.featureSeq_));
   feature.set('description', '');
   feature.set('__editable__', true);
