@@ -788,7 +788,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
           /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
     }
 
-    if (this.get('text')) {
+    if (this.get('isLabel')) {
       return [new ol.style.Style({
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),

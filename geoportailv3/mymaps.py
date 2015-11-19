@@ -139,8 +139,10 @@ class Feature(Base):
         self.size = size if size is not None and unicode(size).isnumeric()\
             else 10
         angle = feature.properties.get('angle')
-        self.angle = angle if angle is not None and unicode(angle).isnumeric()\
-            else 0
+        try:
+            self.angle = float(angle)
+        except TypeError:
+            self.angle = 0
         font_size = feature.properties.get('fontSize')
         self.font_size = font_size if font_size is not None and\
             unicode(font_size).isnumeric() else 15
