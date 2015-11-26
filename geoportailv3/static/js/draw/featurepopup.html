@@ -5,6 +5,9 @@
   </div>
   <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
+  <div ng-show="ctrl.feature.get('thumbnail')" class="feature-popup-body">
+    <a ng-href="{{ctrl.feature.get('image')}}" target="_blank"><img ng-src="{{ctrl.feature.get('thumbnail')}}"/></a>
+  </div>
   <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
       <li ng-show="ctrl.feature.get('__editable__')">

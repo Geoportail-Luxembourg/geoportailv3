@@ -32,10 +32,23 @@ app.module.directive('appStyleediting', app.styleEditingDirective);
 /**
  * @param {angular.Scope} $scope The scope.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.UserManager} appUserManager
  * @constructor
  * @ngInject
  */
-app.StyleEditingController = function($scope, appDrawnFeatures) {
+app.StyleEditingController = function($scope, appDrawnFeatures,
+    appUserManager) {
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+
+  /**
+   * @type {Object}
+   * @export
+   */
+  this.image;
 
   /**
    * @type {app.DrawnFeatures}
@@ -85,6 +98,17 @@ app.StyleEditingController = function($scope, appDrawnFeatures) {
       this.type = 'text';
     }
     this.featureOrig = this.feature.clone();
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.image;
+  }, this), goog.bind(function() {
+    if (!goog.isDef(this.image)) {
+      return;
+    }
+    this.feature.set('thumbnail', this.image['thumbnail']);
+    this.feature.set('image', this.image['image']);
+
   }, this));
 };
 
@@ -184,6 +208,18 @@ app.StyleEditingController.prototype.getSetOpacity = function(val) {
 
 
 /**
+ * @return {string}
+ * @export
+ */
+app.StyleEditingController.prototype.getThumbnail = function() {
+  if (!goog.isDef(this.feature)) {
+    return '';
+  }
+  return /** @type {string} */ (this.feature.get('thumbnail'));
+};
+
+
+/**
  * @param {string} val
  * @return {*}
  * @export
@@ -221,8 +257,19 @@ app.StyleEditingController.prototype.close = function() {
   this.feature.set('symbol_id', this.featureOrig.get('symbol_id'));
   this.feature.set('stroke', this.featureOrig.get('stroke'));
   this.feature.set('linestyle', this.featureOrig.get('linestyle'));
+  this.feature.set('image', this.featureOrig.get('image'));
+  this.feature.set('thumbnail', this.featureOrig.get('thumbnail'));
 
   this.editingStyle = false;
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.StyleEditingController.prototype.isAuthenticated = function() {
+  return this.appUserManager_.isAuthenticated();
 };
 
 app.module.controller('AppStyleEditingController', app.StyleEditingController);
