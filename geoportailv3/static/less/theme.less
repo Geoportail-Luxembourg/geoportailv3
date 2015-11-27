@@ -254,17 +254,27 @@
   }
 
   .mymaps {
-    .mymap-header,
-    .mymap-footer {
+    .map {
       background-color: @primary;
-      color: white;
     }
+
     .features {
       .feature {
         &.selected {
           background-color: @tertiary;
           color: white;
         }
+      }
+    }
+
+    .navbar-nav > li > a {
+      &, &:hover {
+        background-color: transparent;
+        color: #000000;
+      }
+      opacity: 0.2;
+      &:hover {
+        opacity: 0.5;
       }
     }
   }

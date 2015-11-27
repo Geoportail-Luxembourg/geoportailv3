@@ -148,9 +148,8 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapCategoryId = null;
 
   /**
-   * Is the current map public.
+   * Whether the map is public or not.
    * @type {boolean}
-   * @export
    */
   this.mapIsPublic = false;
 

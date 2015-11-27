@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.isMymapsSelected()" class="col-xs-12">
+<div ng-show="!ctrl.isMymapsSelected()">
   <p translate>
     Create, save and share your own maps.
   </p>
@@ -11,22 +11,23 @@
 </div>
 
 <!-- Map displayed -->
-<div ng-show="ctrl.isMymapsSelected()" class="clearfix">
-  <div class="col-xs-12">
-    <div class="map-owner" ng-show="ctrl.getMapOwner()">{{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}</div>
-  </div>
-  
-  <div class="mymap-header col-xs-12">
+<div ng-show="ctrl.isMymapsSelected()">
+
+  <div class="mymap-header">
     <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
     <div class="title" ng-click="ctrl.openModifyMapModal()">{{ctrl.getMapTitle()}}</div>
   </div>
-  <div class="col-xs-12">
     <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
     <p class="no-description" ng-click="ctrl.openModifyMapModal()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
   </div>
 
-  <div ng-show="ctrl.isEditable()" class="mymap-footer col-xs-12">
-    {{'Elements dans ma carte'|translate}}
+  <div ng-show="ctrl.isEditable()" class="mymap-footer navbar">
+    <span ng-show="!ctrl.getMapIsPublic()">
+      <i class="fa fa-lock"></i>&nbsp;
+    </span>
+    <span class="map-owner" ng-show="ctrl.getMapOwner()">
+      {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
+    </span>
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
         <a href class="dropdown-toggle" data-toggle="dropdown">
@@ -50,10 +51,8 @@
       </li>
     </ul>
   </div>
-</div>
 
-<div class="col-xs-12">
-  <ul class="features">
+  <ul class="features list-unstyled">
     <li ng-repeat="feature in ctrl.getMymapsFeatures()" class="feature"
         ng-click="ctrl.selectFeature(feature)"
         ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">
@@ -62,24 +61,26 @@
   </ul>
 </div>
 
-<div ng-show="ctrl.getAnonymousFeatures().length" class="mymap-footer col-xs-12">
-  {{'Elements en dehors de ma carte'|translate}}
-  <ul class="nav navbar-nav navbar-right">
-    <li class="dropdown">
-      <a href class="dropdown-toggle" data-toggle="dropdown">
-        <span class="fa fa-caret-square-o-down"></span>
-      </a>
-      <ul class="dropdown-menu">
-        <li ng-show="ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
-        <li ng-click="ctrl.closeAnonymous()"><a href translate>Supprimer les éléments de la carte</a></li>
-        <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces éléments</a></li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<hr ng-show="ctrl.getAnonymousFeatures().length">
 
-<div class="col-xs-12">
-  <ul class="features">
+<div ng-show="ctrl.getAnonymousFeatures().length">
+  <div class="navbar">
+    {{'Dessins'|translate}}
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href class="dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-caret-square-o-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li ng-show="ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
+          <li ng-click="ctrl.closeAnonymous()"><a href translate>Effacer tous les dessins</a></li>
+          <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces dessins</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <ul class="features list-unstyled">
     <li ng-repeat="feature in ctrl.getAnonymousFeatures()"
       class="feature"
       ng-click="ctrl.selectFeature(feature)"
@@ -140,17 +141,17 @@
       <div class="input-group">
         <!-- <div class="input-group-addon"><i class="fa fa-search"></i></div> -->
         <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
-      </div>      
+      </div>
     </div>
   </form>
 </div>
 <div class="modal-body">
-  <table class="table table-hover table-condensed" ng-init="sortReverse = true">
+  <table class="table table-hover table-condensed mymaps-list" ng-init="sortReverse = true">
     <thead>
       <tr>
         <td>
           <a href="#" ng-click="sortType = 'title'; sortReverse = !sortReverse">
-            {{'Titre'|translate}} 
+            {{'Titre'|translate}}
             <span ng-show="sortType == 'title' && !sortReverse">&#9660;</span>
             <span ng-show="sortType == 'title' && sortReverse">&#9650;</span>
           </a>

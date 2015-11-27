@@ -1,6 +1,6 @@
 <div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature">
   <div class="feature-popup-heading">
-    <a href class="close" ng-click="ctrl.close()">&times;</a>
+    <button href class="close" ng-click="ctrl.close()">&times;</button>
     {{ ctrl.feature.get('name') }}
   </div>
   <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">

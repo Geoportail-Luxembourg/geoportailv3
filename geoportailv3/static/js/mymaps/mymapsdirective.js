@@ -489,6 +489,15 @@ app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
 
 
 /**
+ * @return {boolean} Returns whether the map is public or not.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapIsPublic = function() {
+  return this.appMymaps_.mapIsPublic;
+};
+
+
+/**
  * Creates and load a new map.
  * @export
  */

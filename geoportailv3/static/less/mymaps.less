@@ -1,4 +1,21 @@
 .mymaps {
+
+  app-mymaps {
+    display: block;
+    // Height calculation:
+    // 100% - h2 font-size - padding-top - padding-bottom -
+    height: ~"calc(100% - 40px - 2 * 12px)";
+    overflow: auto;
+  }
+
+  app-mymaps > div {
+    padding: 10px;
+  }
+
+  hr {
+    margin: 0;
+  }
+
   .mymap-header .title {
     width: auto;
     max-width: ~"calc(100% - 15px)";
@@ -8,6 +25,11 @@
     white-space: nowrap;
   }
 
+  .map-owner {
+    font-style: italic;
+    font-size: 0.9em;
+  }
+
   .title,
   .description,
   .no-description {
@@ -15,12 +37,25 @@
   }
 
   .features {
+    > li {
+      padding-left: 10px;
+    }
     .feature {
       cursor: pointer;
     }
   }
+
+  .navbar {
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
   .navbar-nav > li > a {
     padding: 3px;
     background-color: transparent;
+  }
+
+  table.mymaps-list > tbody > tr {
+    cursor: pointer;
   }
 }
