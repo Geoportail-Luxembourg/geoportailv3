@@ -37,10 +37,22 @@ app.module.directive('appSymbolSelector', app.symbolSelectorDirective);
 app.SymbolSelectorController = function($http) {
 
   /**
-   * @type {boolean}
+   * @type {Array<string>}
    * @export
    */
-  this.showStylableSymbols = true;
+  this.colors = [
+    ['#880015', '#ed1c24', '#ff7f27', '#fff200', '#22b14c', '#00a2e8',
+      '#3f48cc', '#a349a4'],
+    ['#b97a57', '#ffaec9', '#ffc90e', '#efe4b0', '#b5e61d', '#99d9ea',
+      '#7092be', '#c8bfe7'],
+    ['#ffffff', '#f7f7f7', '#c3c3c3', '#000000']
+  ];
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.tab = 'stylable';
 
   /**
    * @type {Array}
@@ -165,9 +177,8 @@ app.SymbolSelectorController.prototype.getMySymbols = function() {
  *
  */
 app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
-
+  this.tab = symboltype;
   if (symboltype !== 'stylable') {
-    this.showStylableSymbols = false;
     if (!(symboltype in this.symboltypes_) ||
         this.symboltypes_[symboltype]['status'] != 200) {
       this.symboltypes_[symboltype] = this.http_.get(
@@ -185,8 +196,16 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
     },this));
   } else {
     this.selectedSymbols = null;
-    this.showStylableSymbols = true;
   }
+};
+
+
+/**
+ * @param {string} color
+ * @export
+ */
+app.SymbolSelectorController.prototype.setColor = function(color) {
+    this.feature.set('color', color);
 };
 
 app.module.controller('AppSymbolSelectorController',
