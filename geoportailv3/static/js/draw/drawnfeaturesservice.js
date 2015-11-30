@@ -169,8 +169,8 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('size', +size);
       var angle = /** @type {string} */ (feature.get('angle'));
       feature.set('angle', +angle);
-      var isLabel = /** @type {string} */ (feature.get('is_label'));
-      feature.set('is_label', isLabel === 'true');
+      var isLabel = /** @type {string} */ (feature.get('isLabel'));
+      feature.set('isLabel', isLabel === 'true');
       feature.set('__editable__', true);
       feature.set('__map_id__', undefined);
       feature.setStyle(this.featureStyleFunction_);
