@@ -298,6 +298,14 @@ app.FeaturePopupController.prototype.close = function() {
 
 
 /**
+ * @export
+ */
+app.FeaturePopupController.prototype.fitFeature = function() {
+  this.appFeaturePopup_.fit(this.feature);
+};
+
+
+/**
  * @return {string}
  * @export
  */

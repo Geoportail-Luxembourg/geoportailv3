@@ -12,6 +12,11 @@
   </div>
   <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
+      <li>
+        <a href ng-click="ctrl.fitFeature()">
+          <span class="fa fa-search"></span>
+        </a>
+      </li>
       <li ng-show="ctrl.feature.get('__editable__')">
         <a href ng-click="ctrl.editingAttributes = true">
           <span class="fa fa-pencil"></span>

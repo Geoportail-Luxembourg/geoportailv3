@@ -182,6 +182,19 @@ app.FeaturePopup.prototype.toggleDropdown = function() {
 
 
 /**
+ * @param {ol.Feature} feature
+ */
+app.FeaturePopup.prototype.fit = function(feature) {
+  var viewSize = /** {ol.Size} **/ (this.map_.getSize());
+  goog.asserts.assert(goog.isDef(viewSize));
+  this.map_.getView().fit(
+      feature.getGeometry().getExtent(),
+      viewSize
+  );
+};
+
+
+/**
  */
 app.FeaturePopup.prototype.hide = function() {
   delete this.scope_['feature'];
