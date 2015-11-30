@@ -108,6 +108,16 @@ def main(global_config, **settings):
         request_method="GET"
     )
     config.add_route(
+        "mymaps_get_symbol",
+        "/mymaps/symbol/{symbol_id}",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_get_symbols",
+        "/mymaps/symbols",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_delete",
         "/mymaps/delete/{map_id}",
         request_method="DELETE"

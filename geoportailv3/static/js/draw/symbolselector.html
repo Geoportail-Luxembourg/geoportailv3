@@ -1,0 +1,30 @@
+<div class="feature-popup-heading">
+  <a href class="close" ng-click="ctrl.close()">&times;</a>
+  <div translate>Veuillez choisir un symbole dans une des catégories</div>
+</div>
+
+  <button ng-click="ctrl.openSymbols('stylable')" translate>Symboles avec un style</button>
+  <button ng-click="ctrl.openSymbols('public')" translate>Symboles publics</button>
+  <button ng-click="ctrl.openSymbols('us')" translate>Mes symboles</button>
+
+  <div ng-show='!ctrl.showStylableSymbols' class="feature-symbol-popup-body">
+    <button ng-class="{selected: ctrl.feature.get('symbol_id') == symbol.id}"
+            ng-repeat="symbol in ctrl.selectedSymbols" 
+            ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{symbol.url}}"/></button>
+  </div>
+  <div ng-show='ctrl.showStylableSymbols' class="feature-symbol-popup-body">
+    <button ng-click="ctrl.selectShape('circle')" 
+            ng-class="{selected: ctrl.feature.get('shape') == 'circle'}" translate>Circle</button>
+    <button ng-click="ctrl.selectShape('square')" 
+            ng-class="{selected: ctrl.feature.get('shape') == 'square'}" translate>Square</button>
+    <button ng-click="ctrl.selectShape('cross')" 
+            ng-class="{selected: ctrl.feature.get('shape') == 'cross'}" translate>Cross</button>
+    <button ng-click="ctrl.selectShape('triangle')" 
+            ng-class="{selected: ctrl.feature.get('shape') == 'triangle'}" translate>Triangle</button>
+
+  </div>
+<div class="feature-popup-footer pull-right">
+  <button href class="btn btn-default" ng-click="ctrl.close()" translate>
+    Fermer
+  </button>
+</div>

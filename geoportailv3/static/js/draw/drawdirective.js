@@ -418,7 +418,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('size', 10);
   feature.set('angle', 0);
   feature.set('linestyle', 'plain');
-  feature.set('symbol_id', 'circle');
+  feature.set('shape', 'circle');
   feature.set('isLabel', this.drawLabel.getActive());
   feature.setStyle(this.featureStyleFunction_);
 

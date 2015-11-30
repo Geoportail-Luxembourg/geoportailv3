@@ -401,7 +401,15 @@ class Mymaps(object):
             cur_file = DBSession.query(Images).\
                 filter(Images.name == filename).one()
             the_image = cur_file.image
-            headers = {'Content-Type': 'image/?'}
+            if cur_file.name.lower().endswith(".jpg"):
+                headers = {'Content-Type': 'image/jpeg'}
+            if cur_file.name.lower().endswith(".jpeg"):
+                headers = {'Content-Type': 'image/jpeg'}
+            if cur_file.name.lower().endswith(".gif"):
+                headers = {'Content-Type': 'image/gif'}
+            if cur_file.name.lower().endswith(".png"):
+                headers = {'Content-Type': 'image/png'}
+
             return Response(the_image, headers=headers)
 
         return HTTPNotFound()
@@ -537,7 +545,9 @@ class Mymaps(object):
                                     % (str(cnt_img))}),
                         headers)
 
-    def get_symbol(self, id):
+    @view_config(route_name="mymaps_get_symbol")
+    def get_symbol(self):
+        id = self.request.matchdict.get("symbol_id")
         try:
             symbol = DBSession.query(Symbols).\
                 filter(Symbols.id == id).one()
@@ -548,19 +558,19 @@ class Mymaps(object):
                        }
 
             if symbol.symbol_name.lower().endswith(".jpg"):
-                    headers['Content-Type'] = 'image/jpeg'
+                headers = {'Content-Type': 'image/jpeg'}
             if symbol.symbol_name.lower().endswith(".jpeg"):
-                    headers['Content-Type'] = 'image/jpeg'
+                headers = {'Content-Type': 'image/jpeg'}
             if symbol.symbol_name.lower().endswith(".gif"):
-                    headers['Content-Type'] = 'image/gif'
+                headers = {'Content-Type': 'image/gif'}
             if symbol.symbol_name.lower().endswith(".png"):
-                    headers['Content-Type'] = 'image/png'
-            return symbol.symbol
+                headers = {'Content-Type': 'image/png'}
+            return Response(symbol.symbol, headers=headers)
+
         except:
             from PIL import Image, ImageDraw
             from cStringIO import StringIO
 
-            headers['Content-Type'] = 'image/gif'
             img = Image.new('RGBA', (40, 40))
             ImageDraw.Draw(img)
 
@@ -568,11 +578,13 @@ class Mymaps(object):
             img.save(buf, 'GIF', transparency=0)
             content = buf.getvalue()
             buf.close()
+            headers = {'Content-Type': 'image/gif'}
+            return Response(content, headers=headers)
 
-            return content
-
+    @view_config(route_name="mymaps_get_symbols")
     def get_symbols(self):
-        user = self.request.user
+        user = self.request.user.username
+
         results = []
         try:
             symbol_type = self.request.params.get('symboltype', 'pixmap')
@@ -581,7 +593,7 @@ class Mymaps(object):
                         filter(Symbols.is_public == True).all():  # noqa
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/%s/getSymbol"
+                                    'url': "/mymaps/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
 
@@ -590,7 +602,7 @@ class Mymaps(object):
                         filter(Symbols.login_owner == user).all():
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/%s/getSymbol"
+                                    'url': "/mymaps/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
         except:
