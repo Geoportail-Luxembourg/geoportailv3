@@ -132,7 +132,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.featureStyleFunction_ = this.appMymaps_.createStyleFunction();
 
   var drawPoint = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POINT
   });
 
@@ -152,7 +151,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onDrawEnd_, false, this);
 
   var drawLabel = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POINT
   });
 
@@ -172,7 +170,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onDrawEnd_, false, this);
 
   var drawLine = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.LINE_STRING
   });
 
@@ -192,7 +189,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onDrawEnd_, false, this);
 
   var drawPolygon = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POLYGON
   });
 
@@ -212,7 +208,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onDrawEnd_, false, this);
 
   var drawCircle = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.CIRCLE
   });
 
@@ -392,7 +387,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     feature.set('__map_id__', undefined);
   }
 
-  this.drawnFeatures_.add(feature);
+  this.drawnFeatures_.getCollection().push(feature);
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
