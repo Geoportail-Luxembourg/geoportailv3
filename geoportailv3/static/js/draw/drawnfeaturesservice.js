@@ -55,7 +55,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
           delete properties['__selected__'];
           delete properties['__map_id__'];
           for (var key in properties) {
-            if (goog.isNull(properties[key])) {
+            if (!properties[key]) {
               delete properties[key];
             }
           }

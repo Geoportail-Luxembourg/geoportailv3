@@ -205,7 +205,7 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
  * @export
  */
 app.SymbolSelectorController.prototype.setColor = function(color) {
-    this.feature.set('color', color);
+  this.feature.set('color', color);
 };
 
 app.module.controller('AppSymbolSelectorController',

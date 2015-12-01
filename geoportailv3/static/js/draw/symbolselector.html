@@ -14,6 +14,7 @@
   <button ng-class="{selected: ctrl.feature.get('symbol_id') == symbol.id}"
           ng-repeat="symbol in ctrl.selectedSymbols" 
           ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{symbol.url}}"/></button>
+  <span ng-show='!ctrl.selectedSymbols' translate>Aucun symbole disponible</span>
 </div>
 <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">
   <button ng-click="ctrl.selectShape('circle')" 
@@ -55,6 +56,7 @@
     </table>
   </div>
 </div>
+<br>
 <div class="feature-popup-footer pull-right">
   <button href class="btn btn-default" ng-click="ctrl.close()" translate>
     Fermer

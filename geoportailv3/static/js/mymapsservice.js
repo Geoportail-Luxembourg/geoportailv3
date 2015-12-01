@@ -785,9 +785,14 @@ app.Mymaps.prototype.createStyleFunction = function() {
       });
       image = new ol.style.Icon(imageOptions);
     } else {
-      if (this.get('shape') == 'circle') {
+      var shape = this.get('shape');
+      if (!shape) {
+        this.set('shape', 'circle');
+        shape = 'circle';
+      }
+      if (shape === 'circle') {
         image = new ol.style.Circle(imageOptions);
-      } else if (this.get('shape') == 'square') {
+      } else if (shape === 'square') {
         goog.object.extend(imageOptions, ({
           points: 4,
           angle: Math.PI / 4,
@@ -795,7 +800,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
         }));
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
-      } else if (this.get('shape') == 'triangle') {
+      } else if (shape === 'triangle') {
         goog.object.extend(imageOptions, ({
           points: 3,
           angle: Math.PI / 4,
@@ -803,7 +808,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
         }));
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
-      } else if (this.get('shape') == 'star') {
+      } else if (shape === 'star') {
         goog.object.extend(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
