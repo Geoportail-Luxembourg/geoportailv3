@@ -13,13 +13,6 @@
     </div>
   </div>
 
-  <div>
-    <div class="form-group" ng-show="ctrl.isAuthenticated()">
-      <input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
-      <img ng-show="ctrl.getThumbnail()" ng-src="{{ctrl.getThumbnail()}}"/>
-    </div>
-  </div>
-
   <div class="form-inline" ng-show="ctrl.type == 'polygon'">
     <!-- Stroke size polygons -->
     <div class="form-group">

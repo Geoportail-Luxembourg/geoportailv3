@@ -43,6 +43,12 @@
         <textarea class="form-control" rows="3" ng-model="ctrl.tempDesc"></textarea>
       </div>
     </div>
+    <div class="row">
+      <div class="form-group" ng-show="ctrl.isAuthenticated()">
+        <input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
+        <img ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.tempThumbnail}}"/>
+      </div>
+    </div>
   </div>
   <div class="feature-popup-footer pull-right">
     <button href class="btn btn-default" ng-click="ctrl.editingAttributes = false" translate>

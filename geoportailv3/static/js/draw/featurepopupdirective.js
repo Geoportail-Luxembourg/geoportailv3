@@ -38,11 +38,22 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.UserManager} appUserManager
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
-    appDrawnFeatures, appMymaps, appSelectedFeatures) {
+    appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager) {
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+  /**
+   * @type {Object}
+   * @export
+   */
+  this.image;
 
   /**
    * @type {ol.Collection.<ol.Feature>}
@@ -99,6 +110,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.tempDesc = '';
 
   /**
+   * @type {string}
+   * @export
+   */
+  this.tempThumbnail = '';
+
+  /**
    * @type {app.DrawnFeatures}
    * @private
    */
@@ -120,6 +137,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.image;
+  }, this), goog.bind(function() {
+    if (!goog.isDef(this.image)) {
+      return;
+    }
+    this.tempThumbnail = this.image['thumbnail'];
   }, this));
 };
 
@@ -151,6 +177,7 @@ app.FeaturePopupController.prototype.isEditable = function() {
 app.FeaturePopupController.prototype.initForm_ = function() {
   this.tempName = /** @type {string} */ (this.feature.get('name'));
   this.tempDesc = /** @type {string} */ (this.feature.get('description'));
+  this.tempThumbnail = /** @type {string} */ (this.feature.get('thumbnail'));
 };
 
 
@@ -161,6 +188,11 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
+  if (this.image) {
+    this.feature.set('thumbnail', this.image['thumbnail']);
+    this.feature.set('image', this.image['image']);
+  }
+
   this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;
 };
@@ -191,5 +223,13 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
   return this.sce_.trustAsHtml(content);
 };
 
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.FeaturePopupController.prototype.isAuthenticated = function() {
+  return this.appUserManager_.isAuthenticated();
+};
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);
