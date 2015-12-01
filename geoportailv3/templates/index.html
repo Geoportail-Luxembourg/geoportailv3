@@ -189,7 +189,7 @@
           <a href translate>Couches</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
-          <a href translate>My Maps</a>
+        <a href translate>Mymaps <span ng-show="mainCtrl.drawnFeatureCount > 0">({{ mainCtrl.drawnFeatureCount }})</span></a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
           <a href translate>Infos</a>
@@ -207,7 +207,8 @@
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
-            app-draw-queryactive="mainCtrl.queryActive">
+            app-draw-queryactive="mainCtrl.queryActive"
+            app-draw-featurecount="mainCtrl.drawnFeatureCount">
           </app-draw>
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">

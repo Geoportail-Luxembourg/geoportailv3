@@ -45,7 +45,8 @@ app.drawDirective = function(appDrawTemplateUrl) {
     scope: {
       'map': '=appDrawMap',
       'active': '=appDrawActive',
-      'queryActive': '=appDrawQueryactive'
+      'queryActive': '=appDrawQueryactive',
+      'featureCount': '=appDrawFeaturecount'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -88,6 +89,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @export
    */
   this.active;
+
+  /**
+   * @type {number}
+   * @export
+   */
+  this.featureCount;
 
   /**
    * @type {number}
@@ -231,6 +238,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
+  $scope.$watch(goog.bind(function() {
+    return this.drawnFeatures_.getCollection().getArray().length;
+  }, this), goog.bind(function(newVal) {
+    this.featureCount = newVal;
+  }, this));
 
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
