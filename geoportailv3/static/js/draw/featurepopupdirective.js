@@ -146,11 +146,22 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
       return;
     }
     this.tempThumbnail = this.image['thumbnail'];
+    this.tempImage = this.image['image'];
   }, this));
 };
 
 
 /**
+ * @export
+ */
+app.FeaturePopupController.prototype.removeImage = function() {
+  this.tempThumbnail = '';
+  this.tempImage = '';
+};
+
+
+/**
+ * @export
  */
 app.FeaturePopupController.prototype.close = function() {
   this.appFeaturePopup_.hide();
@@ -178,6 +189,7 @@ app.FeaturePopupController.prototype.initForm_ = function() {
   this.tempName = /** @type {string} */ (this.feature.get('name'));
   this.tempDesc = /** @type {string} */ (this.feature.get('description'));
   this.tempThumbnail = /** @type {string} */ (this.feature.get('thumbnail'));
+  this.tempImage = /** @type {string} */ (this.feature.get('image'));
 };
 
 
@@ -188,10 +200,8 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
-  if (this.image) {
-    this.feature.set('thumbnail', this.image['thumbnail']);
-    this.feature.set('image', this.image['image']);
-  }
+  this.feature.set('thumbnail', this.tempThumbnail);
+  this.feature.set('image', this.tempImage);
 
   this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;

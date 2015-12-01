@@ -91,20 +91,24 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
     attrs) {
   var model = this.parse_(attrs['appImgupload']);
   var modelSetter = model.assign;
-  var fd = new FormData();
-  fd.append('file', file);
-  this.$http_.post('/mymaps/upload_image', fd, {
-    transformRequest: angular.identity,
-    headers: {'Content-Type': undefined}
-  })
-  .success(
-      goog.bind(function(data, status, headers, config) {
-        modelSetter(scope, data);
-      },this))
-  .error(goog.bind(function() {
-        var msg = this.gettext_('Ce format d\'image n\'est as supporté.');
-        this.notify_(msg);
-      }, this));
+  if (!file) {
+    modelSetter(scope, undefined);
+  } else {
+    var fd = new FormData();
+    fd.append('file', file);
+    this.$http_.post('/mymaps/upload_image', fd, {
+      transformRequest: angular.identity,
+      headers: {'Content-Type': undefined}
+    })
+    .success(
+        goog.bind(function(data, status, headers, config) {
+          modelSetter(scope, data);
+        },this))
+    .error(goog.bind(function() {
+          var msg = this.gettext_('Ce format d\'image n\'est as supporté.');
+          this.notify_(msg);
+        }, this));
+  }
 };
 
 app.module.controller('AppImguploadController', app.ImguploadController);
