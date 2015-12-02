@@ -24,6 +24,8 @@ goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ngeo.interaction.MeasureArea');
+goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.CollectionEventType');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
@@ -169,12 +171,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
-  var drawLine = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.LINE_STRING
-  });
+  var drawLine = new ngeo.interaction.MeasureLength();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {ngeo.interaction.MeasureLength}
    * @export
    */
   this.drawLine = drawLine;
@@ -185,15 +185,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLine, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawLine, ol.interaction.DrawEventType.DRAWEND,
+  goog.events.listen(drawLine, ngeo.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, false, this);
 
-  var drawPolygon = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.POLYGON
-  });
+  var drawPolygon = new ngeo.interaction.MeasureArea();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {ngeo.interaction.MeasureArea}
    * @export
    */
   this.drawPolygon = drawPolygon;
@@ -204,7 +202,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawPolygon, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
+  goog.events.listen(drawPolygon, ngeo.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, false, this);
 
   var drawCircle = new ol.interaction.Draw({
