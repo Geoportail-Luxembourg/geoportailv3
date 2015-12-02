@@ -49,10 +49,12 @@ app.module.directive('appImgupload', app.imguploadDirective);
  * @param {angular.$http} $http
  * @param {app.Notify} appNotify Notify service.
  * @param {gettext} gettext Gettext service.
+ * @param {string} mymapsUrl URL to "mymaps" Feature service.
  * @constructor
  * @ngInject
  */
-app.ImguploadController = function($parse, $http, appNotify, gettext) {
+app.ImguploadController = function($parse, $http, appNotify, gettext,
+    mymapsUrl) {
 
   /**
    * @type {angular.$parse}
@@ -77,6 +79,12 @@ app.ImguploadController = function($parse, $http, appNotify, gettext) {
    * @private
    */
   this.gettext_ = gettext;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsUrl_ = mymapsUrl;
 };
 
 
@@ -96,7 +104,7 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
   } else {
     var fd = new FormData();
     fd.append('file', file);
-    this.$http_.post('/mymaps/upload_image', fd, {
+    this.$http_.post(this.mymapsUrl_ + '/upload_image', fd, {
       transformRequest: angular.identity,
       headers: {'Content-Type': undefined}
     })

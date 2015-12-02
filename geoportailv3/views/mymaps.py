@@ -488,8 +488,8 @@ class Mymaps(object):
         os.remove(os.path.join(path, thumbnail_name))
 
         return {'success': True,
-                'image': '/mymaps/image/' + image_name,
-                'thumbnail': '/mymaps/image/' + thumbnail_name}
+                'image': '/mymaps/images/' + image_name,
+                'thumbnail': '/mymaps/images/' + thumbnail_name}
 
     def generate_symbol_file(self):
 
@@ -593,7 +593,7 @@ class Mymaps(object):
                         filter(Symbols.is_public == True).all():  # noqa
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/symbol/%s"
+                                    'url': "/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
 
@@ -602,7 +602,7 @@ class Mymaps(object):
                         filter(Symbols.login_owner == user).all():
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/symbol/%s"
+                                    'url': "/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
         except:

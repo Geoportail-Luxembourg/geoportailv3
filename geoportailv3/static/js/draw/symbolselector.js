@@ -31,10 +31,11 @@ app.module.directive('appSymbolSelector', app.symbolSelectorDirective);
 
 /**
  * @param {angular.$http} $http
+ * @param {string} mymapsUrl URL to "mymaps" Feature service.
  * @constructor
  * @ngInject
  */
-app.SymbolSelectorController = function($http) {
+app.SymbolSelectorController = function($http, mymapsUrl) {
 
   /**
    * @type {Array<string>}
@@ -83,6 +84,12 @@ app.SymbolSelectorController = function($http) {
    * @private
    */
   this.symboltypes_ = {};
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsUrl_ = mymapsUrl;
 };
 
 
@@ -182,7 +189,7 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
     if (!(symboltype in this.symboltypes_) ||
         this.symboltypes_[symboltype]['status'] != 200) {
       this.symboltypes_[symboltype] = this.http_.get(
-          '/mymaps/symbols',
+          this.mymapsUrl_ + '/symbols',
           {params: {
             'symboltype': symboltype
           }})
@@ -206,6 +213,16 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
  */
 app.SymbolSelectorController.prototype.setColor = function(color) {
   this.feature.set('color', color);
+};
+
+
+/**
+ * @param {string} symbol
+ * @return {string}
+ * @export
+ */
+app.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
+  return this.mymapsUrl_ + symbol;
 };
 
 app.module.controller('AppSymbolSelectorController',

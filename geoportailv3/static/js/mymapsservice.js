@@ -132,6 +132,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSymbolUrl_ = mymapsUrl + '/symbol/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -726,7 +732,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
   });
 
   var fillStyle = new ol.style.Fill();
-
+  var symbolUrl = this.mymapsSymbolUrl_;
   return function(resolution) {
 
     // clear the styles
@@ -779,7 +785,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
     var image = null;
     if (this.get('symbolId')) {
       goog.object.extend(imageOptions, {
-        src: '/mymaps/symbol/' + this.get('symbolId'),
+        src: symbolUrl + this.get('symbolId'),
         scale: this.get('size') / 100,
         rotation: this.get('angle')
       });

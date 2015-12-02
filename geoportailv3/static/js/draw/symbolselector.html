@@ -13,7 +13,7 @@
 <div ng-show="ctrl.tab != 'stylable'" class="feature-symbol-popup-body">
   <button ng-class="{selected: ctrl.feature.get('symbol_id') == symbol.id}"
           ng-repeat="symbol in ctrl.selectedSymbols" 
-          ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{symbol.url}}"/></button>
+          ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></button>
   <span ng-show='!ctrl.selectedSymbols' translate>Aucun symbole disponible</span>
 </div>
 <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">

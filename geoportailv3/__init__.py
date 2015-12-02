@@ -51,7 +51,11 @@ def main(global_config, **settings):
         "/mymaps",
         request_method="HEAD"
     )
-
+    config.add_route(
+        "mymaps_image",
+        "/",
+        request_method="HEAD"
+    )
     config.add_route(
         "mymaps_getcategories",
         "mymaps/categories",
@@ -104,7 +108,7 @@ def main(global_config, **settings):
     )
     config.add_route(
         "mymaps_get_image",
-        "/mymaps/image/{filename}",
+        "/mymaps/images/{filename}",
         request_method="GET"
     )
     config.add_route(

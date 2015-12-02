@@ -39,11 +39,20 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.UserManager} appUserManager
+ * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
-    appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager) {
+    appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
+    mymapsImageUrl) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsImageUrl_ = mymapsImageUrl;
+
   /**
    * @type {app.UserManager}
    * @private
@@ -205,6 +214,17 @@ app.FeaturePopupController.prototype.validateModifications = function() {
 
   this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;
+};
+
+
+/**
+ * get the path to the Mymaps Resource
+ * @param {string} resource the resource.
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
+  return this.mymapsImageUrl_ + resource;
 };
 
 
