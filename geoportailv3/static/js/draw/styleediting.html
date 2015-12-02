@@ -45,7 +45,7 @@
       <!-- Symbol style -->
       <label translate>Symbol</label>
       <button ng-click="ctrl.symbolselector = true">
-          <img ng-show="ctrl.feature.get('symbolId')" ng-src="/mymaps/symbol/{{ctrl.feature.get('symbolId')}}">
+          <img ng-show="ctrl.feature.get('symbolId')" ng-src="{{ctrl.getSymbolPath(ctrl.feature.get('symbolId'))}}">
           <div ng-show="!ctrl.feature.get('symbolId')"translate>Symbol</div>
       </button>
     </div>

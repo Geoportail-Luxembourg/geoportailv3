@@ -33,11 +33,18 @@ app.module.directive('appStyleediting', app.styleEditingDirective);
  * @param {angular.Scope} $scope The scope.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.UserManager} appUserManager
+ * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @constructor
  * @ngInject
  */
 app.StyleEditingController = function($scope, appDrawnFeatures,
-    appUserManager) {
+    appUserManager, mymapsUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsUrl_ = mymapsUrl;
+
   /**
    * @type {app.UserManager}
    * @private
@@ -237,6 +244,16 @@ app.StyleEditingController.prototype.close = function() {
   this.feature.set('linestyle', this.featureOrig.get('linestyle'));
 
   this.editingStyle = false;
+};
+
+
+/**
+ * @param {string} symbol
+ * @return {string}
+ * @export
+ */
+app.StyleEditingController.prototype.getSymbolPath = function(symbol) {
+  return this.mymapsUrl_ + '/symbol/' + symbol;
 };
 
 
