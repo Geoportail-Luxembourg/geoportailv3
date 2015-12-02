@@ -230,7 +230,14 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
+  var msg = this.gettext_('Carte Mymaps en chargement');
+  /**
+   * @type {angular.JQLite}
+   * @private
+   */
+  this.notificationLoading_ = this.notify_(msg);
   this.loadMapInformation();
+
   this.loadFeatures_().then(goog.bind(function(features) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
@@ -244,6 +251,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
       feature.setStyle(this.featureStyleFunction_);
     }, this);
 
+    this.notificationLoading_.alert('close');
     collection.extend(
         /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
   }, this));

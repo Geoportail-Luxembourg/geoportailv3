@@ -158,6 +158,11 @@ app.MainController = function(
   this['mymapsOpen'] = false;
 
   /**
+   * @type {number}
+   */
+  this['drawnFeatureCount'] = -1;
+
+  /**
    * @type {boolean}
    */
   this['printOpen'] = false;
