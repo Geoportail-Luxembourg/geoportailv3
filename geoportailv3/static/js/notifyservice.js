@@ -24,6 +24,7 @@ app.notifyFactory = function() {
 
   /**
    * @param {string} msg Message to show.
+   * @return {angular.JQLite}
    */
   function notify(msg) {
     var el = angular.element('<div class="alert alert-warning fade"></div>');
@@ -33,6 +34,7 @@ app.notifyFactory = function() {
     window.setTimeout(function() {
       el.alert('close');
     }, 7000);
+    return el;
   }
 };
 
