@@ -11,13 +11,29 @@
 </div>
 <br>
 <div ng-show="ctrl.tab != 'stylable'" class="feature-symbol-popup-body">
-  <button ng-class="{selected: ctrl.feature.get('symbol_id') == symbol.id}"
-          ng-repeat="symbol in ctrl.selectedSymbols" 
-          ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></button>
+  <input type="text" class="form-control" placeholder="{{ 'Rechercher un symbole'|translate}}" ng-model="searchSymbols">
+  <table class="table table-hover table-condensed mymaps-list" ng-init="sortReverse = true">
+    <thead>
+      <tr>
+        <td>{{'Symbole'|translate}}</td>
+        <td>
+          <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+            {{'Nom'|translate}}
+            <span ng-show="sortType == 'name' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'name' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+    <tr ng-click="ctrl.selectSymbol(symbol.id)" ng-repeat="symbol in ctrl.selectedSymbols| orderBy:sortType:sortReverse| filter:searchSymbols">
+      <td><img ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></td>
+      <td>{{ symbol.name }}</td>
+    </tr>
+    </tbody>
+  </table>
+
   <span ng-show='!ctrl.selectedSymbols' translate>Aucun symbole disponible</span>
-  <div ng-show="ctrl.isAuthenticated()" ng-show="ctrl.tab == 'us'">
-    <input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
-  </div>
 </div>
 <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">
   <button ng-click="ctrl.selectShape('circle')" 
@@ -61,6 +77,9 @@
 </div>
 <br>
 <div class="feature-popup-footer pull-right">
+  <div ng-show="ctrl.isAuthenticated() && ctrl.tab == 'us'">
+    <input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
+  </div>
   <button href class="btn btn-default" ng-click="ctrl.close()" translate>
     Fermer
   </button>
