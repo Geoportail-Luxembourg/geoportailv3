@@ -248,12 +248,15 @@ app.StyleEditingController.prototype.close = function() {
 
 
 /**
- * @param {string} symbol
+ * @param {string | undefined} symbol
  * @return {string}
  * @export
  */
 app.StyleEditingController.prototype.getSymbolPath = function(symbol) {
-  return this.mymapsUrl_ + '/symbol/' + symbol;
+  if (symbol) {
+    return this.mymapsUrl_ + '/symbol/' + symbol;
+  }
+  return '';
 };
 
 
