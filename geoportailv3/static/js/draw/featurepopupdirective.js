@@ -219,12 +219,15 @@ app.FeaturePopupController.prototype.validateModifications = function() {
 
 /**
  * get the path to the Mymaps Resource
- * @param {string} resource the resource.
+ * @param {?string | undefined} resource the resource.
  * @return {string}
  * @export
  */
 app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
-  return this.mymapsImageUrl_ + resource;
+  if (resource) {
+    return this.mymapsImageUrl_ + resource;
+  }
+  return '';
 };
 
 
