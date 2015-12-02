@@ -5,7 +5,7 @@
 <div>
   <ul class="nav nav-tabs">
     <li ng-class="{active: ctrl.tab == 'stylable'}"><a href="#" ng-click="ctrl.openSymbols('stylable')" translate>Configurables</a></li>
-    <li ng-class="{active: ctrl.tab == 'us'}"><a href="#" ng-click="ctrl.openSymbols('us')" translate>Mes symboles</a></li>
+    <li ng-show="ctrl.isAuthenticated()" ng-class="{active: ctrl.tab == 'us'}"><a href="#" ng-click="ctrl.openSymbols('us')" translate>Mes symboles</a></li>
     <li ng-class="{active: ctrl.tab == 'public'}"><a href="#" ng-click="ctrl.openSymbols('public')" translate>Publics</a></li>
   </ul>
 </div>
@@ -15,6 +15,9 @@
           ng-repeat="symbol in ctrl.selectedSymbols" 
           ng-click="ctrl.selectSymbol(symbol.id)"><img ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></button>
   <span ng-show='!ctrl.selectedSymbols' translate>Aucun symbole disponible</span>
+  <div ng-show="ctrl.isAuthenticated()" ng-show="ctrl.tab == 'us'">
+    <input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
+  </div>
 </div>
 <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">
   <button ng-click="ctrl.selectShape('circle')" 

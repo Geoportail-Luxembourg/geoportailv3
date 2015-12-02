@@ -107,6 +107,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "mymaps_upload_symbol",
+        "/mymaps/upload_symbol",
+        request_method="POST"
+    )
+    config.add_route(
         "mymaps_get_image",
         "/mymaps/images/{filename}",
         request_method="GET"

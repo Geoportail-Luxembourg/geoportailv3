@@ -97,6 +97,10 @@ app.ImguploadController = function($parse, $http, appNotify, gettext,
  */
 app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
     attrs) {
+  var path = '/upload_image';
+  if ('appSymbolupload' in attrs) {
+    path = '/upload_symbol';
+  }
   var model = this.parse_(attrs['appImgupload']);
   var modelSetter = model.assign;
   if (!file) {
@@ -104,7 +108,7 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
   } else {
     var fd = new FormData();
     fd.append('file', file);
-    this.$http_.post(this.mymapsUrl_ + '/upload_image', fd, {
+    this.$http_.post(this.mymapsUrl_ + path, fd, {
       transformRequest: angular.identity,
       headers: {'Content-Type': undefined}
     })

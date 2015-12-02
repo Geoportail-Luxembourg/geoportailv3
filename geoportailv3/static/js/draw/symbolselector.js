@@ -30,12 +30,21 @@ app.module.directive('appSymbolSelector', app.symbolSelectorDirective);
 
 
 /**
+ * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http
+ * @param {app.UserManager} appUserManager
  * @param {string} mymapsUrl URL to "mymaps" Feature service.
  * @constructor
  * @ngInject
  */
-app.SymbolSelectorController = function($http, mymapsUrl) {
+app.SymbolSelectorController = function($scope, $http, appUserManager,
+    mymapsUrl) {
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {Array<string>}
@@ -60,7 +69,11 @@ app.SymbolSelectorController = function($http, mymapsUrl) {
    * @export
    */
   this.selectedSymbols = [];
-
+  /**
+   * @type {Object}
+   * @export
+   */
+  this.newSymbol;
   /**
    * @type {angular.$http}
    * @private
@@ -90,6 +103,17 @@ app.SymbolSelectorController = function($http, mymapsUrl) {
    * @private
    */
   this.mymapsUrl_ = mymapsUrl;
+
+  $scope.$watch(goog.bind(function() {
+    return this.newSymbol;
+  }, this), goog.bind(function() {
+    if (!this.newSymbol) {
+      return;
+    }
+    if (this.newSymbol['result']) {
+      this.selectedSymbols.push(this.newSymbol['result']);
+    }
+  }, this));
 };
 
 
@@ -223,6 +247,15 @@ app.SymbolSelectorController.prototype.setColor = function(color) {
  */
 app.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
   return this.mymapsUrl_ + symbol;
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.SymbolSelectorController.prototype.isAuthenticated = function() {
+  return this.appUserManager_.isAuthenticated();
 };
 
 app.module.controller('AppSymbolSelectorController',
