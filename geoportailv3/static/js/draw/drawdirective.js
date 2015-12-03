@@ -34,6 +34,7 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
+goog.require('ol.interaction.Translate');
 goog.require('ol.style.RegularShape');
 
 
@@ -327,6 +328,23 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @private
    */
   this.modifyInteraction_ = modifyInteraction;
+
+  var translateInteraction = new ol.interaction.Translate({
+    features: appSelectedFeatures
+  });
+  this.map.addInteraction(translateInteraction);
+
+  goog.events.listen(
+      translateInteraction,
+      ol.interaction.TranslateEventType.TRANSLATEEND,
+      /**
+       * @param {ol.interaction.TranslateEvent} evt
+       */
+      function(evt) {
+        var feature = evt.features.getArray()[0];
+        this.featurePopup_.show(feature);
+        this.onFeatureModifyEnd_(evt);
+      }, false, this);
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
