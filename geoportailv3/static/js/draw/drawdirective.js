@@ -24,6 +24,9 @@ goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ngeo.interaction.MeasureArea');
+goog.require('ngeo.interaction.MeasureAzimut');
+goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.CollectionEventType');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
@@ -133,7 +136,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.featureStyleFunction_ = this.appMymaps_.createStyleFunction();
 
   var drawPoint = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POINT
   });
 
@@ -153,7 +155,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onDrawEnd_, false, this);
 
   var drawLabel = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
     type: ol.geom.GeometryType.POINT
   });
 
@@ -172,13 +173,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
-  var drawLine = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
-    type: ol.geom.GeometryType.LINE_STRING
-  });
+  var drawLine = new ngeo.interaction.MeasureLength();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {ngeo.interaction.MeasureLength}
    * @export
    */
   this.drawLine = drawLine;
@@ -189,16 +187,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLine, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawLine, ol.interaction.DrawEventType.DRAWEND,
+  goog.events.listen(drawLine, ngeo.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, false, this);
 
-  var drawPolygon = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
-    type: ol.geom.GeometryType.POLYGON
-  });
+  var drawPolygon = new ngeo.interaction.MeasureArea();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {ngeo.interaction.MeasureArea}
    * @export
    */
   this.drawPolygon = drawPolygon;
@@ -209,16 +204,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawPolygon, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
+  goog.events.listen(drawPolygon, ngeo.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, false, this);
 
-  var drawCircle = new ol.interaction.Draw({
-    features: this.drawnFeatures_.getCollection(),
-    type: ol.geom.GeometryType.CIRCLE
-  });
+  var drawCircle = new ngeo.interaction.MeasureAzimut();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {ngeo.interaction.MeasureAzimut}
    * @export
    */
   this.drawCircle = drawCircle;
@@ -229,8 +221,19 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawCircle, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
-      this.onDrawEnd_, false, this);
+  goog.events.listen(drawCircle, ngeo.MeasureEventType.MEASUREEND,
+      /**
+       * @param {ngeo.MeasureEvent} event
+       */
+      function(event) {
+        // In the case of azimut measure interaction, the feature's geometry is
+        // actually a collection (line + circle)
+        // For our purpose here, we only need the circle.
+        var geometry = /** @type {ol.geom.GeometryCollection} */
+            (event.feature.getGeometry());
+        event.feature = new ol.Feature(geometry.getGeometries()[1]);
+        this.onDrawEnd_(event);
+      }, false, this);
 
 
   // Watch the "active" property, and disable the draw interactions
@@ -356,7 +359,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event
+ * @param {ol.interaction.DrawEvent|ngeo.MeasureEvent} event
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
@@ -414,7 +417,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     feature.set('__map_id__', undefined);
   }
 
-  this.drawnFeatures_.add(feature);
+  this.drawnFeatures_.getCollection().push(feature);
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
