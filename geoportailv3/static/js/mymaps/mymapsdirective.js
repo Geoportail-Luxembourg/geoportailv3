@@ -450,6 +450,10 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
       } else if (!goog.array.isEmpty(mymaps)) {
         this.choosing = true;
         this.maps = mymaps;
+      } else {
+        this.notify_(this.gettext_(
+            'You have no existing Maps, please create a New Map'
+            ));
       }
     }, this));
   }
