@@ -69,13 +69,20 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps) {
+    appSelectedFeatures, appMymaps, gettextCatalog) {
+
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.translate_ = gettextCatalog;
 
   /**
    * @type {ol.Map}
@@ -88,12 +95,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @export
    */
   this.active;
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.featureSeq_ = 0;
 
   /**
    * @type {app.DrawnFeatures}
@@ -366,7 +367,28 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
         ol.geom.Polygon.fromCircle(featureGeom)
     );
   }
-  feature.set('name', 'element ' + (++this.featureSeq_));
+
+  /**
+   * @type {string}
+   */
+  var name;
+  switch (feature.getGeometry().getType()) {
+    case 'Point':
+      if (this.drawLabel.getActive()) {
+        name = this.translate_.getString('Label');
+      } else {
+        name = this.translate_.getString('Point');
+      }
+      break;
+    case 'LineString':
+      name = this.translate_.getString('LineString');
+      break;
+    case 'Polygon':
+      name = this.translate_.getString('Polygon');
+      break;
+  }
+  feature.set('name', name + ' ' +
+      (this.drawnFeatures_.getCollection().getLength() + 1));
   feature.set('description', '');
   feature.set('__editable__', true);
   feature.set('color', '#ed1c24');
