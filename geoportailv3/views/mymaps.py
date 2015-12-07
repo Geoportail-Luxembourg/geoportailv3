@@ -401,7 +401,15 @@ class Mymaps(object):
             cur_file = DBSession.query(Images).\
                 filter(Images.name == filename).one()
             the_image = cur_file.image
-            headers = {'Content-Type': 'image/?'}
+            if cur_file.name.lower().endswith(".jpg"):
+                headers = {'Content-Type': 'image/jpeg'}
+            if cur_file.name.lower().endswith(".jpeg"):
+                headers = {'Content-Type': 'image/jpeg'}
+            if cur_file.name.lower().endswith(".gif"):
+                headers = {'Content-Type': 'image/gif'}
+            if cur_file.name.lower().endswith(".png"):
+                headers = {'Content-Type': 'image/png'}
+
             return Response(the_image, headers=headers)
 
         return HTTPNotFound()
@@ -480,12 +488,11 @@ class Mymaps(object):
         os.remove(os.path.join(path, thumbnail_name))
 
         return {'success': True,
-                'image': '/mymaps/image/' + image_name,
-                'thumbnail': '/mymaps/image/' + thumbnail_name}
+                'image': '/mymaps/images/' + image_name,
+                'thumbnail': '/mymaps/images/' + thumbnail_name}
 
     def generate_symbol_file(self):
 
-        headers = {'Content-Type': 'application/json'}
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
@@ -507,12 +514,8 @@ class Mymaps(object):
         the_file = open(dir+"/symbols.map", 'w+')
         the_file.write(symbolsmap)
         the_file.close()
-        os.system('scp "%s" "%s:%s"'
-                  % (dir + "/symbols.map",
-                     "mapserver@todd.geoportal.lu",
-                     "/home/mapserver/config/MYMAPS/symbols"))
+        os.system('sh ./scripts/sync_ms.sh %s' % (dir + "/" + "/symbols.map"))
 
-        cnt_img = 0
         for symbol in DBSession.query(Symbols).\
                 filter(Symbols.synchronized == False).all():  # noqa
 
@@ -525,19 +528,12 @@ class Mymaps(object):
             the_file.close()
             symbol.synchronized = True
             DBSession.commit()
-            cnt_img = cnt_img + 1
-            os.system('scp "%s" "%s:%s"'
-                      % (dir + "/" + the_name,
-                         "mapserver@todd.geoportal.lu",
-                         "/home/mapserver/config/MYMAPS/symbols"))
-            os.remove(dir + "/"+the_name)
+            os.system('sh ./scripts/sync_ms.sh %s remove'
+                      % (dir + "/" + the_name))
 
-        return Response(json_dumps({'success': True,
-                                    'cnt image': '%s copied'
-                                    % (str(cnt_img))}),
-                        headers)
-
-    def get_symbol(self, id):
+    @view_config(route_name="mymaps_get_symbol")
+    def get_symbol(self):
+        id = self.request.matchdict.get("symbol_id")
         try:
             symbol = DBSession.query(Symbols).\
                 filter(Symbols.id == id).one()
@@ -548,19 +544,19 @@ class Mymaps(object):
                        }
 
             if symbol.symbol_name.lower().endswith(".jpg"):
-                    headers['Content-Type'] = 'image/jpeg'
+                headers = {'Content-Type': 'image/jpeg'}
             if symbol.symbol_name.lower().endswith(".jpeg"):
-                    headers['Content-Type'] = 'image/jpeg'
+                headers = {'Content-Type': 'image/jpeg'}
             if symbol.symbol_name.lower().endswith(".gif"):
-                    headers['Content-Type'] = 'image/gif'
+                headers = {'Content-Type': 'image/gif'}
             if symbol.symbol_name.lower().endswith(".png"):
-                    headers['Content-Type'] = 'image/png'
-            return symbol.symbol
+                headers = {'Content-Type': 'image/png'}
+            return Response(symbol.symbol, headers=headers)
+
         except:
             from PIL import Image, ImageDraw
             from cStringIO import StringIO
 
-            headers['Content-Type'] = 'image/gif'
             img = Image.new('RGBA', (40, 40))
             ImageDraw.Draw(img)
 
@@ -568,11 +564,12 @@ class Mymaps(object):
             img.save(buf, 'GIF', transparency=0)
             content = buf.getvalue()
             buf.close()
+            headers = {'Content-Type': 'image/gif'}
+            return Response(content, headers=headers)
 
-            return content
-
+    @view_config(route_name="mymaps_get_symbols")
     def get_symbols(self):
-        user = self.request.user
+
         results = []
         try:
             symbol_type = self.request.params.get('symboltype', 'pixmap')
@@ -581,16 +578,19 @@ class Mymaps(object):
                         filter(Symbols.is_public == True).all():  # noqa
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/%s/getSymbol"
+                                    'url': "/symbol/%s"
                                     % (str(symbol.id)),
-                                    'symboltype': 'us'})
+                                    'symboltype': 'public'})
 
-            if user is not None and symbol_type == 'us':
+            if symbol_type == 'us':
+                user = self.request.user
+                if user is None:
+                    return HTTPUnauthorized()
                 for symbol in DBSession.query(Symbols).\
-                        filter(Symbols.login_owner == user).all():
+                        filter(Symbols.login_owner == user.username).all():
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
-                                    'url': "/mymaps/%s/getSymbol"
+                                    'url': "/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
         except:
@@ -610,14 +610,13 @@ class Mymaps(object):
                                                'results': results}) + ');'),
                             headers=headers)
 
+    @view_config(route_name="mymaps_upload_symbol", renderer='json')
     def upload_symbol(self):
-        headers = {"Content-Type": "text/html",
-                   "Charset": "utf-8"}
 
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
-
+        username = user.username
         file = self.request.POST['file']
 
         # type checking
@@ -630,9 +629,9 @@ class Mymaps(object):
 
         filename = file.filename
         input_file = file.file
-        if not os.path.exists("/tmp/"+user):
-            os.makedirs("/tmp/"+user)
-        file_path = os.path.join("/tmp/"+user, filename)
+        if not os.path.exists("/tmp/"+username):
+            os.makedirs("/tmp/"+username)
+        file_path = os.path.join("/tmp/"+username, filename)
 
         temp_file_path = file_path + '~'
         output_file = open(temp_file_path, 'wb')
@@ -664,7 +663,7 @@ class Mymaps(object):
 
         cur_file.symbol_name = file.filename
         cur_file.symbol = f.read()
-        cur_file.login_owner = user
+        cur_file.login_owner = username
         cur_file.is_public = False
 
         DBSession.add(cur_file)
@@ -678,12 +677,16 @@ class Mymaps(object):
         try:
             self.generate_symbol_file()
         except:
+            DBSession.rollback()
             traceback.print_exc(file=sys.stdout)
 
-        headers = {'Content-Type': 'text/html'}
-        response = json_dumps({'success': 'true',
-                              'description': 'file added'})
-        return Response(response, headers=headers)
+        return {'success': 'true',
+                'description': 'file added',
+                'result': {
+                    'url': "/symbol/" + str(cur_file.id),
+                    'id': cur_file.id,
+                    'symboltype': 'us',
+                    'name': cur_file.symbol_name}}
 
     @view_config(route_name="mymaps_comment", renderer='json')
     def comment(self):

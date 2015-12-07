@@ -9,6 +9,7 @@
  */
 goog.provide('app_main');
 
+goog.require('app.ImguploadDirective');
 goog.require('app.MainController');
 goog.require('app.authenticationDirective');
 goog.require('app.backgroundlayerDirective');
@@ -31,5 +32,6 @@ goog.require('app.scaleselectorDirective');
 goog.require('app.searchDirective');
 goog.require('app.shareDirective');
 goog.require('app.shorturlDirective');
+goog.require('app.symbolSelectorDirective');
 goog.require('app.themeswitcherDirective');
 goog.require('ngeo.btngroupDirective');

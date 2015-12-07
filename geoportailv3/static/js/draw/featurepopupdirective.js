@@ -38,11 +38,31 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.UserManager} appUserManager
+ * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
-    appDrawnFeatures, appMymaps, appSelectedFeatures) {
+    appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
+    mymapsImageUrl) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsImageUrl_ = mymapsImageUrl;
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+  /**
+   * @type {Object}
+   * @export
+   */
+  this.image;
 
   /**
    * @type {ol.Collection.<ol.Feature>}
@@ -99,6 +119,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.tempDesc = '';
 
   /**
+   * @type {string}
+   * @export
+   */
+  this.tempThumbnail = '';
+
+  /**
    * @type {app.DrawnFeatures}
    * @private
    */
@@ -121,10 +147,30 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.editingStyle = false;
     this.deletingFeature = false;
   }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.image;
+  }, this), goog.bind(function() {
+    if (!goog.isDef(this.image)) {
+      return;
+    }
+    this.tempThumbnail = this.image['thumbnail'];
+    this.tempImage = this.image['image'];
+  }, this));
 };
 
 
 /**
+ * @export
+ */
+app.FeaturePopupController.prototype.removeImage = function() {
+  this.tempThumbnail = '';
+  this.tempImage = '';
+};
+
+
+/**
+ * @export
  */
 app.FeaturePopupController.prototype.close = function() {
   this.appFeaturePopup_.hide();
@@ -151,6 +197,8 @@ app.FeaturePopupController.prototype.isEditable = function() {
 app.FeaturePopupController.prototype.initForm_ = function() {
   this.tempName = /** @type {string} */ (this.feature.get('name'));
   this.tempDesc = /** @type {string} */ (this.feature.get('description'));
+  this.tempThumbnail = /** @type {string} */ (this.feature.get('thumbnail'));
+  this.tempImage = /** @type {string} */ (this.feature.get('image'));
 };
 
 
@@ -161,8 +209,25 @@ app.FeaturePopupController.prototype.initForm_ = function() {
 app.FeaturePopupController.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
+  this.feature.set('thumbnail', this.tempThumbnail);
+  this.feature.set('image', this.tempImage);
+
   this.drawnFeatures_.saveFeature(this.feature);
   this.editingAttributes = false;
+};
+
+
+/**
+ * get the path to the Mymaps Resource
+ * @param {?string | undefined} resource the resource.
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
+  if (resource) {
+    return this.mymapsImageUrl_ + resource;
+  }
+  return '';
 };
 
 
@@ -191,5 +256,13 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
   return this.sce_.trustAsHtml(content);
 };
 
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.FeaturePopupController.prototype.isAuthenticated = function() {
+  return this.appUserManager_.isAuthenticated();
+};
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

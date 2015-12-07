@@ -32,10 +32,24 @@ app.module.directive('appStyleediting', app.styleEditingDirective);
 /**
  * @param {angular.Scope} $scope The scope.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.UserManager} appUserManager
+ * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @constructor
  * @ngInject
  */
-app.StyleEditingController = function($scope, appDrawnFeatures) {
+app.StyleEditingController = function($scope, appDrawnFeatures,
+    appUserManager, mymapsUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsUrl_ = mymapsUrl;
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {app.DrawnFeatures}
@@ -60,6 +74,12 @@ app.StyleEditingController = function($scope, appDrawnFeatures) {
    * @export
    */
   this.type = '';
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.symbolselector = false;
 
 
   /**
@@ -109,7 +129,7 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
   if (!goog.isDef(this.feature)) {
     return;
   }
-  this.feature.set('symbol_id', symbol);
+  this.feature.set('shape', symbol);
 };
 
 
@@ -218,11 +238,34 @@ app.StyleEditingController.prototype.close = function() {
   this.feature.set('opacity', this.featureOrig.get('opacity'));
   this.feature.set('angle', this.featureOrig.get('angle'));
   this.feature.set('size', this.featureOrig.get('size'));
-  this.feature.set('symbol_id', this.featureOrig.get('symbol_id'));
+  this.feature.set('shape', this.featureOrig.get('shape'));
+  this.feature.set('symbolId', this.featureOrig.get('symbolId'));
   this.feature.set('stroke', this.featureOrig.get('stroke'));
   this.feature.set('linestyle', this.featureOrig.get('linestyle'));
 
   this.editingStyle = false;
+};
+
+
+/**
+ * @param {string | undefined} symbol
+ * @return {string}
+ * @export
+ */
+app.StyleEditingController.prototype.getSymbolPath = function(symbol) {
+  if (symbol) {
+    return this.mymapsUrl_ + '/symbol/' + symbol;
+  }
+  return '';
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.StyleEditingController.prototype.isAuthenticated = function() {
+  return this.appUserManager_.isAuthenticated();
 };
 
 app.module.controller('AppStyleEditingController', app.StyleEditingController);

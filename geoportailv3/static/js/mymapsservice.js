@@ -132,6 +132,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSymbolUrl_ = mymapsUrl + '/symbol/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -726,7 +732,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
   });
 
   var fillStyle = new ol.style.Fill();
-
+  var symbolUrl = this.mymapsSymbolUrl_;
   return function(resolution) {
 
     // clear the styles
@@ -776,15 +782,57 @@ app.Mymaps.prototype.createStyleFunction = function() {
       }),
       radius: this.get('size')
     };
-    var image = new ol.style.Circle(imageOptions);
-    if (this.get('symbol_id') && this.get('symbol_id') != 'circle') {
-      goog.object.extend(imageOptions, ({
-        points: 4,
-        angle: Math.PI / 4,
+    var image = null;
+    if (this.get('symbolId')) {
+      goog.object.extend(imageOptions, {
+        src: symbolUrl + this.get('symbolId'),
+        scale: this.get('size') / 100,
         rotation: this.get('angle')
-      }));
-      image = new ol.style.RegularShape(
-          /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+      });
+      image = new ol.style.Icon(imageOptions);
+    } else {
+      var shape = this.get('shape');
+      if (!shape) {
+        this.set('shape', 'circle');
+        shape = 'circle';
+      }
+      if (shape === 'circle') {
+        image = new ol.style.Circle(imageOptions);
+      } else if (shape === 'square') {
+        goog.object.extend(imageOptions, ({
+          points: 4,
+          angle: Math.PI / 4,
+          rotation: this.get('angle')
+        }));
+        image = new ol.style.RegularShape(
+            /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+      } else if (shape === 'triangle') {
+        goog.object.extend(imageOptions, ({
+          points: 3,
+          angle: Math.PI / 4,
+          rotation: this.get('angle')
+        }));
+        image = new ol.style.RegularShape(
+            /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+      } else if (shape === 'star') {
+        goog.object.extend(imageOptions, ({
+          points: 5,
+          angle: Math.PI / 4,
+          rotation: this.get('angle'),
+          radius2: this.get('size')
+        }));
+        image = new ol.style.RegularShape(
+            /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+      } else if (this.get('shape') == 'cross') {
+        goog.object.extend(imageOptions, ({
+          points: 4,
+          angle: Math.PI / 4,
+          rotation: this.get('angle'),
+          radius2: 0
+        }));
+        image = new ol.style.RegularShape(
+            /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
+      }
     }
 
     if (this.get('isLabel')) {

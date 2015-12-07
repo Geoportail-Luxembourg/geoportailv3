@@ -5,6 +5,9 @@
   </div>
   <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
+  <div ng-show="ctrl.feature.get('thumbnail')" class="feature-popup-body">
+    <a ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
+  </div>
   <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
       <li ng-show="ctrl.feature.get('__editable__')">
@@ -38,6 +41,13 @@
     <div class="row">
       <div class="col-xs-12 form-group">
         <textarea class="form-control" rows="3" ng-model="ctrl.tempDesc"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group" ng-show="ctrl.isAuthenticated()">
+        <input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
+        <img ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.tempThumbnail)}}"/>
+        <button ng-show="ctrl.tempThumbnail" ng-click="ctrl.removeImage()" translate>Retirer vignette</button>
       </div>
     </div>
   </div>

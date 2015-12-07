@@ -118,6 +118,7 @@ class Feature(Base):
     angle = Column(Float, default=0)
     font_size = Column(Integer, default=15)
     opacity = Column(Float, default=0.5)
+    shape = Column(Unicode(255))
 
     def __init__(self, feature=None):
         if feature:
@@ -134,7 +135,7 @@ class Feature(Base):
         self.show_orientation = feature.properties.get('showOrientation')
         linestyle = feature.properties.get('linestyle')
         self.linestyle = 0 if linestyle == 'plain' else 1
-
+        self.shape = feature.properties.get('shape')
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
             else 10
@@ -215,6 +216,7 @@ class Feature(Base):
                           if self.font_size is not None else 15,
                           opacity=self.opacity
                           if self.opacity is not None else 0.5,
+                          shape=self.shape
                           )
         return geojson.Feature(id=self.id,
                                geometry=geometry,
