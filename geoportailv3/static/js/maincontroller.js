@@ -20,6 +20,7 @@ goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
 goog.require('goog.object');
+goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.GetBrowserLanguage');
@@ -41,6 +42,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angular.Scope} $scope Scope.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
  * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
@@ -61,10 +64,17 @@ goog.require('ol.tilegrid.WMTS');
  * @ngInject
  */
 app.MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
-    appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appMymaps, appStateManager, appThemes, appFeaturePopup, appUserManager,
+    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
+    ngeoGetBrowserLanguage, gettextCatalog, appExclusionManager,
+    appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
+    appStateManager, appThemes, appFeaturePopup, appUserManager,
     appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {app.DrawnFeatures}
@@ -404,6 +414,7 @@ app.MainController.prototype.initMymaps_ = function() {
     this.appMymaps_.clear();
   }
   this.appMymaps_.map = this.map_;
+  this.appMymaps_.layersChanged = this['layersChanged'];
   goog.events.listen(this.map_.getLayerGroup(), 'change',
       goog.bind(function() {
         this.compareLayers_();
@@ -413,31 +424,37 @@ app.MainController.prototype.initMymaps_ = function() {
 
 /**
  * Compare the layers of mymaps with selected layers
- * and set layersChanged to true if there there is a difference.
+ * and set layersChanged to true if there there is a difference
+ * between the displayed layers and the mymaps layers
  * @private
  */
 app.MainController.prototype.compareLayers_ = function() {
-  if (this.appMymaps_.isMymapsSelected()) {
-    /*console.log(this.appMymaps_.mapBgLayer);
-    console.log(this.appMymaps_.mapBgOpacity);
-    console.log(this.appMymaps_.mapLayers);
-    console.log(this.appMymaps_.mapLayersOpacities);
-    console.log(this.appMymaps_.mapLayersVisibilities);
-    console.log(this.appMymaps_.mapLayersIndicies);*/
+  if (this.appMymaps_.isEditable()) {
     this['layersChanged'] = false;
-    this.appThemes_.getBgLayers().then(goog.bind(
-        /**
-         * @param {Array.<Object>} bgLayers Array of background layer objects.
-         */
-        function(bgLayers) {
-          var curBgLayer = bgLayers[0];
-          if (this.appMymaps_.mapBgLayer !== curBgLayer.get('label')) {
+    var backgroundLayer = this.backgroundLayerMgr_.get(this.map_);
+    if (backgroundLayer &&
+        this.appMymaps_.mapBgLayer !== backgroundLayer.get('label')) {
+      this['layersChanged'] = true;
+    } else {
+      if (this['selectedLayers'].length !== this.appMymaps_.mapLayers.length) {
+        this['layersChanged'] = true;
+      } else {
+        var selectedLabels = [];
+        var selectedOpacities = [];
+        goog.array.forEach(this['selectedLayers'], function(item) {
+          selectedLabels.push(item.get('label'));
+          selectedOpacities.push('' + item.getOpacity());
+        });
+        if (selectedLabels.join(',') !== this.appMymaps_.mapLayers.join(',')) {
+          this['layersChanged'] = true;
+        } else {
+          if (selectedOpacities.join(',') !==
+              this.appMymaps_.mapLayersOpacities.join(',')) {
             this['layersChanged'] = true;
-          } else {
-            console.log(curBgLayer);
           }
-        }, this));
-
+        }
+      }
+    }
   } else {
     this['layersChanged'] = false;
   }

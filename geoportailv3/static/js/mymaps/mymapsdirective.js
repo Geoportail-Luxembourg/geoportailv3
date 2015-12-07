@@ -31,7 +31,9 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
     scope: {
       'useropen': '=appMymapsUseropen',
       'drawopen': '=appMymapsDrawopen',
-      'layersChanged': '=appMymapsLayersChanged'
+      'layersChanged': '=appMymapsLayersChanged',
+      'map': '=appMymapsMap',
+      'selectedLayers': '=appMymapsSelectedLayers'
     },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
@@ -48,6 +50,8 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
@@ -60,8 +64,26 @@ app.module.directive('appMymaps', app.mymapsDirective);
  */
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appMymaps, appNotify, appFeaturePopup, appSelectedFeatures,
-    appUserManager, appDrawnFeatures) {
+    ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
+    appSelectedFeatures, appUserManager, appDrawnFeatures) {
+
+  /**
+   * @type {Array}
+   * @private
+   */
+  this.selectedLayers_ = this['selectedLayers'];
+
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {Array.<ol.Feature>}
@@ -176,12 +198,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    */
   this.featurePopup_ = appFeaturePopup;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.layersChanged_ = this['layersChanged'];
-
   $scope.$watch(goog.bind(function() {
     return this.appUserManager_.getRoleId();
   }, this), goog.bind(function(newVal, oldVal) {
@@ -189,6 +205,39 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
       this.appMymaps_.loadCategories();
     }
   }, this));
+};
+
+
+/**
+ * Save the current layers definition into Mymaps.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.saveLayers = function() {
+  var bgLayer = /** @type {string} */
+      (this.backgroundLayerMgr_.get(this.map_).get('label'));
+  var bgOpacity = '1';
+  var layersLabels = [];
+  var layersOpacities = [];
+  var layersVisibilities = [];
+  var layersIndices = [];
+  goog.array.forEach(this.selectedLayers_, function(item, index) {
+    layersLabels.push(item.get('label'));
+    layersOpacities.push('' + item.getOpacity());
+    if (item.getOpacity() === 0) {
+      layersVisibilities.push('false');
+    } else {
+      layersVisibilities.push('true');
+    }
+    layersIndices.push('' + index);
+  });
+
+  this.appMymaps_.updateMapEnv(bgLayer, bgOpacity, layersLabels.join(','),
+      layersOpacities.join(','), layersVisibilities.join(','),
+      layersIndices.join(','))
+      .then(goog.bind(function() {
+        this.appMymaps_.loadMapInformation();
+      },this));
+  this['layersChanged'] = false;
 };
 
 
@@ -366,6 +415,9 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
               return this.appMymaps_.loadMapInformation();
             }}}, this))
         .then(goog.bind(function(mapinformation) {
+          this.saveLayers();
+        }, this))
+        .then(goog.bind(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
         }, this))
         .then(goog.bind(function(mapinformation) {
@@ -522,6 +574,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
         this.newCategoryId,
         this.newIsPublic
     )
+      .then(goog.bind(function(resp) {
+          this.saveLayers();
+        }, this))
       .then(goog.bind(function(resp) {
           this.modal = 'CREATE';
           if (goog.isNull(resp)) {

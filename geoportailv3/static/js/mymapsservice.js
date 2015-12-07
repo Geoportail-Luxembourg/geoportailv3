@@ -42,10 +42,17 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
+
   /**
    * @type {ol.Map}
    */
   this.map;
+
+  /**
+   * @type {boolean}
+   */
+  this.layersChanged;
+
   /**
    * @type {ngeo.BackgroundLayerMgr}
    * @private
@@ -523,17 +530,17 @@ app.Mymaps.prototype.loadMapInformation = function() {
           }
           if ('layers_visibility' in mapinformation &&
               mapinformation['layers_visibility']) {
-            this.mapLayersOpacities =
+            this.mapLayersVisibilities =
                 mapinformation['layers_visibility'].split(',');
           } else {
-            this.mapLayersOpacities = [];
+            this.mapLayersVisibilities = [];
           }
           if ('layers_indices' in mapinformation &&
               mapinformation['layers_indices']) {
-            this.mapLayersOpacities =
+            this.mapLayersIndicies =
                 mapinformation['layers_indices'].split(',');
           } else {
-            this.mapLayersOpacities = [];
+            this.mapLayersIndicies = [];
           }
         } else {
           this.mapLayers = [];
@@ -545,7 +552,8 @@ app.Mymaps.prototype.loadMapInformation = function() {
       }, this))
       .then(goog.bind(function(mapinformation) {
         this.updateLayers();
-        return mapinformation},this));
+        this.layersChanged = false;
+        return mapinformation;},this));
 };
 
 
@@ -738,6 +746,54 @@ app.Mymaps.prototype.updateMap =
     'description': description,
     'category_id': categoryId,
     'public': isPublic
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la mise à jour de votre carte.');
+        this.notify_(msg);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Save the map environment.
+ * @param {string} bgLayer
+ * @param {string} bgOpacity
+ * @param {string} layers
+ * @param {string} layers_opacity
+ * @param {string} layers_visibility
+ * @param {string} layers_indices
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.updateMapEnv =
+    function(bgLayer, bgOpacity, layers, layers_opacity,
+        layers_visibility, layers_indices) {
+
+  var req = $.param({
+    'bgLayer': bgLayer,
+    'bgOpacity': bgOpacity,
+    'layers': layers,
+    'layers_opacity': layers_opacity,
+    'layers_visibility': layers_visibility,
+    'layers_indices': layers_indices
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
