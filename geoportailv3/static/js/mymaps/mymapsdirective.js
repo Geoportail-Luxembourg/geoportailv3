@@ -30,7 +30,8 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
     restrict: 'E',
     scope: {
       'useropen': '=appMymapsUseropen',
-      'drawopen': '=appMymapsDrawopen'
+      'drawopen': '=appMymapsDrawopen',
+      'layersChanged': '=appMymapsLayersChanged'
     },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
@@ -174,6 +175,12 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @private
    */
   this.featurePopup_ = appFeaturePopup;
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.layersChanged_ = this['layersChanged'];
 
   $scope.$watch(goog.bind(function() {
     return this.appUserManager_.getRoleId();

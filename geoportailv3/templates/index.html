@@ -145,7 +145,8 @@
             ✕
           </button>
           <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
-                      app-mymaps-drawopen="mainCtrl.drawOpen"></app-mymaps>
+                      app-mymaps-drawopen="mainCtrl.drawOpen"
+                      app-mymaps-layers-changed="mainCtrl.layersChanged"></app-mymaps>
         </div>
 
         <!-- Infos -->
@@ -189,7 +190,7 @@
           <a href translate>Couches</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
-          <a href translate>My Maps</a>
+          <a href translate>My Maps<span ng-show="mainCtrl.layersChanged">(*)</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
           <a href translate>Infos</a>

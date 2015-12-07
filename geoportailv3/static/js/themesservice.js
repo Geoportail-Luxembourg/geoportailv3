@@ -205,4 +205,44 @@ app.Themes.prototype.isThemePrivate = function(themeId) {
   });
 };
 
+
+/**
+ * @param {Array} element
+ * @return {Array} array
+ * @private
+ */
+app.Themes.prototype.getAllChildren_ = function(element) {
+  var array = [];
+  for (var i = 0; i < element.length; i++) {
+    if (element[i].hasOwnProperty('children')) {
+      goog.array.extend(array, this.getAllChildren_(
+          element[i].children)
+      );
+    } else {
+      element[i].id = element[i].id;
+      array.push(element[i]);
+    }
+  }
+  return array;
+};
+
+
+/**
+ * get the flat catlog
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Themes.prototype.getFlatCatalog = function() {
+  return this.getThemesObject().then(
+      goog.bind(function(themes) {
+        var flatCatalogue = [];
+        for (var i = 0; i < themes.length; i++) {
+          var theme = themes[i];
+          goog.array.extend(flatCatalogue,
+              this.getAllChildren_(theme.children)
+          );
+        }
+        return flatCatalogue;
+      },this));
+};
+
 app.module.service('appThemes', app.Themes);

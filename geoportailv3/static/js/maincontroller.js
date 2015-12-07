@@ -193,6 +193,12 @@ app.MainController = function(
   this['currentTheme'] = undefined;
 
   /**
+   * Set to true to display the change icon in Mymaps.
+   * @type {boolean}
+   */
+  this['layersChanged'] = false;
+
+  /**
    * @type {ol.Map}
    * @private
    */
@@ -317,6 +323,7 @@ app.MainController.prototype.manageSelectedLayers_ =
     return this['selectedLayers'];
   }, this), goog.bind(function() {
     this.map_.render();
+    this.compareLayers_();
   }, this));
 };
 
@@ -395,6 +402,44 @@ app.MainController.prototype.initMymaps_ = function() {
         this.drawnFeatures_.getCollection());
   } else {
     this.appMymaps_.clear();
+  }
+  this.appMymaps_.map = this.map_;
+  goog.events.listen(this.map_.getLayerGroup(), 'change',
+      goog.bind(function() {
+        this.compareLayers_();
+      },this), undefined, this);
+};
+
+
+/**
+ * Compare the layers of mymaps with selected layers
+ * and set layersChanged to true if there there is a difference.
+ * @private
+ */
+app.MainController.prototype.compareLayers_ = function() {
+  if (this.appMymaps_.isMymapsSelected()) {
+    /*console.log(this.appMymaps_.mapBgLayer);
+    console.log(this.appMymaps_.mapBgOpacity);
+    console.log(this.appMymaps_.mapLayers);
+    console.log(this.appMymaps_.mapLayersOpacities);
+    console.log(this.appMymaps_.mapLayersVisibilities);
+    console.log(this.appMymaps_.mapLayersIndicies);*/
+    this['layersChanged'] = false;
+    this.appThemes_.getBgLayers().then(goog.bind(
+        /**
+         * @param {Array.<Object>} bgLayers Array of background layer objects.
+         */
+        function(bgLayers) {
+          var curBgLayer = bgLayers[0];
+          if (this.appMymaps_.mapBgLayer !== curBgLayer.get('label')) {
+            this['layersChanged'] = true;
+          } else {
+            console.log(curBgLayer);
+          }
+        }, this));
+
+  } else {
+    this['layersChanged'] = false;
   }
 };
 

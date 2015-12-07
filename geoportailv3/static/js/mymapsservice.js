@@ -26,11 +26,37 @@ app.MapsResponse;
  * @param {app.StateManager} appStateManager
  * @param {app.UserManager} appUserManager
  * @param {app.Notify} appNotify Notify service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
+ *     create layers from catalog nodes.
  * @param {gettext} gettext Gettext service.
+ * @param {app.Themes} appThemes
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
-    appUserManager, appNotify, gettext) {
+    appUserManager, appNotify, appGetLayerForCatalogNode, gettext, appThemes,
+    ngeoBackgroundLayerMgr) {
+
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
+  /**
+   * @type {ol.Map}
+   */
+  this.map;
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
 
   /**
    * @type {gettext}
@@ -172,6 +198,42 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapDescription = '';
 
   /**
+   * The BG Layer of the mymap.
+   * @type {string}
+   */
+  this.mapBgLayer = 'voidLayer';
+
+  /**
+   * The BG Opacity of the mymap.
+   * @type {number}
+   */
+  this.mapBgOpacity = 1;
+
+  /**
+   * The layers.
+   * @type {Array<string>}
+   */
+  this.mapLayers = [];
+
+  /**
+   * The opacity of layers.
+   * @type {Array<number>}
+   */
+  this.mapLayersOpacities = [];
+
+  /**
+   * The visibility of layers.
+   * @type {Array<boolean>}
+   */
+  this.mapLayersVisibilities = [];
+
+  /**
+   * The indice of layers.
+   * @type {Array<number>}
+   */
+  this.mapLayersIndicies = [];
+
+  /**
    * @type {ol.FeatureStyleFunction}
    * @private
    */
@@ -188,6 +250,20 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @export
    */
   this.categories = null;
+
+
+  /**
+   * @const
+   * @private
+   */
+  this.V2_BGLAYER_TO_V3_ = {
+    'webbasemap' : 'basemap_2015_global',
+    'topogr': 'topogr_global',
+    'pixelmaps-gray': 'topo_bw_jpeg',
+    'streets': 'streets_jpeg',
+    'voidlayer': 'blank',
+    'voidLayer': 'blank'
+  };
 
 };
 
@@ -267,6 +343,12 @@ app.Mymaps.prototype.clear = function() {
   this.mapOwner = '';
   this.mapCategoryId = null;
   this.mapIsPublic = false;
+  this.mapBgLayer = 'voidLayer';
+  this.mapBgOpacity = 1;
+  this.mapLayers = [];
+  this.mapLayersOpacities = [];
+  this.mapLayersVisibilities = [];
+  this.mapLayersIndicies = [];
 };
 
 
@@ -363,6 +445,54 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 
 
 /**
+ * update the map with layers
+ */
+app.Mymaps.prototype.updateLayers = function() {
+  var curBgLayer = this.mapBgLayer;
+  this.appThemes_.getBgLayers().then(goog.bind(
+      /**
+       * @param {Array.<ol.layer.Base>} bgLayers
+       */
+      function(bgLayers) {
+        var layer = /** @type {ol.layer.Base} */
+            (goog.array.find(bgLayers, function(layer) {
+          return layer.get('label') === curBgLayer;
+        }));
+        if (layer) {
+          this.backgroundLayerMgr_.set(this.map, layer);
+        }
+      }, this));
+
+  var curMapLayers = this.mapLayers;
+  var curMapOpacities = this.mapOpacities;
+  var curMapVisibilities = this.mapVisibilities;
+  this.appThemes_.getFlatCatalog()
+  .then(goog.bind(function(flatCatalogue) {
+        goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
+          var node = goog.array.find(flatCatalogue,
+              function(catalogueLayer) {
+                return catalogueLayer['name'] === item;
+              });
+          if (node) {
+            var layer = this.getLayerFunc_(node);
+            if (layer && this.map.getLayers().getArray().indexOf(layer) <= 0) {
+              this.map.addLayer(layer);
+            }
+            if (curMapOpacities) {
+              layer.get('metadata')['start_opacity'] =
+                  curMapOpacities[layerIndex];
+            }
+            if (curMapVisibilities) {
+              if (curMapVisibilities[layerIndex]) {
+                layer.get('metadata')['start_opacity'] = 0;
+              }
+            }
+          }
+        }, this));},this));
+};
+
+
+/**
  * Load the map information.
  * @return {angular.$q.Promise} Promise.
  */
@@ -373,8 +503,49 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.mapTitle = mapinformation['title'];
         this.mapOwner = mapinformation['user_login'];
         this.mapIsPublic = mapinformation['public'];
+        this.mapBgLayer = mapinformation['bg_layer'];
+        if (!this.mapBgLayer) {
+          this.mapBgLayer = 'blank';
+        }
+        if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+          this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+        }
+
+        this.mapBgOpacity = mapinformation['bg_opacity'];
+        if ('layers' in mapinformation && mapinformation['layers']) {
+          this.mapLayers = mapinformation['layers'].split(',');
+          if ('layers_opacity' in mapinformation &&
+              mapinformation['layers_opacity']) {
+            this.mapLayersOpacities =
+                mapinformation['layers_opacity'].split(',');
+          } else {
+            this.mapLayersOpacities = [];
+          }
+          if ('layers_visibility' in mapinformation &&
+              mapinformation['layers_visibility']) {
+            this.mapLayersOpacities =
+                mapinformation['layers_visibility'].split(',');
+          } else {
+            this.mapLayersOpacities = [];
+          }
+          if ('layers_indices' in mapinformation &&
+              mapinformation['layers_indices']) {
+            this.mapLayersOpacities =
+                mapinformation['layers_indices'].split(',');
+          } else {
+            this.mapLayersOpacities = [];
+          }
+        } else {
+          this.mapLayers = [];
+          this.mapOpacities = [];
+          this.mapVisibilities = [];
+          this.mapLayersIndicies = [];
+        }
         return mapinformation;
-      }, this));
+      }, this))
+      .then(goog.bind(function(mapinformation) {
+        this.updateLayers();
+        return mapinformation},this));
 };
 
 
