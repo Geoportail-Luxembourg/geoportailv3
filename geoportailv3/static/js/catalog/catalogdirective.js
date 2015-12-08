@@ -6,8 +6,7 @@
  *
  * Example:
  *
- * <app-catalog app-catalog-map="::mainCtrl.map"
- *              app-catalog-currenttheme="mainCtrl.currentTheme">
+ * <app-catalog app-catalog-map="::mainCtrl.map">
  * </app-catalog>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
@@ -19,6 +18,7 @@ goog.provide('app.catalogDirective');
 
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
+goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
 goog.require('goog.events');
@@ -32,8 +32,7 @@ app.catalogDirective = function() {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appCatalogMap',
-      'currentTheme': '=appCatalogCurrenttheme'
+      'map': '=appCatalogMap'
     },
     controller: 'AppCatalogController',
     controllerAs: 'catalogCtrl',
@@ -54,13 +53,20 @@ app.module.directive('appCatalog', app.catalogDirective);
  * @constructor
  * @param {angular.Scope} $scope Scope.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
  *     create layers from catalog nodes.
  * @export
  * @ngInject
  */
-app.CatalogController = function($scope, appThemes,
+app.CatalogController = function($scope, appThemes, appTheme,
     appGetLayerForCatalogNode) {
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {app.Themes}
@@ -83,7 +89,7 @@ app.CatalogController = function($scope, appThemes,
       }, undefined, this);
 
   $scope.$watch(goog.bind(function() {
-    return this['currentTheme'];
+    return this.appTheme_.getCurrentTheme();
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal !== oldVal) {
       this.setTree_();
@@ -110,7 +116,8 @@ app.CatalogController.prototype.getLayer = function(node) {
  * @private
  */
 app.CatalogController.prototype.setTree_ = function() {
-  this.appThemes_.getThemeObject(this['currentTheme']).then(goog.bind(
+  this.appThemes_.getThemeObject(
+      this.appTheme_.getCurrentTheme()).then(goog.bind(
       /**
        * @param {Object} tree Tree object for the theme.
        */

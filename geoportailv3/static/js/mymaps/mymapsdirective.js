@@ -14,6 +14,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
+goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
 goog.require('ngeo.modalDirective');
@@ -56,6 +57,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.UserManager} appUserManager
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
@@ -65,7 +67,13 @@ app.module.directive('appMymaps', app.mymapsDirective);
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
     ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
-    appSelectedFeatures, appUserManager, appDrawnFeatures) {
+    appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures) {
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {Array}
@@ -230,10 +238,9 @@ app.MymapsDirectiveController.prototype.saveLayers = function() {
     }
     layersIndices.push('' + index);
   });
-
   this.appMymaps_.updateMapEnv(bgLayer, bgOpacity, layersLabels.join(','),
       layersOpacities.join(','), layersVisibilities.join(','),
-      layersIndices.join(','))
+      layersIndices.join(','), this.appTheme_.getCurrentTheme())
       .then(goog.bind(function() {
         this.appMymaps_.loadMapInformation();
       },this));

@@ -6,7 +6,6 @@
  *
  * <app-print app-print-map="::mainCtrl.map"
  *            app-print-open="mainCtrl.printOpen"
- *            app-print-currenttheme="mainCtrl.currentTheme"
  *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
@@ -15,6 +14,7 @@ goog.provide('app.printDirective');
 
 
 goog.require('app.GetShorturl');
+goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -43,7 +43,6 @@ app.printDirective = function(appPrintTemplateUrl) {
     scope: {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
-      'currentTheme': '=appPrintCurrenttheme',
       'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
@@ -68,6 +67,7 @@ app.module.directive('appPrint', app.printDirective);
  * manager.
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
@@ -77,7 +77,7 @@ app.module.directive('appPrint', app.printDirective);
  */
 app.PrintController = function($scope, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
-    appThemes, appGetShorturl, printServiceUrl, qrServiceUrl) {
+    appThemes, appTheme, appGetShorturl, printServiceUrl, qrServiceUrl) {
 
 
   /**
@@ -128,6 +128,12 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * A reference to the vector layer used by feature overlays.
@@ -272,7 +278,7 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
 
   // Set the possible print scales based on the current theme.
   $scope.$watch(goog.bind(function() {
-    return this['currentTheme'];
+    return this.appTheme_.getCurrentTheme();
   }, this), goog.bind(function() {
     this.setScales_();
   }, this));
@@ -587,7 +593,7 @@ app.PrintController.prototype.resetPrintStates_ = function() {
  * @private
  */
 app.PrintController.prototype.setScales_ = function() {
-  var currentTheme = this['currentTheme'];
+  var currentTheme = this.appTheme_.getCurrentTheme();
   this.appThemes_.getThemeObject(currentTheme).then(goog.bind(
       /**
        * @param {Object} tree Tree object for the theme.

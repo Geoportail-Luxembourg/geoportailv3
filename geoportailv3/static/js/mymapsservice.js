@@ -30,12 +30,13 @@ app.MapsResponse;
  *     create layers from catalog nodes.
  * @param {gettext} gettext Gettext service.
  * @param {app.Themes} appThemes
+ * @param {app.Theme} appTheme
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettext, appThemes,
-    ngeoBackgroundLayerMgr) {
+    appTheme, ngeoBackgroundLayerMgr) {
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -64,6 +65,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {gettext}
@@ -209,6 +216,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    */
   this.mapBgLayer = 'voidLayer';
+
+  /**
+   * The theme of the mymap.
+   * @type {string}
+   */
+  this.mapTheme;
 
   /**
    * The BG Opacity of the mymap.
@@ -476,6 +489,9 @@ app.Mymaps.prototype.updateLayers_ = function() {
   var curMapLayers = this.mapLayers;
   var curMapOpacities = this.mapLayersOpacities;
   var curMapVisibilities = this.mapLayersVisibilities;
+  if (this.mapTheme) {
+    this.appTheme_.setCurrentTheme(this.mapTheme);
+  }
   this.appThemes_.getFlatCatalog()
   .then(goog.bind(function(flatCatalogue) {
         goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
@@ -513,6 +529,8 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.mapOwner = mapinformation['user_login'];
         this.mapIsPublic = mapinformation['public'];
         this.mapBgLayer = mapinformation['bg_layer'];
+        this.mapTheme = mapinformation['theme'];
+
         if (!this.mapBgLayer) {
           this.mapBgLayer = 'blank';
         }
@@ -787,11 +805,12 @@ app.Mymaps.prototype.updateMap =
  * @param {string} layers_opacity
  * @param {string} layers_visibility
  * @param {string} layers_indices
+ * @param {string} theme
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
-        layers_visibility, layers_indices) {
+        layers_visibility, layers_indices, theme) {
 
   var req = $.param({
     'bgLayer': bgLayer,
@@ -799,7 +818,8 @@ app.Mymaps.prototype.updateMapEnv =
     'layers': layers,
     'layers_opacity': layers_opacity,
     'layers_visibility': layers_visibility,
-    'layers_indices': layers_indices
+    'layers_indices': layers_indices,
+    'theme': theme
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}

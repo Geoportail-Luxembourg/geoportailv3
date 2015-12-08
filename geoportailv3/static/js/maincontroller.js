@@ -52,6 +52,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
  * @param {app.UserManager} appUserManager
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
@@ -67,7 +68,7 @@ app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
     ngeoGetBrowserLanguage, gettextCatalog, appExclusionManager,
     appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
-    appStateManager, appThemes, appFeaturePopup, appUserManager,
+    appStateManager, appThemes, appTheme, appFeaturePopup, appUserManager,
     appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
 
   /**
@@ -111,6 +112,12 @@ app.MainController = function(
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {ol.Extent}
@@ -196,11 +203,6 @@ app.MainController = function(
    * @type {Array}
    */
   this['selectedLayers'] = [];
-
-  /**
-   * @type {string|undefined}
-   */
-  this['currentTheme'] = undefined;
 
   /**
    * Set to true to display the change icon in Mymaps.
@@ -364,6 +366,15 @@ app.MainController.prototype.switchLanguage = function(lang) {
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
+};
+
+
+/**
+ * @return {string} the current theme.
+ * @export
+ */
+app.MainController.prototype.getCurrentTheme = function() {
+  return this.appTheme_.getCurrentTheme();
 };
 
 
