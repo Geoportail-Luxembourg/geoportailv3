@@ -60,6 +60,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @constructor
  * @export
  * @ngInject
@@ -69,7 +70,14 @@ app.MainController = function(
     ngeoGetBrowserLanguage, gettextCatalog, appExclusionManager,
     appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
     appStateManager, appThemes, appTheme, appFeaturePopup, appUserManager,
-    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays,
+    ngeoLocation) {
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {ngeo.BackgroundLayerMgr}
@@ -416,7 +424,7 @@ app.MainController.prototype.initLanguage_ = function() {
  * @private
  */
 app.MainController.prototype.initMymaps_ = function() {
-  var mapId = this.stateManager_.getInitialValue('map_id');
+  var mapId = this.ngeoLocation_.getParam('map_id');
   this.appMymaps_.mapProjection = this['map'].getView().getProjection();
   if (goog.isDef(mapId)) {
     this.appMymaps_.setCurrentMapId(mapId,
