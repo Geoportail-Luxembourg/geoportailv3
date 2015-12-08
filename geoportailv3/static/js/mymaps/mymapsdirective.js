@@ -576,9 +576,6 @@ app.MymapsDirectiveController.prototype.createMap = function() {
         this.newIsPublic
     )
       .then(goog.bind(function(resp) {
-          this.saveLayers();
-        }, this))
-      .then(goog.bind(function(resp) {
           this.modal = 'CREATE';
           if (goog.isNull(resp)) {
             this.askToConnect();
@@ -587,6 +584,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             if (goog.isDef(mapId)) {
               var map = {'uuid': mapId};
               this.onChosen(map);
+              this.saveLayers();
               var msg = this.gettext_('Nouvelle carte créée');
               this.notify_(msg);
               this.modal = undefined;
