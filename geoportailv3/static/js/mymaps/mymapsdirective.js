@@ -348,6 +348,7 @@ app.MymapsDirectiveController.prototype.shareMap = function() {
 app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
+  this['layersChanged'] = false;
 };
 
 
