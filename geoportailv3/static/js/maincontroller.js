@@ -445,6 +445,8 @@ app.MainController.prototype.compareLayers_ = function() {
           selectedLabels.push(item.get('label'));
           selectedOpacities.push('' + item.getOpacity());
         });
+        selectedLabels.reverse();
+        selectedOpacities.reverse();
         if (selectedLabels.join(',') !== this.appMymaps_.mapLayers.join(',')) {
           this['layersChanged'] = true;
         } else {
