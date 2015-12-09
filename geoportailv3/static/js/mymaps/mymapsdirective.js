@@ -294,7 +294,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
         var mapId = resp['uuid'];
         if (goog.isDef(mapId)) {
           var map = {'uuid': mapId};
-          this.onChosen(map);
+          this.onChosen(map, false);
           var msg = this.gettext_('Carte copiée');
           this.notify_(msg);
           this.modal = undefined;
@@ -395,7 +395,7 @@ app.MymapsDirectiveController.prototype.addInMymaps = function() {
           goog.bind(function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
-            this.onChosen(map);
+            this.onChosen(map, false);
           }, this));
     }
   }
@@ -430,7 +430,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
         }, this))
         .then(goog.bind(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
-          this.onChosen(map);
+          this.onChosen(map, false);
           var msg = this.gettext_('Carte créée');
           this.notify_(msg);
           this.creatingFromAnonymous = false;
@@ -590,8 +590,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             var mapId = resp['uuid'];
             if (goog.isDef(mapId)) {
               var map = {'uuid': mapId};
-              this.onChosen(map);
-              this.saveLayers();
+              this.onChosen(map, false).then(goog.bind(function() {
+                this.saveLayers();
+              },this));
               var msg = this.gettext_('Nouvelle carte créée');
               this.notify_(msg);
               this.modal = undefined;
@@ -638,14 +639,20 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
 /**
  * Called when a map is choosen.
  * @param {Object} map The selected map.
+ * @param {boolean} clear It removes the alreay selected layers.
+ * @return {angular.$q.Promise} Promise.
  * @export
  */
-app.MymapsDirectiveController.prototype.onChosen = function(map) {
+app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
   this.closeMap();
-  this.appMymaps_.setCurrentMapId(map['uuid'],
+  if (clear) {
+    this.map_.getLayers().clear();
+  }
+  var promise = this.appMymaps_.setCurrentMapId(map['uuid'],
       this.drawnFeatures_.getCollection());
   this['drawopen'] = true;
   this.choosing = false;
+  return promise;
 };
 
 

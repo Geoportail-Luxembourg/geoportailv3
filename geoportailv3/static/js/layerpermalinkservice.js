@@ -83,10 +83,14 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
     return layer.getOpacity();
   });
   var bgLayer = this.backgroundLayerMgr_.get(this.map_);
+  var bgLabel = 'blank';
+  if (bgLayer) {
+    bgLabel = bgLayer.get('label');
+  }
   this.stateManager_.updateState({
     'layers': layerIds.join('-'),
     'opacities': opacities.join('-'),
-    'bgLayer': bgLayer.get('label')
+    'bgLayer': bgLabel
   });
 };
 

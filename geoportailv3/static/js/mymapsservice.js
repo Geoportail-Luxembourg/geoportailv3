@@ -215,7 +215,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * The BG Layer of the mymap.
    * @type {string}
    */
-  this.mapBgLayer = 'voidLayer';
+  this.mapBgLayer = 'blank';
 
   /**
    * The theme of the mymap.
@@ -328,12 +328,13 @@ app.Mymaps.prototype.getMapId = function() {
  * Set the mapId and load map information.
  * @param {string} mapId The map id.
  * @param {ol.Collection} collection
+ * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
-  this.loadMapInformation().then(goog.bind(function() {
-    this.loadFeatures_().then(goog.bind(function(features) {
+  return this.loadMapInformation().then(goog.bind(function() {
+    return this.loadFeatures_().then(goog.bind(function(features) {
       var encOpt = /** @type {olx.format.ReadOptions} */ ({
         dataProjection: 'EPSG:2169',
         featureProjection: this.mapProjection
@@ -348,6 +349,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
 
       collection.extend(
           /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
+      return collection;
     }, this));
   },this));
 
@@ -365,7 +367,7 @@ app.Mymaps.prototype.clear = function() {
   this.mapOwner = '';
   this.mapCategoryId = null;
   this.mapIsPublic = false;
-  this.mapBgLayer = 'voidLayer';
+  this.mapBgLayer = 'blank';
   this.mapBgOpacity = 1;
   this.mapLayers = [];
   this.mapLayersOpacities = [];
