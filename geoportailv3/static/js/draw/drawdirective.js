@@ -440,6 +440,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
+  this.drawnFeatures_.saveFeature(feature);
 };
 
 app.module.controller('AppDrawController', app.DrawController);

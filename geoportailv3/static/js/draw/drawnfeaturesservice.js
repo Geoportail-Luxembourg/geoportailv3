@@ -186,11 +186,13 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
  */
 app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
   var currentFeature = feature;
-  if (this.appMymaps_.isEditable()) {
+  if (this.appMymaps_.isEditable() && !feature.get('__saving__')) {
+    feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
       .then(goog.bind(function(resp) {
           var featureId = resp['id'];
           currentFeature.set('id', featureId);
+          feature.set('__saving__', false);
         }, this));
   }
 };
