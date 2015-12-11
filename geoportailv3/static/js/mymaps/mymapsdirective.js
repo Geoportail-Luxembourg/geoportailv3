@@ -340,15 +340,6 @@ app.MymapsDirectiveController.prototype.importKml = function() {
 
 
 /**
- * Share the current map.
- * @export
- */
-app.MymapsDirectiveController.prototype.shareMap = function() {
-  console.log('shareMap');
-};
-
-
-/**
  * Close the current map.
  * @export
  */

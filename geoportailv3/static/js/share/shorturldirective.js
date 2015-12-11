@@ -43,10 +43,17 @@ app.module.directive('appShorturl', app.shorturlDirective);
  * @param {angular.Scope} $scope
  * @param {ngeo.Location} ngeoLocation
  * @param {app.GetShorturl} appGetShorturl
+ * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  */
 app.ShorturlDirectiveController =
-    function($scope, ngeoLocation, appGetShorturl) {
+    function($scope, ngeoLocation, appGetShorturl, appMymaps) {
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
+
   /**
    * @type {ngeo.Location}
    * @private
@@ -64,6 +71,12 @@ app.ShorturlDirectiveController =
    */
   this.getShorturl_ = appGetShorturl;
 
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.onlyMymaps = false;
+
   $scope.$watch(goog.bind(function() {
     return this['active'];
   }, this), goog.bind(function(newVal) {
@@ -77,6 +90,12 @@ app.ShorturlDirectiveController =
       this.removeListener();
     }
   }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this['active'] && this.onlyMymaps;
+  }, this), goog.bind(function(newVal) {
+    this.setUrl_();
+  }, this));
 };
 
 
@@ -85,7 +104,14 @@ app.ShorturlDirectiveController =
  */
 app.ShorturlDirectiveController.prototype.setUrl_ =
     function() {
-  this['url'] = this.ngeoLocation_.getUriString();
+  if (this.onlyMymaps) {
+    var uri = this.ngeoLocation_.getUri().clone();
+    this['url'] = uri.setQueryData('map_id=' + this.appMymaps_.getMapId(),
+        true).toString();
+  } else {
+    this['url'] = this.ngeoLocation_.getUriString();
+  }
+
   this.getShorturl_().then(goog.bind(
       /**
        * @param {string} shorturl The short URL.
@@ -93,6 +119,17 @@ app.ShorturlDirectiveController.prototype.setUrl_ =
       function(shorturl) {
         this['url'] = shorturl;
       }, this));
+};
+
+
+/**
+ * @return {boolean} true if a mymaps is selected
+ * @export
+ */
+app.ShorturlDirectiveController.prototype.isMymapsSelected =
+    function() {
+  if (this.appMymaps_.getMapId()) return true;
+  return false;
 };
 
 app.module.controller('AppShorturlController', app.ShorturlDirectiveController);
