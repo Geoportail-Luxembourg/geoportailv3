@@ -36,6 +36,24 @@
     <span class="map-owner" ng-show="ctrl.getMapOwner()">
       {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
     </span>
+    <div ng-show="ctrl.showKml" class="alert alert-info">
+      <div><strong translate>Importer un kml</strong>
+      <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeKmlPanel();"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <span translate>
+        Veuillez sélectionner le fichier KML que vous désirer importer.
+        <input type="file" ngeo-filereader="ctrl.kmlFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported"/>
+      </span>
+    </div>
+    <div ng-show="ctrl.showGpx" class="alert alert-info">
+      <div><strong translate>Importer un Gpx</strong>
+      <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeGpxPanel();"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <span translate>
+        Veuillez sélectionner le fichier GPX que vous désirer importer.
+        <input type="file" ngeo-filereader="ctrl.gpxFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported"/>
+      </span>
+    </div>
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
         <a href class="dropdown-toggle" data-toggle="dropdown">
@@ -52,8 +70,8 @@
           <li class="divider"></li>
           <li ng-click="ctrl.exportGpx()"><a href translate>Exporter un GPX</a></li>
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-          <li ng-click="ctrl.importGpx()"><a href translate>Importer un GPX</a></li>
-          <li ng-click="ctrl.importKml()"><a href translate>Importer un KML</a></li>
+          <li ng-click="ctrl.showGpxPanel()"><a href translate>Importer un GPX</a></li>
+          <li ng-click="ctrl.showKmlPanel()"><a href translate>Importer un KML</a></li>
         </ul>
       </li>
     </ul>

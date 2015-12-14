@@ -151,6 +151,11 @@ def main(global_config, **settings):
         "/mymaps/copy/{map_id}",
         request_method="POST"
     )
+    config.add_route(
+        "exportgpxkml",
+        "/mymaps/exportgpxkml",
+        request_method="POST"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')

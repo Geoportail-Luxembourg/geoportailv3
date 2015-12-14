@@ -15,7 +15,7 @@ from shapely.geometry import asShape
 from shapely.geometry.multipoint import asMultiPoint
 from shapely.geometry.multilinestring import asMultiLineString
 from shapely.geometry.multipolygon import MultiPolygonAdapter
-from geoalchemy2 import Geometry
+from geoalchemy2 import Geometry, func
 from geoalchemy2.shape import from_shape
 
 import geojson
@@ -163,7 +163,14 @@ class Feature(Base):
         geom_type = ob.get("type").lower()
 
         if geom_type != 'geometrycollection':
+            # openlayers gpx writter creates a 4 dimension geometry and
+            # shapely does not allow if for linestring.
+            if geom_type == 'linestring':
+                feature.geometry.coordinates = \
+                    [coordinate[0:2] for coordinate
+                        in feature.geometry.coordinates]
             shape = asShape(feature.geometry)
+
         else:
             geoms = []
             is_transformable = True
@@ -192,9 +199,10 @@ class Feature(Base):
                     shape = MultiPolygonAdapter(geoms, context_type='geojson')
             else:
                 shape = None
-
-        self.geometry = from_shape(shape, srid=2169) if shape is not None\
-            else None
+        # ST_FORCE2D is used because the db only allows geometry with
+        # 2 dimensions.
+        self.geometry = func.ST_Force2D(from_shape(shape, srid=2169))\
+            if shape is not None else None
 
     @property
     def __geo_interface__(self):
