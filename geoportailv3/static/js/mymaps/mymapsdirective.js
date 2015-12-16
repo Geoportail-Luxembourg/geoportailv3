@@ -73,7 +73,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
 app.MymapsDirectiveController = function($scope, $compile, gettext,
     ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
     appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures,
-    $document, exportgpxkmlUrl) {) {
+    $document, exportgpxkmlUrl) {
 
   /**
    * @type {app.Theme}
@@ -419,7 +419,7 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
   this.appMymaps_.saveFeatures(gpxFeatures).then(
       goog.bind(function() {
         var map = {'uuid': mapId};
-        this.onChosen(map);
+        this.onChosen(map, false);
       }, this)
   );
 };
@@ -462,7 +462,7 @@ app.MymapsDirectiveController.prototype.importKml = function() {
   this.appMymaps_.saveFeatures(kmlFeatures).then(
       goog.bind(function() {
         var map = {'uuid': mapId};
-        this.onChosen(map);
+        this.onChosen(map, false);
       }, this)
   );
 };
