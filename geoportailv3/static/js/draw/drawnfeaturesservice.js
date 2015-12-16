@@ -38,12 +38,30 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   this.ngeoLocation_ = ngeoLocation;
 
   /**
+   * @const
+   * @private
+   */
+  this.SHORT_PARAM_ = {
+    'name' : 'n',
+    'description': 'd',
+    'color': 'c',
+    'opacity': 'o',
+    'stroke': 's',
+    'linestyle': 'l',
+    'shape': 's',
+    'size': 't',
+    'angle': 'a',
+    'isLabel': 'i'
+  };
+
+  /**
    * @type {ngeo.format.FeatureHash}
    * @private
    */
   this.fhFormat_ = new ngeo.format.FeatureHash({
     encodeStyles: false,
     properties: (
+        goog.bind(
         /**
          * @param {ol.Feature} feature Feature.
          * @return {Object.<string, (string|number)>} Properties to encode.
@@ -57,10 +75,16 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
           for (var key in properties) {
             if (!properties[key]) {
               delete properties[key];
+            } else {
+              if (this.SHORT_PARAM_[key]) {
+                var value = properties[key];
+                delete properties[key];
+                properties[this.SHORT_PARAM_[key]] = value;
+              }
             }
           }
           return properties;
-        })
+        },this))
   });
 
   /**
@@ -159,8 +183,14 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
   if (goog.isDef(encodedFeatures)) {
     var remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
     goog.asserts.assert(!goog.isNull(remoteFeatures));
-    for (var i = 0; i < remoteFeatures.length; ++i) {
-      var feature = remoteFeatures[i];
+    goog.array.forEach(remoteFeatures, goog.bind(function(feature) {
+      var properties = feature.getProperties();
+      for (var key in this.SHORT_PARAM_) {
+        if (properties[this.SHORT_PARAM_[key]]) {
+          feature.set(key, properties[this.SHORT_PARAM_[key]]);
+          feature.unset(this.SHORT_PARAM_[key]);
+        }
+      }
       var opacity = /** @type {string} */ (feature.get('opacity'));
       feature.set('opacity', +opacity);
       var stroke = /** @type {string} */ (feature.get('stroke'));
@@ -174,7 +204,8 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('__editable__', true);
       feature.set('__map_id__', undefined);
       feature.setStyle(this.featureStyleFunction_);
-    }
+    },this));
+
     this.features.extend(remoteFeatures);
   }
 };
@@ -186,11 +217,13 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
  */
 app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
   var currentFeature = feature;
-  if (this.appMymaps_.isEditable()) {
+  if (this.appMymaps_.isEditable() && !feature.get('__saving__')) {
+    feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
       .then(goog.bind(function(resp) {
           var featureId = resp['id'];
           currentFeature.set('id', featureId);
+          feature.set('__saving__', false);
         }, this));
   }
 };

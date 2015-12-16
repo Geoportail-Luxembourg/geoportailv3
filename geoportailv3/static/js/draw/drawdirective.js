@@ -317,7 +317,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       }, true, this);
 
   var modifyInteraction = new ol.interaction.Modify({
-    features: appSelectedFeatures
+    features: appSelectedFeatures,
+    deleteCondition: function(event) {
+      return false;
+    }
   });
   this.map.addInteraction(modifyInteraction);
   goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
@@ -440,6 +443,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
+  this.drawnFeatures_.saveFeature(feature);
 };
 
 app.module.controller('AppDrawController', app.DrawController);
