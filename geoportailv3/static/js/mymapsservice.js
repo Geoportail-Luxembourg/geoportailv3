@@ -26,11 +26,51 @@ app.MapsResponse;
  * @param {app.StateManager} appStateManager
  * @param {app.UserManager} appUserManager
  * @param {app.Notify} appNotify Notify service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
+ *     create layers from catalog nodes.
  * @param {gettext} gettext Gettext service.
+ * @param {app.Themes} appThemes
+ * @param {app.Theme} appTheme
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
-    appUserManager, appNotify, gettext) {
+    appUserManager, appNotify, appGetLayerForCatalogNode, gettext, appThemes,
+    appTheme, ngeoBackgroundLayerMgr) {
+
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {ol.Map}
+   */
+  this.map;
+
+  /**
+   * @type {boolean}
+   */
+  this.layersChanged;
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {gettext}
@@ -172,6 +212,48 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapDescription = '';
 
   /**
+   * The BG Layer of the mymap.
+   * @type {string}
+   */
+  this.mapBgLayer = 'blank';
+
+  /**
+   * The theme of the mymap.
+   * @type {string}
+   */
+  this.mapTheme;
+
+  /**
+   * The BG Opacity of the mymap.
+   * @type {number}
+   */
+  this.mapBgOpacity = 1;
+
+  /**
+   * The layers.
+   * @type {Array<string>}
+   */
+  this.mapLayers = [];
+
+  /**
+   * The opacity of layers.
+   * @type {Array<string>}
+   */
+  this.mapLayersOpacities = [];
+
+  /**
+   * The visibility of layers.
+   * @type {Array<string>}
+   */
+  this.mapLayersVisibilities = [];
+
+  /**
+   * The indice of layers.
+   * @type {Array<string>}
+   */
+  this.mapLayersIndicies = [];
+
+  /**
    * @type {ol.FeatureStyleFunction}
    * @private
    */
@@ -188,6 +270,20 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @export
    */
   this.categories = null;
+
+
+  /**
+   * @const
+   * @private
+   */
+  this.V2_BGLAYER_TO_V3_ = {
+    'webbasemap' : 'basemap_2015_global',
+    'topogr': 'topogr_global',
+    'pixelmaps-gray': 'topo_bw_jpeg',
+    'streets': 'streets_jpeg',
+    'voidlayer': 'blank',
+    'voidLayer': 'blank'
+  };
 
 };
 
@@ -232,27 +328,31 @@ app.Mymaps.prototype.getMapId = function() {
  * Set the mapId and load map information.
  * @param {string} mapId The map id.
  * @param {ol.Collection} collection
+ * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
-  this.loadMapInformation();
-  this.loadFeatures_().then(goog.bind(function(features) {
-    var encOpt = /** @type {olx.format.ReadOptions} */ ({
-      dataProjection: 'EPSG:2169',
-      featureProjection: this.mapProjection
-    });
-    var jsonFeatures = (new ol.format.GeoJSON()).
-        readFeatures(features, encOpt);
-    goog.array.forEach(jsonFeatures, function(feature) {
-      feature.set('__map_id__', this.getMapId());
-      feature.set('__editable__', this.isEditable());
-      feature.setStyle(this.featureStyleFunction_);
-    }, this);
+  return this.loadMapInformation().then(goog.bind(function() {
+    return this.loadFeatures_().then(goog.bind(function(features) {
+      var encOpt = /** @type {olx.format.ReadOptions} */ ({
+        dataProjection: 'EPSG:2169',
+        featureProjection: this.mapProjection
+      });
+      var jsonFeatures = (new ol.format.GeoJSON()).
+          readFeatures(features, encOpt);
+      goog.array.forEach(jsonFeatures, function(feature) {
+        feature.set('__map_id__', this.getMapId());
+        feature.set('__editable__', this.isEditable());
+        feature.setStyle(this.featureStyleFunction_);
+      }, this);
 
-    collection.extend(
-        /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
-  }, this));
+      collection.extend(
+          /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
+      return collection;
+    }, this));
+  },this));
+
 };
 
 
@@ -267,6 +367,12 @@ app.Mymaps.prototype.clear = function() {
   this.mapOwner = '';
   this.mapCategoryId = null;
   this.mapIsPublic = false;
+  this.mapBgLayer = 'blank';
+  this.mapBgOpacity = 1;
+  this.mapLayers = [];
+  this.mapLayersOpacities = [];
+  this.mapLayersVisibilities = [];
+  this.mapLayersIndicies = [];
 };
 
 
@@ -363,6 +469,57 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 
 
 /**
+ * update the map with layers
+ * @private
+ */
+app.Mymaps.prototype.updateLayers_ = function() {
+  var curBgLayer = this.mapBgLayer;
+  this.appThemes_.getBgLayers().then(goog.bind(
+      /**
+       * @param {Array.<ol.layer.Base>} bgLayers
+       */
+      function(bgLayers) {
+        var layer = /** @type {ol.layer.Base} */
+            (goog.array.find(bgLayers, function(layer) {
+          return layer.get('label') === curBgLayer;
+        }));
+        if (layer) {
+          this.backgroundLayerMgr_.set(this.map, layer);
+        }
+      }, this));
+
+  var curMapLayers = this.mapLayers;
+  var curMapOpacities = this.mapLayersOpacities;
+  var curMapVisibilities = this.mapLayersVisibilities;
+  if (this.mapTheme) {
+    this.appTheme_.setCurrentTheme(this.mapTheme);
+  }
+  this.appThemes_.getFlatCatalog()
+  .then(goog.bind(function(flatCatalogue) {
+        goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
+          var node = goog.array.find(flatCatalogue,
+              function(catalogueLayer) {
+                return catalogueLayer['name'] === item;
+              });
+          if (node) {
+            var layer = this.getLayerFunc_(node);
+            if (layer && this.map.getLayers().getArray().indexOf(layer) <= 0) {
+              this.map.addLayer(layer);
+            }
+            if (curMapOpacities) {
+              layer.setOpacity(parseFloat(curMapOpacities[layerIndex]));
+            }
+            if (curMapVisibilities) {
+              if (curMapVisibilities[layerIndex] === 'false') {
+                layer.setOpacity(0);
+              }
+            }
+          }
+        }, this));},this));
+};
+
+
+/**
  * Load the map information.
  * @return {angular.$q.Promise} Promise.
  */
@@ -373,8 +530,56 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.mapTitle = mapinformation['title'];
         this.mapOwner = mapinformation['user_login'];
         this.mapIsPublic = mapinformation['public'];
+        this.mapBgLayer = mapinformation['bg_layer'];
+        this.mapTheme = mapinformation['theme'];
+
+        if (!this.mapBgLayer) {
+          this.mapBgLayer = 'blank';
+        }
+        if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+          this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+        }
+
+        this.mapBgOpacity = mapinformation['bg_opacity'];
+        if ('layers' in mapinformation && mapinformation['layers']) {
+          this.mapLayers = mapinformation['layers'].split(',');
+          this.mapLayers.reverse();
+          if ('layers_opacity' in mapinformation &&
+              mapinformation['layers_opacity']) {
+            this.mapLayersOpacities =
+                mapinformation['layers_opacity'].split(',');
+          } else {
+            this.mapLayersOpacities = [];
+          }
+          this.mapLayersOpacities.reverse();
+          if ('layers_visibility' in mapinformation &&
+              mapinformation['layers_visibility']) {
+            this.mapLayersVisibilities =
+                mapinformation['layers_visibility'].split(',');
+          } else {
+            this.mapLayersVisibilities = [];
+          }
+          this.mapLayersVisibilities.reverse();
+          if ('layers_indices' in mapinformation &&
+              mapinformation['layers_indices']) {
+            this.mapLayersIndicies =
+                mapinformation['layers_indices'].split(',');
+          } else {
+            this.mapLayersIndicies = [];
+          }
+          this.mapLayersIndicies.reverse();
+        } else {
+          this.mapLayers = [];
+          this.mapOpacities = [];
+          this.mapVisibilities = [];
+          this.mapLayersIndicies = [];
+        }
         return mapinformation;
-      }, this));
+      }, this))
+      .then(goog.bind(function(mapinformation) {
+        this.updateLayers_();
+        this.layersChanged = false;
+        return mapinformation;},this));
 };
 
 
@@ -567,6 +772,56 @@ app.Mymaps.prototype.updateMap =
     'description': description,
     'category_id': categoryId,
     'public': isPublic
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettext_(
+            'Erreur inattendue lors de la mise à jour de votre carte.');
+        this.notify_(msg);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Save the map environment.
+ * @param {string} bgLayer
+ * @param {string} bgOpacity
+ * @param {string} layers
+ * @param {string} layers_opacity
+ * @param {string} layers_visibility
+ * @param {string} layers_indices
+ * @param {string} theme
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.updateMapEnv =
+    function(bgLayer, bgOpacity, layers, layers_opacity,
+        layers_visibility, layers_indices, theme) {
+
+  var req = $.param({
+    'bgLayer': bgLayer,
+    'bgOpacity': bgOpacity,
+    'layers': layers,
+    'layers_opacity': layers_opacity,
+    'layers_visibility': layers_visibility,
+    'layers_indices': layers_indices,
+    'theme': theme
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}

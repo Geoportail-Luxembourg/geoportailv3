@@ -14,6 +14,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.SelectedFeatures');
+goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
 goog.require('ngeo.modalDirective');
@@ -30,7 +31,10 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
     restrict: 'E',
     scope: {
       'useropen': '=appMymapsUseropen',
-      'drawopen': '=appMymapsDrawopen'
+      'drawopen': '=appMymapsDrawopen',
+      'layersChanged': '=appMymapsLayersChanged',
+      'map': '=appMymapsMap',
+      'selectedLayers': '=appMymapsSelectedLayers'
     },
     controller: 'AppMymapsController',
     controllerAs: 'ctrl',
@@ -47,10 +51,13 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.Notify} appNotify Notify service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.UserManager} appUserManager
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @constructor
@@ -59,8 +66,32 @@ app.module.directive('appMymaps', app.mymapsDirective);
  */
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
-    appMymaps, appNotify, appFeaturePopup, appSelectedFeatures,
-    appUserManager, appDrawnFeatures) {
+    ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
+    appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures) {
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
+
+  /**
+   * @type {Array}
+   * @private
+   */
+  this.selectedLayers_ = this['selectedLayers'];
+
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {Array.<ol.Feature>}
@@ -186,6 +217,38 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
 
 
 /**
+ * Save the current layers definition into Mymaps.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.saveLayers = function() {
+  var bgLayer = /** @type {string} */
+      (this.backgroundLayerMgr_.get(this.map_).get('label'));
+  var bgOpacity = '1';
+  var layersLabels = [];
+  var layersOpacities = [];
+  var layersVisibilities = [];
+  var layersIndices = [];
+  goog.array.forEach(this.selectedLayers_, function(item, index) {
+    layersLabels.push(item.get('label'));
+    layersOpacities.push('' + item.getOpacity());
+    if (item.getOpacity() === 0) {
+      layersVisibilities.push('false');
+    } else {
+      layersVisibilities.push('true');
+    }
+    layersIndices.push('' + index);
+  });
+  this.appMymaps_.updateMapEnv(bgLayer, bgOpacity, layersLabels.join(','),
+      layersOpacities.join(','), layersVisibilities.join(','),
+      layersIndices.join(','), this.appTheme_.getCurrentTheme())
+      .then(goog.bind(function() {
+        this.appMymaps_.loadMapInformation();
+      },this));
+  this['layersChanged'] = false;
+};
+
+
+/**
  * @param {boolean|undefined} value
  * @return {boolean|undefined}
  * @export
@@ -231,7 +294,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
         var mapId = resp['uuid'];
         if (goog.isDef(mapId)) {
           var map = {'uuid': mapId};
-          this.onChosen(map);
+          this.onChosen(map, false);
           var msg = this.gettext_('Carte copiée');
           this.notify_(msg);
           this.modal = undefined;
@@ -292,6 +355,7 @@ app.MymapsDirectiveController.prototype.shareMap = function() {
 app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
+  this['layersChanged'] = false;
 };
 
 
@@ -331,7 +395,7 @@ app.MymapsDirectiveController.prototype.addInMymaps = function() {
           goog.bind(function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
-            this.onChosen(map);
+            this.onChosen(map, false);
           }, this));
     }
   }
@@ -359,11 +423,14 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
               return this.appMymaps_.loadMapInformation();
             }}}, this))
         .then(goog.bind(function(mapinformation) {
+          this.saveLayers();
+        }, this))
+        .then(goog.bind(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
         }, this))
         .then(goog.bind(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
-          this.onChosen(map);
+          this.onChosen(map, false);
           var msg = this.gettext_('Carte créée');
           this.notify_(msg);
           this.creatingFromAnonymous = false;
@@ -523,7 +590,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             var mapId = resp['uuid'];
             if (goog.isDef(mapId)) {
               var map = {'uuid': mapId};
-              this.onChosen(map);
+              this.onChosen(map, false).then(goog.bind(function() {
+                this.saveLayers();
+              },this));
               var msg = this.gettext_('Nouvelle carte créée');
               this.notify_(msg);
               this.modal = undefined;
@@ -570,14 +639,20 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
 /**
  * Called when a map is choosen.
  * @param {Object} map The selected map.
+ * @param {boolean} clear It removes the alreay selected layers.
+ * @return {angular.$q.Promise} Promise.
  * @export
  */
-app.MymapsDirectiveController.prototype.onChosen = function(map) {
+app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
   this.closeMap();
-  this.appMymaps_.setCurrentMapId(map['uuid'],
+  if (clear) {
+    this.map_.getLayers().clear();
+  }
+  var promise = this.appMymaps_.setCurrentMapId(map['uuid'],
       this.drawnFeatures_.getCollection());
   this['drawopen'] = true;
   this.choosing = false;
+  return promise;
 };
 
 

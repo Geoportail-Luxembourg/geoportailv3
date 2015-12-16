@@ -8,6 +8,7 @@ goog.provide('app.themeswitcherDirective');
 
 goog.require('app');
 goog.require('app.Notify');
+goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
 goog.require('goog.events');
@@ -24,7 +25,6 @@ app.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
     scope: {
-      'currentTheme': '=appThemeswitcherCurrenttheme',
       'userOpen': '=appThemeswitcherUseropen'
     },
     controllerAs: 'ctrl',
@@ -43,12 +43,19 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme current theme service.
  * @param {app.Notify} appNotify Notify service.
  * @export
  * @ngInject
  */
 app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
-    appThemes, appNotify) {
+    appThemes, appTheme, appNotify) {
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {angularGettext.Catalog}
@@ -61,17 +68,6 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
    * @private
    */
   this.privateThemeMsg_ = 'Ce thème est protégé. Veuillez vous connecter.';
-
-  /**
-   * @type {string}
-   */
-  this['currentTheme'] = app.ThemeswitcherController.DEFAULT_THEME_;
-
-  /**
-   * @type {ngeo.Location}
-   * @private
-   */
-  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {app.Themes}
@@ -93,53 +89,24 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
         this.setThemes_();
       }, undefined, this);
 
+  this.appTheme_.setCurrentTheme(this.appTheme_.getDefaultTheme());
+
   // Get the theme from the URL if specified, otherwise we use the default
   // theme and add it to the URL.
   var pathElements = ngeoLocation.getPath().split('/');
-  if (app.ThemeswitcherController.themeInUrl(pathElements)) {
-    this['currentTheme'] = pathElements[pathElements.length - 1];
-  } else {
-    this.setLocationPath_(this['currentTheme']);
+  if (this.appTheme_.themeInUrl(pathElements)) {
+    this.appTheme_.setCurrentTheme(pathElements[pathElements.length - 1]);
   }
 };
 
 
 /**
- * @const
- * @private
+ * Get the current theme.
+ * @return {string} The current theme.
+ * @export
  */
-app.ThemeswitcherController.DEFAULT_THEME_ = 'main';
-
-
-/**
- * Return true if there is a theme specified in the URL path.
- * @param {Array.<string>} pathElements Array of path elements.
- * @return {boolean} theme in path.
- */
-app.ThemeswitcherController.themeInUrl = function(pathElements) {
-  var indexOfTheme = pathElements.indexOf('theme');
-  return indexOfTheme >= 0 &&
-      pathElements.indexOf('theme') == pathElements.length - 2;
-};
-
-
-/**
- * @param {string} themeId The theme id to set in the path of the URL.
- * @private
- */
-app.ThemeswitcherController.prototype.setLocationPath_ = function(themeId) {
-  var pathElements = this.ngeoLocation_.getPath().split('/');
-  goog.asserts.assert(pathElements.length > 1);
-  if (pathElements[pathElements.length - 1] === '') {
-    // case where the path is just "/"
-    pathElements.splice(pathElements.length - 1);
-  }
-  if (app.ThemeswitcherController.themeInUrl(pathElements)) {
-    pathElements[pathElements.length - 1] = themeId;
-  } else {
-    pathElements.push('theme', themeId);
-  }
-  this.ngeoLocation_.setPath(pathElements.join('/'));
+app.ThemeswitcherController.prototype.getCurrentTheme = function() {
+  return this.appTheme_.getCurrentTheme();
 };
 
 
@@ -161,10 +128,11 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
         // A theme is valid if it is present in the list of themes.
         // A theme is protected if the related WS returns true
         var themeIndex = goog.array.findIndex(themes, function(theme) {
-          return theme['name'] == this['currentTheme'];
+          return theme['name'] == this.appTheme_.getCurrentTheme();
         }, this);
         if (themeIndex < 0) {
-          this.appThemes_.isThemePrivate(this['currentTheme']).then(goog.bind(
+          this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
+              .then(goog.bind(
               /**
                * @param {angular.$http.Response} resp Ajax response.
                */
@@ -174,7 +142,7 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
                       getString(this.privateThemeMsg_, {}));
                   this['userOpen'] = true;
                 } else {
-                  this.switchTheme(app.ThemeswitcherController.DEFAULT_THEME_);
+                  this.switchTheme(this.appTheme_.getDefaultTheme());
                 }
               }, this));
         }
@@ -187,8 +155,7 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
  * @export
  */
 app.ThemeswitcherController.prototype.switchTheme = function(themeId) {
-  this['currentTheme'] = themeId;
-  this.setLocationPath_(themeId);
+  this.appTheme_.setCurrentTheme(themeId);
 };
 
 

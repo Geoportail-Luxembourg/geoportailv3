@@ -22,6 +22,14 @@
   </div>
 
   <div ng-show="ctrl.isEditable()" class="mymap-footer navbar">
+    <div ng-show="ctrl.layersChanged" class="alert alert-warning">
+    <strong translate>Attention!</strong>
+    <span translate>
+      Les couches sélectionnées dans le catalogue sont différentes de celles chargées avec votre carte.
+      Voulez vous sauvegarder ces modifications dans votre carte?
+      <button ng-click="ctrl.saveLayers()" translate class="btn btn-default">Oui</button>
+    </span>
+    </div>
     <span ng-show="!ctrl.getMapIsPublic()">
       <i class="fa fa-lock"></i>&nbsp;
     </span>
@@ -166,7 +174,7 @@
       </tr>
     </thead>
     <tbody>
-    <tr ng-click="ctrl.onChosen(map)" ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
+    <tr ng-click="ctrl.onChosen(map, true)" ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
       <td>{{ map.title }}</td>
       <td>{{ map.category }}</td>
     </tr>

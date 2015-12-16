@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
   <head>
-  <title ng-bind-template="{{ mainCtrl.currentTheme|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
+  <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
@@ -56,7 +56,7 @@
       .corner-ribbon.orange{background: #e82;}
     </style>
   </head>
-  <body data-theme="{{mainCtrl.currentTheme}}" ng-class="mainCtrl.mobileSearchActive ? 'search-mobile' : ''">
+  <body data-theme="{{mainCtrl.getCurrentTheme()}}" ng-class="mainCtrl.mobileSearchActive ? 'search-mobile' : ''">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -131,9 +131,8 @@
               </div>
             </div>
             <div id="catalog" class="tab-pane">
-              <app-themeswitcher app-themeswitcher-currenttheme="mainCtrl.currentTheme"
-                app-themeswitcher-useropen="mainCtrl.userOpen"></app-themeswitcher>
-              <app-catalog app-catalog-map="::mainCtrl.map" app-catalog-currenttheme="mainCtrl.currentTheme"></app-catalog>
+              <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"></app-themeswitcher>
+              <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
             </div>
           </div>
         </div>
@@ -145,7 +144,10 @@
             ✕
           </button>
           <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
-                      app-mymaps-drawopen="mainCtrl.drawOpen"></app-mymaps>
+                      app-mymaps-drawopen="mainCtrl.drawOpen"
+                      app-mymaps-layers-changed="mainCtrl.layersChanged"
+                      app-mymaps-selected-layers="mainCtrl.selectedLayers"
+                      app-mymaps-map="::mainCtrl.map"></app-mymaps>
         </div>
 
         <!-- Infos -->
@@ -189,7 +191,7 @@
           <a href translate>Couches</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
-          <a href translate>My Maps</a>
+          <a href translate>My Maps<span ng-show="mainCtrl.layersChanged">(*)</a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
           <a href translate>Infos</a>
@@ -220,7 +222,7 @@
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
-          <app-print app-print-map="::mainCtrl.map" app-print-currenttheme="mainCtrl.currentTheme"
+          <app-print app-print-map="::mainCtrl.map"
             app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"></app-print>
         </li>
         <li class="hidden-xs share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">

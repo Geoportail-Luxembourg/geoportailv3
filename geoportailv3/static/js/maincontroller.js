@@ -20,6 +20,7 @@ goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
 goog.require('goog.object');
+goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.GetBrowserLanguage');
@@ -41,6 +42,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {angular.Scope} $scope Scope.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
  * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
@@ -49,6 +52,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.StateManager} appStateManager
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme the current theme service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
  * @param {app.UserManager} appUserManager
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
@@ -56,15 +60,30 @@ goog.require('ol.tilegrid.WMTS');
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @constructor
  * @export
  * @ngInject
  */
 app.MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoGetBrowserLanguage, gettextCatalog,
-    appExclusionManager, appLayerOpacityManager, appLayerPermalinkManager,
-    appMymaps, appStateManager, appThemes, appFeaturePopup, appUserManager,
-    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays) {
+    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
+    ngeoGetBrowserLanguage, gettextCatalog, appExclusionManager,
+    appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
+    appStateManager, appThemes, appTheme, appFeaturePopup, appUserManager,
+    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays,
+    ngeoLocation) {
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {app.DrawnFeatures}
@@ -101,6 +120,12 @@ app.MainController = function(
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {ol.Extent}
@@ -188,9 +213,10 @@ app.MainController = function(
   this['selectedLayers'] = [];
 
   /**
-   * @type {string|undefined}
+   * Set to true to display the change icon in Mymaps.
+   * @type {boolean}
    */
-  this['currentTheme'] = undefined;
+  this['layersChanged'] = false;
 
   /**
    * @type {ol.Map}
@@ -317,6 +343,7 @@ app.MainController.prototype.manageSelectedLayers_ =
     return this['selectedLayers'];
   }, this), goog.bind(function() {
     this.map_.render();
+    this.compareLayers_();
   }, this));
 };
 
@@ -347,6 +374,15 @@ app.MainController.prototype.switchLanguage = function(lang) {
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
+};
+
+
+/**
+ * @return {string} the current theme.
+ * @export
+ */
+app.MainController.prototype.getCurrentTheme = function() {
+  return this.appTheme_.getCurrentTheme();
 };
 
 
@@ -388,13 +424,60 @@ app.MainController.prototype.initLanguage_ = function() {
  * @private
  */
 app.MainController.prototype.initMymaps_ = function() {
-  var mapId = this.stateManager_.getInitialValue('map_id');
+  var mapId = this.ngeoLocation_.getParam('map_id');
   this.appMymaps_.mapProjection = this['map'].getView().getProjection();
   if (goog.isDef(mapId)) {
     this.appMymaps_.setCurrentMapId(mapId,
         this.drawnFeatures_.getCollection());
   } else {
     this.appMymaps_.clear();
+  }
+  this.appMymaps_.map = this.map_;
+  this.appMymaps_.layersChanged = this['layersChanged'];
+  goog.events.listen(this.map_.getLayerGroup(), 'change',
+      goog.bind(function() {
+        this.compareLayers_();
+      },this), undefined, this);
+};
+
+
+/**
+ * Compare the layers of mymaps with selected layers
+ * and set layersChanged to true if there there is a difference
+ * between the displayed layers and the mymaps layers
+ * @private
+ */
+app.MainController.prototype.compareLayers_ = function() {
+  if (this.appMymaps_.isEditable()) {
+    this['layersChanged'] = false;
+    var backgroundLayer = this.backgroundLayerMgr_.get(this.map_);
+    if (backgroundLayer &&
+        this.appMymaps_.mapBgLayer !== backgroundLayer.get('label')) {
+      this['layersChanged'] = true;
+    } else {
+      if (this['selectedLayers'].length !== this.appMymaps_.mapLayers.length) {
+        this['layersChanged'] = true;
+      } else {
+        var selectedLabels = [];
+        var selectedOpacities = [];
+        goog.array.forEach(this['selectedLayers'], function(item) {
+          selectedLabels.push(item.get('label'));
+          selectedOpacities.push('' + item.getOpacity());
+        });
+        selectedLabels.reverse();
+        selectedOpacities.reverse();
+        if (selectedLabels.join(',') !== this.appMymaps_.mapLayers.join(',')) {
+          this['layersChanged'] = true;
+        } else {
+          if (selectedOpacities.join(',') !==
+              this.appMymaps_.mapLayersOpacities.join(',')) {
+            this['layersChanged'] = true;
+          }
+        }
+      }
+    }
+  } else {
+    this['layersChanged'] = false;
   }
 };
 
