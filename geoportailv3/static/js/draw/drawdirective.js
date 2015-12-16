@@ -317,7 +317,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       }, true, this);
 
   var modifyInteraction = new ol.interaction.Modify({
-    features: appSelectedFeatures
+    features: appSelectedFeatures,
+    deleteCondition: function(event) {
+      return false;
+    }
   });
   this.map.addInteraction(modifyInteraction);
   goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
