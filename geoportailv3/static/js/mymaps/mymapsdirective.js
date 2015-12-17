@@ -217,6 +217,16 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
 
 
 /**
+ * Reset the layers & bglayer with the one of Mymaps.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.resetLayers = function() {
+  goog.array.clear(this.selectedLayers_);
+  this.appMymaps_.updateLayers();
+};
+
+
+/**
  * Save the current layers definition into Mymaps.
  * @export
  */
