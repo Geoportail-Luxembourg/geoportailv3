@@ -17,8 +17,11 @@ goog.require('app.SelectedFeatures');
 goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
+goog.require('ngeo.filereaderDirective');
 goog.require('ngeo.modalDirective');
+goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.format.KML');
 
 
 /**
@@ -60,6 +63,8 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.UserManager} appUserManager
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {Document} $document Document.
+ * @param {string} exportgpxkmlUrl URL to echo web service.
  * @constructor
  * @export
  * @ngInject
@@ -67,7 +72,8 @@ app.module.directive('appMymaps', app.mymapsDirective);
 
 app.MymapsDirectiveController = function($scope, $compile, gettext,
     ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
-    appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures) {
+    appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures,
+    $document, exportgpxkmlUrl) {
 
   /**
    * @type {app.Theme}
@@ -92,6 +98,48 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.exportgpxkmlUrl_ = exportgpxkmlUrl;
+
+  /**
+   * @export
+   * @type {boolean}
+   */
+  this.fileReaderSupported = true;
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.gpxFileContent = '';
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.kmlFileContent = '';
+
+  /**
+   * @private
+   * @type {Document}
+   */
+  this.$document_ = $document;
+
+  /**
+   * @private
+   * @type {ol.format.KML}
+   */
+  this.kmlFormat_ = new ol.format.KML();
+
+  /**
+   * @private
+   * @type {ol.format.GPX}
+   */
+  this.gpxFormat_ = new ol.format.GPX();
 
   /**
    * @type {Array.<ol.Feature>}
@@ -213,6 +261,22 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
       this.appMymaps_.loadCategories();
     }
   }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.kmlFileContent;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal) {
+      this.importKml();
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.gpxFileContent;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal) {
+      this.importGpx();
+    }
+  }, this));
 };
 
 
@@ -308,7 +372,27 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.exportGpx = function() {
-  console.log('exportGpx');
+  var features = this.drawnFeatures_.getCollection();
+  var mymapsFeatures = features.getArray().filter(function(feature) {
+    return !!feature.get('__map_id__');
+  });
+  var gpx = this.gpxFormat_.writeFeatures(mymapsFeatures, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(gpx, 'gpx',
+      this.sanitizeFilename_(this.appMymaps_.mapTitle));
+};
+
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ * @private
+ */
+app.MymapsDirectiveController.prototype.sanitizeFilename_ = function(name) {
+  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
+  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
 };
 
 
@@ -317,7 +401,25 @@ app.MymapsDirectiveController.prototype.exportGpx = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.importGpx = function() {
-  console.log('importGpx');
+  var gpxFeatures = (this.gpxFormat_.readFeatures(this.gpxFileContent, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  }));
+  var mapId = this.appMymaps_.getMapId();
+  goog.array.forEach(gpxFeatures, function(feature) {
+    feature.set('__map_id__', mapId);
+
+    if (feature.getId()) {
+      feature.setId(undefined);
+    }
+  });
+
+  this.appMymaps_.saveFeatures(gpxFeatures).then(
+      goog.bind(function() {
+        var map = {'uuid': mapId};
+        this.onChosen(map, false);
+      }, this)
+  );
 };
 
 
@@ -326,7 +428,16 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.exportKml = function() {
-  console.log('exportKml');
+  var features = this.drawnFeatures_.getCollection();
+  var mymapsFeatures = features.getArray().filter(function(feature) {
+    return !!feature.get('__map_id__');
+  });
+  var kml = this.kmlFormat_.writeFeatures(mymapsFeatures, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(kml, 'kml',
+      this.sanitizeFilename_(this.appMymaps_.mapTitle));
 };
 
 
@@ -335,7 +446,24 @@ app.MymapsDirectiveController.prototype.exportKml = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.importKml = function() {
-  console.log('importKml');
+  var kmlFeatures = (this.kmlFormat_.readFeatures(this.kmlFileContent, {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  }));
+  var mapId = this.appMymaps_.getMapId();
+  goog.array.forEach(kmlFeatures, function(feature) {
+    feature.set('__map_id__', mapId);
+    if (feature.getId()) {
+      feature.setId(undefined);
+    }
+  });
+
+  this.appMymaps_.saveFeatures(kmlFeatures).then(
+      goog.bind(function() {
+        var map = {'uuid': mapId};
+        this.onChosen(map, false);
+      }, this)
+  );
 };
 
 
@@ -719,6 +847,40 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
   this.selectedFeatures_.push(feature);
 
   this.featurePopup_.show(feature);
+};
+
+
+/**
+ * @param {string} doc The document to export/download.
+ * @param {string} format The document format.
+ * @param {string} filename File name for the exported document.
+ * @private
+ */
+app.MymapsDirectiveController.prototype.exportFeatures_ =
+    function(doc, format, filename) {
+  var formatInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'format',
+    value: format
+  });
+  var nameInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'name',
+    value: filename
+  });
+  var docInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'doc',
+    value: doc
+  });
+  var form = $('<form>').attr({
+    method: 'POST',
+    action: this.exportgpxkmlUrl_
+  });
+  form.append(formatInput, nameInput, docInput);
+  angular.element(this.$document_[0].body).append(form);
+  form[0].submit();
+  form.remove();
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

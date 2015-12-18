@@ -24,12 +24,49 @@ import sys
 import traceback
 from geoportailv3.mymaps import DBSession
 from sqlalchemy.orm import make_transient
+from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
+
+_CONTENT_TYPES = {
+    "gpx": "application/gpx",
+    "kml": "application/vnd.google-earth.kml+xml",
+}
 
 
 class Mymaps(object):
 
     def __init__(self, request):
         self.request = request
+
+    @view_config(route_name="exportgpxkml")
+    def exportgpxkml(self):
+        """
+        View used to export a GPX or KML document.
+        """
+
+        fmt = self.request.params.get("format")
+        if fmt is None:
+            return HTTPBadRequest("format parameter is required")
+        if fmt not in _CONTENT_TYPES:
+            return HTTPBadRequest("format is not supported")
+
+        name = self.request.params.get("name")
+        if name is None:
+            return HTTPBadRequest("name parameter is required")
+
+        doc = self.request.params.get("doc")
+        if doc is None:
+            return HTTPBadRequest("doc parameter is required")
+
+        charset = "utf-8"
+        response = self.request.response
+        response.body = doc.encode(charset)
+        response.charset = charset
+        response.content_disposition = ("attachment; filename=%s.%s"
+                                        % (name.replace(" ", "_"), fmt))
+        return set_common_headers(
+            self.request, "exportgpxkml", NO_CACHE,
+            content_type=_CONTENT_TYPES[fmt]
+        )
 
     @view_config(route_name="mymaps_getcategories", renderer="json")
     def categories(self):
@@ -226,7 +263,6 @@ class Mymaps(object):
                 if feature_id:
                     cur_feature = DBSession.query(Feature).get(feature_id)
                     DBSession.delete(cur_feature)
-
                 obj = Feature(feature)
                 map.features.append(obj)
 
