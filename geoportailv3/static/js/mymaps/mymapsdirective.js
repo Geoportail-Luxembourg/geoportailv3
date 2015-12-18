@@ -124,18 +124,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.kmlFileContent = '';
 
   /**
-   * @export
-   * @type {boolean}
-   */
-  this.showGpx = false;
-
-  /**
-   * @export
-   * @type {boolean}
-   */
-  this.showKml = false;
-
-  /**
    * @private
    * @type {Document}
    */
@@ -279,7 +267,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal) {
       this.importKml();
-      this.closeKmlPanel();
     }
   }, this));
 
@@ -288,7 +275,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal) {
       this.importGpx();
-      this.closeGpxPanel();
     }
   }, this));
 };
@@ -394,7 +380,19 @@ app.MymapsDirectiveController.prototype.exportGpx = function() {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   });
-  this.exportFeatures_(gpx, 'gpx', this.appMymaps_.getMapId());
+  this.exportFeatures_(gpx, 'gpx',
+      this.sanitizeFilename_(this.appMymaps_.mapTitle));
+};
+
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ * @private
+ */
+app.MymapsDirectiveController.prototype.sanitizeFilename_ = function(name) {
+  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
+  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
 };
 
 
@@ -438,7 +436,8 @@ app.MymapsDirectiveController.prototype.exportKml = function() {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   });
-  this.exportFeatures_(kml, 'kml', this.appMymaps_.getMapId());
+  this.exportFeatures_(kml, 'kml',
+      this.sanitizeFilename_(this.appMymaps_.mapTitle));
 };
 
 
@@ -848,46 +847,6 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
   this.selectedFeatures_.push(feature);
 
   this.featurePopup_.show(feature);
-};
-
-
-/**
- * Close import Kml panel.
- * @export
- */
-app.MymapsDirectiveController.prototype.closeKmlPanel = function() {
-  this.showKml = false;
-  this.kmlFileContent = '';
-};
-
-
-/**
- * Whow import Kml panel.
- * @export
- */
-app.MymapsDirectiveController.prototype.showKmlPanel = function() {
-  this.showKml = true;
-  this.showGpx = false;
-};
-
-
-/**
- * Close import Gpx panel.
- * @export
- */
-app.MymapsDirectiveController.prototype.closeGpxPanel = function() {
-  this.showGpx = false;
-  this.gpxFileContent = '';
-};
-
-
-/**
- * Whow import Gpx panel.
- * @export
- */
-app.MymapsDirectiveController.prototype.showGpxPanel = function() {
-  this.showGpx = true;
-  this.showKml = false;
 };
 
 
