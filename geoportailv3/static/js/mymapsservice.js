@@ -470,9 +470,8 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 
 /**
  * update the map with layers
- * @private
  */
-app.Mymaps.prototype.updateLayers_ = function() {
+app.Mymaps.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
   this.appThemes_.getBgLayers().then(goog.bind(
       /**
@@ -568,6 +567,27 @@ app.Mymaps.prototype.loadMapInformation = function() {
             this.mapLayersIndicies = [];
           }
           this.mapLayersIndicies.reverse();
+
+          // remove layers with no name
+          var iToRemove = [];
+          this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
+            if (item.length === 0) {
+              iToRemove.push(i);
+              return false;
+            }
+            return true;
+          }, this);
+          goog.array.forEachRight(iToRemove, function(item) {
+            if (this.mapLayersIndicies) {
+              this.mapLayersIndicies.splice(item, 1);
+            }
+            if (this.mapLayersVisibilities) {
+              this.mapLayersVisibilities.splice(item, 1);
+            }
+            if (this.mapLayersOpacities) {
+              this.mapLayersOpacities.splice(item, 1);
+            }
+          }, this);
         } else {
           this.mapLayers = [];
           this.mapOpacities = [];
@@ -577,7 +597,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
         return mapinformation;
       }, this))
       .then(goog.bind(function(mapinformation) {
-        this.updateLayers_();
+        this.updateLayers();
         this.layersChanged = false;
         return mapinformation;},this));
 };
