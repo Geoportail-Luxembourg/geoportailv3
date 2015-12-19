@@ -44,8 +44,90 @@
     color: red;
   }
 
-  input[type="range"] {
-    width: 70px;
+  @range-width: 70px;
+  @range-track-color: #1F5D87;
+  .form-control:focus input[type=range] {
+    box-shadow: none;
+  }
+  input[type=range] {
+    /*removes default webkit styles*/
+    -webkit-appearance: none;
+    
+    /*fix for FF unable to apply focus style bug */
+    border: none;
+    padding: 0 0 0 0;
+    /*required for proper track sizing in FF*/
+    width: @range-width;
+    margin-left: 10px;
+    float:none;
+    vertical-align: middle;
+    height: 10px;
+    display: inline;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: @range-width;
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    margin-top: -4px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+
+  input[type=range]::-moz-range-track {
+    width: @range-width;
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+
+  input[type=range]::-ms-track {
+    width: @range-width;
+    height: 5px;
+    padding: 0 0 0 0;
+    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+    background: transparent;
+
+    /*leave room for the larger thumb to overflow with a transparent border */
+    border-color: transparent;
+    border-width: 6px 0;
+
+    /*remove default tick marks*/
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-fill-upper {
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  
+  input[type=range]::-ms-tooltip {
+    display: none;
   }
 }
 
