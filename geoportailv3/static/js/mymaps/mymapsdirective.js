@@ -732,6 +732,34 @@ app.MymapsDirectiveController.prototype.createMap = function() {
 
 
 /**
+ * Delete a map.
+ * @param {string} mapId The map id to delete.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.deleteAMap = function(mapId) {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    if (this.appMymaps_.getMapId() === mapId) {
+      this.closeMap();
+    }
+    this.appMymaps_.deleteAMap(mapId).then(goog.bind(function(resp) {
+      if (goog.isNull(resp)) {
+        this.askToConnect();
+      } else {
+        goog.array.remove(this.maps,
+            goog.array.find(this.maps, goog.bind(function(item) {
+              if (item['uuid'] === mapId) {
+                return true;
+              }
+            }, this)));
+      }
+    }, this));
+  }
+};
+
+
+/**
  * Delete the current map.
  * @export
  */

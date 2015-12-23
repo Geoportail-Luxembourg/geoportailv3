@@ -745,10 +745,11 @@ app.Mymaps.prototype.copyMap =
 
 /**
  * Delete a map.
+ * @param {string} mapId The map id to delete.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteMap = function() {
-  return this.$http_.delete(this.mymapsDeleteMapUrl_ + this.mapId_).then(
+app.Mymaps.prototype.deleteAMap = function(mapId) {
+  return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
       goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -768,6 +769,15 @@ app.Mymaps.prototype.deleteMap = function() {
         return [];
       }, this)
   );
+};
+
+
+/**
+ * Delete the current map.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.deleteMap = function() {
+  return this.deleteAMap(this.mapId_);
 };
 
 

@@ -176,9 +176,10 @@
       </tr>
     </thead>
     <tbody>
-    <tr ng-click="ctrl.onChosen(map, true)" ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
-      <td>{{ map.title }}</td>
-      <td>{{ map.category }}</td>
+    <tr  ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
+      <td ng-click="ctrl.deleteAMap(map.uuid)">X</td>
+      <td ng-click="ctrl.onChosen(map, true)">{{ map.title }}</td>
+      <td ng-click="ctrl.onChosen(map, true)">{{ map.category }}</td>
     </tr>
     </tbody>
   </table>
