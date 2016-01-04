@@ -173,13 +173,14 @@
             <span ng-show="sortType == 'category' && sortReverse">&#9650;</span>
           </a>
         </td>
+        <td></td>
       </tr>
     </thead>
     <tbody>
-    <tr  ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
-      <td ng-click="ctrl.deleteAMap(map.uuid)">X</td>
+    <tr ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
       <td ng-click="ctrl.onChosen(map, true)">{{ map.title }}</td>
       <td ng-click="ctrl.onChosen(map, true)">{{ map.category }}</td>
+      <td ng-click="ctrl.deleteAMap(map.uuid)"><span class="fa fa-trash-o"></span></td>
     </tr>
     </tbody>
   </table>
