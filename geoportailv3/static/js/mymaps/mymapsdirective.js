@@ -292,6 +292,7 @@ app.MymapsDirectiveController.prototype.resetLayers = function() {
 
 /**
  * Save the current layers definition into Mymaps.
+ * @return {angular.$q.Promise} Promise.
  * @export
  */
 app.MymapsDirectiveController.prototype.saveLayers = function() {
@@ -312,13 +313,15 @@ app.MymapsDirectiveController.prototype.saveLayers = function() {
     }
     layersIndices.push('' + index);
   });
-  this.appMymaps_.updateMapEnv(bgLayer, bgOpacity, layersLabels.join(','),
-      layersOpacities.join(','), layersVisibilities.join(','),
-      layersIndices.join(','), this.appTheme_.getCurrentTheme())
-      .then(goog.bind(function() {
+  var promise = this.appMymaps_.updateMapEnv(bgLayer, bgOpacity,
+      layersLabels.join(','), layersOpacities.join(','),
+      layersVisibilities.join(','), layersIndices.join(','),
+      this.appTheme_.getCurrentTheme())
+  .then(goog.bind(function() {
         this.appMymaps_.loadMapInformation();
       },this));
   this['layersChanged'] = false;
+  return promise;
 };
 
 
@@ -549,11 +552,8 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
             if (goog.isDef(mapId)) {
               this['drawopen'] = true;
               this.appMymaps_.setMapId(mapId);
-              return this.appMymaps_.loadMapInformation();
+              return this.saveLayers();
             }}}, this))
-        .then(goog.bind(function(mapinformation) {
-          this.saveLayers();
-        }, this))
         .then(goog.bind(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
         }, this))
@@ -719,9 +719,9 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             var mapId = resp['uuid'];
             if (goog.isDef(mapId)) {
               var map = {'uuid': mapId};
-              this.onChosen(map, false).then(goog.bind(function() {
-                this.saveLayers();
-              },this));
+              this.appMymaps_.setMapId(mapId);
+              this.saveLayers();
+              this.onChosen(map, false);
               var msg = this.gettext_('Nouvelle carte créée');
               this.notify_(msg);
               this.modal = undefined;
