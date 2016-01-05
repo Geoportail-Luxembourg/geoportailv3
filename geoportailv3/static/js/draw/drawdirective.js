@@ -323,7 +323,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   var modifyInteraction = new ol.interaction.Modify({
     features: appSelectedFeatures,
     deleteCondition: function(event) {
-      return false;
+      return ol.events.condition.shiftKeyOnly(event) &&
+          ol.events.condition.singleClick(event);
     }
   });
   this.map.addInteraction(modifyInteraction);
