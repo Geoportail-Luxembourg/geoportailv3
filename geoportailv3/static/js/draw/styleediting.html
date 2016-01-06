@@ -12,6 +12,7 @@
         </tr>
       </table>
     </div>
+  </div>
   <div class="form-inline" ng-show="ctrl.type == 'polygon'">
     <!-- Stroke size polygons -->
     <div class="form-group">
@@ -38,27 +39,15 @@
       <button ng-click="ctrl.setLineDash('dashed')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dashed'}" translate>Dashed</button>
       <button ng-click="ctrl.setLineDash('dotted')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dotted'}" translate>Dotted</button>
     </div>
-    <div ng-show="ctrl.type == 'point'">
-      <div class="form-group">
-        <!-- Symbol style -->
-        <label translate>Symbol</label>
-        <button ng-click="ctrl.symbolselector = true">
-            <img ng-show="ctrl.feature.get('symbolId')" ng-src="{{ctrl.getSymbolPath(ctrl.feature.get('symbolId'))}}">
-            <div ng-show="!ctrl.feature.get('symbolId')"translate>Symbol</div>
-        </button>
-      </div>
-    </div>
-    <div ng-show="ctrl.type == 'point'">
-      <!-- Point radius -->
-      <div class="form-group">
-        <label translate>Size</label>
-        <input type="range" min="10" max="120" class="form-control" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
-      </div>
-      <!-- Point symbol rotation -->
-      <div class="form-group">
-        <label translate>Angle</label>
-        <input type="range" min="-180" max="180" class="form-control" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
-      </div>
+  </div>
+  <div class="form-inline" ng-show="ctrl.type == 'point'">
+    <div class="form-group">
+      <!-- Symbol style -->
+      <label translate>Symbol</label>
+      <button ng-click="ctrl.symbolselector = true">
+          <img ng-show="ctrl.feature.get('symbolId')" ng-src="{{ctrl.getSymbolPath(ctrl.feature.get('symbolId'))}}">
+          <div ng-show="!ctrl.feature.get('symbolId')"translate>Symbol</div>
+      </button>
     </div>
   </div>
   <div class="form-inline" ng-show="ctrl.type == 'point'">
