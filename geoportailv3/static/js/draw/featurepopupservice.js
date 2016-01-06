@@ -4,6 +4,7 @@
 
 goog.provide('app.FeaturePopup');
 
+goog.require('app.GetElevation');
 goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
@@ -18,22 +19,17 @@ goog.require('ol.Overlay');
  * @param {angular.$compile} $compile The compile provider.
  * @param {angular.Scope} $rootScope The rootScope provider.
  * @param {Document} $document The document.
+ * @param {app.GetElevation} appGetElevation
  * @constructor
  * @ngInject
  */
-app.FeaturePopup = function($compile, $rootScope, $document) {
+app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation) {
 
   /**
    * @type {Document}
    * @private
    */
   this.$document_ = $document;
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_;
 
   /**
    * @type {ol.Collection<ol.Feature>?}
@@ -46,6 +42,12 @@ app.FeaturePopup = function($compile, $rootScope, $document) {
    * @private
    */
   this.map_;
+
+  /**
+   * @type {app.GetElevation}
+   * @private
+   */
+  this.getElevation_ = appGetElevation;
 
   /**
    * The scope the compiled element is linked to.
@@ -255,6 +257,15 @@ app.FeaturePopup.prototype.formatLength = function(line) {
       new ol.geom.LineString(coordinates),
       this.map_.getView().getProjection()
   );
+};
+
+
+/**
+ * @param {(ol.geom.Point)} point
+ * @return {angular.$q.Promise}
+ */
+app.FeaturePopup.prototype.getElevation = function(point) {
+  return this.getElevation_(point.getCoordinates());
 };
 
 

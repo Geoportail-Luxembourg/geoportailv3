@@ -9,6 +9,7 @@
     <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span>
     <span ng-hide="ctrl.getArea() == false" translate>Area: </span>
     <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
+    <span ng-hide="ctrl.featureElevation === 'N/A'" translate>Elevation: {{ ctrl.featureElevation }}</span>
   </div>
   <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">

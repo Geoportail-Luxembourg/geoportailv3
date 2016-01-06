@@ -125,6 +125,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.feature;
 
   /**
+   * @type {string}
+   * @export
+   */
+  this.featureElevation = 'N/A';
+
+  /**
    * @type {angular.$sce}
    * @private
    */
@@ -188,6 +194,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
+    this.updateElevation();
   }, this));
 
   $scope.$watch(goog.bind(function() {
@@ -337,6 +344,24 @@ app.FeaturePopupController.prototype.getLength = function() {
     return this.appFeaturePopup_.formatLength(geom);
   } else {
     return '';
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.updateElevation = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
+      !this.feature.get('isLabel')) {
+    var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
+    this.appFeaturePopup_.getElevation(geom).then(
+        goog.bind(function(elevation) {
+          this.featureElevation = elevation;
+        }, this));
+  } else {
+    this.featureElevation = 'N/A';
   }
 };
 
