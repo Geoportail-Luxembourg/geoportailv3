@@ -247,7 +247,39 @@
   input[type=range]::-ms-thumb {
     background: @tertiary;
   }
+  .feature-popup {
+    & input[type=range]::-webkit-slider-runnable-track {
+      background: @secondary;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      background: @secondary;
+    }
 
+    & input[type=range]::-moz-range-track {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-fill-upper {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-upper {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-thumb {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-upper {
+      background: @secondary;
+    }
+  }
   .query-box{
     background-color: @tertiary;
     padding: 5px 5px 5px 5px;
@@ -293,6 +325,8 @@
 header.navbar-default {
   background-color: white;
 }
+
+
 
 .theme(eau, #03a2ac, #45cdd6, #078f98, e016);
 .theme(agriculture, #f39c11, #ffc363, #9c6101, e001);

@@ -12,33 +12,31 @@
         </tr>
       </table>
     </div>
-
-    <div ng-show="ctrl.type == 'polygon'">
-      <!-- Stroke size polygons -->
-      <div class="form-group">
-        <label translate>Stroke width</label>
-        <input type="range" min="0" max="10" class="form-control" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
-      </div>
-      <!-- Fill opacity -->
-      <div class="form-group">
-        <label translate>Transparency</label>
-        <input type="range" min="0" max="100" class="form-control" ng-model="ctrl.getSetOpacity" ng-model-options="{getterSetter: true}">
-      </div>
+  <div class="form-inline" ng-show="ctrl.type == 'polygon'">
+    <!-- Stroke size polygons -->
+    <div class="form-group">
+      <label translate>Stroke width</label>
+      <input type="range" min="0" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
     </div>
+    <!-- Fill opacity -->
+    <div class="form-group">
+      <label translate>Transparency</label>
+      <input type="range" min="0" max="100" step="5" ng-model="ctrl.getSetOpacity" ng-model-options="{getterSetter: true}">
+    </div>
+  </div>
 
-    <div ng-show="ctrl.type == 'linestring'">
-      <!-- Stroke size lines -->
-      <div class="form-group">
-        <label translate>Stroke width</label>
-        <input type="range" min="1" max="10" class="form-control" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
-      </div>
-      <div class="form-group">
-        <!-- Line style -->
-        <label translate>Style</label>
-        <button ng-click="ctrl.setLineDash('plain')" ng-class="{selected: ctrl.feature.get('linestyle') == 'plain'}" translate>Plain</button>
-        <button ng-click="ctrl.setLineDash('dashed')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dashed'}" translate>Dashed</button>
-        <button ng-click="ctrl.setLineDash('dotted')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dotted'}" translate>Dotted</button>
-      </div>
+  <div class="form-inline" ng-show="ctrl.type == 'linestring'">
+    <!-- Stroke size lines -->
+    <div class="form-group">
+      <label translate>Stroke width</label>
+      <input type="range" min="1" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
+    </div>
+    <div class="form-group">
+      <!-- Line style -->
+      <label translate>Style</label>
+      <button ng-click="ctrl.setLineDash('plain')" ng-class="{selected: ctrl.feature.get('linestyle') == 'plain'}" translate>Plain</button>
+      <button ng-click="ctrl.setLineDash('dashed')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dashed'}" translate>Dashed</button>
+      <button ng-click="ctrl.setLineDash('dotted')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dotted'}" translate>Dotted</button>
     </div>
     <div ng-show="ctrl.type == 'point'">
       <div class="form-group">
@@ -62,28 +60,38 @@
         <input type="range" min="-180" max="180" class="form-control" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
       </div>
     </div>
-    <!-- Label font size -->
-    <div ng-show="ctrl.type == 'text'">
-      <div class="form-group">
-        <label translate>Size</label>
-        <input type="range" min="10" max="40" class="form-control" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
-      </div>
+  </div>
+  <div class="form-inline" ng-show="ctrl.type == 'point'">
+    <!-- Point radius -->
+    <div class="form-group">
+      <label translate>Size</label>
+      <input type="range" min="10" max="120" step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
     </div>
-    <!-- Label rotation -->
-    <div ng-show="ctrl.type == 'text'">
-      <div class="form-group">
-        <label translate>Angle</label>
-        <input type="range" min="-90" max="90" class="form-control" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
-      </div>
+    <!-- Point symbol rotation -->
+    <div class="form-group">
+      <label translate>Angle</label>
+      <input type="range" min="-180" max="180" step="45" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
     </div>
-    <div class="feature-popup-footer pull-right">
-      <button href class="btn btn-default" ng-click="ctrl.close()" translate>
-        Annuler
-      </button>
-      <button href class="btn btn-primary" ng-click="ctrl.saveFeature()" translate>
-        OK
-      </button>
+  </div>
+  <!-- Label font size -->
+  <div class="form-inline" ng-show="ctrl.type == 'text'">
+    <div class="form-group">
+      <label translate>Size</label>
+      <input type="range" min="10" max="40"  step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
     </div>
+  <!-- Label rotation -->
+    <div class="form-group">
+      <label translate>Angle</label>
+      <input type="range" min="-90" max="90" step="45" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
+    </div>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-default" ng-click="ctrl.close()" translate>
+      Annuler
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.saveFeature()" translate>
+      OK
+    </button>
   </div>
 </div>
 <div ng-show="ctrl.symbolselector">
