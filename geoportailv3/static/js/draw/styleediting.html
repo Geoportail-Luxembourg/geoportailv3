@@ -16,7 +16,7 @@
     <!-- Stroke size polygons -->
     <div class="form-group">
       <label translate>Stroke width</label>
-      <input type="range" min="0" max="10" step="5" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
+      <input type="range" min="0" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
     </div>
     <!-- Fill opacity -->
     <div class="form-group">
@@ -29,7 +29,7 @@
     <!-- Stroke size lines -->
     <div class="form-group">
       <label translate>Stroke width</label>
-      <input type="range" min="1" max="10" step="5" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
+      <input type="range" min="1" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
     </div>
     <div class="form-group">
       <!-- Line style -->
@@ -74,14 +74,12 @@
     </div>
   </div>
   <!-- Label font size -->
-  <div ng-show="ctrl.type == 'text'">
+  <div class="form-inline" ng-show="ctrl.type == 'text'">
     <div class="form-group">
       <label translate>Size</label>
       <input type="range" min="10" max="40"  step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
     </div>
-  </div>
   <!-- Label rotation -->
-  <div ng-show="ctrl.type == 'text'">
     <div class="form-group">
       <label translate>Angle</label>
       <input type="range" min="-90" max="90" step="45" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
