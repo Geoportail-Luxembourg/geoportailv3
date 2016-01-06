@@ -209,7 +209,8 @@
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
-            app-draw-queryactive="mainCtrl.queryActive">
+            app-draw-queryactive="mainCtrl.queryActive"
+            app-draw-mymaps-open="mainCtrl.mymapsOpen">
           </app-draw>
         </li>
         <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">

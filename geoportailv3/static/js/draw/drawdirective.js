@@ -49,7 +49,8 @@ app.drawDirective = function(appDrawTemplateUrl) {
     scope: {
       'map': '=appDrawMap',
       'active': '=appDrawActive',
-      'queryActive': '=appDrawQueryactive'
+      'queryActive': '=appDrawQueryactive',
+      'mymapsOpen': '=appDrawMymapsOpen'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -251,6 +252,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this['queryActive'] = true;
     } else {
       this['queryActive'] = false;
+      this['mymapsOpen'] = true;
     }
   }, this));
 
@@ -452,6 +454,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.push(feature);
   this.featurePopup_.show(feature);
   this.drawnFeatures_.saveFeature(feature);
+  this['mymapsOpen'] = true;
 };
 
 app.module.controller('AppDrawController', app.DrawController);
