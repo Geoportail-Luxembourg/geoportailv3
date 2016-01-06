@@ -306,8 +306,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
           if (!!feature.get('__map_id__')) {
             this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
+            this.translateInteraction_.setActive(this.appMymaps_.isEditable());
           } else {
             this.modifyInteraction_.setActive(true);
+            this.translateInteraction_.setActive(true);
           }
           this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
         } else {
@@ -348,6 +350,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.featurePopup_.show(feature);
         this.onFeatureModifyEnd_(evt);
       }, false, this);
+
+  /**
+   * @type {ol.interaction.Translate}
+   * @private
+   */
+  this.translateInteraction_ = translateInteraction;
 
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
