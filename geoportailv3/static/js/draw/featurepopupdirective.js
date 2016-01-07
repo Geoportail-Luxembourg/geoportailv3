@@ -6,6 +6,9 @@ goog.provide('app.featurePopupDirective');
 
 goog.require('app');
 goog.require('app.Mymaps');
+goog.require('ol.format.GPX');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.format.KML');
 
 
 /**
@@ -17,7 +20,8 @@ app.featurePopupDirective = function(appFeaturePopupTemplateUrl) {
   return {
     restrict: 'A',
     scope: {
-      'feature': '=appFeaturePopupFeature'
+      'feature': '=appFeaturePopupFeature',
+      'map': '=appFeaturePopupMap'
     },
     controller: 'AppFeaturePopupController',
     controllerAs: 'ctrl',
@@ -40,12 +44,50 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.UserManager} appUserManager
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
+ * @param {string} exportgpxkmlUrl URL to echo web service.
+ * @param {Document} $document Document.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
-    mymapsImageUrl) {
+    mymapsImageUrl, exportgpxkmlUrl, $document) {
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.gpxFileContent = '';
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.kmlFileContent = '';
+
+  /**
+   * @private
+   * @type {Document}
+   */
+  this.$document_ = $document;
+
+  /**
+   * @private
+   * @type {ol.format.KML}
+   */
+  this.kmlFormat_ = new ol.format.KML();
+
+  /**
+   * @private
+   * @type {ol.format.GPX}
+   */
+  this.gpxFormat_ = new ol.format.GPX();
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.exportgpxkmlUrl_ = exportgpxkmlUrl;
 
   /**
    * @type {string}
@@ -157,6 +199,79 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.tempThumbnail = this.image['thumbnail'];
     this.tempImage = this.image['image'];
   }, this));
+};
+
+
+/**
+ * Export a KML file.
+ * @export
+ */
+app.FeaturePopupController.prototype.exportKml = function() {
+  var kml = this.kmlFormat_.writeFeatures([this.feature], {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(kml, 'kml',
+      this.sanitizeFilename_(/** @type {string} */(this.feature.get('name'))));
+};
+
+
+/**
+ * Export a Gpx file.
+ * @export
+ */
+app.FeaturePopupController.prototype.exportGpx = function() {
+  var gpx = this.gpxFormat_.writeFeatures([this.feature], {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this['map'].getView().getProjection()
+  });
+  this.exportFeatures_(gpx, 'gpx',
+      this.sanitizeFilename_(/** @type {string} */(this.feature.get('name'))));
+};
+
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ * @private
+ */
+app.FeaturePopupController.prototype.sanitizeFilename_ = function(name) {
+  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
+  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
+};
+
+
+/**
+ * @param {string} doc The document to export/download.
+ * @param {string} format The document format.
+ * @param {string} filename File name for the exported document.
+ * @private
+ */
+app.FeaturePopupController.prototype.exportFeatures_ =
+    function(doc, format, filename) {
+  var formatInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'format',
+    value: format
+  });
+  var nameInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'name',
+    value: filename
+  });
+  var docInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'doc',
+    value: doc
+  });
+  var form = $('<form>').attr({
+    method: 'POST',
+    action: this.exportgpxkmlUrl_
+  });
+  form.append(formatInput, nameInput, docInput);
+  angular.element(this.$document_[0].body).append(form);
+  form[0].submit();
+  form.remove();
 };
 
 

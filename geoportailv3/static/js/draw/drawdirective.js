@@ -313,7 +313,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
             this.modifyInteraction_.setActive(true);
             this.translateInteraction_.setActive(true);
           }
-          this.featurePopup_.show(feature, evt.mapBrowserEvent.coordinate);
+          this.featurePopup_.show(feature, this.map,
+              evt.mapBrowserEvent.coordinate);
         } else {
           this.featurePopup_.hide();
         }
@@ -349,7 +350,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
        */
       function(evt) {
         var feature = evt.features.getArray()[0];
-        this.featurePopup_.show(feature);
+        this.featurePopup_.show(feature, this.map);
         this.onFeatureModifyEnd_(evt);
       }, false, this);
 
@@ -452,7 +453,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
-  this.featurePopup_.show(feature);
+  this.featurePopup_.show(feature, this.map);
   this.drawnFeatures_.saveFeature(feature);
   this['mymapsOpen'] = true;
 };

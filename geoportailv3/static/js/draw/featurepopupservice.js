@@ -79,6 +79,8 @@ app.FeaturePopup = function($compile, $rootScope, $document) {
   this.element_ = angular.element('<div app-feature-popup></div>');
   this.element_.addClass('feature-popup');
   this.element_.attr('app-feature-popup-feature', 'feature');
+  this.element_.attr('app-feature-popup-map', 'map');
+
 
   // Compile the element, link it to the scope
   $compile(this.element_)(this.scope_);
@@ -148,10 +150,12 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
 
 /**
  * @param {ol.Feature} feature
+ * @param {ol.Map} map
  * @param {ol.Coordinate=} opt_anchor
  */
-app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
+app.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
   this.scope_['feature'] = feature;
+  this.scope_['map'] = map;
   var anchor = goog.isDef(opt_anchor) ? opt_anchor : this.getAnchor(feature);
   this.overlay_.setPosition(anchor);
   var headers = angular.element(this.$document_).
@@ -159,6 +163,8 @@ app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
   goog.array.forEach(headers, function(element) {
     this.setDraggable(angular.element(element));
   }, this);
+  // Enable the dropdown menu
+  $('.dropdown-toggle')['dropdown']();
 };
 
 
@@ -166,6 +172,7 @@ app.FeaturePopup.prototype.show = function(feature, opt_anchor) {
  */
 app.FeaturePopup.prototype.hide = function() {
   delete this.scope_['feature'];
+  delete this.scope_['map'];
   this.overlay_.setPosition(undefined);
   this.features_.clear();
   goog.events.unlistenByKey(this.mousedownEvent_);
