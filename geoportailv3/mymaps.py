@@ -93,6 +93,8 @@ class Map(Base):
         return [{'title': map.title,
                  'uuid': map.uuid,
                  'public': map.public,
+                 'create_date': map.create_date,
+                 'update_date': map.update_date,
                  'category': map.category.name
                  if map.category_id is not None else None} for map in maps]
 
