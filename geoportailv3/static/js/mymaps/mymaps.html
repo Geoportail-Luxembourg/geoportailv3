@@ -33,8 +33,9 @@
         <button ng-click="ctrl.saveLayers()" translate class="btn btn-default">Oui</button>
       </div>
     </div>
-    <span ng-show="!ctrl.getMapIsPublic()">
-      <i class="fa fa-lock"></i>&nbsp;
+    <span ng-switch="ctrl.getMapIsPublic()">
+      <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
+      <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
     </span>
     <span class="map-owner" ng-show="ctrl.getMapOwner()">
       {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
