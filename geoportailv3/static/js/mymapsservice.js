@@ -400,6 +400,11 @@ app.Mymaps.prototype.getMaps = function() {
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
+        goog.array.forEach(resp.data, function(map) {
+          if (goog.isNull(map['update_date'])) {
+            map['update_date'] = map['create_date'];
+          }
+        });
         return resp.data;
       }, this), goog.bind(
       function(error) {
