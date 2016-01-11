@@ -884,7 +884,7 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
 
-  this.featurePopup_.show(feature);
+  this.featurePopup_.show(feature, this.map_);
 };
 
 
