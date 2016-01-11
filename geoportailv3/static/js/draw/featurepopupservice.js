@@ -164,7 +164,14 @@ app.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
     this.setDraggable(angular.element(element));
   }, this);
   // Enable the dropdown menu
-  $('.dropdown-toggle')['dropdown']();
+  this.element_.find('[data-toggle=dropdown]')['dropdown']();
+};
+
+
+/**
+ */
+app.FeaturePopup.prototype.toggleDropdown = function() {
+  this.element_.find('[data-toggle=dropdown]')['dropdown']('toggle');
 };
 
 

@@ -213,6 +213,7 @@ app.FeaturePopupController.prototype.exportKml = function() {
   });
   this.exportFeatures_(kml, 'kml',
       this.sanitizeFilename_(/** @type {string} */(this.feature.get('name'))));
+  this.appFeaturePopup_.toggleDropdown();
 };
 
 
@@ -227,6 +228,7 @@ app.FeaturePopupController.prototype.exportGpx = function() {
   });
   this.exportFeatures_(gpx, 'gpx',
       this.sanitizeFilename_(/** @type {string} */(this.feature.get('name'))));
+  this.appFeaturePopup_.toggleDropdown();
 };
 
 
