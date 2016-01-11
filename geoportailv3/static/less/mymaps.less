@@ -72,6 +72,26 @@
     }
     .feature {
       cursor: pointer;
+
+      .icon {
+        font-family: "geoportail-icons" !important;
+
+        &.point:before {
+          content: '\e901';
+        }
+        &.line:before {
+          content: '\e900';
+        }
+        &.point:before {
+          content: '\e901';
+        }
+        &.line:before {
+          content: '\e900';
+        }
+        &.polygon:before {
+          content: '\e902';
+        }
+      }
     }
   }
 
