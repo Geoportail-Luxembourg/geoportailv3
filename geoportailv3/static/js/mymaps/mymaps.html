@@ -67,7 +67,9 @@
     <li ng-repeat="feature in ctrl.getMymapsFeatures()" class="feature"
         ng-click="ctrl.selectFeature(feature)"
         ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">
-      <span class="icon polygon"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) == 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
       {{ feature.get('name') }}
     </li>
   </ul>
@@ -97,7 +99,9 @@
       class="feature"
       ng-click="ctrl.selectFeature(feature)"
       ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">
-      <span class="icon polygon"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) == 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
       {{ feature.get('name') }}
     </li>
   </ul>

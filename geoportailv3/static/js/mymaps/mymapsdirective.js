@@ -852,6 +852,17 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
 
 
 /**
+ * Return feature type as a string
+ * @param {ol.Feature} feature
+ * @return {string}
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getFeatureType = function(feature) {
+  return feature.getGeometry().getType();
+};
+
+
+/**
  * Get a features Array with the Mymaps features.
  * @return {Array.<ol.Feature>?} The features array.
  * @export
