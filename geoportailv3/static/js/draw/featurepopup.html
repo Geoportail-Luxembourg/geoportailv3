@@ -49,10 +49,12 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group" ng-show="ctrl.isAuthenticated()">
-        <input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
+      <div class="col-xs-8 form-group" ng-show="ctrl.isAuthenticated()">
+        <span ng-hide="ctrl.tempThumbnail" class="btn btn-default btn-file">
+          {{'Ajouter vignette'|translate}}<input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
+        </span>
         <img ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.tempThumbnail)}}"/>
-        <button ng-show="ctrl.tempThumbnail" ng-click="ctrl.removeImage()" translate>Retirer vignette</button>
+        <button class="btn btn-default" ng-show="ctrl.tempThumbnail" ng-click="ctrl.removeImage()" translate>Retirer vignette</button>
       </div>
     </div>
   </div>

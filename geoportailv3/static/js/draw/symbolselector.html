@@ -77,9 +77,9 @@
 </div>
 <br>
 <div class="feature-popup-footer pull-right">
-  <div ng-show="ctrl.isAuthenticated() && ctrl.tab == 'us'">
-    <input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
-  </div>
+    <span ng-show="ctrl.isAuthenticated() && ctrl.tab == 'us'" class="btn btn-default btn-file">
+    {{'Importer un symbole'|translate}}<input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
+    </span>
   <button href class="btn btn-default" ng-click="ctrl.close()" translate>
     Fermer
   </button>
