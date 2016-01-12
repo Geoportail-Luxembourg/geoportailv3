@@ -21,6 +21,7 @@ The following must be installed on the system:
 * ``gcc``
 * ``npm``
 * ``openldap-devel`` (or ``libldap2-dev`` and ``libsasl2-dev`` on Debian)
+* ``libjpeg-devel``
 
 For the print to work, you will need
 * ``jdk`` (java-1.7.0-openjdk-devel)
