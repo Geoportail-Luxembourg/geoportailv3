@@ -275,5 +275,15 @@ app.SymbolSelectorController.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
+
+/**
+ * It tests if the input type color is supported in the current browser.
+ * @return {boolean}
+ * @export
+ */
+app.SymbolSelectorController.prototype.isHTML5ColorSupported = function() {
+  return $('[type="color"]').prop('type') === 'color';
+};
+
 app.module.controller('AppSymbolSelectorController',
     app.SymbolSelectorController);

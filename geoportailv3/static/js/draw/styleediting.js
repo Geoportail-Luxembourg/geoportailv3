@@ -151,6 +151,16 @@ app.StyleEditingController.prototype.getSetColor = function(color) {
 
 
 /**
+ * It tests if the input type color is supported in the current browser.
+ * @return {boolean}
+ * @export
+ */
+app.StyleEditingController.prototype.isHTML5ColorSupported = function() {
+  return $('<input type="color">').prop('type') === 'color';
+};
+
+
+/**
  * @param {number} val
  * @return {*}
  * @export
