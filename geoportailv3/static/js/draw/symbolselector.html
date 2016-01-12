@@ -66,12 +66,7 @@
 
     <div>
       <label translate>Color</label>
-      <table class="palette">
-        <tr ng-repeat="colors in ::ctrl.colors">
-          <td ng-repeat="color in colors" style="background-color:{{color}}" ng-click="ctrl.setColor(color)" ng-class="{selected: color == ctrl.feature.get('color')}">
-          </td>
-        </tr>
-      </table>
+      <input type="color" ng-model="ctrl.getSetColor" ng-model-options="{getterSetter: true}">
     </div>
   </div>
 </div>

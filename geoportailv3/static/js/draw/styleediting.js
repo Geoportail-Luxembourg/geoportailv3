@@ -134,6 +134,23 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
 
 
 /**
+ * @param {string} color
+ * @return {*}
+ * @export
+ */
+app.StyleEditingController.prototype.getSetColor = function(color) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('color', color);
+  } else {
+    return this.feature.get('color');
+  }
+};
+
+
+/**
  * @param {number} val
  * @return {*}
  * @export

@@ -241,6 +241,23 @@ app.SymbolSelectorController.prototype.setColor = function(color) {
 
 
 /**
+ * @param {string} color
+ * @return {*}
+ * @export
+ */
+app.SymbolSelectorController.prototype.getSetColor = function(color) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('color', color);
+  } else {
+    return this.feature.get('color');
+  }
+};
+
+
+/**
  * @param {string} symbol
  * @return {string}
  * @export
