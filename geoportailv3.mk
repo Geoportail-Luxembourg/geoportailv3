@@ -5,7 +5,7 @@ VARS_FILE = vars_geoportailv3.yaml
 VARS_FILES += ${VARS_FILE}
 endif
 
-TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako
+TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
 LANGUAGES = en fr de lb
 CGXP = FALSE
