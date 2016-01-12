@@ -59,18 +59,12 @@ app.searchDirective = function(appSearchTemplateUrl) {
          */
         function(scope, element, attrs) {
           // Empty the search field on focus
-          element.find('input').on('focus', function() {
-            $(this).val('');
+          element.find('input').one('focus', function() {
             $(this).addClass('placeholder-text');
           });
-          element.find('span.clear-button').on('click',
-              goog.bind(function(scope) {
-                $(this).find('input').val('').trigger('input');
-                var ctrl = /** @type {app.SearchDirectiveController} */
-                    (scope['ctrl']);
-                ctrl.featureOverlay_.clear();
-              }, element, scope));
-
+          element.find('input').on('click', function() {
+            $(this).select();
+          });
           element.find('input').on(
               'input propertyChange focus blur', function() {
                 var clearButton =
@@ -81,6 +75,13 @@ app.searchDirective = function(appSearchTemplateUrl) {
                   clearButton.css('display', 'block');
                 }
               });
+          element.find('span.clear-button').on('click',
+              goog.bind(function(scope) {
+                $(this).find('input').val('').trigger('input');
+                var ctrl = /** @type {app.SearchDirectiveController} */
+                    (scope['ctrl']);
+                ctrl.featureOverlay_.clear();
+              }, element, scope));
         }
   };
 };
