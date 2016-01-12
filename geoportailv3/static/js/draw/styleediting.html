@@ -3,19 +3,30 @@
   <div class="feature-popup-heading" translate>Style your drawing</div>
   <a href class="close" ng-click="ctrl.close()">&times;</a>
   <div class="feature-popup-body">
-    <div class="form-inline">
-      <div ng-if="ctrl.isHTML5ColorSupported()" class="form-group">
+    <div ng-if="ctrl.isHTML5ColorSupported()" class="form-inline">
+      <div class="form-group">
         <label translate>Color</label>
         <input type="color" ng-model="ctrl.getSetColor" ng-model-options="{getterSetter: true}">
       </div>
-      <div ng-if="!ctrl.isHTML5ColorSupported()" class="form-group">
+    </div>
+    <div ng-if="!ctrl.isHTML5ColorSupported()" class="form-inline">
+      <div class="form-group">
         <label translate>Color</label>
-        <table ng-if="!ctrl.isHTML5ColorSupported()" class="palette">
-          <tr ng-repeat="colors in ::ctrl.colors">
-            <td ng-repeat="color in colors" style="background-color:{{color}}" ng-click="ctrl.setColor(color)" ng-class="{selected: color == ctrl.feature.get('color')}">
-            </td>
-          </tr>
-        </table>
+        <span class="dropdown">
+          <button class="btn btn-default btn-color dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:{{ctrl.feature.get('color')}}">
+            <span class="fa fa-caret-square-o-down"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <table class="palette">
+                <tr ng-repeat="colors in ::ctrl.colors">
+                  <td ng-repeat="color in colors" style="background-color:{{color}}" ng-click="ctrl.setColor(color)" ng-class="{selected: color == ctrl.feature.get('color')}">
+                  </td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+        </span>
       </div>
     </div>
     <div class="form-inline" ng-show="ctrl.type == 'polygon'">
@@ -49,7 +60,7 @@
       <div class="form-group">
         <!-- Symbol style -->
         <label translate>Symbol</label>
-        <button ng-click="ctrl.symbolselector = true">
+        <button ng-click="ctrl.symbolselector = true" class="btn btn-default">
             <img ng-show="ctrl.feature.get('symbolId')" ng-src="{{ctrl.getSymbolPath(ctrl.feature.get('symbolId'))}}">
             <div ng-show="!ctrl.feature.get('symbolId')"translate>Symbol</div>
         </button>
