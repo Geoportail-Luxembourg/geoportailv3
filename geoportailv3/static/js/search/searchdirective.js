@@ -451,7 +451,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 app.SearchDirectiveController.prototype.matchLayers_ =
     function(fuseEngine, searchString) {
   var fuseResults = /** @type {Array.<FuseResult>} */
-      (fuseEngine.search(searchString).slice(0, 5));
+      (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
   return goog.array.map(fuseResults,
       /**
        * @param {FuseResult} r
