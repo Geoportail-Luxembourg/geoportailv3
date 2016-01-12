@@ -134,6 +134,33 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
 
 
 /**
+ * @param {string} color
+ * @return {*}
+ * @export
+ */
+app.StyleEditingController.prototype.getSetColor = function(color) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('color', color);
+  } else {
+    return this.feature.get('color');
+  }
+};
+
+
+/**
+ * It tests if the input type color is supported in the current browser.
+ * @return {boolean}
+ * @export
+ */
+app.StyleEditingController.prototype.isHTML5ColorSupported = function() {
+  return $('<input type="color">').prop('type') === 'color';
+};
+
+
+/**
  * @param {number} val
  * @return {*}
  * @export

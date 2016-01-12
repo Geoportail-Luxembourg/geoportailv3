@@ -241,6 +241,23 @@ app.SymbolSelectorController.prototype.setColor = function(color) {
 
 
 /**
+ * @param {string} color
+ * @return {*}
+ * @export
+ */
+app.SymbolSelectorController.prototype.getSetColor = function(color) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('color', color);
+  } else {
+    return this.feature.get('color');
+  }
+};
+
+
+/**
  * @param {string} symbol
  * @return {string}
  * @export
@@ -256,6 +273,16 @@ app.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
  */
 app.SymbolSelectorController.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
+};
+
+
+/**
+ * It tests if the input type color is supported in the current browser.
+ * @return {boolean}
+ * @export
+ */
+app.SymbolSelectorController.prototype.isHTML5ColorSupported = function() {
+  return $('[type="color"]').prop('type') === 'color';
 };
 
 app.module.controller('AppSymbolSelectorController',
