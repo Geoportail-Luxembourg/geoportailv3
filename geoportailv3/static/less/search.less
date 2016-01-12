@@ -1,4 +1,11 @@
-@clear-button-width: 15px;
+@clear-button-width: 20px;
+
+// bugfix for IE textboxes who have own clear element
+input[type=text]::-ms-clear {
+    width: 0;
+    height: 0;
+}
+
 span.twitter-typeahead {
     & + span.clear-button {
         position: absolute;
@@ -42,8 +49,8 @@ span.twitter-typeahead {
         z-index: 1000;
         display: none;
         float: left;
-        min-width: 250px;
-        padding: 5px 0;
+	min-width: 329px;
+        padding: 5px 5px;
         margin: 2px 0 0;
         list-style: none;
         font-size: 14px;
@@ -58,19 +65,27 @@ span.twitter-typeahead {
     }
     .tt-suggestion {
         display: block;
-        padding: 3px 20px;
-        margin-bottom: 0px;
         clear: both;
-        font-weight: normal;
-        line-height: 1.42857143;
-        color: #333333;
-        white-space: nowrap;
-        strong {
-            font-weight: 900;
-        }
+        padding: 3px 10px;
+        margin-bottom: 0px;
+	line-height: 1.42857143;
+	> p.suggestion-text {
+	    float:left;
+	    font-weight: normal;
+	    color: #333333;
+		strong {
+		    font-weight: bold;
+		}
+	}
+	> button {
+	    float: right;
+	    background: none;
+	    border: 0;
+	}
     }
     .tt-suggestion:hover,
     .tt-suggestion:focus {
+            cursor: pointer;
             color: #ffffff;
             text-decoration: none;
             outline: 0;
@@ -78,18 +93,17 @@ span.twitter-typeahead {
             color: #ffffff;
             text-decoration: none;
             outline: 0;
+	    clear: both;
             background-color: #428bca;
     }
     .tt-suggestion.tt-cursor {
         color: #ffffff;
         background-color: #428bca;
     }
-    .tt-suggestion button {
-        background: none;
-        border: 0;
-        float: right;
+    .tt-dataset > .header {
+    	font-size: 16px;
+	font-weight: bold;
     }
-
   &:after {
     content: '\f002';
     font-family: FontAwesome;
@@ -140,7 +154,7 @@ span.twitter-typeahead {
       }
 
       span.twitter-typeahead .tt-menu {
-        width: 100%;
+	min-width: 100%;
       }
     }
   }
