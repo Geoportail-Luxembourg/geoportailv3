@@ -6,19 +6,30 @@
 goog.provide('app.DrawnFeatures');
 
 goog.require('app');
+goog.require('gmf.ExportFeatures');
+goog.require('gmf.ExportFormat');
 goog.require('ngeo.Location');
 goog.require('ngeo.format.FeatureHash');
 goog.require('ol.Collection');
+goog.require('ol.format.GPX');
+goog.require('ol.format.KML');
 
 
 
 /**
  * @constructor
  * @param {ngeo.Location} ngeoLocation Location service.
+ * @param {gmf.ExportFeatures} gmfExportFeatures Export features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @ngInject
  */
-app.DrawnFeatures = function(ngeoLocation, appMymaps) {
+app.DrawnFeatures = function(ngeoLocation, gmfExportFeatures, appMymaps) {
+
+  /**
+   * @type {gmf.ExportFeatures}
+   * @private
+   */
+  this.exportFeatures_ = gmfExportFeatures;
 
   /**
    * @type {app.Mymaps}
@@ -96,6 +107,13 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
 
 
 /**
+ * @const
+ * @private
+ */
+app.DrawnFeatures.EXPORT_FILENAME_ = 'geoportail';
+
+
+/**
  * Remove the feature from the drawn list.
  * If the feature is a mymaps feature then delete it from mymaps and
  * then rewrite the url.
@@ -140,6 +158,28 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
   } else {
     this.ngeoLocation_.deleteParam('features');
   }
+};
+
+
+/**
+ * Export the drawn features as GPX.
+ */
+app.DrawnFeatures.prototype.exportFeaturesAsGpx = function() {
+  var features = this.features.getArray();
+  var gpx = (new ol.format.GPX()).writeFeatures(features);
+  this.exportFeatures_(gpx, gmf.ExportFormat.GPX,
+      app.DrawnFeatures.EXPORT_FILENAME_);
+};
+
+
+/**
+ * Export the drawn features as KML.
+ */
+app.DrawnFeatures.prototype.exportFeaturesAsKml = function() {
+  var features = this.features.getArray();
+  var kml = (new ol.format.KML()).writeFeatures(features);
+  this.exportFeatures_(kml, gmf.ExportFormat.KML,
+      app.DrawnFeatures.EXPORT_FILENAME_);
 };
 
 

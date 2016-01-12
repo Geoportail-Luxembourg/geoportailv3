@@ -294,9 +294,6 @@
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
-         appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
-         appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
-         appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
@@ -318,6 +315,12 @@
          appModule.value('appQueryTemplateUrl', 'query/info.html');
          appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
          appModule.value('appMymapsTemplateUrl', 'mymaps/mymaps.html');
+         appModule.value('gmfServiceUrls', {
+           'exportgpxkml': "${request.route_url('exportgpxkml')}"
+         });
+         appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
+         appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
+         appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
        })();
     </script>
     <!-- Piwik -->

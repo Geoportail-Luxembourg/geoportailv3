@@ -5,8 +5,8 @@
  */
 goog.provide('app');
 
+goog.require('gmf');
 goog.require('goog.dom.classlist');
-goog.require('ngeo');
 goog.require('ngeo.MockLocationProvider');
 goog.require('ol.has');
 
@@ -14,7 +14,7 @@ goog.require('ol.has');
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeoModule.name, 'gettext'])
+app.module = angular.module('app', [gmfModule.name, 'gettext'])
     .run(function() {
       if (!ol.has.TOUCH) {
         goog.dom.classlist.add(document.body, 'no-touch');
