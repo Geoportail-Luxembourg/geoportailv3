@@ -153,8 +153,8 @@ class Getfeatureinfo(object):
 
                 if (luxgetfeaturedefinition.additional_info_function
                     is not None and
-                    len(luxgetfeaturedefinition.additional_info_function)
-                        > 0):
+                    len(luxgetfeaturedefinition.
+                        additional_info_function) > 0):
 
                     features = eval(luxgetfeaturedefinition.
                                     additional_info_function)
@@ -196,8 +196,8 @@ class Getfeatureinfo(object):
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
-                        len(luxgetfeaturedefinition.additional_info_function)
-                            > 0):
+                        len(luxgetfeaturedefinition.
+                            additional_info_function) > 0):
                         features = eval(luxgetfeaturedefinition.
                                         additional_info_function)
 
