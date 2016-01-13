@@ -13,14 +13,14 @@
       <div class="form-group">
         <label translate>Color</label>
         <span class="dropdown">
-          <button class="btn btn-default btn-color dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:{{ctrl.feature.get('color')}}">
+          <button class="btn btn-default btn-color dropdown-toggle" type="button" data-toggle="dropdown" ng-style="{'background-color': ctrl.feature.get('color')}">
             <span class="fa fa-caret-square-o-down"></span>
           </button>
           <ul class="dropdown-menu">
             <li>
               <table class="palette">
                 <tr ng-repeat="colors in ::ctrl.colors">
-                  <td ng-repeat="color in colors" style="background-color:{{color}}" ng-click="ctrl.setColor(color)" ng-class="{selected: color == ctrl.feature.get('color')}">
+                  <td ng-repeat="color in colors" ng-style="{'background-color': color}" ng-click="ctrl.setColor(color)" ng-class="{'selected': color == ctrl.feature.get('color')}">
                   </td>
                 </tr>
               </table>
