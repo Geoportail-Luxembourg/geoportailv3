@@ -15,13 +15,14 @@ goog.provide('app.searchDirective');
 
 goog.require('app');
 goog.require('app.CoordinateString');
-goog.require('app.CreateGeoJSONBloodhound');
+// goog.require('app.CreateGeoJSONBloodhound');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.searchDirective');
@@ -58,18 +59,12 @@ app.searchDirective = function(appSearchTemplateUrl) {
          */
         function(scope, element, attrs) {
           // Empty the search field on focus
-          element.find('input').on('focus', function() {
-            $(this).val('');
+          element.find('input').one('focus', function() {
             $(this).addClass('placeholder-text');
           });
-          element.find('span.clear-button').on('click',
-              goog.bind(function(scope) {
-                $(this).find('input').val('').trigger('input');
-                var ctrl = /** @type {app.SearchDirectiveController} */
-                    (scope['ctrl']);
-                ctrl.featureOverlay_.clear();
-              }, element, scope));
-
+          element.find('input').on('click', function() {
+            $(this).select();
+          });
           element.find('input').on(
               'input propertyChange focus blur', function() {
                 var clearButton =
@@ -80,6 +75,13 @@ app.searchDirective = function(appSearchTemplateUrl) {
                   clearButton.css('display', 'block');
                 }
               });
+          element.find('span.clear-button').on('click',
+              goog.bind(function(scope) {
+                $(this).find('input').val('').trigger('input');
+                var ctrl = /** @type {app.SearchDirectiveController} */
+                    (scope['ctrl']);
+                ctrl.featureOverlay_.clear();
+              }, element, scope));
         }
   };
 };
@@ -100,7 +102,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.CoordinateString} appCoordinateString
- * @param {app.CreateGeoJSONBloodhound} appCreateGeoJSONBloodhound The
+ * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The
  * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
@@ -111,7 +113,7 @@ app.module.directive('appSearch', app.searchDirective);
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, appCreateGeoJSONBloodhound, appThemes,
+    appCoordinateString, ngeoCreateGeoJSONBloodhound, appThemes,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent, searchServiceUrl) {
 
   /**
@@ -233,7 +235,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      appCreateGeoJSONBloodhound, searchServiceUrl);
+      ngeoCreateGeoJSONBloodhound, searchServiceUrl);
 
   /** @type {Fuse} */
   var layerFuseEngine =
@@ -287,8 +289,14 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     source: goog.bind(function(query, syncResults) {
       return syncResults(this.matchCoordinate_(query));
     }, this),
-    displayKey: function(suggestion) {
+    /**
+     * @param {Object} suggestion
+     * @return {(string|*)}
+     * @this {TypeaheadDataset}
+     */
+    display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
+      suggestion.set('dataset', this.name);
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */ ({
@@ -316,8 +324,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     /**
      * @param {Object} suggestion
      * @return {string}
+     * @this {TypeaheadDataset}
      */
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
+      suggestion['dataset'] = this.name;
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
@@ -329,13 +339,15 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
-        var html = '<p>' + suggestion['translatedName'];
+        var html = '<p>' +
+            '<span class="suggestion-text">' +
+            suggestion['translatedName'] + '</span>' +
+            '<button ng-click="click($event)">i</button>' +
+            '</p>';
         scope['click'] = goog.bind(function(event) {
           this.showLayerinfo_(this.getLayerFunc_(suggestion));
           event.stopPropagation();
         }, this);
-        html += '<button ng-click="click($event)">i</button>';
-        html += '</p>';
         return $compile(html)(scope);
       }, this)
     })
@@ -352,8 +364,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     /**
      * @param {app.BackgroundLayerSuggestion} suggestion
      * @return {string}
+     * @this {TypeaheadDataset}
      */
-    displayKey: function(suggestion) {
+    display: function(suggestion) {
+      suggestion['dataset'] = this.name;
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
@@ -378,8 +392,17 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   },{
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
-    displayKey: function(suggestion) {
+    // Use a large number for "limit" here. This is to work around a bug
+    // in typeahead.js: https://github.com/twitter/typeahead.js/pull/1319
+    limit: 50,
+    /**
+     * @param {Object} suggestion
+     * @return {(string|*)}
+     * @this {TypeaheadDataset}
+     */
+    display: function(suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
+      feature.set('dataset', this.name);
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */({
@@ -407,7 +430,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   ];
 
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
-    selected: goog.bind(app.SearchDirectiveController.selected_, this)
+    select: goog.bind(app.SearchDirectiveController.selected_, this)
   });
 
   goog.events.listen(this['map'].getLayers(),
@@ -430,7 +453,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 app.SearchDirectiveController.prototype.matchLayers_ =
     function(fuseEngine, searchString) {
   var fuseResults = /** @type {Array.<FuseResult>} */
-      (fuseEngine.search(searchString).slice(0, 5));
+      (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
   return goog.array.map(fuseResults,
       /**
        * @param {FuseResult} r
@@ -519,17 +542,17 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
 
 
 /**
- * @param {app.CreateGeoJSONBloodhound} appCreateGeoJSONBloodhound The create
+ * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The create
  * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
-    function(appCreateGeoJSONBloodhound, searchServiceUrl) {
+    function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
   var url = searchServiceUrl + '?limit=5&query=%QUERY';
-  var bloodhound = appCreateGeoJSONBloodhound(
-      url, ol.proj.get('EPSG:3857'));
+  var bloodhound = ngeoCreateGeoJSONBloodhound(
+      url, undefined, ol.proj.get('EPSG:3857'));
   bloodhound.initialize();
   return bloodhound;
 };
@@ -659,13 +682,18 @@ app.SearchDirectiveController.getAllChildren_ =
 /**
  * @param {jQuery.Event} event
  * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
- * @param {string} dataset Typeahead dataset ID.
  * @this {app.SearchDirectiveController}
  * @private
  */
 app.SearchDirectiveController.selected_ =
-    function(event, suggestion, dataset) {
+    function(event, suggestion) {
   var map = /** @type {ol.Map} */ (this['map']);
+  var /** @type {string} */ dataset;
+  if (goog.isDef(suggestion['dataset'])) {
+    dataset = suggestion['dataset'];
+  } else if (suggestion.get('dataset')) {
+    dataset = suggestion.get('dataset');
+  }
   if (dataset === 'pois' || dataset === 'coordinates') { //POIs
     var feature = /** @type {ol.Feature} */ (suggestion);
     var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
