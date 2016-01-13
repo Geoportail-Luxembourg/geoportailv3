@@ -340,10 +340,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         var scope = $scope.$new(true);
         scope['object'] = suggestion;
         var html = '<p>' +
-                  '<span class="suggestion-text">' +
-                  suggestion['translatedName'] + '</span>' +
-                  '<button ng-click="click($event)">i</button>' +
-                  '</p>';
+            '<span class="suggestion-text">' +
+            suggestion['translatedName'] + '</span>' +
+            '<button ng-click="click($event)">i</button>' +
+            '</p>';
         scope['click'] = goog.bind(function(event) {
           this.showLayerinfo_(this.getLayerFunc_(suggestion));
           event.stopPropagation();
