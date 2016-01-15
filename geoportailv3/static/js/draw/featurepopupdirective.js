@@ -6,6 +6,8 @@ goog.provide('app.featurePopupDirective');
 
 goog.require('app');
 goog.require('app.Mymaps');
+goog.require('app.profileDirective');
+goog.require('ngeo');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
@@ -125,10 +127,23 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.feature;
 
   /**
-   * @type {string}
+   * @type {!string|undefined}
    * @export
    */
-  this.featureElevation = 'N/A';
+  this.featureElevation = undefined;
+
+  /**
+   * @type {!Array<Object>|undefined}
+   * @export
+   */
+  this.featureProfile = undefined;
+
+  /**
+   * Need object to make the profile directive work here
+   * @type {{active: boolean}}
+   * @export
+   */
+  this.showFeatureProfile = {active: false};
 
   /**
    * @type {angular.$sce}
@@ -180,6 +195,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
 
   this.appFeaturePopup_ = appFeaturePopup;
 
+  /**
+   * @type {ol.Map}
+   * @export
+   */
+  this.map = this['map'] || this.appFeaturePopup_.map;
+
   $scope.$watch(goog.bind(function() {
     return this.editingAttributes;
   }, this), goog.bind(function(newVal) {
@@ -190,12 +211,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
 
   $scope.$watch(goog.bind(function() {
     return this.feature;
-  }, this), goog.bind(function(newVal) {
+  }, this), goog.bind(function(newVal, oldVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
-    this.updateElevation();
+    this.updateFeature_();
   }, this));
+
+  goog.events.listen(this.drawnFeatures_.modifyInteraction,
+      ol.ModifyEventType.MODIFYEND, this.updateFeature_, false, this);
 
   $scope.$watch(goog.bind(function() {
     return this.image;
@@ -288,6 +312,16 @@ app.FeaturePopupController.prototype.exportFeatures_ =
 
 
 /**
+ * Update Elevation and Profile after feature geometry change.
+ * @private
+ */
+app.FeaturePopupController.prototype.updateFeature_ = function() {
+  this.updateElevation();
+  this.updateProfile();
+};
+
+
+/**
  * @export
  */
 app.FeaturePopupController.prototype.removeImage = function() {
@@ -361,7 +395,26 @@ app.FeaturePopupController.prototype.updateElevation = function() {
           this.featureElevation = elevation;
         }, this));
   } else {
-    this.featureElevation = 'N/A';
+    this.featureElevation = undefined;
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.updateProfile = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
+  {
+    this.showFeatureProfile.active = true;
+    var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
+    this.appFeaturePopup_.getProfile(geom).then(goog.bind(function(profile) {
+      this.featureProfile = profile;
+    }, this));
+  } else {
+    this.featureProfile = undefined;
+    this.showFeatureProfile.active = false;
   }
 };
 

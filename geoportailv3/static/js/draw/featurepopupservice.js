@@ -5,6 +5,7 @@
 goog.provide('app.FeaturePopup');
 
 goog.require('app.GetElevation');
+goog.require('app.GetProfile');
 goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
@@ -20,10 +21,12 @@ goog.require('ol.Overlay');
  * @param {angular.Scope} $rootScope The rootScope provider.
  * @param {Document} $document The document.
  * @param {app.GetElevation} appGetElevation
+ * @param {app.GetProfile} appGetProfile
  * @constructor
  * @ngInject
  */
-app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation) {
+app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
+    appGetProfile) {
 
   /**
    * @type {Document}
@@ -39,15 +42,21 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation) {
 
   /**
    * @type {ol.Map}
-   * @private
+   * @export
    */
-  this.map_;
+  this.map;
 
   /**
    * @type {app.GetElevation}
    * @private
    */
   this.getElevation_ = appGetElevation;
+
+  /**
+   * @type {app.GetProfile}
+   * @private
+   */
+  this.getProfile_ = appGetProfile;
 
   /**
    * The scope the compiled element is linked to.
@@ -112,8 +121,8 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation) {
  * @param {ol.Collection<ol.Feature>} features Features.
  */
 app.FeaturePopup.prototype.init = function(map, features) {
-  this.map_ = map;
-  this.map_.addOverlay(this.overlay_);
+  this.map = map;
+  this.map.addOverlay(this.overlay_);
   this.features_ = features;
 };
 
@@ -127,7 +136,7 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
         this.element_.css({'transform': 'scale(1.1)',
           'transition': 'transform .3s'});
         if (goog.isNull(this.mousemoveEvent_)) {
-          this.mousemoveEvent_ = goog.events.listen(this.map_,
+          this.mousemoveEvent_ = goog.events.listen(this.map,
               ol.MapBrowserEvent.EventType.POINTERMOVE, goog.bind(function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
@@ -187,9 +196,9 @@ app.FeaturePopup.prototype.toggleDropdown = function() {
  * @param {ol.Feature} feature
  */
 app.FeaturePopup.prototype.fit = function(feature) {
-  var viewSize = /** {ol.Size} **/ (this.map_.getSize());
+  var viewSize = /** {ol.Size} **/ (this.map.getSize());
   goog.asserts.assert(goog.isDef(viewSize));
-  this.map_.getView().fit(
+  this.map.getView().fit(
       feature.getGeometry().getExtent(),
       viewSize
   );
@@ -241,7 +250,7 @@ app.FeaturePopup.prototype.getAnchor = function(feature) {
 app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
-      this.map_.getView().getProjection()
+      this.map.getView().getProjection()
   );
 };
 
@@ -255,7 +264,7 @@ app.FeaturePopup.prototype.formatLength = function(line) {
       line.getCoordinates()[0] : line.getCoordinates();
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
-      this.map_.getView().getProjection()
+      this.map.getView().getProjection()
   );
 };
 
@@ -266,6 +275,15 @@ app.FeaturePopup.prototype.formatLength = function(line) {
  */
 app.FeaturePopup.prototype.getElevation = function(point) {
   return this.getElevation_(point.getCoordinates());
+};
+
+
+/**
+ * @param {(ol.geom.LineString)} linestring
+ * @return {angular.$q.Promise}
+ */
+app.FeaturePopup.prototype.getProfile = function(linestring) {
+  return this.getProfile_(linestring);
 };
 
 
