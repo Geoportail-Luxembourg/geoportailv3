@@ -502,13 +502,13 @@ app.MainController.prototype.toggleThemeSelector = function() {
     if (themesSwitcher.hasClass('in') && themeTab.hasClass('active')) {
       this['layersOpen'] = false;
     } else {
-      this.showTab('a[href=#catalog]');
+      this.showTab('a[href=\'#catalog\']');
       themesSwitcher.collapse('show');
       layerTree.collapse('hide');
     }
   } else {
     this['layersOpen'] = true;
-    this.showTab('a[href=#catalog]');
+    this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
   }
