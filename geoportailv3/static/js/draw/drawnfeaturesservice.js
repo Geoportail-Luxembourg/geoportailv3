@@ -42,16 +42,16 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
    * @private
    */
   this.SHORT_PARAM_ = {
-    'name' : 'n',
-    'description': 'd',
-    'color': 'c',
-    'opacity': 'o',
-    'stroke': 's',
-    'linestyle': 'l',
-    'shape': 's',
-    'size': 't',
     'angle': 'a',
-    'isLabel': 'i'
+    'color': 'c',
+    'description': 'd',
+    'stroke': 'e',
+    'isLabel': 'i',
+    'linestyle': 'l',
+    'name' : 'n',
+    'opacity': 'o',
+    'shape': 's',
+    'size': 't'
   };
 
   /**
