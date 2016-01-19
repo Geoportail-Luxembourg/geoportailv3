@@ -48,12 +48,20 @@
         <label translate>Stroke width</label>
         <input type="range" min="1" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
       </div>
+    </div>
+    <div class="form-inline" ng-show="ctrl.type == 'linestring'">
       <div class="form-group">
         <!-- Line style -->
         <label translate>Style</label>
         <button ng-click="ctrl.setLineDash('plain')" ng-class="{selected: ctrl.feature.get('linestyle') == 'plain'}" translate>Plain</button>
         <button ng-click="ctrl.setLineDash('dashed')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dashed'}" translate>Dashed</button>
         <button ng-click="ctrl.setLineDash('dotted')" ng-class="{selected: ctrl.feature.get('linestyle') == 'dotted'}" translate>Dotted</button>
+      </div>
+    </div>
+    <div class="form-inline" ng-show="ctrl.type == 'linestring'">
+      <div class="form-group">
+        <label translate>Show orientation</label>
+        <input type="checkbox" ng-model="ctrl.getSetOrientation" ng-model-options="{getterSetter: true}">
       </div>
     </div>
     <div class="form-inline" ng-show="ctrl.type == 'point'">

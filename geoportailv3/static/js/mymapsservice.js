@@ -1042,7 +1042,8 @@ app.Mymaps.prototype.createStyleFunction = function() {
     var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
         opacity);
     fillStyle.setColor(fillColor);
-    if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
+    if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
+        this.get('showOrientation') === true) {
       var fontWidth = '32px';
       var curStroke = +this.get('stroke');
       if (curStroke > 3) {

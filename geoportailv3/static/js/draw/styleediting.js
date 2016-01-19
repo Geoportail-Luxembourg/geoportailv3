@@ -134,6 +134,23 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
 
 
 /**
+ * @param {boolean} orientation
+ * @return {*}
+ * @export
+ */
+app.StyleEditingController.prototype.getSetOrientation = function(orientation) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.feature.set('showOrientation', orientation);
+  } else {
+    return this.feature.get('showOrientation');
+  }
+};
+
+
+/**
  * @param {string} color
  * @return {*}
  * @export
