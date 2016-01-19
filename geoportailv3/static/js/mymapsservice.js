@@ -1043,7 +1043,6 @@ app.Mymaps.prototype.createStyleFunction = function() {
         opacity);
     fillStyle.setColor(fillColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
-      console.log(this.get('stroke'));
       var fontWidth = '32px';
       var curStroke = +this.get('stroke');
       if (curStroke > 3) {
