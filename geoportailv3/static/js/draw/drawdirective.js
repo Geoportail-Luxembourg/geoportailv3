@@ -19,6 +19,9 @@ goog.provide('app.drawDirective');
 goog.require('app');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
+goog.require('app.MeasureEvent');
+goog.require('app.MeasureEventType');
+goog.require('app.MeasureLength');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
@@ -26,7 +29,6 @@ goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
-goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.CollectionEventType');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events.condition');
@@ -175,21 +177,19 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
-  var drawLine = new ngeo.interaction.MeasureLength();
-
   /**
-   * @type {ngeo.interaction.MeasureLength}
+   * @type {app.MeasureLength}
    * @export
    */
-  this.drawLine = drawLine;
+  this.drawLine = this.drawnFeatures_.drawLineInteraction;
 
-  drawLine.setActive(false);
-  ngeoDecorateInteraction(drawLine);
-  this.map.addInteraction(drawLine);
-  goog.events.listen(drawLine, ol.Object.getChangeEventType(
+  this.drawLine.setActive(false);
+  ngeoDecorateInteraction(this.drawLine);
+  this.map.addInteraction(this.drawLine);
+  goog.events.listen(this.drawLine, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, false, this);
-  goog.events.listen(drawLine, ngeo.MeasureEventType.MEASUREEND,
+  goog.events.listen(this.drawLine, app.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, false, this);
 
   var drawPolygon = new ngeo.interaction.MeasureArea();
@@ -305,13 +305,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
-
+          var isLine = feature.getGeometry().getType() ===
+              ol.geom.GeometryType.LINE_STRING;
           if (!!feature.get('__map_id__')) {
             this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
-            this.translateInteraction_.setActive(this.appMymaps_.isEditable());
+            this.translateInteraction_.setActive(
+                this.appMymaps_.isEditable() && !isLine);
           } else {
             this.modifyInteraction_.setActive(true);
-            this.translateInteraction_.setActive(true);
+            this.translateInteraction_.setActive(true && !isLine);
           }
           this.featurePopup_.show(feature, this.map,
               evt.mapBrowserEvent.coordinate);
@@ -321,21 +323,23 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         $scope.$apply();
       }, true, this);
 
-  var modifyInteraction = new ol.interaction.Modify({
+  this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
     features: appSelectedFeatures,
     deleteCondition: function(event) {
       return false;
     }
   });
-  this.map.addInteraction(modifyInteraction);
-  goog.events.listen(modifyInteraction, ol.ModifyEventType.MODIFYEND,
-      this.onFeatureModifyEnd_, false, this);
+  this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
+  goog.events.listen(this.drawnFeatures_.modifyInteraction,
+      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, false, this);
+  goog.events.listen(this.drawLine, app.MeasureEventType.MODIFYMEASUREEND,
+      this.onFeatureModifyMeasureEnd_, false, this);
 
   /**
    * @type {ol.interaction.Modify}
    * @private
    */
-  this.modifyInteraction_ = modifyInteraction;
+  this.modifyInteraction_ = this.drawnFeatures_.modifyInteraction;
 
   var translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
@@ -375,6 +379,18 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     var feature = event.features.getArray()[0];
     this.drawnFeatures_.saveFeature(feature);
+  }, this));
+};
+
+
+/**
+ * @param {app.MeasureEvent} event Event.
+ * @private
+ */
+app.DrawController.prototype.onFeatureModifyMeasureEnd_ = function(event) {
+  this.scope_.$applyAsync(goog.bind(function() {
+    this.drawnFeatures_.saveFeature(event.feature);
+    this.modifyInteraction_.setActive(true);
   }, this));
 };
 

@@ -382,4 +382,41 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.continueLine = function() {
+  if (this.feature) {
+    this.drawnFeatures_.modifyInteraction.setActive(false);
+    this.drawnFeatures_.drawLineInteraction.continueLine(this.feature);
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.reverseLine = function() {
+  if (this.feature) {
+    var coordinates = /** @type {ol.geom.LineString}*/
+        (this.feature.getGeometry()).getCoordinates().reverse();
+    this.feature.setGeometry(new ol.geom.LineString(coordinates));
+    this.drawnFeatures_.saveFeature(this.feature);
+  }
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.FeaturePopupController.prototype.isLineString = function() {
+  if (this.feature) {
+    return this.feature.getGeometry().getType() ===
+        ol.geom.GeometryType.LINE_STRING;
+  }
+  return false;
+};
+
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

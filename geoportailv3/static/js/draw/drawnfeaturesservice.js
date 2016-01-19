@@ -6,6 +6,7 @@
 goog.provide('app.DrawnFeatures');
 
 goog.require('app');
+goog.require('app.MeasureLength');
 goog.require('ngeo.Location');
 goog.require('ngeo.format.FeatureHash');
 goog.require('ol.Collection');
@@ -19,6 +20,16 @@ goog.require('ol.Collection');
  * @ngInject
  */
 app.DrawnFeatures = function(ngeoLocation, appMymaps) {
+
+  /**
+   * @type {app.MeasureLength}
+   */
+  this.drawLineInteraction = new app.MeasureLength();
+
+  /**
+   * @type {ol.interaction.Modify}
+   */
+  this.modifyInteraction;
 
   /**
    * @type {app.Mymaps}
