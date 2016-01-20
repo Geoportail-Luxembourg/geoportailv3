@@ -1042,7 +1042,42 @@ app.Mymaps.prototype.createStyleFunction = function() {
     var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
         opacity);
     fillStyle.setColor(fillColor);
+    if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
+        this.get('showOrientation') === true) {
+      var fontWidth = '32px';
+      var curStroke = +this.get('stroke');
+      if (curStroke > 3) {
+        if (curStroke > 6) {
+          fontWidth = '50px';
+        } else {
+          fontWidth = '40px';
+        }
+      }
+      var orientationOptions = {
+        font: fontWidth + ' sans-serif',
+        text: '>',
+        fill: new ol.style.Fill({
+          color: color
+        }),
+        angle: 0,
+        rotation: 0
+      };
+      this.getGeometry().forEachSegment(function(start, end) {
+        var dx = end[0] - start[0];
+        var dy = end[1] - start[1];
+        var textRotation = -1 * Math.atan2(dy, dx);
+        goog.object.extend(orientationOptions, ({
+          rotation: textRotation
+        }));
+        var textOrientation = new ol.style.Text((orientationOptions));
 
+        // arrows
+        styles.push(new ol.style.Style({
+          geometry: new ol.geom.Point(end),
+          text: textOrientation
+        }));
+      });
+    }
     var lineDash;
     if (this.get('linestyle')) {
       switch (this.get('linestyle')) {

@@ -62,7 +62,8 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
     'name' : 'n',
     'opacity': 'o',
     'shape': 's',
-    'size': 't'
+    'size': 't',
+    'showOrientation': 'r'
   };
 
   /**
@@ -212,6 +213,9 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('angle', +angle);
       var isLabel = /** @type {string} */ (feature.get('isLabel'));
       feature.set('isLabel', isLabel === 'true');
+      var showOrientation = /** @type {string} */
+          (feature.get('showOrientation'));
+      feature.set('showOrientation', showOrientation === 'true');
       feature.set('__editable__', true);
       feature.set('__map_id__', undefined);
       feature.setStyle(this.featureStyleFunction_);
