@@ -51,12 +51,13 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.StateManager} appStateManager
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @ngInject
  */
 app.LocationinfoController = function(
         $scope, $timeout, ngeoFeatureOverlayMgr,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
-        qrServiceUrl, appLocationinfoTemplateUrl) {
+        qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures) {
 
   /**
    * @type {app.CoordinateString}
@@ -203,16 +204,18 @@ app.LocationinfoController = function(
 
   goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
       goog.bind(function(event) {
-        if (event.originalEvent.which === 3) { // if left mouse click
-          this.showInfoPane_(event.originalEvent);
-        } else if (!(event.originalEvent instanceof MouseEvent)) {
-          // if touch input device
-          $timeout.cancel(holdPromise);
-          startPixel = event.pixel;
-          var that = this;
-          holdPromise = $timeout(function() {
-            that.showInfoPane_(event.originalEvent);
-          }, 500, false);
+        if (!appSelectedFeatures.getLength()) {
+          if (event.originalEvent.which === 3) { // if right mouse click
+            this.showInfoPane_(event.originalEvent);
+          } else if (!(event.originalEvent instanceof MouseEvent)) {
+            // if touch input device
+            $timeout.cancel(holdPromise);
+            startPixel = event.pixel;
+            var that = this;
+            holdPromise = $timeout(function() {
+              that.showInfoPane_(event.originalEvent);
+            }, 500, false);
+          }
         }
       }, this), false, this);
 
