@@ -324,10 +324,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       }, true, this);
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
-    features: appSelectedFeatures,
-    deleteCondition: function(event) {
-      return false;
-    }
+    features: appSelectedFeatures
   });
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   goog.events.listen(this.drawnFeatures_.modifyInteraction,
