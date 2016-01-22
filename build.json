@@ -21,12 +21,12 @@
       "node_modules/ngeo/externs/mapfish-print-v3.js",
       "node_modules/ngeo/externs/twbootstrap.js",
       "node_modules/ngeo/externs/closure-compiler.js",
+      "node_modules/ngeo/externs/typeahead.js",
       ".build/externs/angular-1.4.js",
       ".build/externs/angular-1.4-q_templated.js",
       ".build/externs/angular-1.4-http-promise_templated.js",
       "geoportailv3/externs/fuse.js",
       "geoportailv3/externs/twbootstrap.js",
-      "geoportailv3/externs/typeahead.js",
       ".build/externs/jquery-1.9.js"
     ],
     "define": [
