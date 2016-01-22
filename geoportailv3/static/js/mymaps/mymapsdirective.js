@@ -393,6 +393,9 @@ app.MymapsDirectiveController.prototype.exportGpx = function() {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   });
+  gpx = gpx.replace('<gpx ',
+      '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+      ' version="1.1" ');
   this.exportFeatures_(gpx, 'gpx',
       this.sanitizeFilename_(this.appMymaps_.mapTitle));
 };
