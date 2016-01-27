@@ -6,6 +6,8 @@ goog.provide('app.featurePopupDirective');
 
 goog.require('app');
 goog.require('app.Mymaps');
+goog.require('app.profileDirective');
+goog.require('ngeo');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
@@ -125,6 +127,25 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.feature;
 
   /**
+   * @type {!string|undefined}
+   * @export
+   */
+  this.featureElevation = undefined;
+
+  /**
+   * @type {!Array<Object>|undefined}
+   * @export
+   */
+  this.featureProfile = undefined;
+
+  /**
+   * Need object to make the profile directive work here
+   * @type {{active: boolean}}
+   * @export
+   */
+  this.showFeatureProfile = {active: false};
+
+  /**
    * @type {angular.$sce}
    * @private
    */
@@ -174,6 +195,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
 
   this.appFeaturePopup_ = appFeaturePopup;
 
+  /**
+   * @type {ol.Map}
+   * @export
+   */
+  this.map = this['map'] || this.appFeaturePopup_.map;
+
   $scope.$watch(goog.bind(function() {
     return this.editingAttributes;
   }, this), goog.bind(function(newVal) {
@@ -184,11 +211,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
 
   $scope.$watch(goog.bind(function() {
     return this.feature;
-  }, this), goog.bind(function(newVal) {
+  }, this), goog.bind(function(newVal, oldVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
+    this.updateFeature_();
   }, this));
+
+  goog.events.listen(this.drawnFeatures_.modifyInteraction,
+      ol.ModifyEventType.MODIFYEND, this.updateFeature_, false, this);
 
   $scope.$watch(goog.bind(function() {
     return this.image;
@@ -281,6 +312,16 @@ app.FeaturePopupController.prototype.exportFeatures_ =
 
 
 /**
+ * Update Elevation and Profile after feature geometry change.
+ * @private
+ */
+app.FeaturePopupController.prototype.updateFeature_ = function() {
+  this.updateElevation();
+  this.updateProfile();
+};
+
+
+/**
  * @export
  */
 app.FeaturePopupController.prototype.removeImage = function() {
@@ -294,6 +335,87 @@ app.FeaturePopupController.prototype.removeImage = function() {
  */
 app.FeaturePopupController.prototype.close = function() {
   this.appFeaturePopup_.hide();
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.fitFeature = function() {
+  this.appFeaturePopup_.fit(this.feature);
+};
+
+
+/**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getArea = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    return this.appFeaturePopup_.formatArea(geom);
+  } else {
+    return '';
+  }
+
+
+};
+
+
+/**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getLength = function() {
+  if (goog.isDef(this.feature) &&
+      (this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON ||
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
+  )
+  {
+    var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
+        (this.feature.getGeometry());
+    return this.appFeaturePopup_.formatLength(geom);
+  } else {
+    return '';
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.updateElevation = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
+      !this.feature.get('isLabel')) {
+    var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
+    this.appFeaturePopup_.getElevation(geom).then(
+        goog.bind(function(elevation) {
+          this.featureElevation = elevation;
+        }, this));
+  } else {
+    this.featureElevation = undefined;
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.updateProfile = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
+  {
+    this.showFeatureProfile.active = true;
+    var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
+    this.appFeaturePopup_.getProfile(geom).then(goog.bind(function(profile) {
+      this.featureProfile = profile;
+    }, this));
+  } else {
+    this.featureProfile = undefined;
+    this.showFeatureProfile.active = false;
+  }
 };
 
 

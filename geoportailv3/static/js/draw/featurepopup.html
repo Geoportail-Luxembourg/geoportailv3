@@ -3,11 +3,24 @@
     <a href class="close" ng-click="ctrl.close()">&times;</a>
   <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
-  <div ng-show="ctrl.feature.get('thumbnail')" class="feature-popup-body">
-    <a ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
+  <div class="feature-popup-body measurements">
+    <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
+    <span ng-hide="ctrl.getLength() == false" translate>Length: </span>
+    <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span>
+    <span ng-hide="ctrl.getArea() == false" translate>Area: </span>
+    <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
+    <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
+    <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
+      <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile">
+    </div>
   </div>
   <div ng-show="ctrl.isEditable()" class="feature-popup-footer">
     <ul class="nav navbar-nav pull-right">
+      <li>
+        <a href ng-click="ctrl.fitFeature()">
+          <span class="fa fa-search"></span>
+        </a>
+      </li>
       <li ng-show="ctrl.feature.get('__editable__')">
         <a href ng-click="ctrl.editingAttributes = true">
           <span class="fa fa-pencil"></span>

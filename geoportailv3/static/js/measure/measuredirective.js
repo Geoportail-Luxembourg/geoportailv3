@@ -14,6 +14,7 @@ goog.provide('app.MeasureController');
 goog.provide('app.measureDirective');
 
 goog.require('app');
+goog.require('app.GetProfile');
 goog.require('app.profileDirective');
 goog.require('goog.dom');
 goog.require('ngeo.DecorateInteraction');
@@ -61,16 +62,16 @@ app.module.directive('appMeasure', app.measureDirective);
  * @param {angular.$http} $http Angular http service.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {app.GetProfile} appGetProfile
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
  * @param {string} elevationServiceUrl the url of the service
- * @param {string} profilejsonUrl The URL to the profile webservice.
  * @constructor
  * @export
  * @ngInject
  */
 app.MeasureController = function($scope, $q, $http, $compile, gettext,
-    ngeoDecorateInteraction, elevationServiceUrl, profilejsonUrl) {
+    appGetProfile, ngeoDecorateInteraction, elevationServiceUrl) {
 
   /**
    * @type {angular.$http}
@@ -79,16 +80,16 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   this.$http_ = $http;
 
   /**
-   * @type {string}
+   * @type {app.GetProfile}
    * @private
    */
-  this.elevationServiceUrl_ = elevationServiceUrl;
+  this.getProfile_ = appGetProfile;
 
   /**
    * @type {string}
    * @private
    */
-  this.profilejsonUrl_ = profilejsonUrl;
+  this.elevationServiceUrl_ = elevationServiceUrl;
 
   var sketchStyle = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -237,21 +238,9 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
        */
       function(evt) {
         var geom = /** @type {ol.geom.Geometry} */ (evt.feature.getGeometry());
-        var encOpt = {
-          dataProjection: 'EPSG:2169',
-          featureProjection: this['map'].getView().getProjection()
-        };
-        var req = $.param({
-          'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
-          'nbPoints': 100,
-          'layers': 'dhm'
-        });
-        var config = {
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        };
-        $http.post(this.profilejsonUrl_, req, config).then(
+        this.getProfile_(geom).then(
             goog.bind(function(resp) {
-              this['profileData'] = resp.data['profile'];
+              this['profileData'] = resp;
             }, this));
       }, undefined, this);
 
