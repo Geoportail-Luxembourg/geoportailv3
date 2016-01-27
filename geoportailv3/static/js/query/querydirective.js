@@ -282,7 +282,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           return;
         }
         if (!this['queryActive']) {
-          this.map_.getTargetElement().style.cursor = '';
+          this.map_.getViewport().style.cursor = '';
         } else {
           var pixel = this.map_.getEventPixel(evt.originalEvent);
           var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
@@ -298,7 +298,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
             }
             return false;
           });
-          this.map_.getTargetElement().style.cursor = hit ? 'pointer' : '';
+          this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
       }, false, this);
 };
@@ -359,7 +359,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
     var small_box = lb.concat(rt);
 
     this.isQuerying_ = true;
-    this.map_.getTargetElement().style.cursor = 'wait';
+    this.map_.getViewport().style.cursor = 'wait';
     this['content'] = '';
     this.http_.get(
         this.getInfoServiceUrl_,
@@ -420,12 +420,12 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           }
           this.highlightFeatures_(this.lastHighlightedFeatures_);
           this.isQuerying_ = false;
-          this.map_.getTargetElement().style.cursor = '';
+          this.map_.getViewport().style.cursor = '';
         }, this),
         goog.bind(function(error) {
           this.clearQueryResult_(this.QUERYPANEL_);
           this['infoOpen'] = false;
-          this.map_.getTargetElement().style.cursor = '';
+          this.map_.getViewport().style.cursor = '';
           this.isQuerying_ = false;
         }, this));
   }
