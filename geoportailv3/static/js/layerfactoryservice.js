@@ -71,7 +71,7 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
   function getWmtsLayer(name, imageType) {
 
     var imageExt = app.getImageExtension_(imageType);
-    var url = 'http://wmts.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
+    var url = 'http://wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
         '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
     var layer = new ol.layer.Tile({
