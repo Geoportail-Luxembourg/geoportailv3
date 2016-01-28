@@ -307,13 +307,19 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
           var feature = evt.selected[0];
           var isLine = feature.getGeometry().getType() ===
               ol.geom.GeometryType.LINE_STRING;
-          if (!!feature.get('__map_id__')) {
-            this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
-            this.translateInteraction_.setActive(
-                this.appMymaps_.isEditable() && !isLine);
+          if (feature.get('__isCircle__')) {
+            console.log('this is a circle');
+            this.modifyInteraction_.setActive(false);
+            this.translateInteraction_.setActive(false);
           } else {
-            this.modifyInteraction_.setActive(true);
-            this.translateInteraction_.setActive(true && !isLine);
+            if (!!feature.get('__map_id__')) {
+              this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
+              this.translateInteraction_.setActive(
+                  this.appMymaps_.isEditable() && !isLine);
+            } else {
+              this.modifyInteraction_.setActive(true);
+              this.translateInteraction_.setActive(true && !isLine);
+            }
           }
           this.featurePopup_.show(feature, this.map,
               evt.mapBrowserEvent.coordinate);
@@ -411,6 +417,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
+    feature.set('__isCircle__', true);
     feature.setGeometry(
         ol.geom.Polygon.fromCircle(featureGeom)
     );
@@ -432,7 +439,11 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       name = this.translate_.getString('LineString');
       break;
     case 'Polygon':
-      name = this.translate_.getString('Polygon');
+      if (feature.get('__isCircle__')) {
+        name = this.translate_.getString('Circle');
+      } else {
+        name = this.translate_.getString('Polygon');
+      }
       break;
   }
   feature.set('name', name + ' ' +
