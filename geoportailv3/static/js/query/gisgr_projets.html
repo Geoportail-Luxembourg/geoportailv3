@@ -1,0 +1,41 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <table class="table table-condensed">
+    <tr ng-if="ctrl['language']=='fr' && feature.attributes['Projet']">
+        <td translate >f_Projet</td> 
+        <td> {{feature.attributes['Projet']}}</td>
+    </tr>
+    <tr ng-if="ctrl['language']!='fr' && feature.attributes['Projekt']">
+        <td translate >f_Projekt</td> 
+        <td> {{feature.attributes['Projekt']}}</td>
+    </tr>
+    <tr ng-if="ctrl['language']=='fr' && feature.attributes['Type_pro'] && feature.attributes['Type_pro']!=''">
+        <td translate>f_Type_pro</td> 
+        <td> {{feature.attributes['Type_pro']}}</td>
+    </tr>
+    <tr ng-if="ctrl['language']!='fr' && feature.attributes['Pro_Typ'] && feature.attributes['Pro_Typ']!=''">
+        <td translate>f_Pro_Typ</td> 
+        <td> {{feature.attributes['Pro_Typ']}}</td>
+    </tr>
+    <tr ng-if="feature.attributes['Priorite / Prioritat']">
+        <td translate>f_Priorite_Prioritat</td> 
+        <td> {{feature.attributes['Priorite / Prioritat']}}</td>
+    </tr>
+    <tr ng-if="feature.attributes['Priorite_Prioritat']">
+        <td translate>f_Priorite_Prioritat</td> 
+        <td> {{feature.attributes['Priorite_Prioritat']}}</td>
+    </tr>
+    <tr ng-if="feature.attributes['Categorie__Kategorie']">
+        <td translate>f_Categorie__Kategorie</td> 
+        <td> {{feature.attributes['Categorie__Kategorie']}}</td>
+    </tr>
+    <tr ng-if="feature.attributes['Envergure / Tragweite']">
+        <td translate>f_Envergure_Tragweite</td> 
+        <td> {{feature.attributes['Envergure / Tragweite']}}</td>
+    </tr>
+    <tr ng-if="feature.attributes['Envergure_Tragweite']">
+        <td translate>f_Envergure_Tragweite</td> 
+        <td> {{feature.attributes['Envergure_Tragweite']}}</td>
+    </tr>
+   </table>
+</div>
