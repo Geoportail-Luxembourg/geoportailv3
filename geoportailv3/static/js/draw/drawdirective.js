@@ -281,7 +281,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-
+        this.activateModifyIfNeeded_(feature);
         var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
@@ -305,22 +305,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
-          var isLine = feature.getGeometry().getType() ===
-              ol.geom.GeometryType.LINE_STRING;
-          if (feature.get('__isCircle__')) {
-            console.log('this is a circle');
-            this.modifyInteraction_.setActive(false);
-            this.translateInteraction_.setActive(false);
-          } else {
-            if (!!feature.get('__map_id__')) {
-              this.modifyInteraction_.setActive(this.appMymaps_.isEditable());
-              this.translateInteraction_.setActive(
-                  this.appMymaps_.isEditable() && !isLine);
-            } else {
-              this.modifyInteraction_.setActive(true);
-              this.translateInteraction_.setActive(true && !isLine);
-            }
-          }
+          this.activateModifyIfNeeded_(feature);
           this.featurePopup_.show(feature, this.map,
               evt.mapBrowserEvent.coordinate);
         } else {
@@ -371,6 +356,31 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
 
   this.drawnFeatures_.drawFeaturesInUrl();
+};
+
+
+/**
+ * @param {ol.Feature} feature The feature.
+ * @private
+ */
+app.DrawController.prototype.activateModifyIfNeeded_ = function(feature) {
+  var isTranlationActive = true;
+  var isModifyInteractionActive = true;
+  if (!!feature.get('__isCircle__')) {
+    isModifyInteractionActive = false;
+    if (!!feature.get('__map_id__')) {
+      isTranlationActive = this.appMymaps_.isEditable();
+    }
+  } else {
+    var isLine = feature.getGeometry().getType() ===
+        ol.geom.GeometryType.LINE_STRING;
+    if (!!feature.get('__map_id__')) {
+      isModifyInteractionActive = this.appMymaps_.isEditable();
+      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+    }
+  }
+  this.modifyInteraction_.setActive(isModifyInteractionActive);
+  this.translateInteraction_.setActive(isTranlationActive);
 };
 
 
