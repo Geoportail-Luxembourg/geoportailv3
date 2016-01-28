@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{layers.layerLabel | translate}}</h1>
+    <div ng-repeat="feature in layers.features" class="poi-feature">
+      <h4>{{feature.attributes.label | translate }}</h4>
+      <table class="table table-condensed">
+        <tr ng-if="ctrl.hasAttributes(feature)" ng-repeat="(key, value) in feature.attributes">
+          <th>{{("f_" + key) | translate}}</th> <td ng-if="value.indexOf('http://')!=0" ng-bind-html="ctrl.trustAsHtml(value)"></td>
+          <td ng-if="value.indexOf('http://')==0"><a target="_blank" href="{{value}}">{{value}}</a></td>
+        </tr>
+        <tr ng-if="!ctrl.hasAttributes(feature)">
+          <td translate>Aucune information disponible pour cette couche</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
