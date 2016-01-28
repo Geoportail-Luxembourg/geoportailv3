@@ -290,7 +290,7 @@ app.MainController.prototype.setMap_ = function() {
     ],
     view: new ol.View({
       maxZoom: 19,
-      minZoom: 8,
+      minZoom: 7,
       extent: this.maxExtent_
     })
   });
