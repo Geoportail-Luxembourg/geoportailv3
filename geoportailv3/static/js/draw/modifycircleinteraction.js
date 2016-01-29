@@ -378,7 +378,7 @@ app.ModifyCircle.handleDragEvent_ = function(evt) {
    * @type {ol.geom.Circle}
    */
   var circle = new ol.geom.Circle(center, line.getLength());
-  var coordinates = ol.geom.Polygon.fromCircle(circle).getCoordinates();
+  var coordinates = ol.geom.Polygon.fromCircle(circle, 64).getCoordinates();
   this.setGeometryCoordinates_(geometry, coordinates);
 
   this.createOrUpdateVertexFeature_(vertex);

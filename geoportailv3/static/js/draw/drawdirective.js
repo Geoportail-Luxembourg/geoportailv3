@@ -406,7 +406,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
     feature.set('isCircle', true);
     feature.setGeometry(
-        ol.geom.Polygon.fromCircle(featureGeom)
+        ol.geom.Polygon.fromCircle(featureGeom, 64)
     );
   }
 
