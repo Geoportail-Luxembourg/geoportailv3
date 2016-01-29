@@ -404,7 +404,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   var feature = event.feature;
   if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
-    feature.set('__isCircle__', true);
+    feature.set('isCircle', true);
     feature.setGeometry(
         ol.geom.Polygon.fromCircle(featureGeom)
     );
@@ -426,7 +426,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       name = this.translate_.getString('LineString');
       break;
     case 'Polygon':
-      if (feature.get('__isCircle__')) {
+      if (feature.get('isCircle')) {
         name = this.translate_.getString('Circle');
       } else {
         name = this.translate_.getString('Polygon');

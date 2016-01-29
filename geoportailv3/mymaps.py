@@ -111,6 +111,7 @@ class Feature(Base):
     color = Column(Unicode(255))
     stroke = Column(Integer, default=2)
     is_label = Column(Boolean, default=False)
+    is_circle = Column(Boolean, default=False)
     linestyle = Column(Integer, default=0)
     show_orientation = Column(Boolean, default=False)
     geometry = Column(Geometry(srid=2169))
@@ -134,6 +135,7 @@ class Feature(Base):
         self.color = feature.properties.get('color')
         self.stroke = feature.properties.get('stroke')
         self.is_label = feature.properties.get('isLabel')
+        self.is_circle = feature.properties.get('isCircle')
         self.show_orientation = feature.properties.get('showOrientation')
         linestyle = feature.properties.get('linestyle')
         self.linestyle = 0 if linestyle == 'plain' else 1
@@ -216,6 +218,7 @@ class Feature(Base):
                           color=self.color,
                           stroke=self.stroke,
                           isLabel=self.is_label,
+                          isCircle=self.is_circle,
                           showOrientation=self.show_orientation,
                           linestyle=self.linestyle,
                           id=self.id,

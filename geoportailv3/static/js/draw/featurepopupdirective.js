@@ -580,7 +580,7 @@ app.FeaturePopupController.prototype.isLineString = function() {
  */
 app.FeaturePopupController.prototype.isCircle = function() {
   if (this.feature) {
-    return !!this.feature.get('__isCircle__');
+    return !!this.feature.get('isCircle');
   }
   return false;
 };

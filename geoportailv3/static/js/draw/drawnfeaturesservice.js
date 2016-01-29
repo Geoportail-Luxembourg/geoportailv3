@@ -71,9 +71,10 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
     'linestyle': 'l',
     'name' : 'n',
     'opacity': 'o',
+    'showOrientation': 'r',
     'shape': 's',
     'size': 't',
-    'showOrientation': 'r'
+    'isCircle': 'u'
   };
 
   /**
@@ -223,6 +224,8 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('angle', +angle);
       var isLabel = /** @type {string} */ (feature.get('isLabel'));
       feature.set('isLabel', isLabel === 'true');
+      var isCircle = /** @type {string} */ (feature.get('isCircle'));
+      feature.set('isCircle', isCircle === 'true');
       var showOrientation = /** @type {string} */
           (feature.get('showOrientation'));
       feature.set('showOrientation', showOrientation === 'true');
@@ -330,7 +333,7 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   var isModifyInteractionActive = true;
   var isModifyCircleActive = false;
 
-  if (!!feature.get('__isCircle__')) {
+  if (!!feature.get('isCircle')) {
     isModifyInteractionActive = false;
     if (!!feature.get('__map_id__')) {
       isTranlationActive = this.appMymaps_.isEditable();
