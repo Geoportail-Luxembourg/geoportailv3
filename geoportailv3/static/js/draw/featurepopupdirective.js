@@ -358,8 +358,24 @@ app.FeaturePopupController.prototype.getArea = function() {
   } else {
     return '';
   }
+};
 
 
+/**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getRadius = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.isCircle()) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var center = ol.extent.getCenter(geom.getExtent());
+    var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
+    return this.appFeaturePopup_.formatRadius(line);
+  } else {
+    return '';
+  }
 };
 
 
