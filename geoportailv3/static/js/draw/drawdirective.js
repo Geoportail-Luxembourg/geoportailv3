@@ -22,6 +22,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.MeasureEvent');
 goog.require('app.MeasureEventType');
 goog.require('app.MeasureLength');
+goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
@@ -237,7 +238,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.onDrawEnd_(event);
       }, false, this);
 
-
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -281,7 +281,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        this.activateModifyIfNeeded_(feature);
+        this.drawnFeatures_.activateModifyIfNeeded(feature);
         var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
@@ -305,7 +305,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
-          this.activateModifyIfNeeded_(feature);
+          this.drawnFeatures_.activateModifyIfNeeded(feature);
           this.featurePopup_.show(feature, this.map,
               evt.mapBrowserEvent.coordinate);
         } else {
@@ -317,25 +317,33 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
     features: appSelectedFeatures
   });
+  this.drawnFeatures_.modifyCircleInteraction =
+      new app.ModifyCircle({
+        features: appSelectedFeatures
+      });
+  /**
+   * @type {app.ModifyCircle}
+   * @private
+   */
+  this.modifyCircleInteraction_ = this.drawnFeatures_.modifyCircleInteraction;
+  this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
+  this.modifyCircleInteraction_.setActive(false);
+  goog.events.listen(this.modifyCircleInteraction_,
+      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, false, this);
+
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   goog.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, false, this);
   goog.events.listen(this.drawLine, app.MeasureEventType.MODIFYMEASUREEND,
       this.onFeatureModifyMeasureEnd_, false, this);
 
-  /**
-   * @type {ol.interaction.Modify}
-   * @private
-   */
-  this.modifyInteraction_ = this.drawnFeatures_.modifyInteraction;
-
-  var translateInteraction = new ol.interaction.Translate({
+  this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
   });
-  this.map.addInteraction(translateInteraction);
+  this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
   goog.events.listen(
-      translateInteraction,
+      this.drawnFeatures_.translateInteraction,
       ol.interaction.TranslateEventType.TRANSLATEEND,
       /**
        * @param {ol.interaction.TranslateEvent} evt
@@ -346,41 +354,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.onFeatureModifyEnd_(evt);
       }, false, this);
 
-  /**
-   * @type {ol.interaction.Translate}
-   * @private
-   */
-  this.translateInteraction_ = translateInteraction;
-
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
 
   this.drawnFeatures_.drawFeaturesInUrl();
-};
-
-
-/**
- * @param {ol.Feature} feature The feature.
- * @private
- */
-app.DrawController.prototype.activateModifyIfNeeded_ = function(feature) {
-  var isTranlationActive = true;
-  var isModifyInteractionActive = true;
-  if (!!feature.get('__isCircle__')) {
-    isModifyInteractionActive = false;
-    if (!!feature.get('__map_id__')) {
-      isTranlationActive = this.appMymaps_.isEditable();
-    }
-  } else {
-    var isLine = feature.getGeometry().getType() ===
-        ol.geom.GeometryType.LINE_STRING;
-    if (!!feature.get('__map_id__')) {
-      isModifyInteractionActive = this.appMymaps_.isEditable();
-      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
-    }
-  }
-  this.modifyInteraction_.setActive(isModifyInteractionActive);
-  this.translateInteraction_.setActive(isTranlationActive);
 };
 
 
@@ -403,7 +380,7 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
 app.DrawController.prototype.onFeatureModifyMeasureEnd_ = function(event) {
   this.scope_.$applyAsync(goog.bind(function() {
     this.drawnFeatures_.saveFeature(event.feature);
-    this.modifyInteraction_.setActive(true);
+    this.drawnFeatures_.activateModifyIfNeeded(event.feature);
   }, this));
 };
 

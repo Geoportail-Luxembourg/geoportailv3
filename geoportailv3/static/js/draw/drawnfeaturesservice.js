@@ -32,6 +32,16 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   this.modifyInteraction;
 
   /**
+   * @type {app.ModifyCircle}
+   */
+  this.modifyCircleInteraction;
+
+  /**
+   * @type {ol.interaction.Translate}
+   */
+  this.translateInteraction;
+
+  /**
    * @type {app.Mymaps}
    * @private
    */
@@ -309,6 +319,36 @@ app.DrawnFeatures.prototype.getArray = function() {
  */
 app.DrawnFeatures.prototype.getCollection = function() {
   return this.features;
+};
+
+
+/**
+ * @param {ol.Feature} feature The feature.
+ */
+app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
+  var isTranlationActive = true;
+  var isModifyInteractionActive = true;
+  var isModifyCircleActive = false;
+
+  if (!!feature.get('__isCircle__')) {
+    isModifyInteractionActive = false;
+    if (!!feature.get('__map_id__')) {
+      isTranlationActive = this.appMymaps_.isEditable();
+      isModifyCircleActive = this.appMymaps_.isEditable();
+    } else {
+      isModifyCircleActive = true;
+    }
+  } else {
+    var isLine = feature.getGeometry().getType() ===
+        ol.geom.GeometryType.LINE_STRING;
+    if (!!feature.get('__map_id__')) {
+      isModifyInteractionActive = this.appMymaps_.isEditable();
+      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+    }
+  }
+  this.modifyInteraction.setActive(isModifyInteractionActive);
+  this.modifyCircleInteraction.setActive(isModifyCircleActive);
+  this.translateInteraction.setActive(isTranlationActive);
 };
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);

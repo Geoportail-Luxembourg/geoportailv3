@@ -535,6 +535,17 @@ app.FeaturePopupController.prototype.reverseLine = function() {
 
 
 /**
+ * @export
+ */
+app.FeaturePopupController.prototype.modifyCircle = function() {
+  if (this.feature) {
+    this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+  }
+  this.appFeaturePopup_.toggleDropdown();
+};
+
+
+/**
  * @return {boolean}
  * @export
  */
@@ -542,6 +553,18 @@ app.FeaturePopupController.prototype.isLineString = function() {
   if (this.feature) {
     return this.feature.getGeometry().getType() ===
         ol.geom.GeometryType.LINE_STRING;
+  }
+  return false;
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.FeaturePopupController.prototype.isCircle = function() {
+  if (this.feature) {
+    return !!this.feature.get('__isCircle__');
   }
   return false;
 };
