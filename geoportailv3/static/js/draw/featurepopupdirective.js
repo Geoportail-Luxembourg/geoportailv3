@@ -530,6 +530,8 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
     this.drawnFeatures_.modifyInteraction.setActive(false);
+    this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+    this.drawnFeatures_.translateInteraction.setActive(false);
     this.drawnFeatures_.drawLineInteraction.continueLine(this.feature);
   }
   this.appFeaturePopup_.toggleDropdown();

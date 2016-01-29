@@ -342,7 +342,6 @@ app.Measure.prototype.onDrawEnd_ = function(evt) {
   this.measureTooltipOverlay_.setOffset([0, -7]);
   if (this.modifyMode) {
     this.modifyMode = false;
-    this.setActive(false);
     this.dispatchEvent(
         new app.MeasureEvent(app.MeasureEventType.MODIFYMEASUREEND,
         this.sketchFeature));

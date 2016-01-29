@@ -24,7 +24,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   /**
    * @type {app.MeasureLength}
    */
-  this.drawLineInteraction = new app.MeasureLength();
+  this.drawLineInteraction;
 
   /**
    * @type {ol.interaction.Modify}
@@ -347,6 +347,8 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
     if (!!feature.get('__map_id__')) {
       isModifyInteractionActive = this.appMymaps_.isEditable();
       isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+    } else {
+      isTranlationActive = !isLine;
     }
   }
   this.modifyInteraction.setActive(isModifyInteractionActive);

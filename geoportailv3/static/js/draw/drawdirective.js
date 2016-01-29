@@ -178,6 +178,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   goog.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, false, this);
 
+  this.drawnFeatures_.drawLineInteraction = new app.MeasureLength();
   /**
    * @type {app.MeasureLength}
    * @export
@@ -249,6 +250,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawLine.setActive(false);
       this.drawPolygon.setActive(false);
       this.drawCircle.setActive(false);
+      this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+      this.drawnFeatures_.modifyInteraction.setActive(false);
       this['queryActive'] = true;
     } else {
       this['queryActive'] = false;
@@ -378,7 +381,16 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
  * @private
  */
 app.DrawController.prototype.onFeatureModifyMeasureEnd_ = function(event) {
+  // Deactivating asynchronosly to prevent dbl-click to zoom in
+  window.setTimeout(goog.bind(function() {
+    this.scope_.$apply(function() {
+      event.target.setActive(false);
+    });
+  }, this), 0);
+
   this.scope_.$applyAsync(goog.bind(function() {
+    this.selectedFeatures_.clear();
+    this.selectedFeatures_.push(event.feature);
     this.drawnFeatures_.saveFeature(event.feature);
     this.drawnFeatures_.activateModifyIfNeeded(event.feature);
   }, this));

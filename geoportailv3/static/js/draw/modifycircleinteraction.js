@@ -150,16 +150,18 @@ goog.inherits(app.ModifyCircle, ol.interaction.Pointer);
  * @private
  */
 app.ModifyCircle.prototype.addFeature_ = function(feature) {
+  if (feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      !!feature.get('isCircle')) {
+    var geometry = /** @type {ol.geom.Polygon}*/ (feature.getGeometry());
+    this.writeCircleGeometry_(feature, geometry);
 
-  var geometry = /** @type {ol.geom.Polygon}*/ (feature.getGeometry());
-  this.writeCircleGeometry_(feature, geometry);
-
-  var map = this.getMap();
-  if (map) {
-    this.handlePointerAtPixel_(this.lastPixel_, map);
+    var map = this.getMap();
+    if (map) {
+      this.handlePointerAtPixel_(this.lastPixel_, map);
+    }
+    goog.events.listen(feature, goog.events.EventType.CHANGE,
+        this.handleFeatureChange_, false, this);
   }
-  goog.events.listen(feature, goog.events.EventType.CHANGE,
-      this.handleFeatureChange_, false, this);
 };
 
 
