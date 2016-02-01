@@ -1074,7 +1074,8 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
         // arrows
         styles.push(new ol.style.Style({
-          geometry: new ol.geom.Point(end),
+          geometry: new ol.geom.Point(
+              [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]),
           text: textOrientation
         }));
       });
