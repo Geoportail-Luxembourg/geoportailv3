@@ -1056,6 +1056,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
       var orientationOptions = {
         font: fontWidth + ' sans-serif',
         text: '>',
+        textAlign: 'start',
         fill: new ol.style.Fill({
           color: color
         }),
@@ -1164,13 +1165,14 @@ app.Mymaps.prototype.createStyleFunction = function() {
       return [new ol.style.Style({
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
+          textAlign: 'start',
           font: this.get('size') + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
             color: color
           }),
           stroke: new ol.style.Stroke({
-            color: 'white',
+            color: '#FFFFFF',
             width: 2
           })
         }))
