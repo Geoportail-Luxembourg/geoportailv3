@@ -14,6 +14,7 @@ from pyramid.paster import get_app, setup_logging
 import os
 os.environ['http_proxy'] = '${http_proxy}'
 os.environ['https_proxy'] = '${http_proxy}'
+os.environ['no_proxy'] = 'localhost'
 % endif
 
 configfile = "${directory}/${'development' if development == 'TRUE' else 'production'}.ini"
