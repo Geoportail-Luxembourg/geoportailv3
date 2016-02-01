@@ -24,12 +24,22 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   /**
    * @type {app.MeasureLength}
    */
-  this.drawLineInteraction = new app.MeasureLength();
+  this.drawLineInteraction;
 
   /**
    * @type {ol.interaction.Modify}
    */
   this.modifyInteraction;
+
+  /**
+   * @type {app.ModifyCircle}
+   */
+  this.modifyCircleInteraction;
+
+  /**
+   * @type {ol.interaction.Translate}
+   */
+  this.translateInteraction;
 
   /**
    * @type {app.Mymaps}
@@ -61,9 +71,10 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
     'linestyle': 'l',
     'name' : 'n',
     'opacity': 'o',
+    'showOrientation': 'r',
     'shape': 's',
     'size': 't',
-    'showOrientation': 'r'
+    'isCircle': 'u'
   };
 
   /**
@@ -213,6 +224,8 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('angle', +angle);
       var isLabel = /** @type {string} */ (feature.get('isLabel'));
       feature.set('isLabel', isLabel === 'true');
+      var isCircle = /** @type {string} */ (feature.get('isCircle'));
+      feature.set('isCircle', isCircle === 'true');
       var showOrientation = /** @type {string} */
           (feature.get('showOrientation'));
       feature.set('showOrientation', showOrientation === 'true');
@@ -309,6 +322,38 @@ app.DrawnFeatures.prototype.getArray = function() {
  */
 app.DrawnFeatures.prototype.getCollection = function() {
   return this.features;
+};
+
+
+/**
+ * @param {ol.Feature} feature The feature.
+ */
+app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
+  var isTranlationActive = true;
+  var isModifyInteractionActive = true;
+  var isModifyCircleActive = false;
+
+  if (!!feature.get('isCircle')) {
+    isModifyInteractionActive = false;
+    if (!!feature.get('__map_id__')) {
+      isTranlationActive = this.appMymaps_.isEditable();
+      isModifyCircleActive = this.appMymaps_.isEditable();
+    } else {
+      isModifyCircleActive = true;
+    }
+  } else {
+    var isLine = feature.getGeometry().getType() ===
+        ol.geom.GeometryType.LINE_STRING;
+    if (!!feature.get('__map_id__')) {
+      isModifyInteractionActive = this.appMymaps_.isEditable();
+      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+    } else {
+      isTranlationActive = !isLine;
+    }
+  }
+  this.modifyInteraction.setActive(isModifyInteractionActive);
+  this.modifyCircleInteraction.setActive(isModifyCircleActive);
+  this.translateInteraction.setActive(isTranlationActive);
 };
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);

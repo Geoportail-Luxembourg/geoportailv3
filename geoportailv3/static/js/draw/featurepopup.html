@@ -5,10 +5,16 @@
   </div>
   <div class="feature-popup-body measurements">
     <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
-    <span ng-hide="ctrl.getLength() == false" translate>Length: </span>
-    <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span>
-    <span ng-hide="ctrl.getArea() == false" translate>Area: </span>
-    <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
+    <div ng-hide="ctrl.getLength() == false"><span translate>Length: </span>
+      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span></div>
+    <div ng-hide="ctrl.getArea() == false">
+      <span translate>Area: </span>
+      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
+    </div>
+    <div ng-show="ctrl.isCircle()">
+      <span translate>Rayon: </span>
+      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getRadius())"></span>
+    </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
     <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
       <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile">

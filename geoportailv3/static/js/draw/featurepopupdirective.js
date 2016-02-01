@@ -358,8 +358,24 @@ app.FeaturePopupController.prototype.getArea = function() {
   } else {
     return '';
   }
+};
 
 
+/**
+ * @return {string}
+ * @export
+ */
+app.FeaturePopupController.prototype.getRadius = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.isCircle()) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var center = ol.extent.getCenter(geom.getExtent());
+    var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
+    return this.appFeaturePopup_.formatRadius(line);
+  } else {
+    return '';
+  }
 };
 
 
@@ -514,6 +530,8 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
     this.drawnFeatures_.modifyInteraction.setActive(false);
+    this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+    this.drawnFeatures_.translateInteraction.setActive(false);
     this.drawnFeatures_.drawLineInteraction.continueLine(this.feature);
   }
   this.appFeaturePopup_.toggleDropdown();
@@ -535,6 +553,17 @@ app.FeaturePopupController.prototype.reverseLine = function() {
 
 
 /**
+ * @export
+ */
+app.FeaturePopupController.prototype.modifyCircle = function() {
+  if (this.feature) {
+    this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+  }
+  this.appFeaturePopup_.toggleDropdown();
+};
+
+
+/**
  * @return {boolean}
  * @export
  */
@@ -542,6 +571,18 @@ app.FeaturePopupController.prototype.isLineString = function() {
   if (this.feature) {
     return this.feature.getGeometry().getType() ===
         ol.geom.GeometryType.LINE_STRING;
+  }
+  return false;
+};
+
+
+/**
+ * @return {boolean}
+ * @export
+ */
+app.FeaturePopupController.prototype.isCircle = function() {
+  if (this.feature) {
+    return !!this.feature.get('isCircle');
   }
   return false;
 };

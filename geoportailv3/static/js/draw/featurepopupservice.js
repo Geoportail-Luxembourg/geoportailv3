@@ -256,6 +256,18 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
 
 
 /**
+ * @param {ol.geom.LineString} line
+ * @return {string}
+ */
+app.FeaturePopup.prototype.formatRadius = function(line) {
+  return ngeo.interaction.Measure.getFormattedLength(
+      line,
+      this.map.getView().getProjection()
+  );
+};
+
+
+/**
  * @param {(ol.geom.LineString|ol.geom.Polygon)} line
  * @return {string}
  */
