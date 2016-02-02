@@ -455,6 +455,22 @@ app.QueryController.prototype.hasAttributes = function(feature) {
 
 
 /**
+ * Has the object at least one attribute.
+ * @param {Object} feature
+ * @param {string} name The name of the attribute.
+ * @return {boolean} true Return if attribute is present.
+ * @export
+ */
+app.QueryController.prototype.hasFeatureAttribute = function(feature, name) {
+  if (feature['attributes'] && Object.keys(feature['attributes']).length > 0 &&
+      !!feature['attributes'][name]) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
  * has the object at least one attribute
  * @param {Array} features
  * @param {string} attr Attribute to join
