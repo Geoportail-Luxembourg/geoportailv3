@@ -2,9 +2,6 @@ goog.provide('app.ModifyCircle');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Collection');
@@ -14,7 +11,7 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
-goog.require('ol.events.condition');
+goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -136,10 +133,10 @@ app.ModifyCircle = function(options) {
   this.features_ = options.features;
 
   this.features_.forEach(this.addFeature_, this);
-  goog.events.listen(this.features_, ol.CollectionEventType.ADD,
-      this.handleFeatureAdd_, false, this);
-  goog.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-      this.handleFeatureRemove_, false, this);
+  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+      this.handleFeatureAdd_, this);
+  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+      this.handleFeatureRemove_, this);
 
 };
 goog.inherits(app.ModifyCircle, ol.interaction.Pointer);
@@ -159,8 +156,8 @@ app.ModifyCircle.prototype.addFeature_ = function(feature) {
     if (map) {
       this.handlePointerAtPixel_(this.lastPixel_, map);
     }
-    goog.events.listen(feature, goog.events.EventType.CHANGE,
-        this.handleFeatureChange_, false, this);
+    ol.events.listen(feature, ol.events.EventType.CHANGE,
+        this.handleFeatureChange_, this);
   }
 };
 
@@ -190,8 +187,8 @@ app.ModifyCircle.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  goog.events.unlisten(feature, goog.events.EventType.CHANGE,
-      this.handleFeatureChange_, false, this);
+  ol.events.unlisten(feature, ol.events.EventType.CHANGE,
+      this.handleFeatureChange_, this);
 };
 
 
@@ -239,7 +236,7 @@ app.ModifyCircle.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {goog.events.Event} evt Event.
+ * @param {ol.events.Event} evt Event.
  * @private
  */
 app.ModifyCircle.prototype.handleFeatureChange_ = function(evt) {

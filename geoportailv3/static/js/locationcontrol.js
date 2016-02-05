@@ -7,7 +7,6 @@ goog.provide('app.LocationControl');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
-goog.require('goog.events');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
@@ -15,6 +14,7 @@ goog.require('ol.Geolocation');
 goog.require('ol.GeolocationProperty');
 goog.require('ol.Object');
 goog.require('ol.control.Control');
+goog.require('ol.events');
 goog.require('ol.geom.Point');
 
 
@@ -81,15 +81,12 @@ app.LocationControl = function(options) {
    */
   this.element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      this.handleClick_, this);
 
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
+  ol.events.listen(button, ol.events.EventType.MOUSEOUT, function() {
     this.blur();
-  }, false);
+  });
 
   goog.base(this, {
     element: this.element,
@@ -101,7 +98,7 @@ goog.inherits(app.LocationControl, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {ol.MapBrowserEvent} event The event to handle
  * @private
  */
 app.LocationControl.prototype.handleClick_ = function(event) {
@@ -143,7 +140,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
     })
   });
 
-  goog.events.listen(this.geolocation_,
+  ol.events.listen(this.geolocation_,
       ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       /**
        * @param {ol.ObjectEvent} e Object event.
@@ -154,9 +151,9 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
         } else {
           goog.dom.classlist.swap(this.element, 'tracker-on', 'tracker-off');
         }
-      }, false, this);
+      }, this);
 
-  goog.events.listen(this.geolocation_,
+  ol.events.listen(this.geolocation_,
       ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
       /**
        * @param {ol.ObjectEvent} e Object event.
@@ -166,9 +163,9 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
             (this.geolocation_.getPosition());
         this.positionFeature_.setGeometry(new ol.geom.Point(position));
         this.getMap().getView().setCenter(position);
-      }, false, this);
+      }, this);
 
-  goog.events.listen(this.geolocation_,
+  ol.events.listen(this.geolocation_,
       ol.Object.getChangeEventType(ol.GeolocationProperty.ACCURACY_GEOMETRY),
       /**
        * @param {ol.ObjectEvent} e Object event.
@@ -176,7 +173,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
       function(e) {
         this.accuracyFeature_.setGeometry(
             this.geolocation_.getAccuracyGeometry());
-      }, false, this);
+      }, this);
 
 };
 

@@ -18,7 +18,7 @@
     "less": "~1.7.5",
     "ngeo": "git+https://github.com/camptocamp/ngeo#master",
     "nomnom": "~1.6.2",
-    "openlayers": "git+https://github.com/openlayers/ol3#master",
+    "openlayers": "git+https://github.com/openlayers/ol3#ff1f447",
     "proj4": "2.3.3",
     "phantomjs": "~1.9.7-5",
     "typeahead.js": "~0.11.1",

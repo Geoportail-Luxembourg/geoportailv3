@@ -202,7 +202,7 @@ app.LocationinfoController = function(
     }
   }
 
-  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
+  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
       goog.bind(function(event) {
         if (!appSelectedFeatures.getLength()) {
           if (event.originalEvent.which === 3) { // if right mouse click
@@ -217,15 +217,15 @@ app.LocationinfoController = function(
             }, 500, false);
           }
         }
-      }, this), false, this);
+      }, this), this);
 
-  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
+  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
       goog.bind(function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
-      }, this), false, this);
+      }, this), this);
 
-  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       goog.bind(function(event) {
         if (startPixel) {
           var pixel = event.pixel;
@@ -236,7 +236,7 @@ app.LocationinfoController = function(
             startPixel = null;
           }
         }
-      }, this), false, this);
+      }, this), this);
 
   this['map'].getViewport()
     .addEventListener('contextmenu', goog.bind(function(event) {

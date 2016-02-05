@@ -23,6 +23,7 @@ goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.Object');
+goog.require('ol.events');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
@@ -210,7 +211,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   ngeoDecorateInteraction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
-  goog.events.listen(measureAzimut, ngeo.MeasureEventType.MEASUREEND,
+  ol.events.listen(measureAzimut, ngeo.MeasureEventType.MEASUREEND,
       goog.bind(function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
@@ -232,7 +233,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
         }, this));
       }, this));
 
-  goog.events.listen(measureProfile, ngeo.MeasureEventType.MEASUREEND,
+  ol.events.listen(measureProfile, ngeo.MeasureEventType.MEASUREEND,
       /**
        * @param {ngeo.MeasureEvent} evt Measure event.
        */
@@ -242,9 +243,9 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
             goog.bind(function(resp) {
               this['profileData'] = resp;
             }, this));
-      }, undefined, this);
+      }, this);
 
-  goog.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
+  ol.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
       /**
        * @param {ol.ObjectEvent} evt Change active event.
        */
@@ -253,7 +254,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
           this['profileData'] = undefined;
           $scope.$applyAsync();
         }
-      }, undefined, this);
+      }, this);
 
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.

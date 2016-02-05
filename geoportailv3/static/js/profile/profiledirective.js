@@ -152,7 +152,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr) {
   this.featureOverlay_.addFeature(this.snappedPoint_);
 
 
-  goog.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -162,7 +162,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr) {
         }
         var coordinate = this['map'].getEventCoordinate(evt.originalEvent);
         this.snapToGeometry_(coordinate, this.line_);
-      }, undefined, this);
+      }, this);
 
 
   /**

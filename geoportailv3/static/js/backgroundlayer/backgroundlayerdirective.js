@@ -72,10 +72,10 @@ app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
         this.setLayer(this['bgLayer']);
       }, this));
 
-  goog.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
+  ol.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
       function() {
         this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
-      }, undefined, this);
+      }, this);
 };
 
 
