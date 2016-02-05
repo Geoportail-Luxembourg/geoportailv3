@@ -10,7 +10,10 @@ goog.require('ol.proj');
 
 
 /**
- * @typedef {function(ol.geom.Geometry):!angular.$q.Promise}
+ * @typedef {function(
+ *  (ol.geom.MultiLineString|ol.geom.LineString),
+ *  string=):!angular.$q.Promise
+ *  }
  */
 app.GetProfile;
 
@@ -26,10 +29,11 @@ app.getProfile_ = function($http, profileServiceUrl) {
   return getProfile;
 
   /**
-   * @param {ol.geom.Geometry} geom
+   * @param {(ol.geom.MultiLineString|ol.geom.LineString)} geom
+   * @param {string=} opt_id
    * @return {!angular.$q.Promise} Promise providing the short URL.
    */
-  function getProfile(geom) {
+  function getProfile(geom, opt_id) {
     var encOpt = {
       dataProjection: 'EPSG:2169',
       featureProjection: 'EPSG:3857'
@@ -37,13 +41,20 @@ app.getProfile_ = function($http, profileServiceUrl) {
     var req = $.param({
       'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
       'nbPoints': 100,
-      'layers': 'dhm'
+      'layers': 'dhm',
+      'id': opt_id
     });
     var config = {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
     return $http.post(profileServiceUrl, req, config).then(
         function(resp) {
+          var data = /** @type {string} */ (resp.config.data);
+          var q = new goog.Uri.QueryData(data);
+          var id = q.getValues('id')[0];
+          goog.array.forEach(resp.data['profile'], function(element) {
+            element['id'] = id;
+          });
           return resp.data['profile'];
         });
   }

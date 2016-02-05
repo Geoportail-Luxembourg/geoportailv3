@@ -238,7 +238,8 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
        * @param {ngeo.MeasureEvent} evt Measure event.
        */
       function(evt) {
-        var geom = /** @type {ol.geom.Geometry} */ (evt.feature.getGeometry());
+        var geom = /** @type {ol.geom.LineString} */
+            (evt.feature.getGeometry());
         this.getProfile_(geom).then(
             goog.bind(function(resp) {
               this['profileData'] = resp;
