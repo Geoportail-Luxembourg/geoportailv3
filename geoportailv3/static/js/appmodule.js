@@ -14,7 +14,7 @@ goog.require('ol.has');
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeoModule.name, 'gettext'])
+app.module = angular.module('app', [ngeo.module.name, 'gettext'])
     .run(function() {
       if (!ol.has.TOUCH) {
         goog.dom.classlist.add(document.body, 'no-touch');
