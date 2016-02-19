@@ -251,7 +251,8 @@ app.FeaturePopup.prototype.getAnchor = function(feature) {
 app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
-      this.map.getView().getProjection()
+      this.map.getView().getProjection(),
+      null
   );
 };
 
@@ -263,7 +264,8 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
 app.FeaturePopup.prototype.formatRadius = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       line,
-      this.map.getView().getProjection()
+      this.map.getView().getProjection(),
+      null
   );
 };
 
@@ -277,7 +279,8 @@ app.FeaturePopup.prototype.formatLength = function(line) {
       line.getCoordinates()[0] : line.getCoordinates();
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
-      this.map.getView().getProjection()
+      this.map.getView().getProjection(),
+      null
   );
 };
 
