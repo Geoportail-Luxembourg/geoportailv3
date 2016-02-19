@@ -15,8 +15,14 @@
         <tr ng-repeat="(key, value) in ctrl.location">
           <th>{{key | translate}} </th> <td>{{ value }}</td>
         </tr>
-        <tr> 
+        <tr>
           <th translate>Elevation</th> <td>{{ ctrl.elevation }}</td>
+        </tr>
+        <tr>
+          <th translate>Adresse la plus proche</th> <td>{{ ctrl.address }}</td>
+        </tr>
+        <tr>
+          <th translate>Distance approximative</th> <td>{{ ctrl.distance }} <span translate> mètres</span></td>
         </tr>
       </table>
     </div>

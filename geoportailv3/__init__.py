@@ -156,6 +156,11 @@ def main(global_config, **settings):
         "/mymaps/exportgpxkml",
         request_method="POST"
     )
+    # geocoder routes
+    config.add_route(
+        "reverse_geocode",
+        "/geocode/reverse"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
