@@ -18,7 +18,6 @@ goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.events');
 goog.require('goog.string');
 goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
@@ -26,6 +25,7 @@ goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
 goog.require('ol.animation');
 goog.require('ol.easing');
+goog.require('ol.events');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
@@ -220,7 +220,7 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
   this['printing'] = false;
 
   /**
-   * @type {goog.events.Key}
+   * @type {ol.events.Key?}
    */
   var postcomposeListenerKey = null;
 
@@ -267,10 +267,10 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
     if (open) {
       this.useOptimalScale_();
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
-      postcomposeListenerKey = goog.events.listen(this.map_,
+      postcomposeListenerKey = ol.events.listen(this.map_,
           ol.render.EventType.POSTCOMPOSE, postcomposeListener);
     } else if (!goog.isNull(postcomposeListenerKey)) {
-      goog.events.unlistenByKey(postcomposeListenerKey);
+      ol.Observable.unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
     }
     this.map_.render();

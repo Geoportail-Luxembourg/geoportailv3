@@ -230,7 +230,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     }
   }, this));
 
-  goog.events.listen(this.map_.getLayers(),
+  ol.events.listen(this.map_.getLayers(),
       ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEvent} e Collection event.
@@ -239,9 +239,9 @@ app.QueryController = function($sce, $timeout, $scope, $http,
         if (this['appSelector'] == this.QUERYPANEL_) {
           this.clearQueryResult_(undefined);
         }
-      }, undefined, this);
+      }, this);
 
-  goog.events.listen(this.map_,
+  ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
         if (!this['queryActive'] || this.isQuerying_) return;
 
@@ -258,25 +258,25 @@ app.QueryController = function($sce, $timeout, $scope, $http,
             }
           }
         }
-      }, false, this);
+      }, this);
 
-  goog.events.listen(this.map_,
+  ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.POINTERDOWN, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerDownTime_ = new Date().getTime();
           this.startPixel_ = evt.pixel;
         }
-      }, false, this);
+      }, this);
 
-  goog.events.listen(this.map_,
+  ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.POINTERUP, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerUpTime_ = new Date().getTime();
           this.stopPixel_ = evt.pixel;
         }
-      }, false, this);
+      }, this);
 
-  goog.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;
@@ -300,7 +300,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           });
           this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
-      }, false, this);
+      }, this);
 };
 
 
@@ -316,7 +316,7 @@ app.QueryController.prototype.clearQueryResult_ = function(appSelector) {
 
 
 /**
- * @param {goog.events.Event} evt The map event
+ * @param {ol.events.Event} evt The map event
  * @private
  */
 app.QueryController.prototype.singleclickEvent_ = function(evt) {

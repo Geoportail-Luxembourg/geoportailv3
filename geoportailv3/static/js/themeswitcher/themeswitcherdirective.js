@@ -11,8 +11,8 @@ goog.require('app.Notify');
 goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
-goog.require('goog.events');
 goog.require('ngeo.Location');
+goog.require('ol.events');
 
 
 /**
@@ -81,13 +81,13 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
    */
   this.appNotify_ = appNotify;
 
-  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+  ol.events.listen(appThemes, app.ThemesEventType.LOAD,
       /**
-       * @param {goog.events.Event} evt Event.
+       * @param {ol.events.Event} evt Event.
        */
       function(evt) {
         this.setThemes_();
-      }, undefined, this);
+      }, this);
 
   this.appTheme_.setCurrentTheme(this.appTheme_.getDefaultTheme());
 

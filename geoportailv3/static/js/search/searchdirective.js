@@ -26,6 +26,7 @@ goog.require('ngeo.CreateGeoJSONBloodhound');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.searchDirective');
+goog.require('ol.events');
 
 
 /**
@@ -262,16 +263,16 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         appThemes, backgroundLayerEngine, gettextCatalog);
   }, this));
 
-  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+  ol.events.listen(appThemes, app.ThemesEventType.LOAD,
       /**
-     * @param {goog.events.Event} evt Event
+     * @param {ol.events.Event} evt Event
      */
       function(evt) {
         this.createLocalAllLayerData_(
             appThemes, layerFuseEngine, gettextCatalog);
         this.createLocalBackgroundLayerData_(
             appThemes, backgroundLayerEngine, gettextCatalog);
-      }, undefined, this);
+      }, this);
 
   /** @type {TypeaheadOptions} */
   this['options'] = {
@@ -433,14 +434,14 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     select: goog.bind(app.SearchDirectiveController.selected_, this)
   });
 
-  goog.events.listen(this['map'].getLayers(),
+  ol.events.listen(this['map'].getLayers(),
       ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEvent} e Collection event.
        */
       function(e) {
         this.featureOverlay_.clear();
-      }, undefined, this);
+      }, this);
 };
 
 

@@ -434,10 +434,10 @@ app.MainController.prototype.initMymaps_ = function() {
   }
   this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
-  goog.events.listen(this.map_.getLayerGroup(), 'change',
+  ol.events.listen(this.map_.getLayerGroup(), 'change',
       goog.bind(function() {
         this.compareLayers_();
-      },this), undefined, this);
+      },this), this);
 };
 
 

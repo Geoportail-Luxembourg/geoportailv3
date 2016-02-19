@@ -10,7 +10,7 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
-goog.require('goog.events.EventTarget');
+goog.require('ol.events.EventTarget');
 
 
 /**
@@ -30,7 +30,7 @@ app.ThemesEventType = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.events.EventTarget}
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
  * @param {string} isThemePrivateUrl URL to check if theme is public.
@@ -79,7 +79,7 @@ app.Themes = function($http, treeUrl, isThemePrivateUrl,
    */
   this.promise_ = null;
 };
-goog.inherits(app.Themes, goog.events.EventTarget);
+goog.inherits(app.Themes, ol.events.EventTarget);
 
 
 /**

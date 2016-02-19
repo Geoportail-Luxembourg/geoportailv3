@@ -12,6 +12,7 @@ goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ol.events');
 
 
 
@@ -176,13 +177,13 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
  */
 app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
 
-  goog.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
+  ol.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({
           'bgLayer': bgLayer.get('label')
         });
-      }, undefined, this);
+      }, this);
 
   if (goog.isFunction(this.scopeWatcher_)) {
     this.scopeWatcher_(); // destroy previous watcher
@@ -196,26 +197,26 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
   var layers = this.map_.getLayers();
   // Add event listeners to existing selected layers
   goog.array.forEach(layers.getArray(), function(layer) {
-    goog.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
+    ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
         function() {
           this.setLayerState_(selectedLayers);
-        }, undefined, this);
+        }, this);
   }, this);
   // Add event listener to all future selected layers
-  goog.events.listen(layers, ol.CollectionEventType.ADD,
+  ol.events.listen(layers, ol.CollectionEventType.ADD,
       /**
        * @param {ol.CollectionEventType} collEvt Collection event.
        */
       function(collEvt) {
         var layer = /** @type {ol.layer.Layer} */ (collEvt.element);
-        goog.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
+        ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
             /**
              * @param {ol.ObjectEventType} layerEvt Layer event
              */
             function(layerEvt) {
               this.setLayerState_(selectedLayers);
-            }, undefined, this);
-      }, undefined, this);
+            }, this);
+      }, this);
 };
 
 
@@ -265,9 +266,9 @@ app.LayerPermalinkManager.prototype.init =
   this.initialVersion_ = this.stateManager_.getVersion();
 
   // Wait for themes to load before adding layers from state
-  goog.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
+  ol.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
       /**
-       * @param {goog.events.Event} evt Event.
+       * @param {ol.events.Event} evt Event.
        */
       function(evt) {
         this.appThemes_.getBgLayers().then(goog.bind(
@@ -369,7 +370,7 @@ app.LayerPermalinkManager.prototype.init =
               }
               this.setupWatchers_(selectedLayers);
             }, this));
-      }, undefined, this);
+      }, this);
 };
 
 app.module.service('appLayerPermalinkManager', app.LayerPermalinkManager);

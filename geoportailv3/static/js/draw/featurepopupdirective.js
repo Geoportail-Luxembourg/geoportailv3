@@ -8,6 +8,7 @@ goog.require('app');
 goog.require('app.Mymaps');
 goog.require('app.profileDirective');
 goog.require('ngeo');
+goog.require('ol.events');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
@@ -218,8 +219,8 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.updateFeature_();
   }, this));
 
-  goog.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.ModifyEventType.MODIFYEND, this.updateFeature_, false, this);
+  ol.events.listen(this.drawnFeatures_.modifyInteraction,
+      ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
   $scope.$watch(goog.bind(function() {
     return this.image;

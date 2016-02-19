@@ -21,8 +21,8 @@ goog.require('app.GetLayerForCatalogNode');
 goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
-goog.require('goog.events');
 goog.require('ngeo.layertreeDirective');
+goog.require('ol.events');
 
 
 /**
@@ -80,13 +80,13 @@ app.CatalogController = function($scope, appThemes, appTheme,
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
 
-  goog.events.listen(appThemes, app.ThemesEventType.LOAD,
+  ol.events.listen(appThemes, app.ThemesEventType.LOAD,
       /**
-       * @param {goog.events.Event} evt Event.
+       * @param {ol.events.Event} evt Event.
        */
       function(evt) {
         this.setTree_();
-      }, undefined, this);
+      }, this);
 
   $scope.$watch(goog.bind(function() {
     return this.appTheme_.getCurrentTheme();
