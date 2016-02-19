@@ -7,6 +7,7 @@ goog.provide('app.locationinfoDirective');
 
 goog.require('app');
 goog.require('app.CoordinateString');
+goog.require('app.Geocoding');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
@@ -52,12 +53,14 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {string} qrServiceUrl
  * @param {string} appLocationinfoTemplateUrl
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @ngInject
  */
 app.LocationinfoController = function(
         $scope, $timeout, ngeoFeatureOverlayMgr,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
-        qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures) {
+        qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
+        appGeocoding) {
 
   /**
    * @type {app.CoordinateString}
@@ -140,10 +143,26 @@ app.LocationinfoController = function(
   this['elevation'] = '';
 
   /**
+   * @type {string}
+   */
+  this['address'] = '';
+
+  /**
+   * @type {string}
+   */
+  this['distance'] = '';
+
+  /**
    * @type {app.GetElevation}
    * @private
    */
   this.getElevation_ = appGetElevation;
+
+  /**
+   * @type {app.Geocoding}
+   * @private
+   */
+  this.geocode_ = appGeocoding;
 
   /**
    * @type {app.GetShorturl}
@@ -297,6 +316,17 @@ app.LocationinfoController.prototype.showInfoPane_ =
         this['url'] = shorturl;
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
       }, this));
+  this['address'] = '';
+  this['distance'] = '';
+  this.geocode_.reverseGeocode(clickCoordinate).then(goog.bind(function(resp) {
+    if (resp['count'] > 0) {
+      var address = resp['results'][0];
+      var formattedAddress = address['number'] + ',' + address['street'] + ',' +
+          address['postal_code'] + ' ' + address['locality'];
+      this['address'] = formattedAddress;
+      this['distance'] = Math.round(address['distance']);
+    }
+  }, this));
 };
 
 
