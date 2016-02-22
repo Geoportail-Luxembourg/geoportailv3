@@ -61,10 +61,25 @@ app.module.directive('appProfile', app.profileDirective);
  * @param {angular.Scope} $scope Scope.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
+ * @param {string} echocsvUrl URL to echo web service.
+ * @param {Document} $document Document.
  * @export
  * @ngInject
  */
-app.ProfileController = function($scope, ngeoFeatureOverlayMgr) {
+app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
+    $document) {
+
+  /**
+   * @private
+   * @type {Document}
+   */
+  this.$document_ = $document;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.echocsvUrl_ = echocsvUrl;
 
   /**
    * @type {angular.Scope}
@@ -311,6 +326,41 @@ app.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
   this['profileHighlight'] = pixelDistSqr < 64 ? closestPoint[2] : -1;
 
   this.scope_.$digest();
+};
+
+
+/**
+ * Export the data as a csv file.
+ * @export
+ */
+app.ProfileController.prototype.exportCSV = function() {
+  var csv = 'dist,MNT,y,x\n';
+  this['profileData'].forEach(goog.bind(function(item) {
+    csv = csv + item['dist'] + ',' +
+          (item['values']['dhm']) / 100 + ',' +
+          item['x'] + ',' +
+          item['y'] + '\n';
+  },this));
+
+  var csvInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'csv',
+    value: csv
+  });
+  var nameInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'name',
+    value: 'mnt'
+  });
+
+  var form = $('<form>').attr({
+    method: 'POST',
+    action: this.echocsvUrl_
+  });
+  form.append(nameInput, csvInput);
+  angular.element(this.$document_[0].body).append(form);
+  form[0].submit();
+  form.remove();
 };
 
 app.module.controller('AppProfileController', app.ProfileController);
