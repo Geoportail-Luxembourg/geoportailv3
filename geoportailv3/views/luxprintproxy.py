@@ -137,6 +137,8 @@ class LuxPrintProxy(PrintProxy):
 
         DBSession.delete(job)
 
+        resp["content-disposition"] =\
+            "attachment; filename=map_geoportal_lu.pdf"
         return self._build_response(
             resp, content, NO_CACHE, "print"
         )
