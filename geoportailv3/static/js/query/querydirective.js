@@ -1,6 +1,8 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
 
+goog.require('app.profileDirective');
+goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 
@@ -9,6 +11,12 @@ goog.require('ngeo.FeatureOverlayMgr');
  * @typedef {{point: Array.<ol.style.Style>, default: Array.<ol.style.Style>}}
  */
 app.QueryStyles;
+
+
+/**
+ * @typedef {{active: boolean}}
+ */
+app.ShowProfile;
 
 
 /**
@@ -44,6 +52,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$http} $http Angular $http service
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
+ * @param {app.GetProfile} appGetProfile
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
@@ -54,8 +63,9 @@ app.module.directive('appQuery', app.queryDirective);
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
-    ngeoFeatureOverlayMgr, appQueryTemplatesPath, getInfoServiceUrl,
-    getRemoteTemplateServiceUrl, downloadmeasurementUrl, downloadsketchUrl) {
+    ngeoFeatureOverlayMgr, appGetProfile, appQueryTemplatesPath,
+    getInfoServiceUrl, getRemoteTemplateServiceUrl, downloadmeasurementUrl,
+    downloadsketchUrl) {
 
   /**
    * @type {Array}
@@ -107,8 +117,10 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    */
   this.getInfoServiceUrl_ = getInfoServiceUrl;
 
-  /** @type {Array.<Object>} */
-  this['content'] = [];
+  /** @type {Array.<Object>}
+   * @export
+   */
+  this.content = [];
 
   /**
    * @type {angular.$http}
@@ -116,6 +128,11 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    */
   this.http_ = $http;
 
+  /**
+   * @type {app.GetProfile}
+   * @private
+   */
+  this.getProfile_ = appGetProfile;
   /**
    * @type {string}
    * @private
@@ -305,12 +322,53 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
 
 /**
+ * @param {Object} feature
+ * @return {{id: string, geom: ol.geom.MultiLineString}}
+ * @private
+ */
+app.QueryController.prototype.filterValidProfileFeatures_ = function(feature) {
+  var validGeomArray = /** @type {Array} */ ([]);
+  var encOpt = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.map_.getView().getProjection()
+  });
+  var activeFeature = /** @type {ol.Feature} */
+      ((new ol.format.GeoJSON()).readFeature(feature, encOpt));
+  switch (activeFeature.getGeometry().getType()) {
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      var geomCollection = /** @type {ol.geom.GeometryCollection} */
+          (activeFeature.getGeometry());
+      goog.array.forEach(geomCollection.getGeometriesArray(),
+          function(geometry) {
+            if (geometry.getType() === ol.geom.GeometryType.LINE_STRING) {
+              var linestringGeom = /** @type {ol.geom.LineString} */ (geometry);
+              validGeomArray.push(linestringGeom.getCoordinates());
+            }
+          });
+      break;
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      var geomMultiLineString = /** @type {ol.geom.MultiLineString} */
+          (activeFeature.getGeometry());
+      validGeomArray = geomMultiLineString.getCoordinates();
+      break;
+    case ol.geom.GeometryType.LINE_STRING:
+      var geomLineString = /** @type {ol.geom.LineString} */
+          (activeFeature.getGeometry());
+      validGeomArray.push(geomLineString.getCoordinates());
+      break;
+  }
+  var id = /** {string} */ (feature['fid']);
+  return {id: id, geom: new ol.geom.MultiLineString(validGeomArray)};
+};
+
+
+/**
  * @param {string | undefined} appSelector the current app using the info panel
  * @private
  */
 app.QueryController.prototype.clearQueryResult_ = function(appSelector) {
   this['appSelector'] = appSelector;
-  this['content'] = [];
+  this.content = [];
   this.clearFeatures_();
 };
 
@@ -360,7 +418,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
 
     this.isQuerying_ = true;
     this.map_.getViewport().style.cursor = 'wait';
-    this['content'] = '';
+    this.content = [];
     this.http_.get(
         this.getInfoServiceUrl_,
         {params: {
@@ -403,12 +461,39 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
             },this);
           }else {
             this.responses_ = resp.data;
-            goog.array.forEach(resp.data, function(item) {
+            goog.array.forEach(this.responses_, function(item) {
               item['layerLabel'] = layerLabel[item.layer];
-            });
+            }, this);
           }
+          goog.array.forEach(this.responses_, function(item) {
+            if (item['template'] === 'mymaps.html') {
+              goog.array.forEach(item.features, function(feature) {
+                var validGeom = this.filterValidProfileFeatures_(feature);
+                if (validGeom.geom.getLineStrings().length > 0) {
+                  feature['attributes']['showProfile'] =
+                      /** @type {app.ShowProfile} */ ({active: true});
+                  this.getProfile_(validGeom.geom, validGeom.id)
+                .then(goog.bind(function(profile) {
+                        goog.array.forEach(this.responses_, function(item) {
+                          if (item['template'] === 'mymaps.html') {
+                            goog.array.forEach(item['features'],
+                                function(feature) {
+                                  if (feature['fid'] === profile[0]['id']) {
+                                    feature['attributes']['showProfile'] =
+                                     /** @type {app.ShowProfile} */
+                                     ({active: true});
+                                    feature['attributes']['profile'] = profile;
+                                  }
+                                }, this);
+                          }
+                        }, this);
+                      }, this));
+                }
+              }, this);
+            }
+          }, this);
           this.clearQueryResult_(this.QUERYPANEL_);
-          this['content'] = this.responses_;
+          this.content = this.responses_;
           if (this.responses_.length > 0) this['infoOpen'] = true;
           else this['infoOpen'] = false;
           this.lastHighlightedFeatures_ = [];
