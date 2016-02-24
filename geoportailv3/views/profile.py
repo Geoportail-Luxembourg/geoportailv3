@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
-from pyramid.httpexceptions import HTTPBadRequest, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.i18n import TranslationStringFactory
 from c2cgeoportal.views.raster import Raster
+from shapely.ops import linemerge
 
 import geojson
 import math
@@ -93,8 +94,17 @@ class Profile(Raster):
             request_geom,
             object_hook=geojson.GeoJSON.to_instance)
         if geom.type == "MultiLineString":
+            # In case of MultiLineString try to merge
+            # the different components
+            lines_to_merge = []
             for line in geom.coordinates:
-                lines.append(geojson.LineString(line))
+                lines_to_merge.append(line)
+
+            for line in linemerge(lines_to_merge).geoms:
+                lines.append(geojson.loads(
+                    geojson.dumps(line),
+                    object_hook=geojson.GeoJSON.to_instance))
+
         if geom.type == "LineString":
             lines.append(geom)
 
@@ -176,31 +186,19 @@ class Profile(Raster):
             ordered_lines.append(lines[line_index])
             lines.pop(line_index)
 
-        lines = ordered_lines
-        return lines
+        return ordered_lines
 
     def _compute_points(self):
         """Compute the alt=fct(dist) array"""
         geoms = self._create_geom(self.request.params["geom"])
-
-        if "layers" in self.request.params:
-            rasters = {}
-            layers = self.request.params["layers"].split(",")
-            for layer in layers:
-                if layer in self.rasters:
-                    rasters[layer] = self.rasters[layer]
-                else:
-                    raise HTTPNotFound("Layer %s not found" % layer)
-        else:
-            rasters = self.rasters
-
         points = []
-
-        dist = 0
-        prev_coord = None
+        rasters = self.rasters
         nb_points = int(self.request.params["nbPoints"]) / len(geoms)
+        dist = 0
         for geom in geoms:
             coords = self._create_points(geom.coordinates, nb_points)
+            prev_coord = None
+
             for coord in coords:
                 if prev_coord is not None:
                     dist += self._dist(prev_coord, coord)
@@ -211,7 +209,8 @@ class Profile(Raster):
                     value = self._get_raster_value(
                         self.rasters[ref],
                         ref, coord[0], coord[1])
-                    if value is not None:
+
+                    if value is not None and value != 0:
                         values[ref] = value
                         has_one = True
 
