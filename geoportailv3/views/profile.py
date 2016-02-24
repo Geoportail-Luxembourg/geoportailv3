@@ -99,10 +99,15 @@ class Profile(Raster):
             lines_to_merge = []
             for line in geom.coordinates:
                 lines_to_merge.append(line)
-
-            for line in linemerge(lines_to_merge).geoms:
+            merged_lines = linemerge(lines_to_merge)
+            if merged_lines.geom_type == "MultiLineString":
+                for line in merged_lines.geoms:
+                    lines.append(geojson.loads(
+                        geojson.dumps(line),
+                        object_hook=geojson.GeoJSON.to_instance))
+            else:
                 lines.append(geojson.loads(
-                    geojson.dumps(line),
+                    geojson.dumps(merged_lines),
                     object_hook=geojson.GeoJSON.to_instance))
 
         if geom.type == "LineString":
