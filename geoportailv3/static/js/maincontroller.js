@@ -203,6 +203,11 @@ app.MainController = function(
   this['queryActive'] = true;
 
   /**
+   * @type {boolean}
+   */
+  this['infosHiddenContent'] = false;
+
+  /**
    * @type {string|undefined}
    */
   this['infosAppSelector'] = undefined;

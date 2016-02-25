@@ -164,7 +164,8 @@
                        app-query-language="mainCtrl.lang"></app-query>
             <app-locationinfo app-locationinfo-map="::mainCtrl.map"
                               app-locationinfo-open="mainCtrl.infosOpen"
-                              app-locationinfo-appselector="mainCtrl.infosAppSelector">
+                              app-locationinfo-appselector="mainCtrl.infosAppSelector"
+                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent">
             </app-locationinfo>
             <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
               <div class="col-xs-12">
@@ -194,7 +195,7 @@
           <a href translate>My Maps<span ng-show="mainCtrl.layersChanged">(*)</span></a>
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
-          <a href translate>Infos</a>
+          <a href translate>Infos<span ng-show="mainCtrl.infosHiddenContent">(*)</span></a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">

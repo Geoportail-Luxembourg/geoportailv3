@@ -27,6 +27,7 @@ app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
     scope: {
       'map': '=appLocationinfoMap',
       'open': '=appLocationinfoOpen',
+      'hiddenContent': '=appLocationinfoHiddenContent',
       'appSelector': '=appLocationinfoAppselector'
     },
     controller: 'AppLocationinfoController',
@@ -54,13 +55,20 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {string} appLocationinfoTemplateUrl
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
+ * @param {Document} $document Document.
  * @ngInject
  */
 app.LocationinfoController = function(
         $scope, $timeout, ngeoFeatureOverlayMgr,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
-        appGeocoding) {
+        appGeocoding, $document) {
+
+  /**
+   * @private
+   * @type {Document}
+   */
+  this.$document_ = $document;
 
   /**
    * @type {app.CoordinateString}
@@ -115,6 +123,7 @@ app.LocationinfoController = function(
       return;
     }
     if (newVal === false) {
+      this['hiddenContent'] = false;
       this.stateManager_.updateState({'crosshair': false});
       var mapCenterCoordinate = this['map'].getView().getCenter();
       this.stateManager_.updateState({
@@ -217,7 +226,14 @@ app.LocationinfoController = function(
     var y = parseInt(appStateManager.getInitialValue('Y'), 0);
     var coordinate = /** @type {ol.Coordinate} */ ([x, y]);
     if (goog.isDef(x) && goog.isDef(y)) {
-      this.showInfoPane_(coordinate);
+      this.loadInfoPane_(coordinate);
+      var env = this.findBootstrapEnvironment_();
+      if (env !== 'xs') {
+        this['open'] = true;
+        this['hiddenContent'] = false;
+      } else {
+        this['hiddenContent'] = true;
+      }
     }
   }
 
@@ -225,14 +241,16 @@ app.LocationinfoController = function(
       goog.bind(function(event) {
         if (!appSelectedFeatures.getLength()) {
           if (event.originalEvent.which === 3) { // if right mouse click
-            this.showInfoPane_(event.originalEvent);
+            this.loadInfoPane_(event.originalEvent);
+            this['open'] = true;
           } else if (!(event.originalEvent instanceof MouseEvent)) {
             // if touch input device
             $timeout.cancel(holdPromise);
             startPixel = event.pixel;
             var that = this;
             holdPromise = $timeout(function() {
-              that.showInfoPane_(event.originalEvent);
+              that.loadInfoPane_(event.originalEvent);
+              that['open'] = true;
             }, 500, false);
           }
         }
@@ -289,7 +307,7 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
  * @param {MouseEvent|TouchEvent|ol.Coordinate} eventOrCoordinate
  * @private
  */
-app.LocationinfoController.prototype.showInfoPane_ =
+app.LocationinfoController.prototype.loadInfoPane_ =
     function(eventOrCoordinate) {
   var clickCoordinate;
   if (eventOrCoordinate instanceof Array) {
@@ -298,7 +316,7 @@ app.LocationinfoController.prototype.showInfoPane_ =
     eventOrCoordinate.preventDefault();
     clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
   }
-  this['open'] = true;
+
   this['appSelector'] = 'locationinfo';
   this.stateManager_.updateState({'crosshair': true});
   this.updateLocation_(clickCoordinate);
@@ -329,5 +347,27 @@ app.LocationinfoController.prototype.showInfoPane_ =
   }, this));
 };
 
+
+/**
+ * @return {string} The current device env.
+ * @private
+ */
+app.LocationinfoController.prototype.findBootstrapEnvironment_ =
+    function() {
+  var envs = ['xs', 'sm', 'md', 'lg'];
+
+  var el = $('<div>');
+  angular.element(this.$document_[0].body).append(el);
+
+  for (var i = envs.length - 1; i >= 0; i--) {
+    var env = envs[i];
+    el.addClass('hidden-' + env);
+    if (el.is(':hidden')) {
+      el.remove();
+      return env;
+    }
+  }
+  return envs[0];
+};
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);
