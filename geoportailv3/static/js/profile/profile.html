@@ -1,6 +1,8 @@
 <div class="profile-popup" ng-show="ctrl.profileInteraction.active">
-  <a ng-show="ctrl.profileData.length > 0" href ng-click="ctrl.exportCSV()" translate>Export csv</a>
-  <a href class="close" ng-click="ctrl.profileInteraction.setActive(false)"><i class="fa fa-close"></i></a>
+  <div class="profile-title">
+    <a href class="close" ng-click="ctrl.profileInteraction.setActive(false)"><i class="fa fa-close"></i></a>
+    <a ng-show="ctrl.profileData.length > 0" href ng-click="ctrl.exportCSV()" translate class="profile-export">Export csv</a>
+  </div>
   <div class="profile" ngeo-profile="ctrl.profileData"
       ngeo-profile-highlight="ctrl.profileHighlight"
       ngeo-profile-options="ctrl.profileOptions">
