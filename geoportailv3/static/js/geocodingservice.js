@@ -1,6 +1,6 @@
 /**
  * @fileoverview This file provides an Angular service for interacting
- * with the "elevation" web service.
+ * with the "geocoding" web service.
  */
 goog.provide('app.Geocoding');
 
@@ -32,7 +32,7 @@ app.Geocoding = function($http, reverseGeocodingServiceUrl) {
 
 /**
  * @param {ol.Coordinate} coordinate
- * @return {!angular.$q.Promise} Promise providing the short URL.
+ * @return {!angular.$q.Promise} Promise providing the reverse geocode.
  */
 app.Geocoding.prototype.reverseGeocode = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
