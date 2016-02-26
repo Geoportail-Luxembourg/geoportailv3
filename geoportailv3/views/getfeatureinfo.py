@@ -175,6 +175,7 @@ class Getfeatureinfo(object):
                             geometry,
                             attributes,
                             luxgetfeaturedefinition.attributes_to_remove,
+                            luxgetfeaturedefinition.columns_order,
                             luxgetfeaturedefinition.geometry_column)
                         features.append(f)
                     if len(features) > 0:
@@ -192,7 +193,8 @@ class Getfeatureinfo(object):
                 features = self._get_external_data(
                     luxgetfeaturedefinition.rest_url,
                     big_box, None, None,
-                    luxgetfeaturedefinition.attributes_to_remove)
+                    luxgetfeaturedefinition.attributes_to_remove,
+                    luxgetfeaturedefinition.columns_order)
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
@@ -227,16 +229,29 @@ class Getfeatureinfo(object):
         return features_to_keep
 
     def to_feature(self, geometry, attributes, attributes_to_remove,
-                   geometry_column='geom'):
+                   columns_order=None, geometry_column='geom'):
         fid = hashlib.md5(geojson_dumps(geometry)).hexdigest()
+        attributes = self.remove_attributes(
+                    attributes,
+                    attributes_to_remove,
+                    geometry_column)
+        if columns_order is not None:
+            import collections
+
+            ordered_attributes = collections.OrderedDict()
+            orders = columns_order.split(",")
+            for order in orders:
+                if order in attributes:
+                    ordered_attributes[order] = attributes[order]
+                    del attributes[order]
+            for attribute in attributes:
+                ordered_attributes[attribute] = attributes[attribute]
+            attributes = ordered_attributes
 
         return {'type': 'Feature',
                 'geometry': geometry,
                 'fid': fid,
-                'attributes': self.remove_attributes(
-                    attributes,
-                    attributes_to_remove,
-                    geometry_column)}
+                'attributes': attributes}
 
     def to_featureinfo(self, features, layer, template, remote_template=False):
         return {"remote_template": remote_template,
@@ -408,7 +423,7 @@ class Getfeatureinfo(object):
         return features
 
     def _get_external_data(self, url, bbox=None, featureid=None, cfg=None,
-                           attributes_to_remove=None):
+                           attributes_to_remove=None, columns_order=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -538,6 +553,7 @@ class Getfeatureinfo(object):
 
                     f = self.to_feature(geometry,
                                         rawfeature['attributes'],
-                                        attributes_to_remove)
+                                        attributes_to_remove,
+                                        columns_order)
                     features.append(f)
         return features
