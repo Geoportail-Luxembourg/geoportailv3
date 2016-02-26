@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-xs-12">
     <h1>{{layers.layerLabel | translate}}</h1>
-    <div ng-repeat="feature in layers.features" class="poi-feature">
+    <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.translateKeys(feature.attributes)">
       <h4>{{feature.attributes.label | translate }}</h4>
       <table class="table table-condensed">
-        <tr ng-if="ctrl.hasAttributes(feature)" ng-repeat="(key, value) in feature.attributes">
-          <th>{{("f_" + key) | translate}}</th> <td ng-bind-html="ctrl.trustAsHtml(value)"></td>
+        <tr ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
+          <th>{{entry['key']}}</th> <td ng-bind-html="ctrl.trustAsHtml(entry['value'])"></td>
         </tr>
         <tr ng-if="!ctrl.hasAttributes(feature)">
           <td translate>Aucune information disponible pour cette couche</td>
