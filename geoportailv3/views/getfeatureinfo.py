@@ -109,7 +109,8 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.query is not None and
                     len(luxgetfeaturedefinition.query) > 0):
                 engine = sqlahelper.get_engine(luxgetfeaturedefinition.engine)
-
+                is_ordered = luxgetfeaturedefinition.columns_order is not None\
+                    and len(luxgetfeaturedefinition.columns_order) > 0
                 query_1 = luxgetfeaturedefinition.query
                 if "WHERE" in query_1.upper():
                     query_1 = query_1 + " AND "
@@ -165,6 +166,7 @@ class Getfeatureinfo(object):
                                 features,
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
+                                is_ordered,
                                 luxgetfeaturedefinition.remote_template))
                 else:
                     features = []
@@ -185,6 +187,7 @@ class Getfeatureinfo(object):
                                     features, coordinates_small_box),
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
+                                is_ordered,
                                 luxgetfeaturedefinition.remote_template))
 
             if (luxgetfeaturedefinition is not None and
@@ -209,6 +212,7 @@ class Getfeatureinfo(object):
                                 features, coordinates_small_box),
                             luxgetfeaturedefinition.layer,
                             luxgetfeaturedefinition.template,
+                            is_ordered,
                             luxgetfeaturedefinition.remote_template))
 
         return results
@@ -253,10 +257,12 @@ class Getfeatureinfo(object):
                 'fid': fid,
                 'attributes': attributes}
 
-    def to_featureinfo(self, features, layer, template, remote_template=False):
+    def to_featureinfo(self, features, layer, template, ordered,
+                       remote_template=False):
         return {"remote_template": remote_template,
                 "template": template,
                 "layer": layer,
+                "ordered": ordered,
                 "features": features}
 
     def get_lux_feature_definition(self, layers):

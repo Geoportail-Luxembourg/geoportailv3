@@ -59,13 +59,20 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {string} getRemoteTemplateServiceUrl
  * @param {string} downloadmeasurementUrl
  * @param {string} downloadsketchUrl
+ * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appGetProfile, appQueryTemplatesPath,
     getInfoServiceUrl, getRemoteTemplateServiceUrl, downloadmeasurementUrl,
-    downloadsketchUrl) {
+    downloadsketchUrl, gettextCatalog) {
+
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.translate_ = gettextCatalog;
 
   /**
    * @type {Array}
@@ -632,7 +639,7 @@ app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
 
 
 /**
- * @param {Array<string>} features the features to highlight
+ * @param {Array<string>} features The features to highlight.
  * @private
  */
 app.QueryController.prototype.highlightFeatures_ = function(features) {
@@ -652,7 +659,7 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
 
 
 /**
- * @return {string} get the URL.
+ * @return {string} Get the URL.
  * @export
  */
 app.QueryController.prototype.getDownloadMeasurementUrl = function() {
@@ -661,11 +668,30 @@ app.QueryController.prototype.getDownloadMeasurementUrl = function() {
 
 
 /**
- * @return {string} get the URL.
+ * @return {string} Get the URL.
  * @export
  */
 app.QueryController.prototype.getDownloadsketchUrl = function() {
   return this.downloadsketchUrl_;
+};
+
+
+/**
+ * @param {Object} attributes The  attributes to sort.
+ * @return {Array<Object>} The ordered attributes.
+ * @export
+ */
+app.QueryController.prototype.translateKeys =
+    function(attributes) {
+  var results = [];
+
+  angular.forEach(attributes, function(value, key) {
+    results.push({'key': this.translate_.getString('f_' + key),
+      'value': value});
+  }, this);
+
+
+  return results;
 };
 
 app.module.controller('AppQueryController',
