@@ -474,7 +474,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                 } else {
                   this['hiddenContent'] = true;
                 }
-                this.showInfo_(false, resp, layerLabel, showInfo);
+                this.showInfo_(false, resp, layerLabel, showInfo, true);
               }, this),
               goog.bind(function(error) {
                 this.clearQueryResult_(this.QUERYPANEL_);
@@ -541,7 +541,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          this.showInfo_(evt.originalEvent.shiftKey, resp, layerLabel, true);
+          this.showInfo_(evt.originalEvent.shiftKey, resp,
+              layerLabel, true, false);
         }, this),
         goog.bind(function(error) {
           this.clearQueryResult_(this.QUERYPANEL_);
@@ -558,10 +559,11 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
  * @param {Object} resp The response from webservice.
  * @param {Object} layerLabel The layerLabel object.
  * @param {boolean} openInfoPanel True if info panel should be opened.
+ * @param {boolean} fit True if the map is centered on the object.
  * @private
  */
 app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
-    openInfoPanel) {
+    openInfoPanel, fit) {
   if (shiftKey) {
     goog.array.forEach(resp.data, function(item) {
       item['layerLabel'] = layerLabel[item.layer];
@@ -638,7 +640,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
         this.responses_[i].features
     );
   }
-  this.highlightFeatures_(this.lastHighlightedFeatures_);
+  this.highlightFeatures_(this.lastHighlightedFeatures_, fit);
   this.isQuerying_ = false;
   this.map_.getViewport().style.cursor = '';
 };
@@ -788,9 +790,10 @@ app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
 
 /**
  * @param {Array<string>} features The features to highlight.
+ * @param {boolean} fit True to fit to the features.
  * @private
  */
-app.QueryController.prototype.highlightFeatures_ = function(features) {
+app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
   if (goog.isDefAndNotNull(features)) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
@@ -799,8 +802,19 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
     var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
       'type': 'FeatureCollection',
       'features': features}, encOpt);
-    for (var i = 0; i < jsonFeatures.length; ++i) {
-      this.featureOverlay_.addFeature(jsonFeatures[i]);
+
+    if (jsonFeatures.length > 0) {
+      var extent = jsonFeatures[0].getGeometry().getExtent();
+      for (var i = 0; i < jsonFeatures.length; ++i) {
+        extent = ol.extent.extend(extent,
+            jsonFeatures[i].getGeometry().getExtent());
+        this.featureOverlay_.addFeature(jsonFeatures[i]);
+      }
+      if (fit) {
+        var mapSize = /** @type {ol.Size} */ (this.map_.getSize());
+        this.map_.getView().fit(extent, mapSize,
+            /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
+      }
     }
   }
 };
