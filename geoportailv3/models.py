@@ -93,6 +93,7 @@ class LuxGetfeatureDefinition(Base):
     poi_id_collection = Column(Unicode, label=_(u'Id of the poi collection'))
     geometry_column = Column(Unicode, label=_(u'Geometry column name'))
     columns_order = Column(Unicode, label=_(u'Order of columns'))
+    id_column = Column(Unicode, label=_(u'ID column name'))
 
 
 class LuxPrintJob(Base):
