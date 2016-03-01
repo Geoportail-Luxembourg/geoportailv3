@@ -1,7 +1,5 @@
 <h1>{{layers.layerLabel | translate}}</h1>
 <div ng-repeat="feature in layers.features" class="poi-feature">
-
-
   <h2>{{feature.attributes.K_MEASUREMENTID}}</h2>
   <span translate>Affaire</span> : {{feature.attributes.K_MEASUREMENTID}}<br>
   <span translate>Commune administrative</span> : {{feature.attributes.K_NOM_COMMUNE_ADMINISTRATIVE}}<br>
@@ -9,4 +7,5 @@
   <span translate>Mesurage</span> : {{feature.attributes.K_MEASUREMENTNUMBER}}<br>
 
   <a class="btn btn-default" href="http://shop.geoportal.lu/Portail/commande/webservices/orderAffaire.jsp?numCommune={{feature.attributes.K_KATASTERGEMEINDE}}&numMesurage={{feature.attributes.K_MEASUREMENTNUMBER}}" target="_blank" translate>Commander fichier GML</a>
+  <a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
 </div>

@@ -1,6 +1,6 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
-
+goog.require('app.GetDevice');
 goog.require('app.profileDirective');
 goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
@@ -32,7 +32,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'infoOpen': '=appQueryOpen',
       'appSelector': '=appQueryAppselector',
       'queryActive': '=appQueryActive',
-      'language': '=appQueryLanguage'
+      'language': '=appQueryLanguage',
+      'hiddenContent': '=appQueryHiddenInfo'
     },
     controller: 'AppQueryController',
     controllerAs: 'ctrl',
@@ -53,6 +54,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetProfile} appGetProfile
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
@@ -60,13 +62,41 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {string} downloadmeasurementUrl
  * @param {string} downloadsketchUrl
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+ * @param {app.Themes} appThemes
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
+ * @param {app.GetDevice} appGetDevice
  * @export
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
-    ngeoFeatureOverlayMgr, appGetProfile, appQueryTemplatesPath,
-    getInfoServiceUrl, getRemoteTemplateServiceUrl, downloadmeasurementUrl,
-    downloadsketchUrl, gettextCatalog) {
+    ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
+    appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
+    downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
+    appGetLayerForCatalogNode, appGetDevice) {
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
+
+  /**
+   * @private
+   * @type {app.GetDevice}
+   */
+  this.appGetDevice_ = appGetDevice;
+
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
 
   /**
    * @type {angularGettext.Catalog}
@@ -325,6 +355,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
       }, this);
+  // Load info window if fid has a valid value
+  var fid = this.ngeoLocation_.getParam('fid');
+
+  if (this.isFIDValid_(fid)) {
+    this.getFeatureInfoById_(fid);
+  }
 };
 
 
@@ -377,6 +413,78 @@ app.QueryController.prototype.clearQueryResult_ = function(appSelector) {
   this['appSelector'] = appSelector;
   this.content = [];
   this.clearFeatures_();
+};
+
+
+/**
+ * @param {Array} element
+ * @return {Array} array
+ * @private
+ */
+app.QueryController.getAllChildren_ = function(element) {
+  var array = [];
+  for (var i = 0; i < element.length; i++) {
+    if (element[i].hasOwnProperty('children')) {
+      goog.array.extend(array, app.QueryController.getAllChildren_(
+          element[i].children)
+      );
+    } else {
+      element[i].id = element[i].id;
+      array.push(element[i]);
+    }
+  }
+  return array;
+};
+
+
+/**
+ * @param {string|undefined} fid The feature Id.
+ * @private
+ */
+app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
+  var splittedFid = fid.split('_');
+  var layersList = [splittedFid[0]];
+  var layerLabel = {};
+
+
+  this.appThemes_.getFlatCatalog().then(
+      goog.bind(function(flatCatalogue) {
+        var node = goog.array.find(flatCatalogue, function(catItem) {
+          return catItem.id == splittedFid[0];
+        });
+        if (goog.isDefAndNotNull(node)) {
+          var layer = this.getLayerFunc_(node);
+          this.map_.addLayer(layer);
+        }
+
+        if (layersList.length > 0) {
+          this.isQuerying_ = true;
+          this.map_.getViewport().style.cursor = 'wait';
+          this.content = [];
+          this.http_.get(
+              this.getInfoServiceUrl_,
+              {params: {
+                'fid': fid
+              }}).then(
+              goog.bind(function(resp) {
+                var env = this.appGetDevice_();
+                var showInfo = false;
+                if (env !== 'xs') {
+                  showInfo = true;
+                  this['hiddenContent'] = false;
+                } else {
+                  this['hiddenContent'] = true;
+                }
+                this.showInfo_(false, resp, layerLabel, showInfo, true);
+              }, this),
+              goog.bind(function(error) {
+                this.clearQueryResult_(this.QUERYPANEL_);
+                this['infoOpen'] = false;
+                this.map_.getViewport().style.cursor = '';
+                this.isQuerying_ = false;
+              }, this));
+        }
+      }, this));
 };
 
 
@@ -434,85 +542,8 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          if (evt.originalEvent.shiftKey) {
-            goog.array.forEach(resp.data, function(item) {
-              item['layerLabel'] = layerLabel[item.layer];
-              var found = false;
-              for (var iLayer = 0; iLayer < this.responses_.length; iLayer++) {
-                if (this.responses_[iLayer].layer == item.layer) {
-                  found = true;
-                  var removed = false;
-                  for (var iItem = 0; iItem < item.features.length; iItem++) {
-                    for (var iFeatures = 0;
-                         iFeatures < this.responses_[iLayer].features.length;
-                         iFeatures++) {
-                      if (this.responses_[iLayer].features[iFeatures]['fid'] ==
-                          item.features[iItem]['fid']) {
-                        removed = true;
-                        this.responses_[iLayer].features.splice(iFeatures, 1);
-                        break;
-                      }
-                    }
-                    if (!removed) {
-                      this.responses_[iLayer].features =
-                          this.responses_[iLayer].features.concat(
-                          item.features[iItem]);
-                    }
-                  }
-                  break;
-                }
-              }
-              if (!found) {
-                this.responses_.push(item);
-              }
-            },this);
-          }else {
-            this.responses_ = resp.data;
-            goog.array.forEach(this.responses_, function(item) {
-              item['layerLabel'] = layerLabel[item.layer];
-            }, this);
-          }
-          goog.array.forEach(this.responses_, function(item) {
-            if (item['template'] === 'mymaps.html') {
-              goog.array.forEach(item.features, function(feature) {
-                var validGeom = this.filterValidProfileFeatures_(feature);
-                if (validGeom.geom.getLineStrings().length > 0) {
-                  feature['attributes']['showProfile'] =
-                      /** @type {app.ShowProfile} */ ({active: true});
-                  this.getProfile_(validGeom.geom, validGeom.id)
-                .then(goog.bind(function(profile) {
-                        goog.array.forEach(this.responses_, function(item) {
-                          if (item['template'] === 'mymaps.html') {
-                            goog.array.forEach(item['features'],
-                                function(feature) {
-                                  if (feature['fid'] === profile[0]['id']) {
-                                    feature['attributes']['showProfile'] =
-                                     /** @type {app.ShowProfile} */
-                                     ({active: true});
-                                    feature['attributes']['profile'] = profile;
-                                  }
-                                }, this);
-                          }
-                        }, this);
-                      }, this));
-                }
-              }, this);
-            }
-          }, this);
-          this.clearQueryResult_(this.QUERYPANEL_);
-          this.content = this.responses_;
-          if (this.responses_.length > 0) this['infoOpen'] = true;
-          else this['infoOpen'] = false;
-          this.lastHighlightedFeatures_ = [];
-          for (var i = 0; i < this.responses_.length; i++) {
-            this.lastHighlightedFeatures_.push.apply(
-                this.lastHighlightedFeatures_,
-                this.responses_[i].features
-            );
-          }
-          this.highlightFeatures_(this.lastHighlightedFeatures_);
-          this.isQuerying_ = false;
-          this.map_.getViewport().style.cursor = '';
+          this.showInfo_(evt.originalEvent.shiftKey, resp,
+              layerLabel, true, false);
         }, this),
         goog.bind(function(error) {
           this.clearQueryResult_(this.QUERYPANEL_);
@@ -525,6 +556,98 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
 
 
 /**
+ * @param {boolean} shiftKey Is shift key pressed.
+ * @param {Object} resp The response from webservice.
+ * @param {Object} layerLabel The layerLabel object.
+ * @param {boolean} openInfoPanel True if info panel should be opened.
+ * @param {boolean} fit True if the map is centered on the object.
+ * @private
+ */
+app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
+    openInfoPanel, fit) {
+  if (shiftKey) {
+    goog.array.forEach(resp.data, function(item) {
+      item['layerLabel'] = layerLabel[item.layer];
+      var found = false;
+      for (var iLayer = 0; iLayer < this.responses_.length; iLayer++) {
+        if (this.responses_[iLayer].layer == item.layer) {
+          found = true;
+          var removed = false;
+          for (var iItem = 0; iItem < item.features.length; iItem++) {
+            for (var iFeatures = 0;
+                 iFeatures < this.responses_[iLayer].features.length;
+                 iFeatures++) {
+              if (this.responses_[iLayer].features[iFeatures]['fid'] ==
+                  item.features[iItem]['fid']) {
+                removed = true;
+                this.responses_[iLayer].features.splice(iFeatures, 1);
+                break;
+              }
+            }
+            if (!removed) {
+              this.responses_[iLayer].features =
+                  this.responses_[iLayer].features.concat(
+                  item.features[iItem]);
+            }
+          }
+          break;
+        }
+      }
+      if (!found) {
+        this.responses_.push(item);
+      }
+    },this);
+  }else {
+    this.responses_ = resp.data;
+    goog.array.forEach(this.responses_, function(item) {
+      item['layerLabel'] = layerLabel[item.layer];
+    }, this);
+  }
+  goog.array.forEach(this.responses_, function(item) {
+    if (item['template'] === 'mymaps.html') {
+      goog.array.forEach(item.features, function(feature) {
+        var validGeom = this.filterValidProfileFeatures_(feature);
+        if (validGeom.geom.getLineStrings().length > 0) {
+          feature['attributes']['showProfile'] =
+              /** @type {app.ShowProfile} */ ({active: true});
+          this.getProfile_(validGeom.geom, validGeom.id)
+        .then(goog.bind(function(profile) {
+                goog.array.forEach(this.responses_, function(item) {
+                  if (item['template'] === 'mymaps.html') {
+                    goog.array.forEach(item['features'],
+                        function(feature) {
+                          if (feature['fid'] === profile[0]['id']) {
+                            feature['attributes']['showProfile'] =
+                                /** @type {app.ShowProfile} */
+                                ({active: true});
+                            feature['attributes']['profile'] = profile;
+                          }
+                        }, this);
+                  }
+                }, this);
+              }, this));
+        }
+      }, this);
+    }
+  }, this);
+  this.clearQueryResult_(this.QUERYPANEL_);
+  this.content = this.responses_;
+  if (this.responses_.length > 0) this['infoOpen'] = openInfoPanel;
+  else this['infoOpen'] = false;
+  this.lastHighlightedFeatures_ = [];
+  for (var i = 0; i < this.responses_.length; i++) {
+    this.lastHighlightedFeatures_.push.apply(
+        this.lastHighlightedFeatures_,
+        this.responses_[i].features
+    );
+  }
+  this.highlightFeatures_(this.lastHighlightedFeatures_, fit);
+  this.isQuerying_ = false;
+  this.map_.getViewport().style.cursor = '';
+};
+
+
+/**
  * @private
  */
 app.QueryController.prototype.clearFeatures_ = function() {
@@ -533,13 +656,41 @@ app.QueryController.prototype.clearFeatures_ = function() {
 
 
 /**
- * has the object at least one attribute
+ * Has the object at least one attribute.
  * @param {Object} feature
  * @return {boolean} true if attribute is present.
  * @export
  */
 app.QueryController.prototype.hasAttributes = function(feature) {
   if (feature['attributes'] && Object.keys(feature['attributes']).length > 0) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * Has the object a valid geoportailv3 featureId.
+ * @param {Object} feature
+ * @return {boolean} true if fid is valid.
+ * @export
+ */
+app.QueryController.prototype.hasValidFID = function(feature) {
+  if (this.isFIDValid_(feature['fid'])) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * Has the fid a valid geoportail v3 syntax.
+ * @param {string|undefined} fid
+ * @return {boolean} True if fid is valid.
+ * @private
+ */
+app.QueryController.prototype.isFIDValid_ = function(fid) {
+  if (!!fid && fid.split('_').length === 2) {
     return true;
   }
   return false;
@@ -640,9 +791,10 @@ app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
 
 /**
  * @param {Array<string>} features The features to highlight.
+ * @param {boolean} fit True to fit to the features.
  * @private
  */
-app.QueryController.prototype.highlightFeatures_ = function(features) {
+app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
   if (goog.isDefAndNotNull(features)) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
@@ -651,8 +803,19 @@ app.QueryController.prototype.highlightFeatures_ = function(features) {
     var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
       'type': 'FeatureCollection',
       'features': features}, encOpt);
-    for (var i = 0; i < jsonFeatures.length; ++i) {
-      this.featureOverlay_.addFeature(jsonFeatures[i]);
+
+    if (jsonFeatures.length > 0) {
+      var extent = jsonFeatures[0].getGeometry().getExtent();
+      for (var i = 0; i < jsonFeatures.length; ++i) {
+        extent = ol.extent.extend(extent,
+            jsonFeatures[i].getGeometry().getExtent());
+        this.featureOverlay_.addFeature(jsonFeatures[i]);
+      }
+      if (fit) {
+        var mapSize = /** @type {ol.Size} */ (this.map_.getSize());
+        this.map_.getView().fit(extent, mapSize,
+            /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
+      }
     }
   }
 };

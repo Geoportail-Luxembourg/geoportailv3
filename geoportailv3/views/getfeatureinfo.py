@@ -4,7 +4,6 @@ import logging
 import sys
 import traceback
 import urllib2
-import hashlib
 
 from urllib import urlencode
 from pyramid.view import view_config
@@ -12,7 +11,6 @@ from geoportailv3.models import LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from geojson import loads as geojson_loads
-from geojson import dumps as geojson_dumps
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 
@@ -90,17 +88,25 @@ class Getfeatureinfo(object):
 
     @view_config(route_name='getfeatureinfo', renderer='json')
     def get_feature_info(self):
-        layers = self.request.params.get('layers', None)
-        if layers is None:
-            return HTTPBadRequest()
-        big_box = self.request.params.get('box1', None)
-        small_box = self.request.params.get('box2', None)
-        if big_box is None or small_box is None:
-            return HTTPBadRequest()
+        fid = self.request.params.get('fid', None)
+
+        if fid is not None:
+            layers, fid = fid.split('_')
+            if layers is None or fid is None:
+                return HTTPBadRequest()
+        else:
+            layers = self.request.params.get('layers', None)
+            if layers is None:
+                return HTTPBadRequest()
+            big_box = self.request.params.get('box1', None)
+            small_box = self.request.params.get('box2', None)
+            if big_box is None or small_box is None:
+                return HTTPBadRequest()
 
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
-        coordinates_big_box = big_box.split(',')
-        coordinates_small_box = small_box.split(',')
+        if fid is None:
+            coordinates_big_box = big_box.split(',')
+            coordinates_small_box = small_box.split(',')
 
         results = []
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
@@ -127,28 +133,33 @@ class Getfeatureinfo(object):
                     query_1 = "SELECT *,ST_AsGeoJSON(%(geom)s) FROM "\
                         % {'geom': luxgetfeaturedefinition.geometry_column} +\
                         query_1
+                if fid is None:
+                    query_point = query_1 + "ST_Intersects( %(geom)s, "\
+                        "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
+                        "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
+                        % {'left': coordinates_big_box[0],
+                           'bottom': coordinates_big_box[1],
+                           'right': coordinates_big_box[2],
+                           'top': coordinates_big_box[3],
+                           'geom': luxgetfeaturedefinition.geometry_column}
 
-                query_point = query_1 + "ST_Intersects( %(geom)s, "\
-                    "ST_MakeEnvelope(%(left)s, %(bottom)s, %(right)s,"\
-                    "%(top)s, 2169) ) AND ST_NRings(%(geom)s) = 0"\
-                    % {'left': coordinates_big_box[0],
-                       'bottom': coordinates_big_box[1],
-                       'right': coordinates_big_box[2],
-                       'top': coordinates_big_box[3],
-                       'geom': luxgetfeaturedefinition.geometry_column}
+                    query_others = query_1 + "ST_Intersects( %(geom)s,"\
+                        " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
+                        " %(top)s, 2169) ) AND  ST_NRings(%(geom)s) > 0"\
+                        % {'left': coordinates_small_box[0],
+                           'bottom': coordinates_small_box[1],
+                           'right': coordinates_small_box[2],
+                           'top': coordinates_small_box[3],
+                           'geom': luxgetfeaturedefinition.geometry_column}
 
-                query_others = query_1 + "ST_Intersects( %(geom)s,"\
-                    " ST_MakeEnvelope (%(left)s, %(bottom)s, %(right)s,"\
-                    " %(top)s, 2169) ) AND  ST_NRings(%(geom)s) > 0"\
-                    % {'left': coordinates_small_box[0],
-                       'bottom': coordinates_small_box[1],
-                       'right': coordinates_small_box[2],
-                       'top': coordinates_small_box[3],
-                       'geom': luxgetfeaturedefinition.geometry_column}
-
-                query = query_point + " UNION ALL " + query_others +\
-                    " LIMIT 20"
-
+                    query = query_point + " UNION ALL " + query_others +\
+                        " LIMIT 20"
+                else:
+                    if luxgetfeaturedefinition.id_column is not None:
+                        query = query_1 + luxgetfeaturedefinition.id_column +\
+                            " = '" + fid + "'"
+                    else:
+                        query = query_1 + " id = '" + fid + "'"
                 res = engine.execute(query)
                 rows = res.fetchall()
 
@@ -173,7 +184,16 @@ class Getfeatureinfo(object):
                     for row in rows:
                         geometry = geojson_loads(row['st_asgeojson'])
                         attributes = dict(row)
+                        if luxgetfeaturedefinition.id_column in row:
+                            featureid = row[luxgetfeaturedefinition.id_column]
+                        else:
+                            if 'id' in row:
+                                featureid = row['id']
+                            else:
+                                featureid = None
                         f = self.to_feature(
+                            luxgetfeaturedefinition.layer + '_' +
+                            str(featureid),
                             geometry,
                             attributes,
                             luxgetfeaturedefinition.attributes_to_remove,
@@ -181,6 +201,53 @@ class Getfeatureinfo(object):
                             luxgetfeaturedefinition.geometry_column)
                         features.append(f)
                     if len(features) > 0:
+                        if fid is None:
+                            results.append(
+                                self.to_featureinfo(
+                                    self.remove_features_outside_tolerance(
+                                        features, coordinates_small_box),
+                                    luxgetfeaturedefinition.layer,
+                                    luxgetfeaturedefinition.template,
+                                    is_ordered,
+                                    luxgetfeaturedefinition.remote_template))
+                        else:
+                            results.append(
+                                self.to_featureinfo(
+                                    features,
+                                    luxgetfeaturedefinition.layer,
+                                    luxgetfeaturedefinition.template,
+                                    is_ordered,
+                                    luxgetfeaturedefinition.remote_template))
+            if (luxgetfeaturedefinition is not None and
+                luxgetfeaturedefinition.rest_url is not None and
+                    len(luxgetfeaturedefinition.rest_url) > 0):
+                if fid is None:
+                    features = self._get_external_data(
+                        luxgetfeaturedefinition.layer,
+                        luxgetfeaturedefinition.rest_url,
+                        luxgetfeaturedefinition.id_column,
+                        big_box, None, None,
+                        luxgetfeaturedefinition.attributes_to_remove,
+                        luxgetfeaturedefinition.columns_order)
+                else:
+                    features = self._get_external_data(
+                        luxgetfeaturedefinition.layer,
+                        luxgetfeaturedefinition.rest_url,
+                        luxgetfeaturedefinition.id_column,
+                        None, fid, None,
+                        luxgetfeaturedefinition.attributes_to_remove,
+                        luxgetfeaturedefinition.columns_order)
+                if len(features) > 0:
+                    if (luxgetfeaturedefinition.additional_info_function
+                        is not None and
+                        len(luxgetfeaturedefinition.
+                            additional_info_function) > 0):
+                        features = eval(luxgetfeaturedefinition.
+                                        additional_info_function)
+                    is_ordered =\
+                        luxgetfeaturedefinition.columns_order is not None\
+                        and len(luxgetfeaturedefinition.columns_order) > 0
+                    if fid is None:
                         results.append(
                             self.to_featureinfo(
                                 self.remove_features_outside_tolerance(
@@ -189,32 +256,14 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
                                 luxgetfeaturedefinition.remote_template))
-
-            if (luxgetfeaturedefinition is not None and
-                luxgetfeaturedefinition.rest_url is not None and
-                    len(luxgetfeaturedefinition.rest_url) > 0):
-                features = self._get_external_data(
-                    luxgetfeaturedefinition.rest_url,
-                    big_box, None, None,
-                    luxgetfeaturedefinition.attributes_to_remove,
-                    luxgetfeaturedefinition.columns_order)
-                if len(features) > 0:
-                    if (luxgetfeaturedefinition.additional_info_function
-                        is not None and
-                        len(luxgetfeaturedefinition.
-                            additional_info_function) > 0):
-                        features = eval(luxgetfeaturedefinition.
-                                        additional_info_function)
-
-                    results.append(
-                        self.to_featureinfo(
-                            self.remove_features_outside_tolerance(
-                                features, coordinates_small_box),
-                            luxgetfeaturedefinition.layer,
-                            luxgetfeaturedefinition.template,
-                            is_ordered,
-                            luxgetfeaturedefinition.remote_template))
-
+                    else:
+                        results.append(
+                            self.to_featureinfo(
+                                features,
+                                luxgetfeaturedefinition.layer,
+                                luxgetfeaturedefinition.template,
+                                is_ordered,
+                                luxgetfeaturedefinition.remote_template))
         return results
 
     def remove_features_outside_tolerance(self, features, coords):
@@ -232,9 +281,8 @@ class Getfeatureinfo(object):
                 features_to_keep.append(feature)
         return features_to_keep
 
-    def to_feature(self, geometry, attributes, attributes_to_remove,
+    def to_feature(self, fid, geometry, attributes, attributes_to_remove,
                    columns_order=None, geometry_column='geom'):
-        fid = hashlib.md5(geojson_dumps(geometry)).hexdigest()
         attributes = self.remove_attributes(
                     attributes,
                     attributes_to_remove,
@@ -333,14 +381,18 @@ class Getfeatureinfo(object):
             modified_features.append(feature)
         return modified_features
 
-    def get_additional_info_for_ng95(self, rows):
+    def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
         dirname = "/sketch"
 
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
-
-            feature = self.to_feature(geometry, dict(row), "")
+            if 'id' in row:
+                fid = row['id']
+            else:
+                fid = None
+            feature = self.to_feature(layer_id + '_' + str(fid),
+                                      geometry, dict(row), "")
 
             feature['attributes']['has_sketch'] = False
             nom_croq = feature['attributes']['nom_croq']
@@ -362,14 +414,18 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_pf(self, rows, measurements=False):
+    def get_info_from_pf(self, layer_id, rows, measurements=False):
         import geoportailv3.PF
         pf = geoportailv3.PF.PF()
         features = []
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
-
-            f = self.to_feature(geometry, dict(row), "")
+            if 'textstring' in row:
+                fid = row['textstring']
+            else:
+                fid = None
+            f = self.to_feature(str(layer_id) + '_' + str(fid),
+                                geometry, dict(row), "")
 
             attributes = f['attributes']
             attributes['PF'] = dict(pf.get_detail(
@@ -391,11 +447,16 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_mymaps(self, rows, attributes_to_remove):
+    def get_info_from_mymaps(self, layer_id, rows, attributes_to_remove):
         features = []
         ids = []
         for row in rows:
             category_id = row['category_id']
+            if 'id' in row:
+                fid = row['id']
+            else:
+                fid = None
+
             map_id = row['map_id']
             cur_id = str(map_id) + "--" + str(category_id)
             if cur_id not in ids:
@@ -419,16 +480,21 @@ class Getfeatureinfo(object):
                                                attributes_to_remove,
                                                "geometry")
                         features.append(
-                            self.to_feature(geometry, attributes, ""))
+                            self.to_feature(str(layer_id) + '_' + str(fid),
+                                            geometry,
+                                            attributes, ""))
                 else:
                     attributes = dict(row)
                     self.remove_attributes(attributes,
                                            attributes_to_remove,
                                            "geometry")
-                    features.append(self.to_feature(geometry, attributes, ""))
+                    features.append(
+                        self.to_feature(str(layer_id) + '_' + str(fid),
+                                        geometry, attributes, ""))
         return features
 
-    def _get_external_data(self, url, bbox=None, featureid=None, cfg=None,
+    def _get_external_data(self, layer_id, url, id_column='objectid',
+                           bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
@@ -472,7 +538,8 @@ class Getfeatureinfo(object):
                 'where': '',
                 'outFields': '*',
                 'objectIds': ''}
-
+        if id_column is None:
+            id_column = 'objectid'
         if featureid is not None:
             body['objectIds'] = featureid
         elif bbox is not None:
@@ -546,6 +613,10 @@ class Getfeatureinfo(object):
 
                 if geometry != '':
                     alias = {}
+                    if id_column in rawfeature['attributes']:
+                        fid = rawfeature['attributes'][id_column]
+                    else:
+                        fid = None
                     for attribute in rawfeature['attributes']:
                         for field in fields:
                             if (field['name'] == attribute and
@@ -557,7 +628,8 @@ class Getfeatureinfo(object):
                         rawfeature['attributes'][key] =\
                             rawfeature['attributes'].pop(value)
 
-                    f = self.to_feature(geometry,
+                    f = self.to_feature(str(layer_id) + '_' + str(fid),
+                                        geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove,
                                         columns_order)

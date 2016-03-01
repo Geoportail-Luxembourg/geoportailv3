@@ -10,6 +10,9 @@
         <tr ng-if="!ctrl.hasAttributes(feature)">
           <td translate>Aucune information disponible pour cette couche</td>
         </tr>
+        <tr ng-if="ctrl.hasValidFID(feature)">
+          <td colspan="2"><a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a></td>
+        </tr>
       </table>
     </div>
   </div>
