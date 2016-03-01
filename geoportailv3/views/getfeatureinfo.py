@@ -231,7 +231,7 @@ class Getfeatureinfo(object):
                         luxgetfeaturedefinition.layer,
                         luxgetfeaturedefinition.rest_url,
                         luxgetfeaturedefinition.id_column,
-                        None, None, fid,
+                        None, fid, None,
                         luxgetfeaturedefinition.attributes_to_remove,
                         luxgetfeaturedefinition.columns_order)
                 if len(features) > 0:
@@ -241,16 +241,26 @@ class Getfeatureinfo(object):
                             additional_info_function) > 0):
                         features = eval(luxgetfeaturedefinition.
                                         additional_info_function)
-
-                    results.append(
-                        self.to_featureinfo(
-                            self.remove_features_outside_tolerance(
-                                features, coordinates_small_box),
-                            luxgetfeaturedefinition.layer,
-                            luxgetfeaturedefinition.template,
-                            is_ordered,
-                            luxgetfeaturedefinition.remote_template))
-
+                    is_ordered =\
+                        luxgetfeaturedefinition.columns_order is not None\
+                        and len(luxgetfeaturedefinition.columns_order) > 0
+                    if fid is None:
+                        results.append(
+                            self.to_featureinfo(
+                                self.remove_features_outside_tolerance(
+                                    features, coordinates_small_box),
+                                luxgetfeaturedefinition.layer,
+                                luxgetfeaturedefinition.template,
+                                is_ordered,
+                                luxgetfeaturedefinition.remote_template))
+                    else:
+                        results.append(
+                            self.to_featureinfo(
+                                features,
+                                luxgetfeaturedefinition.layer,
+                                luxgetfeaturedefinition.template,
+                                is_ordered,
+                                luxgetfeaturedefinition.remote_template))
         return results
 
     def remove_features_outside_tolerance(self, features, coords):
@@ -527,9 +537,8 @@ class Getfeatureinfo(object):
                 'objectIds': ''}
         if id_column is None:
             id_column = 'objectid'
-
         if featureid is not None:
-            body[id_column] = featureid
+            body['objectIds'] = featureid
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
