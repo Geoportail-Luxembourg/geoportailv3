@@ -54,7 +54,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetProfile} appGetProfile
- * @param {app.StateManager} appStateManager
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl
@@ -69,7 +69,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
-    ngeoFeatureOverlayMgr, appGetProfile, appStateManager,
+    ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice) {
@@ -350,7 +350,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
         }
       }, this);
   // Load info window if fid has a valid value
-  var fid = appStateManager.getInitialValue('fid');
+  var fid = ngeoLocation.getParam('fid');
+
   if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
   }
