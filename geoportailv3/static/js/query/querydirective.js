@@ -445,16 +445,10 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
   var splittedFid = fid.split('_');
   var layersList = [splittedFid[0]];
   var layerLabel = {};
-  var flatCatalogue = [];
 
-  this.appThemes_.getThemesObject().then(
-      goog.bind(function(themes) {
-        for (var i = 0; i < themes.length; i++) {
-          var theme = themes[i];
-          goog.array.extend(flatCatalogue,
-              app.QueryController.getAllChildren_(theme.children)
-          );
-        }
+
+  this.appThemes_.getFlatCatalog().then(
+      goog.bind(function(flatCatalogue) {
         var node = goog.array.find(flatCatalogue, function(catItem) {
           return catItem.id == splittedFid[0];
         });
