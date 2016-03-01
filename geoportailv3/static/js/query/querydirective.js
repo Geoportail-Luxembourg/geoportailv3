@@ -1,6 +1,6 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
-
+goog.require('app.GetDevice');
 goog.require('app.profileDirective');
 goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
@@ -64,7 +64,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.Themes} appThemes
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
- * @param {Document} $document Document.
+ * @param {app.GetDevice} appGetDevice
  * @export
  * @ngInject
  */
@@ -72,13 +72,13 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appGetProfile, appStateManager,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
-    appGetLayerForCatalogNode, $document) {
+    appGetLayerForCatalogNode, appGetDevice) {
 
   /**
    * @private
-   * @type {Document}
+   * @type {app.GetDevice}
    */
-  this.$document_ = $document;
+  this.appGetDevice_ = appGetDevice;
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -466,7 +466,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                 'fid': fid
               }}).then(
               goog.bind(function(resp) {
-                var env = this.findBootstrapEnvironment_();
+                var env = this.appGetDevice_();
                 var showInfo = false;
                 if (env !== 'xs') {
                   showInfo = true;
@@ -854,29 +854,6 @@ app.QueryController.prototype.translateKeys =
 
 
   return results;
-};
-
-
-/**
- * @return {string} The current device env.
- * @private
- */
-app.QueryController.prototype.findBootstrapEnvironment_ =
-    function() {
-  var envs = ['xs', 'sm', 'md', 'lg'];
-
-  var el = $('<div>');
-  angular.element(this.$document_[0].body).append(el);
-
-  for (var i = envs.length - 1; i >= 0; i--) {
-    var env = envs[i];
-    el.addClass('hidden-' + env);
-    if (el.is(':hidden')) {
-      el.remove();
-      return env;
-    }
-  }
-  return envs[0];
 };
 
 app.module.controller('AppQueryController',

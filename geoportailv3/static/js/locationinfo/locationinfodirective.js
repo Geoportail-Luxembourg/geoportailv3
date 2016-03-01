@@ -8,6 +8,7 @@ goog.provide('app.locationinfoDirective');
 goog.require('app');
 goog.require('app.CoordinateString');
 goog.require('app.Geocoding');
+goog.require('app.GetDevice');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
@@ -55,20 +56,20 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {string} appLocationinfoTemplateUrl
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
- * @param {Document} $document Document.
+ * @param {app.GetDevice} appGetDevice
  * @ngInject
  */
 app.LocationinfoController = function(
         $scope, $timeout, ngeoFeatureOverlayMgr,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
-        appGeocoding, $document) {
+        appGeocoding, appGetDevice) {
 
   /**
    * @private
-   * @type {Document}
+   * @type {app.GetDevice}
    */
-  this.$document_ = $document;
+  this.appGetDevice_ = appGetDevice;
 
   /**
    * @type {app.CoordinateString}
@@ -227,7 +228,7 @@ app.LocationinfoController = function(
     var coordinate = /** @type {ol.Coordinate} */ ([x, y]);
     if (goog.isDef(x) && goog.isDef(y)) {
       this.loadInfoPane_(coordinate);
-      var env = this.findBootstrapEnvironment_();
+      var env = this.appGetDevice_();
       if (env !== 'xs') {
         this['open'] = true;
         this['hiddenContent'] = false;
@@ -345,29 +346,6 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       this['distance'] = Math.round(address['distance']);
     }
   }, this));
-};
-
-
-/**
- * @return {string} The current device env.
- * @private
- */
-app.LocationinfoController.prototype.findBootstrapEnvironment_ =
-    function() {
-  var envs = ['xs', 'sm', 'md', 'lg'];
-
-  var el = $('<div>');
-  angular.element(this.$document_[0].body).append(el);
-
-  for (var i = envs.length - 1; i >= 0; i--) {
-    var env = envs[i];
-    el.addClass('hidden-' + env);
-    if (el.is(':hidden')) {
-      el.remove();
-      return env;
-    }
-  }
-  return envs[0];
 };
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);
