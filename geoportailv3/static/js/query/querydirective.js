@@ -75,6 +75,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     appGetLayerForCatalogNode, appGetDevice) {
 
   /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
+
+  /**
    * @private
    * @type {app.GetDevice}
    */
@@ -350,7 +356,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
         }
       }, this);
   // Load info window if fid has a valid value
-  var fid = ngeoLocation.getParam('fid');
+  var fid = this.ngeoLocation_.getParam('fid');
 
   if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);

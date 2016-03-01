@@ -155,8 +155,11 @@ class Getfeatureinfo(object):
                     query = query_point + " UNION ALL " + query_others +\
                         " LIMIT 20"
                 else:
-                    query = query_1 + luxgetfeaturedefinition.id_column +\
-                        " = '" + fid + "'"
+                    if luxgetfeaturedefinition.id_column is not None:
+                        query = query_1 + luxgetfeaturedefinition.id_column +\
+                            " = '" + fid + "'"
+                    else:
+                        query = query_1 + " id = '" + fid + "'"
                 res = engine.execute(query)
                 rows = res.fetchall()
 
