@@ -1046,39 +1046,29 @@ app.Mymaps.prototype.createStyleFunction = function() {
     fillStyle.setColor(rgbaColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
-      var fontWidth = '32px';
-      var curStroke = +this.get('stroke');
-      if (curStroke > 3) {
-        if (curStroke > 6) {
-          fontWidth = '50px';
-        } else {
-          fontWidth = '40px';
-        }
-      }
-      var orientationOptions = {
-        font: 'normal ' + fontWidth + ' sans-serif',
-        text: '>',
-        textAlign: 'start',
-        fill: new ol.style.Fill({
-          color: rgbaColor
-        }),
-        angle: 0,
-        rotation: 0
-      };
       this.getGeometry().forEachSegment(function(start, end) {
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
-        var textRotation = -1 * Math.atan2(dy, dx);
-        goog.object.extend(orientationOptions, ({
-          rotation: textRotation
-        }));
-        var textOrientation = new ol.style.Text((orientationOptions));
+
+        var arrowOptions = {
+          fill: new ol.style.Fill({
+            color: rgbColor
+          }),
+          stroke: new ol.style.Stroke({
+            color: rgbColor,
+            width: 1
+          }),
+          radius: 10,
+          points: 3,
+          angle: 0,
+          rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
+        };
 
         // arrows
         styles.push(new ol.style.Style({
           geometry: new ol.geom.Point(
               [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]),
-          text: textOrientation
+          image: new ol.style.RegularShape(arrowOptions)
         }));
       });
     }
