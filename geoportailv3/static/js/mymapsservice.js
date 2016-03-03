@@ -1138,7 +1138,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
       } else if (shape === 'triangle') {
         goog.object.extend(imageOptions, ({
           points: 3,
-          angle: Math.PI / 4,
+          angle: 0,
           rotation: this.get('angle')
         }));
         image = new ol.style.RegularShape(
@@ -1155,7 +1155,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
       } else if (this.get('shape') == 'cross') {
         goog.object.extend(imageOptions, ({
           points: 4,
-          angle: Math.PI / 4,
+          angle: 0,
           rotation: this.get('angle'),
           radius2: 0
         }));
