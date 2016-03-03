@@ -995,10 +995,10 @@ app.Mymaps.prototype.createStyleFunction = function() {
       points: 4,
       angle: Math.PI / 4,
       fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.5)'
+        color: [255, 255, 255, 0.5]
       }),
       stroke: new ol.style.Stroke({
-        color: 'rgba(0, 0, 0, 1)'
+        color: [0, 0, 0, 1]
       })
     }),
     geometry: function(feature) {
@@ -1034,14 +1034,16 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
-    var rgb = goog.color.hexToRgb(color);
+    var rgbColor = goog.color.hexToRgb(color);
     var opacity = this.get('opacity');
     if (!goog.isDef(opacity)) {
       opacity = 1;
     }
-    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        opacity);
-    fillStyle.setColor(fillColor);
+    var rgbaColor = goog.array.clone(rgbColor);
+    rgbColor.push(1);
+    rgbaColor.push(opacity);
+
+    fillStyle.setColor(rgbaColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var fontWidth = '32px';
@@ -1058,7 +1060,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
         text: '>',
         textAlign: 'start',
         fill: new ol.style.Fill({
-          color: color
+          color: rgbaColor
         }),
         angle: 0,
         rotation: 0
@@ -1096,7 +1098,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
     if (this.get('stroke') > 0) {
       stroke = new ol.style.Stroke({
-        color: color,
+        color: rgbColor,
         width: this.get('stroke'),
         lineDash: lineDash
       });
@@ -1104,7 +1106,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
     var imageOptions = {
       fill: fillStyle,
       stroke: new ol.style.Stroke({
-        color: color,
+        color: rgbColor,
         width: this.get('size') / 7
       }),
       radius: this.get('size')
@@ -1170,10 +1172,10 @@ app.Mymaps.prototype.createStyleFunction = function() {
           font: 'normal ' + this.get('size') + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
-            color: color
+            color: rgbColor
           }),
           stroke: new ol.style.Stroke({
-            color: '#FFFFFF',
+            color: [255, 255, 255],
             width: 2
           })
         }))
