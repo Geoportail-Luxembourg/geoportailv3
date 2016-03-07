@@ -549,6 +549,7 @@ app.FeaturePopupController.prototype.reverseLine = function() {
     this.feature.setGeometry(new ol.geom.LineString(coordinates));
     this.drawnFeatures_.saveFeature(this.feature);
   }
+  this.updateProfile();
   this.appFeaturePopup_.toggleDropdown();
 };
 
