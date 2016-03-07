@@ -56,11 +56,12 @@ app.getImageExtension_ = function(imageType) {
 
 /**
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
+ * @param {string} requestScheme
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
  */
-app.getWmtsLayer_ = function(ngeoDecorateLayer) {
+app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
   return getWmtsLayer;
 
   /**
@@ -71,8 +72,13 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
   function getWmtsLayer(name, imageType) {
 
     var imageExt = app.getImageExtension_(imageType);
-    var url = 'http://wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
+    var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
         '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+
+    if (requestScheme === 'https') {
+      url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
+          '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+    }
 
     var layer = new ol.layer.Tile({
       source: new ol.source.WMTS({
