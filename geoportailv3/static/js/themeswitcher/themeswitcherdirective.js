@@ -96,14 +96,13 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
         this.setThemes_();
       }, this);
 
-  this.appTheme_.setCurrentTheme(this.appTheme_.getDefaultTheme(), this.map_);
-
   // Get the theme from the URL if specified, otherwise we use the default
   // theme and add it to the URL.
   var pathElements = ngeoLocation.getPath().split('/');
   if (this.appTheme_.themeInUrl(pathElements)) {
-    this.appTheme_.setCurrentTheme(pathElements[pathElements.length - 1],
-        this.map_);
+    this.switchTheme(pathElements[pathElements.length - 1]);
+  } else {
+    this.switchTheme(this.appTheme_.getDefaultTheme());
   }
 };
 
