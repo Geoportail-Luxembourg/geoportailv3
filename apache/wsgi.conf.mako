@@ -46,4 +46,5 @@ WSGIScriptAlias /${instanceid}/wsgi ${directory}/apache/application.wsgi
     # WSGIProcessGroup must be commented/removed when running the project on windows
     WSGIProcessGroup c2cgeoportal:${instanceid}
     WSGIApplicationGroup %{GLOBAL}
+    SetEnvIf    X-Https on HTTPS=1
 </Location>
