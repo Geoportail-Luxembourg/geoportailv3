@@ -237,6 +237,20 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.newIsPublic = false;
 
   /**
+   * Open or Close the confirmation dialog box?
+   * @type {boolean}
+   * @export
+   */
+  this.confirmDelete = false;
+
+  /**
+   * Open or Close the confirmation dialog box?
+   * @type {boolean}
+   * @export
+   */
+  this.confirmDeleteMap = false;
+
+  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -491,6 +505,24 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
+};
+
+
+/**
+ * Open the confirmation dialog box.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openConfirmDelete = function() {
+  this.confirmDelete = true;
+};
+
+
+/**
+ * Open the delete map confirmation dialog box.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
+  this.confirmDeleteMap = true;
 };
 
 
