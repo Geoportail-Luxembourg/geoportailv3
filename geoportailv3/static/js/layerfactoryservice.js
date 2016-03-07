@@ -78,7 +78,7 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
       source: new ol.source.WMTS({
         url: url,
         layer: name,
-        matrixSet: 'GLOBAL_WEBMERCATOR',
+        matrixSet: 'GLOBAL_WEBMERCATOR_4_V3',
         format: imageType,
         requestEncoding: ol.source.WMTSRequestEncoding.REST,
         projection: ol.proj.get('EPSG:3857'),
@@ -90,10 +90,12 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer) {
             611.496226281, 305.748113141, 152.87405657,
             76.4370282852, 38.2185141426, 19.1092570713,
             9.55462853565, 4.77731426782, 2.38865713391,
-            1.19432856696, 0.597164283478, 0.298582141739],
+            1.19432856696, 0.597164283478, 0.298582141739,
+            0.1492910708695, 0.07464553543475],
           matrixIds: [
             '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
-            '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'
+            '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+            '21'
           ]
         }),
         style: 'default',

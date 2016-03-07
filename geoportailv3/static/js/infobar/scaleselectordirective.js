@@ -63,7 +63,9 @@ app.ScaleselectorController = function($sce) {
     '16': $sce.trustAsHtml('1&nbsp;:&nbsp;6\'000'),
     '17': $sce.trustAsHtml('1&nbsp;:&nbsp;3\'000'),
     '18': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'500'),
-    '19': $sce.trustAsHtml('1&nbsp;:&nbsp;750')
+    '19': $sce.trustAsHtml('1&nbsp;:&nbsp;750'),
+    '20': $sce.trustAsHtml('1&nbsp;:&nbsp;400'),
+    '21': $sce.trustAsHtml('1&nbsp;:&nbsp;200')
   };
 
   /**

@@ -496,7 +496,7 @@ app.Mymaps.prototype.updateLayers = function() {
   var curMapOpacities = this.mapLayersOpacities;
   var curMapVisibilities = this.mapLayersVisibilities;
   if (this.mapTheme) {
-    this.appTheme_.setCurrentTheme(this.mapTheme);
+    this.appTheme_.setCurrentTheme(this.mapTheme, this.map);
   }
   this.appThemes_.getFlatCatalog()
   .then(goog.bind(function(flatCatalogue) {

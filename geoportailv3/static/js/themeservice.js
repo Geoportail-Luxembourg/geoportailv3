@@ -3,6 +3,7 @@
  */
 goog.provide('app.Theme');
 
+goog.require('app.Themes');
 goog.require('ngeo.Location');
 
 
@@ -10,9 +11,25 @@ goog.require('ngeo.Location');
 /**
  * @constructor
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
+ * @param {app.Themes} appThemes
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @ngInject
  */
-app.Theme = function(ngeoLocation) {
+app.Theme = function(ngeoLocation, appThemes, maxExtent) {
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ =
+      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
   /**
    * @type {string}
    * @private
@@ -29,10 +46,32 @@ app.Theme = function(ngeoLocation) {
 
 /**
  * @param {string} themeId The id of the theme.
+ * @param {ol.Map} map The map object.
  */
-app.Theme.prototype.setCurrentTheme = function(themeId) {
+app.Theme.prototype.setCurrentTheme = function(themeId, map) {
   this.currentTheme_ = themeId;
   this.setLocationPath_(this.currentTheme_);
+  this.appThemes_.getThemeObject(this.currentTheme_).then(goog.bind(
+      /**
+       * @param {Object} tree Tree object for the theme.
+       */
+      function(tree) {
+        if (!goog.isNull(tree)) {
+          goog.asserts.assert('metadata' in tree);
+          var maxZoom = 19;
+          if (!goog.string.isEmptySafe(tree['metadata']['resolutions'])) {
+            var resolutions = tree['metadata']['resolutions'].split(',');
+            maxZoom = resolutions.length + 7;
+          }
+          var currentView = map.getView();
+          map.setView(new ol.View({
+            maxZoom: maxZoom,
+            minZoom: 8,
+            extent: this.maxExtent_,
+            center: currentView.getCenter(),
+            zoom: currentView.getZoom()
+          }));
+        }},this));
 };
 
 

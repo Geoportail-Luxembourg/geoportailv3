@@ -25,7 +25,8 @@ app.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
     scope: {
-      'userOpen': '=appThemeswitcherUseropen'
+      'userOpen': '=appThemeswitcherUseropen',
+      'map': '=appThemeswitcherMap'
     },
     controllerAs: 'ctrl',
     bindToController: true,
@@ -50,6 +51,12 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
  */
 app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
     appThemes, appTheme, appNotify) {
+
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
 
   /**
    * @type {app.Theme}
@@ -89,13 +96,13 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
         this.setThemes_();
       }, this);
 
-  this.appTheme_.setCurrentTheme(this.appTheme_.getDefaultTheme());
-
   // Get the theme from the URL if specified, otherwise we use the default
   // theme and add it to the URL.
   var pathElements = ngeoLocation.getPath().split('/');
   if (this.appTheme_.themeInUrl(pathElements)) {
-    this.appTheme_.setCurrentTheme(pathElements[pathElements.length - 1]);
+    this.switchTheme(pathElements[pathElements.length - 1]);
+  } else {
+    this.switchTheme(this.appTheme_.getDefaultTheme());
   }
 };
 
@@ -155,7 +162,7 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
  * @export
  */
 app.ThemeswitcherController.prototype.switchTheme = function(themeId) {
-  this.appTheme_.setCurrentTheme(themeId);
+  this.appTheme_.setCurrentTheme(themeId, this.map_);
 };
 
 
