@@ -83,15 +83,22 @@ app.MapController = function(appStateManager, ngeoDebounce) {
   view.setZoom(viewZoom);
 
   app.MapController.updateState_(appStateManager, view);
-
-  view.on('propertychange',
-      ngeoDebounce(
-          /**
+  var updateStateFunc = ngeoDebounce(
+      /**
            * @param {ol.ObjectEvent} e Object event.
            */
-          function(e) {
-            app.MapController.updateState_(appStateManager, view);
-          }, 300, /* invokeApply */ true));
+      function(e) {
+        app.MapController.updateState_(appStateManager, view);
+      }, 300, /* invokeApply */ true);
+
+  view.on('propertychange', updateStateFunc);
+  map.on('propertychange', function(event) {
+    if (event.key === ol.MapProperty.VIEW) {
+      view.un('propertychange', updateStateFunc);
+      view = map.getView();
+      view.on('propertychange', updateStateFunc);
+    }
+  });
 };
 
 

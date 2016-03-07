@@ -64,6 +64,13 @@ app.Theme.prototype.setCurrentTheme = function(themeId, map) {
             maxZoom = resolutions.length + 7;
           }
           var currentView = map.getView();
+          map.setView(new ol.View({
+            maxZoom: maxZoom,
+            minZoom: 8,
+            extent: this.maxExtent_,
+            center: currentView.getCenter(),
+            zoom: currentView.getZoom()
+          }));
         }},this));
 };
 
