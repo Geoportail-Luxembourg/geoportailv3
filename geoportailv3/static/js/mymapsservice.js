@@ -995,10 +995,10 @@ app.Mymaps.prototype.createStyleFunction = function() {
       points: 4,
       angle: Math.PI / 4,
       fill: new ol.style.Fill({
-        color: 'rgba(255, 255, 255, 0.5)'
+        color: [255, 255, 255, 0.5]
       }),
       stroke: new ol.style.Stroke({
-        color: 'rgba(0, 0, 0, 1)'
+        color: [0, 0, 0, 1]
       })
     }),
     geometry: function(feature) {
@@ -1034,49 +1034,41 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
-    var rgb = goog.color.hexToRgb(color);
+    var rgbColor = goog.color.hexToRgb(color);
     var opacity = this.get('opacity');
     if (!goog.isDef(opacity)) {
       opacity = 1;
     }
-    var fillColor = goog.color.alpha.rgbaToRgbaStyle(rgb[0], rgb[1], rgb[2],
-        opacity);
-    fillStyle.setColor(fillColor);
+    var rgbaColor = goog.array.clone(rgbColor);
+    rgbColor.push(1);
+    rgbaColor.push(opacity);
+
+    fillStyle.setColor(rgbaColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
-      var fontWidth = '32px';
-      var curStroke = +this.get('stroke');
-      if (curStroke > 3) {
-        if (curStroke > 6) {
-          fontWidth = '50px';
-        } else {
-          fontWidth = '40px';
-        }
-      }
-      var orientationOptions = {
-        font: fontWidth + ' sans-serif',
-        text: '>',
-        textAlign: 'start',
-        fill: new ol.style.Fill({
-          color: color
-        }),
-        angle: 0,
-        rotation: 0
-      };
       this.getGeometry().forEachSegment(function(start, end) {
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
-        var textRotation = -1 * Math.atan2(dy, dx);
-        goog.object.extend(orientationOptions, ({
-          rotation: textRotation
-        }));
-        var textOrientation = new ol.style.Text((orientationOptions));
+
+        var arrowOptions = {
+          fill: new ol.style.Fill({
+            color: rgbColor
+          }),
+          stroke: new ol.style.Stroke({
+            color: rgbColor,
+            width: 1
+          }),
+          radius: 10,
+          points: 3,
+          angle: 0,
+          rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
+        };
 
         // arrows
         styles.push(new ol.style.Style({
           geometry: new ol.geom.Point(
               [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]),
-          text: textOrientation
+          image: new ol.style.RegularShape(arrowOptions)
         }));
       });
     }
@@ -1096,7 +1088,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
     if (this.get('stroke') > 0) {
       stroke = new ol.style.Stroke({
-        color: color,
+        color: rgbColor,
         width: this.get('stroke'),
         lineDash: lineDash
       });
@@ -1104,7 +1096,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
     var imageOptions = {
       fill: fillStyle,
       stroke: new ol.style.Stroke({
-        color: color,
+        color: rgbColor,
         width: this.get('size') / 7
       }),
       radius: this.get('size')
@@ -1136,7 +1128,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
       } else if (shape === 'triangle') {
         goog.object.extend(imageOptions, ({
           points: 3,
-          angle: Math.PI / 4,
+          angle: 0,
           rotation: this.get('angle')
         }));
         image = new ol.style.RegularShape(
@@ -1153,7 +1145,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
       } else if (this.get('shape') == 'cross') {
         goog.object.extend(imageOptions, ({
           points: 4,
-          angle: Math.PI / 4,
+          angle: 0,
           rotation: this.get('angle'),
           radius2: 0
         }));
@@ -1167,13 +1159,13 @@ app.Mymaps.prototype.createStyleFunction = function() {
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
           textAlign: 'start',
-          font: this.get('size') + 'px Sans-serif',
+          font: 'normal ' + this.get('size') + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
-            color: color
+            color: rgbColor
           }),
           stroke: new ol.style.Stroke({
-            color: '#FFFFFF',
+            color: [255, 255, 255],
             width: 2
           })
         }))
