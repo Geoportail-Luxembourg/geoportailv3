@@ -223,7 +223,7 @@ class Feature(Base):
                           showOrientation=self.show_orientation,
                           linestyle='plain' if self.linestyle == 0
                           else 'dashed' if self.linestyle == 1 else 'dotted',
-                          id=self.id,
+                          fid=self.id,
                           symbolId=self.symbol_id,
                           angle=self.angle if self.angle is not None else 0,
                           size=self.size if self.size is not None else 10,

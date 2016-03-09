@@ -222,7 +222,7 @@ class Mymaps(object):
                 replace(u'\ufffd', '?')
             feature = geojson.loads(feature,
                                     object_hook=geojson.GeoJSON.to_instance)
-            feature_id = feature.properties.get('id')
+            feature_id = feature.properties.get('fid')
 
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
@@ -258,7 +258,7 @@ class Mymaps(object):
                 loads(features, object_hook=geojson.GeoJSON.to_instance)
 
             for feature in feature_collection['features']:
-                feature_id = feature.properties.get('id')
+                feature_id = feature.properties.get('fid')
 
                 if feature_id:
                     cur_feature = DBSession.query(Feature).get(feature_id)
