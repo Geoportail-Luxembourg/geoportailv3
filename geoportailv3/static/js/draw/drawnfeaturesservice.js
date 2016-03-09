@@ -250,7 +250,7 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
     this.appMymaps_.saveFeature(feature)
       .then(goog.bind(function(resp) {
           var featureId = resp['id'];
-          currentFeature.set('id', featureId);
+          currentFeature.set('fid', featureId);
           feature.set('__saving__', false);
         }, this));
   }

@@ -642,7 +642,7 @@ app.Mymaps.prototype.getMapInformation = function() {
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
-      feature.get('id')).then(goog.bind(
+      feature.get('fid')).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
