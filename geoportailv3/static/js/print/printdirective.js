@@ -13,6 +13,7 @@ goog.provide('app.PrintController');
 goog.provide('app.printDirective');
 
 
+goog.require('app.FeaturePopup');
 goog.require('app.GetShorturl');
 goog.require('app.Theme');
 goog.require('app.Themes');
@@ -68,6 +69,7 @@ app.module.directive('appPrint', app.printDirective);
  * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
+ * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
@@ -77,8 +79,14 @@ app.module.directive('appPrint', app.printDirective);
  */
 app.PrintController = function($scope, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
-    appThemes, appTheme, appGetShorturl, printServiceUrl, qrServiceUrl) {
+    appThemes, appTheme, appFeaturePopup, appGetShorturl,
+    printServiceUrl, qrServiceUrl) {
 
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 
   /**
    * @type {ol.Map}
@@ -265,6 +273,7 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
     }
     var open = /** @type {boolean} */ (newVal);
     if (open) {
+      this.featurePopup_.hide();
       this.useOptimalScale_();
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
       postcomposeListenerKey = ol.events.listen(this.map_,
@@ -455,6 +464,7 @@ app.PrintController.prototype.changeScale = function(newScale) {
  * @export
  */
 app.PrintController.prototype.print = function() {
+  this.featurePopup_.hide();
   var map = this.map_;
 
   var dpi = app.PrintController.DPI_;
