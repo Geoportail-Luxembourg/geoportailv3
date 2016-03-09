@@ -293,6 +293,8 @@ app.MainController.prototype.setMap_ = function() {
         extent: this.defaultExtent_}),
       new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'})
     ],
+    loadTilesWhileInteracting: true,
+    loadTilesWhileAnimating: true,
     view: new ol.View({
       maxZoom: 19,
       minZoom: 8,
