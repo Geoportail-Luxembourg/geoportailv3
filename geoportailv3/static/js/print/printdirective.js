@@ -180,16 +180,16 @@ app.PrintController = function($scope, $timeout, $q, gettextCatalog,
    * @type {Array.<string>}
    */
   this['layouts'] = [
-    gettextCatalog.getString('A4 portrait'),
     gettextCatalog.getString('A4 landscape'),
-    gettextCatalog.getString('A3 portrait'),
+    gettextCatalog.getString('A4 portrait'),
     gettextCatalog.getString('A3 landscape'),
-    gettextCatalog.getString('A2 portrait'),
+    gettextCatalog.getString('A3 portrait'),
     gettextCatalog.getString('A2 landscape'),
-    gettextCatalog.getString('A1 portrait'),
+    gettextCatalog.getString('A2 portrait'),
     gettextCatalog.getString('A1 landscape'),
-    gettextCatalog.getString('A0 portrait'),
-    gettextCatalog.getString('A0 landscape')
+    gettextCatalog.getString('A1 portrait'),
+    gettextCatalog.getString('A0 landscape'),
+    gettextCatalog.getString('A0 portrait')
   ];
 
   /**
