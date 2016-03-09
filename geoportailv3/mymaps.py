@@ -138,7 +138,8 @@ class Feature(Base):
         self.is_circle = feature.properties.get('isCircle')
         self.show_orientation = feature.properties.get('showOrientation')
         linestyle = feature.properties.get('linestyle')
-        self.linestyle = 0 if linestyle == 'plain' else 1
+        self.linestyle = 0 if linestyle == 'plain' else 1\
+            if linestyle == 'dashed' else 2
         self.shape = feature.properties.get('shape')
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
@@ -220,7 +221,8 @@ class Feature(Base):
                           isLabel=self.is_label,
                           isCircle=self.is_circle,
                           showOrientation=self.show_orientation,
-                          linestyle=self.linestyle,
+                          linestyle='plain' if self.linestyle == 0
+                          else 'dashed' if self.linestyle == 1 else 'dotted',
                           id=self.id,
                           symbolId=self.symbol_id,
                           angle=self.angle if self.angle is not None else 0,
