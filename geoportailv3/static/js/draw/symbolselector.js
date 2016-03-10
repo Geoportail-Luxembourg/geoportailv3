@@ -133,6 +133,7 @@ app.SymbolSelectorController.prototype.close = function() {
  */
 app.SymbolSelectorController.prototype.selectSymbol = function(symbolId) {
   this.feature.set('symbolId', symbolId);
+  this.feature.set('size', 100);
   this.feature.set('shape', undefined);
   this.close();
 };
