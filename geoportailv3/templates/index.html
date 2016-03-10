@@ -71,7 +71,8 @@
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
           <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
-            <app-authentication app-authentication-lang="mainCtrl.lang"></app-authentication>
+            <app-authentication app-authentication-lang="mainCtrl.lang"
+                app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
           </li>
 
 
