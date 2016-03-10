@@ -311,15 +311,15 @@ app.PrintController.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
  */
 app.PrintController.MAP_SIZES_ = [
   // A4 portrait and landscape
-  [470, 650], [715, 395],
+  [715, 395], [470, 650],
   // A3 portrait and landscape
-  [715, 975], [1065, 640],
+  [1065, 640], [715, 975],
   // A2 portrait and landscape
-  [1064, 1475], [1558, 985],
+  [1558, 985], [1064, 1475],
   // A1 portrait and landscape
-  [1558, 2175], [2255, 1482],
+  [2255, 1482], [1558, 2175],
   // A0 portrait and landscape
-  [2254, 3155], [3241, 2173]
+  [3241, 2173], [2254, 3155]
 ];
 
 
