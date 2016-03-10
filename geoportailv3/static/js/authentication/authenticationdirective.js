@@ -14,7 +14,8 @@ app.authenticationDirective = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'lang': '=appAuthenticationLang'
+      'lang': '=appAuthenticationLang',
+      'userOpen': '=appAuthenticationUseropen'
     },
     controller: 'AppAuthenticationController',
     controllerAs: 'ctrl',
@@ -34,6 +35,7 @@ app.module.directive('appAuthentication', app.authenticationDirective);
  * @ngInject
  */
 app.AuthenticationController = function(appUserManager) {
+
   /**
    * @type {app.UserManager}
    * @private
@@ -59,7 +61,12 @@ app.AuthenticationController = function(appUserManager) {
  * @export
  */
 app.AuthenticationController.prototype.authenticate = function() {
-  this.appUserManager_.authenticate(this.username, this.password);
+  this.appUserManager_.authenticate(this.username, this.password).success(
+      goog.bind(function(data, status, headers, config) {
+        if (status == 200) {
+          this['userOpen'] = false;
+        }
+      },this));
 };
 
 
