@@ -351,6 +351,11 @@ app.QueryController = function($sce, $timeout, $scope, $http,
               }
             }
             return false;
+          }, this, function(layer) {
+            if (!layer.getSource()) {
+              return false;
+            }
+            return true;
           });
           this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
