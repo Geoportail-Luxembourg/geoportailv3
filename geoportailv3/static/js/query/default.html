@@ -3,17 +3,15 @@
     <h1>{{layers.layerLabel | translate}}</h1>
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.translateKeys(feature.attributes)">
       <h4>{{feature.attributes.label | translate }}</h4>
-      <table class="table table-condensed">
-        <tr ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
-          <th>{{entry['key']}}</th> <td ng-bind-html="ctrl.trustAsHtml(entry['value'])"></td>
-        </tr>
-        <tr ng-if="!ctrl.hasAttributes(feature)">
-          <td translate>Aucune information disponible pour cette couche</td>
-        </tr>
-        <tr ng-if="ctrl.hasValidFID(feature)">
-          <td colspan="2"><a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a></td>
-        </tr>
-      </table>
+      <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
+        <label>{{entry['key']}}</label> : <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+      </div>
+      <div ng-if="!ctrl.hasAttributes(feature)">
+        <span translate>Aucune information disponible pour cette couche</span>
+      </div>
+      <div ng-if="ctrl.hasValidFID(feature)">
+        <span><a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a></span>
+      </div>
     </div>
   </div>
 </div>
