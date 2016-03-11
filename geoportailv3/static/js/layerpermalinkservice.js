@@ -300,16 +300,8 @@ app.LayerPermalinkManager.prototype.init =
               }
             }, this));
 
-        this.appThemes_.getThemesObject().then(
-            goog.bind(function(themes) {
-              var flatCatalogue = [];
-              for (var i = 0; i < themes.length; i++) {
-                var theme = themes[i];
-                goog.array.extend(flatCatalogue,
-                    app.LayerPermalinkManager.getAllChildren_(theme.children)
-                );
-              }
-
+        this.appThemes_.getFlatCatalog().then(
+            goog.bind(function(flatCatalogue) {
               /**
                * @type {Array.<number>|undefined}
                */
