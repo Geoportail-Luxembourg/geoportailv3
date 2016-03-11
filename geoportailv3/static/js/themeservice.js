@@ -69,6 +69,7 @@ app.Theme.prototype.setCurrentTheme = function(themeId, map) {
             minZoom: 8,
             extent: this.maxExtent_,
             center: currentView.getCenter(),
+            enableRotation: false,
             zoom: currentView.getZoom()
           }));
         }},this));
