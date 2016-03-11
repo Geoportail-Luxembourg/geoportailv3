@@ -192,8 +192,8 @@ class Getfeatureinfo(object):
                             else:
                                 featureid = None
                         f = self.to_feature(
-                            luxgetfeaturedefinition.layer + '_' +
-                            str(featureid),
+                            luxgetfeaturedefinition.layer,
+                            featureid,
                             geometry,
                             attributes,
                             luxgetfeaturedefinition.attributes_to_remove,
@@ -281,8 +281,9 @@ class Getfeatureinfo(object):
                 features_to_keep.append(feature)
         return features_to_keep
 
-    def to_feature(self, fid, geometry, attributes, attributes_to_remove,
-                   columns_order=None, geometry_column='geom'):
+    def to_feature(self, layer_id, fid, geometry, attributes,
+                   attributes_to_remove, columns_order=None,
+                   geometry_column='geom'):
         attributes = self.remove_attributes(
                     attributes,
                     attributes_to_remove,
@@ -299,10 +300,13 @@ class Getfeatureinfo(object):
             for attribute in attributes:
                 ordered_attributes[attribute] = attributes[attribute]
             attributes = ordered_attributes
+        layer_fid = None
+        if fid is not None and layer_id is not None:
+            layer_fid = str(layer_id) + '_' + str(fid)
 
         return {'type': 'Feature',
                 'geometry': geometry,
-                'fid': fid,
+                'fid': layer_fid,
                 'attributes': attributes}
 
     def to_featureinfo(self, features, layer, template, ordered,
@@ -391,7 +395,7 @@ class Getfeatureinfo(object):
                 fid = row['id']
             else:
                 fid = None
-            feature = self.to_feature(layer_id + '_' + str(fid),
+            feature = self.to_feature(layer_id, fid,
                                       geometry, dict(row), "")
 
             feature['attributes']['has_sketch'] = False
@@ -424,7 +428,7 @@ class Getfeatureinfo(object):
                 fid = row['textstring']
             else:
                 fid = None
-            f = self.to_feature(str(layer_id) + '_' + str(fid),
+            f = self.to_feature(layer_id, fid,
                                 geometry, dict(row), "")
 
             attributes = f['attributes']
@@ -480,7 +484,7 @@ class Getfeatureinfo(object):
                                                attributes_to_remove,
                                                "geometry")
                         features.append(
-                            self.to_feature(str(layer_id) + '_' + str(fid),
+                            self.to_feature(layer_id, fid,
                                             geometry,
                                             attributes, ""))
                 else:
@@ -489,7 +493,7 @@ class Getfeatureinfo(object):
                                            attributes_to_remove,
                                            "geometry")
                     features.append(
-                        self.to_feature(str(layer_id) + '_' + str(fid),
+                        self.to_feature(layer_id, fid,
                                         geometry, attributes, ""))
         return features
 
@@ -628,7 +632,7 @@ class Getfeatureinfo(object):
                         rawfeature['attributes'][key] =\
                             rawfeature['attributes'].pop(value)
 
-                    f = self.to_feature(str(layer_id) + '_' + str(fid),
+                    f = self.to_feature(layer_id, fid,
                                         geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove,
