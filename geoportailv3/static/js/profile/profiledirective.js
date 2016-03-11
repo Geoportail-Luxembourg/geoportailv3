@@ -70,6 +70,24 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     $document) {
 
   /**
+   * @type {string}
+   * @export
+   */
+  this.elevationGain;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.elevationLoss;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.cumulativeElevation;
+
+  /**
    * @private
    * @type {Document}
    */
@@ -235,6 +253,10 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     return this['profileData'];
   }, this), goog.bind(function(newVal, oldVal) {
     if (goog.isDef(newVal)) {
+      var elevationGain = 0;
+      var elevationLoss = 0;
+      var cumulativeElevation = 0;
+      var lastElevation;
       var i;
       var len = newVal.length;
       var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
@@ -244,8 +266,24 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
         p.transform('EPSG:2169', this['map'].getView().getProjection());
         lineString.appendCoordinate(
             p.getCoordinates().concat(newVal[i]['dist']));
+
+        var curElevation = (newVal[i]['values']['dhm']) / 100;
+        if (lastElevation !== undefined) {
+          var elevation = curElevation - lastElevation;
+          cumulativeElevation = cumulativeElevation + elevation;
+          if (elevation > 0) {
+            elevationGain = elevationGain + elevation;
+          } else {
+            elevationLoss = elevationLoss + elevation;
+          }
+        }
+        lastElevation = curElevation;
       }
       this.line_ = lineString;
+      this.elevationGain = this.formatElevationGain_(elevationGain, 'm');
+      this.elevationLoss = this.formatElevationGain_(elevationLoss, 'm');
+      this.cumulativeElevation = this.formatElevationGain_(cumulativeElevation,
+          'm');
     } else {
       this.line_ = null;
     }
@@ -306,6 +344,19 @@ app.ProfileController.prototype.formatDistance_ = function(dist, units) {
  */
 app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
   return parseFloat(elevation.toPrecision(4)) + ' ' + units;
+};
+
+
+/**
+ * Format the elevation gain text.
+ * @param {number} elevation
+ * @param {string} units
+ * @return {string}
+ * @private
+ */
+app.ProfileController.prototype.formatElevationGain_ =
+    function(elevation, units) {
+  return parseFloat(parseInt(elevation, 10)) + ' ' + units;
 };
 
 
