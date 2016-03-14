@@ -54,7 +54,11 @@ app.StateManager = function(ngeoLocation) {
   var i, key;
 
   if (paramKeys.length === 0 ||
-      (paramKeys.length === 1 && paramKeys[0] == 'debug')) {
+      (paramKeys.length === 1 && (paramKeys[0] == 'debug' ||
+      paramKeys[0] == 'fid')) ||
+      (paramKeys.length === 2 &&
+      ((paramKeys[0] == 'debug' && paramKeys[1] == 'fid') ||
+      (paramKeys[1] == 'debug' && paramKeys[0] == 'fid')))) {
     if (this.localStorage_.isAvailable()) {
       var count = this.localStorage_.getCount();
       for (i = 0; i < count; ++i) {
