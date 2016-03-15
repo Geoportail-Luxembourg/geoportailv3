@@ -281,7 +281,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
       }
       this.line_ = lineString;
       this.elevationGain = this.formatElevationGain_(elevationGain, 'm');
-      this.elevationLoss = this.formatElevationGain_(elevationLoss, 'm');
+      this.elevationLoss = this.formatElevationGain_(-1 * elevationLoss, 'm');
       this.cumulativeElevation = this.formatElevationGain_(cumulativeElevation,
           'm');
     } else {
