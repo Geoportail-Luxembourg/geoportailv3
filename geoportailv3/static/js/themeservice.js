@@ -12,11 +12,11 @@ goog.require('ngeo.Location');
  * @constructor
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes
- * @param {app.ScalesService} appScalesService Service returning available scales.
+ * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @ngInject
  */
-app.Theme = function(ngeoLocation, appThemes, maxExtent, appScalesService) {
+app.Theme = function(ngeoLocation, appThemes, appScalesService, maxExtent) {
 
   /**
    * @type {app.ScalesService}
@@ -78,7 +78,7 @@ app.Theme.prototype.setCurrentTheme = function(themeId, map) {
             center: currentView.getCenter(),
             zoom: currentView.getZoom()
           }));
-          this.scales_.setNbScales(maxZoom - 7);
+          this.scales_.setMaxZoomLevel(maxZoom);
         }},this));
 };
 

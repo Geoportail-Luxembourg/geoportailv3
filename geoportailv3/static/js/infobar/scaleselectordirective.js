@@ -41,7 +41,7 @@ app.module.directive('appScaleselector', app.scaleselectorDirective);
 
 /**
  * @constructor
- * @param {app.ScalesService} appScalesService Service returning available scales.
+ * @param {app.ScalesService} appScalesService Service returning scales.
  * @ngInject
  */
 app.ScaleselectorController = function(appScalesService) {
