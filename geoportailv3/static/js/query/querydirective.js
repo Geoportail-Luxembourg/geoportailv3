@@ -65,6 +65,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.Themes} appThemes
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.GetDevice} appGetDevice
+ * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @export
  * @ngInject
  */
@@ -72,7 +73,13 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
-    appGetLayerForCatalogNode, appGetDevice) {
+    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsImageUrl_ = mymapsImageUrl;
 
   /**
    * @type {ngeo.Location}
@@ -860,6 +867,20 @@ app.QueryController.prototype.translateKeys =
 
 
   return results;
+};
+
+
+/**
+ * get the path to the Mymaps Resource
+ * @param {?string | undefined} resource the resource.
+ * @return {string}
+ * @export
+ */
+app.QueryController.prototype.getMymapsPath = function(resource) {
+  if (resource) {
+    return this.mymapsImageUrl_ + resource;
+  }
+  return '';
 };
 
 app.module.controller('AppQueryController',
