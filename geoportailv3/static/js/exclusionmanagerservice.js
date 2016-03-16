@@ -122,7 +122,7 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         );
         map.removeLayer(layer2);
       } else {
-        this.backgroundLayerMgr_.set(map, this.blankLayer_);
+        this.backgroundLayerMgr_.set(map, this.blankLayer_.getLayer());
         msg = gettextCatalog.getString(
             'Background has been deactivated because ' +
             'the layer {{layer}} cannot be displayed on top of it.',

@@ -130,7 +130,7 @@ app.Themes.prototype.getBgLayers = function() {
         }, this));
 
         // add the blank layer
-        bgLayers.push(this.blankLayer_);
+        bgLayers.push(this.blankLayer_.getLayer());
         return bgLayers;
       }, this));
 };
