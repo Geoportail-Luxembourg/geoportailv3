@@ -46,11 +46,12 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme current theme service.
  * @param {app.Notify} appNotify Notify service.
+ * @param {gettext} gettext Gettext service.
  * @export
  * @ngInject
  */
 app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
-    appThemes, appTheme, appNotify) {
+    appThemes, appTheme, appNotify, gettext) {
 
   /**
    * @type {ol.Map}
@@ -74,7 +75,8 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
    * @type {string}
    * @private
    */
-  this.privateThemeMsg_ = 'Ce thème est protégé. Veuillez vous connecter.';
+  this.privateThemeMsg_ = gettext(
+      'Ce thème est protégé. Veuillez vous connecter.');
 
   /**
    * @type {app.Themes}

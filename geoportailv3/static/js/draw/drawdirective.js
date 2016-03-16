@@ -88,9 +88,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   /**
    * @type {angularGettext.Catalog}
-   * @private
    */
-  this.translate_ = gettextCatalog;
+  this.gettextCatalog = gettextCatalog;
 
   /**
    * @type {ol.Map}
@@ -429,19 +428,19 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   switch (feature.getGeometry().getType()) {
     case 'Point':
       if (this.drawLabel.getActive()) {
-        name = this.translate_.getString('Label');
+        name = this.gettextCatalog.getString('Label');
       } else {
-        name = this.translate_.getString('Point');
+        name = this.gettextCatalog.getString('Point');
       }
       break;
     case 'LineString':
-      name = this.translate_.getString('LineString');
+      name = this.gettextCatalog.getString('LineString');
       break;
     case 'Polygon':
       if (feature.get('isCircle')) {
-        name = this.translate_.getString('Circle');
+        name = this.gettextCatalog.getString('Circle');
       } else {
-        name = this.translate_.getString('Polygon');
+        name = this.gettextCatalog.getString('Polygon');
       }
       break;
   }

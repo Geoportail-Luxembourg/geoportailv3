@@ -53,7 +53,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
- * @param {gettext} gettext Gettext service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.Mymaps} appMymaps Mymaps service.
@@ -70,7 +70,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @ngInject
  */
 
-app.MymapsDirectiveController = function($scope, $compile, gettext,
+app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
     appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures,
     $document, exportgpxkmlUrl) {
@@ -166,10 +166,9 @@ app.MymapsDirectiveController = function($scope, $compile, gettext,
   this.appMymaps_ = appMymaps;
 
   /**
-   * @type {gettext}
-   * @private
+   * @type {angularGettext.Catalog}
    */
-  this.gettext_ = gettext;
+  this.gettextCatalog = gettextCatalog;
 
   /**
    * @type {app.Notify}
@@ -386,7 +385,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
         if (goog.isDef(mapId)) {
           var map = {'uuid': mapId};
           this.onChosen(map, false);
-          var msg = this.gettext_('Carte copiée');
+          var msg = this.gettextCatalog.getString('Carte copiée');
           this.notify_(msg);
           this.modal = undefined;
         }}}, this));
@@ -597,7 +596,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
         .then(goog.bind(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
           this.onChosen(map, false);
-          var msg = this.gettext_('Carte créée');
+          var msg = this.gettextCatalog.getString('Carte créée');
           this.notify_(msg);
           this.creatingFromAnonymous = false;
         }, this));
@@ -654,7 +653,7 @@ app.MymapsDirectiveController.prototype.getMapCategory = function(id) {
   } else {
     return {
       'id': null,
-      'name': this.gettext_('Please select a Category')
+      'name': this.gettextCatalog.getString('Please select a Category')
     };
   }
 };
@@ -684,7 +683,7 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
         this.choosing = true;
         this.maps = mymaps;
       } else {
-        this.notify_(this.gettext_(
+        this.notify_(this.gettextCatalog.getString(
             'You have no existing Maps, please create a New Map'
             ));
       }
@@ -702,7 +701,7 @@ app.MymapsDirectiveController.prototype.openCreateMapModal = function() {
     this.askToConnect();
   }else {
     this.modal = 'CREATE';
-    this.newTitle = this.gettext_('Map without Title');
+    this.newTitle = this.gettextCatalog.getString('Map without Title');
     this.newDescription = '';
     this.newCategoryId = null;
     this.newIsPublic = false;
@@ -759,7 +758,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
               this.appMymaps_.setMapId(mapId);
               this.saveLayers();
               this.onChosen(map, false);
-              var msg = this.gettext_('Nouvelle carte créée');
+              var msg = this.gettextCatalog.getString('Nouvelle carte créée');
               this.notify_(msg);
               this.modal = undefined;
             }
@@ -822,7 +821,7 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.askToConnect = function() {
-  var msg = this.gettext_(
+  var msg = this.gettextCatalog.getString(
       'Veuillez vous identifier afin d\'accéder à vos cartes'
       );
   this.notify_(msg);

@@ -48,12 +48,12 @@ app.module.directive('appImgupload', app.imguploadDirective);
  * @param {angular.$parse} $parse
  * @param {angular.$http} $http
  * @param {app.Notify} appNotify Notify service.
- * @param {gettext} gettext Gettext service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {string} mymapsUrl URL to "mymaps" Feature service.
  * @constructor
  * @ngInject
  */
-app.ImguploadController = function($parse, $http, appNotify, gettext,
+app.ImguploadController = function($parse, $http, appNotify, gettextCatalog,
     mymapsUrl) {
 
   /**
@@ -75,10 +75,9 @@ app.ImguploadController = function($parse, $http, appNotify, gettext,
   this.notify_ = appNotify;
 
   /**
-   * @type {gettext}
-   * @private
+   * @type {angularGettext.Catalog}
    */
-  this.gettext_ = gettext;
+  this.gettextCatalog = gettextCatalog;
 
   /**
    * @type {string}
@@ -117,7 +116,8 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
           modelSetter(scope, data);
         },this))
     .error(goog.bind(function() {
-          var msg = this.gettext_('Ce format d\'image n\'est as supporté.');
+          var msg = this.gettextCatalog.getString(
+              'Ce format d\'image n\'est as supporté.');
           this.notify_(msg);
         }, this));
   }
