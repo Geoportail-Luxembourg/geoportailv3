@@ -11,17 +11,17 @@ goog.require('ol.layer.Tile');
 
 /**
  * @constructor
- * @param {gettext} gettext Gettext service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-app.BlankLayer = function(gettext) {
+app.BlankLayer = function(gettextCatalog) {
 
   /**
    * @typedef {ol.layer.Tile}
    * @private
    */
   this.blankLayer_ = new ol.layer.Tile();
-  var blankLabel = gettext('blank');
+  var blankLabel = gettextCatalog.getString('blank');
   this.blankLayer_.set('label', blankLabel);
 };
 
