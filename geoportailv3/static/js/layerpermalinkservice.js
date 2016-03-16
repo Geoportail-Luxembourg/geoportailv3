@@ -342,6 +342,9 @@ app.LayerPermalinkManager.prototype.init =
                       parseInt(stateBgLayerOpacity, 0) === 0) {
                     stateBgLayerLabel = 'orthogr_2013_global';
                   }
+                } else {
+                  stateBgLayerLabel = 'basemap_2015_global';
+                  stateBgLayerOpacity = 0;
                 }
               } else {
                 stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
