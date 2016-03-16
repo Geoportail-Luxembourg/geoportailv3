@@ -57,9 +57,16 @@ app.printDirective = function(appPrintTemplateUrl) {
 app.module.directive('appPrint', app.printDirective);
 
 
+/**
+ * @typedef {{push: function(Array<string>)}}
+ */
+app.Piwik;
+
+
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.$window} $window Global Scope.
  * @param {angular.$timeout} $timeout The Angular $timeout service.
  * @param {angular.$q} $q The Angular $q service.
  * @param {angularGettext.Catalog} gettextCatalog
@@ -77,10 +84,16 @@ app.module.directive('appPrint', app.printDirective);
  * @export
  * @ngInject
  */
-app.PrintController = function($scope, $timeout, $q, gettextCatalog,
+app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl) {
+
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = $window;
 
   /**
    * @type {app.FeaturePopup}
@@ -497,6 +510,13 @@ app.PrintController.prototype.print = function() {
           'legend': this['legend'] ? legend : null,
           'scalebar': {'geodetic': true}
         });
+        var piwikUrl =
+            goog.string.buildString('http://',
+            this.appTheme_.getCurrentTheme(),
+            '.geoportail.lu/print/',
+            layout.replace(' ', '/'));
+        var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
+        piwik.push(['trackLink', piwikUrl, 'download']);
 
         // add feature overlay layer to print spec
         var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
