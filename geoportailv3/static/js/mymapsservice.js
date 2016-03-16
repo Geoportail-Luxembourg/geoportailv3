@@ -278,7 +278,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    */
   this.V2_BGLAYER_TO_V3_ = {
     'webbasemap' : 'basemap_2015_global',
-    'topogr': 'topogr_global',
+    'pixelmaps-color': 'topogr_global',
     'pixelmaps-gray': 'topo_bw_jpeg',
     'streets': 'streets_jpeg',
     'voidlayer': 'blank',
