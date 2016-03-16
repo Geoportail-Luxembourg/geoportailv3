@@ -28,15 +28,15 @@ app.MapsResponse;
  * @param {app.Notify} appNotify Notify service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
  *     create layers from catalog nodes.
- * @param {gettext} gettext Gettext service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {app.Themes} appThemes
  * @param {app.Theme} appTheme
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
-    appUserManager, appNotify, appGetLayerForCatalogNode, gettext, appThemes,
-    appTheme, ngeoBackgroundLayerMgr) {
+    appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
+    appThemes, appTheme, ngeoBackgroundLayerMgr) {
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -73,10 +73,9 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.appTheme_ = appTheme;
 
   /**
-   * @type {gettext}
-   * @private
+   * @type {angularGettext.Catalog}
    */
-  this.gettext_ = gettext;
+  this.gettextCatalog = gettextCatalog;
 
   /**
    * @type {app.Notify}
@@ -412,7 +411,7 @@ app.Mymaps.prototype.getMaps = function() {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
            'Erreur inattendue lors du chargement de vos cartes.');
         this.notify_(msg);
         return [];
@@ -464,7 +463,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors du chargement de votre carte.');
         this.notify_(msg);
         return [];
@@ -626,7 +625,7 @@ app.Mymaps.prototype.getMapInformation = function() {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors du chargement de votre carte.');
         this.notify_(msg);
         return [];
@@ -656,7 +655,7 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
           return null;
         }
 
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la suppression d\'un élement.');
         this.notify_(msg);
         return [];
@@ -698,7 +697,7 @@ app.Mymaps.prototype.createMap =
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la création de votre carte.');
         this.notify_(msg);
         return [];
@@ -740,7 +739,7 @@ app.Mymaps.prototype.copyMap =
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la copie de votre carte.');
         this.notify_(msg);
         return [];
@@ -768,7 +767,7 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la suppression de votre carte.');
         this.notify_(msg);
         return [];
@@ -825,7 +824,7 @@ app.Mymaps.prototype.updateMap =
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la mise à jour de votre carte.');
         this.notify_(msg);
         return [];
@@ -875,7 +874,7 @@ app.Mymaps.prototype.updateMapEnv =
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la mise à jour de votre carte.');
         this.notify_(msg);
         return [];
@@ -914,7 +913,7 @@ app.Mymaps.prototype.saveFeature = function(feature) {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la sauvegarde de votre modification.');
         this.notify_(msg);
         return [];
@@ -953,7 +952,7 @@ app.Mymaps.prototype.saveFeatures = function(features) {
           this.notifyUnauthorized();
           return null;
         }
-        var msg = this.gettext_(
+        var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la sauvegarde de votre modification.');
         this.notify_(msg);
         return [];
@@ -967,7 +966,7 @@ app.Mymaps.prototype.saveFeatures = function(features) {
  * @export
  */
 app.Mymaps.prototype.notifyUnauthorized = function() {
-  var msg = this.gettext_(
+  var msg = this.gettextCatalog.getString(
       'Votre utilisateur n\'a pas les autorisations suffisantes.');
   this.notify_(msg);
 };

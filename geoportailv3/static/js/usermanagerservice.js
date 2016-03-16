@@ -18,11 +18,11 @@ goog.require('app.Notify');
  * @param {string} logoutUrl The application logout URL.
  * @param {string} getuserinfoUrl The url to get information about the user.
  * @param {app.Notify} appNotify Notify service.
- * @param {gettext} gettext Gettext service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
 app.UserManager = function($http, loginUrl, logoutUrl,
-    getuserinfoUrl, appNotify, gettext) {
+    getuserinfoUrl, appNotify, gettextCatalog) {
   /**
    * @type {string}
    * @private
@@ -87,10 +87,9 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   this.isAdmin = false;
 
   /**
-   * @type {gettext}
-   * @private
+   * @type {angularGettext.Catalog}
    */
-  this.gettext_ = gettext;
+  this.gettextCatalog = gettextCatalog;
 };
 
 
@@ -112,25 +111,20 @@ app.UserManager.prototype.authenticate = function(username, password) {
       goog.bind(function(data, status, headers, config) {
         if (status == 200) {
           this.getUserInfo();
-          this.notify_('Vous êtes maintenant correctement connecté.');
+          var msg = this.gettextCatalog.getString(
+              'Vous êtes maintenant correctement connecté.');
+          this.notify_(msg);
         } else {
           this.clearUserInfo();
-          this.notify_('Invalid username or password.');
+          this.notify_(this.gettextCatalog.getString(
+              'Invalid username or password.'));
         }
       },this)).error(
       goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
-        this.notify_('Invalid username or password.');
+        this.notify_(this.gettextCatalog.getString(
+            'Invalid username or password.'));
       },this));
-};
-
-
-/**
- * @param {string} msg
- * @private
- */
-app.UserManager.prototype.notify_ = function(msg) {
-  this.notify_(this.gettext_(msg));
 };
 
 
@@ -144,12 +138,14 @@ app.UserManager.prototype.logout = function() {
           this.getUserInfo();
         } else {
           this.getUserInfo();
-          this.notify_('Une erreur est survenue durant la déconnexion.');
+          this.notify_(this.gettextCatalog.getString(
+              'Une erreur est survenue durant la déconnexion.'));
         }
       }, this)).error(
       goog.bind(function(data, status, headers, config) {
         this.getUserInfo();
-        this.notify_('Une erreur est survenue durant la déconnexion.');
+        this.notify_(this.gettextCatalog.getString(
+            'Une erreur est survenue durant la déconnexion.'));
       }, this));
 };
 
