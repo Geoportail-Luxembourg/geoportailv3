@@ -63,7 +63,7 @@ class FullTextSearchView(object):
                                             "label.ngram",
                                             "label.simplified"
                                         ],
-                                        "fuzziness": 0.8,
+                                        "fuzziness": "auto",
                                         "operator": "and",
                                         "query": query
                                     }
