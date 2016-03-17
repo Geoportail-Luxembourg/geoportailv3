@@ -1,5 +1,5 @@
 <h1>{{layers.layerLabel | translate}}</h1>
 <div ng-repeat="feature in layers.features" class="poi-feature">
   <span translate>Type</span> : {{feature.attributes.type | translate}}<br>
-  <a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
+  <a class="fid-link" href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
 </div>

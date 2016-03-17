@@ -2,5 +2,5 @@
 <div ng-repeat="feature in layers.features" class="poi-feature">
   <h4>{{feature.attributes.label | translate }}</h4>
   <span translate>Proprietaire</span> : {{feature.attributes.categorie | translate}}<br>
-  <a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
+  <a class="fid-link" href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
 </div>

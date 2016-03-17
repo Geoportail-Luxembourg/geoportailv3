@@ -2,5 +2,5 @@
 <div ng-repeat="feature in layers.features" class="poi-feature">
   <span translate>Name</span> : {{feature.attributes.name}}<br>
   <iframe height="300" width="430" frameborder="0" ng-src="{{ctrl.getTrustedUrl(feature.attributes.preview)}}"></iframe><br>
-  <a href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
+  <a class="fid-link" href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
 </div>
