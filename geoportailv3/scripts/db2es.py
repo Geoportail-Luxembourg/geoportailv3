@@ -58,40 +58,47 @@ def main():
     env = bootstrap('development.ini')
     request = env['request']
     try:
-        opts, args = getopt.getopt(sys.argv[1:], '', ['recreate'])
+        opts, args = getopt.getopt(sys.argv[1:], 'ri', ['reset', 'index'])
     except getopt.GetoptError as err:
         print str(err)
         sys.exit(2)
-    recreate = False
+    index, reset = False, False
     for o, a in opts:
-        if o == '--recreate':
-            recreate = True
-    ensure_index(get_elasticsearch(request), get_index(request), recreate)
-    statuslog("\rCreating Database Query ")
-    c = get_cursor()
-    counter = 1
-    while True:
-        multiple = 250
-        results = c.fetchmany(multiple)
-        doc_list = []
-        for result in results:
-            doc = update_document(get_index(request),
-                                  'poi',
-                                  result['id'],
-                                  result)
-            doc_list.append(doc)
-            statuslog("\rIndexed Elements: %i" % int(counter))
-            counter = counter + 1
-        try:
-            helpers.bulk(client=get_elasticsearch(request),
-                         actions=doc_list,
-                         chunk_size=multiple,
-                         raise_on_error=True)
-        except (BulkIndexError, ConnectionTimeout) as e:
-            print "\n %s" % e
-        if not results:
-            statuslog("\n")
-            break
+        if o in ('-r', '--reset'):
+            statuslog('\rResetting Index')
+            reset = True
+        if o in ('-i', '--index'):
+            statuslog('\rChecking Index')
+            index = True
+
+    ensure_index(get_elasticsearch(request), get_index(request), reset)
+
+    if index:
+        statuslog("\rCreating Database Query ")
+        c = get_cursor()
+        counter = 1
+        while True:
+            multiple = 250
+            results = c.fetchmany(multiple)
+            doc_list = []
+            for result in results:
+                doc = update_document(get_index(request),
+                                      'poi',
+                                      result['id'],
+                                      result)
+                doc_list.append(doc)
+                statuslog("\rIndexed Elements: %i" % int(counter))
+                counter = counter + 1
+            try:
+                helpers.bulk(client=get_elasticsearch(request),
+                             actions=doc_list,
+                             chunk_size=multiple,
+                             raise_on_error=True)
+            except (BulkIndexError, ConnectionTimeout) as e:
+                print "\n %s" % e
+            if not results:
+                statuslog("\n")
+                break
 
 if __name__ == '__main__':
     main()

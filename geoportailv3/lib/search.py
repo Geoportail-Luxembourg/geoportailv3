@@ -54,12 +54,12 @@ ES_MAPPINGS = {
                 'fields': {
                     'ngram': {
                         'type': 'string',
-                        'index_analyzer': 'ngram_analyzer',
+                        'analyzer': 'ngram_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     },
                     'simplified': {
                         'type': 'string',
-                        'index_analyzer': 'simplified_analyzer',
+                        'analyzer': 'simplified_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     }
                 }
