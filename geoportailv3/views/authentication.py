@@ -35,6 +35,7 @@ def get_user_from_request(request):
         user.username = username
         user.email = None
         user.is_admin = False
+        user.mymaps_role = 999
         connector = get_ldap_connector(request)
         cm = connector.manager
 
