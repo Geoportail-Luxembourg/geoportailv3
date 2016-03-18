@@ -4,7 +4,11 @@
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.translateKeys(feature.attributes)">
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
-        <label>{{entry['key']}}</label> : <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+        <span ng-if="!ctrl.isEmpty(entry['value'])">
+          <label>{{entry['key']}}</label> : 
+            <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+            <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['value']}}</a>
+        </span>
       </div>
       <div ng-if="!ctrl.hasAttributes(feature)">
         <span translate>Aucune information disponible pour cette couche</span>

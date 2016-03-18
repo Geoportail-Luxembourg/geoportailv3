@@ -871,7 +871,7 @@ app.QueryController.prototype.translateKeys =
 
 
 /**
- * get the path to the Mymaps Resource
+ * Get the path to the Mymaps Resource.
  * @param {?string | undefined} resource the resource.
  * @return {string}
  * @export
@@ -881,6 +881,29 @@ app.QueryController.prototype.getMymapsPath = function(resource) {
     return this.mymapsImageUrl_ + resource;
   }
   return '';
+};
+
+
+/**
+ * Check if the value is empty.
+ * @param {?string | undefined} value The value to test.
+ * @return {boolean}
+ * @export
+ */
+app.QueryController.prototype.isEmpty = function(value) {
+  return goog.string.isEmptySafe(value);
+};
+
+
+/**
+ * Check if the value is a link.
+ * @param {string} value The value to test.
+ * @return {boolean}
+ * @export
+ */
+app.QueryController.prototype.isLink = function(value) {
+  return goog.string.caseInsensitiveStartsWith('' + value, 'http://') ||
+      goog.string.caseInsensitiveStartsWith('' + value, 'https://');
 };
 
 app.module.controller('AppQueryController',
