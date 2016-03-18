@@ -370,17 +370,18 @@ class Getfeatureinfo(object):
         for feature in features:
             for key in feature['attributes']:
                 value = feature['attributes'][key]
-                if 'hyperlin' in key.lower():
-                    feature['attributes'][key] =\
-                        "<a href='%s' target='_blank'>%s</a>"\
-                        % (value, value.rsplit("/", 1)[1])
-                if 'Fiche station' in key:
-                    feature['attributes'][key] =\
-                        "<a href='%s' target='_blank'>%s</a>"\
-                        % (value, value.rsplit("/", 1)[1])
-                if 'Photo station' in key:
-                    feature['attributes'][key] =\
-                        "<img src='%s' width='300px'/>" % (value)
+                if value is not None:
+                    if 'hyperlin' in key.lower():
+                        feature['attributes'][key] =\
+                            "<a href='%s' target='_blank'>%s</a>"\
+                            % (value, value.rsplit("/", 1)[1])
+                    if 'Fiche station' in key:
+                        feature['attributes'][key] =\
+                            "<a href='%s' target='_blank'>%s</a>"\
+                            % (value, value.rsplit("/", 1)[1])
+                    if 'Photo station' in key:
+                        feature['attributes'][key] =\
+                            "<img src='%s' width='300px'/>" % (value)
 
             modified_features.append(feature)
         return modified_features
