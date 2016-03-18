@@ -66,6 +66,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
  * @param {app.GetDevice} appGetDevice
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
+ * @param {app.Export} appExport The export service.
  * @export
  * @ngInject
  */
@@ -73,7 +74,13 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
-    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl) {
+    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport) {
+
+  /**
+   * @type {app.Export}
+   * @private
+   */
+  this.appExport_ = appExport;
 
   /**
    * @type {string}
@@ -896,6 +903,17 @@ app.QueryController.prototype.isEmpty = function(value) {
 
 
 /**
+ * Export the feature
+ * @param {Object} feature The fetaure.
+ * @param {string} name The file name.
+ * @export
+ */
+app.QueryController.prototype.exportGpx = function(feature, name) {
+  this.appExport_.exportGpx(feature, name);
+};
+
+
+/**
  * Check if the value is a link.
  * @param {string} value The value to test.
  * @return {boolean}
@@ -904,6 +922,35 @@ app.QueryController.prototype.isEmpty = function(value) {
 app.QueryController.prototype.isLink = function(value) {
   return goog.string.caseInsensitiveStartsWith('' + value, 'http://') ||
       goog.string.caseInsensitiveStartsWith('' + value, 'https://');
+};
+
+
+/**
+ * Export the feature
+ * @param {Object} feature The fetaure.
+ * @param {string} name The file name.
+ * @export
+ */
+app.QueryController.prototype.exportKml = function(feature, name) {
+  this.appExport_.exportKml(feature, name);
+};
+
+
+/**
+ * Translate and join the elements of the array.
+ * @param {Array.<string>} array The array to join.
+ * @return {string}
+ * @export
+ */
+app.QueryController.prototype.translateAndjoin = function(array) {
+  if (array !== undefined) {
+    var res = [];
+    goog.array.forEach(array, goog.bind(function(elem) {
+      res.push(this.translate_.getString(elem));
+    }, this));
+    return res.join(', ');
+  }
+  return '';
 };
 
 app.module.controller('AppQueryController',
