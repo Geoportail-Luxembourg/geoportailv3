@@ -6,8 +6,8 @@
   <span translate>Numero cadastral</span> : {{feature.attributes.PF.mainNumber}}/{{feature.attributes.PF.additionalNumber}}<br>
   <span translate>Contenance</span> : {{feature.attributes.PF.capacity}}<br>
   <span translate>Lieudit</span> : {{feature.attributes.PF.locality}}<br>
-  <span translate>Nature</span> : {{feature.attributes.PF.farmingTypes[0]}}<br>
-  <span translate>Occupation</span> : {{feature.attributes.PF.occupations[0]}}<br>
+  <span translate>Nature</span> : {{ctrl.translateAndjoin(feature.attributes.PF.farmingTypes)}}<br>
+  <span translate>Occupation</span> : {{ctrl.translateAndjoin(feature.attributes.PF.occupations)}}<br>
   <span translate>Dernier mesurage</span> : {{feature.attributes.PF.measurementNumber}}<br>
   <a class="btn btn-default" href="http://shop.geoportail.lu/Portail/express/?ids=['{{feature.attributes.textstring}}']&camefrom=mapv3&lang={{ctrl['language']}}" target="_blank" translate>Commander un extrait</a><br>
   <a class="fid-link" href="?fid={{feature.fid}}" translate>Lien direct vers cet objet</a><br>
