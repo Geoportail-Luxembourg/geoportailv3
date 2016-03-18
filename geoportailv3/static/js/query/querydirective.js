@@ -905,10 +905,11 @@ app.QueryController.prototype.isEmpty = function(value) {
 /**
  * Export the feature
  * @param {Object} feature The fetaure.
+ * @param {string} name The file name.
  * @export
  */
-app.QueryController.prototype.exportGpx = function(feature) {
-  this.appExport_.exportGpx(feature);
+app.QueryController.prototype.exportGpx = function(feature, name) {
+  this.appExport_.exportGpx(feature, name);
 };
 
 
@@ -927,10 +928,25 @@ app.QueryController.prototype.isLink = function(value) {
 /**
  * Export the feature
  * @param {Object} feature The fetaure.
+ * @param {string} name The file name.
  * @export
  */
-app.QueryController.prototype.exportKml = function(feature) {
-  this.appExport_.exportKml(feature);
+app.QueryController.prototype.exportKml = function(feature, name) {
+  this.appExport_.exportKml(feature, name);
+};
+
+
+/**
+ * Export the feature
+ * @param {Array.<string>} array The array to join.
+ * @return {string}
+ * @export
+ */
+app.QueryController.prototype.join = function(array) {
+  if (array !== null) {
+    return array.join(', ');
+  }
+  return '';
 };
 
 app.module.controller('AppQueryController',
