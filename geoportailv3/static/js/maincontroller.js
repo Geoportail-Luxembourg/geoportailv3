@@ -11,6 +11,7 @@ goog.provide('app.MainController');
 
 goog.require('app');
 goog.require('app.ExclusionManager');
+goog.require('app.Export');
 goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
@@ -61,6 +62,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {Array.<number>} defaultExtent Default geographical extent.
  * @param {ngeo.SyncArrays} ngeoSyncArrays
  * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {app.Export} appExport The export GPX/KML service.
  * @constructor
  * @export
  * @ngInject
@@ -71,7 +73,13 @@ app.MainController = function(
     appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
     appStateManager, appThemes, appTheme, appFeaturePopup, appUserManager,
     appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays,
-    ngeoLocation) {
+    ngeoLocation, appExport) {
+
+  /**
+   * @type {app.Export}
+   * @private
+   */
+  this.appExport_ = appExport;
 
   /**
    * @type {ngeo.Location}
@@ -249,6 +257,7 @@ app.MainController = function(
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
+  this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
