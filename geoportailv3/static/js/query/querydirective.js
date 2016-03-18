@@ -937,14 +937,18 @@ app.QueryController.prototype.exportKml = function(feature, name) {
 
 
 /**
- * Export the feature
+ * Translate and join the elements of the array.
  * @param {Array.<string>} array The array to join.
  * @return {string}
  * @export
  */
-app.QueryController.prototype.join = function(array) {
-  if (array !== null) {
-    return array.join(', ');
+app.QueryController.prototype.translateAndjoin = function(array) {
+  if (array !== undefined) {
+    var res = [];
+    goog.array.forEach(array, goog.bind(function(elem) {
+      res.push(this.translate_.getString(elem));
+    }, this));
+    return res.join(', ');
   }
   return '';
 };
