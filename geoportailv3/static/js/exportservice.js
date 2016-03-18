@@ -86,9 +86,10 @@ app.Export.prototype.init = function(map) {
 /**
  * Export a Gpx file.
  * @param {Object} feature The feature to export.
+ * @param {string} name The file name.
  * @export
  */
-app.Export.prototype.exportGpx = function(feature) {
+app.Export.prototype.exportGpx = function(feature, name) {
 
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
@@ -101,16 +102,17 @@ app.Export.prototype.exportGpx = function(feature) {
   gpx = gpx.replace('<gpx ',
       '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
       ' version="1.1" ');
-  this.exportFeatures_(gpx, 'gpx', 'kml_title');
+  this.exportFeatures_(gpx, 'gpx', this.sanitizeFilename_(name));
 };
 
 
 /**
  * Export a KML file.
  * @param {Object} feature The feature to export.
+ * @param {string} name The file name.
  * @export
  */
-app.Export.prototype.exportKml = function(feature) {
+app.Export.prototype.exportKml = function(feature, name) {
 
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
@@ -120,7 +122,7 @@ app.Export.prototype.exportKml = function(feature) {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   });
-  this.exportFeatures_(kml, 'kml', 'kml_title');
+  this.exportFeatures_(kml, 'kml', this.sanitizeFilename_(name));
 };
 
 
@@ -157,5 +159,15 @@ app.Export.prototype.exportFeatures_ =
   form.remove();
 };
 
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ * @private
+ */
+app.Export.prototype.sanitizeFilename_ = function(name) {
+  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
+  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
+};
 
 app.module.service('appExport', app.Export);
