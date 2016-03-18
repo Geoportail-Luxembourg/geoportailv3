@@ -385,18 +385,20 @@ class Getfeatureinfo(object):
 
             modified_features.append(feature)
         return modified_features
-    
-    def get_percentage_for_uhd_field(self,features,field_to_use):
-        output_features=[]
+
+    def get_percentage_for_uhd_field(self, features, field_to_use):
+        output_features = []
         for feature in features:
             for key in feature['attributes']:
                 value = feature['attributes'][key]
                 if key == field_to_use:
-                    feature["attributes"]["percentage"]= "%s" % str(value * 100)+"%"
+                    feature["attributes"]["percentage"] = "%s" \
+                        % str(value * 100) + "%"
                     del feature["attributes"][field_to_use]
                     break
             output_features.append(feature)
         return output_features
+
     def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
         dirname = "/sketch"
