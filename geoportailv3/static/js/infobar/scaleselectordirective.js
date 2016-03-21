@@ -2,6 +2,7 @@ goog.provide('app.ScaleselectorController');
 goog.provide('app.scaleselectorDirective');
 
 goog.require('app');
+goog.require('app.ScalesService');
 goog.require('ngeo.ScaleselectorOptions');
 goog.require('ngeo.mapDirective');
 goog.require('ngeo.scaleselectorDirective');
@@ -24,7 +25,7 @@ app.scaleselectorDirective = function() {
     scope: {
       'map': '=appScaleselectorMap'
     },
-    template: '<div ngeo-scaleselector="ctrl.scales" ' +
+    template: '<div ngeo-scaleselector="ctrl.scalesService.getScales()" ' +
         'ngeo-scaleselector-map="ctrl.map" ' +
         'ngeo-scaleselector-options="ctrl.options"></div>',
     controllerAs: 'ctrl',
@@ -40,33 +41,16 @@ app.module.directive('appScaleselector', app.scaleselectorDirective);
 
 /**
  * @constructor
- * @param {angular.$sce} $sce Angular sce service.
+ * @param {app.ScalesService} appScalesService Service returning scales.
  * @ngInject
  */
-app.ScaleselectorController = function($sce) {
+app.ScaleselectorController = function(appScalesService) {
 
   /**
-   * The zoom level/scale map object for the ngeoScaleselector directive.
-   * The values need to be trusted as HTML.
-   * @type {Object.<string, string>}
-   * @const
+   * @type {app.ScalesService}
+   * @export
    */
-  this['scales'] = {
-    '8': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'500\'000'),
-    '9': $sce.trustAsHtml('1&nbsp;:&nbsp;750\'000'),
-    '10': $sce.trustAsHtml('1&nbsp;:&nbsp;400\'000'),
-    '11': $sce.trustAsHtml('1&nbsp;:&nbsp;200\'000'),
-    '12': $sce.trustAsHtml('1&nbsp;:&nbsp;100\'000'),
-    '13': $sce.trustAsHtml('1&nbsp;:&nbsp;50\'000'),
-    '14': $sce.trustAsHtml('1&nbsp;:&nbsp;25\'000'),
-    '15': $sce.trustAsHtml('1&nbsp;:&nbsp;12\'000'),
-    '16': $sce.trustAsHtml('1&nbsp;:&nbsp;6\'000'),
-    '17': $sce.trustAsHtml('1&nbsp;:&nbsp;3\'000'),
-    '18': $sce.trustAsHtml('1&nbsp;:&nbsp;1\'500'),
-    '19': $sce.trustAsHtml('1&nbsp;:&nbsp;750'),
-    '20': $sce.trustAsHtml('1&nbsp;:&nbsp;400'),
-    '21': $sce.trustAsHtml('1&nbsp;:&nbsp;200')
-  };
+  this.scalesService = appScalesService;
 
   /**
    * Use the "dropup" variation of the Bootstrap dropdown.
