@@ -939,14 +939,15 @@ app.QueryController.prototype.exportKml = function(feature, name) {
 /**
  * Translate and join the elements of the array.
  * @param {Array.<string>} array The array to join.
+ * @param {string} prefix The prefix to use for translation.
  * @return {string}
  * @export
  */
-app.QueryController.prototype.translateAndjoin = function(array) {
+app.QueryController.prototype.translateAndjoin = function(array, prefix) {
   if (array !== undefined) {
     var res = [];
     goog.array.forEach(array, goog.bind(function(elem) {
-      res.push(this.translate_.getString(elem));
+      res.push(this.translate_.getString(prefix + '_' + elem));
     }, this));
     return res.join(', ');
   }
