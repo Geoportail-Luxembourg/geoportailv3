@@ -474,6 +474,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
         if (goog.isDefAndNotNull(node)) {
           var layer = this.getLayerFunc_(node);
           this.map_.addLayer(layer);
+          layerLabel[splittedFid[0]] = layer.get('label');
         }
 
         if (layersList.length > 0) {
