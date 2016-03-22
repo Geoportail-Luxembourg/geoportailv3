@@ -27,6 +27,7 @@ NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Transifex" \
         "\n- update-search	Update the ElasticSearch Database" \
         "\n- update-tooltips	Update the automatic generated tooltips fields" \
+        "\n- pull-translations	Pull the translation" \
 # Add rule that copies the font-awesome fonts to the static/build directory.
 POST_RULES = .build/fonts.timestamp
 
@@ -39,6 +40,10 @@ PRINT_VERSION = NONE
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
 	$(VENV_BIN)/tx push -s
+	$(VENV_BIN)/tx pull
+
+.PHONY: pull-translations
+pull-translations:
 	$(VENV_BIN)/tx pull
 
 .build/fonts.timestamp: .build/node_modules.timestamp
