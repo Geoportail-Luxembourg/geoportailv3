@@ -114,6 +114,7 @@
     <h4 class="modal-title" ng-show="ctrl.modal === 'MODIFY'" translate>Modify title and description of the map</h4>
     <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE'" translate>Title and description of the map</h4>
     <h4 class="modal-title" ng-show="ctrl.modal === 'COPYING'" translate>Title and description of the map copy</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" translate>Title and description of the map</h4>
   </div>
   <div class="modal-body">
     <form>
@@ -145,6 +146,7 @@
   <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
   <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'MODIFY'" ng-click="ctrl.saveModifications()" translate>Save changes</button>
   <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE'" ng-click="ctrl.createMap()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" ng-click="ctrl.createMapFromAnonymous()" translate>Save changes</button>
   <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'COPYING'" ng-click="ctrl.copyMap()" translate>Save new map</button>
 </ngeo-modal>
 

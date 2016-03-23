@@ -184,13 +184,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
   this.modal = undefined;
 
   /**
-   * Tells whether the 'creatingFromAnonymous' modal window is open or not.
-   * @type {boolean}
-   * @export
-   */
-  this.creatingFromAnonymous = false;
-
-  /**
    * Tells whether the 'choosing a map' modal window is open or not.
    * @type {boolean}
    * @export
@@ -545,7 +538,11 @@ app.MymapsDirectiveController.prototype.openNewMapFromAnonymous = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
-    this.creatingFromAnonymous = true;
+    this.modal = 'CREATE_FROM_ANONYMOUS';
+    this.newTitle = this.gettextCatalog.getString('Map without Title');
+    this.newDescription = '';
+    this.newCategoryId = null;
+    this.newIsPublic = false;
   }
 };
 
@@ -598,7 +595,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte créée');
           this.notify_(msg);
-          this.creatingFromAnonymous = false;
+          this.modal = undefined;
         }, this));
   }
 };
