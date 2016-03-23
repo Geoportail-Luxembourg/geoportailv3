@@ -710,7 +710,7 @@ app.QueryController.prototype.hasValidFID = function(feature) {
  * @private
  */
 app.QueryController.prototype.isFIDValid_ = function(fid) {
-  if (!!fid && fid.split('_').length === 2) {
+  if (!!fid && fid.split('_').length >= 2) {
     return true;
   }
   return false;
