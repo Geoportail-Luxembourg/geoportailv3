@@ -2,6 +2,8 @@
 from pyramid.view import view_config
 from pyramid_ldap import get_ldap_connector
 from pyramid.security import unauthenticated_userid
+from geoportailv3.portail import Connections
+from geoportailv3.portail import PortailSession
 import ldap
 
 """
@@ -12,8 +14,19 @@ Validates the user against the ldap server
 def ldap_user_validator(request, username, password):
     connector = get_ldap_connector(request)
     data = connector.authenticate(username, password)
+    connection = Connections()
+    connection.login = username
+    connection.application = request.host
+
     if data is not None:
+        connection.action = "CONNECT"
+        PortailSession.add(connection)
+        PortailSession.commit()
         return data[0]
+    else:
+        connection.action = "CONNECT ERROR"
+        PortailSession.add(connection)
+        PortailSession.commit()
 
     return None
 
@@ -55,6 +68,7 @@ def get_user_from_request(request):
                     user.is_admin = result[0][1]['adm'][0]
                 if 'roleMymaps' in result[0][1]:
                     user.mymaps_role = result[0][1]['roleMymaps'][0]
+
         user.role = DBSession.query(Role).filter_by(id=roletheme).one()
 
         user.functionalities = []

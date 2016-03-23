@@ -6,8 +6,6 @@ from c2cgeoportal import locale_negotiator, \
     set_user_validator
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
-from geoportailv3.views.authentication import ldap_user_validator, \
-    get_user_from_request
 from pyramid.renderers import JSON
 from decimal import Decimal
 from turbomail.control import interface
@@ -165,6 +163,17 @@ def main(global_config, **settings):
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 
+    config.add_translation_dirs('geoportailv3:locale/')
+
+    # initialize database
+    engines = config.get_settings()['sqlalchemy_engines']
+    if engines:
+        for engine in engines:
+            sqlahelper.add_engine(
+                sqlalchemy.create_engine(engines[engine]), name=engine)
+
+    from geoportailv3.views.authentication import ldap_user_validator, \
+        get_user_from_request
     ldap_settings = config.get_settings()['ldap']
     if ldap_settings:
         config.include('pyramid_ldap')
@@ -191,16 +200,6 @@ def main(global_config, **settings):
         )
 
         set_user_validator(config, ldap_user_validator)
-
-    config.add_translation_dirs('geoportailv3:locale/')
-
-    # initialize database
-    engines = config.get_settings()['sqlalchemy_engines']
-    if engines:
-        for engine in engines:
-            sqlahelper.add_engine(
-                sqlalchemy.create_engine(engines[engine]), name=engine)
-
     json_renderer = JSON()
 
     json_renderer.add_adapter(datetime.date, datetime_adapter)
