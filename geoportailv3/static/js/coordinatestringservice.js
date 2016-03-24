@@ -94,8 +94,8 @@ app.coordinateString_ = function() {
     return Math.floor(x / 3600) + '\u00b0 ' +
         goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
         goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
-        Math.floor((x - Math.trunc(x)) * 10) + '\u2033 ' +
-        hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+        Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
+        '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
 };
 
