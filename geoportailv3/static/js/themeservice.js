@@ -7,16 +7,42 @@ goog.require('app.Themes');
 goog.require('ngeo.Location');
 
 
+/**
+ * @typedef {{push: function(Array<string>)}}
+ */
+app.Piwik;
+
+
 
 /**
  * @constructor
+ * @param {angular.$window} $window Global Scope.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @ngInject
  */
-app.Theme = function(ngeoLocation, appThemes, appScalesService, maxExtent) {
+app.Theme = function($window, ngeoLocation, appThemes,
+    appScalesService, maxExtent) {
+
+  /**
+   * @const
+   * @private
+   * @type {Object}
+   */
+  this.piwikSiteIdLookup_ = {
+    'main': 18,
+    'tourisme': 7,
+    'emwelt': 8,
+    'eau': 6
+  };
+
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = $window;
 
   /**
    * @type {app.ScalesService}
@@ -57,6 +83,15 @@ app.Theme = function(ngeoLocation, appThemes, appScalesService, maxExtent) {
  */
 app.Theme.prototype.setCurrentTheme = function(themeId, map) {
   this.currentTheme_ = themeId;
+
+  var piwikSiteId = this.piwikSiteIdLookup_[this.currentTheme_];
+  if (!goog.isDefAndNotNull(piwikSiteId)) {
+    piwikSiteId = this.piwikSiteIdLookup_[app.Theme.DEFAULT_THEME_];
+  }
+  var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
+  piwik.push(['setSiteId', piwikSiteId]);
+  piwik.push(['trackPageView']);
+
   this.setLocationPath_(this.currentTheme_);
   this.appThemes_.getThemeObject(this.currentTheme_).then(goog.bind(
       /**
