@@ -93,16 +93,44 @@ app.Export.prototype.exportGpx = function(feature, name) {
 
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
-  var features = [activeFeature];
 
-  var gpx = this.gpxFormat_.writeFeatures(features, {
-    dataProjection: 'EPSG:4326',
-    featureProjection: this['map'].getView().getProjection()
-  });
+  var gpx = this.gpxFormat_.writeFeatures(this.exploseFeature_(activeFeature),
+      {
+        dataProjection: 'EPSG:4326',
+        featureProjection: this['map'].getView().getProjection()
+      });
   gpx = gpx.replace('<gpx ',
       '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
       ' version="1.1" ');
   this.exportFeatures_(gpx, 'gpx', this.sanitizeFilename_(name));
+};
+
+
+/**
+ * Explose the feature into multiple features if the geometry is a
+ * collection of geometries.
+ * @param {ol.Feature} feature The feature to explose.
+ * @return {Array}
+ * @private
+ */
+app.Export.prototype.exploseFeature_ = function(feature) {
+  var features = [];
+  switch (feature.getGeometry().getType()) {
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      var geomCollection = /** @type {ol.geom.GeometryCollection} */
+          (feature.getGeometry());
+      goog.array.forEach(geomCollection.getGeometriesArray(),
+          function(curGeom) {
+            var newFeature = feature.clone();
+            newFeature.setGeometry(curGeom);
+            features.push(newFeature);
+          });
+      break;
+    default :
+      features.push(feature);
+      break;
+  }
+  return features;
 };
 
 
@@ -116,12 +144,12 @@ app.Export.prototype.exportKml = function(feature, name) {
 
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
-  var features = [activeFeature];
 
-  var kml = this.kmlFormat_.writeFeatures(features, {
-    dataProjection: 'EPSG:4326',
-    featureProjection: this['map'].getView().getProjection()
-  });
+  var kml = this.kmlFormat_.writeFeatures(this.exploseFeature_(activeFeature),
+      {
+        dataProjection: 'EPSG:4326',
+        featureProjection: this['map'].getView().getProjection()
+      });
   this.exportFeatures_(kml, 'kml', this.sanitizeFilename_(name));
 };
 
