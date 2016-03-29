@@ -428,15 +428,27 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
     featureProjection: this['map'].getView().getProjection()
   }));
   var mapId = this.appMymaps_.getMapId();
+  var featuresToSave = [];
   goog.array.forEach(gpxFeatures, function(feature) {
     feature.set('__map_id__', mapId);
-
     if (feature.getId()) {
       feature.setId(undefined);
     }
+    var curGeometry = feature.getGeometry();
+    if (curGeometry.getType() === ol.geom.GeometryType.MULTI_LINE_STRING) {
+      var lines = /** @type {ol.geom.MultiLineString} */
+          (curGeometry).getLineStrings();
+      goog.array.forEach(lines, function(line) {
+        var clonedFeature = feature.clone();
+        clonedFeature.setGeometry(line);
+        featuresToSave.push(clonedFeature);
+      });
+    } else {
+      featuresToSave.push(feature);
+    }
   });
 
-  this.appMymaps_.saveFeatures(gpxFeatures).then(
+  this.appMymaps_.saveFeatures(featuresToSave).then(
       goog.bind(function() {
         var map = {'uuid': mapId};
         this.onChosen(map, false);

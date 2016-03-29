@@ -174,6 +174,12 @@ class Feature(Base):
                 feature.geometry.coordinates = \
                     [coordinate[0:2] for coordinate
                         in feature.geometry.coordinates]
+            elif geom_type == 'multilinestring':
+                multilinestring = feature.geometry.coordinates
+                feature.geometry.coordinates = \
+                    [[coord[0:2] for coord in multilinestring[i]]
+                        for i in range(len(multilinestring))]
+
             shape = asShape(feature.geometry)
 
         else:
