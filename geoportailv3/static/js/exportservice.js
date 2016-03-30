@@ -95,6 +95,8 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
   var explodedFeatures = this.exploseFeature_(features);
   if (isTrack) {
     explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
+  } else {
+    explodedFeatures = this.changMultilineToLine_(explodedFeatures);
   }
   var gpx = this.gpxFormat_.writeFeatures(explodedFeatures,
       {
@@ -124,6 +126,36 @@ app.Export.prototype.changeLineToMultiline_ = function(features) {
         multilineFeature.setGeometry(
             new ol.geom.MultiLineString([geom.getCoordinates()]));
         changedFeatures.push(multilineFeature);
+        break;
+      default :
+        changedFeatures.push(feature);
+        break;
+    }
+  });
+  return changedFeatures;
+};
+
+
+/**
+ * Change each multiline contained in the array into line geometry.
+ * @param {Array.<ol.Feature>} features The features to change.
+ * @return {Array.<ol.Feature>}
+ * @private
+ */
+app.Export.prototype.changMultilineToLine_ = function(features) {
+  var changedFeatures = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        var geom = /** @type {ol.geom.MultiLineString} */
+            (feature.getGeometry());
+        var lines = /** @type {ol.geom.MultiLineString} */
+            (geom).getLineStrings();
+        goog.array.forEach(lines, function(line) {
+          var clonedFeature = feature.clone();
+          clonedFeature.setGeometry(line);
+          changedFeatures.push(clonedFeature);
+        });
         break;
       default :
         changedFeatures.push(feature);
