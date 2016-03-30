@@ -907,10 +907,19 @@ app.QueryController.prototype.isEmpty = function(value) {
  * Export the feature
  * @param {Object} feature The fetaure.
  * @param {string} name The file name.
+ * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.QueryController.prototype.exportGpx = function(feature, name) {
-  this.appExport_.exportGpx(feature, name);
+app.QueryController.prototype.exportGpx = function(feature, name, isTrack) {
+  var encOpt_ = /** @type {olx.format.ReadOptions} */({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.map_.getView().getProjection()
+  });
+
+  var activeFeature = /** @type {ol.Feature} */
+      ((new ol.format.GeoJSON()).readFeature(feature, encOpt_));
+
+  this.appExport_.exportGpx([activeFeature], name, isTrack);
 };
 
 

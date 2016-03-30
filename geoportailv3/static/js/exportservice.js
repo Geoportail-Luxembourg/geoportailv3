@@ -85,16 +85,18 @@ app.Export.prototype.init = function(map) {
 
 /**
  * Export a Gpx file.
- * @param {Object} feature The feature to export.
+ * @param {Array.<ol.Feature>} features The features to export.
  * @param {string} name The file name.
+ * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.Export.prototype.exportGpx = function(feature, name) {
-
-  var activeFeature = /** @type {ol.Feature} */
-      ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
-
-  var gpx = this.gpxFormat_.writeFeatures(this.exploseFeature_(activeFeature),
+app.Export.prototype.exportGpx = function(features, name, isTrack) {
+  // LineString geometries, and tracks from MultiLineString
+  var explodedFeatures = this.exploseFeature_(features);
+  if (isTrack) {
+    explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
+  }
+  var gpx = this.gpxFormat_.writeFeatures(explodedFeatures,
       {
         dataProjection: 'EPSG:4326',
         featureProjection: this['map'].getView().getProjection()
@@ -107,30 +109,58 @@ app.Export.prototype.exportGpx = function(feature, name) {
 
 
 /**
- * Explose the feature into multiple features if the geometry is a
- * collection of geometries.
- * @param {ol.Feature} feature The feature to explose.
- * @return {Array}
+ * Change each line contained in the array into multiline geometry.
+ * @param {Array.<ol.Feature>} features The features to change.
+ * @return {Array.<ol.Feature>}
  * @private
  */
-app.Export.prototype.exploseFeature_ = function(feature) {
-  var features = [];
-  switch (feature.getGeometry().getType()) {
-    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-      var geomCollection = /** @type {ol.geom.GeometryCollection} */
-          (feature.getGeometry());
-      goog.array.forEach(geomCollection.getGeometriesArray(),
-          function(curGeom) {
-            var newFeature = feature.clone();
-            newFeature.setGeometry(curGeom);
-            features.push(newFeature);
-          });
-      break;
-    default :
-      features.push(feature);
-      break;
-  }
-  return features;
+app.Export.prototype.changeLineToMultiline_ = function(features) {
+  var changedFeatures = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.LINE_STRING:
+        var geom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+        var multilineFeature = feature.clone();
+        multilineFeature.setGeometry(
+            new ol.geom.MultiLineString([geom.getCoordinates()]));
+        changedFeatures.push(multilineFeature);
+        break;
+      default :
+        changedFeatures.push(feature);
+        break;
+    }
+  });
+  return changedFeatures;
+};
+
+
+/**
+ * Explose the feature into multiple features if the geometry is a
+ * collection of geometries.
+ * @param {Array.<ol.Feature>} features The features to explose.
+ * @return {Array.<ol.Feature>}
+ * @private
+ */
+app.Export.prototype.exploseFeature_ = function(features) {
+  var explodedFeatures = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+        var geomCollection = /** @type {ol.geom.GeometryCollection} */
+            (feature.getGeometry());
+        goog.array.forEach(geomCollection.getGeometriesArray(),
+            function(curGeom) {
+              var newFeature = feature.clone();
+              newFeature.setGeometry(curGeom);
+              explodedFeatures.push(newFeature);
+            });
+        break;
+      default :
+        explodedFeatures.push(feature);
+        break;
+    }
+  });
+  return explodedFeatures;
 };
 
 
@@ -145,7 +175,7 @@ app.Export.prototype.exportKml = function(feature, name) {
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
 
-  var kml = this.kmlFormat_.writeFeatures(this.exploseFeature_(activeFeature),
+  var kml = this.kmlFormat_.writeFeatures(this.exploseFeature_([activeFeature]),
       {
         dataProjection: 'EPSG:4326',
         featureProjection: this['map'].getView().getProjection()
