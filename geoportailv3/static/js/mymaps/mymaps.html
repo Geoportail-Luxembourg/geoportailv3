@@ -24,10 +24,7 @@
   <div ng-show="ctrl.isEditable()" class="mymap-footer navbar">
     <div ng-show="ctrl.layersChanged" class="alert alert-warning">
       <strong translate>Attention!</strong>
-      <span translate>
-        Les couches sélectionnées dans le catalogue sont différentes de celles chargées avec votre carte.
-        Voulez vous sauvegarder ces modifications dans votre carte?
-      </span>
+      <span translate>Les couches sélectionnées dans le catalogue sont différentes de celles chargées avec votre carte. Voulez vous sauvegarder ces modifications dans votre carte?</span>
       <div>
         <button ng-click="ctrl.resetLayers()" translate class="btn btn-default">Reset</button>
         <button ng-click="ctrl.saveLayers()" translate class="btn btn-default">Oui</button>
