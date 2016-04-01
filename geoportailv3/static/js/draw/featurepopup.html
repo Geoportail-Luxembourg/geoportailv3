@@ -46,8 +46,7 @@
           <span class="fa fa-caret-square-o-down"></span>
         </a>
         <ul class="dropdown-menu" role="menu">
-          <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX Track</a></li>
-          <li ng-click="ctrl.exportGpx(false)"><a href translate>Exporter un GPX Route</a></li>
+          <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__') && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__') && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
