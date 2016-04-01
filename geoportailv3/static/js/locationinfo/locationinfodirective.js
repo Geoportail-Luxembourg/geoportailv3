@@ -225,8 +225,13 @@ app.LocationinfoController = function(
       urlLocationInfo === 'true') {
     var x = parseInt(appStateManager.getInitialValue('X'), 0);
     var y = parseInt(appStateManager.getInitialValue('Y'), 0);
-    var coordinate = /** @type {ol.Coordinate} */ ([x, y]);
+    var version = this.stateManager_.getVersion();
+
     if (goog.isDef(x) && goog.isDef(y)) {
+      var coordinate = version === 3 ?
+          /** @type {ol.Coordinate} */ ([x, y]) :
+          /** @type {ol.Coordinate} */ (ol.proj.transform([y, x], 'EPSG:2169',
+              this['map'].getView().getProjection()));
       this.loadInfoPane_(coordinate);
       var env = this.appGetDevice_();
       if (env !== 'xs') {
@@ -315,7 +320,7 @@ app.LocationinfoController.prototype.loadInfoPane_ =
     clickCoordinate = eventOrCoordinate;
   } else {
     eventOrCoordinate.preventDefault();
-    clickCoordinate = this.map.getEventCoordinate(eventOrCoordinate);
+    clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
   }
 
   this['appSelector'] = 'locationinfo';
