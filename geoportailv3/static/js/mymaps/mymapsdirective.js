@@ -65,6 +65,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Document} $document Document.
  * @param {string} exportgpxkmlUrl URL to echo web service.
+ * @param {app.Export} appExport The export service.
  * @constructor
  * @export
  * @ngInject
@@ -73,7 +74,13 @@ app.module.directive('appMymaps', app.mymapsDirective);
 app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
     appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures,
-    $document, exportgpxkmlUrl) {
+    $document, exportgpxkmlUrl, appExport) {
+
+  /**
+   * @type {app.Export}
+   * @private
+   */
+  this.appExport_ = appExport;
 
   /**
    * @type {app.Theme}
@@ -388,22 +395,16 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
 
 /**
  * Export a Gpx file.
+ * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.MymapsDirectiveController.prototype.exportGpx = function() {
+app.MymapsDirectiveController.prototype.exportGpx = function(isTrack) {
+
   var features = this.drawnFeatures_.getCollection();
   var mymapsFeatures = features.getArray().filter(function(feature) {
     return !!feature.get('__map_id__');
   });
-  var gpx = this.gpxFormat_.writeFeatures(mymapsFeatures, {
-    dataProjection: 'EPSG:4326',
-    featureProjection: this['map'].getView().getProjection()
-  });
-  gpx = gpx.replace('<gpx ',
-      '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-      ' version="1.1" ');
-  this.exportFeatures_(gpx, 'gpx',
-      this.sanitizeFilename_(this.appMymaps_.mapTitle));
+  this.appExport_.exportGpx(mymapsFeatures, this.appMymaps_.mapTitle, isTrack);
 };
 
 
