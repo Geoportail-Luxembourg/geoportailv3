@@ -78,13 +78,15 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
+ * @param {gettext} gettext Gettext service.
+ * @param {angular.$compile} $compile The compile provider.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps, gettextCatalog) {
+    appSelectedFeatures, appMymaps, gettextCatalog, gettext, $compile) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -177,7 +179,14 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  this.drawnFeatures_.drawLineInteraction = new app.MeasureLength();
+  var contMsg = gettext('Click to continue drawing the line<br>' +
+      'Double-click or click last point to finish');
+  var helpMsg = gettext('Click to start drawing line');
+  this.drawnFeatures_.drawLineInteraction = new app.MeasureLength({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+  });
+
   /**
    * @type {app.MeasureLength}
    * @export
@@ -193,7 +202,13 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(this.drawLine, app.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, this);
 
-  var drawPolygon = new ngeo.interaction.MeasureArea();
+  helpMsg = gettext('Click to start drawing polygon');
+  contMsg = gettext('Click to continue drawing the polygon<br>' +
+      'Double-click or click last point to finish');
+  var drawPolygon = new ngeo.interaction.MeasureArea({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+  });
 
   /**
    * @type {ngeo.interaction.MeasureArea}
@@ -210,7 +225,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawPolygon, ngeo.MeasureEventType.MEASUREEND,
       this.onDrawEnd_, this);
 
-  var drawCircle = new ngeo.interaction.MeasureAzimut();
+  helpMsg = gettext('Click to start drawing circle');
+  contMsg = gettext('Click to finish');
+  var drawCircle = new ngeo.interaction.MeasureAzimut({
+    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
+    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+  });
 
   /**
    * @type {ngeo.interaction.MeasureAzimut}
