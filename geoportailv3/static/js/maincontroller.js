@@ -24,7 +24,6 @@ goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -45,7 +44,6 @@ goog.require('ol.tilegrid.WMTS');
  * manager.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
- * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
@@ -69,11 +67,10 @@ goog.require('ol.tilegrid.WMTS');
  */
 app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
-    ngeoGetBrowserLanguage, gettextCatalog, appExclusionManager,
-    appLayerOpacityManager, appLayerPermalinkManager, appMymaps,
-    appStateManager, appThemes, appTheme, appFeaturePopup, appUserManager,
-    appDrawnFeatures, langUrls, maxExtent, defaultExtent, ngeoSyncArrays,
-    ngeoLocation, appExport) {
+    gettextCatalog, appExclusionManager, appLayerOpacityManager,
+    appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
+    appFeaturePopup, appUserManager, appDrawnFeatures, langUrls, maxExtent,
+    defaultExtent, ngeoSyncArrays, ngeoLocation, appExport) {
 
   /**
    * @type {app.Export}
@@ -110,12 +107,6 @@ app.MainController = function(
    * @private
    */
   this.scope_ = $scope;
-
-  /**
-   * @type {ngeo.GetBrowserLanguage}
-   * @private
-   */
-  this.getBrowserLanguage_ = ngeoGetBrowserLanguage;
 
   /**
    * @type {app.StateManager}
@@ -415,18 +406,12 @@ app.MainController.prototype.initLanguage_ = function() {
     });
   }, this));
 
-  var browserLanguage = /** @type {string|undefined} */
-      (this.getBrowserLanguage_(goog.object.getKeys(this.langUrls_)));
   var urlLanguage = /** @type {string|undefined} */
       (this.stateManager_.getInitialValue('lang'));
 
   if (goog.isDef(urlLanguage) &&
       goog.object.containsKey(this.langUrls_, urlLanguage)) {
     this.switchLanguage(urlLanguage);
-    return;
-  } else if (goog.isDef(browserLanguage) &&
-      goog.object.containsKey(this.langUrls_, browserLanguage)) {
-    this.switchLanguage(browserLanguage);
     return;
   } else {
     // if there is no information about language preference,
