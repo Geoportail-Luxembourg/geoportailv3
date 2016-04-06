@@ -253,12 +253,6 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapLayersIndicies = [];
 
   /**
-   * @type {ol.FeatureStyleFunction}
-   * @private
-   */
-  this.featureStyleFunction_ = this.createStyleFunction();
-
-  /**
    * @type {ol.proj.Projection}
    */
   this.mapProjection;
@@ -338,12 +332,14 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
         dataProjection: 'EPSG:2169',
         featureProjection: this.mapProjection
       });
+
+      var featureStyleFunction = this.createStyleFunction(this.map);
       var jsonFeatures = (new ol.format.GeoJSON()).
           readFeatures(features, encOpt);
       goog.array.forEach(jsonFeatures, function(feature) {
         feature.set('__map_id__', this.getMapId());
         feature.set('__editable__', this.isEditable());
-        feature.setStyle(this.featureStyleFunction_);
+        feature.setStyle(featureStyleFunction);
       }, this);
 
       collection.extend(
@@ -981,10 +977,11 @@ app.Mymaps.prototype.isMymapsSelected = function() {
 
 
 /**
+ * @param {ol.Map} curMap
  * @return {ol.FeatureStyleFunction}
  * @export
  */
-app.Mymaps.prototype.createStyleFunction = function() {
+app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
   var styles = [];
 
@@ -1022,6 +1019,7 @@ app.Mymaps.prototype.createStyleFunction = function() {
 
   var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
+
   return function(resolution) {
 
     // clear the styles
@@ -1045,7 +1043,10 @@ app.Mymaps.prototype.createStyleFunction = function() {
     fillStyle.setColor(rgbaColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
+      var prevArrow, distance;
       this.getGeometry().forEachSegment(function(start, end) {
+        var arrowPoint = new ol.geom.Point(
+            [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
 
@@ -1063,12 +1064,21 @@ app.Mymaps.prototype.createStyleFunction = function() {
           rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
         };
 
-        // arrows
-        styles.push(new ol.style.Style({
-          geometry: new ol.geom.Point(
-              [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]),
-          image: new ol.style.RegularShape(arrowOptions)
-        }));
+        if (prevArrow) {
+          var pt1 = curMap.getPixelFromCoordinate(arrowPoint.getCoordinates()),
+              pt2 = curMap.getPixelFromCoordinate(prevArrow.getCoordinates()),
+              w = pt2[0] - pt1[0],
+              h = pt2[1] - pt1[1];
+          distance = Math.sqrt(w * w + h * h);
+        }
+        if (!prevArrow || distance > 40) {
+          // arrows
+          styles.push(new ol.style.Style({
+            geometry: arrowPoint,
+            image: new ol.style.RegularShape(arrowOptions)
+          }));
+          prevArrow = arrowPoint;
+        }
       });
     }
     var lineDash;

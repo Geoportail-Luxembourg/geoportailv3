@@ -139,7 +139,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @type {ol.FeatureStyleFunction}
    * @private
    */
-  this.featureStyleFunction_ = this.appMymaps_.createStyleFunction();
+  this.featureStyleFunction_ = this.appMymaps_.createStyleFunction(this.map);
 
   var drawPoint = new ol.interaction.Draw({
     type: ol.geom.GeometryType.POINT
@@ -379,7 +379,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
 
-  this.drawnFeatures_.drawFeaturesInUrl();
+  this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 };
 
 

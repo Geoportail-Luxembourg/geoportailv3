@@ -109,12 +109,6 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
           return properties;
         },this))
   });
-
-  /**
-   * @type {ol.FeatureStyleFunction}
-   * @private
-   */
-  this.featureStyleFunction_ = this.appMymaps_.createStyleFunction();
 };
 
 
@@ -200,8 +194,9 @@ app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
 /**
  * Decode the features encoded in the URL and add them to the collection
  * of drawn features.
+ * @param {ol.FeatureStyleFunction} featureStyleFunction
  */
-app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
+app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
   var encodedFeatures = this.ngeoLocation_.getParam('features');
   if (goog.isDef(encodedFeatures)) {
     var remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
@@ -231,7 +226,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function() {
       feature.set('showOrientation', showOrientation === 'true');
       feature.set('__editable__', true);
       feature.set('__map_id__', undefined);
-      feature.setStyle(this.featureStyleFunction_);
+      feature.setStyle(featureStyleFunction);
     },this));
 
     this.features.extend(remoteFeatures);
