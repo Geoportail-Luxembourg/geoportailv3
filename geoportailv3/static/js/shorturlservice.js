@@ -35,7 +35,7 @@ app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
           });
         }
         var req = $.param({
-          'url': encodeURIComponent(ngeoLocation.getUriString())
+          'url': ngeoLocation.getUriString()
         });
         var config = {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
