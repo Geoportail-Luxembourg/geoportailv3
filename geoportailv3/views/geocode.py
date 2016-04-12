@@ -7,6 +7,7 @@ from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement
 from geoportailv3.geocode import DBSession, Address
+import re
 
 
 class Geocode(object):
@@ -24,8 +25,11 @@ class Geocode(object):
         northing = self.request.params.get('northing', None)
 
         if easting is None or northing is None or\
-           len(easting) == 0 or len(northing) == 0:
-            return HTTPBadRequest("Coordinates are missing")
+           len(easting) == 0 or len(northing) == 0 or\
+           re.match("^[0-9]*[.]{0,1}[0-9]*$", easting) is None or\
+           re.match("^[0-9]*[.]{0,1}[0-9]*$", northing) is None:
+
+            return HTTPBadRequest("Missing or invalid coordinates")
 
         distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
                                            "x": easting,
@@ -33,6 +37,7 @@ class Geocode(object):
                                            }, srid=2169), Address.geom)
 
         results = []
+
         for feature in DBSession.query(
                 Address.id_caclr_rue.label("id_caclr_rue"),
                 Address.id_caclr_bat.label("id_caclr_bat"),
