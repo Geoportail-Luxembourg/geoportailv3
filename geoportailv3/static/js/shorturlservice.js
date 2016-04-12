@@ -34,8 +34,13 @@ app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
             'Y': Math.round(opt_coordinate[1])
           });
         }
-        return $http.post(shorturlServiceUrl + '?url=' +
-                encodeURIComponent(ngeoLocation.getUriString()), {}).then(
+        var req = $.param({
+          'url': encodeURIComponent(ngeoLocation.getUriString())
+        });
+        var config = {
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        };
+        return $http.post(shorturlServiceUrl, req, config).then(
             /**
            * @param {angular.$http.Response} resp Ajax response.
            * @return {string} The short URL.
