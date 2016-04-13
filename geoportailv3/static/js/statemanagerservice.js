@@ -12,7 +12,6 @@ goog.require('goog.storage.mechanism.HTML5LocalStorage');
 goog.require('ngeo.Location');
 
 
-
 /**
  * @constructor
  * @param {ngeo.Location} ngeoLocation ngeo location service.
@@ -119,8 +118,8 @@ app.StateManager.prototype.updateState = function(object) {
 
 
 /**
- * Delete a parameter
- * @param {string} key
+ * Delete a parameter.
+ * @param {string} key The key to remove.
  */
 app.StateManager.prototype.deleteParam = function(key) {
   this.ngeoLocation_.deleteParam(key);

@@ -38,7 +38,6 @@ app.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
 app.module.directive('appThemeswitcher', app.themeswitcherDirective);
 
 
-
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.

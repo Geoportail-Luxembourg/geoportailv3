@@ -13,7 +13,6 @@ goog.require('ol.Object');
 goog.require('ol.events');
 
 
-
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
@@ -126,10 +125,10 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         msg = gettextCatalog.getString(
             'Background has been deactivated because ' +
             'the layer {{layer}} cannot be displayed on top of it.',
-            {
-              'layer': gettextCatalog.getString(
+          {
+            'layer': gettextCatalog.getString(
                   /** @type {string} */(layer1.get('label')))
-            }
+          }
             );
         this.notify_(msg);
       }
@@ -144,11 +143,11 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         'The layers <b>{{layersToRemove}}</b> ' +
         'have been removed because they cannot be displayed while the layer ' +
         '<b>{{layer}}</b> is displayed',
-        {
-          'layersToRemove': layersToRemove.join(', '),
-          'layer': gettextCatalog.getString(
+      {
+        'layersToRemove': layersToRemove.join(', '),
+        'layer': gettextCatalog.getString(
               /** @type {string} */(layer1.get('label')))
-        });
+      });
     this.notify_(msg);
   }
 };

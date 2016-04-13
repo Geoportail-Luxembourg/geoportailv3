@@ -12,7 +12,6 @@ goog.require('ngeo.format.FeatureHash');
 goog.require('ol.Collection');
 
 
-
 /**
  * @constructor
  * @param {ngeo.Location} ngeoLocation Location service.
@@ -120,7 +119,8 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
  */
 app.DrawnFeatures.prototype.remove = function(feature) {
   this.features.remove(feature);
-  if (!!feature.get('__map_id__')) {
+  var isMymaps = !!feature.get('__map_id__');
+  if (isMymaps) {
     if (this.appMymaps_.isEditable()) {
       this.appMymaps_.deleteFeature(feature);
     }
@@ -192,9 +192,10 @@ app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
 
 
 /**
- * Decode the features encoded in the URL and add them to the collection
+ * Decode the features encoded in the URL and add them to the collection
  * of drawn features.
- * @param {ol.FeatureStyleFunction} featureStyleFunction
+ * @param {ol.FeatureStyleFunction} featureStyleFunction The function to style
+ * a feature.
  */
 app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
   var encodedFeatures = this.ngeoLocation_.getParam('features');
@@ -244,10 +245,10 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
     feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
       .then(goog.bind(function(resp) {
-          var featureId = resp['id'];
-          currentFeature.set('fid', featureId);
-          feature.set('__saving__', false);
-        }, this));
+        var featureId = resp['id'];
+        currentFeature.set('fid', featureId);
+        feature.set('__saving__', false);
+      }, this));
   }
 };
 
@@ -327,10 +328,11 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   var isTranlationActive = true;
   var isModifyInteractionActive = true;
   var isModifyCircleActive = false;
-
-  if (!!feature.get('isCircle')) {
+  var isCircle = !!feature.get('isCircle');
+  var isMymaps = !!feature.get('__map_id__');
+  if (isCircle) {
     isModifyInteractionActive = false;
-    if (!!feature.get('__map_id__')) {
+    if (isMymaps) {
       isTranlationActive = this.appMymaps_.isEditable();
       isModifyCircleActive = this.appMymaps_.isEditable();
     } else {
@@ -339,7 +341,7 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   } else {
     var isLine = feature.getGeometry().getType() ===
         ol.geom.GeometryType.LINE_STRING;
-    if (!!feature.get('__map_id__')) {
+    if (isMymaps) {
       isModifyInteractionActive = this.appMymaps_.isEditable();
       isTranlationActive = this.appMymaps_.isEditable() && !isLine;
     } else {

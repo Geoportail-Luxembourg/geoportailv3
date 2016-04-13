@@ -27,9 +27,8 @@ app.authenticationDirective = function(appAuthenticationTemplateUrl) {
 app.module.directive('appAuthentication', app.authenticationDirective);
 
 
-
 /**
- * @param {app.UserManager} appUserManager
+ * @param {app.UserManager} appUserManager The usermanager service.
  * @constructor
  * @export
  * @ngInject
@@ -87,7 +86,7 @@ app.AuthenticationController.prototype.getUserInfo = function() {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if is authenticated.
  * @export
  */
 app.AuthenticationController.prototype.isAuthenticated = function() {
@@ -96,7 +95,7 @@ app.AuthenticationController.prototype.isAuthenticated = function() {
 
 
 /**
- * @return {string|undefined}
+ * @return {string|undefined} The email.
  * @export
  */
 app.AuthenticationController.prototype.getEmail = function() {
@@ -105,7 +104,7 @@ app.AuthenticationController.prototype.getEmail = function() {
 
 
 /**
- * @return {string|undefined}
+ * @return {string|undefined} The username.
  * @export
  */
 app.AuthenticationController.prototype.getUsername = function() {

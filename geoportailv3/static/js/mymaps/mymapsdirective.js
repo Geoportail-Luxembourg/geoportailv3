@@ -26,7 +26,7 @@ goog.require('ol.format.KML');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
- * @param {string} appMymapsTemplateUrl
+ * @param {string} appMymapsTemplateUrl The template url.
  * @ngInject
  */
 app.mymapsDirective = function(appMymapsTemplateUrl) {
@@ -331,16 +331,16 @@ app.MymapsDirectiveController.prototype.saveLayers = function() {
       layersVisibilities.join(','), layersIndices.join(','),
       this.appTheme_.getCurrentTheme())
   .then(goog.bind(function() {
-        this.appMymaps_.loadMapInformation();
-      },this));
+    this.appMymaps_.loadMapInformation();
+  },this));
   this['layersChanged'] = false;
   return promise;
 };
 
 
 /**
- * @param {boolean|undefined} value
- * @return {boolean|undefined}
+ * @param {boolean|undefined} value The value.
+ * @return {boolean|undefined} false or true.
  * @export
  */
 app.MymapsDirectiveController.prototype.modalShownHidden = function(value) {
@@ -652,8 +652,8 @@ app.MymapsDirectiveController.prototype.getMapOwner = function() {
 
 
 /**
- * @param {?number} id
- * @return {Object} returns the category name
+ * @param {?number} id The id.
+ * @return {Object} The category name.
  * @export
  */
 app.MymapsDirectiveController.prototype.getMapCategory = function(id) {
@@ -670,7 +670,7 @@ app.MymapsDirectiveController.prototype.getMapCategory = function(id) {
 
 
 /**
- * @return {Object} returns the categories object
+ * @return {Object} The categories object.
  * @export
  */
 app.MymapsDirectiveController.prototype.getCategories = function() {
@@ -709,7 +709,7 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
 app.MymapsDirectiveController.prototype.openCreateMapModal = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  }else {
+  } else {
     this.modal = 'CREATE';
     this.newTitle = this.gettextCatalog.getString('Map without Title');
     this.newDescription = '';
@@ -750,7 +750,7 @@ app.MymapsDirectiveController.prototype.getMapIsPublic = function() {
 app.MymapsDirectiveController.prototype.createMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
-  }else {
+  } else {
     this.appMymaps_.createMap(
         this.newTitle,
         this.newDescription,
@@ -758,21 +758,21 @@ app.MymapsDirectiveController.prototype.createMap = function() {
         this.newIsPublic
     )
       .then(goog.bind(function(resp) {
-          this.modal = 'CREATE';
-          if (goog.isNull(resp)) {
-            this.askToConnect();
-          } else {
-            var mapId = resp['uuid'];
-            if (goog.isDef(mapId)) {
-              var map = {'uuid': mapId};
-              this.appMymaps_.setMapId(mapId);
-              this.saveLayers();
-              this.onChosen(map, false);
-              var msg = this.gettextCatalog.getString('Nouvelle carte créée');
-              this.notify_(msg);
-              this.modal = undefined;
-            }
-          }}, this));
+        this.modal = 'CREATE';
+        if (goog.isNull(resp)) {
+          this.askToConnect();
+        } else {
+          var mapId = resp['uuid'];
+          if (goog.isDef(mapId)) {
+            var map = {'uuid': mapId};
+            this.appMymaps_.setMapId(mapId);
+            this.saveLayers();
+            this.onChosen(map, false);
+            var msg = this.gettextCatalog.getString('Nouvelle carte créée');
+            this.notify_(msg);
+            this.modal = undefined;
+          }
+        }}, this));
   }
 };
 
@@ -860,8 +860,8 @@ app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
 
 
 /**
- * Is the map editable
- * @return {boolean}
+ * Is the map editable.
+ * @return {boolean} True if the map is editable.
  * @export
  */
 app.MymapsDirectiveController.prototype.isEditable = function() {
@@ -877,7 +877,7 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
-    }else {
+    } else {
       this.appMymaps_.updateMap(
           this.newTitle,
           this.newDescription,
@@ -899,8 +899,8 @@ app.MymapsDirectiveController.prototype.saveModifications = function() {
 
 /**
  * Return feature type as a string
- * @param {ol.Feature} feature
- * @return {string}
+ * @param {ol.Feature} feature The feature.
+ * @return {string} The type as a string.
  * @export
  */
 app.MymapsDirectiveController.prototype.getFeatureType = function(feature) {
@@ -934,7 +934,7 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
 
 /**
  * Selects feature.
- * @param {ol.Feature} feature
+ * @param {ol.Feature} feature The Feature.
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
@@ -952,29 +952,29 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
  */
 app.MymapsDirectiveController.prototype.exportFeatures_ =
     function(doc, format, filename) {
-  var formatInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'format',
-    value: format
-  });
-  var nameInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'name',
-    value: filename
-  });
-  var docInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'doc',
-    value: doc
-  });
-  var form = $('<form>').attr({
-    method: 'POST',
-    action: this.exportgpxkmlUrl_
-  });
-  form.append(formatInput, nameInput, docInput);
-  angular.element(this.$document_[0].body).append(form);
-  form[0].submit();
-  form.remove();
-};
+      var formatInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'format',
+        value: format
+      });
+      var nameInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'name',
+        value: filename
+      });
+      var docInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'doc',
+        value: doc
+      });
+      var form = $('<form>').attr({
+        method: 'POST',
+        action: this.exportgpxkmlUrl_
+      });
+      form.append(formatInput, nameInput, docInput);
+      angular.element(this.$document_[0].body).append(form);
+      form[0].submit();
+      form.remove();
+    };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

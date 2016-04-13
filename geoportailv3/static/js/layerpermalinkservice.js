@@ -15,13 +15,14 @@ goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ol.events');
 
 
-
 /**
  * @constructor
- * @param {app.StateManager} appStateManager
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
- * @param {app.Themes} appThemes
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
+ * @param {app.StateManager} appStateManager The state service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
+ * service.
+ * @param {app.Themes} appThemes The themes service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
+ * manager.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @ngInject
  */
@@ -33,50 +34,50 @@ app.LayerPermalinkManager =
    * @type {ngeo.Location}
    * @private
    */
-  this.ngeoLocation_ = ngeoLocation;
+      this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {Array.<number>}
    * @private
    */
-  this.unavailableLayers_ = [];
+      this.unavailableLayers_ = [];
 
   /**
    * @type {Array.<number>}
    * @private
    */
-  this.unavailableOpacities_ = [];
+      this.unavailableOpacities_ = [];
 
   /**
    * @type {app.Themes}
    * @private
    */
-  this.appThemes_ = appThemes;
+      this.appThemes_ = appThemes;
 
   /**
    * @type {app.StateManager}
    * @private
    */
-  this.stateManager_ = appStateManager;
+      this.stateManager_ = appStateManager;
 
   /**
    * @type {ngeo.BackgroundLayerMgr}
    * @private
    */
-  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+      this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
    */
-  this.getLayerFunc_ = appGetLayerForCatalogNode;
+      this.getLayerFunc_ = appGetLayerForCatalogNode;
 
   /**
    * @type {function()|undefined}
    * @private
    */
-  this.scopeWatcher_ = undefined;
-};
+      this.scopeWatcher_ = undefined;
+    };
 
 
 /**
@@ -93,7 +94,7 @@ app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
 
 
 /**
- * @param {Array.<ol.layer.Layer>} layers
+ * @param {Array.<ol.layer.Layer>} layers The layers.
  * @private
  */
 app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
@@ -117,22 +118,22 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
 
 
 /**
- * @param {Array.<number>} layerIds
- * @param {Array.<number>} opacities
- * @param {Array.<Object>} flatCatalogue
+ * @param {Array.<number>} layerIds The ids.
+ * @param {Array.<number>} opacities The opacities.
+ * @param {Array.<Object>} flatCatalogue The catalog.
  * @private
  */
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
     function(layerIds, opacities, flatCatalogue) {
-  layerIds.reverse();
-  opacities.reverse();
-  var addedLayers = this.map_.getLayers().getArray();
-  goog.array.extend(layerIds, this.unavailableLayers_);
-  goog.array.extend(opacities, this.unavailableOpacities_);
+      layerIds.reverse();
+      opacities.reverse();
+      var addedLayers = this.map_.getLayers().getArray();
+      goog.array.extend(layerIds, this.unavailableLayers_);
+      goog.array.extend(opacities, this.unavailableOpacities_);
 
-  this.unavailableLayers_ = [];
-  this.unavailableOpacities_ = [];
-  goog.array.forEach(layerIds,
+      this.unavailableLayers_ = [];
+      this.unavailableOpacities_ = [];
+      goog.array.forEach(layerIds,
       function(layerId, layerIndex) {
         /**
          * @type {ol.layer.Layer}
@@ -146,11 +147,11 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         } else {
           var unavailableLayer =
               goog.array.find(addedLayers, function(addedLayer) {
-            if (addedLayer.get('queryable_id') === layerId) {
-              return true;
-            }
-            return false;
-          }, this);
+                if (addedLayer.get('queryable_id') === layerId) {
+                  return true;
+                }
+                return false;
+              }, this);
           this.map_.removeLayer(unavailableLayer);
           this.unavailableLayers_.push(layerId);
           this.unavailableOpacities_.push(opacities[layerIndex]);
@@ -171,13 +172,13 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         }
       }, this
   );
-};
+    };
 
 
 /**
- * @param {string} parameter
+ * @param {string} parameter The parameter.
  * @private
- * @return {Array.<number>|undefined}
+ * @return {Array.<number>|undefined} The values.
  */
 app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
   var result = '';
@@ -193,28 +194,28 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
 
 
 /**
- * @param {string} parameter
- * @param {string} splitChar
+ * @param {string} parameter The parameter to get.
+ * @param {string} splitChar The char to split with.
  * @private
- * @return {Array.<number>|undefined}
+ * @return {Array.<number>|undefined} The values.
  */
 app.LayerPermalinkManager.prototype.splitNumbers_ =
     function(parameter, splitChar) {
-  var items = [];
-  if (goog.isDef(parameter)) {
-    goog.array.forEach(parameter.split(splitChar), function(string) {
-      var value = parseFloat(string);
-      if (goog.isNumber(value)) {
-        items.push(value);
+      var items = [];
+      if (goog.isDef(parameter)) {
+        goog.array.forEach(parameter.split(splitChar), function(string) {
+          var value = parseFloat(string);
+          if (goog.isNumber(value)) {
+            items.push(value);
+          }
+        });
       }
-    });
-  }
-  return items.length === 0 ? undefined : items;
-};
+      return items.length === 0 ? undefined : items;
+    };
 
 
 /**
- * @param {Array.<ol.layer.Layer>} selectedLayers
+ * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  * @private
  */
 app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
@@ -263,8 +264,8 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
 
 
 /**
- * @param {Array} element
- * @return {Array} array
+ * @param {Array} element The element.
+ * @return {Array} array The children.
  * @private
  */
 app.LayerPermalinkManager.getAllChildren_ = function(element) {
@@ -284,44 +285,44 @@ app.LayerPermalinkManager.getAllChildren_ = function(element) {
 
 
 /**
- * @param {angular.Scope} scope
- * @param {ol.Map} map
- * @param {Array.<ol.layer.Layer>} selectedLayers
+ * @param {angular.Scope} scope The scope.
+ * @param {ol.Map} map The map.
+ * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  */
 app.LayerPermalinkManager.prototype.init =
     function(scope, map, selectedLayers) {
   /**
    * @type {angular.Scope}
    */
-  this.scope_ = scope;
+      this.scope_ = scope;
 
   /**
    * @type {ol.Map}
    * @private
    */
-  this.map_ = map;
+      this.map_ = map;
 
   /**
    * @type {number}
    * @private
    */
-  this.initialVersion_ = this.stateManager_.getVersion();
+      this.initialVersion_ = this.stateManager_.getVersion();
 
   /**
    * @type {boolean}
    * @private
    */
-  this.initialized_ = false;
+      this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-  ol.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
+      ol.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */
       function(evt) {
         this.appThemes_.getBgLayers().then(goog.bind(
             /**
-             * @param {Array.<ol.layer.Base>} bgLayers
+             * @param {Array.<ol.layer.Base>} bgLayers The background layer.
              */
             function(bgLayers) {
               var stateBgLayerLabel, stateBgLayerOpacity;
@@ -353,8 +354,8 @@ app.LayerPermalinkManager.prototype.init =
               }
               var layer = /** @type {ol.layer.Base} */
                   (goog.array.find(bgLayers, function(layer) {
-                return layer.get('label') === stateBgLayerLabel;
-              }));
+                    return layer.get('label') === stateBgLayerLabel;
+                  }));
               this.backgroundLayerMgr_.set(this.map_, layer);
 
               this.appThemes_.getFlatCatalog().then(
@@ -432,6 +433,6 @@ app.LayerPermalinkManager.prototype.init =
                   }, this));
             }, this));
       }, this);
-};
+    };
 
 app.module.service('appLayerPermalinkManager', app.LayerPermalinkManager);

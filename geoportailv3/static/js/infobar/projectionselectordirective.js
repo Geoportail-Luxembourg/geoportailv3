@@ -25,7 +25,7 @@ goog.require('ol.control.MousePosition');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
- * @param {string} appProjectionselectorTemplateUrl
+ * @param {string} appProjectionselectorTemplateUrl The template url.
  * @ngInject
  */
 app.projectionselectorDirective = function(appProjectionselectorTemplateUrl) {
@@ -45,14 +45,13 @@ app.projectionselectorDirective = function(appProjectionselectorTemplateUrl) {
 app.module.directive('appProjectionselector', app.projectionselectorDirective);
 
 
-
 /**
  * @ngInject
  * @export
  * @constructor
- * @param {Object} $document
+ * @param {Object} $document The document service.
  * @param {angular.$sce} $sce Angular sce service.
- * @param {app.CoordinateString} appCoordinateString
+ * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
 app.ProjectionselectorDirectiveController =
     function($document, $sce, appCoordinateString) {
@@ -60,61 +59,61 @@ app.ProjectionselectorDirectiveController =
    * @type {app.CoordinateString}
    * @private
    */
-  this.coordinateString_ = appCoordinateString;
+      this.coordinateString_ = appCoordinateString;
 
   /**
    * @type {Array.<Object>}
    */
-  this['projectionOptions'] = [
+      this['projectionOptions'] = [
     {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
-  ];
-  this['projection'] = this['projectionOptions'][0];
+      ];
+      this['projection'] = this['projectionOptions'][0];
   /** @type {ol.control.MousePostion} */
-  this['mousePositionControl'] = new ol.control.MousePosition({
-    className: 'custom-mouse-coordinates',
-    coordinateFormat: /** @type {ol.CoordinateFormatType} */
+      this['mousePositionControl'] = new ol.control.MousePosition({
+        className: 'custom-mouse-coordinates',
+        coordinateFormat: /** @type {ol.CoordinateFormatType} */
         (goog.bind(this.mouseCoordinateFormat_, this))
-  });
-};
+      });
+    };
 
 
 /**
- * @param {ol.Coordinate} coord
- * @return {string}
+ * @param {ol.Coordinate} coord The coordinate.
+ * @return {string} The mouse coordinate format.
  * @private
  */
 app.ProjectionselectorDirectiveController.prototype.mouseCoordinateFormat_ =
     function(coord) {
-  var mapEpsgCode =
+      var mapEpsgCode =
       this['map'].getView().getProjection().getCode();
-  if (this['projection']['value'] === 'EPSG:4326:DMS') {
-    var epsgCode = goog.string.remove(this['projection']['value'], ':DMS');
-    return this.coordinateString_(coord, mapEpsgCode, epsgCode, true);
-  } else {
-    return this.coordinateString_(
+      if (this['projection']['value'] === 'EPSG:4326:DMS') {
+        var epsgCode = goog.string.remove(this['projection']['value'], ':DMS');
+        return this.coordinateString_(coord, mapEpsgCode, epsgCode, true);
+      } else {
+        return this.coordinateString_(
         coord, mapEpsgCode, this['projection']['value']);
-  }
-};
+      }
+    };
 
 
 /**
  * @export
- * @param {string} epsgCode
+ * @param {string} epsgCode The epsg code.
  */
 app.ProjectionselectorDirectiveController.prototype.switchProjection =
     function(epsgCode) {
-  this['projection'] = goog.array.find(this['projectionOptions'],
+      this['projection'] = goog.array.find(this['projectionOptions'],
       function(obj) {
         return obj['value'] == epsgCode;
       });
-  this['mousePositionControl'].setCoordinateFormat(
+      this['mousePositionControl'].setCoordinateFormat(
       /** @type {ol.CoordinateFormatType} */
       (goog.bind(this.mouseCoordinateFormat_, this))
   );
-};
+    };
 
 app.module.controller('AppProjectionselectorController',
     app.ProjectionselectorDirectiveController);

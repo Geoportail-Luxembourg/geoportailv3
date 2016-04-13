@@ -16,8 +16,8 @@ app.GetElevation;
 
 /**
  * @param {angular.$http} $http The Angular $http service.
- * @param {angularGettext.Catalog} gettextCatalog
- * @param {string} elevationServiceUrl The URL to the "elevation" service.
+ * @param {angularGettext.Catalog} gettextCatalog The gettext service.
+ * @param {string} elevationServiceUrl The URL to the "elevation" service.
  * @return {app.GetElevation} The getElevation function.
  * @private
  * @ngInject
@@ -26,9 +26,9 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
   return getElevation;
 
   /**
-       * @param {ol.Coordinate} coordinate
-       * @return {!angular.$q.Promise} Promise providing the short URL.
-       */
+   * @param {ol.Coordinate} coordinate The coordinate.
+   * @return {!angular.$q.Promise} Promise providing the short URL.
+   */
   function getElevation(coordinate) {
     var lonlat = /** @type {ol.Coordinate} */
         (ol.proj.transform(coordinate,

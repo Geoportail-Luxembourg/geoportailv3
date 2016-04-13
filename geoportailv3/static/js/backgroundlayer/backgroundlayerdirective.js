@@ -45,7 +45,6 @@ app.backgroundlayerDirective = function(appBackgroundlayerTemplateUrl) {
 app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
 
 
-
 /**
  * @constructor
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer

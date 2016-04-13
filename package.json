@@ -12,6 +12,8 @@
     "angular-gettext": "2.1.0",
     "angular-gettext-tools": "2.1.2",
     "bootstrap": "^3.3.0",
+    "eslint": "2.7.0",
+    "eslint-config-openlayers": "4.0.0",
     "font-awesome": "4.2.0",
     "jquery": "^1.9.1",
     "jshint": "2.7.0",

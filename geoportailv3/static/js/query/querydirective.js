@@ -44,27 +44,27 @@ app.queryDirective = function(appQueryTemplateUrl) {
 app.module.directive('appQuery', app.queryDirective);
 
 
-
 /**
  * @constructor
- * @param {angular.$sce} $sce Angular $sce service
- * @param {angular.$timeout} $timeout
+ * @param {angular.$sce} $sce Angular $sce service.
+ * @param {angular.$timeout} $timeout The timeout service.
  * @param {angular.Scope} $scope Scope.
- * @param {angular.$http} $http Angular $http service
+ * @param {angular.$http} $http Angular $http service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
- * @param {app.GetProfile} appGetProfile
+ * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
- * @param {string} getInfoServiceUrl
- * @param {string} getRemoteTemplateServiceUrl
- * @param {string} downloadmeasurementUrl
- * @param {string} downloadsketchUrl
+ * @param {string} getInfoServiceUrl The infoservice url.
+ * @param {string} getRemoteTemplateServiceUrl The remote template service.
+ * @param {string} downloadmeasurementUrl The url to download measurements.
+ * @param {string} downloadsketchUrl The url to download sketches.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {app.Themes} appThemes
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode
- * @param {app.GetDevice} appGetDevice
+ * @param {app.Themes} appThemes The themes service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * catalog service.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {app.Export} appExport The export service.
  * @export
@@ -384,8 +384,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
 
 /**
- * @param {Object} feature
- * @return {{id: string, geom: ol.geom.MultiLineString}}
+ * @param {Object} feature The feature.
+ * @return {{id: string, geom: ol.geom.MultiLineString}} An object.
  * @private
  */
 app.QueryController.prototype.filterValidProfileFeatures_ = function(feature) {
@@ -418,6 +418,8 @@ app.QueryController.prototype.filterValidProfileFeatures_ = function(feature) {
           (activeFeature.getGeometry());
       validGeomArray.push(geomLineString.getCoordinates());
       break;
+    default:
+      break;
   }
   var id = /** {string} */ (feature['fid']);
   return {id: id, geom: new ol.geom.MultiLineString(validGeomArray)};
@@ -436,8 +438,8 @@ app.QueryController.prototype.clearQueryResult_ = function(appSelector) {
 
 
 /**
- * @param {Array} element
- * @return {Array} array
+ * @param {Array} element The element.
+ * @return {Array} array The children.
  * @private
  */
 app.QueryController.getAllChildren_ = function(element) {
@@ -509,7 +511,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
 
 
 /**
- * @param {ol.events.Event} evt The map event
+ * @param {ol.events.Event} evt The map event.
  * @private
  */
 app.QueryController.prototype.singleclickEvent_ = function(evt) {
@@ -617,7 +619,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
         this.responses_.push(item);
       }
     },this);
-  }else {
+  } else {
     this.responses_ = resp.data;
     goog.array.forEach(this.responses_, function(item) {
       item['layerLabel'] = layerLabel[item.layer];
@@ -632,9 +634,9 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
               /** @type {app.ShowProfile} */ ({active: true});
           this.getProfile_(validGeom.geom, validGeom.id)
         .then(goog.bind(function(profile) {
-                goog.array.forEach(this.responses_, function(item) {
-                  if (item['template'] === 'mymaps.html') {
-                    goog.array.forEach(item['features'],
+          goog.array.forEach(this.responses_, function(item) {
+            if (item['template'] === 'mymaps.html') {
+              goog.array.forEach(item['features'],
                         function(feature) {
                           if (feature['fid'] === profile[0]['id']) {
                             feature['attributes']['showProfile'] =
@@ -643,9 +645,9 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
                             feature['attributes']['profile'] = profile;
                           }
                         }, this);
-                  }
-                }, this);
-              }, this));
+            }
+          }, this);
+        }, this));
         }
       }, this);
     }
@@ -677,7 +679,7 @@ app.QueryController.prototype.clearFeatures_ = function() {
 
 /**
  * Has the object at least one attribute.
- * @param {Object} feature
+ * @param {Object} feature The feature.
  * @return {boolean} true if attribute is present.
  * @export
  */
@@ -691,7 +693,7 @@ app.QueryController.prototype.hasAttributes = function(feature) {
 
 /**
  * Has the object a valid geoportailv3 featureId.
- * @param {Object} feature
+ * @param {Object} feature The feature.
  * @return {boolean} true if fid is valid.
  * @export
  */
@@ -705,7 +707,7 @@ app.QueryController.prototype.hasValidFID = function(feature) {
 
 /**
  * Has the fid a valid geoportail v3 syntax.
- * @param {string|undefined} fid
+ * @param {string|undefined} fid The feature id.
  * @return {boolean} True if fid is valid.
  * @private
  */
@@ -719,7 +721,7 @@ app.QueryController.prototype.isFIDValid_ = function(fid) {
 
 /**
  * Has the object at least one attribute.
- * @param {Object} feature
+ * @param {Object} feature The feature.
  * @param {string} name The name of the attribute.
  * @return {boolean} true Return if attribute is present.
  * @export
@@ -734,11 +736,10 @@ app.QueryController.prototype.hasFeatureAttribute = function(feature, name) {
 
 
 /**
- * has the object at least one attribute
- * @param {Array} features
- * @param {string} attr Attribute to join
- * @param {string} sep the join separator
- * @return {string} the string with joined attributes
+ * @param {Array} features The feature.
+ * @param {string} attr Attribute to join.
+ * @param {string} sep The join separator.
+ * @return {string} The string with joined attributes.
  * @export
  */
 app.QueryController.prototype.joinAttributes = function(features, attr, sep) {
@@ -752,6 +753,7 @@ app.QueryController.prototype.joinAttributes = function(features, attr, sep) {
  * provides the template path according to the fact
  * that the template for the current layer is remote or not
  * @param {{remote_template: boolean, template: string, layer: string}} layer
+ * The layer.
  * @return {string} the template path.
  * @export
  */
@@ -787,10 +789,10 @@ app.QueryController.prototype.trustAsHtml = function(content) {
 
 /**
  * returns a trusted url according to the current language
- * @param {string} urlFr French url to be trusted
- * @param {string} urlDe German url to be trusted
- * @param {string} urlEn English url to be trusted
- * @param {string} urlLb Luxembourgish url to be trusted
+ * @param {string} urlFr French url to be trusted.
+ * @param {string} urlDe German url to be trusted.
+ * @param {string} urlEn English url to be trusted.
+ * @param {string} urlLb Luxembourgish url to be trusted.
  * @return {*} the trusted url.
  * @export
  */
@@ -866,22 +868,22 @@ app.QueryController.prototype.getDownloadsketchUrl = function() {
  */
 app.QueryController.prototype.translateKeys =
     function(attributes) {
-  var results = [];
+      var results = [];
 
-  angular.forEach(attributes, function(value, key) {
-    results.push({'key': this.translate_.getString('f_' + key),
+      angular.forEach(attributes, function(value, key) {
+        results.push({'key': this.translate_.getString('f_' + key),
       'value': value});
-  }, this);
+      }, this);
 
 
-  return results;
-};
+      return results;
+    };
 
 
 /**
  * Get the path to the Mymaps Resource.
- * @param {?string | undefined} resource the resource.
- * @return {string}
+ * @param {?string | undefined} resource The resource.
+ * @return {string} The path to the Mymaps Resource.
  * @export
  */
 app.QueryController.prototype.getMymapsPath = function(resource) {
@@ -895,7 +897,7 @@ app.QueryController.prototype.getMymapsPath = function(resource) {
 /**
  * Check if the value is empty.
  * @param {?string | undefined} value The value to test.
- * @return {boolean}
+ * @return {boolean} True if is empty.
  * @export
  */
 app.QueryController.prototype.isEmpty = function(value) {
@@ -926,7 +928,7 @@ app.QueryController.prototype.exportGpx = function(feature, name, isTrack) {
 /**
  * Check if the value is a link.
  * @param {string} value The value to test.
- * @return {boolean}
+ * @return {boolean} True if is a link.
  * @export
  */
 app.QueryController.prototype.isLink = function(value) {
@@ -950,7 +952,7 @@ app.QueryController.prototype.exportKml = function(feature, name) {
  * Translate and join the elements of the array.
  * @param {Array.<string>} array The array to join.
  * @param {string} prefix The prefix to use for translation.
- * @return {string}
+ * @return {string} The joined and translated text.
  * @export
  */
 app.QueryController.prototype.translateAndjoin = function(array, prefix) {

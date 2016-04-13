@@ -36,12 +36,11 @@ app.shareDirective = function(appShareTemplateUrl) {
 app.module.directive('appShare', app.shareDirective);
 
 
-
 /**
  * @ngInject
  * @constructor
- * @param {angular.$window} $window
- * @param {gettext} gettext
+ * @param {angular.$window} $window The window service.
+ * @param {gettext} gettext The gettext service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  */
@@ -86,7 +85,7 @@ app.ShareDirectiveController = function($window, gettext, gettextCatalog) {
 /**
  * @export
  * @param {string} service Sharing Service Url.
- * @return {boolean}
+ * @return {boolean} Always return false.
  */
 app.ShareDirectiveController.prototype.openShareLink = function(service) {
   if (service in this.services_) {
@@ -107,7 +106,7 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
 
 /**
  * @export
- * @return {boolean}
+ * @return {boolean} Always return false.
  */
 app.ShareDirectiveController.prototype.openFbLink = function() {
   var googUri = new goog.Uri(this.services_['facebook'].url);
@@ -128,7 +127,7 @@ app.ShareDirectiveController.prototype.openFbLink = function() {
 
 /**
  * @export
- * @return {boolean}
+ * @return {boolean} Always return False.
  */
 app.ShareDirectiveController.prototype.openMailLink = function() {
   var googUri = new goog.Uri();

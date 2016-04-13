@@ -11,7 +11,6 @@ goog.require('ol.format.KML');
 goog.require('ol.proj');
 
 
-
 /**
  * @constructor
  * @param {Document} $document Document.
@@ -96,13 +95,13 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
   if (isTrack) {
     explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
   } else {
-    explodedFeatures = this.changMultilineToLine_(explodedFeatures);
+    explodedFeatures = this.changeMultilineToLine_(explodedFeatures);
   }
   var gpx = this.gpxFormat_.writeFeatures(explodedFeatures,
-      {
-        dataProjection: 'EPSG:4326',
-        featureProjection: this['map'].getView().getProjection()
-      });
+    {
+      dataProjection: 'EPSG:4326',
+      featureProjection: this['map'].getView().getProjection()
+    });
   gpx = gpx.replace('<gpx ',
       '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
       ' version="1.1" ');
@@ -113,7 +112,7 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
 /**
  * Change each line contained in the array into multiline geometry.
  * @param {Array.<ol.Feature>} features The features to change.
- * @return {Array.<ol.Feature>}
+ * @return {Array.<ol.Feature>} The changed features.
  * @private
  */
 app.Export.prototype.changeLineToMultiline_ = function(features) {
@@ -139,10 +138,10 @@ app.Export.prototype.changeLineToMultiline_ = function(features) {
 /**
  * Change each multiline contained in the array into line geometry.
  * @param {Array.<ol.Feature>} features The features to change.
- * @return {Array.<ol.Feature>}
+ * @return {Array.<ol.Feature>} The changed features.
  * @private
  */
-app.Export.prototype.changMultilineToLine_ = function(features) {
+app.Export.prototype.changeMultilineToLine_ = function(features) {
   var changedFeatures = [];
   goog.array.forEach(features, function(feature) {
     switch (feature.getGeometry().getType()) {
@@ -170,7 +169,7 @@ app.Export.prototype.changMultilineToLine_ = function(features) {
  * Explose the feature into multiple features if the geometry is a
  * collection of geometries.
  * @param {Array.<ol.Feature>} features The features to explose.
- * @return {Array.<ol.Feature>}
+ * @return {Array.<ol.Feature>} The exploded features.
  * @private
  */
 app.Export.prototype.exploseFeature_ = function(features) {
@@ -208,10 +207,10 @@ app.Export.prototype.exportKml = function(feature, name) {
       ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
 
   var kml = this.kmlFormat_.writeFeatures(this.exploseFeature_([activeFeature]),
-      {
-        dataProjection: 'EPSG:4326',
-        featureProjection: this['map'].getView().getProjection()
-      });
+    {
+      dataProjection: 'EPSG:4326',
+      featureProjection: this['map'].getView().getProjection()
+    });
   this.exportFeatures_(kml, 'kml', this.sanitizeFilename_(name));
 };
 
@@ -224,30 +223,30 @@ app.Export.prototype.exportKml = function(feature, name) {
  */
 app.Export.prototype.exportFeatures_ =
     function(doc, format, filename) {
-  var formatInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'format',
-    value: format
-  });
-  var nameInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'name',
-    value: filename
-  });
-  var docInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'doc',
-    value: doc
-  });
-  var form = $('<form>').attr({
-    method: 'POST',
-    action: this.exportgpxkmlUrl_
-  });
-  form.append(formatInput, nameInput, docInput);
-  angular.element(this.$document_[0].body).append(form);
-  form[0].submit();
-  form.remove();
-};
+      var formatInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'format',
+        value: format
+      });
+      var nameInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'name',
+        value: filename
+      });
+      var docInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'doc',
+        value: doc
+      });
+      var form = $('<form>').attr({
+        method: 'POST',
+        action: this.exportgpxkmlUrl_
+      });
+      form.append(formatInput, nameInput, docInput);
+      angular.element(this.$document_[0].body).append(form);
+      form[0].submit();
+      form.remove();
+    };
 
 
 /**

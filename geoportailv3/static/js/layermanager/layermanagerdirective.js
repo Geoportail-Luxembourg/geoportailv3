@@ -43,7 +43,6 @@ app.layermanagerDirective = function(appLayermanagerTemplateUrl) {
 app.module.directive('appLayermanager', app.layermanagerDirective);
 
 
-
 /**
  * @constructor
  * @export

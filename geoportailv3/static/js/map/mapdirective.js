@@ -39,7 +39,6 @@ app.mapDirective = function(appMapTemplateUrl) {
 app.module.directive('appMap', app.mapDirective);
 
 
-
 /**
  * @param {app.StateManager} appStateManager State manager service.
  * @param {ngeo.Debounce} ngeoDebounce ngeo debounce service.

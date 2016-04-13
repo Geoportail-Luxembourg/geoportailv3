@@ -48,7 +48,6 @@ app.catalogDirective = function() {
 app.module.directive('appCatalog', app.catalogDirective);
 
 
-
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.

@@ -18,8 +18,8 @@ goog.require('ol.proj');
 
 
 /**
- * @param {string} appLocationinfoTemplateUrl
- * @return {angular.Directive}
+ * @param {string} appLocationinfoTemplateUrl The template.
+ * @return {angular.Directive} The directive.
  * @ngInject
  */
 app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
@@ -41,22 +41,22 @@ app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
 app.module.directive('appLocationinfo', app.locationinfoDirective);
 
 
-
 /**
  * @constructor
- * @param {angular.Scope} $scope
- * @param {angular.$timeout} $timeout
+ * @param {angular.Scope} $scope The scope.
+ * @param {angular.$timeout} $timeout The timeout service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
- * @param {app.GetShorturl} appGetShorturl
- * @param {app.GetElevation} appGetElevation
- * @param {app.CoordinateString} appCoordinateString
- * @param {app.StateManager} appStateManager
- * @param {string} qrServiceUrl
- * @param {string} appLocationinfoTemplateUrl
+ * @param {app.GetShorturl} appGetShorturl The short url service.
+ * @param {app.GetElevation} appGetElevation The elevation service.
+ * @param {app.CoordinateString} appCoordinateString The coordinate to string
+ * service.
+ * @param {app.StateManager} appStateManager The state manager service.
+ * @param {string} qrServiceUrl The qr service url.
+ * @param {string} appLocationinfoTemplateUrl The template url.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
- * @param {app.GetDevice} appGetDevice
+ * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -283,14 +283,14 @@ app.LocationinfoController = function(
 
   this['map'].getViewport()
     .addEventListener('contextmenu', goog.bind(function(event) {
-        event.preventDefault(); // disable right-click menu on browsers
-      }, this));
+      event.preventDefault(); // disable right-click menu on browsers
+    }, this));
 
 };
 
 
 /**
- * @param {ol.Coordinate} coordinate
+ * @param {ol.Coordinate} coordinate The coordinate.
  * @private
  */
 app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
@@ -310,47 +310,48 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
 
 
 /**
- * @param {MouseEvent|TouchEvent|ol.Coordinate} eventOrCoordinate
+ * @param {MouseEvent|TouchEvent|ol.Coordinate} eventOrCoordinate The event or
+ * The coordinate.
  * @private
  */
 app.LocationinfoController.prototype.loadInfoPane_ =
     function(eventOrCoordinate) {
-  var clickCoordinate;
-  if (eventOrCoordinate instanceof Array) {
-    clickCoordinate = eventOrCoordinate;
-  } else {
-    eventOrCoordinate.preventDefault();
-    clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
-  }
+      var clickCoordinate;
+      if (eventOrCoordinate instanceof Array) {
+        clickCoordinate = eventOrCoordinate;
+      } else {
+        eventOrCoordinate.preventDefault();
+        clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
+      }
 
-  this['appSelector'] = 'locationinfo';
-  this.stateManager_.updateState({'crosshair': true});
-  this.updateLocation_(clickCoordinate);
-  var feature = /** @type {ol.Feature} */
+      this['appSelector'] = 'locationinfo';
+      this.stateManager_.updateState({'crosshair': true});
+      this.updateLocation_(clickCoordinate);
+      var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-  this.featureOverlay_.clear();
-  this.featureOverlay_.addFeature(feature);
-  this.getElevation_(clickCoordinate).then(goog.bind(
+      this.featureOverlay_.clear();
+      this.featureOverlay_.addFeature(feature);
+      this.getElevation_(clickCoordinate).then(goog.bind(
       function(elevation) {
         this['elevation'] = elevation;
       }, this
       ));
-  this.getShorturl_(clickCoordinate).then(goog.bind(
+      this.getShorturl_(clickCoordinate).then(goog.bind(
       function(shorturl) {
         this['url'] = shorturl;
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
       }, this));
-  this['address'] = '';
-  this['distance'] = '';
-  this.geocode_.reverseGeocode(clickCoordinate).then(goog.bind(function(resp) {
-    if (resp['count'] > 0) {
-      var address = resp['results'][0];
-      var formattedAddress = address['number'] + ',' + address['street'] + ',' +
+      this['address'] = '';
+      this['distance'] = '';
+      this.geocode_.reverseGeocode(clickCoordinate).then(goog.bind(function(resp) {
+        if (resp['count'] > 0) {
+          var address = resp['results'][0];
+          var formattedAddress = address['number'] + ',' + address['street'] + ',' +
           address['postal_code'] + ' ' + address['locality'];
-      this['address'] = formattedAddress;
-      this['distance'] = Math.round(address['distance']);
-    }
-  }, this));
-};
+          this['address'] = formattedAddress;
+          this['distance'] = Math.round(address['distance']);
+        }
+      }, this));
+    };
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);

@@ -63,13 +63,12 @@ app.module.directive('appPrint', app.printDirective);
 app.Piwik;
 
 
-
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$window} $window Global Scope.
  * @param {angular.$timeout} $timeout The Angular $timeout service.
  * @param {angular.$q} $q The Angular $q service.
- * @param {angularGettext.Catalog} gettextCatalog
+ * @param {angularGettext.Catalog} gettextCatalog The gettext service.
  * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
@@ -388,7 +387,9 @@ app.PrintController.findNearestScale_ = function(scales, scale) {
   } else if (scale >= scales[scales.length - 1]) {
     scale = scales[scales.length - 1];
   } else {
-    for (var i = 1, l = scales.length; i < l; ++i) {
+    var i = 1;
+    var l;
+    for (i = 1, l = scales.length; i < l; ++i) {
       if (scales[i] >= scale) {
         if (scales[i] - scale < scale - scales[i - 1]) {
           scale = scales[i];

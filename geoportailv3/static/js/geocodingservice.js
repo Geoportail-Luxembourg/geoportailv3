@@ -8,11 +8,10 @@ goog.require('app');
 goog.require('ol.proj');
 
 
-
 /**
  * @constructor
  * @param {angular.$http} $http The Angular $http service.
- * @param {string} reverseGeocodingServiceUrl
+ * @param {string} reverseGeocodingServiceUrl The url of the service.
  * @ngInject
  */
 app.Geocoding = function($http, reverseGeocodingServiceUrl) {
@@ -31,7 +30,7 @@ app.Geocoding = function($http, reverseGeocodingServiceUrl) {
 
 
 /**
- * @param {ol.Coordinate} coordinate
+ * @param {ol.Coordinate} coordinate The coordinate.
  * @return {!angular.$q.Promise} Promise providing the reverse geocode.
  */
 app.Geocoding.prototype.reverseGeocode = function(coordinate) {

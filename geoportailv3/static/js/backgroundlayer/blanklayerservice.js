@@ -8,7 +8,6 @@ goog.require('app');
 goog.require('ol.layer.Tile');
 
 
-
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
@@ -28,7 +27,7 @@ app.BlankLayer = function(gettextCatalog) {
 
 /**
  * Get the blank layer.
- * @return {ol.layer.Tile}
+ * @return {ol.layer.Tile} The blank tile.
  */
 app.BlankLayer.prototype.getLayer = function() {
   return this.blankLayer_;

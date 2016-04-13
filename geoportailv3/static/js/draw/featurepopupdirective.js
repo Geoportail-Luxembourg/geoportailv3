@@ -36,7 +36,6 @@ app.featurePopupDirective = function(appFeaturePopupTemplateUrl) {
 app.module.directive('appFeaturePopup', app.featurePopupDirective);
 
 
-
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
@@ -45,7 +44,7 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
- * @param {app.UserManager} appUserManager
+ * @param {app.UserManager} appUserManager The user manager service.
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {Document} $document Document.
@@ -282,30 +281,30 @@ app.FeaturePopupController.prototype.sanitizeFilename_ = function(name) {
  */
 app.FeaturePopupController.prototype.exportFeatures_ =
     function(doc, format, filename) {
-  var formatInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'format',
-    value: format
-  });
-  var nameInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'name',
-    value: filename
-  });
-  var docInput = $('<input>').attr({
-    type: 'hidden',
-    name: 'doc',
-    value: doc
-  });
-  var form = $('<form>').attr({
-    method: 'POST',
-    action: this.exportgpxkmlUrl_
-  });
-  form.append(formatInput, nameInput, docInput);
-  angular.element(this.$document_[0].body).append(form);
-  form[0].submit();
-  form.remove();
-};
+      var formatInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'format',
+        value: format
+      });
+      var nameInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'name',
+        value: filename
+      });
+      var docInput = $('<input>').attr({
+        type: 'hidden',
+        name: 'doc',
+        value: doc
+      });
+      var form = $('<form>').attr({
+        method: 'POST',
+        action: this.exportgpxkmlUrl_
+      });
+      form.append(formatInput, nameInput, docInput);
+      angular.element(this.$document_[0].body).append(form);
+      form[0].submit();
+      form.remove();
+    };
 
 
 /**
@@ -344,7 +343,7 @@ app.FeaturePopupController.prototype.fitFeature = function() {
 
 
 /**
- * @return {string}
+ * @return {string} The area.
  * @export
  */
 app.FeaturePopupController.prototype.getArea = function() {
@@ -359,7 +358,7 @@ app.FeaturePopupController.prototype.getArea = function() {
 
 
 /**
- * @return {string}
+ * @return {string} The radius.
  * @export
  */
 app.FeaturePopupController.prototype.getRadius = function() {
@@ -377,15 +376,14 @@ app.FeaturePopupController.prototype.getRadius = function() {
 
 
 /**
- * @return {string}
+ * @return {string} The length.
  * @export
  */
 app.FeaturePopupController.prototype.getLength = function() {
   if (goog.isDef(this.feature) &&
       (this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON ||
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
-  )
-  {
+  ) {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
     return this.appFeaturePopup_.formatLength(geom);
@@ -418,8 +416,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
  */
 app.FeaturePopupController.prototype.updateProfile = function() {
   if (goog.isDef(this.feature) &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
-  {
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     this.appFeaturePopup_.getProfile(geom).then(goog.bind(function(profile) {
@@ -473,9 +470,8 @@ app.FeaturePopupController.prototype.validateModifications = function() {
 
 
 /**
- * get the path to the Mymaps Resource
- * @param {?string | undefined} resource the resource.
- * @return {string}
+ * @param {?string | undefined} resource The resource.
+ * @return {string} The path to the mymaps resource.
  * @export
  */
 app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
@@ -500,8 +496,8 @@ app.FeaturePopupController.prototype.deleteFeature = function() {
 
 /**
  * Returns a trusted html content.
- * @param {?string|undefined} content content to be trusted.
- * @return {*} the trusted content.
+ * @param {?string|undefined} content Content to be trusted.
+ * @return {*} The trusted content.
  * @export
  */
 app.FeaturePopupController.prototype.trustAsHtml = function(content) {
@@ -513,7 +509,7 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if is authenticated.
  * @export
  */
 app.FeaturePopupController.prototype.isAuthenticated = function() {
@@ -562,7 +558,7 @@ app.FeaturePopupController.prototype.modifyCircle = function() {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if is line.
  * @export
  */
 app.FeaturePopupController.prototype.isLineString = function() {
@@ -575,7 +571,7 @@ app.FeaturePopupController.prototype.isLineString = function() {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if circle.
  * @export
  */
 app.FeaturePopupController.prototype.isCircle = function() {

@@ -9,7 +9,6 @@ goog.require('app');
 goog.require('ol.proj');
 
 
-
 /**
  * @constructor
  * @param {angular.$sce} $sce Angular sce service.
@@ -48,7 +47,7 @@ app.ScalesService = function($sce) {
 
 /**
  * @return {Object.<string, string>} The zoom level/scale map object for the
- *   ngeoScaleselector directive.
+ * ngeoScaleselector directive.
  * @export
  */
 app.ScalesService.prototype.getScales = function() {
@@ -58,7 +57,7 @@ app.ScalesService.prototype.getScales = function() {
 
 /**
  * Set maximum zoom level.
- * @param {number} maxScale
+ * @param {number} maxScale The maximum zoom.
  */
 app.ScalesService.prototype.setMaxZoomLevel = function(maxScale) {
   for (var i = 9; i < 22; i++) {

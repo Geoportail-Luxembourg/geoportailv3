@@ -43,10 +43,9 @@ app.imguploadDirective = function() {
 app.module.directive('appImgupload', app.imguploadDirective);
 
 
-
 /**
- * @param {angular.$parse} $parse
- * @param {angular.$http} $http
+ * @param {angular.$parse} $parse The parse service.
+ * @param {angular.$http} $http The http service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {string} mymapsUrl URL to "mymaps" Feature service.
@@ -116,10 +115,10 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
           modelSetter(scope, data);
         },this))
     .error(goog.bind(function() {
-          var msg = this.gettextCatalog.getString(
+      var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');
-          this.notify_(msg);
-        }, this));
+      this.notify_(msg);
+    }, this));
   }
 };
 

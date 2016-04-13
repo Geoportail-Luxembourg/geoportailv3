@@ -29,7 +29,6 @@ goog.require('ol.geom.Point');
 app.LocationControlOptions;
 
 
-
 /**
  * @constructor
  * @extends {ol.control.Control}

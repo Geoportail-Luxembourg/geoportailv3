@@ -370,7 +370,7 @@ build-server: template-generate compile-py-catalog $(SERVER_LOCALISATION_FILES)
 build-cgxp: $(JSBUILD_MAIN_OUTPUT_FILES) $(CSS_BASE_OUTPUT) $(CSS_API_OUTPUT) $(CSS_XAPI_OUTPUT)
 
 .PHONY: lint-ngeo
-lint-ngeo: $(VENV_BIN)/gjslint .build/node_modules.timestamp .build/gjslint.timestamp .build/jshint.timestamp
+lint-ngeo: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/eslint.timestamp
 
 .PHONY: serve
 serve: build development.ini
@@ -554,14 +554,9 @@ ifeq ($(NGEO), TRUE)
 endif
 	touch $@
 
-.build/gjslint.timestamp: $(APP_JS_FILES)
+.build/eslint.timestamp: $(APP_JS_FILES)
 	mkdir -p $(dir $@)
-	$(VENV_BIN)/gjslint --jslint_error=all --strict --custom_jsdoc_tags=event,fires,function,classdesc,api,observable $?
-	touch $@
-
-.build/jshint.timestamp: $(APP_JS_FILES)
-	mkdir -p $(dir $@)
-	./node_modules/.bin/jshint --verbose $?
+	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
 	touch $@
 
 
@@ -679,7 +674,7 @@ test-packages-ngeo: .build/test-packages-ngeo.timestamp
 
 # Check
 
-$(VENV_BIN)/gjslint: .build/dev-requirements.timestamp
+./node_modules/.bin/eslint: .build/dev-requirements.timestamp
 
 $(VENV_BIN)/flake8: .build/dev-requirements.timestamp
 
