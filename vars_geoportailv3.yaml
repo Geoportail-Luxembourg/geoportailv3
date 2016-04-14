@@ -98,6 +98,8 @@ vars:
         # actually don't works for MapFish Print v3
         - checker_printcapabilities
 
+    authorized_ips:
+
 interpreted:
     node:
         vars:

@@ -19,6 +19,7 @@ CONFIG_VARS += ldap
 CONFIG_VARS += sqlalchemy_engines
 CONFIG_VARS += proxy_wms_url
 CONFIG_VARS += turbomail
+CONFIG_VARS += authorized_ips
 
 APACHE_VHOST ?= luxembourg-geomapfish
 
@@ -34,6 +35,7 @@ POST_RULES = .build/fonts.timestamp
 include CONST_Makefile
 
 REQUIREMENTS += "suds>=0.4"
+REQUIREMENTS += "ipaddr==2.1.11"
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 PRINT_VERSION = NONE 
 
