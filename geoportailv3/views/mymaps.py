@@ -236,7 +236,7 @@ class Mymaps(object):
         except:
             DBSession.rollback()
             traceback.print_exc(file=sys.stdout)
-            return {'success': False, 'id': obj.id}
+            return {'success': False, 'id': None}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
     def save_features(self):
