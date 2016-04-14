@@ -17,7 +17,7 @@ class Wms(object):
     def __init__(self, request):
         self.request = request
 
-    def check_ip_(self, client_ip):
+    def _check_ip(self, client_ip):
         client_ip = IPv4Network(client_ip).ip
         config = self.request.registry.settings
         if 'authorized_ips' in config:
@@ -50,7 +50,7 @@ class Wms(object):
         if not internal_wms.public and self.request.user is None:
             remote_addr = str(self.request.environ.get(
                 'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
-            if not self.check_ip_(remote_addr.split(",")[0]):
+            if not self._check_ip(remote_addr.split(",")[0]):
                 return HTTPUnauthorized()
 
         # If the layer is not public and we are connected check the rights
