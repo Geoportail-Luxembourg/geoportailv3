@@ -1,3 +1,4 @@
+from ipaddr import IPv4Network
 from pyramid.view import view_config
 from geoportailv3.models import LuxLayerInternalWMS
 from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
@@ -16,6 +17,19 @@ class Wms(object):
     def __init__(self, request):
         self.request = request
 
+    def check_ip_(self, client_ip):
+        client_ip = IPv4Network(client_ip).ip
+        config = self.request.registry.settings
+        if 'authorized_ips' in config:
+            authorized_ips = config["authorized_ips"].split(",")
+            for authorized_ip in authorized_ips:
+                a_ip = IPv4Network(authorized_ip)
+                if (client_ip == a_ip.network) or (
+                   (client_ip >= a_ip.network) and
+                   (client_ip < a_ip.broadcast)):
+                    return True
+        return False
+
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
         layers = self.request.params.get('LAYERS', '')
@@ -31,9 +45,13 @@ class Wms(object):
         if internal_wms is None:
             return HTTPNotFound()
 
-        # If the layer is not public and we are not connected then refuse
+        # If the layer is not public check if it comes from an authorized url
+        # or from a connected user
         if not internal_wms.public and self.request.user is None:
-            return HTTPUnauthorized()
+            remote_addr = str(self.request.environ.get(
+                'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
+            if not self.check_ip_(remote_addr.split(",")[0]):
+                return HTTPUnauthorized()
 
         # If the layer is not public and we are connected check the rights
         if not internal_wms.public and self.request.user is not None:
