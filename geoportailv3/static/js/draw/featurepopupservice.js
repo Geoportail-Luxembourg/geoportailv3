@@ -16,13 +16,12 @@ goog.require('ol.Overlay');
 goog.require('ol.events');
 
 
-
 /**
  * @param {angular.$compile} $compile The compile provider.
  * @param {angular.Scope} $rootScope The rootScope provider.
  * @param {Document} $document The document.
- * @param {app.GetElevation} appGetElevation
- * @param {app.GetProfile} appGetProfile
+ * @param {app.GetElevation} appGetElevation The elevation service.
+ * @param {app.GetProfile} appGetProfile The profile service.
  * @constructor
  * @ngInject
  */
@@ -129,7 +128,7 @@ app.FeaturePopup.prototype.init = function(map, features) {
 
 
 /**
- * @param {angular.JQLite} element
+ * @param {angular.JQLite} element The element.
  */
 app.FeaturePopup.prototype.setDraggable = function(element) {
   this.mousedownEvent_ = ol.events.listen(element[0], 'mousedown',
@@ -167,9 +166,9 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
 
 
 /**
- * @param {ol.Feature} feature
- * @param {ol.Map} map
- * @param {ol.Coordinate=} opt_anchor
+ * @param {ol.Feature} feature The feature to show.
+ * @param {ol.Map} map The current map.
+ * @param {ol.Coordinate=} opt_anchor The options.
  */
 app.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
   this.scope_['feature'] = feature;
@@ -194,7 +193,7 @@ app.FeaturePopup.prototype.toggleDropdown = function() {
 
 
 /**
- * @param {ol.Feature} feature
+ * @param {ol.Feature} feature The feature.
  */
 app.FeaturePopup.prototype.fit = function(feature) {
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
@@ -207,6 +206,7 @@ app.FeaturePopup.prototype.fit = function(feature) {
 
 
 /**
+ * Hide the overlay.
  */
 app.FeaturePopup.prototype.hide = function() {
   delete this.scope_['feature'];
@@ -219,8 +219,8 @@ app.FeaturePopup.prototype.hide = function() {
 
 
 /**
- * @param {ol.Feature} feature
- * @return {?ol.Coordinate}
+ * @param {ol.Feature} feature The feature.
+ * @return {?ol.Coordinate} The coordinate for the anchor.
  */
 app.FeaturePopup.prototype.getAnchor = function(feature) {
   var geometry = feature.getGeometry();
@@ -245,8 +245,8 @@ app.FeaturePopup.prototype.getAnchor = function(feature) {
 
 
 /**
- * @param {ol.geom.Polygon} polygon
- * @return {string}
+ * @param {ol.geom.Polygon} polygon The oolygon.
+ * @return {string} The formatted area.
  */
 app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
@@ -258,8 +258,8 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
 
 
 /**
- * @param {ol.geom.LineString} line
- * @return {string}
+ * @param {ol.geom.LineString} line The line.
+ * @return {string} The formatted length.
  */
 app.FeaturePopup.prototype.formatRadius = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
@@ -271,8 +271,8 @@ app.FeaturePopup.prototype.formatRadius = function(line) {
 
 
 /**
- * @param {(ol.geom.LineString|ol.geom.Polygon)} line
- * @return {string}
+ * @param {(ol.geom.LineString|ol.geom.Polygon)} line The geometry.
+ * @return {string} The formatted length.
  */
 app.FeaturePopup.prototype.formatLength = function(line) {
   var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
@@ -286,8 +286,8 @@ app.FeaturePopup.prototype.formatLength = function(line) {
 
 
 /**
- * @param {(ol.geom.Point)} point
- * @return {angular.$q.Promise}
+ * @param {(ol.geom.Point)} point The point.
+ * @return {angular.$q.Promise} The promise for the elevation.
  */
 app.FeaturePopup.prototype.getElevation = function(point) {
   return this.getElevation_(point.getCoordinates());
@@ -295,8 +295,8 @@ app.FeaturePopup.prototype.getElevation = function(point) {
 
 
 /**
- * @param {(ol.geom.LineString)} linestring
- * @return {angular.$q.Promise}
+ * @param {(ol.geom.LineString)} linestring The linestring geometry.
+ * @return {angular.$q.Promise} The promise for the profile.
  */
 app.FeaturePopup.prototype.getProfile = function(linestring) {
   return this.getProfile_(linestring);

@@ -37,28 +37,28 @@ goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
 
-
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
- *     manager.
+ * manager.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
- * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity
- * @param {app.LayerPermalinkManager} appLayerPermalinkManager
+ * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
+ * @param {app.LayerPermalinkManager} appLayerPermalinkManager Permalink
+ * service.
  * @param {app.Mymaps} appMymaps Mymaps service.
- * @param {app.StateManager} appStateManager
+ * @param {app.StateManager} appStateManager The state service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.FeaturePopup} appFeaturePopup Feature info service.
- * @param {app.UserManager} appUserManager
+ * @param {app.UserManager} appUserManager The user manager service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
- * @param {ngeo.SyncArrays} ngeoSyncArrays
+ * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchronizer service.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @constructor
@@ -273,12 +273,12 @@ app.MainController = function(
  */
 app.MainController.prototype.addLocationControl_ =
     function(featureOverlayMgr) {
-  this.map_.addControl(
+      this.map_.addControl(
       new app.LocationControl({
         label: '\ue800',
         featureOverlayMgr: featureOverlayMgr
       }));
-};
+    };
 
 
 /**
@@ -335,25 +335,25 @@ app.MainController.prototype.loadThemes_ = function() {
 
 /**
  * @param {angular.Scope} scope Scope
- * @param {ngeo.SyncArrays} ngeoSyncArrays
+ * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchroniser service.
  * @private
  */
 app.MainController.prototype.manageSelectedLayers_ =
     function(scope, ngeoSyncArrays) {
-  ngeoSyncArrays(this.map_.getLayers().getArray(),
+      ngeoSyncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
         return goog.array.indexOf(
             this.map_.getLayers().getArray(), layer) !== 0;
       }, this)
   );
-  scope.$watchCollection(goog.bind(function() {
-    return this['selectedLayers'];
-  }, this), goog.bind(function() {
-    this.map_.render();
-    this.compareLayers_();
-  }, this));
-};
+      scope.$watchCollection(goog.bind(function() {
+        return this['selectedLayers'];
+      }, this), goog.bind(function() {
+        this.map_.render();
+        this.compareLayers_();
+      }, this));
+    };
 
 
 /**

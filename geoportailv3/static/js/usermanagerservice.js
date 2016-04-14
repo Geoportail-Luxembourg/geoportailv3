@@ -10,7 +10,6 @@ goog.require('app');
 goog.require('app.Notify');
 
 
-
 /**
  * @constructor
  * @param {angular.$http} $http Angular http service.
@@ -94,8 +93,8 @@ app.UserManager = function($http, loginUrl, logoutUrl,
 
 
 /**
- * @param {string} username
- * @param {string} password
+ * @param {string} username The username.
+ * @param {string} password The password.
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
 app.UserManager.prototype.authenticate = function(username, password) {
@@ -181,7 +180,7 @@ app.UserManager.prototype.getUserInfo = function() {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if authenticated.
  * @export
  */
 app.UserManager.prototype.isAuthenticated = function() {
@@ -204,7 +203,7 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {?number} roleId Role id.
  * @param {string|undefined} mail Mail.
  * @param {string|undefined} name Name.
- * @param {boolean} isAdmin
+ * @param {boolean} isAdmin True if user is an admin.
  */
 app.UserManager.prototype.setUserInfo = function(
     username, role, roleId, mail, name, isAdmin) {

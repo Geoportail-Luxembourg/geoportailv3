@@ -18,7 +18,7 @@ goog.require('app');
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
- * @param {string} appInfobarTemplateUrl
+ * @param {string} appInfobarTemplateUrl The template url.
  * @ngInject
  */
 app.infobarDirective = function(appInfobarTemplateUrl) {
@@ -36,7 +36,6 @@ app.infobarDirective = function(appInfobarTemplateUrl) {
 
 
 app.module.directive('appInfobar', app.infobarDirective);
-
 
 
 /**

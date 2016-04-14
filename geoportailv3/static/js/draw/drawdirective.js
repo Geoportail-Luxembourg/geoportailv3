@@ -66,7 +66,6 @@ app.drawDirective = function(appDrawTemplateUrl) {
 app.module.directive('appDraw', app.drawDirective);
 
 
-
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
@@ -246,7 +245,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onChangeActive_, this);
   ol.events.listen(drawCircle, ngeo.MeasureEventType.MEASUREEND,
       /**
-       * @param {ngeo.MeasureEvent} event
+       * @param {ngeo.MeasureEvent} event The measure event.
        */
       function(event) {
         // In the case of azimut measure interaction, the feature's geometry is
@@ -297,7 +296,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       goog.bind(
       /**
-       * @param {ol.CollectionEvent} evt
+       * @param {ol.CollectionEvent} evt The event.
        */
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
@@ -311,7 +310,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} evt
+       * @param {ol.CollectionEvent} evt The event.
        */
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
@@ -322,7 +321,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(selectInteraction,
       ol.interaction.SelectEventType.SELECT,
       /**
-       * @param {ol.interaction.SelectEvent} evt
+       * @param {ol.interaction.SelectEvent} evt The event.
        */
       function(evt) {
         if (evt.selected.length > 0) {
@@ -368,7 +367,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawnFeatures_.translateInteraction,
       ol.interaction.TranslateEventType.TRANSLATEEND,
       /**
-       * @param {ol.interaction.TranslateEvent} evt
+       * @param {ol.interaction.TranslateEvent} evt The event.
        */
       function(evt) {
         var feature = evt.features.getArray()[0];
@@ -417,7 +416,7 @@ app.DrawController.prototype.onFeatureModifyMeasureEnd_ = function(event) {
 
 
 /**
- * @param {ol.ObjectEvent} event
+ * @param {ol.ObjectEvent} event The event.
  * @private
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {
@@ -428,7 +427,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent|ngeo.MeasureEvent} event
+ * @param {ol.interaction.DrawEvent|ngeo.MeasureEvent} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
@@ -462,6 +461,9 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       } else {
         name = this.gettextCatalog.getString('Polygon');
       }
+      break;
+    default:
+      name = feature.getGeometry().getType();
       break;
   }
   feature.set('name', name + ' ' +

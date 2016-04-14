@@ -42,7 +42,6 @@ app.MeasureEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ngeo.interaction.Interaction} instances are
@@ -67,7 +66,6 @@ app.MeasureEvent = function(type, feature) {
 
 };
 goog.inherits(app.MeasureEvent, ol.events.Event);
-
 
 
 /**
@@ -151,25 +149,25 @@ app.Measure = function(opt_options) {
   this.changeEventKey_ = null;
 
   var style = goog.isDef(options.style) ? options.style :
-      [
-        new ol.style.Style({
-          fill: new ol.style.Fill({
-            color: 'rgba(255, 255, 255, 0.2)'
-          })
-        }),
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            color: 'white',
-            width: 5
-          })
-        }),
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            color: '#ffcc33',
-            width: 3
-          })
-        })
-      ];
+  [
+    new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(255, 255, 255, 0.2)'
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'white',
+        width: 5
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#ffcc33',
+        width: 3
+      })
+    })
+  ];
 
   /**
    * The vector layer used to show final measure features.
@@ -233,23 +231,23 @@ app.Measure.getFormattedArea = function(polygon, projection) {
  */
 app.Measure.getFormattedLength =
     function(lineString, projection) {
-  var length = 0;
-  var coordinates = lineString.getCoordinates();
-  for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
-    var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-    length += ol.sphere.WGS84.haversineDistance(c1, c2);
-  }
-  var output;
-  if (length > 1000) {
-    output = parseFloat((length / 1000).toPrecision(3)) +
+      var length = 0;
+      var coordinates = lineString.getCoordinates();
+      for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+        var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
+        var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+        length += ol.sphere.WGS84.haversineDistance(c1, c2);
+      }
+      var output;
+      if (length > 1000) {
+        output = parseFloat((length / 1000).toPrecision(3)) +
         ' ' + 'km';
-  } else {
-    output = parseFloat(length.toPrecision(3)) +
+      } else {
+        output = parseFloat(length.toPrecision(3)) +
         ' ' + 'm';
-  }
-  return output;
-};
+      }
+      return output;
+    };
 
 
 /**
@@ -309,7 +307,7 @@ app.Measure.prototype.setMap = function(map) {
 
 /**
  * Handle draw interaction `drawstart` event.
- * @param {ol.interaction.DrawEvent} evt
+ * @param {ol.interaction.DrawEvent} evt The event.
  * @private
  */
 app.Measure.prototype.onDrawStart_ = function(evt) {
@@ -334,7 +332,7 @@ app.Measure.prototype.onDrawStart_ = function(evt) {
 
 /**
  * Handle draw interaction `drawend` event.
- * @param {ol.interaction.DrawEvent} evt
+ * @param {ol.interaction.DrawEvent} evt The event.
  * @private
  */
 app.Measure.prototype.onDrawEnd_ = function(evt) {
@@ -345,7 +343,7 @@ app.Measure.prototype.onDrawEnd_ = function(evt) {
     this.dispatchEvent(
         new app.MeasureEvent(app.MeasureEventType.MODIFYMEASUREEND,
         this.sketchFeature));
-  }else {
+  } else {
     this.dispatchEvent(new app.MeasureEvent(app.MeasureEventType.MEASUREEND,
         this.sketchFeature));
   }
@@ -451,7 +449,7 @@ app.Measure.prototype.handleMeasure = goog.abstractMethod;
 
 /**
  * Get a reference to the tooltip element.
- * @return {Element}
+ * @return {Element} The tooltip element.
  */
 app.Measure.prototype.getTooltipElement = function() {
   return this.measureTooltipElement_;
@@ -460,7 +458,7 @@ app.Measure.prototype.getTooltipElement = function() {
 
 /**
  * Get the current draw interaction.
- * @return {ol.interaction.Draw|ngeo.interaction.DrawAzimut}
+ * @return {ol.interaction.Draw|ngeo.interaction.DrawAzimut} The interaction.
  */
 app.Measure.prototype.getCurrentDrawInteraction = function() {
   return this.drawInteraction_;

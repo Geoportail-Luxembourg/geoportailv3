@@ -43,30 +43,29 @@ app.elevationDirective = function() {
 app.module.directive('appElevation', app.elevationDirective);
 
 
-
 /**
  * @ngInject
  * @constructor
- * @param {angular.$http} $http
- * @param {ngeo.Debounce} ngeoDebounce
- * @param {app.GetElevation} appGetElevation
+ * @param {angular.$http} $http The angular http service.
+ * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
+ * @param {app.GetElevation} appGetElevation Elevation service.
  */
 app.ElevationDirectiveController =
     function($http, ngeoDebounce, appGetElevation) {
-  var map = this['map'];
+      var map = this['map'];
 
   /**
    * @type {app.GetElevation}
    * @private
    */
-  this.getElevation_ = appGetElevation;
+      this.getElevation_ = appGetElevation;
 
   /**
    * @type {string}
    */
-  this['elevation'] = '';
+      this['elevation'] = '';
 
-  map.on('pointermove',
+      map.on('pointermove',
       ngeoDebounce(
       function(e) {
         if (this['active']) {
@@ -77,7 +76,7 @@ app.ElevationDirectiveController =
              ));
         }
       }, 300, true), this);
-};
+    };
 
 
 app.module.controller('AppElevationController',

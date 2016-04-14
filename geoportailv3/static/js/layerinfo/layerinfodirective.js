@@ -26,7 +26,6 @@ app.layerinfoDirective = function(appLayerinfoTemplateUrl) {
 app.module.directive('appLayerinfo', app.layerinfoDirective);
 
 
-
 /**
  * @constructor
  * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.

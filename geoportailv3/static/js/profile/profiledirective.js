@@ -55,7 +55,6 @@ app.profileDirective = function(appProfileTemplateUrl) {
 app.module.directive('appProfile', app.profileDirective);
 
 
-
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
@@ -151,8 +150,8 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   this.line_ = null;
 
   /**
-   * @param {Object} item
-   * @return {number}
+   * @param {Object} item The item.
+   * @return {number} The elevation.
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
@@ -162,8 +161,8 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   };
 
   /**
-    * @param {Object} item
-    * @return {number}
+    * @param {Object} item The item.
+    * @return {number} The distance.
     */
   var dist = function(item) {
     if ('dist' in item) {
@@ -199,11 +198,11 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
 
 
   /**
-   * @param {Object} point
-   * @param {number} dist
-   * @param {string} xUnits
-   * @param {number} elevation
-   * @param {string} yUnits
+   * @param {Object} point The point.
+   * @param {number} dist The distance.
+   * @param {string} xUnits The x unit.
+   * @param {number} elevation The elevation.
+   * @param {string} yUnits The y unit.
    */
   var hoverCallback = goog.bind(
       function(point, dist, xUnits, elevation, yUnits) {
@@ -325,9 +324,9 @@ app.ProfileController.prototype.removeMeasureTooltip_ = function() {
 
 /**
  * Format the distance text.
- * @param {number} dist
- * @param {string} units
- * @return {string}
+ * @param {number} dist The distance.
+ * @param {string} units The unit.
+ * @return {string} The formatted distance.
  * @private
  */
 app.ProfileController.prototype.formatDistance_ = function(dist, units) {
@@ -337,9 +336,9 @@ app.ProfileController.prototype.formatDistance_ = function(dist, units) {
 
 /**
  * Format the elevation text.
- * @param {number} elevation
- * @param {string} units
- * @return {string}
+ * @param {number} elevation The elevation.
+ * @param {string} units The unit.
+ * @return {string} The elevation text.
  * @private
  */
 app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
@@ -349,15 +348,15 @@ app.ProfileController.prototype.formatElevation_ = function(elevation, units) {
 
 /**
  * Format the elevation gain text.
- * @param {number} elevation
- * @param {string} units
- * @return {string}
+ * @param {number} elevation The elevation.
+ * @param {string} units The unit.
+ * @return {string} the elevation gain text.
  * @private
  */
 app.ProfileController.prototype.formatElevationGain_ =
     function(elevation, units) {
-  return parseFloat(parseInt(elevation, 10)) + ' ' + units;
-};
+      return parseFloat(parseInt(elevation, 10)) + ' ' + units;
+    };
 
 
 /**

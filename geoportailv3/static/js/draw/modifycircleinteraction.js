@@ -37,7 +37,6 @@ goog.require('ol.structs.RBush');
 ol.interaction.SegmentDataType;
 
 
-
 /**
  * @classdesc
  * Interaction for modifying feature geometries.
@@ -290,17 +289,17 @@ app.ModifyCircle.prototype.writeCircleGeometry_ = function(feature, geometry) {
  */
 app.ModifyCircle.prototype.createOrUpdateVertexFeature_ =
     function(coordinates) {
-  var vertexFeature = this.vertexFeature_;
-  if (!vertexFeature) {
-    vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
-    this.vertexFeature_ = vertexFeature;
-    this.overlay_.getSource().addFeature(vertexFeature);
-  } else {
-    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
-    geometry.setCoordinates(coordinates);
-  }
-  return vertexFeature;
-};
+      var vertexFeature = this.vertexFeature_;
+      if (!vertexFeature) {
+        vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
+        this.vertexFeature_ = vertexFeature;
+        this.overlay_.getSource().addFeature(vertexFeature);
+      } else {
+        var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+        geometry.setCoordinates(coordinates);
+      }
+      return vertexFeature;
+    };
 
 
 /**
@@ -510,10 +509,10 @@ app.ModifyCircle.prototype.handlePointerAtPixel_ = function(pixel, map) {
  */
 app.ModifyCircle.prototype.setGeometryCoordinates_ =
     function(geometry, coordinates) {
-  this.changingFeature_ = true;
-  geometry.setCoordinates(coordinates);
-  this.changingFeature_ = false;
-};
+      this.changingFeature_ = true;
+      geometry.setCoordinates(coordinates);
+      this.changingFeature_ = false;
+    };
 
 
 /**

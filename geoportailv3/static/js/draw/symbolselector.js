@@ -28,11 +28,11 @@ app.symbolSelectorDirective = function(appSymbolSelectorTemplateUrl) {
 app.module.directive('appSymbolSelector', app.symbolSelectorDirective);
 
 
-
 /**
+ * The constructor.
  * @param {angular.Scope} $scope Scope.
- * @param {angular.$http} $http
- * @param {app.UserManager} appUserManager
+ * @param {angular.$http} $http The Http service.
+ * @param {app.UserManager} appUserManager The user manager service.
  * @param {string} mymapsUrl URL to "mymaps" Feature service.
  * @constructor
  * @ngInject
@@ -127,7 +127,7 @@ app.SymbolSelectorController.prototype.close = function() {
 
 
 /**
- * @param {number} symbolId
+ * @param {number} symbolId The Id of the symbol to select.
  * @export
  *
  */
@@ -140,7 +140,7 @@ app.SymbolSelectorController.prototype.selectSymbol = function(symbolId) {
 
 
 /**
- * @param {string} shape
+ * @param {string} shape The shape to select.
  * @export
  *
  */
@@ -172,7 +172,7 @@ app.SymbolSelectorController.prototype.openPublicSymbols = function() {
 
 
 /**
- * @return {?angular.$q.Promise}
+ * @return {?angular.$q.Promise} The promise.
  * @export
  *
  */
@@ -188,7 +188,7 @@ app.SymbolSelectorController.prototype.getPublicSymbols = function() {
 
 
 /**
- * @return {?angular.$q.Promise}
+ * @return {?angular.$q.Promise} The promise.
  * @export
  *
  */
@@ -233,7 +233,7 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
 
 
 /**
- * @param {string} color
+ * @param {string} color The color to set.
  * @export
  */
 app.SymbolSelectorController.prototype.setColor = function(color) {
@@ -242,8 +242,8 @@ app.SymbolSelectorController.prototype.setColor = function(color) {
 
 
 /**
- * @param {string} color
- * @return {*}
+ * @param {string} color The color.
+ * @return {*} The color of the feature.
  * @export
  */
 app.SymbolSelectorController.prototype.getSetColor = function(color) {
@@ -259,8 +259,8 @@ app.SymbolSelectorController.prototype.getSetColor = function(color) {
 
 
 /**
- * @param {string} symbol
- * @return {string}
+ * @param {string} symbol The symbol.
+ * @return {string} The url of the symbol.
  * @export
  */
 app.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
@@ -269,7 +269,7 @@ app.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
 
 
 /**
- * @return {boolean}
+ * @return {boolean} True if the user is authenticated.
  * @export
  */
 app.SymbolSelectorController.prototype.isAuthenticated = function() {
@@ -278,8 +278,8 @@ app.SymbolSelectorController.prototype.isAuthenticated = function() {
 
 
 /**
- * It tests if the input type color is supported in the current browser.
- * @return {boolean}
+ * @return {boolean} True if the input type color is supported in the current
+ * browser.
  * @export
  */
 app.SymbolSelectorController.prototype.isHTML5ColorSupported = function() {

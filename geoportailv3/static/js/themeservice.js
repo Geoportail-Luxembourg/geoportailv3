@@ -13,12 +13,11 @@ goog.require('ngeo.Location');
 app.Piwik;
 
 
-
 /**
  * @constructor
  * @param {angular.$window} $window Global Scope.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
- * @param {app.Themes} appThemes
+ * @param {app.Themes} appThemes The themes services.
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @ngInject

@@ -20,7 +20,7 @@ app.GetProfile;
 
 /**
  * @param {angular.$http} $http The Angular $http service.
- * @param {string} profileServiceUrl The URL to the "profile" service.
+ * @param {string} profileServiceUrl The URL to the "profile" service.
  * @return {app.GetProfile} The getProfile function.
  * @private
  * @ngInject
@@ -29,8 +29,8 @@ app.getProfile_ = function($http, profileServiceUrl) {
   return getProfile;
 
   /**
-   * @param {(ol.geom.MultiLineString|ol.geom.LineString)} geom
-   * @param {string=} opt_id
+   * @param {(ol.geom.MultiLineString|ol.geom.LineString)} geom The geometry.
+   * @param {string=} opt_id The id.
    * @return {!angular.$q.Promise} Promise providing the short URL.
    */
   function getProfile(geom, opt_id) {

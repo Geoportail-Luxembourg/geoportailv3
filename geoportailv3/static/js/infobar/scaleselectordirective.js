@@ -38,7 +38,6 @@ app.scaleselectorDirective = function() {
 app.module.directive('appScaleselector', app.scaleselectorDirective);
 
 
-
 /**
  * @constructor
  * @param {app.ScalesService} appScalesService Service returning scales.

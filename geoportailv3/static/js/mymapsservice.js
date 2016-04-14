@@ -17,21 +17,21 @@ goog.require('app.UserManager');
 app.MapsResponse;
 
 
-
 /**
  * @constructor
- * @param {angular.$http} $http
+ * @param {angular.$http} $http The angular http service.
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
- * @param {app.StateManager} appStateManager
- * @param {app.UserManager} appUserManager
+ * @param {app.StateManager} appStateManager The state manager service.
+ * @param {app.UserManager} appUserManager The user manager service.
  * @param {app.Notify} appNotify Notify service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
  *     create layers from catalog nodes.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {app.Themes} appThemes
- * @param {app.Theme} appTheme
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr
+ * @param {app.Themes} appThemes The themes service.
+ * @param {app.Theme} appTheme The theme service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
+ * manager.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
@@ -283,7 +283,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
 
 /**
  * @param {?number} categoryId the category id to get a category for
- * @return {?Object}
+ * @return {?Object} The category.
  */
 app.Mymaps.prototype.getCategory = function(categoryId) {
   if (goog.isDefAndNotNull(categoryId)) {
@@ -320,7 +320,7 @@ app.Mymaps.prototype.getMapId = function() {
 /**
  * Set the mapId and load map information.
  * @param {string} mapId The map id.
- * @param {ol.Collection} collection
+ * @param {ol.Collection} collection The collection.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
@@ -372,7 +372,7 @@ app.Mymaps.prototype.clear = function() {
 
 
 /**
- * @return {boolean} return true if is editable by the user
+ * @return {boolean} Return true if is editable by the user
  */
 app.Mymaps.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
@@ -475,13 +475,13 @@ app.Mymaps.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
   this.appThemes_.getBgLayers().then(goog.bind(
       /**
-       * @param {Array.<ol.layer.Base>} bgLayers
+       * @param {Array.<ol.layer.Base>} bgLayers The bg layer.
        */
       function(bgLayers) {
         var layer = /** @type {ol.layer.Base} */
             (goog.array.find(bgLayers, function(layer) {
-          return layer.get('label') === curBgLayer;
-        }));
+              return layer.get('label') === curBgLayer;
+            }));
         if (layer) {
           this.backgroundLayerMgr_.set(this.map, layer);
         }
@@ -495,26 +495,26 @@ app.Mymaps.prototype.updateLayers = function() {
   }
   this.appThemes_.getFlatCatalog()
   .then(goog.bind(function(flatCatalogue) {
-        goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
-          var node = goog.array.find(flatCatalogue,
+    goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
+      var node = goog.array.find(flatCatalogue,
               function(catalogueLayer) {
                 return catalogueLayer['name'] === item;
               });
-          if (node) {
-            var layer = this.getLayerFunc_(node);
-            if (layer && this.map.getLayers().getArray().indexOf(layer) <= 0) {
-              this.map.addLayer(layer);
-            }
-            if (curMapOpacities) {
-              layer.setOpacity(parseFloat(curMapOpacities[layerIndex]));
-            }
-            if (curMapVisibilities) {
-              if (curMapVisibilities[layerIndex] === 'false') {
-                layer.setOpacity(0);
-              }
-            }
+      if (node) {
+        var layer = this.getLayerFunc_(node);
+        if (layer && this.map.getLayers().getArray().indexOf(layer) <= 0) {
+          this.map.addLayer(layer);
+        }
+        if (curMapOpacities) {
+          layer.setOpacity(parseFloat(curMapOpacities[layerIndex]));
+        }
+        if (curMapVisibilities) {
+          if (curMapVisibilities[layerIndex] === 'false') {
+            layer.setOpacity(0);
           }
-        }, this));},this));
+        }
+      }
+    }, this));},this));
 };
 
 
@@ -599,7 +599,8 @@ app.Mymaps.prototype.loadMapInformation = function() {
       .then(goog.bind(function(mapinformation) {
         this.updateLayers();
         this.layersChanged = false;
-        return mapinformation;},this));
+        return mapinformation;
+      },this));
 };
 
 
@@ -670,16 +671,16 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  */
 app.Mymaps.prototype.createMap =
     function(title, description, categoryId, isPublic) {
-  var req = $.param({
-    'title': title,
-    'description': description,
-    'category_id': categoryId,
-    'public': isPublic
-  });
-  var config = {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  };
-  return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
+      var req = $.param({
+        'title': title,
+        'description': description,
+        'category_id': categoryId,
+        'public': isPublic
+      });
+      var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      };
+      return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
       goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -699,7 +700,7 @@ app.Mymaps.prototype.createMap =
         return [];
       }, this)
   );
-};
+    };
 
 
 /**
@@ -712,16 +713,16 @@ app.Mymaps.prototype.createMap =
  */
 app.Mymaps.prototype.copyMap =
     function(title, description, categoryId, isPublic) {
-  var req = $.param({
-    'title': title,
-    'description': description,
-    'category_id': categoryId,
-    'public': isPublic
-  });
-  var config = {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  };
-  return this.$http_.post(this.mymapsCopyMapUrl_ + this.mapId_, req, config).
+      var req = $.param({
+        'title': title,
+        'description': description,
+        'category_id': categoryId,
+        'public': isPublic
+      });
+      var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      };
+      return this.$http_.post(this.mymapsCopyMapUrl_ + this.mapId_, req, config).
       then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -740,7 +741,7 @@ app.Mymaps.prototype.copyMap =
         this.notify_(msg);
         return [];
       }, this));
-};
+    };
 
 
 /**
@@ -792,21 +793,21 @@ app.Mymaps.prototype.deleteMap = function() {
 app.Mymaps.prototype.updateMap =
     function(title, description, categoryId, isPublic) {
 
-  this.mapTitle = title;
-  this.mapDescription = description;
-  this.mapCategoryId = categoryId;
-  this.mapIsPublic = isPublic;
+      this.mapTitle = title;
+      this.mapDescription = description;
+      this.mapCategoryId = categoryId;
+      this.mapIsPublic = isPublic;
 
-  var req = $.param({
-    'title': title,
-    'description': description,
-    'category_id': categoryId,
-    'public': isPublic
-  });
-  var config = {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  };
-  return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      var req = $.param({
+        'title': title,
+        'description': description,
+        'category_id': categoryId,
+        'public': isPublic
+      });
+      var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      };
+      return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -826,37 +827,37 @@ app.Mymaps.prototype.updateMap =
         return [];
       }, this)
   );
-};
+    };
 
 
 /**
  * Save the map environment.
- * @param {string} bgLayer
- * @param {string} bgOpacity
- * @param {string} layers
- * @param {string} layers_opacity
- * @param {string} layers_visibility
- * @param {string} layers_indices
- * @param {string} theme
+ * @param {string} bgLayer The bg layer.
+ * @param {string} bgOpacity The bg opacity.
+ * @param {string} layers The layers.
+ * @param {string} layers_opacity The layer opacity.
+ * @param {string} layers_visibility The layer visibility.
+ * @param {string} layers_indices The layer indices.
+ * @param {string} theme The theme.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
         layers_visibility, layers_indices, theme) {
 
-  var req = $.param({
-    'bgLayer': bgLayer,
-    'bgOpacity': bgOpacity,
-    'layers': layers,
-    'layers_opacity': layers_opacity,
-    'layers_visibility': layers_visibility,
-    'layers_indices': layers_indices,
-    'theme': theme
-  });
-  var config = {
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  };
-  return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
+      var req = $.param({
+        'bgLayer': bgLayer,
+        'bgOpacity': bgOpacity,
+        'layers': layers,
+        'layers_opacity': layers_opacity,
+        'layers_visibility': layers_visibility,
+        'layers_indices': layers_indices,
+        'theme': theme
+      });
+      var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      };
+      return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -876,7 +877,7 @@ app.Mymaps.prototype.updateMapEnv =
         return [];
       }, this)
   );
-};
+    };
 
 
 /**
@@ -920,7 +921,7 @@ app.Mymaps.prototype.saveFeature = function(feature) {
 
 /**
  * Save an array of features into the current map.
- * @param {Array.<ol.Feature>} features The features to save
+ * @param {Array.<ol.Feature>} features The features to save.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.saveFeatures = function(features) {
@@ -977,8 +978,8 @@ app.Mymaps.prototype.isMymapsSelected = function() {
 
 
 /**
- * @param {ol.Map} curMap
- * @return {ol.FeatureStyleFunction}
+ * @param {ol.Map} curMap The current map.
+ * @return {ol.FeatureStyleFunction} The Function to style.
  * @export
  */
 app.Mymaps.prototype.createStyleFunction = function(curMap) {
@@ -1088,6 +1089,9 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           lineDash = [10, 10];
           break;
         case 'dotted':
+          lineDash = [1, 6];
+          break;
+        default:
           lineDash = [1, 6];
           break;
       }

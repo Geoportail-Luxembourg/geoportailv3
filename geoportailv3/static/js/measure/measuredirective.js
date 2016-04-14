@@ -56,17 +56,16 @@ app.measureDirective = function(appMeasureTemplateUrl) {
 app.module.directive('appMeasure', app.measureDirective);
 
 
-
 /**
  * @param {!angular.Scope} $scope Scope.
- * @param {angular.$q} $q
+ * @param {angular.$q} $q The q service.
  * @param {angular.$http} $http Angular http service.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
- * @param {app.GetProfile} appGetProfile
+ * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
- *     interaction service.
- * @param {string} elevationServiceUrl the url of the service
+ * interaction service.
+ * @param {string} elevationServiceUrl The url of the service.
  * @constructor
  * @export
  * @ngInject
@@ -276,8 +275,8 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
 
 
 /**
- * @param {ol.Coordinate} coordinates
- * @return {angular.$q.Promise}
+ * @param {ol.Coordinate} coordinates The coordinate.
+ * @return {angular.$q.Promise} The promise.
  * @private
  */
 app.MeasureController.prototype.getElevation_ = function(coordinates) {

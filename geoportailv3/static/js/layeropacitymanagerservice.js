@@ -17,7 +17,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.events');
 
 
-
 /**
  * @constructor
  * @ngInject

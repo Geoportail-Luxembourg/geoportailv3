@@ -42,7 +42,6 @@ app.scalelineDirective = function() {
 app.module.directive('appScaleline', app.scalelineDirective);
 
 
-
 /**
  * @ngInject
  * @constructor

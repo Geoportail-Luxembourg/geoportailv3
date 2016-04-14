@@ -56,7 +56,7 @@ app.getImageExtension_ = function(imageType) {
 
 /**
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
- * @param {string} requestScheme
+ * @param {string} requestScheme The scheme.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
@@ -136,7 +136,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms) {
    * @param {string} layers Comma-separated list of layer names for that WMS
    *     layer.
    * @param {string} imageType Image type (e.g. "image/png").
-   * @param {string=} opt_url WMS URL.
+   * @param {string=} opt_url WMS URL.
    * @return {ol.layer.Image} The layer.
    */
   function getWmsLayer(name, layers, imageType, opt_url) {
@@ -214,7 +214,6 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     return layer;
   }
 };
-
 
 
 app.module.factory('appGetLayerForCatalogNode', app.getLayerForCatalogNode_);

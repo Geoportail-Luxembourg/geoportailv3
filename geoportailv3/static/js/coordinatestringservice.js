@@ -20,18 +20,18 @@ app.CoordinateString;
 
 /**
  * @private
- * @return {app.CoordinateString}
+ * @return {app.CoordinateString} The coordinate string.
  * @ngInject
  */
 app.coordinateString_ = function() {
   return coordinateString;
 
   /**
-   * @param {ol.Coordinate} coordinate
-   * @param {string} sourceEpsgCode
-   * @param {string} targetEpsgCode
-   * @param {boolean=} opt_DMS
-   * @return {string}
+   * @param {ol.Coordinate} coordinate The coordinate.
+   * @param {string} sourceEpsgCode The source epsg.
+   * @param {string} targetEpsgCode The target epsg.
+   * @param {boolean=} opt_DMS True if DMS.
+   * @return {string} The coordinate string.
    */
   function coordinateString(coordinate, sourceEpsgCode,
       targetEpsgCode, opt_DMS) {
@@ -45,6 +45,7 @@ app.coordinateString_ = function() {
     coordinate = ol.proj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
 
     switch (targetEpsgCode) {
+      default:
       case 'EPSG:2169':
         str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
         break;

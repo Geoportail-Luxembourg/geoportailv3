@@ -5,7 +5,7 @@
  * Closure entry point (see "closure_entry_point" in the "build.json" file).
  *
  * This file includes `goog.require`'s for all the components/directives used
- * by the HTML page.
+ * by the HTML page.
  */
 goog.provide('app_main');
 

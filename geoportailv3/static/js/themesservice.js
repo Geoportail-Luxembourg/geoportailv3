@@ -27,7 +27,6 @@ app.ThemesEventType = {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.events.EventTarget}
@@ -207,8 +206,8 @@ app.Themes.prototype.isThemePrivate = function(themeId) {
 
 
 /**
- * @param {Array} element
- * @return {Array} array
+ * @param {Array} element The element.
+ * @return {Array} array The children.
  * @private
  */
 app.Themes.prototype.getAllChildren_ = function(element) {
