@@ -236,14 +236,21 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
   this.newIsPublic = false;
 
   /**
-   * Open or Close the confirmation dialog box?
+   * Open or Close the confirmation dialog box.
    * @type {boolean}
    * @export
    */
   this.confirmDelete = false;
 
   /**
-   * Open or Close the confirmation dialog box?
+   * Open or Close the confirmation dialog box.
+   * @type {boolean}
+   * @export
+   */
+  this.confirmDeleteObjects = false;
+
+  /**
+   * Open or Close the confirmation dialog box.
    * @type {boolean}
    * @export
    */
@@ -520,6 +527,15 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
  */
 app.MymapsDirectiveController.prototype.openConfirmDelete = function() {
   this.confirmDelete = true;
+};
+
+
+/**
+ * Open the confirmation dialog box.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openConfirmDeleteObjects = function() {
+  this.confirmDeleteObjects = true;
 };
 
 
@@ -819,6 +835,28 @@ app.MymapsDirectiveController.prototype.deleteMap = function() {
           this.askToConnect();
         } else {
           this.closeMap();
+        }
+      }, this));
+    }
+  }
+};
+
+
+/**
+ * Delete the objetcs belonging to the current map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.deleteMymapsObjects = function() {
+  if (this.appMymaps_.isEditable()) {
+    if (!this.appUserManager_.isAuthenticated()) {
+      this.askToConnect();
+    } else {
+      this.appMymaps_.deleteMapFeatures().then(goog.bind(function(resp) {
+        if (goog.isNull(resp)) {
+          this.askToConnect();
+        } else {
+          this.drawnFeatures_.removeMymapsFeatures();
+          this.selectedFeatures_.clear();
         }
       }, this));
     }

@@ -289,6 +289,20 @@ app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
 
 
 /**
+ * Remove the features belonging to mymaps.
+ */
+app.DrawnFeatures.prototype.removeMymapsFeatures = function() {
+  var mymapsFeatures = this.features.getArray().filter(function(feature) {
+    return !!feature.get('__map_id__');
+  });
+
+  mymapsFeatures.forEach(goog.bind(function(feature) {
+    this.features.remove(feature);
+  }, this));
+};
+
+
+/**
  * Clear the anonymous features.
  */
 app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {

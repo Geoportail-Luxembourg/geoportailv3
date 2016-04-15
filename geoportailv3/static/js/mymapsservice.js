@@ -135,6 +135,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsDeleteFeaturesUrl_ = mymapsUrl + '/delete_all_features/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsDeleteMapUrl_ = mymapsUrl + '/delete/';
 
   /**
@@ -774,11 +780,49 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
 
 
 /**
+ * Delete all features of a map.
+ * @param {string} mapId The map id of the features to delete.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
+  return this.$http_.delete(this.mymapsDeleteFeaturesUrl_ + mapId).then(
+      goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettextCatalog.getString(
+            'Erreur inattendue lors de la suppression des objets de la carte.');
+        this.notify_(msg);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
  * Delete the current map.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.deleteMap = function() {
   return this.deleteAMap(this.mapId_);
+};
+
+
+/**
+ * Delete all the features of the current map.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.deleteMapFeatures = function() {
+  return this.deleteAllFeaturesAMap(this.mapId_);
 };
 
 

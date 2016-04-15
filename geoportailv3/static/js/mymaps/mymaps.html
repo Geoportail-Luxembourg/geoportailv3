@@ -48,6 +48,7 @@
           <li ng-click="ctrl.openCopyMapModal()"><a href translate>Créer une copie</a></li>
           <li class="divider"></li>
           <li ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
+          <li ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
           <li class="divider"></li>
           <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
           <li class="divider"></li>
@@ -158,6 +159,20 @@
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
   <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.closeAnonymous()" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.confirmDeleteObjects">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Confirmation de suppression des éléments de la carte</h4>
+</div>
+<div class="modal-body">
+<h4 class="modal-title" translate>Etes-vous certain de vouloir effacer tous les éléments de la carte ?</h4>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.deleteMymapsObjects()" translate>Effacer</button>
 </div>
 </ngeo-modal>
 
