@@ -1092,7 +1092,6 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           lineDash = [1, 6];
           break;
         default:
-          lineDash = [1, 6];
           break;
       }
     }
