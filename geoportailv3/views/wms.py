@@ -23,7 +23,7 @@ class Wms(object):
         if 'authorized_ips' in config:
             authorized_ips = config["authorized_ips"].split(",")
             for authorized_ip in authorized_ips:
-                a_ip = IPv4Network(authorized_ip)
+                a_ip = IPv4Network(authorized_ip.strip())
                 if (client_ip == a_ip.network) or (
                    (client_ip >= a_ip.network) and
                    (client_ip < a_ip.broadcast)):
