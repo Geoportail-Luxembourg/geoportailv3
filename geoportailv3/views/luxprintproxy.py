@@ -82,7 +82,6 @@ class LuxPrintProxy(PrintProxy):
                 for layer in map_layer["layers"]:
                     internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                         LuxLayerInternalWMS.layer == layer).first()
-                    print layer
                     if internal_wms is not None and\
                        not self._is_authorized(internal_wms):
                             return HTTPUnauthorized()
