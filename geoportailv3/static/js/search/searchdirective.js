@@ -555,9 +555,31 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
     function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
-      var url = searchServiceUrl + '?limit=5&query=%QUERY';
+      var geojsonFormat = new ol.format.GeoJSON();
       var bloodhound = ngeoCreateGeoJSONBloodhound(
-      url, undefined, ol.proj.get('EPSG:3857'));
+      '', undefined, undefined, undefined,
+      /** @type {BloodhoundOptions} */ ({
+        remote: {
+          url: searchServiceUrl,
+          replace: function(url, query) {
+            return url +
+                '?query=' + encodeURIComponent(query) +
+                '&limit=5';
+          },
+          rateLimitWait: 50,
+          transform: function(parsedResponse) {
+            /** @type {GeoJSONFeatureCollection} */
+            var featureCollection = /** @type {GeoJSONFeatureCollection} */
+                (parsedResponse);
+
+            return geojsonFormat.readFeatures(featureCollection, {
+              featureProjection: ol.proj.get('EPSG:3857'),
+              dataProjection: undefined
+            });
+          }
+        }
+      }));
+
       bloodhound.initialize();
       return bloodhound;
     };
