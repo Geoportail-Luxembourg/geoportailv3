@@ -325,6 +325,24 @@ class Mymaps(object):
         DBSession.commit()
         return {'success': True}
 
+    @view_config(route_name="mymaps_delete_all_features", renderer='json')
+    def delete_all_features(self):
+        id = self.request.matchdict.get("map_id")
+
+        map = DBSession.query(Map).get(id)
+        if map is None:
+            return HTTPNotFound()
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
+        # remove the features associated to the map
+        features = DBSession.query(Feature).filter(
+            Feature.map_id == map.uuid).all()
+        for f in features:
+            DBSession.delete(f)
+        DBSession.commit()
+        return {'success': True}
+
     def save(self, map, id=None):
         params = self.request.params
         #

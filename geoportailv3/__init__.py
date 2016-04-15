@@ -130,6 +130,11 @@ def main(global_config, **settings):
         request_method="DELETE"
     )
     config.add_route(
+        "mymaps_delete_all_features",
+        "/mymaps/delete_all_features/{map_id}",
+        request_method="DELETE"
+    )
+    config.add_route(
         "mymaps_delete_feature",
         "/mymaps/delete_feature/{feature_id}",
         request_method="DELETE"
