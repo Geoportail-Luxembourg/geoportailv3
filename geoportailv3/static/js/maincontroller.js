@@ -427,10 +427,23 @@ app.MainController.prototype.initLanguage_ = function() {
  */
 app.MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
-  this.appMymaps_.mapProjection = this['map'].getView().getProjection();
+
+  this.appMymaps_.mapProjection = this.map_.getView().getProjection();
   if (goog.isDef(mapId)) {
     this.appMymaps_.setCurrentMapId(mapId,
-        this.drawnFeatures_.getCollection());
+        this.drawnFeatures_.getCollection()).then(
+          function(features) {
+            var x = this.stateManager_.getInitialValue('X');
+            var y = this.stateManager_.getInitialValue('Y');
+
+            if (!goog.isDef(x) && !goog.isDef(y)) {
+              var viewSize = /** @type {ol.Size} */ (this.map_.getSize());
+              this.map_.getView().fit(
+                  this.drawnFeatures_.getExtent(),
+                  viewSize
+              );
+            }
+          }.bind(this));
   } else {
     this.appMymaps_.clear();
   }
