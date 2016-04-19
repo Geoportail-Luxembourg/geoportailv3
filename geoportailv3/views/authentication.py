@@ -49,6 +49,7 @@ def get_user_from_request(request):
         user.email = None
         user.is_admin = False
         user.mymaps_role = 999
+        user.ogc_role = -1
         connector = get_ldap_connector(request)
         cm = connector.manager
 
@@ -68,6 +69,8 @@ def get_user_from_request(request):
                     user.is_admin = result[0][1]['adm'][0]
                 if 'roleMymaps' in result[0][1]:
                     user.mymaps_role = result[0][1]['roleMymaps'][0]
+                if 'roleOGC' in result[0][1]:
+                    user.ogc_role = result[0][1]['roleOGC'][0]
 
         user.role = DBSession.query(Role).filter_by(id=roletheme).one()
 
