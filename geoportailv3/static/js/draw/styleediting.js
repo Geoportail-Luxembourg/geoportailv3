@@ -150,6 +150,19 @@ app.StyleEditingController.prototype.getSetOrientation = function(orientation) {
 
 
 /**
+ * @export
+ */
+app.StyleEditingController.prototype.reverseLine = function() {
+  if (this.feature) {
+    var coordinates = /** @type {ol.geom.LineString}*/
+        (this.feature.getGeometry()).getCoordinates().reverse();
+    this.feature.setGeometry(new ol.geom.LineString(coordinates));
+    this.drawnFeatures_.saveFeature(this.feature);
+  }
+};
+
+
+/**
  * @param {string} color The color.
  * @return {*} The color.
  * @export
@@ -285,7 +298,7 @@ app.StyleEditingController.prototype.close = function() {
   this.feature.set('symbolId', this.featureOrig.get('symbolId'));
   this.feature.set('stroke', this.featureOrig.get('stroke'));
   this.feature.set('linestyle', this.featureOrig.get('linestyle'));
-
+  this.feature.setGeometry(this.featureOrig.getGeometry())
   this.editingStyle = false;
 };
 
