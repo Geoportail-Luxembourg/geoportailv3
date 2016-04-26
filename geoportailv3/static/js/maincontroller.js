@@ -52,7 +52,6 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.StateManager} appStateManager The state service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
- * @param {app.FeaturePopup} appFeaturePopup Feature info service.
  * @param {app.UserManager} appUserManager The user manager service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
@@ -69,8 +68,8 @@ app.MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
-    appFeaturePopup, appUserManager, appDrawnFeatures, langUrls, maxExtent,
-    defaultExtent, ngeoSyncArrays, ngeoLocation, appExport) {
+    appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
+    ngeoSyncArrays, ngeoLocation, appExport) {
 
   /**
    * @type {app.Export}

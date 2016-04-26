@@ -306,17 +306,21 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
+        this['queryActive'] = false;
       }, this));
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.CollectionEvent} evt The event.
        */
-      function(evt) {
+      (function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
-      });
+        if (!this.active) {
+          this['queryActive'] = true;
+        }
+      }).bind(this));
 
   ol.events.listen(selectInteraction,
       ol.interaction.SelectEventType.SELECT,
