@@ -219,6 +219,14 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.updateFeature_();
   }, this));
 
+  $scope.$watch(function() {
+    return this.editingStyle;
+  }.bind(this), function(newVal, oldVal) {
+    if (oldVal && !newVal) {
+      this.updateFeature_();
+    }
+  }.bind(this));
+
   ol.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
