@@ -1,4 +1,5 @@
-# -*- coding: UTF-8 -*-
+﻿# -*- coding: UTF-8 -*-
+from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.response import Response
 import logging
@@ -13,6 +14,7 @@ import sys
 from geoportailv3.portail import PortailSession
 from geoportailv3.portail import PagDownload
 
+_ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 
 
@@ -21,6 +23,7 @@ class Pag(object):
     def __init__(self, request):
         self.request = request
         self.config = self.request.registry.settings
+        self.localizer = get_localizer(self.request)
 
     def __download(self, num):
         if self.staging:
@@ -60,45 +63,26 @@ class Pag(object):
 
     def __send_mail(self, email):
         if self.link == 'error':
-            mailtext = """Bonjour!
-<br>
-il y a eu un souci avec la génération de votre rapport.
-Nous sommes désolés.
-<br>
-Veuillez réessayer plus tard
-<br>
-<br>
-Meilleures salutations
-
-<br>
-Le Géoportail.
-"""
+            mailtext = _("PAG Error during report generation")
         else:
-            mailtext = """Bonjour!
-<br>
-<br>
-Votre rapport PAG est finalisé.
-<br>
-<br>
-<a href="%s">Cliquez-ici pour télécharger le résultat.</a>
-<br>
-<br>
-Meilleures salutations
-<br>
-L'équipe du géoportail et du Ministère de l'Intérieur
-""" % self.link
-            msg = MIMEText(mailtext, 'html', 'utf-8')
-            me = 'support@geoportail.lu'
-            you = email
+            mailtext = _("PAG Mail the report link ${link}",
+                         mapping={'link': self.link})
+        msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
+        me = 'support@geoportail.lu'
+        you = email
+        mails = [you]
+        if "bcc_address" in self.config["pag"]:
             bcc = self.config["pag"]["bcc_address"]
-            msg['Subject'] = 'Rapport PAG'
-            msg['From'] = me
-            msg['To'] = you
             msg['BCC'] = bcc
-            s = smtplib.SMTP(self.config["pag"]["smtp_server"])
-            s.sendmail(me, [you, bcc], msg.as_string())
-            s.quit()
-            return
+            mails.append(bcc)
+        msg['Subject'] = 'Rapport PAG'
+        msg['From'] = me
+        msg['To'] = you
+
+        s = smtplib.SMTP(self.config["pag"]["smtp_server"])
+        s.sendmail(me, mails, msg.as_string())
+        s.quit()
+        return
 
     def __log_download_stats(self, objectids, download_link):
         pag_download = PagDownload()
@@ -132,9 +116,8 @@ L'équipe du géoportail et du Ministère de l'Intérieur
         oid = self.request.matchdict.get('oid', None)
         email = self.request.params.get('email', None)
         self.staging = self.request.params.get('staging', False)
-        resp = "Votre rapport est en train d'être généré. "\
-            "<br>Un email vous sera envoyé à l'adresse %s "\
-            "dès qu'il sera disponible" % email.encode('utf-8')
+        resp = _("PAG webservice response ${email}",
+                 mapping={'email': email.encode('utf-8')})
         try:
             self.__download(oid)
             self.__upload2owncloud()
@@ -144,4 +127,4 @@ L'équipe du géoportail et du Ministère de l'Intérieur
         self.__log_download_stats(oid, self.link)
         self.__send_mail(email)
         headers = {"Content-Type": 'text/html'}
-        return Response(resp, headers=headers)
+        return Response(self.localizer.translate(resp), headers=headers)
