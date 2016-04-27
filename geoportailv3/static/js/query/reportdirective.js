@@ -30,11 +30,12 @@ app.module.directive('appPagreport', app.pagreportDirective);
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {app.UserManager} appUserManager The usermanager service.
+ * @param {string} pagUrl Url to Pag Report Controller.
  * @export
  * @ngInject
  */
 app.PagreportController = function($http, appNotify, gettextCatalog,
-    appUserManager) {
+    appUserManager, pagUrl) {
   /**
    * @type {app.UserManager}
    * @private
@@ -78,6 +79,12 @@ app.PagreportController = function($http, appNotify, gettextCatalog,
   if (this.appUserManager_.isAuthenticated()) {
     this.mail_ = /** @type {string} */ (this.appUserManager_.getEmail());
   }
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.pagUrl_ = pagUrl;
 
 }
 
@@ -124,7 +131,7 @@ app.PagreportController.prototype.generateRepport = function() {
     this.notify_(msg);
   } else {
     this.$http_.post(
-      'http://dev.geoportail.lu/pagreport/' + this['ids'] + '.pdf?email=' + this.mail_,
+      this.pagUrl_ +'/report/' + this['ids'] + '.pdf?email=' + this.mail_,
       {}
     );
     msg = this.gettextCatalog.getString('Votre rapport est en train d\'être généré. Un email vous sera envoyé à l\'adresse ' + this.mail_ + ' dès qu\'il sera disponible');

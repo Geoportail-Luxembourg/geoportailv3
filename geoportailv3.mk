@@ -20,6 +20,7 @@ CONFIG_VARS += sqlalchemy_engines
 CONFIG_VARS += proxy_wms_url
 CONFIG_VARS += turbomail
 CONFIG_VARS += authorized_ips
+CONFIG_VARS += pag
 
 APACHE_VHOST ?= luxembourg-geomapfish
 
@@ -36,6 +37,7 @@ include CONST_Makefile
 
 REQUIREMENTS += "suds>=0.4"
 REQUIREMENTS += "ipaddr==2.1.11"
+REQUIREMENTS += "pyocclient==0.1"
 DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 PRINT_VERSION = NONE 
 

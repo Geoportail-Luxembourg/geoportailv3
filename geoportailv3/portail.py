@@ -45,3 +45,12 @@ class SketchDownload(Base):
     download_date = Column(DateTime, default=datetime.datetime.now)
     application = Column(String)
     directory = Column(String)
+
+
+class PagDownload(Base):
+    __table_args__ = ({'schema': 'geov3_stats', 'autoload': False})
+    __tablename__ = 'pag_download'
+    objectids = Column(String, primary_key=True)
+    download_date = Column(DateTime, default=datetime.datetime.now,
+                           primary_key=True)
+    download_link = Column(String, primary_key=True)
