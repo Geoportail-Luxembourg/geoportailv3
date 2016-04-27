@@ -67,7 +67,7 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
 
     if (!(promiseKey in promises_)) {
       promises_[promiseKey] = $http.jsonp(
-          'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
+          '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
           {params: {
             'uid': metadataUid,
             'lang': currentLanguage,
