@@ -298,7 +298,7 @@ app.StyleEditingController.prototype.close = function() {
   this.feature.set('symbolId', this.featureOrig.get('symbolId'));
   this.feature.set('stroke', this.featureOrig.get('stroke'));
   this.feature.set('linestyle', this.featureOrig.get('linestyle'));
-  this.feature.setGeometry(this.featureOrig.getGeometry())
+  this.feature.setGeometry(this.featureOrig.getGeometry());
   this.editingStyle = false;
 };
 

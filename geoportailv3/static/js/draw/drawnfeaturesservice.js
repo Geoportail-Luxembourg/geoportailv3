@@ -375,11 +375,11 @@ app.DrawnFeatures.prototype.getExtent = function() {
   var extent = ol.extent.createEmpty();
   this.features.forEach(function(feature) {
     if (feature.getGeometry()) {
-      extent = ol.extent.extend(extent, feature.getGeometry().getExtent())
+      extent = ol.extent.extend(extent, feature.getGeometry().getExtent());
     }
   }, this);
 
   return extent;
-}
+};
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);
