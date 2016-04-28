@@ -33,12 +33,15 @@ UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Tran
 # Add rule that copies the font-awesome fonts to the static/build directory.
 POST_RULES = .build/fonts.timestamp
 
+SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py
+
 include CONST_Makefile
 
 REQUIREMENTS += "suds>=0.4"
 REQUIREMENTS += "ipaddr==2.1.11"
 REQUIREMENTS += "pyocclient==0.1"
-DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
+# DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
+DEV_REQUIREMENTS += git+https://github.com/petzlux/transifex-client.git
 PRINT_VERSION = NONE 
 
 .PHONY: update-translations
