@@ -86,7 +86,7 @@ app.PagreportController = function($http, appNotify, gettextCatalog,
    */
   this.pagUrl_ = pagUrl;
 
-}
+};
 
 /**
  * @param {boolean} tac True to accept the terms and conditions.
@@ -138,7 +138,7 @@ app.PagreportController.prototype.generateRepport = function() {
         {'email': this.mail_});
     this.notify_(msg);
   }
-}
+};
 
 app.module.controller('AppPagreportController',
                       app.PagreportController);
