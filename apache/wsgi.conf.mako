@@ -30,6 +30,8 @@ RewriteRule ^${apache_entry_point}mobile$ ${apache_entry_point}mobile/ [R]
 RewriteRule ^${apache_entry_point}mobile/(.*)$ /${instanceid}/wsgi/mobile/$1 [PT]
 RewriteRule ^${apache_entry_point}admin/?$ /${instanceid}/wsgi/admin/ [PT]
 RewriteRule ^${apache_entry_point}search$ /${instanceid}/wsgi/fulltextsearch [PT]
+RewriteRule ^${apache_entry_point}pag/report/$ /${instanceid}/wsgi/pag/report/ [PT]
+RewriteRule ^${apache_entry_point}pag/files/$ /${instanceid}/wsgi/pag/files/ [PT]
 RewriteRule ^${apache_entry_point}s/(.*)$ /${instanceid}/wsgi/short/$1 [PT]
 
 # define a process group

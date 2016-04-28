@@ -164,6 +164,20 @@ def main(global_config, **settings):
         "reverse_geocode",
         "/geocode/reverse"
     )
+    # pag routes
+    config.add_route(
+        "pag_url",
+        "/pag"
+    )
+    # pag routes
+    config.add_route(
+        "pag_report",
+        "/pag/report/{oid}.pdf"
+    )
+    config.add_route(
+        "pag_files",
+        "/pag/files/{_file}"
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
