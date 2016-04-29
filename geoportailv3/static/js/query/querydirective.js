@@ -831,7 +831,20 @@ app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
       for (var i = 0; i < jsonFeatures.length; ++i) {
         extent = ol.extent.extend(extent,
             jsonFeatures[i].getGeometry().getExtent());
-        this.featureOverlay_.addFeature(jsonFeatures[i]);
+        var curFeature = jsonFeatures[i];
+        if (curFeature.getGeometry().getType() ==
+            ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+          var geomCollection = /** @type {ol.geom.GeometryCollection} */
+            (curFeature.getGeometry());
+          goog.array.forEach(geomCollection.getGeometriesArray(),
+              function(geometry) {
+                var newFeature = curFeature.clone();
+                newFeature.setGeometry(geometry);
+                this.featureOverlay_.addFeature(newFeature);
+              }.bind(this));
+        } else {
+          this.featureOverlay_.addFeature(curFeature);
+        }
       }
       if (fit) {
         var mapSize = /** @type {ol.Size} */ (this.map_.getSize());
