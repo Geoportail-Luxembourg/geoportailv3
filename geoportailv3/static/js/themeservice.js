@@ -34,7 +34,8 @@ app.Theme = function($window, ngeoLocation, appThemes,
     'main': 18,
     'tourisme': 7,
     'emwelt': 8,
-    'eau': 6
+    'eau': 6,
+    'pag' : 19
   };
 
   /**
