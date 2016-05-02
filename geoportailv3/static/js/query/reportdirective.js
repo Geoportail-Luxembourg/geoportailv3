@@ -13,7 +13,8 @@ app.pagreportDirective = function(appPagreportTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'ids': '=appPagreportIds'
+      'ids': '=appPagreportIds',
+      'staging': '=appPagreportStaging'
     },
     controller: 'AppPagreportController',
     controllerAs: 'ctrl',
@@ -131,7 +132,7 @@ app.PagreportController.prototype.generateRepport = function() {
     this.notify_(msg);
   } else {
     this.$http_.post(
-      this.pagUrl_ + '/report/' + this['ids'] + '.pdf?email=' + this.mail_,
+      this.pagUrl_ + '/report/' + this['ids'] + '.pdf?email=' + this.mail_ + '&staging=' + this['staging'],
       {}
     );
     msg = this.gettextCatalog.getString('Votre rapport est en train d\'être généré. Un email vous sera envoyé à l\'adresse {{email}} dès qu\'il sera disponible',

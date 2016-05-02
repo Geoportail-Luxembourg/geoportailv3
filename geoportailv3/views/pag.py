@@ -115,7 +115,8 @@ class Pag(object):
     def pag_report(self):
         oid = self.request.matchdict.get('oid', None)
         email = self.request.params.get('email', None)
-        self.staging = self.request.params.get('staging', False)
+        self.staging =\
+            self.request.params.get('staging', 'False').lower() == 'true'
         resp = _("PAG webservice response ${email}",
                  mapping={'email': email.encode('utf-8')})
         try:
