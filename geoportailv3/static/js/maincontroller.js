@@ -314,7 +314,7 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
   scope.$watch(goog.bind(function() {
     return this.appUserManager_.roleId;
   }, this), goog.bind(function(newVal, oldVal) {
-    if (!goog.isDef(oldVal) && !goog.isDef(newVal)) {
+    if (newVal === null && oldVal === null) {
       // This happens at init time. We don't want to reload the themes
       // at this point, as the constructor already loaded them.
       return;
