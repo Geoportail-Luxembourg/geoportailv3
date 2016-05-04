@@ -168,7 +168,7 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['layersOpen'] = false;
+  this['layersOpen'] = true;
 
   /**
    * @type {boolean}
