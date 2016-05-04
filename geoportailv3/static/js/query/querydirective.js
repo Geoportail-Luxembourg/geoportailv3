@@ -299,7 +299,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   }, this));
 
   ol.events.listen(this.map_.getLayers(),
-      ol.CollectionEventType.ADD,
+      ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.CollectionEvent} e Collection event.
        */
@@ -469,15 +469,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
 
 
   this.appThemes_.getFlatCatalog().then(
-      goog.bind(function(flatCatalogue) {
-        var node = goog.array.find(flatCatalogue, function(catItem) {
-          return catItem.id == splittedFid[0];
-        });
-        if (goog.isDefAndNotNull(node)) {
-          var layer = this.getLayerFunc_(node);
-          this.map_.addLayer(layer);
-          layerLabel[splittedFid[0]] = layer.get('label');
-        }
+      function(flatCatalogue) {
 
         if (layersList.length > 0) {
           this.isQuerying_ = true;
@@ -488,7 +480,7 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
               {params: {
                 'fid': fid
               }}).then(
-              goog.bind(function(resp) {
+              function(resp) {
                 var env = this.appGetDevice_();
                 var showInfo = false;
                 if (env !== 'xs') {
@@ -497,16 +489,32 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                 } else {
                   this['hiddenContent'] = true;
                 }
+                var node = goog.array.find(flatCatalogue, function(catItem) {
+                  return catItem.id == splittedFid[0];
+                });
+                if (goog.isDefAndNotNull(node)) {
+                  var layer = this.getLayerFunc_(node);
+                  var idx = goog.array.findIndex(this.map.getLayers().getArray(), function(curLayer) {
+                    if (curLayer.get('queryable_id') === layer.get('queryable_id')) {
+                      return true;
+                    }
+                    return false;
+                  }, this);
+                  if (idx === -1) {
+                    this.map_.addLayer(layer);
+                  }
+                  layerLabel[splittedFid[0]] = layer.get('label');
+                }
                 this.showInfo_(false, resp, layerLabel, showInfo, true);
-              }, this),
-              goog.bind(function(error) {
+              }.bind(this),
+              function(error) {
                 this.clearQueryResult_(this.QUERYPANEL_);
                 this['infoOpen'] = false;
                 this.map_.getViewport().style.cursor = '';
                 this.isQuerying_ = false;
-              }, this));
+              }.bind(this));
         }
-      }, this));
+      }.bind(this));
 };
 
 
@@ -633,7 +641,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
           feature['attributes']['showProfile'] =
               /** @type {app.ShowProfile} */ ({active: true});
           this.getProfile_(validGeom.geom, validGeom.id)
-        .then(goog.bind(function(profile) {
+        .then(function(profile) {
           goog.array.forEach(this.responses_, function(item) {
             if (item['template'] === 'mymaps.html') {
               goog.array.forEach(item['features'],
@@ -647,7 +655,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
                         }, this);
             }
           }, this);
-        }, this));
+        }.bind(this));
         }
       }, this);
     }
