@@ -234,7 +234,11 @@
     </thead>
     <tbody>
     <tr ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
-      <td ng-click="ctrl.onChosen(map, true)">{{ map.title }}</td>
+      <td ng-click="ctrl.onChosen(map, true)">
+        <span ng-switch="map.public">
+          <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
+          <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
+        </span>{{ map.title }}</td>
       <td ng-click="ctrl.onChosen(map, true)">{{ map.category }}</td>
       <td ng-click="ctrl.onChosen(map, true)">{{ map.update_date | date:'dd/MM/yyyy - H:mm' }}</td>
       <td ng-click="ctrl.deleteAMap(map.uuid)"><span class="fa fa-trash-o"></span></td>
