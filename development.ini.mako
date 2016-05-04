@@ -52,21 +52,21 @@ keys = console
 keys = generic
 
 [logger_root]
-level = INFO
+level = WARN
 handlers = console
 
 [logger_c2cgeoportal]
-level = DEBUG
+level = WARN
 handlers =
 qualname = c2cgeoportal
 
 [logger_geoportailv3]
-level = DEBUG
+level = WARN
 handlers =
 qualname = geoportailv3
 
 [logger_sqlalchemy]
-level = INFO
+level = WARN
 handlers =
 qualname = sqlalchemy.engine
 # "level = INFO" logs SQL queries.

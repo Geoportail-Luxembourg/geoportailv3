@@ -67,12 +67,12 @@ level = WARN
 handlers = console
 
 [logger_c2cgeoportal]
-level = INFO
+level = WARN
 handlers =
 qualname = c2cgeoportal
 
 [logger_geoportailv3]
-level = INFO
+level = WARN
 handlers =
 qualname = geoportailv3
 
