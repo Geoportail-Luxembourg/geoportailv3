@@ -103,11 +103,35 @@ app.StateManager.prototype.getInitialValue = function(key) {
 
 
 /**
+ * Get the state value for `key` from local storage.
+ * @param {string} key State key.
+ * @return {string|null} State value.
+ */
+app.StateManager.prototype.getValueFromLocalStorage = function(key) {
+  return this.localStorage_.get(key);
+};
+
+
+/**
  * Update the application state with the values in `object`.
  * @param {Object.<string, string>} object Object.
  */
 app.StateManager.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
+  if (this.localStorage_.isAvailable()) {
+    var key;
+    for (key in object) {
+      this.localStorage_.set(key, object[key]);
+    }
+  }
+};
+
+
+/**
+ * Update the application storage with the values in `object`.
+ * @param {Object.<string, string>} object Object.
+ */
+app.StateManager.prototype.updateStorage = function(object) {
   if (this.localStorage_.isAvailable()) {
     var key;
     for (key in object) {
