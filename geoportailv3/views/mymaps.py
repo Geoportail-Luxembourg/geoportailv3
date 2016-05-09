@@ -136,6 +136,9 @@ class Mymaps(object):
     def copy(self):
         id = self.request.matchdict.get("map_id")
         map = DBSession.query(Map).get(id)
+        user = self.request.user
+        if user is None:
+            return HTTPUnauthorized()
 
         if map is None:
             return HTTPNotFound()
@@ -149,7 +152,9 @@ class Mymaps(object):
             map.title = unicode(params.get('title'))
         if 'description' in params:
             map.description = unicode(params.get('description'))
-
+        map.public = False
+        map.user_login = user.username
+        map.category_id = None
         DBSession.add(map)
         DBSession.commit()
 
