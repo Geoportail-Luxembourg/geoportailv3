@@ -155,6 +155,14 @@ class Mymaps(object):
         map.public = False
         map.user_login = user.username
         map.category_id = None
+        if 'category_id' in params:
+            cat = params.get('category_id')
+            map.category_id = None if cat == '' else cat
+        if 'public' in params:
+            str = unicode(params.get('public'))
+            if str.lower() == u'true':
+                map.public = True
+        map.create_date = None
         DBSession.add(map)
         DBSession.commit()
 
