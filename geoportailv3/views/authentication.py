@@ -65,8 +65,8 @@ def get_user_from_request(request):
                     user.mail = result[0][1]['mail'][0]
                 if 'sn' in result[0][1]:
                     user.sn = result[0][1]['sn'][0]
-                if 'adm' in result[0][1]:
-                    user.is_admin = result[0][1]['adm'][0]
+                if 'isMymapsAdmin' in result[0][1]:
+                    user.is_admin = result[0][1]['isMymapsAdmin'][0]
                 if 'roleMymaps' in result[0][1]:
                     user.mymaps_role = result[0][1]['roleMymaps'][0]
                 if 'roleOGC' in result[0][1]:

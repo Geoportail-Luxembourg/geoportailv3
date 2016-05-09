@@ -303,9 +303,9 @@ class Mymaps(object):
             return False
         if map.user_login != user.username:
             user = self.request.user
-            if user.uti_is_admin is False:
+            if user.is_admin is False:
                 return False
-            user_role = DBSession.query(Role).get(user.uti_rmy_id)
+            user_role = DBSession.query(Role).get(user.mymaps_role)
             if map.category is None or map.category.id not in\
                     [cat.id for cat in user_role.categories]:
                 return False
