@@ -12,14 +12,13 @@
 
 <!-- Map displayed -->
 <div ng-show="ctrl.isMymapsSelected()">
-
   <div class="mymap-header">
     <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
     <div class="title" ng-click="ctrl.openModifyMapModal()">{{ctrl.getMapTitle()}}</div>
   </div>
-    <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
-    <p class="no-description" ng-click="ctrl.openModifyMapModal()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
-  </div>
+  <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
+  <p class="no-description" ng-click="ctrl.openModifyMapModal()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
+
 
   <div ng-show="ctrl.isEditable()" class="mymap-footer navbar">
     <div ng-show="ctrl.layersChanged" class="alert alert-warning">
@@ -30,36 +29,36 @@
         <button ng-click="ctrl.saveLayers()" translate class="btn btn-default">Oui</button>
       </div>
     </div>
-    <span ng-switch="ctrl.getMapIsPublic()">
-      <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
-      <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
-    </span>
-    <span class="map-owner" ng-show="ctrl.getMapOwner()">
-      {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
-    </span>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown">
-        <a href class="dropdown-toggle" data-toggle="dropdown">
-          <span class="fa fa-caret-square-o-down"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li ng-click="ctrl.openCreateMapModal()"><a href translate>Créer une nouvelle carte</a></li>
-          <li ng-click="ctrl.openChooseMapModal()"><a href translate>Ouvrir une carte existante</a></li>
-          <li ng-click="ctrl.openCopyMapModal()"><a href translate>Créer une copie</a></li>
-          <li class="divider"></li>
-          <li ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
-          <li ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
-          <li class="divider"></li>
-          <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
-          <li class="divider"></li>
-          <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
-          <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-          <li><div class="mymapsFileUpload"><a href translate>Importer un GPX</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.gpxFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
-          <li><div class="mymapsFileUpload"><a href translate>Importer un KML</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.kmlFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
-        </ul>
-      </li>
-    </ul>
   </div>
+  <span ng-switch="ctrl.getMapIsPublic()">
+    <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
+    <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
+  </span>
+  <span class="map-owner" ng-show="ctrl.getMapOwner()">
+    {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
+  </span>
+  <ul class="nav navbar-nav navbar-right">
+    <li class="dropdown">
+      <a href class="dropdown-toggle" data-toggle="dropdown">
+        <span class="fa fa-caret-square-o-down"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li ng-click="ctrl.openCreateMapModal()"><a href translate>Créer une nouvelle carte</a></li>
+        <li ng-click="ctrl.openChooseMapModal()"><a href translate>Ouvrir une carte existante</a></li>
+        <li ng-click="ctrl.openCopyMapModal()"><a href translate>Créer une copie</a></li>
+        <li class="divider"></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
+        <li ng-show="ctrl.isEditable()" class="divider"></li>
+        <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
+        <li class="divider"></li>
+        <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
+        <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.gpxFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KML</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.kmlFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+      </ul>
+    </li>
+  </ul>
 
   <ul class="features list-unstyled">
     <li ng-repeat="feature in ctrl.getMymapsFeatures()" class="feature"
