@@ -368,6 +368,8 @@ app.MymapsDirectiveController.prototype.openCopyMapModal = function() {
   this.newTitle = this.appMymaps_.mapTitle;
   this.newDescription = this.appMymaps_.mapDescription;
   this.modal = 'COPYING';
+  this.newCategoryId = null;
+  this.newIsPublic = false;
 };
 
 

@@ -163,6 +163,7 @@ class Mymaps(object):
             if str.lower() == u'true':
                 map.public = True
         map.create_date = None
+        map.update_date = None
         DBSession.add(map)
         DBSession.commit()
 
