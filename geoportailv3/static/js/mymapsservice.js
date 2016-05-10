@@ -547,6 +547,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
           this.mapTitle = mapinformation['title'];
           this.mapOwner = mapinformation['user_login'];
           this.mapIsPublic = mapinformation['public'];
+          this.mapCategoryId = mapinformation['category_id'];
           this.mapBgLayer = mapinformation['bg_layer'];
           this.mapTheme = mapinformation['theme'];
 
