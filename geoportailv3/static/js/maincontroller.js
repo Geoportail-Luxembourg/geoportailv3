@@ -60,6 +60,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchronizer service.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @constructor
  * @export
  * @ngInject
@@ -69,7 +70,13 @@ app.MainController = function(
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoSyncArrays, ngeoLocation, appExport) {
+    ngeoSyncArrays, ngeoLocation, appExport, appGetDevice) {
+
+  /**
+   * @private
+   * @type {app.GetDevice}
+   */
+  this.appGetDevice_ = appGetDevice;
 
   /**
    * @type {app.Export}
@@ -168,7 +175,10 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['layersOpen'] = false;
+  this['layersOpen'] = (this.appGetDevice_() !== 'xs' &&
+      !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
+      this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
+      true : false;
 
   /**
    * @type {boolean}
@@ -178,7 +188,8 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['mymapsOpen'] = false;
+  this['mymapsOpen'] = (this.appGetDevice_() !== 'xs' &&
+      goog.isDef(this.ngeoLocation_.getParam('map_id'))) ? true : false;
 
   /**
    * @type {boolean}
@@ -262,6 +273,9 @@ app.MainController = function(
       $('app-catalog .themes-switcher').collapse('show');
       $('app-themeswitcher #themes-content').collapse('hide');
     }
+    this.stateManager_.updateStorage({
+      'layersOpen': newVal
+    });
   }, this));
 };
 
