@@ -205,6 +205,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapIsPublic = false;
 
   /**
+   * Whether the map is editable by the current user.
+   * @type {boolean}
+   */
+  this.mapIsEditable = false;
+
+  /**
    * The currently displayed map title.
    * @type {string}
    */
@@ -379,6 +385,7 @@ app.Mymaps.prototype.clear = function() {
   this.mapLayersOpacities = [];
   this.mapLayersVisibilities = [];
   this.mapLayersIndicies = [];
+  this.mapIsEditable = false;
 };
 
 
@@ -387,8 +394,7 @@ app.Mymaps.prototype.clear = function() {
  */
 app.Mymaps.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      (this.appUserManager_.isAdmin == 'TRUE' ||
-       this.appUserManager_.getUsername() == this.mapOwner)) {
+      this.mapIsEditable) {
     return true;
   }
   return false;
@@ -550,6 +556,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
           this.mapCategoryId = mapinformation['category_id'];
           this.mapBgLayer = mapinformation['bg_layer'];
           this.mapTheme = mapinformation['theme'];
+          this.mapIsEditable = mapinformation['is_editable'];
 
           if (!this.mapBgLayer) {
             this.mapBgLayer = 'blank';

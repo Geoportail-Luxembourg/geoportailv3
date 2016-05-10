@@ -80,10 +80,6 @@ app.UserManager = function($http, loginUrl, logoutUrl,
    */
   this.name = undefined;
 
-  /**
-   * @type {boolean}
-   */
-  this.isAdmin = false;
 
   /**
    * @type {angularGettext.Catalog}
@@ -166,8 +162,7 @@ app.UserManager.prototype.getUserInfo = function() {
               data['role'],
               data['role_id'],
               data['mail'],
-              data['sn'],
-              data['is_admin']
+              data['sn']
           );
         } else {
           this.clearUserInfo();
@@ -193,7 +188,7 @@ app.UserManager.prototype.isAuthenticated = function() {
  * of error.
  */
 app.UserManager.prototype.clearUserInfo = function() {
-  this.setUserInfo('', undefined, null, undefined, undefined, false);
+  this.setUserInfo('', undefined, null, undefined, undefined);
 };
 
 
@@ -203,17 +198,15 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {?number} roleId Role id.
  * @param {string|undefined} mail Mail.
  * @param {string|undefined} name Name.
- * @param {boolean} isAdmin True if user is an admin.
  */
 app.UserManager.prototype.setUserInfo = function(
-    username, role, roleId, mail, name, isAdmin) {
+    username, role, roleId, mail, name) {
   if (goog.isDef(username)) {
     this.username = username;
     this.role = role;
     this.roleId = roleId;
     this.email = mail;
     this.name = name;
-    this.isAdmin = isAdmin;
   } else {
     this.clearUserInfo();
   }
