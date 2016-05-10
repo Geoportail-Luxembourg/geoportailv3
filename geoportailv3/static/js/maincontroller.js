@@ -438,7 +438,8 @@ app.MainController.prototype.initMymaps_ = function() {
             var x = this.stateManager_.getInitialValue('X');
             var y = this.stateManager_.getInitialValue('Y');
 
-            if (!goog.isDef(x) && !goog.isDef(y)) {
+            if (!goog.isDef(x) && !goog.isDef(y) &&
+                this.drawnFeatures_.getCollection().getLength() > 0) {
               var viewSize = /** @type {ol.Size} */ (this.map_.getSize());
               this.map_.getView().fit(
                   this.drawnFeatures_.getExtent(),

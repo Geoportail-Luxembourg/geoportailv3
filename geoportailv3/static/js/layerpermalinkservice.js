@@ -344,7 +344,12 @@ app.LayerPermalinkManager.prototype.init =
                     stateBgLayerLabel = 'orthogr_2013_global';
                   }
                 } else {
-                  stateBgLayerLabel = 'basemap_2015_global';
+                  var mapId = this.ngeoLocation_.getParam('map_id');
+                  if (!goog.isDef(mapId)) {
+                    stateBgLayerLabel = 'basemap_2015_global';
+                  } else {
+                    stateBgLayerLabel = 'topogr_global';
+                  }
                   stateBgLayerOpacity = 0;
                 }
               } else {

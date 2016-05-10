@@ -226,7 +226,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * The BG Layer of the mymap.
    * @type {string}
    */
-  this.mapBgLayer = 'blank';
+  this.mapBgLayer = 'topogr_global';
 
   /**
    * The theme of the mymap.
@@ -379,7 +379,7 @@ app.Mymaps.prototype.clear = function() {
   this.mapOwner = '';
   this.mapCategoryId = null;
   this.mapIsPublic = false;
-  this.mapBgLayer = 'blank';
+  this.mapBgLayer = 'topogr_global';
   this.mapBgOpacity = 1;
   this.mapLayers = [];
   this.mapLayersOpacities = [];
@@ -559,7 +559,8 @@ app.Mymaps.prototype.loadMapInformation = function() {
           this.mapIsEditable = mapinformation['is_editable'];
 
           if (!this.mapBgLayer) {
-            this.mapBgLayer = 'blank';
+            this.mapBgLayer = 'topogr_global';
+            mapinformation['bg_layer'] = this.mapBgLayer;
           }
           if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
             this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
