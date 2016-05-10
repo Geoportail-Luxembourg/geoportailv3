@@ -559,7 +559,11 @@ app.Mymaps.prototype.loadMapInformation = function() {
           this.mapIsEditable = mapinformation['is_editable'];
 
           if (!this.mapBgLayer) {
-            this.mapBgLayer = 'topogr_global';
+            if (this.mapTheme === 'tourisme') {
+              this.mapBgLayer = 'topo_bw_jpeg';
+            } else {
+              this.mapBgLayer = 'topogr_global';
+            }
             mapinformation['bg_layer'] = this.mapBgLayer;
           }
           if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
