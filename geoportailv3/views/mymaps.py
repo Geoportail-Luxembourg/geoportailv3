@@ -452,6 +452,8 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
         params = dict(map)
+        params["is_editable"] = self.has_permission(self.request.user, map)
+
         if 'cb' in self.request.params:
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
             return Response("%s(%s);"

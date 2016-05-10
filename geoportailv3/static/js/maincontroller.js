@@ -320,6 +320,9 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
       return;
     }
     this.loadThemes_();
+    if (this.appMymaps_.isMymapsSelected()) {
+      this.appMymaps_.loadMapInformation();
+    }
   }, this));
 };
 
