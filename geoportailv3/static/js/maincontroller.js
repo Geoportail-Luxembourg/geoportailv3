@@ -175,11 +175,7 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['layersOpen'] = (this.appGetDevice_() !== 'xs' &&
-      !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
-      this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
-      true : false;
-
+  this['layersOpen'] = false;
   /**
    * @type {boolean}
    */
@@ -188,8 +184,7 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['mymapsOpen'] = (this.appGetDevice_() !== 'xs' &&
-      goog.isDef(this.ngeoLocation_.getParam('map_id'))) ? true : false;
+  this['mymapsOpen'] = false;
 
   /**
    * @type {boolean}
@@ -264,19 +259,27 @@ app.MainController = function(
 
   this.manageUserRoleChange_($scope);
 
-  this.loadThemes_();
+  this.loadThemes_().then(function() {
+    this['layersOpen'] = (this.appGetDevice_() !== 'xs' &&
+    !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
+    this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
+    true : false;
+    this['mymapsOpen'] = (this.appGetDevice_() !== 'xs' &&
+        goog.isDef(this.ngeoLocation_.getParam('map_id'))) ? true : false;
+    $scope.$watch(goog.bind(function() {
+      return this['layersOpen'];
+    }, this), goog.bind(function(newVal) {
+      if (newVal === false) {
+        $('app-catalog .themes-switcher').collapse('show');
+        $('app-themeswitcher #themes-content').collapse('hide');
+      }
+      this.stateManager_.updateStorage({
+        'layersOpen': newVal
+      });
+    }, this));
 
-  $scope.$watch(goog.bind(function() {
-    return this['layersOpen'];
-  }, this), goog.bind(function(newVal) {
-    if (newVal === false) {
-      $('app-catalog .themes-switcher').collapse('show');
-      $('app-themeswitcher #themes-content').collapse('hide');
-    }
-    this.stateManager_.updateStorage({
-      'layersOpen': newVal
-    });
-  }, this));
+  }.bind(this));
+
 };
 
 
@@ -343,9 +346,10 @@ app.MainController.prototype.manageUserRoleChange_ = function(scope) {
 
 /**
  * @private
+ * @return {?angular.$q.Promise} Promise.
  */
 app.MainController.prototype.loadThemes_ = function() {
-  this.appThemes_.loadThemes(this.appUserManager_.roleId);
+  return this.appThemes_.loadThemes(this.appUserManager_.roleId);
 };
 
 
