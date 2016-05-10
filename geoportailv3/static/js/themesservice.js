@@ -175,6 +175,7 @@ app.Themes.prototype.getThemesObject = function() {
 /**
  * @param {?number} roleId The role id to send in the request.
  * Load themes from the "themes" service.
+ * @return {?angular.$q.Promise} Promise.
  */
 app.Themes.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(this.treeUrl_, {
@@ -189,6 +190,7 @@ app.Themes.prototype.loadThemes = function(roleId) {
         this.dispatchEvent(app.ThemesEventType.LOAD);
         return /** @type {app.ThemesResponse} */ (resp.data);
       }, this));
+  return this.promise_;
 };
 
 
