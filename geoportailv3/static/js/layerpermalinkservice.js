@@ -21,63 +21,70 @@ goog.require('ol.events');
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * service.
  * @param {app.Themes} appThemes The themes service.
+ * @param {app.Theme} appTheme The theme service.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
  * manager.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @ngInject
  */
-app.LayerPermalinkManager =
-    function(appStateManager, appGetLayerForCatalogNode, appThemes,
-        ngeoBackgroundLayerMgr, ngeoLocation) {
+app.LayerPermalinkManager = function(appStateManager,
+    appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
+    ngeoLocation) {
 
   /**
    * @type {ngeo.Location}
    * @private
    */
-      this.ngeoLocation_ = ngeoLocation;
+  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {Array.<number>}
    * @private
    */
-      this.unavailableLayers_ = [];
+  this.unavailableLayers_ = [];
 
   /**
    * @type {Array.<number>}
    * @private
    */
-      this.unavailableOpacities_ = [];
+  this.unavailableOpacities_ = [];
 
   /**
    * @type {app.Themes}
    * @private
    */
-      this.appThemes_ = appThemes;
+  this.appThemes_ = appThemes;
+
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
 
   /**
    * @type {app.StateManager}
    * @private
    */
-      this.stateManager_ = appStateManager;
+  this.stateManager_ = appStateManager;
 
   /**
    * @type {ngeo.BackgroundLayerMgr}
    * @private
    */
-      this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
    */
-      this.getLayerFunc_ = appGetLayerForCatalogNode;
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
 
   /**
    * @type {function()|undefined}
    * @private
    */
-      this.scopeWatcher_ = undefined;
-    };
+  this.scopeWatcher_ = undefined;
+};
 
 
 /**
@@ -348,7 +355,11 @@ app.LayerPermalinkManager.prototype.init =
                   if (!goog.isDef(mapId)) {
                     stateBgLayerLabel = 'basemap_2015_global';
                   } else {
-                    stateBgLayerLabel = 'topogr_global';
+                    if (this.appTheme_.getCurrentTheme() === 'tourisme') {
+                      stateBgLayerLabel = 'topo_bw_jpeg';
+                    } else {
+                      stateBgLayerLabel = 'topogr_global';
+                    }
                   }
                   stateBgLayerOpacity = 0;
                 }
