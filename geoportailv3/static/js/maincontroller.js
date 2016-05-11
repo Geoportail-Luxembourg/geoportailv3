@@ -260,12 +260,17 @@ app.MainController = function(
   this.manageUserRoleChange_($scope);
 
   this.loadThemes_().then(function() {
+    var urlLocationInfo = appStateManager.getInitialValue('crosshair');
+    var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
+      urlLocationInfo === 'true';
     this['layersOpen'] = (this.appGetDevice_() !== 'xs' &&
     !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
+    !infoOpen &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
     this['mymapsOpen'] = (this.appGetDevice_() !== 'xs' &&
-        goog.isDef(this.ngeoLocation_.getParam('map_id'))) ? true : false;
+        goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
+        !infoOpen) ? true : false;
     $scope.$watch(goog.bind(function() {
       return this['layersOpen'];
     }, this), goog.bind(function(newVal) {
@@ -273,10 +278,15 @@ app.MainController = function(
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
       }
+    }, this));
+
+    $scope.$watch(function() {
+      return this.sidebarOpen();
+    }.bind(this), function(newVal) {
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
-    }, this));
+    }.bind(this));
 
   }.bind(this));
 
