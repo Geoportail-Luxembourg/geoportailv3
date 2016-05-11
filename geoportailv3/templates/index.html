@@ -109,6 +109,7 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
           <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
                       app-mymaps-drawopen="mainCtrl.drawOpen"
                       app-mymaps-shareopen="mainCtrl.shareOpen"
@@ -125,6 +126,7 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
           <div class="container-fluid">
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
