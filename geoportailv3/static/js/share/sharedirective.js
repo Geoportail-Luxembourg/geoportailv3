@@ -24,7 +24,8 @@ app.shareDirective = function(appShareTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'active': '=appShareActive'
+      'active': '=appShareActive',
+      'activeMymaps': '=appShareActiveMymaps'
     },
     controller: 'AppShareController',
     controllerAs: 'ctrl',

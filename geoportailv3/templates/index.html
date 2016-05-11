@@ -111,6 +111,8 @@
           </button>
           <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
                       app-mymaps-drawopen="mainCtrl.drawOpen"
+                      app-mymaps-shareopen="mainCtrl.shareOpen"
+                      app-mymaps-share-mymaps-checked="mainCtrl.shareMymapsChecked"
                       app-mymaps-layers-changed="mainCtrl.layersChanged"
                       app-mymaps-selected-layers="mainCtrl.selectedLayers"
                       app-mymaps-map="::mainCtrl.map"></app-mymaps>
@@ -197,7 +199,7 @@
         </li>
         <li class="hidden-xs share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
-          <app-share app-share-active="mainCtrl.shareOpen"></app-share>
+          <app-share app-share-active="mainCtrl.shareOpen" app-share-active-mymaps="mainCtrl.shareMymapsChecked"></app-share>
         </li>
       </ul>
     </footer>
