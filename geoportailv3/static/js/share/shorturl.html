@@ -8,11 +8,13 @@
       </div>
     </div>
     <div class="form-group">
+      <div class="col-sm-12">
+        <label translate class="control-label">Show long url</label>
+        <input type="checkbox" ng-model="ctrl.showLongUrl">
+      </div>
       <div class="col-sm-12" ng-show="ctrl.isMymapsSelected()">
         <label translate class="control-label">Share only Mymaps</label>
         <input type="checkbox" ng-model="ctrl.onlyMymaps">
-        <label translate class="control-label">Show long url</label>
-        <input type="checkbox" ng-model="ctrl.showLongUrl">
       </div>
     </div>
     </div>

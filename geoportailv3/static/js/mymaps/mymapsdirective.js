@@ -37,6 +37,7 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
       'drawopen': '=appMymapsDrawopen',
       'shareopen': '=appMymapsShareopen',
       'shareMymapsChecked': '=appMymapsShareMymapsChecked',
+      'shareShowLongUrl': '=appMymapsShareShowLongUrl',
       'layersChanged': '=appMymapsLayersChanged',
       'map': '=appMymapsMap',
       'selectedLayers': '=appMymapsSelectedLayers'
@@ -1026,6 +1027,7 @@ app.MymapsDirectiveController.prototype.exportFeatures_ = function(doc, format,
  */
 app.MymapsDirectiveController.prototype.shareMymapsLink = function() {
   this['shareMymapsChecked'] = true;
+  this['shareShowLongUrl'] = true;
   this['shareopen'] = true;
 };
 

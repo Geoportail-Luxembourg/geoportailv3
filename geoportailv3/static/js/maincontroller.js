@@ -204,6 +204,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['shareShowLongUrl'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['userOpen'] = false;
 
   /**
