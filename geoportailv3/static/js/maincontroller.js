@@ -199,6 +199,16 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['shareMymapsChecked'] = false;
+
+  /**
+   * @type {boolean}
+   */
+  this['shareShowLongUrl'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['userOpen'] = false;
 
   /**

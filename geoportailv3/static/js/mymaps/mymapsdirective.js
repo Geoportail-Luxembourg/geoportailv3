@@ -35,6 +35,9 @@ app.mymapsDirective = function(appMymapsTemplateUrl) {
     scope: {
       'useropen': '=appMymapsUseropen',
       'drawopen': '=appMymapsDrawopen',
+      'shareopen': '=appMymapsShareopen',
+      'shareMymapsChecked': '=appMymapsShareMymapsChecked',
+      'shareShowLongUrl': '=appMymapsShareShowLongUrl',
       'layersChanged': '=appMymapsLayersChanged',
       'map': '=appMymapsMap',
       'selectedLayers': '=appMymapsSelectedLayers'
@@ -990,31 +993,42 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
  * @param {string} filename File name for the exported document.
  * @private
  */
-app.MymapsDirectiveController.prototype.exportFeatures_ =
-    function(doc, format, filename) {
-      var formatInput = $('<input>').attr({
-        type: 'hidden',
-        name: 'format',
-        value: format
-      });
-      var nameInput = $('<input>').attr({
-        type: 'hidden',
-        name: 'name',
-        value: filename
-      });
-      var docInput = $('<input>').attr({
-        type: 'hidden',
-        name: 'doc',
-        value: doc
-      });
-      var form = $('<form>').attr({
-        method: 'POST',
-        action: this.exportgpxkmlUrl_
-      });
-      form.append(formatInput, nameInput, docInput);
-      angular.element(this.$document_[0].body).append(form);
-      form[0].submit();
-      form.remove();
-    };
+app.MymapsDirectiveController.prototype.exportFeatures_ = function(doc, format,
+  filename) {
+  var formatInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'format',
+    value: format
+  });
+  var nameInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'name',
+    value: filename
+  });
+  var docInput = $('<input>').attr({
+    type: 'hidden',
+    name: 'doc',
+    value: doc
+  });
+  var form = $('<form>').attr({
+    method: 'POST',
+    action: this.exportgpxkmlUrl_
+  });
+  form.append(formatInput, nameInput, docInput);
+  angular.element(this.$document_[0].body).append(form);
+  form[0].submit();
+  form.remove();
+};
+
+
+/**
+ * Open the share link.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.shareMymapsLink = function() {
+  this['shareMymapsChecked'] = true;
+  this['shareShowLongUrl'] = true;
+  this['shareopen'] = true;
+};
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

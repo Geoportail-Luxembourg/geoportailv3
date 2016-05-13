@@ -24,7 +24,9 @@ app.shorturlDirective = function(appShorturlTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'active': '=appShorturlActive'
+      'active': '=appShorturlActive',
+      'onlyMymaps': '=appShorturlActiveMymaps',
+      'showLongUrl': '=appShorturlShowLongUrl'
     },
     controller: 'AppShorturlController',
     controllerAs: 'ctrl',
@@ -45,57 +47,58 @@ app.module.directive('appShorturl', app.shorturlDirective);
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  */
-app.ShorturlDirectiveController =
-    function($scope, ngeoLocation, appGetShorturl, appMymaps) {
+app.ShorturlDirectiveController = function($scope, ngeoLocation,
+    appGetShorturl, appMymaps) {
   /**
    * @type {app.Mymaps}
    * @private
    */
-      this.appMymaps_ = appMymaps;
+  this.appMymaps_ = appMymaps;
 
   /**
    * @type {ngeo.Location}
    * @private
    */
-      this.ngeoLocation_ = ngeoLocation;
+  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @type {string}
+   * @export
    */
-      this['url'] = '';
+  this.url = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.longurl = '';
 
   /**
    * @type {app.GetShorturl}
    * @private
    */
-      this.getShorturl_ = appGetShorturl;
+  this.getShorturl_ = appGetShorturl;
 
-  /**
-   * @type {boolean}
-   * @export
-   */
-      this.onlyMymaps = false;
-
-      $scope.$watch(goog.bind(function() {
-        return this['active'];
-      }, this), goog.bind(function(newVal) {
-        if (newVal === true) {
-          this.setUrl_();
-          this.removeListener =
-          $scope.$on('ngeoLocationChange', goog.bind(function(event) {
-            this.setUrl_();
-          }, this));
-        } else if (newVal === false && this.removeListener) {
-          this.removeListener();
-        }
-      }, this));
-
-      $scope.$watch(goog.bind(function() {
-        return this['active'] && this.onlyMymaps;
-      }, this), goog.bind(function(newVal) {
+  $scope.$watch(goog.bind(function() {
+    return this['active'];
+  }, this), goog.bind(function(newVal) {
+    if (newVal === true) {
+      this.setUrl_();
+      this.removeListener =
+      $scope.$on('ngeoLocationChange', goog.bind(function(event) {
         this.setUrl_();
       }, this));
-    };
+    } else if (newVal === false && this.removeListener) {
+      this.removeListener();
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this['active'] && this['onlyMymaps'];
+  }, this), goog.bind(function(newVal) {
+    this.setUrl_();
+  }, this));
+};
 
 
 /**
@@ -103,20 +106,20 @@ app.ShorturlDirectiveController =
  */
 app.ShorturlDirectiveController.prototype.setUrl_ =
     function() {
-      if (this.onlyMymaps) {
+      if (this['onlyMymaps']) {
         var uri = this.ngeoLocation_.getUri().clone();
-        this['url'] = uri.setQueryData('map_id=' + this.appMymaps_.getMapId(),
-        true).toString();
+        this.url = uri.setQueryData('map_id=' + this.appMymaps_.getMapId(),
+          true).toString();
       } else {
-        this['url'] = this.ngeoLocation_.getUriString();
+        this.url = this.ngeoLocation_.getUriString();
       }
-
+      this.longurl = this.url;
       this.getShorturl_().then(goog.bind(
       /**
        * @param {string} shorturl The short URL.
        */
       function(shorturl) {
-        this['url'] = shorturl;
+        this.url = shorturl;
       }, this));
     };
 
