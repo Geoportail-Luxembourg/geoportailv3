@@ -95,7 +95,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
           delete properties['__selected__'];
           delete properties['__map_id__'];
           for (var key in properties) {
-            if (!properties[key]) {
+            if (properties[key] === null || properties[key] === undefined) {
               delete properties[key];
             } else {
               if (this.SHORT_PARAM_[key]) {
@@ -211,6 +211,10 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
         }
       }
       var opacity = /** @type {string} */ (feature.get('opacity'));
+      if (!goog.isDef(opacity)) {
+        opacity = 0;
+      }
+
       feature.set('opacity', +opacity);
       var stroke = /** @type {string} */ (feature.get('stroke'));
       feature.set('stroke', +stroke);
