@@ -13,6 +13,7 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
+from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
 
 log = logging.getLogger(__name__)
 
@@ -322,6 +323,25 @@ class Getfeatureinfo(object):
         try:
             if layers is not None:
                 for layer in layers.split(','):
+                    cur_layer = DBSession.query(Layer).filter(
+                        Layer.id == layer).first()
+                    if cur_layer is None:
+                        continue
+
+                    if not cur_layer.public:
+                        if self.request.user is None:
+                            continue
+                        # Check if the layer has a resctriction area
+                        restriction = DBSession.query(RestrictionArea).filter(
+                            RestrictionArea.roles.any(
+                                Role.id == self.request.user.role.id)).filter(
+                            RestrictionArea.layers.any(
+                                Layer.id == layer
+                            )
+                            ).first()
+                        # If not restriction is set then check next layer
+                        if restriction is None or not restriction.readwrite:
+                            continue
                     query = self.dbsession.query(
                         LuxGetfeatureDefinition).filter(
                             LuxGetfeatureDefinition.layer == layer
