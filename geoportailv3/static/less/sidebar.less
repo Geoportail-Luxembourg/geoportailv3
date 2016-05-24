@@ -52,6 +52,20 @@
     overflow-x: hidden;
   }
 
+  #mymaps .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #infos .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   .themes-switcher {
     overflow-y: auto;
     overflow-x: hidden;
@@ -65,14 +79,10 @@
   .layer-info-content {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: 80%; //fallback for browsers without calc support
-    max-height: ~"calc(100% - 80px)";
   }
 
   #infos .container-fluid {
     overflow-y: auto;
-    max-height: 80%; //fallback for browsers without calc support
-    max-height: ~"calc(100% - 80px)";
   }
   .layer-info-content .poi-feature {
     background-color: rgba(255, 255, 255, 0.5);

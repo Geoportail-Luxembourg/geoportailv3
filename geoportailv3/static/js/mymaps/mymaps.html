@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.isMymapsSelected()" class="tab-content">
+<div ng-show="!ctrl.isMymapsSelected()">
   <p translate>
     Create, save and share your own maps.
   </p>
@@ -11,7 +11,7 @@
 </div>
 
 <!-- Map displayed -->
-<div ng-show="ctrl.isMymapsSelected()" class="tab-content">
+<div ng-show="ctrl.isMymapsSelected()">
   <div class="mymap-header">
     <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
     <div class="title" ng-click="ctrl.openModifyMapModal()">{{ctrl.getMapTitle()}}</div>
@@ -75,7 +75,7 @@
 
 <hr ng-show="ctrl.getAnonymousFeatures().length">
 
-<div ng-show="ctrl.getAnonymousFeatures().length" class="tab-content">
+<div ng-show="ctrl.getAnonymousFeatures().length">
   <div class="navbar">
     {{'Dessins'|translate}}
     <ul class="nav navbar-nav navbar-right">
