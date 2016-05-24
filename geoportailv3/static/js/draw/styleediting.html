@@ -76,7 +76,6 @@
         <button ng-click="ctrl.symbolselector = true" class="btn btn-default">
             <img ng-show="ctrl.feature.get('symbolId')" ng-src="{{ctrl.getSymbolPath(ctrl.feature.get('symbolId'))}}">
             <div ng-show="!ctrl.feature.get('symbolId')"translate>Symbol
-            <svg ng-show="ctrl.feature.get('shape') == 'point'" height="18" width="18"><circle cx="9" cy="9" r="2" stroke="{{ctrl.feature.get('color')}}" stroke-width="1" fill="{{ctrl.feature.get('color')}}" /></svg>
             <svg ng-show="ctrl.feature.get('shape') == 'circle'" height="18" width="18"><circle cx="9" cy="9" r="9" stroke="{{ctrl.feature.get('color')}}" stroke-width="1" fill="{{ctrl.feature.get('color')}}" /></svg>
             <svg ng-show="ctrl.feature.get('shape') == 'square'" width="18" height="18"><rect width="18" height="18" style="fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};" /></svg>
             <svg ng-show="ctrl.feature.get('shape') == 'cross'" width="18" height="18"><text x="0" y="22" font-size='40' fill="{{ctrl.feature.get('color')}}">+</text></svg>
@@ -87,12 +86,12 @@
     </div>
     <div class="form-inline" ctrl.type == 'point'">
       <!-- Point radius -->
-      <div class="form-group" ng-show="ctrl.feature.get('shape') != 'point' && ctrl.feature.get('shape') != 'circle'">
+      <div class="form-group">
         <label translate>Size</label>
         <input type="range" min="5" max="120" step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
       </div>
       <!-- Point symbol rotation -->
-      <div class="form-group" ng-show="ctrl.feature.get('shape') != 'point' && ctrl.feature.get('shape') != 'circle'">
+      <div class="form-group" ng-show="ctrl.feature.get('shape') != 'circle'">
         <label translate>Angle</label>
         <input type="range" min="-180" max="180" step="45" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
       </div>
