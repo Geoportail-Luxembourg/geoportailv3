@@ -1200,10 +1200,20 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     } else {
       var shape = this.get('shape');
       if (!shape) {
-        this.set('shape', 'circle');
-        shape = 'circle';
+        this.set('shape', 'point');
+        shape = 'point';
       }
-      if (shape === 'circle') {
+      if (shape === 'point') {
+        stroke = new ol.style.Stroke({
+          color: rgbColor,
+          width: 1
+        });
+        goog.object.extend(imageOptions, ({
+          radius: 5,
+          stroke: stroke
+        }));
+        image = new ol.style.Circle(imageOptions);
+      } else if (shape === 'circle') {
         image = new ol.style.Circle(imageOptions);
       } else if (shape === 'square') {
         goog.object.extend(imageOptions, ({

@@ -36,6 +36,13 @@
   <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">
     <div class="form-inline">
       <div class="form-group">
+        <button ng-click="ctrl.selectShape('point')" 
+                ng-class="{selected: ctrl.feature.get('shape') == 'point'}">
+         <svg height="18" width="18">
+            <circle cx="9" cy="9" r="2" stroke="{{ctrl.feature.get('color')}}" stroke-width="1" fill="{{ctrl.feature.get('color')}}" />
+          Point
+          </svg>
+        </button>
         <button ng-click="ctrl.selectShape('circle')" 
                 ng-class="{selected: ctrl.feature.get('shape') == 'circle'}">
          <svg height="18" width="18">
