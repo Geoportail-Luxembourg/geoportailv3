@@ -109,14 +109,17 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
-                      app-mymaps-drawopen="mainCtrl.drawOpen"
-                      app-mymaps-shareopen="mainCtrl.shareOpen"
-                      app-mymaps-share-mymaps-checked="mainCtrl.shareMymapsChecked"
-                      app-mymaps-share-show-long-url="mainCtrl.shareShowLongUrl"
-                      app-mymaps-layers-changed="mainCtrl.layersChanged"
-                      app-mymaps-selected-layers="mainCtrl.selectedLayers"
-                      app-mymaps-map="::mainCtrl.map"></app-mymaps>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="tab-content">
+            <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
+                        app-mymaps-drawopen="mainCtrl.drawOpen"
+                        app-mymaps-shareopen="mainCtrl.shareOpen"
+                        app-mymaps-share-mymaps-checked="mainCtrl.shareMymapsChecked"
+                        app-mymaps-share-show-long-url="mainCtrl.shareShowLongUrl"
+                        app-mymaps-layers-changed="mainCtrl.layersChanged"
+                        app-mymaps-selected-layers="mainCtrl.selectedLayers"
+                        app-mymaps-map="::mainCtrl.map"></app-mymaps>
+          </div>
         </div>
 
         <!-- Infos -->
@@ -125,7 +128,8 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <div class="container-fluid">
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
