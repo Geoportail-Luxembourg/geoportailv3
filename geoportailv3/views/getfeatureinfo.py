@@ -384,6 +384,22 @@ class Getfeatureinfo(object):
                 pass
         return attributes
 
+    def add_area_field(self, features):
+        for feature in features:
+            s = asShape(feature['geometry'])
+            try:
+                area = float(s.area)
+                if area < 100:
+                    area_string = "%s m²" % round(area, 2)
+                elif area < 100000:
+                    area_string = "%s ar" % round(area / 100, 2)
+                else:
+                    area_string = "%s ha" % round(area / 10000, 2)
+                feature['attributes']['Superficie'] = area_string
+            except:
+                pass
+        return features
+
     def replace_resource_by_html_link(self, features, attributes_to_remove):
         modified_features = []
 
