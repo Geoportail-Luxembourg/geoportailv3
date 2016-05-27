@@ -1,6 +1,6 @@
 /**
  * @fileoverview Provides a directive that resizes the map in an animation
- * loop during 1 second when the value of "state" changes.
+ * loop during 2 second when the value of "state" changes.
  *
  * Example:
  *
@@ -24,7 +24,7 @@ goog.require('ol.Map');
  * @ngInject
  */
 app.resizemapDirective = function($window, $animate) {
-  var /** @type {number} */ duration = 1000;
+  var /** @type {number} */ duration = 2000;
   return {
     restrict: 'A',
     link:
