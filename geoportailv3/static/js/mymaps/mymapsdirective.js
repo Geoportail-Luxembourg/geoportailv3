@@ -271,12 +271,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
    */
   this.selectedFeaturesList = this.selectedFeatures_.getArray();
 
-  /**
-   * @type {app.FeaturePopup}
-   * @private
-   */
-  this.featurePopup_ = appFeaturePopup;
-
   $scope.$watch(goog.bind(function() {
     return this.appUserManager_.getRoleId();
   }, this), goog.bind(function(newVal, oldVal) {
@@ -522,7 +516,6 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
-  this.featurePopup_.hide();
 };
 
 
@@ -560,7 +553,6 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
 app.MymapsDirectiveController.prototype.closeAnonymous = function() {
   this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
-  this.featurePopup_.hide();
 };
 
 
@@ -983,7 +975,6 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
-  this.featurePopup_.show(feature, this.map_);
 };
 
 

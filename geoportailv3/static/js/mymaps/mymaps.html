@@ -105,6 +105,12 @@
   </ul>
 </div>
 
+<!-- Information about selected features-->
+<div class="mymaps-info-content" ng-show="ctrl.selectedFeaturesList.length">
+  <div ng-repeat="feature in ctrl.selectedFeaturesList">
+    <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
+  </div>
+</div>
 <!-- Modification Modal -->
 <ngeo-modal ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
   <div class="modal-header">

@@ -117,12 +117,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.selectedFeatures_ = appSelectedFeatures;
 
   /**
-   * @type {app.FeaturePopup}
-   * @private
-   */
-  this.featurePopup_ = appFeaturePopup;
-
-  /**
    * @type {angular.Scope}
    * @private
    */
@@ -331,10 +325,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
           this.drawnFeatures_.activateModifyIfNeeded(feature);
-          this.featurePopup_.show(feature, this.map,
-              evt.mapBrowserEvent.coordinate);
-        } else {
-          this.featurePopup_.hide();
+          this['mymapsOpen'] = true;
         }
         $scope.$apply();
       }, this);
@@ -374,8 +365,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
        * @param {ol.interaction.TranslateEvent} evt The event.
        */
       function(evt) {
-        var feature = evt.features.getArray()[0];
-        this.featurePopup_.show(feature, this.map);
         this.onFeatureModifyEnd_(evt);
       }, this);
 
@@ -501,7 +490,6 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
-  this.featurePopup_.show(feature, this.map);
   this.drawnFeatures_.saveFeature(feature);
   this['mymapsOpen'] = true;
 };
