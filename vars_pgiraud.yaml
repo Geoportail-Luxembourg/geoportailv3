@@ -6,3 +6,4 @@ vars:
 
     sqlalchemy_engines:
       mymaps: 'postgresql://www-data:www-data@localhost:5432/mymaps'
+      ecadastre: 'postgresql://user:password@db.geoportal.lu/ecadastre'
