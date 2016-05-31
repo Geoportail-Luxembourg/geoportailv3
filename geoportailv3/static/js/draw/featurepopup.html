@@ -1,7 +1,5 @@
 <div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature">
-    <div class="feature-popup-heading">{{ ctrl.feature.get('name') }}</div>
-    <a href class="close" ng-click="ctrl.close()">&times;</a>
-  <div class="feature-popup-body description" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
+  <div class="feature-popup-heading" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description'))">
   </div>
   <div class="feature-popup-body measurements">
     <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
