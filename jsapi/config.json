@@ -1,0 +1,37 @@
+{
+  "src": [
+    "node_modules/openlayers/src/**/*.js",
+    "node_modules/openlayers/build/ol.ext/**/*.js",
+    "jsapi/src/**/*.js"
+  ],
+  "exports": ["*"],
+  "compile": {
+    "externs": [
+      "externs/bingmaps.js",
+      "externs/cartodb.js",
+      "externs/closure-compiler.js",
+      "externs/esrijson.js",
+      "externs/geojson.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js"
+    ],
+    "define": [
+      "goog.DEBUG=false",
+      "ol.ENABLE_DOM=false",
+      "ol.ENABLE_WEBGL=false"
+    ],
+    "js": [
+      "externs/olx.js",
+      "externs/oli.js"
+    ],
+    "extra_annotation_name": [
+      "api", "observable"
+    ],
+    "generate_exports": true,
+    "compilation_level": "ADVANCED",
+    "warning_level": "VERBOSE",
+    "output_wrapper": "(function(){%output%}).call(window);",
+    "use_types_for_optimization": true
+  }
+}
