@@ -202,7 +202,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    */
   this.map = this['map'] || this.appFeaturePopup_.map;
 
-  $scope.$watch(goog.bind(function() {
+  this.unwatch1_ = $scope.$watch(goog.bind(function() {
     return this.editingAttributes;
   }, this), goog.bind(function(newVal) {
     if (newVal) {
@@ -210,7 +210,8 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     }
   }, this));
 
-  $scope.$watch(goog.bind(function() {
+
+  this.unwatch2_ = $scope.$watch(goog.bind(function() {
     return this.feature;
   }, this), goog.bind(function(newVal, oldVal) {
     this.editingAttributes = false;
@@ -219,7 +220,8 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.updateFeature_();
   }, this));
 
-  $scope.$watch(function() {
+
+  this.unwatch3_ = $scope.$watch(function() {
     return this.editingStyle;
   }.bind(this), function(newVal, oldVal) {
     if (oldVal && !newVal) {
@@ -227,10 +229,14 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     }
   }.bind(this));
 
-  ol.events.listen(this.drawnFeatures_.modifyInteraction,
+  /**
+   * @type {ol.events.Key}
+   * @private
+   */
+  this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
-  $scope.$watch(goog.bind(function() {
+  this.unwatch4_ = $scope.$watch(goog.bind(function() {
     return this.image;
   }, this), goog.bind(function() {
     if (!goog.isDef(this.image)) {
@@ -239,6 +245,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.tempThumbnail = this.image['thumbnail'];
     this.tempImage = this.image['image'];
   }, this));
+
+  $scope.$on('$destroy', function() {
+    ol.events.unlistenByKey(this.event_);
+    this.unwatch1_();
+    this.unwatch2_();
+    this.unwatch3_();
+    this.unwatch4_();
+  }.bind(this));
+
 };
 
 
