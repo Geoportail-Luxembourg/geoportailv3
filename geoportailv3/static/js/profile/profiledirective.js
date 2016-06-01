@@ -183,8 +183,10 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   this.snappedPoint_ = new ol.Feature();
   this.featureOverlay_.addFeature(this.snappedPoint_);
 
-
-  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  /**
+   * @type {ol.events.Key}
+   */
+  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -196,6 +198,9 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
         this.snapToGeometry_(coordinate, this.line_);
       }, this);
 
+  this.scope_.$on('$destroy', function() {
+    ol.events.unlistenByKey(this.event_);
+  }.bind(this));
 
   /**
    * @param {Object} point The point.
