@@ -185,6 +185,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
 
   /**
    * @type {ol.events.Key}
+   * @private
    */
   this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
       /**
