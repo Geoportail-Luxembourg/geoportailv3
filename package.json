@@ -28,6 +28,7 @@
     "temp": "0.8.3",
     "walk": "2.3.9",
     "d3": "3.5.16",
-    "fuse": "git+https://github.com/petzlux/Fuse#master"
+    "fuse": "git+https://github.com/petzlux/Fuse#master",
+    "closure-util": "1.14.0"
   }
 }
