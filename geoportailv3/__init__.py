@@ -246,4 +246,5 @@ def main(global_config, **settings):
     config.add_route('getpoitemplate', '/getpoitemplate')
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
+    config.add_route('jsapiloader', '/apiv3loader.js')
     return config.make_wsgi_app()

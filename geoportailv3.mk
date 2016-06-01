@@ -35,7 +35,21 @@ POST_RULES = .build/fonts.timestamp
 
 SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py
 
+# Add JS API target to "help" target
+SECONDARY_HELP = ""
+SECONDARY_HELP += "\n"
+SECONDARY_HELP += "JS API targets:\n"
+SECONDARY_HELP += "\n"
+SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
+SECONDARY_HELP += "- serve-js-API_OUTPUT_DIRStart a development server for the JS API project."
+
 include CONST_Makefile
+
+# targets related to the JS API
+API_OUTPUT_DIR =  $(OUTPUT_DIR)
+API_DIR = jsapi
+API_TOOLS_DIR = $(API_DIR)/tools
+API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
 REQUIREMENTS += "suds>=0.4"
 REQUIREMENTS += "ipaddr==2.1.11"
@@ -74,3 +88,17 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 	mkdir -p $(dir $@)
 	$(VENV_BIN)/tooltips2pot
 	msguniq $@ -o $@
+
+.PHONY: build-js-api
+build-js-api: \
+	$(API_OUTPUT_DIR)/apiv3.js
+
+$(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
+		$(API_SRC_JS_FILES) \
+		.build/node_modules.timestamp
+	mkdir -p $(dir $@)
+	node node_modules/openlayers/tasks/build.js $< $@
+
+.PHONY: serve-js-api
+serve-js-api: .build/node_modules.timestamp
+	node $(API_TOOLS_DIR)/serve.js
