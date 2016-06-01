@@ -94,7 +94,7 @@ def main():  # pragma: nocover
 
     fields = []
     for result in results:
-        engine = sqlahelper.get_engine(result.engine)
+        engine = sqlahelper.get_engine(result.engine_gfi)
         first_row = None
         if result.query is not None and len(result.query) > 0:
             first_row = engine.execute("SELECT * FROM " + result.query).first()
@@ -119,7 +119,7 @@ def main():  # pragma: nocover
         msgid "f_%(name)s"
         msgstr ""
         ''' % {
-                            "engine": result.engine,
+                            "engine": result.engine_gfi,
                             "layer": result.layer,
                             "role": result.role,
                             "name": attribute,

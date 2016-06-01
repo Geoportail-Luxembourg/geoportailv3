@@ -82,7 +82,7 @@ class LuxGetfeatureDefinition(Base):
     )
     query = Column(Unicode, label=_(u'Table name'))
     rest_url = Column(Unicode, label=_(u'URL Rest'))
-    engine = Column(Unicode, label=_(u'Engine'))
+    engine_gfi = Column('engine', Unicode, label=_(u'Engine'))
     layer = Column(Unicode, label=_(u'Layer'))
     template = Column(Unicode, label=_(u'Template file name'))
     remote_template = Column(Boolean,
@@ -90,7 +90,7 @@ class LuxGetfeatureDefinition(Base):
     additional_info_function = Column(Unicode, label=_(u'Python function'))
     role = Column(Integer, label=_(u'Role'))
     attributes_to_remove = Column(Unicode, label=_(u'Attributes to keep'))
-    poi_id_collection = Column(Unicode, label=_(u'Id of the poi collection'))
+    poi_id_collection = Column(Integer, label=_(u'Id of the poi collection'))
     geometry_column = Column(Unicode, label=_(u'Geometry column name'))
     columns_order = Column(Unicode, label=_(u'Order of columns'))
     id_column = Column(Unicode, label=_(u'ID column name'))

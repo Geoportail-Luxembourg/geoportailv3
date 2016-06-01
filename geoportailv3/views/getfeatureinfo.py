@@ -57,7 +57,7 @@ class Getfeatureinfo(object):
         if luxgetfeaturedefinitions[0].poi_id_collection is None:
             return HTTPBadRequest()
 
-        engine = sqlahelper.get_engine(luxgetfeaturedefinitions[0].engine)
+        engine = sqlahelper.get_engine(luxgetfeaturedefinitions[0].engine_gfi)
         poi_fields = ["id", "id_collection", "line_num", "easting", "northing",
                       "zip", "town", "street", "poi_name", "description",
                       "type", "url", "active", "core_data", "master_id",
@@ -112,10 +112,11 @@ class Getfeatureinfo(object):
         results = []
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if (luxgetfeaturedefinition is not None and
-                luxgetfeaturedefinition.engine is not None and
+                luxgetfeaturedefinition.engine_gfi is not None and
                 luxgetfeaturedefinition.query is not None and
                     len(luxgetfeaturedefinition.query) > 0):
-                engine = sqlahelper.get_engine(luxgetfeaturedefinition.engine)
+                engine = sqlahelper.\
+                    get_engine(luxgetfeaturedefinition.engine_gfi)
                 is_ordered = luxgetfeaturedefinition.columns_order is not None\
                     and len(luxgetfeaturedefinition.columns_order) > 0
                 query_1 = luxgetfeaturedefinition.query
