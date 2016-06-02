@@ -4,6 +4,7 @@ else
 VARS_FILE = vars_geoportailv3.yaml
 VARS_FILES += ${VARS_FILE}
 endif
+API_LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.api.less' 2> /dev/null)
 
 TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
@@ -89,9 +90,20 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 	$(VENV_BIN)/tooltips2pot
 	msguniq $@ -o $@
 
+.PHONY: build-api
+build-api: build-js-api build-css-api
+
 .PHONY: build-js-api
 build-js-api: \
 	$(API_OUTPUT_DIR)/apiv3.js
+
+.PHONY: build-css-api
+build-css-api: \
+	$(API_OUTPUT_DIR)/apiv3.css
+
+$(API_OUTPUT_DIR)/apiv3.css: $(API_LESS_FILES) .build/node_modules.timestamp
+	mkdir -p $(dir $@)
+	./node_modules/.bin/lessc --clean-css $(PACKAGE)/static/less/$(PACKAGE).api.less $@
 
 $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 		$(API_SRC_JS_FILES) \
