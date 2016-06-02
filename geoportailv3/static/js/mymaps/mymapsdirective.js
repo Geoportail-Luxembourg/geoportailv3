@@ -973,8 +973,10 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
-  this.selectedFeatures_.clear();
-  this.selectedFeatures_.push(feature);
+  if(this.selectedFeaturesList.indexOf(feature) === -1) {
+    this.selectedFeatures_.clear();
+    this.selectedFeatures_.push(feature);
+  }
 };
 
 
