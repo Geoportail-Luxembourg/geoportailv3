@@ -38,7 +38,6 @@ manager.on('error', function(e) {
 });
 manager.on('ready', function() {
   var server = new closure.Server({
-    root: 'jsapi/examples',
     manager: manager
   });
   server.listen(options.port, function() {
