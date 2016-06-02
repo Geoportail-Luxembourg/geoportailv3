@@ -202,23 +202,23 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    */
   this.map = this['map'] || this.appFeaturePopup_.map;
 
-  this.unwatch1_ = $scope.$watch(goog.bind(function() {
+  this.unwatch1_ = $scope.$watch(function() {
     return this.editingAttributes;
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal) {
       this.initForm_();
     }
-  }, this));
+  }.bind(this));
 
 
-  this.unwatch2_ = $scope.$watch(goog.bind(function() {
+  this.unwatch2_ = $scope.$watch(function() {
     return this.feature;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
     this.updateFeature_();
-  }, this));
+  }.bind(this));
 
 
   this.unwatch3_ = $scope.$watch(function() {
@@ -236,15 +236,15 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
-  this.unwatch4_ = $scope.$watch(goog.bind(function() {
+  this.unwatch4_ = $scope.$watch(function() {
     return this.image;
-  }, this), goog.bind(function() {
+  }.bind(this), function() {
     if (!goog.isDef(this.image)) {
       return;
     }
     this.tempThumbnail = this.image['thumbnail'];
     this.tempImage = this.image['image'];
-  }, this));
+  }.bind(this));
 
   $scope.$on('$destroy', function() {
     ol.events.unlistenByKey(this.event_);

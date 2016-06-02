@@ -68,6 +68,12 @@ app.module.directive('appProfile', app.profileDirective);
 app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     $document) {
 
+    /**
+   * @type {boolean}
+   * @private
+   */
+  this.showTooltip_ = true;
+
   /**
    * @type {string}
    * @export
@@ -199,10 +205,6 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
         this.snapToGeometry_(coordinate, this.line_);
       }, this);
 
-  this.scope_.$on('$destroy', function() {
-    ol.events.unlistenByKey(this.event_);
-  }.bind(this));
-
   /**
    * @param {Object} point The point.
    * @param {number} dist The distance.
@@ -210,35 +212,35 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @param {number} elevation The elevation.
    * @param {string} yUnits The y unit.
    */
-  var hoverCallback = goog.bind(
-      function(point, dist, xUnits, elevation, yUnits) {
-        // An item in the list of points given to the profile.
-        this['point'] = point;
-        this.featureOverlay_.clear();
-        var curPoint = new ol.geom.Point([point['x'], point['y']]);
-        curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
-        var positionFeature = new ol.Feature({
-          geometry: curPoint
-        });
-        this.featureOverlay_.addFeature(positionFeature);
-
-        this.createMeasureTooltip_();
-        this.measureTooltipElement_.innerHTML = this.distanceLabel_ +
-            this.formatDistance_(dist, xUnits) +
-            '<br>' +
-            this.elevationLabel_ +
-            this.formatElevation_(elevation, yUnits);
-        this.measureTooltip_.setPosition(curPoint.getCoordinates());
-
-        this.snappedPoint_.setGeometry(new ol.geom.Point([point.x, point.y]));
-
-      }, this);
+  var hoverCallback = function(point, dist, xUnits, elevation, yUnits) {
+    if (this.showTooltip_) {
+      // An item in the list of points given to the profile.
+      this['point'] = point;
+      this.featureOverlay_.clear();
+      var curPoint = new ol.geom.Point([point['x'], point['y']]);
+      curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
+      var positionFeature = new ol.Feature({
+        geometry: curPoint
+      });
+      this.featureOverlay_.addFeature(positionFeature);
+      this.createMeasureTooltip_();
+      this.measureTooltipElement_.innerHTML = this.distanceLabel_ +
+          this.formatDistance_(dist, xUnits) +
+          '<br>' +
+          this.elevationLabel_ +
+          this.formatElevation_(elevation, yUnits);
+      this.measureTooltip_.setPosition(curPoint.getCoordinates());
+      this.snappedPoint_.setGeometry(new ol.geom.Point([point.x, point.y]));
+    }
+  }.bind(this);
 
   var outCallback = goog.bind(function() {
-    this['point'] = null;
-    this.removeMeasureTooltip_();
-    this.featureOverlay_.clear();
-    this.snappedPoint_.setGeometry(null);
+    if (this.showTooltip_) {
+      this['point'] = null;
+      this.removeMeasureTooltip_();
+      this.featureOverlay_.clear();
+      this.snappedPoint_.setGeometry(null);
+    }
   }, this);
 
   this['profileOptions'] = {
@@ -254,9 +256,9 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
 
   this['point'] = null;
 
-  $scope.$watch(goog.bind(function() {
+  this.unwatchProfileData = $scope.$watch(function() {
     return this['profileData'];
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (goog.isDef(newVal)) {
       var elevationGain = 0;
       var elevationLoss = 0;
@@ -292,7 +294,12 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     } else {
       this.line_ = null;
     }
-  }, this));
+  }.bind(this));
+
+  this.scope_.$on('$destroy', function() {
+    ol.events.unlistenByKey(this.event_);
+    this.unwatchProfileData();
+  }.bind(this));
 };
 
 
@@ -380,7 +387,11 @@ app.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
   var pixelDistSqr = distSqr / (viewResolution * viewResolution);
   // Check whether dist is lower than 8 pixels
   this['profileHighlight'] = pixelDistSqr < 64 ? closestPoint[2] : -1;
-
+  if (this['profileHighlight'] > -1) {
+    this.showTooltip_ = false;
+  } else {
+    this.showTooltip_ = true;
+  }
   this.scope_.$digest();
 };
 

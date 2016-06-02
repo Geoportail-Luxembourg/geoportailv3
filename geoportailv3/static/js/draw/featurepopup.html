@@ -15,7 +15,8 @@
     </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
     <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
-      <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile">
+      <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile"
+        app-profile-show-tooltip="!ctrl.isEditable()">
     </div>
   </div>
   <div class="feature-popup-footer">
