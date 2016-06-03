@@ -905,6 +905,34 @@ app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
 
 
 /**
+ * Called when a map is choosen.
+ * @param {Object} map The selected map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
+  this.onChosen(map, true).then(function() {
+    var extent = undefined;
+    this.drawnFeatures_.getCollection().forEach(function(feature) {
+      if (feature.get('__map_id__')) {
+        if (goog.isDef(extent)) {
+          extent = ol.extent.extend(extent, feature.getGeometry().getExtent());
+        } else {
+          extent = feature.getGeometry().getExtent();
+        }
+      }
+    }, this);
+    if (goog.isDef(extent)) {
+      var viewSize = /** {ol.Size} **/ (this.map_.getSize());
+      goog.asserts.assert(goog.isDef(viewSize));
+      this.map_.getView().fit(extent,
+          viewSize
+      );
+    }
+  }.bind(this));
+};
+
+
+/**
  * Is the map editable.
  * @return {boolean} True if the map is editable.
  * @export
