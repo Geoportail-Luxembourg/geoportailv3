@@ -17,6 +17,7 @@
     "ngeo": false,
     "gmf": false,
     "app": false,
-    "Fuse": false
+    "Fuse": false,
+    "lux": false
   }
 }
