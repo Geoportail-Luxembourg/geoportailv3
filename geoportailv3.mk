@@ -5,6 +5,7 @@ VARS_FILE = vars_geoportailv3.yaml
 VARS_FILES += ${VARS_FILE}
 endif
 API_LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.api.less' 2> /dev/null)
+API_JS_FILES = $(shell find jsapi/src/ -type f -name '*.js')
 
 TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
@@ -41,8 +42,10 @@ SECONDARY_HELP = ""
 SECONDARY_HELP += "\n"
 SECONDARY_HELP += "JS API targets:\n"
 SECONDARY_HELP += "\n"
+SECONDARY_HELP += "- build-api			Build CSS & JS for the API.\n"
 SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
-SECONDARY_HELP += "- serve-js-API_OUTPUT_DIRStart a development server for the JS API project."
+SECONDARY_HELP += "- build-css-api		Build the CSS API project.\n"
+SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
 
 include CONST_Makefile
 
@@ -114,3 +117,16 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 .PHONY: serve-js-api
 serve-js-api: .build/node_modules.timestamp
 	node $(API_TOOLS_DIR)/serve.js
+
+.PHONY: lint-api
+lint-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.eslint.timestamp
+
+.build/api.eslint.timestamp: $(API_JS_FILES)
+	mkdir -p $(dir $@)
+	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
+	touch $@
+
+clean: geoportailv3clean
+
+geoportailv3clean:
+	rm -rf $(API_OUTPUT_DIR)/apiv3.*
