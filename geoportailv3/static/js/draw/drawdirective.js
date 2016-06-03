@@ -86,6 +86,11 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
     appSelectedFeatures, appMymaps, gettextCatalog, gettext, $compile) {
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 
   /**
    * @type {angularGettext.Catalog}
@@ -115,12 +120,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @private
    */
   this.selectedFeatures_ = appSelectedFeatures;
-
-  /**
-   * @type {app.FeaturePopup}
-   * @private
-   */
-  this.featurePopup_ = appFeaturePopup;
 
   /**
    * @type {angular.Scope}
@@ -331,16 +330,22 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
           this.drawnFeatures_.activateModifyIfNeeded(feature);
-          this.featurePopup_.show(feature, this.map,
+          this['mymapsOpen'] = true;
+          if (!this.featurePopup_.isDocked) {
+            this.featurePopup_.show(feature, this.map,
               evt.mapBrowserEvent.coordinate);
+          }
         } else {
-          this.featurePopup_.hide();
+          if (!this.featurePopup_.isDocked) {
+            this.featurePopup_.hide();
+          }
         }
         $scope.$apply();
       }, this);
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
-    features: appSelectedFeatures
+    features: appSelectedFeatures,
+    pixelTolerance: 20
   });
   this.drawnFeatures_.modifyCircleInteraction =
       new app.ModifyCircle({
@@ -374,8 +379,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
        * @param {ol.interaction.TranslateEvent} evt The event.
        */
       function(evt) {
-        var feature = evt.features.getArray()[0];
-        this.featurePopup_.show(feature, this.map);
         this.onFeatureModifyEnd_(evt);
       }, this);
 
@@ -501,7 +504,6 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
-  this.featurePopup_.show(feature, this.map);
   this.drawnFeatures_.saveFeature(feature);
   this['mymapsOpen'] = true;
 };

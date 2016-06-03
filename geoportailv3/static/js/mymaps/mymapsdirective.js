@@ -80,6 +80,12 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
     $document, exportgpxkmlUrl, appExport) {
 
   /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.appFeaturePopup_ = appFeaturePopup;
+
+  /**
    * @type {app.Export}
    * @private
    */
@@ -270,12 +276,6 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
    * @export
    */
   this.selectedFeaturesList = this.selectedFeatures_.getArray();
-
-  /**
-   * @type {app.FeaturePopup}
-   * @private
-   */
-  this.featurePopup_ = appFeaturePopup;
 
   $scope.$watch(goog.bind(function() {
     return this.appUserManager_.getRoleId();
@@ -522,7 +522,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
-  this.featurePopup_.hide();
+  this.appFeaturePopup_.hide();
 };
 
 
@@ -560,7 +560,9 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
 app.MymapsDirectiveController.prototype.closeAnonymous = function() {
   this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
-  this.featurePopup_.hide();
+  if (this.isDocked()) {
+    this.appFeaturePopup_.hide();
+  }
 };
 
 
@@ -903,6 +905,34 @@ app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
 
 
 /**
+ * Called when a map is choosen.
+ * @param {Object} map The selected map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
+  this.onChosen(map, true).then(function() {
+    var extent = undefined;
+    this.drawnFeatures_.getCollection().forEach(function(feature) {
+      if (feature.get('__map_id__')) {
+        if (goog.isDef(extent)) {
+          extent = ol.extent.extend(extent, feature.getGeometry().getExtent());
+        } else {
+          extent = feature.getGeometry().getExtent();
+        }
+      }
+    }, this);
+    if (goog.isDef(extent)) {
+      var viewSize = /** {ol.Size} **/ (this.map_.getSize());
+      goog.asserts.assert(goog.isDef(viewSize));
+      this.map_.getView().fit(extent,
+          viewSize
+      );
+    }
+  }.bind(this));
+};
+
+
+/**
  * Is the map editable.
  * @return {boolean} True if the map is editable.
  * @export
@@ -981,9 +1011,13 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
-  this.selectedFeatures_.clear();
-  this.selectedFeatures_.push(feature);
-  this.featurePopup_.show(feature, this.map_);
+  if (this.selectedFeaturesList.indexOf(feature) === -1) {
+    this.selectedFeatures_.clear();
+    this.selectedFeatures_.push(feature);
+    if (!this.isDocked()) {
+      this.appFeaturePopup_.show(feature, this.map_);
+    }
+  }
 };
 
 
@@ -1029,6 +1063,14 @@ app.MymapsDirectiveController.prototype.shareMymapsLink = function() {
   this['shareMymapsChecked'] = true;
   this['shareShowLongUrl'] = true;
   this['shareopen'] = true;
+};
+
+/**
+ * @return {boolean} True if the popup is docked.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isDocked = function() {
+  return this.appFeaturePopup_.isDocked;
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

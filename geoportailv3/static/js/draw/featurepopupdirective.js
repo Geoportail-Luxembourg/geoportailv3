@@ -202,24 +202,26 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    */
   this.map = this['map'] || this.appFeaturePopup_.map;
 
-  $scope.$watch(goog.bind(function() {
+  this.unwatch1_ = $scope.$watch(function() {
     return this.editingAttributes;
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal) {
       this.initForm_();
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+
+  this.unwatch2_ = $scope.$watch(function() {
     return this.feature;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     this.editingAttributes = false;
     this.editingStyle = false;
     this.deletingFeature = false;
     this.updateFeature_();
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(function() {
+
+  this.unwatch3_ = $scope.$watch(function() {
     return this.editingStyle;
   }.bind(this), function(newVal, oldVal) {
     if (oldVal && !newVal) {
@@ -227,18 +229,31 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     }
   }.bind(this));
 
-  ol.events.listen(this.drawnFeatures_.modifyInteraction,
+  /**
+   * @type {ol.events.Key}
+   * @private
+   */
+  this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
-  $scope.$watch(goog.bind(function() {
+  this.unwatch4_ = $scope.$watch(function() {
     return this.image;
-  }, this), goog.bind(function() {
+  }.bind(this), function() {
     if (!goog.isDef(this.image)) {
       return;
     }
     this.tempThumbnail = this.image['thumbnail'];
     this.tempImage = this.image['image'];
-  }, this));
+  }.bind(this));
+
+  $scope.$on('$destroy', function() {
+    ol.events.unlistenByKey(this.event_);
+    this.unwatch1_();
+    this.unwatch2_();
+    this.unwatch3_();
+    this.unwatch4_();
+  }.bind(this));
+
 };
 
 
@@ -338,7 +353,7 @@ app.FeaturePopupController.prototype.removeImage = function() {
  * @export
  */
 app.FeaturePopupController.prototype.close = function() {
-  this.appFeaturePopup_.hide();
+  this.dock();
 };
 
 
@@ -530,6 +545,15 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
  */
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
+    var lastCoordinate = /** @type {ol.geom.LineString}*/
+        (this.feature.getGeometry()).getLastCoordinate();
+    var viewSize = /** {ol.Size} **/ (this.map.getSize());
+    goog.asserts.assert(goog.isDef(viewSize));
+    this.map.getView().fit(
+        new ol.geom.Point(lastCoordinate),
+        viewSize
+    );
+
     this.drawnFeatures_.modifyInteraction.setActive(false);
     this.drawnFeatures_.modifyCircleInteraction.setActive(false);
     this.drawnFeatures_.translateInteraction.setActive(false);
@@ -587,6 +611,35 @@ app.FeaturePopupController.prototype.isCircle = function() {
     return !!this.feature.get('isCircle');
   }
   return false;
+};
+
+
+/**
+ * Dock the popup to the left panel.
+ * @export
+ */
+app.FeaturePopupController.prototype.dock = function() {
+  this.appFeaturePopup_.isDocked = true;
+  this.appFeaturePopup_.hide();
+};
+
+
+/**
+ * Undock the popup and display it into the map.
+ * @export
+ */
+app.FeaturePopupController.prototype.undock = function() {
+  this.appFeaturePopup_.isDocked = false;
+  this.appFeaturePopup_.show(this.feature, this.map);
+};
+
+
+/**
+ * @return {boolean} True if the popup is docked.
+ * @export
+ */
+app.FeaturePopupController.prototype.isDocked = function() {
+  return this.appFeaturePopup_.isDocked;
 };
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

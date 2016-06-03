@@ -29,6 +29,11 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
     appGetProfile) {
 
   /**
+   * @type {boolean}
+   */
+  this.isDocked = true;
+
+  /**
    * @type {Document}
    * @private
    */
@@ -212,7 +217,6 @@ app.FeaturePopup.prototype.hide = function() {
   delete this.scope_['feature'];
   delete this.scope_['map'];
   this.overlay_.setPosition(undefined);
-  this.features_.clear();
   ol.Observable.unByKey(this.mousedownEvent_);
   this.mousedownEvent_ = null;
 };

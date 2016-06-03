@@ -85,6 +85,13 @@
     color: #333;
   }
 
+  .mymaps-info-content {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
   #infos .container-fluid {
     overflow-y: auto;
   }
@@ -99,6 +106,18 @@
   .layer-info-content .profile-popup {
     width: 96%;
   }
+
+  .mymaps-info-content .poi-feature {
+    margin: 5px 5px 5px 5px;
+    padding: 10px 0px 10px 10px;
+  }
+  .mymaps-info-content .poi-feature a.fid-link{
+    color: #000000;
+  }
+  .mymaps-info-content .profile-popup {
+    width: 96%;
+  }
+
   @range-width: 70px;
   @range-track-color: #fff;
   input[type=range] {
@@ -113,6 +132,7 @@
     margin-left: 10px;
     float:none;
     vertical-align: middle;
+    display: inline;
   }
   input[type=range]::-webkit-slider-runnable-track {
     width: @range-width;
