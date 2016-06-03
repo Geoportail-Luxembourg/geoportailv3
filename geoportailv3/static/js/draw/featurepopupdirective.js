@@ -545,6 +545,15 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
  */
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
+    var lastCoordinate = /** @type {ol.geom.LineString}*/
+        (this.feature.getGeometry()).getLastCoordinate();
+    var viewSize = /** {ol.Size} **/ (this.map.getSize());
+    goog.asserts.assert(goog.isDef(viewSize));
+    this.map.getView().fit(
+        new ol.geom.Point(lastCoordinate),
+        viewSize
+    );
+
     this.drawnFeatures_.modifyInteraction.setActive(false);
     this.drawnFeatures_.modifyCircleInteraction.setActive(false);
     this.drawnFeatures_.translateInteraction.setActive(false);
