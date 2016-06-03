@@ -48,7 +48,7 @@
         <a href class="dropdown-toggle" data-toggle="dropdown">
           <span class="fa fa-caret-square-o-down"></span>
         </a>
-        <ul class="dropdown-menu {'dropdown-menu-right':ctrl.isDocked()}" role="menu">
+        <ul class="dropdown-menu {{ctrl.isDocked()?'dropdown-menu-right':''}}" role="menu">
           <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__') && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
