@@ -86,6 +86,11 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
     appSelectedFeatures, appMymaps, gettextCatalog, gettext, $compile) {
+  /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.featurePopup_ = appFeaturePopup;
 
   /**
    * @type {angularGettext.Catalog}
@@ -326,6 +331,14 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
           var feature = evt.selected[0];
           this.drawnFeatures_.activateModifyIfNeeded(feature);
           this['mymapsOpen'] = true;
+          if (!this.featurePopup_.isDocked) {
+            this.featurePopup_.show(feature, this.map,
+              evt.mapBrowserEvent.coordinate);
+          }
+        } else {
+          if (!this.featurePopup_.isDocked) {
+            this.featurePopup_.hide();
+          }
         }
         $scope.$apply();
       }, this);

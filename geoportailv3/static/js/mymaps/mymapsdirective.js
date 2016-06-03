@@ -522,6 +522,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
+  this.appFeaturePopup_.hide();
 };
 
 
@@ -559,6 +560,9 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
 app.MymapsDirectiveController.prototype.closeAnonymous = function() {
   this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
+  if (this.isDocked()) {
+    this.appFeaturePopup_.hide();
+  }
 };
 
 
