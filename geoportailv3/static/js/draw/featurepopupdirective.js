@@ -353,7 +353,7 @@ app.FeaturePopupController.prototype.removeImage = function() {
  * @export
  */
 app.FeaturePopupController.prototype.close = function() {
-  this.appFeaturePopup_.hide();
+  this.dock();
 };
 
 
@@ -602,6 +602,35 @@ app.FeaturePopupController.prototype.isCircle = function() {
     return !!this.feature.get('isCircle');
   }
   return false;
+};
+
+
+/**
+ * Dock the popup to the left panel.
+ * @export
+ */
+app.FeaturePopupController.prototype.dock = function() {
+  this.appFeaturePopup_.isDocked = true;
+  this.appFeaturePopup_.hide();
+};
+
+
+/**
+ * Undock the popup and display it into the map.
+ * @export
+ */
+app.FeaturePopupController.prototype.undock = function() {
+  this.appFeaturePopup_.isDocked = false;
+  this.appFeaturePopup_.show(this.feature, this.map);
+};
+
+
+/**
+ * @return {boolean} True if the popup is docked.
+ * @export
+ */
+app.FeaturePopupController.prototype.isDocked = function() {
+  return this.appFeaturePopup_.isDocked;
 };
 
 app.module.controller('AppFeaturePopupController', app.FeaturePopupController);

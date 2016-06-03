@@ -80,6 +80,12 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
     $document, exportgpxkmlUrl, appExport) {
 
   /**
+   * @type {app.FeaturePopup}
+   * @private
+   */
+  this.appFeaturePopup_ = appFeaturePopup;
+
+  /**
    * @type {app.Export}
    * @private
    */
@@ -976,6 +982,9 @@ app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
   if (this.selectedFeaturesList.indexOf(feature) === -1) {
     this.selectedFeatures_.clear();
     this.selectedFeatures_.push(feature);
+    if (!this.isDocked()) {
+      this.appFeaturePopup_.show(feature, this.map_);
+    }
   }
 };
 
@@ -1022,6 +1031,14 @@ app.MymapsDirectiveController.prototype.shareMymapsLink = function() {
   this['shareMymapsChecked'] = true;
   this['shareShowLongUrl'] = true;
   this['shareopen'] = true;
+};
+
+/**
+ * @return {boolean} True if the popup is docked.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isDocked = function() {
+  return this.appFeaturePopup_.isDocked;
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
