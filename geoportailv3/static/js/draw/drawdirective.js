@@ -344,7 +344,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       }, this);
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
-    features: appSelectedFeatures
+    features: appSelectedFeatures,
+    pixelTolerance: 20
   });
   this.drawnFeatures_.modifyCircleInteraction =
       new app.ModifyCircle({
