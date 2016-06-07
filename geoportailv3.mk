@@ -48,6 +48,7 @@ SECONDARY_HELP += "\n"
 SECONDARY_HELP += "- build-api			Build CSS & JS for the API.\n"
 SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
 SECONDARY_HELP += "- build-css-api		Build the CSS API project.\n"
+SECONDARY_HELP += "- clean-js-api		Remove generated files of the JS API project.\n"
 SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
 
 include CONST_Makefile
@@ -133,7 +134,9 @@ lint-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.es
 	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
 	touch $@
 
-clean: geoportailv3clean
+# Add new dependency to clean target
+clean: clean-js-api
 
-geoportailv3clean:
+.PHONY: clean-js-api
+clean-js-api:
 	rm -rf $(API_OUTPUT_DIR)/apiv3.*
