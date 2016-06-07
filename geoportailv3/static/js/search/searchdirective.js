@@ -479,7 +479,7 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       var results = [];
       var re = {
         'EPSG:2169': {
-          regex: /(\d{4,5})\s*([E|N])?\W*(\d{4,6})\s*([E|N])?/,
+          regex: /(\d{4,6})\s*([E|N])?\W*(\d{4,6})\s*([E|N])?/,
           label: 'LUREF'
         },
         'EPSG:4326': {
