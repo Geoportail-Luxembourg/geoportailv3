@@ -102,7 +102,10 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 	msguniq $@ -o $@
 
 .PHONY: build-api
-build-api: build-js-api build-css-api
+build-api: \
+	lint-js-api \
+	build-js-api \
+	build-css-api
 
 .PHONY: build-js-api
 build-js-api: \
