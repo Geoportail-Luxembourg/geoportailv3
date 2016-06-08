@@ -15,6 +15,11 @@ watchless:
 	@echo "Watching changes to less files…"
 	watchmedo shell-command --patterns="*.less" --recursive --command="make -f pgiraud.mk geoportailv3/static/build/build.css"
 
+.PHONY: watchapiless
+watchapiless:
+	@echo "Watching changes to API less files…"
+	watchmedo shell-command --patterns="*.api.less" --recursive --command="make -f pgiraud.mk build-css-api"
+
 .PHONY: watchtemplates
 watchtemplates:
 	@echo "Watching changes to template files…"
