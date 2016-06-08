@@ -557,7 +557,9 @@ app.FeaturePopupController.prototype.continueLine = function() {
     this.drawnFeatures_.modifyInteraction.setActive(false);
     this.drawnFeatures_.modifyCircleInteraction.setActive(false);
     this.drawnFeatures_.translateInteraction.setActive(false);
-    this.drawnFeatures_.drawLineInteraction.continueLine(this.feature);
+    this.drawnFeatures_.drawLineInteraction.setActive(true);
+    this.drawnFeatures_.drawLineInteraction.extend(this.feature);
+    this.drawnFeatures_.continuingLine = true;
   }
   this.appFeaturePopup_.toggleDropdown();
 };

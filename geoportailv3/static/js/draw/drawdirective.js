@@ -19,9 +19,6 @@ goog.provide('app.drawDirective');
 goog.require('app');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
-goog.require('app.MeasureEvent');
-goog.require('app.MeasureEventType');
-goog.require('app.MeasureLength');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
@@ -77,15 +74,21 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {gettext} gettext Gettext service.
  * @param {angular.$compile} $compile The compile provider.
+ * @param {app.Notify} appNotify Notify service.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps, gettextCatalog, gettext, $compile) {
+    appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify) {
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
+
   /**
    * @type {app.FeaturePopup}
    * @private
@@ -177,16 +180,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  var contMsg = gettext('Click to continue drawing the line<br>' +
-      'Double-click or click last point to finish');
-  var helpMsg = gettext('Click to start drawing line');
-  this.drawnFeatures_.drawLineInteraction = new app.MeasureLength({
-    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
-    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+  this.drawnFeatures_.drawLineInteraction = new ol.interaction.Draw({
+    type: ol.geom.GeometryType.LINE_STRING
   });
 
   /**
-   * @type {app.MeasureLength}
+   * @type {ol.interaction.Draw}
    * @export
    */
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
@@ -197,19 +196,16 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(this.drawLine, app.MeasureEventType.MEASUREEND,
+  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  helpMsg = gettext('Click to start drawing polygon');
-  contMsg = gettext('Click to continue drawing the polygon<br>' +
-      'Double-click or click last point to finish');
-  var drawPolygon = new ngeo.interaction.MeasureArea({
-    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
-    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+
+  var drawPolygon = new ol.interaction.Draw({
+    type: ol.geom.GeometryType.POLYGON
   });
 
   /**
-   * @type {ngeo.interaction.MeasureArea}
+   * @type {ol.interaction.Draw}
    * @export
    */
   this.drawPolygon = drawPolygon;
@@ -220,14 +216,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawPolygon, ngeo.MeasureEventType.MEASUREEND,
+  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  helpMsg = gettext('Click to start drawing circle');
-  contMsg = gettext('Click to finish');
   var drawCircle = new ngeo.interaction.MeasureAzimut({
-    startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
-    continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0]
+    startMsg: $compile('')($scope)[0],
+    continueMsg: $compile('')($scope)[0]
   });
 
   /**
@@ -347,6 +341,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
     features: appSelectedFeatures,
     pixelTolerance: 20
   });
+
   this.drawnFeatures_.modifyCircleInteraction =
       new app.ModifyCircle({
         features: appSelectedFeatures
@@ -364,8 +359,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   ol.events.listen(this.drawnFeatures_.modifyInteraction,
       ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
-  ol.events.listen(this.drawLine, app.MeasureEventType.MODIFYMEASUREEND,
-      this.onFeatureModifyMeasureEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
@@ -402,10 +395,10 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
 
 
 /**
- * @param {app.MeasureEvent} event Event.
+ * @param {ol.interaction.DrawEvent} event Event.
  * @private
  */
-app.DrawController.prototype.onFeatureModifyMeasureEnd_ = function(event) {
+app.DrawController.prototype.onContinueLineEnd_ = function(event) {
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {
@@ -430,14 +423,36 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive();
   this.selectInteraction_.setActive(!active);
+  var msg = '';
+  if (this.drawPoint.getActive()) {
+    msg = this.gettextCatalog.getString('Click to draw the point');
+  } else if (this.drawLine.getActive()) {
+    msg = this.gettextCatalog.getString('Click to start drawing line<br>' +
+      'Double-click to finish');
+  } else if (this.drawPolygon.getActive()) {
+    msg = this.gettextCatalog.getString('Click to start drawing polygon<br>' +
+      'Double-click or click last point to finish');
+  } else if (this.drawCircle.getActive()) {
+    msg = this.gettextCatalog.getString('Click to start drawing circle');
+  } else if (this.drawLabel.getActive()) {
+    msg = this.gettextCatalog.getString('Click to place the label');
+  }
+  if (msg.length > 0) {
+    this.notify_(msg);
+  }
 };
 
 
 /**
- * @param {ol.interaction.DrawEvent|ngeo.MeasureEvent} event The event.
+ * @param {ol.interaction.DrawEvent} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
+  if (this.drawnFeatures_.continuingLine) {
+    this.drawnFeatures_.continuingLine = false;
+    this.onContinueLineEnd_(event);
+    return ;
+  }
   var feature = event.feature;
   if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
