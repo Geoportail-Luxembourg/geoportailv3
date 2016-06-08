@@ -65,7 +65,7 @@ REQUIREMENTS += "ipaddr==2.1.11"
 REQUIREMENTS += "pyocclient==0.2"
 # DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 DEV_REQUIREMENTS += git+https://github.com/petzlux/transifex-client.git
-PRINT_VERSION = NONE 
+PRINT_VERSION = NONE
 
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
