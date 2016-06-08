@@ -45,6 +45,7 @@ SECONDARY_HELP += "\n"
 SECONDARY_HELP += "- build-api			Build CSS & JS for the API.\n"
 SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
 SECONDARY_HELP += "- build-css-api		Build the CSS API project.\n"
+SECONDARY_HELP += "- lint-js-api		Run the linter on the JS API code.\n"
 SECONDARY_HELP += "- clean-js-api		Remove generated files of the JS API project.\n"
 SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
 
@@ -119,8 +120,8 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 serve-js-api: .build/node_modules.timestamp
 	node $(API_TOOLS_DIR)/serve.js
 
-.PHONY: lint-api
-lint-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.eslint.timestamp
+.PHONY: lint-js-api
+lint-js-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.eslint.timestamp
 
 .build/api.eslint.timestamp: $(API_JS_FILES)
 	mkdir -p $(dir $@)
