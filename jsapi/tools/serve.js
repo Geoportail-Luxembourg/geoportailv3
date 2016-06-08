@@ -1,5 +1,7 @@
 var closure = require('closure-util');
 var nomnom = require('nomnom');
+var gaze = require('gaze');
+var exec = require('child_process').exec;
 
 var log = closure.log;
 
@@ -18,6 +20,21 @@ var options = nomnom.options({
     metavar: 'LEVEL'
   }
 }).parse();
+
+
+function buildCSS() {
+  log.info('geoportail v3', 'Compiling JS API CSS');
+  exec('make -f geoportailv3.mk build-css-api', function(error, stdout, stderr) {
+    if (error !== null) {
+      console.log(error);
+    }
+    if (stdout) {
+      console.error(stdout);
+    }
+  });
+}
+
+buildCSS();
 
 
 /** @type {string} */
@@ -47,5 +64,12 @@ manager.on('ready', function() {
   server.on('error', function(err) {
     log.error('geoportail v3 js api', 'Server failed to start: ' + err.message);
     process.exit(1);
+  });
+
+  gaze('**/*.less', function(err, watcher) {
+    this.on('all', function(event, filepath) {
+      console.log(filepath + ' was ' + event);
+      buildCSS();
+    });
   });
 });

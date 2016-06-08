@@ -27,6 +27,7 @@
     "fs-extra": "0.30.0",
     "jquery": "2.2.4",
     "less": "2.7.1",
+    "gaze": "1.0.0",
     "less-plugin-autoprefix": "1.5.1",
     "less-plugin-clean-css": "1.5.1",
     "ngeo": "git+https://github.com/camptocamp/ngeo#c71aa06f4fa7fbf1dbd0a68940e4227058291601",
@@ -38,7 +39,6 @@
     "temp": "0.8.3",
     "walk": "2.3.9",
     "d3": "3.5.17",
-    "fuse": "git+https://github.com/petzlux/Fuse#master",
-    "closure-util": "1.14.0"
+    "fuse": "git+https://github.com/petzlux/Fuse#master"
   }
 }
