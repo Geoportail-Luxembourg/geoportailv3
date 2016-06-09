@@ -128,6 +128,8 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 		.build/node_modules.timestamp
 	mkdir -p $(dir $@)
 	node node_modules/openlayers/tasks/build.js $< $@
+	cat node_modules/whatwg-fetch/fetch.js $@ > concatenated.js
+	mv concatenated.js $@
 
 .PHONY: serve-js-api
 serve-js-api: .build/node_modules.timestamp
