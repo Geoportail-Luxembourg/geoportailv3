@@ -1,0 +1,36 @@
+{
+    "basemap_2015_global" : {
+        "imageType" : "image/png",
+        "type"      : "WMTS"
+    },
+    "topo_bw_jpeg" : {
+        "imageType" : "image/jpeg",
+        "type"      : "WMTS"
+    },
+    "topogr_global" : {
+        "imageType" : "image/png",
+        "type"      : "WMTS"
+    },
+    "orthogr_2013_global" : {
+        "imageType" : "image/jpeg",
+        "type"      : "WMTS"
+    },
+    "streets_jpeg" : {
+        "imageType" : "image/png",
+        "type"      : "WMTS"
+    },
+    "354" : {
+        "type"      : "WMS",
+        "layers"    : "districts",
+        "style"     : "default",
+        "name"      : "districts",
+        "imageType" : "image/png"
+    },
+    "543" : {
+        "type"      : "WMS",
+        "layers"    : "543",
+        "style"     : "default",
+        "name"      : "editus_poi_286",
+        "imageType" : "image/png"
+    }
+}
