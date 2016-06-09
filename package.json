@@ -39,6 +39,7 @@
     "temp": "0.8.3",
     "walk": "2.3.9",
     "d3": "3.5.17",
-    "fuse": "git+https://github.com/petzlux/Fuse#master"
+    "fuse": "git+https://github.com/petzlux/Fuse#master",
+    "whatwg-fetch": "1.0.0"
   }
 }
