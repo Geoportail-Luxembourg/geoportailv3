@@ -3,6 +3,57 @@
  */
 var luxx;
 
+/**
+ * Object literal with config options for the map.
+ * @typedef {{
+ *     bgLayer: (string),
+ *     layers: (Array<string>),
+ *     target: (Element|string),
+ *     position: (ol.Coordinate|undefined),
+ *     positionSrs: (string|number|undefined),
+ *     zoom: (number|undefined)
+ * }}
+ */
+luxx.MapOptions;
+
+/**
+ * Identifier of background layer. Default to `basemap_2015_global`.
+ * @type {string}
+ */
+luxx.MapOptions.prototype.bgLayer;
+
+/**
+ * Array of overlay layer identifiers.
+ * @type {Array<string>}
+ */
+luxx.MapOptions.prototype.layers;
+
+/**
+ * The container for the map, either the element itself or the `id` of the
+ * element.
+ * @type {Element|string}
+ */
+luxx.MapOptions.prototype.target;
+
+/**
+ * The initial position of the center for the map view. The coordinate system
+ * for the center is specified with the `positionSrs` option.
+ * @type {ol.Coordinate|undefined}
+ */
+luxx.MapOptions.prototype.position;
+
+/**
+ * The projection of the position coordinates.
+ * Default is `2169` (Spherical Mercator).
+ * @type {string|number}
+ */
+luxx.MapOptions.prototype.positionSrs;
+
+/**
+ * Zoom level used to calculate the initial resolution for the view.
+ * @type {number|undefined}
+ */
+luxx.MapOptions.prototype.zoom;
 
 /**
  * Object literal with config options for the maker.
@@ -57,3 +108,15 @@ luxx.MarkerOptions.prototype.html;
  * @type {boolean|undefined}
  */
 luxx.MarkerOptions.prototype.hover;
+
+/**
+ * Object literal with config options for the layer.
+ * @typedef {{imageType: (string), type: (string)}}
+ */
+luxx.LayerOptions;
+
+/**
+ * Object literal with config options for the layers.
+ * @typedef {Object.<number|string, luxx.LayerOptions>}
+ */
+luxx.LayersOptions;

@@ -6,8 +6,11 @@ goog.require('ol.events');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
+goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
+goog.require('ol.source.ImageWMS');
+goog.require('ol.source.WMTSRequestEncoding');
 
 /**
  * @classdesc
@@ -15,19 +18,68 @@ goog.require('ol.source.OSM');
  *
  * @constructor
  * @extends {ol.Map}
- * @param {olx.MapOptions} options Map options.
+ * @param {luxx.MapOptions} options Map options.
  * @export
  */
 lux.Map = function(options) {
-  options.view = new ol.View({
-    zoom: 5,
-    center: [0, 0]
-  });
-  options.layers = [new ol.layer.Tile({
-    source: new ol.source.OSM()
-  })];
+
+  var layers    = [];
+  var defaultBg = 'basemap_2015_global';
+
+  /**
+   * @private
+   * @type {Object} A JSON layers config object.
+   */
+  this.layersConfig = null;
+
+  /**
+   * @private
+   * @type {Promise} Promise of layers config request.
+   */
+  this.promise = null;
+
+  if (options.bgLayer) {
+    layers.push(options.bgLayer);
+    delete options.bgLayer;
+  } else {
+    layers.push(defaultBg);
+  }
+  if (options.layers) {
+    layers = layers.concat(options.layers);
+    delete options.layers;
+  }
+  this.promise = fetch('../layers.json').then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
+    this.addLayers_(layers);
+  }.bind(this));
+
+  var viewOptions = {
+    center : ol.proj.fromLonLat([6.215, 49.845]),
+    zoom   : 9
+  };
+
+  if (options.position) {
+    viewOptions.center = ol.proj.transform(
+      options.position,
+      (options.positionSrs) ?
+          'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
+      'EPSG:3857'
+    );
+    delete options.position;
+    delete options.positionSrs;
+  }
+  if (options.zoom) {
+    viewOptions.zoom = options.zoom;
+    delete options.zoom;
+  }
+
+  options.view = new ol.View(viewOptions);
+
   goog.base(this, options);
 };
+
 goog.inherits(lux.Map, ol.Map);
 
 /**
@@ -118,3 +170,100 @@ function buildPopupLayout_(html, addCloseBtn) {
   goog.dom.append(container, [arrow, content]);
   return container;
 }
+
+/**
+ * @param {Array<string|number>} layers Array of layer names
+ */
+lux.Map.prototype.addLayers_ = function(layers) {
+  var conf = this.layersConfig;
+  if (!conf) {
+    return;
+  }
+  layers.map(function(layer) {
+    if (!conf[layer]) {
+      console.log('Layer id not present in layers list');
+      return;
+    }
+    var fn = (conf[layer].type === 'WMS') ?
+      lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
+    this.getLayers().push(fn(layer, conf[layer].imageType));
+  }.bind(this));
+};
+
+/**
+ * @param {string|number} layer The layer id
+ */
+lux.Map.prototype.addLayerById = function(layer) {
+  this.promise.then(function() {
+    this.addLayers_([layer]);
+  }.bind(this));
+};
+
+/**
+ * @param {string} name WMTS layer name.
+ * @param {string} imageFormat Image format (e.g. "image/png").
+ * @return {ol.layer.Tile} The layer.
+ */
+lux.WMTSLayerFactory_ = function(name, imageFormat) {
+
+  var imageExt = imageFormat.split('/')[1];
+
+  var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
+  '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+
+  var layer = new ol.layer.Tile({
+    source: new ol.source.WMTS({
+      url             : url,
+      layer           : name,
+      matrixSet       : 'GLOBAL_WEBMERCATOR_4_V3',
+      format          : imageFormat,
+      requestEncoding : ol.source.WMTSRequestEncoding.REST,
+      projection      : ol.proj.get('EPSG:3857'),
+      tileGrid        : new ol.tilegrid.WMTS({
+        origin: [
+          -20037508.3428, 20037508.3428
+        ],
+        resolutions: [
+          156543.033928, 78271.516964, 39135.758482, 19567.879241,
+          9783.9396205, 4891.96981025, 2445.98490513, 1222.99245256,
+          611.496226281, 305.748113141, 152.87405657, 76.4370282852,
+          38.2185141426, 19.1092570713, 9.55462853565, 4.77731426782,
+          2.38865713391, 1.19432856696, 0.597164283478, 0.298582141739,
+          0.1492910708695, 0.07464553543475
+        ],
+        matrixIds: [
+          '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
+          '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+          '20', '21'
+        ]
+      }),
+      style: 'default',
+      crossOrigin: 'anonymous'
+    })
+  });
+
+  return layer;
+};
+
+/**
+ * @param {string} layers Comma-separated list of layer names for that WMS
+ *     layer.
+ * @param {string} imageFormat Image format (e.g. "image/png").
+ * @return {ol.layer.Image} The layer.
+ */
+lux.WMSLayerFactory_ = function(layers, imageFormat) {
+  var url = 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var optSource = {
+    url: url,
+    params: {
+      'FORMAT': imageFormat,
+      'LAYERS': layers
+    }
+  };
+  optSource.crossOrigin = 'anonymous';
+  var layer = new ol.layer.Image({
+    source: new ol.source.ImageWMS(optSource)
+  });
+
+  return layer;
+};
