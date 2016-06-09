@@ -4,6 +4,8 @@ else
 VARS_FILE = vars_geoportailv3.yaml
 VARS_FILES += ${VARS_FILE}
 endif
+API_LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.api.less' 2> /dev/null)
+API_JS_FILES = $(shell find jsapi/src/ -type f -name '*.js')
 
 TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
@@ -35,14 +37,32 @@ POST_RULES = .build/fonts.timestamp
 
 SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py
 
+# Add JS API target to "help" target
+SECONDARY_HELP = ""
+SECONDARY_HELP += "\n"
+SECONDARY_HELP += "JS API targets:\n"
+SECONDARY_HELP += "\n"
+SECONDARY_HELP += "- build-api			Build CSS & JS for the API.\n"
+SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
+SECONDARY_HELP += "- build-css-api		Build the CSS API project.\n"
+SECONDARY_HELP += "- lint-js-api		Run the linter on the JS API code.\n"
+SECONDARY_HELP += "- clean-js-api		Remove generated files of the JS API project.\n"
+SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
+
 include CONST_Makefile
+
+# targets related to the JS API
+API_OUTPUT_DIR =  $(OUTPUT_DIR)
+API_DIR = jsapi
+API_TOOLS_DIR = $(API_DIR)/tools
+API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
 REQUIREMENTS += "suds>=0.4"
 REQUIREMENTS += "ipaddr==2.1.11"
 REQUIREMENTS += "pyocclient==0.1"
 # DEV_REQUIREMENTS += git+https://github.com/transifex/transifex-client.git@fix-proxies#egg=transifex-client-proxies
 DEV_REQUIREMENTS += git+https://github.com/petzlux/transifex-client.git
-PRINT_VERSION = NONE 
+PRINT_VERSION = NONE
 
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
@@ -74,3 +94,46 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 	mkdir -p $(dir $@)
 	$(VENV_BIN)/tooltips2pot
 	msguniq $@ -o $@
+
+.PHONY: build-api
+build-api: \
+	lint-js-api \
+	build-js-api \
+	build-css-api
+
+.PHONY: build-js-api
+build-js-api: \
+	$(API_OUTPUT_DIR)/apiv3.js
+
+.PHONY: build-css-api
+build-css-api: \
+	$(API_OUTPUT_DIR)/apiv3.css
+
+$(API_OUTPUT_DIR)/apiv3.css: $(API_LESS_FILES) .build/node_modules.timestamp
+	mkdir -p $(dir $@)
+	./node_modules/.bin/lessc --clean-css $(PACKAGE)/static/less/$(PACKAGE).api.less $@
+
+$(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
+		$(API_SRC_JS_FILES) \
+		.build/node_modules.timestamp
+	mkdir -p $(dir $@)
+	node node_modules/openlayers/tasks/build.js $< $@
+
+.PHONY: serve-js-api
+serve-js-api: .build/node_modules.timestamp
+	node $(API_TOOLS_DIR)/serve.js
+
+.PHONY: lint-js-api
+lint-js-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.eslint.timestamp
+
+.build/api.eslint.timestamp: $(API_JS_FILES)
+	mkdir -p $(dir $@)
+	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
+	touch $@
+
+# Add new dependency to clean target
+clean: clean-js-api
+
+.PHONY: clean-js-api
+clean-js-api:
+	rm -rf $(API_OUTPUT_DIR)/apiv3.*
