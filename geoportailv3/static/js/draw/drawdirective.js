@@ -433,24 +433,38 @@ app.DrawController.prototype.onContinueLineEnd_ = function(event) {
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
-      this.drawPolygon.getActive() || this.drawCircle.getActive();
+      this.drawPolygon.getActive() || this.drawCircle.getActive() ||
+      this.drawLabel.getActive();
   this.selectInteraction_.setActive(!active);
-  var msg = '';
-  if (this.drawPoint.getActive()) {
-    msg = this.gettextCatalog.getString('Click to draw the point');
-  } else if (this.drawLine.getActive()) {
-    msg = this.gettextCatalog.getString('Click to start drawing line<br>' +
-      'Double-click to finish');
-  } else if (this.drawPolygon.getActive()) {
-    msg = this.gettextCatalog.getString('Click to start drawing polygon<br>' +
-      'Double-click or click last point to finish');
-  } else if (this.drawCircle.getActive()) {
-    msg = this.gettextCatalog.getString('Click to start drawing circle');
-  } else if (this.drawLabel.getActive()) {
-    msg = this.gettextCatalog.getString('Click to place the label');
-  }
-  if (msg.length > 0) {
-    this.notify_(msg);
+
+  if (active) {
+    var msg = '';
+    var cntActive = 0;
+    if (this.drawPoint.getActive()) {
+      msg = this.gettextCatalog.getString('Click to draw the point');
+      cntActive++;
+    }
+    if (this.drawLine.getActive()) {
+      msg = this.gettextCatalog.getString('Click to start drawing line<br>' +
+        'Double-click to finish');
+      cntActive++;
+    }
+    if (this.drawPolygon.getActive()) {
+      msg = this.gettextCatalog.getString('Click to start drawing polygon<br>' +
+        'Double-click or click last point to finish');
+      cntActive++;
+    }
+    if (this.drawCircle.getActive()) {
+      msg = this.gettextCatalog.getString('Click to start drawing circle');
+      cntActive++;
+    }
+    if (this.drawLabel.getActive()) {
+      msg = this.gettextCatalog.getString('Click to place the label');
+      cntActive++;
+    }
+    if (cntActive === 1) {
+      this.notify_(msg);
+    }
   }
 };
 
@@ -466,6 +480,7 @@ app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
       (sketchFeature.getGeometry());
   goog.asserts.assert(goog.isDef(geometry));
   var proj = this.map.getView().getProjection();
+
 
   this.changeEventKey_ = ol.events.listen(geometry,
       ol.events.EventType.CHANGE,
