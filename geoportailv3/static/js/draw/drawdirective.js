@@ -25,8 +25,6 @@ goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.interaction.MeasureArea');
-goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ol.CollectionEventType');
 goog.require('ol.FeatureStyleFunction');
 goog.require('ol.events');
@@ -83,6 +81,27 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
     appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify) {
+  /**
+   * The key for geometry change event.
+   * @type {?ol.events.Key}
+   * @private
+   */
+  this.changeEventKey_ = null;
+
+  /**
+   * The measure tooltip element.
+   * @type {Element}
+   * @private
+   */
+  this.measureTooltipElement_ = null;
+
+  /**
+   * Overlay to show the measurement.
+   * @type {ol.Overlay}
+   * @private
+   */
+  this.measureTooltipOverlay_ = null;
+
   /**
    * @type {app.Notify}
    * @private
@@ -198,7 +217,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onChangeActive_, this);
   ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-
+  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWSTART,
+      this.onDrawLineStart_, this);
 
   var drawPolygon = new ol.interaction.Draw({
     type: ol.geom.GeometryType.POLYGON
@@ -218,14 +238,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onChangeActive_, this);
   ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
+  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWSTART,
+      this.onDrawPolygonStart_, this);
 
-  var drawCircle = new ngeo.interaction.MeasureAzimut({
-    startMsg: $compile('')($scope)[0],
-    continueMsg: $compile('')($scope)[0]
+  var drawCircle = new ol.interaction.Draw({
+    type: ol.geom.GeometryType.CIRCLE
   });
 
   /**
-   * @type {ngeo.interaction.MeasureAzimut}
+   * @type {ol.interaction.Draw}
    * @export
    */
   this.drawCircle = drawCircle;
@@ -236,19 +257,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawCircle, ol.Object.getChangeEventType(
       ol.interaction.InteractionProperty.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawCircle, ngeo.MeasureEventType.MEASUREEND,
-      /**
-       * @param {ngeo.MeasureEvent} event The measure event.
-       */
-      function(event) {
-        // In the case of azimut measure interaction, the feature's geometry is
-        // actually a collection (line + circle)
-        // For our purpose here, we only need the circle.
-        var geometry = /** @type {ol.geom.GeometryCollection} */
-            (event.feature.getGeometry());
-        event.feature = new ol.Feature(geometry.getGeometries()[1]);
-        this.onDrawEnd_(event);
-      }, this);
+  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
+      this.onDrawEnd_, this);
+  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWSTART,
+      this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
@@ -447,7 +459,143 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
  * @param {ol.interaction.DrawEvent} event The event.
  * @private
  */
+app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
+  this.createMeasureTooltip_();
+  var sketchFeature = event.feature;
+  var geometry = /** @type {ol.geom.Polygon} */
+      (sketchFeature.getGeometry());
+  goog.asserts.assert(goog.isDef(geometry));
+  var proj = this.map.getView().getProjection();
+
+  this.changeEventKey_ = ol.events.listen(geometry,
+      ol.events.EventType.CHANGE,
+      function() {
+        var verticesCount = geometry.getCoordinates()[0].length;
+        var coord = null;
+        if (verticesCount > 2) {
+          coord = geometry.getInteriorPoint().getCoordinates();
+        }
+        if (!goog.isNull(coord)) {
+          var output = this.getFormattedArea(geometry, proj);
+          this.measureTooltipElement_.innerHTML = output;
+          this.measureTooltipOverlay_.setPosition(coord);
+        }
+      }, this);
+};
+
+
+/**
+ * @param {ol.interaction.DrawEvent} event The event.
+ * @private
+ */
+app.DrawController.prototype.onDrawLineStart_ = function(event) {
+  this.createMeasureTooltip_();
+  var sketchFeature = event.feature;
+  var geometry = /** @type {ol.geom.LineString} */
+      (sketchFeature.getGeometry());
+  goog.asserts.assert(goog.isDef(geometry));
+  var proj = this.map.getView().getProjection();
+
+  this.changeEventKey_ = ol.events.listen(geometry,
+      ol.events.EventType.CHANGE,
+      function() {
+        var coord = geometry.getLastCoordinate();
+        if (!goog.isNull(coord)) {
+          var output = this.getFormattedLength(geometry, proj);
+          this.measureTooltipElement_.innerHTML = output;
+          this.measureTooltipOverlay_.setPosition(coord);
+        }
+      }, this);
+};
+
+
+/**
+ * @param {ol.interaction.DrawEvent} event The event.
+ * @private
+ */
+app.DrawController.prototype.onDrawCircleStart_ = function(event) {
+  this.createMeasureTooltip_();
+  var sketchFeature = event.feature;
+  var geometry = /** @type {ol.geom.Circle} */ (sketchFeature.getGeometry());
+
+  goog.asserts.assert(goog.isDef(geometry));
+  var proj = this.map.getView().getProjection();
+
+  this.changeEventKey_ = ol.events.listen(geometry,
+      ol.events.EventType.CHANGE,
+      function() {
+        var coord = geometry.getLastCoordinate();
+        var center = geometry.getCenter();
+        if (!goog.isNull(center) && !goog.isNull(coord)) {
+          var output = this.getFormattedLength(
+              new ol.geom.LineString([center, coord]), proj);
+          this.measureTooltipElement_.innerHTML = output;
+          this.measureTooltipOverlay_.setPosition(coord);
+        }
+      }, this);
+};
+
+
+/**
+ * Calculate the length of the passed line string and return a formatted
+ * string of the length.
+ * @param {ol.geom.LineString} lineString Line string.
+ * @param {ol.proj.Projection} projection Projection of the line string coords.
+ * @return {string} Formatted string of length.
+ */
+app.DrawController.prototype.getFormattedLength = function(lineString, projection) {
+  var length = 0;
+  var coordinates = lineString.getCoordinates();
+  for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
+    var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+    length += ol.sphere.WGS84.haversineDistance(c1, c2);
+  }
+  var output;
+  if (length > 1000) {
+    output = parseFloat((length / 1000).toPrecision(3)) +
+    ' ' + 'km';
+  } else {
+    output = parseFloat(length.toPrecision(3)) +
+    ' ' + 'm';
+  }
+  return output;
+};
+
+
+/**
+ * Calculate the area of the passed polygon and return a formatted string
+ * of the area.
+ * @param {ol.geom.Polygon} polygon Polygon.
+ * @param {ol.proj.Projection} projection Projection of the polygon coords.
+ * @return {string} Formatted string of the area.
+ */
+app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
+  var geom = /** @type {ol.geom.Polygon} */ (
+      polygon.clone().transform(projection, 'EPSG:4326'));
+  var coordinates = geom.getLinearRing(0).getCoordinates();
+  var area = Math.abs(ol.sphere.WGS84.geodesicArea(coordinates));
+  var output;
+  if (area > 1000000) {
+    output = parseFloat((area / 1000000).toPrecision(3)) +
+        ' ' + 'km<sup>2</sup>';
+  } else {
+    output = parseFloat(area.toPrecision(3)) + ' ' + 'm<sup>2</sup>';
+  }
+  return output;
+};
+
+
+/**
+ * @param {ol.interaction.DrawEvent} event The event.
+ * @private
+ */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
+  this.removeMeasureTooltip_();
+  if (this.changeEventKey_ !== null) {
+    ol.Observable.unByKey(this.changeEventKey_);
+    this.changeEventKey_ = null;
+  }
   if (this.drawnFeatures_.continuingLine) {
     this.drawnFeatures_.continuingLine = false;
     this.onContinueLineEnd_(event);
@@ -521,6 +669,39 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
   this['mymapsOpen'] = true;
+};
+
+
+/**
+ * Creates a new measure tooltip
+ * @private
+ */
+app.DrawController.prototype.createMeasureTooltip_ = function() {
+  this.removeMeasureTooltip_();
+  this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.classlist.addAll(this.measureTooltipElement_,
+      ['tooltip', 'tooltip-measure']);
+  this.measureTooltipOverlay_ = new ol.Overlay({
+    element: this.measureTooltipElement_,
+    offset: [0, -15],
+    positioning: 'bottom-center',
+    stopEvent: false
+  });
+  this.map.addOverlay(this.measureTooltipOverlay_);
+};
+
+
+/**
+ * Destroy the help tooltip
+ * @private
+ */
+app.DrawController.prototype.removeMeasureTooltip_ = function() {
+  if (!goog.isNull(this.measureTooltipElement_)) {
+    this.measureTooltipElement_.parentNode.removeChild(
+        this.measureTooltipElement_);
+    this.measureTooltipElement_ = null;
+    this.measureTooltipOverlay_ = null;
+  }
 };
 
 app.module.controller('AppDrawController', app.DrawController);
