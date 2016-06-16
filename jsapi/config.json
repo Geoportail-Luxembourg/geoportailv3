@@ -23,7 +23,8 @@
     ],
     "js": [
       "externs/olx.js",
-      "externs/oli.js"
+      "externs/oli.js",
+      "../../jsapi/externs/luxx.js"
     ],
     "extra_annotation_name": [
       "api", "observable"
