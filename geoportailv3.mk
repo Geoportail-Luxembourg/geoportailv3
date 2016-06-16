@@ -101,6 +101,9 @@ build-api: \
 	build-js-api \
 	build-css-api
 
+# Add new dependency to build target
+build: build-api
+
 .PHONY: build-js-api
 build-js-api: \
 	$(API_OUTPUT_DIR)/apiv3.js
