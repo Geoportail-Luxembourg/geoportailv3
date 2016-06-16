@@ -1,1 +1,69 @@
 @import (inline) '../../../node_modules/openlayers/css/ol.css';
+@import "../../../node_modules/bootstrap/less/mixins/vendor-prefixes.less";
+
+
+@popup-bg: #fff;
+@popup-border-color: rgba(0,0,0,0.2);
+@popup-arrow-outer-color: @popup-border-color;
+@popup-arrow-color: @popup-bg;
+@popup-arrow-width: 11px;
+.lux-popup {
+  background-color: @popup-bg;
+  background-clip: padding-box;
+  border: 1px solid @popup-border-color;
+  border-radius: 5px;
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  z-index: 2;
+}
+
+.lux-popup-arrow {
+  border-width: @popup-arrow-width;
+  left: 50%;
+  margin-left: -@popup-arrow-width;
+  border-bottom-width: 0;
+  border-top-color: @popup-arrow-color;
+  bottom: -@popup-arrow-width;
+
+  &,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  &:after {
+    border-width: @popup-arrow-width;
+    content: "";
+    bottom: 1px;
+    margin-left: -@popup-arrow-width;
+    border-bottom-width: 0;
+    border-top-color: @popup-arrow-color;
+  }
+}
+
+.lux-popup-content {
+  padding: 9px 14px;
+}
+
+.lux-popup-close {
+  -webkit-appearance: none;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .2;
+
+  &:hover {
+    text-decoration: none;
+    opacity: 0.5;
+  }
+}
