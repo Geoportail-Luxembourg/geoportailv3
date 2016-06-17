@@ -83,6 +83,8 @@ class FullTextSearchView(object):
         }
         filters = query_body['query']['filtered']['filter']['bool']
 
+        filters['must'].append({"type": {"value": "poi"}})
+
         if layer:
             filters['must'].append({"term": {"layer_name": layer}})
         if self.request.user is None:
@@ -123,3 +125,82 @@ class FullTextSearchView(object):
                                   bbox=bbox)
                 features.append(feature)
         return FeatureCollection(features)
+
+    @view_config(route_name='layersearch', renderer='json')
+    def layersearch(self):
+        if 'query' not in self.request.params:
+            return HTTPBadRequest(detail='no query')
+        query = self.request.params.get('query')
+
+        maxlimit = self.settings.get('maxlimit', 200)
+
+        try:
+            limit = int(self.request.params.get(
+                'limit',
+                self.settings.get('defaultlimit', 30)))
+        except ValueError:
+            return HTTPBadRequest(detail='limit value is incorrect')
+        if limit > maxlimit:
+            limit = maxlimit
+
+        query_body = {
+            "query": {
+                "filtered": {
+                    "query": {
+                        "multi_match": {
+                            "type": "most_fields",
+                            "fields": [
+                                "name_translated.simplified^10",
+                                "name_translated.ngram^5",
+                                "metadata_name.simplified",
+                                "metadata_name.ngram",
+                                "keywords.simplified",
+                                "keywords.ngram",
+                                "description.simplified",
+                            ],
+                            "fuzziness": "auto",
+                            "operator": "and",
+                            "query": query
+                        }
+                    },
+                    "filter": {
+                        "bool": {
+                            "must": [],
+                            "should": [],
+                            "must_not": [],
+                        }
+                    },
+                }
+            }
+        }
+        filters = query_body['query']['filtered']['filter']['bool']
+
+        filters['must'].append({"type": {"value": "layer"}})
+
+        if self.request.user is None:
+            filters['must'].append({"term": {"public": True}})
+        else:
+            role_id = self.request.user.role.id
+            filters['should'].append({"term": {"public": True}})
+            filters['should'].append({"term": {"role_id": role_id}})
+
+        es = get_elasticsearch(self.request)
+        layer_index = get_index(self.request) + '_layers'
+        search = es.search(index=layer_index,
+                           body=query_body,
+                           size=limit*4)
+        objs = search['hits']['hits']
+        features = []
+
+        layer_ids = []
+        for o in objs:
+            s = o['_source']
+            if s['layer_id'] not in layer_ids:
+                feature = {
+                    "language": s['language'],
+                    "name": s['name'],
+                    "layer_id": s['layer_id'],
+                }
+                features.append(feature)
+                layer_ids.append(s['layer_id'])
+        return features[:limit]

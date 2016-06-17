@@ -179,6 +179,12 @@ def main(global_config, **settings):
         "/pag/files/{_file}"
     )
 
+    # full text search routes
+    config.add_route("fulltextsearch", "/fulltextsearch")
+
+    # layer search routes
+    config.add_route("layersearch", "/layersearch")
+
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 

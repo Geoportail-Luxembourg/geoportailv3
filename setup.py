@@ -39,6 +39,7 @@ setup(
         'console_scripts': [
             'create_db = geoportailv3.scripts.create_db:main',
             'db2es = geoportailv3.scripts.db2es:main',
+            'layers2es = geoportailv3.scripts.layers2es:main',
             'tooltips2pot = geoportailv3.scripts.tooltips2pot:main',
         ],
     },

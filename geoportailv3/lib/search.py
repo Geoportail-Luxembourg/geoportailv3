@@ -5,6 +5,15 @@ ES_ANALYSIS = {
     'analysis': {
         'tokenizer': {
             'ngram_tokenizer': {
+                'type': 'nGram',
+                'min_gram': 1,
+                'max_gram': 12,
+                'token_chars': [
+                    'letter',
+                    'digit'
+                ]
+            },
+            'edge_ngram_tokenizer': {
                 'type': 'edgeNGram',
                 'min_gram': 1,
                 'max_gram': 12,
@@ -18,6 +27,14 @@ ES_ANALYSIS = {
             'ngram_analyzer': {
                 'type': 'custom',
                 'tokenizer': 'ngram_tokenizer',
+                'filter': [
+                    'lowercase',
+                    'asciifolding',
+                ]
+            },
+            'edge_ngram_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'edge_ngram_tokenizer',
                 'filter': [
                     'lowercase',
                     'asciifolding',
@@ -44,6 +61,72 @@ ES_ANALYSIS = {
 }
 
 ES_MAPPINGS = {
+    'layer': {
+        'properties': {
+            'language': {'type': 'string', 'index': 'not_analyzed'},
+            'layer_id': {'type': 'string', 'index': 'not_analyzed'},
+            'name': {
+                'index': 'not_analyzed',
+                'type': 'string',
+            },
+            'name_translated': {
+                'type': 'string',
+                'analyzer': 'standard_analyzer',
+                'fields': {
+                    'ngram': {
+                        'type': 'string',
+                        'analyzer': 'ngram_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    },
+                    'simplified': {
+                        'type': 'string',
+                        'analyzer': 'simplified_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    }
+                }
+            },
+            'metadata_name': {
+                'type': 'string',
+                'analyzer': 'standard_analyzer',
+                'fields': {
+                    'ngram': {
+                        'type': 'string',
+                        'analyzer': 'ngram_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    },
+                    'simplified': {
+                        'type': 'string',
+                        'analyzer': 'simplified_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    }
+                }
+            },
+            'keywords': {
+                'type': 'string',
+                'analyzer': 'standard_analyzer',
+                'fields': {
+                    'ngram': {
+                        'type': 'string',
+                        'analyzer': 'ngram_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    },
+                    'simplified': {
+                        'type': 'string',
+                        'analyzer': 'simplified_analyzer',
+                        'search_analyzer': 'simplified_analyzer'
+                    }
+                }
+                },
+            'description': {
+                'type': 'string',
+                'analyzer': 'simplified_analyzer',
+                'search_analyzer': 'simplified_analyzer'
+                },
+            'public': {'type': 'boolean', 'index': 'not_analyzed'},
+            'params': {'type': 'string', 'index': 'not_analyzed'},
+            'role_id': {'type': 'integer', 'index': 'not_analyzed'},
+        }
+    },
     'poi': {
         'properties': {
             'object_id': {'type': 'string', 'index': 'not_analyzed'},
@@ -54,7 +137,7 @@ ES_MAPPINGS = {
                 'fields': {
                     'ngram': {
                         'type': 'string',
-                        'analyzer': 'ngram_analyzer',
+                        'analyzer': 'edge_ngram_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     },
                     'simplified': {
@@ -91,5 +174,4 @@ def ensure_index(client, index, recreate=False):
         settings = {}
         settings['settings'] = ES_ANALYSIS
         settings['mappings'] = ES_MAPPINGS
-        client.indices.create(index,
-                              body=settings)
+        client.indices.create(index, body=settings)
