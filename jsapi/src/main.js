@@ -3,6 +3,7 @@ goog.provide('lux.Map');
 
 goog.require('goog.dom');
 goog.require('ol.events');
+goog.require('ol.control.MousePosition');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -91,7 +92,34 @@ lux.Map = function(options) {
 
   options.view = new ol.View(viewOptions);
 
+  var controls = ol.control.defaults();
+  var srs = options.mousePositionSrs ?
+      'EPSG:' + options.mousePositionSrs.toString() : 'EPSG:2169';
+  if (options.mousePosition) {
+    controls.push(new ol.control.MousePosition({
+      projection: ol.proj.get(srs),
+      coordinateFormat: function(coord) {
+        var decimal = 1;
+        if (srs == 'EPSG:4326') {
+          decimal = 5;
+        }
+        if (srs == 'EPSG:2169') {
+          decimal = 2;
+        }
+        return coord.map(function(c) {
+          return c.toFixed(decimal);
+        });
+      },
+      undefinedHTML: 'Coordinates'
+    }));
+    delete options.mousePosition;
+    delete options.mousePositionSrs;
+  }
+  options.controls = controls;
+
   goog.base(this, options);
+
+  this.getTargetElement().classList.add('lux-map');
 };
 
 goog.inherits(lux.Map, ol.Map);
