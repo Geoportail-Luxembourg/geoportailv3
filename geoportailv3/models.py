@@ -5,7 +5,8 @@ import sqlahelper
 
 from pyramid.i18n import TranslationStringFactory
 
-from c2cgeoportal.models import *  # noqa
+from c2cgeoportal.models import LayerInternalWMS, LayerExternalWMS
+from c2cgeoportal.models import DBSession  # noqa
 from pyramid.security import Allow, ALL_PERMISSIONS, DENY_ALL
 from formalchemy import Column
 from sqlalchemy import ForeignKey
