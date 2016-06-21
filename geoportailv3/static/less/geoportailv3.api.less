@@ -1,12 +1,76 @@
 @import (inline) '../../../node_modules/openlayers/css/ol.css';
 @import "../../../node_modules/bootstrap/less/mixins/vendor-prefixes.less";
 
+@bg: #fff;
+@border: 1px solid #8394a0;
+@border-radius: 2px;
 
-@popup-bg: #fff;
+@popup-bg: @bg;
 @popup-border-color: rgba(0,0,0,0.2);
 @popup-arrow-outer-color: @popup-border-color;
 @popup-arrow-color: @popup-bg;
 @popup-arrow-width: 11px;
+
+@mouseposition-width: 13em;
+@mouseposition-height: 2em;
+
+@color: #2980b9;
+
+.lux-map {
+  border: @border;
+  .ol-attribution {
+    bottom: .2em;
+    right: 0;
+  }
+  .ol-mouse-position {
+    background-color: @bg;
+    top: auto;
+    bottom: 0;
+    height: @mouseposition-height;
+    line-height: @mouseposition-height;
+    width: @mouseposition-width;
+    margin-left: -@mouseposition-width / 2;
+    left: 50%;
+    text-align: center;
+    font-size: 14px;
+    font-family: Mono;
+    text-shadow: 0 0 2px #fff;
+    color: #000;
+    border-radius: @border-radius @border-radius 0 0;
+    border: @border;
+    border-width: 1px 1px 0;
+  }
+  .ol-zoom {
+    padding: 0;
+    background: transparent;
+  }
+  .ol-control {
+    button {
+      width: 41px;
+      height: 41px;
+      font-size: 1.5em;
+      font-weight: 400;
+      text-align: center;
+      text-indent: 0;
+      border: @border;
+      margin: -1px;
+      background-color: #fff;
+      color: @color;
+      &:hover {
+        background-color: @color;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+    .ol-zoom-in {
+      border-radius: @border-radius @border-radius 0 0;
+    }
+    .ol-zoom-in {
+      border-radius: 0 0 @border-radius @border-radius;
+    }
+  }
+}
+
 .lux-popup {
   background-color: @popup-bg;
   background-clip: padding-box;
