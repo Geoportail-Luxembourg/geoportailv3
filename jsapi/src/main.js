@@ -117,6 +117,11 @@ lux.Map = function(options) {
   }
   options.controls = controls;
 
+  options.logo = {
+    href : 'http://map.geoportail.lu',
+    src  : 'https://www.geoportail.lu/favicon.ico'
+  };
+
   goog.base(this, options);
 
   this.getTargetElement().classList.add('lux-map');
