@@ -1,36 +1,3626 @@
 {
-    "basemap_2015_global" : {
-        "imageType" : "image/png",
-        "type"      : "WMTS"
+    "516": {
+        "layers": "eau_new_Quantitativer_Zustand_der_WK_2009",
+        "style": "default",
+        "name": "eau_new_Quantitativer_Zustand_der_WK_2009",
+        "type": "internal WMS",
+        "id": 516,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:quantitativer_zustand_der_wk_2009",
+            "is_queryable": "true",
+            "metadata_id": "a9ebce38-6c8b-447e-9d22-46ba333fa63c"
+        }
     },
-    "topo_bw_jpeg" : {
-        "imageType" : "image/jpeg",
-        "type"      : "WMTS"
+    "517": {
+        "style": "default",
+        "name": "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 517,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hq_extrem_niedrige_wahrscheinlichkeit_2013",
+            "is_queryable": "true",
+            "metadata_id": "b35fd10c-e98d-4138-9674-e5ce45a95734",
+            "start_opacity": "0.8"
+        }
     },
-    "topogr_global" : {
-        "imageType" : "image/png",
-        "type"      : "WMTS"
+    "518": {
+        "layers": "eau_new_Typologie_Oberflaechengewasser_2009",
+        "style": "default",
+        "name": "eau_new_Typologie_Oberflaechengewasser_2009",
+        "type": "internal WMS",
+        "id": 518,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:typologie_oberflaechenwasser_2009",
+            "is_queryable": "true",
+            "metadata_id": "977e6265-b6da-4f94-87c1-8966c9e6d319"
+        }
     },
-    "orthogr_2013_global" : {
-        "imageType" : "image/jpeg",
-        "type"      : "WMTS"
+    "521": {
+        "layers": "eau_new_Niederschlag",
+        "style": "default",
+        "name": "eau_new_Niederschlag",
+        "type": "internal WMS",
+        "id": 521,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:niederschlag",
+            "is_queryable": "true",
+            "metadata_id": "288300c6-5d83-45a6-98ef-4146f37129e2"
+        }
     },
-    "streets_jpeg" : {
-        "imageType" : "image/png",
-        "type"      : "WMTS"
+    "522": {
+        "layers": "eau_new_Schneehoehe",
+        "style": "default",
+        "name": "eau_new_Schneehoehe",
+        "type": "internal WMS",
+        "id": 522,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:schneehoehe",
+            "is_queryable": "true",
+            "metadata_id": "60c9ec41-6fa8-4aed-8822-bfdad9ab755d"
+        }
     },
-    "354" : {
-        "type"      : "WMS",
-        "layers"    : "districts",
-        "style"     : "default",
-        "name"      : "districts",
-        "imageType" : "image/png"
+    "525": {
+        "layers": "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)",
+        "style": "default",
+        "name": "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)",
+        "type": "internal WMS",
+        "id": 525,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:empfindliche_gebiete_kommunalabwasserrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "39952e6c-8e73-4a23-a19c-78c4f06c84d9"
+        }
     },
-    "543" : {
-        "type"      : "WMS",
-        "layers"    : "543",
-        "style"     : "default",
-        "name"      : "editus_poi_286",
-        "imageType" : "image/png"
+    "531": {
+        "layers": "eau_new_Oekologischer_Zustand_2009",
+        "style": "default",
+        "name": "eau_new_Oekologischer_Zustand_2009",
+        "type": "internal WMS",
+        "id": 531,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:oekologischer_zustand_2009",
+            "is_queryable": "true",
+            "metadata_id": "92d28c19-ed51-4e9e-8a80-831144fe3553"
+        }
+    },
+    "535": {
+        "layers": "eau_new_Luftfeucht",
+        "style": "default",
+        "name": "eau_new_Luftfeucht",
+        "type": "internal WMS",
+        "id": 535,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:luftfeucht",
+            "is_queryable": "true",
+            "metadata_id": "bbb784cd-a8f2-4f60-8d2d-8a7bd341ac73"
+        }
+    },
+    "536": {
+        "layers": "eau_new_Luftdruck",
+        "style": "default",
+        "name": "eau_new_Luftdruck",
+        "type": "internal WMS",
+        "id": 536,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:luftdruck",
+            "is_queryable": "true",
+            "metadata_id": "1ebc644b-0643-495f-84ed-c820459920cc"
+        }
+    },
+    "537": {
+        "layers": "eau_new_Globalstrahlung",
+        "style": "default",
+        "name": "eau_new_Globalstrahlung",
+        "type": "internal WMS",
+        "id": 537,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:globalstrahlung",
+            "is_queryable": "true",
+            "metadata_id": "f5d2d484-adb2-46fc-95f0-9a94c85db5de"
+        }
+    },
+    "538": {
+        "layers": "eau_new_Trinkwasserknappheit_(Zustand_orange)",
+        "style": "default",
+        "name": "eau_new_Trinkwasserknappheit_(Zustand_orange)",
+        "type": "internal WMS",
+        "id": 538,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:trinkwasserknappheit_zustand_orange",
+            "is_queryable": "true",
+            "metadata_id": "c5a93247-af34-494d-bce2-9bc112fa50d8"
+        }
+    },
+    "541": {
+        "layers": "eau_new_Bodentemperatur",
+        "style": "default",
+        "name": "eau_new_Bodentemperatur",
+        "type": "internal WMS",
+        "id": 541,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:bodentemperatur",
+            "is_queryable": "true",
+            "metadata_id": "ebded1e9-613e-4f58-a47f-386676a0a39f"
+        }
+    },
+    "546": {
+        "layers": "eau_new_Temporaer_fliessende_Baeche",
+        "style": "default",
+        "name": "eau_new_Temporaer_fliessende_Baeche",
+        "type": "internal WMS",
+        "id": 546,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:temporaer_fliessende_baeche",
+            "is_queryable": "true",
+            "metadata_id": "9fe120ee-0969-4d01-926d-088f1e1a4eed"
+        }
+    },
+    "549": {
+        "layers": "eau_new_Kilometrierung_primaere_Gewaesser",
+        "style": "default",
+        "name": "eau_new_Kilometrierung_primaere_Gewaesser",
+        "type": "internal WMS",
+        "id": 549,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:kilometrierung_primaere_gewaesser",
+            "is_queryable": "true",
+            "metadata_id": "73104f42-88cc-435e-a35e-9327e474055e"
+        }
+    },
+    "550": {
+        "layers": "eau_new_Sekundaere_Gewaesser",
+        "style": "default",
+        "name": "eau_new_Sekundaere_Gewaesser",
+        "type": "internal WMS",
+        "id": 550,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:sekundaere_gewaesser",
+            "is_queryable": "true",
+            "metadata_id": "e1b7e950-20cc-43ef-87ab-f7bd09b62158"
+        }
+    },
+    "551": {
+        "layers": "eau_new_Fischereiabschnitte",
+        "style": "default",
+        "name": "eau_new_Fischereiabschnitte",
+        "type": "internal WMS",
+        "id": 551,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:fischereiabschnitte",
+            "is_queryable": "true",
+            "metadata_id": "bd6be85a-cec4-4e4d-9657-cffa242db28f"
+        }
+    },
+    "552": {
+        "layers": "eau_new_WRRL_-_Ueberblicksueberwachung",
+        "style": "default",
+        "name": "eau_new_WRRL_-_Ueberblicksueberwachung",
+        "type": "internal WMS",
+        "id": 552,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:oberflaechengewasser_wrrl_-_ueberblicksueberwachung",
+            "is_queryable": "true",
+            "metadata_id": "7d186827-29a6-4907-89a7-070c025fbb99"
+        }
+    },
+    "553": {
+        "layers": "eau_new_Bohrungen",
+        "style": "default",
+        "name": "eau_new_Bohrungen",
+        "type": "internal WMS",
+        "id": 553,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:bohrungen",
+            "is_queryable": "true",
+            "metadata_id": "4ab49f17-a50e-4439-9a9e-01ec93421aec"
+        }
+    },
+    "554": {
+        "layers": "eau_new_Quellen",
+        "style": "default",
+        "name": "eau_new_Quellen",
+        "type": "internal WMS",
+        "id": 554,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:quellen",
+            "is_queryable": "true",
+            "metadata_id": "58fa573a-a0c3-474d-9e74-c277cf90b135"
+        }
+    },
+    "556": {
+        "layers": "eau_new_Online_Messstationen",
+        "style": "default",
+        "name": "eau_new_Online_Messstationen",
+        "type": "internal WMS",
+        "id": 556,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:online_messen",
+            "is_queryable": "true",
+            "metadata_id": "3ad8b2b7-bffd-434c-a3c2-6130d3d33275"
+        }
+    },
+    "559": {
+        "layers": "eau_new_Grundwasserleiter",
+        "style": "default",
+        "name": "eau_new_Grundwasserleiter",
+        "type": "internal WMS",
+        "id": 559,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasserleiter",
+            "is_queryable": "true",
+            "metadata_id": "4993e666-c24c-4341-9330-1ecefe7381d3"
+        }
+    },
+    "561": {
+        "layers": "eau_new_UESG_Sauer_1995",
+        "style": "default",
+        "name": "eau_new_UESG_Sauer_1995",
+        "type": "internal WMS",
+        "id": 561,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:uesg_sauer_1995",
+            "is_queryable": "true",
+            "metadata_id": "f01f7be2-0423-4571-8fff-57dd617ae632"
+        }
+    },
+    "562": {
+        "layers": "eau_new_Erheblich_veraenderte_OWK_2009",
+        "style": "default",
+        "name": "eau_new_Erheblich_veraenderte_OWK_2009",
+        "type": "internal WMS",
+        "id": 562,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:erheblich_veraenderte_wasserkoerper_2009",
+            "is_queryable": "true",
+            "metadata_id": "78da31c2-55eb-40c9-99fe-22ff409468c2"
+        }
+    },
+    "179": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_sentiers_communaux",
+        "url": "//ws.geoportail.lu/mymaps?category_id=18",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 179,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "564": {
+        "layers": "eau_new_Einzugsgebiete",
+        "style": "default",
+        "name": "eau_new_Einzugsgebiete",
+        "type": "internal WMS",
+        "id": 564,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:einzugsgebiete",
+            "is_queryable": "true",
+            "metadata_id": "a295a30a-f819-400c-842c-d0ccc695bea5"
+        }
+    },
+    "566": {
+        "layers": "eau_new_UESG_1983_-_Mosel",
+        "style": "default",
+        "name": "eau_new_UESG_1983_-_Mosel",
+        "type": "internal WMS",
+        "id": 566,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:uesg_1983_-_mosel",
+            "is_queryable": "true",
+            "metadata_id": "e6896207-c0f9-417e-9661-119128628e8e"
+        }
+    },
+    "568": {
+        "layers": "eau_new_Durchgaengigkeit",
+        "style": "default",
+        "name": "eau_new_Durchgaengigkeit",
+        "type": "internal WMS",
+        "id": 568,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:durchgaengigkeit",
+            "is_queryable": "true",
+            "metadata_id": "246d7d84-a335-468a-9e4e-0b5d5a135daf"
+        }
+    },
+    "570": {
+        "layers": "eau_new_UESG_1993_(ausser_Mosel)",
+        "style": "default",
+        "name": "eau_new_UESG_1993_(ausser_Mosel)",
+        "type": "internal WMS",
+        "id": 570,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:uesg_1993_ausser_mosel",
+            "is_queryable": "true",
+            "metadata_id": "78c692f3-ad20-467b-b03a-0d020a821647"
+        }
+    },
+    "571": {
+        "layers": "eau_new_UESG_Alzette_1995",
+        "style": "default",
+        "name": "eau_new_UESG_Alzette_1995",
+        "type": "internal WMS",
+        "id": 571,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:uesg_alzette_1995",
+            "is_queryable": "true",
+            "metadata_id": "aaf81780-df85-4580-a890-fded8ae03db7"
+        }
+    },
+    "574": {
+        "layers": "eau_new_Abwassersyndikate",
+        "style": "default",
+        "name": "eau_new_Abwassersyndikate",
+        "type": "internal WMS",
+        "id": 574,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:abwassersyndikate",
+            "is_queryable": "true",
+            "metadata_id": "7643bb42-6ddf-47b2-ae52-b2d49f3e35cf"
+        }
+    },
+    "575": {
+        "layers": "eau_new_Betrachtungsraeume_2009",
+        "style": "default",
+        "name": "eau_new_Betrachtungsraeume_2009",
+        "type": "internal WMS",
+        "id": 575,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:betrachtungsraeume_2009",
+            "is_queryable": "true",
+            "metadata_id": "be15dd7d-df57-44e1-b724-0929cf05eef9"
+        }
+    },
+    "576": {
+        "style": "default",
+        "name": "eau_new_HQextrem_merged_2013",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 576,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hqextrem_hw_risiko_2013",
+            "is_queryable": "false",
+            "metadata_id": "4a2c49db-ca05-4278-8107-c4d4df232422"
+        }
+    },
+    "577": {
+        "layers": "eau_new_Klaeranlagen",
+        "style": "default",
+        "name": "eau_new_Klaeranlagen",
+        "type": "internal WMS",
+        "id": 577,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:klaeranlagen",
+            "is_queryable": "true",
+            "metadata_id": "9b31afb9-0eb6-424f-9b8a-5ef5c4013666"
+        }
+    },
+    "580": {
+        "style": "default",
+        "name": "eau_new_HQ10_merged_2013",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 580,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hq10_hw_risiko_2013",
+            "is_queryable": "false",
+            "metadata_id": "eca4f407-4603-415e-a70b-a9ea34520268"
+        }
+    },
+    "582": {
+        "layers": "eau_new_Bauwerke",
+        "style": "default",
+        "name": "eau_new_Bauwerke",
+        "type": "internal WMS",
+        "id": 582,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:bauwerke",
+            "is_queryable": "true",
+            "metadata_id": "a9ebf471-8c56-4a30-855c-3309efbe58e2"
+        }
+    },
+    "588": {
+        "layers": "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet",
+        "style": "default",
+        "name": "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet",
+        "type": "internal WMS",
+        "id": 588,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasser_wrrl_-_ueberwachung_der_quantitaet",
+            "is_queryable": "true",
+            "metadata_id": "df313a40-1cab-4774-971d-41cd0cd17356"
+        }
+    },
+    "589": {
+        "layers": "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet",
+        "style": "default",
+        "name": "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet",
+        "type": "internal WMS",
+        "id": 589,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasser_wrrl_-_ueberwachung_der_qualitaet",
+            "is_queryable": "true",
+            "metadata_id": "2a564018-2c6e-4d3c-bb0c-68489980cfc0"
+        }
+    },
+    "590": {
+        "layers": "eau_new_Kanal_-__Muehlgraben",
+        "style": "default",
+        "name": "eau_new_Kanal_-__Muehlgraben",
+        "type": "internal WMS",
+        "id": 590,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:kanal_-_muehlgraben",
+            "is_queryable": "true",
+            "metadata_id": "909501fc-a0a9-4af8-8e82-f2a8d7f2fe2f"
+        }
+    },
+    "595": {
+        "layers": "eau_new_Alluvialer_Grundwasserspiegel",
+        "style": "default",
+        "name": "eau_new_Alluvialer_Grundwasserspiegel",
+        "type": "internal WMS",
+        "id": 595,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:alluvialer_grundwasserspiegel",
+            "is_queryable": "true",
+            "metadata_id": "4d328b62-5df3-4205-a45a-4d3d36dc0fa8"
+        }
+    },
+    "599": {
+        "layers": "eau_new_Nitratrichtlinie_Messstationen",
+        "style": "default",
+        "name": "eau_new_Nitratrichtlinie_Messstationen",
+        "type": "internal WMS",
+        "id": 599,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasser_nitratrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "dc7d9871-2693-4714-b1f6-ab202a59d28b"
+        }
+    },
+    "603": {
+        "layers": "eau_new_Wasserstand",
+        "style": "default",
+        "name": "eau_new_Wasserstand",
+        "type": "internal WMS",
+        "id": 603,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:wasserspiegel",
+            "is_queryable": "true",
+            "metadata_id": "124abb10-1d87-4449-912b-06fbf307a95f"
+        }
+    },
+    "608": {
+        "layers": "eau_new_Badegewaesser",
+        "style": "default",
+        "name": "eau_new_Badegewaesser",
+        "type": "internal WMS",
+        "id": 608,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:badegewaesser",
+            "is_queryable": "true",
+            "metadata_id": "72f770ee-7290-4ecb-9358-580b7cfcadf7"
+        }
+    },
+    "609": {
+        "layers": "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise",
+        "style": "default",
+        "name": "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise",
+        "type": "internal WMS",
+        "id": 609,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:_zps_laufende_oeffentliche_verfahrungsweise",
+            "is_queryable": "true",
+            "metadata_id": "87beb1ac-7496-48f6-b5a9-8666e3897523"
+        }
+    },
+    "610": {
+        "layers": "eau_new_Zustand_der_WK_2009",
+        "style": "default",
+        "name": "eau_new_Zustand_der_WK_2009",
+        "type": "internal WMS",
+        "id": 610,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:zustand_der_wk_2009",
+            "is_queryable": "true",
+            "metadata_id": "2df25c38-15d5-447f-a269-4184ce781050"
+        }
+    },
+    "620": {
+        "layers": "ont_poi_3",
+        "style": "default",
+        "name": "ont_poi_3",
+        "type": "internal WMS",
+        "id": 620,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi3",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "621": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_lmg",
+        "type": "internal WMS",
+        "id": 621,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "622": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_ecoles_old",
+        "type": "internal WMS",
+        "id": 622,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "623": {
+        "layers": "ont_poi_5",
+        "style": "default",
+        "name": "ont_poi_5",
+        "type": "internal WMS",
+        "id": 623,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi5",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "624": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_creches",
+        "type": "internal WMS",
+        "id": 624,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "625": {
+        "layers": "ont_poi_7",
+        "style": "default",
+        "name": "ont_poi_7",
+        "type": "internal WMS",
+        "id": 625,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi7",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "626": {
+        "layers": "ont_poi_6",
+        "style": "default",
+        "name": "ont_poi_6",
+        "type": "internal WMS",
+        "id": 626,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi6",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "627": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_Banken",
+        "type": "internal WMS",
+        "id": 627,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "630": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_Tankstelle",
+        "type": "internal WMS",
+        "id": 630,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "413": {
+        "layers": "at_psp_gep",
+        "style": "default",
+        "name": "at_psp_gep",
+        "type": "internal WMS",
+        "id": 413,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:grandsensemblespaysagers",
+            "is_queryable": "true",
+            "metadata_id": "84763751-9311-4d45-8f30-06e8370aeffa",
+            "start_opacity": "0.7"
+        }
+    },
+    "635": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_\u00c4rzte",
+        "type": "internal WMS",
+        "id": 635,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "636": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_Post",
+        "type": "internal WMS",
+        "id": 636,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "637": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_Lycees",
+        "type": "internal WMS",
+        "id": 637,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "638": {
+        "layers": null,
+        "style": "default",
+        "name": "lenoz_Restaurants",
+        "type": "internal WMS",
+        "id": 638,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "639": {
+        "layers": "asta_esp_lisiere",
+        "style": "default",
+        "name": "asta_esp_lisiere",
+        "type": "internal WMS",
+        "id": 639,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "e3dd4b8c-760b-44b3-887a-08c6be34c72d"
+        }
+    },
+    "640": {
+        "layers": "asta_esp_esp",
+        "style": "default",
+        "name": "asta_esp_esp",
+        "type": "internal WMS",
+        "id": 640,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "16f911c8-1008-4f86-b8c1-75584010f79b"
+        }
+    },
+    "641": {
+        "layers": "ont_poi",
+        "style": "default",
+        "name": "ont_poi",
+        "type": "internal WMS",
+        "id": 641,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi1",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "642": {
+        "layers": "ont_poi_2",
+        "style": "default",
+        "name": "ont_poi_2",
+        "type": "internal WMS",
+        "id": 642,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi2",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "647": {
+        "layers": "osm_mq",
+        "style": "default",
+        "name": "osm_mq",
+        "type": "internal WMS",
+        "id": 647,
+        "imageType": "image/png",
+        "metadata": {}
+    },
+    "649": {
+        "layers": "ont_poi_4",
+        "style": "default",
+        "name": "ont_poi_4",
+        "type": "internal WMS",
+        "id": 649,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_poi4",
+            "is_queryable": "true",
+            "metadata_id": "0adedcb7-1373-409e-b2cb-54c9f64f4f80"
+        }
+    },
+    "650": {
+        "layers": "anf_carte_simpl_forets",
+        "style": "default",
+        "name": "anf_carte_simpl_forets",
+        "type": "internal WMS",
+        "id": 650,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "anf:vegetation_forestiere_naturelle",
+            "is_queryable": "false",
+            "metadata_id": "9eac63ee-39b0-4794-81b4-dd2b4819dd39"
+        }
+    },
+    "139": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_b_mobile",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 139,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_b",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "140": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_p_mobile",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 140,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_p",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "141": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_s_mobile",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 141,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_s",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "655": {
+        "style": "default",
+        "name": "topogr_global",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 655,
+        "imageType": "image/png",
+        "metadata": {
+            "exclusion": "[11, 12]"
+        }
+    },
+    "656": {
+        "style": "default",
+        "name": "orthogr_2013_global",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 656,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "exclusion": "[1, 2]"
+        }
+    },
+    "145": {
+        "layers": "arrets_bus",
+        "style": "default",
+        "name": "arrets_bus",
+        "type": "internal WMS",
+        "id": 145,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "mobiliteit:arrets_de_bus",
+            "is_queryable": "true",
+            "metadata_id": "7318c6e8-bb63-40e0-9e40-46ae7b0dc266"
+        }
+    },
+    "146": {
+        "layers": "category",
+        "style": "default",
+        "name": "user_content_vtt",
+        "url": "//ws.geoportail.lu/mymaps?category_id=994",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 146,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "f04f4ca5-d893-4b52-a8b8-9185e2fe79c7"
+        }
+    },
+    "659": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_pistes_velo_mymaps2",
+        "url": "//ws.geoportail.lu/mymaps?category_id=106",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 659,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_velo_national",
+            "is_queryable": "true",
+            "metadata_id": "387f6949-0fc4-43a5-b0e6-4e09bdf65225"
+        }
+    },
+    "148": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_nordic_walking",
+        "url": "//ws.geoportail.lu/mymaps?category_id=17",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 148,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "661": {
+        "style": "default",
+        "name": "ivv_parcels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 661,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "7d372c69-4144-43bf-9622-70dcdc7bbf0b"
+        }
+    },
+    "150": {
+        "style": "default",
+        "name": "addresses",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 150,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "28b310e4-b9e1-467c-a28d-fce2e9a96548"
+        }
+    },
+    "151": {
+        "style": "default",
+        "name": "communes_cadastrales",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 151,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "8a95f8b2-2cfb-42e7-a51c-02084228b364"
+        }
+    },
+    "664": {
+        "layers": "eau_new_Oberflaechenwasserkoerper_2015",
+        "style": "default",
+        "name": "eau_new_Oberflaechenwasserkoerper_2015",
+        "type": "internal WMS",
+        "id": 664,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:oberflaechenwasserkoerper_2015",
+            "is_queryable": "true",
+            "metadata_id": "404cf7b4-f70b-4c2c-a44b-89e297fab0f8"
+        }
+    },
+    "153": {
+        "layers": "category",
+        "style": "default",
+        "name": "user_content_velo",
+        "url": "//ws.geoportail.lu/mymaps?category_id=991",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 153,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "1c4bfd98-49c3-4f94-be12-8c764aa2b826"
+        }
+    },
+    "154": {
+        "style": "default",
+        "name": "topo_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 154,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "topo_50k",
+            "metadata_id": "262"
+        }
+    },
+    "155": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1979",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 155,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "6c2b8b34-0eb8-4b2c-8586-e8a515ad1860"
+        }
+    },
+    "668": {
+        "layers": "natura2000_habitats",
+        "style": "default",
+        "name": "natura2000_habitats",
+        "type": "internal WMS",
+        "id": 668,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "080b7d2e-f8d5-4943-8dbf-04d3dfd4fe09"
+        }
+    },
+    "157": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_cfl",
+        "url": "//ws.geoportail.lu/mymaps?category_id=12",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 157,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "158": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_pistes_velo",
+        "url": "//ws.geoportail.lu/mymaps?category_id=5",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 158,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "671": {
+        "layers": "natura2000_oiseaux_sup",
+        "style": "default",
+        "name": "natura2000_oiseaux_sup",
+        "type": "internal WMS",
+        "id": 671,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "92fbaea1-1d80-422d-a58c-478118bb94af"
+        }
+    },
+    "653": {
+        "style": "default",
+        "name": "topo_bw_jpeg",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 653,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "exclusion": "[11, 12]"
+        }
+    },
+    "161": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_volumes_batiments",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 161,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "162": {
+        "layers": "env_obs1999",
+        "style": "default",
+        "name": "env_obs1999",
+        "type": "internal WMS",
+        "id": 162,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "b4836d86-2803-4dcf-a991-7e78ab9c41b6"
+        }
+    },
+    "166": {
+        "layers": "env_corine",
+        "style": "default",
+        "name": "env_corine",
+        "type": "internal WMS",
+        "id": 166,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "0098c72d-490e-4b03-91f6-f844502883a0"
+        }
+    },
+    "167": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_quality_trails",
+        "url": "//ws.geoportail.lu/mymaps?category_id=22",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 167,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "174": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1964_RGB",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 174,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "27818c9d-19f1-4c3c-bcf6-0856d766d27d"
+        }
+    },
+    "177": {
+        "style": "default",
+        "name": "ivv_grosslagen",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 177,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "89274b7e-4742-4673-b254-9105a4a066b7"
+        }
+    },
+    "178": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_autopedestre",
+        "url": "//ws.geoportail.lu/mymaps?category_id=11",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 178,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "691": {
+        "layers": "mobiliteit_pr",
+        "style": "default",
+        "name": "mobiliteit_pr",
+        "type": "internal WMS",
+        "id": 691,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "mobiliteit:pr",
+            "is_queryable": "true",
+            "metadata_id": "9e0c97ae-aff9-41fc-9489-bbf97999163d"
+        }
+    },
+    "692": {
+        "layers": "mobiliteit_bornes",
+        "style": "default",
+        "name": "mobiliteit_bornes",
+        "type": "internal WMS",
+        "id": 692,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "mobiliteit:bornes",
+            "is_queryable": "true",
+            "metadata_id": "b52c3e87-c640-462e-96e1-ecdb57951ca1"
+        }
+    },
+    "693": {
+        "layers": "mobiliteit_cfl",
+        "style": "default",
+        "name": "mobiliteit_cfl",
+        "type": "internal WMS",
+        "id": 693,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "mobiliteit:cfl",
+            "is_queryable": "true",
+            "metadata_id": "0b3c42a2-275e-4519-b228-f407d46b8350"
+        }
+    },
+    "694": {
+        "layers": "eau_new_Zones_interdiction_utilisation_metazachlore",
+        "style": "default",
+        "name": "eau_new_Zones_interdiction_utilisation_metazachlore",
+        "type": "internal WMS",
+        "id": 694,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:metazachlore",
+            "is_queryable": "false",
+            "metadata_id": "2a90e4ab-53fa-4588-b46d-481d890463d7",
+            "start_opacity": "0.7"
+        }
+    },
+    "183": {
+        "style": "default",
+        "name": "roads",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 183,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "road_network:show",
+            "metadata_id": "12627f90-f0f8-41b3-a56a-2e11a232ba59"
+        }
+    },
+    "184": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_zones",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 184,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6",
+            "start_opacity": "0.7"
+        }
+    },
+    "187": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1990_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 187,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "08342909-3d9e-4eb4-9bd1-2eb96a83490b"
+        }
+    },
+    "190": {
+        "style": "default",
+        "name": "topo_decoupage_tc",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 190,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "191": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_mullerthal_trail",
+        "url": "//ws.geoportail.lu/mymaps?category_id=7",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 191,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "194": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1979_RGB",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 194,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "44675358-e65a-4e3b-ac6f-e4f19fd7bfb5"
+        }
+    },
+    "197": {
+        "style": "default",
+        "name": "topo_decoupage_5000",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 197,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "199": {
+        "style": "default",
+        "name": "topo_5k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 199,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "topo_5k",
+            "metadata_id": "270_2012",
+            "exclusion": "[1,2]"
+        }
+    },
+    "201": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_sentiers_ajl",
+        "url": "//ws.geoportail.lu/mymaps?category_id=10",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 201,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "204": {
+        "style": "default",
+        "name": "buildings",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 204,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "pcn_batiments:show",
+            "is_queryable": "true",
+            "metadata_id": "5d0efc9d-a05a-4964-9f9d-a0ab9932af04",
+            "exclusion": "[2,12,22,41,42,43,44,45,46,47,48,49,61,62,63,64,65,66,67,68,201,202,203,204,205,206]"
+        }
+    },
+    "205": {
+        "style": "default",
+        "name": "topo_decoupage_100k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 205,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "206": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1964",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 206,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "58bec8c3-c9f1-44ba-ab3a-860122694952"
+        }
+    },
+    "210": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_escape_ardenne",
+        "url": "//ws.geoportail.lu/mymaps?category_id=16",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 210,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "211": {
+        "style": "default",
+        "name": "topo_20k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 211,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "topo_20k",
+            "metadata_id": "9fb01381-698c-4e5f-950e-6c4793e0a7fd"
+        }
+    },
+    "212": {
+        "layers": "eau_new_Provisorische_ZPS",
+        "style": "default",
+        "name": "eau_new_Provisorische_ZPS",
+        "type": "internal WMS",
+        "id": 212,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:provisorische_zps",
+            "is_queryable": "true",
+            "metadata_id": "ddc51f25-2fb7-4d14-866a-a08f8af8ef03"
+        }
+    },
+    "216": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_complet",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 216,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6",
+            "start_opacity": "0.7"
+        }
+    },
+    "217": {
+        "style": "default",
+        "name": "decoupage_geo25_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 217,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "220": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_moto",
+        "url": "//ws.geoportail.lu/mymaps?category_id=20",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 220,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "221": {
+        "layers": "env_obs2007",
+        "style": "default",
+        "name": "env_obs2007",
+        "type": "internal WMS",
+        "id": 221,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "bd672300-0851-4901-82c4-6099aff1fcf7"
+        }
+    },
+    "222": {
+        "style": "default",
+        "name": "decoupage_communes",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 222,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "223": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1966-74_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 223,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "0cda7940-0268-4595-97ed-ae5854da628b"
+        }
+    },
+    "224": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_saint_jacques",
+        "url": "//ws.geoportail.lu/mymaps?category_id=6",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 224,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "225": {
+        "style": "default",
+        "name": "topo_decoupage_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 225,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "226": {
+        "style": "default",
+        "name": "TOPO_CARTES_1944",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 226,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "e78c1d0a-ef3d-4552-9bba-f72a1d1d3173"
+        }
+    },
+    "227": {
+        "style": "default",
+        "name": "ivv_klimakarte",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 227,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "ivv_klimakarte",
+            "is_queryable": "true",
+            "metadata_id": "6d989c64-998c-499f-a196-1032e9470666"
+        }
+    },
+    "229": {
+        "style": "default",
+        "name": "topo_250k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 229,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "e1f601a5-ed8f-4043-8719-0cad50cbb483"
+        }
+    },
+    "231": {
+        "style": "default",
+        "name": "ortho_2004",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 231,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "a185f78a-ca9c-43f8-8d06-b1abba8ff056",
+            "exclusion": "[103,203]"
+        }
+    },
+    "232": {
+        "style": "default",
+        "name": "ortho_2001",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 232,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "e6ff269c-1c7c-401f-a90b-b805e80a046e",
+            "exclusion": "[104,204]"
+        }
+    },
+    "234": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_sentiers_nationaux",
+        "url": "//ws.geoportail.lu/mymaps?category_id=4",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 234,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "236": {
+        "layers": "aero_1951_25k",
+        "style": "default",
+        "name": "aero_1951_25k",
+        "type": "internal WMS",
+        "id": 236,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "b3b5fc05-323c-4f0b-804c-a4c186d62a96"
+        }
+    },
+    "238": {
+        "style": "default",
+        "name": "ortho_2007",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 238,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "3be3d98e-7997-4ff6-8d77-e393a5fc4fdd",
+            "exclusion": "[101,201]"
+        }
+    },
+    "242": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_sentiers_gr",
+        "url": "//ws.geoportail.lu/mymaps?category_id=9",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 242,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "244": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_2000",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 244,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "21a56aff-4a9e-4be5-9ed8-cd60dd56d5a1"
+        }
+    },
+    "247": {
+        "style": "default",
+        "name": "ivv_kleinlagen",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 247,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "a040071a-3a72-4d69-93e0-c06d4d4c3bd1"
+        }
+    },
+    "250": {
+        "style": "default",
+        "name": "geologie",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 250,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "geologie",
+            "metadata_id": "b206d194-0067-4f09-a89e-af4a6673413d",
+            "start_opacity": "0.9"
+        }
+    },
+    "253": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_sentiers_syndicats",
+        "url": "//ws.geoportail.lu/mymaps?category_id=19",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 253,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "257": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_DeLux",
+        "url": "//ws.geoportail.lu/mymaps?category_id=13",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 257,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "259": {
+        "style": "default",
+        "name": "1927_CAHANSEN",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 259,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "90750f9f-856d-41ac-a90f-a8befbd75434"
+        }
+    },
+    "261": {
+        "layers": "env_bruit_axes_routiers_lngt",
+        "style": "default",
+        "name": "env_bruit_axes_routiers_lngt",
+        "type": "internal WMS",
+        "id": 261,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lngt",
+            "is_queryable": "true",
+            "metadata_id": "5e4f2607-b114-4884-8e48-8e1faa997eb4",
+            "start_opacity": "0.7",
+            "exclusion": "[333,332]"
+        }
+    },
+    "262": {
+        "style": "default",
+        "name": "feuilles_cadastrales",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 262,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "51333029-c8cf-490f-b4a6-80ba239f0cb4"
+        }
+    },
+    "263": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_limites",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 263,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "264": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_voies_acces",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 264,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "265": {
+        "layers": "env_bruit_axes_ferroviaires_lngt",
+        "style": "default",
+        "name": "env_bruit_axes_ferroviaires_lngt",
+        "type": "internal WMS",
+        "id": 265,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lngt",
+            "is_queryable": "true",
+            "metadata_id": "2d7e26ad-e448-45a2-9045-3dfb3e3ec15b",
+            "start_opacity": "0.7",
+            "exclusion": "[334,332]"
+        }
+    },
+    "267": {
+        "style": "default",
+        "name": "topo_100k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 267,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "topo_100k",
+            "metadata_id": "266"
+        }
+    },
+    "268": {
+        "style": "default",
+        "name": "cadastre",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 268,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "pcn_parcelles:show",
+            "is_queryable": "true",
+            "metadata_id": "de5373d6-340f-4203-a065-da7550a03cc4_2050",
+            "exclusion": "[1,11,21,31,32,33,34,35,36,37,38,39,51,52,53,54,55,56,57,58,101,102,103,104,105,106]"
+        }
+    },
+    "271": {
+        "style": "default",
+        "name": "topo_decoupage_r",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 271,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "3a35eb1a-9eaa-4f90-927f-2891d5e865f7"
+        }
+    },
+    "272": {
+        "style": "default",
+        "name": "sections_cadastrales_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 272,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "4e173cfd-8644-45a7-bf2e-e29a5a8c5187"
+        }
+    },
+    "273": {
+        "style": "default",
+        "name": "ac_remich_ortho",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 273,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "90393f1f-57a9-4c09-b63a-e470c14f6e4d"
+        }
+    },
+    "274": {
+        "style": "default",
+        "name": "districts_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 274,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "c42842e2-834a-427a-99f6-eb8cb79d1db4"
+        }
+    },
+    "275": {
+        "style": "default",
+        "name": "communes_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 275,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "d12dd15a-fd96-4d60-bee1-737371513284"
+        }
+    },
+    "277": {
+        "layers": "category",
+        "style": "default",
+        "name": "user_content_poi",
+        "url": "//ws.geoportail.lu/mymaps?category_id=992",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 277,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "7bfcc15f-ca6e-4b9b-99c5-e6b80f062244"
+        }
+    },
+    "278": {
+        "style": "default",
+        "name": "pedologie_100k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 278,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "pedologie",
+            "metadata_id": "2d712a34-ce79-426d-a57b-b7cadf97b80f"
+        }
+    },
+    "280": {
+        "layers": "eau_new_Chemischer_Zustand_der_WK_2009",
+        "style": "default",
+        "name": "eau_new_Chemischer_Zustand_der_WK_2009",
+        "type": "internal WMS",
+        "id": 280,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:chemischer_zustand_der_wk_2009",
+            "is_queryable": "true",
+            "metadata_id": "e9a72fec-29a0-4183-9e3a-6d4f49c9fea7"
+        }
+    },
+    "281": {
+        "style": "default",
+        "name": "TOPO25K1954C24",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 281,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "7a8bc9a4-e7c7-4584-bc4f-03deaf7b69b2"
+        }
+    },
+    "285": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_2000_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 285,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "ccdd1b07-401d-48cb-821d-1ae51d489f36"
+        }
+    },
+    "289": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_alignements_a_preserver",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 289,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "290": {
+        "style": "default",
+        "name": "asta_meteo",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 290,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "23e4b02d-a93d-47a4-8597-060319ae2af5"
+        }
+    },
+    "292": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1989",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 292,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "d3e2a6d0-52b6-4f06-b833-021647f6de4c"
+        }
+    },
+    "296": {
+        "layers": "category",
+        "style": "default",
+        "name": "nordstad",
+        "url": "//ws.geoportail.lu/mymaps?category_id=14",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 296,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "299": {
+        "style": "default",
+        "name": "wg_ikonos_satellitendaten",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 299,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:ikonos_satellitendaten"
+        }
+    },
+    "300": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_pistes_vtt",
+        "url": "//ws.geoportail.lu/mymaps?category_id=8",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 300,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "301": {
+        "style": "default",
+        "name": "geologie_ancienne_edition",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 301,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "geologie_old",
+            "metadata_id": "807",
+            "start_opacity": "0.9"
+        }
+    },
+    "302": {
+        "style": "default",
+        "name": "topo",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 302,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "1839482f-6b18-433e-bccc-d36c3c5a3160",
+            "exclusion": "[1,2]"
+        }
+    },
+    "303": {
+        "style": "default",
+        "name": "ivv_flik_parcels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 303,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "884ed54c-3b36-417e-b44b-ed7f3283302c"
+        }
+    },
+    "304": {
+        "layers": "ac_preizerdaul_pag",
+        "style": "default",
+        "name": "ac_preizerdaul_pag",
+        "type": "internal WMS",
+        "id": 304,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "preizerdaul:pag",
+            "is_queryable": "true",
+            "metadata_id": "2eb99e09-635c-400f-a32f-fbc7129854c3",
+            "start_opacity": "0.7"
+        }
+    },
+    "305": {
+        "layers": "ac_preizerdaul_ortho_2009",
+        "style": "default",
+        "name": "ac_preizerdaul_ortho_2009",
+        "type": "internal WMS",
+        "id": 305,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "3be3d98e-7997-4ff6-8d77-e393a5fc4fdd"
+        }
+    },
+    "307": {
+        "style": "default",
+        "name": "TOPO_CARTESHISTO_1993_50k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 307,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "f15bf68d-593f-422a-b855-2e05dfb34fcc"
+        }
+    },
+    "308": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_perimetres_zones",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 308,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "309": {
+        "style": "default",
+        "name": "wg_landnutzung",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 309,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:landnutzung",
+            "is_queryable": "true",
+            "start_opacity": "0.7"
+        }
+    },
+    "310": {
+        "style": "default",
+        "name": "communes",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 310,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "de5373d6-340f-4203-a065-da7550a03cc4_2049"
+        }
+    },
+    "137": {
+        "layers": "aero_1963_20k",
+        "style": "default",
+        "name": "aero_1963_20k",
+        "type": "internal WMS",
+        "id": 137,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "56b65f04-d3ab-45b6-9e93-95c8c9524c3e"
+        }
+    },
+    "313": {
+        "style": "default",
+        "name": "ac_wellenstein_pag_volumes_a_sauvegarder",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 313,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wellenstein:pag_complet",
+            "metadata_id": "f92b66ee-4d6c-48fe-a553-83236e8f0ed6"
+        }
+    },
+    "314": {
+        "style": "default",
+        "name": "decoupage_geo25k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 314,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "316": {
+        "style": "default",
+        "name": "wg_versiegelungsklassen",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 316,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:versiegelungsklassen",
+            "start_opacity": "0.7"
+        }
+    },
+    "138": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_f_mobile",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 138,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_f",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "318": {
+        "layers": "env_bruit_axes_ferroviaires_lden",
+        "style": "default",
+        "name": "env_bruit_axes_ferroviaires_lden",
+        "type": "internal WMS",
+        "id": 318,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lden",
+            "is_queryable": "true",
+            "metadata_id": "32b40d1c-111e-4eed-91c7-61d61ef27b8d",
+            "start_opacity": "0.7",
+            "exclusion": "[334,332]"
+        }
+    },
+    "319": {
+        "style": "default",
+        "name": "ortho_irc",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 319,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "9848c7ac-0c12-430d-a05f-62dda9e234a0",
+            "exclusion": "[102,202]"
+        }
+    },
+    "322": {
+        "style": "default",
+        "name": "geologie_nouvelle_edition",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 322,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "geologie_new",
+            "metadata_id": "808",
+            "start_opacity": "0.9"
+        }
+    },
+    "324": {
+        "layers": "category",
+        "style": "default",
+        "name": "env_sentiersnature",
+        "url": "//ws.geoportail.lu/mymaps?category_id=15",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 324,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true"
+        }
+    },
+    "328": {
+        "style": "default",
+        "name": "toponymes",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 328,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "ffa537f7-a438-47da-9e0c-8e32260646a9"
+        }
+    },
+    "652": {
+        "style": "default",
+        "name": "streets_jpeg",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 652,
+        "imageType": "image/png",
+        "metadata": {
+            "exclusion": "[1, 2]"
+        }
+    },
+    "334": {
+        "layers": "env_bruit_axes_routiers_lden",
+        "style": "default",
+        "name": "env_bruit_axes_routiers_lden",
+        "type": "internal WMS",
+        "id": 334,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lden",
+            "is_queryable": "true",
+            "metadata_id": "3e3aa044-89e0-4676-9404-744f64dd7ba0",
+            "start_opacity": "0.7",
+            "exclusion": "[333,332]"
+        }
+    },
+    "335": {
+        "layers": "env_bruit_air_lngt",
+        "style": "default",
+        "name": "env_bruit_air_lngt",
+        "type": "internal WMS",
+        "id": 335,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lngt",
+            "is_queryable": "true",
+            "metadata_id": "6b031060-1f82-467d-af86-afe02a3f04fa",
+            "start_opacity": "0.7",
+            "exclusion": "[335,332]"
+        }
+    },
+    "336": {
+        "style": "default",
+        "name": "1907_CAHANSEN",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 336,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "b88e6524-67d3-4e34-b998-6f30120e3718"
+        }
+    },
+    "337": {
+        "style": "default",
+        "name": "cantons",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 337,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "e8a034e8-f986-4745-a848-b7ef30ce2740"
+        }
+    },
+    "349": {
+        "layers": "aero_1951_10k",
+        "style": "default",
+        "name": "aero_1951_10k",
+        "type": "internal WMS",
+        "id": 349,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "16586649-8e46-4b04-b75c-5537a4bf214e"
+        }
+    },
+    "350": {
+        "style": "default",
+        "name": "ortho_2010",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 350,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "0faf4bdb-a54b-42d7-942c-4e52fa66e963",
+            "exclusion": "[105,205]"
+        }
+    },
+    "351": {
+        "style": "default",
+        "name": "ortho",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 351,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "0faf4bdb-a54b-42d7-942c-4e52fa66e963",
+            "exclusion": "[1,2]"
+        }
+    },
+    "352": {
+        "style": "default",
+        "name": "ac_remich_pag",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 352,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "remich:pag",
+            "metadata_id": "14d4159d-e103-4cac-a2a0-418ff24edaee",
+            "start_opacity": "0.7"
+        }
+    },
+    "353": {
+        "style": "default",
+        "name": "topo_decoupage_ortho",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 353,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "3a35eb1a-9eaa-4f90-927f-2891d5e865f7"
+        }
+    },
+    "354": {
+        "style": "default",
+        "name": "cantons_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 354,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "3af20a80-be4a-4819-a42b-18e49af799aa"
+        }
+    },
+    "357": {
+        "style": "default",
+        "name": "country",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 357,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "4c9b3c0b-85d4-447d-a68c-7416869f8d9b"
+        }
+    },
+    "358": {
+        "style": "default",
+        "name": "communes_cadastrales_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 358,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "5ae8fdfb-bb8f-4f72-b7ee-36c7664fe4b5"
+        }
+    },
+    "359": {
+        "style": "default",
+        "name": "roads_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 359,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "5d606cae-cbc6-44c3-a465-edb981e44a39"
+        }
+    },
+    "360": {
+        "layers": "ac_preizerdaul_ortho",
+        "style": "default",
+        "name": "ac_preizerdaul_ortho",
+        "type": "internal WMS",
+        "id": 360,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "83700e3f-2590-4bab-b93f-47390186a04f"
+        }
+    },
+    "361": {
+        "layers": "cfl_hecto",
+        "style": "default",
+        "name": "cfl_hecto",
+        "type": "internal WMS",
+        "id": 361,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "938f9e8e-071c-4e6b-940f-64b2a60eca74"
+        }
+    },
+    "362": {
+        "style": "default",
+        "name": "parcels_labels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 362,
+        "imageType": "image/png",
+        "metadata": {
+            "metadata_id": "a65629c7-ddd6-43de-b0c3-c49647d8fd2b"
+        }
+    },
+    "363": {
+        "style": "default",
+        "name": "districts",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 363,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "b9edd03f-3aef-4fd6-a3d9-db076b1cf237"
+        }
+    },
+    "364": {
+        "style": "default",
+        "name": "sections_cadastrales",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 364,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "c9122320-8f06-4499-ac86-eb469e911369"
+        }
+    },
+    "365": {
+        "layers": "category",
+        "style": "default",
+        "name": "user_content_rando",
+        "url": "//ws.geoportail.lu/mymaps?category_id=990",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 365,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "75ef197c-2f58-435f-9121-776bc21fa894"
+        }
+    },
+    "366": {
+        "layers": "category",
+        "style": "default",
+        "name": "user_content_autre",
+        "url": "//ws.geoportail.lu/mymaps?category_id=993",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 366,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "5d39c9cf-2444-4775-ab4b-c9c57178fffc"
+        }
+    },
+    "367": {
+        "layers": "FERRARIS",
+        "style": "default",
+        "name": "FERRARIS",
+        "type": "internal WMS",
+        "id": 367,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "legend_name": "ferraris",
+            "metadata_id": "783cb2a8-a143-4263-aaf0-b4f032835e0c"
+        }
+    },
+    "368": {
+        "style": "default",
+        "name": "parcels",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 368,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "pcn_parcelles:show",
+            "is_queryable": "true",
+            "metadata_id": "de5373d6-340f-4203-a065-da7550a03cc4_2050",
+            "exclusion": "[1,11,21,31,32,33,34,35,36,37,38,39,51,52,53,54,55,56,57,58,101,102,103,104,105,106]"
+        }
+    },
+    "369": {
+        "style": "default",
+        "name": "ortho_2013",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 369,
+        "imageType": "image/jpeg",
+        "metadata": {
+            "metadata_id": "ced4a3dd-135e-43d0-86b9-2318982581f7",
+            "exclusion": "[106,206]"
+        }
+    },
+    "147": {
+        "style": "default",
+        "name": "topo_tour_20k",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 147,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "topo_tour_20k",
+            "metadata_id": "1173_"
+        }
+    },
+    "374": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_f",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 374,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_f",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "375": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_b",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 375,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_b",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "657": {
+        "style": "default",
+        "name": "basemap_global",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 657,
+        "imageType": "image/png",
+        "metadata": {
+            "exclusion": "[1, 2]"
+        }
+    },
+    "378": {
+        "layers": "mobiliteit_bikeshare",
+        "style": "default",
+        "name": "mobiliteit_bikeshare",
+        "type": "internal WMS",
+        "id": 378,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "mobiliteit:bikeshare",
+            "is_queryable": "true",
+            "metadata_id": "e9fbbdff-2f8f-422b-b6ae-5cc69f73bb4b"
+        }
+    },
+    "379": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_p",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 379,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_p",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "380": {
+        "style": "default",
+        "name": "emwelt_biotop_kadaster_s",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 380,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:btk_s",
+            "is_queryable": "true",
+            "metadata_id": "f46eace4-8a83-4fa5-b2dd-a417a46fc720"
+        }
+    },
+    "381": {
+        "layers": "category",
+        "style": "default",
+        "name": "tour_pistes_velo_mymaps",
+        "url": "//ws.geoportail.lu/mymaps?category_id=105",
+        "isSingleTile": true,
+        "type": "external WMS",
+        "id": 381,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "tour_velo_national",
+            "is_queryable": "true",
+            "metadata_id": "387f6949-0fc4-43a5-b0e6-4e09bdf65225"
+        }
+    },
+    "382": {
+        "style": "default",
+        "name": "eau_new_HQ100_merged_2013",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 382,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hq100_hw_risiko_2013",
+            "is_queryable": "false",
+            "metadata_id": "3fc6c024-7571-4b9b-ae5e-d806172f2c8d"
+        }
+    },
+    "384": {
+        "layers": "topo_decoupage_ortho_2013",
+        "style": "default",
+        "name": "topo_decoupage_ortho_2013",
+        "type": "internal WMS",
+        "id": 384,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "3a35eb1a-9eaa-4f90-927f-2891d5e865f7"
+        }
+    },
+    "385": {
+        "layers": "prpl_luref",
+        "style": "default",
+        "name": "prpl_luref",
+        "type": "internal WMS",
+        "id": 385,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "275"
+        }
+    },
+    "386": {
+        "layers": "prpl_ntl",
+        "style": "default",
+        "name": "prpl_ntl",
+        "type": "internal WMS",
+        "id": 386,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "426"
+        }
+    },
+    "662": {
+        "style": "default",
+        "name": "asta_flik_parcels_2015",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 662,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "2c77d35a-4f61-45bf-932b-752339a1e1b7"
+        }
+    },
+    "395": {
+        "layers": "anf_peuplements_semenciers",
+        "style": "default",
+        "name": "anf_peuplements_semenciers",
+        "type": "internal WMS",
+        "id": 395,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "5d2b9400-3f94-4962-ad67-8b7e923d6d8b"
+        }
+    },
+    "396": {
+        "layers": "anf_proprietes_forestieres",
+        "style": "default",
+        "name": "anf_proprietes_forestieres",
+        "type": "internal WMS",
+        "id": 396,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "anf:proprietes_forestieres",
+            "is_queryable": "true",
+            "metadata_id": "fa6d38c7-263c-4349-b208-45652f9b98ca"
+        }
+    },
+    "397": {
+        "layers": "anf_stations_biologiques",
+        "style": "default",
+        "name": "anf_stations_biologiques",
+        "type": "internal WMS",
+        "id": 397,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "05e497fc-625d-4701-90af-dbe8813201ab"
+        }
+    },
+    "398": {
+        "layers": "anf_reserves_forestieres",
+        "style": "default",
+        "name": "anf_reserves_forestieres",
+        "type": "internal WMS",
+        "id": 398,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "648f7072-a31d-4439-9e79-fbcb0174fda7"
+        }
+    },
+    "403": {
+        "layers": "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)",
+        "style": "default",
+        "name": "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)",
+        "type": "internal WMS",
+        "id": 403,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:erhoehte_trinkwasserknappheit_zustand_rot",
+            "is_queryable": "true",
+            "metadata_id": "620eea7b-266a-4ba5-9646-8006ff5915d4"
+        }
+    },
+    "404": {
+        "layers": "eau_new_Sanitaere_Schutzzonen_Stausee",
+        "style": "default",
+        "name": "eau_new_Sanitaere_Schutzzonen_Stausee",
+        "type": "internal WMS",
+        "id": 404,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:sanitaere_schutzzonen_stausee",
+            "is_queryable": "true",
+            "metadata_id": "e92e18c5-25ce-40b1-ab29-e6b279b395d0"
+        }
+    },
+    "406": {
+        "style": "default",
+        "name": "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 406,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hq100_mittlere_wahrscheinlichkeit_2013",
+            "is_queryable": "true",
+            "metadata_id": "4d56f6bf-055b-413b-a0dd-36720429c7b0",
+            "start_opacity": "0.8"
+        }
+    },
+    "665": {
+        "layers": "eau_new_Erheblich_veraenderte_WK_2015",
+        "style": "default",
+        "name": "eau_new_Erheblich_veraenderte_WK_2015",
+        "type": "internal WMS",
+        "id": 665,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:erheblich_veraenderte_wk_2015",
+            "is_queryable": "true",
+            "metadata_id": "78da31c2-55eb-40c9-99fe-22ff409468c2"
+        }
+    },
+    "409": {
+        "layers": "anf_arbres_remarquables",
+        "style": "default",
+        "name": "anf_arbres_remarquables",
+        "type": "internal WMS",
+        "id": 409,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "anf:arbres_remarquables",
+            "is_queryable": "true",
+            "metadata_id": "373df6df-a91c-4e66-b211-ac2bc1675d56"
+        }
+    },
+    "666": {
+        "layers": "eau_new_Grundwasserkoerper_2015",
+        "style": "default",
+        "name": "eau_new_Grundwasserkoerper_2015",
+        "type": "internal WMS",
+        "id": 666,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasserkoerper_2015",
+            "is_queryable": "true"
+        }
+    },
+    "414": {
+        "layers": "at_psp_cv",
+        "style": "default",
+        "name": "at_psp_cv",
+        "type": "internal WMS",
+        "id": 414,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:coupureverte",
+            "is_queryable": "true",
+            "metadata_id": "84763751-9311-4d45-8f30-06e8370aeffa",
+            "start_opacity": "0.7"
+        }
+    },
+    "415": {
+        "layers": "anf_secteurs_ecologiques",
+        "style": "default",
+        "name": "anf_secteurs_ecologiques",
+        "type": "internal WMS",
+        "id": 415,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "8afa4162-c23b-4001-b737-4074d4f5360f"
+        }
+    },
+    "416": {
+        "layers": "anf_lots_chasse",
+        "style": "default",
+        "name": "anf_lots_chasse",
+        "type": "internal WMS",
+        "id": 416,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "6a3f0074-fa7a-4354-a4f4-e8934cc4aeb2"
+        }
+    },
+    "417": {
+        "layers": "at_psp_zm_tot",
+        "style": "default",
+        "name": "at_psp_zm_tot",
+        "type": "internal WMS",
+        "id": 417,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zm_tot",
+            "is_queryable": "true",
+            "metadata_id": "84763751-9311-4d45-8f30-06e8370aeffa",
+            "start_opacity": "0.7"
+        }
+    },
+    "667": {
+        "layers": "natura2000_oiseaux",
+        "style": "default",
+        "name": "natura2000_oiseaux",
+        "type": "internal WMS",
+        "id": 667,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "080b7d2e-f8d5-4943-8dbf-04d3dfd4fe09"
+        }
+    },
+    "421": {
+        "layers": "at_psl1",
+        "style": "default",
+        "name": "at_psl1",
+        "type": "internal WMS",
+        "id": 421,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zoneprojenvergurehabitat",
+            "is_queryable": "true",
+            "metadata_id": "a0c94819-73be-40b8-9327-e3b8b0407633",
+            "start_opacity": "0.7"
+        }
+    },
+    "422": {
+        "layers": "at_pszae2",
+        "style": "default",
+        "name": "at_pszae2",
+        "type": "internal WMS",
+        "id": 422,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zaenouvext",
+            "is_queryable": "true",
+            "metadata_id": "ea5da181-a572-43fb-9813-e373ad3ac0c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "423": {
+        "layers": "at_pszae3",
+        "style": "default",
+        "name": "at_pszae3",
+        "type": "internal WMS",
+        "id": 423,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zoneareclasser",
+            "is_queryable": "true",
+            "metadata_id": "ea5da181-a572-43fb-9813-e373ad3ac0c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "424": {
+        "layers": "at_pszae4",
+        "style": "default",
+        "name": "at_pszae4",
+        "type": "internal WMS",
+        "id": 424,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zaepresctrans",
+            "is_queryable": "true",
+            "metadata_id": "ea5da181-a572-43fb-9813-e373ad3ac0c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "156": {
+        "layers": "env_bruit_air_lden",
+        "style": "default",
+        "name": "env_bruit_air_lden",
+        "type": "internal WMS",
+        "id": 156,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "env:bruit_lden",
+            "is_queryable": "true",
+            "metadata_id": "0f4dcfc5-e947-4e5c-9460-702b8e1a572f",
+            "start_opacity": "0.7",
+            "exclusion": "[335,332]"
+        }
+    },
+    "426": {
+        "layers": "at_psp_re",
+        "style": "default",
+        "name": "at_psp_re",
+        "type": "internal WMS",
+        "id": 426,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:reseauecologique",
+            "is_queryable": "true",
+            "metadata_id": "84763751-9311-4d45-8f30-06e8370aeffa",
+            "start_opacity": "0.7"
+        }
+    },
+    "427": {
+        "layers": "at_pszae1",
+        "style": "default",
+        "name": "at_pszae1",
+        "type": "internal WMS",
+        "id": 427,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zaeexistante",
+            "is_queryable": "true",
+            "metadata_id": "ea5da181-a572-43fb-9813-e373ad3ac0c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "428": {
+        "layers": "at_pst2",
+        "style": "default",
+        "name": "at_pst2",
+        "type": "internal WMS",
+        "id": 428,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:couloirpst",
+            "is_queryable": "true",
+            "metadata_id": "10568679-86b2-487b-b19b-b371c39773c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "429": {
+        "layers": "at_psp_zvi",
+        "style": "default",
+        "name": "at_psp_zvi",
+        "type": "internal WMS",
+        "id": 429,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:zoneverteinterurbaine",
+            "is_queryable": "true",
+            "metadata_id": "84763751-9311-4d45-8f30-06e8370aeffa",
+            "start_opacity": "0.7"
+        }
+    },
+    "430": {
+        "layers": "at_pst3",
+        "style": "default",
+        "name": "at_pst3",
+        "type": "internal WMS",
+        "id": 430,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:prm",
+            "is_queryable": "true",
+            "metadata_id": "7b75a189-c871-420f-be08-26496cd284fe",
+            "start_opacity": "0.7"
+        }
+    },
+    "431": {
+        "layers": "at_pst1",
+        "style": "default",
+        "name": "at_pst1",
+        "type": "internal WMS",
+        "id": 431,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "at:projetspst",
+            "is_queryable": "true",
+            "metadata_id": "10568679-86b2-487b-b19b-b371c39773c1",
+            "start_opacity": "0.7"
+        }
+    },
+    "433": {
+        "style": "default",
+        "name": "wg_hangneigung_map",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 433,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:hangneigung_",
+            "start_opacity": "0.7"
+        }
+    },
+    "434": {
+        "style": "default",
+        "name": "wg_relief_map",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 434,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:relief"
+        }
+    },
+    "435": {
+        "style": "default",
+        "name": "wg_exposition_map",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 435,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:exposition",
+            "start_opacity": "0.7"
+        }
+    },
+    "436": {
+        "style": "default",
+        "name": "wg_hohenlinien_10m_map",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 436,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "wg:hohenlinien_10m",
+            "is_queryable": "true"
+        }
+    },
+    "438": {
+        "layers": "remembrements",
+        "style": "default",
+        "name": "remembrements",
+        "type": "internal WMS",
+        "id": 438,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "pcn:remembrements",
+            "is_queryable": "true",
+            "metadata_id": "03d079f3-61fb-48bc-ab39-f3427b208702",
+            "start_opacity": "0.7",
+            "exclusion": "[301,302,303,304,305,306,307,308,309,310]"
+        }
+    },
+    "440": {
+        "layers": null,
+        "style": "default",
+        "name": "repere_alti",
+        "type": "internal WMS",
+        "id": 440,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "false",
+            "metadata_id": "3119179b-56bb-459d-8904-1e0a2bfb6bc7"
+        }
+    },
+    "441": {
+        "layers": "anf_arrondissements",
+        "style": "default",
+        "name": "anf_arrondissements",
+        "type": "internal WMS",
+        "id": 441,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "0ed72c13-1975-4cef-90de-1e4b737f5fbd"
+        }
+    },
+    "442": {
+        "layers": "anf_triages",
+        "style": "default",
+        "name": "anf_triages",
+        "type": "internal WMS",
+        "id": 442,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "d4bb012a-73ab-4d3c-ac0c-f31e9df07d34"
+        }
+    },
+    "443": {
+        "layers": "anf_reserves_naturelles_totalite",
+        "style": "default",
+        "name": "anf_reserves_naturelles_totalite",
+        "type": "internal WMS",
+        "id": 443,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "c54a7ca4-a0ca-4976-810c-6f7e6532aa5b"
+        }
+    },
+    "444": {
+        "layers": "anf_reserves_dig",
+        "style": "default",
+        "name": "anf_reserves_dig",
+        "type": "internal WMS",
+        "id": 444,
+        "imageType": "image/png",
+        "metadata": {
+            "is_queryable": "true",
+            "metadata_id": "ec93478f-836d-4607-8aa5-a9953602f7eb"
+        }
+    },
+    "446": {
+        "layers": "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)",
+        "style": "default",
+        "name": "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)",
+        "type": "internal WMS",
+        "id": 446,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:gefaehrdete_gebiete_nitratrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "9426a9a6-7cb1-4c1a-a504-40dabc4429c0"
+        }
+    },
+    "448": {
+        "layers": "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt",
+        "style": "default",
+        "name": "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt",
+        "type": "internal WMS",
+        "id": 448,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:_zps_durch_grosshrzgl._verordnung_festgelegt",
+            "is_queryable": "true",
+            "metadata_id": "d70f99e0-6032-4a4b-b516-5dfdfce33b26"
+        }
+    },
+    "453": {
+        "layers": "eau_new_Trinkwasserentnahmepunkte",
+        "style": "default",
+        "name": "eau_new_Trinkwasserentnahmepunkte",
+        "type": "internal WMS",
+        "id": 453,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:trinkwasserentnahmepunkte",
+            "is_queryable": "true",
+            "metadata_id": "a049086b-9c17-4ba6-b9bf-78cb4af8ee68"
+        }
+    },
+    "455": {
+        "layers": "eau_new_Trinkwassersyndikate",
+        "style": "default",
+        "name": "eau_new_Trinkwassersyndikate",
+        "type": "internal WMS",
+        "id": 455,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:trinkwassersyndikate",
+            "is_queryable": "true",
+            "metadata_id": "63ecd69e-5714-4311-b05a-5bfa191ac546"
+        }
+    },
+    "456": {
+        "layers": "pag_lintgen_layer",
+        "style": "default",
+        "name": "pag_lintgen_layer",
+        "type": "internal WMS",
+        "id": 456,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "lintgen",
+            "metadata_id": "809bceff-4802-47d2-983d-290a0956b327",
+            "start_opacity": "0.6"
+        }
+    },
+    "461": {
+        "layers": "eau_new_Stausee_Sauer",
+        "style": "default",
+        "name": "eau_new_Stausee_Sauer",
+        "type": "internal WMS",
+        "id": 461,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:stausee_sauer",
+            "is_queryable": "true",
+            "metadata_id": "119ad2e3-b44f-4777-883d-d2d522bafeca"
+        }
+    },
+    "462": {
+        "layers": "eau_new_Grundwasser_(Nitratrichtlinie)",
+        "style": "default",
+        "name": "eau_new_Grundwasser_(Nitratrichtlinie)",
+        "type": "internal WMS",
+        "id": 462,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasser_nitratrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "e15fcc8c-217c-4577-b5a0-e62f08e480c1"
+        }
+    },
+    "468": {
+        "style": "default",
+        "name": "eau_new_HQ10_(hohe_Wahrscheinlichkeit)",
+        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
+        "matrixSet": "GLOBAL_WEB_MERCATOR",
+        "dimensions": {},
+        "type": "WMTS",
+        "id": 468,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hq10_hohe_wahrscheinlichkeit_2013",
+            "is_queryable": "true",
+            "metadata_id": "c92af59f-7d7d-4043-8424-3d62d61c887b",
+            "start_opacity": "0.8"
+        }
+    },
+    "469": {
+        "layers": "eau_new_Einschraenkung_Waermepumpe",
+        "style": "default",
+        "name": "eau_new_Einschraenkung_Waermepumpe",
+        "type": "internal WMS",
+        "id": 469,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:einschraenkung_waermepumpe",
+            "is_queryable": "true",
+            "metadata_id": "62e36488-dda5-4b4a-a1d8-b5d47da5600f"
+        }
+    },
+    "471": {
+        "layers": "eau_new_Badegewaesser_-_Qualitaet",
+        "style": "default",
+        "name": "eau_new_Badegewaesser_-_Qualitaet",
+        "type": "internal WMS",
+        "id": 471,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:badegewaesser_-_qualitaet",
+            "is_queryable": "true",
+            "metadata_id": "c0c9c705-8b26-4a0b-b9bb-e2243cd5386a"
+        }
+    },
+    "473": {
+        "layers": "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie",
+        "style": "default",
+        "name": "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie",
+        "type": "internal WMS",
+        "id": 473,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasser_-_nitratrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "e15fcc8c-217c-4577-b5a0-e62f08e480c1"
+        }
+    },
+    "475": {
+        "layers": "eau_new_Querprofile",
+        "style": "default",
+        "name": "eau_new_Querprofile",
+        "type": "internal WMS",
+        "id": 475,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:querprofile",
+            "is_queryable": "true",
+            "metadata_id": "e308bb4d-3d06-4fb3-959a-ee54537a5689"
+        }
+    },
+    "476": {
+        "layers": "eau_new_Gesamtzustand_2009",
+        "style": "default",
+        "name": "eau_new_Gesamtzustand_2009",
+        "type": "internal WMS",
+        "id": 476,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:gesamtzustand_2009",
+            "is_queryable": "true",
+            "metadata_id": "44862c13-7006-44a4-99e6-2877ea512714"
+        }
+    },
+    "477": {
+        "layers": "eau_new_Chemischer_Zustand_2009",
+        "style": "default",
+        "name": "eau_new_Chemischer_Zustand_2009",
+        "type": "internal WMS",
+        "id": 477,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:chemischer_zustand_2009",
+            "is_queryable": "true",
+            "metadata_id": "d934fbcc-02c6-47fa-a23d-cfbe49214709"
+        }
+    },
+    "478": {
+        "layers": "eau_new_Primaere_Gewaesser",
+        "style": "default",
+        "name": "eau_new_Primaere_Gewaesser",
+        "type": "internal WMS",
+        "id": 478,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:primaere_gewaesser",
+            "is_queryable": "true",
+            "metadata_id": "f46ab9d4-a6dd-414b-a333-f2acfb126537"
+        }
+    },
+    "483": {
+        "layers": "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie",
+        "style": "default",
+        "name": "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie",
+        "type": "internal WMS",
+        "id": 483,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:oberflaechengewaesser_-_nitratrichtlinie",
+            "is_queryable": "true",
+            "metadata_id": "e3d8df5f-eb08-4e11-831f-ae2a90294ccf"
+        }
+    },
+    "492": {
+        "layers": "eau_new_Hydromorphologischer_Zustand_2009",
+        "style": "default",
+        "name": "eau_new_Hydromorphologischer_Zustand_2009",
+        "type": "internal WMS",
+        "id": 492,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:hydromorphologischer_zustand_2009",
+            "is_queryable": "true",
+            "metadata_id": "767e0a8a-31e0-4a53-913f-6ab1c76ca27c"
+        }
+    },
+    "495": {
+        "layers": "eau_new_Lufttemperatur",
+        "style": "default",
+        "name": "eau_new_Lufttemperatur",
+        "type": "internal WMS",
+        "id": 495,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:lufttemperatur",
+            "is_queryable": "true",
+            "metadata_id": "6d73e310-0ef2-4e19-863d-387a90405e78"
+        }
+    },
+    "499": {
+        "layers": "eau_new_Trinkwasserbehaelter",
+        "style": "default",
+        "name": "eau_new_Trinkwasserbehaelter",
+        "type": "internal WMS",
+        "id": 499,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:trinkwasserbehaelter",
+            "is_queryable": "true",
+            "metadata_id": "abe5466d-e045-4872-a17c-7379adc497f5"
+        }
+    },
+    "500": {
+        "layers": "eau_new_Kilometrierung_sekundaere_Gewaesser",
+        "style": "default",
+        "name": "eau_new_Kilometrierung_sekundaere_Gewaesser",
+        "type": "internal WMS",
+        "id": 500,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:kilometrierung_sekundaere_gewaesser",
+            "is_queryable": "true",
+            "metadata_id": "b0dbabf2-c975-498e-b13e-e6f527d4e6fa"
+        }
+    },
+    "504": {
+        "layers": "eau_new_Oberflaechenwasserkoerper_2009",
+        "style": "default",
+        "name": "eau_new_Oberflaechenwasserkoerper_2009",
+        "type": "internal WMS",
+        "id": 504,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:oberflaechenwasserkoerper_2009",
+            "is_queryable": "true",
+            "metadata_id": "b2441357-b7cf-4e3b-b8ea-8bc353940201"
+        }
+    },
+    "506": {
+        "layers": "eau_new_Grundwasserkoerper_2009",
+        "style": "default",
+        "name": "eau_new_Grundwasserkoerper_2009",
+        "type": "internal WMS",
+        "id": 506,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "eau_new:grundwasserkoerper_2009",
+            "is_queryable": "true",
+            "metadata_id": "f23ca424-ec87-4c53-929c-7e627a8e06af"
+        }
     }
 }
