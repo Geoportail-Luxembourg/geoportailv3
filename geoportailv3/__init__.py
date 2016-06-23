@@ -194,6 +194,10 @@ def main(global_config, **settings):
         'jsapiexample',
         '/api-example'
     )
+    config.add_route(
+        'jsapilayers',
+        '/jsapilayers'
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
