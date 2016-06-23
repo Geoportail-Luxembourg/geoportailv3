@@ -11,4 +11,6 @@
           + "${request.static_url('geoportailv3:static/build/apiv3.css')}" + '" />');
   document.write('<scr' + 'ipt type="text/javascript" src="'
           + "${request.static_url('geoportailv3:static/build/apiv3.js')}" + '"></scr' + 'ipt>');
+  document.write('<scr' + 'ipt type="text/javascript">'
+          + "lux.setLayersUrl('${request.route_url('jsapilayers')}');" + '</scr' + 'ipt>');
 })();
