@@ -179,6 +179,16 @@ def main(global_config, **settings):
         "/pag/files/{_file}"
     )
 
+    # jsapi routes
+    config.add_route(
+        'jsapiloader',
+        '/apiv3loader.js'
+    )
+    config.add_route(
+        'jsapiexample',
+        '/api-example'
+    )
+
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 
@@ -246,6 +256,4 @@ def main(global_config, **settings):
     config.add_route('getpoitemplate', '/getpoitemplate')
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
-    config.add_route('jsapiloader', '/apiv3loader.js')
-    config.add_route('jsapiexample', '/api-example')
     return config.make_wsgi_app()
