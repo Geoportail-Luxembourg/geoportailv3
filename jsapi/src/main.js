@@ -237,8 +237,7 @@ lux.WMTSLayerFactory_ = function(name, imageFormat) {
           '20', '21'
         ]
       }),
-      style: 'default',
-      crossOrigin: 'anonymous'
+      style: 'default'
     })
   });
 
@@ -260,7 +259,6 @@ lux.WMSLayerFactory_ = function(layers, imageFormat) {
       'LAYERS': layers
     }
   };
-  optSource.crossOrigin = 'anonymous';
   var layer = new ol.layer.Image({
     source: new ol.source.ImageWMS(optSource)
   });
