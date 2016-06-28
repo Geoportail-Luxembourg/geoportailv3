@@ -2,15 +2,16 @@ goog.provide('marker');
 
 goog.require('lux');
 
+var position =  [ 682773.755, 6394645.349 ];
 var map = new lux.Map({
   target: 'mapContainer',
-  lon: 6.13,
-  lat: 49.61,
-  zoom: 14
+  position: position,
+  zoom: 14,
+  layers: [ 'streets_jpeg' ]
 });
 
 map.showMarker({
-  position: new ol.proj.transform([6, 49.8], 'EPSG:4326', 'EPSG:3857'),
+  position: position,
   autoCenter: true,
   positioning: 'center-center',
   iconURL: 'http://apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
