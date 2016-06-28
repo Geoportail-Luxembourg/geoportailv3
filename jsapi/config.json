@@ -1,5 +1,6 @@
 {
   "src": [
+    "node_modules/proj4/dist/proj4.js",
     "node_modules/openlayers/src/**/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
     "jsapi/src/**/*.js"
