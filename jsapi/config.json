@@ -14,17 +14,15 @@
       "externs/geojson.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js"
+      "externs/topojson.js",
+      "externs/olx.js",
+      "externs/oli.js",
+      "../../jsapi/externs/luxx.js"
     ],
     "define": [
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
-    ],
-    "js": [
-      "externs/olx.js",
-      "externs/oli.js",
-      "../../jsapi/externs/luxx.js"
     ],
     "extra_annotation_name": [
       "api", "observable"
