@@ -51,7 +51,7 @@ luxx.MapOptions.prototype.zoom;
 
 /**
  * Set the presence of a layer manager control. (not included by default)
- * @type {luxx.ControlOptions|undefined}
+ * @type {luxx.LayerManagerOptions|undefined}
  */
 luxx.MapOptions.prototype.layerManager;
 
@@ -129,6 +129,12 @@ luxx.MarkerOptions.prototype.hover;
  */
 luxx.LayerOptions;
 
+
+/**
+ * @type {luxx.LayerMetadataOptions}
+ */
+luxx.LayerOptions.prototype.metadata;
+
 /**
  * @type {string}
  */
@@ -195,3 +201,20 @@ luxx.LayerManagerOptions;
  * @type {Element|string}
  */
 luxx.LayerManagerOptions.prototype.target;
+
+/**
+ * @typedef {Object.<string, Array.<number>>}
+ */
+luxx.Exclusions;
+
+/**
+ * @typedef {{
+ *     exclusion: (string)
+ * }}
+ */
+luxx.LayerMetadataOptions;
+
+/**
+ * @type {string}
+ */
+luxx.LayerMetadataOptions.prototype.exclusion;

@@ -61,6 +61,13 @@ lux.Map = function(options) {
    */
   this.promise = null;
 
+  /**
+   * @private
+   * @type {ol.layer.Tile} The blank layer.
+   */
+  this.blankLayer_ = new ol.layer.Tile();
+  this.blankLayer_.set('name', 'blank');
+
   if (options.bgLayer) {
     layers.push(options.bgLayer);
     delete options.bgLayer;
@@ -165,6 +172,9 @@ lux.Map = function(options) {
     });
     this.addControl(control);
   }
+
+  ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
+      this.checkForExclusion_, this);
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -285,7 +295,64 @@ lux.Map.prototype.addLayers_ = function(layers) {
 };
 
 /**
- * @param {string|number} layer The layer id or name
+ * @param {ol.CollectionEventType} event The event.
+ */
+lux.Map.prototype.checkForExclusion_ = function(event) {
+  var layer1 = event.element;
+
+  if (!goog.isDef(layer1.get('metadata'))) {
+    return;
+  }
+
+  var exclusion1 = layer1.get('metadata')['exclusion'];
+
+
+  if (!goog.isDef(exclusion1)) {
+    return;
+  }
+
+  var layers = this.getLayers().getArray();
+  var len = layers.length;
+  var i;
+  var layer2;
+  var exclusion2;
+  for (i = len - 1; i >= 0; i--) {
+    layer2 = layers[i];
+
+    if (layer2 == layer1 || !goog.isDef(layer2.get('metadata')) ||
+        !goog.isDef(layer2.get('metadata')['exclusion'])) {
+      continue;
+    }
+
+    exclusion2 = layer2.get('metadata')['exclusion'];
+    if (lux.intersects_(exclusion1, exclusion2)) {
+      // layer to exclude is not the current base layer
+      if (i !== 0) {
+        this.removeLayer(layer2);
+      } else {
+        this.getLayers().setAt(0, this.blankLayer_);
+      }
+      console.error('Layer "' + layer2.get('name') + '" cannot be used with "' + layer1.get('name') + '"');
+    }
+  }
+};
+
+/**
+ * @param {string} one The first list of exclusions.
+ * @param {string} two The second list of exclusions.
+ * @return {boolean} Whether the array intersect or not.
+ * @private
+ */
+lux.intersects_ = function(one, two) {
+  var arr1 = /** @type {Array} */ (JSON.parse(one));
+  var arr2 = /** @type {Array} */ (JSON.parse(two));
+  return arr1.some(function(item) {
+    return arr2.indexOf(item) > -1;
+  });
+};
+
+/**
+ * @param {string|number} layer The layer id
  */
 lux.Map.prototype.addLayerById = function(layer) {
   this.promise.then(function() {
@@ -347,14 +414,37 @@ lux.Map.prototype.addBgSelector = function(target) {
       }
       select.appendChild(option);
     });
+
+    // add blank layer
+    var blankOption = document.createElement('option');
+    blankOption.value = 'blank';
+    blankOption.innerText = 'Blank';
+    if (active == 'blank') {
+      blankOption.setAttribute('selected', 'selected');
+    }
+    select.appendChild(blankOption);
+
     container.appendChild(select);
     el.appendChild(container);
 
     select.addEventListener('change', function() {
-      this.getLayers().setAt(
-        0, lux.WMTSLayerFactory_(this.layersConfig[select.value])
-      );
+      if (select.value !== 'blank') {
+        this.getLayers().setAt(
+          0, lux.WMTSLayerFactory_(this.layersConfig[select.value])
+        );
+      } else {
+        this.getLayers().setAt(0, this.blankLayer_);
+      }
     }.bind(this));
+
+    // update the selector if blank layer is set (after exclusion)
+    ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
+        function(event) {
+          var layer = this.getLayers().getArray()[0];
+          if (layer == this.blankLayer_) {
+            blankOption.setAttribute('selected', 'selected');
+          }
+        }, this);
 
   }.bind(this));
 };
@@ -450,6 +540,7 @@ lux.WMTSLayerFactory_ = function(config) {
 
   var layer = new ol.layer.Tile({
     name  : config['name'],
+    metadata: config['metadata'],
     source: new ol.source.WMTS({
       url             : url,
       layer           : config['name'],
@@ -497,6 +588,7 @@ lux.WMSLayerFactory_ = function(config) {
   };
   var layer = new ol.layer.Image({
     name: config['name'],
+    metadata: config['metadata'],
     source: new ol.source.ImageWMS(optSource)
   });
 
