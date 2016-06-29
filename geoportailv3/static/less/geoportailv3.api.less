@@ -11,10 +11,18 @@
 @popup-arrow-color: @popup-bg;
 @popup-arrow-width: 11px;
 
-@mouseposition-width: 13em;
+@mouseposition-width: 10em;
 @mouseposition-height: 2em;
 
 @color: #2980b9;
+
+@font-face {
+  @baseurl: 'http://map.geoportail.lu/main/wsgi/proj/297692c5f20c49ee83e887cde0eedbb4/webfonts';
+  @baseurl: '../../static/webfonts'; // FIXME : cors headers needed for line above to work
+  font-family: DINNextLTPro-Condensed;
+  src:url('@{baseurl}/28867F_0_0.eot');
+  src:url('@{baseurl}/28867F_0_0.eot?#iefix') format('embedded-opentype'),url('@{baseurl}/28867F_0_0.woff') format('woff'),url('@{baseurl}/28867F_0_0.ttf') format('truetype');
+}
 
 .lux-map {
   border: @border;
@@ -32,8 +40,8 @@
     margin-left: -@mouseposition-width / 2;
     left: 50%;
     text-align: center;
-    font-size: 14px;
-    font-family: Mono;
+    font-size: 16px;
+    font-family: DINNextLTPro-Condensed;
     text-shadow: 0 0 2px #fff;
     color: #000;
     border-radius: @border-radius @border-radius 0 0;
@@ -69,6 +77,35 @@
       border-radius: 0 0 @border-radius @border-radius;
     }
   }
+}
+
+.lux-dropdown {
+  background-color: @bg;
+  border-radius: @border-radius;
+  border: @border;
+  display: inline-block;
+  position: relative;
+  width: 10em;
+  &::after {
+    color: @color;
+    content: '⯆';
+    position: absolute;
+    right: .6em;
+    top: .75em;
+    pointer-events: none;
+  }
+}
+.lux-dropdown-select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: @bg;
+  border: 0;
+  color: @color;
+  font-family: DINNextLTPro-Condensed,Arial,sans-serif;
+  font-size: 19px;
+  padding: .5em;
+  width: 100%;
 }
 
 .lux-popup {
