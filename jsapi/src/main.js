@@ -69,6 +69,12 @@ lux.Map = function(options) {
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
     this.addLayers_(layers);
+    // background layers selector
+    if (options.bgSelector && options.bgSelectorTarget) {
+      this.addBgSelector(options.bgSelectorTarget);
+    }
+    delete options.bgSelector;
+    delete options.bgSelectorTarget;
   }.bind(this));
 
   var viewOptions = {
@@ -279,6 +285,52 @@ lux.findLayerByName_ = function(name, layers) {
 };
 
 /**
+ * @param {Element|string} target Dom element or id of the element to render
+ * bgSelector in.
+ */
+lux.Map.prototype.addBgSelector = function(target) {
+  this.promise.then(function() {
+    if (!this.layersConfig) {
+      return;
+    }
+
+    var el = typeof target === 'string' ?
+        document.getElementById(target) :
+        target;
+    var container = document.createElement('div');
+    container.classList.add('lux-dropdown');
+    var select = document.createElement('select');
+    select.classList.add('lux-dropdown-select');
+
+    var conf = this.layersConfig;
+    var backgrounds = Object.keys(conf).filter(function(l) {
+      return conf[l].isBgLayer;
+    }).map(function(l) {
+      return conf[l];
+    });
+    var active = this.getLayers().item(0).get('name');
+    backgrounds.forEach(function(background) {
+      var option = document.createElement('option');
+      option.value = background.id;
+      option.innerText = background.name;
+      if (active == background.name) {
+        option.setAttribute('selected', 'selected');
+      }
+      select.appendChild(option);
+    });
+    container.appendChild(select);
+    el.appendChild(container);
+
+    select.addEventListener('change', function() {
+      this.getLayers().setAt(
+        0, lux.WMTSLayerFactory_(this.layersConfig[select.value])
+      );
+    }.bind(this));
+
+  }.bind(this));
+};
+
+/**
  * @param {Object} config The layer's config
  * @return {ol.layer.Tile} The layer.
  */
@@ -289,7 +341,9 @@ lux.WMTSLayerFactory_ = function(config) {
   var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
   '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
+
   var layer = new ol.layer.Tile({
+    name  : config['name'],
     source: new ol.source.WMTS({
       url             : url,
       layer           : config['name'],
