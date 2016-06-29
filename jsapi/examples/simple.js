@@ -13,4 +13,6 @@ var map = new lux.Map({
     target: 'mapContainer',
     srs : 4326
   }
+  bgSelector       : true,
+  bgSelectorTarget : 'mapContainer'
 });
