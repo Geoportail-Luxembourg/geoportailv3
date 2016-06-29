@@ -11,7 +11,9 @@ var luxx;
  *     target: (Element|string),
  *     position: (ol.Coordinate|undefined),
  *     positionSrs: (string|number|undefined),
- *     zoom: (number|undefined)
+ *     zoom: (number|undefined),
+ *     mousePosition: (boolean),
+ *     mousePositionSrs: (string|number|undefined)
  * }}
  */
 luxx.MapOptions;
@@ -44,7 +46,7 @@ luxx.MapOptions.prototype.position;
 
 /**
  * The projection of the position coordinates.
- * Default is `2169` (Spherical Mercator).
+ * Default is `2169`.
  * @type {string|number}
  */
 luxx.MapOptions.prototype.positionSrs;
@@ -54,6 +56,20 @@ luxx.MapOptions.prototype.positionSrs;
  * @type {number|undefined}
  */
 luxx.MapOptions.prototype.zoom;
+
+/**
+ * Set the presence of a mouse position control in the map. (not included by
+ * default).
+ * @type {boolean|undefined}
+ */
+luxx.MapOptions.prototype.mousePosition;
+
+/**
+ * The projection of the mouse position control.
+ * Default is `2169`.
+ * @type {string|number}
+ */
+luxx.MapOptions.prototype.mousePositionSrs;
 
 /**
  * Object literal with config options for the maker.

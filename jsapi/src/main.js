@@ -3,6 +3,7 @@ goog.provide('lux.Map');
 
 goog.require('goog.dom');
 goog.require('ol.events');
+goog.require('ol.control.MousePosition');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -12,6 +13,7 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTSRequestEncoding');
 
+proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
 
 /**
  * @type {string}
@@ -91,7 +93,39 @@ lux.Map = function(options) {
 
   options.view = new ol.View(viewOptions);
 
+  var controls = ol.control.defaults();
+  var srs = options.mousePositionSrs ?
+      'EPSG:' + options.mousePositionSrs.toString() : 'EPSG:2169';
+  if (options.mousePosition) {
+    controls.push(new ol.control.MousePosition({
+      projection: ol.proj.get(srs),
+      coordinateFormat: function(coord) {
+        var decimal = 1;
+        if (srs == 'EPSG:4326') {
+          decimal = 5;
+        }
+        if (srs == 'EPSG:2169') {
+          decimal = 2;
+        }
+        return coord.map(function(c) {
+          return c.toFixed(decimal);
+        });
+      },
+      undefinedHTML: 'Coordinates'
+    }));
+    delete options.mousePosition;
+    delete options.mousePositionSrs;
+  }
+  options.controls = controls;
+
+  options.logo = {
+    href : 'http://map.geoportail.lu',
+    src  : 'https://www.geoportail.lu/favicon.ico'
+  };
+
   goog.base(this, options);
+
+  this.getTargetElement().classList.add('lux-map');
 };
 
 goog.inherits(lux.Map, ol.Map);
