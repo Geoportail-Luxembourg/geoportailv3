@@ -221,6 +221,7 @@ function buildPopupLayout_(html, addCloseBtn) {
 
 /**
  * @param {Array<string|number>} layers Array of layer names
+ * @private
  */
 lux.Map.prototype.addLayers_ = function(layers) {
   var conf = this.layersConfig;
@@ -228,23 +229,45 @@ lux.Map.prototype.addLayers_ = function(layers) {
     return;
   }
   layers.map(function(layer) {
-    if (!conf[layer]) {
-      console.log('Layer id not present in layers list');
+    var layerConf;
+    if (typeof layer == 'number' || !isNaN(parseInt(layer, 10))) {
+      layerConf = conf[layer];
+    } else if (typeof layer == 'string') {
+      layerConf = lux.findLayerByName_(layer, conf);
+    }
+    if (!layerConf) {
+      console.error('Layer "' + layer + '" not present in layers list');
       return;
     }
-    var fn = (conf[layer].type === 'internal WMS') ?
+    var fn = (layerConf.type === 'internal WMS') ?
       lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
-    this.getLayers().push(fn(conf[layer]));
+    this.getLayers().push(fn(layerConf));
   }.bind(this));
 };
 
 /**
- * @param {string|number} layer The layer id
+ * @param {string|number} layer The layer id or name
  */
 lux.Map.prototype.addLayerById = function(layer) {
   this.promise.then(function() {
     this.addLayers_([layer]);
   }.bind(this));
+};
+
+/**
+ * @param {string} name The layer name
+ * @param {Object<string,luxx.LayersOptions>} layers The layers config
+ * @return {luxx.LayersOptions|undefined} The layer config.
+ * @private
+ */
+lux.findLayerByName_ = function(name, layers) {
+  for (var i in layers) {
+    var layer = layers[i];
+    if (layer.name == name) {
+      return layer;
+    }
+  }
+  return;
 };
 
 /**
