@@ -24,7 +24,7 @@ class JsapiEntry(Entry):
 
         # get background layers
         group, errors = self._get_group(u'bglayers', None, u'desktop', 2)
-        self._extract_layers(group, layers)
+        self._extract_layers(group, layers, True)
         return layers
 
     @view_config(route_name='jsapiloader',
@@ -37,9 +37,11 @@ class JsapiEntry(Entry):
     def apiexample(self):
         return {}
 
-    def _extract_layers(self, node, layers):
+    def _extract_layers(self, node, layers, bg=False):
         for child in node.get('children'):
             if 'children' in child:
                 self._extract_layers(child, layers)
             else:
+                if bg:
+                    child['isBgLayer'] = True
                 layers[child.get('id')] = child
