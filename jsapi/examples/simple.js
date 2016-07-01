@@ -8,7 +8,7 @@ var map = new lux.Map({
   positionSrs      : '4326',
   zoom             : 14,
   bgLayer          : 655,
-  layers           : [ '145' ],
+  layers           : [ 'arrets_bus', 650 ],
   mousePosition    : true,
   mousePositionSrs : 4326
 });
