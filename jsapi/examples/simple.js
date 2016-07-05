@@ -15,5 +15,8 @@ var map = new lux.Map({
   },
   bgSelector       : {
     target : 'mapContainer'
+  },
+  layerManager     : {
+    target: 'layerManager'
   }
 });

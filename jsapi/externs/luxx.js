@@ -48,6 +48,13 @@ luxx.MapOptions.prototype.positionSrs;
  */
 luxx.MapOptions.prototype.zoom;
 
+
+/**
+ * Set the presence of a layer manager control. (not included by default)
+ * @type {luxx.ControlOptions|undefined}
+ */
+luxx.MapOptions.prototype.layerManager;
+
 /**
  * Set the presence of a mouse position control in the map. (not included by
  * default).
@@ -170,3 +177,16 @@ luxx.BgSelectorOptions;
  * @type {Element|string}
  */
 luxx.BgSelectorOptions.prototype.target;
+
+/**
+ * Object literal with config options for the layer manager control.
+ * @typedef {Object}
+ */
+luxx.LayerManagerOptions;
+
+/**
+ * The container for the layer manager control, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string}
+ */
+luxx.LayerManagerOptions.prototype.target;
