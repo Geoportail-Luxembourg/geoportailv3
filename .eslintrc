@@ -18,6 +18,7 @@
     "gmf": false,
     "app": false,
     "Fuse": false,
-    "lux": false
+    "lux": false,
+    "autoComplete": false
   }
 }
