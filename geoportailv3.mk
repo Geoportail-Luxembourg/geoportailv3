@@ -132,6 +132,7 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 	mkdir -p $(dir $@)
 	node node_modules/openlayers/tasks/build.js $< $@
 	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js \
+	node_modules/js-autocomplete/auto-complete.min.js \
 	$@ > concatenated.js
 	mv concatenated.js $@
 
