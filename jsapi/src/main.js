@@ -70,8 +70,8 @@ lux.Map = function(options) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
     this.addLayers_(layers);
     // background layers selector
-    if (options.bgSelector && options.bgSelectorTarget) {
-      this.addBgSelector(options.bgSelectorTarget);
+    if (options.bgSelector && options.bgSelector.target) {
+      this.addBgSelector(options.bgSelector.target);
     }
     delete options.bgSelector;
     delete options.bgSelectorTarget;
@@ -297,6 +297,10 @@ lux.Map.prototype.addBgSelector = function(target) {
     var el = typeof target === 'string' ?
         document.getElementById(target) :
         target;
+    if (!(el instanceof Element)) {
+      console.error('BgSelector target should be a DOM Element or its id');
+      return;
+    }
     var container = document.createElement('div');
     container.classList.add('lux-dropdown');
     var select = document.createElement('select');
