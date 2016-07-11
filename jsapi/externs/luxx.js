@@ -58,16 +58,10 @@ luxx.MapOptions.prototype.mousePosition;
 /**
  * Set the presence of a background selector control in the map.
  * (not included by default).
- * @type {ol.Coordinate|undefined}
+ * @type {luxx.BgSelectorOptions}
  */
 luxx.MapOptions.prototype.bgSelector;
 
-/**
- * The container for the background selector, either the element itself or
- * the `id` of the element.
- * @type {Element|string}
- */
-luxx.MapOptions.prototype.bgSelectorTarget;
 
 /**
  * Object literal with config options for the maker.
@@ -163,3 +157,16 @@ luxx.MousePositionOptions.prototype.srs;
  * @type {Element|string}
  */
 luxx.MousePositionOptions.prototype.target;
+
+/**
+ * Object literal with config options for the bgSelector control.
+ * @typedef {Object}
+ */
+luxx.BgSelectorOptions;
+
+/**
+ * The container for the bgSelector control, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string}
+ */
+luxx.BgSelectorOptions.prototype.target;
