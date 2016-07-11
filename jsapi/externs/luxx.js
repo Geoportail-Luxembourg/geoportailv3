@@ -60,16 +60,9 @@ luxx.MapOptions.prototype.zoom;
 /**
  * Set the presence of a mouse position control in the map. (not included by
  * default).
- * @type {boolean|undefined}
+ * @type {luxx.MousePositionOptions}
  */
 luxx.MapOptions.prototype.mousePosition;
-
-/**
- * The projection of the mouse position control.
- * Default is `2169`.
- * @type {string|number}
- */
-luxx.MapOptions.prototype.mousePositionSrs;
 
 /**
  * Object literal with config options for the maker.
@@ -136,3 +129,24 @@ luxx.LayerOptions;
  * @typedef {Object.<number|string, luxx.LayerOptions>}
  */
 luxx.LayersOptions;
+
+/**
+ * Object literal with config options for the mouse position control.
+ * @typedef {{target: (Element|string),
+ *     srs: (number|string)}}
+ */
+luxx.MousePositionOptions;
+
+ /**
+ * The projection of the mouse position control.
+ * Default is `2169`.
+ * @type {string|number}
+ */
+luxx.MousePositionOptions.prototype.srs;
+
+/**
+ * The container for the mouse position control, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string}
+ */
+luxx.MousePositionOptions.prototype.target;
