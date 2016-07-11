@@ -12,7 +12,8 @@ var map = new lux.Map({
   mousePosition    : {
     target: 'mapContainer',
     srs : 4326
+  },
+  bgSelector       : {
+    target : 'mapContainer'
   }
-  bgSelector       : true,
-  bgSelectorTarget : 'mapContainer'
 });
