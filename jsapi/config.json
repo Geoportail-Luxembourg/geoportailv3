@@ -18,6 +18,7 @@
       "externs/topojson.js",
       "externs/olx.js",
       "externs/oli.js",
+      "../../jsapi/externs/autocompletex.js",
       "../../jsapi/externs/luxx.js"
     ],
     "define": [
