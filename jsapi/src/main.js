@@ -4,6 +4,7 @@ goog.provide('lux.Map');
 goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.control.MousePosition');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -19,6 +20,11 @@ proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.1666666666
  * @type {string}
  */
 lux.layersUrl = '../layers.json';
+
+/**
+ * @type {string}
+ */
+lux.searchUrl = 'http://map.geoportail.lu/main/wsgi/fulltextsearch?';
 
 /**
  * @param {string} url Url to jsapilayers service.
@@ -136,6 +142,11 @@ lux.Map = function(options) {
     href : 'http://map.geoportail.lu',
     src  : 'https://www.geoportail.lu/favicon.ico'
   };
+
+  if (options.search && options.search.target) {
+    this.addSearch(options.search.target);
+    delete options.search;
+  }
 
   goog.base(this, options);
 
@@ -332,6 +343,83 @@ lux.Map.prototype.addBgSelector = function(target) {
     }.bind(this));
 
   }.bind(this));
+};
+
+/**
+ * @param {Element|string} target Dom element or id of the element to render
+ * search widget in.
+ */
+lux.Map.prototype.addSearch = function(target) {
+
+  var el = typeof target === 'string' ?
+      document.getElementById(target) :
+      target;
+  if (!(el instanceof Element)) {
+    console.error('Search target should be a DOM Element or its id');
+    return;
+  }
+
+  var container = document.createElement('div');
+  container.classList.add('lux-search');
+
+  var input = document.createElement('input');
+  input.classList.add('lux-search-input');
+  input.setAttribute('placeholder', 'Search addresses');
+  container.appendChild(input);
+  var clear = document.createElement('button');
+  clear.classList.add('lux-search-clear');
+  clear.innerHTML = '&times;';
+  container.appendChild(clear);
+
+  el.appendChild(container);
+
+  clear.addEventListener('click', function() {
+    input.value         = '';
+    clear.style.display = '';
+  });
+  input.addEventListener('keyup', function() {
+    clear.style.display = (input.value == '') ? '' : 'block';
+  });
+
+  var format = new ol.format.GeoJSON();
+
+  new autoComplete({
+    selector  : input,
+    minChars  : 2,
+    menuClass : 'lux-search-suggestions',
+    source    : function(term, suggest) {
+      term = term.toLowerCase();
+      fetch(lux.searchUrl + 'limit=5&query=' + term).then(function(resp) {
+        return resp.json();
+      }).then(function(json) {
+        suggest(json.features);
+      });
+    },
+    renderItem : function(item, search) {
+      var label = item.properties.label;
+      search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+      var bbox = (!item.bbox.join) ?
+          format.readGeometry(item.geometry).getExtent() : item.bbox;
+      return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
+          'data-extent="' + bbox.join(',') + '">' +
+          label.replace(re, '<b>$1</b>') +
+          '</div>';
+    },
+    onSelect : function(e, term, item) {
+      var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
+      this.getView().fit(
+        ol.geom.Polygon.fromExtent(
+          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+        ),
+        /** @type {Array<number>} */ (this.getSize()),
+        /** @type {olx.view.FitOptions} */ ({
+          minResolution: .5
+        })
+      );
+    }.bind(this)
+  });
+
 };
 
 /**

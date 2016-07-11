@@ -1,4 +1,5 @@
 @import (inline) '../../../node_modules/openlayers/css/ol.css';
+@import (inline) '../../../node_modules/js-autocomplete/auto-complete.css';
 @import "../../../node_modules/bootstrap/less/mixins/vendor-prefixes.less";
 
 @bg: #fff;
@@ -15,6 +16,9 @@
 @mouseposition-height: 2em;
 
 @color: #2980b9;
+@padding: .5em;
+
+@font: DINNextLTPro-Condensed,Arial,sans-serif;
 
 @font-face {
   @baseurl: 'http://map.geoportail.lu/main/wsgi/proj/297692c5f20c49ee83e887cde0eedbb4/webfonts';
@@ -41,7 +45,7 @@
     left: 50%;
     text-align: center;
     font-size: 16px;
-    font-family: DINNextLTPro-Condensed;
+    font-family: @font;
     text-shadow: 0 0 2px #fff;
     color: #000;
     border-radius: @border-radius @border-radius 0 0;
@@ -102,10 +106,39 @@
   background: @bg;
   border: 0;
   color: @color;
-  font-family: DINNextLTPro-Condensed,Arial,sans-serif;
+  font-family: @font;
   font-size: 19px;
-  padding: .5em;
+  padding: @padding;
   width: 100%;
+}
+
+.lux-search {
+  position: relative;
+  padding: 0;
+}
+.lux-search-input,
+.lux-search-suggestions {
+  background-color: @bg;
+  border-radius: @border-radius;
+  border: @border;
+  font-family: @font;
+  width: 14em;
+  font-size: 17px;
+}
+.lux-search-input {
+  padding: @padding;
+}
+.lux-search-clear {
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  font-family: @font;
+  font-size: 24px;
+  position: absolute;
+  right: .05em;
+  top: .10em;
+  z-index: 10;
 }
 
 .lux-popup {
