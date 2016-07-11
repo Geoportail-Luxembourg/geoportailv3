@@ -5,16 +5,7 @@ var luxx;
 
 /**
  * Object literal with config options for the map.
- * @typedef {{
- *     bgLayer: (string),
- *     layers: (Array<string>),
- *     target: (Element|string),
- *     position: (ol.Coordinate|undefined),
- *     positionSrs: (string|number|undefined),
- *     zoom: (number|undefined),
- *     mousePosition: (boolean),
- *     mousePositionSrs: (string|number|undefined)
- * }}
+ * @typedef {Object}
  */
 luxx.MapOptions;
 
@@ -66,8 +57,7 @@ luxx.MapOptions.prototype.mousePosition;
 
 /**
  * Object literal with config options for the maker.
- * @typedef {{position: (ol.Coordinate|undefined),
- *     autoCenter: (boolean|undefined)}}
+ * @typedef {Object}
  */
 luxx.MarkerOptions;
 
@@ -120,9 +110,19 @@ luxx.MarkerOptions.prototype.hover;
 
 /**
  * Object literal with config options for the layer.
- * @typedef {{imageType: (string), type: (string)}}
+ * @typedef {Object}
  */
 luxx.LayerOptions;
+
+/**
+ * @type {string}
+ */
+luxx.LayerOptions.prototype.imageType;
+
+/**
+ * @type {string}
+ */
+luxx.LayerOptions.prototype.type;
 
 /**
  * Object literal with config options for the layers.
@@ -132,8 +132,7 @@ luxx.LayersOptions;
 
 /**
  * Object literal with config options for the mouse position control.
- * @typedef {{target: (Element|string),
- *     srs: (number|string)}}
+ * @typedef {Object}
  */
 luxx.MousePositionOptions;
 
