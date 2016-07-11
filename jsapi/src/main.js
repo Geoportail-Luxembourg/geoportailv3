@@ -94,27 +94,35 @@ lux.Map = function(options) {
   options.view = new ol.View(viewOptions);
 
   var controls = ol.control.defaults();
-  var srs = options.mousePositionSrs ?
-      'EPSG:' + options.mousePositionSrs.toString() : 'EPSG:2169';
   if (options.mousePosition) {
-    controls.push(new ol.control.MousePosition({
-      projection: ol.proj.get(srs),
-      coordinateFormat: function(coord) {
-        var decimal = 1;
-        if (srs == 'EPSG:4326') {
-          decimal = 5;
-        }
-        if (srs == 'EPSG:2169') {
-          decimal = 2;
-        }
-        return coord.map(function(c) {
-          return c.toFixed(decimal);
-        });
-      },
-      undefinedHTML: 'Coordinates'
-    }));
+    var srs = options.mousePosition.srs ?
+        'EPSG:' + options.mousePosition.srs.toString() : 'EPSG:2169';
+    var target = options.mousePosition.target;
+    var el = typeof target === 'string' ?
+         document.getElementById(target) :
+         target;
+    if (el instanceof Element) {
+      controls.push(new ol.control.MousePosition({
+        target: el,
+        projection: ol.proj.get(srs),
+        coordinateFormat: function(coord) {
+          var decimal = 1;
+          if (srs == 'EPSG:4326') {
+            decimal = 5;
+          }
+          if (srs == 'EPSG:2169') {
+            decimal = 2;
+          }
+          return coord.map(function(c) {
+            return c.toFixed(decimal);
+          });
+        },
+        undefinedHTML: 'Coordinates'
+      }));
+    } else {
+      console.error('Mouse position target should be a DOM Element or its id');
+    }
     delete options.mousePosition;
-    delete options.mousePositionSrs;
   }
   options.controls = controls;
 
