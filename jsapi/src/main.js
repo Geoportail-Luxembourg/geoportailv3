@@ -74,7 +74,6 @@ lux.Map = function(options) {
       this.addBgSelector(options.bgSelector.target);
     }
     delete options.bgSelector;
-    delete options.bgSelectorTarget;
   }.bind(this));
 
   var viewOptions = {

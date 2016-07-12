@@ -133,6 +133,11 @@ luxx.LayerOptions.prototype.imageType;
 luxx.LayerOptions.prototype.type;
 
 /**
+ * @type {boolean}
+ */
+luxx.LayerOptions.prototype.isBgLayer;
+
+/**
  * Object literal with config options for the layers.
  * @typedef {Object.<number|string, luxx.LayerOptions>}
  */
