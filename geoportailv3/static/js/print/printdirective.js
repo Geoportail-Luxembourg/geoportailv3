@@ -540,6 +540,12 @@ app.PrintController.prototype.print = function() {
               }
             }
           }
+          if (layer.type === 'wms') {
+            if (!layer.customParams) {
+              layer.customParams = {};
+            }
+            layer.customParams['MAP_RESOLUTION'] = dpi;
+          }
         }, this);
         // create print report
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
