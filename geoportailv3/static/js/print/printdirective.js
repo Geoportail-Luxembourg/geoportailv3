@@ -340,7 +340,7 @@ app.PrintController.MAP_SIZES_ = [
  * @type {number}
  * @private
  */
-app.PrintController.DPI_ = 128;
+app.PrintController.DPI_ = 300;
 
 
 /**
@@ -491,6 +491,13 @@ app.PrintController.prototype.print = function() {
     if (goog.isDef(name)) {
       legend.push({'name': name});
     }
+    var metaMaxDpi = layer.get('metadata')['max_dpi'];
+    if (goog.isDef(metaMaxDpi)) {
+      var maxDpi = parseInt(metaMaxDpi, 10);
+      if (dpi > maxDpi) {
+        dpi = maxDpi;
+      }
+    }
   });
 
   this.getShorturl_().then(goog.bind(
@@ -524,10 +531,16 @@ app.PrintController.prototype.print = function() {
         var resolution = map.getView().getResolution();
         goog.asserts.assert(goog.isDef(resolution));
         this.print_.encodeLayer(layers, this.featureOverlayLayer_, resolution);
-        if (layers.length > 0) {
-          spec.attributes.map.layers.unshift(layers[0]);
-        }
-
+        spec.attributes.map.layers.forEach(function(layer) {
+          if (layer.matrices instanceof Array) {
+            for (var i = layer.matrices.length - 1; i > 0 ; i--) {
+              if (layer.matrices[i].scaleDenominator > this['scale']) {
+                layer.matrices.splice(0, i + 1);
+                break;
+              }
+            }
+          }
+        }, this);
         // create print report
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
           timeout: this.requestCanceler_.promise
