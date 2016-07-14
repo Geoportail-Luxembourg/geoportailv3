@@ -531,6 +531,9 @@ app.PrintController.prototype.print = function() {
         var resolution = map.getView().getResolution();
         goog.asserts.assert(goog.isDef(resolution));
         this.print_.encodeLayer(layers, this.featureOverlayLayer_, resolution);
+        if (layers.length > 0) {
+          spec.attributes.map.layers.unshift(layers[0]);
+        }
         spec.attributes.map.layers.forEach(function(layer) {
           if (layer.matrices instanceof Array) {
             for (var i = layer.matrices.length - 1; i > 0 ; i--) {
