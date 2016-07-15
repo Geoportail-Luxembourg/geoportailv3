@@ -225,6 +225,7 @@ SPHINX_FILES = $(shell find doc -name "*.rst" -print)
 # Server localisation
 SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/models.py $(shell find $(PACKAGE)/templates -type f -name '*.html')
 SERVER_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-server.mo, $(LANGUAGES)))
+CLIENT_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-client.mo, $(LANGUAGES)))
 
 # Print
 PRINT_BASE_DIR ?= print
@@ -364,7 +365,7 @@ flake8: $(VENV_BIN)/flake8
 	$(VENV_BIN)/flake8 $(PACKAGE)
 
 .PHONY: build-server
-build-server: template-generate compile-py-catalog $(SERVER_LOCALISATION_FILES)
+build-server: template-generate compile-py-catalog $(SERVER_LOCALISATION_FILES) $(CLIENT_LOCALISATION_FILES)
 
 .PHONY: build-cgxp
 build-cgxp: $(JSBUILD_MAIN_OUTPUT_FILES) $(CSS_BASE_OUTPUT) $(CSS_API_OUTPUT) $(CSS_XAPI_OUTPUT)
@@ -492,6 +493,7 @@ $(PACKAGE)/locale/%/LC_MESSAGES/%/$(PACKAGE)-client.po: $(PACKAGE)/locale/$(PACK
 	mkdir -p $(dir $@)
 	touch $@
 	msgmerge --update $@ $<
+
 
 $(OUTPUT_DIR)/build.js: .build/node_modules.timestamp .build/build.js $(NGEO_LIBS_JS_FILES) $(NGEO_PROJECT_LIBS_JS_FILES)
 	mkdir -p $(dir $@)
