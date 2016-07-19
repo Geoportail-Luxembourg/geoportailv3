@@ -2,6 +2,7 @@ goog.provide('lux');
 goog.provide('lux.Map');
 
 goog.require('goog.dom');
+goog.require('lux.LayerManager');
 goog.require('ol.events');
 goog.require('ol.control.MousePosition');
 goog.require('ol.Map');
@@ -100,11 +101,14 @@ lux.Map = function(options) {
   options.view = new ol.View(viewOptions);
 
   var controls = ol.control.defaults();
+
+  var target;
+  var el;
   if (options.mousePosition) {
     var srs = options.mousePosition.srs ?
         'EPSG:' + options.mousePosition.srs.toString() : 'EPSG:2169';
-    var target = options.mousePosition.target;
-    var el = typeof target === 'string' ?
+    target = options.mousePosition.target;
+    el = typeof target === 'string' ?
          document.getElementById(target) :
          target;
     if (el instanceof Element) {
@@ -140,6 +144,17 @@ lux.Map = function(options) {
   goog.base(this, options);
 
   this.getTargetElement().classList.add('lux-map');
+
+  if (options.layerManager) {
+    target = options.layerManager.target;
+    el = typeof target === 'string' ?
+         document.getElementById(target) :
+         target;
+    var control = new lux.LayerManager({
+      target: el
+    });
+    this.addControl(control);
+  }
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -394,6 +409,7 @@ lux.WMSLayerFactory_ = function(config) {
     }
   };
   var layer = new ol.layer.Image({
+    name: config['name'],
     source: new ol.source.ImageWMS(optSource)
   });
 
