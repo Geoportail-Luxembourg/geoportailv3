@@ -1,4 +1,5 @@
 <div id="map" style="height: 400px"></div>
+<div id="layerManager"></div>
 
 <script src="/apiv3loader.js"></script>
 <script>
@@ -6,6 +7,9 @@ var map = new lux.Map({
   target: 'map',
   bgLayer     : 653,
   layers      : [ 145, 'buildings' ],
-  zoom: 14
+  zoom: 14,
+  layerManager: {
+    target: 'layerManager'
+  }
 });
 </script>
