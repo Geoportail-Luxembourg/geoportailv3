@@ -74,13 +74,21 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {angular.$compile} $compile The compile provider.
  * @param {app.Notify} appNotify Notify service.
+ * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
  * @constructor
  * @export
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify) {
+    appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify,
+    $anchorScroll) {
+  /**
+   * @type {angular.$anchorScroll}
+   * @private
+   */
+  this.anchorScroll_ = $anchorScroll;
+
   /**
    * The key for geometry change event.
    * @type {?ol.events.Key}
@@ -312,6 +320,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
         this['queryActive'] = false;
+        this.gotoAnchor(
+            'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
       }, this));
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
@@ -717,6 +727,16 @@ app.DrawController.prototype.removeMeasureTooltip_ = function() {
     this.measureTooltipElement_ = null;
     this.measureTooltipOverlay_ = null;
   }
+};
+
+
+/**
+ * Goto the specfied anchor.
+ * @param {string} anchorId The id of the anchor.
+ * @export
+ */
+app.DrawController.prototype.gotoAnchor = function(anchorId) {
+  this.anchorScroll_(anchorId);
 };
 
 app.module.controller('AppDrawController', app.DrawController);
