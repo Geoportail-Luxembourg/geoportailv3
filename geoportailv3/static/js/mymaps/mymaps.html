@@ -137,7 +137,7 @@
           {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li ng-repeat="category in ctrl.getCategories()"><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+          <li ng-repeat="category in ctrl.getCategories() | orderBy:'name | translate' "><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
         </ul>
       </div>
     </div>
