@@ -70,7 +70,7 @@ recreate-search-layers:
 
 .PHONY: recreate-search-poi
 recreate-search-poi:
-	$(VENV_BIN)/db2es --recreate
+	$(VENV_BIN)/db2es --reset --index
 
 update-tooltips:
 	$(VENV_BIN)/tooltips2pot
