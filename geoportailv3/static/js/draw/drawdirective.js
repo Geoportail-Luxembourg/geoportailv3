@@ -285,7 +285,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawnFeatures_.modifyInteraction.setActive(false);
       this['queryActive'] = true;
     } else {
-      this['queryActive'] = false;
+      this['queryActive'] = true;
       this['mymapsOpen'] = true;
     }
   }, this));
@@ -332,9 +332,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
-        if (!this.active) {
-          this['queryActive'] = true;
-        }
+        this['queryActive'] = true;
       }).bind(this));
 
   ol.events.listen(selectInteraction,
@@ -474,6 +472,9 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     }
     if (cntActive === 1) {
       this.notify_(msg);
+      this['queryActive'] = false;
+    } else {
+      this['queryActive'] = true;
     }
   }
 };
@@ -693,6 +694,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
+
   this['mymapsOpen'] = true;
 };
 
