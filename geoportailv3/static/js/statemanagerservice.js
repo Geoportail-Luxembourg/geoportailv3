@@ -53,17 +53,26 @@ app.StateManager = function(ngeoLocation) {
   var i, key;
 
   if (paramKeys.length === 0 ||
-      (paramKeys.length === 1 && (paramKeys[0] == 'debug' ||
-      paramKeys[0] == 'fid')) ||
+      (paramKeys.length === 1 && (paramKeys.indexOf('debug') >= 0 ||
+      paramKeys.indexOf('fid') >= 0 || paramKeys.indexOf('lang') >= 0)) ||
       (paramKeys.length === 2 &&
-      ((paramKeys[0] == 'debug' && paramKeys[1] == 'fid') ||
-      (paramKeys[1] == 'debug' && paramKeys[0] == 'fid')))) {
+      ((paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('fid') >= 0) ||
+      (paramKeys.indexOf('lang') >= 0 && paramKeys.indexOf('fid') >= 0) ||
+      (paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('lang') >= 0))) ||
+      (paramKeys.length === 3 &&
+      paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('fid') >= 0 &&
+      paramKeys.indexOf('lang') >= 0
+      )) {
     if (this.localStorage_.isAvailable()) {
       var count = this.localStorage_.getCount();
       for (i = 0; i < count; ++i) {
         key = this.localStorage_.key(i);
-        goog.asserts.assert(!goog.isNull(key));
-        this.initialState_[key] = this.localStorage_.get(key);
+        if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
+          this.initialState_[key] = ngeoLocation.getParam(key);
+        } else {
+          goog.asserts.assert(!goog.isNull(key));
+          this.initialState_[key] = this.localStorage_.get(key);
+        }
       }
     }
     this.version_ = 3;
