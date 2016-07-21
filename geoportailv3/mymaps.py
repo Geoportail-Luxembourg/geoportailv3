@@ -139,7 +139,8 @@ class Feature(Base):
         self.show_orientation = feature.properties.get('showOrientation')
         linestyle = feature.properties.get('linestyle')
         self.linestyle = 0 if linestyle == 'plain' else 1\
-            if linestyle == 'dashed' else 2
+            if linestyle == 'dashed' else 2\
+            if linestyle == 'dotted' else 0
         self.shape = feature.properties.get('shape')
         size = feature.properties.get('size')
         self.size = size if size is not None and unicode(size).isnumeric()\
