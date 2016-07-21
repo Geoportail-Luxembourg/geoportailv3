@@ -442,10 +442,16 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
   }));
   var mapId = this.appMymaps_.getMapId();
   var featuresToSave = [];
+  var noNameElemCnt = 0;
+  var gpxExtent;
   goog.array.forEach(gpxFeatures, function(feature) {
     feature.set('__map_id__', mapId);
     if (feature.getId()) {
       feature.setId(undefined);
+    }
+    if (!goog.isDef(feature.get('name'))) {
+      feature.set('name', 'Element ' + noNameElemCnt);
+      noNameElemCnt++;
     }
     var curGeometry = feature.getGeometry();
     if (curGeometry.getType() === ol.geom.GeometryType.MULTI_LINE_STRING) {
@@ -459,7 +465,16 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
     } else {
       featuresToSave.push(feature);
     }
+    if (gpxExtent) {
+      ol.extent.extend(gpxExtent, curGeometry.getExtent());
+    } else {
+      gpxExtent = curGeometry.getExtent();
+    }
   });
+
+  if (gpxExtent) {
+    this.fit(gpxExtent);
+  }
 
   this.appMymaps_.saveFeatures(featuresToSave).then(
       goog.bind(function() {
@@ -497,13 +512,29 @@ app.MymapsDirectiveController.prototype.importKml = function() {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   }));
+  var noNameElemCnt = 0;
+  var kmlExtent;
   var mapId = this.appMymaps_.getMapId();
   goog.array.forEach(kmlFeatures, function(feature) {
     feature.set('__map_id__', mapId);
     if (feature.getId()) {
       feature.setId(undefined);
     }
+    if (!goog.isDef(feature.get('name'))) {
+      feature.set('name', 'Element ' + noNameElemCnt);
+      noNameElemCnt++;
+    }
+    var curGeometry = feature.getGeometry();
+    if (kmlExtent) {
+      ol.extent.extend(kmlExtent, curGeometry.getExtent());
+    } else {
+      kmlExtent = curGeometry.getExtent();
+    }
   });
+
+  if (kmlExtent) {
+    this.fit(kmlExtent);
+  }
 
   this.appMymaps_.saveFeatures(kmlFeatures).then(
       goog.bind(function() {
@@ -1065,12 +1096,26 @@ app.MymapsDirectiveController.prototype.shareMymapsLink = function() {
   this['shareopen'] = true;
 };
 
+
 /**
  * @return {boolean} True if the popup is docked.
  * @export
  */
 app.MymapsDirectiveController.prototype.isDocked = function() {
   return this.appFeaturePopup_.isDocked;
+};
+
+
+/**
+ * @param {ol.Extent} extent The extent to fit to.
+ */
+app.MymapsDirectiveController.prototype.fit = function(extent) {
+  var viewSize = /** {ol.Size} **/ (this.map_.getSize());
+  goog.asserts.assert(goog.isDef(viewSize));
+  this.map_.getView().fit(
+      extent,
+      viewSize
+  );
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
