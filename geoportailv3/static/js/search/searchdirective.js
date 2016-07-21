@@ -106,6 +106,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The
  * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
+ * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
  * @param {app.ShowLayerinfo} appShowLayerinfo The layer info service.
@@ -116,7 +117,7 @@ app.module.directive('appSearch', app.searchDirective);
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, ngeoCreateGeoJSONBloodhound, appThemes,
+    appCoordinateString, ngeoCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl) {
 
@@ -205,6 +206,11 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
+  /**
+   * @type {ol.Map}
+   */
+  this.map;
+
   var fillStyle = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
@@ -243,6 +249,18 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
    */
   this.showLayerinfo_ = appShowLayerinfo;
 
+  /**
+   * @type {app.Theme}
+   * @private
+   */
+  this.appTheme_ = appTheme;
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       ngeoCreateGeoJSONBloodhound, poiSearchServiceUrl);
@@ -250,15 +268,6 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhoundEngine_(
       layerSearchServiceUrl);
-
-  /** @type {Fuse} */
-  var layerFuseEngine =
-      new Fuse(this.layers_, {
-        keys: ['translatedName'],
-        threshold: 0.4,
-        distance: 100,
-        includeScore: true
-      });
 
   /** @type {Fuse} */
   var backgroundLayerEngine =
@@ -270,8 +279,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       });
 
   $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
-    this.createLocalAllLayerData_(
-        appThemes, layerFuseEngine, this.gettextCatalog_);
+    this.createLocalAllLayerData_(appThemes);
     this.createLocalBackgroundLayerData_(
         appThemes, backgroundLayerEngine, this.gettextCatalog_);
   }, this));
@@ -281,8 +289,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
      * @param {ol.events.Event} evt Event
      */
       function(evt) {
-        this.createLocalAllLayerData_(
-            appThemes, layerFuseEngine, this.gettextCatalog_);
+        this.createLocalAllLayerData_(appThemes);
         this.createLocalBackgroundLayerData_(
             appThemes, backgroundLayerEngine, this.gettextCatalog_);
       }, this);
@@ -426,12 +433,25 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         var scope = $scope.$new(true);
         var translated_name = this.gettextCatalog_.getString(
                 /** @type {string} */ (suggestion.name)
-            );
+        );
+        var themeLink = '';
+        var layerTheme = suggestion['themes'][0];
+        if (suggestion['showThemeLink']) {
+          themeLink = '<br><a href="#"' +
+            'ng-click="switchTheme(\'' + layerTheme + '\')">' +
+            this.gettextCatalog_.getString(' (open in theme ') +
+            this.gettextCatalog_.getString(layerTheme) +
+            ')</a>';
+        }
         var html = '<p>' +
             '<span class="suggestion-text">' +
              translated_name + '</span>' +
+             themeLink +
             '<button ng-click="click($event)">i</button>' +
             '</p>';
+        scope['switchTheme'] = goog.bind(function(themeId) {
+          this.appTheme_.setCurrentTheme(themeId, this.map);
+        }, this);
         scope['click'] = goog.bind(function(event) {
           var node = goog.array.find(this.layers_, function(element) {
             return goog.object.containsKey(element, 'name') &&
@@ -617,9 +637,21 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhoundEngine_ =
               '?query=' + encodeURIComponent(query) +
               '&limit=5' + '&language=' + this.gettextCatalog_.currentLanguage;
         }, this),
-        transform: function(response) {
+        transform: goog.bind(function(response) {
+          goog.array.forEach(response, goog.bind(function(result) {
+            var layers = goog.array.filter(
+              this.layers_, goog.bind(function(element) {
+                return result['layer_id'] == element['id'];
+              }, this));
+            result['themes'] = [];
+            goog.array.forEach(layers, goog.bind(function(element) {
+              result['themes'].push(element.theme);
+            }, this));
+            result['showThemeLink'] = !goog.array.contains(
+              result['themes'], this.appTheme_.getCurrentTheme());
+          }, this));
           return response;
-        }
+        }, this)
       }
     });
     var bloodhound = new Bloodhound(bloodhoundOptions);
@@ -658,40 +690,16 @@ app.SearchDirectiveController.prototype.createLocalBackgroundLayerData_ =
 
 /**
  * @param {app.Themes} appThemes Themes Service.
- * @param {Fuse} fuse The fuse engine.
- * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @private
  */
 app.SearchDirectiveController.prototype.createLocalAllLayerData_ =
-    function(appThemes, fuse, gettextCatalog) {
+    function(appThemes) {
       this.layers_ = [];
-      appThemes.getThemesObject().then(
-      goog.bind(function(themes) {
-        var dedup = [];
-        for (var i = 0; i < themes.length; i++) {
-          var theme = themes[i];
-          goog.array.extend(dedup,
-              app.SearchDirectiveController.getAllChildren_(
-              theme.children, gettextCatalog
-              )
-          );
-        }
-        var dedup2 = [];
-        goog.array.removeDuplicates(dedup, dedup2,
-           /**
-            * @constructor
-            * @param {Object} element The element.
-            * @dict
-            */
-            (function(element) {
-              return element['id'];
-            })
-        );
-        this.layers_ = [];
-        goog.array.extend(this.layers_, dedup2);
-        fuse.set(this.layers_);
-      }, this)
-  );
+      this.appThemes_.getFlatCatalog().then(
+        goog.bind(function(flatCatalogue) {
+          this.layers_ = [];
+          goog.array.extend(this.layers_, flatCatalogue);
+        }, this));
     };
 
 
@@ -724,32 +732,6 @@ app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
     map.addLayer(layer);
   }
 };
-
-
-/**
- * @param {Array} element The element.
- * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @return {Array} array The children.
- * @private
- */
-app.SearchDirectiveController.getAllChildren_ =
-    function(element, gettextCatalog) {
-      var array = [];
-      for (var i = 0; i < element.length; i++) {
-        if (element[i].hasOwnProperty('children')) {
-          goog.array.extend(
-            array, app.SearchDirectiveController.getAllChildren_(
-                element[i].children, gettextCatalog
-              )
-          );
-        } else {
-          element[i]['translatedName'] =
-            gettextCatalog.getString(element[i].name);
-          array.push(element[i]);
-        }
-      }
-      return array;
-    };
 
 
 /**
