@@ -209,18 +209,20 @@ app.Themes.prototype.isThemePrivate = function(themeId) {
 
 /**
  * @param {Array} element The element.
+ * @param {string} theme Theme name.
  * @return {Array} array The children.
  * @private
  */
-app.Themes.prototype.getAllChildren_ = function(element) {
+app.Themes.prototype.getAllChildren_ = function(element, theme) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
       goog.array.extend(array, this.getAllChildren_(
-          element[i].children)
+          element[i].children, theme)
       );
     } else {
-      element[i].id = element[i].id;
+      // element[i].id = element[i].id;
+      element[i].theme = theme;
       array.push(element[i]);
     }
   }
@@ -239,7 +241,7 @@ app.Themes.prototype.getFlatCatalog = function() {
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
           goog.array.extend(flatCatalogue,
-              this.getAllChildren_(theme.children)
+              this.getAllChildren_(theme.children, theme.name)
           );
         }
         return flatCatalogue;

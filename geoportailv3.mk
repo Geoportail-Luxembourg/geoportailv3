@@ -27,7 +27,9 @@ APACHE_VHOST ?= luxembourg-geomapfish
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 
 UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Transifex" \
-        "\n- update-search	Update the ElasticSearch Database" \
+        "\n- recreate-search-poi	Recreate the ElasticSearch POI Index" \
+        "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index" \
+        "\n- update-search-layers	Update the ElasticSearch Layers Index" \
         "\n- update-tooltips	Update the automatic generated tooltips fields" \
         "\n- pull-translations	Pull the translation" \
 # Add rule that copies the font-awesome fonts to the static/build directory.
@@ -58,16 +60,20 @@ pull-translations:
 	cp node_modules/font-awesome/fonts/* $(PACKAGE)/static/build/fonts/
 	touch $@
 
-.PHONY: update-search
-update-search:
-	$(VENV_BIN)/db2es
+.PHONY: update-search-layers
+update-search-layers:
+	$(VENV_BIN)/layers2es --interfaces desktop --no-themes --no-blocks --no-folders
+
+.PHONY: recreate-search-layers
+recreate-search-layers:
+	$(VENV_BIN)/layers2es --interfaces desktop --no-themes --no-blocks --no-folders --recreate-index
+
+.PHONY: recreate-search-poi
+recreate-search-poi:
+	$(VENV_BIN)/db2es --reset --index
 
 update-tooltips:
 	$(VENV_BIN)/tooltips2pot
-
-.PHONY: recreate-search
-recreate-search:
-	$(VENV_BIN)/db2es --recreate
 
 .PHONY: $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
 $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
