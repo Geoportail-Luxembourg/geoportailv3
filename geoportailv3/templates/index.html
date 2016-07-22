@@ -133,7 +133,6 @@
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
-                       app-query-Active="mainCtrl.queryActive"
                        app-query-language="mainCtrl.lang"
                        app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
 
@@ -185,7 +184,6 @@
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
-            app-draw-queryactive="mainCtrl.queryActive"
             app-draw-mymaps-open="mainCtrl.mymapsOpen">
           </app-draw>
         </li>
@@ -194,7 +192,6 @@
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
             app-profile-open="mainCtrl.profileOpen"
-            app-measure-queryactive="mainCtrl.queryActive">
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">

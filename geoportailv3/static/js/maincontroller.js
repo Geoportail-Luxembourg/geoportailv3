@@ -214,11 +214,6 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
-  this['queryActive'] = true;
-
-  /**
-   * @type {boolean}
-   */
   this['infosHiddenContent'] = false;
 
   /**

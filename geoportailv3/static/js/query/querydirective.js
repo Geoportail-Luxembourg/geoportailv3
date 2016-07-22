@@ -1,5 +1,6 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
+goog.require('app.Activetool');
 goog.require('app.GetDevice');
 goog.require('app.profileDirective');
 goog.require('ngeo');
@@ -31,7 +32,6 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
       'appSelector': '=appQueryAppselector',
-      'queryActive': '=appQueryActive',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo'
     },
@@ -67,6 +67,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {app.Export} appExport The export service.
+ * @param {app.Activetool} appActivetool The activetool service.
  * @export
  * @ngInject
  */
@@ -74,7 +75,14 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
-    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport) {
+    appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
+    appActivetool) {
+
+  /**
+   * @type {app.Activetool}
+   * @private
+   */
+  this.appActivetool_ = appActivetool;
 
   /**
    * @type {app.Export}
@@ -311,7 +319,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
   ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
-        if (!this['queryActive'] || this.isQuerying_) return;
+        if (this.appActivetool_.isActive() || this.isQuerying_) return;
 
         if (evt.originalEvent instanceof MouseEvent) {
           this.singleclickEvent_.apply(this, [evt]);
@@ -349,7 +357,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
         if (evt.dragging || this.isQuerying_) {
           return;
         }
-        if (!this['queryActive']) {
+        if (this.appActivetool_.isActive()) {
           this.map_.getViewport().style.cursor = '';
         } else {
           var pixel = this.map_.getEventPixel(evt.originalEvent);
