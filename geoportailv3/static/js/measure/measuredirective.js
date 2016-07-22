@@ -16,6 +16,7 @@ goog.provide('app.measureDirective');
 goog.require('app');
 goog.require('app.GetProfile');
 goog.require('app.profileDirective');
+goog.require('app.Activetool');
 goog.require('goog.dom');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.btngroupDirective');
@@ -42,8 +43,7 @@ app.measureDirective = function(appMeasureTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appMeasureMap',
-      'active': '=appMeasureActive',
-      'queryActive': '=appMeasureQueryactive'
+      'active': '=appMeasureActive'
     },
     controller: 'AppMeasureController',
     controllerAs: 'ctrl',
@@ -66,12 +66,20 @@ app.module.directive('appMeasure', app.measureDirective);
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  * interaction service.
  * @param {string} elevationServiceUrl The url of the service.
+ * @param {app.Activetool} appActivetool The activetool service.
  * @constructor
  * @export
  * @ngInject
  */
 app.MeasureController = function($scope, $q, $http, $compile, gettext,
-    appGetProfile, ngeoDecorateInteraction, elevationServiceUrl) {
+    appGetProfile, ngeoDecorateInteraction, elevationServiceUrl,
+    appActivetool) {
+
+  /**
+   * @type {app.Activetool}
+   * @private
+   */
+  this.appActivetool_ = appActivetool;
 
   /**
    * @type {angular.$http}
@@ -266,11 +274,39 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
       this['measureArea'].setActive(false);
       this['measureAzimut'].setActive(false);
       this['measureProfile'].setActive(false);
-      this['queryActive'] = true;
+      this.appActivetool_.measureActive = false;
     } else {
-      this['queryActive'] = false;
+      this.appActivetool_.measureActive = false;
     }
   }, this));
+  ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
+    ol.interaction.InteractionProperty.ACTIVE),
+    this.onChangeActive_, this);
+  ol.events.listen(this['measureArea'], ol.Object.getChangeEventType(
+    ol.interaction.InteractionProperty.ACTIVE),
+    this.onChangeActive_, this);
+  ol.events.listen(this['measureAzimut'], ol.Object.getChangeEventType(
+    ol.interaction.InteractionProperty.ACTIVE),
+    this.onChangeActive_, this);
+  ol.events.listen(this['measureProfile'], ol.Object.getChangeEventType(
+    ol.interaction.InteractionProperty.ACTIVE),
+    this.onChangeActive_, this);
+};
+
+
+/**
+ * @param {ol.ObjectEvent} event The event.
+ * @private
+ */
+app.MeasureController.prototype.onChangeActive_ = function(event) {
+  if (this['measureLength'].getActive() ||
+      this['measureArea'].getActive() ||
+      this['measureAzimut'].getActive() ||
+      this['measureProfile'].getActive()) {
+    this.appActivetool_.measureActive = true;
+  } else {
+    this.appActivetool_.measureActive = false;
+  }
 };
 
 

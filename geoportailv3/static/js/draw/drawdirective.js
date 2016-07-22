@@ -5,7 +5,6 @@
  * Example:
  *
  * <app-draw app-draw-map="::mainCtrl.map"
- *           app-draw-queryactive="mainCtrl.queryActive"
  *           app-draw-active="mainCtrl.drawOpen"></app-draw>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
@@ -22,6 +21,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
+goog.require('app.Activetool');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
@@ -47,7 +47,6 @@ app.drawDirective = function(appDrawTemplateUrl) {
     scope: {
       'map': '=appDrawMap',
       'active': '=appDrawActive',
-      'queryActive': '=appDrawQueryactive',
       'mymapsOpen': '=appDrawMymapsOpen'
     },
     controller: 'AppDrawController',
@@ -75,6 +74,7 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
+ * @param {app.Activetool} appActivetool The activetool service.
  * @constructor
  * @export
  * @ngInject
@@ -82,7 +82,13 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
     appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify,
-    $anchorScroll) {
+    $anchorScroll, appActivetool) {
+  /**
+   * @type {app.Activetool}
+   * @private
+   */
+  this.appActivetool_ = appActivetool;
+
   /**
    * @type {angular.$anchorScroll}
    * @private
@@ -283,9 +289,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawCircle.setActive(false);
       this.drawnFeatures_.modifyCircleInteraction.setActive(false);
       this.drawnFeatures_.modifyInteraction.setActive(false);
-      this['queryActive'] = true;
+      this.appActivetool_.drawActive = false;
     } else {
-      this['queryActive'] = false;
+      this.appActivetool_.drawActive = false;
       this['mymapsOpen'] = true;
     }
   }, this));
@@ -319,7 +325,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         var editable = !feature.get('__map_id__') ||
             this.appMymaps_.isEditable();
         feature.set('__editable__', editable);
-        this['queryActive'] = false;
+
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
       }, this));
@@ -332,9 +338,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
-        if (!this.active) {
-          this['queryActive'] = true;
-        }
       }).bind(this));
 
   ol.events.listen(selectInteraction,
@@ -448,6 +451,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   this.selectInteraction_.setActive(!active);
 
   if (active) {
+    this.appActivetool_.drawActive = true;
     var msg = '';
     var cntActive = 0;
     if (this.drawPoint.getActive()) {
@@ -475,6 +479,8 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     if (cntActive === 1) {
       this.notify_(msg);
     }
+  } else {
+    this.appActivetool_.drawActive = false;
   }
 };
 
