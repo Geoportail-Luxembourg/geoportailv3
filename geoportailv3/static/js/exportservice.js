@@ -189,6 +189,17 @@ app.Export.prototype.exploseFeature_ = function(features) {
               explodedFeatures.push(newFeature);
             });
         break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        var multiLineString = /** @type {ol.geom.MultiLineString} */
+            (feature.getGeometry());
+        goog.array.forEach(multiLineString.getLineStrings(),
+            function(curGeom) {
+              var newFeature = feature.clone();
+              newFeature.setGeometry(curGeom);
+              explodedFeatures.push(newFeature);
+            });
+        break;
+
       default :
         explodedFeatures.push(feature);
         break;
