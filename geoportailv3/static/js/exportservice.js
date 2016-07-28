@@ -97,14 +97,17 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
   } else {
     explodedFeatures = this.changeMultilineToLine_(explodedFeatures);
   }
-  var gpx = this.gpxFormat_.writeFeatures(explodedFeatures,
+  var gpx = this.gpxFormat_.writeFeatures(
+    this.orderFeaturesForGpx_(explodedFeatures),
     {
       dataProjection: 'EPSG:4326',
       featureProjection: this['map'].getView().getProjection()
     });
   gpx = gpx.replace('<gpx ',
       '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-      ' version="1.1" ');
+      ' version="1.1" ' +
+      'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+      'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
   this.exportFeatures_(gpx, 'gpx', this.sanitizeFilename_(name));
 };
 
@@ -192,6 +195,40 @@ app.Export.prototype.exploseFeature_ = function(features) {
     }
   });
   return explodedFeatures;
+};
+
+
+/**
+ * Order the feature to have the right GPX order.
+ * An optional instance of <meta />
+ * An arbitrary number of instances of <wpt />
+ * An arbitrary number of instances of <rte />
+ * An arbitrary number of instances of <trk />
+ * An optional instance of <extensions />
+ * @param {Array.<ol.Feature>} features The features to sort.
+ * @return {Array.<ol.Feature>} The sorted features.
+ * @private
+ */
+app.Export.prototype.orderFeaturesForGpx_ = function(features) {
+
+  var points = [];
+  var lines = [];
+  var others = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.POINT:
+        points.push(feature);
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        lines.push(feature);
+        break;
+      default :
+        others.push(feature);
+        break;
+    }
+  });
+
+  return points.concat(lines, others);
 };
 
 
