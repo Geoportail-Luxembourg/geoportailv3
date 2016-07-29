@@ -147,7 +147,8 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
               function(resp) {
                 if (resp.data['is_private'] === true) {
                   this.appNotify_(this.translate_.
-                      getString(this.privateThemeMsg_, {}));
+                      getString(this.privateThemeMsg_, {}),
+                      app.NotifyNotificationType.WARNING);
                   this['userOpen'] = true;
                 } else {
                   this.switchTheme(this.appTheme_.getDefaultTheme());

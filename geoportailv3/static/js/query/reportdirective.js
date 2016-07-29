@@ -126,10 +126,10 @@ app.PagreportController.prototype.generateRepport = function() {
   var msg = this.gettextCatalog.getString('Veuillez saisir une adresse email valide');
   var re = /^\S+@\S+\.\S+$/;
   if (this.mail_.length === 0 || !re.test(this.mail_)) {
-    this.notify_(msg);
+    this.notify_(msg, app.NotifyNotificationType.WARNING);
   } else if (this.tac_ < 1) {
     msg = this.gettextCatalog.getString('Veuillez accepter les termes du rapport');
-    this.notify_(msg);
+    this.notify_(msg, app.NotifyNotificationType.WARNING);
   } else {
     this.$http_.post(
       this.pagUrl_ + '/report/' + this['ids'] + '.pdf?email=' + this.mail_ + '&staging=' + this['staging'],
@@ -137,7 +137,7 @@ app.PagreportController.prototype.generateRepport = function() {
     );
     msg = this.gettextCatalog.getString('Votre rapport est en train d\'être généré. Un email vous sera envoyé à l\'adresse {{email}} dès qu\'il sera disponible',
         {'email': this.mail_});
-    this.notify_(msg);
+    this.notify_(msg, app.NotifyNotificationType.INFO);
   }
 };
 

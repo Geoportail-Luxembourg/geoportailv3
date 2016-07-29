@@ -477,7 +477,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
       cntActive++;
     }
     if (cntActive === 1) {
-      this.notify_(msg);
+      this.notify_(msg, app.NotifyNotificationType.INFO);
     }
   } else {
     this.appActivetool_.drawActive = false;

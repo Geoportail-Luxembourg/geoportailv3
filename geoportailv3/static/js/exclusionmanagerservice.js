@@ -130,7 +130,7 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
                   /** @type {string} */(layer1.get('label')))
           }
             );
-        this.notify_(msg);
+        this.notify_(msg, app.NotifyNotificationType.WARNING);
       }
     }
   }
@@ -148,7 +148,7 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         'layer': gettextCatalog.getString(
               /** @type {string} */(layer1.get('label')))
       });
-    this.notify_(msg);
+    this.notify_(msg, app.NotifyNotificationType.WARNING);
   }
 };
 
