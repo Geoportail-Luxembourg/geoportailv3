@@ -398,7 +398,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
           var map = {'uuid': mapId};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte copiée');
-          this.notify_(msg);
+          this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
         }}}, this));
   }
@@ -661,7 +661,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
           var map = {'uuid': this.appMymaps_.getMapId()};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte créée');
-          this.notify_(msg);
+          this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
         }, this));
   }
@@ -749,7 +749,7 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
       } else {
         this.notify_(this.gettextCatalog.getString(
             'You have no existing Maps, please create a New Map'
-            ));
+            ), app.NotifyNotificationType.WARNING);
       }
     }, this));
   }
@@ -823,7 +823,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             this.saveLayers();
             this.onChosen(map, false);
             var msg = this.gettextCatalog.getString('Nouvelle carte créée');
-            this.notify_(msg);
+            this.notify_(msg, app.NotifyNotificationType.INFO);
             this.modal = undefined;
           }
         }}, this));
@@ -910,7 +910,7 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
   var msg = this.gettextCatalog.getString(
       'Veuillez vous identifier afin d\'accéder à vos cartes'
       );
-  this.notify_(msg);
+  this.notify_(msg, app.NotifyNotificationType.INFO);
   this['useropen'] = true;
 };
 

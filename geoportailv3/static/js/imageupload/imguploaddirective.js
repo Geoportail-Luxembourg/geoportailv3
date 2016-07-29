@@ -117,7 +117,7 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
     .error(goog.bind(function() {
       var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');
-      this.notify_(msg);
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
     }, this));
   }
 };

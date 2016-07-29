@@ -108,17 +108,19 @@ app.UserManager.prototype.authenticate = function(username, password) {
           this.getUserInfo();
           var msg = this.gettextCatalog.getString(
               'Vous êtes maintenant correctement connecté.');
-          this.notify_(msg);
+          this.notify_(msg, app.NotifyNotificationType.INFO);
         } else {
           this.clearUserInfo();
           this.notify_(this.gettextCatalog.getString(
-              'Invalid username or password.'));
+              'Invalid username or password.'),
+              app.NotifyNotificationType.WARNING);
         }
       },this)).error(
       goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
-            'Invalid username or password.'));
+            'Invalid username or password.'),
+            app.NotifyNotificationType.WARNING);
       },this));
 };
 
@@ -134,13 +136,16 @@ app.UserManager.prototype.logout = function() {
         } else {
           this.getUserInfo();
           this.notify_(this.gettextCatalog.getString(
-              'Une erreur est survenue durant la déconnexion.'));
+              'Une erreur est survenue durant la déconnexion.'),
+              app.NotifyNotificationType.ERROR
+              );
         }
       }, this)).error(
       goog.bind(function(data, status, headers, config) {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
-            'Une erreur est survenue durant la déconnexion.'));
+            'Une erreur est survenue durant la déconnexion.'),
+            app.NotifyNotificationType.ERROR);
       }, this));
 };
 
