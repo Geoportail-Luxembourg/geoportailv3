@@ -43,8 +43,17 @@ versioning = false
 bottom = true
 minified = true
 
+[filter:raven]
+use = egg:raven#raven
+dsn = https://0621f1e80e3d4712ba81a98d202785d3:f77bb4cf493847b69d17fd67bfb32ebb@sentry.geoportail.lu/2
+include_paths = app
+
 [pipeline:main]
-pipeline = weberror fanstatic app
+pipeline =
+    raven
+    weberror
+    fanstatic
+    app
 
 [server:main]
 use = egg:waitress#main
@@ -54,17 +63,23 @@ port = ${waitress_port}
 # Begin logging configuration
 
 [loggers]
-keys = root, c2cgeoportal, geoportailv3
+keys = root, sentry, c2cgeoportal, geoportailv3
 
 [handlers]
-keys = console
+keys = console, sentry
 
 [formatters]
 keys = generic
 
 [logger_root]
 level = WARN
+handlers = console, sentry
+
+[logger_sentry]
+level = WARN
 handlers = console
+qualname = sentry.errors
+propagate = 0
 
 [logger_c2cgeoportal]
 level = WARN
@@ -75,6 +90,13 @@ qualname = c2cgeoportal
 level = WARN
 handlers =
 qualname = geoportailv3
+
+[handler_sentry]
+class = raven.handlers.logging.SentryHandler
+args = ('https://0621f1e80e3d4712ba81a98d202785d3:f77bb4cf493847b69d17fd67bfb32ebb@sentry.geoportail.lu/2
+',)
+level = WARNING
+formatter = generic
 
 [handler_console]
 class = StreamHandler
