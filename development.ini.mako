@@ -31,7 +31,7 @@ minified = true
 
 [filter:raven]
 use = egg:raven#raven
-dsn = https://ef76db542ae94bab8aedf9236cbcee55:08f7933d733346ae85725af5318b445c@sentry.geoportail.lu/3
+dsn = ${sentry_dsn}
 include_paths = app
 
 [pipeline:main]
@@ -87,7 +87,7 @@ qualname = sqlalchemy.engine
 
 [handler_sentry]
 class = raven.handlers.logging.SentryHandler
-args = ('https://ef76db542ae94bab8aedf9236cbcee55:08f7933d733346ae85725af5318b445c@sentry.geoportail.lu/3',)
+args = ('${sentry_dsn}',)
 level = WARNING
 formatter = generic
 

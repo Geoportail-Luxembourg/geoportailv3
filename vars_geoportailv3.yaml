@@ -22,6 +22,9 @@ vars:
     dbuser_replication: to_be_defined
     dbpassword_replication: to_be_defined
 
+    #sentry dsn
+    sentry_dsn:
+
     #elasticsearch settings
     search_host: workshop3-local.geoportal.lu:9200
     search_index: index
