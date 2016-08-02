@@ -16,6 +16,7 @@ setup(
     url='http://www.camptocamp.com/geospatial-solutions',
     install_requires=[
         'c2cgeoportal',
+        'raven',
         'elasticsearch',
         'python-ldap',
         'pyramid_ldap',
