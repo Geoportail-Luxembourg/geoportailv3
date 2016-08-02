@@ -45,7 +45,7 @@ minified = true
 
 [filter:raven]
 use = egg:raven#raven
-dsn = https://0621f1e80e3d4712ba81a98d202785d3:f77bb4cf493847b69d17fd67bfb32ebb@sentry.geoportail.lu/2
+dsn = ${sentry_dsn}
 include_paths = app
 
 [pipeline:main]
@@ -93,8 +93,7 @@ qualname = geoportailv3
 
 [handler_sentry]
 class = raven.handlers.logging.SentryHandler
-args = ('https://0621f1e80e3d4712ba81a98d202785d3:f77bb4cf493847b69d17fd67bfb32ebb@sentry.geoportail.lu/2
-',)
+args = ('${sentry_dsn}',)
 level = WARNING
 formatter = generic
 
