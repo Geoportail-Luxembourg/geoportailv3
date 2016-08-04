@@ -51,7 +51,7 @@ luxx.MapOptions.prototype.zoom;
 
 /**
  * Set the presence of a layer manager control. (not included by default)
- * @type {luxx.ControlOptions|undefined}
+ * @type {luxx.LayerManagerOptions|undefined}
  */
 luxx.MapOptions.prototype.layerManager;
 
