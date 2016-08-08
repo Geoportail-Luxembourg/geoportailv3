@@ -1,6 +1,8 @@
 goog.provide('lux.MyMap');
 
+goog.require('goog.dom');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.interaction.Select');
 goog.require('ol.layer.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
@@ -69,12 +71,77 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     });
     source.addFeatures(features);
 
-    map.getView().fit(source.getExtent(), map.getSize());
+    this.map_.getView().fit(source.getExtent(), map.getSize());
+
+    var select = new ol.interaction.Select({
+      layers: [vector]
+    });
+    this.map_.addInteraction(select);
+
+    ol.events.listen(select, ol.interaction.SelectEventType.SELECT,
+      this.onFeatureSelected, this);
   }.bind(this));
 };
 
 /**
- * @param {ol.Map} m The current map.
+ * @param {ol.interaction.SelectEvent} event The select event.
+ */
+lux.MyMap.prototype.onFeatureSelected = function(event) {
+  var features = event.selected;
+
+  if (this.popup_) {
+    this.map_.removeOverlay(this.popup_);
+    this.popup_ = null;
+  }
+
+  if (!features.length) {
+    return;
+  }
+  var feature = features[0];
+  var properties = feature.getProperties();
+
+  var content = goog.dom.createElement(goog.dom.TagName.DIV);
+  var title = goog.dom.createElement(goog.dom.TagName.H3);
+  title.innerHTML = properties['name'];
+  goog.dom.append(content, title);
+
+  var description = goog.dom.createDom(goog.dom.TagName.P, {
+    html: properties.description
+  });
+  goog.dom.append(content, description);
+
+  if (properties.thumbnail) {
+    var link = goog.dom.createDom(goog.dom.TagName.A, {
+      href: lux.baseUrl + properties.image,
+      target: '_blank'
+    });
+    var thumb = goog.dom.createDom(goog.dom.TagName.IMG, {
+      src: lux.baseUrl + properties.thumbnail
+    });
+    goog.dom.append(link, thumb);
+    goog.dom.append(content, link);
+  }
+
+  var element = lux.buildPopupLayout_(content, true);
+
+  this.popup_ = new ol.Overlay({
+    element: element,
+    position: event.mapBrowserEvent.coordinate,
+    positioning: 'bottom-center',
+    offset: [0, -20],
+    insertFirst: false
+  });
+
+  var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
+  ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
+    this.map_.removeOverlay(this.popup_);
+  }.bind(this));
+
+  this.map_.addOverlay(this.popup_);
+};
+
+/**
+ * @param {ol.Map} map The current map.
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @export
  *

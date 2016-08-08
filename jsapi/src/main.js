@@ -36,6 +36,11 @@ lux.searchUrl = 'http://map.geoportail.lu/main/wsgi/fulltextsearch?';
 /**
  * @type {string}
  */
+lux.baseUrl = 'http://map.geoportail.lu/main/wsgi';
+
+/**
+ * @type {string}
+ */
 lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
 
 /**
@@ -262,7 +267,7 @@ lux.Map.prototype.showMarker = function(options) {
         ol.events.EventType.MOUSEMOVE : ol.events.EventType.CLICK;
     ol.events.listen(element, showPopupEvent, (function() {
       if (!popup) {
-        var element = buildPopupLayout_(options.html, !options.hover);
+        var element = lux.buildPopupLayout_(options.html, !options.hover);
         popup = new ol.Overlay({
           element: element,
           position: position,
@@ -294,12 +299,13 @@ lux.Map.prototype.showMarker = function(options) {
 
 /**
  * Builds the popup layout.
- * @param {string} html The HTML/text to put into the popup.
+ * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
+ *    into the popup.
  * @param {boolean} addCloseBtn Whether to add a close button or not.
  * @return {Element} The created element.
  * @private
  */
-function buildPopupLayout_(html, addCloseBtn) {
+lux.buildPopupLayout_ = function(html, addCloseBtn) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup'
   });
@@ -308,6 +314,16 @@ function buildPopupLayout_(html, addCloseBtn) {
   });
 
   var elements = [arrow];
+
+  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'lux-popup-content'
+  });
+
+  if (typeof html == 'string') {
+    content.innerHTML = html;
+  } else {
+    goog.dom.append(content, html);
+  }
 
   if (addCloseBtn) {
     var header = goog.dom.createDom(goog.dom.TagName.H3, {
@@ -321,15 +337,11 @@ function buildPopupLayout_(html, addCloseBtn) {
     elements.push(header);
   }
 
-  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup-content'
-  });
-  content.innerHTML = html;
   elements.push(content);
 
   goog.dom.append(container, elements);
   return container;
-}
+};
 
 /**
  * @param {Array<string|number>} layers Array of layer names
