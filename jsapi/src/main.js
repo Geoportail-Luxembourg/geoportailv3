@@ -4,6 +4,7 @@ goog.provide('lux.Map');
 goog.require('goog.dom');
 goog.require('goog.asserts');
 goog.require('lux.LayerManager');
+goog.require('lux.MyMap');
 goog.require('ol.events');
 goog.require('ol.control.MousePosition');
 goog.require('ol.format.GeoJSON');
@@ -31,6 +32,11 @@ lux.layersUrl = '../layers.json';
  * @type {string}
  */
 lux.searchUrl = 'http://map.geoportail.lu/main/wsgi/fulltextsearch?';
+
+/**
+ * @type {string}
+ */
+lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
 
 /**
  * @param {string} url Url to jsapilayers service.
@@ -715,6 +721,20 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
       this.getTargetElement().style.cursor = hit ? 'pointer' : '';
     }.bind(this));
   }.bind(this));
+};
+
+/**
+ * Load a MyMaps layer.
+ * @param {string} mymap_id The id of the mymap layer.
+ * @export
+ */
+lux.Map.prototype.addMyMapLayer = function(mymap_id) {
+  var mymap = new lux.MyMap(mymap_id, this);
+};
+
+/**
+ */
+lux.Map.prototype.loadMyMapFeatures_ = function(mymap_id) {
 };
 
 /**
