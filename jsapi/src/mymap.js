@@ -34,6 +34,8 @@ lux.MyMap = function(id, map) {
    */
   this.id_ = id;
 
+  this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
+
   var url = [lux.mymapsUrl, 'map', id].join('/');
   fetch(url).then(function(resp) {
     return resp.json();
@@ -72,7 +74,8 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     });
     source.addFeatures(features);
 
-    this.map_.getView().fit(source.getExtent(), this.map_.getSize());
+    var size = /** @type {Array<number>} */ (this.map_.getSize());
+    this.map_.getView().fit(source.getExtent(), size);
 
     var select = new ol.interaction.Select({
       layers: [vector]
@@ -125,7 +128,7 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
     goog.dom.append(content, link);
   }
 
-  var element = lux.buildPopupLayout_(content, true);
+  var element = lux.buildPopupLayout(content, true);
 
   this.popup_ = new ol.Overlay({
     element: element,
@@ -364,7 +367,7 @@ lux.MyMap.prototype.createStyleFunction = function(curMap) {
 
 /**
  * @param {ol.Feature} feature The feature.
- * @return {string} The formatted measure.
+ * @return {Array<Element>} The formatted measure.
  */
 lux.MyMap.prototype.getMeasures = function(feature) {
   var elements = [];
@@ -373,6 +376,9 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   if (geom.getType() === ol.geom.GeometryType.POLYGON ||
       geom.getType() === ol.geom.GeometryType.LINE_STRING) {
     element = goog.dom.createDom(goog.dom.TagName.P);
+
+    goog.asserts.assert(geom instanceof ol.geom.LineString ||
+        geom instanceof ol.geom.Polygon);
 
     var coordinates = (geom.getType() === ol.geom.GeometryType.POLYGON) ?
       geom.getCoordinates()[0] : geom.getCoordinates();
