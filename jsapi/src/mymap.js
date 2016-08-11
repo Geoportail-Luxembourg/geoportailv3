@@ -1,6 +1,7 @@
 goog.provide('lux.MyMap');
 
 goog.require('goog.dom');
+goog.require('ngeo.interaction.Measure');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Vector');
@@ -34,7 +35,7 @@ lux.MyMap = function(id, map) {
   this.id_ = id;
 
   var url = [lux.mymapsUrl, 'map', id].join('/');
-  var promise = fetch(url).then(function(resp) {
+  fetch(url).then(function(resp) {
     return resp.json();
   }).then(function(json) {
 
@@ -71,7 +72,7 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     });
     source.addFeatures(features);
 
-    this.map_.getView().fit(source.getExtent(), map.getSize());
+    this.map_.getView().fit(source.getExtent(), this.map_.getSize());
 
     var select = new ol.interaction.Select({
       layers: [vector]
@@ -110,6 +111,8 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   });
   goog.dom.append(content, description);
 
+  goog.dom.append(content, this.getMeasures(feature));
+
   if (properties.thumbnail) {
     var link = goog.dom.createDom(goog.dom.TagName.A, {
       href: lux.baseUrl + properties.image,
@@ -141,7 +144,7 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
 };
 
 /**
- * @param {ol.Map} map The current map.
+ * @param {ol.Map} curMap The current map.
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @export
  *
@@ -357,4 +360,29 @@ lux.MyMap.prototype.createStyleFunction = function(curMap) {
 
     return styles;
   };
+};
+
+/**
+ * @param {ol.Feature} feature The feature.
+ * @return {string} The formatted measure.
+ */
+lux.MyMap.prototype.getMeasures = function(feature) {
+  var elements = [];
+  var element;
+  var geom = feature.getGeometry();
+  if (geom.getType() === ol.geom.GeometryType.POLYGON ||
+      geom.getType() === ol.geom.GeometryType.LINE_STRING) {
+    element = goog.dom.createDom(goog.dom.TagName.P);
+
+    var coordinates = (geom.getType() === ol.geom.GeometryType.POLYGON) ?
+      geom.getCoordinates()[0] : geom.getCoordinates();
+    var length = ngeo.interaction.Measure.getFormattedLength(
+      new ol.geom.LineString(coordinates),
+      this.map_.getView().getProjection(),
+      null
+    );
+    goog.dom.setTextContent(element, length);
+    elements.push(element);
+  }
+  return elements;
 };

@@ -741,10 +741,11 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
  * @export
  */
 lux.Map.prototype.addMyMapLayer = function(mymap_id) {
-  var mymap = new lux.MyMap(mymap_id, this);
+  new lux.MyMap(mymap_id, this);
 };
 
 /**
+ * @param {string} mymap_id The map uuid.
  */
 lux.Map.prototype.loadMyMapFeatures_ = function(mymap_id) {
 };
