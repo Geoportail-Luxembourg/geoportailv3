@@ -371,11 +371,10 @@ lux.MyMap.prototype.createStyleFunction = function(curMap) {
  */
 lux.MyMap.prototype.getMeasures = function(feature) {
   var elements = [];
-  var element;
   var geom = feature.getGeometry();
   if (geom.getType() === ol.geom.GeometryType.POLYGON ||
       geom.getType() === ol.geom.GeometryType.LINE_STRING) {
-    element = goog.dom.createDom(goog.dom.TagName.P);
+    var lengthEl = goog.dom.createDom(goog.dom.TagName.P);
 
     goog.asserts.assert(geom instanceof ol.geom.LineString ||
         geom instanceof ol.geom.Polygon);
@@ -388,11 +387,11 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       null
     );
     // FIXME add 'length: ' label
-    goog.dom.setTextContent(element, length);
-    elements.push(element);
+    goog.dom.setTextContent(lengthEl, length);
+    elements.push(lengthEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POLYGON) {
-    element = goog.dom.createDom(goog.dom.TagName.P);
+    var areaEl = goog.dom.createDom(goog.dom.TagName.P);
 
     goog.asserts.assert(geom instanceof ol.geom.Polygon);
 
@@ -402,8 +401,42 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       null
     );
     // FIXME add 'area: ' label
-    goog.dom.setTextContent(element, area);
-    elements.push(element);
+    goog.dom.setTextContent(areaEl, area);
+    elements.push(areaEl);
+  }
+  if (geom.getType() === ol.geom.GeometryType.POLYGON &&
+      !!feature.get('isCircle')) {
+    var radiusEl = goog.dom.createDom(goog.dom.TagName.P);
+    goog.asserts.assert(geom instanceof ol.geom.Polygon);
+    var center = ol.extent.getCenter(geom.getExtent());
+    var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
+    var radius = ngeo.interaction.Measure.getFormattedLength(
+      line,
+      this.map_.getView().getProjection(),
+      null
+    );
+    // FIXME add 'radius: ' label
+    goog.dom.setTextContent(radiusEl, radius);
+    elements.push(radiusEl);
+  }
+  if (geom.getType() === ol.geom.GeometryType.POINT &&
+      !feature.get('isLabel')) {
+    var elevationEl = goog.dom.createDom(goog.dom.TagName.P);
+
+    goog.asserts.assert(geom instanceof ol.geom.Point);
+
+    // FIXME translate this
+    goog.dom.setTextContent(elevationEl, 'N/A');
+    lux.getElevation(geom.getCoordinates()).then(
+      function(json) {
+        // FIXME add 'elevation: ' label
+        if (json['dhm'] > 0) {
+          goog.dom.setTextContent(elevationEl,
+              parseInt(json['dhm'] / 100, 0).toString() + ' m');
+        }
+      }
+    );
+    elements.push(elevationEl);
   }
   return elements;
 };

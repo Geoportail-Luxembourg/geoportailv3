@@ -44,6 +44,11 @@ lux.baseUrl = 'http://map.geoportail.lu/main/wsgi';
 lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
 
 /**
+ * @type {string}
+ */
+lux.elevationUrl = 'http://map.geoportail.lu/main/wsgi/raster';
+
+/**
  * @param {string} url Url to jsapilayers service.
  * @export
  */
@@ -340,6 +345,23 @@ lux.buildPopupLayout = function(html, addCloseBtn) {
 
   goog.dom.append(container, elements);
   return container;
+};
+
+/**
+ * Get elevation for coordinates
+ * @param {ol.Coordinate} coordinate The coordinate of the point.
+ * @return {Promise} Promise of the elevation request.
+ */
+lux.getElevation = function(coordinate) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate,
+            'EPSG:3857', 'EPSG:2169'));
+  var url = lux.elevationUrl;
+  url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
+
+  return fetch(url).then(function(resp) {
+    return resp.json();
+  });
 };
 
 /**
