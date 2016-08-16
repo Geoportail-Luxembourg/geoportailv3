@@ -387,7 +387,22 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
+    // FIXME add 'length: ' label
     goog.dom.setTextContent(element, length);
+    elements.push(element);
+  }
+  if (geom.getType() === ol.geom.GeometryType.POLYGON) {
+    element = goog.dom.createDom(goog.dom.TagName.P);
+
+    goog.asserts.assert(geom instanceof ol.geom.Polygon);
+
+    var area = ngeo.interaction.Measure.getFormattedArea(
+      geom,
+      this.map_.getView().getProjection(),
+      null
+    );
+    // FIXME add 'area: ' label
+    goog.dom.setTextContent(element, area);
     elements.push(element);
   }
   return elements;
