@@ -79,6 +79,7 @@ app.Piwik;
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @export
  * @ngInject
@@ -86,7 +87,13 @@ app.Piwik;
 app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
-    printServiceUrl, qrServiceUrl) {
+    printServiceUrl, qrServiceUrl, appSelectedFeatures) {
+
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
 
   /**
    * @type {angular.$window}
@@ -285,6 +292,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     }
     var open = /** @type {boolean} */ (newVal);
     if (open) {
+      this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
