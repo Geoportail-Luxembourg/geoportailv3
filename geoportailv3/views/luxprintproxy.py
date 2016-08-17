@@ -114,8 +114,8 @@ class LuxPrintProxy(PrintProxy):
 
     @view_config(route_name="lux_printproxy_report_cancel")
     def lux_cancel(self):
-        DBSession.query(LuxPrintJob).get(
-            self.request.matchdict.get("ref")
+        DBSession.query(LuxPrintJob).filter(
+            LuxPrintJob.id == self.request.matchdict.get("ref")
         ).delete()
         return self.cancel()
 
