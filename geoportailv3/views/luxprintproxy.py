@@ -122,8 +122,7 @@ class LuxPrintProxy(PrintProxy):
     @cache_region.cache_on_arguments()
     def _get_legend(self, name, lang):
         css = weasyprint.CSS(
-            string="@attributes{ size: 595px 842px; margin: 20px; } "
-            "img {max-height: 800px}"
+            string="img {max-height: 800px}"
         )
 
         url = \
