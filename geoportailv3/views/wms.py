@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
-import sys
+import traceback
 
 log = logging.getLogger(__name__)
 
@@ -104,14 +104,19 @@ class Wms(object):
             separator = "&"
 
         url = remote_host + separator + param_wms[:-1]
-
+        timeout = 15
         try:
-            f = urllib2.urlopen(url, None, 15)
+            f = urllib2.urlopen(url, None, timeout)
             data = f.read()
         except:
-            log.error(sys.exc_info()[0])
-            log.error(url)
-            return HTTPBadGateway()
+            try:
+                # Retry to get the result
+                f = urllib2.urlopen(url, None, timeout)
+                data = f.read()
+            except:
+                traceback.print_exc()
+                log.error(url)
+                return HTTPBadGateway()
 
         headers = {"Content-Type": f.info()['Content-Type']}
 
