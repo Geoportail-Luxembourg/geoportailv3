@@ -7,7 +7,6 @@ from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
-import sys
 import traceback
 
 log = logging.getLogger(__name__)
