@@ -759,10 +759,12 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
 /**
  * Load a MyMaps layer.
  * @param {string} mymap_id The id of the mymap layer.
+ * @param {string|undefined} opt_profileContainer The id of the element in
+ *     which to put the profile (without #). Optional.
  * @export
  */
-lux.Map.prototype.addMyMapLayer = function(mymap_id) {
-  new lux.MyMap(mymap_id, this);
+lux.Map.prototype.addMyMapLayer = function(mymap_id, opt_profileContainer) {
+  new lux.MyMap(mymap_id, this, opt_profileContainer);
 };
 
 /**

@@ -1,7 +1,9 @@
 goog.provide('lux.MyMap');
 
 goog.require('goog.dom');
+goog.require('goog.events');
 goog.require('ngeo.interaction.Measure');
+goog.require('ngeo.profile');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Vector');
@@ -19,8 +21,10 @@ goog.require('ol.style.Text');
  * @constructor
  * @param {string} id The uuid of the mymap to load.
  * @param {lux.Map} map The map in which to load the mymap features.
+ * @param {string|undefined} opt_profileContainer The container in which
+ *     a profile can be displayed for linestrings.
  */
-lux.MyMap = function(id, map) {
+lux.MyMap = function(id, map, opt_profileContainer) {
 
   /**
    * @type {lux.Map} The reference to the map.
@@ -34,6 +38,13 @@ lux.MyMap = function(id, map) {
    */
   this.id_ = id;
 
+  /**
+   * @type {string|undefined} The container for the profile.
+   */
+  this.profileContainer_ = opt_profileContainer;
+
+  this.profile_ = null;
+
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
 
   var url = [lux.mymapsUrl, 'map', id].join('/');
@@ -46,6 +57,10 @@ lux.MyMap = function(id, map) {
     this.loadFeatures_();
 
   }.bind(this));
+
+  if (this.profileContainer_) {
+    this.initProfile();
+  }
 };
 
 /**
@@ -439,5 +454,104 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     );
     elements.push(elevationEl);
   }
+  if (this.profileContainer_ &&
+      geom.getType() === ol.geom.GeometryType.LINE_STRING) {
+    var profileLink = goog.dom.createDom(goog.dom.TagName.P);
+    goog.asserts.assert(geom instanceof ol.geom.LineString);
+    var link = goog.dom.createDom(goog.dom.TagName.A, {
+      href: 'javascript:void(0);'
+    });
+    goog.dom.setTextContent(link, 'show profile');
+    goog.dom.append(profileLink, link);
+    goog.events.listen(link, goog.events.EventType.CLICK, function() {
+      this.loadProfile(geom);
+    }.bind(this));
+    elements.push(profileLink);
+  }
   return elements;
+};
+
+/**
+ */
+lux.MyMap.prototype.initProfile = function() {
+
+  /**
+   * @param {Object} item The item.
+   * @return {number} The elevation.
+   */
+  var z = function(item) {
+    if ('values' in item && 'dhm' in item['values']) {
+      return parseFloat((item['values']['dhm'] / 100).toPrecision(5));
+    }
+    return 0;
+  };
+
+  /**
+    * @param {Object} item The item.
+    * @return {number} The distance.
+    */
+  var dist = function(item) {
+    if ('dist' in item) {
+      return item['dist'];
+    }
+    return 0;
+  };
+
+  /**
+   * @type {ngeox.profile.ElevationExtractor}
+   */
+  var extractor = {z: z, dist: dist};
+
+  this.profile_ = ngeo.profile({
+    elevationExtractor: extractor
+  });
+};
+
+/**
+ * @param {ol.geom.LineString} geom The line geometry.
+ */
+lux.MyMap.prototype.loadProfile = function(geom) {
+  if (!this.profileContainer_) {
+    return;
+  }
+  goog.asserts.assert(geom instanceof ol.geom.LineString);
+
+  var selection = d3.select('#' + this.profileContainer_);
+
+  var encOpt = {
+    dataProjection: 'EPSG:2169',
+    featureProjection: 'EPSG:3857'
+  };
+  var params = {
+    geom: new ol.format.GeoJSON().writeGeometry(geom, encOpt),
+    nbPoints: 100,
+    layer: 'dhm',
+    id: null
+  };
+  // convert to URL GET params
+  /**
+   * @type {string}
+   */
+  var body = Object.keys(params).map(function(k) {
+    return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]);
+  }).join('&');
+
+  /**
+   * @type {RequestInit}
+   */
+  var request = ({
+    method: 'POST',
+    headers: /** @type {HeadersInit} */ ({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }),
+    body: body
+  });
+
+  // FIXME change url
+  fetch('http://maps.geoportail.lu/main/wsgi/profile.json', request
+  ).then(function(resp) {
+    return resp.json();
+  }).then(function(data) {
+    selection.datum(data.profile).call(this.profile_);
+  }.bind(this));
 };

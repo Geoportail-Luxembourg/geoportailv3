@@ -10,4 +10,4 @@ var map = new lux.Map({
   bgLayer          : 655
 });
 
-map.addMyMapLayer('cf12fe433afa448bb6f3f47b4621127f');
+map.addMyMapLayer('cf12fe433afa448bb6f3f47b4621127f', 'profile');
