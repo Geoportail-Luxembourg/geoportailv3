@@ -132,10 +132,10 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
 
   this.popup_ = new ol.Overlay({
     element: element,
-    position: event.mapBrowserEvent.coordinate,
     positioning: 'bottom-center',
     offset: [0, -20],
-    insertFirst: false
+    insertFirst: false,
+    autoPan: true
   });
 
   var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
@@ -144,6 +144,7 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   }.bind(this));
 
   this.map_.addOverlay(this.popup_);
+  this.popup_.setPosition(event.mapBrowserEvent.coordinate);
 };
 
 /**
