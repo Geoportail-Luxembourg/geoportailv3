@@ -129,8 +129,6 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   });
   goog.dom.append(content, description);
 
-  goog.dom.append(content, this.getMeasures(feature));
-
   if (properties.thumbnail) {
     var link = goog.dom.createDom(goog.dom.TagName.A, {
       href: lux.baseUrl + properties.image,
@@ -142,6 +140,8 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
     goog.dom.append(link, thumb);
     goog.dom.append(content, link);
   }
+
+  goog.dom.append(content, this.getMeasures(feature));
 
   var element = lux.buildPopupLayout(content, true);
 
@@ -156,6 +156,7 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
   ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
     this.map_.removeOverlay(this.popup_);
+    this.hideProfile();
   }.bind(this));
 
   this.map_.addOverlay(this.popup_);
@@ -508,6 +509,19 @@ lux.MyMap.prototype.initProfile = function() {
 };
 
 /**
+ * Clears the data in the profile and hide it.
+ */
+lux.MyMap.prototype.hideProfile = function() {
+  if (!this.profileContainer_) {
+    return;
+  }
+
+  var selection = d3.select('#' + this.profileContainer_);
+  selection.datum([]).call(this.profile_);
+  selection.style('display', 'none');
+};
+
+/**
  * @param {ol.geom.LineString} geom The line geometry.
  */
 lux.MyMap.prototype.loadProfile = function(geom) {
@@ -517,6 +531,7 @@ lux.MyMap.prototype.loadProfile = function(geom) {
   goog.asserts.assert(geom instanceof ol.geom.LineString);
 
   var selection = d3.select('#' + this.profileContainer_);
+  selection.style('display', 'block');
 
   var encOpt = {
     dataProjection: 'EPSG:2169',
