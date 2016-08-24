@@ -130,6 +130,7 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 	node node_modules/openlayers/tasks/build.js $< $@
 	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js \
 	node_modules/js-autocomplete/auto-complete.min.js \
+	node_modules/promise-polyfill/promise.min.js \
 	$@ > concatenated.js
 	mv concatenated.js $@
 
