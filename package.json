@@ -42,6 +42,7 @@
     "temp": "0.8.3",
     "walk": "2.3.9",
     "d3": "3.5.17",
-    "whatwg-fetch": "1.0.0"
+    "whatwg-fetch": "1.0.0",
+    "promise-polyfill": "5.2.1"
   }
 }
