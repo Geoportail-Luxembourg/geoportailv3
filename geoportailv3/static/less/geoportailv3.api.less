@@ -29,6 +29,7 @@
 
 .lux-map {
   border: @border;
+  position: relative;
   .ol-attribution {
     bottom: .2em;
     right: 0;
@@ -89,6 +90,10 @@
   display: inline-block;
   position: relative;
   width: 10em;
+  position: absolute;
+  bottom: .5em;
+  left: .5em;
+  z-index: 3;
   &::after {
     color: @color;
     content: '⯆';
