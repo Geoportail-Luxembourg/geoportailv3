@@ -36,6 +36,7 @@ lux.LayerManager.prototype.setMap = function(map) {
         ol.events.listen(layers, ol.Collection.EventType.REMOVE,
             this.update, this)
     );
+    this.update();
   }
 };
 
@@ -51,7 +52,8 @@ lux.LayerManager.prototype.update = function() {
     var li = document.createElement('li');
 
     var label = document.createElement('label');
-    label.innerHTML = layer.get('name');
+    var name = /** @type {string} */ (layer.get('name'));
+    label.innerHTML = lux.i18n[name];
     li.appendChild(label);
 
     var input = document.createElement('input');
