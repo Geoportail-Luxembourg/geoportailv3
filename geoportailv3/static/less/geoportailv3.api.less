@@ -152,6 +152,7 @@
   border-radius: 5px;
   .box-shadow(0 5px 10px rgba(0,0,0,.2));
   z-index: 2;
+  width: 250px;
 }
 
 .lux-popup-arrow {
@@ -182,8 +183,19 @@
   }
 }
 
+.lux-popup-header {
+  padding: 5px;
+  margin: 0;
+}
+
 .lux-popup-content {
   padding: 9px 14px;
+
+  font-family: @font;
+
+  table {
+    width: 100%;
+  }
 }
 
 .lux-popup-close {
