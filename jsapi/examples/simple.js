@@ -7,8 +7,8 @@ var map = new lux.Map({
   position         : [ 6.13, 49.61 ],
   positionSrs      : '4326',
   zoom             : 14,
-  bgLayer          : 655,
-  layers           : [ 'arrets_bus', 650 ],
+  bgLayer          : 653,
+  layers           : [ 145 ],
   mousePosition    : {
     target: 'mapContainer',
     srs : 4326
@@ -20,3 +20,7 @@ var map = new lux.Map({
     target: 'layerManager'
   }
 });
+
+window.setTimeout(function() {
+  map.addLayerById(204);
+}, 1000);
