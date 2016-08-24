@@ -2,15 +2,20 @@ goog.provide('lux');
 goog.provide('lux.Map');
 
 goog.require('goog.dom');
+goog.require('goog.asserts');
 goog.require('lux.LayerManager');
 goog.require('ol.events');
 goog.require('ol.control.MousePosition');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.format.GPX');
+goog.require('ol.format.KML');
+goog.require('ol.interaction.Select');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTSRequestEncoding');
@@ -295,20 +300,28 @@ function buildPopupLayout_(html, addCloseBtn) {
   var arrow = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup-arrow'
   });
-  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup-content'
-  });
-  content.innerHTML = html;
+
+  var elements = [arrow];
 
   if (addCloseBtn) {
+    var header = goog.dom.createDom(goog.dom.TagName.H3, {
+      'class': 'lux-popup-header'
+    });
     var closeBtn = goog.dom.createDom(goog.dom.TagName.BUTTON, {
       'class': 'lux-popup-close'
     });
     closeBtn.innerHTML = '&times;';
-    goog.dom.insertChildAt(content, closeBtn, 0);
+    goog.dom.append(header, closeBtn);
+    elements.push(header);
   }
 
-  goog.dom.append(container, [arrow, content]);
+  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'lux-popup-content'
+  });
+  content.innerHTML = html;
+  elements.push(content);
+
+  goog.dom.append(container, elements);
   return container;
 }
 
@@ -568,6 +581,140 @@ lux.Map.prototype.addSearch = function(target) {
     }.bind(this)
   });
 
+};
+
+/**
+ * Adds a GPX file on the map
+ * @param {string} url Url to the GPX file
+ * @export
+ */
+lux.Map.prototype.addGPX = function(url) {
+  var style = {
+    'Point': new ol.style.Style({
+      image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: 'rgba(255,255,0,0.4)'
+        }),
+        radius: 5,
+        stroke: new ol.style.Stroke({
+          color: '#ff0',
+          width: 1
+        })
+      })
+    }),
+    'LineString': new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#f00',
+        width: 3
+      })
+    }),
+    'MultiLineString': new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#f00',
+        width: 3
+      })
+    })
+  };
+
+  var styleFunction = function(feature) {
+    return style[feature.getGeometry().getType()];
+  };
+
+  this.addVector(url, new ol.format.GPX(), styleFunction);
+};
+
+/**
+ * Adds a KML file on the map
+ * @param {string} url Url to the GPX file
+ * @export
+ */
+lux.Map.prototype.addKML = function(url) {
+  this.addVector(url, new ol.format.KML());
+};
+
+/**
+ * Adds a KML file on the map
+ * @param {string} url Url to the vector file
+ * @param {ol.format.GPX|ol.format.KML} format The format.
+ * @param {ol.style.StyleFunction=} opt_styleFunction The style function.
+ * @export
+ */
+lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
+  var options = {
+    source: new ol.source.Vector({
+      url: url,
+      format: format
+    })
+  };
+  var popup;
+
+  if (opt_styleFunction) {
+    options.style = opt_styleFunction;
+  }
+  this.layersPromise.then(function() {
+    var vector = new ol.layer.Vector(options);
+    this.addLayer(vector);
+
+    ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
+        function() {
+          var size = this.getSize();
+          goog.asserts.assert(size !== undefined, 'size should be defined');
+          this.getView().fit(vector.getSource().getExtent(), size);
+        }.bind(this)
+    );
+
+    var interaction = new ol.interaction.Select();
+    this.addInteraction(interaction);
+
+    interaction.on('select', function(e) {
+      if (popup) {
+        this.removeOverlay(popup);
+      }
+
+      var features = e.target.getFeatures();
+      if (!features.getLength()) {
+        return;
+      }
+      var feature = features.getArray()[0];
+      var properties = feature.getProperties();
+
+      var html = '<table>';
+      var key;
+      for (key in properties) {
+        if (key != feature.getGeometryName() && properties[key]) {
+          html += '<tr><th>';
+          html += key;
+          html += '</th><td ';
+          html += 'title ="';
+          html += properties[key] + '">';
+          html += properties[key] + '</td></tr>';
+        }
+      }
+      html += '</table>';
+
+      var element = buildPopupLayout_(html, true);
+      popup = new ol.Overlay({
+        element: element,
+        position: e.mapBrowserEvent.coordinate,
+        positioning: 'bottom-center',
+        offset: [0, -20],
+        insertFirst: false
+      });
+      this.addOverlay(popup);
+
+      var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
+      ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
+        this.removeOverlay(popup);
+        interaction.getFeatures().clear();
+      }.bind(this));
+    }.bind(this));
+
+    ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
+      var pixel = this.getEventPixel(evt.originalEvent);
+      var hit = this.hasFeatureAtPixel(pixel);
+      this.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    }.bind(this));
+  }.bind(this));
 };
 
 /**
