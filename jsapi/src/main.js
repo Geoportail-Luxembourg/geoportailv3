@@ -36,6 +36,30 @@ lux.setLayersUrl = function(url) {
 };
 
 /**
+ * @type {string}
+ */
+lux.i18nUrl = '../lang_xx.json';
+
+/**
+ * @type {string}
+ */
+lux.lang = 'fr';
+
+
+/**
+ * @type {Object<string, string>} Hash oject with translations.
+ */
+lux.i18n = {};
+
+/**
+ * @param {string} url Url to i18n service.
+ * @export
+ */
+lux.setI18nUrl = function(url) {
+  lux.i18nUrl = url;
+};
+
+/**
  * @classdesc
  * The map is the core component of the Geoportail V3 API.
  *
@@ -59,7 +83,20 @@ lux.Map = function(options) {
    * @private
    * @type {Promise} Promise of layers config request.
    */
-  this.promise = null;
+  this.layersPromise = null;
+
+  /**
+   * @private
+   * @type {Promise} Promise of the translations request.
+   */
+  this.i18nPromise = null;
+
+  var langUrl = lux.i18nUrl.replace('xx', lux.lang);
+  this.i18nPromise = fetch(langUrl).then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    lux.i18n = json[lux.lang];
+  }.bind(this));
 
   /**
    * @private
@@ -78,16 +115,31 @@ lux.Map = function(options) {
     layers = layers.concat(options.layers);
     delete options.layers;
   }
-  this.promise = fetch(lux.layersUrl).then(function(resp) {
+  this.layersPromise = fetch(lux.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
     this.addLayers_(layers);
+  }.bind(this));
+
+  Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     // background layers selector
     if (options.bgSelector && options.bgSelector.target) {
       this.addBgSelector(options.bgSelector.target);
     }
     delete options.bgSelector;
+
+    if (options.layerManager) {
+      var target = options.layerManager.target;
+      var el = typeof target === 'string' ?
+           document.getElementById(target) :
+           target;
+      var control = new lux.LayerManager({
+        target: el
+      });
+      this.addControl(control);
+    }
+    delete options.layerManager;
   }.bind(this));
 
   var viewOptions = {
@@ -154,24 +206,16 @@ lux.Map = function(options) {
   };
 
   if (options.search && options.search.target) {
-    this.addSearch(options.search.target);
+    var searchTarget = options.search.target;
     delete options.search;
+    this.i18nPromise.then(function() {
+      this.addSearch(searchTarget);
+    }.bind(this));
   }
 
   goog.base(this, options);
 
   this.getTargetElement().classList.add('lux-map');
-
-  if (options.layerManager) {
-    target = options.layerManager.target;
-    el = typeof target === 'string' ?
-         document.getElementById(target) :
-         target;
-    var control = new lux.LayerManager({
-      target: el
-    });
-    this.addControl(control);
-  }
 
   ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
       this.checkForExclusion_, this);
@@ -355,7 +399,7 @@ lux.intersects_ = function(one, two) {
  * @param {string|number} layer The layer id
  */
 lux.Map.prototype.addLayerById = function(layer) {
-  this.promise.then(function() {
+  this.layersPromise.then(function() {
     this.addLayers_([layer]);
   }.bind(this));
 };
@@ -381,7 +425,7 @@ lux.findLayerByName_ = function(name, layers) {
  * bgSelector in.
  */
 lux.Map.prototype.addBgSelector = function(target) {
-  this.promise.then(function() {
+  this.layersPromise.then(function() {
     if (!this.layersConfig) {
       return;
     }
@@ -408,7 +452,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     backgrounds.forEach(function(background) {
       var option = document.createElement('option');
       option.value = background.id;
-      option.innerText = background.name;
+      option.innerText = lux.i18n[background.name];
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -418,7 +462,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     // add blank layer
     var blankOption = document.createElement('option');
     blankOption.value = 'blank';
-    blankOption.innerText = 'Blank';
+    blankOption.innerText = lux.i18n['blank'];
     if (active == 'blank') {
       blankOption.setAttribute('selected', 'selected');
     }
@@ -468,7 +512,7 @@ lux.Map.prototype.addSearch = function(target) {
 
   var input = document.createElement('input');
   input.classList.add('lux-search-input');
-  input.setAttribute('placeholder', 'Search addresses');
+  input.setAttribute('placeholder', lux.i18n['search']);
   container.appendChild(input);
   var clear = document.createElement('button');
   clear.classList.add('lux-search-clear');
