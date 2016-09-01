@@ -38,6 +38,13 @@ lux.MyMap = function(id, map, opt_profileContainer) {
    */
   this.id_ = id;
 
+
+  /**
+   * @type {ol.interaction.Select|null} The select interaction.
+   * @private
+   */
+  this.selectInteraction_ = null;
+
   /**
    * @type {string|undefined} The container for the profile.
    */
@@ -92,12 +99,14 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
     this.map_.getView().fit(source.getExtent(), size);
 
-    var select = new ol.interaction.Select({
+    this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
     });
-    this.map_.addInteraction(select);
+    this.map_.addInteraction(this.selectInteraction_);
 
-    ol.events.listen(select, ol.interaction.SelectEventType.SELECT,
+    ol.events.listen(
+      this.selectInteraction_,
+      ol.interaction.SelectEventType.SELECT,
       this.onFeatureSelected, this);
   }.bind(this));
 };
@@ -111,6 +120,7 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   if (this.popup_) {
     this.map_.removeOverlay(this.popup_);
     this.popup_ = null;
+    this.hideProfile();
   }
 
   if (!features.length) {
@@ -156,7 +166,9 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
   ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
     this.map_.removeOverlay(this.popup_);
+    this.popup_ = null;
     this.hideProfile();
+    this.selectInteraction_.getFeatures().clear();
   }.bind(this));
 
   this.map_.addOverlay(this.popup_);
