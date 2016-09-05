@@ -56,6 +56,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
 /**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$compile} $compile The compile provider.
+ * @param {angular.$sce} $sce Angular $sce service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
@@ -74,10 +75,16 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @ngInject
  */
 
-app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
-    ngeoBackgroundLayerMgr, appMymaps, appNotify, appFeaturePopup,
-    appSelectedFeatures, appTheme, appUserManager, appDrawnFeatures,
-    $document, exportgpxkmlUrl, appExport) {
+app.MymapsDirectiveController = function($scope, $compile, $sce,
+    gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
+    appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
+    appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
+
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.sce_ = $sce;
 
   /**
    * @type {app.FeaturePopup}
@@ -310,6 +317,17 @@ app.MymapsDirectiveController = function($scope, $compile, gettextCatalog,
 app.MymapsDirectiveController.prototype.resetLayers = function() {
   goog.array.clear(this.selectedLayers_);
   this.appMymaps_.updateLayers();
+};
+
+
+/**
+ * returns a trusted html content
+ * @param {string} content content to be trusted
+ * @return {*} the trusted content.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.trustAsHtml = function(content) {
+  return this.sce_.trustAsHtml('' + content);
 };
 
 
