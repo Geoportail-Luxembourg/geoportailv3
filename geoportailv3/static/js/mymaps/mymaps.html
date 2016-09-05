@@ -16,7 +16,7 @@
     <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
     <div class="title" ng-click="ctrl.openModifyMapModal()">{{ctrl.getMapTitle()}}</div>
   </div>
-  <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()">{{ctrl.getMapDescription()}}</p>
+  <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()" ng-bind-html="ctrl.trustAsHtml(ctrl.getMapDescription())"></p>
   <p class="no-description" ng-click="ctrl.openModifyMapModal()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
 
 
