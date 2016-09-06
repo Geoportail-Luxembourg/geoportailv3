@@ -731,7 +731,7 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
       }
       html += '</table>';
 
-      var element = buildPopupLayout_(html, true);
+      var element = lux.buildPopupLayout(html, true);
       popup = new ol.Overlay({
         element: element,
         position: e.mapBrowserEvent.coordinate,
@@ -758,15 +758,11 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
 
 /**
  * Load a MyMaps layer.
- * @param {string} mymap_id The id of the mymap layer.
- * @param {string|undefined} opt_profileContainer The id of the element in
- *     which to put the profile (without #). Optional. It is recommended to set
- *     the display style to none at first. The display will then be set to
- *     block adequately.
+ * @param {luxx.MyMapOptions} options The options.
  * @export
  */
-lux.Map.prototype.addMyMapLayer = function(mymap_id, opt_profileContainer) {
-  new lux.MyMap(mymap_id, this, opt_profileContainer);
+lux.Map.prototype.addMyMapLayer = function(options) {
+  new lux.MyMap(this, options);
 };
 
 /**

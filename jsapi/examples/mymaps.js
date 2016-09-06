@@ -10,4 +10,7 @@ var map = new lux.Map({
   bgLayer          : 655
 });
 
-map.addMyMapLayer('cf12fe433afa448bb6f3f47b4621127f', 'profile');
+map.addMyMapLayer({
+  mapId: 'cf12fe433afa448bb6f3f47b4621127f',
+  profileTarget: 'profile'
+});

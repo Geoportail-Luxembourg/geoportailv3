@@ -19,12 +19,10 @@ goog.require('ol.style.Text');
  * A mymap layer manager.
  *
  * @constructor
- * @param {string} id The uuid of the mymap to load.
  * @param {lux.Map} map The map in which to load the mymap features.
- * @param {string|undefined} opt_profileContainer The container in which
- *     a profile can be displayed for linestrings.
+ * @param {luxx.MyMapOptions} options The options.
  */
-lux.MyMap = function(id, map, opt_profileContainer) {
+lux.MyMap = function(map, options) {
 
   /**
    * @type {lux.Map} The reference to the map.
@@ -36,7 +34,8 @@ lux.MyMap = function(id, map, opt_profileContainer) {
    * @type {string} The uuid.
    * @private
    */
-  this.id_ = id;
+  this.id_ = options.mapId;
+  goog.asserts.assert(this.id_ != undefined, 'mapId must be defined');
 
 
   /**
@@ -48,13 +47,13 @@ lux.MyMap = function(id, map, opt_profileContainer) {
   /**
    * @type {string|undefined} The container for the profile.
    */
-  this.profileContainer_ = opt_profileContainer;
+  this.profileContainer_ = options.profileTarget;
 
   this.profile_ = null;
 
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
 
-  var url = [lux.mymapsUrl, 'map', id].join('/');
+  var url = [lux.mymapsUrl, 'map', this.id_].join('/');
   fetch(url).then(function(resp) {
     return resp.json();
   }).then(function(json) {
@@ -477,7 +476,9 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   goog.dom.setTextContent(link, 'zoom to');
   goog.dom.append(links, link);
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
-    this.map_.getView().fit(geom, this.map_.getSize());
+    var size = /** @type {Array<number>} */ (this.map_.getSize());
+    var extent = /** @type {Array<number>} */ (geom.getExtent());
+    this.map_.getView().fit(extent, size);
   }.bind(this));
 
   if (this.profileContainer_ &&
@@ -489,6 +490,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     goog.dom.setTextContent(link, 'show profile');
     goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
+      goog.asserts.assert(geom instanceof ol.geom.LineString);
       this.loadProfile(geom);
     }.bind(this));
   }
