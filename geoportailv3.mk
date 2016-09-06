@@ -49,11 +49,11 @@ PRINT_VERSION = NONE
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
 	$(VENV_BIN)/tx push -s
-	$(VENV_BIN)/tx pull
+	$(VENV_BIN)/tx pull -f
 
 .PHONY: pull-translations
 pull-translations:
-	$(VENV_BIN)/tx pull
+	$(VENV_BIN)/tx pull -f
 
 .build/fonts.timestamp: .build/node_modules.timestamp
 	mkdir -p $(PACKAGE)/static/build/fonts
