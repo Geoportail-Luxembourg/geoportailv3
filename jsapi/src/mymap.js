@@ -467,20 +467,32 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     );
     elements.push(elevationEl);
   }
+
+  var links = goog.dom.createDom(goog.dom.TagName.P);
+  goog.dom.classlist.add(links, 'lux-popup-links');
+
+  var link = goog.dom.createDom(goog.dom.TagName.A, {
+    href: 'javascript:void(0);'
+  });
+  goog.dom.setTextContent(link, 'zoom to');
+  goog.dom.append(links, link);
+  goog.events.listen(link, goog.events.EventType.CLICK, function() {
+    this.map_.getView().fit(geom, this.map_.getSize());
+  }.bind(this));
+
   if (this.profileContainer_ &&
       geom.getType() === ol.geom.GeometryType.LINE_STRING) {
-    var profileLink = goog.dom.createDom(goog.dom.TagName.P);
     goog.asserts.assert(geom instanceof ol.geom.LineString);
-    var link = goog.dom.createDom(goog.dom.TagName.A, {
+    link = goog.dom.createDom(goog.dom.TagName.A, {
       href: 'javascript:void(0);'
     });
     goog.dom.setTextContent(link, 'show profile');
-    goog.dom.append(profileLink, link);
+    goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
       this.loadProfile(geom);
     }.bind(this));
-    elements.push(profileLink);
   }
+  elements.push(links);
   return elements;
 };
 
