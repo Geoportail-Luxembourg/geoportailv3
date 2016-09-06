@@ -183,7 +183,8 @@
   }
 }
 
-.lux-popup-header {
+.lux-popup-header,
+.lux-profile-header {
   padding: 5px;
   margin: 0;
 }
@@ -198,7 +199,8 @@
   }
 }
 
-.lux-popup-close {
+.lux-popup-close,
+.lux-profile-close {
   -webkit-appearance: none;
   padding: 0;
   cursor: pointer;
@@ -216,6 +218,19 @@
     text-decoration: none;
     opacity: 0.5;
   }
+}
+
+.lux-profile {
+  display: none;
+}
+
+.lux-profile-active {
+  display: flex;
+  flex-direction: column;
+}
+
+.lux-profile-content {
+  flex: 1;
 }
 
 .lux-layer-manager {

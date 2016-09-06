@@ -1,6 +1,7 @@
 goog.provide('lux.MyMap');
 
 goog.require('goog.dom');
+goog.require('goog.dom.query');
 goog.require('goog.events');
 goog.require('ngeo.interaction.Measure');
 goog.require('ngeo.profile');
@@ -45,11 +46,23 @@ lux.MyMap = function(map, options) {
   this.selectInteraction_ = null;
 
   /**
-   * @type {string|undefined} The container for the profile.
+   * @type {Element|undefined} The container for the profile.
    */
-  this.profileContainer_ = options.profileTarget;
+  this.profileContainer_ = document.getElementById(options.profileTarget);
+
+  /**
+   * @type {d3.selection|null}
+   * @private
+   */
+  this.selection_ = null;
 
   this.profile_ = null;
+
+
+  /**
+   * @type {function(<Array.ol.Feature>)|undefined}
+   */
+  this.onload_ = options.onload;
 
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
 
@@ -63,10 +76,6 @@ lux.MyMap = function(map, options) {
     this.loadFeatures_();
 
   }.bind(this));
-
-  if (this.profileContainer_) {
-    this.initProfile();
-  }
 };
 
 /**
@@ -89,6 +98,9 @@ lux.MyMap.prototype.loadFeatures_ = function() {
       dataProjection: 'EPSG:2169',
       featureProjection: 'EPSG:3857'
     });
+    if (this.onload_) {
+      this.onload_.call(this, features);
+    }
     var featureStyleFunction = this.createStyleFunction(this.map_);
     features.forEach(function(feature) {
       feature.setStyle(featureStyleFunction);
@@ -119,7 +131,6 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   if (this.popup_) {
     this.map_.removeOverlay(this.popup_);
     this.popup_ = null;
-    this.hideProfile();
   }
 
   if (!features.length) {
@@ -166,7 +177,6 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
   ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
     this.map_.removeOverlay(this.popup_);
     this.popup_ = null;
-    this.hideProfile();
     this.selectInteraction_.getFeatures().clear();
   }.bind(this));
 
@@ -491,16 +501,47 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
       goog.asserts.assert(geom instanceof ol.geom.LineString);
-      this.loadProfile(geom);
+      this.loadProfile(geom, this.profileContainer_, true);
+      var closeBtn = goog.dom.query('.lux-profile-header .lux-profile-close',
+        this.profileContainer_)[0];
+      closeBtn.style.display = 'block';
+      ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
+        this.hideProfile();
+      }.bind(this));
     }.bind(this));
+
   }
   elements.push(links);
   return elements;
 };
 
 /**
+ * @param {string} target The target in which to load the profile.
+ * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
+ *     not.
  */
-lux.MyMap.prototype.initProfile = function() {
+lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
+  goog.dom.removeChildren(target);
+  goog.dom.classlist.add(target, 'lux-profile');
+
+  var header = goog.dom.createDom(goog.dom.TagName.H3, {
+    'class': 'lux-profile-header'
+  });
+  if (opt_addCloseBtn) {
+    var closeBtn = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+      'class': 'lux-profile-close'
+    });
+    closeBtn.innerHTML = '&times;';
+    goog.dom.append(header, closeBtn);
+  }
+  goog.dom.append(target, header);
+
+  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'lux-profile-content'
+  });
+  goog.dom.append(target, content);
+
+  this.selection_ = d3.select(content);
 
   /**
    * @param {Object} item The item.
@@ -542,22 +583,29 @@ lux.MyMap.prototype.hideProfile = function() {
     return;
   }
 
-  var selection = d3.select('#' + this.profileContainer_);
-  selection.datum([]).call(this.profile_);
-  selection.style('display', 'none');
+  this.selection_.datum(null).call(this.profile_);
+  goog.dom.classlist.remove(this.profileContainer_, 'lux-profile-active');
 };
 
 /**
  * @param {ol.geom.LineString} geom The line geometry.
+ * @param {string|undefined} opt_target The target in which to load the
+ *     profile.
+ * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
+ *     not.
  */
-lux.MyMap.prototype.loadProfile = function(geom) {
-  if (!this.profileContainer_) {
+lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
+  if (!target) {
     return;
   }
-  goog.asserts.assert(geom instanceof ol.geom.LineString);
 
-  var selection = d3.select('#' + this.profileContainer_);
-  selection.style('display', 'block');
+  target = document.getElementById(target) || target;
+  this.initProfile(target, opt_addCloseBtn);
+
+  goog.asserts.assert(geom instanceof ol.geom.LineString,
+      'geometry should be a linestring');
+
+  goog.dom.classlist.add(target, 'lux-profile-active');
 
   var encOpt = {
     dataProjection: 'EPSG:2169',
@@ -593,6 +641,6 @@ lux.MyMap.prototype.loadProfile = function(geom) {
   ).then(function(resp) {
     return resp.json();
   }).then(function(data) {
-    selection.datum(data.profile).call(this.profile_);
+    this.selection_.datum(data.profile).call(this.profile_);
   }.bind(this));
 };

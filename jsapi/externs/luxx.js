@@ -239,3 +239,9 @@ luxx.MyMapOptions.prototype.mapId;
  * then be set to block adequately.
  */
 luxx.MyMapOptions.prototype.profileTarget;
+
+/**
+ * @type {function(<Array.ol.Feature>)|undefined}
+ * The function called once the map is loaded. Optional.
+ */
+luxx.MyMapOptions.prototype.onload;
