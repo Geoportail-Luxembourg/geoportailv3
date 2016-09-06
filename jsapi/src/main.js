@@ -766,12 +766,6 @@ lux.Map.prototype.addMyMapLayer = function(options) {
 };
 
 /**
- * @param {string} mymap_id The map uuid.
- */
-lux.Map.prototype.loadMyMapFeatures_ = function(mymap_id) {
-};
-
-/**
  * @param {Object} config The layer's config
  * @return {ol.layer.Tile} The layer.
  */
