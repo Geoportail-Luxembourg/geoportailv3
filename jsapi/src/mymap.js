@@ -534,6 +534,14 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
     closeBtn.innerHTML = '&times;';
     goog.dom.append(header, closeBtn);
   }
+
+  var exportCSV = goog.dom.createDom(goog.dom.TagName.BUTTON);
+  exportCSV.innerHTML = 'Export CSV';
+  ol.events.listen(exportCSV, ol.events.EventType.CLICK, function() {
+    this.exportCSV_();
+  }.bind(this));
+  goog.dom.append(header, exportCSV);
+
   goog.dom.append(target, header);
 
   var content = goog.dom.createDom(goog.dom.TagName.DIV, {
@@ -643,4 +651,36 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   }).then(function(data) {
     this.selection_.datum(data.profile).call(this.profile_);
   }.bind(this));
+};
+
+/**
+ * @private
+ */
+lux.MyMap.prototype.exportCSV_ = function() {
+  var csv = 'dist,MNT,y,x\n';
+  this.selection_.datum().forEach(function(item) {
+    csv += item['dist'] + ',' +
+          (item['values']['dhm']) / 100 + ',' +
+          item['x'] + ',' +
+          item['y'] + '\n';
+  });
+  console.log (csv);
+
+  var csvInput = goog.dom.createElement(goog.dom.TagName.INPUT);
+  csvInput.type = 'hidden';
+  csvInput.name = 'csv';
+  csvInput.value = csv;
+
+  var nameInput = goog.dom.createElement(goog.dom.TagName.INPUT);
+  nameInput.type = 'hidden';
+  nameInput.name = 'name';
+  nameInput.value = 'mnt';
+
+  var form = goog.dom.createElement(goog.dom.TagName.FORM);
+  form.method = 'POST';
+  form.action = 'http://maps.geoportail.lu/main/wsgi/profile/echocsv';
+  goog.dom.append(form, [nameInput, csvInput]);
+  goog.dom.append(document.body, form);
+  form.submit();
+  form.remove();
 };
