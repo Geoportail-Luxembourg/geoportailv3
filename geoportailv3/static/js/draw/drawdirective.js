@@ -25,8 +25,7 @@ goog.require('app.Activetool');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ol.CollectionEventType');
-goog.require('ol.FeatureStyleFunction');
+goog.require('ol.Feature');
 goog.require('ol.events');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Draw');
@@ -97,7 +96,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   /**
    * The key for geometry change event.
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    * @private
    */
   this.changeEventKey_ = null;
@@ -312,10 +311,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.selectInteraction_.setActive(false);
   appFeaturePopup.init(this.map);
 
-  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
+  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.ADD,
       goog.bind(
       /**
-       * @param {ol.CollectionEvent} evt The event.
+       * @param {ol.Collection.Event} evt The event.
        */
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
@@ -331,9 +330,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.scope_.$applyAsync();
       }, this));
 
-  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
+  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} evt The event.
+       * @param {ol.Collection.Event} evt The event.
        */
       function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);

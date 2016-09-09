@@ -13,7 +13,7 @@
 goog.provide('app.LayerOpacityManager');
 
 goog.require('app');
-goog.require('ol.CollectionEventType');
+goog.require('ol.Collection');
 goog.require('ol.events');
 
 
@@ -30,9 +30,9 @@ app.LayerOpacityManager = function() {
  */
 app.LayerOpacityManager.prototype.init = function(map) {
   var layers = map.getLayers();
-  ol.events.listen(layers, ol.CollectionEventType.ADD,
+  ol.events.listen(layers, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEventType} evt Collection event.
+       * @param {ol.Collection.EventType} evt Collection event.
        */
       function(evt) {
         var layer = /** @type {ol.layer.Layer} */ (evt.element);

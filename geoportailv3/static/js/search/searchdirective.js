@@ -478,9 +478,9 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   });
 
   ol.events.listen(this['map'].getLayers(),
-      ol.CollectionEventType.ADD,
+      ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} e Collection event.
+       * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         this.featureOverlay_.clear();

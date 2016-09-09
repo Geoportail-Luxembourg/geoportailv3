@@ -247,7 +247,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
   this['printing'] = false;
 
   /**
-   * @type {ol.events.Key?}
+   * @type {ol.EventsKey?}
    */
   var postcomposeListenerKey = null;
 
@@ -515,9 +515,9 @@ app.PrintController.prototype.print = function() {
       function(shorturl) {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
-
+        var format = 'pdf';
         // create print spec object
-        var spec = this.print_.createSpec(map, scale, dpi, layout, {
+        var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
           'scale': this['scale'],
           'name': this['title'],
           'url': shorturl,

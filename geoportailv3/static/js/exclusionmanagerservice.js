@@ -161,9 +161,9 @@ app.ExclusionManager.prototype.init = function(map) {
 
   // listen on layers being added to the map
   // base layers switch should fire the event as well
-  ol.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
+  ol.events.listen(map.getLayers(), ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} e Collection event.
+       * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
@@ -179,9 +179,9 @@ app.ExclusionManager.prototype.init = function(map) {
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
-  ol.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
+  ol.events.listen(map.getLayers(), ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} e Collection event.
+       * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);

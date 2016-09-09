@@ -11,7 +11,6 @@ goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
 goog.require('ol.Geolocation');
-goog.require('ol.GeolocationProperty');
 goog.require('ol.Object');
 goog.require('ol.control.Control');
 goog.require('ol.events');

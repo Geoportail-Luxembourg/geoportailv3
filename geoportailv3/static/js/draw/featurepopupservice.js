@@ -10,7 +10,7 @@ goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('ol.Coordinate');
+goog.require('ol.coordinate');
 goog.require('ol.MapProperty');
 goog.require('ol.Overlay');
 goog.require('ol.events');
@@ -19,14 +19,19 @@ goog.require('ol.events');
 /**
  * @param {angular.$compile} $compile The compile provider.
  * @param {angular.Scope} $rootScope The rootScope provider.
+ * @param {angular.$injector} $injector Main injector.
  * @param {Document} $document The document.
  * @param {app.GetElevation} appGetElevation The elevation service.
  * @param {app.GetProfile} appGetProfile The profile service.
  * @constructor
  * @ngInject
  */
-app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
-    appGetProfile) {
+app.FeaturePopup = function($compile, $rootScope, $injector, $document,
+    appGetElevation, appGetProfile) {
+  /**
+   * @type {ngeox.unitPrefix}
+   */
+  this.format_ = $injector.get('$filter')('ngeoUnitPrefix');
 
   /**
    * @type {boolean}
@@ -65,13 +70,13 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
   this.scope_ = $rootScope.$new(true);
 
   /**
-   * @type {ol.events.Key?}
+   * @type {ol.EventsKey?}
    * @private
    */
   this.mousemoveEvent_ = null;
 
   /**
-   * @type {ol.events.Key?}
+   * @type {ol.EventsKey?}
    * @private
    */
   this.mousedownEvent_ = null;
@@ -248,7 +253,8 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
       this.map.getView().getProjection(),
-      null
+      null,
+      this.format_
   );
 };
 
@@ -261,7 +267,8 @@ app.FeaturePopup.prototype.formatRadius = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       line,
       this.map.getView().getProjection(),
-      null
+      null,
+      this.format_
   );
 };
 
@@ -276,7 +283,8 @@ app.FeaturePopup.prototype.formatLength = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
       this.map.getView().getProjection(),
-      null
+      null,
+      this.format_
   );
 };
 

@@ -59,7 +59,7 @@ FuseResult.item;
 FuseResult.score;
 
 /**
- * @typedef (Array.<FuseResult>|Array.<string>)
+ * @typedef {Array.<FuseResult>|Array.<string>}
  */
 var FuseResults;
 

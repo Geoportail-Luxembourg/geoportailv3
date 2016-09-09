@@ -190,7 +190,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   this.featureOverlay_.addFeature(this.snappedPoint_);
 
   /**
-   * @type {ol.events.Key}
+   * @type {ol.EventsKey}
    * @private
    */
   this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,

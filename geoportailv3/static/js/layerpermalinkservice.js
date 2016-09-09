@@ -253,9 +253,9 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
         }, this);
   }, this);
   // Add event listener to all future selected layers
-  ol.events.listen(layers, ol.CollectionEventType.ADD,
+  ol.events.listen(layers, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEventType} collEvt Collection event.
+       * @param {ol.Collection.EventType} collEvt Collection event.
        */
       function(collEvt) {
         var layer = /** @type {ol.layer.Layer} */ (collEvt.element);
