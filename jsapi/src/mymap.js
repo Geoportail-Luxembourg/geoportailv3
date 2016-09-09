@@ -58,6 +58,57 @@ lux.MyMap = function(map, options) {
 
   this.profile_ = null;
 
+  var layer = new ol.layer.Vector({
+    source: new ol.source.Vector()
+  });
+
+  layer.setStyle([
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({color: '#ff0000'})
+        })
+      }),
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 5,
+          fill: new ol.style.Fill({color: '#ffffff'})
+        })
+      })]);
+  layer.setMap(this.map_);
+  this.featureOverlay_ = layer.getSource();
+
+  /**
+   * @type {ol.geom.LineString}
+   * @private
+   */
+  this.line_ = null;
+
+  /**
+   * @private
+   */
+  this.distanceLabel_ = 'Distance : ';
+
+  /**
+   * @private
+   */
+  this.elevationLabel_ = 'Elevation : ';
+
+  /**
+   * Overlay to show the measurement.
+   * @type {ol.Overlay}
+   * @private
+   */
+  this.measureTooltip_ = null;
+
+  /**
+   * The measure tooltip element.
+   * @type {Element}
+   * @private
+   */
+  this.measureTooltipElement_ = null;
+
+
 
   /**
    * @type {function(Array<ol.Feature>)|undefined}
@@ -525,7 +576,7 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
   goog.dom.removeChildren(target);
   goog.dom.classlist.add(target, 'lux-profile');
 
-  var header = goog.dom.createDom(goog.dom.TagName.H3, {
+  var header = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-profile-header'
   });
   if (opt_addCloseBtn) {
@@ -535,6 +586,11 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
     closeBtn.innerHTML = '&times;';
     header.appendChild(closeBtn);
   }
+
+  var metadata = goog.dom.createDom(goog.dom.TagName.SPAN, {
+    'class': 'lux-profile-metadata'
+  });
+  header.appendChild(metadata);
 
   var exportCSV = goog.dom.createDom(goog.dom.TagName.BUTTON);
   exportCSV.innerHTML = 'Export CSV';
@@ -579,8 +635,25 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
    */
   var extractor = {z: z, dist: dist};
 
+  ol.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+      /**
+       * @param {ol.MapBrowserPointerEvent} evt Map browser event.
+       */
+      function(evt) {
+        if (evt.dragging || goog.isNull(this.line_)) {
+          return;
+        }
+        var coordinate = this.map_.getEventCoordinate(evt.originalEvent);
+        this.snapToGeometry_(coordinate, this.line_);
+      }, this);
+
   this.profile_ = ngeo.profile({
-    elevationExtractor: extractor
+    elevationExtractor: extractor,
+    hoverCallback: this.profileHoverCallback.bind(this),
+    outCallback: function() {
+      this.removeMeasureTooltip_();
+      this.featureOverlay_.clear();
+    }.bind(this)
   });
 };
 
@@ -593,6 +666,7 @@ lux.MyMap.prototype.hideProfile = function() {
   }
 
   this.selection_.datum(null).call(this.profile_);
+  this.line_ = null;
   goog.dom.classlist.remove(this.profileContainer_, 'lux-profile-active');
 };
 
@@ -606,6 +680,7 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   if (goog.isString(target)) {
     target = document.getElementById(target);
   }
+  this.profileContainer_ = target;
   this.initProfile(target, opt_addCloseBtn);
 
   goog.asserts.assert(geom instanceof ol.geom.LineString,
@@ -647,7 +722,44 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   ).then(function(resp) {
     return resp.json();
   }).then(function(data) {
+    // display the chart
     this.selection_.datum(data.profile).call(this.profile_);
+
+    // compute the line geometry and elevation gain/loss
+    var elevationGain = 0;
+    var elevationLoss = 0;
+    var cumulativeElevation = 0;
+    var lastElevation;
+    var i;
+    var len = data.profile.length;
+    var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
+    for (i = 0; i < len; i++) {
+      var p = data.profile[i];
+      p = new ol.geom.Point([p['x'], p['y']]);
+      p.transform('EPSG:2169', this.map_.getView().getProjection());
+      lineString.appendCoordinate(
+          p.getCoordinates().concat(data.profile[i]['dist']));
+
+      var curElevation = (data.profile[i]['values']['dhm']) / 100;
+      if (lastElevation !== undefined) {
+        var elevation = curElevation - lastElevation;
+        cumulativeElevation = cumulativeElevation + elevation;
+        if (elevation > 0) {
+          elevationGain = elevationGain + elevation;
+        } else {
+          elevationLoss = elevationLoss + elevation;
+        }
+      }
+      lastElevation = curElevation;
+    }
+    this.line_ = lineString;
+
+    var metadata = this.profileContainer_.querySelectorAll(
+      '.lux-profile-header .lux-profile-metadata')[0];
+    metadata.innerHTML = '&Delta; + ' + this.formatElevationGain_(elevationGain, 'm');
+    metadata.innerHTML += '&nbsp;&nbsp;&Delta; -' + this.formatElevationGain_(-1 * elevationLoss, 'm');
+    metadata.innerHTML += '&nbsp;&nbsp;&Delta;' + this.formatElevationGain_(cumulativeElevation,
+        'm');
   }.bind(this));
 };
 
@@ -681,4 +793,115 @@ lux.MyMap.prototype.exportCSV_ = function() {
   document.body.appendChild(form);
   form.submit();
   form.remove();
+};
+
+
+/**
+ * Creates a new measure tooltip
+ * @private
+ */
+lux.MyMap.prototype.createMeasureTooltip_ = function() {
+  this.removeMeasureTooltip_();
+  this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.classlist.addAll(this.measureTooltipElement_,
+      ['lux-tooltip', 'lux-tooltip-measure']);
+  this.measureTooltip_ = new ol.Overlay({
+    element: this.measureTooltipElement_,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  this.map_.addOverlay(this.measureTooltip_);
+};
+
+/**
+ * Destroy the measure tooltip
+ * @private
+ */
+lux.MyMap.prototype.removeMeasureTooltip_ = function() {
+  if (!goog.isNull(this.measureTooltipElement_)) {
+    this.measureTooltipElement_.parentNode.removeChild(
+        this.measureTooltipElement_);
+    this.measureTooltipElement_ = null;
+    this.measureTooltip_ = null;
+  }
+};
+
+/**
+ * @param {Object} point The point.
+ * @param {number} dist The distance.
+ * @param {string} xUnits The x unit.
+ * @param {number} elevation The elevation.
+ * @param {string} yUnits The y unit.
+ */
+lux.MyMap.prototype.profileHoverCallback = function(point, dist, xUnits, elevation, yUnits) {
+  this.featureOverlay_.clear();
+  var curPoint = new ol.geom.Point([point['x'], point['y']]);
+  curPoint.transform('EPSG:2169', this.map_.getView().getProjection());
+  var positionFeature = new ol.Feature({
+    geometry: curPoint
+  });
+  this.featureOverlay_.addFeature(positionFeature);
+  this.createMeasureTooltip_();
+  this.measureTooltipElement_.innerHTML = this.distanceLabel_ +
+      this.formatDistance_(dist, xUnits) +
+      '<br>' +
+      this.elevationLabel_ +
+      this.formatElevation_(elevation, yUnits);
+  this.measureTooltip_.setPosition(curPoint.getCoordinates());
+};
+
+/**
+ * Format the distance text.
+ * @param {number} dist The distance.
+ * @param {string} units The unit.
+ * @return {string} The formatted distance.
+ * @private
+ */
+lux.MyMap.prototype.formatDistance_ = function(dist, units) {
+  return parseFloat(dist.toPrecision(3)) + ' ' + units;
+};
+
+
+/**
+ * Format the elevation text.
+ * @param {number} elevation The elevation.
+ * @param {string} units The unit.
+ * @return {string} The elevation text.
+ * @private
+ */
+lux.MyMap.prototype.formatElevation_ = function(elevation, units) {
+  return parseFloat(elevation.toPrecision(4)) + ' ' + units;
+};
+
+/**
+ * Format the elevation gain text.
+ * @param {number} elevation The elevation.
+ * @param {string} units The unit.
+ * @return {string} the elevation gain text.
+ * @private
+ */
+lux.MyMap.prototype.formatElevationGain_ =
+    function(elevation, units) {
+      return parseFloat(parseInt(elevation, 10)) + ' ' + units;
+    };
+
+/**
+ * @param {ol.Coordinate} coordinate The current pointer coordinate.
+ * @param {ol.geom.Geometry|undefined} geom The geometry to snap to.
+ * @private
+ */
+lux.MyMap.prototype.snapToGeometry_ = function(coordinate, geom) {
+  var closestPoint = geom.getClosestPoint(coordinate);
+  // compute distance to line in pixels
+  var dx = closestPoint[0] - coordinate[0];
+  var dy = closestPoint[1] - coordinate[1];
+  var viewResolution = this.map_.getView().getResolution();
+  var distSqr = dx * dx + dy * dy;
+  var pixelDistSqr = distSqr / (viewResolution * viewResolution);
+  // Check whether dist is lower than 8 pixels
+  if (pixelDistSqr < 64) {
+    this.profile_.highlight(closestPoint[2]);
+  } else {
+    this.profile_.clearHighlight();
+  }
 };
