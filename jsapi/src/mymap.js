@@ -475,8 +475,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    // FIXME add 'length: ' label
-    goog.dom.setTextContent(lengthEl, length);
+    goog.dom.setTextContent(lengthEl, lux.i18n['Length:'] + ' ' + length);
     elements.push(lengthEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POLYGON) {
@@ -489,8 +488,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    // FIXME add 'area: ' label
-    goog.dom.setTextContent(areaEl, area);
+    goog.dom.setTextContent(areaEl, lux.i18n['Area:'] + ' ' + area);
     elements.push(areaEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POLYGON &&
@@ -504,8 +502,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    // FIXME add 'radius: ' label
-    goog.dom.setTextContent(radiusEl, radius);
+    goog.dom.setTextContent(radiusEl, lux.i18n['Rayon:'] + ' ' + radius);
     elements.push(radiusEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POINT &&
@@ -514,13 +511,12 @@ lux.MyMap.prototype.getMeasures = function(feature) {
 
     goog.asserts.assert(geom instanceof ol.geom.Point);
 
-    // FIXME translate this
     goog.dom.setTextContent(elevationEl, 'N/A');
     lux.getElevation(geom.getCoordinates()).then(
       function(json) {
-        // FIXME add 'elevation: ' label
         if (json['dhm'] > 0) {
           goog.dom.setTextContent(elevationEl,
+              lux.i18n['Elevation'] + ': ' +
               parseInt(json['dhm'] / 100, 0).toString() + ' m');
         }
       }
@@ -534,7 +530,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   var link = goog.dom.createDom(goog.dom.TagName.A, {
     href: 'javascript:void(0);'
   });
-  goog.dom.setTextContent(link, 'zoom to');
+  goog.dom.setTextContent(link, lux.i18n['Zoom to']);
   goog.dom.append(links, link);
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
@@ -548,7 +544,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     link = goog.dom.createDom(goog.dom.TagName.A, {
       href: 'javascript:void(0);'
     });
-    goog.dom.setTextContent(link, 'show profile');
+    goog.dom.setTextContent(link, lux.i18n['Profile']);
     goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
       goog.asserts.assert(geom instanceof ol.geom.LineString);
@@ -593,7 +589,7 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
   header.appendChild(metadata);
 
   var exportCSV = goog.dom.createDom(goog.dom.TagName.BUTTON);
-  exportCSV.innerHTML = 'Export CSV';
+  exportCSV.innerHTML = lux.i18n['Export csv'];
   ol.events.listen(exportCSV, ol.events.EventType.CLICK, function() {
     this.exportCSV_();
   }.bind(this));

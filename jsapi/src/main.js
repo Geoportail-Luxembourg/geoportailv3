@@ -762,7 +762,9 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
  * @export
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
-  new lux.MyMap(this, options);
+  Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
+    new lux.MyMap(this, options);
+  }.bind(this));
 };
 
 /**
