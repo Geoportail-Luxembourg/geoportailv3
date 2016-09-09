@@ -1,24 +1,25 @@
 goog.provide('lux');
 goog.provide('lux.Map');
 
-goog.require('goog.dom');
 goog.require('goog.asserts');
+goog.require('goog.dom');
 goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
-goog.require('ol.events');
-goog.require('ol.control.MousePosition');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.format.GPX');
-goog.require('ol.format.KML');
-goog.require('ol.interaction.Select');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
+goog.require('ol.control.MousePosition');
+goog.require('ol.events');
+goog.require('ol.events');
+goog.require('ol.format.GPX');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.format.KML');
+goog.require('ol.interaction.Select');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
 goog.require('ol.source.ImageWMS');
+goog.require('ol.source.OSM');
 goog.require('ol.source.WMTSRequestEncoding');
 
 proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
