@@ -50,6 +50,11 @@ lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
 lux.elevationUrl = 'http://map.geoportail.lu/main/wsgi/raster';
 
 /**
+ * @type {string}
+ */
+lux.queryUrl = 'http://maps.geoportail.lu/main/wsgi/getfeatureinfo?';
+
+/**
  * @param {string} url Url to jsapilayers service.
  * @export
  */
@@ -103,6 +108,12 @@ lux.Map = function(options) {
 
   var layers    = [];
   var defaultBg = 652; // 'streets_jpeg';
+
+  /**
+   * @private
+   * @type {ol.Extent} features to recenter on extent.
+   */
+  this.featureExtent_ = ol.extent.createEmpty();
 
   /**
    * @private
@@ -172,6 +183,10 @@ lux.Map = function(options) {
     }
     delete options.layerManager;
   }.bind(this));
+
+  if (options.features) {
+    this.showFeatures(options.features.layer, options.features.ids);
+  }
 
   var viewOptions = {
     center : ol.proj.fromLonLat([6.215, 49.845]),
@@ -387,6 +402,26 @@ lux.getElevation = function(coordinate) {
 };
 
 /**
+ * @param {string|number} layer Layer id
+ * @return {Object} The layer config
+ * @private
+ */
+lux.Map.prototype.findLayerConf_ = function(layer) {
+  var conf = this.layersConfig;
+  var layerConf;
+  if (typeof layer == 'number' || !isNaN(parseInt(layer, 10))) {
+    layerConf = conf[layer];
+  } else if (typeof layer == 'string') {
+    layerConf = lux.findLayerByName_(layer, conf);
+  }
+  if (!layerConf) {
+    console.error('Layer "' + layer + '" not present in layers list');
+    return null;
+  }
+  return layerConf;
+};
+
+/**
  * @param {Array<string|number>} layers Array of layer names
  * @private
  */
@@ -396,16 +431,7 @@ lux.Map.prototype.addLayers_ = function(layers) {
     return;
   }
   layers.map(function(layer) {
-    var layerConf;
-    if (typeof layer == 'number' || !isNaN(parseInt(layer, 10))) {
-      layerConf = conf[layer];
-    } else if (typeof layer == 'string') {
-      layerConf = lux.findLayerByName_(layer, conf);
-    }
-    if (!layerConf) {
-      console.error('Layer "' + layer + '" not present in layers list');
-      return;
-    }
+    var layerConf = this.findLayerConf_(layer);
     var fn = (layerConf.type === 'internal WMS') ?
       lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
     this.getLayers().push(fn(layerConf));
@@ -564,6 +590,61 @@ lux.Map.prototype.addBgSelector = function(target) {
           }
         }, this);
 
+  }.bind(this));
+};
+
+/**
+ * @param {string|number} layer The layer identifier
+ * @param {Array<string|number>} ids Array of features identifiers
+ * @export
+ */
+lux.Map.prototype.showFeatures = function(layer, ids) {
+  this.layersPromise.then(function() {
+    ids.forEach(function(id) {
+      var lid = this.findLayerConf_(layer).id;
+      fetch(lux.queryUrl + 'fid=' + lid + '_' + id).then(function(resp) {
+        return resp.json();
+      }).then(this.addFeature.bind(this));
+    }.bind(this));
+  }.bind(this));
+};
+
+/**
+ * @param {Object} json GeoJSON object
+ */
+lux.Map.prototype.addFeature = function(json) {
+  var format = new ol.format.GeoJSON();
+  json[0].features.forEach(function(f) {
+    f.properties = f.attributes;
+  });
+  var features = format.readFeatures({
+    type     : 'FeatureCollection',
+    features : json[0].features
+  }, {
+    dataProjection    : 'EPSG:2169',
+    featureProjection : 'EPSG:3857'
+  });
+  if (features.length == 0) {
+    return;
+  }
+  var size = this.getSize();
+  features.forEach(function(feature) {
+    this.showMarker({
+      position   : ol.extent.getCenter(feature.getGeometry().getExtent()),
+      autoCenter : true,
+      hover      : true,
+      html       : '<center>¯\\_(ツ)_/¯</center>' // TODO: Insert magic here.
+    });
+    this.featureExtent_ = ol.extent.extend(
+      this.featureExtent_,
+      feature.getGeometry().getExtent()
+    );
+    if (size) {
+      this.getView().fit(this.featureExtent_, size, {
+        maxZoom: 17,
+        padding: [0, 0, 0, 0]
+      });
+    }
   }.bind(this));
 };
 
