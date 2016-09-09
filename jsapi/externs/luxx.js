@@ -63,6 +63,13 @@ luxx.MapOptions.prototype.layerManager;
 luxx.MapOptions.prototype.mousePosition;
 
 /**
+ * Set the presence of features to recenter on & to show markers for.
+ * (not included by default).
+ * @type {luxx.FeaturesOptions}
+ */
+luxx.MapOptions.prototype.features;
+
+/**
  * Set the presence of a background selector control in the map.
  * (not included by default).
  * @type {luxx.BgSelectorOptions}
@@ -253,3 +260,22 @@ luxx.MyMapOptions.prototype.profileTarget;
  * The function called once the map is loaded. Optional.
  */
 luxx.MyMapOptions.prototype.onload;
+
+/**
+ * Object literal with config options for the feature recenter.
+ * @typedef {Object}
+ */
+luxx.FeaturesOptions;
+
+
+/**
+ * Comma-separated list of ids.
+ * @type {Array<string>}
+ */
+luxx.FeaturesOptions.prototype.ids;
+
+/**
+ * Layer identifier
+ * @type {string|number}
+ */
+luxx.FeaturesOptions.prototype.layer;
