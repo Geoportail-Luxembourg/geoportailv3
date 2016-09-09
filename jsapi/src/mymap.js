@@ -48,19 +48,19 @@ lux.MyMap = function(map, options) {
   /**
    * @type {Element|undefined} The container for the profile.
    */
-  this.profileContainer_ = document.getElementById(options.profileTarget);
+  this.profileContainer_;
 
-  /**
-   * @type {d3.selection|null}
-   * @private
-   */
+  if (options.profileTarget) {
+    this.profileContainer_ = document.getElementById(options.profileTarget);
+  }
+
   this.selection_ = null;
 
   this.profile_ = null;
 
 
   /**
-   * @type {function(<Array.ol.Feature>)|undefined}
+   * @type {function(Array<ol.Feature>)|undefined}
    */
   this.onload_ = options.onload;
 
@@ -501,9 +501,10 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
       goog.asserts.assert(geom instanceof ol.geom.LineString);
+      goog.asserts.assert(this.profileContainer_ instanceof Element);
       this.loadProfile(geom, this.profileContainer_, true);
-      var closeBtn = goog.dom.query('.lux-profile-header .lux-profile-close',
-        this.profileContainer_)[0];
+      var closeBtn = this.profileContainer_.querySelectorAll(
+        '.lux-profile-header .lux-profile-close')[0];
       closeBtn.style.display = 'block';
       ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
         this.hideProfile();
@@ -516,7 +517,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
 };
 
 /**
- * @param {string} target The target in which to load the profile.
+ * @param {Element} target The target in which to load the profile.
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
  *     not.
  */
@@ -532,7 +533,7 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
       'class': 'lux-profile-close'
     });
     closeBtn.innerHTML = '&times;';
-    goog.dom.append(header, closeBtn);
+    header.appendChild(closeBtn);
   }
 
   var exportCSV = goog.dom.createDom(goog.dom.TagName.BUTTON);
@@ -540,14 +541,14 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
   ol.events.listen(exportCSV, ol.events.EventType.CLICK, function() {
     this.exportCSV_();
   }.bind(this));
-  goog.dom.append(header, exportCSV);
+  header.appendChild(exportCSV);
 
-  goog.dom.append(target, header);
+  target.appendChild(header);
 
   var content = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-profile-content'
   });
-  goog.dom.append(target, content);
+  target.appendChild(content);
 
   this.selection_ = d3.select(content);
 
@@ -597,17 +598,14 @@ lux.MyMap.prototype.hideProfile = function() {
 
 /**
  * @param {ol.geom.LineString} geom The line geometry.
- * @param {string|undefined} opt_target The target in which to load the
- *     profile.
+ * @param {Element|string} target The target in which to load the profile.
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
  *     not.
  */
 lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
-  if (!target) {
-    return;
+  if (goog.isString(target)) {
+    target = document.getElementById(target);
   }
-
-  target = document.getElementById(target) || target;
   this.initProfile(target, opt_addCloseBtn);
 
   goog.asserts.assert(geom instanceof ol.geom.LineString,
@@ -664,7 +662,6 @@ lux.MyMap.prototype.exportCSV_ = function() {
           item['x'] + ',' +
           item['y'] + '\n';
   });
-  console.log (csv);
 
   var csvInput = goog.dom.createElement(goog.dom.TagName.INPUT);
   csvInput.type = 'hidden';
@@ -679,8 +676,9 @@ lux.MyMap.prototype.exportCSV_ = function() {
   var form = goog.dom.createElement(goog.dom.TagName.FORM);
   form.method = 'POST';
   form.action = 'http://maps.geoportail.lu/main/wsgi/profile/echocsv';
-  goog.dom.append(form, [nameInput, csvInput]);
-  goog.dom.append(document.body, form);
+  form.appendChild(nameInput);
+  form.appendChild(csvInput);
+  document.body.appendChild(form);
   form.submit();
   form.remove();
 };

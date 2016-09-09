@@ -241,7 +241,7 @@ luxx.MyMapOptions.prototype.mapId;
 luxx.MyMapOptions.prototype.profileTarget;
 
 /**
- * @type {function(<Array.ol.Feature>)|undefined}
+ * @type {function(Array<ol.Feature>)|undefined}
  * The function called once the map is loaded. Optional.
  */
 luxx.MyMapOptions.prototype.onload;
