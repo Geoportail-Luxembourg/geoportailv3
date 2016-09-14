@@ -73,6 +73,15 @@ lux.lang = 'fr';
 lux.i18n = {};
 
 /**
+ * Returns the translated string if available.
+ * @param {string} text The text to translate.
+ * @return {string} The translated text.
+ */
+lux.translate = function(text) {
+  return lux.i18n[text] || text;
+};
+
+/**
  * @param {string} url Url to i18n service.
  * @export
  */
@@ -504,7 +513,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     backgrounds.forEach(function(background) {
       var option = document.createElement('option');
       option.value = background.id;
-      option.innerText = lux.i18n[background.name];
+      option.innerText = lux.translate(background.name);
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -514,7 +523,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     // add blank layer
     var blankOption = document.createElement('option');
     blankOption.value = 'blank';
-    blankOption.innerText = lux.i18n['blank'];
+    blankOption.innerText = lux.translate('blank');
     if (active == 'blank') {
       blankOption.setAttribute('selected', 'selected');
     }
@@ -564,7 +573,7 @@ lux.Map.prototype.addSearch = function(target) {
 
   var input = document.createElement('input');
   input.classList.add('lux-search-input');
-  input.setAttribute('placeholder', lux.i18n['search']);
+  input.setAttribute('placeholder', lux.translate('search'));
   container.appendChild(input);
   var clear = document.createElement('button');
   clear.classList.add('lux-search-clear');

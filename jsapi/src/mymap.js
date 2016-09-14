@@ -475,7 +475,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    goog.dom.setTextContent(lengthEl, lux.i18n['Length:'] + ' ' + length);
+    goog.dom.setTextContent(lengthEl, lux.translate('Length:') + ' ' + length);
     elements.push(lengthEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POLYGON) {
@@ -488,7 +488,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    goog.dom.setTextContent(areaEl, lux.i18n['Area:'] + ' ' + area);
+    goog.dom.setTextContent(areaEl, lux.translate('Area:') + ' ' + area);
     elements.push(areaEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POLYGON &&
@@ -502,7 +502,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       this.map_.getView().getProjection(),
       null
     );
-    goog.dom.setTextContent(radiusEl, lux.i18n['Rayon:'] + ' ' + radius);
+    goog.dom.setTextContent(radiusEl, lux.translate('Rayon:') + ' ' + radius);
     elements.push(radiusEl);
   }
   if (geom.getType() === ol.geom.GeometryType.POINT &&
@@ -516,7 +516,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       function(json) {
         if (json['dhm'] > 0) {
           goog.dom.setTextContent(elevationEl,
-              lux.i18n['Elevation'] + ': ' +
+              lux.translate('Elevation') + ': ' +
               parseInt(json['dhm'] / 100, 0).toString() + ' m');
         }
       }
@@ -530,7 +530,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   var link = goog.dom.createDom(goog.dom.TagName.A, {
     href: 'javascript:void(0);'
   });
-  goog.dom.setTextContent(link, lux.i18n['Zoom to']);
+  goog.dom.setTextContent(link, lux.translate('Zoom to'));
   goog.dom.append(links, link);
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
@@ -544,7 +544,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     link = goog.dom.createDom(goog.dom.TagName.A, {
       href: 'javascript:void(0);'
     });
-    goog.dom.setTextContent(link, lux.i18n['Profile']);
+    goog.dom.setTextContent(link, lux.translate('Profile'));
     goog.dom.append(links, link);
     goog.events.listen(link, goog.events.EventType.CLICK, function() {
       goog.asserts.assert(geom instanceof ol.geom.LineString);
@@ -589,7 +589,7 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
   header.appendChild(metadata);
 
   var exportCSV = goog.dom.createDom(goog.dom.TagName.BUTTON);
-  exportCSV.innerHTML = lux.i18n['Export csv'];
+  exportCSV.innerHTML = lux.translate('Export csv');
   ol.events.listen(exportCSV, ol.events.EventType.CLICK, function() {
     this.exportCSV_();
   }.bind(this));
