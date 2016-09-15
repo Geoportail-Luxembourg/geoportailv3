@@ -86,6 +86,14 @@ luxx.MarkerOptions.prototype.position;
 
 
 /**
+ * The projection of the position coordinates.
+ * Default is `2169`.
+ * @type {string|number}
+ */
+luxx.MarkerOptions.prototype.positionSrs;
+
+
+/**
  * Tells whether the map should be recentered to the marker position.
  * @type {boolean|undefined}
  */
