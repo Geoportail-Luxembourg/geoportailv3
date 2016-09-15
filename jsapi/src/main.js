@@ -463,9 +463,9 @@ lux.Map.prototype.addBgSelector = function(target) {
       return;
     }
     var container = document.createElement('div');
-    container.classList.add('lux-dropdown');
+    container.classList.add('lux-bg-selector');
     var select = document.createElement('select');
-    select.classList.add('lux-dropdown-select');
+    select.classList.add('lux-bg-selector-select');
 
     var conf = this.layersConfig;
     var backgrounds = Object.keys(conf).filter(function(l) {
