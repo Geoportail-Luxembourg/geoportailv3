@@ -183,6 +183,7 @@ lux.Map = function(options) {
     if (el instanceof Element) {
       controls.push(new ol.control.MousePosition({
         target: el,
+        className: 'lux-mouse-position',
         projection: ol.proj.get(srs),
         coordinateFormat: function(coord) {
           var decimal = 1;
