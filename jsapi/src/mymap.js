@@ -20,16 +20,9 @@ goog.require('ol.style.Text');
  * A mymap layer manager.
  *
  * @constructor
- * @param {lux.Map} map The map in which to load the mymap features.
  * @param {luxx.MyMapOptions} options The options.
  */
-lux.MyMap = function(map, options) {
-
-  /**
-   * @type {lux.Map} The reference to the map.
-   * @private
-   */
-  this.map_ = map;
+lux.MyMap = function(options) {
 
   /**
    * @type {string} The uuid.
@@ -58,25 +51,7 @@ lux.MyMap = function(map, options) {
 
   this.profile_ = null;
 
-  var layer = new ol.layer.Vector({
-    source: new ol.source.Vector()
-  });
-
-  layer.setStyle([
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 6,
-        fill: new ol.style.Fill({color: '#ff0000'})
-      })
-    }),
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 5,
-        fill: new ol.style.Fill({color: '#ffffff'})
-      })
-    })]);
-  layer.setMap(this.map_);
-  this.featureOverlay_ = layer.getSource();
+  this.featureOverlay_ = new ol.source.Vector();
 
   /**
    * @type {ol.geom.LineString}
@@ -114,17 +89,43 @@ lux.MyMap = function(map, options) {
   this.onload_ = options.onload;
 
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
+};
 
-  var url = [lux.mymapsUrl, 'map', this.id_].join('/');
-  fetch(url).then(function(resp) {
-    return resp.json();
-  }).then(function(json) {
+/**
+ * Set the map
+ * @param {lux.Map} map The map in which to load the mymap features.
+ * @export
+ */
+lux.MyMap.prototype.setMap = function(map) {
 
-    // FIXME change the bg layer adequately
+  /**
+   * @type {lux.Map} The reference to the map.
+   * @private
+   */
+  this.map_ = map;
 
-    this.loadFeatures_();
+  var layer = new ol.layer.Vector({
+    source: this.featureOverlay_
+  });
 
-  }.bind(this));
+  layer.setStyle([
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({color: '#ff0000'})
+      })
+    }),
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({color: '#ffffff'})
+      })
+    })]);
+  layer.setMap(this.map_);
+
+  // FIXME change the bg layer adequately
+
+  this.loadFeatures_();
 };
 
 /**
