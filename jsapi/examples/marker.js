@@ -2,16 +2,14 @@ goog.provide('marker');
 
 goog.require('lux');
 
-var position =  [ 682773.755, 6394645.349 ];
 var map = new lux.Map({
   target: 'mapContainer',
-  position: position,
-  zoom: 14,
-  layers: [ 'streets_jpeg' ]
+  zoom: 14
 });
 
+var markerPos = [ 91904, 61566 ];
 map.showMarker({
-  position: position,
+  position: markerPos,
   autoCenter: true,
   positioning: 'center-center',
   iconURL: 'http://apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
