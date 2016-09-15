@@ -239,7 +239,19 @@ lux.Map.prototype.showMarker = function(options) {
   image.src = options.iconURL ||
       'http://openlayers.org/en/master/examples/data/icon.png';
   element.appendChild(image);
-  var position = options.position || this.getView().getCenter();
+
+  var position;
+  if (options.position) {
+    position = ol.proj.transform(
+        options.position,
+        (options.positionSrs) ?
+            'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
+        'EPSG:3857'
+    );
+  } else {
+    position = this.getView().getCenter();
+  }
+
   this.addOverlay(new ol.Overlay({
     element: element,
     position: position,
