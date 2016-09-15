@@ -63,18 +63,18 @@ lux.MyMap = function(map, options) {
   });
 
   layer.setStyle([
-      new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 6,
-          fill: new ol.style.Fill({color: '#ff0000'})
-        })
-      }),
-      new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 5,
-          fill: new ol.style.Fill({color: '#ffffff'})
-        })
-      })]);
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({color: '#ff0000'})
+      })
+    }),
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({color: '#ffffff'})
+      })
+    })]);
   layer.setMap(this.map_);
   this.featureOverlay_ = layer.getSource();
 
@@ -107,8 +107,6 @@ lux.MyMap = function(map, options) {
    * @private
    */
   this.measureTooltipElement_ = null;
-
-
 
   /**
    * @type {function(Array<ol.Feature>)|undefined}
@@ -699,7 +697,7 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
    * @type {string}
    */
   var body = Object.keys(params).map(function(k) {
-    return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]);
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
   }).join('&');
 
   /**
