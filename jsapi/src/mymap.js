@@ -151,7 +151,7 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     if (this.onload_) {
       this.onload_.call(this, features);
     }
-    var featureStyleFunction = this.createStyleFunction(this.map_);
+    var featureStyleFunction = this.createStyleFunction_(this.map_);
     features.forEach(function(feature) {
       feature.setStyle(featureStyleFunction);
     });
@@ -168,14 +168,15 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     ol.events.listen(
       this.selectInteraction_,
       ol.interaction.SelectEventType.SELECT,
-      this.onFeatureSelected, this);
+      this.onFeatureSelected_, this);
   }.bind(this));
 };
 
 /**
  * @param {ol.interaction.SelectEvent} event The select event.
+ * @private
  */
-lux.MyMap.prototype.onFeatureSelected = function(event) {
+lux.MyMap.prototype.onFeatureSelected_ = function(event) {
   var features = event.selected;
 
   if (this.popup_) {
@@ -237,11 +238,11 @@ lux.MyMap.prototype.onFeatureSelected = function(event) {
 /**
  * @param {ol.Map} curMap The current map.
  * @return {ol.FeatureStyleFunction} The Function to style.
- * @export
+ * @private
  *
  * Taken from 'mymapsservice.js'
  */
-lux.MyMap.prototype.createStyleFunction = function(curMap) {
+lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
 
   var styles = [];
 
@@ -553,7 +554,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
         '.lux-profile-header .lux-profile-close')[0];
       closeBtn.style.display = 'block';
       ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-        this.hideProfile();
+        this.hideProfile_();
       }.bind(this));
     }.bind(this));
 
@@ -566,8 +567,9 @@ lux.MyMap.prototype.getMeasures = function(feature) {
  * @param {Element} target The target in which to load the profile.
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
  *     not.
+ * @private
  */
-lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
+lux.MyMap.prototype.initProfile_ = function(target, opt_addCloseBtn) {
   goog.dom.removeChildren(target);
   goog.dom.classlist.add(target, 'lux-profile');
 
@@ -644,7 +646,7 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
 
   this.profile_ = ngeo.profile({
     elevationExtractor: extractor,
-    hoverCallback: this.profileHoverCallback.bind(this),
+    hoverCallback: this.profileHoverCallback_.bind(this),
     outCallback: function() {
       this.removeMeasureTooltip_();
       this.featureOverlay_.clear();
@@ -654,8 +656,9 @@ lux.MyMap.prototype.initProfile = function(target, opt_addCloseBtn) {
 
 /**
  * Clears the data in the profile and hide it.
+ * @private
  */
-lux.MyMap.prototype.hideProfile = function() {
+lux.MyMap.prototype.hideProfile_ = function() {
   if (!this.profileContainer_) {
     return;
   }
@@ -670,13 +673,14 @@ lux.MyMap.prototype.hideProfile = function() {
  * @param {Element|string} target The target in which to load the profile.
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
  *     not.
+ * @export
  */
 lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   if (goog.isString(target)) {
     target = document.getElementById(target);
   }
   this.profileContainer_ = target;
-  this.initProfile(target, opt_addCloseBtn);
+  this.initProfile_(target, opt_addCloseBtn);
 
   goog.asserts.assert(geom instanceof ol.geom.LineString,
       'geometry should be a linestring');
@@ -827,8 +831,9 @@ lux.MyMap.prototype.removeMeasureTooltip_ = function() {
  * @param {string} xUnits The x unit.
  * @param {number} elevation The elevation.
  * @param {string} yUnits The y unit.
+ * @private
  */
-lux.MyMap.prototype.profileHoverCallback = function(point, dist, xUnits, elevation, yUnits) {
+lux.MyMap.prototype.profileHoverCallback_ = function(point, dist, xUnits, elevation, yUnits) {
   this.featureOverlay_.clear();
   var curPoint = new ol.geom.Point([point['x'], point['y']]);
   curPoint.transform('EPSG:2169', this.map_.getView().getProjection());
