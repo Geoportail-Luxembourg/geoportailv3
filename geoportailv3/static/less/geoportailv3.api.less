@@ -185,7 +185,8 @@
   }
 }
 
-.lux-popup-header {
+.lux-popup-header,
+.lux-profile-header {
   padding: 5px;
   margin: 0;
 }
@@ -200,7 +201,8 @@
   }
 }
 
-.lux-popup-close {
+.lux-popup-close,
+.lux-profile-close {
   -webkit-appearance: none;
   padding: 0;
   cursor: pointer;
@@ -220,6 +222,25 @@
   }
 }
 
+.lux-profile {
+  display: none;
+  font-family: @font;
+}
+
+.lux-profile-active {
+  display: flex;
+  flex-direction: column;
+}
+
+.lux-profile-header button {
+  float: right;
+  margin-left: 10px;
+}
+
+.lux-profile-content {
+  flex: 1;
+}
+
 .lux-layer-manager {
   list-style: none;
   margin: 0;
@@ -228,4 +249,28 @@
   li label {
     cursor: pointer;
   }
+}
+
+.lux-tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+  font-family: @font;
+}
+.lux-tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+}
+.lux-tooltip-measure:before {
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
 }
