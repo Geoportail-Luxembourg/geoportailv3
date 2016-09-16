@@ -88,6 +88,18 @@ lux.MyMap = function(options) {
    */
   this.onload_ = options.onload;
 
+  /**
+   * @private
+   * @type {ol.format.KML}
+   */
+  this.kmlFormat_ = new ol.format.KML();
+
+  /**
+   * @private
+   * @type {ol.format.GPX}
+   */
+  this.gpxFormat_ = new ol.format.GPX();
+
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
 };
 
@@ -559,6 +571,25 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     }.bind(this));
 
   }
+
+  link = goog.dom.createDom(goog.dom.TagName.A, {
+    href: 'javascript:void(0);'
+  });
+  goog.dom.setTextContent(link, lux.translate('Exporter KMl'));
+  goog.dom.append(links, link);
+  goog.events.listen(link, goog.events.EventType.CLICK, function() {
+    this.exportKml_(feature);
+  }.bind(this));
+
+  link = goog.dom.createDom(goog.dom.TagName.A, {
+    href: 'javascript:void(0);'
+  });
+  goog.dom.setTextContent(link, lux.translate('Exporter GPX'));
+  goog.dom.append(links, link);
+  goog.events.listen(link, goog.events.EventType.CLICK, function() {
+    this.exportGpx_(feature);
+  }.bind(this));
+
   elements.push(links);
   return elements;
 };
@@ -904,4 +935,191 @@ lux.MyMap.prototype.snapToGeometry_ = function(coordinate, geom) {
   } else {
     this.profile_.clearHighlight();
   }
+};
+
+
+/**
+ * Export a KML file
+ * @param {ol.Feature} feature The feature to export.
+ * @private
+ */
+lux.MyMap.prototype.exportKml_ = function(feature) {
+  var kml = this.kmlFormat_.writeFeatures([feature], {
+    dataProjection: 'EPSG:4326',
+    featureProjection: this.map_.getView().getProjection()
+  });
+  this.exportFeatures_(kml, 'kml',
+      this.sanitizeFilename_(/** @type {string} */(feature.get('name'))));
+};
+
+
+/**
+ * Export a Gpx file.
+ * @param {ol.Feature} feature The feature to export.
+ * @private
+ */
+lux.MyMap.prototype.exportGpx_ = function(feature) {
+  // LineString geometries, and tracks from MultiLineString
+  var explodedFeatures = this.exploseFeature_([feature]);
+  explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
+  var gpx = this.gpxFormat_.writeFeatures(
+    this.orderFeaturesForGpx_(explodedFeatures),
+    {
+      dataProjection: 'EPSG:4326',
+      featureProjection: this.map_.getView().getProjection()
+    });
+  gpx = gpx.replace('<gpx ',
+      '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+      ' version="1.1" ' +
+      'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+      'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
+  this.exportFeatures_(gpx, 'gpx',
+      this.sanitizeFilename_(/** @type {string} */(feature.get('name'))));
+};
+
+
+/**
+ * @param {string} doc The document to export/download.
+ * @param {string} format The document format.
+ * @param {string} filename File name for the exported document.
+ * @private
+ */
+lux.MyMap.prototype.exportFeatures_ = function(doc, format, filename) {
+
+  var formatInput = goog.dom.createElement(goog.dom.TagName.INPUT);
+  formatInput.type = 'hidden';
+  formatInput.name = 'format';
+  formatInput.value = format;
+
+  var nameInput = goog.dom.createElement(goog.dom.TagName.INPUT);
+  nameInput.type = 'hidden';
+  nameInput.name = 'name';
+  nameInput.value = filename;
+
+  var docInput = goog.dom.createElement(goog.dom.TagName.INPUT);
+  docInput.type = 'hidden';
+  docInput.name = 'doc';
+  docInput.value = doc;
+
+  var form = goog.dom.createElement(goog.dom.TagName.FORM);
+  form.method = 'POST';
+  form.action = 'http://maps.geoportail.lu/main/wsgi/mymaps/exportgpxkml';
+  form.appendChild(formatInput);
+  form.appendChild(nameInput);
+  form.appendChild(docInput);
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+};
+
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ * @private
+ */
+lux.MyMap.prototype.sanitizeFilename_ = function(name) {
+  name = name.replace(/\s+/g, '_'); // Replace white space with _.
+  return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special charactere.
+};
+
+
+/**
+ * Explose the feature into multiple features if the geometry is a
+ * collection of geometries.
+ * @param {Array.<ol.Feature>} features The features to explose.
+ * @return {Array.<ol.Feature>} The exploded features.
+ * @private
+ */
+lux.MyMap.prototype.exploseFeature_ = function(features) {
+  var explodedFeatures = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+        var geomCollection = /** @type {ol.geom.GeometryCollection} */
+            (feature.getGeometry());
+        goog.array.forEach(geomCollection.getGeometriesArray(),
+            function(curGeom) {
+              var newFeature = feature.clone();
+              newFeature.setGeometry(curGeom);
+              explodedFeatures.push(newFeature);
+            });
+        break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        var multiLineString = /** @type {ol.geom.MultiLineString} */
+            (feature.getGeometry());
+        goog.array.forEach(multiLineString.getLineStrings(),
+            function(curGeom) {
+              var newFeature = feature.clone();
+              newFeature.setGeometry(curGeom);
+              explodedFeatures.push(newFeature);
+            });
+        break;
+
+      default :
+        explodedFeatures.push(feature);
+        break;
+    }
+  });
+  return explodedFeatures;
+};
+
+
+/**
+ * Change each line contained in the array into multiline geometry.
+ * @param {Array.<ol.Feature>} features The features to change.
+ * @return {Array.<ol.Feature>} The changed features.
+ * @private
+ */
+lux.MyMap.prototype.changeLineToMultiline_ = function(features) {
+  var changedFeatures = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.LINE_STRING:
+        var geom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+        var multilineFeature = feature.clone();
+        multilineFeature.setGeometry(
+            new ol.geom.MultiLineString([geom.getCoordinates()]));
+        changedFeatures.push(multilineFeature);
+        break;
+      default :
+        changedFeatures.push(feature);
+        break;
+    }
+  });
+  return changedFeatures;
+};
+
+
+/**
+ * Order the feature to have the right GPX order.
+ * An optional instance of <meta />
+ * An arbitrary number of instances of <wpt />
+ * An arbitrary number of instances of <rte />
+ * An arbitrary number of instances of <trk />
+ * An optional instance of <extensions />
+ * @param {Array.<ol.Feature>} features The features to sort.
+ * @return {Array.<ol.Feature>} The sorted features.
+ * @private
+ */
+lux.MyMap.prototype.orderFeaturesForGpx_ = function(features) {
+
+  var points = [];
+  var lines = [];
+  var others = [];
+  goog.array.forEach(features, function(feature) {
+    switch (feature.getGeometry().getType()) {
+      case ol.geom.GeometryType.POINT:
+        points.push(feature);
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        lines.push(feature);
+        break;
+      default :
+        others.push(feature);
+        break;
+    }
+  });
+
+  return points.concat(lines, others);
 };
