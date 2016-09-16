@@ -46,6 +46,7 @@ var manager = new closure.Manager({
   lib: [
     'jsapi/src/**/*.js',
     'node_modules/openlayers/src/**/*.js',
+    'node_modules/ngeo/src/**/*.js',
     'node_modules/openlayers/build/ol.ext/*.js'
   ],
   main: ['jsapi/examples/*.js']
