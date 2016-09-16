@@ -605,10 +605,10 @@ lux.Map.prototype.addSearch = function(target) {
   var format = new ol.format.GeoJSON();
 
   new autoComplete({
-    selector  : input,
-    minChars  : 2,
-    menuClass : 'lux-search-suggestions',
-    source    : function(term, suggest) {
+    'selector'  : input,
+    'minChars'  : 2,
+    'menuClass' : 'lux-search-suggestions',
+    'source'    : function(term, suggest) {
       term = term.toLowerCase();
       fetch(lux.searchUrl + 'limit=5&query=' + term).then(function(resp) {
         return resp.json();
@@ -616,7 +616,7 @@ lux.Map.prototype.addSearch = function(target) {
         suggest(json.features);
       });
     },
-    renderItem : function(item, search) {
+    'renderItem' : function(item, search) {
       var label = item.properties.label;
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
@@ -627,7 +627,7 @@ lux.Map.prototype.addSearch = function(target) {
           label.replace(re, '<b>$1</b>') +
           '</div>';
     },
-    onSelect : function(e, term, item) {
+    'onSelect' : function(e, term, item) {
       var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
       this.getView().fit(
         ol.geom.Polygon.fromExtent(
