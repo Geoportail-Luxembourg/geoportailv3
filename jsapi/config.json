@@ -3,6 +3,10 @@
     "node_modules/proj4/dist/proj4.js",
     "node_modules/openlayers/src/**/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
+    "node_modules/ngeo/src/d3-ext/**/*.js",
+    "node_modules/ngeo/src/ol-ext/interaction/measure.js",
+    "node_modules/ngeo/src/ol-ext/interaction/measureazimut.js",
+    "node_modules/ngeo/src/ol-ext/interaction/mobiledraw.js",
     "jsapi/src/**/*.js"
   ],
   "exports": ["*"],
@@ -18,6 +22,16 @@
       "externs/topojson.js",
       "externs/olx.js",
       "externs/oli.js",
+      "../../node_modules/ngeo/externs/d3.js",
+      "../../node_modules/ngeo/externs/twbootstrap.js",
+      "../../node_modules/ngeo/externs/typeahead.js",
+      "../../node_modules/ngeo/externs/ngeox.js",
+      "../../.build/externs/angular-1.4.js",
+      "../../.build/externs/angular-1.4-q_templated.js",
+      "../../.build/externs/angular-1.4-http-promise_templated.js",
+      "../../geoportailv3/externs/fuse.js",
+      "../../geoportailv3/externs/twbootstrap.js",
+      "../../.build/externs/jquery-1.9.js",
       "../../jsapi/externs/autocompletex.js",
       "../../jsapi/externs/luxx.js"
     ],
@@ -27,10 +41,11 @@
       "ol.ENABLE_WEBGL=false"
     ],
     "extra_annotation_name": [
-      "api", "observable"
+      "api", "observable", "ngdoc", "ngname", "htmlAttribute"
     ],
     "generate_exports": true,
     "compilation_level": "ADVANCED",
+    "export_local_property_definitions": true,
     "warning_level": "VERBOSE",
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true

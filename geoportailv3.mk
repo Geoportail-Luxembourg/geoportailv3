@@ -128,7 +128,7 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 		.build/node_modules.timestamp
 	mkdir -p $(dir $@)
 	node node_modules/openlayers/tasks/build.js $< $@
-	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js \
+	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/d3.min.js \
 	node_modules/js-autocomplete/auto-complete.min.js \
 	node_modules/promise-polyfill/promise.min.js \
 	$@ > concatenated.js
