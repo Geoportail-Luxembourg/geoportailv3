@@ -4,6 +4,7 @@ goog.provide('lux.Map');
 goog.require('goog.dom');
 goog.require('goog.asserts');
 goog.require('lux.LayerManager');
+goog.require('lux.MyMap');
 goog.require('ol.events');
 goog.require('ol.control.MousePosition');
 goog.require('ol.format.GeoJSON');
@@ -33,6 +34,21 @@ lux.layersUrl = '../layers.json';
 lux.searchUrl = 'http://map.geoportail.lu/main/wsgi/fulltextsearch?';
 
 /**
+ * @type {string}
+ */
+lux.baseUrl = 'http://map.geoportail.lu/main/wsgi';
+
+/**
+ * @type {string}
+ */
+lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
+
+/**
+ * @type {string}
+ */
+lux.elevationUrl = 'http://map.geoportail.lu/main/wsgi/raster';
+
+/**
  * @param {string} url Url to jsapilayers service.
  * @export
  */
@@ -55,6 +71,15 @@ lux.lang = 'fr';
  * @type {Object<string, string>} Hash oject with translations.
  */
 lux.i18n = {};
+
+/**
+ * Returns the translated string if available.
+ * @param {string} text The text to translate.
+ * @return {string} The translated text.
+ */
+lux.translate = function(text) {
+  return lux.i18n[text] || text;
+};
 
 /**
  * @param {string} url Url to i18n service.
@@ -269,7 +294,7 @@ lux.Map.prototype.showMarker = function(options) {
         ol.events.EventType.MOUSEMOVE : ol.events.EventType.CLICK;
     ol.events.listen(element, showPopupEvent, (function() {
       if (!popup) {
-        var element = buildPopupLayout_(options.html, !options.hover);
+        var element = lux.buildPopupLayout(options.html, !options.hover);
         popup = new ol.Overlay({
           element: element,
           position: position,
@@ -301,12 +326,12 @@ lux.Map.prototype.showMarker = function(options) {
 
 /**
  * Builds the popup layout.
- * @param {string} html The HTML/text to put into the popup.
+ * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
+ *    into the popup.
  * @param {boolean} addCloseBtn Whether to add a close button or not.
  * @return {Element} The created element.
- * @private
  */
-function buildPopupLayout_(html, addCloseBtn) {
+lux.buildPopupLayout = function(html, addCloseBtn) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup'
   });
@@ -315,6 +340,16 @@ function buildPopupLayout_(html, addCloseBtn) {
   });
 
   var elements = [arrow];
+
+  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
+    'class': 'lux-popup-content'
+  });
+
+  if (typeof html == 'string') {
+    content.innerHTML = html;
+  } else {
+    goog.dom.append(content, html);
+  }
 
   if (addCloseBtn) {
     var header = goog.dom.createDom(goog.dom.TagName.H3, {
@@ -328,15 +363,28 @@ function buildPopupLayout_(html, addCloseBtn) {
     elements.push(header);
   }
 
-  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup-content'
-  });
-  content.innerHTML = html;
   elements.push(content);
 
   goog.dom.append(container, elements);
   return container;
-}
+};
+
+/**
+ * Get elevation for coordinates
+ * @param {ol.Coordinate} coordinate The coordinate of the point.
+ * @return {Promise} Promise of the elevation request.
+ */
+lux.getElevation = function(coordinate) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate,
+            'EPSG:3857', 'EPSG:2169'));
+  var url = lux.elevationUrl;
+  url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
+
+  return fetch(url).then(function(resp) {
+    return resp.json();
+  });
+};
 
 /**
  * @param {Array<string|number>} layers Array of layer names
@@ -478,7 +526,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     backgrounds.forEach(function(background) {
       var option = document.createElement('option');
       option.value = background.id;
-      option.innerText = lux.i18n[background.name];
+      option.innerText = lux.translate(background.name);
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -488,7 +536,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     // add blank layer
     var blankOption = document.createElement('option');
     blankOption.value = 'blank';
-    blankOption.innerText = lux.i18n['blank'];
+    blankOption.innerText = lux.translate('blank');
     if (active == 'blank') {
       blankOption.setAttribute('selected', 'selected');
     }
@@ -538,7 +586,7 @@ lux.Map.prototype.addSearch = function(target) {
 
   var input = document.createElement('input');
   input.classList.add('lux-search-input');
-  input.setAttribute('placeholder', lux.i18n['search']);
+  input.setAttribute('placeholder', lux.translate('search'));
   container.appendChild(input);
   var clear = document.createElement('button');
   clear.classList.add('lux-search-clear');
@@ -705,7 +753,7 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
       }
       html += '</table>';
 
-      var element = buildPopupLayout_(html, true);
+      var element = lux.buildPopupLayout(html, true);
       popup = new ol.Overlay({
         element: element,
         position: e.mapBrowserEvent.coordinate,
@@ -727,6 +775,18 @@ lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
       var hit = this.hasFeatureAtPixel(pixel);
       this.getTargetElement().style.cursor = hit ? 'pointer' : '';
     }.bind(this));
+  }.bind(this));
+};
+
+/**
+ * Load a MyMaps layer.
+ * @param {luxx.MyMapOptions} options The options.
+ * @export
+ */
+lux.Map.prototype.addMyMapLayer = function(options) {
+  Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
+    var mymap = new lux.MyMap(options);
+    mymap.setMap(this);
   }.bind(this));
 };
 
