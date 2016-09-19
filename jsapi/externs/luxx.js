@@ -333,3 +333,58 @@ luxx.State.prototype.opacities;
  * @type {string}
  */
 luxx.State.prototype.bgLayer;
+
+/**
+ * @typedef {Object}
+ */
+luxx.GeocodeOptions;
+
+/**
+ * @type {number}
+ */
+luxx.GeocodeOptions.prototype.num;
+
+/**
+ * @type {string}
+ */
+luxx.GeocodeOptions.prototype.street;
+
+/**
+ * @type {number}
+ */
+luxx.GeocodeOptions.prototype.zip;
+
+/**
+ * @type {string}
+ */
+luxx.GeocodeOptions.prototype.locality;
+
+/**
+ * @typedef {Object}
+ */
+luxx.GeocodeResult;
+
+/**
+ * @type {number}
+ */
+luxx.GeocodeResult.prototype.easting;
+
+/**
+ * @type {number}
+ */
+luxx.GeocodeResult.prototype.northing;
+
+/**
+ * @typedef {Object}
+ */
+luxx.ReverseGeocodeResponse;
+
+/**
+ * @type {number}
+ */
+luxx.ReverseGeocodeResponse.prototype.count;
+
+/**
+ * @type {Array<Object>}
+ */
+luxx.ReverseGeocodeResponse.prototype.results;
