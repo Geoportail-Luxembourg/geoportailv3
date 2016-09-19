@@ -107,6 +107,7 @@ lux.setI18nUrl = function(url) {
 lux.Map = function(options) {
 
   var layers    = [];
+  var layerOpacities = [];
   var defaultBg = 652; // 'streets_jpeg';
 
   /**
@@ -153,15 +154,24 @@ lux.Map = function(options) {
   } else {
     layers.push(defaultBg);
   }
+  // Add opacity for background
+  layerOpacities.push([1]);
+
   if (options.layers) {
     layers = layers.concat(options.layers);
     delete options.layers;
+  }
+  if (options.layerOpacities) {
+    layerOpacities = layerOpacities.concat(options.layerOpacities);
+    goog.asserts.assert(layers.length == layerOpacities.length,
+        'Layers and opacities should have the same number of items');
+    delete options.layerOpacities;
   }
   this.layersPromise = fetch(lux.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
-    this.addLayers_(layers);
+    this.addLayers_(layers, layerOpacities);
   }.bind(this));
 
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
@@ -425,18 +435,20 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 
 /**
  * @param {Array<string|number>} layers Array of layer names
+ * @param {Array<number>} opacities Array of layer opacities
  * @private
  */
-lux.Map.prototype.addLayers_ = function(layers) {
+lux.Map.prototype.addLayers_ = function(layers, opacities) {
   var conf = this.layersConfig;
   if (!conf) {
     return;
   }
-  layers.map(function(layer) {
+  layers.forEach(function(layer, index) {
     var layerConf = this.findLayerConf_(layer);
     var fn = (layerConf.type === 'internal WMS') ?
       lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
-    this.getLayers().push(fn(layerConf));
+    var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
+    this.getLayers().push(fn(layerConf, opacity));
   }.bind(this));
 };
 
@@ -499,10 +511,12 @@ lux.intersects_ = function(one, two) {
 
 /**
  * @param {string|number} layer The layer id
+ * @param {number=} opt_opacity The layer opacity.
  */
-lux.Map.prototype.addLayerById = function(layer) {
+lux.Map.prototype.addLayerById = function(layer, opt_opacity) {
   this.layersPromise.then(function() {
-    this.addLayers_([layer]);
+    var opacity = goog.isDef(opt_opacity) ? opt_opacity : 1;
+    this.addLayers_([layer], [opacity]);
   }.bind(this));
 };
 
@@ -576,7 +590,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     select.addEventListener('change', function() {
       if (select.value !== 'blank') {
         this.getLayers().setAt(
-          0, lux.WMTSLayerFactory_(this.layersConfig[select.value])
+          0, lux.WMTSLayerFactory_(this.layersConfig[select.value], 1)
         );
       } else {
         this.getLayers().setAt(0, this.blankLayer_);
@@ -875,9 +889,10 @@ lux.Map.prototype.addMyMapLayer = function(options) {
 
 /**
  * @param {Object} config The layer's config
+ * @param {number} opacity The layer's opacity
  * @return {ol.layer.Tile} The layer.
  */
-lux.WMTSLayerFactory_ = function(config) {
+lux.WMTSLayerFactory_ = function(config, opacity) {
   var format = config['imageType'];
   var imageExt = format.split('/')[1];
 
@@ -914,7 +929,8 @@ lux.WMTSLayerFactory_ = function(config) {
         ]
       }),
       style: 'default'
-    })
+    }),
+    opacity: opacity
   });
 
   return layer;
@@ -922,9 +938,10 @@ lux.WMTSLayerFactory_ = function(config) {
 
 /**
  * @param {Object} config The layer's config
+ * @param {number} opacity The layer's opacity
  * @return {ol.layer.Image} The layer.
  */
-lux.WMSLayerFactory_ = function(config) {
+lux.WMSLayerFactory_ = function(config, opacity) {
   var url = 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     url: url,
@@ -936,7 +953,8 @@ lux.WMSLayerFactory_ = function(config) {
   var layer = new ol.layer.Image({
     name: config['name'],
     metadata: config['metadata'],
-    source: new ol.source.ImageWMS(optSource)
+    source: new ol.source.ImageWMS(optSource),
+    opacity: opacity
   });
 
   return layer;
