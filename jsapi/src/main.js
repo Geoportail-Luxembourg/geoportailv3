@@ -49,7 +49,6 @@ lux.setBaseUrl = function(url) {
   lux.baseUrl = url;
 };
 
-
 /**
  * @type {string}
  */
@@ -64,6 +63,16 @@ lux.elevationUrl = 'raster';
  * @type {string}
  */
 lux.queryUrl = 'getfeatureinfo?';
+
+/**
+ * @type {string}
+ */
+lux.geocodeUrl = 'geocode/search';
+
+/**
+ * @type {string}
+ */
+lux.reverseGeocodeUrl = 'geocode/reverse';
 
 /**
  * @param {string} url Url to jsapilayers service.
@@ -154,6 +163,8 @@ lux.initUrls = function() {
 
   lux.searchUrl = lux.baseUrl + lux.searchUrl;
   lux.mymapsUrl = lux.baseUrl + lux.mymapsUrl;
+  lux.geocodeUrl = lux.baseUrl + lux.geocodeUrl;
+  lux.reverseGeocodeUrl = lux.baseUrl + lux.reverseGeocodeUrl;
   lux.elevationUrl = lux.baseUrl + lux.elevationUrl;
 };
 
@@ -1108,4 +1119,52 @@ lux.WMSLayerFactory_ = function(config, opacity) {
   });
 
   return layer;
+};
+
+/**
+ * @param {luxx.GeocodeOptions} obj The hash object representing the
+ *     address to geocode.
+ * @param {function(ol.Coordinate)} cb The callback to call. Called with the
+ *     position in 4326 of the geocoded address.
+ * @export
+ */
+lux.geocode = function(obj, cb) {
+  var url = goog.Uri.parse(lux.geocodeUrl);
+  goog.asserts.assertObject(obj);
+  Object.keys(obj).forEach(function(key) {
+    url.setParameterValue(key, obj[key]);
+  });
+  fetch(url.toString()).then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    goog.asserts.assert(json.results.length, 'No address was found');
+    /**
+     * @type {luxx.GeocodeResult}
+     */
+    var result = json.results[0];
+    cb.call(null, [result.easting, result.northing]);
+  });
+};
+
+/**
+ * @param {ol.Coordinate} coordinate The coordinates to look for an address
+ *     for. Coordinates must be given in EPSG:2169.
+ * @param {function(Object)} cb The callback to call. Called with the address.
+ * @export
+ */
+lux.reverseGeocode = function(coordinate, cb) {
+  var url = goog.Uri.parse(lux.reverseGeocodeUrl);
+  url.setParameterValue('easting', coordinate[0]);
+  url.setParameterValue('northing', coordinate[1]);
+  fetch(url.toString()).then(function(resp) {
+    return resp.json();
+  }).then(
+      /**
+       * @param {luxx.ReverseGeocodeResponse} json The JSON.
+       */
+      function(json) {
+        goog.asserts.assert(json.count, 'No result found');
+        cb.call(null, json.results[0]);
+      }
+  );
 };
