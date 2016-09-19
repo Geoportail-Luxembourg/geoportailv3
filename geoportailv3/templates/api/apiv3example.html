@@ -16,4 +16,11 @@ var map = new lux.Map({
   },
   zoom: 14
 });
+map.on('click', function(evt) {
+  var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
+  lux.reverseGeocode(coordinate, function(address) {
+    var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
+    console.log (html);
+  });
+});
 </script>
