@@ -425,7 +425,7 @@ app.MainController.prototype.setMap_ = function() {
     loadTilesWhileAnimating: true,
     view: new ol.View({
       maxZoom: 19,
-      minZoom: 8,
+      minZoom: 7,
       enableRotation: false,
       extent: this.maxExtent_
     })
