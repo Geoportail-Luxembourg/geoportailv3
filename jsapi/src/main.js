@@ -255,10 +255,11 @@ goog.inherits(lux.Map, ol.Map);
 
 /**
  * Show a marker on the map at the given location.
- * @param {luxx.MarkerOptions} options Config options
+ * @param {luxx.MarkerOptions=} opt_options Config options
  * @export
  */
-lux.Map.prototype.showMarker = function(options) {
+lux.Map.prototype.showMarker = function(opt_options) {
+  var options = opt_options || {};
   var element = goog.dom.createDom(goog.dom.TagName.DIV);
   var image = goog.dom.createDom(goog.dom.TagName.IMG);
   image.src = options.iconURL ||
