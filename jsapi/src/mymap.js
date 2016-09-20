@@ -692,10 +692,10 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     featureProjection: 'EPSG:3857'
   };
   var params = {
-    geom: new ol.format.GeoJSON().writeGeometry(geom, encOpt),
-    nbPoints: 100,
-    layer: 'dhm',
-    id: null
+    'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
+    'nbPoints': 100,
+    'layer': 'dhm',
+    'id': null
   };
   // convert to URL GET params
   /**
