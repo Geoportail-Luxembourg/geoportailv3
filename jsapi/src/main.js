@@ -224,6 +224,7 @@ lux.Map = function(options) {
     if (el instanceof Element) {
       controls.push(new ol.control.MousePosition({
         target: el,
+        className: 'lux-mouse-position',
         projection: ol.proj.get(srs),
         coordinateFormat: function(coord) {
           var decimal = 1;
@@ -538,9 +539,9 @@ lux.Map.prototype.addBgSelector = function(target) {
       return;
     }
     var container = document.createElement('div');
-    container.classList.add('lux-dropdown');
+    container.classList.add('lux-bg-selector');
     var select = document.createElement('select');
-    select.classList.add('lux-dropdown-select');
+    select.classList.add('lux-bg-selector-select');
 
     var conf = this.layersConfig;
     var backgrounds = Object.keys(conf).filter(function(l) {

@@ -34,8 +34,9 @@
     bottom: .2em;
     right: 0;
   }
-  .ol-mouse-position {
+  .lux-mouse-position {
     background-color: @bg;
+    position: absolute;
     top: auto;
     bottom: 0;
     height: @mouseposition-height;
@@ -81,42 +82,49 @@
       border-radius: 0 0 @border-radius @border-radius;
     }
   }
-}
-
-.lux-dropdown {
-  background-color: @bg;
-  border-radius: @border-radius;
-  border: @border;
-  display: inline-block;
-  position: relative;
-  width: 10em;
-  position: absolute;
-  bottom: .5em;
-  left: .5em;
-  z-index: 3;
-  &::after {
-    font-family: @font;
-    font-weight: bold;
-    color: @color;
-    content: 'v';
+  .lux-bg-selector {
+    background-color: @bg;
+    border-radius: @border-radius;
+    border: @border;
+    display: inline-block;
+    width: 10em;
     position: absolute;
-    right: .6em;
-    top: .75em;
-    pointer-events: none;
+    bottom: .5em;
+    left: .5em;
+    z-index: 3;
+    &::after {
+      font-family: @font;
+      font-weight: bold;
+      color: @color;
+      content: 'v';
+      position: absolute;
+      right: .6em;
+      top: .75em;
+      pointer-events: none;
+    }
+  }
+  .lux-bg-selector-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: @bg;
+    border: 0;
+    color: @color;
+    font-family: @font;
+    font-size: 19px;
+    padding: @padding;
+    width: 100%;
+  }
+
+  .lux-search {
+    position: absolute;
+    top: .45em;
+    left: 50%;
+    margin-left: -7em;
+    z-index: 10;
   }
 }
-.lux-dropdown-select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background: @bg;
-  border: 0;
-  color: @color;
-  font-family: @font;
-  font-size: 19px;
-  padding: @padding;
-  width: 100%;
-}
+
 
 .lux-search {
   position: relative;
