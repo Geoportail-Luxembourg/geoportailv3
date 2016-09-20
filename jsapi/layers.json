@@ -3627,5 +3627,19 @@
             "is_queryable": "true",
             "metadata_id": "f23ca424-ec87-4c53-929c-7e627a8e06af"
         }
+    },
+    "543": {
+        "layers": "543",
+        "style": "default",
+        "name": "editus_poi_286",
+        "type": "internal WMS",
+        "id": 543,
+        "imageType": "image/png",
+        "metadata": {
+            "legend_name": "editus_2",
+            "is_queryable": "true",
+            "metadata_id": "ae1bc422-5751-4efa-92af-c24287609dbb",
+            "start_opacity": "0.9"
+        }
     }
 }
