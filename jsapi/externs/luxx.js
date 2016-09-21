@@ -22,6 +22,12 @@ luxx.MapOptions.prototype.bgLayer;
 luxx.MapOptions.prototype.layers;
 
 /**
+ * Array of opacities for the layers.
+ * @type {Array<number>}
+ */
+luxx.MapOptions.prototype.layerOpacities;
+
+/**
  * The container for the map, either the element itself or the `id` of the
  * element.
  * @type {Element|string}
