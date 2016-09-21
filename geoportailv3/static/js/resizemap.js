@@ -19,11 +19,10 @@ goog.require('ol.Map');
 
 /**
  * @param {angular.$window} $window Angular window service.
- * @param {angular.$animate} $animate Angular animate service.
  * @return {angular.Directive} The directive specs.
  * @ngInject
  */
-app.resizemapDirective = function($window, $animate) {
+app.resizemapDirective = function($window) {
   var /** @type {number} */ duration = 2000;
   return {
     restrict: 'A',
@@ -54,6 +53,11 @@ app.resizemapDirective = function($window, $animate) {
                   animationDelay.start();
                 }
               }, $window);
+
+          element.bind('transitionend',function() {
+            map.updateSize();
+            map.renderSync();
+          });
 
           scope.$watch(stateExpr, function(newVal, oldVal) {
             if (newVal != oldVal) {
