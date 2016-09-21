@@ -108,7 +108,7 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
       ' version="1.1" ' +
       'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
       'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
-  this.exportFeatures_(gpx, 'gpx', this.sanitizeFilename_(name));
+  this.exportFeatures_(gpx, 'gpx', app.sanitizeFilename(name));
 };
 
 
@@ -259,7 +259,7 @@ app.Export.prototype.exportKml = function(feature, name) {
       dataProjection: 'EPSG:4326',
       featureProjection: this['map'].getView().getProjection()
     });
-  this.exportFeatures_(kml, 'kml', this.sanitizeFilename_(name));
+  this.exportFeatures_(kml, 'kml', app.sanitizeFilename(name));
 };
 
 
@@ -295,16 +295,5 @@ app.Export.prototype.exportFeatures_ =
       form[0].submit();
       form.remove();
     };
-
-
-/**
- * @param {string} name The string to sanitize.
- * @return {string} The sanitized string.
- * @private
- */
-app.Export.prototype.sanitizeFilename_ = function(name) {
-  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
-  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
-};
 
 app.module.service('appExport', app.Export);

@@ -267,7 +267,7 @@ app.FeaturePopupController.prototype.exportKml = function() {
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
-      this.sanitizeFilename_(/** @type {string} */(this.feature.get('name'))));
+      app.sanitizeFilename(/** @type {string} */(this.feature.get('name'))));
   this.appFeaturePopup_.toggleDropdown();
 };
 
@@ -282,17 +282,6 @@ app.FeaturePopupController.prototype.exportGpx = function(isTrack) {
       /** @type {string} */(this.feature.get('name')), isTrack);
 
   this.appFeaturePopup_.toggleDropdown();
-};
-
-
-/**
- * @param {string} name The string to sanitize.
- * @return {string} The sanitized string.
- * @private
- */
-app.FeaturePopupController.prototype.sanitizeFilename_ = function(name) {
-  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
-  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
 };
 
 

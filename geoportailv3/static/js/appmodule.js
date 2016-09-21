@@ -26,3 +26,12 @@ app.module = angular.module('app', [ngeo.module.name, 'gettext'])
 // and avoid problems when using both ngeoLocation and ng-include in
 // the application.
 app.module.config(ngeo.mockLocationProvider);
+
+/**
+ * @param {string} name The string to sanitize.
+ * @return {string} The sanitized string.
+ */
+app.sanitizeFilename = function(name) {
+  name = name.replace(/\s+/g, '_'); // Replace white space with _.
+  return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special character.
+};
