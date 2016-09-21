@@ -9,6 +9,7 @@ var map = new lux.Map({
   zoom             : 14,
   bgLayer          : 653,
   layers           : [ 145 ],
+  layerOpacities   : [0.5],
   mousePosition    : {
     target: 'mapContainer',
     srs : 4326
