@@ -439,17 +439,6 @@ app.MymapsDirectiveController.prototype.exportGpx = function(isTrack) {
 
 
 /**
- * @param {string} name The string to sanitize.
- * @return {string} The sanitized string.
- * @private
- */
-app.MymapsDirectiveController.prototype.sanitizeFilename_ = function(name) {
-  name = name.replace(/\s+/gi, '_'); // Replace white space with _.
-  return name.replace(/[^a-zA-Z0-9\-]/gi, ''); // Strip any special charactere.
-};
-
-
-/**
  * Import a GPX file.
  * @export
  */
@@ -517,7 +506,7 @@ app.MymapsDirectiveController.prototype.exportKml = function() {
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
-      this.sanitizeFilename_(this.appMymaps_.mapTitle));
+      app.sanitizeFilename(this.appMymaps_.mapTitle));
 };
 
 
