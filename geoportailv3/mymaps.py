@@ -85,6 +85,23 @@ class Map(Base):
         return DBSession.query(Map).get(id)
 
     @staticmethod
+    def belonging_to_categories(user, categories):
+        """ Get maps that belong to user. """
+        maps = DBSession.query(Map).filter(
+            (Map.user_login == user) |
+            (Map.category_id.in_([c.id for c in categories])))\
+            .order_by("category_id asc,title asc").all()
+
+        return [{'title': map.title,
+                 'uuid': map.uuid,
+                 'public': map.public,
+                 'create_date': map.create_date,
+                 'update_date': map.update_date,
+                 'category': map.category.name
+                 if map.category_id is not None else None,
+                 'owner': map.user_login} for map in maps]
+
+    @staticmethod
     def belonging_to(user):
         """ Get maps that belong to user. """
         maps = DBSession.query(Map).filter(Map.user_login == user)\
@@ -96,7 +113,8 @@ class Map(Base):
                  'create_date': map.create_date,
                  'update_date': map.update_date,
                  'category': map.category.name
-                 if map.category_id is not None else None} for map in maps]
+                 if map.category_id is not None else None,
+                 'owner': map.user_login} for map in maps]
 
 
 class Feature(Base):

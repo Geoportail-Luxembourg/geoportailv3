@@ -230,6 +230,13 @@
           </a>
         </td>
         <td>
+          <a href="#" ng-click="sortType = 'owner'; sortReverse = !sortReverse">
+            {{'Créateur carte'|translate}}
+            <span ng-show="sortType == 'owner' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'owner' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td>
           <a href="#" ng-click="sortType = 'update_date'; sortReverse = !sortReverse">
             {{'Dernière Actualisation'|translate}}
             <span ng-show="sortType == 'update_date' && !sortReverse">&#9660;</span>
@@ -247,6 +254,7 @@
           <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
         </span>{{ map.title }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.category }}</td>
+      <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.update_date | date:'dd/MM/yyyy - H:mm' }}</td>
       <td ng-click="ctrl.deleteAMap(map.uuid)"><span class="fa fa-trash-o"></span></td>
     </tr>

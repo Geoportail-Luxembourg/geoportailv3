@@ -77,8 +77,16 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):
-        if self.request.user is None:
+        user = self.request.user
+        if user is None:
             return HTTPUnauthorized()
+        if user.is_admin:
+            user_role = DBSession.query(Role).get(user.mymaps_role)
+            if user_role is not None and \
+               user_role.categories is not None \
+               and len(user_role.categories) > 0:
+                return Map.belonging_to_categories(self.request.user.username,
+                                                   user_role.categories)
 
         return Map.belonging_to(self.request.user.username)
 
