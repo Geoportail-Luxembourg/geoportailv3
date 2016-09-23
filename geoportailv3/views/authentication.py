@@ -66,9 +66,10 @@ def get_user_from_request(request):
                 if 'sn' in result[0][1]:
                     user.sn = result[0][1]['sn'][0]
                 if 'isMymapsAdmin' in result[0][1]:
-                    user.is_admin = result[0][1]['isMymapsAdmin'][0]
+                    user.is_admin =\
+                        "TRUE" == (result[0][1]['isMymapsAdmin'][0]).upper()
                 if 'roleMymaps' in result[0][1]:
-                    user.mymaps_role = result[0][1]['roleMymaps'][0]
+                    user.mymaps_role = int(result[0][1]['roleMymaps'][0])
                 if 'roleOGC' in result[0][1]:
                     user.ogc_role = result[0][1]['roleOGC'][0]
 
@@ -88,6 +89,7 @@ class Authentication(object):
             return {"login": self.request.user.username,
                     "role": self.request.user.role.name,
                     "role_id": self.request.user.role.id,
+                    "mymaps_role": self.request.user.mymaps_role,
                     "mail": self.request.user.mail,
                     "sn": self.request.user.sn,
                     "is_admin": self.request.user.is_admin}

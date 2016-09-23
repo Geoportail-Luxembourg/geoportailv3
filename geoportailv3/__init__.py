@@ -120,6 +120,11 @@ def main(global_config, **settings):
         request_method="GET"
     )
     config.add_route(
+        "mymaps_users_categories",
+        "/mymaps/get_users_categories",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_get_symbols",
         "/mymaps/symbols",
         request_method="GET"

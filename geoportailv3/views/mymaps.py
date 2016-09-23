@@ -24,6 +24,7 @@ import sys
 import traceback
 from geoportailv3.mymaps import DBSession
 from sqlalchemy.orm import make_transient
+from sqlalchemy import and_, or_, func
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
 
 _CONTENT_TYPES = {
@@ -80,15 +81,185 @@ class Mymaps(object):
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
-        if user.is_admin:
-            user_role = DBSession.query(Role).get(user.mymaps_role)
-            if user_role is not None and \
-               user_role.categories is not None \
-               and len(user_role.categories) > 0:
-                return Map.belonging_to_categories(self.request.user.username,
-                                                   user_role.categories)
+        owner = None
+        if 'owner' in self.request.params and\
+           len(self.request.params['owner']) > 0:
+            owner = self.request.params['owner']
+        if not user.is_admin:
+            owner = user.username
 
-        return Map.belonging_to(self.request.user.username)
+        query = None
+        category = None
+        if 'category' in self.request.params and\
+           self.request.params['category'] > 0:
+            category = int(self.request.params["category"])
+        user_role = DBSession.query(Role).get(user.mymaps_role)
+        if user_role is None:
+            user_role = DBSession.query(Role).get(999)
+
+        allowed_categories = [c.id for c in user_role.categories]
+
+        if allowed_categories is not None and len(allowed_categories) > 0:
+            if owner is None:
+                if user.is_admin and user.mymaps_role == 1:
+                    if category is not None:
+                        if category not in allowed_categories:
+                            return HTTPUnauthorized()
+                        else:
+                            query = DBSession.query(Map).filter(
+                                func.coalesce(Map.category_id, 999) ==
+                                category)
+                    else:
+                        query = DBSession.query(Map).filter(
+                            or_(
+                                and_(func.coalesce(Map.category_id, 999).in_(
+                                    allowed_categories),
+                                     Map.user_login != user.username),
+                                Map.user_login == user.username
+                                ))
+                if user.is_admin and user.mymaps_role != 1:
+                    if category is not None:
+                        if category in allowed_categories:
+                            query = DBSession.query(Map).filter(
+                                or_(
+                                    and_(func.coalesce(Map.category_id, 999) ==
+                                         category,
+                                         Map.public == True, Map.user_login !=
+                                         user.username),
+                                    and_(func.coalesce(Map.category_id, 999) ==
+                                         category,
+                                         Map.user_login == user.username)
+                                    )) # noqa
+                        else:
+                            query = DBSession.query(Map).filter(
+                                and_(func.coalesce(Map.category_id, 999) ==
+                                     category,
+                                     Map.user_login == user.username))
+                    else:
+                        query = DBSession.query(Map).filter(
+                            or_(
+                                and_(func.coalesce(Map.category_id, 999).in_(
+                                     allowed_categories),
+                                     Map.public == True,
+                                     Map.user_login != user.username),
+                                Map.user_login == user.username
+                                )) # noqa
+            else:
+                if user.is_admin and user.mymaps_role == 1:
+                    if category is not None:
+                        if owner != user.username and\
+                           category not in allowed_categories:
+                            return HTTPUnauthorized()
+                        query = DBSession.query(Map).filter(
+                            func.coalesce(Map.category_id, 999) == category)\
+                            .filter(Map.user_login == owner)
+                    else:
+                        if owner != user.username:
+                            query = DBSession.query(Map).filter(
+                                and_(func.coalesce(Map.category_id, 999).in_(
+                                     allowed_categories),
+                                     Map.user_login == owner))
+                        else:
+                            query = DBSession.query(Map).\
+                                filter(Map.user_login == user.username)
+
+                if user.is_admin and user.mymaps_role != 1\
+                   and owner == user.username:
+                    if category is not None:
+                        query = DBSession.query(Map).filter(
+                            and_(func.coalesce(Map.category_id, 999) ==
+                                 category, Map.user_login == user.username))
+                    else:
+                        query = DBSession.query(Map).\
+                            filter(Map.user_login == user.username)
+                if user.is_admin and user.mymaps_role != 1\
+                   and owner != user.username:
+                    if category is not None:
+                        if category in allowed_categories:
+                            query = DBSession.query(Map).filter(
+                                and_(func.coalesce(Map.category_id, 999) ==
+                                     category, Map.public == True,
+                                     Map.user_login == owner)) # noqa
+                        else:
+                            return HTTPUnauthorized()
+
+                    else:
+                        query = DBSession.query(Map).filter(
+                            and_(Map.public == True,
+                                 Map.user_login == owner)) # noqa
+                if not user.is_admin and owner == user.username:
+                    query = DBSession.query(Map).\
+                        filter(Map.user_login == owner)
+        if query is not None:
+            maps = query.order_by("category_id asc,title asc").all()
+            return [{'title': map.title,
+                     'uuid': map.uuid,
+                     'public': map.public,
+                     'create_date': map.create_date,
+                     'update_date': map.update_date,
+                     'category': map.category.name
+                     if map.category_id is not None else None,
+                     'owner': map.user_login} for map in maps]
+        return []
+
+    @view_config(route_name="mymaps_users_categories", renderer='json')
+    def getuserscategories(self):
+        user = self.request.user
+        if user is None:
+            return HTTPUnauthorized()
+        user_role = DBSession.query(Role).get(user.mymaps_role)
+
+        if user.is_admin and user.mymaps_role == 1:
+            users = DBSession.query(Map.user_login, func.coalesce(
+                    Map.category_id, 999).label("category_id")).\
+                filter(func.coalesce(Map.category_id, 999).in_(
+                    [c.id for c in user_role.categories])).\
+                group_by(Map.user_login,
+                         func.coalesce(Map.category_id, 999)).all()
+            user_categories = {}
+            for cur_user in users:
+                if cur_user.user_login not in user_categories:
+                    user_categories[cur_user.user_login] =\
+                        [cur_user.category_id]
+                else:
+                    user_categories[cur_user.user_login].append(
+                        cur_user.category_id)
+
+            return [{'username': cur_user,
+                     'categories': user_categories[cur_user]}
+                    for cur_user in user_categories]
+
+        if user.is_admin and user.mymaps_role != 1:
+            users = DBSession.query(
+                    Map.user_login,
+                    func.coalesce(Map.category_id, 999).label("category_id")).\
+                filter((and_(func.coalesce(Map.category_id, 999).in_(
+                    [c.id for c in user_role.categories]),
+                    Map.public == True)) |
+                    and_(Map.public == False,
+                         Map.user_login == user.username)).\
+                group_by(Map.user_login,
+                         func.coalesce(Map.category_id, 999)).all() # noqa
+            user_categories = {}
+            for cur_user in users:
+                if cur_user.user_login not in user_categories:
+                    user_categories[cur_user.user_login] =\
+                        [cur_user.category_id]
+                else:
+                    user_categories[cur_user.user_login].append(
+                        cur_user.category_id)
+
+            return [{'username': cur_user,
+                     'categories': user_categories[cur_user]}
+                    for cur_user in user_categories]
+
+        categies_id = DBSession.query(
+            func.coalesce(Map.category_id, 999).label("category_id")).\
+            filter(Map.user_login == user.username).\
+            group_by(func.coalesce(Map.category_id, 999)).all() # noqa
+
+        return [{'username': user.username, 'categories':
+                [c.category_id for c in categies_id]}]
 
     @view_config(route_name="mymaps_features")
     def features(self):
@@ -320,7 +491,7 @@ class Mymaps(object):
             return False
         if map.user_login != user.username:
             user = self.request.user
-            if user.is_admin is False:
+            if not user.is_admin:
                 return False
             user_role = DBSession.query(Role).get(user.mymaps_role)
             if map.category is None or map.category.id not in\
