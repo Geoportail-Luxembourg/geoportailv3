@@ -498,7 +498,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
   }
   layers.forEach(function(layer, index) {
     var layerConf = this.findLayerConf_(layer);
-    var fn = (layerConf.type === 'internal WMS') ?
+    var fn = (layerConf.type.indexOf('WMS') != -1) ?
       lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
     var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
     this.getLayers().push(fn(layerConf, opacity));
@@ -1055,7 +1055,7 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
  * @return {ol.layer.Image} The layer.
  */
 lux.WMSLayerFactory_ = function(config, opacity) {
-  var url = 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var url = config.url || 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     url: url,
     params: {
