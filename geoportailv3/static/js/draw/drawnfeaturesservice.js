@@ -228,7 +228,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
       var showOrientation = /** @type {string} */
           (feature.get('showOrientation'));
       feature.set('showOrientation', showOrientation === 'true');
-      feature.set('__editable__', true);
+
       feature.set('__map_id__', undefined);
       feature.setStyle(featureStyleFunction);
     },this));
@@ -368,6 +368,9 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   this.modifyInteraction.setActive(isModifyInteractionActive);
   this.modifyCircleInteraction.setActive(isModifyCircleActive);
   this.translateInteraction.setActive(isTranlationActive);
+
+  feature.set('__editable__',
+    isModifyInteractionActive | isModifyCircleActive | isTranlationActive);
 };
 
 

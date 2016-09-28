@@ -532,6 +532,27 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
 /**
  * @export
  */
+app.FeaturePopupController.prototype.modifySelectedFeature = function() {
+  if (this.feature) {
+    this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.endModifySelectedFeature = function() {
+  this.feature.set('__editable__', false);
+  this.drawnFeatures_.modifyInteraction.setActive(false);
+  this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+  this.drawnFeatures_.translateInteraction.setActive(false);
+};
+
+
+/**
+ * @export
+ */
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
     var lastCoordinate = /** @type {ol.geom.LineString}*/
