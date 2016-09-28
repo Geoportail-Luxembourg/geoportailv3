@@ -720,7 +720,7 @@ lux.Map.prototype.addSearch = function(target) {
     clear.style.display = (input.value == '') ? '' : 'block';
   });
 
-    var fillStyle = new ol.style.Fill({
+  var fillStyle = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
 
@@ -753,7 +753,7 @@ lux.Map.prototype.addSearch = function(target) {
     'menuClass' : 'lux-search-suggestions',
     'source'    : function(term, suggest) {
       term = term.toLowerCase();
-      fetch(lux.searchUrl + 'limit=5&query=' + term).then(function(resp) {
+      fetch(lux.searchUrl + 'limit=5&layer=Adresse&query=' + term).then(function(resp) {
         return resp.json();
       }).then(function(json) {
         suggest(json.features);
