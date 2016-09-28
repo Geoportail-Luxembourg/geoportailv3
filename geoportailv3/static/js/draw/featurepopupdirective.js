@@ -532,6 +532,16 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
 /**
  * @export
  */
+app.FeaturePopupController.prototype.modifySelectedFeature = function() {
+  if (this.feature) {
+    this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+  }
+};
+
+
+/**
+ * @export
+ */
 app.FeaturePopupController.prototype.continueLine = function() {
   if (this.feature) {
     var lastCoordinate = /** @type {ol.geom.LineString}*/

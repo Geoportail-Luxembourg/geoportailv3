@@ -202,14 +202,39 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   <h4 class="modal-title" translate>Ouvrir une carte</h4>
-  <form>
-    <div class="form-group">
-      <div class="input-group">
-        <!-- <div class="input-group-addon"><i class="fa fa-search"></i></div> -->
-        <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
+  <div class="row">
+    <form>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
+        </div>
       </div>
-    </div>
-  </form>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <div class="dropdown">
+            <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getMapCategoryFilter(ctrl.filterCategoryId).name | translate}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a ng-click="ctrl.filterCategoryId = null" tabindex="-1" href="#">{{ 'Filter results by category' | translate}}</a></li>
+              <li ng-repeat="category in ctrl.getFilteredCategories() | orderBy:'name | translate' "><a ng-click="ctrl.filterCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <div class="dropdown">
+            <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getUserCategDesc(ctrl.filterMapOwner) }}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a ng-click="ctrl.filterMapOwner = null" tabindex="-1" href="#">{{ 'Filter results by username' | translate}}</a></li>
+              <li ng-repeat="userCateg in ctrl.getFilteredUsersCategories() | orderBy:'username' "><a ng-click="ctrl.filterMapOwner = userCateg.username" tabindex="-1" href="#">{{userCateg.username}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 <div class="modal-body">
   <table class="table table-hover table-condensed mymaps-list" ng-init="sortReverse = true; sortType = 'update_date'">
@@ -230,6 +255,13 @@
           </a>
         </td>
         <td>
+          <a href="#" ng-click="sortType = 'owner'; sortReverse = !sortReverse">
+            {{'Créateur carte'|translate}}
+            <span ng-show="sortType == 'owner' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'owner' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td>
           <a href="#" ng-click="sortType = 'update_date'; sortReverse = !sortReverse">
             {{'Dernière Actualisation'|translate}}
             <span ng-show="sortType == 'update_date' && !sortReverse">&#9660;</span>
@@ -247,6 +279,7 @@
           <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
         </span>{{ map.title }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.category }}</td>
+      <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.update_date | date:'dd/MM/yyyy - H:mm' }}</td>
       <td ng-click="ctrl.deleteAMap(map.uuid)"><span class="fa fa-trash-o"></span></td>
     </tr>

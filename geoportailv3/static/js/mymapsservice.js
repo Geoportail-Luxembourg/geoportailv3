@@ -111,6 +111,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsUserCategoriesUrl_ = mymapsUrl + '/get_users_categories';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsCategoriesUrl_ = mymapsUrl + '/categories';
 
   /**
@@ -402,11 +408,34 @@ app.Mymaps.prototype.isEditable = function() {
 
 
 /**
- * Get an array of map objects.
+ * Get the categories available for each user that the connected user can see.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.getMaps = function() {
-  return this.$http_.get(this.mymapsMapsUrl_).then(goog.bind(
+app.Mymaps.prototype.getUsersCategories = function() {
+  var url = this.mymapsUserCategoriesUrl_;
+  return this.$http_.get(url).then(
+      function(resp) {
+        return resp.data;
+      }.bind(this));
+};
+
+/**
+ * Get an array of map objects.
+ * @param {?string} owner The map owner to restrict.
+ * @param {?number} categoryId The category to restrict.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.getMaps = function(owner, categoryId) {
+  var url = this.mymapsMapsUrl_;
+  var params = {};
+  if (owner !== null) {
+    params['owner'] = owner;
+  }
+  if (categoryId !== null) {
+    params['category'] = categoryId;
+  }
+
+  return this.$http_.get(url, {params: params}).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
