@@ -287,7 +287,6 @@ luxx.FeaturesOptions.prototype.layer;
  */
 luxx.VectorOptions;
 
-
 /**
  * Interval after which to relaod the vector layer (in seconds).
  * @type {number}
@@ -299,3 +298,38 @@ luxx.VectorOptions.prototype.reloadInterval;
  * @type {ol.StyleFunction}
  */
 luxx.VectorOptions.prototype.style;
+
+/**
+ * @typedef {Object}
+ */
+luxx.State;
+
+/**
+ * @type {number}
+ */
+luxx.State.prototype.X;
+
+/**
+ * @type {number}
+ */
+luxx.State.prototype.Y;
+
+/**
+ * @type {number}
+ */
+luxx.State.prototype.zoom;
+
+/**
+ * @type {Array<number>}
+ */
+luxx.State.prototype.layers;
+
+/**
+ * @type {Array<number>}
+ */
+luxx.State.prototype.opacities;
+
+/**
+ * @type {string}
+ */
+luxx.State.prototype.bgLayer;
