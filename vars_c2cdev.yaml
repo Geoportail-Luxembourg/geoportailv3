@@ -3,3 +3,6 @@ extends: vars_geoportailv3.yaml
 vars:
     ldap: false
     host: luxembourg-geomapfish.dev.sig.cloud.camptocamp.net
+
+    sqlalchemy_engines:
+      mymaps: 'postgresql://www-data:www-data@localhost:5432/mymaps'
