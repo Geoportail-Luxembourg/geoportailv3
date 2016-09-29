@@ -6,6 +6,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
+goog.require('lux.StateManager');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -94,6 +95,36 @@ lux.translate = function(text) {
  */
 lux.setI18nUrl = function(url) {
   lux.i18nUrl = url;
+};
+
+/**
+ * Returns a function, that, as long as it continues to be invoked, will not
+ * be triggered. The function will be called after it stops being called for
+ * N milliseconds. If `immediate` is passed, trigger the function on the
+ * leading edge, instead of the trailing.
+ * @param {function()} func The function to call after a given delay.
+ * @param {number} wait The delay in ms.
+ * @param {boolean=} opt_immediate Should the function be called now?
+ * @return {function()} The function.
+ */
+lux.debounce = function(func, wait, opt_immediate) {
+  var timeout;
+  return function() {
+    var context = this;
+    var args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!opt_immediate) {
+        func.apply(context, args);
+      }
+    };
+    var callNow = opt_immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) {
+      func.apply(context, args);
+    }
+  };
 };
 
 /**
@@ -277,6 +308,9 @@ lux.Map = function(options) {
 
   ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
       this.checkForExclusion_, this);
+
+  this.stateManager_ = new lux.StateManager();
+  this.stateManager_.setMap(this);
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -928,6 +962,7 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
 
   var layer = new ol.layer.Tile({
     name  : config['name'],
+    id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.WMTS({
       url             : url,
@@ -978,6 +1013,7 @@ lux.WMSLayerFactory_ = function(config, opacity) {
   };
   var layer = new ol.layer.Image({
     name: config['name'],
+    id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.ImageWMS(optSource),
     opacity: opacity
