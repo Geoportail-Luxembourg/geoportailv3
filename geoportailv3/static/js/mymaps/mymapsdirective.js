@@ -221,6 +221,13 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.maps = [];
 
   /**
+   * List of Users with his categories having maps.
+   * @type {app.MapsResponse}
+   * @export
+   */
+  this.usersCategories = [];
+
+  /**
    * String to be used in the title field in the modifying window.
    * Helps canceling modifications.
    * @type {string}
@@ -243,6 +250,20 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    * @export
    */
   this.newCategoryId = null;
+
+  /**
+   * ID of the category to filter with.
+   * @type {?number}
+   * @export
+   */
+  this.filterCategoryId = null;
+
+  /**
+   * Login of the map's owner to filter with.
+   * @type {?string}
+   * @export
+   */
+  this.filterMapOwner = null;
 
   /**
    * Is Map public?
@@ -283,6 +304,29 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    * @export
    */
   this.selectedFeaturesList = this.selectedFeatures_.getArray();
+
+  $scope.$watch(goog.bind(function() {
+    return this.filterMapOwner;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(goog.bind(function(mymaps) {
+        this.choosing = true;
+        this.maps = mymaps;
+      }, this));
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.filterCategoryId;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(goog.bind(function(mymaps) {
+        this.choosing = true;
+        this.maps = mymaps;
+        this.filterMapOwner = null;
+      }, this));
+    }
+  }, this));
 
   $scope.$watch(goog.bind(function() {
     return this.appUserManager_.getRoleId();
@@ -713,6 +757,37 @@ app.MymapsDirectiveController.prototype.getMapOwner = function() {
 
 
 /**
+ * @param {?string} username The username.
+ * @return {string} The category name.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getUserCategDesc = function(username) {
+  if (goog.isDefAndNotNull(username) && username.length > 0) {
+    return username;
+  } else {
+    return this.gettextCatalog.getString('Filter results by username');
+  }
+};
+
+/**
+ * @param {?number} id The id.
+ * @return {Object} The category name.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMapCategoryFilter = function(id) {
+  var category = this.appMymaps_.getCategory(id);
+  if (goog.isDefAndNotNull(category)) {
+    return category;
+  } else {
+    return {
+      'id': null,
+      'name': 'Filter results by category'
+    };
+  }
+};
+
+
+/**
  * @param {?number} id The id.
  * @return {Object} The category name.
  * @export
@@ -740,6 +815,71 @@ app.MymapsDirectiveController.prototype.getCategories = function() {
 
 
 /**
+ * @return {Object} The the filtered categories object.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getFilteredCategories = function() {
+  var categories = [];
+  if (!goog.isDefAndNotNull(this.filterMapOwner)) {
+    //All the categories of all user with at least one map
+    categories = this.usersCategories;
+  } else {
+    var userCateg = goog.array.find(this.usersCategories, function(item, i) {
+      if (item['username'] === this.filterMapOwner) {
+        return true;
+      }
+      return false;
+    }, this);
+    if (userCateg) {
+      // The categories of the current user having at least one map
+      categories = [userCateg];
+    }
+  }
+  if (this.appMymaps_.categories !== null) {
+    return goog.array.filter(this.appMymaps_.categories, function(category, i) {
+      var elem = goog.array.find(categories, function(userCategory, i) {
+        if (userCategory['categories'].indexOf(category['id']) >= 0) {
+          return true;
+        }
+        return false;
+      }, this);
+      if (elem) {
+        return true;
+      }
+      return false;
+    }, this);
+  }
+  return [];
+};
+
+
+/**
+ * @return {Object} The user_categories object.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getUsersCategories = function() {
+  return this.usersCategories;
+};
+
+
+/**
+ * @return {Object} The user_categories object.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getFilteredUsersCategories = function() {
+  if (this.filterCategoryId === null) {
+    return this.usersCategories;
+  }
+  return goog.array.filter(this.usersCategories, function(item, i) {
+    if (item['categories'].indexOf(this.filterCategoryId) >= 0) {
+      return true;
+    }
+    return false;
+  }, this);
+};
+
+
+/**
  * Open a map. Actually opens the map selector.
  * @export
  */
@@ -747,18 +887,29 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
-    this.appMymaps_.getMaps().then(goog.bind(function(mymaps) {
-      if (goog.isNull(mymaps)) {
-        this.askToConnect();
-      } else if (!goog.array.isEmpty(mymaps)) {
-        this.choosing = true;
-        this.maps = mymaps;
-      } else {
-        this.notify_(this.gettextCatalog.getString(
-            'You have no existing Maps, please create a New Map'
-            ), app.NotifyNotificationType.WARNING);
-      }
-    }, this));
+    this.filterMapOwner = null;
+    this.filterCategoryId = null;
+    if (this.appUserManager_.getMymapsRole() === 1 &&
+        this.appUserManager_.getMymapsAdmin()) {
+      this.filterMapOwner = this.appUserManager_.getUsername();
+    }
+
+    this.appMymaps_.getUsersCategories().then(function(usersCategories) {
+      this.usersCategories = usersCategories;
+      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId)
+        .then(function(mymaps) {
+          if (goog.isNull(mymaps)) {
+            this.askToConnect();
+          } else if (!goog.array.isEmpty(mymaps) || this.appUserManager_.getMymapsAdmin()) {
+            this.choosing = true;
+            this.maps = mymaps;
+          } else {
+            this.notify_(this.gettextCatalog.getString(
+                'You have no existing Maps, please create a New Map'
+                ), app.NotifyNotificationType.WARNING);
+          }
+        }.bind(this));
+    }.bind(this));
   }
 };
 

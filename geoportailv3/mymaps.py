@@ -3,7 +3,7 @@ import uuid
 import datetime
 import sqlahelper
 
-from sqlalchemy import Column, ForeignKey, Table
+from sqlalchemy import Column, ForeignKey, Table, func
 from sqlalchemy.types import Unicode, Boolean, DateTime, Integer, Float, Binary
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -15,7 +15,7 @@ from shapely.geometry import asShape
 from shapely.geometry.multipoint import asMultiPoint
 from shapely.geometry.multilinestring import asMultiLineString
 from shapely.geometry.multipolygon import MultiPolygonAdapter
-from geoalchemy2 import Geometry, func
+from geoalchemy2 import Geometry
 from geoalchemy2.shape import from_shape
 
 import geojson
@@ -49,7 +49,7 @@ class Map(Base):
     selected_node = Column(Unicode)
     rating = Column(Float, default=0)
     rating_count = Column(Integer, default=0)
-    category_id = Column(Integer, ForeignKey('category.id'))
+    category_id = Column(Integer, ForeignKey('category.id'), default=999)
     label = Column(Unicode)
     category = relationship('Category', backref='maps')
     features = relationship('Feature', backref='map')
@@ -96,7 +96,8 @@ class Map(Base):
                  'create_date': map.create_date,
                  'update_date': map.update_date,
                  'category': map.category.name
-                 if map.category_id is not None else None} for map in maps]
+                 if map.category_id is not None else None,
+                 'owner': map.user_login} for map in maps]
 
 
 class Feature(Base):

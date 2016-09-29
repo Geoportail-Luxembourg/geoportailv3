@@ -58,12 +58,10 @@ app.UserManager = function($http, loginUrl, logoutUrl,
    */
   this.username = '';
 
-
   /**
    * @type {string|undefined}
    */
   this.email = undefined;
-
 
   /**
    * @type {string|undefined}
@@ -80,6 +78,15 @@ app.UserManager = function($http, loginUrl, logoutUrl,
    */
   this.name = undefined;
 
+  /**
+   * @type {?number}
+   */
+  this.mymapsRole = null;
+
+  /**
+   * @type {boolean}
+   */
+  this.isMymapsAdmin = false;
 
   /**
    * @type {angularGettext.Catalog}
@@ -167,7 +174,9 @@ app.UserManager.prototype.getUserInfo = function() {
               data['role'],
               data['role_id'],
               data['mail'],
-              data['sn']
+              data['sn'],
+              data['mymaps_role'],
+              data['is_admin']
           );
         } else {
           this.clearUserInfo();
@@ -193,7 +202,7 @@ app.UserManager.prototype.isAuthenticated = function() {
  * of error.
  */
 app.UserManager.prototype.clearUserInfo = function() {
-  this.setUserInfo('', undefined, null, undefined, undefined);
+  this.setUserInfo('', undefined, null, undefined, undefined, null, false);
 };
 
 
@@ -203,20 +212,23 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {?number} roleId Role id.
  * @param {string|undefined} mail Mail.
  * @param {string|undefined} name Name.
+ * @param {?number} mymapsRole The role used by mymaps.
+ * @param {boolean} isAdmin True if is a mymaps admin.
  */
 app.UserManager.prototype.setUserInfo = function(
-    username, role, roleId, mail, name) {
+    username, role, roleId, mail, name, mymapsRole, isAdmin) {
   if (goog.isDef(username)) {
     this.username = username;
     this.role = role;
     this.roleId = roleId;
     this.email = mail;
     this.name = name;
+    this.mymapsRole = mymapsRole;
+    this.isMymapsAdmin = isAdmin;
   } else {
     this.clearUserInfo();
   }
 };
-
 
 /**
  * @return {string} The username.
@@ -225,7 +237,6 @@ app.UserManager.prototype.getUsername = function() {
   return this.username;
 };
 
-
 /**
  * @return {string|undefined} The Email.
  */
@@ -233,12 +244,26 @@ app.UserManager.prototype.getEmail = function() {
   return this.email;
 };
 
-
 /**
  * @return {?number} The Role Id.
  */
 app.UserManager.prototype.getRoleId = function() {
   return this.roleId;
 };
+
+/**
+ * @return {?number} The Role Id.
+ */
+app.UserManager.prototype.getMymapsRole = function() {
+  return this.mymapsRole;
+};
+
+/**
+ * @return {boolean} True if is a mymaps admin.
+ */
+app.UserManager.prototype.getMymapsAdmin = function() {
+  return this.isMymapsAdmin;
+};
+
 
 app.module.service('appUserManager', app.UserManager);

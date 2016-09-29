@@ -224,6 +224,13 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.unwatch3_ = $scope.$watch(function() {
     return this.editingStyle;
   }.bind(this), function(newVal, oldVal) {
+    if (goog.isDef(this.feature)) {
+      if (newVal) {
+        this.feature.set('__selected__', false);
+      } else {
+        this.feature.set('__selected__', true);
+      }
+    }
     if (oldVal && !newVal) {
       this.updateFeature_();
     }
@@ -526,6 +533,27 @@ app.FeaturePopupController.prototype.trustAsHtml = function(content) {
  */
 app.FeaturePopupController.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.modifySelectedFeature = function() {
+  if (this.feature) {
+    this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+  }
+};
+
+
+/**
+ * @export
+ */
+app.FeaturePopupController.prototype.endModifySelectedFeature = function() {
+  this.feature.set('__editable__', false);
+  this.drawnFeatures_.modifyInteraction.setActive(false);
+  this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+  this.drawnFeatures_.translateInteraction.setActive(false);
 };
 
 

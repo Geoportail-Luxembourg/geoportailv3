@@ -23,24 +23,29 @@
         app-profile-show-tooltip="!ctrl.isEditable()">
     </div>
   </div>
+
   <div class="feature-popup-footer">
+    <ul class="nav navbar-nav pull-left">
+      <li ng-show="ctrl.isEditable() && !ctrl.feature.get('__editable__')" ng-click="ctrl.modifySelectedFeature()"><button class="btn btn-primary" translate>Editer l'objet</button></li>
+      <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')" ng-click="ctrl.endModifySelectedFeature()"><button class="btn btn-primary" translate>Terminer édition</button></li>
+    </ul>
     <ul class="nav navbar-nav pull-right">
       <li>
         <a href ng-click="ctrl.fitFeature()">
           <span class="fa fa-search"></span>
         </a>
       </li>
-      <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')">
+      <li ng-show="ctrl.isEditable()">
         <a href ng-click="ctrl.editingAttributes = true">
           <span class="fa fa-pencil"></span>
         </a>
       </li>
-      <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')">
+      <li ng-show="ctrl.isEditable()">
         <a href ng-click="ctrl.editingStyle = true">
           <span class="fa fa-paint-brush"></span>
         </a>
       </li>
-      <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')">
+      <li ng-show="ctrl.isEditable()">
         <a href href ng-click="ctrl.deletingFeature = true">
           <span class="fa fa-trash"></span></a>
       </li>
@@ -51,8 +56,8 @@
         <ul class="dropdown-menu {{ctrl.isDocked()?'dropdown-menu-right':''}}" role="menu">
           <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-          <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__') && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
-          <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__') && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
         </ul>
       </li>
     </ul>

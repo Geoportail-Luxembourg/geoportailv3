@@ -111,6 +111,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsUserCategoriesUrl_ = mymapsUrl + '/get_users_categories';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsCategoriesUrl_ = mymapsUrl + '/categories';
 
   /**
@@ -352,7 +358,6 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
               readFeatures(features, encOpt);
           goog.array.forEach(jsonFeatures, function(feature) {
             feature.set('__map_id__', this.getMapId());
-            feature.set('__editable__', this.isEditable());
             feature.setStyle(featureStyleFunction);
           }, this);
 
@@ -402,11 +407,34 @@ app.Mymaps.prototype.isEditable = function() {
 
 
 /**
- * Get an array of map objects.
+ * Get the categories available for each user that the connected user can see.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.getMaps = function() {
-  return this.$http_.get(this.mymapsMapsUrl_).then(goog.bind(
+app.Mymaps.prototype.getUsersCategories = function() {
+  var url = this.mymapsUserCategoriesUrl_;
+  return this.$http_.get(url).then(
+      function(resp) {
+        return resp.data;
+      }.bind(this));
+};
+
+/**
+ * Get an array of map objects.
+ * @param {?string} owner The map owner to restrict.
+ * @param {?number} categoryId The category to restrict.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.getMaps = function(owner, categoryId) {
+  var url = this.mymapsMapsUrl_;
+  var params = {};
+  if (owner !== null) {
+    params['owner'] = owner;
+  }
+  if (categoryId !== null) {
+    params['category'] = categoryId;
+  }
+
+  return this.$http_.get(url, {params: params}).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
@@ -1077,19 +1105,15 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     geometry: function(feature) {
       var geom = feature.getGeometry();
 
-      if (geom.getType() == ol.geom.GeometryType.POINT) {
-        return;
-      }
-
       var coordinates;
       if (geom instanceof ol.geom.LineString) {
-        coordinates = feature.getGeometry().getCoordinates();
+        coordinates = geom.getCoordinates();
         return new ol.geom.MultiPoint(coordinates);
       } else if (geom instanceof ol.geom.Polygon) {
-        coordinates = feature.getGeometry().getCoordinates()[0];
+        coordinates = geom.getCoordinates()[0];
         return new ol.geom.MultiPoint(coordinates);
       } else {
-        return feature.getGeometry();
+        return geom;
       }
     }
   });
@@ -1173,27 +1197,35 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     }
 
     var stroke;
-
-    if (this.get('stroke') > 0) {
+    var featureStroke = this.get('stroke');
+    if (featureStroke > 0) {
+      if (!this.get('__editable__') && this.get('__selected__')) {
+        featureStroke = featureStroke + 3;
+      }
       stroke = new ol.style.Stroke({
         color: rgbColor,
-        width: this.get('stroke'),
+        width: featureStroke,
         lineDash: lineDash
       });
+    }
+
+    var featureSize = this.get('size');
+    if (!this.get('__editable__') && this.get('__selected__')) {
+      featureSize = featureSize + 3;
     }
     var imageOptions = {
       fill: fillStyle,
       stroke: new ol.style.Stroke({
         color: rgbColor,
-        width: this.get('size') / 7
+        width: featureSize / 7
       }),
-      radius: this.get('size')
+      radius: featureSize
     };
     var image = null;
     if (this.get('symbolId')) {
       goog.object.extend(imageOptions, {
         src: symbolUrl + this.get('symbolId'),
-        scale: this.get('size') / 100,
+        scale: featureSize / 100,
         rotation: this.get('angle')
       });
       image = new ol.style.Icon(imageOptions);
@@ -1226,7 +1258,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
-          radius2: this.get('size')
+          radius2: featureSize
         }));
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
@@ -1247,7 +1279,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
           textAlign: 'start',
-          font: 'normal ' + this.get('size') + 'px Sans-serif',
+          font: 'normal ' + featureSize + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
             color: rgbColor

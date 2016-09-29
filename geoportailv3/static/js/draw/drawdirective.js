@@ -321,10 +321,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        this.drawnFeatures_.activateModifyIfNeeded(feature);
-        var editable = !feature.get('__map_id__') ||
-            this.appMymaps_.isEditable();
-        feature.set('__editable__', editable);
 
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
@@ -338,6 +334,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
+        feature.set('__editable__', false);
+        this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+        this.drawnFeatures_.modifyInteraction.setActive(false);
+        this.drawnFeatures_.translateInteraction.setActive(false);
       }).bind(this));
 
   ol.events.listen(selectInteraction,
@@ -348,7 +348,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       function(evt) {
         if (evt.selected.length > 0) {
           var feature = evt.selected[0];
-          this.drawnFeatures_.activateModifyIfNeeded(feature);
           this['mymapsOpen'] = true;
           if (!this.featurePopup_.isDocked) {
             this.featurePopup_.show(feature, this.map,
