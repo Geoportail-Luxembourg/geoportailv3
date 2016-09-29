@@ -224,6 +224,13 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.unwatch3_ = $scope.$watch(function() {
     return this.editingStyle;
   }.bind(this), function(newVal, oldVal) {
+    if (goog.isDef(this.feature)) {
+      if (newVal) {
+        this.feature.set('__selected__', false);
+      } else {
+        this.feature.set('__selected__', true);
+      }
+    }
     if (oldVal && !newVal) {
       this.updateFeature_();
     }
