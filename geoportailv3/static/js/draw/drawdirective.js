@@ -309,8 +309,8 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @private
    */
   this.selectInteraction_ = selectInteraction;
-
-  appFeaturePopup.init(this.map, selectInteraction.getFeatures());
+  this.selectInteraction_.setActive(false);
+  appFeaturePopup.init(this.map);
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       goog.bind(
@@ -321,16 +321,21 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-
+        this['mymapsOpen'] = true;
+        if (!this.featurePopup_.isDocked) {
+          this.featurePopup_.show(feature, this.map,
+            ol.extent.getCenter(feature.getGeometry().getExtent()));
+        }
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
+        this.scope_.$applyAsync();
       }, this));
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.CollectionEvent} evt The event.
        */
-      (function(evt) {
+      function(evt) {
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
@@ -338,27 +343,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.drawnFeatures_.modifyCircleInteraction.setActive(false);
         this.drawnFeatures_.modifyInteraction.setActive(false);
         this.drawnFeatures_.translateInteraction.setActive(false);
-      }).bind(this));
-
-  ol.events.listen(selectInteraction,
-      ol.interaction.SelectEventType.SELECT,
-      /**
-       * @param {ol.interaction.SelectEvent} evt The event.
-       */
-      function(evt) {
-        if (evt.selected.length > 0) {
-          var feature = evt.selected[0];
-          this['mymapsOpen'] = true;
-          if (!this.featurePopup_.isDocked) {
-            this.featurePopup_.show(feature, this.map,
-              evt.mapBrowserEvent.coordinate);
-          }
-        } else {
-          if (!this.featurePopup_.isDocked) {
-            this.featurePopup_.hide();
-          }
+        if (!this.featurePopup_.isDocked) {
+          this.featurePopup_.hide();
         }
-        $scope.$apply();
+        this.scope_.$applyAsync();
       }, this);
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
@@ -447,8 +435,8 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive() ||
       this.drawLabel.getActive();
-  this.selectInteraction_.setActive(!active);
-
+  //this.selectInteraction_.setActive(!active);
+  this.selectInteraction_.setActive(false);
   if (active) {
     this.appActivetool_.drawActive = true;
     var msg = '';
