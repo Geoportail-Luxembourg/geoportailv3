@@ -37,8 +37,7 @@ app.Activetool = function(appSelectedFeatures) {
  * @return {boolean} The exploded features.
  */
 app.Activetool.prototype.isActive = function() {
-  return (this.drawActive || this.measureActive ||
-    this.selectedFeatures_.getLength() > 0);
+  return (this.drawActive || this.measureActive);
 };
 
 app.module.service('appActivetool', app.Activetool);

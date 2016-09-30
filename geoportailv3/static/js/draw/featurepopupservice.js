@@ -40,12 +40,6 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
   this.$document_ = $document;
 
   /**
-   * @type {ol.Collection<ol.Feature>?}
-   * @private
-   */
-  this.features_;
-
-  /**
    * @type {ol.Map}
    * @export
    */
@@ -123,12 +117,10 @@ app.FeaturePopup = function($compile, $rootScope, $document, appGetElevation,
 
 /**
  * @param {ol.Map} map Map.
- * @param {ol.Collection<ol.Feature>} features Features.
  */
-app.FeaturePopup.prototype.init = function(map, features) {
+app.FeaturePopup.prototype.init = function(map) {
   this.map = map;
   this.map.addOverlay(this.overlay_);
-  this.features_ = features;
 };
 
 

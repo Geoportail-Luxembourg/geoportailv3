@@ -322,7 +322,7 @@ app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
 
 /**
  * Get the current drawn features as an array.
- * @return {Array.<ol.Feature>?} The features array.
+ * @return {Array.<ol.Feature | ol.render.Feature>?} The features array.
  */
 app.DrawnFeatures.prototype.getArray = function() {
   return this.features.getArray();

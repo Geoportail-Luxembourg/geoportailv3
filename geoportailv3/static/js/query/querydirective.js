@@ -31,6 +31,8 @@ app.queryDirective = function(appQueryTemplateUrl) {
     scope: {
       'map': '=appQueryMap',
       'infoOpen': '=appQueryOpen',
+      'layersOpen': '=appQueryLayersOpen',
+      'mymapsOpen': '=appQueryMymapsOpen',
       'appSelector': '=appQueryAppselector',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo'
@@ -68,6 +70,8 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {app.Export} appExport The export service.
  * @param {app.Activetool} appActivetool The activetool service.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @export
  * @ngInject
  */
@@ -76,7 +80,19 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
-    appActivetool) {
+    appActivetool, appSelectedFeatures, appDrawnFeatures) {
+
+  /**
+   * @type {app.DrawnFeatures}
+   * @private
+   */
+  this.drawnFeatures_ = appDrawnFeatures;
+
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
 
   /**
    * @type {app.Activetool}
@@ -320,17 +336,28 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
         if (this.appActivetool_.isActive() || this.isQuerying_) return;
-
-        if (evt.originalEvent instanceof MouseEvent) {
-          this.singleclickEvent_.apply(this, [evt]);
-        } else {
-          if (this.pointerUpTime_ - this.pointerDownTime_ < 499) {
-            var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
-            var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
-            if (deltaX + deltaY < 6) {
-              this.singleclickEvent_.apply(this, [evt]);
-              this.startPixel_ = null;
-              this.stopPixel_ = null;
+        this.selectedFeatures_.clear();
+        var found = false;
+        var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
+            this.drawnFeatures_.getCollection().getLength() > 0;
+        if (isQueryMymaps) {
+          var result = this.selectMymapsFeature_(evt.pixel);
+          if (result) {
+            found = true;
+          }
+        }
+        if (!found) {
+          if (evt.originalEvent instanceof MouseEvent) {
+            this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
+          } else {
+            if (this.pointerUpTime_ - this.pointerDownTime_ < 499) {
+              var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
+              var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
+              if (deltaX + deltaY < 6) {
+                this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
+                this.startPixel_ = null;
+                this.stopPixel_ = null;
+              }
             }
           }
         }
@@ -388,6 +415,29 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
   }
+};
+
+
+/**
+ * @param {Array<number>} pixel The pixel.
+ * @return {boolean} True if someting is selected.
+ * @private
+ */
+app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
+  var selected = [];
+
+  this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
+      selected.push(feature);
+      return false;
+    }
+    return true;
+  }, this);
+  if (selected.length > 0) {
+    this.selectedFeatures_.push(selected.pop());
+  }
+
+  return this.selectedFeatures_.getLength() !== 0;
 };
 
 
@@ -528,12 +578,14 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
 
 /**
  * @param {ol.events.Event} evt The map event.
+ * @param {boolean} infoMymaps True if mymaps has to be checked.
  * @private
  */
-app.QueryController.prototype.singleclickEvent_ = function(evt) {
+app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layers = this.map_.getLayers().getArray();
   var layersList = [];
   var layerLabel = {};
+
   for (var i = 0; i < layers.length; i++) {
     var metadata = layers[i].get('metadata');
     if (goog.isDefAndNotNull(metadata)) {
@@ -580,8 +632,23 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           'box2': small_box.join()
         }}).then(
         goog.bind(function(resp) {
-          this.showInfo_(evt.originalEvent.shiftKey, resp,
-              layerLabel, true, false);
+          if (resp.data.length > 0) {
+            this.showInfo_(evt.originalEvent.shiftKey, resp,
+                layerLabel, true, false);
+          } else {
+            this.isQuerying_ = false;
+            this.map_.getViewport().style.cursor = '';
+            this.lastHighlightedFeatures_ = [];
+            this.highlightFeatures_(this.lastHighlightedFeatures_, false);
+            this.clearQueryResult_(this.QUERYPANEL_);
+            if (infoMymaps) {
+              if (!this.selectMymapsFeature_(evt.pixel)) {
+                this['infoOpen'] = false;
+              }
+            } else {
+              this['infoOpen'] = false;
+            }
+          }
         }, this),
         goog.bind(function(error) {
           this.clearQueryResult_(this.QUERYPANEL_);
@@ -589,6 +656,10 @@ app.QueryController.prototype.singleclickEvent_ = function(evt) {
           this.map_.getViewport().style.cursor = '';
           this.isQuerying_ = false;
         }, this));
+  } else {
+    if (infoMymaps) {
+      this.selectMymapsFeature_(evt.pixel);
+    }
   }
 };
 
