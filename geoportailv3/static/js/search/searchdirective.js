@@ -512,7 +512,7 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       var results = [];
       var re = {
         'EPSG:2169': {
-          regex: /(\d{4,6})\s*([E|N])?\W*(\d{4,6})\s*([E|N])?/,
+          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
           label: 'LUREF'
         },
         'EPSG:4326': {
@@ -538,16 +538,16 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
           if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
             if (goog.array.contains(['latitude', 'lat', 'N'], m[2]) &&
             goog.array.contains(['longitude', 'long', 'lon', 'E'], m[4])) {
-              easting = parseFloat(m[3]);
-              northing = parseFloat(m[1]);
+              easting = parseFloat(m[3].replace(',', '.'));
+              northing = parseFloat(m[1].replace(',', '.'));
             } else if (goog.array.contains(['latitude', 'lat', 'N'], m[4]) &&
             goog.array.contains(['longitude', 'long', 'lon', 'E'], m[2])) {
-              easting = parseFloat(m[1]);
-              northing = parseFloat(m[3]);
+              easting = parseFloat(m[1].replace(',', '.'));
+              northing = parseFloat(m[3].replace(',', '.'));
             }
           } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
-            easting = parseFloat(m[1]);
-            northing = parseFloat(m[3]);
+            easting = parseFloat(m[1].replace(',', '.'));
+            northing = parseFloat(m[3].replace(',', '.'));
           }
           var mapEpsgCode =
           this['map'].getView().getProjection().getCode();
