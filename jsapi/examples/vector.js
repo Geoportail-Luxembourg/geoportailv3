@@ -13,5 +13,7 @@ var map = new lux.Map({
   }
 });
 
-map.addGPX('gpx-trace.gpx');
+map.addGPX('gpx-trace.gpx?fdfd=f', {
+  reloadInterval: 5
+});
 map.addKML('elements.kml');

@@ -285,3 +285,22 @@ luxx.FeaturesOptions.prototype.ids;
  * @type {string|number}
  */
 luxx.FeaturesOptions.prototype.layer;
+
+/**
+ * Object literal with config options for the vector (GPX/KML) layer.
+ * @typedef {Object}
+ */
+luxx.VectorOptions;
+
+
+/**
+ * Interval after which to relaod the vector layer (in seconds).
+ * @type {number}
+ */
+luxx.VectorOptions.prototype.reloadInterval;
+
+/**
+ * The style function.
+ * @type {ol.style.StyleFunction}
+ */
+luxx.VectorOptions.prototype.style;
