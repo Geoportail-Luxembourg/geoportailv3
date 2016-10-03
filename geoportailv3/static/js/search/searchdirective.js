@@ -113,13 +113,14 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
+ * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl) {
+    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch) {
 
   /**
    * @type {Object}
@@ -260,6 +261,12 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
    * @private
    */
   this.appThemes_ = appThemes;
+
+  /**
+   * @type {Array}
+   * @private
+   */
+  this.appExcludeThemeLayerSearch_ = appExcludeThemeLayerSearch;
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
@@ -762,14 +769,23 @@ app.SearchDirectiveController.selected_ =
         if (dataset === 'coordinates') {
           features.push(feature);
         } else if (dataset === 'pois') {
-          if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+          if (!(goog.array.contains(this.appExcludeThemeLayerSearch_,
+                 this.appTheme_.getCurrentTheme()) &&
+                 feature.get('layer_name') === 'Parcelle')) {
+            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+              features.push(feature);
+            }
+            var layers = /** @type {Array<string>} */
+            (this.layerLookup_[suggestion.get('layer_name')] || []);
+            goog.array.forEach(layers, goog.bind(function(layer) {
+              this.addLayerToMap_(/** @type {string} */ (layer));
+            }, this));
+          } else {
+            feature.setGeometry(
+              new ol.geom.Point(ol.extent.getCenter(
+                featureGeometry.getExtent())));
             features.push(feature);
           }
-          var layers = /** @type {Array<string>} */
-          (this.layerLookup_[suggestion.get('layer_name')] || []);
-          goog.array.forEach(layers, goog.bind(function(layer) {
-            this.addLayerToMap_(/** @type {string} */ (layer));
-          }, this));
         }
         for (var i = 0; i < features.length; ++i) {
           this.featureOverlay_.addFeature(features[i]);

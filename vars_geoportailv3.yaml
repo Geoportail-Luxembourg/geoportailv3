@@ -1,6 +1,8 @@
 extends: CONST_vars.yaml
 
 vars:
+    #Theme 
+    exclude_theme_layer_search:
     # database name
     db: lux
     # database schema

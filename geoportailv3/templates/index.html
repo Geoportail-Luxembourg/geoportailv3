@@ -4,6 +4,7 @@
     proxy_wms_url = settings.get('proxy_wms_url')
     node_modules_path = settings.get('node_modules_path')
     closure_library_path = settings.get('closure_library_path')
+    exclude_theme_layer_search = settings.get('exclude_theme_layer_search')
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
@@ -242,6 +243,7 @@
            'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
            'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
          });
+
 % if proxy_wms_url:
          appModule.constant('proxyWmsUrl', "${proxy_wms_url}");
          appModule.constant('remoteProxyWms', true);
@@ -275,6 +277,7 @@
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
          appModule.constant('requestScheme', "${request.scheme}");
          appModule.constant('pagUrl', "${request.route_url('pag_url')}");
+         appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
