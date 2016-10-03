@@ -1,6 +1,7 @@
 goog.provide('lux');
 goog.provide('lux.Map');
 
+goog.require('goog.Uri');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('lux.LayerManager');
@@ -755,9 +756,10 @@ lux.Map.prototype.addSearch = function(target) {
 /**
  * Adds a GPX file on the map
  * @param {string} url Url to the GPX file
+ * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  */
-lux.Map.prototype.addGPX = function(url) {
+lux.Map.prototype.addGPX = function(url, opt_options) {
   var style = {
     'Point': new ol.style.Style({
       image: new ol.style.Circle({
@@ -789,39 +791,63 @@ lux.Map.prototype.addGPX = function(url) {
     return style[feature.getGeometry().getType()];
   };
 
-  this.addVector(url, new ol.format.GPX(), styleFunction);
+  this.addVector(url, new ol.format.GPX(), {
+    style: styleFunction,
+    reloadInterval: opt_options && opt_options.reloadInterval
+  });
 };
 
 /**
  * Adds a KML file on the map
  * @param {string} url Url to the GPX file
+ * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  */
-lux.Map.prototype.addKML = function(url) {
-  this.addVector(url, new ol.format.KML());
+lux.Map.prototype.addKML = function(url, opt_options) {
+  this.addVector(url, new ol.format.KML(), opt_options);
 };
 
 /**
  * Adds a KML file on the map
  * @param {string} url Url to the vector file
  * @param {ol.format.GPX|ol.format.KML} format The format.
- * @param {ol.style.StyleFunction=} opt_styleFunction The style function.
+ * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  */
-lux.Map.prototype.addVector = function(url, format, opt_styleFunction) {
-  var options = {
-    source: new ol.source.Vector({
-      url: url,
-      format: format
-    })
-  };
-  var popup;
+lux.Map.prototype.addVector = function(url, format, opt_options) {
 
-  if (opt_styleFunction) {
-    options.style = opt_styleFunction;
+  var popup;
+  var vector;
+
+  /**
+   * @param {boolean=} opt_time Whether or not to add a timestamp to url.
+   */
+  function setSource(opt_time) {
+    var uri = goog.Uri.parse(url);
+    if (opt_time) {
+      uri.setParameterValue('salt', (new Date).getTime());
+    }
+    vector.setSource(new ol.source.Vector({
+      url: uri.toString(),
+      format: format
+    }));
+  }
+
+  var options = {};
+  if (opt_options && opt_options.style) {
+    options.style = opt_options.style;
   }
   this.layersPromise.then(function() {
-    var vector = new ol.layer.Vector(options);
+    vector = new ol.layer.Vector(options);
+
+    var interval = opt_options && opt_options.reloadInterval;
+    if (interval) {
+      goog.asserts.assertNumber(interval, 'Reload interval must be a number');
+      window.setInterval(function() {
+        setSource(true);
+      }, interval * 1000);
+    }
+    setSource();
     this.addLayer(vector);
 
     ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
