@@ -229,9 +229,7 @@ luxx.LayerManagerOptions.prototype.target;
 luxx.Exclusions;
 
 /**
- * @typedef {{
- *     exclusion: (string)
- * }}
+ * @typedef {Object}
  */
 luxx.LayerMetadataOptions;
 
@@ -241,10 +239,7 @@ luxx.LayerMetadataOptions;
 luxx.LayerMetadataOptions.prototype.exclusion;
 
 /**
- * @typedef {{
- *    mapId: (string),
- *    profileTarget: (string|undefined)
- * }}
+ * @typedef {Object}
  */
 luxx.MyMapOptions;
 
