@@ -16,6 +16,7 @@ goog.require('ol.events');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
+goog.require('ol.geom.Point');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -172,6 +173,12 @@ lux.Map = function(options) {
   }).then(function(json) {
     lux.i18n = json[lux.lang];
   }.bind(this));
+
+  /**
+   * @private
+   * @type {ol.layer.Vector} The layer to use to show search result.
+   */
+  this.searchLayer_ = null;
 
   /**
    * @private
@@ -730,10 +737,36 @@ lux.Map.prototype.addSearch = function(target) {
   clear.addEventListener('click', function() {
     input.value         = '';
     clear.style.display = '';
-  });
+    this.searchLayer_.getSource().clear();
+  }.bind(this));
   input.addEventListener('keyup', function() {
     clear.style.display = (input.value == '') ? '' : 'block';
   });
+
+  var fillStyle = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+
+  var strokeStyle = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+
+  this.searchLayer_ = new ol.layer.Vector({
+    source: new ol.source.Vector()
+  });
+
+  this.searchLayer_.setStyle(
+      new ol.style.Style({
+        fill: fillStyle,
+        stroke: strokeStyle,
+        image: new ol.style.Circle({
+          radius: 10,
+          fill: fillStyle,
+          stroke: strokeStyle
+        })
+      }));
+  this.searchLayer_.setMap(this);
 
   var format = new ol.format.GeoJSON();
 
@@ -743,7 +776,7 @@ lux.Map.prototype.addSearch = function(target) {
     'menuClass' : 'lux-search-suggestions',
     'source'    : function(term, suggest) {
       term = term.toLowerCase();
-      fetch(lux.searchUrl + 'limit=5&query=' + term).then(function(resp) {
+      fetch(lux.searchUrl + 'limit=5&layer=Adresse&query=' + term).then(function(resp) {
         return resp.json();
       }).then(function(json) {
         suggest(json.features);
@@ -753,22 +786,30 @@ lux.Map.prototype.addSearch = function(target) {
       var label = item.properties.label;
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
-      var bbox = (!item.bbox.join) ?
-          format.readGeometry(item.geometry).getExtent() : item.bbox;
+      var geom = /** @type {ol.geom.Point} */ (format.readGeometry(item.geometry));
+      var bbox = (!item.bbox.join) ? geom : item.bbox;
       return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
+          'data-coord="' + geom.getCoordinates().join(',') + '"' +
           'data-extent="' + bbox.join(',') + '">' +
           label.replace(re, '<b>$1</b>') +
           '</div>';
     },
     'onSelect' : function(e, term, item) {
+      var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
       var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
+      this.searchLayer_.getSource().clear();
+      this.searchLayer_.getSource().addFeature(new ol.Feature(
+        new ol.geom.Point(
+          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
+        )
+      ));
       this.getView().fit(
         ol.geom.Polygon.fromExtent(
           ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
         ),
         /** @type {Array<number>} */ (this.getSize()),
         /** @type {olx.view.FitOptions} */ ({
-          minResolution: .5
+          maxZoom: 17
         })
       );
     }.bind(this)
