@@ -497,6 +497,10 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
     return;
   }
   layers.forEach(function(layer, index) {
+    if (layer == 'blank') {
+      this.getLayers().push(this.blankLayer_);
+      return;
+    }
     var layerConf = this.findLayerConf_(layer);
     var fn = (layerConf.type.indexOf('WMS') != -1) ?
       lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
