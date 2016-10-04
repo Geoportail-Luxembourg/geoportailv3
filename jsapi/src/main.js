@@ -210,6 +210,41 @@ lux.Map = function(options) {
    */
   this.searchLayer_ = null;
 
+  var fillStyle = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+
+  var strokeStyle = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+
+  /**
+   * @private
+   * @type {ol.style.Style} The style to be used for the show and search
+   *     layers.
+   */
+  this.vectorStyle_ = new ol.style.Style({
+    fill: fillStyle,
+    stroke: strokeStyle,
+    image: new ol.style.Circle({
+      radius: 10,
+      fill: fillStyle,
+      stroke: strokeStyle
+    })
+  });
+
+  /**
+   * @private
+   * @type {ol.layer.Vector} The layer to use to show features (using
+   *     showFeature method)
+   */
+  this.showLayer_ = new ol.layer.Vector({
+    source: new ol.source.Vector()
+  });
+
+  this.showLayer_.setStyle(this.vectorStyle_);
+
   /**
    * @private
    * @type {ol.layer.Tile} The blank layer.
@@ -348,6 +383,8 @@ lux.Map = function(options) {
 
   this.stateManager_ = new lux.StateManager();
   this.stateManager_.setMap(this);
+
+  this.showLayer_.setMap(this);
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -691,21 +728,31 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @export
  */
 lux.Map.prototype.showFeatures = function(layer, ids) {
+  // remove any highlighted feature
+  this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
+    var lid = this.findLayerConf_(layer).id;
+    // check if layer corresponding to feature is shown on the map
+    // if so, then highlight the feature
+    var visible = this.getLayers().getArray().some(function(l) {
+      return l.get('id') === lid;
+    });
     ids.forEach(function(id) {
-      var lid = this.findLayerConf_(layer).id;
       var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
         return resp.json();
-      }).then(this.addFeature.bind(this));
+      }).then(function(json) {
+        this.addFeature(json, visible);
+      }.bind(this));
     }.bind(this));
   }.bind(this));
 };
 
 /**
  * @param {Object} json GeoJSON object
+ * @param {boolean} highlight Whether or not to highlight the features.
  */
-lux.Map.prototype.addFeature = function(json) {
+lux.Map.prototype.addFeature = function(json, highlight) {
   var format = new ol.format.GeoJSON();
   json[0].features.forEach(function(f) {
     f.properties = f.attributes;
@@ -740,6 +787,9 @@ lux.Map.prototype.addFeature = function(json) {
       });
     }
   }.bind(this));
+  if (highlight) {
+    this.showLayer_.getSource().addFeatures(features);
+  }
 };
 
 /**
@@ -779,29 +829,11 @@ lux.Map.prototype.addSearch = function(target) {
     clear.style.display = (input.value == '') ? '' : 'block';
   });
 
-  var fillStyle = new ol.style.Fill({
-    color: [255, 255, 0, 0.6]
-  });
-
-  var strokeStyle = new ol.style.Stroke({
-    color: [255, 155, 55, 1],
-    width: 3
-  });
-
   this.searchLayer_ = new ol.layer.Vector({
     source: new ol.source.Vector()
   });
 
-  this.searchLayer_.setStyle(
-      new ol.style.Style({
-        fill: fillStyle,
-        stroke: strokeStyle,
-        image: new ol.style.Circle({
-          radius: 10,
-          fill: fillStyle,
-          stroke: strokeStyle
-        })
-      }));
+  this.searchLayer_.setStyle(this.vectorStyle_);
   this.searchLayer_.setMap(this);
 
   var format = new ol.format.GeoJSON();
