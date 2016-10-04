@@ -9,7 +9,7 @@ var map = new lux.Map({
   positionSrs : '4326',
   zoom        : 14,
   bgLayer     : 655,
-  layers      : [ 'arrets_bus' ],
+  layers      : [ 'arrets_bus', 543 ],
   features    : {
     ids   : ['103242'],
     layer : '199'
