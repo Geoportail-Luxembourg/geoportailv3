@@ -95,5 +95,6 @@ lux.StateManager.prototype.updateState = function(object) {
       return key + '=' + encodeURIComponent(this.state_[key]);
     }.bind(this)).join('&');
     logo.href += '&version=3';
+    logo.target = '_blank';
   }
 };
