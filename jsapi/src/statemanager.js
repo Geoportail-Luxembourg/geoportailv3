@@ -58,8 +58,8 @@ lux.StateManager.prototype.setMap = function(map) {
       if (index === 0) {
         object['bgLayer'] = layer.get('name');
       } else {
-        layers.push(layer.get('id'));
-        opacities.push(layer.get('visible') ? layer.getOpacity() : 0);
+        layers.unshift(layer.get('id'));
+        opacities.unshift(layer.get('visible') ? layer.getOpacity() : 0);
         layersListenerKeys[layer.get('id')] = ol.events.listen(
           layer,
           'change:visible',
