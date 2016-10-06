@@ -10,7 +10,7 @@ var map = new lux.Map({
   bgLayer     : 655,
   layers      : [ 'arrets_bus' ],
   features    : {
-    ids   : ['465467'],
-    layer : '543'
+    ids   : ['103242'],
+    layer : '199'
   }
 });
