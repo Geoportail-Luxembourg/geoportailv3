@@ -169,6 +169,10 @@ def main(global_config, **settings):
         "reverse_geocode",
         "/geocode/reverse"
     )
+    config.add_route(
+        "geocode",
+        "/geocode/search"
+    )
     # pag routes
     config.add_route(
         "pag_url",
