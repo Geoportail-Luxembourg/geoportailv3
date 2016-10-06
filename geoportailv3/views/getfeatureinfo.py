@@ -6,10 +6,14 @@ import traceback
 import urllib2
 
 from urllib import urlencode
+from pyramid.renderers import render
 from pyramid.view import view_config
+from pyramid.i18n import get_localizer, TranslationStringFactory
 from geoportailv3.models import LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
+from pkg_resources import resource_filename
+from os.path import isfile
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
@@ -266,6 +270,28 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
                                 luxgetfeaturedefinition.remote_template))
+
+
+        if self.request.params.get('tooltip', None) is not None:
+            path = 'templates/tooltip/'
+            localizer = get_localizer(self.request)
+            server = TranslationStringFactory("geoportailv3-server")
+            tooltips = TranslationStringFactory("geoportailv3-tooltips")
+            _s = lambda s: localizer.translate(server(s))
+            _t = lambda s: localizer.translate(tooltips(s))
+            for r in results:
+                l_template = r['template']
+                filename = resource_filename('geoportailv3', path + l_template)
+                template = l_template if isfile(filename) else 'default.html'
+
+                for f in r['features']:
+                    context = {
+                        "_s": _s,
+                        "_t": _t,
+                        "feature": f }
+                    f['attributes']['tooltip'] = render(
+                            'geoportailv3:' + path + template, context)
+
         return results
 
     def remove_features_outside_tolerance(self, features, coords):

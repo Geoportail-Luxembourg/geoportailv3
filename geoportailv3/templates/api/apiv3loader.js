@@ -12,7 +12,7 @@
   document.write('<scr' + 'ipt type="text/javascript" src="'
           + "${request.static_url('geoportailv3:static/build/apiv3.js')}" + '"></scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.setLayersUrl('${request.route_url('jsapilayers')}');" + '</scr' + 'ipt>');
+          + "lux.setBaseUrl('${request.route_url('home')}');" + '</scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
           + "lux.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}');" + '</scr' + 'ipt>');
 })();
