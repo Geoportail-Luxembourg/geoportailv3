@@ -30,32 +30,40 @@ proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.1666666666
 /**
  * @type {string}
  */
-lux.layersUrl = '../layers.json';
+lux.layersUrl = 'jsapilayers';
 
 /**
  * @type {string}
  */
-lux.searchUrl = 'http://map.geoportail.lu/main/wsgi/fulltextsearch?';
+lux.searchUrl = 'fulltextsearch?';
+
+/**
+ * @type {string?}
+ */
+lux.baseUrl = null;
+
+/**
+ * @param {string} url Base url to services
+ */
+lux.setBaseUrl = function(url) {
+  lux.baseUrl = url;
+};
+
 
 /**
  * @type {string}
  */
-lux.baseUrl = 'http://map.geoportail.lu/main/wsgi';
+lux.mymapsUrl = 'mymaps';
 
 /**
  * @type {string}
  */
-lux.mymapsUrl = 'http://map.geoportail.lu/main/wsgi/mymaps';
+lux.elevationUrl = 'raster';
 
 /**
  * @type {string}
  */
-lux.elevationUrl = 'http://map.geoportail.lu/main/wsgi/raster';
-
-/**
- * @type {string}
- */
-lux.queryUrl = 'http://maps.geoportail.lu/main/wsgi/getfeatureinfo?';
+lux.queryUrl = 'getfeatureinfo?';
 
 /**
  * @param {string} url Url to jsapilayers service.
@@ -68,7 +76,7 @@ lux.setLayersUrl = function(url) {
 /**
  * @type {string}
  */
-lux.i18nUrl = '../lang_xx.json';
+lux.i18nUrl = 'proj/api/build/locale/fr/geoportailv3.json';
 
 /**
  * @type {string}
@@ -129,6 +137,27 @@ lux.debounce = function(func, wait, opt_immediate) {
 };
 
 /**
+ * @export
+ */
+lux.initUrls = function() {
+  if (!lux.baseUrl) {
+    lux.layersUrl = '../layers.json';
+    lux.i18nUrl = '../lang_xx.json';
+    lux.queryUrl = 'http://localhost:5000/getfeatureinfo?';
+
+    lux.baseUrl = 'http://map.geoportail.lu/main/wsgi/';
+  } else {
+    lux.layersUrl = lux.baseUrl + lux.layersUrl;
+    lux.i18nUrl = lux.baseUrl + lux.i18nUrl;
+    lux.queryUrl = lux.baseUrl + lux.queryUrl;
+  }
+
+  lux.searchUrl = lux.baseUrl + lux.searchUrl;
+  lux.mymapsUrl = lux.baseUrl + lux.mymapsUrl;
+  lux.elevationUrl = lux.baseUrl + lux.elevationUrl;
+};
+
+/**
  * @classdesc
  * The map is the core component of the Geoportail V3 API.
  *
@@ -138,6 +167,7 @@ lux.debounce = function(func, wait, opt_immediate) {
  * @export
  */
 lux.Map = function(options) {
+  lux.initUrls();
 
   var layers    = [];
   var layerOpacities = [];
@@ -675,7 +705,8 @@ lux.Map.prototype.showFeatures = function(layer, ids) {
   this.layersPromise.then(function() {
     ids.forEach(function(id) {
       var lid = this.findLayerConf_(layer).id;
-      fetch(lux.queryUrl + 'fid=' + lid + '_' + id).then(function(resp) {
+      var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      fetch(uri).then(function(resp) {
         return resp.json();
       }).then(this.addFeature.bind(this));
     }.bind(this));
@@ -703,10 +734,11 @@ lux.Map.prototype.addFeature = function(json) {
   var size = this.getSize();
   features.forEach(function(feature) {
     this.showMarker({
-      position   : ol.extent.getCenter(feature.getGeometry().getExtent()),
-      autoCenter : true,
-      hover      : true,
-      html       : '<center>¯\\_(ツ)_/¯</center>' // TODO: Insert magic here.
+      position    : ol.extent.getCenter(feature.getGeometry().getExtent()),
+      positionSrs : '3857',
+      autoCenter  : true,
+      hover       : true,
+      html        : feature.get('tooltip')
     });
     this.featureExtent_ = ol.extent.extend(
       this.featureExtent_,
