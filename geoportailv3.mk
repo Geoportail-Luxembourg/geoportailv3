@@ -43,6 +43,8 @@ POST_RULES = .build/fonts.timestamp
 
 SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py $(PACKAGE)/views/luxprintproxy.py
 
+TOOLTIPS_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-tooltips.mo, $(LANGUAGES)))
+
 # Add JS API target to "help" target
 SECONDARY_HELP = ""
 SECONDARY_HELP += "\n"
@@ -56,6 +58,8 @@ SECONDARY_HELP += "- clean-js-api		Remove generated files of the JS API project.
 SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
 
 include CONST_Makefile
+
+build-server: template-generate compile-py-catalog $(SERVER_LOCALISATION_FILES) $(CLIENT_LOCALISATION_FILES) $(TOOLTIPS_LOCALISATION_FILES)
 
 # targets related to the JS API
 API_OUTPUT_DIR =  $(OUTPUT_DIR)
