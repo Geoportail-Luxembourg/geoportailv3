@@ -9,120 +9,147 @@ msgstr ""
 "Project-Id-Version: portail\n"
 "PO-Revision-Date: 2016-04-29 05:26+0000\n"
 "Last-Translator: eRenaud Michaëlis <renaud.michaelis@act.etat.lu>\n"
-"Language-Team: Luxembourgish (http://www.transifex.com/geoportail/geoportailv3-lu/language/lb/)\n"
+"Language-Team: Luxembourgish (http://www.transifex.com/geoportail/"
+"geoportailv3-lu/language/lb/)\n"
+"Language: lb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.8\n"
-"Language: lb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ./geoportailv3/views/pag.py:120
+#: geoportailv3/views/pag.py:120
 #, python-format
 msgid "PAG webservice response ${email}"
-msgstr "Votre rapport est en train d'être généré.\n<br>Un email vous sera envoyé à l'adresse ${email} dès qu'il sera disponible"
+msgstr ""
+"Votre rapport est en train d'être généré.\n"
+"<br>Un email vous sera envoyé à l'adresse ${email} dès qu'il sera disponible"
 
-#: ./geoportailv3/views/pag.py:66
+#: geoportailv3/views/pag.py:66
 msgid "PAG Error during report generation"
-msgstr "Bonjour!\n<br>\nil y a eu un souci avec la génération de votre rapport.\nNous sommes désolés.\n<br>\nVeuillez réessayer plus tard\n<br>\n<br>\nMeilleures salutations\n\n<br>\nLe Géoportail."
+msgstr ""
+"Bonjour!\n"
+"<br>\n"
+"il y a eu un souci avec la génération de votre rapport.\n"
+"Nous sommes désolés.\n"
+"<br>\n"
+"Veuillez réessayer plus tard\n"
+"<br>\n"
+"<br>\n"
+"Meilleures salutations\n"
+"\n"
+"<br>\n"
+"Le Géoportail."
 
-#: ./geoportailv3/views/pag.py:68
+#: geoportailv3/views/pag.py:68
 #, python-format
 msgid "PAG Mail the report link ${link}"
-msgstr "Bonjour!\n<br>\n<br>\nVotre rapport PAG est finalisé.\n<br>\n<br>\n<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et du Ministère de l'Intérieur"
+msgstr ""
+"Bonjour!\n"
+"<br>\n"
+"<br>\n"
+"Votre rapport PAG est finalisé.\n"
+"<br>\n"
+"<br>\n"
+"<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n"
+"<br>\n"
+"<br>\n"
+"Meilleures salutations\n"
+"<br>\n"
+"L'équipe du géoportail et du Ministère de l'Intérieur"
 
-#: ./geoportailv3/models.py:26
+#: geoportailv3/models.py:26
 msgid "Allowed measurement for a user"
 msgstr "Allowed measurement for a user"
 
-#: ./geoportailv3/models.py:37
+#: geoportailv3/models.py:37
 msgid "Internal WMS layer"
 msgstr "Internal WMS layer"
 
-#: ./geoportailv3/models.py:38
+#: geoportailv3/models.py:38
 msgid "Internal WMS layers"
 msgstr "Internal WMS layers"
 
-#: ./geoportailv3/models.py:59
+#: geoportailv3/models.py:59
 msgid "External WMS layer"
 msgstr "External WMS layer"
 
-#: ./geoportailv3/models.py:60
+#: geoportailv3/models.py:60
 msgid "External WMS layers"
 msgstr "External WMS layers"
 
-#: ./geoportailv3/models.py:51
+#: geoportailv3/models.py:51
 msgid "Url"
 msgstr "Url"
 
-#: ./geoportailv3/models.py:52
+#: geoportailv3/models.py:52
 msgid "Layers"
 msgstr "Couchen"
 
-#: ./geoportailv3/models.py:53
+#: geoportailv3/models.py:53
 msgid "Is a POI"
 msgstr "Is a POI"
 
-#: ./geoportailv3/models.py:54
+#: geoportailv3/models.py:54
 msgid "Collection ID"
 msgstr "Collection ID"
 
-#: ./geoportailv3/models.py:55
+#: geoportailv3/models.py:55
 msgid "REST url"
 msgstr "REST url"
 
-#: ./geoportailv3/models.py:73
+#: geoportailv3/models.py:73
 msgid "Category ID"
 msgstr "Category ID"
 
-#: ./geoportailv3/models.py:84
+#: geoportailv3/models.py:84
 msgid "Table name"
 msgstr "Table name"
 
-#: ./geoportailv3/models.py:85
+#: geoportailv3/models.py:85
 msgid "URL Rest"
 msgstr "URL Rest"
 
-#: ./geoportailv3/models.py:86
+#: geoportailv3/models.py:86
 msgid "Engine"
 msgstr "Engine"
 
-#: ./geoportailv3/models.py:87
+#: geoportailv3/models.py:87
 msgid "Layer"
 msgstr "Layer"
 
-#: ./geoportailv3/models.py:88
+#: geoportailv3/models.py:88
 msgid "Template file name"
 msgstr "Template file name"
 
-#: ./geoportailv3/models.py:90
+#: geoportailv3/models.py:90
 msgid "Is the template local or remote"
 msgstr "Is the template local or remote"
 
-#: ./geoportailv3/models.py:91
+#: geoportailv3/models.py:91
 msgid "Python function"
 msgstr "Python function"
 
-#: ./geoportailv3/models.py:92
+#: geoportailv3/models.py:92
 msgid "Role"
 msgstr "Role"
 
-#: ./geoportailv3/models.py:93
+#: geoportailv3/models.py:93
 msgid "Attributes to keep"
 msgstr "Attributes to keep"
 
-#: ./geoportailv3/models.py:94
+#: geoportailv3/models.py:94
 msgid "Id of the poi collection"
 msgstr "Id of the poi collection"
 
-#: ./geoportailv3/models.py:95
+#: geoportailv3/models.py:95
 msgid "Geometry column name"
 msgstr "Geometry column name"
 
-#: ./geoportailv3/models.py:96
+#: geoportailv3/models.py:96
 msgid "Order of columns"
 msgstr "Order of columns"
 
-#: ./geoportailv3/models.py:97
+#: geoportailv3/models.py:97
 msgid "ID column name"
 msgstr "ID column name"

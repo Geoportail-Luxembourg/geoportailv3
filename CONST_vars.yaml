@@ -84,7 +84,8 @@ vars:
         roots_with_prefix:
         - ["{closure_library_path}/closure/goog", "{closure_library_path}/closure/goog"]
         - ["{package}:static/js", "{directory}/{package}/static/js"]
-        - ["{node_modules_path}/openlayers", "{node_modules_path}/openlayers"]
+        - ["{node_modules_path}/openlayers/src", "{node_modules_path}/openlayers/src"]
+        - ["{node_modules_path}/openlayers/build", "{node_modules_path}/openlayers/build"]
         - ["{node_modules_path}/ngeo/src", "{node_modules_path}/ngeo/src"]
 
     # The application's default language. This is the language used by
