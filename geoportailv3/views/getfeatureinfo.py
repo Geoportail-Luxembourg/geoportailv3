@@ -271,14 +271,11 @@ class Getfeatureinfo(object):
                                 is_ordered,
                                 luxgetfeaturedefinition.remote_template))
 
-
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
             localizer = get_localizer(self.request)
             server = TranslationStringFactory("geoportailv3-server")
             tooltips = TranslationStringFactory("geoportailv3-tooltips")
-            _s = lambda s: localizer.translate(server(s))
-            _t = lambda s: localizer.translate(tooltips(s))
             for r in results:
                 l_template = r['template']
                 filename = resource_filename('geoportailv3', path + l_template)
@@ -286,9 +283,9 @@ class Getfeatureinfo(object):
 
                 for f in r['features']:
                     context = {
-                        "_s": _s,
-                        "_t": _t,
-                        "feature": f }
+                        "_s": lambda s: localizer.translate(server(s)),
+                        "_t": lambda s: localizer.translate(tooltips(s)),
+                        "feature": f}
                     f['attributes']['tooltip'] = render(
                             'geoportailv3:' + path + template, context)
 
