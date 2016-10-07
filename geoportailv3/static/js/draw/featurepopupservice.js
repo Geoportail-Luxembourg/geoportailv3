@@ -14,6 +14,7 @@ goog.require('ol.coordinate');
 goog.require('ol.MapProperty');
 goog.require('ol.Overlay');
 goog.require('ol.events');
+goog.require('ngeo.filters');
 
 
 /**
