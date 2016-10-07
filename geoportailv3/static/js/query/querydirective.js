@@ -335,7 +335,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
   ol.events.listen(this.map_,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
-        if (this.appActivetool_.isActive() || this.isQuerying_) return;
+        if (this.drawnFeatures_.modifyInteraction.getActive() ||
+            this.appActivetool_.isActive() || this.isQuerying_) return;
         this.selectedFeatures_.clear();
         var found = false;
         var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
