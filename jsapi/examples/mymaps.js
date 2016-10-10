@@ -1,5 +1,6 @@
 goog.provide('mymaps');
 
+goog.require('common');
 goog.require('lux.Map');
 
 var map = new lux.Map({
