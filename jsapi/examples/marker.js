@@ -1,5 +1,6 @@
 goog.provide('marker');
 
+goog.require('common');
 goog.require('lux');
 
 var map = new lux.Map({

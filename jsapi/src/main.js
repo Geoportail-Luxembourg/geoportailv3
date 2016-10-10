@@ -43,9 +43,28 @@ lux.searchUrl = 'fulltextsearch?';
 lux.baseUrl = null;
 
 /**
- * @param {string} url Base url to services
+ * @param {string|null} url Base url to services
+ * @export
  */
 lux.setBaseUrl = function(url) {
+  if (!url) {
+    lux.layersUrl = '../layers.json';
+    lux.i18nUrl = '../lang_xx.json';
+    lux.queryUrl = 'http://localhost:5000/getfeatureinfo?';
+
+    url = 'http://map.geoportail.lu/main/wsgi/';
+  } else {
+    lux.layersUrl = url + lux.layersUrl;
+    lux.i18nUrl = url + lux.i18nUrl;
+    lux.queryUrl = url + lux.queryUrl;
+  }
+
+  lux.searchUrl = url + lux.searchUrl;
+  lux.mymapsUrl = url + lux.mymapsUrl;
+  lux.elevationUrl = url + lux.elevationUrl;
+  lux.geocodeUrl = url + lux.geocodeUrl;
+  lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
+
   lux.baseUrl = url;
 };
 
@@ -146,29 +165,6 @@ lux.debounce = function(func, wait, opt_immediate) {
 };
 
 /**
- * @export
- */
-lux.initUrls = function() {
-  if (!lux.baseUrl) {
-    lux.layersUrl = '../layers.json';
-    lux.i18nUrl = '../lang_xx.json';
-    lux.queryUrl = 'http://localhost:5000/getfeatureinfo?';
-
-    lux.baseUrl = 'http://map.geoportail.lu/main/wsgi/';
-  } else {
-    lux.layersUrl = lux.baseUrl + lux.layersUrl;
-    lux.i18nUrl = lux.baseUrl + lux.i18nUrl;
-    lux.queryUrl = lux.baseUrl + lux.queryUrl;
-  }
-
-  lux.searchUrl = lux.baseUrl + lux.searchUrl;
-  lux.mymapsUrl = lux.baseUrl + lux.mymapsUrl;
-  lux.geocodeUrl = lux.baseUrl + lux.geocodeUrl;
-  lux.reverseGeocodeUrl = lux.baseUrl + lux.reverseGeocodeUrl;
-  lux.elevationUrl = lux.baseUrl + lux.elevationUrl;
-};
-
-/**
  * @classdesc
  * The map is the core component of the Geoportail V3 API.
  *
@@ -178,7 +174,6 @@ lux.initUrls = function() {
  * @export
  */
 lux.Map = function(options) {
-  lux.initUrls();
 
   var layers    = [];
   var layerOpacities = [];
