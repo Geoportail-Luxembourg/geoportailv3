@@ -602,10 +602,11 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          replace: function(url, query) {
-            return url +
+          prepare: function(query, settings) {
+            settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
                 '&limit=5';
+            return settings;
           },
           rateLimitWait: 50,
           transform: function(parsedResponse) {
