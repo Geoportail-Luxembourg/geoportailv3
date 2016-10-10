@@ -1,0 +1,10 @@
+<table>
+  % for attr in feature['attributes']:
+    % if feature['attributes'][attr] != '' :
+      <tr>
+        <td>${_t('f_' + attr)}</td>
+        <td>${feature['attributes'][attr]}</td>
+      </tr>
+    % endif
+  % endfor
+</table>
