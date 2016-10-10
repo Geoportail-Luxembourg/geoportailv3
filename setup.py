@@ -21,6 +21,7 @@ setup(
         'python-ldap',
         'pyramid_ldap',
         'qrcode==5.1',
+        "html5lib==0.9999999",
         "weasyprint==0.23",
         "PyPDF2==1.24",
         "turbomail",
