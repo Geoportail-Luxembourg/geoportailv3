@@ -32,7 +32,7 @@ vars:
     search_index: index
 
     # closure paths
-    closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
+    closure_library_path: 'process.stdout.write(require("closure-util").getLibraryPath())'
 
     servers:
         my_maps: //ws.geoportail.lu/mymaps

@@ -1,4 +1,6 @@
 {
+  "exports": [],
+  "cwd": ".",
   "src": [
     "node_modules/openlayers/src/**/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
@@ -10,6 +12,7 @@
     "closure_entry_point": "app_main",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
       "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
@@ -22,6 +25,8 @@
       "node_modules/ngeo/externs/twbootstrap.js",
       "node_modules/ngeo/externs/closure-compiler.js",
       "node_modules/ngeo/externs/typeahead.js",
+      "node_modules/ngeo/externs/jqueryui.js",
+      "node_modules/ngeo/externs/angular-dynamic-locale.js",
       ".build/externs/angular-1.4.js",
       ".build/externs/angular-1.4-q_templated.js",
       ".build/externs/angular-1.4-http-promise_templated.js",
@@ -38,7 +43,6 @@
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
-      "geoportailv3/static/js/main.js",
       "node_modules/openlayers/externs/olx.js",
       "node_modules/ngeo/externs/ngeox.js",
       "node_modules/openlayers/externs/oli.js"
@@ -90,7 +94,6 @@
     "generate_exports": true,
     "language_in": "ECMASCRIPT5_STRICT",
     "output_wrapper": "(function(){%output%}).call(window);",
-    "use_types_for_optimization": true,
-    "manage_closure_dependencies": true
+    "use_types_for_optimization": true
   }
 }

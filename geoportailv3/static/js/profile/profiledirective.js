@@ -178,11 +178,6 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   };
 
   /**
-   * @type {Object}
-   */
-  var extractor = {z: z, dist: dist};
-
-  /**
    * @type {ol.Feature}
    * @private
    */
@@ -190,7 +185,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   this.featureOverlay_.addFeature(this.snappedPoint_);
 
   /**
-   * @type {ol.events.Key}
+   * @type {ol.EventsKey}
    * @private
    */
   this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
@@ -209,7 +204,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @param {Object} point The point.
    * @param {number} dist The distance.
    * @param {string} xUnits The x unit.
-   * @param {number} elevation The elevation.
+   * @param {Object} elevation The elevation.
    * @param {string} yUnits The y unit.
    */
   var hoverCallback = function(point, dist, xUnits, elevation, yUnits) {
@@ -228,7 +223,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
           this.formatDistance_(dist, xUnits) +
           '<br>' +
           this.elevationLabel_ +
-          this.formatElevation_(elevation, yUnits);
+          this.formatElevation_(elevation['line1'], yUnits);
       this.measureTooltip_.setPosition(curPoint.getCoordinates());
       this.snappedPoint_.setGeometry(new ol.geom.Point([point.x, point.y]));
     }
@@ -242,9 +237,16 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
       this.snappedPoint_.setGeometry(null);
     }
   }, this);
+  var linesConfiguration = {
+    'line1': {
+      style: {},
+      zExtractor: z
+    }
+  };
 
   this['profileOptions'] = {
-    elevationExtractor: extractor,
+    linesConfiguration: linesConfiguration,
+    distanceExtractor: dist,
     hoverCallback: hoverCallback,
     outCallback: outCallback,
     formatter: {

@@ -237,7 +237,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   }.bind(this));
 
   /**
-   * @type {ol.events.Key}
+   * @type {ol.EventsKey}
    * @private
    */
   this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,

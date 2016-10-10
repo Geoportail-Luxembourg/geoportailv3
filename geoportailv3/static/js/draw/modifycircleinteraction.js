@@ -5,11 +5,10 @@ goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.ViewHint');
+goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -132,9 +131,9 @@ app.ModifyCircle = function(options) {
   this.features_ = options.features;
 
   this.features_.forEach(this.addFeature_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.features_, ol.Collection.EventType.ADD,
       this.handleFeatureAdd_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
       this.handleFeatureRemove_, this);
 
 };
@@ -223,7 +222,7 @@ app.ModifyCircle.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 app.ModifyCircle.prototype.handleFeatureAdd_ = function(evt) {
@@ -248,7 +247,7 @@ app.ModifyCircle.prototype.handleFeatureChange_ = function(evt) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 app.ModifyCircle.prototype.handleFeatureRemove_ = function(evt) {
@@ -417,7 +416,7 @@ app.ModifyCircle.handleEvent = function(mapBrowserEvent) {
   }
 
   var handled;
-  if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
+  if (!mapBrowserEvent.map.getView().getHints()[ol.View.Hint.INTERACTING] &&
       mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
@@ -516,10 +515,10 @@ app.ModifyCircle.prototype.setGeometryCoordinates_ =
 
 
 /**
- * @return {ol.style.StyleFunction} Styles.
+ * @return {ol.StyleFunction} Styles.
  */
 app.ModifyCircle.getDefaultStyleFunction = function() {
-  var style = ol.style.createDefaultEditingStyles();
+  var style = ol.style.Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[ol.geom.GeometryType.POINT];
   };

@@ -323,9 +323,9 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   }, this));
 
   ol.events.listen(this.map_.getLayers(),
-      ol.CollectionEventType.REMOVE,
+      ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} e Collection event.
+       * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         if (this['appSelector'] == this.QUERYPANEL_) {
