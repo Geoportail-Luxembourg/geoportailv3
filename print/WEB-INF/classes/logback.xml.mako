@@ -40,13 +40,19 @@
             <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </layout>
     </appender>
-
+    <logger name="org.apache" level="ERROR" />
+    <!-- Set spec logger to INFO to log all print spec json data -->
+    <logger name="org.mapfish.print.servlet.spec" level="OFF" />
+    <!-- Set ValuesLogger to INFO to show all template parameters -->
+    <logger name="org.mapfish.print.output.ValuesLogger" level="OFF" />
+    <logger name="net.sf.jasperreports" level="ERROR" />
     <logger name="org.mapfish" level="${"DEBUG" if development else "ERROR"}" />
     <logger name="org.springframework" level="OFF" />
     <!-- Set spec logger to INFO to log all print spec json data -->
     <logger name="org.mapfish.print.servlet.BaseMapServlet.spec" level="OFF" />
-    <logger name="com.codahale.metrics" level="INFO" />
-    <logger name="com.codahale.metrics.JmxReporter" level="INFO" />
+    <logger name="org.mapfish.print" level="OFF"/>
+    <logger name="com.codahale.metrics" level="OFF" />
+    <logger name="com.codahale.metrics.JmxReporter" level="OFF" />
 
 
     <root level="ALL">
