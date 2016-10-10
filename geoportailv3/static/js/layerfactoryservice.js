@@ -79,7 +79,8 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
       url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
           '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
     }
-
+    var projection = ol.proj.get('EPSG:3857');
+    var extent = projection.getExtent();
     var layer = new ol.layer.Tile({
       source: new ol.source.WMTS({
         url: url,
@@ -87,9 +88,10 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
         matrixSet: 'GLOBAL_WEBMERCATOR_4_V3',
         format: imageType,
         requestEncoding: ol.source.WMTSRequestEncoding.REST,
-        projection: ol.proj.get('EPSG:3857'),
+        projection: projection,
         tileGrid: new ol.tilegrid.WMTS({
-          origin: [-20037508.3428, 20037508.3428],
+          origin: ol.extent.getTopLeft(extent),
+          extent: extent,
           resolutions: [156543.033928, 78271.516964,
             39135.758482, 19567.879241, 9783.9396205,
             4891.96981025, 2445.98490513, 1222.99245256,
