@@ -7,7 +7,7 @@ goog.provide('app.DrawnFeatures');
 
 goog.require('app');
 goog.require('ngeo.Location');
-goog.require('ngeo.format.FeatureHash');
+goog.require('app.format.FeatureHash');
 goog.require('ol.Collection');
 
 
@@ -76,10 +76,10 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   };
 
   /**
-   * @type {ngeo.format.FeatureHash}
+   * @type {app.format.FeatureHash}
    * @private
    */
-  this.fhFormat_ = new ngeo.format.FeatureHash({
+  this.fhFormat_ = new app.format.FeatureHash({
     encodeStyles: false,
     properties: (
         goog.bind(
@@ -216,10 +216,20 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
 
       feature.set('opacity', +opacity);
       var stroke = /** @type {string} */ (feature.get('stroke'));
+      if (isNaN(stroke)) {
+        stroke = 2;
+      }
       feature.set('stroke', +stroke);
       var size = /** @type {string} */ (feature.get('size'));
+      if (isNaN(size)) {
+        size = 10;
+      }
       feature.set('size', +size);
+
       var angle = /** @type {string} */ (feature.get('angle'));
+      if (isNaN(angle)) {
+        angle = 0;
+      }
       feature.set('angle', +angle);
       var isLabel = /** @type {string} */ (feature.get('isLabel'));
       feature.set('isLabel', isLabel === 'true');
