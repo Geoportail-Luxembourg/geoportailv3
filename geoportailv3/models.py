@@ -104,3 +104,4 @@ class LuxPrintJob(Base):
     id = Column(String, primary_key=True)
     spec = Column(Unicode)
     creation = Column(DateTime)
+    is_error = Column(Boolean, default=False)
