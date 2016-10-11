@@ -47,11 +47,13 @@
 
 import json
 import logging
+import sys
+import traceback
 from cStringIO import StringIO
 from datetime import datetime
 
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPUnauthorized
+from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -74,7 +76,6 @@ class LuxPrintProxy(PrintProxy):
             self.config["print_url"],
             self.request.matchdict.get("format")
         ))
-
         spec = json.loads(self.request.body)
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
@@ -93,6 +94,18 @@ class LuxPrintProxy(PrintProxy):
         return self._build_response(
             resp, content, False, "print"
         )
+
+    @view_config(route_name="lux_printproxy_status")
+    def lux_status(self):
+        try:
+            self.a()
+            return self.status()
+        except:
+            traceback.print_exc(file=sys.stdout)
+            ref = self.request.matchdict.get("ref")
+            job = DBSession.query(LuxPrintJob).get(ref)
+            job.is_error = True
+            return HTTPInternalServerError()
 
     def _is_authorized(self, internal_wms):
         if internal_wms.public:
@@ -141,32 +154,36 @@ class LuxPrintProxy(PrintProxy):
     @view_config(route_name="lux_printproxy_report_get")
     def lux_report_get(self):
         ref = self.request.matchdict.get("ref")
-        resp, content = self._proxy("%s/report/%s" % (
-            self.config["print_url"], ref
-        ))
+        job = DBSession.query(LuxPrintJob).get(ref)
 
-        job = DBSession.query(LuxPrintJob).get(
-            self.request.matchdict.get("ref")
-        )
-        attributes = json.loads(job.spec)["attributes"]
+        try:
+            resp, content = self._proxy("%s/report/%s" % (
+                self.config["print_url"], ref
+            ))
 
-        if "legend" in attributes and attributes["legend"] is not None:
-            merger = PdfFileMerger()
-            merger.append(StringIO(content))
+            attributes = json.loads(job.spec)["attributes"]
 
-            lang = attributes.get("lang")
+            if "legend" in attributes and attributes["legend"] is not None:
+                merger = PdfFileMerger()
+                merger.append(StringIO(content))
 
-            for item in attributes["legend"]:
-                merger.append(self._get_legend(item["name"], lang))
+                lang = attributes.get("lang")
 
-            content = StringIO()
-            merger.write(content)
-            content = content.getvalue()
+                for item in attributes["legend"]:
+                    merger.append(self._get_legend(item["name"], lang))
 
-        DBSession.delete(job)
+                content = StringIO()
+                merger.write(content)
+                content = content.getvalue()
 
-        resp["content-disposition"] =\
-            "attachment; filename=map_geoportal_lu.pdf"
-        return self._build_response(
-            resp, content, NO_CACHE, "print"
-        )
+            DBSession.delete(job)
+
+            resp["content-disposition"] =\
+                "attachment; filename=map_geoportal_lu.pdf"
+            return self._build_response(
+                resp, content, NO_CACHE, "print"
+            )
+        except:
+            traceback.print_exc(file=sys.stdout)
+            job.is_error = True
+            return HTTPInternalServerError()
