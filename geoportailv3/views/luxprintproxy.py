@@ -98,7 +98,6 @@ class LuxPrintProxy(PrintProxy):
     @view_config(route_name="lux_printproxy_status")
     def lux_status(self):
         try:
-            self.a()
             return self.status()
         except:
             traceback.print_exc(file=sys.stdout)
