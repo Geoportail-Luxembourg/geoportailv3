@@ -79,6 +79,13 @@ lux.StateManager.prototype.setMap = function(map) {
 };
 
 /**
+ * @param {string} id The mymap id.
+ */
+lux.StateManager.prototype.setMyMap = function(id) {
+  this.updateState({'map_id': id});
+};
+
+/**
  * Updates the attribution logo href.
  * @param {luxx.State} object The params to update.
  */
