@@ -384,17 +384,6 @@ lux.Map = function(options) {
 
   this.getTargetElement().classList.add('lux-map');
 
-  if (options.layerManager) {
-    target = options.layerManager.target;
-    el = typeof target === 'string' ?
-         document.getElementById(target) :
-         target;
-    var control = new lux.LayerManager({
-      target: el
-    });
-    this.addControl(control);
-  }
-
   ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
       this.checkForExclusion_, this);
 
