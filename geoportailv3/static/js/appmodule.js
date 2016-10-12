@@ -35,3 +35,16 @@ app.sanitizeFilename = function(name) {
   name = name.replace(/\s+/g, '_'); // Replace white space with _.
   return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special character.
 };
+
+app.module.config(['$httpProvider', function($httpProvider) {
+  $httpProvider.interceptors.push('noCacheInterceptor');
+}]).factory('noCacheInterceptor', function() {
+  return {
+    request: function(config) {
+      if (config.method == 'GET' && config.url.indexOf('.html') === -1) {
+        var separator = config.url.indexOf('?') === -1 ? '?' : '&';
+        config.url = config.url + separator + 'noCache=' + new Date().getTime();
+      }
+      return config;
+    }};
+});
