@@ -177,7 +177,7 @@ lux.Map = function(options) {
 
   var layers    = [];
   var layerOpacities = [];
-  var defaultBg = 652; // 'streets_jpeg';
+  var defaultBg = 'basemap_2015_global';
 
   /**
    * @private
