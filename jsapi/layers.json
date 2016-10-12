@@ -901,12 +901,12 @@
             "exclusion": "[1, 2]"
         }
     },
-    "145": {
+    "147": {
         "layers": "arrets_bus",
         "style": "default",
         "name": "arrets_bus",
         "type": "internal WMS",
-        "id": 145,
+        "id": 147,
         "imageType": "image/png",
         "metadata": {
             "legend_name": "mobiliteit:arrets_de_bus",
@@ -2678,20 +2678,6 @@
         "metadata": {
             "metadata_id": "ced4a3dd-135e-43d0-86b9-2318982581f7",
             "exclusion": "[106,206]"
-        }
-    },
-    "147": {
-        "style": "default",
-        "name": "topo_tour_20k",
-        "url": "http://wmts.geoportail.lu/mapproxy_4_v3/wmts/1.0.0/WMTSCapabilities.xml",
-        "matrixSet": "GLOBAL_WEB_MERCATOR",
-        "dimensions": {},
-        "type": "WMTS",
-        "id": 147,
-        "imageType": "image/png",
-        "metadata": {
-            "legend_name": "topo_tour_20k",
-            "metadata_id": "1173_"
         }
     },
     "374": {
