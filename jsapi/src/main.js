@@ -872,7 +872,7 @@ lux.Map.prototype.addSearch = function(target) {
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
       var geom = /** @type {ol.geom.Point} */ (format.readGeometry(item.geometry));
-      var bbox = (!item.bbox.join) ? geom : item.bbox;
+      var bbox = (!item['bbox']['join']) ? geom.getExtent() : item['bbox'];
       return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
           'data-coord="' + geom.getCoordinates().join(',') + '"' +
           'data-extent="' + bbox.join(',') + '">' +
