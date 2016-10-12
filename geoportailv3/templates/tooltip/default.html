@@ -1,6 +1,7 @@
+<% import numbers %>
 <table>
   % for attr in feature['attributes']:
-    % if feature['attributes'][attr] != '' :
+    % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], basestring) and feature['attributes'][attr] != '':
       <tr>
         <td>${_t('f_' + attr)}</td>
         <td>${feature['attributes'][attr]}</td>
