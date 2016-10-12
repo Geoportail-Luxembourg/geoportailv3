@@ -1071,6 +1071,8 @@ lux.Map.prototype.addMyMapLayer = function(options) {
     var mymap = new lux.MyMap(options);
     mymap.setMap(this);
   }.bind(this));
+
+  this.stateManager_.setMyMap(options.mapId);
 };
 
 /**
