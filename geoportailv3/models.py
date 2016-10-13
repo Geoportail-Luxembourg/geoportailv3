@@ -5,6 +5,7 @@ import sqlahelper
 
 from pyramid.i18n import TranslationStringFactory
 
+from c2cgeoportal.models import * # noqa
 from c2cgeoportal.models import LayerInternalWMS, LayerExternalWMS
 from c2cgeoportal.models import DBSession  # noqa
 from pyramid.security import Allow, ALL_PERMISSIONS, DENY_ALL
@@ -76,7 +77,9 @@ class LuxLayerExternalWMS(LayerExternalWMS):
 class LuxGetfeatureDefinition(Base):
     __tablename__ = 'lux_getfeature_definition'
     __table_args__ = {'schema': _schema}
-
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
     id = Column(
         Integer,
         primary_key=True
@@ -100,7 +103,9 @@ class LuxGetfeatureDefinition(Base):
 class LuxPrintJob(Base):
     __tablename__ = 'lux_print_job'
     __table_args__ = {'schema': _schema}
-
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
     id = Column(String, primary_key=True)
     spec = Column(Unicode)
     creation = Column(DateTime)
