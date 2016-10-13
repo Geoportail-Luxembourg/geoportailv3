@@ -46,7 +46,7 @@
     <!-- Set ValuesLogger to INFO to show all template parameters -->
     <logger name="org.mapfish.print.output.ValuesLogger" level="OFF" />
     <logger name="net.sf.jasperreports" level="ERROR" />
-    <logger name="org.mapfish" level="${"DEBUG" if development else "ERROR"}" />
+    <logger name="org.mapfish" level="ERROR" />
     <logger name="org.springframework" level="OFF" />
     <!-- Set spec logger to INFO to log all print spec json data -->
     <logger name="org.mapfish.print.servlet.BaseMapServlet.spec" level="OFF" />
