@@ -103,11 +103,7 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
       dataProjection: 'EPSG:4326',
       featureProjection: this['map'].getView().getProjection()
     });
-  gpx = gpx.replace('<gpx ',
-      '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-      ' version="1.1" ' +
-      'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-      'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
+
   this.exportFeatures_(gpx, 'gpx', app.sanitizeFilename(name));
 };
 
