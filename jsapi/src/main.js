@@ -445,7 +445,10 @@ lux.Map.prototype.showMarker = function(opt_options) {
         ol.events.EventType.MOUSEMOVE : ol.events.EventType.CLICK;
     ol.events.listen(element, showPopupEvent, (function() {
       if (!popup) {
-        var element = lux.buildPopupLayout(options.html, !options.hover);
+        var cb = options.hover ? undefined : function() {
+          this.removeOverlay(popup);
+        }.bind(this);
+        var element = lux.buildPopupLayout(options.html, cb);
         popup = new ol.Overlay({
           element: element,
           position: position,
@@ -453,13 +456,6 @@ lux.Map.prototype.showMarker = function(opt_options) {
           offset: [0, -20],
           insertFirst: false
         });
-
-        if (!options.hover) {
-          var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-          ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-            this.removeOverlay(popup);
-          }.bind(this));
-        }
       }
       this.addOverlay(popup);
       this.renderSync();
@@ -479,10 +475,11 @@ lux.Map.prototype.showMarker = function(opt_options) {
  * Builds the popup layout.
  * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
  *    into the popup.
- * @param {boolean} addCloseBtn Whether to add a close button or not.
+ * @param {function=} closeCallback Optional callback function. If set a close
+ *    button is added.
  * @return {Element} The created element.
  */
-lux.buildPopupLayout = function(html, addCloseBtn) {
+lux.buildPopupLayout = function(html, closeCallback) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup'
   });
@@ -502,7 +499,7 @@ lux.buildPopupLayout = function(html, addCloseBtn) {
     goog.dom.append(content, html);
   }
 
-  if (addCloseBtn) {
+  if (closeCallback) {
     var header = goog.dom.createDom(goog.dom.TagName.H3, {
       'class': 'lux-popup-header'
     });
@@ -512,6 +509,8 @@ lux.buildPopupLayout = function(html, addCloseBtn) {
     closeBtn.innerHTML = '&times;';
     goog.dom.append(header, closeBtn);
     elements.push(header);
+
+    ol.events.listen(closeBtn, ol.events.EventType.CLICK, closeCallback);
   }
 
   elements.push(content);
@@ -1034,7 +1033,10 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
       }
       html += '</table>';
 
-      var element = lux.buildPopupLayout(html, true);
+      var element = lux.buildPopupLayout(html, true, function() {
+        this.removeOverlay(popup);
+        interaction.getFeatures().clear();
+      }.bind(this));
       popup = new ol.Overlay({
         element: element,
         position: e.mapBrowserEvent.coordinate,
@@ -1044,11 +1046,6 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
       });
       this.addOverlay(popup);
 
-      var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-      ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-        this.removeOverlay(popup);
-        interaction.getFeatures().clear();
-      }.bind(this));
     }.bind(this));
 
     ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
@@ -1266,7 +1263,9 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       });
     }.bind(this));
 
-    var element = lux.buildPopupLayout(htmls.join('<hr>'), true);
+    var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+      this.removeOverlay(this.queryPopup_);
+    }.bind(this));
     this.queryPopup_ = new ol.Overlay({
       element: element,
       position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
@@ -1277,10 +1276,5 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
     this.addOverlay(this.queryPopup_);
     this.renderSync();
-
-    var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-    ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-      this.removeOverlay(this.queryPopup_);
-    }.bind(this));
   }.bind(this));
 };
