@@ -1,0 +1,4 @@
+<div ng-repeat="layer in ctrl.layers">
+  <iframe ng-if="ctrl.hasLegend(layer)" width="100%" height="400" frameborder="0" ng-src="{{ctrl.getLegendUrl(layer)}}">
+  </iframe>
+</div>

@@ -158,6 +158,18 @@
             </div>
           </div>
         </div>
+        <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">
+          <h2 translate>legends</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-layerlegends app-layerlegends-map="::mainCtrl.map"
+              app-layerlegends-layers="::mainCtrl.selectedLayers">
+            </app-layerlegends>
+          </div>
+        </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
@@ -173,6 +185,9 @@
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
           <a href translate>Infos<span ng-show="mainCtrl.infosHiddenContent">(*)</span></a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.legendsOpen" class="legends icon">
+          <a href translate>Legends</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
@@ -286,6 +301,7 @@
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
+         appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
          appModule.value('appDrawTemplateUrl', 'draw/draw.html');
          appModule.value('appFeaturePopupTemplateUrl', 'draw/featurepopup.html');

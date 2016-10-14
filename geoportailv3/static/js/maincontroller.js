@@ -175,6 +175,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['legendsOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['layersOpen'] = false;
   /**
    * @type {boolean}
@@ -395,7 +400,8 @@ app.MainController.prototype.manageSelectedLayers_ =
  * @export
  */
 app.MainController.prototype.closeSidebar = function() {
-  this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] = false;
+  this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
+      this['legendsOpen'] = false;
 };
 
 
@@ -404,7 +410,8 @@ app.MainController.prototype.closeSidebar = function() {
  * @export
  */
 app.MainController.prototype.sidebarOpen = function() {
-  return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'];
+  return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
+      this['legendsOpen'];
 };
 
 

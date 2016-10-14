@@ -18,6 +18,7 @@ goog.require('app.drawDirective');
 goog.require('app.elevationDirective');
 goog.require('app.layerinfoDirective');
 goog.require('app.layermanagerDirective');
+goog.require('app.layerlegendsDirective');
 goog.require('app.locationinfoDirective');
 goog.require('app.mapDirective');
 goog.require('app.measureDirective');
