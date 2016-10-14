@@ -161,8 +161,10 @@ class LuxPrintProxy(PrintProxy):
             ))
 
             attributes = json.loads(job.spec)["attributes"]
+            is_pdf = json.loads(job.spec)["format"] == "pdf"
 
-            if "legend" in attributes and attributes["legend"] is not None:
+            if is_pdf and "legend" in attributes and\
+                    attributes["legend"] is not None:
                 merger = PdfFileMerger()
                 merger.append(StringIO(content))
 
@@ -176,9 +178,13 @@ class LuxPrintProxy(PrintProxy):
                 content = content.getvalue()
 
             DBSession.delete(job)
+            if is_pdf:
+                resp["content-disposition"] =\
+                    "attachment; filename=map_geoportal_lu.pdf"
+            else:
+                resp["content-disposition"] =\
+                    "attachment; filename=map_geoportal_lu.png"
 
-            resp["content-disposition"] =\
-                "attachment; filename=map_geoportal_lu.pdf"
             return self._build_response(
                 resp, content, NO_CACHE, "print"
             )

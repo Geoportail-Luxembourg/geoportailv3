@@ -483,16 +483,17 @@ app.PrintController.prototype.changeScale = function(newScale) {
 
 
 /**
+ * @param {string} format The print format.
  * @export
  */
-app.PrintController.prototype.print = function() {
+app.PrintController.prototype.print = function(format) {
   this.featurePopup_.hide();
   var map = this.map_;
 
   var dpi = app.PrintController.DPI_;
   var scale = app.PrintController.adjustScale_(map.getView(), this['scale']);
   var layout = this['layout'];
-
+  var curFormat = format;
   var legend = [];
   this.layers_.forEach(function(layer) {
     var name = layer.get('metadata')['legend_name'];
@@ -515,7 +516,7 @@ app.PrintController.prototype.print = function() {
       function(shorturl) {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
-        var format = 'pdf';
+        var format = curFormat;
         // create print spec object
         var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
           'scale': this['scale'],
