@@ -192,6 +192,10 @@ def main(global_config, **settings):
         "pag_files",
         "/pag/files/{_file}"
     )
+    config.add_route(
+        "get_png",
+        "/legends/get"
+    )
 
     # full text search routes
     config.add_route("fulltextsearch", "/fulltextsearch")

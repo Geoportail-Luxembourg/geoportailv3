@@ -1,4 +1,5 @@
 <div ng-repeat="layer in ctrl.layers">
-  <iframe ng-if="ctrl.hasLegend(layer)" width="100%" height="400" frameborder="0" ng-src="{{ctrl.getLegendUrl(layer)}}">
-  </iframe>
+  <div class="row" ng-if="ctrl.hasLegend(layer)">
+    <img widht="450px" ng-src="{{ctrl.getImageLegendUrl(layer)}}">
+  </div>
 </div>

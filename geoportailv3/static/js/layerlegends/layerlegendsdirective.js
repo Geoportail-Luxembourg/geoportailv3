@@ -29,7 +29,6 @@ app.layerlegendsDirective = function(appLayerlegendsTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appLayerlegendsMap',
       'layers': '=appLayerlegendsLayers'
     },
     controller: 'AppLayerlegendsController',
@@ -46,10 +45,17 @@ app.module.directive('appLayerlegends', app.layerlegendsDirective);
 /**
  * @param {angular.$sce} $sce Angular $sce service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+ * @param {string} getPngLegendUrl The url.
  * @constructor
  * @export
  */
-app.LayerlegendsController = function($sce, gettextCatalog) {
+app.LayerlegendsController = function($sce, gettextCatalog, getPngLegendUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.getPngLegendUrl_ = getPngLegendUrl;
+
   /**
    * @type {angular.$sce}
    * @private
@@ -90,6 +96,25 @@ app.LayerlegendsController.prototype.getLegendUrl = function(layer) {
       '//wiki.geoportail.lu/doku.php?id=' +
       currentLanguage + ':legend:' +
       legend_name + '&do=export_html'
+  );
+};
+
+
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {*} the legend url.
+ * @export
+ */
+app.LayerlegendsController.prototype.getImageLegendUrl = function(layer) {
+  var localMetadata = /** @type {Object.<string, string>} */
+    (layer.get('metadata'));
+  var legend_name = ('legend_name' in localMetadata) ?
+      localMetadata['legend_name'] : '';
+  var currentLanguage = this.gettextCatalog.currentLanguage;
+  return this.sce_.trustAsResourceUrl(
+      this.getPngLegendUrl_ + '?lang=' +
+      currentLanguage + '&name=' +
+      legend_name
   );
 };
 
