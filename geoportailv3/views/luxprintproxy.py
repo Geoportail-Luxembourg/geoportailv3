@@ -165,7 +165,7 @@ class LuxPrintProxy(PrintProxy):
 
             if is_pdf and "legend" in attributes and\
                     attributes["legend"] is not None:
-                merger = PdfFileMerger()
+                merger = PdfFileMerger(strict=False)
                 merger.append(StringIO(content))
 
                 lang = attributes.get("lang")
