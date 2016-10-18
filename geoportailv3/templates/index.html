@@ -158,6 +158,19 @@
             </div>
           </div>
         </div>
+        <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">
+          <h2 translate>legends</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-layerlegends
+              app-layerlegends-layers="::mainCtrl.selectedLayers"
+              app-layerlegends-map="::mainCtrl.map">
+            </app-layerlegends>
+          </div>
+        </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
@@ -173,6 +186,9 @@
         </li>
         <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
           <a href translate>Infos<span ng-show="mainCtrl.infosHiddenContent">(*)</span></a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.legendsOpen" class="legends icon">
+          <a href translate>Legends</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
@@ -274,6 +290,8 @@
          appModule.constant('downloadmeasurementUrl', "${request.route_url('download_measurement')}");
          appModule.constant('downloadsketchUrl', "${request.route_url('download_sketch')}");
          appModule.constant('exportgpxkmlUrl', "${request.route_url('exportgpxkml')}");
+         appModule.constant('getPngLegendUrl', "${request.route_url('get_png')}");
+         appModule.constant('getHtmlLegendUrl', "${request.route_url('get_html')}");
          appModule.constant('echocsvUrl', "${request.route_url('echocsv')}");
          appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
          appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
@@ -286,6 +304,7 @@
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
+         appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
          appModule.value('appDrawTemplateUrl', 'draw/draw.html');
          appModule.value('appFeaturePopupTemplateUrl', 'draw/featurepopup.html');

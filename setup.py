@@ -25,7 +25,8 @@ setup(
         "weasyprint==0.23",
         "PyPDF2==1.24",
         "turbomail",
-        "webtest"
+        "webtest",
+        "beautifulsoup4==4.5.1"
     ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
