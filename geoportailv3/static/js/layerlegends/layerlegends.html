@@ -1,5 +1,12 @@
+<div class="layer-info-content" ng-if="ctrl.hasLegend(ctrl.getBgLayer())">
+  <h1>{{ctrl.getBgLayer().get('label') | translate}}</h1>
+  <div ng-bind-html="ctrl.getLegendHtml(ctrl.getBgLayer())">
+  </div>
+</div>
 <div ng-repeat="layer in ctrl.layers">
-  <div class="row" ng-if="ctrl.hasLegend(layer)">
-    <img widht="450px" ng-src="{{ctrl.getImageLegendUrl(layer)}}">
+  <div class="layer-info-content" ng-if="ctrl.hasLegend(layer)">
+    <h1>{{layer.get('label') | translate}}</h1>
+    <div ng-bind-html="ctrl.getLegendHtml(layer)">
+    </div>
   </div>
 </div>

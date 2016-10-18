@@ -29,7 +29,8 @@ app.layerlegendsDirective = function(appLayerlegendsTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'layers': '=appLayerlegendsLayers'
+      'layers': '=appLayerlegendsLayers',
+      'map': '=appLayerlegendsMap'
     },
     controller: 'AppLayerlegendsController',
     controllerAs: 'ctrl',
@@ -43,13 +44,55 @@ app.module.directive('appLayerlegends', app.layerlegendsDirective);
 
 
 /**
+ * @param {angular.$http} $http The angular http service.
  * @param {angular.$sce} $sce Angular $sce service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} getPngLegendUrl The url.
+ * @param {string} getHtmlLegendUrl The url.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ *     manager.
  * @constructor
+ * @ngInject
  * @export
  */
-app.LayerlegendsController = function($sce, gettextCatalog, getPngLegendUrl) {
+app.LayerlegendsController = function($http, $sce, gettextCatalog,
+    getPngLegendUrl, getHtmlLegendUrl, ngeoBackgroundLayerMgr) {
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type {Object.<string, !angular.$q.Promise>}
+   * @private
+   */
+  this.promises_ = {};
+
+  /**
+   * @type {Object.<string, *>}
+   * @private
+   */
+  this.results_ = {};
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.$http_ = $http;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.getHtmlLegendUrl_ = getHtmlLegendUrl;
+
   /**
    * @type {string}
    * @private
@@ -75,9 +118,33 @@ app.LayerlegendsController = function($sce, gettextCatalog, getPngLegendUrl) {
  * @export
  */
 app.LayerlegendsController.prototype.hasLegend = function(layer) {
-  var localMetadata = /** @type {Object.<string, string>} */
-      (layer.get('metadata'));
-  return ('legend_name' in localMetadata);
+  if (layer !== undefined && layer !== null) {
+    var localMetadata = /** @type {Object.<string, string>} */
+        (layer.get('metadata'));
+
+    var isLegendAvailable = (localMetadata !== undefined &&
+      'legend_name' in localMetadata);
+    if (!isLegendAvailable) {
+      return false;
+    }
+
+    var legend_name = ('legend_name' in localMetadata) ?
+        localMetadata['legend_name'] : '';
+    var currentLanguage = this.gettextCatalog.currentLanguage;
+
+    var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
+        currentLanguage + '&name=' + legend_name;
+
+
+    if (!(legendUrl in this.promises_)) {
+      this.promises_[legendUrl] = this.$http_.get(legendUrl).then(
+        function(resp) {
+          this.results_[legendUrl] = this.sce_.trustAsHtml(resp.data);
+        }.bind(this));
+    }
+    return (legendUrl in this.results_);
+  }
+  return false;
 };
 
 
@@ -118,5 +185,37 @@ app.LayerlegendsController.prototype.getImageLegendUrl = function(layer) {
   );
 };
 
+
+/**
+ * @return {*} the trusted legend.
+ * @export
+ */
+app.LayerlegendsController.prototype.getBgLayer = function() {
+  return this.backgroundLayerMgr_.get(this.map_);
+};
+
+
+/**
+ * @param {ol.layer.Layer} layer Layer.
+ * @return {*} the trusted legend.
+ * @export
+ */
+app.LayerlegendsController.prototype.getLegendHtml = function(layer) {
+  if (layer !== undefined && layer !== null) {
+    var localMetadata = /** @type {Object.<string, string>} */
+      (layer.get('metadata'));
+    var legend_name = ('legend_name' in localMetadata) ?
+        localMetadata['legend_name'] : '';
+    var currentLanguage = this.gettextCatalog.currentLanguage;
+
+    var legendUrl = this.getHtmlLegendUrl_ + '?lang=' +
+        currentLanguage + '&name=' + legend_name;
+
+    if (legendUrl in this.results_) {
+      return this.results_[legendUrl];
+    }
+  }
+  return '';
+};
 
 app.module.controller('AppLayerlegendsController', app.LayerlegendsController);

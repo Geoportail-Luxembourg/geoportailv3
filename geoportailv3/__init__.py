@@ -196,6 +196,10 @@ def main(global_config, **settings):
         "get_png",
         "/legends/get"
     )
+    config.add_route(
+        "get_html",
+        "/legends/get_html"
+    )
 
     # full text search routes
     config.add_route("fulltextsearch", "/fulltextsearch")
