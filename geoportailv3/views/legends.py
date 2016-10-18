@@ -40,7 +40,8 @@ class Legends(object):
     def get_html(self):
         lang = self.request.params.get("lang")
         name = self.request.params.get("name")
-
+        if lang == 'lb':
+            lang = 'lu'
         url = \
             "http://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
