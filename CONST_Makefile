@@ -694,6 +694,7 @@ $(VENV_BIN)/flake8: .build/dev-requirements.timestamp
 # Venv
 
 .build/dev-requirements.timestamp: .build/venv.timestamp-noclean CONST_dev-requirements.txt
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) pycparser==2.14
 	$(PIP_CMD) $(PIP_INSTALL_ARGS) $(DEV_REQUIREMENTS) $(PIP_REDIRECT)
 	touch $@
 
@@ -705,6 +706,7 @@ $(VENV_BIN)/flake8: .build/dev-requirements.timestamp
 	touch $@
 
 .build/requirements.timestamp: $(EGGS_DEPENDENCIES)
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) pycparser==2.14
 	$(PIP_CMD) $(PIP_INSTALL_ARGS) $(REQUIREMENTS) $(PIP_REDIRECT)
 	touch $@
 
