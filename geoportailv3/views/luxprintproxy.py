@@ -190,5 +190,7 @@ class LuxPrintProxy(PrintProxy):
             )
         except:
             traceback.print_exc(file=sys.stdout)
-            job.is_error = True
+            print "reference is : " + ref
+            if job is not None:
+                job.is_error = True
             return HTTPInternalServerError()
