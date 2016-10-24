@@ -31,10 +31,16 @@ app.Theme = function($window, ngeoLocation, appThemes,
    * @type {Object}
    */
   this.piwikSiteIdLookup_ = {
-    'main': 18,
+    'eau': 6,
     'tourisme': 7,
     'emwelt': 8,
-    'eau': 6,
+    'agriculture': 9,
+    'pro': 10,
+    'go': 11,
+    'm': 12,
+    'at': 16,
+    'map': 18,
+    'main': 18,
     'pag' : 19
   };
 
