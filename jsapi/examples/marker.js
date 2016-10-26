@@ -5,7 +5,8 @@ goog.require('lux');
 
 var map = new lux.Map({
   target: 'mapContainer',
-  zoom: 14
+  zoom: 14,
+  bgLayer: 'topo_bw_jpeg'
 });
 
 var markerPos = [ 91904, 61566 ];

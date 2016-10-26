@@ -310,7 +310,8 @@ lux.Map = function(options) {
   }.bind(this));
 
   if (options.features) {
-    this.showFeatures(options.features.layer, options.features.ids);
+    var opts = options.features;
+    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target);
   }
 
   var viewOptions = {
@@ -412,6 +413,16 @@ lux.Map.prototype.showMarker = function(opt_options) {
   var options = opt_options || {};
   var element = goog.dom.createDom(goog.dom.TagName.DIV);
   var image = goog.dom.createDom(goog.dom.TagName.IMG);
+  var el;
+  if (options.target) {
+    el = typeof options.target === 'string' ?
+        document.getElementById(options.target) :
+        options.target;
+    if (!(el instanceof Element)) {
+      console.error('Marker target should be a DOM Element or its id');
+      return;
+    }
+  }
   image.src = options.iconURL ||
       'http://openlayers.org/en/master/examples/data/icon.png';
   element.appendChild(image);
@@ -440,11 +451,15 @@ lux.Map.prototype.showMarker = function(opt_options) {
 
   if (options.html) {
     var popup;
-    var showPopupEvent = options.hover ?
-        ol.events.EventType.MOUSEMOVE : ol.events.EventType.CLICK;
+    var showPopupEvent = options.click ?
+        ol.events.EventType.CLICK : ol.events.EventType.MOUSEMOVE;
     ol.events.listen(element, showPopupEvent, (function() {
+      if (options.target) {
+        el.innerHTML = options.html;
+        return;
+      }
       if (!popup) {
-        var cb = options.hover ? undefined : function() {
+        var cb = !options.click ? undefined : function() {
           this.removeOverlay(popup);
         }.bind(this);
         var element = lux.buildPopupLayout(options.html, cb);
@@ -460,8 +475,12 @@ lux.Map.prototype.showMarker = function(opt_options) {
       this.renderSync();
     }).bind(this));
 
-    if (options.hover) {
+    if (!options.click) {
       ol.events.listen(element, ol.events.EventType.MOUSEOUT, function() {
+        if (options.target) {
+          el.innerHTML = '';
+          return;
+        }
         this.removeOverlay(popup);
       }.bind(this));
     }
@@ -738,9 +757,11 @@ lux.Map.prototype.addBgSelector = function(target) {
 /**
  * @param {string|number} layer The layer identifier
  * @param {Array<string|number>} ids Array of features identifiers
+ * @param {boolean?} opt_click True if click is needed to show popup
+ * @param {Element|string?} opt_target Element to render popup content in
  * @export
  */
-lux.Map.prototype.showFeatures = function(layer, ids) {
+lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
   // remove any highlighted feature
   this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
@@ -755,7 +776,7 @@ lux.Map.prototype.showFeatures = function(layer, ids) {
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
-        this.addFeature(json, visible);
+        this.addFeature(json, visible, opt_click, opt_target);
       }.bind(this));
     }.bind(this));
   }.bind(this));
@@ -764,8 +785,10 @@ lux.Map.prototype.showFeatures = function(layer, ids) {
 /**
  * @param {Object} json GeoJSON object
  * @param {boolean} highlight Whether or not to highlight the features.
+ * @param {boolean?} opt_click True if click is needed to show popup
+ * @param {Element|string?} opt_target Element to render popup content in
  */
-lux.Map.prototype.addFeature = function(json, highlight) {
+lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) {
   var format = new ol.format.GeoJSON();
   json[0].features.forEach(function(f) {
     f.properties = f.attributes;
@@ -786,7 +809,8 @@ lux.Map.prototype.addFeature = function(json, highlight) {
       position    : ol.extent.getCenter(feature.getGeometry().getExtent()),
       positionSrs : '3857',
       autoCenter  : true,
-      hover       : true,
+      click       : opt_click,
+      target      : opt_target,
       html        : feature.get('tooltip')
     });
     this.featureExtent_ = ol.extent.extend(
