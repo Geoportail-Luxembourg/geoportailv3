@@ -138,11 +138,17 @@ luxx.MarkerOptions.prototype.html;
 
 
 /**
- * If set, the popup is displayed when hovering the marker and is closed on
- * mouseout.
+ * If set, the popup is displayed when clicking the marker.
  * @type {boolean|undefined}
  */
-luxx.MarkerOptions.prototype.hover;
+luxx.MarkerOptions.prototype.click;
+
+/**
+ * The container for the marker popup, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string}
+ */
+luxx.MarkerOptions.prototype.target;
 
 /**
  * Object literal with config options for the layer.
@@ -280,6 +286,19 @@ luxx.FeaturesOptions.prototype.ids;
  * @type {string|number}
  */
 luxx.FeaturesOptions.prototype.layer;
+
+/**
+ * The container for the feature popup, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string}
+ */
+luxx.FeaturesOptions.prototype.target;
+
+/**
+ * If set, the popup is displayed when clicking the feature.
+ * @type {boolean|undefined}
+ */
+luxx.FeaturesOptions.prototype.click;
 
 /**
  * Object literal with config options for the vector (GPX/KML) layer.
