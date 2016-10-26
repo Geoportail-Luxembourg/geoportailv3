@@ -475,7 +475,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
  * Builds the popup layout.
  * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
  *    into the popup.
- * @param {function=} closeCallback Optional callback function. If set a close
+ * @param {function()=} closeCallback Optional callback function. If set a close
  *    button is added.
  * @return {Element} The created element.
  */
@@ -1033,7 +1033,7 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
       }
       html += '</table>';
 
-      var element = lux.buildPopupLayout(html, true, function() {
+      var element = lux.buildPopupLayout(html, function() {
         this.removeOverlay(popup);
         interaction.getFeatures().clear();
       }.bind(this));
