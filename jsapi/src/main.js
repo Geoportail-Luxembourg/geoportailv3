@@ -55,7 +55,6 @@ lux.setBaseUrl = function(url) {
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
-    lux.queryUrl = url + lux.queryUrl;
   }
 
   lux.searchUrl = url + lux.searchUrl;
