@@ -207,12 +207,16 @@
 
 .lux-popup-content {
   padding: 9px 14px;
+  clear: both;
 
   font-family: @font;
 
   table {
     width: 100%;
   }
+
+  overflow: auto;
+  max-height: 200px;
 }
 
 .lux-popup-close,
@@ -225,7 +229,6 @@
 
   float: right;
   font-size: 21px;
-  font-weight: 700;
   line-height: 1;
   text-shadow: 0 1px 0 #fff;
   opacity: .2;

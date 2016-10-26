@@ -50,9 +50,8 @@ lux.setBaseUrl = function(url) {
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
-    lux.queryUrl = 'http://localhost:5000/getfeatureinfo?';
 
-    url = 'http://map.geoportail.lu/main/wsgi/';
+    url = 'http://apiv3.geoportail.lu/api/wsgi/';
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
@@ -64,6 +63,7 @@ lux.setBaseUrl = function(url) {
   lux.elevationUrl = url + lux.elevationUrl;
   lux.geocodeUrl = url + lux.geocodeUrl;
   lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
+  lux.queryUrl = url + lux.queryUrl;
 
   lux.baseUrl = url;
 };
@@ -258,6 +258,12 @@ lux.Map = function(options) {
   this.blankLayer_ = new ol.layer.Tile();
   this.blankLayer_.set('name', 'blank');
 
+  /**
+   * @private
+   * @type {ol.Overlay} The query popup.
+   */
+  this.queryPopup_ = null;
+
   if (options.bgLayer) {
     layers.push(options.bgLayer);
     delete options.bgLayer;
@@ -387,6 +393,9 @@ lux.Map = function(options) {
   ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
       this.checkForExclusion_, this);
 
+  ol.events.listen(this, ol.MapBrowserEvent.EventType.SINGLECLICK,
+      this.handleSingleclickEvent_, this);
+
   this.stateManager_ = new lux.StateManager();
   this.stateManager_.setMap(this);
 
@@ -436,7 +445,10 @@ lux.Map.prototype.showMarker = function(opt_options) {
         ol.events.EventType.MOUSEMOVE : ol.events.EventType.CLICK;
     ol.events.listen(element, showPopupEvent, (function() {
       if (!popup) {
-        var element = lux.buildPopupLayout(options.html, !options.hover);
+        var cb = options.hover ? undefined : function() {
+          this.removeOverlay(popup);
+        }.bind(this);
+        var element = lux.buildPopupLayout(options.html, cb);
         popup = new ol.Overlay({
           element: element,
           position: position,
@@ -444,13 +456,6 @@ lux.Map.prototype.showMarker = function(opt_options) {
           offset: [0, -20],
           insertFirst: false
         });
-
-        if (!options.hover) {
-          var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-          ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-            this.removeOverlay(popup);
-          }.bind(this));
-        }
       }
       this.addOverlay(popup);
       this.renderSync();
@@ -470,10 +475,11 @@ lux.Map.prototype.showMarker = function(opt_options) {
  * Builds the popup layout.
  * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
  *    into the popup.
- * @param {boolean} addCloseBtn Whether to add a close button or not.
+ * @param {function=} closeCallback Optional callback function. If set a close
+ *    button is added.
  * @return {Element} The created element.
  */
-lux.buildPopupLayout = function(html, addCloseBtn) {
+lux.buildPopupLayout = function(html, closeCallback) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup'
   });
@@ -493,7 +499,7 @@ lux.buildPopupLayout = function(html, addCloseBtn) {
     goog.dom.append(content, html);
   }
 
-  if (addCloseBtn) {
+  if (closeCallback) {
     var header = goog.dom.createDom(goog.dom.TagName.H3, {
       'class': 'lux-popup-header'
     });
@@ -503,6 +509,8 @@ lux.buildPopupLayout = function(html, addCloseBtn) {
     closeBtn.innerHTML = '&times;';
     goog.dom.append(header, closeBtn);
     elements.push(header);
+
+    ol.events.listen(closeBtn, ol.events.EventType.CLICK, closeCallback);
   }
 
   elements.push(content);
@@ -1025,7 +1033,10 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
       }
       html += '</table>';
 
-      var element = lux.buildPopupLayout(html, true);
+      var element = lux.buildPopupLayout(html, true, function() {
+        this.removeOverlay(popup);
+        interaction.getFeatures().clear();
+      }.bind(this));
       popup = new ol.Overlay({
         element: element,
         position: e.mapBrowserEvent.coordinate,
@@ -1035,11 +1046,6 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
       });
       this.addOverlay(popup);
 
-      var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-      ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
-        this.removeOverlay(popup);
-        interaction.getFeatures().clear();
-      }.bind(this));
     }.bind(this));
 
     ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
@@ -1185,4 +1191,90 @@ lux.reverseGeocode = function(coordinate, cb) {
         cb.call(null, json.results[0]);
       }
   );
+};
+
+lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
+
+  if (this.queryPopup_) {
+    this.removeOverlay(this.queryPopup_);
+  }
+  var layers = this.getLayers().getArray();
+
+  // collect the queryable layers
+  var layersToQuery = [];
+  layers.forEach(function(layer) {
+    var metadata = layer.get('metadata');
+    if (metadata && metadata['is_queryable'] && layer.getVisible()) {
+      layersToQuery.push(layer.get('id'));
+    }
+  });
+
+  if (!layersToQuery.length) {
+    return;
+  }
+
+  var bigBuffer = 20;
+  var smallBuffer = 1;
+
+  var lb = ol.proj.transform(
+      this.getCoordinateFromPixel(
+      [evt.pixel[0] - bigBuffer, evt.pixel[1] + bigBuffer]),
+      this.getView().getProjection(), 'EPSG:2169');
+  var rt = ol.proj.transform(
+      this.getCoordinateFromPixel(
+      [evt.pixel[0] + bigBuffer, evt.pixel[1] - bigBuffer]),
+      this.getView().getProjection(), 'EPSG:2169');
+  var big_box = lb.concat(rt);
+
+  lb = ol.proj.transform(
+      this.getCoordinateFromPixel(
+      [evt.pixel[0] - smallBuffer, evt.pixel[1] + smallBuffer]),
+      this.getView().getProjection(), 'EPSG:2169');
+  rt = ol.proj.transform(
+      this.getCoordinateFromPixel(
+      [evt.pixel[0] + smallBuffer, evt.pixel[1] - smallBuffer]),
+      this.getView().getProjection(), 'EPSG:2169');
+  var small_box = lb.concat(rt);
+
+  this.getViewport().style.cursor = 'wait';
+
+  var params = {
+    'layers': layersToQuery.join(),
+    'box1': big_box.join(),
+    'box2': small_box.join(),
+    'tooltip': 1
+  };
+  var url = goog.Uri.parse(lux.queryUrl);
+  Object.keys(params).forEach(function(key) {
+    url.setParameterValue(key, params[key]);
+  });
+  fetch(url.toString()).then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    this.getViewport().style.cursor = '';
+    if (!json || !json.length) {
+      return;
+    }
+    // each item in the result corresponds to a layer
+    var htmls = [];
+    json.forEach(function(resultLayer) {
+      resultLayer.features.forEach(function(f) {
+        htmls.push(f.attributes['tooltip']);
+      });
+    }.bind(this));
+
+    var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+      this.removeOverlay(this.queryPopup_);
+    }.bind(this));
+    this.queryPopup_ = new ol.Overlay({
+      element: element,
+      position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+      positioning: 'bottom-center',
+      offset: [0, -20],
+      insertFirst: false
+    });
+
+    this.addOverlay(this.queryPopup_);
+    this.renderSync();
+  }.bind(this));
 };
