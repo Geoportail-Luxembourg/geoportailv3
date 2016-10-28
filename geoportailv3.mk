@@ -22,6 +22,7 @@ CONFIG_VARS += turbomail
 CONFIG_VARS += authorized_ips
 CONFIG_VARS += pag
 CONFIG_VARS += exclude_theme_layer_search
+CONFIG_VARS += overview_map
 
 APACHE_VHOST ?= luxembourg-geomapfish
 

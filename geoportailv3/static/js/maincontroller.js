@@ -28,6 +28,7 @@ goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.FullScreen');
+goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
 goog.require('ol.layer.Tile');
@@ -61,6 +62,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {boolean} appOverviewMapShow Add or not the overview control.
+ * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @constructor
  * @export
  * @ngInject
@@ -70,7 +73,8 @@ app.MainController = function(
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoSyncArrays, ngeoLocation, appExport, appGetDevice) {
+    ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
+    appOverviewMapShow, appOverviewMapBaseLayer) {
 
   /**
    * @private
@@ -281,6 +285,20 @@ app.MainController = function(
   this.manageUserRoleChange_($scope);
 
   this.loadThemes_().then(function() {
+    this.appThemes_.getBgLayers().then(
+          function(bgLayers) {
+            if (appOverviewMapShow) {
+              var layer = /** @type {ol.layer.Base} */
+                (goog.array.find(bgLayers, function(layer) {
+                  return layer.get('label') === appOverviewMapBaseLayer;
+                }));
+              this.map_.addControl(
+                new ol.control.OverviewMap(
+                  {layers:[layer],
+                  collapseLabel: '\u00BB',
+                  label: '\u00AB'}));
+            }
+          }.bind(this));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
       urlLocationInfo === 'true';
