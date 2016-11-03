@@ -213,6 +213,12 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     app.layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
     layer.set('queryable_id', node['id']);
+    if (goog.object.containsKey(node['metadata'], 'attribution')) {
+      var source = layer.getSource();
+      source.setAttributions(
+        node['metadata']['attribution']
+      );
+    }
     return layer;
   }
 };

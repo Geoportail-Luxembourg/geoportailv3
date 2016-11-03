@@ -323,11 +323,14 @@ app.MainController.prototype.addLocationControl_ =
 app.MainController.prototype.setMap_ = function() {
 
   this.map_ = this['map'] = new ol.Map({
+    logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
       new ol.control.ZoomToExtent({label: '\ue01b',
         extent: this.defaultExtent_}),
-      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'})
+      new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'}),
+      new ol.control.Attribution({collapsible: false,
+        collapsed: false, className: 'geoportailv3-attribution'})
     ],
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
