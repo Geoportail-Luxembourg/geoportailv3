@@ -125,6 +125,13 @@ app.Themes.prototype.getBgLayers = function() {
           goog.asserts.assert('imageType' in item);
           var layer = this.getWmtsLayer_(item['name'], item['imageType']);
           layer.set('metadata', item['metadata']);
+
+          if (goog.object.containsKey(item['metadata'], 'attribution')) {
+            var source = layer.getSource();
+            source.setAttributions(
+              item['metadata']['attribution']
+            );
+          }
           return layer;
         }, this));
 
