@@ -17,6 +17,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -47,6 +48,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -77,6 +79,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -107,6 +110,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -137,6 +141,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -167,6 +172,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -197,6 +203,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -227,6 +234,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -257,6 +265,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -287,6 +296,7 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
+      dataOwner: !string {}
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]

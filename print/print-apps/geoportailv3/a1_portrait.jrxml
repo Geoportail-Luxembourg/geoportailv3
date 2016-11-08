@@ -23,6 +23,9 @@
 	<parameter name="qrimage" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://dev.geoportail.lu/shorten/qr?url=http%3A%2F%2Fdevv3.geoportail.lu%2Fmain"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="dataOwner" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
 	<field name="table" class="net.sf.jasperreports.engine.data.JRMapCollectionDataSource"/>
 	<field name="displayName" class="java.lang.String"/>
 	<field name="reportTemplate" class="java.lang.String"/>
@@ -108,6 +111,14 @@ Droits d'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/
 				</textElement>
 				<textFieldExpression><![CDATA[$P{url}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="0" y="2222" width="1558" height="10" uuid="6659a107-e37b-4a3a-9ce2-cebd8adf86cc"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font fontName="DejaVu Sans" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[CONCATENATE("<span style=\"background-color:#ddd7d4\">",$P{dataOwner},"</span>")]]></textFieldExpression>
+			</textField>
+
 		</band>
 	</title>
 </jasperReport>
