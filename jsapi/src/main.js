@@ -110,6 +110,11 @@ lux.i18nUrl = 'proj/api/build/locale/fr/geoportailv3.json';
  */
 lux.lang = 'fr';
 
+/**
+ * @type {Array<number>?}
+ */
+lux.popupSize = null;
+
 
 /**
  * @type {Object<string, string>} Hash oject with translations.
@@ -123,6 +128,14 @@ lux.i18n = {};
  */
 lux.translate = function(text) {
   return lux.i18n[text] || text;
+};
+
+/**
+ * @param {Array<number>} size Dimensions for popups
+ * @export
+ */
+lux.setPopupSize = function(size) {
+  lux.popupSize = size;
 };
 
 /**
@@ -491,6 +504,12 @@ lux.buildPopupLayout = function(html, closeCallback) {
   var content = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup-content'
   });
+
+  if (lux.popupSize) {
+    container.style.width = lux.popupSize[0] + 'px';
+    content.style.height = lux.popupSize[1] + 'px';
+    content.style.maxHeight = 'none';
+  }
 
   if (typeof html == 'string') {
     content.innerHTML = html;
