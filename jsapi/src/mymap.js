@@ -227,7 +227,7 @@ lux.MyMap.prototype.onFeatureSelected_ = function(event) {
 
   goog.dom.append(content, this.getMeasures(feature));
 
-  var element = lux.buildPopupLayout(content);
+  var element = lux.buildPopupLayout(content, function() {});
 
   this.popup_ = new ol.Overlay({
     element: element,
