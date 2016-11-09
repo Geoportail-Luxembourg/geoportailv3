@@ -517,6 +517,23 @@ app.PrintController.prototype.print = function(format) {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
         var format = curFormat;
+        var dataOwners = [];
+        map.getLayers().forEach(function(layer) {
+          var source = undefined;
+          if (/** @type{Object} */ (layer).getSource instanceof Function) {
+            source = /** @type{Object} */ (layer).getSource();
+          }
+          if (source != undefined) {
+            var attributions = source.getAttributions();
+            if (attributions !== null) {
+              attributions.forEach(function(attribution) {
+                dataOwners.push(attribution.getHTML());
+              }.bind(this));
+            }
+          }
+        });
+        goog.array.removeDuplicates(dataOwners);
+
         // create print spec object
         var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
           'scale': this['scale'],
@@ -525,7 +542,8 @@ app.PrintController.prototype.print = function(format) {
           'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
           'lang': this.gettextCatalog_.currentLanguage,
           'legend': this['legend'] ? legend : null,
-          'scalebar': {'geodetic': true}
+          'scalebar': {'geodetic': true},
+          'dataOwner': dataOwners.join(' ')
         });
         var piwikUrl =
             goog.string.buildString('http://',
