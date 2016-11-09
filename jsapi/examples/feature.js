@@ -15,3 +15,5 @@ var map = new lux.Map({
     layer : '199'
   }
 });
+
+lux.setPopupSize([400, 200]);
