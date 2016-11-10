@@ -30,6 +30,7 @@ app.ThemesEventType = {
 /**
  * @constructor
  * @extends {ol.events.EventTarget}
+ * @param {angular.$window} $window Window.
  * @param {angular.$http} $http Angular http service.
  * @param {string} treeUrl URL to "themes" web service.
  * @param {string} isThemePrivateUrl URL to check if theme is public.
@@ -37,7 +38,7 @@ app.ThemesEventType = {
  * @param {app.BlankLayer} appBlankLayer Blank Layer service.
  * @ngInject
  */
-app.Themes = function($http, treeUrl, isThemePrivateUrl,
+app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer) {
 
   goog.base(this);
@@ -47,6 +48,16 @@ app.Themes = function($http, treeUrl, isThemePrivateUrl,
    * @private
    */
   this.$http_ = $http;
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.isRetina_ = $window.matchMedia(
+              '(-webkit-min-device-pixel-ratio: 2), ' +
+              '(min-device-pixel-ratio: 2), ' +
+              '(min-resolution: 192dpi)'
+      ).matches;
 
   /**
    * @type {app.GetWmtsLayer}
@@ -123,7 +134,9 @@ app.Themes.prototype.getBgLayers = function() {
         var bgLayers = data['background_layers'].map(goog.bind(function(item) {
           goog.asserts.assert('name' in item);
           goog.asserts.assert('imageType' in item);
-          var layer = this.getWmtsLayer_(item['name'], item['imageType']);
+          var layer = this.getWmtsLayer_(
+            item['name'], item['imageType'], this.isRetina_
+          );
           layer.set('metadata', item['metadata']);
 
           if (goog.object.containsKey(item['metadata'], 'attribution')) {
