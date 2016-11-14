@@ -30,6 +30,7 @@ def ldap_user_validator(request, username, password):
 
     return None
 
+
 """
 Get the user information not from c2cgeoportal user table
 but from ldap

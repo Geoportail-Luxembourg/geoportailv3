@@ -133,7 +133,6 @@ class Geocode(object):
                          u"er": u"",
                          u"premier": u"1",
                          u"ste": u"sainte",
-                         u"st": u"saint",
                          u"i": u"1",
                          u"un": u"1",
                          u"ii": u"2",

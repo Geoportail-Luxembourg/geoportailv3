@@ -133,5 +133,6 @@ class TestMymaps(unittest.TestCase):
         resp = testapp.delete('/mymaps/delete/' + map_id, status=200)
         assert resp.json['success'] is True
 
+
 if __name__ == '__main__':
     unittest.main()
