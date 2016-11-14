@@ -256,6 +256,7 @@ class Feature(Base):
             else:
                 return None
 
+
 role_categories = Table('role_categories',
                         Base.metadata,
                         Column('role_id',
