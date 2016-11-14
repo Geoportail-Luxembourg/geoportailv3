@@ -25,7 +25,7 @@ class Download(object):
         if filename is None:
             return HTTPBadRequest()
 
-        dirname = "/sketch"
+        dirname = "/publication/CRAL_PDF"
 
         sketch_filepath = "%s/%s.pdf" % (dirname, filename)
         f = None
