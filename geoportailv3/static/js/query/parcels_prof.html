@@ -5,8 +5,9 @@
   <span translate>Section</span> : {{feature.attributes.PF.sectionDesignation}}<br>
   <span translate>Numero cadastral</span> : {{feature.attributes.PF.mainNumber}}/{{feature.attributes.PF.additionalNumber}}<br>
   <span translate>Contenance</span> : {{feature.attributes.PF.capacity}}<br>
-  <span translate>Nature</span> : {{feature.attributes.PF.farmingTypes[0]}}<br>
-  <span translate>Dernier mesurage</span> : {{feature.attributes.PF.measurementNumber}}<br>
+  <div ng-if="feature.attributes.PF.farmingTypes && feature.attributes.PF.farmingTypes.length > 0"><span translate>Nature</span> : {{ctrl.translateAndjoin(feature.attributes.PF.farmingTypes, 'pf')}}<br></div>
+  <div ng-if="feature.attributes.PF.occupations && feature.attributes.PF.occupations.length > 0"><span translate >Occupation</span> : {{ctrl.translateAndjoin(feature.attributes.PF.occupations, 'pf')}}<br></div> 
+ <span translate>Dernier mesurage</span> : {{feature.attributes.PF.measurementNumber}}<br>
   <a class="btn btn-default" href="https://xxpfo.intranet.etat.lu/xxpfoi/detail_parcelle.do?noParcelle={{feature.attributes.textstring}}" target="_blank" translate>Ouvrir la PF</a><br>
   <span translate>Lien vers les mesurages</span> : 
   <ul>
