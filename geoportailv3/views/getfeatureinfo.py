@@ -438,7 +438,7 @@ class Getfeatureinfo(object):
 
     def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
-        dirname = "/sketch"
+        dirname = "/publication/CRAL_PDF"
 
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
