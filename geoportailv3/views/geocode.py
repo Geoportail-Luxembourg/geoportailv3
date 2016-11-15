@@ -1,7 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
 
-import sys
-import traceback
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
@@ -409,8 +407,8 @@ class Geocode(object):
                isinstance(result.geom, str):
                 result.geom = loads(result.geom)
             return result
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             DBSession.rollback()
         return None
 
@@ -694,9 +692,9 @@ class Geocode(object):
                         feature.accuracy = 7
                         results.append(self.encode_result(feature))
 
-        except:
+        except Exception as e:
+            log.exception(e)
             p_session.rollback()
-            traceback.print_exc(file=sys.stdout)
 
         return results
 
@@ -1089,8 +1087,8 @@ class Geocode(object):
             if results is not None and len(results) == 0:
                 results.append(self.encoded_country_result())
 
-        except:
-            traceback.print_exc()
+        except Exception as e:
+            log.exception(e)
             DBSession.rollback()
             results = [self.encoded_country_result()]
 

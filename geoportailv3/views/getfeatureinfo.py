@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlahelper
 import logging
-import sys
-import traceback
 import urllib2
 
 from urllib import urlencode
@@ -366,8 +364,8 @@ class Getfeatureinfo(object):
                             LuxGetfeatureDefinition.role == None
                                 ).all():  # noqa
                             luxgetfeaturedefinitions.append(res)
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             return HTTPBadRequest()
         return luxgetfeaturedefinitions
 
@@ -613,8 +611,8 @@ class Getfeatureinfo(object):
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             return []
 
         features = []

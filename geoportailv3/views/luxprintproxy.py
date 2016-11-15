@@ -47,8 +47,6 @@
 
 import json
 import logging
-import sys
-import traceback
 from cStringIO import StringIO
 from datetime import datetime
 
@@ -99,8 +97,8 @@ class LuxPrintProxy(PrintProxy):
     def lux_status(self):
         try:
             return self.status()
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             ref = self.request.matchdict.get("ref")
             job = DBSession.query(LuxPrintJob).get(ref)
             job.is_error = True
@@ -188,9 +186,9 @@ class LuxPrintProxy(PrintProxy):
             return self._build_response(
                 resp, content, NO_CACHE, "print"
             )
-        except:
-            traceback.print_exc(file=sys.stdout)
-            print "reference is : " + ref
+        except Exception as e:
+            log.exception(e)
+            log.error("reference is : " + ref)
             if job is not None:
                 job.is_error = True
             return HTTPInternalServerError()

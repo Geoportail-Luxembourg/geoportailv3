@@ -7,7 +7,6 @@ from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
-import traceback
 
 log = logging.getLogger(__name__)
 
@@ -113,8 +112,8 @@ class Wms(object):
                 # Retry to get the result
                 f = urllib2.urlopen(url, None, timeout)
                 data = f.read()
-            except:
-                traceback.print_exc()
+            except Exception as e:
+                log.exception(e)
                 log.error(url)
                 return HTTPBadGateway()
 

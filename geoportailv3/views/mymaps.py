@@ -20,12 +20,13 @@ from pyramid_ldap import get_ldap_connector
 from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
-import sys
-import traceback
 from geoportailv3.mymaps import DBSession
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
+import logging
+log = logging.getLogger(__name__)
+
 
 _CONTENT_TYPES = {
     "gpx": "application/gpx",
@@ -426,9 +427,9 @@ class Mymaps(object):
             map.features.append(obj)
             DBSession.commit()
             return {'success': True, 'id': obj.id}
-        except:
+        except Exception as e:
+            log.exception(e)
             DBSession.rollback()
-            traceback.print_exc(file=sys.stdout)
             return {'success': False, 'id': None}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
@@ -461,9 +462,9 @@ class Mymaps(object):
 
             DBSession.commit()
             return {'success': True}
-        except:
+        except Exception as e:
+            log.exception(e)
             DBSession.rollback()
-            traceback.print_exc(file=sys.stdout)
             return {'success': False}
 
     @view_config(route_name="mymaps_delete_feature", renderer='json')
@@ -621,8 +622,8 @@ class Mymaps(object):
         try:
             DBSession.add(map)
             DBSession.commit()
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             return {'success': False}
 
         return {'success': True, 'uuid': map.uuid}
@@ -845,8 +846,8 @@ class Mymaps(object):
                                     'url': "/symbol/%s"
                                     % (str(symbol.id)),
                                     'symboltype': 'us'})
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
 
         if 'cb' not in self.request.params:
             headers = {'Content-Type': 'application/json;charset=utf-8;'}
@@ -928,9 +929,9 @@ class Mymaps(object):
 
         try:
             self.generate_symbol_file()
-        except:
+        except Exception as e:
+            log.exception(e)
             DBSession.rollback()
-            traceback.print_exc(file=sys.stdout)
 
         return {'success': 'true',
                 'description': 'file added',
@@ -972,8 +973,8 @@ class Mymaps(object):
                        'feedback_name': feedback_name,
                        'feedback_mail': feedback_mail},
                 plain=comment)
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             return HTTPNotFound()
         message.encoding = 'utf-8'
         message.send()
