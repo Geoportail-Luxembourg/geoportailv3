@@ -6,7 +6,9 @@ import sqlahelper
 import logging
 import os
 import sys
-import traceback
+
+
+log = logging.getLogger(__name__)
 
 
 # Classe pour accéder aux attributs de la publicité foncière##
@@ -54,8 +56,8 @@ class PF():
         req.townCode = town_code
         try:
             resp = self.client_mesurage.service.searchMeasurement(req)
-        except:
-            traceback.print_exc(file=sys.stdout)
+        except Exception as e:
+            log.exception(e)
             return []
 
         if not hasattr(resp, 'measurementList'):
