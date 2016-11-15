@@ -95,7 +95,6 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
         requestEncoding: ol.source.WMTSRequestEncoding.REST,
         projection: projection,
         tileGrid: new ol.tilegrid.WMTS({
-          tileSize: (retina ? 512 : 256),
           origin: ol.extent.getTopLeft(extent),
           extent: extent,
           resolutions: [156543.033928, 78271.516964,
