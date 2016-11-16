@@ -564,7 +564,7 @@ app.PrintController.prototype.print = function(format) {
         spec.attributes.map.layers.forEach(function(layer) {
           if (layer.matrices instanceof Array) {
             for (var i = layer.matrices.length - 1; i > 0 ; i--) {
-              if (layer.matrices[i].scaleDenominator > this['scale']) {
+              if (layer.matrices[i].scaleDenominator * 1.42 > this['scale']) {
                 layer.matrices.splice(0, i + 1);
                 break;
               }
