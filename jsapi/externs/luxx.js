@@ -35,6 +35,13 @@ luxx.MapOptions.prototype.layerOpacities;
 luxx.MapOptions.prototype.target;
 
 /**
+ * The container for map popups, either the element itself or the `id` of the
+ * element.
+ * @type {Element|string}
+ */
+luxx.MapOptions.prototype.popupTarget;
+
+/**
  * The initial position of the center for the map view. The coordinate system
  * for the center is specified with the `positionSrs` option.
  * @type {ol.Coordinate|undefined}
