@@ -406,6 +406,15 @@ lux.Map = function(options) {
   ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
       this.checkForExclusion_, this);
 
+  if (options.popupTarget) {
+    this.popupTarget = typeof options.popupTarget === 'string' ?
+        document.getElementById(options.popupTarget) :
+        options.popupTarget;
+    if (!(this.popupTarget instanceof Element)) {
+      console.error('Marker target should be a DOM Element or its id');
+      return;
+    }
+  }
   ol.events.listen(this, ol.MapBrowserEvent.EventType.SINGLECLICK,
       this.handleSingleclickEvent_, this);
 
@@ -1240,6 +1249,9 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   if (this.queryPopup_) {
     this.removeOverlay(this.queryPopup_);
   }
+  if (this.popupTarget) {
+    this.popupTarget.innerHTML = '';
+  }
   var layers = this.getLayers().getArray();
 
   // collect the queryable layers
@@ -1305,18 +1317,22 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       });
     }.bind(this));
 
-    var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
-      this.removeOverlay(this.queryPopup_);
-    }.bind(this));
-    this.queryPopup_ = new ol.Overlay({
-      element: element,
-      position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
-      positioning: 'bottom-center',
-      offset: [0, -20],
-      insertFirst: false
-    });
+    if (this.popupTarget) {
+      this.popupTarget.innerHTML = htmls.join('');
+    } else {
+      var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+        this.removeOverlay(this.queryPopup_);
+      }.bind(this));
+      this.queryPopup_ = new ol.Overlay({
+        element: element,
+        position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
+        positioning: 'bottom-center',
+        offset: [0, -20],
+        insertFirst: false
+      });
 
-    this.addOverlay(this.queryPopup_);
-    this.renderSync();
+      this.addOverlay(this.queryPopup_);
+      this.renderSync();
+    }
   }.bind(this));
 };
