@@ -5,6 +5,7 @@
     node_modules_path = settings.get('node_modules_path')
     closure_library_path = settings.get('closure_library_path')
     exclude_theme_layer_search = settings.get('exclude_theme_layer_search')
+    authtkt_cookie_name = settings.get('authtkt_cookie_name')
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
@@ -298,6 +299,7 @@
          appModule.constant('requestScheme', "${request.scheme}");
          appModule.constant('pagUrl', "${request.route_url('pag_url')}");
          appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
+         appModule.constant('appAuthtktCookieName', "${authtkt_cookie_name}");
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');

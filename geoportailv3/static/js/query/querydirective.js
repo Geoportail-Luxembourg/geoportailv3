@@ -72,6 +72,8 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.Activetool} appActivetool The activetool service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {string} appAuthtktCookieName The authentication cookie name.
+ * @param {app.Notify} appNotify Notify service.
  * @export
  * @ngInject
  */
@@ -80,7 +82,19 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
-    appActivetool, appSelectedFeatures, appDrawnFeatures) {
+    appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
+    appNotify) {
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.appAuthtktCookieName_ = appAuthtktCookieName;
 
   /**
    * @type {app.DrawnFeatures}
@@ -1066,6 +1080,53 @@ app.QueryController.prototype.translateAndjoin = function(array, prefix) {
   }
   return '';
 };
+
+
+/**
+ * Get a cookie value
+ * @param {string} cname The cookie name.
+ * @return {string} The value.
+ * @private
+ */
+app.QueryController.prototype.getCookie_ = function(cname) {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      var value = c.substring(name.length, c.length);
+      if (value.startsWith('"')) {
+        value = value.substring(1, value.length - 1);
+      }
+      return value;
+    }
+  }
+  return '';
+};
+
+
+/**
+ * Order an "Affaire"
+ * @param {string} numCommune The commune number.
+ * @param {string} numMesurage The measurement number.
+ * @export
+ */
+app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
+  this.http_.get(
+    'https://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
+    {params: {
+      'numCommune': numCommune,
+      'numMesurage': numCommune,
+      'ticket': this.getCookie_(this.appAuthtktCookieName_)
+    }}).then(function() {
+      var msg = this.translate_.getString('Fichier GML commandé.');
+      this.notify_(msg, app.NotifyNotificationType.INFO);
+    }.bind(this));
+};
+
 
 app.module.controller('AppQueryController',
                       app.QueryController);
