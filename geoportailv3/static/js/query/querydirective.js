@@ -1116,7 +1116,7 @@ app.QueryController.prototype.getCookie_ = function(cname) {
  */
 app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
   this.http_.get(
-    'https://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
+    'http://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
     {params: {
       'numCommune': numCommune,
       'numMesurage': numCommune,
