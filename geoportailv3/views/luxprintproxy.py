@@ -52,6 +52,7 @@ from datetime import datetime
 
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
+from pyramid.httpexceptions import HTTPNotFound
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -152,7 +153,8 @@ class LuxPrintProxy(PrintProxy):
     def lux_report_get(self):
         ref = self.request.matchdict.get("ref")
         job = DBSession.query(LuxPrintJob).get(ref)
-
+        if job is None:
+            return HTTPNotFound()
         try:
             resp, content = self._proxy("%s/report/%s" % (
                 self.config["print_url"], ref
