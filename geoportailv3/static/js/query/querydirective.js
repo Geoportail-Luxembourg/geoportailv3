@@ -1119,7 +1119,7 @@ app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
     'https://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
     {params: {
       'numCommune': numCommune,
-      'numMesurage': numCommune,
+      'numMesurage': numMesurage,
       'ticket': this.getCookie_(this.appAuthtktCookieName_)
     }}).then(function() {
       var msg = this.translate_.getString('Fichier GML commandé.');
