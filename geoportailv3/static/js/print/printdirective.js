@@ -227,6 +227,11 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
   this['scale'] = -1;
 
   /**
+   * @type {boolean}
+   */
+  this.needScaleRefresh = false;
+
+  /**
    * @type {boolean|undefined}
    */
   this['open'] = undefined;
@@ -292,6 +297,10 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     }
     var open = /** @type {boolean} */ (newVal);
     if (open) {
+      if (this.needScaleRefresh) {
+        this.needScaleRefresh = false;
+        this.setScales_();
+      }
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
@@ -679,33 +688,34 @@ app.PrintController.prototype.setScales_ = function() {
        * @param {Object} tree Tree object for the theme.
        */
       function(tree) {
-        if (!goog.isNull(tree)) {
-          goog.asserts.assert('metadata' in tree);
-          var scales;
-          if (!goog.string.isEmptySafe(tree['metadata']['print_scales'])) {
-            var printScalesStr = tree['metadata']['print_scales'];
-            scales = goog.array.map(
-                printScalesStr.trim().split(','),
-                /**
-                 * @param {string} scale Scale value as a string.
-                 * @return {number} Scale value as a number.
-                 */
-                function(scale) {
-                  return +scale;
-                });
-            goog.array.sort(scales);
-          } else {
-            scales = app.PrintController.DEFAULT_MAP_SCALES_;
-          }
-          this['scales'] = scales;
-          var scale = this['scale'];
-          if (scale != -1) {
-            // find nearest scale to current scale
-            scale = app.PrintController.findNearestScale_(scales, scale);
-            if (scale != this['scale']) {
-              this['scale'] = scale;
-              this.map_.render();
-            }
+        var scales;
+        if (goog.isNull(tree)) {
+          this.needScaleRefresh = true;
+        }
+        if (!goog.isNull(tree) &&
+            !goog.string.isEmptySafe(tree['metadata']['print_scales'])) {
+          var printScalesStr = tree['metadata']['print_scales'];
+          scales = goog.array.map(
+              printScalesStr.trim().split(','),
+              /**
+               * @param {string} scale Scale value as a string.
+               * @return {number} Scale value as a number.
+               */
+              function(scale) {
+                return +scale;
+              });
+          goog.array.sort(scales);
+        } else {
+          scales = app.PrintController.DEFAULT_MAP_SCALES_;
+        }
+        this['scales'] = scales;
+        var scale = this['scale'];
+        if (scale != -1) {
+          // find nearest scale to current scale
+          scale = app.PrintController.findNearestScale_(scales, scale);
+          if (scale != this['scale']) {
+            this['scale'] = scale;
+            this.map_.render();
           }
         }
       }, this));
