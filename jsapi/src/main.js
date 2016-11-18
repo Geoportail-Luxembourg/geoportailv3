@@ -422,6 +422,13 @@ lux.Map = function(options) {
   this.stateManager_.setMap(this);
 
   this.showLayer_.setMap(this);
+
+  // change cursor on mouseover feature
+  ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
+    var pixel = this.getEventPixel(evt.originalEvent);
+    var hit = this.hasFeatureAtPixel(pixel);
+    this.getTargetElement().style.cursor = hit ? 'pointer' : '';
+  }.bind(this));
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -1099,11 +1106,6 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
 
     }.bind(this));
 
-    ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
-      var pixel = this.getEventPixel(evt.originalEvent);
-      var hit = this.hasFeatureAtPixel(pixel);
-      this.getTargetElement().style.cursor = hit ? 'pointer' : '';
-    }.bind(this));
   }.bind(this));
 };
 
