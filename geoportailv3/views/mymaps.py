@@ -418,11 +418,12 @@ class Mymaps(object):
                                     object_hook=geojson.GeoJSON.to_instance)
             feature_id = feature.properties.get('fid')
 
+            obj = Feature(feature)
+
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
                 DBSession.delete(cur_feature)
-
-            obj = Feature(feature)
+                obj.id = feature_id
 
             map.features.append(obj)
             DBSession.commit()
@@ -453,11 +454,12 @@ class Mymaps(object):
 
             for feature in feature_collection['features']:
                 feature_id = feature.properties.get('fid')
-
+                obj = Feature(feature)
                 if feature_id:
                     cur_feature = DBSession.query(Feature).get(feature_id)
                     DBSession.delete(cur_feature)
-                obj = Feature(feature)
+                    obj.id = feature_id
+
                 map.features.append(obj)
 
             DBSession.commit()
