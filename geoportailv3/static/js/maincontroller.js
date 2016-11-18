@@ -321,7 +321,8 @@ app.MainController.prototype.addLocationControl_ =
  * @private
  */
 app.MainController.prototype.setMap_ = function() {
-
+  var interactions = ol.interaction.defaults(
+      {altShiftDragRotate:false, pinchRotate:false});
   this.map_ = this['map'] = new ol.Map({
     logo: false,
     controls: [
@@ -332,6 +333,7 @@ app.MainController.prototype.setMap_ = function() {
       new ol.control.Attribution({collapsible: false,
         collapsed: false, className: 'geoportailv3-attribution'})
     ],
+    interactions: interactions,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new ol.View({
