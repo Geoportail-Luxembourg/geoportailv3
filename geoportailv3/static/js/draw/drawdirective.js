@@ -609,6 +609,7 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
+
   if (this.changeEventKey_ !== null) {
     ol.Observable.unByKey(this.changeEventKey_);
     this.changeEventKey_ = null;
@@ -686,6 +687,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
   this['mymapsOpen'] = true;
+  this.drawnFeatures_.activateModifyIfNeeded(event.feature);
 };
 
 
