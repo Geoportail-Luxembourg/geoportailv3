@@ -764,7 +764,7 @@ app.SearchDirectiveController.selected_ =
         (feature.getGeometry());
         var mapSize = /** @type {ol.Size} */ (map.getSize());
         map.getView().fit(featureGeometry, mapSize,
-        /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
+        /** @type {olx.view.FitOptions} */ ({maxZoom: 18}));
         this.featureOverlay_.clear();
         var features = [];
         if (dataset === 'coordinates') {
