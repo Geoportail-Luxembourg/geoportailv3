@@ -16,6 +16,7 @@ goog.require('app.backgroundlayerDirective');
 goog.require('app.catalogDirective');
 goog.require('app.drawDirective');
 goog.require('app.elevationDirective');
+goog.require('app.externalDataDirective');
 goog.require('app.layerinfoDirective');
 goog.require('app.layermanagerDirective');
 goog.require('app.layerlegendsDirective');

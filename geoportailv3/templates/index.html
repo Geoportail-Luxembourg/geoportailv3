@@ -95,6 +95,7 @@
               </app-layermanager>
               <div class="text-center">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
+                <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
             </div>
             <div id="catalog" class="tab-pane active">
@@ -327,6 +328,7 @@
          appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
          appModule.value('appMymapsTemplateUrl', 'mymaps/mymaps.html');
          appModule.value('appPagreportTemplateUrl', 'query/pagreport.html');
+         appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
        })();
     </script>
     <!-- Piwik -->
