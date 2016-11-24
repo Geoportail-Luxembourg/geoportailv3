@@ -4,6 +4,7 @@
  */
 
 goog.provide('app.WmsHelper');
+goog.require('ngeo.DecorateLayer');
 goog.require('ol.format.WMSCapabilities');
 
 /**
@@ -11,9 +12,16 @@ goog.require('ol.format.WMSCapabilities');
  * @param {angular.$http} $http Angular http service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
+ * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @ngInject
  */
-app.WmsHelper = function($http, appNotify, gettextCatalog) {
+app.WmsHelper = function($http, appNotify, gettextCatalog, ngeoDecorateLayer) {
+
+  /**
+   * @type {ngeo.DecorateLayer}
+   * @private
+   */
+  this.ngeoDecorateLayer_ = ngeoDecorateLayer;
 
   /**
    * @type {app.Notify}
@@ -323,8 +331,9 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
      'metadata_id': layer['id'],
      'start_opacity': 1
     });
+  newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
-
+  this.ngeoDecorateLayer_(newLayer);
   return newLayer;
 };
 
