@@ -183,6 +183,7 @@ app.ExternalDataController.prototype.getCurWms = function() {
   return '';
 };
 
+
 /**
  * @param {Object} layer The selected layer.
  * @return {boolean} return true if added to the map.
@@ -192,6 +193,46 @@ app.ExternalDataController.prototype.addWmsLayers = function(layer) {
 
   this.appWmsHelper_.addWmsLayers(this.map_, layer);
   return true;
+};
+
+
+/**
+ * @param {Object} curLayer The selected layer.
+ * @return {Array} return child layers.
+ * @export
+ */
+app.ExternalDataController.prototype.getChildLayers = function(curLayer) {
+  if ('Layer' in curLayer) {
+    return curLayer['Layer'];
+  }
+  return [];
+};
+
+/**
+ * @param {string} property The property to check
+ * @param {Object} curLayer The property to check
+ * @return {boolean} return true if the property exists.
+ * @export
+ */
+app.ExternalDataController.prototype.hasProperty = function(
+    property, curLayer) {
+  if (property in curLayer && curLayer[property].length > 0) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * @param {string} value The property to trim.
+ * @return {string} return the string.
+ * @export
+ */
+app.ExternalDataController.prototype.trim = function(value) {
+  if (value !== null && value !== undefined) {
+    return value.trim();
+  }
+  return '';
 };
 
 app.module.controller('AppExternalDataController', app.ExternalDataController);

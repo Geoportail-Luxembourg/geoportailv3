@@ -23,10 +23,19 @@
   <div ng-if="ctrl.abstractService.length > 0">{{ctrl.abstractService}}</div>
   <div class="row">
     <div class="col-sm-6">
-      <ul>
-        <li ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'">
-          <button ng-click="ctrl.addWmsLayers(layer)">+</button>
-          <a tabindex="-1" href="#" ng-click="ctrl.layerDescription = layer.Abstract">{{ layer.Title}}</a>
+      <ul class="layermanager">
+        <li ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="layermanager-panel">
+          <a ng-if="ctrl.hasProperty('Name', layer)" tabindex="-1" href="#" class="fa fa-plus" ng-click="ctrl.addWmsLayers(layer)"></a>
+          <a ng-if="ctrl.trim(layer.Abstract).length > 0" tabindex="-1" href="#" class="fa fa-info" ng-click="ctrl.layerDescription = ctrl.trim(childLayer.Abstract)"></a>
+          {{layer.Title}}
+          <a ng-if="ctrl.hasProperty('Layer', layer)" href="#wms-{{layer.Name}}" data-toggle="collapse" class="collapsed fa fa-ellipsis-h"></a>
+          <ul ng-if="ctrl.hasProperty('Layer', layer)" id="wms-{{layer.Name}}" class="collapse" >
+            <li ng-repeat="childLayer in ctrl.getChildLayers(layer) | orderBy:'Title'" class="layermanager-panel">
+              <a tabindex="-1" href="#" class="fa fa-plus" ng-click="ctrl.addWmsLayers(childLayer)"></a>
+              <a ng-if="ctrl.trim(layer.Abstract).length > 0" tabindex="-1" href="#" class="fa fa-info" ng-click="ctrl.layerDescription = ctrl.trim(childLayer.Abstract)"></a>
+              {{ childLayer.Title}}
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

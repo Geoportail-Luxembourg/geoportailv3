@@ -89,7 +89,6 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
-    layer['Abstract'] = 'layer_invalid_no_name';
   }
 
   if (!layer['isInvalid']) {
