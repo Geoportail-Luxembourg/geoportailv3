@@ -135,12 +135,6 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper) {
    * @type {string}
    */
   this.layerDescription = '';
-
-  /**
-   * @private
-   * @type {Array<string>}
-   */
-  this.imageFormats_ = [];
 };
 
 
@@ -173,7 +167,6 @@ app.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
     this.appWmsHelper_.getLayers(wms).then(function(layers) {
       this.layers = layers;
     }.bind(this));
-    this.imageFormats_ = capabilities['Capability']['Request']['GetMap']['Format'];
     this.abstractService = capabilities['Service']['Abstract'];
   }.bind(this));
 };
@@ -197,23 +190,7 @@ app.ExternalDataController.prototype.getCurWms = function() {
  */
 app.ExternalDataController.prototype.addWmsLayers = function(layer) {
 
-  var hasPng = false;
-  var hasJpeg = false;
-  var imageFormat = this.imageFormats_[0];
-  goog.array.forEach(this.imageFormats_, function(format) {
-    if (format.toUpperCase().indexOf('PNG') !== -1) {
-      hasPng = true;
-    }
-    if (format.toUpperCase().indexOf('JPEG') !== -1) {
-      hasJpeg = true;
-    }
-  }, this);
-  if (hasPng) {
-    imageFormat = 'image/png';
-  } else if (hasJpeg) {
-    imageFormat = 'image/jpeg';
-  }
-  this.appWmsHelper_.addWmsLayers(this.map_, imageFormat, layer);
+  this.appWmsHelper_.addWmsLayers(this.map_, layer);
   return true;
 };
 

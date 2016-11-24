@@ -58,8 +58,9 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     this.wmsCapa_[wms] = this.http_.get(wms)
     .then(function(data) {
       var capabilities = new ol.format.WMSCapabilities().read(data.data);
+      var formats = capabilities['Capability']['Request']['GetMap']['Format'];
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
-        capabilities['version']);
+        capabilities['version'], formats);
       return capabilities;
     }.bind(this));
   }
@@ -72,9 +73,11 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
  * @param {Object} layer The layer object.
  * @param {string} wmsVersion The version of the wms.
  * @return {Object} Returns the layer object.
+ * @param {string} imageFormats The available formats.
  * @private
  */
-app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion) {
+app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
+    imageFormats) {
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
@@ -85,11 +88,13 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;
     layer['id'] = 'WMS||' + layer['wmsUrl'] + '||' + layer['Name'];
+    layer['imageFormats'] = imageFormats;
   }
 
   if (layer['Layer']) {
     for (var i = 0; i < layer['Layer'].length; i++) {
-      var l = this.buildChildLayers_(wms, layer['Layer'][i], wmsVersion);
+      var l = this.buildChildLayers_(wms, layer['Layer'][i], wmsVersion,
+          imageFormats);
       if (!l) {
         layer['Layer'].splice(i, 1);
         i--;
@@ -243,12 +248,43 @@ app.WmsHelper.prototype.getChildLayerById_ = function(layer, id) {
 
 /**
  * @param {ol.Map} map The map to add the layer.
- * @param {string} imageFormat the image format.
  * @param {Object} layer The selected layer.
  * @return {boolean} return true if added to the map.
  * @export
  */
-app.WmsHelper.prototype.addWmsLayers = function(map, imageFormat, layer) {
+app.WmsHelper.prototype.addWmsLayers = function(map, layer) {
+  map.addLayer(this.createWmsLayers(map, layer));
+  return true;
+};
+
+
+/**
+ * @param {ol.Map} map The map to add the layer.
+ * @param {Object} layer The selected raw layer.
+ * @return {ol.layer.Tile} return the created layer.
+ * @export
+ */
+app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
+
+  var imageFormats = layer['imageFormats'];
+
+  var hasPng = false;
+  var hasJpeg = false;
+  var imageFormat = imageFormats[0];
+  goog.array.forEach(imageFormats, function(format) {
+    if (format.toUpperCase().indexOf('PNG') !== -1) {
+      hasPng = true;
+    }
+    if (format.toUpperCase().indexOf('JPEG') !== -1) {
+      hasJpeg = true;
+    }
+  }, this);
+  if (hasPng) {
+    imageFormat = 'image/png';
+  } else if (hasJpeg) {
+    imageFormat = 'image/jpeg';
+  }
+
   var imgOptions = {
     url: layer['wmsUrl'],
     params: {'LAYERS': layer['Name']},
@@ -284,11 +320,12 @@ app.WmsHelper.prototype.addWmsLayers = function(map, imageFormat, layer) {
   newLayer.set('label', layer['Title']);
   newLayer.set('metadata',
     {'isExternalWms' : true,
-     'metadata_id': layer['id']
+     'metadata_id': layer['id'],
+     'start_opacity': 1
     });
+  newLayer.set('queryable_id', layer['id']);
 
-  map.addLayer(newLayer);
-  return true;
+  return newLayer;
 };
 
 app.module.service('appWmsHelper', app.WmsHelper);
