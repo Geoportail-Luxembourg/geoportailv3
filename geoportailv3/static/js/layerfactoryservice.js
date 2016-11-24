@@ -16,7 +16,7 @@ goog.require('ol.tilegrid.WMTS');
 
 
 /**
- * @typedef {function(string, string):ol.layer.Tile}
+ * @typedef {function(string, string, boolean):ol.layer.Tile}
  */
 app.GetWmtsLayer;
 
@@ -67,25 +67,30 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
   /**
    * @param {string} name WMTS layer name.
    * @param {string} imageType Image type (e.g. "image/png").
+   * @param {boolean} retina If there is a retina layer.
    * @return {ol.layer.Tile} The layer.
    */
-  function getWmtsLayer(name, imageType) {
+  function getWmtsLayer(name, imageType, retina) {
 
     var imageExt = app.getImageExtension_(imageType);
-    var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
-        '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+    var retinaExtension = (retina ? '_hd' : '');
+    var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+        retinaExtension +
+        '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
     if (requestScheme === 'https') {
-      url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
-          '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+      url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+          retinaExtension +
+          '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
     }
     var projection = ol.proj.get('EPSG:3857');
     var extent = projection.getExtent();
     var layer = new ol.layer.Tile({
       source: new ol.source.WMTS({
         url: url,
+        tilePixelRatio: (retina ? 2 : 1),
         layer: name,
-        matrixSet: 'GLOBAL_WEBMERCATOR_4_V3',
+        matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
         format: imageType,
         requestEncoding: ol.source.WMTSRequestEncoding.REST,
         projection: projection,
@@ -205,7 +210,9 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     } else if (type == 'WMTS') {
       goog.asserts.assert('name' in node);
       goog.asserts.assert('imageType' in node);
-      layer = appGetWmtsLayer(node['name'], node['imageType']);
+      var retina = (goog.isBoolean(node['metadata']['hasRetina']) ?
+           node['metadata']['hasRetina'] : false);
+      layer = appGetWmtsLayer(node['name'], node['imageType'], retina);
     } else {
       return null;
     }
