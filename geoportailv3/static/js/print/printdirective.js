@@ -580,7 +580,8 @@ app.PrintController.prototype.print = function(format) {
             // goog.array.forEach(layer.matrices, function(matrice) {
             //   matrice.tileSize = [512, 512];
             // });
-
+          }
+          if ((layer.matrices instanceof Array)) {
             for (var i = layer.matrices.length - 1; i > 0 ; i--) {
               if (layer.matrices[i].scaleDenominator > this['scale']) {
                 layer.matrices.splice(0, i + 1);
