@@ -81,6 +81,12 @@ def main(global_config, **settings):
     )
 
     config.add_route(
+        "predefined_wms",
+        "/predefined_wms",
+        request_method="GET"
+    )
+
+    config.add_route(
         "mymaps_create",
         "/mymaps/create",
         request_method="POST"

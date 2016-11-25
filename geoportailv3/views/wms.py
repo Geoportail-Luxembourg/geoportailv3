@@ -1,12 +1,13 @@
 from ipaddr import IPv4Network
 from pyramid.view import view_config
-from geoportailv3.models import LuxLayerInternalWMS
+from geoportailv3.models import LuxLayerInternalWMS, LuxPredefinedWms
 from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 import logging
 import urllib2
+
 
 log = logging.getLogger(__name__)
 
@@ -120,3 +121,9 @@ class Wms(object):
         headers = {"Content-Type": f.info()['Content-Type']}
 
         return Response(data, headers=headers)
+
+    @view_config(route_name='predefined_wms', renderer='json')
+    def predefined_wms(self):
+        predefined_wms = DBSession.query(LuxPredefinedWms).all()
+        return [{'url': wms.url,
+                 'label': wms.label} for wms in predefined_wms]

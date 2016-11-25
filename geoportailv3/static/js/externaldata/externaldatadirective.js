@@ -46,14 +46,22 @@ app.module.directive('appExternalData', app.externalDataDirective);
  * @param {angular.$http} $http The angular http service.
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.
+ * @param {string} predefinedWmsUrl URL to the predefined wms service.
  * @constructor
  * @export
  * @ngInject
  */
 app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
-    appShowLayerinfo) {
+    appShowLayerinfo, predefinedWmsUrl) {
 
   /**
+   * @type {string}
+   * @private
+   */
+  this.predefinedWmsUrl_ = predefinedWmsUrl;
+
+  /**
+   * @type {app.ShowLayerinfo}
    * @private
    */
   this.showLayerInfo_ = appShowLayerinfo;
@@ -89,28 +97,9 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
 
   /**
    * @export
-   * @type {Array<Object>}
+   * @type {Array<Object<string,string>>}
    */
-  this.wmsUrls = [{
-    'url': 'http://ws.geoportail.lu/natura2000',
-    'label': 'Natura 2000'},
-    {'url': 'http://ws.geoportail.lu/250k',
-    'label': '250 K'},
-    {'url': 'http://ws.geoportail.lu/1000k',
-    'label': '1000 K'},
-    {'url': 'http://image.discomap.eea.europa.eu/arcgis/services/Corine/CHA2006/MapServer/WMSServer',
-    'label': 'Land Cover Change between year2000 and 2006'},
-    {'url': 'http://image.discomap.eea.europa.eu/arcgis/services/Corine/CHA2000/MapServer/WMSServer',
-     'label': 'Land Cover Change between year 1990 and 2000'},
-    {'url': 'http://copernicus.discomap.eea.europa.eu/arcgis/services/Elevation/Aspect/MapServer/WMSServer',
-     'label': 'Aspect,Elevation,Copernicus,Copernicus Land'},
-    {'url': 'http://copernicus.discomap.eea.europa.eu/arcgis/services/Elevation/DEM_v_1_1/MapServer/WMSServer',
-     'label': 'EU-DEM v1.0 is a digital surface model (DSM) of EEA39 countries representing the first surface as illuminated by the sensors.'},
-    {'url': 'http://wmts1.geoportail.lu/opendata/service',
-     'label': 'BD-L-ORTHO - Open Data Webservices WMS'},
-    {'url': 'http://ws.geoportail.lu/eau',
-     'label': 'WMS Eau'}
-    ];
+  this.wmsUrls = [];
 
   /**
    * @export
@@ -144,6 +133,8 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
    * @type {string}
    */
   this.layerDescription = '';
+
+  this.loadWmsUrls();
 };
 
 
@@ -154,6 +145,18 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
 app.ExternalDataController.prototype.getWmsUrls = function() {
   return this.wmsUrls;
 };
+
+
+/**
+ * Loads and update the list of predefined wms list.
+ * @export
+ */
+app.ExternalDataController.prototype.loadWmsUrls = function() {
+  this.$http_.get(this.predefinedWmsUrl_).then(function(result) {
+    this.wmsUrls = result.data;
+  }.bind(this));
+};
+
 
 /**
  * @return {Array<Object>} An array of layers comming from remote wms.
