@@ -67,8 +67,10 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     .then(function(data) {
       var capabilities = new ol.format.WMSCapabilities().read(data.data);
       var formats = capabilities['Capability']['Request']['GetMap']['Format'];
+
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
         capabilities['version'], formats);
+
       return capabilities;
     }.bind(this));
   }
@@ -90,7 +92,7 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   if (!layer['Name']) {
     layer['isInvalid'] = true;
   }
-
+  layer['uid'] = goog.getUid(layer).toString();
   if (!layer['isInvalid']) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;

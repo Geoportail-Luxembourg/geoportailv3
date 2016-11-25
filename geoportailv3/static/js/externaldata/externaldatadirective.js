@@ -100,7 +100,9 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper) {
     {'url': 'http://copernicus.discomap.eea.europa.eu/arcgis/services/Elevation/DEM_v_1_1/MapServer/WMSServer',
      'label': 'EU-DEM v1.0 is a digital surface model (DSM) of EEA39 countries representing the first surface as illuminated by the sensors.'},
     {'url': 'http://wmts1.geoportail.lu/opendata/service',
-     'label': 'BD-L-ORTHO - Open Data Webservices WMS'}
+     'label': 'BD-L-ORTHO - Open Data Webservices WMS'},
+    {'url': 'http://ws.geoportail.lu/eau',
+     'label': 'WMS Eau'}
     ];
 
   /**
@@ -209,8 +211,8 @@ app.ExternalDataController.prototype.getChildLayers = function(curLayer) {
 };
 
 /**
- * @param {string} property The property to check
- * @param {Object} curLayer The property to check
+ * @param {string} property The property to check.
+ * @param {Object} curLayer The layer to check.
  * @return {boolean} return true if the property exists.
  * @export
  */
@@ -234,5 +236,44 @@ app.ExternalDataController.prototype.trim = function(value) {
   }
   return '';
 };
+
+
+/**
+ * @param {string} layerId The id of the layer to check.
+ * @return {boolean} return true if the layer is already added.
+ * @export
+ */
+app.ExternalDataController.prototype.isLayerActive = function(layerId) {
+  var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+    if (layer.get('queryable_id') === layerId) {
+      return true;
+    }
+    return false;
+  }, this);
+  if (layer) {
+    return true;
+  }
+  return false;
+};
+
+
+/**
+ * @param {Object} rawLayer The layer to add or remove from the map.
+ * @export
+ */
+app.ExternalDataController.prototype.toggleWmsLayer = function(rawLayer) {
+  var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+    if (layer.get('queryable_id') === rawLayer['id']) {
+      return true;
+    }
+    return false;
+  }, this);
+  if (layer) {
+    this.map_.removeLayer(layer);
+  } else {
+    this.addWmsLayers(rawLayer);
+  }
+};
+
 
 app.module.controller('AppExternalDataController', app.ExternalDataController);
