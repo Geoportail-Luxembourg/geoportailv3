@@ -75,9 +75,15 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     .then(function(data) {
       var capabilities = new ol.format.WMSCapabilities().read(data.data);
       var formats = capabilities['Capability']['Request']['GetMap']['Format'];
-
+      var useTiles = false;
+      if ('MaxWidth' in capabilities['Service'] &&
+          'MaxHeight' in capabilities['Service'] &&
+          capabilities['Service']['MaxWidth']  <= 4096 &&
+          capabilities['Service']['MaxHeight'] <= 4096) {
+        useTiles = true;
+      }
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
-        capabilities['version'], formats);
+        capabilities['version'], formats, useTiles);
 
       return capabilities;
     }.bind(this));
@@ -92,10 +98,11 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
  * @param {string} wmsVersion The version of the wms.
  * @return {Object} Returns the layer object.
  * @param {string} imageFormats The available formats.
+ * @param {boolean} useTiles Set if the layer has a max size.
  * @private
  */
 app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
-    imageFormats) {
+    imageFormats, useTiles) {
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
@@ -106,12 +113,13 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
     layer['wmsVersion'] = wmsVersion;
     layer['id'] = 'WMS||' + layer['wmsUrl'] + '||' + layer['Name'];
     layer['imageFormats'] = imageFormats;
+    layer['useTiles'] = useTiles;
   }
 
   if (layer['Layer']) {
     for (var i = 0; i < layer['Layer'].length; i++) {
       var l = this.buildChildLayers_(wms, layer['Layer'][i], wmsVersion,
-          imageFormats);
+          imageFormats, useTiles);
       if (!l) {
         layer['Layer'].splice(i, 1);
         i--;
@@ -285,7 +293,7 @@ app.WmsHelper.prototype.addWmsLayers = function(map, layer) {
 /**
  * @param {ol.Map} map The map to add the layer.
  * @param {Object} layer The selected raw layer.
- * @return {ol.layer.Tile} return the created layer.
+ * @return {ol.layer.Layer} return the created layer.
  */
 app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 
@@ -336,10 +344,16 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   }
   imgOptions.params['FORMAT'] = imageFormat;
 
-  var newLayer = new ol.layer.Tile({
-    source: new ol.source.TileWMS(imgOptions)
-  });
-
+  var newLayer = null;
+  if (layer['useTiles']) {
+    newLayer = new ol.layer.Tile({
+      source: new ol.source.TileWMS(imgOptions)
+    });
+  } else {
+    newLayer = new ol.layer.Image({
+      source: new ol.source.ImageWMS(imgOptions)
+    });
+  }
   newLayer.set('label', layer['Title']);
   newLayer.set('metadata',
     {'isExternalWms' : true,
