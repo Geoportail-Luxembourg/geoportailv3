@@ -427,7 +427,12 @@ lux.Map = function(options) {
   ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
     var pixel = this.getEventPixel(evt.originalEvent);
     var hit = this.hasFeatureAtPixel(pixel);
-    this.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    var pixelHit = this.forEachLayerAtPixel(pixel, function(colors) {
+      return true;
+    }, this, function(l) {
+      return this.getLayers().getArray()[0] !== l;
+    }.bind(this), this);
+    this.getTargetElement().style.cursor = (hit || pixelHit) ? 'pointer' : '';
   }.bind(this));
 };
 
@@ -1141,6 +1146,7 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
     id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.WMTS({
+      crossOrigin: 'anonymous',
       url             : url,
       layer           : config['name'],
       matrixSet       : 'GLOBAL_WEBMERCATOR_4_V3',
@@ -1181,6 +1187,7 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
 lux.WMSLayerFactory_ = function(config, opacity) {
   var url = config.url || 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
+    crossOrigin: 'anonymous',
     url: url,
     params: {
       'FORMAT': config['imageType'],
