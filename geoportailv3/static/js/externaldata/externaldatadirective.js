@@ -15,7 +15,7 @@ goog.provide('app.externalDataDirective');
 
 goog.require('app');
 goog.require('app.WmsHelper');
-
+goog.require('app.ShowLayerinfo');
 goog.require('ol.format.WMSCapabilities');
 
 
@@ -45,11 +45,18 @@ app.module.directive('appExternalData', app.externalDataDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {angular.$http} $http The angular http service.
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
+ * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.
  * @constructor
  * @export
  * @ngInject
  */
-app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper) {
+app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
+    appShowLayerinfo) {
+
+  /**
+   * @private
+   */
+  this.showLayerInfo_ = appShowLayerinfo;
 
   /**
    * @type {app.WmsHelper}
@@ -272,6 +279,25 @@ app.ExternalDataController.prototype.toggleWmsLayer = function(rawLayer) {
     this.map_.removeLayer(layer);
   } else {
     this.addWmsLayers(rawLayer);
+  }
+};
+
+
+/**
+ * @param {Object} rawLayer The layer to add or remove from the map.
+ * @export
+ */
+app.ExternalDataController.prototype.getInfo = function(rawLayer) {
+  var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+    if (layer.get('queryable_id') === rawLayer['id']) {
+      return true;
+    }
+    return false;
+  }, this);
+  if (layer) {
+    this.showLayerInfo_(/** @type {ol.layer.Layer} */ (layer));
+  } else {
+    this.showLayerInfo_(this.appWmsHelper_.createWmsLayers(this.map_, rawLayer));
   }
 };
 

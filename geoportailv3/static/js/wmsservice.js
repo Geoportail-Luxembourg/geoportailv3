@@ -9,13 +9,21 @@ goog.require('ol.format.WMSCapabilities');
 
 /**
  * @constructor
+ * @param {angular.$sce} $sce Angular $sce service
  * @param {angular.$http} $http Angular http service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @ngInject
  */
-app.WmsHelper = function($http, appNotify, gettextCatalog, ngeoDecorateLayer) {
+app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
+    ngeoDecorateLayer) {
+
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.$sce_ = $sce;
 
   /**
    * @type {ngeo.DecorateLayer}
@@ -222,6 +230,13 @@ app.WmsHelper.prototype.getMetadata = function(id) {
         'name': layer['Title'],
         'language': 'eng'
       };
+      if ('description' in layerMetadata) {
+        layerMetadata['trusted_description'] =
+        this.$sce_.trustAsHtml(layerMetadata['description']);
+        layerMetadata['short_trusted_description'] =
+        this.$sce_.trustAsHtml(layerMetadata['description'].
+        substring(0, 220));
+      }
       content['layerMetadata'] = layerMetadata;
       return content;
     }.bind(this));
@@ -271,7 +286,6 @@ app.WmsHelper.prototype.addWmsLayers = function(map, layer) {
  * @param {ol.Map} map The map to add the layer.
  * @param {Object} layer The selected raw layer.
  * @return {ol.layer.Tile} return the created layer.
- * @export
  */
 app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 

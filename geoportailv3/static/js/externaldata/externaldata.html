@@ -21,60 +21,44 @@
     </div>
   </div>
   <div ng-if="ctrl.abstractService.length > 0">{{ctrl.abstractService}}</div>
-  <div class="row">
-    <div class="col-sm-6">
-      <ul class="catalog">
-        <li ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="panel">
-          <a ng-if="ctrl.hasProperty('Layer', layer)" href="#wms-{{layer.uid}}" data-toggle="collapse" >{{layer.Title}}</a>
-          <ul ng-if="!ctrl.hasProperty('Layer', layer)" class="panel">
-            <li>
-              <a class="fa fa-info" ng-click="ctrl.layerDescription = ctrl.trim(layer.Abstract)"></a>
-              <a href ng-click="ctrl.toggleWmsLayer(layer)">
-                <i class="fa" ng-class="(ctrl.isLayerActive(layer.id)) ? 'fa-check-square' : 'fa-square'"></i>
-              </a>{{layer.Title}}
-            </li>
-          </ul>
-          <ul ng-if="ctrl.hasProperty('Layer', layer)" id="wms-{{layer.uid}}" class="panel collapse" >
-            <li ng-repeat="childLayer in ctrl.getChildLayers(layer) | orderBy:'Title'" ng-class="ctrl.hasProperty('Layer', childLayer)?'panel':''">
-              <a ng-if="ctrl.hasProperty('Layer', childLayer)" href="#wms-{{childLayer.uid}}" data-toggle="collapse" >{{childLayer.Title}}</a>
-              <ul ng-if="!ctrl.hasProperty('Layer', childLayer)" class="panel">
-                <li>
-                  <a class="fa fa-info" ng-click="ctrl.layerDescription = ctrl.trim(childLayer.Abstract)"></a>
-                  <a href ng-click="ctrl.toggleWmsLayer(childLayer)">
-                    <i class="fa" ng-class="(ctrl.isLayerActive(childLayer.id)) ? 'fa-check-square' : 'fa-square'"></i>
-                  </a>
+  <div class="wms-catalog-content">
+    <ul class="catalog">
+      <li ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="panel">
+        <a ng-if="ctrl.hasProperty('Layer', layer)" href="#wms-{{layer.uid}}" data-toggle="collapse" >{{layer.Title}}</a>
+        <ul ng-if="!ctrl.hasProperty('Layer', layer)" class="panel">
+          <li>
+            <a class="fa fa-info" ng-click="ctrl.getInfo(layer)"></a>
+            <a href ng-click="ctrl.toggleWmsLayer(layer)">
+              <i class="fa" ng-class="(ctrl.isLayerActive(layer.id)) ? 'fa-check-square' : 'fa-square'"></i>
+              {{layer.Title}}
+            </a>
+          </li>
+        </ul>
+        <ul ng-if="ctrl.hasProperty('Layer', layer)" id="wms-{{layer.uid}}" class="panel collapse" >
+          <li ng-repeat="childLayer in ctrl.getChildLayers(layer) | orderBy:'Title'" ng-class="ctrl.hasProperty('Layer', childLayer)?'panel':''">
+            <a ng-if="ctrl.hasProperty('Layer', childLayer)" href="#wms-{{childLayer.uid}}" data-toggle="collapse" >{{childLayer.Title}}</a>
+            <ul ng-if="!ctrl.hasProperty('Layer', childLayer)" class="panel">
+              <li>
+                <a class="fa fa-info" ng-click="ctrl.getInfo(childLayer)"></a>
+                <a href ng-click="ctrl.toggleWmsLayer(childLayer)">
+                  <i class="fa" ng-class="(ctrl.isLayerActive(childLayer.id)) ? 'fa-check-square' : 'fa-square'"></i>
                   {{childLayer.Title}}
-                </li>
-              </ul>
-              
-              
-              
-              <ul ng-if="ctrl.hasProperty('Layer', childLayer)" id="wms-{{childLayer.uid}}" class="panel collapse" >
-                <li ng-repeat="childChildLayer in ctrl.getChildLayers(childLayer) | orderBy:'Title'">
-                      <a class="fa fa-info" ng-click="ctrl.layerDescription = ctrl.trim(childChildLayer.Abstract)"></a>
-                      <a href ng-click="ctrl.toggleWmsLayer(childChildLayer)">
-                        <i class="fa" ng-class="(ctrl.isLayerActive(childChildLayer.id)) ? 'fa-check-square' : 'fa-square'"></i>
-                      </a>
+                </a>
+              </li>
+            </ul>
+            <ul ng-if="ctrl.hasProperty('Layer', childLayer)" id="wms-{{childLayer.uid}}" class="panel collapse" >
+              <li ng-repeat="childChildLayer in ctrl.getChildLayers(childLayer) | orderBy:'Title'">
+                    <a class="fa fa-info" ng-click="ctrl.getInfo(childChildLayer)"></a>
+                    <a href ng-click="ctrl.toggleWmsLayer(childChildLayer)">
+                      <i class="fa" ng-class="(ctrl.isLayerActive(childChildLayer.id)) ? 'fa-check-square' : 'fa-square'"></i>
                       {{childChildLayer.Title}}
-                </li>
-              </ul>
-              
-              
-              
-              
-              
-              
-              
-              
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div class="col-sm-6">
-      <div ng-if="ctrl.layerDescription.length > 0">{{ctrl.layerDescription}}</div>
-      <div ng-if="ctrl.layerDescription.length == 0" translate>Aucune description fournie pour cette couche</div>
-    </div>
+                    </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </div>
 <div class="modal-footer">
