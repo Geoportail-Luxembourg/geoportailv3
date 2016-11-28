@@ -322,26 +322,26 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     crossOrigin: 'anonymous'
   };
 
-  var found = false;
-  var hasWgs84 = false;
+  var hasLuref = false;
+  var has3857 = false;
   var projections = layer['CRS'] || layer.SRS || [];
   goog.array.forEach(projections, function(projection) {
-    if (projection.toUpperCase() ===
-        map.getView().getProjection().getCode().toUpperCase()) {
-      found = true;
+    if (projection.toUpperCase() === 'EPSG:2169') {
+      hasLuref = true;
     }
-    if (projection.toUpperCase() === 'EPSG:4326') {
-      hasWgs84 = true;
+    if (projection.toUpperCase() === 'EPSG:3857') {
+      has3857 = true;
     }
   }, this);
 
-  if (!found) {
-    if (hasWgs84) {
-      imgOptions.projection = 'EPSG:4326';
-    } else {
-      imgOptions.projection = projections[0];
-    }
+  if (hasLuref) {
+    imgOptions.projection = 'EPSG:2169';
+  } else if (has3857) {
+    imgOptions.projection = 'EPSG:3857';
+  } else {
+    imgOptions.projection = projections[0];
   }
+
   imgOptions.params['FORMAT'] = imageFormat;
 
   var newLayer = null;
