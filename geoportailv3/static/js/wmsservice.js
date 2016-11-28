@@ -78,7 +78,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
       var useTiles = false;
       if ('MaxWidth' in capabilities['Service'] &&
           'MaxHeight' in capabilities['Service'] &&
-          capabilities['Service']['MaxWidth']  <= 4096 &&
+          capabilities['Service']['MaxWidth'] <= 4096 &&
           capabilities['Service']['MaxHeight'] <= 4096) {
         useTiles = true;
       }
@@ -318,8 +318,11 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 
   var imgOptions = {
     url: layer['wmsUrl'],
-    params: {'LAYERS': layer['Name']},
-    crossOrigin: 'anonymous'
+    params: {
+      'LAYERS': layer['Name']
+    },
+    crossOrigin: 'anonymous',
+    ration: 1
   };
 
   var hasLuref = false;
@@ -336,6 +339,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 
   if (hasLuref) {
     imgOptions.projection = 'EPSG:2169';
+    imgOptions.params['VERSION'] = '1.1.1';
   } else if (has3857) {
     imgOptions.projection = 'EPSG:3857';
   } else {
@@ -346,6 +350,23 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 
   var newLayer = null;
   if (layer['useTiles']) {
+    var projection = ol.proj.get(imgOptions.projection);
+    var extent = projection.getExtent();
+    var resolutions = [
+      156543.033928, 78271.516964,
+      39135.758482, 19567.879241, 9783.9396205,
+      4891.96981025, 2445.98490513, 1222.99245256,
+      611.496226281, 305.748113141, 152.87405657,
+      76.4370282852, 38.2185141426, 19.1092570713,
+      9.55462853565, 4.77731426782, 2.38865713391,
+      1.19432856696, 0.597164283478, 0.298582141739,
+      0.1492910708695, 0.07464553543475];
+    imgOptions.tileGrid = new ol.tilegrid.TileGrid({
+      extent: extent,
+      resolutions: resolutions,
+      tileSize: [1024, 1024]
+    });
+
     newLayer = new ol.layer.Tile({
       source: new ol.source.TileWMS(imgOptions)
     });
