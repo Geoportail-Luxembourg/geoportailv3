@@ -47,12 +47,18 @@ app.module.directive('appExternalData', app.externalDataDirective);
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.
  * @param {string} predefinedWmsUrl URL to the predefined wms service.
+ * @param {string} appWmsTreeTemplateUrl Url to measure template
  * @constructor
  * @export
  * @ngInject
  */
 app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
-    appShowLayerinfo, predefinedWmsUrl) {
+    appShowLayerinfo, predefinedWmsUrl, appWmsTreeTemplateUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.appWmsTreeTemplateUrl_ = appWmsTreeTemplateUrl;
 
   /**
    * @type {string}
@@ -185,7 +191,7 @@ app.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
 
 
 /**
- * @return {string} An array of predefined wms url.
+ * @return {string} The predefined wms url.
  * @export
  */
 app.ExternalDataController.prototype.getCurWms = function() {
@@ -193,6 +199,15 @@ app.ExternalDataController.prototype.getCurWms = function() {
     return this.curWmsUrl;
   }
   return '';
+};
+
+
+/**
+ * @return {string} The template.
+ * @export
+ */
+app.ExternalDataController.prototype.getWmsTreeTemplate = function() {
+  return this.appWmsTreeTemplateUrl_;
 };
 
 
