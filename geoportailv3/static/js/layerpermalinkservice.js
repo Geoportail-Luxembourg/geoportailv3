@@ -182,7 +182,12 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
                   this.map_, rawLayer);
               wmsLayer.get('metadata')['start_opacity'] =
                 opacities[layerIndex];
-              this.map_.addLayer(wmsLayer);
+              if (goog.array.every(addedLayers, function(addedLayer) {
+                return addedLayer.get('queryable_id') !==
+                    wmsLayer.get('queryable_id');
+              }, this)) {
+                this.map_.addLayer(wmsLayer);
+              }
             }.bind(this));
       } else {
         this.setLayerAsUnavailable_(addedLayers,
