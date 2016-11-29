@@ -20,8 +20,9 @@
       </div>
     </div>
   </div>
-  <div ng-if="ctrl.abstractService.length > 0">{{ctrl.abstractService}}</div>
-  <div ng-if="ctrl.accessConstraintsService.length > 0">{{ctrl.accessConstraintsService}}</div>
+  <div ng-if="ctrl.isLoading"><div class="fa fa-refresh fa-spin"></div><span translate>Chargement des informations</span></div>
+  <div ng-if="ctrl.abstractService.length > 0"><label translate>Description du service :</label> {{ctrl.abstractService}}</div>
+  <div ng-if="ctrl.accessConstraintsService.length > 0"><label translate>Access constraints :</label> {{ctrl.accessConstraintsService}}</div>
   <div class="wms-catalog-content">
     <ul class="catalog">
       <li ng-include="ctrl.getWmsTreeTemplate()" ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="panel">

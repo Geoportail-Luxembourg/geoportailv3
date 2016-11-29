@@ -140,6 +140,12 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
    */
   this.accessConstraintsService = '';
 
+  /**
+   * @export
+   * @type {boolean}
+   */
+  this.isLoading = false;
+
   this.loadWmsUrls();
 };
 
@@ -179,7 +185,9 @@ app.ExternalDataController.prototype.getLayers = function() {
 app.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
   this.curWmsUrl = wms;
   this.layers = [];
-  this.abstractService = this.gettextCatalog.getString('Connexion au WMS distant');
+  this.isLoading = true;
+
+  this.abstractService = '';
   this.accessConstraintsService = '';
   this.appWmsHelper_.getCapabilities(wms).then(function(capabilities) {
     this.appWmsHelper_.getLayers(wms).then(function(layers) {
@@ -195,6 +203,7 @@ app.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
     } else {
       this.accessConstraintsService = '';
     }
+    this.isLoading = false;
   }.bind(this));
 };
 
