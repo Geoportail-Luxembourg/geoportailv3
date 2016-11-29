@@ -6,6 +6,7 @@
 goog.provide('app.ShowLayerinfo');
 
 goog.require('ngeo.CreatePopup');
+goog.require('app.WmsHelper');
 
 
 /**
@@ -20,11 +21,12 @@ app.ShowLayerinfo;
  * @param {angular.Scope} $rootScope The root Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
+ * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 app.showLayerinfoFactory = function($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup) {
+    gettextCatalog, ngeoCreatePopup, appWmsHelper) {
 
   /**
    * @type {ngeo.Popup}
@@ -58,6 +60,7 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
     var title = /** @type {string} */ (layer.get('label'));
     var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
+
     var metadataUid = localMetadata['metadata_id'];
     var legend_name = ('legend_name' in localMetadata) ?
         localMetadata['legend_name'] : '';
@@ -66,47 +69,50 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
     var promiseKey = metadataUid + '##' + currentLanguage + '##' + legend_name;
 
     if (!(promiseKey in promises_)) {
-      promises_[promiseKey] = $http.jsonp(
-          '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
-          {params: {
-            'uid': metadataUid,
-            'lang': currentLanguage,
-            'cb': 'JSON_CALLBACK'
-          }}).then(
-              goog.bind(function(resp) {
+      if (localMetadata['isExternalWms']) {
+        promises_[promiseKey] = appWmsHelper.getMetadata(metadataUid);
+      } else {
+        promises_[promiseKey] = $http.jsonp(
+            '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
+            {params: {
+              'uid': metadataUid,
+              'lang': currentLanguage,
+              'cb': 'JSON_CALLBACK'
+            }}).then(
+                goog.bind(function(resp) {
+                  var content = {
+                    'uid' : localMetadata['metadata_id'],
+                    'legendUrl' : null,
+                    'hasLegend' : false,
+                    'isError' : false,
+                    'isShortDesc' : true,
+                    'layerMetadata' : null
+                  };
 
-                var content = {
-                  'uid' : localMetadata['metadata_id'],
-                  'legendUrl' : null,
-                  'hasLegend' : false,
-                  'isError' : false,
-                  'isShortDesc' : true,
-                  'layerMetadata' : null
-                };
+                  var remoteMetadata = resp.data['root'][0];
+                  content['layerMetadata'] = remoteMetadata;
+                  if ('description' in content['layerMetadata']) {
+                    content['layerMetadata']['trusted_description'] =
+                    $sce.trustAsHtml(content['layerMetadata']['description']);
+                    content['layerMetadata']['short_trusted_description'] =
+                    $sce.trustAsHtml(content['layerMetadata']['description'].
+                    substring(0, 220));
+                  }
+                  if ('legend_name' in localMetadata) {
+                    var currentLanguage = gettextCatalog.currentLanguage;
+                    currentLanguage =
+                    currentLanguage === 'lb' ? 'lu' : currentLanguage;
+                    content['legendUrl'] = $sce.trustAsResourceUrl(
+                        '//wiki.geoportail.lu/doku.php?id=' +
+                        currentLanguage + ':legend:' +
+                        localMetadata['legend_name'] + '&do=export_html'
+                    );
+                    content['hasLegend'] = true;
+                  }
 
-                var remoteMetadata = resp.data['root'][0];
-                content['layerMetadata'] = remoteMetadata;
-                if ('description' in content['layerMetadata']) {
-                  content['layerMetadata']['trusted_description'] =
-                  $sce.trustAsHtml(content['layerMetadata']['description']);
-                  content['layerMetadata']['short_trusted_description'] =
-                  $sce.trustAsHtml(content['layerMetadata']['description'].
-                  substring(0, 220));
-                }
-                if ('legend_name' in localMetadata) {
-                  var currentLanguage = gettextCatalog.currentLanguage;
-                  currentLanguage =
-                  currentLanguage === 'lb' ? 'lu' : currentLanguage;
-                  content['legendUrl'] = $sce.trustAsResourceUrl(
-                      '//wiki.geoportail.lu/doku.php?id=' +
-                      currentLanguage + ':legend:' +
-                      localMetadata['legend_name'] + '&do=export_html'
-                  );
-                  content['hasLegend'] = true;
-                }
-
-                return content;
-              }, this));
+                  return content;
+                }, this));
+      }
     }
 
     promises_[promiseKey].then(

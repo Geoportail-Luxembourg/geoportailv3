@@ -110,3 +110,13 @@ class LuxPrintJob(Base):
     spec = Column(Unicode)
     creation = Column(DateTime)
     is_error = Column(Boolean, default=False)
+
+
+class LuxPredefinedWms(Base):
+    __tablename__ = 'lux_predefined_wms'
+    __table_args__ = {'schema': _schema}
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
+    url = Column(Unicode, primary_key=True)
+    label = Column(Unicode)

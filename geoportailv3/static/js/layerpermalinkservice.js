@@ -7,6 +7,7 @@ goog.provide('app.LayerPermalinkManager');
 
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
+goog.require('app.WmsHelper');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('goog.array');
@@ -25,11 +26,18 @@ goog.require('ol.events');
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
  * manager.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @ngInject
  */
 app.LayerPermalinkManager = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
-    ngeoLocation) {
+    ngeoLocation, appWmsHelper) {
+
+  /**
+   * @type {app.WmsHelper}
+   * @private
+   */
+  this.appWmsHelper_ = appWmsHelper;
 
   /**
    * @type {ngeo.Location}
@@ -38,7 +46,7 @@ app.LayerPermalinkManager = function(appStateManager,
   this.ngeoLocation_ = ngeoLocation;
 
   /**
-   * @type {Array.<number>}
+   * @type {Array.<number|string>}
    * @private
    */
   this.unavailableLayers_ = [];
@@ -125,45 +133,29 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
 
 
 /**
- * @param {Array.<number>} layerIds The ids.
+ * @param {Array.<number|string>} layerIds The ids.
  * @param {Array.<number>} opacities The opacities.
  * @param {Array.<Object>} flatCatalogue The catalog.
  * @private
  */
-app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
-    function(layerIds, opacities, flatCatalogue) {
-      layerIds.reverse();
-      opacities.reverse();
-      var addedLayers = this.map_.getLayers().getArray();
-      goog.array.extend(layerIds, this.unavailableLayers_);
-      goog.array.extend(opacities, this.unavailableOpacities_);
+app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
+    layerIds, opacities, flatCatalogue) {
+  layerIds.reverse();
+  opacities.reverse();
+  var addedLayers = this.map_.getLayers().getArray();
+  goog.array.extend(layerIds, this.unavailableLayers_);
+  goog.array.extend(opacities, this.unavailableOpacities_);
 
-      this.unavailableLayers_ = [];
-      this.unavailableOpacities_ = [];
-      goog.array.forEach(layerIds,
-      function(layerId, layerIndex) {
-        /**
-         * @type {ol.layer.Layer}
-         */
-        var layer = null;
-        var node = goog.array.find(flatCatalogue, function(catItem) {
-          return catItem.id === layerId;
-        });
-        if (goog.isDefAndNotNull(node)) {
-          layer = this.getLayerFunc_(node);
-        } else {
-          var unavailableLayer =
-              goog.array.find(addedLayers, function(addedLayer) {
-                if (addedLayer.get('queryable_id') === layerId) {
-                  return true;
-                }
-                return false;
-              }, this);
-          this.map_.removeLayer(unavailableLayer);
-          this.unavailableLayers_.push(layerId);
-          this.unavailableOpacities_.push(opacities[layerIndex]);
-          return;
-        }
+  this.unavailableLayers_ = [];
+  this.unavailableOpacities_ = [];
+  goog.array.forEach(layerIds,
+  function(layerId, layerIndex) {
+    if (goog.isNumber(layerId) && !isNaN(layerId)) {
+      var node = goog.array.find(flatCatalogue, function(catItem) {
+        return catItem.id === layerId;
+      });
+      if (goog.isDefAndNotNull(node)) {
+        var layer = this.getLayerFunc_(node);
         if (goog.isDef(opacities)) {
           // set opacity trough metadata to not interfere
           // with the layer opacity manager service
@@ -177,9 +169,54 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ =
         }, this)) {
           this.map_.addLayer(layer);
         }
-      }, this
-  );
-    };
+      } else {
+        this.setLayerAsUnavailable_(addedLayers, layerId,
+            opacities[layerIndex]);
+        return;
+      }
+    } else {
+      if (/** @type {string} */ (layerId).indexOf('WMS||') === 0) {
+        this.appWmsHelper_.getLayerById(/** @type {string} */ (layerId)).
+            then(function(rawLayer) {
+              var wmsLayer = this.appWmsHelper_.createWmsLayers(
+                  this.map_, rawLayer);
+              wmsLayer.get('metadata')['start_opacity'] =
+                opacities[layerIndex];
+              if (goog.array.every(addedLayers, function(addedLayer) {
+                return addedLayer.get('queryable_id') !==
+                    wmsLayer.get('queryable_id');
+              }, this)) {
+                this.map_.addLayer(wmsLayer);
+              }
+            }.bind(this));
+      } else {
+        this.setLayerAsUnavailable_(addedLayers,
+            /** @type {string} */ (layerId), opacities[layerIndex]);
+        return;
+      }
+    }
+  }, this);
+};
+
+/**
+ * @param {Array<ol.layer.Layer>} addedLayers The mapLayers.
+ * @param {string|number} layerId The id of the layer to remove.
+ * @param {number} opacity The opacity of the layer to remove.
+ * @private
+ */
+app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
+    addedLayers, layerId, opacity) {
+  var unavailableLayer =
+      goog.array.find(addedLayers, function(addedLayer) {
+        if (addedLayer.get('queryable_id') === layerId) {
+          return true;
+        }
+        return false;
+      }, this);
+  this.map_.removeLayer(unavailableLayer);
+  this.unavailableLayers_.push(layerId);
+  this.unavailableOpacities_.push(opacity);
+};
 
 
 /**
@@ -195,7 +232,9 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
   } else {
     return undefined;
   }
-
+  if (parameter === 'layers') {
+    return this.splitLayers_(result, '-');
+  }
   return this.splitNumbers_(result, '-');
 };
 
@@ -212,8 +251,33 @@ app.LayerPermalinkManager.prototype.splitNumbers_ =
       if (goog.isDef(parameter)) {
         goog.array.forEach(parameter.split(splitChar), function(string) {
           var value = parseFloat(string);
-          if (goog.isNumber(value)) {
+          if (goog.isNumber(value) && !isNaN(value)) {
             items.push(value);
+          }
+        });
+      }
+      return items.length === 0 ? undefined : items;
+    };
+
+
+/**
+ * @param {string} parameter The parameter to get.
+ * @param {string} splitChar The char to split with.
+ * @private
+ * @return {Array.<number|string>|undefined} The values.
+ */
+app.LayerPermalinkManager.prototype.splitLayers_ =
+    function(parameter, splitChar) {
+      var items = [];
+      if (goog.isDef(parameter)) {
+        goog.array.forEach(parameter.split(splitChar), function(string) {
+          var value = parseFloat(string);
+          if (goog.isNumber(value) && !isNaN(value)) {
+            items.push(value);
+          } else {
+            if (string.indexOf('WMS||') === 0) {
+              items.push(string);
+            }
           }
         });
       }
@@ -435,7 +499,7 @@ app.LayerPermalinkManager.prototype.init =
                       this.setupWatchers_(selectedLayers);
                       this.initialized_ = true;
                     } else {
-                      layerIds = this.splitNumbers_(
+                      layerIds = this.splitLayers_(
                           this.ngeoLocation_.getParam('layers'), '-');
                       opacities = this.splitNumbers_(
                           this.ngeoLocation_.getParam('opacities'), '-');
