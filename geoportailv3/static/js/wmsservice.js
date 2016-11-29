@@ -111,7 +111,9 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   if (!layer['isInvalid']) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;
-    layer['id'] = 'WMS||' + layer['wmsUrl'] + '||' + layer['Name'];
+
+    layer['id'] = ('WMS||' + layer['wmsUrl'] + '||' + layer['Name']).
+        split('-').join('%2D');
     layer['imageFormats'] = imageFormats;
     layer['useTiles'] = useTiles;
   }
@@ -158,7 +160,8 @@ app.WmsHelper.prototype.getLayers = function(wms) {
  * @export
  */
 app.WmsHelper.prototype.getLayerById = function(id) {
-  var values = id.split('||');
+
+  var values = id.split('%2D').join('-').split('||');
   var serviceType = values[0];
   goog.asserts.assert(serviceType === 'WMS');
   var wms = values[1];
