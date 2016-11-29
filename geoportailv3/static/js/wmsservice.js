@@ -82,6 +82,10 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
           capabilities['Service']['MaxHeight'] <= 4096) {
         useTiles = true;
       }
+      basicWmsUrl = this.getGepMapUrl_(capabilities['Capability']);
+      if (basicWmsUrl.length === 0) {
+        basicWmsUrl = wms;
+      }
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
         capabilities['version'], formats, useTiles);
 
@@ -89,6 +93,33 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     }.bind(this));
   }
   return this.wmsCapa_[wms];
+};
+
+
+/**
+ * @param {Object} capability The capability object.
+ * @return {string} Returns GetMap url if found.
+ * @private
+ */
+app.WmsHelper.prototype.getGepMapUrl_ = function(capability) {
+  var onlineResource;
+  if ('Request' in capability &&
+      'GetMap' in capability['Request'] &&
+      'DCPType' in capability['Request']['GetMap']) {
+    var dcpTypes = capability['Request']['GetMap']['DCPType'];
+    var dcpType = goog.array.find(dcpTypes, function(type, i) {
+      if ('HTTP' in type) {
+        return true;
+      }
+      return false;
+    }, this);
+    if (dcpType &&
+        'Get' in dcpType['HTTP'] &&
+        'OnlineResource' in dcpType['HTTP']['Get']) {
+      onlineResource = dcpType['HTTP']['Get']['OnlineResource'];
+    }
+  }
+  return onlineResource;
 };
 
 
