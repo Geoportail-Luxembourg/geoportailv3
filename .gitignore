@@ -31,3 +31,4 @@
 /.build
 /node_modules
 vars_wepa.yaml
+vars_main.yaml
