@@ -6,12 +6,17 @@
 
 <dl>
   <dt ng-if="content.layerMetadata.name.length > 0" translate>Name</dt><dd ng-bind="content.layerMetadata.name"></dd>
+  <dt ng-if="content.layerMetadata.serviceDescription.length > 0" translate>Description du Service</dt>
+  <dd ng-if="content.layerMetadata.serviceDescription.length > 0" ng-bind="content.layerMetadata.serviceDescription"></dd>
   <dt ng-if="content.layerMetadata.description.length > 0" translate>Description</dt>
   <dd>
       <span ng-if="content.layerMetadata.description.length > 220 && content.isShortDesc == true" ng-bind-html="content.layerMetadata.short_trusted_description"></span><a href="#" ng-if="content.layerMetadata.description.length > 220 && content.isShortDesc" ng-click="content.isShortDesc=false">&#8230;</a>
       <span ng-if="content.layerMetadata.description.length <= 220 || !content.isShortDesc" ng-bind-html="content.layerMetadata.trusted_description"></span><a href="#" ng-if="content.layerMetadata.description.length > 220 && !content.isShortDesc" ng-click="content.isShortDesc=true">-</a>
   </dd>
-
+  <dt ng-if="content.layerMetadata.accessConstraints.length > 0" translate>Contrainte d'utilisation</dt>
+  <dd ng-if="content.layerMetadata.accessConstraints.length > 0" ng-bind="content.layerMetadata.accessConstraints"></dd>
+  <dt ng-if="content.layerMetadata.onlineResource.length > 0" translate>Url vers la resource</dt>
+  <dd ng-if="content.layerMetadata.onlineResource.length > 0" ng-bind="content.layerMetadata.onlineResource"></dd>
 
   <dt ng-if="content.layerMetadata.revisionDate.length > 0" translate>Revision date</dt><dd ng-bind="content.layerMetadata.revisionDate"></dd>
   <dt ng-if="content.layerMetadata.keywords.length > 0" translate>Keywords</dt><dd ng-bind="content.layerMetadata.keywords"></dd>

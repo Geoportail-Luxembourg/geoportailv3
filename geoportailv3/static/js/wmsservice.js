@@ -82,7 +82,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
           capabilities['Service']['MaxHeight'] <= 4096) {
         useTiles = true;
       }
-      basicWmsUrl = this.getGepMapUrl_(capabilities['Capability']);
+      basicWmsUrl = this.getOnlineResource_(capabilities['Capability'], 'GetMap');
       if (basicWmsUrl.length === 0) {
         basicWmsUrl = wms;
       }
@@ -98,13 +98,14 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
 
 /**
  * @param {Object} capability The capability object.
+ * @param {string} service The service we are looking for.
  * @return {string} Returns GetMap url if found.
  * @private
  */
-app.WmsHelper.prototype.getGepMapUrl_ = function(capability) {
+app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
   var onlineResource;
   if ('Request' in capability &&
-      'GetMap' in capability['Request'] &&
+      service in capability['Request'] &&
       'DCPType' in capability['Request']['GetMap']) {
     var dcpTypes = capability['Request']['GetMap']['DCPType'];
     var dcpType = goog.array.find(dcpTypes, function(type, i) {
@@ -223,7 +224,6 @@ app.WmsHelper.prototype.getMetadata = function(id) {
       }
     }
     var content = {
-      'uid' : id,
       'legendUrl' : legendUrl,
       'hasLegend' : false,
       'hasImageLegend' : hasLegend,
@@ -264,15 +264,31 @@ app.WmsHelper.prototype.getMetadata = function(id) {
           'deliverypoint': capabilities['Service']['ContactInformation']['ContactAddress']['Address']
         });
       }
+      var accessConstraints = '';
+      if ('AccessConstraints' in capabilities['Service']) {
+        accessConstraints = capabilities['Service']['AccessConstraints'];
+      }
+      var onlineResource = this.getOnlineResource_(
+        capabilities['Capability'], 'GetCapabilities');
+      var serviceDescription = '';
+      if ('Abstract' in capabilities['Service']) {
+        serviceDescription = capabilities['Service']['Abstract'];
+      }
+
       var layerMetadata = {
         'pocs': pocs,
         'revisionDate': '',
         'keywords': keywords,
         'description': layer['Abstract'],
         'name': layer['Title'],
+        'accessConstraints': accessConstraints,
+        'onlineResource': onlineResource,
+        'serviceDescription': serviceDescription,
         'language': 'eng'
       };
-      if ('description' in layerMetadata) {
+      if ('description' in layerMetadata &&
+          layerMetadata['description'] !== null &&
+          layerMetadata['description'] !== undefined) {
         layerMetadata['trusted_description'] =
         this.$sce_.trustAsHtml(layerMetadata['description']);
         layerMetadata['short_trusted_description'] =
