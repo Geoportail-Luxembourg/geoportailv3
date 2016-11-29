@@ -21,6 +21,7 @@
     </div>
   </div>
   <div ng-if="ctrl.abstractService.length > 0">{{ctrl.abstractService}}</div>
+  <div ng-if="ctrl.accessConstraintsService.length > 0">{{ctrl.accessConstraintsService}}</div>
   <div class="wms-catalog-content">
     <ul class="catalog">
       <li ng-include="ctrl.getWmsTreeTemplate()" ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="panel">
