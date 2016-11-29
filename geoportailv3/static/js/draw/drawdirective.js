@@ -16,12 +16,12 @@ goog.provide('app.drawDirective');
 
 
 goog.require('app');
+goog.require('app.Activetool');
 goog.require('app.DrawnFeatures');
 goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
-goog.require('app.Activetool');
 goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
@@ -46,6 +46,7 @@ app.drawDirective = function(appDrawTemplateUrl) {
     scope: {
       'map': '=appDrawMap',
       'active': '=appDrawActive',
+      'activateMymaps': '=appDrawActivateMymaps',
       'mymapsOpen': '=appDrawMymapsOpen'
     },
     controller: 'AppDrawController',
@@ -291,7 +292,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.appActivetool_.drawActive = false;
     } else {
       this.appActivetool_.drawActive = false;
-      this['mymapsOpen'] = true;
+      if (this['activateMymaps']) {
+        this['mymapsOpen'] = true;
+      }
     }
   }, this));
 
@@ -320,7 +323,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        this['mymapsOpen'] = true;
+        if (this['activateMymaps']) {
+          this['mymapsOpen'] = true;
+        }
         if (!this.featurePopup_.isDocked) {
           this.featurePopup_.show(feature, this.map,
             ol.extent.getCenter(feature.getGeometry().getExtent()));
@@ -560,24 +565,25 @@ app.DrawController.prototype.onDrawCircleStart_ = function(event) {
  * @param {ol.proj.Projection} projection Projection of the line string coords.
  * @return {string} Formatted string of length.
  */
-app.DrawController.prototype.getFormattedLength = function(lineString, projection) {
-  var length = 0;
-  var coordinates = lineString.getCoordinates();
-  for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
-    var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-    length += ol.sphere.WGS84.haversineDistance(c1, c2);
-  }
-  var output;
-  if (length > 1000) {
-    output = parseFloat((length / 1000).toPrecision(3)) +
-    ' ' + 'km';
-  } else {
-    output = parseFloat(length.toPrecision(3)) +
-    ' ' + 'm';
-  }
-  return output;
-};
+app.DrawController.prototype.getFormattedLength =
+  function(lineString, projection) {
+    var length = 0;
+    var coordinates = lineString.getCoordinates();
+    for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
+      var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+      length += ol.sphere.WGS84.haversineDistance(c1, c2);
+    }
+    var output;
+    if (length > 1000) {
+      output = parseFloat((length / 1000).toPrecision(3)) +
+      ' ' + 'km';
+    } else {
+      output = parseFloat(length.toPrecision(3)) +
+      ' ' + 'm';
+    }
+    return output;
+  };
 
 
 /**
@@ -617,7 +623,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   if (this.drawnFeatures_.continuingLine) {
     this.drawnFeatures_.continuingLine = false;
     this.onContinueLineEnd_(event);
-    return ;
+    return;
   }
   var feature = event.feature;
   if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
@@ -686,8 +692,10 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
-  this['mymapsOpen'] = true;
   this.drawnFeatures_.activateModifyIfNeeded(event.feature);
+  if (this['activateMymaps']) {
+    this['mymapsOpen'] = true;
+  }
 };
 
 

@@ -160,6 +160,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['sidebarActive'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['languageOpen'] = false;
 
   /**
@@ -175,12 +180,18 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['feedbackOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
    * @type {boolean}
    */
   this['layersOpen'] = false;
+
   /**
    * @type {boolean}
    */
@@ -297,7 +308,6 @@ app.MainController = function(
         'layersOpen': newVal
       });
     }.bind(this));
-
   }.bind(this));
 
 };
@@ -400,13 +410,24 @@ app.MainController.prototype.manageSelectedLayers_ =
       }, this));
     };
 
+/**
+ * @export
+ */
+app.MainController.prototype.openFeedback = function() {
+  if (this.sidebarOpen) {
+    this.closeSidebar();
+    this['feedbackOpen'] = true;
+  } else {
+    this['feedbackOpen'] = true;
+  }
+};
 
 /**
  * @export
  */
 app.MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
-      this['legendsOpen'] = false;
+      this['feedbackOpen'] = this['legendsOpen'] = false;
 };
 
 
@@ -416,7 +437,7 @@ app.MainController.prototype.closeSidebar = function() {
  */
 app.MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-      this['legendsOpen'];
+      this['legendsOpen'] || this['feedbackOpen'];
 };
 
 

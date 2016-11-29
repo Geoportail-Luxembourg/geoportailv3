@@ -184,6 +184,10 @@ def main(global_config, **settings):
         "geocode",
         "/geocode/search"
     )
+    config.add_route(
+        "feedback",
+        "/feedback"
+    )
     # pag routes
     config.add_route(
         "pag_url",
