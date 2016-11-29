@@ -22,6 +22,7 @@ setup(
         'pyramid_ldap',
         'qrcode==5.1',
         "html5lib==0.9999999",
+        "CairoSVG==1.0.22",
         "weasyprint==0.23",
         "PyPDF2==1.24",
         "turbomail",
