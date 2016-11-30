@@ -505,11 +505,27 @@ app.PrintController.prototype.print = function(format) {
   var curFormat = format;
   var legend = [];
   this.layers_.forEach(function(layer) {
-    var name = layer.get('metadata')['legend_name'];
+    var curMetadata = layer.get('metadata');
+    var name = curMetadata['legend_name'];
     if (goog.isDef(name)) {
       legend.push({'name': name});
+    } else {
+      var isExternalWms = curMetadata['isExternalWms'];
+      if (isExternalWms) {
+        var legendUrl = curMetadata['legendUrl'];
+        var accessConstraints = curMetadata['legendAccessConstraints'];
+        var legendTitle = curMetadata['legendTitle'];
+
+        if (goog.isDef(legendUrl)) {
+          legend.push({
+            'name': null,
+            'legendUrl': legendUrl,
+            'accessConstraints': accessConstraints,
+            'legendTitle': legendTitle});
+        }
+      }
     }
-    var metaMaxDpi = layer.get('metadata')['max_dpi'];
+    var metaMaxDpi = curMetadata['max_dpi'];
     if (goog.isDef(metaMaxDpi)) {
       var maxDpi = parseInt(metaMaxDpi, 10);
       if (dpi > maxDpi) {

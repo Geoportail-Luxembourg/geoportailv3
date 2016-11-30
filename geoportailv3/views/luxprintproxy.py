@@ -50,6 +50,7 @@ import logging
 from cStringIO import StringIO
 from datetime import datetime
 
+from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
@@ -63,6 +64,7 @@ from c2cgeoportal.lib.caching import NO_CACHE, get_region
 
 from geoportailv3.models import DBSession, LuxPrintJob, LuxLayerInternalWMS
 
+_ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 cache_region = get_region()
 
@@ -130,6 +132,40 @@ class LuxPrintProxy(PrintProxy):
         ).delete()
         return self.cancel()
 
+    def _create_legend_from_image(self, url, title, access_constraints):
+        css = weasyprint.CSS(
+            string="img {max-height: 800px}"
+        )
+
+        log.info("Get legend from URL:\n%s." % url)
+
+        legend_buffer = StringIO()
+        html_access_constraints = ""
+        if access_constraints is not None and\
+           len(access_constraints) > 0:
+            h2_title = _("Access constraints")
+            localizer = get_localizer(self.request)
+            trans_h2_title = localizer.translate(h2_title)
+            html_access_constraints = """<h2>%(h2_title)s</h2>
+            <i>%(access_constraints)s</i>""" % {
+                'access_constraints': access_constraints,
+                'h2_title': trans_h2_title}
+
+        html = """<html><head><title>%(title)s</title></head>
+        <body><h1>%(title)s</h1>
+        <img src='%(url)s'/><br>
+        %(html_access_constraints)s
+        </body></html>""" % {
+            'url': url,
+            'title': title,
+            'html_access_constraints': html_access_constraints}
+
+        weasyprint.HTML(string=html).write_pdf(
+            legend_buffer,
+            stylesheets=[css]
+        )
+        return legend_buffer
+
     @cache_region.cache_on_arguments()
     def _get_legend(self, name, lang):
         css = weasyprint.CSS(
@@ -171,7 +207,22 @@ class LuxPrintProxy(PrintProxy):
                 lang = attributes.get("lang")
 
                 for item in attributes["legend"]:
-                    merger.append(self._get_legend(item["name"], lang))
+                    if "legendUrl" in item and item["legendUrl"] is not None:
+                        legend_title = ""
+                        if "legendTitle" in item and\
+                           item["legendTitle"] is not None:
+                            legend_title = item["legendTitle"]
+                        access_constraints = ""
+                        if "accessConstraints" in item and\
+                           item["accessConstraints"] is not None:
+                            access_constraints = item["accessConstraints"]
+                        merger.append(
+                            self._create_legend_from_image(
+                                item["legendUrl"],
+                                legend_title,
+                                access_constraints))
+                    elif "name" in item and item["name"] is not None:
+                        merger.append(self._get_legend(item["name"], lang))
 
                 content = StringIO()
                 merger.write(content)

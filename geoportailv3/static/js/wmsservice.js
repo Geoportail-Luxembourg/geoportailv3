@@ -409,14 +409,22 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     });
   }
   newLayer.set('label', layer['Title']);
-  newLayer.set('metadata',
-    {'isExternalWms' : true,
+  var curMatadata = {'isExternalWms' : true,
      'metadata_id': layer['id'],
      'start_opacity': 1
-    });
+    };
+  newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
   this.ngeoDecorateLayer_(newLayer);
+
+  this.getMetadata(layer['id']).then(function(metadata) {
+    if (metadata['hasImageLegend']) {
+      curMatadata['legendUrl'] = metadata['legendUrl'];
+      curMatadata['legendTitle'] = metadata['layerMetadata']['name'];
+      curMatadata['legendAccessConstraints'] = metadata['layerMetadata']['accessConstraints'];
+    }
+  }.bind(this));
   return newLayer;
 };
 
