@@ -31,6 +31,8 @@ vars:
     search_host: workshop3-local.geoportal.lu:9200
     search_index: index
 
+    support_email_address: support@geoportail.lu
+
     # closure paths
     closure_library_path: 'process.stdout.write(require("closure-util").getLibraryPath())'
 

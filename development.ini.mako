@@ -20,6 +20,8 @@ app.cfg = %(here)s/.build/config.yaml
 elastic.servers = ${search_host}
 elastic.index = ${search_index}
 
+feedback.support_email = ${support_email_address}
+
 [filter:fanstatic]
 use = egg:fanstatic#fanstatic
 publisher_signature = fanstatic

@@ -160,6 +160,7 @@
             </div>
           </div>
         </div>
+        <!-- Legend -->
         <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">
           <h2 translate>legends</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
@@ -173,13 +174,32 @@
             </app-layerlegends>
           </div>
         </div>
+        <!-- Feedback -->
+        <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedback
+              app-feedback-drawing-active="mainCtrl.drawOpen",
+              app-feedback-sidebar-active="mainCtrl.sidebarActive",
+              app-feedback-active="mainCtrl.feedbackOpen"
+              app-feedback-map="::mainCtrl.map"
+              app-feedback-layers="::mainCtrl.selectedLayers">
+            </app-feedback>
+          </div>
+        </div>
       </div>
       <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
-          ng-class="{open: mainCtrl.sidebarOpen()}" ngeo-btn-group>
+          ng-class="{open: mainCtrl.sidebarOpen()}"
+          ngeo-btn-group-active="mainCtrl.sidebarActive"
+          ngeo-btn-group>
         <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
           <a href translate>Couches</a>
         </li>
@@ -194,6 +214,7 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" translate>Contact</a></li>
@@ -205,6 +226,7 @@
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
+            app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
             app-draw-mymaps-open="mainCtrl.mymapsOpen">
           </app-draw>
         </li>
@@ -284,6 +306,7 @@
          appModule.constant('layerSearchServiceUrl', "${request.route_url('layersearch')}");
          appModule.constant('printServiceUrl', "${request.route_url('printproxy')}");
          appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
+         appModule.constant('postFeedbackUrl', "${request.route_url('feedback')}");
          appModule.constant('getInfoServiceUrl', "${request.route_url('getfeatureinfo')}");
          appModule.constant('getRemoteTemplateServiceUrl', "${request.route_url('getremotetemplate')}");
          appModule.constant('isThemePrivateUrl', "${request.route_url('isthemeprivate')}");
@@ -331,6 +354,7 @@
          appModule.value('appPagreportTemplateUrl', 'query/pagreport.html');
          appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
          appModule.value('appWmsTreeTemplateUrl', 'externaldata/wmstree.html');
+         appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html')
        })();
     </script>
     <!-- Piwik -->
