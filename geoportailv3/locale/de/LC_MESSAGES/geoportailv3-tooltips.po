@@ -1,6 +1,6 @@
 # 
 # Translators:
-# adonno <andrea.donno@me.com>, 2015-2016
+# Andrea Donno <andrea.donno@me.com>, 2015-2016
 # Francis Kaell <francis.kaell@act.etat.lu>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015-2016
@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2016-06-30 13:49+0000\n"
+"PO-Revision-Date: 2016-11-29 20:04+0000\n"
 "Last-Translator: Jeff Konnen <jeff.konnen@act.etat.lu>\n"
 "Language-Team: German (http://www.transifex.com/geoportail/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -139,6 +139,10 @@ msgid "f_commune_cad"
 msgstr "Katastergemeinde"
 
 #: engineecadastre Layer:645 RoleNone
+msgid "f_Photo"
+msgstr "Foto"
+
+#: engineecadastre Layer:645 RoleNone
 msgid "f_Code station"
 msgstr "Code Station"
 
@@ -150,21 +154,17 @@ msgstr "Wasserläufe"
 msgid "f_CAPA"
 msgstr "Ausbaugröße"
 
-#: engineecadastre Layer:430 RoleNone
+#: engineecadastre Layer:431 RoleNone
 msgid "f_nom"
 msgstr "name"
 
-#: engineecadastre Layer:430 RoleNone
-msgid "f_date_classement"
-msgstr "DATUM_SORTIERUNG"
-
-#: engineecadastre Layer:430 RoleNone
-msgid "f_sous_zone"
-msgstr ""
-
-#: engineecadastre Layer:430 RoleNone
+#: engineecadastre Layer:431 RoleNone
 msgid "f_code_national"
 msgstr "CODE_NATIONAL"
+
+#: engineecadastre Layer:431 RoleNone
+msgid "f_date_classement"
+msgstr "DATUM_SORTIERUNG"
 
 #: engineecadastre Layer:163 RoleNone
 msgid "f_LEG_FR"
@@ -261,6 +261,30 @@ msgstr "Aktueller Name der Gemeinde, welche den grössten Teil des Biotops beher
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP2_Name"
 msgstr "Deutscher Name des zweiten Biotops"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_interdiction_zone_c"
+msgstr "Verbot Zone C"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_interdiction_zone_a"
+msgstr "Verbot Zone A"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_interdiction_zone_b"
+msgstr "Verbot Zone B"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_commentaire"
+msgstr "Kommentar"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_sous_zone"
+msgstr "Unterzone"
+
+#: engineecadastre Layer:430 RoleNone
+msgid "f_link"
+msgstr "Link"
 
 #: engineecadastre Layer:401 RoleNone
 msgid "f_Nom_Site"
@@ -380,19 +404,15 @@ msgstr "NUMMER"
 
 #: engineecadastre Layer:389 RoleNone
 msgid "f_essence"
-msgstr "BAUMART"
+msgstr "Essenz"
 
 #: engineecadastre Layer:389 RoleNone
-msgid "f_proprietaire"
-msgstr "BESITZER"
-
-#: engineecadastre Layer:389 RoleNone
-msgid "f_admis"
-msgstr "ANGENOMMEN"
+msgid "f_propriete"
+msgstr "BESITZ"
 
 #: engineecadastre Layer:389 RoleNone
 msgid "f_numero"
-msgstr "NUMMER"
+msgstr "Nummer"
 
 #: engineecadastre Layer:690 RoleNone
 msgid "f_secteur"
@@ -401,10 +421,6 @@ msgstr "SEKTOR"
 #: engineecadastre Layer:690 RoleNone
 msgid "f_region"
 msgstr "REGION"
-
-#: engineecadastre Layer:387 RoleNone
-msgid "f_link"
-msgstr "Link"
 
 #: engineecadastre Layer:167 RoleNone
 msgid "f_CodeDesc"
@@ -485,10 +501,6 @@ msgstr "Gemeinde"
 #: engineecadastre Layer:367 RoleNone
 msgid "f_kadasternu"
 msgstr "Num. cadastral"
-
-#: engineecadastre Layer:677 RoleNone
-msgid "f_propriete"
-msgstr "BESITZ"
 
 #: engineecadastre Layer:378 RoleNone
 msgid "f_voiture_emprises"
@@ -594,23 +606,23 @@ msgstr "Genehmigungsnummer"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_code_dossier"
-msgstr ""
+msgstr "Code"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_date_fin"
-msgstr ""
+msgstr "Enddatum"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_annexe"
-msgstr ""
+msgstr "Anhang"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_date_debut"
-msgstr ""
+msgstr "Startdatum"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_etat_libelle"
-msgstr ""
+msgstr "Status"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_aide"
@@ -643,3 +655,47 @@ msgstr "Name (fr)"
 #: engineecadastre Layer:524 RoleNone
 msgid "f_essence_de"
 msgstr "Art (de)"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_No"
+msgstr "No"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Adresse"
+msgstr "Adresse"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Niveau d'assainissement"
+msgstr "Niveau d'assainissement"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Contamination résiduelle"
+msgstr "Contamination résiduelle"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Ancien No"
+msgstr "Ancien No"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Description"
+msgstr "Description"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Nom du site"
+msgstr "Nom du site"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Année de saisie"
+msgstr "Année de saisie"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Commentaire"
+msgstr "Commentaire"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Identifiant surface"
+msgstr "Identifiant surface"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Méthode"
+msgstr "Méthode"
