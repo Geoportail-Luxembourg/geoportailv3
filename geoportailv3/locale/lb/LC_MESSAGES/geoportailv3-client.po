@@ -1,9 +1,9 @@
 # 
 # Translators:
-# adonno <andrea.donno@me.com>, 2015-2016
-# adonno <andrea.donno@me.com>, 2015
-# adonno <andrea.donno@me.com>, 2015-2016
-# adonno <andrea.donno@me.com>, 2016
+# Andrea Donno <andrea.donno@me.com>, 2015-2016
+# Andrea Donno <andrea.donno@me.com>, 2015
+# Andrea Donno <andrea.donno@me.com>, 2015-2016
+# Andrea Donno <andrea.donno@me.com>, 2016
 # eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2016
 # Francis Kaell <francis.kaell@act.etat.lu>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015-2016
@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2016-06-30 13:49+0000\n"
-"Last-Translator: Jeff Konnen <jeff.konnen@act.etat.lu>\n"
+"PO-Revision-Date: 2016-11-30 16:17+0000\n"
+"Last-Translator: Jeff Konnen <jaykayone@gmail.com>\n"
 "Language-Team: Luxembourgish (http://www.transifex.com/geoportail/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,23 @@ msgstr ""
 "Language: lb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geoportailv3/templates/index.html:11
+#: geoportailv3/static/js/profile/profile.html:5
+msgid "&Delta; +"
+msgstr "&Delta; +"
+
+#: geoportailv3/static/js/profile/profile.html:6
+msgid "&Delta; -"
+msgstr "&Delta; -"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:2
+msgid "+ Add external Wms"
+msgstr "+ Externe WMS bäisetzen"
+
+#: geoportailv3/templates/index.html:97
+msgid "+ Add layers"
+msgstr "+ Layeren bäisetzen"
+
+#: geoportailv3/templates/index.html:13
 msgid "- Geoportal Luxembourg"
 msgstr "- Geoportail Letzebuerg"
 
@@ -30,87 +46,63 @@ msgstr "- Geoportail Letzebuerg"
 msgid "- link from geoportail.lu"
 msgstr "link aus dem geoportail.lu"
 
-#: geoportailv3/static/js/query/batiments.html:3
-msgid "{{(\"bat_\"+feature.attributes.type) | translate}}"
-msgstr "{{(\"bat_\"+feature.attributes.type) | translate}}"
-
-#: geoportailv3/static/js/query/remembrements.html:4
-msgid "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
-msgstr "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
-
-#: geoportailv3/static/js/query/remembrements.html:5
-msgid "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
-msgstr "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
-
-#: geoportailv3/static/js/profile/profile.html:6
-msgid "&Delta; -"
-msgstr "&Delta; -"
-
-#: geoportailv3/static/js/profile/profile.html:5
-msgid "&Delta; +"
-msgstr "&Delta; +"
-
-#: geoportailv3/templates/index.html:95
-msgid "+ Add layers"
-msgstr "+ Layeren beisetzen"
-
 #: geoportailv3/static/js/mymaps/mymaps.html:20
 msgid "<em>Aucune description</em>"
 msgstr "<em>Keng Beschreiwung</em>"
 
-#: geoportailv3/templates/index.html:148
+#: geoportailv3/templates/index.html:152
 msgid ""
 "A <em>right click</em> (tap and hold on mobile) will display information "
 "about the current location."
 msgstr "Duerch <em>Rietsklick</em> (tippen an gedréckt haalen op mobil) ginn d'Informatiounen iwwert déi aktuell Positioun ugewisen"
 
-#: geoportailv3/templates/index.html:151
+#: geoportailv3/templates/index.html:155
 msgid ""
 "A <em>short click</em> (tap on mobile) on a map feature will select the "
 "feature and show more information."
 msgstr "Duerch <em>Klick</em> (tippen op mobil) op eng Funktioun gëtt dës ausgewielt an méi Informatiounen ugewisen"
 
-#: geoportailv3/templates/index.html:177
+#: geoportailv3/templates/index.html:218
 msgid "A Propos"
 msgstr "Iwwert Eis"
 
-#: geoportailv3/static/js/print/printdirective.js:203
+#: geoportailv3/static/js/print/printdirective.js:210
 msgid "A0 landscape"
 msgstr "A0 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:204
+#: geoportailv3/static/js/print/printdirective.js:211
 msgid "A0 portrait"
 msgstr "A0 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:201
+#: geoportailv3/static/js/print/printdirective.js:208
 msgid "A1 landscape"
 msgstr "A1 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:202
+#: geoportailv3/static/js/print/printdirective.js:209
 msgid "A1 portrait"
 msgstr "A1 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:199
+#: geoportailv3/static/js/print/printdirective.js:206
 msgid "A2 landscape"
 msgstr "A2 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:200
+#: geoportailv3/static/js/print/printdirective.js:207
 msgid "A2 portrait"
 msgstr "A2 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:197
+#: geoportailv3/static/js/print/printdirective.js:204
 msgid "A3 landscape"
 msgstr "A3 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:198
+#: geoportailv3/static/js/print/printdirective.js:205
 msgid "A3 portrait"
 msgstr "A3 Portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:195
+#: geoportailv3/static/js/print/printdirective.js:202
 msgid "A4 landscape"
 msgstr "A4 Landschaft"
 
-#: geoportailv3/static/js/print/printdirective.js:196
+#: geoportailv3/static/js/print/printdirective.js:203
 msgid "A4 portrait"
 msgstr "A4 Portrait"
 
@@ -118,9 +110,13 @@ msgstr "A4 Portrait"
 msgid "Abort"
 msgstr "Ënnerbriechen"
 
-#: geoportailv3/static/js/search/searchdirective.js:415
-msgid "Addresses"
-msgstr "Adressen"
+#: geoportailv3/static/js/externaldata/externaldata.html:25
+msgid "Access constraints :"
+msgstr "Zougangslimitatiounen :"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:8
+msgid "Add external data"
+msgstr "Extern Date bäilueden"
 
 #: geoportailv3/static/js/query/pagreport.html:8
 msgid "Adresse Email"
@@ -134,11 +130,11 @@ msgstr "Noosten Adress"
 msgid "Affaire"
 msgstr "Affaire"
 
-#: geoportailv3/templates/index.html:178
+#: geoportailv3/templates/index.html:219
 msgid "Aide"
 msgstr "Hëllef"
 
-#: geoportailv3/static/js/draw/featurepopup.html:78
+#: geoportailv3/static/js/draw/featurepopup.html:83
 msgid "Ajouter vignette"
 msgstr "Vignette bäisetzen"
 
@@ -147,12 +143,12 @@ msgstr "Vignette bäisetzen"
 msgid "Angle"
 msgstr "Wénkel"
 
-#: geoportailv3/static/js/draw/featurepopup.html:106
+#: geoportailv3/static/js/draw/featurepopup.html:111
 #: geoportailv3/static/js/draw/styleediting.html:113
 #: geoportailv3/static/js/mymaps/mymaps.html:167
 #: geoportailv3/static/js/mymaps/mymaps.html:181
 #: geoportailv3/static/js/mymaps/mymaps.html:195
-#: geoportailv3/static/js/mymaps/mymaps.html:257
+#: geoportailv3/static/js/mymaps/mymaps.html:290
 msgid "Annuler"
 msgstr "annuléieren"
 
@@ -176,10 +172,6 @@ msgstr "Keng Informatiounen vun dëser Couche disponibel"
 msgid "Azimut"
 msgstr "Azimut"
 
-#: geoportailv3/static/js/search/searchdirective.js:391
-msgid "Background"
-msgstr "Hannergrond"
-
 #: geoportailv3/static/js/exclusionmanagerservice.js:125
 msgid ""
 "Background has been deactivated because the layer {{layer}} cannot be "
@@ -190,9 +182,1077 @@ msgstr "D' Hannergrondkaart gouf ausgeschalt well se net mam Layer {{layer}} kan
 msgid "Background layer:"
 msgstr "Hannergrondlayer:"
 
-#: geoportailv3/static/js/search/searchdirective.js:379
-msgid "Background Layers"
-msgstr "Hannergrondlayeren"
+#: geoportailv3/static/js/draw/featurepopup.html:91
+#: geoportailv3/static/js/mymaps/mymaps.html:151
+msgid "Cancel"
+msgstr "Annuléieren"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:462
+msgid "Carte copiée"
+msgstr "Kaart kopéiert"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:714
+msgid "Carte créée"
+msgstr "Kaart erstallt"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:38
+msgid "Carte créée par"
+msgstr "Kaart erstallt vun: "
+
+#: geoportailv3/templates/index.html:88
+msgid "Catalog"
+msgstr "Katalog"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:252
+msgid "Catégorie"
+msgstr "Kategorie"
+
+#: geoportailv3/static/js/imageupload/imguploaddirective.js:118
+msgid "Ce format d'image n'est as supporté."
+msgstr "Dëst Format gëtt net ennerstëtzt"
+
+#: geoportailv3/static/js/themeswitcher/themeswitcherdirective.js:77
+msgid "Ce thème est protégé. Veuillez vous connecter."
+msgstr "Dëst Thema as geschützt. Loggt Iech w.e.g an"
+
+#: geoportailv3/static/js/themeswitcher/themes.html:4
+msgid "Changer"
+msgstr "Wiesselen"
+
+#: geoportailv3/static/js/draw/featurepopup.html:60
+#: geoportailv3/static/js/draw/styleediting.html:69
+msgid "Changer sens de la ligne"
+msgstr "Richtung vun der Linn änneren"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:23
+msgid "Chargement des informations"
+msgstr "Luede vun Informatiounen"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:15
+msgid "Choose or write a WMS url"
+msgstr "WMS URS auswielen oder erfaassen"
+
+#: geoportailv3/static/js/draw/draw.html:19
+#: geoportailv3/static/js/draw/drawdirective.js:654
+msgid "Circle"
+msgstr "Krees"
+
+#: geoportailv3/static/js/measure/measuredirective.js:147
+msgid ""
+"Click to continue drawing the line<br>Double-click or click last point to "
+"finish"
+msgstr "Klickt fir mam Zeechnen vun der Linn weiderzefueren <br> Duebelklick fir ofzeschléissen"
+
+#: geoportailv3/static/js/measure/measuredirective.js:189
+msgid ""
+"Click to continue drawing the polygon<br>Double-click or click last point to"
+" finish"
+msgstr "Klickt fir mam Zeechnen vum Polygon weiderzefueren <br> Duebelklick fir ofzeschléissen"
+
+#: geoportailv3/static/js/draw/drawdirective.js:449
+msgid "Click to draw the point"
+msgstr "Klickt fir de Punkt ze setzen"
+
+#: geoportailv3/static/js/measure/measuredirective.js:210
+msgid "Click to finish"
+msgstr "Klickt fir ofzeschléissen"
+
+#: geoportailv3/static/js/draw/drawdirective.js:467
+msgid "Click to place the label"
+msgstr "Klickt fir den Text ze setzen"
+
+#: geoportailv3/static/js/measure/measuredirective.js:188
+msgid "Click to start drawing area"
+msgstr "Klickt fir mam Moossen vun enger Fläch unzefänken"
+
+#: geoportailv3/static/js/measure/measuredirective.js:209
+msgid "Click to start drawing azimut"
+msgstr "Klickt fir mam Moossen vun engem Azimut unzefänken"
+
+#: geoportailv3/static/js/draw/drawdirective.js:463
+msgid "Click to start drawing circle"
+msgstr "Klickt, fir unzefänken, ee Krees ze zeechnen"
+
+#: geoportailv3/static/js/measure/measuredirective.js:165
+msgid "Click to start drawing length"
+msgstr "Klickt fir mam Moossen vun enger Längt unzefänken"
+
+#: geoportailv3/static/js/draw/drawdirective.js:453
+msgid "Click to start drawing line<br>Double-click to finish"
+msgstr "Klickt fir unzefenken, eng Linn ze zeechnen<br>Maat een Duebel-Klickt fir ofzeschléissen"
+
+#: geoportailv3/static/js/draw/drawdirective.js:458
+msgid ""
+"Click to start drawing polygon<br>Double-click or click last point to finish"
+msgstr "Klickt fir unzefenken, ee Polygon ze zeechnen<br>Maat een Duebelklick oder klickt op de leschten Punkt fir ofzeschléissen"
+
+#: geoportailv3/static/js/measure/measuredirective.js:146
+msgid "Click to start drawing profile"
+msgstr "Klickt fir mam Moossen vun engem Profil unzefänken"
+
+#: geoportailv3/static/js/query/aero.html:7
+#: geoportailv3/static/js/query/urplang.html:7
+msgid "Cliquez dans l'image pour agrandir"
+msgstr "Klickt an d'Bild fir et ze vergréisseren"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:34
+msgid "Close"
+msgstr "Zoumaachen"
+
+#: geoportailv3/static/js/draw/styleediting.html:14
+#: geoportailv3/static/js/draw/styleediting.html:8
+#: geoportailv3/static/js/draw/symbolselector.html:71
+#: geoportailv3/static/js/draw/symbolselector.html:77
+msgid "Color"
+msgstr "Faarf"
+
+#: geoportailv3/static/js/query/mo.html:8
+msgid "Commander fichier GML"
+msgstr "GML Fichier bestellen"
+
+#: geoportailv3/static/js/query/pagreport.html:16
+msgid "Commander rapport"
+msgstr "Rapport bestellen"
+
+#: geoportailv3/static/js/query/parcels.html:12
+msgid "Commander un extrait"
+msgstr "Extrait bestellen"
+
+#: geoportailv3/static/js/query/parcels.html:4
+#: geoportailv3/static/js/query/parcels_go.html:4
+#: geoportailv3/static/js/query/parcels_prof.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:4
+msgid "Commune"
+msgstr "Gemeng"
+
+#: geoportailv3/static/js/query/mo.html:5
+msgid "Commune administrative"
+msgstr "Administrativ Gemeng"
+
+#: geoportailv3/static/js/query/mo.html:6
+#: geoportailv3/static/js/query/viti_flik.html:4
+msgid "Commune cadastrale"
+msgstr "Kadaster Gemeng"
+
+#: geoportailv3/static/js/draw/symbolselector.html:6
+msgid "Configurables"
+msgstr "Konfiguréierbar"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:189
+msgid "Confirmation de suppression de la carte"
+msgstr "Kaart wierklech läschen?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:161
+msgid "Confirmation de suppression des dessins"
+msgstr "Zeechnungen wierklech läschen?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:175
+msgid "Confirmation de suppression des éléments de la carte"
+msgstr "Bestägegung fir d'Löschen vun allen Elementer aus der Kaart"
+
+#: geoportailv3/static/js/query/parcels_go.html:12
+msgid "Constitution de dossier de mesurage"
+msgstr "Vermoossungsdossier uleeën"
+
+#: geoportailv3/static/js/layerinfo/popup.html:23
+#: geoportailv3/templates/index.html:220
+msgid "Contact"
+msgstr "Kontakt"
+
+#: geoportailv3/static/js/query/parcels.html:7
+#: geoportailv3/static/js/query/parcels_go.html:7
+#: geoportailv3/static/js/query/parcels_prof.html:7
+msgid "Contenance"
+msgstr "Flächeninhalt"
+
+#: geoportailv3/static/js/draw/featurepopup.html:59
+msgid "Continuer la ligne"
+msgstr "Mat der Linn weiderfueren"
+
+#: geoportailv3/static/js/layerinfo/popup.html:16
+msgid "Contrainte d'utilisation"
+msgstr "Notzungsbedingungen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:91
+msgid "Copier dans ma carte"
+msgstr "A méng Kaart kopéieren"
+
+#: geoportailv3/templates/index.html:204
+msgid "Couches"
+msgstr "Layeren"
+
+#: geoportailv3/static/js/authentication/authentication.html:12
+msgid "Create a new user account"
+msgstr "E neien Benotzerkont opmaachen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:2
+msgid "Create, save and share your own maps."
+msgstr "Är egen Kaarten erstellen, speicheren an deelen."
+
+#: geoportailv3/static/js/query/ng95.html:6
+msgid "Croquis"
+msgstr "Croquis"
+
+#: geoportailv3/static/js/query/ng95.html:8
+msgid "Croquis indisponible"
+msgstr "Keen Croquis disponibel"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:259
+msgid "Créateur carte"
+msgstr "Ersteller vun der Kaart"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:48
+msgid "Créer une copie"
+msgstr "Eng Kopie erstellen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:46
+#: geoportailv3/static/js/mymaps/mymaps.html:9
+msgid "Créer une nouvelle carte"
+msgstr "Eng nei Kaart erstellen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:93
+msgid "Créer une nouvelle carte à partir de ces dessins"
+msgstr "Nei Kaart aus dësen Zeechnungen erstellen"
+
+#: geoportailv3/static/js/draw/styleediting.html:57
+msgid "Dashed"
+msgstr "gestréchelt"
+
+#: geoportailv3/static/js/query/affaires.html:10
+msgid "Date"
+msgstr "Datum"
+
+#: geoportailv3/static/js/query/parcels.html:11
+#: geoportailv3/static/js/query/parcels_go.html:11
+#: geoportailv3/static/js/query/parcels_prof.html:11
+msgid "Dernier mesurage"
+msgstr "Leschten Mesurage"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:266
+msgid "Dernière Actualisation"
+msgstr "leschten Update"
+
+#: geoportailv3/static/js/feedback/feedback.html:25
+msgid "Describe the problem within the current map extent:"
+msgstr "Beschreift de Problem, deen an dem aktuelle Kartenauszuch virkënnt:"
+
+#: geoportailv3/static/js/layerinfo/popup.html:11
+#: geoportailv3/static/js/mymaps/mymaps.html:145
+#: geoportailv3/static/js/query/mymaps.html:7
+msgid "Description"
+msgstr "Beschreiwung"
+
+#: geoportailv3/static/js/layerinfo/popup.html:9
+msgid "Description du Service"
+msgstr "Beschreiwung vum Déngscht"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:24
+msgid "Description du service :"
+msgstr "Beschreiwung vum Déngscht :"
+
+#: geoportailv3/templates/index.html:226
+msgid "Dessin"
+msgstr "Zeechnen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:84
+msgid "Dessins"
+msgstr "Zeechnungen"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:25
+msgid "Distance approximative"
+msgstr "geschätzten Distanz"
+
+#: geoportailv3/static/js/draw/styleediting.html:58
+msgid "Dotted"
+msgstr "gepunktelt"
+
+#: geoportailv3/static/js/profile/profile.html:12
+msgid "Draw a line on the map to display an elevation profile."
+msgstr "Zeechent eng Linn op der Kaart fir den Héichtenprofil unzeweisen"
+
+#: geoportailv3/static/js/draw/featurepopup.html:29
+msgid "Editer l'objet"
+msgstr "Objekt éditeieren"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:168
+#: geoportailv3/static/js/mymaps/mymaps.html:182
+#: geoportailv3/static/js/mymaps/mymaps.html:196
+msgid "Effacer"
+msgstr "Läschen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:92
+msgid "Effacer tous les dessins"
+msgstr "all d'Zeechnunge läschen"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:19
+#: geoportailv3/static/js/query/ng95.html:4
+msgid "Elevation"
+msgstr "Héicht"
+
+#: geoportailv3/static/js/draw/featurepopup.html:20
+msgid "Elevation: {{ ctrl.featureElevation }}"
+msgstr "Héicht: {{ ctrl.featureElevation }}"
+
+#: geoportailv3/static/js/share/share.html:13
+msgid "Email"
+msgstr "Email"
+
+#: geoportailv3/static/js/query/pagreport.html:12
+msgid ""
+"En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté "
+"les <a href=\"pagfiles/Disclaimer.pdf\">conditions générales d'utilisation "
+"</a>de ce site web."
+msgstr "Heimat erklärt der, déi <a href='/main/wsgi/pag/files/Disclaimer.pdf'>allgemeng Geschäftsbedingungen</a> vun dësem Site gelies an akzeptéiert ze hunn."
+
+#: geoportailv3/static/js/mymapsservice.js:805
+msgid "Erreur inattendue lors de la copie de votre carte."
+msgstr "Onerwaartenen Fehler beim Kopéieren vun ärer Kaart"
+
+#: geoportailv3/static/js/mymapsservice.js:763
+msgid "Erreur inattendue lors de la création de votre carte."
+msgstr "Onerwaartenen Fehler beim Erstellen vun ärer Kaart"
+
+#: geoportailv3/static/js/mymapsservice.js:928
+#: geoportailv3/static/js/mymapsservice.js:978
+msgid "Erreur inattendue lors de la mise à jour de votre carte."
+msgstr "Onerwaartenen Fehler beim Updaten vun ärer Kaart"
+
+#: geoportailv3/static/js/mymapsservice.js:1017
+#: geoportailv3/static/js/mymapsservice.js:1056
+msgid "Erreur inattendue lors de la sauvegarde de votre modification."
+msgstr "Onerwaartenen Fehler beim Spaicheren vun ärer Ännerung"
+
+#: geoportailv3/static/js/mymapsservice.js:721
+msgid "Erreur inattendue lors de la suppression d'un élement."
+msgstr "Onerwaartenen Fehler beim Läschen vun engem Objet"
+
+#: geoportailv3/static/js/mymapsservice.js:833
+msgid "Erreur inattendue lors de la suppression de votre carte."
+msgstr "Onerwaartenen Fehler beim Läschen vun ärer Kaart"
+
+#: geoportailv3/static/js/mymapsservice.js:862
+msgid "Erreur inattendue lors de la suppression des objets de la carte."
+msgstr "Onerwaarte Fehler beim Löschen vun den Elementer aus der Kaart"
+
+#: geoportailv3/static/js/mymapsservice.js:455
+msgid "Erreur inattendue lors du chargement de vos cartes."
+msgstr "Onerwaartenen Fehler beim Lueden vun äre Kaarten"
+
+#: geoportailv3/static/js/mymapsservice.js:513
+#: geoportailv3/static/js/mymapsservice.js:691
+msgid "Erreur inattendue lors du chargement de votre carte."
+msgstr "Onerwaartenen Fehler beim Lueden vun ärer Kaart"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:192
+msgid "Etes-vous certain de vouloir effacer la carte courrante ?"
+msgstr "Wëllt dir är Kaart wierklech löschen?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:164
+msgid "Etes-vous certain de vouloir effacer tous les dessins ?"
+msgstr "Wëllt dir är Zeechnungen wierklech löschen?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:178
+msgid "Etes-vous certain de vouloir effacer tous les éléments de la carte ?"
+msgstr "Sidd die sécher, datt dir wëllt all d'Elementer aus der Kaart löschen?"
+
+#: geoportailv3/static/js/profile/profile.html:4
+msgid "Export csv"
+msgstr "CSV exportéieren "
+
+#: geoportailv3/static/js/query/mymaps.html:13
+msgid "Exporter GPX"
+msgstr "GPX exportéiren"
+
+#: geoportailv3/static/js/query/mymaps.html:13
+msgid "Exporter KMl"
+msgstr "KML exportéiren"
+
+#: geoportailv3/static/js/draw/featurepopup.html:57
+#: geoportailv3/static/js/mymaps/mymaps.html:56
+msgid "Exporter un GPX"
+msgstr "GPX exportéieren "
+
+#: geoportailv3/static/js/draw/featurepopup.html:58
+#: geoportailv3/static/js/mymaps/mymaps.html:57
+msgid "Exporter un KML"
+msgstr "KML exportéieren "
+
+#: geoportailv3/static/js/share/share.html:4
+msgid "Facebook"
+msgstr "Facebook"
+
+#: geoportailv3/templates/index.html:179 geoportailv3/templates/index.html:217
+msgid "Feedback"
+msgstr "Feedback"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:200
+msgid "Feedback could not be sent to <a href=\"mailto:\"></a>"
+msgstr "De Feedback konnt net op <a href=\"mailto:\"></a> geschéckt ginn"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:194
+msgid "Feedback sent to <a href=\"mailto:\"></a>"
+msgstr "Feedback op <a href=\"mailto:\"></a> geschéckt"
+
+#: geoportailv3/static/js/draw/symbolselector.html:102
+#: geoportailv3/static/js/mymaps/mymaps.html:54
+msgid "Fermer"
+msgstr "Zoumaachen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:218
+msgid "Filter results by category"
+msgstr "Filter: Katégorie"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:230
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:768
+msgid "Filter results by username"
+msgstr "Filter: Benutzernumm"
+
+#: geoportailv3/static/js/query/pcn_pag.html:7
+msgid "Generer Rapport (peut prendre 30 sec)"
+msgstr "Rapport generéieren (kann bis zu 30 Sek daueren)"
+
+#: geoportailv3/static/js/query/pcn_pag.html:3
+msgid "Generer un rapport pour toutes les selections"
+msgstr "Rapport fir d'Gesamtauswal generéieren"
+
+#: geoportailv3/static/js/query/affaires.html:6
+msgid "Geometre"
+msgstr "Geometer"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:16
+msgid "Get the layers"
+msgstr "Layeren ufroen"
+
+#: geoportailv3/static/js/share/share.html:10
+msgid "Google Plus"
+msgstr "Google Plus"
+
+#: geoportailv3/static/js/authentication/authentication.html:11
+msgid "I lost my password"
+msgstr "Ech hu mäi Passwuert verluer"
+
+#: geoportailv3/static/js/query/pagreport.html:1
+msgid ""
+"Ici vous pouvez commander le rapport relatif aux règles urbanistiques "
+"applicables au terrain séctionné"
+msgstr "Hei kënnt der Iech en Rapport zu den Baureegelen fir een ausgewielten Terrain erstellen loossen."
+
+#: geoportailv3/static/js/query/pcn_pag.html:6
+msgid "Identifiant"
+msgstr "Benotzer ID"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:58
+msgid "Importer un GPX"
+msgstr "GPX importéieren"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:59
+msgid "Importer un KML"
+msgstr "KML importéieren"
+
+#: geoportailv3/static/js/draw/symbolselector.html:100
+msgid "Importer un symbole"
+msgstr "Symbol importéieren"
+
+#: geoportailv3/templates/index.html:241
+msgid "Imprimer"
+msgstr "Drécken"
+
+#: geoportailv3/templates/index.html:210
+msgid "Infos<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
+msgstr "Info<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
+
+#: geoportailv3/static/js/usermanagerservice.js:121
+#: geoportailv3/static/js/usermanagerservice.js:128
+msgid "Invalid username or password."
+msgstr "Passwuert oder Benotzernum ongëlteg"
+
+#: geoportailv3/static/js/layerinfo/popup.html:22
+msgid "Keywords"
+msgstr "Stëchwieder"
+
+#: geoportailv3/static/js/mymapsservice.js:508
+#: geoportailv3/static/js/mymapsservice.js:686
+msgid "La carte demandée n'existe pas."
+msgstr "Die vun Iech ausgewielte Kaart gëtt et net."
+
+#: geoportailv3/static/js/draw/draw.html:7
+#: geoportailv3/static/js/draw/drawdirective.js:644
+#: geoportailv3/static/js/query/mymaps.html:5
+msgid "Label"
+msgstr "Beschréftung"
+
+#: geoportailv3/templates/index.html:221
+msgid "Legalites"
+msgstr "Legales"
+
+#: geoportailv3/static/js/layerinfo/popup.html:40
+msgid "Legend"
+msgstr "mat Legend"
+
+#: geoportailv3/templates/index.html:213
+msgid "Legends"
+msgstr "Legenden"
+
+#: geoportailv3/static/js/measure/measure.html:3
+msgid "Length"
+msgstr "Längt"
+
+#: geoportailv3/static/js/draw/featurepopup.html:10
+msgid "Length:"
+msgstr "Längt: "
+
+#: geoportailv3/static/js/mymaps/mymaps.html:26
+msgid ""
+"Les couches sélectionnées dans le catalogue sont différentes de celles "
+"chargées avec votre carte. Voulez vous sauvegarder ces modifications dans "
+"votre carte?"
+msgstr "Déi ausgewielte Layeren am Katalog sin anescht wéi déi vun ärer Kaart. <br>Wëllt dir des Ännerungen an är Kaart iwwerhuelen?"
+
+#: geoportailv3/static/js/query/adresse.html:6
+#: geoportailv3/static/js/query/aero.html:8
+#: geoportailv3/static/js/query/affaires.html:11
+#: geoportailv3/static/js/query/asta_esp.html:6
+#: geoportailv3/static/js/query/batiments.html:4
+#: geoportailv3/static/js/query/bus.html:6
+#: geoportailv3/static/js/query/cfl_hecto.html:4
+#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/flik.html:6
+#: geoportailv3/static/js/query/inst_pub.html:5
+#: geoportailv3/static/js/query/meteo.html:5
+#: geoportailv3/static/js/query/mo.html:9
+#: geoportailv3/static/js/query/mymaps.html:15
+#: geoportailv3/static/js/query/ng95.html:9
+#: geoportailv3/static/js/query/ont_poi.html:5
+#: geoportailv3/static/js/query/parcels.html:13
+#: geoportailv3/static/js/query/parcels_go.html:26
+#: geoportailv3/static/js/query/parcels_prof.html:25
+#: geoportailv3/static/js/query/pcn_pag.html:8
+#: geoportailv3/static/js/query/poi.html:4
+#: geoportailv3/static/js/query/remembrements.html:6
+#: geoportailv3/static/js/query/urplang.html:8
+#: geoportailv3/static/js/query/viti_flik.html:7
+#: geoportailv3/static/js/query/viti_kleinlage.html:4
+#: geoportailv3/static/js/query/viti_name.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:6
+msgid "Lien direct vers cet objet"
+msgstr "Direktlink zu dësem Objet"
+
+#: geoportailv3/static/js/query/mymaps.html:14
+msgid "Lien vers la carte"
+msgstr "Link op d'Kaart"
+
+#: geoportailv3/static/js/query/parcels_go.html:14
+#: geoportailv3/static/js/query/parcels_prof.html:13
+msgid "Lien vers les mesurages"
+msgstr "Link zu de Mesuragen"
+
+#: geoportailv3/static/js/query/parcels.html:8
+#: geoportailv3/static/js/query/parcels_go.html:8
+#: geoportailv3/static/js/query/parcels_prof.html:8
+msgid "Lieudit"
+msgstr "Flouernumm"
+
+#: geoportailv3/static/js/draw/draw.html:11
+msgid "Line"
+msgstr "Linn"
+
+#: geoportailv3/static/js/draw/drawdirective.js:650
+msgid "LineString"
+msgstr "Linn"
+
+#: geoportailv3/static/js/layerinfo/popup.html:32
+msgid "Link to the metadata"
+msgstr "Link op d'Metadaten"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:13
+msgid "Location Coordinates"
+msgstr "Positiounskoordinaten"
+
+#: geoportailv3/static/js/authentication/authentication.html:4
+msgid "Login"
+msgstr "Benotzernumm"
+
+#: geoportailv3/static/js/authentication/authentication.html:22
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: geoportailv3/static/js/query/mymaps.html:8
+msgid "Longeueur"
+msgstr "Längt"
+
+#: geoportailv3/static/js/query/asta_esp.html:5
+msgid "Longueur"
+msgstr "Längt"
+
+#: geoportailv3/static/js/query/parcels_go.html:18
+#: geoportailv3/static/js/query/parcels_go.html:19
+#: geoportailv3/static/js/query/parcels_prof.html:17
+#: geoportailv3/static/js/query/parcels_prof.html:18
+msgid "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
+msgstr "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:660
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:926
+msgid "Map without Title"
+msgstr "Kaart ouni Titel"
+
+#: geoportailv3/static/js/draw/symbolselector.html:7
+msgid "Mes symboles"
+msgstr "Meng Symboler"
+
+#: geoportailv3/static/js/query/mo.html:7
+msgid "Mesurage"
+msgstr "Vermoossung"
+
+#: geoportailv3/static/js/query/parcels_go.html:22
+#: geoportailv3/static/js/query/parcels_prof.html:21
+msgid "Mesurage non disponible"
+msgstr "Mesurage net verfügbar"
+
+#: geoportailv3/templates/index.html:234
+msgid "Mesurer"
+msgstr "Moossen"
+
+#: geoportailv3/static/js/draw/featurepopup.html:67
+msgid "Modification des informations"
+msgstr "Informatiounen änneren"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:119
+msgid "Modify title and description of the map"
+msgstr "Titel an Beschreiwung änneren"
+
+#: geoportailv3/templates/index.html:207
+msgid "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
+msgstr "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
+
+#: geoportailv3/static/js/authentication/authentication.html:2
+#: geoportailv3/static/js/authentication/authentication.html:21
+msgid "My account"
+msgstr "Mäi Kont"
+
+#: geoportailv3/static/js/elevationservice.js:50
+msgid "N/A"
+msgstr "N/A"
+
+#: geoportailv3/static/js/layerinfo/popup.html:8
+#: geoportailv3/static/js/query/mymaps.html:6
+#: geoportailv3/static/js/query/ont_poi.html:3
+msgid "Name"
+msgstr "Numm"
+
+#: geoportailv3/static/js/query/parcels.html:9
+#: geoportailv3/static/js/query/parcels_go.html:9
+#: geoportailv3/static/js/query/parcels_prof.html:9
+msgid "Nature"
+msgstr "Notzung"
+
+#: geoportailv3/static/js/layermanager/layermanager.html:1
+msgid "No layer selected"
+msgstr "Keen Layer ausgewielt"
+
+#: geoportailv3/static/js/draw/symbolselector.html:20
+#: geoportailv3/static/js/query/cfl_hecto.html:3
+#: geoportailv3/static/js/query/remembrements.html:3
+#: geoportailv3/static/js/query/viti_kleinlage.html:3
+#: geoportailv3/static/js/query/viti_name.html:3
+msgid "Nom"
+msgstr "Numm"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:983
+msgid "Nouvelle carte créée"
+msgstr "Nei Kaart erstallt"
+
+#: geoportailv3/static/js/query/affaires.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:3
+msgid "Numero"
+msgstr "Nummer"
+
+#: geoportailv3/static/js/query/asta_esp.html:3
+msgid "Numero EFA"
+msgstr "EFA Nummer"
+
+#: geoportailv3/static/js/query/flik.html:3
+#: geoportailv3/static/js/query/viti_flik.html:3
+msgid "Numero FLIK"
+msgstr "FLIK Nummer"
+
+#: geoportailv3/static/js/query/affaires.html:5
+#: geoportailv3/static/js/query/parcels.html:6
+#: geoportailv3/static/js/query/parcels_go.html:6
+#: geoportailv3/static/js/query/parcels_prof.html:6
+msgid "Numero cadastral"
+msgstr "Parzellennummer"
+
+#: geoportailv3/static/js/draw/featurepopup.html:114
+#: geoportailv3/static/js/draw/styleediting.html:116
+msgid "OK"
+msgstr "OK"
+
+#: geoportailv3/static/js/query/ng95.html:7
+msgid "Obtenir le fichier sous format pdf"
+msgstr "Den Fichier als PDF eroflueden"
+
+#: geoportailv3/static/js/query/parcels.html:10
+#: geoportailv3/static/js/query/parcels_go.html:10
+#: geoportailv3/static/js/query/parcels_prof.html:10
+msgid "Occupation"
+msgstr "Bebauung"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:29
+msgid "Oui"
+msgstr "Jo"
+
+#: geoportailv3/static/js/query/parcels_go.html:13
+#: geoportailv3/static/js/query/parcels_prof.html:12
+msgid "Ouvrir la PF"
+msgstr "PF opmaan"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:204
+#: geoportailv3/static/js/mymaps/mymaps.html:6
+msgid "Ouvrir une carte"
+msgstr "eng Kaart opmachen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:47
+msgid "Ouvrir une carte existante"
+msgstr "eng bestehend Kaart opmaachen"
+
+#: geoportailv3/templates/index.html:246
+msgid "Partager"
+msgstr "Deelen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:49
+msgid "Partager la carte"
+msgstr "Kaart deelen"
+
+#: geoportailv3/static/js/authentication/authentication.html:8
+msgid "Password"
+msgstr "Passwuert"
+
+#: geoportailv3/static/js/query/flik.html:5
+msgid "Perimetre"
+msgstr "Perimeter"
+
+#: geoportailv3/static/js/feedback/feedback.html:9
+msgid "Pick layer where problem occurs"
+msgstr "Wielt de Layer aus, an deem de Problem virkënnt"
+
+#: geoportailv3/static/js/draw/styleediting.html:56
+msgid "Plain"
+msgstr "duerchgezunn"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:111
+#: geoportailv3/static/js/feedback/feedbackdirective.js:134
+msgid "Please pick a layer"
+msgstr "Wielt weg ee Layer aus"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:802
+msgid "Please select a Category"
+msgstr "Wielt w.e.g. eng Kategorie aus"
+
+#: geoportailv3/static/js/draw/draw.html:3
+#: geoportailv3/static/js/draw/drawdirective.js:646
+msgid "Point"
+msgstr "Punkt"
+
+#: geoportailv3/static/js/draw/draw.html:15
+#: geoportailv3/static/js/draw/drawdirective.js:656
+msgid "Polygon"
+msgstr "Polygon"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:14
+msgid "Predefined wms"
+msgstr "Virdefinéiert WMS"
+
+#: geoportailv3/static/js/measure/measure.html:15
+msgid "Profile"
+msgstr "Héichteprofil"
+
+#: geoportailv3/static/js/query/inst_pub.html:4
+msgid "Proprietaire"
+msgstr "Proprietär"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:132
+msgid "Public Map"
+msgstr "Ëffentlech Kaart"
+
+#: geoportailv3/static/js/draw/symbolselector.html:8
+msgid "Publics"
+msgstr "ëffentlech"
+
+#: geoportailv3/static/js/query/mymaps.html:9
+msgid "Rating"
+msgstr "Bewertung"
+
+#: geoportailv3/static/js/draw/featurepopup.html:17
+msgid "Rayon:"
+msgstr "Radius:"
+
+#: geoportailv3/static/js/search/search.html:6
+msgid "Recherche adresse, parcelles, couches ..."
+msgstr "Sich Adressen, Parzellen, Layeren ... "
+
+#: geoportailv3/static/js/draw/symbolselector.html:13
+msgid "Rechercher un symbole"
+msgstr "e Symbol sichen"
+
+#: geoportailv3/static/js/query/affaires.html:7
+msgid "Region"
+msgstr "Region"
+
+#: geoportailv3/static/js/feedback/feedback.html:2
+msgid "Report a map content problem:"
+msgstr "E Problem op der Kaart melden:"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:28
+msgid "Reset"
+msgstr "Reset"
+
+#: geoportailv3/static/js/draw/featurepopup.html:86
+msgid "Retirer vignette"
+msgstr "Vignette wechhuelen"
+
+#: geoportailv3/static/js/layerinfo/popup.html:21
+msgid "Revision date"
+msgstr "Revisiounsdatum"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:152
+#: geoportailv3/static/js/mymaps/mymaps.html:153
+#: geoportailv3/static/js/mymaps/mymaps.html:154
+msgid "Save changes"
+msgstr "Ännerunge späicheren"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:155
+msgid "Save new map"
+msgstr "nei Kaart späicheren"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:209
+msgid "Search Maps"
+msgstr "Kaarten sichen"
+
+#: geoportailv3/static/js/query/parcels.html:5
+#: geoportailv3/static/js/query/parcels_go.html:5
+#: geoportailv3/static/js/query/parcels_prof.html:5
+#: geoportailv3/static/js/query/viti_parcels.html:5
+msgid "Section"
+msgstr "Sectioun"
+
+#: geoportailv3/static/js/query/viti_flik.html:5
+msgid "Section cadastrale"
+msgstr "Kadastersektioun"
+
+#: geoportailv3/static/js/feedback/feedback.html:36
+msgid "Send feedback to support team"
+msgstr "Feedback un d'Support Team schécken"
+
+#: geoportailv3/static/js/share/shorturl.html:16
+msgid "Share only Mymaps"
+msgstr "Nëmmen den „Méng Kaarten“ – Link deelen"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:4
+#: geoportailv3/static/js/share/shorturl.html:4
+msgid "Short Url"
+msgstr "Url"
+
+#: geoportailv3/static/js/share/shorturl.html:12
+msgid "Show long url"
+msgstr "Laang URL uweisen"
+
+#: geoportailv3/static/js/draw/styleediting.html:63
+msgid "Show orientation"
+msgstr "Orientatioun uweisen"
+
+#: geoportailv3/static/js/draw/styleediting.html:102
+#: geoportailv3/static/js/draw/styleediting.html:90
+msgid "Size"
+msgstr "Gréisst"
+
+#: geoportailv3/static/js/query/affaires.html:9
+#: geoportailv3/static/js/query/remembrements.html:4
+msgid "Statut"
+msgstr "Status"
+
+#: geoportailv3/static/js/draw/styleediting.html:35
+#: geoportailv3/static/js/draw/styleediting.html:48
+msgid "Stroke width"
+msgstr "Stréchdéckt"
+
+#: geoportailv3/static/js/draw/styleediting.html:55
+msgid "Style"
+msgstr "Styl"
+
+#: geoportailv3/static/js/draw/styleediting.html:3
+msgid "Style your drawing"
+msgstr "Ärer Zeechnung e Styl ginn"
+
+#: geoportailv3/static/js/authentication/authentication.html:9
+msgid "Submit"
+msgstr "Aloggen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:51
+msgid "Supprimer la carte"
+msgstr "Kaart läschen"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:52
+msgid "Supprimer tous les élements de la carte"
+msgstr "All d'Elementer aus der Kaart löschen"
+
+#: geoportailv3/static/js/measure/measure.html:7
+#: geoportailv3/static/js/query/asta_esp.html:4
+#: geoportailv3/static/js/query/flik.html:4
+#: geoportailv3/static/js/query/viti_flik.html:6
+msgid "Surface"
+msgstr "Fläch"
+
+#: geoportailv3/static/js/draw/styleediting.html:75
+msgid "Symbol"
+msgstr "Symbol"
+
+#: geoportailv3/static/js/draw/styleediting.html:78
+msgid ""
+"Symbol\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'square'\" width=\"18\" height=\"18\"><rect width=\"18\" height=\"18\" style=\"fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};\"/></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'cross'\" width=\"18\" height=\"18\"><text x=\"0\" y=\"22\" font-size=\"40\" fill=\"{{ctrl.feature.get('color')}}\">+</text></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'triangle'\" width=\"18\" height=\"18\"><polygon points=\"0,18 9,0 18,18\" style=\"fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1\"/></svg>"
+msgstr "Symbol\n            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'square'\" width=\"18\" height=\"18\"><rect width=\"18\" height=\"18\" style=\"fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};\"/></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'cross'\" width=\"18\" height=\"18\"><text x=\"0\" y=\"22\" font-size=\"40\" fill=\"{{ctrl.feature.get('color')}}\">+</text></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'triangle'\" width=\"18\" height=\"18\"><polygon points=\"0,18 9,0 18,18\" style=\"fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1\"/></svg>"
+
+#: geoportailv3/static/js/draw/symbolselector.html:17
+msgid "Symbole"
+msgstr "Symbol"
+
+#: geoportailv3/static/js/draw/featurepopup.html:30
+msgid "Terminer édition"
+msgstr "Editiounsmodus verlossen"
+
+#: geoportailv3/static/js/feedback/feedback.html:33
+msgid ""
+"The following <a ng-href=\"{{ctrl.url}}\" target=\"_blank\">map link</a> "
+"will be sent to our support team."
+msgstr "De folgende <a ng-href=\"{{ctrl.url}}\" target=\"_blank\">Kaartelink</a> gëtt un d'Supportteam geschéckt."
+
+#: geoportailv3/static/js/exclusionmanagerservice.js:138
+msgid ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+msgid_plural ""
+"The layers <b>{{layersToRemove}}</b> have been removed because they cannot "
+"be displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr[0] "De Layer <b>{{layersToRemove}}</b> gouf ewechgehol, well en net dierf mam Layer <b>{{layer}}</b> ugewisen gin"
+msgstr[1] "D'Layeren <b>{{layersToRemove}}</b> goufen ewechgeholl, well se net dierfen mam Layer <b>{{layer}}</b> ugewisen ginn"
+
+#: geoportailv3/static/js/layerinfo/popup.html:45
+msgid "The legend is not available for this layer"
+msgstr "Keng spezifesch Legend fir dëse Layer"
+
+#: geoportailv3/static/js/layerinfo/popup.html:39
+msgid "The metadata is right now not available"
+msgstr "Et gi keng Metadaten fir dëse Layer"
+
+#: geoportailv3/static/js/themeswitcher/themes.html:2
+msgid "Theme"
+msgstr "Thema"
+
+#: geoportailv3/static/js/print/print.html:6
+msgid "Title"
+msgstr "Titel"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:120
+#: geoportailv3/static/js/mymaps/mymaps.html:122
+msgid "Title and description of the map"
+msgstr "Titel a Beschreiwung vun der Kaart"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:121
+msgid "Title and description of the map copy"
+msgstr "Titel a Beschreiwung vun der Kopie"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:245
+msgid "Titre"
+msgstr "Titel"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:127
+msgid "Titre de la carte"
+msgstr "Titel vun der Kaart"
+
+#: geoportailv3/static/js/draw/styleediting.html:40
+msgid "Transparency"
+msgstr "Transparenz"
+
+#: geoportailv3/static/js/share/share.html:7
+msgid "Twitter"
+msgstr "Twitter"
+
+#: geoportailv3/static/js/query/affaires.html:8
+#: geoportailv3/static/js/query/batiments.html:3
+#: geoportailv3/static/js/query/ng95.html:5
+#: geoportailv3/static/js/query/remembrements.html:5
+msgid "Type"
+msgstr "Typ"
+
+#: geoportailv3/static/js/usermanagerservice.js:145
+#: geoportailv3/static/js/usermanagerservice.js:153
+msgid "Une erreur est survenue durant la déconnexion."
+msgstr "E Fehler ass während der Verbindung opgetrueden"
+
+#: geoportailv3/static/js/layerinfo/popup.html:18
+msgid "Url vers la resource"
+msgstr "URL vun der Ressource"
+
+#: geoportailv3/static/js/authentication/authentication.html:7
+msgid "Username"
+msgstr "Benotzernumm"
+
+#: geoportailv3/static/js/draw/featurepopup.html:94
+msgid "Validate"
+msgstr "Validéieren"
+
+#: geoportailv3/static/js/query/reportdirective.js:131
+msgid "Veuillez accepter les termes du rapport"
+msgstr "Huelt weg d'Bedingungen vum Rapport un"
+
+#: geoportailv3/static/js/draw/symbolselector.html:1
+msgid "Veuillez choisir un symbole dans une des catégories"
+msgstr "Sicht Iech ee Symbol an enger vun de Kategorie raus"
+
+#: geoportailv3/static/js/query/reportdirective.js:126
+msgid "Veuillez saisir une adresse email valide"
+msgstr "Erfaasst weg eng valid Email-Adress"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1068
+msgid "Veuillez vous identifier afin d'accéder à vos cartes"
+msgstr "Loggt Iech w.e.g. an fir op Är Kaarten zeréckzegräifen"
+
+#: geoportailv3/static/js/query/reportdirective.js:138
+msgid ""
+"Votre rapport est en train d'être généré. Un email vous sera envoyé à "
+"l'adresse {{email}} dès qu'il sera disponible"
+msgstr "Äre Rapport gëtt generéiert. Dir kritt eng Email op d'Adress  {{email}} subaal e fäerdeg ass."
+
+#: geoportailv3/static/js/mymapsservice.js:1070
+msgid "Votre utilisateur n'a pas les autorisations suffisantes."
+msgstr "Ären Benotzer huet net dei néideg Autorisatiounen"
+
+#: geoportailv3/static/js/usermanagerservice.js:116
+msgid "Vous êtes maintenant correctement connecté."
+msgstr "Dir sidd elo ageloggt"
+
+#: geoportailv3/static/js/print/print.html:13
+msgid "With legend"
+msgstr "Mat Legend"
+
+#: geoportailv3/static/js/feedback/feedback.html:34
+msgid ""
+"You can also use the <a href=\"\" ng-"
+"click=\"ctrl.activateDrawingTools()\">Drawing Tools</a> to annotate the map "
+"send to the support team."
+msgstr "Dir kënnt och d'<a href=\"\" ng-click=\"ctrl.activateDrawingTools()\">Zeechfonktioune</a> benotzen, fir d'Kaart ze kommentéiren."
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:907
+msgid "You have no existing Maps, please create a New Map"
+msgstr "Dir hudd keng Kaarten, erstellt w.e.g eng nei Kaart"
+
+#: geoportailv3/static/js/feedback/feedback.html:5
+msgid "Your email"
+msgstr "Är Emailadress"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:6
 msgid "bat_100"
@@ -342,706 +1402,37 @@ msgstr "Gebai dat op Basis vu Loftopnahmen komplétéiert ass"
 msgid "blank"
 msgstr "Keen Hannergrond"
 
-#: geoportailv3/static/js/draw/featurepopup.html:86
-#: geoportailv3/static/js/mymaps/mymaps.html:151
-msgid "Cancel"
-msgstr "Annuléieren"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:400
-msgid "Carte copiée"
-msgstr "Kaart kopéiert"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:632
-msgid "Carte créée"
-msgstr "Kaart erstallt"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:38
-msgid "Carte créée par"
-msgstr "Kaart erstallt vun: "
-
-#: geoportailv3/templates/index.html:86
-msgid "Catalog"
-msgstr "Katalog"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:227
-msgid "Catégorie"
-msgstr "Kategorie"
-
-#: geoportailv3/static/js/imageupload/imguploaddirective.js:118
-msgid "Ce format d'image n'est as supporté."
-msgstr "Dëst Format gëtt net ennerstëtzt"
-
-#: geoportailv3/static/js/themeswitcher/themeswitcherdirective.js:77
-msgid "Ce thème est protégé. Veuillez vous connecter."
-msgstr "Dëst Thema as geschützt. Loggt Iech w.e.g an"
-
-#: geoportailv3/static/js/themeswitcher/themes.html:4
-msgid "Changer"
-msgstr "Wiesselen"
-
-#: geoportailv3/static/js/draw/featurepopup.html:55
-#: geoportailv3/static/js/draw/styleediting.html:69
-msgid "Changer sens de la ligne"
-msgstr "Richtung vun der Linn änneren"
-
-#: geoportailv3/static/js/draw/draw.html:19
-#: geoportailv3/static/js/draw/drawdirective.js:645
-msgid "Circle"
-msgstr "Krees"
-
-#: geoportailv3/static/js/measure/measuredirective.js:138
-msgid ""
-"Click to continue drawing the line<br>Double-click or click last point to "
-"finish"
-msgstr "Klickt fir mam Zeechnen vun der Linn weiderzefueren <br> Duebelklick fir ofzeschléissen"
-
-#: geoportailv3/static/js/measure/measuredirective.js:176
-msgid ""
-"Click to continue drawing the polygon<br>Double-click or click last point to"
-" finish"
-msgstr "Klickt fir mam Zeechnen vum Polygon weiderzefueren <br> Duebelklick fir ofzeschléissen"
-
-#: geoportailv3/static/js/draw/drawdirective.js:444
-msgid "Click to draw the point"
-msgstr ""
-
-#: geoportailv3/static/js/measure/measuredirective.js:195
-msgid "Click to finish"
-msgstr "Klickt fir ofzeschléissen"
-
-#: geoportailv3/static/js/draw/drawdirective.js:462
-msgid "Click to place the label"
-msgstr ""
-
-#: geoportailv3/static/js/measure/measuredirective.js:175
-msgid "Click to start drawing area"
-msgstr "Klickt fir mam Moossen vun enger Fläch unzefänken"
-
-#: geoportailv3/static/js/measure/measuredirective.js:194
-msgid "Click to start drawing azimut"
-msgstr "Klickt fir mam Moossen vun engem Azimut unzefänken"
-
-#: geoportailv3/static/js/draw/drawdirective.js:458
-msgid "Click to start drawing circle"
-msgstr "Klickt, fir unzefänken, ee Krees ze zeechnen"
-
-#: geoportailv3/static/js/measure/measuredirective.js:154
-msgid "Click to start drawing length"
-msgstr "Klickt fir mam Moossen vun enger Längt unzefänken"
-
-#: geoportailv3/static/js/draw/drawdirective.js:448
-msgid "Click to start drawing line<br>Double-click to finish"
-msgstr ""
-
-#: geoportailv3/static/js/draw/drawdirective.js:453
-msgid ""
-"Click to start drawing polygon<br>Double-click or click last point to finish"
-msgstr ""
-
-#: geoportailv3/static/js/measure/measuredirective.js:137
-msgid "Click to start drawing profile"
-msgstr "Klickt fir mam Moossen vun engem Profil unzefänken"
-
-#: geoportailv3/static/js/query/aero.html:7
-#: geoportailv3/static/js/query/urplang.html:7
-msgid "Cliquez dans l'image pour agrandir"
-msgstr "Klickt an d'Bild fir et ze vergréisseren"
-
-#: geoportailv3/static/js/draw/styleediting.html:14
-#: geoportailv3/static/js/draw/styleediting.html:8
-#: geoportailv3/static/js/draw/symbolselector.html:71
-#: geoportailv3/static/js/draw/symbolselector.html:77
-msgid "Color"
-msgstr "Faarf"
-
-#: geoportailv3/static/js/query/mo.html:9
-msgid "Commander fichier GML"
-msgstr "GML Fichier bestellen"
-
-#: geoportailv3/static/js/query/pagreport.html:16
-msgid "Commander rapport"
-msgstr "Rapport bestellen"
-
-#: geoportailv3/static/js/query/parcels.html:12
-msgid "Commander un extrait"
-msgstr "Extrait bestellen"
-
-#: geoportailv3/static/js/query/parcels_go.html:4
-#: geoportailv3/static/js/query/parcels.html:4
-#: geoportailv3/static/js/query/viti_parcels.html:4
-msgid "Commune"
-msgstr "Gemeng"
-
-#: geoportailv3/static/js/query/mo.html:5
-msgid "Commune administrative"
-msgstr "Administrativ Gemeng"
-
-#: geoportailv3/static/js/query/mo.html:6
-#: geoportailv3/static/js/query/viti_flik.html:4
-msgid "Commune cadastrale"
-msgstr "Kadaster Gemeng"
-
-#: geoportailv3/static/js/draw/symbolselector.html:6
-msgid "Configurables"
-msgstr "Konfiguréierbar"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:189
-msgid "Confirmation de suppression de la carte"
-msgstr "Kaart wierklech läschen?"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:161
-msgid "Confirmation de suppression des dessins"
-msgstr "Zeechnungen wierklech läschen?"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:175
-msgid "Confirmation de suppression des éléments de la carte"
-msgstr "Bestägegung fir d'Löschen vun allen Elementer aus der Kaart"
-
-#: geoportailv3/static/js/query/parcels_go.html:10
-msgid "Constitution de dossier de mesurage"
-msgstr "Vermoossungsdossier uleeën"
-
-#: geoportailv3/static/js/layerinfo/popup.html:18
-#: geoportailv3/templates/index.html:179
-msgid "Contact"
-msgstr "Kontakt"
-
-#: geoportailv3/static/js/query/parcels_go.html:7
-#: geoportailv3/static/js/query/parcels.html:7
-msgid "Contenance"
-msgstr "Flächeninhalt"
-
-#: geoportailv3/static/js/draw/featurepopup.html:54
-msgid "Continuer la ligne"
-msgstr "Faarf vun der Linn"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:91
-msgid "Copier dans ma carte"
-msgstr "A méng Kaart kopéieren"
-
-#: geoportailv3/templates/index.html:167
-msgid "Couches"
-msgstr "Layeren"
-
-#: geoportailv3/static/js/authentication/authentication.html:12
-msgid "Create a new user account"
-msgstr "E neien Benotzerkont opmaachen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:2
-msgid "Create, save and share your own maps."
-msgstr "Är egen Kaarten erstellen, speicheren an deelen."
-
-#: geoportailv3/static/js/mymaps/mymaps.html:48
-msgid "Créer une copie"
-msgstr "Eng Kopie erstellen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:46
-#: geoportailv3/static/js/mymaps/mymaps.html:9
-msgid "Créer une nouvelle carte"
-msgstr "Eng nei Kaart erstellen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:93
-msgid "Créer une nouvelle carte à partir de ces dessins"
-msgstr "Nei Kaart aus dësen Zeechnungen erstellen"
-
-#: geoportailv3/static/js/query/ng95.html:6
-msgid "Croquis"
-msgstr "Croquis"
-
-#: geoportailv3/static/js/query/ng95.html:8
-msgid "Croquis indisponible"
-msgstr "Keen Croquis disponibel"
-
-#: geoportailv3/static/js/draw/styleediting.html:57
-msgid "Dashed"
-msgstr "gestréchelt"
-
-#: geoportailv3/static/js/query/affaires.html:10
-msgid "Date"
-msgstr "Datum"
-
-#: geoportailv3/static/js/query/parcels_go.html:9
-#: geoportailv3/static/js/query/parcels.html:11
-msgid "Dernier mesurage"
-msgstr "Leschten Mesurage"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:234
-msgid "Dernière Actualisation"
-msgstr "leschten Update"
-
-#: geoportailv3/static/js/layerinfo/popup.html:9
-#: geoportailv3/static/js/mymaps/mymaps.html:145
-#: geoportailv3/static/js/query/mymaps.html:7
-msgid "Description"
-msgstr "Beschreiwung"
-
-#: geoportailv3/templates/index.html:185
-msgid "Dessin"
-msgstr "Zeechnen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:84
-msgid "Dessins"
-msgstr "Zeechnungen"
-
-#: geoportailv3/static/js/locationinfo/locationinfo.html:25
-msgid "Distance approximative"
-msgstr "geschätzten Distanz"
-
-#: geoportailv3/static/js/draw/styleediting.html:58
-msgid "Dotted"
-msgstr "gepunktelt"
-
-#: geoportailv3/static/js/profile/profile.html:12
-msgid "Draw a line on the map to display an elevation profile."
-msgstr "Zeechent eng Linn op der Kaart fir den Héichtenprofil unzeweisen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:168
-#: geoportailv3/static/js/mymaps/mymaps.html:182
-#: geoportailv3/static/js/mymaps/mymaps.html:196
-msgid "Effacer"
-msgstr "Läschen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:92
-msgid "Effacer tous les dessins"
-msgstr "all d'Zeechnunge läschen"
-
-#: geoportailv3/static/js/locationinfo/locationinfo.html:19
-#: geoportailv3/static/js/query/ng95.html:4
-msgid "Elevation"
-msgstr "Héicht"
-
-#: geoportailv3/static/js/draw/featurepopup.html:20
-msgid "Elevation: {{ ctrl.featureElevation }}"
-msgstr "Héicht: {{ ctrl.featureElevation }}"
-
-#: geoportailv3/static/js/share/share.html:13
-msgid "Email"
-msgstr "Email"
-
-#: geoportailv3/static/js/query/pagreport.html:12
-msgid ""
-"En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté "
-"les <a href=\"pagfiles/Disclaimer.pdf\">conditions générales d'utilisation "
-"</a>de ce site web."
-msgstr "Heimat erklärt der, déi <a href='/main/wsgi/pag/files/Disclaimer.pdf'>allgemeng Geschäftsbedingungen</a> vun dësem Site gelies an akzeptéiert ze hunn."
-
-#: geoportailv3/static/js/mymapsservice.js:777
-msgid "Erreur inattendue lors de la copie de votre carte."
-msgstr "Onerwaartenen Fehler beim Kopéieren vun ärer Kaart"
-
-#: geoportailv3/static/js/mymapsservice.js:735
-msgid "Erreur inattendue lors de la création de votre carte."
-msgstr "Onerwaartenen Fehler beim Erstellen vun ärer Kaart"
-
-#: geoportailv3/static/js/mymapsservice.js:900
-#: geoportailv3/static/js/mymapsservice.js:950
-msgid "Erreur inattendue lors de la mise à jour de votre carte."
-msgstr "Onerwaartenen Fehler beim Updaten vun ärer Kaart"
-
-#: geoportailv3/static/js/mymapsservice.js:1028
-#: geoportailv3/static/js/mymapsservice.js:989
-msgid "Erreur inattendue lors de la sauvegarde de votre modification."
-msgstr "Onerwaartenen Fehler beim Spaicheren vun ärer Ännerung"
-
-#: geoportailv3/static/js/mymapsservice.js:693
-msgid "Erreur inattendue lors de la suppression d'un élement."
-msgstr "Onerwaartenen Fehler beim Läschen vun engem Objet"
-
-#: geoportailv3/static/js/mymapsservice.js:805
-msgid "Erreur inattendue lors de la suppression de votre carte."
-msgstr "Onerwaartenen Fehler beim Läschen vun ärer Kaart"
-
-#: geoportailv3/static/js/mymapsservice.js:834
-msgid "Erreur inattendue lors de la suppression des objets de la carte."
-msgstr "Onerwaarte Fehler beim Löschen vun den Elementer aus der Kaart"
-
-#: geoportailv3/static/js/mymapsservice.js:427
-msgid "Erreur inattendue lors du chargement de vos cartes."
-msgstr "Onerwaartenen Fehler beim Lueden vun äre Kaarten"
-
-#: geoportailv3/static/js/mymapsservice.js:485
-#: geoportailv3/static/js/mymapsservice.js:663
-msgid "Erreur inattendue lors du chargement de votre carte."
-msgstr "Onerwaartenen Fehler beim Lueden vun ärer Kaart"
-
-#: geoportailv3/static/js/draw/featurepopup.html:103
-msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
-msgstr "Wëllt dir wierklech dëst Element aus der Kaart löschen?"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:192
-msgid "Etes-vous certain de vouloir effacer la carte courrante ?"
-msgstr "Wëllt dir är Kaart wierklech löschen?"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:164
-msgid "Etes-vous certain de vouloir effacer tous les dessins ?"
-msgstr "Wëllt dir är Zeechnungen wierklech löschen?"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:178
-msgid "Etes-vous certain de vouloir effacer tous les éléments de la carte ?"
-msgstr "Sidd die sécher, datt dir wëllt all d'Elementer aus der Kaart löschen?"
-
-#: geoportailv3/static/js/profile/profile.html:4
-msgid "Export csv"
-msgstr "CSV exportéieren "
-
-#: geoportailv3/static/js/query/mymaps.html:13
-msgid "Exporter GPX"
-msgstr "GPX exportéiren"
-
-#: geoportailv3/static/js/query/mymaps.html:13
-msgid "Exporter KMl"
-msgstr "KML exportéiren"
-
-#: geoportailv3/static/js/draw/featurepopup.html:52
-#: geoportailv3/static/js/mymaps/mymaps.html:56
-msgid "Exporter un GPX"
-msgstr "GPX exportéieren "
-
-#: geoportailv3/static/js/draw/featurepopup.html:53
-#: geoportailv3/static/js/mymaps/mymaps.html:57
-msgid "Exporter un KML"
-msgstr "KML exportéieren "
-
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:128
 msgid "f_percentage"
 msgstr "Prozentsaz"
 
-#: geoportailv3/static/js/share/share.html:4
-msgid "Facebook"
-msgstr "Facebook"
-
-#: geoportailv3/static/js/draw/symbolselector.html:102
-#: geoportailv3/static/js/mymaps/mymaps.html:54
-msgid "Fermer"
-msgstr "Zoumaachen"
-
-#: geoportailv3/static/js/query/pcn_pag.html:7
-msgid "Generer Rapport (peut prendre 30 sec)"
-msgstr "Rapport generéieren (kann bis zu 30 Sek daueren)"
-
-#: geoportailv3/static/js/query/pcn_pag.html:3
-msgid "Generer un rapport pour toutes les selections"
-msgstr "Rapport fir d'Gesamtauswal generéieren"
-
-#: geoportailv3/static/js/query/affaires.html:6
-msgid "Geometre"
-msgstr "Geometer"
-
-#: geoportailv3/static/js/share/share.html:10
-msgid "Google Plus"
-msgstr "Google Plus"
-
-#: geoportailv3/static/js/authentication/authentication.html:11
-msgid "I lost my password"
-msgstr "Ech hu mäi Passwuert verluer"
-
-#: geoportailv3/static/js/query/pagreport.html:1
-msgid ""
-"Ici vous pouvez commander le rapport relatif aux règles urbanistiques "
-"applicables au terrain séctionné"
-msgstr "Hei kënnt der Iech en Rapport zu den Baureegelen fir een ausgewielten Terrain erstellen loossen."
-
-#: geoportailv3/static/js/query/pcn_pag.html:6
-msgid "Identifiant"
-msgstr "Benotzer ID"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:58
-msgid "Importer un GPX"
-msgstr "GPX importéieren"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:59
-msgid "Importer un KML"
-msgstr "KML importéieren"
-
-#: geoportailv3/static/js/draw/symbolselector.html:100
-msgid "Importer un symbole"
-msgstr "Symbol importéieren"
-
-#: geoportailv3/templates/index.html:201
-msgid "Imprimer"
-msgstr "Drécken"
-
-#: geoportailv3/templates/index.html:127
+#: geoportailv3/templates/index.html:130
 msgid "infos"
 msgstr "Info"
 
-#: geoportailv3/templates/index.html:173
-msgid "Infos<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
-msgstr "Info<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
-
-#: geoportailv3/static/js/usermanagerservice.js:114
-#: geoportailv3/static/js/usermanagerservice.js:120
-msgid "Invalid username or password."
-msgstr "Passwuert oder Benotzernum ongëlteg"
-
-#: geoportailv3/static/js/layerinfo/popup.html:17
-msgid "Keywords"
-msgstr "Stëchwieder"
-
-#: geoportailv3/static/js/mymapsservice.js:480
-#: geoportailv3/static/js/mymapsservice.js:658
-msgid "La carte demandée n'existe pas."
-msgstr "Die vun Iech ausgewielte Kaart gëtt et net."
-
-#: geoportailv3/static/js/draw/draw.html:7
-#: geoportailv3/static/js/draw/drawdirective.js:635
-#: geoportailv3/static/js/query/mymaps.html:5
-msgid "Label"
-msgstr "Beschréftung"
-
-#: geoportailv3/templates/index.html:44
+#: geoportailv3/templates/index.html:46
 msgid "lang"
 msgstr "Sprooch"
 
-#: geoportailv3/templates/index.html:73
+#: geoportailv3/templates/index.html:75
 msgid "layers"
 msgstr "Layeren"
 
-#: geoportailv3/static/js/search/searchdirective.js:339
-msgid "Layers"
-msgstr "Layeren"
+#: geoportailv3/templates/index.html:165
+msgid "legends"
+msgstr "Legenden"
 
-#: geoportailv3/templates/index.html:180
-msgid "Legalites"
-msgstr "Legales"
+#: geoportailv3/templates/index.html:83
+msgid "my_layers"
+msgstr "Méng Layeren"
 
-#: geoportailv3/static/js/layerinfo/popup.html:35
-msgid "Legend"
-msgstr "mat Legend"
-
-#: geoportailv3/static/js/measure/measure.html:3
-msgid "Length"
-msgstr "Längt"
-
-#: geoportailv3/static/js/draw/featurepopup.html:10
-msgid "Length:"
-msgstr "Längt: "
-
-#: geoportailv3/static/js/mymaps/mymaps.html:26
-msgid ""
-"Les couches sélectionnées dans le catalogue sont différentes de celles "
-"chargées avec votre carte. Voulez vous sauvegarder ces modifications dans "
-"votre carte?"
-msgstr "Déi ausgewielte Layeren am Katalog sin anescht wéi déi vun ärer Kaart. <br>Wëllt dir des Ännerungen an är Kaart iwwerhuelen?"
-
-#: geoportailv3/static/js/query/adresse.html:6
-#: geoportailv3/static/js/query/aero.html:8
-#: geoportailv3/static/js/query/affaires.html:11
-#: geoportailv3/static/js/query/batiments.html:4
-#: geoportailv3/static/js/query/bus.html:6
-#: geoportailv3/static/js/query/cfl_hecto.html:4
-#: geoportailv3/static/js/query/default.html:17
-#: geoportailv3/static/js/query/flik.html:6
-#: geoportailv3/static/js/query/inst_pub.html:5
-#: geoportailv3/static/js/query/meteo.html:5
-#: geoportailv3/static/js/query/mo.html:10
-#: geoportailv3/static/js/query/mymaps.html:15
-#: geoportailv3/static/js/query/ng95.html:9
-#: geoportailv3/static/js/query/ont_poi.html:5
-#: geoportailv3/static/js/query/parcels_go.html:24
-#: geoportailv3/static/js/query/parcels.html:13
-#: geoportailv3/static/js/query/pcn_pag.html:8
-#: geoportailv3/static/js/query/poi.html:4
-#: geoportailv3/static/js/query/remembrements.html:6
-#: geoportailv3/static/js/query/urplang.html:8
-#: geoportailv3/static/js/query/viti_flik.html:7
-#: geoportailv3/static/js/query/viti_kleinlage.html:4
-#: geoportailv3/static/js/query/viti_name.html:4
-#: geoportailv3/static/js/query/viti_parcels.html:6
-msgid "Lien direct vers cet objet"
-msgstr "Direktlink zu dësem Objet"
-
-#: geoportailv3/static/js/query/mymaps.html:14
-msgid "Lien vers la carte"
-msgstr "Link op d'Kaart"
-
-#: geoportailv3/static/js/query/parcels_go.html:12
-msgid "Lien vers les mesurages"
-msgstr "Link zu de Mesuragen"
-
-#: geoportailv3/static/js/query/parcels.html:8
-msgid "Lieudit"
-msgstr "Flouernumm"
-
-#: geoportailv3/static/js/draw/draw.html:11
-msgid "Line"
-msgstr "Linn"
-
-#: geoportailv3/static/js/draw/drawdirective.js:641
-msgid "LineString"
-msgstr "Linn"
-
-#: geoportailv3/static/js/layerinfo/popup.html:27
-msgid "Link to the metadata"
-msgstr "Link op d'Metadaten"
-
-#: geoportailv3/static/js/locationinfo/locationinfo.html:13
-msgid "Location Coordinates"
-msgstr "Positiounskoordinaten"
-
-#: geoportailv3/static/js/authentication/authentication.html:4
-msgid "Login"
-msgstr "Benotzernumm"
-
-#: geoportailv3/static/js/authentication/authentication.html:22
-msgid "Logout"
-msgstr "Ausloggen"
-
-#: geoportailv3/static/js/query/mymaps.html:8
-msgid "Longeueur"
-msgstr "Längt"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:578
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:737
-msgid "Map without Title"
-msgstr "Kaart ouni Titel"
-
-#: geoportailv3/static/js/draw/symbolselector.html:7
-msgid "Mes symboles"
-msgstr "Meng Symboler"
-
-#: geoportailv3/static/js/query/parcels_go.html:16
-#: geoportailv3/static/js/query/parcels_go.html:17
-msgid "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
-msgstr "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
-
-#: geoportailv3/static/js/query/mo.html:7
-msgid "Mesurage"
-msgstr "Vermoossung"
-
-#: geoportailv3/static/js/query/parcels_go.html:20
-msgid "Mesurage non disponible"
-msgstr "Mesurage net verfügbar"
-
-#: geoportailv3/templates/index.html:193
-msgid "Mesurer"
-msgstr "Moossen"
+#: geoportailv3/templates/index.html:111
+msgid "my_maps"
+msgstr "My Maps"
 
 #: geoportailv3/static/js/locationinfo/locationinfo.html:25
 msgid "mètres"
 msgstr "Meter"
-
-#: geoportailv3/static/js/draw/featurepopup.html:62
-msgid "Modification des informations"
-msgstr "Informatiounen änneren"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:119
-msgid "Modify title and description of the map"
-msgstr "Titel an Beschreiwung änneren"
-
-#: geoportailv3/static/js/authentication/authentication.html:2
-#: geoportailv3/static/js/authentication/authentication.html:21
-msgid "My account"
-msgstr "Mäi Kont"
-
-#: geoportailv3/templates/index.html:170
-msgid "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
-msgstr "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
-
-#: geoportailv3/templates/index.html:81
-msgid "my_layers"
-msgstr "Méng Layeren"
-
-#: geoportailv3/templates/index.html:108
-msgid "my_maps"
-msgstr "My Maps"
-
-#: geoportailv3/static/js/elevationservice.js:50
-msgid "N/A"
-msgstr "N/A"
-
-#: geoportailv3/static/js/layerinfo/popup.html:8
-#: geoportailv3/static/js/query/mymaps.html:6
-#: geoportailv3/static/js/query/ont_poi.html:3
-msgid "Name"
-msgstr "Numm"
-
-#: geoportailv3/static/js/query/parcels_go.html:8
-#: geoportailv3/static/js/query/parcels.html:9
-msgid "Nature"
-msgstr "Notzung"
-
-#: geoportailv3/static/js/layermanager/layermanager.html:1
-msgid "No layer selected"
-msgstr "Keen Layer ausgewielt"
-
-#: geoportailv3/static/js/draw/symbolselector.html:20
-#: geoportailv3/static/js/query/cfl_hecto.html:3
-#: geoportailv3/static/js/query/remembrements.html:3
-#: geoportailv3/static/js/query/viti_kleinlage.html:3
-#: geoportailv3/static/js/query/viti_name.html:3
-msgid "Nom"
-msgstr "Numm"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:794
-msgid "Nouvelle carte créée"
-msgstr "Nei Kaart erstallt"
-
-#: geoportailv3/static/js/query/affaires.html:4
-#: geoportailv3/static/js/query/viti_parcels.html:3
-msgid "Numero"
-msgstr "Nummer"
-
-#: geoportailv3/static/js/query/affaires.html:5
-#: geoportailv3/static/js/query/parcels_go.html:6
-#: geoportailv3/static/js/query/parcels.html:6
-msgid "Numero cadastral"
-msgstr "Parzellennummer"
-
-#: geoportailv3/static/js/query/flik.html:3
-#: geoportailv3/static/js/query/viti_flik.html:3
-msgid "Numero FLIK"
-msgstr "FLIK Nummer"
-
-#: geoportailv3/static/js/query/ng95.html:7
-msgid "Obtenir le fichier sous format pdf"
-msgstr "Den Fichier als PDF eroflueden"
-
-#: geoportailv3/static/js/query/parcels.html:10
-msgid "Occupation"
-msgstr "Bebauung"
-
-#: geoportailv3/static/js/draw/featurepopup.html:109
-#: geoportailv3/static/js/draw/styleediting.html:116
-msgid "OK"
-msgstr "OK"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:29
-msgid "Oui"
-msgstr "Jo"
-
-#: geoportailv3/static/js/query/parcels_go.html:11
-msgid "Ouvrir la PF"
-msgstr "PF opmaan"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:204
-#: geoportailv3/static/js/mymaps/mymaps.html:6
-msgid "Ouvrir une carte"
-msgstr "eng Kaart opmachen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:47
-msgid "Ouvrir une carte existante"
-msgstr "eng bestehend Kaart opmaachen"
-
-#: geoportailv3/templates/index.html:206
-msgid "Partager"
-msgstr "Deelen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:49
-msgid "Partager la carte"
-msgstr "Kaart deelen"
-
-#: geoportailv3/static/js/authentication/authentication.html:8
-msgid "Password"
-msgstr "Passwuert"
-
-#: geoportailv3/static/js/query/flik.html:5
-msgid "Perimetre"
-msgstr "Perimeter"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:84
-msgid "pf_aéroport"
-msgstr "Flughafen"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:70
 msgid "pf_aire de loisirs"
@@ -1051,6 +1442,10 @@ msgstr "Plaz fir Fräizäitaktivitéiten"
 msgid "pf_autoroute"
 msgstr "Autobunn"
 
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:84
+msgid "pf_aéroport"
+msgstr "Flughafen"
+
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:91
 msgid "pf_bande écologique"
 msgstr "Bande écologique"
@@ -1058,6 +1453,14 @@ msgstr "Bande écologique"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:48
 msgid "pf_bassin"
 msgstr "Becken"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:57
+msgid "pf_bois"
+msgstr "Bësch"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:58
+msgid "pf_broussailles"
+msgstr "Gebësch"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:124
 msgid "pf_bât. en état fut. achèvement"
@@ -1070,18 +1473,6 @@ msgstr "Industriellt oder hendwierklecht Gebai"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:99
 msgid "pf_bât. remarquable/classé"
 msgstr "Besonnescht / klasséiert Gebai"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:123
-msgid "pf_bâtiment à appartements"
-msgstr "Appartementsgebai"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:95
-msgid "pf_bâtiment à habitation"
-msgstr "Wunngebai"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:101
-msgid "pf_bâtiment à usage mixte"
-msgstr "Gemëscht Gebai"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:127
 msgid "pf_bâtiment administratif"
@@ -1115,13 +1506,17 @@ msgstr "Gebai fir religiéis Notzung"
 msgid "pf_bâtiment scolaire"
 msgstr "Schoulgebai"
 
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:57
-msgid "pf_bois"
-msgstr "Bësch"
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:123
+msgid "pf_bâtiment à appartements"
+msgstr "Appartementsgebai"
 
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:58
-msgid "pf_broussailles"
-msgstr "Gebësch"
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:95
+msgid "pf_bâtiment à habitation"
+msgstr "Wunngebai"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:101
+msgid "pf_bâtiment à usage mixte"
+msgstr "Gemëscht Gebai"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:74
 msgid "pf_camp militaire"
@@ -1151,10 +1546,6 @@ msgstr "Sportszentrum"
 msgid "pf_champ de tir"
 msgstr "Schéissstand"
 
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:111
-msgid "pf_château d'eau"
-msgstr "Waassertuerm"
-
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:78
 msgid "pf_chemin d'exploitation"
 msgstr "Wirtschaftswee"
@@ -1162,6 +1553,10 @@ msgstr "Wirtschaftswee"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:77
 msgid "pf_chemin repris"
 msgstr "Landstrooss"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:111
+msgid "pf_château d'eau"
+msgstr "Waassertuerm"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:66
 msgid "pf_cimetière"
@@ -1186,14 +1581,6 @@ msgstr "Schlaackentipp"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:63
 msgid "pf_décharge"
 msgstr "Tipp"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:85
-msgid "pf_écluse"
-msgstr "Schleis"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:46
-msgid "pf_étang"
-msgstr "Weiher"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:119
 msgid "pf_fontaine"
@@ -1234,10 +1621,6 @@ msgstr "Park"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:122
 msgid "pf_partie bâtiment"
 msgstr "Gebaideel"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:51
-msgid "pf_pâture"
-msgstr "Weed"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:79
 msgid "pf_piste cyclable"
@@ -1283,17 +1666,9 @@ msgstr "Elektrizitéitswierk"
 msgid "pf_pré"
 msgstr "Wis"
 
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:92
-msgid "pf_réserve naturelle"
-msgstr "Naturreservat"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:112
-msgid "pf_réservoir d'eau"
-msgstr "Waasserbehälter"
-
-#: geoportailv3/static/js/query/attribute_values_for_translation.html:106
-msgid "pf_réservoir d'hydrocarbures"
-msgstr "réservoir d'hydrocarbures"
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:51
+msgid "pf_pâture"
+msgstr "Weed"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:43
 msgid "pf_rivière"
@@ -1318,6 +1693,18 @@ msgstr "Ruin"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:44
 msgid "pf_ruisseau"
 msgstr "Baach"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:92
+msgid "pf_réserve naturelle"
+msgstr "Naturreservat"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:112
+msgid "pf_réservoir d'eau"
+msgstr "Waasserbehälter"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:106
+msgid "pf_réservoir d'hydrocarbures"
+msgstr "réservoir d'hydrocarbures"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:80
 msgid "pf_sentier"
@@ -1375,59 +1762,13 @@ msgstr "Eisebunn"
 msgid "pf_zone humide"
 msgstr "Fiichtgebitt"
 
-#: geoportailv3/static/js/draw/styleediting.html:56
-msgid "Plain"
-msgstr "duerchgezunn"
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:85
+msgid "pf_écluse"
+msgstr "Schleis"
 
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:689
-msgid "Please select a Category"
-msgstr "Wielt w.e.g. eng Kategorie aus"
-
-#: geoportailv3/static/js/draw/draw.html:3
-#: geoportailv3/static/js/draw/drawdirective.js:637
-msgid "Point"
-msgstr "Punkt"
-
-#: geoportailv3/static/js/draw/draw.html:15
-#: geoportailv3/static/js/draw/drawdirective.js:647
-msgid "Polygon"
-msgstr "Polygon"
-
-#: geoportailv3/static/js/measure/measure.html:15
-msgid "Profile"
-msgstr "Héichteprofil"
-
-#: geoportailv3/static/js/query/inst_pub.html:4
-msgid "Proprietaire"
-msgstr "Proprietär"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:132
-msgid "Public Map"
-msgstr "Ëffentlech Kaart"
-
-#: geoportailv3/static/js/draw/symbolselector.html:8
-msgid "Publics"
-msgstr "ëffentlech"
-
-#: geoportailv3/static/js/query/mymaps.html:9
-msgid "Rating"
-msgstr "Bewertung"
-
-#: geoportailv3/static/js/draw/featurepopup.html:17
-msgid "Rayon:"
-msgstr "Radius:"
-
-#: geoportailv3/static/js/search/search.html:6
-msgid "Recherche adresse, parcelles, couches ..."
-msgstr "Sich Adressen, Parzellen, Layeren ... "
-
-#: geoportailv3/static/js/draw/symbolselector.html:13
-msgid "Rechercher un symbole"
-msgstr "e Symbol sichen"
-
-#: geoportailv3/static/js/query/affaires.html:7
-msgid "Region"
-msgstr "Region"
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:46
+msgid "pf_étang"
+msgstr "Weiher"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:1
 msgid "rem_status_5000"
@@ -1449,233 +1790,29 @@ msgstr "Forstwirtschaft"
 msgid "rem_typ_5002"
 msgstr "Wäibau"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:28
-msgid "Reset"
-msgstr "Reset"
-
-#: geoportailv3/static/js/draw/featurepopup.html:81
-msgid "Retirer vignette"
-msgstr "Vignette wechhuelen"
-
-#: geoportailv3/static/js/layerinfo/popup.html:16
-msgid "Revision date"
-msgstr "Revisiounsdatum"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:152
-#: geoportailv3/static/js/mymaps/mymaps.html:153
-#: geoportailv3/static/js/mymaps/mymaps.html:154
-msgid "Save changes"
-msgstr "Ännerunge späicheren"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:155
-msgid "Save new map"
-msgstr "nei Kaart späicheren"
-
-#: geoportailv3/templates/index.html:35
+#: geoportailv3/templates/index.html:37
 msgid "search"
 msgstr "Sich"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:209
-msgid "Search Maps"
-msgstr "Kaarten sichen"
-
-#: geoportailv3/static/js/query/parcels_go.html:5
-#: geoportailv3/static/js/query/parcels.html:5
-#: geoportailv3/static/js/query/viti_parcels.html:5
-msgid "Section"
-msgstr "Sectioun"
-
-#: geoportailv3/static/js/query/viti_flik.html:5
-msgid "Section cadastrale"
-msgstr "Kadastersektioun"
-
-#: geoportailv3/static/js/share/shorturl.html:16
-msgid "Share only Mymaps"
-msgstr "Nëmmen den „Méng Kaarten“ – Link deelen"
-
-#: geoportailv3/static/js/locationinfo/locationinfo.html:4
-#: geoportailv3/static/js/share/shorturl.html:4
-msgid "Short Url"
-msgstr "Url"
-
-#: geoportailv3/static/js/share/shorturl.html:12
-msgid "Show long url"
-msgstr "Laang URL uweisen"
-
-#: geoportailv3/static/js/draw/styleediting.html:63
-msgid "Show orientation"
-msgstr "Orientatioun uweisen"
-
-#: geoportailv3/static/js/draw/styleediting.html:102
-#: geoportailv3/static/js/draw/styleediting.html:90
-msgid "Size"
-msgstr "Gréisst"
-
-#: geoportailv3/static/js/query/affaires.html:9
-#: geoportailv3/static/js/query/remembrements.html:4
-msgid "Statut"
-msgstr "Status"
-
-#: geoportailv3/static/js/draw/styleediting.html:35
-#: geoportailv3/static/js/draw/styleediting.html:48
-msgid "Stroke width"
-msgstr "Stréchdéckt"
-
-#: geoportailv3/static/js/draw/styleediting.html:55
-msgid "Style"
-msgstr "Styl"
-
-#: geoportailv3/static/js/draw/styleediting.html:3
-msgid "Style your drawing"
-msgstr "Ärer Zeechnung e Styl ginn"
-
-#: geoportailv3/static/js/authentication/authentication.html:9
-msgid "Submit"
-msgstr "Aloggen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:51
-msgid "Supprimer la carte"
-msgstr "Kaart läschen"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:52
-msgid "Supprimer tous les élements de la carte"
-msgstr "All d'Elementer aus der Kaart löschen"
-
-#: geoportailv3/static/js/measure/measure.html:7
-#: geoportailv3/static/js/query/flik.html:4
-#: geoportailv3/static/js/query/viti_flik.html:6
-msgid "Surface"
-msgstr "Fläch"
-
-#: geoportailv3/static/js/draw/styleediting.html:75
-msgid "Symbol"
-msgstr "Symbol"
-
-#: geoportailv3/static/js/draw/styleediting.html:78
-msgid ""
-"Symbol\n"
-"            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n"
-"            <svg ng-show=\"ctrl.feature.get('shape') == 'square'\" width=\"18\" height=\"18\"><rect width=\"18\" height=\"18\" style=\"fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};\"/></svg>\n"
-"            <svg ng-show=\"ctrl.feature.get('shape') == 'cross'\" width=\"18\" height=\"18\"><text x=\"0\" y=\"22\" font-size=\"40\" fill=\"{{ctrl.feature.get('color')}}\">+</text></svg>\n"
-"            <svg ng-show=\"ctrl.feature.get('shape') == 'triangle'\" width=\"18\" height=\"18\"><polygon points=\"0,18 9,0 18,18\" style=\"fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1\"/></svg>"
-msgstr ""
-
-#: geoportailv3/static/js/draw/symbolselector.html:17
-msgid "Symbole"
-msgstr "Symbol"
-
-#: geoportailv3/static/js/exclusionmanagerservice.js:138
-msgid ""
-"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
-"displayed while the layer <b>{{layer}}</b> is displayed"
-msgid_plural ""
-"The layers <b>{{layersToRemove}}</b> have been removed because they cannot "
-"be displayed while the layer <b>{{layer}}</b> is displayed"
-msgstr[0] "De Layer <b>{{layersToRemove}}</b> gouf ewechgehol, well en net dierf mam Layer <b>{{layer}}</b> ugewisen gin"
-msgstr[1] "D'Layeren <b>{{layersToRemove}}</b> goufen ewechgeholl, well se net dierfen mam Layer <b>{{layer}}</b> ugewisen ginn"
-
-#: geoportailv3/static/js/layerinfo/popup.html:38
-msgid "The legend is not available for this layer"
-msgstr "Keng spezifesch Legend fir dëse Layer"
-
-#: geoportailv3/static/js/layerinfo/popup.html:34
-msgid "The metadata is right now not available"
-msgstr "Et gi keng Metadaten fir dëse Layer"
-
-#: geoportailv3/static/js/themeswitcher/themes.html:2
-msgid "Theme"
-msgstr "Thema"
-
-#: geoportailv3/static/js/print/print.html:6
-msgid "Title"
-msgstr "Titel"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:120
-#: geoportailv3/static/js/mymaps/mymaps.html:122
-msgid "Title and description of the map"
-msgstr "Titel a Beschreiwung vun der Kaart"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:121
-msgid "Title and description of the map copy"
-msgstr "Titel a Beschreiwung vun der Kopie"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:220
-msgid "Titre"
-msgstr "Titel"
-
-#: geoportailv3/static/js/mymaps/mymaps.html:127
-msgid "Titre de la carte"
-msgstr "Titel vun der Kaart"
-
-#: geoportailv3/static/js/draw/styleediting.html:40
-msgid "Transparency"
-msgstr "Transparenz"
-
-#: geoportailv3/static/js/share/share.html:7
-msgid "Twitter"
-msgstr "Twitter"
-
-#: geoportailv3/static/js/query/affaires.html:8
-#: geoportailv3/static/js/query/batiments.html:3
-#: geoportailv3/static/js/query/ng95.html:5
-#: geoportailv3/static/js/query/remembrements.html:5
-msgid "Type"
-msgstr "Typ"
-
-#: geoportailv3/static/js/usermanagerservice.js:136
-#: geoportailv3/static/js/usermanagerservice.js:142
-msgid "Une erreur est survenue durant la déconnexion."
-msgstr "E Fehler ass während der Verbindung opgetrueden"
-
-#: geoportailv3/templates/index.html:37
+#: geoportailv3/templates/index.html:39
 msgid "user"
 msgstr "Benotzer"
 
-#: geoportailv3/static/js/authentication/authentication.html:7
-msgid "Username"
-msgstr "Benotzernumm"
+#: geoportailv3/static/js/query/batiments.html:3
+msgid "{{(\"bat_\"+feature.attributes.type) | translate}}"
+msgstr "{{(\"bat_\"+feature.attributes.type) | translate}}"
 
-#: geoportailv3/static/js/draw/featurepopup.html:89
-msgid "Validate"
-msgstr "Validéieren"
+#: geoportailv3/static/js/query/remembrements.html:4
+msgid "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
+msgstr "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
 
-#: geoportailv3/static/js/query/reportdirective.js:131
-msgid "Veuillez accepter les termes du rapport"
-msgstr "Huelt weg d'Bedingungen vum Rapport un"
+#: geoportailv3/static/js/query/remembrements.html:5
+msgid "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
+msgstr "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
 
-#: geoportailv3/static/js/draw/symbolselector.html:1
-msgid "Veuillez choisir un symbole dans une des catégories"
-msgstr "Sicht Iech ee Symbol an enger vun de Kategorie raus"
-
-#: geoportailv3/static/js/query/reportdirective.js:126
-msgid "Veuillez saisir une adresse email valide"
-msgstr "Erfaasst weg eng valid Email-Adress"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:879
-msgid "Veuillez vous identifier afin d'accéder à vos cartes"
-msgstr "Loggt Iech w.e.g. an fir op Är Kaarten zeréckzegräifen"
-
-#: geoportailv3/static/js/query/reportdirective.js:138
-msgid ""
-"Votre rapport est en train d'être généré. Un email vous sera envoyé à "
-"l'adresse {{email}} dès qu'il sera disponible"
-msgstr "Äre Rapport gëtt generéiert. Dir kritt eng Email op d'Adress  {{email}} subaal e fäerdeg ass."
-
-#: geoportailv3/static/js/mymapsservice.js:1042
-msgid "Votre utilisateur n'a pas les autorisations suffisantes."
-msgstr "Ären Benotzer huet net dei néideg Autorisatiounen"
-
-#: geoportailv3/static/js/usermanagerservice.js:109
-msgid "Vous êtes maintenant correctement connecté."
-msgstr "Dir sidd elo ageloggt"
-
-#: geoportailv3/static/js/print/print.html:13
-msgid "With legend"
-msgstr "Mat Legend"
-
-#: geoportailv3/static/js/mymaps/mymapsdirective.js:719
-msgid "You have no existing Maps, please create a New Map"
-msgstr "Dir hudd keng Kaarten, erstellt w.e.g eng nei Kaart"
+#: geoportailv3/static/js/draw/featurepopup.html:108
+msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
+msgstr "Wëllt dir wierklech dëst Element aus der Kaart löschen?"
 
 #: theme.101
 msgid "preemption"
@@ -1757,7 +1894,7 @@ msgstr "Waasser"
 msgid "remich"
 msgstr "Remich"
 
-#: theme.121
+#: theme.121 lu_int_wms.739
 msgid "test"
 msgstr "Test"
 
@@ -1920,10 +2057,6 @@ msgstr "Buedemnotzung"
 #: l_wmts.162
 msgid "ac_wellenstein_pag_volumes_batiments"
 msgstr "Gebaier"
-
-#: lu_int_wms.163
-msgid "env_obs1999"
-msgstr "Biotoptypenkartéirung 1999"
 
 #: group.164
 msgid "mittal_bg"
@@ -2125,10 +2258,6 @@ msgstr "Kadasterparzellen"
 msgid "eau_new_Provisorische_ZPS"
 msgstr "Provisoresch ZPS"
 
-#: lu_int_wms.215
-msgid "env_obs2007"
-msgstr "Biotoptypenkartéirung 2007"
-
 #: l_wmts.216
 msgid "decoupage_communes"
 msgstr "Gemengecode"
@@ -2209,6 +2338,14 @@ msgstr "Grouss Wanderweeër (GR)"
 msgid "ivv_grosslagen"
 msgstr "Lagen am Weibau"
 
+#: l_wmts.215
+msgid "env_obs2007"
+msgstr "Biotoptypenkartéirung 2007"
+
+#: l_wmts.163
+msgid "env_obs1999"
+msgstr "Biotoptypenkartéirung 1999"
+
 #: group.236
 msgid "group_ac_remich_pag"
 msgstr "PAG"
@@ -2284,10 +2421,6 @@ msgstr "Limitem"
 #: l_wmts.258
 msgid "ac_wellenstein_pag_voies_acces"
 msgstr "Zougangsweeër"
-
-#: lu_int_wms.259
-msgid "env_bruit_axes_ferroviaires_lngt"
-msgstr "Eisebunn 2011 (LNGT)"
 
 #: group.260
 msgid "tour_rando_v2"
@@ -2460,10 +2593,6 @@ msgstr "Versijelung"
 #: group.309
 msgid "administrative_einheiten"
 msgstr "Administrativ Eenheeten"
-
-#: lu_int_wms.310
-msgid "env_bruit_axes_ferroviaires_lden"
-msgstr "Eisebunn 2011 (LDEN)"
 
 #: l_wmts.311
 msgid "ortho_irc"
@@ -2639,7 +2768,7 @@ msgstr "Orthophoto 2013"
 
 #: group.361
 msgid "natur_an_emwelt"
-msgstr "Mehrfachnotzung"
+msgstr "Natur & Emwelt"
 
 #: lu_int_wms.362
 msgid "affaires"
@@ -2704,6 +2833,14 @@ msgstr "Stroossen 2011 (LDEN)"
 #: l_wmts.255
 msgid "env_bruit_axes_routiers_lngt"
 msgstr "Stroossen 2011(LNGT)"
+
+#: l_wmts.259
+msgid "env_bruit_axes_ferroviaires_lngt"
+msgstr "Eisebunn 2011 (LNGT)"
+
+#: l_wmts.310
+msgid "env_bruit_axes_ferroviaires_lden"
+msgstr "Eisebunn 2011 (LDEN)"
 
 #: lu_int_wms.367
 msgid "natur_an_emwelt_terrains"
@@ -4177,19 +4314,19 @@ msgstr "Contrats de biodiversité"
 
 #: group.728
 msgid "Atlas Hydro-Climatologique"
-msgstr ""
+msgstr "Atlas Hydro-Climatologique"
 
 #: lu_int_wms.729
 msgid "atl_hydclim_temp_2012_00"
-msgstr ""
+msgstr "atl_hydclim_temp_2012_00"
 
 #: lu_int_wms.730
 msgid "atl_hydclim_temp_2012_01"
-msgstr ""
+msgstr "atl_hydclim_temp_2012_01"
 
 #: lu_int_wms.731
 msgid "atl_hydclim_temp_2012_02"
-msgstr ""
+msgstr "atl_hydclim_temp_2012_02"
 
 #: lu_int_wms.732
 msgid "limadmin_judiciaire"
@@ -4202,3 +4339,23 @@ msgstr "Wahlbezierker"
 #: lu_int_wms.734
 msgid "utm_grid"
 msgstr "UTM Grid"
+
+#: lu_ext_wms.735
+msgid "Catastrophe naturelle 22/07/16 (informations protégées)"
+msgstr "Catastrophe naturelle 22/07/16 (informations protégées)"
+
+#: group.737
+msgid "Groupe canin"
+msgstr "Groupe canin"
+
+#: lu_ext_wms.736
+msgid "police_group_canin"
+msgstr "police_group_canin"
+
+#: lu_int_wms.738
+msgid "luref_graticules"
+msgstr "Koordinatekräizer am LUREF"
+
+#: lu_int_wms.740
+msgid "asta_herbages_sensibles"
+msgstr "Grünlandkartierung"
