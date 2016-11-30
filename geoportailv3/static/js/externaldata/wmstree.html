@@ -1,5 +1,5 @@
 <a ng-if="ctrl.hasProperty('Layer', layer)" href="#wms-{{layer.uid}}" data-toggle="collapse" >{{layer.Title}}</a>
-<ul ng-if="!ctrl.hasProperty('Layer', layer)" class="panel">
+<ul ng-if="!ctrl.hasProperty('Layer', layer) && !layer.isInvalid" class="panel">
   <li>
     <a class="fa fa-info" ng-click="ctrl.getInfo(layer)"></a>
     <a href ng-click="ctrl.toggleWmsLayer(layer)">
