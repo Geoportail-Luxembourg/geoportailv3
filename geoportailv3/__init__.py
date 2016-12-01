@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.config import Configurator
-from c2cgeoportal import locale_negotiator, \
-    add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
+from c2cgeoportal import add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
     set_user_validator
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
@@ -13,9 +12,28 @@ from turbomail.control import interface
 from geoportailv3.adapters import datetime_adapter, decimal_adapter
 
 import datetime
+import json
 import ldap
 import sqlalchemy
 import sqlahelper
+
+
+def locale_negotiator(request):
+    lang = request.params.get("lang")
+    if "/printproxy/report/" in request.path:
+        from geoportailv3.models import DBSession, LuxPrintJob
+        # Language is stored in the database
+        ref = request.path.split("/printproxy/report/")[1]
+        if ref is not None:
+            job = DBSession.query(LuxPrintJob).get(ref)
+            if job is not None:
+                if "lang" in json.loads(job.spec)["attributes"]:
+                    lang = json.loads(job.spec)["attributes"]["lang"]
+
+    if lang is None:
+        return request.accept_language.best_match(
+            request.registry.settings.get("available_locale_names"))
+    return lang
 
 
 def main(global_config, **settings):
