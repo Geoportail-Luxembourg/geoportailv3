@@ -5,7 +5,7 @@ import sqlahelper
 
 from sqlalchemy import Column, ForeignKey, Table, func
 from sqlalchemy.types import Unicode, Boolean, DateTime, Integer, Float, Binary
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import scoped_session, relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -22,8 +22,7 @@ import geojson
 
 engine = sqlahelper.get_engine('mymaps')
 Base = declarative_base(bind=engine)
-Session = sessionmaker(bind=engine)
-DBSession = Session()
+DBSession = scoped_session(sessionmaker(bind=engine))
 
 
 class Map(Base):
