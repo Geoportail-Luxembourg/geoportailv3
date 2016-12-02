@@ -244,8 +244,14 @@ def main(global_config, **settings):
     engines = config.get_settings()['sqlalchemy_engines']
     if engines:
         for engine in engines:
-            sqlahelper.add_engine(
-                sqlalchemy.create_engine(engines[engine]), name=engine)
+            if 'url' not in engines[engine]:
+                sqlahelper.add_engine(
+                    sqlalchemy.create_engine(engines[engine]), name=engine)
+            else:
+                sqlahelper.add_engine(
+                    sqlalchemy.create_engine(
+                        engines[engine]['url'],
+                        pool_size=engines[engine]['pool_size']), name=engine)
 
     from geoportailv3.views.authentication import ldap_user_validator, \
         get_user_from_request
