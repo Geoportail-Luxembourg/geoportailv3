@@ -17,7 +17,7 @@ from c2cgeoportal.models import AUTHORIZED_ROLE, _schema
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 Base = sqlahelper.get_base()
-
+Sessions = {}
 
 LayerInternalWMS.__acl__ = [DENY_ALL]
 LayerExternalWMS.__acl__ = [DENY_ALL]

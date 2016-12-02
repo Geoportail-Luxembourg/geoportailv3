@@ -5,13 +5,14 @@ import urllib2
 
 from urllib import urlencode
 from pyramid.view import view_config
-from geoportailv3.models import LuxGetfeatureDefinition
+from geoportailv3.models import Sessions, LuxGetfeatureDefinition
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +21,6 @@ class Getfeatureinfo(object):
 
     def __init__(self, request):
         self.request = request
-        self.dbsession = sqlahelper.get_session()
 
     # Get the remote template
     @view_config(route_name='getremotetemplate')
@@ -47,15 +47,14 @@ class Getfeatureinfo(object):
         layer = self.request.params.get('layer', None)
         if layer is None:
             return HTTPBadRequest()
-        self.dbsession = sqlahelper.get_session()
+
         luxgetfeaturedefinitions = self.get_lux_feature_definition(layer)
         if len(luxgetfeaturedefinitions) is not 1:
             return HTTPBadRequest()
 
         if luxgetfeaturedefinitions[0].poi_id_collection is None:
             return HTTPBadRequest()
-
-        engine = sqlahelper.get_engine(luxgetfeaturedefinitions[0].engine_gfi)
+        session = self._get_session(luxgetfeaturedefinitions[0].engine_gfi)
         poi_fields = ["id", "id_collection", "line_num", "easting", "northing",
                       "zip", "town", "street", "poi_name", "description",
                       "type", "url", "active", "core_data", "master_id",
@@ -69,7 +68,8 @@ class Getfeatureinfo(object):
         query = "SELECT mapv3_html FROM public.tooltips WHERE \
                 id_collection=%d AND is_default=true"\
                 % (luxgetfeaturedefinitions[0].poi_id_collection)
-        res = engine.execute(query)
+
+        res = session.execute(query)
         for row in res.fetchall():
             content = row['mapv3_html'].replace("$%7B", "${").\
                 replace("%7D", "}")
@@ -113,8 +113,6 @@ class Getfeatureinfo(object):
                 luxgetfeaturedefinition.engine_gfi is not None and
                 luxgetfeaturedefinition.query is not None and
                     len(luxgetfeaturedefinition.query) > 0):
-                engine = sqlahelper.\
-                    get_engine(luxgetfeaturedefinition.engine_gfi)
                 is_ordered = luxgetfeaturedefinition.columns_order is not None\
                     and len(luxgetfeaturedefinition.columns_order) > 0
                 query_1 = luxgetfeaturedefinition.query
@@ -160,7 +158,9 @@ class Getfeatureinfo(object):
                             " = '" + fid + "'"
                     else:
                         query = query_1 + " id = '" + fid + "'"
-                res = engine.execute(query)
+
+                session = self._get_session(luxgetfeaturedefinition.engine_gfi)
+                res = session.execute(query)
                 rows = res.fetchall()
 
                 if (luxgetfeaturedefinition.additional_info_function
@@ -341,7 +341,7 @@ class Getfeatureinfo(object):
                         # If not restriction is set then check next layer
                         if restriction is None or not restriction.readwrite:
                             continue
-                    query = self.dbsession.query(
+                    query = DBSession.query(
                         LuxGetfeatureDefinition).filter(
                             LuxGetfeatureDefinition.layer == layer
                         )
@@ -517,13 +517,13 @@ class Getfeatureinfo(object):
                 geometry = geojson_loads(row['st_asgeojson'])
                 if geometry['type'] == "LineString" or\
                    geometry['type'] == "MultiLineString":
-                    engine = sqlahelper.get_engine("mymaps")
+                    session = self._get_session("mymaps")
                     query = "select  ST_AsGeoJSON(ST_Collect (geometry)) as geometry\
                             , sum(ST_Length(geometry)) as length FROM\
                              public.feature_with_map_with_colors where\
                              category_id = %(category_id)d and map_id = '%(map_id)s'"\
                             % {'category_id': category_id, 'map_id': map_id}
-                    res = engine.execute(query)
+                    res = session.execute(query)
                     for feature in res.fetchall():
                         geometry = geojson_loads(feature['geometry'])
                         attributes = dict(row)
@@ -688,3 +688,9 @@ class Getfeatureinfo(object):
                                         columns_order)
                     features.append(f)
         return features
+
+    def _get_session(self, engine_name):
+        if engine_name not in Sessions:
+            engine = sqlahelper.get_engine(engine_name)
+            Sessions[engine_name] = scoped_session(sessionmaker(bind=engine))
+        return Sessions[engine_name]
