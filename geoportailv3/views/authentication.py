@@ -51,6 +51,8 @@ def get_user_from_request(request):
         user.is_admin = False
         user.mymaps_role = 999
         user.ogc_role = -1
+        user.sn = None
+
         connector = get_ldap_connector(request)
         cm = connector.manager
 
@@ -66,6 +68,8 @@ def get_user_from_request(request):
                     user.mail = result[0][1]['mail'][0]
                 if 'sn' in result[0][1]:
                     user.sn = result[0][1]['sn'][0]
+                else:
+                    user.sn = user.mail
                 if 'isMymapsAdmin' in result[0][1]:
                     user.is_admin =\
                         "TRUE" == (result[0][1]['isMymapsAdmin'][0]).upper()
