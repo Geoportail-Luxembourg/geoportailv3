@@ -22,7 +22,7 @@ import geojson
 
 engine = sqlahelper.get_engine('mymaps')
 Base = declarative_base(bind=engine)
-DBSession = scoped_session(sessionmaker(bind=engine))
+DBSession = scoped_session(sessionmaker(bind=engine, autocommit=True))
 
 
 class Map(Base):
