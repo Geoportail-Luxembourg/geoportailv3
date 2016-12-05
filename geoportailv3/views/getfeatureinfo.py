@@ -692,5 +692,6 @@ class Getfeatureinfo(object):
     def _get_session(self, engine_name):
         if engine_name not in Sessions:
             engine = sqlahelper.get_engine(engine_name)
-            Sessions[engine_name] = scoped_session(sessionmaker(bind=engine))
+            Sessions[engine_name] =\
+                scoped_session(sessionmaker(bind=engine, autocommit=True))
         return Sessions[engine_name]
