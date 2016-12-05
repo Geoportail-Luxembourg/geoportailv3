@@ -8,7 +8,7 @@ from geoalchemy2 import Geometry
 
 engine = sqlahelper.get_engine('ecadastre')
 Base = declarative_base(bind=engine)
-DBSession = scoped_session(sessionmaker(bind=engine))
+DBSession = scoped_session(sessionmaker(bind=engine, autocommit=True))
 
 
 class Address(Base):
