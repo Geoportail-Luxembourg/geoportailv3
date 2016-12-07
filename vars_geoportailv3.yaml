@@ -1,6 +1,11 @@
 extends: CONST_vars.yaml
 
 vars:
+    #OverviewMap
+    overview_map:
+        show: false
+        base_layer: 'basemap_2015_global'
+
     #Theme 
     exclude_theme_layer_search:
     # database name
