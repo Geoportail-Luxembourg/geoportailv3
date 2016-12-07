@@ -422,7 +422,8 @@ class Mymaps(object):
 
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
-                DBSession.delete(cur_feature)
+                if cur_feature is not None:
+                    DBSession.delete(cur_feature)
                 obj.id = feature_id
 
             map.features.append(obj)
