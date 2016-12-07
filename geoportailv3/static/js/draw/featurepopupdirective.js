@@ -162,6 +162,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @type {boolean}
    * @export
    */
+  this.editCircleRadius = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
   this.editingStyle = false;
 
   /**
@@ -187,6 +193,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @export
    */
   this.tempThumbnail = '';
+
+  /**
+   * @type {number}
+   * @export
+   */
+  this.tempCircleRadius = 0;
 
   /**
    * @type {app.DrawnFeatures}
@@ -263,6 +275,67 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
 
 };
 
+
+/**
+ * @param {number} radius The circle radius in meter.
+ * @return {*} The radius.
+ * @export
+ */
+app.FeaturePopupController.prototype.getSetCircleRadius = function(radius) {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.isCircle()) {
+    if (arguments.length === 0) {
+      return this.getCircleRadius();
+    } else {
+      this.setCircleRadius(radius);
+    }
+  }
+};
+
+
+/**
+ * Return not formatted radius.
+ * @return {number} The radius.
+ * @export
+ */
+app.FeaturePopupController.prototype.getCircleRadius = function() {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.isCircle()) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var center = ol.extent.getCenter(geom.getExtent());
+    var projection = this.map.getView().getProjection();
+    var p1 = ol.proj.transform(center, projection, 'EPSG:4326');
+    var p2 = ol.proj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
+    return Math.round(ol.sphere.WGS84.haversineDistance(p1, p2));
+  }
+  return 0;
+};
+
+
+/**
+ * @param {number} radius The circle radius in meter.
+ * @export
+ */
+app.FeaturePopupController.prototype.setCircleRadius = function(radius) {
+  if (goog.isDef(this.feature) &&
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.isCircle()) {
+    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var center = ol.extent.getCenter(geom.getExtent());
+    var projection = this.map.getView().getProjection();
+    var resolution = this.map.getView().getResolution();
+    var pointResolution = projection.getPointResolution(/** @type {number} */ (resolution), center);
+    var resolutionFactor = resolution / pointResolution;
+    radius = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
+    var featureGeom = new ol.geom.Circle(center, radius);
+    this.feature.setGeometry(
+        ol.geom.Polygon.fromCircle(featureGeom, 64)
+    );
+    this.drawnFeatures_.saveFeature(this.feature);
+  }
+};
 
 /**
  * Export a KML file.
@@ -542,6 +615,10 @@ app.FeaturePopupController.prototype.isAuthenticated = function() {
 app.FeaturePopupController.prototype.modifySelectedFeature = function() {
   if (this.feature) {
     this.drawnFeatures_.activateModifyIfNeeded(this.feature);
+    if (this.isCircle() && this.isEditable()) {
+      this.editCircleRadius = true;
+      this.tempCircleRadius = this.getCircleRadius();
+    }
   }
 };
 
@@ -554,6 +631,9 @@ app.FeaturePopupController.prototype.endModifySelectedFeature = function() {
   this.drawnFeatures_.modifyInteraction.setActive(false);
   this.drawnFeatures_.modifyCircleInteraction.setActive(false);
   this.drawnFeatures_.translateInteraction.setActive(false);
+  if (this.isCircle() && this.isEditable()) {
+    this.editCircleRadius = false;
+  }
 };
 
 

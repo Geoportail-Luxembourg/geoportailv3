@@ -13,9 +13,13 @@
       <span translate>Area: </span>
       <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
     </div>
-    <div ng-show="ctrl.isCircle()">
-      <span translate>Rayon: </span>
-      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getRadius())"></span>
+    <div ng-show="ctrl.isCircle()" class="form-inline">
+      <div class="form-group">
+        <span translate>Rayon: </span>
+        <span ng-show="!ctrl.editCircleRadius" ng-bind-html="ctrl.trustAsHtml(ctrl.getRadius())"></span>
+        <span ng-show="ctrl.isEditable() && ctrl.editCircleRadius">
+        <input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"><button class="btn btn-primary" ng-click="ctrl.setCircleRadius(ctrl.tempCircleRadius)" translate>Valider</button></span>
+      </div>
     </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
     <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
