@@ -177,6 +177,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.deletingFeature = false;
 
   /**
+   * @type {boolean}
+   * @export
+   */
+  this.askRadius = false;
+
+  /**
    * @type {string}
    * @export
    */
@@ -207,6 +213,12 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.drawnFeatures_ = appDrawnFeatures;
 
   this.appFeaturePopup_ = appFeaturePopup;
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $scope;
 
   /**
    * @type {ol.Map}
@@ -319,10 +331,21 @@ app.FeaturePopupController.prototype.getCircleRadius = function() {
  * @export
  */
 app.FeaturePopupController.prototype.setCircleRadius = function(radius) {
-  if (goog.isDef(this.feature) &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+  this.setFeatureCircleRadius(this.feature, radius);
+  this.drawnFeatures_.saveFeature(this.feature);
+};
+
+
+/**
+ * @param {ol.Feature} feature The feature.
+ * @param {number} radius The circle radius in meter.
+ * @export
+ */
+app.FeaturePopupController.prototype.setFeatureCircleRadius = function(feature, radius) {
+  if (goog.isDef(feature) &&
+      feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
-    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var geom = /** @type {ol.geom.Polygon} **/ (feature.getGeometry());
     var center = ol.extent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
@@ -330,12 +353,33 @@ app.FeaturePopupController.prototype.setCircleRadius = function(radius) {
     var resolutionFactor = resolution / pointResolution;
     radius = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new ol.geom.Circle(center, radius);
-    this.feature.setGeometry(
+    feature.setGeometry(
         ol.geom.Polygon.fromCircle(featureGeom, 64)
     );
-    this.drawnFeatures_.saveFeature(this.feature);
   }
 };
+
+/**
+ * @param {number} radius The circle radius in meter.
+ * Creates a new circle from this one.
+ * @export
+ */
+app.FeaturePopupController.prototype.createNewCircle = function(radius) {
+  this.askRadius = false;
+  this.appFeaturePopup_.hide();
+  var newCircle = this.feature.clone();
+  newCircle.set('__selected__', false);
+  newCircle.set('fid', undefined);
+  this.setFeatureCircleRadius(newCircle, radius);
+  this.drawnFeatures_.getCollection().push(newCircle);
+  this.drawnFeatures_.saveFeature(newCircle);
+  this.drawnFeatures_.activateModifyIfNeeded(newCircle);
+  this.selectedFeatures_.clear();
+  this.selectedFeatures_.push(newCircle);
+  this.feature = newCircle;
+  this.modifySelectedFeature();
+};
+
 
 /**
  * Export a KML file.

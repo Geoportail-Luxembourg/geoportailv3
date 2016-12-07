@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature">
+<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature && !ctrl.askRadius">
 
   <div class="feature-popup-heading" ng-hide="ctrl.isDocked()">{{ ctrl.feature.get('name') }}&nbsp;</div>
   <a ng-if="!ctrl.isDocked()" href class="close" ng-click="ctrl.close()">&times;</a>
@@ -18,7 +18,7 @@
         <span translate>Rayon: </span>
         <span ng-show="!ctrl.editCircleRadius" ng-bind-html="ctrl.trustAsHtml(ctrl.getRadius())"></span>
         <span ng-show="ctrl.isEditable() && ctrl.editCircleRadius">
-        <input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"><button class="btn btn-primary" ng-click="ctrl.setCircleRadius(ctrl.tempCircleRadius)" translate>Valider</button></span>
+        <input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"><button class="btn btn-primary" ng-click="ctrl.setCircleRadius(ctrl.tempCircleRadius.replace(',','.'))" translate>Valider</button></span>
       </div>
     </div>
     <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
@@ -62,6 +62,7 @@
           <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
           <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
+          <li ng-show="ctrl.isCircle()" ng-click="ctrl.tempCircleRadius = ctrl.getCircleRadius() ; ctrl.askRadius = true"><a href translate>Créer cercle concentrique</a></li>
         </ul>
       </li>
     </ul>
@@ -116,6 +117,26 @@
       Annuler
     </button>
     <button href class="btn btn-primary" ng-click="ctrl.deleteFeature()" translate>
+      OK
+    </button>
+  </div>
+</div>
+<div ng-show="ctrl.askRadius">
+  <div class="feature-popup-body">
+    <span translate>Veuillez entrer les caractéristiques de votre nouveau cercle</span>
+    <div class="form-inline">
+      <div class="form-group">
+        <span translate>Rayon: </span>
+        <span><input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"></span>
+        <span translate>mètres</span>
+      </div>
+    </div>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-primary" ng-click="ctrl.askRadius = false" translate>
+      Annuler
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.createNewCircle(ctrl.tempCircleRadius.replace(',','.'))" translate>
       OK
     </button>
   </div>
