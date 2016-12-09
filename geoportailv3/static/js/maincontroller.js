@@ -263,7 +263,6 @@ app.MainController = function(
    * @private
    */
   this.appMymaps_ = appMymaps;
-
   this.appUserManager_.getUserInfo();
 
   this.setMap_();

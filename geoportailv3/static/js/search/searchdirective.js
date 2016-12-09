@@ -457,7 +457,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
             '<button ng-click="click($event)">i</button>' +
             '</p>';
         scope['switchTheme'] = goog.bind(function(themeId) {
-          this.appTheme_.setCurrentTheme(themeId, this.map);
+          this.appTheme_.setCurrentTheme(themeId);
         }, this);
         scope['click'] = goog.bind(function(event) {
           var node = goog.array.find(this.layers_, function(element) {

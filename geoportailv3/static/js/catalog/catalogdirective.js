@@ -55,11 +55,26 @@ app.module.directive('appCatalog', app.catalogDirective);
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Function to
  *     create layers from catalog nodes.
+ * @param {app.ScalesService} appScalesService Service returning scales.
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @export
  * @ngInject
  */
 app.CatalogController = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent) {
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ =
+      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+
+  /**
+   * @type {app.ScalesService}
+   * @private
+   */
+  this.scales_ = appScalesService;
 
   /**
    * @type {app.Theme}
@@ -122,7 +137,37 @@ app.CatalogController.prototype.setTree_ = function() {
        */
       function(tree) {
         this['tree'] = tree;
+        this.setThemeZooms(this['tree']);
       }, this));
+};
+
+
+/**
+ * @param {Object} tree Tree object for the theme.
+ * Set the maximum scale regarding the loaded theme.
+ */
+app.CatalogController.prototype.setThemeZooms = function(tree) {
+  var maxZoom = 19;
+  if (!goog.isNull(tree)) {
+    goog.asserts.assert('metadata' in tree);
+    if (!goog.string.isEmptySafe(tree['metadata']['resolutions'])) {
+      var resolutions = tree['metadata']['resolutions'].split(',');
+      maxZoom = resolutions.length + 7;
+    }
+    var map = this['map'];
+    var currentView = map.getView();
+    map.setView(new ol.View({
+      maxZoom: maxZoom,
+      minZoom: 8,
+      extent: this.maxExtent_,
+      center: currentView.getCenter(),
+      enableRotation: false,
+      zoom: currentView.getZoom()
+    }));
+    this.scales_.setMaxZoomLevel(maxZoom);
+  } else {
+    this.scales_.setMaxZoomLevel(maxZoom);
+  }
 };
 
 
