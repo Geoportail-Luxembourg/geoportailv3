@@ -63,12 +63,14 @@
 
   <ul class="features list-unstyled">
     <li ng-repeat="(key, feature) in ctrl.getMymapsFeatures()" class="feature"
-        ng-click="ctrl.selectFeature(feature)" id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
-      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
-      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
-      <span class="feature"
-        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+        id="feature-{{ctrl.featuresList.indexOf(feature)}}">
+      <div ng-click="ctrl.selectFeature(feature)">
+        <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+        <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+        <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+        <span class="feature"
+          ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+      </div>
       <!-- Information about selected features-->
       <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
         <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
@@ -98,12 +100,14 @@
 
   <ul class="features list-unstyled">
     <li ng-repeat="(key, feature) in ctrl.getAnonymousFeatures()" class="feature"
-        ng-click="ctrl.selectFeature(feature)" id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
-      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
-      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
-      <span class="feature"
-        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+        id="feature-{{ctrl.featuresList.indexOf(feature)}}">
+      <div ng-click="ctrl.selectFeature(feature)">
+        <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+        <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+        <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+        <span class="feature"
+          ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+      </div>
       <!-- Information about selected features-->
       <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
         <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
