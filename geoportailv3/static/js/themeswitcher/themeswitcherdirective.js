@@ -53,12 +53,6 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
     appThemes, appTheme, appNotify, gettext) {
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
-
-  /**
    * @type {app.Theme}
    * @private
    */
@@ -164,7 +158,7 @@ app.ThemeswitcherController.prototype.setThemes_ = function() {
  * @export
  */
 app.ThemeswitcherController.prototype.switchTheme = function(themeId) {
-  this.appTheme_.setCurrentTheme(themeId, this.map_);
+  this.appTheme_.setCurrentTheme(themeId);
 };
 
 
