@@ -190,7 +190,7 @@ app.StyleEditingController.prototype.isHTML5ColorSupported = function() {
 
 
 /**
- * @param {number} val The stroke.
+ * @param {string} val The stroke.
  * @return {*} The stroke.
  * @export
  */
@@ -199,7 +199,7 @@ app.StyleEditingController.prototype.getSetStroke = function(val) {
     return;
   }
   if (arguments.length) {
-    this.feature.set('stroke', parseFloat(val));
+    this.feature.set('stroke', parseFloat(Math.abs(val)));
   } else {
     return this.feature.get('stroke');
   }
@@ -207,7 +207,7 @@ app.StyleEditingController.prototype.getSetStroke = function(val) {
 
 
 /**
- * @param {number} val The size.
+ * @param {string} val The size.
  * @return {*} The size.
  * @export
  */
@@ -216,7 +216,7 @@ app.StyleEditingController.prototype.getSetSize = function(val) {
     return;
   }
   if (arguments.length) {
-    this.feature.set('size', parseFloat(val));
+    this.feature.set('size', parseFloat(Math.abs(val)));
   } else {
     return this.feature.get('size');
   }
@@ -224,7 +224,7 @@ app.StyleEditingController.prototype.getSetSize = function(val) {
 
 
 /**
- * @param {number} val The rotation.
+ * @param {string} val The rotation.
  * @return {*} The rotation.
  * @export
  */
@@ -236,13 +236,13 @@ app.StyleEditingController.prototype.getSetRotation = function(val) {
     this.feature.set('angle', parseFloat(val) / 360 * Math.PI * 2);
   } else {
     var angle = /** @type {number} */ (this.feature.get('angle'));
-    return angle * 360 / Math.PI / 2;
+    return Math.round((angle * 360 / Math.PI / 2) * 100) / 100;
   }
 };
 
 
 /**
- * @param {number} val The opacity.
+ * @param {string} val The opacity.
  * @return {*} The opacity.
  * @export
  */
@@ -251,10 +251,10 @@ app.StyleEditingController.prototype.getSetOpacity = function(val) {
     return;
   }
   if (arguments.length) {
-    this.feature.set('opacity', 1 - (parseFloat(val) / 100));
+    this.feature.set('opacity', (100 - parseFloat(Math.abs(val))) / 100);
   } else {
     var opacity = /** @type {number} */ (this.feature.get('opacity'));
-    return (1 - opacity) * 100;
+    return Math.round ((100 - (opacity * 100)) * 100) / 100;
   }
 };
 
