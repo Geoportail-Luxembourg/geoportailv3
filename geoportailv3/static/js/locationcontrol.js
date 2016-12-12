@@ -33,11 +33,23 @@ app.LocationControlOptions;
  * @extends {ol.control.Control}
  * @param {app.LocationControlOptions} options Location Control
  * options.
+ * @ngInject
  */
 app.LocationControl = function(options) {
-
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
+
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.gettextCatalog_ = options.gettextCatalog;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = options.notify;
 
   /**
    * @type {ol.Feature}
@@ -173,6 +185,18 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
             this.geolocation_.getAccuracyGeometry());
       }, this);
 
+  ol.events.listen(this.geolocation_,
+      ol.events.EventType.ERROR,
+      function(e) {
+        this.featureOverlay_.clear();
+        if (e.message && e.message.length > 0) {
+          var msg = this.gettextCatalog_.getString(
+              'Erreur lors de l\'acquisition de la position :');
+          msg = msg + e.message;
+          this.notify_(msg, app.NotifyNotificationType.ERROR);
+        }
+      }.bind(this));
+
 };
 
 
@@ -180,6 +204,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
  * @private
  */
 app.LocationControl.prototype.initFeatureOverlay_ = function() {
+  this.featureOverlay_.clear();
   this.accuracyFeature_.setGeometry(null);
   this.positionFeature_.setGeometry(null);
   this.featureOverlay_.addFeature(this.accuracyFeature_);

@@ -17,6 +17,7 @@ goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
 goog.require('app.Mymaps');
+goog.require('app.Notify');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
@@ -64,6 +65,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
+ * @param {app.Notify} appNotify Notify service.
  * @constructor
  * @export
  * @ngInject
@@ -74,7 +76,12 @@ app.MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer) {
+    appOverviewMapShow, appOverviewMapBaseLayer, appNotify) {
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * @private
@@ -339,7 +346,9 @@ app.MainController.prototype.addLocationControl_ =
       this.map_.addControl(
       new app.LocationControl({
         label: '\ue800',
-        featureOverlayMgr: featureOverlayMgr
+        featureOverlayMgr: featureOverlayMgr,
+        notify: this.notify_,
+        gettextCatalog: this.gettextCatalog_
       }));
     };
 
