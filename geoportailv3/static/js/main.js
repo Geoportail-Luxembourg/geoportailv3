@@ -11,6 +11,7 @@ goog.provide('app_main');
 
 goog.require('app.ImguploadDirective');
 goog.require('app.MainController');
+goog.require('app.askredirectDirective');
 goog.require('app.authenticationDirective');
 goog.require('app.backgroundlayerDirective');
 goog.require('app.catalogDirective');

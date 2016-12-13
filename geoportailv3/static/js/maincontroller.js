@@ -66,6 +66,7 @@ goog.require('ol.tilegrid.WMTS');
  * @param {boolean} appOverviewMapShow Add or not the overview control.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
+* @param {angular.$window} $window Window.
  * @constructor
  * @export
  * @ngInject
@@ -76,7 +77,13 @@ app.MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer, appNotify) {
+    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window) {
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = $window;
+
   /**
    * @type {app.Notify}
    * @private
@@ -244,6 +251,11 @@ app.MainController = function(
   this['infosHiddenContent'] = false;
 
   /**
+   * @type {boolean}
+   */
+  this['showRedirect'] = false;
+
+  /**
    * @type {string|undefined}
    */
   this['infosAppSelector'] = undefined;
@@ -348,7 +360,9 @@ app.MainController.prototype.addLocationControl_ =
         label: '\ue800',
         featureOverlayMgr: featureOverlayMgr,
         notify: this.notify_,
-        gettextCatalog: this.gettextCatalog_
+        gettextCatalog: this.gettextCatalog_,
+        scope: this.scope_,
+        window: this.window_
       }));
     };
 

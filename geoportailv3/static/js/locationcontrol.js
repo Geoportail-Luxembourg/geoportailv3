@@ -22,7 +22,11 @@ goog.require('ol.geom.Point');
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
- *     featureOverlayMgr: ngeo.FeatureOverlayMgr
+ *     featureOverlayMgr: ngeo.FeatureOverlayMgr,
+ *     notify: app.Notify,
+ *     gettextCatalog: angularGettext.Catalog,
+ *     scope: angular.Scope,
+ *     window: angular.$window
  * }}
  */
 app.LocationControlOptions;
@@ -38,6 +42,17 @@ app.LocationControlOptions;
 app.LocationControl = function(options) {
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = options.window;
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = options.scope;
 
   /**
    * @type {angularGettext.Catalog}
@@ -113,7 +128,11 @@ goog.inherits(app.LocationControl, ol.control.Control);
  */
 app.LocationControl.prototype.handleClick_ = function(event) {
   event.preventDefault();
-  this.handleCenterToLocation_();
+  if (this.window_.location.protocol !== 'https:') {
+    this.scope_['mainCtrl']['showRedirect'] = true;
+  } else {
+    this.handleCenterToLocation_();
+  }
 };
 
 

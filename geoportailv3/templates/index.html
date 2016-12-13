@@ -194,6 +194,7 @@
           </div>
         </div>
       </div>
+      <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
     <!-- Begin bottom bar -->
@@ -217,7 +218,7 @@
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos {{mainCtrl.showRedirect}}</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" translate>Contact</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" translate>Legalites</a></li>
@@ -364,6 +365,7 @@
          appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
          appModule.value('appWmsTreeTemplateUrl', 'externaldata/wmstree.html');
          appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html')
+         appModule.value('appAskredirectTemplateUrl', 'askredirect/askredirect.html')
        })();
     </script>
     <!-- Piwik -->
