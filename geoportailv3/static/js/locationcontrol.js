@@ -131,15 +131,15 @@ app.LocationControl.prototype.handleClick_ = function(event) {
   if (this.window_.location.protocol !== 'https:') {
     this.scope_['mainCtrl']['showRedirect'] = true;
   } else {
-    this.handleCenterToLocation_();
+    this.handleCenterToLocation();
   }
 };
 
 
 /**
- * @private
+ * Active or unactive the tracking.
  */
-app.LocationControl.prototype.handleCenterToLocation_ = function() {
+app.LocationControl.prototype.handleCenterToLocation = function() {
   if (goog.isNull(this.geolocation_)) {
     this.initGeoLocation_();
   }

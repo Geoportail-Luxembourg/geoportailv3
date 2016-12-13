@@ -28,15 +28,22 @@ app.module.directive('appAskredirect', app.askredirectDirective);
 /**
  * @constructor
  * @param {angular.$window} $window Window.
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
-app.AskredirectController = function($window) {
+app.AskredirectController = function($window, ngeoLocation) {
   /**
    * @type {angular.$window}
    * @private
    */
   this.$window_ = $window;
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 };
 
 
@@ -46,8 +53,13 @@ app.AskredirectController = function($window) {
  */
 app.AskredirectController.prototype.redirect = function() {
   if (this.$window_.location.protocol !== 'https:') {
-    this.$window_.location = 'https://' + this.$window_.location.hostname +
-      this.$window_.location.pathname + this.$window_.location.hash;
+    var separator = '?';
+    if (this.$window_.location.href.indexOf('?') >= 0) {
+      separator = '&';
+    }
+    this.$window_.location.href =
+        this.$window_.location.href.replace(/http:/g, 'https:') +
+        separator + 'tracking=true';
   }
 };
 

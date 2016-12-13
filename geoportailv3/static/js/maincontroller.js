@@ -355,15 +355,27 @@ app.MainController = function(
  */
 app.MainController.prototype.addLocationControl_ =
     function(featureOverlayMgr) {
-      this.map_.addControl(
-      new app.LocationControl({
+      var isActive = false;
+      var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
+      if (activateGeoLocation && 'true' === activateGeoLocation) {
+        isActive = true;
+        this.ngeoLocation_.deleteParam('tracking');
+      }
+      var locationControl = new app.LocationControl({
         label: '\ue800',
         featureOverlayMgr: featureOverlayMgr,
         notify: this.notify_,
         gettextCatalog: this.gettextCatalog_,
         scope: this.scope_,
         window: this.window_
-      }));
+      });
+      this.map_.addControl(locationControl);
+      if (isActive) {
+        ol.events.listenOnce(this.map_,
+          ol.Object.getChangeEventType(ol.MapProperty.VIEW), function(e) {
+            locationControl.handleCenterToLocation();
+          }.bind(this));
+      }
     };
 
 
