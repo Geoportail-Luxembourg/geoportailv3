@@ -4,7 +4,7 @@
     <span ng-if="!layers.features.length">Aucune information disponible pour cette couche</span>
     <div ng-repeat="feature in layers.features" class="poi-feature">
       <span translate>Identifiant</span> : {{feature.attributes.OBJECTID}}<br>
-      <a class="btn btn-default" href="http://dev.geoportail.lu/pagreport/{{feature.attributes.OBJECTID}}.pdf" target="_blank" translate>Generer Rapport (peut prendre 30 sec)</a>
+      <a class="btn btn-default" download href="http://dev.geoportail.lu/pagreport/{{feature.attributes.OBJECTID}}.pdf" target="_blank" translate>Generer Rapport (peut prendre 30 sec)</a>
       <a class="fid-link" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a>
     </div>
 </div>
