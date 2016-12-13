@@ -17,6 +17,7 @@ goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
 goog.require('app.Mymaps');
+goog.require('app.Notify');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
@@ -64,6 +65,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
+ * @param {app.Notify} appNotify Notify service.
+* @param {angular.$window} $window Window.
  * @constructor
  * @export
  * @ngInject
@@ -74,7 +77,18 @@ app.MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer) {
+    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window) {
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = $window;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * @private
@@ -237,6 +251,11 @@ app.MainController = function(
   this['infosHiddenContent'] = false;
 
   /**
+   * @type {boolean}
+   */
+  this['showRedirect'] = false;
+
+  /**
    * @type {string|undefined}
    */
   this['infosAppSelector'] = undefined;
@@ -336,11 +355,27 @@ app.MainController = function(
  */
 app.MainController.prototype.addLocationControl_ =
     function(featureOverlayMgr) {
-      this.map_.addControl(
-      new app.LocationControl({
+      var isActive = false;
+      var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
+      if (activateGeoLocation && 'true' === activateGeoLocation) {
+        isActive = true;
+        this.ngeoLocation_.deleteParam('tracking');
+      }
+      var locationControl = new app.LocationControl({
         label: '\ue800',
-        featureOverlayMgr: featureOverlayMgr
-      }));
+        featureOverlayMgr: featureOverlayMgr,
+        notify: this.notify_,
+        gettextCatalog: this.gettextCatalog_,
+        scope: this.scope_,
+        window: this.window_
+      });
+      this.map_.addControl(locationControl);
+      if (isActive) {
+        ol.events.listenOnce(this.map_,
+          ol.Object.getChangeEventType(ol.MapProperty.VIEW), function(e) {
+            locationControl.handleCenterToLocation();
+          }.bind(this));
+      }
     };
 
 

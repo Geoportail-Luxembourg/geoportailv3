@@ -22,7 +22,11 @@ goog.require('ol.geom.Point');
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
- *     featureOverlayMgr: ngeo.FeatureOverlayMgr
+ *     featureOverlayMgr: ngeo.FeatureOverlayMgr,
+ *     notify: app.Notify,
+ *     gettextCatalog: angularGettext.Catalog,
+ *     scope: angular.Scope,
+ *     window: angular.$window
  * }}
  */
 app.LocationControlOptions;
@@ -33,11 +37,34 @@ app.LocationControlOptions;
  * @extends {ol.control.Control}
  * @param {app.LocationControlOptions} options Location Control
  * options.
+ * @ngInject
  */
 app.LocationControl = function(options) {
-
   var className = goog.isDef(options.className) ? options.className :
       'location-button';
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = options.window;
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = options.scope;
+
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.gettextCatalog_ = options.gettextCatalog;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = options.notify;
 
   /**
    * @type {ol.Feature}
@@ -101,14 +128,18 @@ goog.inherits(app.LocationControl, ol.control.Control);
  */
 app.LocationControl.prototype.handleClick_ = function(event) {
   event.preventDefault();
-  this.handleCenterToLocation_();
+  if (this.window_.location.protocol !== 'https:') {
+    this.scope_['mainCtrl']['showRedirect'] = true;
+  } else {
+    this.handleCenterToLocation();
+  }
 };
 
 
 /**
- * @private
+ * Active or unactive the tracking.
  */
-app.LocationControl.prototype.handleCenterToLocation_ = function() {
+app.LocationControl.prototype.handleCenterToLocation = function() {
   if (goog.isNull(this.geolocation_)) {
     this.initGeoLocation_();
   }
@@ -173,6 +204,18 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
             this.geolocation_.getAccuracyGeometry());
       }, this);
 
+  ol.events.listen(this.geolocation_,
+      ol.events.EventType.ERROR,
+      function(e) {
+        this.featureOverlay_.clear();
+        if (e.message && e.message.length > 0) {
+          var msg = this.gettextCatalog_.getString(
+              'Erreur lors de l\'acquisition de la position :');
+          msg = msg + e.message;
+          this.notify_(msg, app.NotifyNotificationType.ERROR);
+        }
+      }.bind(this));
+
 };
 
 
@@ -180,6 +223,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
  * @private
  */
 app.LocationControl.prototype.initFeatureOverlay_ = function() {
+  this.featureOverlay_.clear();
   this.accuracyFeature_.setGeometry(null);
   this.positionFeature_.setGeometry(null);
   this.featureOverlay_.addFeature(this.accuracyFeature_);

@@ -194,6 +194,7 @@
           </div>
         </div>
       </div>
+      <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
     </div>
     <!-- Begin bottom bar -->
@@ -364,6 +365,7 @@
          appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
          appModule.value('appWmsTreeTemplateUrl', 'externaldata/wmstree.html');
          appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html')
+         appModule.value('appAskredirectTemplateUrl', 'askredirect/askredirect.html')
        })();
     </script>
     <!-- Piwik -->
