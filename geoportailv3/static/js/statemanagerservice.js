@@ -6,6 +6,7 @@
 goog.provide('app.StateManager');
 
 goog.require('app');
+goog.require('app.Notify');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
@@ -15,9 +16,22 @@ goog.require('ngeo.Location');
 /**
  * @constructor
  * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {app.Notify} appNotify Notify service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-app.StateManager = function(ngeoLocation) {
+app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
+  /**
+   * @type {angularGettext.Catalog}
+   * @private
+   */
+  this.gettextCatalog_ = gettextCatalog;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * Object representing the application's initial state.
@@ -85,6 +99,21 @@ app.StateManager = function(ngeoLocation) {
     this.version_ = this.initialState_.hasOwnProperty('version') ?
         goog.math.clamp(+this.initialState_['version'], 2, 3) : 2;
   }
+
+  if (!((this.initialState_.hasOwnProperty('bgLayer') &&
+      this.initialState_['bgLayer'].length > 0 &&
+      this.initialState_['bgLayer'] != 'blank') ||
+      (this.initialState_.hasOwnProperty('layers') &&
+      this.initialState_['layers'].length > 0) ||
+      (this.initialState_.hasOwnProperty('fid') &&
+      this.initialState_['fid'].length > 0))) {
+    this.initialState_['bgLayer'] = 'basemap_2015_global';
+    var msg = this.gettextCatalog_.getString(
+        'Aucune couche n\'étant définie pour cette carte,' +
+        ' une couche de fond a automatiquement été ajoutée.');
+    this.notify_(msg, app.NotifyNotificationType.INFO);
+  }
+
   goog.asserts.assert(this.version_ != -1);
 
   this.ngeoLocation_.updateParams({'version': 3});
