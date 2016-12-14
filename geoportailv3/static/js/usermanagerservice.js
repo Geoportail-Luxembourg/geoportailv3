@@ -18,10 +18,17 @@ goog.require('app.Notify');
  * @param {string} getuserinfoUrl The url to get information about the user.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
+ * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
 app.UserManager = function($http, loginUrl, logoutUrl,
-    getuserinfoUrl, appNotify, gettextCatalog) {
+    getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.appAuthtktCookieName_ = appAuthtktCookieName;
+
   /**
    * @type {string}
    * @private
@@ -193,7 +200,11 @@ app.UserManager.prototype.getUserInfo = function() {
  * @export
  */
 app.UserManager.prototype.isAuthenticated = function() {
-  return (this.username.length > 0);
+  if (this.hasCookie(this.appAuthtktCookieName_)) {
+    return (this.username.length > 0);
+  }
+  this.clearUserInfo();
+  return false;
 };
 
 
@@ -263,6 +274,25 @@ app.UserManager.prototype.getMymapsRole = function() {
  */
 app.UserManager.prototype.getMymapsAdmin = function() {
   return this.isMymapsAdmin;
+};
+
+/**
+ * @param {string} cname The cookie name.
+ * @return {boolean} True if the cookie exists.
+ */
+app.UserManager.prototype.hasCookie = function(cname) {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return true;
+    }
+  }
+  return false;
 };
 
 
