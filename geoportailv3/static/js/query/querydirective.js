@@ -1099,7 +1099,7 @@ app.QueryController.prototype.getCookie_ = function(cname) {
     }
     if (c.indexOf(name) == 0) {
       var value = c.substring(name.length, c.length);
-      if (value.startsWith('"')) {
+      if (value.indexOf('"') === 0) {
         value = value.substring(1, value.length - 1);
       }
       return value;
