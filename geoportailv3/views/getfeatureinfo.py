@@ -594,7 +594,10 @@ class Getfeatureinfo(object):
         if id_column is None:
             id_column = 'objectid'
         if featureid is not None:
-            body['objectIds'] = featureid
+            if id_column == 'objectid':
+                body['objectIds'] = featureid
+            else:
+                body['where'] = id_column + ' = \'' + featureid + '\''
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
