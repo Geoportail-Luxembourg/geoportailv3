@@ -620,7 +620,10 @@ class Getfeatureinfo(object):
             esricoll = geojson_loads(content)
         except:
             raise
-        fields = esricoll['fields']
+        if 'fields' in esricoll:
+            fields = esricoll['fields']
+        else:
+            fields = []
         if 'features' in esricoll:
             for rawfeature in esricoll['features']:
                 geometry = ''
