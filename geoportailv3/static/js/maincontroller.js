@@ -66,7 +66,8 @@ goog.require('ol.tilegrid.WMTS');
  * @param {boolean} appOverviewMapShow Add or not the overview control.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
-* @param {angular.$window} $window Window.
+ * @param {angular.$window} $window Window.
+ * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @export
  * @ngInject
@@ -77,7 +78,14 @@ app.MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window) {
+    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
+    appSelectedFeatures) {
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   * @private
+   */
+  this.selectedFeatures_ = appSelectedFeatures;
+
   /**
    * @type {angular.$window}
    * @private
@@ -189,6 +197,11 @@ app.MainController = function(
    * @type {boolean}
    */
   this['drawOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
+  this['drawOpenMobile'] = false;
 
   /**
    * @type {boolean}
@@ -343,6 +356,11 @@ app.MainController = function(
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
+      if (this['mymapsOpen'] && this.appGetDevice_() === 'xs' &&
+          this.selectedFeatures_.getLength() > 0) {
+        var feature = this.selectedFeatures_.getArray()[0];
+        feature.set('__refreshProfile__', true);
+      }
     }.bind(this));
   }.bind(this));
 

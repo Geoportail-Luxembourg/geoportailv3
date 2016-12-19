@@ -41,7 +41,7 @@ header {
 
 .toolbox-panel {
   display: none;
-  z-index: 3;
+  z-index: 2;
   position: absolute;
   top: auto;
   bottom: 100%;
@@ -76,14 +76,13 @@ header {
 .sidebar-controls {
   left: 0;
   .transition(left 300ms 0 ease-out);
-  z-index: 4;
+  z-index: 1;
 }
 
 @media (max-width: @screen-xs-max) {
   .sidebar-controls,
   .toolbox {
     position: absolute;
-    bottom: 20px;
   }
   .sidebar-controls,
   .toolbox {
@@ -91,10 +90,14 @@ header {
       display: block;
     }
   }
+  .sidebar-controls {
+    bottom: 100px;
+  }
   .toolbox {
     width: auto;
     margin: 0;
-    right: 0;
+    left: 0;
+    bottom: 20px;
   }
   footer {
     .sidebar-controls.open {
@@ -232,14 +235,17 @@ header {
       }
     }
     > li:first-child > a {
-      border-left: 0;
+        border-left: 0;
+    }
+  }
+  .sidebar-controls {
+      > li:first-child > a {
       border-top: 1px solid @navbars-button-border-color;
     }
   }
   .toolbox {
-    > li > a {
-      border: 1px solid @navbars-button-border-color;
-      border-width: 1px 0 1px 1px;
+      > li:first-child > a {
+      border-top: 0px;
     }
   }
 }

@@ -277,12 +277,27 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     this.tempImage = this.image['image'];
   }.bind(this));
 
+  this.unwatch5_ = $scope.$watch(function() {
+    if (this.feature) {
+      return this.feature.get('__refreshProfile__');
+    }
+    return false;
+  }.bind(this), function(newVal, oldVal) {
+    if (this.feature) {
+      this.feature.set('__refreshProfile__', false);
+      if (newVal) {
+        this.updateFeature_();
+      }
+    }
+  }.bind(this));
+
   $scope.$on('$destroy', function() {
     ol.events.unlistenByKey(this.event_);
     this.unwatch1_();
     this.unwatch2_();
     this.unwatch3_();
     this.unwatch4_();
+    this.unwatch5_();
   }.bind(this));
 
 };
