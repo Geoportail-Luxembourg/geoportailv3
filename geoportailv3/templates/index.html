@@ -225,7 +225,7 @@
         <li><a ng-href="http://www.act.public.lu/">ACT</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
-        <li class="hidden-xs draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
+        <li class="draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
@@ -245,7 +245,7 @@
           <app-print app-print-map="::mainCtrl.map"
             app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"></app-print>
         </li>
-        <li class="hidden-xs share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
+        <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
           <app-share app-share-active="mainCtrl.shareOpen"
             app-share-active-mymaps="mainCtrl.shareMymapsChecked"

@@ -75,6 +75,7 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
  * @param {app.Activetool} appActivetool The activetool service.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @constructor
  * @export
  * @ngInject
@@ -82,7 +83,13 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
     appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify,
-    $anchorScroll, appActivetool) {
+    $anchorScroll, appActivetool, appGetDevice) {
+  /**
+   * @private
+   * @type {app.GetDevice}
+   */
+  this.appGetDevice_ = appGetDevice;
+
   /**
    * @type {app.Activetool}
    * @private
@@ -144,6 +151,36 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @export
    */
   this.active;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.drawPointActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.drawLabelActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.drawLineActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.drawPolygonActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.drawCircleActive = false;
 
   /**
    * @type {app.DrawnFeatures}
@@ -282,6 +319,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
     return this.active;
   }, this), goog.bind(function(newVal) {
     if (newVal === false) {
+      if (this.selectedFeatures_.getLength() > 0) {
+        var feature = this.selectedFeatures_.getArray()[0];
+        feature.set('__editable__', false);
+      }
       this.drawPoint.setActive(false);
       this.drawLabel.setActive(false);
       this.drawLine.setActive(false);
@@ -292,7 +333,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.appActivetool_.drawActive = false;
     } else {
       this.appActivetool_.drawActive = false;
-      if (this['activateMymaps']) {
+      if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
         this['mymapsOpen'] = true;
       }
     }
@@ -323,7 +364,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        if (this['activateMymaps']) {
+        if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
           this['mymapsOpen'] = true;
         }
         if (!this.featurePopup_.isDocked) {
@@ -439,7 +480,6 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive() ||
       this.drawLabel.getActive();
-  //this.selectInteraction_.setActive(!active);
   this.selectInteraction_.setActive(false);
   if (active) {
     this.appActivetool_.drawActive = true;
@@ -693,9 +733,142 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
   this.drawnFeatures_.activateModifyIfNeeded(event.feature);
-  if (this['activateMymaps']) {
+  if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
     this['mymapsOpen'] = true;
   }
+};
+
+
+/**
+ * @param {boolean} active Set active or not.
+ * @param {ol.interaction.Draw} interaction Set active or not.
+ * @private
+ */
+app.DrawController.prototype.setActiveDraw_ = function(active, interaction) {
+  if (this.selectedFeatures_.getLength() > 0) {
+    var feature = this.selectedFeatures_.getArray()[0];
+    feature.set('__editable__', false);
+  }
+  this.drawnFeatures_.modifyInteraction.setActive(false);
+  this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+  this.drawnFeatures_.translateInteraction.setActive(false);
+  this.drawPoint.setActive(false);
+  this.drawLabel.setActive(false);
+  this.drawCircle.setActive(false);
+  this.drawPolygon.setActive(false);
+  this.drawLine.setActive(false);
+  if (!active) {
+    interaction.setActive(false);
+  } else {
+    interaction.setActive(true);
+  }
+};
+
+
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleDrawPoint = function() {
+  var active = !this.isEditing('drawPoint');
+  this.setActiveDraw_(active, this.drawPoint);
+  return this.isEditing('drawPoint');
+};
+
+
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleDrawLine = function() {
+  var active = !this.isEditing('drawLine');
+  this.setActiveDraw_(active, this.drawLine);
+  return this.isEditing('drawLine');
+};
+
+
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleDrawLabel = function() {
+  var active = !this.isEditing('drawLabel');
+  this.setActiveDraw_(active, this.drawLabel);
+  return this.isEditing('drawLabel');
+};
+
+
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleDrawPolygon = function() {
+  var active = !this.isEditing('drawPolygon');
+  this.setActiveDraw_(active, this.drawPolygon);
+  return this.isEditing('drawPolygon');
+};
+
+
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleDrawCircle = function() {
+  var active = !this.isEditing('drawCircle');
+  this.setActiveDraw_(active, this.drawCircle);
+  return this.isEditing('drawCircle');
+};
+
+
+/**
+ * @param {string} type The interaction type.
+ * @return {boolean} true if the feature is being edited.
+ * @export
+ */
+app.DrawController.prototype.isEditing = function(type) {
+  var feature;
+  if (this.selectedFeatures_.getLength() > 0) {
+    feature = this.selectedFeatures_.getArray()[0];
+  }
+
+  if ('drawPoint' === type) {
+    if (this.drawPoint.getActive() ||
+        (feature !== undefined && feature.get('__editable__') === 1 &&
+        !feature.get('isLabel') &&
+        feature.getGeometry().getType() === ol.geom.GeometryType.POINT)) {
+      return true;
+    }
+  }
+  if ('drawLabel' === type) {
+    if (this.drawLabel.getActive() ||
+        (feature !== undefined && feature.get('__editable__') === 1 &&
+        !!feature.get('isLabel'))) {
+      return true;
+    }
+  }
+  if ('drawLine' === type) {
+    if (this.drawLine.getActive() ||
+        (feature !== undefined && feature.get('__editable__') === 1 &&
+        feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)) {
+      return true;
+    }
+  }
+  if ('drawPolygon' === type) {
+    if (this.drawPolygon.getActive() ||
+        (feature !== undefined && feature.get('__editable__') === 1 &&
+        !feature.get('isCircle') &&
+        feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON)) {
+      return true;
+    }
+  }
+  if ('drawCircle' === type) {
+    if (this.drawCircle.getActive() ||
+        (feature !== undefined && feature.get('__editable__') === 1 &&
+        !!feature.get('isCircle'))) {
+      return true;
+    }
+  }
+  return false;
 };
 
 

@@ -1,22 +1,27 @@
 <ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom">
-  <li ng-class="{active: ctrl.drawPoint.active}">
+  <li ng-class="{active: ctrl.isEditing('drawPoint')}">
     <a href translate ngeo-btn
-       ng-model="ctrl.drawPoint.active">Point</a>
+       ng-model="ctrl.drawPointActive"
+       ng-click="ctrl.toggleDrawPoint()">Point</a>
   </li>
-  <li ng-class="{active: ctrl.drawLabel.active}">
+  <li ng-class="{active: ctrl.isEditing('drawLabel')}">
     <a href translate ngeo-btn
-       ng-model="ctrl.drawLabel.active">Label</a>
+       ng-model="ctrl.drawLabelActive"
+       ng-click="ctrl.toggleDrawLabel()">Label</a>
   </li>
-  <li ng-class="{active: ctrl.drawLine.active}">
+  <li ng-class="{active: ctrl.isEditing('drawLine')}">
     <a href translate ngeo-btn
-       ng-model="ctrl.drawLine.active">Line</a>
+       ng-model="ctrl.drawLineActive"
+       ng-click="ctrl.toggleDrawLine()">Line</a>
   </li>
-  <li ng-class="{active: ctrl.drawPolygon.active}">
+  <li ng-class="{active: ctrl.isEditing('drawPolygon')}">
     <a href translate ngeo-btn
-       ng-model="ctrl.drawPolygon.active">Polygon</a>
+       ng-model="ctrl.drawPolygonActive"
+       ng-click="ctrl.toggleDrawPolygon()">Polygon</a>
   </li>
-  <li ng-class="{active: ctrl.drawCircle.active}">
+  <li ng-class="{active: ctrl.isEditing('drawCircle')}">
     <a href translate ngeo-btn
-       ng-model="ctrl.drawCircle.active">Circle</a>
+       ng-model="ctrl.drawCircleActive"
+       ng-click="ctrl.toggleDrawCircle()">Circle</a>
   </li>
 </ul>
