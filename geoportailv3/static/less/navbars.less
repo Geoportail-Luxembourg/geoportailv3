@@ -1,6 +1,8 @@
 /** Top and bottom bars (header and footer) **/
 
 @navbars-button-border-color: #8394a0;
+@grid-float-breakpoint-max: 0px;
+
 
 header {
   &.navbar {
@@ -21,6 +23,13 @@ header {
     /* force items to appear on the same line even for small screens */
     display: inline-block;
   }
+}
+.navbar-right {
+  float: right!important;
+}
+.navbar-right .dropdown-menu {
+  left: auto;
+  right: 0;
 }
 
 /***************/
