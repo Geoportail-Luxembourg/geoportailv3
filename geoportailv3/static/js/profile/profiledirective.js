@@ -43,7 +43,8 @@ app.profileDirective = function(appProfileTemplateUrl) {
     scope: {
       'profileData': '=appProfileData',
       'profileInteraction': '=appProfileInteraction',
-      'map': '=appProfileMap'
+      'map': '=appProfileMap',
+      'isLoadingProfileMsg': '=appProfileIsLoadingMsg'
     },
     controller: 'AppProfileController',
     controllerAs: 'ctrl',
@@ -68,7 +69,7 @@ app.module.directive('appProfile', app.profileDirective);
 app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     $document) {
 
-    /**
+  /**
    * @type {boolean}
    * @private
    */
