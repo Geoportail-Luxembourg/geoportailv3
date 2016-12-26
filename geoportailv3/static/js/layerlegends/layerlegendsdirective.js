@@ -149,6 +149,27 @@ app.LayerlegendsController.prototype.hasLegend = function(layer) {
 
 
 /**
+ * @return {boolean} True if the layer as a legend.
+ * @export
+ */
+app.LayerlegendsController.prototype.isALegendAvailable = function() {
+
+  if (this.layers != undefined && this.layers.length > 0) {
+    var elem = goog.array.find(this.layers, function(layer) {
+      if (this.hasLegend(layer)) {
+        return true;
+      }
+      return false;
+    }.bind(this));
+    if (elem != undefined) {
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
  * @return {*} the legend url.
  * @export
