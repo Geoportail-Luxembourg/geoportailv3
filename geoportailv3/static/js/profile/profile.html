@@ -9,8 +9,13 @@
   <div class="profile" ngeo-profile="ctrl.profileData"
       ngeo-profile-highlight="ctrl.profileHighlight"
       ngeo-profile-options="ctrl.profileOptions">
-    <div translate ng-hide="ctrl.profileData.length > 0">
-      Draw a line on the map to display an elevation profile.
+    <div ng-hide="ctrl.profileData.length > 0">
+      <div translate ng-show="!ctrl.isLoadingProfileMsg">
+        Draw a line on the map to display an elevation profile.
+      </div>
+      <div translate ng-show="ctrl.isLoadingProfileMsg">
+        Please wait, the profile is loading.
+      </div>
     </div>
   </div>
 </div>
