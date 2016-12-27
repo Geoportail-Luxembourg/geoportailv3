@@ -77,6 +77,10 @@ class Mymaps(object):
 
         return Category.belonging_to(self.request.user)
 
+    @view_config(route_name="mymaps_getallcategories", renderer="json")
+    def allcategories(self):
+        return Category.all()
+
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):
         user = self.request.user
@@ -189,8 +193,15 @@ class Mymaps(object):
                             and_(Map.public == True,
                                  Map.user_login == owner)) # noqa
                 if not user.is_admin and owner == user.username:
-                    query = DBSession.query(Map).\
-                        filter(Map.user_login == owner)
+                    if category is not None:
+                        query = DBSession.query(Map).filter(
+                            and_(func.coalesce(Map.category_id, 999) ==
+                                 category,
+                                 Map.user_login == owner)) # noqa
+                    else:
+                        query = DBSession.query(Map).\
+                            filter(Map.user_login == owner)
+
         if query is not None:
             maps = query.order_by("category_id asc,title asc").all()
             return [{'title': map.title,
