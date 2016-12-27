@@ -123,6 +123,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsAllCategoriesUrl_ = mymapsUrl + '/allcategories';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsFeaturesUrl_ = mymapsUrl + '/features/';
 
   /**
@@ -282,6 +288,11 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    */
   this.categories = null;
 
+  /**
+   * The list of all existing categories objects.
+   * @type {?Array.<Object>}
+   */
+  this.allcategories = null;
 
   /**
    * @const
@@ -296,6 +307,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     'voidLayer': 'blank'
   };
 
+  this.loadAllCategories();
 };
 
 
@@ -305,7 +317,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
  */
 app.Mymaps.prototype.getCategory = function(categoryId) {
   if (goog.isDefAndNotNull(categoryId)) {
-    return goog.array.find(this.categories, function(category) {
+    return goog.array.find(this.allcategories, function(category) {
       return category.id === categoryId;
     });
   } else {
@@ -473,6 +485,30 @@ app.Mymaps.prototype.loadCategories = function() {
          */
       function(resp) {
         this.categories = resp.data;
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          return null;
+        }
+        return [];
+      }, this)
+  );
+};
+
+
+/**
+ * Load the permissible categories from the webservice.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.loadAllCategories = function() {
+  return this.$http_.get(this.mymapsAllCategoriesUrl_).then(goog.bind(
+      /**
+         * @param {angular.$http.Response} resp Ajax response.
+         * @return {app.MapsResponse} The "mymaps" web service response.
+         */
+      function(resp) {
+        this.allcategories = resp.data;
         return resp.data;
       }, this), goog.bind(
       function(error) {

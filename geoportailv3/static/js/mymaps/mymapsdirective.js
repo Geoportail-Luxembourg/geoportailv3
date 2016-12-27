@@ -835,8 +835,8 @@ app.MymapsDirectiveController.prototype.getFilteredCategories = function() {
       categories = [userCateg];
     }
   }
-  if (this.appMymaps_.categories !== null) {
-    return goog.array.filter(this.appMymaps_.categories, function(category, i) {
+  if (this.appMymaps_.allcategories !== null) {
+    return goog.array.filter(this.appMymaps_.allcategories, function(category, i) {
       var elem = goog.array.find(categories, function(userCategory, i) {
         if (userCategory['categories'].indexOf(category['id']) >= 0) {
           return true;

@@ -288,6 +288,11 @@ class Category(Base):
             if user_role.categories is not None else []
         return [category.todict() for category in categories]
 
+    @staticmethod
+    def all():
+        categories = DBSession.query(Category).all()
+        return [category.todict() for category in categories]
+
 
 class Role(Base):
     __tablename__ = 'role'
