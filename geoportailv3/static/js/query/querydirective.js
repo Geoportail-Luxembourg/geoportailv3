@@ -555,9 +555,8 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                 'fid': fid
               }}).then(
               function(resp) {
-                var env = this.appGetDevice_();
                 var showInfo = false;
-                if (env !== 'xs') {
+                if (!this.appGetDevice_.testEnv('xs')) {
                   showInfo = true;
                   this['hiddenContent'] = false;
                 } else {

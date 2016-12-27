@@ -131,11 +131,13 @@ app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @param {string} proxyWmsUrl URL to the proxy wms.
  * @param {boolean} remoteProxyWms is the proxy wms remote or local.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @return {app.GetWmsLayer} The getWmsLayer function.
  * @private
  * @ngInject
  */
-app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms) {
+app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms,
+    appGetDevice) {
   return getWmsLayer;
 
   /**
@@ -151,11 +153,14 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms) {
         opt_url : proxyWmsUrl;
     var optSource = {
       url: url,
+      hidpi: appGetDevice.isHiDpi(),
+      serverType: 'mapserver',
       params: {
         'FORMAT': app.getImageExtension_(imageType),
         'LAYERS': layers
       }
     };
+
     if (goog.isDef(opt_url) || remoteProxyWms) {
       optSource.crossOrigin = 'anonymous';
     }
