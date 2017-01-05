@@ -45,6 +45,7 @@ lux.baseUrl = null;
 /**
  * @param {string|null} url Base url to services
  * @export
+ * @api
  */
 lux.setBaseUrl = function(url) {
   if (!url) {
@@ -95,6 +96,7 @@ lux.reverseGeocodeUrl = 'geocode/reverse';
 /**
  * @param {string} url Url to jsapilayers service.
  * @export
+ * @api
  */
 lux.setLayersUrl = function(url) {
   lux.layersUrl = url;
@@ -117,7 +119,7 @@ lux.popupSize = null;
 
 
 /**
- * @type {Object<string, string>} Hash oject with translations.
+ * @type {Object<string, string>}
  */
 lux.i18n = {};
 
@@ -133,6 +135,7 @@ lux.translate = function(text) {
 /**
  * @param {Array<number>} size Dimensions for popups
  * @export
+ * @api
  */
 lux.setPopupSize = function(size) {
   lux.popupSize = size;
@@ -141,6 +144,7 @@ lux.setPopupSize = function(size) {
 /**
  * @param {string} url Url to i18n service.
  * @export
+ * @api
  */
 lux.setI18nUrl = function(url) {
   lux.i18nUrl = url;
@@ -155,6 +159,7 @@ lux.setI18nUrl = function(url) {
  * @param {number} wait The delay in ms.
  * @param {boolean=} opt_immediate Should the function be called now?
  * @return {function()} The function.
+ * @api
  */
 lux.debounce = function(func, wait, opt_immediate) {
   var timeout;
@@ -184,6 +189,7 @@ lux.debounce = function(func, wait, opt_immediate) {
  * @extends {ol.Map}
  * @param {luxx.MapOptions} options Map options.
  * @export
+ * @api stable
  */
 lux.Map = function(options) {
 
@@ -193,25 +199,25 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.Extent} features to recenter on extent.
+   * @type {ol.Extent}
    */
   this.featureExtent_ = ol.extent.createEmpty();
 
   /**
    * @private
-   * @type {Object} A JSON layers config object.
+   * @type {Object}
    */
   this.layersConfig = null;
 
   /**
    * @private
-   * @type {Promise} Promise of layers config request.
+   * @type {Promise}
    */
   this.layersPromise = null;
 
   /**
    * @private
-   * @type {Promise} Promise of the translations request.
+   * @type {Promise}
    */
   this.i18nPromise = null;
 
@@ -224,7 +230,7 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.layer.Vector} The layer to use to show search result.
+   * @type {ol.layer.Vector}
    */
   this.searchLayer_ = null;
 
@@ -239,8 +245,7 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.style.Style} The style to be used for the show and search
-   *     layers.
+   * @type {ol.style.Style}
    */
   this.vectorStyle_ = new ol.style.Style({
     fill: fillStyle,
@@ -254,8 +259,7 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.layer.Vector} The layer to use to show features (using
-   *     showFeature method)
+   * @type {ol.layer.Vector}
    */
   this.showLayer_ = new ol.layer.Vector({
     source: new ol.source.Vector()
@@ -265,14 +269,14 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.layer.Tile} The blank layer.
+   * @type {ol.layer.Tile}
    */
   this.blankLayer_ = new ol.layer.Tile();
   this.blankLayer_.set('name', 'blank');
 
   /**
    * @private
-   * @type {ol.Overlay} The query popup.
+   * @type {ol.Overlay}
    */
   this.queryPopup_ = null;
 
@@ -442,6 +446,7 @@ goog.inherits(lux.Map, ol.Map);
  * Show a marker on the map at the given location.
  * @param {luxx.MarkerOptions=} opt_options Config options
  * @export
+ * @api
  */
 lux.Map.prototype.showMarker = function(opt_options) {
   var options = opt_options || {};
@@ -798,8 +803,9 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @param {string|number} layer The layer identifier
  * @param {Array<string|number>} ids Array of features identifiers
  * @param {boolean?} opt_click True if click is needed to show popup
- * @param {Element|string?} opt_target Element to render popup content in
+ * @param {Element|string|undefined} opt_target Element to render popup content in
  * @export
+ * @api
  */
 lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
   // remove any highlighted feature
@@ -826,7 +832,7 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
  * @param {Object} json GeoJSON object
  * @param {boolean} highlight Whether or not to highlight the features.
  * @param {boolean?} opt_click True if click is needed to show popup
- * @param {Element|string?} opt_target Element to render popup content in
+ * @param {Element|string|undefined} opt_target Element to render popup content in
  */
 lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) {
   var format = new ol.format.GeoJSON();
@@ -967,6 +973,7 @@ lux.Map.prototype.addSearch = function(target) {
  * @param {string} url Url to the GPX file
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
+ * @api
  */
 lux.Map.prototype.addGPX = function(url, opt_options) {
   var style = {
@@ -1011,6 +1018,7 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
  * @param {string} url Url to the GPX file
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
+ * @api
  */
 lux.Map.prototype.addKML = function(url, opt_options) {
   this.addVector(url, new ol.format.KML(), opt_options);
@@ -1118,6 +1126,7 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
  * Load a MyMaps layer.
  * @param {luxx.MyMapOptions} options The options.
  * @export
+ * @api
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
@@ -1211,6 +1220,7 @@ lux.WMSLayerFactory_ = function(config, opacity) {
  * @param {function(ol.Coordinate)} cb The callback to call. Called with the
  *     position in 4326 of the geocoded address.
  * @export
+ * @api
  */
 lux.geocode = function(obj, cb) {
   var url = goog.Uri.parse(lux.geocodeUrl);
@@ -1235,6 +1245,7 @@ lux.geocode = function(obj, cb) {
  *     for. Coordinates must be given in EPSG:2169.
  * @param {function(Object)} cb The callback to call. Called with the address.
  * @export
+ * @api
  */
 lux.reverseGeocode = function(coordinate, cb) {
   var url = goog.Uri.parse(lux.reverseGeocodeUrl);
