@@ -257,21 +257,22 @@ luxx.LayerMetadataOptions.prototype.exclusion;
 luxx.MyMapOptions;
 
 /**
+ * The identifier of the map.
  * @type {string}
  */
 luxx.MyMapOptions.prototype.mapId;
 
 /**
- * @type {string|undefined}
  * The id of the element in which to put the profile (without #). Optional. It
  * is recommended to set the display style to none at first. The display will
  * then be set to block adequately.
+ * @type {string|undefined}
  */
 luxx.MyMapOptions.prototype.profileTarget;
 
 /**
- * @type {function(Array<ol.Feature>)|undefined}
  * The function called once the map is loaded. Optional.
+ * @type {function(Array<ol.Feature>)|undefined}
  */
 luxx.MyMapOptions.prototype.onload;
 
