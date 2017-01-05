@@ -113,7 +113,8 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 build-api: \
 	lint-js-api \
 	build-js-api \
-	build-css-api
+	build-css-api \
+	build-js-apidoc
 
 # Add new dependency to build target
 build: build-api
@@ -140,6 +141,20 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 	node_modules/promise-polyfill/promise.min.js \
 	$@ > concatenated.js
 	mv concatenated.js $@
+
+.build/jsdocOl3.js: jsapi/jsdoc/get-ol3-doc-ref.js
+	node $< > $@.tmp
+	mv $@.tmp $@
+
+.PHONY: build-js-apidoc
+build-js-apidoc: node_modules/openlayers/config/jsdoc/api/index.md \
+			jsapi/jsdoc/api/conf.json $(API_SRC_JS_FILES) \
+			$(shell find node_modules/openlayers/config/jsdoc/api/template -type f) \
+			.build/node_modules.timestamp \
+			.build/jsdocOl3.js
+	@mkdir -p $(@D)
+	@rm -rf $(API_OUTPUT_DIR)/apidoc
+	node_modules/.bin/jsdoc jsapi/jsdoc/api/index.md -c jsapi/jsdoc/api/conf.json  -d $(API_OUTPUT_DIR)/apidoc
 
 .PHONY: serve-js-api
 serve-js-api: .build/node_modules.timestamp
