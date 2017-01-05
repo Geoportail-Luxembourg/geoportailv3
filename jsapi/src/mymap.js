@@ -22,11 +22,12 @@ goog.require('ol.style.Text');
  *
  * @constructor
  * @param {luxx.MyMapOptions} options The options.
+ * @api stable
  */
 lux.MyMap = function(options) {
 
   /**
-   * @type {string} The uuid.
+   * @type {string}
    * @private
    */
   this.id_ = options.mapId;
@@ -34,13 +35,13 @@ lux.MyMap = function(options) {
 
 
   /**
-   * @type {ol.interaction.Select|null} The select interaction.
+   * @type {ol.interaction.Select|null}
    * @private
    */
   this.selectInteraction_ = null;
 
   /**
-   * @type {Element|undefined} The container for the profile.
+   * @type {Element|undefined}
    */
   this.profileContainer_;
 
@@ -108,11 +109,12 @@ lux.MyMap = function(options) {
  * Set the map
  * @param {lux.Map} map The map in which to load the mymap features.
  * @export
+ * @api
  */
 lux.MyMap.prototype.setMap = function(map) {
 
   /**
-   * @type {lux.Map} The reference to the map.
+   * @type {lux.Map}
    * @private
    */
   this.map_ = map;
@@ -252,8 +254,6 @@ lux.MyMap.prototype.onFeatureSelected_ = function(event) {
  * @param {ol.Map} curMap The current map.
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @private
- *
- * Taken from 'mymapsservice.js'
  */
 lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
 
@@ -718,6 +718,7 @@ lux.MyMap.prototype.hideProfile_ = function() {
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
  *     not.
  * @export
+ * @api
  */
 lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   if (goog.isString(target)) {

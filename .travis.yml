@@ -7,6 +7,9 @@ python:
 
 sudo: false
 
+before_install:
+  - nvm install node
+
 install:
 - createdb -E UTF8 -T template0 template_postgis -U postgres
 - psql -d template_postgis -c "CREATE EXTENSION postgis;" -U postgres
