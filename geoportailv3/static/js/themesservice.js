@@ -36,10 +36,11 @@ app.ThemesEventType = {
  * @param {string} isThemePrivateUrl URL to check if theme is public.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.BlankLayer} appBlankLayer Blank Layer service.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
 app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
-    appGetWmtsLayer, appBlankLayer) {
+    appGetWmtsLayer, appBlankLayer, appGetDevice) {
 
   goog.base(this);
 
@@ -53,11 +54,7 @@ app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
    * @type {boolean}
    * @private
    */
-  this.isRetina_ = $window.matchMedia(
-              '(-webkit-min-device-pixel-ratio: 2), ' +
-              '(min-device-pixel-ratio: 2), ' +
-              '(min-resolution: 192dpi)'
-      ).matches;
+  this.isRetina_ = appGetDevice.isHiDpi();
 
   /**
    * @type {app.GetWmtsLayer}

@@ -333,7 +333,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.appActivetool_.drawActive = false;
     } else {
       this.appActivetool_.drawActive = false;
-      if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
+      if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
         this['mymapsOpen'] = true;
       }
     }
@@ -364,7 +364,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         goog.asserts.assertInstanceof(evt.element, ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', true);
-        if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
+        if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
           this['mymapsOpen'] = true;
         }
         if (!this.featurePopup_.isDocked) {
@@ -733,7 +733,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
   this.drawnFeatures_.activateModifyIfNeeded(event.feature);
-  if (this['activateMymaps'] && this.appGetDevice_()  !== 'xs') {
+  if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
     this['mymapsOpen'] = true;
   }
 };

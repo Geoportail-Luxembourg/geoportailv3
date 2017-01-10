@@ -333,12 +333,12 @@ app.MainController = function(
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
       urlLocationInfo === 'true';
-    this['layersOpen'] = (this.appGetDevice_() !== 'xs' &&
+    this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
     !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
     !infoOpen &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
-    this['mymapsOpen'] = (this.appGetDevice_() !== 'xs' &&
+    this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
         !infoOpen) ? true : false;
     $scope.$watch(goog.bind(function() {
@@ -356,7 +356,7 @@ app.MainController = function(
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
-      if (this['mymapsOpen'] && this.appGetDevice_() === 'xs' &&
+      if (this['mymapsOpen'] && this.appGetDevice_.testEnv('xs') &&
           this.selectedFeatures_.getLength() > 0) {
         var feature = this.selectedFeatures_.getArray()[0];
         feature.set('__refreshProfile__', true);

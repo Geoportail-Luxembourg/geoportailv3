@@ -233,8 +233,7 @@ app.LocationinfoController = function(
           /** @type {ol.Coordinate} */ (ol.proj.transform([y, x], 'EPSG:2169',
               this['map'].getView().getProjection()));
       this.loadInfoPane_(coordinate);
-      var env = this.appGetDevice_();
-      if (env !== 'xs') {
+      if (!this.appGetDevice_.testEnv('xs')) {
         this['open'] = true;
         this['hiddenContent'] = false;
       } else {

@@ -9,39 +9,65 @@ goog.require('ol.proj');
 
 
 /**
- * @typedef {function():string}
- */
-app.GetDevice;
-
-
-/**
+ * @constructor
  * @param {Document} $document Document.
- * @return {app.GetDevice} The getDevice function.
+ * @param {angular.$window} $window Window.
  * @private
  * @ngInject
  */
-app.getDevice_ = function($document) {
-  return findBootstrapEnvironment;
+app.GetDevice = function($document, $window) {
+  /**
+   * @type {Document}
+   * @private
+   */
+  this.$document_ = $document;
 
   /**
-   * @return {string} The device env.
+   * @type {boolean}
+   * @private
    */
-  function findBootstrapEnvironment() {
-    var envs = ['xs', 'sm', 'md', 'lg'];
-    var el = $('<div>');
-    angular.element($document[0].body).append(el);
-
-    for (var i = envs.length - 1; i >= 0; i--) {
-      var env = envs[i];
-      el.addClass('hidden-' + env);
-      if (el.is(':hidden')) {
-        el.remove();
-        return env;
-      }
-    }
-    return envs[0];
-  }
+  this.isHiDpi_ = $window.matchMedia(
+              '(-webkit-min-device-pixel-ratio: 2), ' +
+              '(min-device-pixel-ratio: 2), ' +
+              '(min-resolution: 192dpi)'
+      ).matches;
 };
 
 
-app.module.service('appGetDevice', app.getDevice_);
+/**
+  * @return {string} The device env.
+ */
+app.GetDevice.prototype.findBootstrapEnvironment = function() {
+  var envs = ['xs', 'sm', 'md', 'lg'];
+  var el = $('<div>');
+  angular.element(this.$document_[0].body).append(el);
+
+  for (var i = envs.length - 1; i >= 0; i--) {
+    var env = envs[i];
+    el.addClass('hidden-' + env);
+    if (el.is(':hidden')) {
+      el.remove();
+      return env;
+    }
+  }
+  return envs[0];
+};
+
+
+/**
+  * @param {string} env to check.
+  * @return {boolean} True if XS env screen.
+ */
+app.GetDevice.prototype.testEnv = function(env) {
+  return this.findBootstrapEnvironment() === env;
+};
+
+
+/**
+  * @return {boolean} True if highdpi screen.
+ */
+app.GetDevice.prototype.isHiDpi = function() {
+  return this.isHiDpi_;
+};
+
+app.module.service('appGetDevice', app.GetDevice);
