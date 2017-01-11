@@ -57,13 +57,34 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {app.Themes} appThemes The themes service.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * @ngInject
  */
 app.LocationinfoController = function(
         $scope, $timeout, ngeoFeatureOverlayMgr,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
-        appGeocoding, appGetDevice) {
+        appGeocoding, appGetDevice, ngeoLocation, appThemes,
+        appGetLayerForCatalogNode) {
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {app.Themes}
+   * @private
+   */
+  this.appThemes_ = appThemes;
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @private
@@ -240,6 +261,38 @@ app.LocationinfoController = function(
         this['hiddenContent'] = true;
       }
     }
+  }
+  if (goog.isDef(this.ngeoLocation_.getParam('address'))) {
+    this.appThemes_.getFlatCatalog().then(function(flatCatalogue) {
+      var node = goog.array.find(flatCatalogue,
+        function(catalogueLayer) {
+          return catalogueLayer['name'] === 'addresses';
+        }, this);
+      if (goog.isDefAndNotNull(node)) {
+        var layer = this.getLayerFunc_(node);
+        if (this['map'].getLayers().getArray().indexOf(layer) <= 0) {
+          this['map'].addLayer(layer);
+        }
+      }
+    }.bind(this));
+    this.geocode_.geocode(this.ngeoLocation_.getParam('address')).then(function(data) {
+      var results = data['results'];
+      if (goog.isDef(results) && results.length > 0) {
+        var coordinates = /** @type {ol.Coordinate} */
+            (ol.proj.transform(
+                results[0]['geom']['coordinates'], 'EPSG:2169',
+                this['map'].getView().getProjection()));
+        this['map'].getView().setZoom(17);
+        this['map'].getView().setCenter(coordinates);
+        this.loadInfoPane_(coordinates);
+        if (!this.appGetDevice_.testEnv('xs')) {
+          this['open'] = true;
+          this['hiddenContent'] = false;
+        } else {
+          this['hiddenContent'] = true;
+        }
+      }
+    }.bind(this));
   }
 
   ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
