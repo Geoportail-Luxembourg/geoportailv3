@@ -178,9 +178,8 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 
   /**
    * @type {angularGettext.Catalog}
-   * @private
    */
-  this.gettextCatalog_ = gettextCatalog;
+  this.gettextCatalog = gettextCatalog;
 
   /**
    * @type {ol.Extent}
@@ -288,7 +287,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
     this.createLocalAllLayerData_(appThemes);
     this.createLocalBackgroundLayerData_(
-        appThemes, backgroundLayerEngine, this.gettextCatalog_);
+        appThemes, backgroundLayerEngine, this.gettextCatalog);
   }, this));
 
   ol.events.listen(appThemes, app.ThemesEventType.LOAD,
@@ -298,7 +297,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
       function(evt) {
         this.createLocalAllLayerData_(appThemes);
         this.createLocalBackgroundLayerData_(
-            appThemes, backgroundLayerEngine, this.gettextCatalog_);
+            appThemes, backgroundLayerEngine, this.gettextCatalog);
       }, this);
 
   /** @type {TypeaheadOptions} */
@@ -361,7 +360,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     templates: /** @type {TypeaheadTemplates} */({
       header: goog.bind(function() {
         return '<div class="header">' +
-            this.gettextCatalog_.getString('Background Layers') +
+            this.gettextCatalog.getString('Background Layers') +
             '</div>';
       }, this),
       suggestion: goog.bind(
@@ -373,7 +372,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
             var scope = $scope.$new(true);
             scope['object'] = suggestion;
             var html = '<p>' + suggestion['translatedName'];
-            html += ' (' + this.gettextCatalog_.getString('Background') + ') ';
+            html += ' (' + this.gettextCatalog.getString('Background') + ') ';
             html += '</p>';
             return $compile(html)(scope);
           }, this)
@@ -397,7 +396,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     templates: /** @type {TypeaheadTemplates} */({
       header: goog.bind(function() {
         return '<div class="header">' +
-            this.gettextCatalog_.getString('Addresses') +
+            this.gettextCatalog.getString('Addresses') +
             '</div>';
       }, this),
       suggestion: goog.bind(function(suggestion) {
@@ -409,7 +408,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         };
 
         var html = '<p>' + feature.get('label') +
-            ' <span>(' + this.gettextCatalog_.getString(
+            ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
             ) + ')</span></p>';
         return $compile(html)(scope);
@@ -433,21 +432,22 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     templates: /** @type {TypeaheadTemplates} */({
       header: goog.bind(function() {
         return '<div class="header">' +
-            this.gettextCatalog_.getString('Layers') +
+            this.gettextCatalog.getString('Layers') +
             '</div>';
       }, this),
       suggestion: goog.bind(function(suggestion) {
         var scope = $scope.$new(true);
-        var translated_name = this.gettextCatalog_.getString(
+        var translated_name = this.gettextCatalog.getString(
                 /** @type {string} */ (suggestion.name)
         );
         var themeLink = '';
         var layerTheme = suggestion['themes'][0];
         if (suggestion['showThemeLink']) {
           themeLink = '<br><a href="#"' +
-            'ng-click="switchTheme(\'' + layerTheme + '\')">' +
-            this.gettextCatalog_.getString(' (open in theme ') +
-            this.gettextCatalog_.getString(layerTheme) +
+            'ng-click="switchTheme(\'' + layerTheme + '\')"> (' +
+            this.gettextCatalog.getString('open in theme') +
+            ' ' +
+            this.gettextCatalog.getString(layerTheme) +
             ')</a>';
         }
         var html = '<p>' +
@@ -643,7 +643,7 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhoundEngine_ =
         replace: goog.bind(function(url, query) {
           return url +
               '?query=' + encodeURIComponent(query) +
-              '&limit=5' + '&language=' + this.gettextCatalog_.currentLanguage;
+              '&limit=5' + '&language=' + this.gettextCatalog.currentLanguage;
         }, this),
         transform: goog.bind(function(response) {
           goog.array.forEach(response, goog.bind(function(result) {
