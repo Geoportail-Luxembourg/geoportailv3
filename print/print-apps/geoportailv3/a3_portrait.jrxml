@@ -11,6 +11,9 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
+	<parameter name="disclaimer" class="java.lang.String"/>
+	<parameter name="scaleTitle" class="java.lang.String"/>
+	<parameter name="appTitle" class="java.lang.String"/>
 	<parameter name="name" class="java.lang.String"/>
 	<parameter name="scale" class="java.lang.String">
 		<defaultValueExpression><![CDATA[5000]]></defaultValueExpression>
@@ -63,20 +66,20 @@
 				<reportElement x="0" y="0" width="230" height="51" uuid="70bbdaea-7cb7-4c97-b3ad-fd38c75a98ad"/>
 				<imageExpression><![CDATA["LOGO_ACT.png"]]></imageExpression>
 			</image>
-			<staticText>
+			<textField>
 				<reportElement x="390" y="20" width="325" height="30" uuid="f8a42822-0e3d-4802-ad70-024f9cc6677c"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
-				<text><![CDATA[Le géoportail national du Grand-Duché du Luxembourg]]></text>
-			</staticText>
-			<staticText>
+				<textFieldExpression><![CDATA[$P{appTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
 				<reportElement x="412" y="1040" width="280" height="30" uuid="eeaea6dd-01ac-4bbe-9216-e47772a7bcd9"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<text><![CDATA[Echelle approximative 1:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{scaleTitle}]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="537" y="1040" width="71" height="40" uuid="7a0a9863-e339-4697-b24b-d6178dbb85c5"/>
 				<textElement>
@@ -93,15 +96,13 @@
 				</reportElement>
 				<imageExpression><![CDATA[$P{qrimage}]]></imageExpression>
 			</image>
-			<staticText>
+			<textField>
 				<reportElement x="0" y="1041" width="401" height="59" uuid="90411500-de3c-418d-9c8d-cac869972f42"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="7"/>
 				</textElement>
-				<text><![CDATA[www.geoportail.lu est un portail d'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises.
-Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique.
-Droits d'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{disclaimer}]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="590" y="1039" width="125" height="30" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
 				<textElement textAlignment="Right">
