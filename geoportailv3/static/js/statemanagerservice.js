@@ -69,12 +69,21 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
   if (paramKeys.length === 0 ||
       (paramKeys.length === 1 && (paramKeys.indexOf('debug') >= 0 ||
       paramKeys.indexOf('fid') >= 0 || paramKeys.indexOf('lang') >= 0)) ||
+      (paramKeys.length === 1 && (paramKeys.indexOf('debug') >= 0 ||
+      paramKeys.indexOf('address') >= 0 || paramKeys.indexOf('lang') >= 0)) ||
       (paramKeys.length === 2 &&
       ((paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('fid') >= 0) ||
       (paramKeys.indexOf('lang') >= 0 && paramKeys.indexOf('fid') >= 0) ||
       (paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('lang') >= 0))) ||
+      (paramKeys.length === 2 &&
+      ((paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('address') >= 0) ||
+      (paramKeys.indexOf('lang') >= 0 && paramKeys.indexOf('address') >= 0) ||
+      (paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('lang') >= 0))) ||
       (paramKeys.length === 3 &&
       paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('fid') >= 0 &&
+      paramKeys.indexOf('lang') >= 0) ||
+      (paramKeys.length === 3 &&
+      paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('address') >= 0 &&
       paramKeys.indexOf('lang') >= 0
       )) {
     if (this.localStorage_.isAvailable()) {
