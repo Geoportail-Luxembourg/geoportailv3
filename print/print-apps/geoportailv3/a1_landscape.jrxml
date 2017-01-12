@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.0.3.final using JasperReports Library version 6.0.3  -->
-<!-- 2016-03-15T10:27:28 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-23T10:34:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="2380" pageHeight="1684" orientation="Landscape" columnWidth="2254" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="34" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
@@ -12,6 +12,7 @@
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
 	<parameter name="disclaimer" class="java.lang.String"/>
+	<parameter name="dateText" class="java.lang.String"/>
 	<parameter name="scaleTitle" class="java.lang.String"/>
 	<parameter name="appTitle" class="java.lang.String"/>
 	<parameter name="name" class="java.lang.String"/>
@@ -31,7 +32,7 @@
 	<field name="displayName" class="java.lang.String"/>
 	<field name="reportTemplate" class="java.lang.String"/>
 	<title>
-		<band height="1593" splitType="Stretch">
+		<band height="1594" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="mm"/>
 			<property name="com.jaspersoft.studio.unit.height" value="mm"/>
 			<staticText>
@@ -117,7 +118,16 @@
 				</textElement>
 				<textFieldExpression><![CDATA[CONCATENATE("<span style=\"background-color:#ddd7d4\">",$P{dataOwner},"</span>")]]></textFieldExpression>
 			</textField>
-
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="-10" y="1339" width="10" height="200" uuid="e58d3bb8-3bed-48c8-b6f5-a374de400a0e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Serif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 </jasperReport>

@@ -17,10 +17,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -51,10 +57,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -85,10 +97,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -119,10 +137,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -153,10 +177,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -187,10 +217,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -221,10 +257,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -255,10 +297,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -289,10 +337,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
@@ -323,10 +377,16 @@ templates:
       scale: !string {}
       url: !string {}
       qrimage: !string {}
-      dataOwner: !string {}
-      disclaimer: !string {}
-      scaleTitle: !string {}
-      appTitle: !string {}
+      dataOwner: !string
+        default: ""
+      disclaimer: !string
+        default: ""
+      dateText: !string
+        default: ""
+      scaleTitle: !string
+        default: ""
+      appTitle: !string
+        default: ""
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
