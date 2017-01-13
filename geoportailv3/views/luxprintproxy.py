@@ -47,6 +47,7 @@
 
 import json
 import logging
+import re
 from cStringIO import StringIO
 from datetime import datetime
 
@@ -198,6 +199,11 @@ class LuxPrintProxy(PrintProxy):
 
             attributes = json.loads(job.spec)["attributes"]
             is_pdf = json.loads(job.spec)["format"] == "pdf"
+            print_title = attributes.get("name")
+            if print_title is None or len(print_title) == 0:
+                print_title = "map_geoportal_lu"
+            print_title = re.sub(r" ", "_", print_title)
+            print_title = re.sub(r"[^a-zA-Z0-9\-\_]", "", print_title)
 
             if is_pdf and "legend" in attributes and\
                     attributes["legend"] is not None:
@@ -231,10 +237,10 @@ class LuxPrintProxy(PrintProxy):
             DBSession.delete(job)
             if is_pdf:
                 resp["content-disposition"] =\
-                    "attachment; filename=map_geoportal_lu.pdf"
+                    "attachment; filename=%s.pdf" % (str(print_title))
             else:
                 resp["content-disposition"] =\
-                    "attachment; filename=map_geoportal_lu.png"
+                    "attachment; filename=%s.png" % (str(print_title))
 
             return self._build_response(
                 resp, content, NO_CACHE, "print"
