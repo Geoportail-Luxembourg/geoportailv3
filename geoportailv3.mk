@@ -43,7 +43,7 @@ SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py
 TOOLTIPS_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-tooltips.mo, $(LANGUAGES)))
 
 # Add JS API target to "help" target
-SECONDARY_HELP = ""
+SECONDARY_HELP = -e ""
 SECONDARY_HELP += "\n"
 SECONDARY_HELP += "JS API targets:\n"
 SECONDARY_HELP += "\n"
