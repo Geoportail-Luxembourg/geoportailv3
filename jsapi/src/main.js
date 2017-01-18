@@ -702,6 +702,8 @@ lux.intersects_ = function(one, two) {
 /**
  * @param {string|number} layer The layer id
  * @param {number=} opt_opacity The layer opacity.
+ * @export
+ * @api
  */
 lux.Map.prototype.addLayerById = function(layer, opt_opacity) {
   this.layersPromise.then(function() {
