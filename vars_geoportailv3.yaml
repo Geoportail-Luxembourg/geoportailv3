@@ -140,3 +140,7 @@ update_paths:
 - checker
 - check_collector.hosts
 - admin_interface
+
+overview_map:
+    show: true
+    base_layer: 'topogr_global'
