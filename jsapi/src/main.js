@@ -443,6 +443,19 @@ lux.Map = function(options) {
 goog.inherits(lux.Map, ol.Map);
 
 /**
+ * Adds the given layer to the top of this map. If you want to add a layer
+ * elsewhere in the stack, use `getLayers()` and the methods available on
+ * {@link ol.Collection}.
+ * @param {ol.layer.Base} layer Layer.
+ * @api
+ */
+lux.Map.prototype.addLayer = function(layer) {
+  this.layersPromise.then(function() {
+    ol.Map.prototype.addLayer.call(this, layer);
+  }.bind(this));
+};
+
+/**
  * Show a marker on the map at the given location.
  * @param {luxx.MarkerOptions=} opt_options Config options
  * @export
