@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.0.3.final using JasperReports Library version 6.0.3  -->
-<!-- 2016-03-15T10:40:54 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-01-23T10:34:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="595" pageHeight="842" columnWidth="469" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="34" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
@@ -12,6 +12,7 @@
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
 	<parameter name="disclaimer" class="java.lang.String"/>
+	<parameter name="dateText" class="java.lang.String"/>
 	<parameter name="scaleTitle" class="java.lang.String"/>
 	<parameter name="appTitle" class="java.lang.String"/>
 	<parameter name="name" class="java.lang.String"/>
@@ -24,14 +25,14 @@
 	<parameter name="qrimage" class="java.lang.String">
 		<defaultValueExpression><![CDATA["http://dev.geoportail.lu/shorten/qr?url=http%3A%2F%2Fdevv3.geoportail.lu%2Fmain"]]></defaultValueExpression>
 	</parameter>
-        <parameter name="dataOwner" class="java.lang.String">
+	<parameter name="dataOwner" class="java.lang.String">
 		<defaultValueExpression><![CDATA["TEST"]]></defaultValueExpression>
-        </parameter>
+	</parameter>
 	<field name="table" class="net.sf.jasperreports.engine.data.JRMapCollectionDataSource"/>
 	<field name="displayName" class="java.lang.String"/>
 	<field name="reportTemplate" class="java.lang.String"/>
 	<title>
-		<band height="751" splitType="Stretch">
+		<band height="752" splitType="Stretch">
 			<subreport>
 				<reportElement x="0" y="55" width="470" height="650" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -95,7 +96,7 @@
 				<textFieldExpression><![CDATA[$P{disclaimer}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="470" y="601" width="10" height="104" backcolor="#FFFFFF" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
+				<reportElement positionType="Float" mode="Transparent" x="470" y="601" width="10" height="104" backcolor="#FFFFFF" uuid="39ebc32b-521c-4db2-9e67-82ba86a9850c"/>
 				<textElement textAlignment="Left" rotation="Left">
 					<font fontName="DejaVu Sans" size="8"/>
 				</textElement>
@@ -121,6 +122,16 @@
 					<font fontName="DejaVu Sans" size="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[CONCATENATE("<span style=\"background-color:#ddd7d4\">",$P{dataOwner},"</span>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="-10" y="507" width="10" height="200" uuid="596db574-7a37-40d5-b449-e038170154e6">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Serif" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
