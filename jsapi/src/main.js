@@ -447,6 +447,7 @@ goog.inherits(lux.Map, ol.Map);
  * elsewhere in the stack, use `getLayers()` and the methods available on
  * {@link ol.Collection}.
  * @param {ol.layer.Base} layer Layer.
+ * @export
  * @api
  */
 lux.Map.prototype.addLayer = function(layer) {
