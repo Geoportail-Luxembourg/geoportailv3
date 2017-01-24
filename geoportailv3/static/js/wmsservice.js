@@ -181,7 +181,12 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
  */
 app.WmsHelper.prototype.getLayers = function(wms) {
   return this.getCapabilities(wms).then(function(capabilities) {
-    return capabilities['Capability']['Layer']['Layer'];
+    if ('Layer' in capabilities['Capability']['Layer']) {
+      return capabilities['Capability']['Layer']['Layer'];
+    }
+    if ('Layer' in capabilities['Capability']) {
+      return [capabilities['Capability']['Layer']];
+    }
   }.bind(this));
 };
 
@@ -252,16 +257,38 @@ app.WmsHelper.prototype.getMetadata = function(id) {
       }
       var pocs = [];
       if ('ContactInformation' in capabilities['Service']) {
+        var phone = capabilities['Service']['ContactInformation']['ContactVoiceTelephone'];
+        var hasContactAddress = ('ContactAddress' in capabilities['Service']['ContactInformation']);
+        var email = capabilities['Service']['ContactInformation']['ContactElectronicMailAddress'];
+        var fax = capabilities['Service']['ContactInformation']['ContactFacsimileTelephone'];
+
+        var country;
+        var postalcode;
+        var city;
+        var deliverypoint;
+        if (hasContactAddress) {
+          country = capabilities['Service']['ContactInformation']['ContactAddress']['Country'];
+          postalcode = capabilities['Service']['ContactInformation']['ContactAddress']['PostCode'];
+          city = capabilities['Service']['ContactInformation']['ContactAddress']['City'];
+          deliverypoint = capabilities['Service']['ContactInformation']['ContactAddress']['Address'];
+        }
+        var hasContactPersonPrimary = ('ContactPersonPrimary' in capabilities['Service']['ContactInformation']);
+        var name;
+        var organisation;
+        if (hasContactPersonPrimary) {
+          name = capabilities['Service']['ContactInformation']['ContactPersonPrimary']['ContactPerson'];
+          organisation = capabilities['Service']['ContactInformation']['ContactPersonPrimary']['ContactOrganization'];
+        }
         pocs.push({
-          'phone': capabilities['Service']['ContactInformation']['ContactVoiceTelephone'],
-          'country': capabilities['Service']['ContactInformation']['ContactAddress']['Country'],
-          'postalcode': capabilities['Service']['ContactInformation']['ContactAddress']['PostCode'],
-          'email': capabilities['Service']['ContactInformation']['ContactElectronicMailAddress'],
-          'fax': capabilities['Service']['ContactInformation']['ContactFacsimileTelephone'],
-          'name': capabilities['Service']['ContactInformation']['ContactPersonPrimary']['ContactPerson'],
-          'organisation': capabilities['Service']['ContactInformation']['ContactPersonPrimary']['ContactOrganization'],
-          'city': capabilities['Service']['ContactInformation']['ContactAddress']['City'],
-          'deliverypoint': capabilities['Service']['ContactInformation']['ContactAddress']['Address']
+          'phone': phone,
+          'country': country,
+          'postalcode': postalcode,
+          'email': email,
+          'fax': fax,
+          'name': name,
+          'organisation': organisation,
+          'city': city,
+          'deliverypoint': deliverypoint
         });
       }
       var accessConstraints = '';
