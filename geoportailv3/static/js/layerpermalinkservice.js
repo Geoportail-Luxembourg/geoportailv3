@@ -397,6 +397,7 @@ app.LayerPermalinkManager.prototype.init =
              */
             function(bgLayers) {
               var stateBgLayerLabel, stateBgLayerOpacity;
+              var mapId = this.ngeoLocation_.getParam('map_id');
               if (!this.initialized_) {
                 stateBgLayerLabel =
                     this.stateManager_.getInitialValue('bgLayer');
@@ -415,7 +416,6 @@ app.LayerPermalinkManager.prototype.init =
                     stateBgLayerLabel = 'orthogr_2013_global';
                   }
                 } else {
-                  var mapId = this.ngeoLocation_.getParam('map_id');
                   if (!goog.isDef(mapId)) {
                     stateBgLayerLabel = 'basemap_2015_global';
                   } else {
@@ -432,12 +432,14 @@ app.LayerPermalinkManager.prototype.init =
                 stateBgLayerOpacity =
                     this.ngeoLocation_.getParam('bgOpacity');
               }
-              var layer = /** @type {ol.layer.Base} */
-                  (goog.array.find(bgLayers, function(layer) {
-                    return layer.get('label') === stateBgLayerLabel;
-                  }));
-              this.backgroundLayerMgr_.set(this.map_, layer);
-
+              var hasBgLayerInUrl = goog.isDef(this.ngeoLocation_.getParam('bgLayer'));
+              if (!goog.isDef(mapId) || hasBgLayerInUrl) {
+                var layer = /** @type {ol.layer.Base} */
+                    (goog.array.find(bgLayers, function(layer) {
+                      return layer.get('label') === stateBgLayerLabel;
+                    }));
+                this.backgroundLayerMgr_.set(this.map_, layer);
+              }
               this.appThemes_.getFlatCatalog().then(
                   goog.bind(function(flatCatalogue) {
                     /**

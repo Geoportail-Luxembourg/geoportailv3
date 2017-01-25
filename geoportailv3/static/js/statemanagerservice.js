@@ -108,8 +108,9 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
     this.version_ = this.initialState_.hasOwnProperty('version') ?
         goog.math.clamp(+this.initialState_['version'], 2, 3) : 2;
   }
-
-  if (!((this.initialState_.hasOwnProperty('bgLayer') &&
+  var mapId = this.ngeoLocation_.getParam('map_id');
+  if (!goog.isDef(mapId) &&
+      !((this.initialState_.hasOwnProperty('bgLayer') &&
       this.initialState_['bgLayer'].length > 0 &&
       this.initialState_['bgLayer'] != 'blank') ||
       (this.initialState_.hasOwnProperty('layers') &&
