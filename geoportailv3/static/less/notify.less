@@ -3,7 +3,7 @@
 @alert-warning-bg: #fcf850;
 .notify {
   position: fixed;
-  top: 10px;
+  top: 40px;
   left: 50%;
   right: 50%;
   width: @notify-width-sm;
@@ -13,14 +13,24 @@
 
 @media (min-width: @screen-md-min) {
   .notify {
-    width: @notify-width-md;
+	width: @notify-width-md;
+	top: 40px;
     margin-left: ~"calc(-@{notify-width-md} / 2)";
   }
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: @screen-xs-max) and (orientation: portrait) {
   .notify {
-    max-width: 100%;
+	top: 40px;
+	max-width: 80%;
+    width: ~"calc(@{notify-width-sm} - 10px)";
+  }
+}
+@media (max-width: @screen-xs-max) and (orientation: landscape) {
+  .notify {
+	left: 35%;
+	top: 40px;
+    max-width: 80%;
     width: ~"calc(100% - 10px)";
   }
 }

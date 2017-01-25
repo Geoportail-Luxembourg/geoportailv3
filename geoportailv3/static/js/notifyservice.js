@@ -41,10 +41,14 @@ app.notifyFactory = function() {
       ' fade"></div>');
     container.append(el);
     el.html(msg).addClass('in');
+    var notifyDuration = 7000;
+    if (notificationType === app.NotifyNotificationType.WARNING) {
+      notifyDuration = 4000;
+    }
 
     window.setTimeout(function() {
       el.alert('close');
-    }, 7000);
+    }, notifyDuration);
   }
 };
 
