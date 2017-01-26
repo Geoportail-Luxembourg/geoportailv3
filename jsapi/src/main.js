@@ -28,6 +28,27 @@ goog.require('ol.source.WMTSRequestEncoding');
 proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
 
 /**
+ * @typedef {{push: function(Array<string>)}}
+ */
+lux.Piwik;
+
+/**
+ * @type {lux.Piwik}
+ * @export
+ */
+var _paq = [];
+
+_paq.push(['setSiteId', 22]);
+
+(function() {
+  var u = '//statistics.geoportail.lu/';
+  _paq.push(['setTrackerUrl', u + 'piwik.php']);
+  var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+  g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g,s);
+})();
+
+
+/**
  * @type {string}
  */
 lux.layersUrl = 'jsapilayers';
@@ -196,6 +217,8 @@ lux.Map = function(options) {
   var layers    = [];
   var layerOpacities = [];
   var defaultBg = 'basemap_2015_global';
+
+  _paq.push(['trackPageView']);
 
   /**
    * @private
