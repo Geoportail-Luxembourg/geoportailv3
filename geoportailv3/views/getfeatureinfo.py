@@ -316,6 +316,7 @@ class Getfeatureinfo(object):
 
     def to_featureinfo(self, features, layer, template, ordered,
                        has_profile=False, remote_template=False):
+
         return {"remote_template": remote_template,
                 "template": template,
                 "layer": layer,
@@ -401,6 +402,20 @@ class Getfeatureinfo(object):
                 else:
                     area_string = "%s ha" % round(area / 10000, 2)
                 feature['attributes']['Superficie'] = area_string
+            except:
+                pass
+        return features
+
+    def add_length_field(self, features):
+        for feature in features:
+            s = asShape(feature['geometry'])
+            try:
+                length = float(s.length)
+                if length < 1000:
+                    length_string = "%s m" % round(length, 2)
+                else:
+                    length_string = "%s km" % round(length / 1000, 2)
+                feature['attributes']['formatted_length'] = length_string
             except:
                 pass
         return features
