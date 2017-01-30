@@ -178,6 +178,7 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
+                                luxgetfeaturedefinition.has_profile,
                                 luxgetfeaturedefinition.remote_template))
                 else:
                     features = []
@@ -209,6 +210,7 @@ class Getfeatureinfo(object):
                                     luxgetfeaturedefinition.layer,
                                     luxgetfeaturedefinition.template,
                                     is_ordered,
+                                    luxgetfeaturedefinition.has_profile,
                                     luxgetfeaturedefinition.remote_template))
                         else:
                             results.append(
@@ -217,6 +219,7 @@ class Getfeatureinfo(object):
                                     luxgetfeaturedefinition.layer,
                                     luxgetfeaturedefinition.template,
                                     is_ordered,
+                                    luxgetfeaturedefinition.has_profile,
                                     luxgetfeaturedefinition.remote_template))
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.rest_url is not None and
@@ -255,6 +258,7 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
+                                luxgetfeaturedefinition.has_profile,
                                 luxgetfeaturedefinition.remote_template))
                     else:
                         results.append(
@@ -263,6 +267,7 @@ class Getfeatureinfo(object):
                                 luxgetfeaturedefinition.layer,
                                 luxgetfeaturedefinition.template,
                                 is_ordered,
+                                luxgetfeaturedefinition.has_profile,
                                 luxgetfeaturedefinition.remote_template))
         return results
 
@@ -310,12 +315,13 @@ class Getfeatureinfo(object):
                 'attributes': attributes}
 
     def to_featureinfo(self, features, layer, template, ordered,
-                       remote_template=False):
+                       has_profile=False, remote_template=False):
         return {"remote_template": remote_template,
                 "template": template,
                 "layer": layer,
                 "ordered": ordered,
-                "features": features}
+                "features": features,
+                "has_profile": has_profile}
 
     def get_lux_feature_definition(self, layers):
         luxgetfeaturedefinitions = []
