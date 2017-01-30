@@ -728,7 +728,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
     }, this);
   }
   goog.array.forEach(this.responses_, function(item) {
-    if (item['template'] === 'mymaps.html') {
+    if (item['has_profile']) {
       goog.array.forEach(item.features, function(feature) {
         var validGeom = this.filterValidProfileFeatures_(feature);
         if (validGeom.geom.getLineStrings().length > 0) {
@@ -737,7 +737,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
           this.getProfile_(validGeom.geom, validGeom.id)
         .then(function(profile) {
           goog.array.forEach(this.responses_, function(item) {
-            if (item['template'] === 'mymaps.html') {
+            if (item['has_profile']) {
               goog.array.forEach(item['features'],
                         function(feature) {
                           if (feature['fid'] === profile[0]['id']) {
@@ -986,8 +986,10 @@ app.QueryController.prototype.translateKeys =
       var results = [];
 
       angular.forEach(attributes, function(value, key) {
-        results.push({'key': this.translate_.getString('f_' + key),
-      'value': value});
+        if (key !== 'showProfile') {
+          results.push({'key': this.translate_.getString('f_' + key),
+        'value': value});
+        }
       }, this);
 
 
@@ -1035,7 +1037,9 @@ app.QueryController.prototype.exportGpx = function(feature, name, isTrack) {
 
   var activeFeature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(feature, encOpt_));
-
+  if (name === undefined) {
+    name = 'kml';
+  }
   this.appExport_.exportGpx([activeFeature], name, isTrack);
 };
 
@@ -1059,6 +1063,9 @@ app.QueryController.prototype.isLink = function(value) {
  * @export
  */
 app.QueryController.prototype.exportKml = function(feature, name) {
+  if (name === undefined) {
+    name = 'kml';
+  }
   this.appExport_.exportKml(feature, name);
 };
 
