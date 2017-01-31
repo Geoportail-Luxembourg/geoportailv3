@@ -14,7 +14,9 @@
         ]
     },
     "plugins": [
-        "node_modules/jsdoc/plugins/markdown"
+        "node_modules/jsdoc/plugins/markdown",
+		"jsapi/jsdoc/api/plugins/api",
+		"jsapi/jsdoc/api/plugins/typedefs"
     ],
     "markdown": {
         "parser": "gfm"
