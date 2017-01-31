@@ -69,16 +69,23 @@ lux.profileUrl = 'profile.json';
 lux.baseUrl = null;
 
 /**
- * @param {string|null} url Base url to services
+ * Sets the basic url of the rest services such as :
+ * <lu><li>Search service</li>
+ * <li>Mymaps service</li>
+ * <li>Mymaps service</li>
+ * <li>Elevation service</li>
+ * <li>Geocoding service</li>
+ * <li>Reverse geocoding service</li>
+ * </lu>
+ * @param {string|null} url Base url to services. Default is //apiv3.geoportail.lu/api/wsgi/
  * @export
- * @api
  */
 lux.setBaseUrl = function(url) {
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
 
-    url = 'http://apiv3.geoportail.lu/api/wsgi/';
+    url = '//apiv3.geoportail.lu/api/wsgi/';
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
@@ -210,7 +217,19 @@ lux.debounce = function(func, wait, opt_immediate) {
 /**
  * @classdesc
  * The map is the core component of the Geoportail V3 API.
- *
+ * This constructor instantiates and render a [lux.Map](lux.Map.html) object.
+ * @example
+ * // To render a map, the API needs to know the element where to display the map (target),
+ * // the predefined background layer (bgLayer) to display,
+ * // the predefined layers (layers),
+ * // the starting zoom level (zoom),
+ * // the central position of the map (position)
+ * var map = new lux.Map({
+ * target: 'map1',
+ * bgLayer: 'basemap_2015_global',
+ * zoom: 18,
+ * position: [75977, 75099]
+ * });
  * @constructor
  * @extends {ol.Map}
  * @param {luxx.MapOptions} options Map options.
@@ -419,8 +438,8 @@ lux.Map = function(options) {
   options.controls = controls;
 
   options.logo = {
-    href : 'http://map.geoportail.lu',
-    src  : 'https://www.geoportail.lu/favicon.ico'
+    href : '//map.geoportail.lu',
+    src  : '//www.geoportail.lu/favicon.ico'
   };
 
   if (options.search && options.search.target) {
@@ -505,7 +524,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      'http://openlayers.org/en/master/examples/data/icon.png';
+      '//openlayers.org/en/master/examples/data/icon.png';
   element.appendChild(image);
 
   var position;
@@ -577,6 +596,8 @@ lux.Map.prototype.showMarker = function(opt_options) {
  * @param {function()=} closeCallback Optional callback function. If set a close
  *    button is added.
  * @return {Element} The created element.
+ * @export
+ * @api
  */
 lux.buildPopupLayout = function(html, closeCallback) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
@@ -625,9 +646,11 @@ lux.buildPopupLayout = function(html, closeCallback) {
 };
 
 /**
- * Get elevation for coordinates
+ * Get the elevation for coordinates.
  * @param {ol.Coordinate} coordinate The coordinate of the point.
  * @return {Promise} Promise of the elevation request.
+ * @export
+ * @api
  */
 lux.getElevation = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
@@ -686,6 +709,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
 
 /**
  * @param {ol.Collection.EventType} event The event.
+ * @private
  */
 lux.Map.prototype.checkForExclusion_ = function(event) {
   var layer1 = event.element;
@@ -742,8 +766,11 @@ lux.intersects_ = function(one, two) {
 };
 
 /**
- * @param {string|number} layer The layer id
- * @param {number=} opt_opacity The layer opacity.
+ * Adds the given layer to the top of this map. If you want to add a layer
+ * elsewhere in the stack, use `getLayers()` and the methods available on
+ * {@link ol.Collection}.
+ * @param {string|number} layer The layer id.
+ * @param {number=} opt_opacity The layer opacity. Default is 1.
  * @export
  * @api
  */
@@ -755,8 +782,8 @@ lux.Map.prototype.addLayerById = function(layer, opt_opacity) {
 };
 
 /**
- * @param {string} name The layer name
- * @param {Object<string,luxx.LayersOptions>} layers The layers config
+ * @param {string} name The layer name.
+ * @param {Object<string,luxx.LayersOptions>} layers The layers config.
  * @return {luxx.LayersOptions|undefined} The layer config.
  * @private
  */
@@ -771,8 +798,12 @@ lux.findLayerByName_ = function(name, layers) {
 };
 
 /**
+ * It adds a simple background selector control into a specific html element.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example3}
  * @param {Element|string} target Dom element or id of the element to render
  * bgSelector in.
+ * @export
+ * @api
  */
 lux.Map.prototype.addBgSelector = function(target) {
   this.layersPromise.then(function() {
@@ -877,6 +908,7 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
  * @param {boolean} highlight Whether or not to highlight the features.
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
+ * @private
  */
 lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) {
   var format = new ol.format.GeoJSON();
@@ -920,8 +952,12 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
 };
 
 /**
+ * It adds the search control into an html element.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example6}
  * @param {Element|string} target Dom element or id of the element to render
  * search widget in.
+ * @export
+ * @api
  */
 lux.Map.prototype.addSearch = function(target) {
 
@@ -1013,69 +1049,77 @@ lux.Map.prototype.addSearch = function(target) {
 };
 
 /**
- * Adds a GPX file on the map
- * @param {string} url Url to the GPX file
+ * It displays a GPX file on the map.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example4}
+ * @param {string} url Url to the GPX file.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  * @api
  */
 lux.Map.prototype.addGPX = function(url, opt_options) {
-  var style = {
-    'Point': new ol.style.Style({
-      image: new ol.style.Circle({
-        fill: new ol.style.Fill({
-          color: 'rgba(255,255,0,0.4)'
-        }),
-        radius: 5,
+
+  /** @type {ol.StyleFunction | undefined}*/
+  var styleFunction;
+  if (opt_options && opt_options.style !== undefined) {
+    styleFunction = opt_options.style;
+  } else {
+    var style = {
+      'Point': new ol.style.Style({
+        image: new ol.style.Circle({
+          fill: new ol.style.Fill({
+            color: 'rgba(255,255,0,0.4)'
+          }),
+          radius: 5,
+          stroke: new ol.style.Stroke({
+            color: '#ff0',
+            width: 1
+          })
+        })
+      }),
+      'LineString': new ol.style.Style({
         stroke: new ol.style.Stroke({
-          color: '#ff0',
-          width: 1
+          color: '#f00',
+          width: 3
+        })
+      }),
+      'MultiLineString': new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#f00',
+          width: 3
         })
       })
-    }),
-    'LineString': new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: '#f00',
-        width: 3
-      })
-    }),
-    'MultiLineString': new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: '#f00',
-        width: 3
-      })
-    })
-  };
+    };
+    styleFunction = function(feature) {
+      return style[feature.getGeometry().getType()];
+    };
+  }
 
-  var styleFunction = function(feature) {
-    return style[feature.getGeometry().getType()];
-  };
-
-  this.addVector(url, new ol.format.GPX(), {
+  this.addVector_(url, new ol.format.GPX(), {
     style: styleFunction,
     reloadInterval: opt_options && opt_options.reloadInterval
   });
 };
 
 /**
- * Adds a KML file on the map
- * @param {string} url Url to the GPX file
+ * It displays a KML file on the map.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example4}
+ * @param {string} url Url to the GPX file.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  * @api
  */
 lux.Map.prototype.addKML = function(url, opt_options) {
-  this.addVector(url, new ol.format.KML(), opt_options);
+  this.addVector_(url, new ol.format.KML(), opt_options);
 };
 
 /**
- * Adds a KML file on the map
+ * Adds a KML or gpx file on the map
  * @param {string} url Url to the vector file
  * @param {ol.format.GPX|ol.format.KML} format The format.
  * @param {luxx.VectorOptions=} opt_options Options.
- * @export
+ * @private
  */
-lux.Map.prototype.addVector = function(url, format, opt_options) {
+lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
   var popup;
   var vector;
@@ -1167,7 +1211,18 @@ lux.Map.prototype.addVector = function(url, format, opt_options) {
 };
 
 /**
- * Load a MyMaps layer.
+ * It loads a MyMaps layer.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example8}.
+ * @example
+ * var map8 = new lux.Map({
+ * target: 'map8',
+ * bgLayer: 'topo_bw_jpeg',
+ * zoom: 12,
+ * position: [76825, 75133]
+ * });
+ * map8.addMyMapLayer({
+ *  mapId: '0416ef680fbe4cdaa2d8009262d1127c'
+ * });
  * @param {luxx.MyMapOptions} options The options.
  * @export
  * @api
@@ -1185,6 +1240,7 @@ lux.Map.prototype.addMyMapLayer = function(options) {
  * @param {Object} config The layer's config
  * @param {number} opacity The layer's opacity
  * @return {ol.layer.Tile} The layer.
+ * @private
  */
 lux.WMTSLayerFactory_ = function(config, opacity) {
   var format = config['imageType'];
@@ -1236,9 +1292,10 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
  * @param {Object} config The layer's config
  * @param {number} opacity The layer's opacity
  * @return {ol.layer.Image} The layer.
+ * @private
  */
 lux.WMSLayerFactory_ = function(config, opacity) {
-  var url = config.url || 'http://map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var url = config.url || '//map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
     url: url,
@@ -1259,12 +1316,31 @@ lux.WMSLayerFactory_ = function(config, opacity) {
 };
 
 /**
- * @param {luxx.GeocodeOptions} obj The hash object representing the
- *     address to geocode.
+ * It geocodes an address. The found position is transmitted to the callback function as parameter.
+ * @param {luxx.GeocodeOptions} obj The hash object representing the address to geocode.
  * @param {function(ol.Coordinate)} cb The callback to call. Called with the
- *     position in 4326 of the geocoded address.
+ *     position in EPSG:2169 (LUREF) of the geocoded address.
+ * @return {Promise.<luxx.GeocodeResponse>} Promise that returns the geocoding response.
+ * @example
+ * lux.geocode({
+ *   queryString: '54 avenue gaston diderich 1420 luxembourg'
+ * }, function(position) {
+ *	 console.log (position);
+ * });
+ *
+ * @example
+ * lux.geocode({
+ * num: 54,
+ *   street: 'avenue gaston diderich',
+ *   zip: 1420,
+ *   locality: 'luxembourg'
+ * }, function(position) {
+ *	console.log (position);
+ * });
  * @export
  * @api
+ * @static
+ * @global
  */
 lux.geocode = function(obj, cb) {
   var url = goog.Uri.parse(lux.geocodeUrl);
@@ -1272,30 +1348,40 @@ lux.geocode = function(obj, cb) {
   Object.keys(obj).forEach(function(key) {
     url.setParameterValue(key, obj[key]);
   });
-  fetch(url.toString()).then(function(resp) {
+  return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     goog.asserts.assert(json.results.length, 'No address was found');
-    /**
-     * @type {luxx.GeocodeResult}
-     */
+
     var result = json.results[0];
-    cb.call(null, [result.easting, result.northing]);
-  });
+    if (cb !== undefined) {
+      cb.call(null, [result.easting, result.northing]);
+    }
+  }));
 };
 
 /**
- * @param {ol.Coordinate} coordinate The coordinates to look for an address
- *     for. Coordinates must be given in EPSG:2169.
- * @param {function(Object)} cb The callback to call. Called with the address.
+ * It returns the most closest address of a given point.
+ * @param {ol.Coordinate} coordinate The coordinates to look for an address.
+ *     Coordinates must be given in EPSG:2169.
+ * @param {function(Object)} cb The callback function to call.
+ *    Called with the address represented by [luxx.ReverseGeocodeResult](luxx.html#ReverseGeocodeResult).
+ * @return {Promise.<luxx.ReverseGeocodeResponse>} Promise that returns the reverse geocoding response.
+ * @example
+ * lux.reverseGeocode([75979,75067], function(address) {
+ *   var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
+ *   console.log(html);console.log(address);
+ * });
  * @export
  * @api
+ * @static
+ * @global
  */
 lux.reverseGeocode = function(coordinate, cb) {
   var url = goog.Uri.parse(lux.reverseGeocodeUrl);
   url.setParameterValue('easting', coordinate[0]);
   url.setParameterValue('northing', coordinate[1]);
-  fetch(url.toString()).then(function(resp) {
+  return /** @type {Promise.<luxx.ReverseGeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(
       /**
@@ -1303,11 +1389,17 @@ lux.reverseGeocode = function(coordinate, cb) {
        */
       function(json) {
         goog.asserts.assert(json.count, 'No result found');
-        cb.call(null, json.results[0]);
+        if (cb !== undefined) {
+          cb.call(null, json.results[0]);
+        }
       }
-  );
+  ));
 };
 
+/**
+ * @param {Object} evt The event.
+ * @private
+ */
 lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
   if (this.queryPopup_) {

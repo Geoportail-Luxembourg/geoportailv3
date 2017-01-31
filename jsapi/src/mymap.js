@@ -42,6 +42,7 @@ lux.MyMap = function(options) {
 
   /**
    * @type {Element|undefined}
+   * @private
    */
   this.profileContainer_;
 
@@ -87,6 +88,7 @@ lux.MyMap = function(options) {
 
   /**
    * @type {function(Array<ol.Feature>)|undefined}
+   * @private
    */
   this.onload_ = options.onload;
 
@@ -713,10 +715,11 @@ lux.MyMap.prototype.hideProfile_ = function() {
 };
 
 /**
+ * It loads the profile into an HTML element.
  * @param {ol.geom.LineString} geom The line geometry.
  * @param {Element|string} target The target in which to load the profile.
  * @param {boolean|undefined} opt_addCloseBtn Whether to add a close button or
- *     not.
+ *     not. Default is false.
  * @export
  * @api
  */
@@ -830,7 +833,7 @@ lux.MyMap.prototype.exportCSV_ = function() {
 
   var form = goog.dom.createElement(goog.dom.TagName.FORM);
   form.method = 'POST';
-  form.action = 'http://maps.geoportail.lu/main/wsgi/profile/echocsv';
+  form.action = '//maps.geoportail.lu/main/wsgi/profile/echocsv';
   form.appendChild(nameInput);
   form.appendChild(csvInput);
   document.body.appendChild(form);
@@ -1016,7 +1019,7 @@ lux.MyMap.prototype.exportFeatures_ = function(doc, format, filename) {
 
   var form = goog.dom.createElement(goog.dom.TagName.FORM);
   form.method = 'POST';
-  form.action = 'http://maps.geoportail.lu/main/wsgi/mymaps/exportgpxkml';
+  form.action = '//maps.geoportail.lu/main/wsgi/mymaps/exportgpxkml';
   form.appendChild(formatInput);
   form.appendChild(nameInput);
   form.appendChild(docInput);

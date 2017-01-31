@@ -11,19 +11,22 @@ luxx.MapOptions;
 
 /**
  * Identifier of background layer. Default to `basemap_2015_global`.
- * @type {string}
+ * @type {string|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.bgLayer;
 
 /**
  * Array of overlay layer identifiers.
- * @type {Array<string>}
+ * @type {Array<string>|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.layers;
 
 /**
  * Array of opacities for the layers.
- * @type {Array<number>}
+ * @type {Array<number>|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.layerOpacities;
 
@@ -31,13 +34,15 @@ luxx.MapOptions.prototype.layerOpacities;
  * The container for the map, either the element itself or the `id` of the
  * element.
  * @type {Element|string}
+ * @api
  */
 luxx.MapOptions.prototype.target;
 
 /**
  * The container for map popups, either the element itself or the `id` of the
  * element.
- * @type {Element|string}
+ * @type {Element|string|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.popupTarget;
 
@@ -45,13 +50,15 @@ luxx.MapOptions.prototype.popupTarget;
  * The initial position of the center for the map view. The coordinate system
  * for the center is specified with the `positionSrs` option.
  * @type {ol.Coordinate|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.position;
 
 /**
  * The projection of the position coordinates.
  * Default is `2169`.
- * @type {string|number}
+ * @type {string|number|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.positionSrs;
 
@@ -65,27 +72,30 @@ luxx.MapOptions.prototype.zoom;
 /**
  * Set the presence of a layer manager control. (not included by default)
  * @type {luxx.LayerManagerOptions|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.layerManager;
 
 /**
  * Set the presence of a mouse position control in the map. (not included by
  * default).
- * @type {luxx.MousePositionOptions}
+ * @type {luxx.MousePositionOptions|undefined}
  */
 luxx.MapOptions.prototype.mousePosition;
 
 /**
  * Set the presence of features to recenter on & to show markers for.
  * (not included by default).
- * @type {luxx.FeaturesOptions}
+ * @type {luxx.FeaturesOptions|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.features;
 
 /**
  * Set the presence of a background selector control in the map.
  * (not included by default).
- * @type {luxx.BgSelectorOptions}
+ * @type {luxx.BgSelectorOptions|undefined}
+ * @api
  */
 luxx.MapOptions.prototype.bgSelector;
 
@@ -257,8 +267,9 @@ luxx.LayerMetadataOptions.prototype.exclusion;
 luxx.MyMapOptions;
 
 /**
- * The identifier of the map.
+ * The map identifier.
  * @type {string}
+ * @api
  */
 luxx.MyMapOptions.prototype.mapId;
 
@@ -267,12 +278,14 @@ luxx.MyMapOptions.prototype.mapId;
  * is recommended to set the display style to none at first. The display will
  * then be set to block adequately.
  * @type {string|undefined}
+ * @api
  */
 luxx.MyMapOptions.prototype.profileTarget;
 
 /**
  * The function called once the map is loaded. Optional.
  * @type {function(Array<ol.Feature>)|undefined}
+ * @api
  */
 luxx.MyMapOptions.prototype.onload;
 
@@ -315,14 +328,14 @@ luxx.FeaturesOptions.prototype.click;
 luxx.VectorOptions;
 
 /**
- * Interval after which to relaod the vector layer (in seconds).
- * @type {number}
+ * Interval after which to reload the vector layer (in seconds).
+ * @type {number | undefined}
  */
 luxx.VectorOptions.prototype.reloadInterval;
 
 /**
  * The style function.
- * @type {ol.StyleFunction}
+ * @type {ol.StyleFunction | undefined}
  */
 luxx.VectorOptions.prototype.style;
 
@@ -362,44 +375,127 @@ luxx.State.prototype.opacities;
 luxx.State.prototype.bgLayer;
 
 /**
+ * The address object to send to the geocoding webservice.
  * @typedef {Object}
  */
 luxx.GeocodeOptions;
 
 /**
+ * The house number.
  * @type {number}
+ * @api
  */
 luxx.GeocodeOptions.prototype.num;
 
 /**
+ * The street name.
  * @type {string}
+ * @api
  */
 luxx.GeocodeOptions.prototype.street;
 
 /**
+ * The postal code.
  * @type {number}
+ * @api
  */
 luxx.GeocodeOptions.prototype.zip;
 
 /**
+ * The locality name.
  * @type {string}
+ * @api
  */
 luxx.GeocodeOptions.prototype.locality;
 
 /**
+ * The complete address into one string.
+ * @type {string}
+ * @api
+ */
+luxx.GeocodeOptions.prototype.queryString;
+
+/**
  * @typedef {Object}
  */
-luxx.GeocodeResult;
+luxx.GeocodeResponse;
 
 /**
  * @type {number}
  */
-luxx.GeocodeResult.prototype.easting;
+luxx.GeocodeResponse.prototype.easting;
 
 /**
  * @type {number}
  */
-luxx.GeocodeResult.prototype.northing;
+luxx.GeocodeResponse.prototype.easting;
+
+/**
+ * @type {number}
+ */
+luxx.GeocodeResponse.prototype.northing;
+
+/**
+ * Address returned by the reverse geocoding webservice.
+ * @typedef {Object}
+ */
+luxx.ReverseGeocodeResult;
+
+/**
+ * The distance in meter between the coordinate and the found address.
+ * @type {number}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.distance;
+
+/**
+ * The location of the found address.
+ * @type {ol.geom.Geometry}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.geom;
+
+/**
+ * The internal id of the batiment.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.id_caclr_bat;
+
+/**
+ * The internal id of the street.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.id_caclr_street;
+
+/**
+ * The locality of the found address.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.locality;
+
+/**
+ * The house number.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.number;
+
+/**
+ * The postal code of the locality.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.postal_code;
+
+/**
+ * The street name.
+ * @type {String}
+ * @api
+ */
+luxx.ReverseGeocodeResult.prototype.street;
 
 /**
  * @typedef {Object}
@@ -407,11 +503,19 @@ luxx.GeocodeResult.prototype.northing;
 luxx.ReverseGeocodeResponse;
 
 /**
+ * The number of results.
  * @type {number}
  */
 luxx.ReverseGeocodeResponse.prototype.count;
 
 /**
- * @type {Array<Object>}
+ * An array of found addresses.
+ * @type {Array<luxx.ReverseGeocodeResult>}
  */
 luxx.ReverseGeocodeResponse.prototype.results;
+
+/**
+ * The request received by the webservice.
+ * @type {Object}
+ */
+luxx.ReverseGeocodeResponse.prototype.request;
