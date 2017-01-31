@@ -97,7 +97,7 @@ lux.StateManager.prototype.updateState = function(object) {
   var el = this.map_.getTargetElement();
   var logo = el.querySelectorAll('.ol-attribution a')[0];
   if (logo) {
-    logo.href = 'http://map.geoportail.lu/theme/main?';
+    logo.href = '//map.geoportail.lu/theme/main?';
     logo.href += Object.keys(this.state_).map(function(key) {
       return key + '=' + encodeURIComponent(this.state_[key]);
     }.bind(this)).join('&');
