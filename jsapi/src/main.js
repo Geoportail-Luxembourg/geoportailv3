@@ -59,6 +59,11 @@ lux.layersUrl = 'jsapilayers';
 lux.searchUrl = 'fulltextsearch?';
 
 /**
+ * @type {string}
+ */
+lux.profileUrl = 'profile.json';
+
+/**
  * @type {string?}
  */
 lux.baseUrl = null;
@@ -85,7 +90,7 @@ lux.setBaseUrl = function(url) {
   lux.geocodeUrl = url + lux.geocodeUrl;
   lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
   lux.queryUrl = url + lux.queryUrl;
-
+  lux.profileUrl = url + lux.profileUrl;
   lux.baseUrl = url;
 };
 
