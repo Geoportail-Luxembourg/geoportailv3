@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>API V3 layers list</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen">        
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+	<script type="text/html" id='usageList' >		
+		
+		<h2>Layers available through the GeoAPI</h2>
+		<a href="//apiv3.geoportail.lu/">Back to the API V3 documentation</a>
+
+		<table class="table table-striped table-condensed">
+				<thead>
+					<tr>
+						<th title="layer identifier to use in addLayerToMap() method">Id</th>
+						<th title="full name of the layer">Name</th>
+						<th title="image format of layer tiles">Format</th>
+						<th title="if the layer supports featureinfo requests on click">queryable</th>				
+						<th title="feature geometry type">type</th>
+						<th title="linked metadata catalog identifier">metadataID</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+				<% _.each(items,function(item,key,list){ %>
+					<% var name = item.name || "N/A"; %>
+					<% var format= item.imageType || "N/A"; %>
+					<% var queryable= item.metadata.is_queryable || false; %>
+					<% var ftype= item.type || "N/A"; %>
+					<% var metadataID= item.metadata.metadata_id || false %>
+
+						<tr>
+							<!-- use variables -->
+							<td><a title="Preview the layer in the Geoportail" target="_blank" href="http://map.geoportail.lu/?layers=<%= key %>&opacities=1&version=3"><%= key %></a></td>
+								<td class="name">
+									<%= i18n[name] %>
+									<div id="demo" class="collapse out"> lorem ipsum</div>
+								</td>
+							<td class="format"><%= format %></td>
+							<td class="queryable"><%= queryable %></td>
+							<td class="type"><%= ftype %></td>
+							<% if(metadataID) { %>
+								<td class="metadataID"><a title="Get More Details of this dataset" target="_blank" 
+									href="http://www.geoportal.lu/Portail/menuAction.do?lang=fr&dispatch=load&menuToLoad=inspireViewMetadataExt&uid=<%= metadataID %>"> MetaData </a></td>
+							<% } else { %>
+								<td class="metadataID">N/A</td>
+							<% }; %>
+						</tr>
+				<% }); %>
+			</tbody>
+		</table>
+	</script>
+
+	<!-- Create your target -->
+		<div id="target"></div>
+
+		<script type="text/javascript" >
+			var template = $("#usageList").html();
+      var i18n;
+      var layersJson;
+      var i18nPromise = this.i18nPromise = fetch("//apiv3.geoportail.lu/api/wsgi/proj/api/build/locale/en/geoportailv3.json").then(function(resp) {
+          return resp.json();
+      }).then(function(json) {
+          i18n = json['en'];
+      }.bind(this));
+
+			var layersPromise = fetch("//apiv3.geoportail.lu/api/wsgi/jsapilayers").then(function(resp) {
+        return resp.json();
+      }).then(function(json) {
+          layersJson = json;
+      }.bind(this));
+      
+      Promise.all([i18nPromise, layersPromise]).then(function(json) {
+        $("#target").html(_.template(template,{items:layersJson}));
+      }.bind(this));
+		</script>
+	</body>
+</html>
+
