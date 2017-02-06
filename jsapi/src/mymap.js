@@ -761,7 +761,6 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     body: body
   });
 
-  // FIXME change url
   fetch(lux.profileUrl, request
   ).then(function(resp) {
     return resp.json();
