@@ -890,7 +890,7 @@ lux.MyMap.prototype.profileHoverCallback_ = function(point, dist, xUnits, elevat
       this.formatDistance_(dist, xUnits) +
       '<br>' +
       this.elevationLabel_ +
-      this.formatElevation_(elevation, yUnits);
+      this.formatElevation_(elevation['line1'], yUnits);
   this.measureTooltip_.setPosition(curPoint.getCoordinates());
 };
 
