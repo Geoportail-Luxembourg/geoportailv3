@@ -47,6 +47,10 @@ _paq.push(['setSiteId', 22]);
   g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g,s);
 })();
 
+/**
+ * @type {string}
+ */
+lux.requestScheme = 'http';
 
 /**
  * @type {string}
@@ -77,10 +81,15 @@ lux.baseUrl = null;
  * <li>Geocoding service</li>
  * <li>Reverse geocoding service</li>
  * </lu>
- * @param {string|null} url Base url to services. Default is //apiv3.geoportail.lu/api/wsgi/
+ * @param {string | null} url Base url to services. Default is //apiv3.geoportail.lu/api/wsgi/
+ * @param {string | undefined} requestScheme The request scheme. Default is http.
  * @export
  */
-lux.setBaseUrl = function(url) {
+lux.setBaseUrl = function(url, requestScheme) {
+  if (requestScheme !== undefined) {
+    lux.requestScheme = requestScheme;
+  }
+
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
@@ -160,6 +169,7 @@ lux.i18n = {};
  * Returns the translated string if available.
  * @param {string} text The text to translate.
  * @return {string} The translated text.
+ * @export
  */
 lux.translate = function(text) {
   return lux.i18n[text] || text;
@@ -494,6 +504,7 @@ goog.inherits(lux.Map, ol.Map);
  * elsewhere in the stack, use `getLayers()` and the methods available on
  * {@link ol.Collection}.
  * @param {ol.layer.Base} layer Layer.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
  * @export
  * @api
  */
@@ -771,6 +782,7 @@ lux.intersects_ = function(one, two) {
  * {@link ol.Collection}.
  * @param {string|number} layer The layer id.
  * @param {number=} opt_opacity The layer opacity. Default is 1.
+ * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
  * @export
  * @api
  */
@@ -1237,8 +1249,8 @@ lux.Map.prototype.addMyMapLayer = function(options) {
 };
 
 /**
- * @param {Object} config The layer's config
- * @param {number} opacity The layer's opacity
+ * @param {Object} config The layer's config.
+ * @param {number} opacity The layer's opacity.
  * @return {ol.layer.Tile} The layer.
  * @private
  */
@@ -1249,6 +1261,10 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
   var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
   '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
+  if (lux.requestScheme === 'https') {
+    url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+        '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+  }
 
   var layer = new ol.layer.Tile({
     name  : config['name'],
