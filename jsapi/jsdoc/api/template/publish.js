@@ -392,7 +392,7 @@ function buildNav(members) {
         _nav += buildMemberNav(members.mixins, 'Mixins', seen, linkto, module);
         _nav += buildMemberNav(members.tutorials, 'Tutorials', seenTutorials, linktoTutorial, module);
         _nav += buildMemberNav(members.interfaces, 'Interfaces', seen, linkto, module);
-        _nav += buildMemberNav(members.typedefs, 'Types', seen, linkto, module);
+        //_nav += buildMemberNav(members.typedefs, 'Types', seen, linkto, module);
         _nav += buildMemberNav(members.enums, 'Enumerations', seen, linkto, module);
         if (_nav !== '') {
             nav += '<h2>' + module + '</h2>';
