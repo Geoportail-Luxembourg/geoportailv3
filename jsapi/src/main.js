@@ -81,7 +81,7 @@ lux.baseUrl = null;
  * <li>Geocoding service</li>
  * <li>Reverse geocoding service</li>
  * </lu>
- * @param {string | null} url Base url to services. Default is //apiv3.geoportail.lu/api/wsgi/
+ * @param {string | null} url Base url to services. Default is //apiv3.geoportail.lu/
  * @param {string | undefined} requestScheme The request scheme. Default is http.
  * @export
  */
@@ -94,7 +94,7 @@ lux.setBaseUrl = function(url, requestScheme) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
 
-    url = '//apiv3.geoportail.lu/api/wsgi/';
+    url = '//apiv3.geoportail.lu/';
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
@@ -504,7 +504,7 @@ goog.inherits(lux.Map, ol.Map);
  * elsewhere in the stack, use `getLayers()` and the methods available on
  * {@link ol.Collection}.
  * @param {ol.layer.Base} layer Layer.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
  * @export
  * @api
  */
@@ -782,7 +782,7 @@ lux.intersects_ = function(one, two) {
  * {@link ol.Collection}.
  * @param {string|number} layer The layer id.
  * @param {number=} opt_opacity The layer opacity. Default is 1.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
  * @export
  * @api
  */
@@ -811,7 +811,7 @@ lux.findLayerByName_ = function(name, layers) {
 
 /**
  * It adds a simple background selector control into a specific html element.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example3}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example3}
  * @param {Element|string} target Dom element or id of the element to render
  * bgSelector in.
  * @export
@@ -965,7 +965,7 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
 
 /**
  * It adds the search control into an html element.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example6}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
  * @param {Element|string} target Dom element or id of the element to render
  * search widget in.
  * @export
@@ -1062,7 +1062,7 @@ lux.Map.prototype.addSearch = function(target) {
 
 /**
  * It displays a GPX file on the map.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example4}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
  * @param {string} url Url to the GPX file.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
@@ -1114,7 +1114,7 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
 
 /**
  * It displays a KML file on the map.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example4}
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
  * @param {string} url Url to the GPX file.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
@@ -1224,7 +1224,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
 /**
  * It loads a MyMaps layer.
- * @see {@link https://apiv3.geoportail.lu/api/wsgi/proj/1.0/build/apidoc/examples/index.html#example8}.
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example8}.
  * @example
  * var map8 = new lux.Map({
  * target: 'map8',
