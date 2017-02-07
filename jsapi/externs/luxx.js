@@ -132,7 +132,7 @@ luxx.MarkerOptions.prototype.autoCenter;
 
 /**
  * URL to an image.
- * Defaults to `http://openlayers.org/en/master/examples/data/icon.png`.
+ * Defaults to `//openlayers.org/en/master/examples/data/icon.png`.
  * @type {string|undefined}
  */
 luxx.MarkerOptions.prototype.iconURL;
@@ -140,7 +140,7 @@ luxx.MarkerOptions.prototype.iconURL;
 
 /**
  * Positioning of the icon. See
- * {@link http://openlayers.org/en/latest/apidoc/ol.html#.OverlayPositioning}
+ * {@link //openlayers.org/en/latest/apidoc/ol.html#.OverlayPositioning}
  * @type {string|undefined}
  */
 luxx.MarkerOptions.prototype.positioning;

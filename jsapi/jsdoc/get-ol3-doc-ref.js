@@ -12,7 +12,7 @@ jsdom.env({
                 console.log(
                     "    helper.registerLink('" +
                     element.getAttribute("data-name") +
-                    "', 'http://openlayers.org/en/master/apidoc/" +
+                    "', '//openlayers.org/en/master/apidoc/" +
                     element.querySelector("a").getAttribute("href") +
                     "');"
                 )
