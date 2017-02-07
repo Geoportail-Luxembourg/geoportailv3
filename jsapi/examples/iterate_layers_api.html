@@ -68,13 +68,13 @@
 			var template = $("#usageList").html();
       var i18n;
       var layersJson;
-      var i18nPromise = this.i18nPromise = fetch("//apiv3.geoportail.lu/api/wsgi/proj/api/build/locale/en/geoportailv3.json").then(function(resp) {
+      var i18nPromise = this.i18nPromise = fetch("//apiv3.geoportail.lu/proj/api/build/locale/en/geoportailv3.json").then(function(resp) {
           return resp.json();
       }).then(function(json) {
           i18n = json['en'];
       }.bind(this));
 
-			var layersPromise = fetch("//apiv3.geoportail.lu/api/wsgi/jsapilayers").then(function(resp) {
+			var layersPromise = fetch("//apiv3.geoportail.lu/jsapilayers").then(function(resp) {
         return resp.json();
       }).then(function(json) {
           layersJson = json;
