@@ -5,7 +5,7 @@ Although the options for data processing are limited compared with “real” of
 For any assistance as well as for request access, please contact our support here : <a href="mailto:support.geoportail@act.etat.lu">support.geoportail@act.etat.lu</a></p>
 <p>To help the developers, some examples and use cases are available on our <a href="./examples/">demo page</a></p>
 <p>The catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
-<p>The Geoportail.lu V3 API is built on top of the <a href="http://openlayers.org/en/latest/apidoc/">OpenLayers 3 API</a>.
+<p>The Geoportail.lu V3 API is built on top of the <a href="//openlayers.org/en/latest/apidoc/">OpenLayers 3 API</a>.
 The Geoportail.lu V3 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.</p>
 <p>All the needed resources are loaded by including the following js script.</p>
 <pre>
@@ -13,7 +13,7 @@ The Geoportail.lu V3 offers classes, methods, and properties to ease the build o
 </pre>
 <p>The script automaticaly includes the Geoportail v3 libraries as well as the OpenLayers V3.x libraries. Thus there is no need to include it again.</p>
 <p>
-  The core API object is a [lux.Map](lux.Map.html) that extends an OpenLayers [ol.Map](http://openlayers.org/en/master/apidoc/ol.Map.html). This is the main entry point to create a basic map.
+  The core API object is a [lux.Map](lux.Map.html) that extends an OpenLayers [ol.Map](//openlayers.org/en/master/apidoc/ol.Map.html). This is the main entry point to create a basic map.
 </p>
 <p>
 The main properties of a [lux.Map](lux.Map.html) are : 
