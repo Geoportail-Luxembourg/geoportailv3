@@ -19,10 +19,11 @@
 					<tr>
 						<th title="layer identifier to use in addLayerToMap() method">Id</th>
 						<th title="full name of the layer">Name</th>
+            <th title="Technical layer name">Technical layer name</th>
 						<th title="image format of layer tiles">Format</th>
-						<th title="if the layer supports featureinfo requests on click">queryable</th>				
-						<th title="feature geometry type">type</th>
-						<th title="linked metadata catalog identifier">metadataID</th>
+						<th title="if the layer supports featureinfo requests on click">Queryable</th>				
+						<th title="feature geometry type">Type</th>
+						<th title="linked metadata catalog identifier">Metadata ID</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -41,6 +42,10 @@
 									<%= i18n[name] %>
 									<div id="demo" class="collapse out"> lorem ipsum</div>
 								</td>
+                <td class="name">
+									<%= name %>
+									<div id="demo" class="collapse out"> lorem ipsum</div>
+						  </td>
 							<td class="format"><%= format %></td>
 							<td class="queryable"><%= queryable %></td>
 							<td class="type"><%= ftype %></td>
@@ -81,4 +86,3 @@
 		</script>
 	</body>
 </html>
-
