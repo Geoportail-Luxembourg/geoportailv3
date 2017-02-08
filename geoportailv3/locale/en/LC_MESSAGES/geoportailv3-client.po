@@ -2,18 +2,18 @@
 # Translators:
 # Andrea Donno <andrea.donno@me.com>, 2015-2016
 # Andrea Donno <andrea.donno@me.com>, 2015
-# Andrea Donno <andrea.donno@me.com>, 2015-2016
+# Andrea Donno <andrea.donno@me.com>, 2015-2017
 # Andrea Donno <andrea.donno@me.com>, 2016
 # eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2015-2016
 # Francis Kaell <francis.kaell@act.etat.lu>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015-2016
-# Jeff Konnen <jaykayone@gmail.com>, 2016
+# Jeff Konnen <jaykayone@gmail.com>, 2016-2017
 # Patrick Weber <pweber@spatialbit.com>, 2015
 # Patrick Weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2016-11-30 15:44+0000\n"
+"PO-Revision-Date: 2017-01-30 16:24+0000\n"
 "Last-Translator: Jeff Konnen <jaykayone@gmail.com>\n"
 "Language-Team: English (http://www.transifex.com/geoportail/geoportailv3-lu/language/en/)\n"
 "MIME-Version: 1.0\n"
@@ -34,11 +34,11 @@ msgstr "&Delta; -"
 msgid "+ Add external Wms"
 msgstr "+ Add external WMS"
 
-#: geoportailv3/templates/index.html:97
+#: geoportailv3/templates/index.html:99
 msgid "+ Add layers"
 msgstr "+ Add layers"
 
-#: geoportailv3/templates/index.html:13
+#: geoportailv3/templates/index.html:15
 msgid "- Geoportal Luxembourg"
 msgstr "- Geoportal Luxembourg"
 
@@ -50,59 +50,59 @@ msgstr "Map from geoportal.lu"
 msgid "<em>Aucune description</em>"
 msgstr "<em>No description</em>"
 
-#: geoportailv3/templates/index.html:152
+#: geoportailv3/templates/index.html:154
 msgid ""
 "A <em>right click</em> (tap and hold on mobile) will display information "
 "about the current location."
 msgstr "A <em>right click</em> (tap and hold on mobile) will display information about the current location."
 
-#: geoportailv3/templates/index.html:155
+#: geoportailv3/templates/index.html:157
 msgid ""
 "A <em>short click</em> (tap on mobile) on a map feature will select the "
 "feature and show more information."
 msgstr "A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information."
 
-#: geoportailv3/templates/index.html:218
+#: geoportailv3/templates/index.html:221
 msgid "A Propos"
 msgstr "About Us"
 
-#: geoportailv3/static/js/print/printdirective.js:210
+#: geoportailv3/static/js/print/printdirective.js:209
 msgid "A0 landscape"
 msgstr "A0 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:211
+#: geoportailv3/static/js/print/printdirective.js:210
 msgid "A0 portrait"
 msgstr "A0 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:208
+#: geoportailv3/static/js/print/printdirective.js:207
 msgid "A1 landscape"
 msgstr "A1 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:209
+#: geoportailv3/static/js/print/printdirective.js:208
 msgid "A1 portrait"
 msgstr "A1 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:206
+#: geoportailv3/static/js/print/printdirective.js:205
 msgid "A2 landscape"
 msgstr "A2 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:207
+#: geoportailv3/static/js/print/printdirective.js:206
 msgid "A2 portrait"
 msgstr "A2 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:204
+#: geoportailv3/static/js/print/printdirective.js:203
 msgid "A3 landscape"
 msgstr "A3 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:205
+#: geoportailv3/static/js/print/printdirective.js:204
 msgid "A3 portrait"
 msgstr "A3 portrait"
 
-#: geoportailv3/static/js/print/printdirective.js:202
+#: geoportailv3/static/js/print/printdirective.js:201
 msgid "A4 landscape"
 msgstr "A4 landscape"
 
-#: geoportailv3/static/js/print/printdirective.js:203
+#: geoportailv3/static/js/print/printdirective.js:202
 msgid "A4 portrait"
 msgstr "A4 portrait"
 
@@ -118,6 +118,10 @@ msgstr "Access constraints"
 msgid "Add external data"
 msgstr "Add external data"
 
+#: geoportailv3/static/js/search/searchdirective.js:399
+msgid "Addresses"
+msgstr "Adressess"
+
 #: geoportailv3/static/js/query/pagreport.html:8
 msgid "Adresse Email"
 msgstr "Email address"
@@ -130,25 +134,27 @@ msgstr "Closest addess"
 msgid "Affaire"
 msgstr "Case"
 
-#: geoportailv3/templates/index.html:219
+#: geoportailv3/templates/index.html:222
 msgid "Aide"
 msgstr "Help"
 
-#: geoportailv3/static/js/draw/featurepopup.html:83
+#: geoportailv3/static/js/draw/featurepopup.html:88
 msgid "Ajouter vignette"
 msgstr "Add thumbnail"
 
-#: geoportailv3/static/js/draw/styleediting.html:107
-#: geoportailv3/static/js/draw/styleediting.html:95
+#: geoportailv3/static/js/draw/styleediting.html:113
+#: geoportailv3/static/js/draw/styleediting.html:99
 msgid "Angle"
 msgstr "Angle"
 
-#: geoportailv3/static/js/draw/featurepopup.html:111
-#: geoportailv3/static/js/draw/styleediting.html:113
-#: geoportailv3/static/js/mymaps/mymaps.html:167
-#: geoportailv3/static/js/mymaps/mymaps.html:181
-#: geoportailv3/static/js/mymaps/mymaps.html:195
-#: geoportailv3/static/js/mymaps/mymaps.html:290
+#: geoportailv3/static/js/askredirect/askredirect.html:10
+#: geoportailv3/static/js/draw/featurepopup.html:116
+#: geoportailv3/static/js/draw/featurepopup.html:136
+#: geoportailv3/static/js/draw/styleediting.html:120
+#: geoportailv3/static/js/mymaps/mymaps.html:171
+#: geoportailv3/static/js/mymaps/mymaps.html:185
+#: geoportailv3/static/js/mymaps/mymaps.html:199
+#: geoportailv3/static/js/mymaps/mymaps.html:294
 msgid "Annuler"
 msgstr "Cancel"
 
@@ -164,13 +170,25 @@ msgstr "Attention!"
 msgid "Aucun symbole disponible"
 msgstr "No symbol available"
 
-#: geoportailv3/static/js/query/default.html:14
+#: geoportailv3/static/js/query/default.html:20
 msgid "Aucune information disponible pour cette couche"
 msgstr "No information available for this layer"
+
+#: geoportailv3/static/js/layerlegends/layerlegends.html:7
+msgid "Aucune légende n'est disponible pour les couches sélectionnées."
+msgstr "There is no legend defined for the selected layers"
 
 #: geoportailv3/static/js/measure/measure.html:11
 msgid "Azimut"
 msgstr "Azimut"
+
+#: geoportailv3/static/js/search/searchdirective.js:375
+msgid "Background"
+msgstr "Background"
+
+#: geoportailv3/static/js/search/searchdirective.js:363
+msgid "Background Layers"
+msgstr "Background Layers"
 
 #: geoportailv3/static/js/exclusionmanagerservice.js:125
 msgid ""
@@ -182,8 +200,8 @@ msgstr "Background has been deactivated because the layer {{layer}} cannot be di
 msgid "Background layer:"
 msgstr "Background layer"
 
-#: geoportailv3/static/js/draw/featurepopup.html:91
-#: geoportailv3/static/js/mymaps/mymaps.html:151
+#: geoportailv3/static/js/draw/featurepopup.html:96
+#: geoportailv3/static/js/mymaps/mymaps.html:155
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -199,11 +217,11 @@ msgstr "Map created"
 msgid "Carte créée par"
 msgstr "Map created by"
 
-#: geoportailv3/templates/index.html:88
+#: geoportailv3/templates/index.html:90
 msgid "Catalog"
 msgstr "Catalog"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:252
+#: geoportailv3/static/js/mymaps/mymaps.html:256
 msgid "Catégorie"
 msgstr "Category "
 
@@ -211,7 +229,7 @@ msgstr "Category "
 msgid "Ce format d'image n'est as supporté."
 msgstr "This image format is not supported"
 
-#: geoportailv3/static/js/themeswitcher/themeswitcherdirective.js:77
+#: geoportailv3/static/js/themeswitcher/themeswitcherdirective.js:71
 msgid "Ce thème est protégé. Veuillez vous connecter."
 msgstr "This theme is protected. Please login"
 
@@ -219,8 +237,8 @@ msgstr "This theme is protected. Please login"
 msgid "Changer"
 msgstr "Change"
 
-#: geoportailv3/static/js/draw/featurepopup.html:60
-#: geoportailv3/static/js/draw/styleediting.html:69
+#: geoportailv3/static/js/draw/featurepopup.html:64
+#: geoportailv3/static/js/draw/styleediting.html:72
 msgid "Changer sens de la ligne"
 msgstr "Change line direction"
 
@@ -232,8 +250,8 @@ msgstr "Loading information"
 msgid "Choose or write a WMS url"
 msgstr "Choose or write a WMS URL"
 
-#: geoportailv3/static/js/draw/draw.html:19
-#: geoportailv3/static/js/draw/drawdirective.js:654
+#: geoportailv3/static/js/draw/draw.html:23
+#: geoportailv3/static/js/draw/drawdirective.js:694
 msgid "Circle"
 msgstr "Circle"
 
@@ -249,7 +267,7 @@ msgid ""
 " finish"
 msgstr "Click to continue drawing the polygon<br>Double-click to finish"
 
-#: geoportailv3/static/js/draw/drawdirective.js:449
+#: geoportailv3/static/js/draw/drawdirective.js:489
 msgid "Click to draw the point"
 msgstr "Click to draw the point"
 
@@ -257,7 +275,7 @@ msgstr "Click to draw the point"
 msgid "Click to finish"
 msgstr "Click to finish"
 
-#: geoportailv3/static/js/draw/drawdirective.js:467
+#: geoportailv3/static/js/draw/drawdirective.js:507
 msgid "Click to place the label"
 msgstr "Click to place the label"
 
@@ -269,7 +287,7 @@ msgstr "Click to start measuring an area"
 msgid "Click to start drawing azimut"
 msgstr "Click to start measuring an azimut"
 
-#: geoportailv3/static/js/draw/drawdirective.js:463
+#: geoportailv3/static/js/draw/drawdirective.js:503
 msgid "Click to start drawing circle"
 msgstr "Click to start drawing a circle"
 
@@ -277,11 +295,11 @@ msgstr "Click to start drawing a circle"
 msgid "Click to start drawing length"
 msgstr "Click to start measuring a distance"
 
-#: geoportailv3/static/js/draw/drawdirective.js:453
+#: geoportailv3/static/js/draw/drawdirective.js:493
 msgid "Click to start drawing line<br>Double-click to finish"
 msgstr "Click to start drawing line<br>Double-click to finish"
 
-#: geoportailv3/static/js/draw/drawdirective.js:458
+#: geoportailv3/static/js/draw/drawdirective.js:498
 msgid ""
 "Click to start drawing polygon<br>Double-click or click last point to finish"
 msgstr "Click to start drawing polygon<br>Double-click or click last point to finish"
@@ -338,15 +356,19 @@ msgstr "Cadastral Commune"
 msgid "Configurables"
 msgstr "Customizable"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:189
+#: geoportailv3/static/js/askredirect/askredirect.html:4
+msgid "Confirmation de redirection"
+msgstr "Redirection confirmation"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:193
 msgid "Confirmation de suppression de la carte"
 msgstr "Confirm map deletion"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:161
+#: geoportailv3/static/js/mymaps/mymaps.html:165
 msgid "Confirmation de suppression des dessins"
 msgstr "Confirm drawing deletion"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:175
+#: geoportailv3/static/js/mymaps/mymaps.html:179
 msgid "Confirmation de suppression des éléments de la carte"
 msgstr "Do you want to delete all the elements of the map?"
 
@@ -355,7 +377,7 @@ msgid "Constitution de dossier de mesurage"
 msgstr "Create surveying dossier"
 
 #: geoportailv3/static/js/layerinfo/popup.html:23
-#: geoportailv3/templates/index.html:220
+#: geoportailv3/templates/index.html:223
 msgid "Contact"
 msgstr "Contact"
 
@@ -365,7 +387,7 @@ msgstr "Contact"
 msgid "Contenance"
 msgstr "Capacity"
 
-#: geoportailv3/static/js/draw/featurepopup.html:59
+#: geoportailv3/static/js/draw/featurepopup.html:63
 msgid "Continuer la ligne"
 msgstr "Continue line"
 
@@ -373,11 +395,11 @@ msgstr "Continue line"
 msgid "Contrainte d'utilisation"
 msgstr "Access constraints"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:91
+#: geoportailv3/static/js/mymaps/mymaps.html:93
 msgid "Copier dans ma carte"
 msgstr "Copy to my map"
 
-#: geoportailv3/templates/index.html:204
+#: geoportailv3/templates/index.html:207
 msgid "Couches"
 msgstr "Layers"
 
@@ -397,9 +419,13 @@ msgstr "Sketch"
 msgid "Croquis indisponible"
 msgstr "Sketch not available"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:259
+#: geoportailv3/static/js/mymaps/mymaps.html:263
 msgid "Créateur carte"
 msgstr "Map creator"
+
+#: geoportailv3/static/js/draw/featurepopup.html:65
+msgid "Créer cercle concentrique"
+msgstr "Create circle with same center"
 
 #: geoportailv3/static/js/mymaps/mymaps.html:48
 msgid "Créer une copie"
@@ -410,11 +436,11 @@ msgstr "Create a copy"
 msgid "Créer une nouvelle carte"
 msgstr "Create a new map"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:93
+#: geoportailv3/static/js/mymaps/mymaps.html:95
 msgid "Créer une nouvelle carte à partir de ces dessins"
 msgstr "Create a new map from drawings"
 
-#: geoportailv3/static/js/draw/styleediting.html:57
+#: geoportailv3/static/js/draw/styleediting.html:60
 msgid "Dashed"
 msgstr "Dashed"
 
@@ -422,13 +448,17 @@ msgstr "Dashed"
 msgid "Date"
 msgstr "Date"
 
+#: geoportailv3/static/js/print/printdirective.js:561
+msgid "Date d'impression:"
+msgstr "Print date:"
+
 #: geoportailv3/static/js/query/parcels.html:11
 #: geoportailv3/static/js/query/parcels_go.html:11
 #: geoportailv3/static/js/query/parcels_prof.html:11
 msgid "Dernier mesurage"
 msgstr "Last measurement"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:266
+#: geoportailv3/static/js/mymaps/mymaps.html:270
 msgid "Dernière Actualisation"
 msgstr "Last Update"
 
@@ -437,7 +467,7 @@ msgid "Describe the problem within the current map extent:"
 msgstr "Describe the problem within the current map extent:"
 
 #: geoportailv3/static/js/layerinfo/popup.html:11
-#: geoportailv3/static/js/mymaps/mymaps.html:145
+#: geoportailv3/static/js/mymaps/mymaps.html:149
 #: geoportailv3/static/js/query/mymaps.html:7
 msgid "Description"
 msgstr "Description"
@@ -450,11 +480,11 @@ msgstr "Service description"
 msgid "Description du service :"
 msgstr "Service description"
 
-#: geoportailv3/templates/index.html:226
+#: geoportailv3/templates/index.html:229
 msgid "Dessin"
 msgstr "Draw"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:84
+#: geoportailv3/static/js/mymaps/mymaps.html:86
 msgid "Dessins"
 msgstr "Drawings"
 
@@ -462,25 +492,29 @@ msgstr "Drawings"
 msgid "Distance approximative"
 msgstr "Approximative distance"
 
-#: geoportailv3/static/js/draw/styleediting.html:58
+#: geoportailv3/static/js/draw/styleediting.html:61
 msgid "Dotted"
 msgstr "Dotted"
 
-#: geoportailv3/static/js/profile/profile.html:12
+#: geoportailv3/static/js/profile/profile.html:13
 msgid "Draw a line on the map to display an elevation profile."
 msgstr "Draw a line on the map to display an elevation profile."
 
-#: geoportailv3/static/js/draw/featurepopup.html:29
+#: geoportailv3/static/js/print/printdirective.js:562
+msgid "Echelle approximative 1:"
+msgstr "Approximate scale 1:"
+
+#: geoportailv3/static/js/draw/featurepopup.html:33
 msgid "Editer l'objet"
 msgstr "Edit object"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:168
-#: geoportailv3/static/js/mymaps/mymaps.html:182
-#: geoportailv3/static/js/mymaps/mymaps.html:196
+#: geoportailv3/static/js/mymaps/mymaps.html:172
+#: geoportailv3/static/js/mymaps/mymaps.html:186
+#: geoportailv3/static/js/mymaps/mymaps.html:200
 msgid "Effacer"
 msgstr "Delete"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:92
+#: geoportailv3/static/js/mymaps/mymaps.html:94
 msgid "Effacer tous les dessins"
 msgstr "Delete all drawings"
 
@@ -489,7 +523,7 @@ msgstr "Delete all drawings"
 msgid "Elevation"
 msgstr "Elevation"
 
-#: geoportailv3/static/js/draw/featurepopup.html:20
+#: geoportailv3/static/js/draw/featurepopup.html:24
 msgid "Elevation: {{ ctrl.featureElevation }}"
 msgstr "Elevation: {{ ctrl.featureElevation }}"
 
@@ -504,54 +538,54 @@ msgid ""
 "</a>de ce site web."
 msgstr "By checking this box, the user declares that he has read, understood and accepted the <a href=\"/main/wsgi/pag/files/Disclaimer.pdf\">general terms of use of this website."
 
-#: geoportailv3/static/js/mymapsservice.js:805
+#: geoportailv3/static/js/mymapsservice.js:841
 msgid "Erreur inattendue lors de la copie de votre carte."
 msgstr "An unexpected error occured while copying your map"
 
-#: geoportailv3/static/js/mymapsservice.js:763
+#: geoportailv3/static/js/mymapsservice.js:799
 msgid "Erreur inattendue lors de la création de votre carte."
 msgstr "An unexpected error occured while creating your map"
 
-#: geoportailv3/static/js/mymapsservice.js:928
-#: geoportailv3/static/js/mymapsservice.js:978
+#: geoportailv3/static/js/mymapsservice.js:1014
+#: geoportailv3/static/js/mymapsservice.js:964
 msgid "Erreur inattendue lors de la mise à jour de votre carte."
 msgstr "An unexpected error occured while updating your map"
 
-#: geoportailv3/static/js/mymapsservice.js:1017
-#: geoportailv3/static/js/mymapsservice.js:1056
+#: geoportailv3/static/js/mymapsservice.js:1053
+#: geoportailv3/static/js/mymapsservice.js:1092
 msgid "Erreur inattendue lors de la sauvegarde de votre modification."
 msgstr "An unexpected error occured while saving your modifcations"
 
-#: geoportailv3/static/js/mymapsservice.js:721
+#: geoportailv3/static/js/mymapsservice.js:757
 msgid "Erreur inattendue lors de la suppression d'un élement."
 msgstr "An unexpected error occured while deleting an element"
 
-#: geoportailv3/static/js/mymapsservice.js:833
+#: geoportailv3/static/js/mymapsservice.js:869
 msgid "Erreur inattendue lors de la suppression de votre carte."
 msgstr "An unexpected error occured while deleting your map"
 
-#: geoportailv3/static/js/mymapsservice.js:862
+#: geoportailv3/static/js/mymapsservice.js:898
 msgid "Erreur inattendue lors de la suppression des objets de la carte."
 msgstr "Unexpected error while deleting the objects of the map."
 
-#: geoportailv3/static/js/mymapsservice.js:455
+#: geoportailv3/static/js/mymapsservice.js:467
 msgid "Erreur inattendue lors du chargement de vos cartes."
 msgstr "An unexpected error occured while loading your maps"
 
-#: geoportailv3/static/js/mymapsservice.js:513
-#: geoportailv3/static/js/mymapsservice.js:691
+#: geoportailv3/static/js/mymapsservice.js:549
+#: geoportailv3/static/js/mymapsservice.js:727
 msgid "Erreur inattendue lors du chargement de votre carte."
 msgstr "An unexpected error occured while loading your map"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:192
+#: geoportailv3/static/js/mymaps/mymaps.html:196
 msgid "Etes-vous certain de vouloir effacer la carte courrante ?"
 msgstr "Are you sure you want to delete the current map?"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:164
+#: geoportailv3/static/js/mymaps/mymaps.html:168
 msgid "Etes-vous certain de vouloir effacer tous les dessins ?"
 msgstr "Are you sure you want to delete all the drawings?"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:178
+#: geoportailv3/static/js/mymaps/mymaps.html:182
 msgid "Etes-vous certain de vouloir effacer tous les éléments de la carte ?"
 msgstr "Are you sure you want to delete all the elements of this map?"
 
@@ -559,20 +593,22 @@ msgstr "Are you sure you want to delete all the elements of this map?"
 msgid "Export csv"
 msgstr "Export CSV"
 
-#: geoportailv3/static/js/query/mymaps.html:13
+#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/mymaps.html:12
 msgid "Exporter GPX"
 msgstr "Export GPX"
 
-#: geoportailv3/static/js/query/mymaps.html:13
+#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/mymaps.html:12
 msgid "Exporter KMl"
 msgstr "Export KML"
 
-#: geoportailv3/static/js/draw/featurepopup.html:57
+#: geoportailv3/static/js/draw/featurepopup.html:61
 #: geoportailv3/static/js/mymaps/mymaps.html:56
 msgid "Exporter un GPX"
 msgstr "Export GPX"
 
-#: geoportailv3/static/js/draw/featurepopup.html:58
+#: geoportailv3/static/js/draw/featurepopup.html:62
 #: geoportailv3/static/js/mymaps/mymaps.html:57
 msgid "Exporter un KML"
 msgstr "Export KML"
@@ -581,7 +617,7 @@ msgstr "Export KML"
 msgid "Facebook"
 msgstr "Facebook"
 
-#: geoportailv3/templates/index.html:179 geoportailv3/templates/index.html:217
+#: geoportailv3/templates/index.html:181 geoportailv3/templates/index.html:220
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -598,11 +634,11 @@ msgstr "Feedback sent to <a href=\"mailto:\"></a>"
 msgid "Fermer"
 msgstr "Close"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:218
+#: geoportailv3/static/js/mymaps/mymaps.html:222
 msgid "Filter results by category"
 msgstr "Filter results by category"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:230
+#: geoportailv3/static/js/mymaps/mymaps.html:234
 #: geoportailv3/static/js/mymaps/mymapsdirective.js:768
 msgid "Filter results by username"
 msgstr "Filter results by username"
@@ -653,16 +689,16 @@ msgstr "Import KML"
 msgid "Importer un symbole"
 msgstr "Import symbol"
 
-#: geoportailv3/templates/index.html:241
+#: geoportailv3/templates/index.html:244
 msgid "Imprimer"
 msgstr "Print"
 
-#: geoportailv3/templates/index.html:210
+#: geoportailv3/templates/index.html:213
 msgid "Infos<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
 msgstr "Info<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
 
-#: geoportailv3/static/js/usermanagerservice.js:121
 #: geoportailv3/static/js/usermanagerservice.js:128
+#: geoportailv3/static/js/usermanagerservice.js:135
 msgid "Invalid username or password."
 msgstr "Invalid username or password."
 
@@ -670,18 +706,31 @@ msgstr "Invalid username or password."
 msgid "Keywords"
 msgstr "Keywords"
 
-#: geoportailv3/static/js/mymapsservice.js:508
-#: geoportailv3/static/js/mymapsservice.js:686
+#: geoportailv3/static/js/mymapsservice.js:544
+#: geoportailv3/static/js/mymapsservice.js:722
 msgid "La carte demandée n'existe pas."
 msgstr "The map that you have chosen does not exist"
 
-#: geoportailv3/static/js/draw/draw.html:7
-#: geoportailv3/static/js/draw/drawdirective.js:644
-#: geoportailv3/static/js/query/mymaps.html:5
+#: geoportailv3/static/js/askredirect/askredirect.html:7
+msgid ""
+"La geolocalisation n'est disponible que dans la version sécurisée du "
+"Geoportail (https). Voulez-vous être automatiquement redirigé?"
+msgstr "Geolocation is only available in the secure version of geoportal.lu (https).\nDo you want to be redirected?"
+
+#: geoportailv3/static/js/draw/draw.html:8
+#: geoportailv3/static/js/draw/drawdirective.js:684
 msgid "Label"
 msgstr "Label"
 
-#: geoportailv3/templates/index.html:221
+#: geoportailv3/static/js/search/searchdirective.js:435
+msgid "Layers"
+msgstr "Layers"
+
+#: geoportailv3/static/js/print/printdirective.js:563
+msgid "Le géoportail national du Grand-Duché du Luxembourg"
+msgstr "The official geoportal for the Grand-Duchy of Luxembourg"
+
+#: geoportailv3/templates/index.html:224
 msgid "Legalites"
 msgstr "T & C"
 
@@ -689,7 +738,7 @@ msgstr "T & C"
 msgid "Legend"
 msgstr "with legend"
 
-#: geoportailv3/templates/index.html:213
+#: geoportailv3/templates/index.html:216
 msgid "Legends"
 msgstr "Legends"
 
@@ -715,12 +764,12 @@ msgstr "The layers selected in the catalog are different than the ones loaded in
 #: geoportailv3/static/js/query/batiments.html:4
 #: geoportailv3/static/js/query/bus.html:6
 #: geoportailv3/static/js/query/cfl_hecto.html:4
-#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/default.html:23
 #: geoportailv3/static/js/query/flik.html:6
 #: geoportailv3/static/js/query/inst_pub.html:5
 #: geoportailv3/static/js/query/meteo.html:5
 #: geoportailv3/static/js/query/mo.html:9
-#: geoportailv3/static/js/query/mymaps.html:15
+#: geoportailv3/static/js/query/mymaps.html:14
 #: geoportailv3/static/js/query/ng95.html:9
 #: geoportailv3/static/js/query/ont_poi.html:5
 #: geoportailv3/static/js/query/parcels.html:13
@@ -737,7 +786,7 @@ msgstr "The layers selected in the catalog are different than the ones loaded in
 msgid "Lien direct vers cet objet"
 msgstr "Direct link to object"
 
-#: geoportailv3/static/js/query/mymaps.html:14
+#: geoportailv3/static/js/query/mymaps.html:13
 msgid "Lien vers la carte"
 msgstr "Link to the map"
 
@@ -752,11 +801,11 @@ msgstr "Link to measurements"
 msgid "Lieudit"
 msgstr "Place name"
 
-#: geoportailv3/static/js/draw/draw.html:11
+#: geoportailv3/static/js/draw/draw.html:13
 msgid "Line"
 msgstr "Line"
 
-#: geoportailv3/static/js/draw/drawdirective.js:650
+#: geoportailv3/static/js/draw/drawdirective.js:690
 msgid "LineString"
 msgstr "Line"
 
@@ -809,19 +858,19 @@ msgstr "Surveying Dossier"
 msgid "Mesurage non disponible"
 msgstr "Measurement unavailable"
 
-#: geoportailv3/templates/index.html:234
+#: geoportailv3/templates/index.html:237
 msgid "Mesurer"
 msgstr "Measure"
 
-#: geoportailv3/static/js/draw/featurepopup.html:67
+#: geoportailv3/static/js/draw/featurepopup.html:72
 msgid "Modification des informations"
 msgstr "Modify information"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:119
+#: geoportailv3/static/js/mymaps/mymaps.html:123
 msgid "Modify title and description of the map"
 msgstr "Modify title and description of the map"
 
-#: geoportailv3/templates/index.html:207
+#: geoportailv3/templates/index.html:210
 msgid "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
 msgstr "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
 
@@ -883,8 +932,9 @@ msgstr "FLIK number"
 msgid "Numero cadastral"
 msgstr "cadastral parcel number"
 
-#: geoportailv3/static/js/draw/featurepopup.html:114
-#: geoportailv3/static/js/draw/styleediting.html:116
+#: geoportailv3/static/js/draw/featurepopup.html:119
+#: geoportailv3/static/js/draw/featurepopup.html:139
+#: geoportailv3/static/js/draw/styleediting.html:123
 msgid "OK"
 msgstr "OK"
 
@@ -898,6 +948,7 @@ msgstr "Get File as a PDF"
 msgid "Occupation"
 msgstr "Occupation"
 
+#: geoportailv3/static/js/askredirect/askredirect.html:11
 #: geoportailv3/static/js/mymaps/mymaps.html:29
 msgid "Oui"
 msgstr "Yes"
@@ -907,7 +958,7 @@ msgstr "Yes"
 msgid "Ouvrir la PF"
 msgstr "Open PF"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:204
+#: geoportailv3/static/js/mymaps/mymaps.html:208
 #: geoportailv3/static/js/mymaps/mymaps.html:6
 msgid "Ouvrir une carte"
 msgstr "Open a map"
@@ -916,7 +967,7 @@ msgstr "Open a map"
 msgid "Ouvrir une carte existante"
 msgstr "Open an exsisting map"
 
-#: geoportailv3/templates/index.html:246
+#: geoportailv3/templates/index.html:249
 msgid "Partager"
 msgstr "Share"
 
@@ -936,7 +987,7 @@ msgstr "Perimeter"
 msgid "Pick layer where problem occurs"
 msgstr "Pick layer where problem occurs"
 
-#: geoportailv3/static/js/draw/styleediting.html:56
+#: geoportailv3/static/js/draw/styleediting.html:59
 msgid "Plain"
 msgstr "Plain"
 
@@ -949,13 +1000,17 @@ msgstr "Please pick a layer"
 msgid "Please select a Category"
 msgstr "Please select a category"
 
+#: geoportailv3/static/js/profile/profile.html:16
+msgid "Please wait, the profile is loading."
+msgstr "Please wait, the profile is loading."
+
 #: geoportailv3/static/js/draw/draw.html:3
-#: geoportailv3/static/js/draw/drawdirective.js:646
+#: geoportailv3/static/js/draw/drawdirective.js:686
 msgid "Point"
 msgstr "Point"
 
-#: geoportailv3/static/js/draw/draw.html:15
-#: geoportailv3/static/js/draw/drawdirective.js:656
+#: geoportailv3/static/js/draw/draw.html:18
+#: geoportailv3/static/js/draw/drawdirective.js:696
 msgid "Polygon"
 msgstr "Polygon"
 
@@ -971,7 +1026,7 @@ msgstr "Height profile"
 msgid "Proprietaire"
 msgstr "Owner"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:132
+#: geoportailv3/static/js/mymaps/mymaps.html:136
 msgid "Public Map"
 msgstr "Public Map"
 
@@ -979,11 +1034,8 @@ msgstr "Public Map"
 msgid "Publics"
 msgstr "Public"
 
-#: geoportailv3/static/js/query/mymaps.html:9
-msgid "Rating"
-msgstr "Rating"
-
-#: geoportailv3/static/js/draw/featurepopup.html:17
+#: geoportailv3/static/js/draw/featurepopup.html:129
+#: geoportailv3/static/js/draw/featurepopup.html:18
 msgid "Rayon:"
 msgstr "Radius:"
 
@@ -1007,7 +1059,7 @@ msgstr "Report a map content problem:"
 msgid "Reset"
 msgstr "Reset"
 
-#: geoportailv3/static/js/draw/featurepopup.html:86
+#: geoportailv3/static/js/draw/featurepopup.html:91
 msgid "Retirer vignette"
 msgstr "Remove thumbnail"
 
@@ -1015,17 +1067,17 @@ msgstr "Remove thumbnail"
 msgid "Revision date"
 msgstr "Revision date"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:152
-#: geoportailv3/static/js/mymaps/mymaps.html:153
-#: geoportailv3/static/js/mymaps/mymaps.html:154
+#: geoportailv3/static/js/mymaps/mymaps.html:156
+#: geoportailv3/static/js/mymaps/mymaps.html:157
+#: geoportailv3/static/js/mymaps/mymaps.html:158
 msgid "Save changes"
 msgstr "Save changes"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:155
+#: geoportailv3/static/js/mymaps/mymaps.html:159
 msgid "Save new map"
 msgstr "Save new map"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:209
+#: geoportailv3/static/js/mymaps/mymaps.html:213
 msgid "Search Maps"
 msgstr "Search Maps"
 
@@ -1057,12 +1109,12 @@ msgstr "Url"
 msgid "Show long url"
 msgstr "Show long URL"
 
-#: geoportailv3/static/js/draw/styleediting.html:63
+#: geoportailv3/static/js/draw/styleediting.html:66
 msgid "Show orientation"
 msgstr "Show orientation"
 
-#: geoportailv3/static/js/draw/styleediting.html:102
-#: geoportailv3/static/js/draw/styleediting.html:90
+#: geoportailv3/static/js/draw/styleediting.html:107
+#: geoportailv3/static/js/draw/styleediting.html:93
 msgid "Size"
 msgstr "Size"
 
@@ -1072,11 +1124,11 @@ msgid "Statut"
 msgstr "Status"
 
 #: geoportailv3/static/js/draw/styleediting.html:35
-#: geoportailv3/static/js/draw/styleediting.html:48
+#: geoportailv3/static/js/draw/styleediting.html:50
 msgid "Stroke width"
 msgstr "Stroke width"
 
-#: geoportailv3/static/js/draw/styleediting.html:55
+#: geoportailv3/static/js/draw/styleediting.html:58
 msgid "Style"
 msgstr "Style"
 
@@ -1103,11 +1155,11 @@ msgstr "Delete all the elements of the map"
 msgid "Surface"
 msgstr "Surface"
 
-#: geoportailv3/static/js/draw/styleediting.html:75
+#: geoportailv3/static/js/draw/styleediting.html:78
 msgid "Symbol"
 msgstr "Symbol"
 
-#: geoportailv3/static/js/draw/styleediting.html:78
+#: geoportailv3/static/js/draw/styleediting.html:81
 msgid ""
 "Symbol\n"
 "            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n"
@@ -1120,7 +1172,7 @@ msgstr "Symbol\n            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'
 msgid "Symbole"
 msgstr "Symbol"
 
-#: geoportailv3/static/js/draw/featurepopup.html:30
+#: geoportailv3/static/js/draw/featurepopup.html:34
 msgid "Terminer édition"
 msgstr "Quit edit mode"
 
@@ -1156,24 +1208,24 @@ msgstr "Theme"
 msgid "Title"
 msgstr "Title"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:120
-#: geoportailv3/static/js/mymaps/mymaps.html:122
+#: geoportailv3/static/js/mymaps/mymaps.html:124
+#: geoportailv3/static/js/mymaps/mymaps.html:126
 msgid "Title and description of the map"
 msgstr "Title and description of the map"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:121
+#: geoportailv3/static/js/mymaps/mymaps.html:125
 msgid "Title and description of the map copy"
 msgstr "Title and description of the map copy"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:245
+#: geoportailv3/static/js/mymaps/mymaps.html:249
 msgid "Titre"
 msgstr "Title"
 
-#: geoportailv3/static/js/mymaps/mymaps.html:127
+#: geoportailv3/static/js/mymaps/mymaps.html:131
 msgid "Titre de la carte"
 msgstr "Title of the map"
 
-#: geoportailv3/static/js/draw/styleediting.html:40
+#: geoportailv3/static/js/draw/styleediting.html:41
 msgid "Transparency"
 msgstr "Transparency"
 
@@ -1188,8 +1240,8 @@ msgstr "Twitter"
 msgid "Type"
 msgstr "Type"
 
-#: geoportailv3/static/js/usermanagerservice.js:145
-#: geoportailv3/static/js/usermanagerservice.js:153
+#: geoportailv3/static/js/usermanagerservice.js:152
+#: geoportailv3/static/js/usermanagerservice.js:160
 msgid "Une erreur est survenue durant la déconnexion."
 msgstr "An error occured while disconnecting"
 
@@ -1201,8 +1253,12 @@ msgstr "Ressource URL"
 msgid "Username"
 msgstr "Username"
 
-#: geoportailv3/static/js/draw/featurepopup.html:94
+#: geoportailv3/static/js/draw/featurepopup.html:99
 msgid "Validate"
+msgstr "Validate"
+
+#: geoportailv3/static/js/draw/featurepopup.html:21
+msgid "Valider"
 msgstr "Validate"
 
 #: geoportailv3/static/js/query/reportdirective.js:131
@@ -1212,6 +1268,10 @@ msgstr "Please accept the terms of the report"
 #: geoportailv3/static/js/draw/symbolselector.html:1
 msgid "Veuillez choisir un symbole dans une des catégories"
 msgstr "Chose a symbol from a category"
+
+#: geoportailv3/static/js/draw/featurepopup.html:126
+msgid "Veuillez entrer les caractéristiques de votre nouveau cercle"
+msgstr "Please specify the details of your new circle"
 
 #: geoportailv3/static/js/query/reportdirective.js:126
 msgid "Veuillez saisir une adresse email valide"
@@ -1227,11 +1287,11 @@ msgid ""
 "l'adresse {{email}} dès qu'il sera disponible"
 msgstr "Your report is being generated. \nYou will receive an email at your address {{email}} as soon as it is available"
 
-#: geoportailv3/static/js/mymapsservice.js:1070
+#: geoportailv3/static/js/mymapsservice.js:1106
 msgid "Votre utilisateur n'a pas les autorisations suffisantes."
 msgstr "Your user has not enough privileges"
 
-#: geoportailv3/static/js/usermanagerservice.js:116
+#: geoportailv3/static/js/usermanagerservice.js:123
 msgid "Vous êtes maintenant correctement connecté."
 msgstr "You are now logged in"
 
@@ -1406,33 +1466,38 @@ msgstr "White background"
 msgid "f_percentage"
 msgstr "Prozentsatz"
 
-#: geoportailv3/templates/index.html:130
+#: geoportailv3/templates/index.html:132
 msgid "infos"
 msgstr "infos"
 
-#: geoportailv3/templates/index.html:46
+#: geoportailv3/templates/index.html:48
 msgid "lang"
 msgstr "Language"
 
-#: geoportailv3/templates/index.html:75
+#: geoportailv3/templates/index.html:77
 msgid "layers"
 msgstr "Layers"
 
-#: geoportailv3/templates/index.html:165
+#: geoportailv3/templates/index.html:167
 msgid "legends"
 msgstr "legends"
 
-#: geoportailv3/templates/index.html:83
+#: geoportailv3/templates/index.html:85
 msgid "my_layers"
 msgstr "My layers"
 
-#: geoportailv3/templates/index.html:111
+#: geoportailv3/templates/index.html:113
 msgid "my_maps"
 msgstr "My Maps"
 
+#: geoportailv3/static/js/draw/featurepopup.html:131
 #: geoportailv3/static/js/locationinfo/locationinfo.html:25
 msgid "mètres"
 msgstr "meters"
+
+#: geoportailv3/static/js/search/searchdirective.js:448
+msgid "open in theme"
+msgstr "open in theme"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:70
 msgid "pf_aire de loisirs"
@@ -1493,6 +1558,10 @@ msgstr "BDTopo building"
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:97
 msgid "pf_bâtiment commercial"
 msgstr "commercial building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:129
+msgid "pf_bâtiment non défini"
+msgstr "Undefined building"
 
 #: geoportailv3/static/js/query/attribute_values_for_translation.html:94
 msgid "pf_bâtiment public"
@@ -1790,13 +1859,29 @@ msgstr "forestry"
 msgid "rem_typ_5002"
 msgstr "viticultural"
 
-#: geoportailv3/templates/index.html:37
+#: geoportailv3/templates/index.html:39
 msgid "search"
 msgstr "Search"
 
-#: geoportailv3/templates/index.html:39
+#: geoportailv3/static/js/query/mymaps.html:5
+msgid "sentier"
+msgstr "Path:"
+
+#: geoportailv3/templates/index.html:41
 msgid "user"
 msgstr "User"
+
+#: geoportailv3/static/js/print/printdirective.js:560
+msgid ""
+"www.geoportail.lu est un portail d'accès aux informations géolocalisées, "
+"données et services qui sont mis à disposition par les administrations "
+"publiques luxembourgeoises. Responsabilité: Malgré la grande attention "
+"qu’elles portent à la justesse des informations diffusées sur ce site, les "
+"autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à "
+"l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces "
+"informations. Information dépourvue de foi publique. Droits d'auteur: "
+"Administration du Cadastre et de la Topographie. http://g-o.lu/copyright"
+msgstr "www.geoportal.lu offers spatial data & services provided by Luxembourg government bodies. Responsibiliy: Despite the great care taken by the official instances regarding the exactitude of the published data, the authorities cannot assume any responsibility regarding fidelity, exactitude, up-to-dateness, reliability and integrity of these informations. Information without legal value.\nCopyright: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright"
 
 #: geoportailv3/static/js/query/batiments.html:3
 msgid "{{(\"bat_\"+feature.attributes.type) | translate}}"
@@ -1810,7 +1895,7 @@ msgstr "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
 msgid "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
 msgstr "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
 
-#: geoportailv3/static/js/draw/featurepopup.html:108
+#: geoportailv3/static/js/draw/featurepopup.html:113
 msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
 msgstr "Are you sure you want to delete this element from the map?"
 
@@ -2614,7 +2699,7 @@ msgstr "Geological map, new edition"
 msgid "tour_mymaps"
 msgstr "Foot trails"
 
-#: lu_ext_wms.316
+#: lu_ext_wms.316 lu_int_wms.749
 msgid "env_sentiersnature"
 msgstr "Nature trails"
 
@@ -2824,7 +2909,7 @@ msgstr "Small winegrowing areas"
 
 #: lu_int_wms.297
 msgid "ivv_flik_parcels"
-msgstr "FLIK reference parcels for Vineyards 2015"
+msgstr "FLIK reference parcels for Vineyards 2016"
 
 #: l_wmts.326
 msgid "env_bruit_axes_routiers_lden"
@@ -4270,7 +4355,7 @@ msgstr "Climate map"
 
 #: lu_int_wms.510
 msgid "ivv_parcels"
-msgstr "Vineyards 2015"
+msgstr "Vineyards 2016"
 
 #: l_wmts.420
 msgid "eau_new_HQ100_mittlere_Wahrscheinlichkeit"
@@ -4359,3 +4444,35 @@ msgstr "Graticules in LUREF "
 #: lu_int_wms.740
 msgid "asta_herbages_sensibles"
 msgstr "Herbages sensibles"
+
+#: lu_ext_wms.741
+msgid "Données saisies par l'armée luxembourgeoise"
+msgstr ""
+
+#: group.742
+msgid "Armée luxembourgeoise"
+msgstr ""
+
+#: lu_int_wms.743
+msgid "aero_1987_30k"
+msgstr "Aerial images from 1987 (1:30k)"
+
+#: lu_int_wms.744
+msgid "tour_ort"
+msgstr "Regional Tourist Offices"
+
+#: l_wmts.745
+msgid "ortho_2016"
+msgstr "Orthophoto 2016"
+
+#: lu_int_wms.746
+msgid "tour_leader"
+msgstr " LEADER Areas"
+
+#: lu_int_wms.747
+msgid "tour_parcsnaturels"
+msgstr "Nature Parks"
+
+#: lu_int_wms.748
+msgid "aero_1994_30k"
+msgstr "Aerial images from 1994 (1:30k)"
