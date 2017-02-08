@@ -1,0 +1,9 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<table>
+<th translate>Num ligne</th>
+<th translate>Description</th>
+<tr ng-repeat="feature in layers.features | orderBy: 'attributes.label'" class="poi-feature">
+  <td>{{feature.attributes.label}}</td>
+  <td><a class="fid-link" href="?map_id={{feature.attributes.map_id}}" target='_blank' translate>{{feature.attributes.map_description}}</a><br></td>
+</tr>
+</table>
