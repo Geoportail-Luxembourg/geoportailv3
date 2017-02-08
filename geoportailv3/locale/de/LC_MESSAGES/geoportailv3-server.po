@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2016-11-30 16:28+0000\n"
-"Last-Translator: Jeff Konnen <jaykayone@gmail.com>\n"
+"PO-Revision-Date: 2017-01-30 16:15+0000\n"
+"Last-Translator: Jeff Konnen <jeff.konnen@act.etat.lu>\n"
 "Language-Team: German (http://www.transifex.com/geoportail/geoportailv3-lu/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,7 +32,7 @@ msgstr "Bonjour!\n<br>\nil y a eu un souci avec la génération de votre rapport
 msgid "PAG Mail the report link ${link}"
 msgstr "Bonjour!\n<br>\n<br>\nVotre rapport PAG est finalisé.\n<br>\n<br>\n<a href=\"${link}\">Cliquez-ici pour télécharger le résultat.</a>\n<br>\n<br>\nMeilleures salutations\n<br>\nL'équipe du géoportail et du Ministère de l'Intérieur"
 
-#: ./geoportailv3/views/luxprintproxy.py:146
+#: ./geoportailv3/views/luxprintproxy.py:147
 msgid "Access constraints"
 msgstr "Zugangsbestimmungen"
 
@@ -131,3 +131,7 @@ msgstr "Order of columns"
 #: ./geoportailv3/models.py:100
 msgid "ID column name"
 msgstr "ID column name"
+
+#: ./geoportailv3/models.py:102
+msgid "Is a profile displayed in template ?"
+msgstr ""
