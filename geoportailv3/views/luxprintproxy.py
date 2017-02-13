@@ -74,14 +74,17 @@ class LuxPrintProxy(PrintProxy):
 
     @view_config(route_name="lux_printproxy_report_create")
     def lux_report_create(self):
-        resp, content = self._proxy("%s/report.%s" % (
-            self.config["print_url"],
-            self.request.matchdict.get("format")
-        ))
+        token = self.config["authtkt_secret"]
+
         spec = json.loads(self.request.body)
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
+                if "customParams" in map_layer:
+                    map_layer["customParams"]["TOKEN"] = token
+                else:
+                    map_layer["customParams"] = {"TOKEN": token}
+
                 for layer in map_layer["layers"]:
                     internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
                         LuxLayerInternalWMS.layer == layer).first()
@@ -89,8 +92,14 @@ class LuxPrintProxy(PrintProxy):
                        not self._is_authorized(internal_wms):
                             return HTTPUnauthorized()
         job = LuxPrintJob()
+        job.spec = json.dumps(spec)
+        self.request.body = job.spec
+        resp, content = self._proxy("%s/report.%s" % (
+            self.config["print_url"],
+            self.request.matchdict.get("format")
+        ))
         job.id = json.loads(content)["ref"]
-        job.spec = self.request.body
+
         job.creation = datetime.now()
         DBSession.add(job)
         return self._build_response(
