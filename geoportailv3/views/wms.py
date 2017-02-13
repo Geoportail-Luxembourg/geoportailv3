@@ -17,6 +17,12 @@ class Wms(object):
     def __init__(self, request):
         self.request = request
 
+    def _check_token(self, token):
+        config = self.request.registry.settings
+        if config["authtkt_secret"] == token:
+            return True
+        return False
+
     def _check_ip(self, client_ip):
         client_ip = IPv4Network(client_ip).ip
         config = self.request.registry.settings
@@ -46,11 +52,13 @@ class Wms(object):
             return HTTPNotFound()
 
         # If the layer is not public check if it comes from an authorized url
-        # or from a connected user
+        # or from a connected user or uses the right token
         if not internal_wms.public and self.request.user is None:
             remote_addr = str(self.request.environ.get(
                 'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
-            if not self._check_ip(remote_addr.split(",")[0]):
+
+            if not self._check_token(self.request.params.get('TOKEN')) and \
+               not self._check_ip(remote_addr.split(",")[0]):
                 return HTTPUnauthorized()
 
         # If the layer is not public and we are connected check the rights
