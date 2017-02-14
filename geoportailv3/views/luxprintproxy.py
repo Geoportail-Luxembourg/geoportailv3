@@ -81,9 +81,9 @@ class LuxPrintProxy(PrintProxy):
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
                 if "customParams" in map_layer:
-                    map_layer["customParams"]["TOKEN"] = token
+                    map_layer["customParams"]["GP_TOKEN"] = token
                 else:
-                    map_layer["customParams"] = {"TOKEN": token}
+                    map_layer["customParams"] = {"GP_TOKEN": token}
 
                 for layer in map_layer["layers"]:
                     internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
