@@ -57,7 +57,7 @@ class Wms(object):
             remote_addr = str(self.request.environ.get(
                 'HTTP_X_FORWARDED_FOR', self.request.environ['REMOTE_ADDR']))
 
-            if not self._check_token(self.request.params.get('TOKEN')) and \
+            if not self._check_token(self.request.params.get('GP_TOKEN')) and \
                not self._check_ip(remote_addr.split(",")[0]):
                 return HTTPUnauthorized()
 
