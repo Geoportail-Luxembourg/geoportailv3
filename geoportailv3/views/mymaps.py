@@ -668,14 +668,20 @@ class Mymaps(object):
             cur_file = DBSession.query(Images).\
                 filter(Images.name == filename).one()
             the_image = cur_file.image
-            if cur_file.name.lower().endswith(".jpg"):
+            lower_file_name = cur_file.name.lower()
+            if "." in lower_file_name:
+                splitted_name = cur_file.name.lower().split(".")
+                headers = {'Content-Type': 'image/'+splitted_name[-1]}
+            if lower_file_name.endswith(".jpg"):
                 headers = {'Content-Type': 'image/jpeg'}
-            if cur_file.name.lower().endswith(".jpeg"):
+            if lower_file_name.endswith(".jpeg"):
                 headers = {'Content-Type': 'image/jpeg'}
-            if cur_file.name.lower().endswith(".gif"):
+            if lower_file_name.endswith(".gif"):
                 headers = {'Content-Type': 'image/gif'}
-            if cur_file.name.lower().endswith(".png"):
+            if lower_file_name.endswith(".png"):
                 headers = {'Content-Type': 'image/png'}
+            if lower_file_name.endswith(".bmp"):
+                headers = {'Content-Type': 'image/bmp'}
 
             return Response(the_image, headers=headers)
 
