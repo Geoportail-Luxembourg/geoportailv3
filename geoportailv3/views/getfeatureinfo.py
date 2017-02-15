@@ -483,8 +483,7 @@ class Getfeatureinfo(object):
                         f = None
                 if f is not None:
                     feature['attributes']['has_sketch'] = True
-
-                features.append(feature)
+            features.append(feature)
 
         return features
 
