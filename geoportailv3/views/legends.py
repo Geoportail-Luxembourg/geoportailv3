@@ -22,7 +22,7 @@ class Legends(object):
         name = self.request.params.get("name")
 
         url = \
-            "http://wiki.geoportail.lu/doku.php?" \
+            "https://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
             (lang, name)
 
@@ -43,7 +43,7 @@ class Legends(object):
         if lang == 'lb':
             lang = 'lu'
         url = \
-            "http://wiki.geoportail.lu/doku.php?" \
+            "https://wiki.geoportail.lu/doku.php?" \
             "id=%s:legend:%s&do=export_html" % \
             (lang, name)
 
@@ -51,12 +51,12 @@ class Legends(object):
         data = f.read()
         data = data.replace(
             "/lib/exe/fetch.php",
-            "http://wiki.geoportail.lu/lib/exe/fetch.php")
+            "https://wiki.geoportail.lu/lib/exe/fetch.php")
         data = data.replace(
-            "src=\"img/", "src=\"http://wiki.geoportail.lu/img/")
+            "src=\"img/", "src=\"https://wiki.geoportail.lu/img/")
         data = data.replace(
             "/lib/exe/detail.php",
-            "http://wiki.geoportail.lu/lib/exe/detail.php")
+            "https://wiki.geoportail.lu/lib/exe/detail.php")
 
         soup = BeautifulSoup(data, "lxml")
         a_tags = soup.find_all("a")
