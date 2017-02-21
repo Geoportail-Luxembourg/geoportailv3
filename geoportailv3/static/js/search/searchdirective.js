@@ -62,9 +62,6 @@ app.searchDirective = function(appSearchTemplateUrl) {
           element.find('input').one('focus', function() {
             $(this).addClass('placeholder-text');
           });
-          element.find('input').on('click', function() {
-            $(this).select();
-          });
           element.find('input').on(
               'input propertyChange focus blur', function() {
                 var clearButton =
