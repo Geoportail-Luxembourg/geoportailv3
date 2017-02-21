@@ -195,6 +195,7 @@ app.FeedbackController.prototype.sendReport = function() {
         'Feedback sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
       this.notify_(msg, app.NotifyNotificationType.INFO);
+      this['active'] = false;
     }, this))
     .error(goog.bind(function(data, status, headers, config) {
       var msg = this.gettextCatalog.getString(
