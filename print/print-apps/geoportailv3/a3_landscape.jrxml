@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-01-23T10:34:44 -->
+<!-- 2017-02-21T14:15:08 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1064" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="28" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
@@ -52,7 +52,9 @@
 				<subreportExpression><![CDATA[$P{mapSubReport}]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="734" y="710" width="230" height="34" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d"/>
+				<reportElement x="734" y="713" width="230" height="40" backcolor="#FFFFFF" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<subreportExpression><![CDATA[$P{scalebarSubReport}]]></subreportExpression>
 			</subreport>
 			<textField>
@@ -78,14 +80,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{scaleTitle}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="869" y="699" width="71" height="40" uuid="7a0a9863-e339-4697-b24b-d6178dbb85c5"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{scale}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[CONCATENATE($P{scaleTitle}, $P{scale})]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement x="1024" y="710" width="40" height="40" uuid="4e19a7b3-e5c9-4db3-ba26-65fd8e83fba6">
