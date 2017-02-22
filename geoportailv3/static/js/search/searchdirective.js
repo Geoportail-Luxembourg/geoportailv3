@@ -576,7 +576,7 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
             var resultPoint =
               /** @type {ol.geom.Point} */ (feature.getGeometry());
             var resultString = this.coordinateString_(
-            resultPoint.getCoordinates(), mapEpsgCode, epsgCode);
+            resultPoint.getCoordinates(), mapEpsgCode, epsgCode, false, false);
             feature.set('label', resultString);
             feature.set('epsgLabel', re[epsgCode].label);
             results.push(feature);

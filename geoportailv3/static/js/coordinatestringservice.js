@@ -13,7 +13,7 @@ goog.require('ol.proj');
 
 
 /**
- * @typedef {function(ol.Coordinate, string, string, boolean=):string}
+ * @typedef {function(ol.Coordinate, string, string, boolean, boolean):string}
  */
 app.CoordinateString;
 
@@ -30,11 +30,12 @@ app.coordinateString_ = function() {
    * @param {ol.Coordinate} coordinate The coordinate.
    * @param {string} sourceEpsgCode The source epsg.
    * @param {string} targetEpsgCode The target epsg.
-   * @param {boolean=} opt_DMS True if DMS.
+   * @param {boolean} opt_DMS True if DMS.
+   * @param {boolean} opt_DMm True if Degree decimal minutes.
    * @return {string} The coordinate string.
    */
   function coordinateString(coordinate, sourceEpsgCode,
-      targetEpsgCode, opt_DMS) {
+      targetEpsgCode, opt_DMS, opt_DMm) {
     var str = '';
     if (targetEpsgCode === 'EPSG:3263*') {
       var lonlat = /** @type {ol.Coordinate} */
@@ -50,11 +51,16 @@ app.coordinateString_ = function() {
         str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
         break;
       case 'EPSG:4326':
-        if (goog.isDef(opt_DMS) && opt_DMS === true) {
+        if (opt_DMS) {
           var hdms = toStringHDMS_(coordinate);
           var yhdms = hdms.split(' ').slice(0, 4).join(' ');
           var xhdms = hdms.split(' ').slice(4, 8).join(' ');
           str = xhdms + ' | ' + yhdms;
+        } else if (opt_DMm) {
+          var hdmm = toStringHDMm_(coordinate);
+          var yhdmm = hdmm.split(' ').slice(0, 3).join(' ');
+          var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
+          str = xhdmm + ' | ' + yhdmm;
         } else {
           str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
         }
@@ -85,6 +91,20 @@ app.coordinateString_ = function() {
 
   /**
    * @private
+   * @param {ol.Coordinate|undefined} coordinate Coordinate.
+   * @return {string} Hemisphere, degrees, decimal minutes.
+   */
+  function toStringHDMm_(coordinate) {
+    if (goog.isDef(coordinate)) {
+      return degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
+          degreesToStringHDMm_(coordinate[0], 'EW');
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * @private
    * @param {number} degrees Degrees.
    * @param {string} hemispheres Hemispheres.
    * @return {string} String.
@@ -97,6 +117,25 @@ app.coordinateString_ = function() {
         goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
         Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
         '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+  }
+
+  /**
+   * @private
+   * @param {number} degrees Degrees.
+   * @param {string} hemispheres Hemispheres.
+   * @return {string} String.
+   */
+  function degreesToStringHDMm_(degrees, hemispheres) {
+    var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+    var x = Math.abs(3600 * normalizedDegrees);
+    var dd = x / 3600;
+    var m = (dd - Math.floor(dd)) * 60;
+
+    var res = Math.floor(dd) + '\u00b0 ' +
+        goog.string.padNumber(Math.floor(m), 2) + ',' +
+        Math.floor((m - Math.floor(m)) * 100000) +
+        '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+    return res;
   }
 };
 

@@ -216,6 +216,7 @@ app.LocationinfoController = function(
     'EPSG:2169': 'Luref',
     'EPSG:4326': 'Lon/Lat WGS84',
     'EPSG:4326:DMS': 'Lon/Lat WGS84 DMS',
+    'EPSG:4326:DMm': 'Lon/Lat WGS84 DM',
     'EPSG:3263*': 'WGS84 UTM'
   };
 
@@ -350,12 +351,14 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
   goog.object.forEach(this.projections_, function(value, key) {
     var sourceEpsgCode = this['map'].getView().getProjection().getCode();
     if (key === 'EPSG:4326:DMS') {
-      var epsgCode = goog.string.remove(key, ':DMS');
       this['location'][value] = this.coordinateString_(
-          coordinate, sourceEpsgCode, epsgCode, true);
+          coordinate, sourceEpsgCode, 'EPSG:4326', true, false);
+    } else if (key === 'EPSG:4326:DMm') {
+      this['location'][value] = this.coordinateString_(
+          coordinate, sourceEpsgCode, 'EPSG:4326', false, true);
     } else {
       this['location'][value] = this.coordinateString_(
-          coordinate, sourceEpsgCode, key);
+          coordinate, sourceEpsgCode, key, false, false);
     }
   }, this);
 };
