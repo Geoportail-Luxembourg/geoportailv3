@@ -86,7 +86,8 @@ class Map(Base):
     @staticmethod
     def belonging_to(user):
         """ Get maps that belong to user. """
-        maps = DBSession.query(Map).filter(Map.user_login == user)\
+        maps = DBSession.query(Map).filter(
+            func.lower(Map.user_login) == func.lower(user)) \
             .order_by("category_id asc,title asc").all()
 
         return [{'title': map.title,
@@ -96,7 +97,7 @@ class Map(Base):
                  'update_date': map.update_date,
                  'category': map.category.name
                  if map.category_id is not None else None,
-                 'owner': map.user_login} for map in maps]
+                 'owner': map.user_login.lower()} for map in maps]
 
 
 class Feature(Base):

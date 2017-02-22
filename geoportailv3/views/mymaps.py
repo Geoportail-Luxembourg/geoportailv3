@@ -119,8 +119,10 @@ class Mymaps(object):
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                     allowed_categories),
-                                     Map.user_login != user.username),
-                                Map.user_login == user.username
+                                     func.lower(Map.user_login) !=
+                                     func.lower(user.username)),
+                                func.lower(Map.user_login) ==
+                                func.lower(user.username)
                                 ))
                 if user.is_admin and user.mymaps_role != 1:
                     if category is not None:
@@ -129,25 +131,30 @@ class Mymaps(object):
                                 or_(
                                     and_(func.coalesce(Map.category_id, 999) ==
                                          category,
-                                         Map.public == True, Map.user_login !=
-                                         user.username),
+                                         Map.public == True,
+                                         func.lower(Map.user_login) !=
+                                         func.lower(user.username)),
                                     and_(func.coalesce(Map.category_id, 999) ==
                                          category,
-                                         Map.user_login == user.username)
+                                         func.lower(Map.user_login) ==
+                                         func.lower(user.username))
                                     )) # noqa
                         else:
                             query = DBSession.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category,
-                                     Map.user_login == user.username))
+                                     func.lower(Map.user_login) ==
+                                     func.lower(user.username)))
                     else:
                         query = DBSession.query(Map).filter(
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
                                      Map.public == True,
-                                     Map.user_login != user.username),
-                                Map.user_login == user.username
+                                     func.lower(Map.user_login) !=
+                                     func.lower(user.username)),
+                                func.lower(Map.user_login) ==
+                                func.lower(user.username)
                                 )) # noqa
             else:
                 if user.is_admin and user.mymaps_role == 1:
@@ -157,26 +164,32 @@ class Mymaps(object):
                             return HTTPUnauthorized()
                         query = DBSession.query(Map).filter(
                             func.coalesce(Map.category_id, 999) == category)\
-                            .filter(Map.user_login == owner)
+                            .filter(func.lower(Map.user_login) ==
+                                    func.lower(owner))
                     else:
                         if owner != user.username:
                             query = DBSession.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
-                                     Map.user_login == owner))
+                                     func.lower(Map.user_login) ==
+                                     func.lower(owner)))
                         else:
                             query = DBSession.query(Map).\
-                                filter(Map.user_login == user.username)
+                                filter(func.lower(Map.user_login) ==
+                                       func.lower(user.username))
 
                 if user.is_admin and user.mymaps_role != 1\
                    and owner == user.username:
                     if category is not None:
                         query = DBSession.query(Map).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
-                                 category, Map.user_login == user.username))
+                                 category,
+                                 func.lower(Map.user_login) ==
+                                 func.lower(user.username)))
                     else:
                         query = DBSession.query(Map).\
-                            filter(Map.user_login == user.username)
+                            filter(func.lower(Map.user_login) ==
+                                   func.lower(user.username))
                 if user.is_admin and user.mymaps_role != 1\
                    and owner != user.username:
                     if category is not None:
@@ -184,23 +197,24 @@ class Mymaps(object):
                             query = DBSession.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category, Map.public == True,
-                                     Map.user_login == owner)) # noqa
+                                     func.lower(Map.user_login) == func.lower(owner))) # noqa
                         else:
                             return HTTPUnauthorized()
 
                     else:
                         query = DBSession.query(Map).filter(
                             and_(Map.public == True,
-                                 Map.user_login == owner)) # noqa
+                                 func.lower(Map.user_login) == func.lower(owner))) # noqa
                 if not user.is_admin and owner == user.username:
                     if category is not None:
                         query = DBSession.query(Map).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
                                  category,
-                                 Map.user_login == owner)) # noqa
+                                 func.lower(Map.user_login) == func.lower(owner))) # noqa
                     else:
                         query = DBSession.query(Map).\
-                            filter(Map.user_login == owner)
+                            filter(func.lower(Map.user_login) ==
+                                   func.lower(owner))
 
         if query is not None:
             maps = query.order_by("category_id asc,title asc").all()
@@ -211,7 +225,7 @@ class Mymaps(object):
                      'update_date': map.update_date,
                      'category': map.category.name
                      if map.category_id is not None else None,
-                     'owner': map.user_login} for map in maps]
+                     'owner': map.user_login.lower()} for map in maps]
         return []
 
     @view_config(route_name="mymaps_users_categories", renderer='json')
@@ -222,11 +236,12 @@ class Mymaps(object):
         user_role = DBSession.query(Role).get(user.mymaps_role)
 
         if user.is_admin and user.mymaps_role == 1:
-            users = DBSession.query(Map.user_login, func.coalesce(
-                    Map.category_id, 999).label("category_id")).\
+            users = DBSession.query(
+                    func.lower(Map.user_login).label("user_login"),
+                    func.coalesce(Map.category_id, 999).label("category_id")).\
                 filter(func.coalesce(Map.category_id, 999).in_(
                     [c.id for c in user_role.categories])).\
-                group_by(Map.user_login,
+                group_by(func.lower(Map.user_login),
                          func.coalesce(Map.category_id, 999)).all()
             user_categories = {}
             for cur_user in users:
@@ -243,14 +258,15 @@ class Mymaps(object):
 
         if user.is_admin and user.mymaps_role != 1:
             users = DBSession.query(
-                    Map.user_login,
+                    func.lower(Map.user_login),
                     func.coalesce(Map.category_id, 999).label("category_id")).\
                 filter((and_(func.coalesce(Map.category_id, 999).in_(
                     [c.id for c in user_role.categories]),
                     Map.public == True)) |
                     and_(Map.public == False,
-                         Map.user_login == user.username)).\
-                group_by(Map.user_login,
+                         func.lower(Map.user_login) ==
+                         func.lower(user.username))).\
+                group_by(func.lower(Map.user_login),
                          func.coalesce(Map.category_id, 999)).all() # noqa
             user_categories = {}
             for cur_user in users:
@@ -267,7 +283,7 @@ class Mymaps(object):
 
         categies_id = DBSession.query(
             func.coalesce(Map.category_id, 999).label("category_id")).\
-            filter(Map.user_login == user.username).\
+            filter(func.lower(Map.user_login) == func.lower(user.username)).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
 
         return [{'username': user.username, 'categories':
@@ -504,7 +520,7 @@ class Mymaps(object):
     def has_permission(self, user, map):
         if user is None:
             return False
-        if map.user_login != user.username:
+        if map.user_login.lower() != user.username.lower():
             user = self.request.user
             if not user.is_admin:
                 return False
@@ -860,7 +876,8 @@ class Mymaps(object):
                 if user is None:
                     return HTTPUnauthorized()
                 for symbol in DBSession.query(Symbols).\
-                        filter(Symbols.login_owner == user.username).all():
+                        filter(func.lower(Symbols.login_owner) ==
+                               func.lower(user.username)).all():
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
                                     'url': "/symbol/%s"
@@ -969,7 +986,7 @@ class Mymaps(object):
             return HTTPNotFound()
 
         # read the map author's email address from LDAP
-        author = self.get_user_info(map.user_login)
+        author = self.get_user_info(map.user_login.lower())
 
         comment = self.request.params.get('comment')
 
