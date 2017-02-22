@@ -68,6 +68,7 @@ app.ProjectionselectorDirectiveController =
     {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
+    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DM'), 'value': 'EPSG:4326:DMm'},
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
       ];
       this['projection'] = this['projectionOptions'][0];
@@ -90,11 +91,12 @@ app.ProjectionselectorDirectiveController.prototype.mouseCoordinateFormat_ =
       var mapEpsgCode =
       this['map'].getView().getProjection().getCode();
       if (this['projection']['value'] === 'EPSG:4326:DMS') {
-        var epsgCode = goog.string.remove(this['projection']['value'], ':DMS');
-        return this.coordinateString_(coord, mapEpsgCode, epsgCode, true);
+        return this.coordinateString_(coord, mapEpsgCode, 'EPSG:4326', true, false);
+      } else if (this['projection']['value'] === 'EPSG:4326:DMm') {
+        return this.coordinateString_(coord, mapEpsgCode, 'EPSG:4326', false, true);
       } else {
         return this.coordinateString_(
-        coord, mapEpsgCode, this['projection']['value']);
+        coord, mapEpsgCode, this['projection']['value'], false, false);
       }
     };
 
