@@ -418,8 +418,8 @@ class PF():
             return False
 
         if (self.dbsession.query(LuxMeasurementLoginCommune).
-                filter(LuxMeasurementLoginCommune.login ==
-                       func.geov3.getMainAccount(user.username)).
+                filter(func.lower(LuxMeasurementLoginCommune.login) ==
+                       func.lower(func.geov3.getMainAccount(user.username))).
                 filter(LuxMeasurementLoginCommune.num_commune ==
                        town_info.get("townNum")).count() > 0):
             return True
