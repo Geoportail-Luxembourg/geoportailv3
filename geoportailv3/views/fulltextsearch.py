@@ -40,48 +40,44 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
-                        "bool": {
-                            "should": [
-                                {
-                                    "multi_match": {
-                                        "type": "most_fields",
-                                        "fields": [
-                                            "label^3",
-                                            "label.ngram^2",
-                                            "label.simplified^2"
-                                        ],
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                },
-                                {
-                                    "multi_match": {
-                                        "type": "most_fields",
-                                        "fields": [
-                                            "label.ngram",
-                                            "label.simplified"
-                                        ],
-                                        "fuzziness": "auto",
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                }
-                            ]
-                        }
-                    },
+                "bool": {
                     "filter": {
                         "bool": {
                             "must": [],
                             "should": [],
                             "must_not": [],
                         }
-                    }
+                    },
+                    "should": [
+                        {
+                            "multi_match": {
+                                "type": "most_fields",
+                                "fields": [
+                                    "label^3",
+                                    "label.ngram^2",
+                                    "label.simplified^2"
+                                ],
+                                "operator": "and",
+                                "query": query
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "type": "most_fields",
+                                "fields": [
+                                    "label.ngram",
+                                    "label.simplified"
+                                ],
+                                "fuzziness": "auto",
+                                "operator": "and",
+                                "query": query
+                            }
+                        }
+                    ]
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "poi"}})
 
@@ -145,8 +141,15 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
+                "bool": {
+                    "filter": {
+                        "bool": {
+                            "must": [],
+                            "should": [],
+                            "must_not": [],
+                        }
+                    },
+                    "must": {
                         "multi_match": {
                             "type": "most_fields",
                             "fields": [
@@ -163,17 +166,10 @@ class FullTextSearchView(object):
                             "query": query
                         }
                     },
-                    "filter": {
-                        "bool": {
-                            "must": [],
-                            "should": [],
-                            "must_not": [],
-                        }
-                    },
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "layer"}})
 
