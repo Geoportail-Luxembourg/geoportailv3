@@ -362,8 +362,15 @@ app.MainController = function(
         feature.set('__refreshProfile__', true);
       }
     }.bind(this));
-  }.bind(this));
 
+    this.appThemes_.getThemeObject(
+      this.appTheme_.getCurrentTheme()).then(function() {
+        var zoom = Number(appStateManager.getInitialValue('zoom'));
+        if (zoom > 19) {
+          this.map_.getView().setZoom(zoom);
+        }
+      }.bind(this));
+  }.bind(this));
 };
 
 
