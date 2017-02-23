@@ -41,6 +41,7 @@ class FullTextSearchView(object):
         query_body = {
             "query": {
                 "bool": {
+                    "minimum_should_match": 2,
                     "filter": {
                         "bool": {
                             "must": [],
@@ -51,9 +52,9 @@ class FullTextSearchView(object):
                     "should": [
                         {
                             "multi_match": {
-                                "type": "most_fields",
+                                "type": "best_fields",
                                 "fields": [
-                                    "label^3",
+                                    "label^2",
                                     "label.ngram^2",
                                     "label.simplified^2"
                                 ],
@@ -63,14 +64,36 @@ class FullTextSearchView(object):
                         },
                         {
                             "multi_match": {
-                                "type": "most_fields",
+                                "type": "best_fields",
                                 "fields": [
+                                    "label",
                                     "label.ngram",
                                     "label.simplified"
                                 ],
-                                "fuzziness": "auto",
+                                "fuzziness": 1,
                                 "operator": "and",
                                 "query": query
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Commune", "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Localité", "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "wildcard": {
+                                "layer_name": {
+                                    "value": "editus_poi*", "boost": -1.5
+                                }
                             }
                         }
                     ]
