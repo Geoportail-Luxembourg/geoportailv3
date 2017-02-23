@@ -25,6 +25,8 @@ from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
 import logging
+import urllib2
+import json
 log = logging.getLogger(__name__)
 
 
@@ -38,6 +40,7 @@ class Mymaps(object):
 
     def __init__(self, request):
         self.request = request
+        self.config = self.request.registry.settings
 
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):
@@ -365,10 +368,13 @@ class Mymaps(object):
         if 'category_id' in params:
             cat = params.get('category_id')
             map.category_id = None if cat == '' else cat
+        trigger_fme = False
+
         if 'public' in params:
             str = unicode(params.get('public'))
             if str.lower() == u'true':
                 map.public = True
+                trigger_fme = True
         map.create_date = None
         map.update_date = None
         DBSession.add(map)
@@ -383,6 +389,12 @@ class Mymaps(object):
                 f.id = None
                 map.features.append(f)
             DBSession.commit()
+        try:
+            if trigger_fme:
+                self.notify_at_save(map, map.user_login, map.uuid, map.title,
+                                    map.category.name)
+        except Exception as e:
+            log.exception(e)
 
         return {'success': map.uuid is not None, 'uuid': map.uuid}
 
@@ -455,6 +467,7 @@ class Mymaps(object):
 
             map.features.append(obj)
             DBSession.commit()
+
             return {'success': True, 'id': obj.id}
         except Exception as e:
             log.exception(e)
@@ -491,6 +504,7 @@ class Mymaps(object):
                 map.features.append(obj)
 
             DBSession.commit()
+
             return {'success': True}
         except Exception as e:
             log.exception(e)
@@ -550,6 +564,7 @@ class Mymaps(object):
             DBSession.delete(f)
         DBSession.delete(map)
         DBSession.commit()
+
         return {'success': True}
 
     @view_config(route_name="mymaps_delete_all_features", renderer='json')
@@ -568,6 +583,7 @@ class Mymaps(object):
         for f in features:
             DBSession.delete(f)
         DBSession.commit()
+
         return {'success': True}
 
     def save(self, map, id=None):
@@ -615,46 +631,30 @@ class Mymaps(object):
         if 'category_id' in params:
             cat = params.get('category_id')
             map.category_id = None if cat == '' else cat
+        trigger_fme = False
         if 'public' in params:
             str = unicode(params.get('public'))
             if str == u'true':
+                if not map.public:
+                    trigger_fme = True
                 map.public = True
             elif str == u'false':
                 map.public = False
         if 'label' in params:
             map.label = unicode(params.get('label'))
-        # if '_dc' not in params:
-        #     map.public = params.get('public') == 'on'
 
-        #
-        # deal with the features
-        #
-        # delete all features for the given map
-        # if id:
-        #    DBSession.query(Feature).filter(Feature.map_id == id).delete()
-        # if 'features' in params:
-        #    features = params.get('features').replace(u'\ufffd', '?')
-        #    collection = geojson.loads(
-        #        features, object_hook=geojson.GeoJSON.to_instance)
-        #
-        #    if not isinstance(collection, geojson.FeatureCollection):
-        #        return HTTPBadRequest()
-        #
-        #    for feature in collection.features:
-        #        if not isinstance(feature, geojson.Feature):
-        #            return HTTPBadRequest()
-        #        obj = Feature(feature)
-        #        map.features.append(obj)
-
-        #
-        # send everything to the DB
-        #
         try:
             DBSession.add(map)
             DBSession.commit()
         except Exception as e:
             log.exception(e)
             return {'success': False}
+        try:
+            if trigger_fme:
+                self.notify_at_save(map, map.user_login, map.uuid, map.title,
+                                    map.category.name)
+        except Exception as e:
+            log.exception(e)
 
         return {'success': True, 'uuid': map.uuid}
 
@@ -1046,3 +1046,26 @@ class Mymaps(object):
                 return HTTPNotFound()
 
             return (user, mail_address)
+
+    def notify_at_save(self, map, username, id, name, category):
+
+        if self.config["modify_notification"]["url"] is not None and\
+           "admin_email" in self.config["modify_notification"]:
+            url = self.config["modify_notification"]["url"]
+            admin_email = self.config["modify_notification"]["admin_email"]
+            email_cc = ""
+            if "email_cc" in self.config["modify_notification"]:
+                email_cc = self.config["modify_notification"]["email_cc"]
+            if map.category_id is not None and map.category.id == 300 and\
+               map.public:
+                email_content = u"""Bonjour,<br>l\'utilisateur %s a
+                modifié une carte publique de la catégorie %s:<br>
+                <a href='http://map.geoportail.lu?map_id=%s'>%s</a><br>
+                Cordialement,<br>Le géoportail"""\
+                    % (username, category, id, name)
+                data = {'email_to': admin_email,
+                        'subscriber_content': email_content,
+                        'email_cc': email_cc}
+                req = urllib2.Request(url)
+                req.add_header('Content-Type', 'application/json')
+                urllib2.urlopen(req, json.dumps(data))

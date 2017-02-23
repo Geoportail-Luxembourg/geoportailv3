@@ -111,6 +111,12 @@ vars:
         - checker_printcapabilities
 
     authorized_ips:
+
+    modify_notification:
+      url:
+      admin_email:
+      email_cc:
+
     pag: 
       staging_url:
       prod_url:
