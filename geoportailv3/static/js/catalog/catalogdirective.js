@@ -57,11 +57,17 @@ app.module.directive('appCatalog', app.catalogDirective);
  *     create layers from catalog nodes.
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
+ * @param {app.StateManager} appStateManager The state service.
  * @export
  * @ngInject
  */
 app.CatalogController = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode, appScalesService, maxExtent) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.appStateManager_ = appStateManager;
 
   /**
    * @type {ol.Extent}
@@ -164,10 +170,12 @@ app.CatalogController.prototype.setThemeZooms = function(tree) {
       enableRotation: false,
       zoom: currentView.getZoom()
     }));
-    this.scales_.setMaxZoomLevel(maxZoom);
-  } else {
-    this.scales_.setMaxZoomLevel(maxZoom);
   }
+  this.scales_.setMaxZoomLevel(maxZoom);
+  var viewZoom = this['map'].getView().getZoom();
+  this.appStateManager_.updateState({
+    'zoom': viewZoom
+  });
 };
 
 
