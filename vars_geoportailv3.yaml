@@ -109,7 +109,8 @@ vars:
         - checker_wfscapabilities
         # actually don't works for MapFish Print v3
         - checker_printcapabilities
-
+    https_proxy:
+      unauthorized_ips: 10.0.0.0/8, 127.0.0.1
     authorized_ips:
 
     modify_notification:
