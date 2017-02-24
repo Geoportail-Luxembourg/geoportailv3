@@ -601,7 +601,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layersList = [];
   var layerLabel = {};
 
-  for (var i = 0; i < layers.length; i++) {
+  for (var i = layers.length - 1; i >= 0 ; i--) {
     var metadata = layers[i].get('metadata');
     if (goog.isDefAndNotNull(metadata)) {
       if (metadata['is_queryable'] == 'true' &&
