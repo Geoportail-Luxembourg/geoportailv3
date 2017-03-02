@@ -5,9 +5,11 @@ from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
+from urlparse import urlparse
 import logging
+import urllib
 import urllib2
-
+import socket
 
 log = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ class Wms(object):
     def _check_ip(self, client_ip):
         client_ip = IPv4Network(client_ip).ip
         config = self.request.registry.settings
-        if 'authorized_ips' in config:
+        if "authorized_ips" in config:
             authorized_ips = config["authorized_ips"].split(",")
             for authorized_ip in authorized_ips:
                 a_ip = IPv4Network(authorized_ip.strip())
@@ -35,6 +37,24 @@ class Wms(object):
                    (client_ip < a_ip.broadcast)):
                     return True
         return False
+
+    def _check_ip_for_httpsproxy(self, url):
+        parsedurl = urlparse(url)
+        hostname = parsedurl.netloc.split(":")
+
+        remote_ip = IPv4Network(socket.gethostbyname(hostname[0])).ip
+        config = self.request.registry.settings
+        if "https_proxy" in config:
+            if "unauthorized_ips" in config["https_proxy"]:
+                unauthorized_ips =\
+                    config["https_proxy"]['unauthorized_ips'].split(",")
+                for unauthorized_ip in unauthorized_ips:
+                    a_ip = IPv4Network(unauthorized_ip.strip())
+                    if (remote_ip == a_ip.network) or (
+                       (remote_ip >= a_ip.network) and
+                       (remote_ip < a_ip.broadcast)):
+                        return False
+        return True
 
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
@@ -135,3 +155,45 @@ class Wms(object):
         predefined_wms = DBSession.query(LuxPredefinedWms).all()
         return [{'url': wms.url,
                  'label': wms.label} for wms in predefined_wms]
+
+    @view_config(route_name='https_proxy')
+    def proxy(self):
+
+        url = self.request.params.get("url", "")
+
+        if not url.lower().startswith("http://"):
+            log.error("This service can only request HTTP protocol")
+            return HTTPBadGateway()
+
+        if not self._check_ip_for_httpsproxy(url):
+            log.error("Try to access an unathorized network")
+            log.error(url)
+            return HTTPUnauthorized()
+
+        params_dict = {}
+        for key in self.request.params.keys():
+            if not (key == "url"):
+                params_dict[key] = self.request.params.get(key)
+        params = urllib.urlencode(params_dict)
+        separator = "?"
+        if "?" in url:
+            separator = "&"
+        url = url + separator + params
+
+        timeout = 15
+        try:
+            f = urllib2.urlopen(url, None, timeout)
+            data = f.read()
+        except:
+            try:
+                # Retry to get the result
+                f = urllib2.urlopen(url, None, timeout)
+                data = f.read()
+            except Exception as e:
+                log.exception(e)
+                log.error(url)
+                return HTTPBadGateway()
+
+        headers = {"Content-Type": f.info()['Content-Type']}
+
+        return Response(data, headers=headers)

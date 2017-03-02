@@ -14,10 +14,24 @@ goog.require('ol.format.WMSCapabilities');
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
+ * @param {angular.$window} $window Window.
+ * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
 app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
-    ngeoDecorateLayer) {
+    ngeoDecorateLayer, $window, httpsProxyUrl) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.httpsProxyUrl_ = httpsProxyUrl;
+
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.$window_ = $window;
 
   /**
    * @type {angular.$sce}
@@ -71,7 +85,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
   }
 
   if (!(wms in this.wmsCapa_)) {
-    this.wmsCapa_[wms] = this.http_.get(wms)
+    this.wmsCapa_[wms] = this.http_.get(this.proxyIfNeeded(wms))
     .then(function(data) {
       var capabilities = new ol.format.WMSCapabilities().read(data.data);
       var formats = capabilities['Capability']['Request']['GetMap']['Format'];
@@ -90,6 +104,11 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
         capabilities['version'], formats, useTiles);
 
       return capabilities;
+    }.bind(this), function(e) {
+      var msg = this.gettextCatalog.getString(
+        'Impossible de contacter ce WMS');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return null;
     }.bind(this));
   }
   return this.wmsCapa_[wms];
@@ -225,7 +244,7 @@ app.WmsHelper.prototype.getMetadata = function(id) {
           layer['Style'][i]['LegendURL'].length > 0 &&
           'OnlineResource' in layer['Style'][i]['LegendURL'][0]) {
         hasLegend = true;
-        legendUrl = layer['Style'][i]['LegendURL'][0]['OnlineResource'];
+        legendUrl = this.proxyIfNeeded(layer['Style'][i]['LegendURL'][0]['OnlineResource']);
       }
     }
     var content = {
@@ -394,7 +413,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   }
 
   var imgOptions = {
-    url: layer['wmsUrl'],
+    url: this.proxyIfNeeded(layer['wmsUrl']),
     params: {
       'LAYERS': layer['Name']
     },
@@ -453,6 +472,22 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     }
   }.bind(this));
   return newLayer;
+};
+
+/**
+ * @param {string} url The url to proxy.
+ * @return {string} returns the proxyed url if needed.
+ */
+app.WmsHelper.prototype.proxyIfNeeded = function(url) {
+  if (url.indexOf('httpsproxy') > 0) {
+    return url;
+  }
+
+  if (this.$window_.location.protocol === 'https:' &&
+      goog.string.caseInsensitiveStartsWith(url, 'http:')) {
+    return this.httpsProxyUrl_ + '?url=' + encodeURIComponent(url);
+  }
+  return url;
 };
 
 app.module.service('appWmsHelper', app.WmsHelper);

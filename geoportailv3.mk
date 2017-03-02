@@ -24,6 +24,7 @@ CONFIG_VARS += pag
 CONFIG_VARS += exclude_theme_layer_search
 CONFIG_VARS += overview_map
 CONFIG_VARS += modify_notification
+CONFIG_VARS += https_proxy
 
 APACHE_VHOST ?= luxembourg-geomapfish
 

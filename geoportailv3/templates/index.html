@@ -296,6 +296,7 @@
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
          appModule.constant('remoteProxyWms', false);
 % endif
+         appModule.constant('httpsProxyUrl', "${request.route_url('https_proxy')}");
          appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
          appModule.constant('mymapsUrl', "${request.route_url('mymaps')}");
          appModule.constant('mymapsImageUrl', "${request.route_url('mymaps_image')}");

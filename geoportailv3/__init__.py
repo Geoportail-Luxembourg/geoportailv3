@@ -306,6 +306,7 @@ def main(global_config, **settings):
     config.add_route("echocsv", "/profile/echocsv", request_method="POST")
     config.add_route('getuserinfo', '/getuserinfo')
     config.add_route('wms', '/ogcproxywms')
+    config.add_route('https_proxy', '/httpsproxy')
     config.add_route('download_sketch', '/downloadsketch')
     config.add_route('download_measurement', '/downloadmeasurement')
     config.add_route('qr', '/qr')

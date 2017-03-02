@@ -190,6 +190,9 @@ app.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
   this.abstractService = '';
   this.accessConstraintsService = '';
   this.appWmsHelper_.getCapabilities(wms).then(function(capabilities) {
+    if (capabilities === null) {
+      return null;
+    }
     this.appWmsHelper_.getLayers(wms).then(function(layers) {
       this.layers = layers;
     }.bind(this));
