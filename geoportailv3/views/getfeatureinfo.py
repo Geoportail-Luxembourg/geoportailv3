@@ -2,6 +2,7 @@
 import sqlahelper
 import logging
 import urllib2
+import re
 
 from urllib import urlencode
 from pyramid.view import view_config
@@ -381,11 +382,12 @@ class Getfeatureinfo(object):
         elements = []
         if not (attributes_to_remove is None or
                 len(attributes_to_remove) == 0):
-            elements = attributes_to_remove.split(",")
+            elements = re.split(r'(?<!\\),', attributes_to_remove)
+
         elements.extend([geometry_column, 'st_asgeojson'])
         for element in elements:
             try:
-                del attributes[element]
+                del attributes[element.replace("\\,", ",")]
             except:
                 pass
         return attributes
