@@ -74,6 +74,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @param {app.Notify} appNotify Notify service.
+ * @param {string} downloadresourceUrl The url to download a resource.
  * @export
  * @ngInject
  */
@@ -83,7 +84,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
-    appNotify) {
+    appNotify, downloadresourceUrl) {
   /**
    * @type {app.Notify}
    * @private
@@ -239,6 +240,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @private
    */
   this.downloadmeasurementUrl_ = downloadmeasurementUrl;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.proxyresourceUrl = downloadresourceUrl;
 
   /**
    * @type {string}
