@@ -7,7 +7,7 @@ import re
 from urllib import urlencode
 from pyramid.view import view_config
 from geoportailv3.models import Sessions, LuxGetfeatureDefinition
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.response import Response
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
@@ -22,6 +22,55 @@ class Getfeatureinfo(object):
 
     def __init__(self, request):
         self.request = request
+
+    @view_config(route_name='download_resource')
+    def download_resource(self):
+        fid = self.request.params.get('fid', None)
+        attribute = self.request.params.get('attribute', None)
+        if fid is None or attribute is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        layers, fid = fid.split('_', 1)
+        if layers is None:
+            return HTTPBadRequest("Request paramaters are missing")
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
+        if len(luxgetfeaturedefinitions) == 0:
+            return HTTPBadRequest("Configuration is missing")
+        url = None
+        luxgetfeaturedefinition = luxgetfeaturedefinitions[0]
+        # TODO : Manage Database definition. Not only remote services.
+        if (luxgetfeaturedefinition is not None and
+            luxgetfeaturedefinition.rest_url is not None and
+                len(luxgetfeaturedefinition.rest_url) > 0):
+            features = self._get_external_data(
+                luxgetfeaturedefinition.layer,
+                luxgetfeaturedefinition.rest_url,
+                luxgetfeaturedefinition.id_column,
+                None, fid, None,
+                luxgetfeaturedefinition.attributes_to_remove,
+                luxgetfeaturedefinition.columns_order)
+            if attribute not in features[0]['attributes']:
+                return HTTPBadRequest("Bad attribute")
+            url = features[0]['attributes'][attribute]
+
+        if (url is None or not url.lower().startswith("http")):
+            return HTTPBadRequest("Attribute is not a valid url")
+        timeout = 15
+        try:
+            f = urllib2.urlopen(url, None, timeout)
+            data = f.read()
+        except:
+            try:
+                # Retry to get the result
+                f = urllib2.urlopen(url, None, timeout)
+                data = f.read()
+            except Exception as e:
+                log.exception(e)
+                log.error(url)
+                return HTTPBadGateway("Unable to access the remote url")
+
+        headers = {"Content-Type": f.info()['Content-Type']}
+
+        return Response(data, headers=headers)
 
     # Get the remote template
     @view_config(route_name='getremotetemplate')
@@ -420,6 +469,11 @@ class Getfeatureinfo(object):
                 feature['attributes']['formatted_length'] = length_string
             except:
                 pass
+        return features
+
+    def add_proxy(self, features, field):
+        for feature in features:
+            feature['attributes']['__proxy__'] = field
         return features
 
     def replace_resource_by_html_link(self, features, attributes_to_remove):
