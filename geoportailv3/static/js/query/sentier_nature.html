@@ -5,7 +5,7 @@
       <h4>{{feature.attributes.sentier}}</h4>
       <div ng-if="ctrl.hasAttributes(feature)">
         <label translate>Longueur du parcours</label> : <span>{{feature.attributes.formatted_length }}</span>
-        <div>
+        <div ng-if="ctrl.hasFeatureAttribute(feature, 'link')">
           <a class="btn btn-default" ng-href="{{ctrl.proxyresourceUrl}}?fid={{feature.fid}}&attribute=link" target="_blank" translate>Télécharger la brochure</a>
         </div>
       </div>
