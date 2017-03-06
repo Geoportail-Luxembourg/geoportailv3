@@ -40,48 +40,67 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
-                        "bool": {
-                            "should": [
-                                {
-                                    "multi_match": {
-                                        "type": "most_fields",
-                                        "fields": [
-                                            "label^3",
-                                            "label.ngram^2",
-                                            "label.simplified^2"
-                                        ],
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                },
-                                {
-                                    "multi_match": {
-                                        "type": "most_fields",
-                                        "fields": [
-                                            "label.ngram",
-                                            "label.simplified"
-                                        ],
-                                        "fuzziness": "auto",
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                }
-                            ]
-                        }
-                    },
+                "bool": {
+                    "minimum_should_match": 2,
                     "filter": {
                         "bool": {
                             "must": [],
                             "should": [],
                             "must_not": [],
                         }
-                    }
+                    },
+                    "should": [
+                        {
+                            "multi_match": {
+                                "type": "best_fields",
+                                "fields": [
+                                    "label^2",
+                                    "label.ngram^2",
+                                    "label.simplified^2"
+                                ],
+                                "operator": "and",
+                                "query": query
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "type": "best_fields",
+                                "fields": [
+                                    "label",
+                                    "label.ngram",
+                                    "label.simplified"
+                                ],
+                                "fuzziness": 1,
+                                "operator": "and",
+                                "query": query
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Commune", "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Localité", "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "wildcard": {
+                                "layer_name": {
+                                    "value": "editus_poi*", "boost": -1.5
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "poi"}})
 
@@ -145,8 +164,15 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
+                "bool": {
+                    "filter": {
+                        "bool": {
+                            "must": [],
+                            "should": [],
+                            "must_not": [],
+                        }
+                    },
+                    "must": {
                         "multi_match": {
                             "type": "most_fields",
                             "fields": [
@@ -163,17 +189,10 @@ class FullTextSearchView(object):
                             "query": query
                         }
                     },
-                    "filter": {
-                        "bool": {
-                            "must": [],
-                            "should": [],
-                            "must_not": [],
-                        }
-                    },
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "layer"}})
 

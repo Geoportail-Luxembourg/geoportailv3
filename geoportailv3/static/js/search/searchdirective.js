@@ -62,9 +62,6 @@ app.searchDirective = function(appSearchTemplateUrl) {
           element.find('input').one('focus', function() {
             $(this).addClass('placeholder-text');
           });
-          element.find('input').on('click', function() {
-            $(this).select();
-          });
           element.find('input').on(
               'input propertyChange focus blur', function() {
                 var clearButton =
@@ -175,6 +172,11 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     'asta_esp',
     'Parcelle'
   ];
+
+  /**
+   * @type {number}
+   */
+  this.limitResults = 8;
 
   /**
    * @type {angularGettext.Catalog}
@@ -694,12 +696,12 @@ app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: function(query, settings) {
+          prepare: goog.bind(function(query, settings) {
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
-                '&limit=5';
+                '&limit=' + this.limitResults;
             return settings;
-          },
+          }, this),
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
@@ -735,7 +737,8 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhoundEngine_ =
         replace: goog.bind(function(url, query) {
           return url +
               '?query=' + encodeURIComponent(query) +
-              '&limit=5' + '&language=' + this.gettextCatalog.currentLanguage;
+              '&limit=' + this.limitResults +
+              '&language=' + this.gettextCatalog.currentLanguage;
         }, this),
         transform: goog.bind(function(response) {
           goog.array.forEach(response, goog.bind(function(result) {

@@ -41,6 +41,7 @@ def update_document(index, type, obj_id, obj=None):
     doc['_source'] = {}
     doc['_source']['ts'] = json.loads(obj['geom_4326'])
     doc['_source']['object_id'] = obj_id
+    doc['_source']['fk'] = obj['fk']
     doc['_source']['object_type'] = 'poi'
     doc['_source']['layer_name'] = obj['type']
     doc['_source']['label'] = obj['label']
