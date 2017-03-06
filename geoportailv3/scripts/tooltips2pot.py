@@ -4,6 +4,7 @@ import sqlahelper
 import traceback
 import sys
 import urllib2
+import re
 from os import path
 from pyramid.paster import bootstrap
 from urllib import urlencode
@@ -58,11 +59,11 @@ def remove_attributes(attributes, attributes_to_remove,
     elements = []
     if not (attributes_to_remove is None or
             len(attributes_to_remove) == 0):
-        elements = attributes_to_remove.split(",")
+        elements = re.split(r'(?<!\\),', attributes_to_remove)
     elements.extend([geometry_column, 'st_asgeojson'])
     for element in elements:
         try:
-            del attributes[element]
+            del attributes[element.replace("\\,", ",")]
         except:
             pass
     return attributes
