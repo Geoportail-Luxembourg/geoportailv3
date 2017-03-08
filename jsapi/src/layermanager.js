@@ -53,7 +53,13 @@ lux.LayerManager.prototype.update = function() {
 
     var label = document.createElement('label');
     var name = /** @type {string} */ (layer.get('name'));
-    label.innerHTML = lux.i18n[name];
+
+    if (lux.i18n[name] !== undefined) {
+      label.innerHTML = lux.i18n[name];
+    } else {
+      label.innerHTML = name;
+    }
+
     li.appendChild(label);
 
     var input = document.createElement('input');
