@@ -261,7 +261,7 @@ class Mymaps(object):
 
         if user.is_admin and user.mymaps_role != 1:
             users = DBSession.query(
-                    func.lower(Map.user_login),
+                    func.lower(Map.user_login).label("user_login"),
                     func.coalesce(Map.category_id, 999).label("category_id")).\
                 filter((and_(func.coalesce(Map.category_id, 999).in_(
                     [c.id for c in user_role.categories]),
