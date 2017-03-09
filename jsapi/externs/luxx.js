@@ -340,6 +340,12 @@ luxx.VectorOptions.prototype.reloadInterval;
 luxx.VectorOptions.prototype.style;
 
 /**
+ * The layer name.
+ * @type {string | undefined}
+ */
+luxx.VectorOptions.prototype.name;
+
+/**
  * @typedef {Object}
  */
 luxx.State;

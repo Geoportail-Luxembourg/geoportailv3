@@ -1154,6 +1154,9 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
   if (opt_options && opt_options.style) {
     options.style = opt_options.style;
   }
+  if (opt_options && opt_options.name) {
+    options.name = opt_options.name;
+  }
   this.layersPromise.then(function() {
     vector = new ol.layer.Vector(options);
 
