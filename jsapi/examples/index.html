@@ -1,0 +1,991 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "//www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>geoportail.lu API v3 samples</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="theme.css">
+    <script src="//apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"></script>
+</head>
+<body>
+    <div class='titlebar'><h1>API Samples</h1></div>
+    <div class='sample'>
+    <a name="example1"/>
+        <div class='description' id='desc1'>
+        <h2>Basic example</h2>
+        This is the beginning
+        <pre>
+var map = new lux.Map({
+  target: 'map1',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099]
+});
+        </pre>
+        
+        </div>
+        <div class='map' id='map1'></div>
+    </div>
+    <div class='sample'>
+    <a name="example1b"/>
+        <div class='description' id='desc1b'>
+        <h2>Basic example with coordinate display</h2>
+        This is the basic example with coordinate display
+        <pre>
+var map1b = new lux.Map({
+  target: 'map1b',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099],
+  mousePosition    : {
+    target: 'map1b',
+    srs : 2169
+},
+});
+        </pre>
+        
+        </div>
+        <div class='map' id='map1b'></div>
+
+    </div>
+
+    <div class='sample'>
+    <a name="example1c"/>
+        <div class='description' id='desc1c'>
+        <h2>Basic example with coordinate display in div</h2>
+        This is the basic example with coordinate display in a div
+        <pre>
+var map1c = new lux.Map({
+  target: 'map1c',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099],
+  mousePosition    : {
+    target: 'coord1c',
+    srs : 2169
+},
+});
+        </pre>
+        <div class='coord' id='coord1c'></div>
+        </div>
+        <div class='map' id='map1c'></div>
+          
+    </div>
+<div class='sample'>
+    <a name="example2"/>
+        <div class='description' id='desc2'>
+        <h2>Basic example with marker</h2>
+        This is a simple map with a marker
+        <pre>
+var position = [75977, 75099 ];
+var map2 = new lux.Map({
+  target: 'map2',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2.showMarker(  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
+});
+        </pre>
+        
+        </div>
+        <div class='map' id='map2'></div>
+    </div>
+
+
+<div class='sample'>
+    <a name="example2a"/>
+        <div class='description' id='desc2a'>
+        <h2>Basic example with marker on click</h2>
+        This is a simple map with a marker on click
+        <pre>
+var position = [75977, 75099 ];
+var map2a = new lux.Map({
+  target: 'map2a',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2a.showMarker(  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: true,
+   html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
+});
+        </pre>
+        
+        </div>
+        <div class='map' id='map2a'></div>
+    </div>
+
+
+<div class='sample'>
+    <a name="example2b"/>
+        <div class='description' id='desc2b'>
+        <h2>Basic example with marker in other position</h2>
+        This is a simple map with a marker in another position than the center
+        <pre>
+var position = [75950, 75050];
+var map2b = new lux.Map({
+  target: 'map2b',
+  bgLayer: 'streets_jpeg',
+  zoom: 18,
+  position: position
+});
+
+var position2 = [75977, 75099];
+map2b.showMarker(  
+  {position: position2,
+   positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
+});
+        </pre>
+        
+        </div>
+        <div class='map' id='map2b'></div>
+    </div>
+
+<div class='largesample'>
+    <a name="example2c"/>
+        <div class='description' id='desc2c'>
+        <h2>Basic example with marker on click</h2>
+        This is a simple map with a marker showing popup on click in div
+        <pre>
+var position = [75977, 75099 ];
+var map2c = new lux.Map({
+  target: 'map2c',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2c.showMarker(  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: true,
+   target: info2c,
+   html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
+});
+        </pre>
+        <div id='info2c' class='popup'></div>
+        </div>
+        <div class='map' id='map2c'></div>
+    </div>
+
+
+
+    <div class='largesample'>
+ <a name="example3"/>
+        <div class='description' id='desc3'>
+        <h2>Example with overlay, layermanager and bgSelector</h2>
+        This is a basic example with overlay-layers, 
+        a layer manager in a div and a bgSelector in a div
+        <pre>
+var map3 = new lux.Map({
+  target: 'map3',
+  bgLayer: 'streets_jpeg',
+  layers: [ '149','386','512' ],
+  layerOpacities: [0.6,0.8,0.8],
+  layerManager: {
+    target: 'layerManager3'
+  },
+  bgSelector: {
+    target: 'bgMap3'
+  },
+  zoom: 12,
+  position: [76825, 75133]
+});
+        </pre>
+        <div id='layerManager3' class='layermanager'></div>
+        <div id='bgMap3' class='bgselector'></div>
+        </div>
+        <div class='map' id='map3'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example4"/>
+        <div class='description' id='desc4'>
+        <h2>Example with GPX</h2>
+        This is a basic example with a GPX file. It can only contain lines
+        and points. 
+        <pre>
+var map4 = new lux.Map({
+  target: 'map4',
+  bgLayer: 'streets_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map4.addGPX('DemoGPX.gpx');
+        </pre>
+        </div>
+        <div class='map' id='map4'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example4b"/>
+        <div class='description' id='desc4'>
+        <h2>Example with GPX and new style</h2>
+        This is a basic example with a GPX file.
+        <pre>
+  var map4b = new lux.Map({
+    target: 'map4b',
+    bgLayer: 'streets_jpeg',
+    zoom: 12,
+    position: [76825, 75133]
+  });
+ var style = {
+    'Point': new ol.style.Style({
+      image: new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: 'rgba(255,255,255,1)'
+        }),
+        radius: 10,
+        stroke: new ol.style.Stroke({
+          color: '#fff',
+          width: 1
+        })
+      })
+    }),
+    'LineString': new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#fff',
+        width: 3
+      })
+    }),
+    'MultiLineString': new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: '#fff',
+        width: 3
+      })
+    })
+  };
+  
+  var styleFunction = function(feature) {
+    return style[feature.getGeometry().getType()];
+  };
+  map4b.addGPX('DemoGPX.gpx', {style: styleFunction});
+        </pre>
+        </div>
+        <div class='map' id='map4b'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example5"/>
+        <div class='description' id='desc5'>
+        <h2>Example with KML</h2>
+        This is a basic example with a KML file. It can contain points, lines
+        and polygons.
+        
+        <pre>
+var map5 = new lux.Map({
+  target: 'map5',
+  bgLayer: 'streets_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map5.addKML('//cita.lu/kml/chantiers_actuel.kml',
+{reloadInterval: 60});
+        </pre>
+        </div>
+        <div class='map' id='map5'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example6"/>
+        <div class='description' id='desc6'>
+        <h2>Example with Search in Map</h2>
+        This is a basic example with a search widget inside the map
+        
+        <pre>
+var map6 = new lux.Map({
+  target: 'map6',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133],
+  search      : {
+    target : 'map6'
+}
+});
+
+        </pre>
+        </div>
+        <div class='map' id='map6'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example7"/>
+        <div class='description' id='desc7'>
+        <h2>Example with Search in div</h2>
+        This is a basic example with a search widget inside a div
+        
+        <pre>
+var map7 = new lux.Map({
+  target: 'map7',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133],
+  search      : {
+    target : 'search7'
+  }
+});
+
+        </pre>
+        <div id='search7'></div>
+        </div>
+        <div class='map' id='map7'></div>
+    </div>
+
+    <div class='sample'>
+        <a name="example8"/>
+        <div class='description' id='desc8'>
+        <h2>Example with mymaps</h2>
+        This is a basic example with a mymaps map
+
+        <pre>
+var map8 = new lux.Map({
+  target: 'map8',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map8.addMyMapLayer({
+  mapId: '0416ef680fbe4cdaa2d8009262d1127c'
+});
+        </pre>
+        </div>
+        <div class='map' id='map8'></div>
+    </div>
+
+    <div class='largesample'>
+        <a name="example9"/>
+        <div class='description' id='desc9'>
+        <h2>Example with mymaps and profile</h2>
+        This is a basic example with a mymaps map and a profile in a div
+
+        <pre>
+var map9 = new lux.Map({
+  target: 'map9',
+  bgLayer: 'topogr_global',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map9.addMyMapLayer({
+  mapId: '63c5e450445e438d9126a3757bee9d2b',
+  profileTarget:'profile9'
+});
+        </pre>
+        <div id='profile9' class='profile'></div>
+        </div>
+        <div class='map' id='map9'></div>
+    </div>
+
+<div class='largesample'>
+        <a name="example10"/>
+        <div class='description' id='desc10'>
+        <h2>Example with mymaps and opened profile</h2>
+        This is a basic example with a mymaps map and a profile that is already open in a div
+
+        <pre>
+var map10 = new lux.Map({
+  target: 'map10',
+  bgLayer: 'topogr_global',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map10.addMyMapLayer({
+  mapId: '63c5e450445e438d9126a3757bee9d2b',
+  onload: function(features) {
+    this.loadProfile(features[0].getGeometry(), 'profile10');
+  }
+});
+        </pre>
+        <div id='profile10' class='profile'></div>
+        </div>
+        <div class='map' id='map10'></div>
+    </div>
+
+
+<div class='sample'>
+        <a name="example11"/>
+        <div class='description' id='desc11'>
+        <h2>Example with recenter on feature</h2>
+        This is a basic example with a feature ID that we want to zoom on
+
+        <pre>
+var map11 = new lux.Map({
+  target: 'map11',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359'
+  }
+});
+
+        </pre>
+        </div>
+        <div class='map' id='map11'></div>
+    </div>
+
+<div class='sample'>
+        <a name="example11b"/>
+        <div class='description' id='desc11b'>
+        <h2>Example with recenter on feature with click</h2>
+        This is a basic example with a feature ID that we want to zoom on, 
+        infos on click
+
+        <pre>
+var map11b = new lux.Map({
+  target: 'map11b',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359',
+    click: true
+  }
+});
+
+        </pre>
+        </div>
+        <div class='map' id='map11b'></div>
+    </div>
+
+<div class='largesample'>
+        <a name="example11c"/>
+        <div class='description' id='desc11c'>
+        <h2>Example with recenter on feature with click rendered in div</h2>
+        This is a basic example with a feature ID that we want to zoom on, 
+        infos on click, rendered in div
+        <pre>
+var map11c = new lux.Map({
+  target: 'map11c',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359',
+    click: true
+  }
+});
+
+        </pre>
+        <div id='info11c' class='popup'></div>
+        </div>
+        <div class='map' id='map11c'></div>
+    </div>
+
+<div class='sample'>
+        <a name="example12"/>
+        <div class='description' id='desc12'>
+        <h2>Example with geocoding</h2>
+        This is a map that will zoom using a textual address rather than 
+        coordinates 
+
+        <pre>
+var map12 = new lux.Map({
+  target: 'map12',
+  bgLayer: 'basemap_2015_global',
+  zoom: 17
+});
+
+lux.geocode({
+  num: 54,
+  street: 'avenue gaston diderich',
+  zip: 1420,
+  locality: 'luxembourg'
+}, function(position) {
+  map12.showMarker({
+    position: position,
+    autoCenter: true,
+    positioning: 'center-center',
+    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png'
+  });
+});
+
+        </pre>
+        </div>
+        <div class='map' id='map12'></div>
+    </div>
+
+
+<div class='sample'>
+        <a name="example13"/>
+        <div class='description' id='desc13'>
+        <h2>Example with reverse geocoding</h2>
+        Click in the map to see the address 
+
+        <pre>
+var map13 = new lux.Map({
+  target: 'map13',
+  bgLayer: 'basemap_2015_global',
+  zoom: 12,
+  position: [76825, 75133]
+});
+
+map13.on('click', function(evt) {
+  var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
+  lux.reverseGeocode(coordinate, function(address) {
+    var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
+    document.getElementById('address').innerHTML = html;
+  });
+});
+
+        </pre>
+        <div id='address' style='background-color:white;color:red'></div>
+        </div>
+        <div class='map' id='map13'></div>
+    </div>
+
+
+<div class='largesample'>
+        <a name="example14"/>
+        <div class='description' id='desc14'>
+        <h2>Example with tooltips</h2>
+        Click on a feature to see the tooltip
+
+        <pre>
+var map14 = new lux.Map({
+  target: 'map14',
+  bgLayer: 'basemap_2015_global',
+  zoom: 12,
+  position: [76825, 75133],
+  layers: [147]
+});
+
+        </pre>
+        </div>
+        <div class='map' id='map14'></div>
+    </div>
+
+<div class='largesample'>
+        <a name="example15"/>
+        <div class='description' id='desc15'>
+        <h2>Example with tooltips</h2>
+        Click on a feature to see the tooltip in a div
+
+        <pre>
+var map15 = new lux.Map({
+  target: 'map15',
+  bgLayer: 'basemap_2015_global',
+  zoom: 12,
+  position: [76825, 75133],
+  layers: [147],
+  popupTarget: info15
+});
+
+        </pre>
+        <div id='info15' class='popup'></div>
+        </div>
+        <div class='map' id='map15'></div>
+    </div>
+
+<div class='longdescription'>
+        <a name="example16"/>
+        <div class='description' id='desc16'>
+        <h2>Use OL3 API together with the GeoAPI</h2>
+        Click on a feature to see the tooltip in a div
+
+        <pre>
+var map16 = new lux.Map({
+   target: 'map16',
+   bgLayer: 'basemap_2015_global',
+   zoom: 18,
+   position: [75977, 75099 ]
+});
+var cadastreFeature = new ol.Feature({
+  geometry: new ol.geom.Point(ol.proj.transform([75977, 75099], 'EPSG:2169', 'EPSG:3857')),
+  name: 'Cadastre'
+});
+var iconStyle = new ol.style.Style({
+  image: new ol.style.Icon(({
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    src: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png'
+  }))
+});
+cadastreFeature.setStyle(iconStyle);
+var vectorSource = new ol.source.Vector({
+    features: [cadastreFeature]
+});
+var vectorLayer = new ol.layer.Vector({
+    source: vectorSource
+});
+
+map16.on('click', function(evt) {
+  var feature = map16.forEachFeatureAtPixel(evt.pixel, function(feature) {
+    return feature;
+  });
+  if (feature !== undefined) {
+    document.getElementById('info16').innerHTML = "Name : " + feature.get('name');
+  } else {
+    document.getElementById('info16').innerHTML = "";
+  }
+});
+
+map16.addLayer(vectorLayer);
+        </pre>
+        <div id='info16' class='popup'></div>
+        </div>
+        <div class='map' id='map16'></div>
+    </div>
+
+
+<script type='text/javascript'>
+
+lux.setPopupSize([400, 150]);
+
+var map1 = new lux.Map({
+  target: 'map1',
+  bgLayer     : 'basemap_2015_global',
+  
+
+  zoom: 18,
+  position: [   75977 , 75099 ]
+
+});
+
+var map1b = new lux.Map({
+  target: 'map1b',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099],
+  mousePosition    : {
+    target: 'map1b',
+    srs : 2169 
+},
+});
+
+var map1c = new lux.Map({
+  target: 'map1c',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099],
+  mousePosition    : {
+    target: 'coord1c',
+    srs : 2169
+},
+});
+
+var position = [75977, 75099 ];
+var map2 = new lux.Map({
+  target: 'map2',
+  bgLayer     : 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2.showMarker(  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
+});
+
+
+var position = [75977, 75099 ];
+var map2a = new lux.Map({
+  target: 'map2a',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2a.showMarker(  
+  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: true,
+   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
+});
+
+var position = [75950, 75050];
+var map2b = new lux.Map({
+  target: 'map2b',
+  bgLayer: 'streets_jpeg',
+  zoom: 18,
+  position: position
+});
+
+var position2 = [75977, 75099];
+map2b.showMarker(  
+  {position: position2,
+   positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
+});
+
+var map2c = new lux.Map({
+  target: 'map2c',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position
+});
+
+map2c.showMarker(  
+  {positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: true,
+   target: info2c,
+   html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
+});
+
+var map3 = new lux.Map({
+  target: 'map3',
+  bgLayer     : 'streets_jpeg',
+  layers      : [ '149','386','512' ],
+  layerOpacities: [0.6,0.8, 0.8],
+  layerManager: {
+    target: 'layerManager3'
+  },
+  bgSelector  : {
+    target: 'bgMap3'
+  },
+  zoom: 12,
+  position: [       76825 , 75133  ]
+
+});
+
+var map4 = new lux.Map({
+  target: 'map4',
+  bgLayer: 'streets_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map4.addGPX('DemoGPX.gpx');
+
+var map4b = new lux.Map({
+  target: 'map4b',
+  bgLayer: 'streets_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+var style = {
+  'Point': new ol.style.Style({
+    image: new ol.style.Circle({
+      fill: new ol.style.Fill({
+        color: 'rgba(255,255,255,1)'
+      }),
+      radius: 10,
+      stroke: new ol.style.Stroke({
+        color: '#FFFFFF',
+        width: 1
+      })
+    })
+  }),
+  'LineString': new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#FFFFFF',
+      width: 3
+    })
+  }),
+  'MultiLineString': new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#FFFFFF',
+      width: 3
+    })
+  })
+};
+
+var styleFunction = function(feature) {
+  return style[feature.getGeometry().getType()];
+};
+map4b.addGPX('DemoGPX.gpx', {style: styleFunction});
+  
+var map5 = new lux.Map({
+  target: 'map5',
+  bgLayer: 'streets_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map5.addKML('//cita.lu/kml/chantiers_actuel.kml',
+            {reloadInterval: 60});
+
+var map6 = new lux.Map({
+  target: 'map6',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133],
+  search      : {
+    target : 'map6'
+  }
+});
+
+var map7 = new lux.Map({
+  target: 'map7',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133],
+  search      : {
+    target : 'search7'
+  }
+});
+
+var map8 = new lux.Map({
+  target: 'map8',
+  bgLayer: 'topogr_global',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map8.addMyMapLayer({
+  mapId: '0416ef680fbe4cdaa2d8009262d1127c'
+});
+
+var map9 = new lux.Map({
+  target: 'map9',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map9.addMyMapLayer({
+  mapId: '76d7d4d147c74dba89ef407598b135b6',
+  profileTarget:'profile9'
+});
+
+
+var map10 = new lux.Map({
+  target: 'map10',
+  bgLayer: 'topo_bw_jpeg',
+  zoom: 12,
+  position: [76825, 75133]
+});
+
+map10.addMyMapLayer({
+  mapId: '76d7d4d147c74dba89ef407598b135b6',
+  onload: function(features) {
+    this.loadProfile(features[0].getGeometry(), 'profile10');
+  }
+});
+
+var map11 = new lux.Map({
+  target: 'map11',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359'
+  }
+});
+
+var map11b = new lux.Map({
+  target: 'map11b',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359',
+    click: true
+  }
+});
+
+var map11c = new lux.Map({
+  target: 'map11c',
+  bgLayer: 'blank',
+  layers: ['parcels','parcels_labels'],
+  features    : {
+    ids   : ['061F00614004236'],
+    layer : '359',
+    click: true,
+    target: info11c
+  }
+});
+
+var map12 = new lux.Map({
+  target: 'map12',
+  bgLayer: 'basemap_2015_global',
+  zoom: 17
+});
+
+lux.geocode({
+  num: 54,
+  street: 'avenue gaston diderich',
+  zip: 1420,
+  locality: 'luxembourg'
+}, function(position) {
+  map12.showMarker({
+    position: position,
+    autoCenter: true,
+    positioning: 'center-center',
+    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png'
+  });
+});
+
+var map13 = new lux.Map({
+  target: 'map13',
+  bgLayer: 'basemap_2015_global',
+  zoom: 15,
+  position: [76825, 75133]
+});
+
+map13.on('click', function(evt) {
+  var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
+  lux.reverseGeocode(coordinate, function(address) {
+    var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
+    document.getElementById('address').innerHTML = html;
+  });
+});
+
+
+var map14 = new lux.Map({
+  target: 'map14',
+  bgLayer: 'basemap_2015_global',
+  zoom: 15,
+  position: [76825, 75133],
+  layers: [147]
+});
+
+var map15 = new lux.Map({
+  target: 'map15',
+  bgLayer: 'basemap_2015_global',
+  zoom: 12,
+  position: [76825, 75133],
+  layers: [147]
+  ,popupTarget:'info15'  
+});
+
+var map16 = new lux.Map({
+   target: 'map16',
+   bgLayer: 'basemap_2015_global',
+   zoom: 18,
+   position: [75977, 75099 ]
+});
+var cadastreFeature = new ol.Feature({
+  geometry: new ol.geom.Point(ol.proj.transform([75977, 75099], 'EPSG:2169', 'EPSG:3857')),
+  name: 'Cadastre'
+});
+var iconStyle = new ol.style.Style({
+  image: new ol.style.Icon(({
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    src: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png'
+  }))
+});
+cadastreFeature.setStyle(iconStyle);
+var vectorSource = new ol.source.Vector({
+    features: [cadastreFeature]
+});
+var vectorLayer = new ol.layer.Vector({
+    source: vectorSource
+});
+
+map16.on('click', function(evt) {
+  var feature = map16.forEachFeatureAtPixel(evt.pixel, function(feature) {
+    return feature;
+  });
+  if (feature !== undefined) {
+    document.getElementById('info16').innerHTML = "Name : " + feature.get('name');
+  } else {
+    document.getElementById('info16').innerHTML = "";
+  }
+});
+
+map16.addLayer(vectorLayer);
+</script>
+</body>
+</html>
