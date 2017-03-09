@@ -636,6 +636,42 @@ map16.addLayer(vectorLayer);
         <div class='map' id='map16'></div>
     </div>
 
+<div class='longdescription'>
+        <a name="example17"/>
+        <div class='description' id='desc17'>
+        <h2>Programatically activate the layer information popup.</h2>
+        The example displays the layer information either on map or on div.<br>
+        <input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked);">Activate/Unactivate layer query. 
+        <pre>
+&lt;input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked)"&gt;Activate/Unactivate layer query. 
+var map17 = new lux.Map({
+   target: 'map17',
+   bgLayer     : 'blank',
+   layers: ['parcels','parcels_labels'],
+   zoom: 14,
+   position: [75977, 75099 ],
+   showLayerInfoPopup : false,
+   popupTarget: 'info17'
+});
+var onInfo17 = true;
+map17.on('click', function(evt) {
+  if (!document.getElementById("cbInfo17").checked) {
+    return;
+  }
+  map17.removeInfoPopup();
+  if (onInfo17) {
+    onInfo17 = false;
+    map17.setPopupTarget('info17');
+  } else {
+    onInfo17 = true;
+    map17.setPopupTarget(undefined);
+  }
+});
+        </pre>
+        <div id='info17' class='popup'></div>
+        </div>
+        <div class='map' id='map17'></div>
+    </div>
 
 <script type='text/javascript'>
 
@@ -944,8 +980,8 @@ var map15 = new lux.Map({
   bgLayer: 'basemap_2015_global',
   zoom: 12,
   position: [76825, 75133],
-  layers: [147]
-  ,popupTarget:'info15'  
+  layers: [147],
+  popupTarget:'info15'  
 });
 
 var map16 = new lux.Map({
@@ -986,6 +1022,29 @@ map16.on('click', function(evt) {
 });
 
 map16.addLayer(vectorLayer);
+var map17 = new lux.Map({
+   target: 'map17',
+   bgLayer     : 'blank',
+   layers: ['parcels','parcels_labels'],
+   zoom: 14,
+   position: [75977, 75099 ],
+   showLayerInfoPopup : false,
+   popupTarget: 'info17'
+});
+var onInfo17 = true;
+map17.on('click', function(evt) {
+  if (!document.getElementById("cbInfo17").checked) {
+    return;
+  }
+  map17.removeInfoPopup();
+  if (onInfo17) {
+    onInfo17 = false;
+    map17.setPopupTarget('info17');
+  } else {
+    onInfo17 = true;
+    map17.setPopupTarget(undefined);
+  }
+});
 </script>
 </body>
 </html>
