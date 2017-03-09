@@ -47,6 +47,14 @@ luxx.MapOptions.prototype.target;
 luxx.MapOptions.prototype.popupTarget;
 
 /**
+ * If set to true, it displays the feature information in a popup or
+ * in popupTarget element.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.showLayerInfoPopup;
+
+/**
  * The initial position of the center for the map view. The coordinate system
  * for the center is specified with the `positionSrs` option.
  * @type {ol.Coordinate|undefined}

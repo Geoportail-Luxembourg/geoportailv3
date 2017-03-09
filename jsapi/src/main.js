@@ -278,6 +278,12 @@ lux.Map = function(options) {
    */
   this.i18nPromise = null;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
+
   var langUrl = lux.i18nUrl.replace('xx', lux.lang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
     return resp.json();
@@ -467,15 +473,13 @@ lux.Map = function(options) {
   ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
       this.checkForExclusion_, this);
 
-  if (options.popupTarget) {
-    this.popupTarget = typeof options.popupTarget === 'string' ?
-        document.getElementById(options.popupTarget) :
-        options.popupTarget;
-    if (!(this.popupTarget instanceof Element)) {
-      console.error('Marker target should be a DOM Element or its id');
-      return;
-    }
-  }
+  /**
+   * @private
+   * @type {Element|string|undefined}
+   */
+  this.popupTarget_ = undefined;
+  this.setPopupTarget(options.popupTarget);
+
   ol.events.listen(this, ol.MapBrowserEvent.EventType.SINGLECLICK,
       this.handleSingleclickEvent_, this);
 
@@ -512,6 +516,31 @@ lux.Map.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
     ol.Map.prototype.addLayer.call(this, layer);
   }.bind(this));
+};
+
+/**
+ * Show a marker on the map at the given location.
+ * @param {boolean} show Set to true will allow to display the feature
+ * information popup when clicking on an object.
+ * @export
+ * @api
+ */
+lux.Map.prototype.showLayerInfoPopup = function(show) {
+  this.showLayerInfoPopup_ = show;
+};
+
+/**
+ * Sets the popup target or undefined to let the api create popup.
+ * @param {Element|string|undefined} optPopupTarget The container for map
+ * popups, either the element itself or the `id` of the element. Undefined lets
+ * the popup be created by the api.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
+  this.popupTarget_ = typeof optPopupTarget === 'string' ?
+      document.getElementById(optPopupTarget) :
+      optPopupTarget;
 };
 
 /**
@@ -1416,17 +1445,28 @@ lux.reverseGeocode = function(coordinate, cb) {
 };
 
 /**
+ * Removes the popup or the information content.
+ * @export
+ */
+lux.Map.prototype.removeInfoPopup = function() {
+  if (this.queryPopup_) {
+    this.removeOverlay(this.queryPopup_);
+  }
+  if (this.popupTarget_) {
+    this.popupTarget_.innerHTML = '';
+  }
+};
+
+/**
  * @param {Object} evt The event.
  * @private
  */
 lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
+  this.removeInfoPopup();
+  if (!this.showLayerInfoPopup_) {
+    return;
+  }
 
-  if (this.queryPopup_) {
-    this.removeOverlay(this.queryPopup_);
-  }
-  if (this.popupTarget) {
-    this.popupTarget.innerHTML = '';
-  }
   var layers = this.getLayers().getArray();
 
   // collect the queryable layers
@@ -1492,8 +1532,8 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       });
     }.bind(this));
 
-    if (this.popupTarget) {
-      this.popupTarget.innerHTML = htmls.join('');
+    if (this.popupTarget_) {
+      this.popupTarget_.innerHTML = htmls.join('');
     } else {
       var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
         this.removeOverlay(this.queryPopup_);
