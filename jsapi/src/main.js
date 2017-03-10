@@ -250,6 +250,7 @@ lux.Map = function(options) {
 
   var layers    = [];
   var layerOpacities = [];
+
   var defaultBg = 'basemap_2015_global';
 
   _paq.push(['trackPageView']);
@@ -259,6 +260,13 @@ lux.Map = function(options) {
    * @type {ol.Extent}
    */
   this.featureExtent_ = ol.extent.createEmpty();
+
+  /**
+   * @private
+   * @type {Array<string|number>|undefined}
+   */
+  this.queryableLayers_ = options.queryableLayers;
+  delete options.queryableLayers;
 
   /**
    * @private
@@ -362,6 +370,7 @@ lux.Map = function(options) {
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
+
   this.layersPromise = fetch(lux.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
@@ -516,6 +525,18 @@ lux.Map.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
     ol.Map.prototype.addLayer.call(this, layer);
   }.bind(this));
+};
+
+/**
+ * Set the queryable layers. If undefined then use the default value
+ * from metadata.
+ * @param {Array<string|number>|undefined} queryableLayers An array of
+ * queryable layers
+ * @export
+ * @api
+ */
+lux.Map.prototype.setQueryableLayers = function(queryableLayers) {
+  this.queryableLayers_ = queryableLayers;
 };
 
 /**
@@ -725,11 +746,12 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 };
 
 /**
- * @param {Array<string|number>} layers Array of layer names
- * @param {Array<number>} opacities Array of layer opacities
+ * @param {Array<string|number>} layers Array of layer names.
+ * @param {Array<number>} opacities Array of layer opacities.
  * @private
  */
 lux.Map.prototype.addLayers_ = function(layers, opacities) {
+
   var conf = this.layersConfig;
   if (!conf) {
     return;
@@ -1483,12 +1505,22 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
   // collect the queryable layers
   var layersToQuery = [];
-  layers.forEach(function(layer) {
-    var metadata = layer.get('metadata');
-    if (metadata && metadata['is_queryable'] && layer.getVisible()) {
-      layersToQuery.push(layer.get('id'));
-    }
-  });
+  if (this.queryableLayers_ === undefined) {
+    layers.forEach(function(layer) {
+      var metadata = layer.get('metadata');
+      if (metadata && metadata['is_queryable'] === 'true' &&
+          layer.getVisible()) {
+        layersToQuery.push(layer.get('id'));
+      }
+    });
+  } else {
+    this.queryableLayers_.forEach(function(layer) {
+      var layerConf = this.findLayerConf_(layer);
+      if (layerConf !== null) {
+        layersToQuery.push(layerConf.id);
+      }
+    }.bind(this));
+  }
 
   if (!layersToQuery.length) {
     return;
