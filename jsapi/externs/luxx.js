@@ -18,7 +18,7 @@ luxx.MapOptions.prototype.bgLayer;
 
 /**
  * Array of overlay layer identifiers.
- * @type {Array<string>|undefined}
+ * @type {Array<string|number>|undefined}
  * @api
  */
 luxx.MapOptions.prototype.layers;
@@ -29,6 +29,13 @@ luxx.MapOptions.prototype.layers;
  * @api
  */
 luxx.MapOptions.prototype.layerOpacities;
+
+/**
+ * Array of queryable layers.
+ * @type {Array<string|number>|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.queryableLayers;
 
 /**
  * The container for the map, either the element itself or the `id` of the
