@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geoportail V3 JS API Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" href="../../geoportailv3/static/build/apiv3.css">
+    <style>
+      #mapContainer,
+      #mapContainer2 {
+        position: relative;
+        width: 500px;
+        height: 300px;
+        position: relative;
+      }
+      .lux-dropdown {
+        position: absolute;
+        bottom: .5em;
+        left: .5em;
+        z-index: 3;
+      }
+      .lux-popup-content h3,
+      .lux-popup-content p {
+        margin: 0;
+      }
+      #profile,
+      #profile2 {
+        width: 450px;
+        height: 150px;
+        border: 1px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Example showing how to load a MyMap layer.</p>
+    <div id="mapContainer"></div>
+    <div id="profile" class="lux-profile"></div>
+    <p>Example showing how to load a MyMap layer and directly display the profile chart.</p>
+    <div id="mapContainer2"></div>
+    <div id="profile2"></div>
+    <script src="../../node_modules/proj4/dist/proj4.js"></script>
+    <script src="../../node_modules/whatwg-fetch/fetch.js"></script>
+    <script src="../../node_modules/d3/d3.min.js"></script>
+    <script src="/@?main=mymaps.js"></script>
+  </body>
+</html>
