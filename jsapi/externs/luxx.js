@@ -354,6 +354,19 @@ luxx.VectorOptions.prototype.style;
 luxx.VectorOptions.prototype.name;
 
 /**
+ * If set, the popup is displayed when clicking the feature.
+ * @type {boolean | undefined}
+ */
+luxx.VectorOptions.prototype.click;
+
+/**
+ * The container for the feature popup, either the element itself or
+ * the `id` of the element.
+ * @type {Element|string|undefined}
+ */
+luxx.VectorOptions.prototype.target;
+
+/**
  * @typedef {Object}
  */
 luxx.State;
