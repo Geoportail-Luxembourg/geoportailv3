@@ -1207,7 +1207,9 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
         }.bind(this)
     );
 
-    var interaction = new ol.interaction.Select();
+    var interaction = new ol.interaction.Select({
+      layers: [vector]
+    });
     this.addInteraction(interaction);
 
     interaction.on('select', function(e) {
