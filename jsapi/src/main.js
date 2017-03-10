@@ -1137,7 +1137,9 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
 
   this.addVector_(url, new ol.format.GPX(), {
     style: styleFunction,
-    reloadInterval: opt_options && opt_options.reloadInterval
+    reloadInterval: opt_options && opt_options.reloadInterval,
+    click: opt_options.click,
+    target: opt_options.target
   });
 };
 
@@ -1164,7 +1166,12 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
   var popup;
   var vector;
-
+  var el;
+  if (opt_options.target) {
+    el = typeof opt_options.target === 'string' ?
+        document.getElementById(opt_options.target) :
+        opt_options.target;
+  }
   /**
    * @param {boolean=} opt_time Whether or not to add a timestamp to url.
    */
@@ -1206,51 +1213,56 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
           this.getView().fit(vector.getSource().getExtent(), size);
         }.bind(this)
     );
-
-    var interaction = new ol.interaction.Select();
-    this.addInteraction(interaction);
-
-    interaction.on('select', function(e) {
-      if (popup) {
-        this.removeOverlay(popup);
-      }
-
-      var features = e.target.getFeatures();
-      if (!features.getLength()) {
-        return;
-      }
-      var feature = features.getArray()[0];
-      var properties = feature.getProperties();
-
-      var html = '<table>';
-      var key;
-      for (key in properties) {
-        if (key != feature.getGeometryName() && properties[key]) {
-          html += '<tr><th>';
-          html += key;
-          html += '</th><td ';
-          html += 'title ="';
-          html += properties[key] + '">';
-          html += properties[key] + '</td></tr>';
-        }
-      }
-      html += '</table>';
-
-      var element = lux.buildPopupLayout(html, function() {
-        this.removeOverlay(popup);
-        interaction.getFeatures().clear();
-      }.bind(this));
-      popup = new ol.Overlay({
-        element: element,
-        position: e.mapBrowserEvent.coordinate,
-        positioning: 'bottom-center',
-        offset: [0, -20],
-        insertFirst: false
+    if (opt_options && opt_options.click) {
+      var interaction = new ol.interaction.Select({
+        layers: [vector]
       });
-      this.addOverlay(popup);
+      this.addInteraction(interaction);
 
-    }.bind(this));
+      interaction.on('select', function(e) {
+        if (popup) {
+          this.removeOverlay(popup);
+        }
 
+        var features = e.target.getFeatures();
+        if (!features.getLength()) {
+          return;
+        }
+        var feature = features.getArray()[0];
+        var properties = feature.getProperties();
+
+        var html = '<table>';
+        var key;
+        for (key in properties) {
+          if (key != feature.getGeometryName() && properties[key]) {
+            html += '<tr><th>';
+            html += key;
+            html += '</th><td ';
+            html += 'title ="';
+            html += properties[key] + '">';
+            html += properties[key] + '</td></tr>';
+          }
+        }
+        html += '</table>';
+        if (opt_options.target) {
+          el.innerHTML = html;
+          return;
+        }
+        var element = lux.buildPopupLayout(html, function() {
+          this.removeOverlay(popup);
+          interaction.getFeatures().clear();
+        }.bind(this));
+        popup = new ol.Overlay({
+          element: element,
+          position: e.mapBrowserEvent.coordinate,
+          positioning: 'bottom-center',
+          offset: [0, -20],
+          insertFirst: false
+        });
+        this.addOverlay(popup);
+
+      }.bind(this));
+    }
   }.bind(this));
 };
 
