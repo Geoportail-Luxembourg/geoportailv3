@@ -543,7 +543,8 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_pf(self, layer_id, rows, measurements=False):
+    def get_info_from_pf(self, layer_id, rows, measurements=False,
+                         attributes_to_remove=""):
         import geoportailv3.PF
         pf = geoportailv3.PF.PF()
         features = []
@@ -554,7 +555,7 @@ class Getfeatureinfo(object):
             else:
                 fid = None
             f = self.to_feature(layer_id, fid,
-                                geometry, dict(row), "")
+                                geometry, dict(row), attributes_to_remove)
 
             attributes = f['attributes']
             attributes['PF'] = dict(pf.get_detail(
