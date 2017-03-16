@@ -40,11 +40,6 @@ goog.require('ol.tilegrid.WMTS');
 
 
 /**
- * @typedef {{push: function(Array<string>)}}
- */
-app.Piwik;
-
-/**
  * @param {angular.Scope} $scope Scope.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
@@ -535,7 +530,7 @@ app.MainController.prototype.switchLanguage = function(lang, track) {
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
 
-  var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
   if (track) piwik.push(['trackPageView']);
 };
