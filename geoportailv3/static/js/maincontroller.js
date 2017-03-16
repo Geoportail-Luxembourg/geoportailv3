@@ -481,9 +481,22 @@ app.MainController.prototype.manageSelectedLayers_ =
   );
       scope.$watchCollection(goog.bind(function() {
         return this['selectedLayers'];
-      }, this), goog.bind(function() {
+      }, this), goog.bind(function(newSelectedLayers, oldSelectedLayers) {
         this.map_.render();
         this.compareLayers_();
+
+        if (newSelectedLayers.length > oldSelectedLayers.length) {
+          var nbLayersAdded =
+             newSelectedLayers.length - oldSelectedLayers.length;
+          for (var i = 0; i < nbLayersAdded; i++) {
+            var layer = this['selectedLayers'][i];
+            var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+            piwik.push(['setDocumentTitle',
+              'LayersAdded/' + layer.get('label')
+              ]);
+            piwik.push(['trackPageView']);
+          }
+        }
       }, this));
     };
 
