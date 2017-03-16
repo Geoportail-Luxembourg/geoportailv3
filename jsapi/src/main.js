@@ -762,10 +762,12 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
       return;
     }
     var layerConf = this.findLayerConf_(layer);
-    var fn = (layerConf.type.indexOf('WMS') != -1) ?
-      lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
-    var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
-    this.getLayers().push(fn(layerConf, opacity));
+    if (layerConf !== null) {
+      var fn = (layerConf.type.indexOf('WMS') != -1) ?
+        lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
+      var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
+      this.getLayers().push(fn(layerConf, opacity));
+    }
   }.bind(this));
 };
 
