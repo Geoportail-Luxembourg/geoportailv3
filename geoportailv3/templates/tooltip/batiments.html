@@ -1,13 +1,4 @@
 <div>
-  <h3>${_s('Batiments')}</h3>
-  <table>
-    % for attr in feature['attributes']:
-      % if feature['attributes'][attr] != '' :
-        <tr>
-          <td>${_t('f_' + attr)}</td>
-          <td>${feature['attributes'][attr]}</td>
-        </tr>
-      % endif
-    % endfor
-  </table>
+  <h3>${_c("buildings")}</h3>
+  <label>${_c("Type")}</label> :<span>${_c("bat_"+str(int(feature['attributes']['type'])))}</span>
 </div>
