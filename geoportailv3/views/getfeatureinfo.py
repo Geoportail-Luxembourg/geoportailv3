@@ -329,6 +329,7 @@ class Getfeatureinfo(object):
             localizer = get_localizer(self.request)
             server = TranslationStringFactory("geoportailv3-server")
             tooltips = TranslationStringFactory("geoportailv3-tooltips")
+            client = TranslationStringFactory("geoportailv3-client")
             for r in results:
                 l_template = r['template']
                 filename = resource_filename('geoportailv3', path + l_template)
@@ -338,6 +339,7 @@ class Getfeatureinfo(object):
                     context = {
                         "_s": lambda s: localizer.translate(server(s)),
                         "_t": lambda s: localizer.translate(tooltips(s)),
+                        "_c": lambda s: localizer.translate(client(s)),
                         "feature": f}
                     f['attributes']['tooltip'] = render(
                             'geoportailv3:' + path + template, context)

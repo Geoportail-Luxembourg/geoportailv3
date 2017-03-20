@@ -292,12 +292,7 @@ lux.Map = function(options) {
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
 
-  var langUrl = lux.i18nUrl.replace('xx', lux.lang);
-  this.i18nPromise = fetch(langUrl).then(function(resp) {
-    return resp.json();
-  }).then(function(json) {
-    lux.i18n = json[lux.lang];
-  }.bind(this));
+  this.setLanguage(lux.lang);
 
   /**
    * @private
@@ -524,6 +519,21 @@ goog.inherits(lux.Map, ol.Map);
 lux.Map.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
     ol.Map.prototype.addLayer.call(this, layer);
+  }.bind(this));
+};
+
+/**
+ * @param {string} lang Set the language.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setLanguage = function(lang) {
+  lux.lang = lang;
+  var langUrl = lux.i18nUrl.replace('xx', lux.lang);
+  this.i18nPromise = fetch(langUrl).then(function(resp) {
+    return resp.json();
+  }).then(function(json) {
+    lux.i18n = json[lux.lang];
   }.bind(this));
 };
 
@@ -1557,7 +1567,8 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     'layers': layersToQuery.join(),
     'box1': big_box.join(),
     'box2': small_box.join(),
-    'tooltip': 1
+    'tooltip': 1,
+    'lang': lux.lang
   };
   var url = goog.Uri.parse(lux.queryUrl);
   Object.keys(params).forEach(function(key) {
