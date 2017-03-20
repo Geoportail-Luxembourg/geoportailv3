@@ -1,0 +1,17 @@
+﻿## -*- coding: utf-8 -*-
+<h1>${_c("parcels")}</h1>
+<h2>${_c(feature['attributes']['PF']['mainNumber'])}/${_c(feature['attributes']['PF']['additionalNumber'])}</h2>
+<span>${_c("Commune")}</span> : ${_c(feature['attributes']['PF']['townName'])}<br>
+<span>${_c("Section")}</span> : ${_c(feature['attributes']['PF']['sectionDesignation'])}<br>
+<span>${_c("Numero cadastral")}</span> : ${_c(feature['attributes']['PF']['mainNumber'])}/${_c(feature['attributes']['PF']['additionalNumber'])}<br>
+<span>${_c("Contenance")}</span> : ${_c(feature['attributes']['PF']['capacity'])}<br>
+<span>${_c("Lieudit")}</span> : ${_c(feature['attributes']['PF']['locality'])}<br>
+% if 'farmingTypes' in feature['attributes']['PF']:
+  <span>${_c("Nature")}</span> : ${_c(feature['attributes']['PF']['farmingTypes'])}<br>
+% endif
+% if 'occupations' in feature['attributes']['PF']:
+  <span>${_c("Occupation")}</span> : ${_c(feature['attributes']['PF']['occupations'])}<br>
+% endif
+% if 'measurementNumber' in feature['attributes']['PF']:
+  <span>${_c("Dernier mesurage")}</span> : ${_c(feature['attributes']['PF']['measurementNumber'])}
+% endif
