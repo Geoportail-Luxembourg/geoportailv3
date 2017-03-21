@@ -14,7 +14,13 @@ goog.require('app.GetShorturl');
 goog.require('app.StateManager');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
 goog.require('ol.proj');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 /**

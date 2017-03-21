@@ -26,13 +26,14 @@ goog.require('goog.asserts');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
+goog.require('ol.Overlay');
 goog.require('ol.events');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.LineString');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.interaction.Translate');
-goog.require('ol.style.RegularShape');
 
 
 /**

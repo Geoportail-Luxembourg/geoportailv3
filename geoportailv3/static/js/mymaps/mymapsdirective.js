@@ -20,7 +20,6 @@ goog.require('goog.array');
 goog.require('ngeo.filereaderDirective');
 goog.require('ngeo.modalDirective');
 goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
 
 

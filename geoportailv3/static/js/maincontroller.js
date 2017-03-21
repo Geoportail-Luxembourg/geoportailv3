@@ -23,20 +23,16 @@ goog.require('app.Themes');
 goog.require('app.UserManager');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.SyncArrays');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.control.Attribution');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
-goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.OSM');
-goog.require('ol.source.WMTS');
-goog.require('ol.tilegrid.WMTS');
 
 
 /**

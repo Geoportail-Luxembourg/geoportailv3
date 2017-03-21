@@ -4,7 +4,6 @@ goog.provide('app.feedbackDirective');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
-goog.require('ngeo.BackgroundEventType');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ngeo.Location');
 

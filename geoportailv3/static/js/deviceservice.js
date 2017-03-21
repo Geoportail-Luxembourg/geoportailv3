@@ -5,7 +5,6 @@
 goog.provide('app.GetDevice');
 
 goog.require('app');
-goog.require('ol.proj');
 
 
 /**

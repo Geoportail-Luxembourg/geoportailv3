@@ -2,8 +2,8 @@ goog.provide('app.StyleEditingController');
 goog.provide('app.styleEditingDirective');
 
 goog.require('app');
-goog.require('goog.color.alpha');
 goog.require('ol.Feature');
+goog.require('ol.geom.LineString');
 
 
 /**

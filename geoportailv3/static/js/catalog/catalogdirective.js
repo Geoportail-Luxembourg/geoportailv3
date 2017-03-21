@@ -23,6 +23,7 @@ goog.require('app.Themes');
 goog.require('app.ThemesEventType');
 goog.require('ngeo.layertreeDirective');
 goog.require('ol.events');
+goog.require('ol.View');
 
 
 /**

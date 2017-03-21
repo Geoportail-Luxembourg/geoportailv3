@@ -6,6 +6,12 @@ goog.require('app.profileDirective');
 goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
 
 
 /**

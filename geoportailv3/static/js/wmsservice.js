@@ -6,6 +6,10 @@
 goog.provide('app.WmsHelper');
 goog.require('ngeo.DecorateLayer');
 goog.require('ol.format.WMSCapabilities');
+goog.require('ol.layer.Image');
+goog.require('ol.layer.Tile');
+goog.require('ol.source.ImageWMS');
+goog.require('ol.source.TileWMS');
 
 /**
  * @constructor

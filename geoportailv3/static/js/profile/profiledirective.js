@@ -26,6 +26,7 @@ goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Overlay');
 goog.require('ol.geom.GeometryLayout');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');

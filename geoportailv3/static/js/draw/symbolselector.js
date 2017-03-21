@@ -2,7 +2,6 @@ goog.provide('app.SymbolSelectorController');
 goog.provide('app.symbolSelectorDirective');
 
 goog.require('app');
-goog.require('goog.color.alpha');
 goog.require('ol.Feature');
 
 

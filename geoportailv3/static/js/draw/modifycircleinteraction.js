@@ -1,8 +1,6 @@
 goog.provide('app.ModifyCircle');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
@@ -13,10 +11,8 @@ goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.ModifyEvent');

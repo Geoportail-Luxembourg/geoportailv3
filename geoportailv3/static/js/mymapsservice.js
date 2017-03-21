@@ -9,6 +9,16 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Text');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 /**
  * @typedef {Array.<Object>}

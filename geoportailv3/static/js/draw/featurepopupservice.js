@@ -9,11 +9,9 @@ goog.require('app.GetProfile');
 goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('ol.coordinate');
-goog.require('ol.MapProperty');
 goog.require('ol.Overlay');
 goog.require('ol.events');
+goog.require('ol.geom.LineString');
 goog.require('ngeo.filters');
 
 

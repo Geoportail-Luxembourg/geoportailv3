@@ -26,6 +26,13 @@ goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.searchDirective');
 goog.require('ol.events');
+goog.require('ol.Feature');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Point');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
 
 
 /**

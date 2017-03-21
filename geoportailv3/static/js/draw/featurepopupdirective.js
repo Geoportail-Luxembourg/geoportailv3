@@ -7,11 +7,11 @@ goog.provide('app.featurePopupDirective');
 goog.require('app');
 goog.require('app.Mymaps');
 goog.require('app.profileDirective');
-goog.require('ngeo');
 goog.require('ol.events');
-goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
 
 
 /**

@@ -38,7 +38,6 @@
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
@@ -49,41 +48,12 @@
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
-      "accessControls",
-      "ambiguousFunctionDecl",
-      "checkEventfulObjectDisposal",
-      "checkRegExp",
-      "checkTypes",
-      "checkVars",
-      "const",
-      "constantProperty",
-      "deprecated",
-      "duplicateMessage",
-      "es3",
-      "es5Strict",
-      "externsValidation",
-      "fileoverviewTags",
-      "globalThis",
-      "internetExplorerChecks",
-      "invalidCasts",
-      "misplacedTypeAnnotation",
-      "missingGetCssName",
-      "missingProperties",
-      "missingProvide",
-      "missingReturn",
-      "newCheckTypes",
-      "nonStandardJsDocs",
-      "suspiciousCode",
-      "strictModuleDepCheck",
-      "typeInvalidation",
-      "undefinedNames",
-      "undefinedVars",
-      "uselessCode",
-      "visibility"
+      "*"
     ],
     "jscomp_off": [
-      "unknownDefines",
-      "missingRequire"
+      "useOfGoogBase",
+      "extraRequire",
+      "lintChecks"
     ],
     "extra_annotation_name": [
       "api", "observable", "ngdoc", "ngname", "htmlAttribute"
