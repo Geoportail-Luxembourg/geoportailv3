@@ -92,7 +92,7 @@ app.MapController = function(appStateManager, ngeoDebounce) {
 
   view.on('propertychange', updateStateFunc);
   map.on('propertychange', function(event) {
-    if (event.key === ol.MapProperty.VIEW) {
+    if (event.key === ol.Map.Property.VIEW) {
       view.un('propertychange', updateStateFunc);
       view = map.getView();
       view.on('propertychange', updateStateFunc);

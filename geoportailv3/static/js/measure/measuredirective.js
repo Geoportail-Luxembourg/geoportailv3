@@ -286,16 +286,16 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
     }
   }, this));
   ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureArea'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureAzimut'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureProfile'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Interaction.Property.ACTIVE),
     this.onChangeActive_, this);
 };
 

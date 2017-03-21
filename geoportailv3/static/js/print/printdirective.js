@@ -30,7 +30,6 @@ goog.require('ol.events');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
 
 
 /**
@@ -319,7 +318,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
       this.useOptimalScale_();
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
       postcomposeListenerKey = ol.events.listen(this.map_,
-          ol.render.EventType.POSTCOMPOSE, postcomposeListener);
+          ol.render.Event.Type.POSTCOMPOSE, postcomposeListener);
     } else if (!goog.isNull(postcomposeListenerKey)) {
       ol.Observable.unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;

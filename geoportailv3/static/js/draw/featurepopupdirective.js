@@ -265,7 +265,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @private
    */
   this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
+      ol.interaction.Modify.EventType.MODIFYEND, this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;

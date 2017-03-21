@@ -170,7 +170,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
   });
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
+      ol.Object.getChangeEventType(ol.Geolocation.Property.TRACKING),
       /**
        * @param {ol.ObjectEvent} e Object event.
        */
@@ -183,7 +183,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
       }, this);
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+      ol.Object.getChangeEventType(ol.Geolocation.Property.POSITION),
       /**
        * @param {ol.ObjectEvent} e Object event.
        */
@@ -195,7 +195,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
       }, this);
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.ACCURACY_GEOMETRY),
+      ol.Object.getChangeEventType(ol.Geolocation.Property.ACCURACY_GEOMETRY),
       /**
        * @param {ol.ObjectEvent} e Object event.
        */

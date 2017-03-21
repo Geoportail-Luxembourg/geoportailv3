@@ -393,7 +393,7 @@ app.MainController.prototype.addLocationControl_ =
       this.map_.addControl(locationControl);
       if (isActive) {
         ol.events.listenOnce(this.map_,
-          ol.Object.getChangeEventType(ol.MapProperty.VIEW), function(e) {
+          ol.Object.getChangeEventType(ol.Map.Property.VIEW), function(e) {
             locationControl.handleCenterToLocation();
           }.bind(this));
       }
