@@ -74,19 +74,19 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
       } else {
         promises_[promiseKey] = $http.jsonp(
             '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
-            {params: {
-              'uid': metadataUid,
-              'lang': currentLanguage,
-              'cb': 'JSON_CALLBACK'
-            }}).then(
+          {params: {
+            'uid': metadataUid,
+            'lang': currentLanguage,
+            'cb': 'JSON_CALLBACK'
+          }}).then(
                 goog.bind(function(resp) {
                   var content = {
-                    'uid' : localMetadata['metadata_id'],
-                    'legendUrl' : null,
-                    'hasLegend' : false,
-                    'isError' : false,
-                    'isShortDesc' : true,
-                    'layerMetadata' : null
+                    'uid': localMetadata['metadata_id'],
+                    'legendUrl': null,
+                    'hasLegend': false,
+                    'isError': false,
+                    'isShortDesc': true,
+                    'layerMetadata': null
                   };
 
                   var remoteMetadata = resp.data['root'][0];

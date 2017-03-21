@@ -410,7 +410,7 @@ app.ProfileController.prototype.exportCSV = function() {
           (item['values']['dhm']) / 100 + ',' +
           item['x'] + ',' +
           item['y'] + '\n';
-  },this));
+  }, this));
 
   var csvInput = $('<input>').attr({
     type: 'hidden',

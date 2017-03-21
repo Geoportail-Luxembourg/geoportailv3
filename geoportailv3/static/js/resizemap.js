@@ -54,7 +54,7 @@ app.resizemapDirective = function($window) {
                 }
               }, $window);
 
-          element.bind('transitionend',function() {
+          element.bind('transitionend', function() {
             map.updateSize();
             map.renderSync();
           });

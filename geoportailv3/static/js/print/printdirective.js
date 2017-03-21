@@ -644,15 +644,15 @@ app.PrintController.prototype.print = function(format) {
           if ((layer.matrices instanceof Array) &&
             layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
             // Ugly hack to request non retina wmts layer for print
-            layer.baseURL = goog.string.remove(layer.baseURL,'_hd');
-            layer.matrixSet = goog.string.remove(layer.matrixSet,'_HD');
+            layer.baseURL = goog.string.remove(layer.baseURL, '_hd');
+            layer.matrixSet = goog.string.remove(layer.matrixSet, '_HD');
             // layer.layer = layer.layer + '_hd';
             // goog.array.forEach(layer.matrices, function(matrice) {
             //   matrice.tileSize = [512, 512];
             // });
           }
           if ((layer.matrices instanceof Array)) {
-            for (var i = layer.matrices.length - 1; i > 0 ; i--) {
+            for (var i = layer.matrices.length - 1; i > 0; i--) {
               if (layer.matrices[i].scaleDenominator > this['scale']) {
                 layer.matrices.splice(0, i + 1);
                 break;

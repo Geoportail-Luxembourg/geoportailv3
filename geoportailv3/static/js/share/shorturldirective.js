@@ -130,7 +130,9 @@ app.ShorturlDirectiveController.prototype.setUrl_ =
  */
 app.ShorturlDirectiveController.prototype.isMymapsSelected =
     function() {
-      if (this.appMymaps_.getMapId()) return true;
+      if (this.appMymaps_.getMapId()) {
+        return true;
+      }
       return false;
     };
 

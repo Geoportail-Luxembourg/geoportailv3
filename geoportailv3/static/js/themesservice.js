@@ -262,7 +262,7 @@ app.Themes.prototype.getFlatCatalog = function() {
           );
         }
         return flatCatalogue;
-      },this));
+      }, this));
 };
 
 app.module.service('appThemes', app.Themes);

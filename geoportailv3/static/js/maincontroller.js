@@ -325,9 +325,9 @@ app.MainController = function(
                 }));
               this.map_.addControl(
                 new ol.control.OverviewMap(
-                  {layers:[layer],
-                  collapseLabel: '\u00BB',
-                  label: '\u00AB'}));
+                  {layers: [layer],
+                    collapseLabel: '\u00BB',
+                    label: '\u00AB'}));
             }
           }.bind(this));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
@@ -409,7 +409,7 @@ app.MainController.prototype.addLocationControl_ =
  */
 app.MainController.prototype.setMap_ = function() {
   var interactions = ol.interaction.defaults(
-      {altShiftDragRotate:false, pinchRotate:false});
+      {altShiftDragRotate: false, pinchRotate: false});
   this.map_ = this['map'] = new ol.Map({
     logo: false,
     controls: [
@@ -618,7 +618,7 @@ app.MainController.prototype.initMymaps_ = function() {
   ol.events.listen(this.map_.getLayerGroup(), 'change',
       goog.bind(function() {
         this.compareLayers_();
-      },this), this);
+      }, this), this);
 };
 
 

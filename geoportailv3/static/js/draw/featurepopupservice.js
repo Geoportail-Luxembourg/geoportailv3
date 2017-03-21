@@ -147,11 +147,11 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
                 }
                 var currentDragPoint = e.coordinate;
                 this.overlay_.setPosition(
-                    [this.startingAnchorPoint_[0] + currentDragPoint[0] -
+                  [this.startingAnchorPoint_[0] + currentDragPoint[0] -
                      this.startingDragPoint_[0],
-                     this.startingAnchorPoint_[1] + currentDragPoint[1] -
+                    this.startingAnchorPoint_[1] + currentDragPoint[1] -
                      this.startingDragPoint_[1]]);
-              },this));
+              }, this));
         }
         ol.events.listenOnce(this.$document_[0],
             'mouseup', goog.bind(function() {
@@ -163,8 +163,8 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
                 ol.Observable.unByKey(this.mousemoveEvent_);
               }
               this.mousemoveEvent_ = null;
-            },this));
-      },this), this);
+            }, this));
+      }, this), this);
 };
 
 

@@ -67,7 +67,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
     'stroke': 'e',
     'isLabel': 'i',
     'linestyle': 'l',
-    'name' : 'n',
+    'name': 'n',
     'opacity': 'o',
     'showOrientation': 'r',
     'shape': 's',
@@ -105,7 +105,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
             }
           }
           return properties;
-        },this))
+        }, this))
   });
 };
 
@@ -241,7 +241,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
 
       feature.set('__map_id__', undefined);
       feature.setStyle(featureStyleFunction);
-    },this));
+    }, this));
 
     this.features.extend(remoteFeatures);
   }

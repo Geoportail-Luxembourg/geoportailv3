@@ -237,7 +237,7 @@ app.WmsHelper.prototype.getMetadata = function(id) {
     var hasLegend = false;
     var legendUrl = null;
 
-    for (var i = 0;'Style' in layer && i < layer['Style'].length; i++) {
+    for (var i = 0; 'Style' in layer && i < layer['Style'].length; i++) {
       if ('Name' in layer['Style'][i] &&
           layer['Style'][i]['Name'] === 'default' &&
           'LegendURL' in layer['Style'][i] &&
@@ -248,11 +248,11 @@ app.WmsHelper.prototype.getMetadata = function(id) {
       }
     }
     var content = {
-      'legendUrl' : legendUrl,
-      'hasLegend' : false,
-      'hasImageLegend' : hasLegend,
-      'isError' : false,
-      'isShortDesc' : true
+      'legendUrl': legendUrl,
+      'hasLegend': false,
+      'hasImageLegend': hasLegend,
+      'isError': false,
+      'isShortDesc': true
     };
 
     return this.getCapabilities(layer['wmsUrl']).then(function(capabilities) {
@@ -455,10 +455,10 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     });
   }
   newLayer.set('label', layer['Title']);
-  var curMatadata = {'isExternalWms' : true,
-     'metadata_id': layer['id'],
-     'start_opacity': 1
-    };
+  var curMatadata = {'isExternalWms': true,
+    'metadata_id': layer['id'],
+    'start_opacity': 1
+  };
   newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);

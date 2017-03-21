@@ -304,7 +304,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.V2_BGLAYER_TO_V3_ = {
-    'webbasemap' : 'basemap_2015_global',
+    'webbasemap': 'basemap_2015_global',
     'pixelmaps-color': 'topogr_global',
     'pixelmaps-gray': 'topo_bw_jpeg',
     'streets': 'streets_jpeg',
@@ -385,7 +385,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
       }, this));
     }
     return null;
-  },this));
+  }, this));
 
 };
 
@@ -606,7 +606,8 @@ app.Mymaps.prototype.updateLayers = function() {
           }
         }
       }
-    }, this));},this));
+    }, this));
+  }, this));
 };
 
 
@@ -701,7 +702,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.updateLayers();
         this.layersChanged = false;
         return mapinformation;
-      },this));
+      }, this));
 };
 
 

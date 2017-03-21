@@ -238,7 +238,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
             (geometryCollection.getGeometries()[0]);
         var radiusCoordinates = radius.getCoordinates();
         $q.all([this.getElevation_(radiusCoordinates[0]),
-              this.getElevation_(radiusCoordinates[1])]
+          this.getElevation_(radiusCoordinates[1])]
         ).then(goog.bind(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
             var el = evt.target.getTooltipElement();

@@ -404,7 +404,7 @@ app.MymapsDirectiveController.prototype.saveLayers = function() {
       this.appTheme_.getCurrentTheme())
   .then(goog.bind(function() {
     this.appMymaps_.loadMapInformation();
-  },this));
+  }, this));
   this['layersChanged'] = false;
   return promise;
 };
@@ -462,7 +462,9 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
           var msg = this.gettextCatalog.getString('Carte copiée');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
-        }}}, this));
+        }
+      }
+    }, this));
   }
 };
 
@@ -704,7 +706,9 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
               this['drawopen'] = true;
               this.appMymaps_.setMapId(mapId);
               return this.saveLayers();
-            }}}, this))
+            }
+          }
+        }, this))
         .then(goog.bind(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
         }, this))
@@ -984,7 +988,8 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             this.notify_(msg, app.NotifyNotificationType.INFO);
             this.modal = undefined;
           }
-        }}, this));
+        }
+      }, this));
   }
 };
 

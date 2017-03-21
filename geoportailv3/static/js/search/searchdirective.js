@@ -349,7 +349,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         return $compile(html)(scope);
       }, this)
     })
-  },{
+  }, {
     name: 'backgroundLayers',
     /**
      * @param {Object} query The query.
@@ -388,7 +388,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
             return $compile(html)(scope);
           }, this)
     })
-  },{
+  }, {
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
     // Use a large number for "limit" here. This is to work around a bug
@@ -425,7 +425,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         return $compile(html)(scope);
       }, this)
     })
-  },{
+  }, {
     name: 'layers',
     source: LayerBloodhoundEngine.ttAdapter(),
     // Use a large number for "limit" here. This is to work around a bug

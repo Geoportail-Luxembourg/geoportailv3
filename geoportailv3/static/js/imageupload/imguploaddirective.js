@@ -113,7 +113,7 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
     .success(
         goog.bind(function(data, status, headers, config) {
           modelSetter(scope, data);
-        },this))
+        }, this))
     .error(goog.bind(function() {
       var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');

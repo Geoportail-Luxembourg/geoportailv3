@@ -65,7 +65,7 @@ app.AuthenticationController.prototype.authenticate = function() {
         if (status == 200) {
           this['userOpen'] = false;
         }
-      },this));
+      }, this));
 };
 
 

@@ -129,13 +129,13 @@ app.UserManager.prototype.authenticate = function(username, password) {
               'Invalid username or password.'),
               app.NotifyNotificationType.WARNING);
         }
-      },this)).error(
+      }, this)).error(
       goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
             app.NotifyNotificationType.WARNING);
-      },this));
+      }, this));
 };
 
 
@@ -188,10 +188,10 @@ app.UserManager.prototype.getUserInfo = function() {
         } else {
           this.clearUserInfo();
         }
-      },this)).error(
+      }, this)).error(
       goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
-      },this));
+      }, this));
 };
 
 

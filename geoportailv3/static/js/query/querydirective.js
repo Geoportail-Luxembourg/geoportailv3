@@ -358,7 +358,9 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
         if (this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
-            this.appActivetool_.isActive() || this.isQuerying_) return;
+            this.appActivetool_.isActive() || this.isQuerying_) {
+          return;
+        }
         this.selectedFeatures_.clear();
         var found = false;
         var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
@@ -558,9 +560,9 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
           this.content = [];
           this.http_.get(
               this.getInfoServiceUrl_,
-              {params: {
-                'fid': fid
-              }}).then(
+            {params: {
+              'fid': fid
+            }}).then(
               function(resp) {
                 var showInfo = false;
                 if (!this.appGetDevice_.testEnv('xs')) {
@@ -608,7 +610,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layersList = [];
   var layerLabel = {};
 
-  for (var i = layers.length - 1; i >= 0 ; i--) {
+  for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
     if (goog.isDefAndNotNull(metadata)) {
       if (metadata['is_queryable'] == 'true' &&
@@ -648,11 +650,11 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     this.content = [];
     this.http_.get(
         this.getInfoServiceUrl_,
-        {params: {
-          'layers': layersList.join(),
-          'box1': big_box.join(),
-          'box2': small_box.join()
-        }}).then(
+      {params: {
+        'layers': layersList.join(),
+        'box1': big_box.join(),
+        'box2': small_box.join()
+      }}).then(
         goog.bind(function(resp) {
           if (resp.data.length > 0) {
             this.showInfo_(evt.originalEvent.shiftKey, resp,
@@ -727,7 +729,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
       if (!found) {
         this.responses_.push(item);
       }
-    },this);
+    }, this);
   } else {
     this.responses_ = resp.data;
     goog.array.forEach(this.responses_, function(item) {
@@ -763,8 +765,11 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
   }, this);
   this.clearQueryResult_(this.QUERYPANEL_);
   this.content = this.responses_;
-  if (this.responses_.length > 0) this['infoOpen'] = openInfoPanel;
-  else this['infoOpen'] = false;
+  if (this.responses_.length > 0) {
+    this['infoOpen'] = openInfoPanel;
+  }  else {
+    this['infoOpen'] = false;
+  }
   this.lastHighlightedFeatures_ = [];
   for (var i = 0; i < this.responses_.length; i++) {
     this.lastHighlightedFeatures_.push.apply(
@@ -995,7 +1000,7 @@ app.QueryController.prototype.translateKeys =
       angular.forEach(attributes, function(value, key) {
         if (key !== 'showProfile') {
           results.push({'key': this.translate_.getString('f_' + key),
-        'value': value});
+            'value': value});
         }
       }, this);
       return results;
