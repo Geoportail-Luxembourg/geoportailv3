@@ -116,7 +116,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
-  return this.http_.post(this.loginUrl_, req, config).success(
+  return this.http_.post(this.loginUrl_, req, config).then(
       goog.bind(function(data, status, headers, config) {
         if (status == 200) {
           this.getUserInfo();
@@ -129,8 +129,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
               'Invalid username or password.'),
               app.NotifyNotificationType.WARNING);
         }
-      }, this)).error(
-      goog.bind(function(data, status, headers, config) {
+      }, this), goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
@@ -143,7 +142,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
 app.UserManager.prototype.logout = function() {
-  return this.http_.get(this.logoutUrl_).success(
+  return this.http_.get(this.logoutUrl_).then(
       goog.bind(function(data, status, headers, config) {
         if (status == 200) {
           this.getUserInfo();
@@ -154,8 +153,7 @@ app.UserManager.prototype.logout = function() {
               app.NotifyNotificationType.ERROR
               );
         }
-      }, this)).error(
-      goog.bind(function(data, status, headers, config) {
+      }, this), goog.bind(function(data, status, headers, config) {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Une erreur est survenue durant la déconnexion.'),
@@ -173,7 +171,7 @@ app.UserManager.prototype.getUserInfo = function() {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
 
-  this.http_.post(this.getuserinfoUrl_, req, config).success(
+  this.http_.post(this.getuserinfoUrl_, req, config).then(
       goog.bind(function(data, status, headers, config) {
         if (status == 200) {
           this.setUserInfo(
@@ -188,8 +186,7 @@ app.UserManager.prototype.getUserInfo = function() {
         } else {
           this.clearUserInfo();
         }
-      }, this)).error(
-      goog.bind(function(data, status, headers, config) {
+      }, this), goog.bind(function(data, status, headers, config) {
         this.clearUserInfo();
       }, this));
 };
