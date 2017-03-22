@@ -481,9 +481,22 @@ app.MainController.prototype.manageSelectedLayers_ =
   );
       scope.$watchCollection(goog.bind(function() {
         return this['selectedLayers'];
-      }, this), goog.bind(function() {
+      }, this), goog.bind(function(newSelectedLayers, oldSelectedLayers) {
         this.map_.render();
         this.compareLayers_();
+
+        if (newSelectedLayers.length > oldSelectedLayers.length) {
+          var nbLayersAdded =
+             newSelectedLayers.length - oldSelectedLayers.length;
+          for (var i = 0; i < nbLayersAdded; i++) {
+            var layer = this['selectedLayers'][i];
+            var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+            piwik.push(['setDocumentTitle',
+              'LayersAdded/' + layer.get('label')
+              ]);
+            piwik.push(['trackPageView']);
+          }
+        }
       }, this));
     };
 
@@ -520,13 +533,19 @@ app.MainController.prototype.sidebarOpen = function() {
 
 /**
  * @param {string} lang Language code.
+ * @param {boolean=} track track page view
  * @export
  */
-app.MainController.prototype.switchLanguage = function(lang) {
+app.MainController.prototype.switchLanguage = function(lang, track) {
+  if (!goog.isBoolean(track)) track = true;
   goog.asserts.assert(lang in this.langUrls_);
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
   this['lang'] = lang;
+
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
+  if (track) piwik.push(['trackPageView']);
 };
 
 
@@ -556,12 +575,12 @@ app.MainController.prototype.initLanguage_ = function() {
 
   if (goog.isDef(urlLanguage) &&
       goog.object.containsKey(this.langUrls_, urlLanguage)) {
-    this.switchLanguage(urlLanguage);
+    this.switchLanguage(urlLanguage, false);
     return;
   } else {
     // if there is no information about language preference,
     // fallback to french
-    this.switchLanguage('fr');
+    this.switchLanguage('fr', false);
     return;
   }
 };

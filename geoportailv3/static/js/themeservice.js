@@ -8,12 +8,6 @@ goog.require('ngeo.Location');
 
 
 /**
- * @typedef {{push: function(Array<string>)}}
- */
-app.Piwik;
-
-
-/**
  * @constructor
  * @param {angular.$window} $window Global Scope.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
@@ -77,8 +71,9 @@ app.Theme.prototype.setCurrentTheme = function(themeId) {
   if (!goog.isDefAndNotNull(piwikSiteId)) {
     piwikSiteId = this.piwikSiteIdLookup_[app.Theme.DEFAULT_THEME_];
   }
-  var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setSiteId', piwikSiteId]);
+  piwik.push(['setDocumentTitle',themeId]);
   piwik.push(['trackPageView']);
 
   this.setLocationPath_(this.currentTheme_);
