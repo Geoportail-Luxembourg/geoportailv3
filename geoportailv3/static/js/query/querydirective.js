@@ -984,8 +984,8 @@ app.QueryController.prototype.getDownloadsketchUrl = function() {
 
 
 /**
- * @param {Object} attributes The  attributes to sort.
- * @return {Array<Object>} The ordered attributes.
+ * @param {Object} attributes The  attributes to translate.
+ * @return {Array<Object>} The translated attributes.
  * @export
  */
 app.QueryController.prototype.translateKeys =
@@ -998,11 +998,25 @@ app.QueryController.prototype.translateKeys =
         'value': value});
         }
       }, this);
-
-
       return results;
     };
 
+/**
+ * @param {Object} attributes The attributes to prefix.
+ * @param {string} prefix The prefix.
+ * @return {Array<Object>} The attributes with prefix.
+ * @export
+ */
+app.QueryController.prototype.prefixKeys =
+    function(attributes, prefix) {
+      var results = [];
+      angular.forEach(attributes, function(value, key) {
+        if (key !== 'showProfile') {
+          results.push({'key': 'f_' + key, 'value': value});
+        }
+      }, this);
+      return results;
+    };
 
 /**
  * Get the path to the Mymaps Resource.

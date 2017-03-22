@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-xs-12">
     <h1>{{layers.layerLabel | translate}}</h1>
-    <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.translateKeys(feature.attributes)">
+    <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, 'f_')">
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
         <span ng-if="!ctrl.isEmpty(entry['value'])">
-          <label>{{entry['key']}}</label> : 
+          <label>{{entry['key'] | translate}}</label> :
             <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
             <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['value']}}</a>
         </span>
