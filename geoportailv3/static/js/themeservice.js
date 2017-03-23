@@ -26,7 +26,7 @@ app.Theme = function($window, ngeoLocation, appThemes) {
     'tourisme': 7,
     'emwelt': 8,
     'agriculture': 9,
-    'pro': 10,
+    'prof': 10,
     'go': 11,
     'm': 12,
     'at': 16,
