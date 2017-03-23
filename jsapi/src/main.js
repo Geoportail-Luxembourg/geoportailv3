@@ -419,8 +419,18 @@ lux.Map = function(options) {
   }
 
   options.view = new ol.View(viewOptions);
-
-  var controls = ol.control.defaults();
+  var controls;
+  if (options.controls !== undefined) {
+    if (Array.isArray(options.controls)) {
+      controls = new ol.Collection(options.controls.slice());
+    } else {
+      ol.asserts.assert(options.controls instanceof ol.Collection,
+          47); // Expected `controls` to be an array or an `ol.Collection`
+      controls = options.controls;
+    }
+  } else {
+    controls = ol.control.defaults();
+  }
 
   var target;
   var el;
