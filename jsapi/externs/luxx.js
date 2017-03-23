@@ -10,6 +10,14 @@ var luxx;
 luxx.MapOptions;
 
 /**
+ * Controls initially added to the map. If not specified,
+ * {@link ol.control.defaults ol.control.defaults()} is used.
+ * @type {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.controls;
+
+/**
  * Identifier of background layer. Default to `basemap_2015_global`.
  * @type {string|undefined}
  * @api
