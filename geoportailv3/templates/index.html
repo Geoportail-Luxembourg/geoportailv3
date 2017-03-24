@@ -41,9 +41,6 @@
           <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
             <ul class="nav toolbox-panel toolbox-panel-top">
-              <li ng-class="{active: mainCtrl.lang == 'lb'}">
-                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
-              </li>
               <li ng-class="{active: mainCtrl.lang == 'fr'}">
                 <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
               </li>
@@ -279,8 +276,7 @@
          appModule.constant('langUrls', {
            'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
            'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
-           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
-           'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
+           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}'
          });
 
 % if proxy_wms_url:
