@@ -261,7 +261,7 @@ def main(global_config, **settings):
     from geoportailv3.views.authentication import ldap_user_validator, \
         get_user_from_request
     ldap_settings = config.get_settings()['ldap']
-    if False:
+    if ldap_settings:
         config.include('pyramid_ldap')
 
         """Config the ldap connection.
