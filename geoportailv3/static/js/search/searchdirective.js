@@ -817,23 +817,29 @@ app.SearchDirectiveController.prototype.setBackgroundLayer_ = function(input) {
 
 /**
  * @param {(Object|string)} input The input.
+ * @return {boolean} True if layer is added otherwise false.
  * @private
  */
 app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
-  var layer = {};
+  var layer;
   if (typeof input === 'string') {
     var node = goog.array.find(this.layers_, function(element) {
       return goog.object.containsKey(element, 'name') &&
           goog.object.containsValue(element, input);
     });
-    layer = this.getLayerFunc_(node);
+    if (node !== null) {
+      layer = this.getLayerFunc_(node);
+    }
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
   var map = this['map'];
-  if (map.getLayers().getArray().indexOf(layer) <= 0) {
+  if (layer !== undefined && layer !== null &&
+      map.getLayers().getArray().indexOf(layer) <= 0) {
     map.addLayer(layer);
+    return true;
   }
+  return false;
 };
 
 
@@ -868,14 +874,22 @@ app.SearchDirectiveController.selected_ =
           if (!(goog.array.contains(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
-              features.push(feature);
-            }
+            var allLayerAdded = true;
             var layers = /** @type {Array<string>} */
             (this.layerLookup_[suggestion.get('layer_name')] || []);
             goog.array.forEach(layers, goog.bind(function(layer) {
-              this.addLayerToMap_(/** @type {string} */ (layer));
+              allLayerAdded = allLayerAdded &&
+                this.addLayerToMap_(/** @type {string} */ (layer));
             }, this));
+
+            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+              if (!allLayerAdded) {
+                feature.setGeometry(
+                  new ol.geom.Point(ol.extent.getCenter(
+                    featureGeometry.getExtent())));
+              }
+              features.push(feature);
+            }
           } else {
             feature.setGeometry(
               new ol.geom.Point(ol.extent.getCenter(
