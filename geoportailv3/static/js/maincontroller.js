@@ -490,7 +490,7 @@ app.MainController.prototype.manageSelectedLayers_ =
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
             piwik.push(['setDocumentTitle',
               'LayersAdded/' + layer.get('label')
-              ]);
+            ]);
             piwik.push(['trackPageView']);
           }
         }
@@ -534,7 +534,9 @@ app.MainController.prototype.sidebarOpen = function() {
  * @export
  */
 app.MainController.prototype.switchLanguage = function(lang, track) {
-  if (!goog.isBoolean(track)) track = true;
+  if (!goog.isBoolean(track)) {
+    track = true;
+  }
   goog.asserts.assert(lang in this.langUrls_);
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
@@ -542,7 +544,9 @@ app.MainController.prototype.switchLanguage = function(lang, track) {
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
-  if (track) piwik.push(['trackPageView']);
+  if (track) {
+    piwik.push(['trackPageView']);
+  }
 };
 
 
