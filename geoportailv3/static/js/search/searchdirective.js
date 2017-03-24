@@ -398,9 +398,6 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   }, {
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
-    // Use a large number for "limit" here. This is to work around a bug
-    // in typeahead.js: https://github.com/twitter/typeahead.js/pull/1319
-    limit: 50,
     /**
      * @param {Object} suggestion The suggestion.
      * @return {(string|*)} The result.
@@ -435,9 +432,6 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   }, {
     name: 'layers',
     source: LayerBloodhoundEngine.ttAdapter(),
-    // Use a large number for "limit" here. This is to work around a bug
-    // in typeahead.js: https://github.com/twitter/typeahead.js/pull/1319
-    limit: 50,
     /**
      * @param {Object} suggestion The suggestion.
      * @return {(string|*)} The result.
