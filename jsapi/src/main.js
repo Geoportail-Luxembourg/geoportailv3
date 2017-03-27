@@ -398,27 +398,34 @@ lux.Map = function(options) {
     this.showFeatures(opts.layer, opts.ids, opts.click, opts.target);
   }
 
-  var viewOptions = {
-    center : ol.proj.fromLonLat([6.215, 49.845]),
-    zoom   : 9
-  };
+  if (options.view === undefined) {
+    options.view = new ol.View();
+  }
 
   if (options.position) {
-    viewOptions.center = ol.proj.transform(
+    options.view.setCenter(ol.proj.transform(
       options.position,
       (options.positionSrs) ?
           'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
       'EPSG:3857'
-    );
+      ));
     delete options.position;
     delete options.positionSrs;
   }
   if (options.zoom) {
-    viewOptions.zoom = options.zoom;
+    options.view.setZoom(options.zoom);
     delete options.zoom;
   }
 
-  options.view = new ol.View(viewOptions);
+  if (options.view.getCenter() === undefined ||
+      options.view.getCenter() === null) {
+    options.view.setCenter(ol.proj.fromLonLat([6.215, 49.845]));
+  }
+  if (options.view.getZoom() === undefined ||
+      options.view.getZoom() === null) {
+    options.view.setZoom(9);
+  }
+
   var controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
