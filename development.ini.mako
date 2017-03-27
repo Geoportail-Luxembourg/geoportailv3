@@ -31,14 +31,8 @@ versioning = false
 bottom = true
 minified = true
 
-[filter:raven]
-use = egg:raven#raven
-dsn = ${sentry_dsn}
-include_paths = app
-
 [pipeline:main]
 pipeline =
-    raven
     egg:WebError#evalerror
     fanstatic
     app
@@ -51,23 +45,17 @@ port = ${waitress_port}
 # Begin logging configuration
 
 [loggers]
-keys = root, sentry, c2cgeoportal, geoportailv3
+keys = root, c2cgeoportal, geoportailv3
 
 [handlers]
-keys = console, sentry
+keys = console
 
 [formatters]
 keys = generic
 
 [logger_root]
 level = WARN
-handlers = console, sentry
-
-[logger_sentry]
-level = WARN
 handlers = console
-qualname = sentry.errors
-propagate = 0
 
 [logger_c2cgeoportal]
 level = WARN
@@ -86,12 +74,6 @@ qualname = sqlalchemy.engine
 # "level = INFO" logs SQL queries.
 # "level = DEBUG" logs SQL queries and results.
 # "level = WARN" logs neither.  (Recommended for production systems.)
-
-[handler_sentry]
-class = raven.handlers.logging.SentryHandler
-args = ('${sentry_dsn}',)
-level = WARNING
-formatter = generic
 
 [handler_console]
 class = StreamHandler
