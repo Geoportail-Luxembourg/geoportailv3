@@ -117,7 +117,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
       this.initialState_['layers'].length > 0) ||
       (this.initialState_.hasOwnProperty('fid') &&
       this.initialState_['fid'].length > 0))) {
-    this.initialState_['bgLayer'] = 'topogr_global';
+    this.initialState_['bgLayer'] = 'topogg';
     var msg = this.gettextCatalog_.getString(
         'Aucune couche n\'étant définie pour cette carte,' +
         ' une couche de fond a automatiquement été ajoutée.');
