@@ -10,6 +10,21 @@ var luxx;
 luxx.MapOptions;
 
 /**
+ * Identifier of background layer. Default to `basemap_2015_global`.
+ * @type {string|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.bgLayer;
+
+/**
+ * Set the presence of a background selector control in the map.
+ * (not included by default).
+ * @type {luxx.BgSelectorOptions|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.bgSelector;
+
+/**
  * Controls initially added to the map. If not specified,
  * {@link ol.control.defaults ol.control.defaults()} is used.
  * @type {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined}
@@ -18,18 +33,19 @@ luxx.MapOptions;
 luxx.MapOptions.prototype.controls;
 
 /**
- * Identifier of background layer. Default to `basemap_2015_global`.
- * @type {string|undefined}
+ * Set the presence of features to recenter on & to show markers for.
+ * (not included by default).
+ * @type {luxx.FeaturesOptions|undefined}
  * @api
  */
-luxx.MapOptions.prototype.bgLayer;
+luxx.MapOptions.prototype.features;
 
 /**
- * Array of overlay layer identifiers.
- * @type {Array<string|number>|undefined}
+ * Set the presence of a layer manager control. (not included by default)
+ * @type {luxx.LayerManagerOptions|undefined}
  * @api
  */
-luxx.MapOptions.prototype.layers;
+luxx.MapOptions.prototype.layerManager;
 
 /**
  * Array of opacities for the layers.
@@ -39,19 +55,18 @@ luxx.MapOptions.prototype.layers;
 luxx.MapOptions.prototype.layerOpacities;
 
 /**
- * Array of queryable layers.
+ * Array of overlay layer identifiers.
  * @type {Array<string|number>|undefined}
  * @api
  */
-luxx.MapOptions.prototype.queryableLayers;
+luxx.MapOptions.prototype.layers;
 
 /**
- * The container for the map, either the element itself or the `id` of the
- * element.
- * @type {Element|string}
- * @api
+ * Set the presence of a mouse position control in the map. (not included by
+ * default).
+ * @type {luxx.MousePositionOptions|undefined}
  */
-luxx.MapOptions.prototype.target;
+luxx.MapOptions.prototype.mousePosition;
 
 /**
  * The container for map popups, either the element itself or the `id` of the
@@ -62,16 +77,9 @@ luxx.MapOptions.prototype.target;
 luxx.MapOptions.prototype.popupTarget;
 
 /**
- * If set to true, it displays the feature information in a popup or
- * in popupTarget element.
- * @type {boolean|undefined}
- * @api
- */
-luxx.MapOptions.prototype.showLayerInfoPopup;
-
-/**
  * The initial position of the center for the map view. The coordinate system
  * for the center is specified with the `positionSrs` option.
+ * If a center is defined in the view, then this parameter will override the center defined in the view.
  * @type {ol.Coordinate|undefined}
  * @api
  */
@@ -86,41 +94,41 @@ luxx.MapOptions.prototype.position;
 luxx.MapOptions.prototype.positionSrs;
 
 /**
+ * Array of queryable layers.
+ * @type {Array<string|number>|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.queryableLayers;
+
+/**
+ * If set to true, it displays the feature information in a popup or
+ * in popupTarget element.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.showLayerInfoPopup;
+
+/**
+ * The container for the map, either the element itself or the `id` of the
+ * element.
+ * @type {Element|string}
+ * @api
+ */
+luxx.MapOptions.prototype.target;
+
+/**
+ * The map's view.
+ * @type {ol.View|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.view;
+
+/**
  * Zoom level used to calculate the initial resolution for the view.
+ * If zoom are defined here and in the view, this parameter will override the view one.
  * @type {number|undefined}
  */
 luxx.MapOptions.prototype.zoom;
-
-
-/**
- * Set the presence of a layer manager control. (not included by default)
- * @type {luxx.LayerManagerOptions|undefined}
- * @api
- */
-luxx.MapOptions.prototype.layerManager;
-
-/**
- * Set the presence of a mouse position control in the map. (not included by
- * default).
- * @type {luxx.MousePositionOptions|undefined}
- */
-luxx.MapOptions.prototype.mousePosition;
-
-/**
- * Set the presence of features to recenter on & to show markers for.
- * (not included by default).
- * @type {luxx.FeaturesOptions|undefined}
- * @api
- */
-luxx.MapOptions.prototype.features;
-
-/**
- * Set the presence of a background selector control in the map.
- * (not included by default).
- * @type {luxx.BgSelectorOptions|undefined}
- * @api
- */
-luxx.MapOptions.prototype.bgSelector;
 
 
 /**
