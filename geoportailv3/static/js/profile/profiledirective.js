@@ -162,7 +162,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return parseFloat((item['values']['dhm'] / 100).toPrecision(5));
+      return parseFloat((item['values']['dhm']).toPrecision(5));
     }
     return 0;
   };
@@ -214,7 +214,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
       this['point'] = point;
       this.featureOverlay_.clear();
       var curPoint = new ol.geom.Point([point['x'], point['y']]);
-      curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
+      curPoint.transform('EPSG:3857', this['map'].getView().getProjection());
       var positionFeature = new ol.Feature({
         geometry: curPoint
       });
@@ -273,11 +273,11 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
       for (i = 0; i < len; i++) {
         var p = newVal[i];
         p = new ol.geom.Point([p['x'], p['y']]);
-        p.transform('EPSG:2169', this['map'].getView().getProjection());
+        p.transform('EPSG:3857', this['map'].getView().getProjection());
         lineString.appendCoordinate(
             p.getCoordinates().concat(newVal[i]['dist']));
 
-        var curElevation = (newVal[i]['values']['dhm']) / 100;
+        var curElevation = (newVal[i]['values']['dhm']);
         if (lastElevation !== undefined) {
           var elevation = curElevation - lastElevation;
           cumulativeElevation = cumulativeElevation + elevation;
@@ -407,7 +407,7 @@ app.ProfileController.prototype.exportCSV = function() {
   var csv = 'dist,MNT,y,x\n';
   this['profileData'].forEach(goog.bind(function(item) {
     csv = csv + item['dist'] + ',' +
-          (item['values']['dhm']) / 100 + ',' +
+          (item['values']['dhm']) + ',' +
           item['x'] + ',' +
           item['y'] + '\n';
   },this));
