@@ -1,0 +1,9 @@
+extends: vars_geoportailv3.yaml
+
+vars:
+    ldap: false
+    dbport: 5433
+
+    sqlalchemy_engines:
+      mymaps: 'postgresql://www-data:www-data@localhost:5433/dummy'
+      ecadastre: 'postgresql://www-data:www-data@localhost:5433/dummy'
