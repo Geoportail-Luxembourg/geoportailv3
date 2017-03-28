@@ -164,7 +164,7 @@ app.CatalogController.prototype.setThemeZooms = function(tree) {
     var currentView = map.getView();
     map.setView(new ol.View({
       maxZoom: maxZoom,
-      minZoom: 8,
+      minZoom: 7,
       extent: this.maxExtent_,
       center: currentView.getCenter(),
       enableRotation: false,
