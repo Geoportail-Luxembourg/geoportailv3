@@ -6,6 +6,11 @@ from pyramid.response import Response
 from pyramid.i18n import TranslationStringFactory
 from c2cgeoportal.views.raster import Raster
 from shapely.ops import linemerge
+from shapely.geometry import Point
+
+from functools import partial
+import pyproj
+from shapely.ops import transform
 
 import geojson
 import math
@@ -234,8 +239,14 @@ class Profile(Raster):
 
     def _dist(self, coord1, coord2):
         """Compute the distance between 2 points"""
-        return math.sqrt(math.pow(coord1[0] - coord2[0], 2.0) +
-                         math.pow(coord1[1] - coord2[1], 2.0))
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init='epsg:3857'),
+            pyproj.Proj(init='epsg:32632'))
+        point1 = transform(project, Point(coord1[0], coord1[1]))
+        point2 = transform(project, Point(coord2[0], coord2[1]))
+        return math.sqrt(math.pow(point1.x - point2.x, 2.0) +
+                         math.pow(point1.y - point2.y, 2.0))
 
     def _create_points(self, coords, nb_points):
         """Add some points in order to reach roughly asked number of points"""
