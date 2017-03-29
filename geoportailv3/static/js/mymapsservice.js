@@ -10,7 +10,6 @@ goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
 
-
 /**
  * @typedef {Array.<Object>}
  */
@@ -32,11 +31,17 @@ app.MapsResponse;
  * @param {app.Theme} appTheme The theme service.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
+ * @param {string} arrowUrl URL to the arrow.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, arrowUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.arrowUrl_ = arrowUrl;
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -1156,7 +1161,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
   var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
-
+  var arrowUrl = this.arrowUrl_;
   return function(resolution) {
 
     // clear the styles
@@ -1187,20 +1192,6 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
 
-        var arrowOptions = {
-          fill: new ol.style.Fill({
-            color: rgbColor
-          }),
-          stroke: new ol.style.Stroke({
-            color: rgbColor,
-            width: 1
-          }),
-          radius: 10,
-          points: 3,
-          angle: 0,
-          rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
-        };
-
         if (prevArrow) {
           var pt1 = curMap.getPixelFromCoordinate(arrowPoint.getCoordinates()),
               pt2 = curMap.getPixelFromCoordinate(prevArrow.getCoordinates()),
@@ -1208,11 +1199,15 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
               h = pt2[1] - pt1[1];
           distance = Math.sqrt(w * w + h * h);
         }
-        if (!prevArrow || distance > 40) {
+        if (!prevArrow || distance > 600) {
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
-            image: new ol.style.RegularShape(arrowOptions)
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+              color: rgbColor,
+              rotation: Math.PI / 2 - Math.atan2(dy, dx),
+              src: arrowUrl
+            }))
           }));
           prevArrow = arrowPoint;
         }
