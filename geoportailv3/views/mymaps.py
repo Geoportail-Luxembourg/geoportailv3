@@ -936,8 +936,8 @@ class Mymaps(object):
         output_file.close()
 
         im1 = Image.open(temp_file_path)
-        scaled_width = 40
-        scaled_height = 40
+        scaled_width = 900
+        scaled_height = 900
 
         cur_file = Symbols()
 
