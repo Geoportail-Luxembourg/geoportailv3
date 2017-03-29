@@ -91,8 +91,8 @@
       <!-- Point radius -->
       <div class="form-group">
         <label translate>Size</label>
-        <input type="range" min="5" max="120" step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
-        <input type="number" ng-min="-120" ng-max="120" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="range" min="5" max="900" step="5" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
+        <input type="number" ng-min="-900" ng-max="900" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
       <!-- Point symbol rotation -->
       <div class="form-group" ng-show="ctrl.feature.get('shape') != 'circle'">
