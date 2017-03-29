@@ -66,7 +66,7 @@ class PF():
         measurements = resp.measurementList
 
         if len(town_code) == 0:
-            self.log.debug("Erreur le town code ne peut pas être vide")
+            self.log.debug("Erreur le town code ne peut pas ï¿½tre vide")
 
         parc_id = self._add_char_before(3, town_code)
 
@@ -296,7 +296,7 @@ class PF():
             76: {'name': 'MAMER', 'shortName': 'MAME',
                  "townNum": "76", "inDirectory": ""},
             77: {'name': 'MANTERNACH', 'shortName': 'MANT',
-                 "townNum": "77", "inDirectory": "VALLEE_ERNZ"},
+                 "townNum": "77", "inDirectory": ""},
             78: {'name': 'MECHER', 'shortName': 'MECH',
                  "townNum": "78", "inDirectory": "LAC_HAUTE_SURE"},
             79: {'name': 'Medernach', 'shortName': 'MEDE',
