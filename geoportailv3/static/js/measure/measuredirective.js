@@ -24,6 +24,7 @@ goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.Object');
 goog.require('ol.events');
+goog.require('ol.proj');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');

@@ -17,8 +17,10 @@ goog.require('app.SelectedFeatures');
 goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ngeo.filereaderDirective');
 goog.require('ngeo.modalDirective');
+goog.require('ol.extent');
 goog.require('ol.format.GPX');
 goog.require('ol.format.KML');
 

@@ -18,6 +18,7 @@ goog.provide('app.backgroundlayerDirective');
 
 goog.require('app');
 goog.require('app.Themes');
+goog.require('ol.events');
 goog.require('ngeo.BackgroundEventType');
 goog.require('ngeo.BackgroundLayerMgr');
 

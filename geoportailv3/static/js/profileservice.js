@@ -6,6 +6,7 @@
 goog.provide('app.GetProfile');
 
 goog.require('app');
+goog.require('goog.array');
 goog.require('goog.Uri.QueryData');
 goog.require('ol.format.GeoJSON');
 

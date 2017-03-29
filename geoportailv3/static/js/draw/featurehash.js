@@ -1,8 +1,10 @@
 goog.provide('app.format.FeatureHash');
 
 goog.require('goog.asserts');
+goog.require('goog.object');
 goog.require('goog.color');
 goog.require('ol.Feature');
+goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.format.TextFeature');
 goog.require('ol.geom.GeometryLayout');

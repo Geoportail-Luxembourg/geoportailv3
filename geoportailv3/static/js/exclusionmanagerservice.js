@@ -8,8 +8,10 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.Notify');
 goog.require('goog.asserts');
+goog.require('goog.array');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ol.Object');
+goog.require('ol.Observable');
 goog.require('ol.events');
 
 

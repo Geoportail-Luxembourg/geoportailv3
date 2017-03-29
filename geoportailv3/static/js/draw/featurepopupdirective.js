@@ -7,11 +7,16 @@ goog.provide('app.featurePopupDirective');
 goog.require('app');
 goog.require('app.Mymaps');
 goog.require('app.profileDirective');
+goog.require('goog.asserts');
 goog.require('ol.events');
+goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.format.KML');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.geom.LineString');
+goog.require('ol.sphere.WGS84');
 
 
 /**

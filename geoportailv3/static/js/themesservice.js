@@ -10,6 +10,8 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
+goog.require('goog.object');
+goog.require('goog.array');
 goog.require('ol.events.EventTarget');
 
 

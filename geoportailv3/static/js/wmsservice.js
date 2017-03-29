@@ -4,7 +4,11 @@
  */
 
 goog.provide('app.WmsHelper');
+
 goog.require('ngeo.DecorateLayer');
+goog.require('goog.asserts');
+goog.require('goog.array');
+goog.require('goog.string');
 goog.require('ol.format.WMSCapabilities');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');

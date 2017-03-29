@@ -27,6 +27,7 @@ goog.require('ngeo.PrintUtils');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events');
+goog.require('ol.Observable');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');

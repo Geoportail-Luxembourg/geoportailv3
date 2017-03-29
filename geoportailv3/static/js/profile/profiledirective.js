@@ -22,6 +22,7 @@ goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.profileDirective');
+goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Overlay');

@@ -6,6 +6,7 @@
 goog.provide('app.ScalesService');
 
 goog.require('app');
+goog.require('goog.object');
 
 
 /**

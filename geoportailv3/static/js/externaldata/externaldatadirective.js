@@ -16,6 +16,7 @@ goog.provide('app.externalDataDirective');
 goog.require('app');
 goog.require('app.WmsHelper');
 goog.require('app.ShowLayerinfo');
+goog.require('goog.array');
 
 
 /**

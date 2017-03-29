@@ -11,6 +11,7 @@ goog.require('app.Notify');
 goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
+goog.require('goog.array');
 goog.require('ngeo.Location');
 goog.require('ol.events');
 

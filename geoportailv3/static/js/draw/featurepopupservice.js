@@ -9,10 +9,13 @@ goog.require('app.GetProfile');
 goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
+goog.require('goog.array');
 goog.require('ol.Overlay');
+goog.require('ol.Observable');
 goog.require('ol.events');
 goog.require('ol.geom.LineString');
 goog.require('ngeo.filters');
+goog.require('ngeo.interaction.Measure');
 
 
 /**

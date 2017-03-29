@@ -8,6 +8,9 @@ goog.provide('app.DrawnFeatures');
 goog.require('app');
 goog.require('ngeo.Location');
 goog.require('app.format.FeatureHash');
+goog.require('goog.asserts');
+goog.require('goog.array');
+goog.require('ol.extent');
 goog.require('ol.Collection');
 
 

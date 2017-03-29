@@ -5,6 +5,7 @@ goog.provide('app.Theme');
 
 goog.require('app.Themes');
 goog.require('ngeo.Location');
+goog.require('goog.asserts');
 
 
 /**

@@ -26,6 +26,8 @@ goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.searchDirective');
 goog.require('ol.events');
+goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.Feature');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Point');
