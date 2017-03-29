@@ -355,7 +355,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   }, this));
 
   ol.events.listen(this.map_.getLayers(),
-      ol.Collection.EventType.REMOVE,
+      ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -366,7 +366,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
+      ol.MapBrowserEventType.SINGLECLICK, function(evt) {
         if (this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
             this.appActivetool_.isActive() || this.isQuerying_) {
@@ -400,7 +400,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.POINTERDOWN, function(evt) {
+      ol.MapBrowserEventType.POINTERDOWN, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerDownTime_ = new Date().getTime();
           this.startPixel_ = evt.pixel;
@@ -408,14 +408,14 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.POINTERUP, function(evt) {
+      ol.MapBrowserEventType.POINTERUP, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerUpTime_ = new Date().getTime();
           this.stopPixel_ = evt.pixel;
         }
       }, this);
 
-  ol.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;
@@ -972,9 +972,10 @@ app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
         }
       }
       if (fit) {
-        var mapSize = /** @type {ol.Size} */ (this.map_.getSize());
-        this.map_.getView().fit(extent, mapSize,
-            /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
+        this.map_.getView().fit(extent, /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {ol.Size} */ (this.map_.getSize()),
+          maxZoom: 17
+        }));
       }
     }
   }

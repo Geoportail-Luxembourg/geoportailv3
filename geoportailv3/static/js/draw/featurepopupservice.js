@@ -141,7 +141,7 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
           'transition': 'transform .3s'});
         if (goog.isNull(this.mousemoveEvent_)) {
           this.mousemoveEvent_ = ol.events.listen(this.map,
-              ol.MapBrowserEvent.EventType.POINTERMOVE, goog.bind(function(e) {
+              ol.MapBrowserEventType.POINTERMOVE, goog.bind(function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
                   this.startingDragPoint_ = e.coordinate;
@@ -202,10 +202,9 @@ app.FeaturePopup.prototype.toggleDropdown = function() {
 app.FeaturePopup.prototype.fit = function(feature) {
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
   goog.asserts.assert(goog.isDef(viewSize));
-  this.map.getView().fit(
-      feature.getGeometry().getExtent(),
-      viewSize
-  );
+  this.map.getView().fit(feature.getGeometry().getExtent(), {
+    size: viewSize
+  });
 };
 
 
@@ -255,7 +254,7 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };
@@ -269,7 +268,7 @@ app.FeaturePopup.prototype.formatRadius = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       line,
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };
@@ -285,7 +284,7 @@ app.FeaturePopup.prototype.formatLength = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };

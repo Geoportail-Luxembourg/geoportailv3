@@ -24,7 +24,7 @@ goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.profileDirective');
 goog.require('ol.events');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.Overlay');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
@@ -191,7 +191,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */

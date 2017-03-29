@@ -170,9 +170,9 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
   });
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.Geolocation.Property.TRACKING),
+      ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       /**
-       * @param {ol.ObjectEvent} e Object event.
+       * @param {ol.Object.Event} e Object event.
        */
       function(e) {
         if (this.geolocation_.getTracking()) {
@@ -183,9 +183,9 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
       }, this);
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.Geolocation.Property.POSITION),
+      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
       /**
-       * @param {ol.ObjectEvent} e Object event.
+       * @param {ol.Object.Event} e Object event.
        */
       function(e) {
         var position = /** @type {ol.Coordinate} */
@@ -195,9 +195,9 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
       }, this);
 
   ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.Geolocation.Property.ACCURACY_GEOMETRY),
+      ol.Object.getChangeEventType(ol.GeolocationProperty.ACCURACY_GEOMETRY),
       /**
-       * @param {ol.ObjectEvent} e Object event.
+       * @param {ol.Object.Event} e Object event.
        */
       function(e) {
         this.accuracyFeature_.setGeometry(

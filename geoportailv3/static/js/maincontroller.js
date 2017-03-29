@@ -397,7 +397,7 @@ app.MainController.prototype.addLocationControl_ =
       this.map_.addControl(locationControl);
       if (isActive) {
         ol.events.listenOnce(this.map_,
-          ol.Object.getChangeEventType(ol.Map.Property.VIEW), function(e) {
+          ol.Object.getChangeEventType(ol.MapProperty.VIEW), function(e) {
             locationControl.handleCenterToLocation();
           }.bind(this));
       }
@@ -607,11 +607,9 @@ app.MainController.prototype.initMymaps_ = function() {
 
             if (!goog.isDef(x) && !goog.isDef(y) &&
                 this.drawnFeatures_.getCollection().getLength() > 0) {
-              var viewSize = /** @type {ol.Size} */ (this.map_.getSize());
-              this.map_.getView().fit(
-                  this.drawnFeatures_.getExtent(),
-                  viewSize
-              );
+              this.map_.getView().fit(this.drawnFeatures_.getExtent(), {
+                size: /** @type {ol.Size} */ (this.map_.getSize())
+              });
             }
           }.bind(this));
   } else {

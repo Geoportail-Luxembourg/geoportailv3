@@ -64,7 +64,7 @@ app.format.FeatureHashLegacyProperties_ = {};
  * Provide an OpenLayers format for encoding and decoding features for use
  * in permalinks.
  *
- * The code is based on Stéphane Brunner's URLCompressed format.
+ * The code is based on StÃ©phane Brunner's URLCompressed format.
  *
  * TODOs:
  *
@@ -1025,6 +1025,7 @@ app.format.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, 
  * @param {string} text Text.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_options) {
@@ -1075,6 +1076,7 @@ app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_option
  * @param {string} text Text.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.readFeaturesFromText = function(text, opt_options) {
@@ -1099,6 +1101,7 @@ app.format.FeatureHash.prototype.readFeaturesFromText = function(text, opt_optio
  * @param {string} text Text.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.readGeometryFromText = function(text, opt_options) {
@@ -1115,6 +1118,7 @@ app.format.FeatureHash.prototype.readGeometryFromText = function(text, opt_optio
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {string} Encoded feature.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.writeFeatureText = function(feature, opt_options) {
@@ -1191,6 +1195,7 @@ app.format.FeatureHash.prototype.writeFeatureText = function(feature, opt_option
  * @param {Array.<ol.Feature>} features Feature.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {string} Encoded features.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.writeFeaturesText = function(features, opt_options) {
@@ -1210,6 +1215,7 @@ app.format.FeatureHash.prototype.writeFeaturesText = function(features, opt_opti
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {string} Encoded geometry.
+ * @override
  * @protected
  */
 app.format.FeatureHash.prototype.writeGeometryText = function(geometry, opt_options) {

@@ -235,9 +235,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPoint);
   this.map.addInteraction(drawPoint);
   ol.events.listen(drawPoint, ol.Object.getChangeEventType(
-      ol.interaction.Interaction.Property.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawPoint, ol.interaction.Draw.EventType.DRAWEND,
+  ol.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
   var drawLabel = new ol.interaction.Draw({
@@ -254,9 +254,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawLabel);
   this.map.addInteraction(drawLabel);
   ol.events.listen(drawLabel, ol.Object.getChangeEventType(
-      ol.interaction.Interaction.Property.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawLabel, ol.interaction.Draw.EventType.DRAWEND,
+  ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
   this.drawnFeatures_.drawLineInteraction = new ol.interaction.Draw({
@@ -273,11 +273,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(this.drawLine);
   this.map.addInteraction(this.drawLine);
   ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
-      ol.interaction.Interaction.Property.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(this.drawLine, ol.interaction.Draw.EventType.DRAWEND,
+  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(this.drawLine, ol.interaction.Draw.EventType.DRAWSTART,
+  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWSTART,
       this.onDrawLineStart_, this);
 
   var drawPolygon = new ol.interaction.Draw({
@@ -294,11 +294,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPolygon);
   this.map.addInteraction(drawPolygon);
   ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
-      ol.interaction.Interaction.Property.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawPolygon, ol.interaction.Draw.EventType.DRAWEND,
+  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(drawPolygon, ol.interaction.Draw.EventType.DRAWSTART,
+  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWSTART,
       this.onDrawPolygonStart_, this);
 
   var drawCircle = new ol.interaction.Draw({
@@ -315,11 +315,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawCircle);
   this.map.addInteraction(drawCircle);
   ol.events.listen(drawCircle, ol.Object.getChangeEventType(
-      ol.interaction.Interaction.Property.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawCircle, ol.interaction.Draw.EventType.DRAWEND,
+  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(drawCircle, ol.interaction.Draw.EventType.DRAWSTART,
+  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWSTART,
       this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
@@ -364,7 +364,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.selectInteraction_.setActive(false);
   appFeaturePopup.init(this.map);
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.ADD,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       goog.bind(
       /**
        * @param {ol.Collection.Event} evt The event.
@@ -385,7 +385,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.scope_.$applyAsync();
       }, this));
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.REMOVE,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -420,11 +420,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
   ol.events.listen(this.modifyCircleInteraction_,
-      ol.interaction.Modify.EventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.interaction.Modify.EventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
@@ -433,7 +433,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   ol.events.listen(
       this.drawnFeatures_.translateInteraction,
-      ol.interaction.Translate.EventType.TRANSLATEEND,
+      ol.interaction.TranslateEventType.TRANSLATEEND,
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
@@ -485,7 +485,7 @@ app.DrawController.prototype.onContinueLineEnd_ = function(event) {
 
 
 /**
- * @param {ol.ObjectEvent} event The event.
+ * @param {ol.Object.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {

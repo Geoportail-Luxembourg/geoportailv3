@@ -28,12 +28,13 @@
       "node_modules/ngeo/externs/jqueryui.js",
       "node_modules/ngeo/externs/angular-dynamic-locale.js",
       "node_modules/ngeo/externs/file-saver.js",
-      ".build/externs/angular-1.5.js",
-      ".build/externs/angular-1.5-q_templated.js",
-      ".build/externs/angular-1.5-http-promise_templated.js",
+      "node_modules/ngeo/externs/geo-admin-api.js",
+      "node_modules/ngeo/externs/google_maps_api_v3_27.js",
+      ".build/externs/angular-1.6.js",
+      ".build/externs/angular-1.6-q_templated.js",
+      ".build/externs/angular-1.6-http-promise_templated.js",
       "geoportailv3/externs/piwik.js",
       "geoportailv3/externs/fuse.js",
-      "geoportailv3/externs/twbootstrap.js",
       "geoportailv3/externs/mapfish-print.js",
       ".build/externs/jquery-1.9.js"
     ],
@@ -41,6 +42,7 @@
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false",
+      "ol.ENABLE_RASTER_REPROJECTION=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
@@ -55,7 +57,9 @@
     "jscomp_off": [
       "useOfGoogBase",
       "extraRequire",
-      "lintChecks"
+      "strictMissingRequire",
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable", "ngdoc", "ngname", "htmlAttribute"
@@ -65,7 +69,8 @@
     "export_local_property_definitions": true,
     "warning_level": "VERBOSE",
     "generate_exports": true,
-    "language_in": "ECMASCRIPT5_STRICT",
+    "language_in": "ECMASCRIPT6_STRICT",
+    "language_out": "ECMASCRIPT5_STRICT",
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true
   }

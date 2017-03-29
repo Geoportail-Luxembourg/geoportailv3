@@ -24,7 +24,6 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
-goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events');
 goog.require('ol.Observable');
@@ -319,7 +318,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
       this.useOptimalScale_();
       goog.asserts.assert(goog.isNull(postcomposeListenerKey));
       postcomposeListenerKey = ol.events.listen(this.map_,
-          ol.render.Event.Type.POSTCOMPOSE, postcomposeListener);
+          ol.render.EventType.POSTCOMPOSE, postcomposeListener);
     } else if (!goog.isNull(postcomposeListenerKey)) {
       ol.Observable.unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
@@ -386,7 +385,7 @@ app.PrintController.getViewCenterResolution_ = function(view) {
   goog.asserts.assert(goog.isDef(viewCenter));
   goog.asserts.assert(!goog.isNull(viewProjection));
   goog.asserts.assert(goog.isDef(viewResolution));
-  return viewProjection.getPointResolution(viewResolution, viewCenter);
+  return ol.proj.getPointResolution(viewProjection, viewResolution, viewCenter);
 };
 
 
@@ -492,12 +491,11 @@ app.PrintController.prototype.changeScale = function(newScale) {
   if (currentResolution < optimalResolution) {
     var newResolution = view.constrainResolution(optimalResolution, 0, 1);
     goog.asserts.assert(newResolution >= optimalResolution);
-    map.beforeRender(ol.animation.zoom({
+    view.animate({
       duration: 250,
       easing: ol.easing.easeOut,
       resolution: currentResolution
-    }));
-    view.setResolution(newResolution);
+    });
   }
 
   map.render();

@@ -1119,9 +1119,9 @@ app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
     if (goog.isDef(extent)) {
       var viewSize = /** {ol.Size} **/ (this.map_.getSize());
       goog.asserts.assert(goog.isDef(viewSize));
-      this.map_.getView().fit(extent,
-          viewSize
-      );
+      this.map_.getView().fit(extent, {
+        size: viewSize
+      });
     }
   }.bind(this));
 };
@@ -1276,10 +1276,9 @@ app.MymapsDirectiveController.prototype.isDocked = function() {
 app.MymapsDirectiveController.prototype.fit = function(extent) {
   var viewSize = /** {ol.Size} **/ (this.map_.getSize());
   goog.asserts.assert(goog.isDef(viewSize));
-  this.map_.getView().fit(
-      extent,
-      viewSize
-  );
+  this.map_.getView().fit(extent, {
+    size: viewSize
+  });
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

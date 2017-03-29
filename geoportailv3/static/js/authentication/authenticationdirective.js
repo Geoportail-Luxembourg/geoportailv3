@@ -60,7 +60,7 @@ app.AuthenticationController = function(appUserManager) {
  * @export
  */
 app.AuthenticationController.prototype.authenticate = function() {
-  this.appUserManager_.authenticate(this.username, this.password).success(
+  this.appUserManager_.authenticate(this.username, this.password).then(
       goog.bind(function(data, status, headers, config) {
         if (status == 200) {
           this['userOpen'] = false;

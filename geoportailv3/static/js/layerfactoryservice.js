@@ -96,7 +96,7 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
         layer: name,
         matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
         format: imageType,
-        requestEncoding: ol.source.WMTS.RequestEncoding.REST,
+        requestEncoding: ol.source.WMTSRequestEncoding.REST,
         projection: projection,
         tileGrid: new ol.tilegrid.WMTS({
           origin: ol.extent.getTopLeft(extent),

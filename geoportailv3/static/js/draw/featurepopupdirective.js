@@ -270,7 +270,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @private
    */
   this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.interaction.Modify.EventType.MODIFYEND, this.updateFeature_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;
@@ -369,7 +369,7 @@ app.FeaturePopupController.prototype.setFeatureCircleRadius = function(feature, 
     var center = ol.extent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
-    var pointResolution = projection.getPointResolution(/** @type {number} */ (resolution), center);
+    var pointResolution = ol.proj.getPointResolution(projection, /** @type {number} */ (resolution), center);
     var resolutionFactor = resolution / pointResolution;
     radius = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new ol.geom.Circle(center, radius);
@@ -710,10 +710,9 @@ app.FeaturePopupController.prototype.continueLine = function() {
         (this.feature.getGeometry()).getLastCoordinate();
     var viewSize = /** {ol.Size} **/ (this.map.getSize());
     goog.asserts.assert(goog.isDef(viewSize));
-    this.map.getView().fit(
-        new ol.geom.Point(lastCoordinate),
-        viewSize
-    );
+    this.map.getView().fit(new ol.geom.Point(lastCoordinate), {
+      size: viewSize
+    });
 
     this.drawnFeatures_.modifyInteraction.setActive(false);
     this.drawnFeatures_.modifyCircleInteraction.setActive(false);

@@ -262,7 +262,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
 
   ol.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
       /**
-       * @param {ol.ObjectEvent} evt Change active event.
+       * @param {ol.Object.Event} evt Change active event.
        */
       function(evt) {
         if (!measureProfile.getActive()) {
@@ -287,22 +287,22 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
     }
   }, this));
   ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
-    ol.interaction.Interaction.Property.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureArea'], ol.Object.getChangeEventType(
-    ol.interaction.Interaction.Property.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureAzimut'], ol.Object.getChangeEventType(
-    ol.interaction.Interaction.Property.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureProfile'], ol.Object.getChangeEventType(
-    ol.interaction.Interaction.Property.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
 };
 
 
 /**
- * @param {ol.ObjectEvent} event The event.
+ * @param {ol.Object.Event} event The event.
  * @private
  */
 app.MeasureController.prototype.onChangeActive_ = function(event) {

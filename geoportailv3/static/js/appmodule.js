@@ -27,6 +27,14 @@ app.module = angular.module('app', [ngeo.module.name, 'gettext'])
 // the application.
 app.module.config(ngeo.mockLocationProvider);
 
+
+// activate pre-assigning bindings
+// See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
+app.module.config(['$compileProvider', function($compileProvider) {
+  $compileProvider.preAssignBindingsEnabled(true);
+}]);
+
+
 /**
  * @param {string} name The string to sanitize.
  * @return {string} The sanitized string.

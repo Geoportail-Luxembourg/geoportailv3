@@ -84,15 +84,15 @@ app.MapController = function(appStateManager, ngeoDebounce) {
   app.MapController.updateState_(appStateManager, view);
   var updateStateFunc = ngeoDebounce(
       /**
-           * @param {ol.ObjectEvent} e Object event.
-           */
+       * @param {ol.Object.Event} e Object event.
+       */
       function(e) {
         app.MapController.updateState_(appStateManager, view);
       }, 300, /* invokeApply */ true);
 
   view.on('propertychange', updateStateFunc);
   map.on('propertychange', function(event) {
-    if (event.key === ol.Map.Property.VIEW) {
+    if (event.key === ol.MapProperty.VIEW) {
       view.un('propertychange', updateStateFunc);
       view = map.getView();
       view.on('propertychange', updateStateFunc);

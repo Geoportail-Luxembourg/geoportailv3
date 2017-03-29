@@ -21,10 +21,10 @@ goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.CreateGeoJSONBloodhound');
+goog.require('ngeo.search.createGeoJSONBloodhound');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.searchDirective');
+goog.require('ngeo.search.searchDirective');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -118,7 +118,7 @@ app.module.directive('appSearch', app.searchDirective);
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
- * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The
+ * @param {ngeo.search.CreateGeoJSONBloodhound} ngeoSearchCreateGeoJSONBloodhound The
  * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
@@ -133,7 +133,7 @@ app.module.directive('appSearch', app.searchDirective);
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, ngeoCreateGeoJSONBloodhound, appThemes, appTheme,
+    appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch) {
 
@@ -289,7 +289,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      ngeoCreateGeoJSONBloodhound, poiSearchServiceUrl);
+      ngeoSearchCreateGeoJSONBloodhound, poiSearchServiceUrl);
 
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhoundEngine_(
@@ -492,7 +492,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   });
 
   ol.events.listen(this['map'].getLayers(),
-      ol.Collection.EventType.ADD,
+      ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -694,16 +694,16 @@ app.SearchDirectiveController.prototype.decDegFromMatch_ = function(m) {
 };
 
 /**
- * @param {ngeo.CreateGeoJSONBloodhound} ngeoCreateGeoJSONBloodhound The create
+ * @param {ngeo.search.CreateGeoJSONBloodhound} ngeoSearchCreateGeoJSONBloodhound The create
  * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl The search url.
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
-    function(ngeoCreateGeoJSONBloodhound, searchServiceUrl) {
+    function(ngeoSearchCreateGeoJSONBloodhound, searchServiceUrl) {
       var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeoCreateGeoJSONBloodhound(
+      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {
@@ -868,11 +868,11 @@ app.SearchDirectiveController.selected_ =
       }
       if (dataset === 'pois' || dataset === 'coordinates') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
-        var featureGeometry = /** @type {ol.geom.SimpleGeometry} */
-        (feature.getGeometry());
-        var mapSize = /** @type {ol.Size} */ (map.getSize());
-        map.getView().fit(featureGeometry, mapSize,
-        /** @type {olx.view.FitOptions} */ ({maxZoom: 18}));
+        var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+        map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {ol.Size} */ (map.getSize()),
+          maxZoom: 18
+        }));
         this.featureOverlay_.clear();
         var features = [];
         if (dataset === 'coordinates') {
