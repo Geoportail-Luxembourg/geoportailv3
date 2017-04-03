@@ -189,13 +189,13 @@ app.FeedbackController.prototype.sendReport = function() {
   };
   var supportEmail = 'support.geoportail@act.etat.lu';
   this.$http_.post(this.postFeedbackUrl_, req, config)
-    .then(goog.bind(function(data, status, headers, config) {
+    .then(goog.bind(function(response) {
       var msg = this.gettextCatalog.getString(
         'Feedback sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
       this.notify_(msg, app.NotifyNotificationType.INFO);
       this['active'] = false;
-    }, this), goog.bind(function(data, status, headers, config) {
+    }, this), goog.bind(function(response) {
       var msg = this.gettextCatalog.getString(
         'Feedback could not be sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
