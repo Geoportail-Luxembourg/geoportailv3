@@ -35,6 +35,17 @@ app.module.config(['$compileProvider', function($compileProvider) {
 }]);
 
 
+// Strict Contextual Escaping (SCE) configuration
+app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // trust data from shop.geoportail.lu
+    'http*://shop.geoportail.lu/Portail/inspire/webservices/**'
+  ]);
+}]);
+
+
 /**
  * @param {string} name The string to sanitize.
  * @return {string} The sanitized string.

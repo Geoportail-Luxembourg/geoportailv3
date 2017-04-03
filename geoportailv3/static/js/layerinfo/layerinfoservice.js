@@ -72,13 +72,14 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
       if (localMetadata['isExternalWms']) {
         promises_[promiseKey] = appWmsHelper.getMetadata(metadataUid);
       } else {
+        // TODO: remove the quotes around jsonpCallbackParam when
+        // https://github.com/google/closure-compiler/pull/2400 is merged
         promises_[promiseKey] = $http.jsonp(
             '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
           {params: {
             'uid': metadataUid,
-            'lang': currentLanguage,
-            'cb': 'JSON_CALLBACK'
-          }}).then(
+            'lang': currentLanguage
+          }, 'jsonpCallbackParam': 'cb'}).then(
                 goog.bind(function(resp) {
                   var content = {
                     'uid': localMetadata['metadata_id'],
