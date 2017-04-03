@@ -58,6 +58,14 @@ app.searchDirective = function(appSearchTemplateUrl) {
          * @param {angular.Attributes} attrs Atttributes
          */
         function(scope, element, attrs) {
+          element.find('input').on('keypress', function(e) {
+            if (e.keyCode == 13) {
+              e.preventDefault();
+              var downE = $.Event('keydown');
+              downE.which = 40;
+              $(this).trigger(downE);
+            }
+          });
           // Empty the search field on focus
           element.find('input').one('focus', function() {
             $(this).addClass('placeholder-text');
