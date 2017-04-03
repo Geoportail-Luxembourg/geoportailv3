@@ -61,6 +61,17 @@ class FullTextSearchView(object):
                                     "multi_match": {
                                         "type": "best_fields",
                                         "fields": [
+                                            "label.ngram",
+                                            "label.simplified"
+                                        ],
+                                        "operator": "or",
+                                        "query": query
+                                    }
+                                },
+                                {
+                                    "multi_match": {
+                                        "type": "best_fields",
+                                        "fields": [
                                             "label",
                                             "label.ngram",
                                             "label.simplified"

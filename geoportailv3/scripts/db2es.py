@@ -27,7 +27,7 @@ def get_cursor():
     conn = psycopg2.connect(**source_conf)
     cursor = conn.cursor(cursor_factory=DictCursor)
     query = "Select *, ST_AsGeoJSON(ST_Transform(\"searchLayer\".geom,4326)) as geom_4326 \
-            from public.\"searchLayer\" ;"
+            from public.\"searchLayer\" where type in ('Adresse');"
     cursor.execute(query)
     return cursor
 
