@@ -198,6 +198,10 @@ def main(global_config, **settings):
         "/mymaps/exportgpxkml",
         request_method="POST"
     )
+    config.add_route(
+        "get_arrow_color",
+        "/mymaps/getarrow"
+    )
     # geocoder routes
     config.add_route(
         "reverse_geocode",
