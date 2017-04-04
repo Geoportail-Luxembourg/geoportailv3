@@ -20,6 +20,7 @@ from pyramid_ldap import get_ldap_connector
 from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
+from cStringIO import StringIO
 from geoportailv3.mymaps import DBSession
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
@@ -41,6 +42,38 @@ class Mymaps(object):
     def __init__(self, request):
         self.request = request
         self.config = self.request.registry.settings
+
+    @view_config(route_name="get_arrow_color")
+    def get_arrow_color(self):
+        color = self.request.params.get("color")
+        if color is None or len(color) == 0:
+            color = "ffffff"
+        color = color.replace("#", "")
+
+        dir = "/tmp/arrows"
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+        temp_file_path = dir + "/" + color + ".png"
+        # If the colored arrow does not exist then
+        # gets the default one, colorizes it and saves it
+        if not os.path.exists(temp_file_path):
+            url = self.request.static_url(
+                'geoportailv3:static/images/arrow.png')
+            orig_arrow = urllib2.urlopen(url, None, 15)
+            content = orig_arrow.read()
+            image = Image.open(StringIO(content))
+
+            pixdata = image.load()
+            for y in xrange(image.size[1]):
+                for x in xrange(image.size[0]):
+                    if pixdata[x, y] == (255, 255, 255, 255):
+                        pixdata[x, y] =\
+                            tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
+            image.save(temp_file_path)
+
+        f = open(temp_file_path, "r")
+
+        return Response(f.read(), headers={'Content-Type': 'image/png'})
 
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):
@@ -844,7 +877,6 @@ class Mymaps(object):
 
         except:
             from PIL import Image, ImageDraw
-            from cStringIO import StringIO
 
             img = Image.new('RGBA', (40, 40))
             ImageDraw.Draw(img)

@@ -1186,13 +1186,14 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
+
       this.getGeometry().forEachSegment(function(start, end) {
         var arrowPoint = new ol.geom.Point(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
 
-        if (prevArrow) {
+        if (prevArrow != undefined) {
           var pt1 = curMap.getPixelFromCoordinate(arrowPoint.getCoordinates()),
               pt2 = curMap.getPixelFromCoordinate(prevArrow.getCoordinates()),
               w = pt2[0] - pt1[0],
@@ -1200,13 +1201,13 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
+          var coloredArrowUrl = arrowUrl + '?color=' + color.replace('#', '');
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-              color: rgbColor,
               rotation: Math.PI / 2 - Math.atan2(dy, dx),
-              src: arrowUrl
+              src: coloredArrowUrl
             }))
           }));
           prevArrow = arrowPoint;
