@@ -86,6 +86,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
                 var ctrl = /** @type {app.SearchDirectiveController} */
                     (scope['ctrl']);
                 ctrl.featureOverlay_.clear();
+                $(this).find('input').focus();
               }, element, scope));
         }
   };
