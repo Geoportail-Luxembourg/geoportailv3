@@ -663,6 +663,23 @@ app.PrintController.prototype.print = function(format) {
             }
             layer.customParams['MAP_RESOLUTION'] = dpi;
           }
+          // set the graphicFormat because mapfish print is not able
+          // to guess it from the externalGraphic (doesn't end with file
+          // extension)
+          if (layer.type === 'geojson') {
+            var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
+            for (var key in vector.style) {
+              var style = vector.style[key];
+              if (goog.isObject(style)) {
+                for (var j = 0; j < style.symbolizers.length; j++) {
+                  var symbolizer = style.symbolizers[j];
+                  if (symbolizer.externalGraphic) {
+                    symbolizer.graphicFormat = 'image/png';
+                  }
+                }
+              }
+            }
+          }
         }, this);
         // create print report
         this.print_.createReport(spec, /** @type {angular.$http.Config} */ ({
