@@ -898,7 +898,7 @@ app.DrawController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'tooltip-measure']);
+      ['tooltip', 'ngeo-tooltip-measure']);
   this.measureTooltipOverlay_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
