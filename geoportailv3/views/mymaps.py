@@ -491,6 +491,7 @@ class Mymaps(object):
             feature_id = feature.properties.get('fid')
 
             obj = Feature(feature)
+            obj.last_modified_by = self.request.user.username
 
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
@@ -529,6 +530,7 @@ class Mymaps(object):
             for feature in feature_collection['features']:
                 feature_id = feature.properties.get('fid')
                 obj = Feature(feature)
+                obj.last_modified_by = self.request.user.username
                 if feature_id:
                     cur_feature = DBSession.query(Feature).get(feature_id)
                     DBSession.delete(cur_feature)

@@ -123,6 +123,7 @@ class Feature(Base):
     font_size = Column(Integer, default=15)
     opacity = Column(Float, default=0.5)
     shape = Column(Unicode(255))
+    last_modified_by = Column(Unicode(50))
 
     def __init__(self, feature=None):
         if feature:
