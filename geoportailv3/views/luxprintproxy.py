@@ -131,7 +131,7 @@ class LuxPrintProxy(PrintProxy):
                         )
                     ).first()
             # If not restriction is set then return unauthorized
-            if restriction is None or not restriction.readwrite:
+            if restriction is None:
                 return False
         return True
 
