@@ -421,6 +421,7 @@ app.MainController.prototype.setMap_ = function() {
         collapsed: false, className: 'geoportailv3-attribution'})
     ],
     interactions: interactions,
+    keyboardEventTarget: document,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new ol.View({

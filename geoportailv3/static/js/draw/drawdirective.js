@@ -436,6 +436,9 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
+
+  ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
+      this.keyboardHandler_, this);
 };
 
 
@@ -912,6 +915,38 @@ app.DrawController.prototype.removeMeasureTooltip_ = function() {
  */
 app.DrawController.prototype.gotoAnchor = function(anchorId) {
   this.anchorScroll_(anchorId);
+};
+
+
+/**
+ * Handle the backspace and escape keys.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @private
+ */
+app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
+  var keyEvent = mapBrowserEvent.originalEvent;
+
+  if (this.active && keyEvent.key === 'Backspace') {
+    if (this.drawLine.getActive()) {
+      this.drawLine.removeLastPoint();
+    }
+    if (this.drawPolygon.getActive()) {
+      this.drawPolygon.removeLastPoint();
+    }
+    mapBrowserEvent.preventDefault();
+  }
+  if (this.active && keyEvent.key === 'Escape') {
+    if (this.drawLine.getActive()) {
+      this.drawLine.finishDrawing();
+    }
+    if (this.drawPolygon.getActive()) {
+      this.drawPolygon.finishDrawing();
+    }
+    if (this.drawCircle.getActive()) {
+      this.drawCircle.finishDrawing();
+    }
+    mapBrowserEvent.preventDefault();
+  }
 };
 
 app.module.controller('AppDrawController', app.DrawController);
