@@ -379,6 +379,7 @@ class Getfeatureinfo(object):
         try:
             if layers is not None:
                 for layer in layers.split(','):
+
                     cur_layer = DBSession.query(Layer).filter(
                         Layer.id == layer).first()
                     if cur_layer is None:
@@ -396,7 +397,7 @@ class Getfeatureinfo(object):
                             )
                             ).first()
                         # If not restriction is set then check next layer
-                        if restriction is None or not restriction.readwrite:
+                        if restriction is None:
                             continue
                     query = DBSession.query(
                         LuxGetfeatureDefinition).filter(
