@@ -307,7 +307,7 @@ class PF():
                  "townNum": "81", "inDirectory": ""},
             82: {'name': 'MERTZIG', 'shortName': 'MERZ',
                  "townNum": "82", "inDirectory": ""},
-            83: {'name': 'Mompach', 'shortName': 'MOMP',
+            83: {'name': 'MOMPACH', 'shortName': 'MOMP',
                  "townNum": "83", "inDirectory": ""},
             84: {'name': 'MONDERCANGE', 'shortName': 'MONC',
                  "townNum": "84", "inDirectory": ""},
