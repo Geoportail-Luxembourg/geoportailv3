@@ -181,17 +181,15 @@ class FullTextSearchView(object):
                     },
                     "must": {
                         "multi_match": {
-                            "type": "most_fields",
+                            "type": "cross_fields",
                             "fields": [
-                                "name_translated.simplified^10",
-                                "name_translated.ngram^5",
-                                "metadata_name.simplified",
+                                "name_translated.simplified^2",
+                                "name_translated.ngram",
+                                "metadata_name.simplified^2",
                                 "metadata_name.ngram",
-                                "keywords.simplified",
-                                "keywords.ngram",
-                                "description.simplified",
+                                "keywords",
+                                "description",
                             ],
-                            "fuzziness": "auto",
                             "operator": "and",
                             "query": query
                         }

@@ -65,66 +65,52 @@ ES_MAPPINGS = {
         'properties': {
             'language': {'type': 'string', 'index': 'not_analyzed'},
             'layer_id': {'type': 'string', 'index': 'not_analyzed'},
-            'name': {
-                'index': 'not_analyzed',
-                'type': 'string',
-            },
+            'name': {'type': 'string', 'index': 'not_analyzed'},
+            'public': {'type': 'boolean', 'index': 'not_analyzed'},
+            'params': {'type': 'string', 'index': 'not_analyzed'},
+            'role_id': {'type': 'integer', 'index': 'not_analyzed'},
             'name_translated': {
                 'type': 'string',
-                'analyzer': 'standard_analyzer',
+                'analyzer': 'standard',
                 'fields': {
                     'ngram': {
                         'type': 'string',
                         'analyzer': 'ngram_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
+                        'search_analyzer': 'standard'
                     },
                     'simplified': {
                         'type': 'string',
-                        'analyzer': 'simplified_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
+                        'analyzer': 'standard',
+                        'search_analyzer': 'standard'
                     }
                 }
             },
             'metadata_name': {
                 'type': 'string',
-                'analyzer': 'standard_analyzer',
+                'analyzer': 'standard',
                 'fields': {
                     'ngram': {
                         'type': 'string',
                         'analyzer': 'ngram_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
+                        'search_analyzer': 'standard'
                     },
                     'simplified': {
                         'type': 'string',
-                        'analyzer': 'simplified_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
+                        'analyzer': 'standard',
+                        'search_analyzer': 'standard'
                     }
                 }
             },
             'keywords': {
                 'type': 'string',
-                'analyzer': 'standard_analyzer',
-                'fields': {
-                    'ngram': {
-                        'type': 'string',
-                        'analyzer': 'ngram_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
-                    },
-                    'simplified': {
-                        'type': 'string',
-                        'analyzer': 'simplified_analyzer',
-                        'search_analyzer': 'simplified_analyzer'
-                    }
-                }
-                },
+                'analyzer': 'standard',
+                'search_analyzer': 'standard'
+            },
             'description': {
                 'type': 'string',
-                'analyzer': 'simplified_analyzer',
-                'search_analyzer': 'simplified_analyzer'
-                },
-            'public': {'type': 'boolean', 'index': 'not_analyzed'},
-            'params': {'type': 'string', 'index': 'not_analyzed'},
-            'role_id': {'type': 'integer', 'index': 'not_analyzed'},
+                'analyzer': 'standard',
+                'search_analyzer': 'standard'
+            },
         }
     },
     'poi': {
