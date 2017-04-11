@@ -29,6 +29,10 @@
 # policies, either expressed or implied, of the FreeBSD Project.
 
 
+# The default command to import just layers is:
+# layers2es --interfaces desktop mobile --no-folders --no-blocks --no-themes \
+# --recreate-index --app-config development.ini
+
 import sys
 import yaml
 import requests
