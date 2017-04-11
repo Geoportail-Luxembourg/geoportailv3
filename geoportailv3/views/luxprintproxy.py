@@ -243,6 +243,20 @@ class LuxPrintProxy(PrintProxy):
                 merger.write(content)
                 content = content.getvalue()
 
+            if is_pdf and "queryResults" in attributes and\
+                    attributes["queryResults"] is not None:
+                merger = PdfFileMerger(strict=False)
+                merger.append(StringIO(content))
+                query_results = StringIO()
+                weasyprint.HTML(string=attributes["queryResults"]).write_pdf(
+                    query_results
+                )
+                merger.append(query_results)
+
+                content = StringIO()
+                merger.write(content)
+                content = content.getvalue()
+
             DBSession.delete(job)
             if is_pdf:
                 resp["content-disposition"] =\

@@ -243,7 +243,8 @@
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
-            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"></app-print>
+            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
+            app-print-info-open="mainCtrl.infosOpen"></app-print>
         </li>
         <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
