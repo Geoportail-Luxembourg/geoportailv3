@@ -63,51 +63,51 @@ ES_ANALYSIS = {
 ES_MAPPINGS = {
     'layer': {
         'properties': {
-            'language': {'type': 'string', 'index': 'not_analyzed'},
-            'layer_id': {'type': 'string', 'index': 'not_analyzed'},
-            'name': {'type': 'string', 'index': 'not_analyzed'},
+            'language': {'type': 'keyword', 'index': 'not_analyzed'},
+            'layer_id': {'type': 'keyword', 'index': 'not_analyzed'},
+            'name': {'type': 'keyword', 'index': 'not_analyzed'},
             'public': {'type': 'boolean', 'index': 'not_analyzed'},
-            'params': {'type': 'string', 'index': 'not_analyzed'},
+            'params': {'type': 'text', 'index': 'not_analyzed'},
             'role_id': {'type': 'integer', 'index': 'not_analyzed'},
             'name_translated': {
-                'type': 'string',
+                'type': 'text',
                 'analyzer': 'standard',
                 'fields': {
                     'ngram': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'ngram_analyzer',
                         'search_analyzer': 'standard'
                     },
                     'simplified': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'standard',
                         'search_analyzer': 'standard'
                     }
                 }
             },
             'metadata_name': {
-                'type': 'string',
+                'type': 'text',
                 'analyzer': 'standard',
                 'fields': {
                     'ngram': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'ngram_analyzer',
                         'search_analyzer': 'standard'
                     },
                     'simplified': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'standard',
                         'search_analyzer': 'standard'
                     }
                 }
             },
             'keywords': {
-                'type': 'string',
+                'type': 'text',
                 'analyzer': 'standard',
                 'search_analyzer': 'standard'
             },
             'description': {
-                'type': 'string',
+                'type': 'text',
                 'analyzer': 'standard',
                 'search_analyzer': 'standard'
             },
@@ -115,26 +115,27 @@ ES_MAPPINGS = {
     },
     'poi': {
         'properties': {
-            'object_id': {'type': 'string', 'index': 'not_analyzed'},
-            'layer_name': {'type': 'string', 'index': 'not_analyzed'},
+            'object_id': {'type': 'keyword', 'index': 'not_analyzed'},
+            'fk': {'type': 'keyword', 'index': 'not_analyzed'},
+            'layer_name': {'type': 'keyword', 'index': 'not_analyzed'},
             'label': {
-                'type': 'string',
+                'type': 'text',
                 'analyzer': 'standard_analyzer',
                 'fields': {
                     'ngram': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'edge_ngram_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     },
                     'simplified': {
-                        'type': 'string',
+                        'type': 'text',
                         'analyzer': 'simplified_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     }
                 }
             },
             'public': {'type': 'boolean', 'index': 'not_analyzed'},
-            'params': {'type': 'string', 'index': 'not_analyzed'},
+            'params': {'type': 'text', 'index': 'not_analyzed'},
             'role_id': {'type': 'integer', 'index': 'not_analyzed'},
             'ts': {'type': 'geo_shape'},
         }
