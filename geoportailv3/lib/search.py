@@ -1,7 +1,10 @@
 from elasticsearch import Elasticsearch
 import json
+import os
 
-with open('geoportailv3/lib/index_settings.json') as json_file:
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'index_settings.json')
+
+with open(SETTINGS_FILE) as json_file:
     settings = json.load(json_file)
 
 
