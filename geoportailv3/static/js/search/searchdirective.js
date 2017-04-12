@@ -453,7 +453,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         );
         var themeLink = '';
         var layerTheme = suggestion['themes'][0];
-        if (suggestion['showThemeLink']) {
+        if (suggestion['showThemeLink'] && layerTheme) {
           themeLink = '<br><a href="#"' +
             'ng-click="switchTheme(\'' + layerTheme + '\')"> (' +
             this.gettextCatalog.getString('open in theme') +
@@ -762,6 +762,7 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhoundEngine_ =
             result['showThemeLink'] = !goog.array.contains(
               result['themes'], this.appTheme_.getCurrentTheme());
           }, this));
+
           return response;
         }, this)
       }

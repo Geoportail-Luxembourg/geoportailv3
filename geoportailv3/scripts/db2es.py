@@ -41,6 +41,7 @@ def update_document(index, type, obj_id, obj=None):
     doc['_source'] = {}
     doc['_source']['ts'] = json.loads(obj['geom_4326'])
     doc['_source']['object_id'] = obj_id
+    doc['_source']['fk'] = obj['fk']
     doc['_source']['object_type'] = 'poi'
     doc['_source']['layer_name'] = obj['type']
     doc['_source']['label'] = obj['label']
@@ -62,7 +63,8 @@ def main():
     except getopt.GetoptError as err:
         print str(err)
         sys.exit(2)
-    index, reset = False, False
+    index = False
+    reset = False
     for o, a in opts:
         if o in ('-r', '--reset'):
             statuslog('\rResetting Index')
@@ -71,9 +73,11 @@ def main():
             statuslog('\rChecking Index')
             index = True
 
-    ensure_index(get_elasticsearch(request), get_index(request), reset)
+    import time
+    index_name = get_index(request) + '_' + time.strftime("%Y%m%d")
+    ensure_index(get_elasticsearch(request), index_name, reset)
 
-    if index:
+    if index is True:
         statuslog("\rCreating Database Query ")
         c = get_cursor()
         counter = 1
