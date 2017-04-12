@@ -1,8 +1,21 @@
+# -*- coding: utf-8 -*-
+
 from elasticsearch import Elasticsearch
 
 
 ES_ANALYSIS = {
     'analysis': {
+        'filter': {
+            'synonyms_filter': {
+                'type': 'synonym',
+                'ignore_case': True,
+                'synonyms': [
+                    'Ste, Ste., Sainte',
+                    'Pl, Place',
+                    'zac, z.a.c., zone artisanale et commerciale'
+                ]
+            }
+        },
         'tokenizer': {
             'ngram_tokenizer': {
                 'type': 'nGram',
@@ -40,13 +53,32 @@ ES_ANALYSIS = {
                     'asciifolding',
                 ]
             },
+            'poi_edge_ngram_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'edge_ngram_tokenizer',
+                'filter': [
+                    'lowercase',
+                    'asciifolding',
+                    'synonyms_filter',
+                ]
+            },
             'simplified_analyzer': {
                 'type': 'custom',
                 'tokenizer': 'standard',
                 'filter': [
                     'lowercase',
                     'asciifolding',
-                    'elision'
+                    'elision',
+                ]
+            },
+            'poi_simplified_analyzer': {
+                'type': 'custom',
+                'tokenizer': 'standard',
+                'filter': [
+                    'lowercase',
+                    'asciifolding',
+                    'synonyms_filter',
+                    'elision',
                 ]
             },
             'standard_analyzer': {
@@ -137,12 +169,12 @@ ES_MAPPINGS = {
                 'fields': {
                     'ngram': {
                         'type': 'string',
-                        'analyzer': 'edge_ngram_analyzer',
+                        'analyzer': 'poi_edge_ngram_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     },
                     'simplified': {
                         'type': 'string',
-                        'analyzer': 'simplified_analyzer',
+                        'analyzer': 'poi_simplified_analyzer',
                         'search_analyzer': 'simplified_analyzer'
                     }
                 }
