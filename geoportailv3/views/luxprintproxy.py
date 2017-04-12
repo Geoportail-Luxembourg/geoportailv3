@@ -243,6 +243,26 @@ class LuxPrintProxy(PrintProxy):
                 merger.write(content)
                 content = content.getvalue()
 
+            if is_pdf and "queryResults" in attributes and\
+                    attributes["queryResults"] is not None:
+                css = weasyprint.CSS(
+                    string=".ng-hide {display: none !important;} " +
+                           ".no-print {display: none !important;} " +
+                           "body {font-size: 60%;} "
+                )
+                merger = PdfFileMerger(strict=False)
+                merger.append(StringIO(content))
+                query_results = StringIO()
+                weasyprint.HTML(string=attributes["queryResults"]).write_pdf(
+                    query_results,
+                    stylesheets=[css]
+                )
+                merger.append(query_results)
+
+                content = StringIO()
+                merger.write(content)
+                content = content.getvalue()
+
             DBSession.delete(job)
             if is_pdf:
                 resp["content-disposition"] =\

@@ -44,6 +44,7 @@ app.printDirective = function(appPrintTemplateUrl) {
     scope: {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
+      'infoOpen': '=appPrintInfoOpen',
       'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
@@ -234,6 +235,11 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {boolean|undefined}
    */
   this['open'] = undefined;
+
+  /**
+   * @type {boolean|undefined}
+   */
+  this['infoOpen'] = undefined;
 
   /**
    * @type {string|undefined}
@@ -561,6 +567,12 @@ app.PrintController.prototype.print = function(format) {
         var dateText = this.gettextCatalog.getString('Date d\'impression: ');
         var scaleTitle = this.gettextCatalog.getString('Echelle approximative 1:');
         var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
+        var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
+        var queryResultsHtml = null;
+        if (this['infoOpen'] && queryResults.length > 0) {
+          queryResultsHtml = queryResults[0].innerHTML;
+        }
+
         // create print spec object
         var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
           'disclaimer': disclaimer,
@@ -574,7 +586,8 @@ app.PrintController.prototype.print = function(format) {
           'legend': this['legend'] ? legend : null,
           'scalebar': {'geodetic': true},
           'dataOwner': dataOwners.join(' '),
-          'dateText': dateText
+          'dateText': dateText,
+          'queryResults': queryResultsHtml
         });
         var piwikUrl =
             goog.string.buildString('http://',
