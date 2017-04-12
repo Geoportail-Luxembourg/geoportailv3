@@ -158,12 +158,6 @@ class Import:
         self.tdirs = registry.queryUtility(ITranslationDirectories, default=[])
         self.tsf = TranslationStringFactory('geoportailv3-client')
 
-        ensure_index(
-            get_elasticsearch(request),
-            self.es_layer_index,
-            options.recreate_index
-        )
-
         self.interfaces = self.session.query(Interface).filter(
             Interface.name.in_(options.interfaces)
         ).all()
@@ -177,15 +171,15 @@ class Import:
         for theme in self.session.query(Theme).filter_by(public=True).all():
             self._add_theme(theme)
 
+        for role in self.session.query(Role).all():
+            for theme in self.session.query(Theme).all():
+                self._add_theme(theme, role)
+
         ensure_index(
             get_elasticsearch(request),
             self.es_layer_index,
             options.recreate_index
         )
-        for role in self.session.query(Role).all():
-            for theme in self.session.query(Theme).all():
-                self._add_theme(theme, role)
-
         try:
             helpers.bulk(actions=self.layers,
                          client=get_elasticsearch(request),
