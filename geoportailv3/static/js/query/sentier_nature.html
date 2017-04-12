@@ -13,13 +13,13 @@
         <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
       </div>
       <div ng-show="feature.attributes.showProfile.active">
-        <a class="btn btn-default"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
+        <a class="btn btn-default no-print"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default no-print" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
       </div>
       <div ng-if="!ctrl.hasAttributes(feature)">
         <span translate>Aucune information disponible pour cette couche</span>
       </div>
       <div ng-if="ctrl.hasValidFID(feature)">
-        <span><a class="fid-link" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
+        <span><a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
       </div>
     </div>
   </div>

@@ -10,5 +10,5 @@
   <div ng-if="feature.attributes.PF.occupations && feature.attributes.PF.occupations.length > 0"><span translate >Occupation</span> : {{ctrl.translateAndjoin(feature.attributes.PF.occupations, 'pf')}}<br></div>
   <span translate>Dernier mesurage</span> : {{feature.attributes.PF.measurementNumber}}<br>
   <a class="btn btn-default" href="http://shop.geoportail.lu/Portail/express/?ids=['{{feature.attributes.textstring}}']&camefrom=mapv3&lang={{ctrl['language']}}" target="_blank" translate>Commander un extrait</a><br>
-  <a class="fid-link" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
 </div>

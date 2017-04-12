@@ -246,7 +246,8 @@ class LuxPrintProxy(PrintProxy):
             if is_pdf and "queryResults" in attributes and\
                     attributes["queryResults"] is not None:
                 css = weasyprint.CSS(
-                    string=".ng-hide {display: none !important;}"
+                    string=".ng-hide {display: none !important;} " +
+                           ".no-print {display: none !important;}"
                 )
                 merger = PdfFileMerger(strict=False)
                 merger.append(StringIO(content))
