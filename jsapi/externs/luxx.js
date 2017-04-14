@@ -149,7 +149,7 @@ luxx.MarkerOptions.prototype.position;
 /**
  * The projection of the position coordinates.
  * Default is `2169`.
- * @type {string|number}
+ * @type {string|number|undefined}
  */
 luxx.MarkerOptions.prototype.positionSrs;
 
