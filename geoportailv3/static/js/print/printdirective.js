@@ -81,6 +81,7 @@ app.Piwik;
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @constructor
  * @export
  * @ngInject
@@ -88,7 +89,14 @@ app.Piwik;
 app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
-    printServiceUrl, qrServiceUrl, appSelectedFeatures) {
+    printServiceUrl, qrServiceUrl, appSelectedFeatures,
+    ngeoBackgroundLayerMgr) {
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -509,6 +517,15 @@ app.PrintController.prototype.print = function(format) {
   var layout = this['layout'];
   var curFormat = format;
   var legend = [];
+
+  var bgLayer = this.backgroundLayerMgr_.get(this.map_);
+  var bgMetadata = bgLayer.get('metadata');
+  if (goog.isDef(bgMetadata)) {
+    var bgName = bgMetadata['legend_name'];
+    if (goog.isDef(bgName)) {
+      legend.push({'name': bgName});
+    }
+  }
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
     var name = curMetadata['legend_name'];
