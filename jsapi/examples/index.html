@@ -177,7 +177,43 @@ map2c.showMarker(
         <div class='map' id='map2c'></div>
     </div>
 
+<div class='largesample'>
+    <a name="example2d"/>
+        <div class='description' id='desc2d'>
+        <h2>Basic example with markers position with different SRS</h2>
+        This is a simple map with 2 markers displayed in different SRS.
+        <pre>
+var position2d2169 = [75977, 75099];
+var position2d4326 = [6.11149,49.61062];
+var map2d = new lux.Map({
+  target: 'map2d',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position2d2169
+});
 
+map2d.showMarker(  
+  {
+  position: position2d2169,
+  positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: false,
+   target: info2d
+});
+map2d.showMarker(
+  {
+  position: position2d4326,
+  positionSrs: 4326,
+  positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: false,
+   target: info2d
+});
+        </pre>
+        <div id='info2d' class='popup'></div>
+        </div>
+        <div class='map' id='map2d'></div>
+    </div>
 
     <div class='largesample'>
  <a name="example3"/>
@@ -773,6 +809,34 @@ map2c.showMarker(
    target: info2c,
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
 });
+
+var position2d2169 = [75977, 75099];
+var position2d4326 = [6.11149,49.61062];
+var map2d = new lux.Map({
+  target: 'map2d',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: position2d2169
+});
+
+map2d.showMarker(  
+  {
+  position: position2d2169,
+  positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: false,
+   target: info2d
+});
+map2d.showMarker(
+  {
+  position: position2d4326,
+  positionSrs: 4326,
+  positioning: 'center-center',
+   iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
+   click: false,
+   target: info2d
+});
+
 
 var map3 = new lux.Map({
   target: 'map3',
