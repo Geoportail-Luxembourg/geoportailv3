@@ -690,12 +690,18 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       }
       break;
     case 'LineString':
+      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+        return;
+      }
       name = this.gettextCatalog.getString('LineString');
       break;
     case 'Polygon':
       if (feature.get('isCircle')) {
         name = this.gettextCatalog.getString('Circle');
       } else {
+        if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
+          return;
+        }
         name = this.gettextCatalog.getString('Polygon');
       }
       break;
