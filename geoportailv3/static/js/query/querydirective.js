@@ -468,7 +468,7 @@ app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
       return false;
     }
     return true;
-  }, this);
+  }.bind(this));
   if (selected.length > 0) {
     this.selectedFeatures_.push(selected.pop());
   }
