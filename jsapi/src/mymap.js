@@ -105,6 +105,7 @@ lux.MyMap = function(options) {
   this.gpxFormat_ = new ol.format.GPX();
 
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
+  this.arrowUrl_ = [lux.mymapsUrl, 'getarrow'].join('/');
 };
 
 /**
@@ -276,26 +277,22 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
     geometry: function(feature) {
       var geom = feature.getGeometry();
 
-      if (geom.getType() == ol.geom.GeometryType.POINT) {
-        return;
-      }
-
       var coordinates;
       if (geom instanceof ol.geom.LineString) {
-        coordinates = feature.getGeometry().getCoordinates();
+        coordinates = geom.getCoordinates();
         return new ol.geom.MultiPoint(coordinates);
       } else if (geom instanceof ol.geom.Polygon) {
-        coordinates = feature.getGeometry().getCoordinates()[0];
+        coordinates = geom.getCoordinates()[0];
         return new ol.geom.MultiPoint(coordinates);
       } else {
-        return feature.getGeometry();
+        return geom;
       }
     }
   });
 
   var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
-
+  var arrowUrl = this.arrowUrl_;
   return function(resolution) {
 
     // clear the styles
@@ -320,38 +317,29 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
+
       this.getGeometry().forEachSegment(function(start, end) {
         var arrowPoint = new ol.geom.Point(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
 
-        var arrowOptions = {
-          fill: new ol.style.Fill({
-            color: rgbColor
-          }),
-          stroke: new ol.style.Stroke({
-            color: rgbColor,
-            width: 1
-          }),
-          radius: 10,
-          points: 3,
-          angle: 0,
-          rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
-        };
-
-        if (prevArrow) {
+        if (prevArrow != undefined) {
           var pt1 = curMap.getPixelFromCoordinate(arrowPoint.getCoordinates()),
               pt2 = curMap.getPixelFromCoordinate(prevArrow.getCoordinates()),
               w = pt2[0] - pt1[0],
               h = pt2[1] - pt1[1];
           distance = Math.sqrt(w * w + h * h);
         }
-        if (!prevArrow || distance > 40) {
+        if (!prevArrow || distance > 600) {
+          var coloredArrowUrl = arrowUrl + '?color=' + color.replace('#', '');
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
-            image: new ol.style.RegularShape(arrowOptions)
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+              rotation: Math.PI / 2 - Math.atan2(dy, dx),
+              src: coloredArrowUrl
+            }))
           }));
           prevArrow = arrowPoint;
         }
@@ -372,27 +360,35 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
     }
 
     var stroke;
-
-    if (this.get('stroke') > 0) {
+    var featureStroke = this.get('stroke');
+    if (featureStroke > 0) {
+      if (!this.get('__editable__') && this.get('__selected__')) {
+        featureStroke = featureStroke + 3;
+      }
       stroke = new ol.style.Stroke({
         color: rgbColor,
-        width: this.get('stroke'),
+        width: featureStroke,
         lineDash: lineDash
       });
+    }
+
+    var featureSize = this.get('size');
+    if (!this.get('__editable__') && this.get('__selected__')) {
+      featureSize = featureSize + 3;
     }
     var imageOptions = {
       fill: fillStyle,
       stroke: new ol.style.Stroke({
         color: rgbColor,
-        width: this.get('size') / 7
+        width: featureSize / 7
       }),
-      radius: this.get('size')
+      radius: featureSize
     };
     var image = null;
     if (this.get('symbolId')) {
       goog.object.extend(imageOptions, {
         src: symbolUrl + this.get('symbolId'),
-        scale: this.get('size') / 100,
+        scale: featureSize / 100,
         rotation: this.get('angle')
       });
       image = new ol.style.Icon(imageOptions);
@@ -425,7 +421,7 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
-          radius2: this.get('size')
+          radius2: featureSize
         }));
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
@@ -446,7 +442,7 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
           textAlign: 'start',
-          font: 'normal ' + this.get('size') + 'px Sans-serif',
+          font: 'normal ' + featureSize + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
             color: rgbColor
