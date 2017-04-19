@@ -26,7 +26,7 @@
       </thead>
       <tbody>
       <tr ng-click="ctrl.selectSymbol(symbol.id)" ng-repeat="symbol in ctrl.selectedSymbols| orderBy:sortType:sortReverse| filter:searchSymbols">
-        <td><img ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></td>
+        <td><img class="symbol-style" ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></td>
         <td>{{ symbol.name }}</td>
       </tr>
       </tbody>
