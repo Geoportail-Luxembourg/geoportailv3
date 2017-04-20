@@ -1256,8 +1256,8 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     var image = null;
     if (this.get('symbolId')) {
       goog.object.extend(imageOptions, {
-        src: symbolUrl + this.get('symbolId'),
-        scale: featureSize / 100,
+        src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
+        scale: 1,
         rotation: this.get('angle')
       });
       image = new ol.style.Icon(imageOptions);
