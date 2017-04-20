@@ -621,24 +621,6 @@ app.PrintController.prototype.print = function(format) {
           spec.attributes.map.layers.unshift(layers[0]);
         }
         spec.attributes.map.layers.forEach(function(layer) {
-          if (layer.style instanceof Object) {
-            for (var propertyName in layer.style) {
-              var style = layer.style[propertyName];
-              if (style.symbolizers instanceof Array) {
-                style.symbolizers.forEach(function(symbolizer) {
-                  if (symbolizer.externalGraphic !== undefined) {
-                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
-                      delete symbolizer.graphicHeight;
-                      delete symbolizer.graphicWidth;
-                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
-                      symbolizer.graphicHeight = 10;
-                      symbolizer.graphicWidth = 10;
-                    }
-                  }
-                },this);
-              }
-            }
-          }
           if ((layer.matrices instanceof Array) &&
             layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
             // Ugly hack to request non retina wmts layer for print
@@ -675,6 +657,13 @@ app.PrintController.prototype.print = function(format) {
                   var symbolizer = style.symbolizers[j];
                   if (symbolizer.externalGraphic) {
                     symbolizer.graphicFormat = 'image/png';
+                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
+                      delete symbolizer.graphicHeight;
+                      delete symbolizer.graphicWidth;
+                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
+                      symbolizer.graphicHeight = 10;
+                      symbolizer.graphicWidth = 10;
+                    }
                   }
                 }
               }
