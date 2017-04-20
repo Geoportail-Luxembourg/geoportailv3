@@ -2,7 +2,6 @@ goog.provide('app.SymbolSelectorController');
 goog.provide('app.symbolSelectorDirective');
 
 goog.require('app');
-goog.require('goog.color.alpha');
 goog.require('ol.Feature');
 
 
@@ -215,17 +214,17 @@ app.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
         this.symboltypes_[symboltype]['status'] != 200) {
       this.symboltypes_[symboltype] = this.http_.get(
           this.mymapsUrl_ + '/symbols',
-          {params: {
-            'symboltype': symboltype
-          }})
+        {params: {
+          'symboltype': symboltype
+        }})
       .then(
           goog.bind(function(resp) {
             return resp['data']['results'];
-          },this));
+          }, this));
     }
     this.symboltypes_[symboltype].then(goog.bind(function(content) {
       this.selectedSymbols = content;
-    },this));
+    }, this));
   } else {
     this.selectedSymbols = null;
   }

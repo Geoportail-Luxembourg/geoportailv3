@@ -116,9 +116,9 @@ app.UserManager.prototype.authenticate = function(username, password) {
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
-  return this.http_.post(this.loginUrl_, req, config).success(
-      goog.bind(function(data, status, headers, config) {
-        if (status == 200) {
+  return this.http_.post(this.loginUrl_, req, config).then(
+      goog.bind(function(response) {
+        if (response.status == 200) {
           this.getUserInfo();
           var msg = this.gettextCatalog.getString(
               'Vous êtes maintenant correctement connecté.');
@@ -129,13 +129,14 @@ app.UserManager.prototype.authenticate = function(username, password) {
               'Invalid username or password.'),
               app.NotifyNotificationType.WARNING);
         }
-      },this)).error(
-      goog.bind(function(data, status, headers, config) {
+        return response;
+      }, this), goog.bind(function(response) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
             app.NotifyNotificationType.WARNING);
-      },this));
+        return response;
+      }, this));
 };
 
 
@@ -143,9 +144,9 @@ app.UserManager.prototype.authenticate = function(username, password) {
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
 app.UserManager.prototype.logout = function() {
-  return this.http_.get(this.logoutUrl_).success(
-      goog.bind(function(data, status, headers, config) {
-        if (status == 200) {
+  return this.http_.get(this.logoutUrl_).then(
+      goog.bind(function(response) {
+        if (response.status == 200) {
           this.getUserInfo();
         } else {
           this.getUserInfo();
@@ -154,12 +155,13 @@ app.UserManager.prototype.logout = function() {
               app.NotifyNotificationType.ERROR
               );
         }
-      }, this)).error(
-      goog.bind(function(data, status, headers, config) {
+        return response;
+      }, this), goog.bind(function(response) {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Une erreur est survenue durant la déconnexion.'),
             app.NotifyNotificationType.ERROR);
+        return response;
       }, this));
 };
 
@@ -173,25 +175,26 @@ app.UserManager.prototype.getUserInfo = function() {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
 
-  this.http_.post(this.getuserinfoUrl_, req, config).success(
-      goog.bind(function(data, status, headers, config) {
-        if (status == 200) {
+  this.http_.post(this.getuserinfoUrl_, req, config).then(
+      goog.bind(function(response) {
+        if (response.status == 200) {
           this.setUserInfo(
-              data['login'],
-              data['role'],
-              data['role_id'],
-              data['mail'],
-              data['sn'],
-              data['mymaps_role'],
-              data['is_admin']
+              response.data['login'],
+              response.data['role'],
+              response.data['role_id'],
+              response.data['mail'],
+              response.data['sn'],
+              response.data['mymaps_role'],
+              response.data['is_admin']
           );
         } else {
           this.clearUserInfo();
         }
-      },this)).error(
-      goog.bind(function(data, status, headers, config) {
+        return response;
+      }, this), goog.bind(function(response) {
         this.clearUserInfo();
-      },this));
+        return response;
+      }, this));
 };
 
 

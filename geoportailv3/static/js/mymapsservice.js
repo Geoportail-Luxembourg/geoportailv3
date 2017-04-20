@@ -9,6 +9,20 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
+goog.require('goog.array');
+goog.require('goog.color');
+goog.require('goog.object');
+goog.require('goog.string');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Text');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 /**
  * @typedef {Array.<Object>}
@@ -304,7 +318,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.V2_BGLAYER_TO_V3_ = {
-    'webbasemap' : 'basemap_2015_global',
+    'webbasemap': 'basemap_2015_global',
     'pixelmaps-color': 'topogr_global',
     'pixelmaps-gray': 'topo_bw_jpeg',
     'streets': 'streets_jpeg',
@@ -385,7 +399,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
       }, this));
     }
     return null;
-  },this));
+  }, this));
 
 };
 
@@ -606,7 +620,8 @@ app.Mymaps.prototype.updateLayers = function() {
           }
         }
       }
-    }, this));},this));
+    }, this));
+  }, this));
 };
 
 
@@ -701,7 +716,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.updateLayers();
         this.layersChanged = false;
         return mapinformation;
-      },this));
+      }, this));
 };
 
 

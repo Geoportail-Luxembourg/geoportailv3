@@ -23,16 +23,25 @@ goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
+goog.require('ol.Object');
+goog.require('ol.Observable');
+goog.require('ol.Overlay');
 goog.require('ol.events');
+goog.require('ol.extent');
+goog.require('ol.proj');
+goog.require('ol.sphere.WGS84');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.interaction.Translate');
-goog.require('ol.style.RegularShape');
 
 
 /**
@@ -226,7 +235,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPoint);
   this.map.addInteraction(drawPoint);
   ol.events.listen(drawPoint, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -245,7 +254,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawLabel);
   this.map.addInteraction(drawLabel);
   ol.events.listen(drawLabel, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -264,7 +273,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(this.drawLine);
   this.map.addInteraction(this.drawLine);
   ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -285,7 +294,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPolygon);
   this.map.addInteraction(drawPolygon);
   ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -306,7 +315,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawCircle);
   this.map.addInteraction(drawCircle);
   ol.events.listen(drawCircle, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -355,7 +364,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.selectInteraction_.setActive(false);
   appFeaturePopup.init(this.map);
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.ADD,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       goog.bind(
       /**
        * @param {ol.Collection.Event} evt The event.
@@ -376,7 +385,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.scope_.$applyAsync();
       }, this));
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.REMOVE,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -411,11 +420,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
   ol.events.listen(this.modifyCircleInteraction_,
-      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
@@ -426,7 +435,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawnFeatures_.translateInteraction,
       ol.interaction.TranslateEventType.TRANSLATEEND,
       /**
-       * @param {ol.interaction.TranslateEvent} evt The event.
+       * @param {ol.interaction.Translate.Event} evt The event.
        */
       function(evt) {
         this.onFeatureModifyEnd_(evt);
@@ -455,7 +464,7 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event Event.
+ * @param {ol.interaction.Draw.Event} event Event.
  * @private
  */
 app.DrawController.prototype.onContinueLineEnd_ = function(event) {
@@ -476,7 +485,7 @@ app.DrawController.prototype.onContinueLineEnd_ = function(event) {
 
 
 /**
- * @param {ol.ObjectEvent} event The event.
+ * @param {ol.Object.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {
@@ -520,7 +529,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
@@ -550,7 +559,7 @@ app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawLineStart_ = function(event) {
@@ -575,7 +584,7 @@ app.DrawController.prototype.onDrawLineStart_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawCircleStart_ = function(event) {
@@ -653,7 +662,7 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
@@ -889,7 +898,7 @@ app.DrawController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'tooltip-measure']);
+      ['tooltip', 'ngeo-tooltip-measure']);
   this.measureTooltipOverlay_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],

@@ -14,7 +14,15 @@ goog.require('app.GetShorturl');
 goog.require('app.StateManager');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('goog.array');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.events');
 goog.require('ol.proj');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 /**
@@ -276,7 +284,9 @@ app.LocationinfoController = function(
         }
       }
     }.bind(this));
-    this.geocode_.geocode(this.ngeoLocation_.getParam('address')).then(function(data) {
+    var address = this.ngeoLocation_.getParam('address');
+    goog.asserts.assert(goog.isDef(address));
+    this.geocode_.geocode(address).then(function(data) {
       var results = data['results'];
       if (goog.isDef(results) && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */
@@ -296,7 +306,7 @@ app.LocationinfoController = function(
     }.bind(this));
   }
 
-  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERDOWN,
+  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERDOWN,
       goog.bind(function(event) {
         if (!appSelectedFeatures.getLength()) {
           if (event.originalEvent.which === 3) { // if right mouse click
@@ -315,13 +325,13 @@ app.LocationinfoController = function(
         }
       }, this), this);
 
-  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERUP,
+  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERUP,
       goog.bind(function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
       }, this), this);
 
-  ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
       goog.bind(function(event) {
         if (startPixel) {
           var pixel = event.pixel;

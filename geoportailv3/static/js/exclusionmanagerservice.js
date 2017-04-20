@@ -8,8 +8,10 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.Notify');
 goog.require('goog.asserts');
+goog.require('goog.array');
 goog.require('ngeo.BackgroundLayerMgr');
 goog.require('ol.Object');
+goog.require('ol.Observable');
 goog.require('ol.events');
 
 
@@ -161,7 +163,7 @@ app.ExclusionManager.prototype.init = function(map) {
 
   // listen on layers being added to the map
   // base layers switch should fire the event as well
-  ol.events.listen(map.getLayers(), ol.Collection.EventType.ADD,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -171,7 +173,7 @@ app.ExclusionManager.prototype.init = function(map) {
 
         // listen on opacity change
         var key = ol.events.listen(layer,
-            ol.Object.getChangeEventType(ol.layer.LayerProperty.OPACITY),
+            ol.Object.getChangeEventType(ol.layer.Property.OPACITY),
             function(e) {
               this.checkForLayerExclusion_(map, layer);
             }, this);
@@ -179,7 +181,7 @@ app.ExclusionManager.prototype.init = function(map) {
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
-  ol.events.listen(map.getLayers(), ol.Collection.EventType.REMOVE,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */

@@ -27,6 +27,25 @@ app.module = angular.module('app', [ngeo.module.name, 'gettext'])
 // the application.
 app.module.config(ngeo.mockLocationProvider);
 
+
+// activate pre-assigning bindings
+// See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
+app.module.config(['$compileProvider', function($compileProvider) {
+  $compileProvider.preAssignBindingsEnabled(true);
+}]);
+
+
+// Strict Contextual Escaping (SCE) configuration
+app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // trust data from shop.geoportail.lu
+    'http*://shop.geoportail.lu/Portail/inspire/webservices/**'
+  ]);
+}]);
+
+
 /**
  * @param {string} name The string to sanitize.
  * @return {string} The sanitized string.

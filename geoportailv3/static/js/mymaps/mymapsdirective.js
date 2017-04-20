@@ -17,10 +17,11 @@ goog.require('app.SelectedFeatures');
 goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('ngeo.filereaderDirective');
 goog.require('ngeo.modalDirective');
+goog.require('ol.extent');
 goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
 
 
@@ -404,7 +405,7 @@ app.MymapsDirectiveController.prototype.saveLayers = function() {
       this.appTheme_.getCurrentTheme())
   .then(goog.bind(function() {
     this.appMymaps_.loadMapInformation();
-  },this));
+  }, this));
   this['layersChanged'] = false;
   return promise;
 };
@@ -462,7 +463,9 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
           var msg = this.gettextCatalog.getString('Carte copiée');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
-        }}}, this));
+        }
+      }
+    }, this));
   }
 };
 
@@ -704,7 +707,9 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
               this['drawopen'] = true;
               this.appMymaps_.setMapId(mapId);
               return this.saveLayers();
-            }}}, this))
+            }
+          }
+        }, this))
         .then(goog.bind(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
         }, this))
@@ -984,7 +989,8 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             this.notify_(msg, app.NotifyNotificationType.INFO);
             this.modal = undefined;
           }
-        }}, this));
+        }
+      }, this));
   }
 };
 
@@ -1113,9 +1119,9 @@ app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
     if (goog.isDef(extent)) {
       var viewSize = /** {ol.Size} **/ (this.map_.getSize());
       goog.asserts.assert(goog.isDef(viewSize));
-      this.map_.getView().fit(extent,
-          viewSize
-      );
+      this.map_.getView().fit(extent, {
+        size: viewSize
+      });
     }
   }.bind(this));
 };
@@ -1270,10 +1276,9 @@ app.MymapsDirectiveController.prototype.isDocked = function() {
 app.MymapsDirectiveController.prototype.fit = function(extent) {
   var viewSize = /** {ol.Size} **/ (this.map_.getSize());
   goog.asserts.assert(goog.isDef(viewSize));
-  this.map_.getView().fit(
-      extent,
-      viewSize
-  );
+  this.map_.getView().fit(extent, {
+    size: viewSize
+  });
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

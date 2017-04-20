@@ -7,11 +7,16 @@ goog.provide('app.featurePopupDirective');
 goog.require('app');
 goog.require('app.Mymaps');
 goog.require('app.profileDirective');
-goog.require('ngeo');
+goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
+goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.format.KML');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.LineString');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -265,7 +270,7 @@ app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @private
    */
   this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.ModifyEventType.MODIFYEND, this.updateFeature_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;
@@ -364,7 +369,7 @@ app.FeaturePopupController.prototype.setFeatureCircleRadius = function(feature, 
     var center = ol.extent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
-    var pointResolution = projection.getPointResolution(/** @type {number} */ (resolution), center);
+    var pointResolution = ol.proj.getPointResolution(projection, /** @type {number} */ (resolution), center);
     var resolutionFactor = resolution / pointResolution;
     radius = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new ol.geom.Circle(center, radius);
@@ -705,10 +710,9 @@ app.FeaturePopupController.prototype.continueLine = function() {
         (this.feature.getGeometry()).getLastCoordinate();
     var viewSize = /** {ol.Size} **/ (this.map.getSize());
     goog.asserts.assert(goog.isDef(viewSize));
-    this.map.getView().fit(
-        new ol.geom.Point(lastCoordinate),
-        viewSize
-    );
+    this.map.getView().fit(new ol.geom.Point(lastCoordinate), {
+      size: viewSize
+    });
 
     this.drawnFeatures_.modifyInteraction.setActive(false);
     this.drawnFeatures_.modifyCircleInteraction.setActive(false);

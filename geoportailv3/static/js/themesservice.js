@@ -10,6 +10,8 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
+goog.require('goog.object');
+goog.require('goog.array');
 goog.require('ol.events.EventTarget');
 
 
@@ -262,7 +264,7 @@ app.Themes.prototype.getFlatCatalog = function() {
           );
         }
         return flatCatalogue;
-      },this));
+      }, this));
 };
 
 app.module.service('appThemes', app.Themes);

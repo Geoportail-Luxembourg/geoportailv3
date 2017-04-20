@@ -16,7 +16,7 @@ goog.provide('app.externalDataDirective');
 goog.require('app');
 goog.require('app.WmsHelper');
 goog.require('app.ShowLayerinfo');
-goog.require('ol.format.WMSCapabilities');
+goog.require('goog.array');
 
 
 /**
@@ -119,7 +119,7 @@ app.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
    */
   this.versionList = [
     {'version': '1.3.0',
-     'defaultGetCapabilities': 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'}
+      'defaultGetCapabilities': 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'}
   ];
 
   /**

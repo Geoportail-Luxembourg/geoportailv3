@@ -24,13 +24,12 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
-goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events');
+goog.require('ol.Observable');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
 
 
 /**
@@ -386,7 +385,7 @@ app.PrintController.getViewCenterResolution_ = function(view) {
   goog.asserts.assert(goog.isDef(viewCenter));
   goog.asserts.assert(!goog.isNull(viewProjection));
   goog.asserts.assert(goog.isDef(viewResolution));
-  return viewProjection.getPointResolution(viewResolution, viewCenter);
+  return ol.proj.getPointResolution(viewProjection, viewResolution, viewCenter);
 };
 
 
@@ -492,12 +491,11 @@ app.PrintController.prototype.changeScale = function(newScale) {
   if (currentResolution < optimalResolution) {
     var newResolution = view.constrainResolution(optimalResolution, 0, 1);
     goog.asserts.assert(newResolution >= optimalResolution);
-    map.beforeRender(ol.animation.zoom({
+    view.animate({
       duration: 250,
       easing: ol.easing.easeOut,
       resolution: currentResolution
-    }));
-    view.setResolution(newResolution);
+    });
   }
 
   map.render();
@@ -623,36 +621,18 @@ app.PrintController.prototype.print = function(format) {
           spec.attributes.map.layers.unshift(layers[0]);
         }
         spec.attributes.map.layers.forEach(function(layer) {
-          if (layer.style instanceof Object) {
-            for (var propertyName in layer.style) {
-              var style = layer.style[propertyName];
-              if (style.symbolizers instanceof Array) {
-                style.symbolizers.forEach(function(symbolizer) {
-                  if (symbolizer.externalGraphic !== undefined) {
-                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
-                      delete symbolizer.graphicHeight;
-                      delete symbolizer.graphicWidth;
-                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
-                      symbolizer.graphicHeight = 10;
-                      symbolizer.graphicWidth = 10;
-                    }
-                  }
-                },this);
-              }
-            }
-          }
           if ((layer.matrices instanceof Array) &&
             layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
             // Ugly hack to request non retina wmts layer for print
-            layer.baseURL = goog.string.remove(layer.baseURL,'_hd');
-            layer.matrixSet = goog.string.remove(layer.matrixSet,'_HD');
+            layer.baseURL = goog.string.remove(layer.baseURL, '_hd');
+            layer.matrixSet = goog.string.remove(layer.matrixSet, '_HD');
             // layer.layer = layer.layer + '_hd';
             // goog.array.forEach(layer.matrices, function(matrice) {
             //   matrice.tileSize = [512, 512];
             // });
           }
           if ((layer.matrices instanceof Array)) {
-            for (var i = layer.matrices.length - 1; i > 0 ; i--) {
+            for (var i = layer.matrices.length - 1; i > 0; i--) {
               if (layer.matrices[i].scaleDenominator > this['scale']) {
                 layer.matrices.splice(0, i + 1);
                 break;
@@ -664,6 +644,30 @@ app.PrintController.prototype.print = function(format) {
               layer.customParams = {};
             }
             layer.customParams['MAP_RESOLUTION'] = dpi;
+          }
+          // set the graphicFormat because mapfish print is not able
+          // to guess it from the externalGraphic (doesn't end with file
+          // extension)
+          if (layer.type === 'geojson') {
+            var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
+            for (var key in vector.style) {
+              var style = vector.style[key];
+              if (goog.isObject(style)) {
+                for (var j = 0; j < style.symbolizers.length; j++) {
+                  var symbolizer = style.symbolizers[j];
+                  if (symbolizer.externalGraphic) {
+                    symbolizer.graphicFormat = 'image/png';
+                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
+                      delete symbolizer.graphicHeight;
+                      delete symbolizer.graphicWidth;
+                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
+                      symbolizer.graphicHeight = 10;
+                      symbolizer.graphicWidth = 10;
+                    }
+                  }
+                }
+              }
+            }
           }
         }, this);
         // create print report

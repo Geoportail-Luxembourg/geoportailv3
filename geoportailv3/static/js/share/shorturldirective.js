@@ -106,12 +106,10 @@ app.ShorturlDirectiveController = function($scope, ngeoLocation,
  */
 app.ShorturlDirectiveController.prototype.setUrl_ =
     function() {
+      this.url = this.ngeoLocation_.getUriString();
       if (this['onlyMymaps']) {
-        var uri = this.ngeoLocation_.getUri().clone();
-        this.url = uri.setQueryData('map_id=' + this.appMymaps_.getMapId(),
-          true).toString();
-      } else {
-        this.url = this.ngeoLocation_.getUriString();
+        this.url += location.search ? '&' : '?';
+        this.url += 'map_id=' + this.appMymaps_.getMapId();
       }
       this.longurl = this.url;
       this.getShorturl_().then(goog.bind(
@@ -130,7 +128,9 @@ app.ShorturlDirectiveController.prototype.setUrl_ =
  */
 app.ShorturlDirectiveController.prototype.isMymapsSelected =
     function() {
-      if (this.appMymaps_.getMapId()) return true;
+      if (this.appMymaps_.getMapId()) {
+        return true;
+      }
       return false;
     };
 

@@ -8,6 +8,10 @@ goog.provide('app.GetWmtsLayer');
 
 goog.require('app');
 goog.require('ngeo.DecorateLayer');
+goog.require('goog.asserts');
+goog.require('goog.object');
+goog.require('ol.extent');
+goog.require('ol.proj');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.ImageWMS');

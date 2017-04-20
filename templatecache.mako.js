@@ -29,7 +29,7 @@ goog.require('app');
 
 (function() {
   /**
-   * @param {angular.$cacheFactory.Cache} $templateCache
+   * @param {angular.cacheFactory.Cache} $templateCache
    * @ngInject
    */
   var runner = function($templateCache) {

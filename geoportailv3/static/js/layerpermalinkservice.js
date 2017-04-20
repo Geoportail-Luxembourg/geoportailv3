@@ -100,7 +100,7 @@ app.LayerPermalinkManager = function(appStateManager,
  * @private
  */
 app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
-  'webbasemap' : 'basemap_2015_global',
+  'webbasemap': 'basemap_2015_global',
   'pixelmaps-color': 'topogr_global',
   'pixelmaps-gray': 'topo_bw_jpeg',
   'streets': 'streets_jpeg',
@@ -317,9 +317,9 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
         }, this);
   }, this);
   // Add event listener to all future selected layers
-  ol.events.listen(layers, ol.Collection.EventType.ADD,
+  ol.events.listen(layers, ol.CollectionEventType.ADD,
       /**
-       * @param {ol.Collection.EventType} collEvt Collection event.
+       * @param {ol.CollectionEventType} collEvt Collection event.
        */
       function(collEvt) {
         var layer = /** @type {ol.layer.Layer} */ (collEvt.element);

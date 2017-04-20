@@ -1,11 +1,22 @@
 goog.provide('app.QueryController');
 goog.provide('app.queryDirective');
+
 goog.require('app.Activetool');
 goog.require('app.GetDevice');
 goog.require('app.profileDirective');
+goog.require('goog.array');
+goog.require('goog.string');
 goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ol.extent');
+goog.require('ol.proj');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
 
 
 /**
@@ -344,7 +355,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   }, this));
 
   ol.events.listen(this.map_.getLayers(),
-      ol.Collection.EventType.REMOVE,
+      ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -355,10 +366,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.SINGLECLICK, function(evt) {
+      ol.MapBrowserEventType.SINGLECLICK, function(evt) {
         if (this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
-            this.appActivetool_.isActive() || this.isQuerying_) return;
+            this.appActivetool_.isActive() || this.isQuerying_) {
+          return;
+        }
         this.selectedFeatures_.clear();
         var found = false;
         var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
@@ -387,7 +400,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.POINTERDOWN, function(evt) {
+      ol.MapBrowserEventType.POINTERDOWN, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerDownTime_ = new Date().getTime();
           this.startPixel_ = evt.pixel;
@@ -395,14 +408,14 @@ app.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   ol.events.listen(this.map_,
-      ol.MapBrowserEvent.EventType.POINTERUP, function(evt) {
+      ol.MapBrowserEventType.POINTERUP, function(evt) {
         if (!(evt.originalEvent instanceof MouseEvent)) {
           this.pointerUpTime_ = new Date().getTime();
           this.stopPixel_ = evt.pixel;
         }
       }, this);
 
-  ol.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;
@@ -455,7 +468,7 @@ app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
       return false;
     }
     return true;
-  }, this);
+  }.bind(this));
   if (selected.length > 0) {
     this.selectedFeatures_.push(selected.pop());
   }
@@ -558,9 +571,9 @@ app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
           this.content = [];
           this.http_.get(
               this.getInfoServiceUrl_,
-              {params: {
-                'fid': fid
-              }}).then(
+            {params: {
+              'fid': fid
+            }}).then(
               function(resp) {
                 var showInfo = false;
                 if (!this.appGetDevice_.testEnv('xs')) {
@@ -608,7 +621,7 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layersList = [];
   var layerLabel = {};
 
-  for (var i = layers.length - 1; i >= 0 ; i--) {
+  for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
     if (goog.isDefAndNotNull(metadata)) {
       if (metadata['is_queryable'] == 'true' &&
@@ -648,11 +661,11 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     this.content = [];
     this.http_.get(
         this.getInfoServiceUrl_,
-        {params: {
-          'layers': layersList.join(),
-          'box1': big_box.join(),
-          'box2': small_box.join()
-        }}).then(
+      {params: {
+        'layers': layersList.join(),
+        'box1': big_box.join(),
+        'box2': small_box.join()
+      }}).then(
         goog.bind(function(resp) {
           if (resp.data.length > 0) {
             this.showInfo_(evt.originalEvent.shiftKey, resp,
@@ -727,7 +740,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
       if (!found) {
         this.responses_.push(item);
       }
-    },this);
+    }, this);
   } else {
     this.responses_ = resp.data;
     goog.array.forEach(this.responses_, function(item) {
@@ -763,8 +776,11 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
   }, this);
   this.clearQueryResult_(this.QUERYPANEL_);
   this.content = this.responses_;
-  if (this.responses_.length > 0) this['infoOpen'] = openInfoPanel;
-  else this['infoOpen'] = false;
+  if (this.responses_.length > 0) {
+    this['infoOpen'] = openInfoPanel;
+  }  else {
+    this['infoOpen'] = false;
+  }
   this.lastHighlightedFeatures_ = [];
   for (var i = 0; i < this.responses_.length; i++) {
     this.lastHighlightedFeatures_.push.apply(
@@ -956,9 +972,10 @@ app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
         }
       }
       if (fit) {
-        var mapSize = /** @type {ol.Size} */ (this.map_.getSize());
-        this.map_.getView().fit(extent, mapSize,
-            /** @type {olx.view.FitOptions} */ ({maxZoom: 17}));
+        this.map_.getView().fit(extent, /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {ol.Size} */ (this.map_.getSize()),
+          maxZoom: 17
+        }));
       }
     }
   }
@@ -995,7 +1012,7 @@ app.QueryController.prototype.translateKeys =
       angular.forEach(attributes, function(value, key) {
         if (key !== 'showProfile') {
           results.push({'key': this.translate_.getString('f_' + key),
-        'value': value});
+            'value': value});
         }
       }, this);
       return results;

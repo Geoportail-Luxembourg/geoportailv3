@@ -110,11 +110,9 @@ app.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
       transformRequest: angular.identity,
       headers: {'Content-Type': undefined}
     })
-    .success(
-        goog.bind(function(data, status, headers, config) {
-          modelSetter(scope, data);
-        },this))
-    .error(goog.bind(function() {
+    .then(goog.bind(function(response) {
+      modelSetter(scope, response.data);
+    }, this), goog.bind(function() {
       var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');
       this.notify_(msg, app.NotifyNotificationType.ERROR);
