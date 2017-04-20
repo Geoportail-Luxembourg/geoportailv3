@@ -858,6 +858,10 @@ class Mymaps(object):
     @view_config(route_name="mymaps_get_symbol")
     def get_symbol(self):
         id = self.request.matchdict.get("symbol_id")
+        scale = self.request.params.get("scale")
+        if scale is None:
+            scale = 100
+
         try:
             symbol = DBSession.query(Symbols).\
                 filter(Symbols.id == id).one()
@@ -866,18 +870,34 @@ class Mymaps(object):
                        'Content-Disposition': 'filename=\"%s\";'
                        % (str(symbol.symbol_name))
                        }
-
+            format = ""
             if symbol.symbol_name.lower().endswith(".jpg"):
                 headers = {'Content-Type': 'image/jpeg'}
+                format = "PNG"
             if symbol.symbol_name.lower().endswith(".jpeg"):
                 headers = {'Content-Type': 'image/jpeg'}
+                format = "JPEG"
             if symbol.symbol_name.lower().endswith(".gif"):
                 headers = {'Content-Type': 'image/gif'}
+                format = "GIF"
             if symbol.symbol_name.lower().endswith(".png"):
                 headers = {'Content-Type': 'image/png'}
-            return Response(symbol.symbol, headers=headers)
+                format = "PNG"
+            if scale != 100:
+                from PIL import Image
+                import io
+                image = Image.open(io.BytesIO(symbol.symbol))
+                img_byte_arr = io.BytesIO()
 
-        except:
+                thumbnail = image.resize(
+                    (image.size[0] * int(scale)/100,
+                     image.size[1] * int(scale)/100))
+                thumbnail.save(img_byte_arr, format=format)
+                return Response(img_byte_arr.getvalue(), headers=headers)
+            return Response(symbol.symbol, headers=headers)
+        except Exception as e:
+            log.exception(e)
+
             from PIL import Image, ImageDraw
 
             img = Image.new('RGBA', (40, 40))
