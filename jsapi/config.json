@@ -45,6 +45,8 @@
     "compilation_level": "ADVANCED",
     "export_local_property_definitions": true,
     "warning_level": "VERBOSE",
+    "language_in": "ECMASCRIPT6_STRICT",
+    "language_out": "ECMASCRIPT5_STRICT",
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true
   }
