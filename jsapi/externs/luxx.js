@@ -55,6 +55,13 @@ luxx.MapOptions.prototype.layerManager;
 luxx.MapOptions.prototype.layerOpacities;
 
 /**
+ * Array of visibilities for the layers.
+ * @type {Array<boolean>|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.layerVisibilities;
+
+/**
  * Array of overlay layer identifiers.
  * @type {Array<string|number>|undefined}
  * @api

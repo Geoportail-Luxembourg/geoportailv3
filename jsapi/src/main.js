@@ -253,6 +253,7 @@ lux.Map = function(options) {
 
   var layers    = [];
   var layerOpacities = [];
+  var layerVisibilities = [];
 
   var defaultBg = 'basemap_2015_global';
 
@@ -368,12 +369,19 @@ lux.Map = function(options) {
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
+  if (options.layerVisibilities) {
+    layerVisibilities.push(true);
+    layerVisibilities = layerVisibilities.concat(options.layerVisibilities);
+    goog.asserts.assert(layers.length == layerVisibilities.length,
+        'Layers and visibility should have the same number of items');
+    delete options.layerVisibilities;
+  }
 
   this.layersPromise = fetch(lux.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
-    this.addLayers_(layers, layerOpacities);
+    this.addLayers_(layers, layerOpacities, layerVisibilities);
   }.bind(this));
 
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
@@ -778,9 +786,10 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 /**
  * @param {Array<string|number>} layers Array of layer names.
  * @param {Array<number>} opacities Array of layer opacities.
+ * @param {Array<boolean>} visibilities Array of layer visibility.
  * @private
  */
-lux.Map.prototype.addLayers_ = function(layers, opacities) {
+lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
 
   var conf = this.layersConfig;
   if (!conf) {
@@ -796,7 +805,8 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
         lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
       var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
-      this.getLayers().push(fn(layerConf, opacity));
+      var visible = goog.isDef(visibilities[index]) ? visibilities[index] : true;
+      this.getLayers().push(fn(layerConf, opacity, visible));
     }
   }.bind(this));
 };
@@ -865,14 +875,16 @@ lux.intersects_ = function(one, two) {
  * {@link ol.Collection}.
  * @param {string|number} layer The layer id.
  * @param {number=} opt_opacity The layer opacity. Default is 1.
+ * @param {boolean=} opt_visibility The layer visibility. Default is true.
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html}
  * @export
  * @api
  */
-lux.Map.prototype.addLayerById = function(layer, opt_opacity) {
+lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
   this.layersPromise.then(function() {
     var opacity = goog.isDef(opt_opacity) ? opt_opacity : 1;
-    this.addLayers_([layer], [opacity]);
+    var visibility = goog.isDef(opt_visibility) ? opt_visibility : true;
+    this.addLayers_([layer], [opacity], [visibility]);
   }.bind(this));
 };
 
@@ -950,7 +962,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     select.addEventListener('change', function() {
       if (select.value !== 'blank') {
         this.getLayers().setAt(
-          0, lux.WMTSLayerFactory_(this.layersConfig[select.value], 1)
+          0, lux.WMTSLayerFactory_(this.layersConfig[select.value], 1, true)
         );
       } else {
         this.getLayers().setAt(0, this.blankLayer_);
@@ -1350,10 +1362,11 @@ lux.Map.prototype.addMyMapLayer = function(options) {
 /**
  * @param {Object} config The layer's config.
  * @param {number} opacity The layer's opacity.
+ * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Tile} The layer.
  * @private
  */
-lux.WMTSLayerFactory_ = function(config, opacity) {
+lux.WMTSLayerFactory_ = function(config, opacity, visible) {
   var format = config['imageType'];
   var imageExt = format.split('/')[1];
 
@@ -1397,19 +1410,21 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
       }),
       style: 'default'
     }),
-    opacity: opacity
+    opacity: opacity,
+    visible: visible
   });
 
   return layer;
 };
 
 /**
- * @param {Object} config The layer's config
- * @param {number} opacity The layer's opacity
+ * @param {Object} config The layer's config.
+ * @param {number} opacity The layer's opacity.
+ * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Image} The layer.
  * @private
  */
-lux.WMSLayerFactory_ = function(config, opacity) {
+lux.WMSLayerFactory_ = function(config, opacity, visible) {
   var url = config.url || '//map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
@@ -1424,9 +1439,9 @@ lux.WMSLayerFactory_ = function(config, opacity) {
     id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.ImageWMS(optSource),
-    opacity: opacity
+    opacity: opacity,
+    visible: visible
   });
-
   return layer;
 };
 
