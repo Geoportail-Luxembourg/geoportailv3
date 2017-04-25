@@ -1,6 +1,7 @@
 goog.provide('lux.LayerManager');
 
 goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('ol.control.Control');
 
 /**
@@ -31,9 +32,9 @@ lux.LayerManager.prototype.setMap = function(map) {
   if (map) {
     var layers = map.getLayers();
     this.listenerKeys.push(
-        ol.events.listen(layers, ol.Collection.EventType.ADD,
+        ol.events.listen(layers, ol.CollectionEventType.ADD,
             this.update, this),
-        ol.events.listen(layers, ol.Collection.EventType.REMOVE,
+        ol.events.listen(layers, ol.CollectionEventType.REMOVE,
             this.update, this)
     );
     this.update();

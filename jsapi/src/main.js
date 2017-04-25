@@ -4,6 +4,7 @@ goog.provide('lux.Map');
 goog.require('goog.Uri');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
 goog.require('lux.StateManager');
@@ -24,8 +25,10 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.OSM');
 goog.require('ol.source.WMTSRequestEncoding');
+goog.require('ol.source.WMTS');
+goog.require('ol.tilegrid.WMTS');
 
-proj4.defs('EPSG:2169','+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
+proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
 
 /**
  * @typedef {{push: function(Array<string>)}}
@@ -44,7 +47,7 @@ _paq.push(['setSiteId', 22]);
   var u = '//statistics.geoportail.lu/';
   _paq.push(['setTrackerUrl', u + 'piwik.php']);
   var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-  g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g,s);
+  g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
 })();
 
 /**
@@ -475,8 +478,8 @@ lux.Map = function(options) {
   options.controls = controls;
 
   options.logo = {
-    href : '//map.geoportail.lu',
-    src  : '//www.geoportail.lu/favicon.ico'
+    href: '//map.geoportail.lu',
+    src: '//www.geoportail.lu/favicon.ico'
   };
 
   if (options.search && options.search.target) {
@@ -491,7 +494,7 @@ lux.Map = function(options) {
 
   this.getTargetElement().classList.add('lux-map');
 
-  ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
+  ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
       this.checkForExclusion_, this);
 
   /**
@@ -501,7 +504,7 @@ lux.Map = function(options) {
   this.popupTarget_ = undefined;
   this.setPopupTarget(options.popupTarget);
 
-  ol.events.listen(this, ol.MapBrowserEvent.EventType.SINGLECLICK,
+  ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
       this.handleSingleclickEvent_, this);
 
   this.stateManager_ = new lux.StateManager();
@@ -510,7 +513,7 @@ lux.Map = function(options) {
   this.showLayer_.setMap(this);
 
   // change cursor on mouseover feature
-  ol.events.listen(this, ol.pointer.EventType.POINTERMOVE, function(evt) {
+  ol.events.listen(this, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
     var pixel = this.getEventPixel(evt.originalEvent);
     var hit = this.hasFeatureAtPixel(pixel);
     var pixelHit = this.forEachLayerAtPixel(pixel, function(colors) {
@@ -799,7 +802,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities) {
 };
 
 /**
- * @param {ol.Collection.EventType} event The event.
+ * @param {ol.CollectionEventType} event The event.
  * @private
  */
 lux.Map.prototype.checkForExclusion_ = function(event) {
@@ -955,7 +958,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     }.bind(this));
 
     // update the selector if blank layer is set (after exclusion)
-    ol.events.listen(this.getLayers(), ol.Collection.EventType.ADD,
+    ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
         function(event) {
           var layer = this.getLayers().getArray()[0];
           if (layer == this.blankLayer_) {
@@ -1008,11 +1011,11 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
     f.properties = f.attributes;
   });
   var features = format.readFeatures({
-    type     : 'FeatureCollection',
-    features : json[0].features
+    type: 'FeatureCollection',
+    features: json[0].features
   }, {
-    dataProjection    : 'EPSG:2169',
-    featureProjection : 'EPSG:3857'
+    dataProjection: 'EPSG:2169',
+    featureProjection: 'EPSG:3857'
   });
   if (features.length == 0) {
     return;
@@ -1020,19 +1023,20 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
   var size = this.getSize();
   features.forEach(function(feature) {
     this.showMarker({
-      position    : ol.extent.getCenter(feature.getGeometry().getExtent()),
-      positionSrs : '3857',
-      autoCenter  : true,
-      click       : opt_click,
-      target      : opt_target,
-      html        : feature.get('tooltip')
+      position: ol.extent.getCenter(feature.getGeometry().getExtent()),
+      positionSrs: '3857',
+      autoCenter: true,
+      click: opt_click,
+      target: opt_target,
+      html: feature.get('tooltip')
     });
     this.featureExtent_ = ol.extent.extend(
       this.featureExtent_,
       feature.getGeometry().getExtent()
     );
     if (size) {
-      this.getView().fit(this.featureExtent_, size, {
+      this.getView().fit(this.featureExtent_, {
+        size: size,
         maxZoom: 17,
         padding: [0, 0, 0, 0]
       });
@@ -1094,10 +1098,10 @@ lux.Map.prototype.addSearch = function(target) {
   var format = new ol.format.GeoJSON();
 
   new autoComplete({
-    'selector'  : input,
-    'minChars'  : 2,
-    'menuClass' : 'lux-search-suggestions',
-    'source'    : function(term, suggest) {
+    'selector': input,
+    'minChars': 2,
+    'menuClass': 'lux-search-suggestions',
+    'source': function(term, suggest) {
       term = term.toLowerCase();
       fetch(lux.searchUrl + 'limit=5&layer=Adresse&query=' + term).then(function(resp) {
         return resp.json();
@@ -1105,7 +1109,7 @@ lux.Map.prototype.addSearch = function(target) {
         suggest(json.features);
       });
     },
-    'renderItem' : function(item, search) {
+    'renderItem': function(item, search) {
       var label = item.properties.label;
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
@@ -1117,7 +1121,7 @@ lux.Map.prototype.addSearch = function(target) {
           label.replace(re, '<b>$1</b>') +
           '</div>';
     },
-    'onSelect' : function(e, term, item) {
+    'onSelect': function(e, term, item) {
       var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
       var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
       this.searchLayer_.getSource().clear();
@@ -1130,8 +1134,8 @@ lux.Map.prototype.addSearch = function(target) {
         ol.geom.Polygon.fromExtent(
           ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
         ),
-        /** @type {Array<number>} */ (this.getSize()),
         /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {Array<number>} */ (this.getSize()),
           maxZoom: 17
         })
       );
@@ -1261,7 +1265,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
         function() {
           var size = this.getSize();
           goog.asserts.assert(size !== undefined, 'size should be defined');
-          this.getView().fit(vector.getSource().getExtent(), size);
+          this.getView().fit(vector.getSource().getExtent(), {size: size});
         }.bind(this)
     );
     if (opt_options && opt_options.click) {
@@ -1362,18 +1366,18 @@ lux.WMTSLayerFactory_ = function(config, opacity) {
   }
 
   var layer = new ol.layer.Tile({
-    name  : config['name'],
+    name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.WMTS({
       crossOrigin: 'anonymous',
-      url             : url,
-      layer           : config['name'],
-      matrixSet       : 'GLOBAL_WEBMERCATOR_4_V3',
-      format          : format,
-      requestEncoding : ol.source.WMTSRequestEncoding.REST,
-      projection      : ol.proj.get('EPSG:3857'),
-      tileGrid        : new ol.tilegrid.WMTS({
+      url: url,
+      layer: config['name'],
+      matrixSet: 'GLOBAL_WEBMERCATOR_4_V3',
+      format: format,
+      requestEncoding: ol.source.WMTSRequestEncoding.REST,
+      projection: ol.proj.get('EPSG:3857'),
+      tileGrid: new ol.tilegrid.WMTS({
         origin: [
           -20037508.3428, 20037508.3428
         ],
