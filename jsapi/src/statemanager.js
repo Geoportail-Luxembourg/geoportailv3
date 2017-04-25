@@ -72,9 +72,9 @@ lux.StateManager.prototype.setMap = function(map) {
     this.updateState(object);
   }
 
-  ol.events.listen(map.getLayers(), ol.Collection.EventType.ADD,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
     onLayersUpdate, this);
-  ol.events.listen(map.getLayers(), ol.Collection.EventType.REMOVE,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
     onLayersUpdate, this);
 };
 

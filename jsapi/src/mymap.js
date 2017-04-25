@@ -2,6 +2,7 @@ goog.provide('lux.MyMap');
 
 goog.require('goog.dom');
 goog.require('goog.dom.query');
+goog.require('goog.dom.classlist');
 goog.require('goog.color');
 goog.require('goog.events');
 goog.require('ngeo.interaction.Measure');
@@ -176,7 +177,7 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     source.addFeatures(features);
 
     var size = /** @type {Array<number>} */ (this.map_.getSize());
-    this.map_.getView().fit(source.getExtent(), size);
+    this.map_.getView().fit(source.getExtent(), {size: size});
 
     this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
@@ -184,14 +185,14 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     this.map_.addInteraction(this.selectInteraction_);
 
     ol.events.listen(
-      this.selectInteraction_,
-      ol.interaction.SelectEventType.SELECT,
+      vector,
+      ol.CollectionEventType.ADD,
       this.onFeatureSelected_, this);
   }.bind(this));
 };
 
 /**
- * @param {ol.interaction.SelectEvent} event The select event.
+ * @param {ol.interaction.Select.Event} event The select event.
  * @private
  */
 lux.MyMap.prototype.onFeatureSelected_ = function(event) {
@@ -484,7 +485,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     var length = ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
       this.map_.getView().getProjection(),
-      null,
+      undefined,
       function(measure) {
         return measure.toString();
       }
@@ -500,7 +501,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     var area = ngeo.interaction.Measure.getFormattedArea(
       geom,
       this.map_.getView().getProjection(),
-      null,
+      undefined,
       function(measure) {
         return measure.toString();
       }
@@ -517,7 +518,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     var radius = ngeo.interaction.Measure.getFormattedLength(
       line,
       this.map_.getView().getProjection(),
-      null,
+      undefined,
       function(measure) {
         return measure.toString();
       }
@@ -555,7 +556,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
     var extent = /** @type {Array<number>} */ (geom.getExtent());
-    this.map_.getView().fit(extent, size);
+    this.map_.getView().fit(extent, {size: size});
   }.bind(this));
 
   if (this.profileContainer_ &&
@@ -666,7 +667,7 @@ lux.MyMap.prototype.initProfile_ = function(target, opt_addCloseBtn) {
     return 0;
   };
 
-  ol.events.listen(this.map_, ol.MapBrowserEvent.EventType.POINTERMOVE,
+  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -750,7 +751,7 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   }).join('&');
 
   /**
-   * @type {RequestInit}
+   * @type {!RequestInit}
    */
   var request = ({
     method: 'POST',
