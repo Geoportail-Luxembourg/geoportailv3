@@ -1370,12 +1370,23 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
   var format = config['imageType'];
   var imageExt = format.split('/')[1];
 
-  var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/' +
-  '{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+  var isHiDpi = window.matchMedia(
+              '(-webkit-min-device-pixel-ratio: 2), ' +
+              '(min-device-pixel-ratio: 2), ' +
+              '(min-resolution: 192dpi)'
+      ).matches;
+
+  var retina = isHiDpi && config['metadata']['hasRetina'] === 'true';
+
+  var retinaExtension = (retina ? '_hd' : '');
+  var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+  retinaExtension +
+  '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
   if (lux.requestScheme === 'https') {
     url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
-        '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
+    retinaExtension +
+    '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
 
   var layer = new ol.layer.Tile({
@@ -1386,7 +1397,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
       crossOrigin: 'anonymous',
       url: url,
       layer: config['name'],
-      matrixSet: 'GLOBAL_WEBMERCATOR_4_V3',
+      matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
       format: format,
       requestEncoding: ol.source.WMTSRequestEncoding.REST,
       projection: ol.proj.get('EPSG:3857'),
