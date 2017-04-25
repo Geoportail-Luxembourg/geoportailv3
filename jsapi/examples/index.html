@@ -220,13 +220,16 @@ map2d.showMarker(
         <div class='description' id='desc3'>
         <h2>Example with overlay, layermanager and bgSelector</h2>
         This is a basic example with overlay-layers, 
-        a layer manager in a div and a bgSelector in a div
+        a layer manager in a div and a bgSelector in a div.
+        The layer visibility can be set with layerVisibilities parameter.
+        If not set, ech layer is visible.
         <pre>
 var map3 = new lux.Map({
   target: 'map3',
   bgLayer: 'streets_jpeg',
   layers: [ '149','386','512' ],
   layerOpacities: [0.6,0.8,0.8],
+  layerVisibilities: [true,true,false],
   layerManager: {
     target: 'layerManager3'
   },
@@ -843,6 +846,7 @@ var map3 = new lux.Map({
   bgLayer     : 'streets_jpeg',
   layers      : [ '149','386','512' ],
   layerOpacities: [0.6,0.8, 0.8],
+  layerVisibilities: [true,true,false],
   layerManager: {
     target: 'layerManager3'
   },
