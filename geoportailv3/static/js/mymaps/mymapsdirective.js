@@ -80,7 +80,6 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
     appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
-
   /**
    * @type {angular.$sce}
    * @private
@@ -352,6 +351,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
       this.importGpx();
     }
   }, this));
+
 };
 
 
@@ -1205,13 +1205,15 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
  * @param {ol.Feature} feature The Feature.
  * @export
  */
-app.MymapsDirectiveController.prototype.selectFeature = function(feature) {
+app.MymapsDirectiveController.prototype.toggleFeatureSelection = function(feature) {
   if (this.selectedFeaturesList.indexOf(feature) === -1) {
     this.selectedFeatures_.clear();
     this.selectedFeatures_.push(feature);
     if (!this.isDocked()) {
       this.appFeaturePopup_.show(feature, this.map_);
     }
+  } else {
+    this.selectedFeatures_.clear();
   }
 };
 
@@ -1279,6 +1281,17 @@ app.MymapsDirectiveController.prototype.fit = function(extent) {
   this.map_.getView().fit(extent, {
     size: viewSize
   });
+};
+
+
+/**
+ * Update the map and save the new feature order.
+ * @param {angular.JQLite} feature The feature.
+ * @param {Array} array The array.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.afterReorder = function(feature, array) {
+  this.drawnFeatures_.computeOrder();
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);

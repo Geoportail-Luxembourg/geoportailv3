@@ -333,7 +333,7 @@ class Mymaps(object):
             return HTTPNotFound()
 
         features = DBSession.query(Feature).filter(
-            Feature.map_id == map.uuid).all()
+            Feature.map_id == map.uuid).order_by(Feature.display_order).all()
         if 'cb' in self.request.params:
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
             return Response("%s(%s);"
@@ -545,6 +545,32 @@ class Mymaps(object):
             log.exception(e)
             DBSession.rollback()
             return {'success': False}
+
+    @view_config(route_name="mymaps_save_order", renderer='json')
+    def save_order(self):
+        map_id = self.request.matchdict.get("map_id")
+        map = DBSession.query(Map).get(map_id)
+        if map is None:
+            return HTTPNotFound()
+
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
+        if 'orders' not in self.request.params:
+            return HTTPBadRequest("Orders param is not available")
+        orders = json.loads(self.request.params.get('orders'))
+        for order in orders:
+            feature_id = order['fid']
+            display_order = order['display_order']
+            try:
+                cur_feature = DBSession.query(Feature).get(feature_id)
+                cur_feature.display_order = display_order
+                DBSession.commit()
+            except Exception as e:
+                log.exception(e)
+                DBSession.rollback()
+                return {'success': False}
+        return {'success': True}
 
     @view_config(route_name="mymaps_delete_feature", renderer='json')
     def delete_feature(self):
