@@ -249,6 +249,20 @@ def main(global_config, **settings):
     # layer search routes
     config.add_route("layersearch", "/layersearch")
 
+    # jsapi routes
+    config.add_route(
+        'jsapiloader',
+        '/apiv3loader.js'
+    )
+    config.add_route(
+        'jsapiexample',
+        '/api-example'
+    )
+    config.add_route(
+        'jsapilayers',
+        '/jsapilayers'
+    )
+
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 

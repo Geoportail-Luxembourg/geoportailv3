@@ -1,0 +1,8 @@
+<% import numbers %>
+% for attr in feature['attributes']:
+  % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], basestring) and feature['attributes'][attr] != '':
+      <label>${_t('f_' + attr)}</label>
+      <span>${feature['attributes'][attr]}</span>
+    <br>
+  % endif
+% endfor

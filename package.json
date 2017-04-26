@@ -25,7 +25,12 @@
     "floatthead": "1.4.2",
     "font-awesome": "4.6.3",
     "fs-extra": "0.30.0",
+    "fuse": "git+https://github.com/petzlux/Fuse#master",
+    "gaze": "1.0.0",
     "jquery": "2.2.4",
+    "js-autocomplete": "^1.0.3",
+    "jsdoc": "^3.4.3",
+    "jsdom": "^9.9.1",
     "less": "2.7.1",
     "less-plugin-autoprefix": "1.5.1",
     "less-plugin-clean-css": "1.5.1",
@@ -33,11 +38,14 @@
     "nomnom": "1.8.1",
     "openlayers": "4.1.0",
     "proj4": "2.4.3",
+	"phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
     "corejs-typeahead": "1.1.1",
     "temp": "0.8.3",
     "walk": "2.3.9",
     "d3": "4.7.4",
-    "fuse": "git+https://github.com/petzlux/Fuse#master"
+    "fuse": "git+https://github.com/petzlux/Fuse#master",
+    "whatwg-fetch": "1.0.0",
+	"promise-polyfill": "5.2.1"
   }
 }
