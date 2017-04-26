@@ -1396,6 +1396,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
     source: new ol.source.WMTS({
       crossOrigin: 'anonymous',
       url: url,
+      tilePixelRatio: (retina ? 2 : 1),
       layer: config['name'],
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
       format: format,
