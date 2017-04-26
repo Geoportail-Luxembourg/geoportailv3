@@ -183,10 +183,9 @@ lux.MyMap.prototype.loadFeatures_ = function() {
       layers: [vector]
     });
     this.map_.addInteraction(this.selectInteraction_);
-
     ol.events.listen(
-      vector,
-      ol.CollectionEventType.ADD,
+      this.selectInteraction_,
+      'select',
       this.onFeatureSelected_, this);
   }.bind(this));
 };
