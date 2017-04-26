@@ -124,12 +124,18 @@ class Feature(Base):
     opacity = Column(Float, default=0.5)
     shape = Column(Unicode(255))
     last_modified_by = Column(Unicode(50))
+    display_order = Column(Integer, default=0)
 
     def __init__(self, feature=None):
         if feature:
             self.__update__(feature)
 
     def __update__(self, feature):
+        try:
+            order = feature.properties.get('display_order')
+            self.display_order = order
+        except:
+            self.display_order = 0
         self.name = feature.properties.get('name')
         self.description = feature.properties.get('description')
         self.thumbnail = feature.properties.get('thumbnail')
@@ -240,7 +246,9 @@ class Feature(Base):
                           if self.font_size is not None else 15,
                           opacity=self.opacity
                           if self.opacity is not None else 0.5,
-                          shape=self.shape
+                          shape=self.shape,
+                          display_order=self.display_order
+                          if self.display_order is not None else 0,
                           )
         return geojson.Feature(id=self.id,
                                geometry=geometry,

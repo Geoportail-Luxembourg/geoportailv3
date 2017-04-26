@@ -60,17 +60,15 @@
       </ul>
     </li>
   </ul>
-
-  <ul class="features list-unstyled">
+ <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
     <li ng-repeat="(key, feature) in ctrl.getMymapsFeatures()" class="feature"
         id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <div ng-click="ctrl.selectFeature(feature)">
-        <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
-        <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
-        <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
-        <span class="feature"
-          ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
-      </div>
+      <span ng-hide="!ctrl.isEditable()" class="sortable-handle fa fa-reorder"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+      <span class="feature" ng-click="ctrl.toggleFeatureSelection(feature)"
+        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
       <!-- Information about selected features-->
       <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
         <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
@@ -98,16 +96,16 @@
     </ul>
   </div>
 
-  <ul class="features list-unstyled">
+  <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
     <li ng-repeat="(key, feature) in ctrl.getAnonymousFeatures()" class="feature"
         id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <div ng-click="ctrl.selectFeature(feature)">
-        <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
-        <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
-        <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
-        <span class="feature"
-          ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
-      </div>
+      <span class="sortable-handle fa fa-reorder"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+
+      <span class="feature" ng-click="ctrl.toggleFeatureSelection(feature)"
+        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
       <!-- Information about selected features-->
       <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
         <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>

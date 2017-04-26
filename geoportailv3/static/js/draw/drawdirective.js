@@ -26,7 +26,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('ngeo.DecorateInteraction');
-goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
@@ -73,8 +72,6 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
@@ -90,9 +87,9 @@ app.module.directive('appDraw', app.drawDirective);
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
-    ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify,
-    $anchorScroll, appActivetool, appGetDevice) {
+    appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
+    appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
+    appActivetool, appGetDevice) {
   /**
    * @private
    * @type {app.GetDevice}
@@ -441,9 +438,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.onFeatureModifyEnd_(evt);
       }, this);
 
-  var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
-
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 
   ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
@@ -718,8 +712,9 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       name = feature.getGeometry().getType();
       break;
   }
+  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
   feature.set('name', name + ' ' +
-      (this.drawnFeatures_.getCollection().getLength() + 1));
+      (nbFeatures + 1));
   feature.set('description', '');
   feature.set('__editable__', true);
   feature.set('color', '#ed1c24');
@@ -731,7 +726,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('shape', 'circle');
   feature.set('isLabel', this.drawLabel.getActive());
   feature.setStyle(this.featureStyleFunction_);
-
+  feature.set('display_order', nbFeatures);
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {

@@ -196,6 +196,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSaveFeatureOrderUrl_ = mymapsUrl + '/save_order/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsSaveFeaturesUrl_ = mymapsUrl + '/save_features/';
 
   /**
@@ -1041,6 +1047,48 @@ app.Mymaps.prototype.updateMapEnv =
 
 
 /**
+ * Save features order into a map.
+ * @param {Array<ol.Feature>} features The feature to save
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.saveFeaturesOrder = function(features) {
+
+  var orders = [];
+  goog.array.forEach(features, function(feature) {
+    orders.push({'fid': feature.get('fid'),
+      'display_order': feature.get('display_order')});
+  }, this);
+
+  var req = $.param({
+    'orders': JSON.stringify(orders)
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsSaveFeatureOrderUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettextCatalog.getString(
+            'Erreur inattendue lors de la sauvegarde de votre modification.');
+        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
  * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
  * @return {angular.$q.Promise} Promise.
@@ -1185,7 +1233,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (this.get('__editable__') && this.get('__selected__')) {
       styles.push(vertexStyle);
     }
-
+    var order = this.get('display_order');
+    if (order === undefined) {
+      order = 0;
+    }
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
     var rgbColor = goog.color.hexToRgb(color);
@@ -1220,6 +1271,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
+            zIndex: order,
             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
               rotation: Math.PI / 2 - Math.atan2(dy, dx),
               src: coloredArrowUrl
@@ -1341,7 +1393,8 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       styles.push(new ol.style.Style({
         image: image,
         fill: fillStyle,
-        stroke: stroke
+        stroke: stroke,
+        zIndex: order
       }));
     }
 
