@@ -190,10 +190,12 @@ app.module.factory('appGetWmsLayer', app.getWmsLayer_);
  * @param {app.GetWmtsLayer} appGetWmtsLayer The getWmtsLayer function.
  * @param {app.GetWmsLayer} appGetWmsLayer The getWmsLayer function.
  * @return {app.GetLayerForCatalogNode} The getLayerForCatalogNode function.
+ * @param {app.GetDevice} appGetDevice The device service.
  * @private
  * @ngInject
  */
-app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
+app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
+    appGetDevice) {
   return getLayerForCatalogNode;
 
   /**
@@ -219,9 +221,9 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer) {
     } else if (type == 'WMTS') {
       goog.asserts.assert('name' in node);
       goog.asserts.assert('imageType' in node);
-      var retina = (goog.isBoolean(node['metadata']['hasRetina']) ?
-           node['metadata']['hasRetina'] : false);
-      layer = appGetWmtsLayer(node['name'], node['imageType'], retina);
+      var hasRetina = (node['metadata']['hasRetina'] === 'true' &&
+        appGetDevice.isHiDpi());
+      layer = appGetWmtsLayer(node['name'], node['imageType'], hasRetina);
     } else {
       return null;
     }
