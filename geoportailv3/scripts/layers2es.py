@@ -29,6 +29,10 @@
 # policies, either expressed or implied, of the FreeBSD Project.
 
 
+# The default command to import just layers is:
+# layers2es --interfaces desktop mobile --no-folders --no-blocks --no-themes \
+# --recreate-index --app-config development.ini
+
 import sys
 import yaml
 import requests
@@ -231,10 +235,13 @@ class Import:
                             resp = requests.get(url=self.metadata_service_url,
                                                 params=params)
                             data = json.loads(resp.text)
-                            fts['keywords'] = data['root'][0]['keywords']
-                            fts['description'] = \
-                                data['root'][0]['description']
-                            fts['metadata_name'] = data['root'][0]['name']
+                            try:
+                                fts['keywords'] = data['root'][0]['keywords']
+                                fts['description'] = \
+                                    data['root'][0]['description']
+                                fts['metadata_name'] = data['root'][0]['name']
+                            except KeyError as e:
+                                statuslog("\n %s" % e)
                         except requests.exceptions.RequestException as e:
                             statuslog("\n %s" % e)
                             sys.exit(1)

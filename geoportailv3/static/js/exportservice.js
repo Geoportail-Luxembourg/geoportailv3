@@ -5,10 +5,11 @@
 goog.provide('app.Export');
 
 goog.require('app');
+goog.require('goog.array');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
-goog.require('ol.proj');
+goog.require('ol.geom.MultiLineString');
 
 
 /**

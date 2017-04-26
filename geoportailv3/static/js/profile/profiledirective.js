@@ -22,10 +22,12 @@ goog.require('ngeo');
 goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.profileDirective');
+goog.require('ol.events');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.Overlay');
 goog.require('ol.geom.GeometryLayout');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -189,7 +191,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEvent.EventType.POINTERMOVE,
+  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -314,7 +316,7 @@ app.ProfileController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'tooltip-measure']);
+      ['tooltip', 'ngeo-tooltip-measure']);
   this.measureTooltip_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
@@ -410,7 +412,7 @@ app.ProfileController.prototype.exportCSV = function() {
           (item['values']['dhm']) + ',' +
           item['x'] + ',' +
           item['y'] + '\n';
-  },this));
+  }, this));
 
   var csvInput = $('<input>').attr({
     type: 'hidden',

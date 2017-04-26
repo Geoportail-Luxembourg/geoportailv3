@@ -10,16 +10,16 @@
             <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['value']}}</a>
         </span>
       </div>
-      <div class='query-profile' ng-show="feature.attributes.showProfile.active">
+      <div class='query-profile no-print' ng-show="feature.attributes.showProfile.active">
         <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
       </div>
-      <div ng-show="feature.attributes.showProfile.active">
+      <div class="no-print" ng-show="feature.attributes.showProfile.active">
         <a class="btn btn-default"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
       </div>
       <div ng-if="!ctrl.hasAttributes(feature)">
         <span translate>Aucune information disponible pour cette couche</span>
       </div>
-      <div ng-if="ctrl.hasValidFID(feature)">
+      <div class="no-print" ng-if="ctrl.hasValidFID(feature)">
         <span><a class="fid-link" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
       </div>
     </div>

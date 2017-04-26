@@ -21,22 +21,22 @@ goog.require('app.Notify');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
+goog.require('goog.asserts');
+goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.FeatureOverlay');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.SyncArrays');
+goog.require('ol.events');
 goog.require('ol.Map');
+goog.require('ol.Object');
 goog.require('ol.View');
+goog.require('ol.control.Attribution');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
-goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.OSM');
-goog.require('ol.source.WMTS');
-goog.require('ol.tilegrid.WMTS');
 
 
 /**
@@ -325,9 +325,9 @@ app.MainController = function(
                 }));
               this.map_.addControl(
                 new ol.control.OverviewMap(
-                  {layers:[layer],
-                  collapseLabel: '\u00BB',
-                  label: '\u00AB'}));
+                  {layers: [layer],
+                    collapseLabel: '\u00BB',
+                    label: '\u00AB'}));
             }
           }.bind(this));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
@@ -408,8 +408,11 @@ app.MainController.prototype.addLocationControl_ =
  * @private
  */
 app.MainController.prototype.setMap_ = function() {
-  var interactions = ol.interaction.defaults(
-      {altShiftDragRotate:false, pinchRotate:false});
+  var interactions = ol.interaction.defaults({
+    altShiftDragRotate: false,
+    pinchRotate: false,
+    constrainResolution: true
+  });
   this.map_ = this['map'] = new ol.Map({
     logo: false,
     controls: [
@@ -421,6 +424,7 @@ app.MainController.prototype.setMap_ = function() {
         collapsed: false, className: 'geoportailv3-attribution'})
     ],
     interactions: interactions,
+    keyboardEventTarget: document,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new ol.View({
@@ -493,7 +497,7 @@ app.MainController.prototype.manageSelectedLayers_ =
             var piwik = /** @type {Piwik} */ (this.window_['_paq']);
             piwik.push(['setDocumentTitle',
               'LayersAdded/' + layer.get('label')
-              ]);
+            ]);
             piwik.push(['trackPageView']);
           }
         }
@@ -537,7 +541,9 @@ app.MainController.prototype.sidebarOpen = function() {
  * @export
  */
 app.MainController.prototype.switchLanguage = function(lang, track) {
-  if (!goog.isBoolean(track)) track = true;
+  if (!goog.isBoolean(track)) {
+    track = true;
+  }
   goog.asserts.assert(lang in this.langUrls_);
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
@@ -545,7 +551,9 @@ app.MainController.prototype.switchLanguage = function(lang, track) {
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setCustomVariable', 1, 'Language', this['lang']]);
-  if (track) piwik.push(['trackPageView']);
+  if (track) {
+    piwik.push(['trackPageView']);
+  }
 };
 
 
@@ -602,11 +610,9 @@ app.MainController.prototype.initMymaps_ = function() {
 
             if (!goog.isDef(x) && !goog.isDef(y) &&
                 this.drawnFeatures_.getCollection().getLength() > 0) {
-              var viewSize = /** @type {ol.Size} */ (this.map_.getSize());
-              this.map_.getView().fit(
-                  this.drawnFeatures_.getExtent(),
-                  viewSize
-              );
+              this.map_.getView().fit(this.drawnFeatures_.getExtent(), {
+                size: /** @type {ol.Size} */ (this.map_.getSize())
+              });
             }
           }.bind(this));
   } else {
@@ -617,7 +623,7 @@ app.MainController.prototype.initMymaps_ = function() {
   ol.events.listen(this.map_.getLayerGroup(), 'change',
       goog.bind(function() {
         this.compareLayers_();
-      },this), this);
+      }, this), this);
 };
 
 

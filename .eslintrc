@@ -4,8 +4,7 @@
     "jquery": true
   },
   "rules": {
-    "no-console": 0,
-    "semi": 2
+    "no-console": 0
   },
   "globals": {
     "angular": false,
@@ -17,6 +16,9 @@
     "ngeo": false,
     "gmf": false,
     "app": false,
-    "Fuse": false
+    "Fuse": false,
+    "lux": false,
+	"autoComplete": false,
+	"Promise": true
   }
 }

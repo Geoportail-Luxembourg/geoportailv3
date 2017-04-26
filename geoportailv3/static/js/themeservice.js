@@ -5,6 +5,7 @@ goog.provide('app.Theme');
 
 goog.require('app.Themes');
 goog.require('ngeo.Location');
+goog.require('goog.asserts');
 
 
 /**
@@ -26,13 +27,13 @@ app.Theme = function($window, ngeoLocation, appThemes) {
     'tourisme': 7,
     'emwelt': 8,
     'agriculture': 9,
-    'pro': 10,
+    'prof': 10,
     'go': 11,
     'm': 12,
     'at': 16,
     'map': 18,
     'main': 18,
-    'pag' : 19
+    'pag': 19
   };
 
   /**
@@ -73,7 +74,7 @@ app.Theme.prototype.setCurrentTheme = function(themeId) {
   }
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setSiteId', piwikSiteId]);
-  piwik.push(['setDocumentTitle',themeId]);
+  piwik.push(['setDocumentTitle', themeId]);
   piwik.push(['trackPageView']);
 
   this.setLocationPath_(this.currentTheme_);

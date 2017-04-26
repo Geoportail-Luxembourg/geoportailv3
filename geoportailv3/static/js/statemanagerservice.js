@@ -35,7 +35,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
 
   /**
    * Object representing the application's initial state.
-   * @type {Object.<string ,string>}
+   * @type {!Object.<string ,string>}
    * @private
    */
   this.initialState_ = {};
@@ -162,7 +162,7 @@ app.StateManager.prototype.getValueFromLocalStorage = function(key) {
 
 /**
  * Update the application state with the values in `object`.
- * @param {Object.<string, string>} object Object.
+ * @param {!Object.<string, string>} object Object.
  */
 app.StateManager.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
@@ -177,7 +177,7 @@ app.StateManager.prototype.updateState = function(object) {
 
 /**
  * Update the application storage with the values in `object`.
- * @param {Object.<string, string>} object Object.
+ * @param {!Object.<string, string>} object Object.
  */
 app.StateManager.prototype.updateStorage = function(object) {
   if (this.localStorage_.isAvailable()) {

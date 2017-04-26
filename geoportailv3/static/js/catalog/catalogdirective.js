@@ -21,8 +21,12 @@ goog.require('app.GetLayerForCatalogNode');
 goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
+goog.require('goog.asserts');
+goog.require('goog.string');
 goog.require('ngeo.layertreeDirective');
 goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.View');
 
 
 /**

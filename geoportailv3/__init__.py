@@ -189,6 +189,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "mymaps_save_order",
+        "/mymaps/save_order/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
         "mymaps_copy",
         "/mymaps/copy/{map_id}",
         request_method="POST"
@@ -197,6 +202,10 @@ def main(global_config, **settings):
         "exportgpxkml",
         "/mymaps/exportgpxkml",
         request_method="POST"
+    )
+    config.add_route(
+        "get_arrow_color",
+        "/mymaps/getarrow"
     )
     # geocoder routes
     config.add_route(
@@ -239,6 +248,20 @@ def main(global_config, **settings):
 
     # layer search routes
     config.add_route("layersearch", "/layersearch")
+
+    # jsapi routes
+    config.add_route(
+        'jsapiloader',
+        '/apiv3loader.js'
+    )
+    config.add_route(
+        'jsapiexample',
+        '/api-example'
+    )
+    config.add_route(
+        'jsapilayers',
+        '/jsapilayers'
+    )
 
     config.include('c2cgeoportal')
     config.include('pyramid_closure')

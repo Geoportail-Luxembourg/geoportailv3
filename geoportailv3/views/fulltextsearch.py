@@ -40,79 +40,74 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
-                        "bool": {
-                            "minimum_should_match": 2,
-                            "should": [
-                                {
-                                    "multi_match": {
-                                        "type": "best_fields",
-                                        "fields": [
-                                            "label^2",
-                                            "label.ngram^2",
-                                            "label.simplified^2"
-                                        ],
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                },
-                                {
-                                    "multi_match": {
-                                        "type": "best_fields",
-                                        "fields": [
-                                            "label",
-                                            "label.ngram",
-                                            "label.simplified"
-                                        ],
-                                        "fuzziness": 1,
-                                        "operator": "and",
-                                        "query": query
-                                    }
-                                },
-                                {
-                                    "term": {
-                                        "layer_name": {
-                                            "value": "Commune", "boost": 2
-                                        }
-                                    }
-                                },
-                                {
-                                    "term": {
-                                        "layer_name": {
-                                            "value": "Localité", "boost": 1.7
-                                        }
-                                    }
-                                },
-                                {
-                                    "term": {
-                                        "layer_name": {
-                                            "value": "lieu_dit", "boost": 1.5
-                                        }
-                                    }
-                                },
-                                {
-                                    "wildcard": {
-                                        "layer_name": {
-                                            "value": "editus_poi*",
-                                            "boost": -1.5
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
+                "bool": {
                     "filter": {
                         "bool": {
                             "must": [],
                             "should": [],
                             "must_not": [],
                         }
-                    }
+                    },
+                    "minimum_should_match": 2,
+                    "should": [
+                        {
+                            "multi_match": {
+                                "type": "best_fields",
+                                "fields": [
+                                    "label^2",
+                                    "label.ngram^2",
+                                    "label.simplified^2"
+                                ],
+                                "operator": "and",
+                                "query": query
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "type": "best_fields",
+                                "fields": [
+                                    "label.ngram",
+                                    "label.simplified"
+                                ],
+                                "fuzziness": 1,
+                                "operator": "and",
+                                "query": query
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Commune", "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Localité", "boost": 1.7
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "lieu_dit", "boost": 1.5
+                                }
+                            }
+                        },
+                        {
+                            "wildcard": {
+                                "layer_name": {
+                                    "value": "editus_poi*",
+                                    "boost": -1.5
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "poi"}})
 
@@ -176,24 +171,7 @@ class FullTextSearchView(object):
 
         query_body = {
             "query": {
-                "filtered": {
-                    "query": {
-                        "multi_match": {
-                            "type": "most_fields",
-                            "fields": [
-                                "name_translated.simplified^10",
-                                "name_translated.ngram^5",
-                                "metadata_name.simplified",
-                                "metadata_name.ngram",
-                                "keywords.simplified",
-                                "keywords.ngram",
-                                "description.simplified",
-                            ],
-                            "fuzziness": "auto",
-                            "operator": "and",
-                            "query": query
-                        }
-                    },
+                "bool": {
                     "filter": {
                         "bool": {
                             "must": [],
@@ -201,10 +179,25 @@ class FullTextSearchView(object):
                             "must_not": [],
                         }
                     },
+                    "must": {
+                        "multi_match": {
+                            "type": "cross_fields",
+                            "fields": [
+                                "name_translated.simplified^2",
+                                "name_translated.ngram",
+                                "metadata_name.simplified^2",
+                                "metadata_name.ngram",
+                                "keywords",
+                                "description",
+                            ],
+                            "operator": "and",
+                            "query": query
+                        }
+                    },
                 }
             }
         }
-        filters = query_body['query']['filtered']['filter']['bool']
+        filters = query_body['query']['bool']['filter']['bool']
 
         filters['must'].append({"type": {"value": "layer"}})
 

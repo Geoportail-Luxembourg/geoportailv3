@@ -1,0 +1,26 @@
+<div id="map" style="height: 400px"></div>
+<div id="layerManager"></div>
+
+<script src="/apiv3loader.js"></script>
+<script>
+var map = new lux.Map({
+  target: 'map',
+  bgLayer     : 653,
+  layers      : [ 145, 'buildings' ],
+  zoom: 14,
+  layerManager: {
+    target: 'layerManager'
+  },
+  bgSelector  : {
+    target: 'map'
+  },
+  zoom: 14
+});
+map.on('click', function(evt) {
+  var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
+  lux.reverseGeocode(coordinate, function(address) {
+    var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
+    console.log (html);
+  });
+});
+</script>

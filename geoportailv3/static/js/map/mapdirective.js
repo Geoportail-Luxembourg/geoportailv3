@@ -84,8 +84,8 @@ app.MapController = function(appStateManager, ngeoDebounce) {
   app.MapController.updateState_(appStateManager, view);
   var updateStateFunc = ngeoDebounce(
       /**
-           * @param {ol.ObjectEvent} e Object event.
-           */
+       * @param {ol.Object.Event} e Object event.
+       */
       function(e) {
         app.MapController.updateState_(appStateManager, view);
       }, 300, /* invokeApply */ true);

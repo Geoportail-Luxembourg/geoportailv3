@@ -1,9 +1,14 @@
 language: python
 
+dist: trusty
+
 python:
 - 2.7
 
 sudo: false
+
+before_install:
+  - nvm install node
 
 install:
 - createdb -E UTF8 -T template0 template_postgis -U postgres

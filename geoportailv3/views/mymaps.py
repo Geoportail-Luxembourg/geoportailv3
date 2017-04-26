@@ -20,6 +20,7 @@ from pyramid_ldap import get_ldap_connector
 from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
+from cStringIO import StringIO
 from geoportailv3.mymaps import DBSession
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
@@ -41,6 +42,38 @@ class Mymaps(object):
     def __init__(self, request):
         self.request = request
         self.config = self.request.registry.settings
+
+    @view_config(route_name="get_arrow_color")
+    def get_arrow_color(self):
+        color = self.request.params.get("color")
+        if color is None or len(color) == 0:
+            color = "ffffff"
+        color = color.replace("#", "")
+
+        dir = "/tmp/arrows"
+        if not os.path.exists(dir):
+            os.mkdir(dir)
+        temp_file_path = dir + "/" + color + ".png"
+        # If the colored arrow does not exist then
+        # gets the default one, colorizes it and saves it
+        if not os.path.exists(temp_file_path):
+            url = self.request.static_url(
+                'geoportailv3:static/images/arrow.png')
+            orig_arrow = urllib2.urlopen(url, None, 15)
+            content = orig_arrow.read()
+            image = Image.open(StringIO(content))
+
+            pixdata = image.load()
+            for y in xrange(image.size[1]):
+                for x in xrange(image.size[0]):
+                    if pixdata[x, y] == (255, 255, 255, 255):
+                        pixdata[x, y] =\
+                            tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
+            image.save(temp_file_path)
+
+        f = open(temp_file_path, "r")
+
+        return Response(f.read(), headers={'Content-Type': 'image/png'})
 
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):
@@ -300,7 +333,7 @@ class Mymaps(object):
             return HTTPNotFound()
 
         features = DBSession.query(Feature).filter(
-            Feature.map_id == map.uuid).all()
+            Feature.map_id == map.uuid).order_by(Feature.display_order).all()
         if 'cb' in self.request.params:
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
             return Response("%s(%s);"
@@ -458,6 +491,7 @@ class Mymaps(object):
             feature_id = feature.properties.get('fid')
 
             obj = Feature(feature)
+            obj.last_modified_by = self.request.user.username
 
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
@@ -496,6 +530,7 @@ class Mymaps(object):
             for feature in feature_collection['features']:
                 feature_id = feature.properties.get('fid')
                 obj = Feature(feature)
+                obj.last_modified_by = self.request.user.username
                 if feature_id:
                     cur_feature = DBSession.query(Feature).get(feature_id)
                     DBSession.delete(cur_feature)
@@ -510,6 +545,32 @@ class Mymaps(object):
             log.exception(e)
             DBSession.rollback()
             return {'success': False}
+
+    @view_config(route_name="mymaps_save_order", renderer='json')
+    def save_order(self):
+        map_id = self.request.matchdict.get("map_id")
+        map = DBSession.query(Map).get(map_id)
+        if map is None:
+            return HTTPNotFound()
+
+        if not self.has_permission(self.request.user, map):
+            return HTTPUnauthorized()
+
+        if 'orders' not in self.request.params:
+            return HTTPBadRequest("Orders param is not available")
+        orders = json.loads(self.request.params.get('orders'))
+        for order in orders:
+            feature_id = order['fid']
+            display_order = order['display_order']
+            try:
+                cur_feature = DBSession.query(Feature).get(feature_id)
+                cur_feature.display_order = display_order
+                DBSession.commit()
+            except Exception as e:
+                log.exception(e)
+                DBSession.rollback()
+                return {'success': False}
+        return {'success': True}
 
     @view_config(route_name="mymaps_delete_feature", renderer='json')
     def delete_feature(self):
@@ -823,6 +884,10 @@ class Mymaps(object):
     @view_config(route_name="mymaps_get_symbol")
     def get_symbol(self):
         id = self.request.matchdict.get("symbol_id")
+        scale = self.request.params.get("scale")
+        if scale is None:
+            scale = 100
+
         try:
             symbol = DBSession.query(Symbols).\
                 filter(Symbols.id == id).one()
@@ -831,20 +896,35 @@ class Mymaps(object):
                        'Content-Disposition': 'filename=\"%s\";'
                        % (str(symbol.symbol_name))
                        }
-
+            format = ""
             if symbol.symbol_name.lower().endswith(".jpg"):
                 headers = {'Content-Type': 'image/jpeg'}
+                format = "PNG"
             if symbol.symbol_name.lower().endswith(".jpeg"):
                 headers = {'Content-Type': 'image/jpeg'}
+                format = "JPEG"
             if symbol.symbol_name.lower().endswith(".gif"):
                 headers = {'Content-Type': 'image/gif'}
+                format = "GIF"
             if symbol.symbol_name.lower().endswith(".png"):
                 headers = {'Content-Type': 'image/png'}
-            return Response(symbol.symbol, headers=headers)
+                format = "PNG"
+            if scale != 100:
+                from PIL import Image
+                import io
+                image = Image.open(io.BytesIO(symbol.symbol))
+                img_byte_arr = io.BytesIO()
 
-        except:
+                thumbnail = image.resize(
+                    (image.size[0] * int(scale)/100,
+                     image.size[1] * int(scale)/100))
+                thumbnail.save(img_byte_arr, format=format)
+                return Response(img_byte_arr.getvalue(), headers=headers)
+            return Response(symbol.symbol, headers=headers)
+        except Exception as e:
+            log.exception(e)
+
             from PIL import Image, ImageDraw
-            from cStringIO import StringIO
 
             img = Image.new('RGBA', (40, 40))
             ImageDraw.Draw(img)
@@ -936,8 +1016,8 @@ class Mymaps(object):
         output_file.close()
 
         im1 = Image.open(temp_file_path)
-        scaled_width = 40
-        scaled_height = 40
+        scaled_width = 900
+        scaled_height = 900
 
         cur_file = Symbols()
 

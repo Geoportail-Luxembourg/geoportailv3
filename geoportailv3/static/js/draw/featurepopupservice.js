@@ -9,12 +9,13 @@ goog.require('app.GetProfile');
 goog.require('app.featurePopupDirective');
 goog.require('app.styleEditingDirective');
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('ol.coordinate');
-goog.require('ol.MapProperty');
+goog.require('goog.array');
 goog.require('ol.Overlay');
+goog.require('ol.Observable');
 goog.require('ol.events');
+goog.require('ol.geom.LineString');
 goog.require('ngeo.filters');
+goog.require('ngeo.interaction.Measure');
 
 
 /**
@@ -140,18 +141,18 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
           'transition': 'transform .3s'});
         if (goog.isNull(this.mousemoveEvent_)) {
           this.mousemoveEvent_ = ol.events.listen(this.map,
-              ol.MapBrowserEvent.EventType.POINTERMOVE, goog.bind(function(e) {
+              ol.MapBrowserEventType.POINTERMOVE, goog.bind(function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
                   this.startingDragPoint_ = e.coordinate;
                 }
                 var currentDragPoint = e.coordinate;
                 this.overlay_.setPosition(
-                    [this.startingAnchorPoint_[0] + currentDragPoint[0] -
+                  [this.startingAnchorPoint_[0] + currentDragPoint[0] -
                      this.startingDragPoint_[0],
-                     this.startingAnchorPoint_[1] + currentDragPoint[1] -
+                    this.startingAnchorPoint_[1] + currentDragPoint[1] -
                      this.startingDragPoint_[1]]);
-              },this));
+              }, this));
         }
         ol.events.listenOnce(this.$document_[0],
             'mouseup', goog.bind(function() {
@@ -163,8 +164,8 @@ app.FeaturePopup.prototype.setDraggable = function(element) {
                 ol.Observable.unByKey(this.mousemoveEvent_);
               }
               this.mousemoveEvent_ = null;
-            },this));
-      },this), this);
+            }, this));
+      }, this), this);
 };
 
 
@@ -201,10 +202,9 @@ app.FeaturePopup.prototype.toggleDropdown = function() {
 app.FeaturePopup.prototype.fit = function(feature) {
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
   goog.asserts.assert(goog.isDef(viewSize));
-  this.map.getView().fit(
-      feature.getGeometry().getExtent(),
-      viewSize
-  );
+  this.map.getView().fit(feature.getGeometry().getExtent(), {
+    size: viewSize
+  });
 };
 
 
@@ -254,7 +254,7 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };
@@ -268,7 +268,7 @@ app.FeaturePopup.prototype.formatRadius = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       line,
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };
@@ -284,7 +284,7 @@ app.FeaturePopup.prototype.formatLength = function(line) {
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
       this.map.getView().getProjection(),
-      null,
+      undefined,
       this.format_
   );
 };

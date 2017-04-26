@@ -10,6 +10,8 @@ goog.require('app');
 goog.require('app.BlankLayer');
 goog.require('app.GetWmtsLayer');
 goog.require('goog.asserts');
+goog.require('goog.object');
+goog.require('goog.array');
 goog.require('ol.events.EventTarget');
 
 
@@ -54,7 +56,7 @@ app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
    * @type {boolean}
    * @private
    */
-  this.isRetina_ = appGetDevice.isHiDpi();
+  this.isHiDpi_ = appGetDevice.isHiDpi();
 
   /**
    * @type {app.GetWmtsLayer}
@@ -129,10 +131,11 @@ app.Themes.prototype.getBgLayers = function() {
        */
       function(data) {
         var bgLayers = data['background_layers'].map(goog.bind(function(item) {
+          var hasRetina = item['metadata']['hasRetina'] === 'true' && this.isHiDpi_;
           goog.asserts.assert('name' in item);
           goog.asserts.assert('imageType' in item);
           var layer = this.getWmtsLayer_(
-            item['name'], item['imageType'], this.isRetina_
+            item['name'], item['imageType'], hasRetina
           );
           layer.set('metadata', item['metadata']);
 
@@ -262,7 +265,7 @@ app.Themes.prototype.getFlatCatalog = function() {
           );
         }
         return flatCatalogue;
-      },this));
+      }, this));
 };
 
 app.module.service('appThemes', app.Themes);

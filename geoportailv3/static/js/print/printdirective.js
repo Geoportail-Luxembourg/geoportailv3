@@ -24,13 +24,12 @@ goog.require('ngeo.CreatePrint');
 goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ngeo.Print');
 goog.require('ngeo.PrintUtils');
-goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events');
+goog.require('ol.Observable');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
 
 
 /**
@@ -44,6 +43,7 @@ app.printDirective = function(appPrintTemplateUrl) {
     scope: {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
+      'infoOpen': '=appPrintInfoOpen',
       'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
@@ -80,6 +80,7 @@ app.Piwik;
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @constructor
  * @export
  * @ngInject
@@ -87,7 +88,14 @@ app.Piwik;
 app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
-    printServiceUrl, qrServiceUrl, appSelectedFeatures) {
+    printServiceUrl, qrServiceUrl, appSelectedFeatures,
+    ngeoBackgroundLayerMgr) {
+
+  /**
+   * @type {ngeo.BackgroundLayerMgr}
+   * @private
+   */
+  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -236,6 +244,11 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
   this['open'] = undefined;
 
   /**
+   * @type {boolean|undefined}
+   */
+  this['infoOpen'] = undefined;
+
+  /**
    * @type {string|undefined}
    */
   this['title'] = '';
@@ -372,7 +385,7 @@ app.PrintController.getViewCenterResolution_ = function(view) {
   goog.asserts.assert(goog.isDef(viewCenter));
   goog.asserts.assert(!goog.isNull(viewProjection));
   goog.asserts.assert(goog.isDef(viewResolution));
-  return viewProjection.getPointResolution(viewResolution, viewCenter);
+  return ol.proj.getPointResolution(viewProjection, viewResolution, viewCenter);
 };
 
 
@@ -478,12 +491,11 @@ app.PrintController.prototype.changeScale = function(newScale) {
   if (currentResolution < optimalResolution) {
     var newResolution = view.constrainResolution(optimalResolution, 0, 1);
     goog.asserts.assert(newResolution >= optimalResolution);
-    map.beforeRender(ol.animation.zoom({
+    view.animate({
       duration: 250,
       easing: ol.easing.easeOut,
       resolution: currentResolution
-    }));
-    view.setResolution(newResolution);
+    });
   }
 
   map.render();
@@ -503,6 +515,15 @@ app.PrintController.prototype.print = function(format) {
   var layout = this['layout'];
   var curFormat = format;
   var legend = [];
+
+  var bgLayer = this.backgroundLayerMgr_.get(this.map_);
+  var bgMetadata = bgLayer.get('metadata');
+  if (goog.isDef(bgMetadata)) {
+    var bgName = bgMetadata['legend_name'];
+    if (goog.isDef(bgName)) {
+      legend.push({'name': bgName});
+    }
+  }
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
     var name = curMetadata['legend_name'];
@@ -561,6 +582,12 @@ app.PrintController.prototype.print = function(format) {
         var dateText = this.gettextCatalog.getString('Date d\'impression: ');
         var scaleTitle = this.gettextCatalog.getString('Echelle approximative 1:');
         var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
+        var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
+        var queryResultsHtml = null;
+        if (this['infoOpen'] && queryResults.length > 0) {
+          queryResultsHtml = queryResults[0].innerHTML;
+        }
+
         // create print spec object
         var spec = this.print_.createSpec(map, scale, dpi, layout, format, {
           'disclaimer': disclaimer,
@@ -574,7 +601,8 @@ app.PrintController.prototype.print = function(format) {
           'legend': this['legend'] ? legend : null,
           'scalebar': {'geodetic': true},
           'dataOwner': dataOwners.join(' '),
-          'dateText': dateText
+          'dateText': dateText,
+          'queryResults': queryResultsHtml
         });
         var piwikUrl =
             goog.string.buildString('http://',
@@ -596,15 +624,15 @@ app.PrintController.prototype.print = function(format) {
           if ((layer.matrices instanceof Array) &&
             layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
             // Ugly hack to request non retina wmts layer for print
-            layer.baseURL = goog.string.remove(layer.baseURL,'_hd');
-            layer.matrixSet = goog.string.remove(layer.matrixSet,'_HD');
+            layer.baseURL = goog.string.remove(layer.baseURL, '_hd');
+            layer.matrixSet = goog.string.remove(layer.matrixSet, '_HD');
             // layer.layer = layer.layer + '_hd';
             // goog.array.forEach(layer.matrices, function(matrice) {
             //   matrice.tileSize = [512, 512];
             // });
           }
           if ((layer.matrices instanceof Array)) {
-            for (var i = layer.matrices.length - 1; i > 0 ; i--) {
+            for (var i = layer.matrices.length - 1; i > 0; i--) {
               if (layer.matrices[i].scaleDenominator > this['scale']) {
                 layer.matrices.splice(0, i + 1);
                 break;
@@ -616,6 +644,30 @@ app.PrintController.prototype.print = function(format) {
               layer.customParams = {};
             }
             layer.customParams['MAP_RESOLUTION'] = dpi;
+          }
+          // set the graphicFormat because mapfish print is not able
+          // to guess it from the externalGraphic (doesn't end with file
+          // extension)
+          if (layer.type === 'geojson') {
+            var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
+            for (var key in vector.style) {
+              var style = vector.style[key];
+              if (goog.isObject(style)) {
+                for (var j = 0; j < style.symbolizers.length; j++) {
+                  var symbolizer = style.symbolizers[j];
+                  if (symbolizer.externalGraphic) {
+                    symbolizer.graphicFormat = 'image/png';
+                    if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
+                      delete symbolizer.graphicHeight;
+                      delete symbolizer.graphicWidth;
+                    } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
+                      symbolizer.graphicHeight = 10;
+                      symbolizer.graphicWidth = 10;
+                    }
+                  }
+                }
+              }
+            }
           }
         }, this);
         // create print report

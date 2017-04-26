@@ -5,6 +5,9 @@ from pyramid.security import unauthenticated_userid
 from geoportailv3.portail import Connections
 from geoportailv3.portail import PortailSession
 import ldap
+import logging
+
+log = logging.getLogger(__name__)
 
 """
 Validates the user against the ldap server
@@ -77,8 +80,11 @@ def get_user_from_request(request):
                     user.mymaps_role = int(result[0][1]['roleMymaps'][0])
                 if 'roleOGC' in result[0][1]:
                     user.ogc_role = result[0][1]['roleOGC'][0]
-
-        user.role = DBSession.query(Role).filter_by(id=roletheme).one()
+        try:
+            user.role = DBSession.query(Role).filter_by(id=roletheme).one()
+        except Exception as e:
+            user.role = DBSession.query(Role).filter_by(id=0).one()
+            log.exception(e)
 
         user.functionalities = []
         return user

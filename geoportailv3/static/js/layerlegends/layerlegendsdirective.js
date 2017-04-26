@@ -18,6 +18,7 @@ goog.provide('app.layerlegendsDirective');
 
 goog.require('app');
 goog.require('ngeo.sortableDirective');
+goog.require('goog.array');
 
 
 /**

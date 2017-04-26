@@ -8,6 +8,9 @@ goog.provide('app.DrawnFeatures');
 goog.require('app');
 goog.require('ngeo.Location');
 goog.require('app.format.FeatureHash');
+goog.require('goog.asserts');
+goog.require('goog.array');
+goog.require('ol.extent');
 goog.require('ol.Collection');
 
 
@@ -15,9 +18,23 @@ goog.require('ol.Collection');
  * @constructor
  * @param {ngeo.Location} ngeoLocation Location service.
  * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * manager
  * @ngInject
  */
-app.DrawnFeatures = function(ngeoLocation, appMymaps) {
+app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
+
+  /**
+   * @type {ngeo.FeatureOverlayMgr}
+   * @private
+   */
+  this.ngeoFeatureOverlayMgr_ = ngeoFeatureOverlayMgr;
+
+  /**
+  * @type {ngeo.FeatureOverlay}
+  * @export
+  */
+  this.drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   /**
    * @type {ol.interaction.Draw}
@@ -67,13 +84,14 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
     'stroke': 'e',
     'isLabel': 'i',
     'linestyle': 'l',
-    'name' : 'n',
+    'name': 'n',
     'opacity': 'o',
     'showOrientation': 'r',
     'shape': 's',
     'size': 't',
     'isCircle': 'u'
   };
+  this.drawOverlay.setFeatures(this.features);
 
   /**
    * @type {app.format.FeatureHash}
@@ -105,7 +123,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
             }
           }
           return properties;
-        },this))
+        }, this))
   });
 };
 
@@ -127,6 +145,16 @@ app.DrawnFeatures.prototype.remove = function(feature) {
   this.encodeFeaturesInUrl_(this.features.getArray());
 };
 
+/**
+ * Recompute the feature order.
+ * @export
+ */
+app.DrawnFeatures.prototype.computeOrder = function() {
+  this.features.getArray().forEach(function(feature) {
+    feature.set('display_order', this.features.getArray().indexOf(feature));
+  }, this);
+  this.saveFeaturesOrder();
+};
 
 /**
  * Add a feature in the drawn feature list.
@@ -172,6 +200,19 @@ app.DrawnFeatures.prototype.saveFeature = function(feature) {
   this.encodeFeaturesInUrl_(this.features.getArray());
 };
 
+/**
+ * Save the current feature order
+ * has the permissions.
+ */
+app.DrawnFeatures.prototype.saveFeaturesOrder = function() {
+  if (this.appMymaps_.isEditable()) {
+    var mymapsFeatures = this.features.getArray().filter(function(feature) {
+      return !!feature.get('__map_id__');
+    });
+    this.appMymaps_.saveFeaturesOrder(mymapsFeatures);
+  }
+  this.encodeFeaturesInUrl_(this.features.getArray());
+};
 
 /**
  * Move anonymous features to mymaps
@@ -209,6 +250,11 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
           feature.unset(this.SHORT_PARAM_[key]);
         }
       }
+      var order = /** @type {string} */ (feature.get('display_order'));
+      if (!goog.isDef(order)) {
+        order = remoteFeatures.indexOf(feature);
+      }
+
       var opacity = /** @type {string} */ (feature.get('opacity'));
       if (!goog.isDef(opacity)) {
         opacity = 0;
@@ -241,7 +287,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
 
       feature.set('__map_id__', undefined);
       feature.setStyle(featureStyleFunction);
-    },this));
+    }, this));
 
     this.features.extend(remoteFeatures);
   }
@@ -274,7 +320,6 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
 app.DrawnFeatures.prototype.saveFeaturesInMymaps_ = function(features) {
   return this.appMymaps_.saveFeatures(features);
 };
-
 
 /**
  * Clear the drawn features.

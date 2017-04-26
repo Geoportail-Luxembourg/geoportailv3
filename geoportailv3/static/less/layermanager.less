@@ -25,8 +25,7 @@ li.layermanager-panel {
     margin-left: 5px;
   }
 
-  a[data-toggle=collapse] .expanded,
-  a[data-toggle=collapse] .collapsed {
+  .options-button {
     float: right;
     line-height: inherit;
   }
@@ -56,13 +55,14 @@ li.layermanager-panel {
 }
 
 .sortable-dragger {
-  padding: 2px 10px;
   white-space: nowrap;
   .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
-  .fa {
+
+  app-layerinfo {
     visibility: hidden;
-    &.sortable-handle {
-      visibility: visible;
-    }
   }
+  .poi-feature, .mymaps-info-content, .delete, .options-button, .options-body {
+    display: none;
+  }
+
 }

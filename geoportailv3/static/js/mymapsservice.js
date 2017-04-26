@@ -9,7 +9,20 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
-
+goog.require('goog.array');
+goog.require('goog.color');
+goog.require('goog.object');
+goog.require('goog.string');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Text');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 /**
  * @typedef {Array.<Object>}
@@ -32,11 +45,17 @@ app.MapsResponse;
  * @param {app.Theme} appTheme The theme service.
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
+ * @param {string} arrowUrl URL to the arrow.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, arrowUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.arrowUrl_ = arrowUrl;
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -177,6 +196,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSaveFeatureOrderUrl_ = mymapsUrl + '/save_order/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mymapsSaveFeaturesUrl_ = mymapsUrl + '/save_features/';
 
   /**
@@ -299,7 +324,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.V2_BGLAYER_TO_V3_ = {
-    'webbasemap' : 'basemap_2015_global',
+    'webbasemap': 'basemap_2015_global',
     'pixelmaps-color': 'topogg',
     'pixelmaps-gray': 'topo_bw_jpeg',
     'streets': 'streets_jpeg',
@@ -380,7 +405,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
       }, this));
     }
     return null;
-  },this));
+  }, this));
 
 };
 
@@ -601,7 +626,8 @@ app.Mymaps.prototype.updateLayers = function() {
           }
         }
       }
-    }, this));},this));
+    }, this));
+  }, this));
 };
 
 
@@ -696,7 +722,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
         this.updateLayers();
         this.layersChanged = false;
         return mapinformation;
-      },this));
+      }, this));
 };
 
 
@@ -1021,6 +1047,48 @@ app.Mymaps.prototype.updateMapEnv =
 
 
 /**
+ * Save features order into a map.
+ * @param {Array<ol.Feature>} features The feature to save
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.saveFeaturesOrder = function(features) {
+
+  var orders = [];
+  goog.array.forEach(features, function(feature) {
+    orders.push({'fid': feature.get('fid'),
+      'display_order': feature.get('display_order')});
+  }, this);
+
+  var req = $.param({
+    'orders': JSON.stringify(orders)
+  });
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsSaveFeatureOrderUrl_ + this.mapId_,
+      req, config).then(goog.bind(
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {app.MapsResponse} The "mymaps" web service response.
+       */
+      function(resp) {
+        return resp.data;
+      }, this), goog.bind(
+      function(error) {
+        if (error.status == 401) {
+          this.notifyUnauthorized();
+          return null;
+        }
+        var msg = this.gettextCatalog.getString(
+            'Erreur inattendue lors de la sauvegarde de votre modification.');
+        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        return [];
+      }, this)
+  );
+};
+
+
+/**
  * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
  * @return {angular.$q.Promise} Promise.
@@ -1156,7 +1224,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
   var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
-
+  var arrowUrl = this.arrowUrl_;
   return function(resolution) {
 
     // clear the styles
@@ -1165,7 +1233,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (this.get('__editable__') && this.get('__selected__')) {
       styles.push(vertexStyle);
     }
-
+    var order = this.get('display_order');
+    if (order === undefined) {
+      order = 0;
+    }
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
     var rgbColor = goog.color.hexToRgb(color);
@@ -1181,38 +1252,30 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
+
       this.getGeometry().forEachSegment(function(start, end) {
         var arrowPoint = new ol.geom.Point(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
 
-        var arrowOptions = {
-          fill: new ol.style.Fill({
-            color: rgbColor
-          }),
-          stroke: new ol.style.Stroke({
-            color: rgbColor,
-            width: 1
-          }),
-          radius: 10,
-          points: 3,
-          angle: 0,
-          rotation: (90 * Math.PI / 180) + (-1 * Math.atan2(dy, dx))
-        };
-
-        if (prevArrow) {
+        if (prevArrow != undefined) {
           var pt1 = curMap.getPixelFromCoordinate(arrowPoint.getCoordinates()),
               pt2 = curMap.getPixelFromCoordinate(prevArrow.getCoordinates()),
               w = pt2[0] - pt1[0],
               h = pt2[1] - pt1[1];
           distance = Math.sqrt(w * w + h * h);
         }
-        if (!prevArrow || distance > 40) {
+        if (!prevArrow || distance > 600) {
+          var coloredArrowUrl = arrowUrl + '?color=' + color.replace('#', '');
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
-            image: new ol.style.RegularShape(arrowOptions)
+            zIndex: order,
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+              rotation: Math.PI / 2 - Math.atan2(dy, dx),
+              src: coloredArrowUrl
+            }))
           }));
           prevArrow = arrowPoint;
         }
@@ -1260,8 +1323,8 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     var image = null;
     if (this.get('symbolId')) {
       goog.object.extend(imageOptions, {
-        src: symbolUrl + this.get('symbolId'),
-        scale: featureSize / 100,
+        src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
+        scale: 1,
         rotation: this.get('angle')
       });
       image = new ol.style.Icon(imageOptions);
@@ -1330,7 +1393,8 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       styles.push(new ol.style.Style({
         image: image,
         fill: fillStyle,
-        stroke: stroke
+        stroke: stroke,
+        zIndex: order
       }));
     }
 

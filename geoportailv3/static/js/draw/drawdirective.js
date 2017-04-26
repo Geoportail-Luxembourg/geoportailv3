@@ -23,16 +23,24 @@ goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.dom.classlist');
 goog.require('ngeo.DecorateInteraction');
-goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.Feature');
+goog.require('ol.Object');
+goog.require('ol.Observable');
+goog.require('ol.Overlay');
 goog.require('ol.events');
+goog.require('ol.extent');
+goog.require('ol.proj');
+goog.require('ol.sphere.WGS84');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Select');
 goog.require('ol.interaction.Translate');
-goog.require('ol.style.RegularShape');
 
 
 /**
@@ -64,8 +72,6 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {!angular.Scope} $scope Scope.
  * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  *     interaction service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
@@ -81,9 +87,9 @@ app.module.directive('appDraw', app.drawDirective);
  * @ngInject
  */
 app.DrawController = function($scope, ngeoDecorateInteraction,
-    ngeoFeatureOverlayMgr, appFeaturePopup, appDrawnFeatures,
-    appSelectedFeatures, appMymaps, gettextCatalog, $compile, appNotify,
-    $anchorScroll, appActivetool, appGetDevice) {
+    appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
+    appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
+    appActivetool, appGetDevice) {
   /**
    * @private
    * @type {app.GetDevice}
@@ -226,7 +232,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPoint);
   this.map.addInteraction(drawPoint);
   ol.events.listen(drawPoint, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -245,7 +251,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawLabel);
   this.map.addInteraction(drawLabel);
   ol.events.listen(drawLabel, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -264,7 +270,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(this.drawLine);
   this.map.addInteraction(this.drawLine);
   ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -285,7 +291,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawPolygon);
   this.map.addInteraction(drawPolygon);
   ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -306,7 +312,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ngeoDecorateInteraction(drawCircle);
   this.map.addInteraction(drawCircle);
   ol.events.listen(drawCircle, ol.Object.getChangeEventType(
-      ol.interaction.InteractionProperty.ACTIVE),
+      ol.interaction.Property.ACTIVE),
       this.onChangeActive_, this);
   ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
@@ -355,7 +361,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.selectInteraction_.setActive(false);
   appFeaturePopup.init(this.map);
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.ADD,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
       goog.bind(
       /**
        * @param {ol.Collection.Event} evt The event.
@@ -376,7 +382,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
         this.scope_.$applyAsync();
       }, this));
 
-  ol.events.listen(appSelectedFeatures, ol.Collection.EventType.REMOVE,
+  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -411,11 +417,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
   ol.events.listen(this.modifyCircleInteraction_,
-      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
@@ -426,16 +432,16 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.drawnFeatures_.translateInteraction,
       ol.interaction.TranslateEventType.TRANSLATEEND,
       /**
-       * @param {ol.interaction.TranslateEvent} evt The event.
+       * @param {ol.interaction.Translate.Event} evt The event.
        */
       function(evt) {
         this.onFeatureModifyEnd_(evt);
       }, this);
 
-  var drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  drawOverlay.setFeatures(this.drawnFeatures_.getCollection());
-
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
+
+  ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
+      this.keyboardHandler_, this);
 };
 
 
@@ -452,7 +458,7 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event Event.
+ * @param {ol.interaction.Draw.Event} event Event.
  * @private
  */
 app.DrawController.prototype.onContinueLineEnd_ = function(event) {
@@ -473,7 +479,7 @@ app.DrawController.prototype.onContinueLineEnd_ = function(event) {
 
 
 /**
- * @param {ol.ObjectEvent} event The event.
+ * @param {ol.Object.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onChangeActive_ = function(event) {
@@ -517,7 +523,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
@@ -547,7 +553,7 @@ app.DrawController.prototype.onDrawPolygonStart_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawLineStart_ = function(event) {
@@ -572,7 +578,7 @@ app.DrawController.prototype.onDrawLineStart_ = function(event) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawCircleStart_ = function(event) {
@@ -650,7 +656,7 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
 
 
 /**
- * @param {ol.interaction.DrawEvent} event The event.
+ * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
@@ -687,12 +693,18 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       }
       break;
     case 'LineString':
+      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+        return;
+      }
       name = this.gettextCatalog.getString('LineString');
       break;
     case 'Polygon':
       if (feature.get('isCircle')) {
         name = this.gettextCatalog.getString('Circle');
       } else {
+        if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
+          return;
+        }
         name = this.gettextCatalog.getString('Polygon');
       }
       break;
@@ -700,8 +712,9 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       name = feature.getGeometry().getType();
       break;
   }
+  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
   feature.set('name', name + ' ' +
-      (this.drawnFeatures_.getCollection().getLength() + 1));
+      (nbFeatures + 1));
   feature.set('description', '');
   feature.set('__editable__', true);
   feature.set('color', '#ed1c24');
@@ -713,7 +726,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('shape', 'circle');
   feature.set('isLabel', this.drawLabel.getActive());
   feature.setStyle(this.featureStyleFunction_);
-
+  feature.set('display_order', nbFeatures);
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {
@@ -880,7 +893,7 @@ app.DrawController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'tooltip-measure']);
+      ['tooltip', 'ngeo-tooltip-measure']);
   this.measureTooltipOverlay_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
@@ -912,6 +925,38 @@ app.DrawController.prototype.removeMeasureTooltip_ = function() {
  */
 app.DrawController.prototype.gotoAnchor = function(anchorId) {
   this.anchorScroll_(anchorId);
+};
+
+
+/**
+ * Handle the backspace and escape keys.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @private
+ */
+app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
+  var keyEvent = mapBrowserEvent.originalEvent;
+
+  if (this.active && keyEvent.key === 'Backspace') {
+    if (this.drawLine.getActive()) {
+      this.drawLine.removeLastPoint();
+    }
+    if (this.drawPolygon.getActive()) {
+      this.drawPolygon.removeLastPoint();
+    }
+    mapBrowserEvent.preventDefault();
+  }
+  if (this.active && keyEvent.key === 'Escape') {
+    if (this.drawLine.getActive()) {
+      this.drawLine.finishDrawing();
+    }
+    if (this.drawPolygon.getActive()) {
+      this.drawPolygon.finishDrawing();
+    }
+    if (this.drawCircle.getActive()) {
+      this.drawCircle.finishDrawing();
+    }
+    mapBrowserEvent.preventDefault();
+  }
 };
 
 app.module.controller('AppDrawController', app.DrawController);

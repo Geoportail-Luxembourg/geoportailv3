@@ -17,7 +17,6 @@ goog.require('app');
 goog.require('app.GetProfile');
 goog.require('app.profileDirective');
 goog.require('app.Activetool');
-goog.require('goog.dom');
 goog.require('ngeo.DecorateInteraction');
 goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.interaction.MeasureArea');
@@ -25,8 +24,7 @@ goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.Object');
 goog.require('ol.events');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.source.Vector');
+goog.require('ol.proj');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -238,7 +236,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
             (geometryCollection.getGeometries()[0]);
         var radiusCoordinates = radius.getCoordinates();
         $q.all([this.getElevation_(radiusCoordinates[0]),
-              this.getElevation_(radiusCoordinates[1])]
+          this.getElevation_(radiusCoordinates[1])]
         ).then(goog.bind(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
             var el = evt.target.getTooltipElement();
@@ -264,7 +262,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
 
   ol.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
       /**
-       * @param {ol.ObjectEvent} evt Change active event.
+       * @param {ol.Object.Event} evt Change active event.
        */
       function(evt) {
         if (!measureProfile.getActive()) {
@@ -289,22 +287,22 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
     }
   }, this));
   ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureArea'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureAzimut'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
   ol.events.listen(this['measureProfile'], ol.Object.getChangeEventType(
-    ol.interaction.InteractionProperty.ACTIVE),
+    ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);
 };
 
 
 /**
- * @param {ol.ObjectEvent} event The event.
+ * @param {ol.Object.Event} event The event.
  * @private
  */
 app.MeasureController.prototype.onChangeActive_ = function(event) {
