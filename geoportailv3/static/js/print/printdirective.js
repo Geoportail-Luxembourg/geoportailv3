@@ -239,16 +239,6 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
   this.needScaleRefresh = false;
 
   /**
-   * @type {boolean|undefined}
-   */
-  this['open'] = undefined;
-
-  /**
-   * @type {boolean|undefined}
-   */
-  this['infoOpen'] = undefined;
-
-  /**
    * @type {string|undefined}
    */
   this['title'] = '';
