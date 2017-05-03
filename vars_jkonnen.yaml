@@ -2,5 +2,5 @@ extends: vars_geoportailv3.yaml
 
 vars:
   modwsgi_user: apache
-  db: mapv3
+  db: mapv3 
   
