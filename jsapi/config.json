@@ -20,7 +20,7 @@
       "../../node_modules/openlayers/externs/proj4js.js",
       "../../node_modules/openlayers/externs/tilejson.js",
       "../../node_modules/openlayers/externs/topojson.js",
-	  "../../jsapi/externs/ngeox.js",
+	  "../../node_modules/ngeo/options/ngeox.js",
       "../../node_modules/openlayers/externs/olx.js",
       "../../node_modules/openlayers/externs/oli.js",
       "../../node_modules/ngeo/externs/d3.js",
