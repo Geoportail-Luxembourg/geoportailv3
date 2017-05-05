@@ -1063,7 +1063,7 @@ app.QueryController.prototype.getMymapsPath = function(resource) {
  */
 app.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
   if (mapId !== undefined) {
-    return this.qrServiceUrl + '?url=' + this.mymapsImageUrl_ + '?map_id='+mapId;
+    return this.qrServiceUrl + '?url=' + this.mymapsImageUrl_ + '?map_id=' + mapId;
   }
   return '';
 };
