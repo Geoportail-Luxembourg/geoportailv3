@@ -575,7 +575,26 @@ app.PrintController.prototype.print = function(format) {
         var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
         var queryResultsHtml = null;
         if (this['infoOpen'] && queryResults.length > 0) {
-          queryResultsHtml = queryResults[0].innerHTML;
+          var clonedQuery = queryResults[0].cloneNode(true);
+          var profileElements = goog.dom.getElementsByClass('profile', clonedQuery);
+          if (profileElements !== null && profileElements.length > 0) {
+            goog.array.forEach(profileElements, function(profileElement) {
+              var nodeList = profileElement.getElementsByTagName('svg');
+              if (nodeList !== undefined && nodeList.length > 0) {
+                var svgString = this.getSVGString_(nodeList[0]);
+                var img = goog.dom.createElement(goog.dom.TagName.IMG);
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+                goog.dom.replaceNode(img, nodeList[0]);
+              }
+            }, this);
+          }
+          var noprintElements = goog.dom.getElementsByClass('no-print', clonedQuery);
+          if (noprintElements !== null && noprintElements.length > 0) {
+            goog.array.forEach(noprintElements, function(noprintElement) {
+              goog.dom.removeNode(noprintElement);
+            }, this);
+          }
+          queryResultsHtml = clonedQuery.innerHTML;
         }
 
         // create print spec object
@@ -820,5 +839,94 @@ app.PrintController.prototype.useOptimalScale_ = function() {
   this['scale'] = scale != -1 ? scale : this['scales'][0];
 };
 
+/**
+ * Get the optimal print scale for the current map size and resolution,
+ * and for the selected print layout.
+ * @param {Element} svgNode Element.
+ * @return {string} the string as valid svg.
+ * @private
+ */
+app.PrintController.prototype.getSVGString_ = function(svgNode) {
+  svgNode.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
+  var cssStyleText = this.getCSSStyles_(svgNode);
+  this.appendCSS_(cssStyleText, svgNode);
+
+  var serializer = new XMLSerializer();
+  var svgString = serializer.serializeToString(svgNode);
+  svgString = svgString.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
+  svgString = svgString.replace(/NS\d+:href/g, 'xlink:href'); // Safari NS namespace fix
+
+  return svgString;
+};
+
+/**
+ * Append css.
+ * @param {string} cssText The css text.
+ * @param {Element} element Element.
+ * @private
+ */
+app.PrintController.prototype.appendCSS_ = function(cssText, element) {
+  var styleElement = document.createElement('style');
+  styleElement.setAttribute('type', 'text/css');
+  styleElement.innerHTML = cssText;
+  var refNode = element.hasChildNodes() ? element.children[0] : null;
+  element.insertBefore(styleElement, refNode);
+};
+
+/**
+ * Get the css styles.
+ * @param {Element} parentElement Element.
+ * @return {string} The extracted CSS Text.
+ * @private
+ */
+app.PrintController.prototype.getCSSStyles_ = function(parentElement) {
+  var selectorTextArr = [];
+
+  // Add Parent element Id and Classes to the list
+  selectorTextArr.push('#' + parentElement.id);
+  for (var c1 = 0; c1 < parentElement.classList.length; c1++) {
+    if (!goog.array.contains(selectorTextArr, '.' + parentElement.classList[c1])) {
+      selectorTextArr.push('.' + parentElement.classList[c1]);
+    }
+  }
+  // Add Children element Ids and Classes to the list
+  var nodes = parentElement.getElementsByTagName('*');
+  for (var i1 = 0; i1 < nodes.length; i1++) {
+    var id = nodes[i1].id;
+    if (!goog.array.contains(selectorTextArr, '#' + id)) {
+      selectorTextArr.push('#' + id);
+    }
+    var classes = nodes[i1].classList;
+    for (var c2 = 0; c2 < classes.length; c2++) {
+      if (!goog.array.contains(selectorTextArr, '.' + classes[c2])) {
+        selectorTextArr.push('.' + classes[c2]);
+      }
+    }
+  }
+
+  // Extract CSS Rules
+  var extractedCSSText = '';
+  for (var i2 = 0; i2 < document.styleSheets.length; i2++) {
+    var s = document.styleSheets[i2];
+    try {
+      if (!s.cssRules) {
+        continue;
+      }
+    } catch (e) {
+      if (e.name !== 'SecurityError') {
+        throw e; // for Firefox
+      }
+      continue;
+    }
+
+    var cssRules = s.cssRules;
+    for (var r1 = 0; r1 < cssRules.length; r1++) {
+      if (goog.array.contains(selectorTextArr, cssRules[r1].selectorText)) {
+        extractedCSSText += cssRules[r1].cssText;
+      }
+    }
+  }
+  return extractedCSSText;
+};
 
 app.module.controller('AppPrintController', app.PrintController);
