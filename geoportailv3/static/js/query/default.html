@@ -10,7 +10,7 @@
             <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['value']}}</a>
         </span>
       </div>
-      <div class='query-profile no-print' ng-show="feature.attributes.showProfile.active">
+      <div class="query-profile" ng-show="feature.attributes.showProfile.active">
         <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
       </div>
       <div class="no-print" ng-show="feature.attributes.showProfile.active">
