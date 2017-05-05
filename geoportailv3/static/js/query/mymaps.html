@@ -10,6 +10,7 @@
     <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
   </div>
   <a class="btn btn-default no-print"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default no-print" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a><br>
+  <img ng-src="{{ctrl.getQrCodeForMymapsUrl(feature.attributes.map_id)}}"><br>
   <a class="fid-link no-print" href="?map_id={{feature.attributes.map_id}}" target='_blank' translate>Lien vers la carte</a><br>
   <a class="fid-link no-print" href="?fid={{feature.fid}}" target='_blank' translate>Lien direct vers cet objet</a><br>
 </div>

@@ -86,6 +86,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @param {app.Notify} appNotify Notify service.
  * @param {string} downloadresourceUrl The url to download a resource.
+ * @param {string} qrServiceUrl The qr service url.
  * @export
  * @ngInject
  */
@@ -95,7 +96,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
-    appNotify, downloadresourceUrl) {
+    appNotify, downloadresourceUrl, qrServiceUrl) {
   /**
    * @type {app.Notify}
    * @private
@@ -257,6 +258,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @export
    */
   this.proxyresourceUrl = downloadresourceUrl;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.qrServiceUrl = qrServiceUrl;
 
   /**
    * @type {string}
@@ -1048,6 +1055,18 @@ app.QueryController.prototype.getMymapsPath = function(resource) {
   return '';
 };
 
+/**
+ * Returns the url to the qrcode of the mymaps.
+ * @param {string} mapId The mymaps id.
+ * @return {string} The url to qrcode.
+ * @export
+ */
+app.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
+  if (mapId !== undefined) {
+    return this.qrServiceUrl + '?url=' + this.mymapsImageUrl_ + '?map_id='+mapId;
+  }
+  return '';
+};
 
 /**
  * Check if the value is empty.
