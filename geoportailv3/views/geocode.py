@@ -418,7 +418,7 @@ class Geocode(object):
         if p_zip is None or len(p_zip) == 0:
             return False
         try:
-            p_zip = str(int(float(p_zip)))
+            p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
         except:
             pass
 
@@ -565,7 +565,8 @@ class Geocode(object):
             features =\
                 p_session.query(Address).filter(
                     " code_postal::integer  in (" + (",".join(zips)) +
-                    ") and lower(numero) like (lower('" + str(p_num) + "'))").\
+                    ") and lower(numero) = (lower('" +
+                    str(p_num).replace("'", "") + "'))").\
                 all()
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -587,7 +588,8 @@ class Geocode(object):
         if len(p_locality) > 0:
             features = p_session.query(Address).filter(
                 " lower(localite) = '" + p_locality +
-                "' and lower(numero) like (lower('" + str(p_num) + "'))").all()
+                "' and lower(numero) = (lower('" +
+                str(p_num).replace("'", "") + "'))").all()
 
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -641,7 +643,7 @@ class Geocode(object):
         try:
             if p_zip is not None and len(p_zip) > 0:
                 try:
-                    p_zip = str(int(float(p_zip)))
+                    p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
                     for feature in p_session.query(WKPOI).\
                             filter(" zip = " + p_zip).all():
                         cur_ratio = difflib.SequenceMatcher(
@@ -798,7 +800,8 @@ class Geocode(object):
         results = []
         if p_num is not None and len(p_num) > 0:
             features = p_session.query(Address).filter(
-                " lower(numero) like (lower('" + str(p_num) + "'))").all()
+                " lower(numero) = (lower('" +
+                str(p_num).replace("'", "") + "'))").all()
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
                 # Is a corresponding street existing ?
@@ -813,14 +816,15 @@ class Geocode(object):
             self, p_ratio, p_num, p_street, p_zip, p_session):
         results = []
         try:
-            p_zip = str(int(float(p_zip)))
+            p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
         except:
             return results
 
         features = p_session.query(Address).\
             filter(
                 " code_postal::integer  = (" + str(p_zip) +
-                ") and lower(numero) like (lower('" + str(p_num) + "'))").all()
+                ") and lower(numero) = (lower('" +
+                str(p_num).replace("'", "") + "'))").all()
 
         if len(features) > 0:
             # accuracy = 8   Address level accuracy.
@@ -835,13 +839,14 @@ class Geocode(object):
             self, p_ratio, p_num, p_street, p_zip, p_session):
         results = []
         try:
-            p_zip = str(int(float(p_zip)))
+            p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
         except:
             return results
 
         features = p_session.query(Address).filter(
             " code_postal::integer  = (" + str(p_zip) +
-            ") and lower(numero) like (lower('" + p_num + "'))").all()
+            ") and lower(numero) = (lower('" +
+            p_num.replace("'", "") + "'))").all()
 
         if len(features) > 0:
             for feature in features:
@@ -941,7 +946,7 @@ class Geocode(object):
         if p_zip is None:
             p_zip = ""
         try:
-            p_zip = str(int(float(p_zip)))
+            p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
         except:
             p_zip = p_zip.replace("L", "").replace("-", "").replace(" ", "")
 
