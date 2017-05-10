@@ -1,5 +1,5 @@
 <p>The Geoportail.lu V3 API is a web delivered service platform delivering both data and functionality, enabling geographical information to be shown on a map.
-Just as with the geoportail.lu web service, the Geoportail.lu V3 API enables the integration in external web pages of the geoportail functionalities.
+The Geoportail.lu V3 API enables the integration in external web pages of the geoportail functionalities.
 Although the options for data processing are limited compared with “real” office GIS software, some targeted queries and analyses are possible.</p>
 <p><i>Important Note: For access to the Geoportail.lu V3 API on your own servers, you will need to request access to the ACT, specifying the server address you wish to grant access too.</i>
 For any assistance as well as for request access, please contact our support here : <a href="mailto:support.geoportail@act.etat.lu">support.geoportail@act.etat.lu</a></p>
