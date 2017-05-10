@@ -48,6 +48,3 @@ Build
 cd geoportailv3
 make -f <user>.mk build
 ```
- 
- 
- 
