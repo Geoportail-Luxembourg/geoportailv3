@@ -1019,6 +1019,9 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
  */
 lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) {
   var format = new ol.format.GeoJSON();
+  if (json.length === 0) {
+    return;
+  }
   json[0].features.forEach(function(f) {
     f.properties = f.attributes;
   });
