@@ -68,6 +68,7 @@ goog.require('ol.proj');
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$window} $window Window.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {angular.$locale} $locale The locale service.
  * @constructor
  * @export
  * @ngInject
@@ -79,7 +80,13 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures) {
+    appSelectedFeatures, $locale) {
+  /**
+   * @type {angular.$locale}
+   * @private
+   */
+  this.locale_ = $locale;
+
   /**
    * @type {ol.Collection<ol.Feature>}
    * @private
@@ -547,6 +554,7 @@ app.MainController.prototype.switchLanguage = function(lang, track) {
   goog.asserts.assert(lang in this.langUrls_);
   this.gettextCatalog_.setCurrentLanguage(lang);
   this.gettextCatalog_.loadRemote(this.langUrls_[lang]);
+  this.locale_.NUMBER_FORMATS.GROUP_SEP = ' ';
   this['lang'] = lang;
 
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
