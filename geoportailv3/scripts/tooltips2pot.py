@@ -91,13 +91,14 @@ def main():  # pragma: nocover
     dbsession = sqlahelper.get_session()
     results = dbsession.query(LuxGetfeatureDefinition).\
         filter(LuxGetfeatureDefinition.remote_template == False).\
-        filter(LuxGetfeatureDefinition.template == 'default.html').all()  # noqa
+        filter(LuxGetfeatureDefinition.template == 'default_gisgr.html').all()  # noqa
 
     fields = []
     for result in results:
-        engine = sqlahelper.get_engine(result.engine_gfi)
+        engine = None
         first_row = None
         if result.query is not None and len(result.query) > 0:
+            engine = sqlahelper.get_engine(result.engine)
             first_row = engine.execute("SELECT * FROM " + result.query).first()
         if result.rest_url is not None and len(result.rest_url) > 0:
             first_row = _get_external_data(

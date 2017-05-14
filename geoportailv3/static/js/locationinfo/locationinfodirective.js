@@ -221,11 +221,10 @@ app.LocationinfoController = function(
    * @const
    */
   this.projections_ = {
-    'EPSG:2169': 'Luref',
+    'EPSG:3263*': 'WGS84 UTM',
     'EPSG:4326': 'Lon/Lat WGS84',
     'EPSG:4326:DMS': 'Lon/Lat WGS84 DMS',
-    'EPSG:4326:DMm': 'Lon/Lat WGS84 DM',
-    'EPSG:3263*': 'WGS84 UTM'
+    'EPSG:4326:DMm': 'Lon/Lat WGS84 DM'
   };
 
   /**

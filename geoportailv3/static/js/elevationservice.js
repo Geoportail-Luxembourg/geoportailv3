@@ -30,13 +30,10 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
    * @return {!angular.$q.Promise} Promise providing the short URL.
    */
   function getElevation(coordinate) {
-    var lonlat = /** @type {ol.Coordinate} */
-        (ol.proj.transform(coordinate,
-            'EPSG:3857', 'EPSG:2169'));
     return $http.get(elevationServiceUrl, {
       params: {
-        'lon': lonlat[0],
-        'lat': lonlat[1]
+        'lon': coordinate[0],
+        'lat': coordinate[1]
       }
     }).then(
         /**
@@ -45,7 +42,7 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
            */
             function(resp) {
               if (resp.data['dhm'] > 0) {
-                return parseInt(resp.data['dhm'] / 100, 0).toString() + ' m';
+                return parseInt(resp.data['dhm'], 0).toString() + ' m';
               } else {
                 return gettextCatalog.getString('N/A');
               }

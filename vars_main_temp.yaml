@@ -3,20 +3,12 @@ extends: vars_geoportailv3.yaml
 vars:
   modwsgi_user: apache
   db: mapv3
-  dbport: 5432
-  dbuser: www-data
-  dbhost: localhost
-  dbpassword: test
-  schema: geov3
-  overview_map:
-      show: true
-      base_layer: 'basemap_2015_global'
-  http_proxy: http://proxy.rlp:8080
+  http_proxy: http://proxy:3128
   print_url: http://localhost:8083/print-c2cgeoportal-{instanceid}/pdf/ 
   sqlalchemy_engines:
         ecadastre: 'postgresql://localhost:5432/ecadastre'
         mymaps: 'postgresql://localhost:5432/mymaps'
   sentry_dsn: ''
   #elasticsearch settings
-  search_host: localhost:9200
+  search_host: workshop3-local.geoportal.lu:9200
   search_index: main-index

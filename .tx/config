@@ -1,20 +1,20 @@
 [main]
 host = https://www.transifex.com
 
-[geoportailv3-lu.geoportailv3-client]
+[gisgr.geoportailv3-client]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-client.po
 source_file = geoportailv3/locale/geoportailv3-client.pot
 source_lang = frp
 type = PO
 
-[geoportailv3-lu.geoportailv3-server]
+[gisgr.geoportailv3-server]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-server.po
 source_file = geoportailv3/locale/geoportailv3-server.pot
 source_lang = frp
 type = PO
 
 
-[geoportailv3-lu.geoportailv3-tooltips]
+[gisgr.geoportailv3-tooltips]
 file_filter = geoportailv3/locale/<lang>/LC_MESSAGES/geoportailv3-tooltips.po
 source_file = geoportailv3/locale/geoportailv3-tooltips.pot
 source_lang = frp

@@ -37,7 +37,7 @@ app.getProfile_ = function($http, profileServiceUrl) {
    */
   function getProfile(geom, opt_id) {
     var encOpt = {
-      dataProjection: 'EPSG:2169',
+      dataProjection: 'EPSG:3857',
       featureProjection: 'EPSG:3857'
     };
     var req = $.param({

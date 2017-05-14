@@ -533,11 +533,6 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
       searchString = searchString.replace(/,/gi, '.');
       var results = [];
       var re = {
-        'EPSG:2169': {
-          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
-          label: 'LUREF',
-          epsgCode: 'EPSG:2169'
-        },
         'EPSG:4326': {
           regex:
           /(\d{1,2}[\,\.]\d{1,6})\d*\s?(latitude|lat|N|longitude|long|lon|E|east|est)?\W*(\d{1,2}[\,\.]\d{1,6})\d*\s?(longitude|long|lon|E|latitude|lat|N|north|nord)?/i,
@@ -570,7 +565,7 @@ app.SearchDirectiveController.prototype.matchCoordinate_ =
            * @type {number | undefined}
            */
           var northing = undefined;
-          if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
+          if (epsgKey === 'EPSG:4326') {
             if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
               if (goog.array.contains(northArray, m[2].toUpperCase()) &&
               goog.array.contains(eastArray, m[4].toUpperCase())) {
@@ -830,23 +825,29 @@ app.SearchDirectiveController.prototype.setBackgroundLayer_ = function(input) {
 
 /**
  * @param {(Object|string)} input The input.
+ * @return {boolean} True if layer is added otherwise false.
  * @private
  */
 app.SearchDirectiveController.prototype.addLayerToMap_ = function(input) {
-  var layer = {};
+  var layer;
   if (typeof input === 'string') {
     var node = goog.array.find(this.layers_, function(element) {
       return goog.object.containsKey(element, 'name') &&
           goog.object.containsValue(element, input);
     });
-    layer = this.getLayerFunc_(node);
+    if (node !== null) {
+      layer = this.getLayerFunc_(node);
+    }
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
   var map = this['map'];
-  if (map.getLayers().getArray().indexOf(layer) <= 0) {
+  if (layer !== undefined && layer !== null &&
+      map.getLayers().getArray().indexOf(layer) <= 0) {
     map.addLayer(layer);
+    return true;
   }
+  return false;
 };
 
 
@@ -881,14 +882,22 @@ app.SearchDirectiveController.selected_ =
           if (!(goog.array.contains(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
-              features.push(feature);
-            }
+            var allLayerAdded = true;
             var layers = /** @type {Array<string>} */
             (this.layerLookup_[suggestion.get('layer_name')] || []);
             goog.array.forEach(layers, goog.bind(function(layer) {
-              this.addLayerToMap_(/** @type {string} */ (layer));
+              allLayerAdded = allLayerAdded &&
+                this.addLayerToMap_(/** @type {string} */ (layer));
             }, this));
+
+            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+              if (!allLayerAdded) {
+                feature.setGeometry(
+                  new ol.geom.Point(ol.extent.getCenter(
+                    featureGeometry.getExtent())));
+              }
+              features.push(feature);
+            }
           } else {
             feature.setGeometry(
               new ol.geom.Point(ol.extent.getCenter(

@@ -65,11 +65,10 @@ app.ProjectionselectorDirectiveController =
    * @type {Array.<Object>}
    */
       this['projectionOptions'] = [
-    {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
+    {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
     {'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
-    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DM'), 'value': 'EPSG:4326:DMm'},
-    {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
+    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DM'), 'value': 'EPSG:4326:DMm'}
       ];
       this['projection'] = this['projectionOptions'][0];
   /** @type {ol.control.MousePostion} */
