@@ -132,6 +132,21 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
   this.feature.set('shape', symbol);
 };
 
+/**
+ * @param {boolean} mapmatching True to use the map mathing.
+ * @return {*} The orientation.
+ * @export
+ */
+app.StyleEditingController.prototype.getSetMapMatching = function(mapmatching) {
+  if (!goog.isDef(this.feature)) {
+    return;
+  }
+  if (arguments.length) {
+    this.drawnFeatures_.mapMatching = mapmatching;
+  } else {
+    return this.drawnFeatures_.mapMatching;
+  }
+};
 
 /**
  * @param {boolean} orientation True to show the orientation.
@@ -148,7 +163,6 @@ app.StyleEditingController.prototype.getSetOrientation = function(orientation) {
     return this.feature.get('showOrientation');
   }
 };
-
 
 /**
  * @export
