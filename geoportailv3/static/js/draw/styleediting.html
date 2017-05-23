@@ -69,6 +69,12 @@
     </div>
     <div class="form-inline" ng-if="ctrl.type == 'linestring'">
       <div class="form-group">
+        <label translate>Map matching</label>
+        <input type="checkbox" ng-model="ctrl.getSetMapMatching" ng-model-options="{getterSetter: true}">
+      </div>
+    </div>
+    <div class="form-inline" ng-if="ctrl.type == 'linestring'">
+      <div class="form-group">
             <button href class="btn btn-primary" ng-click="ctrl.reverseLine()" translate>Changer sens de la ligne</button>
       </div>
     </div>

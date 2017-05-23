@@ -22,12 +22,17 @@ from pyramid.view import view_config
 from PIL import Image
 from cStringIO import StringIO
 from geoportailv3.mymaps import DBSession
+from geoportailv3.routing import DBSession as RoutingSession
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
+from shapely.wkt import loads
+from shapely.ops import linemerge
+from shapely.geometry import Point, LineString
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
 import logging
 import urllib2
 import json
+
 log = logging.getLogger(__name__)
 
 
@@ -74,6 +79,163 @@ class Mymaps(object):
         f = open(temp_file_path, "r")
 
         return Response(f.read(), headers={'Content-Type': 'image/png'})
+
+    @view_config(route_name="getroute", renderer="json")
+    def getroute(self):
+        waypoints = self.request.params.get('waypoints', '')
+        waypoints = waypoints.split(",")
+        fallback_line = LineString(
+                    [Point(float(waypoints[1]), float(waypoints[0])),
+                     Point(float(waypoints[3]), float(waypoints[2]))])
+
+        lines_sql = """select ST_ASTEXT(ST_Transform(ST_SetSRID(geom,3857),4326)) geom,
+                ST_ASTEXT(ST_Transform(
+                st_LineSubstring(ST_SetSRID(geom,3857),0,COALESCE(fraction,1)
+                ),4326)) geom_part1,
+                ST_ASTEXT(ST_Transform(
+                st_LineSubstring(ST_SetSRID(geom,3857),COALESCE(fraction,1),1
+                ),4326)) geom_part2,
+                ST_ASTEXT(ST_Transform(
+                st_LineSubstring(ST_SetSRID(geom,3857),
+                    CASE WHEN COALESCE(fraction,1) < COALESCE(fraction2,1)
+                         THEN COALESCE(fraction,1) else COALESCE(fraction2,1)
+                    END,
+                    CASE WHEN COALESCE(fraction,1) < COALESCE(fraction2,1)
+                         THEN COALESCE(fraction2,1) else COALESCE(fraction,1)
+                    END
+                ),4326)) geom_part3,
+                COALESCE(fraction,1) fraction from (pgr_withpoints(
+               'SELECT gid as id, source, target,
+                       st_length(geom) as cost,
+                       st_length(geom) as reverse_cost
+                FROM public.reseau order by gid',
+               '(select 1 as pid, gid as edge_id,
+                        ST_LineLocatePoint(reseau.geom,poi1) as fraction
+                   from ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp3},{wp2}),4326),3857) as poi1,
+                        reseau
+                   where st_dwithin(poi1,reseau.geom,100)
+                   order by st_distance(poi1,reseau.geom) asc limit 1)
+            union
+            (select 2 as pid, gid as edge_id,
+                    ST_LineLocatePoint(reseau.geom,poi2) as fraction
+                   from ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp1},{wp0}),4326),3857) as poi2,
+                        reseau
+                   where st_dwithin(poi2,reseau.geom,100)
+                   order by st_distance(poi2,reseau.geom) asc limit 1)',
+            -1,
+            -2) as di
+            JOIN reseau pt
+            ON di.edge = pt.gid
+            LEFT JOIN ((select gid as edge_id,
+                            ST_LineLocatePoint(reseau.geom,poi1) as fraction,
+                            ST_LineLocatePoint(reseau.geom,poi2) as fraction2
+                   from ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp3},{wp2}),4326),3857) as poi1,
+                        reseau,
+                        ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp1},{wp0}),4326),3857) as poi2
+                   where st_dwithin(poi1,reseau.geom,100)
+                   order by st_distance(poi1,reseau.geom) asc limit 1)
+            union
+            (select gid as edge_id,
+                    ST_LineLocatePoint(reseau.geom,poi2) as fraction,
+                    ST_LineLocatePoint(reseau.geom,poi1) as fraction2
+                   from ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp1},{wp0}),4326),3857) as poi2,
+                        reseau,
+                        ST_Transform(
+                            ST_SetSRID(
+                                ST_MakePoint({wp3},{wp2}),4326),3857) as poi1
+                   where st_dwithin(poi2,reseau.geom,100)
+                   order by st_distance(poi2,reseau.geom) asc limit 1)) d2
+            ON di.edge = d2.edge_id)
+            ORDER BY SEQ""".format(wp3=waypoints[3],
+                                   wp2=waypoints[2],
+                                   wp1=waypoints[1],
+                                   wp0=waypoints[0])
+        try:
+            lines = RoutingSession.execute(lines_sql)
+        except Exception as e:
+            log.exception(e)
+            RoutingSession.rollback()
+            lines = []
+            the_line = fallback_line
+        new_line = None
+        lines_array = []
+        for l1 in lines:
+            lines_array.append(l1)
+        idx = 0
+        if len(lines_array) == 2 and\
+           lines_array[0].geom == lines_array[1].geom:
+            the_line = loads(lines_array[0].geom_part3)
+        else:
+            for cur_line in lines_array:
+                if idx < len(lines_array)-1:
+                    next_line = lines_array[idx + 1]
+                else:
+                    next_line = None
+                if new_line is None and next_line is not None:
+                    next_geom = loads(next_line.geom)
+                    cur_geom = loads(cur_line.geom)
+
+                    if next_geom.coords[0] == cur_geom.coords[0] or\
+                       next_geom.coords[-1] == cur_geom.coords[0]:
+                        new_line = loads(cur_line.geom_part1)
+                    else:
+                        new_line = loads(cur_line.geom_part2)
+                else:
+                    if next_line is None:
+                        cur_geom = loads(cur_line.geom)
+                        previous_geom = loads(lines_array[idx - 1].geom)
+                        if previous_geom.coords[0] == cur_geom.coords[0] or\
+                           previous_geom.coords[-1] == cur_geom.coords[0]:
+                            new_line = new_line.union(
+                                        loads(cur_line.geom_part1))
+                        else:
+                            new_line = new_line.union(
+                                        loads(cur_line.geom_part2))
+                    else:
+                        new_line = new_line.union(loads(cur_line.geom))
+                idx = idx + 1
+
+            if new_line is None:
+                the_line = fallback_line
+            else:
+                the_line = linemerge(new_line)
+        if not (the_line.geom_type == 'LineString'):
+            the_line = fallback_line
+        distance1 = Point(float(waypoints[1]), float(waypoints[0])).\
+            distance(Point(the_line.coords[0]))
+        distance2 = Point(float(waypoints[1]), float(waypoints[0])).\
+            distance(Point(the_line.coords[-1]))
+
+        if distance1 > distance2:
+            the_line.coords = list(the_line.coords)[::-1]
+        geom = geojson.Feature(geometry=the_line, properties={})
+
+        return {"success": True,
+                "errorMessages": [],
+                "geom": geom.geometry}
+
+    def getroute_old(self):
+        waypoints = self.request.params.get('waypoints', '')
+        criteria = self.request.params.get('criteria', '1')
+        transport_mode = self.request.params.get('transportMode', '1')
+        url = "http://routing.geoportail.lu/router/getRoute?criteria=" +\
+            criteria + "&transport_mode=" + transport_mode + "&waypoints=" +\
+            waypoints
+        timeout = 15
+        f = urllib2.urlopen(url, None, timeout)
+        data = f.read()
+        headers = {"Content-Type": f.info()['Content-Type']}
+        return Response(data, headers=headers)
 
     @view_config(route_name="exportgpxkml")
     def exportgpxkml(self):

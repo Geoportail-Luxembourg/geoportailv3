@@ -82,6 +82,8 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
  * @param {app.Activetool} appActivetool The activetool service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {angular.$http} $http Angular $http service.
+ * @param {string} getRouteUrl The url.
  * @constructor
  * @export
  * @ngInject
@@ -89,7 +91,19 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
     appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
-    appActivetool, appGetDevice) {
+    appActivetool, appGetDevice, $http, getRouteUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.getRouteUrl_ = getRouteUrl;
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.$http_ = $http;
+
   /**
    * @private
    * @type {app.GetDevice}
@@ -255,9 +269,63 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onChangeActive_, this);
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
+  /**
+   * @type {string | undefined}
+   * @private
+   */
+  this.lastWaypoints_;
+  /**
+   * @type {ol.geom.LineString | undefined}
+   * @private
+   */
+  this.lastRoutedGeometry_;
 
   this.drawnFeatures_.drawLineInteraction = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.LINE_STRING
+    type: ol.geom.GeometryType.LINE_STRING,
+    geometryFunction: function(coordinates, opt_geometry) {
+      var geometry = opt_geometry;
+
+      if (geometry) {
+        if (!this.drawnFeatures_.mapMatching) {
+          geometry.setCoordinates(coordinates);
+          return geometry;
+        }
+        var last = coordinates[coordinates.length - 1];
+        if (coordinates.length > 2) {
+          var penultimate = ol.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
+          var antepenultimate = ol.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
+          var waypoints = antepenultimate[1] + ',' + antepenultimate[0] + ',' + penultimate[1] + ',' + penultimate[0];
+          if (waypoints !== this.lastWaypoints_) {
+            this.lastWaypoints_ = waypoints;
+            var url = this.getRouteUrl_ + '?waypoints=' + waypoints;
+            this.$http_.get(url).then(function(resp) {
+              var parser = new ol.format.GeoJSON();
+              if (resp['data']['success']) {
+                var routedGeometry = parser.readGeometry(resp['data']['geom']);
+                this.lastRoutedGeometry_ = /** @type {ol.geom.LineString} */ (routedGeometry.transform('EPSG:4326', 'EPSG:3857'));
+                var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 1).
+                  concat(/** @type {ol.geom.LineString} */ (this.lastRoutedGeometry_).getCoordinates());
+                curCoordinates.push(last);
+                geometry.setCoordinates(curCoordinates);
+              } else {
+                console.log('Erreur de calcul de la route');
+                this.lastRoutedGeometry_ = undefined;
+              }
+            }.bind(this));
+          }
+        }
+        if (this.lastRoutedGeometry_ !== undefined) {
+          this.lastRoutedGeometry_ = undefined;
+        } else {
+          var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 1);
+          curCoordinates.push(last);
+          geometry.setCoordinates(curCoordinates);
+        }
+      } else {
+        geometry = new ol.geom.LineString(coordinates);
+      }
+      return geometry;
+    }.bind(this)
   });
 
   /**
@@ -564,6 +632,32 @@ app.DrawController.prototype.onDrawLineStart_ = function(event) {
   goog.asserts.assert(goog.isDef(geometry));
   var proj = this.map.getView().getProjection();
 
+  /**
+   * @type {string}
+   */
+  var name = this.gettextCatalog.getString('LineString');
+
+  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
+  sketchFeature.set('name', name + ' ' +
+      (nbFeatures + 1));
+  sketchFeature.set('description', '');
+  sketchFeature.set('__editable__', true);
+  sketchFeature.set('color', '#ed1c24');
+  sketchFeature.set('opacity', 0.2);
+  sketchFeature.set('stroke', 1.25);
+  sketchFeature.set('size', 10);
+  sketchFeature.set('angle', 0);
+  sketchFeature.set('linestyle', 'plain');
+  sketchFeature.set('shape', 'circle');
+  sketchFeature.set('isLabel', this.drawLabel.getActive());
+  sketchFeature.setStyle(this.featureStyleFunction_);
+  sketchFeature.set('display_order', nbFeatures);
+
+  this.selectedFeatures_.clear();
+  sketchFeature.set('creating', true);
+  this.selectedFeatures_.push(sketchFeature);
+  this.drawnFeatures_.getCollection().push(sketchFeature);
+
   this.changeEventKey_ = ol.events.listen(geometry,
       ol.events.EventType.CHANGE,
       function() {
@@ -661,6 +755,8 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
+  this.lastWaypoints_ = undefined;
+  this.lastRoutedGeometry_ = undefined;
 
   if (this.changeEventKey_ !== null) {
     ol.Observable.unByKey(this.changeEventKey_);
@@ -679,69 +775,72 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
         ol.geom.Polygon.fromCircle(featureGeom, 64)
     );
   }
-
-  /**
-   * @type {string}
-   */
-  var name;
-  switch (feature.getGeometry().getType()) {
-    case 'Point':
-      if (this.drawLabel.getActive()) {
-        name = this.gettextCatalog.getString('Label');
-      } else {
-        name = this.gettextCatalog.getString('Point');
-      }
-      break;
-    case 'LineString':
-      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
-        return;
-      }
-      name = this.gettextCatalog.getString('LineString');
-      break;
-    case 'Polygon':
-      if (feature.get('isCircle')) {
-        name = this.gettextCatalog.getString('Circle');
-      } else {
-        if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
+  if (feature.get('creating') !== true) {
+    /**
+     * @type {string}
+     */
+    var name;
+    switch (feature.getGeometry().getType()) {
+      case 'Point':
+        if (this.drawLabel.getActive()) {
+          name = this.gettextCatalog.getString('Label');
+        } else {
+          name = this.gettextCatalog.getString('Point');
+        }
+        break;
+      case 'LineString':
+        if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
           return;
         }
-        name = this.gettextCatalog.getString('Polygon');
-      }
-      break;
-    default:
-      name = feature.getGeometry().getType();
-      break;
+        name = this.gettextCatalog.getString('LineString');
+        break;
+      case 'Polygon':
+        if (feature.get('isCircle')) {
+          name = this.gettextCatalog.getString('Circle');
+        } else {
+          if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
+            return;
+          }
+          name = this.gettextCatalog.getString('Polygon');
+        }
+        break;
+      default:
+        name = feature.getGeometry().getType();
+        break;
+    }
+    var nbFeatures = this.drawnFeatures_.getCollection().getLength();
+    feature.set('name', name + ' ' +
+        (nbFeatures + 1));
+    feature.set('description', '');
+    feature.set('__editable__', true);
+    feature.set('color', '#ed1c24');
+    feature.set('opacity', 0.2);
+    feature.set('stroke', 1.25);
+    feature.set('size', 10);
+    feature.set('angle', 0);
+    feature.set('linestyle', 'plain');
+    feature.set('shape', 'circle');
+    feature.set('isLabel', this.drawLabel.getActive());
+    feature.setStyle(this.featureStyleFunction_);
+    feature.set('display_order', nbFeatures);
   }
-  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
-  feature.set('name', name + ' ' +
-      (nbFeatures + 1));
-  feature.set('description', '');
-  feature.set('__editable__', true);
-  feature.set('color', '#ed1c24');
-  feature.set('opacity', 0.2);
-  feature.set('stroke', 1.25);
-  feature.set('size', 10);
-  feature.set('angle', 0);
-  feature.set('linestyle', 'plain');
-  feature.set('shape', 'circle');
-  feature.set('isLabel', this.drawLabel.getActive());
-  feature.setStyle(this.featureStyleFunction_);
-  feature.set('display_order', nbFeatures);
+
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {
       event.target.setActive(false);
     });
   }, this), 0);
-
-  if (this.appMymaps_.isEditable()) {
-    feature.set('__map_id__', this.appMymaps_.getMapId());
-  } else {
-    feature.set('__map_id__', undefined);
+  if (feature.get('creating') !== true) {
+    if (this.appMymaps_.isEditable()) {
+      feature.set('__map_id__', this.appMymaps_.getMapId());
+    } else {
+      feature.set('__map_id__', undefined);
+    }
+    this.drawnFeatures_.getCollection().push(feature);
   }
-
-  this.drawnFeatures_.getCollection().push(feature);
-
+  feature.set('__refreshProfile__', true);
+  feature.unset('creating');
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
@@ -787,7 +886,6 @@ app.DrawController.prototype.toggleDrawPoint = function() {
   this.setActiveDraw_(active, this.drawPoint);
   return this.isEditing('drawPoint');
 };
-
 
 /**
  * @return {boolean} true if the feature is active.
@@ -843,7 +941,6 @@ app.DrawController.prototype.isEditing = function(type) {
   if (this.selectedFeatures_.getLength() > 0) {
     feature = this.selectedFeatures_.getArray()[0];
   }
-
   if ('drawPoint' === type) {
     if (this.drawPoint.getActive() ||
         (feature !== undefined && feature.get('__editable__') === 1 &&
