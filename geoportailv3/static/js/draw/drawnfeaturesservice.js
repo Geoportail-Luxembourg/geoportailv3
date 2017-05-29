@@ -7,6 +7,7 @@ goog.provide('app.DrawnFeatures');
 
 goog.require('app');
 goog.require('ngeo.Location');
+goog.require('app.interaction.DrawRoute');
 goog.require('app.format.FeatureHash');
 goog.require('goog.asserts');
 goog.require('goog.array');
@@ -42,7 +43,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {app.interaction.DrawRoute}
    */
   this.drawLineInteraction;
 
