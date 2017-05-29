@@ -209,6 +209,7 @@ class Mymaps(object):
                 the_line = fallback_line
             else:
                 the_line = linemerge(new_line)
+                # the_line = the_line.simplify(0.00004, preserve_topology=True)
         if not (the_line.geom_type == 'LineString'):
             the_line = fallback_line
         distance1 = Point(float(waypoints[1]), float(waypoints[0])).\
