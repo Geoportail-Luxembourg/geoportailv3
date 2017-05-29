@@ -200,7 +200,6 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    */
   this.startPixel_ = null;
 
-
   /**
    * @type {number}
    * @private
@@ -276,6 +275,17 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @private
    */
   this.map_ = this['map'];
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.isLongPress_ = false;
+
+  /**
+   * @type {angular.$q.Promise|undefined}
+   */
+  var holdPromise;
 
   /**
    * @type {boolean}
@@ -372,54 +382,61 @@ app.QueryController = function($sce, $timeout, $scope, $http,
         }
       }, this);
 
+
   ol.events.listen(this.map_,
-      ol.MapBrowserEventType.SINGLECLICK, function(evt) {
+      ol.MapBrowserEventType.POINTERDOWN, function(evt) {
+        this.isLongPress_ = false;
+        this.startPixel_ = evt.pixel;
+        this.pointerDownTime_ = new Date().getTime();
+
+        $timeout.cancel(holdPromise);
+      }, this);
+
+  ol.events.listen(this.map_,
+      ol.MapBrowserEventType.POINTERUP, function(evt) {
+        $timeout.cancel(holdPromise);
+        var tempTime = new Date().getTime();
+        if ((tempTime - this.pointerUpTime_) <= 499) {
+          return;
+        }
+        this.pointerUpTime_ = tempTime;
+        this.stopPixel_ = evt.pixel;
+        if (!this.isLongPress_ &&
+            !(evt.originalEvent instanceof MouseEvent)) {
+          if (this.pointerUpTime_ - this.pointerDownTime_ > 499) {
+            this.isLongPress_ = true;
+          }
+        }
+        if (this.isLongPress_ || evt.originalEvent.which === 3) {
+          this.isLongPress_ = false;
+          return;
+        }
         if (this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
             this.appActivetool_.isActive() || this.isQuerying_) {
           return;
         }
-        this.selectedFeatures_.clear();
-        var found = false;
-        var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
-            this.drawnFeatures_.getCollection().getLength() > 0;
-        if (isQueryMymaps) {
-          var result = this.selectMymapsFeature_(evt.pixel);
-          if (result) {
-            found = true;
-          }
-        }
-        if (!found) {
-          if (evt.originalEvent instanceof MouseEvent) {
-            this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
-          } else {
-            if (this.pointerUpTime_ - this.pointerDownTime_ < 499) {
-              var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
-              var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
-              if (deltaX + deltaY < 6) {
-                this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
-                this.startPixel_ = null;
-                this.stopPixel_ = null;
-              }
+        holdPromise = $timeout(function() {
+          this.selectedFeatures_.clear();
+          var found = false;
+          var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
+              this.drawnFeatures_.getCollection().getLength() > 0;
+          if (isQueryMymaps) {
+            var result = this.selectMymapsFeature_(evt.pixel);
+            if (result) {
+              found = true;
             }
           }
-        }
-      }, this);
-
-  ol.events.listen(this.map_,
-      ol.MapBrowserEventType.POINTERDOWN, function(evt) {
-        if (!(evt.originalEvent instanceof MouseEvent)) {
-          this.pointerDownTime_ = new Date().getTime();
-          this.startPixel_ = evt.pixel;
-        }
-      }, this);
-
-  ol.events.listen(this.map_,
-      ol.MapBrowserEventType.POINTERUP, function(evt) {
-        if (!(evt.originalEvent instanceof MouseEvent)) {
-          this.pointerUpTime_ = new Date().getTime();
-          this.stopPixel_ = evt.pixel;
-        }
+          if (!found) {
+            var deltaX = Math.abs(this.startPixel_[0] - this.stopPixel_[0]);
+            var deltaY = Math.abs(this.startPixel_[1] - this.stopPixel_[1]);
+            if (deltaX + deltaY < 6) {
+              this.singleclickEvent_.apply(this, [evt, !isQueryMymaps]);
+              this.startPixel_ = null;
+              this.stopPixel_ = null;
+            }
+          }
+        }.bind(this), 500, false);
       }, this);
 
   ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
@@ -452,6 +469,14 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
       }, this);
+
+  this['map'].getViewport()
+    .addEventListener('contextmenu', goog.bind(function(event) {
+      event.preventDefault(); // disable right-click menu on browsers
+      $timeout.cancel(holdPromise);
+      this.isLongPress_ = true;
+    }, this));
+
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
 
