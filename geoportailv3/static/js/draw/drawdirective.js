@@ -18,6 +18,7 @@ goog.provide('app.drawDirective');
 goog.require('app');
 goog.require('app.Activetool');
 goog.require('app.DrawnFeatures');
+goog.require('app.interaction.DrawRoute');
 goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
@@ -280,9 +281,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    */
   this.lastRoutedGeometry_;
 
-  this.drawnFeatures_.drawLineInteraction = new ol.interaction.Draw({
+  this.drawnFeatures_.drawLineInteraction = new app.interaction.DrawRoute({
     type: ol.geom.GeometryType.LINE_STRING,
-    geometryFunction: function(coordinates, opt_geometry) {
+    getRouteUrl: this.getRouteUrl_,
+    $http: this.$http_,
+    mapMatching: this.drawnFeatures_.mapMatching,
+    geometryFunction2: function(coordinates, opt_geometry) {
       var geometry = opt_geometry;
 
       if (geometry) {
@@ -329,7 +333,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   });
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {app.interaction.DrawRoute}
    * @export
    */
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
@@ -387,6 +391,11 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWSTART,
       this.onDrawCircleStart_, this);
 
+  $scope.$watch(function() {
+    return this.drawnFeatures_.mapMatching;
+  }.bind(this), function(newVal) {
+    this.drawnFeatures_.drawLineInteraction.setMapMatching(newVal);
+  }.bind(this));
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -853,7 +862,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 
 /**
  * @param {boolean} active Set active or not.
- * @param {ol.interaction.Draw} interaction Set active or not.
+ * @param {ol.interaction.Draw | app.interaction.DrawRoute} interaction Set active or not.
  * @private
  */
 app.DrawController.prototype.setActiveDraw_ = function(active, interaction) {
@@ -1035,7 +1044,7 @@ app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
 
   if (this.active && keyEvent.key === 'Backspace') {
     if (this.drawLine.getActive()) {
-      this.drawLine.removeLastPoint();
+      this.drawLine.removeLastPoints();
     }
     if (this.drawPolygon.getActive()) {
       this.drawPolygon.removeLastPoint();
