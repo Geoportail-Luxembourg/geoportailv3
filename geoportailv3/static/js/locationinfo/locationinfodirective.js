@@ -107,6 +107,12 @@ app.LocationinfoController = function(
   this.coordinateString_ = appCoordinateString;
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.openInPointerDown_ = false;
+
+  /**
    * @type {ngeo.FeatureOverlay}
    * @private
    */
@@ -307,23 +313,24 @@ app.LocationinfoController = function(
   }
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERDOWN,
-      goog.bind(function(event) {
-        if (!appSelectedFeatures.getLength()) {
-          if (event.originalEvent.which === 3) { // if right mouse click
-            this.loadInfoPane_(event.originalEvent);
-            this['open'] = true;
-          } else if (!(event.originalEvent instanceof MouseEvent)) {
-            // if touch input device
-            $timeout.cancel(holdPromise);
-            startPixel = event.pixel;
-            var that = this;
-            holdPromise = $timeout(function() {
-              that.loadInfoPane_(event.originalEvent);
-              that['open'] = true;
-            }, 500, false);
-          }
+    goog.bind(function(event) {
+      if (!appSelectedFeatures.getLength()) {
+        if (event.originalEvent.which === 3) { // if right mouse click
+          this.loadInfoPane_(event.originalEvent);
+          this['open'] = true;
+          this.openInPointerDown_ = true;
+        } else if (!(event.originalEvent instanceof MouseEvent)) {
+          // if touch input device
+          $timeout.cancel(holdPromise);
+          startPixel = event.pixel;
+          var that = this;
+          holdPromise = $timeout(function() {
+            that.loadInfoPane_(event.originalEvent);
+            that['open'] = true;
+          }, 500, false);
         }
-      }, this), this);
+      }
+    }, this), this);
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERUP,
       goog.bind(function(event) {
@@ -347,6 +354,11 @@ app.LocationinfoController = function(
   this['map'].getViewport()
     .addEventListener('contextmenu', goog.bind(function(event) {
       event.preventDefault(); // disable right-click menu on browsers
+      if (!this.openInPointerDown_) {
+        this.loadInfoPane_(event);
+        this['open'] = true;
+      }
+      this.openInPointerDown_ = false;
     }, this));
 
 };
