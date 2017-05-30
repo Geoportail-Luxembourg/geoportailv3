@@ -138,26 +138,26 @@ app.interaction.DrawRoute = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.finishCondition_ = options.finishCondition ? options.finishCondition : ol.functions.TRUE;
-  
+
   /**
    * @private
    * @type {string}
-   */  
+   */
   this.lastWaypoints_;
-  
+
   /**
    * @private
    * @type {string}
-   */  
+   */
   this.getRouteUrl_ = options.getRouteUrl;
 
   /**
    * @private
    * @type {Array}
-   */  
-  this.pointsCnt = [];
+   */
+  this.pointsCnt_ = [];
 
-  /** 
+  /**
    * @private
    * @type {boolean}
    */
@@ -422,7 +422,7 @@ app.interaction.DrawRoute.prototype.handlePointerMove_ = function(event) {
   }
 
   if (this.finishCoordinate_) {
-      this.modifyDrawing_(event);
+    this.modifyDrawing_(event);
   } else {
     this.createOrUpdateSketchPoint_(event);
   }
@@ -577,10 +577,10 @@ app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
   }
   coordinates.push(coordinate.slice());
   if (!this.mapMatching_ || this.freehand_ ||
-      this.getRouteUrl_ === undefined || 
+      this.getRouteUrl_ === undefined ||
       this.$http_ === undefined) {
-    this.pointsCnt.push(1);
-    this.geometryFunction_(coordinates, geometry);    
+    this.pointsCnt_.push(1);
+    this.geometryFunction_(coordinates, geometry);
     this.updateSketchFeatures_();
   } else {
     var last = coordinates[coordinates.length - 1];
@@ -596,8 +596,8 @@ app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
           var parser = new ol.format.GeoJSON();
           if (resp['data']['success']) {
             var routedGeometry = parser.readGeometry(resp['data']['geom']);
-            this.pointsCnt.push(/** @type {ol.geom.LineString} */ (routedGeometry).getCoordinates().length);
-            var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 1).
+            this.pointsCnt_.push(/** @type {ol.geom.LineString} */ (routedGeometry).getCoordinates().length);
+            var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 2).
               concat(/** @type {ol.geom.LineString} */ (routedGeometry.transform('EPSG:4326', 'EPSG:3857')).getCoordinates());
             if (!this.finishAfterRoute_) {
               curCoordinates.push(last);
@@ -633,12 +633,27 @@ app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
 };
 
 /**
- * Remove last point of the feature currently being drawn.
+ * Activate or deactivate Map matching.
  * @param {boolean} actif Set to true to activate mapmatching.
  */
 app.interaction.DrawRoute.prototype.setMapMatching = function(actif) {
   this.mapMatching_ = actif;
-}
+};
+
+/**
+ * Get the status of mapmatching.
+ * @return {boolean} Return true if mapMatching is active.
+ */
+app.interaction.DrawRoute.prototype.getMapMatching = function() {
+  return this.mapMatching_;
+};
+
+/**
+ * Toggle the mapmatching status.
+ */
+app.interaction.DrawRoute.prototype.toggleMapMatching = function() {
+  this.mapMatching_ = !this.mapMatching_;
+};
 
 /**
  * Remove last point of the feature currently being drawn.
@@ -650,19 +665,20 @@ app.interaction.DrawRoute.prototype.removeLastPoints = function() {
   }
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates = this.sketchCoords_;
-  var a = this.pointsCnt.pop();
-  coordinates.splice((-1 * a) - 1, a);
+  var curNb = this.pointsCnt_.pop();
+  coordinates.splice((-1 * curNb) - 1, curNb);
   this.geometryFunction_(coordinates, geometry);
   if (coordinates.length >= 2) {
     this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
   }
-  
+
   if (coordinates.length === 0) {
     this.finishCoordinate_ = null;
   }
 
   this.updateSketchFeatures_();
-}
+};
+
 /**
  * Remove last point of the feature currently being drawn.
  * @api
@@ -704,7 +720,7 @@ app.interaction.DrawRoute.prototype.removeLastPoint = function() {
  */
 app.interaction.DrawRoute.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
- 
+
   // First dispatch event to allow full set up of feature
   this.dispatchEvent(new app.interaction.DrawRoute.Event(
       ol.interaction.DrawEventType.DRAWEND, sketchFeature));

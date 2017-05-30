@@ -1,4 +1,4 @@
-<div ng-show="!ctrl.editingAttributes && !(ctrl.editingStyle || ctrl.feature.get('creating') === true) && !ctrl.deletingFeature && !ctrl.askRadius">
+<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature && !ctrl.askRadius">
 
   <div class="feature-popup-heading" ng-hide="ctrl.isDocked()">{{ ctrl.feature.get('name') }}&nbsp;</div>
   <a ng-if="!ctrl.isDocked()" href class="close" ng-click="ctrl.close()">&times;</a>
@@ -101,7 +101,7 @@
     </button>
   </div>
 </div>
-<div ng-show="ctrl.editingStyle || ctrl.feature.get('creating') === true">
+<div ng-show="ctrl.editingStyle">
   <div class="feature-popup-body">
     <app-styleediting app-style-editing-feature="ctrl.feature"
                        app-style-editing-style="ctrl.editingStyle">

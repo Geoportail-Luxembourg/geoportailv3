@@ -23,6 +23,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
+goog.require('app.RouteControl');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
@@ -270,66 +271,12 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
       this.onChangeActive_, this);
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  /**
-   * @type {string | undefined}
-   * @private
-   */
-  this.lastWaypoints_;
-  /**
-   * @type {ol.geom.LineString | undefined}
-   * @private
-   */
-  this.lastRoutedGeometry_;
 
   this.drawnFeatures_.drawLineInteraction = new app.interaction.DrawRoute({
     type: ol.geom.GeometryType.LINE_STRING,
     getRouteUrl: this.getRouteUrl_,
     $http: this.$http_,
-    mapMatching: this.drawnFeatures_.mapMatching,
-    geometryFunction2: function(coordinates, opt_geometry) {
-      var geometry = opt_geometry;
-
-      if (geometry) {
-        if (!this.drawnFeatures_.mapMatching) {
-          geometry.setCoordinates(coordinates);
-          return geometry;
-        }
-        var last = coordinates[coordinates.length - 1];
-        if (coordinates.length > 2) {
-          var penultimate = ol.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
-          var antepenultimate = ol.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
-          var waypoints = antepenultimate[1] + ',' + antepenultimate[0] + ',' + penultimate[1] + ',' + penultimate[0];
-          if (waypoints !== this.lastWaypoints_) {
-            this.lastWaypoints_ = waypoints;
-            var url = this.getRouteUrl_ + '?waypoints=' + waypoints;
-            this.$http_.get(url).then(function(resp) {
-              var parser = new ol.format.GeoJSON();
-              if (resp['data']['success']) {
-                var routedGeometry = parser.readGeometry(resp['data']['geom']);
-                this.lastRoutedGeometry_ = /** @type {ol.geom.LineString} */ (routedGeometry.transform('EPSG:4326', 'EPSG:3857'));
-                var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 1).
-                  concat(/** @type {ol.geom.LineString} */ (this.lastRoutedGeometry_).getCoordinates());
-                curCoordinates.push(last);
-                geometry.setCoordinates(curCoordinates);
-              } else {
-                console.log('Erreur de calcul de la route');
-                this.lastRoutedGeometry_ = undefined;
-              }
-            }.bind(this));
-          }
-        }
-        if (this.lastRoutedGeometry_ !== undefined) {
-          this.lastRoutedGeometry_ = undefined;
-        } else {
-          var curCoordinates = geometry.getCoordinates().slice(0, geometry.getCoordinates().length - 1);
-          curCoordinates.push(last);
-          geometry.setCoordinates(curCoordinates);
-        }
-      } else {
-        geometry = new ol.geom.LineString(coordinates);
-      }
-      return geometry;
-    }.bind(this)
+    mapMatching: false
   });
 
   /**
@@ -391,11 +338,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWSTART,
       this.onDrawCircleStart_, this);
 
-  $scope.$watch(function() {
-    return this.drawnFeatures_.mapMatching;
-  }.bind(this), function(newVal) {
-    this.drawnFeatures_.drawLineInteraction.setMapMatching(newVal);
-  }.bind(this));
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
   $scope.$watch(goog.bind(function() {
@@ -519,6 +461,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
       this.keyboardHandler_, this);
+
+  /**
+   * @type {app.RouteControl}
+   * @private
+   */
+  this.routeControl_ = new app.RouteControl({
+    label: '\ue006',
+    drawLineInteraction: this.drawLine
+  });
 };
 
 
@@ -596,6 +547,11 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   } else {
     this.appActivetool_.drawActive = false;
   }
+  if (this.drawLine.getActive()) {
+    this.map.addControl(this.routeControl_);
+  } else {
+    this.map.removeControl(this.routeControl_);
+  }
 };
 
 
@@ -640,32 +596,6 @@ app.DrawController.prototype.onDrawLineStart_ = function(event) {
       (sketchFeature.getGeometry());
   goog.asserts.assert(goog.isDef(geometry));
   var proj = this.map.getView().getProjection();
-
-  /**
-   * @type {string}
-   */
-  var name = this.gettextCatalog.getString('LineString');
-
-  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
-  sketchFeature.set('name', name + ' ' +
-      (nbFeatures + 1));
-  sketchFeature.set('description', '');
-  sketchFeature.set('__editable__', true);
-  sketchFeature.set('color', '#ed1c24');
-  sketchFeature.set('opacity', 0.2);
-  sketchFeature.set('stroke', 1.25);
-  sketchFeature.set('size', 10);
-  sketchFeature.set('angle', 0);
-  sketchFeature.set('linestyle', 'plain');
-  sketchFeature.set('shape', 'circle');
-  sketchFeature.set('isLabel', this.drawLabel.getActive());
-  sketchFeature.setStyle(this.featureStyleFunction_);
-  sketchFeature.set('display_order', nbFeatures);
-
-  this.selectedFeatures_.clear();
-  sketchFeature.set('creating', true);
-  this.selectedFeatures_.push(sketchFeature);
-  this.drawnFeatures_.getCollection().push(sketchFeature);
 
   this.changeEventKey_ = ol.events.listen(geometry,
       ol.events.EventType.CHANGE,
@@ -764,8 +694,6 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
  */
 app.DrawController.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
-  this.lastWaypoints_ = undefined;
-  this.lastRoutedGeometry_ = undefined;
 
   if (this.changeEventKey_ !== null) {
     ol.Observable.unByKey(this.changeEventKey_);
@@ -784,55 +712,55 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
         ol.geom.Polygon.fromCircle(featureGeom, 64)
     );
   }
-  if (feature.get('creating') !== true) {
-    /**
-     * @type {string}
-     */
-    var name;
-    switch (feature.getGeometry().getType()) {
-      case 'Point':
-        if (this.drawLabel.getActive()) {
-          name = this.gettextCatalog.getString('Label');
-        } else {
-          name = this.gettextCatalog.getString('Point');
-        }
-        break;
-      case 'LineString':
-        if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+
+  /**
+   * @type {string}
+   */
+  var name;
+  switch (feature.getGeometry().getType()) {
+    case 'Point':
+      if (this.drawLabel.getActive()) {
+        name = this.gettextCatalog.getString('Label');
+      } else {
+        name = this.gettextCatalog.getString('Point');
+      }
+      break;
+    case 'LineString':
+      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+        return;
+      }
+      name = this.gettextCatalog.getString('LineString');
+      break;
+    case 'Polygon':
+      if (feature.get('isCircle')) {
+        name = this.gettextCatalog.getString('Circle');
+      } else {
+        if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
           return;
         }
-        name = this.gettextCatalog.getString('LineString');
-        break;
-      case 'Polygon':
-        if (feature.get('isCircle')) {
-          name = this.gettextCatalog.getString('Circle');
-        } else {
-          if (/** @type {ol.geom.Polygon} */ (feature.getGeometry()).getLinearRing(0).getCoordinates().length < 4) {
-            return;
-          }
-          name = this.gettextCatalog.getString('Polygon');
-        }
-        break;
-      default:
-        name = feature.getGeometry().getType();
-        break;
-    }
-    var nbFeatures = this.drawnFeatures_.getCollection().getLength();
-    feature.set('name', name + ' ' +
-        (nbFeatures + 1));
-    feature.set('description', '');
-    feature.set('__editable__', true);
-    feature.set('color', '#ed1c24');
-    feature.set('opacity', 0.2);
-    feature.set('stroke', 1.25);
-    feature.set('size', 10);
-    feature.set('angle', 0);
-    feature.set('linestyle', 'plain');
-    feature.set('shape', 'circle');
-    feature.set('isLabel', this.drawLabel.getActive());
-    feature.setStyle(this.featureStyleFunction_);
-    feature.set('display_order', nbFeatures);
+        name = this.gettextCatalog.getString('Polygon');
+      }
+      break;
+    default:
+      name = feature.getGeometry().getType();
+      break;
   }
+  var nbFeatures = this.drawnFeatures_.getCollection().getLength();
+  feature.set('name', name + ' ' +
+      (nbFeatures + 1));
+  feature.set('description', '');
+  feature.set('__editable__', true);
+  feature.set('color', '#ed1c24');
+  feature.set('opacity', 0.2);
+  feature.set('stroke', 1.25);
+  feature.set('size', 10);
+  feature.set('angle', 0);
+  feature.set('linestyle', 'plain');
+  feature.set('shape', 'circle');
+  feature.set('isLabel', this.drawLabel.getActive());
+  feature.setStyle(this.featureStyleFunction_);
+  feature.set('display_order', nbFeatures);
+
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
@@ -840,16 +768,15 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       event.target.setActive(false);
     });
   }, this), 0);
-  if (feature.get('creating') !== true) {
-    if (this.appMymaps_.isEditable()) {
-      feature.set('__map_id__', this.appMymaps_.getMapId());
-    } else {
-      feature.set('__map_id__', undefined);
-    }
-    this.drawnFeatures_.getCollection().push(feature);
+  if (this.appMymaps_.isEditable()) {
+    feature.set('__map_id__', this.appMymaps_.getMapId());
+  } else {
+    feature.set('__map_id__', undefined);
   }
+  this.drawnFeatures_.getCollection().push(feature);
+
   feature.set('__refreshProfile__', true);
-  feature.unset('creating');
+
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
   this.drawnFeatures_.saveFeature(feature);
@@ -903,6 +830,7 @@ app.DrawController.prototype.toggleDrawPoint = function() {
 app.DrawController.prototype.toggleDrawLine = function() {
   var active = !this.isEditing('drawLine');
   this.setActiveDraw_(active, this.drawLine);
+
   return this.isEditing('drawLine');
 };
 
