@@ -26,11 +26,6 @@ goog.require('ol.Collection');
 app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
 
   /**
-   * @type {boolean}
-   */
-  this.mapMatching = false;
-
-  /**
    * @type {ngeo.FeatureOverlayMgr}
    * @private
    */
