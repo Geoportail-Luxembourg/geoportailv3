@@ -28,6 +28,7 @@ goog.require('ol.source.WMTSRequestEncoding');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
+
 proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
 
 /**
@@ -345,6 +346,12 @@ lux.Map = function(options) {
   this.blankLayer_.set('name', 'blank');
 
   /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ = [2.6, 47.7, 8.6, 51];
+
+  /**
    * @private
    * @type {ol.Overlay}
    */
@@ -492,9 +499,10 @@ lux.Map = function(options) {
 
   if (options.search && options.search.target) {
     var searchTarget = options.search.target;
+    var searchDataSets = options.search.dataSets;
     delete options.search;
     this.i18nPromise.then(function() {
-      this.addSearch(searchTarget);
+      this.addSearch(searchTarget, searchDataSets);
     }.bind(this));
   }
 
@@ -1065,13 +1073,25 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
 /**
  * It adds the search control into an html element.
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
- * @param {Element|string} target Dom element or id of the element to render
- * search widget in.
+ * @param {Element|string} target Dom element or id of the element to render search widget in.
+ * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
  * @export
  * @api
  */
-lux.Map.prototype.addSearch = function(target) {
-
+lux.Map.prototype.addSearch = function(target, dataSets) {
+  var layers = [];
+  var searchCoordinates = false;
+  if (dataSets !== undefined && dataSets.length > 0) {
+    dataSets.forEach(function(layer) {
+      if (layer === 'Coordinates') {
+        searchCoordinates = true;
+      } else {
+        layers.push(layer);
+      }
+    });
+  } else {
+    layers.push('Adresse');
+  }
   var el = typeof target === 'string' ?
       document.getElementById(target) :
       target;
@@ -1112,24 +1132,32 @@ lux.Map.prototype.addSearch = function(target) {
 
   var format = new ol.format.GeoJSON();
 
+
   new autoComplete({
     'selector': input,
     'minChars': 2,
     'menuClass': 'lux-search-suggestions',
     'source': function(term, suggest) {
-      term = term.toLowerCase();
-      fetch(lux.searchUrl + 'limit=5&layer=Adresse&query=' + term).then(function(resp) {
-        return resp.json();
-      }).then(function(json) {
-        suggest(json.features);
-      });
-    },
+      var coordResults = [];
+      if (searchCoordinates) {
+        coordResults = this.matchCoordinate_(term);
+        suggest(coordResults);
+      }
+      if (layers.length > 0) {
+        term = term.toLowerCase();
+        fetch(lux.searchUrl + 'limit=5&layer=' + layers.join(',') + '&query=' + term).then(function(resp) {
+          return resp.json();
+        }).then(function(json) {
+          suggest(coordResults.concat(json.features));
+        });
+      }
+    }.bind(this),
     'renderItem': function(item, search) {
       var label = item.properties.label;
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
       var geom = /** @type {ol.geom.Point} */ (format.readGeometry(item.geometry));
-      var bbox = (!item['bbox']['join']) ? geom.getExtent() : item['bbox'];
+      var bbox = (!item['bbox'] || !item['bbox']['join']) ? geom.getExtent() : item['bbox'];
       return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
           'data-coord="' + geom.getCoordinates().join(',') + '"' +
           'data-extent="' + bbox.join(',') + '">' +
@@ -1157,6 +1185,175 @@ lux.Map.prototype.addSearch = function(target) {
     }.bind(this)
   });
 
+};
+
+/**
+ * @param {string} searchString The search string.
+ * @return {Array<ol.Feature>} The result.
+ * @private
+ */
+lux.Map.prototype.matchCoordinate_ = function(searchString) {
+  searchString = searchString.replace(/,/gi, '.');
+  var results = [];
+  var format = new ol.format.GeoJSON();
+  var re = {
+    'EPSG:2169': {
+      regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
+      label: 'LUREF',
+      epsgCode: 'EPSG:2169'
+    },
+    'EPSG:4326': {
+      regex:
+      /(\d{1,2}[\,\.]\d{1,6})\d*\s?(latitude|lat|N|longitude|long|lon|E|east|est)?\W*(\d{1,2}[\,\.]\d{1,6})\d*\s?(longitude|long|lon|E|latitude|lat|N|north|nord)?/i,
+      label: 'long/lat WGS84',
+      epsgCode: 'EPSG:4326'
+    },
+    'EPSG:4326:DMS': {
+      regex:
+      /([NSEW])?(-)?(\d+(?:\.\d+)?)[°º:d\s]?\s?(?:(\d+(?:\.\d+)?)['’‘′:]\s?(?:(\d{1,2}(?:\.\d+)?)(?:"|″|’’|'')?)?)?\s?([NSEW])?/i,
+      label: 'long/lat WGS84 DMS',
+      epsgCode: 'EPSG:4326'
+    }
+  };
+  var northArray = ['LATITUDE', 'LAT', 'N', 'NORTH', 'NORD'];
+  var eastArray = ['LONGITUDE', 'LONG', 'LON', 'E', 'EAST', 'EST'];
+  for (var epsgKey in re) {
+    /**
+     * @type {Array.<string | undefined>}
+     */
+    var m = re[epsgKey].regex.exec(searchString);
+
+    if (goog.isDefAndNotNull(m)) {
+      var epsgCode = re[epsgKey].epsgCode;
+      var isDms = false;
+      /**
+       * @type {number | undefined}
+       */
+      var easting = undefined;
+      /**
+       * @type {number | undefined}
+       */
+      var northing = undefined;
+      if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
+        if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
+          if (goog.array.contains(northArray, m[2].toUpperCase()) &&
+          goog.array.contains(eastArray, m[4].toUpperCase())) {
+            easting = parseFloat(m[3].replace(',', '.'));
+            northing = parseFloat(m[1].replace(',', '.'));
+          } else if (goog.array.contains(northArray, m[4].toUpperCase()) &&
+          goog.array.contains(eastArray, m[2].toUpperCase())) {
+            easting = parseFloat(m[1].replace(',', '.'));
+            northing = parseFloat(m[3].replace(',', '.'));
+          }
+        } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+          easting = parseFloat(m[1].replace(',', '.'));
+          northing = parseFloat(m[3].replace(',', '.'));
+        }
+      } else if (epsgKey === 'EPSG:4326:DMS') {
+        // Inspired by https://github.com/gmaclennan/parse-dms/blob/master/index.js
+        var m1, m2, decDeg1, decDeg2, dmsString2;
+        m1 = m;
+        if (m1[1]) {
+          m1[6] = undefined;
+          dmsString2 = searchString.substr(m1[0].length - 1).trim();
+        } else {
+          dmsString2 = searchString.substr(m1[0].length).trim();
+        }
+        decDeg1 = this.decDegFromMatch_(m1);
+        if (decDeg1 !== undefined) {
+          m2 = re[epsgKey].regex.exec(dmsString2);
+          decDeg2 = m2 ? this.decDegFromMatch_(m2) : undefined;
+          if (decDeg2 !== undefined) {
+            if (typeof decDeg1.latLon === 'undefined') {
+              if (!isNaN(decDeg1.decDeg) && !isNaN(decDeg2.decDeg)) {
+                // If no hemisphere letter but we have two coordinates,
+                // infer that the first is lat, the second lon
+                decDeg1.latLon = 'lat';
+              }
+            }
+            if (decDeg1.latLon === 'lat') {
+              northing = decDeg1.decDeg;
+              easting = decDeg2.decDeg;
+            } else {
+              easting = decDeg1.decDeg;
+              northing = decDeg2.decDeg;
+            }
+            isDms = true;
+          }
+        }
+      }
+      if (easting !== undefined && northing !== undefined) {
+        var mapEpsgCode = 'EPSG:4326';
+        var point = /** @type {ol.geom.Point} */
+        (new ol.geom.Point([easting, northing])
+       .transform(epsgCode, mapEpsgCode));
+        var flippedPoint =  /** @type {ol.geom.Point} */
+        (new ol.geom.Point([northing, easting])
+       .transform(epsgCode, mapEpsgCode));
+        var feature = /** @type {ol.Feature} */ (null);
+        if (ol.extent.containsCoordinate(
+        this.maxExtent_, point.getCoordinates())) {
+          feature = new ol.Feature(point);
+        } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+        this.maxExtent_, flippedPoint.getCoordinates())) {
+          feature = new ol.Feature(flippedPoint);
+        }
+        if (!goog.isNull(feature)) {
+          var resultPoint =
+            /** @type {ol.geom.Point} */ (feature.getGeometry());
+          var resultString = lux.coordinateString_(
+          resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
+          feature.set('label', resultString);
+          feature.set('epsgLabel', re[epsgKey].label);
+          results.push(format.writeFeatureObject(feature));
+        }
+      }
+    }
+  }
+  return results; //return empty array if no match
+};
+
+/**
+ * @param {Array.<string | undefined>} m The matched result.
+ * @return {Object | undefined} Returns the coordinate.
+ * @private
+ */
+lux.Map.prototype.decDegFromMatch_ = function(m) {
+  var signIndex = {
+    '-': -1,
+    'N': 1,
+    'S': -1,
+    'E': 1,
+    'W': -1
+  };
+
+  var latLonIndex = {
+    'N': 'lat',
+    'S': 'lat',
+    'E': 'lon',
+    'W': 'lon'
+  };
+
+  var sign;
+  sign = signIndex[m[2]] || signIndex[m[1]] || signIndex[m[6]] || 1;
+  if (m[3] === undefined) {
+    return undefined;
+  }
+
+  var degrees, minutes = 0, seconds = 0, latLon;
+  degrees = Number(m[3]);
+  if (m[4] !== undefined) {
+    minutes = Number(m[4]);
+  }
+  if (m[5] !== undefined) {
+    seconds = Number(m[5]);
+  }
+  latLon = latLonIndex[m[1]] || latLonIndex[m[6]];
+
+  return {
+    decDeg: sign * (degrees + minutes / 60 + seconds / 3600),
+    latLon: latLon
+  };
 };
 
 /**
@@ -1233,7 +1430,6 @@ lux.Map.prototype.addKML = function(url, opt_options) {
  * @private
  */
 lux.Map.prototype.addVector_ = function(url, format, opt_options) {
-
   var popup;
   var vector;
   var el;
@@ -1658,4 +1854,116 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       this.renderSync();
     }
   }.bind(this));
+};
+
+/**
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @param {string} sourceEpsgCode The source epsg.
+ * @param {string} targetEpsgCode The target epsg.
+ * @param {boolean} opt_DMS True if DMS.
+ * @param {boolean} opt_DMm True if Degree decimal minutes.
+ * @return {string} The coordinate string.
+ */
+lux.coordinateString_ = function(coordinate, sourceEpsgCode,
+    targetEpsgCode, opt_DMS, opt_DMm) {
+  var str = '';
+  if (targetEpsgCode === 'EPSG:3263*') {
+    var lonlat = /** @type {ol.Coordinate} */
+        (ol.proj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+    targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
+  }
+
+  coordinate = ol.proj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+
+  switch (targetEpsgCode) {
+    default:
+    case 'EPSG:2169':
+      str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
+      break;
+    case 'EPSG:4326':
+      if (opt_DMS) {
+        var hdms = lux.toStringHDMS_(coordinate);
+        var yhdms = hdms.split(' ').slice(0, 4).join(' ');
+        var xhdms = hdms.split(' ').slice(4, 8).join(' ');
+        str = xhdms + ' | ' + yhdms;
+      } else if (opt_DMm) {
+        var hdmm = lux.toStringHDMm_(coordinate);
+        var yhdmm = hdmm.split(' ').slice(0, 3).join(' ');
+        var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
+        str = xhdmm + ' | ' + yhdmm;
+      } else {
+        str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
+      }
+      break;
+    case 'EPSG:32632':
+      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+      break;
+    case 'EPSG:32631':
+      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+      break;
+  }
+  return str;
+};
+
+/**
+ * @private
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @return {string} Hemisphere, degrees, minutes and seconds.
+ */
+lux.toStringHDMS_ = function(coordinate) {
+  if (goog.isDef(coordinate)) {
+    return lux.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
+        lux.degreesToStringHDMS_(coordinate[0], 'EW');
+  } else {
+    return '';
+  }
+};
+
+/**
+ * @private
+ * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @return {string} Hemisphere, degrees, decimal minutes.
+ */
+lux.toStringHDMm_ = function(coordinate) {
+  if (goog.isDef(coordinate)) {
+    return lux.degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
+        lux.degreesToStringHDMm_(coordinate[0], 'EW');
+  } else {
+    return '';
+  }
+};
+
+/**
+ * @private
+ * @param {number} degrees Degrees.
+ * @param {string} hemispheres Hemispheres.
+ * @return {string} String.
+ */
+lux.degreesToStringHDMS_ = function(degrees, hemispheres) {
+  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var x = Math.abs(3600 * normalizedDegrees);
+  return Math.floor(x / 3600) + '\u00b0 ' +
+      goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+      goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
+      Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
+      '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+};
+
+/**
+ * @private
+ * @param {number} degrees Degrees.
+ * @param {string} hemispheres Hemispheres.
+ * @return {string} String.
+ */
+lux.degreesToStringHDMm_ = function(degrees, hemispheres) {
+  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var x = Math.abs(3600 * normalizedDegrees);
+  var dd = x / 3600;
+  var m = (dd - Math.floor(dd)) * 60;
+
+  var res = Math.floor(dd) + '\u00b0 ' +
+      goog.string.padNumber(Math.floor(m), 2) + ',' +
+      Math.floor((m - Math.floor(m)) * 100000) +
+      '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+  return res;
 };
