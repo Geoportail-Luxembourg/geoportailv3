@@ -27,8 +27,10 @@
 </ul>
 <ul ng-show="ctrl.showMapMatchingButton" ngeo-btn-group class="nav toolbox-panel-mapmatching toolbox-panel-mapmatching-bottom">
   <li ng-class="{active: ctrl.getMapMatching()}">
-    <a href translate ngeo-btn
+    <a href ngeo-btn
     ng-model="ctrl.mapmatchingActive"
-    ng-click="ctrl.toggleMapMatching()">Suivre la route</a>
+    ng-click="ctrl.toggleMapMatching()">
+    <i class="fa" ng-class="(ctrl.getMapMatching()) ? 'fa-check-square' : 'fa-square'"></i>
+    {{"Suivre la route" | translate}}</a>
   </li>
 </ul>

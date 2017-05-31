@@ -745,6 +745,7 @@ app.interaction.DrawRoute.prototype.finishDrawing = function() {
 app.interaction.DrawRoute.prototype.abortDrawing_ = function() {
   this.finishCoordinate_ = null;
   var sketchFeature = this.sketchFeature_;
+  this.pointsCnt_ = [];
   if (sketchFeature) {
     this.sketchFeature_ = null;
     this.sketchPoint_ = null;
