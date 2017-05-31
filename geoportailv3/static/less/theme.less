@@ -114,6 +114,20 @@
     background-color: @primary;
   }
 
+  .footer .toolbox-panel-mapmatching > li {
+    > a {
+      background-color: @tertiary;
+      color: white;
+    }
+    &.active > a {
+      background-color: @primary;
+    }
+  }
+
+  &.no-touch .footer .toolbox-panel > li > a:hover {
+    background-color: @primary;
+  }
+
   ul.catalog {
     ul {
       background-color: @secondary;
