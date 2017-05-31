@@ -108,6 +108,13 @@ luxx.MapOptions.prototype.positionSrs;
 luxx.MapOptions.prototype.queryableLayers;
 
 /**
+ * The search configuration.
+ * @type {luxx.SearchOption|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.search;
+
+/**
  * If set to true, it displays the feature information in a popup or
  * in popupTarget element.
  * @type {boolean|undefined}
@@ -122,7 +129,6 @@ luxx.MapOptions.prototype.showLayerInfoPopup;
  * @api
  */
 luxx.MapOptions.prototype.target;
-
 /**
  * The map's view.
  * @type {ol.View|undefined}
@@ -137,6 +143,27 @@ luxx.MapOptions.prototype.view;
  */
 luxx.MapOptions.prototype.zoom;
 
+/**
+ * Object literal with config options for the search.
+ * @typedef {Object}
+ */
+luxx.SearchOption;
+
+/**
+ * The container for the map, either the element itself or the `id` of the
+ * element.
+ * @type {Element|string}
+ * @api
+ */
+luxx.SearchOption.prototype.target;
+
+/**
+ * A dataSets Array of layer used as search sources. Default is Adresse.
+ * Possible values are 'Adresse' and 'Coordinates'.
+ * @type {Array<string>|undefined}
+ * @api
+ */
+luxx.SearchOption.prototype.dataSets;
 
 /**
  * Object literal with config options for the maker.

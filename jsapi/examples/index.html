@@ -361,8 +361,8 @@ var map6 = new lux.Map({
         <a name="example7"/>
         <div class='description' id='desc7'>
         <h2>Example with Search in div</h2>
-        This is a basic example with a search widget inside a div
-        
+        This is a basic example with a search widget inside a div.
+        The search by coordinates is enabled.
         <pre>
 var map7 = new lux.Map({
   target: 'map7',
@@ -370,7 +370,8 @@ var map7 = new lux.Map({
   zoom: 12,
   position: [76825, 75133],
   search      : {
-    target : 'search7'
+    target : 'search7',
+    dataSets : ['Adresse', 'Coordinates']
   }
 });
 
@@ -929,7 +930,8 @@ var map7 = new lux.Map({
   zoom: 12,
   position: [76825, 75133],
   search      : {
-    target : 'search7'
+    target : 'search7',
+    dataSets : ['Adresse', 'Coordinates']
   }
 });
 
