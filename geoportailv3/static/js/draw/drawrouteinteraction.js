@@ -650,9 +650,11 @@ app.interaction.DrawRoute.prototype.getMapMatching = function() {
 
 /**
  * Toggle the mapmatching status.
+ * @return {boolean} Return true if mapMatching is active.
  */
 app.interaction.DrawRoute.prototype.toggleMapMatching = function() {
   this.mapMatching_ = !this.mapMatching_;
+  return this.mapMatching_;
 };
 
 /**
