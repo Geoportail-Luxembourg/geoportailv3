@@ -207,6 +207,10 @@ def main(global_config, **settings):
         "get_arrow_color",
         "/mymaps/getarrow"
     )
+    config.add_route(
+        "getroute",
+        "/mymaps/getroute"
+    )
     # geocoder routes
     config.add_route(
         "reverse_geocode",

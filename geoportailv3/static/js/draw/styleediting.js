@@ -132,7 +132,6 @@ app.StyleEditingController.prototype.setShape = function(symbol) {
   this.feature.set('shape', symbol);
 };
 
-
 /**
  * @param {boolean} orientation True to show the orientation.
  * @return {*} The orientation.
@@ -148,7 +147,6 @@ app.StyleEditingController.prototype.getSetOrientation = function(orientation) {
     return this.feature.get('showOrientation');
   }
 };
-
 
 /**
  * @export

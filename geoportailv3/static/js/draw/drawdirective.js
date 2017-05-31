@@ -18,6 +18,7 @@ goog.provide('app.drawDirective');
 goog.require('app');
 goog.require('app.Activetool');
 goog.require('app.DrawnFeatures');
+goog.require('app.interaction.DrawRoute');
 goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
@@ -82,6 +83,8 @@ app.module.directive('appDraw', app.drawDirective);
  * @param {angular.$anchorScroll} $anchorScroll The anchorScroll provider.
  * @param {app.Activetool} appActivetool The activetool service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {angular.$http} $http Angular $http service.
+ * @param {string} getRouteUrl The url.
  * @constructor
  * @export
  * @ngInject
@@ -89,7 +92,19 @@ app.module.directive('appDraw', app.drawDirective);
 app.DrawController = function($scope, ngeoDecorateInteraction,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
     appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
-    appActivetool, appGetDevice) {
+    appActivetool, appGetDevice, $http, getRouteUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.getRouteUrl_ = getRouteUrl;
+
+  /**
+   * @type {angular.$http}
+   * @private
+   */
+  this.$http_ = $http;
+
   /**
    * @private
    * @type {app.GetDevice}
@@ -180,6 +195,18 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @type {boolean}
    * @export
    */
+  this.mapmatchingActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showMapMatchingButton = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
   this.drawPolygonActive = false;
 
   /**
@@ -256,12 +283,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  this.drawnFeatures_.drawLineInteraction = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.LINE_STRING
+  this.drawnFeatures_.drawLineInteraction = new app.interaction.DrawRoute({
+    type: ol.geom.GeometryType.LINE_STRING,
+    getRouteUrl: this.getRouteUrl_,
+    $http: this.$http_,
+    mapMatching: false
   });
 
   /**
-   * @type {ol.interaction.Draw}
+   * @type {app.interaction.DrawRoute}
    * @export
    */
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
@@ -442,6 +472,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
       this.keyboardHandler_, this);
+
 };
 
 
@@ -518,6 +549,11 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     }
   } else {
     this.appActivetool_.drawActive = false;
+  }
+  if (this.drawLine.getActive()) {
+    this.showMapMatchingButton = true;
+  } else {
+    this.showMapMatchingButton = false;
   }
 };
 
@@ -727,20 +763,22 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   feature.set('isLabel', this.drawLabel.getActive());
   feature.setStyle(this.featureStyleFunction_);
   feature.set('display_order', nbFeatures);
+
+
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(goog.bind(function() {
     this.scope_.$apply(function() {
       event.target.setActive(false);
     });
   }, this), 0);
-
   if (this.appMymaps_.isEditable()) {
     feature.set('__map_id__', this.appMymaps_.getMapId());
   } else {
     feature.set('__map_id__', undefined);
   }
-
   this.drawnFeatures_.getCollection().push(feature);
+
+  feature.set('__refreshProfile__', true);
 
   this.selectedFeatures_.clear();
   this.selectedFeatures_.push(feature);
@@ -754,7 +792,7 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
 
 /**
  * @param {boolean} active Set active or not.
- * @param {ol.interaction.Draw} interaction Set active or not.
+ * @param {ol.interaction.Draw | app.interaction.DrawRoute} interaction Set active or not.
  * @private
  */
 app.DrawController.prototype.setActiveDraw_ = function(active, interaction) {
@@ -788,7 +826,6 @@ app.DrawController.prototype.toggleDrawPoint = function() {
   return this.isEditing('drawPoint');
 };
 
-
 /**
  * @return {boolean} true if the feature is active.
  * @export
@@ -796,9 +833,25 @@ app.DrawController.prototype.toggleDrawPoint = function() {
 app.DrawController.prototype.toggleDrawLine = function() {
   var active = !this.isEditing('drawLine');
   this.setActiveDraw_(active, this.drawLine);
+
   return this.isEditing('drawLine');
 };
 
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleMapMatching = function() {
+  return this.drawLine.toggleMapMatching();
+};
+
+/**
+ * @return {boolean} True if mapmatching active.
+ * @export
+ */
+app.DrawController.prototype.getMapMatching = function() {
+  return this.drawLine.getMapMatching();
+};
 
 /**
  * @return {boolean} true if the feature is active.
@@ -843,7 +896,6 @@ app.DrawController.prototype.isEditing = function(type) {
   if (this.selectedFeatures_.getLength() > 0) {
     feature = this.selectedFeatures_.getArray()[0];
   }
-
   if ('drawPoint' === type) {
     if (this.drawPoint.getActive() ||
         (feature !== undefined && feature.get('__editable__') === 1 &&
@@ -938,7 +990,7 @@ app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
 
   if (this.active && keyEvent.key === 'Backspace') {
     if (this.drawLine.getActive()) {
-      this.drawLine.removeLastPoint();
+      this.drawLine.removeLastPoints();
     }
     if (this.drawPolygon.getActive()) {
       this.drawPolygon.removeLastPoint();

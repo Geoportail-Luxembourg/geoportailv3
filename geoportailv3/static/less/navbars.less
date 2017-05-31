@@ -48,6 +48,25 @@ header {
   }
 }
 
+.toolbox-panel-mapmatching {
+  display: none;
+  z-index: 2;
+  position: absolute;
+  top: auto;
+  bottom: ~"calc(100% + 63px)";
+  white-space: nowrap;
+  padding-left: 128px;
+  > li {
+    display: block;
+    float: left;
+    > a {
+      padding: 0;
+      text-align: center;
+      margin-right: 1px;
+    }
+  }
+}
+
 .toolbox-panel {
   display: none;
   z-index: 2;
@@ -79,6 +98,10 @@ header {
 }
 
 .active .toolbox-panel {
+  display: block;
+}
+
+.active .toolbox-panel-mapmatching {
   display: block;
 }
 
@@ -136,6 +159,11 @@ header {
   padding-right: 7px;
   padding-left: 7px;
 }
+.toolbox-panel-mapmatching > li > a {
+  width: (@icon-width * 3) + 2;
+  line-height: 39px;
+}
+
 .toolbox-panel > li > a {
   width: @icon-width;
   line-height: @icon-width;
@@ -143,6 +171,10 @@ header {
 
 .toolbox-panel-bottom > li > a {
   margin-right: 1px;
+}
+
+.toolbox-panel-mapmatching-bottom > li > a {
+  margin-bottom: 1px;
 }
 
 .toolbox-panel-top > li > a {
