@@ -25,3 +25,10 @@
        ng-click="ctrl.toggleDrawCircle()">Circle</a>
   </li>
 </ul>
+<ul ng-show="ctrl.showMapMatchingButton" ngeo-btn-group class="nav toolbox-panel-mapmatching toolbox-panel-mapmatching-bottom">
+  <li ng-class="{active: ctrl.getMapMatching()}">
+    <a href translate ngeo-btn
+    ng-model="ctrl.mapmatchingActive"
+    ng-click="ctrl.toggleMapMatching()">Suivre la route</a>
+  </li>
+</ul>

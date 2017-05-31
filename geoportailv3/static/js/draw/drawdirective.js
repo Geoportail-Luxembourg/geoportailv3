@@ -23,7 +23,6 @@ goog.require('app.FeaturePopup');
 goog.require('app.ModifyCircle');
 goog.require('app.Mymaps');
 goog.require('app.SelectedFeatures');
-goog.require('app.RouteControl');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
@@ -191,6 +190,18 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
    * @export
    */
   this.drawLineActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.mapmatchingActive = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showMapMatchingButton = false;
 
   /**
    * @type {boolean}
@@ -462,14 +473,6 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
       this.keyboardHandler_, this);
 
-  /**
-   * @type {app.RouteControl}
-   * @private
-   */
-  this.routeControl_ = new app.RouteControl({
-    label: '\ue006',
-    drawLineInteraction: this.drawLine
-  });
 };
 
 
@@ -548,9 +551,9 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     this.appActivetool_.drawActive = false;
   }
   if (this.drawLine.getActive()) {
-    this.map.addControl(this.routeControl_);
+    this.showMapMatchingButton = true;
   } else {
-    this.map.removeControl(this.routeControl_);
+    this.showMapMatchingButton = false;
   }
 };
 
@@ -834,6 +837,21 @@ app.DrawController.prototype.toggleDrawLine = function() {
   return this.isEditing('drawLine');
 };
 
+/**
+ * @return {boolean} true if the feature is active.
+ * @export
+ */
+app.DrawController.prototype.toggleMapMatching = function() {
+  return this.drawLine.toggleMapMatching();
+};
+
+/**
+ * @return {boolean} True if mapmatching active.
+ * @export
+ */
+app.DrawController.prototype.getMapMatching = function() {
+  return this.drawLine.getMapMatching();
+};
 
 /**
  * @return {boolean} true if the feature is active.
