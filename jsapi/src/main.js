@@ -1136,6 +1136,7 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
   new autoComplete({
     'selector': input,
     'minChars': 2,
+    'cache': 0,
     'menuClass': 'lux-search-suggestions',
     'source': function(term, suggest) {
       var coordResults = [];
