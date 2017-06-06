@@ -49,7 +49,7 @@ vars:
       - de
       - fr
       - lb
-
+    print_urls:
     ldap:
       url: 'ldap://willie.geoportal.lu:3890'
       bind: 'cn=system,dc=act,dc=lu'

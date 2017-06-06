@@ -111,6 +111,7 @@ class LuxPrintJob(Base):
     id = Column(String, primary_key=True)
     spec = Column(Unicode)
     creation = Column(DateTime)
+    print_url = Column(Unicode)
     is_error = Column(Boolean, default=False)
 
 
