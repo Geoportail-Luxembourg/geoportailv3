@@ -48,6 +48,7 @@
 import json
 import logging
 import re
+import random
 from cStringIO import StringIO
 from datetime import datetime
 
@@ -75,7 +76,11 @@ class LuxPrintProxy(PrintProxy):
     @view_config(route_name="lux_printproxy_report_create")
     def lux_report_create(self):
         token = self.config["authtkt_secret"]
-
+        print_urls = self.config["print_urls"]
+        if print_urls is not None and len(print_urls) > 0:
+            print_url = print_urls[random.randint(0, len(print_urls) - 1)]
+        else:
+            print_url = self.config["print_url"]
         spec = json.loads(self.request.body)
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
@@ -93,13 +98,15 @@ class LuxPrintProxy(PrintProxy):
                             return HTTPUnauthorized()
         job = LuxPrintJob()
         job.spec = json.dumps(spec)
+
         self.request.body = job.spec
+
         resp, content = self._proxy("%s/report.%s" % (
-            self.config["print_url"],
+            print_url,
             self.request.matchdict.get("format")
         ))
         job.id = json.loads(content)["ref"]
-
+        job.print_url = print_url
         job.creation = datetime.now()
         DBSession.add(job)
         return self._build_response(
@@ -108,12 +115,19 @@ class LuxPrintProxy(PrintProxy):
 
     @view_config(route_name="lux_printproxy_status")
     def lux_status(self):
+        ref = self.request.matchdict.get("ref")
+        job = DBSession.query(LuxPrintJob).get(ref)
+
         try:
-            return self.status()
+            return self._proxy_response(
+                "print",
+                "%s/status/%s.json" % (
+                    job.print_url,
+                    ref
+                ),
+            )
         except Exception as e:
             log.exception(e)
-            ref = self.request.matchdict.get("ref")
-            job = DBSession.query(LuxPrintJob).get(ref)
             job.is_error = True
             return HTTPInternalServerError()
 
@@ -137,10 +151,19 @@ class LuxPrintProxy(PrintProxy):
 
     @view_config(route_name="lux_printproxy_report_cancel")
     def lux_cancel(self):
+        ref = self.request.matchdict.get("ref")
+        job = DBSession.query(LuxPrintJob).get(ref)
+        print_url = job.print_url
         DBSession.query(LuxPrintJob).filter(
-            LuxPrintJob.id == self.request.matchdict.get("ref")
+            LuxPrintJob.id == ref
         ).delete()
-        return self.cancel()
+        return self._proxy_response(
+            "print",
+            "%s/cancel/%s" % (
+                print_url,
+                ref
+            ),
+        )
 
     def _create_legend_from_image(self, url, title, access_constraints):
         css = weasyprint.CSS(
@@ -203,7 +226,7 @@ class LuxPrintProxy(PrintProxy):
             return HTTPNotFound()
         try:
             resp, content = self._proxy("%s/report/%s" % (
-                self.config["print_url"], ref
+                job.print_url, ref
             ))
 
             attributes = json.loads(job.spec)["attributes"]
