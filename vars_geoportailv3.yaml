@@ -1,6 +1,7 @@
 extends: CONST_vars.yaml
 
 vars:
+    no_proxy: localhost
     #OverviewMap
     overview_map:
         show: false
