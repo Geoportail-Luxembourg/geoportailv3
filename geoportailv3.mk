@@ -28,6 +28,7 @@ CONFIG_VARS += overview_map
 CONFIG_VARS += modify_notification
 CONFIG_VARS += https_proxy
 CONFIG_VARS += print_urls
+CONFIG_VARS += no_proxy
 
 APACHE_VHOST ?= luxembourg-geomapfish
 
