@@ -68,6 +68,7 @@ vars:
     sqlalchemy_engines:
       mymaps: 'postgresql://localhost:5432/mymaps'
       pgroute: 'postgresql://localhost:5432/pgroute'
+      ecadastre: 'postgresql://localhost:5432/ecadastre'
     raster:
       dhm:
         file: /var/sig/bt.shp
