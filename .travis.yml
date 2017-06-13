@@ -15,10 +15,12 @@ install:
 - createuser www-data --no-superuser --no-createdb --no-createrole -U postgres
 - psql -d lux -c 'CREATE SCHEMA geov3;' -U postgres
 - psql -d lux -c 'CREATE SCHEMA geov3_static;' -U postgres
+- psql -d lux -c 'CREATE SCHEMA geov3_stats;' -U postgres
 - psql -d lux -c "ALTER USER \"www-data\" PASSWORD 'www-data';" -U postgres
 - psql -d lux -c 'GRANT SELECT ON spatial_ref_sys TO "www-data";' -U postgres
 - psql -d lux -c 'GRANT ALL ON SCHEMA geov3 TO "www-data";' -U postgres
 - psql -d lux -c 'GRANT ALL ON SCHEMA geov3_static TO "www-data";' -U postgres
+- psql -d lux -c 'GRANT ALL ON SCHEMA geov3_stats TO "www-data";' -U postgres
 - psql -d lux -c 'GRANT ALL ON geometry_columns TO "www-data";' -U postgres
 
 - make -f travis.mk .build/requirements.timestamp || make -f travis.mk .build/requirements.timestamp
