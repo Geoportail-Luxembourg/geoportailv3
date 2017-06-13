@@ -7,3 +7,4 @@ vars:
     sqlalchemy_engines:
       mymaps: 'postgresql://www-data:www-data@localhost:5433/dummy'
       ecadastre: 'postgresql://www-data:www-data@localhost:5433/dummy'
+      pgroute: 'postgresql://www-data:www-data@localhost:5433/dummy'
