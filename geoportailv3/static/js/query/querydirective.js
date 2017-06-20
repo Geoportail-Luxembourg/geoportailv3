@@ -946,6 +946,8 @@ app.QueryController.prototype.trustAsHtml = function(content) {
 
 /**
  * returns a trusted url according to the current language
+ * If an url is not defined then use french as default.
+ * That means, at least french url should be defined.
  * @param {string} urlFr French url to be trusted.
  * @param {string} urlDe German url to be trusted.
  * @param {string} urlEn English url to be trusted.
@@ -958,11 +960,23 @@ app.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
   if (this['language'] == 'fr') {
     return this.sce_.trustAsResourceUrl(urlFr);
   } else if (this['language'] == 'de') {
-    return this.sce_.trustAsResourceUrl(urlDe);
+    if (urlDe !== null && urlDe !== undefined) {
+      return this.sce_.trustAsResourceUrl(urlDe);
+    } else {
+      return this.sce_.trustAsResourceUrl(urlFr);
+    }
   } else if (this['language'] == 'en') {
-    return this.sce_.trustAsResourceUrl(urlEn);
+    if (urlEn !== null && urlEn !== undefined) {
+      return this.sce_.trustAsResourceUrl(urlEn);
+    } else {
+      return this.sce_.trustAsResourceUrl(urlFr);
+    }
   } else if (this['language'] == 'lb') {
-    return this.sce_.trustAsResourceUrl(urlLb);
+    if (urlLb !== null && urlLb !== undefined) {
+      return this.sce_.trustAsResourceUrl(urlLb);
+    } else {
+      return this.sce_.trustAsResourceUrl(urlFr);
+    }
   }
   return this.sce_.trustAsResourceUrl(urlFr);
 };
