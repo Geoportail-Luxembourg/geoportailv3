@@ -10,6 +10,7 @@ import logging
 import urllib
 import urllib2
 import socket
+import base64
 
 log = logging.getLogger(__name__)
 
@@ -96,6 +97,17 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         remote_host = internal_wms.url
+        idx_arobase = remote_host.find("@")
+        base64user = None
+        if idx_arobase > -1:
+            idx1 = remote_host.find("://") + 3
+            idx2 = remote_host.find(":", idx1)
+            remote_user = remote_host[idx1:idx2]
+            remote_password = remote_host[idx2 + 1:idx_arobase]
+            remote_host = remote_host.replace(
+                remote_host[idx1:idx_arobase+1], "")
+            base64user = base64.b64encode(
+                "%s:%s" % (remote_user, remote_password)).replace("\n", "")
 
         param_wms = ""
         for param in self.request.params:
@@ -133,13 +145,16 @@ class Wms(object):
 
         url = remote_host + separator + param_wms[:-1]
         timeout = 15
+        url_request = urllib2.Request(url)
+        if base64user is not None:
+            url_request.add_header("Authorization", "Basic %s" % base64user)
         try:
-            f = urllib2.urlopen(url, None, timeout)
+            f = urllib2.urlopen(url_request, None, timeout)
             data = f.read()
         except:
             try:
                 # Retry to get the result
-                f = urllib2.urlopen(url, None, timeout)
+                f = urllib2.urlopen(url_request, None, timeout)
                 data = f.read()
             except Exception as e:
                 log.exception(e)
