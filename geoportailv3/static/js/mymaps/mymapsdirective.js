@@ -147,6 +147,12 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.kmlFileContent = '';
 
   /**
+   * @export
+   * @type {string}
+   */
+  this.kmzFileContent = '';
+
+  /**
    * @private
    * @type {Document}
    */
@@ -341,6 +347,16 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal) {
       this.importKml();
+      $('#dropdown-mymaps').removeClass('open');
+    }
+  }, this));
+
+  $scope.$watch(goog.bind(function() {
+    return this.kmzFileContent;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal) {
+      this.importKmz();
+      $('#dropdown-mymaps').removeClass('open');
     }
   }, this));
 
@@ -349,6 +365,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   }, this), goog.bind(function(newVal, oldVal) {
     if (newVal) {
       this.importGpx();
+      $('#dropdown-mymaps').removeClass('open');
     }
   }, this));
 
@@ -494,6 +511,7 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   }));
+  this.gpxFileContent = '';
   var mapId = this.appMymaps_.getMapId();
   var featuresToSave = [];
   var noNameElemCnt = 0;
@@ -503,6 +521,10 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
     if (feature.getId()) {
       feature.setId(undefined);
     }
+    if (feature.get('fid') !== undefined) {
+      feature.set('fid', undefined);
+    }
+
     if (!goog.isDef(feature.get('name'))) {
       feature.set('name', 'Element ' + noNameElemCnt);
       noNameElemCnt++;
@@ -559,13 +581,18 @@ app.MymapsDirectiveController.prototype.exportKml = function() {
 
 /**
  * Import a KML file.
+ * @param {string=} kml The kml as text.
  * @export
  */
-app.MymapsDirectiveController.prototype.importKml = function() {
-  var kmlFeatures = (this.kmlFormat_.readFeatures(this.kmlFileContent, {
+app.MymapsDirectiveController.prototype.importKml = function(kml) {
+  if (kml === undefined) {
+    kml = this.kmlFileContent;
+  }
+  var kmlFeatures = (this.kmlFormat_.readFeatures(kml, {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   }));
+  this.kmlFileContent = '';
   var noNameElemCnt = 0;
   var kmlExtent;
   var mapId = this.appMymaps_.getMapId();
@@ -573,6 +600,9 @@ app.MymapsDirectiveController.prototype.importKml = function() {
     feature.set('__map_id__', mapId);
     if (feature.getId()) {
       feature.setId(undefined);
+    }
+    if (feature.get('fid') !== undefined) {
+      feature.set('fid', undefined);
     }
     if (!goog.isDef(feature.get('name'))) {
       feature.set('name', 'Element ' + noNameElemCnt);
@@ -598,6 +628,23 @@ app.MymapsDirectiveController.prototype.importKml = function() {
   );
 };
 
+/**
+ * Import a KMZ file.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.importKmz = function() {
+  var zip = new JSZip();
+  zip.loadAsync(this.kmzFileContent).then(function(pZip) {
+    pZip.forEach(function(relativePath, file) {
+      if (file.name.endsWith('.kml')) {
+        file.async('string').then(function(data) {
+          this.importKml(data);
+          this.kmzFileContent = '';
+        }.bind(this));
+      }
+    }.bind(this));
+  }.bind(this));
+};
 
 /**
  * Close the current map.

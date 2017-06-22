@@ -19,6 +19,7 @@
     "Fuse": false,
     "lux": false,
 	"autoComplete": false,
+	"JSZip": false,
 	"Promise": true
   }
 }
