@@ -38,7 +38,7 @@
     {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
   </span>
   <ul class="nav navbar-nav navbar-right">
-    <li class="dropdown">
+    <li id="dropdown-mymaps" class="dropdown">
       <a href class="dropdown-toggle white-item" data-toggle="dropdown">
         <span class="fa fa-caret-square-o-down"></span>
       </a>
@@ -55,8 +55,9 @@
         <li class="divider"></li>
         <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
         <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.gpxFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
-        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KML</a><input type="file" class="mymapsUpload"  ngeo-filereader="ctrl.kmlFileContent" ngeo-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.gpxFileContent" app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KML</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.kmlFileContent" app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KMZ</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.kmzFileContent" app-filereader-supported="ctrl.fileReaderSupported" app-filereader-filetype="binary" /></div></li>
       </ul>
     </li>
   </ul>

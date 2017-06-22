@@ -33,6 +33,7 @@ CONFIG_VARS += no_proxy
 APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
+NGEO_LIBS_JS_FILES += node_modules/jszip/dist/jszip.min.js
 
 UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Transifex" \
         "\n- recreate-search-poi	Recreate the ElasticSearch POI Index" \
