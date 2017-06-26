@@ -36,7 +36,7 @@ app.filereaderDirective = function($window) {
                 function(evt) {
                   scope.$apply(function() {
                     if (fileType === 'GPX') {
-                      scope['fileContent'] = evt.target.result;
+                      scope['gpxfileContent'] = evt.target.result;
                     } else if (fileType === 'KML') {
                       scope['kmlfileContent'] = evt.target.result;
                     } else if (fileType === 'KMZ') {
