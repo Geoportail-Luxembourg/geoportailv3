@@ -2,9 +2,6 @@ goog.provide('app.filereaderDirective');
 
 
 /**
- * @htmlAttribute {string} app-filereader The content of the file read.
- * @htmlAttribute {boolean=} app-filereader-supported Whether the FileReader API is supported.
- * @htmlAttribute {string=} app-filereader-filetype The file type (binary or text).
  * @param {angular.$window} $window The Angular $window service.
  * @return {angular.Directive} Directive Definition Object.
  * @ngInject
@@ -15,7 +12,9 @@ app.filereaderDirective = function($window) {
   return {
     restrict: 'A',
     scope: {
-      'fileContent': '=appFilereader',
+      'kmzfileContent': '=appKmzFilereader',
+      'kmlfileContent': '=appKmlFilereader',
+      'gpxfileContent': '=appGpxFilereader',
       'supported': '=?appFilereaderSupported',
       'fileType': '=?appFilereaderFiletype'
     },
@@ -27,6 +26,7 @@ app.filereaderDirective = function($window) {
       }
 
       element.on('change', function(changeEvent) {
+        var fileType = 'GPX';
         /** @type {!FileReader} */
         var fileReader = new $window.FileReader();
         fileReader.onload = (
@@ -35,14 +35,25 @@ app.filereaderDirective = function($window) {
                  */
                 function(evt) {
                   scope.$apply(function() {
-                    scope['fileContent'] = evt.target.result;
+                    if (fileType === 'GPX') {
+                      scope['fileContent'] = evt.target.result;
+                    } else if (fileType === 'KML') {
+                      scope['kmlfileContent'] = evt.target.result;
+                    } else if (fileType === 'KMZ') {
+                      scope['kmzfileContent'] = evt.target.result;
+                    }
                     angular.element(element).val(undefined);
                   }.bind(this));
                 });
-        if (attrs['appFilereaderFiletype'] === undefined || attrs['appFilereaderFiletype'] === 'text') {
+        if (changeEvent.target.files[0].name.toUpperCase().endsWith('.KML')) {
           fileReader.readAsText(changeEvent.target.files[0]);
-        } else {
+          fileType = 'KML';
+        } else if (changeEvent.target.files[0].name.toUpperCase().endsWith('.GPX')) {
+          fileReader.readAsText(changeEvent.target.files[0]);
+          fileType = 'GPX';
+        } else if (changeEvent.target.files[0].name.toUpperCase().endsWith('.KMZ')) {
           fileReader.readAsBinaryString(changeEvent.target.files[0]);
+          fileType = 'KMZ';
         }
       }.bind(this));
     }
