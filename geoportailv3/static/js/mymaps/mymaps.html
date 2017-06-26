@@ -55,9 +55,13 @@
         <li class="divider"></li>
         <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
         <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
-        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.gpxFileContent" app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
-        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KML</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.kmlFileContent" app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
-        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un KMZ</a><input type="file" class="mymapsUpload"  app-filereader="ctrl.kmzFileContent" app-filereader-supported="ctrl.fileReaderSupported" app-filereader-filetype="binary" /></div></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX/KML/KMZ</a>
+          <input type="file" class="mymapsUpload" 
+                 app-filereader
+                 app-gpx-filereader="ctrl.gpxFileContent"
+                 app-kml-filereader="ctrl.kmlFileContent"
+                 app-kmz-filereader="ctrl.kmzFileContent"
+                 app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
       </ul>
     </li>
   </ul>
