@@ -311,6 +311,12 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    */
   this.selectedFeaturesList = this.selectedFeatures_.getArray();
 
+  /**
+   * @type {ol.FeatureStyleFunction}
+   * @private
+   */
+  this.featureStyleFunction_ = this.appMymaps_.createStyleFunction(this.map);
+
   $scope.$watch(goog.bind(function() {
     return this.filterMapOwner;
   }, this), goog.bind(function(newVal, oldVal) {
@@ -517,13 +523,8 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
   var noNameElemCnt = 0;
   var gpxExtent;
   goog.array.forEach(gpxFeatures, function(feature) {
+    this.sanitizeFeature_(feature);
     feature.set('__map_id__', mapId);
-    if (feature.getId()) {
-      feature.setId(undefined);
-    }
-    if (feature.get('fid') !== undefined) {
-      feature.set('fid', undefined);
-    }
 
     if (!goog.isDef(feature.get('name'))) {
       feature.set('name', 'Element ' + noNameElemCnt);
@@ -546,7 +547,8 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
     } else {
       gpxExtent = curGeometry.getExtent();
     }
-  });
+    feature.setStyle(this.featureStyleFunction_);
+  }, this);
 
   if (gpxExtent) {
     this.fit(gpxExtent);
@@ -597,13 +599,8 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
   var kmlExtent;
   var mapId = this.appMymaps_.getMapId();
   goog.array.forEach(kmlFeatures, function(feature) {
+    this.sanitizeFeature_(feature);
     feature.set('__map_id__', mapId);
-    if (feature.getId()) {
-      feature.setId(undefined);
-    }
-    if (feature.get('fid') !== undefined) {
-      feature.set('fid', undefined);
-    }
     if (!goog.isDef(feature.get('name'))) {
       feature.set('name', 'Element ' + noNameElemCnt);
       noNameElemCnt++;
@@ -614,7 +611,7 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
     } else {
       kmlExtent = curGeometry.getExtent();
     }
-  });
+  }, this);
 
   if (kmlExtent) {
     this.fit(kmlExtent);
@@ -626,6 +623,70 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
         this.onChosen(map, false);
       }, this)
   );
+};
+
+
+/**
+ * Verify each feature property type and value.
+ * Remove unwanted properties.
+ * @param {ol.Feature} feature The feature.
+ * @private
+ */
+app.MymapsDirectiveController.prototype.sanitizeFeature_ = function(feature) {
+  if (feature.getId()) {
+    feature.setId(undefined);
+  }
+  if (feature.get('fid') !== undefined) {
+    feature.set('fid', undefined, true);
+  }
+  if (feature.get('__editable__') !== undefined) {
+    feature.set('__editable__', undefined, true);
+  }
+  if (feature.get('__map_id__') !== undefined) {
+    feature.set('__map_id__', undefined, true);
+  }
+  if (feature.get('__refreshProfile__') !== undefined) {
+    feature.set('__refreshProfile__', undefined, true);
+  }
+  if (feature.get('__saving__') !== undefined) {
+    feature.set('__saving__', undefined, true);
+  }
+  if (feature.get('__selected__') !== undefined) {
+    feature.set('__selected__', undefined, true);
+  }
+  if (feature.get('__selected__') !== undefined) {
+    feature.set('__selected__', undefined, true);
+  }
+
+  var opacity = /** @type {string} */ (feature.get('opacity'));
+  if (!goog.isDef(opacity)) {
+    opacity = 0;
+  }
+
+  feature.set('opacity', +opacity);
+  var stroke = /** @type {string} */ (feature.get('stroke'));
+  if (isNaN(stroke)) {
+    stroke = 2;
+  }
+  feature.set('stroke', +stroke);
+  var size = /** @type {string} */ (feature.get('size'));
+  if (isNaN(size)) {
+    size = 10;
+  }
+  feature.set('size', +size);
+
+  var angle = /** @type {string} */ (feature.get('angle'));
+  if (isNaN(angle)) {
+    angle = 0;
+  }
+  feature.set('angle', +angle);
+  var isLabel = /** @type {string} */ (feature.get('isLabel'));
+  feature.set('isLabel', isLabel === 'true');
+  var isCircle = /** @type {string} */ (feature.get('isCircle'));
+  feature.set('isCircle', isCircle === 'true');
+  var showOrientation = /** @type {string} */
+      (feature.get('showOrientation'));
+  feature.set('showOrientation', showOrientation === 'true');
 };
 
 /**
