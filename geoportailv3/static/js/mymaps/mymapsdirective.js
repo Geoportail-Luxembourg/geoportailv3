@@ -633,34 +633,45 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
  * @private
  */
 app.MymapsDirectiveController.prototype.sanitizeFeature_ = function(feature) {
+  // Could be removed as soon as
+  // https://github.com/openlayers/openlayers/issues/6959
+  // is solved
+  var properties = feature.getProperties();
+  for (var key in properties) {
+    if (key !== 'geometry' &&
+        key !== 'name' &&
+        key !== 'description') {
+      feature.unset(key, true);
+    }
+  }
   if (feature.getId()) {
     feature.setId(undefined);
   }
   if (feature.get('fid') !== undefined) {
-    feature.set('fid', undefined, true);
+    feature.unset('fid', true);
   }
   if (feature.get('__editable__') !== undefined) {
-    feature.set('__editable__', undefined, true);
+    feature.unset('__editable__', true);
   }
   if (feature.get('__map_id__') !== undefined) {
-    feature.set('__map_id__', undefined, true);
+    feature.unset('__map_id__', true);
   }
   if (feature.get('__refreshProfile__') !== undefined) {
-    feature.set('__refreshProfile__', undefined, true);
+    feature.unset('__refreshProfile__', true);
   }
   if (feature.get('__saving__') !== undefined) {
-    feature.set('__saving__', undefined, true);
+    feature.unset('__saving__', true);
   }
   if (feature.get('__selected__') !== undefined) {
-    feature.set('__selected__', undefined, true);
+    feature.unset('__selected__', true);
   }
   if (feature.get('__selected__') !== undefined) {
-    feature.set('__selected__', undefined, true);
+    feature.unset('__selected__', true);
   }
 
   var opacity = /** @type {string} */ (feature.get('opacity'));
   if (!goog.isDef(opacity)) {
-    opacity = 0;
+    opacity = 0.2;
   }
 
   feature.set('opacity', +opacity);
