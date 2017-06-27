@@ -47,6 +47,7 @@
     "d3": "4.7.4",
     "fuse": "git+https://github.com/petzlux/Fuse#master",
     "whatwg-fetch": "1.0.0",
-    "promise-polyfill": "5.2.1"
+    "promise-polyfill": "5.2.1",
+	"jszip": "3.1.3"
   }
 }
