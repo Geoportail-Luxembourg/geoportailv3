@@ -160,7 +160,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms,
       hidpi: appGetDevice.isHiDpi(),
       serverType: 'mapserver',
       params: {
-        'FORMAT': app.getImageExtension_(imageType),
+        'FORMAT': imageType,
         'LAYERS': layers
       }
     };
