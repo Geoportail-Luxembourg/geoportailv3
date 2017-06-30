@@ -5,8 +5,10 @@ goog.require('goog.Uri');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
+goog.require('goog.Timer');
 goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
+goog.require('lux.PrintManager');
 goog.require('lux.StateManager');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
@@ -72,6 +74,11 @@ lux.searchUrl = 'fulltextsearch?';
 lux.profileUrl = 'profile.json';
 
 /**
+ * @type {string}
+ */
+lux.shorturlUrl = 'short/create';
+
+/**
  * @type {string?}
  */
 lux.baseUrl = null;
@@ -111,6 +118,8 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
   lux.queryUrl = url + lux.queryUrl;
   lux.profileUrl = url + lux.profileUrl;
+  lux.printUrl = url + lux.printUrl;
+  lux.shorturlUrl = url + lux.shorturlUrl;
   lux.baseUrl = url;
 };
 
@@ -140,6 +149,11 @@ lux.geocodeUrl = 'geocode/search';
 lux.reverseGeocodeUrl = 'geocode/reverse';
 
 /**
+ * @type {string}
+ */
+lux.printUrl = 'printproxy';
+
+/**
  * @param {string} url Url to jsapilayers service.
  * @export
  * @api
@@ -151,7 +165,7 @@ lux.setLayersUrl = function(url) {
 /**
  * @type {string}
  */
-lux.i18nUrl = 'proj/api/build/locale/fr/geoportailv3.json';
+lux.i18nUrl = 'proj/api/build/locale/xx/geoportailv3.json';
 
 /**
  * @type {string}
@@ -166,6 +180,7 @@ lux.popupSize = null;
 
 /**
  * @type {Object<string, string>}
+ * @export
  */
 lux.i18n = {};
 
@@ -556,8 +571,146 @@ lux.Map.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
     ol.Map.prototype.addLayer.call(this, layer);
   }.bind(this));
+
 };
 
+/**
+ * Prints the current map.
+ * @param {string=} name The title of the map.
+ * @param {string=} layout The layout of the map.
+ * Default is A4 landscape or A4 portrait depending on the map size.
+ * Available values are : A4 landscape, A4 portrait, A3 landscape,
+ * A3 portrait, A2 landscape, A2 portrait, A1 landscape, A1 portrait,
+ * A0 landscape, A0 portrait
+ * @param {number=} scale The scale to use.
+ * @example
+ * map.print();
+ * @export
+ * @api
+ */
+lux.Map.prototype.print = function(name, layout, scale) {
+  var dpi = 127;
+  var format = 'pdf';
+
+  var pm = new lux.PrintManager(lux.printUrl, this);
+
+  if (name === undefined || name === null) {
+    name = '';
+  }
+  var curLayout = '';
+  if (layout === undefined || layout === null ||
+      lux.PrintManager.LAYOUTS.indexOf(layout) === -1) {
+    var size = this.getSize();
+    if (size !== undefined && size[0] > size[1]) {
+      curLayout = 'A4 landscape';
+    } else {
+      curLayout = 'A4 portrait';
+    }
+  } else {
+    curLayout = layout;
+  }
+  var dataOwners = [];
+  this.getLayers().forEach(function(layer) {
+    var source = undefined;
+    if (/** @type{Object} */ (layer).getSource instanceof Function) {
+      source = /** @type{Object} */ (layer).getSource();
+    }
+    if (source != undefined) {
+      var attributions = source.getAttributions();
+      if (attributions !== null) {
+        attributions.forEach(function(attribution) {
+          dataOwners.push(attribution.getHTML());
+        }.bind(this));
+      }
+    }
+  });
+  var piwikUrl =
+    goog.string.buildString('http://',
+    'apiv3.geoportail.lu/print/',
+    curLayout.replace(' ', '/'));
+  _paq.push(['trackLink', piwikUrl, 'download']);
+
+  goog.array.removeDuplicates(dataOwners);
+  var disclaimer = lux.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
+  var dateText = lux.translate('Date d\'impression: ');
+  var scaleTitle = lux.translate('Echelle approximative 1:');
+  var appTitle = lux.translate('Le géoportail national du Grand-Duché du Luxembourg');
+  var longUrl = this.stateManager_.getUrl();
+  if (longUrl.toLowerCase().indexOf('http') !== 0 &&
+      longUrl.toLowerCase().indexOf('//') === 0) {
+    longUrl = 'http:' + longUrl;
+  }
+  var form = new FormData();
+  form.append('url', longUrl);
+  fetch(lux.shorturlUrl, /** @type {!RequestInit | undefined} */ ({
+    method: 'POST',
+    body: form
+  })).then(function(resp) {
+    resp.json().then(function(dataShortUrl) {
+      var shortUrl = dataShortUrl['short_url'];
+      if (scale === undefined || scale === null) {
+        scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
+      }
+      var spec = pm.createSpec(scale, dpi, curLayout, format, {
+        'disclaimer': disclaimer,
+        'scaleTitle': scaleTitle,
+        'appTitle': appTitle,
+        'scale': scale,
+        'name': name,
+        'url': shortUrl,
+        'qrimage': 'http://map.geoportail.lu/main/wsgi/qr?url=' + shortUrl,
+        'lang': lux.lang,
+        'legend': '',
+        'scalebar': {'geodetic': true},
+        'dataOwner': dataOwners.join(' '),
+        'dateText': dateText,
+        'queryResults': null
+      });
+     // create print report
+      pm.createReport(spec).then(
+        function(resp) {
+          if (resp.status === 200) {
+            resp.json().then(function(data) {
+              var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
+              var ref = mfResp.ref;
+              goog.asserts.assert(ref.length > 0);
+              this.getStatus_(pm, ref);
+            }.bind(this));
+          }
+        }.bind(this));
+    }.bind(this));
+  }.bind(this));
+};
+
+/**
+ * @param {lux.PrintManager} pm Print manager.
+ * @param {string} ref Ref.
+ * @private
+ */
+lux.Map.prototype.getStatus_ = function(pm, ref) {
+  pm.getStatus(ref).then(
+    function(resp) {
+      if (resp.status === 200) {
+        resp.json().then(function(data) {
+          var mfResp = /** @type {MapFishPrintStatusResponse} */ (data);
+          var done = mfResp.done;
+          if (done) {
+            // The report is ready. Open it by changing the window location.
+            if (mfResp.status !== 'error') {
+              window.location.href = pm.getReportUrl(ref);
+            } else {
+              console.log(mfResp.error);
+            }
+          } else {
+            goog.Timer.callOnce(function() {
+              this.getStatus_(pm, ref);
+            }, 1000, this);
+          }
+        });
+      }
+    }.bind(this)
+  );
+};
 /**
  * @param {string} lang Set the language.
  * @export
@@ -1588,7 +1741,8 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
     retinaExtension +
     '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
-
+  var projection = ol.proj.get('EPSG:3857');
+  var extent = projection.getExtent();
   var layer = new ol.layer.Tile({
     name: config['name'],
     id: config['id'],
@@ -1601,11 +1755,12 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
       format: format,
       requestEncoding: ol.source.WMTSRequestEncoding.REST,
-      projection: ol.proj.get('EPSG:3857'),
+      projection: projection,
       tileGrid: new ol.tilegrid.WMTS({
         origin: [
           -20037508.3428, 20037508.3428
         ],
+        extent: extent,
         resolutions: [
           156543.033928, 78271.516964, 39135.758482, 19567.879241,
           9783.9396205, 4891.96981025, 2445.98490513, 1222.99245256,

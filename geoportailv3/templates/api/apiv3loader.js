@@ -14,5 +14,5 @@
   document.write('<scr' + 'ipt type="text/javascript">'
           + "lux.setBaseUrl('${request.route_url('home')}', '${request.scheme}');" + '</scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}');" + '</scr' + 'ipt>');
+          + "lux.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/xx/geoportailv3.json')}');" + '</scr' + 'ipt>');
 })();
