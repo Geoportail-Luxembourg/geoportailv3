@@ -26,6 +26,7 @@
       "../../node_modules/ngeo/externs/d3.js",
       "../../node_modules/ngeo/externs/twbootstrap.js",
       "../../node_modules/ngeo/externs/typeahead.js",
+	  "../../node_modules/ngeo/externs/mapfish-print-v3.js",
       "../../.build/externs/angular-1.6.js",
       "../../.build/externs/angular-1.6-q_templated.js",
       "../../.build/externs/angular-1.6-http-promise_templated.js",
