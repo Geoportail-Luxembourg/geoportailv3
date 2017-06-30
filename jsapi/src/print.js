@@ -29,7 +29,6 @@ goog.require('ol.tilegrid.WMTS');
  * @param {lux.Map} map Map object to print.
  * @constructor
  * @export
- * @api
  */
 lux.PrintManager = function(url, map) {
   /**
@@ -43,6 +42,18 @@ lux.PrintManager = function(url, map) {
    * @private
    */
   this.url_ = url;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.dpi_ = 127;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.scale_ = 1500;
 };
 
 /**
@@ -79,13 +90,28 @@ lux.PrintStyleTypes_[ol.geom.GeometryType.MULTI_POLYGON] =
  */
 lux.PrintManager.FEAT_STYLE_PROP_PREFIX_ = '_ngeo_style_';
 
+/**
+ * @const
+ * @type {Array.<string>}
+*/
+lux.PrintManager.LAYOUTS = [
+  'A4 landscape',
+  'A4 portrait',
+  'A3 landscape',
+  'A3 portrait',
+  'A2 landscape',
+  'A2 portrait',
+  'A1 landscape',
+  'A1 portrait',
+  'A0 landscape',
+  'A0 portrait'
+];
 
 /**
  * Cancel a report.
  * @param {string} ref Print report reference.
  * @return {Promise} HTTP promise.
  * @export
- * @api
  */
 lux.PrintManager.prototype.cancel = function(ref) {
   return fetch(this.url_ + '/cancel/' + ref, {
@@ -102,11 +128,11 @@ lux.PrintManager.prototype.cancel = function(ref) {
  * @param {Object.<string, *>} customAttributes Custom attributes.
  * @return {MapFishPrintSpec} The print spec.
  * @export
- * @api
  */
 lux.PrintManager.prototype.createSpec = function(
     scale, dpi, layout, format, customAttributes) {
-
+  this.dpi_ = dpi;
+  this.scale_ = scale;
   var specMap = /** @type {MapFishPrintMap} */ ({
     dpi: dpi,
     rotation: /** number */ (customAttributes['rotation'])
@@ -158,12 +184,43 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
   layers.forEach(function(layer) {
     if (layer.getVisible()) {
       goog.asserts.assert(viewResolution !== undefined);
-      console.log('ICI');
-      console.log(object.layers);
-      console.log(layer);
-      console.log(viewResolution);
       this.encodeLayer(object.layers, layer, viewResolution);
-      console.log('APRES');
+    }
+  }, this);
+  var overlays = this.map_.getOverlays();
+  overlays.forEach(function(layer) {
+    goog.asserts.assert(viewResolution !== undefined);
+    var element = layer.getElement();
+    if (element !== undefined) {
+      var image = element.firstChild;
+      var url = image.getAttribute('src');
+      if (url !== undefined && url !== null && url.length > 0) {
+        if (url.toLowerCase().indexOf('http') !== 0 &&
+            url.toLowerCase().indexOf('//') === 0) {
+          url = 'http:' + url;
+        }
+        var markerStyle = new ol.style.Style({
+          image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            src: url
+          })
+        });
+        var position = layer.getPosition();
+        if (position !== undefined && position !== null) {
+          var geoMarker = new ol.Feature({
+            geometry: new ol.geom.Point(position)
+          });
+          var vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features: [geoMarker]
+            }),
+            style: markerStyle
+          });
+          var /** @type {Array.<MapFishPrintLayer>} */ overlaylayers = [];
+          this.encodeLayer(overlaylayers, vectorLayer, viewResolution);
+          object.layers.unshift(overlaylayers[0]);
+        }
+      }
     }
   }, this);
 };
@@ -176,13 +233,10 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
  */
 lux.PrintManager.prototype.encodeLayer = function(arr, layer, resolution) {
   if (layer instanceof ol.layer.Image) {
-    console.log('-->1');
     this.encodeImageLayer_(arr, layer);
   } else if (layer instanceof ol.layer.Tile) {
-    console.log('-->2');
     this.encodeTileLayer_(arr, layer);
   } else if (layer instanceof ol.layer.Vector) {
-    console.log('-->3');
     this.encodeVectorLayer_(arr, layer, resolution);
   }
 };
@@ -229,7 +283,7 @@ lux.PrintManager.prototype.encodeImageWmsLayer_ = function(arr, layer) {
  * @private
  */
 lux.PrintManager.prototype.encodeWmsLayer_ = function(arr, opacity, url, params) {
-  var customParams = {'TRANSPARENT': true};
+  var customParams = {'TRANSPARENT': true, 'MAP_RESOLUTION': this.dpi_};
   ol.obj.assign(customParams, params);
 
   delete customParams['LAYERS'];
@@ -272,10 +326,8 @@ lux.PrintManager.prototype.encodeTileLayer_ = function(arr, layer) {
   goog.asserts.assertInstanceof(layer, ol.layer.Tile);
   var source = layer.getSource();
   if (source instanceof ol.source.WMTS) {
-    console.log('==>2-1');
     this.encodeTileWmtsLayer_(arr, layer);
   } else if (source instanceof ol.source.TileWMS) {
-    console.log('==>2-2');
     this.encodeTileWmsLayer_(arr, layer);
   }
 };
@@ -290,49 +342,32 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
   goog.asserts.assertInstanceof(layer, ol.layer.Tile);
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.WMTS);
-  console.log('2-1-0');
   var projection = source.getProjection();
   var tileGrid = source.getTileGrid();
   goog.asserts.assertInstanceof(tileGrid, ol.tilegrid.WMTS);
   var matrixIds = tileGrid.getMatrixIds();
-  console.log('2-1-1');
   /** @type {Array.<MapFishPrintWmtsMatrix>} */
   var matrices = [];
-
   for (var i = 0, ii = matrixIds.length; i < ii; ++i) {
-    console.log('2-1-1a');
-    console.log(i);
     var tileRange = tileGrid.getFullTileRange(i);
-    console.log('2-1-1b');
-    console.log(matrixIds[i]);
-    console.log('a');
-    console.log(tileGrid.getResolution(i) *
-          projection.getMetersPerUnit() / 0.28E-3);
-    console.log('b');
-    console.log(ol.size.toSize(tileGrid.getTileSize(i)));
-    console.log('c');
-    console.log(tileGrid.getOrigin(i));
-    console.log('d');
-    console.log(tileRange);
+    var matrixSize = [];
     if (tileRange !== null) {
-      matrices.push(/** @type {MapFishPrintWmtsMatrix} */ ({
-        identifier: matrixIds[i],
-        scaleDenominator: tileGrid.getResolution(i) *
-            projection.getMetersPerUnit() / 0.28E-3,
-        tileSize: ol.size.toSize(tileGrid.getTileSize(i)),
-        topLeftCorner: tileGrid.getOrigin(i),
-        matrixSize: [
-          tileRange.maxX - tileRange.minX,
-          tileRange.maxY - tileRange.minY
-        ]
-      }));
+      matrixSize = [
+        tileRange.maxX - tileRange.minX,
+        tileRange.maxY - tileRange.minY
+      ];
     }
-    console.log('2-1-1c');
+    matrices.push(/** @type {MapFishPrintWmtsMatrix} */ ({
+      identifier: matrixIds[i],
+      scaleDenominator: tileGrid.getResolution(i) *
+          projection.getMetersPerUnit() / 0.28E-3,
+      tileSize: ol.size.toSize(tileGrid.getTileSize(i)),
+      topLeftCorner: tileGrid.getOrigin(i),
+      matrixSize: matrixSize
+    }));
   }
-  console.log('2-1-2');
   var dimensions = source.getDimensions();
   var dimensionKeys = Object.keys(dimensions);
-  console.log('2-1-3');
   var object = /** @type {MapFishPrintWmtsLayer} */ ({
     baseURL: this.getWmtsUrl_(source),
     dimensions: dimensionKeys,
@@ -347,7 +382,19 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
     type: 'WMTS',
     version: source.getVersion()
   });
-  console.log('2-1-4');
+  if (object.matrixSet === 'GLOBAL_WEBMERCATOR_4_V3_HD') {
+    // Ugly hack to request non retina wmts layer for print
+    object.baseURL = goog.string.remove(object.baseURL, '_hd');
+    object.matrixSet = goog.string.remove(object.matrixSet, '_HD');
+  }
+  if ((object.matrices instanceof Array)) {
+    for (var j = object.matrices.length - 1; j > 0; j--) {
+      if (object.matrices[j].scaleDenominator > this.scale_) {
+        object.matrices.splice(0, j + 1);
+        break;
+      }
+    }
+  }
   arr.push(object);
 };
 
@@ -483,12 +530,12 @@ lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, s
     return;
   }
   var styleType = lux.PrintStyleTypes_[geometryType];
-  /*var key = `[${featureStyleProp} = '${styleId}']`;
+  var key = '[' + featureStyleProp + ' = \'' + styleId + '\']';
   if (key in object) {
     // do nothing if we already have a style object for this CQL rule
     return;
-  }*/
-  var key = featureStyleProp = styleId;
+  }
+
   var styleObject = /** @type {MapFishPrintSymbolizers} */ ({
     symbolizers: []
   });
@@ -513,6 +560,24 @@ lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, s
   }
   if (textStyle !== null) {
     this.encodeTextStyle_(styleObject.symbolizers, textStyle);
+  }
+
+  // set the graphicFormat because mapfish print is not able
+  // to guess it from the externalGraphic (doesn't end with file
+  // extension)
+  for (var j = 0; j < styleObject.symbolizers.length; j++) {
+    var symbolizer = styleObject.symbolizers[j];
+    symbolizer['conflictResolution'] = false;
+    if (symbolizer.externalGraphic) {
+      symbolizer.graphicFormat = 'image/png';
+      if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
+        delete symbolizer.graphicHeight;
+        delete symbolizer.graphicWidth;
+      } else if (symbolizer.externalGraphic.indexOf('getarrow') > 0) {
+        symbolizer.graphicHeight = 10;
+        symbolizer.graphicWidth = 10;
+      }
+    }
   }
 };
 
@@ -789,7 +854,6 @@ lux.PrintManager.prototype.getWmtsUrl_ = function(source) {
  * @param {MapFishPrintSpec} printSpec Print specification.
  * @return {Promise} HTTP promise.
  * @export
- * @api
  */
 lux.PrintManager.prototype.createReport = function(printSpec) {
   var format = printSpec.format || 'pdf';
@@ -797,10 +861,10 @@ lux.PrintManager.prototype.createReport = function(printSpec) {
 
   return fetch(url, /** @type {!RequestInit | undefined} */ ({
     method: 'POST',
-    body: printSpec,
     headers: {
       'Content-Type': 'application/json; charset=UTF-8'
-    }
+    },
+    body: JSON.stringify(printSpec)
   }));
 };
 
@@ -810,7 +874,6 @@ lux.PrintManager.prototype.createReport = function(printSpec) {
  * @param {string} ref Print report reference.
  * @return {Promise} HTTP promise.
  * @export
- * @api
  */
 lux.PrintManager.prototype.getStatus = function(ref) {
   var url = this.url_ + '/status/' + ref + '.json';
@@ -823,7 +886,6 @@ lux.PrintManager.prototype.getStatus = function(ref) {
  * @param {string} ref Print report reference.
  * @return {string} The report URL for this ref.
  * @export
- * @api
  */
 lux.PrintManager.prototype.getReportUrl = function(ref) {
   return this.url_ + '/report/' + ref;
@@ -835,7 +897,6 @@ lux.PrintManager.prototype.getReportUrl = function(ref) {
  * @param {ol.layer.Base} layer The base layer, mostly a group of layers.
  * @return {Array.<ol.layer.Layer>} Layers.
  * @export
- * @api
  */
 lux.PrintManager.prototype.getFlatLayers = function(layer) {
   return this.getFlatLayers_(layer, []);

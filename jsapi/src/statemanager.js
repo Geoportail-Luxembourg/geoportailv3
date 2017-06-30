@@ -16,6 +16,12 @@ lux.StateManager = function() {
    * @type {luxx.State}
    */
   this.state_ = {};
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.url_ = '';
 };
 
 /**
@@ -96,12 +102,22 @@ lux.StateManager.prototype.updateState = function(object) {
 
   var el = this.map_.getTargetElement();
   var logo = el.querySelectorAll('.ol-attribution a')[0];
+
+  this.url_ = '//map.geoportail.lu/theme/main?';
+  this.url_ += Object.keys(this.state_).map(function(key) {
+    return key + '=' + encodeURIComponent(this.state_[key]);
+  }.bind(this)).join('&');
+  this.url_ += '&version=3';
+
   if (logo) {
-    logo.href = '//map.geoportail.lu/theme/main?';
-    logo.href += Object.keys(this.state_).map(function(key) {
-      return key + '=' + encodeURIComponent(this.state_[key]);
-    }.bind(this)).join('&');
-    logo.href += '&version=3';
+    logo.href = this.url_;
     logo.target = '_blank';
   }
+};
+
+/**
+ * @return {string} the url to the map
+ */
+lux.StateManager.prototype.getUrl = function() {
+  return this.url_;
 };
