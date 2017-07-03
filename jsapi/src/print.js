@@ -862,7 +862,7 @@ lux.PrintManager.prototype.createReport = function(printSpec) {
   return fetch(url, /** @type {!RequestInit | undefined} */ ({
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': 'text/plain'
     },
     body: JSON.stringify(printSpec)
   }));
