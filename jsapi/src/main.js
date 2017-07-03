@@ -74,11 +74,6 @@ lux.searchUrl = 'fulltextsearch?';
 lux.profileUrl = 'profile.json';
 
 /**
- * @type {string}
- */
-lux.shorturlUrl = 'short/create';
-
-/**
  * @type {string?}
  */
 lux.baseUrl = null;
@@ -119,7 +114,6 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.queryUrl = url + lux.queryUrl;
   lux.profileUrl = url + lux.profileUrl;
   lux.printUrl = url + lux.printUrl;
-  lux.shorturlUrl = url + lux.shorturlUrl;
   lux.baseUrl = url;
 };
 
@@ -640,46 +634,36 @@ lux.Map.prototype.print = function(name, layout, scale) {
       longUrl.toLowerCase().indexOf('//') === 0) {
     longUrl = 'http:' + longUrl;
   }
-  var form = new FormData();
-  form.append('url', longUrl);
-  fetch(lux.shorturlUrl, /** @type {!RequestInit | undefined} */ ({
-    method: 'POST',
-    body: form
-  })).then(function(resp) {
-    resp.json().then(function(dataShortUrl) {
-      var shortUrl = dataShortUrl['short_url'];
-      if (scale === undefined || scale === null) {
-        scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
-      }
-      var spec = pm.createSpec(scale, dpi, curLayout, format, {
-        'disclaimer': disclaimer,
-        'scaleTitle': scaleTitle,
-        'appTitle': appTitle,
-        'scale': scale,
-        'name': name,
-        'url': shortUrl,
-        'qrimage': 'http://map.geoportail.lu/main/wsgi/qr?url=' + shortUrl,
-        'lang': lux.lang,
-        'legend': '',
-        'scalebar': {'geodetic': true},
-        'dataOwner': dataOwners.join(' '),
-        'dateText': dateText,
-        'queryResults': null
-      });
-     // create print report
-      pm.createReport(spec).then(
-        function(resp) {
-          if (resp.status === 200) {
-            resp.json().then(function(data) {
-              var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
-              var ref = mfResp.ref;
-              goog.asserts.assert(ref.length > 0);
-              this.getStatus_(pm, ref);
-            }.bind(this));
-          }
+
+  if (scale === undefined || scale === null) {
+    scale = Math.round(this.getView().getResolution() * 39.3701 * 72);
+  }
+  var spec = pm.createSpec(scale, dpi, curLayout, format, {
+    'disclaimer': disclaimer,
+    'scaleTitle': scaleTitle,
+    'appTitle': appTitle,
+    'scale': scale,
+    'name': name,
+    'longUrl': longUrl,
+    'lang': lux.lang,
+    'legend': '',
+    'scalebar': {'geodetic': true},
+    'dataOwner': dataOwners.join(' '),
+    'dateText': dateText,
+    'queryResults': null
+  });
+ // create print report
+  pm.createReport(spec).then(
+    function(resp) {
+      if (resp.status === 200) {
+        resp.json().then(function(data) {
+          var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
+          var ref = mfResp.ref;
+          goog.asserts.assert(ref.length > 0);
+          this.getStatus_(pm, ref);
         }.bind(this));
+      }
     }.bind(this));
-  }.bind(this));
 };
 
 /**
