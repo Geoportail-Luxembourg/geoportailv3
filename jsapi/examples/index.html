@@ -25,6 +25,24 @@ var map = new lux.Map({
         </div>
         <div class='map' id='map1'></div>
     </div>
+<div class='sample'>
+    <a name="example1a"/>
+        <div class='description' id='desc1'>
+        <h2>Basic example with print</h2>
+        Print the current map : <button onclick="map1a.print();">Print the current map</button>
+        <pre>
+var map1a = new lux.Map({
+  target: 'map1a',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099]
+});
+&lt;button onclick="map1a.print();"&gt;Print the current map&lt;/button&gt;
+        </pre>
+
+        </div>
+        <div class='map' id='map1a'></div>
+</div>
     <div class='sample'>
     <a name="example1b"/>
         <div class='description' id='desc1b'>
@@ -728,6 +746,13 @@ var map1 = new lux.Map({
   zoom: 18,
   position: [   75977 , 75099 ]
 
+});
+
+var map1a = new lux.Map({
+  target: 'map1a',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [75977, 75099]
 });
 
 var map1b = new lux.Map({
