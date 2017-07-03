@@ -267,7 +267,7 @@ lux.Map = function(options) {
 
   var defaultBg = 'basemap_2015_global';
 
-  _paq.push(['trackPageView']);
+  window['_paq'].push(['trackPageView']);
 
   /**
    * @private
@@ -622,7 +622,7 @@ lux.Map.prototype.print = function(name, layout, scale) {
     goog.string.buildString('http://',
     'apiv3.geoportail.lu/print/',
     curLayout.replace(' ', '/'));
-  _paq.push(['trackLink', piwikUrl, 'download']);
+  window['_paq'].push(['trackLink', piwikUrl, 'download']);
 
   goog.array.removeDuplicates(dataOwners);
   var disclaimer = lux.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
