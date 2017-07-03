@@ -49,6 +49,8 @@ import json
 import logging
 import re
 import random
+import urllib
+import urllib2
 from cStringIO import StringIO
 from datetime import datetime
 
@@ -96,6 +98,18 @@ class LuxPrintProxy(PrintProxy):
                     if internal_wms is not None and\
                        not self._is_authorized(internal_wms):
                             return HTTPUnauthorized()
+        if "longUrl" in spec["attributes"]:
+            opener = urllib2.build_opener(urllib2.HTTPHandler())
+            data = urllib.urlencode({"url": spec["attributes"]["longUrl"]})
+            content = opener.open(
+                "https://map.geoportail.lu/wsgi/short/create",
+                data=data).read()
+            shortner = json.loads(content)
+            spec["attributes"]["url"] = shortner["short_url"]
+            spec["attributes"]["qrimage"] =\
+                "http://map.geoportail.lu/main/wsgi/qr?url=" + \
+                spec["attributes"]["url"]
+
         job = LuxPrintJob()
         job.spec = json.dumps(spec)
 
