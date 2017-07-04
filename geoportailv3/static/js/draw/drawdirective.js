@@ -987,26 +987,32 @@ app.DrawController.prototype.gotoAnchor = function(anchorId) {
  */
 app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
   var keyEvent = mapBrowserEvent.originalEvent;
-
+  var prevent = false;
   if (this.active && keyEvent.key === 'Backspace') {
     if (this.drawLine.getActive()) {
       this.drawLine.removeLastPoints();
+      prevent = true;
     }
     if (this.drawPolygon.getActive()) {
       this.drawPolygon.removeLastPoint();
+      prevent = true;
     }
-    mapBrowserEvent.preventDefault();
   }
   if (this.active && keyEvent.key === 'Escape') {
     if (this.drawLine.getActive()) {
       this.drawLine.finishDrawing();
+      prevent = true;
     }
     if (this.drawPolygon.getActive()) {
       this.drawPolygon.finishDrawing();
+      prevent = true;
     }
     if (this.drawCircle.getActive()) {
       this.drawCircle.finishDrawing();
+      prevent = true;
     }
+  }
+  if (prevent) {
     mapBrowserEvent.preventDefault();
   }
 };
