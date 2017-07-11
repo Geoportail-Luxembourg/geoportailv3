@@ -690,13 +690,24 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
 
     this.isQuerying_ = true;
     this.map_.getViewport().style.cursor = 'wait';
+
     this.content = [];
+    var size = this.map_.getSize();
+    var extent = this.map_.getView().calculateExtent(size);
+
+    var bbox = extent.join(',');
     this.http_.get(
         this.getInfoServiceUrl_,
       {params: {
         'layers': layersList.join(),
         'box1': big_box.join(),
-        'box2': small_box.join()
+        'box2': small_box.join(),
+        'BBOX': bbox,
+        'WIDTH': size[0],
+        'HEIGHT': size[1],
+        'X': evt.pixel[0],
+        'Y': evt.pixel[1],
+        'srs': 'EPSG:3857'
       }}).then(
         goog.bind(function(resp) {
           if (resp.data.length > 0) {
