@@ -8,6 +8,7 @@ from urllib import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
 from geoportailv3.models import Sessions, LuxGetfeatureDefinition
+from geoportailv3.models import LuxLayerInternalWMS
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.response import Response
@@ -275,6 +276,49 @@ class Getfeatureinfo(object):
                                     is_ordered,
                                     luxgetfeaturedefinition.has_profile,
                                     luxgetfeaturedefinition.remote_template))
+            if (luxgetfeaturedefinition is not None and
+                (luxgetfeaturedefinition.rest_url is None or
+                    len(luxgetfeaturedefinition.rest_url) == 0) and
+                (luxgetfeaturedefinition.query is None or
+                    len(luxgetfeaturedefinition.query) == 0)):
+                x = self.request.params.get('X', None)
+                y = self.request.params.get('Y', None)
+                width = self.request.params.get('WIDTH', None)
+                height = self.request.params.get('HEIGHT', None)
+                bbox = self.request.params.get('BBOX', None)
+                if x is None or y is None or width is None or\
+                   height is None or bbox is None:
+                    return HTTPBadRequest()
+                srs = self.request.params.get('srs', 'EPSG:2169')
+                internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
+                    LuxLayerInternalWMS.id == luxgetfeaturedefinition.layer).\
+                    first()
+                url = internal_wms.url
+                ogc_layers = internal_wms.layers
+
+                features = self._ogc_getfeatureinfo(
+                    url, x, y, width, height,
+                    ogc_layers, bbox, srs, luxgetfeaturedefinition.layer,
+                    luxgetfeaturedefinition.attributes_to_remove)
+                if len(features) > 0:
+                    if (luxgetfeaturedefinition.additional_info_function
+                        is not None and
+                        len(luxgetfeaturedefinition.
+                            additional_info_function) > 0):
+                        features = eval(luxgetfeaturedefinition.
+                                        additional_info_function)
+                    is_ordered =\
+                        luxgetfeaturedefinition.columns_order is not None\
+                        and len(luxgetfeaturedefinition.columns_order) > 0
+                    results.append(
+                        self.to_featureinfo(
+                            features,
+                            luxgetfeaturedefinition.layer,
+                            luxgetfeaturedefinition.template,
+                            is_ordered,
+                            luxgetfeaturedefinition.has_profile,
+                            luxgetfeaturedefinition.remote_template))
+
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.rest_url is not None and
                     len(luxgetfeaturedefinition.rest_url) > 0):
@@ -649,6 +693,55 @@ class Getfeatureinfo(object):
                                         geometry, attributes, ""))
         return features
 
+    def _ogc_getfeatureinfo(
+            self, url, x, y, width, height, layer, bbox, srs, layer_id,
+            attributes_to_remove):
+        body = {
+            'SERVICE': 'WMS',
+            'VERSION': '1.1.1',
+            'REQUEST': 'GetFeatureInfo',
+            'QUERY_LAYERS': layer,
+            'LAYERS': layer,
+            'STYLES': '',
+            'INFO_FORMAT': 'application/json',
+            'FEATURE_COUNT': '50',
+            'X': x,
+            'Y': y,
+            'SRS': srs,
+            'WIDTH': width,
+            'HEIGHT': height,
+            'BBOX': bbox
+        }
+        separator = "?"
+        if url.find(separator) > 0:
+            separator = "&"
+        query = '%s%s%s' % (url, separator, urlencode(body))
+
+        content = ""
+        try:
+            result = urllib2.urlopen(query, None, 15)
+            content = result.read()
+        except Exception as e:
+            log.exception(e)
+            return []
+        try:
+            features = []
+            ogc_features = geojson_loads(content)
+
+            columns_order = ""
+            for feature in ogc_features['features']:
+                f = self.to_feature(layer_id, None,
+                                    feature['geometry'],
+                                    feature['properties'],
+                                    attributes_to_remove,
+                                    columns_order)
+                features.append(f)
+            return features
+        except Exception as e:
+            log.exception(e)
+            return []
+        return []
+
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
                            attributes_to_remove=None, columns_order=None):
@@ -708,10 +801,13 @@ class Getfeatureinfo(object):
         else:
             return []
 
+        if url.find("@") > -1:
+            url = self._get_url_with_token(url)
+
         # construct url for get request
-        separator = "?"
-        if url.find('?'):
-            separator = "&"
+        separator = '?'
+        if url.find(separator) > 0:
+            separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
 
         try:
@@ -797,6 +893,21 @@ class Getfeatureinfo(object):
                                         columns_order)
                     features.append(f)
         return features
+
+    def _get_url_with_token(self, url):
+        try:
+            creds_re = re.compile('//(.*)@')
+            creds = creds_re.findall(url)[0]
+            user_password = creds.split(':')
+            baseurl = url.replace(creds + '@', '')
+            tokenurl = baseurl.split('rest/')[0] +\
+                'tokens?username=%s&password=%s'\
+                % (user_password[0], user_password[1])
+            token = urllib2.urlopen(tokenurl, None, 15).read()
+            return baseurl + "token=" + token
+        except Exception as e:
+            log.exception(e)
+        return None
 
     def _get_session(self, engine_name):
         if engine_name not in Sessions:
