@@ -1,7 +1,7 @@
 {
     "opts": {
         "recurse": true,
-        "template": "jsapi/jsdoc/api/template"
+        "template": "./jsapi/jsdoc/api/template"
     },
     "tags": {
         "allowUnknownTags": true
@@ -9,14 +9,14 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "include": [
-            "jsapi/src/",
-            "jsapi/externs/luxx.js"
+            "./jsapi/src/",
+            "./jsapi/externs/luxx.js"
         ]
     },
     "plugins": [
-        "node_modules/jsdoc/plugins/markdown",
-		"jsapi/jsdoc/api/plugins/api",
-		"jsapi/jsdoc/api/plugins/typedefs"
+        "./node_modules/jsdoc/plugins/markdown",
+		"./jsapi/jsdoc/api/plugins/api",
+		"./jsapi/jsdoc/api/plugins/typedefs"
     ],
     "markdown": {
         "parser": "gfm"
