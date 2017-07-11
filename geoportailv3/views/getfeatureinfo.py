@@ -801,6 +801,9 @@ class Getfeatureinfo(object):
         else:
             return []
 
+        if url.find("@") > -1:
+            url = self._get_url_with_token(url)
+
         # construct url for get request
         separator = '?'
         if url.find(separator) > 0:
@@ -890,6 +893,21 @@ class Getfeatureinfo(object):
                                         columns_order)
                     features.append(f)
         return features
+
+    def _get_url_with_token(self, url):
+        try:
+            creds_re = re.compile('//(.*)@')
+            creds = creds_re.findall(url)[0]
+            user_password = creds.split(':')
+            baseurl = url.replace(creds + '@', '')
+            tokenurl = baseurl.split('rest/')[0] +\
+                'tokens?username=%s&password=%s'\
+                % (user_password[0], user_password[1])
+            token = urllib2.urlopen(tokenurl, None, 15).read()
+            return baseurl + "token=" + token
+        except Exception as e:
+            log.exception(e)
+        return None
 
     def _get_session(self, engine_name):
         if engine_name not in Sessions:
