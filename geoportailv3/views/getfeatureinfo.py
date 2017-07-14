@@ -9,6 +9,7 @@ from pyramid.renderers import render
 from pyramid.view import view_config
 from geoportailv3.models import Sessions, LuxGetfeatureDefinition
 from geoportailv3.models import LuxLayerInternalWMS
+from mako.template import Template
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.response import Response
@@ -99,6 +100,7 @@ class Getfeatureinfo(object):
     # and replace each poi placeholder by the angular notation
     @view_config(route_name='getpoitemplate')
     def get_poi_template(self):
+        render_type = self.request.params.get('render', 'mapv3')
         layer = self.request.params.get('layer', None)
         if layer is None:
             return HTTPBadRequest()
@@ -120,23 +122,35 @@ class Getfeatureinfo(object):
                       "user_field4", "user_field5", "phone", "mail",
                       "id_poi", "country", "category"]
 
-        query = "SELECT mapv3_html FROM public.tooltips WHERE \
+        query = "SELECT mapv3_html, text1 FROM public.tooltips WHERE \
                 id_collection=%d AND is_default=true"\
                 % (luxgetfeaturedefinitions[0].poi_id_collection)
 
         res = session.execute(query)
         for row in res.fetchall():
-            content = row['mapv3_html'].replace("$%7B", "${").\
+            tooltip = row['mapv3_html']
+            if tooltip is None or len(tooltip) == 0:
+                tooltip = row['text1']
+
+            content = tooltip.replace("$%7B", "${").\
                 replace("%7D", "}")
             for field in poi_fields:
-                content = content.replace("${%(field)s}" % ({'field': field}),
-                                          "{{feature['attributes']\
-                                          ['%(field)s']}}"
-                                          % ({'field': field}))
-            response = "<h1>{{layers['layerLabel'] | translate}}</h1>\
-                       <div class=\"poi-feature\"\
-                       ng-repeat=\"feature in layers['features']\">%s\
-                       </div>" % (content)
+                sep = "{{"
+                end_sep = "}}"
+                if render_type == 'apiv3':
+                    sep = "${"
+                    end_sep = "}"
+                content = content.replace(
+                    "${%(field)s}" % ({'field': field}),
+                    (sep + "feature['attributes']['%(field)s']" + end_sep)
+                    % ({'field': field}))
+            if render_type != 'apiv3':
+                response = "<h1>{{layers['layerLabel'] | translate}}</h1>\
+                           <div class=\"poi-feature\"\
+                           ng-repeat=\"feature in layers['features']\">%s\
+                           </div>" % (content)
+            else:
+                response = content
             return Response(response)
         return HTTPBadRequest()
 
@@ -385,8 +399,25 @@ class Getfeatureinfo(object):
                         "_t": lambda s: localizer.translate(tooltips(s)),
                         "_c": lambda s: localizer.translate(client(s)),
                         "feature": f}
-                    f['attributes']['tooltip'] = render(
-                            'geoportailv3:' + path + template, context)
+
+                    if r['remote_template'] is not None and\
+                       r['remote_template']:
+                        data = ""
+                        try:
+                            url_remote = urllib2.urlopen(
+                                l_template + "&render=apiv3", None, 15)
+                            data = url_remote.read()
+                        except Exception as e:
+                            log.exception(e)
+                            log.error(l_template)
+                            return HTTPBadGateway()
+                        remote_template = Template(data)
+                        f['attributes']['tooltip'] =\
+                            remote_template.render(feature=f)
+                    else:
+                        path = 'geoportailv3:' + path + template
+                        f['attributes']['tooltip'] = render(
+                            path, context)
 
         return results
 
