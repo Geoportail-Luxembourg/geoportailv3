@@ -422,7 +422,7 @@ lux.Map = function(options) {
 
   if (options.features) {
     var opts = options.features;
-    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target);
+    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target, opts.showMarker);
   }
 
   if (options.view === undefined) {
@@ -792,7 +792,6 @@ lux.Map.prototype.showMarker = function(opt_options) {
   if (options.autoCenter) {
     this.getView().setCenter(position);
   }
-
   if (options.html) {
     var popup;
     var showPopupEvent = options.click ?
@@ -1131,10 +1130,11 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @param {Array<string|number>} ids Array of features identifiers
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
+ * @param {boolean|undefined} isShowMarker True if a marker has to be displayed.
  * @export
  * @api
  */
-lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
+lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker) {
   // remove any highlighted feature
   this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
@@ -1149,7 +1149,8 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
-        this.addFeature(json, visible, opt_click, opt_target);
+        this.addFeature_(json, visible, opt_click, opt_target,
+          (isShowMarker === undefined) ? true : isShowMarker);
       }.bind(this));
     }.bind(this));
   }.bind(this));
@@ -1160,9 +1161,11 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target) {
  * @param {boolean} highlight Whether or not to highlight the features.
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
+ * @param {boolean} isShowMarker True if the marker should be shown.
  * @private
  */
-lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) {
+lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker) {
+
   var format = new ol.format.GeoJSON();
   if (json.length === 0) {
     return;
@@ -1182,14 +1185,16 @@ lux.Map.prototype.addFeature = function(json, highlight, opt_click, opt_target) 
   }
   var size = this.getSize();
   features.forEach(function(feature) {
-    this.showMarker({
-      position: ol.extent.getCenter(feature.getGeometry().getExtent()),
-      positionSrs: '3857',
-      autoCenter: true,
-      click: opt_click,
-      target: opt_target,
-      html: feature.get('tooltip')
-    });
+    if (isShowMarker) {
+      this.showMarker({
+        position: ol.extent.getCenter(feature.getGeometry().getExtent()),
+        positionSrs: '3857',
+        autoCenter: true,
+        click: opt_click,
+        target: opt_target,
+        html: feature.get('tooltip')
+      });
+    }
     this.featureExtent_ = ol.extent.extend(
       this.featureExtent_,
       feature.getGeometry().getExtent()
