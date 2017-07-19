@@ -363,12 +363,14 @@ luxx.FeaturesOptions;
 /**
  * Comma-separated list of ids.
  * @type {Array<string>}
+ * @api
  */
 luxx.FeaturesOptions.prototype.ids;
 
 /**
  * Layer identifier
  * @type {string|number}
+ * @api
  */
 luxx.FeaturesOptions.prototype.layer;
 
@@ -376,18 +378,21 @@ luxx.FeaturesOptions.prototype.layer;
  * The container for the feature popup, either the element itself or
  * the `id` of the element.
  * @type {Element|string}
+ * @api
  */
 luxx.FeaturesOptions.prototype.target;
 
 /**
  * If set, the popup is displayed when clicking the feature.
  * @type {boolean|undefined}
+ * @api
  */
 luxx.FeaturesOptions.prototype.click;
 
 /**
  * If set to true, a marker is shown. Default is true.
  * @type {boolean|undefined}
+ * @api
  */
 luxx.FeaturesOptions.prototype.showMarker;
 
@@ -400,24 +405,28 @@ luxx.VectorOptions;
 /**
  * Interval after which to reload the vector layer (in seconds).
  * @type {number | undefined}
+ * @api
  */
 luxx.VectorOptions.prototype.reloadInterval;
 
 /**
  * The style function.
  * @type {ol.StyleFunction | undefined}
+ * @api
  */
 luxx.VectorOptions.prototype.style;
 
 /**
  * The layer name.
  * @type {string | undefined}
+ * @api
  */
 luxx.VectorOptions.prototype.name;
 
 /**
  * If set, the popup is displayed when clicking the feature.
  * @type {boolean | undefined}
+ * @api
  */
 luxx.VectorOptions.prototype.click;
 
@@ -425,6 +434,7 @@ luxx.VectorOptions.prototype.click;
  * The container for the feature popup, either the element itself or
  * the `id` of the element.
  * @type {Element|string|undefined}
+ * @api
  */
 luxx.VectorOptions.prototype.target;
 
