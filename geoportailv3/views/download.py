@@ -5,8 +5,12 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPUnauthorized
 from geoportailv3.portail import MesurageDownload, SketchDownload
 from geoportailv3.portail import PortailSession
+from geoportailv3.models import LuxDownloadUrl
+from c2cgeoportal.models import DBSession
 import logging
+import mimetypes
 import geoportailv3.PF
+import urllib2
 
 log = logging.getLogger(__name__)
 
@@ -15,6 +19,36 @@ class Download(object):
 
     def __init__(self, request):
         self.request = request
+
+    @view_config(route_name='download')
+    def download_generic(self):
+        id = self.request.params.get('id', None)
+        filename = self.request.params.get('filename', None)
+        if id is None or filename is None:
+            return HTTPBadRequest()
+        entry = DBSession.query(LuxDownloadUrl).filter(
+                    LuxDownloadUrl.id == id).first()
+        if entry is not None:
+            if entry.protected and self.request.user is None:
+                return HTTPUnauthorized()
+            url = entry.url + filename
+            try:
+                data = urllib2.urlopen(url, None, 1800)
+            except Exception as e:
+                log.exception(e)
+                data = None
+                log.debug(url)
+            mimetypes.init()
+            type = "application/octet-stream"
+            mimetype = mimetypes.guess_type(url)
+            if mimetype[0] is not None:
+                type = mimetype[0]
+            headers = {"Content-Type": type,
+                       "Content-Disposition": "attachment; filename=\""
+                       + str(filename) + "\""}
+            if data is not None:
+                return Response(data.read(), headers=headers)
+        return HTTPBadRequest()
 
     @view_config(route_name='download_sketch')
     def download_sketch(self):

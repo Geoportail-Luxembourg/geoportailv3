@@ -6,6 +6,7 @@ from c2cgeoportal import add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
 from pyramid.renderers import JSON
+
 from decimal import Decimal
 from turbomail.control import interface
 
@@ -37,6 +38,7 @@ def locale_negotiator(request):
 
 
 def main(global_config, **settings):
+
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(
@@ -335,6 +337,7 @@ def main(global_config, **settings):
     config.add_route('wms', '/ogcproxywms')
     config.add_route('https_proxy', '/httpsproxy')
     config.add_route('download_sketch', '/downloadsketch')
+    config.add_route('download', '/download')
     config.add_route('download_measurement', '/downloadmeasurement')
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')

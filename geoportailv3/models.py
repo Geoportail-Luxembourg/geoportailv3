@@ -23,6 +23,21 @@ LayerInternalWMS.__acl__ = [DENY_ALL]
 LayerExternalWMS.__acl__ = [DENY_ALL]
 
 
+class LuxDownloadUrl(Base):
+    __label__ = _(u"Base url for download")
+    __tablename__ = "lux_download_url"
+    __table_args__ = {"schema": _schema}
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
+    id = Column(
+        Integer,
+        primary_key=True
+    )
+    url = Column(Unicode, label=_(u"Url"))
+    protected = Column(Boolean, label=_(u"Only connected user can download"))
+
+
 class LuxMeasurementLoginCommune(Base):
     __label__ = _(u"Allowed measurement for a user")
     __tablename__ = "lux_measurement_login_commune"
@@ -30,6 +45,7 @@ class LuxMeasurementLoginCommune(Base):
     __acl__ = [
         (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
     ]
+
     login = Column(String, primary_key=True)
     num_commune = Column(String, primary_key=True)
 
