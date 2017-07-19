@@ -218,7 +218,6 @@ luxx.MarkerOptions.prototype.positioning;
  */
 luxx.MarkerOptions.prototype.html;
 
-
 /**
  * If set, the popup is displayed when clicking the marker.
  * @type {boolean|undefined}
@@ -385,6 +384,12 @@ luxx.FeaturesOptions.prototype.target;
  * @type {boolean|undefined}
  */
 luxx.FeaturesOptions.prototype.click;
+
+/**
+ * If set to true, a marker is shown. Default is true.
+ * @type {boolean|undefined}
+ */
+luxx.FeaturesOptions.prototype.showMarker;
 
 /**
  * Object literal with config options for the vector (GPX/KML) layer.
