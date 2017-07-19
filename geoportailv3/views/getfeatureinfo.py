@@ -8,7 +8,7 @@ from urllib import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
 from geoportailv3.models import Sessions, LuxGetfeatureDefinition
-from geoportailv3.models import LuxLayerInternalWMS
+from geoportailv3.models import LuxLayerInternalWMS, LuxDownloadUrl
 from mako.template import Template
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.i18n import get_localizer, TranslationStringFactory
@@ -576,6 +576,22 @@ class Getfeatureinfo(object):
         for feature in features:
             feature['attributes']['__proxy__'] = field
         return features
+
+    def replace_url_by_proxy(self, features, attributes):
+        modified_features = []
+        proxy_url = self.request.route_url('download')
+        for feature in features:
+            for key in attributes:
+                value = feature['attributes'][key]
+                entries = DBSession.query(LuxDownloadUrl).all()
+                for entry in entries:
+                    if entry.url in value:
+                        feature['attributes'][key] =\
+                            proxy_url + "?id=" + str(entry.id) +\
+                            "&filename=" + value.split(entry.url)[1]
+                        break
+            modified_features.append(feature)
+        return modified_features
 
     def replace_resource_by_html_link(self, features, attributes_to_remove):
         modified_features = []
