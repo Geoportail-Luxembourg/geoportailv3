@@ -115,9 +115,9 @@ if (data.defaultvalue && (data.defaultvaluetype === 'object' || data.defaultvalu
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     <?js
-    // https://github.com/Geoportail-Luxembourg/geoportailv3/tree/jsapi/jsapi/src
+    // https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/jsapi/src
     var baseUrl = 'https://github.com/Geoportail-Luxembourg/geoportailv3/blob/' +
-      (process.env.TRAVIS_COMMIT || 'jsapi') + '/jsapi/';
+      (process.env.TRAVIS_COMMIT || 'master') + '/jsapi/';
     ?>
         <a href="<?js= baseUrl ?><?js= meta.shortpath ?>"><?js= meta.shortpath ?></a>,
         <a href="<?js= baseUrl ?><?js= meta.shortpath ?>#L<?js= meta.lineno ?>">line <?js= meta.lineno ?></a>
