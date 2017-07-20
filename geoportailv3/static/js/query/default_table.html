@@ -3,11 +3,17 @@
     <h1>{{layers.layerLabel | translate}}</h1>
     <div ng-repeat="feature in layers.features" class="poi-feature" ng-init="attributes = ctrl.prefixKeys(feature.attributes, 'f_')">
       <h4>{{feature.attributes.label | translate }}</h4>
-      <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
+      <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')" class="row">
         <span ng-if="!ctrl.isEmpty(entry['value'])">
-          <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label> 
-          <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
-          <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
+          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-4">
+            <label>{{entry['key'] | translate}} :</label> 
+          </div>
+          <div ng-if="!ctrl.isLink(entry['value'])" class="col-xs-8">
+            <span ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
+          </div>
+          <div ng-if="ctrl.isLink(entry['value'])" class="col-xs-12 text-center">
+            <a ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
+          </div>
         </span>
       </div>
       <div class="query-profile" ng-show="feature.attributes.showProfile.active">
