@@ -90,8 +90,9 @@ def main():  # pragma: nocover
 
     dbsession = sqlahelper.get_session()
     results = dbsession.query(LuxGetfeatureDefinition).\
-        filter(LuxGetfeatureDefinition.remote_template == False).\
-        filter(LuxGetfeatureDefinition.template == 'default.html').all()  # noqa
+        filter(LuxGetfeatureDefinition.remote_template == False).filter(
+            LuxGetfeatureDefinition.template.in_
+            (['default.html', 'default_table.html'])).all()  # noqa
 
     fields = []
     for result in results:
