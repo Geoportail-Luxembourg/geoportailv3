@@ -440,7 +440,7 @@ class Getfeatureinfo(object):
 
     def to_feature(self, layer_id, fid, geometry, attributes,
                    attributes_to_remove, columns_order=None,
-                   geometry_column='geom'):
+                   geometry_column='geom', alias={}):
         attributes = self.remove_attributes(
                     attributes,
                     attributes_to_remove,
@@ -464,7 +464,8 @@ class Getfeatureinfo(object):
         return {'type': 'Feature',
                 'geometry': geometry,
                 'fid': layer_fid,
-                'attributes': attributes}
+                'attributes': attributes,
+                'alias': alias}
 
     def to_featureinfo(self, features, layer, template, ordered,
                        has_profile=False, remote_template=False):
@@ -795,9 +796,14 @@ class Getfeatureinfo(object):
             self, features, geometry_name, layer_id, url, id_column,
             attributes_to_remove, columns_order, where_key):
         for feature in features:
-            if where_key in feature['attributes']:
-                where_clause = where_key + '=\'' +\
-                    feature['attributes'][where_key] + '\''
+            if where_key in feature['attributes'] or\
+                    ('alias' in feature and where_key in feature['alias']):
+                if 'alias' in feature and where_key in feature['alias']:
+                    where_clause = feature['alias'][where_key] + '=\'' +\
+                        feature['attributes'][where_key] + '\''
+                else:
+                    where_clause = where_key + '=\'' +\
+                        feature['attributes'][where_key] + '\''
                 new_features = self._get_external_data(
                     layer_id, url, id_column, None, None, None,
                     attributes_to_remove, columns_order, where_clause)
@@ -955,12 +961,11 @@ class Getfeatureinfo(object):
                     for key, value in alias.items():
                         rawfeature['attributes'][key] =\
                             rawfeature['attributes'].pop(value)
-
                     f = self.to_feature(layer_id, fid,
                                         geometry,
                                         rawfeature['attributes'],
                                         attributes_to_remove,
-                                        columns_order)
+                                        columns_order, 'geom', alias)
                     features.append(f)
         return features
 
