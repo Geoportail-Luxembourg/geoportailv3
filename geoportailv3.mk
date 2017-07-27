@@ -117,7 +117,13 @@ build-api: \
 	lint-js-api \
 	build-js-api \
 	build-css-api \
-	build-js-apidoc
+	build-js-apidoc \
+	create-xx-lang
+
+.PHONY: create-xx-lang
+create-xx-lang:
+	mkdir -p $(OUTPUT_DIR)/locale/xx
+	cp -rf $(OUTPUT_DIR)/locale/fr/$(PACKAGE).json $(OUTPUT_DIR)/locale/xx/$(PACKAGE).json
 
 # Add new dependency to build target
 build: build-api
