@@ -20,6 +20,7 @@ from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
 from sqlalchemy.orm import scoped_session, sessionmaker
+from shapely.geometry import MultiLineString, mapping, shape
 
 log = logging.getLogger(__name__)
 
@@ -344,6 +345,7 @@ class Getfeatureinfo(object):
                         big_box, None, None,
                         luxgetfeaturedefinition.attributes_to_remove,
                         luxgetfeaturedefinition.columns_order)
+
                 else:
                     features = self._get_external_data(
                         luxgetfeaturedefinition.layer,
@@ -789,9 +791,28 @@ class Getfeatureinfo(object):
             return []
         return []
 
+    def get_additional_external_data(
+            self, features, geometry_name, layer_id, url, id_column,
+            attributes_to_remove, columns_order, where_key):
+        for feature in features:
+            if where_key in feature['attributes']:
+                where_clause = where_key + '=\'' +\
+                    feature['attributes'][where_key] + '\''
+                new_features = self._get_external_data(
+                    layer_id, url, id_column, None, None, None,
+                    attributes_to_remove, columns_order, where_clause)
+                lines = []
+                for new_feature in new_features:
+                    for line in shape(new_feature[geometry_name]):
+                        lines.append(line)
+                multi_line = MultiLineString(lines)
+                feature[geometry_name] = mapping(multi_line)
+        return features
+
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
-                           attributes_to_remove=None, columns_order=None):
+                           attributes_to_remove=None, columns_order=None,
+                           where_clause=None):
         # ArcGIS Server REST API:
         # http://help.arcgis.com/en/arcgisserver/10.0/apis/rest/query.html
         # form example:
@@ -836,6 +857,7 @@ class Getfeatureinfo(object):
                 'objectIds': ''}
         if id_column is None:
             id_column = 'objectid'
+
         if featureid is not None:
             if id_column == 'objectid':
                 body['objectIds'] = featureid
@@ -845,6 +867,8 @@ class Getfeatureinfo(object):
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
             body['spatialRel'] = 'esriSpatialRelIntersects'
+        elif where_clause is not None:
+            body['where'] = where_clause
         else:
             return []
 
@@ -856,7 +880,6 @@ class Getfeatureinfo(object):
         if url.find(separator) > 0:
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
-
         try:
             result = urllib2.urlopen(query, None, 15)
             content = result.read()
