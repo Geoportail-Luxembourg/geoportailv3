@@ -1241,6 +1241,21 @@ app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
     }.bind(this));
 };
 
+/**
+ * Show tracing Geometry
+ * @param {string} geom Geoson multilinestring string in 3857
+ * @export
+ */
+app.QueryController.prototype.showGeom = function(geom) {
+  this.featureOverlay_.clear();
+  if (geom != undefined) {
+    var feature = /** @type {ol.Feature} */
+      ((new ol.format.GeoJSON()).readFeature(geom));
+    this.featureOverlay_.addFeature(feature);
+    this.map_.getView().fit(feature.getGeometry().getExtent());
+  }
+};
+
 
 app.module.controller('AppQueryController',
                       app.QueryController);
