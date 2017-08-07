@@ -1,0 +1,9 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+ 	<div ng-repeat="feature in layers.features" class="poi-feature">
+	  <span translate>Numero</span> : {{feature.attributes.id_utilisa}}<br>
+	  <span translate>ID</span> : {{feature.attributes.id}}<br>
+	  <span translate>UpStream</span> :   <button ng-click="ctrl.showGeom(feature.attributes.up_geom_geojson)"  > Visualiser </button> <br>
+	  <span translate>DownStream</span> : <button ng-click="ctrl.showGeom(feature.attributes.down_geom_geojson)"> Visualiser </button> <br>
+	  <span translate>Effacer</span> :    <button ng-click="ctrl.showGeom()                                    "> Effacer    </button> <br>
+	</div>
+  
