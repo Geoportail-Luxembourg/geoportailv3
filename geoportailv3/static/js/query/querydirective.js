@@ -293,6 +293,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    */
   this.isQuerying_ = false;
 
+  /**
+   * The draw overlay
+   * @type {ngeo.FeatureOverlay}
+   * @private
+   */
+  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
@@ -307,41 +313,6 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     stroke: circleStroke
   });
 
-  var defaultStyle = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: [255, 255, 0, 0.6]
-      })
-    }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: '#ffffff',
-        width: 5
-      })
-    }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: '#ffcc33',
-        width: 3
-      })
-    })
-  ];
-
-  /** @type {app.QueryStyles} */
-  var styles = {
-    point: [new ol.style.Style({
-      image: image
-    })],
-    default: defaultStyle
-  };
-
-  /**
-   * The draw overlay
-   * @type {ngeo.FeatureOverlay}
-   * @private
-   */
-  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
-
   this.featureOverlay_.setStyle(
       /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -349,10 +320,32 @@ app.QueryController = function($sce, $timeout, $scope, $http,
        * @return {Array.<ol.style.Style>} Array of styles.
        */
       function(feature, resolution) {
+        var lineColor = /** @type {string} */(feature.get('color') || '#ffcc33');
+        var lineWidth = /** @type {number} */ (feature.get('width') || 3);
+        var defaultStyle = [
+          new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: [255, 255, 0, 0.6]
+            })
+          }),
+          new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: '#ffffff',
+              width: 5
+            })
+          }),
+          new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: lineColor,
+              width: lineWidth
+            })
+          })
+        ];
+
         var geometryType = feature.getGeometry().getType();
         return geometryType == ol.geom.GeometryType.POINT ||
             geometryType == ol.geom.GeometryType.MULTI_POINT ?
-            styles.point : styles.default;
+            [new ol.style.Style({image: image})] : defaultStyle;
       });
 
   $scope.$watch(goog.bind(function() {
@@ -1243,17 +1236,22 @@ app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
 
 /**
  * Show tracing Geometry
- * @param {string} geom Geoson multilinestring string in 3857
+ * @param {string} geom Geoson multilinestring string in 3857.
+ * @param {string} color The line color. If undefined then use the default one.
  * @export
  */
-app.QueryController.prototype.showGeom = function(geom) {
+app.QueryController.prototype.showGeom = function(geom, color) {
   this.featureOverlay_.clear();
-  if (geom != undefined) {
+  if (geom !== undefined) {
     var feature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(geom));
+    if (color !== undefined) {
+      feature.set('color', color);
+    }
     this.featureOverlay_.addFeature(feature);
     this.map_.getView().fit(feature.getGeometry().getExtent());
   }
+  this.highlightFeatures_(this.lastHighlightedFeatures_, false);
 };
 
 
