@@ -234,7 +234,11 @@ class Import:
                         try:
                             resp = requests.get(url=self.metadata_service_url,
                                                 params=params)
-                            data = json.loads(resp.text)
+                            try:
+                                data = json.loads(resp.text)
+                            except:
+                                statuslog("\n %s" % self.metadata_service_url)
+                                statuslog("\n %s" % str(resp.status_code))
                             try:
                                 fts['keywords'] = data['root'][0]['keywords']
                                 fts['description'] = \
