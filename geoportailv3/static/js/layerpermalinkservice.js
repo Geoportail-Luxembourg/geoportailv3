@@ -159,8 +159,16 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
         if (goog.isDef(opacities)) {
           // set opacity trough metadata to not interfere
           // with the layer opacity manager service
-          layer.get('metadata')['start_opacity'] =
-              opacities[layerIndex];
+          var layerMetadata = layer.get('metadata');
+          if (!layerMetadata.hasOwnProperty('original_start_opacity')) {
+            if (layerMetadata.hasOwnProperty('start_opacity')) {
+              layerMetadata['original_start_opacity'] =
+                layerMetadata['start_opacity'];
+            } else {
+              layerMetadata['original_start_opacity'] = 1;
+            }
+          }
+          layerMetadata['start_opacity'] = opacities[layerIndex];
         }
         // Skip layers that have already been added
         if (goog.array.every(addedLayers, function(addedLayer) {
@@ -180,8 +188,16 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
             then(function(rawLayer) {
               var wmsLayer = this.appWmsHelper_.createWmsLayers(
                   this.map_, rawLayer);
-              wmsLayer.get('metadata')['start_opacity'] =
-                opacities[layerIndex];
+              var wmsMetadata = wmsLayer.get('metadata');
+              if (!wmsMetadata.hasOwnProperty('original_start_opacity')) {
+                if (wmsMetadata.hasOwnProperty('start_opacity')) {
+                  wmsMetadata['original_start_opacity'] =
+                    wmsMetadata['start_opacity'];
+                } else {
+                  wmsMetadata['original_start_opacity'] = 1;
+                }
+              }
+              wmsMetadata['start_opacity'] = opacities[layerIndex];
               if (goog.array.every(addedLayers, function(addedLayer) {
                 return addedLayer.get('queryable_id') !==
                     wmsLayer.get('queryable_id');
