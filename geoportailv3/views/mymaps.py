@@ -1054,11 +1054,16 @@ class Mymaps(object):
         try:
             symbol = DBSession.query(Symbols).\
                 filter(Symbols.id == id).one()
-
-            headers = {'Content-Type': 'application/octet-stream',
-                       'Content-Disposition': 'filename=\"%s\";'
-                       % (str(symbol.symbol_name))
-                       }
+            try:
+                headers = {'Content-Type': 'application/octet-stream',
+                           'Content-Disposition': 'filename=\"%s\";'
+                           % (symbol.symbol_name)
+                           }
+            except:
+                headers = {'Content-Type': 'application/octet-stream',
+                           'Content-Disposition': 'filename=\"%s\";'
+                           % (str(symbol.id))
+                           }
             format = ""
             if symbol.symbol_name.lower().endswith(".jpg"):
                 headers = {'Content-Type': 'image/jpeg'}
