@@ -109,3 +109,19 @@
 table.mymaps-list > tbody > tr {
   cursor: pointer;
 }
+.modal-body{
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+@media (min-height: 500px) {
+    .modal-body { 
+		max-height: 400px;
+	}
+}
+
+@media (min-height: 800px) {
+    .modal-body {
+		max-height: 600px;
+	}
+}
