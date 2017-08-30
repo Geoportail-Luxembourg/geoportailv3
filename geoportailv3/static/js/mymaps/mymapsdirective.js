@@ -300,6 +300,27 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.confirmDeleteMap = false;
 
   /**
+   * Open or Close the confirmation dialog box.
+   * @type {boolean}
+   * @export
+   */
+  this.confirmDeleteSelectedMap = false;
+
+  /**
+   * Id of the map to delete.
+   * @type {string | undefined}
+   * @export
+   */
+  this.requestedMapIdToDelete = undefined;
+
+  /**
+   * Title of the map to delete
+   * @type {string | undefined}
+   * @export
+   */
+  this.requestedMapTitle = undefined;
+
+  /**
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
@@ -756,6 +777,18 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
   this.confirmDeleteMap = true;
 };
 
+/**
+ * Open the "delete a map" confirmation dialog box.
+ * @param {string} mapId The map id to ask for deleting.
+ * @param {string} mapTitle The map title to ask for deleting.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openConfirmDeleteAMap = function(mapId, mapTitle) {
+  this.confirmDeleteSelectedMap = true;
+  this.requestedMapIdToDelete = mapId;
+  this.requestedMapTitle = mapTitle;
+  this.choosing = false;
+};
 
 /**
  * Closes the current anonymous drawing.
@@ -1130,6 +1163,9 @@ app.MymapsDirectiveController.prototype.deleteAMap = function(mapId) {
       if (goog.isNull(resp)) {
         this.askToConnect();
       } else {
+        this.choosing = true;
+        this.requestedMapTitle = undefined;
+        this.requestedMapIdToDelete = undefined;
         goog.array.remove(this.maps,
             goog.array.find(this.maps, goog.bind(function(item) {
               if (item['uuid'] === mapId) {
