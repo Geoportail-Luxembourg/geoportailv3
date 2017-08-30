@@ -182,7 +182,6 @@ app.CatalogController.prototype.setThemeZooms = function(tree) {
   });
 };
 
-
 /**
  * Add or remove layer from map.
  * @param {Object} node Tree node.
@@ -194,6 +193,11 @@ app.CatalogController.prototype.toggle = function(node) {
   if (map.getLayers().getArray().indexOf(layer) >= 0) {
     map.removeLayer(layer);
   } else {
+    var layerMetadata = layer.get('metadata');
+    if (layerMetadata.hasOwnProperty('start_opacity') &&
+        layerMetadata.hasOwnProperty('original_start_opacity')) {
+      layerMetadata['start_opacity'] = layerMetadata['original_start_opacity'];
+    }
     map.addLayer(layer);
   }
 };
