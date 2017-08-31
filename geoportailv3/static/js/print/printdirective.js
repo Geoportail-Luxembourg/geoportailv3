@@ -665,6 +665,9 @@ app.PrintController.prototype.print = function(format) {
                 for (var j = 0; j < style.symbolizers.length; j++) {
                   var symbolizer = style.symbolizers[j];
                   symbolizer['conflictResolution'] = false;
+                  if (symbolizer.labelAlign) {
+                    symbolizer.labelAlign = 'lm';
+                  }
                   if (symbolizer.externalGraphic) {
                     symbolizer.graphicFormat = 'image/png';
                     if (symbolizer.externalGraphic.indexOf('scale=') > 0) {
