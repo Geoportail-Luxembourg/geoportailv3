@@ -1377,7 +1377,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       return [new ol.style.Style({
         text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
-          textAlign: 'start',
+          textAlign: 'left',
           font: 'normal ' + featureSize + 'px Sans-serif',
           rotation: this.get('angle'),
           fill: new ol.style.Fill({
