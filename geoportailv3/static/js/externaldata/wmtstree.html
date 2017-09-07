@@ -1,0 +1,14 @@
+<a ng-if="ctrl.hasProperty('Layer', layer)" href="#wms-{{layer.uid}}" data-toggle="collapse" >{{layer.Title}}</a>
+<ul ng-if="!ctrl.hasProperty('Layer', layer) && !layer.isInvalid" class="panel">
+  <li>
+    <a class="fa fa-info" ng-click="ctrl.getInfo(layer, 'wmts')"></a>
+    <a href ng-click="ctrl.toggleLayer(layer, 'wmts')">
+      <i class="fa" ng-class="(ctrl.isLayerActive(layer.id)) ? 'fa-check-square' : 'fa-square'"></i>
+      {{layer.Title}}
+    </a>
+  </li>
+</ul>
+<ul ng-if="ctrl.hasProperty('Layer', layer)" id="wmts-{{layer.uid}}" class="panel collapse" >
+  <li ng-include="ctrl.getWmtsTreeTemplate()" ng-repeat="layer in ctrl.getChildLayers(layer) | orderBy:'Title'" ng-class="ctrl.hasProperty('Layer', layer)?'panel':''">
+  </li>
+</ul>

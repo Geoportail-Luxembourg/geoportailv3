@@ -7,6 +7,7 @@ goog.provide('app.ShowLayerinfo');
 
 goog.require('ngeo.CreatePopup');
 goog.require('app.WmsHelper');
+goog.require('app.WmtsHelper');
 
 
 /**
@@ -22,11 +23,12 @@ app.ShowLayerinfo;
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
+ * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
  * @return {app.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 app.showLayerinfoFactory = function($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup, appWmsHelper) {
+    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
 
   /**
    * @type {ngeo.Popup}
@@ -69,7 +71,9 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
     var promiseKey = metadataUid + '##' + currentLanguage + '##' + legend_name;
 
     if (!(promiseKey in promises_)) {
-      if (localMetadata['isExternalWms']) {
+      if (localMetadata['isExternalWmts']) {
+        promises_[promiseKey] = appWmtsHelper.getMetadata(metadataUid);
+      } else if (localMetadata['isExternalWms']) {
         promises_[promiseKey] = appWmsHelper.getMetadata(metadataUid);
       } else {
         // TODO: remove the quotes around jsonpCallbackParam when
