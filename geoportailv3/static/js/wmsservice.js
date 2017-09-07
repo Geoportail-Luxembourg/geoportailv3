@@ -96,6 +96,9 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     this.wmsCapa_[wms] = this.http_.get(this.proxyIfNeeded(wms))
     .then(function(data) {
       var capabilities = new ol.format.WMSCapabilities().read(data.data);
+      if (!('Capability' in capabilities)) {
+        return null;
+      }
       var formats = capabilities['Capability']['Request']['GetMap']['Format'];
       var useTiles = false;
       if ('MaxWidth' in capabilities['Service'] &&
@@ -149,7 +152,6 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
   }
   return onlineResource;
 };
-
 
 /**
  * @param {string} wms The wms url.

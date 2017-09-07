@@ -8,6 +8,7 @@ goog.provide('app.LayerPermalinkManager');
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
 goog.require('app.WmsHelper');
+goog.require('app.WmtsHelper');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('goog.array');
@@ -26,18 +27,25 @@ goog.require('ol.events');
  * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
  * manager.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
- * @param {app.WmsHelper} appWmsHelper The wms herlper service.
+ * @param {app.WmsHelper} appWmsHelper The wms helper service.
+ * @param {app.WmtsHelper} appWmtsHelper The wmts helper service.
  * @ngInject
  */
 app.LayerPermalinkManager = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
-    ngeoLocation, appWmsHelper) {
+    ngeoLocation, appWmsHelper, appWmtsHelper) {
 
   /**
    * @type {app.WmsHelper}
    * @private
    */
   this.appWmsHelper_ = appWmsHelper;
+
+  /**
+   * @type {app.WmtsHelper}
+   * @private
+   */
+  this.appWmtsHelper_ = appWmtsHelper;
 
   /**
    * @type {ngeo.Location}
@@ -183,7 +191,35 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
         return;
       }
     } else {
-      if (/** @type {string} */ (layerId).indexOf('WMS||') === 0) {
+      if (/** @type {string} */ (layerId).indexOf('WMTS||') === 0) {
+        this.appWmtsHelper_.getLayerById(/** @type {string} */ (layerId)).
+            then(function(rawLayer) {
+              var values = layerId.split('%2D').join('-').split('||');
+              var url = values[1];
+              this.appWmtsHelper_.getCapabilities(url).then(function(capabilities) {
+                if (rawLayer['options'] !== null) {
+                  var wmtsLayer = this.appWmtsHelper_.createWmtsLayers(
+                      this.map_, rawLayer, rawLayer['options']);
+                  var wmtsMetadata = wmtsLayer.get('metadata');
+                  if (!wmtsMetadata.hasOwnProperty('original_start_opacity')) {
+                    if (wmtsMetadata.hasOwnProperty('start_opacity')) {
+                      wmtsMetadata['original_start_opacity'] =
+                        wmtsMetadata['start_opacity'];
+                    } else {
+                      wmtsMetadata['original_start_opacity'] = 1;
+                    }
+                  }
+                  wmtsMetadata['start_opacity'] = opacities[layerIndex];
+                  if (goog.array.every(addedLayers, function(addedLayer) {
+                    return addedLayer.get('queryable_id') !==
+                        wmtsLayer.get('queryable_id');
+                  }, this)) {
+                    this.map_.addLayer(wmtsLayer);
+                  }
+                }
+              }.bind(this));
+            }.bind(this));
+      } else  if (/** @type {string} */ (layerId).indexOf('WMS||') === 0) {
         this.appWmsHelper_.getLayerById(/** @type {string} */ (layerId)).
             then(function(rawLayer) {
               var wmsLayer = this.appWmsHelper_.createWmsLayers(
@@ -291,7 +327,8 @@ app.LayerPermalinkManager.prototype.splitLayers_ =
           if (goog.isNumber(value) && !isNaN(value)) {
             items.push(value);
           } else {
-            if (string.indexOf('WMS||') === 0) {
+            if (string.indexOf('WMS||') === 0 ||
+                string.indexOf('WMTS||') === 0) {
               items.push(string);
             }
           }
