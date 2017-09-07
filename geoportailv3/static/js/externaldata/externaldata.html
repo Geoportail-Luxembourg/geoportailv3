@@ -12,8 +12,8 @@
     <div class="dropdown">
      <div class="form-group">
        <button type="button" class="btn btn-default" data-toggle="dropdown"><span translate>Predefined wms</span><span class="caret"></span></button>
-       <input type="url" class="form-control url-control" placeholder="{{ 'Choose or write a WMS url'|translate}}" ng-model="ctrl.curWmsUrl">
-       <button type="button" class="btn btn-default" ng-click="ctrl.refreshWmsLayers(ctrl.curWmsUrl)">{{ 'Get the layers'|translate}}</button>
+       <input type="url" class="form-control url-control" placeholder="{{ 'Choose or write a WMS url'|translate}}" ng-model="ctrl.curDataUrl">
+       <button type="button" class="btn btn-default" ng-click="ctrl.detectServiceType(ctrl.curDataUrl);">{{ 'Get the layers'|translate}}</button>
         <ul class="dropdown-menu" role="menu">
           <li ng-repeat="wms in ctrl.getWmsUrls() | orderBy:'label'" ><a tabindex="-1" href="#" ng-click="ctrl.refreshWmsLayers(wms.url)">{{ wms.label }}</a></li>
         </ul>
@@ -25,7 +25,9 @@
   <div ng-if="ctrl.accessConstraintsService.length > 0"><label translate>Access constraints :</label> {{ctrl.accessConstraintsService}}</div>
   <div class="wms-catalog-content">
     <ul class="catalog">
-      <li ng-include="ctrl.getWmsTreeTemplate()" ng-repeat="layer in ctrl.getLayers() | orderBy:'Title'" class="panel">
+      <li ng-include="ctrl.getWmsTreeTemplate()" ng-repeat="layer in ctrl.getWmsLayers() | orderBy:'Title'" class="panel">
+      </li>
+      <li ng-include="ctrl.getWmtsTreeTemplate()" ng-repeat="layer in ctrl.getWmtsLayers() | orderBy:'Title'" class="panel">
       </li>
     </ul>
   </div>

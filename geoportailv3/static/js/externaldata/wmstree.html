@@ -2,7 +2,7 @@
 <ul ng-if="!ctrl.hasProperty('Layer', layer) && !layer.isInvalid" class="panel">
   <li>
     <a class="fa fa-info" ng-click="ctrl.getInfo(layer)"></a>
-    <a href ng-click="ctrl.toggleWmsLayer(layer)">
+    <a href ng-click="ctrl.toggleLayer(layer)">
       <i class="fa" ng-class="(ctrl.isLayerActive(layer.id)) ? 'fa-check-square' : 'fa-square'"></i>
       {{layer.Title}}
     </a>
