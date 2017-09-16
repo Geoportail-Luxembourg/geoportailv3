@@ -750,7 +750,6 @@ app.FeaturePopupController.prototype.modifyCircle = function() {
   this.appFeaturePopup_.toggleDropdown();
 };
 
-
 /**
  * @return {boolean} True if is line.
  * @export

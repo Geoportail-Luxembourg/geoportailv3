@@ -80,6 +80,25 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
     appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
+
+  /**
+   * @export
+   * @type {Array<ol.Feature>}
+   */
+  this.selectedLineString = [];
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.newLineName = '';
+
+  /**
+   * @export
+   * @type {string}
+   */
+  this.newLineDesc = '';
+
   /**
    * @type {angular.$sce}
    * @private
@@ -218,6 +237,13 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    * @export
    */
   this.choosing = false;
+
+  /**
+   * Tells whether the 'mergin lines' modal window is open or not.
+   * @type {boolean}
+   * @export
+   */
+  this.mergingLines = false;
 
   /**
    * List of Mymaps
@@ -396,6 +422,36 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
     }
   }, this));
 
+};
+
+
+/**
+ * Returns if the map is in the clip line mode.
+ * @return {boolean} Returns true if clip line mode.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.isClipLineMode = function() {
+  return this.drawnFeatures_.clipLineInteraction.getActive();
+};
+
+
+/**
+ * @export
+ */
+app.MymapsDirectiveController.prototype.toggleClippingLineMode = function() {
+  var clippingLineMode = !this.drawnFeatures_.clipLineInteraction.getActive();
+  this.drawnFeatures_.clipLineInteraction.setActive(clippingLineMode);
+  if (clippingLineMode) {
+    var msg = this.gettextCatalog.getString('Vous êtes en mode découpage.<br> Veuillez cliquer sur une ligne pour la couper en deux.');
+    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.drawnFeatures_.clipLineInteraction.setActive(true);
+  } else {
+    this.drawnFeatures_.clipLineInteraction.setActive(false);
+  }
+  this.drawnFeatures_.clearEditMode();
+  this.drawnFeatures_.modifyInteraction.setActive(false);
+  this.drawnFeatures_.modifyCircleInteraction.setActive(false);
+  this.drawnFeatures_.translateInteraction.setActive(false);
 };
 
 
@@ -1089,6 +1145,25 @@ app.MymapsDirectiveController.prototype.openCreateMapModal = function() {
 
 
 /**
+ * Open the merge lines modal panel.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.openMergeLinesModal = function() {
+  if (this.getMymapsLinestringFeatures().length > 1) {
+    goog.array.clear(this.selectedLineString);
+    this.newLineName = this.gettextCatalog.getString('Nouvelle ligne');
+
+    this.newLineDesc = '';
+    this.mergingLines = true;
+    this.drawnFeatures_.clearEditMode();
+  } else {
+    var msg = this.gettextCatalog.getString('Il faut au moins 2 lignes disponibles pour pouvoir les fusionner.');
+    this.notify_(msg, app.NotifyNotificationType.INFO);
+  }
+};
+
+
+/**
  *  Open the modification modal
  * @export
  */
@@ -1342,6 +1417,17 @@ app.MymapsDirectiveController.prototype.getMymapsFeatures = function() {
   });
 };
 
+/**
+ * Get a features Array with the Mymaps linestring features.
+ * @return {Array.<ol.Feature>?} The features array.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.getMymapsLinestringFeatures = function() {
+  return this.featuresList.filter(function(feature) {
+    return (feature.getGeometry().getType() === 'LineString');
+  });
+};
+
 
 /**
  * Get a features Array with the anonymous features.
@@ -1352,6 +1438,110 @@ app.MymapsDirectiveController.prototype.getAnonymousFeatures = function() {
   return this.featuresList.filter(function(feature) {
     return !feature.get('__map_id__');
   });
+};
+
+/**
+ * Selects feature.
+ * @param {ol.Feature} feature The Feature.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.toggleLinestring = function(feature) {
+  var position = this.selectedLineString.indexOf(feature);
+  if (position === -1) {
+    this.selectedLineString.push(feature);
+  } else {
+    this.selectedLineString.splice(position, 1);
+  }
+};
+
+/**
+ * Merge the selected features.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.mergesSelectedLineString = function() {
+  if (this.selectedLineString.length > 0) {
+    var firstFeature = this.selectedLineString[0];
+    this.selectedLineString.splice(0, 1);
+    var builtGeom =  /** @type {ol.geom.LineString} */(firstFeature.getGeometry());
+
+    while (this.selectedLineString.length > 0) {
+      var firstCoordFirstGeom = builtGeom.getFirstCoordinate();
+      var lastCoordFirstGeom = builtGeom.getLastCoordinate();
+      var prevLength = undefined;
+      var idxCanditate = -1;
+      var exchange = false;
+      var reverseLine = false;
+      for (var i = 0; i < this.selectedLineString.length; i++) {
+        var curFeature = this.selectedLineString[i];
+        var curGeom =  /** @type {ol.geom.LineString} */(curFeature.getGeometry());
+        var firstCoordCurGeom = curGeom.getFirstCoordinate();
+        var lastCoordCurGeom = curGeom.getLastCoordinate();
+        var line1 = new ol.geom.LineString([firstCoordFirstGeom, firstCoordCurGeom]);
+        var line4 = new ol.geom.LineString([lastCoordFirstGeom, lastCoordCurGeom]);
+
+        var line2 = new ol.geom.LineString([lastCoordFirstGeom, firstCoordCurGeom]);
+        var line3 = new ol.geom.LineString([firstCoordFirstGeom, lastCoordCurGeom]);
+
+        var lengthLine1 = line1.getLength();
+        var lengthLine2 = line2.getLength();
+        var lengthLine3 = line3.getLength();
+        var lengthLine4 = line4.getLength();
+
+        if (lengthLine1 < lengthLine2 &&
+            lengthLine1 < lengthLine3 &&
+            lengthLine1 < lengthLine4) {
+          if (prevLength === undefined || lengthLine1 < prevLength) {
+            prevLength = lengthLine1;
+            idxCanditate = i;
+            exchange = true;
+            reverseLine = true;
+          }
+        } else if (lengthLine4 < lengthLine1 &&
+            lengthLine4 < lengthLine2 &&
+            lengthLine4 < lengthLine3) {
+          if (prevLength === undefined || lengthLine4 < prevLength) {
+            prevLength = lengthLine4;
+            idxCanditate = i;
+            exchange = false;
+            reverseLine = true;
+          }
+        } else if (lengthLine2 < lengthLine1 &&
+            lengthLine2 < lengthLine3 &&
+            lengthLine2 < lengthLine4) {
+          if (prevLength === undefined || lengthLine2 < prevLength) {
+            prevLength = lengthLine2;
+            idxCanditate = i;
+            exchange = false;
+            reverseLine = false;
+          }
+        } else {
+          if (prevLength === undefined || lengthLine3 < prevLength) {
+            prevLength = lengthLine3;
+            idxCanditate = i;
+            exchange = true;
+            reverseLine = false;
+          }
+        }
+      }
+      var candidateFeature = this.selectedLineString[idxCanditate];
+      this.drawnFeatures_.remove(candidateFeature);
+      this.selectedLineString.splice(idxCanditate, 1);
+      var candidateGeom = /** @type {ol.geom.LineString} */(candidateFeature.getGeometry());
+      if (reverseLine) {
+        candidateGeom = new ol.geom.LineString(candidateGeom.getCoordinates().reverse());
+      }
+      if (exchange) {
+        builtGeom.setCoordinates(candidateGeom.getCoordinates().concat(/** @type {ol.geom.LineString} */(builtGeom).getCoordinates()));
+      } else {
+        builtGeom.setCoordinates(builtGeom.getCoordinates().concat(/** @type {ol.geom.LineString} */(candidateGeom).getCoordinates()));
+      }
+    }
+
+    firstFeature.set('name', this.newLineName);
+    firstFeature.set('description', this.newLineDesc);
+
+    this.drawnFeatures_.saveFeature(firstFeature);
+  }
 };
 
 
