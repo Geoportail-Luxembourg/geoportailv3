@@ -7,6 +7,7 @@ goog.provide('app.DrawnFeatures');
 
 goog.require('app');
 goog.require('ngeo.Location');
+goog.require('app.ClipLine');
 goog.require('app.interaction.DrawRoute');
 goog.require('app.format.FeatureHash');
 goog.require('goog.asserts');
@@ -51,6 +52,11 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
    * @type {app.ModifyCircle}
    */
   this.modifyCircleInteraction;
+
+  /**
+   * @type {app.ClipLine}
+   */
+  this.clipLineInteraction;
 
   /**
    * @type {ol.interaction.Translate}
@@ -156,6 +162,16 @@ app.DrawnFeatures.prototype.computeOrder = function() {
   }, this);
   this.saveFeaturesOrder();
 };
+
+/**
+ * Deactivate the editmode for each drawn features.
+ */
+app.DrawnFeatures.prototype.clearEditMode = function() {
+  this.features.getArray().forEach(function(feature) {
+    feature.set('__editable__', false);
+  }, this);
+};
+
 
 /**
  * Add a feature in the drawn feature list.

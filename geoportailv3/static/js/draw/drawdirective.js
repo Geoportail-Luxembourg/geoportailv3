@@ -435,6 +435,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
     pixelTolerance: 20
   });
 
+  this.drawnFeatures_.clipLineInteraction =
+      new app.ClipLine({
+        features: this.drawnFeatures_.getCollection()
+      });
+  this.drawnFeatures_.clipLineInteraction.setActive(false);
+  this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
+  ol.events.listen(this.drawnFeatures_.clipLineInteraction,
+      ol.interaction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
+
   this.drawnFeatures_.modifyCircleInteraction =
       new app.ModifyCircle({
         features: appSelectedFeatures
@@ -486,7 +495,6 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
     this.drawnFeatures_.saveFeature(feature);
   }, this));
 };
-
 
 /**
  * @param {ol.interaction.Draw.Event} event Event.
@@ -787,6 +795,35 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
     this['mymapsOpen'] = true;
   }
+};
+
+
+/**
+ * @param {ol.interaction.Modify.Event} event The event.
+ * @private
+ */
+app.DrawController.prototype.onClipLineEnd_ = function(event) {
+  var features = event.features.getArray();
+
+  if (this.appMymaps_.isEditable()) {
+    features[0].set('__map_id__', this.appMymaps_.getMapId());
+    features[1].set('__map_id__', this.appMymaps_.getMapId());
+  } else {
+    features[0].set('__map_id__', undefined);
+    features[1].set('__map_id__', undefined);
+  }
+  this.drawnFeatures_.remove(features[2]);
+  features[0].set('fid', undefined);
+  features[1].set('fid', undefined);
+  features[0].set('__selected__', undefined);
+  features[1].set('__selected__', undefined);
+  this.selectedFeatures_.clear();
+  this.drawnFeatures_.saveFeature(features[0]);
+  this.drawnFeatures_.saveFeature(features[1]);
+  if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
+    this['mymapsOpen'] = true;
+  }
+  this.drawnFeatures_.clipLineInteraction.setActive(false);
 };
 
 

@@ -50,6 +50,8 @@
         <li class="divider"></li>
         <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
         <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Mode couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
         <li ng-show="ctrl.isEditable()" class="divider"></li>
         <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
         <li class="divider"></li>
@@ -97,6 +99,8 @@
           <li ng-show="ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
           <li ng-click="ctrl.openConfirmDelete()"><a href translate>Effacer tous les dessins</a></li>
           <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces dessins</a></li>
+          <li ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
+          <li ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Mode couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
         </ul>
       </li>
     </ul>
@@ -310,5 +314,36 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.mergingLines">
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Fusionner des lignes</h4>
+</div>
+
+<div class="mymaps-list-scroll modal-body">
+  <div class="row">
+    <div class="col-xs-8 form-group">
+      <label translate>Nouveau nom</label><input type="text" class="form-control" ng-model="ctrl.newLineName">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 form-group">
+      <label translate>Nouvelle description</label> <textarea class="form-control" rows="3" ng-model="ctrl.newLineDesc"></textarea>
+    </div>
+  </div>
+  <ul class="features list-unstyled" " >
+    <li ng-repeat="(key, feature) in ctrl.getMymapsLinestringFeatures()" class="feature">
+    <i class="fa fa-square" ng-click="ctrl.toggleLinestring(feature)" ng-class="(ctrl.selectedLineString.indexOf(feature)>=0) ? 'fa-check-square' : 'fa-square'"></i> {{ feature.get('name') }}
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.mergesSelectedLineString()" translate>Fusionner</button>
 </div>
 </ngeo-modal>
