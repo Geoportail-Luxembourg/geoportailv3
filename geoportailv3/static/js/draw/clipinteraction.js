@@ -314,7 +314,10 @@ app.ClipLine.handleDownEvent_ = function(evt) {
       var segmentDataMatch = segmentDataMatches[i];
       if (segmentDataMatch.feature !== undefined &&
           this.features_.getArray().indexOf(segmentDataMatch.feature) >= 0) {
-
+        var closestVertex = ol.coordinate.closestOnSegment(vertex, segmentDataMatch.segment);
+        if (!ol.coordinate.equals(closestVertex, vertex)) {
+          continue;
+        }
         this.features_.remove(segmentDataMatch.feature);
         var feature1 = segmentDataMatch.feature.clone();
         var feature2 = segmentDataMatch.feature.clone();

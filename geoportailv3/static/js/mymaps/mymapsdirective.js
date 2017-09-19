@@ -445,8 +445,11 @@ app.MymapsDirectiveController.prototype.toggleClippingLineMode = function() {
     var msg = this.gettextCatalog.getString('Vous êtes en mode découpage.<br> Veuillez cliquer sur une ligne pour la couper en deux.');
     this.notify_(msg, app.NotifyNotificationType.INFO);
     this.drawnFeatures_.clipLineInteraction.setActive(true);
+    this.drawnFeatures_.selectInteraction.setActive(false);
+    this.selectedFeatures_.clear();
   } else {
     this.drawnFeatures_.clipLineInteraction.setActive(false);
+    this.drawnFeatures_.selectInteraction.setActive(true);
   }
   this.drawnFeatures_.clearEditMode();
   this.drawnFeatures_.modifyInteraction.setActive(false);
@@ -1539,8 +1542,9 @@ app.MymapsDirectiveController.prototype.mergesSelectedLineString = function() {
 
     firstFeature.set('name', this.newLineName);
     firstFeature.set('description', this.newLineDesc);
-
+    this.selectedFeatures_.clear();
     this.drawnFeatures_.saveFeature(firstFeature);
+    this.selectedFeatures_.push(firstFeature);
   }
 };
 
