@@ -39,6 +39,11 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   /**
+   * @type {ol.interaction.Select}
+   */
+  this.selectInteraction;
+
+  /**
    * @type {app.interaction.DrawRoute}
    */
   this.drawLineInteraction;

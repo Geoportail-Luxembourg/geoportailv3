@@ -377,18 +377,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
+    hitTolerance: 20,
     filter: goog.bind(function(feature, layer) {
       return this.drawnFeatures_.getArray().indexOf(feature) != -1;
     }, this)
   });
   this.map.addInteraction(selectInteraction);
 
-  /**
-   * @type {ol.interaction.Select}
-   * @private
-   */
-  this.selectInteraction_ = selectInteraction;
-  this.selectInteraction_.setActive(false);
+  this.drawnFeatures_.selectInteraction = selectInteraction;
+  this.drawnFeatures_.selectInteraction.setActive(false);
   appFeaturePopup.init(this.map);
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
@@ -525,7 +522,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive() ||
       this.drawLabel.getActive();
-  this.selectInteraction_.setActive(false);
+  this.drawnFeatures_.selectInteraction.setActive(false);
   if (active) {
     this.appActivetool_.drawActive = true;
     var msg = '';
@@ -557,6 +554,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     }
   } else {
     this.appActivetool_.drawActive = false;
+    this.drawnFeatures_.selectInteraction.setActive(false);
   }
   if (this.drawLine.getActive()) {
     this.showMapMatchingButton = true;
