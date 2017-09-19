@@ -410,11 +410,11 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           return;
         }
         holdPromise = $timeout(function() {
-          this.selectedFeatures_.clear();
           var found = false;
           var isQueryMymaps = (this['layersOpen'] || this['mymapsOpen']) &&
               this.drawnFeatures_.getCollection().getLength() > 0;
           if (isQueryMymaps) {
+            this.selectedFeatures_.clear();
             var result = this.selectMymapsFeature_(evt.pixel);
             if (result) {
               found = true;
@@ -486,14 +486,16 @@ app.QueryController = function($sce, $timeout, $scope, $http,
  */
 app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
   var selected = [];
-
+  var opt = {
+    hitTolerance: 5
+  };
   this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
     if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
       selected.push(feature);
       return false;
     }
     return true;
-  }.bind(this));
+  }.bind(this), opt);
   if (selected.length > 0) {
     this.selectedFeatures_.push(selected.pop());
   }
