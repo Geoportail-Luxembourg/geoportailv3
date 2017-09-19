@@ -737,8 +737,20 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       }
       break;
     case 'LineString':
-      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+      var curLineStringGeom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+      var curLineStringCooridnates = curLineStringGeom.getCoordinates();
+      if (curLineStringCooridnates.length < 2) {
         return;
+      }
+      var prevCoord = curLineStringCooridnates[curLineStringCooridnates.length - 1];
+      var antePrevCoord = curLineStringCooridnates[curLineStringCooridnates.length - 2];
+      if (prevCoord[0] === antePrevCoord[0] &&
+          prevCoord[1] === antePrevCoord[1]) {
+        curLineStringCooridnates.pop();
+        if (curLineStringCooridnates.length < 2) {
+          return;
+        }
+        curLineStringGeom.setCoordinates(curLineStringCooridnates);
       }
       name = this.gettextCatalog.getString('LineString');
       break;
