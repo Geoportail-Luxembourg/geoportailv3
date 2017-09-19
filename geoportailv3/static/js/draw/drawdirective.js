@@ -377,18 +377,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
+    hitTolerance: 20,
     filter: goog.bind(function(feature, layer) {
       return this.drawnFeatures_.getArray().indexOf(feature) != -1;
     }, this)
   });
   this.map.addInteraction(selectInteraction);
 
-  /**
-   * @type {ol.interaction.Select}
-   * @private
-   */
-  this.selectInteraction_ = selectInteraction;
-  this.selectInteraction_.setActive(false);
+  this.drawnFeatures_.selectInteraction = selectInteraction;
+  this.drawnFeatures_.selectInteraction.setActive(false);
   appFeaturePopup.init(this.map);
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
@@ -434,6 +431,15 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
     features: appSelectedFeatures,
     pixelTolerance: 20
   });
+
+  this.drawnFeatures_.clipLineInteraction =
+      new app.ClipLine({
+        features: this.drawnFeatures_.getCollection()
+      });
+  this.drawnFeatures_.clipLineInteraction.setActive(false);
+  this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
+  ol.events.listen(this.drawnFeatures_.clipLineInteraction,
+      ol.interaction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
 
   this.drawnFeatures_.modifyCircleInteraction =
       new app.ModifyCircle({
@@ -487,7 +493,6 @@ app.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
   }, this));
 };
 
-
 /**
  * @param {ol.interaction.Draw.Event} event Event.
  * @private
@@ -517,7 +522,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive() ||
       this.drawLabel.getActive();
-  this.selectInteraction_.setActive(false);
+  this.drawnFeatures_.selectInteraction.setActive(false);
   if (active) {
     this.appActivetool_.drawActive = true;
     var msg = '';
@@ -549,6 +554,7 @@ app.DrawController.prototype.onChangeActive_ = function(event) {
     }
   } else {
     this.appActivetool_.drawActive = false;
+    this.drawnFeatures_.selectInteraction.setActive(false);
   }
   if (this.drawLine.getActive()) {
     this.showMapMatchingButton = true;
@@ -729,8 +735,20 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
       }
       break;
     case 'LineString':
-      if (/** @type {ol.geom.LineString} */ (feature.getGeometry()).getCoordinates().length < 2) {
+      var curLineStringGeom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+      var curLineStringCooridnates = curLineStringGeom.getCoordinates();
+      if (curLineStringCooridnates.length < 2) {
         return;
+      }
+      var prevCoord = curLineStringCooridnates[curLineStringCooridnates.length - 1];
+      var antePrevCoord = curLineStringCooridnates[curLineStringCooridnates.length - 2];
+      if (prevCoord[0] === antePrevCoord[0] &&
+          prevCoord[1] === antePrevCoord[1]) {
+        curLineStringCooridnates.pop();
+        if (curLineStringCooridnates.length < 2) {
+          return;
+        }
+        curLineStringGeom.setCoordinates(curLineStringCooridnates);
       }
       name = this.gettextCatalog.getString('LineString');
       break;
@@ -787,6 +805,35 @@ app.DrawController.prototype.onDrawEnd_ = function(event) {
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
     this['mymapsOpen'] = true;
   }
+};
+
+
+/**
+ * @param {ol.interaction.Modify.Event} event The event.
+ * @private
+ */
+app.DrawController.prototype.onClipLineEnd_ = function(event) {
+  var features = event.features.getArray();
+
+  if (this.appMymaps_.isEditable()) {
+    features[0].set('__map_id__', this.appMymaps_.getMapId());
+    features[1].set('__map_id__', this.appMymaps_.getMapId());
+  } else {
+    features[0].set('__map_id__', undefined);
+    features[1].set('__map_id__', undefined);
+  }
+  this.drawnFeatures_.remove(features[2]);
+  features[0].set('fid', undefined);
+  features[1].set('fid', undefined);
+  features[0].set('__selected__', undefined);
+  features[1].set('__selected__', undefined);
+  this.selectedFeatures_.clear();
+  this.drawnFeatures_.saveFeature(features[0]);
+  this.drawnFeatures_.saveFeature(features[1]);
+  if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
+    this['mymapsOpen'] = true;
+  }
+  this.drawnFeatures_.clipLineInteraction.setActive(false);
 };
 
 
