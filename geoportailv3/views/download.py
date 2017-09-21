@@ -112,7 +112,7 @@ class Download(object):
 
         self._log_download_measurement_stats(filename, dirname, parcel)
         headers = {"Content-Type": "application/pdf",
-                   "Content-Disposition": "attachment; filename=\"%s.pdf\""
+                   "Content-Disposition": "attachment; filename=\"%s\""
                    % (str(filename))}
 
         return Response(f.read(), headers=headers)
