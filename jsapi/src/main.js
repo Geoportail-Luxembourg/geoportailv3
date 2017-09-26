@@ -577,17 +577,23 @@ lux.Map.prototype.addLayer = function(layer) {
  * A3 portrait, A2 landscape, A2 portrait, A1 landscape, A1 portrait,
  * A0 landscape, A0 portrait
  * @param {number=} scale The scale to use.
+ * @param {Array<Object>=} firstPagesUrls An array containing urls and
+ * type of pages that will be introduced at the beginning of the pdf.
+ * Only html and pdf are supported.
+ * [{'url': 'http://url1', 'html'},{'url': 'http://url2' 'pdf'}]
  * @example
  * map.print();
  * @export
  * @api
  */
-lux.Map.prototype.print = function(name, layout, scale) {
+lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
   var dpi = 127;
   var format = 'pdf';
 
   var pm = new lux.PrintManager(lux.printUrl, this);
-
+  if (firstPagesUrls === undefined || firstPagesUrls === null) {
+    firstPagesUrls = [];
+  }
   if (name === undefined || name === null) {
     name = '';
   }
@@ -650,7 +656,8 @@ lux.Map.prototype.print = function(name, layout, scale) {
     'scalebar': {'geodetic': true},
     'dataOwner': dataOwners.join(' '),
     'dateText': dateText,
-    'queryResults': null
+    'queryResults': null,
+    'firstPagesUrls': firstPagesUrls
   });
  // create print report
   pm.createReport(spec).then(
