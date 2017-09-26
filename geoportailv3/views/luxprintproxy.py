@@ -251,6 +251,31 @@ class LuxPrintProxy(PrintProxy):
             print_title = re.sub(r" ", "_", print_title)
             print_title = re.sub(r"[^a-zA-Z0-9\-\_]", "", print_title)
 
+            if is_pdf and "firstPagesUrls" in attributes and\
+                    attributes["firstPagesUrls"] is not None and\
+                    len(attributes["firstPagesUrls"]) > 0:
+                attributes["firstPagesUrls"].reverse()
+                for pageUrl in attributes["firstPagesUrls"]:
+                    try:
+                        merger = PdfFileMerger(strict=False)
+                        if pageUrl['type'].lower() == 'pdf':
+                            opener = urllib2.build_opener(
+                                urllib2.HTTPHandler())
+                            pdf_content = opener.open(pageUrl['url']).read()
+                            merger.append(StringIO(pdf_content))
+                        else:
+                            first_page = StringIO()
+                            weasyprint.HTML(pageUrl['url']).write_pdf(
+                                first_page
+                            )
+                            merger.append(first_page)
+                        merger.append(StringIO(content))
+                        content = StringIO()
+                        merger.write(content)
+                        content = content.getvalue()
+                    except Exception as e:
+                        log.exception(e)
+
             if is_pdf and "legend" in attributes and\
                     attributes["legend"] is not None:
                 merger = PdfFileMerger(strict=False)
