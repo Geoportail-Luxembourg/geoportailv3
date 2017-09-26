@@ -33,7 +33,8 @@ app.Theme = function($window, ngeoLocation, appThemes) {
     'at': 16,
     'map': 18,
     'main': 18,
-    'pag': 19
+    'pag': 19,
+    'cadastre_hertzien': 25
   };
 
   /**
