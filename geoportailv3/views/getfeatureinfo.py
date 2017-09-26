@@ -417,9 +417,8 @@ class Getfeatureinfo(object):
                         f['attributes']['tooltip'] =\
                             remote_template.render(feature=f)
                     else:
-                        path = 'geoportailv3:' + path + template
                         f['attributes']['tooltip'] = render(
-                            path, context)
+                            'geoportailv3:' + path + template, context)
 
         return results
 
