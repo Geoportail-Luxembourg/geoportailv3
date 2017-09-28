@@ -702,6 +702,15 @@ lux.Map.prototype.getStatus_ = function(pm, ref) {
     }.bind(this)
   );
 };
+
+/**
+ * Get the show layer.
+ * @return {ol.layer.Vector} The show layer.
+ */
+lux.Map.prototype.getShowLayer = function() {
+  return this.showLayer_;
+};
+
 /**
  * @param {string} lang Set the language.
  * @export
