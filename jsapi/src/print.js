@@ -178,7 +178,9 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
 
   var mapLayerGroup = this.map_.getLayerGroup();
   goog.asserts.assert(mapLayerGroup !== null);
+  var showLayer = this.map_.getShowLayer();
   var layers = this.getFlatLayers(mapLayerGroup);
+  layers.push(showLayer);
   layers = layers.slice().reverse();
 
   layers.forEach(function(layer) {
@@ -187,6 +189,7 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
       this.encodeLayer(object.layers, layer, viewResolution);
     }
   }, this);
+
   var overlays = this.map_.getOverlays();
   overlays.forEach(function(layer) {
     goog.asserts.assert(viewResolution !== undefined);
