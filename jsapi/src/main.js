@@ -704,7 +704,9 @@ lux.Map.prototype.getStatus_ = function(pm, ref) {
 };
 
 /**
- * Get the show layer.
+ * Get the layer containing highlighted features.
+ * @export
+ * @api
  * @return {ol.layer.Vector} The show layer.
  */
 lux.Map.prototype.getShowLayer = function() {
