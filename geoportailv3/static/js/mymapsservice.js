@@ -1252,7 +1252,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
-
+      var arrowColor = this.get('arrowcolor');
+      if (arrowColor === undefined || arrowColor === null) {
+        arrowColor = color;
+      }
       this.getGeometry().forEachSegment(function(start, end) {
         var arrowPoint = new ol.geom.Point(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
@@ -1267,7 +1270,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
-          var coloredArrowUrl = arrowUrl + '?color=' + color.replace('#', '');
+          var coloredArrowUrl = arrowUrl + '?color=' + arrowColor.replace('#', '');
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
