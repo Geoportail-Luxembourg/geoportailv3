@@ -1,14 +1,17 @@
 <% import numbers %>
-% for attr in feature['attributes']:
-  % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], basestring) and len(feature['attributes'][attr].rstrip()) > 0:
-    % if isinstance(feature['attributes'][attr], basestring) and (feature['attributes'][attr].lower().startswith("http://") or feature['attributes'][attr].lower().startswith("https://")):
-      <a href="${feature['attributes'][attr]}" target="_blank">${_t('f_' + attr)}</a>
-    <br>
+## -*- coding: utf-8 -*-
+% for feature in features:
+  % for attr in feature['attributes']:
+    % if isinstance(feature['attributes'][attr], numbers.Number) or isinstance(feature['attributes'][attr], basestring) and len(feature['attributes'][attr].rstrip()) > 0:
+      % if isinstance(feature['attributes'][attr], basestring) and (feature['attributes'][attr].lower().startswith("http://") or feature['attributes'][attr].lower().startswith("https://")):
+        <a href="${feature['attributes'][attr]}" target="_blank">${_t('f_' + attr)}</a>
+      <br>
+      % endif
+      % if not (isinstance(feature['attributes'][attr], basestring) and (feature['attributes'][attr].lower().startswith("http://") or feature['attributes'][attr].lower().startswith("https://"))):
+        <label>${_t('f_' + attr)}</label>
+        <span>${feature['attributes'][attr]}</span>
+      <br>
+      % endif
     % endif
-    % if not (isinstance(feature['attributes'][attr], basestring) and (feature['attributes'][attr].lower().startswith("http://") or feature['attributes'][attr].lower().startswith("https://"))):
-      <label>${_t('f_' + attr)}</label>
-      <span>${feature['attributes'][attr]}</span>
-    <br>
-    % endif
-  % endif
+  % endfor
 % endfor
