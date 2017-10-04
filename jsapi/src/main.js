@@ -1176,6 +1176,28 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
 
 /**
  * @param {Object} json GeoJSON object
+ * @return {Array<ol.Feature>} the features.
+ * @private
+ */
+lux.Map.prototype.readJsonFeatures_ = function(json) {
+  var features = [];
+  if (json.features != undefined) {
+    json.features.forEach(function(f) {
+      f.properties = f.attributes;
+    });
+    features = new ol.format.GeoJSON().readFeatures({
+      type: 'FeatureCollection',
+      features: json.features
+    }, {
+      dataProjection: 'EPSG:2169',
+      featureProjection: 'EPSG:3857'
+    });
+  }
+  return features;
+};
+
+/**
+ * @param {Object} json GeoJSON object
  * @param {boolean} highlight Whether or not to highlight the features.
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
@@ -1184,20 +1206,15 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
  */
 lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker) {
 
-  var format = new ol.format.GeoJSON();
   if (json.length === 0) {
     return;
   }
-  json[0].features.forEach(function(f) {
-    f.properties = f.attributes;
-  });
-  var features = format.readFeatures({
-    type: 'FeatureCollection',
-    features: json[0].features
-  }, {
-    dataProjection: 'EPSG:2169',
-    featureProjection: 'EPSG:3857'
-  });
+  var tooltip = undefined;
+
+  if ('tooltip' in json[0]) {
+    tooltip = json[0]['tooltip'];
+  }
+  var features = this.readJsonFeatures_(json[0]);
   if (features.length == 0) {
     return;
   }
@@ -1210,7 +1227,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
         autoCenter: true,
         click: opt_click,
         target: opt_target,
-        html: feature.get('tooltip')
+        html: tooltip
       });
     }
     this.featureExtent_ = ol.extent.extend(
@@ -1994,9 +2011,14 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     // each item in the result corresponds to a layer
     var htmls = [];
     json.forEach(function(resultLayer) {
-      resultLayer.features.forEach(function(f) {
-        htmls.push(f.attributes['tooltip']);
-      });
+      if ('tooltip' in resultLayer) {
+        htmls.push(resultLayer['tooltip']);
+      }
+      var features = this.readJsonFeatures_(resultLayer);
+      this.showLayer_.getSource().clear();
+      if (features.length != 0) {
+        this.showLayer_.getSource().addFeatures(features);
+      }
     }.bind(this));
 
     if (this.popupTarget_) {

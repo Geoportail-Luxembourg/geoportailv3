@@ -1,0 +1,17 @@
+## -*- coding: utf-8 -*-
+<table>
+<tr><th>${_c("Num ligne")}</th> <th>${_c("Description")}</th></tr>
+% for feature in features:
+    <%
+      operateur = 'tice'
+      if feature['attributes']['category_id'] == 400:
+        operateur = 'avl'
+      elif feature['attributes']['category_id'] == 401:
+        operateur = 'rgtr'
+    %>
+<tr>
+  <td><a href="https://www.mobiliteit.lu/se-deplacer/horaires-et-reseaux/bus?field_zone_geographique_value=All&field_operateurs_value=operateur_${operateur}&keys=${feature['attributes']['label']}" target='_blank'>${_c(feature['attributes']['label'])}</a></td>
+  <td><a href="https://map.geoportail.lu?map_id=${feature['attributes']['map_id']}" target='_blank'>${_c(feature['attributes']['map_description'])}</a></td>
+</tr>
+% endfor
+</table>
