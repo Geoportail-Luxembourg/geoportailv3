@@ -390,35 +390,34 @@ class Getfeatureinfo(object):
             server = TranslationStringFactory("geoportailv3-server")
             tooltips = TranslationStringFactory("geoportailv3-tooltips")
             client = TranslationStringFactory("geoportailv3-client")
+
             for r in results:
                 l_template = r['template']
                 filename = resource_filename('geoportailv3', path + l_template)
                 template = l_template if isfile(filename) else 'default.html'
-
-                for f in r['features']:
-                    context = {
-                        "_s": lambda s: localizer.translate(server(s)),
-                        "_t": lambda s: localizer.translate(tooltips(s)),
-                        "_c": lambda s: localizer.translate(client(s)),
-                        "feature": f}
-
-                    if r['remote_template'] is not None and\
-                       r['remote_template']:
-                        data = ""
-                        try:
-                            url_remote = urllib2.urlopen(
-                                l_template + "&render=apiv3", None, 15)
-                            data = url_remote.read()
-                        except Exception as e:
-                            log.exception(e)
-                            log.error(l_template)
-                            return HTTPBadGateway()
-                        remote_template = Template(data)
-                        f['attributes']['tooltip'] =\
-                            remote_template.render(feature=f)
-                    else:
-                        f['attributes']['tooltip'] = render(
-                            'geoportailv3:' + path + template, context)
+                features = r['features']
+                context = {
+                    "_s": lambda s: localizer.translate(server(s)),
+                    "_t": lambda s: localizer.translate(tooltips(s)),
+                    "_c": lambda s: localizer.translate(client(s)),
+                    "features": features}
+                if r['remote_template'] is not None and\
+                   r['remote_template']:
+                    data = ""
+                    try:
+                        url_remote = urllib2.urlopen(
+                            l_template + "&render=apiv3", None, 15)
+                        data = url_remote.read()
+                    except Exception as e:
+                        log.exception(e)
+                        log.error(l_template)
+                        return HTTPBadGateway()
+                    remote_template = Template(data)
+                    r['tooltip'] =\
+                        remote_template.render(features=features)
+                else:
+                    r['tooltip'] = render(
+                        'geoportailv3:' + path + template, context)
 
         return results
 
