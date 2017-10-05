@@ -107,6 +107,8 @@ lux.MyMap = function(options) {
 
   this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
   this.arrowUrl_ = [lux.mymapsUrl, 'getarrow'].join('/');
+  this.exportGpxUrl_ = [lux.mymapsUrl, 'exportgpxkml'].join('/');
+  this.exportCsvUrl_ = lux.exportCsvUrl;
 };
 
 /**
@@ -832,7 +834,7 @@ lux.MyMap.prototype.exportCSV_ = function() {
 
   var form = goog.dom.createElement(goog.dom.TagName.FORM);
   form.method = 'POST';
-  form.action = '//maps.geoportail.lu/main/wsgi/profile/echocsv';
+  form.action = this.exportCsvUrl_;
   form.appendChild(nameInput);
   form.appendChild(csvInput);
   document.body.appendChild(form);
@@ -1018,7 +1020,7 @@ lux.MyMap.prototype.exportFeatures_ = function(doc, format, filename) {
 
   var form = goog.dom.createElement(goog.dom.TagName.FORM);
   form.method = 'POST';
-  form.action = '//maps.geoportail.lu/main/wsgi/mymaps/exportgpxkml';
+  form.action = this.exportGpxUrl_;
   form.appendChild(formatInput);
   form.appendChild(nameInput);
   form.appendChild(docInput);
