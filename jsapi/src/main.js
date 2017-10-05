@@ -74,6 +74,11 @@ lux.searchUrl = 'fulltextsearch?';
 lux.profileUrl = 'profile.json';
 
 /**
+ * @type {string}
+ */
+lux.exportCsvUrl = 'profile/echocsv';
+
+/**
  * @type {string?}
  */
 lux.baseUrl = null;
@@ -113,6 +118,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
   lux.queryUrl = url + lux.queryUrl;
   lux.profileUrl = url + lux.profileUrl;
+  lux.exportCsvUrl = url + lux.exportCsvUrl;
   lux.printUrl = url + lux.printUrl;
   lux.baseUrl = url;
 };
