@@ -789,6 +789,16 @@ lux.Map.prototype.showMarker = function(opt_options) {
   var options = opt_options || {};
   var element = goog.dom.createDom(goog.dom.TagName.DIV);
   var image = goog.dom.createDom(goog.dom.TagName.IMG);
+  // Overlay compute the position where the image must be displayed using
+  // the size of the element. But as the size of the image is only known
+  // after the image is loaded, then we have to refresh the map, to be sure
+  //  the marker is displayed at the right position.
+  image.style.display = 'none';
+  image.onload = function() {
+    image.style.display = '';
+    this.renderSync();
+  }.bind(this);
+
   var el;
   if (options.target) {
     el = typeof options.target === 'string' ?
