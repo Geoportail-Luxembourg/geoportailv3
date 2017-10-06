@@ -840,12 +840,13 @@ lux.Map.prototype.showMarker = function(opt_options) {
         var element = lux.buildPopupLayout(options.html, cb);
         popup = new ol.Overlay({
           element: element,
-          position: position,
+          position: markerOverlay.getPosition(),
           positioning: 'bottom-center',
           offset: [0, -20],
           insertFirst: false
         });
       }
+      popup.setPosition(markerOverlay.getPosition());
       this.addOverlay(popup);
       this.renderSync();
     }).bind(this));
