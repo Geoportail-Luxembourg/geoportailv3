@@ -554,6 +554,12 @@ lux.Map = function(options) {
     }.bind(this), this);
     this.getTargetElement().style.cursor = (hit || pixelHit) ? 'pointer' : '';
   }.bind(this));
+
+  if (options.callback !== undefined) {
+    Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
+      options.callback.call(this);
+    }.bind(this));
+  }
 };
 
 goog.inherits(lux.Map, ol.Map);
@@ -852,7 +858,6 @@ lux.Map.prototype.showMarker = function(opt_options) {
       }.bind(this));
     }
   }
-
 };
 
 
