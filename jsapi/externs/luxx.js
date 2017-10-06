@@ -10,6 +10,13 @@ var luxx;
 luxx.MapOptions;
 
 /**
+ * Function called when the objects are initialized.
+ * @type {function()|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.callback;
+
+/**
  * Identifier of background layer. Default to `basemap_2015_global`.
  * @type {string|undefined}
  * @api
