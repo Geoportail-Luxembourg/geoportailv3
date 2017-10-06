@@ -84,6 +84,11 @@ lux.exportCsvUrl = 'profile/echocsv';
 lux.baseUrl = null;
 
 /**
+ * @type {Object}
+ */
+lux.languages = {};
+
+/**
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
  * <li>Mymaps service</li>
@@ -726,17 +731,38 @@ lux.Map.prototype.getShowLayer = function() {
 };
 
 /**
+ * @param {string} lang Set the new language.
+ * @param {Object} translations Set the new translations.
+ * @export
+ */
+lux.Map.prototype.addNewLanguage = function(lang, translations) {
+  lux.languages[lang] = translations;
+};
+
+/**
  * @param {string} lang Set the language.
  * @export
  * @api
  */
 lux.Map.prototype.setLanguage = function(lang) {
-  lux.lang = lang;
+  var previousLang = lux.lang;
+  lux.lang = lang.toLowerCase();
+  if (lang in lux.languages) {
+    lux.i18n = lux.languages[lang];
+    return;
+  }
   var langUrl = lux.i18nUrl.replace('xx', lux.lang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
-    return resp.json();
+    if (resp.ok) {
+      return resp.json();
+    }
+    throw new Error('' + resp.status + ' ' + resp.statusText);
   }).then(function(json) {
+    lux.languages[lang] = json[lux.lang];
     lux.i18n = json[lux.lang];
+  }.bind(this)).catch(function(error) {
+    console.log(error);
+    lux.lang = previousLang;
   }.bind(this));
 };
 
