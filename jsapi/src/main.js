@@ -780,6 +780,8 @@ lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
 /**
  * Show a marker on the map at the given location.
  * @param {luxx.MarkerOptions=} opt_options Config options
+ * @return {ol.Overlay} The overlay containing the marker
+ * or null if the marker target is not conform.
  * @export
  * @api
  */
@@ -794,7 +796,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
         options.target;
     if (!(el instanceof Element)) {
       console.error('Marker target should be a DOM Element or its id');
-      return;
+      return null;
     }
   }
   image.src = options.iconURL ||
@@ -812,12 +814,12 @@ lux.Map.prototype.showMarker = function(opt_options) {
   } else {
     position = this.getView().getCenter();
   }
-
-  this.addOverlay(new ol.Overlay({
+  var markerOverlay = new ol.Overlay({
     element: element,
     position: position,
     positioning: options.positioning || 'center-center'
-  }));
+  });
+  this.addOverlay(markerOverlay);
 
   if (options.autoCenter) {
     this.getView().setCenter(position);
@@ -838,12 +840,13 @@ lux.Map.prototype.showMarker = function(opt_options) {
         var element = lux.buildPopupLayout(options.html, cb);
         popup = new ol.Overlay({
           element: element,
-          position: position,
+          position: markerOverlay.getPosition(),
           positioning: 'bottom-center',
           offset: [0, -20],
           insertFirst: false
         });
       }
+      popup.setPosition(markerOverlay.getPosition());
       this.addOverlay(popup);
       this.renderSync();
     }).bind(this));
@@ -858,6 +861,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
       }.bind(this));
     }
   }
+  return markerOverlay;
 };
 
 
