@@ -85,6 +85,7 @@ lux.baseUrl = null;
 
 /**
  * @type {Object}
+ * @export
  */
 lux.languages = {};
 
@@ -184,19 +185,16 @@ lux.popupSize = null;
 
 
 /**
- * @type {Object<string, string>}
- * @export
- */
-lux.i18n = {};
-
-/**
  * Returns the translated string if available.
  * @param {string} text The text to translate.
  * @return {string} The translated text.
  * @export
  */
 lux.translate = function(text) {
-  return lux.i18n[text] || text;
+  if (lux.lang in lux.languages) {
+    return lux.languages[lux.lang][text] || text;
+  }
+  return text;
 };
 
 /**
@@ -366,6 +364,12 @@ lux.Map = function(options) {
   this.blankLayer_.set('name', 'blank');
 
   /**
+   * @private
+   * @type {lux.LayerManager}
+   */
+  this.layerManagerControl_ = null;
+
+  /**
    * @type {ol.Extent}
    * @private
    */
@@ -423,10 +427,10 @@ lux.Map = function(options) {
       var el = typeof target === 'string' ?
            document.getElementById(target) :
            target;
-      var control = new lux.LayerManager({
+      this.layerManagerControl_ = new lux.LayerManager({
         target: el
       });
-      this.addControl(control);
+      this.addControl(this.layerManagerControl_);
     }
     delete options.layerManager;
   }.bind(this));
@@ -736,7 +740,7 @@ lux.Map.prototype.getShowLayer = function() {
  * @export
  */
 lux.Map.prototype.addNewLanguage = function(lang, translations) {
-  lux.languages[lang] = translations;
+  lux.languages[lang.toLowerCase()] = translations;
 };
 
 /**
@@ -747,19 +751,24 @@ lux.Map.prototype.addNewLanguage = function(lang, translations) {
 lux.Map.prototype.setLanguage = function(lang) {
   var previousLang = lux.lang;
   lux.lang = lang.toLowerCase();
-  if (lang in lux.languages) {
-    lux.i18n = lux.languages[lang];
+  var curLang = lang.toLowerCase();
+  if (curLang in lux.languages) {
+    if (this.layerManagerControl_ !== null) {
+      this.layerManagerControl_.update();
+    }
     return;
   }
-  var langUrl = lux.i18nUrl.replace('xx', lux.lang);
+  var langUrl = lux.i18nUrl.replace('xx', curLang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
     if (resp.ok) {
       return resp.json();
     }
     throw new Error('' + resp.status + ' ' + resp.statusText);
   }).then(function(json) {
-    lux.languages[lang] = json[lux.lang];
-    lux.i18n = json[lux.lang];
+    lux.languages[curLang] = json[curLang];
+    if (this.layerManagerControl_ !== null) {
+      this.layerManagerControl_.update();
+    }
   }.bind(this)).catch(function(error) {
     console.log(error);
     lux.lang = previousLang;

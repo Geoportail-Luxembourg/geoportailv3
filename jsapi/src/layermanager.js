@@ -55,8 +55,9 @@ lux.LayerManager.prototype.update = function() {
     var label = document.createElement('label');
     var name = /** @type {string} */ (layer.get('name'));
 
-    if (lux.i18n[name] !== undefined) {
-      label.innerHTML = lux.i18n[name];
+    if (lux.lang in lux.languages &&
+        lux.languages[lux.lang][name] !== undefined) {
+      label.innerHTML = lux.languages[lux.lang][name];
     } else {
       label.innerHTML = name;
     }
