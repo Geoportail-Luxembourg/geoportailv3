@@ -764,7 +764,7 @@ lux.Map.prototype.setLanguage = function(lang) {
   }
   var langUrl = lux.i18nUrl.replace('xx', curLang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
-    if (resp !== null && resp !== undefined) {
+    if (resp === null || resp === undefined) {
       throw new Error('Invalid response');
     }
     if (resp.ok) {
