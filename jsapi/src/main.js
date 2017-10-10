@@ -750,23 +750,31 @@ lux.Map.prototype.addNewLanguage = function(lang, translations) {
  */
 lux.Map.prototype.setLanguage = function(lang) {
   var previousLang = lux.lang;
+  if (lang === undefined) {
+    lang = lux.lang;
+  }
   lux.lang = lang.toLowerCase();
   var curLang = lang.toLowerCase();
   if (curLang in lux.languages) {
-    if (this.layerManagerControl_ !== null) {
+    if (this.layerManagerControl_ !== null &&
+        this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
     return;
   }
   var langUrl = lux.i18nUrl.replace('xx', curLang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
+    if (resp !== null && resp !== undefined) {
+      throw new Error('Invalid response');
+    }
     if (resp.ok) {
       return resp.json();
     }
     throw new Error('' + resp.status + ' ' + resp.statusText);
   }).then(function(json) {
     lux.languages[curLang] = json[curLang];
-    if (this.layerManagerControl_ !== null) {
+    if (this.layerManagerControl_ !== null &&
+        this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
   }.bind(this)).catch(function(error) {
