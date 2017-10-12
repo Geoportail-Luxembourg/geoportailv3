@@ -433,6 +433,12 @@ lux.Map = function(options) {
       this.addControl(this.layerManagerControl_);
     }
     delete options.layerManager;
+    if (options.search && options.search.target) {
+      var searchTarget = options.search.target;
+      var searchDataSets = options.search.dataSets;
+      delete options.search;
+      this.addSearch(searchTarget, searchDataSets);
+    }
   }.bind(this));
 
   if (options.features) {
@@ -521,14 +527,6 @@ lux.Map = function(options) {
     src: '//www.geoportail.lu/favicon.ico'
   };
 
-  if (options.search && options.search.target) {
-    var searchTarget = options.search.target;
-    var searchDataSets = options.search.dataSets;
-    delete options.search;
-    this.i18nPromise.then(function() {
-      this.addSearch(searchTarget, searchDataSets);
-    }.bind(this));
-  }
 
   goog.base(this, options);
 
