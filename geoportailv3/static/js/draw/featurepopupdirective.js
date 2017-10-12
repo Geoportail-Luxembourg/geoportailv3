@@ -16,7 +16,8 @@ goog.require('ol.geom.Circle');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.LineString');
-goog.require('ol.sphere.WGS84');
+goog.require('ol.Sphere');
+goog.require('ol.proj.EPSG4326');
 
 
 /**
@@ -340,7 +341,7 @@ app.FeaturePopupController.prototype.getCircleRadius = function() {
     var projection = this.map.getView().getProjection();
     var p1 = ol.proj.transform(center, projection, 'EPSG:4326');
     var p2 = ol.proj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
-    return Math.round(ol.sphere.WGS84.haversineDistance(p1, p2));
+    return Math.round(ngeo.interaction.Measure.SPHERE_WGS84.haversineDistance(p1, p2));
   }
   return 0;
 };
