@@ -3,7 +3,8 @@
 <tr><th translate>Num ligne</th> <th translate>Description</th></tr>
 {{feature.attributes.category_id}}
 <tr ng-repeat="feature in layers.features | orderBy: 'attributes.label'" class="poi-feature">
-  <td><a class="fid-link no-print" href="https://www.mobiliteit.lu/se-deplacer/horaires-et-reseaux/bus?field_zone_geographique_value=All&field_operateurs_value=operateur_{{ (feature.attributes.category_id == 400) ? 'avl' : (feature.attributes.category_id == 401) ? 'rgtr' : 'tice' }}&keys={{feature.attributes.label}}" target='_blank' translate>{{feature.attributes.label}}</a></td>
+  <td ng-if='(feature.attributes.category_id == 403)'><a class="fid-link no-print" href="https://www.mobiliteit.lu/se-deplacer/horaires-et-reseaux/trains?field_zone_geographique_value=All&keys={{feature.attributes.label}}" target='_blank' translate>{{feature.attributes.label}}</a></td>
+  <td ng-if='(feature.attributes.category_id < 403)'><a class="fid-link no-print" href="https://www.mobiliteit.lu/se-deplacer/horaires-et-reseaux/bus?field_zone_geographique_value=All&field_operateurs_value=operateur_{{ (feature.attributes.category_id == 400) ? 'avl' : (feature.attributes.category_id == 401) ? 'rgtr' : 'tice' }}&keys={{feature.attributes.label}}" target='_blank' translate>{{feature.attributes.label}}</a></td>
   <td><a class="fid-link no-print" href="?map_id={{feature.attributes.map_id}}" target='_blank' translate>{{feature.attributes.map_description}}</a></td>
 </tr>
 </table>
