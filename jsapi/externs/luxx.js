@@ -179,13 +179,13 @@ luxx.SearchOption.prototype.dataSets;
 luxx.MarkerOptions;
 
 /**
- * Allow to display popup when clicking on a transparent part of the marker.
+ * Allow to deactivate popup when clicking on a transparent part of the marker.
  * This property is experimental. The marker should come from the same source
  * as the page, or the image server has to set the following  header
  * Access-Control-Allow-Origin "*"
  * @type {boolean|undefined}
  */
-luxx.MarkerOptions.prototype.popupOnTransparency;
+luxx.MarkerOptions.prototype.noPopupOnTransparency;
 
 /**
  * Position of the marker. If not set, the marker is displayed at the center of
