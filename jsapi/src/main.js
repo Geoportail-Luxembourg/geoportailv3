@@ -883,7 +883,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     ol.events.listen(element, showPopupEvent, (function(event) {
       var curMarker = markerOverlay.getElement().firstChild;
       var isTransparent = false;
-      if (options.popupOnTransparency === true) {
+      if (options.noPopupOnTransparency === true) {
         try {
           if (curMarker instanceof HTMLImageElement) {
             curMarker.crossOrigin = 'Anonymous';
