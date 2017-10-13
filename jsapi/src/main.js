@@ -875,11 +875,34 @@ lux.Map.prototype.showMarker = function(opt_options) {
   if (options.autoCenter) {
     this.getView().setCenter(position);
   }
+  var canvasContext = document.createElement('canvas').getContext('2d');
   if (options.html) {
     var popup;
     var showPopupEvent = options.click ?
         ol.events.EventType.CLICK : ol.events.EventType.MOUSEMOVE;
-    ol.events.listen(element, showPopupEvent, (function() {
+    ol.events.listen(element, showPopupEvent, (function(event) {
+      var curMarker = markerOverlay.getElement().firstChild;
+      var isTransparent = false;
+      if (options.popupOnTransparency === true) {
+        try {
+          if (curMarker instanceof HTMLImageElement) {
+            curMarker.crossOrigin = 'Anonymous';
+            var x = event.clientX - curMarker.getBoundingClientRect().left;
+            var y = event.clientY - curMarker.getBoundingClientRect().top;
+            var w = canvasContext.canvas.width = curMarker.width;
+            var h = canvasContext.canvas.height = curMarker.height;
+            canvasContext.drawImage(curMarker, 0, 0, w, h);
+            var data = canvasContext.getImageData(x, y, 1, 1).data;
+            // If alpha chanel is lower than 5, then this is transparent.
+            isTransparent = data[3] < 5;
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      if (isTransparent) {
+        return;
+      }
       if (options.target) {
         el.innerHTML = options.html;
         return;
