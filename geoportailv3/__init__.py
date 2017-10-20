@@ -236,6 +236,17 @@ def main(global_config, **settings):
         "pag_report",
         "/pag/report/{oid}.pdf"
     )
+    # pag routes
+    config.add_route(
+        "casipo_url",
+        "/casipo"
+    )
+    # pag routes
+    config.add_route(
+        "casipo_report",
+        "/casipo/report/{oid}.pdf"
+    )
+
     config.add_route(
         "pag_files",
         "/pag/files/{_file}"

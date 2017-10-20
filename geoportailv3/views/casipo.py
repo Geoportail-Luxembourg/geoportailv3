@@ -11,8 +11,6 @@ import urllib2
 from email.mime.text import MIMEText
 import time
 import sys
-from geoportailv3.portail import PortailSession
-#from geoportailv3.portail import CasipoDownload
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -85,14 +83,7 @@ class Casipo(object):
         return
 
     def __log_download_stats(self, objectids, download_link):
-        #casipo_download = CasipoDownload()
-        #casipo_download.objectids = objectids
-        #casipo_download.download_link = download_link
-        #PortailSession.add(casipo_download)
-        #PortailSession.commit()
         pass
-
-    
 
     @view_config(route_name='casipo_report')
     def casipo_report(self):
