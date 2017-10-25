@@ -42,7 +42,6 @@
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false",
       "ol.ENABLE_RASTER_REPROJECTION=false",
       "ol.ENABLE_WEBGL=false"
@@ -73,6 +72,7 @@
     "generate_exports": true,
     "language_in": "ECMASCRIPT6_STRICT",
     "language_out": "ECMASCRIPT5_STRICT",
+    "dependency_mode": "LOOSE",
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true
   }

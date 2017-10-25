@@ -40,7 +40,7 @@ vars:
     support_email_address: support@geoportail.lu
 
     # closure paths
-    closure_library_path: 'process.stdout.write(require("closure-util").getLibraryPath())'
+    closure_library_path: 'process.stdout.write(require("@camptocamp/closure-util").getLibraryPath())'
 
     servers:
         my_maps: //ws.geoportail.lu/mymaps
