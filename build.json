@@ -28,6 +28,7 @@
       "node_modules/ngeo/externs/jqueryui.js",
       "node_modules/ngeo/externs/angular-dynamic-locale.js",
       "node_modules/ngeo/externs/file-saver.js",
+      "node_modules/ngeo/externs/moment.js",
       "node_modules/ngeo/externs/geo-admin-api.js",
       "node_modules/ngeo/externs/google_maps_api_v3_27.js",
       ".build/externs/angular-1.6.js",
