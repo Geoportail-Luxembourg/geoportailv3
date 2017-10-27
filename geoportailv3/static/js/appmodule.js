@@ -47,13 +47,6 @@ app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
 
 
 /**
- * @const
- * @type {RegExp}
- */
-app.numberRegexp = /^-?[0-9]+(\.[0-9]{1,2})?$/;
-
-
-/**
  * @param {string} name The string to sanitize.
  * @return {string} The sanitized string.
  */
