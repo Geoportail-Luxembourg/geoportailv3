@@ -121,6 +121,7 @@ app.ModifyCircle = function(options) {
     updateWhileInteracting: true
   });
 
+  goog.asserts.assert(options.features);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
