@@ -55,6 +55,9 @@
     "jscomp_error": [
       "*"
     ],
+    "jscomp_warning": [
+      "deprecated"
+    ],
     "jscomp_off": [
       "useOfGoogBase",
       "extraRequire",
