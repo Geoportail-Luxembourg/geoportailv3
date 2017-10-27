@@ -208,7 +208,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   contMsg = gettext('Click to finish');
   /** @type {ngeo.interaction.MeasureAzimut} */
   var measureAzimut = new ngeo.interaction.MeasureAzimut(
-    $filter('ngeoUnitPrefix'),
+    $filter('ngeoUnitPrefix'), $filter('ngeoNumber'),
     {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
