@@ -87,6 +87,7 @@ vars:
         - ["{node_modules_path}/openlayers/src", "{node_modules_path}/openlayers/src"]
         - ["{node_modules_path}/openlayers/build", "{node_modules_path}/openlayers/build"]
         - ["{node_modules_path}/ngeo/src", "{node_modules_path}/ngeo/src"]
+        - ["{node_modules_path}/ol-cesium/src", "{node_modules_path}/ol-cesium/src"]
 
     # The application's default language. This is the language used by
     # the application if no specific language is specified in the URLs.
