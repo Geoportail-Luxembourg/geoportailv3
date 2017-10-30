@@ -135,6 +135,11 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.map_ = this['map'];
 
   /**
+   * @const {?app.olcs.Lux3DManager}
+   */
+  this.ol3dm = /** @type {?app.olcs.Lux3DManager} */ (this.map_.get('ol3dm'));
+
+  /**
    * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
@@ -193,6 +198,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    * @export
    */
   this.featuresList = appDrawnFeatures.getArray();
+  this.map.addLayer(appDrawnFeatures.getLayer());
 
   /**
    * @type {app.DrawnFeatures}
@@ -1170,6 +1176,9 @@ app.MymapsDirectiveController.prototype.openMergeLinesModal = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
+  if (this.ol3dm.is3dEnabled()) {
+    return;
+  }
   if (this.appMymaps_.isEditable()) {
     this.newTitle = this.appMymaps_.mapTitle;
     this.newDescription = this.appMymaps_.mapDescription;
@@ -1339,6 +1348,10 @@ app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
 app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
   this.onChosen(map, true).then(function() {
     var extent = undefined;
+    var layer = this.drawnFeatures_.getLayer();
+    if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
+      this.map_.addLayer(layer);
+    }
     this.drawnFeatures_.getCollection().forEach(function(feature) {
       if (feature.get('__map_id__')) {
         if (goog.isDef(extent)) {

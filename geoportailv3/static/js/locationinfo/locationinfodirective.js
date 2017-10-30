@@ -17,9 +17,11 @@ goog.require('ngeo.map.FeatureOverlay');
 goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('goog.array');
 goog.require('ol.Feature');
-goog.require('ol.geom.Point');
 goog.require('ol.events');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
 goog.require('ol.proj');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -80,7 +82,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @ngInject
  */
 app.LocationinfoController = function(
-        $scope, $timeout, ngeoFeatureOverlayMgr,
+        $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
@@ -170,7 +172,7 @@ app.LocationinfoController = function(
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
     if (newVal != 'locationinfo') {
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -191,7 +193,7 @@ app.LocationinfoController = function(
       });
       this['appSelector'] = undefined;
       this['location'] = {};
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -474,6 +476,7 @@ app.LocationinfoController.prototype.setClickCordinate_ = function(eventOrCoordi
   this.clickCoordinate4326_ = ol.proj.transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 };
+
 
 /**
  * Load the information panel.

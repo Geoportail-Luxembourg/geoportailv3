@@ -16,6 +16,7 @@ goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
+goog.require('app');
 
 /**
  * @constructor
@@ -347,8 +348,8 @@ app.WmtsHelper.prototype.addWmtsLayers = function(map, layer, url) {
  * @return {ol.layer.Layer} return the created layer.
  */
 app.WmtsHelper.prototype.createWmtsLayers = function(map, layer, options) {
-
   var newLayer = new ol.layer.Tile({
+    'olcs.extent': app.olcsExtent,
     source: new ol.source.WMTS(options)
   });
 

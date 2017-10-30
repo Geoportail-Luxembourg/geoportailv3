@@ -20,15 +20,17 @@
     "d3": false,
     "Bloodhound": false,
     "ol": false,
+    "olcs": false,
+    "Cesium": false,
     "proj4": false,
     "ngeo": false,
     "gmf": false,
     "app": false,
     "Fuse": false,
     "lux": false,
-	"autoComplete": false,
-	"JSZip": false,
-	"Promise": true,
-	"google": false
+    "autoComplete": false,
+    "JSZip": false,
+    "Promise": true,
+    "google": false
   }
 }

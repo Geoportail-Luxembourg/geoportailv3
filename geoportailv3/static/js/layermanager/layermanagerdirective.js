@@ -77,6 +77,18 @@ app.LayermanagerController.prototype.removeLayer = function(layer) {
 
 
 /**
+ * @param {angular.JQLite} element Element.
+ * @param {Array.<ol.layer.Layer>} layers Layers.
+ * @export
+ */
+app.LayermanagerController.prototype.reorderCallback = function(element, layers) {
+  for (var i = 0; i < layers.length; i++) {
+    layers[i].setZIndex(layers.length - i);
+  }
+};
+
+
+/**
  * @param {ol.layer.Layer} layer Layer.
  * @export
  */

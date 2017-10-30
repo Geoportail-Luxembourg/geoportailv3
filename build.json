@@ -2,14 +2,14 @@
   "exports": [],
   "cwd": ".",
   "src": [
-	"node_modules/openlayers/src/*.js",
+    "node_modules/openlayers/src/*.js",
     "node_modules/openlayers/src/**/*.js",
-	"node_modules/openlayers/build/ol.ext/*.js",
+    "node_modules/openlayers/build/ol.ext/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
-    "node_modules/ol-cesium/src/**/*.js",
-	"node_modules/ngeo/src/*.js",
+    "node_modules/ngeo/src/*.js",
     "node_modules/ngeo/src/**/*.js",
-	"geoportailv3/static/js/*.js",
+    "node_modules/ol-cesium/src/**/*.js",
+    "geoportailv3/static/js/*.js",
     "geoportailv3/static/js/**/*.js",
     "geoportailv3/static/build/templatecache.js"
   ],
@@ -44,7 +44,7 @@
       "geoportailv3/externs/piwik.js",
       "geoportailv3/externs/fuse.js",
       "geoportailv3/externs/mapfish-print.js",
-	  "geoportailv3/externs/jszip.js",
+      "geoportailv3/externs/jszip.js",
       ".build/externs/jquery-1.9.js"
     ],
     "define": [
@@ -60,9 +60,6 @@
     ],
     "jscomp_error": [
       "*"
-    ],
-    "jscomp_warning": [
-      "deprecated"
     ],
     "jscomp_off": [
       "useOfGoogBase",
@@ -83,6 +80,7 @@
     "language_out": "ECMASCRIPT5_STRICT",
     "dependency_mode": "LOOSE",
     "output_wrapper": "(function(){%output%}).call(window);",
+    "hide_warnings_for": "node_modules/@camptocamp/closure-util",
     "use_types_for_optimization": true
   }
 }
