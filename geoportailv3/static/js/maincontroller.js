@@ -37,6 +37,7 @@ goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
 goog.require('ol.proj');
+goog.require('ol.math');
 goog.require('olcs.contrib.Manager');
 
 
@@ -473,7 +474,7 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   // [minx, miny, maxx, maxy]
-  var luxembourgRectangle = [5.31, 49.38, 6.64, 50.21].map(olcs.core.toRadians);
+  var luxembourgRectangle = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
   goog.asserts.assert(this.map_);
   return new app.MainController.Lux3DManager(cesiumURL, {
     map: this.map_,
