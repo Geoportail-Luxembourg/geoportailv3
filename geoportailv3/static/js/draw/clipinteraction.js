@@ -402,7 +402,7 @@ app.ClipLine.prototype.handlePointerMove_ = function(evt) {
 
 /**
  * @param {ol.Pixel} pixel Pixel
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @private
  */
 app.ClipLine.prototype.handlePointerAtPixel_ = function(pixel, map) {
