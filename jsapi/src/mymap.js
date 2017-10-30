@@ -477,6 +477,8 @@ lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
 lux.MyMap.prototype.getMeasures = function(feature) {
   var elements = [];
   var geom = feature.getGeometry();
+  var projection = this.map_.getView().getProjection();
+  goog.asserts.assert(projection);
   if (geom.getType() === ol.geom.GeometryType.POLYGON ||
       geom.getType() === ol.geom.GeometryType.LINE_STRING) {
     var lengthEl = goog.dom.createDom(goog.dom.TagName.P);
@@ -488,7 +490,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
       geom.getCoordinates()[0] : geom.getCoordinates();
     var length = ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
-      this.map_.getView().getProjection(),
+      projection,
       undefined,
       function(measure) {
         return measure.toString();
@@ -504,7 +506,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
 
     var area = ngeo.interaction.Measure.getFormattedArea(
       geom,
-      this.map_.getView().getProjection(),
+      projection,
       undefined,
       function(measure) {
         return measure.toString();
@@ -521,7 +523,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
     var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
     var radius = ngeo.interaction.Measure.getFormattedLength(
       line,
-      this.map_.getView().getProjection(),
+      projection,
       undefined,
       function(measure) {
         return measure.toString();
