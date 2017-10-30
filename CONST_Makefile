@@ -567,7 +567,7 @@ endif
 
 .build/eslint.timestamp: $(APP_JS_FILES)
 	mkdir -p $(dir $@)
-	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
+	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $^)
 	touch $@
 
 
