@@ -37,6 +37,7 @@ goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
 goog.require('ol.proj');
+goog.require('olcs.contrib.Manager');
 
 
 /**
@@ -69,6 +70,7 @@ goog.require('ol.proj');
  * @param {angular.$window} $window Window.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
+ * @param {string} cesiumURL The Cesium script URL.
  * @constructor
  * @export
  * @ngInject
@@ -80,7 +82,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale) {
+    appSelectedFeatures, $locale, cesiumURL) {
   /**
    * @type {angular.$locale}
    * @private
@@ -292,19 +294,23 @@ app.MainController = function(
   this['layersChanged'] = false;
 
   /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = null;
-
-  /**
    * @type {app.Mymaps}
    * @private
    */
   this.appMymaps_ = appMymaps;
   this.appUserManager_.getUserInfo();
 
-  this.setMap_();
+  /**
+   * @const {!ol.Map}
+   * @private
+   */
+  this.map_ = this.createMap_();
+
+  /**
+   * @const {!olcs.contrib.Manager}
+   * @private
+   */
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL);
 
   this.initLanguage_();
 
@@ -413,14 +419,15 @@ app.MainController.prototype.addLocationControl_ =
 
 /**
  * @private
+ * @return {!ol.Map} The map
  */
-app.MainController.prototype.setMap_ = function() {
+app.MainController.prototype.createMap_ = function() {
   var interactions = ol.interaction.defaults({
     altShiftDragRotate: false,
     pinchRotate: false,
     constrainResolution: true
   });
-  this.map_ = this['map'] = new ol.Map({
+  var map = this['map'] = new ol.Map({
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
@@ -441,6 +448,54 @@ app.MainController.prototype.setMap_ = function() {
       extent: this.maxExtent_
     })
   });
+  return map;
+};
+
+
+// Due to a bug in the closure compiler we can not define the class
+// in the method below. See https://github.com/google/closure-compiler/issues/2696.
+app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
+  /**
+   * @override
+   */
+  configureForUsability(scene) {
+    super.configureForUsability(scene);
+    const camera = scene.camera;
+    camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
+  }
+};
+
+
+/**
+ * @private
+ * @param {string} cesiumURL The Cesium URL
+ * @return {!olcs.contrib.Manager} The created manager
+ */
+app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
+  // [minx, miny, maxx, maxy]
+  var luxembourgRectangle = [5.31, 49.38, 6.64, 50.21].map(olcs.core.toRadians);
+  goog.asserts.assert(this.map_);
+  return new app.MainController.Lux3DManager(cesiumURL, {
+    map: this.map_,
+    cameraExtentInRadians: luxembourgRectangle
+  });
+};
+
+
+/**
+ * @export
+ */
+app.MainController.prototype.toggle3d = function() {
+  this.ol3dm_.toggle3d();
+};
+
+
+/**
+ * @export
+ * @return {boolean}
+ */
+app.MainController.prototype.is3DEnabled = function() {
+  return this.ol3dm_.is3dEnabled();
 };
 
 
