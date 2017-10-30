@@ -29,5 +29,6 @@
 /geoportailv3/locale/*.pot
 /.eggs
 /.build
+/package-lock.json
 /node_modules
 vars_wepa.yaml

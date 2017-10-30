@@ -80,6 +80,18 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.features = new ol.Collection();
 
   /**
+   * @type {ol.layer.Vector}
+   * @export
+   */
+  this.drawLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      features: this.features
+    }),
+    zIndex: 1000,
+    'altitudeMode': 'clampToGround'
+  });
+
+  /**
    * @type {ngeo.statemanager.Location}
    * @private
    */
@@ -103,7 +115,6 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
     'size': 't',
     'isCircle': 'u'
   };
-  this.drawOverlay.setFeatures(this.features);
 
   /**
    * @type {app.format.FeatureHash}
@@ -463,6 +474,13 @@ app.DrawnFeatures.prototype.getExtent = function() {
   }, this);
 
   return extent;
+};
+
+/**
+ * @return {ol.layer.Vector} The drawn features layer.
+ */
+app.DrawnFeatures.prototype.getLayer = function() {
+  return this.drawLayer;
 };
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);

@@ -1,5 +1,7 @@
 goog.provide('app.filereaderDirective');
 
+goog.require('app');
+
 
 /**
  * @param {angular.$window} $window The Angular $window service.
@@ -61,4 +63,4 @@ app.filereaderDirective = function($window) {
 };
 
 
-ngeo.module.directive('appFilereader', app.filereaderDirective);
+app.module.directive('appFilereader', app.filereaderDirective);

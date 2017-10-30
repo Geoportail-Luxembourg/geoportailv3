@@ -5,6 +5,6 @@ vars:
     dbport: 5433
 
     sqlalchemy_engines:
-      mymaps: 'postgresql://www-data:www-data@localhost:5433/dummy'
+      mymaps: 'postgresql://www-data:www-data@localhost:5433/lux'
       ecadastre: 'postgresql://www-data:www-data@localhost:5433/dummy'
       pgroute: 'postgresql://www-data:www-data@localhost:5433/dummy'
