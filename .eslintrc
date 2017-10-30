@@ -3,6 +3,14 @@
   "env": {
     "jquery": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "generators": false,
+      "objectLiteralDuplicateProperties": false
+    },
+    "sourceType": "module"
+  },
   "rules": {
     "no-console": 0
   },
