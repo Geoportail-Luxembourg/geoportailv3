@@ -470,7 +470,7 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
 /**
  * @private
  * @param {string} cesiumURL The Cesium URL
- * @return {!olcs.contrib.Manager} The created manager
+ * @return {!olcs.contrib.Manager} The created manager.
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   // [minx, miny, maxx, maxy]
@@ -493,7 +493,7 @@ app.MainController.prototype.toggle3d = function() {
 
 /**
  * @export
- * @return {boolean}
+ * @return {boolean} Whether 3D is active.
  */
 app.MainController.prototype.is3DEnabled = function() {
   return this.ol3dm_.is3dEnabled();
