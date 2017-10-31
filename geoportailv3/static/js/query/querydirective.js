@@ -1120,7 +1120,7 @@ app.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
  * @export
  */
 app.QueryController.prototype.isEmpty = function(value) {
-  return goog.string.isEmptySafe(value);
+  return !value;
 };
 
 

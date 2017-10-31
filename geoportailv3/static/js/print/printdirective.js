@@ -789,8 +789,7 @@ app.PrintController.prototype.setScales_ = function() {
         if (goog.isNull(tree)) {
           this.needScaleRefresh = true;
         }
-        if (!goog.isNull(tree) &&
-            !goog.string.isEmptySafe(tree['metadata']['print_scales'])) {
+        if (!goog.isNull(tree) && tree['metadata']['print_scales']) {
           var printScalesStr = tree['metadata']['print_scales'];
           scales = goog.array.map(
               printScalesStr.trim().split(','),

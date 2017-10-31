@@ -507,8 +507,7 @@ app.LayerPermalinkManager.prototype.init =
                       if (this.initialVersion_ === 2) {
                         var layerString = this.stateManager_.
                             getInitialValue('layers');
-                        if (goog.isDefAndNotNull(layerString) &&
-                            !goog.string.isEmpty(layerString)) {
+                        if (layerString) {
                           var layers = layerString.split(',');
                           goog.array.forEach(layers,
                               function(stateLayerLabel) {
@@ -526,8 +525,8 @@ app.LayerPermalinkManager.prototype.init =
                             getInitialValue('layers_visibility');
                         if (goog.isDefAndNotNull(opacitiesString) &&
                             goog.isDefAndNotNull(visibilitiesString) &&
-                            !goog.string.isEmpty(visibilitiesString) &&
-                            !goog.string.isEmpty(opacitiesString)) {
+                            visibilitiesString &&
+                            opacitiesString) {
                           var visibilities = visibilitiesString.split(',');
                           goog.array.forEach(
                               opacitiesString.split(','),
