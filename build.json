@@ -5,6 +5,7 @@
     "node_modules/openlayers/src/**/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
     "node_modules/ngeo/src/**/*.js",
+    "node_modules/ol-cesium/src/**/*.js",
     "geoportailv3/static/js/**/*.js",
     "geoportailv3/static/build/templatecache.js"
   ],
@@ -31,6 +32,8 @@
       "node_modules/ngeo/externs/moment.js",
       "node_modules/ngeo/externs/geo-admin-api.js",
       "node_modules/ngeo/externs/google_maps_api_v3_27.js",
+      "node_modules/ol-cesium/Cesium.externs.js",
+      "node_modules/ol-cesium/externs/olcsx.js",
       ".build/externs/angular-1.6.js",
       ".build/externs/angular-1.6-q_templated.js",
       ".build/externs/angular-1.6-http-promise_templated.js",
@@ -55,9 +58,6 @@
     "jscomp_error": [
       "*"
     ],
-    "jscomp_warning": [
-      "deprecated"
-    ],
     "jscomp_off": [
       "useOfGoogBase",
       "extraRequire",
@@ -77,6 +77,7 @@
     "language_out": "ECMASCRIPT5_STRICT",
     "dependency_mode": "LOOSE",
     "output_wrapper": "(function(){%output%}).call(window);",
+    "hide_warnings_for": "node_modules/@camptocamp/closure-util",
     "use_types_for_optimization": true
   }
 }

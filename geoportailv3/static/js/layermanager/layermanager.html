@@ -1,5 +1,5 @@
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
-<ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
+<ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
   <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel">
   <span class="sortable-handle fa fa-reorder"></span>
     <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>

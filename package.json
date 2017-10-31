@@ -43,6 +43,8 @@
     "ngeo": "git+https://github.com/camptocamp/ngeo#bece942",
     "nomnom": "1.8.1",
     "openlayers": "git+https://github.com/openlayers/openlayers#435f93a",
+    "ol-cesium": "git+https://github.com/openlayers/ol-cesium#7c72340b",
+    "cesium": "1.38.0",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
     "proj4": "2.4.4",

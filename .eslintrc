@@ -3,6 +3,14 @@
   "env": {
     "jquery": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "generators": false,
+      "objectLiteralDuplicateProperties": false
+    },
+    "sourceType": "module"
+  },
   "rules": {
     "no-console": 0
   },
@@ -12,14 +20,15 @@
     "d3": false,
     "Bloodhound": false,
     "ol": false,
+    "olcs": false,
     "proj4": false,
     "ngeo": false,
     "gmf": false,
     "app": false,
     "Fuse": false,
     "lux": false,
-	"autoComplete": false,
-	"JSZip": false,
-	"Promise": true
+    "autoComplete": false,
+    "JSZip": false,
+    "Promise": true
   }
 }

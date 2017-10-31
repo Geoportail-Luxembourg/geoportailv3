@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
     % endif
  </head>
-  <body data-theme="{{mainCtrl.getCurrentTheme()}}" ng-class="mainCtrl.mobileSearchActive ? 'search-mobile' : ''">
+  <body data-theme="{{mainCtrl.getCurrentTheme()}}" ng-class="{'search-mobile': mainCtrl.mobileSearchActive, '3d-enabled': mainCtrl.is3DEnabled()}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -217,6 +217,7 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a href ng-click="mainCtrl.toggle3d()">3d</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
@@ -240,7 +241,7 @@
             app-profile-open="mainCtrl.profileOpen"
           </app-measure>
         </li>
-        <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
+        <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
             app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
@@ -298,6 +299,12 @@
 % else:
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
          appModule.constant('remoteProxyWms', false);
+% endif
+
+% if debug:
+        appModule.constant('cesiumURL', "${request.static_url('%s/cesium/Build/CesiumUnminified/Cesium.js' % node_modules_path)}");
+% else:
+        appModule.constant('cesiumURL', "${request.static_url('%s/cesium/Build/Cesium/Cesium.js' % node_modules_path)}");
 % endif
          appModule.constant('httpsProxyUrl', "${request.route_url('https_proxy')}");
          appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
