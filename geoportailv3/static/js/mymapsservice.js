@@ -1181,7 +1181,7 @@ app.Mymaps.prototype.notifyUnauthorized = function() {
  * @return {boolean} Return true if a map is selected.
  */
 app.Mymaps.prototype.isMymapsSelected = function() {
-  return !goog.string.isEmpty(this.mapId_);
+  return !!this.mapId_;
 };
 
 

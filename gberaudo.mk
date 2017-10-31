@@ -1,4 +1,4 @@
-INSTANCE_ID = fredj
+INSTANCE_ID = gberaudo
 VARS_FILE = vars_c2cdev.yaml
 DISABLE_BUILD_RULES += print apache
 

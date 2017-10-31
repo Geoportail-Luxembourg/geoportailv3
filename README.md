@@ -48,3 +48,9 @@ Build
 cd geoportailv3
 make -f <user>.mk build
 ```
+
+Local run
+---------
+
+To some extent, it is possible to simulate the services needed by the
+application using git@github.com:camptocamp/luxembourg_dev_db.git

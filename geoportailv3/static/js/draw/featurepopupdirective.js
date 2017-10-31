@@ -16,7 +16,8 @@ goog.require('ol.geom.Circle');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.LineString');
-goog.require('ol.sphere.WGS84');
+goog.require('ol.Sphere');
+goog.require('ol.proj.EPSG4326');
 
 
 /**
@@ -340,7 +341,7 @@ app.FeaturePopupController.prototype.getCircleRadius = function() {
     var projection = this.map.getView().getProjection();
     var p1 = ol.proj.transform(center, projection, 'EPSG:4326');
     var p2 = ol.proj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
-    return Math.round(ol.sphere.WGS84.haversineDistance(p1, p2));
+    return Math.round(ngeo.interaction.Measure.SPHERE_WGS84.haversineDistance(p1, p2));
   }
   return 0;
 };
@@ -506,6 +507,7 @@ app.FeaturePopupController.prototype.getArea = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    goog.asserts.assert(geom);
     return this.appFeaturePopup_.formatArea(geom);
   } else {
     return '';
@@ -522,6 +524,7 @@ app.FeaturePopupController.prototype.getRadius = function() {
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    goog.asserts.assert(geom);
     var center = ol.extent.getCenter(geom.getExtent());
     var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
@@ -542,6 +545,7 @@ app.FeaturePopupController.prototype.getLength = function() {
   ) {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
+    goog.asserts.assert(geom);
     return this.appFeaturePopup_.formatLength(geom);
   } else {
     return '';
@@ -557,6 +561,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
       !this.feature.get('isLabel')) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
+    goog.asserts.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
         goog.bind(function(elevation) {
           this.featureElevation = elevation;
@@ -575,6 +580,7 @@ app.FeaturePopupController.prototype.updateProfile = function() {
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
+    goog.asserts.assert(geom);
     this.appFeaturePopup_.getProfile(geom).then(goog.bind(function(profile) {
       this.featureProfile = profile;
     }, this));

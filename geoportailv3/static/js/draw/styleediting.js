@@ -81,6 +81,11 @@ app.StyleEditingController = function($scope, appDrawnFeatures,
    */
   this.symbolselector = false;
 
+  /**
+   * @type {RegExp}
+   * @export
+   */
+  this.numberRegexp = /^-?[0-9]+(\.[0-9]{1,2})?$/;
 
   /**
    * @type {Array<string>}

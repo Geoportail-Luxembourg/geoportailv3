@@ -34,7 +34,8 @@ goog.require('ol.Overlay');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');
-goog.require('ol.sphere.WGS84');
+goog.require('ol.Sphere');
+goog.require('ol.proj.EPSG4326');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Polygon');
@@ -660,7 +661,7 @@ app.DrawController.prototype.getFormattedLength =
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
       var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-      length += ol.sphere.WGS84.haversineDistance(c1, c2);
+      length += ngeo.interaction.Measure.SPHERE_WGS84.haversineDistance(c1, c2);
     }
     var output;
     if (length > 1000) {
@@ -685,7 +686,7 @@ app.DrawController.prototype.getFormattedArea = function(polygon, projection) {
   var geom = /** @type {ol.geom.Polygon} */ (
       polygon.clone().transform(projection, 'EPSG:4326'));
   var coordinates = geom.getLinearRing(0).getCoordinates();
-  var area = Math.abs(ol.sphere.WGS84.geodesicArea(coordinates));
+  var area = Math.abs(ngeo.interaction.Measure.SPHERE_WGS84.geodesicArea(coordinates));
   var output;
   if (area > 1000000) {
     output = parseFloat((area / 1000000).toPrecision(3)) +
