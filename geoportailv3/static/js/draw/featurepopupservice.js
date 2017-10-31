@@ -247,13 +247,15 @@ app.FeaturePopup.prototype.getAnchor = function(feature) {
 
 
 /**
- * @param {ol.geom.Polygon} polygon The oolygon.
+ * @param {!ol.geom.Polygon} polygon The polygon.
  * @return {string} The formatted area.
  */
 app.FeaturePopup.prototype.formatArea = function(polygon) {
+  var projection = this.map.getView().getProjection();
+  goog.asserts.assert(projection);
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
-      this.map.getView().getProjection(),
+      projection,
       undefined,
       this.format_
   );
@@ -261,13 +263,15 @@ app.FeaturePopup.prototype.formatArea = function(polygon) {
 
 
 /**
- * @param {ol.geom.LineString} line The line.
+ * @param {!ol.geom.LineString} line The line.
  * @return {string} The formatted length.
  */
 app.FeaturePopup.prototype.formatRadius = function(line) {
+  var projection = this.map.getView().getProjection();
+  goog.asserts.assert(projection);
   return ngeo.interaction.Measure.getFormattedLength(
       line,
-      this.map.getView().getProjection(),
+      projection,
       undefined,
       this.format_
   );
@@ -275,15 +279,17 @@ app.FeaturePopup.prototype.formatRadius = function(line) {
 
 
 /**
- * @param {(ol.geom.LineString|ol.geom.Polygon)} line The geometry.
+ * @param {(!ol.geom.LineString|!ol.geom.Polygon)} line The geometry.
  * @return {string} The formatted length.
  */
 app.FeaturePopup.prototype.formatLength = function(line) {
   var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
       line.getCoordinates()[0] : line.getCoordinates();
+  var projection = this.map.getView().getProjection();
+  goog.asserts.assert(projection);
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
-      this.map.getView().getProjection(),
+      projection,
       undefined,
       this.format_
   );
@@ -291,7 +297,7 @@ app.FeaturePopup.prototype.formatLength = function(line) {
 
 
 /**
- * @param {(ol.geom.Point)} point The point.
+ * @param {!ol.geom.Point} point The point.
  * @return {angular.$q.Promise} The promise for the elevation.
  */
 app.FeaturePopup.prototype.getElevation = function(point) {
@@ -300,7 +306,7 @@ app.FeaturePopup.prototype.getElevation = function(point) {
 
 
 /**
- * @param {(ol.geom.LineString)} linestring The linestring geometry.
+ * @param {!ol.geom.LineString} linestring The linestring geometry.
  * @return {angular.$q.Promise} The promise for the profile.
  */
 app.FeaturePopup.prototype.getProfile = function(linestring) {

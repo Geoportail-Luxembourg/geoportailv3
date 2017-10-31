@@ -118,7 +118,7 @@ app.module.directive('appSearch', app.searchDirective);
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
- * @param {ngeo.search.CreateGeoJSONBloodhound} ngeoSearchCreateGeoJSONBloodhound The
+ * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The
  * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
@@ -694,7 +694,7 @@ app.SearchDirectiveController.prototype.decDegFromMatch_ = function(m) {
 };
 
 /**
- * @param {ngeo.search.CreateGeoJSONBloodhound} ngeoSearchCreateGeoJSONBloodhound The create
+ * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The create
  * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl The search url.
  * @return {Bloodhound} The bloodhound engine.

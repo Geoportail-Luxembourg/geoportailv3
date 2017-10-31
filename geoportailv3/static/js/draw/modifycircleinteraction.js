@@ -121,6 +121,7 @@ app.ModifyCircle = function(options) {
     updateWhileInteracting: true
   });
 
+  goog.asserts.assert(options.features);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
@@ -436,7 +437,7 @@ app.ModifyCircle.prototype.handlePointerMove_ = function(evt) {
 
 /**
  * @param {ol.Pixel} pixel Pixel
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @private
  */
 app.ModifyCircle.prototype.handlePointerAtPixel_ = function(pixel, map) {
