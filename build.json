@@ -9,7 +9,7 @@
     "geoportailv3/static/build/templatecache.js"
   ],
   "compile": {
-    "closure_entry_point": "app_main",
+    "entry_point": "app_main",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
       "node_modules/openlayers/externs/cartodb.js",
@@ -28,6 +28,7 @@
       "node_modules/ngeo/externs/jqueryui.js",
       "node_modules/ngeo/externs/angular-dynamic-locale.js",
       "node_modules/ngeo/externs/file-saver.js",
+      "node_modules/ngeo/externs/moment.js",
       "node_modules/ngeo/externs/geo-admin-api.js",
       "node_modules/ngeo/externs/google_maps_api_v3_27.js",
       ".build/externs/angular-1.6.js",
@@ -41,7 +42,6 @@
     ],
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false",
       "ol.ENABLE_RASTER_REPROJECTION=false",
       "ol.ENABLE_WEBGL=false"
@@ -54,6 +54,9 @@
     ],
     "jscomp_error": [
       "*"
+    ],
+    "jscomp_warning": [
+      "deprecated"
     ],
     "jscomp_off": [
       "useOfGoogBase",
@@ -72,6 +75,7 @@
     "generate_exports": true,
     "language_in": "ECMASCRIPT6_STRICT",
     "language_out": "ECMASCRIPT5_STRICT",
+    "dependency_mode": "LOOSE",
     "output_wrapper": "(function(){%output%}).call(window);",
     "use_types_for_optimization": true
   }

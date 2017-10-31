@@ -112,6 +112,7 @@ app.ClipLine = function(options) {
     updateWhileInteracting: true
   });
 
+  goog.asserts.assert(options.features);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
@@ -401,7 +402,7 @@ app.ClipLine.prototype.handlePointerMove_ = function(evt) {
 
 /**
  * @param {ol.Pixel} pixel Pixel
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @private
  */
 app.ClipLine.prototype.handlePointerAtPixel_ = function(pixel, map) {

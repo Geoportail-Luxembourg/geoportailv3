@@ -160,7 +160,7 @@ app.CatalogController.prototype.setThemeZooms = function(tree) {
   var maxZoom = 19;
   if (!goog.isNull(tree)) {
     goog.asserts.assert('metadata' in tree);
-    if (!goog.string.isEmptySafe(tree['metadata']['resolutions'])) {
+    if (tree['metadata']['resolutions']) {
       var resolutions = tree['metadata']['resolutions'].split(',');
       maxZoom = resolutions.length + 7;
     }

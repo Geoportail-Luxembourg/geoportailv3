@@ -24,8 +24,7 @@ goog.inherits(lux.LayerManager, ol.control.Control);
 
 
 /**
- * Set the map instance the control is associated with.
- * @param {ol.Map} map The map instance.
+ * @inheritDoc
  */
 lux.LayerManager.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);

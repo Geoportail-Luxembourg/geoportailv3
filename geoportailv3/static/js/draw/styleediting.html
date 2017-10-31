@@ -34,13 +34,13 @@
       <div class="form-group">
         <label translate>Stroke width</label>
         <input type="range" min="0" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
-        <input type="number" min="0" max="10" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="0" max="10" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
       <!-- Fill opacity -->
       <div class="form-group">
         <label translate>Transparency</label>
         <input type="range" min="0" max="100" step="1" ng-model="ctrl.getSetOpacity" ng-model-options="{getterSetter: true}">
-        <input type="number" min="0" max="100" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetOpacity" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="0" max="100" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetOpacity" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
     </div>
 
@@ -49,7 +49,7 @@
       <div class="form-group">
         <label translate>Stroke width</label>
         <input type="range" min="0" max="10" step="1" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}">
-        <input type="number" min="0" max="10" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="0" max="10" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetStroke" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
     </div>
     <div class="form-inline" ng-if="ctrl.type == 'linestring'">
@@ -93,13 +93,13 @@
       <div class="form-group">
         <label translate>Size</label>
         <input type="range" min="0" max="900" step="1" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
-        <input type="number" min="0" max="900" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="0" max="900" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
       <!-- Point symbol rotation -->
       <div class="form-group" ng-show="ctrl.feature.get('shape') != 'circle'">
         <label translate>Angle</label>
         <input type="range" min="-180" max="180" step="1" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
-        <input type="number" min="-180" max="180" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="-180" max="180" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
     </div>
     <!-- Label font size -->
@@ -107,13 +107,13 @@
       <div class="form-group">
         <label translate>Size</label>
         <input type="range" min="0" max="40" step="1" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}">
-        <input type="number" min="0" ng-max="40" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="0" ng-max="40" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetSize" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
     <!-- Label rotation -->
       <div class="form-group">
         <label translate>Angle</label>
         <input type="range" min="-90" max="90" step="1" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}">
-        <input type="number" min="-90" max="90" step="1" ng-pattern="/^-?[0-9]+(\.[0-9]{1,2})?$/" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}" class="range-number">
+        <input type="number" min="-90" max="90" step="1" ng-pattern="ctrl.numberRegexp" ng-model="ctrl.getSetRotation" ng-model-options="{getterSetter: true}" class="range-number">
       </div>
     </div>
   </div>

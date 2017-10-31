@@ -11,6 +11,7 @@
     "send": "^0.15.0"
   },
   "devDependencies": {
+    "@camptocamp/closure-util": "1.25.0",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
     "angular-dynamic-locale": "0.1.32",
@@ -22,7 +23,6 @@
     "angular-ui-date": "1.1.1",
     "angular-ui-slider": "0.4.0",
     "bootstrap": "3.3.7",
-    "closure-util": "git+https://github.com/camptocamp/closure-util.git#487fac6",
     "corejs-typeahead": "1.1.1",
     "d3": "4.7.4",
     "eslint": "3.18.0",
@@ -40,9 +40,9 @@
     "less": "2.7.1",
     "less-plugin-autoprefix": "1.5.1",
     "less-plugin-clean-css": "1.5.1",
-    "ngeo": "git+https://github.com/camptocamp/ngeo#86ea59f",
+    "ngeo": "git+https://github.com/camptocamp/ngeo#bece942",
     "nomnom": "1.8.1",
-    "openlayers": "4.3.4",
+    "openlayers": "git+https://github.com/openlayers/openlayers#435f93a",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
     "proj4": "2.4.4",
