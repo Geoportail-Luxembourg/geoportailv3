@@ -21,8 +21,8 @@ def upgrade():
     schema = context.get_context().config.get_main_option("schema")
     op.create_table(
         "lux_print_servers",
-        Column("id", String(100), primary_key=True),
-        Column("name", Unicode),
+        Column("id", Integer, primary_key=True, autoincrement=True, nullable=False),
+        Column("url", Unicode, nullable=False),
         Column("creation", DateTime),
         schema=schema,
     )
