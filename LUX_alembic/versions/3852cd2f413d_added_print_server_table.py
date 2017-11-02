@@ -15,7 +15,7 @@ depends_on = None
 import sqlalchemy as sa
 from alembic import op, context
 from sqlalchemy import Column
-from sqlalchemy.types import String, Unicode, DateTime
+from sqlalchemy.types import String, Unicode, DateTime,Integer
 
 def upgrade():
     schema = context.get_context().config.get_main_option("schema")
