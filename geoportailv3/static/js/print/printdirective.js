@@ -44,6 +44,7 @@ app.printDirective = function(appPrintTemplateUrl) {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
       'infoOpen': '=appPrintInfoOpen',
+      'routingOpen': '=appPrintRoutingOpen',
       'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
@@ -574,7 +575,7 @@ app.PrintController.prototype.print = function(format) {
         var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
         var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
         var queryResultsHtml = null;
-        if (this['infoOpen'] && queryResults.length > 0) {
+        if ((this['routingOpen'] || this['infoOpen']) && queryResults.length > 0) {
           var clonedQuery = queryResults[0].cloneNode(true);
           var profileElements = goog.dom.getElementsByClass('profile', clonedQuery);
           if (profileElements !== null && profileElements.length > 0) {

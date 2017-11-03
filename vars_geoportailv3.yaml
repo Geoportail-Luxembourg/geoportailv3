@@ -148,6 +148,13 @@ vars:
       owncloud_password:
       smtp_server:
       bcc_address:
+    routing:
+      graphhopper:
+        url: 'https://graphhopper.com/api/1/route'
+        api_key: 
+      mapquest:
+        url: 'http://open.mapquestapi.com/directions/v2/route'
+        api_key:
 
 interpreted:
     node:

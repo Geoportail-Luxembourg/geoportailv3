@@ -8,6 +8,16 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'apart-geoportail';
+  src: url('../webfonts/apart-geoportail.eot');
+  src: url('../webfonts/apart-geoportail.eot#iefix') format('embedded-opentype'),
+	   url('../webfonts/apart-geoportail.ttf') format('truetype'),
+	   url('../webfonts/apart-geoportail.woff') format('woff'),
+	   url('../webfonts/apart-geoportail.svg?#apart-geoportail') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @icon-width: 63px;
 
@@ -84,6 +94,10 @@ button.icon.search:after,
 .icon.legends a:after {
   content: '\e041';
 }
+.icon.routing a:after {
+  content: '\e905';
+  font-family: 'apart-geoportail' !important;
+}
 .icon.draw > a:after {
   content: '\e01e';
 }
@@ -104,6 +118,12 @@ button.icon.search:after,
 }
 .icon.active > a:after {
   content: '\e02c';
+  font-family: 'geoportail-icons' !important;
+}
+.icon.routing.active > a:after {
+  content: '\e02c';
+  font-family: 'geoportail-icons' !important;
+  font-size: 2em!important;
 }
 
 .infobar-button:after {

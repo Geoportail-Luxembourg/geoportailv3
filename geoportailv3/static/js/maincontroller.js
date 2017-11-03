@@ -193,6 +193,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['hasRoutingResult'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['sidebarActive'] = false;
 
   /**
@@ -224,6 +229,11 @@ app.MainController = function(
    * @type {boolean}
    */
   this['legendsOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
+  this['routingOpen'] = false;
 
   /**
    * @type {boolean}
@@ -528,7 +538,7 @@ app.MainController.prototype.openFeedback = function() {
  */
 app.MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
-      this['feedbackOpen'] = this['legendsOpen'] = false;
+      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] = false;
 };
 
 
@@ -538,7 +548,7 @@ app.MainController.prototype.closeSidebar = function() {
  */
 app.MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-      this['legendsOpen'] || this['feedbackOpen'];
+      this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'];
 };
 
 

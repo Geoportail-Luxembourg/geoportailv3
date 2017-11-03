@@ -71,6 +71,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {ol.Extent} bboxLidar Bbox of lidar.
  * @param {string} bboxSrsLidar Bbox srs of lidar.
  * @param {string} lidarDemoUrl Url to the demo of lidar.
+ * @param {app.Routing} appRouting The routing service.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -78,7 +79,7 @@ app.LocationinfoController = function(
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
-        appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl) {
+        appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl, appRouting) {
   /**
    * @type {string}
    * @private
@@ -91,6 +92,13 @@ app.LocationinfoController = function(
    */
   this.lidarExtent_ = ol.proj.transformExtent(
     bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
+
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
+
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -289,6 +297,11 @@ app.LocationinfoController = function(
    */
   var holdPromise;
 
+  /**
+   * @type {ol.Coordinate}
+   */
+  this.clickCoordinate = null;
+
   // Load infowindow if crosshair variable is set
   var urlLocationInfo = appStateManager.getInitialValue('crosshair');
   if (goog.isDefAndNotNull(urlLocationInfo) &&
@@ -421,25 +434,36 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
 
 
 /**
+ * @export
+ */
+app.LocationinfoController.prototype.setStartRoute = function() {
+  var feature = /** @type {ol.Feature} */
+      (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
+  feature.set('label', this['location'][this.projections_['EPSG:2169']]);
+  this.appRouting_.routes[0] = /** @type {string} */ (feature.get('label'));
+  this.appRouting_.insertFeatureAt(feature, 1);
+};
+
+/**
  * @param {MouseEvent|TouchEvent|ol.Coordinate} eventOrCoordinate The event or
  * The coordinate.
  * @private
  */
 app.LocationinfoController.prototype.loadInfoPane_ =
     function(eventOrCoordinate) {
-      var clickCoordinate;
+
       if (eventOrCoordinate instanceof Array) {
-        clickCoordinate = eventOrCoordinate;
+        this.clickCoordinate = eventOrCoordinate;
       } else {
         eventOrCoordinate.preventDefault();
-        clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
+        this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
       }
 
       this['appSelector'] = 'locationinfo';
       this.stateManager_.updateState({'crosshair': true});
-      this.updateLocation_(clickCoordinate);
+      this.updateLocation_(this.clickCoordinate);
       var feature = /** @type {ol.Feature} */
-      (new ol.Feature(new ol.geom.Point(clickCoordinate)));
+      (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
       this.featureOverlay_.clear();
       this.featureOverlay_.addFeature(feature);
       this.clickCoordinateLuref_ = ol.proj.transform(
@@ -464,7 +488,7 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       }, this));
       this['address'] = '';
       this['distance'] = '';
-      this.geocode_.reverseGeocode(clickCoordinate).then(goog.bind(function(resp) {
+      this.geocode_.reverseGeocode(this.clickCoordinate).then(goog.bind(function(resp) {
         if (resp['count'] > 0) {
           var address = resp['results'][0];
           var formattedAddress = address['number'] + ',' + address['street'] + ',' +

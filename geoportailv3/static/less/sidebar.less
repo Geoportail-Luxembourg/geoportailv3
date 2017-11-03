@@ -60,6 +60,13 @@
     color: #FFFFFF;
   }
 
+  #routing .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - 64px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   #infos .tab-content {
     // FIXME: use variables for the calculation
     height: ~"calc(100% - @{input-height-base} - 79px)";
@@ -120,6 +127,9 @@
   }
 
   #infos .container-fluid {
+    overflow-y: initial;
+  }
+  #routing .container-fluid {
     overflow-y: auto;
   }
   .layer-info-content .poi-feature {
