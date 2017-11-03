@@ -81,6 +81,14 @@ class LuxPrintProxy(PrintProxy):
         print_servers = DBSession.query(LuxPrintServers).all()
         print_urls = [[print_server.url] for print_server in print_servers]
         if print_urls is not None and len(print_urls) > 0:
+            
+            for url in print_urls:
+                try:
+                    urllib2.urlopen(url)
+                except:
+                    print_server = DBSession.query(LuxPrintServers.filter_by(url=url).first())
+                    DBSession.delete(print_server)
+                    print_urls.remove(url)
             print_url = print_urls[random.randint(0, len(print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
