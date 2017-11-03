@@ -66,7 +66,7 @@ from c2cgeoportal.models import RestrictionArea, Role, Layer
 from c2cgeoportal.views.printproxy import PrintProxy
 from c2cgeoportal.lib.caching import NO_CACHE, get_region
 
-from geoportailv3.models import DBSession, LuxPrintJob, LuxLayerInternalWMS
+from geoportailv3.models import DBSession, LuxPrintJob,LuxPrintServers, LuxLayerInternalWMS
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -78,7 +78,8 @@ class LuxPrintProxy(PrintProxy):
     @view_config(route_name="lux_printproxy_report_create")
     def lux_report_create(self):
         token = self.config["authtkt_secret"]
-        print_urls = self.config["print_urls"]
+        print_servers = DBSession.query(LuxPrintServers).all()
+        print_urls = [[print_server.url] for print_server in print_servers]
         if print_urls is not None and len(print_urls) > 0:
             print_url = print_urls[random.randint(0, len(print_urls) - 1)]
         else:
