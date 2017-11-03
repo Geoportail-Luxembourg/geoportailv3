@@ -33,6 +33,7 @@ goog.require('app.projections');
 goog.require('app.projectionselectorDirective');
 goog.require('app.queryDirective');
 goog.require('app.resizemapDirective');
+goog.require('app.routingDirective');
 goog.require('app.scalelineDirective');
 goog.require('app.scaleselectorDirective');
 goog.require('app.searchDirective');

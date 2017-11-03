@@ -54,8 +54,27 @@ app.getProfile_ = function($http, profileServiceUrl) {
           var data = /** @type {string} */ (resp.config.data);
           var q = new goog.Uri.QueryData(data);
           var id = q.getValues('id')[0];
+          var elevationGain = 0;
+          var elevationLoss = 0;
+          var cumulativeElevation = 0;
+          var lastElevation;
+
           goog.array.forEach(resp.data['profile'], function(element) {
             element['id'] = id;
+            var curElevation = (element['values']['dhm']) / 100;
+            if (lastElevation !== undefined) {
+              var elevation = curElevation - lastElevation;
+              cumulativeElevation = cumulativeElevation + elevation;
+              if (elevation > 0) {
+                elevationGain = elevationGain + elevation;
+              } else {
+                elevationLoss = elevationLoss + elevation;
+              }
+            }
+            element['cumulativeElevation'] = cumulativeElevation;
+            element['elevationGain'] = elevationGain;
+            element['elevationLoss'] = elevationLoss;
+            lastElevation = curElevation;
           });
           return resp.data['profile'];
         });

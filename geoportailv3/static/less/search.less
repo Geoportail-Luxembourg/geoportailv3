@@ -49,7 +49,7 @@ span.twitter-typeahead {
         z-index: 1000;
         display: none;
         float: left;
-	min-width: 329px;
+		min-width: 329px;
         padding: 5px 5px;
         margin: 2px 0 0;
         list-style: none;
@@ -66,9 +66,12 @@ span.twitter-typeahead {
     .tt-suggestion {
         display: block;
         clear: both;
-        padding: 3px 10px;
-        margin-bottom: 0px;
-	line-height: 1.42857143;
+		border-bottom: 1px solid #8394A0;
+		padding: 10px 15px 10px 0;
+		font-size: 14px;
+		line-height: 20px;
+		margin: 0 0 0 0;
+		font-family: 'Open Sans', sans-serif;
 	> p.suggestion-text {
 	    float:left;
 	    font-weight: normal;
@@ -114,9 +117,12 @@ span.twitter-typeahead {
     line-height: 36px;
     color: white;
   }
-
 }
-
+.routing-route-container span.twitter-typeahead {
+	&:after {
+		content: none;
+	}
+}
 @media (min-width: @screen-sm-min) {
   header .navbar-form {
     float: right;

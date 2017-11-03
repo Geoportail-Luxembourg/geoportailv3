@@ -213,6 +213,10 @@ def main(global_config, **settings):
         "getroute",
         "/mymaps/getroute"
     )
+    config.add_route(
+        "getremoteroute",
+        "/router/getroute"
+    )
     # geocoder routes
     config.add_route(
         "reverse_geocode",
