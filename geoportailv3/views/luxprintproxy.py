@@ -79,7 +79,7 @@ class LuxPrintProxy(PrintProxy):
     def lux_report_create(self):
         token = self.config["authtkt_secret"]
         print_servers = DBSession.query(LuxPrintServers).all()
-        print_urls = [[print_server.url] for print_server in print_servers]
+        print_urls = [print_server.url for print_server in print_servers]
         if print_urls is not None and len(print_urls) > 0:
             
             for url in print_urls:
