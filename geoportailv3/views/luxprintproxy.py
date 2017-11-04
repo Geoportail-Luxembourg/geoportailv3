@@ -86,9 +86,12 @@ class LuxPrintProxy(PrintProxy):
                 try:
                     urllib2.urlopen(url)
                 except:
+                    log.debug("could not connect to %s. deleting " % url)
                     print_server = DBSession.query(LuxPrintServers).filter_by(url=url).first()
                     DBSession.delete(print_server)
                     print_urls.remove(url)
+                    DBSession.commit()
+                    
             print_url = print_urls[random.randint(0, len(print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
