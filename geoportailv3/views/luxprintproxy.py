@@ -80,22 +80,21 @@ class LuxPrintProxy(PrintProxy):
         token = self.config["authtkt_secret"]
         print_servers = DBSession.query(LuxPrintServers).all()
         print_urls = [print_server.url for print_server in print_servers]
+        urllib2.getproxies = lambda: {}
+        valid_print_urls = []
         if print_urls is not None and len(print_urls) > 0:
-            
             for url in print_urls:
-                log.debug(url)
                 try:
-                    log.error("trying to open")
+                    log.error("trying to open %s" % url)
                     urllib2.urlopen(url)
                     log.error("opened")
+                    valid_print_urls.append(url)
                 except:
                     log.error("could not connect to %s. deleting " % url)
-                    print_server = DBSession.query(LuxPrintServers).filter_by(url=url).first()
-                    #DBSession.delete(print_server)
-                    print_urls.remove(url)
-                    #DBSession.commit()
-                    
-            print_url = print_urls[random.randint(0, len(print_urls) - 1)]
+                    print_server = DBSession.query(LuxPrintServers).filter(LuxPrintServers.url == url).delete()
+                    DBSession.execute("commit")
+            log.error(valid_print_urls)        
+            print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
         spec = json.loads(self.request.body)
