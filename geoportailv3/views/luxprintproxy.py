@@ -86,15 +86,11 @@ class LuxPrintProxy(PrintProxy):
             for url in print_urls:
                 try:
                     test_url = url.replace("/print/geoportailv3","")
-                    log.error("trying to open %s" % test_url)
                     urllib2.urlopen(test_url)
-                    log.error("opened")
                     valid_print_urls.append(url)
                 except:
-                    log.error("could not connect to %s. deleting " % url)
                     print_server = DBSession.query(LuxPrintServers).filter(LuxPrintServers.url == url).delete()
                     DBSession.execute("commit")
-            log.error(valid_print_urls)        
             print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
