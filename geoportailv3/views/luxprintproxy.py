@@ -85,8 +85,9 @@ class LuxPrintProxy(PrintProxy):
         if print_urls is not None and len(print_urls) > 0:
             for url in print_urls:
                 try:
-                    log.error("trying to open %s" % url)
-                    urllib2.urlopen(url)
+                    test_url = url.replace("/print/geoportailv3","")
+                    log.error("trying to open %s" % test_url)
+                    urllib2.urlopen(test_url)
                     log.error("opened")
                     valid_print_urls.append(url)
                 except:
