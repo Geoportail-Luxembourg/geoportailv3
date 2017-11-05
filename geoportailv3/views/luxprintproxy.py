@@ -66,7 +66,8 @@ from c2cgeoportal.models import RestrictionArea, Role, Layer
 from c2cgeoportal.views.printproxy import PrintProxy
 from c2cgeoportal.lib.caching import NO_CACHE, get_region
 
-from geoportailv3.models import DBSession, LuxPrintJob,LuxPrintServers, LuxLayerInternalWMS
+from geoportailv3.models import DBSession, LuxPrintJob
+from geoportailv3.models import LuxPrintServers, LuxLayerInternalWMS
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -85,13 +86,16 @@ class LuxPrintProxy(PrintProxy):
         if print_urls is not None and len(print_urls) > 0:
             for url in print_urls:
                 try:
-                    test_url = url.replace("/print/geoportailv3","")
+                    test_url = url.replace("/print/geoportailv3", "")
                     urllib2.urlopen(test_url)
                     valid_print_urls.append(url)
                 except:
-                    print_server = DBSession.query(LuxPrintServers).filter(LuxPrintServers.url == url).delete()
+                    print_server = DBSession.query(LuxPrintServers).filter(
+                                   LuxPrintServers.url == url)
+                    print_server.delete()
                     DBSession.execute("commit")
-            print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
+            print_url = valid_print_urls[random.randint(0,
+                                         len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
         spec = json.loads(self.request.body)

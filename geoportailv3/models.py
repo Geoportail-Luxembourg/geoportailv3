@@ -141,7 +141,7 @@ class LuxPrintServers(Base):
     url = Column(Unicode)
     creation = Column(DateTime)
 
-    
+
 class LuxPredefinedWms(Base):
     __tablename__ = 'lux_predefined_wms'
     __table_args__ = {'schema': _schema}
