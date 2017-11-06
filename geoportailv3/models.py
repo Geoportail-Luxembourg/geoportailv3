@@ -131,6 +131,17 @@ class LuxPrintJob(Base):
     is_error = Column(Boolean, default=False)
 
 
+class LuxPrintServers(Base):
+    __tablename__ = 'lux_print_servers'
+    __table_args__ = {'schema': _schema}
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
+    id = Column(String, primary_key=True)
+    url = Column(Unicode)
+    creation = Column(DateTime)
+
+
 class LuxPredefinedWms(Base):
     __tablename__ = 'lux_predefined_wms'
     __table_args__ = {'schema': _schema}
