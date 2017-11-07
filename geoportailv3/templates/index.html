@@ -302,9 +302,9 @@
 % endif
 
 % if debug:
-        appModule.constant('cesiumURL', "${request.static_url('%s/cesium/Build/CesiumUnminified/Cesium.js' % node_modules_path)}");
+        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/CesiumUnminified/Cesium.js' % node_modules_path)}");
 % else:
-        appModule.constant('cesiumURL', "${request.static_url('%s/cesium/Build/Cesium/Cesium.js' % node_modules_path)}");
+        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/Cesium/Cesium.js' % node_modules_path)}");
 % endif
          appModule.constant('httpsProxyUrl', "${request.route_url('https_proxy')}");
          appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
