@@ -451,8 +451,11 @@ lux.Map = function(options) {
   }
 
   if (options.position) {
+    var position = [parseFloat(
+      options.position[0]),
+      parseFloat(options.position[1])];
     options.view.setCenter(ol.proj.transform(
-      options.position,
+      position,
       (options.positionSrs) ?
           'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
       'EPSG:3857'
