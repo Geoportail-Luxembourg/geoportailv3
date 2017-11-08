@@ -430,7 +430,10 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
     features: appSelectedFeatures,
-    pixelTolerance: 20
+    pixelTolerance: 20,
+    deleteCondition: function(event) {
+      return ol.events.condition.noModifierKeys(event) && ol.events.condition.singleClick(event);
+    }
   });
 
   this.drawnFeatures_.clipLineInteraction =
