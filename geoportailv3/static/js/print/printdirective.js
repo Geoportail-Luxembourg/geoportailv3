@@ -568,6 +568,13 @@ app.PrintController.prototype.print = function(format) {
             }
           }
         });
+
+        var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
+        if (routingAttributions !== undefined && routingAttributions !== null) {
+          routingAttributions.forEach(function(attribution) {
+            dataOwners.push(attribution.getHTML());
+          }, this);
+        }
         goog.array.removeDuplicates(dataOwners);
         var disclaimer = this.gettextCatalog.getString('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
         var dateText = this.gettextCatalog.getString('Date d\'impression: ');
