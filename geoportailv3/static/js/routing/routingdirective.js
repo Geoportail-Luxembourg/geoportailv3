@@ -270,6 +270,12 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
       this.removeTooltip_();
     }
   }.bind(this));
+
+  /**
+   * @type {ol.source.Vector}
+   * @private
+   */
+  this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 };
 
 /**
@@ -356,6 +362,30 @@ app.RoutingController.prototype.isRoute = function() {
 };
 
 /**
+ * @export
+ */
+app.RoutingController.prototype.clearRoute = function() {
+  this.appRouting.routes = ['', ''];
+  this.appRouting.features.clear();
+  this.routeDesc = [];
+  this.source_.setAttributions(undefined);
+  this.getRoute_();
+};
+
+/**
+ * @param {number} step The text to clear.
+ * @export
+ */
+app.RoutingController.prototype.removeOrClearStep = function(step) {
+  if (this.appRouting.routes.length > 2) {
+    this.appRouting.routes.splice(step, 1);
+  } else {
+    this.appRouting.routes[step] = '';
+  }
+  this.getRoute_();
+};
+
+/**
  * @return {string} The distance.
  * @export
  */
@@ -388,7 +418,7 @@ app.RoutingController.prototype.getRoute_ = function() {
   this.stepFeaturesCollection_.clear();
   this.selectInteraction_.setActive(false);
   this['hasResult'] = false;
-
+  this.source_.setAttributions(undefined);
   if (this.appRouting.features.getLength() >= 2) {
     var waypoints = [];
     this.appRouting.features.forEach(function(feature) {
@@ -422,6 +452,7 @@ app.RoutingController.prototype.getRoute_ = function() {
               jsonFeatures.forEach(function(feature) {
                 feature.setStyle(this.roadStyle_);
                 this.appRouting.routeOverlay.addFeature(feature);
+                this.source_.setAttributions(feature.get('attribution'));
                 this.getProfile_(feature.getGeometry()).then(function(profile) {
                   this.profileData = profile;
                   this.elevation_ = this.profileData[this.profileData.length - 1]['cumulativeElevation'];
