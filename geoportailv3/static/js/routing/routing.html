@@ -52,15 +52,15 @@
               <div class="route-general-info-container">
                   <div class="route-single-info">
                       <div class="route-info-title" translate>Distance</div>
-                      <div class="route-info-data route-info-general-data">{{ctrl.getDistance()}}</div>
+                      <div class="route-info-data route-info-general-data">{{ctrl.getDistance() | ngeoUnitPrefix:'m'}}</div>
                   </div>
                   <div class="route-single-info">
                       <div class="route-info-title" translate>Temps</div>
-                      <div class="route-info-data route-info-general-data">{{ctrl.getTime()}}</div>
+                      <div class="route-info-data route-info-general-data">{{ctrl.getTime() | appSecondsToHHmmss}}</div>
                   </div>
                   <div class="route-single-info">
                       <div class="route-info-title" translate>Altitude</div>
-                      <div class="route-info-data route-info-general-data">{{ctrl.getElevation()}}</div>
+                      <div class="route-info-data route-info-general-data">{{ctrl.getElevation() | ngeoUnitPrefix:'m'}}</div>
                   </div>
               </div>
           </div>
@@ -83,10 +83,10 @@
                       {{value.description}}
                   </div>
                   <div class="route-info-data route-instruction-data">
-                      {{value.distance / 1000}}<span class="route-inline-unit">km</span>
+                      {{value.cumulativeDistance | ngeoUnitPrefix:'m'}}
                   </div>
                   <div class="route-info-data route-instruction-data">
-                      {{value.time / 100}}<span class="route-inline-unit">min</span>
+                      {{value.cumulativeTime | appSecondsToHHmmss}}
                   </div>
               </div>
           </div>

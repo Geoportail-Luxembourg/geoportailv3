@@ -13,6 +13,7 @@ goog.provide('app.routingDirective');
 
 goog.require('app');
 goog.require('app.Routing');
+goog.require('ngeo.filters');
 
 /**
  * @param {string} appRoutingTemplateUrl Url to routing template.
@@ -386,27 +387,27 @@ app.RoutingController.prototype.removeOrClearStep = function(step) {
 };
 
 /**
- * @return {string} The distance.
+ * @return {number} The distance in meter.
  * @export
  */
 app.RoutingController.prototype.getDistance = function() {
-  return parseInt(this.distance_, 10) + ' km';
+  return this.distance_;
 };
 
 /**
- * @return {string} The time.
+ * @return {number} The total time in seconde.
  * @export
  */
 app.RoutingController.prototype.getTime = function() {
-  return parseInt((this.time_), 10) + ' min';
+  return this.time_;
 };
 
 /**
- * @return {string} the elevation.
+ * @return {number} the elevation in meter.
  * @export
  */
 app.RoutingController.prototype.getElevation = function() {
-  return parseInt(this.elevation_, 10) + ' m';
+  return this.elevation_;
 };
 
 /**
@@ -463,6 +464,8 @@ app.RoutingController.prototype.getRoute_ = function() {
                 });
 
                 this.routeDesc = feature.get('desc');
+                var cumulativeDistance = 0;
+                var cumulativeTime = 0;
                 this.routeDesc.forEach(function(description) {
                   var coordinate = [description.lon, description.lat];
                   var geometry = /** @type {ol.Coordinate} */
@@ -470,14 +473,18 @@ app.RoutingController.prototype.getRoute_ = function() {
                   var stepFeature = new ol.Feature({
                     geometry: new ol.geom.Point(geometry)
                   });
+                  cumulativeDistance += description.distance;
+                  cumulativeTime += description.time;
+                  description['cumulativeDistance'] = cumulativeDistance;
+                  description['cumulativeTime'] = cumulativeTime;
                   stepFeature.setStyle(this.stepStyle_);
                   stepFeature.set('__text', description.description);
                   this.appRouting.routeOverlay.addFeature(stepFeature);
                   this.stepFeaturesCollection_.push(stepFeature);
                 }, this);
                 this.selectInteraction_.setActive(true);
-                this.distance_ = feature.get('dist') / 1000;
-                this.time_ = feature.get('time') / 60;
+                this.distance_ = feature.get('dist');
+                this.time_ = feature.get('time');
                 this['hasResult'] = true;
               }.bind(this));
             }
@@ -637,3 +644,18 @@ app.RoutingController.prototype.addRoute = function() {
 
 
 app.module.controller('AppRoutingController', app.RoutingController);
+
+/**
+ * @param {angular.$filter} $filter Angular filter.
+ * @return {function(number): string} A function to format secondes.
+ * @ngInject
+ * @ngdoc filter
+ * @ngname appSecondsToHHmmss
+ */
+app.secondsToHHmmss = function($filter) {
+  return function(seconds) {
+    return $filter('date')(new Date(0, 0, 0).setSeconds(seconds), 'HH:mm:ss');
+  };
+};
+
+app.module.filter('appSecondsToHHmmss', app.secondsToHHmmss);
