@@ -176,7 +176,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
       var feature = /** @type {ol.Feature} */ (suggestion);
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
-      this.getRoute_();
+      // this.getRoute_();
     }.bind(this)
   });
 
@@ -284,6 +284,11 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @private
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
+
+  ol.events.listen(this.appRouting.features, ol.CollectionEventType.ADD,
+    this.getRoute_, this);
+  ol.events.listen(this.appRouting.features, ol.CollectionEventType.REMOVE,
+    this.getRoute_, this);
 };
 
 /**
@@ -377,7 +382,7 @@ app.RoutingController.prototype.clearRoute = function() {
   this.appRouting.features.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
-  this.getRoute_();
+  //this.getRoute_();
 };
 
 /**
@@ -390,7 +395,7 @@ app.RoutingController.prototype.removeOrClearStep = function(step) {
   } else {
     this.appRouting.routes[step] = '';
   }
-  this.getRoute_();
+  //this.getRoute_();
 };
 
 /**
@@ -422,7 +427,7 @@ app.RoutingController.prototype.getElevation = function() {
  * @private
  */
 app.RoutingController.prototype.getRoute_ = function() {
-  this.appRouting.routeOverlay.clear();
+  this.appRouting.routeFeatures.clear();
   this.stepFeaturesCollection_.clear();
   this.selectInteraction_.setActive(false);
   this['hasResult'] = false;
@@ -616,7 +621,7 @@ app.RoutingController.prototype.exchangeRoutes = function() {
   this.appRouting.routes[this.appRouting.routes.length - 1] = this.appRouting.routes[0];
   this.appRouting.routes[0] = temp;
   this.setPositionText_();
-  this.getRoute_();
+  // this.getRoute_();
 };
 
 /**
