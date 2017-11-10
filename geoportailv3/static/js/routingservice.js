@@ -39,6 +39,11 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
    * @type {ngeo.FeatureOverlay}
    */
   this.routeOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   */
+  this.routeFeatures = new ol.Collection();
+  this.routeOverlay.setFeatures(this.routeFeatures);
 
   /**
    * @type {ngeo.FeatureOverlay}

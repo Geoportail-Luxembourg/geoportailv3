@@ -48,13 +48,20 @@ app.module.directive('appRouting', app.routingDirective);
  * @param {app.Routing} appRouting The routing service.
  * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
+ * @param {app.Export} appExport The export service.
  * @constructor
  * @ngInject
  * @export
  */
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
-    ngeoFeatureOverlayMgr) {
+    ngeoFeatureOverlayMgr, appExport) {
+  /**
+   * @type {app.Export}
+   * @private
+   */
+  this.appExport_ = appExport;
+
   /**
    * @type {app.ShowProfile}
    * @export
@@ -447,12 +454,12 @@ app.RoutingController.prototype.getRoute_ = function() {
 
             if (jsonFeatures !== null && jsonFeatures !== undefined) {
 
-              this.appRouting.routeOverlay.clear();
+              this.appRouting.routeFeatures.clear();
               var curView = this.map.getView();
               // Only one path is returned
               jsonFeatures.forEach(function(feature) {
                 feature.setStyle(this.roadStyle_);
-                this.appRouting.routeOverlay.addFeature(feature);
+                this.appRouting.routeFeatures.push(feature);
                 this.source_.setAttributions(feature.get('attribution'));
                 this.getProfile_(feature.getGeometry()).then(function(profile) {
                   this.profileData = profile;
@@ -479,7 +486,7 @@ app.RoutingController.prototype.getRoute_ = function() {
                   description['cumulativeTime'] = cumulativeTime;
                   stepFeature.setStyle(this.stepStyle_);
                   stepFeature.set('__text', description.description);
-                  this.appRouting.routeOverlay.addFeature(stepFeature);
+                  this.appRouting.routeFeatures.push(stepFeature);
                   this.stepFeaturesCollection_.push(stepFeature);
                 }, this);
                 this.selectInteraction_.setActive(true);
@@ -642,6 +649,17 @@ app.RoutingController.prototype.addRoute = function() {
   this.appRouting.routes.push('');
 };
 
+/**
+ * Export a Gpx file.
+ * @export
+ */
+app.RoutingController.prototype.exportGpx = function() {
+  var features = goog.array.filter(
+    this.appRouting.routeFeatures.getArray(), function(feature) {
+      return (feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING);
+    }, this);
+  this.appExport_.exportGpx(features, 'Route', true);
+};
 
 app.module.controller('AppRoutingController', app.RoutingController);
 
