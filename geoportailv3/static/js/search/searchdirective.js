@@ -54,7 +54,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
     scope: {
       'map': '=appSearchMap',
       'language': '=appSearchLanguage',
-      'mobileActive': '=appSearchMobileactive'
+      'mobileActive': '=appSearchMobileactive',
+      'routingOpen': '=appSearchRoutingOpen'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',
@@ -129,13 +130,21 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
+ * @param {app.Routing} appRouting The routing service.
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch) {
+    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch,
+    appRouting) {
+
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
 
   /**
    * @type {Object}
@@ -423,11 +432,16 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         scope['click'] = function(event) {
           event.stopPropagation();
         };
+        scope['addRoutePoint'] = function(feature, event) {
+          this.addRoutePoint(feature);
+          event.stopPropagation();
+        }.bind(this);
 
         var html = '<p>' + feature.get('label') +
             ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span></p>';
+            ) + ')</span> <button class="standalone-routing-icon" ng-click="addRoutePoint(feature, $event)"></button></p>';
+
         return $compile(html)(scope);
       }, this)
     })
@@ -909,6 +923,24 @@ app.SearchDirectiveController.selected_ =
       }
     };
 
+/**
+ * @param {ol.Feature} suggestion The feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addRoutePoint = function(suggestion) {
+  var coordinate = ol.extent.getCenter(suggestion.getGeometry().getExtent());
+  var feature = /** @type {ol.Feature} */
+      (new ol.Feature(new ol.geom.Point(coordinate)));
+  feature.set('label', suggestion.get('label'));
+  var routeNum = this.appRouting_.features.getLength();
+  if (this.appRouting_.routes.length < routeNum) {
+    this.appRouting_.routes.push ('');
+  }
+  this.appRouting_.routes[routeNum] = /** @type {string} */ (feature.get('label'));
+  this.appRouting_.insertFeatureAt(feature, routeNum + 1);
+  this['routingOpen'] = true;
+
+};
 
 app.module.controller('AppSearchController',
     app.SearchDirectiveController);

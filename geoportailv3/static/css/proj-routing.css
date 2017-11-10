@@ -14655,18 +14655,16 @@ header .navbar-form {
   right: 15px;
   font-size: 0.8em;
 }
-.standalone-routing-icon {
+.standalone-routing-icon2 {
   height: 32px;
   width: 32px;
   transform: rotate(45deg);
   border-radius: 2px;
-  background-color: #0081BE;
   border: 0;
 }
 .standalone-routing-icon:after {
   content: "\e905";
   font-family: 'apart-geoportail' !important;
-  color: #fff;
   position: absolute;
   font-size: 0.8em;
   transform: rotate(-45deg) translateY(-50%);
