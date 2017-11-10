@@ -36,6 +36,7 @@ app.locationinfoDirective = function(appLocationinfoTemplateUrl) {
     scope: {
       'map': '=appLocationinfoMap',
       'open': '=appLocationinfoOpen',
+      'routingOpen': '=appLocationinfoRoutingOpen',
       'hiddenContent': '=appLocationinfoHiddenContent',
       'appSelector': '=appLocationinfoAppselector'
     },
@@ -436,12 +437,17 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
 /**
  * @export
  */
-app.LocationinfoController.prototype.setStartRoute = function() {
+app.LocationinfoController.prototype.addRoutePoint = function() {
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
   feature.set('label', this['location'][this.projections_['EPSG:2169']]);
-  this.appRouting_.routes[0] = /** @type {string} */ (feature.get('label'));
-  this.appRouting_.insertFeatureAt(feature, 1);
+  var routeNum = this.appRouting_.features.getLength();
+  if (this.appRouting_.routes.length < routeNum) {
+    this.appRouting_.routes.push ('');
+  }
+  this.appRouting_.routes[routeNum] = /** @type {string} */ (feature.get('label'));
+  this.appRouting_.insertFeatureAt(feature, routeNum + 1);
+  this['routingOpen'] = true;
 };
 
 /**
