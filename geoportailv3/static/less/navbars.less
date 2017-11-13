@@ -40,6 +40,12 @@ header {
   float: none;
   // FIXME to be set to real width (may depend on media width)
   width: 300px;
+  .enabled-3d & {
+    width: 70px;
+    li a {
+      border-left: 1px solid @navbars-button-border-color;
+    }
+  }
   // center the toolbox bar
   margin: 0 auto;
   > li {
