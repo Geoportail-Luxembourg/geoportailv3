@@ -463,6 +463,10 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
     super.configureForUsability(scene);
     const camera = scene.camera;
     camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
+
+    scene.terrainProvider = new Cesium.CesiumTerrainProvider({
+      url: '//3dtiles.geoportail.lu/tiles'
+    });
   }
 };
 

@@ -21,6 +21,7 @@
     "Bloodhound": false,
     "ol": false,
     "olcs": false,
+    "Cesium": false,
     "proj4": false,
     "ngeo": false,
     "gmf": false,
