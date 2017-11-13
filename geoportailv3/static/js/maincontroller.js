@@ -504,7 +504,7 @@ app.MainController.prototype.toggle3d = function() {
  * @export
  * @return {boolean} Whether 3D is active.
  */
-app.MainController.prototype.is3DEnabled = function() {
+app.MainController.prototype.is3dEnabled = function() {
   return this.ol3dm_.is3dEnabled();
 };
 
