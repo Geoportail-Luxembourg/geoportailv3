@@ -492,6 +492,15 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
  */
 app.MainController.prototype.toggle3d = function() {
   this.ol3dm_.toggle3d();
+  // Disable uncompatible tools
+  if (!this.is3dEnabled()) { // inversed test: still not active
+    this['mymapsOpen'] = false;
+    this['drawOpen'] = false;
+    this['drawOpenMobile'] = false;
+    this['measureOpen'] = false;
+    this['printOpen'] = false;
+    this['layersOpen'] = true;
+  }
 };
 
 
@@ -499,7 +508,7 @@ app.MainController.prototype.toggle3d = function() {
  * @export
  * @return {boolean} Whether 3D is active.
  */
-app.MainController.prototype.is3DEnabled = function() {
+app.MainController.prototype.is3dEnabled = function() {
   return this.ol3dm_.is3dEnabled();
 };
 
