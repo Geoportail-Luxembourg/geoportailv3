@@ -2,6 +2,7 @@
 # We also use the build.js task of OpenLayers which hardcodes its closure-util version.
 # The line below ensures we use the same version everywhere.
 $(shell rm -rf node_modules/openlayers/node_modules/closure-util; ln -s ../../@camptocamp/closure-util node_modules/openlayers/node_modules/closure-util)
+$(shell rm -rf node_modules/closure-util; ln -s ./@camptocamp/closure-util node_modules/closure-util)
 
 ifdef VARS_FILE
 VARS_FILES += ${VARS_FILE} vars_geoportailv3.yaml
