@@ -1,7 +1,4 @@
 ﻿<div class="route-container">
-  <button type="button" class="close" aria-label="Close" ng-click="ctrl.clearRoute();">
-  <span aria-hidden="true">×</span>
-  </button>
   <div class="routes">
       <div class="routing-component">
           <div class="routing-icon-container  container-fluid">
@@ -15,9 +12,11 @@
                   <span class="icon-Bike" ng-click="ctrl.setMode(2)"></span>
               </span>
               <span class="routing-icon">
+                  <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoute();"></span>
                   <span class="icon-Switch" ng-click="ctrl.exchangeRoutes()"></span>
               </span>
           </div>
+
           <div class="routing-routes">
               <div ng-repeat="(key , value) in ctrl.getRoutes() track by $index" class="routing-route-container">
                 <div class="route-number" ng-click="ctrl.removeOrClearStep()" >{{key + 1}}</div>
