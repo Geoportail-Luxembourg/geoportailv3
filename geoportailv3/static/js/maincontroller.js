@@ -462,6 +462,27 @@ app.MainController.prototype.createMap_ = function() {
 // Due to a bug in the closure compiler we can not define the class
 // in the method below. See https://github.com/google/closure-compiler/issues/2696.
 app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
+
+  /**
+   *
+   * @param {string} cesiumUrl Cesium URL.
+   * @param {ol.Map} map The map.
+   * @param {ngeo.Location} ngeoLocation The location service.
+   */
+  constructor(cesiumUrl, map, ngeoLocation) {
+    super(cesiumUrl, {
+      map,
+      cameraExtentInRadians: [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians)
+    });
+
+    /**
+     * @private
+     * @type {ngeo.Location}
+     */
+    this.ngeoLocation_ = ngeoLocation;
+  }
+
+
   /**
    * @override
    */
@@ -470,9 +491,11 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
     const camera = scene.camera;
     camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
 
-    scene.terrainProvider = new Cesium.CesiumTerrainProvider({
-      url: '//3dtiles.geoportail.lu/tiles'
-    });
+    if (this.ngeoLocation_.hasParam('own_terrain')) {
+      scene.terrainProvider = new Cesium.CesiumTerrainProvider({
+        url: '//3dtiles.geoportail.lu/tiles'
+      });
+    }
   }
 };
 
@@ -487,12 +510,8 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
     return null;
   }
   // [minx, miny, maxx, maxy]
-  var luxembourgRectangle = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
   goog.asserts.assert(this.map_);
-  return new app.MainController.Lux3DManager(cesiumURL, {
-    map: this.map_,
-    cameraExtentInRadians: luxembourgRectangle
-  });
+  return new app.MainController.Lux3DManager(cesiumURL, this.map_, this.ngeoLocation_);
 };
 
 
