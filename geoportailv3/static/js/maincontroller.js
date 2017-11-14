@@ -308,7 +308,13 @@ app.MainController = function(
   this.map_ = this.createMap_();
 
   /**
-   * @const {!olcs.contrib.Manager}
+   * @export
+   * @type {boolean}
+   */
+  this.allow3d = this.ngeoLocation_.hasParam('3d');
+
+  /**
+   * @const {?olcs.contrib.Manager}
    * @private
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL);
@@ -474,9 +480,12 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
 /**
  * @private
  * @param {string} cesiumURL The Cesium URL
- * @return {!olcs.contrib.Manager} The created manager.
+ * @return {olcs.contrib.Manager} The created manager.
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
+  if (!this.allow3d) {
+    return null;
+  }
   // [minx, miny, maxx, maxy]
   var luxembourgRectangle = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
   goog.asserts.assert(this.map_);
@@ -509,7 +518,7 @@ app.MainController.prototype.toggle3d = function() {
  * @return {boolean} Whether 3D is active.
  */
 app.MainController.prototype.is3dEnabled = function() {
-  return this.ol3dm_.is3dEnabled();
+  return this.allow3d && this.ol3dm_.is3dEnabled();
 };
 
 
