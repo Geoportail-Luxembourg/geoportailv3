@@ -77,7 +77,7 @@
                   </div>
               </h3>
 
-              <div ng-repeat="(key , value) in ctrl.routeDesc track by $index" class="route-details-step" ng-mouseleave="ctrl.clearHighlight();" ng-mouseover="ctrl.highlightPosition(value.lon, value.lat, value.description);">
+              <div ng-repeat="(key , value) in ctrl.routeDesc track by $index" class="route-details-step" ng-mouseleave="ctrl.clearHighlight();" ng-mouseover="ctrl.highlightPosition(value.lon, value.lat, value.description);" ng-click="ctrl.center(value.lon, value.lat);">
                   <div class="route-instruction">
                       <span class="icon-Direction {{ctrl.getIconDirectionClass(value.direction)}}"></span>
                       {{value.description}}
