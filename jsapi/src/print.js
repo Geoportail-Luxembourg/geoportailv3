@@ -489,6 +489,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
         if (geojsonFeature.properties === null) {
           geojsonFeature.properties = {};
         }
+        this.replaceNullValues(geojsonFeature.properties);
 
         var featureStyleProp = lux.PrintManager.FEAT_STYLE_PROP_PREFIX_ + j;
         this.encodeVectorStyle_(
@@ -518,6 +519,21 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
   }
 };
 
+/**
+ * @param {Object} object Object to replace the null values.
+ * @private
+ */
+lux.PrintManager.prototype.replaceNullValues = function(object) {
+  // Mapfish print does not support null properties.
+  for (var idx in object) {
+    if (object[idx] === null) {
+      object[idx] = '';
+    }
+    if (object[idx] instanceof Object) {
+      this.replaceNullValues(object[idx]);
+    }
+  }
+};
 
 /**
  * @param {MapFishPrintVectorStyle} object MapFish style object.
