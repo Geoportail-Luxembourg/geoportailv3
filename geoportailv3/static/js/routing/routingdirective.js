@@ -506,6 +506,18 @@ app.RoutingController.prototype.getRoute_ = function() {
   }
 };
 
+
+/**
+ * @param {number} lon The longitude.
+ * @param {number} lat The latitude.
+ * @export
+ */
+app.RoutingController.prototype.center = function(lon, lat) {
+  var curView = this.map.getView();
+  var coordinate = ol.proj.transform([lon, lat], 'EPSG:4326', curView.getProjection());
+  curView.setCenter(coordinate);
+};
+
 /**
  * @param {number} lon The longitude.
  * @param {number} lat The latitude.
