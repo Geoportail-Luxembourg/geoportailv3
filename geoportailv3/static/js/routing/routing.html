@@ -17,9 +17,12 @@
               </span>
           </div>
 
-          <div class="routing-routes">
+          <div class="routing-routes" ngeo-sortable="ctrl.routesOrder"
+                   ngeo-sortable-callback-ctx="::ctrl"
+                   ngeo-sortable-callback="::ctrl.afterReorder"
+                   ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
               <div ng-repeat="(key , value) in ctrl.getRoutes() track by $index" class="routing-route-container">
-                <div class="route-number" ng-click="ctrl.removeOrClearStep()" >{{key + 1}}</div>
+                <div class="route-number sortable-handle" ng-click="ctrl.removeOrClearStep()" >{{key + 1}}</div>
                 <input route-number="{{key + 1}}" type="text" autocorrect="off" autocapitalize="none" class="route-field route-field-my-location form-control" placeholder="{{ 'Indiquez une adresse, un lieu' |translate}}"
                              ngeo-search-listeners="ctrl.listeners" ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ng-model="ctrl.appRouting.routes[key]">
                 </input>
