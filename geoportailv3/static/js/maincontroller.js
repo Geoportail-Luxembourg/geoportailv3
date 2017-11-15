@@ -38,7 +38,7 @@ goog.require('ol.control.Zoom');
 goog.require('ol.control.ZoomToExtent');
 goog.require('ol.proj');
 goog.require('ol.math');
-goog.require('olcs.contrib.Manager');
+goog.require('ngeo.olcs.Manager');
 
 
 /**
@@ -72,6 +72,8 @@ goog.require('olcs.contrib.Manager');
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
  * @param {string} cesiumURL The Cesium script URL.
+ * @param {angular.Scope} $rootScope Angular root scope.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @constructor
  * @export
  * @ngInject
@@ -83,7 +85,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, cesiumURL) {
+    appSelectedFeatures, $locale, cesiumURL, $rootScope, ngeoOlcsService) {
   /**
    * @type {angular.$locale}
    * @private
@@ -314,10 +316,12 @@ app.MainController = function(
   this.allow3d = this.ngeoLocation_.hasParam('3d');
 
   /**
-   * @const {?olcs.contrib.Manager}
+   * @const {?app.MainController.Lux3DManager}
    * @private
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL);
+  this.ol3dm_.setRootScope($rootScope);
+  ngeoOlcsService.initialize(this.ol3dm_);
 
   this.initLanguage_();
 
@@ -461,7 +465,7 @@ app.MainController.prototype.createMap_ = function() {
 
 // Due to a bug in the closure compiler we can not define the class
 // in the method below. See https://github.com/google/closure-compiler/issues/2696.
-app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
+app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
 
   /**
    *
@@ -503,7 +507,7 @@ app.MainController.Lux3DManager = class extends olcs.contrib.Manager {
 /**
  * @private
  * @param {string} cesiumURL The Cesium URL
- * @return {olcs.contrib.Manager} The created manager.
+ * @return {?app.MainController.Lux3DManager} The created manager.
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   if (!this.allow3d) {
