@@ -531,7 +531,6 @@ app.MainController.prototype.toggle3d = function() {
     this['drawOpenMobile'] = false;
     this['measureOpen'] = false;
     this['printOpen'] = false;
-    this['layersOpen'] = true;
   }
 };
 
