@@ -64,6 +64,24 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
 };
 
 /**
+ * @param {number} fromPosition The position.
+ * @param {number} toPosition The position.
+ */
+app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
+  if (this.features.getLength() > fromPosition) {
+    var feature = this.features.removeAt(fromPosition);
+    if (feature !== undefined) {
+      this.features.insertAt(toPosition, feature);
+      var idx = 1;
+      this.features.forEach(function(curFeature) {
+        curFeature.set('__text', '' + idx);
+        idx++;
+      }, this);
+    }
+  }
+};
+
+/**
  * @param {ol.Feature} feature The feature to insert.
  * @param {number} routeNumber The position.
  */
@@ -115,6 +133,7 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
     var j;
     for (j = featuresLength; j < routeNumber; ++j) {
       var blankFeature = new ol.Feature();
+      blankFeature.set('__text', '' + j);
       this.features.insertAt(j, blankFeature);
     }
   }

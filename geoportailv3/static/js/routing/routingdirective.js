@@ -57,6 +57,12 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport) {
   /**
+   * @type {Array<number>}
+   * @export
+   */
+  this.routesOrder = [0, 1];
+
+  /**
    * @type {app.Export}
    * @private
    */
@@ -311,6 +317,43 @@ app.RoutingController.prototype.createTooltip_ = function(position, text) {
   this.tooltipOverlay_.setPosition(position);
 };
 
+/**
+ * Update the map and save the new feature order.
+ * @param {angular.JQLite} element The feature.
+ * @param {Array} array The array.
+ * @export
+ */
+app.RoutingController.prototype.afterReorder = function(element, array) {
+  var fromIdx = 0;
+  var toIdx = 0;
+  var i = 0;
+  for (i = 0; i < this.routesOrder.length; i++) {
+    if (this.routesOrder[i] !== i) {
+      if (this.routesOrder[i] > i) {
+        toIdx = i;
+      } else {
+        fromIdx = i;
+      }
+    }
+  }
+
+  var elementToMove = this.appRouting.routes[fromIdx];
+  this.appRouting.routes.splice(fromIdx, 1);
+  this.appRouting.routes.splice(toIdx, 0, elementToMove);
+  this.appRouting.moveFeaturePosition(fromIdx, toIdx);
+  this.reorderRoute_();
+};
+
+/**
+ * Reorder the route.
+ * @private
+ */
+app.RoutingController.prototype.reorderRoute_ = function() {
+  var i = 0;
+  for (i = 0; i < this.routesOrder.length; i++) {
+    this.routesOrder[i] = i;
+  }
+};
 
 /**
  * Destroy the tooltip.
@@ -379,6 +422,7 @@ app.RoutingController.prototype.isRoute = function() {
  */
 app.RoutingController.prototype.clearRoute = function() {
   this.appRouting.routes = ['', ''];
+  this.routesOrder = [0, 1];
   this.appRouting.features.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
@@ -392,6 +436,8 @@ app.RoutingController.prototype.clearRoute = function() {
 app.RoutingController.prototype.removeOrClearStep = function(step) {
   if (this.appRouting.routes.length > 2) {
     this.appRouting.routes.splice(step, 1);
+    this.routesOrder.splice(step, 1);
+    this.reorderRoute_();
   } else {
     this.appRouting.routes[step] = '';
   }
@@ -664,6 +710,7 @@ app.RoutingController.prototype.getRoutes = function() {
  */
 app.RoutingController.prototype.addRoute = function() {
   this.appRouting.routes.push('');
+  this.routesOrder.push(this.routesOrder.length);
 };
 
 /**
