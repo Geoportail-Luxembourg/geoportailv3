@@ -26,7 +26,8 @@ goog.require('ol.proj');
 app.mapDirective = function(appMapTemplateUrl) {
   return {
     scope: {
-      'map': '=appMapMap'
+      'map': '=appMapMap',
+      'mainctrl': '=appMapMainctrl'
     },
     bindToController: true,
     controller: 'AppMapController',
@@ -37,6 +38,28 @@ app.mapDirective = function(appMapTemplateUrl) {
 
 
 app.module.directive('appMap', app.mapDirective);
+
+
+/**
+ * @return {angular.Directive} The Directive Definition Object.
+ * @ngInject
+ */
+app.Toggle3dDirective = function() {
+  return {
+    scope: true,
+    template: `
+      <div class="ol-unselectable ol-control ol-toogle3d"
+           ng-class="{active: ctrl.mainctrl.is3dEnabled()}"
+           ng-if="::ctrl.mainctrl.toggle3d">
+        <button type="button" ng-click="ctrl.mainctrl.toggle3d()">3D</button>
+      </div>`
+  };
+};
+
+
+app.module.directive('appToggle3d', app.Toggle3dDirective);
+
+
 
 
 /**
