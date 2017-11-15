@@ -4,6 +4,8 @@
 $(shell rm -rf node_modules/openlayers/node_modules/closure-util; ln -s ../../@camptocamp/closure-util node_modules/openlayers/node_modules/closure-util)
 $(shell rm -rf node_modules/closure-util; ln -s ./@camptocamp/closure-util node_modules/closure-util)
 
+LESS_FILES += node_modules/ngeo/src/modules/olcs/controls3d.less
+
 ifdef VARS_FILE
 VARS_FILES += ${VARS_FILE} vars_geoportailv3.yaml
 else
