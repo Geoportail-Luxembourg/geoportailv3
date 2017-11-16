@@ -60,8 +60,6 @@ app.Toggle3dDirective = function() {
 app.module.directive('appToggle3d', app.Toggle3dDirective);
 
 
-
-
 /**
  * @param {app.StateManager} appStateManager State manager service.
  * @param {ngeo.Debounce} ngeoDebounce ngeo debounce service.
