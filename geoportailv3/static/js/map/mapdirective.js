@@ -7,6 +7,8 @@
  */
 goog.provide('app.MapController');
 goog.provide('app.mapDirective');
+goog.provide('app.Toggle3dController');
+goog.provide('app.Toggle3dDirective');
 
 goog.require('app');
 goog.require('app.StateManager');
@@ -26,8 +28,7 @@ goog.require('ol.proj');
 app.mapDirective = function(appMapTemplateUrl) {
   return {
     scope: {
-      'map': '=appMapMap',
-      'mainctrl': '=appMapMainctrl'
+      'map': '=appMapMap'
     },
     bindToController: true,
     controller: 'AppMapController',
@@ -46,18 +47,33 @@ app.module.directive('appMap', app.mapDirective);
  */
 app.Toggle3dDirective = function() {
   return {
-    scope: true,
+    scope: {},
+    bindToController: true,
+    controller: 'appToggle3dController',
+    controllerAs: 'ctrl',
     template: `
       <div class="ol-unselectable ol-control ol-toogle3d"
-           ng-class="{active: ctrl.mainctrl.is3dEnabled()}"
-           ng-if="::ctrl.mainctrl.toggle3d">
-        <button type="button" ng-click="ctrl.mainctrl.toggle3d()">3D</button>
+           ng-class="{active: ctrl.manager && ctrl.manager.is3dEnabled()}"
+           ng-if="::ctrl.manager">
+        <button type="button" ng-click="ctrl.manager.toggle3d()">3D</button>
       </div>`
   };
 };
 
 
 app.module.directive('appToggle3d', app.Toggle3dDirective);
+
+
+/**
+ * @param {ngeo.olcs.Service} ngeoOlcsService ngeo debounce service.
+ * @constructor
+ * @ngInject
+ */
+app.Toggle3dController = function(appStateManager, ngeoOlcsService) {
+  this.manager = ngeoOlcsService.getManager();
+};
+
+app.module.controller('appToggle3dController', app.Toggle3dController);
 
 
 /**

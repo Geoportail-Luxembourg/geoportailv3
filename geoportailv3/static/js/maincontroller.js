@@ -399,6 +399,17 @@ app.MainController = function(
 
 
 /**
+ * @private
+ */
+app.MainController.prototype.callback3d_ = function() {
+  this['mymapsOpen'] = false;
+  this['drawOpen'] = false;
+  this['drawOpenMobile'] = false;
+  this['measureOpen'] = false;
+  this['printOpen'] = false;
+}
+
+/**
  * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
@@ -472,8 +483,9 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
    * @param {string} cesiumUrl Cesium URL.
    * @param {ol.Map} map The map.
    * @param {ngeo.Location} ngeoLocation The location service.
+   * @param {function()} callback for 3d activation
    */
-  constructor(cesiumUrl, map, ngeoLocation) {
+  constructor(cesiumUrl, map, ngeoLocation, callback) {
     super(cesiumUrl, {
       map,
       cameraExtentInRadians: [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians)
@@ -484,6 +496,12 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
      * @type {ngeo.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
+
+    /**
+     * @private
+     * @type {function()}
+     */
+    this.callback_ = callback;
   }
 
 
@@ -501,6 +519,17 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
       });
     }
   }
+
+  /**
+   * @override
+   */
+  toggle3d() {
+    super.toggle3d()
+    if (!this.is3dEnabled() && this.callback_) { // inversed test: still not active
+      this.callback_();
+    }
+    return null;
+  }
 };
 
 
@@ -515,23 +544,8 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   }
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
-  return new app.MainController.Lux3DManager(cesiumURL, this.map_, this.ngeoLocation_);
-};
-
-
-/**
- * @export
- */
-app.MainController.prototype.toggle3d = function() {
-  this.ol3dm_.toggle3d();
-  // Disable uncompatible tools
-  if (!this.is3dEnabled()) { // inversed test: still not active
-    this['mymapsOpen'] = false;
-    this['drawOpen'] = false;
-    this['drawOpenMobile'] = false;
-    this['measureOpen'] = false;
-    this['printOpen'] = false;
-  }
+  return new app.MainController.Lux3DManager(
+    cesiumURL, this.map_, this.ngeoLocation_, this.callback3d_.bind(this));
 };
 
 
