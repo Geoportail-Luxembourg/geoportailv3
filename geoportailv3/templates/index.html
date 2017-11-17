@@ -195,7 +195,11 @@
         </div>
       </div>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
-      <app-map app-map-map="::mainCtrl.map"></app-map>
+
+      <div class="map-wrapper">
+        <app-map app-map-map="::mainCtrl.map"></app-map>
+        <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()"></ngeo-olcs-controls3d>
+      </div>
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
@@ -354,6 +358,8 @@
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
+         appModule.value('ngeoOlcsControls3dTemplateUrl',
+           '${request.static_url('%s/ngeo/src/modules/olcs/controls3d.html' % node_modules_path)}');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
