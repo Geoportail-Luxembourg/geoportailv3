@@ -407,7 +407,7 @@ app.MainController.prototype.callback3d_ = function() {
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
   this['printOpen'] = false;
-}
+};
 
 /**
  * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
@@ -524,7 +524,7 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
    * @override
    */
   toggle3d() {
-    super.toggle3d()
+    super.toggle3d();
     if (!this.is3dEnabled() && this.callback_) { // inversed test: still not active
       this.callback_();
     }
