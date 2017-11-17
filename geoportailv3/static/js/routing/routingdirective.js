@@ -553,30 +553,16 @@ app.RoutingController.prototype.isRoute = function() {
 };
 
 /**
+ * Clear all fields and remove computed route.
  * @export
  */
-app.RoutingController.prototype.clearRoute = function() {
+app.RoutingController.prototype.clearRoutes = function() {
   this.appRouting.routes = ['', ''];
   this.routesOrder = [0, 1];
   this.appRouting.features.clear();
   this.appRouting.routeFeatures.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
-  //this.getRoute_();
-};
-
-/**
- * @param {number} step The text to clear.
- * @export
- */
-app.RoutingController.prototype.removeOrClearStep = function(step) {
-  if (this.appRouting.routes.length > 2) {
-    this.appRouting.routes.splice(step, 1);
-    this.routesOrder.splice(step, 1);
-    this.reorderRoute_();
-  } else {
-    this.appRouting.routes[step] = '';
-  }
   //this.getRoute_();
 };
 
