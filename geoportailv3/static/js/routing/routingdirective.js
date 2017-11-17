@@ -49,13 +49,29 @@ app.module.directive('appRouting', app.routingDirective);
  * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
  * @param {app.Export} appExport The export service.
+ * @param {app.CoordinateString} appCoordinateString The coordinate to string
+ * service.
+ * @param {Array.<number>} maxExtent Constraining extent.
  * @constructor
  * @ngInject
  * @export
  */
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
-    ngeoFeatureOverlayMgr, appExport) {
+    ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent) {
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.maxExtent_ =
+      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+
+  /**
+   * @type {app.CoordinateString}
+   * @private
+   */
+  this.coordinateString_ = appCoordinateString;
+
   /**
    * @type {Array<number>}
    * @export
@@ -145,6 +161,38 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
 
   /** @type {Array.<TypeaheadDataset>}*/
   this['datasets'] = [{
+    name: 'coordinates',
+    /**
+     * @param {Object} query
+     * @param {function(Array<string>)} syncResults
+     * @return {Object}
+     */
+    source: goog.bind(function(query, syncResults) {
+      return syncResults(this.matchCoordinate_(query));
+    }, this),
+    /**
+     * @param {Object} suggestion The suggestion.
+     * @return {(string|*)} The string.
+     * @this {TypeaheadDataset}
+     */
+    display: function(suggestion) {
+      var feature = /** @type {ol.Feature} */ (suggestion);
+      feature.set('dataset', this.name);
+      return feature.get('label');
+    },
+    templates: /** @type {TypeaheadTemplates} */ ({
+      suggestion: goog.bind(function(feature) {
+        var scope = $scope.$new(true);
+        scope['object'] = feature;
+        scope['click'] = function(event) {
+          event.stopPropagation();
+        };
+        var html = '<p>' + feature.get('label') +
+            ' (' + feature.get('epsgLabel') + ')</p>';
+        return $compile(html)(scope);
+      }, this)
+    })
+  }, {
     name: 'pois',
     source: POIBloodhoundEngine.ttAdapter(),
     /**
@@ -256,35 +304,43 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.stepFeaturesCollection_ = new ol.Collection();
 
   /**
+   * @type {ol.Collection}
+   * @private
+   */
+  this.modyfyFeaturesCollection_ = new ol.Collection();
+
+  /**
+   * Due to https://github.com/openlayers/openlayers/issues/7483
+   * We cannot use pointermove condition.
    * @type {ol.interaction.Select}
    * @private
    */
   this.selectInteraction_ = new ol.interaction.Select({
-    hitTolerance: 20,
-    condition: ol.events.condition.pointerMove,
+    features: this.modyfyFeaturesCollection_,
+    condition: ol.events.condition.click,
     filter: goog.bind(function(feature, layer) {
       return this.stepFeaturesCollection_.getArray().indexOf(feature) != -1;
     }, this)
   });
+
   this.map.addInteraction(this.selectInteraction_);
 
   this.selectInteraction_.setActive(false);
-  this.selectInteraction_.on('select', function(e) {
-    this.highlightOverlay_.clear();
-    var selectedFeatures = e.target.getFeatures();
-    if (selectedFeatures.getLength() > 0) {
-      var feature = selectedFeatures.getArray()[0];
-      var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
-      var newFeature = new ol.Feature({
-        geometry: new ol.geom.Point(geometry)
-      });
-      this.highlightOverlay_.addFeature(newFeature);
-      this.createTooltip_(geometry, feature.get('__text'));
-    } else {
-      this.removeTooltip_();
-    }
-  }.bind(this));
+  ol.events.listen(this.selectInteraction_, 'select',
+    this.showHideTooltip_, this);
 
+  /**
+   * @type {ol.interaction.Modify}
+   * @private
+   */
+  this.modifyInteraction_ = new ol.interaction.Modify({
+    features: this.modyfyFeaturesCollection_
+  });
+  this.map.addInteraction(this.modifyInteraction_);
+  this.modifyInteraction_.setActive(true);
+
+  ol.events.listen(this.modifyInteraction_,
+    ol.interaction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
   /**
    * @type {ol.source.Vector}
    * @private
@@ -295,6 +351,46 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     this.getRoute_, this);
   ol.events.listen(this.appRouting.features, ol.CollectionEventType.REMOVE,
     this.getRoute_, this);
+};
+
+/**
+ * Modify the step feature.
+ * @param {ol.interaction.Modify.Event} event The event.
+ * @private
+ */
+app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
+  var feature = this.modyfyFeaturesCollection_.getArray()[0];
+  var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
+
+  var label = this.coordinateString_(
+          geometry, 'EPSG:3857', 'EPSG:4326', false, true);
+
+  feature.set('label', label);
+  this.addRoute(label);
+  this.appRouting.insertFeatureAt(feature, this.appRouting.routes.length);
+};
+
+/**
+ * Show or hide tooltip.
+ * @param {ol.interaction.Select.Event} e The event.
+ * @private
+ */
+app.RoutingController.prototype.showHideTooltip_ = function(e) {
+  this.highlightOverlay_.clear();
+  var selectedFeatures = e.target.getFeatures();
+  if (selectedFeatures.getLength() > 0) {
+    console.log('select feature');
+    var feature = selectedFeatures.getArray()[0];
+
+    var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
+    var newFeature = new ol.Feature({
+      geometry: new ol.geom.Point(geometry)
+    });
+    this.highlightOverlay_.addFeature(newFeature);
+    this.createTooltip_(geometry, feature.get('__text'));
+  } else {
+    this.removeTooltip_();
+  }
 };
 
 /**
@@ -706,10 +802,11 @@ app.RoutingController.prototype.getRoutes = function() {
 
 /**
  * Add a new empy route.
+ * @param {string | undefined} routeName The label of the route.
  * @export
  */
-app.RoutingController.prototype.addRoute = function() {
-  this.appRouting.routes.push('');
+app.RoutingController.prototype.addRoute = function(routeName) {
+  this.appRouting.routes.push((routeName === undefined) ? '' : routeName);
   this.routesOrder.push(this.routesOrder.length);
 };
 
@@ -723,6 +820,177 @@ app.RoutingController.prototype.exportGpx = function() {
       return (feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING);
     }, this);
   this.appExport_.exportGpx(features, 'Route', true);
+};
+
+
+/**
+ * @param {string} searchString The search string.
+ * @return {Array<ol.Feature>} The result.
+ * @private
+ */
+app.RoutingController.prototype.matchCoordinate_ =
+    function(searchString) {
+      searchString = searchString.replace(/,/gi, '.');
+      var results = [];
+      var re = {
+        'EPSG:2169': {
+          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
+          label: 'LUREF',
+          epsgCode: 'EPSG:2169'
+        },
+        'EPSG:4326': {
+          regex:
+          /(\d{1,2}[\,\.]\d{1,6})\d*\s?(latitude|lat|N|longitude|long|lon|E|east|est)?\W*(\d{1,2}[\,\.]\d{1,6})\d*\s?(longitude|long|lon|E|latitude|lat|N|north|nord)?/i,
+          label: 'long/lat WGS84',
+          epsgCode: 'EPSG:4326'
+        },
+        'EPSG:4326:DMS': {
+          regex:
+          /([NSEW])?(-)?(\d+(?:\.\d+)?)[°º:d\s]?\s?(?:(\d+(?:\.\d+)?)['’‘′:]\s?(?:(\d{1,2}(?:\.\d+)?)(?:"|″|’’|'')?)?)?\s?([NSEW])?/i,
+          label: 'long/lat WGS84 DMS',
+          epsgCode: 'EPSG:4326'
+        }
+      };
+      var northArray = ['LATITUDE', 'LAT', 'N', 'NORTH', 'NORD'];
+      var eastArray = ['LONGITUDE', 'LONG', 'LON', 'E', 'EAST', 'EST'];
+      for (var epsgKey in re) {
+        /**
+         * @type {Array.<string | undefined>}
+         */
+        var m = re[epsgKey].regex.exec(searchString);
+
+        if (goog.isDefAndNotNull(m)) {
+          var epsgCode = re[epsgKey].epsgCode;
+          var isDms = false;
+          /**
+           * @type {number | undefined}
+           */
+          var easting = undefined;
+          /**
+           * @type {number | undefined}
+           */
+          var northing = undefined;
+          if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
+            if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
+              if (goog.array.contains(northArray, m[2].toUpperCase()) &&
+              goog.array.contains(eastArray, m[4].toUpperCase())) {
+                easting = parseFloat(m[3].replace(',', '.'));
+                northing = parseFloat(m[1].replace(',', '.'));
+              } else if (goog.array.contains(northArray, m[4].toUpperCase()) &&
+              goog.array.contains(eastArray, m[2].toUpperCase())) {
+                easting = parseFloat(m[1].replace(',', '.'));
+                northing = parseFloat(m[3].replace(',', '.'));
+              }
+            } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+              easting = parseFloat(m[1].replace(',', '.'));
+              northing = parseFloat(m[3].replace(',', '.'));
+            }
+          } else if (epsgKey === 'EPSG:4326:DMS') {
+            // Inspired by https://github.com/gmaclennan/parse-dms/blob/master/index.js
+            var m1, m2, decDeg1, decDeg2, dmsString2;
+            m1 = m;
+            if (m1[1]) {
+              m1[6] = undefined;
+              dmsString2 = searchString.substr(m1[0].length - 1).trim();
+            } else {
+              dmsString2 = searchString.substr(m1[0].length).trim();
+            }
+            decDeg1 = this.decDegFromMatch_(m1);
+            if (decDeg1 !== undefined) {
+              m2 = re[epsgKey].regex.exec(dmsString2);
+              decDeg2 = m2 ? this.decDegFromMatch_(m2) : undefined;
+              if (decDeg2 !== undefined) {
+                if (typeof decDeg1.latLon === 'undefined') {
+                  if (!isNaN(decDeg1.decDeg) && !isNaN(decDeg2.decDeg)) {
+                    // If no hemisphere letter but we have two coordinates,
+                    // infer that the first is lat, the second lon
+                    decDeg1.latLon = 'lat';
+                  }
+                }
+                if (decDeg1.latLon === 'lat') {
+                  northing = decDeg1.decDeg;
+                  easting = decDeg2.decDeg;
+                } else {
+                  easting = decDeg1.decDeg;
+                  northing = decDeg2.decDeg;
+                }
+                isDms = true;
+              }
+            }
+          }
+          if (easting !== undefined && northing !== undefined) {
+            var mapEpsgCode =
+            this['map'].getView().getProjection().getCode();
+            var point = /** @type {ol.geom.Point} */
+            (new ol.geom.Point([easting, northing])
+           .transform(epsgCode, mapEpsgCode));
+            var flippedPoint =  /** @type {ol.geom.Point} */
+            (new ol.geom.Point([northing, easting])
+           .transform(epsgCode, mapEpsgCode));
+            var feature = /** @type {ol.Feature} */ (null);
+            if (ol.extent.containsCoordinate(
+            this.maxExtent_, point.getCoordinates())) {
+              feature = new ol.Feature(point);
+            } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+            this.maxExtent_, flippedPoint.getCoordinates())) {
+              feature = new ol.Feature(flippedPoint);
+            }
+            if (!goog.isNull(feature)) {
+              var resultPoint =
+                /** @type {ol.geom.Point} */ (feature.getGeometry());
+              var resultString = this.coordinateString_(
+              resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
+              feature.set('label', resultString);
+              feature.set('epsgLabel', re[epsgKey].label);
+              results.push(feature);
+            }
+          }
+        }
+      }
+      return results; //return empty array if no match
+    };
+
+/**
+ * @param {Array.<string | undefined>} m The matched result.
+ * @return {Object | undefined} Returns the coordinate.
+ * @private
+ */
+app.RoutingController.prototype.decDegFromMatch_ = function(m) {
+  var signIndex = {
+    '-': -1,
+    'N': 1,
+    'S': -1,
+    'E': 1,
+    'W': -1
+  };
+
+  var latLonIndex = {
+    'N': 'lat',
+    'S': 'lat',
+    'E': 'lon',
+    'W': 'lon'
+  };
+
+  var sign;
+  sign = signIndex[m[2]] || signIndex[m[1]] || signIndex[m[6]] || 1;
+  if (m[3] === undefined) {
+    return undefined;
+  }
+
+  var degrees, minutes = 0, seconds = 0, latLon;
+  degrees = Number(m[3]);
+  if (m[4] !== undefined) {
+    minutes = Number(m[4]);
+  }
+  if (m[5] !== undefined) {
+    seconds = Number(m[5]);
+  }
+  latLon = latLonIndex[m[1]] || latLonIndex[m[6]];
+
+  return {
+    decDeg: sign * (degrees + minutes / 60 + seconds / 3600),
+    latLon: latLon
+  };
 };
 
 app.module.controller('AppRoutingController', app.RoutingController);
