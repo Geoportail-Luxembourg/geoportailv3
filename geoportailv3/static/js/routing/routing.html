@@ -30,7 +30,7 @@
                   <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length === 0" ng-click="ctrl.whereAmI(key)">
                     <div class="icon-Target"></div>
                   </div>
-                  <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length !== 0" ng-click="ctrl.whereAmI(key)">
+                  <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length !== 0">
                     <span class="fa fa-trash icon-Trash" ng-click="ctrl.appRouting.routes[key] = ''"></span>
                   </div>
                   <div class="tooltip routing-tooltip">{{ 'Insérez rapidement' | translate }} <span class="current-location" translate>votre position actuelle</span></div>
