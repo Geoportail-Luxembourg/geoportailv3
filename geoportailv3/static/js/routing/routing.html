@@ -27,7 +27,7 @@
                              ngeo-search-listeners="ctrl.listeners" ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ng-model="ctrl.appRouting.routes[key]">
                 </input>
                 <div class="tooltip-container">
-                  <div class="routing-icon">
+                  <div class="routing-icon" ng-click="ctrl.whereAmI(key)">
                     <div class="icon-Target"></div>
                   </div>
                   <div class="tooltip routing-tooltip">{{ 'Insérez rapidement' | translate }} <span class="current-location" translate>votre position actuelle</span></div>

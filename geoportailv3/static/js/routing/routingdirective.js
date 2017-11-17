@@ -351,6 +351,20 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     this.getRoute_, this);
   ol.events.listen(this.appRouting.features, ol.CollectionEventType.REMOVE,
     this.getRoute_, this);
+
+  /**
+   * @type {ol.Geolocation}
+   * @private
+   */
+  this.geolocation_ = new ol.Geolocation({
+    projection: this.map.getView().getProjection(),
+    trackingOptions: /** @type {GeolocationPositionOptions} */ ({
+      enableHighAccuracy: true,
+      maximumAge: 60000,
+      timeout: 7000
+    })
+  });
+
 };
 
 /**
@@ -359,7 +373,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
  * @private
  */
 app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
-  var feature = this.modyfyFeaturesCollection_.getArray()[0];
+  var feature = this.modyfyFeaturesCollection_.getArray()[0].clone();
   var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
 
   var label = this.coordinateString_(
@@ -371,6 +385,32 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
 };
 
 /**
+ * Modify the step feature.
+ * @param {number} step The step.
+ * @export
+ */
+app.RoutingController.prototype.whereAmI = function(step) {
+
+  ol.events.listenOnce(this.geolocation_,
+    ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+    /**
+     * @param {ol.Object.Event} e Object event.
+     */
+    function(e) {
+      var position = /** @type {ol.Coordinate} */
+          (this.geolocation_.getPosition());
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point(position)
+      });
+      var label = this.coordinateString_(
+              position, 'EPSG:3857', 'EPSG:4326', false, true);
+      feature.set('label', label);
+      this.appRouting.insertFeatureAt(feature, step);
+    }, this);
+
+};
+
+/**
  * Show or hide tooltip.
  * @param {ol.interaction.Select.Event} e The event.
  * @private
@@ -379,7 +419,6 @@ app.RoutingController.prototype.showHideTooltip_ = function(e) {
   this.highlightOverlay_.clear();
   var selectedFeatures = e.target.getFeatures();
   if (selectedFeatures.getLength() > 0) {
-    console.log('select feature');
     var feature = selectedFeatures.getArray()[0];
 
     var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
