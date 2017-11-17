@@ -520,6 +520,7 @@ app.RoutingController.prototype.clearRoute = function() {
   this.appRouting.routes = ['', ''];
   this.routesOrder = [0, 1];
   this.appRouting.features.clear();
+  this.appRouting.routeFeatures.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
   //this.getRoute_();
