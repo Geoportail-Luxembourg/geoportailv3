@@ -71,7 +71,7 @@ app.ElevationDirectiveController =
         if (this['active']) {
           this.getElevation_(e.coordinate).then(goog.bind(
              function(elevation) {
-               this['elevation'] = elevation;
+               this['elevation'] = elevation['formattedElevation'];
              }, this
              ));
         }
