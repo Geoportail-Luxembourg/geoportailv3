@@ -1773,9 +1773,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
           if (key != feature.getGeometryName() && properties[key]) {
             html += '<tr><th>';
             html += key;
-            html += '</th><td ';
-            html += 'title ="';
-            html += properties[key] + '">';
+            html += '</th><td>';
             html += properties[key] + '</td></tr>';
           }
         }
