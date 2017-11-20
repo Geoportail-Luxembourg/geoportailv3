@@ -6,7 +6,13 @@ vars:
     overview_map:
         show: false
         base_layer: 'basemap_2015_global'
-
+    lidar:
+      minx: 71500
+      miny: 98600
+      maxx: 81500
+      maxy: 108600
+      srs: 'EPSG:2169'
+      demo_url: ''
     #Theme 
     exclude_theme_layer_search:
     # database name
