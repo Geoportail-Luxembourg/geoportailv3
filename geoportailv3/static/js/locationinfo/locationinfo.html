@@ -24,6 +24,9 @@
         <tr>
           <th translate>Distance approximative</th> <td>{{ ctrl.distance }} <span translate> mètres</span></td>
         </tr>
+        <tr class="no-print" ng-if="ctrl.isInBoxOfLidar">
+          <td colspan="2"><a class="fid-link" href="{{ctrl.getLidarUrl()}}" target="_blank" translate>Lien vers la démo lidar</a></td>
+        </tr>
       </table>
     </div>
   </div>

@@ -8,6 +8,7 @@
     authtkt_cookie_name = settings.get('authtkt_cookie_name')
     overview_map_show = settings.get('overview_map')['show']
     overview_map_base_layer = settings.get('overview_map')['base_layer']
+    lidar = settings.get('lidar')
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
@@ -336,6 +337,10 @@
          appModule.constant('casipoUrl', "${request.route_url('casipo_url')}");
          appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
          appModule.constant('appAuthtktCookieName', "${authtkt_cookie_name}");
+         appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
+         appModule.constant('bboxSrsLidar', "${lidar['srs']}");
+         appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
+
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);
 % else:

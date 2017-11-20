@@ -68,6 +68,9 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {ngeo.Location} ngeoLocation ngeo location service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
+ * @param {ol.Extent} bboxLidar Bbox of lidar.
+ * @param {string} bboxSrsLidar Bbox srs of lidar.
+ * @param {string} lidarDemoUrl Url to the demo of lidar.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -75,7 +78,20 @@ app.LocationinfoController = function(
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
-        appGetLayerForCatalogNode) {
+        appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.lidarDemoUrl_ = lidarDemoUrl;
+
+  /**
+   * @type {ol.Extent}
+   * @private
+   */
+  this.lidarExtent_ = ol.proj.transformExtent(
+    bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
+
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
@@ -111,6 +127,12 @@ app.LocationinfoController = function(
    * @private
    */
   this.openInPointerDown_ = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.isInBoxOfLidar = false;
 
   /**
    * @type {ngeo.FeatureOverlay}
@@ -188,6 +210,12 @@ app.LocationinfoController = function(
   this['elevation'] = '';
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.rawElevation_ = 0;
+
+  /**
    * @type {string}
    */
   this['address'] = '';
@@ -244,6 +272,12 @@ app.LocationinfoController = function(
    * @private
    */
   this.stateManager_ = appStateManager;
+
+  /**
+   * @type {ol.Coordinate | undefined}
+   * @private
+   */
+  this.clickCoordinateLuref_ = undefined;
 
   /**
    * @type {Object<number, number>}
@@ -408,11 +442,21 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
       this.featureOverlay_.clear();
       this.featureOverlay_.addFeature(feature);
-      this.getElevation_(clickCoordinate).then(goog.bind(
-      function(elevation) {
-        this['elevation'] = elevation;
-      }, this
-      ));
+      this.clickCoordinateLuref_ = ol.proj.transform(
+        clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
+      this.getElevation_(clickCoordinate).then(
+        function(elevation) {
+          this['elevation'] = elevation['formattedElevation'];
+          this.rawElevation_ = elevation['rawElevation'];
+          if (this.lidarDemoUrl_ !== undefined &&
+              this.lidarDemoUrl_.length > 0 && ol.extent.intersects(
+                feature.getGeometry().getExtent(), this.lidarExtent_)) {
+            this.isInBoxOfLidar = true;
+          } else {
+            this.isInBoxOfLidar = false;
+          }
+        }.bind(this)
+      );
       this.getShorturl_(clickCoordinate).then(goog.bind(
       function(shorturl) {
         this['url'] = shorturl;
@@ -430,5 +474,20 @@ app.LocationinfoController.prototype.loadInfoPane_ =
         }
       }, this));
     };
+
+/**
+ * @return {string} The lidar url.
+ * @export
+ */
+app.LocationinfoController.prototype.getLidarUrl = function() {
+  if (this.lidarDemoUrl_ !== undefined && this.lidarDemoUrl_.length > 0 &&
+      this.isInBoxOfLidar) {
+    return this.lidarDemoUrl_ + '?COORD_X=' +
+      this.clickCoordinateLuref_[0] + '&COORD_Y=' +
+      this.clickCoordinateLuref_[1] + '&COORD_Z=' +
+      parseInt(this.rawElevation_ / 100, 0);
+  }
+  return '';
+};
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);
