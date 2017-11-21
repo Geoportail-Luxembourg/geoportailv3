@@ -473,8 +473,8 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       this.featureOverlay_.clear();
       this.featureOverlay_.addFeature(feature);
       this.clickCoordinateLuref_ = ol.proj.transform(
-        clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
-      this.getElevation_(clickCoordinate).then(
+        this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
+      this.getElevation_(this.clickCoordinate).then(
         function(elevation) {
           this['elevation'] = elevation['formattedElevation'];
           this.rawElevation_ = elevation['rawElevation'];
@@ -487,7 +487,7 @@ app.LocationinfoController.prototype.loadInfoPane_ =
           }
         }.bind(this)
       );
-      this.getShorturl_(clickCoordinate).then(goog.bind(
+      this.getShorturl_(this.clickCoordinate).then(goog.bind(
       function(shorturl) {
         this['url'] = shorturl;
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
