@@ -8,6 +8,8 @@ from geoportailv3.graphhopperrouter import GraphhopperRouter
 from pyramid.view import view_config
 from urllib2 import HTTPError
 from pyramid.httpexceptions import HTTPBadRequest
+from geoportailv3.portail import PortailSession
+from geoportailv3.portail import RoutingStats
 
 
 class RouterController(object):
@@ -66,6 +68,11 @@ class RouterController(object):
             else:
                 routing_success = False
                 r.errorMessages.append('An error occured')
+
+        routing_stats = RoutingStats()
+        routing_stats.transport_mode = transport_mode
+        PortailSession.add(routing_stats)
+        PortailSession.commit()
 
         if routing_success:
             json = {
