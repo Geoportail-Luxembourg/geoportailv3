@@ -38,6 +38,10 @@
 
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
+          <li ng-click="mainCtrl.toggleThemeSelector();">
+            <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
+          </li>
+
           <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
             <app-authentication app-authentication-lang="mainCtrl.lang"
@@ -63,11 +67,11 @@
             </ul>
           </li>
         </ul>
+        <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
         <app-search app-search-map="::mainCtrl.map"
                     app-search-language="mainCtrl.lang"
                     app-search-mobileactive="mainCtrl.mobileSearchActive"
                     app-search-routing-open="mainCtrl.routingOpen"></app-search>
-        <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
       </div>
     </header>
     <div class="routing-goto-route" ng-if="mainCtrl.hasRoutingResult">

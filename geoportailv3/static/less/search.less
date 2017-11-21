@@ -49,7 +49,7 @@ span.twitter-typeahead {
         z-index: 1000;
         display: none;
         float: left;
-		min-width: 329px;
+        min-width: 400px;
         padding: 5px 5px;
         margin: 2px 0 0;
         list-style: none;
@@ -66,25 +66,25 @@ span.twitter-typeahead {
     .tt-suggestion {
         display: block;
         clear: both;
-		border-bottom: 1px solid #8394A0;
-		padding: 10px 15px 10px 0;
-		font-size: 14px;
-		line-height: 20px;
-		margin: 0 0 0 0;
-		font-family: 'Open Sans', sans-serif;
-	> p.suggestion-text {
-	    float:left;
-	    font-weight: normal;
-	    color: #333333;
-		strong {
-		    font-weight: bold;
-		}
-	}
-	> button {
-	    float: right;
-	    background: none;
-	    border: 0;
-	}
+        border-bottom: 1px solid #8394A0;
+        padding: 10px 15px 10px 0;
+        font-size: 14px;
+        line-height: 20px;
+        margin: 0 0 0 0;
+        font-family: 'Open Sans', sans-serif;
+    > p.suggestion-text {
+        float:left;
+        font-weight: normal;
+        color: #333333;
+        strong {
+            font-weight: bold;
+        }
+    }
+    > button {
+        float: right;
+        background: none;
+        border: 0;
+    }
     }
     .tt-suggestion:hover,
     .tt-suggestion:focus {
@@ -96,7 +96,7 @@ span.twitter-typeahead {
             color: #ffffff;
             text-decoration: none;
             outline: 0;
-	    clear: both;
+        clear: both;
             background-color: #428bca;
     }
     .tt-suggestion.tt-cursor {
@@ -104,8 +104,8 @@ span.twitter-typeahead {
         background-color: #428bca;
     }
     .tt-dataset > .header {
-    	font-size: 16px;
-	font-weight: bold;
+        font-size: 16px;
+    font-weight: bold;
     }
   &:after {
     content: '\f002';
@@ -119,14 +119,21 @@ span.twitter-typeahead {
   }
 }
 .routing-route-container span.twitter-typeahead {
-	&:after {
-		content: none;
-	}
+    &:after {
+        content: none;
+    }
 }
+
 @media (min-width: @screen-sm-min) {
   header .navbar-form {
-    float: right;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
     padding-right: 15px;
+    span.twitter-typeahead,
+        .form-control {
+        width: 400px;
+      }
   }
 }
 
@@ -160,7 +167,7 @@ span.twitter-typeahead {
       }
 
       span.twitter-typeahead .tt-menu {
-	min-width: 100%;
+    min-width: 100%;
       }
     }
   }
