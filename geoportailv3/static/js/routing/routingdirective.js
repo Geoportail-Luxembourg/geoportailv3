@@ -373,6 +373,10 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
  * @private
  */
 app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
+  var lastIdx = this.appRouting.features.getLength() - 1;
+  var lastFeature = this.appRouting.features.removeAt(lastIdx);
+  var lastLabel = this.appRouting.routes[lastIdx];
+
   var feature = this.modyfyFeaturesCollection_.getArray()[0].clone();
   var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
 
@@ -380,8 +384,13 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
           geometry, 'EPSG:3857', 'EPSG:4326', false, true);
 
   feature.set('label', label);
-  this.addRoute(label);
-  this.appRouting.insertFeatureAt(feature, this.appRouting.routes.length);
+  this.appRouting.insertFeatureAt(feature, lastIdx + 1);
+  this.appRouting.routes[lastIdx] = label;
+  if (lastFeature !== undefined &&
+      lastFeature !== null) {
+    this.addRoute(lastLabel);
+    this.appRouting.insertFeatureAt(lastFeature, lastIdx + 2);
+  }
 };
 
 /**
