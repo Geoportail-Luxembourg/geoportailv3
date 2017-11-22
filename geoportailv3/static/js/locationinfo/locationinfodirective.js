@@ -444,7 +444,7 @@ app.LocationinfoController.prototype.addRoutePoint = function() {
   var routeNum = this.appRouting_.features.getLength();
   if (this.appRouting_.routes.length < routeNum) {
     this.appRouting_.routes.push ('');
-    this.appRouting_.routesOrder.push(this.appRouting_.routesOrder.length)
+    this.appRouting_.routesOrder.push(this.appRouting_.routesOrder.length);
     this.appRouting_.reorderRoute();
   }
   this.appRouting_.routes[routeNum] = /** @type {string} */ (feature.get('label'));
