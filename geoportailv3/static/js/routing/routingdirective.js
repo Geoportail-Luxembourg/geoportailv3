@@ -567,6 +567,21 @@ app.RoutingController.prototype.clearRoutes = function() {
 };
 
 /**
+ * Clear the field and remove computed route.
+ * @param {number} routeIdx The route number.
+ * @export
+ */
+app.RoutingController.prototype.clearRoute = function(routeIdx) {
+  this.appRouting.routes[routeIdx] = '';
+  var blankFeature = new ol.Feature();
+  blankFeature.set('__text', '' + (routeIdx + 1));
+  this.appRouting.features.setAt(routeIdx, blankFeature);
+  this.appRouting.routeFeatures.clear();
+  this.routeDesc = [];
+  this.source_.setAttributions(undefined);
+};
+
+/**
  * @return {number} The distance in meter.
  * @export
  */
