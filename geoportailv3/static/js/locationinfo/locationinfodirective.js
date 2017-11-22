@@ -447,6 +447,7 @@ app.LocationinfoController.prototype.addRoutePoint = function() {
   }
   this.appRouting_.routes[routeNum] = /** @type {string} */ (feature.get('label'));
   this.appRouting_.insertFeatureAt(feature, routeNum + 1);
+  this.appRouting_.getRoute();
   this['routingOpen'] = true;
 };
 

@@ -122,18 +122,6 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {number}
    * @private
    */
-  this.mode_ = 0;
-
-  /**
-   * @type {number}
-   * @private
-   */
-  this.criteria_ = 0;
-
-  /**
-   * @type {number}
-   * @private
-   */
   this.distance_ = 0;
 
   /**
@@ -230,7 +218,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
       var feature = /** @type {ol.Feature} */ (suggestion);
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
-      // this.getRoute_();
+      this.appRouting.getRoute();
     }.bind(this)
   });
 
@@ -257,16 +245,6 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     })
   });
 
-  /**
-   * @type {ol.style.Style}
-   * @private
-   */
-  this.roadStyle_ = new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: [255, 0, 0],
-      width: 5
-    })
-  });
   /**
    * The draw overlay
    * @type {ngeo.FeatureOverlay}
@@ -297,13 +275,6 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.tooltipOverlay_ = null;
 
   /**
-   * The collection containg each step feature.
-   * @type {ol.Collection}
-   * @private
-   */
-  this.stepFeaturesCollection_ = new ol.Collection();
-
-  /**
    * @type {ol.Collection}
    * @private
    */
@@ -319,14 +290,28 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     features: this.modyfyFeaturesCollection_,
     condition: ol.events.condition.click,
     filter: goog.bind(function(feature, layer) {
-      return this.stepFeaturesCollection_.getArray().indexOf(feature) != -1;
+      return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }, this)
   });
 
   this.map.addInteraction(this.selectInteraction_);
-
   this.selectInteraction_.setActive(false);
-  ol.events.listen(this.selectInteraction_, 'select',
+  /**
+   * We cannot use pointermove condition.
+   * @type {ol.interaction.Select}
+   * @private
+   */
+  this.selectInteractionPM_ = new ol.interaction.Select({
+    condition: ol.events.condition.pointerMove,
+    filter: goog.bind(function(feature, layer) {
+      return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
+    }, this)
+  });
+
+  this.map.addInteraction(this.selectInteractionPM_);
+
+  this.selectInteractionPM_.setActive(false);
+  ol.events.listen(this.selectInteractionPM_, 'select',
     this.showHideTooltip_, this);
 
   /**
@@ -347,10 +332,10 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
-  ol.events.listen(this.appRouting.features, ol.CollectionEventType.ADD,
-    this.getRoute_, this);
-  ol.events.listen(this.appRouting.features, ol.CollectionEventType.REMOVE,
-    this.getRoute_, this);
+  ol.events.listen(this.appRouting.routeFeatures, ol.CollectionEventType.ADD,
+    this.showRoute_, this);
+  ol.events.listen(this.appRouting.routeFeatures, ol.CollectionEventType.REMOVE,
+    this.removeRoute_, this);
 
   /**
    * @type {ol.Geolocation}
@@ -364,7 +349,15 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
       timeout: 7000
     })
   });
+  this.initRoutingService_();
+};
 
+/**
+ * Init the routing service_.
+ * @private
+ */
+app.RoutingController.prototype.initRoutingService_ = function() {
+  this.appRouting.map = this.map;
 };
 
 /**
@@ -391,6 +384,7 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
     this.addRoute(lastLabel);
     this.appRouting.insertFeatureAt(lastFeature, lastIdx + 2);
   }
+  this.appRouting.getRoute();
 };
 
 /**
@@ -417,6 +411,7 @@ app.RoutingController.prototype.whereAmI = function(step) {
       feature.set('label', label);
       this.appRouting.insertFeatureAt(feature, step + 1);
       this.appRouting.routes[step] = label;
+      this.appRouting.getRoute();
     }, this);
   this.geolocation_.setTracking(true);
 };
@@ -499,6 +494,7 @@ app.RoutingController.prototype.reorderRoute_ = function() {
   for (i = 0; i < this.routesOrder.length; i++) {
     this.routesOrder[i] = i;
   }
+  this.appRouting.getRoute();
 };
 
 /**
@@ -574,7 +570,6 @@ app.RoutingController.prototype.clearRoutes = function() {
   this.appRouting.routeFeatures.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
-  //this.getRoute_();
 };
 
 /**
@@ -590,6 +585,7 @@ app.RoutingController.prototype.clearRoute = function(routeIdx) {
   this.appRouting.routeFeatures.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
+  this.appRouting.getRoute();
 };
 
 /**
@@ -617,89 +613,65 @@ app.RoutingController.prototype.getElevation = function() {
 };
 
 /**
- * Get the route.
+ * Remove the route information.
  * @private
  */
-app.RoutingController.prototype.getRoute_ = function() {
-  this.appRouting.routeFeatures.clear();
-  this.stepFeaturesCollection_.clear();
+app.RoutingController.prototype.removeRoute_ = function() {
+  this.appRouting.stepFeatures.clear();
   this.selectInteraction_.setActive(false);
+  this.selectInteractionPM_.setActive(false);
   this['hasResult'] = false;
   this.source_.setAttributions(undefined);
-  if (this.appRouting.features.getLength() >= 2) {
-    var waypoints = [];
-    this.appRouting.features.forEach(function(feature) {
-      var geom = feature.getGeometry();
-      if (geom instanceof ol.geom.Point) {
-        var lonlat = /** @type {ol.Coordinate} */
-            (ol.proj.transform(geom.getFirstCoordinate(),
-            'EPSG:3857', 'EPSG:4326'));
-        waypoints.push(lonlat[1] + ',' + lonlat[0]);
-      }
-    }.bind(this));
-    if (waypoints.length < 2) {
-      return;
-    }
-    this.appRouting.getRoute(waypoints.join(','),
-        this.getCriteria(), this.getMode()).then(function(features) {
-
-          if (features !== null) {
-            var encOpt = /** @type {olx.format.ReadOptions} */ ({
-              dataProjection: 'EPSG:4326',
-              featureProjection: this.map.getView().getProjection()
-            });
-            var jsonFeatures = (new ol.format.GeoJSON()).
-                readFeatures(features, encOpt);
-
-            if (jsonFeatures !== null && jsonFeatures !== undefined) {
-
-              this.appRouting.routeFeatures.clear();
-              var curView = this.map.getView();
-              // Only one path is returned
-              jsonFeatures.forEach(function(feature) {
-                feature.setStyle(this.roadStyle_);
-                this.appRouting.routeFeatures.push(feature);
-                this.source_.setAttributions(feature.get('attribution'));
-                this.getProfile_(feature.getGeometry()).then(function(profile) {
-                  this.profileData = profile;
-                  this.elevation_ = this.profileData[this.profileData.length - 1]['cumulativeElevation'];
-                }.bind(this));
-                var viewSize = /** {ol.Size} **/ (this.map.getSize());
-                this.map.getView().fit(feature.getGeometry(), {
-                  size: viewSize
-                });
-
-                this.routeDesc = feature.get('desc');
-                var cumulativeDistance = 0;
-                var cumulativeTime = 0;
-                this.routeDesc.forEach(function(description) {
-                  var coordinate = [description.lon, description.lat];
-                  var geometry = /** @type {ol.Coordinate} */
-                  (ol.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
-                  var stepFeature = new ol.Feature({
-                    geometry: new ol.geom.Point(geometry)
-                  });
-                  cumulativeDistance += description.distance;
-                  cumulativeTime += description.time;
-                  description['cumulativeDistance'] = cumulativeDistance;
-                  description['cumulativeTime'] = cumulativeTime;
-                  stepFeature.setStyle(this.stepStyle_);
-                  stepFeature.set('__text', description.description);
-                  this.appRouting.routeFeatures.push(stepFeature);
-                  this.stepFeaturesCollection_.push(stepFeature);
-                }, this);
-                this.selectInteraction_.setActive(true);
-                this.distance_ = feature.get('dist');
-                this.time_ = feature.get('time');
-                this['hasResult'] = true;
-              }.bind(this));
-            }
-            return jsonFeatures;
-          }
-        }.bind(this));
-  }
 };
 
+/**
+ * @private
+ */
+app.RoutingController.prototype.showRoute_ = function() {
+  var routeArray = this.appRouting.routeFeatures.getArray();
+  if (routeArray.length === 0) {
+    this.removeRoute_();
+    return;
+  }
+  var feature = routeArray[0];
+
+  var curView = this.map.getView();
+  // Only one path is returned
+
+  this.source_.setAttributions(/** @type {string} */ (feature.get('attribution')));
+  this.getProfile_(/** @type {ol.geom.LineString} */ (feature.getGeometry())).then(function(profile) {
+    this.profileData = profile;
+    this.elevation_ = this.profileData[this.profileData.length - 1]['cumulativeElevation'];
+  }.bind(this));
+  var viewSize = /** {ol.Size} **/ (this.map.getSize());
+  curView.fit(/** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry()), {
+    size: viewSize
+  });
+
+  this.routeDesc = /** @type {Array} */ (feature.get('desc'));
+  var cumulativeDistance = 0;
+  var cumulativeTime = 0;
+  this.routeDesc.forEach(function(description) {
+    var coordinate = [description.lon, description.lat];
+    var geometry = /** @type {ol.Coordinate} */
+    (ol.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
+    var stepFeature = new ol.Feature({
+      geometry: new ol.geom.Point(geometry)
+    });
+    cumulativeDistance += description.distance;
+    cumulativeTime += description.time;
+    description['cumulativeDistance'] = cumulativeDistance;
+    description['cumulativeTime'] = cumulativeTime;
+    stepFeature.setStyle(this.stepStyle_);
+    stepFeature.set('__text', description.description);
+    this.appRouting.stepFeatures.push(stepFeature);
+  }, this);
+  this.distance_ = /** @type {number} */ (feature.get('dist'));
+  this.time_ = /** @type {number} */ (feature.get('time'));
+  this.selectInteraction_.setActive(true);
+  this.selectInteractionPM_.setActive(true);
+  this['hasResult'] = true;
+};
 
 /**
  * @param {number} lon The longitude.
@@ -774,7 +746,7 @@ app.RoutingController.prototype.getIconDirectionClass = function(direction) {
  * @export
  */
 app.RoutingController.prototype.getCriteria = function() {
-  return this.criteria_;
+  return this.appRouting.criteria;
 };
 
 
@@ -784,8 +756,8 @@ app.RoutingController.prototype.getCriteria = function() {
  * @export
  */
 app.RoutingController.prototype.setCriteria = function(criteria) {
-  this.criteria_ = criteria;
-  this.getRoute_();
+  this.appRouting.criteria = criteria;
+  this.appRouting.getRoute();
 };
 
 
@@ -797,7 +769,7 @@ app.RoutingController.prototype.setCriteria = function(criteria) {
  * @export
  */
 app.RoutingController.prototype.getMode = function() {
-  return this.mode_;
+  return this.appRouting.transportMode;
 };
 
 /**
@@ -806,8 +778,8 @@ app.RoutingController.prototype.getMode = function() {
  * @export
  */
 app.RoutingController.prototype.setMode = function(mode) {
-  this.mode_ = mode;
-  this.getRoute_();
+  this.appRouting.transportMode = mode;
+  this.appRouting.getRoute();
 };
 
 /**
@@ -827,7 +799,7 @@ app.RoutingController.prototype.exchangeRoutes = function() {
   this.appRouting.routes[this.appRouting.routes.length - 1] = this.appRouting.routes[0];
   this.appRouting.routes[0] = temp;
   this.setPositionText_();
-  // this.getRoute_();
+  this.appRouting.getRoute();
 };
 
 /**
