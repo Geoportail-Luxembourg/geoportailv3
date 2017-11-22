@@ -30,6 +30,12 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   });
 
   /**
+   * @type {Array<number>}
+   * @export
+   */
+  this.routesOrder = [0, 1];
+
+  /**
    * @type {ol.Map}
    */
   this.map;
@@ -116,6 +122,16 @@ app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
         idx++;
       }, this);
     }
+  }
+};
+
+/**
+ * Reorder the route.
+ */
+app.Routing.prototype.reorderRoute = function() {
+  var i = 0;
+  for (i = 0; i < this.routesOrder.length; i++) {
+    this.routesOrder[i] = i;
   }
 };
 

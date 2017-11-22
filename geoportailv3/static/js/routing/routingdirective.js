@@ -73,12 +73,6 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.coordinateString_ = appCoordinateString;
 
   /**
-   * @type {Array<number>}
-   * @export
-   */
-  this.routesOrder = [0, 1];
-
-  /**
    * @type {app.Export}
    * @private
    */
@@ -468,9 +462,9 @@ app.RoutingController.prototype.afterReorder = function(element, array) {
   var fromIdx = 0;
   var toIdx = 0;
   var i = 0;
-  for (i = 0; i < this.routesOrder.length; i++) {
-    if (this.routesOrder[i] !== i) {
-      if (this.routesOrder[i] > i) {
+  for (i = 0; i < this.appRouting.routesOrder.length; i++) {
+    if (this.appRouting.routesOrder[i] !== i) {
+      if (this.appRouting.routesOrder[i] > i) {
         toIdx = i;
       } else {
         fromIdx = i;
@@ -482,18 +476,7 @@ app.RoutingController.prototype.afterReorder = function(element, array) {
   this.appRouting.routes.splice(fromIdx, 1);
   this.appRouting.routes.splice(toIdx, 0, elementToMove);
   this.appRouting.moveFeaturePosition(fromIdx, toIdx);
-  this.reorderRoute_();
-};
-
-/**
- * Reorder the route.
- * @private
- */
-app.RoutingController.prototype.reorderRoute_ = function() {
-  var i = 0;
-  for (i = 0; i < this.routesOrder.length; i++) {
-    this.routesOrder[i] = i;
-  }
+  this.appRouting.reorderRoute();
   this.appRouting.getRoute();
 };
 
@@ -565,9 +548,10 @@ app.RoutingController.prototype.isRoute = function() {
  */
 app.RoutingController.prototype.clearRoutes = function() {
   this.appRouting.routes = ['', ''];
-  this.routesOrder = [0, 1];
+  this.appRouting.routesOrder = [0, 1];
   this.appRouting.features.clear();
   this.appRouting.routeFeatures.clear();
+  this.modyfyFeaturesCollection_.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
 };
@@ -578,11 +562,22 @@ app.RoutingController.prototype.clearRoutes = function() {
  * @export
  */
 app.RoutingController.prototype.clearRoute = function(routeIdx) {
-  this.appRouting.routes[routeIdx] = '';
-  var blankFeature = new ol.Feature();
-  blankFeature.set('__text', '' + (routeIdx + 1));
-  this.appRouting.features.setAt(routeIdx, blankFeature);
+
+  if (routeIdx > 0 && routeIdx < this.appRouting.features.getArray().length - 1) {
+    this.appRouting.features.removeAt(routeIdx);
+    this.appRouting.routes.splice(routeIdx, 1);
+    this.appRouting.routesOrder.splice(routeIdx, 1);
+    this.appRouting.reorderRoute();
+  } else {
+    this.appRouting.routes[routeIdx] = '';
+    var blankFeature = new ol.Feature();
+    blankFeature.set('__text', '' + (routeIdx + 1));
+    this.appRouting.features.setAt(routeIdx, blankFeature);
+  }
+  
   this.appRouting.routeFeatures.clear();
+  this.appRouting.stepFeatures.clear();
+  this.modyfyFeaturesCollection_.clear();
   this.routeDesc = [];
   this.source_.setAttributions(undefined);
   this.appRouting.getRoute();
@@ -831,7 +826,7 @@ app.RoutingController.prototype.getRoutes = function() {
  */
 app.RoutingController.prototype.addRoute = function(routeName) {
   this.appRouting.routes.push((routeName === undefined) ? '' : routeName);
-  this.routesOrder.push(this.routesOrder.length);
+  this.appRouting.routesOrder.push(this.appRouting.routesOrder.length);
 };
 
 /**
