@@ -391,12 +391,13 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
  */
 app.RoutingController.prototype.whereAmI = function(step) {
 
-  ol.events.listenOnce(this.geolocation_,
+  ol.events.listen(this.geolocation_,
     ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
     /**
      * @param {ol.Object.Event} e Object event.
      */
     function(e) {
+      this.geolocation_.setTracking(false);
       var position = /** @type {ol.Coordinate} */
           (this.geolocation_.getPosition());
       var feature = new ol.Feature({
@@ -405,9 +406,10 @@ app.RoutingController.prototype.whereAmI = function(step) {
       var label = this.coordinateString_(
               position, 'EPSG:3857', 'EPSG:4326', false, true);
       feature.set('label', label);
-      this.appRouting.insertFeatureAt(feature, step);
+      this.appRouting.insertFeatureAt(feature, step + 1);
+      this.appRouting.routes[step] = label;
     }, this);
-
+  this.geolocation_.setTracking(true);
 };
 
 /**
