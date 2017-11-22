@@ -574,7 +574,6 @@ app.RoutingController.prototype.clearRoute = function(routeIdx) {
     blankFeature.set('__text', '' + (routeIdx + 1));
     this.appRouting.features.setAt(routeIdx, blankFeature);
   }
-  
   this.appRouting.routeFeatures.clear();
   this.appRouting.stepFeatures.clear();
   this.modyfyFeaturesCollection_.clear();
