@@ -19,6 +19,32 @@ goog.require('ol.proj');
 app.Routing = function($http, routingServiceUrl, gettextCatalog,
     ngeoFeatureOverlayMgr) {
   /**
+   * @type {ol.style.Style}
+   * @private
+   */
+  this.roadStyle_ = new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: [255, 0, 0],
+      width: 5
+    })
+  });
+
+  /**
+   * @type {ol.Map}
+   */
+  this.map;
+
+  /**
+   * @type {number}
+   */
+  this.criteria = 0;
+
+  /**
+   * @type {number}
+   */
+  this.transportMode = 0;
+
+  /**
    * @type {angular.$http}
    * @private
    */
@@ -39,11 +65,23 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
    * @type {ngeo.FeatureOverlay}
    */
   this.routeOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+
   /**
    * @type {ol.Collection<ol.Feature>}
    */
   this.routeFeatures = new ol.Collection();
   this.routeOverlay.setFeatures(this.routeFeatures);
+
+  /**
+   * @type {ngeo.FeatureOverlay}
+   */
+  this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+
+  /**
+   * @type {ol.Collection<ol.Feature>}
+   */
+  this.stepFeatures = new ol.Collection();
+  this.stepsOverlay.setFeatures(this.stepFeatures);
 
   /**
    * @type {ngeo.FeatureOverlay}
@@ -141,30 +179,57 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
 };
 
 /**
- * @param {string} waypoints The waypoints.
- * @param {number} criteria The critria 0: fastest, 1:shortest.
- * @param {number} transportMode The transport mode.
- * @return {!angular.$q.Promise} Promise providing the reverse geocode.
+ * Get the route
  */
-app.Routing.prototype.getRoute = function(waypoints, criteria, transportMode) {
-  var currentLanguage = this.gettextCatalog.currentLanguage;
-
-  return this.$http_.get(this.routingServiceUrl_, {
-    params: {
-      'criteria': criteria,
-      'lang': currentLanguage,
-      'transportMode': transportMode,
-      'waypoints': waypoints,
-      'avoid': ''
+app.Routing.prototype.getRoute = function() {
+  this.routeFeatures.clear();
+  this.stepFeatures.clear();
+  if (this.features.getLength() >= 2) {
+    var waypoints = [];
+    this.features.forEach(function(feature) {
+      var geom = feature.getGeometry();
+      if (geom instanceof ol.geom.Point) {
+        var lonlat = /** @type {ol.Coordinate} */
+            (ol.proj.transform(geom.getFirstCoordinate(),
+            'EPSG:3857', 'EPSG:4326'));
+        waypoints.push(lonlat[1] + ',' + lonlat[0]);
+      }
+    }.bind(this));
+    if (waypoints.length < 2) {
+      return;
     }
-  }).then(
-      /**
-         * @param {angular.$http.Response} resp Ajax response.
-         * @return {Object} The response
-         */
-          function(resp) {
-            return resp['data'];
-          });
+
+    var currentLanguage = this.gettextCatalog.currentLanguage;
+
+    this.$http_.get(this.routingServiceUrl_, {
+      params: {
+        'criteria': this.criteria,
+        'lang': currentLanguage,
+        'transportMode': this.transportMode,
+        'waypoints': waypoints.join(','),
+        'avoid': ''
+      }
+    }).then(function(resp) {
+      var features = resp['data'];
+      if (features !== null) {
+        var curView = this.map.getView();
+        var encOpt = /** @type {olx.format.ReadOptions} */ ({
+          dataProjection: 'EPSG:4326',
+          featureProjection: curView.getProjection()
+        });
+        var jsonFeatures = (new ol.format.GeoJSON()).
+            readFeatures(features, encOpt);
+        if (jsonFeatures !== null && jsonFeatures !== undefined) {
+          this.routeFeatures.clear();
+          // Only one path is returned
+          jsonFeatures.forEach(function(feature) {
+            feature.setStyle(this.roadStyle_);
+            this.routeFeatures.push(feature);
+          }.bind(this));
+        }
+      }
+    }.bind(this));
+  }
 };
 
 
