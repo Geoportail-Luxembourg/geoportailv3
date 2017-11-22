@@ -195,7 +195,9 @@
             ✕
           </button>
           <div class="tab-content">
-            <app-routing app-routing-map="::mainCtrl.map" app-routing-has-result="mainCtrl.hasRoutingResult"></app-routing>
+            <app-routing app-routing-map="::mainCtrl.map"
+              app-routing-has-result="mainCtrl.hasRoutingResult"
+              app-routing-show-redirect="mainCtrl.showRedirect"></app-routing>
             <div class="routing-goto-plan" ng-if="mainCtrl.hasRoutingResult">
               <button class="routing-rounded-button"  ng-click="mainCtrl.closeSidebar()" translate>Voir le plan</button>
             </div>

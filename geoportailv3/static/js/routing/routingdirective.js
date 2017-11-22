@@ -25,7 +25,8 @@ app.routingDirective = function(appRoutingTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appRoutingMap',
-      'hasResult': '=appRoutingHasResult'
+      'hasResult': '=appRoutingHasResult',
+      'showRedirect': '=appRoutingShowRedirect'
     },
     controller: 'AppRoutingController',
     controllerAs: 'ctrl',
@@ -52,13 +53,27 @@ app.module.directive('appRouting', app.routingDirective);
  * @param {app.CoordinateString} appCoordinateString The coordinate to string
  * service.
  * @param {Array.<number>} maxExtent Constraining extent.
+ * @param {angular.$window} $window Window.
  * @constructor
  * @ngInject
  * @export
  */
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
-    ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent) {
+    ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
+    $window) {
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.scope_ = $scope;
+
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.window_ = $window;
+
   /**
    * @type {ol.Extent}
    * @private
@@ -164,7 +179,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     },
     templates: /** @type {TypeaheadTemplates} */ ({
       suggestion: goog.bind(function(feature) {
-        var scope = $scope.$new(true);
+        var scope = this.scope_.$new(true);
         scope['object'] = feature;
         scope['click'] = function(event) {
           event.stopPropagation();
@@ -387,27 +402,30 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
  * @export
  */
 app.RoutingController.prototype.whereAmI = function(step) {
-
-  ol.events.listen(this.geolocation_,
-    ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
-    /**
-     * @param {ol.Object.Event} e Object event.
-     */
-    function(e) {
-      this.geolocation_.setTracking(false);
-      var position = /** @type {ol.Coordinate} */
-          (this.geolocation_.getPosition());
-      var feature = new ol.Feature({
-        geometry: new ol.geom.Point(position)
-      });
-      var label = this.coordinateString_(
-              position, 'EPSG:3857', 'EPSG:4326', false, true);
-      feature.set('label', label);
-      this.appRouting.insertFeatureAt(feature, step + 1);
-      this.appRouting.routes[step] = label;
-      this.appRouting.getRoute();
-    }, this);
-  this.geolocation_.setTracking(true);
+  if (this.window_.location.protocol !== 'https:') {
+    this['showRedirect'] = true;
+  } else {
+    ol.events.listen(this.geolocation_,
+      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+      /**
+       * @param {ol.Object.Event} e Object event.
+       */
+      function(e) {
+        this.geolocation_.setTracking(false);
+        var position = /** @type {ol.Coordinate} */
+            (this.geolocation_.getPosition());
+        var feature = new ol.Feature({
+          geometry: new ol.geom.Point(position)
+        });
+        var label = this.coordinateString_(
+                position, 'EPSG:3857', 'EPSG:4326', false, true);
+        feature.set('label', label);
+        this.appRouting.insertFeatureAt(feature, step + 1);
+        this.appRouting.routes[step] = label;
+        this.appRouting.getRoute();
+      }, this);
+    this.geolocation_.setTracking(true);
+  }
 };
 
 /**
