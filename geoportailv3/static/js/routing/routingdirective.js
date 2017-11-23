@@ -232,6 +232,9 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
     select: function(event, suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
+      var geometry = feature.getGeometry();
+      feature.setGeometry(new ol.geom.Point(ol.extent.getCenter(
+        geometry.getExtent())));
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
       this.appRouting.getRoute();
@@ -548,7 +551,7 @@ app.RoutingController.prototype.createAndInitPOIBloodhound_ =
           prepare: goog.bind(function(query, settings) {
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
-                '&limit=8&layer=Adresse';
+                '&limit=8';
             return settings;
           }, this),
           rateLimitWait: 50,
