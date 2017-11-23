@@ -116,11 +116,6 @@ app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
     var feature = this.features.removeAt(fromPosition);
     if (feature !== undefined) {
       this.features.insertAt(toPosition, feature);
-      var idx = 1;
-      this.features.forEach(function(curFeature) {
-        curFeature.set('__text', '' + idx);
-        idx++;
-      }, this);
     }
   }
 };
@@ -133,6 +128,13 @@ app.Routing.prototype.reorderRoute = function() {
   for (i = 0; i < this.routesOrder.length; i++) {
     this.routesOrder[i] = i;
   }
+  var idx = 1;
+  this.features.forEach(function(curFeature) {
+    if (curFeature.getGeometry() !== undefined) {
+      curFeature.set('__text', '' + idx);
+      idx++;
+    }
+  }, this);
 };
 
 /**
