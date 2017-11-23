@@ -194,6 +194,7 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
           <div class="tab-content">
             <app-routing app-routing-map="::mainCtrl.map"
               app-routing-has-result="mainCtrl.hasRoutingResult"
