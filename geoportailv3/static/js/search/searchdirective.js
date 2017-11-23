@@ -447,7 +447,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         var html = '<p>' + feature.get('label') +
             ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span> <button class="standalone-routing-icon" ng-click="addRoutePoint(feature, $event)"></button></p>';
+            ) + ')</span> <button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></p>';
 
         return $compile(html)(scope);
       }, this)
