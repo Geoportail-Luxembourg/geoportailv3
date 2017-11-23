@@ -54,6 +54,7 @@ app.module.directive('appRouting', app.routingDirective);
  * service.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {angular.$window} $window Window.
+ * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @constructor
  * @ngInject
  * @export
@@ -61,7 +62,13 @@ app.module.directive('appRouting', app.routingDirective);
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
-    $window) {
+    $window, appGeocoding) {
+  /**
+   * @type {app.Geocoding}
+   * @private
+   */
+  this.geocode_ = appGeocoding;
+
   /**
    * @type {angular.Scope}
    * @private
@@ -381,13 +388,23 @@ app.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
 
   var feature = this.modyfyFeaturesCollection_.getArray()[0].clone();
   var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
+  this.geocode_.reverseGeocode(geometry).then(function(resp) {
+    if (resp['count'] > 0) {
+      var address = resp['results'][0];
+      var formattedAddress = address['number'] + ',' + address['street'] + ',' +
+      address['postal_code'] + ' ' + address['locality'];
+      var label = formattedAddress;
+      if (!(label.length > 0 && Math.round(address['distance']) <= 100)) {
+        label = this.coordinateString_(
+        geometry, 'EPSG:3857', 'EPSG:2169', false, true);
+      }
+      feature.set('label', label);
+      this.appRouting.routes[lastIdx] = label;
+    }
+  }.bind(this));
 
-  var label = this.coordinateString_(
-          geometry, 'EPSG:3857', 'EPSG:4326', false, true);
-
-  feature.set('label', label);
   this.appRouting.insertFeatureAt(feature, lastIdx + 1);
-  this.appRouting.routes[lastIdx] = label;
+
   if (lastFeature !== undefined &&
       lastFeature !== null) {
     this.addRoute(lastLabel);

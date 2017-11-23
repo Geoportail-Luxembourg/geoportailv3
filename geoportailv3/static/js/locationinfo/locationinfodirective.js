@@ -440,7 +440,11 @@ app.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
 app.LocationinfoController.prototype.addRoutePoint = function() {
   var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
-  feature.set('label', this['location'][this.projections_['EPSG:2169']]);
+  if (this['address'].length > 0 &&  this['distance'] <= 100) {
+    feature.set('label', this['address']);
+  } else {
+    feature.set('label', this['location'][this.projections_['EPSG:2169']]);
+  }
   var routeNum = this.appRouting_.features.getLength();
   if (this.appRouting_.routes.length < routeNum) {
     this.appRouting_.routes.push ('');
