@@ -195,6 +195,31 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
 };
 
 /**
+ * Add a new routing step at the best place.
+ * @param {ol.Feature} feature The Feature.
+ */
+app.Routing.prototype.addRoutePoint = function(feature) {
+  var routeNum = -1;
+  var i = 0;
+  for (i = 0; i < this.routes.length; i++) {
+    if (this.routes[i].length === 0) {
+      routeNum = i;
+      break;
+    }
+  }
+  if (routeNum === -1) {
+    routeNum = this.routes.length;
+    this.routes.push ('');
+    this.routesOrder.push(this.routes.length);
+    this.reorderRoute();
+  }
+
+  this.routes[routeNum] = /** @type {string} */ (feature.get('label'));
+  this.insertFeatureAt(feature, routeNum + 1);
+  this.getRoute();
+};
+
+/**
  * Get the route
  */
 app.Routing.prototype.getRoute = function() {
