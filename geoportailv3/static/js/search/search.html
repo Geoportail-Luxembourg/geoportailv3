@@ -8,4 +8,9 @@
             <span class="clear-button" ng-click="click($event)">&#10005;</span>
         </input>
     </div>
+    <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group">
+        <button ng-click="ctrl.addLastSuggestedFeature();" class="create-itinerary">
+          <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
+        </button>
+    </div>
 </form>

@@ -96,6 +96,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
                 var ctrl = /** @type {app.SearchDirectiveController} */
                     (scope['ctrl']);
                 ctrl.featureOverlay_.clear();
+                ctrl.lastSelectedSuggestion_ = null;
                 $(this).find('input').focus();
               }, element, scope));
         }
@@ -234,6 +235,12 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.lastSelectedSuggestion_ = null;
 
   /**
    * @type {ol.Map}
@@ -882,6 +889,7 @@ app.SearchDirectiveController.selected_ =
       }
       if (dataset === 'pois' || dataset === 'coordinates') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
+        this.lastSelectedSuggestion_ = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
         map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
           size: /** @type {ol.Size} */ (map.getSize()),
@@ -942,6 +950,22 @@ app.SearchDirectiveController.prototype.addRoutePoint = function(suggestion) {
   this.appRouting_.insertFeatureAt(feature, routeNum + 1);
   this.appRouting_.getRoute();
   this['routingOpen'] = true;
+};
+
+/**
+ * @return {boolean} true if a featuer is selected.
+ * @export
+ */
+app.SearchDirectiveController.prototype.isSearchFeature = function() {
+  return (this.lastSelectedSuggestion_ !== null);
+};
+
+/**
+ * Add to the routing the last suggested feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addLastSuggestedFeature = function() {
+  this.addRoutePoint(this.lastSelectedSuggestion_);
 };
 
 app.module.controller('AppSearchController',
