@@ -81,7 +81,6 @@ class MapquestRouter:
         for type in self.avoid:
             request_url = request_url + "&avoids=%s"\
                 % (urlquote(self.__lu_avoid(type)))
-
         res = json_loads(urllib2.urlopen(request_url).read())
         return res
 
