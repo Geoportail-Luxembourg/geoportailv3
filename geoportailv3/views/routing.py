@@ -110,5 +110,5 @@ class RouterController(object):
         router.transport_mode = transport_mode
         router.criteria = criteria
         router.avoid = avoid
-        router.prefer_bike_road = prefer_bike_road
-        router.bike_avoid_hills = bike_avoid_hills
+        router.preferBikeRoad = prefer_bike_road
+        router.bikeAvoidHills = bike_avoid_hills
