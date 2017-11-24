@@ -444,10 +444,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
           event.stopPropagation();
         }.bind(this);
 
-        var html = '<p>' + feature.get('label') +
+        var html = '<p><span class="search-result-container"><span class="search-result-label">' + feature.get('label') +
             ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span> <button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></p>';
+            ) + ')</span></span><span class="search-result-routing"><button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></span></span></p>';
 
         return $compile(html)(scope);
       }, this)
