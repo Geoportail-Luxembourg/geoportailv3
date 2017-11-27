@@ -18,6 +18,7 @@ goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
+goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
@@ -69,6 +70,7 @@ goog.require('ol.proj');
  * @param {angular.$window} $window Window.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
+ * @param {app.Routing} appRouting The routing service.
  * @constructor
  * @export
  * @ngInject
@@ -80,7 +82,13 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale) {
+    appSelectedFeatures, $locale, appRouting) {
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
+
   /**
    * @type {angular.$locale}
    * @private
@@ -331,7 +339,6 @@ app.MainController = function(
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-
   this.loadThemes_().then(function() {
     this.appThemes_.getBgLayers().then(
           function(bgLayers) {
@@ -351,6 +358,7 @@ app.MainController = function(
     var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
       urlLocationInfo === 'true';
     this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
+    !this['routingOpen'] &&
     !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
     !infoOpen &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
@@ -388,6 +396,34 @@ app.MainController = function(
         }
       }.bind(this));
   }.bind(this));
+  var waypoints = appStateManager.getInitialValue('waypoints');
+  if (waypoints !== undefined && waypoints !== null) {
+    this['routingOpen'] = true;
+    var criteria = parseInt(appStateManager.getInitialValue('criteria'), 10);
+    var transportMode = parseInt(
+      appStateManager.getInitialValue('transportMode'), 10);
+    this.appRouting_.criteria = criteria;
+    this.appRouting_.transportMode = transportMode;
+    var coordinates = waypoints.split(',');
+    var i = 0;
+    var routeNumber = 1;
+    for (i = 0; i < coordinates.length; i = i + 2) {
+      var position = [
+        parseFloat(coordinates[i + 1]), parseFloat(coordinates[i])];
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point((ol.proj.transform(position,
+          'EPSG:4326', 'EPSG:3857')))
+      });
+      feature.set('label', '' + routeNumber);
+      this.appRouting_.insertFeatureAt(feature, routeNumber);
+      routeNumber++;
+    }
+    if (i > 1) {
+      var labels = appStateManager.getInitialValue('labels');
+      this.appRouting_.routes  = labels.split('||');
+      this.appRouting_.getRoute();
+    }
+  }
 };
 
 
