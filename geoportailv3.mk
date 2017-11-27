@@ -1,8 +1,4 @@
-# We use a custom version of closure-util in our package.json.
-# We also use the build.js task of OpenLayers which hardcodes its closure-util version.
-# The line below ensures we use the same version everywhere.
-$(shell rm -rf node_modules/openlayers/node_modules/closure-util; ln -s ../../@camptocamp/closure-util node_modules/openlayers/node_modules/closure-util)
-$(shell rm -rf node_modules/closure-util; ln -s ./@camptocamp/closure-util node_modules/closure-util)
+$(shell scripts/ensure_own_closure_util.sh > /dev/null 2>&1)
 
 LESS_FILES += node_modules/ngeo/src/modules/olcs/controls3d.less
 
