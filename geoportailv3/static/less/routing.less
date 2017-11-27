@@ -318,7 +318,7 @@
   margin-left: 4px;
 }
 .route-info-wrapper .route-info-container {
-  padding: 20px 12px 25px 12px;
+  padding: 20px 12px 25px 10px;
 }
 .route-info-wrapper .route-info-container:not(:last-of-type) {
   border-bottom: 1px solid #8394A0;
@@ -374,8 +374,16 @@
 }
 
 .route-info-container .profile-title {
+  display: block;
+}
+.route-info-container .profile-title .profile-export{
   display: none;
 }
+
+.route-info-container .profile-title .close{
+  display: none;
+}
+
 .route-info-wrapper .route-details .route-details-download {
   position: absolute;
   bottom: 0;

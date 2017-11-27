@@ -150,7 +150,12 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {number}
    * @private
    */
-  this.elevation_ = 0;
+  this.elevationGain_ = 0;
+  /**
+   * @type {number}
+   * @private
+   */
+  this.elevationLoss_ = 0;
 
   /**
    * @type {Array<Object>}
@@ -637,11 +642,19 @@ app.RoutingController.prototype.getTime = function() {
 };
 
 /**
- * @return {number} the elevation in meter.
+ * @return {number} the elevation gain in meter.
  * @export
  */
-app.RoutingController.prototype.getElevation = function() {
-  return this.elevation_;
+app.RoutingController.prototype.getElevationGain = function() {
+  return this.elevationGain_;
+};
+
+/**
+ * @return {number} the elevation gain in meter.
+ * @export
+ */
+app.RoutingController.prototype.getElevationLoss = function() {
+  return this.elevationLoss_;
 };
 
 /**
@@ -673,7 +686,8 @@ app.RoutingController.prototype.showRoute_ = function() {
   this.source_.setAttributions(/** @type {string} */ (feature.get('attribution')));
   this.getProfile_(/** @type {ol.geom.LineString} */ (feature.getGeometry())).then(function(profile) {
     this.profileData = profile;
-    this.elevation_ = this.profileData[this.profileData.length - 1]['cumulativeElevation'];
+    this.elevationGain_ = this.profileData[this.profileData.length - 1]['elevationGain'];
+    this.elevationLoss_ = this.profileData[this.profileData.length - 1]['elevationLoss'];
   }.bind(this));
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
   curView.fit(/** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry()), {

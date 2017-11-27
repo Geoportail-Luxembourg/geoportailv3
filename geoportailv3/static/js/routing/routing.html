@@ -63,10 +63,6 @@
                       <div class="route-info-title" translate>Temps</div>
                       <div class="route-info-data route-info-general-data">{{ctrl.getTime() | appSecondsToHHmmss}}</div>
                   </div>
-                  <div class="route-single-info">
-                      <div class="route-info-title" translate>Altitude</div>
-                      <div class="route-info-data route-info-general-data">{{ctrl.getElevation() | ngeoUnitPrefix:'m'}}</div>
-                  </div>
               </div>
           </div>
           <div class="route-graphic-container route-info-container" ng-if="ctrl.profileData.length > 0">
