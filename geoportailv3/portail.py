@@ -62,3 +62,4 @@ class RoutingStats(Base):
     id = Column(Integer, primary_key=True)
     date = Column(DateTime, default=datetime.datetime.now)
     transport_mode = Column(Integer)
+    transport_criteria = Column(Integer)
