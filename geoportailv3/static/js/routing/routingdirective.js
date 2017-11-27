@@ -1079,11 +1079,20 @@ app.module.controller('AppRoutingController', app.RoutingController);
  */
 app.secondsToHHmmss = function($filter) {
   return function(seconds) {
-    var pattern = 'HH:mm:ss';
-    if (seconds >= 86400) {
-      pattern = 'd HH:mm:ss';
+    var hours   = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds - (hours * 3600)) / 60);
+    var sec = seconds - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {
+      hours   = '0' + hours;
     }
-    return $filter('date')(new Date(0, 0, 0).setSeconds(seconds), pattern);
+    if (minutes < 10) {
+      minutes = '0' + minutes;
+    }
+    if (sec < 10) {
+      sec = '0' + sec;
+    }
+    return hours + ':' + minutes + ':' + sec;
   };
 };
 
