@@ -63,6 +63,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
     $window, appGeocoding) {
+
   /**
    * @type {app.Geocoding}
    * @private
@@ -242,6 +243,9 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
         geometry.getExtent())));
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
+
+      this.appRouting.routes[routeNumber - 1] = /** @type {string} */
+        (feature.get('label'));
       this.appRouting.getRoute();
     }.bind(this)
   });
@@ -596,6 +600,7 @@ app.RoutingController.prototype.clearRoutes = function() {
   this.appRouting.routeFeatures.clear();
   this.modyfyFeaturesCollection_.clear();
   this.routeDesc = [];
+  this.appRouting.getRoute();
   this.source_.setAttributions(undefined);
 };
 

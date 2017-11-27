@@ -14,10 +14,17 @@ goog.require('ol.proj');
  * @param {string} routingServiceUrl The url of the service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
+ * @param {app.StateManager} appStateManager The state manager service.
  * @ngInject
  */
 app.Routing = function($http, routingServiceUrl, gettextCatalog,
-    ngeoFeatureOverlayMgr) {
+    ngeoFeatureOverlayMgr, appStateManager) {
+  /**
+   * @type {app.StateManager}
+   * @private
+   */
+  this.stateManager_ = appStateManager;
+
   /**
    * @type {ol.style.Style}
    * @private
@@ -225,6 +232,10 @@ app.Routing.prototype.addRoutePoint = function(feature) {
  * Get the route
  */
 app.Routing.prototype.getRoute = function() {
+  this.stateManager_.deleteParam('criteria');
+  this.stateManager_.deleteParam('transportMode');
+  this.stateManager_.deleteParam('waypoints');
+  this.stateManager_.deleteParam('labels');
   this.routeFeatures.clear();
   this.stepFeatures.clear();
   if (this.features.getLength() >= 2) {
@@ -243,7 +254,12 @@ app.Routing.prototype.getRoute = function() {
     }
 
     var currentLanguage = this.gettextCatalog.currentLanguage;
-
+    this.stateManager_.updateState({
+      'criteria': '' + this.criteria,
+      'transportMode': '' + this.transportMode,
+      'waypoints': waypoints.join(','),
+      'labels': this.routes.join('||')
+    });
     this.$http_.get(this.routingServiceUrl_, {
       params: {
         'criteria': this.criteria,
