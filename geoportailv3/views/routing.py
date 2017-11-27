@@ -71,6 +71,7 @@ class RouterController(object):
 
         routing_stats = RoutingStats()
         routing_stats.transport_mode = transport_mode
+        routing_stats.transport_criteria = criteria
         PortailSession.add(routing_stats)
         PortailSession.commit()
 
