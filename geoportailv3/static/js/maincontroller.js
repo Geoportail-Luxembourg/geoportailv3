@@ -324,7 +324,7 @@ app.MainController = function(
   ngeoOlcsService.initialize(this.ol3dm_);
   $scope.$watch(
     () => (this.ol3dm_.getOl3d() && this.ol3dm_.getOl3d().getEnabled()),
-    this.enable3dCallback_
+    this.enable3dCallback_.bind(this)
   );
 
   this.initLanguage_();
@@ -407,7 +407,9 @@ app.MainController = function(
  * @param {boolean} active 3d state
  */
 app.MainController.prototype.enable3dCallback_ = function(active) {
-  if (!active) { return; }
+  if (!active) {
+    return;
+  }
   this['mymapsOpen'] = false;
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;

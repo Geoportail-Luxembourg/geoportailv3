@@ -29,4 +29,4 @@ app.toggle3d = {
     </div>`
 };
 
-angular.module('app').component('appToggle3d', app.toggle3d)
+angular.module('app').component('appToggle3d', app.toggle3d);
