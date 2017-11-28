@@ -283,6 +283,7 @@ app.Routing.prototype.getRoute = function() {
           // Only one path is returned
           jsonFeatures.forEach(function(feature) {
             feature.setStyle(this.roadStyle_);
+            feature.set('name', 'route');
             this.routeFeatures.push(feature);
           }.bind(this));
         }
