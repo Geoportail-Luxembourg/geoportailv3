@@ -12,6 +12,7 @@ goog.require('app');
 goog.require('app.StateManager');
 goog.require('app.infobarDirective');
 goog.require('app.projections');
+goog.require('app.toggle3d');
 goog.require('goog.asserts');
 goog.require('ngeo.Debounce');
 goog.require('ngeo.mapDirective');
@@ -37,25 +38,6 @@ app.mapDirective = function(appMapTemplateUrl) {
 
 
 app.module.directive('appMap', app.mapDirective);
-
-angular.module('app').component('appToggle3d', {
-  /**
-   * @constructor
-   * @param {ngeo.olcs.Service} ngeoOlcsService The service.
-   */
-  controller: function Toggle3dController(ngeoOlcsService) {
-    /**
-     * @export
-     */
-    this.manager = ngeoOlcsService.getManager();
-  },
-  template: `
-    <div class="ol-unselectable ol-control ol-toogle3d"
-         ng-class="{active: $ctrl.manager && $ctrl.manager.is3dEnabled()}"
-         ng-if="::$ctrl.manager">
-      <button type="button" ng-click="$ctrl.manager.toggle3d()">3D</button>
-    </div>`
-});
 
 
 /**
