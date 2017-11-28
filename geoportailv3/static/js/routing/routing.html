@@ -12,6 +12,7 @@
                   <span class="icon-Bike" ng-click="ctrl.setMode(2)"></span>
               </span>
               <span class="routing-icon">
+                  <span ng-if="ctrl.isRoute()" class="fa fa-floppy-o icon-Trash" ng-click="ctrl.createMapFromRoute()"></span>
                   <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoutes();"></span>
                   <span class="icon-Switch" ng-click="ctrl.exchangeRoutes()"></span>
               </span>
@@ -50,11 +51,6 @@
           <li><a href ng-click="ctrl.setCriteria(1)">{{ "Le plus court" | translate}}</a></li>
         </ul>
       </div>
-  </div>
-  <div class="route-options clearfix" ng-if="ctrl.isRoute()">
-    <div class="route-option">
-      <button class="route-option-button route-add" ng-click="ctrl.createMapFromRoute()" translate>Sauver comme mymaps</button>
-    </div>
   </div>
   <div class="route-info-wrapper printable">
       <div class="route-info" ng-if="ctrl.isRoute()">

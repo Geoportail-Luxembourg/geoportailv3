@@ -138,7 +138,7 @@ app.Routing.prototype.reorderRoute = function() {
   var idx = 1;
   this.features.forEach(function(curFeature) {
     if (curFeature.getGeometry() !== undefined) {
-      curFeature.set('__text', '' + idx);
+      curFeature.set('name', '' + idx);
       idx++;
     }
   }, this);
@@ -169,7 +169,7 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
         stroke: strokeStyle
       })
     }));
-    var text = this.get('__text');
+    var text = this.get('name');
     if (text === undefined) {
       text = '';
     }
@@ -190,13 +190,13 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
     return styles;
   });
 
-  feature.set('__text', '' + routeNumber);
+  feature.set('name', '' + routeNumber);
   var featuresLength = this.features.getLength();
   if (routeNumber > featuresLength) {
     var j;
     for (j = featuresLength; j < routeNumber; ++j) {
       var blankFeature = new ol.Feature();
-      blankFeature.set('__text', '' + j);
+      blankFeature.set('name', '' + j);
       this.features.insertAt(j, blankFeature);
     }
   }

@@ -500,7 +500,7 @@ app.RoutingController.prototype.showHideTooltip_ = function(e) {
       geometry: new ol.geom.Point(geometry)
     });
     this.highlightOverlay_.addFeature(newFeature);
-    this.createTooltip_(geometry, feature.get('__text'));
+    this.createTooltip_(geometry, feature.get('name'));
   } else {
     this.removeTooltip_();
   }
@@ -646,7 +646,7 @@ app.RoutingController.prototype.clearRoute = function(routeIdx) {
   } else {
     this.appRouting.routes[routeIdx] = '';
     var blankFeature = new ol.Feature();
-    blankFeature.set('__text', '' + (routeIdx + 1));
+    blankFeature.set('name', '' + (routeIdx + 1));
     this.appRouting.features.setAt(routeIdx, blankFeature);
   }
   this.appRouting.routeFeatures.clear();
@@ -741,7 +741,7 @@ app.RoutingController.prototype.showRoute_ = function() {
     description['cumulativeDistance'] = cumulativeDistance;
     description['cumulativeTime'] = cumulativeTime;
     stepFeature.setStyle(this.stepStyle_);
-    stepFeature.set('__text', description.description);
+    stepFeature.set('name', description.description);
     this.appRouting.stepFeatures.push(stepFeature);
   }, this);
   this.distance_ = /** @type {number} */ (feature.get('dist'));
@@ -889,7 +889,7 @@ app.RoutingController.prototype.setPositionText_ = function() {
   this.appRouting.features.forEach(function(feature) {
     pos++;
     if (feature !== undefined && feature !== null) {
-      feature.set('__text', '' + pos);
+      feature.set('name', '' + pos);
     }
   }, this);
 };
@@ -1119,9 +1119,11 @@ app.RoutingController.prototype.createMapFromRoute = function() {
             }
           }
         }.bind(this)).then(function(mapinformation) {
-          return this.appMymaps_.saveFeatures(this.appRouting.routeFeatures.getArray());
+          var features = this.appRouting.routeFeatures.getArray();
+          var stepFeatures = this.appRouting.stepFeatures.getArray();
+          return this.appMymaps_.saveFeatures(features.concat(stepFeatures));
         }.bind(this)).then(function(mapinformation) {
-          var msg = this.gettextCatalog.getString('Carte créée');
+          var msg = this.gettextCatalog.getString('Une copie de votre route a été enregistrée dans Mymaps.');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.appMymaps_.clear();
         }.bind(this));
