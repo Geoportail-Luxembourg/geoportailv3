@@ -51,7 +51,12 @@
         </ul>
       </div>
   </div>
-   <div class="route-info-wrapper printable">
+  <div class="route-options clearfix" ng-if="ctrl.isRoute()">
+    <div class="route-option">
+      <button class="route-option-button route-add" ng-click="ctrl.createMapFromRoute()" translate>Sauver comme mymaps</button>
+    </div>
+  </div>
+  <div class="route-info-wrapper printable">
       <div class="route-info" ng-if="ctrl.isRoute()">
           <div class="route-general route-info-container">
               <div class="route-general-info-container">

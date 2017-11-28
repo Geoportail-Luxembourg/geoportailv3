@@ -55,6 +55,10 @@ app.module.directive('appRouting', app.routingDirective);
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {angular.$window} $window Window.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
+ * @param {app.UserManager} appUserManager The user manager service.
+ * @param {app.Notify} appNotify Notify service.
+ * @param {app.Mymaps} appMymaps Mymaps service.
+ * @param {angular.$filter} $filter Angular filter.
  * @constructor
  * @ngInject
  * @export
@@ -62,7 +66,30 @@ app.module.directive('appRouting', app.routingDirective);
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
-    $window, appGeocoding) {
+    $window, appGeocoding, appUserManager, appNotify, appMymaps, $filter) {
+  /**
+   * @type {angular.$filter}
+   * @private
+   */
+  this.filter_ = $filter;
+
+  /**
+   * @type {app.Mymaps}
+   * @private
+   */
+  this.appMymaps_ = appMymaps;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
 
   /**
    * @type {app.Geocoding}
@@ -1066,6 +1093,51 @@ app.RoutingController.prototype.decDegFromMatch_ = function(m) {
     decDeg: sign * (degrees + minutes / 60 + seconds / 3600),
     latLon: latLon
   };
+};
+
+/**
+ * Create a map from an route.
+ * @export
+ */
+app.RoutingController.prototype.createMapFromRoute = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    this.askToConnect();
+  } else {
+    var mapTitle = this.gettextCatalog.getString('Route du');
+    mapTitle = mapTitle + ' ' + this.filter_('date')(Date.now(), 'dd/MM/yyyy');
+    var mapDescription = this.appRouting.routes[0] + ' ' +
+      this.appRouting.routes[this.appRouting.routes.length - 1];
+    this.appMymaps_.createMap(mapTitle, mapDescription,
+        null, false)
+        .then(function(resp) {
+          if (goog.isNull(resp)) {
+            this.askToConnect();
+          } else {
+            var mapId = resp['uuid'];
+            if (goog.isDef(mapId)) {
+              this.appMymaps_.setMapId(mapId);
+            }
+          }
+        }.bind(this)).then(function(mapinformation) {
+          return this.appMymaps_.saveFeatures(this.appRouting.routeFeatures.getArray());
+        }.bind(this)).then(function(mapinformation) {
+          var msg = this.gettextCatalog.getString('Carte créée');
+          this.notify_(msg, app.NotifyNotificationType.INFO);
+          this.appMymaps_.clear();
+        }.bind(this));
+  }
+};
+
+/**
+ * Notify the user he has to connect
+ * @export
+ */
+app.RoutingController.prototype.askToConnect = function() {
+  var msg = this.gettextCatalog.getString(
+      'Veuillez vous identifier afin d\'accéder à vos cartes'
+      );
+  this.notify_(msg, app.NotifyNotificationType.INFO);
+  this['useropen'] = true;
 };
 
 app.module.controller('AppRoutingController', app.RoutingController);
