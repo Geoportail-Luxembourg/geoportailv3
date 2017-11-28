@@ -35,7 +35,9 @@ goog.require('ol.control.Attribution');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
-goog.require('ol.control.ZoomToExtent');
+goog.require('app.olcs.ZoomToExtent');
+goog.require('app.olcs.Lux3DManager');
+goog.require('app.olcs.toggle3d');
 goog.require('ol.proj');
 goog.require('ol.math');
 goog.require('ngeo.olcs.Manager');
@@ -316,16 +318,15 @@ app.MainController = function(
   this.allow3d = this.ngeoLocation_.hasParam('3d');
 
   /**
-   * @const {?app.MainController.Lux3DManager}
-   * @private
+   * @const {?app.olcs.Lux3DManager}
+   * @export
    */
-  this.ol3dm_ = this.createCesiumManager_(cesiumURL);
-  this.ol3dm_.setRootScope($rootScope);
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
   ngeoOlcsService.initialize(this.ol3dm_);
-  $scope.$watch(
-    () => (this.ol3dm_.getOl3d() && this.ol3dm_.getOl3d().getEnabled()),
-    this.enable3dCallback_.bind(this)
-  );
+  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
+
+  // Add the zoom to extent control in a second step since it depends on ol3dm.
+  this.map_.addControl(new app.olcs.ZoomToExtent(this.defaultExtent_, this.ol3dm_));
 
   this.initLanguage_();
 
@@ -461,8 +462,7 @@ app.MainController.prototype.createMap_ = function() {
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
-      new ol.control.ZoomToExtent({label: '\ue01b',
-        extent: this.defaultExtent_}),
+      // the zoom to extent control will be added later since it depends on ol3dm
       new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'}),
       new ol.control.Attribution({collapsible: false,
         collapsed: false, className: 'geoportailv3-attribution'})
@@ -482,60 +482,20 @@ app.MainController.prototype.createMap_ = function() {
 };
 
 
-// Due to a bug in the closure compiler we can not define the class
-// in the method below. See https://github.com/google/closure-compiler/issues/2696.
-app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
-
-  /**
-   *
-   * @param {string} cesiumUrl Cesium URL.
-   * @param {ol.Map} map The map.
-   * @param {ngeo.Location} ngeoLocation The location service.
-   */
-  constructor(cesiumUrl, map, ngeoLocation) {
-    super(cesiumUrl, {
-      map,
-      cameraExtentInRadians: [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians)
-    });
-
-    /**
-     * @private
-     * @type {ngeo.Location}
-     */
-    this.ngeoLocation_ = ngeoLocation;
-  }
-
-
-  /**
-   * @override
-   */
-  configureForUsability(scene) {
-    super.configureForUsability(scene);
-    const camera = scene.camera;
-    camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
-
-    if (this.ngeoLocation_.hasParam('own_terrain')) {
-      scene.terrainProvider = new Cesium.CesiumTerrainProvider({
-        url: '//3dtiles.geoportail.lu/tiles'
-      });
-    }
-  }
-};
-
-
 /**
  * @private
  * @param {string} cesiumURL The Cesium URL
- * @return {?app.MainController.Lux3DManager} The created manager.
+ * @param {angular.Scope} $rootScope The root scope
+ * @return {?app.olcs.Lux3DManager} The created manager.
  */
-app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
+app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
   if (!this.allow3d) {
     return null;
   }
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
-  return new app.MainController.Lux3DManager(
-    cesiumURL, this.map_, this.ngeoLocation_);
+  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
+  return new app.olcs.Lux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_, $rootScope);
 };
 
 

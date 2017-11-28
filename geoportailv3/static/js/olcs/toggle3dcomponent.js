@@ -5,22 +5,26 @@
  *
  * <app-toggle-3d><app-toggle-3d>
  */
-goog.provide('app.toggle3d');
+goog.module('app.olcs.toggle3d');
 
 goog.require('app');
 goog.require('ngeo.olcs.Service');
 
-app.toggle3d = {
+class Controller {
   /**
-   * @constructor
+   * @ngInject
    * @param {ngeo.olcs.Service} ngeoOlcsService The service.
    */
-  controller: function Toggle3dController(ngeoOlcsService) {
+  constructor(ngeoOlcsService) {
     /**
      * @export
      */
     this.manager = ngeoOlcsService.getManager();
-  },
+  }
+}
+
+const toggle3d = {
+  controller: Controller,
   template: `
     <div class="ol-unselectable ol-control ol-toogle3d"
          ng-class="{active: $ctrl.manager && $ctrl.manager.is3dEnabled()}"
@@ -29,4 +33,4 @@ app.toggle3d = {
     </div>`
 };
 
-angular.module('app').component('appToggle3d', app.toggle3d);
+angular.module('app').component('appToggle3d', toggle3d);
