@@ -59,5 +59,5 @@ application using git@github.com:camptocamp/luxembourg_dev_db.git
 Automatic deployement
 ---------------------
 
-3D demo: https://3d-demo.geoportail.lu/?3d
-3D dev: https://3d-test.geoportail.lu/?3d
+3D demo: https://3d-demo.geoportail.lu/
+3D dev: https://3d-test.geoportail.lu/

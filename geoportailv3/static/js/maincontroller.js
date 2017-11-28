@@ -312,12 +312,6 @@ app.MainController = function(
   this.map_ = this.createMap_();
 
   /**
-   * @export
-   * @type {boolean}
-   */
-  this.allow3d = this.ngeoLocation_.hasParam('3d');
-
-  /**
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
@@ -486,12 +480,9 @@ app.MainController.prototype.createMap_ = function() {
  * @private
  * @param {string} cesiumURL The Cesium URL
  * @param {angular.Scope} $rootScope The root scope
- * @return {?app.olcs.Lux3DManager} The created manager.
+ * @return {!app.olcs.Lux3DManager} The created manager.
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
-  if (!this.allow3d) {
-    return null;
-  }
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
@@ -504,7 +495,7 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootSco
  * @return {boolean} Whether 3D is active.
  */
 app.MainController.prototype.is3dEnabled = function() {
-  return this.allow3d && this.ol3dm_.is3dEnabled();
+  return this.ol3dm_.is3dEnabled();
 };
 
 
