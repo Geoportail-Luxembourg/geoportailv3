@@ -46,12 +46,14 @@ app.module.directive('appElevation', app.elevationDirective);
 /**
  * @ngInject
  * @constructor
+ * @param {angular.Scope} $scope The scope.
  * @param {angular.$http} $http The angular http service.
  * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  */
 app.ElevationDirectiveController =
-    function($http, ngeoDebounce, appGetElevation) {
+    function($scope, $http, ngeoDebounce, appGetElevation, ngeoOlcsService) {
       var map = this['map'];
 
   /**
@@ -65,17 +67,43 @@ app.ElevationDirectiveController =
    */
       this['elevation'] = '';
 
-      map.on('pointermove',
-      ngeoDebounce(
-      function(e) {
-        if (this['active']) {
-          this.getElevation_(e.coordinate).then(goog.bind(
-             function(elevation) {
-               this['elevation'] = elevation;
-             }, this
-             ));
+      this['ol3d'] = null;
+
+      const requestElevation = (coordinate) =>
+        this.getElevation_(coordinate).then(
+          (elevation) => (this['elevation'] = elevation)
+        );
+
+
+      // 2D
+      map.on('pointermove', ngeoDebounce(function(e) {
+        if (!this['active'] || (this['ol3d'] && this['ol3d'].getEnabled())) {
+          return;
         }
+        requestElevation(e.coordinate);
       }, 300, true), this);
+
+      // 3D
+      let bound = false;
+      $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (value) => {
+        if (!value || bound) { return; }
+        const manager = ngeoOlcsService.getManager()
+        const scene = manager.getCesiumScene();
+        this['ol3d'] = manager.getOl3d();
+        const camera = scene.camera;
+        const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+        const WMP = new Cesium.WebMercatorProjection()
+        handler.setInputAction(ngeoDebounce((movement) => {
+          if (!this['active'] || !this['ol3d'].getEnabled()) { return; }
+          let cartesian = camera.pickEllipsoid(movement.endPosition, scene.globe.ellipsoid);
+          if (cartesian) {
+            let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            cartesian = WMP.project(cartographic);
+            let coordinate = [ cartesian.x, cartesian.y ];
+            requestElevation(coordinate);
+          }
+        }, 300, true), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+      });
     };
 
 
