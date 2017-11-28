@@ -322,6 +322,10 @@ app.MainController = function(
   this.ol3dm_ = this.createCesiumManager_(cesiumURL);
   this.ol3dm_.setRootScope($rootScope);
   ngeoOlcsService.initialize(this.ol3dm_);
+  $scope.$watch(
+    () => (this.ol3dm_.getOl3d() && this.ol3dm_.getOl3d().getEnabled()),
+    this.enable3dCallback_
+  );
 
   this.initLanguage_();
 
@@ -400,8 +404,10 @@ app.MainController = function(
 
 /**
  * @private
+ * @param {boolean} active 3d state
  */
-app.MainController.prototype.callback3d_ = function() {
+app.MainController.prototype.enable3dCallback_ = function(active) {
+  if (!active) { return; }
   this['mymapsOpen'] = false;
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
@@ -483,9 +489,8 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
    * @param {string} cesiumUrl Cesium URL.
    * @param {ol.Map} map The map.
    * @param {ngeo.Location} ngeoLocation The location service.
-   * @param {function()} callback for 3d activation
    */
-  constructor(cesiumUrl, map, ngeoLocation, callback) {
+  constructor(cesiumUrl, map, ngeoLocation) {
     super(cesiumUrl, {
       map,
       cameraExtentInRadians: [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians)
@@ -496,12 +501,6 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
      * @type {ngeo.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
-
-    /**
-     * @private
-     * @type {function()}
-     */
-    this.callback_ = callback;
   }
 
 
@@ -519,17 +518,6 @@ app.MainController.Lux3DManager = class extends ngeo.olcs.Manager {
       });
     }
   }
-
-  /**
-   * @override
-   */
-  toggle3d() {
-    super.toggle3d();
-    if (!this.is3dEnabled() && this.callback_) { // inversed test: still not active
-      this.callback_();
-    }
-    return null;
-  }
 };
 
 
@@ -545,7 +533,7 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
   return new app.MainController.Lux3DManager(
-    cesiumURL, this.map_, this.ngeoLocation_, this.callback3d_.bind(this));
+    cesiumURL, this.map_, this.ngeoLocation_);
 };
 
 
