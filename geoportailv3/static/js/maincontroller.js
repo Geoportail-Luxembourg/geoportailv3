@@ -322,6 +322,10 @@ app.MainController = function(
   this.ol3dm_ = this.createCesiumManager_(cesiumURL);
   this.ol3dm_.setRootScope($rootScope);
   ngeoOlcsService.initialize(this.ol3dm_);
+  $scope.$watch(
+    () => (this.ol3dm_.getOl3d() && this.ol3dm_.getOl3d().getEnabled()),
+    this.enable3dCallback_.bind(this)
+  );
 
   this.initLanguage_();
 
@@ -397,6 +401,21 @@ app.MainController = function(
   }.bind(this));
 };
 
+
+/**
+ * @private
+ * @param {boolean} active 3d state
+ */
+app.MainController.prototype.enable3dCallback_ = function(active) {
+  if (!active) {
+    return;
+  }
+  this['mymapsOpen'] = false;
+  this['drawOpen'] = false;
+  this['drawOpenMobile'] = false;
+  this['measureOpen'] = false;
+  this['printOpen'] = false;
+};
 
 /**
  * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
@@ -515,24 +534,8 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL) {
   }
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
-  return new app.MainController.Lux3DManager(cesiumURL, this.map_, this.ngeoLocation_);
-};
-
-
-/**
- * @export
- */
-app.MainController.prototype.toggle3d = function() {
-  this.ol3dm_.toggle3d();
-  // Disable uncompatible tools
-  if (!this.is3dEnabled()) { // inversed test: still not active
-    this['mymapsOpen'] = false;
-    this['drawOpen'] = false;
-    this['drawOpenMobile'] = false;
-    this['measureOpen'] = false;
-    this['printOpen'] = false;
-    this['layersOpen'] = true;
-  }
+  return new app.MainController.Lux3DManager(
+    cesiumURL, this.map_, this.ngeoLocation_);
 };
 
 

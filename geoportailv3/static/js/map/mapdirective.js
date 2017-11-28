@@ -12,6 +12,7 @@ goog.require('app');
 goog.require('app.StateManager');
 goog.require('app.infobarDirective');
 goog.require('app.projections');
+goog.require('app.toggle3d');
 goog.require('goog.asserts');
 goog.require('ngeo.Debounce');
 goog.require('ngeo.mapDirective');
