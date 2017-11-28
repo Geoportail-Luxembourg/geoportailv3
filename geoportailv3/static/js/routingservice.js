@@ -89,12 +89,37 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
    * @type {ngeo.FeatureOverlay}
    */
   this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  var fillStyle = new ol.style.Fill({
+    color: [41, 128, 185]
+  });
+
+  var strokeStyle = new ol.style.Stroke({
+    color: [255, 255, 255],
+    width: 3
+  });
+
+  /**
+   * @type {ol.style.Style}
+   * @private
+   */
+  this.stepStyle_ = new ol.style.Style({
+    fill: fillStyle,
+    zIndex: 0,
+    stroke: strokeStyle,
+    image: new ol.style.Circle({
+      radius: 7,
+      fill: fillStyle,
+      stroke: strokeStyle
+    })
+  });
+
 
   /**
    * @type {ol.Collection<ol.Feature>}
    */
   this.stepFeatures = new ol.Collection();
   this.stepsOverlay.setFeatures(this.stepFeatures);
+  this.stepsOverlay.setStyle(this.stepStyle_);
 
   /**
    * @type {ngeo.FeatureOverlay}
@@ -161,6 +186,7 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
     });
 
     styles.push(new ol.style.Style({
+      zIndex: 1,
       fill: fillStyle,
       stroke: strokeStyle,
       image: new ol.style.Circle({
@@ -174,12 +200,13 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
       text = '';
     }
     styles.push(new ol.style.Style({
+      zIndex: 2,
       text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
         text: text,
         textAlign: 'center',
         font: 'normal 10px Sans-serif',
         fill: new ol.style.Fill({
-          color: [0, 0, 0]
+          color: [41, 128, 185]
         }),
         stroke: new ol.style.Stroke({
           color: [255, 255, 255],

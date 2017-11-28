@@ -277,29 +277,6 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
     }.bind(this)
   });
 
-  var fillStyle = new ol.style.Fill({
-    color: [41, 128, 185]
-  });
-
-  var strokeStyle = new ol.style.Stroke({
-    color: [255, 255, 255],
-    width: 3
-  });
-
-  /**
-   * @type {ol.style.Style}
-   * @private
-   */
-  this.stepStyle_ = new ol.style.Style({
-    fill: fillStyle,
-    stroke: strokeStyle,
-    image: new ol.style.Circle({
-      radius: 7,
-      fill: fillStyle,
-      stroke: strokeStyle
-    })
-  });
-
   /**
    * The draw overlay
    * @type {ngeo.FeatureOverlay}
@@ -740,7 +717,7 @@ app.RoutingController.prototype.showRoute_ = function() {
     cumulativeTime += description.time;
     description['cumulativeDistance'] = cumulativeDistance;
     description['cumulativeTime'] = cumulativeTime;
-    stepFeature.setStyle(this.stepStyle_);
+
     stepFeature.set('name', description.description);
     this.appRouting.stepFeatures.push(stepFeature);
   }, this);
