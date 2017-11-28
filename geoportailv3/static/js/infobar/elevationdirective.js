@@ -84,9 +84,8 @@ app.ElevationDirectiveController =
       }, 300, true), this);
 
       // 3D
-      let bound = false;
-      $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (value) => {
-        if (!value || bound) { return; }
+      let unwatch = $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (ol3d) => {
+        if (!ol3d) { return; }
         const manager = ngeoOlcsService.getManager()
         const scene = manager.getCesiumScene();
         this['ol3d'] = manager.getOl3d();
@@ -103,6 +102,7 @@ app.ElevationDirectiveController =
             requestElevation(coordinate);
           }
         }, 300, true), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        unwatch();
       });
     };
 
