@@ -27,7 +27,7 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     /**
      * @const {ol.Extent}
      */
-    this.cameraExtentInRadians = cameraExtentInRadians;
+    this.luxCameraExtentInRadians = cameraExtentInRadians;
   }
 
 
