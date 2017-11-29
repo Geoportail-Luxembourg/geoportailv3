@@ -599,7 +599,9 @@ app.RoutingController.prototype.isRoute = function() {
  */
 app.RoutingController.prototype.clearRoutes = function() {
   this.appRouting.routes = ['', ''];
-  this.appRouting.routesOrder = [0, 1];
+  this.appRouting.routesOrder.splice(0);
+  this.appRouting.routesOrder.push(0);
+  this.appRouting.routesOrder.push(1);
   this.appRouting.features.clear();
   this.appRouting.routeFeatures.clear();
   this.modyfyFeaturesCollection_.clear();
