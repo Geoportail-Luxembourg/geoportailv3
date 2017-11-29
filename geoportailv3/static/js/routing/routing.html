@@ -1,0 +1,101 @@
+﻿<div class="route-container">
+  <div class="routes">
+      <div class="routing-component">
+          <div class="routing-icon-container  container-fluid">
+              <span class="routing-icon" ng-class="ctrl.getMode() == 0 ? 'selected' : ''">
+                  <span class="icon-Car" ng-click="ctrl.setMode(0)"></span>
+              </span>
+              <span class="routing-icon" ng-class="ctrl.getMode() == 1 ? 'selected' : ''">
+                  <span class="icon-Pedestrian" ng-click="ctrl.setMode(1)"></span>
+              </span>
+              <span class="routing-icon" ng-class="ctrl.getMode() == 2 ? 'selected' : ''">
+                  <span class="icon-Bike" ng-click="ctrl.setMode(2)"></span>
+              </span>
+              <span class="routing-icon">
+                  <span ng-if="ctrl.isRoute()" class="fa fa-floppy-o icon-Trash" ng-click="ctrl.createMapFromRoute()"></span>
+                  <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoutes();"></span>
+                  <span class="icon-Switch" ng-click="ctrl.exchangeRoutes()"></span>
+              </span>
+          </div>
+
+          <div class="routing-routes" ngeo-sortable="ctrl.appRouting.routesOrder"
+                   ngeo-sortable-callback-ctx="::ctrl"
+                   ngeo-sortable-callback="::ctrl.afterReorder"
+                   ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
+              <div ng-repeat="(key , value) in ctrl.getRoutes() track by $index" class="routing-route-container">
+                <div class="route-number sortable-handle">{{key + 1}}</div>
+                <input route-number="{{key + 1}}" type="text" autocorrect="off" autocapitalize="none" class="route-field route-field-my-location form-control" placeholder="{{ 'Indiquez une adresse, un lieu' |translate}}"
+                             ngeo-search-listeners="ctrl.listeners" ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ng-model="ctrl.appRouting.routes[key]">
+                </input>
+                <div class="tooltip-container">
+                  <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length === 0" ng-click="ctrl.whereAmI(key)">
+                    <div class="icon-Target"></div>
+                  </div>
+                  <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length !== 0">
+                    <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoute(key);"></span>
+                  </div>
+                  <div class="tooltip routing-tooltip">{{ 'Insérez rapidement' | translate }} <span class="current-location" translate>votre position actuelle</span></div>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="route-options clearfix">
+      <div class="route-option"> 
+        <button class="route-option-button route-add" ng-click="ctrl.addRoute()" translate>Ajouter une étape</button>
+      </div>
+      <div class="route-option dropdown"> 
+        <button class="route-option-button route-fastest" data-toggle="dropdown">{{ ((ctrl.getCriteria() == 0) ? "Le plus rapide" : "Le plus court") | translate}} <span class="caret"></button></label>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href ng-click="ctrl.setCriteria(0)">{{ "Le plus rapide" | translate}}</a></li>
+          <li><a href ng-click="ctrl.setCriteria(1)">{{ "Le plus court" | translate}}</a></li>
+        </ul>
+      </div>
+  </div>
+  <div class="route-info-wrapper printable">
+      <div class="route-info" ng-if="ctrl.isRoute()">
+          <div class="route-general route-info-container">
+              <div class="route-general-info-container">
+                  <div class="route-single-info">
+                      <div class="route-info-title" translate>Distance</div>
+                      <div class="route-info-data route-info-general-data">{{ctrl.getDistance() | ngeoUnitPrefix:'m'}}</div>
+                  </div>
+                  <div class="route-single-info">
+                      <div class="route-info-title" translate>Temps</div>
+                      <div class="route-info-data route-info-general-data">{{ctrl.getTime() | appSecondsToHHmmss}}</div>
+                  </div>
+              </div>
+          </div>
+          <div class="route-graphic-container route-info-container" ng-if="ctrl.profileData.length > 0">
+              <h3 class="route-info-title" translate>Dénivelé lors de votre trajet</h3>
+              <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.showProfile" app-profile-map="::ctrl.map">
+          </div>
+
+          <div class="route-details route-info-container">
+              <h3 class="route-info-title"><span translate>Détail de votre trajet</span>
+                  <div class="no-print route-details-download" ng-click="ctrl.exportGpx()">
+                      <small translate>Télécharger</small>
+                      <span class="icon-Download"></span>
+                  </div>
+              </h3>
+
+              <div ng-repeat="(key , value) in ctrl.routeDesc track by $index" class="route-details-step" ng-mouseleave="ctrl.clearHighlight();" ng-mouseover="ctrl.highlightPosition(value.lon, value.lat, value.description);" ng-click="ctrl.center(value.lon, value.lat);">
+                  <div class="route-instruction">
+                      <span class="icon-Direction {{ctrl.getIconDirectionClass(value.direction)}}"></span>
+                      {{value.description}}
+                  </div>
+                  <div class="route-info-data route-instruction-data">
+                      {{value.cumulativeDistance | ngeoUnitPrefix:'m'}}
+                  </div>
+                  <div class="route-info-data route-instruction-data">
+                      {{value.cumulativeTime | appSecondsToHHmmss}}
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="routes-tip">
+      <h3 translate>Petite astuce!</h3>
+      <p translate>Cliquez droit (ou appui long sur mobile) à un endroit sur la carte pour ajouter rapidement une adresse.</p>
+  </div>
+</div>

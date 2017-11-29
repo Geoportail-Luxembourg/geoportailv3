@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-01-23T10:34:45 -->
+<!-- 2017-11-25T08:56:56 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="2380" pageHeight="3368" columnWidth="2254" leftMargin="70" rightMargin="56" topMargin="56" bottomMargin="34" isSummaryNewPage="true" uuid="9a3e59f5-6675-48cf-ad74-9c42b5a5b290">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
@@ -114,9 +114,9 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{url}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement mode="Transparent" x="0" y="3202" width="2254" height="10" uuid="6659a107-e37b-4a3a-9ce2-cebd8adf86cc"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="0" y="3150" width="2254" height="62" uuid="6659a107-e37b-4a3a-9ce2-cebd8adf86cc"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="html">
 					<font fontName="DejaVu Sans" size="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[CONCATENATE("<span style=\"background-color:#ddd7d4\">",$P{dataOwner},"</span>")]]></textFieldExpression>

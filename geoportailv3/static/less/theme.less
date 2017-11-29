@@ -1,10 +1,11 @@
 /** Themes related styling (mainly colors) **/
-.theme(@theme, @primary, @secondary, @tertiary, @icon) {
+.theme(@theme, @primary, @secondary, @tertiary, @icon, @font-family) {
   [data-theme="@{theme}"] {
     .theme_(@primary, @secondary, @tertiary);
     .theme-icon:after {
       color: @primary;
       content: '\@{icon}';
+	  font-family: @font-family !important;
     }
   }
 
@@ -12,6 +13,7 @@
     background-color: @primary;
     a:after{
       content: '\@{icon}';
+	  font-family: @font-family !important;
     }
     a:hover,
     a.active{
@@ -156,7 +158,42 @@
       }
     }
   }
-
+  .theme-header {
+    color: @primary;
+  }
+  .standalone-routing-button {
+    background-color: @primary !important;
+  }
+  .routing.icon:before {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container:after {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container .route-number {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container .routing-tooltip .current-location {
+    color: @primary;
+  }
+  .routes-tip h3 {
+    color: @primary;
+  }
+  .route-info-wrapper .route-details .icon-Download:before {
+    color: @primary;
+  }
+  .route-info-wrapper .route-details .route-details-step:hover:before {
+    background-color: @primary;
+  }
+  .route-options .route-add {
+    background-color: lighten(@primary, 5%);
+  }
+  .route-options .route-fastest {
+    background-color: lighten(@primary, 10%);
+  }
+  .routing-rounded-button {
+    color: @primary;
+  }
   ul.layermanager {
     &, a {
       color: @tertiary;
@@ -338,6 +375,9 @@
       }
     }
   }
+  .create-itinerary {
+    background-color: @tertiary !important;
+  }
 }
 
 .themes-list a {
@@ -359,22 +399,23 @@ header.navbar-default {
 // Then use the 3 darkest colors in the following order:
 // medium - light - dark
 
-.theme(eau, #03a2ac, #45cdd6, #078f98, e016);
-.theme(agriculture, #f39c11, #ffc363, #9c6101, e001);
-.theme(main, #2980b9, #97bbd3, #1f5d87, e02d);
-.theme(at, #be8541, #ffb257, #7f6b52, e018);
-.theme(intranet-at, #9e9ac8, #cbc9e2, #756bb1, e018);
-.theme(pag,  #2b8cbe, #74a9cf, #045a8d, e018);
-.theme(tourisme, #e84c3d, #e88c83, #a50f15, e027);
-.theme(emwelt, #879d31, #bacd81, #627529, e015);
-.theme(lenoz, #f4b72b, #f3d89b, #b3851d, e01A);
-.theme(preizerdaul, #ad223b, #d87e8e, #711727, e00c);
-.theme(wellenstein, #7ac573, #b0e4ab, #42803c, e00c);
-.theme(lintgen, #f3c531, #f3d89b, #b3851d, e00c);
-.theme(remich, #8ca229, #bacd63, #5c6b1b, e00c);
-.theme(prof,  #006d2c, #99d8c9, #238b45, e00a);
-.theme(go,  #555, #bbb, #756bb1, e00b);
-.theme(municipalities,   #9e9ac8, #cbc9e2, #756bb1, e00c);
-.theme(cadastre_hertzien,   #689f38, #99d066, #387002, e02d);
-.theme(ahc, #ff5722, #ff8a50, #c41c00, e016);
+.theme(municipalities,   #9e9ac8, #cbc9e2, #756bb1, e900, "Geoportail-Grande-Region");
+.theme(agriculture, #f39c11, #ffc363, #9c6101, e901, "Geoportail-Grande-Region");
+.theme(tourisme, #e84c3d, #e88c83, #a50f15, e90c, "Geoportail-Grande-Region");
+.theme(emwelt, #879d31, #bacd81, #627529, e909, "Geoportail-Grande-Region");
+
+.theme(eau, #03a2ac, #45cdd6, #078f98, e016, "geoportail-icons");
+.theme(main, #2980b9, #97bbd3, #1f5d87, e02d, "geoportail-icons");
+.theme(at, #be8541, #ffb257, #7f6b52, e018, "geoportail-icons");
+.theme(intranet-at, #9e9ac8, #cbc9e2, #756bb1, e018, "geoportail-icons");
+.theme(pag,  #2b8cbe, #74a9cf, #045a8d, e018, "geoportail-icons");
+.theme(lenoz, #f4b72b, #f3d89b, #b3851d, e01A, "geoportail-icons");
+.theme(preizerdaul, #ad223b, #d87e8e, #711727, e00c, "geoportail-icons");
+.theme(wellenstein, #7ac573, #b0e4ab, #42803c, e00c, "geoportail-icons");
+.theme(lintgen, #f3c531, #f3d89b, #b3851d, e00c, "geoportail-icons");
+.theme(remich, #8ca229, #bacd63, #5c6b1b, e00c, "geoportail-icons");
+.theme(prof,  #006d2c, #99d8c9, #238b45, e00a, "geoportail-icons");
+.theme(go,  #555, #bbb, #756bb1, e00b, "geoportail-icons");
+.theme(cadastre_hertzien,   #689f38, #99d066, #387002, e02d, "geoportail-icons");
+.theme(ahc, #ff5722, #ff8a50, #c41c00, e016, "geoportail-icons");
 .theme_(#777, #ddd, #999);

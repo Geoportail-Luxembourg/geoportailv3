@@ -54,7 +54,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
     scope: {
       'map': '=appSearchMap',
       'language': '=appSearchLanguage',
-      'mobileActive': '=appSearchMobileactive'
+      'mobileActive': '=appSearchMobileactive',
+      'routingOpen': '=appSearchRoutingOpen'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',
@@ -95,6 +96,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
                 var ctrl = /** @type {app.SearchDirectiveController} */
                     (scope['ctrl']);
                 ctrl.featureOverlay_.clear();
+                ctrl.lastSelectedSuggestion_ = null;
                 $(this).find('input').focus();
               }, element, scope));
         }
@@ -129,13 +131,21 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
+ * @param {app.Routing} appRouting The routing service.
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch) {
+    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch,
+    appRouting) {
+
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
 
   /**
    * @type {Object}
@@ -225,6 +235,12 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.lastSelectedSuggestion_ = null;
 
   /**
    * @type {ol.Map}
@@ -423,11 +439,16 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         scope['click'] = function(event) {
           event.stopPropagation();
         };
+        scope['addRoutePoint'] = function(feature, event) {
+          this.addRoutePoint(feature);
+          event.stopPropagation();
+        }.bind(this);
 
-        var html = '<p>' + feature.get('label') +
+        var html = '<p><span class="search-result-container"><span class="search-result-label">' + feature.get('label') +
             ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span></p>';
+            ) + ')</span></span><span class="search-result-routing"><button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></span></span></p>';
+
         return $compile(html)(scope);
       }, this)
     })
@@ -868,6 +889,7 @@ app.SearchDirectiveController.selected_ =
       }
       if (dataset === 'pois' || dataset === 'coordinates') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
+        this.lastSelectedSuggestion_ = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
         map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
           size: /** @type {ol.Size} */ (map.getSize()),
@@ -909,6 +931,34 @@ app.SearchDirectiveController.selected_ =
       }
     };
 
+/**
+ * @param {ol.Feature} suggestion The feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addRoutePoint = function(suggestion) {
+  var coordinate = ol.extent.getCenter(suggestion.getGeometry().getExtent());
+  var feature = /** @type {ol.Feature} */
+      (new ol.Feature(new ol.geom.Point(coordinate)));
+  feature.set('label', suggestion.get('label'));
+  this.appRouting_.addRoutePoint(feature);
+  this['routingOpen'] = true;
+};
+
+/**
+ * @return {boolean} true if a featuer is selected.
+ * @export
+ */
+app.SearchDirectiveController.prototype.isSearchFeature = function() {
+  return (this.lastSelectedSuggestion_ !== null);
+};
+
+/**
+ * Add to the routing the last suggested feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addLastSuggestedFeature = function() {
+  this.addRoutePoint(this.lastSelectedSuggestion_);
+};
 
 app.module.controller('AppSearchController',
     app.SearchDirectiveController);

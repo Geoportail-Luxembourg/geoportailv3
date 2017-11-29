@@ -1,0 +1,556 @@
+.routes-layer {
+  overflow: visible;
+}
+.routes-goto-plan {
+  position: absolute;
+}
+@media screen and (max-width: 767px) {
+  .routes-layer {
+    overflow: auto;
+  }
+}
+
+.routes .close-panel {
+  top: 4px !important;
+}
+
+.icon-Download:before {
+  content: "\e900";
+  color: #fff;
+  font-family: 'apart-geoportail' !important;
+}
+.icon-Bike:before {
+  content: "\e901";
+  color: #fff;
+}
+.icon-Car:before {
+  content: "\e902";
+  color: #fff;
+}
+.icon-Direction:before {
+  font-family: 'apart-geoportail' !important;
+  content: "\e903";
+  color: #fff;
+}
+.icon-Direction.s-e {
+  transform: rotate(45deg);
+}
+.icon-Direction.south {
+  transform: rotate(90deg);
+}
+.icon-Direction.north {
+  transform: rotate(270deg);
+}
+.icon-Direction.north {
+  transform: rotate(270deg);
+}
+.icon-Direction.west {
+  transform: rotate(180deg);
+}
+.icon-Direction.east {
+  transform: rotate(0deg);
+}
+.icon-Direction.n-e {
+  transform: rotate(315deg);
+}
+.icon-Direction.n-w {
+  transform: rotate(225deg);
+}
+.icon-Direction.s-w {
+  transform: rotate(135deg);
+}
+.icon-Pedestrian:before {
+  content: "\e904";
+  color: #fff;
+}
+.icon-Trash:before {
+  color: #fff;
+  font-size: 19px
+}
+.icon-Route:before {
+  content: "\e905";
+  color: #fff;
+}
+.icon-Switch:before {
+  content: "\e906";
+  color: #fff;
+}
+.icon-Target:before {
+  content: "\e907";
+  color: #fff;
+  font-family: 'apart-geoportail' !important;
+}
+.routing-component {
+  margin: 20px 0 0 0;
+}
+.routing-component .routing-icon-container {
+  margin: 0 0 20px 0;
+  position: relative;
+  font-family: 'apart-geoportail' !important;
+}
+.routing-component .routing-icon {
+  display: inline-block;
+  opacity: 0.5;
+  transition: opacity 0.15s linear;
+  cursor: pointer;
+}
+.routing-component .routing-icon + .routing-icon {
+  margin: 0 0 0 20px;
+}
+.routing-component .routing-icon [class^="icon-"]:before {
+  font-size: 19px;
+}
+.routing-component .routing-icon.selected {
+  opacity: 1;
+}
+.routing-component .routing-icon:hover {
+  opacity: 1;
+}
+.routing-component .routing-icon:last-of-type {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  opacity: 1;
+}
+.routing-component .routing-routes {
+  position: relative;
+}
+.routing-component .routing-routes:after {
+  content: "";
+  width: 2px;
+  position: absolute;
+  z-index: 10;
+  top: 30px;
+  bottom: 30px;
+  left: 15px;
+  margin: 0 0 0 -1px;
+  background-color: #fff;
+}
+.routing-component .routing-route-container {
+  padding-left: 45px;
+  position: relative;
+  margin: 0 0 45px 0;
+}
+.routing-component .routing-route-container:after {
+  content: "";
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: -4px;
+  width: 40px;
+  height: 48px;
+  border-radius: 50%;
+  z-index: 20;
+}
+.routing-component .routing-route-container .route-number {
+  width: 30px;
+  height: 30px;
+  line-height: 26px;
+  /* top and bottom border times 2 */
+  border: 2px solid #fff;
+  border-radius: 50%;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  position: absolute;
+  z-index: 1000;
+  top: 50%;
+  margin-top: -15px;
+  left: 0;
+}
+.routing-component .routing-route-container .route-field {
+  border: 0;
+  width: 100%;
+  height: 48px;
+  padding: 0 10px;
+  background-color: #66B3D8;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.routing-component .routing-route-container .route-field::-webkit-input-placeholder {
+  /* Chrome */
+  color: rgba(255, 255, 255, 0.5);
+}
+.routing-component .routing-route-container .route-field:-ms-input-placeholder {
+  /* IE 10+ */
+  color: rgba(255, 255, 255, 0.5);
+}
+.routing-component .routing-route-container .route-field::-moz-placeholder {
+  /* Firefox 19+ */
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+.routing-component .routing-route-container .route-field:-moz-placeholder {
+  /* Firefox 4 - 18 */
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+.routing-component .routing-route-container .route-field.route-field-my-location {
+  padding-right: 48px;
+}
+.routing-component .routing-route-container .tooltip-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+}
+.routing-component .routing-route-container .tooltip-container:hover .tooltip {
+  display: block;
+}
+@media screen and (max-width: 767px) {
+  .routing-component .routing-route-container .tooltip-container:hover .tooltip {
+    display: none;
+  }
+}
+.routing-component .routing-route-container .tooltip-container .routing-icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  opacity: 1;
+}
+.routing-component .routing-route-container .tooltip-container .icon-Target:before {
+  font-size: 19px;
+}
+.routing-component .routing-route-container .routing-tooltip {
+  display: none;
+  top: 50%;
+  left: 100%;
+  margin-left: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.09);
+  border-radius: 2px;
+  min-width: 300px;
+  text-align: center;
+  padding: 2px;
+  transform: translateY(-50%);
+  opacity: 1 !important;
+}
+.routing-component .routing-route-container .routing-tooltip:after {
+  content: "";
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  top: 50%;
+  left: 0;
+  margin: -6px 0 0 -12px;
+  border-color: transparent;
+  border-style: solid;
+  border-right-color: #fff;
+  border-width: 6px;
+}
+.routes-tip {
+  padding: 30px 20px;
+  text-align: center;
+  background-color: #fff;
+}
+.routes-tip h3 {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+.routes-tip p {
+  font-size: 14px;
+  line-height: 20px;
+}
+.route-suggestions {
+  padding: 12px 0 12px 12px;
+}
+.route-suggestions .route-item {
+  border-bottom: 1px solid #8394A0;
+  padding: 10px 15px 10px 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+.route-suggestions .route-item .important {
+  font-weight: bold;
+}
+.route-options {
+  display: table;
+  width: 100%;
+}
+.route-options .route-option {
+  display: table-cell;
+  width: 50%;
+  height: 50px;
+  line-height: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.route-options .route-option-button {
+  border: none;
+  width: 100%;
+}
+.route-option .dropdown-menu{
+  min-width:150px;
+  width:150px;
+}
+
+.route-info-wrapper {
+  overflow: auto;
+  height: 100%;
+}
+@media screen and (max-width: 767px) {
+  .route-info-wrapper {
+    overflow: visible;
+  }
+}
+.route-info-wrapper .route-info {
+  padding-bottom: 0px;
+}
+@media screen and (max-width: 767px) {
+  .route-info-wrapper .route-info {
+    padding-bottom: 50px;
+  }
+}
+.route-info-wrapper .route-inline-unit {
+  margin-left: 4px;
+}
+.route-info-wrapper .route-info-container {
+  padding: 20px 12px 25px 10px;
+}
+.route-info-wrapper .route-info-container:not(:last-of-type) {
+  border-bottom: 1px solid #8394A0;
+}
+.route-info-wrapper .route-general {
+  background-color: #E6EAEC;
+  padding: 20px 12px 25px 12px;
+}
+@media screen and (max-width: 767px) {
+  .route-info-wrapper .route-general {
+    padding: 0;
+  }
+}
+.route-info-wrapper .route-general-info-container {
+  display: table;
+  width: 100%;
+}
+.route-info-wrapper .route-single-info {
+  display: table-cell;
+  width: auto;
+}
+@media screen and (max-width: 767px) {
+  .route-info-wrapper .route-single-info {
+    width: 33.33333%;
+    padding: 12px;
+  }
+  .route-info-wrapper .route-single-info:not(:last-of-type) {
+    border-right: 1px solid ;
+  }
+}
+.route-info-wrapper .route-info-title {
+  font-size: 18px;
+  line-height: 19px;
+  font-weight: bold;
+}
+.route-info-wrapper .route-info-data {
+  color: #8394A0;
+}
+.route-info-wrapper .route-info-data.route-info-general-data {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 22px;
+  padding-top: 10px;
+}
+.route-info-wrapper .route-details .route-info-title {
+  position: relative;
+}
+.route-info-container .profile {
+  width: 100%;
+}
+.routing-routes span.twitter-typeahead {
+    width: 96%;
+}
+
+.route-info-container .profile-title {
+  display: block;
+}
+.route-info-container .profile-title .profile-export{
+  display: none;
+}
+
+.route-info-container .profile-title .close{
+  display: none;
+}
+
+.route-info-wrapper .route-details .route-details-download {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}
+.route-info-wrapper .route-details .route-details-download small {
+  font-size: 11px;
+  line-height: 10px;
+  color: #8394A0;
+  margin-right: 3px;
+}
+.route-info-wrapper .route-details .route-details-step {
+  font-size: 16px;
+  line-height: 20px;
+  border-bottom: 1px solid #8394A0;
+  padding: 10px 10px 10px 30px;
+  margin: 0 -12px 0 0;
+  position: relative;
+}
+.route-info-wrapper .route-details .route-details-step:hover:before {
+  content: "";
+  width: 4px;
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  margin: 0 0 0 -12px;
+}
+.route-info-wrapper .route-details .route-details-step .route-instruction {
+  margin-bottom: 10px;
+  position: relative;
+}
+.route-info-wrapper .route-details .route-details-step .icon-Direction {
+  position: absolute;
+  top: 0px;
+  right: 100%;
+  margin-right: 6px;
+}
+.route-info-wrapper .route-details .route-details-step .icon-Direction:before {
+  color: #000;
+  font-size: 6px;
+}
+.route-info-wrapper .route-details .route-details-step .route-instruction-data {
+  font-size: 16px;
+  line-height: 19px;
+  display: inline-block;
+  margin: 0 10px 0 0;
+}
+
+.route-details {
+  background-color: #fff;
+}
+.route-graphic-container {
+  background-color: #fff;
+}
+.routing.icon:after {
+  color: #fff;
+}
+.routing.icon > a:after {
+  content: "\e905";
+  font-family: 'apart-geoportail' !important;
+  font-size: 0.7em !important;
+  color: #fff;
+  z-index: 20;
+}
+.routing.icon:before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  display: block;
+  transform: rotate(45deg);
+  position: absolute;
+  z-index: 10;
+  top: 5px;
+  left: 50%;
+  margin: 0 0 0 -12px;
+}
+@media (max-width: @screen-xs-max) {
+  .routing-goto-route {
+    bottom: 8px;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	z-index: 2;
+	display:block;
+  }
+}
+@media (min-width: @screen-md-min) {
+  .routing-goto-route {
+	display:none;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .routing-goto-plan {
+    bottom: 8px;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	display:block;
+  }
+}
+@media (min-width: @screen-md-min) {
+  .routing-goto-plan {
+	display:none;
+  }
+}
+.routing-rounded-button {
+  padding: 0 30px;
+  height: 50px;
+  line-height: 55px;
+  border-radius: 25px;
+  opacity: 0.7;
+  background-color: #fff;
+  font-size: 20px;
+  text-align: center;
+  border: 0;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+}
+.itinary-button {
+  position: absolute;
+  width: 250px;
+  margin-top: -43px;
+  margin-left: 410px;
+}
+.create-itinerary {
+  padding: 0 45px 0 15px;
+  position: relative;
+  border: 0;
+  height: 34px;
+  color: #fff;
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.create-itinerary .create-itinerary-text {
+  line-height: 40px;
+}
+.create-itinerary:after {
+  content: "\e905";
+  font-family: 'apart-geoportail' !important;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  margin: -0.4em 0 0 0;
+  right: 15px;
+  font-size: 0.8em;
+}
+.standalone-routing-button {
+  height: 20px;
+  width: 20px;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  border: 0;
+}
+.standalone-routing-icon:after{
+  content: "\e905";
+  color: #FFF;
+  font-family: 'apart-geoportail' !important;
+  position: absolute;
+  font-size: 0.8em;
+  transform: rotate(-45deg) translateY(-15px);
+  width: 20px;
+  height: 20px;
+}
+.routing-route-container .tt-menu {
+  min-width: 245px !important;
+}
