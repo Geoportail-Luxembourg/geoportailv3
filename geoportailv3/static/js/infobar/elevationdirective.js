@@ -74,7 +74,6 @@ app.ElevationDirectiveController =
           (elevation) => (this['elevation'] = elevation)
         );
 
-
       // 2D
       map.on('pointermove', ngeoDebounce(function(e) {
         if (!this['active'] || (this['ol3d'] && this['ol3d'].getEnabled())) {
@@ -85,15 +84,19 @@ app.ElevationDirectiveController =
 
       // 3D
       let unwatch = $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (ol3d) => {
-        if (!ol3d) { return; }
+        if (!ol3d) {
+          return;
+        }
         const manager = ngeoOlcsService.getManager()
         const scene = manager.getCesiumScene();
         this['ol3d'] = manager.getOl3d();
         const camera = scene.camera;
         const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-        const WMP = new Cesium.WebMercatorProjection()
+        const WMP = new Cesium.WebMercatorProjection(null);
         handler.setInputAction(ngeoDebounce((movement) => {
-          if (!this['active'] || !this['ol3d'].getEnabled()) { return; }
+          if (!this['active'] || !this['ol3d'].getEnabled()) {
+            return;
+          }
           let cartesian = camera.pickEllipsoid(movement.endPosition, scene.globe.ellipsoid);
           if (cartesian) {
             let cartographic = Cesium.Cartographic.fromCartesian(cartesian);

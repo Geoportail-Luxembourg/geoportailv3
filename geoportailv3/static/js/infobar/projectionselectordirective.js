@@ -19,8 +19,8 @@ goog.require('app');
 goog.require('app.CoordinateString');
 goog.require('app.projections');
 goog.require('ngeo.controlDirective');
+goog.require('ngeo.Debounce');
 goog.require('goog.array');
-goog.require('ol.control.MousePosition');
 
 
 /**
@@ -49,18 +49,27 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @ngInject
  * @export
  * @constructor
+ * @param {angular.Scope} $scope The scope.
+ * @param {Element} $element The element.
  * @param {Object} $document The document service.
  * @param {angular.$sce} $sce Angular sce service.
+ * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
 app.ProjectionselectorDirectiveController =
-    function($document, $sce, appCoordinateString) {
-  /**
-   * @type {app.CoordinateString}
-   * @private
-   */
+    function($scope, $element, $document, $sce, ngeoDebounce, ngeoOlcsService, appCoordinateString) {
+      /**
+       * @type {app.CoordinateString}
+       * @private
+       */
       this.coordinateString_ = appCoordinateString;
 
+      /**
+       * @type {string}
+       * @private
+       */
+      this.coordinates = '';
   /**
    * @type {Array.<Object>}
    */
@@ -72,11 +81,42 @@ app.ProjectionselectorDirectiveController =
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
       ];
       this['projection'] = this['projectionOptions'][0];
-  /** @type {ol.control.MousePostion} */
-      this['mousePositionControl'] = new ol.control.MousePosition({
-        className: 'custom-mouse-coordinates',
-        coordinateFormat: /** @type {ol.CoordinateFormatType} */
-        (goog.bind(this.mouseCoordinateFormat_, this))
+
+      let updateEl = (coordinates) => $($element)
+        .find('.custom-mouse-coordinates')
+        .text(this.mouseCoordinateFormat_(coordinates));
+
+      this['map'].on('pointermove', ngeoDebounce((e) => {
+        if (this.old3d && this.ol3d.is3dEnabled()) {
+          return;
+        }
+        updateEl(e.coordinate);
+      }, 10, false), this);
+
+      // 3D
+      let unwatch = $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (ol3d) => {
+        if (!ol3d) {
+          return;
+        }
+        const manager = ngeoOlcsService.getManager()
+        this.ol3d = manager.getOl3d();
+
+        const scene = manager.getCesiumScene();
+        const camera = scene.camera;
+        const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+        const WMP = new Cesium.WebMercatorProjection(null);
+        handler.setInputAction(ngeoDebounce((movement) => {
+          if (!this.ol3d.getEnabled()) { return; }
+          let cartesian = camera.pickEllipsoid(movement.endPosition, scene.globe.ellipsoid);
+          if (!cartesian) {
+            return;
+          }
+          let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+          cartesian = WMP.project(cartographic);
+          let coordinate = [ cartesian.x, cartesian.y ];
+          updateEl(coordinate);
+        }, 10, false), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        unwatch();
       });
     };
 
@@ -111,10 +151,6 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection =
       function(obj) {
         return obj['value'] == epsgCode;
       });
-      this['mousePositionControl'].setCoordinateFormat(
-      /** @type {ol.CoordinateFormatType} */
-      (goog.bind(this.mouseCoordinateFormat_, this))
-  );
     };
 
 app.module.controller('AppProjectionselectorController',
