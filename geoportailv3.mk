@@ -31,6 +31,7 @@ CONFIG_VARS += https_proxy
 CONFIG_VARS += print_urls
 CONFIG_VARS += no_proxy
 CONFIG_VARS += lidar
+CONFIG_VARS += routing
 
 APACHE_VHOST ?= luxembourg-geomapfish
 

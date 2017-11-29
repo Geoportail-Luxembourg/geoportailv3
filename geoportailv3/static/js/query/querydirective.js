@@ -45,6 +45,7 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'layersOpen': '=appQueryLayersOpen',
       'mymapsOpen': '=appQueryMymapsOpen',
       'appSelector': '=appQueryAppselector',
+      'routingOpen': '=appQueryRoutingOpen',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo'
     },
@@ -404,7 +405,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           this.isLongPress_ = false;
           return;
         }
-        if (this.drawnFeatures_.modifyInteraction.getActive() ||
+        if (this['routingOpen'] ||
+            this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
             this.appActivetool_.isActive() || this.isQuerying_) {
           return;

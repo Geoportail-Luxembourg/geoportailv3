@@ -325,7 +325,40 @@ class LuxPrintProxy(PrintProxy):
                 css = weasyprint.CSS(
                     string=".ng-hide {display: none !important;} " +
                            ".no-print {display: none !important;} " +
-                           "body {font-size: 60%;} "
+                           "body {font-size: 60%;} " +
+                           ".route-details-step { font-family: " +
+                           "Arial,sans-serif; font-size: 14px; " +
+                           "line-height: 20px; border-bottom: 1px " +
+                           "solid #8394A0; padding: 10px 10px 10px 30px; " +
+                           "margin: 0 -12px 0 0; position: relative;} " +
+                           ".route-info-title {font-size: 18px; " +
+                           "line-height: 19px; font-weight: 700;} " +
+                           ".route-general-info-container {display: " +
+                           "table; width: 100%;} " +
+                           ".route-single-info {display: table-cell; " +
+                           "width: auto;} " +
+                           ".route-info-general-data {font-size: 18px; " +
+                           "font-weight: 700; line-height: 22px; " +
+                           "padding-top: 10px;} " +
+                           ".route-info-data {color: #8394A0;} " +
+                           ".route-instruction-data {font-size: 16px; " +
+                           "line-height: 19px; display: inline-block; " +
+                           "margin: 0 10px 0 0;} " +
+                           ".route-instruction {margin-bottom: 10px;" +
+                           "position: relative;} " +
+                           ".icon-Direction {position: absolute; top: 0;" +
+                           "right: 100%; margin-right: 6px;} " +
+                           ".icon-Direction:before {font-family: " +
+                           "apart-geoportail!important;content: '\e903';" +
+                           "font-size: 6px;color:'#000';} " +
+                           ".south {transform: rotate(90deg);} " +
+                           ".north {transform: rotate(270deg);} " +
+                           ".west {transform: rotate(180deg);} " +
+                           ".east {transform: rotate(0deg);} " +
+                           ".n-e {transform: rotate(315deg);} " +
+                           ".n-w {transform: rotate(225deg);} " +
+                           ".s-w {transform: rotate(135deg);} " +
+                           ".s-e {transform: rotate(45deg);} "
                 )
                 merger = PdfFileMerger(strict=False)
                 merger.append(StringIO(content))
