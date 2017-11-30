@@ -20,9 +20,10 @@ def upgrade():
     schema_stats = schema + '_stats'
     op.create_table(
         'lux_predefined_wms',
+        sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
         sa.Column('url', sa.VARCHAR(), nullable=False),
         sa.Column('label', sa.VARCHAR(), nullable=False),
-        sa.PrimaryKeyConstraint('url'),
+        sa.PrimaryKeyConstraint('id'),
         schema=schema
     )
 
