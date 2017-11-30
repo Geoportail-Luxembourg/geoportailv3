@@ -1,5 +1,3 @@
-$(shell scripts/ensure_own_closure_util.sh > /dev/null 2>&1)
-
 LESS_FILES += node_modules/ngeo/src/modules/olcs/controls3d.less
 
 ifdef VARS_FILE

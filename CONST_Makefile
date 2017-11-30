@@ -387,6 +387,7 @@ serve: build development.ini
 .PHONY: update-node-modules
 update-node-modules:
 	npm install --force
+	scripts/ensure_own_closure_util.sh
 	touch .build/node_modules.timestamp
 
 # Templates
@@ -560,6 +561,7 @@ endif
 	mkdir -p $(dir $@)
 ifeq ($(NGEO), TRUE)
 	npm install
+	scripts/ensure_own_closure_util.sh
 endif
 	touch $@
 
@@ -585,6 +587,7 @@ update:
 	git submodule foreach git submodule foreach git clean -fd
 ifeq ($(NGEO), TRUE)
 	npm install --force
+	scripts/ensure_own_closure_util.sh
 	touch .build/node_modules.timestamp
 endif
 
