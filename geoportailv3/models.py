@@ -148,5 +148,6 @@ class LuxPredefinedWms(Base):
     __acl__ = [
         (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
     ]
-    url = Column(Unicode, primary_key=True)
+    id = Column(String, primary_key=True)
+    url = Column(Unicode, unique=True, label=_(u"Url"))
     label = Column(Unicode)
