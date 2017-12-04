@@ -21,9 +21,8 @@ app.olcs.ZoomToExtent = class extends ol.control.ZoomToExtent {
    * @override
    */
   handleZoomToExtent() {
-    if (this.ol3dm && this.ol3dm.is3dEnabled()) {
-      const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
-      const rectangle = new Cesium.Rectangle(...cameraExtentInRadians);
+    if (this.ol3dm && this.ol3dm.luxCameraExtentInRadians && this.ol3dm.is3dEnabled()) {
+      const rectangle = new Cesium.Rectangle(...this.ol3dm.luxCameraExtentInRadians);
       const offset = 2000;
       this.ol3dm.flyToRectangle(rectangle, offset);
     } else {
