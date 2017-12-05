@@ -475,8 +475,8 @@ $(VENV_BIN)/db2pot: .build/requirements.timestamp
 $(PACKAGE)/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
 
-$(PACKAGE)/locale/$(PACKAGE)-js.pot: $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) .build/node_modules.timestamp
-	node tools/extract-messages.js $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) > $@
+$(PACKAGE)/locale/$(PACKAGE)-js.pot: $(APP_HTML_FILES) $(GCC_JS_FILES) $(APP_PARTIALS_FILES) .build/node_modules.timestamp
+	node tools/extract-messages.js $(APP_HTML_FILES) $(GCC_JS_FILES) $(APP_PARTIALS_FILES) > $@
 
 .INTERMEDIATE:$(PACKAGE)/locale/$(PACKAGE)-db.pot
 $(PACKAGE)/locale/$(PACKAGE)-db.pot: $(VENV_BIN)/db2pot development.ini .build/config-$(INSTANCE_ID).timestamp
@@ -516,7 +516,7 @@ $(OUTPUT_DIR)/build.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
 	./node_modules/.bin/lessc --relative-urls $(PACKAGE)/static/less/$(PACKAGE).less $@
 
-.build/build.js: build.json $(GCC_JS_FILES) $(APP_JS_FILES) \
+.build/build.js: build.json $(GCC_JS_FILES) \
 		$(OUTPUT_DIR)/templatecache.js \
 		.build/externs/angular-1.6.js \
 		.build/externs/angular-1.6-q_templated.js \
@@ -565,7 +565,7 @@ ifeq ($(NGEO), TRUE)
 endif
 	touch $@
 
-.build/eslint.timestamp: $(APP_JS_FILES)
+.build/eslint.timestamp: $(GCC_JS_FILES)
 	mkdir -p $(dir $@)
 	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $^)
 	touch $@

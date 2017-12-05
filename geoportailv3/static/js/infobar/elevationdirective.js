@@ -54,27 +54,25 @@ app.ElevationDirectiveController =
     function($http, ngeoDebounce, appGetElevation) {
       var map = this['map'];
 
-  /**
-   * @type {app.GetElevation}
-   * @private
-   */
+      /**
+       * @type {app.GetElevation}
+       * @private
+       */
       this.getElevation_ = appGetElevation;
 
-  /**
-   * @type {string}
-   */
+      /**
+       * @type {string}
+       */
       this['elevation'] = '';
 
-      map.on('pointermove',
-      ngeoDebounce(
-      function(e) {
-        if (this['active']) {
-          this.getElevation_(e.coordinate).then(goog.bind(
-             function(elevation) {
-               this['elevation'] = elevation;
-             }, this
-             ));
+      // 2D
+      map.on('pointermove', ngeoDebounce(function(e) {
+        if (!this['active'] || !e.coordinate) {
+          return;
         }
+        this.getElevation_(e.coordinate).then(
+          (elevation) => (this['elevation'] = elevation)
+        );
       }, 300, true), this);
     };
 

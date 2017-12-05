@@ -16,6 +16,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
+goog.require('app.Map');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.StateManager');
@@ -306,7 +307,7 @@ app.MainController = function(
   this.appUserManager_.getUserInfo();
 
   /**
-   * @const {!ol.Map}
+   * @const {!app.Map}
    * @private
    */
   this.map_ = this.createMap_();
@@ -318,6 +319,7 @@ app.MainController = function(
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
   ngeoOlcsService.initialize(this.ol3dm_);
   $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
+  this.map_.set('ol3dm', this.ol3dm_);
 
   // Add the zoom to extent control in a second step since it depends on ol3dm.
   this.map_.addControl(new app.olcs.ZoomToExtent(this.defaultExtent_, this.ol3dm_));
@@ -444,7 +446,7 @@ app.MainController.prototype.addLocationControl_ =
 
 /**
  * @private
- * @return {!ol.Map} The map
+ * @return {!app.Map} The extended ol.Map.
  */
 app.MainController.prototype.createMap_ = function() {
   var interactions = ol.interaction.defaults({
@@ -452,7 +454,7 @@ app.MainController.prototype.createMap_ = function() {
     pinchRotate: false,
     constrainResolution: true
   });
-  var map = this['map'] = new ol.Map({
+  var map = this['map'] = new app.Map({
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),

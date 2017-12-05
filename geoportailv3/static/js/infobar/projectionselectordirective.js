@@ -19,6 +19,7 @@ goog.require('app');
 goog.require('app.CoordinateString');
 goog.require('app.projections');
 goog.require('ngeo.controlDirective');
+goog.require('ngeo.Debounce');
 goog.require('goog.array');
 goog.require('ol.control.MousePosition');
 
@@ -55,10 +56,10 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  */
 app.ProjectionselectorDirectiveController =
     function($document, $sce, appCoordinateString) {
-  /**
-   * @type {app.CoordinateString}
-   * @private
-   */
+      /**
+       * @type {app.CoordinateString}
+       * @private
+       */
       this.coordinateString_ = appCoordinateString;
 
   /**
@@ -72,7 +73,7 @@ app.ProjectionselectorDirectiveController =
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
       ];
       this['projection'] = this['projectionOptions'][0];
-  /** @type {ol.control.MousePostion} */
+      /** @type {ol.control.MousePostion} */
       this['mousePositionControl'] = new ol.control.MousePosition({
         className: 'custom-mouse-coordinates',
         coordinateFormat: /** @type {ol.CoordinateFormatType} */
@@ -112,9 +113,9 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection =
         return obj['value'] == epsgCode;
       });
       this['mousePositionControl'].setCoordinateFormat(
-      /** @type {ol.CoordinateFormatType} */
-      (goog.bind(this.mouseCoordinateFormat_, this))
-  );
+        /** @type {ol.CoordinateFormatType} */
+        (goog.bind(this.mouseCoordinateFormat_, this))
+      );
     };
 
 app.module.controller('AppProjectionselectorController',
