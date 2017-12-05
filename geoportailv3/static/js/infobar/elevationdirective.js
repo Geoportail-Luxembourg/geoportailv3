@@ -68,7 +68,7 @@ app.ElevationDirectiveController =
 
       // 2D
       map.on('pointermove', ngeoDebounce(function(e) {
-        if (!this['active']) {
+        if (!this['active'] || !e.coordinate) {
           return;
         }
         this.getElevation_(e.coordinate).then(
