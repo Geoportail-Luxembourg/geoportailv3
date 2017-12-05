@@ -21,6 +21,7 @@ goog.require('app.projections');
 goog.require('ngeo.controlDirective');
 goog.require('ngeo.Debounce');
 goog.require('goog.array');
+goog.require('ol.control.MousePosition');
 
 
 /**
@@ -82,11 +83,12 @@ app.ProjectionselectorDirectiveController =
       ];
       this['projection'] = this['projectionOptions'][0];
 
-      this['map'].on('pointermove', ngeoDebounce((e) => {
-        $($element)
-          .find('.custom-mouse-coordinates')
-          .text(this.mouseCoordinateFormat_(e.coordinate));
-      }, 10, false), this);
+      /** @type {ol.control.MousePostion} */
+      this['mousePositionControl'] = new ol.control.MousePosition({
+        className: 'custom-mouse-coordinates',
+        coordinateFormat: /** @type {ol.CoordinateFormatType} */
+        (goog.bind(this.mouseCoordinateFormat_, this))
+      });
     };
 
 
@@ -120,6 +122,10 @@ app.ProjectionselectorDirectiveController.prototype.switchProjection =
       function(obj) {
         return obj['value'] == epsgCode;
       });
+      this['mousePositionControl'].setCoordinateFormat(
+        /** @type {ol.CoordinateFormatType} */
+        (goog.bind(this.mouseCoordinateFormat_, this))
+      );
     };
 
 app.module.controller('AppProjectionselectorController',
