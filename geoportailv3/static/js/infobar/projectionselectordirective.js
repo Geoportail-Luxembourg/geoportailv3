@@ -82,42 +82,11 @@ app.ProjectionselectorDirectiveController =
       ];
       this['projection'] = this['projectionOptions'][0];
 
-      let updateEl = (coordinates) => $($element)
-        .find('.custom-mouse-coordinates')
-        .text(this.mouseCoordinateFormat_(coordinates));
-
       this['map'].on('pointermove', ngeoDebounce((e) => {
-        if (this.old3d && this.ol3d.is3dEnabled()) {
-          return;
-        }
-        updateEl(e.coordinate);
+        $($element)
+          .find('.custom-mouse-coordinates')
+          .text(this.mouseCoordinateFormat_(e.coordinate));
       }, 10, false), this);
-
-      // 3D
-      let unwatch = $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (ol3d) => {
-        if (!ol3d) {
-          return;
-        }
-        const manager = ngeoOlcsService.getManager()
-        this.ol3d = manager.getOl3d();
-
-        const scene = manager.getCesiumScene();
-        const camera = scene.camera;
-        const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-        const WMP = new Cesium.WebMercatorProjection(null);
-        handler.setInputAction(ngeoDebounce((movement) => {
-          if (!this.ol3d.getEnabled()) { return; }
-          let cartesian = camera.pickEllipsoid(movement.endPosition, scene.globe.ellipsoid);
-          if (!cartesian) {
-            return;
-          }
-          let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-          cartesian = WMP.project(cartographic);
-          let coordinate = [ cartesian.x, cartesian.y ];
-          updateEl(coordinate);
-        }, 10, false), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        unwatch();
-      });
     };
 
 

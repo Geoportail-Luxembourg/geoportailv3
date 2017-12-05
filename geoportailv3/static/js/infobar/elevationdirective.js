@@ -56,57 +56,36 @@ app.ElevationDirectiveController =
     function($scope, $http, ngeoDebounce, appGetElevation, ngeoOlcsService) {
       var map = this['map'];
 
-  /**
-   * @type {app.GetElevation}
-   * @private
-   */
+      /**
+       * @type {app.GetElevation}
+       * @private
+       */
       this.getElevation_ = appGetElevation;
 
-  /**
-   * @type {string}
-   */
+      /**
+       * @type {string}
+       */
       this['elevation'] = '';
 
-      this['ol3d'] = null;
-
-      const requestElevation = (coordinate) =>
-        this.getElevation_(coordinate).then(
-          (elevation) => (this['elevation'] = elevation)
-        );
+      let manager = ngeoOlcsService.getManager();
 
       // 2D
       map.on('pointermove', ngeoDebounce(function(e) {
-        if (!this['active'] || (this['ol3d'] && this['ol3d'].getEnabled())) {
+        if (!this['active']) {
           return;
         }
-        requestElevation(e.coordinate);
-      }, 300, true), this);
-
-      // 3D
-      let unwatch = $scope.$watch(() => ngeoOlcsService.getManager().getOl3d(), (ol3d) => {
-        if (!ol3d) {
-          return;
-        }
-        const manager = ngeoOlcsService.getManager()
-        const scene = manager.getCesiumScene();
-        this['ol3d'] = manager.getOl3d();
-        const camera = scene.camera;
-        const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
-        const WMP = new Cesium.WebMercatorProjection(null);
-        handler.setInputAction(ngeoDebounce((movement) => {
-          if (!this['active'] || !this['ol3d'].getEnabled()) {
+        if (manager.is3dEnabled()) {
+          let coordinate = map.getCoordinateFromPixel(e.pixel);
+          if (!coordinate) {
             return;
           }
-          let cartesian = camera.pickEllipsoid(movement.endPosition, scene.globe.ellipsoid);
-          if (cartesian) {
-            let cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-            cartesian = WMP.project(cartographic);
-            let coordinate = [ cartesian.x, cartesian.y ];
-            requestElevation(coordinate);
-          }
-        }, 300, true), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        unwatch();
-      });
+          this['elevation'] = Math.round(coordinate[2]) + ' m';
+        } else {
+          this.getElevation_(e.coordinate).then(
+            (elevation) => (this['elevation'] = elevation)
+          );
+        }
+      }, 300, true), this);
     };
 
 
