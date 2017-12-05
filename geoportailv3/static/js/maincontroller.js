@@ -454,7 +454,7 @@ app.MainController.prototype.createMap_ = function() {
     pinchRotate: false,
     constrainResolution: true
   });
-  return new app.Map({
+  var map = this['map'] = new app.Map({
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
@@ -474,6 +474,7 @@ app.MainController.prototype.createMap_ = function() {
       extent: this.maxExtent_
     })
   });
+  return map;
 };
 
 

@@ -50,10 +50,9 @@ app.module.directive('appElevation', app.elevationDirective);
  * @param {angular.$http} $http The angular http service.
  * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
- * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  */
 app.ElevationDirectiveController =
-    function($scope, $http, ngeoDebounce, appGetElevation, ngeoOlcsService) {
+    function($scope, $http, ngeoDebounce, appGetElevation) {
       var map = this['map'];
 
       /**
@@ -67,24 +66,14 @@ app.ElevationDirectiveController =
        */
       this['elevation'] = '';
 
-      let manager = ngeoOlcsService.getManager();
-
       // 2D
       map.on('pointermove', ngeoDebounce(function(e) {
         if (!this['active']) {
           return;
         }
-        if (manager.is3dEnabled()) {
-          let coordinate = map.getCoordinateFromPixel(e.pixel);
-          if (!coordinate) {
-            return;
-          }
-          this['elevation'] = Math.round(coordinate[2]) + ' m';
-        } else {
-          this.getElevation_(e.coordinate).then(
-            (elevation) => (this['elevation'] = elevation)
-          );
-        }
+        this.getElevation_(e.coordinate).then(
+          (elevation) => (this['elevation'] = elevation)
+        );
       }, 300, true), this);
     };
 
