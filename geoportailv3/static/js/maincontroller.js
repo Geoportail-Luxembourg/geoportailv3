@@ -446,6 +446,7 @@ app.MainController.prototype.addLocationControl_ =
 
 /**
  * @private
+ * @return {!app.Map} The extended ol.Map.
  */
 app.MainController.prototype.createMap_ = function() {
   var interactions = ol.interaction.defaults({
@@ -453,7 +454,7 @@ app.MainController.prototype.createMap_ = function() {
     pinchRotate: false,
     constrainResolution: true
   });
-  var map = /** @type {app.Map} */ (new app.Map({
+  return new app.Map({
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
@@ -472,8 +473,7 @@ app.MainController.prototype.createMap_ = function() {
       enableRotation: false,
       extent: this.maxExtent_
     })
-  }));
-  return map;
+  });
 };
 
 

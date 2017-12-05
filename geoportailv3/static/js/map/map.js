@@ -7,7 +7,7 @@ goog.provide('app.Map');
 goog.require('app');
 goog.require('ol.Map');
 
-app.Map = class Map3d extends ol.Map {
+app.Map = class extends ol.Map {
 
   /**
    * @override
