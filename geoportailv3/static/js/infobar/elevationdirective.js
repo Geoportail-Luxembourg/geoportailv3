@@ -46,13 +46,12 @@ app.module.directive('appElevation', app.elevationDirective);
 /**
  * @ngInject
  * @constructor
- * @param {angular.Scope} $scope The scope.
  * @param {angular.$http} $http The angular http service.
  * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
  */
 app.ElevationDirectiveController =
-    function($scope, $http, ngeoDebounce, appGetElevation) {
+    function($http, ngeoDebounce, appGetElevation) {
       var map = this['map'];
 
       /**

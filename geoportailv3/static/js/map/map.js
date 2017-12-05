@@ -12,7 +12,7 @@ app.Map = class extends ol.Map {
   /**
    * @override
    */
-  getCoordinateFromPixel (pixel) {
+  getCoordinateFromPixel(pixel) {
     let coordinate = super.getCoordinateFromPixel(pixel);
     const manager = this.get('ol3dm');
     if (!manager || !manager.is3dEnabled()) {
@@ -26,6 +26,6 @@ app.Map = class extends ol.Map {
       return null;
     }
     cartesian = WMP.project(Cesium.Cartographic.fromCartesian(cartesian));
-    return [ cartesian.x, cartesian.y, cartesian.z ];
-  };
-}
+    return [cartesian.x, cartesian.y, cartesian.z];
+  }
+};

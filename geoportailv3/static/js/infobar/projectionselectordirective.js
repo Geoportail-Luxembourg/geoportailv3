@@ -50,27 +50,18 @@ app.module.directive('appProjectionselector', app.projectionselectorDirective);
  * @ngInject
  * @export
  * @constructor
- * @param {angular.Scope} $scope The scope.
- * @param {Element} $element The element.
  * @param {Object} $document The document service.
  * @param {angular.$sce} $sce Angular sce service.
- * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
- * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
 app.ProjectionselectorDirectiveController =
-    function($scope, $element, $document, $sce, ngeoDebounce, ngeoOlcsService, appCoordinateString) {
+    function($document, $sce, appCoordinateString) {
       /**
        * @type {app.CoordinateString}
        * @private
        */
       this.coordinateString_ = appCoordinateString;
 
-      /**
-       * @type {string}
-       * @private
-       */
-      this.coordinates = '';
   /**
    * @type {Array.<Object>}
    */
@@ -82,7 +73,6 @@ app.ProjectionselectorDirectiveController =
     {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
       ];
       this['projection'] = this['projectionOptions'][0];
-
       /** @type {ol.control.MousePostion} */
       this['mousePositionControl'] = new ol.control.MousePosition({
         className: 'custom-mouse-coordinates',
