@@ -450,8 +450,9 @@ lux.Map = function(options) {
     if (options.search && options.search.target) {
       var searchTarget = options.search.target;
       var searchDataSets = options.search.dataSets;
+      var onSelect = options.search.onSelect;
       delete options.search;
-      this.addSearch(searchTarget, searchDataSets);
+      this.addSearch(searchTarget, searchDataSets, onSelect);
     }
   }.bind(this));
 
@@ -1358,10 +1359,11 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
  * @param {Element|string} target Dom element or id of the element to render search widget in.
  * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
+ * @param {function(Event, String, Element)=} onSelect Optional function called when result is selected.
  * @export
  * @api
  */
-lux.Map.prototype.addSearch = function(target, dataSets) {
+lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
   var layers = [];
   var searchCoordinates = false;
   if (dataSets !== undefined && dataSets.length > 0) {
@@ -1381,6 +1383,30 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
   if (!(el instanceof Element)) {
     console.error('Search target should be a DOM Element or its id');
     return;
+  }
+  var selectFunction;
+  if (onSelect !== undefined) {
+    selectFunction = onSelect;
+  } else {
+    selectFunction = function(e, term, item) {
+      var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
+      var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
+      this.searchLayer_.getSource().clear();
+      this.searchLayer_.getSource().addFeature(new ol.Feature(
+        new ol.geom.Point(
+          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
+        )
+      ));
+      this.getView().fit(
+        ol.geom.Polygon.fromExtent(
+          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+        ),
+        /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {Array<number>} */ (this.getSize()),
+          maxZoom: 17
+        })
+      );
+    };
   }
 
   var container = document.createElement('div');
@@ -1438,34 +1464,20 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
     }.bind(this),
     'renderItem': function(item, search) {
       var label = item.properties.label;
+      var layerName = item.properties['layer_name'];
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
       var geom = /** @type {ol.geom.Point} */ (format.readGeometry(item.geometry));
       var bbox = (!item['bbox'] || !item['bbox']['join']) ? geom.getExtent() : item['bbox'];
       return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
-          'data-coord="' + geom.getCoordinates().join(',') + '"' +
-          'data-extent="' + bbox.join(',') + '">' +
+          ' data-coord="' + geom.getCoordinates().join(',') + '"' +
+          ' data-layer="' + layerName + '"' +
+          ' data-extent="' + bbox.join(',') + '">' +
           label.replace(re, '<b>$1</b>') +
           '</div>';
     },
     'onSelect': function(e, term, item) {
-      var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
-      var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
-      this.searchLayer_.getSource().clear();
-      this.searchLayer_.getSource().addFeature(new ol.Feature(
-        new ol.geom.Point(
-          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
-        )
-      ));
-      this.getView().fit(
-        ol.geom.Polygon.fromExtent(
-          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
-        ),
-        /** @type {olx.view.FitOptions} */ ({
-          size: /** @type {Array<number>} */ (this.getSize()),
-          maxZoom: 17
-        })
-      );
+      selectFunction.call(this, e, term, item);
     }.bind(this)
   });
 
