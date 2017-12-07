@@ -90,6 +90,11 @@ lux.baseUrl = null;
 lux.languages = {};
 
 /**
+ * @type {string?}
+ */
+lux.wmtsCrossOrigin = 'anonymous';
+
+/**
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
  * <li>Mymaps service</li>
@@ -166,6 +171,15 @@ lux.printUrl = 'printproxy';
  */
 lux.setLayersUrl = function(url) {
   lux.layersUrl = url;
+};
+
+/**
+ * @param {string?} crossorigin The crossorigin header. Default is anonymous.
+ * @export
+ * @api
+ */
+lux.setWmtsCrossOrigin = function(crossorigin) {
+  lux.wmtsCrossOrigin = crossorigin;
 };
 
 /**
@@ -1857,12 +1871,13 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
   }
   var projection = ol.proj.get('EPSG:3857');
   var extent = projection.getExtent();
+
   var layer = new ol.layer.Tile({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.WMTS({
-      crossOrigin: 'anonymous',
+      crossOrigin: lux.wmtsCrossOrigin,
       url: url,
       tilePixelRatio: (retina ? 2 : 1),
       layer: config['name'],

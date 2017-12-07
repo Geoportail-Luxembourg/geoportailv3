@@ -1,6 +1,8 @@
 extends: CONST_vars.yaml
 
 vars:
+    referrer:
+
     no_proxy: localhost
     #OverviewMap
     overview_map:
