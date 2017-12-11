@@ -413,8 +413,13 @@ class Getfeatureinfo(object):
                         log.error(l_template)
                         return HTTPBadGateway()
                     remote_template = Template(data)
-                    r['tooltip'] =\
-                        remote_template.render(features=features)
+                    if "${features" in data:
+                        r['tooltip'] =\
+                            remote_template.render(features=features)
+                    else:
+                        r['tooltip'] =\
+                            remote_template.render(feature=features[0])
+
                 else:
                     r['tooltip'] = render(
                         'geoportailv3:' + path + template, context)
