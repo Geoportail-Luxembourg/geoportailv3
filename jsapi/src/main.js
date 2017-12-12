@@ -1872,12 +1872,12 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
   var retina = isHiDpi && config['metadata']['hasRetina'] === 'true';
 
   var retinaExtension = (retina ? '_hd' : '');
-  var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+  var url = 'http://wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
   retinaExtension +
   '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
   if (lux.requestScheme === 'https') {
-    url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+    url = 'https://wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
     retinaExtension +
     '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
