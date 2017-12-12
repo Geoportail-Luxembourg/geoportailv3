@@ -1371,10 +1371,13 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
       if (layer === 'Coordinates') {
         searchCoordinates = true;
       } else {
-        layers.push(layer);
+        if (layer.indexOf('editus_poi') < 0) {
+          layers.push(layer);
+        }
       }
     });
-  } else {
+  }
+  if (layers.length === 0) {
     layers.push('Adresse');
   }
   var el = typeof target === 'string' ?
