@@ -7,16 +7,16 @@ goog.require('app.profileDirective');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ngeo');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
 goog.require('ol.extent');
-goog.require('ol.proj');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.MultiLineString');
+goog.require('ol.layer.Vector');
+goog.require('ol.proj');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
 goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 /**
@@ -63,7 +63,6 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$timeout} $timeout The timeout service.
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.Location} ngeoLocation ngeo location service.
@@ -91,7 +90,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @ngInject
  */
 app.QueryController = function($sce, $timeout, $scope, $http,
-    ngeoFeatureOverlayMgr, appGetProfile, ngeoLocation,
+    appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
@@ -294,11 +293,16 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   this.isQuerying_ = false;
 
   /**
-   * The draw overlay
-   * @type {ngeo.FeatureOverlay}
+   * The features layer
+   * @type {ol.layer.Vector}
    * @private
    */
-  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  this.featureLayer_ = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    zIndex: 1000,
+    altitudeMode: 'clampToGround'
+  });
+  this.map_.addLayer(this.featureLayer_);
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });
@@ -313,7 +317,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     stroke: circleStroke
   });
 
-  this.featureOverlay_.setStyle(
+  this.featureLayer_.setStyle(
       /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @param {number} resolution Resolution.
@@ -663,72 +667,65 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     var bigBuffer = 20;
     var smallBuffer = 1;
 
-    var lb = ol.proj.transform(
-        this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] - bigBuffer, evt.pixel[1] + bigBuffer]),
+    var point = ol.proj.transform(evt.coordinate,
         this.map_.getView().getProjection(), 'EPSG:2169');
-    var rt = ol.proj.transform(
-        this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] + bigBuffer, evt.pixel[1] - bigBuffer]),
-        this.map_.getView().getProjection(), 'EPSG:2169');
-    var big_box = lb.concat(rt);
-
-    lb = ol.proj.transform(
-        this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] - smallBuffer, evt.pixel[1] + smallBuffer]),
-        this.map_.getView().getProjection(), 'EPSG:2169');
-    rt = ol.proj.transform(
-        this.map_.getCoordinateFromPixel(
-        [evt.pixel[0] + smallBuffer, evt.pixel[1] - smallBuffer]),
-        this.map_.getView().getProjection(), 'EPSG:2169');
-    var small_box = lb.concat(rt);
+    var big_box = [
+      [point[0] - bigBuffer, point[1] + bigBuffer],
+      [point[0] + bigBuffer, point[1] - bigBuffer]
+    ];
+    var small_box = [
+      [point[0] - smallBuffer, point[1] + smallBuffer],
+      [point[0] + smallBuffer, point[1] - smallBuffer]
+    ];
 
     this.isQuerying_ = true;
     this.map_.getViewport().style.cursor = 'wait';
 
     this.content = [];
-    var size = this.map_.getSize();
-    var extent = this.map_.getView().calculateExtent(size);
-
-    var bbox = extent.join(',');
-    this.http_.get(
-        this.getInfoServiceUrl_,
-      {params: {
-        'layers': layersList.join(),
-        'box1': big_box.join(),
-        'box2': small_box.join(),
+    var params = {
+      'layers': layersList.join(),
+      'box1': big_box.join(),
+      'box2': small_box.join(),
+      'srs': 'EPSG:3857'
+    };
+    if (!this.map_.get('ol3dm').is3dEnabled()) {
+      var size = this.map_.getSize();
+      var extent = this.map_.getView().calculateExtent(size);
+      var bbox = extent.join(',');
+      $.extend(params, {
         'BBOX': bbox,
         'WIDTH': size[0],
         'HEIGHT': size[1],
         'X': evt.pixel[0],
-        'Y': evt.pixel[1],
-        'srs': 'EPSG:3857'
-      }}).then(
-        goog.bind(function(resp) {
-          if (resp.data.length > 0) {
-            this.showInfo_(evt.originalEvent.shiftKey, resp,
-                layerLabel, true, false);
-          } else {
-            this.isQuerying_ = false;
-            this.map_.getViewport().style.cursor = '';
-            this.lastHighlightedFeatures_ = [];
-            this.highlightFeatures_(this.lastHighlightedFeatures_, false);
-            this.clearQueryResult_(this.QUERYPANEL_);
-            if (infoMymaps) {
-              if (!this.selectMymapsFeature_(evt.pixel)) {
-                this['infoOpen'] = false;
-              }
-            } else {
+        'Y': evt.pixel[1]
+      });
+    }
+    this.http_.get(this.getInfoServiceUrl_, {params: params})
+      .then(goog.bind(function(resp) {
+        if (resp.data.length > 0) {
+          this.showInfo_(evt.originalEvent.shiftKey, resp,
+              layerLabel, true, false);
+        } else {
+          this.isQuerying_ = false;
+          this.map_.getViewport().style.cursor = '';
+          this.lastHighlightedFeatures_ = [];
+          this.highlightFeatures_(this.lastHighlightedFeatures_, false);
+          this.clearQueryResult_(this.QUERYPANEL_);
+          if (infoMymaps) {
+            if (!this.selectMymapsFeature_(evt.pixel)) {
               this['infoOpen'] = false;
             }
+          } else {
+            this['infoOpen'] = false;
           }
-        }, this),
-        goog.bind(function(error) {
-          this.clearQueryResult_(this.QUERYPANEL_);
-          this['infoOpen'] = false;
-          this.map_.getViewport().style.cursor = '';
-          this.isQuerying_ = false;
-        }, this));
+        }
+      }, this),
+      goog.bind(function(error) {
+        this.clearQueryResult_(this.QUERYPANEL_);
+        this['infoOpen'] = false;
+        this.map_.getViewport().style.cursor = '';
+        this.isQuerying_ = false;
+      }, this));
   } else {
     if (infoMymaps) {
       this.selectMymapsFeature_(evt.pixel);
@@ -836,7 +833,7 @@ app.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
  * @private
  */
 app.QueryController.prototype.clearFeatures_ = function() {
-  this.featureOverlay_.clear();
+  this.featureLayer_.getSource().clear();
 };
 
 
@@ -1017,10 +1014,10 @@ app.QueryController.prototype.highlightFeatures_ = function(features, fit) {
               function(geometry) {
                 var newFeature = curFeature.clone();
                 newFeature.setGeometry(geometry);
-                this.featureOverlay_.addFeature(newFeature);
+                this.featureLayer_.getSource().addFeature(newFeature);
               }.bind(this));
         } else {
-          this.featureOverlay_.addFeature(curFeature);
+          this.featureLayer_.getSource().addFeature(curFeature);
         }
       }
       if (fit) {
@@ -1243,14 +1240,14 @@ app.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
  * @export
  */
 app.QueryController.prototype.showGeom = function(geom, color) {
-  this.featureOverlay_.clear();
+  this.featureLayer_.getSource().clear();
   if (geom !== undefined) {
     var feature = /** @type {ol.Feature} */
       ((new ol.format.GeoJSON()).readFeature(geom));
     if (color !== undefined) {
       feature.set('color', color);
     }
-    this.featureOverlay_.addFeature(feature);
+    this.featureLayer_.getSource().addFeature(feature);
     this.map_.getView().fit(feature.getGeometry().getExtent());
   }
   this.highlightFeatures_(this.lastHighlightedFeatures_, false);
