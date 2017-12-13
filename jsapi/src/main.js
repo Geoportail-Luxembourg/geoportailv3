@@ -47,7 +47,7 @@ var _paq = [];
 _paq.push(['setSiteId', 22]);
 
 (function() {
-  var u = '//statistics.geoportail.lu/';
+  var u = 'https://statistics.geoportail.lu/';
   _paq.push(['setTrackerUrl', u + 'piwik.php']);
   var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
   g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
@@ -116,7 +116,7 @@ lux.setBaseUrl = function(url, requestScheme) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
 
-    url = '//apiv3.geoportail.lu/';
+    url = 'https://apiv3.geoportail.lu/';
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
@@ -541,8 +541,8 @@ lux.Map = function(options) {
   options.controls = controls;
 
   options.logo = {
-    href: '//map.geoportail.lu',
-    src: '//www.geoportail.lu/favicon.ico'
+    href: 'https://map.geoportail.lu',
+    src: 'https://www.geoportail.lu/favicon.ico'
   };
 
 
@@ -869,7 +869,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      '//openlayers.org/en/master/examples/data/icon.png';
+      'https://openlayers.org/en/master/examples/data/icon.png';
   element.appendChild(image);
 
   var position;
@@ -1936,7 +1936,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
  * @private
  */
 lux.WMSLayerFactory_ = function(config, opacity, visible) {
-  var url = config.url || '//map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var url = config.url || 'https://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
     url: url,
