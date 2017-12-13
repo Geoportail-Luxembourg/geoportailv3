@@ -502,7 +502,10 @@ lux.Map = function(options) {
       controls = options.controls;
     }
   } else {
-    controls = ol.control.defaults();
+    var attribution = new ol.control.Attribution({
+      collapsible: false
+    });
+    controls = ol.control.defaults({attribution: false}).extend([attribution]);
   }
 
   var target;
@@ -544,7 +547,6 @@ lux.Map = function(options) {
     href: 'https://map.geoportail.lu',
     src: 'https://www.geoportail.lu/favicon.ico'
   };
-
 
   goog.base(this, options);
 
@@ -1894,6 +1896,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
     source: new ol.source.WMTS({
       crossOrigin: lux.wmtsCrossOrigin,
       url: url,
+      attributions: [''],
       tilePixelRatio: (retina ? 2 : 1),
       layer: config['name'],
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
