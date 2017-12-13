@@ -458,7 +458,7 @@ lux.Map = function(options) {
 
   if (options.features) {
     var opts = options.features;
-    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target, opts.showMarker);
+    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target, opts.showMarker, opts.maxZoom);
   }
 
   if (options.view === undefined) {
@@ -1258,10 +1258,11 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
  * @param {boolean|undefined} isShowMarker True if a marker has to be displayed.
+ * @param {number|undefined} maxZoom The maximum zoom to fit.
  * @export
  * @api
  */
-lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker) {
+lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker, maxZoom) {
   // remove any highlighted feature
   this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
@@ -1277,7 +1278,7 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
         return resp.json();
       }).then(function(json) {
         this.addFeature_(json, visible, opt_click, opt_target,
-          (isShowMarker === undefined) ? true : isShowMarker);
+          (isShowMarker === undefined) ? true : isShowMarker, maxZoom);
       }.bind(this));
     }.bind(this));
   }.bind(this));
@@ -1311,9 +1312,11 @@ lux.Map.prototype.readJsonFeatures_ = function(json) {
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
  * @param {boolean} isShowMarker True if the marker should be shown.
+ * @param {number | undefined} maxZoom The maxZoom to fit.
  * @private
  */
-lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker) {
+lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker, maxZoom) {
+  var curMaxZoom = (maxZoom !== undefined) ? maxZoom : 17;
 
   if (json.length === 0) {
     return;
@@ -1346,7 +1349,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
     if (size) {
       this.getView().fit(this.featureExtent_, {
         size: size,
-        maxZoom: 17,
+        maxZoom: curMaxZoom,
         padding: [0, 0, 0, 0]
       });
     }

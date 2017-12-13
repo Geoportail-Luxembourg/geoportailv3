@@ -420,6 +420,13 @@ luxx.FeaturesOptions.prototype.click;
 luxx.FeaturesOptions.prototype.showMarker;
 
 /**
+ * The maximal zoom level to use when zooming on a feature. Default is 17.
+ * @type {number|undefined}
+ * @api
+ */
+luxx.FeaturesOptions.prototype.maxZoom;
+
+/**
  * Object literal with config options for the vector (GPX/KML) layer.
  * @typedef {Object}
  */
