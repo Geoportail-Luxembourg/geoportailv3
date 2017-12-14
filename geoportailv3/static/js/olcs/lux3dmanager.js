@@ -30,6 +30,28 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     this.luxCameraExtentInRadians = cameraExtentInRadians;
   }
 
+  /**
+   * @override
+   */
+  instantiateOLCesium() {
+    goog.asserts.assert(this.map);
+    const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '2.0');
+
+    const sceneOptions = /** @type {!Cesium.SceneOptions} */ ({terrainExaggeration});
+    const ol3d = new olcs.OLCesium({map: this.map, sceneOptions});
+
+    const scene = ol3d.getCesiumScene();
+
+    // for performance, limit terrain levels to be loaded
+    const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
+    const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
+    const rectangle = this.getCameraExtentRectangle();
+    const url = this.ngeoLocation_.hasParam('own_terrain') ?
+      'https://3dtiles.geoportail.lu/tiles' :
+      'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
+    scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
+    return ol3d;
+  }
 
   /**
    * @override
@@ -38,16 +60,5 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     super.configureForUsability(scene);
     const camera = scene.camera;
     camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
-
-    // for performance, limit terrain levels to be loaded
-    const availableLevels = [8, 11, 14, 16, 17];
-    const rectangle = this.getCameraExtentRectangle();
-    const url = this.ngeoLocation_.hasParam('own_terrain') ?
-      'https://3dtiles.geoportail.lu/tiles' :
-      'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
-    scene.terrainProvider = new Cesium.CesiumTerrainProvider({
-      rectangle,
-      url,
-      availableLevels});
   }
 };
