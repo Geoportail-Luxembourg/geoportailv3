@@ -24,6 +24,14 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
      */
     this.ngeoLocation_ = ngeoLocation;
 
+    if (ngeoLocation.hasParam('fog_sse_factor')) {
+      this.fogSSEFactor = parseFloat(ngeoLocation.getParam('fog_sse_factor'));
+    }
+
+    if (ngeoLocation.hasParam('fog_density')) {
+      this.fogDensity = parseFloat(ngeoLocation.getParam('fog_density'));
+    }
+
     /**
      * @const {ol.Extent}
      */
