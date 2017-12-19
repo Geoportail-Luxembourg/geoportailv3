@@ -664,8 +664,9 @@ app.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     }
   }
   if (layersList.length > 0) {
-    var bigBuffer = 20;
-    var smallBuffer = 1;
+    var resolution = this.map_.getView().getResolution();
+    var bigBuffer = 20 * resolution;
+    var smallBuffer = 1 * resolution;
 
     var point = ol.proj.transform(evt.coordinate,
         this.map_.getView().getProjection(), 'EPSG:2169');
