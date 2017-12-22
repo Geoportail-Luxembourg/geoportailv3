@@ -5,7 +5,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPUnauthorized
 from geoportailv3.portail import MesurageDownload, SketchDownload
 from geoportailv3.portail import PortailSession
-from geoportailv3.models import LuxDownloadUrl
+from geoportailv3.models import LuxDownloadUrl, LuxMeasurementDirectory
 from c2cgeoportal.models import DBSession
 import logging
 import mimetypes
@@ -88,29 +88,28 @@ class Download(object):
         if self.request.user is None and self.request.referer is None:
             return HTTPUnauthorized()
 
-        dirname = self.request.params.get("dirName", None)
+        townname = self.request.params.get("dirName", None)
         filename = self.request.params.get("filename", None)
-        in_directory = self.request.params.get("inDirectory", None)
 
-        if filename is None or dirname is None:
+        if filename is None or townname is None:
             return HTTPBadRequest("parameters are missing")
 
         pf = geoportailv3.PF.PF()
 
         if not pf._is_download_authorized(
-                dirname, self.request.user, self.request.referer):
+                townname, self.request.user, self.request.referer):
             return HTTPUnauthorized()
+        cur_record = DBSession.query(LuxMeasurementDirectory).\
+            filter(LuxMeasurementDirectory.name == townname).first()
+        if cur_record is None:
+            return HTTPBadRequest("Invalid Town name")
+        measurement_filepath = "%s/%s" % (cur_record.path, filename)
 
-        measurement_filepath = "%s/%s" % (dirname, filename)
-        if (in_directory is not None and len(in_directory) > 0):
-            measurement_filepath = "%s/%s" % (in_directory,
-                                              measurement_filepath)
-
-        f = open("/mesurage/pdf/"+measurement_filepath, 'r')
+        f = open(measurement_filepath, 'r')
 
         parcel = self.request.params.get("parcel", "UNKNOWN")
 
-        self._log_download_measurement_stats(filename, dirname, parcel)
+        self._log_download_measurement_stats(filename, townname, parcel)
         headers = {"Content-Type": "application/pdf",
                    "Content-Disposition": "attachment; filename=\"%s\""
                    % (str(filename))}
