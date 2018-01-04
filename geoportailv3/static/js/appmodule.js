@@ -73,3 +73,9 @@ app.module.config(['$httpProvider', function($httpProvider) {
       return config;
     }};
 });
+
+/**
+ * The OpenLayers extent used in 3D to restrict the area rendered by Cesium.
+ * @type {!ol.Extent}
+ */
+app.olcsExtent = ol.proj.transformExtent([5.31, 49.38, 6.64, 50.21], 'EPSG:4326', 'EPSG:3857');

@@ -14,6 +14,8 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
+goog.require('app');
+
 
 /**
  * @constructor
@@ -457,10 +459,12 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   var newLayer = null;
   if (layer['useTiles']) {
     newLayer = new ol.layer.Tile({
+      'olcs.extent': app.olcsExtent,
       source: new ol.source.TileWMS(imgOptions)
     });
   } else {
     newLayer = new ol.layer.Image({
+      'olcs.extent': app.olcsExtent,
       source: new ol.source.ImageWMS(imgOptions)
     });
   }

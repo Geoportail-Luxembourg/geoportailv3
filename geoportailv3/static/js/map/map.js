@@ -13,6 +13,10 @@ app.Map = class extends ol.Map {
    * @override
    */
   getCoordinateFromPixel(pixel) {
+    if (Number.isNaN(pixel[0]) || Number.isNaN(pixel[1])) {
+      // OpenLayers calls us on keyboard events...
+      return null;
+    }
     let coordinate = super.getCoordinateFromPixel(pixel);
     const manager = this.get('ol3dm');
     if (!manager || !manager.is3dEnabled()) {
