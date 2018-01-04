@@ -90,6 +90,7 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
     var projection = ol.proj.get('EPSG:3857');
     var extent = projection.getExtent();
     var layer = new ol.layer.Tile({
+      'olcs.extent': app.olcsExtent,
       source: new ol.source.WMTS({
         url: url,
         tilePixelRatio: (retina ? 2 : 1),
@@ -169,6 +170,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms,
       optSource.crossOrigin = 'anonymous';
     }
     var layer = new ol.layer.Image({
+      'olcs.extent': app.olcsExtent,
       source: new ol.source.ImageWMS(optSource)
     });
 
