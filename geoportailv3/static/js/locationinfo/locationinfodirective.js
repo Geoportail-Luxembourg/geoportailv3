@@ -12,13 +12,13 @@ goog.require('app.GetDevice');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
 goog.require('goog.array');
 goog.require('ol.Feature');
-goog.require('ol.geom.Point');
 goog.require('ol.events');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
 goog.require('ol.proj');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -53,7 +53,6 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope The scope.
  * @param {angular.$timeout} $timeout The timeout service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.GetElevation} appGetElevation The elevation service.
@@ -71,7 +70,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @ngInject
  */
 app.LocationinfoController = function(
-        $scope, $timeout, ngeoFeatureOverlayMgr,
+        $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
@@ -113,10 +112,15 @@ app.LocationinfoController = function(
   this.openInPointerDown_ = false;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ol.layer.Vector}
    * @private
    */
-  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  this.featureLayer_ = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    zIndex: 1000,
+    altitudeMode: 'clampToGround'
+  });
+  this['map'].addLayer(this.featureLayer_);
 
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
@@ -132,7 +136,7 @@ app.LocationinfoController = function(
     stroke: circleStroke
   });
 
-  this.featureOverlay_.setStyle(
+  this.featureLayer_.setStyle(
       /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @param {number} resolution Resolution.
@@ -148,7 +152,7 @@ app.LocationinfoController = function(
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
     if (newVal != 'locationinfo') {
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -168,7 +172,7 @@ app.LocationinfoController = function(
       });
       this['appSelector'] = undefined;
       this['location'] = {};
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -406,8 +410,8 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       this.updateLocation_(clickCoordinate);
       var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(clickCoordinate)));
-      this.featureOverlay_.clear();
-      this.featureOverlay_.addFeature(feature);
+      this.featureLayer_.getSource().clear();
+      this.featureLayer_.getSource().addFeature(feature);
       this.getElevation_(clickCoordinate).then(goog.bind(
       function(elevation) {
         this['elevation'] = elevation;
