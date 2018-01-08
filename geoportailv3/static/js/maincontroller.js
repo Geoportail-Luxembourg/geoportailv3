@@ -71,6 +71,7 @@ goog.require('ol.proj');
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
+ * @param {number} minZoom The minimal zoom.
  * @constructor
  * @export
  * @ngInject
@@ -82,7 +83,14 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting) {
+    appSelectedFeatures, $locale, appRouting, minZoom) {
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minZoom_ = minZoom;
+
   /**
    * @type {app.Routing}
    * @export
@@ -482,7 +490,7 @@ app.MainController.prototype.setMap_ = function() {
     loadTilesWhileAnimating: true,
     view: new ol.View({
       maxZoom: 19,
-      minZoom: 8,
+      minZoom: this.minZoom_,
       enableRotation: false,
       extent: this.maxExtent_
     })

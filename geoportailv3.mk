@@ -33,6 +33,9 @@ CONFIG_VARS += no_proxy
 CONFIG_VARS += lidar
 CONFIG_VARS += routing
 CONFIG_VARS += referrer
+CONFIG_VARS += defaultExtent
+CONFIG_VARS += maxExtent
+CONFIG_VARS += minZoom
 
 APACHE_VHOST ?= luxembourg-geomapfish
 
