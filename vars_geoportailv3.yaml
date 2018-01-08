@@ -2,6 +2,17 @@ extends: CONST_vars.yaml
 
 vars:
     referrer:
+    defaultExtent:
+      - 425152.9429259216
+      - 6324465.99999133
+      - 914349.9239510496
+      - 6507914.867875754
+    maxExtent:
+      - 2.6
+      - 47.7
+      - 8.6
+      - 51
+    minZoom: 8
 
     no_proxy: localhost
     #OverviewMap

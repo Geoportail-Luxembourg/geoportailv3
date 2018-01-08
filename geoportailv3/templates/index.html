@@ -9,6 +9,9 @@
     overview_map_show = settings.get('overview_map')['show']
     overview_map_base_layer = settings.get('overview_map')['base_layer']
     lidar = settings.get('lidar')
+    defaultExtent = settings.get('defaultExtent')
+    maxExtent = settings.get('maxExtent')
+    minZoom = settings.get('minZoom')
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
@@ -362,8 +365,6 @@
          appModule.constant('echocsvUrl', "${request.route_url('echocsv')}");
          appModule.constant('getRouteUrl', "${request.route_url('getroute')}");
          appModule.constant('predefinedWmsUrl', "${request.route_url('predefined_wms')}");
-         appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
-         appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
          appModule.constant('requestScheme', "${request.scheme}");
          appModule.constant('pagUrl', "${request.route_url('pag_url')}");
          appModule.constant('casipoUrl', "${request.route_url('casipo_url')}");
@@ -372,6 +373,9 @@
          appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
          appModule.constant('bboxSrsLidar', "${lidar['srs']}");
          appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
+         appModule.constant('defaultExtent', [${defaultExtent[0]},${defaultExtent[1]}, ${defaultExtent[2]}, ${defaultExtent[3]}]);
+         appModule.constant('maxExtent', [${maxExtent[0]}, ${maxExtent[1]}, ${maxExtent[2]} ,${maxExtent[3]}]);
+         appModule.constant('minZoom', ${minZoom});
 
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);

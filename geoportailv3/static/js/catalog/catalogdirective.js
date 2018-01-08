@@ -62,11 +62,19 @@ app.module.directive('appCatalog', app.catalogDirective);
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {app.StateManager} appStateManager The state service.
+ * @param {number} minZoom The minimal zoom.
  * @export
  * @ngInject
  */
 app.CatalogController = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager,
+    minZoom) {
+  /**
+   * @type {number}
+   * @private
+   */
+  this.minZoom_ = minZoom;
+
   /**
    * @type {app.StateManager}
    * @private
@@ -168,7 +176,7 @@ app.CatalogController.prototype.setThemeZooms = function(tree) {
     var currentView = map.getView();
     map.setView(new ol.View({
       maxZoom: maxZoom,
-      minZoom: 8,
+      minZoom: this.minZoom_,
       extent: this.maxExtent_,
       center: currentView.getCenter(),
       enableRotation: false,
