@@ -1396,7 +1396,7 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
   if (onSelect !== undefined) {
     selectFunction = onSelect;
   } else {
-    selectFunction = function(e, term, item) {
+    selectFunction = function(e, term, item, clearButton) {
       var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
       var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
       this.searchLayer_.getSource().clear();
@@ -1485,7 +1485,7 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
           '</div>';
     },
     'onSelect': function(e, term, item) {
-      selectFunction.call(this, e, term, item);
+      selectFunction.call(this, e, term, item, clear);
     }.bind(this)
   });
 
