@@ -89,11 +89,9 @@ class LuxPrintProxy(PrintProxy):
                     test_url = url.replace("/print/geoportailv3", "")
                     urllib2.urlopen(test_url)
                     valid_print_urls.append(url)
-                except:
-                    print_server = DBSession.query(LuxPrintServers).filter(
-                                   LuxPrintServers.url == url)
-                    print_server.delete()
-                    DBSession.execute("commit")
+                except Exception as e:
+                    log.exception(e)
+                    log.error("Print server not available : " + url)
             print_url = valid_print_urls[random.randint(0,
                                          len(valid_print_urls) - 1)]
         else:
