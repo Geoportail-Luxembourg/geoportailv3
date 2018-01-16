@@ -284,6 +284,7 @@ TEMPLATES_FILES = $(shell find $(PACKAGE)/templates -type f -print)
 TEMPLATE_EXCLUDE += .build print/templates \
 	CONST_alembic/main/script.py.mako \
 	CONST_alembic/static/script.py.mako \
+	node_modules \
 	$(PACKAGE)/static/lib
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
 TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print)
