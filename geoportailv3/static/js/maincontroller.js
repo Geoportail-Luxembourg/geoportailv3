@@ -543,6 +543,9 @@ app.MainController.prototype.manageSelectedLayers_ =
       ngeoSyncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
+        if (layer instanceof ol.layer.Vector && layer.get('altitudeMode') === 'clampToGround') {
+          return false;
+        }
         return goog.array.indexOf(
             this.map_.getLayers().getArray(), layer) !== 0;
       }, this)
