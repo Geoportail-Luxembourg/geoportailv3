@@ -111,6 +111,7 @@ app.module.directive('appSearch', app.searchDirective);
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope Angular root scope.
+ * @param {angular.$window} $window The window service.
  * @param {angular.$compile} $compile Angular compile service.
  * create GeoJSON Bloodhound service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
@@ -120,6 +121,8 @@ app.module.directive('appSearch', app.searchDirective);
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
+ * @param {ngeo.search.createGeoJSONBloodhound.Function}
+ * ngeoSearchCreateGeoJSONBloodhound The GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
@@ -128,22 +131,29 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
+ * @param {string} cmsSearchServiceUrl The url to the cms search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
  * @param {app.Routing} appRouting The routing service.
  * @export
  */
-app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
-    ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, appThemes, appTheme,
+app.SearchDirectiveController = function($scope, $window, $compile,
+    gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
+    appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch,
-    appRouting) {
+    poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl,
+    appExcludeThemeLayerSearch, appRouting) {
 
   /**
    * @type {app.Routing}
    * @export
    */
   this.appRouting_ = appRouting;
+
+  /**
+   * @type {angular.$window}
+   * @private
+   */
+  this.$window_ = $window;
 
   /**
    * @type {Object}
@@ -308,6 +318,10 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhoundEngine_(
       layerSearchServiceUrl);
+
+  /** @type {Bloodhound} */
+  var CMSBloodhoundEngine = this.createAndInitCMSBloodhoundEngine_(
+      cmsSearchServiceUrl);
 
   /** @type {Fuse} */
   var backgroundLayerEngine =
@@ -500,6 +514,33 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
           this.showLayerinfo_(this.getLayerFunc_(node));
           event.stopPropagation();
         }, this);
+        return $compile(html)(scope);
+      }, this)
+    })
+  }, {
+    name: 'cms',
+    source: CMSBloodhoundEngine.ttAdapter(),
+    /**
+     * @param {Object} suggestion The suggestion.
+     * @return {(string|*)} The result.
+     * @this {TypeaheadDataset}
+     */
+    display: function(suggestion) {
+      suggestion['dataset'] = this.name;
+      return gettextCatalog.getString(suggestion.name);
+    },
+    templates: /** @type {TypeaheadTemplates} */({
+      header: goog.bind(function() {
+        return '<div class="header">' +
+            this.gettextCatalog.getString('Website Pages') +
+            '</div>';
+      }, this),
+      suggestion: goog.bind(function(suggestion) {
+        var scope = $scope.$new(true);
+        var html = '<p>' +
+            '<span class="suggestion-text">' +
+            suggestion.title + '</span>' +
+            '</p>';
         return $compile(html)(scope);
       }, this)
     })
@@ -791,6 +832,34 @@ app.SearchDirectiveController.prototype.createAndInitLayerBloodhoundEngine_ =
     return bloodhound;
   };
 
+/**
+ * @param {string} cmsSearchServiceUrl The search url.
+ * @return {Bloodhound} The bloodhound engine.
+ * @private
+ */
+app.SearchDirectiveController.prototype.createAndInitCMSBloodhoundEngine_ =
+  function(cmsSearchServiceUrl) {
+    var bloodhoundOptions = /** @type {BloodhoundOptions} */ ({
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      datumTokenizer: goog.nullFunction,
+      remote: {
+        url: cmsSearchServiceUrl,
+        rateLimitWait: 50,
+        replace: goog.bind(function(url, query) {
+          return url +
+              '?query=' + encodeURIComponent(query) +
+              '&limit=' + this.limitResults +
+              '&language=' + this.gettextCatalog.currentLanguage;
+        }, this),
+        transform: goog.bind(function(response) {
+          return response;
+        }, this)
+      }
+    });
+    var bloodhound = new Bloodhound(bloodhoundOptions);
+    return bloodhound;
+  };
+
 
 /**
  * @param {app.Themes} appThemes Themes Service
@@ -924,6 +993,8 @@ app.SearchDirectiveController.selected_ =
       } else if (dataset === 'backgroundLayers') { //BackgroundLayer
         this.setBackgroundLayer_(
         /** @type {app.BackgroundLayerSuggestion} */ (suggestion));
+      } else if (dataset === 'cms') {
+        this.$window_.open('https://www.geoportail.lu' + suggestion.url, '_blank');
       }
     };
 
