@@ -261,11 +261,13 @@ class FullTextSearchView(object):
                     },
                     "must": {
                         "multi_match": {
-                            "type": "cross_fields",
+                            "type": "best_fields",
                             "fields": [
                                 "title^2",
                                 "text",
                             ],
+                            "fuzziness": "auto",
+                            "prefix_length": 3,
                             "operator": "and",
                             "query": query
                         }
