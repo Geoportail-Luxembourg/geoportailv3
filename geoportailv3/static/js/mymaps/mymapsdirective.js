@@ -194,6 +194,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
    * @export
    */
   this.featuresList = appDrawnFeatures.getArray();
+  this.map.addLayer(appDrawnFeatures.getLayer());
 
   /**
    * @type {app.DrawnFeatures}
