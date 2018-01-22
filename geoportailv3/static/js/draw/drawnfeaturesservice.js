@@ -20,17 +20,9 @@ goog.require('ol.Collection');
  * @constructor
  * @param {ngeo.Location} ngeoLocation Location service.
  * @param {app.Mymaps} appMymaps Mymaps service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager
  * @ngInject
  */
-app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
-
-  /**
-   * @type {ngeo.FeatureOverlayMgr}
-   * @private
-   */
-  this.ngeoFeatureOverlayMgr_ = ngeoFeatureOverlayMgr;
+app.DrawnFeatures = function(ngeoLocation, appMymaps) {
 
   /**
    * @type {ol.interaction.Select}
