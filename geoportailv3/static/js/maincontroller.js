@@ -407,7 +407,9 @@ app.MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
     return;
   }
-  this['mymapsOpen'] = false;
+  if (!goog.isDef(this.ngeoLocation_.getParam('map_id'))) {
+    this['mymapsOpen'] = false;
+  }
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
@@ -766,6 +768,15 @@ app.MainController.prototype.toggleThemeSelector = function() {
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
   }
+};
+
+/**
+ * @return {boolean} If mymaps button should be shown
+ * @export
+ */
+app.MainController.prototype.showMyMapsButton = function() {
+  return (!this.ol3dm_.is3dEnabled()) ||
+    goog.isDef(this.ngeoLocation_.getParam('map_id'));
 };
 
 app.module.controller('MainController', app.MainController);

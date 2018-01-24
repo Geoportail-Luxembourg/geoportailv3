@@ -136,6 +136,12 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.map_ = this['map'];
 
   /**
+   * @const {?app.olcs.Lux3DManager}
+   * @export
+   */
+  this.ol3dm = /** @type {?app.olcs.Lux3DManager} */ (this.map_.get('ol3dm'));
+
+  /**
    * @type {ngeo.BackgroundLayerMgr}
    * @private
    */
@@ -1172,6 +1178,9 @@ app.MymapsDirectiveController.prototype.openMergeLinesModal = function() {
  * @export
  */
 app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
+  if (this.ol3dm.is3dEnabled()) {
+    return;
+  }
   if (this.appMymaps_.isEditable()) {
     this.newTitle = this.appMymaps_.mapTitle;
     this.newDescription = this.appMymaps_.mapDescription;
