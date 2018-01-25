@@ -43,7 +43,7 @@
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.DEBUG=false",
-      "ol.ENABLE_RASTER_REPROJECTION=false",
+      "ol.ENABLE_RASTER_REPROJECTION=true",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
