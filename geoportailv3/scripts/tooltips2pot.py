@@ -99,7 +99,11 @@ def main():  # pragma: nocover
         engine = sqlahelper.get_engine(result.engine_gfi)
         first_row = None
         if result.query is not None and len(result.query) > 0:
-            first_row = engine.execute("SELECT * FROM " + result.query).first()
+            if "SELECT" in result.query.upper():
+                first_row = engine.execute(result.query).first()
+            else:
+                first_row =\
+                    engine.execute("SELECT * FROM " + result.query).first()
         if result.rest_url is not None and len(result.rest_url) > 0:
             first_row = _get_external_data(
                 result.rest_url,
