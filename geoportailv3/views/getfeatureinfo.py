@@ -155,29 +155,55 @@ class Getfeatureinfo(object):
             return Response(response)
         return HTTPBadRequest()
 
+    def unescape_html(self, features, key):
+        from HTMLParser import HTMLParser
+        h = HTMLParser()
+        modified_features = []
+
+        for feature in features:
+            value = feature['attributes'][key]
+            if value is not None:
+                feature['attributes'][key] = h.unescape(value)
+
+            modified_features.append(feature)
+        return modified_features
+
     @view_config(route_name='getfeatureinfo', renderer='json')
     def get_feature_info(self):
-        fid = self.request.params.get('fid', None)
-
-        if fid is not None:
-            layers, fid = fid.split('_', 1)
-            if layers is None or fid is None:
-                return HTTPBadRequest()
-        else:
-            layers = self.request.params.get('layers', None)
-            if layers is None:
-                return HTTPBadRequest()
-            big_box = self.request.params.get('box1', None)
-            small_box = self.request.params.get('box2', None)
-            if big_box is None or small_box is None:
-                return HTTPBadRequest()
-
-        luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
-        if fid is None:
-            coordinates_big_box = big_box.split(',')
-            coordinates_small_box = small_box.split(',')
-
         results = []
+        fid = self.request.params.get('fid', None)
+        fids = self.request.params.get('fids', None)
+        fids_array = []
+        if fids is not None:
+            fids_array = fids.split(',')
+
+        if fid is not None or len(fids_array) > 0:
+            if fid is not None:
+                fids_array.append(fid)
+            for fid in fids_array:
+                layers, fid = fid.split('_', 1)
+                if layers is None or fid is None:
+                    return HTTPBadRequest()
+                self.get_info(fid, None, None, results, layers)
+            return results
+
+        layers = self.request.params.get('layers', None)
+        if layers is None:
+            return HTTPBadRequest()
+        big_box = self.request.params.get('box1', None)
+        small_box = self.request.params.get('box2', None)
+        if big_box is None or small_box is None:
+            return HTTPBadRequest()
+
+        coordinates_big_box = big_box.split(',')
+        coordinates_small_box = small_box.split(',')
+        return self.get_info(
+            fid, coordinates_big_box,
+            coordinates_small_box, results, layers, big_box)
+
+    def get_info(self, fid, coordinates_big_box, coordinates_small_box,
+                 results, layers, big_box):
+        luxgetfeaturedefinitions = self.get_lux_feature_definition(layers)
         for luxgetfeaturedefinition in luxgetfeaturedefinitions:
             if (luxgetfeaturedefinition is not None and
                 luxgetfeaturedefinition.engine_gfi is not None and
