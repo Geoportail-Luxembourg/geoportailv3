@@ -184,7 +184,7 @@ class Getfeatureinfo(object):
                 layers, fid = fid.split('_', 1)
                 if layers is None or fid is None:
                     return HTTPBadRequest()
-                self.get_info(fid, None, None, results, layers)
+                self.get_info(fid, None, None, results, layers, None)
             return results
 
         layers = self.request.params.get('layers', None)
