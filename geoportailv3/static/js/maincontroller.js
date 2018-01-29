@@ -767,13 +767,4 @@ app.MainController.prototype.toggleThemeSelector = function() {
   }
 };
 
-/**
- * @return {boolean} If mymaps button should be shown
- * @export
- */
-app.MainController.prototype.showMyMapsButton = function() {
-  return (!this.ol3dm_.is3dEnabled()) ||
-    goog.isDef(this.ngeoLocation_.getParam('map_id'));
-};
-
 app.module.controller('MainController', app.MainController);
