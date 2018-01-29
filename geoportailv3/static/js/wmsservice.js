@@ -436,15 +436,19 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
       'LAYERS': layer['Name']
     },
     crossOrigin: 'anonymous',
-    ration: 1
+    ratio: 1
   };
 
   var hasLuref = false;
   var has3857 = false;
+  var hasWGS84 = false;
   var projections = layer['CRS'] || layer.SRS || [];
   goog.array.forEach(projections, function(projection) {
     if (projection.toUpperCase() === 'EPSG:2169') {
       hasLuref = true;
+    }
+    if (projection.toUpperCase() === 'EPSG:4326') {
+      hasWGS84 = true;
     }
     if (projection.toUpperCase() === 'EPSG:3857') {
       has3857 = true;
@@ -456,6 +460,8 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     imgOptions.params['VERSION'] = '1.1.1';
   } else if (has3857) {
     imgOptions.projection = 'EPSG:3857';
+  } else if (hasWGS84) {
+    imgOptions.projection = 'EPSG:4326';
   } else {
     imgOptions.projection = projections[0];
   }
@@ -473,6 +479,12 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
       'olcs.extent': app.olcsExtent,
       source: new ol.source.ImageWMS(imgOptions)
     });
+  }
+  if (has3857) {
+    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:3857'));
+  }
+  else if (hasWGS84) {
+    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:4326'));
   }
   newLayer.set('label', layer['Title']);
   var curMatadata = {'isExternalWms': true,
