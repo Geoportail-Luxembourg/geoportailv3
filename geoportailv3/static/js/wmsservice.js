@@ -165,7 +165,7 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
  * @private
  */
 app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
-    imageFormats, useTiles) {
+    imageFormats, useTiles, parentLayer) {
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
@@ -181,10 +181,16 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
     layer['useTiles'] = useTiles;
   }
 
+  // casacading CRS
+  layer.CRS = layer.CRS || [];
+  if(parentLayer) {
+    parentLayer.CRS.forEach(crs => layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs));
+  }
+
   if (layer['Layer']) {
     for (var i = 0; i < layer['Layer'].length; i++) {
       var l = this.buildChildLayers_(wms, layer['Layer'][i], wmsVersion,
-          imageFormats, useTiles);
+          imageFormats, useTiles, layer);
       if (!l) {
         layer['Layer'].splice(i, 1);
         i--;
