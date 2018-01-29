@@ -50,6 +50,10 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
 
     const scene = ol3d.getCesiumScene();
 
+    if (this.ngeoLocation_.hasParam('tile_coordinates')) {
+      scene.imageryLayers.addImageryProvider(new Cesium['TileCoordinatesImageryProvider']());
+    }
+
     // for performance, limit terrain levels to be loaded
     const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
     const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
