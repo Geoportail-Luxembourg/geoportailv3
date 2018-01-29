@@ -91,7 +91,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     separator = '?';
   }
   if (wms.indexOf('Capabilities') === -1) {
-    wms = wms + separator + 'SERVICE=WMS&REQUEST=GetCapabilities';
+    wms = wms + separator + 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0';
   }
 
   if (!(wms in this.wmsCapa_)) {
