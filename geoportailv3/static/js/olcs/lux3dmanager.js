@@ -30,7 +30,8 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
      * for mountainous regions, less tiles will need to be requested, but the terrain meshes near the horizon may be a noticeably
      * lower resolution. If the value is increased in a relatively flat area, there will be little noticeable change on the horizon.
      * type {Number}
-     * default 2.0
+     * default in Cesium 2.0
+     * default in Ngeo 25.0
      */
     if (ngeoLocation.hasParam('fog_sse_factor')) {
       this.fogSSEFactor = parseFloat(ngeoLocation.getParam('fog_sse_factor'));
@@ -43,7 +44,8 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
      * 1000.0m above the ellipsoid, increasing the value to 3.0e-3 will cause many tiles close to the viewer be culled.
      * Decreasing the value will push the fog further from the viewer, but decrease performance as more of the terrain is rendered.
      * type {Number}
-     * default 2.0e-4
+     * default in Cesium 2.0e-4
+     * default in Ngeo 1.0e-4
      */
     if (ngeoLocation.hasParam('fog_density')) {
       this.fogDensity = parseFloat(ngeoLocation.getParam('fog_density'));
