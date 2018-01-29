@@ -1,5 +1,3 @@
-LESS_FILES += node_modules/ngeo/src/modules/olcs/controls3d.less
-
 ifdef VARS_FILE
 VARS_FILES += ${VARS_FILE} vars_geoportailv3.yaml
 else
