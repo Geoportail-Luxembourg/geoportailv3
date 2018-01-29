@@ -407,9 +407,6 @@ app.MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
     return;
   }
-  if (!goog.isDef(this.ngeoLocation_.getParam('map_id'))) {
-    this['mymapsOpen'] = false;
-  }
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
