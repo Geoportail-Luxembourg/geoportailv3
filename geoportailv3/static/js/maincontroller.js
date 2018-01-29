@@ -407,7 +407,6 @@ app.MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
     return;
   }
-  this['mymapsOpen'] = false;
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;

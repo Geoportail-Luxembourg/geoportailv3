@@ -5,7 +5,8 @@
   <p class="text-center">
     <button class="btn btn-default" ng-click="ctrl.openChooseMapModal()" translate>Ouvrir une carte</button>
   </p>
-  <p class="text-center">
+  <p class="hidden-2d" translate>Switch to 2D to create a map</p>
+  <p class="text-center hidden-3d">
     <button class="btn btn-default" ng-click="ctrl.openCreateMapModal()" translate>Créer une nouvelle carte</button>
   </p>
 </div>
@@ -37,7 +38,7 @@
   <span class="map-owner" ng-show="ctrl.getMapOwner()">
     {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
   </span>
-  <ul class="nav navbar-nav navbar-right">
+  <ul class="nav navbar-nav navbar-right hidden-3d">
     <li id="dropdown-mymaps" class="dropdown">
       <a href class="dropdown-toggle white-item" data-toggle="dropdown">
         <span class="fa fa-caret-square-o-down"></span>

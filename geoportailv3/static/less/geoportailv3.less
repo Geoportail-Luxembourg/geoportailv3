@@ -97,8 +97,14 @@ app-map {
   }
 }
 
+.hidden-2d {
+  display: none;
+}
 body.enabled-3d {
   .hidden-3d {
     display: none !important;
+  }
+  .hidden-2d {
+    display: inherit;
   }
 }
