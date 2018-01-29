@@ -137,7 +137,6 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
 
   /**
    * @const {?app.olcs.Lux3DManager}
-   * @export
    */
   this.ol3dm = /** @type {?app.olcs.Lux3DManager} */ (this.map_.get('ol3dm'));
 
