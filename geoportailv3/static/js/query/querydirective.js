@@ -300,9 +300,9 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   this.featureLayer_ = new ol.layer.Vector({
     source: new ol.source.Vector(),
     zIndex: 1000,
-    'altitudeMode': 'clampToGround',
-    map: this.map
+    'altitudeMode': 'clampToGround'
   });
+  this.map_.addLayer(this.featureLayer_);
   var defaultFill = new ol.style.Fill({
     color: [255, 255, 0, 0.6]
   });

@@ -20,23 +20,9 @@ goog.require('ol.Collection');
  * @constructor
  * @param {ngeo.Location} ngeoLocation Location service.
  * @param {app.Mymaps} appMymaps Mymaps service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager
  * @ngInject
  */
-app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
-
-  /**
-   * @type {ngeo.FeatureOverlayMgr}
-   * @private
-   */
-  this.ngeoFeatureOverlayMgr_ = ngeoFeatureOverlayMgr;
-
-  /**
-  * @type {ngeo.FeatureOverlay}
-  * @export
-  */
-  this.drawOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
+app.DrawnFeatures = function(ngeoLocation, appMymaps) {
 
   /**
    * @type {ol.interaction.Select}
@@ -80,6 +66,18 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.features = new ol.Collection();
 
   /**
+  * @type {ol.layer.Vector}
+  * @export
+  */
+  this.drawLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      features: this.features
+    }),
+    zIndex: 1000,
+    'altitudeMode': 'clampToGround'
+  });
+
+  /**
    * @type {ngeo.Location}
    * @private
    */
@@ -103,7 +101,6 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
     'size': 't',
     'isCircle': 'u'
   };
-  this.drawOverlay.setFeatures(this.features);
 
   /**
    * @type {app.format.FeatureHash}
@@ -463,6 +460,13 @@ app.DrawnFeatures.prototype.getExtent = function() {
   }, this);
 
   return extent;
+};
+
+/**
+ * @return {ol.layer.Vector} The drawn features layer.
+ */
+app.DrawnFeatures.prototype.getLayer = function() {
+  return this.drawLayer;
 };
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);
