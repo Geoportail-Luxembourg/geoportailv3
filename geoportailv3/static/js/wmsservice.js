@@ -114,7 +114,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
         basicWmsUrl = wms;
       }
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
-        capabilities['version'], formats, useTiles);
+        capabilities['version'], formats, useTiles, null);
 
       return capabilities;
     }.bind(this), function(e) {
@@ -162,6 +162,7 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
  * @return {Object} Returns the layer object.
  * @param {string} imageFormats The available formats.
  * @param {boolean} useTiles Set if the layer has a max size.
+ * @param {Object} parentLayer Parent layer object in capabilities tree.
  * @private
  */
 app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
@@ -183,8 +184,10 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
 
   // casacading CRS
   layer.CRS = layer.CRS || [];
-  if(parentLayer) {
-    parentLayer.CRS.forEach(crs => layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs));
+  if (parentLayer) {
+    parentLayer.CRS.forEach(function(crs) {
+      layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs);
+    });
   }
 
   if (layer['Layer']) {
@@ -482,8 +485,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   }
   if (has3857) {
     newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:3857'));
-  }
-  else if (hasWGS84) {
+  } else if (hasWGS84) {
     newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:4326'));
   }
   newLayer.set('label', layer['Title']);
