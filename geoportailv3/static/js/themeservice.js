@@ -4,14 +4,14 @@
 goog.provide('app.Theme');
 
 goog.require('app.Themes');
-goog.require('ngeo.Location');
 goog.require('goog.asserts');
+goog.require('ngeo.statemanager.module');
 
 
 /**
  * @constructor
  * @param {angular.$window} $window Global Scope.
- * @param {ngeo.Location} ngeoLocation ngeo Location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes The themes services.
  * @ngInject
  */
@@ -56,7 +56,7 @@ app.Theme = function($window, ngeoLocation, appThemes) {
   this.currentTheme_ = app.Theme.DEFAULT_THEME_;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;

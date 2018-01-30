@@ -20,11 +20,11 @@ goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.search.createGeoJSONBloodhound');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.search.searchDirective');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.message.popoverComponent');
+goog.require('ngeo.search.module');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -114,14 +114,12 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angular.$compile} $compile Angular compile service.
  * create GeoJSON Bloodhound service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background
  * manager service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The
- * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
@@ -136,7 +134,7 @@ app.module.directive('appSearch', app.searchDirective);
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
+    appCoordinateString, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch,
     appRouting) {
@@ -225,13 +223,13 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   this.layers_ = [];
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
@@ -305,7 +303,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      ngeoSearchCreateGeoJSONBloodhound, poiSearchServiceUrl);
+      poiSearchServiceUrl);
 
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhoundEngine_(
@@ -715,16 +713,14 @@ app.SearchDirectiveController.prototype.decDegFromMatch_ = function(m) {
 };
 
 /**
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The create
- * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl The search url.
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
-    function(ngeoSearchCreateGeoJSONBloodhound, searchServiceUrl) {
+    function(searchServiceUrl) {
       var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+      var bloodhound = ngeo.search.createGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {

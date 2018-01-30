@@ -7,8 +7,8 @@ goog.require('app.profileDirective');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ngeo');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.format.GeoJSON');
@@ -64,10 +64,10 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$timeout} $timeout The timeout service.
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl The infoservice url.
@@ -141,7 +141,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   this.mymapsImageUrl_ = mymapsImageUrl;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
@@ -296,7 +296,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
 
   /**
    * The draw overlay
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();

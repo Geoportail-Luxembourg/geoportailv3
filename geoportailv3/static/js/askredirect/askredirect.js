@@ -2,8 +2,8 @@ goog.provide('app.AskredirectController');
 goog.provide('app.askredirectDirective');
 
 goog.require('app');
-goog.require('ngeo.modalDirective');
-
+goog.require('ngeo.message.modalComponent');
+goog.require('ngeo.statemanager.module');
 
 /**
  * @param {string} appAskredirectTemplateUrl URL to directive template.
@@ -28,7 +28,7 @@ app.module.directive('appAskredirect', app.askredirectDirective);
 /**
  * @constructor
  * @param {angular.$window} $window Window.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
@@ -40,7 +40,7 @@ app.AskredirectController = function($window, ngeoLocation) {
   this.$window_ = $window;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;

@@ -16,7 +16,6 @@ goog.provide('app.ScalelineDirectiveController');
 goog.provide('app.scalelineDirective');
 
 goog.require('app');
-goog.require('ngeo.controlDirective');
 goog.require('ol.control.ScaleLine');
 
 

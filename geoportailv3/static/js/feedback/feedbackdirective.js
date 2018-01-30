@@ -4,8 +4,8 @@ goog.provide('app.feedbackDirective');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
-goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.Location');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.statemanager.Location');
 
 
 /**
@@ -40,8 +40,8 @@ app.module.directive('appFeedback', app.feedbackDirective);
  * @param {app.Notify} appNotify Notify service.
  * @param {app.UserManager} appUserManager The User Manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {ngeo.Location} ngeoLocation The location service.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The Background
+ * @param {ngeo.statemanager.Location} ngeoLocation The location service.
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The Background
  * service.
  * @param {string} postFeedbackUrl the feedback post url.
  * @ngInject
@@ -57,13 +57,13 @@ app.FeedbackController = function($scope, $http, appNotify, appUserManager,
   this.$http_ = $http;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;

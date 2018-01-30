@@ -1,12 +1,18 @@
 {
   "src": [
     "node_modules/proj4/dist/proj4.js",
+	"node_modules/openlayers/src/*.js",
     "node_modules/openlayers/src/**/*.js",
+	"node_modules/openlayers/build/ol.ext/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
     "node_modules/ngeo/src/d3-ext/**/*.js",
-    "node_modules/ngeo/src/ol-ext/interaction/measure.js",
-    "node_modules/ngeo/src/ol-ext/interaction/measureazimut.js",
-    "node_modules/ngeo/src/ol-ext/interaction/mobiledraw.js",
+	"node_modules/ngeo/src/interaction/MeasureBaseOptions.js",
+	"node_modules/ngeo/src/customevent.js",
+    "node_modules/ngeo/src/interaction/measure.js",
+	"node_modules/ngeo/src/interaction/drawazimut.js",
+    "node_modules/ngeo/src/interaction/measureazimut.js",
+    "node_modules/ngeo/src/interaction/mobiledraw.js",
+	"node_modules/ngeo/src/profile/d3Elevation.js",
     "jsapi/src/**/*.js"
   ],
   "exports": ["*"],

@@ -17,7 +17,6 @@ goog.provide('app.LayerlegendsController');
 goog.provide('app.layerlegendsDirective');
 
 goog.require('app');
-goog.require('ngeo.sortableDirective');
 goog.require('goog.array');
 
 
@@ -50,7 +49,7 @@ app.module.directive('appLayerlegends', app.layerlegendsDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} getPngLegendUrl The url.
  * @param {string} getHtmlLegendUrl The url.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @constructor
  * @ngInject
@@ -65,7 +64,7 @@ app.LayerlegendsController = function($http, $sce, gettextCatalog,
   this.map_ = this['map'];
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;

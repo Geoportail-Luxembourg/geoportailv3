@@ -18,8 +18,7 @@ goog.require('app.Theme');
 goog.require('app.UserManager');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ngeo.filereaderDirective');
-goog.require('ngeo.modalDirective');
+goog.require('ngeo.message.extraModule');
 goog.require('ol.extent');
 goog.require('ol.format.GPX');
 goog.require('ol.format.KML');
@@ -59,7 +58,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {angular.$sce} $sce Angular $sce service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.Notify} appNotify Notify service.
@@ -136,7 +135,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   this.map_ = this['map'];
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
