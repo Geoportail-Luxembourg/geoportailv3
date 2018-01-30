@@ -12,8 +12,8 @@ goog.require('app.GetDevice');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.StateManager');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('goog.array');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
@@ -54,7 +54,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope The scope.
  * @param {angular.$timeout} $timeout The timeout service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.GetElevation} appGetElevation The elevation service.
@@ -66,7 +66,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @param {app.GetDevice} appGetDevice The device service.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * @param {ol.Extent} bboxLidar Bbox of lidar.
@@ -114,7 +114,7 @@ app.LocationinfoController = function(
   this.appThemes_ = appThemes;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
@@ -144,7 +144,7 @@ app.LocationinfoController = function(
   this.isInBoxOfLidar = false;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();

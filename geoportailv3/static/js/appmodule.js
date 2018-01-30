@@ -7,14 +7,15 @@ goog.provide('app');
 
 goog.require('goog.dom.classlist');
 goog.require('ngeo');
-goog.require('ngeo.MockLocationProvider');
+goog.require('ngeo.statemanager.module');
+goog.require('ngeo.search.module');
 goog.require('ol.has');
 
 
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeo.module.name, 'gettext'])
+app.module = angular.module('app', [ngeo.module.name, 'gettext', ngeo.search.module.name])
     .run(function() {
       if (!ol.has.TOUCH) {
         goog.dom.classlist.add(document.body, 'no-touch');
@@ -25,7 +26,7 @@ app.module = angular.module('app', [ngeo.module.name, 'gettext'])
 // Use ngeo's mockLocationProvider to work around a problem in Angular
 // and avoid problems when using both ngeoLocation and ng-include in
 // the application.
-app.module.config(ngeo.mockLocationProvider);
+app.module.config(ngeo.statemanager.Location.MockProvider);
 
 
 // activate pre-assigning bindings

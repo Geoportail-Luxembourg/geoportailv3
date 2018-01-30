@@ -14,6 +14,8 @@ goog.provide('app.routingDirective');
 goog.require('app');
 goog.require('app.Routing');
 goog.require('ngeo.filters');
+goog.require('ngeo.search.createGeoJSONBloodhound');
+goog.require('ngeo.search.module');
 
 /**
  * @param {string} appRoutingTemplateUrl Url to routing template.
@@ -44,11 +46,9 @@ app.module.directive('appRouting', app.routingDirective);
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {string} poiSearchServiceUrl The url to the layer search service.
  * @param {angular.$compile} $compile Angular compile service.
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The
- * GeoJSON Bloodhound factory.
  * @param {app.Routing} appRouting The routing service.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
  * @param {app.Export} appExport The export service.
  * @param {app.CoordinateString} appCoordinateString The coordinate to string
  * service.
@@ -64,7 +64,7 @@ app.module.directive('appRouting', app.routingDirective);
  * @export
  */
 app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
-    $compile, ngeoSearchCreateGeoJSONBloodhound, appRouting, appGetProfile,
+    $compile, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
     $window, appGeocoding, appUserManager, appNotify, appMymaps, $filter) {
   /**
@@ -193,7 +193,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      ngeoSearchCreateGeoJSONBloodhound, poiSearchServiceUrl);
+      poiSearchServiceUrl);
 
 
   /** @type {Array.<TypeaheadDataset>}*/
@@ -279,7 +279,7 @@ app.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
 
   /**
    * The draw overlay
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.highlightOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
@@ -547,16 +547,14 @@ app.RoutingController.prototype.removeTooltip_ = function() {
 };
 
 /**
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The create
- * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl The search url.
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.RoutingController.prototype.createAndInitPOIBloodhound_ =
-    function(ngeoSearchCreateGeoJSONBloodhound, searchServiceUrl) {
+    function(searchServiceUrl) {
       var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+      var bloodhound = ngeo.search.createGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {

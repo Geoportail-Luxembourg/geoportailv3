@@ -17,8 +17,7 @@ goog.require('app');
 goog.require('app.GetProfile');
 goog.require('app.profileDirective');
 goog.require('app.Activetool');
-goog.require('ngeo.DecorateInteraction');
-goog.require('ngeo.btngroupDirective');
+goog.require('ngeo.misc.decorate');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
@@ -61,7 +60,6 @@ app.module.directive('appMeasure', app.measureDirective);
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
  * interaction service.
  * @param {string} elevationServiceUrl The url of the service.
  * @param {app.Activetool} appActivetool The activetool service.
@@ -71,7 +69,7 @@ app.module.directive('appMeasure', app.measureDirective);
  * @ngInject
  */
 app.MeasureController = function($scope, $q, $http, $compile, gettext,
-    appGetProfile, ngeoDecorateInteraction, elevationServiceUrl,
+    appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
   /**
@@ -157,7 +155,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
    */
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
-  ngeoDecorateInteraction(measureProfile);
+  ngeo.misc.decorate.interaction(measureProfile);
   this.map_.addInteraction(measureProfile);
 
   helpMsg = gettext('Click to start drawing length');
@@ -180,7 +178,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureLength'] = measureLength;
 
   measureLength.setActive(false);
-  ngeoDecorateInteraction(measureLength);
+  ngeo.misc.decorate.interaction(measureLength);
   this.map_.addInteraction(measureLength);
 
   helpMsg = gettext('Click to start drawing area');
@@ -201,7 +199,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureArea'] = measureArea;
 
   measureArea.setActive(false);
-  ngeoDecorateInteraction(measureArea);
+  ngeo.misc.decorate.interaction(measureArea);
   this.map_.addInteraction(measureArea);
 
   helpMsg = gettext('Click to start drawing azimut');
@@ -222,14 +220,14 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureAzimut'] = measureAzimut;
 
   measureAzimut.setActive(false);
-  ngeoDecorateInteraction(measureAzimut);
+  ngeo.misc.decorate.interaction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
-  ol.events.listen(measureAzimut, ngeo.MeasureEventType.MEASUREEND,
+  ol.events.listen(measureAzimut, 'measureend',
       goog.bind(function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
-            (evt.feature.getGeometry());
+            (evt.detail.feature.getGeometry());
 
         var radius =
             /** @type {ol.geom.LineString} */
@@ -247,13 +245,10 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
         }, this));
       }, this));
 
-  ol.events.listen(measureProfile, ngeo.MeasureEventType.MEASUREEND,
-      /**
-       * @param {ngeo.MeasureEvent} evt Measure event.
-       */
+  ol.events.listen(measureProfile, 'measureend',
       function(evt) {
         var geom = /** @type {ol.geom.LineString} */
-            (evt.feature.getGeometry());
+            (evt.detail.feature.getGeometry());
         this.getProfile_(geom).then(
             goog.bind(function(resp) {
               this['profileData'] = resp;
