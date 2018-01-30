@@ -91,7 +91,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     separator = '?';
   }
   if (wms.indexOf('Capabilities') === -1) {
-    wms = wms + separator + 'SERVICE=WMS&REQUEST=GetCapabilities';
+    wms = wms + separator + 'SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0';
   }
 
   if (!(wms in this.wmsCapa_)) {
@@ -114,7 +114,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
         basicWmsUrl = wms;
       }
       this.buildChildLayers_(basicWmsUrl, capabilities['Capability']['Layer'],
-        capabilities['version'], formats, useTiles);
+        capabilities['version'], formats, useTiles, null);
 
       return capabilities;
     }.bind(this), function(e) {
@@ -162,10 +162,11 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
  * @return {Object} Returns the layer object.
  * @param {string} imageFormats The available formats.
  * @param {boolean} useTiles Set if the layer has a max size.
+ * @param {Object} parentLayer Parent layer object in capabilities tree.
  * @private
  */
 app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
-    imageFormats, useTiles) {
+    imageFormats, useTiles, parentLayer) {
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
@@ -181,10 +182,18 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
     layer['useTiles'] = useTiles;
   }
 
+  // casacading CRS
+  layer.CRS = layer.CRS || [];
+  if (parentLayer) {
+    parentLayer.CRS.forEach(function(crs) {
+      layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs);
+    });
+  }
+
   if (layer['Layer']) {
     for (var i = 0; i < layer['Layer'].length; i++) {
       var l = this.buildChildLayers_(wms, layer['Layer'][i], wmsVersion,
-          imageFormats, useTiles);
+          imageFormats, useTiles, layer);
       if (!l) {
         layer['Layer'].splice(i, 1);
         i--;
@@ -430,15 +439,19 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
       'LAYERS': layer['Name']
     },
     crossOrigin: 'anonymous',
-    ration: 1
+    ratio: 1
   };
 
   var hasLuref = false;
   var has3857 = false;
+  var hasWGS84 = false;
   var projections = layer['CRS'] || layer.SRS || [];
   goog.array.forEach(projections, function(projection) {
     if (projection.toUpperCase() === 'EPSG:2169') {
       hasLuref = true;
+    }
+    if (projection.toUpperCase() === 'EPSG:4326') {
+      hasWGS84 = true;
     }
     if (projection.toUpperCase() === 'EPSG:3857') {
       has3857 = true;
@@ -450,6 +463,8 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
     imgOptions.params['VERSION'] = '1.1.1';
   } else if (has3857) {
     imgOptions.projection = 'EPSG:3857';
+  } else if (hasWGS84) {
+    imgOptions.projection = 'EPSG:4326';
   } else {
     imgOptions.projection = projections[0];
   }
@@ -467,6 +482,11 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
       'olcs.extent': app.olcsExtent,
       source: new ol.source.ImageWMS(imgOptions)
     });
+  }
+  if (has3857) {
+    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:3857'));
+  } else if (hasWGS84) {
+    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:4326'));
   }
   newLayer.set('label', layer['Title']);
   var curMatadata = {'isExternalWms': true,
