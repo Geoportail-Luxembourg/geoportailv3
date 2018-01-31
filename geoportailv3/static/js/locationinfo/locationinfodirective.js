@@ -118,7 +118,7 @@ app.LocationinfoController = function(
   this.featureLayer_ = new ol.layer.Vector({
     source: new ol.source.Vector(),
     zIndex: 1000,
-    altitudeMode: 'clampToGround'
+    'altitudeMode': 'clampToGround'
   });
   this['map'].addLayer(this.featureLayer_);
 
