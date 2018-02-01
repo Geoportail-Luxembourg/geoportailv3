@@ -13,7 +13,8 @@ goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.string');
-goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
 
 
@@ -24,9 +25,9 @@ goog.require('ol.events');
  * service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.Theme} appTheme The theme service.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr the background layer
  * manager.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.WmsHelper} appWmsHelper The wms helper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts helper service.
  * @ngInject
@@ -48,7 +49,7 @@ app.LayerPermalinkManager = function(appStateManager,
   this.appWmtsHelper_ = appWmtsHelper;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
@@ -84,7 +85,7 @@ app.LayerPermalinkManager = function(appStateManager,
   this.stateManager_ = appStateManager;
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
@@ -344,7 +345,7 @@ app.LayerPermalinkManager.prototype.splitLayers_ =
  */
 app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
 
-  ol.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
+  ol.events.listen(this.backgroundLayerMgr_, 'change',
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({

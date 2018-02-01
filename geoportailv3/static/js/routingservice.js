@@ -13,7 +13,7 @@ goog.require('ol.proj');
  * @param {angular.$http} $http The Angular $http service.
  * @param {string} routingServiceUrl The url of the service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay?
  * @param {app.StateManager} appStateManager The state manager service.
  * @ngInject
  */
@@ -75,7 +75,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   this.gettextCatalog = gettextCatalog;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    */
   this.routeOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
@@ -86,7 +86,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   this.routeOverlay.setFeatures(this.routeFeatures);
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    */
   this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
   var fillStyle = new ol.style.Fill({
@@ -122,7 +122,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   this.stepsOverlay.setStyle(this.stepStyle_);
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    */
   this.routingOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 

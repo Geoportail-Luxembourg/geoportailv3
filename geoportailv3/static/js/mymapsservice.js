@@ -43,7 +43,7 @@ app.MapsResponse;
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {app.Themes} appThemes The themes service.
  * @param {app.Theme} appTheme The theme service.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
  * @param {string} arrowUrl URL to the arrow.
  * @ngInject
@@ -74,7 +74,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.layersChanged;
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;

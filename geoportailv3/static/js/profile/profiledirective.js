@@ -19,9 +19,9 @@ goog.require('app');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('ngeo');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.profileDirective');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ngeo.profile.module');
 goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
@@ -61,7 +61,7 @@ app.module.directive('appProfile', app.profileDirective);
 /**
  * @constructor
  * @param {angular.Scope} $scope Scope.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {string} echocsvUrl URL to echo web service.
  * @param {Document} $document Document.
@@ -139,7 +139,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
 
   /**
    * The draw overlay
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
