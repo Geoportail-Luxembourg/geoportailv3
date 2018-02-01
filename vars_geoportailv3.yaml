@@ -1,6 +1,7 @@
 extends: CONST_vars.yaml
 
 vars:
+    excluded_themes_from_search:
     referrer:
 
     no_proxy: localhost

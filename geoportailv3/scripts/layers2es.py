@@ -142,6 +142,10 @@ class Import:
             settings = yaml.load(f)
 
         self.languages = settings["available_locale_names"]
+        exluded_themes_string = settings["excluded_themes_from_search"]
+        exluded_themes = []
+        if exluded_themes_string is not None:
+            exluded_themes = exluded_themes_string.split(",")
 
         # must be done only once we have loaded the project config
         from c2cgeoportal.models import DBSession, Interface, Theme, Role
@@ -169,11 +173,13 @@ class Import:
             self.public_group[interface.id] = []
 
         for theme in self.session.query(Theme).filter_by(public=True).all():
-            self._add_theme(theme)
+            if theme.name not in exluded_themes:
+                self._add_theme(theme)
 
         for role in self.session.query(Role).all():
             for theme in self.session.query(Theme).all():
-                self._add_theme(theme, role)
+                if theme.name not in exluded_themes:
+                    self._add_theme(theme, role)
 
         ensure_index(
             get_elasticsearch(request),
