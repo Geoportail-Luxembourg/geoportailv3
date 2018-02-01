@@ -3,6 +3,7 @@ goog.provide('app.format.FeatureHash');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.color');
+goog.require('ngeo.format.FeatureProperties');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -655,7 +656,7 @@ app.format.FeatureHash.setStyleProperties_ = function(text, feature) {
   // Deal with legacy properties
   if (geometry instanceof ol.geom.Point) {
     if (properties['isLabel'] ||
-        properties[ngeo.FeatureProperties.IS_TEXT]) {
+        properties[ngeo.format.FeatureProperties.IS_TEXT]) {
       delete properties['strokeColor'];
       delete properties['fillColor'];
     } else {
@@ -704,18 +705,18 @@ app.format.FeatureHash.setStyleProperties_ = function(text, feature) {
  */
 app.format.FeatureHash.castValue_ = function(key, value) {
   var numProperties = [
-    ngeo.FeatureProperties.ANGLE,
-    ngeo.FeatureProperties.OPACITY,
-    ngeo.FeatureProperties.SIZE,
-    ngeo.FeatureProperties.STROKE,
+    ngeo.format.FeatureProperties.ANGLE,
+    ngeo.format.FeatureProperties.OPACITY,
+    ngeo.format.FeatureProperties.SIZE,
+    ngeo.format.FeatureProperties.STROKE,
     'pointRadius',
     'strokeWidth'
   ];
   var boolProperties = [
-    ngeo.FeatureProperties.IS_CIRCLE,
-    ngeo.FeatureProperties.IS_RECTANGLE,
-    ngeo.FeatureProperties.IS_TEXT,
-    ngeo.FeatureProperties.SHOW_MEASURE,
+    ngeo.format.FeatureProperties.IS_CIRCLE,
+    ngeo.format.FeatureProperties.IS_RECTANGLE,
+    ngeo.format.FeatureProperties.IS_TEXT,
+    ngeo.format.FeatureProperties.SHOW_MEASURE,
     'isCircle',
     'isRectangle',
     'isLabel',

@@ -25,9 +25,14 @@ goog.require('app.UserManager');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.SyncArrays');
+goog.require('ngeo.draw.module');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ngeo.message.popupComponent');
+goog.require('ngeo.message.Popup');
+goog.require('ngeo.misc.syncArrays');
+goog.require('ngeo.search.module');
+goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
 goog.require('ol.Map');
 goog.require('ol.Object');
@@ -42,9 +47,9 @@ goog.require('ol.proj');
 
 /**
  * @param {angular.Scope} $scope Scope.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
@@ -60,8 +65,7 @@ goog.require('ol.proj');
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
- * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchronizer service.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
@@ -80,7 +84,7 @@ app.MainController = function(
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
+    ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting) {
   /**
@@ -126,13 +130,13 @@ app.MainController = function(
   this.appExport_ = appExport;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
@@ -328,7 +332,7 @@ app.MainController = function(
 
   this.initMymaps_();
 
-  this.manageSelectedLayers_($scope, ngeoSyncArrays);
+  this.manageSelectedLayers_($scope);
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
@@ -428,7 +432,7 @@ app.MainController = function(
 
 
 /**
- * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
+ * @param {ngeo.map.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
 app.MainController.prototype.addLocationControl_ =
@@ -524,12 +528,11 @@ app.MainController.prototype.loadThemes_ = function() {
 
 /**
  * @param {angular.Scope} scope Scope
- * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchroniser service.
  * @private
  */
 app.MainController.prototype.manageSelectedLayers_ =
-    function(scope, ngeoSyncArrays) {
-      ngeoSyncArrays(this.map_.getLayers().getArray(),
+    function(scope) {
+      ngeo.misc.syncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
         return goog.array.indexOf(

@@ -26,7 +26,7 @@ goog.require('app.SelectedFeatures');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('ngeo.DecorateInteraction');
+goog.require('ngeo.misc.decorate');
 goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
@@ -72,8 +72,6 @@ app.module.directive('appDraw', app.drawDirective);
 
 /**
  * @param {!angular.Scope} $scope Scope.
- * @param {ngeo.DecorateInteraction} ngeoDecorateInteraction Decorate
- *     interaction service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
@@ -90,7 +88,7 @@ app.module.directive('appDraw', app.drawDirective);
  * @export
  * @ngInject
  */
-app.DrawController = function($scope, ngeoDecorateInteraction,
+app.DrawController = function($scope,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
     appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
     appActivetool, appGetDevice, $http, getRouteUrl) {
@@ -257,7 +255,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawPoint = drawPoint;
 
   drawPoint.setActive(false);
-  ngeoDecorateInteraction(drawPoint);
+  ngeo.misc.decorate.interaction(drawPoint);
   this.map.addInteraction(drawPoint);
   ol.events.listen(drawPoint, ol.Object.getChangeEventType(
       ol.interaction.Property.ACTIVE),
@@ -276,7 +274,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawLabel = drawLabel;
 
   drawLabel.setActive(false);
-  ngeoDecorateInteraction(drawLabel);
+  ngeo.misc.decorate.interaction(drawLabel);
   this.map.addInteraction(drawLabel);
   ol.events.listen(drawLabel, ol.Object.getChangeEventType(
       ol.interaction.Property.ACTIVE),
@@ -298,7 +296,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
 
   this.drawLine.setActive(false);
-  ngeoDecorateInteraction(this.drawLine);
+  ngeo.misc.decorate.interaction(this.drawLine);
   this.map.addInteraction(this.drawLine);
   ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
       ol.interaction.Property.ACTIVE),
@@ -319,7 +317,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawPolygon = drawPolygon;
 
   drawPolygon.setActive(false);
-  ngeoDecorateInteraction(drawPolygon);
+  ngeo.misc.decorate.interaction(drawPolygon);
   this.map.addInteraction(drawPolygon);
   ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
       ol.interaction.Property.ACTIVE),
@@ -340,7 +338,7 @@ app.DrawController = function($scope, ngeoDecorateInteraction,
   this.drawCircle = drawCircle;
 
   drawCircle.setActive(false);
-  ngeoDecorateInteraction(drawCircle);
+  ngeo.misc.decorate.interaction(drawCircle);
   this.map.addInteraction(drawCircle);
   ol.events.listen(drawCircle, ol.Object.getChangeEventType(
       ol.interaction.Property.ACTIVE),

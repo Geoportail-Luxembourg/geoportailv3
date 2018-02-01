@@ -12,7 +12,7 @@ goog.provide('app.shorturlDirective');
 
 goog.require('app');
 goog.require('app.GetShorturl');
-goog.require('ngeo.Location');
+goog.require('ngeo.statemanager.module');
 
 
 /**
@@ -42,7 +42,7 @@ app.module.directive('appShorturl', app.shorturlDirective);
  * @ngInject
  * @constructor
  * @param {angular.Scope} $scope The scope.
- * @param {ngeo.Location} ngeoLocation The location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation The location service.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
@@ -56,7 +56,7 @@ app.ShorturlDirectiveController = function($scope, ngeoLocation,
   this.appMymaps_ = appMymaps;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;

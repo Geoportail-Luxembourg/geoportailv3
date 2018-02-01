@@ -13,8 +13,8 @@ goog.require('app.StateManager');
 goog.require('app.infobarDirective');
 goog.require('app.projections');
 goog.require('goog.asserts');
-goog.require('ngeo.Debounce');
-goog.require('ngeo.mapDirective');
+goog.require('ngeo.map.module');
+goog.require('ngeo.misc.debounce');
 goog.require('ol.proj');
 
 
@@ -41,7 +41,7 @@ app.module.directive('appMap', app.mapDirective);
 
 /**
  * @param {app.StateManager} appStateManager State manager service.
- * @param {ngeo.Debounce} ngeoDebounce ngeo debounce service.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeo debounce service.
  * @constructor
  * @ngInject
  */

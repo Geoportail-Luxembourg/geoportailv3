@@ -12,7 +12,7 @@ goog.require('app.Theme');
 goog.require('app.Themes');
 goog.require('app.ThemesEventType');
 goog.require('goog.array');
-goog.require('ngeo.Location');
+goog.require('ngeo.statemanager.Location');
 goog.require('ol.events');
 
 
@@ -42,7 +42,7 @@ app.module.directive('appThemeswitcher', app.themeswitcherDirective);
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {ngeo.Location} ngeoLocation ngeo Location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo Location service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme current theme service.
  * @param {app.Notify} appNotify Notify service.

@@ -5,7 +5,7 @@
 
 goog.provide('app.ShowLayerinfo');
 
-goog.require('ngeo.CreatePopup');
+goog.require('ngeo.message.Popup');
 goog.require('app.WmsHelper');
 goog.require('app.WmtsHelper');
 
@@ -21,7 +21,7 @@ app.ShowLayerinfo;
  * @param {angular.$sce} $sce Angular $sce service
  * @param {angular.Scope} $rootScope The root Scope.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {ngeo.CreatePopup} ngeoCreatePopup Ngeo popup factory service
+ * @param {ngeox.PopupFactory} ngeoCreatePopup Ngeo popup factory service
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
  * @return {app.ShowLayerinfo} The show layer info function.
@@ -31,7 +31,7 @@ app.showLayerinfoFactory = function($http, $sce, $rootScope,
     gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
 
   /**
-   * @type {ngeo.Popup}
+   * @type {ngeo.message.Popup}
    */
   var popup = ngeoCreatePopup();
   /**

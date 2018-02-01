@@ -17,8 +17,7 @@ goog.provide('app.LayermanagerController');
 goog.provide('app.layermanagerDirective');
 
 goog.require('app');
-goog.require('ngeo.sortableDirective');
-
+goog.require('ngeo.layertree.module');
 
 /**
  * @param {string} appLayermanagerTemplateUrl Url to layermanager template
