@@ -43,7 +43,7 @@
     "less-plugin-clean-css": "1.5.1",
     "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/1680664d0",
     "nomnom": "1.8.1",
-    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/v1.34",
+    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/a3faf8fd766139bd15b96ce684bb366f9ebad87c",
     "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/f139b7001a7",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
