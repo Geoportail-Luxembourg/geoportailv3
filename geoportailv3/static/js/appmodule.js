@@ -7,11 +7,12 @@ goog.provide('app');
 
 goog.require('goog.dom.classlist');
 goog.require('ngeo');
-goog.require('ngeo.MockLocationProvider');
+goog.require('ngeo.statemanager.module');
+goog.require('ngeo.search.module');
 goog.require('ol.has');
 
 goog.require('ngeo.olcs.olcsModule');
-goog.require('ngeo.search.searchModule');
+goog.require('ngeo.search.module');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('ngeo.search.searchModule');
 app.module = angular.module('app', [
   ngeo.module.name, 'gettext',
   ngeo.olcs.olcsModule.name,
-  ngeo.search.searchModule.module.name
+  ngeo.search.module.name
 ]).run(function() {
   if (!ol.has.TOUCH) {
     goog.dom.classlist.add(document.body, 'no-touch');
@@ -31,7 +32,7 @@ app.module = angular.module('app', [
 // Use ngeo's mockLocationProvider to work around a problem in Angular
 // and avoid problems when using both ngeoLocation and ng-include in
 // the application.
-app.module.config(ngeo.mockLocationProvider);
+app.module.config(ngeo.statemanager.Location.MockProvider);
 
 
 // activate pre-assigning bindings
@@ -76,6 +77,6 @@ app.module.config(['$httpProvider', function($httpProvider) {
 
 /**
  * The OpenLayers extent used in 3D to restrict the area rendered by Cesium.
- * @type {!ol.Extent}
+ * @type {ol.Extent}
  */
 app.olcsExtent = ol.proj.transformExtent([5.31, 49.38, 6.64, 50.21], 'EPSG:4326', 'EPSG:3857');

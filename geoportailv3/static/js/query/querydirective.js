@@ -45,6 +45,7 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'layersOpen': '=appQueryLayersOpen',
       'mymapsOpen': '=appQueryMymapsOpen',
       'appSelector': '=appQueryAppselector',
+      'routingOpen': '=appQueryRoutingOpen',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo'
     },
@@ -65,7 +66,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$http} $http Angular $http service.
  * manager.
  * @param {app.GetProfile} appGetProfile The profile service.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
  *                 to find the intterogation templates.
  * @param {string} getInfoServiceUrl The infoservice url.
@@ -139,7 +140,7 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   this.mymapsImageUrl_ = mymapsImageUrl;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
@@ -408,7 +409,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
           this.isLongPress_ = false;
           return;
         }
-        if (this.drawnFeatures_.modifyInteraction.getActive() ||
+        if (this['routingOpen'] ||
+            this.drawnFeatures_.modifyInteraction.getActive() ||
             this.drawnFeatures_.modifyCircleInteraction.getActive() ||
             this.appActivetool_.isActive() || this.isQuerying_) {
           return;

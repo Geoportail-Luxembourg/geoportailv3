@@ -2,15 +2,19 @@
   "exports": [],
   "cwd": ".",
   "src": [
+	"node_modules/openlayers/src/*.js",
     "node_modules/openlayers/src/**/*.js",
+	"node_modules/openlayers/build/ol.ext/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
+	"node_modules/ngeo/src/*.js",
     "node_modules/ngeo/src/**/*.js",
     "node_modules/ol-cesium/src/**/*.js",
+	"geoportailv3/static/js/*.js",
     "geoportailv3/static/js/**/*.js",
     "geoportailv3/static/build/templatecache.js"
   ],
   "compile": {
-    "entry_point": "app_main",
+    "entry_point": "app.main",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
       "node_modules/openlayers/externs/cartodb.js",
@@ -20,6 +24,8 @@
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
       "node_modules/openlayers/externs/topojson.js",
+      "node_modules/ol-cesium/Cesium.externs.js",
+      "node_modules/ol-cesium/externs/olcsx.js",
       "node_modules/ngeo/externs/angular-gettext.js",
       "node_modules/ngeo/externs/d3.js",
       "node_modules/ngeo/externs/mapfish-print-v3.js",
@@ -32,8 +38,6 @@
       "node_modules/ngeo/externs/moment.js",
       "node_modules/ngeo/externs/geo-admin-api.js",
       "node_modules/ngeo/externs/google_maps_api_v3_27.js",
-      "node_modules/ol-cesium/Cesium.externs.js",
-      "node_modules/ol-cesium/externs/olcsx.js",
       ".build/externs/angular-1.6.js",
       ".build/externs/angular-1.6-q_templated.js",
       ".build/externs/angular-1.6-http-promise_templated.js",
@@ -46,13 +50,12 @@
     "define": [
       "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.DEBUG=false",
-      "ol.ENABLE_RASTER_REPROJECTION=false",
+      "ol.ENABLE_RASTER_REPROJECTION=true",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
       "node_modules/ngeo/options/ngeox.js",
       "node_modules/openlayers/externs/olx.js",
-      "node_modules/openlayers/src/ol/typedefs.js",
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [

@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+
 import logging
 from c2cgeoportal.views.entry import Entry
 
@@ -30,6 +31,19 @@ class JsapiEntry(Entry):
     @view_config(route_name='jsapiloader',
                  renderer='geoportailv3:templates/api/apiv3loader.js')
     def apiloader(self):
+        config = self.settings
+        referrer = config["referrer"]
+        if "sc" in self.request.params and \
+           referrer is not None and \
+           "cookie_name" in referrer and \
+           "cookie_value" in referrer and \
+           "cookie_domain" in referrer:
+            cookie_name = referrer["cookie_name"]
+            cookie_value = referrer["cookie_value"]
+            cookie_domain = referrer["cookie_domain"]
+            self.request.response.set_cookie(
+                cookie_name, value=cookie_value, domain=cookie_domain)
+
         return {}
 
     @view_config(route_name='jsapiexample',

@@ -7,8 +7,8 @@ goog.provide('app.LocationControl');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ol.Feature');
 goog.require('ol.Geolocation');
 goog.require('ol.Object');
@@ -22,7 +22,7 @@ goog.require('ol.geom.Point');
  *     label: (string|undefined),
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
- *     featureOverlayMgr: ngeo.FeatureOverlayMgr,
+ *     featureOverlayMgr: ngeo.map.FeatureOverlayMgr,
  *     notify: app.Notify,
  *     gettextCatalog: angularGettext.Catalog,
  *     scope: angular.Scope,
@@ -85,7 +85,7 @@ app.LocationControl = function(options) {
   this.geolocation_ = null;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = options.featureOverlayMgr.getFeatureOverlay();

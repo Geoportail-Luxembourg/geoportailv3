@@ -7,9 +7,9 @@ goog.provide('app.GetWmsLayer');
 goog.provide('app.GetWmtsLayer');
 
 goog.require('app');
-goog.require('ngeo.DecorateLayer');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ngeo.misc.decorate');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.layer.Image');
@@ -59,13 +59,12 @@ app.getImageExtension_ = function(imageType) {
 
 
 /**
- * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @param {string} requestScheme The scheme.
  * @return {app.GetWmtsLayer} The getWmtsLayer function.
  * @private
  * @ngInject
  */
-app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
+app.getWmtsLayer_ = function(requestScheme) {
   return getWmtsLayer;
 
   /**
@@ -122,7 +121,7 @@ app.getWmtsLayer_ = function(ngeoDecorateLayer, requestScheme) {
     });
 
     layer.set('label', name);
-    ngeoDecorateLayer(layer);
+    ngeo.misc.decorate.layer(layer);
 
     return layer;
   }
@@ -133,7 +132,6 @@ app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
 
 
 /**
- * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @param {string} proxyWmsUrl URL to the proxy wms.
  * @param {boolean} remoteProxyWms is the proxy wms remote or local.
  * @param {app.GetDevice} appGetDevice The device service.
@@ -141,7 +139,7 @@ app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
  * @private
  * @ngInject
  */
-app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms,
+app.getWmsLayer_ = function(proxyWmsUrl, remoteProxyWms,
     appGetDevice) {
   return getWmsLayer;
 
@@ -175,7 +173,7 @@ app.getWmsLayer_ = function(ngeoDecorateLayer, proxyWmsUrl, remoteProxyWms,
     });
 
     layer.set('label', name);
-    ngeoDecorateLayer(layer);
+    ngeo.misc.decorate.layer(layer);
 
     return layer;
   }

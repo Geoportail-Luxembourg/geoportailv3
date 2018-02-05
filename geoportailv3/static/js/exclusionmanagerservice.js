@@ -9,7 +9,7 @@ goog.require('app.BlankLayer');
 goog.require('app.Notify');
 goog.require('goog.asserts');
 goog.require('goog.array');
-goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('ol.Object');
 goog.require('ol.Observable');
 goog.require('ol.events');
@@ -17,7 +17,7 @@ goog.require('ol.events');
 
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.BlankLayer} appBlankLayer Blank layer service.
  * @param {app.Notify} appNotify Notify service.
@@ -28,7 +28,7 @@ app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
     appBlankLayer, appNotify) {
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;

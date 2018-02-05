@@ -564,7 +564,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
     goog.asserts.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
         goog.bind(function(elevation) {
-          this.featureElevation = elevation;
+          this.featureElevation = elevation['formattedElevation'];
         }, this));
   } else {
     this.featureElevation = undefined;

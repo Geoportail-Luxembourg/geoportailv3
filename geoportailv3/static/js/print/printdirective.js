@@ -20,10 +20,9 @@ goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.string');
-goog.require('ngeo.CreatePrint');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.Print');
-goog.require('ngeo.PrintUtils');
+goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ngeo.print.Service');
+goog.require('ngeo.print.Utils');
 goog.require('ol.easing');
 goog.require('ol.events');
 goog.require('ol.Observable');
@@ -44,6 +43,7 @@ app.printDirective = function(appPrintTemplateUrl) {
       'map': '=appPrintMap',
       'open': '=appPrintOpen',
       'infoOpen': '=appPrintInfoOpen',
+      'routingOpen': '=appPrintRoutingOpen',
       'layers': '=appPrintLayers'
     },
     controller: 'AppPrintController',
@@ -69,10 +69,10 @@ app.Piwik;
  * @param {angular.$timeout} $timeout The Angular $timeout service.
  * @param {angular.$q} $q The Angular $q service.
  * @param {angularGettext.Catalog} gettextCatalog The gettext service.
- * @param {ngeo.CreatePrint} ngeoCreatePrint The ngeoCreatePrint service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeox.CreatePrint} ngeoCreatePrint The ngeoCreatePrint function.
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
- * @param {ngeo.PrintUtils} ngeoPrintUtils The ngeoPrintUtils service.
+ * @param {ngeo.print.Utils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
@@ -80,7 +80,7 @@ app.Piwik;
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @constructor
  * @export
  * @ngInject
@@ -92,7 +92,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoBackgroundLayerMgr) {
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
@@ -147,13 +147,13 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
   this.requestCanceler_ = null;
 
   /**
-   * @type {ngeo.Print}
+   * @type {ngeo.print.Service}
    * @private
    */
   this.print_ = ngeoCreatePrint(printServiceUrl);
 
   /**
-   * @type {ngeo.PrintUtils}
+   * @type {ngeo.print.Utils}
    * @private
    */
   this.printUtils_ = ngeoPrintUtils;
@@ -567,6 +567,13 @@ app.PrintController.prototype.print = function(format) {
             }
           }
         });
+
+        var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
+        if (routingAttributions !== undefined && routingAttributions !== null) {
+          routingAttributions.forEach(function(attribution) {
+            dataOwners.push(attribution.getHTML());
+          }, this);
+        }
         goog.array.removeDuplicates(dataOwners);
         var disclaimer = this.gettextCatalog.getString('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
         var dateText = this.gettextCatalog.getString('Date d\'impression: ');
@@ -574,7 +581,7 @@ app.PrintController.prototype.print = function(format) {
         var appTitle = this.gettextCatalog.getString('Le géoportail national du Grand-Duché du Luxembourg');
         var queryResults = $('.printable:not(.ng-hide):not(.ng-scope)');
         var queryResultsHtml = null;
-        if (this['infoOpen'] && queryResults.length > 0) {
+        if ((this['routingOpen'] || this['infoOpen']) && queryResults.length > 0) {
           var clonedQuery = queryResults[0].cloneNode(true);
           var profileElements = goog.dom.getElementsByClass('profile', clonedQuery);
           if (profileElements !== null && profileElements.length > 0) {

@@ -9,7 +9,7 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
    * @param {string} cesiumUrl Cesium URL.
    * @param {ol.Extent} cameraExtentInRadians The Luxembourg extent.
    * @param {ol.Map} map The map.
-   * @param {ngeo.Location} ngeoLocation The location service.
+   * @param {ngeo.statemanager.Location} ngeoLocation The location service.
    * @param {angular.Scope} $rootScope The root scope.
    */
   constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope) {
@@ -20,7 +20,7 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
 
     /**
      * @private
-     * @type {ngeo.Location}
+     * @type {ngeo.statemanager.Location}
      */
     this.ngeoLocation_ = ngeoLocation;
 

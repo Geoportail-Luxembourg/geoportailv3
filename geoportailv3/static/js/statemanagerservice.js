@@ -10,12 +10,12 @@ goog.require('app.Notify');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
-goog.require('ngeo.Location');
+goog.require('ngeo.statemanager.module');
 
 
 /**
  * @constructor
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
@@ -41,7 +41,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
   this.initialState_ = {};
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;

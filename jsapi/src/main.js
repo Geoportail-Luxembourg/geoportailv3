@@ -47,7 +47,7 @@ var _paq = [];
 _paq.push(['setSiteId', 22]);
 
 (function() {
-  var u = '//statistics.geoportail.lu/';
+  var u = 'https://statistics.geoportail.lu/';
   _paq.push(['setTrackerUrl', u + 'piwik.php']);
   var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
   g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
@@ -90,6 +90,11 @@ lux.baseUrl = null;
 lux.languages = {};
 
 /**
+ * @type {string?}
+ */
+lux.wmtsCrossOrigin = 'anonymous';
+
+/**
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
  * <li>Mymaps service</li>
@@ -111,7 +116,7 @@ lux.setBaseUrl = function(url, requestScheme) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
 
-    url = '//apiv3.geoportail.lu/';
+    url = 'https://apiv3.geoportail.lu/';
   } else {
     lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
@@ -166,6 +171,15 @@ lux.printUrl = 'printproxy';
  */
 lux.setLayersUrl = function(url) {
   lux.layersUrl = url;
+};
+
+/**
+ * @param {string?} crossorigin The crossorigin header. Default is anonymous.
+ * @export
+ * @api
+ */
+lux.setWmtsCrossOrigin = function(crossorigin) {
+  lux.wmtsCrossOrigin = crossorigin;
 };
 
 /**
@@ -436,14 +450,15 @@ lux.Map = function(options) {
     if (options.search && options.search.target) {
       var searchTarget = options.search.target;
       var searchDataSets = options.search.dataSets;
+      var onSelect = options.search.onSelect;
       delete options.search;
-      this.addSearch(searchTarget, searchDataSets);
+      this.addSearch(searchTarget, searchDataSets, onSelect);
     }
   }.bind(this));
 
   if (options.features) {
     var opts = options.features;
-    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target, opts.showMarker);
+    this.showFeatures(opts.layer, opts.ids, opts.click, opts.target, opts.showMarker, opts.maxZoom);
   }
 
   if (options.view === undefined) {
@@ -487,7 +502,10 @@ lux.Map = function(options) {
       controls = options.controls;
     }
   } else {
-    controls = ol.control.defaults();
+    var attribution = new ol.control.Attribution({
+      collapsible: false
+    });
+    controls = ol.control.defaults({attribution: false}).extend([attribution]);
   }
 
   var target;
@@ -526,10 +544,9 @@ lux.Map = function(options) {
   options.controls = controls;
 
   options.logo = {
-    href: '//map.geoportail.lu',
-    src: '//www.geoportail.lu/favicon.ico'
+    href: 'https://map.geoportail.lu',
+    src: 'https://www.geoportail.lu/favicon.ico'
   };
-
 
   goog.base(this, options);
 
@@ -854,7 +871,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }
   }
   image.src = options.iconURL ||
-      '//openlayers.org/en/master/examples/data/icon.png';
+      'https://openlayers.org/en/master/examples/data/icon.png';
   element.appendChild(image);
 
   var position;
@@ -1241,10 +1258,11 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
  * @param {boolean|undefined} isShowMarker True if a marker has to be displayed.
+ * @param {number|undefined} maxZoom The maximum zoom to fit.
  * @export
  * @api
  */
-lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker) {
+lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker, maxZoom) {
   // remove any highlighted feature
   this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
@@ -1260,7 +1278,7 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
         return resp.json();
       }).then(function(json) {
         this.addFeature_(json, visible, opt_click, opt_target,
-          (isShowMarker === undefined) ? true : isShowMarker);
+          (isShowMarker === undefined) ? true : isShowMarker, maxZoom);
       }.bind(this));
     }.bind(this));
   }.bind(this));
@@ -1294,9 +1312,11 @@ lux.Map.prototype.readJsonFeatures_ = function(json) {
  * @param {boolean?} opt_click True if click is needed to show popup
  * @param {Element|string|undefined} opt_target Element to render popup content in
  * @param {boolean} isShowMarker True if the marker should be shown.
+ * @param {number | undefined} maxZoom The maxZoom to fit.
  * @private
  */
-lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker) {
+lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker, maxZoom) {
+  var curMaxZoom = (maxZoom !== undefined) ? maxZoom : 17;
 
   if (json.length === 0) {
     return;
@@ -1329,7 +1349,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
     if (size) {
       this.getView().fit(this.featureExtent_, {
         size: size,
-        maxZoom: 17,
+        maxZoom: curMaxZoom,
         padding: [0, 0, 0, 0]
       });
     }
@@ -1344,10 +1364,11 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example6}
  * @param {Element|string} target Dom element or id of the element to render search widget in.
  * @param {Array<string>=} dataSets=['Adresse'] Array of layer used as search sources.
+ * @param {function(Event, String, Element)=} onSelect Optional function called when result is selected.
  * @export
  * @api
  */
-lux.Map.prototype.addSearch = function(target, dataSets) {
+lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
   var layers = [];
   var searchCoordinates = false;
   if (dataSets !== undefined && dataSets.length > 0) {
@@ -1355,10 +1376,13 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
       if (layer === 'Coordinates') {
         searchCoordinates = true;
       } else {
-        layers.push(layer);
+        if (layer.indexOf('editus_poi') < 0) {
+          layers.push(layer);
+        }
       }
     });
-  } else {
+  }
+  if (layers.length === 0) {
     layers.push('Adresse');
   }
   var el = typeof target === 'string' ?
@@ -1367,6 +1391,30 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
   if (!(el instanceof Element)) {
     console.error('Search target should be a DOM Element or its id');
     return;
+  }
+  var selectFunction;
+  if (onSelect !== undefined) {
+    selectFunction = onSelect;
+  } else {
+    selectFunction = function(e, term, item, clearButton) {
+      var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
+      var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
+      this.searchLayer_.getSource().clear();
+      this.searchLayer_.getSource().addFeature(new ol.Feature(
+        new ol.geom.Point(
+          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
+        )
+      ));
+      this.getView().fit(
+        ol.geom.Polygon.fromExtent(
+          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+        ),
+        /** @type {olx.view.FitOptions} */ ({
+          size: /** @type {Array<number>} */ (this.getSize()),
+          maxZoom: 17
+        })
+      );
+    };
   }
 
   var container = document.createElement('div');
@@ -1424,34 +1472,20 @@ lux.Map.prototype.addSearch = function(target, dataSets) {
     }.bind(this),
     'renderItem': function(item, search) {
       var label = item.properties.label;
+      var layerName = item.properties['layer_name'];
       search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
       var geom = /** @type {ol.geom.Point} */ (format.readGeometry(item.geometry));
       var bbox = (!item['bbox'] || !item['bbox']['join']) ? geom.getExtent() : item['bbox'];
       return '<div class="autocomplete-suggestion" data-val="' + label + '"' +
-          'data-coord="' + geom.getCoordinates().join(',') + '"' +
-          'data-extent="' + bbox.join(',') + '">' +
+          ' data-coord="' + geom.getCoordinates().join(',') + '"' +
+          ' data-layer="' + layerName + '"' +
+          ' data-extent="' + bbox.join(',') + '">' +
           label.replace(re, '<b>$1</b>') +
           '</div>';
     },
     'onSelect': function(e, term, item) {
-      var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
-      var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
-      this.searchLayer_.getSource().clear();
-      this.searchLayer_.getSource().addFeature(new ol.Feature(
-        new ol.geom.Point(
-          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
-        )
-      ));
-      this.getView().fit(
-        ol.geom.Polygon.fromExtent(
-          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
-        ),
-        /** @type {olx.view.FitOptions} */ ({
-          size: /** @type {Array<number>} */ (this.getSize()),
-          maxZoom: 17
-        })
-      );
+      selectFunction.call(this, e, term, item, clear);
     }.bind(this)
   });
 
@@ -1773,9 +1807,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
           if (key != feature.getGeometryName() && properties[key]) {
             html += '<tr><th>';
             html += key;
-            html += '</th><td ';
-            html += 'title ="';
-            html += properties[key] + '">';
+            html += '</th><td>';
             html += properties[key] + '</td></tr>';
           }
         }
@@ -1848,24 +1880,26 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
   var retina = isHiDpi && config['metadata']['hasRetina'] === 'true';
 
   var retinaExtension = (retina ? '_hd' : '');
-  var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+  var url = 'http://wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
   retinaExtension +
   '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
   if (lux.requestScheme === 'https') {
-    url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+    url = 'https://wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
     retinaExtension +
     '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
   var projection = ol.proj.get('EPSG:3857');
   var extent = projection.getExtent();
+
   var layer = new ol.layer.Tile({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
     source: new ol.source.WMTS({
-      crossOrigin: 'anonymous',
+      crossOrigin: lux.wmtsCrossOrigin,
       url: url,
+      attributions: [''],
       tilePixelRatio: (retina ? 2 : 1),
       layer: config['name'],
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
@@ -1908,7 +1942,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
  * @private
  */
 lux.WMSLayerFactory_ = function(config, opacity, visible) {
-  var url = config.url || '//map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var url = config.url || 'https://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
     url: url,
