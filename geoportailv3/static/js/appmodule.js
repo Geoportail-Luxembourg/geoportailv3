@@ -7,6 +7,7 @@ goog.provide('app');
 
 goog.require('goog.dom.classlist');
 goog.require('ngeo');
+goog.require('ngeo.misc.sortableComponent');
 goog.require('ngeo.statemanager.module');
 goog.require('ngeo.search.module');
 goog.require('ol.has');
