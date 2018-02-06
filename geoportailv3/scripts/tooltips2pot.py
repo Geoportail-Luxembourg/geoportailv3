@@ -110,13 +110,17 @@ def main():  # pragma: nocover
                 '96958.90059551848,61965.61097091329,' +
                 '97454.77280739773,62463.21618929457', result.layer)
 
+        attributes = None
         if first_row is not None:
             attributes = dict(first_row)
             attributes = remove_attributes(
                 attributes,
                 result.attributes_to_remove,
                 result.geometry_column)
-
+        if first_row is None and result.columns_order is not None and\
+           len(result.columns_order) > 0:
+            attributes = result.columns_order.split(",")
+        if attributes is not None:
             for attribute in attributes:
                 if attribute not in fields:
                     fields.append(attribute)
