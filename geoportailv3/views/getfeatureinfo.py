@@ -340,7 +340,8 @@ class Getfeatureinfo(object):
                 features = self._ogc_getfeatureinfo(
                     url, x, y, width, height,
                     ogc_layers, bbox, srs, luxgetfeaturedefinition.layer,
-                    luxgetfeaturedefinition.attributes_to_remove)
+                    luxgetfeaturedefinition.attributes_to_remove,
+                    luxgetfeaturedefinition.columns_order)
                 if len(features) > 0:
                     if (luxgetfeaturedefinition.additional_info_function
                         is not None and
@@ -474,6 +475,7 @@ class Getfeatureinfo(object):
                     attributes,
                     attributes_to_remove,
                     geometry_column)
+
         if columns_order is not None:
             import collections
 
@@ -774,7 +776,7 @@ class Getfeatureinfo(object):
 
     def _ogc_getfeatureinfo(
             self, url, x, y, width, height, layer, bbox, srs, layer_id,
-            attributes_to_remove):
+            attributes_to_remove, columns_order):
         body = {
             'SERVICE': 'WMS',
             'VERSION': '1.1.1',
@@ -807,7 +809,6 @@ class Getfeatureinfo(object):
             features = []
             ogc_features = geojson_loads(content)
 
-            columns_order = ""
             for feature in ogc_features['features']:
                 f = self.to_feature(layer_id, None,
                                     feature['geometry'],
