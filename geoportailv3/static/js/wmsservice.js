@@ -176,10 +176,10 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   }
 
   // casacading CRS
-  layer.CRS = layer.CRS || [];
+  layer['CRS'] = layer['CRS'] || [];
   if (parentLayer) {
-    parentLayer.CRS.forEach(function(crs) {
-      layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs);
+    parentLayer['CRS'].forEach(function(crs) {
+      layer['CRS'].indexOf(crs) < 0 && layer['CRS'].push(crs);
     });
   }
 
@@ -438,7 +438,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   var hasLuref = false;
   var has3857 = false;
   var hasWGS84 = false;
-  var projections = layer['CRS'] || layer.SRS || [];
+  var projections = layer['CRS'] || layer['SRS'] || [];
   goog.array.forEach(projections, function(projection) {
     if (projection.toUpperCase() === 'EPSG:2169') {
       hasLuref = true;
