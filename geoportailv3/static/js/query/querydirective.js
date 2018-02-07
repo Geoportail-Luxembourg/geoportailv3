@@ -493,13 +493,21 @@ app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
   var opt = {
     hitTolerance: 5
   };
-  this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
-      selected.push(feature);
-      return false;
+  var ol3dm = this.map_.get('ol3dm');
+  if (ol3dm.is3dEnabled()) {
+    var pick = ol3dm.getCesiumScene().pick({x: pixel[0], y: pixel[1]});
+    if (pick && pick.primitive.olFeature) {
+      selected.push(pick.primitive.olFeature);
     }
-    return true;
-  }.bind(this), opt);
+  } else {
+    this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
+      if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
+        selected.push(feature);
+        return false;
+      }
+      return true;
+    }.bind(this), opt);
+  }
   if (selected.length > 0) {
     this.selectedFeatures_.push(selected.pop());
   }
