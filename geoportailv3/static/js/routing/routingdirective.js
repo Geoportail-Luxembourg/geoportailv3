@@ -13,7 +13,7 @@ goog.provide('app.routingDirective');
 
 goog.require('app');
 goog.require('app.Routing');
-goog.require('ngeo.filters');
+goog.require('ngeo.misc.filters');
 goog.require('ngeo.search.createGeoJSONBloodhound');
 goog.require('ngeo.search.module');
 
