@@ -1037,6 +1037,9 @@ app.DrawController.prototype.gotoAnchor = function(anchorId) {
 app.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
   var keyEvent = mapBrowserEvent.originalEvent;
   var prevent = false;
+  if (this.appActivetool_.streetviewActive) {
+    prevent = true;
+  }
   if (this.active && keyEvent.key === 'Backspace') {
     if (this.drawLine.getActive()) {
       this.drawLine.removeLastPoints();

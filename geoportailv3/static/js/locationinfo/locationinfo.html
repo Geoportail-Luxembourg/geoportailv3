@@ -11,7 +11,7 @@
   <div class="row">
     <div class="col-xs-14">
       <h3 translate>Location Coordinates</h3>
-      <table class="table-condensed">
+      <table class="table-condensed location-info-padding">
         <tr ng-repeat="(key, value) in ctrl.location">
           <th>{{key | translate}} </th> <td>{{ value }}</td>
         </tr>
@@ -31,12 +31,34 @@
           <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('SID')}}" target="_blank" translate>Itinéraire mobilitéit.lu depuis ici</a></td>
           <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('ZID')}}" target="_blank" translate>Itinéraire mobilitéit.lu vers ici</a></td>
         </tr>
+        <tr class="no-print">
+          <td colspan="2">
+            <button class="btn btn-default no-print" ng-click="ctrl.addRoutePoint()">
+              <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
+            </button>
+          </td>
+        </tr>
+        <tr class="no-print" ng-if="ctrl.showStreetView">
+          <td colspan="2">
+           <button class="btn btn-default no-print" ng-click="ctrl.showStreetView = !ctrl.showStreetView">
+             <span class="create-itinerary-text" translate>Désactiver Google Streetview</span>
+           </button>
+          </td>
+        </tr>
       </table>
     </div>
   </div>
-  <button class="btn btn-default no-print" ng-click="ctrl.addRoutePoint()">
-        <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
-  </button>
 
-
+  <div class="row">
+    <app-streetview
+        app-streetview-active="ctrl.open && ctrl.showStreetView"
+        app-streetview-map="::ctrl.map"
+        app-streetview-location="ctrl.clickCoordinate">
+    </app-streetview>
+    <div class="streetview text-center" ng-show="!(ctrl.open && ctrl.showStreetView)">
+      <button ng-if="!ctrl.showStreetView" class="btn btn-default no-print" ng-click="ctrl.showStreetView = !ctrl.showStreetView">
+        <span class="create-itinerary-text" translate>Activer Google Streetview</span>
+      </button>
+    </div>
+  </div>
 </div>

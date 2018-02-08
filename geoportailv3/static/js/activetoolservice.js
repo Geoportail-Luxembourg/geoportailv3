@@ -29,6 +29,11 @@ app.Activetool = function(appSelectedFeatures) {
    * @type {boolean}
    */
   this.measureActive = false;
+
+  /**
+   * @type {boolean}
+   */
+  this.streetviewActive = false;
 };
 
 
@@ -37,7 +42,7 @@ app.Activetool = function(appSelectedFeatures) {
  * @return {boolean} The exploded features.
  */
 app.Activetool.prototype.isActive = function() {
-  return (this.drawActive || this.measureActive);
+  return (this.drawActive || this.measureActive || this.streetviewActive);
 };
 
 app.module.service('appActivetool', app.Activetool);

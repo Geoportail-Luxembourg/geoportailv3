@@ -388,6 +388,7 @@
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
+         appModule.value('appStreetviewTemplateUrl', 'streetview/streetview.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
          appModule.value('appDrawTemplateUrl', 'draw/draw.html');
          appModule.value('appFeaturePopupTemplateUrl', 'draw/featurepopup.html');
@@ -415,8 +416,10 @@
          appModule.value('appWmtsTreeTemplateUrl', 'externaldata/wmtstree.html');
          appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html');
          appModule.value('appAskredirectTemplateUrl', 'askredirect/askredirect.html');
+         appModule.value('appImagesPath', '${request.static_url('geoportailv3:static/images/')}');
        })();
     </script>
+
     <!-- Piwik -->
       <script type="text/javascript">
         var _paq = _paq || [];
