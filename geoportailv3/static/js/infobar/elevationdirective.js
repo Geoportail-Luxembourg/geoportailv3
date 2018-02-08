@@ -17,7 +17,7 @@ goog.provide('app.elevationDirective');
 goog.require('app');
 goog.require('app.GetElevation');
 goog.require('app.projections');
-goog.require('ngeo.Debounce');
+goog.require('ngeo.misc.debounce');
 
 
 /**
@@ -47,7 +47,7 @@ app.module.directive('appElevation', app.elevationDirective);
  * @ngInject
  * @constructor
  * @param {angular.$http} $http The angular http service.
- * @param {ngeo.Debounce} ngeoDebounce ngeoDebounce service.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
  */
 app.ElevationDirectiveController =
@@ -71,7 +71,7 @@ app.ElevationDirectiveController =
           return;
         }
         this.getElevation_(e.coordinate).then(
-          (elevation) => (this['elevation'] = elevation)
+          (elevation) => (this['elevation'] = elevation['formattedElevation'])
         );
       }, 300, true), this);
     };

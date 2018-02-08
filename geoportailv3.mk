@@ -30,7 +30,10 @@ CONFIG_VARS += modify_notification
 CONFIG_VARS += https_proxy
 CONFIG_VARS += print_urls
 CONFIG_VARS += no_proxy
-
+CONFIG_VARS += lidar
+CONFIG_VARS += routing
+CONFIG_VARS += referrer
+CONFIG_VARS += excluded_themes_from_search
 APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
@@ -150,6 +153,7 @@ $(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
 	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/build/d3.min.js \
 	node_modules/js-autocomplete/auto-complete.min.js \
 	node_modules/promise-polyfill/promise.min.js \
+	node_modules/url-polyfill/url-polyfill.min.js \
 	$@ > concatenated.js
 	mv concatenated.js $@
 

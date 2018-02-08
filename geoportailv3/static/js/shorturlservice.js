@@ -5,6 +5,7 @@
 goog.provide('app.GetShorturl');
 
 goog.require('app');
+goog.require('ngeo.statemanager.module');
 
 
 /**
@@ -15,7 +16,7 @@ app.GetShorturl;
 
 /**
  * @param {angular.$http} $http The Angular $http service.
- * @param {ngeo.Location} ngeoLocation The ngeo Location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation The ngeo Location service.
  * @param {string} shorturlServiceUrl The URL to the "shorturl" service.
  * @return {app.GetShorturl} The getShorturl function.
  * @private

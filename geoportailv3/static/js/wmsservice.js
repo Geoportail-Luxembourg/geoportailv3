@@ -5,7 +5,7 @@
 
 goog.provide('app.WmsHelper');
 
-goog.require('ngeo.DecorateLayer');
+goog.require('ngeo.misc.decorate');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('goog.string');
@@ -23,13 +23,12 @@ goog.require('app');
  * @param {angular.$http} $http Angular http service.
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
- * @param {ngeo.DecorateLayer} ngeoDecorateLayer ngeo decorate layer service.
  * @param {angular.$window} $window Window.
  * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
 app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
-    ngeoDecorateLayer, $window, httpsProxyUrl) {
+    $window, httpsProxyUrl) {
 
   /**
    * @type {string}
@@ -48,12 +47,6 @@ app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
    * @private
    */
   this.$sce_ = $sce;
-
-  /**
-   * @type {ngeo.DecorateLayer}
-   * @private
-   */
-  this.ngeoDecorateLayer_ = ngeoDecorateLayer;
 
   /**
    * @type {app.Notify}
@@ -183,10 +176,10 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   }
 
   // casacading CRS
-  layer.CRS = layer.CRS || [];
+  layer['CRS'] = layer['CRS'] || [];
   if (parentLayer) {
-    parentLayer.CRS.forEach(function(crs) {
-      layer.CRS.indexOf(crs) < 0 && layer.CRS.push(crs);
+    parentLayer['CRS'].forEach(function(crs) {
+      layer['CRS'].indexOf(crs) < 0 && layer['CRS'].push(crs);
     });
   }
 
@@ -445,7 +438,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   var hasLuref = false;
   var has3857 = false;
   var hasWGS84 = false;
-  var projections = layer['CRS'] || layer.SRS || [];
+  var projections = layer['CRS'] || layer['SRS'] || [];
   goog.array.forEach(projections, function(projection) {
     if (projection.toUpperCase() === 'EPSG:2169') {
       hasLuref = true;
@@ -496,7 +489,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
-  this.ngeoDecorateLayer_(newLayer);
+  ngeo.misc.decorate.layer(newLayer);
 
   this.getMetadata(layer['id']).then(function(metadata) {
     if (metadata['hasImageLegend']) {

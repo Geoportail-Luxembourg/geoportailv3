@@ -27,7 +27,7 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
 
   /**
    * @param {ol.Coordinate} coordinate The coordinate.
-   * @return {!angular.$q.Promise} Promise providing the short URL.
+   * @return {!angular.$q.Promise} Promise providing the elevation object.
    */
   function getElevation(coordinate) {
     var lonlat = /** @type {ol.Coordinate} */
@@ -41,14 +41,15 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
     }).then(
         /**
            * @param {angular.$http.Response} resp Ajax response.
-           * @return {string} The elevation
+           * @return {Object} The elevation object.
            */
             function(resp) {
+              var text = gettextCatalog.getString('N/A');
               if (resp.data['dhm'] > 0) {
-                return parseInt(resp.data['dhm'] / 100, 0).toString() + ' m';
-              } else {
-                return gettextCatalog.getString('N/A');
+                text = parseInt(resp.data['dhm'] / 100, 0).toString() + ' m';
               }
+              return {'formattedElevation': text,
+                'rawElevation': resp.data['dhm']};
             });
   }
 };

@@ -39,7 +39,7 @@ class LuxDownloadUrl(Base):
 
 
 class LuxMeasurementLoginCommune(Base):
-    __label__ = _(u"Allowed measurement for a user")
+    __label__ = _(u"Allowed surveying for a user")
     __tablename__ = "lux_measurement_login_commune"
     __table_args__ = {"schema": _schema}
     __acl__ = [
@@ -48,6 +48,19 @@ class LuxMeasurementLoginCommune(Base):
 
     login = Column(String, primary_key=True)
     num_commune = Column(String, primary_key=True)
+
+
+class LuxMeasurementDirectory(Base):
+    __label__ = _(u"Surveying file config")
+    __tablename__ = "lux_measurement_directory"
+    __table_args__ = {"schema": _schema}
+    __acl__ = [
+        (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
+    ]
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    path = Column(String)
+    town_code = Column(Integer)
 
 
 class LuxLayerInternalWMS(LayerInternalWMS):
@@ -148,5 +161,6 @@ class LuxPredefinedWms(Base):
     __acl__ = [
         (Allow, AUTHORIZED_ROLE, ALL_PERMISSIONS),
     ]
-    url = Column(Unicode, primary_key=True)
+    id = Column(String, primary_key=True)
+    url = Column(Unicode, unique=True, label=_(u"Url"))
     label = Column(Unicode)

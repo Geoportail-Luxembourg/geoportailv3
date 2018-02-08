@@ -19,8 +19,7 @@ goog.provide('app.backgroundlayerDirective');
 goog.require('app');
 goog.require('app.Themes');
 goog.require('ol.events');
-goog.require('ngeo.BackgroundEventType');
-goog.require('ngeo.BackgroundLayerMgr');
+goog.require('ngeo.map.BackgroundLayerMgr');
 
 
 /**
@@ -48,7 +47,7 @@ app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
 
 /**
  * @constructor
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
  * @param {app.Themes} appThemes Themes service.
  * @export
@@ -57,7 +56,7 @@ app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
 app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
@@ -72,7 +71,7 @@ app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
         this.setLayer(this['bgLayer']);
       }, this));
 
-  ol.events.listen(this.backgroundLayerMgr_, ngeo.BackgroundEventType.CHANGE,
+  ol.events.listen(this.backgroundLayerMgr_, 'change',
       function() {
         this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
       }, this);

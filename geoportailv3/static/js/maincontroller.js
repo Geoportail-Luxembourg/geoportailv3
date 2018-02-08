@@ -19,15 +19,21 @@ goog.require('app.LocationControl');
 goog.require('app.Map');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
+goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
 goog.require('app.UserManager');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.SyncArrays');
+goog.require('ngeo.draw.module');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ngeo.message.popupComponent');
+goog.require('ngeo.message.Popup');
+goog.require('ngeo.misc.syncArrays');
+goog.require('ngeo.search.module');
+goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
 goog.require('ol.Map');
 goog.require('ol.Object');
@@ -46,9 +52,9 @@ goog.require('ngeo.olcs.Manager');
 
 /**
  * @param {angular.Scope} $scope Scope.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
@@ -64,8 +70,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
- * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchronizer service.
- * @param {ngeo.Location} ngeoLocation ngeo location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
@@ -77,6 +82,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {string} cesiumURL The Cesium script URL.
  * @param {angular.Scope} $rootScope Angular root scope.
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
+ * @param {app.Routing} appRouting The routing service.
  * @constructor
  * @export
  * @ngInject
@@ -86,9 +92,17 @@ app.MainController = function(
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
-    ngeoSyncArrays, ngeoLocation, appExport, appGetDevice,
+    ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, cesiumURL, $rootScope, ngeoOlcsService) {
+    appSelectedFeatures, $locale, cesiumURL, $rootScope, ngeoOlcsService,
+    appRouting) {
+
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
+
   /**
    * @type {angular.$locale}
    * @private
@@ -126,13 +140,13 @@ app.MainController = function(
   this.appExport_ = appExport;
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
@@ -201,6 +215,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['hasRoutingResult'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['sidebarActive'] = false;
 
   /**
@@ -232,6 +251,11 @@ app.MainController = function(
    * @type {boolean}
    */
   this['legendsOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
+  this['routingOpen'] = false;
 
   /**
    * @type {boolean}
@@ -328,7 +352,7 @@ app.MainController = function(
 
   this.initMymaps_();
 
-  this.manageSelectedLayers_($scope, ngeoSyncArrays);
+  this.manageSelectedLayers_($scope);
 
   appExclusionManager.init(this.map_);
   appLayerOpacityManager.init(this.map_);
@@ -339,7 +363,6 @@ app.MainController = function(
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-
   this.loadThemes_().then(function() {
     this.appThemes_.getBgLayers().then(
           function(bgLayers) {
@@ -359,6 +382,7 @@ app.MainController = function(
     var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
       urlLocationInfo === 'true';
     this['layersOpen'] = (!this.appGetDevice_.testEnv('xs') &&
+    !this['routingOpen'] &&
     !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
     !infoOpen &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
@@ -396,6 +420,34 @@ app.MainController = function(
         }
       }.bind(this));
   }.bind(this));
+  var waypoints = appStateManager.getInitialValue('waypoints');
+  if (waypoints !== undefined && waypoints !== null) {
+    this['routingOpen'] = true;
+    var criteria = parseInt(appStateManager.getInitialValue('criteria'), 10);
+    var transportMode = parseInt(
+      appStateManager.getInitialValue('transportMode'), 10);
+    this.appRouting_.criteria = criteria;
+    this.appRouting_.transportMode = transportMode;
+    var coordinates = waypoints.split(',');
+    var i = 0;
+    var routeNumber = 1;
+    for (i = 0; i < coordinates.length; i = i + 2) {
+      var position = [
+        parseFloat(coordinates[i + 1]), parseFloat(coordinates[i])];
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point((ol.proj.transform(position,
+          'EPSG:4326', 'EPSG:3857')))
+      });
+      feature.set('label', '' + routeNumber);
+      this.appRouting_.insertFeatureAt(feature, routeNumber);
+      routeNumber++;
+    }
+    if (i > 1) {
+      var labels = appStateManager.getInitialValue('labels');
+      this.appRouting_.routes  = labels.split('||');
+      this.appRouting_.getRoute();
+    }
+  }
 };
 
 
@@ -414,7 +466,7 @@ app.MainController.prototype.enable3dCallback_ = function(active) {
 };
 
 /**
- * @param {ngeo.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
+ * @param {ngeo.map.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
 app.MainController.prototype.addLocationControl_ =
@@ -534,12 +586,11 @@ app.MainController.prototype.loadThemes_ = function() {
 
 /**
  * @param {angular.Scope} scope Scope
- * @param {ngeo.SyncArrays} ngeoSyncArrays The array synchroniser service.
  * @private
  */
 app.MainController.prototype.manageSelectedLayers_ =
-    function(scope, ngeoSyncArrays) {
-      ngeoSyncArrays(this.map_.getLayers().getArray(),
+    function(scope) {
+      ngeo.misc.syncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
         if (layer instanceof ol.layer.Vector && layer.get('altitudeMode') === 'clampToGround') {
@@ -587,7 +638,7 @@ app.MainController.prototype.openFeedback = function() {
  */
 app.MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
-      this['feedbackOpen'] = this['legendsOpen'] = false;
+      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] = false;
 };
 
 
@@ -597,7 +648,7 @@ app.MainController.prototype.closeSidebar = function() {
  */
 app.MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-      this['legendsOpen'] || this['feedbackOpen'];
+      this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'];
 };
 
 

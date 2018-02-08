@@ -6,7 +6,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.color');
 goog.require('goog.events');
 goog.require('ngeo.interaction.Measure');
-goog.require('ngeo.profile');
+goog.require('ngeo.profile.d3Elevation');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Vector');
@@ -692,7 +692,7 @@ lux.MyMap.prototype.initProfile_ = function(target, opt_addCloseBtn) {
     }
   };
 
-  this.profile_ = ngeo.profile({
+  this.profile_ = ngeo.profile.d3Elevation({
     linesConfiguration: linesConfiguration,
     distanceExtractor: dist,
     hoverCallback: this.profileHoverCallback_.bind(this),

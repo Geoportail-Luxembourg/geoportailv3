@@ -173,6 +173,14 @@ luxx.SearchOption.prototype.target;
 luxx.SearchOption.prototype.dataSets;
 
 /**
+ * The function to be called when an entry is selected.
+ * The default function center the map on the selection and add an overlay.
+ * @type {function(Event, String, Element)|undefined}
+ * @api
+ */
+luxx.SearchOption.prototype.onSelect;
+
+/**
  * Object literal with config options for the maker.
  * @typedef {Object}
  */
@@ -410,6 +418,13 @@ luxx.FeaturesOptions.prototype.click;
  * @api
  */
 luxx.FeaturesOptions.prototype.showMarker;
+
+/**
+ * The maximal zoom level to use when zooming on a feature. Default is 17.
+ * @type {number|undefined}
+ * @api
+ */
+luxx.FeaturesOptions.prototype.maxZoom;
 
 /**
  * Object literal with config options for the vector (GPX/KML) layer.

@@ -3,9 +3,6 @@ goog.provide('app.scaleselectorDirective');
 
 goog.require('app');
 goog.require('app.ScalesService');
-goog.require('ngeo.ScaleselectorOptions');
-goog.require('ngeo.mapDirective');
-goog.require('ngeo.scaleselectorDirective');
 
 
 // Use the default "scale selector" template.
@@ -53,7 +50,7 @@ app.ScaleselectorController = function(appScalesService) {
 
   /**
    * Use the "dropup" variation of the Bootstrap dropdown.
-   * @type {ngeo.ScaleselectorOptions}
+   * @type {ngeox.ScaleselectorOptions}
    */
   this['options'] = {
     'dropup': true

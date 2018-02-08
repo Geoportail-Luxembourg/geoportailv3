@@ -6,7 +6,7 @@
 goog.provide('app.DrawnFeatures');
 
 goog.require('app');
-goog.require('ngeo.Location');
+goog.require('ngeo.statemanager.Location');
 goog.require('app.ClipLine');
 goog.require('app.interaction.DrawRoute');
 goog.require('app.format.FeatureHash');
@@ -18,7 +18,7 @@ goog.require('ol.Collection');
 
 /**
  * @constructor
- * @param {ngeo.Location} ngeoLocation Location service.
+ * @param {ngeo.statemanager.Location} ngeoLocation Location service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @ngInject
  */
@@ -66,9 +66,9 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   this.features = new ol.Collection();
 
   /**
-  * @type {ol.layer.Vector}
-  * @export
-  */
+   * @type {ol.layer.Vector}
+   * @export
+   */
   this.drawLayer = new ol.layer.Vector({
     source: new ol.source.Vector({
       features: this.features
@@ -78,7 +78,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps) {
   });
 
   /**
-   * @type {ngeo.Location}
+   * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;

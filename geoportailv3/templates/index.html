@@ -8,6 +8,7 @@
     authtkt_cookie_name = settings.get('authtkt_cookie_name')
     overview_map_show = settings.get('overview_map')['show']
     overview_map_base_layer = settings.get('overview_map')['base_layer']
+    lidar = settings.get('lidar')
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
@@ -37,6 +38,10 @@
 
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
+          <li ng-click="mainCtrl.toggleThemeSelector();">
+            <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
+          </li>
+
           <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
             <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
             <app-authentication app-authentication-lang="mainCtrl.lang"
@@ -62,11 +67,16 @@
             </ul>
           </li>
         </ul>
-        <app-search app-search-map="::mainCtrl.map" app-search-language="mainCtrl.lang" app-search-mobileactive="mainCtrl.mobileSearchActive"></app-search>
         <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
+        <app-search app-search-map="::mainCtrl.map"
+                    app-search-language="mainCtrl.lang"
+                    app-search-mobileactive="mainCtrl.mobileSearchActive"
+                    app-search-routing-open="mainCtrl.routingOpen"></app-search>
       </div>
     </header>
-
+    <div class="routing-goto-route" ng-if="mainCtrl.hasRoutingResult">
+      <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
+    </div>
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
@@ -139,12 +149,14 @@
                        app-query-open="mainCtrl.infosOpen"
                        app-query-mymaps-open="mainCtrl.mymapsOpen"
                        app-query-layers-open="mainCtrl.layersOpen"
+                       app-query-routing-open="mainCtrl.routingOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
                        app-query-language="mainCtrl.lang"
                        app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
 
             <app-locationinfo app-locationinfo-map="::mainCtrl.map"
                               app-locationinfo-open="mainCtrl.infosOpen"
+                              app-locationinfo-routing-open="mainCtrl.routingOpen"
                               app-locationinfo-appselector="mainCtrl.infosAppSelector"
                               app-locationinfo-hidden-content="mainCtrl.infosHiddenContent">
             </app-locationinfo>
@@ -174,6 +186,22 @@
               app-layerlegends-layers="::mainCtrl.selectedLayers"
               app-layerlegends-map="::mainCtrl.map">
             </app-layerlegends>
+          </div>
+        </div>
+        <!-- Routing -->
+        <div id="routing" ng-class="mainCtrl.routingOpen ? 'show' : 'hide'">
+          <h2 translate>Routing</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="tab-content">
+            <app-routing app-routing-map="::mainCtrl.map"
+              app-routing-has-result="mainCtrl.hasRoutingResult"
+              app-routing-show-redirect="mainCtrl.showRedirect"></app-routing>
+            <div class="routing-goto-plan" ng-if="mainCtrl.hasRoutingResult">
+              <button class="routing-rounded-button"  ng-click="mainCtrl.closeSidebar()" translate>Voir le plan</button>
+            </div>
           </div>
         </div>
         <!-- Feedback -->
@@ -219,6 +247,9 @@
         <li ngeo-btn ng-model="mainCtrl.legendsOpen" class="legends icon">
           <a href translate>Legends</a>
         </li>
+        <li ngeo-btn ng-model="mainCtrl.routingOpen" class="routing icon">
+          <a href translate>Routing</a>
+        </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
@@ -248,7 +279,8 @@
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
             app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
-            app-print-info-open="mainCtrl.infosOpen"></app-print>
+            app-print-info-open="mainCtrl.infosOpen"
+            app-print-routing-open="mainCtrl.routingOpen"></app-print>
         </li>
         <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
@@ -329,6 +361,7 @@
          appModule.constant('isThemePrivateUrl', "${request.route_url('isthemeprivate')}");
          appModule.constant('qrServiceUrl', "${request.route_url('qr')}");
          appModule.constant('reverseGeocodingServiceUrl', "${request.route_url('reverse_geocode')}");
+         appModule.constant('routingServiceUrl', "${request.route_url('getremoteroute')}");
          appModule.constant('geocodingServiceUrl', "${request.route_url('geocode')}");
          appModule.constant('downloadmeasurementUrl', "${request.route_url('download_measurement')}");
          appModule.constant('downloadsketchUrl', "${request.route_url('download_sketch')}");
@@ -346,6 +379,10 @@
          appModule.constant('casipoUrl', "${request.route_url('casipo_url')}");
          appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
          appModule.constant('appAuthtktCookieName', "${authtkt_cookie_name}");
+         appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
+         appModule.constant('bboxSrsLidar', "${lidar['srs']}");
+         appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
+
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);
 % else:
@@ -358,7 +395,7 @@
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('ngeoOlcsControls3dTemplateUrl',
-           '${request.static_url('%s/ngeo/src/modules/olcs/controls3d.html' % node_modules_path)}');
+           '${request.static_url('%s/ngeo/src/olcs/controls3d.html' % node_modules_path)}');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
@@ -381,6 +418,7 @@
          appModule.value('appQueryTemplateUrl', 'query/info.html');
          appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
          appModule.value('appMymapsTemplateUrl', 'mymaps/mymaps.html');
+         appModule.value('appRoutingTemplateUrl', 'routing/routing.html');
          appModule.value('appPagreportTemplateUrl', 'query/pagreport.html');
          appModule.value('appCasiporeportTemplateUrl', 'query/casiporeport.html');
          appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');

@@ -20,11 +20,11 @@ goog.require('app.ShowLayerinfo');
 goog.require('app.Themes');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.BackgroundLayerMgr');
-goog.require('ngeo.search.createGeoJSONBloodhound');
-goog.require('ngeo.FeatureOverlay');
-goog.require('ngeo.FeatureOverlayMgr');
-goog.require('ngeo.search.searchDirective');
+goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('ngeo.message.popoverComponent');
+goog.require('ngeo.search.module');
+goog.require('ngeo.map.FeatureOverlay');
+goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -57,7 +57,8 @@ app.searchDirective = function(appSearchTemplateUrl) {
     scope: {
       'map': '=appSearchMap',
       'language': '=appSearchLanguage',
-      'mobileActive': '=appSearchMobileactive'
+      'mobileActive': '=appSearchMobileactive',
+      'routingOpen': '=appSearchRoutingOpen'
     },
     controller: 'AppSearchController',
     controllerAs: 'ctrl',
@@ -98,6 +99,7 @@ app.searchDirective = function(appSearchTemplateUrl) {
                 var ctrl = /** @type {app.SearchDirectiveController} */
                     (scope['ctrl']);
                 ctrl.featureOverlay_.clear();
+                ctrl.lastSelectedSuggestion_ = null;
                 $(this).find('input').focus();
               }, element, scope));
         }
@@ -115,14 +117,12 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {angular.$compile} $compile Angular compile service.
  * create GeoJSON Bloodhound service
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog
- * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background
  * manager service.
- * @param {ngeo.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
+ * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The
- * GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
@@ -132,13 +132,21 @@ app.module.directive('appSearch', app.searchDirective);
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
  * @param {Array} appExcludeThemeLayerSearch The themes to exclude.
+ * @param {app.Routing} appRouting The routing service.
  * @export
  */
 app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
     ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
+    appCoordinateString, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
-    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch) {
+    poiSearchServiceUrl, layerSearchServiceUrl, appExcludeThemeLayerSearch,
+    appRouting) {
+
+  /**
+   * @type {app.Routing}
+   * @export
+   */
+  this.appRouting_ = appRouting;
 
   /**
    * @type {Object}
@@ -218,16 +226,22 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
   this.layers_ = [];
 
   /**
-   * @type {ngeo.BackgroundLayerMgr}
+   * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {ngeo.FeatureOverlay}
+   * @type {ngeo.map.FeatureOverlay}
    * @private
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.lastSelectedSuggestion_ = null;
 
   /**
    * @type {ol.Map}
@@ -292,7 +306,7 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
 
   /** @type {Bloodhound} */
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
-      ngeoSearchCreateGeoJSONBloodhound, poiSearchServiceUrl);
+      poiSearchServiceUrl);
 
   /** @type {Bloodhound} */
   var LayerBloodhoundEngine = this.createAndInitLayerBloodhoundEngine_(
@@ -426,11 +440,16 @@ app.SearchDirectiveController = function($scope, $compile, gettextCatalog,
         scope['click'] = function(event) {
           event.stopPropagation();
         };
+        scope['addRoutePoint'] = function(feature, event) {
+          this.addRoutePoint(feature);
+          event.stopPropagation();
+        }.bind(this);
 
-        var html = '<p>' + feature.get('label') +
+        var html = '<p><span class="search-result-container"><span class="search-result-label">' + feature.get('label') +
             ' <span>(' + this.gettextCatalog.getString(
                 /** @type {string} */ (feature.get('layer_name'))
-            ) + ')</span></p>';
+            ) + ')</span></span><span class="search-result-routing"><button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></span></span></p>';
+
         return $compile(html)(scope);
       }, this)
     })
@@ -697,16 +716,14 @@ app.SearchDirectiveController.prototype.decDegFromMatch_ = function(m) {
 };
 
 /**
- * @param {ngeo.search.createGeoJSONBloodhound.Function} ngeoSearchCreateGeoJSONBloodhound The create
- * GeoJSON Bloodhound service.
  * @param {string} searchServiceUrl The search url.
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
 app.SearchDirectiveController.prototype.createAndInitPOIBloodhound_ =
-    function(ngeoSearchCreateGeoJSONBloodhound, searchServiceUrl) {
+    function(searchServiceUrl) {
       var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+      var bloodhound = ngeo.search.createGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {
@@ -871,6 +888,7 @@ app.SearchDirectiveController.selected_ =
       }
       if (dataset === 'pois' || dataset === 'coordinates') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
+        this.lastSelectedSuggestion_ = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
         map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
           size: /** @type {ol.Size} */ (map.getSize()),
@@ -912,6 +930,34 @@ app.SearchDirectiveController.selected_ =
       }
     };
 
+/**
+ * @param {ol.Feature} suggestion The feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addRoutePoint = function(suggestion) {
+  var coordinate = ol.extent.getCenter(suggestion.getGeometry().getExtent());
+  var feature = /** @type {ol.Feature} */
+      (new ol.Feature(new ol.geom.Point(coordinate)));
+  feature.set('label', suggestion.get('label'));
+  this.appRouting_.addRoutePoint(feature);
+  this['routingOpen'] = true;
+};
+
+/**
+ * @return {boolean} true if a featuer is selected.
+ * @export
+ */
+app.SearchDirectiveController.prototype.isSearchFeature = function() {
+  return (this.lastSelectedSuggestion_ !== null);
+};
+
+/**
+ * Add to the routing the last suggested feature.
+ * @export
+ */
+app.SearchDirectiveController.prototype.addLastSuggestedFeature = function() {
+  this.addRoutePoint(this.lastSelectedSuggestion_);
+};
 
 app.module.controller('AppSearchController',
     app.SearchDirectiveController);

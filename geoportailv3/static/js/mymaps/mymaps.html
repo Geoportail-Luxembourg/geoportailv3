@@ -125,49 +125,6 @@
   </ul>
 </div>
 
-<!-- Modification Modal -->
-<ngeo-modal ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <h4 class="modal-title" ng-show="ctrl.modal === 'MODIFY'" translate>Modify title and description of the map</h4>
-    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE'" translate>Title and description of the map</h4>
-    <h4 class="modal-title" ng-show="ctrl.modal === 'COPYING'" translate>Title and description of the map copy</h4>
-    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" translate>Title and description of the map</h4>
-  </div>
-  <div class="modal-body">
-    <form>
-    <div class="form-group">
-      <label translate>Titre de la carte</label>
-      <input type="text" onClick="this.select()" class="form-control" ng-model="ctrl.newTitle">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" ng-model="ctrl.newIsPublic">
-          <span translate>Public Map</span>
-        </label>
-      </div>
-      <div class="dropdown">
-        <button type="button" class="btn btn-default" data-toggle="dropdown">
-          {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-          <li ng-repeat="category in ctrl.getCategories() | orderBy:'name | translate' "><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="form-group">
-      <label translate>Description</label>
-      <textarea onClick="this.select()" class="form-control" rows="3" ng-model="ctrl.newDescription"></textarea>
-    </div>
-  </form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
-  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'MODIFY'" ng-click="ctrl.saveModifications()" translate>Save changes</button>
-  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE'" ng-click="ctrl.createMap()" translate>Save changes</button>
-  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" ng-click="ctrl.createMapFromAnonymous()" translate>Save changes</button>
-  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'COPYING'" ng-click="ctrl.copyMap()" translate>Save new map</button>
-</ngeo-modal>
-
 <ngeo-modal ng-model="ctrl.confirmDelete">
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -221,6 +178,37 @@
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.choosing = true" translate>Annuler</button>
   <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.deleteAMap(ctrl.requestedMapIdToDelete)" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.mergingLines">
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Fusionner des lignes</h4>
+</div>
+
+<div class="mymaps-list-scroll modal-body">
+  <div class="row">
+    <div class="col-xs-8 form-group">
+      <label translate>Nouveau nom</label><input type="text" class="form-control" ng-model="ctrl.newLineName">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 form-group">
+      <label translate>Nouvelle description</label> <textarea class="form-control" rows="3" ng-model="ctrl.newLineDesc"></textarea>
+    </div>
+  </div>
+  <ul class="features list-unstyled" " >
+    <li ng-repeat="(key, feature) in ctrl.getMymapsLinestringFeatures()" class="feature">
+    <i class="fa fa-square" ng-click="ctrl.toggleLinestring(feature)" ng-class="(ctrl.selectedLineString.indexOf(feature)>=0) ? 'fa-check-square' : 'fa-square'"></i> {{ feature.get('name') }}
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.mergesSelectedLineString()" translate>Fusionner</button>
 </div>
 </ngeo-modal>
 
@@ -318,33 +306,48 @@
 </div>
 </ngeo-modal>
 
-<ngeo-modal ng-model="ctrl.mergingLines">
 
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title" translate>Fusionner des lignes</h4>
-</div>
 
-<div class="mymaps-list-scroll modal-body">
-  <div class="row">
-    <div class="col-xs-8 form-group">
-      <label translate>Nouveau nom</label><input type="text" class="form-control" ng-model="ctrl.newLineName">
-    </div>
+<!-- Modification Modal -->
+<ngeo-modal ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'MODIFY'" translate>Modify title and description of the map</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE'" translate>Title and description of the map</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'COPYING'" translate>Title and description of the map copy</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" translate>Title and description of the map</h4>
   </div>
-  <div class="row">
-    <div class="col-xs-12 form-group">
-      <label translate>Nouvelle description</label> <textarea class="form-control" rows="3" ng-model="ctrl.newLineDesc"></textarea>
+  <div class="modal-body">
+    <form>
+    <div class="form-group">
+      <label translate>Titre de la carte</label>
+      <input type="text" onClick="this.select()" class="form-control" ng-model="ctrl.newTitle">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="ctrl.newIsPublic">
+          <span translate>Public Map</span>
+        </label>
+      </div>
+      <div class="dropdown">
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li ng-repeat="category in ctrl.getCategories() | orderBy:'name | translate' "><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <ul class="features list-unstyled" " >
-    <li ng-repeat="(key, feature) in ctrl.getMymapsLinestringFeatures()" class="feature">
-    <i class="fa fa-square" ng-click="ctrl.toggleLinestring(feature)" ng-class="(ctrl.selectedLineString.indexOf(feature)>=0) ? 'fa-check-square' : 'fa-square'"></i> {{ feature.get('name') }}
-    </li>
-  </ul>
+    <div class="form-group">
+      <label translate>Description</label>
+      <textarea onClick="this.select()" class="form-control" rows="3" ng-model="ctrl.newDescription"></textarea>
+    </div>
+  </form>
 </div>
-
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
-  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.mergesSelectedLineString()" translate>Fusionner</button>
-</div>
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'MODIFY'" ng-click="ctrl.saveModifications()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE'" ng-click="ctrl.createMap()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" ng-click="ctrl.createMapFromAnonymous()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'COPYING'" ng-click="ctrl.copyMap()" translate>Save new map</button>
 </ngeo-modal>
+
