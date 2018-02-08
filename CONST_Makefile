@@ -511,11 +511,11 @@ $(OUTPUT_DIR)/build.js: .build/node_modules.timestamp .build/build.js $(NGEO_LIB
 
 $(OUTPUT_DIR)/build.min.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc --relative-urls --clean-css $(PACKAGE)/static/less/$(PACKAGE).less $@
+	./node_modules/.bin/lessc --clean-css $(PACKAGE)/static/less/$(PACKAGE).less $@
 
 $(OUTPUT_DIR)/build.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc --relative-urls $(PACKAGE)/static/less/$(PACKAGE).less $@
+	./node_modules/.bin/lessc  $(PACKAGE)/static/less/$(PACKAGE).less $@
 
 .build/build.js: build.json $(GCC_JS_FILES) \
 		$(OUTPUT_DIR)/templatecache.js \
