@@ -27,10 +27,16 @@
         <tr class="no-print" ng-if="ctrl.isInBoxOfLidar">
           <td colspan="2"><a class="fid-link" href="{{ctrl.getLidarUrl()}}" target="_blank" translate>Lien vers la démo lidar</a></td>
         </tr>
+        <tr class="no-print">
+          <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('SID')}}" target="_blank" translate>Itinéraire mobilitéit.lu depuis ici</a></td>
+          <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('ZID')}}" target="_blank" translate>Itinéraire mobilitéit.lu vers ici</a></td>
+        </tr>
       </table>
     </div>
   </div>
   <button class="btn btn-default no-print" ng-click="ctrl.addRoutePoint()">
         <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
   </button>
+
+
 </div>
