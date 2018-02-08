@@ -73,6 +73,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {string} bboxSrsLidar Bbox srs of lidar.
  * @param {string} lidarDemoUrl Url to the demo of lidar.
  * @param {app.Routing} appRouting The routing service.
+ * @param {angular.$sce} $sce Angular $sce service.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -80,7 +81,14 @@ app.LocationinfoController = function(
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
-        appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl, appRouting) {
+        appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
+        appRouting, $sce) {
+  /**
+   * @type {angular.$sce}
+   * @private
+   */
+  this.sce_ = $sce;
+
   /**
    * @type {string}
    * @private
@@ -289,6 +297,12 @@ app.LocationinfoController = function(
   this.clickCoordinateLuref_ = undefined;
 
   /**
+   * @type {ol.Coordinate | undefined}
+   * @private
+   */
+  this.clickCoordinate4326_ = undefined;
+
+  /**
    * @type {Object<number, number>}
    */
   var startPixel = null;
@@ -473,6 +487,9 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       this.featureOverlay_.addFeature(feature);
       this.clickCoordinateLuref_ = ol.proj.transform(
         this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
+      this.clickCoordinate4326_ = ol.proj.transform(
+        this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
+
       this.getElevation_(this.clickCoordinate).then(
         function(elevation) {
           this['elevation'] = elevation['formattedElevation'];
@@ -518,5 +535,26 @@ app.LocationinfoController.prototype.getLidarUrl = function() {
   }
   return '';
 };
+
+/**
+ * @param {string} dest The destination parameter .
+ * @return {*} The url to mobility from field.
+ * @export
+ */
+app.LocationinfoController.prototype.getMobilityUrl = function(dest) {
+  if (this.clickCoordinate4326_ !== undefined) {
+    var poi = 'POI%20G%C3%A9oportail';
+    if (this['address'].length > 0 &&  this['distance'] <= 20) {
+      poi = this['address'];
+    }
+    var baseUrl = 'http://travelplanner.mobiliteit.lu/hafas/cdt/query.exe/fn?';
+    return this.sce_.trustAsResourceUrl(baseUrl + dest + '=A=2@O=' +
+      poi + '@X=' +
+      Math.floor(this.clickCoordinate4326_[0] * 1000000) + '@Y=' +
+      Math.floor(this.clickCoordinate4326_[1] * 1000000));
+  }
+  return undefined;
+};
+
 
 app.module.controller('AppLocationinfoController', app.LocationinfoController);
