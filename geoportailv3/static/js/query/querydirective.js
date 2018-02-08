@@ -495,13 +495,25 @@ app.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
   var opt = {
     hitTolerance: 5
   };
-  this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
-      selected.push(feature);
-      return false;
-    }
-    return true;
-  }.bind(this), opt);
+  var ol3dm = this.map_.get('ol3dm');
+  if (ol3dm.is3dEnabled()) {
+    var picked = ol3dm.getCesiumScene().drillPick(
+      new Cesium.Cartesian2(pixel[0], pixel[1])
+    );
+    picked.forEach(function(pick) {
+      if (pick && pick.primitive.olFeature) {
+        selected.push(pick.primitive.olFeature);
+      }
+    });
+  } else {
+    this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
+      if (this.drawnFeatures_.getArray().indexOf(feature) != -1)  {
+        selected.push(feature);
+        return false;
+      }
+      return true;
+    }.bind(this), opt);
+  }
   if (selected.length > 0) {
     this.selectedFeatures_.push(selected.pop());
   }
