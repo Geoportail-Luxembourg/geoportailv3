@@ -1717,7 +1717,7 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
 /**
  * It displays a KML file on the map.
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example4}
- * @param {string} url Url to the GPX file.
+ * @param {string} url Url to the KML file.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @export
  * @api
@@ -1727,9 +1727,20 @@ lux.Map.prototype.addKML = function(url, opt_options) {
 };
 
 /**
+ * It displays a GeoJSON file on the map.
+ * @param {string} url Url to the GeoJSON file.
+ * @param {luxx.VectorOptions=} opt_options Options.
+ * @export
+ * @api
+ */
+lux.Map.prototype.addGeoJSON = function(url, opt_options) {
+  this.addVector_(url, new ol.format.GeoJSON(), opt_options);
+};
+
+/**
  * Adds a KML or gpx file on the map
  * @param {string} url Url to the vector file
- * @param {ol.format.GPX|ol.format.KML} format The format.
+ * @param {ol.format.GPX|ol.format.KML|ol.format.GeoJSON} format The format.
  * @param {luxx.VectorOptions=} opt_options Options.
  * @private
  */
