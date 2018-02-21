@@ -270,6 +270,9 @@ def main(global_config, **settings):
     # layer search routes
     config.add_route("layersearch", "/layersearch")
 
+    # cms search routes
+    config.add_route("cmssearch", "/cmssearch")
+
     # jsapi routes
     config.add_route(
         'jsapiloader',
