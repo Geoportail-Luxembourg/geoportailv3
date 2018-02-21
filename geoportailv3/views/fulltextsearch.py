@@ -230,3 +230,68 @@ class FullTextSearchView(object):
                 features.append(feature)
                 layer_ids.append(s['layer_id'])
         return features[:limit]
+
+    @view_config(route_name='cmssearch', renderer='json')
+    def cmssearch(self):
+        if 'query' not in self.request.params:
+            return HTTPBadRequest(detail='no query')
+        query = self.request.params.get('query')
+        query_language = self.request.params.get('language', 'fr')
+
+        maxlimit = self.settings.get('maxlimit', 200)
+
+        try:
+            limit = int(self.request.params.get(
+                'limit',
+                self.settings.get('defaultlimit', 30)))
+        except ValueError:
+            return HTTPBadRequest(detail='limit value is incorrect')
+        if limit > maxlimit:
+            limit = maxlimit
+
+        query_body = {
+            "query": {
+                "bool": {
+                    "filter": {
+                        "bool": {
+                            "must": [],
+                            "should": [],
+                            "must_not": [],
+                        }
+                    },
+                    "must": {
+                        "multi_match": {
+                            "type": "best_fields",
+                            "fields": [
+                                "title^2",
+                                "text",
+                            ],
+                            "fuzziness": "auto",
+                            "prefix_length": 3,
+                            "operator": "and",
+                            "query": query
+                        }
+                    },
+                }
+            }
+        }
+        filters = query_body['query']['bool']['filter']['bool']
+
+        filters['must'].append({"term": {"language": query_language}})
+        es = get_elasticsearch(self.request)
+        search = es.search(index='cms-index',
+                           body=query_body,
+                           size=limit*4)
+        objs = search['hits']['hits']
+        features = []
+
+        for o in objs:
+            s = o['_source']
+            feature = {
+                "url": s['url'],
+                "title": s['title'],
+                "text": s['text'],
+                "language": s['language']
+            }
+            features.append(feature)
+        return features[:limit]
