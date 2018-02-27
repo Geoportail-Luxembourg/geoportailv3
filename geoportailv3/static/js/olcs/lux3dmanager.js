@@ -80,7 +80,10 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     const url = this.ngeoLocation_.hasParam('own_terrain') ?
       'https://3dtiles.geoportail.lu/tiles' :
       'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
-    scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
+    if (!this.ngeoLocation_.hasParam('no_terrain')) {
+      scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});
+    }
+
     return ol3d;
   }
 
