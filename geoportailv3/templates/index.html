@@ -390,6 +390,7 @@
          appModule.constant('appOverviewMapShow', false);
 % endif
          appModule.value('arrowUrl', '${request.route_url('get_arrow_color')}');
+         appModule.constant('arrowModelUrl', '${request.static_url('geoportailv3:static/models/arrow5.glb')}');
          appModule.constant('appOverviewMapBaseLayer', "${overview_map_base_layer}");
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');

@@ -2,14 +2,14 @@
   "exports": [],
   "cwd": ".",
   "src": [
-	"node_modules/openlayers/src/*.js",
+    "node_modules/openlayers/src/*.js",
     "node_modules/openlayers/src/**/*.js",
-	"node_modules/openlayers/build/ol.ext/*.js",
+    "node_modules/openlayers/build/ol.ext/*.js",
     "node_modules/openlayers/build/ol.ext/**/*.js",
-	"node_modules/ngeo/src/*.js",
+    "node_modules/ngeo/src/*.js",
     "node_modules/ngeo/src/**/*.js",
     "node_modules/ol-cesium/src/**/*.js",
-	"geoportailv3/static/js/*.js",
+    "geoportailv3/static/js/*.js",
     "geoportailv3/static/js/**/*.js",
     "geoportailv3/static/build/templatecache.js"
   ],
