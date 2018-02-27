@@ -1304,7 +1304,7 @@ class Mymaps(object):
             email_cc = ""
             if "email_cc" in self.config["modify_notification"]:
                 email_cc = self.config["modify_notification"]["email_cc"]
-            if map.category_id is not None and map.category.id == 300 and\
+            if map.category_id is not None and map.category.id == 302 and\
                map.public:
                 email_content = u"""Bonjour,<br>l\'utilisateur %s a
                 modifié une carte publique de la catégorie %s:<br>
