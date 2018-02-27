@@ -565,9 +565,10 @@ class Geocode(object):
             features =\
                 p_session.query(Address).filter(
                     " code_postal::integer  in (" + (",".join(zips)) +
-                    ") and lower(numero) = (lower('" +
-                    str(p_num).replace("'", "") + "'))").\
+                    ") and lower('" + str(p_num).replace("'", "") +
+                    "') = ANY  (regexp_split_to_array (lower(numero), '-'))").\
                 all()
+
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
                 # Is a corresponding street existing ?
@@ -588,8 +589,8 @@ class Geocode(object):
         if len(p_locality) > 0:
             features = p_session.query(Address).filter(
                 " lower(localite) = '" + p_locality +
-                "' and lower(numero) = (lower('" +
-                str(p_num).replace("'", "") + "'))").all()
+                "' and lower('" + str(p_num).replace("'", "") +
+                "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
 
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -800,8 +801,9 @@ class Geocode(object):
         results = []
         if p_num is not None and len(p_num) > 0:
             features = p_session.query(Address).filter(
-                " lower(numero) = (lower('" +
-                str(p_num).replace("'", "") + "'))").all()
+                " lower('" + str(p_num).replace("'", "") +
+                "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
+
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
                 # Is a corresponding street existing ?
@@ -845,8 +847,8 @@ class Geocode(object):
 
         features = p_session.query(Address).filter(
             " code_postal::integer  = (" + str(p_zip) +
-            ") and lower(numero) = (lower('" +
-            p_num.replace("'", "") + "'))").all()
+            ") and lower('" + str(p_num).replace("'", "") +
+            "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
 
         if len(features) > 0:
             for feature in features:
