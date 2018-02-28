@@ -1,7 +1,7 @@
 <div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature && !ctrl.askRadius">
 
   <div class="feature-popup-heading" ng-hide="ctrl.isDocked()">{{ ctrl.feature.get('name') }}&nbsp;</div>
-  <a ng-if="!ctrl.isDocked()" href class="close" ng-click="ctrl.close()">&times;</a>
+  <a ng-if="!ctrl.isDocked()" class="close" ng-click="ctrl.close()">&times;</a>
   <span ng-if="ctrl.isDocked()" class="fa fa-object-ungroup" role="button" ng-click="ctrl.undock()">&nbsp;</span>
   <div class="{{ctrl.isDocked()?'feature-popup-heading':'feature-popup-body description'}}" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description')+'&nbsp;')"></div>
 
@@ -70,7 +70,7 @@
 </div>
 <div ng-show="ctrl.editingAttributes">
   <div class="feature-popup-heading" translate>Modification des informations</div>
-  <a href class="close" ng-click="ctrl.close()">&times;</a>
+  <a class="close" ng-click="ctrl.close()">&times;</a>
   <div class="feature-popup-body">
     <div class="row">
       <div class="col-xs-8 form-group">
