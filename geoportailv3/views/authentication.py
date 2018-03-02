@@ -100,8 +100,14 @@ class Authentication(object):
             return {"login": self.request.user.username,
                     "role": self.request.user.role.name,
                     "role_id": self.request.user.role.id,
-                    "mymaps_role": self.request.user.mymaps_role,
-                    "mail": self.request.user.mail,
-                    "sn": self.request.user.sn,
-                    "is_admin": self.request.user.is_admin}
+                    "mymaps_role": getattr(
+                        self.request.user,
+                        'mymaps_role', self.request.user.role.id),
+                    "mail": getattr(
+                        self.request.user, 'mail',
+                        self.request.user.email),
+                    "sn": getattr(
+                        self.request.user, 'sn',
+                        self.request.user.username),
+                    "is_admin": getattr(self.request.user, 'is_admin', False)}
         return {}
