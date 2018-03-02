@@ -293,9 +293,13 @@ class Category(Base):
 
     @staticmethod
     def belonging_to(user):
-        user_role = DBSession.query(Role).get(user.mymaps_role)
-        categories = user_role.categories\
-            if user_role.categories is not None else []
+        user_role = DBSession.query(Role).get(
+            getattr(user, 'mymaps_role', user.role.id))
+        try:
+            categories = user_role.categories\
+                if user_role.categories is not None else []
+        except:
+            categories = []
         return [category.todict() for category in categories]
 
     @staticmethod
