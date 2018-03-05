@@ -1083,7 +1083,7 @@ app.QueryController.prototype.prefixKeys =
       var results = [];
       angular.forEach(attributes, function(value, key) {
         if (key !== 'showProfile') {
-          results.push({'key': 'f_' + key, 'value': value});
+          results.push({'key': prefix + key, 'value': value});
         }
       }, this);
       return results;
