@@ -2,7 +2,7 @@
 The Geoportail.lu V3 API enables the integration of geoportail functionalities in external web pages.
 Although the options for data processing are limited compared with “real” office GIS software, some targeted queries and analyses are possible.</p>
 <p><i>Important Note: For access to the Geoportail.lu V3 API on your own servers, you will need to request access to the ACT, specifying the server address you wish to grant access too.</i>
-For any assistance as well as for request access, please contact our support here : <a href="mailto:support.geoportail@act.etat.lu">support.geoportail@act.etat.lu</a></p>
+For any assistance as well as for request access, please contact our support here : <a href="mailto:support@geoportail.lu">support@geoportail.lu</a></p>
 <p>To help the developers, some examples and use cases are available on our <a href="./examples/">demo page</a></p>
 <p>The catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
 <p>The Geoportail.lu V3 API is built on top of the <a href="//openlayers.org/en/latest/apidoc/">OpenLayers 3 API</a>.
