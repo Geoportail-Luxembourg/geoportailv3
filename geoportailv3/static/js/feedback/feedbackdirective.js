@@ -187,7 +187,7 @@ app.FeedbackController.prototype.sendReport = function() {
   var config = {
     headers: {'Content-Type': 'application/json; charset=utf-8'}
   };
-  var supportEmail = 'support.geoportail@act.etat.lu';
+  var supportEmail = 'support@geoportail.lu';
   this.$http_.post(this.postFeedbackUrl_, req, config)
     .then(goog.bind(function(response) {
       var msg = this.gettextCatalog.getString(

@@ -34,7 +34,7 @@ class Feedback(object):
                         vars['url']
                         )
             support_email = self.config.get('feedback.support_email',
-                                            'support.geoportail@act.etat.lu')
+                                            'support@geoportail.lu')
             message = Message(
                 author=vars['email'],
                 to=support_email,
