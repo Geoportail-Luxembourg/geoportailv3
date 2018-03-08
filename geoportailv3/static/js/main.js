@@ -39,5 +39,6 @@ goog.require('app.scaleselectorDirective');
 goog.require('app.searchDirective');
 goog.require('app.shareDirective');
 goog.require('app.shorturlDirective');
+goog.require('app.streetviewDirective');
 goog.require('app.symbolSelectorDirective');
 goog.require('app.themeswitcherDirective');
