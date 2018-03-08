@@ -1260,7 +1260,7 @@ class Mymaps(object):
             feedback_mail = user[1]
         try:
             message = Message(
-                author='support.geoportail@act.etat.lu',
+                author='support@geoportail.lu',
                 to=author[1],
                 bcc='ecadastre@act.etat.lu',
                 subject=(u'comment_email_subject')
