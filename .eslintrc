@@ -20,6 +20,7 @@
     "lux": false,
 	"autoComplete": false,
 	"JSZip": false,
-	"Promise": true
+	"Promise": true,
+	"google": false
   }
 }

@@ -11,6 +11,7 @@ goog.require('app.Geocoding');
 goog.require('app.GetDevice');
 goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
+goog.require('app.LocationInfoOverlay');
 goog.require('app.StateManager');
 goog.require('ngeo.map.FeatureOverlay');
 goog.require('ngeo.map.FeatureOverlayMgr');
@@ -74,6 +75,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {string} lidarDemoUrl Url to the demo of lidar.
  * @param {app.Routing} appRouting The routing service.
  * @param {angular.$sce} $sce Angular $sce service.
+ * @param {app.LocationInfoOverlay} appLocationInfoOverlay The overlay.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -82,7 +84,13 @@ app.LocationinfoController = function(
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
-        appRouting, $sce) {
+        appRouting, $sce, appLocationInfoOverlay) {
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showStreetView = false;
+
   /**
    * @type {angular.$sce}
    * @private
@@ -152,36 +160,10 @@ app.LocationinfoController = function(
   this.isInBoxOfLidar = false;
 
   /**
-   * @type {ngeo.map.FeatureOverlay}
+   * @type {app.LocationInfoOverlay}
    * @private
    */
-  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
-
-  var defaultFill = new ol.style.Fill({
-    color: [255, 255, 0, 0.6]
-  });
-  var circleStroke = new ol.style.Stroke({
-    color: [255, 155, 55, 1],
-    width: 3
-  });
-
-  var pointStyle = new ol.style.Circle({
-    radius: 10,
-    fill: defaultFill,
-    stroke: circleStroke
-  });
-
-  this.featureOverlay_.setStyle(
-      /**
-       * @param {ol.Feature|ol.render.Feature} feature Feature.
-       * @param {number} resolution Resolution.
-       * @return {Array.<ol.style.Style>} Array of styles.
-       */
-      function(feature, resolution) {
-        return [new ol.style.Style({
-          image: pointStyle
-        })];
-      });
+  this.featureOverlay_ = appLocationInfoOverlay;
 
   $scope.$watch(goog.bind(function() {
     return this['appSelector'];
@@ -314,6 +296,7 @@ app.LocationinfoController = function(
 
   /**
    * @type {ol.Coordinate}
+   * @export
    */
   this.clickCoordinate = null;
 
@@ -330,7 +313,8 @@ app.LocationinfoController = function(
           /** @type {ol.Coordinate} */ ([x, y]) :
           /** @type {ol.Coordinate} */ (ol.proj.transform([y, x], 'EPSG:2169',
               this['map'].getView().getProjection()));
-      this.loadInfoPane_(coordinate);
+      this.setClickCordinate_(coordinate);
+      this.loadInfoPane_();
       if (!this.appGetDevice_.testEnv('xs')) {
         this['open'] = true;
         this['hiddenContent'] = false;
@@ -363,7 +347,7 @@ app.LocationinfoController = function(
                 this['map'].getView().getProjection()));
         this['map'].getView().setZoom(17);
         this['map'].getView().setCenter(coordinates);
-        this.loadInfoPane_(coordinates);
+        this.setClickCordinate_(coordinates);
         if (!this.appGetDevice_.testEnv('xs')) {
           this['open'] = true;
           this['hiddenContent'] = false;
@@ -373,12 +357,20 @@ app.LocationinfoController = function(
       }
     }.bind(this));
   }
+  $scope.$watch(goog.bind(function() {
+    return this.clickCoordinate;
+  }, this), goog.bind(function(newVal, oldVal) {
+    if (newVal == oldVal) {
+      return;
+    }
+    this.loadInfoPane_();
+  }, this));
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERDOWN,
     goog.bind(function(event) {
       if (!appSelectedFeatures.getLength()) {
         if (event.originalEvent.which === 3) { // if right mouse click
-          this.loadInfoPane_(event.originalEvent);
+          this.setClickCordinate_(event.originalEvent);
           this['open'] = true;
           this.openInPointerDown_ = true;
         } else if (!(event.originalEvent instanceof MouseEvent)) {
@@ -387,7 +379,7 @@ app.LocationinfoController = function(
           startPixel = event.pixel;
           var that = this;
           holdPromise = $timeout(function() {
-            that.loadInfoPane_(event.originalEvent);
+            that.setClickCordinate_(event.originalEvent);
             that['open'] = true;
           }, 500, false);
         }
@@ -417,7 +409,7 @@ app.LocationinfoController = function(
     .addEventListener('contextmenu', goog.bind(function(event) {
       event.preventDefault(); // disable right-click menu on browsers
       if (!this.openInPointerDown_) {
-        this.loadInfoPane_(event);
+        this.setClickCordinate_(event);
         this['open'] = true;
       }
       this.openInPointerDown_ = false;
@@ -468,16 +460,25 @@ app.LocationinfoController.prototype.addRoutePoint = function() {
  * The coordinate.
  * @private
  */
+app.LocationinfoController.prototype.setClickCordinate_ = function(eventOrCoordinate) {
+  if (eventOrCoordinate instanceof Array) {
+    this.clickCoordinate = eventOrCoordinate;
+  } else {
+    eventOrCoordinate.preventDefault();
+    this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
+  }
+  this.clickCoordinateLuref_ = ol.proj.transform(
+    this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
+  this.clickCoordinate4326_ = ol.proj.transform(
+    this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
+};
+
+/**
+ * Load the information panel.
+ * @private
+ */
 app.LocationinfoController.prototype.loadInfoPane_ =
-    function(eventOrCoordinate) {
-
-      if (eventOrCoordinate instanceof Array) {
-        this.clickCoordinate = eventOrCoordinate;
-      } else {
-        eventOrCoordinate.preventDefault();
-        this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
-      }
-
+    function() {
       this['appSelector'] = 'locationinfo';
       this.stateManager_.updateState({'crosshair': true});
       this.updateLocation_(this.clickCoordinate);
@@ -485,10 +486,6 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
       this.featureOverlay_.clear();
       this.featureOverlay_.addFeature(feature);
-      this.clickCoordinateLuref_ = ol.proj.transform(
-        this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
-      this.clickCoordinate4326_ = ol.proj.transform(
-        this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 
       this.getElevation_(this.clickCoordinate).then(
         function(elevation) {
