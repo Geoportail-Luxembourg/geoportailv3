@@ -239,17 +239,16 @@ app.StreetviewController = function($element, $scope, ngeoFeatureOverlayMgr,
 app.StreetviewController.prototype.$onInit = function() {
   this.map_.addInteraction(this.selectSingleClick_);
   this.selectSingleClick_.on('select', function(e) {
-    if (e.target.getFeatures().getLength() === 0) {
-      return;
-    }
-    var curFeature = e.target.getFeatures().getArray()[0];
-    var pano = curFeature.get('pano');
-    e.target.getFeatures().clear();
-    if (pano !== undefined) {
-      this.panorama_.setPano(pano);
+    if (e.target.getFeatures().getLength() !== 0) {
+      var curFeature = e.target.getFeatures().getArray()[0];
+      var pano = curFeature.get('pano');
+      e.target.getFeatures().clear();
+      if (pano !== undefined) {
+        this.panorama_.setPano(pano);
+      }
     }
   }.bind(this));
-
+  this.selectSingleClick_.setActive(false);
   this.scope_.$watch(function() {
     return this.location;
   }.bind(this), function(newVal, oldVal) {
@@ -267,6 +266,7 @@ app.StreetviewController.prototype.$onInit = function() {
       return;
     }
     this.appActivetool_.streetviewActive = this.active;
+    this.selectSingleClick_.setActive(this.active);
     if (this.active) {
       this.loadGoogleapis_().then(function() {
         var piwik = /** @type {Piwik} */ (this.window_['_paq']);
