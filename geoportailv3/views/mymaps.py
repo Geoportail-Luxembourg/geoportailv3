@@ -29,6 +29,7 @@ from shapely.wkt import loads
 from shapely.ops import linemerge
 from shapely.geometry import Point, LineString
 from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
+
 import logging
 import urllib2
 import json
@@ -429,6 +430,12 @@ class Mymaps(object):
                      'public': map.public,
                      'create_date': map.create_date,
                      'update_date': map.update_date,
+                     'last_feature_update': DBSession.query(
+                        func.max(Feature.update_date)).filter(
+                        Feature.map_id == map.uuid).one()[0]
+                     if DBSession.query(func.max(Feature.update_date)).
+                     filter(Feature.map_id == map.uuid).one()[0]
+                     is not None else map.update_date,
                      'category': map.category.name
                      if map.category_id is not None else None,
                      'owner': map.user_login.lower()} for map in maps]
@@ -665,7 +672,6 @@ class Mymaps(object):
 
             obj = Feature(feature)
             obj.last_modified_by = self.request.user.username
-
             if feature_id:
                 cur_feature = DBSession.query(Feature).get(feature_id)
                 if cur_feature is not None:
