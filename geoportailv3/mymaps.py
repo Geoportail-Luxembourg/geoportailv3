@@ -125,6 +125,8 @@ class Feature(Base):
     shape = Column(Unicode(255))
     last_modified_by = Column(Unicode(50))
     display_order = Column(Integer, default=0)
+    update_date = Column(DateTime, default=datetime.datetime.now,
+                         onupdate=datetime.datetime.now)
 
     def __init__(self, feature=None):
         if feature:
