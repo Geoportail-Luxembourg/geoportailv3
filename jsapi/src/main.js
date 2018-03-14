@@ -545,7 +545,7 @@ lux.Map = function(options) {
 
   options.logo = {
     href: 'https://map.geoportail.lu',
-    src: 'https://www.geoportail.lu/favicon.ico'
+    src: 'https://www.geoportail.lu/static/img/favicon-16x16.ico'
   };
 
   goog.base(this, options);
