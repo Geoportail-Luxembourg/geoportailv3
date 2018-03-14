@@ -214,12 +214,11 @@ lux.MyMap.prototype.onFeatureSelected_ = function(event) {
   var title = goog.dom.createElement(goog.dom.TagName.H3);
   title.innerHTML = properties['name'];
   goog.dom.append(content, title);
-
-  var description = goog.dom.createDom(goog.dom.TagName.P, {
-    html: properties.description
-  });
-  goog.dom.append(content, description);
-
+  if (properties.description) {
+    var description = goog.dom.createDom(goog.dom.TagName.P, null,
+      properties.description);
+    goog.dom.append(content, description);
+  }
   if (properties.thumbnail) {
     var link = goog.dom.createDom(goog.dom.TagName.A, {
       href: lux.baseUrl + properties.image,
