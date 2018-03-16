@@ -11,6 +11,9 @@ from pyramid.httpexceptions import HTTPBadRequest
 from geoportailv3.portail import PortailSession
 from geoportailv3.portail import RoutingStats
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class RouterController(object):
     def __init__(self, request):
@@ -68,12 +71,15 @@ class RouterController(object):
             else:
                 routing_success = False
                 r.errorMessages.append('An error occured')
-
-        routing_stats = RoutingStats()
-        routing_stats.transport_mode = transport_mode
-        routing_stats.transport_criteria = criteria
-        PortailSession.add(routing_stats)
-        PortailSession.commit()
+        try:
+            routing_stats = RoutingStats()
+            routing_stats.transport_mode = transport_mode
+            routing_stats.transport_criteria = criteria
+            PortailSession.add(routing_stats)
+            PortailSession.commit()
+        except Exception as e:
+            log.exception(e)
+            PortailSession.rollback()
 
         if routing_success:
             json = {
