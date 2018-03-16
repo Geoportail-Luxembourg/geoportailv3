@@ -401,6 +401,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
           var jsonFeatures = (new ol.format.GeoJSON()).
               readFeatures(features, encOpt);
           goog.array.forEach(jsonFeatures, function(feature) {
+            feature.set('altitudeMode', 'clampToGround');
             feature.set('__map_id__', this.getMapId());
             feature.setStyle(featureStyleFunction);
           }, this);
