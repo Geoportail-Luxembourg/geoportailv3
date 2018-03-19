@@ -71,7 +71,11 @@ class Legends(object):
                 img_tag['style'] = 'max-width:290px;'
 
         res = soup.find("div", {"class": "dokuwiki export"})
-        data = res.encode_contents()
+
+        if res is not None:
+            data = res.encode_contents()
+        else:
+            data = ""
 
         headers = {"Content-Type": f.info()['Content-Type']}
 
