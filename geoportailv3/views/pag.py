@@ -88,8 +88,12 @@ class Pag(object):
         pag_download = PagDownload()
         pag_download.objectids = objectids
         pag_download.download_link = download_link
-        PortailSession.add(pag_download)
-        PortailSession.commit()
+        try:
+            PortailSession.add(pag_download)
+            PortailSession.commit()
+        except Exception as e:
+            log.exception(e)
+            PortailSession.rollback()
 
     @view_config(route_name='pag_files')
     def pag_files(self, ):
