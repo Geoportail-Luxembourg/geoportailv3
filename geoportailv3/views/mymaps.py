@@ -84,6 +84,9 @@ class Mymaps(object):
     @view_config(route_name="getroute", renderer="json")
     def getroute(self):
         waypoints = self.request.params.get('waypoints', '')
+        if len(waypoints) == 0:
+            return {"success": False,
+                    "errorMessages": ["Waypoints are missing"]}
         waypoints = waypoints.split(",")
         fallback_line = LineString(
                     [Point(float(waypoints[1]), float(waypoints[0])),
