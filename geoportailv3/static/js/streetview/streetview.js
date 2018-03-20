@@ -328,16 +328,18 @@ app.StreetviewController.prototype.$onInit = function() {
     }
   }.bind(this));
   ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
-    var pixel = this.map_.getEventPixel(evt.originalEvent);
+    if (this.appActivetool_.streetviewActive) {
+      var pixel = this.map_.getEventPixel(evt.originalEvent);
 
-    //detect feature at mouse coords
-    var hit = this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
-      if (feature.get('pano') !== undefined) {
-        return true;
-      }
-      return false;
-    });
-    this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
+      //detect feature at mouse coords
+      var hit = this.map_.forEachFeatureAtPixel(pixel, function(feature, layer) {
+        if (feature.get('pano') !== undefined) {
+          return true;
+        }
+        return false;
+      });
+      this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
+    }
   }, this);
 };
 
