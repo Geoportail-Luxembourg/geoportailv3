@@ -89,6 +89,18 @@ app.Theme.prototype.getCurrentTheme = function() {
   return this.currentTheme_;
 };
 
+/**
+ * Encode the theme name.
+ * @param {string} theme The theme to encode.
+ * @return {string} The theme.
+ * @export
+ */
+app.Theme.prototype.encodeThemeName = function(theme) {
+  if (theme !== undefined) {
+    return theme.replace(/\s+/g, '_');
+  }
+  return theme;
+};
 
 /**
  * @return {string} themeId The id of the theme.

@@ -622,6 +622,13 @@ app.MainController.prototype.getCurrentTheme = function() {
   return this.appTheme_.getCurrentTheme();
 };
 
+/**
+ * @return {string} the current theme.
+ * @export
+ */
+app.MainController.prototype.getEncodedCurrentTheme = function() {
+  return this.appTheme_.encodeThemeName(this.appTheme_.getCurrentTheme());
+};
 
 /**
  * @private

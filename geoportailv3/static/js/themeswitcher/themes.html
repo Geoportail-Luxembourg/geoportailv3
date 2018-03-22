@@ -21,8 +21,8 @@
 
 <div id="themes-content" class="collapse themes-switcher">
     <ul class="themes-list clearfix">
-        <li ng-repeat='theme in ctrl.themes' class="theme-{{theme.name}}">
-            <a href=".themes-switcher" data-toggle="collapse" ng-class="(ctrl.currentTheme == theme.name)? 'active': ''" ng-click="ctrl.switchTheme(theme.name)">{{theme.name | translate}}</a>
+        <li ng-repeat='theme in ctrl.themes' class="theme-{{ctrl.encodeThemeName(theme.name)}}">
+            <a href=".themes-switcher" data-toggle="collapse" ng-class="(ctrl.encodeThemeName(ctrl.currentTheme) == ctrl.encodeThemeName(theme.name))? 'active': ''" ng-click="ctrl.switchTheme(theme.name)">{{theme.name | translate}}</a>
         </li>
     </ul>
 </div>
