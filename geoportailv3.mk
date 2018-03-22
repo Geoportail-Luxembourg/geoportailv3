@@ -38,6 +38,7 @@ APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 NGEO_LIBS_JS_FILES += node_modules/jszip/dist/jszip.min.js
+NGEO_LIBS_JS_FILES += node_modules/babel-polyfill/dist/polyfill.min.js
 NGEO_LIBS_JS_FILES += node_modules/url-polyfill/url-polyfill.min.js
 
 UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Transifex" \
