@@ -96,7 +96,7 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
   // theme and add it to the URL.
   var pathElements = ngeoLocation.getPath().split('/');
   if (this.appTheme_.themeInUrl(pathElements)) {
-    this.switchTheme(pathElements[pathElements.length - 1]);
+    this.switchTheme(decodeURIComponent(pathElements[pathElements.length - 1]));
   } else {
     this.switchTheme(this.appTheme_.getDefaultTheme());
   }
@@ -110,6 +110,17 @@ app.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
  */
 app.ThemeswitcherController.prototype.getCurrentTheme = function() {
   return this.appTheme_.getCurrentTheme();
+};
+
+
+/**
+ * Encode the theme name.
+ * @param {string} theme The theme to encode.
+ * @return {string} The theme.
+ * @export
+ */
+app.ThemeswitcherController.prototype.encodeThemeName = function(theme) {
+  return this.appTheme_.encodeThemeName(theme);
 };
 
 
