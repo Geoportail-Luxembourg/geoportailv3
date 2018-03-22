@@ -51,7 +51,8 @@
     "promise-polyfill": "5.2.1",
     "temp": "0.8.3",
     "typeahead.js": "~0.11.1",
-    "url-polyfill": "^1.0.7",
+    "url-polyfill": "1.0.11",
+    "babel-polyfill": "6.26.0",
     "walk": "2.3.9",
     "whatwg-fetch": "1.0.0"
   }
