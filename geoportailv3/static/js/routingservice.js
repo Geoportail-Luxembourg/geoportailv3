@@ -156,12 +156,11 @@ app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
  * Reorder the route.
  */
 app.Routing.prototype.reorderRoute = function() {
-  var i = 0;
-  for (i = 0; i < this.routesOrder.length; i++) {
-    this.routesOrder[i] = i;
-  }
+  this.routesOrder.splice(0, this.routesOrder.length);
+
   var idx = 1;
   this.features.forEach(function(curFeature) {
+    this.routesOrder.push(idx - 1);
     if (curFeature.getGeometry() !== undefined) {
       curFeature.set('name', '' + idx);
       idx++;

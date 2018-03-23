@@ -411,6 +411,7 @@ app.MainController = function(
     var coordinates = waypoints.split(',');
     var i = 0;
     var routeNumber = 1;
+    this.appRouting_.routesOrder.splice(0, this.appRouting_.routesOrder.length);
     for (i = 0; i < coordinates.length; i = i + 2) {
       var position = [
         parseFloat(coordinates[i + 1]), parseFloat(coordinates[i])];
@@ -420,6 +421,7 @@ app.MainController = function(
       });
       feature.set('label', '' + routeNumber);
       this.appRouting_.insertFeatureAt(feature, routeNumber);
+      this.appRouting_.routesOrder.push(routeNumber - 1);
       routeNumber++;
     }
     if (i > 1) {
