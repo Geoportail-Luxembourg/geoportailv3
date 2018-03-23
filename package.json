@@ -11,7 +11,7 @@
     "send": "^0.15.0"
   },
   "devDependencies": {
-    "@camptocamp/cesium": "1.40.0",
+    "@camptocamp/cesium": "1.43.1",
     "@camptocamp/closure-util": "1.27.0",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
@@ -43,7 +43,7 @@
     "less-plugin-clean-css": "1.5.1",
     "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/f81ab0c24624cfbc5e6974a27c4c9f0d4d3f1b38",
     "nomnom": "1.8.1",
-    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/64f934c362804b55f9df8dbdd3b92f0376ed9237",
+    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/628501a",
     "openlayers": "4.6.4",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
