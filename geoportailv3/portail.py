@@ -5,13 +5,12 @@ import sqlahelper
 from c2cgeoportal.models import *  # noqa
 from formalchemy import Column
 from sqlalchemy.types import Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = sqlahelper.get_engine()
 Base = declarative_base(bind=engine)
-Session = sessionmaker(bind=engine)
-PortailSession = Session()
+PortailSession = scoped_session(sessionmaker(bind=engine))
 
 
 class Connections(Base):
