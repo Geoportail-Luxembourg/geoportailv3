@@ -510,25 +510,41 @@ app.RoutingController.prototype.createTooltip_ = function(position, text) {
  * @export
  */
 app.RoutingController.prototype.afterReorder = function(element, array) {
-  var fromIdx = 0;
-  var toIdx = 0;
+  var fromIdx = -1;
+  var toIdx = -1;
   var i = 0;
+  var isFirst = false;
+  var moveBottom = false;
   for (i = 0; i < this.appRouting.routesOrder.length; i++) {
     if (this.appRouting.routesOrder[i] !== i) {
-      if (this.appRouting.routesOrder[i] > i) {
-        toIdx = i;
-      } else {
+      if (this.appRouting.routesOrder[i] === i + 1 && !isFirst) {
+        moveBottom = true;
+        isFirst = true;
         fromIdx = i;
+      }
+      if (moveBottom && this.appRouting.routesOrder[i] < i) {
+        toIdx = i;
+        break;
+      }
+
+      if (this.appRouting.routesOrder[i] > i &&
+          this.appRouting.routesOrder[i] !== i + 1 && !isFirst) {
+        isFirst = true;
+        toIdx = i;
+        fromIdx = this.appRouting.routesOrder[i];
+        break;
       }
     }
   }
-
-  var elementToMove = this.appRouting.routes[fromIdx];
-  this.appRouting.routes.splice(fromIdx, 1);
-  this.appRouting.routes.splice(toIdx, 0, elementToMove);
-  this.appRouting.moveFeaturePosition(fromIdx, toIdx);
-  this.appRouting.reorderRoute();
-  this.appRouting.getRoute();
+  element.off('sortupdate');
+  if (fromIdx !== toIdx) {
+    var elementToMove = this.appRouting.routes[fromIdx];
+    this.appRouting.routes.splice(fromIdx, 1);
+    this.appRouting.routes.splice(toIdx, 0, elementToMove);
+    this.appRouting.moveFeaturePosition(fromIdx, toIdx);
+    this.appRouting.reorderRoute();
+    this.appRouting.getRoute();
+  }
 };
 
 /**
