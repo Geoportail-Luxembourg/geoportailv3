@@ -96,6 +96,7 @@ class LuxPrintProxy(PrintProxy):
                                          len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
+
         spec = json.loads(self.request.body)
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
@@ -104,6 +105,15 @@ class LuxPrintProxy(PrintProxy):
                     map_layer["customParams"]["GP_TOKEN"] = token
                 else:
                     map_layer["customParams"] = {"GP_TOKEN": token}
+                if self.request.user and\
+                   self.request.user.ogc_role is not None and\
+                   self.request.user.ogc_role != -1:
+                    if "customParams" in map_layer:
+                        map_layer["customParams"]["roleOGC"] =\
+                            str(self.request.user.ogc_role)
+                    else:
+                        map_layer["customParams"] =\
+                            {"roleOGC": str(self.request.user.ogc_role)}
 
                 for layer in map_layer["layers"]:
                     internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
@@ -125,7 +135,6 @@ class LuxPrintProxy(PrintProxy):
 
         job = LuxPrintJob()
         job.spec = json.dumps(spec)
-
         self.request.body = job.spec
 
         resp, content = self._proxy("%s/report.%s" % (
