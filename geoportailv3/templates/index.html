@@ -89,6 +89,10 @@
             ✕
           </button>
           <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
+            <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
+            <span translate>Afficher les modèles 3D</span>
+          </div>
           <ul class="nav nav-tabs">
             <li role="presentation">
             <a href="#mylayers" data-toggle="tab">
@@ -383,6 +387,8 @@
          appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
          appModule.constant('bboxSrsLidar', "${lidar['srs']}");
          appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
+         appModule.constant('tiles3dLayers', ['buildings25d', 'buildings3d', 'bridges3d','vegetation_point_cloud']);
+         appModule.constant('tiles3dUrl', 'http://3dtiles.geoportail.lu/3dtiles/');
 
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);

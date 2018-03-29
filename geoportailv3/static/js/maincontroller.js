@@ -83,6 +83,8 @@ goog.require('ngeo.olcs.Manager');
  * @param {angular.Scope} $rootScope Angular root scope.
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {app.Routing} appRouting The routing service.
+ * @param {Array<string>} tiles3dLayers 3D tiles layers.
+ * @param {string} tiles3dUrl 3D tiles server url.
  * @constructor
  * @export
  * @ngInject
@@ -95,7 +97,7 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, cesiumURL, $rootScope, ngeoOlcsService,
-    appRouting) {
+    appRouting, tiles3dLayers, tiles3dUrl) {
 
   /**
    * @type {app.Routing}
@@ -186,6 +188,18 @@ app.MainController = function(
    * @private
    */
   this.appTheme_ = appTheme;
+
+  /**
+   * @private
+   * @type {Array<string>}
+   */
+  this.tiles3dLayers_ = tiles3dLayers;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.tiles3dUrl_ = tiles3dUrl;
 
   /**
    * @type {ol.Extent}
@@ -324,6 +338,12 @@ app.MainController = function(
   this['layersChanged'] = false;
 
   /**
+   * Set to true to display the change icon in Mymaps.
+   * @type {boolean}
+   */
+  this['tiles3dVisible'] = appStateManager.getInitialValue('3dtiles_visible') == 'true';
+
+  /**
    * @type {app.Mymaps}
    * @private
    */
@@ -341,6 +361,10 @@ app.MainController = function(
    * @export
    */
   this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
+  this.ol3dm_.on('load', () => {
+    this.ol3dm_.init3dTiles(this.tiles3dVisible);
+  });
+
   ngeoOlcsService.initialize(this.ol3dm_);
   $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
   this.map_.set('ol3dm', this.ol3dm_);
@@ -539,7 +563,8 @@ app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootSco
   // [minx, miny, maxx, maxy]
   goog.asserts.assert(this.map_);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
-  return new app.olcs.Lux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_, $rootScope);
+  return new app.olcs.Lux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
+    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
 };
 
 
@@ -816,6 +841,17 @@ app.MainController.prototype.toggleThemeSelector = function() {
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
   }
+};
+
+/**
+ * @export
+ */
+app.MainController.prototype.toggleTiles3dVisibility = function() {
+  this.tiles3dVisible = !this.tiles3dVisible;
+  this.ol3dm_.set3dTilesetVisible(this.tiles3dVisible);
+  this.stateManager_.updateState({
+    '3dtiles_visible': this.tiles3dVisible
+  });
 };
 
 app.module.controller('MainController', app.MainController);

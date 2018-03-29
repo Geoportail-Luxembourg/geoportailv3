@@ -11,8 +11,11 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
    * @param {ol.Map} map The map.
    * @param {ngeo.statemanager.Location} ngeoLocation The location service.
    * @param {angular.Scope} $rootScope The root scope.
+   * @param {Array<string>} tiles3dLayers 3D tiles layers.
+   * @param {string} tiles3dUrl 3D tiles server url.
    */
-  constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope) {
+  constructor(cesiumUrl, cameraExtentInRadians, map, ngeoLocation, $rootScope,
+              tiles3dLayers, tiles3dUrl) {
     super(cesiumUrl, $rootScope, {
       map,
       cameraExtentInRadians
@@ -55,6 +58,24 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
      * @const {ol.Extent}
      */
     this.luxCameraExtentInRadians = cameraExtentInRadians;
+
+    /**
+     * Array of 3D tiles set used for buildings/vegetation
+     * @type {Array<Cesium.Cesium3DTileset>}
+     */
+    this.tilesets3d = [];
+
+    /**
+     * @private
+     * @type {Array<string>}
+     */
+    this.tiles3dLayers_ = tiles3dLayers;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.tiles3dUrl_ = tiles3dUrl;
   }
 
   /**
@@ -85,6 +106,32 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     }
 
     return ol3d;
+  }
+
+  /***
+   * Initialize 3D tiles layers (buildings/vegetation)
+   * @param {boolean} visible Initial visibility of 3D tiles.
+   */
+  init3dTiles(visible) {
+    const scene = this.ol3d.getCesiumScene();
+    this.tiles3dLayers_.forEach((layer) => {
+      const url = this.tiles3dUrl_ + layer;
+      const tileset = new Cesium.Cesium3DTileset({
+        url: url,
+        maximumNumberOfLoadedTiles: 3,
+        show: visible
+      });
+      this.tilesets3d.push(tileset);
+      scene.primitives.add(tileset);
+    });
+  }
+
+  /**
+   * Change 3D tiles layers visibility
+   * @param {boolean} visible Visibility.
+   */
+  set3dTilesetVisible(visible) {
+    this.tilesets3d.forEach((tileset) => tileset.show = visible);
   }
 
   /**
