@@ -6,6 +6,7 @@ goog.provide('app.Geocoding');
 
 goog.require('app');
 goog.require('ol.proj');
+goog.require('ngeo.statemanager.module');
 
 
 /**
