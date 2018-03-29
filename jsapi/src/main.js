@@ -284,7 +284,7 @@ lux.debounce = function(func, wait, opt_immediate) {
  */
 lux.Map = function(options) {
 
-  var layers    = [];
+  var layers  = [];
   var layerOpacities = [];
   var layerVisibilities = [];
 
@@ -328,6 +328,12 @@ lux.Map = function(options) {
    * @type {boolean}
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
+
+  /**
+   * @private
+   * @type {function}
+   */
+  this.layerInfoCallback_ = options.layerInfoCallback;
 
   this.setLanguage(lux.lang);
 
@@ -2067,16 +2073,34 @@ lux.Map.prototype.removeInfoPopup = function() {
   }
 };
 
-/**
- * @param {Object} evt The event.
- * @private
- */
-lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
-  this.removeInfoPopup();
-  if (!this.showLayerInfoPopup_) {
-    return;
-  }
 
+/**
+ * @param {string|number} layer Layer id
+ * @param {Array<string|number>} ids The ids to retrieve.
+ * @param {function} callback The function to call.
+ * @export
+ */
+lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
+
+  this.layersPromise.then(function() {
+    var lid = this.findLayerConf_(layer).id;
+    ids.forEach(function(id) {
+      var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      fetch(uri).then(function(resp) {
+        return resp.json();
+      }).then(function(json) {
+        callback.call(this, json);
+      }.bind(this));
+    }.bind(this));
+  }.bind(this));
+};
+
+/**
+ * @param {Object} evt The click event.
+ * @param {function} callback The function to call.
+ * @export
+ */
+lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   var layers = this.getLayers().getArray();
 
   // collect the queryable layers
@@ -2142,6 +2166,21 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     return resp.json();
   }).then(function(json) {
     this.getViewport().style.cursor = '';
+    callback.call(this, json);
+  }.bind(this));
+};
+
+/**
+ * @param {Object} evt The event.
+ * @private
+ */
+lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
+  this.removeInfoPopup();
+  if (!this.showLayerInfoPopup_) {
+    return;
+  }
+
+  this.getFeatureInfo(evt, function(json) {
     if (!json || !json.length) {
       return;
     }
@@ -2176,6 +2215,7 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
       this.renderSync();
     }
   }.bind(this));
+
 };
 
 /**
