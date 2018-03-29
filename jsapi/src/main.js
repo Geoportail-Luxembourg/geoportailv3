@@ -2075,6 +2075,27 @@ lux.Map.prototype.removeInfoPopup = function() {
 
 
 /**
+ * @param {string|number} layer Layer id
+ * @param {Array<string|number>} ids The ids to retrieve.
+ * @param {function} callback The function to call.
+ * @export
+ */
+lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
+
+  this.layersPromise.then(function() {
+    var lid = this.findLayerConf_(layer).id;
+    ids.forEach(function(id) {
+      var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      fetch(uri).then(function(resp) {
+        return resp.json();
+      }).then(function(json) {
+        callback.call(this, json);
+      }.bind(this));
+    }.bind(this));
+  }.bind(this));
+};
+
+/**
  * @param {Object} evt The click event.
  * @param {function} callback The function to call.
  * @export
