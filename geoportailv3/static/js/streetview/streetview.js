@@ -1,11 +1,11 @@
 /**
- * @fileoverview This file provides a list of social sharing options.
- * This directive is used
- * to create a sharing panel in the page.
+ * @fileoverview This file provides a streetview overview.
  *
  * Example:
- *
- * <app-share app-share-active=":mainCtrl.active"></app-share>
+ *  <app-streetview
+ *   app-streetview-map="::ctrl.map"
+ *   app-streetview-location="ctrl.clickCoordinate">
+ *  </app-streetview>
  *
  */
 goog.provide('app.StreetviewController');
@@ -25,7 +25,6 @@ app.streetviewDirective = function(appStreetviewTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'active': '=appStreetviewActive',
       'map': '=appStreetviewMap',
       'location': '=appStreetviewLocation'
     },
@@ -98,11 +97,6 @@ app.StreetviewController = function($element, $scope, ngeoFeatureOverlayMgr,
    */
   this.element_ = $element;
 
-  /**
-   * @type {boolean}
-   * @export
-   */
-  this.active;
 
   /**
    * @type {ol.Map}
@@ -252,7 +246,7 @@ app.StreetviewController.prototype.$onInit = function() {
   this.scope_.$watch(function() {
     return this.location;
   }.bind(this), function(newVal, oldVal) {
-    if (this.active && this.streetViewService_ !== null) {
+    if (this.isActive() && this.streetViewService_ !== null) {
       this.handleLocationChange_(newVal, oldVal);
     }
   }.bind(this));
@@ -260,14 +254,13 @@ app.StreetviewController.prototype.$onInit = function() {
   // (3) Watcher to manage the visibility of the panorama.
 
   this.scope_.$watch(function() {
-    return this.active;
+    return this.isActive();
   }.bind(this), function(show, oldShow) {
     if (show === undefined) {
       return;
     }
-    this.appActivetool_.streetviewActive = this.active;
-    this.selectSingleClick_.setActive(this.active);
-    if (this.active) {
+    this.selectSingleClick_.setActive(this.isActive());
+    if (this.isActive()) {
       this.loadGoogleapis_().then(function() {
         var piwik = /** @type {Piwik} */ (this.window_['_paq']);
         piwik.push(['setDocumentTitle',
@@ -328,7 +321,7 @@ app.StreetviewController.prototype.$onInit = function() {
     }
   }.bind(this));
   ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
-    if (this.appActivetool_.streetviewActive) {
+    if (this.isActive()) {
       var pixel = this.map_.getEventPixel(evt.originalEvent);
 
       //detect feature at mouse coords
@@ -374,6 +367,15 @@ app.StreetviewController.prototype.handleLocationChange_ = function(location, ol
     }, this.handleStreetViewServiceGetPanorama_.bind(this));
   }
 };
+
+/**
+ * @return {boolean} True if is active.
+ * @export
+ */
+app.StreetviewController.prototype.isActive = function() {
+  return this.appActivetool_.streetviewActive;
+};
+
 
 /**
  * Called when the component 'virtual ready' state changes.
