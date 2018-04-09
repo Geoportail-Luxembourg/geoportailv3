@@ -38,9 +38,9 @@
             </button>
           </td>
         </tr>
-        <tr class="no-print" ng-if="ctrl.showStreetView">
+        <tr class="no-print" ng-if="ctrl.isStreetviewActive()">
           <td colspan="2">
-           <button class="btn btn-default no-print" ng-click="ctrl.showStreetView = !ctrl.showStreetView">
+           <button class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
              <span class="create-itinerary-text" translate>Désactiver Google Streetview</span>
            </button>
           </td>
@@ -51,12 +51,11 @@
 
   <div class="row">
     <app-streetview
-        app-streetview-active="ctrl.open && ctrl.showStreetView"
         app-streetview-map="::ctrl.map"
         app-streetview-location="ctrl.clickCoordinate">
     </app-streetview>
-    <div class="streetview text-center" ng-show="!(ctrl.open && ctrl.showStreetView)">
-      <button ng-if="!ctrl.showStreetView" class="btn btn-default no-print" ng-click="ctrl.showStreetView = !ctrl.showStreetView">
+    <div class="streetview text-center" ng-show="!(ctrl.open && ctrl.isStreetviewActive())">
+      <button ng-if="!ctrl.isStreetviewActive()" class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
         <span class="create-itinerary-text" translate>Activer Google Streetview</span>
       </button>
     </div>

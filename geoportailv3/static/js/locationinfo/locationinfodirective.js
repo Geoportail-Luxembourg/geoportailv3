@@ -76,6 +76,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @param {app.Routing} appRouting The routing service.
  * @param {angular.$sce} $sce Angular $sce service.
  * @param {app.LocationInfoOverlay} appLocationInfoOverlay The overlay.
+ * @param {app.Activetool} appActivetool The activetool service.
  * @ngInject
  */
 app.LocationinfoController = function(
@@ -84,12 +85,12 @@ app.LocationinfoController = function(
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
         appGetLayerForCatalogNode, bboxLidar, bboxSrsLidar, lidarDemoUrl,
-        appRouting, $sce, appLocationInfoOverlay) {
+        appRouting, $sce, appLocationInfoOverlay, appActivetool) {
   /**
-   * @type {boolean}
-   * @export
+   * @type {app.Activetool}
+   * @private
    */
-  this.showStreetView = false;
+  this.appActivetool_ = appActivetool;
 
   /**
    * @type {angular.$sce}
@@ -180,6 +181,7 @@ app.LocationinfoController = function(
       return;
     }
     if (newVal === false) {
+      this.appActivetool_.streetviewActive = false;
       this['hiddenContent'] = false;
       this.stateManager_.updateState({'crosshair': false});
       var mapCenterCoordinate = this['map'].getView().getCenter();
@@ -551,6 +553,22 @@ app.LocationinfoController.prototype.getMobilityUrl = function(dest) {
       Math.floor(this.clickCoordinate4326_[1] * 1000000));
   }
   return undefined;
+};
+
+/**
+ * @return {boolean} True if is active.
+ * @export
+ */
+app.LocationinfoController.prototype.isStreetviewActive = function() {
+  return this.appActivetool_.streetviewActive;
+};
+
+/**
+ * Change the status of streetview widget.
+ * @export
+ */
+app.LocationinfoController.prototype.toggleStreetview = function() {
+  this.appActivetool_.streetviewActive = !this.appActivetool_.streetviewActive;
 };
 
 
