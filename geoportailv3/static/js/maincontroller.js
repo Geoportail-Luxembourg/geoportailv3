@@ -75,6 +75,7 @@ goog.require('ol.proj');
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
+ * @param {Document} $document Document.
  * @constructor
  * @export
  * @ngInject
@@ -86,7 +87,19 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting) {
+    appSelectedFeatures, $locale, appRouting, $document) {
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.activeLayersComparator = false;
+
+  /**
+   * @type {Document}
+   * @private
+   */
+  this.$document_ = $document;
+
   /**
    * @type {app.Routing}
    * @export
@@ -378,6 +391,7 @@ app.MainController = function(
         $('app-themeswitcher #themes-content').collapse('hide');
       }
     }, this));
+    this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
 
     $scope.$watch(function() {
       return this.sidebarOpen();
