@@ -67,6 +67,12 @@ app.LayerPermalinkManager = function(appStateManager,
   this.unavailableOpacities_ = [];
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.unavailableLayerIndex_ = [];
+
+  /**
    * @type {app.Themes}
    * @private
    */
@@ -149,14 +155,19 @@ app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
  */
 app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
     layerIds, opacities, flatCatalogue) {
-  layerIds.reverse();
-  opacities.reverse();
-  var addedLayers = this.map_.getLayers().getArray();
-  goog.array.extend(layerIds, this.unavailableLayers_);
-  goog.array.extend(opacities, this.unavailableOpacities_);
-
+  this.unavailableLayerIndex_.forEach(function(elem, index) {
+    layerIds.splice(elem, 0,  this.unavailableLayers_[index]);
+    opacities.splice(elem, 0, this.unavailableOpacities_[index]);
+  }, this);
+  this.unavailableLayerIndex_ = [];
   this.unavailableLayers_ = [];
   this.unavailableOpacities_ = [];
+
+  layerIds.reverse();
+  opacities.reverse();
+
+  var addedLayers = this.map_.getLayers().getArray();
+
   goog.array.forEach(layerIds,
   function(layerId, layerIndex) {
     if (goog.isNumber(layerId) && !isNaN(layerId)) {
@@ -188,7 +199,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
         }
       } else {
         this.setLayerAsUnavailable_(addedLayers, layerId,
-            opacities[layerIndex]);
+            opacities[layerIndex], layerIndex);
         return;
       }
     } else {
@@ -244,7 +255,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
             }.bind(this));
       } else {
         this.setLayerAsUnavailable_(addedLayers,
-            /** @type {string} */ (layerId), opacities[layerIndex]);
+            /** @type {string} */ (layerId), opacities[layerIndex], layerIndex);
         return;
       }
     }
@@ -255,20 +266,24 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
  * @param {Array<ol.layer.Layer>} addedLayers The mapLayers.
  * @param {string|number} layerId The id of the layer to remove.
  * @param {number} opacity The opacity of the layer to remove.
+ * @param {number} layerIndex The index of the layer in the list.
  * @private
  */
 app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
-    addedLayers, layerId, opacity) {
-  var unavailableLayer =
+    addedLayers, layerId, opacity, layerIndex) {
+  var layerToRemove =
       goog.array.find(addedLayers, function(addedLayer) {
         if (addedLayer.get('queryable_id') === layerId) {
           return true;
         }
         return false;
       }, this);
-  this.map_.removeLayer(unavailableLayer);
+  if (layerToRemove !== null) {
+    this.map_.removeLayer(layerToRemove);
+  }
   this.unavailableLayers_.push(layerId);
   this.unavailableOpacities_.push(opacity);
+  this.unavailableLayerIndex_.push(layerIndex);
 };
 
 
