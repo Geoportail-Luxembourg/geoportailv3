@@ -103,7 +103,8 @@
           <div class="tab-content">
             <div id="mylayers" class="tab-pane col-xs-12">
               <app-layermanager app-layermanager-map="::mainCtrl.map"
-                app-layermanager-layers="::mainCtrl.selectedLayers">
+                app-layermanager-layers="::mainCtrl.selectedLayers"
+                app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
               </app-layermanager>
               <div class="text-center">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
@@ -224,6 +225,15 @@
       </div>
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
+      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
+           app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" >
+        <div class="slider-line"></div>
+        <div class="slider-arrows">
+          <div class="slider-arrow-left"></div>
+          <div class="slider-arrow-right"></div>
+        </div>
+        <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
+      </div>
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
@@ -299,6 +309,7 @@
     <script src="${request.static_url('%s/ngeo/third-party/jquery-ui/jquery-ui.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-touch/angular-touch.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-ui-date/dist/date.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-float-thead/angular-floatThead.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
@@ -389,6 +400,7 @@
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
          appModule.value('appStreetviewTemplateUrl', 'streetview/streetview.html');
+         appModule.value('appSliderTemplateUrl', 'slider/slider.html');
          appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
          appModule.value('appDrawTemplateUrl', 'draw/draw.html');
          appModule.value('appFeaturePopupTemplateUrl', 'draw/featurepopup.html');

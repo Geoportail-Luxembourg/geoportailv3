@@ -29,7 +29,8 @@ app.layermanagerDirective = function(appLayermanagerTemplateUrl) {
     restrict: 'E',
     scope: {
       'map': '=appLayermanagerMap',
-      'layers': '=appLayermanagerLayers'
+      'layers': '=appLayermanagerLayers',
+      'activeLC': '=appLayermanagerActiveLayersComparator'
     },
     controller: 'AppLayermanagerController',
     controllerAs: 'ctrl',
@@ -43,10 +44,18 @@ app.module.directive('appLayermanager', app.layermanagerDirective);
 
 
 /**
+ * @param {ngeo.statemanager.Location} ngeoLocation Location service.
  * @constructor
+ * @ngInject
  * @export
  */
-app.LayermanagerController = function() {
+app.LayermanagerController = function(ngeoLocation) {
+  /**
+   * @type {ngeo.statemanager.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
+
   this['uid'] = goog.getUid(this);
 
   /**
@@ -64,7 +73,6 @@ app.LayermanagerController = function() {
  */
 app.LayermanagerController.prototype.removeLayer = function(layer) {
   this['map'].removeLayer(layer);
-
 };
 
 
@@ -89,6 +97,26 @@ app.LayermanagerController.prototype.changeVisibility = function(layer) {
     newOpacity = 0;
   }
   layer.setOpacity(newOpacity);
+};
+
+/**
+ * Is layers comparator displayed.
+ * @return {boolean} Returns true when comparator is shown.
+ * @export
+ */
+app.LayermanagerController.prototype.isLayersComparatorDisplayed = function() {
+  return this['activeLC'] === true;
+};
+
+/**
+ * Toggle layers comparator.
+ * @export
+ */
+app.LayermanagerController.prototype.toggleLayersComparator = function() {
+  this['activeLC'] = !this['activeLC'];
+  this.ngeoLocation_.updateParams({
+    'lc': this['activeLC']
+  });
 };
 
 

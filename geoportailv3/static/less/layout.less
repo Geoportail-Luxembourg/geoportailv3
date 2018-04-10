@@ -135,6 +135,7 @@ app-map > div {
 }
 
 .ol-control {
+  z-index: 2;
   &, &:hover {
     background-color: transparent;
   }
@@ -250,6 +251,7 @@ app-map > div {
 }
 
 .location-button {
+  z-index: 2;
   bottom: 55px;
   padding: 0;
   right: 8px;
@@ -577,5 +579,79 @@ div.ol-zoom-extent > button {
     p {
       margin-top: 10px;
     }
+  }
+}
+
+.slider-line-area {
+  top: 0px;
+  position: absolute;
+  width: 32px;
+  height: 100%;
+  left: 50%;
+  margin-left: -2px;
+  cursor: w-resize;
+  user-select: none; 
+}
+
+.slider-line {
+  top: 0px;
+  position: absolute;
+  width: 4px;
+  height: 100%;
+  left: 50%;
+  margin-left: -2px;
+  cursor: w-resize;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+}
+
+.slider-layer-label {
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  position: absolute;
+  width: 120px;
+  bottom: 55px;
+  right: 30px;
+  padding: 5px 3px; 
+  font-weight: bold;
+  background-color: white;
+
+  &:before {
+    padding-right: 3px;
+  }
+}
+
+.slider-arrows {
+  position: absolute;
+  width: 35px;
+  height: 32px;
+  left: 0px;
+  top: 50%;
+  margin-top: -16px;
+  padding: 5px 4px;
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  div {
+    display: inline-block;
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+
+  .slider-arrow-right{
+    margin-left: 3px;
+    border-left: 10px solid white;
+  }
+
+  .slider-arrow-left {
+    border-right: 10px solid white;
   }
 }
