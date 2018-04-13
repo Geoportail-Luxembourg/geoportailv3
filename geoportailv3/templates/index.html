@@ -226,7 +226,7 @@
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
       <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
-           app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" >
+           app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
         <div class="slider-line"></div>
         <div class="slider-arrows">
           <div class="slider-arrow-left"></div>
