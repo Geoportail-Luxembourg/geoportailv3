@@ -67,6 +67,12 @@ app.LayerPermalinkManager = function(appStateManager,
   this.unavailableOpacities_ = [];
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.unavailableLayerIndex_ = [];
+
+  /**
    * @type {app.Themes}
    * @private
    */
@@ -101,6 +107,18 @@ app.LayerPermalinkManager = function(appStateManager,
    * @private
    */
   this.scopeWatcher_ = undefined;
+
+  /**
+   * @type {Array}
+   * @private
+   */
+  this.layersListenerKeys_ = [];
+
+  /**
+   * @type {ol.EventsKey?}
+   * @private
+   */
+  this.backgroundLayerMgrLstn_ = null;
 };
 
 
@@ -118,10 +136,46 @@ app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
 
 
 /**
+ * Remove the listeners for property change.
+ * @private
+ */
+app.LayerPermalinkManager.prototype.unListenProtertyChange_ = function() {
+  this.layersListenerKeys_.forEach(function(key) {
+    ol.events.unlistenByKey(key);
+  });
+  this.layersListenerKeys_.length = 0;
+};
+
+
+/**
+ * Add the listeners for property change.
  * @param {Array.<ol.layer.Layer>} layers The layers.
  * @private
  */
-app.LayerPermalinkManager.prototype.setLayerState_ = function(layers) {
+app.LayerPermalinkManager.prototype.listenProtertyChange = function(layers) {
+  layers.forEach(function(layer) {
+    this.layersListenerKeys_.push(ol.events.listen(
+        layer, ol.ObjectEventType.PROPERTYCHANGE,
+        function() {
+          this.onLayerUpdate_(layers);
+        }, this)
+    );
+  }, this);
+};
+
+
+/**
+ * @param {Array.<ol.layer.Layer>} layers The layers.
+ * @private
+ */
+app.LayerPermalinkManager.prototype.onLayerUpdate_ = function(layers) {
+
+  // Check if a layer is added or removed;
+  if (layers.length !== this.layersListenerKeys_.length) {
+    this.unListenProtertyChange_();
+    this.listenProtertyChange(layers);
+  }
+
   var layerIds = goog.array.map(layers, function(layer) {
     return layer.get('queryable_id');
   });
@@ -151,12 +205,18 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
     layerIds, opacities, flatCatalogue) {
   layerIds.reverse();
   opacities.reverse();
-  var addedLayers = this.map_.getLayers().getArray();
-  goog.array.extend(layerIds, this.unavailableLayers_);
-  goog.array.extend(opacities, this.unavailableOpacities_);
-
+  this.unavailableLayerIndex_.forEach(function(elem, index) {
+    layerIds.splice(elem, 0,  this.unavailableLayers_[index]);
+    opacities.splice(elem, 0, this.unavailableOpacities_[index]);
+  }, this);
+  this.unavailableLayerIndex_ = [];
   this.unavailableLayers_ = [];
   this.unavailableOpacities_ = [];
+
+
+  var addedLayers = this.map_.getLayers().getArray();
+  // Keep only the background layer
+  addedLayers.length = 1;
   goog.array.forEach(layerIds,
   function(layerId, layerIndex) {
     if (goog.isNumber(layerId) && !isNaN(layerId)) {
@@ -188,7 +248,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
         }
       } else {
         this.setLayerAsUnavailable_(addedLayers, layerId,
-            opacities[layerIndex]);
+            opacities[layerIndex], layerIndex);
         return;
       }
     } else {
@@ -244,7 +304,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
             }.bind(this));
       } else {
         this.setLayerAsUnavailable_(addedLayers,
-            /** @type {string} */ (layerId), opacities[layerIndex]);
+            /** @type {string} */ (layerId), opacities[layerIndex], layerIndex);
         return;
       }
     }
@@ -255,20 +315,24 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
  * @param {Array<ol.layer.Layer>} addedLayers The mapLayers.
  * @param {string|number} layerId The id of the layer to remove.
  * @param {number} opacity The opacity of the layer to remove.
+ * @param {number} layerIndex The index of the layer in the list.
  * @private
  */
 app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
-    addedLayers, layerId, opacity) {
-  var unavailableLayer =
+    addedLayers, layerId, opacity, layerIndex) {
+  var layerToRemove =
       goog.array.find(addedLayers, function(addedLayer) {
         if (addedLayer.get('queryable_id') === layerId) {
           return true;
         }
         return false;
       }, this);
-  this.map_.removeLayer(unavailableLayer);
+  if (layerToRemove !== null) {
+    this.map_.removeLayer(layerToRemove);
+  }
   this.unavailableLayers_.push(layerId);
   this.unavailableOpacities_.push(opacity);
+  this.unavailableLayerIndex_.push(layerIndex);
 };
 
 
@@ -340,12 +404,27 @@ app.LayerPermalinkManager.prototype.splitLayers_ =
 
 
 /**
+ * @private
+ */
+app.LayerPermalinkManager.prototype.removeWatchers_ = function() {
+  if (this.backgroundLayerMgrLstn_ !== null) {
+    ol.events.unlistenByKey(this.backgroundLayerMgrLstn_);
+    this.backgroundLayerMgrLstn_ = null;
+  }
+  if (goog.isFunction(this.scopeWatcher_)) {
+    this.scopeWatcher_(); // destroy previous watcher
+  }
+  //this.unListenProtertyChange_();
+};
+
+
+/**
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  * @private
  */
 app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
 
-  ol.events.listen(this.backgroundLayerMgr_, 'change',
+  this.backgroundLayerMgrLstn_ = ol.events.listen(this.backgroundLayerMgr_, 'change',
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({
@@ -353,38 +432,14 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
         });
       }, this);
 
-  if (goog.isFunction(this.scopeWatcher_)) {
-    this.scopeWatcher_(); // destroy previous watcher
-  }
-  this.scopeWatcher_ = this.scope_.$watchCollection(goog.bind(function() {
+  // Add, Remove, Order
+  this.scopeWatcher_ = this.scope_.$watchCollection(function() {
     return selectedLayers;
-  }, this), goog.bind(function() {
-    this.setLayerState_(selectedLayers);
-  }, this));
-
-  var layers = this.map_.getLayers();
-  // Add event listeners to existing selected layers
-  goog.array.forEach(layers.getArray(), function(layer) {
-    ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-        function() {
-          this.setLayerState_(selectedLayers);
-        }, this);
-  }, this);
-  // Add event listener to all future selected layers
-  ol.events.listen(layers, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.CollectionEventType} collEvt Collection event.
-       */
-      function(collEvt) {
-        var layer = /** @type {ol.layer.Layer} */ (collEvt.element);
-        ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-            /**
-             * @param {ol.ObjectEventType} layerEvt Layer event
-             */
-            function(layerEvt) {
-              this.setLayerState_(selectedLayers);
-            }, this);
-      }, this);
+  }.bind(this), function(newColl) {
+    this.onLayerUpdate_(selectedLayers);
+  }.bind(this));
+  //to be sure it's executed at least once.
+  this.onLayerUpdate_(selectedLayers);
 };
 
 
@@ -441,14 +496,8 @@ app.LayerPermalinkManager.prototype.init =
 
   // Wait for themes to load before adding layers from state
       ol.events.listen(this.appThemes_, app.ThemesEventType.LOAD,
-      /**
-       * @param {ol.events.Event} evt Event.
-       */
       function(evt) {
-        this.appThemes_.getBgLayers().then(goog.bind(
-            /**
-             * @param {Array.<ol.layer.Base>} bgLayers The background layer.
-             */
+        this.appThemes_.getBgLayers().then(
             function(bgLayers) {
               var stateBgLayerLabel, stateBgLayerOpacity;
               var mapId = this.ngeoLocation_.getParam('map_id');
@@ -495,7 +544,7 @@ app.LayerPermalinkManager.prototype.init =
                 this.backgroundLayerMgr_.set(this.map_, layer);
               }
               this.appThemes_.getFlatCatalog().then(
-                  goog.bind(function(flatCatalogue) {
+                  function(flatCatalogue) {
                     /**
                      * @type {Array.<number>|undefined}
                      */
@@ -551,7 +600,6 @@ app.LayerPermalinkManager.prototype.init =
                         layerIds = this.getStateValue_('layers');
                         opacities = this.getStateValue_('opacities');
                       }
-                      this.setupWatchers_(selectedLayers);
                       this.initialized_ = true;
                     } else {
                       layerIds = this.splitLayers_(
@@ -559,14 +607,16 @@ app.LayerPermalinkManager.prototype.init =
                       opacities = this.splitNumbers_(
                           this.ngeoLocation_.getParam('opacities'), '-');
                     }
+                    this.removeWatchers_();
                     if (goog.isDef(layerIds) && goog.isDef(opacities) &&
                         layerIds.length > 0 &&
                         layerIds.length === opacities.length) {
                       this.applyLayerStateToMap_(layerIds, opacities,
                           flatCatalogue);
                     }
-                  }, this));
-            }, this));
+                    this.setupWatchers_(selectedLayers);
+                  }.bind(this));
+            }.bind(this));
       }, this);
     };
 
