@@ -50,7 +50,7 @@ class RouterController(object):
                     r.execute()
                 except HTTPError as e:
                     if e.code == 429:
-                        r = MapquestRouter()
+                        r = MapquestRouter(self.config['routing']['mapquest'])
                         self.__setup_router(
                             coords, lang, transport_mode,
                             criteria, avoid, prefer_bike_road,
