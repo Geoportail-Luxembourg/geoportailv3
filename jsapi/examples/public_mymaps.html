@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List of public Mymaps available through the GeoAPI.</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
+    <script src="/apiv3loader.js"  type="text/javascript"></script>
+    <script>
+    function sanitizeFilename(name) {
+      name = name.replace(/\s+/g, '_'); // Replace white space with _.
+      return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special charactere.
+    };
+
+    function isElementInViewport (el) {
+        if (typeof jQuery === "function" && el instanceof jQuery) {
+            el = el[0];
+        }
+
+        var rect = el.getBoundingClientRect();
+
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= ($(window).height()) &&
+            rect.right <= ($(window).width())
+        );
+    }
+    var ids = [];
+    var mymapsList = {};
+    function showMymaps(ids) {
+      ids.forEach(function (id) {
+        var elem = $('#map_' + id);
+        if (isElementInViewport(elem) && elem.children().length == 0) {
+          var curMap = new lux.Map({
+            target: 'map_' + id,
+            bgLayer: 'topo_bw_jpeg',
+            zoom: 12,
+            position: [76825, 75133]
+          });
+          var mymaps = curMap.addMyMapLayer({
+            mapId: id
+          });
+          mymaps.then(function(a) {
+            mymapsList[id] = a;
+          }.bind(this));
+       }
+      }, this);
+    };
+    </script>
+  <style>
+  .cardrows > div > div.card {
+    height: calc(100% - 15px);
+    margin-bottom: 15px;
+  }
+  </style>
+  </head>
+  <body style="overflow:hidden">
+  <div class="modal" tabindex="-1" role="dialog"  id="exampleModal">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">HTML to display the mymaps : <span id="maptitle"></span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <pre>
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;script src=&quot;//apiv3.geoportail.lu/apiv3loader.js&quot;  type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="map1"&gt;&lt;/div&gt;
+    &lt;script&gt;
+      var curMap = new lux.Map({
+        target: 'map1',
+        bgLayer: 'topo_bw_jpeg',
+        zoom: 12,
+        position: [76825, 75133]
+      });
+      curMap.addMyMapLayer({
+        mapId: '<span id="mapid"></span>'
+      });
+    &lt/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+         </pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>List of public Mymaps available through the GeoAPI.</h2>
+  <a href="//apiv3.geoportail.lu/">Back to the API V3 documentation</a>
+  <script type="text/html" id='usageList'>
+    <div class="row">
+      <div class="col-4" style="max-height: calc(100vh - 4em);overflow-y: auto;">
+        <ul class="list-group">
+        <% _.each(items,function(item,key,list){ %>
+            <% var name = item.name; %>
+            <% var count = item.public_map_cnt; %>
+            <% var id = item.id; %>
+              <% if (count > 0) {%>
+              <li onclick="getList('<%= id %>')" class="list-group-item d-flex justify-content-between align-items-center">
+              <%= name%> <span class="badge badge-primary badge-pill"><%= count%></span>
+              </li>
+              <% }%>
+        <% }); %>
+        </ul>
+      </div>
+      <div class="col-8"  style="max-height: calc(100vh - 4em);overflow-y: auto;" id="mymaps-container">
+        <div class="tab-content" id="mymaps"></div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/html" id='mymapsTemplate'>
+    <div class="row cardrows">
+    <% _.each(items,function(item,key,list){ %>
+      <% var title = item.title; %>
+      <% var uuid = item.uuid; %>
+      <% var category = item.category; %>
+      <% var update = item.last_feature_update; %>
+      <div class="col-12 col-sm-12  col-lg-6 col-xs-4 col-xl-4">
+        <div class="card">
+          <div class="card-header"><%= title%></div>
+          <div class="card-img-top" id='map_<%=uuid%>'></div>
+          <div class="text-right">
+            <a href="#" onclick="mymapsList['<%=uuid%>'].exportMymapsAsGpx('<%= sanitizeFilename(title)%>')" class="card-link">GPX</a>
+            <a href="#" onclick="mymapsList['<%=uuid%>'].exportMymapsAsKml('<%= sanitizeFilename(title)%>')" class="card-link">KML</a>
+          </div>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted"><%= category%></h6>
+            <p class="card-text">Mymaps id : <%= uuid%></p>
+            <button type="button" class="btn btn-primary btn-block" role="button" onclick="window.open('http://map.geoportail.lu?map_id=<%= uuid%>', '_blank');">Open into the map</button>
+            <button type="button" class="btn btn-primary btn-block" role="button" data-toggle="modal" data-target="#exampleModal" onclick="document.getElementById('maptitle').innerHTML='<%= sanitizeFilename(title)%>';document.getElementById('mapid').innerHTML='<%= uuid%>';">Show me the code</button>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Last updated <%= update%></small>
+          </div>
+        </div>
+      </div>
+      <% ids.push(uuid);%>
+    <% }); %>
+    
+    </div>
+  </script>
+
+
+  <!-- Create your target -->
+    <div id="target" class="container-fluid"></div>
+    <script type="text/javascript" >
+      function getList(id) {
+        var ownerTemplate = $("#mymapsTemplate").html();
+        fetch("/mymaps/public_maps?category="+id).then(function(resp) {
+          return resp.json();
+        }).then(function(json) {
+            ids = [];
+            mymapsList = [];
+            $("#mymaps").html(_.template(ownerTemplate)({items:json}));
+            showMymaps(ids);
+        }.bind(this));
+      }
+      var template = $("#usageList").html();
+
+      var mymapsPromise = fetch("/mymaps/public_categories").then(function(resp) {
+        return resp.json();
+      }).then(function(json) {
+          $("#target").html(_.template(template)({items:json}));
+          $( "#mymaps-container" ).scroll(function() {showMymaps(ids);});
+      }.bind(this));
+    </script>
+  </body>
+</html>

@@ -13,7 +13,8 @@ except:
     from simplejson import dumps as json_dumps
 
 from turbomail import Message
-from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images
+from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images,\
+    RoleCategories
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 from pyramid_ldap import get_ldap_connector
@@ -283,6 +284,58 @@ class Mymaps(object):
     @view_config(route_name="mymaps_getallcategories", renderer="json")
     def allcategories(self):
         return Category.all()
+
+    @view_config(route_name="mymaps_getpublicmaps", renderer='json')
+    def public_maps(self):
+        query = DBSession.query(Map).filter(Map.public == True) # noqa
+
+        category = None
+        if 'category' in self.request.params and\
+           len(self.request.params['category']) > 0:
+            category = self.request.params['category']
+
+        if category is not None:
+            query = query.filter(
+                func.coalesce(Map.category_id, 999) == category)
+        query = query.join(Feature).group_by(Map)
+        maps = query.order_by("title asc").all()
+        return [{'title': map.title,
+                 'uuid': map.uuid,
+                 'public': map.public,
+                 'create_date': map.create_date,
+                 'update_date': map.update_date,
+                 'last_feature_update': DBSession.query(
+                    func.max(Feature.update_date)).filter(
+                    Feature.map_id == map.uuid).one()[0]
+                 if DBSession.query(func.max(Feature.update_date)).
+                 filter(Feature.map_id == map.uuid).one()[0]
+                 is not None else map.update_date,
+                 'category': map.category.name
+                 if map.category_id is not None else None} for map in maps]
+
+    @view_config(route_name="mymaps_getpublicategories", renderer='json')
+    def public_categories(self):
+        categories = DBSession.query(Category)
+        categories = categories.filter(Category.id != 999).\
+            filter(Category.id.in_(
+                DBSession.query(RoleCategories.category_id).filter(
+                    ~or_(and_(RoleCategories.category_id >= 70,
+                              RoleCategories.category_id <= 80),
+                         and_(RoleCategories.category_id >= 200,
+                              RoleCategories.category_id <= 302))).all()))
+        categories = categories.order_by("name asc")
+        categ = []
+        for category in categories.all():
+            map_cnt = DBSession.query(Map.uuid).\
+                filter(Map.public == True).filter( # noqa
+                func.coalesce(Map.category_id, 999) == category.id).\
+                join(Feature).group_by(Map).count()
+            if map_cnt > 0:
+                categ.append(
+                    {'id': category.id,
+                     'name': category.name,
+                     'public_map_cnt': map_cnt})
+        return categ
 
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):
