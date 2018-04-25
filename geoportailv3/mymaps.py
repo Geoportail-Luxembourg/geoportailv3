@@ -3,7 +3,7 @@ import uuid
 import datetime
 import sqlahelper
 
-from sqlalchemy import Column, ForeignKey, Table, func
+from sqlalchemy import Column, ForeignKey, func
 from sqlalchemy.types import Unicode, Boolean, DateTime, Integer, Float, Binary
 from sqlalchemy.orm import scoped_session, relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -268,14 +268,13 @@ class Feature(Base):
                 return None
 
 
-role_categories = Table('role_categories',
-                        Base.metadata,
-                        Column('role_id',
-                               Integer,
-                               ForeignKey('role.id')),
-                        Column('category_id',
-                               Integer,
-                               ForeignKey('category.id')))
+class RoleCategories(Base):
+    __tablename__ = 'role_categories'
+
+    role_id = Column('role_id', Integer, ForeignKey('role.id'),
+                     primary_key=True)
+    category_id = Column('category_id', Integer, ForeignKey('category.id'),
+                         primary_key=True)
 
 
 class Category(Base):
@@ -315,7 +314,7 @@ class Role(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(255))
-    categories = relationship(Category, secondary=role_categories)
+    categories = relationship(Category, secondary="role_categories")
 
     def __init__(self, name):
         self.name = name

@@ -89,6 +89,17 @@ def main(global_config, **settings):
         "mymaps/allcategories",
         request_method="GET"
     )
+
+    config.add_route(
+        "mymaps_getpublicmaps",
+        "/mymaps/public_maps",
+        request_method="GET"
+    )
+    config.add_route(
+        "mymaps_getpublicategories",
+        "/mymaps/public_categories",
+        request_method="GET"
+    )
     config.add_route(
         "mymaps_getmaps",
         "/mymaps/maps",

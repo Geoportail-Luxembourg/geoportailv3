@@ -109,6 +109,12 @@ lux.MyMap = function(options) {
   this.arrowUrl_ = [lux.mymapsUrl, 'getarrow'].join('/');
   this.exportGpxUrl_ = [lux.mymapsUrl, 'exportgpxkml'].join('/');
   this.exportCsvUrl_ = lux.exportCsvUrl;
+
+  /**
+   * @private
+   * @type {ol.source.Vector}
+   */
+  this.sourceFeatures_;
 };
 
 /**
@@ -160,9 +166,9 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     return resp.json();
   }).then(function(json) {
     var format = new ol.format.GeoJSON();
-    var source = new ol.source.Vector();
+    this.sourceFeatures_ = new ol.source.Vector();
     var vector = new ol.layer.Vector({
-      source: source
+      source: this.sourceFeatures_
     });
     this.map_.addLayer(vector);
     var features = format.readFeatures(json, {
@@ -176,10 +182,10 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     features.forEach(function(feature) {
       feature.setStyle(featureStyleFunction);
     });
-    source.addFeatures(features);
+    this.sourceFeatures_.addFeatures(features);
 
     var size = /** @type {Array<number>} */ (this.map_.getSize());
-    this.map_.getView().fit(source.getExtent(), {size: size});
+    this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
 
     this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
@@ -955,30 +961,62 @@ lux.MyMap.prototype.snapToGeometry_ = function(coordinate, geom) {
   }
 };
 
+/**
+ * Export the mymaps as a KML file.
+ * @param {string | undefined} filename The filename.
+ * @export
+ */
+lux.MyMap.prototype.exportMymapsAsKml = function(filename) {
+  this.exportKml_(this.sourceFeatures_.getFeatures(), filename);
+};
 
 /**
  * Export a KML file
- * @param {ol.Feature} feature The feature to export.
+ * @param {ol.Feature | Array.<ol.Feature>} feature The feature to export.
+ * @param {string | undefined} filename The filename.
  * @private
  */
-lux.MyMap.prototype.exportKml_ = function(feature) {
-  var kml = this.kmlFormat_.writeFeatures([feature], {
+lux.MyMap.prototype.exportKml_ = function(feature, filename) {
+  var features = feature;
+  if (features instanceof ol.Feature) {
+    features = [feature];
+  }
+  if (filename === undefined) {
+    filename = /** @type {string} */(features[0].get('name'));
+  }
+  var kml = this.kmlFormat_.writeFeatures(features, {
     dataProjection: 'EPSG:4326',
     featureProjection: this.map_.getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
-      this.sanitizeFilename_(/** @type {string} */(feature.get('name'))));
+      this.sanitizeFilename_(filename));
 };
 
+/**
+ * Export the mymaps as a Gpx file.
+ * @param {string | undefined} filename The filename.
+ * @export
+ */
+lux.MyMap.prototype.exportMymapsAsGpx = function(filename) {
+  this.exportGpx_(this.sourceFeatures_.getFeatures(), filename);
+};
 
 /**
  * Export a Gpx file.
- * @param {ol.Feature} feature The feature to export.
+ * @param {ol.Feature | Array.<ol.Feature>} feature The feature to export.
+ * @param {string | undefined} filename The filename.
  * @private
  */
-lux.MyMap.prototype.exportGpx_ = function(feature) {
+lux.MyMap.prototype.exportGpx_ = function(feature, filename) {
   // LineString geometries, and tracks from MultiLineString
-  var explodedFeatures = this.exploseFeature_([feature]);
+  var features = feature;
+  if (features instanceof ol.Feature) {
+    features = [feature];
+  }
+  if (filename === undefined) {
+    filename = /** @type {string} */(features[0].get('name'));
+  }
+  var explodedFeatures = this.exploseFeature_(features);
   explodedFeatures = this.changeLineToMultiline_(explodedFeatures);
   var gpx = this.gpxFormat_.writeFeatures(
     this.orderFeaturesForGpx_(explodedFeatures),
@@ -992,7 +1030,7 @@ lux.MyMap.prototype.exportGpx_ = function(feature) {
       'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
       'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
   this.exportFeatures_(gpx, 'gpx',
-      this.sanitizeFilename_(/** @type {string} */(feature.get('name'))));
+      this.sanitizeFilename_(filename));
 };
 
 
