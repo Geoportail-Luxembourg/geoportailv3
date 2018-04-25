@@ -342,8 +342,9 @@ app.MainController = function(
   /**
    * Trrue if no initial state is defined.
    * @type {boolean}
+   * @export
    */
-  this['tiles3dVisible'] = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
+  this.tiles3dVisible = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
 
   /**
    * @type {app.Mymaps}
