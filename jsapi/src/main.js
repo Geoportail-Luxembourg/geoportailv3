@@ -98,7 +98,6 @@ lux.wmtsCrossOrigin = 'anonymous';
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
  * <li>Mymaps service</li>
- * <li>Mymaps service</li>
  * <li>Elevation service</li>
  * <li>Geocoding service</li>
  * <li>Reverse geocoding service</li>
@@ -1865,16 +1864,17 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
  *  mapId: '0416ef680fbe4cdaa2d8009262d1127c'
  * });
  * @param {luxx.MyMapOptions} options The options.
+ * @return {Promise} Promise of the mymaps object.
  * @export
  * @api
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
-  Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
+  this.stateManager_.setMyMap(options.mapId);
+  return Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     var mymap = new lux.MyMap(options);
     mymap.setMap(this);
+    return mymap;
   }.bind(this));
-
-  this.stateManager_.setMyMap(options.mapId);
 };
 
 /**

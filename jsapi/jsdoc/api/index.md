@@ -4,7 +4,8 @@ Although the options for data processing are limited compared with “real” of
 <p><i>Important Note: For access to the Geoportail.lu V3 API on your own servers, you will need to request access to the ACT, specifying the server address you wish to grant access too.</i>
 For any assistance as well as for request access, please contact our support here : <a href="mailto:support@geoportail.lu">support@geoportail.lu</a></p>
 <p>To help the developers, some examples and use cases are available on our <a href="./examples/">demo page</a></p>
-<p>The catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
+<p>A catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
+<p>A catalog of public mymaps is available on the <a href="./examples/public_mymaps.html">List of public Mymaps page.</a></p>
 <p>The Geoportail.lu V3 API is built on top of the <a href="//openlayers.org/en/latest/apidoc/">OpenLayers 3 API</a>.
 The Geoportail.lu V3 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.</p>
 <p>All the needed resources are loaded by including the following js script.</p>
