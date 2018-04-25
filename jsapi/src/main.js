@@ -1864,7 +1864,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
  *  mapId: '0416ef680fbe4cdaa2d8009262d1127c'
  * });
  * @param {luxx.MyMapOptions} options The options.
- * @return {Promise} Promise of the elevation request.
+ * @return {Promise} Promise of the mymaps object.
  * @export
  * @api
  */
