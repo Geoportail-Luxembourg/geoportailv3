@@ -18,16 +18,6 @@ import ldap
 import sqlalchemy
 import sqlahelper
 
-from pyramid.events import NewResponse, subscriber
-
-
-@subscriber(NewResponse)
-def add_cors_headers(event):
-    event.response.headers.update({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-    })
-
 
 def locale_negotiator(request):
     lang = request.params.get("lang")
