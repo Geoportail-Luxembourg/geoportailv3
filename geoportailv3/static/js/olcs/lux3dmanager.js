@@ -83,7 +83,7 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
    */
   instantiateOLCesium() {
     goog.asserts.assert(this.map);
-    const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '1.5');
+    const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '1.0');
 
     const sceneOptions = /** @type {!Cesium.SceneOptions} */ ({terrainExaggeration});
     const ol3d = new olcs.OLCesium({map: this.map, sceneOptions});
@@ -98,7 +98,8 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     const unparsedTerrainLevels = this.ngeoLocation_.getParam('terrain_levels');
     const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
     const rectangle = this.getCameraExtentRectangle();
-    const url = this.ngeoLocation_.hasParam('own_terrain') ?
+    const terrainToDisplay = this.ngeoLocation_.getParam('3d_terrain') || 'own';
+    const url = terrainToDisplay === 'own' ?
       'https://3dtiles.geoportail.lu/tiles' :
       'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
