@@ -28,6 +28,7 @@
             rect.right <= ($(window).width())
         );
     }
+    var lastSelectedCateg = null;
     var ids = [];
     var mymapsList = {};
     function showMymaps(ids) {
@@ -98,17 +99,20 @@
   </div>
 
   <h2>List of public Mymaps available through the GeoAPI.</h2>
-  <a href="//apiv3.geoportail.lu/">Back to the API V3 documentation</a>
+  <div class="text-right"><a href="//apiv3.geoportail.lu/">Back to the API V3 documentation</a></div>
   <script type="text/html" id='usageList'>
     <div class="row">
       <div class="col-4" style="max-height: calc(100vh - 4em);overflow-y: auto;">
         <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center active">
+          Grouped by category
+        </li>
         <% _.each(items,function(item,key,list){ %>
             <% var name = item.name; %>
             <% var count = item.public_map_cnt; %>
             <% var id = item.id; %>
               <% if (count > 0) {%>
-              <li onclick="getList('<%= id %>')" class="list-group-item d-flex justify-content-between align-items-center">
+              <li onclick="getList('<%= id %>');" id="li-<%= id%>" class="list-group-item d-flex justify-content-between align-items-center">
               <%= name%> <span class="badge badge-primary badge-pill"><%= count%></span>
               </li>
               <% }%>
@@ -159,6 +163,11 @@
     <script type="text/javascript" >
       function getList(id) {
         var ownerTemplate = $("#mymapsTemplate").html();
+        if (lastSelectedCateg !== null) {
+          $(lastSelectedCateg).removeClass('active');
+        }
+        lastSelectedCateg = "#li-"+id;
+        $("#li-"+id).addClass('active');
         fetch("/mymaps/public_maps?category="+id).then(function(resp) {
           return resp.json();
         }).then(function(json) {
