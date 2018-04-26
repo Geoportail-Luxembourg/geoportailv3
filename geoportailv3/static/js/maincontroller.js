@@ -340,7 +340,7 @@ app.MainController = function(
   const initial3dTilesVisibleValue = appStateManager.getInitialValue('3dtiles_visible');
 
   /**
-   * Trrue if no initial state is defined.
+   * True if no initial state is defined.
    * @type {boolean}
    * @export
    */
