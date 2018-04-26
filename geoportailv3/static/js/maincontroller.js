@@ -337,11 +337,14 @@ app.MainController = function(
    */
   this['layersChanged'] = false;
 
+  const initial3dTilesVisibleValue = appStateManager.getInitialValue('3dtiles_visible');
+
   /**
-   * Set to true to display the change icon in Mymaps.
+   * True if no initial state is defined.
    * @type {boolean}
+   * @export
    */
-  this['tiles3dVisible'] = appStateManager.getInitialValue('3dtiles_visible') == 'true';
+  this.tiles3dVisible = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
 
   /**
    * @type {app.Mymaps}
