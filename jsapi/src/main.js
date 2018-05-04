@@ -2150,13 +2150,22 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   var small_box = lb.concat(rt);
 
   this.getViewport().style.cursor = 'wait';
+  var size = this.getSize();
+  var extent = this.getView().calculateExtent(size);
 
+  var bbox = extent.join(',');
   var params = {
     'layers': layersToQuery.join(),
     'box1': big_box.join(),
     'box2': small_box.join(),
+    'BBOX': bbox,
+    'WIDTH': size[0],
+    'HEIGHT': size[1],
+    'X': evt.pixel[0],
+    'Y': evt.pixel[1],
     'tooltip': 1,
-    'lang': lux.lang
+    'lang': lux.lang,
+    'srs': 'EPSG:3857'
   };
   var url = goog.Uri.parse(lux.queryUrl);
   Object.keys(params).forEach(function(key) {
