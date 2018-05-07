@@ -130,8 +130,14 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.profileUrl = url + lux.profileUrl;
   lux.exportCsvUrl = url + lux.exportCsvUrl;
   lux.printUrl = url + lux.printUrl;
+  lux.pagUrl = url + lux.pagUrl;
   lux.baseUrl = url;
 };
+
+/**
+ * @type {string}
+ */
+lux.pagUrl = 'pag';
 
 /**
  * @type {string}
@@ -260,6 +266,15 @@ lux.debounce = function(func, wait, opt_immediate) {
 };
 
 /**
+ * Notify a text to the user.
+ * @param {string} msg The message to notify.
+ * @api
+ */
+lux.notify = function(msg) {
+  alert(msg);
+};
+
+/**
  * @classdesc
  * The map is the core component of the Geoportail V3 API.
  * This constructor instantiates and render a [lux.Map](lux.Map.html) object.
@@ -330,7 +345,7 @@ lux.Map = function(options) {
 
   /**
    * @private
-   * @type {function}
+   * @type {function()}
    */
   this.layerInfoCallback_ = options.layerInfoCallback;
 
@@ -2077,7 +2092,7 @@ lux.Map.prototype.removeInfoPopup = function() {
 /**
  * @param {string|number} layer Layer id
  * @param {Array<string|number>} ids The ids to retrieve.
- * @param {function} callback The function to call.
+ * @param {function()} callback The function to call.
  * @export
  */
 lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
@@ -2097,7 +2112,7 @@ lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
 
 /**
  * @param {Object} evt The click event.
- * @param {function} callback The function to call.
+ * @param {function(?)} callback The function to call.
  * @export
  */
 lux.Map.prototype.getFeatureInfo = function(evt, callback) {
@@ -2337,4 +2352,35 @@ lux.degreesToStringHDMm_ = function(degrees, hemispheres) {
       Math.floor((m - Math.floor(m)) * 100000) +
       '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   return res;
+};
+
+/**
+ * Generate and send the repport.
+ * @param {string} ids The ids.
+ * @param {string} mail The email.
+ * @param {boolean} eula Has user accepted the end user licence agreement?.
+ * @export
+ */
+lux.generatePagRepport = function(ids, mail, eula) {
+  var msg = lux.translate('Votre rapport est en train d\'être généré. Un email vous sera envoyé dès qu\'il sera disponible');
+  var re = /^\S+@\S+\.\S+$/;
+  if (mail.length === 0 || !re.test(mail)) {
+    msg = lux.translate('Veuillez saisir une adresse email valide');
+    lux.notify(msg);
+  } else if (!eula) {
+    msg = lux.translate('Veuillez accepter les termes du rapport');
+    lux.notify(msg);
+  } else {
+    /**
+     * @type {!RequestInit}
+     */
+    var request = ({
+      method: 'POST',
+      headers: /** @type {HeadersInit} */ ({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      })
+    });
+    fetch(lux.pagUrl + '/report/' + ids + '.pdf?email=' + mail + '&staging=false', request);
+    lux.notify(msg);
+  }
 };
