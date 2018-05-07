@@ -598,7 +598,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   goog.dom.setTextContent(link, lux.translate('Exporter KMl'));
   goog.dom.append(links, link);
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
-    this.exportKml_(feature);
+    this.exportKml_(feature, undefined);
   }.bind(this));
 
   link = goog.dom.createDom(goog.dom.TagName.A, {
@@ -607,7 +607,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
   goog.dom.setTextContent(link, lux.translate('Exporter GPX'));
   goog.dom.append(links, link);
   goog.events.listen(link, goog.events.EventType.CLICK, function() {
-    this.exportGpx_(feature);
+    this.exportGpx_(feature, undefined);
   }.bind(this));
 
   elements.push(links);
