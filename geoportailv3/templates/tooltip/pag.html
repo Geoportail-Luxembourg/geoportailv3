@@ -1,0 +1,20 @@
+## -*- coding: utf-8 -*-
+<label>${_c("Ici vous pouvez commander le rapport relatif aux r&egrave;gles urbanistiques applicables au terrain sectionn&eacute;")| n}</label>
+<br>
+<br>
+<table>
+<tr>
+    <td width="20px" ></td>
+    <td colspan=2><label>${_c("Adresse Email")}</label> <input type='type' id="pag_mail" value=""></td>
+</tr>
+<tr >
+    <td width="20px" style="vertical-align:top"><td width="20px" style="vertical-align:top"><input type="checkbox" id="pag_eula" value="true"></td>
+    <td><label>${_c("En cochant cette case, l'utilisateur d&eacute;clare avoir lu, compris et accept&eacute; les <a href='pagfiles/Disclaimer.pdf'> conditions g&eacute;n&eacute;rales d'utilisation</a>de ce site web.")| n}</label></td>
+</tr>
+</table>
+<br>
+<% ids = []%>
+% for feature in features:
+<%   ids.append (str(feature['attributes']['OBJECTID']))%>
+% endfor
+<button onclick="lux.generatePagRepport('${','.join(ids)}', document.getElementById('pag_mail').value, document.getElementById('pag_eula').checked)" target="_blank">Commander rapport</button>
