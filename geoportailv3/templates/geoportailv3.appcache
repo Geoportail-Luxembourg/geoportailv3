@@ -1,0 +1,26 @@
+CACHE MANIFEST
+
+<%
+  import os
+  fonts = os.listdir('geoportailv3/static/build/fonts/')
+  webfonts = os.listdir('geoportailv3/static/webfonts/')
+%>
+
+CACHE:
+${request.static_url('geoportailv3:static/build/build.js')}
+${request.static_url('geoportailv3:static/build/build.min.css')}
+${request.static_url('geoportailv3:static/images/gov-light.png')}
+% for font in fonts:
+${request.static_url('geoportailv3:static/build/fonts/' + font)}
+% endfor
+% for webfont in webfonts:
+${request.static_url('geoportailv3:static/webfonts/' + webfont)}
+% endfor
+${request.static_url('geoportailv3:static/build/fonts/fontawesome-webfont.woff2')}?v=4.7.0
+
+NETWORK:
+*
+
+FALLBACK:
+/theme/main? /theme/main
+/theme/main
