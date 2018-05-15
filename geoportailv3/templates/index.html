@@ -11,7 +11,8 @@
     lidar = settings.get('lidar')
 %>\
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
+<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl"
+                                          manifest="${request.route_url('appcache')}">
   <head>
   <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
@@ -32,7 +33,7 @@
       <div class="container-fluid">
         <div class="navbar-inner">
           <div class="pull-left brand">
-            <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
+            <img src="${request.static_url('geoportailv3:static/images/gov-light.png')}" alt="Gouvernement du Grand-Duché de Luxembourg">
           </div>
         </div>
 

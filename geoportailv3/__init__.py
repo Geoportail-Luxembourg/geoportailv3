@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.config import Configurator
+from pyramid_mako import add_mako_renderer
+
 from c2cgeoportal import add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
     set_user_validator
 from c2cgeoportal.lib.authentication import create_authentication
@@ -301,6 +303,8 @@ def main(global_config, **settings):
     config.include('c2cgeoportal')
     config.include('pyramid_closure')
 
+    add_mako_renderer(config, '.appcache')
+
     config.add_translation_dirs('geoportailv3:locale/')
 
     # initialize database
@@ -374,5 +378,11 @@ def main(global_config, **settings):
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
     config.add_route('download_resource', '/downloadresource')
+
+    # Appcache manifest
+    config.add_route(
+        'appcache',
+        '/geoportailv3.appcache'
+    )
 
     return config.make_wsgi_app()
