@@ -86,7 +86,10 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '1.0');
 
     const sceneOptions = /** @type {!Cesium.SceneOptions} */ ({terrainExaggeration});
-    const ol3d = new olcs.OLCesium({map: this.map, sceneOptions});
+    const map = this.map;
+    const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+2:00'));
+    const time = () => niceIlluminationDate;
+    const ol3d = new olcs.OLCesium({map, time, sceneOptions});
 
     const scene = ol3d.getCesiumScene();
 
