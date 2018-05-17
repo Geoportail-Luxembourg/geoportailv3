@@ -55,4 +55,3 @@ Local run
 To some extent, it is possible to simulate the services needed by the
 application using git@github.com:camptocamp/luxembourg_dev_db.git
 
-(Test for CI)
