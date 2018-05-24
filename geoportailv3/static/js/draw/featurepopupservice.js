@@ -15,6 +15,7 @@ goog.require('ol.Observable');
 goog.require('ol.events');
 goog.require('ol.geom.LineString');
 goog.require('ngeo.misc.filters');
+goog.require('ngeo.filter.module');
 goog.require('ngeo.interaction.Measure');
 
 
