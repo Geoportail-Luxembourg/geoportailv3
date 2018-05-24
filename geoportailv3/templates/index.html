@@ -235,6 +235,12 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <ngeo-offline
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-extentsize="::ctrl.offlineExtentSize"
+      >
+      </ngeo-offline>
+
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
@@ -398,6 +404,7 @@
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
+         appModule.value('ngeoOfflineTemplateUrl', function() {return '../node_modules/ngeo/src/offline/component.html'});
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');

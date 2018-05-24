@@ -15,7 +15,6 @@ goog.require('app.projections');
 goog.require('goog.asserts');
 goog.require('ngeo.map.module');
 goog.require('ngeo.misc.debounce');
-goog.require('ngeo.offline.module');
 goog.require('ol.proj');
 
 
@@ -52,13 +51,6 @@ app.MapController = function(appStateManager, ngeoDebounce) {
   /** @type {ol.Map} */
   var map = this['map'];
   var view = map.getView();
-
-  /**
-   * Save a square of 10 km sideways (Map's unit is the meter).
-   * @type {number}
-   * @export
-   */
-  this.offlineExtentSize = 10000;
 
   /** @type {number} */
   var version = appStateManager.getVersion();
