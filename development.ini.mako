@@ -6,6 +6,7 @@ debug_authorization = false
 debug_notfound = false
 debug_routematch = false
 debug_templates = true
+skip_appcache = true
 mako.directories = geoportailv3:templates
     c2cgeoportal:templates
 
