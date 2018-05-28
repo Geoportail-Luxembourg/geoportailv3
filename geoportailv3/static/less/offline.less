@@ -1,28 +1,32 @@
+
 ngeo-offline {
   div {
     z-index: 1;
   }
   .main-button {
     position: absolute;
-    right: 1rem;
+    right: 8px;
     bottom: 11rem;
     cursor: pointer;
     .no-data {
       color: black;
     }
-    .with-data {
-      color: red;
-    }
     .no-data, .with-data {
       background-color: white;
       text-align: center;
-      font-size: 2.5rem;
-      line-height: 2rem;
-      border-radius: 2rem;
+      font-size: 2.7rem;
       font-family: FontAwesome;
+      line-height: 1.5em;
+      color: #2980b9;
+      width: 41px;
+      height: 41px;
+      border: 1px solid #8394a0;
       &::after {
         content: @fa-var-arrow-circle-o-down;
       }
+    }
+    .with-data {
+      color: red;
     }
   }
 

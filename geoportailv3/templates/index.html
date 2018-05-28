@@ -252,7 +252,7 @@
       </div>
       <ngeo-offline
           ngeo-offline-map="::mainCtrl.map"
-          ngeo-offline-extentsize="::ctrl.offlineExtentSize"
+          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize"
       >
       </ngeo-offline>
 
@@ -432,7 +432,8 @@
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
          appModule.value('ngeoOlcsControls3dTemplateUrl', 'olcs/controls3d.html');
-         appModule.value('ngeoOfflineTemplateUrl', function() {return '../node_modules/ngeo/src/offline/component.html'});
+         appModule.value('ngeoOfflineTemplateUrl', function() {
+           return '${request.static_url('%s/ngeo/src/offline/component.html' % node_modules_path)}'});
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
