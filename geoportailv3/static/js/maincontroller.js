@@ -31,6 +31,7 @@ goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ngeo.message.popupComponent');
 goog.require('ngeo.message.Popup');
 goog.require('ngeo.misc.syncArrays');
+goog.require('ngeo.offline.module');
 goog.require('ngeo.search.module');
 goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
@@ -214,6 +215,13 @@ app.MainController = function(
    * @private
    */
   this.defaultExtent_ = defaultExtent;
+
+  /**
+   * Save a square of 10 km sideways (Map's unit is the meter).
+   * @type {number}
+   * @export
+   */
+  this.offlineExtentSize = 10000;
 
   /**
    * @type {boolean}

@@ -1,0 +1,62 @@
+
+ngeo-offline {
+  div {
+    z-index: 1;
+  }
+  .main-button {
+    position: absolute;
+    right: 8px;
+    bottom: 11rem;
+    cursor: pointer;
+    .no-data {
+      color: black;
+    }
+    .no-data, .with-data {
+      background-color: white;
+      text-align: center;
+      font-size: 2.7rem;
+      font-family: FontAwesome;
+      line-height: 1.5em;
+      color: #2980b9;
+      width: 41px;
+      height: 41px;
+      border: 1px solid #8394a0;
+      &::after {
+        content: @fa-var-arrow-circle-o-down;
+      }
+    }
+    .with-data {
+      color: red;
+    }
+  }
+
+  .validate-extent {
+    position: absolute;
+    bottom: 0.5rem;
+    width: 10rem;
+    left: calc(~"50% - 5rem");
+  }
+
+  .in-progress {
+    position: absolute;
+    left: calc(~"50% - 3.3rem");
+    top: calc(~"50% - 3rem");
+    color: white;
+    font-weight: bold;
+    background-color: #337ab7;
+    padding: 2rem 2rem;
+    border-radius: 1rem;
+  }
+
+  .modal-content {
+    width: 30rem;
+  }
+
+  .modal-body {
+    button {
+      display: block;
+      margin: 0.5rem auto;
+      width: 25rem;
+    }
+  }
+}

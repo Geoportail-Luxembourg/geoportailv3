@@ -235,6 +235,12 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <ngeo-offline
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize"
+      >
+      </ngeo-offline>
+
     </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
@@ -311,6 +317,7 @@
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-touch/angular-touch.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/angular-sanitize/angular-sanitize.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-ui-date/dist/date.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular-float-thead/angular-floatThead.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
@@ -397,6 +404,8 @@
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
+         appModule.value('ngeoOfflineTemplateUrl', function() {
+           return '${request.static_url('%s/ngeo/src/offline/component.html' % node_modules_path)}'});
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
