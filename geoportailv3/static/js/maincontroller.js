@@ -87,6 +87,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {Array<string>} tiles3dLayers 3D tiles layers.
  * @param {string} tiles3dUrl 3D tiles server url.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @constructor
  * @export
  * @ngInject
@@ -99,7 +100,7 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus) {
   /**
    * @type {boolean}
    * @export
@@ -213,6 +214,12 @@ app.MainController = function(
    * @type {string}
    */
   this.tiles3dUrl_ = tiles3dUrl;
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @export
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @type {ol.Extent}
