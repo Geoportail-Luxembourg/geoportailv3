@@ -320,6 +320,18 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.allcategories = null;
 
   /**
+   * The raw response data of the map info query.
+   * @type {?Object}
+   */
+  this.mapInfo_ = null;
+
+  /**
+   * The raw response data of the map features query.
+   * @type {?Object}
+   */
+  this.mapFeatures_ = null;
+
+  /**
    * @const
    * @private
    */
@@ -333,6 +345,22 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   };
 
   this.loadAllCategories();
+};
+
+
+/**
+ * @return {?Object} The raw response data of the map info query.
+ */
+app.Mymaps.prototype.getMapInfo = function() {
+  return this.mapInfo_;
+};
+
+
+/**
+ * @return {?Object} The raw response data of the map features query.
+ */
+app.Mymaps.prototype.getMapFeatures = function() {
+  return this.mapFeatures_;
 };
 
 
@@ -384,31 +412,33 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   return this.loadMapInformation().then(goog.bind(function(mapinformation) {
     if (mapinformation !== null) {
       return this.loadFeatures_().then(goog.bind(function(features) {
-        if (features !== null) {
-          var encOpt = /** @type {olx.format.ReadOptions} */ ({
-            dataProjection: 'EPSG:2169',
-            featureProjection: this.mapProjection
-          });
-
-          var featureStyleFunction = this.createStyleFunction(this.map);
-          var jsonFeatures = (new ol.format.GeoJSON()).
-              readFeatures(features, encOpt);
-          goog.array.forEach(jsonFeatures, function(feature) {
-            feature.set('__map_id__', this.getMapId());
-            feature.setStyle(featureStyleFunction);
-          }, this);
-
-          collection.extend(
-              /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
-        }
-        return collection;
+        return this.setFeatures(features, collection);
       }, this));
     }
     return null;
   }, this));
-
 };
 
+app.Mymaps.prototype.setFeatures = function(features, collection) {
+  if (features !== null) {
+    var encOpt = /** @type {olx.format.ReadOptions} */ ({
+      dataProjection: 'EPSG:2169',
+      featureProjection: this.mapProjection
+    });
+  
+    var featureStyleFunction = this.createStyleFunction(this.map);
+    var jsonFeatures = (new ol.format.GeoJSON()).
+        readFeatures(features, encOpt);
+    goog.array.forEach(jsonFeatures, function(feature) {
+      feature.set('__map_id__', this.getMapId());
+      feature.setStyle(featureStyleFunction);
+    }, this);
+  
+    collection.extend(
+        /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
+  }
+  return collection;
+};
 
 /**
  * clear the mymaps service
@@ -558,6 +588,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
+        this.mapFeatures_ = resp.data;
         return resp.data;
       }, this), goog.bind(
       function(error) {
@@ -638,91 +669,98 @@ app.Mymaps.prototype.updateLayers = function() {
 app.Mymaps.prototype.loadMapInformation = function() {
   return this.getMapInformation().then(
       goog.bind(function(mapinformation) {
-        if (mapinformation !== null) {
-          this.mapDescription = mapinformation['description'];
-          this.mapTitle = mapinformation['title'];
-          this.mapOwner = mapinformation['user_login'];
-          this.mapIsPublic = mapinformation['public'];
-          this.mapCategoryId = mapinformation['category_id'];
-          this.mapBgLayer = mapinformation['bg_layer'];
-          this.mapTheme = mapinformation['theme'];
-          this.mapIsEditable = mapinformation['is_editable'];
-
-          if (!this.mapBgLayer) {
-            if (this.mapTheme === 'tourisme') {
-              this.mapBgLayer = 'topo_bw_jpeg';
-            } else {
-              this.mapBgLayer = 'topogr_global';
-            }
-            mapinformation['bg_layer'] = this.mapBgLayer;
-          }
-          if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
-            this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
-          }
-
-          this.mapBgOpacity = mapinformation['bg_opacity'];
-          if ('layers' in mapinformation && mapinformation['layers']) {
-            this.mapLayers = mapinformation['layers'].split(',');
-            this.mapLayers.reverse();
-            if ('layers_opacity' in mapinformation &&
-                mapinformation['layers_opacity']) {
-              this.mapLayersOpacities =
-                  mapinformation['layers_opacity'].split(',');
-            } else {
-              this.mapLayersOpacities = [];
-            }
-            this.mapLayersOpacities.reverse();
-            if ('layers_visibility' in mapinformation &&
-                mapinformation['layers_visibility']) {
-              this.mapLayersVisibilities =
-                  mapinformation['layers_visibility'].split(',');
-            } else {
-              this.mapLayersVisibilities = [];
-            }
-            this.mapLayersVisibilities.reverse();
-            if ('layers_indices' in mapinformation &&
-                mapinformation['layers_indices']) {
-              this.mapLayersIndicies =
-                  mapinformation['layers_indices'].split(',');
-            } else {
-              this.mapLayersIndicies = [];
-            }
-            this.mapLayersIndicies.reverse();
-
-            // remove layers with no name
-            var iToRemove = [];
-            this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
-              if (item.length === 0) {
-                iToRemove.push(i);
-                return false;
-              }
-              return true;
-            }, this);
-            goog.array.forEachRight(iToRemove, function(item) {
-              if (this.mapLayersIndicies) {
-                this.mapLayersIndicies.splice(item, 1);
-              }
-              if (this.mapLayersVisibilities) {
-                this.mapLayersVisibilities.splice(item, 1);
-              }
-              if (this.mapLayersOpacities) {
-                this.mapLayersOpacities.splice(item, 1);
-              }
-            }, this);
-          } else {
-            this.mapLayers = [];
-            this.mapOpacities = [];
-            this.mapVisibilities = [];
-            this.mapLayersIndicies = [];
-          }
-        }
-        return mapinformation;
+        return this.setMapInformation(mapinformation);
       }, this))
-      .then(goog.bind(function(mapinformation) {
-        this.updateLayers();
-        this.layersChanged = false;
-        return mapinformation;
-      }, this));
+};
+
+
+/**
+ * FIXME
+ * @param {Object} mapinformation any
+ * @return {Object} mapinformation any
+ */
+app.Mymaps.prototype.setMapInformation = function(mapinformation) {
+  if (mapinformation !== null) {
+    this.mapDescription = mapinformation['description'];
+    this.mapTitle = mapinformation['title'];
+    this.mapOwner = mapinformation['user_login'];
+    this.mapIsPublic = mapinformation['public'];
+    this.mapCategoryId = mapinformation['category_id'];
+    this.mapBgLayer = mapinformation['bg_layer'];
+    this.mapTheme = mapinformation['theme'];
+    this.mapIsEditable = mapinformation['is_editable'];
+ 
+    if (!this.mapBgLayer) {
+      if (this.mapTheme === 'tourisme') {
+        this.mapBgLayer = 'topo_bw_jpeg';
+      } else {
+        this.mapBgLayer = 'topogr_global';
+      }
+      mapinformation['bg_layer'] = this.mapBgLayer;
+    }
+    if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+      this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+    }
+ 
+    this.mapBgOpacity = mapinformation['bg_opacity'];
+    if ('layers' in mapinformation && mapinformation['layers']) {
+      this.mapLayers = mapinformation['layers'].split(',');
+      this.mapLayers.reverse();
+      if ('layers_opacity' in mapinformation &&
+          mapinformation['layers_opacity']) {
+        this.mapLayersOpacities =
+            mapinformation['layers_opacity'].split(',');
+      } else {
+        this.mapLayersOpacities = [];
+      }
+      this.mapLayersOpacities.reverse();
+      if ('layers_visibility' in mapinformation &&
+          mapinformation['layers_visibility']) {
+        this.mapLayersVisibilities =
+            mapinformation['layers_visibility'].split(',');
+      } else {
+        this.mapLayersVisibilities = [];
+      }
+      this.mapLayersVisibilities.reverse();
+      if ('layers_indices' in mapinformation &&
+          mapinformation['layers_indices']) {
+        this.mapLayersIndicies =
+            mapinformation['layers_indices'].split(',');
+      } else {
+        this.mapLayersIndicies = [];
+      }
+      this.mapLayersIndicies.reverse();
+ 
+      // remove layers with no name
+      var iToRemove = [];
+      this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
+        if (item.length === 0) {
+          iToRemove.push(i);
+          return false;
+        }
+        return true;
+      }, this);
+      goog.array.forEachRight(iToRemove, function(item) {
+        if (this.mapLayersIndicies) {
+          this.mapLayersIndicies.splice(item, 1);
+        }
+        if (this.mapLayersVisibilities) {
+          this.mapLayersVisibilities.splice(item, 1);
+        }
+        if (this.mapLayersOpacities) {
+          this.mapLayersOpacities.splice(item, 1);
+        }
+      }, this);
+    } else {
+      this.mapLayers = [];
+      this.mapOpacities = [];
+      this.mapVisibilities = [];
+      this.mapLayersIndicies = [];
+    }
+  }
+  this.updateLayers();
+  this.layersChanged = false;
+  return mapinformation;
 };
 
 
@@ -737,6 +775,7 @@ app.Mymaps.prototype.getMapInformation = function() {
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
+        this.mapInfo_ = resp.data;
         return resp.data;
       }, this), goog.bind(
       function(error) {
