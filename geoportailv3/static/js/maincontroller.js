@@ -19,6 +19,7 @@ goog.require('app.LocationControl');
 goog.require('app.Map');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
+goog.require('app.OfflineDownloader');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -57,6 +58,7 @@ goog.require('ngeo.olcs.Manager');
  * manager.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
+ * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
@@ -93,7 +95,7 @@ goog.require('ngeo.olcs.Manager');
  * @ngInject
  */
 app.MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
+    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
@@ -510,6 +512,8 @@ app.MainController = function(
       this.appRouting_.getRoute();
     }
   }
+
+  ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
 };
 
 
