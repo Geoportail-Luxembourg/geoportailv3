@@ -77,6 +77,7 @@ goog.require('ol.proj');
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @constructor
  * @export
  * @ngInject
@@ -88,7 +89,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document) {
+    appSelectedFeatures, $locale, appRouting, $document, ngeoNetworkStatus) {
   /**
    * @type {boolean}
    * @export
@@ -190,6 +191,12 @@ app.MainController = function(
    * @private
    */
   this.appTheme_ = appTheme;
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @export
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @type {ol.Extent}
