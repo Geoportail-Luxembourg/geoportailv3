@@ -72,3 +72,4 @@ Serve the geoportal:
 cd ../geoportailv3
 make -f  <user>.mk serve
 ```
+
