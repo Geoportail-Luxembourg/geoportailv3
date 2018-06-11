@@ -2195,6 +2195,16 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
 };
 
 /**
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
+ *      style The style of the show layer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setShowlayerStyle = function(style) {
+  this.showLayer_.setStyle(style);
+};
+
+/**
  * @param {Object} evt The event.
  * @private
  */
