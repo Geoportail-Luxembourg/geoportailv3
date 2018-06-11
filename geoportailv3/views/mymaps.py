@@ -278,7 +278,18 @@ class Mymaps(object):
     def categories(self):
         if self.request.user is None:
             return HTTPUnauthorized()
-
+        if getattr(self.request.user, 'is_admin', False):
+            unique_categ = []
+            categories = []
+            for usercateg in self.getuserscategories():
+                for categ in usercateg['categories']:
+                    if categ not in unique_categ:
+                        unique_categ.append(categ)
+                        query = DBSession.query(Category).\
+                            filter(Category.id == categ).all()
+                        for category in query:
+                            categories.append(category.todict())
+            return categories
         return Category.belonging_to(self.request.user)
 
     @view_config(route_name="mymaps_getallcategories", renderer="json")
