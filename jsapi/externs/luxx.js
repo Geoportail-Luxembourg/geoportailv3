@@ -433,6 +433,14 @@ luxx.FeaturesOptions.prototype.maxZoom;
 luxx.VectorOptions;
 
 /**
+ * True if map should fit to the vector. Default and undefined are true.
+ * @type {boolean | undefined}
+ * @api
+ */
+luxx.VectorOptions.prototype.fit;
+
+
+/**
  * Interval after which to reload the vector layer (in seconds).
  * @type {number | undefined}
  * @api

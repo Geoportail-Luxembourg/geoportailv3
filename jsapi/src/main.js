@@ -1734,7 +1734,8 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
     style: styleFunction,
     reloadInterval: opt_options && opt_options.reloadInterval,
     click: opt_options.click,
-    target: opt_options.target
+    target: opt_options.target,
+    fit: opt_options && opt_options.fit
   });
 };
 
@@ -1772,6 +1773,13 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
   var popup;
   var vector;
   var el;
+  var fit = true;
+  if (opt_options && opt_options.fit === undefined) {
+    fit = true;
+  }
+  if (opt_options && opt_options.fit === false) {
+    fit = false;
+  }
   if (opt_options.target) {
     el = typeof opt_options.target === 'string' ?
         document.getElementById(opt_options.target) :
@@ -1810,14 +1818,15 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     }
     setSource();
     this.addLayer(vector);
-
-    ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
-        function() {
-          var size = this.getSize();
-          goog.asserts.assert(size !== undefined, 'size should be defined');
-          this.getView().fit(vector.getSource().getExtent(), {size: size});
-        }.bind(this)
-    );
+    if (fit) {
+      ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
+          function() {
+            var size = this.getSize();
+            goog.asserts.assert(size !== undefined, 'size should be defined');
+            this.getView().fit(vector.getSource().getExtent(), {size: size});
+          }.bind(this)
+      );
+    }
     if (opt_options && opt_options.click) {
       var interaction = new ol.interaction.Select({
         layers: [vector]
