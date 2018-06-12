@@ -45,6 +45,7 @@ goog.require('ol.control.Zoom');
 goog.require('app.olcs.ZoomToExtent');
 goog.require('app.olcs.Lux3DManager');
 goog.require('app.olcs.toggle3d');
+goog.require('app.olcs.resetnorth');
 goog.require('ol.proj');
 goog.require('ol.math');
 goog.require('ngeo.olcs.Manager');
