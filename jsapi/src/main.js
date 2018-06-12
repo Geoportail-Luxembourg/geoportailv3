@@ -640,12 +640,13 @@ lux.Map.prototype.addLayer = function(layer) {
  * type of pages that will be introduced at the beginning of the pdf.
  * Only html and pdf are supported.
  * [{'url': 'http://url1', 'html'},{'url': 'http://url2' 'pdf'}]
+ * @param {function()=} callback Optional callback function.
  * @example
  * map.print();
  * @export
  * @api
  */
-lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
+lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback) {
   var dpi = 127;
   var format = 'pdf';
 
@@ -726,7 +727,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
           var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
           var ref = mfResp.ref;
           goog.asserts.assert(ref.length > 0);
-          this.getStatus_(pm, ref);
+          this.getStatus_(pm, ref, callback);
         }.bind(this));
       }
     }.bind(this));
@@ -735,9 +736,10 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
 /**
  * @param {lux.PrintManager} pm Print manager.
  * @param {string} ref Ref.
+ * @param {function()=} callback Optional callback function.
  * @private
  */
-lux.Map.prototype.getStatus_ = function(pm, ref) {
+lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
   pm.getStatus(ref).then(
     function(resp) {
       if (resp.status === 200) {
@@ -748,12 +750,14 @@ lux.Map.prototype.getStatus_ = function(pm, ref) {
             // The report is ready. Open it by changing the window location.
             if (mfResp.status !== 'error') {
               window.location.href = pm.getReportUrl(ref);
+              callback.call(this, mfResp.status);
             } else {
               console.log(mfResp.error);
+              callback.call(this, mfResp.status);
             }
           } else {
             goog.Timer.callOnce(function() {
-              this.getStatus_(pm, ref);
+              this.getStatus_(pm, ref, callback);
             }, 1000, this);
           }
         });
