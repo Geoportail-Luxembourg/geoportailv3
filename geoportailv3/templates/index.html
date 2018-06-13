@@ -236,10 +236,14 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
-      <ngeo-offline
+      <ngeo-offline class="offline-debug" ng-if="::mainCtrl.debugOffline"
+          debug="::true"
           ngeo-offline-map="::mainCtrl.map"
-          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize"
-      >
+          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize">
+      </ngeo-offline>
+      <ngeo-offline  ng-if="::!mainCtrl.debugOffline"
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize">
       </ngeo-offline>
 
     </div>
