@@ -1,5 +1,16 @@
+@font-face {
+  font-family: "icomoon";
+  src: url("../webfonts/icomoon.eot");
+  src: url("../webfonts/icomoon.eot?#iefix") format("embedded-opentype"),
+       url("../webfonts/icomoon.woff") format("woff"),
+       url("../webfonts/icomoon.ttf") format("truetype"),
+       url("../webfonts/icomoon.svg#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @controls3d-border: 20px;
-@controls3d-button-padding: 17px;
+@controls3d-button-padding: 0px;
 
 ngeo-olcs-controls3d {
   position: absolute;
@@ -17,27 +28,25 @@ ngeo-olcs-controls3d {
     border: 0;
     padding: @controls3d-button-padding;
     cursor: pointer;
-    &.ngeo-left {
-      background-image: data-uri('../images/3d/left.png');
-      background-position: 100% 0%;
-      background-size: 100%;
+    &.ngeo-left:after {
+      font-family: "icomoon" !important;
+      content: '\e905';
+      text-align: center;
     }
-    &.ngeo-right {
-      background-image: data-uri('../images/3d/right.png');
-      background-position: 0% 0%;
-      background-size: 100%;
+    &.ngeo-right:after {
+      font-family: "icomoon" !important;
+      content: '\e906';
+      text-align: center;
     }
-    &.ngeo-left-inactive {
-      background-image: data-uri('../images/3d/left.png');
-      background-position: 100% 0%;
-      cursor: default;
-      background-size: 100%;
+    &.ngeo-left-inactive:after {
+      font-family: "icomoon" !important;
+      content: '\e905';
+        text-align: center;
     }
-    &.ngeo-right-inactive {
-      background-image: data-uri('../images/3d/right.png');
-      background-position: 0% 0%;
-      cursor: default;
-      background-size: 100%;
+    &.ngeo-right-inactive:after {
+      font-family: "icomoon" !important;
+      content: '\e906';
+      text-align: center;
     }
   }
   .ngeo-tools, .ngeo-zoom {
@@ -46,7 +55,6 @@ ngeo-olcs-controls3d {
   }
   .ngeo-tools {
     margin: 0;
-    width: 74px;
     .ngeo-angle, .ngeo-rotation {
       margin: 5px 3px 3px;
       height: 64px;
@@ -62,18 +70,34 @@ ngeo-olcs-controls3d {
         background-repeat: no-repeat;
         background-position: center center;
       }
-      .ngeo-angle3d {
-        background-image: data-uri('../images/3d/angle.png');
-        background-size: 100%;
+      .ngeo-angle3d:before, .ngeo-rotation3d:before {
+        font-family: "icomoon" !important;
+        content: '\e907';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        color: white;
       }
-      .ngeo-rotation3d {
-        background-image: data-uri('../images/3d/rotation.png');
-        background-size: 100%;
+      .ngeo-angle3d:after {
+        font-family: "icomoon" !important;
+        content: '\e900';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        margin-left: -64px;
+      }
+      .ngeo-rotation3d:after {
+        font-family: "icomoon" !important;
+        content: '\e901';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        margin-left: -64px;
       }
     }
   }
   .ngeo-zoom {
-    padding: 25px 0px 0;
+    padding: 40px 0px 0;
     vertical-align: top;
     width: 20px;
     line-height: 0;
@@ -93,12 +117,30 @@ ngeo-olcs-controls3d {
     background-color: transparent;
     background-size: 60%;
   }
-  .ol-zoom-in {
-    background-position: 50% 100%;
-    background-image: data-uri('../images/3d/zoomin.png');
+
+  .ol-zoom-in:before, .ol-zoom-out:before{
+    font-family: "icomoon" !important;
+    content: '\e902';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    color:white;
   }
-  .ol-zoom-out {
-    background-position: 50% 0%;
-    background-image: data-uri('../images/3d/zoomout.png');
+ 
+  .ol-zoom-in:after {
+    font-family: "icomoon" !important;
+    content: '\e904';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    margin-left: -20px;
+  }
+  .ol-zoom-out:after {
+    font-family: "icomoon" !important;
+    content: '\e903';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    margin-left: -20px;
   }
 }
