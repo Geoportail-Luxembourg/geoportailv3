@@ -49,11 +49,7 @@ app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
   ]);
 }]);
 
-// Define the offline download service
-app.module.run(['ngeoOfflineServiceManager', function(ngeoOfflineServiceManager) {
-  ngeoOfflineServiceManager.setSaveService('offlineDownloader');
-}]);
-
+// Define the offline download configuration service
 app.module.service('ngeoOfflineConfiguration', ngeo.offline.DefaultConfiguration);
 
 /**
