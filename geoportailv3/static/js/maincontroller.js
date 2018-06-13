@@ -367,6 +367,11 @@ app.MainController = function(
   const initial3dTilesVisibleValue = appStateManager.getInitialValue('3dtiles_visible');
 
   /**
+   * @export
+   */
+  this.debugOffline = ngeoLocation.hasParam('debugOffline');
+
+  /**
    * True if no initial state is defined.
    * @type {boolean}
    * @export
