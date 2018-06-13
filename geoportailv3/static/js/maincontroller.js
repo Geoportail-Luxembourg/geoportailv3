@@ -342,6 +342,11 @@ app.MainController = function(
   this['layersChanged'] = false;
 
   /**
+   * @export
+   */
+  this.debugOffline = ngeoLocation.hasParam('debugOffline');
+
+  /**
    * @type {ol.Map}
    * @private
    */
