@@ -1,7 +1,3 @@
-/**
- * TODO
- */
-
 goog.provide('app.MymapsOffline');
 
 goog.require('app');
@@ -32,39 +28,50 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures) {
    * @private
    */
   this.storage_ = window.localStorage;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.storageGroupeKey_ = 'offline_mymaps';
 }
 
 /**
  * Save data to local storage
  */
 app.MymapsOffline.prototype.save = function() {
-  var myMapsAllcategories = JSON.stringify(this.appMymaps_.allcategories);
-  var myMapsMapInfo = JSON.stringify(this.appMymaps_.getMapInfo());
-  var myMapsMapFeatures = JSON.stringify(this.appMymaps_.getMapFeatures());
-  this.storage_.setItem('myMapsallCategories', myMapsAllcategories);
-  this.storage_.setItem('myMapsMapInfo', myMapsMapInfo);
-  this.storage_.setItem('myMapsMapFeatures', myMapsMapFeatures);
+  var item = JSON.stringify({
+    'allCategories': this.appMymaps_.allcategories,
+    'mapInfo': this.appMymaps_.getMapInfo(),
+    'mapFeatures': this.appMymaps_.getMapFeatures()
+  });
+  this.storage_.setItem(this.storageGroupeKey_, item);
 };
 
 /**
- * Retore on the map data from local storage
+ * Restore on the map data from local storage
  */
 app.MymapsOffline.prototype.restore = function() {
-  var myMapsAllcategories = this.storage_.getItem('myMapsallCategories');
-  var myMapsMapInfo = this.storage_.getItem('myMapsMapInfo');
-  var myMapsMapFeatures = this.storage_.getItem('myMapsMapFeatures');
-  if (myMapsAllcategories) {
-    myMapsAllcategories = /** @type {Array<(Object|null)>} */ (JSON.parse(myMapsAllcategories));
-    this.appMymaps_.allcategories = (myMapsAllcategories);
+  var storedItem = this.storage_.getItem(this.storageGroupeKey_);
+  if (!storedItem) {
+    return;
   }
-  if (myMapsMapInfo) {
-    myMapsMapInfo = /** @type {Object} */ (JSON.parse(myMapsMapInfo));
-    this.appMymaps_.setMapInformation(myMapsMapInfo);
+  storedItem = JSON.parse(storedItem);
+
+  var allcategories = /** @type {Array<(Object|null)>} */ (storedItem['allCategories']);
+  if (allcategories) {
+    this.appMymaps_.allcategories = (allcategories);
   };
-  if(myMapsMapFeatures) {
-    myMapsMapFeatures = JSON.parse(myMapsMapFeatures);
-    this.appMymaps_.setFeatures(myMapsMapFeatures, this.drawnFeatures_.getCollection());
-  }
+
+  var mapInfo = /** @type {Object} */ (storedItem['mapInfo']);
+  if (mapInfo) {
+    this.appMymaps_.setMapInformation(mapInfo);
+  };
+
+  var mapFeatures = storedItem['mapFeatures'];
+  if (mapFeatures) {
+    this.appMymaps_.setFeatures(mapFeatures, this.drawnFeatures_.getCollection());
+  };
 };
 
 app.module.service('appMymapsOffline', app.MymapsOffline);
