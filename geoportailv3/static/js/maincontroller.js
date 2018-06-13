@@ -486,6 +486,10 @@ app.MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
     return;
   }
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', 'enable3d']);
+  piwik.push(['trackPageView']);
+
   this['drawOpen'] = false;
   this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
@@ -855,6 +859,11 @@ app.MainController.prototype.toggleTiles3dVisibility = function() {
   this.stateManager_.updateState({
     '3dtiles_visible': this.tiles3dVisible
   });
+  if (this.tiles3dVisible) {
+    var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+    piwik.push(['setDocumentTitle', '3dtiles_visible']);
+    piwik.push(['trackPageView']);
+  }
 };
 
 app.module.controller('MainController', app.MainController);
