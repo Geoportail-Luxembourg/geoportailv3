@@ -66,8 +66,6 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {angular.$timeout} $timeout The timeout service.
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$http} $http Angular $http service.
- * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager.
  * @param {app.GetProfile} appGetProfile The profile service.
  * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {string} appQueryTemplatesPath Path
@@ -297,8 +295,8 @@ app.QueryController = function($sce, $timeout, $scope, $http,
   this.isQuerying_ = false;
 
   /**
-   * The draw overlay
-   * @type {ngeo.map.FeatureOverlay}
+   * The features layer.
+   * @type {ol.layer.Vector}
    * @private
    */
   this.featureLayer_ = new ol.layer.Vector({
