@@ -19,6 +19,7 @@ goog.require('app.LocationControl');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
+goog.require('app.OfflineRestorer');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -468,6 +469,7 @@ app.MainController = function(
   }
 
   ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
+  ngeoOfflineServiceManager.setRestoreService('appOfflineRestorer');
 };
 
 
