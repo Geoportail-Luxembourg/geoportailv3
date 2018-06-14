@@ -236,8 +236,8 @@
           </div>
         </div>
       </div>
+    <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
-      <div class="map-wrapper">
       <app-map app-map-map="::mainCtrl.map"></app-map>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
       <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
@@ -250,6 +250,7 @@
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
     </div>
+  </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
