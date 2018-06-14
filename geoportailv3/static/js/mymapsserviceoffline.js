@@ -43,7 +43,8 @@ app.MymapsOffline.prototype.save = function() {
   var item = JSON.stringify({
     'allCategories': this.appMymaps_.allcategories,
     'mapInfo': this.appMymaps_.getMapInfo(),
-    'mapFeatures': this.appMymaps_.getMapFeatures()
+    'mapFeatures': this.appMymaps_.getMapFeatures(),
+    'mapId': this.appMymaps_.getMapId()
   });
   this.storage_.setItem(this.storageGroupeKey_, item);
 };
@@ -71,6 +72,11 @@ app.MymapsOffline.prototype.restore = function() {
   var mapFeatures = storedItem['mapFeatures'];
   if (mapFeatures) {
     this.appMymaps_.setFeatures(mapFeatures, this.drawnFeatures_.getCollection());
+  };
+
+  var mapId = storedItem['mapId'];
+  if (mapId) {
+    this.appMymaps_.setMapId(mapId);
   };
 };
 
