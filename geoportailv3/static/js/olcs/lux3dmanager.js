@@ -146,4 +146,11 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
     const camera = scene.camera;
     camera.constrainedAxisAngle = 7 * Math.PI / 16; // almost PI/2
   }
+  /**
+   * Reset to the north.
+   * @export
+   */
+  resetNorth() {
+    super.setHeading(super.getHeading());
+  }
 };
