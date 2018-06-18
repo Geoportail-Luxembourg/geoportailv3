@@ -514,6 +514,16 @@ app.MainController = function(
     }
   }
 
+  $scope.$watch(
+      () => {
+        return this.ngeoNetworkStatus.offline;
+      }, () => {
+      if (this.ngeoNetworkStatus.offline) {
+        this.closeSidebar();
+        this.layersOpen = true;
+        this.showTab('a[href=\'#mylayers\']');
+      }
+    });
   ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
   ngeoOfflineServiceManager.setRestoreService('appOfflineRestorer');
 };

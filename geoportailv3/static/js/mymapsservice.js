@@ -9,6 +9,8 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
+goog.require('ngeo.offline.NetworkStatus');
+goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.array');
 goog.require('goog.color');
 goog.require('goog.object');
@@ -45,13 +47,14 @@ app.MapsResponse;
  * @param {app.Theme} appTheme The theme service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
  * @param {string} arrowUrl URL to the arrow.
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, arrowUrl, arrowModelUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
   /**
    * @type {string}
    * @private
@@ -85,6 +88,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @private
+   */
+  this.ngeoNetworkStatus_ = ngeoNetworkStatus;
 
   /**
    * @type {app.Themes}
@@ -474,7 +483,7 @@ app.Mymaps.prototype.clear = function() {
  */
 app.Mymaps.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      this.mapIsEditable) {
+      this.mapIsEditable && !this.ngeoNetworkStatus_.offline) {
     return true;
   }
   return false;
