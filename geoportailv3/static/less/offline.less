@@ -67,3 +67,31 @@ ngeo-offline {
 .offline .offline-msg {
   display: block;
 }
+
+
+/** Disable components **/
+
+body.offline {
+  .search-container,
+  .theme-icon,
+  .theme-header,
+  .lang,
+  .user,
+  .infos,
+  .legends,
+  .routing,
+  .toolbox,
+  .footer-navigation,
+  .catalog-tab,
+  .add-layers,
+   #dropdown-mymaps,
+  app-mymaps>div:first-child,
+  .feature-popup-profile,
+  .feature-popup-footer .dropup {
+    display: none;
+  }
+  app-backgroundlayer,
+  app-layerinfo {
+    visibility: hidden;
+  }
+}

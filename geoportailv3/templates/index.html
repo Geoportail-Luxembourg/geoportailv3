@@ -92,13 +92,13 @@
           </button>
           <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
           <ul class="nav nav-tabs">
-            <li role="presentation">
-            <a href="#mylayers" data-toggle="tab">
-              <span translate>my_layers</span>
-              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            <li role="presentation" class="my-layers-tab">
+              <a href="#mylayers" data-toggle="tab">
+                <span translate>my_layers</span>
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
               </a>
             </li>
-            <li role="presentation" class="active">
+            <li role="presentation" class="active catalog-tab">
               <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
           </ul>
@@ -108,7 +108,7 @@
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
               </app-layermanager>
-              <div class="text-center">
+              <div class="text-center add-layers">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Infos -->
-        <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+        <div ng-if="!mainCtrl.ngeoNetworkStatus.offline" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
@@ -290,7 +290,7 @@
         <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
-            app-profile-open="mainCtrl.profileOpen"
+            app-profile-open="mainCtrl.profileOpen">
           </app-measure>
         </li>
         <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
