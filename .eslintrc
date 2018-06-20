@@ -12,6 +12,7 @@
     "d3": false,
     "Bloodhound": false,
     "ol": false,
+    "localforage": false,
     "proj4": false,
     "ngeo": false,
     "gmf": false,
