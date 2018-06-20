@@ -132,12 +132,15 @@ app.MapController.updateState_ = function(appStateManager, view) {
   var viewZoom = view.getZoom();
   var viewCenter = view.getCenter();
   goog.asserts.assert(goog.isDef(viewCenter));
-  goog.asserts.assert(goog.isDef(viewZoom));
-  appStateManager.updateState({
-    'zoom': viewZoom,
-    'X': Math.round(viewCenter[0]),
-    'Y': Math.round(viewCenter[1])
-  });
+  if (viewZoom) {
+    // FIXME 3D
+    // Update the state IF the zoom is defined (not in 3D)
+    appStateManager.updateState({
+      'zoom': viewZoom,
+      'X': Math.round(viewCenter[0]),
+      'Y': Math.round(viewCenter[1])
+    });
+  }
 };
 
 

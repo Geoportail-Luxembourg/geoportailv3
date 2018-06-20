@@ -1,0 +1,149 @@
+@font-face {
+  font-family: "icomoon";
+  src: url("../webfonts/icomoon.eot");
+  src: url("../webfonts/icomoon.eot?#iefix") format("embedded-opentype"),
+       url("../webfonts/icomoon.woff") format("woff"),
+       url("../webfonts/icomoon.ttf") format("truetype"),
+       url("../webfonts/icomoon.svg#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@controls3d-border: 20px;
+@controls3d-button-padding: 0px;
+
+ngeo-olcs-controls3d {
+  position: absolute;
+  bottom: 20px - @controls3d-border;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 180px + 2 * @controls3d-border;
+  button {
+    width: 24px;
+    height: 20px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: 0;
+    padding: @controls3d-button-padding;
+    cursor: pointer;
+    &.ngeo-left:after {
+      font-family: "icomoon" !important;
+      content: '\e905';
+      text-align: center;
+    }
+    &.ngeo-right:after {
+      font-family: "icomoon" !important;
+      content: '\e906';
+      text-align: center;
+    }
+    &.ngeo-left-inactive:after {
+      font-family: "icomoon" !important;
+      content: '\e905';
+        text-align: center;
+    }
+    &.ngeo-right-inactive:after {
+      font-family: "icomoon" !important;
+      content: '\e906';
+      text-align: center;
+    }
+  }
+  .ngeo-tools, .ngeo-zoom {
+    display: table-cell;
+    text-align: center;
+  }
+  .ngeo-tools {
+    margin: 0;
+    .ngeo-rotation {
+     cursor: pointer;
+    }
+    .ngeo-angle, .ngeo-rotation {
+      margin: 5px 3px 3px;
+      height: 64px;
+      width: 64px;
+      position: relative;
+      overflow: hidden;
+      .ngeo-angle3d, .ngeo-rotation3d {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-repeat: no-repeat;
+        background-position: center center;
+      }
+      .ngeo-angle3d:before, .ngeo-rotation3d:before {
+        font-family: "icomoon" !important;
+        content: '\e907';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        color: white;
+      }
+      .ngeo-angle3d:after {
+        font-family: "icomoon" !important;
+        content: '\e900';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        margin-left: -64px;
+      }
+      .ngeo-rotation3d:after {
+        font-family: "icomoon" !important;
+        content: '\e901';
+        font-size:64px;
+        text-align: center;
+        line-height: 64px;
+        margin-left: -64px;
+      }
+    }
+  }
+  .ngeo-zoom {
+    padding: 40px 0px 0;
+    vertical-align: top;
+    width: 20px;
+    line-height: 0;
+    button {
+      width: 20px;
+      height: 20px;
+      margin: 7px 0;
+    }
+  }
+
+  .ol-zoom-in, .ol-zoom-out {
+    display: block;
+    width: 40px;
+    height: 32px;
+    border: 0;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: 60%;
+  }
+
+  .ol-zoom-in:before, .ol-zoom-out:before{
+    font-family: "icomoon" !important;
+    content: '\e902';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    color:white;
+  }
+ 
+  .ol-zoom-in:after {
+    font-family: "icomoon" !important;
+    content: '\e904';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    margin-left: -20px;
+  }
+  .ol-zoom-out:after {
+    font-family: "icomoon" !important;
+    content: '\e903';
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    margin-left: -20px;
+  }
+}

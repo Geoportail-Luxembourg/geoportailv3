@@ -77,12 +77,10 @@ GIT_REMOTE ?= origin
 GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 # ngeo
-OL_JS_FILES = $(shell find node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
-NGEO_JS_FILES = $(shell find node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
-APP_JS_FILES = $(shell find $(PACKAGE)/static/js -type f -name '*.js')
+GCC_JS_FILES = $(shell find node_modules/openlayers/src/ol node_modules/ngeo/src node_modules/ol-cesium/src $(PACKAGE)/static/js -type f -name '*.js' 2> /dev/null)
 APP_HTML_FILES = $(shell find $(PACKAGE)/templates -type f -name '*.html')
 APP_PARTIALS_FILES := $(shell find $(PACKAGE)/static/js -type f -name '*.html')
-LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.less' 2> /dev/null)
+LESS_FILES += $(shell find $(PACKAGE)/static/less -type f -name '*.less' 2> /dev/null)
 JSON_CLIENT_LOCALISATION_FILES = $(addprefix $(OUTPUT_DIR)/locale/, $(addsuffix /$(PACKAGE).json, $(LANGUAGES)))
 NGEO_LIBS_JS_FILES += \
 	node_modules/jquery/dist/jquery.min.js \
@@ -286,6 +284,7 @@ TEMPLATES_FILES = $(shell find $(PACKAGE)/templates -type f -print)
 TEMPLATE_EXCLUDE += .build print/templates \
 	CONST_alembic/main/script.py.mako \
 	CONST_alembic/static/script.py.mako \
+	node_modules \
 	$(PACKAGE)/static/lib
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
 TEMPLATE_FILES = $(shell find $(FIND_OPTS) -name "*.in" -print)
@@ -389,6 +388,7 @@ serve: build development.ini
 .PHONY: update-node-modules
 update-node-modules:
 	npm install --force
+	scripts/ensure_own_closure_util.sh
 	touch .build/node_modules.timestamp
 
 # Templates
@@ -476,8 +476,8 @@ $(VENV_BIN)/db2pot: .build/requirements.timestamp
 $(PACKAGE)/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
 
-$(PACKAGE)/locale/$(PACKAGE)-js.pot: $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) .build/node_modules.timestamp
-	node tools/extract-messages.js $(APP_HTML_FILES) $(APP_JS_FILES) $(APP_PARTIALS_FILES) > $@
+$(PACKAGE)/locale/$(PACKAGE)-js.pot: $(APP_HTML_FILES) $(GCC_JS_FILES) $(APP_PARTIALS_FILES) .build/node_modules.timestamp
+	node tools/extract-messages.js $(APP_HTML_FILES) $(GCC_JS_FILES) $(APP_PARTIALS_FILES) > $@
 
 .INTERMEDIATE:$(PACKAGE)/locale/$(PACKAGE)-db.pot
 $(PACKAGE)/locale/$(PACKAGE)-db.pot: $(VENV_BIN)/db2pot development.ini .build/config-$(INSTANCE_ID).timestamp
@@ -515,9 +515,9 @@ $(OUTPUT_DIR)/build.min.css: $(LESS_FILES) .build/node_modules.timestamp
 
 $(OUTPUT_DIR)/build.css: $(LESS_FILES) .build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc $(PACKAGE)/static/less/$(PACKAGE).less $@
+	./node_modules/.bin/lessc  $(PACKAGE)/static/less/$(PACKAGE).less $@
 
-.build/build.js: build.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) \
+.build/build.js: build.json $(GCC_JS_FILES) \
 		$(OUTPUT_DIR)/templatecache.js \
 		.build/externs/angular-1.6.js \
 		.build/externs/angular-1.6-q_templated.js \
@@ -562,12 +562,13 @@ endif
 	mkdir -p $(dir $@)
 ifeq ($(NGEO), TRUE)
 	npm install
+	scripts/ensure_own_closure_util.sh
 endif
 	touch $@
 
-.build/eslint.timestamp: $(APP_JS_FILES)
+.build/eslint.timestamp: $(GCC_JS_FILES)
 	mkdir -p $(dir $@)
-	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
+	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $^)
 	touch $@
 
 
@@ -587,6 +588,7 @@ update:
 	git submodule foreach git submodule foreach git clean -fd
 ifeq ($(NGEO), TRUE)
 	npm install --force
+	scripts/ensure_own_closure_util.sh
 	touch .build/node_modules.timestamp
 endif
 

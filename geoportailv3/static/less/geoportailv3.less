@@ -3,6 +3,7 @@
 @import "../../../node_modules/bootstrap/less/bootstrap.less";
 @import "../../../node_modules/font-awesome/less/font-awesome.less";
 
+@import "controls3d.less";
 @import "variables.less";
 @import "layout.less";
 @import "sidebar.less";
@@ -28,12 +29,15 @@
        url('../webfonts/28867F_0_0.ttf') format('truetype');
 }
 
-@fa-font-path: "fonts";
+@fa-font-path: "fonts" ;
 
 body {
   font-family: 'DINNextLTPro-Condensed', Arial, sans-serif;
 }
 
+.map-wrapper {
+  height: 100%;
+}
 
 app-map {
   -webkit-user-select: none !important; /* disable selection/Copy of UIWebView */
@@ -92,4 +96,19 @@ app-map {
   .ngeo-tooltip-static:before {
     border-top-color: #ffcc33;
   }
+}
+
+.hidden-2d {
+  display: none;
+}
+body.enabled-3d {
+  .hidden-3d {
+    display: none !important;
+  }
+  .hidden-2d {
+    display: inherit;
+  }
+}
+.olcs-hideoverlay .ol-overlay-container {
+  visibility:hidden;
 }

@@ -13,6 +13,7 @@ goog.provide('app.streetviewDirective');
 
 goog.require('app');
 goog.require('app.Activetool');
+goog.require('app.LocationInfoOverlay');
 goog.require('app.Notify');
 goog.require('goog.Uri');
 
