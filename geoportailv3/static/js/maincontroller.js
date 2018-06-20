@@ -16,6 +16,7 @@ goog.require('app.FeaturePopup');
 goog.require('app.LayerOpacityManager');
 goog.require('app.LayerPermalinkManager');
 goog.require('app.LocationControl');
+goog.require('app.Map');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.Routing');
@@ -41,8 +42,12 @@ goog.require('ol.control.Attribution');
 goog.require('ol.control.FullScreen');
 goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
-goog.require('ol.control.ZoomToExtent');
+goog.require('app.olcs.ZoomToExtent');
+goog.require('app.olcs.Lux3DManager');
+goog.require('app.olcs.toggle3d');
 goog.require('ol.proj');
+goog.require('ol.math');
+goog.require('ngeo.olcs.Manager');
 
 
 /**
@@ -76,6 +81,11 @@ goog.require('ol.proj');
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
+ * @param {string} cesiumURL The Cesium script URL.
+ * @param {angular.Scope} $rootScope Angular root scope.
+ * @param {ngeo.olcs.Service} ngeoOlcsService The service.
+ * @param {Array<string>} tiles3dLayers 3D tiles layers.
+ * @param {string} tiles3dUrl 3D tiles server url.
  * @constructor
  * @export
  * @ngInject
@@ -87,7 +97,8 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document) {
+    appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
   /**
    * @type {boolean}
    * @export
@@ -189,6 +200,18 @@ app.MainController = function(
    * @private
    */
   this.appTheme_ = appTheme;
+
+  /**
+   * @private
+   * @type {Array<string>}
+   */
+  this.tiles3dLayers_ = tiles3dLayers;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.tiles3dUrl_ = tiles3dUrl;
 
   /**
    * @type {ol.Extent}
@@ -326,11 +349,14 @@ app.MainController = function(
    */
   this['layersChanged'] = false;
 
+  const initial3dTilesVisibleValue = appStateManager.getInitialValue('3dtiles_visible');
+
   /**
-   * @type {ol.Map}
-   * @private
+   * True if no initial state is defined.
+   * @type {boolean}
+   * @export
    */
-  this.map_ = null;
+  this.tiles3dVisible = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
 
   /**
    * @type {app.Mymaps}
@@ -339,7 +365,27 @@ app.MainController = function(
   this.appMymaps_ = appMymaps;
   this.appUserManager_.getUserInfo();
 
-  this.setMap_();
+  /**
+   * @const {!app.Map}
+   * @private
+   */
+  this.map_ = this.createMap_();
+
+  /**
+   * @const {?app.olcs.Lux3DManager}
+   * @export
+   */
+  this.ol3dm_ = this.createCesiumManager_(cesiumURL, $rootScope);
+  this.ol3dm_.on('load', () => {
+    this.ol3dm_.init3dTiles(this.tiles3dVisible);
+  });
+
+  ngeoOlcsService.initialize(this.ol3dm_);
+  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
+  this.map_.set('ol3dm', this.ol3dm_);
+
+  // Add the zoom to extent control in a second step since it depends on ol3dm.
+  this.map_.addControl(new app.olcs.ZoomToExtent(this.defaultExtent_, this.ol3dm_));
 
   this.initLanguage_();
 
@@ -448,6 +494,24 @@ app.MainController = function(
 
 
 /**
+ * @private
+ * @param {boolean} active 3d state
+ */
+app.MainController.prototype.enable3dCallback_ = function(active) {
+  if (!active) {
+    return;
+  }
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', 'enable3d']);
+  piwik.push(['trackPageView']);
+
+  this['drawOpen'] = false;
+  this['drawOpenMobile'] = false;
+  this['measureOpen'] = false;
+  this['printOpen'] = false;
+};
+
+/**
  * @param {ngeo.map.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
@@ -479,19 +543,19 @@ app.MainController.prototype.addLocationControl_ =
 
 /**
  * @private
+ * @return {!app.Map} The extended ol.Map.
  */
-app.MainController.prototype.setMap_ = function() {
+app.MainController.prototype.createMap_ = function() {
   var interactions = ol.interaction.defaults({
     altShiftDragRotate: false,
     pinchRotate: false,
     constrainResolution: true
   });
-  this.map_ = this['map'] = new ol.Map({
+  var map = this['map'] = new app.Map({
     logo: false,
     controls: [
       new ol.control.Zoom({zoomInLabel: '\ue032', zoomOutLabel: '\ue033'}),
-      new ol.control.ZoomToExtent({label: '\ue01b',
-        extent: this.defaultExtent_}),
+      // the zoom to extent control will be added later since it depends on ol3dm
       new ol.control.FullScreen({label: '\ue01c', labelActive: '\ue02c'}),
       new ol.control.Attribution({collapsible: false,
         collapsed: false, className: 'geoportailv3-attribution'})
@@ -507,6 +571,31 @@ app.MainController.prototype.setMap_ = function() {
       extent: this.maxExtent_
     })
   });
+  return map;
+};
+
+
+/**
+ * @private
+ * @param {string} cesiumURL The Cesium URL
+ * @param {angular.Scope} $rootScope The root scope
+ * @return {!app.olcs.Lux3DManager} The created manager.
+ */
+app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
+  // [minx, miny, maxx, maxy]
+  goog.asserts.assert(this.map_);
+  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
+  return new app.olcs.Lux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
+    $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
+};
+
+
+/**
+ * @export
+ * @return {boolean} Whether 3D is active.
+ */
+app.MainController.prototype.is3dEnabled = function() {
+  return this.ol3dm_.is3dEnabled();
 };
 
 
@@ -551,6 +640,9 @@ app.MainController.prototype.manageSelectedLayers_ =
       ngeo.misc.syncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
       goog.bind(function(layer) {
+        if (layer instanceof ol.layer.Vector && layer.get('altitudeMode') === 'clampToGround') {
+          return false;
+        }
         return goog.array.indexOf(
             this.map_.getLayers().getArray(), layer) !== 0;
       }, this)
@@ -777,6 +869,22 @@ app.MainController.prototype.toggleThemeSelector = function() {
     this.showTab('a[href=\'#catalog\']');
     themesSwitcher.collapse('show');
     layerTree.collapse('hide');
+  }
+};
+
+/**
+ * @export
+ */
+app.MainController.prototype.toggleTiles3dVisibility = function() {
+  this.tiles3dVisible = !this.tiles3dVisible;
+  this.ol3dm_.set3dTilesetVisible(this.tiles3dVisible);
+  this.stateManager_.updateState({
+    '3dtiles_visible': this.tiles3dVisible
+  });
+  if (this.tiles3dVisible) {
+    var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+    piwik.push(['setDocumentTitle', '3dtiles_visible']);
+    piwik.push(['trackPageView']);
   }
 };
 
