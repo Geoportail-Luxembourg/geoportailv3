@@ -250,13 +250,6 @@ app.MainController = function(
   this.defaultExtent_ = defaultExtent;
 
   /**
-   * Save a square of 10 km sideways (Map's unit is the meter).
-   * @type {number}
-   * @export
-   */
-  this.offlineExtentSize = 10000;
-
-  /**
    * @type {boolean}
    */
   this['hasRoutingResult'] = false;

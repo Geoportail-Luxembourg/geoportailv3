@@ -252,16 +252,14 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
-      <ngeo-offline class="offline-debug" ng-if="::mainCtrl.debugOffline"
-          debug="::true"
+      <ngeo-offline class="offline-debug" ng-class="{'offline-debug': mainCtrl.debugOffline}"
+          debug="::mainCtrl.debugOffline"
           ngeo-offline-map="::mainCtrl.map"
-          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize">
+          ngeo-offline-mask-margin="::100"
+          ngeo-offline-min_zoom="::11"
+          ngeo-offline-max_zoom="::15"
+      >
       </ngeo-offline>
-      <ngeo-offline  ng-if="::!mainCtrl.debugOffline"
-          ngeo-offline-map="::mainCtrl.map"
-          ngeo-offline-extentsize="::mainCtrl.offlineExtentSize">
-      </ngeo-offline>
-
     </div>
   </div>
     <!-- Begin bottom bar -->
