@@ -3,13 +3,20 @@ goog.module.declareLegacyNamespace();
 
 goog.require('app');
 goog.require('app.MymapsOffline');
+goog.require('ngeo.offline.DefaultConfiguration');
+const restorer = goog.require('ngeo.offline.Restorer');
 
-const OfflineRestorer = class {
+/**
+ * @extends {ngeo.offline.Restorer}
+ */
+const OfflineRestorer = class extends restorer {
   /**
    * @ngInject
+   * @param {ngeox.OfflineConfiguration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    */
-  constructor(appMymapsOffline) {
+  constructor(ngeoOfflineConfiguration, appMymapsOffline) {
+    super(ngeoOfflineConfiguration);
     /**
      * @type {app.MymapsOffline}
      * @private
@@ -18,10 +25,13 @@ const OfflineRestorer = class {
   }
 
   /**
-   * Restore the stored objects on the map.
+   * @param {ol.Map} map The map to work on.
+   * @return {Promise<ol.Extent>} A promise resolving when restore is finished.
+   * @override
    */
-  restore() {
+  restore(map) {
     this.appMymapsOffline_.restore();
+    return super.restore(map);
   }
 }
 
