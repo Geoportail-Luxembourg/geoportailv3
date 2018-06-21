@@ -215,8 +215,6 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
 
 
   var addedLayers = this.map_.getLayers().getArray();
-  // Keep only the background layer
-  addedLayers.length = 1;
   goog.array.forEach(layerIds,
   function(layerId, layerIndex) {
     if (goog.isNumber(layerId) && !isNaN(layerId)) {
