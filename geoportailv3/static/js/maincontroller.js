@@ -519,8 +519,10 @@ app.MainController = function(
         return this.ngeoNetworkStatus.offline;
       }, () => {
       if (this.ngeoNetworkStatus.offline) {
-        this.closeSidebar();
-        this.layersOpen = true;
+        if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
+          this.closeSidebar();
+          this['layersOpen'] = true;
+        }
         this.showTab('a[href=\'#mylayers\']');
       }
     });
@@ -708,7 +710,7 @@ app.MainController.prototype.manageSelectedLayers_ =
  * @export
  */
 app.MainController.prototype.openFeedback = function() {
-  if (this.sidebarOpen) {
+  if (this.sidebarOpen()) {
     this.closeSidebar();
     this['feedbackOpen'] = true;
   } else {
