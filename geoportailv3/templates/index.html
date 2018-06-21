@@ -37,6 +37,8 @@
           </div>
         </div>
 
+        <div class="offline-msg alert-danger" translate>You are currently offline.</div>
+
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
           <li ng-click="mainCtrl.toggleThemeSelector();">
@@ -80,7 +82,6 @@
     </div>
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
-      <div class="offline-msg alert-danger" translate>You are currently offline.</div>
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
