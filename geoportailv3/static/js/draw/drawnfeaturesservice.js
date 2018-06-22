@@ -437,20 +437,20 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   var isMymaps = !!feature.get('__map_id__');
   if (isCircle) {
     isModifyInteractionActive = false;
+    isTranlationActive = false;
     if (isMymaps) {
-      isTranlationActive = this.appMymaps_.isEditable();
       isModifyCircleActive = this.appMymaps_.isEditable();
     } else {
       isModifyCircleActive = true;
     }
   } else {
-    var isLine = feature.getGeometry().getType() ===
-        ol.geom.GeometryType.LINE_STRING;
+    var isPoint = feature.getGeometry().getType() ===
+        ol.geom.GeometryType.POINT;
     if (isMymaps) {
       isModifyInteractionActive = this.appMymaps_.isEditable();
-      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+      isTranlationActive = this.appMymaps_.isEditable() && isPoint;
     } else {
-      isTranlationActive = !isLine;
+      isTranlationActive = isPoint;
     }
   }
   this.modifyInteraction.setActive(isModifyInteractionActive);
