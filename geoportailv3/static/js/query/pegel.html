@@ -1,0 +1,6 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3>{{feature.attributes.Nom}}</h3>
+  <iframe width=300 height='1500' frameborder=0 src="{{ctrl.getTrustedUrl('http://geoportail.eau.etat.lu/pdf/112/'+feature.attributes.Nom+'.html')}}"></iframe>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

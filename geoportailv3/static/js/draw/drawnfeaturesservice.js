@@ -80,6 +80,18 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.features = new ol.Collection();
 
   /**
+   * @type {ol.layer.Vector}
+   * @export
+   */
+  this.drawLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      features: this.features
+    }),
+    zIndex: 1000,
+    'altitudeMode': 'clampToGround'
+  });
+
+  /**
    * @type {ngeo.statemanager.Location}
    * @private
    */
@@ -103,7 +115,6 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
     'size': 't',
     'isCircle': 'u'
   };
-  this.drawOverlay.setFeatures(this.features);
 
   /**
    * @type {app.format.FeatureHash}
@@ -426,20 +437,20 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   var isMymaps = !!feature.get('__map_id__');
   if (isCircle) {
     isModifyInteractionActive = false;
+    isTranlationActive = false;
     if (isMymaps) {
-      isTranlationActive = this.appMymaps_.isEditable();
       isModifyCircleActive = this.appMymaps_.isEditable();
     } else {
       isModifyCircleActive = true;
     }
   } else {
-    var isLine = feature.getGeometry().getType() ===
-        ol.geom.GeometryType.LINE_STRING;
+    var isPoint = feature.getGeometry().getType() ===
+        ol.geom.GeometryType.POINT;
     if (isMymaps) {
       isModifyInteractionActive = this.appMymaps_.isEditable();
-      isTranlationActive = this.appMymaps_.isEditable() && !isLine;
+      isTranlationActive = this.appMymaps_.isEditable() && isPoint;
     } else {
-      isTranlationActive = !isLine;
+      isTranlationActive = isPoint;
     }
   }
   this.modifyInteraction.setActive(isModifyInteractionActive);
@@ -463,6 +474,13 @@ app.DrawnFeatures.prototype.getExtent = function() {
   }, this);
 
   return extent;
+};
+
+/**
+ * @return {ol.layer.Vector} The drawn features layer.
+ */
+app.DrawnFeatures.prototype.getLayer = function() {
+  return this.drawLayer;
 };
 
 app.module.service('appDrawnFeatures', app.DrawnFeatures);

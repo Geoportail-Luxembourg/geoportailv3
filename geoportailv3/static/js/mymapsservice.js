@@ -49,16 +49,24 @@ app.MapsResponse;
  * manager.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
  * @param {string} arrowUrl URL to the arrow.
+ * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
 app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl,
+    arrowModelUrl) {
   /**
    * @type {string}
    * @private
    */
   this.arrowUrl_ = arrowUrl;
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.arrowModelUrl_ = arrowModelUrl;
 
   /**
    * @type {app.GetLayerForCatalogNode}
@@ -439,6 +447,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
     var jsonFeatures = (new ol.format.GeoJSON()).
         readFeatures(features, encOpt);
     goog.array.forEach(jsonFeatures, function(feature) {
+      feature.set('altitudeMode', 'clampToGround');
       feature.set('__map_id__', this.getMapId());
       feature.setStyle(featureStyleFunction);
     }, this);
@@ -1273,6 +1282,14 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
   var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
   var arrowUrl = this.arrowUrl_;
+  const arrowModelUrl = this.arrowModelUrl_;
+
+  const colorStringToRgba = (colorString, opacity = 1) => {
+    const color = goog.color.hexToRgb(colorString);
+    color.push(opacity);
+    return color;
+  };
+
   return function(resolution) {
 
     // clear the styles
@@ -1287,14 +1304,13 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     }
     // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
-    var rgbColor = goog.color.hexToRgb(color);
+    var rgbColor = colorStringToRgba(color, 1);
     var opacity = this.get('opacity');
     if (!goog.isDef(opacity)) {
       opacity = 1;
     }
     var rgbaColor = goog.array.clone(rgbColor);
-    rgbColor.push(1);
-    rgbaColor.push(opacity);
+    rgbaColor[3] = opacity;
 
     fillStyle.setColor(rgbaColor);
     if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
@@ -1318,16 +1334,37 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
-          var coloredArrowUrl = arrowUrl + '?color=' + arrowColor.replace('#', '');
+          var src = arrowUrl + '?color=' + arrowColor.replace('#', '');
+          const rotation =  Math.PI / 2 - Math.atan2(dy, dx);
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
             zIndex: order,
             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-              rotation: Math.PI / 2 - Math.atan2(dy, dx),
-              src: coloredArrowUrl
+              rotation,
+              src
             }))
           }));
+          const modelColor = colorStringToRgba(arrowColor, 1);
+          arrowPoint.set('olcs_model', () => {
+            const coordinates = arrowPoint.getCoordinates();
+            const center = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+            return {
+              cesiumOptions: {
+                url: arrowModelUrl,
+                // Adding a tiny translation along Z would allow the arrows not to sink into the terrain.
+                // However it does not work, the model is always clamped to the ground.
+                modelMatrix: olcs.core.createMatrixAtCoordinates(center, rotation),
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                minimumPixelSize: 80,
+                color: olcs.core.convertColorToCesium(modelColor)
+                // It would be great to have a silouhette around the 3d arrow to better distinguish it from the underlying line.
+                // But for some reason Cesium is throwing an error with the model we are using.
+                // silhouetteColor: Cesium.Color.WHITE,
+                // silhouetteSize: 3
+              }
+            };
+          });
           prevArrow = arrowPoint;
         }
       });

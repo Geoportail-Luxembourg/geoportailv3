@@ -51,6 +51,12 @@ header {
   float: none;
   // FIXME to be set to real width (may depend on media width)
   width: 300px;
+  .enabled-3d & {
+    width: 48px;
+    li a {
+      border-left: 1px solid @navbars-button-border-color;
+    }
+  }
   // center the toolbox bar
   margin: 0 auto;
   > li {
@@ -135,6 +141,9 @@ header {
   }
   .sidebar-controls {
     bottom: 100px;
+    .enabled-3d &{
+      bottom: 61px;
+    }
   }
   .toolbox {
     width: auto;
@@ -289,6 +298,9 @@ header {
     > li:first-child > a {
         border-left: 0;
     }
+  }
+  .enabled-3d .toolbox > li > a {
+    border-left: none;
   }
   .sidebar-controls {
       > li:first-child > a {

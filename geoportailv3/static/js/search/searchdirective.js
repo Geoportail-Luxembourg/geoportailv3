@@ -37,6 +37,9 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Stroke');
 
 
+// Add dependency into Angular module
+app.module.requires.push(ngeo.search.createGeoJSONBloodhound.module.name);
+
 /**
  * @typedef {{bgLayer: ol.layer.Layer, translatedName: string}}
  */
