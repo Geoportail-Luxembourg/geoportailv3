@@ -72,6 +72,13 @@ lux.StateManager.prototype.setMap = function(map) {
           onLayersUpdate,
           this);
       }
+      if (layer.get('metadata') !== undefined &&
+          layer.get('metadata')['attribution'] !== undefined) {
+        var source = layer.getSource();
+        source.setAttributions(
+          layer.get('metadata')['attribution']
+        );
+      }
     }.bind(this));
     object['layers'] = layers.join('-');
     object['opacities'] = opacities.join('-');

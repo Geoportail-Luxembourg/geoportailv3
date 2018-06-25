@@ -19,15 +19,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
           content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-title" content="geoportail.lu">
+    <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" type="image/x-icon" href="https://www.geoportail.lu/static/img/favicon-16x16.ico" />
+    <link rel="apple-touch-icon" sizes="57x57" href="${request.static_url('geoportailv3:static/images/apple-icon-57x57.png')}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="${request.static_url('geoportailv3:static/images/apple-icon-72x72.png')}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="${request.static_url('geoportailv3:static/images/apple-icon-114x114.png')}" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="${request.static_url('geoportailv3:static/images/apple-icon-57x57-precomposed.png')}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="${request.static_url('geoportailv3:static/images/apple-icon-72x72-precomposed.png')}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="${request.static_url('geoportailv3:static/images/apple-icon-114x114-precomposed.png')}" />
+
 % if debug:
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
 % else:
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
     % endif
  </head>
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{offline: mainCtrl.ngeoNetworkStatus.offline, 'search-mobile': mainCtrl.mobileSearchActive}">
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{offline: mainCtrl.ngeoNetworkStatus.offline, 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -92,6 +101,10 @@
             ✕
           </button>
           <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
+            <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
+            <span translate>Afficher les modèles 3D</span>
+          </div>
           <ul class="nav nav-tabs">
             <li role="presentation" class="my-layers-tab">
               <a href="#mylayers" data-toggle="tab">
@@ -226,8 +239,10 @@
           </div>
         </div>
       </div>
+    <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
+      <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
       <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
            app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
         <div class="slider-line"></div>
@@ -248,6 +263,7 @@
       </ngeo-offline>
 
     </div>
+  </div>
     <!-- Begin bottom bar -->
     <footer class="footer">
       <ul class="sidebar-controls nav navbar-nav pull-left"
@@ -279,7 +295,7 @@
         <li><a ng-href="http://www.act.public.lu/">ACT</a></li>
       </ul>
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
-        <li class="draw icon" ng-class="mainCtrl.drawOpen ? 'active' : ''">
+        <li class="draw icon hidden-3d" ng-class="mainCtrl.drawOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
@@ -287,14 +303,14 @@
             app-draw-mymaps-open="mainCtrl.mymapsOpen">
           </app-draw>
         </li>
-        <li class="hidden-xs measure icon" ng-class="mainCtrl.measureOpen ? 'active' : ''">
+        <li class="hidden-xs measure icon hidden-3d" ng-class="mainCtrl.measureOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
           <app-measure app-measure-map="::mainCtrl.map"
             app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
             app-profile-open="mainCtrl.profileOpen">
           </app-measure>
         </li>
-        <li class="hidden-xs print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
+        <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
             app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
@@ -357,6 +373,12 @@
          appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
          appModule.constant('remoteProxyWms', false);
 % endif
+
+% if debug:
+        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/CesiumUnminified/Cesium.js' % node_modules_path)}");
+% else:
+        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/Cesium/Cesium.js' % node_modules_path)}");
+% endif
          appModule.constant('httpsProxyUrl', "${request.route_url('https_proxy')}");
          appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
          appModule.constant('mymapsUrl', "${request.route_url('mymaps')}");
@@ -399,6 +421,9 @@
          appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
          appModule.constant('bboxSrsLidar', "${lidar['srs']}");
          appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
+         appModule.constant('tiles3dLayers', ['buildings25d', 'buildings3d', 'bridges3d']);
+         // 'vegetation_model','vegetation_mesh','buildings25d_provisoire'
+         appModule.constant('tiles3dUrl', 'https://3dtiles.geoportail.lu/3dtiles/');
 
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);
@@ -406,6 +431,7 @@
          appModule.constant('appOverviewMapShow', false);
 % endif
          appModule.value('arrowUrl', '${request.route_url('get_arrow_color')}');
+         appModule.constant('arrowModelUrl', '${request.static_url('geoportailv3:static/models/arrow5.glb')}');
          appModule.constant('appOverviewMapBaseLayer', "${overview_map_base_layer}");
          appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
@@ -414,6 +440,7 @@
          appModule.value('ngeoOfflineTestUrl', 'infobar/scaleselector.html');
          appModule.value('ngeoOfflineTemplateUrl', function() {
            return '${request.static_url('%s/ngeo/src/offline/component.html' % node_modules_path)}'});
+         appModule.value('ngeoOlcsControls3dTemplateUrl', 'olcs/controls3d.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');

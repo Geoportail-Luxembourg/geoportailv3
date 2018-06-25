@@ -13,13 +13,13 @@ goog.require('app.GetElevation');
 goog.require('app.GetShorturl');
 goog.require('app.LocationInfoOverlay');
 goog.require('app.StateManager');
-goog.require('ngeo.map.FeatureOverlay');
-goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('goog.array');
 goog.require('ol.Feature');
-goog.require('ol.geom.Point');
 goog.require('ol.events');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
 goog.require('ol.proj');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -55,8 +55,6 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @constructor
  * @param {angular.Scope} $scope The scope.
  * @param {angular.$timeout} $timeout The timeout service.
- * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
- * manager.
  * @param {app.GetShorturl} appGetShorturl The short url service.
  * @param {app.GetElevation} appGetElevation The elevation service.
  * @param {app.CoordinateString} appCoordinateString The coordinate to string
@@ -80,7 +78,7 @@ app.module.directive('appLocationinfo', app.locationinfoDirective);
  * @ngInject
  */
 app.LocationinfoController = function(
-        $scope, $timeout, ngeoFeatureOverlayMgr,
+        $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
         appGeocoding, appGetDevice, ngeoLocation, appThemes,
@@ -160,17 +158,47 @@ app.LocationinfoController = function(
    */
   this.isInBoxOfLidar = false;
 
-  /**
-   * @type {app.LocationInfoOverlay}
+ /**
+   * @type {ol.layer.Vector}
    * @private
    */
-  this.featureOverlay_ = appLocationInfoOverlay;
+  this.featureLayer_ = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    zIndex: 1000,
+    'altitudeMode': 'clampToGround'
+  });
+  this['map'].addLayer(this.featureLayer_);
+  var defaultFill = new ol.style.Fill({
+    color: [255, 255, 0, 0.6]
+  });
+  var circleStroke = new ol.style.Stroke({
+    color: [255, 155, 55, 1],
+    width: 3
+  });
+
+  var pointStyle = new ol.style.Circle({
+    radius: 10,
+    fill: defaultFill,
+    stroke: circleStroke
+  });
+
+  this.featureLayer_.setStyle(
+    /**
+     * @param {ol.Feature|ol.render.Feature} feature Feature.
+     * @param {number} resolution Resolution.
+     * @return {Array.<ol.style.Style>} Array of styles.
+     */
+    function(feature, resolution) {
+      return [new ol.style.Style({
+        image: pointStyle
+      })];
+    });
 
   $scope.$watch(goog.bind(function() {
     return this['appSelector'];
   }, this), goog.bind(function(newVal) {
     if (newVal != 'locationinfo') {
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -191,7 +219,7 @@ app.LocationinfoController = function(
       });
       this['appSelector'] = undefined;
       this['location'] = {};
-      this.featureOverlay_.clear();
+      this.featureLayer_.getSource().clear();
     }
   }, this));
 
@@ -475,6 +503,7 @@ app.LocationinfoController.prototype.setClickCordinate_ = function(eventOrCoordi
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 };
 
+
 /**
  * Load the information panel.
  * @private
@@ -486,8 +515,8 @@ app.LocationinfoController.prototype.loadInfoPane_ =
       this.updateLocation_(this.clickCoordinate);
       var feature = /** @type {ol.Feature} */
       (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
-      this.featureOverlay_.clear();
-      this.featureOverlay_.addFeature(feature);
+      this.featureLayer_.getSource().clear();
+      this.featureLayer_.getSource().addFeature(feature);
 
       this.getElevation_(this.clickCoordinate).then(
         function(elevation) {

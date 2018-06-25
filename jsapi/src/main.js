@@ -640,12 +640,13 @@ lux.Map.prototype.addLayer = function(layer) {
  * type of pages that will be introduced at the beginning of the pdf.
  * Only html and pdf are supported.
  * [{'url': 'http://url1', 'html'},{'url': 'http://url2' 'pdf'}]
+ * @param {function()=} callback Optional callback function.
  * @example
  * map.print();
  * @export
  * @api
  */
-lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
+lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback) {
   var dpi = 127;
   var format = 'pdf';
 
@@ -726,7 +727,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
           var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
           var ref = mfResp.ref;
           goog.asserts.assert(ref.length > 0);
-          this.getStatus_(pm, ref);
+          this.getStatus_(pm, ref, callback);
         }.bind(this));
       }
     }.bind(this));
@@ -735,9 +736,10 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls) {
 /**
  * @param {lux.PrintManager} pm Print manager.
  * @param {string} ref Ref.
+ * @param {function()=} callback Optional callback function.
  * @private
  */
-lux.Map.prototype.getStatus_ = function(pm, ref) {
+lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
   pm.getStatus(ref).then(
     function(resp) {
       if (resp.status === 200) {
@@ -748,12 +750,14 @@ lux.Map.prototype.getStatus_ = function(pm, ref) {
             // The report is ready. Open it by changing the window location.
             if (mfResp.status !== 'error') {
               window.location.href = pm.getReportUrl(ref);
+              callback.call(this, mfResp.status);
             } else {
               console.log(mfResp.error);
+              callback.call(this, mfResp.status);
             }
           } else {
             goog.Timer.callOnce(function() {
-              this.getStatus_(pm, ref);
+              this.getStatus_(pm, ref, callback);
             }, 1000, this);
           }
         });
@@ -1730,7 +1734,8 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
     style: styleFunction,
     reloadInterval: opt_options && opt_options.reloadInterval,
     click: opt_options.click,
-    target: opt_options.target
+    target: opt_options.target,
+    fit: opt_options && opt_options.fit
   });
 };
 
@@ -1768,6 +1773,13 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
   var popup;
   var vector;
   var el;
+  var fit = true;
+  if (opt_options && opt_options.fit === undefined) {
+    fit = true;
+  }
+  if (opt_options && opt_options.fit === false) {
+    fit = false;
+  }
   if (opt_options.target) {
     el = typeof opt_options.target === 'string' ?
         document.getElementById(opt_options.target) :
@@ -1806,14 +1818,15 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     }
     setSource();
     this.addLayer(vector);
-
-    ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
-        function() {
-          var size = this.getSize();
-          goog.asserts.assert(size !== undefined, 'size should be defined');
-          this.getView().fit(vector.getSource().getExtent(), {size: size});
-        }.bind(this)
-    );
+    if (fit) {
+      ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
+          function() {
+            var size = this.getSize();
+            goog.asserts.assert(size !== undefined, 'size should be defined');
+            this.getView().fit(vector.getSource().getExtent(), {size: size});
+          }.bind(this)
+      );
+    }
     if (opt_options && opt_options.click) {
       var interaction = new ol.interaction.Select({
         layers: [vector]
@@ -2192,6 +2205,16 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
     this.getViewport().style.cursor = '';
     callback.call(this, json);
   }.bind(this));
+};
+
+/**
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
+ *      style The style of the show layer.
+ * @export
+ * @api
+ */
+lux.Map.prototype.setShowlayerStyle = function(style) {
+  this.showLayer_.setStyle(style);
 };
 
 /**

@@ -72,3 +72,8 @@ cd ../geoportailv3
 make -f  <user>.mk serve
 ```
 
+Automatic deployement
+---------------------
+
+* 3D demo: https://3d-demo.geoportail.lu/
+* 3D dev: https://3d-test.geoportail.lu/

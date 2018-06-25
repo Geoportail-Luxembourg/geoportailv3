@@ -14,16 +14,23 @@ goog.require('ngeo.offline.module');
 goog.require('ngeo.offline.DefaultConfiguration');
 goog.require('ol.has');
 
+goog.require('ngeo.olcs.olcsModule');
+goog.require('ngeo.search.module');
+
 
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeo.module.name, 'gettext', ngeo.search.module.name, ngeo.offline.module.name])
-    .run(function() {
-      if (!ol.has.TOUCH) {
-        goog.dom.classlist.add(document.body, 'no-touch');
-      }
-    });
+app.module = angular.module('app', [
+  ngeo.module.name, 'gettext',
+  ngeo.olcs.olcsModule.name,
+  ngeo.search.module.name,
+  ngeo.offline.module.name
+]).run(function() {
+  if (!ol.has.TOUCH) {
+    goog.dom.classlist.add(document.body, 'no-touch');
+  }
+});
 
 
 // Use ngeo's mockLocationProvider to work around a problem in Angular
@@ -73,3 +80,9 @@ app.module.config(['$httpProvider', function($httpProvider) {
       return config;
     }};
 });
+
+/**
+ * The OpenLayers extent used in 3D to restrict the area rendered by Cesium.
+ * @type {ol.Extent}
+ */
+app.olcsExtent = ol.proj.transformExtent([5.31, 49.38, 6.64, 50.21], 'EPSG:4326', 'EPSG:3857');
