@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@camptocamp/cesium": "1.43.1",
-    "@camptocamp/closure-util": "1.27.0",
+    "@camptocamp/closure-util": "https://api.github.com/repos/camptocamp/closure-util/tarball/cbead63",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
     "angular-dynamic-locale": "0.1.32",
@@ -45,7 +45,7 @@
     "localforage": "1.7.1",
     "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/f3e26bf",
     "nomnom": "1.8.1",
-    "ol-cesium": "1.34.0",
+    "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/9bc93a85a2cf25fbec11905597f3c5cbc18acea5",
     "olcs": "0.0.2",
     "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/72ca7b2",
     "phantomjs": "~1.9.7-5",
