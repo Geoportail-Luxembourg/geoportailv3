@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-import sqlahelper
 
 from sqlalchemy import Column, Integer
-from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from geoalchemy2 import Geometry
 
-engine = sqlahelper.get_engine('pgroute')
-Base = declarative_base(bind=engine)
-DBSession = scoped_session(sessionmaker(bind=engine, autocommit=True))
+Base = declarative_base()
 
 
 class ReseauVertices(Base):
