@@ -441,7 +441,7 @@
          appModule.value('ngeoOlcsControls3dTemplateUrl', 'olcs/controls3d.html');
          appModule.value('ngeoOfflineTestUrl', 'infobar/scaleselector.html');
          appModule.value('ngeoOfflineTemplateUrl', function() {
-           return '${request.static_url('%s/ngeo/src/offline/component.html' % node_modules_path)}'});
+           return '${request.static_url('geoportailv3:static/js/offlineNgeoComponent.html')}'});
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
          appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
