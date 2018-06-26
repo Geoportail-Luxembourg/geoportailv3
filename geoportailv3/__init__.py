@@ -11,12 +11,30 @@ from decimal import Decimal
 from turbomail.control import interface
 
 from geoportailv3.adapters import datetime_adapter, decimal_adapter
+from sqlalchemy.orm import sessionmaker
 
 import datetime
 import json
 import ldap
 import sqlalchemy
 import sqlahelper
+
+
+def init_db(engine):
+    def db(request):
+        maker = request.registry.dbmakers[engine]
+        session = maker()
+
+        def cleanup(request):
+            if request.exception is not None:
+                session.rollback()
+            else:
+                session.commit()
+            session.close()
+        request.add_finished_callback(cleanup)
+
+        return session
+    return db
 
 
 def locale_negotiator(request):
@@ -306,15 +324,19 @@ def main(global_config, **settings):
     # initialize database
     engines = config.get_settings()['sqlalchemy_engines']
     if engines:
+        config.registry.dbmakers = {}
         for engine in engines:
             if 'url' not in engines[engine]:
                 sqlahelper.add_engine(
                     sqlalchemy.create_engine(engines[engine]), name=engine)
             else:
                 sqlahelper.add_engine(
-                    sqlalchemy.create_engine(
-                        engines[engine]['url'],
-                        pool_size=engines[engine]['pool_size']), name=engine)
+                    sqlalchemy.create_engine(engines[engine]['url']),
+                    name=engine)
+            config.registry.dbmakers[engine] = sessionmaker(
+                bind=sqlahelper.get_engine(engine))
+            config.add_request_method(init_db(engine),
+                                      'db_'+engine, reify=True)
 
     from geoportailv3.views.authentication import ldap_user_validator, \
         get_user_from_request

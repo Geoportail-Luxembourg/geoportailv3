@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sqlahelper
 import logging
 import urllib2
 import re
@@ -7,7 +6,7 @@ import re
 from urllib import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
-from geoportailv3.models import Sessions, LuxGetfeatureDefinition
+from geoportailv3.models import LuxGetfeatureDefinition
 from geoportailv3.models import LuxLayerInternalWMS, LuxDownloadUrl
 from mako.template import Template
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
@@ -19,7 +18,6 @@ from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
-from sqlalchemy.orm import scoped_session, sessionmaker
 from shapely.geometry import MultiLineString, mapping, shape
 
 log = logging.getLogger(__name__)
@@ -1015,8 +1013,4 @@ class Getfeatureinfo(object):
         return None
 
     def _get_session(self, engine_name):
-        if engine_name not in Sessions:
-            engine = sqlahelper.get_engine(engine_name)
-            Sessions[engine_name] =\
-                scoped_session(sessionmaker(bind=engine, autocommit=True))
-        return Sessions[engine_name]
+        return getattr(self.request, 'db_' + engine_name)

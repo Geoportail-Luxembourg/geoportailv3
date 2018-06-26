@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import uuid
 import datetime
-import sqlahelper
 
 from sqlalchemy import Column, ForeignKey, func
 from sqlalchemy.types import Unicode, Boolean, DateTime, Integer, Float, Binary
-from sqlalchemy.orm import scoped_session, relationship, sessionmaker
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -20,9 +19,7 @@ from geoalchemy2.shape import from_shape
 
 import geojson
 
-engine = sqlahelper.get_engine('mymaps')
-Base = declarative_base(bind=engine)
-DBSession = scoped_session(sessionmaker(bind=engine))
+Base = declarative_base()
 
 
 class Map(Base):
@@ -79,14 +76,14 @@ class Map(Base):
         return self.todict()
 
     @staticmethod
-    def get(id):
+    def get(id, session):
         """ Get map by its id. """
-        return DBSession.query(Map).get(id)
+        return session.query(Map).get(id)
 
     @staticmethod
-    def belonging_to(user):
+    def belonging_to(user, session):
         """ Get maps that belong to user. """
-        maps = DBSession.query(Map).filter(
+        maps = session.query(Map).filter(
             func.lower(Map.user_login) == func.lower(user)) \
             .order_by("category_id asc,title asc").all()
 
@@ -293,8 +290,8 @@ class Category(Base):
                 'allow_labeling': self.allow_labeling}
 
     @staticmethod
-    def belonging_to(user):
-        user_role = DBSession.query(Role).get(
+    def belonging_to(user, session):
+        user_role = session.query(Role).get(
             getattr(user, 'mymaps_role', user.role.id))
         try:
             categories = user_role.categories\
@@ -304,8 +301,8 @@ class Category(Base):
         return [category.todict() for category in categories]
 
     @staticmethod
-    def all():
-        categories = DBSession.query(Category).all()
+    def all(session):
+        categories = session.query(Category).all()
         return [category.todict() for category in categories]
 
 
