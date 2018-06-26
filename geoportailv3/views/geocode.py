@@ -6,7 +6,7 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3.geocode import DBSession, Address, WKPOI, Neighbourhood
+from geoportailv3.geocode import Address, WKPOI, Neighbourhood
 from shapely.wkt import loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
@@ -44,7 +44,7 @@ class Geocode(object):
 
         results = []
 
-        for feature in DBSession.query(
+        for feature in self.request.db_ecadastre.query(
                 Address.id_caclr_rue.label("id_caclr_rue"),
                 Address.id_caclr_bat.label("id_caclr_bat"),
                 Address.rue.label("rue"),
@@ -176,13 +176,15 @@ class Geocode(object):
         return zips
 
     def encoded_locality_result(self, locality):
-        locality_info = self.get_best_locality_name(locality, DBSession, True)
+        locality_info = self.get_best_locality_name(
+            locality, self.request.db_ecadastre, True)
         if locality_info is not None:
             if locality_info['locality'] is None:
                 locality_info['locality'] = ""
             if locality_info['geom'] is None:
-                features = DBSession.query((func.ST_AsText(func.ST_Centroid(
-                    func.ST_Collect(Address.geom)))).label("geom"),
+                features = self.request.db_ecadastre.query((func.ST_AsText(
+                    func.ST_Centroid(
+                        func.ST_Collect(Address.geom)))).label("geom"),
                             Address.localite).filter(
                             " lower(localite) = lower('" + locality + "')").\
                             group_by(Address.localite).all()
@@ -223,7 +225,7 @@ class Geocode(object):
         return self.encoded_country_result()
 
     def encoded_post_code_result(self, p_zip):
-        features = DBSession.query(
+        features = self.request.db_ecadastre.query(
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label("geom"),
             Address.localite).\
@@ -265,7 +267,7 @@ class Geocode(object):
         return self.encoded_country_result()
 
     def encoded_post_code_locality_result(self, p_zip, p_locality):
-        features = DBSession.query(
+        features = self.request.db_ecadastre.query(
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label("geom"), Address.localite).\
             filter(" lower(code_postal) = lower('" + p_zip + "')").\
@@ -282,7 +284,7 @@ class Geocode(object):
 
         if res.localite is None:
             res.localite = ''
-            features = DBSession.query(
+            features = self.request.db_ecadastre.query(
                 (func.ST_AsText(func.ST_Centroid(
                     func.ST_Collect(Address.geom)))).
                 label("geom"), Address.localite).\
@@ -401,7 +403,7 @@ class Geocode(object):
             geomwgs = func.ST_AsText(func.ST_Centroid(func.ST_Transform(
                 WKTElement(
                     'POINT(%(x)s %(y)s)' % {"x": x, "y": y}, 2169), 4326)))
-            result = DBSession.query(geomwgs.label(
+            result = self.request.db_ecadastre.query(geomwgs.label(
                 "geom"), WKPOI.geom.label("geom2")).first()
             if isinstance(result.geom, unicode) or\
                isinstance(result.geom, str):
@@ -409,7 +411,7 @@ class Geocode(object):
             return result
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            self.request.db_ecadastre.rollback()
         return None
 
     # Returns true if zip code exists in database
@@ -1074,7 +1076,8 @@ class Geocode(object):
                 p_num = self.request.params.get('num', '').lower().strip()
 
             results = self.start_search(
-                0.7, p_num, p_street, p_zip, p_locality, p_country, DBSession)
+                0.7, p_num, p_street, p_zip, p_locality, p_country,
+                self.request.db_ecadastre)
             results = self.keep_the_best_result(results, p_street)
 
             if results is not None and p_zip is not None and\
@@ -1096,7 +1099,7 @@ class Geocode(object):
 
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            self.request.db_ecadastre.rollback()
             results = [self.encoded_country_result()]
 
         if 'cb' not in self.request.params:
@@ -1615,7 +1618,7 @@ class Geocode(object):
                 'locality': locality}
 
     def get_locality_from_zip(self, p_zip):
-        features = DBSession.query(Address.localite).filter(
+        features = self.request.db_ecadastre.query(Address.localite).filter(
             " lower(code_postal) = lower('" + p_zip + "')").\
             group_by(Address.localite).all()
 
