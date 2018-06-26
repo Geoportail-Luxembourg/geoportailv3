@@ -54,6 +54,17 @@ exports = class extends NgeoConfiguration {
     return results;
   }
 
+  /**
+   * @override
+   * @param {ol.Map} map The map to work on.
+   * @param {ol.Extent} userExtent The extent selected by the user.
+   * @return {!Array<ngeox.OfflineLayerMetadata>} the downloadable layers and metadata.
+   */
+  createLayerMetadatas(map, userExtent) {
+    const layersItems = super.createLayerMetadatas(map, userExtent);
+    return layersItems.filter(item => item.type === 'tile');
+  }
+
   isBgLayer_(layer, map) {
     return layer === this.backgroundLayerMgr_.get(map);
   }
