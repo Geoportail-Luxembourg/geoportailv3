@@ -11,7 +11,7 @@ goog.require('ngeo.misc.sortableComponent');
 goog.require('ngeo.statemanager.module');
 goog.require('ngeo.search.module');
 goog.require('ngeo.offline.module');
-goog.require('ngeo.offline.DefaultConfiguration');
+goog.require('app.offline.DefaultConfiguration');
 goog.require('ol.has');
 
 goog.require('ngeo.olcs.olcsModule');
@@ -57,7 +57,7 @@ app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
 }]);
 
 // Define the offline download configuration service
-app.module.service('ngeoOfflineConfiguration', ngeo.offline.DefaultConfiguration);
+app.module.service('ngeoOfflineConfiguration', app.offline.DefaultConfiguration);
 
 /**
  * @param {string} name The string to sanitize.
