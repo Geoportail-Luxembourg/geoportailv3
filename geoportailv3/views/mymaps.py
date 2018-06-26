@@ -22,8 +22,6 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
 from cStringIO import StringIO
-from geoportailv3.mymaps import DBSession
-from geoportailv3.routing import DBSession as RoutingSession
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
 from shapely.wkt import loads
@@ -166,10 +164,10 @@ class Mymaps(object):
                                    wp1=waypoints[1],
                                    wp0=waypoints[0])
         try:
-            lines = RoutingSession.execute(lines_sql)
+            lines = self.request.db_pgroute.execute(lines_sql)
         except Exception as e:
             log.exception(e)
-            RoutingSession.rollback()
+            self.request.db_pgroute.rollback()
             lines = []
             the_line = fallback_line
         new_line = None
@@ -285,20 +283,20 @@ class Mymaps(object):
                 for categ in usercateg['categories']:
                     if categ not in unique_categ:
                         unique_categ.append(categ)
-                        query = DBSession.query(Category).\
+                        query = self.request.db_mymaps.query(Category).\
                             filter(Category.id == categ).all()
                         for category in query:
                             categories.append(category.todict())
             return categories
-        return Category.belonging_to(self.request.user)
+        return Category.belonging_to(self.request.user, self.request.db_mymaps)
 
     @view_config(route_name="mymaps_getallcategories", renderer="json")
     def allcategories(self):
-        return Category.all()
+        return Category.all(self.request.db_mymaps)
 
     @view_config(route_name="mymaps_getpublicmaps", renderer='json')
     def public_maps(self):
-        query = DBSession.query(Map).filter(Map.public == True) # noqa
+        query = self.request.db_mymaps.query(Map).filter(Map.public == True) # noqa
 
         category = None
         if 'category' in self.request.params and\
@@ -315,10 +313,11 @@ class Mymaps(object):
                  'public': map.public,
                  'create_date': map.create_date,
                  'update_date': map.update_date,
-                 'last_feature_update': DBSession.query(
+                 'last_feature_update': self.request.db_mymaps.query(
                     func.max(Feature.update_date)).filter(
                     Feature.map_id == map.uuid).one()[0]
-                 if DBSession.query(func.max(Feature.update_date)).
+                 if self.request.db_mymaps.query(
+                    func.max(Feature.update_date)).
                  filter(Feature.map_id == map.uuid).one()[0]
                  is not None else map.update_date,
                  'category': map.category.name
@@ -326,10 +325,11 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_getpublicategories", renderer='json')
     def public_categories(self):
-        categories = DBSession.query(Category)
+        db_mymaps = self.request.db_mymaps
+        categories = self.request.db_mymaps.query(Category)
         categories = categories.filter(Category.id != 999).\
             filter(Category.id.in_(
-                DBSession.query(RoleCategories.category_id).filter(
+                db_mymaps.query(RoleCategories.category_id).filter(
                     ~or_(and_(RoleCategories.category_id >= 70,
                               RoleCategories.category_id <= 80),
                          and_(RoleCategories.category_id >= 200,
@@ -337,7 +337,7 @@ class Mymaps(object):
         categories = categories.order_by("name asc")
         categ = []
         for category in categories.all():
-            map_cnt = DBSession.query(Map.uuid).\
+            map_cnt = db_mymaps.query(Map.uuid).\
                 filter(Map.public == True).filter( # noqa
                 func.coalesce(Map.category_id, 999) == category.id).\
                 join(Feature).group_by(Map).count()
@@ -350,6 +350,7 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_getmaps", renderer='json')
     def maps(self):
+        session = self.request.db_mymaps
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
@@ -365,10 +366,10 @@ class Mymaps(object):
         if 'category' in self.request.params and\
            self.request.params['category'] > 0:
             category = int(self.request.params["category"])
-        user_role = DBSession.query(Role).get(
+        user_role = session.query(Role).get(
             getattr(user, 'mymaps_role', user.role.id))
         if user_role is None:
-            user_role = DBSession.query(Role).get(999)
+            user_role = session.query(Role).get(999)
 
         allowed_categories = [c.id for c in user_role.categories]
 
@@ -380,11 +381,11 @@ class Mymaps(object):
                         if category not in allowed_categories:
                             return HTTPUnauthorized()
                         else:
-                            query = DBSession.query(Map).filter(
+                            query = session.query(Map).filter(
                                 func.coalesce(Map.category_id, 999) ==
                                 category)
                     else:
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                     allowed_categories),
@@ -397,7 +398,7 @@ class Mymaps(object):
                         user, 'mymaps_role', user.role.id) != 1:
                     if category is not None:
                         if category in allowed_categories:
-                            query = DBSession.query(Map).filter(
+                            query = session.query(Map).filter(
                                 or_(
                                     and_(func.coalesce(Map.category_id, 999) ==
                                          category,
@@ -410,13 +411,13 @@ class Mymaps(object):
                                          func.lower(user.username))
                                     )) # noqa
                         else:
-                            query = DBSession.query(Map).filter(
+                            query = session.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category,
                                      func.lower(Map.user_login) ==
                                      func.lower(user.username)))
                     else:
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
@@ -433,19 +434,19 @@ class Mymaps(object):
                         if owner != user.username and\
                            category not in allowed_categories:
                             return HTTPUnauthorized()
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             func.coalesce(Map.category_id, 999) == category)\
                             .filter(func.lower(Map.user_login) ==
                                     func.lower(owner))
                     else:
                         if owner != user.username:
-                            query = DBSession.query(Map).filter(
+                            query = session.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
                                      func.lower(Map.user_login) ==
                                      func.lower(owner)))
                         else:
-                            query = DBSession.query(Map).\
+                            query = session.query(Map).\
                                 filter(func.lower(Map.user_login) ==
                                        func.lower(user.username))
 
@@ -453,13 +454,13 @@ class Mymaps(object):
                         user, 'mymaps_role', user.role.id) != 1\
                    and owner == user.username:
                     if category is not None:
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
                                  category,
                                  func.lower(Map.user_login) ==
                                  func.lower(user.username)))
                     else:
-                        query = DBSession.query(Map).\
+                        query = session.query(Map).\
                             filter(func.lower(Map.user_login) ==
                                    func.lower(user.username))
                 if getattr(user, 'is_admin', False) and getattr(
@@ -467,7 +468,7 @@ class Mymaps(object):
                    and owner != user.username:
                     if category is not None:
                         if category in allowed_categories:
-                            query = DBSession.query(Map).filter(
+                            query = session.query(Map).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category, Map.public == True,
                                      func.lower(Map.user_login) == func.lower(owner))) # noqa
@@ -475,32 +476,33 @@ class Mymaps(object):
                             return HTTPUnauthorized()
 
                     else:
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             and_(Map.public == True,
                                  func.lower(Map.user_login) == func.lower(owner))) # noqa
                 if not getattr(user, 'is_admin', False) and\
                    owner == user.username:
                     if category is not None:
-                        query = DBSession.query(Map).filter(
+                        query = session.query(Map).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
                                  category,
                                  func.lower(Map.user_login) == func.lower(owner))) # noqa
                     else:
-                        query = DBSession.query(Map).\
+                        query = session.query(Map).\
                             filter(func.lower(Map.user_login) ==
                                    func.lower(owner))
 
         if query is not None:
+            db_mymaps = self.request.db_mymaps
             maps = query.order_by("category_id asc,title asc").all()
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
                      'create_date': map.create_date,
                      'update_date': map.update_date,
-                     'last_feature_update': DBSession.query(
+                     'last_feature_update': db_mymaps.query(
                         func.max(Feature.update_date)).filter(
                         Feature.map_id == map.uuid).one()[0]
-                     if DBSession.query(func.max(Feature.update_date)).
+                     if db_mymaps.query(func.max(Feature.update_date)).
                      filter(Feature.map_id == map.uuid).one()[0]
                      is not None else map.update_date,
                      'category': map.category.name
@@ -513,12 +515,12 @@ class Mymaps(object):
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
-        user_role = DBSession.query(Role).get(
+        user_role = self.request.db_mymaps.query(Role).get(
             getattr(user, 'mymaps_role', user.role.id))
 
         if getattr(user, 'is_admin', False) and getattr(
                 user, 'mymaps_role', user.role.id) == 1:
-            users = DBSession.query(
+            users = self.request.db_mymaps.query(
                     func.lower(Map.user_login).label("user_login"),
                     func.coalesce(Map.category_id, 999).label("category_id")).\
                 filter(func.coalesce(Map.category_id, 999).in_(
@@ -540,7 +542,7 @@ class Mymaps(object):
 
         if getattr(user, 'is_admin', False) and getattr(
                 user, 'mymaps_role', user.role.id) != 1:
-            users = DBSession.query(
+            users = self.request.db_mymaps.query(
                     func.lower(Map.user_login).label("user_login"),
                     func.coalesce(Map.category_id, 999).label("category_id")).\
                 filter((and_(func.coalesce(Map.category_id, 999).in_(
@@ -564,7 +566,7 @@ class Mymaps(object):
                      'categories': user_categories[cur_user]}
                     for cur_user in user_categories]
 
-        categies_id = DBSession.query(
+        categies_id = self.request.db_mymaps.query(
             func.coalesce(Map.category_id, 999).label("category_id")).\
             filter(func.lower(Map.user_login) == func.lower(user.username)).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
@@ -575,11 +577,11 @@ class Mymaps(object):
     @view_config(route_name="mymaps_features")
     def features(self):
         id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
 
-        features = DBSession.query(Feature).filter(
+        features = self.request.db_mymaps.query(Feature).filter(
             Feature.map_id == map.uuid).order_by(Feature.display_order).all()
         if 'cb' in self.request.params:
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
@@ -596,7 +598,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_map_info")
     def map_info(self):
         id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).filter(Map.uuid == id).first()
+        map = self.request.db_mymaps.query(Map).filter(Map.uuid == id).first()
 
         if map is None:
             return HTTPNotFound()
@@ -625,7 +627,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_copy", renderer='json')
     def copy(self):
         id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
@@ -633,7 +635,7 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
 
-        DBSession.expunge(map)
+        self.request.db_mymaps.expunge(map)
 
         make_transient(map)
         map.uuid = None
@@ -657,18 +659,18 @@ class Mymaps(object):
                 trigger_fme = True
         map.create_date = None
         map.update_date = None
-        DBSession.add(map)
-        DBSession.commit()
+        self.request.db_mymaps.add(map)
+        self.request.db_mymaps.commit()
 
         if map.uuid is not None:
-            features = DBSession.query(Feature).filter(
+            features = self.request.db_mymaps.query(Feature).filter(
                 Feature.map_id == id).all()
             for f in features:
-                DBSession.expunge(f)
+                self.request.db_mymaps.expunge(f)
                 make_transient(f)
                 f.id = None
                 map.features.append(f)
-            DBSession.commit()
+            self.request.db_mymaps.commit()
         try:
             if trigger_fme:
                 self.notify_at_save(map, map.user_login, map.uuid, map.title,
@@ -681,7 +683,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_update", renderer='json')
     def update(self):
         id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
 
         if map is None:
             return HTTPNotFound()
@@ -700,15 +702,15 @@ class Mymaps(object):
         if rating < 0 or rating > 5:
             return HTTPBadRequest('Rating value should be between 0 and 5')
 
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPBadRequest('Map does not exist')
         map.rating = ((map.rating * map.rating_count + rating) /
                       (map.rating_count + 1))
         map.rating_count = map.rating_count + 1
         try:
-            DBSession.add(map)
-            DBSession.commit()
+            self.request.db_mymaps.add(map)
+            self.request.db_mymaps.commit()
             return {
                 'success': True,
                 'rating': map.rating,
@@ -719,9 +721,10 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_save_feature", renderer='json')
     def save_feature(self):
+        db_mymaps = self.request.db_mymaps
         try:
             map_id = self.request.matchdict.get("map_id")
-            map = DBSession.query(Map).get(map_id)
+            map = db_mymaps.query(Map).get(map_id)
             if map is None:
                 return HTTPNotFound()
 
@@ -740,25 +743,25 @@ class Mymaps(object):
             obj = Feature(feature)
             obj.last_modified_by = self.request.user.username
             if feature_id:
-                cur_feature = DBSession.query(Feature).get(feature_id)
+                cur_feature = db_mymaps.query(Feature).get(feature_id)
                 if cur_feature is not None:
-                    DBSession.delete(cur_feature)
+                    db_mymaps.delete(cur_feature)
                 obj.id = feature_id
 
             map.features.append(obj)
-            DBSession.commit()
+            db_mymaps.commit()
 
             return {'success': True, 'id': obj.id}
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            db_mymaps.rollback()
             return {'success': False, 'id': None}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
     def save_features(self):
         try:
             map_id = self.request.matchdict.get("map_id")
-            map = DBSession.query(Map).get(map_id)
+            map = self.request.db_mymaps.query(Map).get(map_id)
             if map is None:
                 return HTTPNotFound()
 
@@ -778,24 +781,26 @@ class Mymaps(object):
                 obj = Feature(feature)
                 obj.last_modified_by = self.request.user.username
                 if feature_id:
-                    cur_feature = DBSession.query(Feature).get(feature_id)
-                    DBSession.delete(cur_feature)
+                    cur_feature = self.request.db_mymaps.query(Feature).\
+                        get(feature_id)
+                    self.request.db_mymaps.delete(cur_feature)
                     obj.id = feature_id
 
                 map.features.append(obj)
 
-            DBSession.commit()
+            self.request.db_mymaps.commit()
 
             return {'success': True}
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            self.request.db_mymaps.rollback()
             return {'success': False}
 
     @view_config(route_name="mymaps_save_order", renderer='json')
     def save_order(self):
+        db_mymaps = self.request.db_mymaps
         map_id = self.request.matchdict.get("map_id")
-        map = DBSession.query(Map).get(map_id)
+        map = db_mymaps.query(Map).get(map_id)
         if map is None:
             return HTTPNotFound()
 
@@ -809,12 +814,12 @@ class Mymaps(object):
             feature_id = order['fid']
             display_order = order['display_order']
             try:
-                cur_feature = DBSession.query(Feature).get(feature_id)
+                cur_feature = db_mymaps.query(Feature).get(feature_id)
                 cur_feature.display_order = display_order
-                DBSession.commit()
+                db_mymaps.commit()
             except Exception as e:
                 log.exception(e)
-                DBSession.rollback()
+                db_mymaps.rollback()
                 return {'success': False}
         return {'success': True}
 
@@ -822,19 +827,19 @@ class Mymaps(object):
     def delete_feature(self):
         id = self.request.matchdict.get("feature_id")
 
-        feature = DBSession.query(Feature).get(id)
+        feature = self.request.db_mymaps.query(Feature).get(id)
         if feature is None:
             return HTTPNotFound()
 
-        map = DBSession.query(Map).get(feature.map_id)
+        map = self.request.db_mymaps.query(Map).get(feature.map_id)
         if map is None:
             return HTTPNotFound()
 
         if not self.has_permission(self.request.user, map):
             return HTTPUnauthorized()
 
-        DBSession.delete(feature)
-        DBSession.commit()
+        self.request.db_mymaps.delete(feature)
+        self.request.db_mymaps.commit()
 
         return {'success': True}
 
@@ -845,7 +850,7 @@ class Mymaps(object):
             user = self.request.user
             if not getattr(user, 'is_admin', False):
                 return False
-            user_role = DBSession.query(Role).get(getattr(
+            user_role = self.request.db_mymaps.query(Role).get(getattr(
                 user, 'mymaps_role', user.role.id))
             if map.category is None and 999 in\
                     [cat.id for cat in user_role.categories]:
@@ -859,19 +864,19 @@ class Mymaps(object):
     def delete(self):
         id = self.request.matchdict.get("map_id")
 
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
         if not self.has_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         # remove the features associated to the map
-        features = DBSession.query(Feature).filter(
+        features = self.request.db_mymaps.query(Feature).filter(
             Feature.map_id == map.uuid).all()
         for f in features:
-            DBSession.delete(f)
-        DBSession.delete(map)
-        DBSession.commit()
+            self.request.db_mymaps.delete(f)
+        self.request.db_mymaps.delete(map)
+        self.request.db_mymaps.commit()
 
         return {'success': True}
 
@@ -879,18 +884,18 @@ class Mymaps(object):
     def delete_all_features(self):
         id = self.request.matchdict.get("map_id")
 
-        map = DBSession.query(Map).get(id)
+        map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
         if not self.has_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         # remove the features associated to the map
-        features = DBSession.query(Feature).filter(
+        features = self.request.db_mymaps.query(Feature).filter(
             Feature.map_id == map.uuid).all()
         for f in features:
-            DBSession.delete(f)
-        DBSession.commit()
+            self.request.db_mymaps.delete(f)
+        self.request.db_mymaps.commit()
 
         return {'success': True}
 
@@ -952,8 +957,8 @@ class Mymaps(object):
             map.label = unicode(params.get('label'))
 
         try:
-            DBSession.add(map)
-            DBSession.commit()
+            self.request.db_mymaps.add(map)
+            self.request.db_mymaps.commit()
         except Exception as e:
             log.exception(e)
             return {'success': False}
@@ -969,7 +974,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_map", renderer='json')
     def map(self):
         id = self.request.matchdict.get("map_id")
-        map = Map.get(id)
+        map = Map.get(id, self.request.db_mymaps)
         if map is None:
             return HTTPNotFound()
         params = dict(map)
@@ -987,9 +992,9 @@ class Mymaps(object):
     @view_config(route_name="mymaps_get_image")
     def image(self):
         filename = self.request.matchdict.get("filename")
-        if DBSession.query(Images).\
+        if self.request.db_mymaps.query(Images).\
                 filter(Images.name == filename).count() > 0:
-            cur_file = DBSession.query(Images).\
+            cur_file = self.request.db_mymaps.query(Images).\
                 filter(Images.name == filename).one()
             the_image = cur_file.image
             lower_file_name = cur_file.name.lower()
@@ -1065,15 +1070,15 @@ class Mymaps(object):
             cur_file.name = image_name
             cur_file.image = f_image.read()
             cur_file.login_owner = user
-            DBSession.add(cur_file)
-            DBSession.commit()
+            self.request.db_mymaps.add(cur_file)
+            self.request.db_mymaps.commit()
 
             cur_file = Images()
             cur_file.name = thumbnail_name
             cur_file.image = f_thumbnail.read()
             cur_file.login_owner = user
-            DBSession.add(cur_file)
-            DBSession.commit()
+            self.request.db_mymaps.add(cur_file)
+            self.request.db_mymaps.commit()
 
         except:
             return {'success': False, 'msg': 'Bad image'}
@@ -1098,7 +1103,7 @@ class Mymaps(object):
         if not os.path.exists(dir):
             os.mkdir(dir)
         symbolsmap = ""
-        for symbol in DBSession.query(Symbols).all():
+        for symbol in self.request.db_mymaps.query(Symbols).all():
             _, ext = os.path.splitext(symbol.symbol_name)
             symbolsmap = symbolsmap + """
                 SYMBOL
@@ -1113,7 +1118,7 @@ class Mymaps(object):
         the_file.close()
         os.system('sh ./scripts/sync_ms.sh %s' % (dir + "/" + "/symbols.map"))
 
-        for symbol in DBSession.query(Symbols).\
+        for symbol in self.request.db_mymaps.query(Symbols).\
                 filter(Symbols.synchronized == False).all():  # noqa
 
             _, ext = os.path.splitext(symbol.symbol_name)
@@ -1124,7 +1129,7 @@ class Mymaps(object):
             the_file.write(symbol.symbol)
             the_file.close()
             symbol.synchronized = True
-            DBSession.commit()
+            self.request.db_mymaps.commit()
             os.system('sh ./scripts/sync_ms.sh %s remove'
                       % (dir + "/" + the_name))
 
@@ -1136,7 +1141,7 @@ class Mymaps(object):
             scale = 100
 
         try:
-            symbol = DBSession.query(Symbols).\
+            symbol = self.request.db_mymaps.query(Symbols).\
                 filter(Symbols.id == id).one()
             try:
                 headers = {'Content-Type': 'application/octet-stream',
@@ -1195,7 +1200,7 @@ class Mymaps(object):
         try:
             symbol_type = self.request.params.get('symboltype', 'pixmap')
             if symbol_type == 'public':
-                for symbol in DBSession.query(Symbols).\
+                for symbol in self.request.db_mymaps.query(Symbols).\
                         filter(Symbols.is_public == True).all():  # noqa
                     results.append({'id': symbol.id,
                                     'name': symbol.symbol_name,
@@ -1207,7 +1212,7 @@ class Mymaps(object):
                 user = self.request.user
                 if user is None:
                     return HTTPUnauthorized()
-                for symbol in DBSession.query(Symbols).\
+                for symbol in self.request.db_mymaps.query(Symbols).\
                         filter(func.lower(Symbols.login_owner) ==
                                func.lower(user.username)).all():
                     results.append({'id': symbol.id,
@@ -1288,8 +1293,8 @@ class Mymaps(object):
         cur_file.login_owner = username
         cur_file.is_public = False
 
-        DBSession.add(cur_file)
-        DBSession.commit()
+        self.request.db_mymaps.add(cur_file)
+        self.request.db_mymaps.commit()
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
@@ -1300,7 +1305,7 @@ class Mymaps(object):
             self.generate_symbol_file()
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            self.request.db_mymaps.rollback()
 
         return {'success': 'true',
                 'description': 'file added',
