@@ -17,7 +17,7 @@ exports = class extends NgeoConfiguration {
    *     manager.
    */
   constructor($rootScope, ngeoBackgroundLayerMgr) {
-    super($rootScope);
+    super($rootScope, ngeoBackgroundLayerMgr);
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
@@ -62,7 +62,7 @@ exports = class extends NgeoConfiguration {
    */
   createLayerMetadatas(map, userExtent) {
     const layersItems = super.createLayerMetadatas(map, userExtent);
-    return layersItems.filter(item => item.type === 'tile');
+    return layersItems.filter(item => item.layerType === 'tile');
   }
 
   isBgLayer_(layer, map) {
