@@ -16,6 +16,9 @@
   "compile": {
     "entry_point": "app.main",
     "externs": [
+      "node_modules/openlayers/externs/olx.js",
+      "node_modules/openlayers/externs/oli.js",
+      "node_modules/ngeo/options/ngeox.js",
       "node_modules/openlayers/externs/bingmaps.js",
       "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
@@ -55,9 +58,6 @@
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
-      "node_modules/ngeo/options/ngeox.js",
-      "node_modules/openlayers/externs/olx.js",
-      "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
       "*"
