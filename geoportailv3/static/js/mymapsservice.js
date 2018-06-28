@@ -435,6 +435,12 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   }, this));
 };
 
+/**
+ * Fill a collection of features with features objects.
+ * @param {app.MapsResponse} features An array of feature object.
+ * @param {ol.Collection} collection The collection of features to fill.
+ * @return {ol.Collection} a collection of features with the new features.
+ */
 app.Mymaps.prototype.setFeatures = function(features, collection) {
   if (features !== null) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
