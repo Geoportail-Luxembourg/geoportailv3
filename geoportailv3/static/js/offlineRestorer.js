@@ -16,7 +16,7 @@ const OfflineRestorer = class extends restorer {
    * @ngInject
    * @param {ngeox.OfflineConfiguration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
-   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr
+   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
    */
   constructor(ngeoOfflineConfiguration, appMymapsOffline, ngeoBackgroundLayerMgr) {
     super(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr);
@@ -33,10 +33,12 @@ const OfflineRestorer = class extends restorer {
    * @override
    */
   restore(map) {
-    this.appMymapsOffline_.restore();
-    return super.restore(map);
+    return super.restore(map).then((extent) => {
+      this.appMymapsOffline_.restore();
+      return extent;
+    });
   }
-}
+};
 
 app.module.service('appOfflineRestorer', OfflineRestorer);
 exports = OfflineRestorer;
