@@ -72,7 +72,9 @@ app.MymapsOffline.prototype.restore = function() {
   
     var mapFeatures = storedItem['mapFeatures'];
     if (mapFeatures) {
-      this.appMymaps_.setFeatures(mapFeatures, this.drawnFeatures_.getCollection());
+      const collection = this.drawnFeatures_.getCollection();
+      collection.clear();
+      this.appMymaps_.setFeatures(mapFeatures, collection);
     };
   
     var mapId = storedItem['mapId'];
