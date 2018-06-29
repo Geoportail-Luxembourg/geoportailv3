@@ -11,6 +11,15 @@ body {
   padding-top: @topbar-height;
 }
 
+@media (max-width: @screen-sm-min) {
+  .modal-backdrop {
+    display: none !important;
+  }
+  .modal-dialog {
+    margin: 30px auto;
+  }
+
+}
 [ng-cloak]
 {
   display: none !important;
