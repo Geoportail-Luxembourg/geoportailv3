@@ -21,6 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
+goog.require('app.offline.State');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -91,6 +92,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {Array<string>} tiles3dLayers 3D tiles layers.
  * @param {string} tiles3dUrl 3D tiles server url.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
+ * @param {app.offline.State} appOfflineState Offline state manager.
  * @constructor
  * @export
  * @ngInject
@@ -103,7 +105,8 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, appOfflineState) {
+
   /**
    * @type {boolean}
    * @export
@@ -205,6 +208,18 @@ app.MainController = function(
    * @private
    */
   this.appTheme_ = appTheme;
+
+  /**
+   * @private
+   * @type {ngeo.offline.NetworkStatus}
+   */
+  this.ngeoNetworkStatus_ = ngeoNetworkStatus;
+
+  /**
+   * @type {app.offline.State}
+   * @export
+   */
+  this.offlineState = appOfflineState;
 
   /**
    * @private
@@ -509,9 +524,9 @@ app.MainController = function(
 
   $scope.$watch(
       () => {
-        return this.ngeoNetworkStatus.offline;
+        return this.ngeoNetworkStatus_.offline;
       }, () => {
-      if (this.ngeoNetworkStatus.offline) {
+      if (this.ngeoNetworkStatus_.offline) {
         if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
           this.closeSidebar();
           this['layersOpen'] = true;
