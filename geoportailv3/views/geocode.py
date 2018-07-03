@@ -6,7 +6,7 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3.geocode import Address, WKPOI, Neighbourhood
+from geoportailv3.geocode import Address, WKPOI, Neighbourhood, Parcel
 from shapely.wkt import loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
@@ -23,6 +23,7 @@ class Geocode(object):
 
     def __init__(self, request):
         self.request = request
+        self.returnParcelInfo = False
 
     # View used to get an adress from a coordinate.
     @view_config(route_name="reverse_geocode", renderer="json")
@@ -371,8 +372,7 @@ class Geocode(object):
 
         result = self.transform_to_latlon(
             cur_geom.centroid.x, cur_geom.centroid.y)
-
-        return ({'name': self.get_formatted_address(
+        resp = {'name': self.get_formatted_address(
             str(numero).strip(),
             str(feature.rue.encode('utf-8')).strip(),
             str(code_postal).strip(),
@@ -396,7 +396,16 @@ class Geocode(object):
             "locality": str(feature.localite.encode('utf-8')).strip(),
             "id_caclr_street": str(caclr_rue),
             "id_caclr_building": str(caclr_bat)
-        }})
+        }}
+        if hasattr(feature, 'cle_parcelle') and self.returnParcelInfo is True:
+            label = self.request.db_ecadastre.query(
+                Parcel).get(feature.cle_parcelle)
+
+            resp['parcel'] = {
+                'key': feature.cle_parcelle,
+                'label': label.label
+                }
+        return resp
 
     def transform_to_latlon(self, x, y):
         try:
@@ -1056,6 +1065,9 @@ class Geocode(object):
     def search(self):
         results = []
         try:
+            self.returnParcelInfo = (
+                self.request.params.get('returnParcelInfo', 'False').lower() ==
+                'true')
             querystring = self.request.params.get('queryString', None)
             if querystring is not None:
                 res = self._split_address(querystring)
