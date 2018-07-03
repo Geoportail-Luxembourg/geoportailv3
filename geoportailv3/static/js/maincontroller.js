@@ -21,6 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
+goog.require('app.offline.State');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -86,6 +87,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
+ * @param {app.offline.State} appOfflineState Offline state manager.
  * @param {string} cesiumURL The Cesium script URL.
  * @param {angular.Scope} $rootScope Angular root scope.
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
@@ -102,7 +104,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, ngeoNetworkStatus,
+    appSelectedFeatures, $locale, appRouting, $document, ngeoNetworkStatus, appOfflineState,
     cesiumURL, $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
   /**
    * @type {boolean}
@@ -207,10 +209,16 @@ app.MainController = function(
   this.appTheme_ = appTheme;
 
   /**
+   * @private
    * @type {ngeo.offline.NetworkStatus}
+   */
+  this.ngeoNetworkStatus_ = ngeoNetworkStatus;
+
+  /**
+   * @type {app.offline.State}
    * @export
    */
-  this.ngeoNetworkStatus = ngeoNetworkStatus;
+  this.offlineState = appOfflineState;
 
   /**
    * @private
@@ -510,9 +518,9 @@ app.MainController = function(
 
   $scope.$watch(
       () => {
-        return this.ngeoNetworkStatus.offline;
+        return this.ngeoNetworkStatus_.offline;
       }, () => {
-      if (this.ngeoNetworkStatus.offline) {
+      if (this.ngeoNetworkStatus_.offline) {
         if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
           this.closeSidebar();
           this['layersOpen'] = true;
