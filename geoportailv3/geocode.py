@@ -7,6 +7,14 @@ from geoalchemy2 import Geometry
 Base = declarative_base()
 
 
+class Parcel(Base):
+    __table_args__ = ({'schema': 'diffdata', 'autoload': False})
+    __tablename__ = 'pcnpar_s'
+
+    id = Column(Unicode, primary_key=True)
+    label = Column(Unicode)
+
+
 class Address(Base):
     __table_args__ = ({'schema': 'diffdata', 'autoload': False})
     __tablename__ = 'v_pcn_addresspoints'
@@ -18,6 +26,7 @@ class Address(Base):
     code_postal = Column(Unicode)
     id_caclr_rue = Column(Unicode)
     id_caclr_bat = Column(Unicode)
+    cle_parcelle = Column(Unicode)
     geom = Column(Geometry(srid=2169))
 
 
