@@ -28,11 +28,19 @@ const OfflineState = function(ngeoNetworkStatus) {
 };
 
 /**
- * Clear the feature overlay.
+ * Is the application considered as offline.
  * @export
  */
 OfflineState.prototype.isOffline = function() {
   return this.ngeoNetworkStatus.offline || this.offline;
+};
+
+/**
+ * Get if offline mode is enabled.
+ * @export
+ */
+OfflineState.prototype.getOffline = function() {
+  return this.offline;
 };
 
 /**
