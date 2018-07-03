@@ -91,7 +91,6 @@ goog.require('ngeo.olcs.Manager');
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {Array<string>} tiles3dLayers 3D tiles layers.
  * @param {string} tiles3dUrl 3D tiles server url.
- * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {app.offline.State} appOfflineState Offline state manager.
  * @constructor
  * @export
@@ -105,8 +104,7 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, appOfflineState) {
-
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, appOfflineState) {
   /**
    * @type {boolean}
    * @export
@@ -208,12 +206,6 @@ app.MainController = function(
    * @private
    */
   this.appTheme_ = appTheme;
-
-  /**
-   * @private
-   * @type {ngeo.offline.NetworkStatus}
-   */
-  this.ngeoNetworkStatus_ = ngeoNetworkStatus;
 
   /**
    * @type {app.offline.State}
@@ -524,9 +516,9 @@ app.MainController = function(
 
   $scope.$watch(
       () => {
-        return this.ngeoNetworkStatus_.offline;
-      }, () => {
-      if (this.ngeoNetworkStatus_.offline) {
+        return this.offlineState.isOffline();
+      }, (offline) => {
+      if (offline) {
         if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
           this.closeSidebar();
           this['layersOpen'] = true;
