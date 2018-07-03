@@ -3,6 +3,7 @@ goog.module.declareLegacyNamespace();
 
 goog.require('app');
 goog.require('app.MymapsOffline');
+goog.require('app.offline.State');
 goog.require('ngeo.offline.DefaultConfiguration');
 goog.require('ngeo.map.BackgroundLayerMgr');
 
@@ -18,8 +19,10 @@ const OfflineRestorer = class extends restorer {
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
    * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+   * @param {app.offline.State} appOfflineState Offline state manager.
    */
-  constructor(ngeoOfflineConfiguration, appMymapsOffline, ngeoBackgroundLayerMgr, appDrawnFeatures) {
+  constructor(ngeoOfflineConfiguration, appMymapsOffline, ngeoBackgroundLayerMgr,
+              appDrawnFeatures, appOfflineState) {
     super(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr);
     /**
      * @type {app.MymapsOffline}
@@ -32,6 +35,12 @@ const OfflineRestorer = class extends restorer {
      * @type {app.DrawnFeatures}
      */
     this.appDrawnFeatures_ = appDrawnFeatures;
+
+    /**
+     * @private
+     * @type {app.offline.State}
+     */
+    this.offlineState_ = appOfflineState;
   }
 
   /**
@@ -43,6 +52,7 @@ const OfflineRestorer = class extends restorer {
     return super.restore(map).then((extent) => {
       this.appMymapsOffline_.restore();
       map.addLayer(this.appDrawnFeatures_.drawLayer);
+      this.offlineState_.setOffline(true);
       return extent;
     });
   }
