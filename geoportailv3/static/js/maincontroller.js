@@ -21,7 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
-goog.require('app.offline.State');
+goog.require('ngeo.offline.State');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -86,7 +86,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
- * @param {app.offline.State} appOfflineState Offline state manager.
+ * @param {ngeo.offline.State} ngeoOfflineState Offline state manager.
  * @param {string} cesiumURL The Cesium script URL.
  * @param {angular.Scope} $rootScope Angular root scope.
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
@@ -103,7 +103,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, appOfflineState,
+    appSelectedFeatures, $locale, appRouting, $document, ngeoOfflineState,
     cesiumURL, $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
   /**
    * @type {boolean}
@@ -208,10 +208,10 @@ app.MainController = function(
   this.appTheme_ = appTheme;
 
   /**
-   * @type {app.offline.State}
+   * @type {ngeo.offline.State}
    * @export
    */
-  this.offlineState = appOfflineState;
+  this.offlineState = ngeoOfflineState;
 
   /**
    * @private
