@@ -257,7 +257,7 @@
           ngeo-offline-mask-margin="::100"
           ngeo-offline-min-zoom="::11"
           ngeo-offline-max-zoom="::15"
-          ng-class="{'offline-mode': mainCtrl.offlineState.getOffline()}"
+          ng-class="{'offline-mode': mainCtrl.offlineState.isOfflineDataLoaded()}"
       >
       </ngeo-offline>
     </div>
