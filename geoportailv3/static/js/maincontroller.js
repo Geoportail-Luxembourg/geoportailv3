@@ -21,7 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
-goog.require('app.offline.State');
+goog.require('ngeo.offline.State');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -91,7 +91,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {Array<string>} tiles3dLayers 3D tiles layers.
  * @param {string} tiles3dUrl 3D tiles server url.
- * @param {app.offline.State} appOfflineState Offline state manager.
+ * @param {ngeo.offline.State} ngeoOfflineState Offline state manager.
  * @constructor
  * @export
  * @ngInject
@@ -104,7 +104,7 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, appOfflineState) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoOfflineState) {
   /**
    * @type {boolean}
    * @export
@@ -208,10 +208,10 @@ app.MainController = function(
   this.appTheme_ = appTheme;
 
   /**
-   * @type {app.offline.State}
+   * @type {ngeo.offline.State}
    * @export
    */
-  this.offlineState = appOfflineState;
+  this.offlineState = ngeoOfflineState;
 
   /**
    * @private

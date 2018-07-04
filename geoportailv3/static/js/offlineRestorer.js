@@ -18,11 +18,11 @@ const OfflineRestorer = class extends restorer {
    * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
+   * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
-   * @param {app.offline.State} appOfflineState Offline state manager.
    */
-  constructor(ngeoOfflineConfiguration, appMymapsOffline, ngeoBackgroundLayerMgr,
-              appDrawnFeatures, appOfflineState) {
+  constructor(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr,
+              appMymapsOffline, appDrawnFeatures ) {
     super(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr);
     /**
      * @type {app.MymapsOffline}
@@ -35,12 +35,6 @@ const OfflineRestorer = class extends restorer {
      * @type {app.DrawnFeatures}
      */
     this.appDrawnFeatures_ = appDrawnFeatures;
-
-    /**
-     * @private
-     * @type {app.offline.State}
-     */
-    this.offlineState_ = appOfflineState;
   }
 
   /**
@@ -52,7 +46,6 @@ const OfflineRestorer = class extends restorer {
     return super.restore(map).then((extent) => {
       this.appMymapsOffline_.restore();
       map.addLayer(this.appDrawnFeatures_.drawLayer);
-      this.offlineState_.setOffline(true);
       return extent;
     });
   }
