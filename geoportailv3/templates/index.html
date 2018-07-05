@@ -46,7 +46,12 @@
           </div>
         </div>
 
-        <div class="offline-msg alert-danger" translate>You are currently offline.</div>
+        <div class="offline-msg alert-danger" translate>
+          <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnect.
+            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" translate>Enable offline mode</a>
+          </span>
+          <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
+        </div>
 
         <ul class="nav navbar-nav pull-right">
           <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
