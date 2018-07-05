@@ -21,7 +21,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('ngeo.map.FeatureOverlayMgr');
-goog.require('ngeo.print.Service');
+goog.require('app.Printservice');
 goog.require('ngeo.print.Utils');
 goog.require('ol.easing');
 goog.require('ol.events');
@@ -69,7 +69,6 @@ app.Piwik;
  * @param {angular.$timeout} $timeout The Angular $timeout service.
  * @param {angular.$q} $q The Angular $q service.
  * @param {angularGettext.Catalog} gettextCatalog The gettext service.
- * @param {ngeox.CreatePrint} ngeoCreatePrint The ngeoCreatePrint function.
  * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {ngeo.print.Utils} ngeoPrintUtils The ngeoPrintUtils service.
@@ -81,15 +80,17 @@ app.Piwik;
  * @param {string} qrServiceUrl URL to qr generator service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+ * @param {angular.$http} $http Angular $http service.
+ * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper.
  * @constructor
  * @export
  * @ngInject
  */
 app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
-    ngeoCreatePrint, ngeoFeatureOverlayMgr, ngeoPrintUtils,
+    ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
-    ngeoBackgroundLayerMgr) {
+    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -150,7 +151,7 @@ app.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {ngeo.print.Service}
    * @private
    */
-  this.print_ = ngeoCreatePrint(printServiceUrl);
+  this.print_ = new app.Printservice(printServiceUrl, $http, ngeoLayerHelper);
 
   /**
    * @type {ngeo.print.Utils}
