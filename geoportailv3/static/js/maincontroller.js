@@ -21,6 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
+goog.require('ngeo.offline.Mode');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -86,6 +87,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {string} cesiumURL The Cesium script URL.
  * @param {angular.Scope} $rootScope Angular root scope.
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
@@ -102,7 +104,7 @@ app.MainController = function(
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
-    appSelectedFeatures, $locale, appRouting, $document, ngeoNetworkStatus,
+    appSelectedFeatures, $locale, appRouting, $document, ngeoNetworkStatus, ngeoOfflineMode,
     cesiumURL, $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
   /**
    * @type {boolean}
@@ -208,9 +210,15 @@ app.MainController = function(
 
   /**
    * @type {ngeo.offline.NetworkStatus}
+   * @private
+   */
+  this.networkStatus_ = ngeoNetworkStatus;
+
+  /**
+   * @type {ngeo.offline.Mode}
    * @export
    */
-  this.ngeoNetworkStatus = ngeoNetworkStatus;
+  this.offlineMode = ngeoOfflineMode;
 
   /**
    * @private
@@ -508,11 +516,8 @@ app.MainController = function(
     }
   }
 
-  $scope.$watch(
-      () => {
-        return this.ngeoNetworkStatus.offline;
-      }, () => {
-      if (this.ngeoNetworkStatus.offline) {
+  $scope.$watch(this.isDisconnectedOrOffline.bind(this), (offline) => {
+      if (offline) {
         if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
           this.closeSidebar();
           this['layersOpen'] = true;
@@ -918,6 +923,15 @@ app.MainController.prototype.toggleTiles3dVisibility = function() {
     piwik.push(['setDocumentTitle', '3dtiles_visible']);
     piwik.push(['trackPageView']);
   }
+};
+
+/**
+ * Check if disconnected or offline mode enabled.
+ * @returns {boolean}
+ * @export
+ */
+app.MainController.prototype.isDisconnectedOrOffline = function() {
+  return this.offlineMode.isEnabled() || !!this.networkStatus_.isDisconnected();
 };
 
 app.module.controller('MainController', app.MainController);

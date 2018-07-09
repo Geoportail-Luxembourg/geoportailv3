@@ -29,6 +29,14 @@ ngeo-offline {
     }
   }
 
+  &.offline-mode {
+    .main-button {
+      .no-data, .with-data{
+        color: green;
+      }
+    }
+  }
+
   .validate-extent {
     position: absolute;
     bottom: 0.5rem;
@@ -63,7 +71,7 @@ ngeo-offline {
 .offline-msg {
   display: none;
 }
-.offline .offline-msg {
+.offline-or-disconnected .offline-msg {
   display: block;
   position: absolute;
   z-index: 10000;
@@ -77,7 +85,7 @@ ngeo-offline {
 
 /** Disable components **/
 
-body.offline {
+body.offline-or-disconnected {
   .search-container,
   .theme-icon,
   .theme-header,
