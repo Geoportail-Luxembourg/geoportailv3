@@ -3,7 +3,7 @@ goog.module.declareLegacyNamespace();
 
 goog.require('app');
 goog.require('app.MymapsOffline');
-goog.require('ngeo.offline.DefaultConfiguration');
+goog.require('ngeo.offline.Configuration');
 const downloader = goog.require('ngeo.offline.Downloader');
 
 /**
@@ -12,7 +12,7 @@ const downloader = goog.require('ngeo.offline.Downloader');
 const OfflineDownloader = class extends downloader {
   /**
    * @ngInject
-   * @param {ngeox.OfflineConfiguration} ngeoOfflineConfiguration A service for customizing offline behaviour.
+   * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    */
   constructor(ngeoOfflineConfiguration, appMymapsOffline) {
