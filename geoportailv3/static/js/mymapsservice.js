@@ -490,7 +490,7 @@ app.Mymaps.prototype.clear = function() {
  */
 app.Mymaps.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      this.mapIsEditable && !this.ngeoNetworkStatus_.offline) {
+      this.mapIsEditable && !this.ngeoNetworkStatus_.isDisconnected()) {
     return true;
   }
   return false;
