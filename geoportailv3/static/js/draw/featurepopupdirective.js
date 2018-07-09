@@ -568,7 +568,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
       !this.feature.get('isLabel') &&
-      !this.ngeoNetworkStatus_.offline) {
+      !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
@@ -587,7 +587,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
 app.FeaturePopupController.prototype.updateProfile = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
-      !this.ngeoNetworkStatus_.offline) {
+      !this.ngeoNetworkStatus_.isDisconnected()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);

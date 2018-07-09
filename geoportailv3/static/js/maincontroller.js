@@ -521,7 +521,7 @@ app.MainController = function(
     }
   }
 
-  $scope.$watch(this.isOfflineState.bind(this), (offline) => {
+  $scope.$watch(this.isDisconnectedOrOffline.bind(this), (offline) => {
       if (offline) {
         if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
           this.closeSidebar();
@@ -935,8 +935,8 @@ app.MainController.prototype.toggleTiles3dVisibility = function() {
  * @returns {boolean}
  * @export
  */
-app.MainController.prototype.isOfflineState = function() {
-  return this.offlineMode.isEnabled() || !!this.networkStatus_.offline;
+app.MainController.prototype.isDisconnectedOrOffline = function() {
+  return this.offlineMode.isEnabled() || !!this.networkStatus_.isDisconnected();
 };
 
 app.module.controller('MainController', app.MainController);
