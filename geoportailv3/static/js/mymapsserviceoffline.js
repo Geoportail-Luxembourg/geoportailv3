@@ -2,14 +2,14 @@ goog.provide('app.MymapsOffline');
 
 goog.require('app');
 goog.require('app.Mymaps');
-goog.require('ngeo.offline.DefaultConfiguration');
+goog.require('ngeo.offline.Configuration');
 
 
 /**
  * @constructor
  * @param {app.Mymaps} appMymaps app mymaps service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
- * @param {ngeo.offline.DefaultConfiguration} ngeoOfflineConfiguration ngeo Offline Configuration
+ * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
  * @ngInject
  */
 app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
@@ -26,7 +26,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
   this.drawnFeatures_ = appDrawnFeatures;
 
   /**
-   * @type {ngeo.offline.DefaultConfiguration}
+   * @type {ngeo.offline.Configuration}
    * @private
    */
   this.ngeoOfflineConfiguration_ = ngeoOfflineConfiguration;

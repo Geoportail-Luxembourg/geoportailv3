@@ -3,7 +3,7 @@ goog.module.declareLegacyNamespace();
 
 goog.require('app');
 goog.require('app.MymapsOffline');
-goog.require('ngeo.offline.DefaultConfiguration');
+goog.require('ngeo.offline.Configuration');
 goog.require('ngeo.map.BackgroundLayerMgr');
 
 const restorer = goog.require('ngeo.offline.Restorer');
@@ -14,7 +14,7 @@ const restorer = goog.require('ngeo.offline.Restorer');
 const OfflineRestorer = class extends restorer {
   /**
    * @ngInject
-   * @param {ngeox.OfflineConfiguration} ngeoOfflineConfiguration A service for customizing offline behaviour.
+   * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
    * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.

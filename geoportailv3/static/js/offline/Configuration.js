@@ -1,12 +1,11 @@
-goog.module('app.offline.DefaultConfiguration');
+goog.module('app.offline.Configuration');
 goog.module.declareLegacyNamespace();
 
 goog.require('ngeo.map.BackgroundLayerMgr');
 
-const NgeoConfiguration = goog.require('ngeo.offline.DefaultConfiguration');
+const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
 
 /**
- * @implements {ngeox.OfflineConfiguration}
  */
 exports = class extends NgeoConfiguration {
 
@@ -24,6 +23,24 @@ exports = class extends NgeoConfiguration {
      * @private
      */
     this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+  }
+
+ /**
+   * @override
+   * @param {!ol.Map} map the map
+   * @return {number} an estimated size in MB
+   */
+  estimateLoadDataSize(map) {
+    let estimation = 0;
+    const bgFactor = window.devicePixelRatio > 1 ? 2 : 1;
+    const sizeOfANormalLayer = 20;
+    const sizeOfABgLayer = bgFactor * sizeOfANormalLayer;
+    map.getLayers().forEach((layer) => {
+      if (!(layer instanceof ol.layer.Vector)) {
+        estimation += this.isBgLayer_(layer, map) ? sizeOfABgLayer : sizeOfANormalLayer;
+      }
+    });
+    return estimation;
   }
 
   /**
@@ -65,6 +82,12 @@ exports = class extends NgeoConfiguration {
     return layersItems.filter(item => item.layerType === 'tile');
   }
 
+  /**
+   * @private
+   * @param {ol.layer.Base} layer
+   * @param {ol.Map} map
+   * @return {boolean}
+   */
   isBgLayer_(layer, map) {
     return layer === this.backgroundLayerMgr_.get(map);
   }
