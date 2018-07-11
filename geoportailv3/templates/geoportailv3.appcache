@@ -5,15 +5,16 @@ CACHE MANIFEST
   fonts = os.listdir('geoportailv3/static/build/fonts/')
   webfonts = os.listdir('geoportailv3/static/webfonts/')
   settings = request.registry.settings
-  import random
+  import time
 %>
 
 % if 'skip_appcache' in settings:
-# Dev mode: prevent caching with random string ${random.random()}_${random.random()}
+# Dev mode: prevent caching on a 10s basis ${int(time.time()) / 10}
 % endif
 
 CACHE:
 ${request.static_url('geoportailv3:static/build/build.js')}
+${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}
 ${request.static_url('geoportailv3:static/build/build.min.css')}
 ${request.static_url('geoportailv3:static/images/gov-light.png')}
 % for font in fonts:
@@ -28,5 +29,7 @@ NETWORK:
 *
 
 FALLBACK:
-/theme/main? /theme/main
-/theme/main
+/theme/main /theme/main
+/themes /themes?interface=desktop&version=2&catalog=true&background=bglayers&min_levels=1
+/mymaps/allcategories /mymaps/allcategories
+/predefined_wms /predefined_wms

@@ -73,7 +73,9 @@ app.module.config(['$httpProvider', function($httpProvider) {
 }]).factory('noCacheInterceptor', function() {
   return {
     request: function(config) {
-      if (config.method == 'GET' && config.url.indexOf('.html') === -1) {
+      if (config.method == 'GET' &&
+          config.url.indexOf('geoportailv3.json') === -1 && // static files already have cache control
+          config.url.indexOf('.html') === -1) {
         var separator = config.url.indexOf('?') === -1 ? '?' : '&';
         config.url = config.url + separator + 'noCache=' + new Date().getTime();
       }
