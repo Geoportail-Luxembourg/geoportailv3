@@ -14,6 +14,7 @@ CACHE MANIFEST
 
 CACHE:
 ${request.static_url('geoportailv3:static/build/build.js')}
+${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}
 ${request.static_url('geoportailv3:static/build/build.min.css')}
 ${request.static_url('geoportailv3:static/images/gov-light.png')}
 % for font in fonts:
@@ -28,5 +29,7 @@ NETWORK:
 *
 
 FALLBACK:
-/theme/main? /theme/main
-/theme/main
+/theme/main /theme/main
+/themes /themes?interface=desktop&version=2&catalog=true&background=bglayers&min_levels=1
+/mymaps/allcategories /mymaps/allcategories
+/predefined_wms /predefined_wms
