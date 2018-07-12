@@ -683,6 +683,7 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
   var noNameElemCnt = 0;
   var kmlExtent;
   var mapId = this.appMymaps_.getMapId();
+  var badfeatures = [];
   goog.array.forEach(kmlFeatures, function(feature) {
     this.sanitizeFeature_(feature);
     feature.set('__map_id__', mapId);
@@ -691,10 +692,20 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
       noNameElemCnt++;
     }
     var curGeometry = feature.getGeometry();
-    if (kmlExtent) {
-      ol.extent.extend(kmlExtent, curGeometry.getExtent());
+    if (curGeometry !== null) {
+      if (kmlExtent) {
+        ol.extent.extend(kmlExtent, curGeometry.getExtent());
+      } else {
+        kmlExtent = curGeometry.getExtent();
+      }
     } else {
-      kmlExtent = curGeometry.getExtent();
+      badfeatures.push(feature);
+    }
+  }, this);
+  badfeatures.forEach(function(feature) {
+    var index = kmlFeatures.indexOf(feature);
+    if (index > -1) {
+      kmlFeatures.splice(index, 1);
     }
   }, this);
 

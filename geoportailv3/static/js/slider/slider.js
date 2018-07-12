@@ -114,9 +114,13 @@ app.SliderController = function($element, ngeoLocation, $document, $scope) {
   this.scope_.$watchCollection(function() {
     return this.layers;
   }.bind(this), function(newSelectedLayers, oldSelectedLayers) {
-    if (this['active'] && newSelectedLayers.length != oldSelectedLayers.length) {
+    if (this['active'] && newSelectedLayers.length > 0 &&
+        newSelectedLayers.length != oldSelectedLayers.length) {
       this.activate(false);
       this.activate(true);
+    } else if (newSelectedLayers.length === 0) {
+      this.activate(false);
+      this['active'] = false;
     }
   }.bind(this));
 };
