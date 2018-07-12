@@ -448,7 +448,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
       dataProjection: 'EPSG:2169',
       featureProjection: this.mapProjection
     });
-  
+
     var featureStyleFunction = this.createStyleFunction(this.map);
     var jsonFeatures = (new ol.format.GeoJSON()).
         readFeatures(features, encOpt);
@@ -457,7 +457,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
       feature.set('__map_id__', this.getMapId());
       feature.setStyle(featureStyleFunction);
     }, this);
-  
+
     collection.extend(
         /** @type {!Array<(null|ol.Feature)>} */ (jsonFeatures));
   }
@@ -694,7 +694,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
   return this.getMapInformation().then(
       goog.bind(function(mapinformation) {
         return this.setMapInformation(mapinformation);
-      }, this))
+      }, this));
 };
 
 
@@ -713,7 +713,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
     this.mapBgLayer = mapinformation['bg_layer'];
     this.mapTheme = mapinformation['theme'];
     this.mapIsEditable = mapinformation['is_editable'];
- 
+
     if (!this.mapBgLayer) {
       if (this.mapTheme === 'tourisme') {
         this.mapBgLayer = 'topo_bw_jpeg';
@@ -725,7 +725,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
     if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
       this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
     }
- 
+
     this.mapBgOpacity = mapinformation['bg_opacity'];
     if ('layers' in mapinformation && mapinformation['layers']) {
       this.mapLayers = mapinformation['layers'].split(',');
@@ -754,7 +754,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
         this.mapLayersIndicies = [];
       }
       this.mapLayersIndicies.reverse();
- 
+
       // remove layers with no name
       var iToRemove = [];
       this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {

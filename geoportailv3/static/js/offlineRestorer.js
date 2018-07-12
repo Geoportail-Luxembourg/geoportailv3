@@ -20,7 +20,7 @@ const OfflineRestorer = class extends restorer {
    * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
    */
   constructor(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr,
-              appMymapsOffline, appDrawnFeatures ) {
+              appMymapsOffline, appDrawnFeatures) {
     super(ngeoOfflineConfiguration, ngeoBackgroundLayerMgr);
     /**
      * @type {app.MymapsOffline}
