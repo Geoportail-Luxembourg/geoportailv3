@@ -45,7 +45,7 @@
     "olcs": "0.0.2",
     "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/f81ab0c24624cfbc5e6974a27c4c9f0d4d3f1b38",
     "nomnom": "1.8.1",
-    "openlayers": "git+https://github.com/openlayers/openlayers#72ca7b2",
+    "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/72ca7b2",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
     "proj4": "2.4.4",
