@@ -45,11 +45,11 @@ exports = class extends NgeoConfiguration {
 
   /**
    * @override
-   * @param {ol.Map} map
-   * @param {ol.layer.Layer} layer
-   * @param {Array<ol.layer.Group>} ancestors
+   * @param {ol.Map} map theo map
+   * @param {ol.layer.Layer} layer the layer
+   * @param {Array<ol.layer.Group>} ancestors the ancestors
    * @param {ol.Extent} userExtent The extent selected by the user.
-   * @return {Array<ngeox.OfflineExtentByZoom>}
+   * @return {Array<ngeox.OfflineExtentByZoom>} the thing to return.
    */
   getExtentByZoom(map, layer, ancestors, userExtent) {
     const currentZoom = map.getView().getZoom();
@@ -84,9 +84,9 @@ exports = class extends NgeoConfiguration {
 
   /**
    * @private
-   * @param {ol.layer.Base} layer
-   * @param {ol.Map} map
-   * @return {boolean}
+   * @param {ol.layer.Base} layer the layer.
+   * @param {ol.Map} map the map.
+   * @return {boolean} whether it is a backgroundl layer.
    */
   isBgLayer_(layer, map) {
     return layer === this.backgroundLayerMgr_.get(map);

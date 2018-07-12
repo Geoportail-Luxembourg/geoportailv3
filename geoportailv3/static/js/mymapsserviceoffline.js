@@ -36,7 +36,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
    * @private
    */
   this.storageGroupeKey_ = 'offline_mymaps';
-}
+};
 
 /**
  * Save data into the storage system.
@@ -59,28 +59,28 @@ app.MymapsOffline.prototype.restore = function() {
     if (!storedItem) {
       return;
     }
-  
+
     var allcategories = /** @type {Array<(Object|null)>} */ (storedItem['allCategories']);
     if (allcategories) {
       this.appMymaps_.allcategories = (allcategories);
-    };
-  
+    }
+
     var mapInfo = /** @type {Object} */ (storedItem['mapInfo']);
     if (mapInfo) {
       this.appMymaps_.setMapInformation(mapInfo);
-    };
-  
+    }
+
     var mapFeatures = storedItem['mapFeatures'];
     if (mapFeatures) {
       const collection = this.drawnFeatures_.getCollection();
       collection.clear();
       this.appMymaps_.setFeatures(mapFeatures, collection);
-    };
-  
+    }
+
     var mapId = storedItem['mapId'];
     if (mapId) {
       this.appMymaps_.setMapId(mapId);
-    };
+    }
   });
 };
 

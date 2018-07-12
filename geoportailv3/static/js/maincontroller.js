@@ -522,14 +522,14 @@ app.MainController = function(
   }
 
   $scope.$watch(this.isDisconnectedOrOffline.bind(this), (offline) => {
-      if (offline) {
-        if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
-          this.closeSidebar();
-          this['layersOpen'] = true;
-        }
-        this.showTab('a[href=\'#mylayers\']');
+    if (offline) {
+      if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
+        this.closeSidebar();
+        this['layersOpen'] = true;
       }
-    });
+      this.showTab('a[href=\'#mylayers\']');
+    }
+  });
   ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
   ngeoOfflineServiceManager.setRestoreService('appOfflineRestorer');
 };
@@ -932,7 +932,7 @@ app.MainController.prototype.toggleTiles3dVisibility = function() {
 
 /**
  * Check if disconnected or offline mode enabled.
- * @returns {boolean}
+ * @return {boolean} the state.
  * @export
  */
 app.MainController.prototype.isDisconnectedOrOffline = function() {

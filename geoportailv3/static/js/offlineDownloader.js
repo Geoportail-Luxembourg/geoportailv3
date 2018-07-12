@@ -34,7 +34,7 @@ const OfflineDownloader = class extends downloader {
     this.appMymapsOffline_.save();
     return super.save(extent, map);
   }
-}
+};
 
 app.module.service('appOfflineDownloader', OfflineDownloader);
 exports = OfflineDownloader;
