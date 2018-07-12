@@ -24,7 +24,7 @@ app.Printservice = class extends ngeo.print.Service {
   /**
    * @override
    */
-    createSpec(map, scale, dpi, layout, format, customAttributes) {
+  createSpec(map, scale, dpi, layout, format, customAttributes) {
 
     const specMap = /** @type {MapFishPrintMap} */ ({
       dpi: dpi,
@@ -45,7 +45,7 @@ app.Printservice = class extends ngeo.print.Service {
     });
 
     return spec;
-  };
+  }
 
   /**
    * @param {ol.Map} map Map.
@@ -82,5 +82,5 @@ app.Printservice = class extends ngeo.print.Service {
         this.encodeLayer(object.layers, layer, viewResolution);
       }
     });
-  };
+  }
 };
