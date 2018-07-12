@@ -430,7 +430,7 @@ app.DrawnFeatures.prototype.getCollection = function() {
  * @param {ol.Feature} feature The feature.
  */
 app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
-  var isTranlationActive = true;
+  var isTranlationActive = false;
   var isModifyInteractionActive = true;
   var isModifyCircleActive = false;
   var isCircle = !!feature.get('isCircle');

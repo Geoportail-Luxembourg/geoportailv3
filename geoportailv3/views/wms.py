@@ -127,7 +127,8 @@ class Wms(object):
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
         # check sso
-        if self.request.user and self.request.user.ogc_role is not None and\
+        if self.request.user and hasattr(self.request.user, 'ogc_role') and \
+           self.request.user.ogc_role is not None and \
            self.request.user.ogc_role != -1:
             param_wms += "roleOGC=%s&" % str(self.request.user.ogc_role)
 

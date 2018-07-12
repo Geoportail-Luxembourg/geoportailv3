@@ -71,7 +71,7 @@ class Pag(object):
         me = 'support@geoportail.lu'
         you = email
         mails = [you]
-        if "bcc_address" in self.config["pag"]:
+        if "bcc_address" in self.config["pag"] and self.link == 'error':
             bcc = self.config["pag"]["bcc_address"]
             msg['BCC'] = bcc
             mails.append(bcc)

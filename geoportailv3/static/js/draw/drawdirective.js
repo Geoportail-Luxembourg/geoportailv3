@@ -464,6 +464,7 @@ app.DrawController = function($scope,
   this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
     features: appSelectedFeatures
   });
+  this.drawnFeatures_.translateInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
   ol.events.listen(
