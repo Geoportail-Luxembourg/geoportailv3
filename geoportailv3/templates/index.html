@@ -48,7 +48,7 @@
 
         <div class="offline-msg alert-danger" translate>
           <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
-            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" translate>Enable offline mode</a>
+            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
           </span>
           <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
         </div>
