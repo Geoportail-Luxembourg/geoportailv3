@@ -87,45 +87,42 @@
         },
         "name_translated": {
           "type": "text",
-          "analyzer": "standard",
+          "analyzer": "standard_analyzer",
           "fields": {
             "ngram": {
               "type": "text",
               "analyzer": "ngram_analyzer",
-              "search_analyzer": "standard"
+              "search_analyzer": "simplified_analyzer"
             },
             "simplified": {
               "type": "text",
-              "analyzer": "standard",
-              "search_analyzer": "standard"
+              "analyzer": "simplified_analyzer",
+              "search_analyzer": "simplified_analyzer"
             }
           }
         },
         "metadata_name": {
           "type": "text",
-          "analyzer": "standard",
+          "analyzer": "standard_analyzer",
           "fields": {
             "ngram": {
               "type": "text",
               "analyzer": "ngram_analyzer",
-              "search_analyzer": "standard"
+              "search_analyzer": "simplified_analyzer"
             },
             "simplified": {
               "type": "text",
-              "analyzer": "standard",
-              "search_analyzer": "standard"
+              "analyzer": "simplified_analyzer"
             }
           }
         },
         "keywords": {
           "type": "text",
-          "analyzer": "standard",
-          "search_analyzer": "standard"
+          "analyzer": "simplified_analyzer"
         },
         "description": {
           "type": "text",
-          "analyzer": "standard",
-          "search_analyzer": "standard"
+          "analyzer": "simplified_analyzer"
         }
       }
     },
