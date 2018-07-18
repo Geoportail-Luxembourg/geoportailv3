@@ -12,10 +12,11 @@ exports = class extends NgeoConfiguration {
   /**
    * @ngInject
    * @param {!angular.Scope} $rootScope The rootScope provider.
+   * @param {angular.$injector} $injector Main injector.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
    *     manager.
    */
-  constructor($rootScope, ngeoBackgroundLayerMgr) {
+  constructor($rootScope, $injector, ngeoBackgroundLayerMgr) {
     super($rootScope, ngeoBackgroundLayerMgr);
 
     /**
@@ -23,9 +24,20 @@ exports = class extends NgeoConfiguration {
      * @private
      */
     this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+    let appMymaps = null;
+    if ($injector.has('appMymaps')) {
+      appMymaps = $injector.get('appMymaps');
+    }
+
+    /**
+     * @type {app.Mymaps}
+     * @private
+     */
+    this.appMymaps_ = appMymaps;
   }
 
- /**
+  /**
    * @override
    * @param {string} msg the message.
    * @param {string} key the key.
@@ -58,9 +70,16 @@ exports = class extends NgeoConfiguration {
     const sizeOfABgLayer = bgFactor * sizeOfANormalLayer;
     map.getLayers().forEach((layer) => {
       if (!(layer instanceof ol.layer.Vector)) {
-        estimation += this.isBgLayer_(layer, map) ? sizeOfABgLayer : sizeOfANormalLayer;
+        if (this.isBgLayer_(layer, map)) {
+          estimation += (layer.get('label') === 'blank') ? 0 : sizeOfABgLayer;
+        } else {
+          estimation += sizeOfANormalLayer;
+        }
       }
     });
+    if (this.appMymaps_ && this.appMymaps_.getMapId() !== '') {
+      estimation += 5;
+    }
     return estimation;
   }
 
