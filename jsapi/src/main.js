@@ -1836,7 +1836,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
       );
     }
 
-    if (opt_options && (opt_options.click || opt_options.onClick !== undefined)) {
+    if (opt_options && opt_options.click) {
       var interaction = new ol.interaction.Select({
         layers: [vector]
       });
@@ -1845,9 +1845,9 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
         interaction.on('select', function(e) {
           var features = e.target.getFeatures();
           opt_options.onClick.call(null, features, e.mapBrowserEvent.coordinate);
+          interaction.getFeatures().clear();
         }.bind(this));
-      }
-      if (opt_options.click) {
+      } else {
         interaction.on('select', function(e) {
           if (popup) {
             this.removeOverlay(popup);
