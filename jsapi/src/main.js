@@ -297,7 +297,11 @@ lux.notify = function(msg) {
  * @api stable
  */
 lux.Map = function(options) {
-
+  /**
+   * @private
+   * @type {ol.Overlay | undefined}
+   */
+  this.lastpopup_ = undefined;
   var layers  = [];
   var layerOpacities = [];
   var layerVisibilities = [];
@@ -989,11 +993,12 @@ lux.Map.prototype.showMarker = function(opt_options) {
  *    into the popup.
  * @param {function()=} closeCallback Optional callback function. If set a close
  *    button is added.
+ * @param {string} title The  popup title.
  * @return {Element} The created element.
  * @export
  * @api
  */
-lux.buildPopupLayout = function(html, closeCallback) {
+lux.buildPopupLayout = function(html, closeCallback, title) {
   var container = goog.dom.createDom(goog.dom.TagName.DIV, {
     'class': 'lux-popup'
   });
@@ -1023,6 +1028,9 @@ lux.buildPopupLayout = function(html, closeCallback) {
     var header = goog.dom.createDom(goog.dom.TagName.H3, {
       'class': 'lux-popup-header'
     });
+    if (title !== undefined) {
+      header.innerHTML = title;
+    }
     var closeBtn = goog.dom.createDom(goog.dom.TagName.BUTTON, {
       'class': 'lux-popup-close'
     });
@@ -1827,55 +1835,93 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
           }.bind(this)
       );
     }
-    if (opt_options && opt_options.click) {
+
+    if (opt_options && (opt_options.click || opt_options.onClick !== undefined)) {
       var interaction = new ol.interaction.Select({
         layers: [vector]
       });
       this.addInteraction(interaction);
-
-      interaction.on('select', function(e) {
-        if (popup) {
-          this.removeOverlay(popup);
-        }
-
-        var features = e.target.getFeatures();
-        if (!features.getLength()) {
-          return;
-        }
-        var feature = features.getArray()[0];
-        var properties = feature.getProperties();
-
-        var html = '<table>';
-        var key;
-        for (key in properties) {
-          if (key != feature.getGeometryName() && properties[key]) {
-            html += '<tr><th>';
-            html += key;
-            html += '</th><td>';
-            html += properties[key] + '</td></tr>';
-          }
-        }
-        html += '</table>';
-        if (opt_options.target) {
-          el.innerHTML = html;
-          return;
-        }
-        var element = lux.buildPopupLayout(html, function() {
-          this.removeOverlay(popup);
-          interaction.getFeatures().clear();
+      if (opt_options.onClick) {
+        interaction.on('select', function(e) {
+          var features = e.target.getFeatures();
+          opt_options.onClick.call(null, features, e.mapBrowserEvent.coordinate);
         }.bind(this));
-        popup = new ol.Overlay({
-          element: element,
-          position: e.mapBrowserEvent.coordinate,
-          positioning: 'bottom-center',
-          offset: [0, -20],
-          insertFirst: false
-        });
-        this.addOverlay(popup);
+      }
+      if (opt_options.click) {
+        interaction.on('select', function(e) {
+          if (popup) {
+            this.removeOverlay(popup);
+          }
 
-      }.bind(this));
+          var features = e.target.getFeatures();
+          if (!features.getLength()) {
+            return;
+          }
+          var feature = features.getArray()[0];
+          var properties = feature.getProperties();
+
+          var html = '<table>';
+          var key;
+          for (key in properties) {
+            if (key != feature.getGeometryName() && properties[key]) {
+              html += '<tr><th>';
+              html += key;
+              html += '</th><td>';
+              html += properties[key] + '</td></tr>';
+            }
+          }
+          html += '</table>';
+          if (opt_options.target) {
+            el.innerHTML = html;
+            return;
+          }
+          var element = lux.buildPopupLayout(html, function() {
+            this.removeOverlay(popup);
+            interaction.getFeatures().clear();
+          }.bind(this));
+          popup = new ol.Overlay({
+            element: element,
+            position: e.mapBrowserEvent.coordinate,
+            positioning: 'bottom-center',
+            offset: [0, -20],
+            insertFirst: false
+          });
+          this.addOverlay(popup);
+        }.bind(this));
+      }
     }
   }.bind(this));
+};
+
+/**
+ * It shows a popup.
+ * @param {ol.coordinate} position The position of the popup.
+ * @param {string} title The popup title.
+ * @param {string} content The popup content.
+ * @return {ol.Overlay} The popup overlay.
+ * @export
+ * @api
+ */
+lux.Map.prototype.showPopup = function(position, title, content) {
+  var popup;
+  var element = lux.buildPopupLayout(content, function() {
+    if (popup !== undefined) {
+      this.removeOverlay(popup);
+    }
+  }.bind(this), title);
+  popup = new ol.Overlay({
+    element: element,
+    position: position,
+    positioning: 'bottom-center',
+    offset: [0, -20],
+    insertFirst: false
+  });
+  this.addOverlay(popup);
+  if (this.lastpopup_ !== undefined) {
+    this.removeOverlay(this.lastpopup_);
+  }
+  this.lastpopup_ = popup;
+  return popup;
 };
 
 /**
