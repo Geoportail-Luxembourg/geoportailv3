@@ -469,7 +469,7 @@ luxx.VectorOptions.prototype.name;
 luxx.VectorOptions.prototype.click;
 
 /**
- * If set, the function is called with the feature as parameter.
+ * If set, and if click is true then the function is called with the feature as parameter.
  * @type {function() | undefined}
  * @api
  */
