@@ -27,6 +27,27 @@ exports = class extends NgeoConfiguration {
 
  /**
    * @override
+   * @param {string} msg the message.
+   * @param {string} key the key.
+   * @param {Promise<?>} promise the promise.
+   * @return {Promise<?>} the passed promise.
+   */
+  traceGetSetItem(msg, key, promise) {
+    if (location.search.indexOf('trace_storage') === -1)  {
+      return promise;
+    }
+    const start = new Date();
+    console.log(msg, key, start);
+    promise.then(
+      () => console.log('OK', msg, key, new Date() - start),
+      (err) => console.log('ERROR', msg, key, err, new Date() - start)
+    );
+    return promise;
+  }
+
+
+ /**
+   * @override
    * @param {!ol.Map} map the map
    * @return {number} an estimated size in MB
    */
