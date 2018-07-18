@@ -469,6 +469,13 @@ luxx.VectorOptions.prototype.name;
 luxx.VectorOptions.prototype.click;
 
 /**
+ * If set, the function is called with the feature as parameter.
+ * @type {function() | undefined}
+ * @api
+ */
+luxx.VectorOptions.prototype.onClick;
+
+/**
  * The container for the feature popup, either the element itself or
  * the `id` of the element.
  * @type {Element|string|undefined}
