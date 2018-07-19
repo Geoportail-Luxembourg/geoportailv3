@@ -93,22 +93,35 @@ exports = class extends NgeoConfiguration {
    */
   getExtentByZoom(map, layer, ancestors, userExtent) {
     const currentZoom = map.getView().getZoom();
-    const viewportExtent = map.getView().calculateExtent(map.getSize());
+    const zoomRange = [0, 1, 2, 3].map(dz => dz + currentZoom);
 
-    const extent = this.isBgLayer_(layer, map) ? viewportExtent : userExtent;
-    const zoomRange = [0, 1, 2, 3, 4].map(dz => dz + currentZoom);
-    const zooms = this.isBgLayer_(layer, map) ?
-      [8, 9, 10, 11, 12, 13, 14, 15, ...zoomRange.filter(dz => dz > 15)] :
-      zoomRange;
-
-    const results = [];
-    zooms.forEach((dz) => {
-      results.push({
-        zoom: dz,
-        extent: extent
+    if (this.isBgLayer_(layer, map)) {
+      const zooms = [8, 9, 10, 11, 12, 13, 14, 15, ...zoomRange.filter(dz => dz > 15)];
+      const view = map.getView();
+      const userExtentSideInMeters = ol.extent.getWidth(userExtent);
+      const fakeViewportSideInPixels = 2 * 1024;
+      return zooms.map((z) => {
+        const resolution = view.getResolutionForZoom(z);
+        const fakeViewportSideInMeters = fakeViewportSideInPixels * resolution;
+        let extent = userExtent;
+        if (fakeViewportSideInMeters > userExtentSideInMeters) {
+          // the fake viewport at this resolution covers a bigger area than the user extent
+          extent = ol.extent.boundingExtent([ol.extent.getCenter(userExtent)]);
+          ol.extent.buffer(extent, fakeViewportSideInMeters / 2, extent);
+        }
+        return {
+          zoom: z,
+          extent
+        };
       });
-    });
-    return results;
+    } else {
+      return zoomRange.map((z) => {
+        return {
+          zoom: z,
+          extent: userExtent
+        };
+      });
+    }
   }
 
   /**
