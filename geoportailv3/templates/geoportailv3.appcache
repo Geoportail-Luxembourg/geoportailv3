@@ -30,6 +30,6 @@ NETWORK:
 
 FALLBACK:
 /theme/main /theme/main
-/themes /themes?interface=desktop&version=2&catalog=true&background=bglayers&min_levels=1
+/themes ${request.route_url('themes', _query={'version': '2', 'background': 'bglayers', 'interface': 'desktop', 'catalog': 'true', 'min_levels': '1'})}
 /mymaps/allcategories /mymaps/allcategories
 /predefined_wms /predefined_wms
