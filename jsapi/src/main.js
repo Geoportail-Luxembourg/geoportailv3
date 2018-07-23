@@ -632,6 +632,16 @@ lux.Map.prototype.addLayer = function(layer) {
 };
 
 /**
+ * Get the promise to have a map in a ready state.
+ * @return {Promise} Promise of a configured map.
+ * @export
+ * @api
+ */
+lux.Map.prototype.getMapReadyPromise = function() {
+  return Promise.all([this.i18nPromise, this.layersPromise]);
+};
+
+/**
  * Prints the current map.
  * @param {string=} name The title of the map.
  * @param {string=} layout The layout of the map.
