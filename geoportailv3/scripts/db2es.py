@@ -16,13 +16,13 @@ Utility functions for importing data into Elasticsearch from database
 """
 
 
-def get_cursor():
+def get_cursor(database, user, password, host, port):
     source_conf = {
-        'database': 'search',
-        'user': 'postgres',
-        'password': '',
-        'host': 'luigi11',
-        'port': '5432'
+        'database': database,
+        'user': user,
+        'password': password,
+        'host': host,
+        'port': port
     }
     conn = psycopg2.connect(**source_conf)
     cursor = conn.cursor(cursor_factory=DictCursor)
@@ -79,7 +79,13 @@ def main():
 
     if index is True:
         statuslog("\rCreating Database Query ")
-        c = get_cursor()
+        database = request.registry.settings.get('elastic.source.db.name')
+        user = request.registry.settings.get('elastic.source.db.user')
+        password = request.registry.settings.get('elastic.source.db.password')
+        host = request.registry.settings.get('elastic.source.db.host')
+        port = request.registry.settings.get('elastic.source.db.port')
+
+        c = get_cursor(database, user, password, host, port)
         counter = 1
         while True:
             multiple = 250

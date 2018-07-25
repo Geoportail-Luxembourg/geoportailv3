@@ -19,6 +19,12 @@ app.cfg = %(here)s/.build/config.yaml
 
 elastic.servers = ${search_host}
 elastic.index = ${search_index}
+elastic.source.db.name = ${search_db_name}
+elastic.source.db.user = ${search_db_user}
+elastic.source.db.password = ${search_db_password}
+elastic.source.db.host = ${search_db_host}
+elastic.source.db.port = ${search_db_port}
+
 
 feedback.support_email = ${support_email_address}
 
