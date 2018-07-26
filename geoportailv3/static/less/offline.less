@@ -76,10 +76,15 @@ ngeo-offline {
   position: absolute;
   z-index: 10000;
   width: 100vw;
-  left: @leftbar-width;
+  text-align: center;
   height: @topbar-height;
   padding-left: 1rem;
   line-height: @topbar-height;
+
+  @media (max-width: @screen-xs-max) {
+    height: 40px;
+    line-height: 40px;
+  }
 }
 
 
