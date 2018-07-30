@@ -49,16 +49,16 @@ const OfflineRestorer = class extends restorer {
   }
 
   /**
-   * @param {ol.Map} map
-   * @param {ngeox.OfflinePersistentContent} offlineContent
-   * @return {ol.Extent}
+   * @param {ol.Map} map The map.
+   * @param {ngeox.OfflinePersistentContent} offlineContent The offline content.
+   * @return {ol.Extent} the extent.
    * @override
    */
   doRestore(map, offlineContent) {
     const view = map.getView();
     const {zooms} = offlineContent;
     view.setMinZoom(zooms[0]);
-    view.setMaxZoom(zooms[zooms.length -1 ]);
+    view.setMaxZoom(zooms[zooms.length - 1 ]);
     return super.doRestore(map, offlineContent);
   }
 
