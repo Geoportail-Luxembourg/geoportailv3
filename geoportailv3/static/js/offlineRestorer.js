@@ -47,6 +47,21 @@ const OfflineRestorer = class extends restorer {
       return extent;
     });
   }
+
+  /**
+   * @param {ol.Map} map The map.
+   * @param {ngeox.OfflinePersistentContent} offlineContent The offline content.
+   * @return {ol.Extent} the extent.
+   * @override
+   */
+  doRestore(map, offlineContent) {
+    const view = map.getView();
+    const {zooms} = offlineContent;
+    view.setMinZoom(zooms[0]);
+    view.setMaxZoom(zooms[zooms.length - 1 ]);
+    return super.doRestore(map, offlineContent);
+  }
+
 };
 
 app.module.service('appOfflineRestorer', OfflineRestorer);
