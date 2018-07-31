@@ -3,7 +3,10 @@ goog.module.declareLegacyNamespace();
 
 goog.require('ngeo.map.BackgroundLayerMgr');
 
+const ngeoOfflineModule = goog.require('ngeo.offline.module');
 const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
+
+ngeoOfflineModule.value('ngeoOfflineGutter', 96);
 
 /**
  */
@@ -13,11 +16,11 @@ exports = class extends NgeoConfiguration {
    * @ngInject
    * @param {!angular.Scope} $rootScope The rootScope provider.
    * @param {angular.$injector} $injector Main injector.
-   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
-   *     manager.
+   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
+   * @param {number} ngeoOfflineGutter The luxembourg offline gutter
    */
-  constructor($rootScope, $injector, ngeoBackgroundLayerMgr) {
-    super($rootScope, ngeoBackgroundLayerMgr);
+  constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoOfflineGutter) {
+    super($rootScope, ngeoBackgroundLayerMgr, ngeoOfflineGutter);
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
