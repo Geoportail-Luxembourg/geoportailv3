@@ -2,11 +2,10 @@ goog.module('app.offline.Configuration');
 goog.module.declareLegacyNamespace();
 
 goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('goog.asserts');
 
 const ngeoOfflineModule = goog.require('ngeo.offline.module');
 const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
-
-ngeoOfflineModule.value('ngeoOfflineGutter', 96);
 
 /**
  */
@@ -17,10 +16,13 @@ exports = class extends NgeoConfiguration {
    * @param {!angular.Scope} $rootScope The rootScope provider.
    * @param {angular.$injector} $injector Main injector.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
-   * @param {number} ngeoOfflineGutter The luxembourg offline gutter
+   * @param {ngeo.statemanager.Location} ngeoLocation The location service
    */
-  constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoOfflineGutter) {
-    super($rootScope, ngeoBackgroundLayerMgr, ngeoOfflineGutter);
+  constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoLocation) {
+    const gutter = ngeoLocation.hasParam('offline_gutter') ? ngeoLocation.getParamAsInt('offline_gutter') : 96;
+    goog.asserts.assert(gutter !== undefined);
+    ngeoOfflineModule.value('ngeoOfflineGutter', gutter);
+    super($rootScope, ngeoBackgroundLayerMgr, gutter);
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
