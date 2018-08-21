@@ -617,7 +617,7 @@ class Getfeatureinfo(object):
                 value = feature['attributes'][key]
                 entries = DBSession.query(LuxDownloadUrl).all()
                 for entry in entries:
-                    if entry.url in value:
+                    if value is not None and entry.url in value:
                         feature['attributes'][key] =\
                             proxy_url + "?id=" + str(entry.id) +\
                             "&filename=" + value.split(entry.url)[1]
