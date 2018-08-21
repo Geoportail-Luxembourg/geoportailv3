@@ -9,7 +9,7 @@ from pyramid.renderers import JSON
 
 from decimal import Decimal
 from turbomail.control import interface
-
+# from pyramid.events import NewRequest
 from geoportailv3.adapters import datetime_adapter, decimal_adapter
 from sqlalchemy.orm import sessionmaker
 
@@ -18,6 +18,19 @@ import json
 import ldap
 import sqlalchemy
 import sqlahelper
+
+
+def add_cors_headers_response_callback(event):
+    def cors_headers(request, response):
+        response.headers.update({
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
+            'Access-Control-Allow-Headers': 'Origin, ' +
+            'Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Max-Age': '1728000',
+        })
+    event.request.add_response_callback(cors_headers)
 
 
 def init_db(engine):
@@ -64,6 +77,7 @@ def main(global_config, **settings):
         locale_negotiator=locale_negotiator,
         authentication_policy=create_authentication(settings)
     )
+    # config.add_subscriber(add_cors_headers_response_callback, NewRequest)
 
     # overwrite print routes
     config.add_route(
@@ -390,6 +404,7 @@ def main(global_config, **settings):
     config.add_route('download_sketch', '/downloadsketch')
     config.add_route('download', '/download')
     config.add_route('download_measurement', '/downloadmeasurement')
+    config.add_route('preview_measurement', '/previewmeasurement')
     config.add_route('qr', '/qr')
     config.add_route('getfeatureinfo', '/getfeatureinfo')
     config.add_route('getpoitemplate', '/getpoitemplate')
