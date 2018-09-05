@@ -13,31 +13,31 @@ RewriteEngine on
 
 # uncomment this if you need HTTP authentication/authorization to work (with
 # repoze.who or any other security toolkit), see the Apache mod_wsgi FAQ to
-# understand why mod_wsgi doesn't pass the user credentials to the WSGI
+# understand why mod_wsgi does not pass the user credentials to the WSGI
 # application by default.
 # http://code.google.com/p/modwsgi/wiki/FrequentlyAskedQuestions#Access_Control_Mechanisms
 WSGIPassAuthorization On
 
-RewriteRule ^${apache_entry_point}?$ /${instanceid}/wsgi/ [PT]
+
+RewriteRule ^${apache_entry_point}?$ /${instanceid}/wsgi/${default_interface} [PT]
+RewriteRule ^${apache_entry_point}theme/(.+)$ /${instanceid}/wsgi/${default_interface}/theme/$1 [PT]
+
+% for interface in interfaces:
+RewriteRule ^${apache_entry_point}${interface}/?$ /${instanceid}/wsgi/${interface} [PT]
+RewriteRule ^${apache_entry_point}${interface}/theme/(.+)$ /${instanceid}/wsgi/${interface}/theme/$1 [PT]
+% endfor
+
 RewriteRule ^${apache_entry_point}api.js$ /${instanceid}/wsgi/api.js [PT]
 RewriteRule ^${apache_entry_point}xapi.js$ /${instanceid}/wsgi/xapi.js [PT]
 RewriteRule ^${apache_entry_point}apihelp.html$ /${instanceid}/wsgi/apihelp.html [PT]
 RewriteRule ^${apache_entry_point}xapihelp.html$ /${instanceid}/wsgi/xapihelp.html [PT]
-RewriteRule ^${apache_entry_point}theme/(.+)$ /${instanceid}/wsgi/theme/$1 [PT]
-RewriteRule ^${apache_entry_point}routing/?$ /${instanceid}/wsgi/routing [PT]
-RewriteRule ^${apache_entry_point}edit/?$ /${instanceid}/wsgi/edit [PT]
-RewriteRule ^${apache_entry_point}mobile$ ${apache_entry_point}mobile/ [R]
-RewriteRule ^${apache_entry_point}mobile/(.*)$ /${instanceid}/wsgi/mobile/$1 [PT]
 RewriteRule ^${apache_entry_point}admin/?$ /${instanceid}/wsgi/admin/ [PT]
-RewriteRule ^${apache_entry_point}fulltextsearch$ /${instanceid}/wsgi/fulltextsearch [PT]
-RewriteRule ^${apache_entry_point}layersearch$ /${instanceid}/wsgi/layersearch [PT]
-RewriteRule ^${apache_entry_point}pag/report/$ /${instanceid}/wsgi/pag/report/ [PT]
-RewriteRule ^${apache_entry_point}pag/files/$ /${instanceid}/wsgi/pag/files/ [PT]
+RewriteRule ^${apache_entry_point}search$ /${instanceid}/wsgi/fulltextsearch [PT]
 RewriteRule ^${apache_entry_point}s/(.*)$ /${instanceid}/wsgi/short/$1 [PT]
 
 # define a process group
 # WSGIDaemonProcess must be commented/removed when running the project on windows
-WSGIDaemonProcess c2cgeoportal:${instanceid} display-name=%{GROUP} user=${modwsgi_user} python-path=${python_path}
+WSGIDaemonProcess c2cgeoportal:${instanceid} display-name=%{GROUP} user=${modwsgi_user}
 
 # define the path to the WSGI app
 WSGIScriptAlias /${instanceid}/wsgi ${directory}/apache/application.wsgi
@@ -49,5 +49,4 @@ WSGIScriptAlias /${instanceid}/wsgi ${directory}/apache/application.wsgi
     # WSGIProcessGroup must be commented/removed when running the project on windows
     WSGIProcessGroup c2cgeoportal:${instanceid}
     WSGIApplicationGroup %{GLOBAL}
-    SetEnvIf X-Https on HTTPS=1
 </Location>

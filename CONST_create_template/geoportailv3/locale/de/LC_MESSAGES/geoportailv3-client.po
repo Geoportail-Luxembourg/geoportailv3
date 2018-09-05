@@ -1,0 +1,219 @@
+# Translators:
+# Michael Kuenzli <michael.kuenzli@camptocamp.com>, 2017
+# Elisabeth Leu <elisabeth.leu@camptocamp.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: Elisabeth Leu <elisabeth.leu@camptocamp.com>, 2017\n"
+"Language-Team: German (https://www.transifex.com/camptocamp/teams/36764/de/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: contribs/gmf/apps/desktop/js/controller.js:96
+#: contribs/gmf/apps/desktop_alt/js/controller.js:109
+#: contribs/gmf/apps/oeedit/js/controller.js:209
+#: contribs/gmf/apps/oeview/js/controller.js:96
+msgid "Add a layer"
+msgstr "Layer hinzufügen"
+
+#: contribs/gmf/apps/desktop/js/controller.js:95
+#: contribs/gmf/apps/desktop_alt/js/controller.js:108
+#: contribs/gmf/apps/oeedit/js/controller.js:208
+#: contribs/gmf/apps/oeview/js/controller.js:95
+msgid "Add a sub theme"
+msgstr "Unterthema hinzufügen"
+
+#: contribs/gmf/apps/desktop/js/controller.js:94
+#: contribs/gmf/apps/desktop_alt/js/controller.js:107
+#: contribs/gmf/apps/oeedit/js/controller.js:207
+#: contribs/gmf/apps/oeview/js/controller.js:94
+msgid "Add a theme"
+msgstr "Thema hinzufügen"
+
+#: contribs/gmf/apps/desktop_alt/index.html:4
+msgid "Alternative Desktop Application"
+msgstr "Alternative Desktop-Applikation"
+
+#: contribs/gmf/apps/mobile/index.html:110
+#: contribs/gmf/apps/mobile/index.html:73
+msgid "Back"
+msgstr "Zurück"
+
+#: contribs/gmf/apps/mobile/index.html:79
+#: contribs/gmf/apps/mobile/index.html:94
+msgid "Background"
+msgstr "Hintergrund"
+
+#: contribs/gmf/apps/mobile/index.html:66
+msgid "Close"
+msgstr "Schliessen"
+
+#: contribs/gmf/apps/mobile/index.html:129
+msgid "Coordinate"
+msgstr "Koordinate"
+
+#: contribs/gmf/apps/desktop/index.html:4
+msgid "Desktop Application"
+msgstr "Desktop-Applikation"
+
+#: contribs/gmf/apps/desktop/index.html:102
+#: contribs/gmf/apps/desktop/index.html:56
+#: contribs/gmf/apps/desktop_alt/index.html:101
+#: contribs/gmf/apps/desktop_alt/index.html:54
+msgid "Draw & Measure"
+msgstr "Zeichnen & Messen"
+
+#: contribs/gmf/apps/desktop/index.html:148
+#: contribs/gmf/apps/desktop_alt/index.html:148
+msgid ""
+"Draw a line on the map to display the corresponding elevation profile.\n"
+"                    Use double-click to finish the drawing."
+msgstr ""
+"Zeichnen Sie eine Linie auf die Karte um das dazugehörige Höhenprofil anzuzeigen.\n"
+"Ein Doppelklick beendet das Zeichnen der Linie."
+
+#: contribs/gmf/apps/desktop/index.html:142
+#: contribs/gmf/apps/desktop_alt/index.html:141
+msgid "Draw profile line"
+msgstr "Profil-Linie zeichnen"
+
+#: contribs/gmf/apps/desktop/index.html:115
+#: contribs/gmf/apps/desktop/index.html:60
+#: contribs/gmf/apps/desktop_alt/index.html:114
+#: contribs/gmf/apps/desktop_alt/index.html:58
+msgid "Editing"
+msgstr "Editieren"
+
+#: contribs/gmf/apps/desktop/contextualdata.html:35
+#: contribs/gmf/apps/oeedit/contextualdata.html:35
+#: contribs/gmf/apps/oeview/contextualdata.html:35
+msgid "Elevation (Aster)"
+msgstr "Erhöhung (Aster)"
+
+#: contribs/gmf/apps/desktop/contextualdata.html:27
+#: contribs/gmf/apps/oeedit/contextualdata.html:27
+#: contribs/gmf/apps/oeview/contextualdata.html:27
+msgid "Elevation (SRTM)"
+msgstr "Erhöhung (SRTM)"
+
+#: contribs/gmf/apps/desktop/index.html:120
+#: contribs/gmf/apps/desktop_alt/index.html:119
+msgid "In order to use the editing tool, you must log in first."
+msgstr "Sie müssen eingeloggt sein um das Editier-Werkzeug zu verwenden."
+
+#: contribs/gmf/apps/mobile/index.html:138
+msgid "Length"
+msgstr "Länge"
+
+#: contribs/gmf/apps/desktop/index.html:25
+#: contribs/gmf/apps/oeedit/index.html:24
+#: contribs/gmf/apps/oeview/index.html:24
+msgid "Loading..."
+msgstr "Lade..."
+
+#: contribs/gmf/apps/desktop/index.html:48
+#: contribs/gmf/apps/desktop/index.html:81
+#: contribs/gmf/apps/desktop_alt/index.html:46
+#: contribs/gmf/apps/desktop_alt/index.html:79
+#: contribs/gmf/apps/mobile/index.html:117
+#: contribs/gmf/apps/mobile/index.html:143
+msgid "Login"
+msgstr "Login"
+
+#: contribs/gmf/apps/mobile/index.html:116
+#: contribs/gmf/apps/mobile/index.html:121
+msgid "Measure tools"
+msgstr "Messen"
+
+#: contribs/gmf/apps/mobile/index.html:4
+msgid "Mobile Application"
+msgstr "Mobile Applikation"
+
+#: contribs/gmf/apps/oeedit/index.html:51
+#: contribs/gmf/apps/oeedit/index.html:69
+msgid "Object Editing"
+msgstr "Objektbasierte Editierung"
+
+#: contribs/gmf/apps/oeedit/index.html:4
+msgid "ObjectEditing - Edit Application"
+msgstr "Objektbasierte Editierung - Bearbeitung"
+
+#: contribs/gmf/apps/oeview/index.html:4
+msgid "ObjectEditiong - Viewer Application"
+msgstr "Objektbasierte Editierung - Ansicht"
+
+#: contribs/gmf/apps/desktop/index.html:52
+#: contribs/gmf/apps/desktop/index.html:90
+#: contribs/gmf/apps/desktop_alt/index.html:50
+#: contribs/gmf/apps/desktop_alt/index.html:88
+msgid "Print"
+msgstr "Drucken"
+
+#: contribs/gmf/apps/desktop/index.html:134
+#: contribs/gmf/apps/desktop/index.html:65
+#: contribs/gmf/apps/desktop_alt/index.html:133
+#: contribs/gmf/apps/desktop_alt/index.html:63
+msgid "Profile"
+msgstr "Profil"
+
+#: contribs/gmf/apps/oeedit/index.html:47
+#: contribs/gmf/apps/oeedit/index.html:60
+msgid "Query"
+msgstr "Abfrage"
+
+#: contribs/gmf/apps/desktop/index.html:163
+#: contribs/gmf/apps/desktop_alt/index.html:163
+#: contribs/gmf/apps/mobile/index.html:45
+#: contribs/gmf/apps/oeedit/index.html:90
+#: contribs/gmf/apps/oeview/index.html:47
+msgid "Search…"
+msgstr "Suche..."
+
+#: contribs/gmf/apps/desktop/index.html:71
+#: contribs/gmf/apps/desktop_alt/index.html:69
+msgid "Share this map"
+msgstr "Diese Karte teilen"
+
+#: contribs/gmf/apps/desktop/contextualdata.html:3
+#: contribs/gmf/apps/oeedit/contextualdata.html:3
+#: contribs/gmf/apps/oeview/contextualdata.html:3
+msgid "Swiss grid (LV03)"
+msgstr "Swiss Grid (LV03)"
+
+#: contribs/gmf/apps/desktop/index.html:24
+#: contribs/gmf/apps/oeedit/index.html:23
+#: contribs/gmf/apps/oeview/index.html:23
+msgid "Theme:"
+msgstr "Thema:"
+
+#: contribs/gmf/apps/desktop_alt/index.html:24
+#: contribs/gmf/apps/mobile/index.html:102
+#: contribs/gmf/apps/mobile/index.html:82
+msgid "Themes"
+msgstr "Themen"
+
+#: contribs/gmf/apps/desktop/contextualdata.html:11
+#: contribs/gmf/apps/oeedit/contextualdata.html:11
+#: contribs/gmf/apps/oeview/contextualdata.html:11
+msgid "Wgs Coord."
+msgstr "WGS-Koord."
+
+#: contribs/gmf/apps/desktop/contextualdata.html:19
+#: contribs/gmf/apps/oeedit/contextualdata.html:19
+#: contribs/gmf/apps/oeview/contextualdata.html:19
+msgid "Wgs Coord. DMS"
+msgstr "WGS84-Koord. Grad, Min., Sek."
+
+#: contribs/gmf/apps/mobile/index.html:67
+msgid "You're using the mobile version. Check out the"
+msgstr "Sie brauchen die mobile Applikation. Wechseln Sie zur"
+
+#: contribs/gmf/apps/desktop_alt/js/controller.js:106
+msgid "merged_osm_times"
+msgstr "merged_osm_times"
+
+#: contribs/gmf/apps/mobile/index.html:67
+msgid "standard version"
+msgstr "Standard-Version"

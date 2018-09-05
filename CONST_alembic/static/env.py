@@ -1,4 +1,4 @@
-# Copyright (c) 2015, Camptocamp SA
+# Copyright (c) 2015-2017, Camptocamp SA
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ from __future__ import with_statement
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
+import os
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -37,6 +38,10 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
+
+# Allow to define the DB URL from the environment
+if 'SQLALCHEMY_URL' in os.environ:  # pragma: nocover
+    config.set_main_option('sqlalchemy.url', os.environ['SQLALCHEMY_URL'])
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -50,23 +55,23 @@ target_metadata = None
 # ... etc.
 
 
-def run_migrations_offline():  # pragma: nocover
+def run_migrations_offline():  # pragma: no cover
     """Run migrations in 'offline' mode.
 
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
     here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
+    we do not even need a DBAPI to be available.
 
     Calls to context.execute() here emit the given string to the
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option('sqlalchemy.url')
     context.configure(
         url=url,
         target_metadata=target_metadata,
-        version_table_schema=config.get_main_option("version_table_schema"),
+        version_table_schema=config.get_main_option('version_table_schema'),
     )
 
     with context.begin_transaction():
@@ -82,14 +87,14 @@ def run_migrations_online():
     """
     engine = engine_from_config(
         config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool)
 
     connection = engine.connect()
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
-        version_table_schema=config.get_main_option("version_table_schema"),
+        version_table_schema=config.get_main_option('version_table_schema'),
     )
 
     try:
@@ -98,7 +103,8 @@ def run_migrations_online():
     finally:
         connection.close()
 
-if context.is_offline_mode():  # pragma: nocover
+
+if context.is_offline_mode():  # pragma: no cover
     run_migrations_offline()
 else:
     run_migrations_online()

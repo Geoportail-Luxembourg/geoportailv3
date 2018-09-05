@@ -11,6 +11,7 @@ TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
 LANGUAGES = en fr de lb
 CGXP = FALSE
+CGXP_API = FALSE
 MOBILE = FALSE
 NGEO = TRUE
 TILECLOUD_CHAIN = FALSE
@@ -35,6 +36,8 @@ CONFIG_VARS += routing
 CONFIG_VARS += referrer
 CONFIG_VARS += excluded_themes_from_search
 APACHE_VHOST ?= luxembourg-geomapfish
+
+VISIBLE_WEB_HOST ?= localhost
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 NGEO_LIBS_JS_FILES += node_modules/jszip/dist/jszip.min.js
@@ -120,11 +123,11 @@ $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
 
 .PHONY: build-api
 build-api: \
-	lint-js-api \
-	build-js-api \
-	build-css-api \
-	build-js-apidoc \
-	create-xx-lang
+	# lint-js-api \
+	# build-js-api \
+	# build-css-api \
+	# build-js-apidoc \
+	# create-xx-lang
 
 .PHONY: create-xx-lang
 create-xx-lang:
@@ -192,3 +195,13 @@ clean: clean-js-api
 .PHONY: clean-js-api
 clean-js-api:
 	rm -rf $(API_OUTPUT_DIR)/apiv3.*
+
+# REMOVE ME ? (Was added to pass upgrade)
+.PRECIOUS: .build/locale/%/LC_MESSAGES/gmf.po
+.build/locale/%/LC_MESSAGES/gmf.po: $(TX_DEPENDENCIES)
+	$(PRERULE_CMD)
+
+# REMOVE ME ? (Was added to pass upgrade)
+.PRECIOUS: .build/locale/%/LC_MESSAGES/ngeo.po
+.build/locale/%/LC_MESSAGES/ngeo.po: $(TX_DEPENDENCIES)
+	$(PRERULE_CMD)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2014-2015, Camptocamp SA
+# Copyright (c) 2014-2017, Camptocamp SA
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,13 @@ from alembic import op, context
 from sqlalchemy import types
 
 # revision identifiers, used by Alembic.
-revision = "3f89a7d71a5e"
+revision = '3f89a7d71a5e'
 down_revision = None
 
 
 def upgrade():
-    schema = "%s_static" % context.get_context().config.get_main_option("schema")
-    op.alter_column("shorturl", "url", type_=types.Unicode, schema=schema)
+    schema = '{0!s}_static'.format(context.get_context().config.get_main_option('schema'))
+    op.alter_column('shorturl', 'url', type_=types.Unicode, schema=schema)
 
 
 def downgrade():

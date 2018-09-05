@@ -1,5 +1,428 @@
 This file includes migration steps for each release of c2cgeoportal.
 
+Version 1.6.12
+==============
+
+1. In the `vars_geoportailv3.yaml` file, remove:
+
+   - smtp_server: smtp.example.com
+
+  from the reset_password configuration node.
+
+  and add this line to the parent node:
+
+   + smtp:
+   +     host: smtp.example.com
+
+     reset_password:
+        ...
+
+Check the documentation if you need ssl, startls, username and password for
+your SMTP service.
+
+Version 2.1.5
+=============
+
+1. Get the new language mapping used to select angular sub local:
+
+    cp CONST_create_template/language_mapping .
+
+
+Version 2.1.2
+=============
+
+1. Rename the following file:
+
+    git mv deploy/hooks/post-{create,restore}
+
+2. Add in the project vars file:
+
+    deploy:
+        code_source: /var/www/c2cgeoportal_mapfish/private/c2cgeoportal
+        code_destination: /var/www/c2cgeoportal_mapfish/private/c2cgeoportal
+
+    with the right deploy path.
+
+
+Version 2.1.0
+=============
+
+If you upgrade from the version 1.6.x be careful to apply the steps for the version 2.0 first.
+
+In recent versions of GeoMapFish, `CGXP` has been replaced by `ngeo` to propose
+a more modern interface to the end user. It is still possible to keep using
+`CGXP` though.
+
+If you want to keep the `CGXP` interface please read the following
+documentation and then move directly to step 4:
+https://camptocamp.github.io/c2cgeoportal/2.1/integrator/legacy_cgxp.html
+
+After you upgrade the application you can use the following scripts to help you on upgrade
+your data from CGXP to ngeo:
+* `.build/venv/bin/themev1tov2` to migrate the themes
+* `.build/venv/bin/l10nv1tov2` to migrate the localisation files (language strings)
+Use the `--help` argument for more information.
+
+You should also add a Layer group named 'background' with the background layers.
+
+
+1. Get the new files for ngeo integration:
+
+    cp CONST_create_template/geoportailv3/templates/desktop.html geoportailv3/templates/
+    cp CONST_create_template/geoportailv3/static-ngeo/less/desktop.less geoportailv3/static-ngeo/less
+    cp CONST_create_template/geoportailv3/static-ngeo/js/desktop.js geoportailv3/static-ngeo/js
+    cp -r CONST_create_template/geoportailv3/static-ngeo/components geoportailv3/static-ngeo/
+
+2. Remove the cgxp interfaces:
+
+    git rm geoportailv3/templates/index.html
+    git rm geoportailv3/templates/viewer.js
+    git rm geoportailv3/templates/edit.html
+    git rm geoportailv3/templates/edit.js
+    git rm geoportailv3/templates/routing.html
+    git rm geoportailv3/templates/routing.js
+
+3. In the `geoportailv3/__init__.py` do the following replacement:
+
+    - add_interface(config)
+    - add_interface(config, "edit")
+    - add_interface(config, "routing")
+    + add_interface(config, "desktop", INTERFACE_TYPE_NGEO)
+
+4. Remove the no longer used files:
+
+    git rm CONST_versions.txt
+    git rm .jshintrc
+
+5. Get the new and heavily modified files for ngeo integration:
+
+    chmod +x CONST_create_template/deploy/hooks/*
+    cp CONST_create_template/apache/wsgi.conf.mako apache/
+    cp CONST_create_template/deploy/hooks/* deploy/hooks/
+
+6. The less build is simplified (be careful if you customized the style):
+
+    git rm geoportailv3/static-ngeo/less/mobile-build.less
+    cp CONST_create_template/geoportailv3/static-ngeo/less/mobile.less geoportailv3/static-ngeo/less
+
+7. The checkers will be refactored, you should do at least the following
+   changes in your `vars_geoportailv3.yaml` (be careful if you use legacy components):
+      checker:
+    -     fulltextsearch: text to search
+    -     print_spec:
+    -         layout: "1 A4 portrait"
+    -         outputFormat: "pdf"
+    -         attributes:
+    -             title: ""
+    -             comments: ""
+    -             datasource: []
+    -             map:
+    -                 projection: "EPSG:21781"
+    -                 dpi: 254
+    -                 rotation: 0
+    -                 center: [600000, 200000]
+    -                 scale: 100000
+    -                 longitudeFirst: true
+    -                 layers: []
+    -             legend: {}
+    +     defaults:
+    +         routes_disable: []
+    +         fulltextsearch: text to search
+    +         print_spec:
+    +             layout: "1 A4 portrait"
+    +             outputFormat: "pdf"
+    +             attributes:
+    +                 title: ""
+    +                 comments: ""
+    +                 datasource: []
+    +                 map:
+    +                     projection: "EPSG:21781"
+    +                     dpi: 254
+    +                     rotation: 0
+    +                     center: [600000, 200000]
+    +                     scale: 100000
+    +                     longitudeFirst: true
+    +                     layers: []
+    +                 legend: {}
+    +     all:
+    +         routes_disable: []
+      check_collector:
+    +     disabled: []
+          hosts: []
+    ...
+      update_paths:
+    ...
+    - - checker
+    + - checker.defaults
+    + - checker.all
+    + - check_collector.disabled
+      - check_collector.hosts
+
+8. In your vars_geoportailv3.yaml file remove the host entry.
+
+9. In your geoportailv3.mk add the following lines:
+
+   + VISIBLE_WEB_HOST ?= example.com
+   +
+   + # Deploy branch
+   + DEPLOY_BRANCH_DIR ?= /var/www/vhosts/$(APACHE_VHOST)/private/deploybranch
+   + GIT_REMOTE_URL ?= git@github.com:camptocamp/geoportailv3.git
+   + DEPLOY_BRANCH_BASE_URL ?= $(VISIBLE_PROTOCOL)://$(VISIBLE_HOST)
+   + DEPLOY_BRANCH_MAKEFILE ?= geoportailv3.mk
+
+   Where 'example.com' is the hostname use in the browser to open the application
+
+10. In your vars_geoportailv3.yaml file rename `mobile_default_theme` to `default_theme`.
+
+11. In your geoportailv3/__init__.py do the following change:
+
+    -from c2cgeoportal import locale_negotiator, add_interface, INTERFACE_TYPE_NGEO
+    +from c2cgeoportal.pyramid_ import locale_negotiator, add_interface, INTERFACE_TYPE_NGEO
+
+12. The TileCloud chain config file format change a little bit, the main change to do is:
+
+    -layer_default:
+    -    ...
+    +defaults:
+    +    layer: &layer
+    +        ...
+
+    and for all `layers:`
+
+     layers:
+         name:
+    +       <<: *layer
+            ...
+
+    And if the dimensions are a number like 2016 they should be quoted => '2016'.
+
+    example: https://github.com/camptocamp/demo_geomapfish/commit/158c53b5f16c230744f0b101bb3b42a88a0bf969
+
+13. To pre upgrade the database, run:
+
+    make -f <user>.mk .build/venv/bin/alembic alembic.ini production.ini .build/config.yaml
+    .build/venv/bin/alembic --config alembic.ini upgrade 7d271f4527cd
+    .build/venv/bin/treeitem_uniquename
+
+    If you are using Windows, then please replace `bin` with `scripts` in the paths
+
+14. In the database we have added some restrictions, have a look here for more information:
+    https://github.com/camptocamp/c2cgeoportal/issues/2568
+
+
+Version 2.0.0
+=============
+
+This changelog considers that you do not currently use an ngeo interface and you
+replace your sencha touch interface by an ngeo interface.
+
+If you want to keep the `Print version 2.x`, please read the following
+documentation:
+https://camptocamp.github.io/c2cgeoportal/2.1/integrator/legacy_print.html
+You must also not remove the `print/print-servlet.war` (at step 2) and not
+add it in the `.gitignore` (at step 3).
+
+1. Get the new and heavily modified files for ngeo integration:
+
+    at that point, the following folder should exist: CONST_create_template
+
+    cp CONST_create_template/lingua-client.cfg .
+    cp CONST_create_template/lingua-server.cfg .
+    cp CONST_create_template/apache/wsgi.conf.mako apache/
+    cp -r CONST_create_template/geoportailv3/static-ngeo geoportailv3/
+    cp CONST_create_template/geoportailv3/templates/mobile.html geoportailv3/templates/
+
+2. Remove the no longer used files:
+
+    git rm lingua.cfg
+    git rm -r geoportailv3/static/mobile/
+    git rm jsbuild/mobile.cfg
+    git rm print/print-servlet.war
+
+3. Add in the `.gitignore` file:
+
+    + /node_modules/
+    + /print/print-servlet.war
+    + /.tx/config
+    + /.tx/ngeo.gmf-*
+    + /geoportailv3/static-ngeo/build/
+    + /geoportailv3/static-ngeo/fonts/gmf-icons.*
+    + /geoportailv3/static-ngeo/fonts/fontawesome-webfont.*
+    + /geoportailv3/version.py
+    + /mapserver/replace_db.sh
+    + /testDB/11-schemas.sql
+    + /testDB/12-alembic.sql
+    + /testDB/13-alembic-static.sql
+    * /testDB/Dockerfile
+    + /.whiskey/action_hooks/pre-build
+
+4. In the `vars_geoportailv3.yaml` file:
+
+   * Remove the `vars.checker.lang_files` parameter to use the default value
+     that checks the ngeo language files.
+
+5. In the `geoportailv3/__init__.py` file:
+
+   * If your project's main function includes `config.include("pyramid_closure")`,
+     remove it, as c2cgeoportal now takes care of including `pyramid_closure`.
+
+   * Use the ngeo interface for the mobile by doing this changes:
+
+     - from c2cgeoportal import locale_negotiator, add_interface, \
+     -     INTERFACE_TYPE_SENCHA_TOUCH, INTERFACE_TYPE_NGEO
+     + from c2cgeoportal import locale_negotiator, add_interface, INTERFACE_TYPE_NGEO
+
+     ...
+
+     - add_interface(config, "mobile", INTERFACE_TYPE_SENCHA_TOUCH)
+     + add_interface(config, "mobile", INTERFACE_TYPE_NGEO)
+
+6. If you have set the `cache_control` in your `vars_geoportailv3.yaml` file,
+   rename 'cache_control' to 'headers' and 'max_age' to
+   'cache_control_max_age':
+
+   -  cache_control:
+   -      "<service_name>":
+   -          "max_age": <max_age>
+   +  headers:
+   +      "<service_name>":
+   +          "cache_control_max_age": <max_age>
+
+7. On the `geoportailv3/models.py` remove the following lines:
+
+    - LayerInternalWMS.__acl__ = [DENY_ALL]
+    - LayerExternalWMS.__acl__ = [DENY_ALL]
+    - LayerWMTS.__acl__ = [DENY_ALL]
+    - WMTSDimension.__acl__ = [DENY_ALL]
+
+8. It is not allowed anymore to have layers directly in a theme.
+
+
+Version 1.6.8
+=============
+
+1. In the file `print/WEB-INF/classes/logback.xml.mako` do the following replacement:
+
+    - <file>build/logs/logFile.log</file>
+    + <file>logs/${instanceid}.log</file>
+    - <fileNamePattern>build/logs/logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+    + <fileNamePattern>logs/${instanceid}.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+2. In the `deploy/hooks/pre-restore-database.mako` file add:
+   cd "${directory}"
+   before
+   .build/venv/bin/alembic -c alembic_static.ini upgrade head
+
+
+Version 1.6.7
+=============
+
+1. To be able to update the static schema on deploy, we must have the latest
+   Alembic upgrade script and for that the new `restore_order` parameter must be
+   added to the `main` block in the `deploy/deploy.cfg.mako` file:
+
+   [main]
+  +# to update the static schema, we need to deploy the code first
+  +restore_order = code,database,files
+
+2. Add the following lines in your `jsbuild/app.cfg.mako` file to get the french and german
+   translation for some of the print panel strings:
+
+      [lang-fr.js]
+      ...
+      include =
+      ...
+     +    locale/SimplePrint-fr.js
+
+      [lang-de.js]
+      ...
+      include =
+      ...
+     +    locale/SimplePrint-de.js
+
+3. Update the `configureHttpRequests` of the print v3 template to:
+
+        - !configureHttpRequests &configureHttpRequests
+            httpProcessors:
+            - !mapUri
+                matchers:
+                - !dnsMatch
+                    host: ${host}
+                mapping:
+                    (https?)://${host}/(.*): "http://127.0.0.1/$2"
+            - !forwardHeaders
+                matchers:
+                - !localMatch {}
+                headers:
+                - Cookie
+                - Host
+            - !forwardHeaders
+                headers:
+                - Referer
+            - !restrictUris
+                matchers:
+                - !localMatch
+                  pathRegex: "/${instanceid}/wsgi/mapserv_proxy"
+                - !localMatch
+                  pathRegex: "/${instanceid}/tiles/.*"
+                - !localMatch
+                  reject: true
+                - !ipMatch
+                  ip: 10.0.0.0
+                  mask: 255.0.0.0
+                  reject: true
+                - !ipMatch
+                  ip: 172.16.0.0
+                  mask: 255.240.0.0
+                  reject: true
+                - !ipMatch
+                  ip: 192.168.0.0
+                  mask: 255.255.0.0
+                  reject: true
+                - !acceptAll {}
+
+
+Version 1.6.6
+=============
+
+1. Now the files `apache/mapcache.xml` and `apache/tiles.conf` are generated automatically,
+   then you can remove your custom build rules.
+
+   If you do not use tilecloud-chain and you do not have a `tilegeneration/config.yaml` configuration
+   file, you must disable it by setting the following parameter in your Makefile:
+
+   `TILECLOUD_CHAIN ?= FALSE`
+
+
+Version 1.6.5
+=============
+
+1. In the PDF report config the show_map attribute will be removed and a map is added in the config hierarchy.
+   See the doc to update your config: https://camptocamp.github.io/c2cgeoportal/1.6/integrator/pdfreport.html
+
+2. If you use ngeo in your project edit `build.json`, located at the root of the project, and change the
+   `templatecache.js` line:
+
+     - ".build/templatecache.js"
+     + "geoportailv3/static/build/templatecache.js"
+
+3. If you use ngeo you need to update your project to Angular 1.4.x (1.4.7 is the latest version). For this
+   you need to change two files: `build.json` and `package.json`.
+
+   Changes to `build.json`:
+
+     -      ".build/externs/angular-1.3.js",
+     -      ".build/externs/angular-1.3-q.js",
+     -      ".build/externs/angular-1.3-http-promise.js",
+     +      ".build/externs/angular-1.4.js",
+     +      ".build/externs/angular-1.4-q_templated.js",
+     +      ".build/externs/angular-1.4-http-promise_templated.js",
+
+   Changes to `package.json`:
+
+     -    "angular": "1.3.4",
+     +    "angular": "1.4.7",
+
 
 Version 1.6.3
 =============
@@ -57,7 +480,7 @@ Version 1.6.3
 
 4. In all `mapserver/*.map` or `mapserver/*.map.mako` files, adding an EXTENT to all
    LAYER definitions will be a great performance improvement, see:
-   http://docs.camptocamp.net/c2cgeoportal/1.6/administrator/mapfile.html#performance-improvement
+   https://camptocamp.github.io/c2cgeoportal/1.6/administrator/mapfile.html#performance-improvement
 
 5. In `vars_geoportailv3.yaml` file add `admin_interface` key in `update_paths`:
 
@@ -122,17 +545,21 @@ Version 1.6.3
 
      configfile = "${directory}/${'development' if development == 'TRUE' else 'production'}.ini"
 
-12. On deploy the post-restore-code will be moved to pre-restore-code and deeply modified.
+12. On deploy `post-restore-database.mako` must be renamed to `pre-restore-database.mako` and deeply modified.
     If you did not modify it you can just copy the new version with the following:
 
-    mv deploy/hooks/post-restore-code deploy/hooks/pre-restore-code
-    cp /tmp/geoportailv3/deploy/hooks/pre-restore-code deploy/hooks
-    chmod +x deploy/hooks/pre-restore-code
+    mv deploy/hooks/post-restore-database.mako deploy/hooks/pre-restore-database.mako
+    cp /tmp/geoportailv3/deploy/hooks/pre-restore-database.mako deploy/hooks
+    chmod +x deploy/hooks/pre-restore-database.mako
 
     and the `.gitignore` file should also be adapted:
 
     - /deploy/hooks/post-restore-database
     + /deploy/hooks/pre-restore-database
+
+
+11. In the PDF report config the show_map attribute will be removed and a map is added in the config hierarchy.
+    See the doc to update your config: https://camptocamp.github.io/c2cgeoportal/1.6/integrator/pdfreport.html
 
 
 Version 1.6.2
@@ -156,6 +583,18 @@ Version 1.6.2
 
 3. In the `geoportailv3/__init__.py` file remove all the `config.add_settings({ ... })`, they should be in the `vars_*.yaml` files.
 
+
+   In the `vars_*.yaml` file, the `closure_library_path` configuration variable and the entry in the `interpreted`
+   section can be removed:
+
+     closure_library_path: 'process.stdout.write(require("openlayers/node_modules/closure-util").getLibraryPath())'
+
+     node:
+        vars:
+        - closure_library_path
+        cmd: ["node", "-e"]
+
+   It is now directly defined in the CONST_vars.yaml file.
 
 Version 1.6
 ===========
@@ -184,7 +623,7 @@ Version 1.6
    NOT have both files.
 
 2. Follow the instructions explained in this documentation chapter:
-    http://docs.camptocamp.net/c2cgeoportal/1.6/integrator/upgrade_application.html#easy-upgrading-an-application-from-1-5-to-1-6
+    https://camptocamp.github.io/c2cgeoportal/1.6/integrator/upgrade_application.html#easy-upgrading-an-application-from-1-5-to-1-6
 
 3. Get the new and heavily modified files:
 
@@ -210,7 +649,7 @@ Version 1.6
 
 4. Starting from version 1.6 we use a new build system based on Make that will change
    many of your habits, information are given at:
-   http://docs.camptocamp.net/c2cgeoportal/1.6/integrator/make.html
+   https://camptocamp.github.io/c2cgeoportal/1.6/integrator/make.html
 
    Main things to do:
    - Move your old `config.yaml` and your `[vars]` section of the old
@@ -229,7 +668,7 @@ Version 1.6
      `<%include file="templates/A4_portrait.mako" />`.
    - The build environments (`<user>.mk` files) must be recreated.
      For multi project mode have a look at the documentation:
-     http://docs.camptocamp.net/c2cgeoportal/master/integrator/create_application.html
+     https://camptocamp.github.io/c2cgeoportal/1.6/integrator/create_application.html
 
 5. In the `setup.cfg` file you should remove all the `[compile_catalog]`,
    `[extract_messages]`, `[init_catalog]`, `[update_catalog]` sections.

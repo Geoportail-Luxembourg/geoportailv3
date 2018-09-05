@@ -1,36 +1,10 @@
-{
-  "extends": "openlayers",
-  "env": {
-    "jquery": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "ecmaFeatures": {
-      "generators": false,
-      "objectLiteralDuplicateProperties": false
-    },
-    "sourceType": "module"
-  },
-  "rules": {
-    "no-console": 0
-  },
-  "globals": {
-    "angular": false,
-    "goog": false,
-    "d3": false,
-    "Bloodhound": false,
-    "ol": false,
-    "olcs": false,
-    "Cesium": false,
-    "proj4": false,
-    "ngeo": false,
-    "gmf": false,
-    "app": false,
-    "Fuse": false,
-    "lux": false,
-    "autoComplete": false,
-    "JSZip": false,
-    "Promise": true,
-    "google": false
-  }
-}
+extends: openlayers
+globals:
+  'geoportailv3': false
+  angular: false
+  goog: false
+  ol: false
+  ngeo: false
+  gmf: false
+rules:
+  valid-jsdoc: off

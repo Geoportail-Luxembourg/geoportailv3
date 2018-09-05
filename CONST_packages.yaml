@@ -1,31 +1,16 @@
 default_cmd: dpkg -l {package} | grep ^ii | awk '{{print $3}}'
 
-main:
-    mapserver:
-        cmd: /usr/lib/cgi-bin/mapserv -v | awk '{{print $3}}'
-        version: 7.0
+common:
     python:
         cmd: /usr/bin/python --version 2>&1 | awk '{{print $2}}'
         version: 2.7
     python-dev: 2.7
-    postgres:
-        cmd: psql --version | awk '{{print $3}}'
-        version: 9.1
-    postgis:
-        cmd: sudo -u postgres psql template_postgis -c "select PostGIS_lib_version();" -At
-        #cmd: dpkg -l | grep postgis | grep ^ii | awk '{{print $3}}' | head -n 1
-        version: 2.0
-    deploy: 0.4
-    java:
-        cmd: java -version 2>&1 | grep 'java version' | awk '{{print $3}}' | sed 's/"//g' | sed 's/_/./g'
-        version: 1.7.0
-    tomcat:
-        cmd: /usr/share/tomcat*/bin/version.sh | grep 'Server number' | awk '{{print $3}}'
-        version: 6.0
+
+main:
     libproj0: 4.7
     virtualenv:
         cmd: virtualenv --version
-        version: 1.7
+        version: 1.10
     httpd:
         cmd: /usr/sbin/apache2ctl -v 2> /dev/null | head -n 1 | awk '{{print $3}}' | awk -F / '{{print $2}}'
         version: 2.2
@@ -38,11 +23,44 @@ main:
         cmd: gettext -V | head -n1 | awk '{{print $4}}'
         version: 0.18
 
-mobile:
-    sencha:
-        cmd: sencha help 2> /dev/null | grep 'Sencha Cmd' | head -n 1 | awk '{{print $3}}' | sed 's/^v//'
-        version: 4.0
-    ruby-compass: 0 # just present
+docker:
+    docker:
+        cmd: docker --version | awk '{{print $3}}'
+        version: 1.8.2
+    docker-compose:
+        cmd: docker-compose --version | awk '{{print $3}}'
+        version: 1.4.2
+
+mapserver:
+    mapserver:
+        cmd: /usr/lib/cgi-bin/mapserv -v | awk '{{print $3}}'
+        version: 7.0
+
+postgres:
+    postgres:
+        cmd: psql --version | awk '{{print $3}}'
+        version: 9.1
+    postgis:
+        cmd: sudo -u postgres psql template_postgis -c "select PostGIS_lib_version();" -At
+        #cmd: dpkg -l | grep postgis | grep ^ii | awk '{{print $3}}' | head -n 1
+        version: 2.0
+
+print:
+    java:
+        cmd: java -version 2>&1 | grep  -E '(java|openjdk) version' | awk '{{print $3}}' | sed 's/"//g' | sed 's/_/./g'
+        version: 1.7.0
+    tomcat:
+        cmd: /usr/share/tomcat*/bin/version.sh | grep 'Server number' | awk '{{print $3}}'
+        version: 6.0
+    unzip:
+        cmd: unzip -v | head -n1 | awk '{{print $2}}'
+        version: 6.0
+    zip:
+        cmd: zip -v | head -n2 | tail -n1 | awk '{{print $4}}'
+        version: 3.0
+
+deploy:
+    deploy: 0.4.8
 
 tilecloud-chain:
     libapache2-mod-mapcache: 1.0.0
@@ -56,4 +74,4 @@ ngeo:
         version: 0.10
     npm:
         cmd: npm --version
-        version: 1.3
+        version: 1.4

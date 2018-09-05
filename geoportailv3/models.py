@@ -6,7 +6,7 @@ import sqlahelper
 from pyramid.i18n import TranslationStringFactory
 
 from c2cgeoportal.models import * # noqa
-from c2cgeoportal.models import LayerInternalWMS, LayerExternalWMS
+from c2cgeoportal.models import LayerWMS, LayerWMS
 from c2cgeoportal.models import DBSession  # noqa
 from pyramid.security import Allow, ALL_PERMISSIONS, DENY_ALL
 from formalchemy import Column
@@ -18,9 +18,6 @@ _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
 Base = sqlahelper.get_base()
 Sessions = {}
-
-LayerInternalWMS.__acl__ = [DENY_ALL]
-LayerExternalWMS.__acl__ = [DENY_ALL]
 
 
 class LuxDownloadUrl(Base):
@@ -63,7 +60,7 @@ class LuxMeasurementDirectory(Base):
     town_code = Column(Integer)
 
 
-class LuxLayerInternalWMS(LayerInternalWMS):
+class LuxLayerInternalWMS(LayerWMS):
     __label__ = _(u"Internal WMS layer")
     __plural__ = _(u"Internal WMS layers")
     __tablename__ = "lux_layer_internal_wms"
@@ -75,7 +72,7 @@ class LuxLayerInternalWMS(LayerInternalWMS):
 
     id = Column(
         Integer,
-        ForeignKey(_schema + ".layer_internal_wms.id"),
+        ForeignKey(_schema + ".layer_wms.id"),
         primary_key=True
     )
     url = Column(Unicode, label=_(u"Url"))
@@ -85,7 +82,7 @@ class LuxLayerInternalWMS(LayerInternalWMS):
     rest_url = Column(Unicode, label=_(u"REST url"))
 
 
-class LuxLayerExternalWMS(LayerExternalWMS):
+class LuxLayerExternalWMS(LayerWMS):
     __label__ = _(u"External WMS layer")
     __plural__ = _(u"External WMS layers")
     __tablename__ = "lux_layer_external_wms"
@@ -97,7 +94,7 @@ class LuxLayerExternalWMS(LayerExternalWMS):
 
     id = Column(
         Integer,
-        ForeignKey(_schema + ".layer_external_wms.id"),
+        ForeignKey(_schema + ".layer_wms.id"),
         primary_key=True
     )
     category_id = Column(Integer, label=_(u'Category ID'))

@@ -22,8 +22,6 @@ vars:
     db: lux
     # database schema
     schema: geov3
-    # Name of the server hosting the application
-    host: localhost
 
     srid: 2169
 
@@ -85,25 +83,28 @@ vars:
 
     # Checker configuration
     checker:
-        lang_files: [ngeo]
-        print_spec: 
-            layout: A4 portrait
-            outputFormat: pdf
-            attributes:
-                name: Exemple
-                description: Carte exemple
-                scale: 60000
-                url: "http://g-o.lu/0mf4r"
-                qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
-                legend: {}
-                scalebar:
-                  projection: EPSG:2169
-                map:
-                  bbox: [668126, 6368118, 689717, 6389761]
-                  projection: EPSG:3857
-                  dpi: 128
-                  rotation: 0
-                  layers: []
+        default:
+            fulltextsearch: "bat"
+            print_spec: 
+                layout: A4 portrait
+                outputFormat: pdf
+                attributes:
+                    name: Exemple
+                    description: Carte exemple
+                    scale: 60000
+                    url: "http://g-o.lu/0mf4r"
+                    qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
+                    legend: {}
+                    scalebar:
+                      projection: EPSG:2169
+                    map:
+                      bbox: [668126, 6368118, 689717, 6389761]
+                      projection: EPSG:3857
+                      dpi: 128
+                      rotation: 0
+                      layers: []
+        all:
+            routes_disable: []
 
     check_collector:
         disabled:
@@ -159,6 +160,10 @@ vars:
         url: 'http://open.mapquestapi.com/directions/v2/route'
         api_key:
 
+    deploy:                                                                      
+        code_source: not_set
+        code_destination: not_set
+
 interpreted:
     node:
         vars:
@@ -166,6 +171,8 @@ interpreted:
         cmd: ["node", "-e"]
 
 update_paths:
-- checker
+- checker.defaults
+- checker.all
+- checker.disabled
 - check_collector.hosts
 - admin_interface

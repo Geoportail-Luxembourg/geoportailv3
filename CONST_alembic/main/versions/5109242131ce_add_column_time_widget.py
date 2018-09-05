@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015, Camptocamp SA
+# Copyright (c) 2015-2017, Camptocamp SA
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without
@@ -39,24 +39,24 @@ from sqlalchemy import Column
 from sqlalchemy.types import Unicode
 
 # revision identifiers, used by Alembic.
-revision = "5109242131ce"
-down_revision = "164ac0819a61"
+revision = '5109242131ce'
+down_revision = '164ac0819a61'
 
 
 def upgrade():
-    schema = context.get_context().config.get_main_option("schema")
+    schema = context.get_context().config.get_main_option('schema')
 
     # Instructions
-    for table in ["layerv1", "layer_internal_wms", "layer_external_wms"]:
-        op.add_column(table, Column("time_widget", Unicode(10), default=u"slider"), schema=schema)
-        op.execute("UPDATE %(schema)s.%(table)s SET time_widget = 'slider'" % {
-            "schema": schema, "table": table
-        })
+    for table in ['layerv1', 'layer_internal_wms', 'layer_external_wms']:
+        op.add_column(table, Column('time_widget', Unicode(10), default=u'slider'), schema=schema)
+        op.execute("UPDATE {schema!s}.{table!s} SET time_widget = 'slider'".format(
+            schema=schema, table=table
+        ))
 
 
 def downgrade():
-    schema = context.get_context().config.get_main_option("schema")
+    schema = context.get_context().config.get_main_option('schema')
 
     # Instructions
-    for table in ["layerv1", "layer_internal_wms", "layer_external_wms"]:
-        op.drop_column(table, "time_widget", schema=schema)
+    for table in ['layerv1', 'layer_internal_wms', 'layer_external_wms']:
+        op.drop_column(table, 'time_widget', schema=schema)

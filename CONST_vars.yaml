@@ -6,10 +6,18 @@ vars:
     # the package name
     package: geoportailv3
 
+    srid: -1
+
+    host: VISIBLE_WEB_HOST
+    web_protocol: VISIBLE_WEB_PROTOCOL
+
     # the Unix user under which the modwsgi daemon processes are executed.
-    modwsgi_user: www-data
+    modwsgi_user: MODWSGI_USER
     # url-path where the instance must respond.
     apache_entry_point: APACHE_ENTRY_POINT
+    # Docker base image name (comes from the makefile).
+    docker_base: DOCKER_BASE
+    docker: DOCKER
     # database user
     dbuser: www-data
     # database password
@@ -49,6 +57,7 @@ vars:
 
     directory: __import__('os').getcwd()
     python_path: __import__('distutils').sysconfig.get_python_lib()
+    ps: __import__('os').path.sep
 
     # Authentication settings
     authtkt:
@@ -68,11 +77,8 @@ vars:
         root_dir: "{directory}"
 
     # used for the "node_modules" and "closure" static views
-    closure_library_path: 'process.stdout.write(require("@camptocamp/closure-util").getLibraryPath())'
-    node_modules_path: "{directory}/node_modules"
-
-    layers: {}
-    reset_password: {}
+    closure_library_path: 'process.stdout.write(require("closure-util").getLibraryPath())'
+    node_modules_path: "{directory}{ps}node_modules"
 
     # pyramid_closure configuration
     # Each item in the roots_with_prefix array is an array with two elements. The
@@ -83,11 +89,12 @@ vars:
     pyramid_closure:
         roots_with_prefix:
         - ["{closure_library_path}/closure/goog", "{closure_library_path}/closure/goog"]
-        - ["{package}:static/js", "{directory}/{package}/static/js"]
-        - ["{node_modules_path}/openlayers/src", "{node_modules_path}/openlayers/src"]
-        - ["{node_modules_path}/openlayers/build", "{node_modules_path}/openlayers/build"]
-        - ["{node_modules_path}/ngeo/src", "{node_modules_path}/ngeo/src"]
-        - ["{node_modules_path}/ol-cesium/src", "{node_modules_path}/ol-cesium/src"]
+        - ["{package}:static-ngeo/js", "{directory}/{package}/static-ngeo/js"]
+        - ["{package}:static-ngeo/components", "{directory}/{package}/static-ngeo/components"]
+        - ["{node_modules_path}{ps}openlayers/src", "{node_modules_path}{ps}openlayers/src"]
+        - ["{node_modules_path}{ps}openlayers/build", "{node_modules_path}{ps}openlayers/build"]
+        - ["{node_modules_path}{ps}ngeo/src", "{node_modules_path}{ps}ngeo/src"]
+        - ["{node_modules_path}{ps}ngeo/contribs/gmf/src", "{node_modules_path}{ps}ngeo/contribs/gmf/src"]
 
     # The application's default language. This is the language used by
     # the application if no specific language is specified in the URLs.
@@ -99,6 +106,11 @@ vars:
     - en
     - fr
     - de
+
+    # All the application interfaces used to create the apache rewrite rules
+    interfaces: __import__('os').environ.get("INTERFACES").split(" ")
+
+    default_interface: desktop
 
     # The dogpile.cache configuration.
     #
@@ -128,14 +140,53 @@ vars:
         map_y: 5860000
         map_zoom: 10
 
-    # The list of available variable names for the `UI metadatas` form.
+    # The list of available variable names for the `Metadatas` form.
         available_metadata:
-        - copy_to
+        # Layers group
+        - name: isExpanded
+          type: boolean
+        # Layer
+        - name: copy_to
+        - name: legend
+          type: boolean
+        - name: isLegendExpanded
+          type: boolean
+        - legendRule
+        - name: legendImage
+          type: url
+        - name: iconUrl
+          type: url
+        - name: metadataUrl
+          type: url
+        - disclaimer
+        - name: isChecked
+          type: boolean
+        - identifierAttributeField
+        - name: maxResolution
+          type: float
+        - name: minResolution
+          type: float
+        - name: thumbnail
+          type: url
+        - name: copyable
+          type: boolean
+        - lastUpdateDateColumn
+        - lastUpdateUserColumn
+        - name: snappingConfig
+          type: json
+        - name: geometry_validation
+          type: boolean
+        # WMTS layers
+        - name: ogcServer
+        - name: printLayers
+        - name: queryLayers
+        - name: wmsLayers
 
     # The list of functionalities that can be configured
     # through the admin interface.
         available_functionalities:
         - default_basemap
+        - default_theme
         - print_template
         - mapserver_substitution
 
@@ -148,12 +199,12 @@ vars:
             - 2 A3 landscape
             default_basemap: plan
 
-    # The name of the theme to use as the default theme for the
-    # mobile app. The default theme is the theme loaded when no
+    # The name of the theme to use as the default theme.
+    # The default theme is the theme loaded when no
     # theme name is specified in the mobile app URL. If unset
-    # then there's no default theme, and no theme information
+    # then there is no default theme, and no theme information
     # will be passed to the config.js template.
-            mobile_default_theme:
+            default_theme:
 
     # Functionalities that are accessible to authenticated
     # users with no associated functionalities in the
@@ -163,6 +214,8 @@ vars:
     # Functionalities that are made available to Mako templates.
         available_in_templates:
         - default_basemap
+        - default_theme
+        - print_template
 
     # Define URLs to the parent application. Only useful if
     # this application is a child application in a parent/child
@@ -170,16 +223,7 @@ vars:
     external_themes_url:
 
     mapserverproxy:
-        # URL to internal MapServer instance
-        mapserv_url: http://localhost/{instanceid}/mapserv
-        # If the WFS service is different from the WMS service, uncomment and set the
-        # mapserv_wfs_url parameter
-        #mapserv_wfs_url:
-
-        external_mapserv_url:
-        # If the WFS service is different from the WMS service, uncomment and set the
-        # external_mapserv_wfs_url parameter
-        #external_mapserv_wfs_url:
+        default_ogc_server: source for image/png
 
     tinyowsproxy:
         # URL to internal TinyOWS instance
@@ -196,116 +240,197 @@ vars:
         # the host has to be set explicitly in a vhost environment.
         # tinyows_host: {host}
 
+    resourceproxy:
+        # list of urls from which it is safe to load content
+        targets:
+          #exempletargetname: http://www.camptocamp.com/?param1=%s&param2=%s
+
+    fulltextsearch:
+        defaultlimit: 30
+        maxlimit: 200
+        languages:
+            fr: french
+            en: english
+            de: german
+
     servers:
+        internal: http://localhost/{instanceid}/
+        local: '{web_protocol}://{host}/{instanceid}/'
 
     # The "raster web services" configuration. See the "raster"
     # chapter in the integrator documentation.
-    raster:
+    raster: {}
+
+    # Used by enumeration in the query builder
+    layers: {}
+
+    # Used by reset_password and shortener to send emails
+    smtp: {}
+
+    # Used to send an email on password reset
+    reset_password:
 
     # The shortner base configuration
     shortener:
         # The base of created URL
-        base_url:  http://{host}{apache_entry_point}s/
+        base_url:  '{web_protocol}://{host}{apache_entry_point}s/'
 
     # Define whether the MapServer proxy should hide the OGC capabilities.
     hide_capabilities: false
 
-    # Enable or disable the filtering of the layers using Mapserver runtime
-    # substitution variables in METADATA to hide protected layers from the
-    # GetCapabilities.
-    # Be careful as too many protected layers will cause an error because Apache has a
-    # 8190 characters hard limit for GET query length.
-    use_security_metadata: false
-
     # For print proxy
     print_url: http://localhost:8080/print-{instanceid}/print/{package}
 
+    pdfreport:
+        print_url: http://localhost:8080/print-{instanceid}/print/{package}
+
     # For base layers
     tiles_url:
-    - http://a.tiles.{host}/{instanceid}/tiles
-    - http://b.tiles.{host}/{instanceid}/tiles
-    - http://c.tiles.{host}/{instanceid}/tiles
-    - http://d.tiles.{host}/{instanceid}/tiles
+    - '{web_protocol}://a.tiles.{host}/{instanceid}/tiles'
+    - '{web_protocol}://b.tiles.{host}/{instanceid}/tiles'
+    - '{web_protocol}://c.tiles.{host}/{instanceid}/tiles'
+    - '{web_protocol}://d.tiles.{host}/{instanceid}/tiles'
+    wmtscapabilities_path: WMTSCAPABILITIES_PATH
 
-    # The URL template used to generate the sub domain URL
-    # %(sub)s will be replaced by the sub domain value.
-    #subdomain_url_template: http://%(sub)s.{host}
-    # The used sub domain for the static resources
-    #subdomains: [s1, s2, s3, s4]
+    ogcproxy_enable: False
 
-    #proxies:
-    #    http: http://someproxy
-
+    # Control the HTTP headers
+    headers:
+        ngeo_index:
+            access_control_max_age: 600 # 10 minutes
+        mapserver:
+            access_control_allow_origin: ["*"]
 
     # Checker configuration
     checker:
-        fulltextsearch: text to search
-        lang_files: [cgxp, cgxp-api]
-        themes:
-            default:
-                params:
-                    version: 2
+        defaults:
+            fulltextsearch: text to search
+            lang_files: [ngeo, cgxp-api]
+            phantomjs_routes:
+            - name: desktop
+              param:
+                no_redirect: true
+            forward_headers: []
+            routes_disable: []
+            themes:
+                default:
+                    params:
+                        version: 2
+        all:
+            phantomjs_routes:
+            - name: desktop
+              param:
+                no_redirect: true
+            - name: mobile
+              param:
+                no_redirect: true
+            - name: desktop
+              param:
+                no_redirect: true
+                debug: true
+            - name: mobile
+              param:
+                no_redirect: true
+                debug: true
+            routes:
+            - name: apijs
+            - name: xapijs
+            - name: printproxy_capabilities
+            # print V2
+            #- name: printproxy_info
+            - name: mapserverproxy
+              params:
+                SERVICE: WMS
+                VERSION: 1.1.1
+                REQUEST: GetCapabilities
+            - name: mapserverproxy
+              params:
+                SERVICE: WFS
+                VERSION: 1.1.0
+                REQUEST: GetCapabilities
+        main:
+            routes:
+            - name: apijs
+            - name: printproxy_capabilities
 
     # Check collector configuration
     check_collector:
-        disabled: [checker_printcapabilities, checker_pdf]
+        disabled: [checker_pdf]
         check_type:
             all:
-            - name: checker_main
-              display: Main page
-            - name: checker_viewer
-              display: Viewer script
-            - name: checker_edit
-              display: Edit page
-            - name: checker_edit_js
-              display: Edit script
+            - name: checker_routes
+              display: Check pages
             - name: checker_theme_errors
               display: Errors in the themes
-            - name: checker_api
-              display: API
-            - name: checker_xapi
-              display: Extended API
             - name: checker_lang_files
               display: Language files
-            - name: checker_printcapabilities
-              display: Print capabilities
             - name: checker_pdf
               display: Print PDF
-            - name: checker_print3capabilities
-              display: Print capabilities
             - name: checker_pdf3
               display: Print PDF
             - name: checker_fts
               display: FullTextSearch
-            - name: checker_wmscapabilities
-              display: WMS capabilities
-            - name: checker_wfscapabilities
-              display: WFS capabilities
+            - name: checker_phantomjs
+              display: PhantomJS generic test
             main:
-            - name: checker_main
-              display: Main page
-            - name: checker_viewer
-              display: Viewer script
-            - name: checker_api
-              display: API
-            - name: checker_print3capabilities
-              display: Print capabilities
+            - name: checker_routes
+              display: Check pages
             - name: checker_fts
               display: FullTextSearch
+            - name: checker_phantomjs
+              display: PhantomJS generic test
             default: # for children
-            - name: checker_viewer
-              display: Viewer script
+            - name: checker_phantomjs
+              display: PhantomJS generic test
         hosts:
         - display: geoportailv3
-          url: http://{host}/{instanceid}/wsgi
+          url: '{web_protocol}://{host}/{instanceid}/wsgi'
           type: main
+
+    # What web page is authorized to use the API
+    authorized_referers:
+    - '{web_protocol}://{host}/{instanceid}'
+
+    # Hooks that can be called at different moments in the life of the
+    # application. The value is the full python name
+    # (full.module.path.function_name) of the function to call
+    hooks: {}
+      # after_settings: geoportailv3.after_settings_hook
+      #   Called just after the settings have been loaded. Allows to modify
+      #   the settings at runtime (they are constructed at build time).
+      #   The function receives one parameter: the settings object.
+
+    # Statistics are disabled by default
+    stats: {}
+
+    db_chooser:
+      # List of {method path} regexes to force the usage of the master, even for GET and OPTIONS
+      # This supersedes the slave list.
+      master:
+      - GET /short/.*   # The shortener updates the last_hit column on GET
+      # List of {method path} regexes to force the usage of the slave
+      slave:
+      - \w+ /printproxy/.*  # The print proxy is never writing to the DB
 
 interpreted:
     python:
     - authtkt.secret
     - python_path
+    - ps
     - directory
+    - interfaces
     environment:
+    - modwsgi_user
     - instanceid
     - apache_entry_point
+    - docker
+    - docker_base
     - development
+    - wmtscapabilities_path
+    - host
+    - web_protocol
+    node:
+        vars:
+        - closure_library_path
+        cmd: ["node", "-e"]
+        ignore_error: true

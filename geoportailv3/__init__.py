@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pyramid.config import Configurator
-from c2cgeoportal import add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
-    set_user_validator
+from c2cgeoportal.pyramid_ import add_interface, INTERFACE_TYPE_NGEO_CATALOGUE, \
+    set_user_validator, INTERFACE_TYPE_NGEO
 from c2cgeoportal.lib.authentication import create_authentication
 from geoportailv3.resources import Root
 from pyramid.renderers import JSON
@@ -317,7 +317,6 @@ def main(global_config, **settings):
     )
 
     config.include('c2cgeoportal')
-    config.include('pyramid_closure')
 
     config.add_translation_dirs('geoportailv3:locale/')
 
@@ -382,6 +381,7 @@ def main(global_config, **settings):
 
     # add the interfaces
     add_interface(config, interface_type=INTERFACE_TYPE_NGEO_CATALOGUE)
+    add_interface(config, "index", INTERFACE_TYPE_NGEO)
 
     config.add_route("echocsv", "/profile/echocsv", request_method="POST")
     config.add_route('getuserinfo', '/getuserinfo')
