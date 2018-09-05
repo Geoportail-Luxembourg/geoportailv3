@@ -21,6 +21,7 @@ setup(
         'python-ldap',
         'pyramid_ldap',
         'qrcode==5.1',
+        'psycopg2==2.7.5',
         "bleach==1.5.0",
         "html5lib==0.9999999",
         "CairoSVG==1.0.22",
