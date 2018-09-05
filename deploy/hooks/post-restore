@@ -1,6 +1,0 @@
-#!/bin/sh -ex
-
-cd not_set
-make -f $TARGET.mk build -j2
-
-rm /tmp/np

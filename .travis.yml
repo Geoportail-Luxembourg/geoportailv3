@@ -1,39 +1,11 @@
-language: python
-
-dist: trusty
-
-python:
-- 2.7
+---
 
 sudo: false
+
 addons:
-  postgresql: "9.5"
   apt:
     packages:
-      - postgresql-9.5-postgis-2.3
-
-install:
-- createdb -E UTF8 -T template0 template_postgis -U postgres
-- psql -d template_postgis -c "CREATE EXTENSION postgis;" -U postgres
-- createdb -E UTF8 -T template_postgis lux -U postgres
-- createuser www-data --no-superuser --no-createdb --no-createrole -U postgres
-- psql -d lux -c 'CREATE SCHEMA geov3;' -U postgres
-- psql -d lux -c 'CREATE SCHEMA geov3_static;' -U postgres
-- psql -d lux -c 'CREATE SCHEMA geov3_stats;' -U postgres
-- psql -d lux -c "ALTER USER \"www-data\" PASSWORD 'www-data';" -U postgres
-- psql -d lux -c 'GRANT SELECT ON spatial_ref_sys TO "www-data";' -U postgres
-- psql -d lux -c 'GRANT ALL ON SCHEMA geov3 TO "www-data";' -U postgres
-- psql -d lux -c 'GRANT ALL ON SCHEMA geov3_static TO "www-data";' -U postgres
-- psql -d lux -c 'GRANT ALL ON SCHEMA geov3_stats TO "www-data";' -U postgres
-- psql -d lux -c 'GRANT ALL ON geometry_columns TO "www-data";' -U postgres
-
-- make -f travis.mk .build/requirements.timestamp || make -f travis.mk .build/requirements.timestamp
-- make -f travis.mk .build/dev-requirements.timestamp || make -f travis.mk .build/dev-requirements.timestamp
-- make -f travis.mk alembic.ini lux_alembic.ini
-- .build/venv/bin/alembic upgrade head
-- .build/venv/bin/alembic -c lux_alembic.ini upgrade head
-- make -f travis.mk .build/build.js || make -f travis.mk .build/build.js
-- make -f travis.mk build
+      - python3-netifaces
 
 script:
-- make -f travis.mk checks
+  - ./docker-run make checks

@@ -1,436 +1,625 @@
+---
+
 vars:
-    # project instance id
-    instanceid: INSTANCE_ID
-    # is in developement mode
-    development: DEVELOPMENT
-    # the package name
-    package: geoportailv3
+  # is in development mode
+  development: '{DEVELOPMENT}'
+  # the package name
+  package: geoportailv3
+  geomapfish_version: '{GEOMAPFISH_VERSION}'
+  instance: '{INSTANCE}'
+  build_volume_name: '{BUILD_VOLUME_NAME}'
 
-    srid: -1
+  srid: -1
 
-    host: VISIBLE_WEB_HOST
-    web_protocol: VISIBLE_WEB_PROTOCOL
+  host: '{VISIBLE_WEB_HOST}'
+  web_protocol: '{VISIBLE_WEB_PROTOCOL}'
+  entry_point: '{VISIBLE_ENTRY_POINT}'
+  docker_entry_point: '{DOCKER_ENTRY_POINT}'
+  docker_host: '{DOCKER_WEB_HOST}'
+  docker_web_protocol: '{DOCKER_WEB_PROTOCOL}'
 
-    # the Unix user under which the modwsgi daemon processes are executed.
-    modwsgi_user: MODWSGI_USER
-    # url-path where the instance must respond.
-    apache_entry_point: APACHE_ENTRY_POINT
-    # Docker base image name (comes from the makefile).
-    docker_base: DOCKER_BASE
-    docker: DOCKER
-    # database user
-    dbuser: www-data
-    # database password
-    dbpassword: www-data
-    # database host
-    dbhost: localhost
-    # database port
-    dbport: 5432
-    # database name
-    db: override_me
-    # sqlalchemy schema
-    schema: main
-    # database parent schema
-    parentschema: ""
-    # apache/mapserver.conf "Allow" statement
-    mapserv_allow: Allow from 127.0.0.1 ::1
-    # mapserver connexion string
-    mapserver_connection: user={dbuser} password={dbpassword} dbname={db} host={dbhost}
-    # mapserver join tables
-    mapserver_join_tables: '{schema}.restrictionarea AS ra, {schema}.role_restrictionarea AS rra, {schema}.layer_restrictionarea AS lra, {schema}.treeitem AS la'
-    # mapserver visible area
-    mapserver_join_area: ra.area
-    # mapserver join close
-    mapserver_join_where: 'rra.role_id = %role_id% AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name = '
-    # mapserver metadata for validation
-    mapserver_layer_metadata: ""
-    mapserver_layer_validation:
-        '"default_role_id" "-1"
-        "role_id" "^-?[0-9]*$"'
-    # mapfile data subselect
-    mapfile_data_subselect: 'SELECT ST_Collect(ra.area) FROM main.restrictionarea AS ra, main.role_restrictionarea AS rra, main.layer_restrictionarea AS lra, main.treeitem AS la WHERE rra.role_id = %role_id% AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name = '
-    # mapserver filter on role id only
-    mapfile_data_noarea_subselect: 'SELECT rra.role_id FROM {mapserver_join_tables} WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name = '
-    # port for the waitress web server
-    waitress_port: 5000
-    enable_admin_interface: True
+  # Docker base image name (comes from the makefile).
+  docker_base: '{DOCKER_BASE}'
+  docker_tag: '{DOCKER_TAG}'
+  docker_global_front: false
+  docker_services:
+    config:
+      environment:
+        VISIBLE_WEB_HOST: '{docker_host}'
+        VISIBLE_WEB_PROTOCOL: '{docker_web_protocol}'
+        VISIBLE_ENTRY_POINT: '{docker_entry_point}'
+        PGHOST: 172.17.0.1
+        PGHOST_SLAVE: 172.17.0.1
+        PGPORT: 5432
+        PGUSER: www-data
+        PGPASSWORD: www-data
+        PGDATABASE: geomapfish
+        GEOPORTAL_INTERNAL_URL: http://geoportal:8080
+        MAPCACHE_URL: http://mapcache:8080/mapcache/
+        MAPSERVER_URL: http://mapserver:8080/
+        MEMCACHED_HOST: memcached
+        MEMCACHED_PORT: 11211
+        TILEGENERATION_SQS_QUEUE: '<queue_name>'
+    db:
+      environment:
+        POSTGRES_DB: geomapfish
+        POSTGRES_USER: www-data
+        POSTGRES_PASSWORD: www-data
+    geoportal-build:
+      environment: &geo-run-env
+        VISIBLE_ENTRY_POINT: '{docker_entry_point}'
+        PGHOST: 172.17.0.1
+        PGHOST_SLAVE: 172.17.0.1
+        PGPORT: 5432
+        PGUSER: www-data
+        PGPASSWORD: www-data
+        PGDATABASE: geomapfish
+        PGSCHEMA: main
+        PGSCHEMA_STATIC: main_static
+    geoportal:
+      environment:
+        <<: *geo-run-env
+        GUNICORN_PARAMS:
+          --bind=:8080
+          --worker-class=gthread
+          --threads=10
+          --workers=5
+          --timeout=60
+          --max-requests=1000
+          --max-requests-jitter=100
+        VISIBLE_WEB_HOST: '{docker_host}'
+        VISIBLE_WEB_PROTOCOL: '{docker_web_protocol}'
+        TINYOWS_URL: http://tinyows:8080/
+        MAPSERVER_URL: http://mapserver:8080/
+        PRINT_URL: http://print:8080/print/
+        DEVSERVER_HOST: webpack-dev-server:8080
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        C2C_REDIS_URL: redis://redis:6379
+        C2C_BROADCAST_PREFIX: broadcast_geoportal_
+    qgisserver:
+      environment: *geo-run-env
+    tilecloudchain:
+      environment:
+        GUNICORN_PARAMS:
+          --bind=:8080
+          --worker-class=gthread
+          --threads=10
+          --workers=5
+          --max-requests=1000
+          --max-requests-jitter=100
+        VISIBLE_ENTRY_POINT: '{docker_entry_point}'
+        TILEGENERATION_CONFIGFILE: /etc/tilegeneration/config.yaml
+        C2C_BASE_PATH: /c2c_tiles
+        C2C_REDIS_URL: redis://redis:6379
+        C2C_BROADCAST_PREFIX: broadcast_tilecloudchain_
+    print:
+      environment:
+        CATALINA_OPTS: -Xmx1024m
+    front:
+      port: 80
 
-    directory: __import__('os').getcwd()
-    python_path: __import__('distutils').sysconfig.get_python_lib()
-    ps: __import__('os').path.sep
+  # database user
+  dbuser: '{PGUSER}'
+  # database password
+  dbpassword: '{PGPASSWORD}'
+  # master database host
+  dbhost: '{PGHOST}'
+  # slave database host
+  dbhost_slave: '{PGHOST_SLAVE}'
+  # database port
+  dbport: '{PGPORT}'
+  # database name
+  db: '{PGDATABASE}'
+  # sqlalchemy schema
+  schema: '{PGSCHEMA}'
+  # sqlalchemy static schema
+  schema_static: '{PGSCHEMA_STATIC}'
 
-    # Authentication settings
-    authtkt:
-        # Cookie session secret
-        secret: __import__('uuid').uuid4().hex
-        cookie_name: auth_tkt_{instanceid}
-    # Database informations
-    sqlalchemy:
-        url: postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{db}
+  alembic_yaml_file: '{ALEMBIC_YAML_FILE}'
 
-    # 10 days of default cache
-    default_max_age: 864000
+  dbsessions: {}
 
-    # For debug mode
-    jsbuild:
-        config: "{directory}/jsbuild/app.cfg"
-        root_dir: "{directory}"
+  # mapserver connexion string
+  mapserver_connection: user={dbuser} password={dbpassword} dbname={db} host={dbhost}
+  # mapserver join tables
+  mapserver_join_tables: "{schema}.restrictionarea AS ra, {schema}.role_restrictionarea AS rra, \
+    {schema}.layer_restrictionarea AS lra, {schema}.treeitem AS la"
+  # mapserver visible area
+  mapserver_join_area: ra.area
+  # mapserver join close
+  mapserver_join_where: "rra.role_id = %role_id% AND rra.restrictionarea_id = ra.id AND \
+    lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name = "
+  # mapserver metadata for validation
+  mapserver_layer_metadata: ""
+  mapserver_layer_validation: |
+    "default_role_id" "-1"
+    "role_id" "^-?[0-9]*$"
+  # mapfile data subselect
+  mapfile_data_subselect: "SELECT ST_Collect(ra.area) FROM main.restrictionarea AS ra, \
+    main.role_restrictionarea AS rra, main.layer_restrictionarea AS lra, main.treeitem AS la \
+    WHERE rra.role_id = %role_id% AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id \
+    AND lra.layer_id = la.id AND la.name = "
+  # mapserver filter on role id only
+  mapfile_data_noarea_subselect: "SELECT rra.role_id FROM {mapserver_join_tables} \
+    WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id \
+    AND lra.layer_id = la.id AND la.name = "
+  enable_admin_interface: True
 
-    # used for the "node_modules" and "closure" static views
-    closure_library_path: 'process.stdout.write(require("closure-util").getLibraryPath())'
-    node_modules_path: "{directory}{ps}node_modules"
+  project_directory: '{PROJECT_DIRECTORY}'
+  ps: __import__('os').path.sep
 
-    # pyramid_closure configuration
-    # Each item in the roots_with_prefix array is an array with two elements. The
-    # first element is the path pyramid_closure passed to request.static_url. The
-    # second element is the file system path where js source files are searched.
-    # For this to work window.CLOSURE_BASE_PATH being set to the empty string in
-    # the HTML page.
-    pyramid_closure:
-        roots_with_prefix:
-        - ["{closure_library_path}/closure/goog", "{closure_library_path}/closure/goog"]
-        - ["{package}:static-ngeo/js", "{directory}/{package}/static-ngeo/js"]
-        - ["{package}:static-ngeo/components", "{directory}/{package}/static-ngeo/components"]
-        - ["{node_modules_path}{ps}openlayers/src", "{node_modules_path}{ps}openlayers/src"]
-        - ["{node_modules_path}{ps}openlayers/build", "{node_modules_path}{ps}openlayers/build"]
-        - ["{node_modules_path}{ps}ngeo/src", "{node_modules_path}{ps}ngeo/src"]
-        - ["{node_modules_path}{ps}ngeo/contribs/gmf/src", "{node_modules_path}{ps}ngeo/contribs/gmf/src"]
+  # Authentication settings
+  authtkt:
+    # Cookie session secret
+    secret: __import__('uuid').uuid4().hex
+    cookie_name: auth_tkt_{instance}
+  # Database information
+  sqlalchemy:
+    url: postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{db}
+    pool_recycle: 30
+    pool_size: 5
+    max_overflow: 25
+    use_batch_mode: true
+  sqlalchemy_slave:
+    url: postgresql://{dbuser}:{dbpassword}@{dbhost_slave}:{dbport}/{db}
+    pool_recycle: 30
+    pool_size: 5
+    max_overflow: 25
+    use_batch_mode: true
 
-    # The application's default language. This is the language used by
-    # the application if no specific language is specified in the URLs.
-    # This also defines the language used for the text search.
-    default_locale_name: fr
+  # 10 days of default cache
+  default_max_age: 864000
 
-    # The set of languages supported by the applications.
-    available_locale_names:
+  # For debug mode
+  jsbuild:
+    config: /src/jsbuild/app.cfg
+    root_dir: /src
+
+  # The application's default language. This is the language used by
+  # the application if no specific language is specified in the URLs.
+  # This also defines the language used for the text search.
+  default_locale_name: fr
+
+  # The set of languages supported by the applications.
+  available_locale_names:
     - en
     - fr
     - de
 
-    # All the application interfaces used to create the apache rewrite rules
-    interfaces: __import__('os').environ.get("INTERFACES").split(" ")
+  # All the application interfaces used to create the apache rewrite rules
+  interfaces: __import__('os').environ.get("INTERFACES").split(" ")
 
-    default_interface: desktop
+  default_interface: desktop
 
-    # The dogpile.cache configuration.
-    #
-    # Do not touch if unsure.
-    #
-    # The cache section below takes three properties:
-    #
-    # - backend: the name of the cache backend (ex: dogpile.cache.memory,
-    #   dogpile.cache.memcached, etc.). Mandatory.
-    # - expiration_time: the cache expiration time. Optional (infinite if not
-    #   specified).
-    # - arguments: backend-specific arguments. Optional.
-    #
-    # Here is a dogpile.cache configuration example for the memcached backend
-    # (equivalent of http://dogpilecache.readthedocs.org/en/latest/api.html#dogpile.cache.backends.memcached.MemcachedBackend)
-    # cache:
-    #   backend: dogpile.cache.memcached
-    #   expiration_time: 3600
-    #   arguments:
-    #     url: 127.0.0.1:11211
-    cache:
-        backend: dogpile.cache.memory
+  interfaces_theme:
+    desktop: desktop
+    desktop_alt: desktop
+    mobile: mobile
+    mobile_alt: mobile
+    oeview: desktop
+    oeedit: desktop
 
-    admin_interface:
+  # The dogpile.cache configuration.
+  #
+  # Do not touch if unsure.
+  #
+  # The cache section below takes three properties:
+  #
+  # - backend: the name of the cache backend (ex: dogpile.cache.memory,
+  #   dogpile.cache.memcached, etc.). Mandatory.
+  # - expiration_time: the cache expiration time. Optional (infinite if not
+  #   specified).
+  # - arguments: backend-specific arguments. Optional.
+  #
+  # Here is a dogpile.cache configuration example for the memcached backend
+  # (equivalent of
+  # http://dogpilecache.readthedocs.org/en/latest/api.html#dogpile.cache.backends.memcached.MemcachedBackend)
+  # cache:
+  #   backend: dogpile.cache.memcached
+  #   expiration_time: 3600
+  #   arguments:
+  #   url: 127.0.0.1:11211
+  cache:
+    backend: dogpile.cache.redis
+    arguments:
+      host: '{REDIS_HOST}'
+      port: '{REDIS_PORT}'
+      db: 0
+      redis_expiration_time: 86400  # One day
+      distributed_lock: True
+
+  admin_interface:
     # Default values for the admin interface's maps.
-        map_x: 740000
-        map_y: 5860000
-        map_zoom: 10
+    map_x: 740000
+    map_y: 5860000
+    map_zoom: 10
+
+    layer_tree_max_nodes: 1000
 
     # The list of available variable names for the `Metadatas` form.
-        available_metadata:
-        # Layers group
-        - name: isExpanded
-          type: boolean
-        # Layer
-        - name: copy_to
-        - name: legend
-          type: boolean
-        - name: isLegendExpanded
-          type: boolean
-        - legendRule
-        - name: legendImage
-          type: url
-        - name: iconUrl
-          type: url
-        - name: metadataUrl
-          type: url
-        - disclaimer
-        - name: isChecked
-          type: boolean
-        - identifierAttributeField
-        - name: maxResolution
-          type: float
-        - name: minResolution
-          type: float
-        - name: thumbnail
-          type: url
-        - name: copyable
-          type: boolean
-        - lastUpdateDateColumn
-        - lastUpdateUserColumn
-        - name: snappingConfig
-          type: json
-        - name: geometry_validation
-          type: boolean
-        # WMTS layers
-        - name: ogcServer
-        - name: printLayers
-        - name: queryLayers
-        - name: wmsLayers
+    available_metadata:
+      # Layers group
+      - name: isExpanded
+        type: boolean
+      - name: printNativeAngle
+        type: boolean
+      # Layer
+      - name: copyTo  # V1
+      - name: copyable
+        type: boolean
+      - name: legend
+        type: boolean
+      - name: isLegendExpanded
+        type: boolean
+      - name: legendRule
+      - name: legendImage
+        type: url
+      - name: iconUrl
+        type: url
+      - name: metadataUrl
+        type: url
+      - name: disclaimer
+        translate: True
+      - name: isChecked
+        type: boolean
+      - name: identifierAttributeField
+      - name: maxResolution
+        type: float
+      - name: minResolution
+        type: float
+      - name: opacity
+        type: float
+      - name: thumbnail
+        type: url
+      - name: timeAttribute
+      - name: lastUpdateDateColumn
+      - name: lastUpdateUserColumn
+      - name: snappingConfig
+        type: json
+      - name: geometryValidation  # V1
+        type: boolean
+      - name: excludeProperties  # not yet used
+      - name: customOpenLayersOptions
+        type: json
+      # WMS
+      - name: directedFilterAttributes
+        type: list
+      - name: enumeratedAttributes
+        type: list
+      # WMTS layers
+      - name: ogcServer
+      - name: wmsLayers
+      - name: queryLayers
+      - name: printLayers
 
     # The list of functionalities that can be configured
     # through the admin interface.
-        available_functionalities:
-        - default_basemap
-        - default_theme
-        - print_template
-        - mapserver_substitution
+    available_functionalities:
+      - default_basemap
+      - default_theme
+      - print_template
+      - mapserver_substitution
+      - filterable_layers
+      - preset_layer_filter
+      - open_panel
 
-    functionalities:
+  functionalities:
     # Functionalities that are accessible to anonymous
     # users.
-        anonymous:
-            print_template:
-            - 1 A4 portrait
-            - 2 A3 landscape
-            default_basemap: plan
+    anonymous:
+      print_template:
+        - 1 A4 portrait
+        - 2 A3 landscape
+      default_basemap: plan
 
-    # The name of the theme to use as the default theme.
-    # The default theme is the theme loaded when no
-    # theme name is specified in the mobile app URL. If unset
-    # then there is no default theme, and no theme information
-    # will be passed to the config.js template.
-            default_theme:
+      # The name of the theme to use as the default theme.
+      # The default theme is the theme loaded when no
+      # theme name is specified in the mobile app URL. If unset
+      # then there is no default theme, and no theme information
+      # will be passed to the config.js template.
+      default_theme:
 
     # Functionalities that are accessible to authenticated
     # users with no associated functionalities in the
     # database.
-        registered:
+    registered: {}
 
-    # Functionalities that are made available to Mako templates.
-        available_in_templates:
-        - default_basemap
-        - default_theme
-        - print_template
+    # Functionalities that are made available to Mako templates and loginuser.
+    available_in_templates:
+      - default_basemap
+      - default_theme
+      - filterable_layers
+      - print_template
+      - preset_layer_filter
+      - open_panel
 
-    # Define URLs to the parent application. Only useful if
-    # this application is a child application in a parent/child
-    # architecture.
-    external_themes_url:
+  urllogin: {}
 
-    mapserverproxy:
-        default_ogc_server: source for image/png
+  tinyowsproxy:
+    # URL to internal TinyOWS instance
+    tinyows_url: '{TINYOWS_URL}'
 
-    tinyowsproxy:
-        # URL to internal TinyOWS instance
-        tinyows_url: http://localhost/{instanceid}/tinyows
+    # If the `online_resource` url in the TinyOWS configuration is not set
+    # to the TinyOWS proxy url (e.g. when the service is also used without
+    # the proxy), the proxy can replace the original `online_resource`
+    # url with the proxy url.
+    # proxy_online_resource: http://{host}{entry_point}tinyows_proxy
+    # online_resource: http://localhost{entry_point}tinyows
 
-        # If the `online_resource` url in the TinyOWS configuration is not set
-        # to the TinyOWS proxy url (e.g. when the service is also used without
-        # the proxy), the proxy can replace the original `online_resource`
-        # url with the proxy url.
-        # proxy_online_resource: http://{host}/{instanceid}/tinyows_proxy
-        # online_resource: http://localhost/{instanceid}/tinyows
+    # When running a c2cgeoportal appl. in debug mode (with `make serve`)
+    # the host has to be set explicitly in a vhost environment.
+    # tinyows_host: {host}
 
-        # When running a c2cgeoportal appl. in debug mode (with `make serve`)
-        # the host has to be set explicitly in a vhost environment.
-        # tinyows_host: {host}
+  resourceproxy:
+    # List of urls from which it is safe to load content
+    targets: {}
+    #   exempletargetname: http://www.camptocamp.com/?param1=%s&param2=%s
 
-    resourceproxy:
-        # list of urls from which it is safe to load content
-        targets:
-          #exempletargetname: http://www.camptocamp.com/?param1=%s&param2=%s
+  # List of allowed headers
+  allowed_headers:
+    - Cache-Control
+    - Content-Encoding
+    - Content-Language
+    - Content-Type
+    - Date
+    - ETag
+    - Vary
 
+  fulltextsearch:
+    defaultlimit: 30
+    maxlimit: 200
+    languages:
+      fr: french
+      en: english
+      de: german
+
+  servers:
+    internal: http://localhost/
+    local: '{web_protocol}://{host}{entry_point}'
+    mapserver: '{MAPSERVER_URL}'
+
+  host_forward_host: []
+
+  # The "raster web services" configuration. See the "raster"
+  # chapter in the integrator documentation.
+  raster: {}
+
+  # Used by enumeration in the query builder
+  layers:
+    geometry_validation: True
+
+  # Used by reset_password and shortener to send emails
+  smtp: {}
+
+  # Used to send an email on password reset
+  reset_password: {}
+
+  # The shortener base configuration
+  shortener:
+    # The base of created URL
+    base_url: '{web_protocol}://{host}{entry_point}s/'
+    allowed_hosts:
+      - '{host}'
+
+  # Define whether the MapServer proxy should hide the OGC capabilities.
+  hide_capabilities: false
+
+  # For print proxy
+  print_url: '{PRINT_URL}'
+  mapserver_url: '{MAPSERVER_URL}'
+  mapcache_url: '{MAPCACHE_URL}'
+  devserver_url: http://{DEVSERVER_HOST}{entry_point}
+  memcached_host: '{MEMCACHED_HOST}'
+  memcached_port: '{MEMCACHED_PORT}'
+  tilegeneration_sqs_queue: '{TILEGENERATION_SQS_QUEUE}'
+
+  pdfreport:
+    print_url: '{print_url}'
+
+  # For base layers
+  tiles_url:
+    - '{web_protocol}://a.tiles.{host}/tiles'
+    - '{web_protocol}://b.tiles.{host}/tiles'
+    - '{web_protocol}://c.tiles.{host}/tiles'
+    - '{web_protocol}://d.tiles.{host}/tiles'
+  wmtscapabilities_path: '{WMTSCAPABILITIES_PATH}'
+
+  ogcproxy_enable: false
+
+  lingua_extractor: {}
+
+  global_headers:
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    Referrer-Policy: origin
+    Strict-Transport-Security: max-age=31536000; includeSubDomains
+    Content-Security-Policy: script-src 'self'; frame-src 'self'; form-action 'self'
+
+  # Control the HTTP headers
+  headers:
+    index: &header
+      cache_control_max_age: 600  # 10 minutes
+      access_control_max_age: 600  # 10 minutes
+      access_control_allow_origin:
+        - "*"
+    api: *header
+    profile: *header
+    raster: *header
+    echo: *header
+    csvecho: *header
+    exportgpxkml: *header
+    error: *header
+    themes: &auth_header
+      cache_control_max_age: 600  # 10 minutes
+      access_control_max_age: 600  # 10 minutes
+      access_control_allow_origin:
+        - "{web_protocol}://{host}"
+        - "*"
+    config: *auth_header
+    print: *auth_header
+    fulltextsearch: *auth_header
+    mapserver: *auth_header
+    tinyows: *auth_header
+    layers: *auth_header
+    shortener: *auth_header
+    login:
+      cache_control_max_age: 600  # 10 minutes
+      access_control_max_age: 600  # 10 minutes
+      access_control_allow_origin:
+        - "{web_protocol}://{host}"
+
+  # Checker configuration
+  checker:
     fulltextsearch:
-        defaultlimit: 30
-        maxlimit: 200
-        languages:
-            fr: french
-            en: english
-            de: german
+      level: 1
+      search: text to search
+    lang:
+      level: 1
+      files: [ngeo, cgxp-api]
+    phantomjs:
+      disable: []
+      routes:
+        - name: desktop
+          params:
+            no_redirect: "true"
+          level: 3
+        - name: mobile
+          params:
+            no_redirect: "true"
+          level: 3
+    routes:
+      disable: []
+      routes:
+        - name: apijs
+          level: 3
+        - name: xapijs
+          level: 3
+        - name: printproxy_capabilities
+          level: 3
+        - name: mapserverproxy
+          display_name: mapserverproxy_wms
+          params:
+            SERVICE: WMS
+            VERSION: 1.1.1
+            REQUEST: GetCapabilities
+          level: 3
+        - name: mapserverproxy
+          display_name: mapserverproxy_wfs
+          params:
+            SERVICE: WFS
+            VERSION: 1.1.0
+            REQUEST: GetCapabilities
+          level: 3
+    themes:
+      params:
+        version: "2"
+      level: 1
+      interfaces: {}
+    print:
+      spec: {}
+      level: 3
 
-    servers:
-        internal: http://localhost/{instanceid}/
-        local: '{web_protocol}://{host}/{instanceid}/'
+  # Check collector configuration
+  check_collector:
+    hosts:
+      - display: Main
+        url: '{web_protocol}://{host}{entry_point}'
+    max_level: 1
+    level: 10
 
-    # The "raster web services" configuration. See the "raster"
-    # chapter in the integrator documentation.
-    raster: {}
+  # What web page is authorized to use the API
+  authorized_referers:
+    - '{web_protocol}://{host}/'
 
-    # Used by enumeration in the query builder
-    layers: {}
+  # Hooks that can be called at different moments in the life of the
+  # application. The value is the full python name
+  # (full.module.path.function_name) of the function to call
+  hooks: {}
+  #   after_settings: geoportailv3.after_settings_hook
+  # Called just after the settings have been loaded. Allows to modify
+  # the settings at runtime (they are constructed at build time).
+  # The function receives one parameter: the settings object.
 
-    # Used by reset_password and shortener to send emails
-    smtp: {}
+  # Statistics are disabled by default
+  stats: {}
 
-    # Used to send an email on password reset
-    reset_password:
+  # The c2cwsgiutils base path
+  c2c:
+    base_path: /c2c
 
-    # The shortner base configuration
-    shortener:
-        # The base of created URL
-        base_url:  '{web_protocol}://{host}{apache_entry_point}s/'
-
-    # Define whether the MapServer proxy should hide the OGC capabilities.
-    hide_capabilities: false
-
-    # For print proxy
-    print_url: http://localhost:8080/print-{instanceid}/print/{package}
-
-    pdfreport:
-        print_url: http://localhost:8080/print-{instanceid}/print/{package}
-
-    # For base layers
-    tiles_url:
-    - '{web_protocol}://a.tiles.{host}/{instanceid}/tiles'
-    - '{web_protocol}://b.tiles.{host}/{instanceid}/tiles'
-    - '{web_protocol}://c.tiles.{host}/{instanceid}/tiles'
-    - '{web_protocol}://d.tiles.{host}/{instanceid}/tiles'
-    wmtscapabilities_path: WMTSCAPABILITIES_PATH
-
-    ogcproxy_enable: False
-
-    # Control the HTTP headers
-    headers:
-        ngeo_index:
-            access_control_max_age: 600 # 10 minutes
-        mapserver:
-            access_control_allow_origin: ["*"]
-
-    # Checker configuration
-    checker:
-        defaults:
-            fulltextsearch: text to search
-            lang_files: [ngeo, cgxp-api]
-            phantomjs_routes:
-            - name: desktop
-              param:
-                no_redirect: true
-            forward_headers: []
-            routes_disable: []
-            themes:
-                default:
-                    params:
-                        version: 2
-        all:
-            phantomjs_routes:
-            - name: desktop
-              param:
-                no_redirect: true
-            - name: mobile
-              param:
-                no_redirect: true
-            - name: desktop
-              param:
-                no_redirect: true
-                debug: true
-            - name: mobile
-              param:
-                no_redirect: true
-                debug: true
-            routes:
-            - name: apijs
-            - name: xapijs
-            - name: printproxy_capabilities
-            # print V2
-            #- name: printproxy_info
-            - name: mapserverproxy
-              params:
-                SERVICE: WMS
-                VERSION: 1.1.1
-                REQUEST: GetCapabilities
-            - name: mapserverproxy
-              params:
-                SERVICE: WFS
-                VERSION: 1.1.0
-                REQUEST: GetCapabilities
-        main:
-            routes:
-            - name: apijs
-            - name: printproxy_capabilities
-
-    # Check collector configuration
-    check_collector:
-        disabled: [checker_pdf]
-        check_type:
-            all:
-            - name: checker_routes
-              display: Check pages
-            - name: checker_theme_errors
-              display: Errors in the themes
-            - name: checker_lang_files
-              display: Language files
-            - name: checker_pdf
-              display: Print PDF
-            - name: checker_pdf3
-              display: Print PDF
-            - name: checker_fts
-              display: FullTextSearch
-            - name: checker_phantomjs
-              display: PhantomJS generic test
-            main:
-            - name: checker_routes
-              display: Check pages
-            - name: checker_fts
-              display: FullTextSearch
-            - name: checker_phantomjs
-              display: PhantomJS generic test
-            default: # for children
-            - name: checker_phantomjs
-              display: PhantomJS generic test
-        hosts:
-        - display: geoportailv3
-          url: '{web_protocol}://{host}/{instanceid}/wsgi'
-          type: main
-
-    # What web page is authorized to use the API
-    authorized_referers:
-    - '{web_protocol}://{host}/{instanceid}'
-
-    # Hooks that can be called at different moments in the life of the
-    # application. The value is the full python name
-    # (full.module.path.function_name) of the function to call
-    hooks: {}
-      # after_settings: geoportailv3.after_settings_hook
-      #   Called just after the settings have been loaded. Allows to modify
-      #   the settings at runtime (they are constructed at build time).
-      #   The function receives one parameter: the settings object.
-
-    # Statistics are disabled by default
-    stats: {}
-
-    db_chooser:
-      # List of {method path} regexes to force the usage of the master, even for GET and OPTIONS
-      # This supersedes the slave list.
-      master:
+  db_chooser:
+    # List of {method path} regexes to force the usage of the master, even for GET and OPTIONS
+    # This supersedes the slave list.
+    master:
       - GET /short/.*   # The shortener updates the last_hit column on GET
-      # List of {method path} regexes to force the usage of the slave
-      slave:
+    # List of {method path} regexes to force the usage of the slave
+    slave:
       - \w+ /printproxy/.*  # The print proxy is never writing to the DB
 
+
 interpreted:
-    python:
+  python:
     - authtkt.secret
-    - python_path
     - ps
-    - directory
     - interfaces
-    environment:
-    - modwsgi_user
-    - instanceid
-    - apache_entry_point
-    - docker
-    - docker_base
-    - development
-    - wmtscapabilities_path
-    - host
-    - web_protocol
-    node:
-        vars:
-        - closure_library_path
-        cmd: ["node", "-e"]
-        ignore_error: true
+
+environment:
+  - GEOMAPFISH_VERSION
+  - DOCKER_BASE
+  - DOCKER_TAG
+  - DOCKER_WEB_PROTOCOL
+  - DOCKER_WEB_HOST
+  - DOCKER_ENTRY_POINT
+  - DEVELOPMENT
+  - WMTSCAPABILITIES_PATH
+  - BUILD_VOLUME_NAME
+  - PROJECT_DIRECTORY
+  - INSTANCE
+  - ALEMBIC_YAML_FILE
+
+runtime_environment:
+  - name: VISIBLE_WEB_HOST
+    default: localhost
+  - name: VISIBLE_WEB_PROTOCOL
+    default: https
+  - name: VISIBLE_ENTRY_POINT
+    default: /
+  - PGHOST
+  - PGHOST_SLAVE
+  - name: PGPORT
+    default: '5432'
+  - PGUSER
+  - PGPASSWORD
+  - name: PGDATABASE
+    default: geomapfish
+  - name: PGSCHEMA
+    default: main
+  - name: PGSCHEMA_STATIC
+    default: main_static
+  - name: TINYOWS_URL
+    default: http://tinyows/
+  - name: MAPSERVER_URL
+    default: http://mapserver/
+  - name: PRINT_URL
+    default: http://print:8080/print/
+  - name: MAPCACHE_URL
+    default: http://mapcache:8080/
+  - name: DEVSERVER_HOST
+    default: webpack-dev-server:8080
+  - name: REDIS_HOST
+    default: redis
+  - name: REDIS_PORT
+    default: '6372'
+  - name: MEMCACHED_HOST
+    default: memcached
+  - name: MEMCACHED_PORT
+    default: '11211'
+  - name: TILEGENERATION_SQS_QUEUE
+    default: queue_name
+
+runtime_postprocess:
+  - expression: int({})
+    vars:
+      - cache.arguments.port

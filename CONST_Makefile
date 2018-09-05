@@ -1,49 +1,38 @@
-PYTHON_VERSION = $(shell $(VENV_BIN)/python -c "import sys; print('%i.%i' % (sys.version_info.major, sys.version_info.minor))" 2> /dev/null)
+GEOMAPFISH_VERSION ?= 2.3.3
+export GEOMAPFISH_VERSION
 export PACKAGE = geoportailv3
-OPERATING_SYSTEM ?= LINUX
+
+INSTANCE ?= main
+export INSTANCE
+
+DOCKER ?= TRUE
+ifeq ($(INSTANCE), main)
+DOCKER_ENTRY_POINT ?= /
+else
+DOCKER_ENTRY_POINT ?= /_$(INSTANCE)/
+endif
+DOCKER_WEB_HOST ?= localhost
+DOCKER_WEB_PROTOCOL ?= https
+export DOCKER_ENTRY_POINT
+export DOCKER_WEB_HOST
+export DOCKER_WEB_PROTOCOL
 
 ifeq ($(DEBUG), TRUE)
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-PRERULE_CMD ?= @echo "Build $@ due mofification on $?"; ls -lt --reverse $? $@ || true
-else
-PRERULE_CMD ?= @echo "Build \033[1;34m$@\033[0m due mofification on \033[1;34m$?\033[0m"; ls -lt --reverse $? $@ || true
-endif
+PRERULE_CMD ?= @echo "Build \033[1;34m$@\033[0m due modification on \033[1;34m$?\033[0m" 1>&2; ls -t --full-time --reverse $? $@ 1>&2 || true
 endif
 
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-VENV_BIN = .build/venv/Scripts
-PYTHON_BIN_POSTFIX = .exe
-NODE_BIN_POSTFIX = .cmd
-FIND ?= $(CYGWIN_PATH)/bin/find.exe
-HOME_DIR ?= ""
-# TILECLOUD_CHAIN require Shapely but does not have a system specific setup.
-# You can still install it but you must install Shapely manualy inside
-# TILECLOUD_CHAIN virtualenv
-TILECLOUD_CHAIN ?= FALSE
-# Some python packages are installed from already packaged wheels.
-CONST_REQUIREMENT ?= CONST_requirements_windows.txt
-# because Windows does not like path with //
-PRINT_TMP ?= tmp
-else
-VENV_BIN ?= .build/venv/bin
-PYTHON_BIN_POSTFIX =
-NODE_BIN_POSTFIX =
-FIND ?= find
-HOME_DIR ?= $(HOME)/
+VENV_BIN ?= /build/venv/bin
 # Use TileCloud chain
 TILECLOUD_CHAIN ?= TRUE
 TILECLOUD_CHAIN_LOCAL ?= FALSE
-CONST_REQUIREMENT ?= CONST_requirements.txt
-PRINT_TMP ?= /tmp
-endif
 
-TEMPLATE_EXCLUDE += .build node_modules \
-	print/templates CONST_alembic \
-	$(PACKAGE)/static/lib
+TEMPLATE_EXCLUDE += /build node_modules \
+	print/templates \
+	CONST_create_template \
+	geoportal/$(PACKAGE)_geoportal/static/lib
 FIND_OPTS = $(foreach ELEM, $(TEMPLATE_EXCLUDE),-path ./$(ELEM) -prune -o) -type f
 
-
-# Do not minify the js / css, ...
+# If TRUE do not minify the js / css, ...
 DEVELOPMENT ?= FALSE
 export DEVELOPMENT
 # Language provided by the application
@@ -51,442 +40,304 @@ LANGUAGES ?= en fr de
 NGEO_INTERFACES ?= desktop mobile
 CGXP_INTERFACES ?=
 CGXP_API ?= TRUE
+CGXP_XAPI ?= FALSE
 INTERFACES += $(NGEO_INTERFACES) $(CGXP_INTERFACES)
 export INTERFACES
-# Used print version
-PRINT_VERSION ?= 3
+# Use print
+PRINT ?= TRUE
 # Enable Docker target
-DOCKER ?= FALSE
-DOCKER_BASE ?= no
-export DOCKER
+DOCKER_BASE ?= camptocamp/geoportailv3
 export DOCKER_BASE
 DOCKER_TAG ?= latest
-# Use deploy
-ifeq ($(DOCKER), FALSE)
-DEPLOY ?= TRUE
-else
-DEPLOY ?= FALSE
-INSTANCE_ID =
-endif
-export INSTANCE_ID
+export DOCKER_TAG
 
-PIP_CMD ?= $(VENV_BIN)/pip
-PIP_VERSION ?= $(shell grep ^pip== CONST_optional-requirements.txt --colour=never)
-SETUPTOOLS_VERSION ?= $(shell grep ^setuptools== CONST_optional-requirements.txt --colour=never)
-TILECLOUD_VERSION ?= $(shell grep ^tilecloud== CONST_optional-requirements.txt --colour=never)
-TILECLOUDCHAIN_VERSION ?= $(shell grep ^tilecloud-chain== CONST_optional-requirements.txt --colour=never)
-JSTOOLS_VERSION ?= $(shell grep ^JSTools== CONST_optional-requirements.txt --colour=never)
-C2CCSSMIN_VERSION ?= $(shell grep ^c2c.cssmin== CONST_optional-requirements.txt --colour=never)
+PGHOST ?= localhost
+export PGHOST
+PGHOST_SLAVE ?= localhost
+export PGHOST_SLAVE
+PGPORT ?= 5432
+export PGPORT
+PGUSER ?= www-data
+export PGUSER
+PGPASSWORD ?= www-data
+export PGPASSWORD
+PGDATABASE ?= geomapfish
+export PGDATABASE
+PGSCHEMA ?= main
+export PGSCHEMA
+PGSCHEMA_STATIC ?= main_static
+export PGSCHEMA_STATIC
 
-GIT_MODULES_FOLDER ?= .git/modules/
-
-ifdef CGXP_INTERFACES
-DEFAULT_WEB_RULE += build-cgxp
-else
-ifeq ($(CGXP_API), TRUE)
-DEFAULT_WEB_RULE += build-cgxp
-endif
-endif
+DEFAULT_WEB_RULE += $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT)
 ifneq ($(NGEO_INTERFACES), "")
-DEFAULT_WEB_RULE += build-ngeo
+DEFAULT_WEB_RULE += $(NGEO_OUTPUT_FILES)
 CLIENT_CHECK_RULE ?= lint-ngeo
 endif
 WEB_RULE ?= $(DEFAULT_WEB_RULE)
 
-DEFAULT_BUILD_RULES ?= .build/requirements.timestamp $(WEB_RULE) $(PACKAGE)/version.py build-server apache
+DEFAULT_BUILD_RULES ?= docker-build-geoportal \
+	docker-build-config \
+	project.yaml \
+	geoportal/alembic.ini \
+	geoportal/alembic.yaml \
+	docker-compose.yaml \
+	docker-compose-build.yaml \
+	docker-compose-dev.yaml
 
 # TileCloud-chain
-WMTSCAPABILITIES_PATH ?= 1.0.0/WMTSCapabilities-$(INSTANCE_ID).xml
+WMTSCAPABILITIES_PATH ?= 1.0.0/WMTSCapabilities-$(ENVIRONMENT).xml
 export WMTSCAPABILITIES_PATH
 ifeq ($(TILECLOUD_CHAIN), TRUE)
 WMTSCAPABILITIES_FILE ?= /var/sig/tiles/$(WMTSCAPABILITIES_PATH)
-DEFAULT_BUILD_RULES += apache/tiles.conf tilegeneration/config.yaml
+MAPCACHE_FILE ?= mapcache/mapcache.xml.tmpl
+TILEGENERATION_CONFIG_FILE ?= tilegeneration/config.yaml.tmpl
+DEFAULT_BUILD_RULES += $(TILEGENERATION_CONFIG_FILE)
 ifeq ($(TILECLOUD_CHAIN_LOCAL), TRUE)
 DEFAULT_BUILD_RULES += $(WMTSCAPABILITIES_FILE)
 endif
 endif
 
-# Test packages
-ifndef TEST_PACKAGES
-TEST_PACKAGES = common
-ifeq ($(DOCKER), FALSE)
-TEST_PACKAGES += main
-ifneq (, $(filter $(PRINT_VERSION), 2 3))
-TEST_PACKAGES += print
-endif
-ifeq ($(MAPSERVER), TRUE)
-TEST_PACKAGES += mapserver
-endif
-ifeq ($(POSTGRES), TRUE)
-TEST_PACKAGES += postgres
-endif
-ifeq ($(TILECLOUD_CHAIN), TRUE)
-TEST_PACKAGES += tilecloud-chain
-endif
-ifeq ($(DEPLOY), TRUE)
-TEST_PACKAGES += deploy
-endif
-ifneq ($(NGEO_INTERFACES), "")
-TEST_PACKAGES += ngeo
-endif
-else
-TEST_PACKAGES += docker
-endif # DOCKER
-endif # TEST_PACKAGES
 
 # Make rules
-ifneq ($(TEST_PACKAGES), FALSE)
-DEFAULT_BUILD_RULES += test-packages
-endif
-ifeq ($(TILECLOUD_CHAIN), TRUE)
-DEFAULT_BUILD_RULES += tilegeneration/config.yaml
-endif
-ifeq ($(PRINT_VERSION), 2)
-DEFAULT_BUILD_RULES += print
-endif
-ifeq ($(PRINT_VERSION), 3)
-DEFAULT_BUILD_RULES += print
-endif
-ifeq (${DEPOY}, TRUE)
-DEFAULT_BUILD_RULES += deploy/deploy.cfg
-endif
-ifeq (${DOCKER}, TRUE)
-DEFAULT_BUILD_RULES += testDB
-endif
-BUILD_RULES ?= $(PRE_RULES) $(filter-out $(DISABLE_BUILD_RULES),$(DEFAULT_BUILD_RULES)) $(POST_RULES)
-
-# Requirements
-EGGS_DEPENDENCIES += .build/venv.timestamp-noclean setup.py \
-	CONST_versions_requirements.txt \
-	CONST_fixversions.txt \
-	CONST_optional-requirements.txt \
-	$(CONST_REQUIREMENT)
-REQUIREMENTS ?= c2cgeoportal==2.1.11
-REQUIREMENTS += -r $(CONST_REQUIREMENT)
-DEV_REQUIREMENTS += -r CONST_fixversions.txt
-DEV_REQUIREMENTS += -r CONST_dev-requirements.txt
-ifeq ($(TILECLOUD_CHAIN), TRUE)
-DEV_REQUIREMENTS += $(TILECLOUD_VERSION) $(TILECLOUDCHAIN_VERSION)
-endif
-ifneq ($(CGXP_INTERFACES), "")
-REQUIREMENTS += $(JSTOOLS_VERSION)
-DEV_REQUIREMENTS += $(C2CCSSMIN_VERSION)
+ifeq (${DEVELOPMENT}, TRUE)
+DEFAULT_BUILD_RULES += docker-build-testdb
 endif
 
-OUTPUT_DIR = $(PACKAGE)/static/build
+BUILD_RULES ?= $(filter-out $(DISABLE_BUILD_RULES),$(DEFAULT_BUILD_RULES))
+
+OUTPUT_DIR = geoportal/$(PACKAGE)_geoportal/static/build
 
 # Git
 GIT_REMOTE ?= origin
 GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
-
-# Visible web URL
-# The protocol part
-VISIBLE_WEB_PROTOCOL ?= https
-export VISIBLE_WEB_HOST
-export VISIBLE_WEB_PROTOCOL
+GIT_HASH ?= $(shell git rev-parse HEAD)
 
 # ngeo
-ANGULAR_VERSION = 1.5
-APP_OUTPUT_DIR = $(PACKAGE)/static-ngeo/build
-OL_JS_FILES = $(shell $(FIND) node_modules/openlayers/src/ol -type f -name '*.js' 2> /dev/null)
-NGEO_JS_FILES = $(shell $(FIND) node_modules/ngeo/src -type f -name '*.js' 2> /dev/null)
-APP_JS_FILES = $(shell $(FIND) $(PACKAGE)/static-ngeo/js $(PACKAGE)/static-ngeo/components -type f -name '*.js' 2> /dev/null)
-APP_JS_MAKO_FILES += $(shell $(FIND) $(PACKAGE)/static-ngeo/js $(PACKAGE)/static-ngeo/components $(FIND_OPTS) -name "*.js.mako" -print 2> /dev/null)
-APP_JS_JINJA_FILES += $(shell $(FIND) $(PACKAGE)/static-ngeo/js $(PACKAGE)/static-ngeo/components $(FIND_OPTS) -name "*.js.jinja" -print 2> /dev/null)
+NODE_ENV ?= production
+export NODE_ENV
+NO_DEV_SERVER ?= TRUE
+export NO_DEV_SERVER
+ANGULAR_VERSION = 1.6
+APP_OUTPUT_DIR = geoportal/$(PACKAGE)_geoportal/static-ngeo/build
+GCC_JS_FILES = $(shell find /usr/lib/node_modules/openlayers/src/ol /usr/lib/node_modules/ngeo/src /usr/lib/node_modules/ol-cesium/src -type f -name '*.js' 2> /dev/null)
+APP_JS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js geoportal/$(PACKAGE)_geoportal/static-ngeo/components -type f -name '*.js' 2> /dev/null)
+APP_JS_MAKO_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js geoportal/$(PACKAGE)_geoportal/static-ngeo/components $(FIND_OPTS) -name "*.js.mako" -print 2> /dev/null)
+APP_JS_JINJA_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js geoportal/$(PACKAGE)_geoportal/static-ngeo/components $(FIND_OPTS) -name "*.js.jinja" -print 2> /dev/null)
 APP_JS_FILES +=  $(APP_JS_MAKO_FILES:.mako=) $(APP_JS_JINJA_FILES:.jinja=)
-APP_HTML_FILES += $(addprefix $(PACKAGE)/templates/, $(addsuffix .html, $(NGEO_INTERFACES)))
-NGEO_DIRECTIVES_PARTIALS_FILES = $(shell ls -1 node_modules/ngeo/src/directives/partials/*.html 2> /dev/null)
-GMF_DIRECTIVES_PARTIALS_FILES = $(shell ls -1 node_modules/ngeo/contribs/gmf/src/directives/partials/*.html 2> /dev/null)
-APP_DIRECTIVES_PARTIALS_FILES = $(shell $(FIND) $(PACKAGE)/static-ngeo/components $(PACKAGE)/static-ngeo/partials $(PACKAGE)/static-ngeo/js -type f -name '*.html' 2> /dev/null)
-LESS_FILES = $(shell $(FIND) $(PACKAGE)/static-ngeo/less $(PACKAGE)/static-ngeo/components -type f -name '*.less' 2> /dev/null)
-NGEO_GMF_FONTS = $(addprefix $(PACKAGE)/static-ngeo/fonts/gmf-icons, .woff .ttf .eot)
-NGEO_FONTAWESOME_FONTS = $(addprefix $(PACKAGE)/static-ngeo/fonts/fontawesome-webfont, .woff .woff2 .ttf .eot)
+APP_HTML_FILES += $(addprefix geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/, $(addsuffix .html.ejs, $(NGEO_INTERFACES)))
+APP_DIRECTIVES_PARTIALS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/components geoportal/$(PACKAGE)_geoportal/static-ngeo/partials geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+LESS_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/less geoportal/$(PACKAGE)_geoportal/static-ngeo/components -type f -name '*.less' 2> /dev/null)
+NGEO_GMF_FONTS = $(addprefix geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/gmf-icons, .woff .ttf .eot)
+NGEO_FONTAWESOME_FONTS = $(addprefix geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/fontawesome-webfont, .woff .woff2 .ttf .eot)
 NGEO_FONTS = $(NGEO_GMF_FONTS) $(NGEO_FONTAWESOME_FONTS)
 JSON_CLIENT_LOCALISATION_FILES = $(addprefix $(APP_OUTPUT_DIR)/, $(addsuffix .json, $(LANGUAGES)))
-L10N_CLIENT_POSTFIX=client
-L10N_SERVER_POSTFIX=server
-MO_CLIENT_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).mo, $(LANGUAGES)))
+L10N_CLIENT_POSTFIX ?= client
+L10N_SERVER_POSTFIX ?= server
+CLIENT_LOCALISATION_RULES = $(addprefix /build/lang-client-, $(LANGUAGES))
 ANGULAR_LOCALES_FILES = $(addprefix $(APP_OUTPUT_DIR)/angular-locale_, $(addsuffix .js, $(LANGUAGES)))
-NGEO_OUTPUT_JS_INTERFACES_FILES = $(addprefix $(APP_OUTPUT_DIR)/, $(addsuffix .js, $(NGEO_INTERFACES)))
-NGEO_OUTPUT_CSS_INTERFACES_FILES = $(addprefix $(APP_OUTPUT_DIR)/, $(addsuffix .css, $(NGEO_INTERFACES)))
 NGEO_OUTPUT_FILES = $(JSON_CLIENT_LOCALISATION_FILES) \
-	$(MO_CLIENT_LOCALISATION_FILES) \
-	node_modules/ngeo/node_modules/font-awesome \
-	node_modules/ngeo/node_modules/openlayers \
-	node_modules/ngeo/node_modules/bootstrap \
-	node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.woff2 \
-	node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.woff \
-	node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.ttf \
-	node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.eot \
-	$(APP_OUTPUT_DIR)/templatecache.js \
-	$(NGEO_OUTPUT_JS_INTERFACES_FILES) \
-	$(NGEO_OUTPUT_CSS_INTERFACES_FILES) \
 	$(ANGULAR_LOCALES_FILES)
-NGEO_LIBS_JS_FILES += \
-	node_modules/jquery/dist/jquery.min.js \
-	node_modules/ngeo/third-party/jquery-ui/jquery-ui.min.js \
-	node_modules/angular/angular.min.js \
-	node_modules/angular-animate/angular-animate.min.js \
-	node_modules/angular-sanitize/angular-sanitize.min.js \
-	node_modules/angular-touch/angular-touch.min.js \
-	node_modules/corejs-typeahead/dist/typeahead.bundle.min.js \
-	node_modules/angular-ui-date/dist/date.js \
-	node_modules/angular-float-thead/angular-floatThead.js \
-	node_modules/floatthead/dist/jquery.floatThead.min.js \
-	node_modules/angular-ui-slider/src/slider.js \
-	node_modules/proj4/dist/proj4.js \
-	node_modules/angular-gettext/dist/angular-gettext.min.js \
-	node_modules/angular-dynamic-locale/dist/tmhDynamicLocale.min.js \
-	node_modules/bootstrap/dist/js/bootstrap.min.js \
-	node_modules/d3/d3.min.js \
-	node_modules/file-saver/FileSaver.min.js
-NGEO_PROJECT_LIBS_JS_FILES ?=
-ifeq ($(OPERATING_SYSTEM),WINDOWS)
-COMPILE_CATALOG = node_modules/ngeo/buildtools/compile-catalog.js
+NGEO_OUTPUT_FILES += /build/apps.timestamp
+
+ifdef CI
+WEBPACK_ARGS ?= --debug
 else
-COMPILE_CATALOG = node_modules/.bin/compile-catalog
+WEBPACK_ARGS ?= --progress --debug
 endif
 
 # i18n
-TX_VERSION = $(shell $(VENV_BIN)/python -c "print('_'.join(__import__('pkg_resources').get_distribution('c2cgeoportal').version.split('.')[0:2]))")
-TX_RC = $(HOME_DIR).transifexrc
-TX_DEPENDENCIES = $(VENV_BIN)/tx$(PYTHON_BIN_POSTFIX) $(TX_RC) .tx/config
-TX_HOST ?= https://www.transifex.com
-ifeq (,$(wildcard $(TX_RC)))
-TOUCHBACK_TXRC =
-else
-TOUCHBACK_TXRC = touch --date "$(shell stat -c '%y' $(TX_RC))" $(TX_RC)
-endif
-
-MAP_FILES += $(shell $(FIND) mapserver $(FIND_OPTS) \( -name "*.map" -o -name "*.sym" -o -name "*.conf" \) -print)
-MAP_MAKO_FILES += $(shell $(FIND) mapserver $(FIND_OPTS) \( -name "*.map.mako" -o -name "*.sym.mako" -o -name "*.conf.mako" \) -print)
-MAP_JINJA_FILES += $(shell $(FIND) mapserver $(FIND_OPTS) \( -name "*.map.jinja" -o -name "*.sym.jinja" -o -name "*.conf.jinja" \) -print)
-MAP_FILES += $(MAP_MAKO_FILES:.mako=) $(MAP_JINJA_FILES:.jinja=)
-
 I18N_SOURCE_FILES += $(APP_HTML_FILES) \
 	$(APP_JS_FILES) \
 	$(APP_DIRECTIVES_PARTIALS_FILES) \
-	.build/config.yaml
-ifeq ($(DOCKER),FALSE)
+	geoportal/config.yaml
 # The theme from the database
-I18N_SOURCE_FILES += development.ini
-endif
-I18N_DEPENDENCIES += $(MAP_FILES) \
-	project.yaml
+I18N_SOURCE_FILES += geoportal/development.ini
+I18N_DEPENDENCIES += project.yaml /build/requirements.timestamp
+
+
+# Alembic
+ALEMBIC_YAML_FILE ?= $(VARS_FILE)
+export ALEMBIC_YAML_FILE
 
 # CGXP
-JSBUILD_MAIN_FILES = $(shell $(FIND) $(PACKAGE)/static/lib/cgxp $(PACKAGE)/static/js -name "*.js" -print 2> /dev/null)
-JSBUILD_MAIN_CONFIG = jsbuild/app.cfg
-JSBUILD_MAIN_OUTPUT_FILES ?= $(addsuffix .js, $(CGXP_INTERFACES)) api.js xapi.js
+JSBUILD_MAIN_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static/lib/cgxp geoportal/$(PACKAGE)_geoportal/static/js -name "*.js" -print 2> /dev/null)
+JSBUILD_MAIN_CONFIG = geoportal/jsbuild/app.cfg
 ifdef CGXP_INTERFACES
-JSBUILD_MAIN_OUTPUT_FILES += $(addprefix lang-, $(addsuffix .js, $(LANGUAGES)))
+JSBUILD_OUTPUT_FILES ?= $(addsuffix .js, $(CGXP_INTERFACES))
+JSBUILD_OUTPUT_FILES += $(addprefix lang-, $(addsuffix .js, $(LANGUAGES)))
+CSS_CGXP_OUTPUT = $(OUTPUT_DIR)/app.css
 endif
-JSBUILD_MAIN_OUTPUT_FILES += $(addprefix api-lang-, $(addsuffix .js, $(LANGUAGES)))
-JSBUILD_MAIN_OUTPUT_FILES := $(addprefix $(OUTPUT_DIR)/, $(JSBUILD_MAIN_OUTPUT_FILES))
+ifeq ($(CGXP_XAPI), TRUE)
+JSBUILD_OUTPUT_FILES += xapi.js
+JSBUILD_OUTPUT_FILES += $(addprefix lang-, $(addsuffix .js, $(LANGUAGES)))
+CSS_API_OUTPUT = $(OUTPUT_DIR)/xapi.css
+endif
+ifeq ($(CGXP_API), TRUE)
+JSBUILD_OUTPUT_FILES += api.js
+JSBUILD_OUTPUT_FILES += $(addprefix api-lang-, $(addsuffix .js, $(LANGUAGES)))
+CSS_API_OUTPUT = $(OUTPUT_DIR)/api.css
+endif
+JSBUILD_OUTPUT_FILES := $(addprefix $(OUTPUT_DIR)/, $(JSBUILD_OUTPUT_FILES))
 ifeq ($(DEVELOPMENT), TRUE)
 JSBUILD_ARGS += --uncompress
 endif
+CGXP_GIT_REMOTE ?= https://github.com/camptocamp/cgxp.git
+
 
 ifeq ($(DEVELOPMENT), FALSE)
-	CSSMIN_ARGS += --compress
-	LESS_ARGS += --clean-css="--s0"
+CSSMIN_ARGS += --compress
+LESS_ARGS += --clean-css="--s0"
 endif
 LESS_ARGS += --autoprefix
 DEFAULT_CSS_BASE_FILES += \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/ext-all.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css \
-	$(PACKAGE)/static/lib/cgxp/openlayers/theme/default/style.css \
-	$(PACKAGE)/static/lib/cgxp/geoext/resources/css/popup.css \
-	$(PACKAGE)/static/lib/cgxp/geoext/resources/css/gxtheme-gray.css \
-	$(PACKAGE)/static/lib/cgxp/geoext.ux/ux/Measure/resources/css/measure.css \
-	$(PACKAGE)/static/lib/cgxp/sandbox/FeatureEditing/resources/css/feature-editing.css \
-	$(PACKAGE)/static/lib/cgxp/styler/theme/css/styler.css \
-	$(PACKAGE)/static/lib/cgxp/gxp/src/theme/all.css \
-	$(PACKAGE)/static/lib/cgxp/core/src/theme/all.css \
-	$(PACKAGE)/static/lib/cgxp/ext.ux/ColorPicker/ressources/colorpicker.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/examples/ux/css/Spinner.css \
-	$(PACKAGE)/static/css/proj.css \
-	$(PACKAGE)/static/css/proj-map.css \
-	$(PACKAGE)/static/css/proj-widgets.css
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/ext-all.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/openlayers/theme/default/style.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/geoext/resources/css/popup.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/geoext/resources/css/gxtheme-gray.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/geoext.ux/ux/Measure/resources/css/measure.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/sandbox/FeatureEditing/resources/css/feature-editing.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/styler/theme/css/styler.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/gxp/src/theme/all.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/core/src/theme/all.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext.ux/ColorPicker/ressources/colorpicker.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/examples/ux/css/Spinner.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj-widgets.css
 ifdef CSS_BASE_FILES
 CSS_BASE_FILES := $(DEFAULT_CSS_BASE_FILES) $(CSS_BASE_FILES)
 else
 CSS_BASE_FILES := $(DEFAULT_CSS_BASE_FILES)
 endif
-CSS_BASE_OUTPUT = $(OUTPUT_DIR)/app.css
 
 DEFAULT_CSS_API_FILES += \
-	$(PACKAGE)/static/lib/cgxp/openlayers/theme/default/style.css \
-	$(PACKAGE)/static/css/proj-map.css
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/openlayers/theme/default/style.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css
 ifdef CSS_API_FILES
 CSS_API_FILES := $(DEFAULT_CSS_API_FILES) $(CSS_API_FILES)
 else
 CSS_API_FILES := $(DEFAULT_CSS_API_FILES)
 endif
-CSS_API_OUTPUT = $(OUTPUT_DIR)/api.css
 
 DEFAULT_CSS_XAPI_FILES += \
-	$(PACKAGE)/static/lib/cgxp/core/src/theme/reset.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/editor.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/pivotgrid.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/menu.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/panel.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/grid.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/debug.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/qtips.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/dd.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/form.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/resizable.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/toolbar.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/slider.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/combo.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/layout.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/dialog.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/core.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/button.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/progress.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/tabs.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/box.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/borders.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/date-picker.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/tree.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/window.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/visual/list-view.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/editor.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/pivotgrid.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/menu.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/panel.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/grid.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/debug.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/qtips.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/dd.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/form.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/resizable.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/toolbar.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/panel-reset.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/slider.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/combo.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/layout.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/dialog.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/core.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/button.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/progress.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/tabs.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/box.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/borders.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/date-picker.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/tree.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/window.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/structure/list-view.css \
-	$(PACKAGE)/static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css \
-	$(PACKAGE)/static/lib/cgxp/openlayers/theme/default/style.css \
-	$(PACKAGE)/static/lib/cgxp/geoext/resources/css/gxtheme-gray.css \
-	$(PACKAGE)/static/lib/cgxp/geoext.ux/ux/Measure/resources/css/measure.css \
-	$(PACKAGE)/static/lib/cgxp/gxp/src/theme/all.css \
-	$(PACKAGE)/static/lib/cgxp/core/src/theme/all.css \
-	$(PACKAGE)/static/css/proj-map.css \
-	$(PACKAGE)/static/css/proj-widgets.css
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/core/src/theme/reset.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/editor.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/pivotgrid.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/menu.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/panel.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/grid.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/debug.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/qtips.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/dd.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/form.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/resizable.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/toolbar.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/slider.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/combo.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/layout.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/dialog.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/core.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/button.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/progress.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/tabs.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/box.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/borders.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/date-picker.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/tree.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/window.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/visual/list-view.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/editor.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/pivotgrid.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/menu.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/panel.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/grid.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/debug.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/qtips.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/dd.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/form.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/resizable.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/toolbar.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/panel-reset.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/slider.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/combo.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/layout.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/dialog.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/core.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/button.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/progress.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/tabs.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/box.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/borders.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/date-picker.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/tree.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/window.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/structure/list-view.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ext/Ext/resources/css/xtheme-gray.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/openlayers/theme/default/style.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/geoext/resources/css/gxtheme-gray.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/geoext.ux/ux/Measure/resources/css/measure.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/gxp/src/theme/all.css \
+	geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/core/src/theme/all.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css \
+	geoportal/$(PACKAGE)_geoportal/static/css/proj-widgets.css
 ifdef CSS_XAPI_FILES
 CSS_XAPI_FILES := $(DEFAULT_CSS_XAPI_FILES) $(CSS_XAPI_FILES)
 else
 CSS_XAPI_FILES := $(DEFAULT_CSS_XAPI_FILES)
 endif
-CSS_XAPI_OUTPUT = $(OUTPUT_DIR)/xapi.css
 
-VALIDATE_PY_FOLDERS = $(PACKAGE)/*.py $(PACKAGE)/lib $(PACKAGE)/scripts $(PACKAGE)/views
-VALIDATE_PY_TEST_FOLDERS = $(PACKAGE)/tests
+VALIDATE_PY_FOLDERS = admin/$(PACKAGE)_admin \
+	geoportal/$(PACKAGE)_geoportal/*.py geoportal/$(PACKAGE)_geoportal/lib \
+	geoportal/$(PACKAGE)_geoportal/scripts geoportal/$(PACKAGE)_geoportal/views
+VALIDATE_PY_TEST_FOLDERS = geoportal/$(PACKAGE)_geoportal/tests
 
 # Documentation
-SPHINX_FILES = $(shell $(FIND) doc -name "*.rst" -print)
+SPHINX_FILES = $(shell find doc -name "*.rst" -print)
 
 # Server localisation
 ifdef CGXP_INTERFACES
-SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/models.py $(shell $(FIND) $(PACKAGE)/templates -type f -name '*.html')
-SERVER_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-$(L10N_SERVER_POSTFIX).mo, $(LANGUAGES)))
+SERVER_LOCALISATION_SOURCES_FILES += geoportal/$(PACKAGE)_geoportal/models.py $(shell find geoportal/$(PACKAGE)_geoportal/templates -type f -name '*.html')
+SERVER_LOCALISATION_RULES = $(addprefix /build/lang-server-, $(LANGUAGES))
 endif
 
 # Print
+ifeq ($(PRINT), TRUE)
 PRINT_BASE_DIR ?= print
-PRINT_WAR ?= print-$(INSTANCE_ID).war
-PRINT_OUTPUT ?= /srv/tomcat/tomcat1/webapps
-PRINT_OUTPUT_WAR =
-JASPERREPORTS_VERSION ?= 6.1.1
-TOMCAT_SERVICE_COMMAND ?= sudo /etc/init.d/tomcat-tomcat1
-ifneq ($(TOMCAT_SERVICE_COMMAND),)
-TOMCAT_STOP_COMMAND ?= $(TOMCAT_SERVICE_COMMAND) stop
-TOMCAT_START_COMMAND ?= $(TOMCAT_SERVICE_COMMAND) start
-endif
-ifeq ($(PRINT_VERSION), 3)
-PRINT_OUTPUT_WAR = $(PRINT_OUTPUT)/$(PRINT_WAR)
-PRINT_BASE_WAR ?= print-servlet.war
-PRINT_INPUT += print-apps WEB-INF
-PRINT_EXTRA_LIBS += \
-	$(PRINT_BASE_DIR)/WEB-INF/lib/jasperreports-functions-$(JASPERREPORTS_VERSION).jar \
-	$(PRINT_BASE_DIR)/WEB-INF/lib/joda-time-1.6.jar \
-	$(PRINT_BASE_DIR)/WEB-INF/lib/postgresql-9.3-1102.jdbc41.jar
-PRINT_REQUIREMENT += $(PRINT_EXTRA_LIBS) \
-	$(PRINT_BASE_DIR)/WEB-INF/classes/logback.xml \
-	$(PRINT_BASE_DIR)/WEB-INF/classes/mapfish-spring-application-context-override.xml \
-	$(shell $(FIND) $(PRINT_BASE_DIR)/print-apps)
-I18N_SOURCE_FILES += print/print-apps/$(PACKAGE)/config.yaml
-endif
-ifeq ($(PRINT_VERSION), 2)
-PRINT_OUTPUT_WAR = $(PRINT_OUTPUT)/$(PRINT_WAR)
-PRINT_BASE_WAR ?= print-servlet-2.1-SNAPSHOT-IMG-MAGICK.war
-PRINT_INPUT_LS += config.yaml WEB-INF/classes/log4j.properties
-PRINT_INPUT_FIND += *.tif *.bmp *.jpg *.jpeg *.gif *.png *.pdf *.xml
-PRINT_INPUT += $(shell cd $(PRINT_BASE_DIR) && ls -1 $(PRINT_INPUT_LS) 2> /dev/null)
-PRINT_INPUT += $(foreach INPUT, $(PRINT_INPUT_FIND), $(shell cd $(PRINT_BASE_DIR) && $(FIND) -name '$(INPUT)' -type f))
-PRINT_REQUIREMENT += $(addprefix $(PRINT_BASE_DIR)/, $(PRINT_INPUT))
+PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
+I18N_SOURCE_FILES += $(PRINT_CONFIG_FILE)
 endif
 
-ifneq (, $(filter $(PRINT_VERSION), 2 3))
-PRINT_FILES += $(shell $(FIND) print $(FIND_OPTS) -not -name ".mako" -not -name ".jinja" -print)
-PRINT_MAKO_FILES += $(shell $(FIND) print $(FIND_OPTS) -name "*.mako" -print)
-PRINT_JINJA_FILES += $(shell $(FIND) print $(FIND_OPTS) -name "*.jinja" -print)
-PRINT_FILES +=  $(PRINT_MAKO_FILES:.mako=) $(PRINT_JINJA_FILES:.jinja=)
-PRINT_REQUIREMENT += $(PRINT_FILES)
-endif
-
-ifeq ($(DOCKER), FALSE)
-PRINT_REQUIREMENT += $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR)
-endif
-
-# Apache
-APACHE_ENTRY_POINT ?= /$(INSTANCE_ID)/
-export APACHE_ENTRY_POINT
-APACHE_VHOST ?= $(PACKAGE)
-APACHE_CONF_DIR ?= /var/www/vhosts/$(APACHE_VHOST)/conf
-APACHE_GRACEFUL ?= sudo /usr/sbin/apache2ctl graceful
-MODWSGI_USER ?= www-data
-export MODWSGI_USER
-CONF_FILES += apache/application.wsgi
-CONF_FILES_MAKO = $(shell ls -1 apache/*.conf.mako 2> /dev/null)
-CONF_FILES_JINJA = $(shell ls -1 apache/*.conf.jinja 2> /dev/null)
-CONF_FILES += $(shell ls -1 apache/*.conf 2> /dev/null) $(CONF_FILES_MAKO:.mako=) $(CONF_FILES_JINJA:.jinja=)
-ifeq ($(TILECLOUD_CHAIN), TRUE)
-CONF_FILES += apache/tiles.conf apache/mapcache.xml
-endif
-PY_FILES = $(shell $(FIND) $(PACKAGE) -type f -name '*.py' -print)
-TEMPLATES_FILES = $(shell $(FIND) $(PACKAGE)/templates -type f -print)
+PY_FILES = $(shell find $(PACKAGE) -type f -name '*.py' -print)
 
 # Templates
-ALL_MAKO_FILES = $(shell $(FIND) $(FIND_OPTS) -name "*.mako" -print)
-ALL_JINJA_FILES = $(shell $(FIND) $(FIND_OPTS) -name "*.jinja" -print)
-EXTRA_EXCLUDE = $(foreach ELEM, print apache mapfile deploy jsbuild tilegeneration,-path ./$(ELEM) -prune -o)
-MAKO_FILES = $(shell $(FIND) $(EXTRA_EXCLUDE) $(FIND_OPTS) -name "*.mako" -print)
-JINJA_FILES = $(shell $(FIND) $(EXTRA_EXCLUDE) $(FIND_OPTS) -name "*.jinja" -print)
+ALL_MAKO_FILES = $(shell find $(FIND_OPTS) -name "*.mako" -print)
+ALL_JINJA_FILES = $(shell find $(FIND_OPTS) -name "*.jinja" -print)
+EXTRA_EXCLUDE = $(foreach ELEM, print mapfile jsbuild tilegeneration,-path ./$(ELEM) -prune -o)
 VARS_FILES += CONST_vars.yaml $(VARS_FILE)
-VARS_DEPENDS += $(VARS_FILES) .build/node_modules.timestamp
-CONFIG_VARS += instanceid sqlalchemy.url schema parentschema enable_admin_interface pyramid_closure \
-	node_modules_path closure_library_path default_locale_name servers layers \
-	available_locale_names cache admin_interface functionalities external_themes_url \
+VARS_DEPENDS += $(VARS_FILES)
+CONFIG_VARS += sqlalchemy.url sqlalchemy.pool_recycle sqlalchemy.pool_size sqlalchemy.max_overflow \
+	sqlalchemy.use_batch_mode sqlalchemy_slave.url sqlalchemy_slave.pool_recycle sqlalchemy_slave.pool_size \
+	sqlalchemy_slave.max_overflow sqlalchemy_slave.use_batch_mode schema schema_static enable_admin_interface \
+	default_locale_name servers layers available_locale_names cache admin_interface functionalities \
 	raster shortener hide_capabilities mapserverproxy tinyowsproxy resourceproxy print_url \
 	tiles_url checker check_collector default_max_age jsbuild package srid \
-	reset_password fulltextsearch headers authorized_referers hooks stats db_chooser \
-	ogcproxy_enable smtp
-C2C_TEMPLATE_CMD = $(ENVIRONMENT_VARS) $(VENV_BIN)/c2c-template --vars $(VARS_FILE)
-MAKE_FILES = $(shell ls -1 *.mk) CONST_Makefile
+	reset_password fulltextsearch global_headers headers authorized_referers hooks stats db_chooser \
+	ogcproxy_enable dbsessions urllogin host_forward_host smtp c2c.base_path welcome_email host \
+	lingua_extractor interfaces_config interfaces default_interface devserver_url
+MAKE_FILES = $(wildcard *.mk) CONST_Makefile
+
+# Secrets
+
+ifndef DISABLE_DEFAULT_GPG_KEYS
+GPG_KEYS += D1D6A94C # Stéphane Brunner
+GPG_KEYS += B42AF223 # Patrick Valsecchi
+GPG_KEYS += C27D570B # Roman Zoller
+GPG_KEYS += CF8E9976 # Guillaume Beraudo
+GPG_KEYS += 3EA11D26 # Elisabeth Leu
+GPG_KEYS += 0875810F # Frederic Junod
+GPG_KEYS += 1DAFEE6A # Oliver Christen
+endif
 
 # Disabling Make built-in rules to speed up execution time
 .SUFFIXES:
@@ -497,26 +348,21 @@ help:
 	@echo
 	@echo  "Main targets:"
 	@echo
+	@echo  "- docker-build   	Pull all the needed Docker images, build all (Outside Docker)"
 	@echo  "- build			Build and configure the project"
 	@echo  "- checks		Perform a number of checks on the code"
-	@echo  "- serve			Run the development server (Pserve)"
+	@echo  "- serve			Run the development server (Outside Docker)"
 	@echo  "- clean			Remove generated files"
-	@echo  "- cleanall		Remove all the build artefacts"
-	@echo  "- cleanallcache		Remove all the build artefacts and the extra caches (npm and pip)"
+	@echo  "- clean-all		Remove all the build artifacts"
+	@echo  "- clean-all-cache	Remove all the build artifacts and the extra caches (npm and pip)"
 	@echo
 	@echo  "Utility targets:"
 	@echo
 	@echo  "- update		Update and clean the project (Git, Node, Pip)"
-	@echo  "- update-git-submodules	Update and clean the Git submodules"
-	@echo  "- update-node-modules	Update node modules (using --force)"
 	@echo  "- upgrade-db		Upgrade the database to the latest version"
 	@echo  "- upgrade		Launch the upgrade process"
-	@echo
-	@echo  "Deploy branch target:"
-	@echo
-	@echo  "- theme2fts		Inport the theme in the full-text search"
-	@echo  "- deploy-branch		Deploy the curent branch to demos"
-	@echo  "- remove-branch		Remove the curent branch from demos"
+	@echo  "- theme2fts		Import the theme in the full-text search"
+	@echo  "- update-po		Update the localisations files"
 
 ifdef UTILITY_HELP
 	@echo $(UTILITY_HELP)
@@ -526,209 +372,191 @@ endif
 	@echo
 	@echo  "- build-cgxp		Build the javascript and the css for cgxp"
 	@echo  "- build-ngeo		Build the javascript and the css for ngeo"
-	@echo  "- build-server		Build the files required by the server"
-	@echo  "- compile-js-catalog	Compile the Angular translation catalog"
-	@echo  "- compile-py-catalog	Compile the Python translation catalog"
 	@echo  "- flake8		Run Flake8 checker on the Python code"
 	@echo  "- lint-ngeo		Check the JavaScript code with linters for ngeo"
 	@echo  "- template-clean	Clean the template file"
-	@echo  "- template-generate	Generate the template file"
 ifdef SECONDARY_HELP
 	@echo $(SECONDARY_HELP)
 endif
 	@echo
 
+.PHONY: docker-build
+docker-build:
+	docker pull camptocamp/geomapfish-build:${MAJOR_VERSION}
+	for image in `find -name Dockerfile -o -name Dockerfile.mako | xargs grep --no-filename FROM | awk '{print $$2}' | sort -u`; do docker pull $$image; done
+	./docker-run make build
+
 .PHONY: build
 build: $(BUILD_RULES)
 
 .PHONY: checks
-checks: flake8 $(CLIENT_CHECK_RULE) $(NGEO_OUTPUT_JS_INTERFACES_FILES) $(NGEO_OUTPUT_CSS_INTERFACES_FILES) git-attributes
+checks: flake8 $(CLIENT_CHECK_RULE) git-attributes yamllint spell printlint
 
 .PHONY: git-attributes
 git-attributes:
 	git --no-pager diff --check `git log --oneline | tail -1 | cut --fields=1 --delimiter=' '`
 
+PRINT_REPORTS_FILES ?= $(shell find print/print-apps -name "*.jsrml" -print)
+.PHONY: printlint
+printlint: $(PRINT_REPORTS_FILES)
+	xmllint --valid --encode utf-8 $(PRINT_REPORTS_FILES)
+
+YAML_FILES ?= $(filter-out ./tilegeneration/config.yaml ./geoportal/config.yaml \
+	./qgisserver/geomapfish.yaml ./geoportal/alembic.yaml \
+	./docker-compose-dev.yaml ./docker-compose.yaml, \
+	$(shell find \
+		-name .build -prune -or \
+		-name cgxp -prune -or \
+		-name node_modules -prune -or \
+		\( -name "*.yml" -or -name "*.yaml" \) -print \
+	))
+.PHONY: yamllint
+yamllint: $(YAML_FILES)
+	yamllint --strict --config-file=yamllint.yaml -s $(YAML_FILES)
+
+.PHONY: spell
+spell:
+	codespell --quiet-level=2 --check-filenames --ignore-words=spell-ignore-words.txt \
+		$(shell find -name node_modules -prune -or -name .git -prune -or -name '__pycache__' -prune \
+		-or -name 'build' -prune -or -name '.build' -prune -or -name 'cgxp' -prune -or -name 'c2cgeoportal_*' -prune \
+		-or \( -type f -and -not -name '*.png' -and -not -name '*.mo' -and -not -name '*.po*' \
+		-and -not -name 'CONST_Makefile' -and -not -name 'package-lock.json' \) -print)
+
 .PHONY: clean
 clean: template-clean
-	rm -f .build/*.timestamp
-	rm -f apache/mapcache.xml apache/tiles.conf
-	rm -rf $(OUTPUT_DIR)/
-	rm -rf $(APP_OUTPUT_DIR)/
-	rm -f $(PACKAGE)/locale/$(PACKAGE)-*.pot
-# We use the print
-ifdef PRINT_BASE_WAR
-	$(TOMCAT_OUTPUT_CMD_PREFIX) rm -f $(PRINT_OUTPUT)/$(PRINT_WAR)
-	$(TOMCAT_OUTPUT_CMD_PREFIX) rm -rf $(PRINT_OUTPUT)/$(PRINT_WAR:.war=) 2> /dev/null || true
-endif
-	rm -f $(APACHE_CONF_DIR)/$(INSTANCE_ID).conf
+	rm --recursive --force /build/*.timestamp \
+		$(MAPCACHE_FILE) \
+		$(OUTPUT_DIR)/ \
+		$(APP_OUTPUT_DIR)/ \
+		geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)-*.pot \
+		geoportal/alembic.yaml \
+		qgisserver/geomapfish.yaml \
+		.UPGRADE* \
+		mapcache \
+		$(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).mo, $(LANGUAGES))) \
+		$(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).mo, $(LANGUAGES)))
 ifeq ($(TILECLOUD_CHAIN_LOCAL), TRUE)
-	rm -f $(WMTSCAPABILITIES_FILE)
+	rm --force $(WMTSCAPABILITIES_FILE)
 endif
 
-.PHONY: cleanall
-cleanall: clean
-	rm -rf .build
-	rm -rf node_modules
-	rm -f $(ANGULAR_LOCALES_FILES)
+.PHONY: clean-all
+clean-all: clean
+	rm --recursive --force /build/* \
+		geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/ \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ \
+		$(ANGULAR_LOCALES_FILES) \
+		`find -name __pycache__` \
+		node_modules  # for nondocker
 
-ifdef PRINT_BASE_WAR
-ifeq ($(PRINT_VERSION), 3)
-	rm -f $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) $(PRINT_EXTRA_LIBS)
-endif
-endif
-
-.PHONY: cleanallcache
-cleanallcache: cleanall
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-	rm -rf %AppData%/npm-cache
-	rm -rf %AppData%/../Local/pip/cache
-else
-	rm -rf $(HOME_DIR).npm
-	rm -rf $(HOME_DIR).cache/pip
-endif
+.PHONY: clean-all-cache
+clean-all-cache: cleanall
+	rm  --recursive --force $(HOME)/.npm \
+		$(HOME)/.cache/pip
 
 .PHONY: theme2fts
-theme2fts: $(VENV_BIN)/theme2fts$(PYTHON_BIN_POSTFIX) \
-		$(MO_CLIENT_LOCALISATION_FILES)
-	$(VENV_BIN)/theme2fts
+theme2fts: /build/requirements.timestamp geoportal/config.yaml \
+		$(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).mo, $(LANGUAGES)))
+	$(VENV_BIN)/python /usr/local/bin/theme2fts
 
 .PHONY: flake8
-flake8: $(VENV_BIN)/flake8$(PYTHON_BIN_POSTFIX)
-	$(VENV_BIN)/flake8 $(PACKAGE)
-
-.PHONY: build-server
-build-server: template-generate compile-py-catalog $(SERVER_LOCALISATION_FILES)
+flake8:
+	flake8 $(PACKAGE)
 
 .PHONY: build-cgxp
-build-cgxp: $(JSBUILD_MAIN_OUTPUT_FILES) $(CSS_BASE_OUTPUT) $(CSS_API_OUTPUT) $(CSS_XAPI_OUTPUT)
+build-cgxp: $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT)
 
 .PHONY: lint-ngeo
-lint-ngeo: .build/eslint.timestamp
-
-.PHONY: serve
-serve: build development.ini
-	$(VENV_BIN)/pserve --reload --monitor-restart development.ini
-
-.PHONY: update-node-modules
-update-node-modules:
-	npm install --force
-	mkdir -p .build
-	touch .build/node_modules.timestamp
-
-$(VENV_BIN)/alembic$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
+lint-ngeo: /build/eslint.timestamp
 
 .PHONY: upgrade-db
-upgrade-db: alembic.ini alembic_static.ini $(VENV_BIN)/alembic$(PYTHON_BIN_POSTFIX)
-	$(VENV_BIN)/alembic -c alembic.ini upgrade head
-	$(VENV_BIN)/alembic -c alembic_static.ini upgrade head
-
-# Deploy branch
-
-.PHONY: deploy-branch
-deploy-branch:
-	@read -p "Are you sure to deploy the branch in $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH) (Y/n)?" RESP; RESP=`echo $$RESP | tr '[:upper:]' '[:lower:]'`; /usr/bin/test "$$RESP" == "y" -o "$$RESP" == "yes" -o "$$RESP" == ""
-	rm -f $(APACHE_CONF_DIR)/$(GIT_BRANCH).conf
-	rm -rf $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH)
-	mkdir --parents $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH)
-	git clone $(GIT_REMOTE_URL) -b $(GIT_BRANCH) $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH)
-	cd $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH); INSTANCE_ID=$(GIT_BRANCH) APACHE_CONF_DIR=$(APACHE_CONF_DIR) APACHE_ENTRY_POINT=/$(GIT_BRANCH)/ $(MAKE) -f $(DEPLOY_BRANCH_MAKEFILE) build
-	@echo Now open $(DEPLOY_BRANCH_BASE_URL)/$(GIT_BRANCH)
-
-.PHONY: remove-branch
-remove-branch:
-	rm -f $(APACHE_CONF_DIR)/$(GIT_BRANCH).conf
-	rm -fr $(DEPLOY_BRANCH_DIR)/$(GIT_BRANCH)
-	$(APACHE_GRACEFUL)
+upgrade-db: geoportal/alembic.ini geoportal/alembic.yaml
+	alembic --config=$< --name=main upgrade head
+	alembic --config=$< --name=static upgrade head
 
 # Templates
 
 .PHONY: template-clean
 template-clean:
-	rm -f $(ALL_MAKO_FILES:.mako=)
-	rm -f $(ALL_JINJA_FILES:.jinja=)
-	rm -f .build/config.yaml
+	rm --force /build/c2ctemplate-cache.json \
+		$(ALL_MAKO_FILES:.mako=) \
+		$(ALL_JINJA_FILES:.jinja=) \
+		geoportal/config.yaml
 
-.PHONY: template-generate
-template-generate: $(ALL_MAKO_FILES:.mako=) $(ALL_JINJA_FILES:.jinja=) .build/config.yaml
-
-$(MAKO_FILES:.mako=) $(JINJA_FILES:.jinja=): $(VENV_BIN)/c2c-template$(PYTHON_BIN_POSTFIX) $(VARS_DEPENDS)
-
-%: %.mako $(INSTANCE_ID_MARKER) $(VENV_BIN)/c2c-template$(PYTHON_BIN_POSTFIX)
+/build/c2ctemplate-cache.json: $(VARS_DEPENDS) $(MAKE_FILES)
 	$(PRERULE_CMD)
 ifeq ($(origin VARS_FILE), undefined)
 	@echo "Error: the variable VARS_FILE is required."
 	exit 1
 endif
-	$(C2C_TEMPLATE_CMD) --engine mako --files $<
+	c2c-template --vars $(VARS_FILE) --get-cache $@
 
-%: %.jinja $(INSTANCE_ID_MARKER) $(VENV_BIN)/c2c-template$(PYTHON_BIN_POSTFIX)
+%: %.mako /build/c2ctemplate-cache.json
 	$(PRERULE_CMD)
-ifeq ($(origin VARS_FILE), undefined)
-	@echo "Error: the variable VARS_FILE is required."
-	exit 1
-endif
-	$(C2C_TEMPLATE_CMD) --engine jinja --files $<
+	c2c-template --cache /build/c2ctemplate-cache.json --engine mako \
+		--runtime-environment-pattern '$${{{}}}' --files $<
 
-$(VENV_BIN)/c2c-template$(PYTHON_BIN_POSTFIX): .build/requirements.timestamp
-
-.build/config.yaml: $(INSTANCE_ID_MARKER) $(VENV_BIN)/c2c-template$(PYTHON_BIN_POSTFIX) $(VARS_DEPENDS) $(MAKE_FILES)
+%: %.jinja /build/c2ctemplate-cache.json
 	$(PRERULE_CMD)
-	$(C2C_TEMPLATE_CMD) --get-config .build/config.yaml $(CONFIG_VARS)
+	c2c-template --cache /build/c2ctemplate-cache.json --engine jinja \
+		--runtime-environment-pattern '$${{{}}}' --files $<
+
+geoportal/config.yaml: /build/c2ctemplate-cache.json
+	$(PRERULE_CMD)
+	c2c-template --cache /build/c2ctemplate-cache.json --get-config /build/_config.yaml $(CONFIG_VARS)
+	pykwalify --data-file /build/_config.yaml --schema-file CONST_config-schema.yaml
+	mv /build/_config.yaml $@
+	touch $@
+
+qgisserver/geomapfish.yaml: /build/c2ctemplate-cache.json
+	$(PRERULE_CMD)
+	mkdir --parent $(dir $@)
+	c2c-template --cache /build/c2ctemplate-cache.json --get-config $@ \
+		sqlalchemy_slave.url schema schema_static srid
+	touch $@
 
 # server localisation
 
-.PRECIOUS: $(VENV_BIN)/pot-create$(PYTHON_BIN_POSTFIX)
-$(VENV_BIN)/pot-create$(PYTHON_BIN_POSTFIX): .build/requirements.timestamp
-	$(PRERULE_CMD)
-	touch --no-create $@
-
-.PHONY: compile-py-catalog
-compile-py-catalog: $(SERVER_LOCALISATION_FILES)
-
-.PRECIOUS: $(PACKAGE)/locale/$(PACKAGE)-$(L10N_SERVER_POSTFIX).pot
-$(PACKAGE)/locale/$(PACKAGE)-$(L10N_SERVER_POSTFIX).pot: \
-		lingua-server.cfg \
-		$(VENV_BIN)/pot-create$(PYTHON_BIN_POSTFIX) \
+.PRECIOUS: geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).pot
+geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).pot: \
+		lingua-server.cfg /build/requirements.timestamp \
 		$(SERVER_LOCALISATION_SOURCES_FILES)
 	$(PRERULE_CMD)
 	rm -f $@ # Because of WindowsError, thus only problematic on Windows
-	$(VENV_BIN)/pot-create --keyword _ --config $< --output $@ $(SERVER_LOCALISATION_SOURCES_FILES) || true
-	# removes the always changed date line
-	[ ! -f $@ ] || sed -i '/^"POT-Creation-Date: /d' $@
-	[ ! -f $@ ] || sed -i '/^"PO-Revision-Date: /d' $@
+	pot-create --keyword _ --config $< --output $@ $(SERVER_LOCALISATION_SOURCES_FILES) || true
 	[ ! -f $@ ] || chmod go+r $@
 
-.PRECIOUS: $(PACKAGE)/locale/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).pot
-$(PACKAGE)/locale/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).pot: \
-		lingua-client.cfg \
-		$(I18N_DEPENDENCIES) \
-		$(I18N_SOURCE_FILES) \
-		$(VENV_BIN)/pot-create$(PYTHON_BIN_POSTFIX) \
-		.build/mapserver.timestamp \
-		.build/config.yaml
+.PRECIOUS: geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).pot
+geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).pot: \
+		lingua-client.cfg $(I18N_DEPENDENCIES) $(I18N_SOURCE_FILES)
 	$(PRERULE_CMD)
 	rm -f $@ # Because of WindowsError, thus only problematic on Windows
-	$(VENV_BIN)/pot-create --config $< --output $@ $(I18N_SOURCE_FILES)
-	# removes the always changed date line
-	sed -i '/^"POT-Creation-Date: /d' $@
-	sed -i '/^"PO-Revision-Date: /d' $@
+	$(VENV_BIN)/python /usr/local/bin/pot-create --config $< --output $@ $(I18N_SOURCE_FILES)
 	chmod go+r $@
 
-.PRECIOUS: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_SERVER_POSTFIX).po
-$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_SERVER_POSTFIX).po: $(PACKAGE)/locale/$(PACKAGE)-$(L10N_SERVER_POSTFIX).pot
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	[ -f $@ ] || msginit --no-translator --input=$< --output-file=$@ -l $*
-	touch --no-create $@
-	[ ! -f $< ] || msgmerge --backup=none --update --sort-output --no-location $@ $<
+.PHONY: update-po
+update-po: \
+	$(CLIENT_LOCALISATION_RULES) \
+	$(SERVER_LOCALISATION_RULES)
 
-.PRECIOUS: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).po
-$(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).po: $(PACKAGE)/locale/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).pot
+.PRECIOUS: /build/lang-server-%
+/build/lang-server-%: \
+		geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).pot
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	[ -f $@ ] || msginit --no-translator --input=$< --output-file=$@ -l $*
-	touch --no-create $@
-	msgmerge --backup=none --update --sort-output --no-location $@ $<
+	mkdir --parent geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/
+	[ -f geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).po ] || [ ! -f $< ] || msginit --no-translator --input=$< --output-file=geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).po -l $*
+	touch --no-create geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).po
+	[ ! -f $< ] || msgmerge --backup=none --update --sort-output --no-location geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).po $<
+	touch geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).po
+
+.PRECIOUS: /build/lang-client-%
+/build/lang-client-%: \
+		geoportal/$(PACKAGE)_geoportal/locale/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).pot
+	$(PRERULE_CMD)
+	mkdir --parent geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/
+	[ -f geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po ] || msginit --no-translator --input=$< --output-file=geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po -l $*
+	touch --no-create geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po
+	msgmerge --backup=none --update --sort-output --no-location geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po $<
+	touch geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po
 
 .PRECIOUS: %.mo
 %.mo: %.po
@@ -736,582 +564,243 @@ $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).po: $(PACKAGE)
 	msgfmt -o $@ $<
 	touch --no-create $@
 
-# Get l10n from ngeo
-
-$(VENV_BIN)/tx$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-$(VENV_BIN)/mako-render$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-$(TX_RC):
-	$(PRERULE_CMD)
-	echo "[$(TX_HOST)]" > $@
-	echo "hostname = $(TX_HOST)" >> $@
-	echo "username = c2c" >> $@
-	echo "password = c2cc2c" >> $@
-	echo "token =" >> $@
-
-.tx/config: .tx/CONST_config_mako $(VENV_BIN)/mako-render$(PYTHON_BIN_POSTFIX) .build/requirements.timestamp
-	$(PRERULE_CMD)
-	PYTHONIOENCODING=UTF-8 $(VENV_BIN)/mako-render \
-		--var "tx_version=$(TX_VERSION)" --var "tx_host=$(TX_HOST)" $< > $@
-
-.PRECIOUS: .build/locale/%/LC_MESSAGES/gmf.po
-.build/locale/%/LC_MESSAGES/gmf.po: $(TX_DEPENDENCIES)
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	sleep 1 # To be sure that the creation date should be after the .transifexrc file. (the $(TOUCHBACK_TXRC) lost the ms)
-	$(VENV_BIN)/tx pull --language $* --resource ngeo.gmf-$(TX_VERSION) --force
-	$(TOUCHBACK_TXRC)
-	test -s $@
-
-.PRECIOUS: .build/locale/%/LC_MESSAGES/ngeo.po
-.build/locale/%/LC_MESSAGES/ngeo.po: $(TX_DEPENDENCIES)
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	sleep 1 # To be sure that the creation date should be after the .transifexrc file. (the $(TOUCHBACK_TXRC) lost the ms)
-	$(VENV_BIN)/tx pull --language $* --resource ngeo.ngeo-$(TX_VERSION) --force
-	$(TOUCHBACK_TXRC)
-	test -s $@
-
-.build/locale/en/LC_MESSAGES/gmf.po:
-	$(PRERULE_CMD)
-	@echo "The en language is the source language, so the file must stay empty"
-
-.build/locale/en/LC_MESSAGES/ngeo.po:
-	$(PRERULE_CMD)
-	@echo "The en language is the source language, so the file must stay empty"
-
 # ngeo
 
 .PHONY: build-ngeo
 build-ngeo: $(NGEO_OUTPUT_FILES)
 
-.PHONY: compile-js-catalog
-compile-js-catalog: $(JSON_CLIENT_LOCALISATION_FILES)
-
-$(VENV_BIN)/db2pot$(PYTHON_BIN_POSTFIX): .build/requirements.timestamp
-
-$(JSON_CLIENT_LOCALISATION_FILES): .build/node_modules.timestamp
-
-$(COMPILE_CATALOG): .build/node_modules.timestamp
-
 .PRECIOUS: $(APP_OUTPUT_DIR)/%.json
-$(APP_OUTPUT_DIR)/%.json: $(PACKAGE)/locale/%/LC_MESSAGES/$(PACKAGE)-$(L10N_CLIENT_POSTFIX).po \
-		.build/locale/%/LC_MESSAGES/gmf.po \
-		.build/locale/%/LC_MESSAGES/ngeo.po \
-		$(COMPILE_CATALOG) \
-		.build/node_modules.timestamp
+$(APP_OUTPUT_DIR)/%.json: \
+		geoportal/$(PACKAGE)_geoportal/locale/%/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po \
+		/opt/c2cgeoportal_geoportal/c2cgeoportal_geoportal/locale/%/LC_MESSAGES/gmf.po \
+		/opt/c2cgeoportal_geoportal/c2cgeoportal_geoportal/locale/%/LC_MESSAGES/ngeo.po
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	node $(COMPILE_CATALOG) \
-		.build/locale/$*/LC_MESSAGES/gmf.po \
-		.build/locale/$*/LC_MESSAGES/ngeo.po \
-		$< > $@
+	mkdir --parent $(dir $@)
+	node /usr/bin/compile-catalog \
+		/opt/c2cgeoportal_geoportal/c2cgeoportal_geoportal/locale/$*/LC_MESSAGES/gmf.po \
+		/opt/c2cgeoportal_geoportal/c2cgeoportal_geoportal/locale/$*/LC_MESSAGES/ngeo.po \
+		geoportal/$(PACKAGE)_geoportal/locale/$*/LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).po > $@
 
-$(APP_OUTPUT_DIR)/angular-locale_%.js: node_modules/ngeo/github_versions language_mapping
-	mkdir -p $(dir $@)
-	wget -O $@ https://raw.githubusercontent.com/angular/angular.js/`grep ^angular.js= $< | cut --delimiter = --fields 2`/src/ngLocale/angular-locale_`(grep $* language_mapping || echo $*) | cut -d = -f 2`.js
+/opt/c2cgeoportal_geoportal/c2cgeoportal_geoportal/locale/en/LC_MESSAGES/%.po:
+	echo "Nothing to do for $@"
 
-$(APP_OUTPUT_DIR)/%.js: .build/%.js .build/node_modules.timestamp $(NGEO_LIBS_JS_FILES) $(NGEO_PROJECT_LIBS_JS_FILES)
+$(APP_OUTPUT_DIR)/angular-locale_%.js: /usr/lib/node_modules/ngeo/package.json language_mapping
+	mkdir --parent $(dir $@)
+	rm --force $@
+	cp /opt/angular-locale/angular-locale_`(grep $* language_mapping || echo $*) | cut --delimiter = --fields 2 | tr --delete '\r\n'`.js $@
+
+.PRECIOUS: geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/gmf-icons.%
+geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/gmf-icons.%: /usr/lib/node_modules/ngeo/contribs/gmf/fonts/gmf-icons.%
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	awk 'FNR==1{print ""}1' $(NGEO_LIBS_JS_FILES) $(NGEO_PROJECT_LIBS_JS_FILES) $< > $@
-	sed -i '/^\/\/# sourceMappingURL=.*\.map$$/d' $@
-
-.PRECIOUS: node_modules/%
-node_modules/%: .build/node_modules.timestamp
-	$(PRERULE_CMD)
-	touch --no-create $@
-
-.PRECIOUS: node_modules/ngeo/node_modules/%
-node_modules/ngeo/node_modules/%: node_modules/%
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	[ -e $@ ] || ln -s ../../../$< $@
-	touch --no-create $@
-
-.PRECIOUS: node_modules/font-awesome/fonts/fontawesome-webfont.%
-node_modules/font-awesome/fonts/fontawesome-webfont.%: .build/node_modules.timestamp
-	$(PRERULE_CMD)
-	touch --no-create $@
-
-.PRECIOUS: node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.%
-node_modules/ngeo/contribs/gmf/fonts/fontawesome-webfont.%: node_modules/font-awesome/fonts/fontawesome-webfont.%
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	cp $< $@
-	touch --no-create $@
-
-.PRECIOUS: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.svg
-node_modules/ngeo/contribs/gmf/fonts/gmf-icons.%: .build/node_modules.timestamp
-	$(PRERULE_CMD)
-	touch --no-create $@
-
-.PRECIOUS: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.ttf
-node_modules/ngeo/contribs/gmf/fonts/gmf-icons.ttf: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.svg
-	node_modules/.bin/svg2ttf $< $@
-
-.PRECIOUS: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.eot
-node_modules/ngeo/contribs/gmf/fonts/gmf-icons.eot: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.ttf
-	node_modules/.bin/ttf2eot $< $@
-
-.PRECIOUS: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.woff
-node_modules/ngeo/contribs/gmf/fonts/gmf-icons.woff: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.ttf
-	node_modules/.bin/ttf2woff $< $@
-
-.PRECIOUS: $(PACKAGE)/static-ngeo/fonts/gmf-icons.%
-$(PACKAGE)/static-ngeo/fonts/gmf-icons.%: node_modules/ngeo/contribs/gmf/fonts/gmf-icons.%
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
+	mkdir --parent $(dir $@)
 	cp $< $@
 
-.PRECIOUS: node_modules/font-awesome/fonts/fontawesome-webfont.%
-node_modules/font-awesome/fonts/fontawesome-webfont.%: .build/node_modules.timestamp
+.PRECIOUS: geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/fontawesome-webfont.%
+geoportal/$(PACKAGE)_geoportal/static-ngeo/fonts/fontawesome-webfont.%: /usr/lib/node_modules/font-awesome/fonts/fontawesome-webfont.%
 	$(PRERULE_CMD)
-	touch --no-create $@
-
-.PRECIOUS: $(PACKAGE)/static-ngeo/fonts/fontawesome-webfont.%
-$(PACKAGE)/static-ngeo/fonts/fontawesome-webfont.%: node_modules/font-awesome/fonts/fontawesome-webfont.%
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
+	mkdir --parent $(dir $@)
 	cp $< $@
 
-$(APP_OUTPUT_DIR)/%.css: $(PACKAGE)/static-ngeo/less/%.less $(LESS_FILES) $(NGEO_FONTS) .build/node_modules.timestamp
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	node_modules/.bin/lessc $(LESS_ARGS) $< $@
 
-.PRECIOUS: node_modules/ngeo/buildtools/mako_build.json
-node_modules/ngeo/buildtools/mako_build.json: .build/node_modules.timestamp
+$(APP_OUTPUT_DIR)/images/: /usr/lib/node_modules/jquery-ui/themes/base/images
 	$(PRERULE_CMD)
-	touch --no-create $@
+	mkdir --parent $@
+	cp -r $</* $@
 
-.PRECIOUS: .build/%.json
-.build/%.json: node_modules/ngeo/buildtools/mako_build.json \
-		$(VENV_BIN)/mako-render$(PYTHON_BIN_POSTFIX)
-	$(PRERULE_CMD)
-	PYTHONIOENCODING=UTF-8 $(VENV_BIN)/mako-render \
-		--var 'src=$(PACKAGE)/static-ngeo/js/**/*.js,$(PACKAGE)/static-ngeo/components/**/*.js' \
-		--var src_set=contribs_gmf \
-		--var entry_point=$(PACKAGE)_$* \
-		--var ngeo_folder=node_modules/ngeo/ \
-		--var generate_exports=true $< > $@
 
-.PRECIOUS: .build/%.js
-.build/%.js: .build/%.json $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) \
-		.build/gmftemplatecache.js \
-		.build/externs/angular-$(ANGULAR_VERSION).js \
-		.build/externs/angular-$(ANGULAR_VERSION)-q_templated.js \
-		.build/externs/angular-$(ANGULAR_VERSION)-http-promise_templated.js \
-		.build/externs/jquery-1.9.js \
-		.build/node_modules.timestamp
-	$(PRERULE_CMD)
-	node node_modules/ngeo/buildtools/build.js $< $@
-
-node_modules/ngeo/buildtools/templatecache.mako.js: .build/node_modules.timestamp
-
-$(APP_OUTPUT_DIR)/templatecache.js: .build/gmftemplatecache.js
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	cp $< $@
-
-.PRECIOUS: .build/gmftemplatecache.js
-.build/gmftemplatecache.js: node_modules/ngeo/buildtools/templatecache.mako.js \
-		.build/dev-requirements.timestamp \
-		$(VENV_BIN)/mako-render$(PYTHON_BIN_POSTFIX) \
-		$(APP_DIRECTIVES_PARTIALS_FILES) \
-		$(GMF_DIRECTIVES_PARTIALS_FILES) \
-		$(NGEO_DIRECTIVES_PARTIALS_FILES)
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	PYTHONIOENCODING=UTF-8 $(VENV_BIN)/mako-render \
-		--var "partials=ngeo:node_modules/ngeo/src/directives/partials \
-		gmf:node_modules/ngeo/contribs/gmf/src/directives/partials \
-		$(PACKAGE)_components:$(PACKAGE)/static-ngeo/components \
-		$(PACKAGE)_partials:$(PACKAGE)/static-ngeo/partials \
-		$(PACKAGE)_js:$(PACKAGE)/static-ngeo/js"\
-		--var "app=$(PACKAGE)" $< > $@
-
-.build/externs/angular-$(ANGULAR_VERSION).js: node_modules/ngeo/github_versions
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ https://raw.githubusercontent.com/google/closure-compiler/`grep ^closure-compiler= $< | cut --delimiter = --fields 2`/contrib/externs/angular-$(ANGULAR_VERSION).js
-
-.build/externs/angular-$(ANGULAR_VERSION)-q_templated.js: node_modules/ngeo/github_versions
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ https://raw.githubusercontent.com/google/closure-compiler/`grep ^closure-compiler= $< | cut --delimiter = --fields 2`/contrib/externs/angular-$(ANGULAR_VERSION)-q_templated.js
-
-.build/externs/angular-$(ANGULAR_VERSION)-http-promise_templated.js: node_modules/ngeo/github_versions
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ https://raw.githubusercontent.com/google/closure-compiler/`grep ^closure-compiler= $< | cut --delimiter = --fields 2`/contrib/externs/angular-$(ANGULAR_VERSION)-http-promise_templated.js
-
-.build/externs/jquery-1.9.js: node_modules/ngeo/github_versions
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ https://raw.githubusercontent.com/google/closure-compiler/`grep ^closure-compiler= $< | cut --delimiter = --fields 2`/contrib/externs/jquery-1.9.js
-
-package.json:
-	$(PRERULE_CMD)
-ifneq ($(NGEO_INTERFACES), "")
-	@echo Missing $@ required file by ngeo
-	exit 1
-else
+.PRECIOUS: /build/apps.timestamp
+/build/apps.timestamp: geoportal/webpack.apps.js $(addprefix /build/apps., $(addsuffix .timestamp, $(NGEO_INTERFACES)))
 	touch $@
-endif
 
-.build/node_modules.timestamp: package.json
+.PRECIOUS: /build/apps.%.timestamp
+/build/apps.%.timestamp: $(OL_JS_FILES) $(NGEO_JS_FILES) $(APP_JS_FILES) \
+			$(APP_HTML_FILES) geoportal/webpack.config.js \
+			$(LESS_FILES) \
+			$(NGEO_FONTS) \
+			$(APP_OUTPUT_DIR)/images/
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-ifneq ($(NGEO_INTERFACES), "")
-	npm install || sleep 20 || npm install || sleep 90 || npm install
+	# Workaround to make Webpack working for ol/index.js
+	rm --force geoportal/node_modules
+	ln --symbolic /usr/lib/node_modules/ geoportal/
+	(cd geoportal; INTERFACE=$* webpack $(WEBPACK_ARGS))
+	rm geoportal/node_modules
+ifeq ($(DOCKER), TRUE)
+	mv $(APP_OUTPUT_DIR)/$*.html $(APP_OUTPUT_DIR)/$*.html.tmpl
+	ls -1 $(APP_OUTPUT_DIR)/$*.*.css|while read file; do mv $${file} $${file}.tmpl; done
 endif
 	touch $@
 
-node_modules/.bin/eslint$(NODE_BIN_POSTFIX): .build/node_modules.timestamp
-
-.build/eslint.timestamp: node_modules/.bin/eslint$(NODE_BIN_POSTFIX) $(APP_JS_FILES)
+/build/eslint.timestamp: $(APP_JS_FILES)
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	node_modules/.bin/eslint$(NODE_BIN_POSTFIX) $(filter-out node_modules/.bin/eslint$(NODE_BIN_POSTFIX), $?)
+	eslint $?
 	touch $@
 
 
 # Git
 
-$(VENV_BIN)/jsbuild$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-.PHONY: update
-update:
-	git pull --rebase $(GIT_REMOTE) $(GIT_BRANCH)
-	git clean -fd
-	git submodule sync
-	git submodule update
-	git submodule foreach git submodule sync
-	git submodule foreach git submodule update --init
-	git submodule foreach git clean -fd
-	git submodule foreach git submodule foreach git clean -fd
-ifneq ($(NGEO_INTERFACES), "")
-	rm -f .build/node_modules.timestamp
-	npm install --force
-	touch .build/node_modules.timestamp
-endif
-	@echo After that you should launch the `build` task.
-	@echo Unfortunately sometimes we get an error, then you should run the task `cleanall` before.
-
-.PHONY: update-git-submodules
-update-git-submodules:
-	git submodule sync
-	git submodule update
-	git submodule foreach git submodule sync
-	git submodule foreach git submodule update --init
-	git submodule foreach git clean -fd
-	git submodule foreach git submodule foreach git clean -fd
-
-$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/modules/%/HEAD: $(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD
+geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/: cgxp_revision
 	$(PRERULE_CMD)
-	if [ -e $@ ]; then touch $@; else git submodule foreach git submodule update --init; fi
-
-$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD:
-	$(PRERULE_CMD)
-	git submodule update --init
+	# Sometimes we have an empty directory
+	rmdir $@ || true
+	if [ ! -e $@ ]; then git clone $(CGXP_GIT_ARGS) $(CGXP_GIT_REMOTE) $@; fi
+	cd $@ && git fetch
+	cd $@ && git reset --hard $(shell cat $<)
+	cd $@ && git submodule foreach git submodule sync
+	cd $@ && git submodule update --init
 
 
 # CGXP build
 
-$(VENV_BIN)/cssmin$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-$(VENV_BIN)/jsbuild$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-$(JSBUILD_MAIN_OUTPUT_FILES): $(JSBUILD_MAIN_FILES) \
+# Workaround to fix strange Make missing rule error
+$(OUTPUT_DIR)/api-lang-en.js: \
 		$(JSBUILD_MAIN_CONFIG) \
-		$(VENV_BIN)/jsbuild$(PYTHON_BIN_POSTFIX) \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/modules/openlayers/HEAD \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD
+		$(JSBUILD_MAIN_FILES) \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/
+
+$(OUTPUT_DIR)/%.js: \
+		$(JSBUILD_MAIN_CONFIG) \
+		$(JSBUILD_MAIN_FILES) \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	$(VENV_BIN)/jsbuild $(JSBUILD_MAIN_CONFIG) $(JSBUILD_ARGS) -j $(notdir $@) -o $(OUTPUT_DIR)
+	mkdir --parent $(dir $@)
+	jsbuild $< $(JSBUILD_ARGS) -j $(notdir $@) -o $(dir $@)
 
-$(CSS_BASE_OUTPUT): $(VENV_BIN)/cssmin$(PYTHON_BIN_POSTFIX) \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/modules/openlayers/HEAD \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD \
-		$(CSS_BASE_FILES)
+$(CSS_CGXP_OUTPUT): \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj.css \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj-widgets.css
 	$(PRERULE_CMD)
-	$(VENV_BIN)/c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_BASE_FILES)
+	c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_BASE_FILES)
 
-$(CSS_API_OUTPUT): $(VENV_BIN)/cssmin$(PYTHON_BIN_POSTFIX) \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/modules/openlayers/HEAD \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD \
-		$(CSS_API_FILES)
+$(CSS_API_OUTPUT): \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css
 	$(PRERULE_CMD)
-	$(VENV_BIN)/c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_API_FILES)
+	c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_API_FILES)
 
-$(CSS_XAPI_OUTPUT): $(VENV_BIN)/cssmin$(PYTHON_BIN_POSTFIX) \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/modules/openlayers/HEAD \
-		$(GIT_MODULES_FOLDER)$(PACKAGE)/static/lib/cgxp/HEAD \
-		$(CSS_XAPI_FILES)
+$(CSS_XAPI_OUTPUT): \
+		geoportal/$(PACKAGE)_geoportal/static/lib/cgxp/ \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj-map.css \
+		geoportal/$(PACKAGE)_geoportal/static/css/proj-widgets.css
 	$(PRERULE_CMD)
-	$(VENV_BIN)/c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_XAPI_FILES)
-
-# Check packages
-
-$(VENV_BIN)/c2c-versions$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-.PHONY: test-packages
-test-packages: .build/test-packages.timestamp
-
-.build/test-packages.timestamp: $(VENV_BIN)/c2c-versions$(PYTHON_BIN_POSTFIX) CONST_packages.yaml
-	$(PRERULE_CMD)
-	$(VENV_BIN)/c2c-versions CONST_packages.yaml $(TEST_PACKAGES)
-	touch $@
-
-# Check
-
-$(VENV_BIN)/theme2fts$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-$(VENV_BIN)/flake8$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
+	c2c-cssmin $(CSSMIN_ARGS) $@ $(CSS_XAPI_FILES)
 
 # Venv
 
-.build/dev-requirements.timestamp: .build/venv.timestamp-noclean \
-		CONST_dev-requirements.txt \
-		CONST_dev-fixversions.txt \
-		CONST_optional-requirements.txt
+/build/venv.timestamp-noclean:
 	$(PRERULE_CMD)
-	$(PIP_CMD) install $(DEV_REQUIREMENTS)
+	rm --recursive --force /build/venv
+	virtualenv --system-site-packages /build/venv
 	touch $@
 
-.build/venv.timestamp-noclean: CONST_optional-requirements.txt
+/build/requirements.timestamp: /build/venv.timestamp-noclean geoportal/setup.py
 	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	virtualenv --no-site-packages .build/venv
-	$(PIP_CMD) install '$(PIP_VERSION)' '$(SETUPTOOLS_VERSION)'
+	$(VENV_BIN)/pip install --editable=geoportal
 	touch $@
-
-.build/requirements.timestamp: $(EGGS_DEPENDENCIES)
-	$(PRERULE_CMD)
-	$(PIP_CMD) install $(REQUIREMENTS)
-	touch $@
-
-# Print
-
-.PHONY: print
-ifeq ($(DOCKER), TRUE)
-print: print/Dockerfile $(PRINT_REQUIREMENT)
-	docker build -t $(DOCKER_BASE)_print:$(DOCKER_TAG) print
-
-else # !DOCKER
-print: $(PRINT_OUTPUT)/$(PRINT_WAR)
-
-$(PRINT_BASE_DIR)/$(PRINT_BASE_WAR): CONST_print_url
-ifeq ($(PRINT_VERSION), 3)
-	$(PRERULE_CMD)
-	curl --max-redirs 0 --location --output $@ $(shell cat $<)
-endif
-
-$(PRINT_OUTPUT)/$(PRINT_WAR): $(PRINT_REQUIREMENT)
-	$(PRERULE_CMD)
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-	mkdir -p $(PRINT_BASE_DIR)/$(PRINT_TMP)
-	cp $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) $(PRINT_BASE_DIR)/$(PRINT_TMP)/$(PRINT_WAR)
-ifeq ($(PRINT_VERSION), 3)
-	zip -d $(PRINT_BASE_DIR)/$(PRINT_TMP)/$(PRINT_WAR) print-apps/
-endif
-	cd $(PRINT_BASE_DIR) && jar -uf $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_INPUT)
-else
-	cp $(PRINT_BASE_DIR)/$(PRINT_BASE_WAR) $(PRINT_TMP)/$(PRINT_WAR)
-ifeq ($(PRINT_VERSION), 3)
-	zip -d $(PRINT_TMP)/$(PRINT_WAR) print-apps/
-endif
-	cd $(PRINT_BASE_DIR) && jar -uf $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_INPUT)
-	chmod g+r,o+r $(PRINT_TMP)/$(PRINT_WAR)
-endif
-
-ifneq ($(TOMCAT_STOP_COMMAND),)
-	$(TOMCAT_STOP_COMMAND)
-endif
-	$(TOMCAT_OUTPUT_CMD_PREFIX) rm -f $(PRINT_OUTPUT)/$(PRINT_WAR)
-	$(TOMCAT_OUTPUT_CMD_PREFIX) rm -rf $(PRINT_OUTPUT)/$(PRINT_WAR:.war=)
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-	mv $(PRINT_BASE_DIR)/$(PRINT_TMP)/$(PRINT_WAR) $(PRINT_OUTPUT)
-	cd $(PRINT_BASE_DIR) && rm -fd $(PRINT_TMP)
-else
-	$(TOMCAT_OUTPUT_CMD_PREFIX) cp $(PRINT_TMP)/$(PRINT_WAR) $(PRINT_OUTPUT)
-	rm -f $(PRINT_TMP)/$(PRINT_WAR)
-endif
-ifneq ($(TOMCAT_START_COMMAND),)
-	$(TOMCAT_START_COMMAND)
-endif
-endif # !DOCKER
-
-print/WEB-INF/lib/jasperreports-functions-$(JASPERREPORTS_VERSION).jar:
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --location --output $@ https://kent.dl.sourceforge.net/project/jasperreports/jasperreports/JasperReports%20$(JASPERREPORTS_VERSION)/jasperreports-functions-$(JASPERREPORTS_VERSION).jar
-	unzip -t -q $@
-
-print/WEB-INF/lib/joda-time-1.6.jar:
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ http://central.maven.org/maven2/joda-time/joda-time/1.6/joda-time-1.6.jar
-	unzip -t -q $@
-
-print/WEB-INF/lib/postgresql-9.3-1102.jdbc41.jar:
-	$(PRERULE_CMD)
-	mkdir -p $(dir $@)
-	curl --max-redirs 0 --location --output $@ https://jdbc.postgresql.org/download/postgresql-9.3-1102.jdbc41.jar
-	unzip -t -q $@
-
-$(VENV_BIN)/generate_controller$(PYTHON_BIN_POSTFIX): .build/dev-requirements.timestamp
-
-# Tile cloud chain
-apache/mapcache.xml: tilegeneration/config.yaml $(VENV_BIN)/generate_controller$(PYTHON_BIN_POSTFIX)
-	$(PRERULE_CMD)
-	$(VENV_BIN)/generate_controller --generate-mapcache-config
-
-apache/tiles.conf: tilegeneration/config.yaml apache/mapcache.xml $(VENV_BIN)/generate_controller$(PYTHON_BIN_POSTFIX)
-	$(PRERULE_CMD)
-	$(VENV_BIN)/generate_controller --generate-apache-config
-
-# Apache config
-.PHONY: apache
-ifeq ($(DOCKER), TRUE)
-apache: mapserver_docker wsgi_docker
-
-.PHONY: mapserver_docker
-mapserver_docker: mapserver/Dockerfile $(MAKO_FILES:.mako=) mapserver/mapserver.map
-	$(PRERULE_CMD)
-	docker build -t $(DOCKER_BASE)_mapserver:$(DOCKER_TAG) mapserver
-
-mapserver/mapserver.map: mapserver/c2cgeoportal.map
-	$(PRERULE_CMD)
-	echo 'INCLUDE "c2cgeoportal.map"' > $@
-
-.PHONY: wsgi_docker
-wsgi_docker: requirements.txt .whiskey/action_hooks/pre-build
-	$(PRERULE_CMD)
-	docker build -t $(DOCKER_BASE)_wsgi:$(DOCKER_TAG) .
-	rm requirements.txt
-
-.PHONY: requirements.txt
-requirements.txt:
-	$(PRERULE_CMD)
-	rm -f $@
-	for line in $(REQUIREMENTS) ; do echo $$line >> $@; done # one requirement one line
-	sed -e ':a;N;$$!ba;s/-\([re]\)\n/-\1 /g' -i requirements.txt # put "-r blah" on a single line
-
-else
-apache: .build/apache.timestamp
-
-$(APACHE_CONF_DIR)/$(INSTANCE_ID).conf:
-	$(PRERULE_CMD)
-	echo "Include $(shell pwd)/apache/*.conf" > $@
-
-.build/apache.timestamp: \
-		.build/mapserver.timestamp \
-		.build/config.yaml \
-		$(CONF_FILES) \
-		apache/application.wsgi \
-		$(PY_FILES) \
-		$(TEMPLATES_FILES) \
-		.build/requirements.timestamp \
-		$(PRINT_OUTPUT_WAR) \
-		development.ini production.ini \
-		$(JSON_CLIENT_LOCALISATION_FILES)
-	$(PRERULE_CMD)
-	$(APACHE_GRACEFUL)
-	touch $@
-
-.build/mapserver.timestamp: \
-		$(MAP_FILES) \
-		apache/mapserver.conf \
-		$(APACHE_CONF_DIR)/$(INSTANCE_ID).conf
-	$(PRERULE_CMD)
-	$(APACHE_GRACEFUL)
-	touch $@
-endif
-
-# instance id marker
-INSTANCE_ID_MARKER ?= .build/instanceid-$(INSTANCE_ID).timestamp
-$(INSTANCE_ID_MARKER):
-	$(PRERULE_CMD)
-	rm -f .build/instanceid-*.timestamp || true
-	touch $@
-
-# Upgrade
-UPGRADE_MAKE_FILE ?= $(INSTANCE_ID).mk
-ifeq ($(OPERATING_SYSTEM), WINDOWS)
-UPGRADE_ARGS ?= --windows
-else
-UPGRADE_ARGS ?=
-endif
-
-$(UPGRADE_MAKE_FILE):
-	@echo "The file '$(UPGRADE_MAKE_FILE)' cannot be found,"
-	@echo "this probably mean that you Makefile is not named '<instanceid>.mk'."
-	@echo "To solve this you can rename your Makefile or add in your Makefile"
-	@echo "\`UPGRADE_MAKE_FILE = <your_makefile_name>\`."
-	exit 1
-
-$(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX): .build/requirements.timestamp $(VENV_BIN)/alembic$(PYTHON_BIN_POSTFIX)
-
-.PHONY: upgrade
-upgrade: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/pip install c2cgeoportal==${VERSION}
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) ${VERSION}
-
-.PHONY: upgrade1
-upgrade1: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) ${VERSION} --step 1
-
-.PHONY: upgrade2
-upgrade2: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml alembic.ini alembic_static.ini $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) --step 2
-
-.PHONY: upgrade3
-upgrade3: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) --step 3
-
-.PHONY: upgrade4
-upgrade4: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) --step 4
-
-.PHONY: upgrade5
-upgrade5: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) ${VERSION} --step 5
-
-.PHONY: upgrade6
-upgrade6: $(VENV_BIN)/c2ctool$(PYTHON_BIN_POSTFIX) project.yaml $(UPGRADE_MAKE_FILE)
-	$(VENV_BIN)/c2ctool upgrade $(UPGRADE_ARGS) $(UPGRADE_MAKE_FILE) ${VERSION} --step 6
 
 # Docker
-ifeq ($(DOCKER), TRUE)
-.PHONY: push_docker
-push_docker:
-	docker push $(DOCKER_BASE)_print:$(DOCKER_TAG)
-	docker push $(DOCKER_BASE)_wsgi:$(DOCKER_TAG)
-	docker push $(DOCKER_BASE)_mapserver:$(DOCKER_TAG)
 
-.PHONY: testDB
-testDB: testDB/12-alembic.sql testDB/13-alembic-static.sql
+docker-compose-build.yaml: /build/requirements.timestamp
 
-testDB/12-alembic.sql: $(VENV_BIN)/alembic$(PYTHON_BIN_POSTFIX) alembic.ini CONST_alembic/main/versions/*.py
-	$(PRERULE_CMD)
-	$(VENV_BIN)/alembic -c alembic.ini upgrade --sql head > $@
+.PHONY: docker-build-config
+docker-build-config: $(shell docker-required --path .) \
+		$(PRINT_CONFIG_FILE) \
+		$(MAPCACHE_FILE) \
+		qgisserver/geomapfish.yaml
+	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) .
 
-testDB/13-alembic-static.sql: $(VENV_BIN)/alembic$(PYTHON_BIN_POSTFIX) alembic_static.ini CONST_alembic/static/versions/*.py
-	$(PRERULE_CMD)
-	$(VENV_BIN)/alembic -c alembic_static.ini upgrade --sql head > $@
+.PHONY: docker-build-geoportal
+docker-build-geoportal: $(shell docker-required --path geoportal) \
+		$(WEB_RULE) \
+		$(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).mo, $(LANGUAGES))) \
+		geoportal/config.yaml
+	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) geoportal
+ifdef CGXP_INTERFACES
+docker-build-geoportal: $(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).mo, $(LANGUAGES)))
 endif
 
+
+.PHONY: push-docker
+push-docker:
+	docker push $(DOCKER_BASE)-config:$(DOCKER_TAG)
+	docker push $(DOCKER_BASE)-geoportal:$(DOCKER_TAG)
+
+geoportal/alembic.yaml: $(ALEMBIC_YAML_FILE) vars.yaml CONST_vars.yaml
+	$(PRERULE_CMD)
+	c2c-template --vars $< --get-config /build/_alembic.yaml srid schema schema_static sqlalchemy.url cache
+	mv /build/_alembic.yaml $@
+
+testdb/11-schemas.sql: vars_alembic.yaml $(ALEMBIC_YAML_FILE) testdb/11-schemas.sql_mako vars.yaml CONST_vars.yaml
+	$(PRERULE_CMD)
+	rm --force testdb/11-schemas.sql.mako
+	ln -s 11-schemas.sql_mako testdb/11-schemas.sql.mako
+	c2c-template --vars $< --engine mako --runtime-environment-pattern '$${{{}}}' \
+		--files testdb/11-schemas.sql.mako
+	rm testdb/11-schemas.sql.mako
+
+testdb/12-alembic.sql: geoportal/alembic.ini geoportal/alembic.yaml $(shell ls -1 /opt/alembic/main/*.py)
+	$(PRERULE_CMD)
+	alembic --config=$< --name=main upgrade --sql head > $@
+
+testdb/13-alembic-static.sql: geoportal/alembic.ini geoportal/alembic.yaml $(shell ls -1 /opt/alembic/static/*.py)
+	$(PRERULE_CMD)
+	alembic --config=$< --name=static upgrade --sql head > $@
+
+.PHONY: docker-build-testdb
+docker-build-testdb: testdb/11-schemas.sql testdb/12-alembic.sql testdb/13-alembic-static.sql \
+		$(shell docker-required --path testdb)
+	docker build --tag=$(DOCKER_BASE)-testdb:$(DOCKER_TAG) testdb
+
+# Upgrade
+
+UPGRADE_ARGS += --use-makefile
+
+.PHONY: upgrade
+upgrade: project.yaml
+	c2cupgrade $(UPGRADE_ARGS)
+
+.PHONY: upgrade%
+upgrade%:
+	c2cupgrade $(UPGRADE_ARGS) --step $*
+
 # Tilecloud chain
-$(WMTSCAPABILITIES_FILE): tilegeneration/config.yaml .build/dev-requirements.timestamp
-	$(VENV_BIN)/generate_controller --capabilities
 
-# Version
-$(VENV_BIN)/gen-version$(PYTHON_BIN_POSTFIX): .build/requirements.timestamp
+$(MAPCACHE_FILE): $(TILEGENERATION_CONFIG_FILE)
+	$(PRERULE_CMD)
+	mkdir --parent $(dir $@)
+	generate_controller --config=$< --mapcache
 
-.PHONY: $(PACKAGE)/version.py
-$(PACKAGE)/version.py: $(VENV_BIN)/gen-version$(PYTHON_BIN_POSTFIX)
-	@echo "# Auto-generated file. Do not Edit!" > $@
-	@$(VENV_BIN)/gen-version >> $@
+$(WMTSCAPABILITIES_FILE): $(TILEGENERATION_CONFIG_FILE)
+	$(PRERULE_CMD)
+	mkdir --parent $(dir $@)
+	generate_controller --config=$< --capabilities
+
+# Secrets
+
+secrets.tar.bz2.gpg:
+	tar -jcf secrets.tar.bz2 $^
+	gpg --keyserver pool.sks-keyservers.net --keyserver-options timeout=20 --recv-keys $(GPG_KEYS)
+	rm -f $@
+	gpg --always-trust --output $@ --encrypt $(addprefix --recipient ,$(GPG_KEYS)) secrets.tar.bz2
+	rm secrets.tar.bz2
+
+.PHONY: secrets
+secrets:
+	gpg --output secrets.tar.bz2 --decrypt secrets.tar.bz2.gpg
+	tar -jxf secrets.tar.bz2
+	rm secrets.tar.bz2
+
+# QGIS
+
+.PHONY: edit-qgis-project
+edit-qgis-project:
+	IP=$$(ip addr show dev $$(route | grep default | awk '{print $$(NF)}' | head -1) | awk '$$1 ~ /^inet/ { sub("/.*", "", $$2); print $$2 }' | head -1); \
+	docker run -ti \
+		--add-host=db:$${IP} \
+		--volume=$${PWD}/qgisserver:/etc/qgisserver \
+		--volume=/tmp/.X11-unix:/tmp/.X11-unix \
+		--volume=$${HOME}:$${HOME} \
+		--env=DISPLAY=unix$${DISPLAY} \
+		--env=PGSERVICEFILE=$$HOME/.pg_service.conf \
+		--rm camptocamp/qgis-server:3.2 /usr/local/bin/start-client /etc/qgisserver/project.qgs

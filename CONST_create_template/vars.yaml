@@ -1,0 +1,320 @@
+---
+
+extends: CONST_vars.yaml
+
+vars:
+  # Database name
+  db: geomapfish
+
+  srid: 2169
+
+  # The application's default language. This is the language used by
+  # the application if no specific language is specified in the URLs.
+  # This also defines the language used for the text search.
+  default_locale_name: fr
+
+  # The set of languages supported by the applications.
+  available_locale_names:
+    - en
+    - fr
+    - de
+
+  default_interface: desktop
+
+  interfaces_config:
+    default: &interface
+      constants: &constants
+        defaultTheme: Demo
+        defaultLang: en
+        gmfSearchActions:
+          - action: add_theme
+            title: Add a theme
+          - action: add_group
+            title: Add a sub theme
+          - action: add_layer
+            title: Add a layer
+        gmfExternalOGCServers:
+          - name: Swiss Topo WMS
+            type: WMS
+            url: https://wms.geo.admin.ch/?lang=fr
+          - name: Swiss Topo WMTS
+            type: WMTS
+            url: https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
+          - name: ASIT VD
+            type: WMTS
+            url: https://ows.asitvd.ch/wmts/1.0.0/WMTSCapabilities.xml
+      fulltextsearch_params:
+        limit: 30
+        partitionlimit: 5
+      routes: &routes
+        authenticationBaseUrl: base
+        gmfLayersUrl: layers_root
+        gmfRasterUrl: raster
+        gmfProfileCsvUrl: profile.csv
+        gmfShortenerCreateUrl: shortener_create
+      static:
+        assetsBaseUrl: '{package}_geoportal:static-ngeo/'
+      wfs_permalink:
+        wfsTypes:
+          - featureType: fuel
+            label: display_name
+          - featureType: osm_scale
+            label: display_name
+        defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
+        defaultFeaturePrefix: feature
+    mobile:
+      <<: *interface
+      redirect_interface: desktop
+      constants:
+        <<: *constants
+        gmfSearchGroups: []
+    mobile_alt:
+      <<: *interface
+      constants:
+        <<: *constants
+        gmfTreeManagerModeFlush: false
+        # FIXME: gmfSearchActions: []
+    desktop:
+      <<: *interface
+      redirect_interface: mobile
+      do_redirect: True
+      constants:
+        <<: *constants
+        gmfSearchGroups: []
+      routes:
+        <<: *routes
+        gmfProfileJsonUrl: profile.json
+        gmfPrintUrl: printproxy
+    desktop_alt:
+      <<: *interface
+      constants:
+        <<: *constants
+        gmfPrintOptions: {scaleInput: true}
+        gmfTreeManagerModeFlush: false
+        ngeoRoutingOptions:
+          - backendUrl: https://routing.osm.ch/
+          - profiles:
+              - label: Car
+                profile: routed-car
+              - label: Bike (City)
+                profile: routed-bike
+              - label: Bike (Touring)
+                profile: routed-bike-touring
+              - label: Foot
+                profile: routed-foot
+              - label: Hiking
+                profile: routed-hiking
+        ngeoNominatimSearchDefaultParams:
+          - countrycodes: CH
+      routes:
+        <<: *routes
+        gmfProfileJsonUrl: profile.json
+        gmfPrintUrl: printproxy
+    oeview:
+      <<: *interface
+      # FIXME: gmfContextualdatacontentTemplateUrl
+      routes:
+        <<: *routes
+        gmfProfileJsonUrl: profile.json
+        gmfPrintUrl: printproxy
+    oeedit:
+      <<: *interface
+      # FIXME: gmfContextualdatacontentTemplateUrl
+      routes:
+        <<: *routes
+        gmfProfileJsonUrl: profile.json
+        gmfPrintUrl: printproxy
+
+  authtkt:
+    # One day
+    timeout: 86400
+
+  admin_interface:
+    # Default values for the admin interface's maps.
+    map_x: 740000
+    map_y: 5860000
+    map_zoom: 10
+
+  functionalities:
+    # Functionalities that are accessible to anonymous
+    # users.
+    anonymous:
+      print_template:
+        - 1 A4 portrait
+        - 2 A4 landscape
+        - 3 A3 portrait
+        - 4 A3 landscape
+      default_basemap: map
+
+      # The name of the theme to use as the default theme.
+      # The default theme is the theme loaded when no
+      # theme name is specified in the mobile app URL. If unset
+      # then there is no default theme, and no theme information
+      # will be passed to the config.js template.
+      default_theme:
+
+    # Functionalities that are accessible to authenticated
+    # users with no associated functionalities in the
+    # database.
+    registered: {}
+
+    # Functionalities that are made available to Mako templates.
+    available_in_templates:
+      - default_basemap
+
+  layers:
+    geometry_validation: True
+
+  # For base layers
+  tiles_url:
+    - '{web_protocol}://a.tiles.{host}{entry_point}tiles'
+    - '{web_protocol}://b.tiles.{host}{entry_point}tiles'
+    - '{web_protocol}://c.tiles.{host}{entry_point}tiles'
+
+  # The URL template used to generate the sub domain URL
+  # %(sub)s will be replaced by the sub domain value.
+  # subdomain_url_template: http://%(sub)s.{host}
+  # The used sub domain for the static resources
+  # Do not works with pyramid debug toolbar
+  # subdomains: [s1, s2, s3]
+
+  mapserverproxy:
+    default_ogc_server: source for image/png
+
+  fulltextsearch:
+    languages:
+      fr: french
+      en: english
+      de: german
+
+  # proxies:
+  #   http: http://someproxy
+
+  shortener:
+    # Used to send a confirmation email
+    email_from: info@example.com
+    email_subject: "Geoportal URL"
+    email_body: |
+      Hello,
+
+      Somebody sent you the following link:
+      {short_url}
+
+      With the message:
+      {message}
+
+      Sincerely yours
+      The GeoMapfish team
+
+  smtp:
+    # Used to send email from various feature
+    host: smtp.example.com
+    ssl: true
+    user: <username>
+    password: <password>
+    starttls: false
+
+  reset_password:
+    # Used to send a reset password email
+    email_from: info@camptocamp.com
+    email_subject: New password generated for GeoMapFish
+    email_body: |
+      Hello {user},
+
+      You have asked for an new password,
+      the newly generated password is: {password}
+
+      Sincerely yours
+      The GeoMapfish team
+
+  welcome_email:
+    # Used to send a welcome email for new user
+    email_from: info@camptocamp.com
+    email_subject: Welcome to GeoMapFish
+    email_body: |
+      Hello {user},
+
+      You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
+      Your user name is: {user}
+      Your password is: {password}
+
+      Sincerely yours
+      The GeoMapfish team
+
+  docker_services:
+    qgisserver:
+      environment:
+        GEOMAPFISH_OGCSERVER: <OGC server name>
+
+  # Checker configuration
+  checker:
+    fulltextsearch:
+      search: text to search
+    print:
+      spec:
+        layout: "1 A4 portrait"
+        outputFormat: "pdf"
+        attributes:
+          title: ""
+          comments: ""
+          datasource: []
+          map:
+            projection: "EPSG:21781"
+            dpi: 254
+            rotation: 0
+            center: [600000, 200000]
+            scale: 100000
+            longitudeFirst: true
+            layers: []
+          legend: {}
+
+  check_collector:
+    hosts: []
+    # - display: Child:
+    #   url: {web_protocol}://{host}/child/wsgi
+
+update_paths:
+  - admin_interface.available_functionalities
+  - admin_interface.available_metadata
+  - admin_interface.functionalities
+  - admin_interface.available_in_templates
+  - authorized_referers
+  - authtkt
+  - check_collector.disabled
+  - check_collector.hosts
+  - checker.fulltextsearch
+  - checker.lang
+  - checker.phantomjs
+  - checker.print
+  - checker.routes
+  - checker.themes
+  - docker_services.config.environment
+  - docker_services.db.environment
+  - docker_services.geoportal.environment
+  - docker_services.tilecloudchain.environment
+  - fulltextsearch
+  - functionalities.available_in_templates
+  - headers.index
+  - headers.api
+  - headers.profile
+  - headers.raster
+  - headers.echo
+  - headers.csvecho
+  - headers.exportgpxkml
+  - headers.error
+  - headers.themes
+  - headers.config
+  - headers.print
+  - headers.fulltextsearch
+  - headers.mapserver
+  - headers.tinyows
+  - headers.layers
+  - headers.shortener
+  - headers.login
+  - interfaces_theme
+  - shortener
+
+no_interpreted:
+  - reset_password.email_body
+  - shortener.email_body
+  - welcome_email.email_body
