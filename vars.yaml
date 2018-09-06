@@ -25,6 +25,112 @@ vars:
 
     srid: 2169
 
+    ########################################
+    # FIXME added for gmf 2.3
+    mapserverproxy:
+      default_ogc_server: Main PNG
+
+    welcome_email:
+      # Used to send a welcome email for new user
+      # You should be able to use {user} from smtp.user
+      email_from: info@camptocamp.com
+      email_subject: Welcome to GeoMapFish
+      email_body: |
+        Hello user,
+
+        You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
+        Your user name is: user
+        Your password is: password
+
+        Sincerely yours
+        The GeoMapfish team
+
+    reset_password:
+      # Used to send a reset password email
+      email_from: info@camptocamp.com
+      email_subject: New password generated for GeoMapFish
+      email_body: |
+        Hello user,
+
+        You have asked for an new password,
+        the newly generated password is: password
+
+        Sincerely yours
+        The GeoMapfish team
+
+    shortener:
+      # Used to send a confirmation email
+      email_from: info@camptocamp.com
+      email_subject: "Geoportal URL"
+      email_body: |
+        Hello,
+
+        Somebody sent you the following link:
+        short_url
+
+        With the message:
+        message
+
+        Sincerely yours
+        The GeoMapfish team
+      allowed_hosts:
+        - localhost
+
+    smtp:
+      host: echo 'no-set'
+      ssl: True
+      user: echo 'not-set'
+      password: echo 'not-set'
+
+    default_interface: desktop
+
+    interfaces_config:
+      default: &interface
+        constants: &constants
+          defaultTheme: Demo
+          defaultLang: en
+          gmfSearchGroups: [osm, district]
+          sentryUrl: https://eb74985290ea4f3c9ae6665db9252d72@sentry.camptocamp.com/14
+          gmfSearchActions:
+            - action: add_theme
+              title: Add a theme
+            - action: add_group
+              title: Add a sub theme
+            - action: add_layer
+              title: Add a layer
+          gmfExternalOGCServers:
+            - name: Swiss Topo WMS
+              type: WMS
+              url: https://wms.geo.admin.ch/?lang=fr
+            - name: Swiss Topo WMTS
+              type: WMTS
+              url: https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
+            - name: ASIT VD
+              type: WMTS
+              url: https://ows.asitvd.ch/wmts/1.0.0/WMTSCapabilities.xml
+        fulltextsearch_params:
+          limit: 30
+          partitionlimit: 5
+        routes: &routes
+          authenticationBaseUrl: base
+          fulltextsearchUrl: fulltextsearch
+          gmfLayersUrl: layers_root
+          gmfRasterUrl: raster
+          gmfProfileCsvUrl: profile.csv
+          gmfShortenerCreateUrl: shortener_create
+        static:
+          assetsBaseUrl: '{package}_geoportal:static-ngeo/'
+        wfs_permalink:
+          wfsTypes:
+            - featureType: fuel
+              label: display_name
+            - featureType: osm_scale
+              label: display_name
+          defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
+          defaultFeaturePrefix: feature
+
+    ########################################
+
     # Administration interface activation
     enable_admin_interface: true
 
@@ -84,44 +190,44 @@ vars:
 
     # Checker configuration
     checker:
-        default:
-            fulltextsearch: "bat"
-            print_spec: 
-                layout: A4 portrait
-                outputFormat: pdf
-                attributes:
-                    name: Exemple
-                    description: Carte exemple
-                    scale: 60000
-                    url: "http://g-o.lu/0mf4r"
-                    qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
-                    legend: {}
-                    scalebar:
-                      projection: EPSG:2169
-                    map:
-                      bbox: [668126, 6368118, 689717, 6389761]
-                      projection: EPSG:3857
-                      dpi: 128
-                      rotation: 0
-                      layers: []
-        all:
-            routes_disable: []
+        fulltextsearch:
+          search: bat
+        print:
+          spec: 
+            layout: A4 portrait
+            outputFormat: pdf
+            attributes:
+                name: Exemple
+                description: Carte exemple
+                scale: 60000
+                url: "http://g-o.lu/0mf4r"
+                qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
+                legend: {}
+                scalebar:
+                  projection: EPSG:2169
+                map:
+                  bbox: [668126, 6368118, 689717, 6389761]
+                  projection: EPSG:3857
+                  dpi: 128
+                  rotation: 0
+                  layers: []
 
-    check_collector:
-        disabled:
-        - checker_main
-        - checker_viewer
-        - checker_theme_errors # TODO configure and enable it
-        - checker_edit
-        - checker_edit_js
-        - checker_api
-        - checker_xapi
-        - checker_fts
-        - checker_pdf
-        - checker_wmscapabilities
-        - checker_wfscapabilities
-        # actually don't works for MapFish Print v3
-        - checker_printcapabilities
+    # Commented for 2.3 FIXME
+    #    check_collector:
+    #        disabled:
+    #        - checker_main
+    #        - checker_viewer
+    #        - checker_theme_errors # TODO configure and enable it
+    #        - checker_edit
+    #        - checker_edit_js
+    #        - checker_api
+    #        - checker_xapi
+    #        - checker_fts
+    #        - checker_pdf
+    #        - checker_wmscapabilities
+    #        - checker_wfscapabilities
+    #        # actually don't works for MapFish Print v3
+    #        - checker_printcapabilities
     https_proxy:
       unauthorized_ips: 10.0.0.0/8, 127.0.0.1
     authorized_ips:
@@ -165,15 +271,24 @@ vars:
         code_source: not_set
         code_destination: not_set
 
-# interpreted:
-#     node:
-#         vars:
-#         - closure_library_path
-#         cmd: ["node", "-e"]
+########################################
+# FIXME added for gmf 2.3
+interpreted:
+  bash:
+    - smtp.user
+    - smtp.password
+# node:
+#   vars:
+#    - closure_library_path
+#     cmd: ["node", "-e"]
+########################################
 
 update_paths:
 - checker.defaults
 - checker.all
 - checker.disabled
+- checker.fulltextsearch
+- checker.print
 - check_collector.hosts
 - admin_interface
+- shortener

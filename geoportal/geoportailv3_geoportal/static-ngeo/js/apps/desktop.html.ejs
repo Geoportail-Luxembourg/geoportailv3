@@ -1,28 +1,18 @@
-<%
-from json import dumps
-from c2cgeoportal.lib.cacheversion import get_cache_version
-%>
 <!DOCTYPE html>
-<html lang="{{desktopCtrl.lang}}" ng-app="geoportailv3" ng-controller="DesktopController as mainCtrl">
+<html lang="{{mainCtrl.lang}}" ng-app="Appdesktop" ng-controller="DesktopController as mainCtrl" ng-strict-di>
   <head>
-    % if "no_redirect" not in request.params:
-            <script>
-                if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-                    window.location = "${request.route_url('mobile', _query=dict(request.GET)) | n}";
-                }
-            </script>
-    % endif
-    
-    <title>{{'Desktop Application'|translate}}</title>
+    <title ng-bind-template="{{'Desktop Application'|translate}}">GeoMapFish</title>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <link rel="shortcut icon" href="${request.static_url('geoportailv3:static-ngeo/images/favicon.ico')}"/>
-    <link rel="stylesheet" href="${request.static_url('geoportailv3:static-ngeo/build/desktop.css')}" type="text/css">
+    <link rel="shortcut icon" href="<%=require("./image/favicon.ico")%>" />
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+    <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+    <% } %>
   </head>
   <body ng-class="{'gmf-profile-chart-active': !!profileChartActive}">
     <header>
-      <div>
-        <img src="${request.static_url('geoportailv3:static-ngeo/images/logo.png')}" />
+      <div class="logo">
+        <img src="<%=require("./image/logo.png")%>" />
         <span>by Camptocamp</span>
       </div>
     </header>
@@ -33,9 +23,14 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
             <a href class="btn btn-default btn-block btn-primary"
               data-toggle="dropdown">
               <span class="fa fa-grid"></span>
-              <span translate>Theme:</span>
-              <b ng-if="!mainCtrl.gmfThemeManager.themeName" translate>Loading...</b>
-              <b ng-if="mainCtrl.gmfThemeManager.themeName">{{mainCtrl.gmfThemeManager.themeName|translate}}</b>
+              <span ng-if="mainCtrl.gmfThemeManager.modeFlush">
+                <span translate>Theme:</span>
+                <b ng-if="mainCtrl.gmfThemeManager.isLoading()" translate>Loading...</b>
+                <b ng-if="!mainCtrl.gmfThemeManager.isLoading()">{{mainCtrl.gmfThemeManager.getThemeName()|translate}}</b>
+              </span>
+              <span ng-if="!mainCtrl.gmfThemeManager.modeFlush">
+                <b ng-if="!mainCtrl.gmfThemeManager.themeName" translate>Themes</b>
+              </span>
               <span class="caret"></span>
             </a>
             <gmf-themeselector class="dropdown-menu"
@@ -47,18 +42,16 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
         <div class="gmf-app-content">
           <gmf-layertree
             gmf-layertree-dimensions="mainCtrl.dimensions"
-            gmf-layertree-map="::mainCtrl.map"
-            gmf-layertree-openlinksinnewwindow="::true">
+            gmf-layertree-map="::mainCtrl.map">
           </gmf-layertree>
         </div>
       </div>
-      <div class="gmf-app-tools" ngeo-resizemap="mainCtrl.map"
-        ngeo-resizemap-state="mainCtrl.toolsActive">
+      <div class="gmf-app-tools" ngeo-resizemap="mainCtrl.map" ngeo-resizemap-state="mainCtrl.toolsActive">
         <div class="gmf-app-bar">
           <div ngeo-btn-group class="btn-group-vertical" ngeo-btn-group-active="mainCtrl.toolsActive">
             <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.loginActive"
               data-toggle="tooltip" data-placement="left" data-original-title="{{'Login'|translate}}">
-              <span class="fa fa-user"></span>
+              <span class="fa fa-user" ng-class="mainCtrl.gmfUser.username ? 'fa-user-times' : 'fa-user'"></span>
             </button>
             <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.printPanelActive"
               data-toggle="tooltip" data-placement="left" data-original-title="{{'Print'|translate}}">
@@ -67,6 +60,10 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
             <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.drawFeatureActive"
               data-toggle="tooltip" data-placement="left" data-original-title="{{'Draw & Measure'|translate}}">
               <span class="fa fa-paint-brush"></span>
+            </button>
+            <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.filterSelectorActive"
+              data-toggle="tooltip" data-placement="left" data-original-title="{{'Filter'|translate}}">
+              <span class="fa fa-filter"></span>
             </button>
             <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.editFeatureActive"
               data-toggle="tooltip" data-placement="left" data-original-title="{{'Editing'|translate}}"
@@ -77,6 +74,14 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
               data-toggle="tooltip" data-placement="left" data-original-title="{{'Profile'|translate}}">
               <span class="fa fa-area-chart"></span>
             </button>
+            <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.googleStreetViewActive"
+              data-toggle="tooltip" data-placement="left" data-original-title="{{'Street View'|translate}}">
+              <span class="fa fa-street-view"></span>
+            </button>
+            <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.importDataSourceActive"
+                    data-toggle="tooltip" data-placement="left" data-original-title="{{'Import Layer'|translate}}">
+              <span class="fa fa-upload"></span>
+            </button>
           </div>
           <br/>
           <br/>
@@ -86,7 +91,9 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
             </button>
           </span>
         </div>
-        <div class="gmf-app-tools-content container-fluid" ng-class="{'gmf-app-active': mainCtrl.toolsActive}">
+        <div
+            class="gmf-app-tools-content container-fluid"
+            ng-class="{'gmf-app-active': mainCtrl.toolsActive,'gmf-app-googlestreetview-active': mainCtrl.googleStreetViewActive }">
           <div ng-show="mainCtrl.loginActive" class="row">
             <div class="col-sm-12">
               <div class="gmf-app-tools-content-heading">
@@ -103,7 +110,7 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
                 <a class="btn close" ng-click="mainCtrl.printPanelActive = false">&times;</a>
               </div>
               <gmf-print
-                gmf-print-map="mainCtrl.map"
+                gmf-print-map="::mainCtrl.map"
                 gmf-print-active="mainCtrl.printActive">
               </gmf-print>
             </div>
@@ -119,6 +126,19 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
                   gmf-drawfeature-layer="::mainCtrl.drawFeatureLayer"
                   gmf-drawfeature-map="::mainCtrl.map">
               </gmf-drawfeature>
+            </div>
+          </div>
+          <div ng-show="mainCtrl.filterSelectorActive" class="row">
+            <div class="col-sm-12">
+              <div class="gmf-app-tools-content-heading">
+                {{'Filter'|translate}}
+                <a class="btn close" ng-click="mainCtrl.filterSelectorActive = false">&times;</a>
+              </div>
+              <gmf-filterselector
+                  active="mainCtrl.filterSelectorActive"
+                  map="mainCtrl.map"
+                  tool-group="mainCtrl.mapToolsGroup">
+              </gmf-filterselector>
             </div>
           </div>
           <div ng-show="mainCtrl.editFeatureActive" class="row">
@@ -165,25 +185,54 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
               </div>
             </div>
           </div>
+          <div ng-show="mainCtrl.googleStreetViewActive" class="row">
+            <div class="col-sm-12">
+              <div class="gmf-app-tools-content-heading">
+                {{'Street View'|translate}}
+                <a class="btn close" ng-click="mainCtrl.googleStreetViewActive = false">&times;</a>
+              </div>
+              <ngeo-googlestreetview
+                  active="mainCtrl.googleStreetViewActive"
+                  feature-style="mainCtrl.googleStreetViewStyle"
+                  map="mainCtrl.map">
+              </ngeo-googlestreetview>
+            </div>
+          </div>
+          <div ng-show="mainCtrl.importDataSourceActive" class="row">
+            <div class="col-sm-12">
+              <div class="gmf-app-tools-content-heading">
+                {{'Import Layer'|translate}}
+                <a class="btn close" ng-click="mainCtrl.importDataSourceActive = false">&times;</a>
+              </div>
+              <gmf-importdatasource
+                      map="mainCtrl.map">
+              </gmf-importdatasource>
+            </div>
+          </div>
         </div>
       </div>
       <div class="gmf-app-map-container" ng-class="{'gmf-app-infobar-active': mainCtrl.showInfobar}">
-        <gmf-search gmf-search-map="mainCtrl.map"
-          gmf-search-datasources="mainCtrl.searchDatasources"
-          gmf-search-coordinatesprojections="mainCtrl.searchCoordinatesProjections"
-          gmf-search-colorchooser="false"
-          gmf-search-placeholder="{{'Search…'|translate}}"
-          gmf-search-clearbutton="true">
+        <gmf-search gmf-search-map="::mainCtrl.map"
+          gmf-search-datasources="::mainCtrl.searchDatasources"
+          gmf-search-coordinatesprojections="::mainCtrl.searchCoordinatesProjections">
         </gmf-search>
+        <ngeo-displaywindow
+          content="mainCtrl.displaywindowContent"
+          desktop="true"
+          height="mainCtrl.displaywindowHeight"
+          open="mainCtrl.displaywindowOpen"
+          title="mainCtrl.displaywindowTitle"
+          url="mainCtrl.displaywindowUrl"
+          width="mainCtrl.displaywindowWidth"
+        ></ngeo-displaywindow>
         <div class="gmf-app-map-bottom-controls">
           <div class="gmf-backgroundlayerbutton btn-group dropup">
             <button
                 class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown">
-              <img src="${request.static_url('geoportailv3:static-ngeo/images/background-layer-button.png')}" />
+              <img src="<%=require('./image/background-layer-button.png')%>" alt="" />
             </button>
             <gmf-backgroundlayerselector
-              gmf-backgroundlayerselector-dimensions="::mainCtrl.dimensions"
               gmf-backgroundlayerselector-map="::mainCtrl.map"
               class="dropdown-menu">
             </gmf-backgroundlayerselector>
@@ -194,11 +243,16 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
             </gmf-disclaimer>
           </div>
           <gmf-displayquerywindow
+            gmf-displayquerywindow-draggable-containment="::mainCtrl.displaywindowDraggableContainment"
             gmf-displayquerywindow-featuresstyle="::mainCtrl.queryFeatureStyle"
             gmf-displayquerywindow-desktop="true">
           </gmf-displayquerywindow>
         </div>
-        <gmf-map class="gmf-map" gmf-map-map="mainCtrl.map"
+        <gmf-map
+          class="gmf-map"
+          gmf-map-map="mainCtrl.map"
+          gmf-map-manage-resize="mainCtrl.manageResize"
+          gmf-map-resize-transition="mainCtrl.resizeTransition"
           gmf-contextualdata=""
           gmf-contextualdata-map="::mainCtrl.map"
           gmf-contextualdata-projections="::[21781, 4326]"
@@ -235,8 +289,23 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
           </div>
         </div>
       </div>
-      <ngeo-modal ng-model="mainCtrl.modalShareShown" ngeo-modal-destroy-content-on-hide="true">
-        <gmf-share gmf-share-email="true"/>
+      <ngeo-modal ng-model="mainCtrl.modalShareShown">
+        <gmf-share ng-if="mainCtrl.modalShareShown" gmf-share-email="true"></gmf-share>
+      </ngeo-modal>
+      <ngeo-modal
+          ngeo-modal-closable="false"
+          ng-model="mainCtrl.userMustChangeItsPassword()"
+          ng-model-options="{getterSetter: true}">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            {{'You must change your password' | translate}}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <gmf-authentication
+            gmf-authentication-force-password-change="::true">
+          </gmf-authentication>
+        </div>
       </ngeo-modal>
     </main>
     <footer>
@@ -249,88 +318,11 @@ from c2cgeoportal.lib.cacheversion import get_cache_version
         ngeo-resizemap-state="profileChartActive">
       </gmf-profile>
     </footer>
-    % if debug:
-    <script>
-        window.CLOSURE_BASE_PATH = '';
-        window.CLOSURE_NO_DEPS = true;
-    </script>
-    <script src="${request.static_url('%s/jquery/dist/jquery.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/ngeo/third-party/jquery-ui/jquery-ui.min.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular/angular.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-animate/angular-animate.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-sanitize/angular-sanitize.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-touch/angular-touch.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/corejs-typeahead/dist/typeahead.bundle.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-ui-date/dist/date.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-float-thead/angular-floatThead.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/floatthead/dist/jquery.floatThead.min.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-ui-slider/src/slider.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/angular-dynamic-locale/dist/tmhDynamicLocale.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/d3/d3.min.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script src="${request.static_url('%s/file-saver/FileSaver.min.js' % request.registry.settings['node_modules_path'])}"></script>
-
-    <script src="${request.static_url('%s/closure/goog/base.js' % request.registry.settings['closure_library_path'])}"></script>
-    <script src="${request.route_url('deps.js')}"></script>
-    <script>
-        goog.require('geoportailv3_desktop');
-    </script>
-    <script src="${request.static_url('geoportailv3:static-ngeo/build/templatecache.js')}"></script>
-    <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % request.registry.settings['node_modules_path'])}"></script>
-    <script>
-        geoportailv3.componentsBaseTemplateUrl = '${request.static_url("geoportailv3:static-ngeo/components")}';
-        // geoportailv3.partialsBaseTemplateUrl = '${request.static_url("geoportailv3:static-ngeo/partials")}';
-        // geoportailv3.baseTemplateUrl = '${request.static_url("geoportailv3:static-ngeo/js")}';
-    </script>
-% else:
-    <script src="${request.static_url('geoportailv3:static-ngeo/build/desktop.js')}"></script>
-% endif
-    <script>
-      (function() {        var urlElements = window.location.pathname.split('/');
-
-
-        var gmfModule = angular.module('gmf');
-        gmfModule.constant('angularLocaleScript', '${request.static_url('geoportailv3:static-ngeo/build/')}angular-locale_{{locale}}.js');
-        var langUrls = {
-${ ',\n'.join([
-    "          '{lang}': '{url}'".format(
-        lang=lang,
-        url=request.static_url('geoportailv3:static-ngeo/build/{lang}.json'.format(lang=lang))
-    )
-    for lang in request.registry.settings["available_locale_names"]
-]) | n}
-        };
-
-        var module = angular.module('geoportailv3');
-        module.constant('defaultTheme', 'Demo');
-        module.constant('defaultLang', '${request.registry.settings["default_locale_name"]}');
-        module.constant('langUrls', langUrls);
-        module.constant('cacheVersion', '${get_cache_version()}');
-        module.constant('authenticationBaseUrl', '${request.route_url('base') | n}');
-        module.constant('fulltextsearchUrl', '${request.route_url('fulltextsearch', _query={"interface": "desktop", "partitionlimit": "5", "limit": "30"}) | n}');
-        module.constant('gmfRasterUrl', '${request.route_url('raster') | n}');
-        module.constant('gmfProfileJsonUrl', '${request.route_url('profile.json') | n}');
-        module.constant('gmfPrintUrl', '${request.route_url('printproxy') | n}');
-        module.constant('gmfTreeUrl', '${request.route_url('themes', _query={"interface": "desktop", "version": "2", "background": "background"}) | n}');
-        module.constant('gmfLayersUrl', '${request.route_url('layers_root', _query={}) | n}');
-        module.constant('gmfShortenerCreateUrl', '${request.route_url('shortener_create') | n}');
-        module.constant('gmfSearchGroups', ${dumps(fulltextsearch_groups) | n});
-        // Requires that the gmfSearchGroups is specified
-        module.constant('gmfSearchActions', [
-                {action: 'add_theme', title: 'Add a theme'},
-                {action: 'add_group', title: 'Add a sub theme'},
-                {action: 'add_layer', title: 'Add a layer'}
-        ]);
-        module.constant('gmfContextualdatacontentTemplateUrl', geoportailv3.componentsBaseTemplateUrl + '/contextualdata/contextualdata.html');
-        module.value('ngeoWfsPermalinkOptions', /** @type {ngeox.WfsPermalinkOptions} */ ({
-              url: '${request.route_url('mapserverproxy') | n}',
-              wfsTypes: ${dumps(wfs_types) | n},
-              defaultFeatureNS: 'http://mapserver.gis.umn.edu/mapserver',
-              defaultFeaturePrefix: 'feature'
-            }));
-      })();
-    </script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyCYnqxEQA5sz13sWSgMr97ejzvUeGP8gz4"></script>
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+    <% } %>
+    <script src="${htmlWebpackPlugin.options.vars.entry_point}dynamic.js?interface=desktop"></script>
   </body>
 </html>

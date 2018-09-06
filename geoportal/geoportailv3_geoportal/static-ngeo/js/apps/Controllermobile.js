@@ -1,33 +1,40 @@
 /**
+ * @module geoportailv3.mobile.Controller
+ */
+/**
  * Application entry point.
- *
- * This file defines the "geoportailv3_mobile" Closure namespace, which is be used as the
- * Closure entry point (see "closure_entry_point" in the "build.json" file).
  *
  * This file includes `goog.require`'s for all the components/directives used
  * by the HTML page and the controller to provide the configuration.
  */
-goog.provide('geoportailv3.MobileController');
-goog.provide('geoportailv3_mobile');
 
-goog.require('geoportailv3');
-goog.require('gmf.AbstractMobileController');
-/** @suppress {extraRequire} */
-goog.require('ngeo.proj.EPSG2056');
-/** @suppress {extraRequire} */
-goog.require('ngeo.proj.EPSG21781');
+import gmfControllersAbstractMobileController from 'gmf/controllers/AbstractMobileController.js';
+import 'gmf/controllers/mobile.less';
+import geoportailv3Base from '../geoportailv3module.js';
+import ngeoProjEPSG2056 from 'ngeo/proj/EPSG2056.js';
+import ngeoProjEPSG21781 from 'ngeo/proj/EPSG21781.js';
+import * as olBase from 'ol/index.js';
+import Raven from 'raven-js/src/raven.js';
+import RavenPluginsAngular from 'raven-js/plugins/angular.js';
 
+if (!window.requestAnimationFrame) {
+  alert('Your browser is not supported, please update it or use another one. You will be redirected.\n\n'
+    + 'Votre navigateur n\'est pas supporté, veuillez le mettre à jour ou en utiliser un autre. Vous allez être redirigé.\n\n'
+    + 'Ihr Browser wird nicht unterstützt, bitte aktualisieren Sie ihn oder verwenden Sie einen anderen. Sie werden weitergeleitet.');
+  window.location = 'http://geomapfish.org/';
+}
 
 /**
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$injector} $injector Main injector.
  * @constructor
- * @extends {gmf.AbstractMobileController}
+ * @extends {gmf.controllers.AbstractMobileController}
  * @ngInject
  * @export
  */
-geoportailv3.MobileController = function($scope, $injector) {
-  gmf.AbstractMobileController.call(this, {
+const exports = function($scope, $injector) {
+  gmfControllersAbstractMobileController.call(this, {
+    autorotate: false,
     srid: 21781,
     mapViewConfig: {
       center: [632464, 185457],
@@ -37,22 +44,36 @@ geoportailv3.MobileController = function($scope, $injector) {
   }, $scope, $injector);
 
   /**
-   * @type {Object.<string, gmf.MobileMeasurePointController.LayerConfig>}
+   * @type {Array.<gmf.mobile.measure.pointComponent.LayerConfig>}
    * @export
    */
-  this.elevationLayersConfig = {
-    'aster': {unit: 'm'},
-    'srtm': {unit: 'm'}
-  };
+  this.elevationLayersConfig = [
+    {name: 'aster', unit: 'm'},
+    {name: 'srtm', unit: 'm'}
+  ];
 
   /**
    * @type {Array.<string>}
    * @export
    */
-  this.searchCoordinatesProjections = ['EPSG:21781', 'EPSG:2056', 'EPSG:4326'];
+  this.searchCoordinatesProjections = [ngeoProjEPSG21781, ngeoProjEPSG2056, 'EPSG:4326'];
 
+  if ($injector.has('sentryUrl')) {
+    const options = $injector.has('sentryOptions') ? $injector.get('sentryOptions') : undefined;
+    const raven = new Raven();
+    raven.config($injector.get('sentryUrl'), options)
+      .addPlugin(RavenPluginsAngular)
+      .install();
+  }
 };
-ol.inherits(geoportailv3.MobileController, gmf.AbstractMobileController);
 
+olBase.inherits(exports, gmfControllersAbstractMobileController);
 
-geoportailv3.module.controller('MobileController', geoportailv3.MobileController);
+exports.module = angular.module('Appmobile', [
+  geoportailv3Base.module.name,
+  gmfControllersAbstractMobileController.module.name,
+]);
+
+exports.module.controller('MobileController', exports);
+
+export default exports;
