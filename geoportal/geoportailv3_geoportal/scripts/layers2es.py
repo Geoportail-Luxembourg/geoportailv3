@@ -41,7 +41,8 @@ from argparse import ArgumentParser
 from pyramid.paster import get_app, bootstrap
 from pyramid.i18n import TranslationStringFactory, make_localizer
 from pyramid.interfaces import ITranslationDirectories
-from geoportailv3.lib.search import get_elasticsearch, get_index, ensure_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, \
+    ensure_index
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
@@ -148,7 +149,8 @@ class Import:
             exluded_themes = exluded_themes_string.split(",")
 
         # must be done only once we have loaded the project config
-        from c2cgeoportal.models import DBSession, Interface, Theme, Role
+        from c2cgeoportal_commons.models import DBSession
+        from c2cgeoportal_commons.models.main import Interface, Theme, Role
 
         self.session = DBSession()
 
@@ -279,7 +281,7 @@ class Import:
         return self._add_group(group, interface, self.options.folders, role)
 
     def _add_group(self, group, interface, export, role):
-        from c2cgeoportal.models import LayerGroup
+        from c2cgeoportal_commons.models.main import LayerGroup
 
         fill = False
         if hasattr(group, 'children'):
@@ -307,7 +309,7 @@ class Import:
         return False
 
     def _add_layer(self, layer, interface, role):
-        from c2cgeoportal.models import LayerV1
+        from c2cgeoportal_commons.models.main import LayerV1
 
         if isinstance(layer, LayerV1):
             return False

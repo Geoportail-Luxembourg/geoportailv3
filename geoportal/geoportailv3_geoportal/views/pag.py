@@ -7,12 +7,12 @@ import owncloud
 import shutil
 import os
 import smtplib
-import urllib2
+import urllib.request
 from email.mime.text import MIMEText
 import time
 import sys
-from geoportailv3.portail import PortailSession
-from geoportailv3.portail import PagDownload
+from geoportailv3_geoportal.portail import PagDownload
+from c2cgeoportal_commons.models import DBSession
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class Pag(object):
                  num,
                  self.config["pag"]["fme_token"])
         try:
-            f = urllib2.urlopen(url, None, 1800)
+            f = urllib.request.urlopen(url, None, 1800)
             data = f
             self.filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
             with open(self.filename, 'wb') as fp:
@@ -89,11 +89,11 @@ class Pag(object):
         pag_download.objectids = objectids
         pag_download.download_link = download_link
         try:
-            PortailSession.add(pag_download)
-            PortailSession.commit()
+            DBSession.add(pag_download)
+            DBSession.commit()
         except Exception as e:
             log.exception(e)
-            PortailSession.rollback()
+            DBSession.rollback()
 
     @view_config(route_name='pag_files')
     def pag_files(self, ):
@@ -104,9 +104,9 @@ class Pag(object):
             folder = "PartieGraphique"
         url = "%s/%s/%s" % (self.config["pag"]["file_server"], folder, _file)
         try:
-            req = urllib2.Request(url)
+            req = urllib.request.Request(url)
             req.add_header('Cache-Control', 'max-age=0')
-            f = urllib2.urlopen(req, None, 15)
+            f = urllib.request.urlopen(req, None, 15)
             data = f.read()
         except:
             log.error(sys.exc_info()[0])

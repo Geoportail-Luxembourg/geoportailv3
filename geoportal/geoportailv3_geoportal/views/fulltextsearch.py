@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from geojson import Feature, FeatureCollection
 from shapely.geometry import shape
-from geoportailv3.lib.search import get_elasticsearch, get_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index
 
 
 class FullTextSearchView(object):

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-import urllib2
 import re
 
-from urllib import urlencode
+import urllib.request
+from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
-from geoportailv3.models import LuxGetfeatureDefinition
-from geoportailv3.models import LuxLayerInternalWMS, LuxDownloadUrl
+from geoportailv3_geoportal.models import LuxGetfeatureDefinition
+from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxDownloadUrl
 from mako.template import Template
 from pyramid.httpexceptions import HTTPBadRequest, HTTPBadGateway
 from pyramid.i18n import get_localizer, TranslationStringFactory
@@ -17,7 +17,8 @@ from os.path import isfile
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
-from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
+from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
 from shapely.geometry import MultiLineString, mapping, shape
 
 log = logging.getLogger(__name__)
@@ -61,12 +62,12 @@ class Getfeatureinfo(object):
             return HTTPBadRequest("Attribute is not a valid url")
         timeout = 15
         try:
-            f = urllib2.urlopen(url, None, timeout)
+            f = urllib.request.urlopen(url, None, timeout)
             data = f.read()
         except:
             try:
                 # Retry to get the result
-                f = urllib2.urlopen(url, None, timeout)
+                f = urllib.request.urlopen(url, None, timeout)
                 data = f.read()
             except Exception as e:
                 log.exception(e)
@@ -90,7 +91,7 @@ class Getfeatureinfo(object):
 
         if (luxgetfeaturedefinitions[0].template is not None and
                 len(luxgetfeaturedefinitions[0].template) > 0):
-            f = urllib2.urlopen(luxgetfeaturedefinitions[0].template, None, 15)
+            f = urllib.request.urlopen(luxgetfeaturedefinitions[0].template, None, 15)
             return Response(f.read())
 
         return HTTPBadRequest()
@@ -430,7 +431,7 @@ class Getfeatureinfo(object):
                    r['remote_template']:
                     data = ""
                     try:
-                        url_remote = urllib2.urlopen(
+                        url_remote = urllib.request.urlopen(
                             l_template + "&render=apiv3", None, 15)
                         data = url_remote.read()
                     except Exception as e:
@@ -694,8 +695,8 @@ class Getfeatureinfo(object):
 
     def get_info_from_pf(self, layer_id, rows, measurements=False,
                          attributes_to_remove=""):
-        import geoportailv3.PF
-        pf = geoportailv3.PF.PF()
+        import geoportailv3_geoportal.PF
+        pf = geoportailv3_geoportal.PF.PF()
         features = []
         for row in rows:
             geometry = geojson_loads(row['st_asgeojson'])
@@ -798,7 +799,7 @@ class Getfeatureinfo(object):
 
         content = ""
         try:
-            result = urllib2.urlopen(query, None, 15)
+            result = urllib.request.urlopen(query, None, 15)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -915,7 +916,7 @@ class Getfeatureinfo(object):
             separator = '&'
         query = '%s%s%s' % (url, separator, urlencode(body))
         try:
-            result = urllib2.urlopen(query, None, 15)
+            result = urllib.request.urlopen(query, None, 15)
             content = result.read()
         except Exception as e:
             log.exception(e)
@@ -1006,7 +1007,7 @@ class Getfeatureinfo(object):
             tokenurl = baseurl.split('rest/')[0] +\
                 'tokens?username=%s&password=%s'\
                 % (user_password[0], user_password[1])
-            token = urllib2.urlopen(tokenurl, None, 15).read()
+            token = urllib.request.urlopen(tokenurl, None, 15).read()
             return baseurl + "token=" + token
         except Exception as e:
             log.exception(e)

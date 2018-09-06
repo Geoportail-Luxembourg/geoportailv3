@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Unicode, Integer
-from sqlalchemy.ext.declarative import declarative_base
 from geoalchemy2 import Geometry
-
-Base = declarative_base()
+from c2cgeoportal_commons.models import Base
 
 
 class Parcel(Base):

@@ -20,9 +20,9 @@ TILECLOUD_CHAIN = FALSE
 DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap
-CONFIG_VARS += sqlalchemy_engines
+CONFIG_VARS += dbsessions
 CONFIG_VARS += proxy_wms_url
-CONFIG_VARS += turbomail
+CONFIG_VARS += mailer
 CONFIG_VARS += authorized_ips
 CONFIG_VARS += pag
 CONFIG_VARS += casipo

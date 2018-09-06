@@ -1,4 +1,4 @@
-extends: vars_geoportailv3.yaml
+extends: vars.yaml
 
 vars:
   modwsgi_user: apache

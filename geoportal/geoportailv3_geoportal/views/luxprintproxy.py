@@ -49,9 +49,9 @@ import json
 import logging
 import re
 import random
-import urllib
-import urllib2
-from cStringIO import StringIO
+import urllib.parse
+import urllib.request
+from io import StringIO
 from datetime import datetime
 
 from pyramid.i18n import get_localizer, TranslationStringFactory
@@ -62,12 +62,13 @@ from pyramid.httpexceptions import HTTPNotFound
 from PyPDF2 import PdfFileMerger
 import weasyprint
 
-from c2cgeoportal.models import RestrictionArea, Role, Layer
-from c2cgeoportal.views.printproxy import PrintProxy
-from c2cgeoportal.lib.caching import NO_CACHE, get_region
+from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_geoportal.views.printproxy import PrintProxy
+from c2cgeoportal_geoportal.lib.caching import NO_CACHE, get_region
 
-from geoportailv3.models import DBSession, LuxPrintJob
-from geoportailv3.models import LuxPrintServers, LuxLayerInternalWMS
+from geoportailv3_geoportal.models import LuxPrintJob, LuxPrintServers, \
+    LuxLayerInternalWMS
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -81,13 +82,13 @@ class LuxPrintProxy(PrintProxy):
         token = self.config["authtkt_secret"]
         print_servers = DBSession.query(LuxPrintServers).all()
         print_urls = [print_server.url for print_server in print_servers]
-        urllib2.getproxies = lambda: {}
+        urllib.request.getproxies = lambda: {}
         valid_print_urls = []
         if print_urls is not None and len(print_urls) > 0:
             for url in print_urls:
                 try:
                     test_url = url.replace("/print/geoportailv3", "")
-                    urllib2.urlopen(test_url)
+                    urllib.request.urlopen(test_url)
                     valid_print_urls.append(url)
                 except Exception as e:
                     log.exception(e)
@@ -122,8 +123,8 @@ class LuxPrintProxy(PrintProxy):
                        not self._is_authorized(internal_wms):
                             return HTTPUnauthorized()
         if "longUrl" in spec["attributes"]:
-            opener = urllib2.build_opener(urllib2.HTTPHandler())
-            data = urllib.urlencode({"url": spec["attributes"]["longUrl"]})
+            opener = urllib.request.build_opener(urllib.request.HTTPHandler())
+            data = urllib.parse.urlencode({"url": spec["attributes"]["longUrl"]})
             content = opener.open(
                 "https://map.geoportail.lu/wsgi/short/create",
                 data=data).read()
@@ -281,8 +282,8 @@ class LuxPrintProxy(PrintProxy):
                     try:
                         merger = PdfFileMerger(strict=False)
                         if pageUrl['type'].lower() == 'pdf':
-                            opener = urllib2.build_opener(
-                                urllib2.HTTPHandler())
+                            opener = urllib.request.build_opener(
+                                urllib.request.HTTPHandler())
                             pdf_content = opener.open(pageUrl['url']).read()
                             merger.append(StringIO(pdf_content))
                         else:

@@ -6,7 +6,7 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3.geocode import Address, WKPOI, Neighbourhood, Parcel
+from geoportailv3_geoportal.geocode import Address, WKPOI, Neighbourhood, Parcel
 from shapely.wkt import loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape

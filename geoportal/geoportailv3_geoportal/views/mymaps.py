@@ -2,8 +2,7 @@
 import os
 import uuid
 import imghdr
-import ldap
-
+import ldap3 as ldap
 
 import geojson
 
@@ -12,25 +11,25 @@ try:
 except:
     from simplejson import dumps as json_dumps
 
-from turbomail import Message
-from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images,\
+from marrow.mailer import Message
+from geoportailv3_geoportal.mymaps import Category, Map, Feature, Role, Symbols, Images,\
     RoleCategories
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
-from pyramid_ldap import get_ldap_connector
+from pyramid_ldap3 import get_ldap_connector
 from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
-from cStringIO import StringIO
+from io import StringIO
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
 from shapely.wkt import loads
 from shapely.ops import linemerge
 from shapely.geometry import Point, LineString
-from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
+from c2cgeoportal_geoportal.lib.caching import set_common_headers, NO_CACHE
 
 import logging
-import urllib2
+import urllib.request
 import json
 
 log = logging.getLogger(__name__)
@@ -64,7 +63,7 @@ class Mymaps(object):
         if not os.path.exists(temp_file_path):
             url = self.request.static_url(
                 'geoportailv3:static/images/arrow.png')
-            orig_arrow = urllib2.urlopen(url, None, 15)
+            orig_arrow = urllib.request.urlopen(url, None, 15)
             content = orig_arrow.read()
             image = Image.open(StringIO(content))
 
@@ -236,7 +235,7 @@ class Mymaps(object):
             criteria + "&transport_mode=" + transport_mode + "&waypoints=" +\
             waypoints
         timeout = 15
-        f = urllib2.urlopen(url, None, timeout)
+        f = urllib.request.urlopen(url, None, timeout)
         data = f.read()
         headers = {"Content-Type": f.info()['Content-Type']}
         return Response(data, headers=headers)
@@ -1360,29 +1359,29 @@ class Mymaps(object):
             encode('ASCII', 'ignore').replace(' ', '_')
 
     def get_user_info(self, user):
-        connector = get_ldap_connector(self.request)
-        cm = connector.manager
-        with cm.connection() as conn:
-            dn_list = conn.search_s('ou=portail,dc=act,dc=lu',
-                                    ldap.SCOPE_SUBTREE, '(login=%s)' % user)
-            if len(dn_list) != 1:
-                return HTTPInternalServerError()
+         connector = get_ldap_connector(self.request)
+         cm = connector.manager
+         with cm.connection() as conn:
+             dn_list = conn.search_s('ou=portail,dc=act,dc=lu',
+                                     ldap.SUBTREE, '(login=%s)' % user)
+             if len(dn_list) != 1:
+                 return HTTPInternalServerError()
 
-            dn = dn_list[0][0]
-            attributes = conn.search_s(dn,
-                                       ldap.SCOPE_BASE,
-                                       '(objectClass=*)',
-                                       ['mail'])
-            if len(attributes) == 0 or len(attributes[0]) != 2:
-                return HTTPInternalServerError()
-            attributes = attributes[0][1]
-            if 'mail' not in attributes or len(attributes['mail']) == 0:
-                return HTTPNotFound()
-            mail_address = attributes['mail'][0]
-            if not mail_address:
-                return HTTPNotFound()
+             dn = dn_list[0][0]
+             attributes = conn.search_s(dn,
+                                        ldap.SCOPE_BASE,
+                                        '(objectClass=*)',
+                                        ['mail'])
+             if len(attributes) == 0 or len(attributes[0]) != 2:
+                 return HTTPInternalServerError()
+             attributes = attributes[0][1]
+             if 'mail' not in attributes or len(attributes['mail']) == 0:
+                 return HTTPNotFound()
+             mail_address = attributes['mail'][0]
+             if not mail_address:
+                 return HTTPNotFound()
 
-            return (user, mail_address)
+             return (user, mail_address)
 
     def notify_at_save(self, map, username, id, name, category):
 
@@ -1403,6 +1402,6 @@ class Mymaps(object):
                 data = {'email_to': admin_email,
                         'subscriber_content': email_content,
                         'email_cc': email_cc}
-                req = urllib2.Request(url)
+                req = urllib.request.Request(url)
                 req.add_header('Content-Type', 'application/json')
-                urllib2.urlopen(req, json.dumps(data))
+                urllib.request.urlopen(req, json.dumps(data))

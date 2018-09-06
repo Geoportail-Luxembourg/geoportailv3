@@ -5,8 +5,8 @@
 
 import geojson
 import logging
-import urllib2
-from urllib import quote as urlquote
+import urllib.request
+from urllib.parse import quote as urlquote
 
 try:
     from json import loads as json_loads
@@ -81,7 +81,7 @@ class MapquestRouter:
         for type in self.avoid:
             request_url = request_url + "&avoids=%s"\
                 % (urlquote(self.__lu_avoid(type)))
-        res = json_loads(urllib2.urlopen(request_url).read())
+        res = json_loads(urllib.request.urlopen(request_url).read())
         return res
 
     def __get_route(self):

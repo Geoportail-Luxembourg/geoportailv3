@@ -3,14 +3,13 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPUnauthorized
-from geoportailv3.portail import MesurageDownload, SketchDownload
-from geoportailv3.portail import PortailSession
-from geoportailv3.models import LuxDownloadUrl, LuxMeasurementDirectory
-from c2cgeoportal.models import DBSession
+from geoportailv3_geoportal.portail import MesurageDownload, SketchDownload
+from geoportailv3_geoportal.models import LuxDownloadUrl, LuxMeasurementDirectory
+from c2cgeoportal_commons.models import DBSession
 import logging
 import mimetypes
-import geoportailv3.PF
-import urllib2
+import geoportailv3_geoportal.PF
+import urllib.request
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +32,7 @@ class Download(object):
                 return HTTPUnauthorized()
             url = entry.url + filename
             try:
-                data = urllib2.urlopen(url, None, 1800)
+                data = urllib.request.urlopen(url, None, 1800)
             except Exception as e:
                 log.exception(e)
                 data = None
@@ -94,7 +93,7 @@ class Download(object):
         if filename is None or townname is None:
             return HTTPBadRequest("parameters are missing")
 
-        pf = geoportailv3.PF.PF()
+        pf = geoportailv3_geoportal.PF.PF()
 
         if not pf._is_download_authorized(
                 townname, self.request.user, self.request.referer):
@@ -123,8 +122,8 @@ class Download(object):
         sketch_download.filename = filename
         sketch_download.directory = town
 
-        PortailSession.add(sketch_download)
-        PortailSession.commit()
+        DBSession.add(sketch_download)
+        DBSession.commit()
 
     def _log_download_measurement_stats(self, filename, town, parcel):
         mesurage_download = MesurageDownload()
@@ -138,5 +137,5 @@ class Download(object):
         mesurage_download.commune = town
         mesurage_download.parcelle = parcel
 
-        PortailSession.add(mesurage_download)
-        PortailSession.commit()
+        DBSession.add(mesurage_download)
+        DBSession.commit()

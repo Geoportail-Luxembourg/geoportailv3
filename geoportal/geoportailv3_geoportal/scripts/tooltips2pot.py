@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import codecs
-import sqlahelper
 import traceback
 import sys
-import urllib2
+import urllib.request
+import urllib.parse
 import re
 from os import path
 from pyramid.paster import bootstrap
-from urllib import urlencode
 from geojson import loads as geojson_loads
+from c2cgeoportal_commons.models import DBSession
 
 
 def _get_external_data(url, bbox=None, layer=None):
@@ -32,10 +32,10 @@ def _get_external_data(url, bbox=None, layer=None):
     separator = "?"
     if url.find('?'):
         separator = "&"
-    query = '%s%s%s' % (url, separator, urlencode(body))
+    query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
 
     try:
-        result = urllib2.urlopen(query, None, 15)
+        result = urllib.request.urlopen(query, None, 15)
         content = result.read()
     except:
         traceback.print_exc(file=sys.stdout)
@@ -71,7 +71,7 @@ def remove_attributes(attributes, attributes_to_remove,
 
 def main():  # pragma: nocover
     env = bootstrap("development.ini")
-    from geoportailv3.models import LuxGetfeatureDefinition
+    from geoportailv3_geoportal.models import LuxGetfeatureDefinition
 
     package = env["registry"].settings["package"]
     directory = "%s/locale/" % package
@@ -88,8 +88,7 @@ def main():  # pragma: nocover
         '''
     )
 
-    dbsession = sqlahelper.get_session()
-    results = dbsession.query(LuxGetfeatureDefinition).\
+    results = DBSession.query(LuxGetfeatureDefinition).\
         filter(LuxGetfeatureDefinition.remote_template == False).filter(
             LuxGetfeatureDefinition.template.in_
             (['default.html', 'default_table.html'])).all()  # noqa
@@ -100,10 +99,10 @@ def main():  # pragma: nocover
         first_row = None
         if result.query is not None and len(result.query) > 0:
             if "SELECT" in result.query.upper():
-                first_row = engine.execute(result.query).first()
+                first_row = DBSession.execute(result.query).first()
             else:
                 first_row =\
-                    engine.execute("SELECT * FROM " + result.query).first()
+                    DBSession.execute("SELECT * FROM " + result.query).first()
         if result.rest_url is not None and len(result.rest_url) > 0:
             first_row = _get_external_data(
                 result.rest_url,

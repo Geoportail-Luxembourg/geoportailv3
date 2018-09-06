@@ -3,13 +3,13 @@
 # reviewed by koje
 # reviewed by mire
 
-from geoportailv3.mapquestrouter import MapquestRouter
-from geoportailv3.graphhopperrouter import GraphhopperRouter
+from geoportailv3_geoportal.mapquestrouter import MapquestRouter
+from geoportailv3_geoportal.graphhopperrouter import GraphhopperRouter
 from pyramid.view import view_config
-from urllib2 import HTTPError
+from urllib.error import HTTPError
 from pyramid.httpexceptions import HTTPBadRequest
-from geoportailv3.portail import PortailSession
-from geoportailv3.portail import RoutingStats
+from geoportailv3_geoportal.portail import RoutingStats
+from c2cgeoportal_commons.models import DBSession
 
 import logging
 log = logging.getLogger(__name__)
@@ -75,11 +75,11 @@ class RouterController(object):
             routing_stats = RoutingStats()
             routing_stats.transport_mode = transport_mode
             routing_stats.transport_criteria = criteria
-            PortailSession.add(routing_stats)
-            PortailSession.commit()
+            DBSession.add(routing_stats)
+            DBSession.commit()
         except Exception as e:
             log.exception(e)
-            PortailSession.rollback()
+            DBSession.rollback()
 
         if routing_success:
             json = {

@@ -1,14 +1,14 @@
 from ipaddr import IPv4Network
 from pyramid.view import view_config
-from geoportailv3.models import LuxLayerInternalWMS, LuxPredefinedWms
-from c2cgeoportal.models import DBSession, RestrictionArea, Role, Layer
+from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
+from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
-from urlparse import urlparse
 import logging
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
 import socket
 import base64
 
@@ -40,7 +40,7 @@ class Wms(object):
         return False
 
     def _check_ip_for_httpsproxy(self, url):
-        parsedurl = urlparse(url)
+        parsedurl = urllib.parse.urlparse(url)
         hostname = parsedurl.netloc.split(":")
 
         remote_ip = IPv4Network(socket.gethostbyname(hostname[0])).ip
@@ -117,12 +117,12 @@ class Wms(object):
 
             if param.lower() != 'layers':
                 param_wms = param_wms + param + "=" + \
-                    urllib2.quote(
+                    urllib.parse.quote(
                         self.request.params.get(param, '').encode('utf-8')
                         ) + "&"
             else:
                 param_wms = param_wms + param + "=" + \
-                    urllib2.quote(internal_wms.layers.encode('utf-8')) + "&"
+                    urllib.parse.quote(internal_wms.layers.encode('utf-8')) + "&"
 
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
@@ -146,16 +146,16 @@ class Wms(object):
 
         url = remote_host + separator + param_wms[:-1]
         timeout = 15
-        url_request = urllib2.Request(url)
+        url_request = urllib.request.Request(url)
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
         try:
-            f = urllib2.urlopen(url_request, None, timeout)
+            f = urllib.request.urlopen(url_request, None, timeout)
             data = f.read()
         except:
             try:
                 # Retry to get the result
-                f = urllib2.urlopen(url_request, None, timeout)
+                f = urllib.request.urlopen(url_request, None, timeout)
                 data = f.read()
             except Exception as e:
                 log.exception(e)
@@ -190,7 +190,7 @@ class Wms(object):
         for key in self.request.params.keys():
             if not (key == "url"):
                 params_dict[key] = self.request.params.get(key)
-        params = urllib.urlencode(params_dict)
+        params = urllib.parse.urlencode(params_dict)
         separator = "?"
         if "?" in url:
             separator = "&"
@@ -198,12 +198,12 @@ class Wms(object):
 
         timeout = 15
         try:
-            f = urllib2.urlopen(url, None, timeout)
+            f = urllib.request.urlopen(url, None, timeout)
             data = f.read()
         except:
             try:
                 # Retry to get the result
-                f = urllib2.urlopen(url, None, timeout)
+                f = urllib.request.urlopen(url, None, timeout)
                 data = f.read()
             except Exception as e:
                 log.exception(e)

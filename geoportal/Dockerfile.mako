@@ -27,7 +27,7 @@ RUN mv webpack.apps.js webpack.apps.js.tmpl && \
 
 ARG GIT_HASH
 
-RUN pip install --disable-pip-version-check --no-cache-dir --no-deps --editable=/app/ && \
+RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python -m compileall -q /app/${package}_geoportal -x /app/${package}_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
 

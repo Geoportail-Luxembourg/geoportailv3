@@ -1,9 +1,9 @@
 ﻿# -*- coding: utf-8 -*-
 from suds.client import Client
-from geoportailv3.models import LuxMeasurementLoginCommune
-from geoportailv3.models import LuxMeasurementDirectory
+from geoportailv3_geoportal.models import LuxMeasurementLoginCommune
+from geoportailv3_geoportal.models import LuxMeasurementDirectory
+from c2cgeoportal_commons.models import DBSession
 from sqlalchemy import func
-import sqlahelper
 import logging
 import os
 import sys
@@ -25,7 +25,6 @@ class PF():
             Client('https://titan.etat.lu/xxpfoWS/Measure' +
                    'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
         self.log = logging.getLogger(__name__)
-        self.dbsession = sqlahelper.get_session()
 
     def get_client(self):
         return self.client
@@ -117,7 +116,7 @@ class PF():
             return {"town_info": town_info,
                     "files": files_list}
         except:
-            print sys.exc_info()
+            print(sys.exc_info())
             return {}
 
     def _add_char_before(self, max_length, the_string):
@@ -128,7 +127,7 @@ class PF():
 
     # retourne l'information sur une commune
     def _get_town_by_code(self, town_code):
-        cur_record = self.dbsession.query(LuxMeasurementDirectory).\
+        cur_record = DBSession.query(LuxMeasurementDirectory).\
             filter(LuxMeasurementDirectory.town_code == town_code).first()
         if cur_record is not None:
             return {
@@ -139,7 +138,7 @@ class PF():
         return None
 
     def _get_town_by_name(self, town_name):
-        cur_record = self.dbsession.query(LuxMeasurementDirectory).\
+        cur_record = DBSession.query(LuxMeasurementDirectory).\
             filter(LuxMeasurementDirectory.name == town_name).first()
         if cur_record is not None:
             return {
@@ -160,7 +159,7 @@ class PF():
         if (town_info is None or user is None or user.username is None):
             return False
 
-        if (self.dbsession.query(LuxMeasurementLoginCommune).
+        if (DBSession.query(LuxMeasurementLoginCommune).
                 filter(func.lower(LuxMeasurementLoginCommune.login) ==
                        func.lower(func.geov3.getMainAccount(user.username))).
                 filter(LuxMeasurementLoginCommune.num_commune ==

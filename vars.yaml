@@ -171,18 +171,21 @@ vars:
       passwd: 'to_be_defined'
       base_dn: 'ou=portail,dc=act,dc=lu'
 
-    turbomail:
-      mail.on: True
-      mail.transport: smtp
-      mail.smtp.server: keendo
-      mail.message.encoding: UTF-8
+    mailer:
+      transport.use: smtp
+      transport.host: keendo
+      message.encoding: UTF-8
 
     proxy_wms_url:
 
-    sqlalchemy_engines:
-      mymaps: 'postgresql://localhost:5432/mymaps'
-      pgroute: 'postgresql://localhost:5432/pgroute'
-      ecadastre: 'postgresql://localhost:5432/ecadastre'
+    dbsessions:
+      mymaps:
+        url: 'postgresql://localhost:5432/mymaps'
+      pgroute:
+        url: 'postgresql://localhost:5432/pgroute'
+      ecadastre:
+        url: 'postgresql://localhost:5432/ecadastre'
+
     raster:
       dhm:
         file: /var/sig/bt.shp

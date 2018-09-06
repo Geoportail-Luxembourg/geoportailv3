@@ -2,7 +2,7 @@
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound
-from turbomail import Message
+from marrow.mailer import Message
 import bleach
 import logging
 

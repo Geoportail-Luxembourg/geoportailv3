@@ -1,10 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
 from pyramid.view import view_config
-from pyramid_ldap import get_ldap_connector
+from pyramid_ldap3 import get_ldap_connector
 from pyramid.security import unauthenticated_userid
-from geoportailv3.portail import Connections
-from geoportailv3.portail import PortailSession
-import ldap
+from geoportailv3_geoportal.portail import Connections
+from c2cgeoportal_commons.models import DBSession
+import ldap3 as ldap
 import logging
 
 log = logging.getLogger(__name__)
@@ -23,13 +23,13 @@ def ldap_user_validator(request, username, password):
 
     if data is not None:
         connection.action = "CONNECT"
-        PortailSession.add(connection)
-        PortailSession.commit()
+        DBSession.add(connection)
+        DBSession.commit()
         return data[0]
     else:
         connection.action = "CONNECT ERROR"
-        PortailSession.add(connection)
-        PortailSession.commit()
+        DBSession.add(connection)
+        DBSession.commit()
 
     return None
 
@@ -41,7 +41,8 @@ but from ldap
 
 
 def get_user_from_request(request):
-    from c2cgeoportal.models import DBSession, Role
+    from c2cgeoportal_commons.models import DBSession
+    from c2cgeoportal_commons.models.main import Role
 
     class O(object):
         pass

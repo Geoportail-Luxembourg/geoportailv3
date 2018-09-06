@@ -1,10 +1,13 @@
-extends: vars_geoportailv3.yaml
+extends: vars.yaml
 
 vars:
     ldap: false
     dbport: 5433
 
-    sqlalchemy_engines:
-      mymaps: 'postgresql://www-data:www-data@localhost:5433/lux'
-      ecadastre: 'postgresql://www-data:www-data@localhost:5433/dummy'
-      pgroute: 'postgresql://www-data:www-data@localhost:5433/dummy'
+    dbsessions:
+      mymaps:
+        url: 'postgresql://www-data:www-data@localhost:5433/lux'
+      ecadastre:
+        url: 'postgresql://www-data:www-data@localhost:5433/dummy'
+      pgroute:
+        url: 'postgresql://www-data:www-data@localhost:5433/dummy'

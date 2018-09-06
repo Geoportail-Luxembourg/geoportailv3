@@ -4,7 +4,8 @@
 # reviewed by mire
 
 import logging
-import urllib2
+import urllib.request
+import urllib.error
 
 try:
     from json import loads as json_loads
@@ -64,7 +65,7 @@ class GraphhopperRouter:
 
         # log.info(request_url)
 
-        res = json_loads(urllib2.urlopen(request_url).read())
+        res = json_loads(urllib.request.urlopen(request_url).read())
         # log.info(res)
         return res
 
@@ -75,7 +76,7 @@ class GraphhopperRouter:
         try:
             result = self.__send_request()
 
-        except urllib2.HTTPError, e:
+        except urllib.error.HTTPError as e:
 
             # Bad Request
             if e.code == 400:

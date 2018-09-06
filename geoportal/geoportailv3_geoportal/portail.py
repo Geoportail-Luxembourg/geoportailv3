@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 import datetime
-import sqlahelper
 
-from c2cgeoportal.models import *  # noqa
-from formalchemy import Column
+from c2cgeoportal_commons.models import Base
+from sqlalchemy import Column
 from sqlalchemy.types import Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
-
-engine = sqlahelper.get_engine()
-Base = declarative_base(bind=engine)
-PortailSession = scoped_session(sessionmaker(bind=engine))
-
 
 class Connections(Base):
     __table_args__ = ({'schema': 'geov3_stats', 'autoload': False})
