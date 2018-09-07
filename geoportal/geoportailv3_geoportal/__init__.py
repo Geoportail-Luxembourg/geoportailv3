@@ -120,6 +120,11 @@ def main(global_config, **settings):
         request_method="HEAD"
     )
     config.add_route(
+        "mymaps_get_full_mymaps",
+        "mymaps/get_full_mymaps",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_getcategories",
         "mymaps/categories",
         request_method="GET"
@@ -250,6 +255,11 @@ def main(global_config, **settings):
     config.add_route(
         "mymaps_save_order",
         "/mymaps/save_order/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
+        "mymaps_save_offline",
+        "/mymaps/save_offline",
         request_method="POST"
     )
     config.add_route(

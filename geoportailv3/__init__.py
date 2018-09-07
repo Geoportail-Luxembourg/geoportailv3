@@ -114,6 +114,11 @@ def main(global_config, **settings):
         request_method="HEAD"
     )
     config.add_route(
+        "mymaps_get_full_mymaps",
+        "mymaps/get_full_mymaps",
+        request_method="GET"
+    )
+    config.add_route(
         "mymaps_getcategories",
         "mymaps/categories",
         request_method="GET"
@@ -247,6 +252,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "mymaps_save_offline",
+        "/mymaps/save_offline",
+        request_method="POST"
+    )
+    config.add_route(
         "mymaps_copy",
         "/mymaps/copy/{map_id}",
         request_method="POST"
@@ -375,6 +385,7 @@ def main(global_config, **settings):
             config.add_request_method(init_db(engine),
                                       'db_'+engine, reify=True)
 
+    # ldap
     from geoportailv3.views.authentication import ldap_user_validator, \
         get_user_from_request
     ldap_settings = config.get_settings()['ldap']
@@ -403,6 +414,7 @@ def main(global_config, **settings):
         )
 
         set_user_validator(config, ldap_user_validator)
+
     json_renderer = JSON()
 
     json_renderer.add_adapter(datetime.date, datetime_adapter)

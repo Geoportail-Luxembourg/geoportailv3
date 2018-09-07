@@ -1,7 +1,7 @@
 /**
  * @module lux.MyMap
  */
-import luxBase from './index.js';
+import luxUtil from './util.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 import ngeoProfileD3Elevation from 'ngeo/profile/d3Elevation.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -120,10 +120,10 @@ const exports = function(options) {
    */
   this.gpxFormat_ = new olFormatGPX();
 
-  this.mymapsSymbolUrl_ = [luxBase.mymapsUrl, 'symbol/'].join('/');
-  this.arrowUrl_ = [luxBase.mymapsUrl, 'getarrow'].join('/');
-  this.exportGpxUrl_ = [luxBase.mymapsUrl, 'exportgpxkml'].join('/');
-  this.exportCsvUrl_ = luxBase.exportCsvUrl;
+  this.mymapsSymbolUrl_ = [luxUtil.mymapsUrl, 'symbol/'].join('/');
+  this.arrowUrl_ = [luxUtil.mymapsUrl, 'getarrow'].join('/');
+  this.exportGpxUrl_ = [luxUtil.mymapsUrl, 'exportgpxkml'].join('/');
+  this.exportCsvUrl_ = luxUtil.exportCsvUrl;
 
   /**
    * @private
@@ -176,7 +176,7 @@ exports.prototype.setMap = function(map) {
  */
 exports.prototype.loadFeatures_ = function() {
 
-  var url = [luxBase.mymapsUrl, 'features', this.id_].join('/');
+  var url = [luxUtil.mymapsUrl, 'features', this.id_].join('/');
   fetch(url).then(function(resp) {
     return resp.json();
   }).then(function(json) {
@@ -242,11 +242,11 @@ exports.prototype.onFeatureSelected_ = function(event) {
   }
   if (properties.thumbnail) {
     var link = document.createElement('A');
-    link.setAttribute('href', luxBase.baseUrl + properties.image);
+    link.setAttribute('href', luxUtil.baseUrl + properties.image);
     link.setAttribute('target', '_blank');
 
     var thumb = document.createElement('IMG');
-    thumb.setAttribute('src', luxBase.baseUrl + properties.thumbnail);
+    thumb.setAttribute('src', luxUtil.baseUrl + properties.thumbnail);
 
     link.appendChild(thumb);
     content.appendChild(link);
@@ -255,7 +255,7 @@ exports.prototype.onFeatureSelected_ = function(event) {
     content.appendChild(element);
   });
 
-  var element = luxBase.buildPopupLayout(content, function() {});
+  var element = luxUtil.buildPopupLayout(content, function() {});
 
   this.popup_ = new olOverlay({
     element: element,
@@ -519,7 +519,7 @@ exports.prototype.getMeasures = function(feature) {
         return measure.toString();
       }
     );
-    lengthEl.appendChild(document.createTextNode(luxBase.translate('Length:') + ' ' + length));
+    lengthEl.appendChild(document.createTextNode(luxUtil.translate('Length:') + ' ' + length));
     elements.push(lengthEl);
   }
   if (geom.getType() === olGeomGeometryType.POLYGON) {
@@ -535,7 +535,7 @@ exports.prototype.getMeasures = function(feature) {
         return measure.toString();
       }
     );
-    areaEl.appendChild(document.createTextNode(luxBase.translate('Area:') + ' ' + area));
+    areaEl.appendChild(document.createTextNode(luxUtil.translate('Area:') + ' ' + area));
     elements.push(areaEl);
   }
   if (geom.getType() === olGeomGeometryType.POLYGON &&
@@ -552,7 +552,7 @@ exports.prototype.getMeasures = function(feature) {
         return measure.toString();
       }
     );
-    radiusEl.appendChild(document.createTextNode(luxBase.translate('Rayon:') + ' ' + radius));
+    radiusEl.appendChild(document.createTextNode(luxUtil.translate('Rayon:') + ' ' + radius));
     elements.push(radiusEl);
   }
   if (geom.getType() === olGeomGeometryType.POINT &&
@@ -562,10 +562,10 @@ exports.prototype.getMeasures = function(feature) {
     console.assert(geom instanceof olGeomPoint);
 
     elevationEl.appendChild(document.createTextNode('N/A'));
-    luxBase.getElevation(/** @type{!ol.geom.Point} */ (geom).getCoordinates()).then(
+    luxUtil.getElevation(/** @type{!ol.geom.Point} */ (geom).getCoordinates()).then(
       function(json) {
         if (json['dhm'] > 0) {
-          elevationEl.appendChild(document.createTextNode(luxBase.translate('Elevation') + ': ' +
+          elevationEl.appendChild(document.createTextNode(luxUtil.translate('Elevation') + ': ' +
               parseInt(json['dhm'], 0).toString() + ' m'));
         }
       }
@@ -578,7 +578,7 @@ exports.prototype.getMeasures = function(feature) {
 
   var link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxBase.translate('Zoom to')));
+  link.appendChild(document.createTextNode(luxUtil.translate('Zoom to')));
   links.appendChild(link);
   olEvents.listen(link, olEventsEventType.CLICK, function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
@@ -591,7 +591,7 @@ exports.prototype.getMeasures = function(feature) {
     console.assert(geom instanceof olGeomLineString);
     link = document.createElement('A');
     link.setAttribute('href', 'javascript:void(0);');
-    link.appendChild(document.createTextNode(luxBase.translate('Profile')));
+    link.appendChild(document.createTextNode(luxUtil.translate('Profile')));
     links.appendChild(link);
 
     olEvents.listen(link, olEventsEventType.CLICK, function() {
@@ -612,7 +612,7 @@ exports.prototype.getMeasures = function(feature) {
 
   link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxBase.translate('Exporter KMl')));
+  link.appendChild(document.createTextNode(luxUtil.translate('Exporter KMl')));
 
   links.appendChild(link);
   olEvents.listen(link, olEventsEventType.CLICK, function() {
@@ -621,7 +621,7 @@ exports.prototype.getMeasures = function(feature) {
 
   link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxBase.translate('Exporter GPX')));
+  link.appendChild(document.createTextNode(luxUtil.translate('Exporter GPX')));
 
   links.appendChild(link);
   olEvents.listen(link, olEventsEventType.CLICK, function() {
@@ -662,7 +662,7 @@ exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
   header.appendChild(metadata);
 
   var exportCSV = document.createElement('BUTTON');
-  exportCSV.innerHTML = luxBase.translate('Export csv');
+  exportCSV.innerHTML = luxUtil.translate('Export csv');
   olEvents.listen(exportCSV, olEventsEventType.CLICK, function() {
     this.exportCSV_();
   }.bind(this));
@@ -792,7 +792,7 @@ exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     body: body
   });
 
-  fetch(luxBase.profileUrl, request
+  fetch(luxUtil.profileUrl, request
   ).then(function(resp) {
     return resp.json();
   }).then(function(data) {

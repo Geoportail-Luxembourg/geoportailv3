@@ -73,6 +73,16 @@ const exports = angular.module('Appmain', [
 exports.config(ngeoStatemanagerLocation.MockProvider);
 
 
+exports.config(['$compileProvider', function($compileProvider) {
+  // activate pre-assigning bindings
+  // See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
+  $compileProvider.preAssignBindingsEnabled(true);
+
+  // allow clicking the thumbnail link while offline
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?:|s?ftp:|mailto:|tel:|file:|data:image)/);
+}]);
+
+
 // Strict Contextual Escaping (SCE) configuration
 exports.config(['$sceDelegateProvider', function($sceDelegateProvider) {
   $sceDelegateProvider.resourceUrlWhitelist([
@@ -189,12 +199,6 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appFeedbackTemplateUrl', require('./feedback/feedback.html'));
   $templateCache.put('templatecache/appAskredirectTemplateUrl', require('./askredirect/askredirect.html'));
 }
-
-// activate pre-assigning bindings
-// See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
-exports.config(['$compileProvider', function($compileProvider) {
-  $compileProvider.preAssignBindingsEnabled(true);
-}]);
 
 exports.run(templateRunner);
 

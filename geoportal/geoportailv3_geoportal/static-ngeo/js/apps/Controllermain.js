@@ -56,6 +56,7 @@ import '../../less/geoportailv3.less'
  import appDrawFeaturePopupController from '../draw/FeaturePopupController.js';
  import appDrawFeaturePopupDirective from '../draw/featurePopupDirective.js';
  import appDrawRouteControl from '../draw/RouteControl.js';
+ import appGetLayerForCatalogNodeFactory from '../GetLayerForCatalogNodeFactory.js';
 
  //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
  import appDrawSelectedFeatures from '../draw/SelectedFeaturesService.js';
@@ -136,7 +137,6 @@ import '../../less/geoportailv3.less'
  import appGeocoding from '../Geocoding.js';
  import appGetDevice from '../GetDevice.js';
  import appGetElevation from '../GetElevationService.js';
- import appGetLayerForCatalogNode from '../GetLayerForCatalogNodeFactory.js';
  import appGetProfile from '../GetProfileService.js';
  import appGetShorturl from '../GetShorturlService.js';
  import appGetWmsLayer from '../GetWmsLayerFactory.js';
@@ -209,6 +209,7 @@ import '../../less/geoportailv3.less'
  * @param {string} tiles3dUrl 3D tiles server url.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
  * @constructor
  * @export
  * @ngInject
@@ -222,7 +223,12 @@ const MainController = function(
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    appOfflineDownloader, appOfflineRestorer) {
+    appOfflineDownloader, appOfflineRestorer, appMymapsOffline) {
+
+  appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
+  appMymaps.setOfflineMode(ngeoOfflineMode);
+  appMymaps.setOfflineService(appMymapsOffline);
+
   /**
    * @type {boolean}
    * @export
@@ -944,6 +950,7 @@ MainController.prototype.initLanguage_ = function() {
 MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
 
+  this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
   if (mapId !== undefined) {
     this.appMymaps_.setCurrentMapId(mapId,
@@ -962,7 +969,6 @@ MainController.prototype.initMymaps_ = function() {
   } else {
     this.appMymaps_.clear();
   }
-  this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
     if (!this.appOfflineRestorer_.restoring) {
