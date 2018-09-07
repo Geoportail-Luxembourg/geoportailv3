@@ -32,12 +32,20 @@ import {getDistance as haversineDistance} from 'ol/sphere.js';
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {Document} $document Document.
  * @param {app.Export} appExport The export service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode.
  * @export
  * @ngInject
  */
 const exports = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
-    ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
+    ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport,
+    ngeoOfflineMode) {
+
+  /**
+   * @private
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
 
   /**
    * @type {ngeo.offline.NetworkStatus}
@@ -542,7 +550,7 @@ exports.prototype.updateElevation = function() {
   if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === olGeomGeometryType.POINT &&
       !this.feature.get('isLabel') &&
-      !this.ngeoNetworkStatus_.isDisconnected()) {
+      !this.ngeoOfflineMode_.isEnabled()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
     this.appFeaturePopup_.getElevation(/** @type {!ol.geom.Point} */ (geom)).then(
@@ -561,7 +569,7 @@ exports.prototype.updateElevation = function() {
 exports.prototype.updateProfile = function() {
   if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
-      !this.ngeoNetworkStatus_.isDisconnected()) {
+      !this.ngeoOfflineMode_.isEnabled()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
@@ -622,6 +630,9 @@ exports.prototype.validateModifications = function() {
  */
 exports.prototype.getMymapsPath = function(resource) {
   if (resource) {
+    if (resource.startsWith('data:image')) {
+      return resource;
+    }
     if (resource.startsWith('/') &&
         this.mymapsImageUrl_.endsWith('/')) {
       resource = '.' + resource;
@@ -633,7 +644,7 @@ exports.prototype.getMymapsPath = function(resource) {
 
 
 /**
- * Puts the temporary edited name and description back to the feature.
+ * Delete feature.
  * @export
  */
 exports.prototype.deleteFeature = function() {

@@ -9,6 +9,7 @@
 
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
+import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
 
 /**
  * @constructor
@@ -28,6 +29,12 @@ const exports = function($http, loginUrl, logoutUrl,
    * @private
    */
   this.appAuthtktCookieName_ = appAuthtktCookieName;
+
+  /**
+   * @type {ngeo.offline.Mode}
+   * @private
+   */
+  this.ngeoOfflineMode_;
 
   /**
    * @type {string}
@@ -101,6 +108,12 @@ const exports = function($http, loginUrl, logoutUrl,
   this.gettextCatalog = gettextCatalog;
 };
 
+/**
+ * @param {ngeo.offline.Mode} ngeoOfflineMode offline mode service.
+ */
+exports.prototype.setOfflineMode = function(ngeoOfflineMode) {
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
+};
 
 /**
  * @param {string} username The username.
@@ -203,9 +216,14 @@ exports.prototype.getUserInfo = function() {
  * @export
  */
 exports.prototype.isAuthenticated = function() {
-  if (this.hasCookie(this.appAuthtktCookieName_)) {
-    return (this.username.length > 0);
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return true;
   }
+
+  if (this.hasCookie(this.appAuthtktCookieName_)) {
+    return this.username.length > 0;
+  }
+
   this.clearUserInfo();
   return false;
 };

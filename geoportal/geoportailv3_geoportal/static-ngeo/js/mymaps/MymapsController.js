@@ -38,6 +38,8 @@ import * as olExtent from 'ol/extent.js';
  * @param {Document} $document Document.
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {app.Export} appExport The export service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @constructor
  * @export
  * @ngInject
@@ -46,7 +48,20 @@ import * as olExtent from 'ol/extent.js';
 const exports = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
-    appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
+    appDrawnFeatures, $document, exportgpxkmlUrl, appExport, ngeoOfflineMode,
+    ngeoNetworkStatus) {
+
+  /**
+   * @export
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode = ngeoOfflineMode;
+
+  /**
+   * @export
+   * @type {ngeo.offline.NetworkStatus}
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @export
@@ -397,6 +412,17 @@ const exports = function($scope, $compile, $sce,
     }
   }.bind(this));
 
+  // Reopen active map when going offline
+  $scope.$watch(
+    () => ngeoOfflineMode.isEnabled(),
+    (newVal, oldVal) => {
+      if (newVal && this.appMymaps_.getMapId()) {
+        this.onChosen_({
+          'uuid': this.appMymaps_.getMapId()
+        });
+      }
+    }
+  );
 };
 
 
@@ -538,7 +564,7 @@ exports.prototype.copyMap = function() {
         var mapId = resp['uuid'];
         if (mapId !== undefined) {
           var map = {'uuid': mapId};
-          this.onChosen(map, false);
+          this.onChosen_(map);
           var msg = this.gettextCatalog.getString('Carte copiée');
           this.notify_(msg, appNotifyNotificationType.INFO);
           this.modal = undefined;
@@ -627,7 +653,7 @@ exports.prototype.importFeatures_ = function(features) {
   this.appMymaps_.saveFeatures(featuresToSave).then(
       function() {
         var map = {'uuid': mapId};
-        this.onChosen(map, false);
+        this.onChosen_(map);
       }.bind(this)
   );
 };
@@ -822,6 +848,15 @@ exports.prototype.openConfirmDeleteAMap = function(mapId, mapTitle) {
 };
 
 /**
+ * Call the map synchronisation when in offline state.
+ * @param {Object} map The selected map.
+ * @export
+ */
+exports.prototype.syncOfflineMaps = function(map) {
+  this.appMymaps_.syncOfflineMaps(map);
+};
+
+/**
  * Closes the current anonymous drawing.
  * @export
  */
@@ -864,7 +899,7 @@ exports.prototype.addInMymaps = function() {
           function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
-            this.onChosen(map, false);
+            this.onChosen_(map);
           }.bind(this));
     }
   }
@@ -898,7 +933,7 @@ exports.prototype.createMapFromAnonymous = function() {
         }.bind(this))
         .then(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
-          this.onChosen(map, false);
+          this.onChosen_(map);
           var msg = this.gettextCatalog.getString('Carte créée');
           this.notify_(msg, appNotifyNotificationType.INFO);
           this.modal = undefined;
@@ -1192,7 +1227,7 @@ exports.prototype.createMap = function() {
             var map = {'uuid': mapId};
             this.appMymaps_.setMapId(mapId);
             this.saveLayers();
-            this.onChosen(map, false);
+            this.onChosen_(map);
             var msg = this.gettextCatalog.getString('Nouvelle carte créée');
             this.notify_(msg, appNotifyNotificationType.INFO);
             this.modal = undefined;
@@ -1223,13 +1258,15 @@ exports.prototype.deleteAMap = function(mapId) {
         this.setDragHandler();
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
-        var curElem = this.maps.find(function(item) {
-          if (item['uuid'] === mapId) {
-            return true;
+        if (!this.ngeoOfflineMode.isEnabled()) {
+          var curElem = this.maps.find(function(item) {
+            if (item['uuid'] === mapId) {
+              return true;
+            }
+          }.bind(this));
+          if (curElem !== undefined) {
+            this.maps.splice(this.maps.indexOf(curElem), 1);
           }
-        }.bind(this));
-        if (curElem !== undefined) {
-          this.maps.splice(this.maps.indexOf(curElem), 1);
         }
       }
     }.bind(this));
@@ -1296,15 +1333,11 @@ exports.prototype.askToConnect = function() {
 /**
  * Called when a map is choosen.
  * @param {Object} map The selected map.
- * @param {boolean} clear It removes the alreay selected layers.
  * @return {angular.$q.Promise} Promise.
- * @export
+ * @private
  */
-exports.prototype.onChosen = function(map, clear) {
+exports.prototype.onChosen_ = function(map) {
   this.closeMap();
-  if (clear) {
-    this.map_.getLayers().clear();
-  }
   var promise = this.appMymaps_.setCurrentMapId(map['uuid'],
       this.drawnFeatures_.getCollection());
   this['drawopen'] = true;
@@ -1319,7 +1352,10 @@ exports.prototype.onChosen = function(map, clear) {
  * @export
  */
 exports.prototype.selectMymaps = function(map) {
-  this.onChosen(map, true).then(function() {
+  if (map['deletedWhileOffline']) {
+    return;
+  }
+  this.onChosen_(map).then(function() {
     var extent = undefined;
     var layer = this.drawnFeatures_.getLayer();
     if (this.map_.getLayers().getArray().indexOf(layer) === -1) {

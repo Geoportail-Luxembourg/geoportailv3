@@ -5,6 +5,8 @@ import {boundingExtent, getWidth, getCenter, buffer} from 'ol/extent.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoOfflineModule from 'ngeo/offline/module.js';
 import NgeoConfiguration from 'ngeo/offline/Configuration.js';
+import localforage from 'localforage';
+window['localforage'] = localforage;
 
 /**
  */
@@ -39,6 +41,21 @@ const exports = class extends NgeoConfiguration {
      * @private
      */
     this.appMymaps_ = appMymaps;
+
+    const isMobile = location.search.includes('localforage=android') || location.search.includes('localforage=ios');
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.maxNumberOfDownloads_ = isMobile ? 5 : 11;
+  }
+
+  /**
+   * @override
+   */
+  getMaxNumberOfParallelDownloads() {
+    return this.maxNumberOfDownloads_;
   }
 
   /**
@@ -63,6 +80,7 @@ const exports = class extends NgeoConfiguration {
 
 
  /**
+   * @export
    * @override
    * @param {!ol.Map} map the map
    * @return {number} an estimated size in MB
