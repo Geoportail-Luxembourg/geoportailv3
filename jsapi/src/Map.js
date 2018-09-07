@@ -1,7 +1,7 @@
 /**
  * @module lux.Map
  */
-import luxBase from './index.js';
+import luxUtil from './util.js';
 import luxLayerManager from './LayerManager.js';
 import luxMyMap from './MyMap.js';
 import luxPrintManager from './PrintManager.js';
@@ -140,7 +140,7 @@ const exports = function(options) {
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
 
-  this.setLanguage(luxBase.lang);
+  this.setLanguage(luxUtil.lang);
 
   /**
    * @private
@@ -221,19 +221,19 @@ const exports = function(options) {
   }
   if (options.layerOpacities) {
     layerOpacities = layerOpacities.concat(options.layerOpacities);
-    console.assert(layers.length !== layerOpacities.length,
+    console.assert(layers.length === layerOpacities.length,
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
   if (options.layerVisibilities) {
     layerVisibilities.push(true);
     layerVisibilities = layerVisibilities.concat(options.layerVisibilities);
-    console.assert(layers.length !== layerVisibilities.length,
+    console.assert(layers.length === layerVisibilities.length,
         'Layers and visibility should have the same number of items');
     delete options.layerVisibilities;
   }
 
-  this.layersPromise = fetch(luxBase.layersUrl).then(function(resp) {
+  this.layersPromise = fetch(luxUtil.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
@@ -451,7 +451,7 @@ exports.prototype.print = function(name, layout, scale, firstPagesUrls, callback
   var dpi = 127;
   var format = 'pdf';
 
-  var pm = new luxPrintManager(luxBase.printUrl, this);
+  var pm = new luxPrintManager(luxUtil.printUrl, this);
   if (firstPagesUrls === undefined || firstPagesUrls === null) {
     firstPagesUrls = [];
   }
@@ -491,10 +491,10 @@ exports.prototype.print = function(name, layout, scale, firstPagesUrls, callback
     return self.indexOf(item) == pos;
   });
 
-  var disclaimer = luxBase.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
-  var dateText = luxBase.translate('Date d\'impression: ');
-  var scaleTitle = luxBase.translate('Echelle approximative 1:');
-  var appTitle = luxBase.translate('Le géoportail national du Grand-Duché du Luxembourg');
+  var disclaimer = luxUtil.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
+  var dateText = luxUtil.translate('Date d\'impression: ');
+  var scaleTitle = luxUtil.translate('Echelle approximative 1:');
+  var appTitle = luxUtil.translate('Le géoportail national du Grand-Duché du Luxembourg');
   var longUrl = this.stateManager_.getUrl();
   if (longUrl.toLowerCase().indexOf('http') !== 0 &&
       longUrl.toLowerCase().indexOf('//') === 0) {
@@ -511,7 +511,7 @@ exports.prototype.print = function(name, layout, scale, firstPagesUrls, callback
     'scale': scale,
     'name': name,
     'longUrl': longUrl,
-    'lang': luxBase.lang,
+    'lang': luxUtil.lang,
     'legend': '',
     'scalebar': {'geodetic': true},
     'dataOwner': dataOwners.join(' '),
@@ -586,7 +586,7 @@ exports.prototype.getShowLayer = function() {
  * @export
  */
 exports.prototype.addNewLanguage = function(lang, translations) {
-  luxBase.languages[lang.toLowerCase()] = translations;
+  luxUtil.languages[lang.toLowerCase()] = translations;
 };
 
 /**
@@ -595,20 +595,20 @@ exports.prototype.addNewLanguage = function(lang, translations) {
  * @api
  */
 exports.prototype.setLanguage = function(lang) {
-  var previousLang = luxBase.lang;
+  var previousLang = luxUtil.lang;
   if (lang === undefined) {
-    lang = luxBase.lang;
+    lang = luxUtil.lang;
   }
-  luxBase.lang = lang.toLowerCase();
+  luxUtil.lang = lang.toLowerCase();
   var curLang = lang.toLowerCase();
-  if (curLang in luxBase.languages) {
+  if (curLang in luxUtil.languages) {
     if (this.layerManagerControl_ !== null &&
         this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
     return;
   }
-  var langUrl = luxBase.i18nUrl.replace('xx', curLang);
+  var langUrl = luxUtil.i18nUrl.replace('xx', curLang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
     if (resp === null || resp === undefined) {
       throw new Error('Invalid response');
@@ -618,14 +618,14 @@ exports.prototype.setLanguage = function(lang) {
     }
     throw new Error('' + resp.status + ' ' + resp.statusText);
   }).then(function(json) {
-    luxBase.languages[curLang] = json[curLang];
+    luxUtil.languages[curLang] = json[curLang];
     if (this.layerManagerControl_ !== null &&
         this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
   }.bind(this)).catch(function(error) {
     console.log(error);
-    luxBase.lang = previousLang;
+    luxUtil.lang = previousLang;
   }.bind(this));
 };
 
@@ -759,7 +759,7 @@ exports.prototype.showMarker = function(opt_options) {
         var cb = !options.click ? undefined : function() {
           this.removeOverlay(popup);
         }.bind(this);
-        var element = luxBase.buildPopupLayout(options.html, cb);
+        var element = luxUtil.buildPopupLayout(options.html, cb);
         popup = new olOverlay({
           element: element,
           position: markerOverlay.getPosition(),
@@ -794,11 +794,11 @@ exports.prototype.showMarker = function(opt_options) {
  * @export
  * @api
  */
-luxBase.getElevation = function(coordinate) {
+lux.getElevation = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
         (olProj.transform(coordinate,
             'EPSG:3857', 'EPSG:2169'));
-  var url = luxBase.elevationUrl;
+  var url = luxUtil.elevationUrl;
   url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
 
   return fetch(url).then(function(resp) {
@@ -817,7 +817,7 @@ exports.prototype.findLayerConf_ = function(layer) {
   if (typeof layer == 'number' || !isNaN(parseInt(layer, 10))) {
     layerConf = conf[layer];
   } else if (typeof layer == 'string') {
-    layerConf = luxBase.findLayerByName_(layer, conf);
+    layerConf = exports.findLayerByName_(layer, conf);
   }
   if (!layerConf) {
     console.error('Layer "' + layer + '" not present in layers list');
@@ -846,7 +846,7 @@ exports.prototype.addLayers_ = function(layers, opacities, visibilities) {
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
-        luxBase.WMSLayerFactory : luxBase.WMTSLayerFactory;
+        luxUtil.WMSLayerFactory : luxUtil.WMTSLayerFactory;
       var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
       var visible = (visibilities[index] !== undefined) ? visibilities[index] : true;
       this.getLayers().push(fn(layerConf, opacity, visible));
@@ -886,7 +886,7 @@ exports.prototype.checkForExclusion_ = function(event) {
     }
 
     exclusion2 = layer2.get('metadata')['exclusion'];
-    if (luxBase.intersects(exclusion1, exclusion2)) {
+    if (luxUtil.intersects(exclusion1, exclusion2)) {
       // layer to exclude is not the current base layer
       if (i !== 0) {
         this.removeLayer(layer2);
@@ -915,22 +915,6 @@ exports.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
     var visibility = (opt_visibility === undefined) ? opt_visibility : true;
     this.addLayers_([layer], [opacity], [visibility]);
   }.bind(this));
-};
-
-/**
- * @param {string} name The layer name.
- * @param {Object<string,luxx.LayersOptions>} layers The layers config.
- * @return {luxx.LayersOptions|undefined} The layer config.
- * @private
- */
-luxBase.findLayerByName_ = function(name, layers) {
-  for (var i in layers) {
-    var layer = layers[i];
-    if (layer.name == name) {
-      return layer;
-    }
-  }
-  return;
 };
 
 /**
@@ -969,7 +953,7 @@ exports.prototype.addBgSelector = function(target) {
     backgrounds.forEach(function(background) {
       var option = document.createElement('option');
       option.value = background.id;
-      option.innerText = luxBase.translate(background.name);
+      option.innerText = luxUtil.translate(background.name);
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -979,7 +963,7 @@ exports.prototype.addBgSelector = function(target) {
     // add blank layer
     var blankOption = document.createElement('option');
     blankOption.value = 'blank';
-    blankOption.innerText = luxBase.translate('blank');
+    blankOption.innerText = luxUtil.translate('blank');
     if (active == 'blank') {
       blankOption.setAttribute('selected', 'selected');
     }
@@ -991,7 +975,7 @@ exports.prototype.addBgSelector = function(target) {
     select.addEventListener('change', function() {
       if (select.value !== 'blank') {
         this.getLayers().setAt(
-          0, luxBase.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
+          0, luxUtil.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
         );
       } else {
         this.getLayers().setAt(0, this.blankLayer_);
@@ -1034,7 +1018,7 @@ exports.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
       ids = [ids];
     }
     ids.forEach(function(id) {
-      var uri = luxBase.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      var uri = luxUtil.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
@@ -1183,7 +1167,7 @@ exports.prototype.addSearch = function(target, dataSets, onSelect) {
 
   var input = document.createElement('input');
   input.classList.add('lux-search-input');
-  input.setAttribute('placeholder', luxBase.translate('search'));
+  input.setAttribute('placeholder', luxUtil.translate('search'));
   container.appendChild(input);
   var clear = document.createElement('button');
   clear.classList.add('lux-search-clear');
@@ -1224,7 +1208,7 @@ exports.prototype.addSearch = function(target, dataSets, onSelect) {
       }
       if (layers.length > 0) {
         term = term.toLowerCase();
-        fetch(luxBase.searchUrl + 'limit=5&layer=' + layers.join(',') + '&query=' + term).then(function(resp) {
+        fetch(luxUtil.searchUrl + 'limit=5&layer=' + layers.join(',') + '&query=' + term).then(function(resp) {
           return resp.json();
         }).then(function(json) {
           suggest(coordResults.concat(json.features));
@@ -1366,7 +1350,7 @@ exports.prototype.matchCoordinate_ = function(searchString) {
         if (feature !== null) {
           var resultPoint =
             /** @type {ol.geom.Point} */ (feature.getGeometry());
-          var resultString = luxBase.coordinateString_(
+          var resultString = luxUtil.coordinateString_(
           resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
           feature.set('label', resultString);
           feature.set('epsgLabel', re[epsgKey].label);
@@ -1613,7 +1597,7 @@ exports.prototype.addVector_ = function(url, format, opt_options) {
             el.innerHTML = html;
             return;
           }
-          var element = luxBase.buildPopupLayout(html, function() {
+          var element = luxUtil.buildPopupLayout(html, function() {
             this.removeOverlay(popup);
             interaction.getFeatures().clear();
           }.bind(this));
@@ -1642,7 +1626,7 @@ exports.prototype.addVector_ = function(url, format, opt_options) {
  */
 exports.prototype.showPopup = function(position, title, content) {
   var popup;
-  var element = luxBase.buildPopupLayout(content, function() {
+  var element = luxUtil.buildPopupLayout(content, function() {
     if (popup !== undefined) {
       this.removeOverlay(popup);
     }
@@ -1717,7 +1701,7 @@ exports.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
       ids = [ids];
     }
     ids.forEach(function(id) {
-      var uri = luxBase.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      var uri = luxUtil.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
@@ -1796,11 +1780,11 @@ exports.prototype.getFeatureInfo = function(evt, callback) {
     'X': evt.pixel[0],
     'Y': evt.pixel[1],
     'tooltip': 1,
-    'lang': luxBase.lang,
+    'lang': luxUtil.lang,
     'srs': 'EPSG:3857'
   };
   var url = document.createElement('A');
-  url.href = luxBase.queryUrl;
+  url.href = luxUtil.queryUrl;
 
   Object.keys(params).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + params[key];
@@ -1853,7 +1837,7 @@ exports.prototype.handleSingleclickEvent_ = function(evt) {
     if (this.popupTarget_) {
       this.popupTarget_.innerHTML = htmls.join('');
     } else {
-      var element = luxBase.buildPopupLayout(htmls.join('<hr>'), function() {
+      var element = luxUtil.buildPopupLayout(htmls.join('<hr>'), function() {
         this.removeOverlay(this.queryPopup_);
       }.bind(this));
       this.queryPopup_ = new olOverlay({
@@ -1869,6 +1853,22 @@ exports.prototype.handleSingleclickEvent_ = function(evt) {
     }
   }.bind(this));
 
+};
+
+/**
+ * @param {string} name The layer name.
+ * @param {Object<string,luxx.LayersOptions>} layers The layers config.
+ * @return {luxx.LayersOptions|undefined} The layer config.
+ * @private
+ */
+exports.findLayerByName_ = function(name, layers) {
+  for (var i in layers) {
+    var layer = layers[i];
+    if (layer.name == name) {
+      return layer;
+    }
+  }
+  return;
 };
 
 

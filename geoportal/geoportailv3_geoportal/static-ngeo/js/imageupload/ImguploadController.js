@@ -20,11 +20,16 @@ import appNotifyNotificationType from '../NotifyNotificationType.js';
  * @param {app.Notify} appNotify Notify service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {string} mymapsUrl URL to "mymaps" Feature service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode service.
  * @constructor
  * @ngInject
  */
 const exports = function($parse, $http, appNotify, gettextCatalog,
-    mymapsUrl) {
+    mymapsUrl, ngeoOfflineMode) {
+  /**
+   * @private
+   */
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
 
   /**
    * @type {angular.$parse}
@@ -74,19 +79,30 @@ exports.prototype.uploadFileToUrl = function(file, scope,
   if (!file) {
     modelSetter(scope, undefined);
   } else {
-    var fd = new FormData();
-    fd.append('file', file);
-    this.$http_.post(this.mymapsUrl_ + path, fd, {
-      transformRequest: angular.identity,
-      headers: {'Content-Type': undefined}
-    })
-    .then(function(response) {
-      modelSetter(scope, response.data);
-    }.bind(this), function() {
-      var msg = this.gettextCatalog.getString(
-              'Ce format d\'image n\'est as supporté.');
-      this.notify_(msg, appNotifyNotificationType.ERROR);
-    }.bind(this));
+    if (this.ngeoOfflineMode_.isEnabled()) {
+      const reader  = new FileReader();
+      reader.addEventListener('load', () => {
+        modelSetter(scope, {
+          'image': reader.result,
+          'thumbnail': reader.result
+        });
+      }, false);
+      reader.readAsDataURL(file);
+    } else {
+      var fd = new FormData();
+      fd.append('file', file);
+      this.$http_.post(this.mymapsUrl_ + path, fd, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+      })
+      .then(response => {
+        modelSetter(scope, response.data);
+      }, () => {
+        var msg = this.gettextCatalog.getString(
+                'Ce format d\'image n\'est as supporté.');
+        this.notify_(msg, appNotifyNotificationType.ERROR);
+      });
+    }
   }
 };
 

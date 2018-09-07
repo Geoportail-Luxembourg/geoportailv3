@@ -13,11 +13,11 @@
   document.write('<scr' + 'ipt type="text/javascript" src="'
           + "${request.static_url('geoportailv3:static/build/apiv3.js')}" + '"></scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.setBaseUrl('${request.route_url('home')}', '${request.scheme}');" + '</scr' + 'ipt>');
+          + "lux.util.setBaseUrl('${request.route_url('home')}', '${request.scheme}');" + '</scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/xx/geoportailv3.json')}');" + '</scr' + 'ipt>');
+          + "lux.util.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/xx/geoportailv3.json')}');" + '</scr' + 'ipt>');
 % if hasSC:
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.setWmtsCrossOrigin(null);" + '</scr' + 'ipt>');
+          + "lux.util.setWmtsCrossOrigin(null);" + '</scr' + 'ipt>');
 % endif
 })();

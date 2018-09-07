@@ -5,8 +5,8 @@
   <p class="text-center">
     <button class="btn btn-default" ng-click="ctrl.openChooseMapModal()" translate>Ouvrir une carte</button>
   </p>
-  <p class="hidden-2d" translate>Switch to 2D to create a map</p>
-  <p class="text-center hidden-3d">
+  <p class="hidden-2d create-map" translate>Switch to 2D to create a map</p>
+  <p class="text-center hidden-3d create-map">
     <button class="btn btn-default" ng-click="ctrl.openCreateMapModal()" translate>Créer une nouvelle carte</button>
   </p>
 </div>
@@ -47,12 +47,12 @@
         <li ng-click="ctrl.openCreateMapModal()"><a href translate>Créer une nouvelle carte</a></li>
         <li ng-click="ctrl.openChooseMapModal()"><a href translate>Ouvrir une carte existante</a></li>
         <li ng-click="ctrl.openCopyMapModal()"><a href translate>Créer une copie</a></li>
-        <li ng-click="ctrl.shareMymapsLink()"><a href translate>Partager la carte</a></li>
+        <li ng-click="ctrl.shareMymapsLink()" class="hide-when-offline"><a href translate>Partager la carte</a></li>
         <li class="divider"></li>
         <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
         <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
-        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
-        <li ng-show="ctrl.isEditable()" ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openMergeLinesModal()" class="hide-when-offline"><a href translate>Fusionner des lignes</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.toggleClippingLineMode()" class="hide-when-offline"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
         <li ng-show="ctrl.isEditable()" class="divider"></li>
         <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
         <li class="divider"></li>
@@ -100,8 +100,8 @@
           <li ng-show="ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
           <li ng-click="ctrl.openConfirmDelete()"><a href translate>Effacer tous les dessins</a></li>
           <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces dessins</a></li>
-          <li ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
-          <li ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
+          <li ng-click="ctrl.openMergeLinesModal()" class="hide-when-offline"><a href translate>Fusionner des lignes</a></li>
+          <li ng-click="ctrl.toggleClippingLineMode()" class="hide-when-offline"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
         </ul>
       </li>
     </ul>
@@ -224,7 +224,7 @@
           <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-4" ng-if="!ctrl.ngeoOfflineMode.isEnabled()">
         <div class="input-group">
           <div class="dropdown">
             <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getMapCategoryFilter(ctrl.filterCategoryId).name | translate}}<span class="caret"></span>
@@ -236,7 +236,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-4" ng-if="!ctrl.ngeoOfflineMode.isEnabled()">
         <div class="input-group">
           <div class="dropdown">
             <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getUserCategDesc(ctrl.filterMapOwner) }}<span class="caret"></span>
@@ -287,8 +287,9 @@
       </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
-      <td ng-click="ctrl.selectMymaps(map)">
+    <tr ng-repeat="map in ctrl.maps | orderBy:sortType:sortReverse| filter:searchMaps"
+        ng-class="{noclick: map.deletedWhileOffline}">
+      <td ng-click="!map.deletedWhileOffline && ctrl.selectMymaps(map)">
         <span ng-switch="map.public">
           <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
           <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
@@ -296,7 +297,12 @@
       <td ng-click="ctrl.selectMymaps(map)">{{ map.category }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.last_feature_update | date:'dd/MM/yyyy - H:mm' }}</td>
-      <td ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)"><span class="fa fa-trash-o"></span></td>
+      <td>
+        <span ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)" ng-if="!map.deletedWhileOffline" class="fa fa-trash-o"></span>
+      </td>
+      <td>
+        <span ng-if="!ctrl.ngeoNetworkStatus.isDisconnected() && ctrl.ngeoOfflineMode.isEnabled() && map.dirty" ng-click="ctrl.syncOfflineMaps(map)" class="fa fa-refresh"></span>
+      </td>
     </tr>
     </tbody>
   </table>
