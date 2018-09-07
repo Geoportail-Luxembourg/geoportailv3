@@ -5,11 +5,11 @@ goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.asserts');
 
 const ngeoOfflineModule = goog.require('ngeo.offline.module');
-const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
+const AppBaseConfiguration = goog.require('app.offline.BaseConfiguration');
 
 /**
  */
-exports = class extends NgeoConfiguration {
+exports = class extends AppBaseConfiguration {
 
   /**
    * @ngInject
