@@ -996,7 +996,8 @@ app.QueryController.prototype.getTrustedUrl = function(url) {
  */
 app.QueryController.prototype.getPreviewUrl = function() {
   return this.sce_.trustAsResourceUrl(
-    this.previewMesurementUrl + '?code=' +
+    'https://shop.geoportail.lu/Portail/commande/webservices/getMesuragePreview.jsp' +
+    '?codeCommune=' +
     this.previewTownCode + '&filename=' +
     this.previewFilename);
 };
