@@ -53,8 +53,6 @@ class Download(object):
     @view_config(route_name='download_sketch')
     def download_sketch(self):
 
-        if self.request.user is None:
-            return HTTPUnauthorized()
         filename = self.request.params.get('name', None)
         if filename is None:
             return HTTPBadRequest()
@@ -118,7 +116,10 @@ class Download(object):
 
     def _log_download_sketch_stats(self, filename, town):
         sketch_download = SketchDownload()
-        sketch_download.login = self.request.user.username
+        if self.request.user is not None:
+            sketch_download.login = self.request.user.username
+        else:
+            sketch_download.login = None
         sketch_download.application = self.request.host
         sketch_download.filename = filename
         sketch_download.directory = town
