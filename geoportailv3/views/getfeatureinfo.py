@@ -692,7 +692,7 @@ class Getfeatureinfo(object):
 
         return features
 
-    def get_info_from_pf(self, layer_id, rows, measurements=False,
+    def get_info_from_pf(self, layer_id, rows, measurements=True,
                          attributes_to_remove=""):
         import geoportailv3.PF
         pf = geoportailv3.PF.PF()

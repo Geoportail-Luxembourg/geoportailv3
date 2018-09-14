@@ -88,6 +88,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {app.Notify} appNotify Notify service.
  * @param {string} downloadresourceUrl The url to download a resource.
  * @param {string} qrServiceUrl The qr service url.
+ * @param {string} previewMesurementUrl The preview service url.
  * @export
  * @ngInject
  */
@@ -97,7 +98,37 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
-    appNotify, downloadresourceUrl, qrServiceUrl) {
+    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl) {
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewDescription = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewParcelId = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewTownCode = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewFilename = '';
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.preview = false;
+
   /**
    * @type {app.Notify}
    * @private
@@ -264,6 +295,12 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @export
    */
   this.qrServiceUrl = qrServiceUrl;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewMesurementUrl = previewMesurementUrl;
 
   /**
    * @type {string}
@@ -949,6 +986,38 @@ app.QueryController.prototype.getTemplatePath = function(layer) {
  */
 app.QueryController.prototype.getTrustedUrl = function(url) {
   return this.sce_.trustAsResourceUrl(url);
+};
+
+
+/**
+ * Get a trusted preview url.
+ * @return {*} The trusted url.
+ * @export
+ */
+app.QueryController.prototype.getPreviewUrl = function() {
+  return this.sce_.trustAsResourceUrl(
+    this.previewMesurementUrl + '?code=' +
+    this.previewTownCode + '&filename=' +
+    this.previewFilename);
+};
+
+
+/**
+ * Open preview mesurement popup.
+ * @param {string} townCode The townCode.
+ * @param {string} filename The measurement file name.
+ * @param {string} description The description of the survey.
+ * @param {string} parcelId The technical parcel id.
+ * @export
+ */
+app.QueryController.prototype.openPreviewMesurage = function(townCode, filename, description, parcelId) {
+  this.preview = true;
+  this.previewTownCode = townCode;
+  this.previewFilename = filename;
+  this.previewDescription = description.trim() + ' - No ' +
+    filename.substring(0, 5) + ' MES_TYPE_' + filename.substring(5, 6) + ' ' +
+    filename.substring(8, 10) + '/' + filename.substring(10, 12) + '/' + filename.substring(12, 16);
+  this.previewParcelId = parcelId;
 };
 
 

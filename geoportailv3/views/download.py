@@ -7,10 +7,14 @@ from geoportailv3.portail import MesurageDownload, SketchDownload
 from geoportailv3.portail import PortailSession
 from geoportailv3.models import LuxDownloadUrl, LuxMeasurementDirectory
 from c2cgeoportal.models import DBSession
+from PyPDF2 import PdfFileReader
 import logging
 import mimetypes
 import geoportailv3.PF
 import urllib2
+import subprocess
+import tempfile
+import os
 
 log = logging.getLogger(__name__)
 
@@ -113,6 +117,33 @@ class Download(object):
                    % (str(filename))}
 
         return Response(f.read(), headers=headers)
+
+    @view_config(route_name='preview_measurement')
+    def preview_measurement(self):
+        towncode = self.request.params.get("code", None)
+        filename = self.request.params.get("filename", None)
+        cur_record = DBSession.query(LuxMeasurementDirectory).\
+            filter(LuxMeasurementDirectory.town_code == int(towncode)).first()
+        if cur_record is None:
+            return HTTPBadRequest("Invalid Town name")
+        measurement_filepath = "%s/%s" % (cur_record.path, filename)
+        input1 = PdfFileReader(open(measurement_filepath, 'rb'))
+        factor = 1.5
+        page0 = input1.getPage(0)
+        width = int(int(page0.mediaBox[2]) / factor)
+        height = int(int(page0.mediaBox[3]) / factor)
+        (fd, tempfilename) = tempfile.mkstemp(".png")
+        try:
+            subprocess.call(["/usr/bin/convert", "-sample",
+                             str(width) + "x" + str(height),
+                             measurement_filepath, tempfilename])
+            tfile = open(tempfilename, "r")
+            data = tfile.read()
+        finally:
+            os.close(fd)
+            os.remove(tempfilename)
+        headers = {"Content-Type": "image/png"}
+        return Response(data, headers=headers)
 
     def _log_download_sketch_stats(self, filename, town):
         sketch_download = SketchDownload()
