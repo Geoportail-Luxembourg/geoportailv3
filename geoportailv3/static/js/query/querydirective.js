@@ -103,6 +103,18 @@ app.QueryController = function($sce, $timeout, $scope, $http,
    * @type {string}
    * @export
    */
+  this.previewDescription = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.previewParcelId = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
   this.previewTownCode = '';
 
   /**
@@ -994,12 +1006,18 @@ app.QueryController.prototype.getPreviewUrl = function() {
  * Open preview mesurement popup.
  * @param {string} townCode The townCode.
  * @param {string} filename The measurement file name.
+ * @param {string} description The description of the survey.
+ * @param {string} parcelId The technical parcel id.
  * @export
  */
-app.QueryController.prototype.openPreviewMesurage = function(townCode, filename) {
+app.QueryController.prototype.openPreviewMesurage = function(townCode, filename, description, parcelId) {
   this.preview = true;
   this.previewTownCode = townCode;
   this.previewFilename = filename;
+  this.previewDescription = description.trim() + ' - No ' +
+    filename.substring(0, 5) + ' MES_TYPE_' + filename.substring(5, 6) + ' ' +
+    filename.substring(8, 10) + '/' + filename.substring(10, 12) + '/' + filename.substring(12, 16);
+  this.previewParcelId = parcelId;
 };
 
 
