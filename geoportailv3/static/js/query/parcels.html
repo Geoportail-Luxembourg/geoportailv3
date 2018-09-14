@@ -13,7 +13,7 @@
   <ul>
   <div ng-repeat="measurement in feature.attributes.measurements">
     <div ng-repeat="file in measurement.files">
-      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.town_info.town_code, file.filename)">No {{file.filename | limitTo : 5 :0}} <span translate>MES_TYPE_{{file.filename | limitTo : 1 :5}}</span> {{file.filename | limitTo : 2 :8}}/{{file.filename | limitTo : 2 :10}}/{{file.filename | limitTo : 4 :12}}</a></li>
+      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.town_info.town_code, file.filename,measurement.measurementType, measurement.parcelId)">No {{file.filename | limitTo : 5 :0}} <span translate>MES_TYPE_{{file.filename | limitTo : 1 :5}}</span> {{file.filename | limitTo : 2 :8}}/{{file.filename | limitTo : 2 :10}}/{{file.filename | limitTo : 4 :12}}</a></li>
     </div>
     <div ng-if="!measurement.files">
       <li><span translate>Mesurage non disponible</span> : {{measurement.measurementNumber}}</li>
