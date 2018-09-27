@@ -19,6 +19,9 @@ goog.require('app.LocationControl');
 goog.require('app.Map');
 goog.require('app.Mymaps');
 goog.require('app.Notify');
+goog.require('app.OfflineDownloader');
+goog.require('app.OfflineRestorer');
+goog.require('ngeo.offline.Mode');
 goog.require('app.Routing');
 goog.require('app.StateManager');
 goog.require('app.Themes');
@@ -32,6 +35,7 @@ goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('ngeo.message.popupComponent');
 goog.require('ngeo.message.Popup');
 goog.require('ngeo.misc.syncArrays');
+goog.require('ngeo.offline.module');
 goog.require('ngeo.search.module');
 goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
@@ -56,6 +60,7 @@ goog.require('ngeo.olcs.Manager');
  * manager.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
+ * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
@@ -86,19 +91,21 @@ goog.require('ngeo.olcs.Manager');
  * @param {ngeo.olcs.Service} ngeoOlcsService The service.
  * @param {Array<string>} tiles3dLayers 3D tiles layers.
  * @param {string} tiles3dUrl 3D tiles server url.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @constructor
  * @export
  * @ngInject
  */
 app.MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr,
+    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode) {
   /**
    * @type {boolean}
    * @export
@@ -202,6 +209,18 @@ app.MainController = function(
   this.appTheme_ = appTheme;
 
   /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @private
+   */
+  this.networkStatus_ = ngeoNetworkStatus;
+
+  /**
+   * @type {ngeo.offline.Mode}
+   * @export
+   */
+  this.offlineMode = ngeoOfflineMode;
+
+  /**
    * @private
    * @type {Array<string>}
    */
@@ -212,6 +231,12 @@ app.MainController = function(
    * @type {string}
    */
   this.tiles3dUrl_ = tiles3dUrl;
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @export
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @type {ol.Extent}
@@ -352,6 +377,11 @@ app.MainController = function(
   const initial3dTilesVisibleValue = appStateManager.getInitialValue('3dtiles_visible');
 
   /**
+   * @export
+   */
+  this.debugOffline = ngeoLocation.hasParam('debugOffline');
+
+  /**
    * True if no initial state is defined.
    * @type {boolean}
    * @export
@@ -490,6 +520,18 @@ app.MainController = function(
       this.appRouting_.getRoute();
     }
   }
+
+  $scope.$watch(this.isDisconnectedOrOffline.bind(this), (offline) => {
+    if (offline) {
+      if (this.sidebarOpen() && !this['layersOpen'] && !this['mymapsOpen']) {
+        this.closeSidebar();
+        this['layersOpen'] = true;
+      }
+      this.showTab('a[href=\'#mylayers\']');
+    }
+  });
+  ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
+  ngeoOfflineServiceManager.setRestoreService('appOfflineRestorer');
 };
 
 
@@ -672,7 +714,7 @@ app.MainController.prototype.manageSelectedLayers_ =
  * @export
  */
 app.MainController.prototype.openFeedback = function() {
-  if (this.sidebarOpen) {
+  if (this.sidebarOpen()) {
     this.closeSidebar();
     this['feedbackOpen'] = true;
   } else {
@@ -886,6 +928,15 @@ app.MainController.prototype.toggleTiles3dVisibility = function() {
     piwik.push(['setDocumentTitle', '3dtiles_visible']);
     piwik.push(['trackPageView']);
   }
+};
+
+/**
+ * Check if disconnected or offline mode enabled.
+ * @return {boolean} the state.
+ * @export
+ */
+app.MainController.prototype.isDisconnectedOrOffline = function() {
+  return this.offlineMode.isEnabled() || !!this.networkStatus_.isDisconnected();
 };
 
 app.module.controller('MainController', app.MainController);

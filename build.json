@@ -16,6 +16,9 @@
   "compile": {
     "entry_point": "app.main",
     "externs": [
+      "node_modules/openlayers/externs/olx.js",
+      "node_modules/openlayers/externs/oli.js",
+      "node_modules/ngeo/options/ngeox.js",
       "node_modules/openlayers/externs/bingmaps.js",
       "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
@@ -41,6 +44,7 @@
       ".build/externs/angular-1.6.js",
       ".build/externs/angular-1.6-q_templated.js",
       ".build/externs/angular-1.6-http-promise_templated.js",
+      "geoportailv3/externs/localforage.js",
       "geoportailv3/externs/piwik.js",
       "geoportailv3/externs/fuse.js",
       "geoportailv3/externs/mapfish-print.js",
@@ -54,9 +58,6 @@
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
-      "node_modules/ngeo/options/ngeox.js",
-      "node_modules/openlayers/externs/olx.js",
-      "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
       "*"

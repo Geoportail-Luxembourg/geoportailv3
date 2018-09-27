@@ -11,7 +11,8 @@
     lidar = settings.get('lidar')
 %>\
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
+<html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl"
+                                          manifest="${request.route_url('appcache')}">
   <head>
   <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
@@ -35,14 +36,21 @@
     <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
     % endif
  </head>
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-inner">
           <div class="pull-left brand">
-            <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
+            <img src="${request.static_url('geoportailv3:static/images/gov-light.png')}" alt="Gouvernement du Grand-Duché de Luxembourg">
           </div>
+        </div>
+
+        <div class="offline-msg alert-danger" translate>
+          <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
+            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
+          </span>
+          <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
         </div>
 
         <ul class="nav navbar-nav pull-right">
@@ -103,13 +111,13 @@
             <span translate>Afficher les modèles 3D</span>
           </div>
           <ul class="nav nav-tabs">
-            <li role="presentation">
-            <a href="#mylayers" data-toggle="tab">
-              <span translate>my_layers</span>
-              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            <li role="presentation" class="my-layers-tab">
+              <a href="#mylayers" data-toggle="tab">
+                <span translate>my_layers</span>
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
               </a>
             </li>
-            <li role="presentation" class="active">
+            <li role="presentation" class="active catalog-tab">
               <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
           </ul>
@@ -119,7 +127,7 @@
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
               </app-layermanager>
-              <div class="text-center">
+              <div class="text-center add-layers">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
@@ -152,7 +160,7 @@
         </div>
 
         <!-- Infos -->
-        <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+        <div ng-if="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
@@ -249,6 +257,14 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <ngeo-offline
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-mask-margin="::100"
+          ngeo-offline-min-zoom="::12"
+          ngeo-offline-max-zoom="::16"
+          ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
+      >
+      </ngeo-offline>
     </div>
   </div>
     <!-- Begin bottom bar -->
@@ -321,6 +337,7 @@
       window.CLOSURE_NO_DEPS = true;
     </script>
     <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
+    <script src="${request.static_url('%s/localforage/dist/localforage.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/ngeo/third-party/jquery-ui/jquery-ui.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
@@ -424,6 +441,8 @@
          appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
          appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
          appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
+         appModule.value('ngeoOfflineTestUrl', 'infobar/scaleselector.html');
+         appModule.value('ngeoOfflineTemplateUrl', function() {return 'js/offlineNgeoComponent.html';});
          appModule.value('ngeoOlcsControls3dTemplateUrl', 'olcs/controls3d.html');
          appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
          appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
