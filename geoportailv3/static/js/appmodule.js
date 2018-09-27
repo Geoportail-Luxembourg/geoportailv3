@@ -10,6 +10,9 @@ goog.require('ngeo');
 goog.require('ngeo.misc.sortableComponent');
 goog.require('ngeo.statemanager.module');
 goog.require('ngeo.search.module');
+goog.require('ngeo.offline.module');
+goog.require('ngeo.olcs.olcsModule');
+goog.require('app.offline.Configuration');
 goog.require('ol.has');
 
 goog.require('ngeo.olcs.olcsModule');
@@ -19,15 +22,12 @@ goog.require('ngeo.search.module');
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [
-  ngeo.module.name, 'gettext',
-  ngeo.olcs.olcsModule.name,
-  ngeo.search.module.name
-]).run(function() {
-  if (!ol.has.TOUCH) {
-    goog.dom.classlist.add(document.body, 'no-touch');
-  }
-});
+app.module = angular.module('app', [ngeo.module.name, 'gettext', ngeo.olcs.olcsModule.name, ngeo.search.module.name, ngeo.offline.module.name])
+    .run(function() {
+      if (!ol.has.TOUCH) {
+        goog.dom.classlist.add(document.body, 'no-touch');
+      }
+    });
 
 
 // Use ngeo's mockLocationProvider to work around a problem in Angular
@@ -53,6 +53,8 @@ app.module.config(['$sceDelegateProvider', function($sceDelegateProvider) {
   ]);
 }]);
 
+// Define the offline download configuration service
+app.module.service('ngeoOfflineConfiguration', app.offline.Configuration);
 
 /**
  * @param {string} name The string to sanitize.
@@ -68,7 +70,9 @@ app.module.config(['$httpProvider', function($httpProvider) {
 }]).factory('noCacheInterceptor', function() {
   return {
     request: function(config) {
-      if (config.method == 'GET' && config.url.indexOf('.html') === -1) {
+      if (config.method == 'GET' &&
+          config.url.indexOf('geoportailv3.json') === -1 && // static files already have cache control
+          config.url.indexOf('.html') === -1) {
         var separator = config.url.indexOf('?') === -1 ? '?' : '&';
         config.url = config.url + separator + 'noCache=' + new Date().getTime();
       }

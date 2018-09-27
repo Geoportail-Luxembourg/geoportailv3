@@ -12,6 +12,7 @@
  */
 goog.provide('app.InfobarDirectiveController');
 goog.provide('app.infobarDirective');
+goog.require('ngeo.offline.NetworkStatus');
 
 goog.require('app');
 
@@ -39,15 +40,22 @@ app.module.directive('appInfobar', app.infobarDirective);
 
 
 /**
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
  * @ngInject
  * @constructor
  * @export
  */
-app.InfobarDirectiveController = function() {
+app.InfobarDirectiveController = function(ngeoNetworkStatus) {
   /**
-     * @type {boolean}
-     */
+   * @type {boolean}
+   */
   this['infobarOpen'] = false;
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @export
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 };
 
 

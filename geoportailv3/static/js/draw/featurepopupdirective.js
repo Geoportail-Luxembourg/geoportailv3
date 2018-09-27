@@ -7,6 +7,7 @@ goog.provide('app.featurePopupDirective');
 goog.require('app');
 goog.require('app.Mymaps');
 goog.require('app.profileDirective');
+goog.require('ngeo.offline.NetworkStatus');
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -51,6 +52,7 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.UserManager} appUserManager The user manager service.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {Document} $document Document.
@@ -60,7 +62,13 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
-    mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
+    ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
+
+  /**
+   * @type {ngeo.offline.NetworkStatus}
+   * @private
+   */
+  this.ngeoNetworkStatus_ = ngeoNetworkStatus;
 
   /**
    * @type {app.Export}
@@ -559,7 +567,8 @@ app.FeaturePopupController.prototype.getLength = function() {
 app.FeaturePopupController.prototype.updateElevation = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
-      !this.feature.get('isLabel')) {
+      !this.feature.get('isLabel') &&
+      !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
@@ -577,7 +586,8 @@ app.FeaturePopupController.prototype.updateElevation = function() {
  */
 app.FeaturePopupController.prototype.updateProfile = function() {
   if (goog.isDef(this.feature) &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
+      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
+      !this.ngeoNetworkStatus_.isDisconnected()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);

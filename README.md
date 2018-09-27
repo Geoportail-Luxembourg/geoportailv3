@@ -54,14 +54,22 @@ Local run
 ---------
 
 To some extent, it is possible to simulate the services needed by the
-application using git@github.com:camptocamp/luxembourg_dev_db.git
+application using git@github.com:camptocamp/luxembourg_dev_db.git.
+Docker is required.
 
+Install it:
 
-Automatic deployement
----------------------
+```bash
+cd ..
+git clone git@github.com:camptocamp/luxembourg_dev_db.git
+cd luxembourg_dev_db
+make
+```
 
-3D demo: https://3d-demo.geoportail.lu/
-3D dev: https://3d-test.geoportail.lu/
+Serve the geoportal:
 
+```bash
+cd ../geoportailv3
+make -f  <user>.mk serve
+```
 
-   

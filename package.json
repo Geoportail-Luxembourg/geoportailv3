@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@camptocamp/cesium": "1.43.1",
-    "@camptocamp/closure-util": "1.27.0",
+    "@camptocamp/closure-util": "https://api.github.com/repos/camptocamp/closure-util/tarball/cbead63",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
     "angular-dynamic-locale": "0.1.32",
@@ -23,6 +23,7 @@
     "angular-touch": "1.6.6",
     "angular-ui-date": "1.1.1",
     "angular-ui-slider": "0.4.0",
+    "babel-polyfill": "6.26.0",
     "bootstrap": "3.3.7",
     "corejs-typeahead": "1.1.1",
     "d3": "4.7.4",
@@ -41,10 +42,11 @@
     "less": "2.7.1",
     "less-plugin-autoprefix": "1.5.1",
     "less-plugin-clean-css": "1.5.1",
+    "localforage": "1.7.1",
+    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/d736fff",
+    "nomnom": "1.8.1",
     "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/9bc93a85a2cf25fbec11905597f3c5cbc18acea5",
     "olcs": "0.0.2",
-    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/f81ab0c24624cfbc5e6974a27c4c9f0d4d3f1b38",
-    "nomnom": "1.8.1",
     "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/72ca7b2",
     "phantomjs": "~1.9.7-5",
     "phantomjs-prebuilt": "2.1.12",
@@ -53,7 +55,6 @@
     "temp": "0.8.3",
     "typeahead.js": "~0.11.1",
     "url-polyfill": "1.0.11",
-    "babel-polyfill": "6.26.0",
     "walk": "2.3.9",
     "whatwg-fetch": "1.0.0"
   }

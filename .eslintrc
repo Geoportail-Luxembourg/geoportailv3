@@ -22,6 +22,7 @@
     "ol": false,
     "olcs": false,
     "Cesium": false,
+    "localforage": false,
     "proj4": false,
     "ngeo": false,
     "gmf": false,
