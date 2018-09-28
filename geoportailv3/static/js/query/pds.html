@@ -1,0 +1,6 @@
+﻿<h1>{{layers.layerLabel | translate}}</h1>
+
+<div class="poi-feature">
+  <app-pdsreport app-pagreport-staging="false"
+    app-pdsreport-ids="ctrl.joinAttributes(layers.features, 'textstring', ',')">
+</div>
