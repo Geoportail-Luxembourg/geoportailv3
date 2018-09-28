@@ -11,7 +11,6 @@ import urllib2
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formatdate
 import time
 import sys
 
@@ -26,6 +25,7 @@ class Pds(object):
         self.config = self.request.registry.settings
         self.localizer = get_localizer(self.request)
         self.link = 'demo'
+
     def __download(self, num):
         if self.staging:
             url = "%s?parcelid=%s" % (
@@ -62,12 +62,12 @@ class Pds(object):
         os.remove(self.filename)
         return
 
-    def __send_mail(self, email,files):
+    def __send_mail(self, email, files):
         if self.link == 'error':
             mailtext = _("PDS Error during report generation")
         else:
-            mailtext = _('Veuillez trouver en annexe votre attestation "Plans directeurs sectoriels"')
-        #msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
+            mailtext = _('Veuillez trouver en annexe votre '
+                         + 'attestation "Plans directeurs sectoriels"')
         msg = MIMEMultipart()
         me = 'support@geoportail.lu'
         you = email
@@ -78,7 +78,7 @@ class Pds(object):
             print bcc
             mails.append(bcc)
         else:
-            print "no bcc_address in" + str(self.config["pds"]) 
+            print "no bcc_address in" + str(self.config["pds"])
         msg['Subject'] = 'Attestation PDS '
         msg['From'] = me
         msg['To'] = you
@@ -90,7 +90,8 @@ class Pds(object):
                               Name=os.path.basename(f)
                               )
                 # After the file is closed
-                part['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(f)
+                a = 'attachment; filename="%s"' % os.path.basename(f)
+                part['Content-Disposition'] = a
                 msg.attach(part)
         s = smtplib.SMTP(self.config["pds"]["smtp_server"])
         s.sendmail(me, mails, msg.as_string())
@@ -110,10 +111,9 @@ class Pds(object):
                  mapping={'email': email.encode('utf-8')})
         try:
             self.__download(oid)
-            #self.__upload2owncloud()
         except:
             log.error(sys.exc_info()[0])
             self.link = 'error'
-        self.__send_mail(email,[self.filename])
+        self.__send_mail(email, [self.filename])
         headers = {"Content-Type": 'text/html'}
         return Response(self.localizer.translate(resp), headers=headers)
