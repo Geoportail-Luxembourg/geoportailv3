@@ -288,11 +288,6 @@ app.CasiporeportController.prototype.generateRepport = function() {
 app.module.controller('AppCasiporeportController',
                       app.CasiporeportController);
 
-
-
-
-
-
 /**
  * @param {string} appPdsreportTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
