@@ -303,8 +303,6 @@ def main(global_config, **settings):
         "pds_report",
         "/pds/report/{oid}.pdf"
     )
-
-
     config.add_route(
         "pag_files",
         "/pag/files/{_file}"
