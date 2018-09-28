@@ -295,7 +295,16 @@ def main(global_config, **settings):
         "casipo_report",
         "/casipo/report/{oid}.pdf"
     )
-
+    # pds routes
+    config.add_route(
+        "pds_url",
+        "/pds"
+    )
+    # pag routes
+    config.add_route(
+        "pds_report",
+        "/pds/report/{oid}.pdf"
+    )
     config.add_route(
         "pag_files",
         "/pag/files/{_file}"

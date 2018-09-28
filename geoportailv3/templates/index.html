@@ -420,6 +420,7 @@
          appModule.constant('requestScheme', "${request.scheme}");
          appModule.constant('pagUrl', "${request.route_url('pag_url')}");
          appModule.constant('casipoUrl', "${request.route_url('casipo_url')}");
+         appModule.constant('pdsUrl', "${request.route_url('pds_url')}");
          appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
          appModule.constant('appAuthtktCookieName', "${authtkt_cookie_name}");
          appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
@@ -471,6 +472,7 @@
          appModule.value('appRoutingTemplateUrl', 'routing/routing.html');
          appModule.value('appPagreportTemplateUrl', 'query/pagreport.html');
          appModule.value('appCasiporeportTemplateUrl', 'query/casiporeport.html');
+         appModule.value('appPdsreportTemplateUrl', 'query/pdsreport.html');
          appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
          appModule.value('appWmsTreeTemplateUrl', 'externaldata/wmstree.html');
          appModule.value('appWmtsTreeTemplateUrl', 'externaldata/wmtstree.html');

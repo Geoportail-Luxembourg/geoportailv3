@@ -140,7 +140,16 @@ vars:
       smtp_server: 
       bcc_address: 
       file_server:
-
+    pds:
+      staging_url:
+      prod_url:
+      fme_token:
+      owncloud_internal_url:
+      owncloud_external_url:
+      owncloud_user:
+      owncloud_password:
+      smtp_server:
+      bcc_address:   
     casipo:
       staging_url:
       prod_url:
