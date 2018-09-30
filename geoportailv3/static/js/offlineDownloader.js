@@ -14,14 +14,21 @@ const OfflineDownloader = class extends downloader {
    * @ngInject
    * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
+   * @param {angular.$window} $window Window.
    */
-  constructor(ngeoOfflineConfiguration, appMymapsOffline) {
+  constructor(ngeoOfflineConfiguration, appMymapsOffline, $window) {
     super(ngeoOfflineConfiguration);
     /**
      * @type {app.MymapsOffline}
      * @private
      */
     this.appMymapsOffline_ = appMymapsOffline;
+
+    /**
+     * @type {angular.$window}
+     * @private
+     */
+    this.window_ = $window;
   }
 
   /**
@@ -32,6 +39,11 @@ const OfflineDownloader = class extends downloader {
    */
   save(extent, map) {
     this.appMymapsOffline_.save();
+    var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+    piwik.push(['setDocumentTitle',
+      'saveOfflineMap'
+    ]);
+    piwik.push(['trackPageView']);
     return super.save(extent, map);
   }
 };
