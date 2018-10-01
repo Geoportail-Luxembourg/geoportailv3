@@ -67,9 +67,10 @@ class Pds(object):
             mailtext = _("PDS Error during report generation")
         else:
             mailtext = _('Bonjour,\n Veuillez trouver en annexe'
-                         + 'votre attestation "Plans directeurs sectoriels".\n\n'
-                         + 'Meilleures salutations,'
-                         + 'L''équipe du géoportail et du Département de l''aménagement du territoire'
+                         + 'votre attestation "Plans directeurs 
+                         + 'sectoriels".\n\nMeilleures salutations,'
+                         + 'L''équipe du géoportail et du Département '
+                         + 'de l''aménagement du territoire'
                          )
         msg = MIMEMultipart()
         me = 'support@geoportail.lu'
