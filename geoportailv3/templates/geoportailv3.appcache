@@ -1,10 +1,11 @@
 CACHE MANIFEST
 
 <%
-  import os
-  fonts = os.listdir('geoportailv3/static/build/fonts/')
-  webfonts = os.listdir('geoportailv3/static/webfonts/')
   settings = request.registry.settings
+  import os
+  jsbuild_root_dir = settings.get('jsbuild')['root_dir']
+  fonts = os.listdir(jsbuild_root_dir + '/geoportailv3/static/build/fonts/')
+  webfonts = os.listdir(jsbuild_root_dir + '/geoportailv3/static/webfonts/')
   import time
 %>
 
