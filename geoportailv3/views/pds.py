@@ -67,7 +67,7 @@ class Pds(object):
             mailtext = _("PDS Error during report generation")
         else:
             mailtext = _('Bonjour,\n Veuillez trouver en annexe'
-                         + 'votre attestation "Plans directeurs 
+                         + 'votre attestation "Plans directeurs'
                          + 'sectoriels".\n\nMeilleures salutations,'
                          + 'L''équipe du géoportail et du Département '
                          + 'de l''aménagement du territoire'
