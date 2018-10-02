@@ -929,6 +929,9 @@ app.QueryController.prototype.hasValidFID = function(feature) {
  */
 app.QueryController.prototype.isFIDValid_ = function(fid) {
   var valid = true;
+  if (fid === undefined) {
+    return false;
+  }
   var fids = fid.split(',');
   fids.forEach(function(curFid) {
     if (!(!!curFid && curFid.split('_').length >= 2)) {
