@@ -636,61 +636,64 @@ app.QueryController.getAllChildren_ = function(element) {
 
 
 /**
- * @param {string|undefined} fid The feature Id.
+ * @param {string|undefined} fid The comma separated list of feature id.
  * @private
  */
 app.QueryController.prototype.getFeatureInfoById_ = function(fid) {
-  var splittedFid = fid.split('_');
-  var layersList = [splittedFid[0]];
-  var layerLabel = {};
+  var fids = fid.split(',');
+  fids.forEach(function(curFid) {
+    var splittedFid = curFid.split('_');
+    var layersList = [splittedFid[0]];
+    var layerLabel = {};
 
 
-  this.appThemes_.getFlatCatalog().then(
-      function(flatCatalogue) {
+    this.appThemes_.getFlatCatalog().then(
+        function(flatCatalogue) {
 
-        if (layersList.length > 0) {
-          this.isQuerying_ = true;
-          this.map_.getViewport().style.cursor = 'wait';
-          this.content = [];
-          this.http_.get(
-              this.getInfoServiceUrl_,
-            {params: {
-              'fid': fid
-            }}).then(
-              function(resp) {
-                var showInfo = false;
-                if (!this.appGetDevice_.testEnv('xs')) {
-                  showInfo = true;
-                  this['hiddenContent'] = false;
-                } else {
-                  this['hiddenContent'] = true;
-                }
-                var node = goog.array.find(flatCatalogue, function(catItem) {
-                  return catItem.id == splittedFid[0];
-                });
-                if (goog.isDefAndNotNull(node)) {
-                  var layer = this.getLayerFunc_(node);
-                  var idx = goog.array.findIndex(this.map.getLayers().getArray(), function(curLayer) {
-                    if (curLayer.get('queryable_id') === layer.get('queryable_id')) {
-                      return true;
-                    }
-                    return false;
-                  }, this);
-                  if (idx === -1) {
-                    this.map_.addLayer(layer);
+          if (layersList.length > 0) {
+            this.isQuerying_ = true;
+            this.map_.getViewport().style.cursor = 'wait';
+            this.content = [];
+            this.http_.get(
+                this.getInfoServiceUrl_,
+              {params: {
+                'fid': curFid
+              }}).then(
+                function(resp) {
+                  var showInfo = false;
+                  if (!this.appGetDevice_.testEnv('xs')) {
+                    showInfo = true;
+                    this['hiddenContent'] = false;
+                  } else {
+                    this['hiddenContent'] = true;
                   }
-                  layerLabel[splittedFid[0]] = layer.get('label');
-                }
-                this.showInfo_(false, resp, layerLabel, showInfo, true);
-              }.bind(this),
-              function(error) {
-                this.clearQueryResult_(this.QUERYPANEL_);
-                this['infoOpen'] = false;
-                this.map_.getViewport().style.cursor = '';
-                this.isQuerying_ = false;
-              }.bind(this));
-        }
-      }.bind(this));
+                  var node = goog.array.find(flatCatalogue, function(catItem) {
+                    return catItem.id == splittedFid[0];
+                  });
+                  if (goog.isDefAndNotNull(node)) {
+                    var layer = this.getLayerFunc_(node);
+                    var idx = goog.array.findIndex(this.map.getLayers().getArray(), function(curLayer) {
+                      if (curLayer.get('queryable_id') === layer.get('queryable_id')) {
+                        return true;
+                      }
+                      return false;
+                    }, this);
+                    if (idx === -1) {
+                      this.map_.addLayer(layer);
+                    }
+                    layerLabel[splittedFid[0]] = layer.get('label');
+                  }
+                  this.showInfo_(true, resp, layerLabel, showInfo, true);
+                }.bind(this),
+                function(error) {
+                  this.clearQueryResult_(this.QUERYPANEL_);
+                  this['infoOpen'] = false;
+                  this.map_.getViewport().style.cursor = '';
+                  this.isQuerying_ = false;
+                }.bind(this));
+          }
+        }.bind(this));
+  }, this);
 };
 
 
@@ -920,15 +923,19 @@ app.QueryController.prototype.hasValidFID = function(feature) {
 
 /**
  * Has the fid a valid geoportail v3 syntax.
- * @param {string|undefined} fid The feature id.
- * @return {boolean} True if fid is valid.
+ * @param {string|undefined} fid The comma separated list of feature id.
+ * @return {boolean} True if all fids are valid.
  * @private
  */
 app.QueryController.prototype.isFIDValid_ = function(fid) {
-  if (!!fid && fid.split('_').length >= 2) {
-    return true;
-  }
-  return false;
+  var valid = true;
+  var fids = fid.split(',');
+  fids.forEach(function(curFid) {
+    if (!(!!curFid && curFid.split('_').length >= 2)) {
+      valid = false;
+    }
+  }, this);
+  return valid;
 };
 
 
