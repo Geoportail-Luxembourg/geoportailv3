@@ -32,5 +32,5 @@ NETWORK:
 FALLBACK:
 /theme/main /theme/main
 /themes ${request.route_url('themes', _query={'version': '2', 'background': 'bglayers', 'interface': 'desktop', 'catalogue': 'true', 'min_levels': '1'})}
-/mymaps/allcategories /mymaps/allcategories
+${request.route_url('mymaps_getallcategories')} ${request.route_url('mymaps_getallcategories')}
 /predefined_wms /predefined_wms
