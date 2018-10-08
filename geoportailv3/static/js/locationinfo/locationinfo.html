@@ -5,7 +5,7 @@
       <input onclick="this.select();" type="text" class="form-control" name="shorturl" ng-model="ctrl.url" readonly="readonly" />
     </div>
     <div class="col-xs-4">
-      <img class="img-responsive" style="margin-top: 22px;" ng-src="{{ ctrl.qrUrl }}"></img>
+      <img class="img-responsive" style="margin-top: 22px;" ng-if="ctrl.qrUrl" ng-src="{{ ctrl.qrUrl }}"></img>
     </div>
   </div>
   <div class="row">
