@@ -25,6 +25,7 @@ class Pds(object):
         self.config = self.request.registry.settings
         self.localizer = get_localizer(self.request)
         self.link = 'demo'
+        self.filenames = []
 
     def __download(self, num):
         if self.staging:
@@ -37,12 +38,12 @@ class Pds(object):
                  num
                  )
         try:
-            print url
             f = urllib2.urlopen(url, None, 1800)
             data = f
-            self.filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
-            with open(self.filename, 'wb') as fp:
+            filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
+            with open(filename, 'wb') as fp:
                 shutil.copyfileobj(data, fp)
+            self.filenames.append(filename)
         except:
             log.error(sys.exc_info()[0])
             data = None
@@ -112,11 +113,13 @@ class Pds(object):
             self.request.params.get('staging', 'False').lower() == 'true'
         resp = _("PDS webservice response ${email}",
                  mapping={'email': email.encode('utf-8')})
-        try:
-            self.__download(oid)
-        except:
-            log.error(sys.exc_info()[0])
-            self.link = 'error'
-        self.__send_mail(email, [self.filename])
+        oids = oid.split(",")
+        for curOid in oids:
+            try:
+                self.__download(curOid)
+            except:
+                log.error(sys.exc_info()[0])
+                self.link = 'error'
+        self.__send_mail(email, self.filenames)
         headers = {"Content-Type": 'text/html'}
         return Response(self.localizer.translate(resp), headers=headers)
