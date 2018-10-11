@@ -427,6 +427,14 @@ app.MainController = function(
   appLayerOpacityManager.init(this.map_);
   ngeoFeatureOverlayMgr.init(this.map_);
   appLayerPermalinkManager.init($scope, this.map_, this['selectedLayers']);
+  $scope.$watch(function() {
+    return appLayerPermalinkManager.hasUnavailableLayers();
+  }.bind(this), function(newVal, oldVal) {
+    if (newVal !== null && oldVal !== null && newVal !== oldVal && newVal === true) {
+      this['userOpen'] = true;
+    }
+  }.bind(this));
+
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
