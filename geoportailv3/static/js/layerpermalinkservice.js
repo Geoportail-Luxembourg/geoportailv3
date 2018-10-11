@@ -7,6 +7,7 @@ goog.provide('app.LayerPermalinkManager');
 
 goog.require('app');
 goog.require('app.GetLayerForCatalogNode');
+goog.require('app.Notify');
 goog.require('app.WmsHelper');
 goog.require('app.WmtsHelper');
 goog.require('app.StateManager');
@@ -30,11 +31,23 @@ goog.require('ol.events');
  * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @param {app.WmsHelper} appWmsHelper The wms helper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts helper service.
+ * @param {app.Notify} appNotify Notify service.
+ * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
 app.LayerPermalinkManager = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
-    ngeoLocation, appWmsHelper, appWmtsHelper) {
+    ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, gettextCatalog) {
+  /**
+   * @type {angularGettext.Catalog}
+   */
+  this.gettextCatalog = gettextCatalog;
+
+  /**
+   * @type {app.Notify}
+   * @private
+   */
+  this.notify_ = appNotify;
 
   /**
    * @type {app.WmsHelper}
@@ -307,6 +320,18 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
       }
     }
   }, this);
+  if (this.unavailableLayers_.length > 0) {
+    var msg = this.gettextCatalog.getString('Certaines couches sont protégées. Veuillez vous connecter avec un utilisateur disposant les droits de visualiser cette couche.');
+    this.notify_(msg, app.NotifyNotificationType.WARNING);
+  }
+};
+
+/**
+ * Tell if t leat one unavaillable layer is present.
+ * @return {boolean} True if has at leat one unavaillable layer.
+ */
+app.LayerPermalinkManager.prototype.hasUnavailableLayers = function() {
+  return (this.unavailableLayers_.length > 0);
 };
 
 /**
