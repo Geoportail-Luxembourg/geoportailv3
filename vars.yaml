@@ -27,8 +27,12 @@ vars:
 
     ########################################
     # FIXME added for gmf 2.3
+
+    interfaces:
+      - desktop
+    
     mapserverproxy:
-      default_ogc_server: Main PNG
+      default_ogc_server: source for image/jpeg
 
     welcome_email:
       # Used to send a welcome email for new user
@@ -86,39 +90,131 @@ vars:
 
     interfaces_config:
       default: &interface
+        static: &static
+          assetsBaseUrl: '{package}_geoportal:static-ngeo/'
+          # langUrls:
+          #   fr: 'geoportailv3:static/build/locale/fr/geoportailv3.json'
+          #   en: 'geoportailv3:static/build/locale/en/geoportailv3.json'
+          #   de: 'geoportailv3:static/build/locale/de/geoportailv3.json'
+          #   lb: 'geoportailv3:static/build/locale/lb/geoportailv3.json'
+          arrowModelUrl: '{package}_geoportal:static/models/arrow5.gl'
+          appQueryTemplatesPath: '{package}_geoportal:static/js/query/'
+          appImagesPath: '{package}_geoportal:static/images/'
+          # FIXME add all missing node_modules pagackages
         constants: &constants
-          defaultTheme: Demo
+          defaultTheme: main
           defaultLang: en
-          gmfSearchGroups: [osm, district]
-          sentryUrl: https://eb74985290ea4f3c9ae6665db9252d72@sentry.camptocamp.com/14
-          gmfSearchActions:
-            - action: add_theme
-              title: Add a theme
-            - action: add_group
-              title: Add a sub theme
-            - action: add_layer
-              title: Add a layer
-          gmfExternalOGCServers:
-            - name: Swiss Topo WMS
-              type: WMS
-              url: https://wms.geo.admin.ch/?lang=fr
-            - name: Swiss Topo WMTS
-              type: WMTS
-              url: https://wmts.geo.admin.ch/1.0.0/WMTSCapabilities.xml?lang=fr
-            - name: ASIT VD
-              type: WMTS
-              url: https://ows.asitvd.ch/wmts/1.0.0/WMTSCapabilities.xml
+          sentryUrl: ''
+          gmfSearchActions: []
+          gmfExternalOGCServers: []
+          fulltextsearch_param: {}
+          remoteProxyWms: false
+          defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
+          maxExtent: [2.6, 47.7, 8.6, 51]
+          requestScheme: 'main'  # request.scheme, how FIXME
+          appExcludeThemeLayerSearch: FIXME
+          appAuthtktCookieName: FIXME
+          bboxLidar: FIXME
+          bboxSrsLidar: FIXME
+          lidarDemoUrl: FIXME
+          tiles3dLayers: ['buildings25d', 'buildings3d', 'bridges3d']
+          tiles3dUrl: 'https://3dtiles.geoportail.lu/3dtiles/'
+          appOverviewMapShow: true
+          ngeoLayertreeTemplateUrl: 'catalog/layertree.html'
+          ngeoPopupTemplateUrl: 'layerinfo/popup.html'
+          ngeoScaleselectorTemplateUrl: 'infobar/scaleselector.html'
+          ngeoOfflineTestUrl: 'infobar/scaleselector.html'
+          ngeoOfflineTemplateUrl: 'js/offlineNgeoComponent.html'  # FIXME was a function
+          ngeoOlcsControls3dTemplateUrl: 'olcs/controls3d.html'
+          appBackgroundlayerTemplateUrl: 'backgroundlayer/backgroundlayer.html'
+          appLayermanagerTemplateUrl: 'layermanager/layermanager.html'
+          appLayerlegendsTemplateUrl: 'layerlegends/layerlegends.html'
+          appStreetviewTemplateUrl: 'streetview/streetview.html'
+          appSliderTemplateUrl: 'slider/slider.html'
+          appMeasureTemplateUrl: 'measure/measure.html'
+          appDrawTemplateUrl: 'draw/draw.html'
+          appFeaturePopupTemplateUrl: 'draw/featurepopup.html'
+          appStyleEditingTemplateUrl: 'draw/styleediting.html'
+          appSymbolSelectorTemplateUrl: 'draw/symbolselector.html'
+          appLayerinfoTemplateUrl: 'layerinfo/layerinfo.html'
+          appAuthenticationTemplateUrl: 'authentication/authentication.html'
+          appInfobarTemplateUrl: 'infobar/infobar.html'
+          appProjectionselectorTemplateUrl: 'infobar/projectionselector.html'
+          appMapTemplateUrl: 'map/map.html'
+          appThemeswitcherTemplateUrl: 'themeswitcher/themes.html'
+          appProfileTemplateUrl: 'profile/profile.html'
+          appPrintTemplateUrl: 'print/print.html'
+          appSearchTemplateUrl: 'search/search.html'
+          appShareTemplateUrl: 'share/share.html'
+          appShorturlTemplateUrl: 'share/shorturl.html'
+          appQueryTemplateUrl: 'query/info.html'
+          appLocationinfoTemplateUrl: 'locationinfo/locationinfo.html'
+          appMymapsTemplateUrl: 'mymaps/mymaps.html'
+          appRoutingTemplateUrl: 'routing/routing.html'
+          appPagreportTemplateUrl: 'query/pagreport.html'
+          appCasiporeportTemplateUrl: 'query/casiporeport.html'
+          appPdsreportTemplateUrl: 'query/pdsreport.html'
+          appExternalDataTemplateUrl: 'externaldata/externaldata.html'
+          appWmsTreeTemplateUrl: 'externaldata/wmstree.html'
+          appWmtsTreeTemplateUrl: 'externaldata/wmtstree.html'
+          appFeedbackTemplateUrl: 'feedback/feedback.html'
+          appAskredirectTemplateUrl: 'askredirect/askredirect.html'
+
+        routes: &routes
+          gmfProfileJsonUrl: profile.json
+          gmfPrintUrl: printproxy
+          authenticationBaseUrl: base  # FIXME was not existing ?
+          gmfLayersUrl: layers_root  # FIXME was not existing ?
+          gmfRasterUrl: raster  # FIXME was not existing ?
+          gmfProfileCsvUrl: profile.csv  # FIXME was not existing ?
+          gmfShortenerCreateUrl: shortener_create  # FIXME was not existing ?
+          proxyWmsUrl: wms
+          httpsProxyUrl: https_proxy
+          mymapsMapsUrl: mymaps_getmaps
+          mymapsUrl: mymaps
+          mymapsImageUrl: mymaps_image
+          loginUrl: login
+          logoutUrl: logout
+          getuserinfoUrl: getuserinfo
+          elevationServiceUrl: raster
+          profileServiceUrl: profile.json
+          poiSearchServiceUrl: fulltextsearch
+          layerSearchServiceUrl: layersearch
+          cmsSearchServiceUrl: cmssearch
+          printServiceUrl: printproxy
+          shorturlServiceUrl: shortener_create
+          postFeedbackUrl: feedback
+          getInfoServiceUrl: getfeatureinfo
+          getRemoteTemplateServiceUrl: getremotetemplate
+          isThemePrivateUrl: isthemeprivate
+          qrServiceUrl: qr
+          reverseGeocodingServiceUrl: reverse_geocode
+          routingServiceUrl: getremoteroute
+          geocodingServiceUrl: geocode
+          downloadmeasurementUrl: download_measurement
+          downloadsketchUrl: download_sketch
+          downloadresourceUrl: download_resource
+          exportgpxkmlUrl: exportgpxkml
+          getPngLegendUrl: get_png
+          getHtmlLegendUrl: get_html
+          echocsvUrl: echocsv
+          getRouteUrl: getroute
+          predefinedWmsUrl: predefined_wms
+          previewMesurementUrl: preview_measurement
+          pagUrl: pag_url
+          casipoUrl: casipo_url
+          pdsUrl: pds_url
+          arrowUrl: get_arrow_color
+
         fulltextsearch_params:
           limit: 30
           partitionlimit: 5
-        routes: &routes
           authenticationBaseUrl: base
           fulltextsearchUrl: fulltextsearch
           gmfLayersUrl: layers_root
           gmfRasterUrl: raster
           gmfProfileCsvUrl: profile.csv
           gmfShortenerCreateUrl: shortener_create
-        static:
           assetsBaseUrl: '{package}_geoportal:static-ngeo/'
         wfs_permalink:
           wfsTypes:
@@ -128,6 +224,63 @@ vars:
               label: display_name
           defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
           defaultFeaturePrefix: feature
+      desktop:
+        <<: *interface
+        constants:
+          <<: *constants
+          tags:
+              service: js
+              interface: desktop
+
+    admin_interface:
+      available_metadata:
+        - name: attribution
+        - name: bg_layer
+        - name: bg_opacity
+          type: float
+        - name: css
+        - name: display_in_switcher
+          type: boolean
+        - name: exclusion
+        - name: fake_scales  # FIXME adatp type or data ?
+          type: list
+        - name: hasRetina
+          type: boolean
+        - name: is_queryable
+          type: boolean
+        - name: legend_name
+        - name: link
+          type: url
+        - name: link_title
+        - name: max_dpi
+          type: float
+        - name: metadata_id
+        - name: page_title
+        - name: print_img
+        - name: print_long_txt_de
+        - name: print_long_txt_en
+        - name: print_long_txt_fr
+        - name: print_long_txt_lu
+        - name: print_scales
+          type: list
+        - name: print_short_txt_de
+        - name: print_short_txt_en
+        - name: print_short_txt_fr
+        - name: print_short_txt_lu
+        - name: resolutions
+          type: list
+        - name: show_in_mobile
+          type: boolean
+        - name: start_layers
+          type: list
+        - name: start_opacity
+          type: float
+        - name: start_x
+          type: float
+        - name: start_y
+          type: float
+        - name: start_zoom
+          type: float
 
     ########################################
 
@@ -294,4 +447,5 @@ update_paths:
 - checker.print
 - check_collector.hosts
 - admin_interface
+- admin_interface.available_metadata
 - shortener
