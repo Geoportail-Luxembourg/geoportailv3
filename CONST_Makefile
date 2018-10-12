@@ -77,6 +77,7 @@ GIT_REMOTE ?= origin
 GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 # ngeo
+APP_JS_FILES = $(shell find $(PACKAGE)/static/js -type f -name '*.js' 2> /dev/null)
 GCC_JS_FILES = $(shell find node_modules/openlayers/src/ol node_modules/ngeo/src node_modules/ol-cesium/src $(PACKAGE)/static/js -type f -name '*.js' 2> /dev/null)
 APP_HTML_FILES = $(shell find $(PACKAGE)/templates -type f -name '*.html')
 APP_PARTIALS_FILES := $(shell find $(PACKAGE)/static/js -type f -name '*.html')
@@ -566,9 +567,9 @@ ifeq ($(NGEO), TRUE)
 endif
 	touch $@
 
-.build/eslint.timestamp: $(GCC_JS_FILES)
+.build/eslint.timestamp: $(APP_JS_FILES)
 	mkdir -p $(dir $@)
-	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $^)
+	./node_modules/.bin/eslint $^
 	touch $@
 
 
