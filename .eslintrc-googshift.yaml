@@ -21,7 +21,8 @@
 
     'googshift/valid-provide-and-module': ['error', {
       entryPoints: ['app'],
-      root: 'geoportailv3/static/js/'
+      replace: 'static/js|app',
+      root: 'geoportailv3'
     }],
 
     'googshift/valid-requires': 'error'
