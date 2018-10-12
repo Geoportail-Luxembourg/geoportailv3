@@ -15,7 +15,7 @@
 goog.provide('app.ScalelineDirectiveController');
 goog.provide('app.scalelineDirective');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('ol.control.ScaleLine');
 
 

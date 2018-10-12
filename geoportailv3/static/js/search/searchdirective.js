@@ -13,18 +13,14 @@
 goog.provide('app.SearchDirectiveController');
 goog.provide('app.searchDirective');
 
-goog.require('app');
-goog.require('app.CoordinateString');
-goog.require('app.GetLayerForCatalogNode');
-goog.require('app.ShowLayerinfo');
-goog.require('app.Themes');
+goog.require('app.module');
+goog.require('app.BackgroundLayerSuggestion');
+goog.require('app.ThemesEventType');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.map.BackgroundLayerMgr');
-goog.require('ngeo.message.popoverComponent');
-goog.require('ngeo.search.module');
-goog.require('ngeo.map.FeatureOverlay');
-goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ngeo.search.createGeoJSONBloodhound.module');
+goog.require('ngeo.search');
+goog.require('ol.CollectionEventType');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');

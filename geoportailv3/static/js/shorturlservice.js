@@ -4,8 +4,7 @@
  */
 goog.provide('app.GetShorturl');
 
-goog.require('app');
-goog.require('ngeo.statemanager.module');
+goog.require('app.module');
 
 
 /**

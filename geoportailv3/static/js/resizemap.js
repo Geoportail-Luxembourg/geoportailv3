@@ -11,7 +11,7 @@
 
 goog.provide('app.resizemapDirective');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('ol.Map');

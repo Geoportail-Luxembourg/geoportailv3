@@ -1,9 +1,7 @@
 goog.provide('app.AskredirectController');
 goog.provide('app.askredirectDirective');
 
-goog.require('app');
-goog.require('ngeo.message.modalComponent');
-goog.require('ngeo.statemanager.module');
+goog.require('app.module');
 
 /**
  * @param {string} appAskredirectTemplateUrl URL to directive template.

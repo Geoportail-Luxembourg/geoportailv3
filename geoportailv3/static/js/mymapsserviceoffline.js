@@ -1,8 +1,6 @@
 goog.provide('app.MymapsOffline');
 
-goog.require('app');
-goog.require('app.Mymaps');
-goog.require('ngeo.offline.Configuration');
+goog.require('app.module');
 
 
 /**

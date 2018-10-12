@@ -8,13 +8,9 @@
 goog.provide('app.MapController');
 goog.provide('app.mapDirective');
 
-goog.require('app');
-goog.require('app.StateManager');
-goog.require('app.infobarDirective');
-goog.require('app.projections');
+goog.require('app.module');
 goog.require('goog.asserts');
-goog.require('ngeo.map.module');
-goog.require('ngeo.misc.debounce');
+goog.require('ol.MapProperty');
 goog.require('ol.proj');
 
 

@@ -4,7 +4,7 @@
  */
 goog.provide('app.GetElevation');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('ol.proj');
 
 

@@ -5,7 +5,7 @@
  */
 goog.provide('app.GetProfile');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.array');
 goog.require('goog.Uri.QueryData');
 goog.require('ol.format.GeoJSON');

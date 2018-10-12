@@ -5,7 +5,8 @@
 
 goog.provide('app.LocationInfoOverlay');
 
-goog.require('app');
+goog.require('app.module');
+goog.require('ol.style');
 
 
 /**

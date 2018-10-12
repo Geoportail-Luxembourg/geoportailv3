@@ -6,9 +6,8 @@
 goog.provide('app.Themes');
 goog.provide('app.ThemesEventType');
 
-goog.require('app');
-goog.require('app.BlankLayer');
-goog.require('app.GetWmtsLayer');
+goog.require('app.module');
+goog.require('app.ThemesResponse');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.array');

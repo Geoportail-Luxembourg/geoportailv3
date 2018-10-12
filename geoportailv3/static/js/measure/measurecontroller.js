@@ -10,19 +10,16 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.MeasureController');
-goog.provide('app.measureDirective');
+goog.provide('measure.MeasureController');
 
-goog.require('app');
-goog.require('app.GetProfile');
-goog.require('app.profileDirective');
-goog.require('app.Activetool');
+goog.require('app.module');
 goog.require('ngeo.misc.decorate');
 goog.require('ngeo.interaction.MeasureArea');
 goog.require('ngeo.interaction.MeasureAzimut');
 goog.require('ngeo.interaction.MeasureLength');
 goog.require('ol.Object');
 goog.require('ol.events');
+goog.require('ol.interaction.Property');
 goog.require('ol.proj');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');

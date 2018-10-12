@@ -3,20 +3,18 @@
  * application's main namespace. And it defines the application's Angular
  * module.
  */
-goog.provide('app');
+goog.provide('app.module');
 
 goog.require('goog.dom.classlist');
 goog.require('ngeo');
-goog.require('ngeo.misc.sortableComponent');
-goog.require('ngeo.statemanager.module');
 goog.require('ngeo.search.module');
 goog.require('ngeo.offline.module');
 goog.require('ngeo.olcs.olcsModule');
+goog.require('ngeo.statemanager.Location');
 goog.require('app.offline.Configuration');
 goog.require('ol.has');
+goog.require('ol.proj');
 
-goog.require('ngeo.olcs.olcsModule');
-goog.require('ngeo.search.module');
 
 
 /**

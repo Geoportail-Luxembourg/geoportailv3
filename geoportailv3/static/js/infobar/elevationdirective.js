@@ -14,10 +14,7 @@
 goog.provide('app.ElevationDirectiveController');
 goog.provide('app.elevationDirective');
 
-goog.require('app');
-goog.require('app.GetElevation');
-goog.require('app.projections');
-goog.require('ngeo.misc.debounce');
+goog.require('app.module');
 
 
 /**

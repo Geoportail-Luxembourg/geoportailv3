@@ -1,10 +1,7 @@
 goog.module('app.OfflineRestorer');
 goog.module.declareLegacyNamespace();
 
-goog.require('app');
-goog.require('app.MymapsOffline');
-goog.require('ngeo.offline.Configuration');
-goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('app.module');
 
 const restorer = goog.require('ngeo.offline.Restorer');
 

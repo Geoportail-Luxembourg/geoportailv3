@@ -5,13 +5,13 @@
 
 goog.provide('app.DrawnFeatures');
 
-goog.require('app');
-goog.require('ngeo.statemanager.Location');
-goog.require('app.ClipLine');
-goog.require('app.interaction.DrawRoute');
+goog.require('app.module');
 goog.require('app.format.FeatureHash');
 goog.require('goog.asserts');
 goog.require('goog.array');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.extent');
 goog.require('ol.Collection');
 

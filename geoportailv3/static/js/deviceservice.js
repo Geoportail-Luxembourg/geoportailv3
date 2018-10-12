@@ -4,7 +4,7 @@
  */
 goog.provide('app.GetDevice');
 
-goog.require('app');
+goog.require('app.module');
 
 
 /**

@@ -1,9 +1,7 @@
 goog.module('app.OfflineDownloader');
 goog.module.declareLegacyNamespace();
 
-goog.require('app');
-goog.require('app.MymapsOffline');
-goog.require('ngeo.offline.Configuration');
+goog.require('app.module');
 const downloader = goog.require('ngeo.offline.Downloader');
 
 /**

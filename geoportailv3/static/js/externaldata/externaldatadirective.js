@@ -13,10 +13,7 @@
 goog.provide('app.ExternalDataController');
 goog.provide('app.externalDataDirective');
 
-goog.require('app');
-goog.require('app.WmsHelper');
-goog.require('app.WmtsHelper');
-goog.require('app.ShowLayerinfo');
+goog.require('app.module');
 goog.require('goog.array');
 
 

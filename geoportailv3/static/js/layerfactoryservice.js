@@ -6,7 +6,7 @@ goog.provide('app.GetLayerForCatalogNode');
 goog.provide('app.GetWmsLayer');
 goog.provide('app.GetWmtsLayer');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ngeo.misc.decorate');
@@ -16,6 +16,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.WMTS');
+goog.require('ol.source.WMTSRequestEncoding');
 goog.require('ol.tilegrid.WMTS');
 
 

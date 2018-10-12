@@ -11,12 +11,16 @@
 goog.provide('app.RoutingController');
 goog.provide('app.routingDirective');
 
-goog.require('app');
-goog.require('app.Routing');
-goog.require('ngeo.misc.filters');
-goog.require('ngeo.filter.module');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 goog.require('ngeo.search.createGeoJSONBloodhound');
-goog.require('ngeo.search.module');
+goog.require('ol');
+goog.require('ol.geom');
+goog.require('ol.style');
+goog.require('ol.interaction');
+goog.require('ol.events');
+goog.require('ol.format.GeoJSON');
+
 
 /**
  * @param {string} appRoutingTemplateUrl Url to routing template.

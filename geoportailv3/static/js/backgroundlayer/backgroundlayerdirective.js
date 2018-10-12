@@ -16,10 +16,8 @@
 goog.provide('app.BackgroundlayerController');
 goog.provide('app.backgroundlayerDirective');
 
-goog.require('app');
-goog.require('app.Themes');
+goog.require('app.module');
 goog.require('ol.events');
-goog.require('ngeo.map.BackgroundLayerMgr');
 
 
 /**

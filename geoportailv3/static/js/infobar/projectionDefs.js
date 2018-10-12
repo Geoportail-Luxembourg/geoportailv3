@@ -1,6 +1,5 @@
 goog.provide('app.projections');
 
-goog.require('ol.Map');
 goog.require('ol.proj');
 
 proj4.defs('EPSG:32632', '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs');

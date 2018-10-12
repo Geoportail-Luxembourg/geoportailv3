@@ -4,7 +4,7 @@
  */
 goog.provide('app.BlankLayer');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('ol.layer.Tile');
 
 

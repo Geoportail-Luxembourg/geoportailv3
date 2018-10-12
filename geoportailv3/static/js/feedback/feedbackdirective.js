@@ -1,11 +1,8 @@
 goog.provide('app.FeedbackController');
 goog.provide('app.feedbackDirective');
 
-goog.require('app');
-goog.require('app.Notify');
-goog.require('app.UserManager');
-goog.require('ngeo.map.BackgroundLayerMgr');
-goog.require('ngeo.statemanager.Location');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 
 
 /**

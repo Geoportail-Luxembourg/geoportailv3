@@ -3,6 +3,7 @@
  * displaying general messages.
  */
 
+
 goog.provide('app.Notify');
 goog.provide('app.NotifyNotificationType');
 

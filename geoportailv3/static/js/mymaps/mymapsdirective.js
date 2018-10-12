@@ -9,19 +9,14 @@
 goog.provide('app.MymapsDirectiveController');
 goog.provide('app.mymapsDirective');
 
-goog.require('app');
-goog.require('app.FeaturePopup');
-goog.require('app.Mymaps');
-goog.require('app.Notify');
-goog.require('app.SelectedFeatures');
-goog.require('app.Theme');
-goog.require('app.UserManager');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('ngeo.message.extraModule');
 goog.require('ol.extent');
 goog.require('ol.format.GPX');
 goog.require('ol.format.KML');
+goog.require('ol.geom');
 
 
 /**

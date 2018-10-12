@@ -6,18 +6,14 @@
 
 goog.provide('app.Mymaps');
 
-goog.require('app');
-goog.require('app.Notify');
-goog.require('app.UserManager');
-goog.require('ngeo.offline.NetworkStatus');
-goog.require('ngeo.map.BackgroundLayerMgr');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 goog.require('goog.array');
 goog.require('goog.color');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom');
+goog.require('ol.proj');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
@@ -25,6 +21,7 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Text');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+
 
 /**
  * @typedef {Array.<Object>}

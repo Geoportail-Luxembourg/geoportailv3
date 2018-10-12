@@ -12,9 +12,8 @@
  */
 goog.provide('app.InfobarDirectiveController');
 goog.provide('app.infobarDirective');
-goog.require('ngeo.offline.NetworkStatus');
 
-goog.require('app');
+goog.require('app.module');
 
 
 /**

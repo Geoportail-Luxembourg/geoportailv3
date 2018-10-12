@@ -4,7 +4,7 @@
  */
 goog.provide('app.Map');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('ol.Map');
 
 app.Map = class extends ol.Map {

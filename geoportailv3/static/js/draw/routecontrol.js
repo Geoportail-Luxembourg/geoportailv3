@@ -4,10 +4,10 @@
  */
 goog.provide('app.RouteControl');
 
+goog.require('app.RouteControlOptions');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classlist');
-goog.require('ol.Object');
+goog.require('ol.css');
 goog.require('ol.control.Control');
 goog.require('ol.events');
 

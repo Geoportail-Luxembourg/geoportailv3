@@ -15,11 +15,8 @@
 goog.provide('app.ProjectionselectorDirectiveController');
 goog.provide('app.projectionselectorDirective');
 
-goog.require('app');
-goog.require('app.CoordinateString');
-goog.require('app.projections');
+goog.require('app.module');
 goog.require('goog.array');
-goog.require('ngeo.misc.controlComponent');
 goog.require('ol.control.MousePosition');
 
 

@@ -6,13 +6,9 @@
 goog.provide('app.ThemeswitcherController');
 goog.provide('app.themeswitcherDirective');
 
-goog.require('app');
-goog.require('app.Notify');
-goog.require('app.Theme');
-goog.require('app.Themes');
+goog.require('app.module');
 goog.require('app.ThemesEventType');
 goog.require('goog.array');
-goog.require('ngeo.statemanager.Location');
 goog.require('ol.events');
 
 

@@ -5,12 +5,10 @@
  */
 goog.provide('app.StateManager');
 
-goog.require('app');
-goog.require('app.Notify');
+goog.require('app.module');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
-goog.require('ngeo.statemanager.module');
 
 
 /**
