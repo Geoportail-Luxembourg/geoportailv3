@@ -4,15 +4,15 @@
  */
 goog.provide('app.ExclusionManager');
 
-goog.require('app');
-goog.require('app.BlankLayer');
-goog.require('app.Notify');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
+goog.require('ol.Observable');
 goog.require('goog.asserts');
 goog.require('goog.array');
-goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('ol.Object');
-goog.require('ol.Observable');
 goog.require('ol.events');
+goog.require('ol.layer.Property');
+goog.require('ol.CollectionEventType');
 
 
 /**

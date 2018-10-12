@@ -5,9 +5,7 @@
 
 goog.provide('app.ShowLayerinfo');
 
-goog.require('ngeo.message.Popup');
-goog.require('app.WmsHelper');
-goog.require('app.WmtsHelper');
+goog.require('app.module');
 
 
 /**

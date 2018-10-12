@@ -5,18 +5,12 @@
 
 goog.provide('app.LayerPermalinkManager');
 
-goog.require('app');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
+goog.require('app.ThemesEventType');
 goog.require('app.GetLayerForCatalogNode');
-goog.require('app.Notify');
-goog.require('app.WmsHelper');
-goog.require('app.WmtsHelper');
-goog.require('app.StateManager');
-goog.require('app.Themes');
-goog.require('goog.array');
-goog.require('goog.string');
-goog.require('ngeo.map.BackgroundLayerMgr');
-goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
+goog.require('ol.ObjectEventType');
 
 
 /**

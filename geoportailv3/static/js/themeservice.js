@@ -3,9 +3,8 @@
  */
 goog.provide('app.Theme');
 
-goog.require('app.Themes');
 goog.require('goog.asserts');
-goog.require('ngeo.statemanager.module');
+goog.require('app.module');
 
 
 /**

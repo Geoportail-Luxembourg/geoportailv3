@@ -10,9 +10,7 @@
 goog.provide('app.ShorturlDirectiveController');
 goog.provide('app.shorturlDirective');
 
-goog.require('app');
-goog.require('app.GetShorturl');
-goog.require('ngeo.statemanager.module');
+goog.require('app.module');
 
 
 /**

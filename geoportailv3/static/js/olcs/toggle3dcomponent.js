@@ -7,8 +7,6 @@
  */
 goog.module('app.olcs.toggle3d');
 
-goog.require('app');
-goog.require('ngeo.olcs.Service');
 
 class Controller {
   /**

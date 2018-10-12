@@ -13,22 +13,17 @@ goog.provide('app.PrintController');
 goog.provide('app.printDirective');
 
 
-goog.require('app.FeaturePopup');
-goog.require('app.GetShorturl');
-goog.require('app.Theme');
-goog.require('app.Themes');
+goog.require('app.module');
+goog.require('app.Piwik');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.string');
-goog.require('ngeo.map.FeatureOverlayMgr');
 goog.require('app.Printservice');
-goog.require('ngeo.print.Utils');
 goog.require('ol.easing');
 goog.require('ol.events');
 goog.require('ol.Observable');
-goog.require('ol.layer.Layer');
-goog.require('ol.layer.Vector');
-goog.require('ol.render.Event');
+goog.require('ol.proj');
+goog.require('ol.render.EventType');
 
 
 /**

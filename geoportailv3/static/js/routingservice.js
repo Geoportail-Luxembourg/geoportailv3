@@ -4,8 +4,11 @@
  */
 goog.provide('app.Routing');
 
-goog.require('app');
-goog.require('ol.proj');
+goog.require('app.module');
+goog.require('ol');
+goog.require('ol.style');
+goog.require('ol.geom');
+goog.require('ol.format');
 
 
 /**

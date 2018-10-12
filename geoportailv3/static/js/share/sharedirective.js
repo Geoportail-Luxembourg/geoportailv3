@@ -11,7 +11,7 @@
 goog.provide('app.ShareDirectiveController');
 goog.provide('app.shareDirective');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.Uri');
 
 

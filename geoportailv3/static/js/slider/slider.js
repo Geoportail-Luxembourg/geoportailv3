@@ -1,8 +1,8 @@
 goog.provide('app.SliderController');
 goog.provide('app.sliderDirective');
 
-goog.require('app');
-goog.require('ol.Map');
+goog.require('app.module');
+goog.require('ol');
 
 
 /**

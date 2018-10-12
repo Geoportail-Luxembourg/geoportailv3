@@ -1,0 +1,29 @@
+{
+  plugins: [
+    'googshift'
+  ],
+  rules: {
+    'googshift/no-duplicate-requires': 'error',
+
+    'googshift/no-missing-requires': ['error', {
+      prefixes: ['app', 'ol', 'ngeo'],
+      exceptions: ['ngeo.module.requires.push']
+    }],
+
+    'googshift/no-unused-requires': 'error',
+
+    'googshift/one-provide-or-module': ['error', {
+      entryPoints: ['app'],
+      root: 'geoportailv3/static/js/'
+    }],
+
+    'googshift/requires-first': 'error',
+
+    'googshift/valid-provide-and-module': ['error', {
+      entryPoints: ['app'],
+      root: 'geoportailv3/static/js/'
+    }],
+
+    'googshift/valid-requires': 'error'
+  }
+}

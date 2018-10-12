@@ -1,8 +1,7 @@
 goog.provide('app.AuthenticationController');
 goog.provide('app.authenticationDirective');
 
-goog.require('app');
-goog.require('app.UserManager');
+goog.require('app.module');
 
 
 /**

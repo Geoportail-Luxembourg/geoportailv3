@@ -1,8 +1,7 @@
 goog.provide('app.SymbolSelectorController');
 goog.provide('app.symbolSelectorDirective');
 
-goog.require('app');
-goog.require('ol.Feature');
+goog.require('app.module');
 
 
 /**

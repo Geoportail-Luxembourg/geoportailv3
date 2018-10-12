@@ -6,8 +6,8 @@
 
 goog.provide('app.UserManager');
 
-goog.require('app');
-goog.require('app.Notify');
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 
 
 /**

@@ -12,8 +12,7 @@
  */
 goog.provide('app.LayerOpacityManager');
 
-goog.require('app');
-goog.require('ol.Collection');
+goog.require('app.module');
 goog.require('ol.CollectionEventType');
 goog.require('ol.events');
 

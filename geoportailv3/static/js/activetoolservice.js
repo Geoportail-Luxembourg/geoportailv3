@@ -4,8 +4,7 @@
  */
 goog.provide('app.Activetool');
 
-goog.require('app');
-goog.require('app.SelectedFeatures');
+goog.require('app.module');
 
 /**
  * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.

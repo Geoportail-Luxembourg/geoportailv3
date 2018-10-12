@@ -11,11 +11,12 @@
 goog.provide('app.StreetviewController');
 goog.provide('app.streetviewDirective');
 
-goog.require('app');
-goog.require('app.Activetool');
-goog.require('app.LocationInfoOverlay');
-goog.require('app.Notify');
-goog.require('goog.Uri');
+goog.require('app.module');
+goog.require('ol');
+goog.require('ol.geom');
+goog.require('ol.interaction');
+goog.require('ol.style');
+
 
 /**
  * @param {string} appStreetviewTemplateUrl Url to streetview template

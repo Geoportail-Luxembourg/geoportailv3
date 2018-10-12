@@ -1,5 +1,8 @@
 {
-  "extends": "openlayers",
+  "extends": [
+    "openlayers",
+    ".eslintrc-googshift.yaml"
+  ],
   "env": {
     "jquery": true
   },

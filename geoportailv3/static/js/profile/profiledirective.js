@@ -15,13 +15,9 @@
 goog.provide('app.ProfileController');
 goog.provide('app.profileDirective');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('ngeo');
-goog.require('ngeo.map.FeatureOverlay');
-goog.require('ngeo.map.FeatureOverlayMgr');
-goog.require('ngeo.profile.module');
 goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');

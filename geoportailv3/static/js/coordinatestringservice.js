@@ -5,7 +5,7 @@
 
 goog.provide('app.CoordinateString');
 
-goog.require('app.projections');
+goog.require('app.module');
 goog.require('goog.math');
 goog.require('goog.string');
 goog.require('ol.coordinate');

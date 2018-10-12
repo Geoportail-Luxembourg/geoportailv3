@@ -4,7 +4,8 @@
  */
 goog.provide('app.Export');
 
-goog.require('app');
+goog.require('app.module');
+goog.require('ol.geom.GeometryType');
 goog.require('goog.array');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');

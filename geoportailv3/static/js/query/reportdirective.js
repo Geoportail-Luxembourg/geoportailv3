@@ -5,7 +5,10 @@ goog.provide('app.casiporeportDirective');
 
 goog.provide('app.PdsreportController');
 goog.provide('app.pdsreportDirective');
-goog.require('app.Notify');
+
+
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 
 
 /**

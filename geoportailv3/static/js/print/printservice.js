@@ -1,9 +1,10 @@
 goog.provide('app.Printservice');
 
-goog.require('app');
-goog.require('app');
+goog.require('app.module');
 goog.require('ngeo.print.Service');
 goog.require('ol.array');
+goog.require('ol.obj');
+goog.require('ol.math');
 
 
 app.Printservice = class extends ngeo.print.Service {

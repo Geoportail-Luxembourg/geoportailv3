@@ -5,14 +5,7 @@
 goog.provide('app.LocationinfoController');
 goog.provide('app.locationinfoDirective');
 
-goog.require('app');
-goog.require('app.CoordinateString');
-goog.require('app.Geocoding');
-goog.require('app.GetDevice');
-goog.require('app.GetElevation');
-goog.require('app.GetShorturl');
-goog.require('app.LocationInfoOverlay');
-goog.require('app.StateManager');
+goog.require('app.module');
 goog.require('goog.array');
 goog.require('ol.Feature');
 goog.require('ol.events');
@@ -24,6 +17,8 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.MapBrowserEventType');
+goog.require('ol.extent');
 
 
 /**

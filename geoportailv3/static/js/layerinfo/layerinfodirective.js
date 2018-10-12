@@ -1,8 +1,7 @@
 goog.provide('app.LayerinfoController');
 goog.provide('app.layerinfoDirective');
 
-goog.require('app');
-goog.require('app.ShowLayerinfo');
+goog.require('app.module');
 
 
 /**

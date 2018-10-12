@@ -9,37 +9,19 @@
  */
 goog.provide('app.MainController');
 
-goog.require('app');
-goog.require('app.ExclusionManager');
-goog.require('app.Export');
-goog.require('app.FeaturePopup');
-goog.require('app.LayerOpacityManager');
-goog.require('app.LayerPermalinkManager');
+goog.require('app.module');
 goog.require('app.LocationControl');
 goog.require('app.Map');
-goog.require('app.Mymaps');
-goog.require('app.Notify');
-goog.require('app.OfflineDownloader');
-goog.require('app.OfflineRestorer');
-goog.require('ngeo.offline.Mode');
-goog.require('app.Routing');
-goog.require('app.StateManager');
-goog.require('app.Themes');
-goog.require('app.UserManager');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('ngeo.draw.module');
-goog.require('ngeo.map.BackgroundLayerMgr');
-goog.require('ngeo.map.FeatureOverlayMgr');
-goog.require('ngeo.message.popupComponent');
-goog.require('ngeo.message.Popup');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.MapProperty');
+goog.require('ol.interaction');
+goog.require('ol.layer.Vector');
 goog.require('ngeo.misc.syncArrays');
-goog.require('ngeo.offline.module');
-goog.require('ngeo.search.module');
-goog.require('ngeo.statemanager.module');
 goog.require('ol.events');
-goog.require('ol.Map');
 goog.require('ol.Object');
 goog.require('ol.View');
 goog.require('ol.control.Attribution');
@@ -48,10 +30,8 @@ goog.require('ol.control.OverviewMap');
 goog.require('ol.control.Zoom');
 goog.require('app.olcs.ZoomToExtent');
 goog.require('app.olcs.Lux3DManager');
-goog.require('app.olcs.toggle3d');
 goog.require('ol.proj');
 goog.require('ol.math');
-goog.require('ngeo.olcs.Manager');
 
 
 /**

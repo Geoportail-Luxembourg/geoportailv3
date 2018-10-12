@@ -16,7 +16,7 @@
 goog.provide('app.LayerlegendsController');
 goog.provide('app.layerlegendsDirective');
 
-goog.require('app');
+goog.require('app.module');
 goog.require('goog.array');
 
 

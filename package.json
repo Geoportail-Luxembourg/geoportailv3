@@ -57,6 +57,7 @@
     "typeahead.js": "~0.11.1",
     "url-polyfill": "1.0.11",
     "walk": "2.3.9",
-    "whatwg-fetch": "1.0.0"
+    "whatwg-fetch": "1.0.0",
+    "eslint-plugin-googshift": "git+https://github.com/gberaudo/eslint-plugin-googshift#master"
   }
 }

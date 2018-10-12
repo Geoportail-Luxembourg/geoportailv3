@@ -4,11 +4,13 @@
  */
 goog.provide('app.LocationControl');
 
+goog.require('app.LocationControlOptions');
+goog.require('app.NotifyNotificationType');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
-goog.require('ngeo.map.FeatureOverlay');
-goog.require('ngeo.map.FeatureOverlayMgr');
+goog.require('ol.GeolocationProperty');
+goog.require('ol.css');
 goog.require('ol.Feature');
 goog.require('ol.Geolocation');
 goog.require('ol.Object');

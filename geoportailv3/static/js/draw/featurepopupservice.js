@@ -4,19 +4,18 @@
 
 goog.provide('app.FeaturePopup');
 
-goog.require('app.GetElevation');
-goog.require('app.GetProfile');
-goog.require('app.featurePopupDirective');
-goog.require('app.styleEditingDirective');
+goog.require('app.module');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('ol.Overlay');
 goog.require('ol.Observable');
 goog.require('ol.events');
 goog.require('ol.geom.LineString');
-goog.require('ngeo.misc.filters');
-goog.require('ngeo.filter.module');
 goog.require('ngeo.interaction.Measure');
+goog.require('ol.MapBrowserEventType');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 
 
 /**

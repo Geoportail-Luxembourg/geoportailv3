@@ -5,18 +5,16 @@
 
 goog.provide('app.WmtsHelper');
 
+goog.require('app.module');
+goog.require('app.NotifyNotificationType');
 goog.require('ngeo.misc.decorate');
 goog.require('goog.asserts');
 goog.require('goog.array');
 goog.require('goog.string');
 goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.ImageWMS');
-goog.require('ol.source.TileWMS');
 goog.require('ol.source.WMTS');
-goog.require('ol.tilegrid.WMTS');
-goog.require('app');
+
 
 /**
  * @constructor

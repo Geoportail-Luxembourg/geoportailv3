@@ -1,8 +1,7 @@
 goog.provide('app.ScaleselectorController');
 goog.provide('app.scaleselectorDirective');
 
-goog.require('app');
-goog.require('app.ScalesService');
+goog.require('app.module');
 
 
 // Use the default "scale selector" template.

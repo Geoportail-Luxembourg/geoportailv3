@@ -1,6 +1,6 @@
 goog.provide('app.filereaderDirective');
 
-goog.require('app');
+goog.require('app.module');
 
 
 /**

@@ -16,8 +16,7 @@
 goog.provide('app.LayermanagerController');
 goog.provide('app.layermanagerDirective');
 
-goog.require('app');
-goog.require('ngeo.layertree.module');
+goog.require('app.module');
 
 /**
  * @param {string} appLayermanagerTemplateUrl Url to layermanager template

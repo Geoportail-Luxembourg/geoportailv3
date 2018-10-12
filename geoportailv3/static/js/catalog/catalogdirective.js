@@ -16,13 +16,9 @@
 goog.provide('app.CatalogController');
 goog.provide('app.catalogDirective');
 
-goog.require('app');
-goog.require('app.GetLayerForCatalogNode');
-goog.require('app.Theme');
-goog.require('app.Themes');
+goog.require('app.module');
 goog.require('app.ThemesEventType');
 goog.require('goog.asserts');
-goog.require('goog.string');
 goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.View');
