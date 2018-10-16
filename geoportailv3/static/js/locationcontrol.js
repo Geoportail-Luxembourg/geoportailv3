@@ -4,7 +4,7 @@
  */
 goog.provide('app.LocationControl');
 
-goog.require('app.LocationControlOptions');
+
 goog.require('app.NotifyNotificationType');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -17,21 +17,6 @@ goog.require('ol.Object');
 goog.require('ol.control.Control');
 goog.require('ol.events');
 goog.require('ol.geom.Point');
-
-
-/**
- * @typedef {{className: (string|undefined),
- *     label: (string|undefined),
- *     tipLabel: (string|undefined),
- *     target: (Element|undefined),
- *     featureOverlayMgr: ngeo.map.FeatureOverlayMgr,
- *     notify: app.Notify,
- *     gettextCatalog: angularGettext.Catalog,
- *     scope: angular.Scope,
- *     window: angular.$window
- * }}
- */
-app.LocationControlOptions;
 
 
 /**

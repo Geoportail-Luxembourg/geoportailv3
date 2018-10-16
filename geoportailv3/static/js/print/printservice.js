@@ -1,13 +1,12 @@
-goog.provide('app.Printservice');
+goog.provide('app.print.Printservice');
 
-goog.require('app.module');
 goog.require('ngeo.print.Service');
 goog.require('ol.array');
 goog.require('ol.obj');
 goog.require('ol.math');
 
 
-app.Printservice = class extends ngeo.print.Service {
+app.print.Printservice = class extends ngeo.print.Service {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.

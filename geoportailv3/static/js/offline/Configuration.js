@@ -1,10 +1,9 @@
 goog.module('app.offline.Configuration');
 goog.module.declareLegacyNamespace();
 
-goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.layer');
+goog.require('ol.layer.Vector');
 
 const ngeoOfflineModule = goog.require('ngeo.offline.module');
 const NgeoConfiguration = goog.require('ngeo.offline.Configuration');

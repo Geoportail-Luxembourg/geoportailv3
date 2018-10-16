@@ -1,5 +1,4 @@
-goog.provide('app.ScaleselectorController');
-goog.provide('app.scaleselectorDirective');
+goog.provide('app.infobar.scaleselectorDirective');
 
 goog.require('app.module');
 
@@ -15,7 +14,7 @@ goog.require('app.module');
  *
  * @return {angular.Directive} Directive Definition Object.
  */
-app.scaleselectorDirective = function() {
+app.infobar.scaleselectorDirective = function() {
   return {
     restrict: 'E',
     scope: {
@@ -31,30 +30,4 @@ app.scaleselectorDirective = function() {
 };
 
 
-app.module.directive('appScaleselector', app.scaleselectorDirective);
-
-
-/**
- * @constructor
- * @param {app.ScalesService} appScalesService Service returning scales.
- * @ngInject
- */
-app.ScaleselectorController = function(appScalesService) {
-
-  /**
-   * @type {app.ScalesService}
-   * @export
-   */
-  this.scalesService = appScalesService;
-
-  /**
-   * Use the "dropup" variation of the Bootstrap dropdown.
-   * @type {ngeox.ScaleselectorOptions}
-   */
-  this['options'] = {
-    'dropup': true
-  };
-};
-
-app.module.controller('AppScaleselectorController',
-    app.ScaleselectorController);
+app.module.directive('appScaleselector', app.infobar.scaleselectorDirective);
