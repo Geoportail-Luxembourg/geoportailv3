@@ -17,7 +17,6 @@ goog.provide('app.catalog.CatalogController');
 
 goog.require('app.module');
 goog.require('app.events.ThemesEventType');
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.View');
@@ -83,13 +82,13 @@ app.catalog.CatalogController = function($scope, appThemes, appTheme,
         this.setTree_();
       }, this);
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.appTheme_.getCurrentTheme();
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal !== oldVal) {
       this.setTree_();
     }
-  }, this));
+  }.bind(this));
 
 };
 
@@ -112,14 +111,14 @@ app.catalog.CatalogController.prototype.getLayer = function(node) {
  */
 app.catalog.CatalogController.prototype.setTree_ = function() {
   this.appThemes_.getThemeObject(
-      this.appTheme_.getCurrentTheme()).then(goog.bind(
+      this.appTheme_.getCurrentTheme()).then(
       /**
        * @param {Object} tree Tree object for the theme.
        */
       function(tree) {
         this['tree'] = tree;
         this.setThemeZooms(this['tree']);
-      }, this));
+      }.bind(this));
 };
 
 
@@ -130,7 +129,7 @@ app.catalog.CatalogController.prototype.setTree_ = function() {
 app.catalog.CatalogController.prototype.setThemeZooms = function(tree) {
   var maxZoom = 19;
   if (!goog.isNull(tree)) {
-    goog.asserts.assert('metadata' in tree);
+    console.assert('metadata' in tree);
     if (tree['metadata']['resolutions']) {
       var resolutions = tree['metadata']['resolutions'].split(',');
       maxZoom = resolutions.length + 7;

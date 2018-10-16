@@ -6,9 +6,7 @@
 goog.provide('app.Themes');
 
 goog.require('app.module');
-goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.array');
 goog.require('ol.events.EventTarget');
 goog.require('app.events.ThemesEventType');
 
@@ -107,17 +105,17 @@ app.Themes.findTheme_ = function(themes, themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getBgLayers = function() {
-  goog.asserts.assert(!goog.isNull(this.promise_));
-  return this.promise_.then(goog.bind(
+  console.assert(!goog.isNull(this.promise_));
+  return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
        * @return {Array.<Object>} Array of background layer objects.
        */
       function(data) {
-        var bgLayers = data['background_layers'].map(goog.bind(function(item) {
+        var bgLayers = data['background_layers'].map(function(item) {
           var hasRetina = item['metadata']['hasRetina'] === 'true' && this.isHiDpi_;
-          goog.asserts.assert('name' in item);
-          goog.asserts.assert('imageType' in item);
+          console.assert('name' in item);
+          console.assert('imageType' in item);
           var layer = this.getWmtsLayer_(
             item['name'], item['imageType'], hasRetina
           );
@@ -130,12 +128,12 @@ app.Themes.prototype.getBgLayers = function() {
             );
           }
           return layer;
-        }, this));
+        }.bidn(this));
 
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
         return bgLayers;
-      }, this));
+      }.bind(this));
 };
 
 
@@ -145,7 +143,7 @@ app.Themes.prototype.getBgLayers = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemeObject = function(themeName) {
-  goog.asserts.assert(!goog.isNull(this.promise_));
+  console.assert(!goog.isNull(this.promise_));
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -163,7 +161,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemesObject = function() {
-  goog.asserts.assert(!goog.isNull(this.promise_));
+  console.assert(!goog.isNull(this.promise_));
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -183,9 +181,9 @@ app.Themes.prototype.getThemesObject = function() {
  */
 app.Themes.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(this.treeUrl_, {
-    params: goog.isDef(roleId) ? {'role': roleId} : {},
+    params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
-  }).then(goog.bind(
+  }).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {Object} The "themes" web service response.
@@ -193,7 +191,7 @@ app.Themes.prototype.loadThemes = function(roleId) {
       function(resp) {
         this.dispatchEvent(app.events.ThemesEventType.LOAD);
         return /** @type {app.ThemesResponse} */ (resp.data);
-      }, this));
+      }.bind(this));
   return this.promise_;
 };
 
@@ -240,7 +238,7 @@ app.Themes.prototype.getAllChildren_ = function(element, theme) {
  */
 app.Themes.prototype.getFlatCatalog = function() {
   return this.getThemesObject().then(
-      goog.bind(function(themes) {
+      function(themes) {
         var flatCatalogue = [];
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
@@ -249,7 +247,7 @@ app.Themes.prototype.getFlatCatalog = function() {
           );
         }
         return flatCatalogue;
-      }, this));
+      }.bind(this));
 };
 
 app.module.service('appThemes', app.Themes);

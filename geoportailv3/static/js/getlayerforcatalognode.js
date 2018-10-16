@@ -5,7 +5,6 @@
 goog.provide('app.GetLayerForCatalogNode');
 
 goog.require('app.module');
-goog.require('goog.asserts');
 goog.require('goog.object');
 
 /**
@@ -52,21 +51,21 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
       return app.layerCache_[layerCacheKey];
     }
     if (type.indexOf('WMS') != -1) {
-      goog.asserts.assert('name' in node);
-      goog.asserts.assert('layers' in node);
-      goog.asserts.assert('imageType' in node);
+      console.assert('name' in node);
+      console.assert('layers' in node);
+      console.assert('imageType' in node);
       layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'],
           node['url']);
     } else if (type == 'WMTS') {
-      goog.asserts.assert('name' in node);
-      goog.asserts.assert('imageType' in node);
+      console.assert('name' in node);
+      console.assert('imageType' in node);
       var hasRetina = (node['metadata']['hasRetina'] === 'true' &&
         appGetDevice.isHiDpi());
       layer = appGetWmtsLayer(node['name'], node['imageType'], hasRetina);
     } else {
       return null;
     }
-    goog.asserts.assert(goog.isDefAndNotNull(layer));
+    console.assert(layer !== undefined && layer !== null);
     app.layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
     layer.set('queryable_id', node['id']);

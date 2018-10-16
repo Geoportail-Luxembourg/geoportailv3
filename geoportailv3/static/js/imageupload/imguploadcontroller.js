@@ -80,13 +80,13 @@ app.imageupload.ImguploadController.prototype.uploadFileToUrl_ = function(file, 
       transformRequest: angular.identity,
       headers: {'Content-Type': undefined}
     })
-    .then(goog.bind(function(response) {
+    .then(function(response) {
       modelSetter(scope, response.data);
-    }, this), goog.bind(function() {
+    }.bind(this), function() {
       var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');
       this.notify_(msg, app.NotifyNotificationType.ERROR);
-    }, this));
+    }.bind(this));
   }
 };
 

@@ -5,7 +5,6 @@
 goog.provide('app.locationinfo.LocationinfoController');
 
 goog.require('app.module');
-goog.require('goog.array');
 goog.require('ol.Feature');
 goog.require('ol.events');
 goog.require('ol.geom.Point');
@@ -163,17 +162,17 @@ app.locationinfo.LocationinfoController = function(
       })];
     });
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['appSelector'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal != 'locationinfo') {
       this.featureLayer_.getSource().clear();
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['open'];
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal == oldVal) {
       return;
     }
@@ -190,7 +189,7 @@ app.locationinfo.LocationinfoController = function(
       this['location'] = {};
       this.featureLayer_.getSource().clear();
     }
-  }, this));
+  }.bind(this));
 
   /**
    * @type {string}
@@ -301,13 +300,13 @@ app.locationinfo.LocationinfoController = function(
 
   // Load infowindow if crosshair variable is set
   var urlLocationInfo = appStateManager.getInitialValue('crosshair');
-  if (goog.isDefAndNotNull(urlLocationInfo) &&
+  if (urlLocationInfo !== undefined &&  urlLocationInfo !== null &&
       urlLocationInfo === 'true') {
     var x = parseInt(appStateManager.getInitialValue('X'), 0);
     var y = parseInt(appStateManager.getInitialValue('Y'), 0);
     var version = this.stateManager_.getVersion();
 
-    if (goog.isDef(x) && goog.isDef(y)) {
+    if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
           /** @type {ol.Coordinate} */ ([x, y]) :
           /** @type {ol.Coordinate} */ (ol.proj.transform([y, x], 'EPSG:2169',
@@ -322,13 +321,13 @@ app.locationinfo.LocationinfoController = function(
       }
     }
   }
-  if (goog.isDef(this.ngeoLocation_.getParam('address'))) {
+  if (this.ngeoLocation_.getParam('address') !== undefined) {
     this.appThemes_.getFlatCatalog().then(function(flatCatalogue) {
       var node = goog.array.find(flatCatalogue,
         function(catalogueLayer) {
           return catalogueLayer['name'] === 'addresses';
         }, this);
-      if (goog.isDefAndNotNull(node)) {
+      if (node !== undefined && node  !== null) {
         var layer = this.getLayerFunc_(node);
         if (this['map'].getLayers().getArray().indexOf(layer) <= 0) {
           this['map'].addLayer(layer);
@@ -336,10 +335,10 @@ app.locationinfo.LocationinfoController = function(
       }
     }.bind(this));
     var address = this.ngeoLocation_.getParam('address');
-    goog.asserts.assert(goog.isDef(address));
+    console.assert(address !== undefined);
     this.geocode_.geocode(address).then(function(data) {
       var results = data['results'];
-      if (goog.isDef(results) && results.length > 0) {
+      if (results !== undefined && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */
             (ol.proj.transform(
                 results[0]['geom']['coordinates'], 'EPSG:2169',
@@ -356,17 +355,17 @@ app.locationinfo.LocationinfoController = function(
       }
     }.bind(this));
   }
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.clickCoordinate;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal == oldVal) {
       return;
     }
     this.loadInfoPane_();
-  }, this));
+  }.bind(this));
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERDOWN,
-    goog.bind(function(event) {
+    function(event) {
       if (!appSelectedFeatures.getLength()) {
         if (event.originalEvent.which === 3) { // if right mouse click
           this.setClickCordinate_(event.originalEvent);
@@ -383,16 +382,16 @@ app.locationinfo.LocationinfoController = function(
           }, 500, false);
         }
       }
-    }, this), this);
+    }.bind(this), this);
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERUP,
-      goog.bind(function(event) {
+      function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
-      }, this), this);
+      }.bind(this), this);
 
   ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
-      goog.bind(function(event) {
+      function(event) {
         if (startPixel) {
           var pixel = event.pixel;
           var deltaX = Math.abs(startPixel[0] - pixel[0]);
@@ -402,17 +401,17 @@ app.locationinfo.LocationinfoController = function(
             startPixel = null;
           }
         }
-      }, this), this);
+      }.bind(this), this);
 
   this['map'].getViewport()
-    .addEventListener('contextmenu', goog.bind(function(event) {
+    .addEventListener('contextmenu', function(event) {
       event.preventDefault(); // disable right-click menu on browsers
       if (!this.openInPointerDown_) {
         this.setClickCordinate_(event);
         this['open'] = true;
       }
       this.openInPointerDown_ = false;
-    }, this));
+    }.bind(this));
 
 };
 
@@ -500,14 +499,13 @@ app.locationinfo.LocationinfoController.prototype.loadInfoPane_ =
           }
         }.bind(this)
       );
-      this.getShorturl_(this.clickCoordinate).then(goog.bind(
-      function(shorturl) {
+      this.getShorturl_(this.clickCoordinate).then(function(shorturl) {
         this['url'] = shorturl;
         this['qrUrl'] = this.qrServiceUrl_ + '?url=' + shorturl;
-      }, this));
+      }.bind(this));
       this['address'] = '';
       this['distance'] = '';
-      this.geocode_.reverseGeocode(this.clickCoordinate).then(goog.bind(function(resp) {
+      this.geocode_.reverseGeocode(this.clickCoordinate).then(function(resp) {
         if (resp['count'] > 0) {
           var address = resp['results'][0];
           var formattedAddress = address['number'] + ',' + address['street'] + ',' +
@@ -515,7 +513,7 @@ app.locationinfo.LocationinfoController.prototype.loadInfoPane_ =
           this['address'] = formattedAddress;
           this['distance'] = Math.round(address['distance']);
         }
-      }, this));
+      }.bind(this));
     };
 
 /**

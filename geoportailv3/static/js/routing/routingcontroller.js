@@ -176,18 +176,19 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
   var POIBloodhoundEngine = this.createAndInitPOIBloodhound_(
       poiSearchServiceUrl);
 
-
+  var sourceFunc =
+  /**
+   * @param {Object} query
+   * @param {function(Array<string>)} syncResults
+   * @return {Object}
+   */
+  function(query, syncResults) {
+    return syncResults(this.matchCoordinate_(query));
+  };
   /** @type {Array.<TypeaheadDataset>}*/
   this['datasets'] = [{
     name: 'coordinates',
-    /**
-     * @param {Object} query
-     * @param {function(Array<string>)} syncResults
-     * @return {Object}
-     */
-    source: goog.bind(function(query, syncResults) {
-      return syncResults(this.matchCoordinate_(query));
-    }, this),
+    source: sourceFunc.bind(this),
     /**
      * @param {Object} suggestion The suggestion.
      * @return {(string|*)} The string.
@@ -199,7 +200,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */ ({
-      suggestion: goog.bind(function(feature) {
+      suggestion: function(feature) {
         var scope = this.scope_.$new(true);
         scope['object'] = feature;
         scope['click'] = function(event) {
@@ -208,7 +209,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
         var html = '<p>' + feature.get('label') +
             ' (' + feature.get('epsgLabel') + ')</p>';
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }, {
     name: 'pois',
@@ -224,12 +225,12 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: goog.bind(function() {
+      header: function() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Addresses') +
             '</div>';
-      }, this),
-      suggestion: goog.bind(function(suggestion) {
+      }.bind(this),
+      suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
         var scope = $scope.$new(true);
         scope['feature'] = feature;
@@ -239,7 +240,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
 
         var html = '<p>' + feature.get('label') + '</p>';
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }];
 
@@ -302,9 +303,9 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
   this.selectInteraction_ = new ol.interaction.Select({
     features: this.modyfyFeaturesCollection_,
     condition: ol.events.condition.click,
-    filter: goog.bind(function(feature, layer) {
+    filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
-    }, this)
+    }.bind(this)
   });
 
   this.map.addInteraction(this.selectInteraction_);
@@ -316,9 +317,9 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
    */
   this.selectInteractionPM_ = new ol.interaction.Select({
     condition: ol.events.condition.pointerMove,
-    filter: goog.bind(function(feature, layer) {
+    filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
-    }, this)
+    }.bind(this)
   });
 
   this.map.addInteraction(this.selectInteractionPM_);
@@ -556,12 +557,12 @@ app.routing.RoutingController.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: goog.bind(function(query, settings) {
+          prepare: function(query, settings) {
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
                 '&limit=8';
             return settings;
-          }, this),
+          }.bind(this),
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
@@ -935,7 +936,7 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
          */
         var m = re[epsgKey].regex.exec(searchString);
 
-        if (goog.isDefAndNotNull(m)) {
+        if (m !== undefined && m !== null) {
           var epsgCode = re[epsgKey].epsgCode;
           var isDms = false;
           /**
@@ -947,7 +948,7 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
            */
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
-            if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
+            if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
               if (goog.array.contains(northArray, m[2].toUpperCase()) &&
               goog.array.contains(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
@@ -957,7 +958,7 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
-            } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+            } else if (m[2] === undefined && m[4] === undefined) {
               easting = parseFloat(m[1].replace(',', '.'));
               northing = parseFloat(m[3].replace(',', '.'));
             }
@@ -1088,7 +1089,7 @@ app.routing.RoutingController.prototype.createMapFromRoute = function() {
             this.askToConnect();
           } else {
             var mapId = resp['uuid'];
-            if (goog.isDef(mapId)) {
+            if (mapId !== undefined) {
               this.appMymaps_.setMapId(mapId);
             }
           }

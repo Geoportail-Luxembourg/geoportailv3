@@ -5,8 +5,6 @@
 goog.provide('app.draw.FeaturePopup');
 
 goog.require('app.module');
-goog.require('goog.asserts');
-goog.require('goog.array');
 goog.require('ol.Overlay');
 goog.require('ol.Observable');
 goog.require('ol.events');
@@ -136,12 +134,12 @@ app.draw.FeaturePopup.prototype.init = function(map) {
  */
 app.draw.FeaturePopup.prototype.setDraggable = function(element) {
   this.mousedownEvent_ = ol.events.listen(element[0], 'mousedown',
-      goog.bind(function(event) {
+      function(event) {
         this.element_.css({'transform': 'scale(1.1)',
           'transition': 'transform .3s'});
         if (goog.isNull(this.mousemoveEvent_)) {
           this.mousemoveEvent_ = ol.events.listen(this.map,
-              ol.MapBrowserEventType.POINTERMOVE, goog.bind(function(e) {
+              ol.MapBrowserEventType.POINTERMOVE, function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
                   this.startingDragPoint_ = e.coordinate;
@@ -152,10 +150,10 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
                      this.startingDragPoint_[0],
                     this.startingAnchorPoint_[1] + currentDragPoint[1] -
                      this.startingDragPoint_[1]]);
-              }, this));
+              }.bind(this));
         }
         ol.events.listenOnce(this.$document_[0],
-            'mouseup', goog.bind(function() {
+            'mouseup', function() {
               this.element_.css({'transform': 'scale(1)'});
               this.startingAnchorPoint_ = null;
               this.startingDragPoint_ = null;
@@ -164,8 +162,8 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
                 ol.Observable.unByKey(this.mousemoveEvent_);
               }
               this.mousemoveEvent_ = null;
-            }, this));
-      }, this), this);
+            }.bind(this));
+      }.bind(this), this);
 };
 
 
@@ -177,11 +175,11 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
 app.draw.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
   this.scope_['feature'] = feature;
   this.scope_['map'] = map;
-  var anchor = goog.isDef(opt_anchor) ? opt_anchor : this.getAnchor(feature);
+  var anchor = opt_anchor !== undefined ? opt_anchor : this.getAnchor(feature);
   this.overlay_.setPosition(anchor);
   var headers = angular.element(this.$document_).
       find('.feature-popup-heading');
-  goog.array.forEach(headers, function(element) {
+  headers.forEach(function(element) {
     this.setDraggable(angular.element(element));
   }, this);
   // Enable the dropdown menu
@@ -201,7 +199,7 @@ app.draw.FeaturePopup.prototype.toggleDropdown = function() {
  */
 app.draw.FeaturePopup.prototype.fit = function(feature) {
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
-  goog.asserts.assert(goog.isDef(viewSize));
+  console.assert(viewSize !== undefined);
   this.map.getView().fit(feature.getGeometry().getExtent(), {
     size: viewSize
   });
@@ -228,7 +226,7 @@ app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
   var geometry = feature.getGeometry();
   switch (geometry.getType()) {
     case ol.geom.GeometryType.POINT:
-      goog.asserts.assertInstanceof(geometry, ol.geom.Point,
+      console.assert(geometry instanceof ol.geom.Point,
           'geometry should be an ol.geom.Point');
       return geometry.getFlatCoordinates();
     case ol.geom.GeometryType.LINE_STRING:
@@ -252,7 +250,7 @@ app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
  */
 app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
   var projection = this.map.getView().getProjection();
-  goog.asserts.assert(projection);
+  console.assert(projection);
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
       projection,
@@ -268,7 +266,7 @@ app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
  */
 app.draw.FeaturePopup.prototype.formatRadius = function(line) {
   var projection = this.map.getView().getProjection();
-  goog.asserts.assert(projection);
+  console.assert(projection);
   return ngeo.interaction.Measure.getFormattedLength(
       line,
       projection,
@@ -286,7 +284,7 @@ app.draw.FeaturePopup.prototype.formatLength = function(line) {
   var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
       line.getCoordinates()[0] : line.getCoordinates();
   var projection = this.map.getView().getProjection();
-  goog.asserts.assert(projection);
+  console.assert(projection);
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
       projection,

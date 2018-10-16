@@ -14,7 +14,6 @@ goog.provide('app.search.SearchController');
 
 goog.require('app.module');
 goog.require('app.events.ThemesEventType');
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ngeo.search.createGeoJSONBloodhound');
 goog.require('ol.CollectionEventType');
@@ -255,11 +254,11 @@ app.search.SearchController = function($scope, $window, $compile,
         includeScore: true
       });
 
-  $scope.$on('gettextLanguageChanged', goog.bind(function(evt) {
+  $scope.$on('gettextLanguageChanged', function(evt) {
     this.createLocalAllLayerData_(appThemes);
     this.createLocalBackgroundLayerData_(
         appThemes, backgroundLayerEngine, this.gettextCatalog);
-  }, this));
+  }.bind(this));
 
   ol.events.listen(appThemes, app.events.ThemesEventType.LOAD,
       /**
@@ -275,18 +274,19 @@ app.search.SearchController = function($scope, $window, $compile,
   this['options'] = {
     highlight: true
   };
-
-  /** @type {Array.<TypeaheadDataset>} */
-  this['datasets'] = [{
-    name: 'coordinates',
+  var sourceFunc =
     /**
      * @param {Object} query
      * @param {function(Array<string>)} syncResults
      * @return {Object}
      */
-    source: goog.bind(function(query, syncResults) {
+    function(query, syncResults) {
       return syncResults(this.matchCoordinate_(query));
-    }, this),
+    };
+  /** @type {Array.<TypeaheadDataset>} */
+  this['datasets'] = [{
+    name: 'coordinates',
+    source: sourceFunc.bind(this),
     /**
      * @param {Object} suggestion The suggestion.
      * @return {(string|*)} The string.
@@ -298,7 +298,7 @@ app.search.SearchController = function($scope, $window, $compile,
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */ ({
-      suggestion: goog.bind(function(feature) {
+      suggestion: function(feature) {
         var scope = $scope.$new(true);
         scope['object'] = feature;
         scope['click'] = function(event) {
@@ -307,7 +307,7 @@ app.search.SearchController = function($scope, $window, $compile,
         var html = '<p>' + feature.get('label') +
             ' (' + feature.get('epsgLabel') + ')</p>';
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }, {
     name: 'backgroundLayers',
@@ -316,9 +316,9 @@ app.search.SearchController = function($scope, $window, $compile,
      * @param {function(Array<string>)} syncResults A function.
      * @return {Object} The result.
      */
-    source: goog.bind(function(query, syncResults) {
+    source: function(query, syncResults) {
       return syncResults(this.matchLayers_(backgroundLayerEngine, query));
-    }, this),
+    }.bind(this),
     /**
      * @param {app.BackgroundLayerSuggestion} suggestion The suggestion.
      * @return {string} The result.
@@ -329,12 +329,12 @@ app.search.SearchController = function($scope, $window, $compile,
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: goog.bind(function() {
+      header: function() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Background Layers') +
             '</div>';
-      }, this),
-      suggestion: goog.bind(
+      }.bind(this),
+      suggestion:
           /**
            * @param {app.BackgroundLayerSuggestion} suggestion The suggestion.
            * @return {*} The result.
@@ -346,7 +346,7 @@ app.search.SearchController = function($scope, $window, $compile,
             html += ' (' + this.gettextCatalog.getString('Background') + ') ';
             html += '</p>';
             return $compile(html)(scope);
-          }, this)
+          }.bind(this)
     })
   }, {
     name: 'pois',
@@ -362,12 +362,12 @@ app.search.SearchController = function($scope, $window, $compile,
       return feature.get('label');
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: goog.bind(function() {
+      header: function() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Addresses') +
             '</div>';
-      }, this),
-      suggestion: goog.bind(function(suggestion) {
+      }.bind(this),
+      suggestion: function(suggestion) {
         var feature = /** @type {ol.Feature} */ (suggestion);
         var scope = $scope.$new(true);
         scope['feature'] = feature;
@@ -385,7 +385,7 @@ app.search.SearchController = function($scope, $window, $compile,
             ) + ')</span></span><span class="search-result-routing"><button class="standalone-routing-button" ng-click="addRoutePoint(feature, $event)"><span class="standalone-routing-icon"></span></button></span></span></p>';
 
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }, {
     name: 'layers',
@@ -400,12 +400,12 @@ app.search.SearchController = function($scope, $window, $compile,
       return gettextCatalog.getString(suggestion.name);
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: goog.bind(function() {
+      header: function() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Layers') +
             '</div>';
-      }, this),
-      suggestion: goog.bind(function(suggestion) {
+      }.bind(this),
+      suggestion: function(suggestion) {
         var scope = $scope.$new(true);
         var translated_name = this.gettextCatalog.getString(
                 /** @type {string} */ (suggestion.name)
@@ -426,19 +426,19 @@ app.search.SearchController = function($scope, $window, $compile,
              themeLink +
             '<button ng-click="click($event)">i</button>' +
             '</p>';
-        scope['switchTheme'] = goog.bind(function(themeId) {
+        scope['switchTheme'] = function(themeId) {
           this.appTheme_.setCurrentTheme(themeId);
-        }, this);
-        scope['click'] = goog.bind(function(event) {
+        }.bind(this);
+        scope['click'] = function(event) {
           var node = goog.array.find(this.layers_, function(element) {
             return goog.object.containsKey(element, 'name') &&
                 goog.object.containsValue(element, suggestion.name);
           });
           this.showLayerinfo_(this.getLayerFunc_(node));
           event.stopPropagation();
-        }, this);
+        }.bind(this);
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }, {
     name: 'cms',
@@ -453,25 +453,25 @@ app.search.SearchController = function($scope, $window, $compile,
       return gettextCatalog.getString(suggestion.name);
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: goog.bind(function() {
+      header: function() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Website Pages') +
             '</div>';
-      }, this),
-      suggestion: goog.bind(function(suggestion) {
+      }.bind(this),
+      suggestion: function(suggestion) {
         var scope = $scope.$new(true);
         var html = '<p>' +
             '<span class="suggestion-text">' +
             suggestion.title + '</span>' +
             '</p>';
         return $compile(html)(scope);
-      }, this)
+      }.bind(this)
     })
   }
   ];
 
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
-    select: goog.bind(app.search.SearchController.selected_, this)
+    select: app.search.SearchController.selected_.bind(this)
   });
 
   ol.events.listen(this['map'].getLayers(),
@@ -542,7 +542,7 @@ app.search.SearchController.prototype.matchCoordinate_ =
          */
         var m = re[epsgKey].regex.exec(searchString);
 
-        if (goog.isDefAndNotNull(m)) {
+        if (m !== undefined && m !== null) {
           var epsgCode = re[epsgKey].epsgCode;
           var isDms = false;
           /**
@@ -554,7 +554,7 @@ app.search.SearchController.prototype.matchCoordinate_ =
            */
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
-            if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
+            if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
               if (goog.array.contains(northArray, m[2].toUpperCase()) &&
               goog.array.contains(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
@@ -564,7 +564,7 @@ app.search.SearchController.prototype.matchCoordinate_ =
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
-            } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+            } else if (m[2] === undefined && m[4] === undefined) {
               easting = parseFloat(m[1].replace(',', '.'));
               northing = parseFloat(m[3].replace(',', '.'));
             }
@@ -689,12 +689,12 @@ app.search.SearchController.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: goog.bind(function(query, settings) {
+          prepare: function(query, settings) {
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
                 '&limit=' + this.limitResults;
             return settings;
-          }, this),
+          }.bind(this),
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
@@ -727,28 +727,28 @@ app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
       remote: {
         url: layerSearchServiceUrl,
         rateLimitWait: 50,
-        replace: goog.bind(function(url, query) {
+        replace: function(url, query) {
           return url +
               '?query=' + encodeURIComponent(query) +
               '&limit=' + this.limitResults +
               '&language=' + this.gettextCatalog.currentLanguage;
-        }, this),
-        transform: goog.bind(function(response) {
-          goog.array.forEach(response, goog.bind(function(result) {
+        }.bind(this),
+        transform: function(response) {
+          response.forEach(function(result) {
             var layers = goog.array.filter(
               this.layers_, goog.bind(function(element) {
                 return result['layer_id'] == element['id'];
               }, this));
             result['themes'] = [];
-            goog.array.forEach(layers, goog.bind(function(element) {
+            layers.forEach(goog.bind(function(element) {
               result['themes'].push(element.theme);
             }, this));
             result['showThemeLink'] = !goog.array.contains(
               result['themes'], this.appTheme_.getCurrentTheme());
-          }, this));
+          }.bind(this));
 
           return response;
-        }, this)
+        }.bind(this)
       }
     });
     var bloodhound = new Bloodhound(bloodhoundOptions);
@@ -768,15 +768,15 @@ app.search.SearchController.prototype.createAndInitCMSBloodhoundEngine_ =
       remote: {
         url: cmsSearchServiceUrl,
         rateLimitWait: 50,
-        replace: goog.bind(function(url, query) {
+        replace: function(url, query) {
           return url +
               '?query=' + encodeURIComponent(query) +
               '&limit=' + this.limitResults +
               '&language=' + this.gettextCatalog.currentLanguage;
-        }, this),
-        transform: goog.bind(function(response) {
+        }.bind(this),
+        transform: function(response) {
           return response;
-        }, this)
+        }.bind(this)
       }
     });
     var bloodhound = new Bloodhound(bloodhoundOptions);
@@ -793,7 +793,7 @@ app.search.SearchController.prototype.createAndInitCMSBloodhoundEngine_ =
 app.search.SearchController.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, fuse, gettextCatalog) {
       appThemes.getBgLayers().then(
-      goog.bind(function(bgLayers) {
+      function(bgLayers) {
         var suggestions = goog.array.map(bgLayers,
             /**
              * @param {ol.layer.Layer} bgLayer The current bg layer.
@@ -808,7 +808,7 @@ app.search.SearchController.prototype.createLocalBackgroundLayerData_ =
             }
             );
         fuse.set(suggestions);
-      }, this)
+      }.bind(this)
   );
     };
 
@@ -821,10 +821,10 @@ app.search.SearchController.prototype.createLocalAllLayerData_ =
     function(appThemes) {
       this.layers_ = [];
       this.appThemes_.getFlatCatalog().then(
-        goog.bind(function(flatCatalogue) {
+        function(flatCatalogue) {
           this.layers_ = [];
           goog.array.extend(this.layers_, flatCatalogue);
-        }, this));
+        }.bind(this));
     };
 
 
@@ -870,7 +870,7 @@ app.search.SearchController.selected_ =
     function(event, suggestion) {
       var map = /** @type {ol.Map} */ (this['map']);
       var /** @type {string} */ dataset;
-      if (goog.isDef(suggestion['dataset'])) {
+      if (suggestion['dataset'] !== undefined) {
         dataset = suggestion['dataset'];
       } else if (suggestion.get('dataset')) {
         dataset = suggestion.get('dataset');
@@ -896,9 +896,9 @@ app.search.SearchController.selected_ =
             }
             var layers = /** @type {Array<string>} */
             (this.layerLookup_[suggestion.get('layer_name')] || []);
-            goog.array.forEach(layers, goog.bind(function(layer) {
+            layers.forEach(function(layer) {
               this.addLayerToMap_(/** @type {string} */ (layer));
-            }, this));
+            }.bind(this));
           } else {
             feature.setGeometry(
               new ol.geom.Point(ol.extent.getCenter(

@@ -79,16 +79,16 @@ app.draw.SymbolSelectorController = function($scope, $http, appUserManager,
    */
   this.mymapsUrl_ = mymapsUrl;
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.newSymbol;
-  }, this), goog.bind(function() {
+  }.bind(this), function() {
     if (!this.newSymbol) {
       return;
     }
     if (this.newSymbol['result']) {
       this.selectedSymbols.push(this.newSymbol['result']);
     }
-  }, this));
+  }.bind(this));
 };
 
 
@@ -194,13 +194,13 @@ app.draw.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
           'symboltype': symboltype
         }})
       .then(
-          goog.bind(function(resp) {
+          function(resp) {
             return resp['data']['results'];
-          }, this));
+          }.bind(this));
     }
-    this.symboltypes_[symboltype].then(goog.bind(function(content) {
+    this.symboltypes_[symboltype].then(function(content) {
       this.selectedSymbols = content;
-    }, this));
+    }.bind(this));
   } else {
     this.selectedSymbols = null;
   }
@@ -222,7 +222,7 @@ app.draw.SymbolSelectorController.prototype.setColor = function(color) {
  * @export
  */
 app.draw.SymbolSelectorController.prototype.getSetColor = function(color) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {

@@ -8,7 +8,6 @@ goog.provide('app.Mymaps');
 
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.array');
 goog.require('goog.color');
 goog.require('goog.object');
 goog.require('ol.format.GeoJSON');
@@ -380,7 +379,7 @@ app.Mymaps.prototype.getMapFeatures = function() {
  * @return {?Object} The category.
  */
 app.Mymaps.prototype.getCategory = function(categoryId) {
-  if (goog.isDefAndNotNull(categoryId)) {
+  if (categoryId !== undefined && categoryId !== null) {
     return goog.array.find(this.allcategories, function(category) {
       return category.id === categoryId;
     });
@@ -420,14 +419,14 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
-  return this.loadMapInformation().then(goog.bind(function(mapinformation) {
+  return this.loadMapInformation().then(function(mapinformation) {
     if (mapinformation !== null) {
-      return this.loadFeatures_().then(goog.bind(function(features) {
+      return this.loadFeatures_().then(function(features) {
         return this.setFeatures(features, collection);
-      }, this));
+      }.bind(this));
     }
     return null;
-  }, this));
+  }.bind(this));
 };
 
 /**
@@ -446,7 +445,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
     var featureStyleFunction = this.createStyleFunction(this.map);
     var jsonFeatures = (new ol.format.GeoJSON()).
         readFeatures(features, encOpt);
-    goog.array.forEach(jsonFeatures, function(feature) {
+    jsonFeatures.forEach(function(feature) {
       feature.set('altitudeMode', 'clampToGround');
       feature.set('__map_id__', this.getMapId());
       feature.setStyle(featureStyleFunction);
@@ -519,20 +518,19 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
     params['category'] = categoryId;
   }
 
-  return this.$http_.get(url, {params: params}).then(goog.bind(
+  return this.$http_.get(url, {params: params}).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
-        goog.array.forEach(resp.data, function(map) {
+        resp.data.forEach(function(map) {
           if (goog.isNull(map['update_date'])) {
             map['update_date'] = map['create_date'];
           }
         });
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -541,7 +539,7 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
            'Erreur inattendue lors du chargement de vos cartes.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -551,7 +549,7 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.loadCategories = function() {
-  return this.$http_.get(this.mymapsCategoriesUrl_).then(goog.bind(
+  return this.$http_.get(this.mymapsCategoriesUrl_).then(
       /**
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.
@@ -559,13 +557,12 @@ app.Mymaps.prototype.loadCategories = function() {
       function(resp) {
         this.categories = resp.data;
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           return null;
         }
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -575,7 +572,7 @@ app.Mymaps.prototype.loadCategories = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.loadAllCategories = function() {
-  return this.$http_.get(this.mymapsAllCategoriesUrl_).then(goog.bind(
+  return this.$http_.get(this.mymapsAllCategoriesUrl_).then(
       /**
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.
@@ -583,13 +580,12 @@ app.Mymaps.prototype.loadAllCategories = function() {
       function(resp) {
         this.allcategories = resp.data;
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           return null;
         }
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -600,7 +596,7 @@ app.Mymaps.prototype.loadAllCategories = function() {
  * @private
  */
 app.Mymaps.prototype.loadFeatures_ = function() {
-  return this.$http_.get(this.mymapsFeaturesUrl_ + this.mapId_).then(goog.bind(
+  return this.$http_.get(this.mymapsFeaturesUrl_ + this.mapId_).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
@@ -608,8 +604,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
       function(resp) {
         this.mapFeatures_ = resp.data;
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         var msg;
         if (error.status == 401) {
           this.notifyUnauthorized();
@@ -624,7 +619,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
           'Erreur inattendue lors du chargement de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return null;
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -634,7 +629,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
  */
 app.Mymaps.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
-  this.appThemes_.getBgLayers().then(goog.bind(
+  this.appThemes_.getBgLayers().then(
       /**
        * @param {Array.<ol.layer.Base>} bgLayers The bg layer.
        */
@@ -646,7 +641,7 @@ app.Mymaps.prototype.updateLayers = function() {
         if (layer) {
           this.backgroundLayerMgr_.set(this.map, layer);
         }
-      }, this));
+      }.bind(this));
 
   var curMapLayers = this.mapLayers;
   var curMapOpacities = this.mapLayersOpacities;
@@ -655,8 +650,8 @@ app.Mymaps.prototype.updateLayers = function() {
     this.appTheme_.setCurrentTheme(this.mapTheme);
   }
   this.appThemes_.getFlatCatalog()
-  .then(goog.bind(function(flatCatalogue) {
-    goog.array.forEach(curMapLayers, goog.bind(function(item, layerIndex) {
+  .then(function(flatCatalogue) {
+    curMapLayers.forEach(function(item, layerIndex) {
       var node = goog.array.find(flatCatalogue,
               function(catalogueLayer) {
                 return catalogueLayer['name'] === item;
@@ -675,8 +670,8 @@ app.Mymaps.prototype.updateLayers = function() {
           }
         }
       }
-    }, this));
-  }, this));
+    }, this);
+  }.bind(this));
 };
 
 
@@ -685,10 +680,9 @@ app.Mymaps.prototype.updateLayers = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.loadMapInformation = function() {
-  return this.getMapInformation().then(
-      goog.bind(function(mapinformation) {
-        return this.setMapInformation(mapinformation);
-      }, this));
+  return this.getMapInformation().then(function(mapinformation) {
+    return this.setMapInformation(mapinformation);
+  }.bind(this));
 };
 
 
@@ -787,7 +781,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMapInformation = function() {
-  return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
+  return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
@@ -795,8 +789,7 @@ app.Mymaps.prototype.getMapInformation = function() {
       function(resp) {
         this.mapInfo_ = resp.data;
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         var msg;
         if (error.status == 401) {
           this.notifyUnauthorized();
@@ -811,7 +804,7 @@ app.Mymaps.prototype.getMapInformation = function() {
           'Erreur inattendue lors du chargement de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return null;
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -823,15 +816,14 @@ app.Mymaps.prototype.getMapInformation = function() {
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
-      feature.get('fid')).then(goog.bind(
+      feature.get('fid')).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -841,7 +833,7 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
             'Erreur inattendue lors de la suppression d\'un élement.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -866,15 +858,13 @@ app.Mymaps.prototype.createMap =
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
       return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
-      goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -883,7 +873,7 @@ app.Mymaps.prototype.createMap =
             'Erreur inattendue lors de la création de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
     };
 
@@ -908,15 +898,14 @@ app.Mymaps.prototype.copyMap =
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
       return this.$http_.post(this.mymapsCopyMapUrl_ + this.mapId_, req, config).
-      then(goog.bind(
+      then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -925,7 +914,7 @@ app.Mymaps.prototype.copyMap =
             'Erreur inattendue lors de la copie de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this));
+      }.bind(this));
     };
 
 
@@ -936,15 +925,13 @@ app.Mymaps.prototype.copyMap =
  */
 app.Mymaps.prototype.deleteAMap = function(mapId) {
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
-      goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -953,7 +940,7 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
             'Erreur inattendue lors de la suppression de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -965,15 +952,13 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
  */
 app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
   return this.$http_.delete(this.mymapsDeleteFeaturesUrl_ + mapId).then(
-      goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -982,7 +967,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
             'Erreur inattendue lors de la suppression des objets de la carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -1031,15 +1016,14 @@ app.Mymaps.prototype.updateMap =
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
       return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
-      req, config).then(goog.bind(
+      req, config).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1048,7 +1032,7 @@ app.Mymaps.prototype.updateMap =
             'Erreur inattendue lors de la mise à jour de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
     };
 
@@ -1081,15 +1065,14 @@ app.Mymaps.prototype.updateMapEnv =
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
       return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
-      req, config).then(goog.bind(
+      req, config).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1098,7 +1081,7 @@ app.Mymaps.prototype.updateMapEnv =
             'Erreur inattendue lors de la mise à jour de votre carte.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
     };
 
@@ -1111,7 +1094,7 @@ app.Mymaps.prototype.updateMapEnv =
 app.Mymaps.prototype.saveFeaturesOrder = function(features) {
 
   var orders = [];
-  goog.array.forEach(features, function(feature) {
+  features.forEach(function(feature) {
     orders.push({'fid': feature.get('fid'),
       'display_order': feature.get('display_order')});
   }, this);
@@ -1123,15 +1106,14 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.$http_.post(this.mymapsSaveFeatureOrderUrl_ + this.mapId_,
-      req, config).then(goog.bind(
+      req, config).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1140,7 +1122,7 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
             'Erreur inattendue lors de la sauvegarde de votre modification.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -1162,15 +1144,14 @@ app.Mymaps.prototype.saveFeature = function(feature) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.$http_.post(this.mymapsSaveFeatureUrl_ + this.mapId_,
-      req, config).then(goog.bind(
+      req, config).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1179,7 +1160,7 @@ app.Mymaps.prototype.saveFeature = function(feature) {
             'Erreur inattendue lors de la sauvegarde de votre modification.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -1201,15 +1182,14 @@ app.Mymaps.prototype.saveFeatures = function(features) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.$http_.post(this.mymapsSaveFeaturesUrl_ + this.mapId_,
-      req, config).then(goog.bind(
+      req, config).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
       function(resp) {
         return resp.data;
-      }, this), goog.bind(
-      function(error) {
+      }.bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1218,7 +1198,7 @@ app.Mymaps.prototype.saveFeatures = function(features) {
             'Erreur inattendue lors de la sauvegarde de votre modification.');
         this.notify_(msg, app.NotifyNotificationType.ERROR);
         return [];
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -1302,11 +1282,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (order === undefined) {
       order = 0;
     }
-    // goog.asserts.assert(goog.isDef(this.get('__style__'));
     var color = this.get('color') || '#FF0000';
     var rgbColor = colorStringToRgba(color, 1);
     var opacity = this.get('opacity');
-    if (!goog.isDef(opacity)) {
+    if (opacity === undefined) {
       opacity = 1;
     }
     var rgbaColor = goog.array.clone(rgbColor);

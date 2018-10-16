@@ -82,7 +82,7 @@ app.layerinfo.ShowLayerinfoFactory = function($http, $sce, $rootScope,
             'uid': metadataUid,
             'lang': currentLanguage
           }, 'jsonpCallbackParam': 'cb'}).then(
-                goog.bind(function(resp) {
+                function(resp) {
                   var content = {
                     'uid': localMetadata['metadata_id'],
                     'legendUrl': null,
@@ -114,7 +114,7 @@ app.layerinfo.ShowLayerinfoFactory = function($http, $sce, $rootScope,
                   }
 
                   return content;
-                }, this));
+                }.bind(this));
       }
     }
 

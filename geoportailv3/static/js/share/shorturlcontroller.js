@@ -53,25 +53,25 @@ app.share.ShorturlController = function($scope, ngeoLocation,
    */
   this.getShorturl_ = appGetShorturl;
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['active'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal === true) {
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', goog.bind(function(event) {
+      $scope.$on('ngeoLocationChange', function(event) {
         this.setUrl_();
-      }, this));
+      }.bind(this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['active'] && this['onlyMymaps'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     this.setUrl_();
-  }, this));
+  }.bind(this));
 };
 
 
@@ -86,13 +86,13 @@ app.share.ShorturlController.prototype.setUrl_ =
         this.url += 'map_id=' + this.appMymaps_.getMapId();
       }
       this.longurl = this.url;
-      this.getShorturl_().then(goog.bind(
+      this.getShorturl_().then(
       /**
        * @param {string} shorturl The short URL.
        */
       function(shorturl) {
         this.url = shorturl;
-      }, this));
+      }.bind(this));
     };
 
 

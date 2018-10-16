@@ -72,7 +72,7 @@ app.layermanager.LayermanagerController.prototype.changeVisibility = function(la
   var newOpacity;
   var uid = goog.getUid(layer);
   if (currentOpacity === 0) {
-    if (goog.isDef(this.opacities_[uid])) {
+    if (this.opacities_[uid] !== undefined) {
       newOpacity = this.opacities_[uid];
     } else {
       newOpacity = 1;

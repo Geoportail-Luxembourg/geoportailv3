@@ -1,6 +1,4 @@
 goog.provide('app.interaction.ModifyCircle');
-
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
@@ -120,7 +118,7 @@ app.interaction.ModifyCircle = function(options) {
     updateWhileInteracting: true
   });
 
-  goog.asserts.assert(options.features);
+  console.assert(options.features);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private

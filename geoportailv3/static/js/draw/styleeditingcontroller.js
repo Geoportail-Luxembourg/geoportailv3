@@ -75,10 +75,10 @@ app.draw.StyleEditingController = function($scope, appDrawnFeatures,
     ['#ffffff', '#f7f7f7', '#c3c3c3', '#000000']
   ];
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.feature;
-  }, this), goog.bind(function() {
-    if (!goog.isDef(this.feature)) {
+  }.bind(this), function() {
+    if (this.feature === undefined) {
       return;
     }
     this.type = this.feature.getGeometry().getType().toLowerCase();
@@ -86,7 +86,7 @@ app.draw.StyleEditingController = function($scope, appDrawnFeatures,
       this.type = 'text';
     }
     this.featureOrig = this.feature.clone();
-  }, this));
+  }.bind(this));
 };
 
 
@@ -95,7 +95,7 @@ app.draw.StyleEditingController = function($scope, appDrawnFeatures,
  * @export
  */
 app.draw.StyleEditingController.prototype.setLineDash = function(lineStyle) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   this.feature.set('linestyle', lineStyle);
@@ -107,7 +107,7 @@ app.draw.StyleEditingController.prototype.setLineDash = function(lineStyle) {
  * @export
  */
 app.draw.StyleEditingController.prototype.setShape = function(symbol) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   this.feature.set('shape', symbol);
@@ -119,7 +119,7 @@ app.draw.StyleEditingController.prototype.setShape = function(symbol) {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetOrientation = function(orientation) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -148,7 +148,7 @@ app.draw.StyleEditingController.prototype.reverseLine = function() {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetColor = function(color) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -175,7 +175,7 @@ app.draw.StyleEditingController.prototype.isHTML5ColorSupported = function() {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetStroke = function(val) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -192,7 +192,7 @@ app.draw.StyleEditingController.prototype.getSetStroke = function(val) {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetSize = function(val) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -209,7 +209,7 @@ app.draw.StyleEditingController.prototype.getSetSize = function(val) {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetRotation = function(val) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -227,7 +227,7 @@ app.draw.StyleEditingController.prototype.getSetRotation = function(val) {
  * @export
  */
 app.draw.StyleEditingController.prototype.getSetOpacity = function(val) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {
@@ -245,7 +245,7 @@ app.draw.StyleEditingController.prototype.getSetOpacity = function(val) {
  * @export
  */
 app.draw.StyleEditingController.prototype.setColor = function(val) {
-  if (!goog.isDef(this.feature)) {
+  if (this.feature === undefined) {
     return;
   }
   if (arguments.length) {

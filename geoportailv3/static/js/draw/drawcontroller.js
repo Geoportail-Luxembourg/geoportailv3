@@ -18,7 +18,6 @@ goog.require('app.interaction.DrawRoute');
 goog.require('app.interaction.ClipLine');
 goog.require('app.interaction.ModifyCircle');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('ngeo.interaction.Measure');
@@ -321,9 +320,9 @@ app.draw.DrawController = function($scope,
 
   // Watch the "active" property, and disable the draw interactions
   // when "active" gets set to false.
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.active;
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal === false) {
       if (this.selectedFeatures_.getLength() > 0) {
         var feature = this.selectedFeatures_.getArray()[0];
@@ -343,14 +342,14 @@ app.draw.DrawController = function($scope,
         this['mymapsOpen'] = true;
       }
     }
-  }, this));
+  }.bind(this));
 
   var selectInteraction = new ol.interaction.Select({
     features: appSelectedFeatures,
     hitTolerance: 20,
-    filter: goog.bind(function(feature, layer) {
+    filter: function(feature, layer) {
       return this.drawnFeatures_.getArray().indexOf(feature) != -1;
-    }, this)
+    }.bind(this)
   });
   this.map.addInteraction(selectInteraction);
 
@@ -359,7 +358,6 @@ app.draw.DrawController = function($scope,
   appFeaturePopup.init(this.map);
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
-      goog.bind(
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -377,7 +375,7 @@ app.draw.DrawController = function($scope,
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
         this.scope_.$applyAsync();
-      }, this));
+      }.bind(this));
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
@@ -461,10 +459,10 @@ app.draw.DrawController = function($scope,
  * @private
  */
 app.draw.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
-  this.scope_.$applyAsync(goog.bind(function() {
+  this.scope_.$applyAsync(function() {
     var feature = event.features.getArray()[0];
     this.drawnFeatures_.saveFeature(feature);
-  }, this));
+  }.bind(this));
 };
 
 /**
@@ -473,18 +471,18 @@ app.draw.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
  */
 app.draw.DrawController.prototype.onContinueLineEnd_ = function(event) {
   // Deactivating asynchronosly to prevent dbl-click to zoom in
-  window.setTimeout(goog.bind(function() {
+  window.setTimeout(function() {
     this.scope_.$apply(function() {
       event.target.setActive(false);
     });
-  }, this), 0);
+  }.bind(this), 0);
 
-  this.scope_.$applyAsync(goog.bind(function() {
+  this.scope_.$applyAsync(function() {
     this.selectedFeatures_.clear();
     this.selectedFeatures_.push(event.feature);
     this.drawnFeatures_.saveFeature(event.feature);
     this.drawnFeatures_.activateModifyIfNeeded(event.feature);
-  }, this));
+  }.bind(this));
 };
 
 
@@ -547,7 +545,7 @@ app.draw.DrawController.prototype.onDrawPolygonStart_ = function(event) {
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.Polygon} */
       (sketchFeature.getGeometry());
-  goog.asserts.assert(goog.isDef(geometry));
+  console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
 
@@ -577,7 +575,7 @@ app.draw.DrawController.prototype.onDrawLineStart_ = function(event) {
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.LineString} */
       (sketchFeature.getGeometry());
-  goog.asserts.assert(goog.isDef(geometry));
+  console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
   this.changeEventKey_ = ol.events.listen(geometry,
@@ -602,7 +600,7 @@ app.draw.DrawController.prototype.onDrawCircleStart_ = function(event) {
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.Circle} */ (sketchFeature.getGeometry());
 
-  goog.asserts.assert(goog.isDef(geometry));
+  console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
   this.changeEventKey_ = ol.events.listen(geometry,
@@ -758,11 +756,11 @@ app.draw.DrawController.prototype.onDrawEnd_ = function(event) {
 
 
   // Deactivating asynchronosly to prevent dbl-click to zoom in
-  window.setTimeout(goog.bind(function() {
+  window.setTimeout(function() {
     this.scope_.$apply(function() {
       event.target.setActive(false);
     });
-  }, this), 0);
+  }.bind(this), 0);
   if (this.appMymaps_.isEditable()) {
     feature.set('__map_id__', this.appMymaps_.getMapId());
   } else {

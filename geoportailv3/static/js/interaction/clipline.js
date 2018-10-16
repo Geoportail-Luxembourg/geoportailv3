@@ -1,6 +1,4 @@
 goog.provide('app.interaction.ClipLine');
-
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
@@ -99,7 +97,7 @@ app.interaction.ClipLine = function(options) {
     updateWhileInteracting: true
   });
 
-  goog.asserts.assert(options.features);
+  console.assert(options.features);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private

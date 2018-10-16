@@ -13,9 +13,6 @@ goog.provide('app.print.PrintController');
 
 
 goog.require('app.module');
-goog.require('goog.array');
-goog.require('goog.asserts');
-goog.require('goog.string');
 goog.require('app.print.Printservice');
 goog.require('ol.easing');
 goog.require('ol.events');
@@ -82,7 +79,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
    * @private
    */
   this.map_ = this['map'];
-  goog.asserts.assert(goog.isDefAndNotNull(this.map_));
+  console.assert(this.map_ !== undefined && this.map_ !== null);
 
   /**
    * @type {angular.$timeout}
@@ -230,7 +227,6 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
    * @type {function(ol.render.Event)}
    */
   var postcomposeListener = ngeoPrintUtils.createPrintMaskPostcompose(
-      goog.bind(
           /**
            * Return the size in dots of the map to print. Depends on
            * the selected layout.
@@ -238,10 +234,9 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
            */
           function() {
             var layoutIdx = this['layouts'].indexOf(this['layout']);
-            goog.asserts.assert(layoutIdx >= 0);
+            console.assert(layoutIdx >= 0);
             return app.print.PrintController.MAP_SIZES_[layoutIdx];
-          }, this),
-      goog.bind(
+          }.bind(this),
           /**
            * Return the scale of the map to print.
            * @param {olx.FrameState} frameState Frame state.
@@ -250,13 +245,13 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
           function(frameState) {
             return app.print.PrintController.adjustScale_(
                 this.map_.getView(), this['scale']);
-          }, this));
+          }.bind(this));
 
   // Show/hide the print mask based on the value of the "open" property.
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['open'];
-  }, this), goog.bind(function(newVal) {
-    if (!goog.isDef(newVal)) {
+  }.bind(this), function(newVal) {
+    if (newVal === undefined) {
       return;
     }
     var open = /** @type {boolean} */ (newVal);
@@ -268,7 +263,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      goog.asserts.assert(goog.isNull(postcomposeListenerKey));
+      console.assert(goog.isNull(postcomposeListenerKey));
       postcomposeListenerKey = ol.events.listen(this.map_,
           ol.render.EventType.POSTCOMPOSE, postcomposeListener);
     } else if (!goog.isNull(postcomposeListenerKey)) {
@@ -276,14 +271,14 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
       postcomposeListenerKey = null;
     }
     this.map_.render();
-  }, this));
+  }.bind(this));
 
   // Set the possible print scales based on the current theme.
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.appTheme_.getCurrentTheme();
-  }, this), goog.bind(function() {
+  }.bind(this), function() {
     this.setScales_();
-  }, this));
+  }.bind(this));
 };
 
 
@@ -334,9 +329,9 @@ app.print.PrintController.getViewCenterResolution_ = function(view) {
   var viewCenter = view.getCenter();
   var viewProjection = view.getProjection();
   var viewResolution = view.getResolution();
-  goog.asserts.assert(goog.isDef(viewCenter));
-  goog.asserts.assert(!goog.isNull(viewProjection));
-  goog.asserts.assert(goog.isDef(viewResolution));
+  console.assert(viewCenter !== undefined);
+  console.assert(viewProjection !== null);
+  console.assert(viewResolution !== undefined);
   return ol.proj.getPointResolution(viewProjection, viewResolution, viewCenter);
 };
 
@@ -350,7 +345,7 @@ app.print.PrintController.getViewCenterResolution_ = function(view) {
 app.print.PrintController.adjustScale_ = function(view, scale) {
   var viewResolution = view.getResolution();
   var viewCenterResolution = app.print.PrintController.getViewCenterResolution_(view);
-  goog.asserts.assert(goog.isDef(viewResolution));
+  console.assert(viewResolution !== undefined);
   var factor = viewResolution / viewCenterResolution;
   return scale * factor;
 };
@@ -380,7 +375,7 @@ app.print.PrintController.findNearestScale_ = function(scales, scale) {
         break;
       }
     }
-    goog.asserts.assert(i < l);
+    console.assert(i < l);
   }
   return scale;
 };
@@ -391,7 +386,7 @@ app.print.PrintController.findNearestScale_ = function(scales, scale) {
  */
 app.print.PrintController.prototype.cancel = function() {
   // Cancel the latest request, if it's not finished yet.
-  goog.asserts.assert(!goog.isNull(this.requestCanceler_));
+  console.assert(!goog.isNull(this.requestCanceler_));
   this.requestCanceler_.resolve();
 
   // Cancel the status timeout if there's one set, to make sure no other
@@ -400,7 +395,7 @@ app.print.PrintController.prototype.cancel = function() {
     this.$timeout_.cancel(this.statusTimeoutPromise_);
   }
 
-  goog.asserts.assert(this.curRef_.length > 0);
+  console.assert(this.curRef_.length > 0);
 
   this.print_.cancel(this.curRef_);
 
@@ -429,10 +424,10 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
   var map = this.map_;
 
   var mapSize = map.getSize();
-  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+  console.assert(mapSize !== undefined && mapSize !== null);
 
   var layoutIdx = this['layouts'].indexOf(this['layout']);
-  goog.asserts.assert(layoutIdx >= 0);
+  console.assert(layoutIdx >= 0);
 
   var optimalResolution = this.printUtils_.getOptimalResolution(
       mapSize, app.print.PrintController.MAP_SIZES_[layoutIdx], newScale);
@@ -442,7 +437,7 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
 
   if (currentResolution < optimalResolution) {
     var newResolution = view.constrainResolution(optimalResolution, 0, 1);
-    goog.asserts.assert(newResolution >= optimalResolution);
+    console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
       easing: ol.easing.easeOut,
@@ -470,16 +465,16 @@ app.print.PrintController.prototype.print = function(format) {
 
   var bgLayer = this.backgroundLayerMgr_.get(this.map_);
   var bgMetadata = bgLayer.get('metadata');
-  if (goog.isDef(bgMetadata)) {
+  if (bgMetadata !== undefined) {
     var bgName = bgMetadata['legend_name'];
-    if (goog.isDef(bgName)) {
+    if (bgName !== undefined) {
       legend.push({'name': bgName});
     }
   }
   this.layers_.forEach(function(layer) {
     var curMetadata = layer.get('metadata');
     var name = curMetadata['legend_name'];
-    if (goog.isDef(name)) {
+    if (name !== undefined) {
       legend.push({'name': name});
     } else {
       var isExternalWms = curMetadata['isExternalWms'];
@@ -488,7 +483,7 @@ app.print.PrintController.prototype.print = function(format) {
         var accessConstraints = curMetadata['legendAccessConstraints'];
         var legendTitle = curMetadata['legendTitle'];
 
-        if (goog.isDef(legendUrl)) {
+        if (legendUrl !== undefined) {
           legend.push({
             'name': null,
             'legendUrl': legendUrl,
@@ -498,7 +493,7 @@ app.print.PrintController.prototype.print = function(format) {
       }
     }
     var metaMaxDpi = curMetadata['max_dpi'];
-    if (goog.isDef(metaMaxDpi)) {
+    if (metaMaxDpi !== undefined) {
       var maxDpi = parseInt(metaMaxDpi, 10);
       if (dpi > maxDpi) {
         dpi = maxDpi;
@@ -506,7 +501,7 @@ app.print.PrintController.prototype.print = function(format) {
     }
   });
 
-  this.getShorturl_().then(goog.bind(
+  this.getShorturl_().then(
       /**
        * @param {string} shorturl The short URL.
        */
@@ -547,7 +542,7 @@ app.print.PrintController.prototype.print = function(format) {
           var clonedQuery = queryResults[0].cloneNode(true);
           var profileElements = goog.dom.getElementsByClass('profile', clonedQuery);
           if (profileElements !== null && profileElements.length > 0) {
-            goog.array.forEach(profileElements, function(profileElement) {
+            profileElements.forEach(function(profileElement) {
               var nodeList = profileElement.getElementsByTagName('svg');
               if (nodeList !== undefined && nodeList.length > 0) {
                 var svgString = this.getSVGString_(nodeList[0]);
@@ -559,7 +554,7 @@ app.print.PrintController.prototype.print = function(format) {
           }
           var noprintElements = goog.dom.getElementsByClass('no-print', clonedQuery);
           if (noprintElements !== null && noprintElements.length > 0) {
-            goog.array.forEach(noprintElements, function(noprintElement) {
+            noprintElements.forEach(function(noprintElement) {
               goog.dom.removeNode(noprintElement);
             }, this);
           }
@@ -583,17 +578,16 @@ app.print.PrintController.prototype.print = function(format) {
           'queryResults': queryResultsHtml
         });
         var piwikUrl =
-            goog.string.buildString('http://',
-            this.appTheme_.getCurrentTheme(),
-            '.geoportail.lu/print/',
-            layout.replace(' ', '/'));
+            'http://' + this.appTheme_.getCurrentTheme() +
+            '.geoportail.lu/print/' +
+            layout.replace(' ', '/');
         var piwik = /** @type {app.Piwik} */ (this.window_['_paq']);
         piwik.push(['trackLink', piwikUrl, 'download']);
 
         // add feature overlay layer to print spec
         var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
         var resolution = map.getView().getResolution();
-        goog.asserts.assert(goog.isDef(resolution));
+        console.assert(resolution !== undefined);
         this.print_.encodeLayer(layers, this.featureOverlayLayer_, resolution);
         if (layers.length > 0) {
           spec.attributes.map.layers.unshift(layers[0]);
@@ -602,8 +596,8 @@ app.print.PrintController.prototype.print = function(format) {
           if ((layer.matrices instanceof Array) &&
             layer.matrixSet == 'GLOBAL_WEBMERCATOR_4_V3_HD') {
             // Ugly hack to request non retina wmts layer for print
-            layer.baseURL = goog.string.remove(layer.baseURL, '_hd');
-            layer.matrixSet = goog.string.remove(layer.matrixSet, '_HD');
+            layer.baseURL = layer.baseURL.replace('_hd', '');
+            layer.matrixSet = layer.matrixSet.replace('_HD', '');
             // layer.layer = layer.layer + '_hd';
             // goog.array.forEach(layer.matrices, function(matrice) {
             //   matrice.tileSize = [512, 512];
@@ -659,7 +653,7 @@ app.print.PrintController.prototype.print = function(format) {
             angular.bind(this, this.handleCreateReportSuccess_),
             angular.bind(this, this.handleCreateReportError_));
 
-      }, this));
+      }.bind(this));
 };
 
 
@@ -670,7 +664,7 @@ app.print.PrintController.prototype.print = function(format) {
 app.print.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
   var mfResp = /** @type {MapFishPrintReportResponse} */ (resp.data);
   var ref = mfResp.ref;
-  goog.asserts.assert(ref.length > 0);
+  console.assert(ref.length > 0);
   this.curRef_ = ref;
   this.getStatus_(ref);
 };
@@ -749,7 +743,7 @@ app.print.PrintController.prototype.resetPrintStates_ = function() {
  */
 app.print.PrintController.prototype.setScales_ = function() {
   var currentTheme = this.appTheme_.getCurrentTheme();
-  this.appThemes_.getThemeObject(currentTheme).then(goog.bind(
+  this.appThemes_.getThemeObject(currentTheme).then(
       /**
        * @param {Object} tree Tree object for the theme.
        */
@@ -783,7 +777,7 @@ app.print.PrintController.prototype.setScales_ = function() {
             this.map_.render();
           }
         }
-      }, this));
+      }.bind(this));
 };
 
 
@@ -796,13 +790,13 @@ app.print.PrintController.prototype.useOptimalScale_ = function() {
   var map = this.map_;
 
   var mapSize = map.getSize();
-  goog.asserts.assert(goog.isDefAndNotNull(mapSize));
+  console.assert(mapSize !== undefined && mapSize !== null);
 
   var viewCenterResolution = app.print.PrintController.getViewCenterResolution_(
       map.getView());
 
   var layoutIdx = this['layouts'].indexOf(this['layout']);
-  goog.asserts.assert(layoutIdx >= 0);
+  console.assert(layoutIdx >= 0);
 
   var scale = this.printUtils_.getOptimalScale(mapSize,
       viewCenterResolution, app.print.PrintController.MAP_SIZES_[layoutIdx],

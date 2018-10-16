@@ -8,7 +8,6 @@ goog.provide('app.themeswitcher.ThemeswitcherController');
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
 goog.require('app.events.ThemesEventType');
-goog.require('goog.array');
 goog.require('ol.events');
 
 
@@ -101,7 +100,7 @@ app.themeswitcher.ThemeswitcherController.prototype.encodeThemeName = function(t
  * @private
  */
 app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
-  this.appThemes_.getThemesObject().then(goog.bind(
+  this.appThemes_.getThemesObject().then(
       /**
        * Keep only the themes dedicated to the theme switcher
        * @param {Array.<Object>} themes Array of theme objects.
@@ -119,7 +118,7 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
         }, this);
         if (themeIndex < 0) {
           this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
-              .then(goog.bind(
+              .then(
               /**
                * @param {angular.$http.Response} resp Ajax response.
                */
@@ -132,9 +131,9 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
                 } else {
                   this.switchTheme(this.appTheme_.getDefaultTheme());
                 }
-              }, this));
+              }.bind(this));
         }
-      }, this));
+      }.bind(this));
 };
 
 

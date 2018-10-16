@@ -37,7 +37,7 @@ app.LayerOpacityManager.prototype.init = function(map) {
       function(evt) {
         var layer = /** @type {ol.layer.Layer} */ (evt.element);
         var layerMetadata = layer.get('metadata');
-        var layerStartOpacity = goog.isDef(layerMetadata) &&
+        var layerStartOpacity = layerMetadata !== undefined &&
             layerMetadata.hasOwnProperty('start_opacity') ?
             +layerMetadata['start_opacity'] : 1;
         layer.setOpacity(layerStartOpacity);

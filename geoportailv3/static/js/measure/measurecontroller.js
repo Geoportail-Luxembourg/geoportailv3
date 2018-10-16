@@ -221,7 +221,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
   this.map_.addInteraction(measureAzimut);
 
   ol.events.listen(measureAzimut, 'measureend',
-      goog.bind(function(evt) {
+      function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
             (evt.detail.feature.getGeometry());
@@ -232,24 +232,24 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
         var radiusCoordinates = radius.getCoordinates();
         $q.all([this.getElevation_(radiusCoordinates[0]),
           this.getElevation_(radiusCoordinates[1])]
-        ).then(goog.bind(function(data) {
+        ).then(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
             var el = evt.target.getTooltipElement();
             var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
             el.innerHTML += '<br> &Delta;h : ' +
                 parseInt(elevationOffset / 100, 0) + 'm';
           }
-        }, this));
-      }, this));
+        }.bind(this));
+      }.bind(this));
 
   ol.events.listen(measureProfile, 'measureend',
       function(evt) {
         var geom = /** @type {ol.geom.LineString} */
             (evt.detail.feature.getGeometry());
         this.getProfile_(geom).then(
-            goog.bind(function(resp) {
+            function(resp) {
               this['profileData'] = resp;
-            }, this));
+            }.bind(this));
       }, this);
 
   ol.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
@@ -265,9 +265,9 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
 
   // Watch the "active" property, and disable the measure interactions
   // when "active" gets set to false.
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['active'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal === false) {
       this['measureLength'].setActive(false);
       this['measureArea'].setActive(false);
@@ -277,7 +277,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
     } else {
       this.appActivetool_.measureActive = false;
     }
-  }, this));
+  }.bind(this));
   ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
     ol.interaction.Property.ACTIVE),
     this.onChangeActive_, this);

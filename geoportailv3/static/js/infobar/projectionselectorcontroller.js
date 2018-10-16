@@ -15,7 +15,6 @@
 goog.provide('app.infobar.ProjectionselectorController');
 
 goog.require('app.module');
-goog.require('goog.array');
 goog.require('ol.control.MousePosition');
 
 
@@ -50,7 +49,7 @@ app.infobar.ProjectionselectorController =
       this['mousePositionControl'] = new ol.control.MousePosition({
         className: 'custom-mouse-coordinates',
         coordinateFormat: /** @type {ol.CoordinateFormatType} */
-        (goog.bind(this.mouseCoordinateFormat_, this))
+        (this.mouseCoordinateFormat_.bind(this))
       });
     };
 
@@ -87,7 +86,7 @@ app.infobar.ProjectionselectorController.prototype.switchProjection =
       });
       this['mousePositionControl'].setCoordinateFormat(
         /** @type {ol.CoordinateFormatType} */
-        (goog.bind(this.mouseCoordinateFormat_, this))
+        (this.mouseCoordinateFormat_.bind(this))
       );
     };
 

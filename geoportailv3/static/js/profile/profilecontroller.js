@@ -203,14 +203,14 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
     }
   }.bind(this);
 
-  var outCallback = goog.bind(function() {
+  var outCallback = function() {
     if (this.showTooltip_) {
       this['point'] = null;
       this.removeMeasureTooltip_();
       this.featureOverlay_.clear();
       this.snappedPoint_.setGeometry(null);
     }
-  }, this);
+  }.bind(this);
   var linesConfiguration = {
     'line1': {
       style: {},
@@ -235,7 +235,7 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
   this.unwatchProfileData = $scope.$watch(function() {
     return this['profileData'];
   }.bind(this), function(newVal, oldVal) {
-    if (goog.isDef(newVal)) {
+    if (newVal !== undefined) {
       var i;
       var len = newVal.length;
       var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
@@ -361,12 +361,12 @@ app.profile.ProfileController.prototype.snapToGeometry_ = function(coordinate, g
  */
 app.profile.ProfileController.prototype.exportCSV = function() {
   var csv = 'dist,MNT,y,x\n';
-  this['profileData'].forEach(goog.bind(function(item) {
+  this['profileData'].forEach(function(item) {
     csv = csv + item['dist'] + ',' +
           (item['values']['dhm']) / 100 + ',' +
           item['x'] + ',' +
           item['y'] + '\n';
-  }, this));
+  }.bind(this));
 
   var csvInput = $('<input>').attr({
     type: 'hidden',
