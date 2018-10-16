@@ -2,9 +2,8 @@
  * @fileoverview This file defines the geolocation control.
  *
  */
-goog.provide('app.RouteControl');
+goog.provide('app.draw.RouteControl');
 
-goog.require('app.RouteControlOptions');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('ol.css');
@@ -13,24 +12,13 @@ goog.require('ol.events');
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     label: (string|undefined),
- *     tipLabel: (string|undefined),
- *     target: (Element|undefined),
- *     drawLineInteraction: app.interaction.DrawRoute
- * }}
- */
-app.RouteControlOptions;
-
-
-/**
  * @constructor
  * @extends {ol.control.Control}
- * @param {app.RouteControlOptions} options Location Control
+ * @param {app.draw.RouteControlOptions} options Location Control
  * options.
  * @ngInject
  */
-app.RouteControl = function(options) {
+app.draw.RouteControl = function(options) {
   var className = goog.isDef(options.className) ? options.className :
       'route-button';
   /**
@@ -75,14 +63,14 @@ app.RouteControl = function(options) {
   });
 
 };
-goog.inherits(app.RouteControl, ol.control.Control);
+goog.inherits(app.draw.RouteControl, ol.control.Control);
 
 
 /**
  * @param {ol.MapBrowserEvent} event The event to handle
  * @private
  */
-app.RouteControl.prototype.handleClick_ = function(event) {
+app.draw.RouteControl.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.drawLineInteraction_.toggleMapMatching();
   this.element.classList.toggle('route-on');

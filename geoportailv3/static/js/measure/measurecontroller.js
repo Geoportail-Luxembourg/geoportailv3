@@ -10,7 +10,7 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('measure.MeasureController');
+goog.provide('app.measure.MeasureController');
 
 goog.require('app.module');
 goog.require('ngeo.misc.decorate');

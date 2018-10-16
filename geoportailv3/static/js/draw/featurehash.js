@@ -1,4 +1,4 @@
-goog.provide('app.format.FeatureHash');
+goog.provide('app.draw.FeatureHash');
 
 goog.require('goog.asserts');
 goog.require('goog.object');
@@ -28,7 +28,7 @@ goog.require('ol.style.Text');
 /**
  * @enum {string}
  */
-app.format.FeatureHashStyleType = {
+app.draw.FeatureHashStyleType = {
   LINE_STRING: 'LineString',
   POINT: 'Point',
   POLYGON: 'Polygon'
@@ -36,30 +36,30 @@ app.format.FeatureHashStyleType = {
 
 
 /**
- * @type {Object.<ol.geom.GeometryType, app.format.FeatureHashStyleType>}
+ * @type {Object.<ol.geom.GeometryType, app.draw.FeatureHashStyleType>}
  * @private
  */
-app.format.FeatureHashStyleTypes_ = {};
+app.draw.FeatureHashStyleTypes_ = {};
 
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.LINE_STRING] =
-    app.format.FeatureHashStyleType.LINE_STRING;
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.POINT] =
-    app.format.FeatureHashStyleType.POINT;
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.POLYGON] =
-    app.format.FeatureHashStyleType.POLYGON;
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_LINE_STRING] =
-    app.format.FeatureHashStyleType.LINE_STRING;
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_POINT] =
-    app.format.FeatureHashStyleType.POINT;
-app.format.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_POLYGON] =
-    app.format.FeatureHashStyleType.POLYGON;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.LINE_STRING] =
+    app.draw.FeatureHashStyleType.LINE_STRING;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.POINT] =
+    app.draw.FeatureHashStyleType.POINT;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.POLYGON] =
+    app.draw.FeatureHashStyleType.POLYGON;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_LINE_STRING] =
+    app.draw.FeatureHashStyleType.LINE_STRING;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_POINT] =
+    app.draw.FeatureHashStyleType.POINT;
+app.draw.FeatureHashStyleTypes_[ol.geom.GeometryType.MULTI_POLYGON] =
+    app.draw.FeatureHashStyleType.POLYGON;
 
 
 /**
  * @type {Object.<string, string>}
  * @private
  */
-app.format.FeatureHashLegacyProperties_ = {};
+app.draw.FeatureHashLegacyProperties_ = {};
 
 
 /**
@@ -87,7 +87,7 @@ app.format.FeatureHashLegacyProperties_ = {};
  * @param {ngeox.format.FeatureHashOptions=} opt_options Options.
  * @export
  */
-app.format.FeatureHash = function(opt_options) {
+app.draw.FeatureHash = function(opt_options) {
 
   ol.format.TextFeature.call(this);
 
@@ -98,7 +98,7 @@ app.format.FeatureHash = function(opt_options) {
    * @private
    */
   this.accuracy_ = options.accuracy !== undefined ?
-      options.accuracy : app.format.FeatureHash.ACCURACY_;
+      options.accuracy : app.draw.FeatureHash.ACCURACY_;
 
   /**
    * @type {boolean}
@@ -112,7 +112,7 @@ app.format.FeatureHash = function(opt_options) {
    * @private
    */
   this.propertiesFunction_ = options.properties !== undefined ?
-      options.properties : app.format.FeatureHash.defaultPropertiesFunction_;
+      options.properties : app.draw.FeatureHash.defaultPropertiesFunction_;
 
   /**
    * @type {boolean}
@@ -136,52 +136,52 @@ app.format.FeatureHash = function(opt_options) {
    * @type {Object.<string, string>}
    * @private
    */
-  app.format.FeatureHashLegacyProperties_ = (options.propertiesType !== undefined) &&  options.propertiesType;
+  app.draw.FeatureHashLegacyProperties_ = (options.propertiesType !== undefined) &&  options.propertiesType;
 
 };
-ol.inherits(app.format.FeatureHash, ol.format.TextFeature);
+ol.inherits(app.draw.FeatureHash, ol.format.TextFeature);
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.readFeature;
+app.draw.FeatureHash.prototype.readFeature;
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.readFeatures;
+app.draw.FeatureHash.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.readGeometry;
+app.draw.FeatureHash.prototype.readGeometry;
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.writeFeature;
+app.draw.FeatureHash.prototype.writeFeature;
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.writeFeatures;
+app.draw.FeatureHash.prototype.writeFeatures;
 
 
 /**
  * @inheritDoc
  * @export
  */
-app.format.FeatureHash.prototype.writeGeometry;
+app.draw.FeatureHash.prototype.writeGeometry;
 
 
 /**
@@ -191,7 +191,7 @@ app.format.FeatureHash.prototype.writeGeometry;
  * @const
  * @private
  */
-app.format.FeatureHash.CHAR64_ =
+app.draw.FeatureHash.CHAR64_ =
     '.-_!*ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghjkmnpqrstuvwxyz';
 
 
@@ -199,7 +199,7 @@ app.format.FeatureHash.CHAR64_ =
  * @const
  * @private
  */
-app.format.FeatureHash.ACCURACY_ = 1;
+app.draw.FeatureHash.ACCURACY_ = 1;
 
 
 /**
@@ -209,7 +209,7 @@ app.format.FeatureHash.ACCURACY_ = 1;
  * serialize.
  * @private
  */
-app.format.FeatureHash.defaultPropertiesFunction_ = function(feature) {
+app.draw.FeatureHash.defaultPropertiesFunction_ = function(feature) {
   return feature.getProperties();
 };
 
@@ -220,12 +220,12 @@ app.format.FeatureHash.defaultPropertiesFunction_ = function(feature) {
  * @return {string} String.
  * @private
  */
-app.format.FeatureHash.encodeSignedNumber_ = function(num) {
+app.draw.FeatureHash.encodeSignedNumber_ = function(num) {
   var signedNum = num << 1;
   if (num < 0) {
     signedNum = ~(signedNum);
   }
-  return app.format.FeatureHash.encodeNumber_(signedNum);
+  return app.draw.FeatureHash.encodeNumber_(signedNum);
 };
 
 
@@ -235,14 +235,14 @@ app.format.FeatureHash.encodeSignedNumber_ = function(num) {
  * @return {string} String.
  * @private
  */
-app.format.FeatureHash.encodeNumber_ = function(num) {
+app.draw.FeatureHash.encodeNumber_ = function(num) {
   var encodedNumber = '';
   while (num >= 0x20) {
-    encodedNumber += app.format.FeatureHash.CHAR64_.charAt(
+    encodedNumber += app.draw.FeatureHash.CHAR64_.charAt(
         0x20 | (num & 0x1f));
     num >>= 5;
   }
-  encodedNumber += app.format.FeatureHash.CHAR64_.charAt(num);
+  encodedNumber += app.draw.FeatureHash.CHAR64_.charAt(num);
   return encodedNumber;
 };
 
@@ -256,8 +256,8 @@ app.format.FeatureHash.encodeNumber_ = function(num) {
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStyles_ = function(styles, geometryType, encodedStyles) {
-  var styleType = app.format.FeatureHashStyleTypes_[geometryType];
+app.draw.FeatureHash.encodeStyles_ = function(styles, geometryType, encodedStyles) {
+  var styleType = app.draw.FeatureHashStyleTypes_[geometryType];
   goog.asserts.assert(styleType !== undefined);
   for (var i = 0; i < styles.length; ++i) {
     var style = styles[i];
@@ -265,22 +265,22 @@ app.format.FeatureHash.encodeStyles_ = function(styles, geometryType, encodedSty
     var imageStyle = style.getImage();
     var strokeStyle = style.getStroke();
     var textStyle = style.getText();
-    if (styleType == app.format.FeatureHashStyleType.POLYGON) {
+    if (styleType == app.draw.FeatureHashStyleType.POLYGON) {
       if (fillStyle !== null) {
-        app.format.FeatureHash.encodeStylePolygon_(
+        app.draw.FeatureHash.encodeStylePolygon_(
             fillStyle, strokeStyle, encodedStyles);
       }
-    } else if (styleType == app.format.FeatureHashStyleType.LINE_STRING) {
+    } else if (styleType == app.draw.FeatureHashStyleType.LINE_STRING) {
       if (strokeStyle !== null) {
-        app.format.FeatureHash.encodeStyleLine_(strokeStyle, encodedStyles);
+        app.draw.FeatureHash.encodeStyleLine_(strokeStyle, encodedStyles);
       }
-    } else if (styleType == app.format.FeatureHashStyleType.POINT) {
+    } else if (styleType == app.draw.FeatureHashStyleType.POINT) {
       if (imageStyle !== null) {
-        app.format.FeatureHash.encodeStylePoint_(imageStyle, encodedStyles);
+        app.draw.FeatureHash.encodeStylePoint_(imageStyle, encodedStyles);
       }
     }
     if (textStyle !== null) {
-      app.format.FeatureHash.encodeStyleText_(textStyle, encodedStyles);
+      app.draw.FeatureHash.encodeStyleText_(textStyle, encodedStyles);
     }
   }
 };
@@ -293,8 +293,8 @@ app.format.FeatureHash.encodeStyles_ = function(styles, geometryType, encodedSty
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStyleLine_ = function(strokeStyle, encodedStyles) {
-  app.format.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
+app.draw.FeatureHash.encodeStyleLine_ = function(strokeStyle, encodedStyles) {
+  app.draw.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
 };
 
 
@@ -305,7 +305,7 @@ app.format.FeatureHash.encodeStyleLine_ = function(strokeStyle, encodedStyles) {
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStylePoint_ = function(imageStyle, encodedStyles) {
+app.draw.FeatureHash.encodeStylePoint_ = function(imageStyle, encodedStyles) {
   if (imageStyle instanceof ol.style.Circle) {
     var radius = imageStyle.getRadius();
     if (encodedStyles.length > 0) {
@@ -314,11 +314,11 @@ app.format.FeatureHash.encodeStylePoint_ = function(imageStyle, encodedStyles) {
     encodedStyles.push(encodeURIComponent('pointRadius*' + radius));
     var fillStyle = imageStyle.getFill();
     if (fillStyle !== null) {
-      app.format.FeatureHash.encodeStyleFill_(fillStyle, encodedStyles);
+      app.draw.FeatureHash.encodeStyleFill_(fillStyle, encodedStyles);
     }
     var strokeStyle = imageStyle.getStroke();
     if (strokeStyle !== null) {
-      app.format.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
+      app.draw.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
     }
   }
 };
@@ -333,10 +333,10 @@ app.format.FeatureHash.encodeStylePoint_ = function(imageStyle, encodedStyles) {
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStylePolygon_ = function(fillStyle, strokeStyle, encodedStyles) {
-  app.format.FeatureHash.encodeStyleFill_(fillStyle, encodedStyles);
+app.draw.FeatureHash.encodeStylePolygon_ = function(fillStyle, strokeStyle, encodedStyles) {
+  app.draw.FeatureHash.encodeStyleFill_(fillStyle, encodedStyles);
   if (strokeStyle !== null) {
-    app.format.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
+    app.draw.FeatureHash.encodeStyleStroke_(strokeStyle, encodedStyles);
   }
 };
 
@@ -350,7 +350,7 @@ app.format.FeatureHash.encodeStylePolygon_ = function(fillStyle, strokeStyle, en
  * @param {string=} opt_propertyName Property name.
  * @private
  */
-app.format.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) {
+app.draw.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) {
   var propertyName = opt_propertyName !== undefined ?
       opt_propertyName : 'fillColor';
   var fillColor = fillStyle.getColor();
@@ -375,7 +375,7 @@ app.format.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
+app.draw.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
     goog.asserts.assert(Array.isArray(strokeColor));
@@ -404,7 +404,7 @@ app.format.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles)
  * @param {Array.<string>} encodedStyles Encoded styles array.
  * @private
  */
-app.format.FeatureHash.encodeStyleText_ = function(textStyle, encodedStyles) {
+app.draw.FeatureHash.encodeStyleText_ = function(textStyle, encodedStyles) {
   var fontStyle = textStyle.getFont();
   if (fontStyle !== undefined) {
     var font = fontStyle.split(' ');
@@ -417,7 +417,7 @@ app.format.FeatureHash.encodeStyleText_ = function(textStyle, encodedStyles) {
   }
   var fillStyle = textStyle.getFill();
   if (fillStyle !== null) {
-    app.format.FeatureHash.encodeStyleFill_(
+    app.draw.FeatureHash.encodeStyleFill_(
         fillStyle, encodedStyles, 'fontColor');
   }
 };
@@ -428,10 +428,10 @@ app.format.FeatureHash.encodeStyleText_ = function(textStyle, encodedStyles) {
  * {@link ol.geom.LineString}.
  * @param {string} text Text.
  * @return {ol.geom.LineString} Line string.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readLineStringGeometry_ = function(text) {
+app.draw.FeatureHash.readLineStringGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'l(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -447,10 +447,10 @@ app.format.FeatureHash.readLineStringGeometry_ = function(text) {
  * {@link ol.geom.MultiLineString}.
  * @param {string} text Text.
  * @return {ol.geom.MultiLineString} Line string.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readMultiLineStringGeometry_ = function(text) {
+app.draw.FeatureHash.readMultiLineStringGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'L(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -473,10 +473,10 @@ app.format.FeatureHash.readMultiLineStringGeometry_ = function(text) {
  * {@link ol.geom.Point}.
  * @param {string} text Text.
  * @return {ol.geom.Point} Point.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readPointGeometry_ = function(text) {
+app.draw.FeatureHash.readPointGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'p(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -493,10 +493,10 @@ app.format.FeatureHash.readPointGeometry_ = function(text) {
  * {@link ol.geom.MultiPoint}.
  * @param {string} text Text.
  * @return {ol.geom.MultiPoint} MultiPoint.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readMultiPointGeometry_ = function(text) {
+app.draw.FeatureHash.readMultiPointGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'P(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -512,10 +512,10 @@ app.format.FeatureHash.readMultiPointGeometry_ = function(text) {
  * {@link ol.geom.Polygon}.
  * @param {string} text Text.
  * @return {ol.geom.Polygon} Polygon.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readPolygonGeometry_ = function(text) {
+app.draw.FeatureHash.readPolygonGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'a(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -545,10 +545,10 @@ app.format.FeatureHash.readPolygonGeometry_ = function(text) {
  * {@link ol.geom.MultiPolygon}.
  * @param {string} text Text.
  * @return {ol.geom.MultiPolygon} MultiPolygon.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.readMultiPolygonGeometry_ = function(text) {
+app.draw.FeatureHash.readMultiPolygonGeometry_ = function(text) {
   goog.asserts.assert(text.substring(0, 2) === 'A(');
   goog.asserts.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
@@ -588,12 +588,12 @@ app.format.FeatureHash.readMultiPolygonGeometry_ = function(text) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-app.format.FeatureHash.setStyleInFeature_ = function(text, feature) {
+app.draw.FeatureHash.setStyleInFeature_ = function(text, feature) {
   if (text == '') {
     return;
   }
   var fillColor, fontSize, fontColor, pointRadius, strokeColor, strokeWidth;
-  var properties = app.format.FeatureHash.getStyleProperties_(text, feature);
+  var properties = app.draw.FeatureHash.getStyleProperties_(text, feature);
   fillColor = properties['fillColor'];
   fontSize = properties['fontSize'];
   fontColor = properties['fontColor'];
@@ -650,9 +650,9 @@ app.format.FeatureHash.setStyleInFeature_ = function(text, feature) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-app.format.FeatureHash.setStyleProperties_ = function(text, feature) {
+app.draw.FeatureHash.setStyleProperties_ = function(text, feature) {
 
-  var properties = app.format.FeatureHash.getStyleProperties_(text, feature);
+  var properties = app.draw.FeatureHash.getStyleProperties_(text, feature);
   var geometry = feature.getGeometry();
 
   // Deal with legacy properties
@@ -687,8 +687,8 @@ app.format.FeatureHash.setStyleProperties_ = function(text, feature) {
   var clone = {};
   for (var key in properties) {
     var value = properties[key];
-    if (app.format.FeatureHashLegacyProperties_[key]) {
-      clone[app.format.FeatureHashLegacyProperties_[key]] = value;
+    if (app.draw.FeatureHashLegacyProperties_[key]) {
+      clone[app.draw.FeatureHashLegacyProperties_[key]] = value;
     } else {
       clone[key] = value;
     }
@@ -705,7 +705,7 @@ app.format.FeatureHash.setStyleProperties_ = function(text, feature) {
  * @return {number|boolean|string} The casted value corresponding to the key.
  * @private
  */
-app.format.FeatureHash.castValue_ = function(key, value) {
+app.draw.FeatureHash.castValue_ = function(key, value) {
   var numProperties = [
     ngeo.format.FeatureProperties.ANGLE,
     ngeo.format.FeatureProperties.OPACITY,
@@ -746,7 +746,7 @@ app.format.FeatureHash.castValue_ = function(key, value) {
  *     the feature.
  * @private
  */
-app.format.FeatureHash.getStyleProperties_ = function(text, feature) {
+app.draw.FeatureHash.getStyleProperties_ = function(text, feature) {
   var parts = text.split('\'');
   var properties = {};
 
@@ -757,7 +757,7 @@ app.format.FeatureHash.getStyleProperties_ = function(text, feature) {
     var key = keyVal[0];
     var val = keyVal[1];
 
-    properties[key] = app.format.FeatureHash.castValue_(key, val);
+    properties[key] = app.draw.FeatureHash.castValue_(key, val);
   }
 
   return properties;
@@ -769,10 +769,10 @@ app.format.FeatureHash.getStyleProperties_ = function(text, feature) {
  * characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writeLineStringGeometry_ = function(geometry) {
+app.draw.FeatureHash.writeLineStringGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
@@ -786,10 +786,10 @@ app.format.FeatureHash.writeLineStringGeometry_ = function(geometry) {
  * of characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writeMultiLineStringGeometry_ = function(geometry) {
+app.draw.FeatureHash.writeMultiLineStringGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
   var ends = geometry.getEnds();
   var lineStringCount = ends.length;
@@ -816,10 +816,10 @@ app.format.FeatureHash.writeMultiLineStringGeometry_ = function(geometry) {
  * characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writePointGeometry_ = function(geometry) {
+app.draw.FeatureHash.writePointGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Point);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
@@ -833,10 +833,10 @@ app.format.FeatureHash.writePointGeometry_ = function(geometry) {
  * of characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writeMultiPointGeometry_ = function(geometry) {
+app.draw.FeatureHash.writeMultiPointGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
@@ -853,10 +853,10 @@ app.format.FeatureHash.writeMultiPointGeometry_ = function(geometry) {
  * @param {Array.<number>} ends Ends.
  * @param {Array.<string>} textArray Text array.
  * @return {number} The new offset.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.encodeRings_ = function(flatCoordinates, stride, offset, ends, textArray) {
+app.draw.FeatureHash.encodeRings_ = function(flatCoordinates, stride, offset, ends, textArray) {
   var linearRingCount = ends.length;
   for (var i = 0; i < linearRingCount; ++i) {
     // skip the "closing" point
@@ -877,17 +877,17 @@ app.format.FeatureHash.encodeRings_ = function(flatCoordinates, stride, offset, 
  * of characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writePolygonGeometry_ = function(geometry) {
+app.draw.FeatureHash.writePolygonGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   var ends = geometry.getEnds();
   var offset = 0;
   var textArray = ['a('];
-  app.format.FeatureHash.encodeRings_.call(this,
+  app.draw.FeatureHash.encodeRings_.call(this,
       flatCoordinates, stride, offset, ends, textArray);
   textArray.push(')');
   return textArray.join('');
@@ -899,10 +899,10 @@ app.format.FeatureHash.writePolygonGeometry_ = function(geometry) {
  * characters.
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Encoded geometry.
- * @this {app.format.FeatureHash}
+ * @this {app.draw.FeatureHash}
  * @private
  */
-app.format.FeatureHash.writeMultiPolygonGeometry_ = function(geometry) {
+app.draw.FeatureHash.writeMultiPolygonGeometry_ = function(geometry) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
@@ -913,7 +913,7 @@ app.format.FeatureHash.writeMultiPolygonGeometry_ = function(geometry) {
   for (var i = 0; i < polygonCount; ++i) {
     var ends = endss[i];
     textArray.push('(');
-    offset = app.format.FeatureHash.encodeRings_.call(this,
+    offset = app.draw.FeatureHash.encodeRings_.call(this,
         flatCoordinates, stride, offset, ends, textArray);
     textArray.push(')');
   }
@@ -926,13 +926,13 @@ app.format.FeatureHash.writeMultiPolygonGeometry_ = function(geometry) {
  * @private
  * @type {Object.<string, function(string):ol.geom.Geometry>}
  */
-app.format.FeatureHash.GEOMETRY_READERS_ = {
-  'P': app.format.FeatureHash.readMultiPointGeometry_,
-  'L': app.format.FeatureHash.readMultiLineStringGeometry_,
-  'A': app.format.FeatureHash.readMultiPolygonGeometry_,
-  'l': app.format.FeatureHash.readLineStringGeometry_,
-  'p': app.format.FeatureHash.readPointGeometry_,
-  'a': app.format.FeatureHash.readPolygonGeometry_
+app.draw.FeatureHash.GEOMETRY_READERS_ = {
+  'P': app.draw.FeatureHash.readMultiPointGeometry_,
+  'L': app.draw.FeatureHash.readMultiLineStringGeometry_,
+  'A': app.draw.FeatureHash.readMultiPolygonGeometry_,
+  'l': app.draw.FeatureHash.readLineStringGeometry_,
+  'p': app.draw.FeatureHash.readPointGeometry_,
+  'a': app.draw.FeatureHash.readPolygonGeometry_
 };
 
 
@@ -941,13 +941,13 @@ app.format.FeatureHash.GEOMETRY_READERS_ = {
  * @private
  * @type {Object.<string, function(ol.geom.Geometry):string>}
  */
-app.format.FeatureHash.GEOMETRY_WRITERS_ = {
-  'MultiLineString': app.format.FeatureHash.writeMultiLineStringGeometry_,
-  'MultiPoint': app.format.FeatureHash.writeMultiPointGeometry_,
-  'MultiPolygon': app.format.FeatureHash.writeMultiPolygonGeometry_,
-  'LineString': app.format.FeatureHash.writeLineStringGeometry_,
-  'Point': app.format.FeatureHash.writePointGeometry_,
-  'Polygon': app.format.FeatureHash.writePolygonGeometry_
+app.draw.FeatureHash.GEOMETRY_WRITERS_ = {
+  'MultiLineString': app.draw.FeatureHash.writeMultiLineStringGeometry_,
+  'MultiPoint': app.draw.FeatureHash.writeMultiPointGeometry_,
+  'MultiPolygon': app.draw.FeatureHash.writeMultiPolygonGeometry_,
+  'LineString': app.draw.FeatureHash.writeLineStringGeometry_,
+  'Point': app.draw.FeatureHash.writePointGeometry_,
+  'Polygon': app.draw.FeatureHash.writePolygonGeometry_
 };
 
 
@@ -961,7 +961,7 @@ app.format.FeatureHash.GEOMETRY_WRITERS_ = {
  * @return {Array.<number>} Flat coordinates.
  * @private
  */
-app.format.FeatureHash.prototype.decodeCoordinates_ = function(text, opt_flatCoordinates) {
+app.draw.FeatureHash.prototype.decodeCoordinates_ = function(text, opt_flatCoordinates) {
   var len = text.length;
   var index = 0;
   var flatCoordinates = opt_flatCoordinates !== undefined ?
@@ -972,7 +972,7 @@ app.format.FeatureHash.prototype.decodeCoordinates_ = function(text, opt_flatCoo
     var shift = 0;
     var result = 0;
     do {
-      b = app.format.FeatureHash.CHAR64_.indexOf(text.charAt(index++));
+      b = app.draw.FeatureHash.CHAR64_.indexOf(text.charAt(index++));
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 32);
@@ -981,7 +981,7 @@ app.format.FeatureHash.prototype.decodeCoordinates_ = function(text, opt_flatCoo
     shift = 0;
     result = 0;
     do {
-      b = app.format.FeatureHash.CHAR64_.indexOf(text.charAt(index++));
+      b = app.draw.FeatureHash.CHAR64_.indexOf(text.charAt(index++));
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 32);
@@ -1005,7 +1005,7 @@ app.format.FeatureHash.prototype.decodeCoordinates_ = function(text, opt_flatCoo
  * @return {string} String.
  * @private
  */
-app.format.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, stride, offset, end) {
+app.draw.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, stride, offset, end) {
   var encodedCoordinates = '';
   for (var i = offset; i < end; i += stride) {
     var x = flatCoordinates[i];
@@ -1016,8 +1016,8 @@ app.format.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, 
     var dy = y - this.prevY_;
     this.prevX_ = x;
     this.prevY_ = y;
-    encodedCoordinates += app.format.FeatureHash.encodeSignedNumber_(dx) +
-        app.format.FeatureHash.encodeSignedNumber_(dy);
+    encodedCoordinates += app.draw.FeatureHash.encodeSignedNumber_(dx) +
+        app.draw.FeatureHash.encodeSignedNumber_(dy);
   }
   return encodedCoordinates;
 };
@@ -1031,7 +1031,7 @@ app.format.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, 
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_options) {
+app.draw.FeatureHash.prototype.readFeatureFromText = function(text, opt_options) {
   goog.asserts.assert(text.length > 2);
   goog.asserts.assert(text[1] === '(');
   goog.asserts.assert(text[text.length - 1] === ')');
@@ -1055,8 +1055,8 @@ app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_option
         goog.asserts.assert(keyVal.length === 2);
         var key = keyVal[0];
         var value = keyVal[1];
-        if (!this.setStyle_ && app.format.FeatureHashLegacyProperties_[key]) {
-          key = app.format.FeatureHashLegacyProperties_[key];
+        if (!this.setStyle_ && app.draw.FeatureHashLegacyProperties_[key]) {
+          key = app.draw.FeatureHashLegacyProperties_[key];
         }
         feature.set(key, value);
       }
@@ -1064,9 +1064,9 @@ app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_option
     if (splitIndex >= 0) {
       var stylesText = attributesAndStylesText.substring(splitIndex + 1);
       if (this.setStyle_) {
-        app.format.FeatureHash.setStyleInFeature_(stylesText, feature);
+        app.draw.FeatureHash.setStyleInFeature_(stylesText, feature);
       } else {
-        app.format.FeatureHash.setStyleProperties_(stylesText, feature);
+        app.draw.FeatureHash.setStyleProperties_(stylesText, feature);
       }
     }
   }
@@ -1082,7 +1082,7 @@ app.format.FeatureHash.prototype.readFeatureFromText = function(text, opt_option
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.readFeaturesFromText = function(text, opt_options) {
+app.draw.FeatureHash.prototype.readFeaturesFromText = function(text, opt_options) {
   goog.asserts.assert(text[0] === 'F');
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -1107,8 +1107,8 @@ app.format.FeatureHash.prototype.readFeaturesFromText = function(text, opt_optio
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.readGeometryFromText = function(text, opt_options) {
-  var geometryReader = app.format.FeatureHash.GEOMETRY_READERS_[text[0]];
+app.draw.FeatureHash.prototype.readGeometryFromText = function(text, opt_options) {
+  var geometryReader = app.draw.FeatureHash.GEOMETRY_READERS_[text[0]];
   goog.asserts.assert(geometryReader !== undefined);
   this.prevX_ = 0;
   this.prevY_ = 0;
@@ -1124,7 +1124,7 @@ app.format.FeatureHash.prototype.readGeometryFromText = function(text, opt_optio
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.writeFeatureText = function(feature, opt_options) {
+app.draw.FeatureHash.prototype.writeFeatureText = function(feature, opt_options) {
   var /** @type {Array.<string>} */ encodedParts = [];
 
   // encode geometry
@@ -1176,7 +1176,7 @@ app.format.FeatureHash.prototype.writeFeatureText = function(feature, opt_option
       if (styles !== null) {
         var encodedStyles = [];
         styles = Array.isArray(styles) ? styles : [styles];
-        app.format.FeatureHash.encodeStyles_(
+        app.draw.FeatureHash.encodeStyles_(
             styles, geometry.getType(), encodedStyles);
         if (encodedStyles.length > 0) {
           encodedParts.push('~');
@@ -1201,7 +1201,7 @@ app.format.FeatureHash.prototype.writeFeatureText = function(feature, opt_option
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.writeFeaturesText = function(features, opt_options) {
+app.draw.FeatureHash.prototype.writeFeaturesText = function(features, opt_options) {
   var textArray = [];
   if (features.length > 0) {
     textArray.push('F');
@@ -1221,8 +1221,8 @@ app.format.FeatureHash.prototype.writeFeaturesText = function(features, opt_opti
  * @override
  * @protected
  */
-app.format.FeatureHash.prototype.writeGeometryText = function(geometry, opt_options) {
-  var geometryWriter = app.format.FeatureHash.GEOMETRY_WRITERS_[
+app.draw.FeatureHash.prototype.writeGeometryText = function(geometry, opt_options) {
+  var geometryWriter = app.draw.FeatureHash.GEOMETRY_WRITERS_[
       geometry.getType()];
   goog.asserts.assert(geometryWriter !== undefined);
   var transformedGeometry = /** @type {ol.geom.Geometry} */

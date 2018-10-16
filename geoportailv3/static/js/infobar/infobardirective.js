@@ -10,8 +10,7 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.InfobarDirectiveController');
-goog.provide('app.infobarDirective');
+goog.provide('app.infobar.infobarDirective');
 
 goog.require('app.module');
 
@@ -21,7 +20,7 @@ goog.require('app.module');
  * @param {string} appInfobarTemplateUrl The template url.
  * @ngInject
  */
-app.infobarDirective = function(appInfobarTemplateUrl) {
+app.infobar.infobarDirective = function(appInfobarTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -35,35 +34,4 @@ app.infobarDirective = function(appInfobarTemplateUrl) {
 };
 
 
-app.module.directive('appInfobar', app.infobarDirective);
-
-
-/**
- * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
- * @ngInject
- * @constructor
- * @export
- */
-app.InfobarDirectiveController = function(ngeoNetworkStatus) {
-  /**
-   * @type {boolean}
-   */
-  this['infobarOpen'] = false;
-
-  /**
-   * @type {ngeo.offline.NetworkStatus}
-   * @export
-   */
-  this.ngeoNetworkStatus = ngeoNetworkStatus;
-};
-
-
-/**
- * @export
- */
-app.InfobarDirectiveController.prototype.infobarSwitch = function() {
-  this['infobarOpen'] = !this['infobarOpen'];
-};
-
-app.module.controller('AppInfobarController',
-    app.InfobarDirectiveController);
+app.module.directive('appInfobar', app.infobar.infobarDirective);
