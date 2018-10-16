@@ -35,7 +35,7 @@ app.backgroundlayer.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
-  appThemes.getBgLayers().then(goog.bind(
+  appThemes.getBgLayers().then(
       /**
        * @param {Array.<Object>} bgLayers Array of background layer objects.
        */
@@ -43,7 +43,7 @@ app.backgroundlayer.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
         this['bgLayers'] = bgLayers;
         this['bgLayer'] = this['bgLayers'][0];
         this.setLayer(this['bgLayer']);
-      }, this));
+      }.bind(this));
 
   ol.events.listen(this.backgroundLayerMgr_, 'change',
       function() {

@@ -6,7 +6,6 @@
 goog.provide('app.StateManager');
 
 goog.require('app.module');
-goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.storage.mechanism.HTML5LocalStorage');
 goog.require('app.NotifyNotificationType');
@@ -92,7 +91,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
         if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
           this.initialState_[key] = ngeoLocation.getParam(key);
         } else {
-          goog.asserts.assert(!goog.isNull(key));
+          console.assert(!goog.isNull(key));
           this.initialState_[key] = this.localStorage_.get(key);
         }
       }
@@ -108,7 +107,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
         goog.math.clamp(+this.initialState_['version'], 2, 3) : 2;
   }
   var mapId = this.ngeoLocation_.getParam('map_id');
-  if (!goog.isDef(mapId) &&
+  if (mapId === undefined &&
       !((this.initialState_.hasOwnProperty('bgLayer') &&
       this.initialState_['bgLayer'].length > 0 &&
       this.initialState_['bgLayer'] != 'blank') ||
@@ -123,7 +122,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
     this.notify_(msg, app.NotifyNotificationType.INFO);
   }
 
-  goog.asserts.assert(this.version_ != -1);
+  console.assert(this.version_ != -1);
 
   this.ngeoLocation_.updateParams({'version': 3});
 };

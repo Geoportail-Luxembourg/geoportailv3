@@ -92,9 +92,9 @@ app.feedback.FeedbackController = function($scope, $http, appNotify, appUserMana
    */
   this.url = '';
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['active'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal === true) {
       if (this.appUserManager_.isAuthenticated()) {
         this.email = this.appUserManager_.getEmail();
@@ -104,23 +104,23 @@ app.feedback.FeedbackController = function($scope, $http, appNotify, appUserMana
         this.gettextCatalog.getString('Please pick a layer');
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', goog.bind(function(event) {
+      $scope.$on('ngeoLocationChange', function(event) {
         this.setUrl_();
         this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
-      }, this));
+      }.bind(this));
     } else if (newVal === false && this.removeListener) {
       this.removeListener();
       this.email = this.description = this.url = '';
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['sidebarActive'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal) {
       this['active'] = false;
     }
-  }, this));
+  }.bind(this));
 };
 
 /**
@@ -160,18 +160,18 @@ app.feedback.FeedbackController.prototype.sendReport = function() {
   };
   var supportEmail = 'support@geoportail.lu';
   this.$http_.post(this.postFeedbackUrl_, req, config)
-    .then(goog.bind(function(response) {
+    .then(function(response) {
       var msg = this.gettextCatalog.getString(
         'Feedback sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
       this.notify_(msg, app.NotifyNotificationType.INFO);
       this['active'] = false;
-    }, this), goog.bind(function(response) {
+    }.bind(this), function(response) {
       var msg = this.gettextCatalog.getString(
         'Feedback could not be sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
       this.notify_(msg, app.NotifyNotificationType.ERROR);
-    }, this));
+    }.bind(this));
 };
 
 app.module.controller('AppFeedbackController', app.feedback.FeedbackController);

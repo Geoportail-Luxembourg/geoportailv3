@@ -12,7 +12,6 @@
 goog.provide('app.resizemapDirective');
 
 goog.require('app.module');
-goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('ol.Map');
 
@@ -38,13 +37,13 @@ app.resizemapDirective = function($window) {
           goog.asserts.assertInstanceof(map, ol.Map);
 
           var stateExpr = attrs['appResizemapState'];
-          goog.asserts.assert(goog.isDef(stateExpr));
+          console.assert((stateExpr !== undefined));
 
           var /** @type {number} */ start = -1;
 
           var animationDelay = new goog.async.AnimationDelay(
               function() {
-                goog.asserts.assert(start != -1);
+                console.assert(start != -1);
 
                 map.updateSize();
                 map.renderSync();

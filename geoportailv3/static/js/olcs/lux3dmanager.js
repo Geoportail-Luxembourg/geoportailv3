@@ -82,7 +82,7 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
    * @override
    */
   instantiateOLCesium() {
-    goog.asserts.assert(this.map);
+    console.assert(this.map);
     const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '1.0');
 
     const sceneOptions = /** @type {!Cesium.SceneOptions} */ ({terrainExaggeration});

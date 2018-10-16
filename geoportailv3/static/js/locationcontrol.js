@@ -27,7 +27,7 @@ goog.require('ol.geom.Point');
  * @ngInject
  */
 app.LocationControl = function(options) {
-  var className = goog.isDef(options.className) ? options.className :
+  var className = (options.className !== undefined) ? options.className :
       'location-button';
   /**
    * @type {angular.$window}
@@ -77,8 +77,8 @@ app.LocationControl = function(options) {
    */
   this.featureOverlay_ = options.featureOverlayMgr.getFeatureOverlay();
 
-  var label = goog.isDef(options.label) ? options.label : 'L';
-  var tipLabel = goog.isDef(options.tipLabel) ?
+  var label = (options.label !== undefined) ? options.label : 'L';
+  var tipLabel = (options.tipLabel !== undefined) ?
       options.tipLabel : 'Location';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',

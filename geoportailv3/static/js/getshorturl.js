@@ -28,7 +28,7 @@ app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
        * @return {!angular.$q.Promise} Promise providing the short URL.
        */
       function getShorturl(opt_coordinate) {
-        if (goog.isDef(opt_coordinate)) {
+        if (opt_coordinate !== undefined) {
           ngeoLocation.updateParams({
             'X': Math.round(opt_coordinate[0]),
             'Y': Math.round(opt_coordinate[1])

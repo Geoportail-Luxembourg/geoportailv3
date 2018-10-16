@@ -9,9 +9,6 @@ goog.require('app.module');
 goog.require('app.NotifyNotificationType');
 goog.require('app.olcs.Extent');
 goog.require('ngeo.misc.decorate');
-goog.require('goog.asserts');
-goog.require('goog.array');
-goog.require('goog.string');
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.WMTS');
@@ -182,7 +179,7 @@ app.WmtsHelper.prototype.getLayerById = function(id) {
 
   var values = id.split('%2D').join('-').split('||');
   var serviceType = values[0];
-  goog.asserts.assert(serviceType === 'WMTS');
+  console.assert(serviceType === 'WMTS');
   var wmts = values[1];
   return this.getLayers(wmts).then(function(mainLayer) {
     return this.getChildLayerById_(mainLayer, id);
@@ -383,7 +380,7 @@ app.WmtsHelper.prototype.proxyIfNeeded = function(url) {
   }
 
   if (this.$window_.location.protocol === 'https:' &&
-      goog.string.caseInsensitiveStartsWith(url, 'http:')) {
+      url.toLowerCase().indexOf('http:') === 0) {
     return this.httpsProxyUrl_ + '?url=' + encodeURIComponent(url);
   }
   return url;

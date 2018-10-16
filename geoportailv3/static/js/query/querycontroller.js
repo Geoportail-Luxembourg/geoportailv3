@@ -2,8 +2,6 @@ goog.provide('app.query.QueryController');
 
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.array');
-goog.require('goog.string');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
@@ -349,21 +347,21 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
             [new ol.style.Style({image: image})] : defaultStyle;
       });
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['appSelector'];
-  }, this), goog.bind(function(newVal) {
+  }.bind(this), function(newVal) {
     if (newVal != this.QUERYPANEL_) {
       this.clearQueryResult_(newVal);
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this['infoOpen'];
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal === false) {
       this.clearQueryResult_(undefined);
     }
-  }, this));
+  }.bind(this));
 
   ol.events.listen(this.map_.getLayers(),
       ol.CollectionEventType.REMOVE,
@@ -444,10 +442,10 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
         } else {
           var pixel = this.map_.getEventPixel(evt.originalEvent);
           var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
-            if (goog.isDefAndNotNull(layer)) {
+            if (layer !== undefined && layer !== null) {
               var metadata = layer.get('metadata');
-              if (goog.isDefAndNotNull(metadata)) {
-                if (goog.isDefAndNotNull(metadata['is_queryable']) &&
+              if (metadata !== undefined && metadata !== null) {
+                if (metadata['is_queryable'] !== undefined && metadata['is_queryable'] !== null &&
                     metadata['is_queryable'] &&
                     layer.getVisible() && layer.getOpacity() > 0) {
                   return true;
@@ -466,11 +464,11 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
   this['map'].getViewport()
-    .addEventListener('contextmenu', goog.bind(function(event) {
+    .addEventListener('contextmenu', function(event) {
       event.preventDefault(); // disable right-click menu on browsers
       $timeout.cancel(holdPromise);
       this.isLongPress_ = true;
-    }, this));
+    }.bind(this));
 
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
@@ -535,7 +533,7 @@ app.query.QueryController.prototype.filterValidProfileFeatures_ = function(featu
     case ol.geom.GeometryType.GEOMETRY_COLLECTION:
       var geomCollection = /** @type {ol.geom.GeometryCollection} */
           (activeFeature.getGeometry());
-      goog.array.forEach(geomCollection.getGeometriesArray(),
+      geomCollection.getGeometriesArray().forEach(
           function(geometry) {
             if (geometry.getType() === ol.geom.GeometryType.LINE_STRING) {
               var linestringGeom = /** @type {ol.geom.LineString} */ (geometry);
@@ -628,7 +626,7 @@ app.query.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                   var node = goog.array.find(flatCatalogue, function(catItem) {
                     return catItem.id == splittedFid[0];
                   });
-                  if (goog.isDefAndNotNull(node)) {
+                  if (node !== undefined && node !== null) {
                     var layer = this.getLayerFunc_(node);
                     var idx = goog.array.findIndex(this.map.getLayers().getArray(), function(curLayer) {
                       if (curLayer.get('queryable_id') === layer.get('queryable_id')) {
@@ -667,7 +665,7 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
 
   for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
-    if (goog.isDefAndNotNull(metadata)) {
+    if (metadata !== undefined && metadata !== null) {
       if (metadata['is_queryable'] == 'true' &&
           layers[i].getVisible() && layers[i].getOpacity() > 0) {
         var queryableId = layers[i].get('queryable_id');
@@ -715,7 +713,7 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
       });
     }
     this.http_.get(this.getInfoServiceUrl_, {params: params})
-      .then(goog.bind(function(resp) {
+      .then(function(resp) {
         if (resp.data.length > 0) {
           this.showInfo_(evt.originalEvent.shiftKey, resp,
               layerLabel, true, false);
@@ -733,13 +731,13 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
             this['infoOpen'] = false;
           }
         }
-      }, this),
-      goog.bind(function(error) {
+      }.bind(this),
+      function(error) {
         this.clearQueryResult_(this.QUERYPANEL_);
         this['infoOpen'] = false;
         this.map_.getViewport().style.cursor = '';
         this.isQuerying_ = false;
-      }, this));
+      }.bind(this));
   } else {
     if (infoMymaps) {
       this.selectMymapsFeature_(evt.pixel);
@@ -759,7 +757,7 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
 app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
     openInfoPanel, fit) {
   if (shiftKey) {
-    goog.array.forEach(resp.data, function(item) {
+    resp.data.forEach(function(item) {
       item['layerLabel'] = layerLabel[item.layer];
       var found = false;
       for (var iLayer = 0; iLayer < this.responses_.length; iLayer++) {
@@ -792,22 +790,22 @@ app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLa
     }, this);
   } else {
     this.responses_ = resp.data;
-    goog.array.forEach(this.responses_, function(item) {
+    this.responses_.forEach(function(item) {
       item['layerLabel'] = layerLabel[item.layer];
     }, this);
   }
-  goog.array.forEach(this.responses_, function(item) {
+  this.responses_.forEach(function(item) {
     if (item['has_profile']) {
-      goog.array.forEach(item.features, function(feature) {
+      item.features.forEach(function(feature) {
         var validGeom = this.filterValidProfileFeatures_(feature);
         if (validGeom.geom.getLineStrings().length > 0) {
           feature['attributes']['showProfile'] =
               /** @type {app.ShowProfile} */ ({active: true});
           this.getProfile_(validGeom.geom, validGeom.id)
         .then(function(profile) {
-          goog.array.forEach(this.responses_, function(item) {
+          this.responses_.forEach(function(item) {
             if (item['has_profile']) {
-              goog.array.forEach(item['features'],
+              item['features'].forEach(
                         function(feature) {
                           if (feature['fid'] === profile[0]['id']) {
                             feature['attributes']['showProfile'] =
@@ -1044,7 +1042,7 @@ app.query.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
  * @private
  */
 app.query.QueryController.prototype.highlightFeatures_ = function(features, fit) {
-  if (goog.isDefAndNotNull(features)) {
+  if (features !== undefined && features !== null) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
       featureProjection: this.map_.getView().getProjection()
@@ -1063,7 +1061,7 @@ app.query.QueryController.prototype.highlightFeatures_ = function(features, fit)
             ol.geom.GeometryType.GEOMETRY_COLLECTION) {
           var geomCollection = /** @type {ol.geom.GeometryCollection} */
             (curFeature.getGeometry());
-          goog.array.forEach(geomCollection.getGeometriesArray(),
+          geomCollection.getGeometriesArray().forEach(
               function(geometry) {
                 var newFeature = curFeature.clone();
                 newFeature.setGeometry(geometry);
@@ -1203,8 +1201,8 @@ app.query.QueryController.prototype.exportGpx = function(feature, name, isTrack)
  * @export
  */
 app.query.QueryController.prototype.isLink = function(value) {
-  return goog.string.caseInsensitiveStartsWith('' + value, 'http://') ||
-      goog.string.caseInsensitiveStartsWith('' + value, 'https://');
+  return ('' + value).toLowerCase().indexOf('http://') === 0 ||
+      ('' + value).toLowerCase().indexOf('https://') === 0;
 };
 
 
@@ -1232,9 +1230,9 @@ app.query.QueryController.prototype.exportKml = function(feature, name) {
 app.query.QueryController.prototype.translateAndjoin = function(array, prefix) {
   if (array !== undefined) {
     var res = [];
-    goog.array.forEach(array, goog.bind(function(elem) {
+    array.forEach(function(elem) {
       res.push(this.translate_.getString(prefix + '_' + elem));
-    }, this));
+    }.bind(this));
     return res.join(', ');
   }
   return '';

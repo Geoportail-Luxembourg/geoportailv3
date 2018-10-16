@@ -7,7 +7,6 @@ goog.provide('app.Export');
 goog.require('app.module');
 goog.require('ol.geom.GeometryType');
 goog.require('app.misc.file');
-goog.require('goog.array');
 goog.require('ol.format.GPX');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
@@ -119,7 +118,7 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
  */
 app.Export.prototype.changeLineToMultiline_ = function(features) {
   var changedFeatures = [];
-  goog.array.forEach(features, function(feature) {
+  features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
       case ol.geom.GeometryType.LINE_STRING:
         var geom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
@@ -145,14 +144,14 @@ app.Export.prototype.changeLineToMultiline_ = function(features) {
  */
 app.Export.prototype.changeMultilineToLine_ = function(features) {
   var changedFeatures = [];
-  goog.array.forEach(features, function(feature) {
+  features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
       case ol.geom.GeometryType.MULTI_LINE_STRING:
         var geom = /** @type {ol.geom.MultiLineString} */
             (feature.getGeometry());
         var lines = /** @type {ol.geom.MultiLineString} */
             (geom).getLineStrings();
-        goog.array.forEach(lines, function(line) {
+        lines.forEach(function(line) {
           var clonedFeature = feature.clone();
           clonedFeature.setGeometry(line);
           changedFeatures.push(clonedFeature);
@@ -176,12 +175,12 @@ app.Export.prototype.changeMultilineToLine_ = function(features) {
  */
 app.Export.prototype.exploseFeature_ = function(features) {
   var explodedFeatures = [];
-  goog.array.forEach(features, function(feature) {
+  features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
       case ol.geom.GeometryType.GEOMETRY_COLLECTION:
         var geomCollection = /** @type {ol.geom.GeometryCollection} */
             (feature.getGeometry());
-        goog.array.forEach(geomCollection.getGeometriesArray(),
+        geomCollection.getGeometriesArray().forEach(
             function(curGeom) {
               var newFeature = feature.clone();
               newFeature.setGeometry(curGeom);
@@ -191,7 +190,7 @@ app.Export.prototype.exploseFeature_ = function(features) {
       case ol.geom.GeometryType.MULTI_LINE_STRING:
         var multiLineString = /** @type {ol.geom.MultiLineString} */
             (feature.getGeometry());
-        goog.array.forEach(multiLineString.getLineStrings(),
+        multiLineString.getLineStrings().forEach(
             function(curGeom) {
               var newFeature = feature.clone();
               newFeature.setGeometry(curGeom);
@@ -224,7 +223,7 @@ app.Export.prototype.orderFeaturesForGpx_ = function(features) {
   var points = [];
   var lines = [];
   var others = [];
-  goog.array.forEach(features, function(feature) {
+  features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
       case ol.geom.GeometryType.POINT:
         points.push(feature);

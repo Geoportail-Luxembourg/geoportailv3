@@ -221,15 +221,15 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
 
 
   var addedLayers = this.map_.getLayers().getArray();
-  goog.array.forEach(layerIds,
+  layerIds.forEach(
   function(layerId, layerIndex) {
     if (goog.isNumber(layerId) && !isNaN(layerId)) {
       var node = goog.array.find(flatCatalogue, function(catItem) {
         return catItem.id === layerId;
       });
-      if (goog.isDefAndNotNull(node)) {
+      if (node !== undefined && node !== null) {
         var layer = this.getLayerFunc_(node);
-        if (goog.isDef(opacities)) {
+        if (opacities !== undefined) {
           // set opacity trough metadata to not interfere
           // with the layer opacity manager service
           var layerMetadata = layer.get('metadata');
@@ -360,7 +360,7 @@ app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
 app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
   var result = '';
   var response = this.stateManager_.getInitialValue(parameter);
-  if (goog.isDef(response) && response.length > 0) {
+  if (response !== undefined && response.length > 0) {
     result = response;
   } else {
     return undefined;
@@ -381,8 +381,8 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
 app.LayerPermalinkManager.prototype.splitNumbers_ =
     function(parameter, splitChar) {
       var items = [];
-      if (goog.isDef(parameter)) {
-        goog.array.forEach(parameter.split(splitChar), function(string) {
+      if (parameter !== undefined) {
+        parameter.split(splitChar).forEach(function(string) {
           var value = parseFloat(string);
           if (goog.isNumber(value) && !isNaN(value)) {
             items.push(value);
@@ -402,8 +402,8 @@ app.LayerPermalinkManager.prototype.splitNumbers_ =
 app.LayerPermalinkManager.prototype.splitLayers_ =
     function(parameter, splitChar) {
       var items = [];
-      if (goog.isDef(parameter)) {
-        goog.array.forEach(parameter.split(splitChar), function(string) {
+      if (parameter !== undefined) {
+        parameter.split(splitChar).forEach(function(string) {
           var value = parseFloat(string);
           if (goog.isNumber(value) && !isNaN(value)) {
             items.push(value);
@@ -522,11 +522,11 @@ app.LayerPermalinkManager.prototype.init =
                     this.stateManager_.getInitialValue('bgLayer');
                 stateBgLayerOpacity =
                     this.stateManager_.getInitialValue('bgOpacity');
-                if (goog.isDefAndNotNull(stateBgLayerLabel) ||
-                    (goog.isDefAndNotNull(stateBgLayerOpacity) &&
+                if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
+                    ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) &&
                     parseInt(stateBgLayerOpacity, 0) === 0)) {
                   if (this.initialVersion_ === 2 &&
-                      goog.isDefAndNotNull(stateBgLayerLabel)) {
+                      stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
                     stateBgLayerLabel =
                         app.LayerPermalinkManager.
                         V2_BGLAYER_TO_V3_[stateBgLayerLabel];
@@ -535,7 +535,7 @@ app.LayerPermalinkManager.prototype.init =
                     stateBgLayerLabel = 'orthogr_2013_global';
                   }
                 } else {
-                  if (!goog.isDef(mapId)) {
+                  if (mapId === undefined) {
                     stateBgLayerLabel = 'basemap_2015_global';
                   } else {
                     if (this.appTheme_.getCurrentTheme() === 'tourisme') {
@@ -551,8 +551,8 @@ app.LayerPermalinkManager.prototype.init =
                 stateBgLayerOpacity =
                     this.ngeoLocation_.getParam('bgOpacity');
               }
-              var hasBgLayerInUrl = goog.isDef(this.ngeoLocation_.getParam('bgLayer'));
-              if (!goog.isDef(mapId) || hasBgLayerInUrl) {
+              var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
+              if (mapId === undefined || hasBgLayerInUrl) {
                 var layer = /** @type {ol.layer.Base} */
                     (goog.array.find(bgLayers, function(layer) {
                       return layer.get('label') === stateBgLayerLabel;
@@ -575,7 +575,7 @@ app.LayerPermalinkManager.prototype.init =
                             getInitialValue('layers');
                         if (layerString) {
                           var layers = layerString.split(',');
-                          goog.array.forEach(layers,
+                          layers.forEach(
                               function(stateLayerLabel) {
                                 var layer = goog.array.find(flatCatalogue,
                                     function(catalogueLayer) {
@@ -589,13 +589,12 @@ app.LayerPermalinkManager.prototype.init =
                             getInitialValue('layers_opacity');
                         var visibilitiesString = this.stateManager_.
                             getInitialValue('layers_visibility');
-                        if (goog.isDefAndNotNull(opacitiesString) &&
-                            goog.isDefAndNotNull(visibilitiesString) &&
+                        if (opacitiesString !== undefined && opacitiesString !== null &&
+                            visibilitiesString !== undefined && visibilitiesString !== null &&
                             visibilitiesString &&
                             opacitiesString) {
                           var visibilities = visibilitiesString.split(',');
-                          goog.array.forEach(
-                              opacitiesString.split(','),
+                          opacitiesString.split(',').forEach(
                               function(opacity, index) {
                                 if (visibilities[index] === 'true') {
                                   opacities.push(parseFloat(opacity));
@@ -624,7 +623,7 @@ app.LayerPermalinkManager.prototype.init =
                           this.ngeoLocation_.getParam('opacities'), '-');
                     }
                     this.removeWatchers_();
-                    if (goog.isDef(layerIds) && goog.isDef(opacities) &&
+                    if (layerIds !== undefined && opacities !== undefined &&
                         layerIds.length > 0 &&
                         layerIds.length === opacities.length) {
                       this.applyLayerStateToMap_(layerIds, opacities,

@@ -6,7 +6,6 @@ goog.provide('app.GetWmtsLayer');
 
 goog.require('app.module');
 goog.require('app.olcs.Extent');
-goog.require('goog.asserts');
 goog.require('ngeo.misc.decorate');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -35,9 +34,9 @@ app.layerCache_ = {};
  * @private
  */
 app.getImageExtension_ = function(imageType) {
-  goog.asserts.assert(imageType.indexOf('/'));
+  console.assert(imageType.indexOf('/'));
   var imageExt = imageType.split('/')[1];
-  goog.asserts.assert(imageExt == 'png' || imageExt == 'jpeg');
+  console.assert(imageExt == 'png' || imageExt == 'jpeg');
   return imageExt;
 };
 

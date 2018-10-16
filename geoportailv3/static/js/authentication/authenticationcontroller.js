@@ -37,11 +37,11 @@ app.authentication.AuthenticationController = function(appUserManager) {
  */
 app.authentication.AuthenticationController.prototype.authenticate = function() {
   this.appUserManager_.authenticate(this.username, this.password).then(
-      goog.bind(function(response) {
+      function(response) {
         if (response.status == 200) {
           this['userOpen'] = false;
         }
-      }, this));
+      }.bind(this));
 };
 
 

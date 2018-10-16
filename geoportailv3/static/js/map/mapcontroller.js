@@ -8,7 +8,6 @@
 goog.provide('app.map.MapController');
 
 goog.require('app.module');
-goog.require('goog.asserts');
 goog.require('ol.MapProperty');
 goog.require('ol.proj');
 
@@ -33,7 +32,7 @@ app.map.MapController = function(appStateManager, ngeoDebounce) {
 
   /** @type {number} */
   var viewZoom;
-  if (goog.isDef(zoom)) {
+  if (zoom !== undefined) {
     viewZoom = version === 3 ? +zoom :
         app.map.MapController.V2_ZOOM_TO_V3_ZOOM_[zoom];
   } else {
@@ -45,7 +44,7 @@ app.map.MapController = function(appStateManager, ngeoDebounce) {
 
   /** @type {ol.Coordinate} */
   var viewCenter;
-  if (goog.isDef(x) && goog.isDef(y)) {
+  if (x !== undefined && y !== undefined) {
     viewCenter = version === 3 ?
         [+x, +y] : lurefToWebMercatorFn([+y, +x], undefined, 2);
   } else {
@@ -105,7 +104,7 @@ app.map.MapController.V2_ZOOM_TO_V3_ZOOM_ = {
 app.map.MapController.updateState_ = function(appStateManager, view) {
   var viewZoom = view.getZoom();
   var viewCenter = view.getCenter();
-  goog.asserts.assert(goog.isDef(viewCenter));
+  console.assert(viewCenter !== undefined);
   if (viewZoom) {
     // FIXME 3D
     // Update the state IF the zoom is defined (not in 3D)

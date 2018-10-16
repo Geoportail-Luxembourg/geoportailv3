@@ -19,7 +19,7 @@ goog.require('ol.events');
  * @ngInject
  */
 app.draw.RouteControl = function(options) {
-  var className = goog.isDef(options.className) ? options.className :
+  var className = options.className !== undefined ? options.className :
       'route-button';
   /**
    * @type {angular.$window}
@@ -33,8 +33,8 @@ app.draw.RouteControl = function(options) {
    */
   this.drawLineInteraction_ = options.drawLineInteraction;
 
-  var label = goog.isDef(options.label) ? options.label : 'L';
-  var tipLabel = goog.isDef(options.tipLabel) ?
+  var label = options.label !== undefined ? options.label : 'L';
+  var tipLabel = options.tipLabel !== undefined ?
       options.tipLabel : 'Route';
   var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
     'type': 'button',

@@ -60,8 +60,8 @@ app.print.Printservice = class extends ngeo.print.Service {
     const viewResolution = view.getResolution();
     const viewRotation = object.rotation || ol.math.toDegrees(view.getRotation());
 
-    goog.asserts.assert(viewCenter !== undefined);
-    goog.asserts.assert(viewProjection !== undefined);
+    console.assert(viewCenter !== undefined);
+    console.assert(viewProjection !== undefined);
 
     object.center = viewCenter;
     object.projection = viewProjection.getCode();
@@ -70,7 +70,7 @@ app.print.Printservice = class extends ngeo.print.Service {
     object.layers = [];
 
     const mapLayerGroup = map.getLayerGroup();
-    goog.asserts.assert(mapLayerGroup);
+    console.assert(mapLayerGroup);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
     ol.array.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
@@ -78,7 +78,7 @@ app.print.Printservice = class extends ngeo.print.Service {
 
     layers.forEach((layer) => {
       if (layer.getVisible()) {
-        goog.asserts.assert(viewResolution !== undefined);
+        console.assert(viewResolution !== undefined);
         this.encodeLayer(object.layers, layer, viewResolution);
       }
     });

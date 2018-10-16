@@ -7,7 +7,6 @@ goog.provide('app.CoordinateString');
 
 goog.require('app.module');
 goog.require('goog.math');
-goog.require('goog.string');
 goog.require('ol.coordinate');
 goog.require('ol.proj');
 
@@ -81,7 +80,7 @@ app.coordinateString_ = function() {
    * @return {string} Hemisphere, degrees, minutes and seconds.
    */
   function toStringHDMS_(coordinate) {
-    if (goog.isDef(coordinate)) {
+    if (coordinate !== undefined) {
       return degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
           degreesToStringHDMS_(coordinate[0], 'EW');
     } else {
@@ -95,7 +94,7 @@ app.coordinateString_ = function() {
    * @return {string} Hemisphere, degrees, decimal minutes.
    */
   function toStringHDMm_(coordinate) {
-    if (goog.isDef(coordinate)) {
+    if (coordinate !== undefined) {
       return degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
           degreesToStringHDMm_(coordinate[0], 'EW');
     } else {

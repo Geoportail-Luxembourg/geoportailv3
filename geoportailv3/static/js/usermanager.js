@@ -117,7 +117,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.http_.post(this.loginUrl_, req, config).then(
-      goog.bind(function(response) {
+      function(response) {
         if (response.status == 200) {
           this.getUserInfo();
           var msg = this.gettextCatalog.getString(
@@ -130,13 +130,13 @@ app.UserManager.prototype.authenticate = function(username, password) {
               app.NotifyNotificationType.WARNING);
         }
         return response;
-      }, this), goog.bind(function(response) {
+      }.bind(this), function(response) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
             app.NotifyNotificationType.WARNING);
         return response;
-      }, this));
+      }.bind(this));
 };
 
 
@@ -145,7 +145,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
  */
 app.UserManager.prototype.logout = function() {
   return this.http_.get(this.logoutUrl_).then(
-      goog.bind(function(response) {
+      function(response) {
         if (response.status == 200) {
           this.getUserInfo();
         } else {
@@ -156,13 +156,13 @@ app.UserManager.prototype.logout = function() {
               );
         }
         return response;
-      }, this), goog.bind(function(response) {
+      }.bind(this), function(response) {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Une erreur est survenue durant la déconnexion.'),
             app.NotifyNotificationType.ERROR);
         return response;
-      }, this));
+      }.bind(this));
 };
 
 
@@ -176,7 +176,7 @@ app.UserManager.prototype.getUserInfo = function() {
   };
 
   this.http_.post(this.getuserinfoUrl_, req, config).then(
-      goog.bind(function(response) {
+      function(response) {
         if (response.status == 200) {
           this.setUserInfo(
               response.data['login'],
@@ -191,10 +191,10 @@ app.UserManager.prototype.getUserInfo = function() {
           this.clearUserInfo();
         }
         return response;
-      }, this), goog.bind(function(response) {
+      }.bind(this), function(response) {
         this.clearUserInfo();
         return response;
-      }, this));
+      }.bind(this));
 };
 
 
@@ -231,7 +231,7 @@ app.UserManager.prototype.clearUserInfo = function() {
  */
 app.UserManager.prototype.setUserInfo = function(
     username, role, roleId, mail, name, mymapsRole, isAdmin) {
-  if (goog.isDef(username)) {
+  if (username !== undefined) {
     this.username = username;
     this.role = role;
     this.roleId = roleId;

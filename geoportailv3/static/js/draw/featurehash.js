@@ -1,6 +1,4 @@
 goog.provide('app.draw.FeatureHash');
-
-goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.color');
 goog.require('ngeo.format.FeatureProperties');
@@ -258,7 +256,7 @@ app.draw.FeatureHash.encodeNumber_ = function(num) {
  */
 app.draw.FeatureHash.encodeStyles_ = function(styles, geometryType, encodedStyles) {
   var styleType = app.draw.FeatureHashStyleTypes_[geometryType];
-  goog.asserts.assert(styleType !== undefined);
+  console.assert(styleType !== undefined);
   for (var i = 0; i < styles.length; ++i) {
     var style = styles[i];
     var fillStyle = style.getFill();
@@ -355,9 +353,9 @@ app.draw.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_p
       opt_propertyName : 'fillColor';
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
-    goog.asserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
+    console.assert(Array.isArray(fillColor), 'only supporting fill colors');
     var fillColorRgba = ol.color.asArray(fillColor);
-    goog.asserts.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
+    console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
     var fillColorHex = goog.color.rgbArrayToHex(fillColorRgba);
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
@@ -378,9 +376,9 @@ app.draw.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_p
 app.draw.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
-    goog.asserts.assert(Array.isArray(strokeColor));
+    console.assert(Array.isArray(strokeColor));
     var strokeColorRgba = ol.color.asArray(strokeColor);
-    goog.asserts.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
+    console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
     var strokeColorHex = goog.color.rgbArrayToHex(strokeColorRgba);
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
@@ -432,8 +430,8 @@ app.draw.FeatureHash.encodeStyleText_ = function(textStyle, encodedStyles) {
  * @private
  */
 app.draw.FeatureHash.readLineStringGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'l(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'l(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = this.decodeCoordinates_(text);
   var lineString = new ol.geom.LineString(null);
@@ -451,8 +449,8 @@ app.draw.FeatureHash.readLineStringGeometry_ = function(text) {
  * @private
  */
 app.draw.FeatureHash.readMultiLineStringGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'L(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'L(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = [];
   var ends = [];
@@ -477,11 +475,11 @@ app.draw.FeatureHash.readMultiLineStringGeometry_ = function(text) {
  * @private
  */
 app.draw.FeatureHash.readPointGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'p(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'p(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = this.decodeCoordinates_(text);
-  goog.asserts.assert(flatCoordinates.length === 2);
+  console.assert(flatCoordinates.length === 2);
   var point = new ol.geom.Point(null);
   point.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return point;
@@ -497,8 +495,8 @@ app.draw.FeatureHash.readPointGeometry_ = function(text) {
  * @private
  */
 app.draw.FeatureHash.readMultiPointGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'P(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'P(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = this.decodeCoordinates_(text);
   var multiPoint = new ol.geom.MultiPoint(null);
@@ -516,8 +514,8 @@ app.draw.FeatureHash.readMultiPointGeometry_ = function(text) {
  * @private
  */
 app.draw.FeatureHash.readPolygonGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'a(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'a(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = [];
   var ends = [];
@@ -549,8 +547,8 @@ app.draw.FeatureHash.readPolygonGeometry_ = function(text) {
  * @private
  */
 app.draw.FeatureHash.readMultiPolygonGeometry_ = function(text) {
-  goog.asserts.assert(text.substring(0, 2) === 'A(');
-  goog.asserts.assert(text[text.length - 1] == ')');
+  console.assert(text.substring(0, 2) === 'A(');
+  console.assert(text[text.length - 1] == ')');
   text = text.substring(2, text.length - 1);
   var flatCoordinates = [];
   var endss = [];
@@ -753,7 +751,7 @@ app.draw.FeatureHash.getStyleProperties_ = function(text, feature) {
   for (var i = 0; i < parts.length; ++i) {
     var part = decodeURIComponent(parts[i]);
     var keyVal = part.split('*');
-    goog.asserts.assert(keyVal.length === 2);
+    console.assert(keyVal.length === 2);
     var key = keyVal[0];
     var val = keyVal[1];
 
@@ -1032,9 +1030,9 @@ app.draw.FeatureHash.prototype.encodeCoordinates_ = function(flatCoordinates, st
  * @protected
  */
 app.draw.FeatureHash.prototype.readFeatureFromText = function(text, opt_options) {
-  goog.asserts.assert(text.length > 2);
-  goog.asserts.assert(text[1] === '(');
-  goog.asserts.assert(text[text.length - 1] === ')');
+  console.assert(text.length > 2);
+  console.assert(text[1] === '(');
+  console.assert(text[text.length - 1] === ')');
   var splitIndex = text.indexOf('~');
   var geometryText = splitIndex >= 0 ?
       text.substring(0, splitIndex) + ')' : text;
@@ -1052,7 +1050,7 @@ app.draw.FeatureHash.prototype.readFeatureFromText = function(text, opt_options)
       for (var i = 0; i < parts.length; ++i) {
         var part = decodeURIComponent(parts[i]);
         var keyVal = part.split('*');
-        goog.asserts.assert(keyVal.length === 2);
+        console.assert(keyVal.length === 2);
         var key = keyVal[0];
         var value = keyVal[1];
         if (!this.setStyle_ && app.draw.FeatureHashLegacyProperties_[key]) {
@@ -1083,13 +1081,13 @@ app.draw.FeatureHash.prototype.readFeatureFromText = function(text, opt_options)
  * @protected
  */
 app.draw.FeatureHash.prototype.readFeaturesFromText = function(text, opt_options) {
-  goog.asserts.assert(text[0] === 'F');
+  console.assert(text[0] === 'F');
   /** @type {Array.<ol.Feature>} */
   var features = [];
   text = text.substring(1);
   while (text.length > 0) {
     var index = text.indexOf(')');
-    goog.asserts.assert(index >= 0);
+    console.assert(index >= 0);
     var feature = this.readFeatureFromText(
         text.substring(0, index + 1), opt_options);
     features.push(feature);
@@ -1109,7 +1107,7 @@ app.draw.FeatureHash.prototype.readFeaturesFromText = function(text, opt_options
  */
 app.draw.FeatureHash.prototype.readGeometryFromText = function(text, opt_options) {
   var geometryReader = app.draw.FeatureHash.GEOMETRY_READERS_[text[0]];
-  goog.asserts.assert(geometryReader !== undefined);
+  console.assert(geometryReader !== undefined);
   this.prevX_ = 0;
   this.prevY_ = 0;
   return geometryReader.call(this, text);
@@ -1131,13 +1129,13 @@ app.draw.FeatureHash.prototype.writeFeatureText = function(feature, opt_options)
 
   var encodedGeometry = '';
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry !== undefined && geometry  !== null) {
     encodedGeometry = this.writeGeometryText(geometry, opt_options);
   }
 
   if (encodedGeometry.length > 0) {
     // remove the final bracket
-    goog.asserts.assert(encodedGeometry[encodedGeometry.length - 1] === ')');
+    console.assert(encodedGeometry[encodedGeometry.length - 1] === ')');
     encodedGeometry = encodedGeometry.substring(0, encodedGeometry.length - 1);
     encodedParts.push(encodedGeometry);
   }
@@ -1224,7 +1222,7 @@ app.draw.FeatureHash.prototype.writeFeaturesText = function(features, opt_option
 app.draw.FeatureHash.prototype.writeGeometryText = function(geometry, opt_options) {
   var geometryWriter = app.draw.FeatureHash.GEOMETRY_WRITERS_[
       geometry.getType()];
-  goog.asserts.assert(geometryWriter !== undefined);
+  console.assert(geometryWriter !== undefined);
   var transformedGeometry = /** @type {ol.geom.Geometry} */
       (ol.format.Feature.transformWithOptions(geometry, true, opt_options));
   this.prevX_ = 0;

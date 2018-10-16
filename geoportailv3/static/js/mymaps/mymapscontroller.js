@@ -11,8 +11,6 @@ goog.provide('app.mymaps.MymapsController');
 goog.require('app.module');
 goog.require('app.misc.file');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.format.GPX');
 goog.require('ol.format.KML');
@@ -336,63 +334,63 @@ app.mymaps.MymapsController = function($scope, $compile, $sce,
    */
   this.featureStyleFunction_ = this.appMymaps_.createStyleFunction(this.map);
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.filterMapOwner;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal !== oldVal) {
-      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(goog.bind(function(mymaps) {
+      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(function(mymaps) {
         this.choosing = true;
         this.maps = mymaps;
-      }, this));
+      }.bind(this));
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.filterCategoryId;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal !== oldVal) {
-      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(goog.bind(function(mymaps) {
+      this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(function(mymaps) {
         this.choosing = true;
         this.maps = mymaps;
         this.filterMapOwner = null;
-      }, this));
+      }.bind(this));
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.appUserManager_.getRoleId();
-  }, this), goog.bind(function(newVal, oldVal) {
-    if (goog.isDefAndNotNull(newVal)) {
+  }.bind(this), function(newVal, oldVal) {
+    if (newVal !== undefined && newVal !== null) {
       this.appMymaps_.loadCategories();
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.kmlFileContent;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal) {
       this.importKml();
       $('#dropdown-mymaps').removeClass('open');
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.kmzFileContent;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal) {
       this.importKmz();
       $('#dropdown-mymaps').removeClass('open');
     }
-  }, this));
+  }.bind(this));
 
-  $scope.$watch(goog.bind(function() {
+  $scope.$watch(function() {
     return this.gpxFileContent;
-  }, this), goog.bind(function(newVal, oldVal) {
+  }.bind(this), function(newVal, oldVal) {
     if (newVal) {
       this.importGpx();
       $('#dropdown-mymaps').removeClass('open');
     }
-  }, this));
+  }.bind(this));
 
 };
 
@@ -464,7 +462,7 @@ app.mymaps.MymapsController.prototype.saveLayers = function() {
   var layersOpacities = [];
   var layersVisibilities = [];
   var layersIndices = [];
-  goog.array.forEach(this.selectedLayers_, function(item, index) {
+  this.selectedLayers_.forEach(function(item, index) {
     layersLabels.push(item.get('label'));
     layersOpacities.push('' + item.getOpacity());
     if (item.getOpacity() === 0) {
@@ -478,9 +476,9 @@ app.mymaps.MymapsController.prototype.saveLayers = function() {
       layersLabels.join(','), layersOpacities.join(','),
       layersVisibilities.join(','), layersIndices.join(','),
       this.appTheme_.getCurrentTheme())
-  .then(goog.bind(function() {
+  .then(function() {
     this.appMymaps_.loadMapInformation();
-  }, this));
+  }.bind(this));
   this['layersChanged'] = false;
   return promise;
 };
@@ -492,10 +490,10 @@ app.mymaps.MymapsController.prototype.saveLayers = function() {
  * @export
  */
 app.mymaps.MymapsController.prototype.modalShownHidden = function(value) {
-  if (goog.isDef(value) && value === false) {
+  if (value !== undefined && value === false) {
     this.modal = undefined;
     return false;
-  } else if (goog.isDef(this.modal)) {
+  } else if (this.modal !== undefined) {
     return true;
   }
 };
@@ -527,12 +525,12 @@ app.mymaps.MymapsController.prototype.copyMap = function() {
         this.newDescription,
         this.newCategoryId,
         this.newIsPublic
-    ).then(goog.bind(function(resp) {
-      if (goog.isNull(resp)) {
+    ).then(function(resp) {
+      if (resp === null) {
         this.askToConnect();
       } else {
         var mapId = resp['uuid'];
-        if (goog.isDef(mapId)) {
+        if (mapId !== undefined) {
           var map = {'uuid': mapId};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte copiée');
@@ -540,7 +538,7 @@ app.mymaps.MymapsController.prototype.copyMap = function() {
           this.modal = undefined;
         }
       }
-    }, this));
+    }.bind(this));
   }
 };
 
@@ -574,11 +572,11 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
   var featuresToSave = [];
   var noNameElemCnt = 0;
   var gpxExtent;
-  goog.array.forEach(gpxFeatures, function(feature) {
+  gpxFeatures.forEach(function(feature) {
     this.sanitizeFeature_(feature);
     feature.set('__map_id__', mapId);
 
-    if (!goog.isDef(feature.get('name'))) {
+    if (feature.get('name') === undefined) {
       feature.set('name', 'Element ' + noNameElemCnt);
       noNameElemCnt++;
     }
@@ -586,7 +584,7 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
     if (curGeometry.getType() === ol.geom.GeometryType.MULTI_LINE_STRING) {
       var lines = /** @type {ol.geom.MultiLineString} */
           (curGeometry).getLineStrings();
-      goog.array.forEach(lines, function(line) {
+      lines.forEach(function(line) {
         var clonedFeature = feature.clone();
         clonedFeature.setGeometry(line);
         featuresToSave.push(clonedFeature);
@@ -607,10 +605,10 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
   }
 
   this.appMymaps_.saveFeatures(featuresToSave).then(
-      goog.bind(function() {
+      function() {
         var map = {'uuid': mapId};
         this.onChosen(map, false);
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -651,10 +649,10 @@ app.mymaps.MymapsController.prototype.importKml = function(kml) {
   var kmlExtent;
   var mapId = this.appMymaps_.getMapId();
   var badfeatures = [];
-  goog.array.forEach(kmlFeatures, function(feature) {
+  kmlFeatures.forEach(function(feature) {
     this.sanitizeFeature_(feature);
     feature.set('__map_id__', mapId);
-    if (!goog.isDef(feature.get('name'))) {
+    if (feature.get('name') === undefined) {
       feature.set('name', 'Element ' + noNameElemCnt);
       noNameElemCnt++;
     }
@@ -681,10 +679,10 @@ app.mymaps.MymapsController.prototype.importKml = function(kml) {
   }
 
   this.appMymaps_.saveFeatures(kmlFeatures).then(
-      goog.bind(function() {
+      function() {
         var map = {'uuid': mapId};
         this.onChosen(map, false);
-      }, this)
+      }.bind(this)
   );
 };
 
@@ -733,7 +731,7 @@ app.mymaps.MymapsController.prototype.sanitizeFeature_ = function(feature) {
   }
 
   var opacity = /** @type {string} */ (feature.get('opacity'));
-  if (!goog.isDef(opacity)) {
+  if (opacity === undefined) {
     opacity = 0.2;
   }
 
@@ -872,11 +870,11 @@ app.mymaps.MymapsController.prototype.addInMymaps = function() {
   } else {
     if (this.isMymapsSelected()) {
       this.drawnFeatures_.moveAnonymousFeaturesToMymaps().then(
-          goog.bind(function(mapinformation) {
+          function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
             this.onChosen(map, false);
-          }, this));
+          }.bind(this));
     }
   }
 };
@@ -892,28 +890,28 @@ app.mymaps.MymapsController.prototype.createMapFromAnonymous = function() {
   } else {
     this.appMymaps_.createMap(this.newTitle, this.newDescription,
         this.newCategoryId, this.newIsPublic)
-        .then(goog.bind(function(resp) {
-          if (goog.isNull(resp)) {
+        .then(function(resp) {
+          if (resp === null) {
             this.askToConnect();
           } else {
             var mapId = resp['uuid'];
-            if (goog.isDef(mapId)) {
+            if (mapId !== undefined) {
               this['drawopen'] = true;
               this.appMymaps_.setMapId(mapId);
               return this.saveLayers();
             }
           }
-        }, this))
-        .then(goog.bind(function(mapinformation) {
+        }.bind(this))
+        .then(function(mapinformation) {
           return this.drawnFeatures_.moveAnonymousFeaturesToMymaps();
-        }, this))
-        .then(goog.bind(function(mapinformation) {
+        }.bind(this))
+        .then(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte créée');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
-        }, this));
+        }.bind(this));
   }
 };
 
@@ -961,7 +959,7 @@ app.mymaps.MymapsController.prototype.getMapOwner = function() {
  * @export
  */
 app.mymaps.MymapsController.prototype.getUserCategDesc = function(username) {
-  if (goog.isDefAndNotNull(username) && username.length > 0) {
+  if (username !== undefined && username !== null && username.length > 0) {
     return username;
   } else {
     return this.gettextCatalog.getString('Filter results by username');
@@ -975,7 +973,7 @@ app.mymaps.MymapsController.prototype.getUserCategDesc = function(username) {
  */
 app.mymaps.MymapsController.prototype.getMapCategoryFilter = function(id) {
   var category = this.appMymaps_.getCategory(id);
-  if (goog.isDefAndNotNull(category)) {
+  if (category !== undefined && category !== null) {
     return category;
   } else {
     return {
@@ -993,7 +991,7 @@ app.mymaps.MymapsController.prototype.getMapCategoryFilter = function(id) {
  */
 app.mymaps.MymapsController.prototype.getMapCategory = function(id) {
   var category = this.appMymaps_.getCategory(id);
-  if (goog.isDefAndNotNull(category)) {
+  if (category !== undefined && category !== null) {
     return category;
   } else {
     return {
@@ -1019,7 +1017,7 @@ app.mymaps.MymapsController.prototype.getCategories = function() {
  */
 app.mymaps.MymapsController.prototype.getFilteredCategories = function() {
   var categories = [];
-  if (!goog.isDefAndNotNull(this.filterMapOwner)) {
+  if (!(this.filterMapOwner !== undefined && this.filterMapOwner !== null)) {
     //All the categories of all user with at least one map
     categories = this.usersCategories;
   } else {
@@ -1190,13 +1188,13 @@ app.mymaps.MymapsController.prototype.createMap = function() {
         this.newCategoryId,
         this.newIsPublic
     )
-      .then(goog.bind(function(resp) {
+      .then(function(resp) {
         this.modal = 'CREATE';
-        if (goog.isNull(resp)) {
+        if (resp === null) {
           this.askToConnect();
         } else {
           var mapId = resp['uuid'];
-          if (goog.isDef(mapId)) {
+          if (mapId !== undefined) {
             var map = {'uuid': mapId};
             this.appMymaps_.setMapId(mapId);
             this.saveLayers();
@@ -1206,7 +1204,7 @@ app.mymaps.MymapsController.prototype.createMap = function() {
             this.modal = undefined;
           }
         }
-      }, this));
+      }.bind(this));
   }
 };
 
@@ -1223,7 +1221,7 @@ app.mymaps.MymapsController.prototype.deleteAMap = function(mapId) {
     if (this.appMymaps_.getMapId() === mapId) {
       this.closeMap();
     }
-    this.appMymaps_.deleteAMap(mapId).then(goog.bind(function(resp) {
+    this.appMymaps_.deleteAMap(mapId).then(function(resp) {
       if (goog.isNull(resp)) {
         this.askToConnect();
       } else {
@@ -1231,13 +1229,13 @@ app.mymaps.MymapsController.prototype.deleteAMap = function(mapId) {
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
         goog.array.remove(this.maps,
-            goog.array.find(this.maps, goog.bind(function(item) {
+            goog.array.find(this.maps, function(item) {
               if (item['uuid'] === mapId) {
                 return true;
               }
-            }, this)));
+            }.bind(this)));
       }
-    }, this));
+    }.bind(this));
   }
 };
 
@@ -1251,13 +1249,13 @@ app.mymaps.MymapsController.prototype.deleteMap = function() {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
     } else {
-      this.appMymaps_.deleteMap().then(goog.bind(function(resp) {
-        if (goog.isNull(resp)) {
+      this.appMymaps_.deleteMap().then(function(resp) {
+        if (resp === null) {
           this.askToConnect();
         } else {
           this.closeMap();
         }
-      }, this));
+      }.bind(this));
     }
   }
 };
@@ -1272,14 +1270,14 @@ app.mymaps.MymapsController.prototype.deleteMymapsObjects = function() {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
     } else {
-      this.appMymaps_.deleteMapFeatures().then(goog.bind(function(resp) {
-        if (goog.isNull(resp)) {
+      this.appMymaps_.deleteMapFeatures().then(function(resp) {
+        if (resp === null) {
           this.askToConnect();
         } else {
           this.drawnFeatures_.removeMymapsFeatures();
           this.selectedFeatures_.clear();
         }
-      }, this));
+      }.bind(this));
     }
   }
 };
@@ -1332,16 +1330,16 @@ app.mymaps.MymapsController.prototype.selectMymaps = function(map) {
     }
     this.drawnFeatures_.getCollection().forEach(function(feature) {
       if (feature.get('__map_id__')) {
-        if (goog.isDef(extent)) {
+        if (extent !== undefined) {
           extent = ol.extent.extend(extent, feature.getGeometry().getExtent());
         } else {
           extent = feature.getGeometry().getExtent();
         }
       }
     }, this);
-    if (goog.isDef(extent)) {
+    if (extent !== undefined) {
       var viewSize = /** {ol.Size} **/ (this.map_.getSize());
-      goog.asserts.assert(goog.isDef(viewSize));
+      console.assert(viewSize !== undefined);
       this.map_.getView().fit(extent, {
         size: viewSize
       });
@@ -1375,14 +1373,13 @@ app.mymaps.MymapsController.prototype.saveModifications = function() {
           this.newCategoryId,
           this.newIsPublic
       )
-        .then(
-          goog.bind(function(mymaps) {
-            if (goog.isNull(mymaps)) {
-              this.askToConnect();
-            } else {
-              this.modal = undefined;
-            }
-          }, this));
+        .then(function(mymaps) {
+          if (mymaps === null) {
+            this.askToConnect();
+          } else {
+            this.modal = undefined;
+          }
+        }.bind(this));
     }
   }
 };
@@ -1616,7 +1613,7 @@ app.mymaps.MymapsController.prototype.isDocked = function() {
  */
 app.mymaps.MymapsController.prototype.fit = function(extent) {
   var viewSize = /** {ol.Size} **/ (this.map_.getSize());
-  goog.asserts.assert(goog.isDef(viewSize));
+  console.assert(viewSize !== undefined);
   this.map_.getView().fit(extent, {
     size: viewSize
   });

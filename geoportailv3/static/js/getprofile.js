@@ -6,7 +6,6 @@
 goog.provide('app.GetProfile');
 
 goog.require('app.module');
-goog.require('goog.array');
 goog.require('goog.Uri.QueryData');
 goog.require('ol.format.GeoJSON');
 
@@ -59,7 +58,7 @@ app.getProfile_ = function($http, profileServiceUrl) {
           var cumulativeElevation = 0;
           var lastElevation;
 
-          goog.array.forEach(resp.data['profile'], function(element) {
+          resp.data['profile'].forEach(function(element) {
             element['id'] = id;
             var curElevation = (element['values']['dhm']);
             if (lastElevation !== undefined) {

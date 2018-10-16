@@ -5,7 +5,6 @@ goog.provide('app.draw.FeaturePopupController');
 
 goog.require('app.module');
 goog.require('app.misc.file');
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -238,7 +237,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.unwatch3_ = $scope.$watch(function() {
     return this.editingStyle;
   }.bind(this), function(newVal, oldVal) {
-    if (goog.isDef(this.feature)) {
+    if (this.feature !== undefined) {
       if (newVal) {
         this.feature.set('__selected__', false);
       } else {
@@ -260,7 +259,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;
   }.bind(this), function() {
-    if (!goog.isDef(this.image)) {
+    if (this.image === undefined) {
       return;
     }
     this.tempThumbnail = this.image['thumbnail'];
@@ -299,7 +298,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
  * @export
  */
 app.draw.FeaturePopupController.prototype.getSetCircleRadius = function(radius) {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     if (arguments.length === 0) {
@@ -317,7 +316,7 @@ app.draw.FeaturePopupController.prototype.getSetCircleRadius = function(radius) 
  * @export
  */
 app.draw.FeaturePopupController.prototype.getCircleRadius = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
@@ -347,7 +346,7 @@ app.draw.FeaturePopupController.prototype.setCircleRadius = function(radius) {
  * @export
  */
 app.draw.FeaturePopupController.prototype.setFeatureCircleRadius = function(feature, radius) {
-  if (goog.isDef(feature) &&
+  if (this.feature !== undefined &&
       feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (feature.getGeometry());
@@ -488,10 +487,10 @@ app.draw.FeaturePopupController.prototype.fitFeature = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.getArea = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    goog.asserts.assert(geom);
+    console.assert(geom);
     return this.appFeaturePopup_.formatArea(geom);
   } else {
     return '';
@@ -504,11 +503,11 @@ app.draw.FeaturePopupController.prototype.getArea = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.getRadius = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    goog.asserts.assert(geom);
+    console.assert(geom);
     var center = ol.extent.getCenter(geom.getExtent());
     var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
@@ -523,13 +522,13 @@ app.draw.FeaturePopupController.prototype.getRadius = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.getLength = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       (this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON ||
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
   ) {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
-    goog.asserts.assert(geom);
+    console.assert(geom);
     return this.appFeaturePopup_.formatLength(geom);
   } else {
     return '';
@@ -541,16 +540,16 @@ app.draw.FeaturePopupController.prototype.getLength = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.updateElevation = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
       !this.feature.get('isLabel') &&
       !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
-    goog.asserts.assert(geom);
+    console.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
-        goog.bind(function(elevation) {
+        function(elevation) {
           this.featureElevation = elevation['formattedElevation'];
-        }, this));
+        }.bind(this));
   } else {
     this.featureElevation = undefined;
   }
@@ -561,15 +560,15 @@ app.draw.FeaturePopupController.prototype.updateElevation = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.updateProfile = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
       !this.ngeoNetworkStatus_.isDisconnected()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
-    goog.asserts.assert(geom);
-    this.appFeaturePopup_.getProfile(geom).then(goog.bind(function(profile) {
+    console.assert(geom);
+    this.appFeaturePopup_.getProfile(geom).then(function(profile) {
       this.featureProfile = profile;
-    }, this));
+    }.bind(this));
   } else {
     this.featureProfile = undefined;
     this.showFeatureProfile.active = false;
@@ -582,7 +581,7 @@ app.draw.FeaturePopupController.prototype.updateProfile = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.isEditable = function() {
-  if (goog.isDef(this.feature) &&
+  if (this.feature !== undefined &&
       !!this.feature.get('__map_id__')) {
     return this.appMymaps_.isEditable();
   }
@@ -649,7 +648,7 @@ app.draw.FeaturePopupController.prototype.deleteFeature = function() {
  * @export
  */
 app.draw.FeaturePopupController.prototype.trustAsHtml = function(content) {
-  if (!goog.isDefAndNotNull(content)) {
+  if (!(content !== undefined && content !== null)) {
     content = '';
   }
   return this.sce_.trustAsHtml(content);
@@ -701,7 +700,7 @@ app.draw.FeaturePopupController.prototype.continueLine = function() {
     var lastCoordinate = /** @type {ol.geom.LineString}*/
         (this.feature.getGeometry()).getLastCoordinate();
     var viewSize = /** {ol.Size} **/ (this.map.getSize());
-    goog.asserts.assert(goog.isDef(viewSize));
+    console.assert(viewSize !== undefined);
     this.map.getView().fit(new ol.geom.Point(lastCoordinate), {
       size: viewSize
     });

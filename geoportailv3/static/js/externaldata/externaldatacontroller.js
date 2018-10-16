@@ -13,7 +13,6 @@
 goog.provide('app.externaldata.ExternalDataController');
 
 goog.require('app.module');
-goog.require('goog.array');
 
 
 /**

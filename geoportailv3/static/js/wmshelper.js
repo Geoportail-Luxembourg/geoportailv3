@@ -9,9 +9,6 @@ goog.require('app.module');
 goog.require('app.olcs.Extent');
 goog.require('app.NotifyNotificationType');
 goog.require('ngeo.misc.decorate');
-goog.require('goog.asserts');
-goog.require('goog.array');
-goog.require('goog.string');
 goog.require('ol.format.WMSCapabilities');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
@@ -236,7 +233,7 @@ app.WmsHelper.prototype.getLayerById = function(id) {
 
   var values = id.split('%2D').join('-').split('||');
   var serviceType = values[0];
-  goog.asserts.assert(serviceType === 'WMS');
+  console.assert(serviceType === 'WMS');
   var wms = values[1];
   return this.getLayers(wms).then(function(mainLayer) {
     return this.getChildLayerById_(mainLayer, id);
@@ -415,7 +412,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   var hasPng = false;
   var hasJpeg = false;
   var imageFormat = imageFormats[0];
-  goog.array.forEach(imageFormats, function(format) {
+  imageFormats.forEach(function(format) {
     if (format.toUpperCase().indexOf('PNG') !== -1) {
       hasPng = true;
     }
@@ -442,7 +439,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   var has3857 = false;
   var hasWGS84 = false;
   var projections = layer['CRS'] || layer['SRS'] || [];
-  goog.array.forEach(projections, function(projection) {
+  projections.forEach(function(projection) {
     if (projection.toUpperCase() === 'EPSG:2169') {
       hasLuref = true;
     }
@@ -514,7 +511,7 @@ app.WmsHelper.prototype.proxyIfNeeded = function(url) {
   }
 
   if (this.$window_.location.protocol === 'https:' &&
-      goog.string.caseInsensitiveStartsWith(url, 'http:')) {
+      url.toLowerCase().indexOf('http:') === 0) {
     return this.httpsProxyUrl_ + '?url=' + encodeURIComponent(url);
   }
   return url;

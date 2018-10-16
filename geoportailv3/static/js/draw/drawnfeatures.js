@@ -7,8 +7,6 @@ goog.provide('app.draw.DrawnFeatures');
 
 goog.require('app.module');
 goog.require('app.draw.FeatureHash');
-goog.require('goog.asserts');
-goog.require('goog.array');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.geom.GeometryType');
@@ -123,7 +121,6 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.fhFormat_ = new app.draw.FeatureHash({
     encodeStyles: false,
     properties: (
-        goog.bind(
         /**
          * @param {ol.Feature} feature Feature.
          * @return {Object.<string, (string|number)>} Properties to encode.
@@ -146,7 +143,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
             }
           }
           return properties;
-        }, this))
+        }.bind(this))
   });
 };
 
@@ -253,12 +250,12 @@ app.DrawnFeatures.prototype.saveFeaturesOrder = function() {
  */
 app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
   var newMymapsFeatures = [];
-  this.features.getArray().map(goog.bind(function(feature) {
+  this.features.getArray().map(function(feature) {
     if (!feature.get('__map_id__')) {
       feature.set('__map_id__', this.appMymaps_.getMapId());
       newMymapsFeatures.push(feature);
     }
-  }, this));
+  }.bind(this));
 
   return this.saveFeaturesInMymaps_(newMymapsFeatures);
 };
@@ -272,10 +269,10 @@ app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
  */
 app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
   var encodedFeatures = this.ngeoLocation_.getParam('features');
-  if (goog.isDef(encodedFeatures)) {
+  if (encodedFeatures !== undefined) {
     var remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
-    goog.asserts.assert(!goog.isNull(remoteFeatures));
-    goog.array.forEach(remoteFeatures, goog.bind(function(feature) {
+    console.assert(!goog.isNull(remoteFeatures));
+    remoteFeatures.forEach(function(feature) {
       var properties = feature.getProperties();
       for (var key in this.SHORT_PARAM_) {
         if (properties[this.SHORT_PARAM_[key]]) {
@@ -284,12 +281,12 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
         }
       }
       var order = /** @type {string} */ (feature.get('display_order'));
-      if (!goog.isDef(order)) {
+      if (order === undefined) {
         order = remoteFeatures.indexOf(feature);
       }
 
       var opacity = /** @type {string} */ (feature.get('opacity'));
-      if (!goog.isDef(opacity)) {
+      if (opacity === undefined) {
         opacity = 0;
       }
 
@@ -320,7 +317,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
 
       feature.set('__map_id__', undefined);
       feature.setStyle(featureStyleFunction);
-    }, this));
+    }.bind(this));
 
     this.features.extend(remoteFeatures);
   }
@@ -336,11 +333,11 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
   if (this.appMymaps_.isEditable() && !feature.get('__saving__')) {
     feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
-      .then(goog.bind(function(resp) {
+      .then(function(resp) {
         var featureId = resp['id'];
         currentFeature.set('fid', featureId);
         feature.set('__saving__', false);
-      }, this));
+      }.bind(this));
   }
 };
 
@@ -371,9 +368,9 @@ app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
     return !!feature.get('__map_id__');
   });
 
-  mymapsFeatures.forEach(goog.bind(function(feature) {
+  mymapsFeatures.forEach(function(feature) {
     this.features.remove(feature);
-  }, this));
+  }.bind(this));
   this.appMymaps_.clear();
   this.encodeFeaturesInUrl_(this.features.getArray());
 };
@@ -387,9 +384,9 @@ app.DrawnFeatures.prototype.removeMymapsFeatures = function() {
     return !!feature.get('__map_id__');
   });
 
-  mymapsFeatures.forEach(goog.bind(function(feature) {
+  mymapsFeatures.forEach(function(feature) {
     this.features.remove(feature);
-  }, this));
+  }.bind(this));
 };
 
 
@@ -401,9 +398,9 @@ app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
     return !feature.get('__map_id__');
   });
 
-  anonymousFeatures.forEach(goog.bind(function(feature) {
+  anonymousFeatures.forEach(function(feature) {
     this.features.remove(feature);
-  }, this));
+  }.bind(this));
   this.encodeFeaturesInUrl_(this.features.getArray());
 };
 

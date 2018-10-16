@@ -38,7 +38,7 @@ app.getWmsLayer_ = function(proxyWmsUrl, remoteProxyWms,
    * @return {ol.layer.Image} The layer.
    */
   function getWmsLayer(name, layers, imageType, opt_url) {
-    var url = goog.isDef(opt_url) ?
+    var url = opt_url !== undefined ?
         opt_url : proxyWmsUrl;
     var optSource = {
       url: url,
@@ -50,7 +50,7 @@ app.getWmsLayer_ = function(proxyWmsUrl, remoteProxyWms,
       }
     };
 
-    if (goog.isDef(opt_url) || remoteProxyWms) {
+    if (opt_url !== undefined || remoteProxyWms) {
       optSource.crossOrigin = 'anonymous';
     }
     var layer = new ol.layer.Image({

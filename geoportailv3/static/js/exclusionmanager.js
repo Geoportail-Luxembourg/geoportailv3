@@ -7,8 +7,6 @@ goog.provide('app.ExclusionManager');
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
 goog.require('ol.Observable');
-goog.require('goog.asserts');
-goog.require('goog.array');
 goog.require('ol.Object');
 goog.require('ol.events');
 goog.require('ol.layer.Property');
@@ -89,12 +87,12 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
     return;
   }
 
-  if (!goog.isDef(layer1.get('metadata'))) {
+  if (layer1.get('metadata') === undefined) {
     return;
   }
   var exclusion1 = layer1.get('metadata')['exclusion'];
 
-  if (!goog.isDef(exclusion1)) {
+  if (exclusion1 === undefined) {
     return;
   }
 
@@ -107,8 +105,8 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
   var layersToRemove = [];
   for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
-    if (layer2 == layer1 || !goog.isDef(layer2.get('metadata')) ||
-        !goog.isDef(layer2.get('metadata')['exclusion'])) {
+    if (layer2 == layer1 || layer2.get('metadata') === undefined ||
+        layer2.get('metadata')['exclusion'] === undefined) {
       continue;
     }
 
@@ -187,7 +185,7 @@ app.ExclusionManager.prototype.init = function(map) {
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
-        goog.asserts.assert(goog.getUid(layer) in layerOpacityListenerKeys);
+        console.assert(goog.getUid(layer) in layerOpacityListenerKeys);
         ol.Observable.unByKey(layerOpacityListenerKeys[goog.getUid(layer)]);
       }, this);
 };

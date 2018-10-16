@@ -2,8 +2,6 @@
  * @fileoverview This service keeps and share the state of the theme.
  */
 goog.provide('app.Theme');
-
-goog.require('goog.asserts');
 goog.require('app.module');
 
 
@@ -70,7 +68,7 @@ app.Theme.prototype.setCurrentTheme = function(themeId) {
   this.currentTheme_ = themeId;
 
   var piwikSiteId = this.piwikSiteIdLookup_[this.currentTheme_];
-  if (!goog.isDefAndNotNull(piwikSiteId)) {
+  if (piwikSiteId === undefined || piwikSiteId === null) {
     piwikSiteId = this.piwikSiteIdLookup_[app.Theme.DEFAULT_THEME_];
   }
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
@@ -116,7 +114,7 @@ app.Theme.prototype.getDefaultTheme = function() {
  */
 app.Theme.prototype.setLocationPath_ = function(themeId) {
   var pathElements = this.ngeoLocation_.getPath().split('/');
-  goog.asserts.assert(pathElements.length > 1);
+  console.assert(pathElements.length > 1);
   if (pathElements[pathElements.length - 1] === '') {
     // case where the path is just "/"
     pathElements.splice(pathElements.length - 1);
