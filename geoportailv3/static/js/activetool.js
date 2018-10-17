@@ -7,7 +7,7 @@ goog.provide('app.Activetool');
 goog.require('app.module');
 
 /**
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @ngInject
  */

@@ -90,9 +90,9 @@ app.share.ShorturlController.prototype.setUrl_ =
       /**
        * @param {string} shorturl The short URL.
        */
-      function(shorturl) {
+      (function(shorturl) {
         this.url = shorturl;
-      }.bind(this));
+      }).bind(this));
     };
 
 

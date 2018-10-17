@@ -20,13 +20,6 @@ goog.require('ol.tilegrid.WMTS');
  */
 app.GetWmtsLayer;
 
-/**
- * @const
- * @type {Object.<string, ol.layer.Layer>}
- * @private
- */
-app.layerCache_ = {};
-
 
 /**
  * @param {string} imageType Image type (e.g. "image/png").

@@ -6,23 +6,23 @@
     'googshift/no-duplicate-requires': 'error',
 
     'googshift/no-missing-requires': ['error', {
-      prefixes: ['app', 'ol', 'ngeo'],
+      prefixes: ['lux', 'ol'],
       exceptions: ['ngeo.module.requires.push']
     }],
 
-    'googshift/no-unused-requires': 'warn',
+    'googshift/no-unused-requires': 'error',
 
     'googshift/one-provide-or-module': ['error', {
-      entryPoints: ['app'],
-      root: 'geoportailv3/static/js/'
+      entryPoints: ['lux'],
+      root: 'jsapi/src/'
     }],
 
     'googshift/requires-first': 'error',
 
     'googshift/valid-provide-and-module': ['error', {
-      entryPoints: ['app'],
-      replace: 'static/js|app',
-      root: 'geoportailv3'
+      entryPoints: ['lux'],
+      replace: 'src|lux',
+      root: 'jsapi'
     }],
 
     'googshift/valid-requires': 'error'

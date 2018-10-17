@@ -22,7 +22,7 @@ goog.require('ol.Collection');
  * manager
  * @ngInject
  */
-app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
+app.draw.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
 
   /**
    * @type {ngeo.map.FeatureOverlayMgr}
@@ -52,12 +52,12 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.modifyInteraction;
 
   /**
-   * @type {app.ModifyCircle}
+   * @type {app.interaction.ModifyCircle}
    */
   this.modifyCircleInteraction;
 
   /**
-   * @type {app.ClipLine}
+   * @type {app.interaction.ClipLine}
    */
   this.clipLineInteraction;
 
@@ -125,7 +125,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
          * @param {ol.Feature} feature Feature.
          * @return {Object.<string, (string|number)>} Properties to encode.
          */
-        function(feature) {
+        (function(feature) {
           // Do not encode the __editable__ and __selected__ properties.
           var properties = feature.getProperties();
           delete properties['__editable__'];
@@ -143,7 +143,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
             }
           }
           return properties;
-        }.bind(this))
+        }).bind(this))
   });
 };
 
@@ -154,7 +154,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
  * then rewrite the url.
  * @param {ol.Feature} feature The feature to remove.
  */
-app.DrawnFeatures.prototype.remove = function(feature) {
+app.draw.DrawnFeatures.prototype.remove = function(feature) {
   this.features.remove(feature);
   var isMymaps = !!feature.get('__map_id__');
   if (isMymaps) {
@@ -169,7 +169,7 @@ app.DrawnFeatures.prototype.remove = function(feature) {
  * Recompute the feature order.
  * @export
  */
-app.DrawnFeatures.prototype.computeOrder = function() {
+app.draw.DrawnFeatures.prototype.computeOrder = function() {
   this.features.getArray().forEach(function(feature) {
     feature.set('display_order', this.features.getArray().indexOf(feature));
   }, this);
@@ -179,7 +179,7 @@ app.DrawnFeatures.prototype.computeOrder = function() {
 /**
  * Deactivate the editmode for each drawn features.
  */
-app.DrawnFeatures.prototype.clearEditMode = function() {
+app.draw.DrawnFeatures.prototype.clearEditMode = function() {
   this.features.getArray().forEach(function(feature) {
     feature.set('__editable__', false);
   }, this);
@@ -191,7 +191,7 @@ app.DrawnFeatures.prototype.clearEditMode = function() {
  * Save it into mymaps and rewrite the url.
  * @param {ol.Feature} feature The feature to add.
  */
-app.DrawnFeatures.prototype.add = function(feature) {
+app.draw.DrawnFeatures.prototype.add = function(feature) {
   var features = this.features.getArray().slice();
   features.push(feature);
   this.saveFeature(feature);
@@ -203,7 +203,7 @@ app.DrawnFeatures.prototype.add = function(feature) {
  * @param {Array.<ol.Feature>} features Features to encode in the URL.
  * @private
  */
-app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
+app.draw.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
   var featuresToEncode = features.filter(function(feature) {
     return !feature.get('__map_id__');
   });
@@ -222,7 +222,7 @@ app.DrawnFeatures.prototype.encodeFeaturesInUrl_ = function(features) {
  * has the permissions.
  * @param {ol.Feature} feature The feature to save.
  */
-app.DrawnFeatures.prototype.saveFeature = function(feature) {
+app.draw.DrawnFeatures.prototype.saveFeature = function(feature) {
   if (this.appMymaps_.isEditable() &&
       !!feature.get('__map_id__')) {
     this.saveFeatureInMymaps_(feature);
@@ -234,7 +234,7 @@ app.DrawnFeatures.prototype.saveFeature = function(feature) {
  * Save the current feature order
  * has the permissions.
  */
-app.DrawnFeatures.prototype.saveFeaturesOrder = function() {
+app.draw.DrawnFeatures.prototype.saveFeaturesOrder = function() {
   if (this.appMymaps_.isEditable()) {
     var mymapsFeatures = this.features.getArray().filter(function(feature) {
       return !!feature.get('__map_id__');
@@ -248,7 +248,7 @@ app.DrawnFeatures.prototype.saveFeaturesOrder = function() {
  * Move anonymous features to mymaps
  * @return {angular.$q.Promise} Promise.
  */
-app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
+app.draw.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
   var newMymapsFeatures = [];
   this.features.getArray().map(function(feature) {
     if (!feature.get('__map_id__')) {
@@ -267,11 +267,11 @@ app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
  * @param {ol.FeatureStyleFunction} featureStyleFunction The function to style
  * a feature.
  */
-app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
+app.draw.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
   var encodedFeatures = this.ngeoLocation_.getParam('features');
   if (encodedFeatures !== undefined) {
     var remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
-    console.assert(!goog.isNull(remoteFeatures));
+    console.assert(remoteFeatures !== null);
     remoteFeatures.forEach(function(feature) {
       var properties = feature.getProperties();
       for (var key in this.SHORT_PARAM_) {
@@ -328,7 +328,7 @@ app.DrawnFeatures.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
  * @param {ol.Feature} feature Feature to save in mymaps.
  * @private
  */
-app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
+app.draw.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
   var currentFeature = feature;
   if (this.appMymaps_.isEditable() && !feature.get('__saving__')) {
     feature.set('__saving__', true);
@@ -347,14 +347,14 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
  * @return {angular.$q.Promise} Promise.
  * @private
  */
-app.DrawnFeatures.prototype.saveFeaturesInMymaps_ = function(features) {
+app.draw.DrawnFeatures.prototype.saveFeaturesInMymaps_ = function(features) {
   return this.appMymaps_.saveFeatures(features);
 };
 
 /**
  * Clear the drawn features.
  */
-app.DrawnFeatures.prototype.clear = function() {
+app.draw.DrawnFeatures.prototype.clear = function() {
   this.features.clear();
   this.appMymaps_.clear();
 };
@@ -363,7 +363,7 @@ app.DrawnFeatures.prototype.clear = function() {
 /**
  * Clear the features belonging to mymaps.
  */
-app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
+app.draw.DrawnFeatures.prototype.clearMymapsFeatures = function() {
   var mymapsFeatures = this.features.getArray().filter(function(feature) {
     return !!feature.get('__map_id__');
   });
@@ -379,7 +379,7 @@ app.DrawnFeatures.prototype.clearMymapsFeatures = function() {
 /**
  * Remove the features belonging to mymaps.
  */
-app.DrawnFeatures.prototype.removeMymapsFeatures = function() {
+app.draw.DrawnFeatures.prototype.removeMymapsFeatures = function() {
   var mymapsFeatures = this.features.getArray().filter(function(feature) {
     return !!feature.get('__map_id__');
   });
@@ -393,7 +393,7 @@ app.DrawnFeatures.prototype.removeMymapsFeatures = function() {
 /**
  * Clear the anonymous features.
  */
-app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
+app.draw.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
   var anonymousFeatures = this.features.getArray().filter(function(feature) {
     return !feature.get('__map_id__');
   });
@@ -409,7 +409,7 @@ app.DrawnFeatures.prototype.clearAnonymousFeatures = function() {
  * Get the current drawn features as an array.
  * @return {Array.<ol.Feature | ol.render.Feature>?} The features array.
  */
-app.DrawnFeatures.prototype.getArray = function() {
+app.draw.DrawnFeatures.prototype.getArray = function() {
   return this.features.getArray();
 };
 
@@ -418,7 +418,7 @@ app.DrawnFeatures.prototype.getArray = function() {
  * Get the current drawn features as a Collection.
  * @return {ol.Collection} The collection of drawn features.
  */
-app.DrawnFeatures.prototype.getCollection = function() {
+app.draw.DrawnFeatures.prototype.getCollection = function() {
   return this.features;
 };
 
@@ -426,7 +426,7 @@ app.DrawnFeatures.prototype.getCollection = function() {
 /**
  * @param {ol.Feature} feature The feature.
  */
-app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
+app.draw.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
   var isTranlationActive = false;
   var isModifyInteractionActive = true;
   var isModifyCircleActive = false;
@@ -462,7 +462,7 @@ app.DrawnFeatures.prototype.activateModifyIfNeeded = function(feature) {
 /**
  * @return {ol.Extent} The extent of all features
  */
-app.DrawnFeatures.prototype.getExtent = function() {
+app.draw.DrawnFeatures.prototype.getExtent = function() {
   var extent = ol.extent.createEmpty();
   this.features.forEach(function(feature) {
     if (feature.getGeometry()) {
@@ -476,8 +476,8 @@ app.DrawnFeatures.prototype.getExtent = function() {
 /**
  * @return {ol.layer.Vector} The drawn features layer.
  */
-app.DrawnFeatures.prototype.getLayer = function() {
+app.draw.DrawnFeatures.prototype.getLayer = function() {
   return this.drawLayer;
 };
 
-app.module.service('appDrawnFeatures', app.DrawnFeatures);
+app.module.service('appDrawnFeatures', app.draw.DrawnFeatures);

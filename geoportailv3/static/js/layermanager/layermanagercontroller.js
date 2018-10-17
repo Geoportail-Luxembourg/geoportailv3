@@ -16,7 +16,7 @@
 goog.provide('app.layermanager.LayermanagerController');
 
 goog.require('app.module');
-
+goog.require('ol');
 
 /**
  * @param {ngeo.statemanager.Location} ngeoLocation Location service.
@@ -31,7 +31,7 @@ app.layermanager.LayermanagerController = function(ngeoLocation) {
    */
   this.ngeoLocation_ = ngeoLocation;
 
-  this['uid'] = goog.getUid(this);
+  this['uid'] = ol.getUid(this);
 
   /**
    * Hash array to keep track of opacities set on layers.
@@ -70,7 +70,7 @@ app.layermanager.LayermanagerController.prototype.reorderCallback = function(ele
 app.layermanager.LayermanagerController.prototype.changeVisibility = function(layer) {
   var currentOpacity = layer.getOpacity();
   var newOpacity;
-  var uid = goog.getUid(layer);
+  var uid = ol.getUid(layer);
   if (currentOpacity === 0) {
     if (this.opacities_[uid] !== undefined) {
       newOpacity = this.opacities_[uid];

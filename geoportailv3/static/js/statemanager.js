@@ -91,8 +91,8 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
         if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
           this.initialState_[key] = ngeoLocation.getParam(key);
         } else {
-          console.assert(!goog.isNull(key));
-          this.initialState_[key] = this.localStorage_.get(key);
+          console.assert(key !== null, 'The key should not be null');
+          this.initialState_[key] = this.localStorage_.get(/** @type {string} */ (key));
         }
       }
     }

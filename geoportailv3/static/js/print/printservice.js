@@ -63,14 +63,14 @@ app.print.Printservice = class extends ngeo.print.Service {
     console.assert(viewCenter !== undefined);
     console.assert(viewProjection !== undefined);
 
-    object.center = viewCenter;
+    object.center = /** @type{Array<number>} */(viewCenter);
     object.projection = viewProjection.getCode();
     object.rotation = viewRotation;
     object.scale = scale;
     object.layers = [];
 
     const mapLayerGroup = map.getLayerGroup();
-    console.assert(mapLayerGroup);
+    console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
     ol.array.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
@@ -79,7 +79,7 @@ app.print.Printservice = class extends ngeo.print.Service {
     layers.forEach((layer) => {
       if (layer.getVisible()) {
         console.assert(viewResolution !== undefined);
-        this.encodeLayer(object.layers, layer, viewResolution);
+        this.encodeLayer(object.layers, layer, /** @type{number} */(viewResolution));
       }
     });
   }

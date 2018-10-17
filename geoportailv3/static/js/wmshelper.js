@@ -15,6 +15,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
+goog.require('ol');
 
 
 /**
@@ -164,7 +165,7 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   if (!layer['Name']) {
     layer['isInvalid'] = true;
   }
-  layer['uid'] = goog.getUid(layer).toString();
+  layer['uid'] = ol.getUid(layer).toString();
   if (!layer['isInvalid']) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;

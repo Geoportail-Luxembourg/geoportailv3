@@ -354,7 +354,7 @@ app.draw.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_p
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
     console.assert(Array.isArray(fillColor), 'only supporting fill colors');
-    var fillColorRgba = ol.color.asArray(fillColor);
+    var fillColorRgba = ol.color.asArray(/** @type {Array<number>} */ (fillColor));
     console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
     var fillColorHex = goog.color.rgbArrayToHex(fillColorRgba);
     if (encodedStyles.length > 0) {
@@ -377,7 +377,7 @@ app.draw.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
     console.assert(Array.isArray(strokeColor));
-    var strokeColorRgba = ol.color.asArray(strokeColor);
+    var strokeColorRgba = ol.color.asArray(/** @type {Array<number>} */ (strokeColor));
     console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
     var strokeColorHex = goog.color.rgbArrayToHex(strokeColorRgba);
     if (encodedStyles.length > 0) {
@@ -771,9 +771,9 @@ app.draw.FeatureHash.getStyleProperties_ = function(text, feature) {
  * @private
  */
 app.draw.FeatureHash.writeLineStringGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString);
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  console.assert(geometry instanceof ol.geom.LineString);
+  var flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.LineString} */ (geometry).getStride();
   var end = flatCoordinates.length;
   return 'l(' + this.encodeCoordinates_(flatCoordinates, stride, 0, end) + ')';
 };
@@ -788,11 +788,11 @@ app.draw.FeatureHash.writeLineStringGeometry_ = function(geometry) {
  * @private
  */
 app.draw.FeatureHash.writeMultiLineStringGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString);
-  var ends = geometry.getEnds();
+  console.assert(geometry instanceof ol.geom.MultiLineString);
+  var ends = /** @type {ol.geom.MultiLineString} */ (geometry).getEnds();
   var lineStringCount = ends.length;
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  var flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.MultiLineString} */ (geometry).getStride();
   var offset = 0;
   var textArray = ['L('];
   for (var i = 0; i < lineStringCount; ++i) {
@@ -818,9 +818,9 @@ app.draw.FeatureHash.writeMultiLineStringGeometry_ = function(geometry) {
  * @private
  */
 app.draw.FeatureHash.writePointGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point);
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  console.assert(geometry instanceof ol.geom.Point);
+  var flatCoordinates = /** @type {ol.geom.Point} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.Point} */ (geometry).getStride();
   var end = flatCoordinates.length;
   return 'p(' + this.encodeCoordinates_(flatCoordinates, stride, 0, end) + ')';
 };
@@ -835,9 +835,9 @@ app.draw.FeatureHash.writePointGeometry_ = function(geometry) {
  * @private
  */
 app.draw.FeatureHash.writeMultiPointGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint);
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  console.assert(geometry instanceof ol.geom.MultiPoint);
+  var flatCoordinates = /** @type {ol.geom.MultiPoint} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.MultiPoint} */ (geometry).getStride();
   var end = flatCoordinates.length;
   return 'P(' + this.encodeCoordinates_(flatCoordinates, stride, 0, end) + ')';
 };
@@ -879,10 +879,10 @@ app.draw.FeatureHash.encodeRings_ = function(flatCoordinates, stride, offset, en
  * @private
  */
 app.draw.FeatureHash.writePolygonGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon);
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
-  var ends = geometry.getEnds();
+  console.assert(geometry instanceof ol.geom.Polygon);
+  var flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.Polygon} */ (geometry).getStride();
+  var ends = /** @type {ol.geom.Polygon} */ (geometry).getEnds();
   var offset = 0;
   var textArray = ['a('];
   app.draw.FeatureHash.encodeRings_.call(this,
@@ -901,10 +901,10 @@ app.draw.FeatureHash.writePolygonGeometry_ = function(geometry) {
  * @private
  */
 app.draw.FeatureHash.writeMultiPolygonGeometry_ = function(geometry) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon);
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
-  var endss = geometry.getEndss();
+  console.assert(geometry instanceof ol.geom.MultiPolygon);
+  var flatCoordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatCoordinates();
+  var stride = /** @type {ol.geom.MultiPolygon} */ (geometry).getStride();
+  var endss = /** @type {ol.geom.MultiPolygon} */ (geometry).getEndss();
   var polygonCount = endss.length;
   var offset = 0;
   var textArray = ['A'];

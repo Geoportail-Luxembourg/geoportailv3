@@ -24,12 +24,12 @@ app.imageupload.ImguploadDirective = function() {
          * @param {!angular.Scope} scope Scope.
          * @param {angular.JQLite} element Element.
          * @param {angular.Attributes} attrs Attributes.
-         * @param {app.ImguploadController} ctrl Controller.
+         * @param {app.imageupload.ImguploadController} ctrl Controller.
          */
         function(scope, element, attrs, ctrl) {
           element.bind('change', function() {
             scope.$apply(function() {
-              ctrl.uploadFileToUrl_(element[0].files[0], scope, attrs);
+              ctrl.uploadFileToUrl(element[0].files[0], scope, attrs);
             });
           });
         },

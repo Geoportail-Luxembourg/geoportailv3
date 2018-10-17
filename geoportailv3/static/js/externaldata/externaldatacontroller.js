@@ -20,7 +20,7 @@ goog.require('app.module');
  * @param {angular.$http} $http The angular http service.
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.WmtsHelper} appWmtsHelper The wms herlper service.
- * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.
+ * @param {app.layerinfo.ShowLayerinfo} appShowLayerinfo app.layerinfo.ShowLayerinfo service.
  * @param {string} predefinedWmsUrl URL to the predefined wms service.
  * @param {string} appWmsTreeTemplateUrl Url to display wms layers.
  * @param {string} appWmtsTreeTemplateUrl Url to display wmts layers.
@@ -50,7 +50,7 @@ app.externaldata.ExternalDataController = function(gettextCatalog, $http, appWms
   this.predefinedWmsUrl_ = predefinedWmsUrl;
 
   /**
-   * @type {app.ShowLayerinfo}
+   * @type {app.layerinfo.ShowLayerinfo}
    * @private
    */
   this.showLayerInfo_ = appShowLayerinfo;

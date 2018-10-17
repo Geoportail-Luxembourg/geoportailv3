@@ -5,7 +5,7 @@ goog.require('app.module');
 
 /**
  * @constructor
- * @param {app.ShowLayerinfo} appShowLayerinfo app.ShowLayerinfo service.
+ * @param {app.layerinfo.ShowLayerinfo} appShowLayerinfo app.layerinfo.ShowLayerinfo service.
  * @ngInject
  * @export
  */

@@ -9,7 +9,7 @@ goog.provide('app.Mymaps');
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
 goog.require('goog.color');
-goog.require('goog.object');
+goog.require('ol.obj');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiPoint');
@@ -523,14 +523,14 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         resp.data.forEach(function(map) {
           if (goog.isNull(map['update_date'])) {
             map['update_date'] = map['create_date'];
           }
         });
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -554,10 +554,10 @@ app.Mymaps.prototype.loadCategories = function() {
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.
          */
-      function(resp) {
+      (function(resp) {
         this.categories = resp.data;
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           return null;
         }
@@ -577,10 +577,10 @@ app.Mymaps.prototype.loadAllCategories = function() {
          * @param {angular.$http.Response} resp Ajax response.
          * @return {app.MapsResponse} The "mymaps" web service response.
          */
-      function(resp) {
+      (function(resp) {
         this.allcategories = resp.data;
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           return null;
         }
@@ -601,10 +601,10 @@ app.Mymaps.prototype.loadFeatures_ = function() {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         this.mapFeatures_ = resp.data;
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         var msg;
         if (error.status == 401) {
           this.notifyUnauthorized();
@@ -633,7 +633,7 @@ app.Mymaps.prototype.updateLayers = function() {
       /**
        * @param {Array.<ol.layer.Base>} bgLayers The bg layer.
        */
-      function(bgLayers) {
+      (function(bgLayers) {
         var layer = /** @type {ol.layer.Base} */
             (goog.array.find(bgLayers, function(layer) {
               return layer.get('label') === curBgLayer;
@@ -641,7 +641,7 @@ app.Mymaps.prototype.updateLayers = function() {
         if (layer) {
           this.backgroundLayerMgr_.set(this.map, layer);
         }
-      }.bind(this));
+      }).bind(this));
 
   var curMapLayers = this.mapLayers;
   var curMapOpacities = this.mapLayersOpacities;
@@ -786,10 +786,10 @@ app.Mymaps.prototype.getMapInformation = function() {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         this.mapInfo_ = resp.data;
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         var msg;
         if (error.status == 401) {
           this.notifyUnauthorized();
@@ -821,9 +821,9 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -862,9 +862,9 @@ app.Mymaps.prototype.createMap =
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -903,9 +903,9 @@ app.Mymaps.prototype.copyMap =
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -929,9 +929,9 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -956,9 +956,9 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1021,9 +1021,9 @@ app.Mymaps.prototype.updateMap =
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1070,9 +1070,9 @@ app.Mymaps.prototype.updateMapEnv =
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1111,9 +1111,9 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1149,9 +1149,9 @@ app.Mymaps.prototype.saveFeature = function(feature) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1187,9 +1187,9 @@ app.Mymaps.prototype.saveFeatures = function(features) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {app.MapsResponse} The "mymaps" web service response.
        */
-      function(resp) {
+      (function(resp) {
         return resp.data;
-      }.bind(this), function(error) {
+      }).bind(this), function(error) {
         if (error.status == 401) {
           this.notifyUnauthorized();
           return null;
@@ -1389,7 +1389,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     };
     var image = null;
     if (this.get('symbolId')) {
-      goog.object.extend(imageOptions, {
+      ol.obj.assign(imageOptions, {
         src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
         scale: 1,
         rotation: this.get('angle')
@@ -1404,7 +1404,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       if (shape === 'circle') {
         image = new ol.style.Circle(imageOptions);
       } else if (shape === 'square') {
-        goog.object.extend(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 4,
           angle: Math.PI / 4,
           rotation: this.get('angle')
@@ -1412,7 +1412,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {
-        goog.object.extend(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 3,
           angle: 0,
           rotation: this.get('angle')
@@ -1420,7 +1420,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'star') {
-        goog.object.extend(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
@@ -1429,7 +1429,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (this.get('shape') == 'cross') {
-        goog.object.extend(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 4,
           angle: 0,
           rotation: this.get('angle'),

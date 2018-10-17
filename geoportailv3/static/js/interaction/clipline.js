@@ -25,7 +25,7 @@ goog.require('ol.style.Style');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
- * @fires app.ModifyCircleEvent
+ * @fires app.interaction.ModifyCircleEvent
  * @api
  */
 app.interaction.ClipLine = function(options) {
@@ -97,12 +97,12 @@ app.interaction.ClipLine = function(options) {
     updateWhileInteracting: true
   });
 
-  console.assert(options.features);
+  console.assert(options.features !== undefined);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = options.features;
+  this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.ADD,
@@ -189,9 +189,9 @@ app.interaction.ClipLine.prototype.setMap = function(map) {
  */
 app.interaction.ClipLine.prototype.handleFeatureAdd_ = function(evt) {
   var feature = evt.element;
-  goog.asserts.assertInstanceof(feature, ol.Feature,
+  console.assert(feature instanceof ol.Feature,
       'feature should be an ol.Feature');
-  this.addFeature_(feature);
+  this.addFeature_(/** @type {ol.Feature} */ (feature));
 };
 
 

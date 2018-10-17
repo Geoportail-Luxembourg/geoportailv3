@@ -49,7 +49,7 @@ goog.require('ol.style.Stroke');
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
- * @param {app.ShowLayerinfo} appShowLayerinfo The layer info service.
+ * @param {app.layerinfo.ShowLayerinfo} appShowLayerinfo The layer info service.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {string} poiSearchServiceUrl The url to the poi search service.
  * @param {string} layerSearchServiceUrl The url to the layer search service.
@@ -162,15 +162,13 @@ app.search.SearchController = function($scope, $window, $compile,
 
   /**
    * @type {ngeo.map.FeatureOverlay}
-   * @private
    */
-  this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
+  this.featureOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   /**
    * @type {ol.Feature}
-   * @private
    */
-  this.lastSelectedSuggestion_ = null;
+  this.lastSelectedSuggestion = null;
 
   /**
    * @type {ol.Map}
@@ -186,7 +184,7 @@ app.search.SearchController = function($scope, $window, $compile,
     width: 3
   });
 
-  this.featureOverlay_.setStyle(
+  this.featureOverlay.setStyle(
       new ol.style.Style({
         fill: fillStyle,
         stroke: strokeStyle,
@@ -210,7 +208,7 @@ app.search.SearchController = function($scope, $window, $compile,
   this.getLayerFunc_ = appGetLayerForCatalogNode;
 
   /**
-   * @type {app.ShowLayerinfo}
+   * @type {app.layerinfo.ShowLayerinfo}
    * @private
    */
   this.showLayerinfo_ = appShowLayerinfo;
@@ -264,11 +262,11 @@ app.search.SearchController = function($scope, $window, $compile,
       /**
      * @param {ol.events.Event} evt Event
      */
-      function(evt) {
+      (function(evt) {
         this.createLocalAllLayerData_(appThemes);
         this.createLocalBackgroundLayerData_(
             appThemes, backgroundLayerEngine, this.gettextCatalog);
-      }, this);
+      }), this);
 
   /** @type {TypeaheadOptions} */
   this['options'] = {
@@ -320,7 +318,7 @@ app.search.SearchController = function($scope, $window, $compile,
       return syncResults(this.matchLayers_(backgroundLayerEngine, query));
     }.bind(this),
     /**
-     * @param {app.BackgroundLayerSuggestion} suggestion The suggestion.
+     * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
      * @return {string} The result.
      * @this {TypeaheadDataset}
      */
@@ -336,17 +334,17 @@ app.search.SearchController = function($scope, $window, $compile,
       }.bind(this),
       suggestion:
           /**
-           * @param {app.BackgroundLayerSuggestion} suggestion The suggestion.
+           * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
            * @return {*} The result.
            */
-          function(suggestion) {
+          (function(suggestion) {
             var scope = $scope.$new(true);
             scope['object'] = suggestion;
             var html = '<p>' + suggestion['translatedName'];
             html += ' (' + this.gettextCatalog.getString('Background') + ') ';
             html += '</p>';
             return $compile(html)(scope);
-          }.bind(this)
+          }).bind(this)
     })
   }, {
     name: 'pois',
@@ -479,9 +477,9 @@ app.search.SearchController = function($scope, $window, $compile,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
-      function(e) {
-        this.featureOverlay_.clear();
-      }, this);
+      (function(e) {
+        this.featureOverlay.clear();
+      }), this);
 };
 
 
@@ -500,9 +498,9 @@ app.search.SearchController.prototype.matchLayers_ =
        * @param {FuseResult} r The result.
        * @return {*} The item.
        */
-      function(r) {
+      (function(r) {
         return r.item;
-      });
+      }));
     };
 
 
@@ -794,18 +792,18 @@ app.search.SearchController.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, fuse, gettextCatalog) {
       appThemes.getBgLayers().then(
       function(bgLayers) {
-        var suggestions = goog.array.map(bgLayers,
+        var suggestions = bgLayers.map(
             /**
              * @param {ol.layer.Layer} bgLayer The current bg layer.
-             * @return {app.BackgroundLayerSuggestion} The suggestion.
+             * @return {app.search.BackgroundLayerSuggestion} The suggestion.
              */
-            function(bgLayer) {
-              return {
+            (function(bgLayer) {
+              return /** @type {app.search.BackgroundLayerSuggestion} */({
                 'bgLayer': bgLayer,
                 'translatedName': gettextCatalog.getString(
                     /** @type {string} */ (bgLayer.get('label')))
-              };
-            }
+              });
+            })
             );
         fuse.set(suggestions);
       }.bind(this)
@@ -829,7 +827,7 @@ app.search.SearchController.prototype.createLocalAllLayerData_ =
 
 
 /**
- * @param {(app.BackgroundLayerSuggestion)} input The input.
+ * @param {(app.search.BackgroundLayerSuggestion)} input The input.
  * @private
  */
 app.search.SearchController.prototype.setBackgroundLayer_ = function(input) {
@@ -861,7 +859,7 @@ app.search.SearchController.prototype.addLayerToMap_ = function(input) {
 
 /**
  * @param {jQuery.Event} event The event.
- * @param {(ol.Feature|Object|app.BackgroundLayerSuggestion)} suggestion
+ * @param {(ol.Feature|Object|app.search.BackgroundLayerSuggestion)} suggestion
  * The suggestion.
  * @this {app.search.SearchController}
  * @private
@@ -877,13 +875,13 @@ app.search.SearchController.selected_ =
       }
       if (dataset === 'pois' || dataset === 'coordinates') { //POIs
         var feature = /** @type {ol.Feature} */ (suggestion);
-        this.lastSelectedSuggestion_ = feature;
+        this.lastSelectedSuggestion = feature;
         var featureGeometry = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
         map.getView().fit(featureGeometry, /** @type {olx.view.FitOptions} */ ({
           size: /** @type {ol.Size} */ (map.getSize()),
           maxZoom: 18
         }));
-        this.featureOverlay_.clear();
+        this.featureOverlay.clear();
         var features = [];
         if (dataset === 'coordinates') {
           features.push(feature);
@@ -907,7 +905,7 @@ app.search.SearchController.selected_ =
           }
         }
         for (var i = 0; i < features.length; ++i) {
-          this.featureOverlay_.addFeature(features[i]);
+          this.featureOverlay.addFeature(features[i]);
         }
       // } else if (dataset === 'layers') { //Layer
       //   this.addLayerToMap_(/** @type {Object} */ (suggestion));
@@ -915,7 +913,7 @@ app.search.SearchController.selected_ =
         this.addLayerToMap_(/** @type {string} */ (suggestion.name));
       } else if (dataset === 'backgroundLayers') { //BackgroundLayer
         this.setBackgroundLayer_(
-        /** @type {app.BackgroundLayerSuggestion} */ (suggestion));
+        /** @type {app.search.BackgroundLayerSuggestion} */ (suggestion));
       } else if (dataset === 'cms') {
         this.$window_.open('https://www.geoportail.lu' + suggestion.url, '_blank');
       }
@@ -939,7 +937,7 @@ app.search.SearchController.prototype.addRoutePoint = function(suggestion) {
  * @export
  */
 app.search.SearchController.prototype.isSearchFeature = function() {
-  return (this.lastSelectedSuggestion_ !== null);
+  return (this.lastSelectedSuggestion !== null);
 };
 
 /**
@@ -947,7 +945,7 @@ app.search.SearchController.prototype.isSearchFeature = function() {
  * @export
  */
 app.search.SearchController.prototype.addLastSuggestedFeature = function() {
-  this.addRoutePoint(this.lastSelectedSuggestion_);
+  this.addRoutePoint(this.lastSelectedSuggestion);
 };
 
 app.module.controller('AppSearchController',

@@ -38,8 +38,8 @@ goog.require('ol.style.Style');
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
  * @param {app.Export} appExport The export service.
  * @param {app.Activetool} appActivetool The activetool service.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @param {app.Notify} appNotify Notify service.
  * @param {string} downloadresourceUrl The url to download a resource.
@@ -98,7 +98,7 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
   this.appAuthtktCookieName_ = appAuthtktCookieName;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -800,7 +800,7 @@ app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLa
         var validGeom = this.filterValidProfileFeatures_(feature);
         if (validGeom.geom.getLineStrings().length > 0) {
           feature['attributes']['showProfile'] =
-              /** @type {app.ShowProfile} */ ({active: true});
+              /** @type {app.query.ShowProfile} */ ({active: true});
           this.getProfile_(validGeom.geom, validGeom.id)
         .then(function(profile) {
           this.responses_.forEach(function(item) {
@@ -809,7 +809,7 @@ app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLa
                         function(feature) {
                           if (feature['fid'] === profile[0]['id']) {
                             feature['attributes']['showProfile'] =
-                                /** @type {app.ShowProfile} */
+                                /** @type {app.query.ShowProfile} */
                                 ({active: true});
                             feature['attributes']['profile'] = profile;
                           }

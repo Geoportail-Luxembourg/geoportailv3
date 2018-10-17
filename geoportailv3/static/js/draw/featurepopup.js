@@ -177,9 +177,9 @@ app.draw.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
   this.scope_['map'] = map;
   var anchor = opt_anchor !== undefined ? opt_anchor : this.getAnchor(feature);
   this.overlay_.setPosition(anchor);
-  var headers = angular.element(this.$document_).
-      find('.feature-popup-heading');
-  headers.forEach(function(element) {
+
+  var headers = angular.element(this.$document_).find('.feature-popup-heading');
+  angular.forEach(headers, function(element) {
     this.setDraggable(angular.element(element));
   }, this);
   // Enable the dropdown menu
@@ -228,17 +228,17 @@ app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
     case ol.geom.GeometryType.POINT:
       console.assert(geometry instanceof ol.geom.Point,
           'geometry should be an ol.geom.Point');
-      return geometry.getFlatCoordinates();
+      return /** @type {ol.geom.Point} */ (geometry).getFlatCoordinates();
     case ol.geom.GeometryType.LINE_STRING:
-      goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
+      console.assert(geometry instanceof ol.geom.LineString,
           'geometry should be an ol.geom.LineString');
-      return geometry.getFlatMidpoint();
+      return /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
     case ol.geom.GeometryType.POLYGON:
-      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
+      console.assert(geometry instanceof ol.geom.Polygon,
           'geometry should be an ol.geom.Polygon');
-      return geometry.getFlatInteriorPoint();
+      return /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
     default:
-      goog.asserts.fail('Unsupported geometry type');
+      console.assert(false, 'Unsupported geometry type');
       return null;
   }
 };
@@ -250,10 +250,10 @@ app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
  */
 app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
   var projection = this.map.getView().getProjection();
-  console.assert(projection);
+  console.assert(projection !== null);
   return ngeo.interaction.Measure.getFormattedArea(
       polygon,
-      projection,
+       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
       this.format_
   );
@@ -266,10 +266,10 @@ app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
  */
 app.draw.FeaturePopup.prototype.formatRadius = function(line) {
   var projection = this.map.getView().getProjection();
-  console.assert(projection);
+  console.assert(projection !== null);
   return ngeo.interaction.Measure.getFormattedLength(
       line,
-      projection,
+      /** @type {!ol.proj.Projection} */ (projection),
       undefined,
       this.format_
   );
@@ -284,10 +284,10 @@ app.draw.FeaturePopup.prototype.formatLength = function(line) {
   var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
       line.getCoordinates()[0] : line.getCoordinates();
   var projection = this.map.getView().getProjection();
-  console.assert(projection);
+  console.assert(projection !== null);
   return ngeo.interaction.Measure.getFormattedLength(
       new ol.geom.LineString(coordinates),
-      projection,
+      /** @type {!ol.proj.Projection} */ (projection),
       undefined,
       this.format_
   );

@@ -12,6 +12,7 @@ goog.require('ngeo.misc.decorate');
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.WMTS');
+goog.require('ol');
 
 
 /**
@@ -145,7 +146,7 @@ app.WmtsHelper.prototype.buildChildLayers_ = function(wmts, capabilities) {
     var options = ol.source.WMTS.optionsFromCapabilities(capabilities, wmtsConfig);
     layer['options'] = options;
     layer['isInvalid'] = false;
-    layer['uid'] = goog.getUid(layer).toString();
+    layer['uid'] = ol.getUid(layer).toString();
     if (!layer['isInvalid']) {
       layer['wmtsUrl'] = wmts;
 

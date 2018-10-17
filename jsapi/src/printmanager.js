@@ -1,6 +1,7 @@
 goog.provide('lux.PrintManager');
 
 goog.require('goog.color.alpha');
+goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.GeometryType');
@@ -14,13 +15,14 @@ goog.require('ol.source.TileWMS');
 goog.require('ol.source.Vector');
 goog.require('ol.source.WMTS');
 goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Image');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
 goog.require('ol.style.RegularShape');
+goog.require('ol.style.Style');
 goog.require('ol.tilegrid.WMTS');
+goog.require('ol.obj');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.style.Icon');
+goog.require('ol.layer.Group');
 
 
 /**

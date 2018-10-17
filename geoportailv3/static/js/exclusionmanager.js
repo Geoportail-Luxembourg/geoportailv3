@@ -6,6 +6,7 @@ goog.provide('app.ExclusionManager');
 
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
+goog.require('ol');
 goog.require('ol.Observable');
 goog.require('ol.Object');
 goog.require('ol.events');
@@ -17,7 +18,7 @@ goog.require('ol.CollectionEventType');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  *     manager.
- * @param {app.BlankLayer} appBlankLayer Blank layer service.
+ * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank layer service.
  * @param {app.Notify} appNotify Notify service.
  * @constructor
  * @ngInject
@@ -32,7 +33,7 @@ app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {app.BlankLayer}
+   * @type {app.backgroundlayer.BlankLayer}
    * @private
    */
   this.blankLayer_ = appBlankLayer;
@@ -175,7 +176,7 @@ app.ExclusionManager.prototype.init = function(map) {
             function(e) {
               this.checkForLayerExclusion_(map, layer);
             }, this);
-        layerOpacityListenerKeys[goog.getUid(layer)] = key;
+        layerOpacityListenerKeys[ol.getUid(layer)] = key;
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
@@ -185,8 +186,8 @@ app.ExclusionManager.prototype.init = function(map) {
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
-        console.assert(goog.getUid(layer) in layerOpacityListenerKeys);
-        ol.Observable.unByKey(layerOpacityListenerKeys[goog.getUid(layer)]);
+        console.assert(ol.getUid(layer) in layerOpacityListenerKeys);
+        ol.Observable.unByKey(layerOpacityListenerKeys[ol.getUid(layer)]);
       }, this);
 };
 
