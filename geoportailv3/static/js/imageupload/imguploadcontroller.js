@@ -61,9 +61,8 @@ app.imageupload.ImguploadController = function($parse, $http, appNotify, gettext
  * @param {Blob} file the file to upload
  * @param {!angular.Scope} scope Scope.
  * @param {angular.Attributes} attrs Attributes.
- * @private
  */
-app.imageupload.ImguploadController.prototype.uploadFileToUrl_ = function(file, scope,
+app.imageupload.ImguploadController.prototype.uploadFileToUrl = function(file, scope,
     attrs) {
   var path = '/upload_image';
   if ('appSymbolupload' in attrs) {

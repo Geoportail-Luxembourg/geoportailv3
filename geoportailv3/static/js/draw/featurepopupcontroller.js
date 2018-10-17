@@ -22,10 +22,10 @@ goog.require('ngeo.interaction.Measure');
  * @constructor
  * @param {angular.Scope} $scope Scope.
  * @param {angular.$sce} $sce Angular $sce service.
- * @param {app.FeaturePopup} appFeaturePopup The feature popup service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.FeaturePopup} appFeaturePopup The feature popup service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.UserManager} appUserManager The user manager service.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
  * @param {string} mymapsImageUrl URL to "mymaps" Feature service.
@@ -196,7 +196,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   this.tempCircleRadius = 0;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -490,7 +490,7 @@ app.draw.FeaturePopupController.prototype.getArea = function() {
   if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    console.assert(geom);
+    console.assert(geom !== null && geom !== undefined);
     return this.appFeaturePopup_.formatArea(geom);
   } else {
     return '';
@@ -507,7 +507,7 @@ app.draw.FeaturePopupController.prototype.getRadius = function() {
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    console.assert(geom);
+    console.assert(geom !== null && geom !== undefined);
     var center = ol.extent.getCenter(geom.getExtent());
     var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
@@ -528,7 +528,7 @@ app.draw.FeaturePopupController.prototype.getLength = function() {
   ) {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
-    console.assert(geom);
+    console.assert(geom !== null && geom !== undefined);
     return this.appFeaturePopup_.formatLength(geom);
   } else {
     return '';
@@ -545,7 +545,7 @@ app.draw.FeaturePopupController.prototype.updateElevation = function() {
       !this.feature.get('isLabel') &&
       !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
-    console.assert(geom);
+    console.assert(geom !== null && geom !== undefined);
     this.appFeaturePopup_.getElevation(geom).then(
         function(elevation) {
           this.featureElevation = elevation['formattedElevation'];
@@ -565,7 +565,7 @@ app.draw.FeaturePopupController.prototype.updateProfile = function() {
       !this.ngeoNetworkStatus_.isDisconnected()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
-    console.assert(geom);
+    console.assert(geom !== null && geom !== undefined);
     this.appFeaturePopup_.getProfile(geom).then(function(profile) {
       this.featureProfile = profile;
     }.bind(this));

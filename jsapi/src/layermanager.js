@@ -1,8 +1,11 @@
 goog.provide('lux.LayerManager');
 
+goog.require('lux');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('ol.control.Control');
+goog.require('ol.events');
+goog.require('ol.CollectionEventType');
+
 
 /**
  * @constructor

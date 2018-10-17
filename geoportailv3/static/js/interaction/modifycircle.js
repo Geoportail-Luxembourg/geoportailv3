@@ -118,12 +118,12 @@ app.interaction.ModifyCircle = function(options) {
     updateWhileInteracting: true
   });
 
-  console.assert(options.features);
+  console.assert(options.features !== null && options.features !== undefined);
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = options.features;
+  this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.ADD,
@@ -222,9 +222,9 @@ app.interaction.ModifyCircle.prototype.setMap = function(map) {
  */
 app.interaction.ModifyCircle.prototype.handleFeatureAdd_ = function(evt) {
   var feature = evt.element;
-  goog.asserts.assertInstanceof(feature, ol.Feature,
+  console.assert(feature instanceof ol.Feature,
       'feature should be an ol.Feature');
-  this.addFeature_(feature);
+  this.addFeature_(/** @type {ol.Feature} */ (feature));
 };
 
 
@@ -328,7 +328,7 @@ app.interaction.ModifyCircle.handleDownEvent_ = function(evt) {
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      var uid = goog.getUid(segmentDataMatch.feature);
+      var uid = ol.getUid(segmentDataMatch.feature);
       var depth = segmentDataMatch.depth;
       if (depth) {
         uid += '-' + depth.join('-'); // separate feature components
@@ -472,7 +472,7 @@ app.interaction.ModifyCircle.prototype.handlePointerAtPixel_ = function(pixel, m
             closestSegment[1] : closestSegment[0];
         this.createOrUpdateVertexFeature_(vertex);
         var vertexSegments = {};
-        vertexSegments[goog.getUid(closestSegment)] = true;
+        vertexSegments[ol.getUid(closestSegment)] = true;
         var segment;
         for (var i = 1, ii = nodes.length; i < ii; ++i) {
           segment = nodes[i].segment;
@@ -480,7 +480,7 @@ app.interaction.ModifyCircle.prototype.handlePointerAtPixel_ = function(pixel, m
               ol.coordinate.equals(closestSegment[1], segment[1]) ||
               (ol.coordinate.equals(closestSegment[0], segment[1]) &&
               ol.coordinate.equals(closestSegment[1], segment[0])))) {
-            vertexSegments[goog.getUid(segment)] = true;
+            vertexSegments[ol.getUid(segment)] = true;
           } else {
             break;
           }

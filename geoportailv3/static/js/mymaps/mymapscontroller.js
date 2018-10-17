@@ -27,11 +27,11 @@ goog.require('ol.geom.LineString');
  *     manager.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {app.Notify} appNotify Notify service.
- * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.UserManager} appUserManager
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Document} $document Document.
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {app.Export} appExport The export service.
@@ -70,7 +70,7 @@ app.mymaps.MymapsController = function($scope, $compile, $sce,
   this.sce_ = $sce;
 
   /**
-   * @type {app.FeaturePopup}
+   * @type {app.draw.FeaturePopup}
    * @private
    */
   this.appFeaturePopup_ = appFeaturePopup;
@@ -166,7 +166,7 @@ app.mymaps.MymapsController = function($scope, $compile, $sce,
   this.map.addLayer(appDrawnFeatures.getLayer());
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;

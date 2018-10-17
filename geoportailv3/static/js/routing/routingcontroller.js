@@ -110,10 +110,10 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
   this.appExport_ = appExport;
 
   /**
-   * @type {app.ShowProfile}
+   * @type {app.query.ShowProfile}
    * @export
    */
-  this.showProfile = /** @type {app.ShowProfile} */ ({active: true});
+  this.showProfile = /** @type {app.query.ShowProfile} */ ({active: true});
 
   /**
    * @type {Array<Object>}

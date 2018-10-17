@@ -78,9 +78,9 @@ app.catalog.CatalogController = function($scope, appThemes, appTheme,
       /**
        * @param {ol.events.Event} evt Event.
        */
-      function(evt) {
+      (function(evt) {
         this.setTree_();
-      }, this);
+      }), this);
 
   $scope.$watch(function() {
     return this.appTheme_.getCurrentTheme();
@@ -115,10 +115,10 @@ app.catalog.CatalogController.prototype.setTree_ = function() {
       /**
        * @param {Object} tree Tree object for the theme.
        */
-      function(tree) {
+      (function(tree) {
         this['tree'] = tree;
         this.setThemeZooms(this['tree']);
-      }.bind(this));
+      }).bind(this));
 };
 
 

@@ -1,7 +1,7 @@
 goog.provide('lux.MyMap');
 
+goog.require('lux');
 goog.require('goog.dom');
-goog.require('goog.dom.query');
 goog.require('goog.dom.classlist');
 goog.require('goog.color');
 goog.require('goog.events');
@@ -16,6 +16,24 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Style');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
+goog.require('ol.source.Vector');
+goog.require('ol.format.KML');
+goog.require('ol.format.GPX');
+goog.require('ol.style.Circle');
+goog.require('ol.events');
+goog.require('ol.Overlay');
+goog.require('ol.events.EventType');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.MapBrowserEventType');
+goog.require('ol.geom.GeometryLayout');
+goog.require('ol.Feature');
+goog.require('ol.extent');
+goog.require('ol.geom.MultiLineString');
+
 
 /**
  * @classdesc

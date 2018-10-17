@@ -30,7 +30,7 @@ goog.require('ol.extent');
  * @param {app.StateManager} appStateManager The state manager service.
  * @param {string} qrServiceUrl The qr service url.
  * @param {string} appLocationinfoTemplateUrl The template url.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Geocoding} appGeocoding appGeocoding The geocoding service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
@@ -41,7 +41,7 @@ goog.require('ol.extent');
  * @param {string} lidarDemoUrl Url to the demo of lidar.
  * @param {app.Routing} appRouting The routing service.
  * @param {angular.$sce} $sce Angular $sce service.
- * @param {app.LocationInfoOverlay} appLocationInfoOverlay The overlay.
+ * @param {app.locationinfo.LocationInfoOverlay} appLocationInfoOverlay The overlay.
  * @param {app.Activetool} appActivetool The activetool service.
  * @ngInject
  */
@@ -336,7 +336,7 @@ app.locationinfo.LocationinfoController = function(
     }.bind(this));
     var address = this.ngeoLocation_.getParam('address');
     console.assert(address !== undefined);
-    this.geocode_.geocode(address).then(function(data) {
+    this.geocode_.geocode(/** @type{string} */ (address)).then(function(data) {
       var results = data['results'];
       if (results !== undefined && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */

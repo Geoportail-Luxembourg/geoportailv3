@@ -34,10 +34,10 @@ app.resizemapDirective = function($window) {
         function(scope, element, attrs) {
 
           var map = scope.$eval(attrs['appResizemap']);
-          goog.asserts.assertInstanceof(map, ol.Map);
+          console.assert(map instanceof ol.Map);
 
           var stateExpr = attrs['appResizemapState'];
-          console.assert((stateExpr !== undefined));
+          console.assert(stateExpr !== undefined);
 
           var /** @type {number} */ start = -1;
 

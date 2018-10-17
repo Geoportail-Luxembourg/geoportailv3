@@ -42,9 +42,9 @@ goog.require('ol.interaction.Translate');
 
 /**
  * @param {!angular.Scope} $scope Scope.
- * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @param {angular.$compile} $compile The compile provider.
@@ -120,7 +120,7 @@ app.draw.DrawController = function($scope,
   this.notify_ = appNotify;
 
   /**
-   * @type {app.FeaturePopup}
+   * @type {app.draw.FeaturePopup}
    * @private
    */
   this.featurePopup_ = appFeaturePopup;
@@ -185,7 +185,7 @@ app.draw.DrawController = function($scope,
   this.drawCircleActive = false;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -361,9 +361,9 @@ app.draw.DrawController = function($scope,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
-        var feature = evt.element;
+      (function(evt) {
+        console.assert(evt.element instanceof ol.Feature);
+        var feature = /** @type {ol.Feature} */ (evt.element);
         feature.set('__selected__', true);
         if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
           this['mymapsOpen'] = true;
@@ -375,14 +375,14 @@ app.draw.DrawController = function($scope,
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
         this.scope_.$applyAsync();
-      }.bind(this));
+      }).bind(this));
 
   ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
-      function(evt) {
-        goog.asserts.assertInstanceof(evt.element, ol.Feature);
+      (function(evt) {
+        console.assert(evt.element instanceof ol.Feature);
         var feature = evt.element;
         feature.set('__selected__', false);
         feature.set('__editable__', false);
@@ -393,7 +393,7 @@ app.draw.DrawController = function($scope,
           this.featurePopup_.hide();
         }
         this.scope_.$applyAsync();
-      }, this);
+      }), this);
 
   this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
     features: appSelectedFeatures,
@@ -442,9 +442,9 @@ app.draw.DrawController = function($scope,
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
-      function(evt) {
+      (function(evt) {
         this.onFeatureModifyEnd_(evt);
-      }, this);
+      }), this);
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 

@@ -1,5 +1,9 @@
 goog.provide('lux.StateManager');
 
+goog.require('lux');
+goog.require('ol.CollectionEventType');
+goog.require('ol.events');
+
 
 /**
  * @classdesc

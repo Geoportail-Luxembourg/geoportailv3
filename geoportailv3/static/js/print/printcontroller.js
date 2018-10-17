@@ -32,11 +32,11 @@ goog.require('ol.render.EventType');
  * @param {ngeo.print.Utils} ngeoPrintUtils The ngeoPrintUtils service.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
- * @param {app.FeaturePopup} appFeaturePopup Feature popup service.
+ * @param {app.draw.FeaturePopup} appFeaturePopup Feature popup service.
  * @param {app.GetShorturl} appGetShorturl The getShorturl function.
  * @param {string} printServiceUrl URL to print service.
  * @param {string} qrServiceUrl URL to qr generator service.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @param {angular.$http} $http Angular $http service.
  * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper.
@@ -69,7 +69,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
   this.window_ = $window;
 
   /**
-   * @type {app.FeaturePopup}
+   * @type {app.draw.FeaturePopup}
    * @private
    */
   this.featurePopup_ = appFeaturePopup;
@@ -232,20 +232,20 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
            * the selected layout.
            * @return {ol.Size} Size.
            */
-          function() {
+          (function() {
             var layoutIdx = this['layouts'].indexOf(this['layout']);
             console.assert(layoutIdx >= 0);
             return app.print.PrintController.MAP_SIZES_[layoutIdx];
-          }.bind(this),
+          }).bind(this),
           /**
            * Return the scale of the map to print.
            * @param {olx.FrameState} frameState Frame state.
            * @return {number} Scale.
            */
-          function(frameState) {
+          (function(frameState) {
             return app.print.PrintController.adjustScale_(
                 this.map_.getView(), this['scale']);
-          }.bind(this));
+          }).bind(this));
 
   // Show/hide the print mask based on the value of the "open" property.
   $scope.$watch(function() {
@@ -263,7 +263,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      console.assert(goog.isNull(postcomposeListenerKey));
+      console.assert(postcomposeListenerKey !== null);
       postcomposeListenerKey = ol.events.listen(this.map_,
           ol.render.EventType.POSTCOMPOSE, postcomposeListener);
     } else if (!goog.isNull(postcomposeListenerKey)) {
@@ -332,7 +332,7 @@ app.print.PrintController.getViewCenterResolution_ = function(view) {
   console.assert(viewCenter !== undefined);
   console.assert(viewProjection !== null);
   console.assert(viewResolution !== undefined);
-  return ol.proj.getPointResolution(viewProjection, viewResolution, viewCenter);
+  return ol.proj.getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
 };
 
 
@@ -386,7 +386,7 @@ app.print.PrintController.findNearestScale_ = function(scales, scale) {
  */
 app.print.PrintController.prototype.cancel = function() {
   // Cancel the latest request, if it's not finished yet.
-  console.assert(!goog.isNull(this.requestCanceler_));
+  console.assert(this.requestCanceler_ !== null);
   this.requestCanceler_.resolve();
 
   // Cancel the status timeout if there's one set, to make sure no other
@@ -430,7 +430,7 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
   console.assert(layoutIdx >= 0);
 
   var optimalResolution = this.printUtils_.getOptimalResolution(
-      mapSize, app.print.PrintController.MAP_SIZES_[layoutIdx], newScale);
+      /** @type {Array<number>} */ (mapSize), app.print.PrintController.MAP_SIZES_[layoutIdx], newScale);
 
   var view = map.getView();
   var currentResolution = view.getResolution();
@@ -505,7 +505,7 @@ app.print.PrintController.prototype.print = function(format) {
       /**
        * @param {string} shorturl The short URL.
        */
-      function(shorturl) {
+      (function(shorturl) {
         this.requestCanceler_ = this.$q_.defer();
         this['printing'] = true;
         var format = curFormat;
@@ -588,7 +588,7 @@ app.print.PrintController.prototype.print = function(format) {
         var /** @type {Array.<MapFishPrintLayer>} */ layers = [];
         var resolution = map.getView().getResolution();
         console.assert(resolution !== undefined);
-        this.print_.encodeLayer(layers, this.featureOverlayLayer_, resolution);
+        this.print_.encodeLayer(layers, this.featureOverlayLayer_, /** @type{number} */(resolution));
         if (layers.length > 0) {
           spec.attributes.map.layers.unshift(layers[0]);
         }
@@ -653,7 +653,7 @@ app.print.PrintController.prototype.print = function(format) {
             angular.bind(this, this.handleCreateReportSuccess_),
             angular.bind(this, this.handleCreateReportError_));
 
-      }.bind(this));
+      }).bind(this));
 };
 
 
@@ -747,7 +747,7 @@ app.print.PrintController.prototype.setScales_ = function() {
       /**
        * @param {Object} tree Tree object for the theme.
        */
-      function(tree) {
+      (function(tree) {
         var scales;
         if (goog.isNull(tree)) {
           this.needScaleRefresh = true;
@@ -777,7 +777,7 @@ app.print.PrintController.prototype.setScales_ = function() {
             this.map_.render();
           }
         }
-      }.bind(this));
+      }).bind(this));
 };
 
 
@@ -798,7 +798,7 @@ app.print.PrintController.prototype.useOptimalScale_ = function() {
   var layoutIdx = this['layouts'].indexOf(this['layout']);
   console.assert(layoutIdx >= 0);
 
-  var scale = this.printUtils_.getOptimalScale(mapSize,
+  var scale = this.printUtils_.getOptimalScale(/** @type {Array<number>} */ (mapSize),
       viewCenterResolution, app.print.PrintController.MAP_SIZES_[layoutIdx],
       this['scales']);
 

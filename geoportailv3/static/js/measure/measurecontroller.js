@@ -28,29 +28,6 @@ goog.require('ol.style.Style');
 
 
 /**
- * @param {string} appMeasureTemplateUrl Url to measure template
- * @return {angular.Directive} The Directive Definition Object.
- * @ngInject
- */
-app.measureDirective = function(appMeasureTemplateUrl) {
-  return {
-    restrict: 'E',
-    scope: {
-      'map': '=appMeasureMap',
-      'active': '=appMeasureActive'
-    },
-    controller: 'AppMeasureController',
-    controllerAs: 'ctrl',
-    bindToController: true,
-    templateUrl: appMeasureTemplateUrl
-  };
-};
-
-
-app.module.directive('appMeasure', app.measureDirective);
-
-
-/**
  * @param {!angular.Scope} $scope Scope.
  * @param {angular.$q} $q The q service.
  * @param {angular.$http} $http Angular http service.
@@ -65,7 +42,7 @@ app.module.directive('appMeasure', app.measureDirective);
  * @export
  * @ngInject
  */
-app.MeasureController = function($scope, $q, $http, $compile, gettext,
+app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
     appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
@@ -297,7 +274,7 @@ app.MeasureController = function($scope, $q, $http, $compile, gettext,
  * @param {ol.Object.Event} event The event.
  * @private
  */
-app.MeasureController.prototype.onChangeActive_ = function(event) {
+app.measure.MeasureController.prototype.onChangeActive_ = function(event) {
   if (this['measureLength'].getActive() ||
       this['measureArea'].getActive() ||
       this['measureAzimut'].getActive() ||
@@ -314,7 +291,7 @@ app.MeasureController.prototype.onChangeActive_ = function(event) {
  * @return {angular.$q.Promise} The promise.
  * @private
  */
-app.MeasureController.prototype.getElevation_ = function(coordinates) {
+app.measure.MeasureController.prototype.getElevation_ = function(coordinates) {
   var eastnorth =
       /** @type {ol.Coordinate} */ (ol.proj.transform(
       coordinates,
@@ -326,4 +303,4 @@ app.MeasureController.prototype.getElevation_ = function(coordinates) {
   });
 };
 
-app.module.controller('AppMeasureController', app.MeasureController);
+app.module.controller('AppMeasureController', app.measure.MeasureController);

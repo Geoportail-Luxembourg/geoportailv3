@@ -25,7 +25,7 @@ goog.require('ol.style');
  * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Ngeo FeatureOverlay
  *     manager.
  * @param {string} appImagesPath Path to the images folder.
- * @param {app.LocationInfoOverlay} appLocationInfoOverlay The overlay.
+ * @param {app.locationinfo.LocationInfoOverlay} appLocationInfoOverlay The overlay.
  * @param {app.Activetool} appActivetool The activetool service.
  * @param {angular.$window} $window Window.
  * @export
@@ -45,12 +45,12 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
   this.appActivetool_ = appActivetool;
 
   /**
-   * @type {app.LocationInfoOverlay}
+   * @type {app.locationinfo.LocationInfoOverlay}
    * @private
    */
   this.locationInfoOverlay_ = appLocationInfoOverlay;
 
-  this['uid'] = goog.getUid(this);
+  this['uid'] = ol.getUid(this);
 
   /**
    * @type {string}

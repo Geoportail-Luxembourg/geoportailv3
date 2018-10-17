@@ -19,7 +19,7 @@ goog.require('app.events.ThemesEventType');
  * @param {string} treeUrl URL to "themes" web service.
  * @param {string} isThemePrivateUrl URL to check if theme is public.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
- * @param {app.BlankLayer} appBlankLayer Blank Layer service.
+ * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank Layer service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
@@ -47,7 +47,7 @@ app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
   this.getWmtsLayer_ = appGetWmtsLayer;
 
   /**
-   * @type {app.BlankLayer}
+   * @type {app.backgroundlayer.BlankLayer}
    * @private
    */
   this.blankLayer_ = appBlankLayer;
@@ -105,13 +105,13 @@ app.Themes.findTheme_ = function(themes, themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getBgLayers = function() {
-  console.assert(!goog.isNull(this.promise_));
+  console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
        * @return {Array.<Object>} Array of background layer objects.
        */
-      function(data) {
+      (function(data) {
         var bgLayers = data['background_layers'].map(function(item) {
           var hasRetina = item['metadata']['hasRetina'] === 'true' && this.isHiDpi_;
           console.assert('name' in item);
@@ -128,12 +128,12 @@ app.Themes.prototype.getBgLayers = function() {
             );
           }
           return layer;
-        }.bidn(this));
+        }.bind(this));
 
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
         return bgLayers;
-      }.bind(this));
+      }).bind(this));
 };
 
 
@@ -143,7 +143,7 @@ app.Themes.prototype.getBgLayers = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemeObject = function(themeName) {
-  console.assert(!goog.isNull(this.promise_));
+  console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -161,7 +161,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Themes.prototype.getThemesObject = function() {
-  console.assert(!goog.isNull(this.promise_));
+  console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
@@ -188,10 +188,10 @@ app.Themes.prototype.loadThemes = function(roleId) {
        * @param {angular.$http.Response} resp Ajax response.
        * @return {Object} The "themes" web service response.
        */
-      function(resp) {
+      (function(resp) {
         this.dispatchEvent(app.events.ThemesEventType.LOAD);
         return /** @type {app.ThemesResponse} */ (resp.data);
-      }.bind(this));
+      }).bind(this));
   return this.promise_;
 };
 

@@ -70,10 +70,10 @@ app.search.searchDirective = function(appSearchTemplateUrl) {
           element.find('span.clear-button').on('click',
               goog.bind(function(scope) {
                 $(this).find('input').val('').trigger('input');
-                var ctrl = /** @type {app.search.searchDirectiveController} */
+                var ctrl = /** @type {app.search.SearchController} */
                     (scope['ctrl']);
-                ctrl.featureOverlay_.clear();
-                ctrl.lastSelectedSuggestion_ = null;
+                ctrl.featureOverlay.clear();
+                ctrl.lastSelectedSuggestion = null;
                 $(this).find('input').focus();
               }, element, scope));
         }

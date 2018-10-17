@@ -6,7 +6,6 @@
 goog.provide('app.CoordinateString');
 
 goog.require('app.module');
-goog.require('goog.math');
 goog.require('ol.coordinate');
 goog.require('ol.proj');
 
@@ -109,7 +108,7 @@ app.coordinateString_ = function() {
    * @return {string} String.
    */
   function degreesToStringHDMS_(degrees, hemispheres) {
-    var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+    var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     return Math.floor(x / 3600) + '\u00b0 ' +
         goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
@@ -125,7 +124,7 @@ app.coordinateString_ = function() {
    * @return {string} String.
    */
   function degreesToStringHDMm_(degrees, hemispheres) {
-    var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+    var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     var dd = x / 3600;
     var m = (dd - Math.floor(dd)) * 60;
@@ -136,6 +135,8 @@ app.coordinateString_ = function() {
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;
   }
+
 };
+
 
 app.module.service('appCoordinateString', app.coordinateString_);

@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "openlayers",
+    ".eslintrc-googshift.yaml"
+  ],
+  "env": {
+    "jquery": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "generators": false,
+      "objectLiteralDuplicateProperties": false
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": 0
+  },
+  "globals": {
+    "angular": false,
+    "goog": false,
+    "d3": false,
+    "Bloodhound": false,
+    "ol": false,
+    "olcs": false,
+    "Cesium": false,
+    "localforage": false,
+    "proj4": false,
+    "ngeo": false,
+    "gmf": false,
+    "app": false,
+    "Fuse": false,
+    "lux": false,
+    "autoComplete": false,
+    "JSZip": false,
+    "Promise": true,
+    "google": false
+  }
+}

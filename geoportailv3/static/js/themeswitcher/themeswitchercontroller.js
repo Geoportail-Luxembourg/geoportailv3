@@ -60,9 +60,9 @@ app.themeswitcher.ThemeswitcherController = function(gettextCatalog, ngeoLocatio
       /**
        * @param {ol.events.Event} evt Event.
        */
-      function(evt) {
+      (function(evt) {
         this.setThemes_();
-      }, this);
+      }), this);
 
   // Get the theme from the URL if specified, otherwise we use the default
   // theme and add it to the URL.
@@ -105,7 +105,7 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
        * Keep only the themes dedicated to the theme switcher
        * @param {Array.<Object>} themes Array of theme objects.
        */
-      function(themes) {
+      (function(themes) {
         this['themes'] = goog.array.filter(themes, function(object) {
           return 'true' == object['metadata']['display_in_switcher'];
         });
@@ -122,7 +122,7 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
               /**
                * @param {angular.$http.Response} resp Ajax response.
                */
-              function(resp) {
+              (function(resp) {
                 if (resp.data['is_private'] === true) {
                   this.appNotify_(this.translate_.
                       getString(this.privateThemeMsg_, {}),
@@ -131,9 +131,9 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
                 } else {
                   this.switchTheme(this.appTheme_.getDefaultTheme());
                 }
-              }.bind(this));
+              }).bind(this));
         }
-      }.bind(this));
+      }).bind(this));
 };
 
 

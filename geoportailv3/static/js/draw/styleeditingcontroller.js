@@ -7,7 +7,7 @@ goog.require('ol.geom.LineString');
 
 /**
  * @param {angular.Scope} $scope The scope.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {app.UserManager} appUserManager The user manager service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @constructor
@@ -28,7 +28,7 @@ app.draw.StyleEditingController = function($scope, appDrawnFeatures,
   this.appUserManager_ = appUserManager;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;

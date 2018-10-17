@@ -6,7 +6,7 @@ goog.require('app.module');
 /**
  * @constructor
  * @param {app.Mymaps} appMymaps app mymaps service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
  * @ngInject
  */
@@ -18,7 +18,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
   this.appMymaps_ = appMymaps;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;

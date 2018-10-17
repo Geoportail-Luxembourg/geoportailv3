@@ -49,7 +49,7 @@ goog.require('ol.math');
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme the current theme service.
  * @param {app.UserManager} appUserManager The user manager service.
- * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {Object.<string, string>} langUrls URLs to translation files.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {Array.<number>} defaultExtent Default geographical extent.
@@ -60,7 +60,7 @@ goog.require('ol.math');
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$window} $window Window.
- * @param {app.SelectedFeatures} appSelectedFeatures Selected features service.
+ * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @param {angular.$locale} $locale The locale service.
  * @param {app.Routing} appRouting The routing service.
  * @param {Document} $document Document.
@@ -160,7 +160,7 @@ app.MainController = function(
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
   /**
-   * @type {app.DrawnFeatures}
+   * @type {app.draw.DrawnFeatures}
    * @private
    */
   this.drawnFeatures_ = appDrawnFeatures;
@@ -568,14 +568,14 @@ app.MainController.prototype.addLocationControl_ =
         isActive = true;
         this.ngeoLocation_.deleteParam('tracking');
       }
-      var locationControl = new app.LocationControl({
+      var locationControl = new app.LocationControl(/** @type {app.LocationControlOptions} */({
         label: '\ue800',
         featureOverlayMgr: featureOverlayMgr,
         notify: this.notify_,
         gettextCatalog: this.gettextCatalog_,
         scope: this.scope_,
         window: this.window_
-      });
+      }));
       this.map_.addControl(locationControl);
       if (isActive) {
         ol.events.listenOnce(this.map_,
@@ -628,7 +628,7 @@ app.MainController.prototype.createMap_ = function() {
  */
 app.MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
   // [minx, miny, maxx, maxy]
-  console.assert(this.map_);
+  console.assert(this.map_ !== null && this.map_ !== undefined);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(ol.math.toRadians);
   return new app.olcs.Lux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
     $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
