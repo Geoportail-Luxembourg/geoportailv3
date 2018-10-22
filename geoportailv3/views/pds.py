@@ -50,9 +50,9 @@ class Pds(object):
     def __send_mail(self, email, files):
         if self.error == True:
             mailtext = _(u'Bonjour,\n Il y a eu un souci lors de la '
-                         + u'génération de votre '
+                         + u'creation de votre '
                          + u'attestation "Plans directeurs '
-                         + u'sectoriels".\n\nVeuillez réessayer '
+                         + u'sectoriels".\n\nVeuillez essayer '
                          + u'plus tard".\n\nMeilleures salutations,\n'
                          + u'L\'Equipe de geoportail.lu et du DAT'
                          )        
