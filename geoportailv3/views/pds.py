@@ -3,7 +3,6 @@ from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.response import Response
 import logging
-import owncloud
 import shutil
 import os
 import smtplib
@@ -46,16 +45,15 @@ class Pds(object):
             log.debug(url)
         return
 
-
     def __send_mail(self, email, files):
-        if self.error == True:
+        if self.error is True:
             mailtext = _(u'Bonjour,\n Il y a eu un souci lors de la '
                          + u'creation de votre '
                          + u'attestation "Plans directeurs '
                          + u'sectoriels".\n\nVeuillez essayer '
                          + u'plus tard".\n\nMeilleures salutations,\n'
                          + u'L\'Equipe de geoportail.lu et du DAT'
-                         )        
+                         )
         else:
             mailtext = _(u'Bonjour,\n Veuillez trouver en annexe '
                          + u'votre attestation "Plans directeurs '
