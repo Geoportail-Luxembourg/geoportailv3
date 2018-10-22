@@ -6,7 +6,7 @@
 goog.provide('app.ScalesService');
 
 goog.require('app.module');
-goog.require('goog.object');
+goog.require('ol.obj');
 
 
 /**
@@ -41,7 +41,7 @@ app.ScalesService = function($sce) {
   /**
    * @type {Object.<string, string>}
    */
-  this.scales = goog.object.clone(this.origScales);
+  this.scales = ol.obj.assign({}, this.origScales);
 };
 
 

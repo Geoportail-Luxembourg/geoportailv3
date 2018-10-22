@@ -6,7 +6,8 @@
 goog.provide('app.Themes');
 
 goog.require('app.module');
-goog.require('goog.object');
+goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.events.EventTarget');
 goog.require('app.events.ThemesEventType');
 
@@ -25,8 +26,7 @@ goog.require('app.events.ThemesEventType');
  */
 app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice) {
-
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @type {angular.$http}
@@ -70,7 +70,7 @@ app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
    */
   this.promise_ = null;
 };
-goog.inherits(app.Themes, ol.events.EventTarget);
+ol.inherits(app.Themes, ol.events.EventTarget);
 
 
 /**
@@ -81,9 +81,13 @@ goog.inherits(app.Themes, ol.events.EventTarget);
  * @private
  */
 app.Themes.findObjectByName_ = function(objects, objectName) {
-  return goog.array.find(objects, function(object) {
+  var obj = objects.find(function(object) {
     return object['name'] === objectName;
   });
+  if (obj === undefined) {
+    return null;
+  }
+  return obj;
 };
 
 
@@ -120,8 +124,7 @@ app.Themes.prototype.getBgLayers = function() {
             item['name'], item['imageType'], hasRetina
           );
           layer.set('metadata', item['metadata']);
-
-          if (goog.object.containsKey(item['metadata'], 'attribution')) {
+          if ('attribution' in item['metadata']) {
             var source = layer.getSource();
             source.setAttributions(
               item['metadata']['attribution']
@@ -219,7 +222,7 @@ app.Themes.prototype.getAllChildren_ = function(element, theme) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      goog.array.extend(array, this.getAllChildren_(
+      ol.array.extend(array, this.getAllChildren_(
           element[i].children, theme)
       );
     } else {
@@ -242,7 +245,7 @@ app.Themes.prototype.getFlatCatalog = function() {
         var flatCatalogue = [];
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          goog.array.extend(flatCatalogue,
+          ol.array.extend(flatCatalogue,
               this.getAllChildren_(theme.children, theme.name)
           );
         }

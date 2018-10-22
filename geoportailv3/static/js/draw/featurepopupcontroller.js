@@ -489,9 +489,9 @@ app.draw.FeaturePopupController.prototype.fitFeature = function() {
 app.draw.FeaturePopupController.prototype.getArea = function() {
   if (this.feature !== undefined &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
-    var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
+    var geom = /** @type {ol.geom.Polygon} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    return this.appFeaturePopup_.formatArea(geom);
+    return this.appFeaturePopup_.formatArea(/** @type {!ol.geom.Polygon} */(geom));
   } else {
     return '';
   }
@@ -529,7 +529,7 @@ app.draw.FeaturePopupController.prototype.getLength = function() {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    return this.appFeaturePopup_.formatLength(geom);
+    return this.appFeaturePopup_.formatLength(/** @type {!(ol.geom.LineString|ol.geom.Polygon)} **/(geom));
   } else {
     return '';
   }
@@ -546,7 +546,7 @@ app.draw.FeaturePopupController.prototype.updateElevation = function() {
       !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    this.appFeaturePopup_.getElevation(geom).then(
+    this.appFeaturePopup_.getElevation(/** @type {!ol.geom.Point} */ (geom)).then(
         function(elevation) {
           this.featureElevation = elevation['formattedElevation'];
         }.bind(this));
@@ -566,7 +566,7 @@ app.draw.FeaturePopupController.prototype.updateProfile = function() {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    this.appFeaturePopup_.getProfile(geom).then(function(profile) {
+    this.appFeaturePopup_.getProfile(/** @type {!ol.geom.LineString} */ (geom)).then(function(profile) {
       this.featureProfile = profile;
     }.bind(this));
   } else {

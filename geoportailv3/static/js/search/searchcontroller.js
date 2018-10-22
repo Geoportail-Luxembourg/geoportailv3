@@ -14,8 +14,8 @@ goog.provide('app.search.SearchController');
 
 goog.require('app.module');
 goog.require('app.events.ThemesEventType');
-goog.require('goog.object');
 goog.require('ngeo.search.createGeoJSONBloodhound');
+goog.require('ol.array');
 goog.require('ol.CollectionEventType');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -428,11 +428,19 @@ app.search.SearchController = function($scope, $window, $compile,
           this.appTheme_.setCurrentTheme(themeId);
         }.bind(this);
         scope['click'] = function(event) {
-          var node = goog.array.find(this.layers_, function(element) {
-            return goog.object.containsKey(element, 'name') &&
-                goog.object.containsValue(element, suggestion.name);
+          var node = this.layers_.find(function(element) {
+            if ('name' in /** @type{Object} */(element)) {
+              for (var key in /** @type{Object} */(element)) {
+                if (/** @type{Object} */(element)[key] == suggestion.name) {
+                  return true;
+                }
+              }
+            }
+            return false;
           });
-          this.showLayerinfo_(this.getLayerFunc_(node));
+          if (node !== undefined) {
+            this.showLayerinfo_(this.getLayerFunc_(node));
+          }
           event.stopPropagation();
         }.bind(this);
         return $compile(html)(scope);
@@ -493,7 +501,7 @@ app.search.SearchController.prototype.matchLayers_ =
     function(fuseEngine, searchString) {
       var fuseResults = /** @type {Array.<FuseResult>} */
       (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
-      return goog.array.map(fuseResults,
+      return fuseResults.map(
       /**
        * @param {FuseResult} r The result.
        * @return {*} The item.
@@ -553,12 +561,12 @@ app.search.SearchController.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (goog.array.contains(northArray, m[2].toUpperCase()) &&
-              goog.array.contains(eastArray, m[4].toUpperCase())) {
+              if (ol.array.includes(northArray, m[2].toUpperCase()) &&
+              ol.array.includes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (goog.array.contains(northArray, m[4].toUpperCase()) &&
-              goog.array.contains(eastArray, m[2].toUpperCase())) {
+              } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
+              ol.array.includes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -616,7 +624,7 @@ app.search.SearchController.prototype.matchCoordinate_ =
             this.maxExtent_, flippedPoint.getCoordinates())) {
               feature = new ol.Feature(flippedPoint);
             }
-            if (!goog.isNull(feature)) {
+            if (feature !== null) {
               var resultPoint =
                 /** @type {ol.geom.Point} */ (feature.getGeometry());
               var resultString = this.coordinateString_(
@@ -721,7 +729,7 @@ app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
   function(layerSearchServiceUrl) {
     var bloodhoundOptions = /** @type {BloodhoundOptions} */ ({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
-      datumTokenizer: goog.nullFunction,
+      datumTokenizer: function() {},
       remote: {
         url: layerSearchServiceUrl,
         rateLimitWait: 50,
@@ -733,15 +741,15 @@ app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
         }.bind(this),
         transform: function(response) {
           response.forEach(function(result) {
-            var layers = goog.array.filter(
-              this.layers_, goog.bind(function(element) {
-                return result['layer_id'] == element['id'];
-              }, this));
+            var layers = this.layers_.filter(function(element) {
+              return result['layer_id'] == element['id'];
+            }.bind(this));
             result['themes'] = [];
-            layers.forEach(goog.bind(function(element) {
+            layers.forEach(function(element) {
               result['themes'].push(element.theme);
-            }, this));
-            result['showThemeLink'] = !goog.array.contains(
+            }.bind(this));
+
+            result['showThemeLink'] = !ol.array.includes(
               result['themes'], this.appTheme_.getCurrentTheme());
           }.bind(this));
 
@@ -762,7 +770,7 @@ app.search.SearchController.prototype.createAndInitCMSBloodhoundEngine_ =
   function(cmsSearchServiceUrl) {
     var bloodhoundOptions = /** @type {BloodhoundOptions} */ ({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
-      datumTokenizer: goog.nullFunction,
+      datumTokenizer: function() {},
       remote: {
         url: cmsSearchServiceUrl,
         rateLimitWait: 50,
@@ -821,7 +829,7 @@ app.search.SearchController.prototype.createLocalAllLayerData_ =
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalogue) {
           this.layers_ = [];
-          goog.array.extend(this.layers_, flatCatalogue);
+          ol.array.extend(this.layers_, flatCatalogue);
         }.bind(this));
     };
 
@@ -842,11 +850,19 @@ app.search.SearchController.prototype.setBackgroundLayer_ = function(input) {
 app.search.SearchController.prototype.addLayerToMap_ = function(input) {
   var layer = {};
   if (typeof input === 'string') {
-    var node = goog.array.find(this.layers_, function(element) {
-      return goog.object.containsKey(element, 'name') &&
-          goog.object.containsValue(element, input);
+    var node = this.layers_.find(function(element) {
+      if ('name' in /** @type {Object} */ (element)) {
+        for (var key in /** @type {Object} */ (element)) {
+          if (/** @type {Object} */ (element)[key] == input) {
+            return true;
+          }
+        }
+      }
+      return false;
     });
-    layer = this.getLayerFunc_(node);
+    if (node !== undefined) {
+      layer = this.getLayerFunc_(node);
+    }
   } else if (typeof input === 'object') {
     layer = this.getLayerFunc_(input);
   }
@@ -886,10 +902,10 @@ app.search.SearchController.selected_ =
         if (dataset === 'coordinates') {
           features.push(feature);
         } else if (dataset === 'pois') {
-          if (!(goog.array.contains(this.appExcludeThemeLayerSearch_,
+          if (!(ol.array.includes(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (goog.array.contains(this.showGeom_, feature.get('layer_name'))) {
+            if (ol.array.includes(this.showGeom_, feature.get('layer_name'))) {
               features.push(feature);
             }
             var layers = /** @type {Array<string>} */

@@ -8,7 +8,6 @@ goog.provide('app.Mymaps');
 
 goog.require('app.module');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.color');
 goog.require('ol.obj');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.LineString');
@@ -380,9 +379,13 @@ app.Mymaps.prototype.getMapFeatures = function() {
  */
 app.Mymaps.prototype.getCategory = function(categoryId) {
   if (categoryId !== undefined && categoryId !== null) {
-    return goog.array.find(this.allcategories, function(category) {
+    var categ = this.allcategories.find(function(category) {
       return category.id === categoryId;
     });
+    if (categ === undefined) {
+      return null;
+    }
+    return categ;
   } else {
     return null;
   }
@@ -525,7 +528,7 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
        */
       (function(resp) {
         resp.data.forEach(function(map) {
-          if (goog.isNull(map['update_date'])) {
+          if (map['update_date'] === null) {
             map['update_date'] = map['create_date'];
           }
         });
@@ -635,7 +638,7 @@ app.Mymaps.prototype.updateLayers = function() {
        */
       (function(bgLayers) {
         var layer = /** @type {ol.layer.Base} */
-            (goog.array.find(bgLayers, function(layer) {
+            (bgLayers.find(function(layer) {
               return layer.get('label') === curBgLayer;
             }));
         if (layer) {
@@ -652,7 +655,7 @@ app.Mymaps.prototype.updateLayers = function() {
   this.appThemes_.getFlatCatalog()
   .then(function(flatCatalogue) {
     curMapLayers.forEach(function(item, layerIndex) {
-      var node = goog.array.find(flatCatalogue,
+      var node = flatCatalogue.find(
               function(catalogueLayer) {
                 return catalogueLayer['name'] === item;
               });
@@ -745,14 +748,15 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
 
       // remove layers with no name
       var iToRemove = [];
-      this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
+      this.mapLayers = this.mapLayers.filter(function(item, i) {
         if (item.length === 0) {
           iToRemove.push(i);
           return false;
         }
         return true;
       }, this);
-      goog.array.forEachRight(iToRemove, function(item) {
+      for (var i = iToRemove.length - 1; i >= 0; --i) {
+        var item = iToRemove[i];
         if (this.mapLayersIndicies) {
           this.mapLayersIndicies.splice(item, 1);
         }
@@ -762,7 +766,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
         if (this.mapLayersOpacities) {
           this.mapLayersOpacities.splice(item, 1);
         }
-      }, this);
+      }
     } else {
       this.mapLayers = [];
       this.mapOpacities = [];
@@ -1265,9 +1269,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
   const arrowModelUrl = this.arrowModelUrl_;
 
   const colorStringToRgba = (colorString, opacity = 1) => {
-    const color = goog.color.hexToRgb(colorString);
-    color.push(opacity);
-    return color;
+    var r = parseInt(colorString.substr(1, 2), 16);
+    var g = parseInt(colorString.substr(3, 2), 16);
+    var b = parseInt(colorString.substr(5, 2), 16);
+    return [r, g, b, opacity];
   };
 
   return function(resolution) {
@@ -1288,7 +1293,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     if (opacity === undefined) {
       opacity = 1;
     }
-    var rgbaColor = goog.array.clone(rgbColor);
+    var rgbaColor = rgbColor.slice();
     rgbaColor[3] = opacity;
 
     fillStyle.setColor(rgbaColor);
@@ -1404,11 +1409,11 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       if (shape === 'circle') {
         image = new ol.style.Circle(imageOptions);
       } else if (shape === 'square') {
-        ol.obj.assign(imageOptions, ({
+        ol.obj.assign(imageOptions, {
           points: 4,
           angle: Math.PI / 4,
           rotation: this.get('angle')
-        }));
+        });
         image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {

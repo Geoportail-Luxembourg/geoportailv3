@@ -14,6 +14,7 @@ goog.provide('app.print.PrintController');
 
 goog.require('app.module');
 goog.require('app.print.Printservice');
+goog.require('ol.array');
 goog.require('ol.easing');
 goog.require('ol.events');
 goog.require('ol.Observable');
@@ -263,10 +264,10 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      console.assert(postcomposeListenerKey !== null);
+      console.assert(postcomposeListenerKey === null);
       postcomposeListenerKey = ol.events.listen(this.map_,
           ol.render.EventType.POSTCOMPOSE, postcomposeListener);
-    } else if (!goog.isNull(postcomposeListenerKey)) {
+    } else if (postcomposeListenerKey !== null) {
       ol.Observable.unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
     }
@@ -391,7 +392,7 @@ app.print.PrintController.prototype.cancel = function() {
 
   // Cancel the status timeout if there's one set, to make sure no other
   // status request is sent.
-  if (!goog.isNull(this.statusTimeoutPromise_)) {
+  if (this.statusTimeoutPromise_ !== null) {
     this.$timeout_.cancel(this.statusTimeoutPromise_);
   }
 
@@ -531,7 +532,10 @@ app.print.PrintController.prototype.print = function(format) {
             dataOwners.push(attribution.getHTML());
           }, this);
         }
-        goog.array.removeDuplicates(dataOwners);
+        //Remove duplicates.
+        dataOwners = dataOwners.filter(function(item, pos, self) {
+          return self.indexOf(item) == pos;
+        });
         var disclaimer = this.gettextCatalog.getString('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
         var dateText = this.gettextCatalog.getString('Date d\'impression: ');
         var scaleTitle = this.gettextCatalog.getString('Echelle approximative 1:');
@@ -540,22 +544,25 @@ app.print.PrintController.prototype.print = function(format) {
         var queryResultsHtml = null;
         if ((this['routingOpen'] || this['infoOpen']) && queryResults.length > 0) {
           var clonedQuery = queryResults[0].cloneNode(true);
-          var profileElements = goog.dom.getElementsByClass('profile', clonedQuery);
+          var profileElements = clonedQuery.getElementsByClassName('profile');
           if (profileElements !== null && profileElements.length > 0) {
-            profileElements.forEach(function(profileElement) {
+            Array.prototype.slice.call(profileElements).forEach(function(profileElement) {
               var nodeList = profileElement.getElementsByTagName('svg');
               if (nodeList !== undefined && nodeList.length > 0) {
                 var svgString = this.getSVGString_(nodeList[0]);
-                var img = goog.dom.createElement(goog.dom.TagName.IMG);
+                var img = document.createElement('IMG');
                 img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
-                goog.dom.replaceNode(img, nodeList[0]);
+                var parent = nodeList[0].parentNode;
+                if (parent) {
+                  parent.replaceChild(img, nodeList[0]);
+                }
               }
             }, this);
           }
-          var noprintElements = goog.dom.getElementsByClass('no-print', clonedQuery);
+          var noprintElements = clonedQuery.getElementsByClassName('no-print');
           if (noprintElements !== null && noprintElements.length > 0) {
-            noprintElements.forEach(function(noprintElement) {
-              goog.dom.removeNode(noprintElement);
+            Array.prototype.slice.call(noprintElements).forEach(function(noprintElement) {
+              noprintElement.parentNode.removeChild(noprintElement);
             }, this);
           }
           queryResultsHtml = clonedQuery.innerHTML;
@@ -624,7 +631,7 @@ app.print.PrintController.prototype.print = function(format) {
             var vector = /** @type {MapFishPrintVectorLayer} */ (layer);
             for (var key in vector.style) {
               var style = vector.style[key];
-              if (goog.isObject(style)) {
+              if ((typeof style == 'object' && style !== null) || typeof style == 'function') {
                 for (var j = 0; j < style.symbolizers.length; j++) {
                   var symbolizer = style.symbolizers[j];
                   symbolizer['conflictResolution'] = false;
@@ -749,13 +756,12 @@ app.print.PrintController.prototype.setScales_ = function() {
        */
       (function(tree) {
         var scales;
-        if (goog.isNull(tree)) {
+        if (tree === null) {
           this.needScaleRefresh = true;
         }
-        if (!goog.isNull(tree) && tree['metadata']['print_scales']) {
+        if (tree !== null && tree['metadata']['print_scales']) {
           var printScalesStr = tree['metadata']['print_scales'];
-          scales = goog.array.map(
-              printScalesStr.trim().split(','),
+          scales = printScalesStr.trim().split(',').map(
               /**
                * @param {string} scale Scale value as a string.
                * @return {number} Scale value as a number.
@@ -763,7 +769,7 @@ app.print.PrintController.prototype.setScales_ = function() {
               function(scale) {
                 return +scale;
               });
-          goog.array.sort(scales);
+          scales.sort();
         } else {
           scales = app.print.PrintController.DEFAULT_MAP_SCALES_;
         }
@@ -851,7 +857,7 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
   // Add Parent element Id and Classes to the list
   selectorTextArr.push('#' + parentElement.id);
   for (var c1 = 0; c1 < parentElement.classList.length; c1++) {
-    if (!goog.array.contains(selectorTextArr, '.' + parentElement.classList[c1])) {
+    if (!ol.array.includes(selectorTextArr, '.' + parentElement.classList[c1])) {
       selectorTextArr.push('.' + parentElement.classList[c1]);
     }
   }
@@ -859,12 +865,12 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
   var nodes = parentElement.getElementsByTagName('*');
   for (var i1 = 0; i1 < nodes.length; i1++) {
     var id = nodes[i1].id;
-    if (!goog.array.contains(selectorTextArr, '#' + id)) {
+    if (!ol.array.includes(selectorTextArr, '#' + id)) {
       selectorTextArr.push('#' + id);
     }
     var classes = nodes[i1].classList;
     for (var c2 = 0; c2 < classes.length; c2++) {
-      if (!goog.array.contains(selectorTextArr, '.' + classes[c2])) {
+      if (!ol.array.includes(selectorTextArr, '.' + classes[c2])) {
         selectorTextArr.push('.' + classes[c2]);
       }
     }
@@ -887,7 +893,7 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
 
     var cssRules = s.cssRules;
     for (var r1 = 0; r1 < cssRules.length; r1++) {
-      if (goog.array.contains(selectorTextArr, cssRules[r1].selectorText)) {
+      if (ol.array.includes(selectorTextArr, cssRules[r1].selectorText)) {
         extractedCSSText += cssRules[r1].cssText;
       }
     }

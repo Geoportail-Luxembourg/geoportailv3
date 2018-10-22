@@ -44,7 +44,7 @@ app.layerinfo.ShowLayerinfoFactory = function($http, $sce, $rootScope,
   var currentLayer = null;
 
   $rootScope.$on('gettextLanguageChanged', function() {
-    if (!goog.isNull(currentLayer) && popup.getOpen()) {
+    if (currentLayer !== null && popup.getOpen()) {
       showLayerInfo(currentLayer);
     }
   });

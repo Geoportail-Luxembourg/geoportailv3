@@ -12,7 +12,6 @@
 goog.provide('app.resizemapDirective');
 
 goog.require('app.module');
-goog.require('goog.async.AnimationDelay');
 goog.require('ol.Map');
 
 
@@ -40,18 +39,16 @@ app.resizemapDirective = function($window) {
           console.assert(stateExpr !== undefined);
 
           var /** @type {number} */ start = -1;
+          var animationDelayKey;
+          var animationDelay = () => {
+            console.assert(start != -1);
+            map.updateSize();
+            map.renderSync();
 
-          var animationDelay = new goog.async.AnimationDelay(
-              function() {
-                console.assert(start != -1);
-
-                map.updateSize();
-                map.renderSync();
-
-                if (goog.now() - start < duration) {
-                  animationDelay.start();
-                }
-              }, $window);
+            if (Date.now() - start < duration) {
+              animationDelayKey = $window.requestAnimationFrame(animationDelay);
+            }
+          };
 
           element.bind('transitionend', function() {
             map.updateSize();
@@ -60,9 +57,9 @@ app.resizemapDirective = function($window) {
 
           scope.$watch(stateExpr, function(newVal, oldVal) {
             if (newVal != oldVal) {
-              start = goog.now();
-              animationDelay.stop();
-              animationDelay.start();
+              start = Date.now();
+              $window.cancelAnimationFrame(animationDelayKey);
+              animationDelayKey = $window.requestAnimationFrame(animationDelay);
             }
           });
         }

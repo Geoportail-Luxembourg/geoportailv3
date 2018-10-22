@@ -130,7 +130,7 @@ app.layerlegends.LayerlegendsController.prototype.hasLegend = function(layer) {
 app.layerlegends.LayerlegendsController.prototype.isALegendAvailable = function() {
 
   if (this.layers != undefined && this.layers.length > 0) {
-    var elem = goog.array.find(this.layers, function(layer) {
+    var elem = this.layers.find(function(layer) {
       if (this.hasLegend(layer)) {
         return true;
       }

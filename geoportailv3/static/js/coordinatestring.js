@@ -8,6 +8,7 @@ goog.provide('app.CoordinateString');
 goog.require('app.module');
 goog.require('ol.coordinate');
 goog.require('ol.proj');
+goog.require('ol.string');
 
 
 /**
@@ -111,8 +112,8 @@ app.coordinateString_ = function() {
     var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     return Math.floor(x / 3600) + '\u00b0 ' +
-        goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-        goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
+        ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+        ol.string.padNumber(Math.floor(x % 60), 2) + ',' +
         Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
         '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
@@ -130,7 +131,7 @@ app.coordinateString_ = function() {
     var m = (dd - Math.floor(dd)) * 60;
 
     var res = Math.floor(dd) + '\u00b0 ' +
-        goog.string.padNumber(Math.floor(m), 2) + ',' +
+        ol.string.padNumber(Math.floor(m), 2) + ',' +
         Math.floor((m - Math.floor(m)) * 100000) +
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;

@@ -80,7 +80,7 @@ app.infobar.ProjectionselectorController.prototype.mouseCoordinateFormat_ =
  */
 app.infobar.ProjectionselectorController.prototype.switchProjection =
     function(epsgCode) {
-      this['projection'] = goog.array.find(this['projectionOptions'],
+      this['projection'] = this['projectionOptions'].find(
       function(obj) {
         return obj['value'] == epsgCode;
       });

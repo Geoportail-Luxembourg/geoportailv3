@@ -1,0 +1,35 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "//www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>geoportail.lu API v3 samples</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<script src="http://apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"></script>
+<div id="map7"></div>
+<script>
+var map7 = new lux.Map({
+  target: 'map7',
+  bgLayer: 'basemap_2015_global',
+  zoom: 18,
+  position: [77071.95729999989, 75433.75469999947],
+  search      : {
+    target : 'map7',
+    dataSets : ['Adresse', 'Coordinates']
+  }
+});
+
+map7.showMarker({
+  position: [77071.95729999989, 75433.75469999947],
+  autoCenter: true,
+  positioning: 'bottom-center',
+  popupPositioning: 'bottom-center',
+  iconURL: '//cdn.public.lu/skizz/img/maps/icon-parent.png',
+  html: '<h2 class="popup-title">Direction générale PME et Entrepreneuriat</h2><div> 19-21, boulevard Royal</div><div>L-2449 Luxembourg</div><div> <strong> Tel: </strong>Selon le domaine d’attribution</div><div> <strong> Fax: </strong>(+352) 247-74701</div>'
+});
+</script>
+</body>
+</html>
+
+

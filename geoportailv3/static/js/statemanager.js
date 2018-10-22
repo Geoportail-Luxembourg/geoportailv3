@@ -6,8 +6,7 @@
 goog.provide('app.StateManager');
 
 goog.require('app.module');
-goog.require('goog.math');
-goog.require('goog.storage.mechanism.HTML5LocalStorage');
+goog.require('ol.math');
 goog.require('app.NotifyNotificationType');
 
 
@@ -39,16 +38,26 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
   this.initialState_ = {};
 
   /**
+   * @type {boolean}
+   */
+  this.useLocalStorage;
+  try {
+    if ('localStorage' in window) {
+      window.localStorage.setItem('test', '');
+      window.localStorage.removeItem('test');
+    } else {
+      this.useLocalStorage = false;
+    }
+  } catch (err) {
+    console.error(err);
+    this.useLocalStorage = false;
+  }
+
+  /**
    * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
-
-  /**
-   * @type {goog.storage.mechanism.HTML5LocalStorage}
-   * @private
-   */
-  this.localStorage_ = new goog.storage.mechanism.HTML5LocalStorage();
 
   /**
    * @type {number}
@@ -84,15 +93,14 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
       paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('address') >= 0 &&
       paramKeys.indexOf('lang') >= 0
       )) {
-    if (this.localStorage_.isAvailable()) {
-      var count = this.localStorage_.getCount();
-      for (i = 0; i < count; ++i) {
-        key = this.localStorage_.key(i);
+    if (this.useLocalStorage !== false) {
+      for (const key in window.localStorage) {
+        const value = window.localStorage[key];
         if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
           this.initialState_[key] = ngeoLocation.getParam(key);
         } else {
           console.assert(key !== null, 'The key should not be null');
-          this.initialState_[key] = this.localStorage_.get(/** @type {string} */ (key));
+          this.initialState_[key] = value;
         }
       }
     }
@@ -104,7 +112,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
       this.initialState_[key] = ngeoLocation.getParam(key);
     }
     this.version_ = this.initialState_.hasOwnProperty('version') ?
-        goog.math.clamp(+this.initialState_['version'], 2, 3) : 2;
+        ol.math.clamp(+this.initialState_['version'], 2, 3) : 2;
   }
   var mapId = this.ngeoLocation_.getParam('map_id');
   if (mapId === undefined &&
@@ -154,7 +162,7 @@ app.StateManager.prototype.getInitialValue = function(key) {
  * @return {string|null} State value.
  */
 app.StateManager.prototype.getValueFromLocalStorage = function(key) {
-  return this.localStorage_.get(key);
+  return window.localStorage[key];
 };
 
 
@@ -164,10 +172,10 @@ app.StateManager.prototype.getValueFromLocalStorage = function(key) {
  */
 app.StateManager.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
-  if (this.localStorage_.isAvailable()) {
+  if (this.useLocalStorage !== false) {
     var key;
     for (key in object) {
-      this.localStorage_.set(key, object[key]);
+      window.localStorage[key] = object[key];
     }
   }
 };
@@ -178,10 +186,10 @@ app.StateManager.prototype.updateState = function(object) {
  * @param {!Object.<string, string>} object Object.
  */
 app.StateManager.prototype.updateStorage = function(object) {
-  if (this.localStorage_.isAvailable()) {
+  if (this.useLocalStorage !== false) {
     var key;
     for (key in object) {
-      this.localStorage_.set(key, object[key]);
+      window.localStorage[key] = object[key];
     }
   }
 };
@@ -193,8 +201,8 @@ app.StateManager.prototype.updateStorage = function(object) {
  */
 app.StateManager.prototype.deleteParam = function(key) {
   this.ngeoLocation_.deleteParam(key);
-  if (this.localStorage_.isAvailable()) {
-    this.localStorage_.remove(key);
+  if (this.useLocalStorage !== false) {
+    delete window.localStorage[key];
   }
 };
 

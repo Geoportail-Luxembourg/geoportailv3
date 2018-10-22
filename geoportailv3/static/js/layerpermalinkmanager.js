@@ -10,6 +10,7 @@ goog.require('app.NotifyNotificationType');
 goog.require('app.events.ThemesEventType');
 goog.require('ol.events');
 goog.require('ol.ObjectEventType');
+goog.require('ol.array');
 
 
 /**
@@ -182,10 +183,10 @@ app.LayerPermalinkManager.prototype.onLayerUpdate_ = function(layers) {
     this.listenProtertyChange(layers);
   }
 
-  var layerIds = goog.array.map(layers, function(layer) {
+  var layerIds = layers.map(function(layer) {
     return layer.get('queryable_id');
   });
-  var opacities = goog.array.map(layers, function(layer) {
+  var opacities = layers.map(function(layer) {
     return layer.getOpacity();
   });
   var bgLayer = this.backgroundLayerMgr_.get(this.map_);
@@ -223,8 +224,8 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
   var addedLayers = this.map_.getLayers().getArray();
   layerIds.forEach(
   function(layerId, layerIndex) {
-    if (goog.isNumber(layerId) && !isNaN(layerId)) {
-      var node = goog.array.find(flatCatalogue, function(catItem) {
+    if (typeof layerId == 'number' && !isNaN(layerId)) {
+      var node = flatCatalogue.find(function(catItem) {
         return catItem.id === layerId;
       });
       if (node !== undefined && node !== null) {
@@ -244,7 +245,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
           layerMetadata['start_opacity'] = opacities[layerIndex];
         }
         // Skip layers that have already been added
-        if (goog.array.every(addedLayers, function(addedLayer) {
+        if (addedLayers.every(function(addedLayer) {
           return addedLayer.get('queryable_id') !==
               layer.get('queryable_id');
         }, this)) {
@@ -275,7 +276,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
                     }
                   }
                   wmtsMetadata['start_opacity'] = opacities[layerIndex];
-                  if (goog.array.every(addedLayers, function(addedLayer) {
+                  if (addedLayers.every(function(addedLayer) {
                     return addedLayer.get('queryable_id') !==
                         wmtsLayer.get('queryable_id');
                   }, this)) {
@@ -299,7 +300,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
                 }
               }
               wmsMetadata['start_opacity'] = opacities[layerIndex];
-              if (goog.array.every(addedLayers, function(addedLayer) {
+              if (addedLayers.every(function(addedLayer) {
                 return addedLayer.get('queryable_id') !==
                     wmsLayer.get('queryable_id');
               }, this)) {
@@ -336,13 +337,13 @@ app.LayerPermalinkManager.prototype.hasUnavailableLayers = function() {
  */
 app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
     addedLayers, layerId, opacity, layerIndex) {
-  var layerToRemove =
-      goog.array.find(addedLayers, function(addedLayer) {
+  var layerToRemove = /** @type{ol.layer.Base} */
+      (addedLayers.find(function(addedLayer) {
         if (addedLayer.get('queryable_id') === layerId) {
           return true;
         }
         return false;
-      }, this);
+      }, this));
   if (layerToRemove !== null) {
     this.map_.removeLayer(layerToRemove);
   }
@@ -384,7 +385,7 @@ app.LayerPermalinkManager.prototype.splitNumbers_ =
       if (parameter !== undefined) {
         parameter.split(splitChar).forEach(function(string) {
           var value = parseFloat(string);
-          if (goog.isNumber(value) && !isNaN(value)) {
+          if (typeof value == 'number' && !isNaN(value)) {
             items.push(value);
           }
         });
@@ -405,7 +406,7 @@ app.LayerPermalinkManager.prototype.splitLayers_ =
       if (parameter !== undefined) {
         parameter.split(splitChar).forEach(function(string) {
           var value = parseFloat(string);
-          if (goog.isNumber(value) && !isNaN(value)) {
+          if (typeof value == 'number' && !isNaN(value)) {
             items.push(value);
           } else {
             if (string.indexOf('WMS||') === 0 ||
@@ -427,7 +428,7 @@ app.LayerPermalinkManager.prototype.removeWatchers_ = function() {
     ol.events.unlistenByKey(this.backgroundLayerMgrLstn_);
     this.backgroundLayerMgrLstn_ = null;
   }
-  if (goog.isFunction(this.scopeWatcher_)) {
+  if (typeof this.scopeWatcher_ == 'function') {
     this.scopeWatcher_(); // destroy previous watcher
   }
   //this.unListenProtertyChange_();
@@ -468,7 +469,7 @@ app.LayerPermalinkManager.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      goog.array.extend(array, app.LayerPermalinkManager.getAllChildren_(
+      ol.array.extend(array, app.LayerPermalinkManager.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -554,7 +555,7 @@ app.LayerPermalinkManager.prototype.init =
               var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
               if (mapId === undefined || hasBgLayerInUrl) {
                 var layer = /** @type {ol.layer.Base} */
-                    (goog.array.find(bgLayers, function(layer) {
+                    (bgLayers.find(function(layer) {
                       return layer.get('label') === stateBgLayerLabel;
                     }));
                 this.backgroundLayerMgr_.set(this.map_, layer);
@@ -577,7 +578,7 @@ app.LayerPermalinkManager.prototype.init =
                           var layers = layerString.split(',');
                           layers.forEach(
                               function(stateLayerLabel) {
-                                var layer = goog.array.find(flatCatalogue,
+                                var layer = flatCatalogue.find(
                                     function(catalogueLayer) {
                                       return catalogueLayer['name'] ===
                                           stateLayerLabel;

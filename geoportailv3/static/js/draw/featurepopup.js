@@ -137,7 +137,7 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
       function(event) {
         this.element_.css({'transform': 'scale(1.1)',
           'transition': 'transform .3s'});
-        if (goog.isNull(this.mousemoveEvent_)) {
+        if (this.mousemoveEvent_ !== null) {
           this.mousemoveEvent_ = ol.events.listen(this.map,
               ol.MapBrowserEventType.POINTERMOVE, function(e) {
                 if (!this.startingDragPoint_) {

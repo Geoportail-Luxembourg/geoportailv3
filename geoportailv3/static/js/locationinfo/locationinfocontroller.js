@@ -323,7 +323,7 @@ app.locationinfo.LocationinfoController = function(
   }
   if (this.ngeoLocation_.getParam('address') !== undefined) {
     this.appThemes_.getFlatCatalog().then(function(flatCatalogue) {
-      var node = goog.array.find(flatCatalogue,
+      var node = flatCatalogue.find(
         function(catalogueLayer) {
           return catalogueLayer['name'] === 'addresses';
         }, this);
@@ -422,7 +422,8 @@ app.locationinfo.LocationinfoController = function(
  */
 app.locationinfo.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
   this['location'] = {};
-  goog.object.forEach(this.projections_, function(value, key) {
+  for (var key in this.projections_) {
+    var value = this.projections_[key];
     var sourceEpsgCode = this['map'].getView().getProjection().getCode();
     if (key === 'EPSG:4326:DMS') {
       this['location'][value] = this.coordinateString_(
@@ -434,7 +435,7 @@ app.locationinfo.LocationinfoController.prototype.updateLocation_ = function(coo
       this['location'][value] = this.coordinateString_(
           coordinate, sourceEpsgCode, key, false, false);
     }
-  }, this);
+  }
 };
 
 

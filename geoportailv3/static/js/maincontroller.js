@@ -12,7 +12,6 @@ goog.provide('app.MainController');
 goog.require('app.module');
 goog.require('app.LocationControl');
 goog.require('app.Map');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.MapProperty');
@@ -437,7 +436,7 @@ app.MainController = function(
           function(bgLayers) {
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
-                (goog.array.find(bgLayers, function(layer) {
+                (bgLayers.find(function(layer) {
                   return layer.get('label') === appOverviewMapBaseLayer;
                 }));
               this.map_.addControl(
@@ -688,8 +687,7 @@ app.MainController.prototype.manageSelectedLayers_ =
         if (layer instanceof ol.layer.Vector && layer.get('altitudeMode') === 'clampToGround') {
           return false;
         }
-        return goog.array.indexOf(
-            this.map_.getLayers().getArray(), layer) !== 0;
+        return this.map_.getLayers().getArray().indexOf(layer) !== 0;
       }.bind(this)
   );
       scope.$watchCollection(function() {
@@ -779,7 +777,7 @@ app.MainController.prototype.sidebarOpen = function() {
  * @export
  */
 app.MainController.prototype.switchLanguage = function(lang, track) {
-  if (!goog.isBoolean(track)) {
+  if (typeof track !== 'boolean') {
     track = true;
   }
   console.assert(lang in this.langUrls_);
@@ -827,8 +825,7 @@ app.MainController.prototype.initLanguage_ = function() {
   var urlLanguage = /** @type {string|undefined} */
       (this.stateManager_.getInitialValue('lang'));
 
-  if (urlLanguage !== undefined &&
-      goog.object.containsKey(this.langUrls_, urlLanguage)) {
+  if (urlLanguage !== undefined && urlLanguage in this.langUrls_) {
     this.switchLanguage(urlLanguage, false);
     return;
   } else {

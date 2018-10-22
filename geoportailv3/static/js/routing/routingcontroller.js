@@ -892,8 +892,8 @@ app.routing.RoutingController.prototype.addRoute = function(routeName) {
  * @export
  */
 app.routing.RoutingController.prototype.exportGpx = function() {
-  var features = goog.array.filter(
-    this.appRouting.routeFeatures.getArray(), function(feature) {
+  var features = this.appRouting.routeFeatures.getArray().filter(
+    function(feature) {
       return (feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING);
     }, this);
   this.appExport_.exportGpx(features, 'Route', true);
@@ -949,12 +949,12 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (goog.array.contains(northArray, m[2].toUpperCase()) &&
-              goog.array.contains(eastArray, m[4].toUpperCase())) {
+              if (ol.array.includes(northArray, m[2].toUpperCase()) &&
+              ol.array.includes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (goog.array.contains(northArray, m[4].toUpperCase()) &&
-              goog.array.contains(eastArray, m[2].toUpperCase())) {
+              } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
+              ol.array.includes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -1012,7 +1012,7 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
             this.maxExtent_, flippedPoint.getCoordinates())) {
               feature = new ol.Feature(flippedPoint);
             }
-            if (!goog.isNull(feature)) {
+            if (feature !== null) {
               var resultPoint =
                 /** @type {ol.geom.Point} */ (feature.getGeometry());
               var resultString = this.coordinateString_(
@@ -1085,7 +1085,7 @@ app.routing.RoutingController.prototype.createMapFromRoute = function() {
     this.appMymaps_.createMap(mapTitle, mapDescription,
         null, false)
         .then(function(resp) {
-          if (goog.isNull(resp)) {
+          if (resp === null) {
             this.askToConnect();
           } else {
             var mapId = resp['uuid'];

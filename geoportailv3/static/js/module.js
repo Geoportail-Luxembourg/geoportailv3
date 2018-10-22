@@ -5,26 +5,63 @@
  */
 goog.provide('app.module');
 
-goog.require('goog.dom.classlist');
+goog.require('ol.has');
 goog.require('ngeo');
-goog.require('ngeo.search.module');
+goog.require('ngeo.datasource.module');
+goog.require('ngeo.download.module');
+goog.require('ngeo.draw.module');
+goog.require('ngeo.editing.module');
+goog.require('ngeo.filter.module');
+goog.require('ngeo.googlestreetview.module');
+goog.require('ngeo.grid.module');
+goog.require('ngeo.layertree.module');
+goog.require('ngeo.map.module');
+goog.require('ngeo.map.extraModule');
+goog.require('ngeo.misc.extraModule');
+goog.require('ngeo.measure.module');
+goog.require('ngeo.message.extraModule');
+goog.require('app.offline.Configuration');
 goog.require('ngeo.offline.module');
 goog.require('ngeo.olcs.olcsModule');
+goog.require('ngeo.print.module');
+goog.require('ngeo.profile.module');
+goog.require('ngeo.query.module');
+goog.require('ngeo.search.module');
 goog.require('ngeo.statemanager.Location');
-goog.require('app.offline.Configuration');
-goog.require('ol.has');
+goog.require('ngeo.statemanager.module');
+goog.require('ngeo.statemanager.WfsPermalink');
 
 
 /**
  * @type {!angular.Module}
  */
-app.module = angular.module('app', [ngeo.module.name, 'gettext', ngeo.olcs.olcsModule.name, ngeo.search.module.name, ngeo.offline.module.name])
-    .run(function() {
-      if (!ol.has.TOUCH) {
-        goog.dom.classlist.add(document.body, 'no-touch');
-      }
-    });
-
+app.module = angular.module('app', [
+  ngeo.datasource.module.name,
+  ngeo.download.module.name,
+  ngeo.draw.module.name,
+  ngeo.editing.module.name,
+  ngeo.filter.module.name,
+  ngeo.googlestreetview.module.name,
+  ngeo.grid.module.name,
+  ngeo.layertree.module.name,
+  ngeo.map.extraModule.name,
+  ngeo.map.module.name,
+  ngeo.misc.extraModule.name,
+  ngeo.message.extraModule.name,
+  ngeo.measure.module.name,
+  ngeo.olcs.olcsModule.name,
+  ngeo.offline.module.name,
+  ngeo.print.module.name,
+  ngeo.profile.module.name,
+  ngeo.query.module.name,
+  ngeo.search.module.name,
+  ngeo.statemanager.module.name,
+  ngeo.statemanager.WfsPermalink.module.name,
+  'gettext']).run(function() {
+    if (!ol.has.TOUCH) {
+      document.body.classList.add('no-touch');
+    }
+  });
 
 // Use ngeo's mockLocationProvider to work around a problem in Angular
 // and avoid problems when using both ngeoLocation and ng-include in

@@ -3,6 +3,7 @@ goog.provide('lux.StateManager');
 goog.require('lux');
 goog.require('ol.CollectionEventType');
 goog.require('ol.events');
+goog.require('ol.obj');
 
 
 /**
@@ -107,22 +108,24 @@ lux.StateManager.prototype.setMyMap = function(id) {
  * @param {luxx.State} object The params to update.
  */
 lux.StateManager.prototype.updateState = function(object) {
-  goog.object.extend(this.state_, object);
+  if (this.state_ !== null) {
+    ol.obj.assign(this.state_, object);
 
-  goog.asserts.assertObject(this.state_);
+    goog.asserts.assertObject(this.state_);
 
-  var el = this.map_.getTargetElement();
-  var logo = el.querySelectorAll('.ol-attribution a')[0];
+    var el = this.map_.getTargetElement();
+    var logo = el.querySelectorAll('.ol-attribution a')[0];
 
-  this.url_ = 'https://map.geoportail.lu/theme/main?';
-  this.url_ += Object.keys(this.state_).map(function(key) {
-    return key + '=' + encodeURIComponent(this.state_[key]);
-  }.bind(this)).join('&');
-  this.url_ += '&version=3';
+    this.url_ = 'https://map.geoportail.lu/theme/main?';
+    this.url_ += Object.keys(this.state_).map(function(key) {
+      return key + '=' + encodeURIComponent(this.state_[key]);
+    }.bind(this)).join('&');
+    this.url_ += '&version=3';
 
-  if (logo) {
-    logo.href = this.url_;
-    logo.target = '_blank';
+    if (logo) {
+      logo.href = this.url_;
+      logo.target = '_blank';
+    }
   }
 };
 

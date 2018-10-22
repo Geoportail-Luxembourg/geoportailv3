@@ -128,7 +128,7 @@ app.catalog.CatalogController.prototype.setTree_ = function() {
  */
 app.catalog.CatalogController.prototype.setThemeZooms = function(tree) {
   var maxZoom = 19;
-  if (!goog.isNull(tree)) {
+  if (tree !== null) {
     console.assert('metadata' in tree);
     if (tree['metadata']['resolutions']) {
       var resolutions = tree['metadata']['resolutions'].split(',');

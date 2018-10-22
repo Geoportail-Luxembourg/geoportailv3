@@ -9,6 +9,7 @@ goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Modify');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.ModifyEventType');
@@ -30,7 +31,7 @@ goog.require('ol.style.Style');
  */
 app.interaction.ClipLine = function(options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: app.interaction.ClipLine.handleDownEvent_,
     handleEvent: app.interaction.ClipLine.handleEvent,
     handleUpEvent: app.interaction.ClipLine.handleUpEvent_
@@ -111,7 +112,7 @@ app.interaction.ClipLine = function(options) {
       this.handleFeatureRemove_, this);
 
 };
-goog.inherits(app.interaction.ClipLine, ol.interaction.Pointer);
+ol.inherits(app.interaction.ClipLine, ol.interaction.Pointer);
 
 
 /**
@@ -179,7 +180,7 @@ app.interaction.ClipLine.prototype.removeFeatureSegmentData_ = function(feature)
  */
 app.interaction.ClipLine.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  goog.base(this, 'setMap', map);
+  ol.interaction.Interaction.prototype.setMap.call(this, map);
 };
 
 
@@ -373,7 +374,7 @@ app.interaction.ClipLine.prototype.setActive = function(active) {
       map.getTargetElement().style.cursor = '';
     }
   }
-  goog.base(this, 'setActive', active);
+  ol.interaction.Interaction.prototype.setActive.call(this, active);
 };
 
 /**

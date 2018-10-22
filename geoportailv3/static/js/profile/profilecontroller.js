@@ -15,8 +15,6 @@
 goog.provide('app.profile.ProfileController');
 
 goog.require('app.module');
-goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
@@ -167,7 +165,7 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
       function(evt) {
-        if (evt.dragging || goog.isNull(this.line_)) {
+        if (evt.dragging || this.line_ === null) {
           return;
         }
         var coordinate = this['map'].getEventCoordinate(evt.originalEvent);
@@ -268,9 +266,9 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
  */
 app.profile.ProfileController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
-  this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
-  goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'ngeo-tooltip-measure']);
+  this.measureTooltipElement_ = document.createElement('DIV');
+  this.measureTooltipElement_.classList.add('tooltip');
+  this.measureTooltipElement_.classList.add('ngeo-tooltip-measure');
   this.measureTooltip_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
@@ -285,7 +283,7 @@ app.profile.ProfileController.prototype.createMeasureTooltip_ = function() {
  * @private
  */
 app.profile.ProfileController.prototype.removeMeasureTooltip_ = function() {
-  if (!goog.isNull(this.measureTooltipElement_)) {
+  if (this.measureTooltipElement_  !== null) {
     this.measureTooltipElement_.parentNode.removeChild(
         this.measureTooltipElement_);
     this.measureTooltipElement_ = null;

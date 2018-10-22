@@ -1,7 +1,6 @@
 goog.provide('app.draw.FeatureHash');
-goog.require('goog.object');
-goog.require('goog.color');
 goog.require('ngeo.format.FeatureProperties');
+goog.require('ngeo.utils');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.array');
@@ -356,7 +355,7 @@ app.draw.FeatureHash.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_p
     console.assert(Array.isArray(fillColor), 'only supporting fill colors');
     var fillColorRgba = ol.color.asArray(/** @type {Array<number>} */ (fillColor));
     console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
-    var fillColorHex = goog.color.rgbArrayToHex(fillColorRgba);
+    var fillColorHex = ngeo.utils.rgbArrayToHex(/** @type {!Array<number>} */ (fillColorRgba));
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
     }
@@ -379,7 +378,7 @@ app.draw.FeatureHash.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
     console.assert(Array.isArray(strokeColor));
     var strokeColorRgba = ol.color.asArray(/** @type {Array<number>} */ (strokeColor));
     console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
-    var strokeColorHex = goog.color.rgbArrayToHex(strokeColorRgba);
+    var strokeColorHex = ngeo.utils.rgbArrayToHex(/** @type {!Array<number>} */ (strokeColorRgba));
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
     }
@@ -1143,22 +1142,25 @@ app.draw.FeatureHash.prototype.writeFeatureText = function(feature, opt_options)
   // encode properties
 
   var /** @type {Array.<string>} */ encodedProperties = [];
-  goog.object.forEach(this.propertiesFunction_(feature), (
-      /**
-       * @param {*} value Value.
-       * @param {string} key Key.
-       */
-      function(value, key) {
-        if (key !== feature.getGeometryName()) {
-          if (encodedProperties.length !== 0) {
-            encodedProperties.push('\'');
-          }
-          var encoded = encodeURIComponent(
-              key.replace(/[()'*]/g, '_') + '*' +
-              value.toString().replace(/[()'*]/g, '_'));
-          encodedProperties.push(encoded);
-        }
-      }));
+  /**
+   * @param {*} value Value.
+   * @param {string} key Key.
+   */
+  var f = function(value, key) {
+    if (key !== feature.getGeometryName()) {
+      if (encodedProperties.length !== 0) {
+        encodedProperties.push('\'');
+      }
+      var encoded = encodeURIComponent(
+          key.replace(/[()'*]/g, '_') + '*' +
+          value.toString().replace(/[()'*]/g, '_'));
+      encodedProperties.push(encoded);
+    }
+  };
+  var obj = this.propertiesFunction_(feature);
+  for (var key in obj) {
+    f(obj[key], key);
+  }
 
   if (encodedProperties.length > 0) {
     encodedParts.push('~');
