@@ -6,17 +6,15 @@ goog.provide('app.LocationControl');
 
 
 goog.require('app.NotifyNotificationType');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.dom.classlist');
-goog.require('ol.GeolocationProperty');
+goog.require('ol');
 goog.require('ol.css');
-goog.require('ol.Feature');
-goog.require('ol.Geolocation');
-goog.require('ol.Object');
 goog.require('ol.control.Control');
 goog.require('ol.events');
+goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.Geolocation');
+goog.require('ol.GeolocationProperty');
+goog.require('ol.Object');
 
 
 /**
@@ -80,10 +78,11 @@ app.LocationControl = function(options) {
   var label = (options.label !== undefined) ? options.label : 'L';
   var tipLabel = (options.tipLabel !== undefined) ?
       options.tipLabel : 'Location';
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'type': 'button',
-    'title': tipLabel
-  }, label);
+
+  var button = document.createElement('BUTTON');
+  button.appendChild(document.createTextNode(label));
+  button.setAttribute('type', 'button');
+  button.setAttribute('title', tipLabel);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL + ' ' + 'tracker-off';
@@ -91,7 +90,9 @@ app.LocationControl = function(options) {
   /**
    * @type {!Element}
    */
-  this.element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  this.element = document.createElement('DIV');
+  this.element.setAttribute('class', cssClasses);
+  this.element.appendChild(button);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, this);
@@ -99,14 +100,13 @@ app.LocationControl = function(options) {
   ol.events.listen(button, ol.events.EventType.MOUSEOUT, function() {
     this.blur();
   });
-
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: this.element,
     target: options.target
   });
 
 };
-goog.inherits(app.LocationControl, ol.control.Control);
+ol.inherits(app.LocationControl, ol.control.Control);
 
 
 /**
@@ -127,7 +127,7 @@ app.LocationControl.prototype.handleClick_ = function(event) {
  * Active or unactive the tracking.
  */
 app.LocationControl.prototype.handleCenterToLocation = function() {
-  if (goog.isNull(this.geolocation_)) {
+  if (this.geolocation_ === null) {
     this.initGeoLocation_();
   }
   if (!this.geolocation_.getTracking()) {
@@ -163,9 +163,11 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
        */
       function(e) {
         if (this.geolocation_.getTracking()) {
-          goog.dom.classlist.swap(this.element, 'tracker-off', 'tracker-on');
+          this.element.classList.remove('tracker-off');
+          this.element.classList.add('tracker-on');
         } else {
-          goog.dom.classlist.swap(this.element, 'tracker-on', 'tracker-off');
+          this.element.classList.remove('tracker-on');
+          this.element.classList.add('tracker-off');
         }
       }, this);
 

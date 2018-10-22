@@ -106,32 +106,35 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
        * @param {Array.<Object>} themes Array of theme objects.
        */
       (function(themes) {
-        this['themes'] = goog.array.filter(themes, function(object) {
+        this['themes'] = themes.filter(function(object) {
           return 'true' == object['metadata']['display_in_switcher'];
         });
         // Check whether the current theme is valid or is protected;
         // and if it's not, use the default theme.
         // A theme is valid if it is present in the list of themes.
         // A theme is protected if the related WS returns true
-        var themeIndex = goog.array.findIndex(themes, function(theme) {
+        var curTheme = themes.find(function(theme) {
           return theme['name'] == this.appTheme_.getCurrentTheme();
         }, this);
-        if (themeIndex < 0) {
-          this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
-              .then(
-              /**
-               * @param {angular.$http.Response} resp Ajax response.
-               */
-              (function(resp) {
-                if (resp.data['is_private'] === true) {
-                  this.appNotify_(this.translate_.
-                      getString(this.privateThemeMsg_, {}),
-                      app.NotifyNotificationType.WARNING);
-                  this['userOpen'] = true;
-                } else {
-                  this.switchTheme(this.appTheme_.getDefaultTheme());
-                }
-              }).bind(this));
+        if (curTheme !== undefined) {
+          var themeIndex = themes.indexOf(curTheme);
+          if (themeIndex < 0) {
+            this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
+                .then(
+                /**
+                 * @param {angular.$http.Response} resp Ajax response.
+                 */
+                (function(resp) {
+                  if (resp.data['is_private'] === true) {
+                    this.appNotify_(this.translate_.
+                        getString(this.privateThemeMsg_, {}),
+                        app.NotifyNotificationType.WARNING);
+                    this['userOpen'] = true;
+                  } else {
+                    this.switchTheme(this.appTheme_.getDefaultTheme());
+                  }
+                }).bind(this));
+          }
         }
       }).bind(this));
 };

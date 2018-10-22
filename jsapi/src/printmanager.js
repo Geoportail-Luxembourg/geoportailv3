@@ -392,8 +392,8 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
   });
   if (object.matrixSet === 'GLOBAL_WEBMERCATOR_4_V3_HD') {
     // Ugly hack to request non retina wmts layer for print
-    object.baseURL = goog.string.remove(object.baseURL, '_hd');
-    object.matrixSet = goog.string.remove(object.matrixSet, '_HD');
+    object.baseURL = object.baseURL.replace('_hd', '');
+    object.matrixSet = object.matrixSet.replace('_HD', '');
   }
   if ((object.matrices instanceof Array)) {
     for (var j = object.matrices.length - 1; j > 0; j--) {

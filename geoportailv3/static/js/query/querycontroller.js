@@ -579,7 +579,7 @@ app.query.QueryController.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      goog.array.extend(array, app.query.QueryController.getAllChildren_(
+      ol.array.extend(array, app.query.QueryController.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -623,17 +623,18 @@ app.query.QueryController.prototype.getFeatureInfoById_ = function(fid) {
                   } else {
                     this['hiddenContent'] = true;
                   }
-                  var node = goog.array.find(flatCatalogue, function(catItem) {
+                  var node = flatCatalogue.find(function(catItem) {
                     return catItem.id == splittedFid[0];
                   });
                   if (node !== undefined && node !== null) {
                     var layer = this.getLayerFunc_(node);
-                    var idx = goog.array.findIndex(this.map.getLayers().getArray(), function(curLayer) {
+                    var foundLayer = this.map.getLayers().getArray().find(function(curLayer) {
                       if (curLayer.get('queryable_id') === layer.get('queryable_id')) {
                         return true;
                       }
                       return false;
-                    }, this);
+                    });
+                    var idx = this.map.getLayers().getArray().indexOf(foundLayer);
                     if (idx === -1) {
                       this.map_.addLayer(layer);
                     }
@@ -870,7 +871,7 @@ app.query.QueryController.prototype.hasAttributes = function(feature) {
  * @export
  */
 app.query.QueryController.prototype.hasValidFID = function(feature) {
-  if (this.isFIDValid_(feature['fid'])) {
+  if ('fid' in feature && this.isFIDValid_(feature['fid'])) {
     return true;
   }
   return false;
@@ -885,7 +886,7 @@ app.query.QueryController.prototype.hasValidFID = function(feature) {
  */
 app.query.QueryController.prototype.isFIDValid_ = function(fid) {
   var valid = true;
-  if (fid === undefined) {
+  if (fid === undefined || fid === null) {
     return false;
   }
   var fids = fid.split(',');
@@ -922,7 +923,7 @@ app.query.QueryController.prototype.hasFeatureAttribute = function(feature, name
  * @export
  */
 app.query.QueryController.prototype.joinAttributes = function(features, attr, sep) {
-  return goog.array.map(features, function(feature) {
+  return features.map(function(feature) {
     return feature.attributes[attr];
   }).join(sep);
 };
@@ -994,6 +995,9 @@ app.query.QueryController.prototype.openPreviewMesurage = function(townCode, fil
  * @export
  */
 app.query.QueryController.prototype.trustAsHtml = function(content) {
+  if (typeof content !== 'string') {
+    return content;
+  }
   return this.sce_.trustAsHtml('' + content);
 };
 
@@ -1196,13 +1200,13 @@ app.query.QueryController.prototype.exportGpx = function(feature, name, isTrack)
 
 /**
  * Check if the value is a link.
- * @param {string} value The value to test.
+ * @param {*} value The value to test.
  * @return {boolean} True if is a link.
  * @export
  */
 app.query.QueryController.prototype.isLink = function(value) {
-  return ('' + value).toLowerCase().indexOf('http://') === 0 ||
-      ('' + value).toLowerCase().indexOf('https://') === 0;
+  return String(value).toLowerCase().indexOf('http://') === 0 ||
+      String(value).toLowerCase().indexOf('https://') === 0;
 };
 
 

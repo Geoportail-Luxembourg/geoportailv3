@@ -356,7 +356,7 @@ app.externaldata.ExternalDataController.prototype.trim = function(value) {
  */
 app.externaldata.ExternalDataController.prototype.isLayerActive = function(layerId) {
   if (layerId !== undefined) {
-    var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+    var layer = this.map_.getLayers().getArray().find(function(layer, i) {
       if (layer.get('queryable_id') === layerId) {
         return true;
       }
@@ -377,7 +377,7 @@ app.externaldata.ExternalDataController.prototype.isLayerActive = function(layer
  */
 app.externaldata.ExternalDataController.prototype.toggleLayer = function(rawLayer, pLayerType) {
   var layerType = (pLayerType === undefined) ? 'wms' : pLayerType;
-  var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+  var layer = this.map_.getLayers().getArray().find(function(layer, i) {
     if (layer.get('queryable_id') === rawLayer['id']) {
       return true;
     }
@@ -404,7 +404,7 @@ app.externaldata.ExternalDataController.prototype.getInfo = function(rawLayer, t
   if (type === undefined) {
     type = 'wms';
   }
-  var layer = goog.array.find(this.map_.getLayers().getArray(), function(layer, i) {
+  var layer = this.map_.getLayers().getArray().find(function(layer, i) {
     if (layer.get('queryable_id') === rawLayer['id']) {
       return true;
     }

@@ -51,8 +51,10 @@ app.getProfile_ = function($http, profileServiceUrl) {
     return $http.post(profileServiceUrl, req, config).then(
         function(resp) {
           var data = /** @type {string} */ (resp.config.data);
-          var q = new goog.Uri.QueryData(data);
-          var id = q.getValues('id')[0];
+          var ids = data.split('&').find(function(elem) {
+            return (elem.split('=')[0] === 'id');
+          });
+          var id = ids.split('=')[1];
           var elevationGain = 0;
           var elevationLoss = 0;
           var cumulativeElevation = 0;

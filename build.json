@@ -22,6 +22,7 @@
       "node_modules/openlayers/externs/bingmaps.js",
       "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
+      "node_modules/ngeo/externs/datetimepicker.js",
       "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",

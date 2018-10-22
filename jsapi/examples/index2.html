@@ -1,0 +1,41 @@
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+
+<!--script src="//vip-90.geoportal.lu:9999/apiv3loader.js"  type="text/javascript"></script-->
+<!--script src="//devv3rm.geoportail.lu/apiv3loader.js"  type="text/javascript"></script-->
+<script src="//apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"></script>
+
+<style>
+#mappicker {
+width: 800px;
+height: 400px;
+}
+</style>
+</head>
+
+<body >
+<div id="map5"></div>
+
+<script>
+var map5 = new lux.Map({
+  target: 'map5',
+  bgLayer: 'blank',
+  zoom: 12,
+  position: [76825, 75133]
+});
+map5.addKML('//cita.lu/kml/chantiers_actuel.kml',
+{reloadInterval: 60, click:true, fit:false, onClick:function (features, point) {
+  console.log(features);
+  map5.showPopup(point, "Le titre", "On a cliqué ICI");
+}});
+
+/*map5.addKML('//cita.lu/kml/chantiers_actuel.kml',
+{reloadInterval: 60, click:true, fit:false});
+*/
+
+</script>
+</body>
+</html>

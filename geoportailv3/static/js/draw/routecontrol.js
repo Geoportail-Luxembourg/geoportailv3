@@ -4,8 +4,7 @@
  */
 goog.provide('app.draw.RouteControl');
 
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
+goog.require('ol');
 goog.require('ol.css');
 goog.require('ol.control.Control');
 goog.require('ol.events');
@@ -21,11 +20,6 @@ goog.require('ol.events');
 app.draw.RouteControl = function(options) {
   var className = options.className !== undefined ? options.className :
       'route-button';
-  /**
-   * @type {angular.$window}
-   * @private
-   */
-  this.window_ = options.window;
 
   /**
    * @type {app.interaction.DrawRoute}
@@ -36,10 +30,10 @@ app.draw.RouteControl = function(options) {
   var label = options.label !== undefined ? options.label : 'L';
   var tipLabel = options.tipLabel !== undefined ?
       options.tipLabel : 'Route';
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'type': 'button',
-    'title': tipLabel
-  }, label);
+  var button = document.createElement('BUTTON');
+  button.appendChild(document.createTextNode(label));
+  button.setAttribute('type', 'button');
+  button.setAttribute('title', tipLabel);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL + ' ' +
@@ -48,7 +42,9 @@ app.draw.RouteControl = function(options) {
   /**
    * @type {!Element}
    */
-  this.element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  this.element = document.createElement('DIV');
+  this.element.setAttribute('class', cssClasses);
+  this.element.appendChild(button);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, this);
@@ -57,13 +53,13 @@ app.draw.RouteControl = function(options) {
     this.blur();
   });
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: this.element,
     target: options.target
   });
 
 };
-goog.inherits(app.draw.RouteControl, ol.control.Control);
+ol.inherits(app.draw.RouteControl, ol.control.Control);
 
 
 /**

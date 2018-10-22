@@ -1,14 +1,12 @@
 goog.provide('lux.Map');
 
 goog.require('lux');
-goog.require('goog.Uri');
-goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.Timer');
 goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
 goog.require('lux.PrintManager');
 goog.require('lux.StateManager');
+goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -142,12 +140,6 @@ lux.Map = function(options) {
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
 
-  /**
-   * @private
-   * @type {function()}
-   */
-  this.layerInfoCallback_ = options.layerInfoCallback;
-
   this.setLanguage(lux.lang);
 
   /**
@@ -229,14 +221,14 @@ lux.Map = function(options) {
   }
   if (options.layerOpacities) {
     layerOpacities = layerOpacities.concat(options.layerOpacities);
-    goog.asserts.assert(layers.length == layerOpacities.length,
+    console.assert(layers.length !== layerOpacities.length,
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
   if (options.layerVisibilities) {
     layerVisibilities.push(true);
     layerVisibilities = layerVisibilities.concat(options.layerVisibilities);
-    goog.asserts.assert(layers.length == layerVisibilities.length,
+    console.assert(layers.length !== layerVisibilities.length,
         'Layers and visibility should have the same number of items');
     delete options.layerVisibilities;
   }
@@ -367,7 +359,7 @@ lux.Map = function(options) {
     src: 'https://www.geoportail.lu/static/img/favicon-16x16.ico'
   };
 
-  goog.base(this, options);
+  ol.Map.call(this, options);
 
   this.getTargetElement().classList.add('lux-map');
 
@@ -408,7 +400,7 @@ lux.Map = function(options) {
   }
 };
 
-goog.inherits(lux.Map, ol.Map);
+ol.inherits(lux.Map, ol.Map);
 
 /**
  * Adds the given layer to the top of this map. If you want to add a layer
@@ -493,13 +485,12 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
       }
     }
   });
-  var piwikUrl =
-    goog.string.buildString('http://',
-    'apiv3.geoportail.lu/print/',
-    curLayout.replace(' ', '/'));
+  var piwikUrl = 'http://apiv3.geoportail.lu/print/' + curLayout.replace(' ', '/');
   window['_paq'].push(['trackLink', piwikUrl, 'download']);
+  dataOwners = dataOwners.filter(function(item, pos, self) {
+    return self.indexOf(item) == pos;
+  });
 
-  goog.array.removeDuplicates(dataOwners);
   var disclaimer = lux.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
   var dateText = lux.translate('Date d\'impression: ');
   var scaleTitle = lux.translate('Echelle approximative 1:');
@@ -535,7 +526,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
         resp.json().then(function(data) {
           var mfResp = /** @type {MapFishPrintReportResponse} */ (data);
           var ref = mfResp.ref;
-          goog.asserts.assert(ref.length > 0);
+          console.assert(ref.length !== 0);
           this.getStatus_(pm, ref, callback);
         }.bind(this));
       }
@@ -545,7 +536,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
 /**
  * @param {lux.PrintManager} pm Print manager.
  * @param {string} ref Ref.
- * @param {function()=} callback Optional callback function.
+ * @param {function(string)=} callback Optional callback function.
  * @private
  */
 lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
@@ -569,9 +560,9 @@ lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
               }
             }
           } else {
-            goog.Timer.callOnce(function() {
+            window.setTimeout(function() {
               this.getStatus_(pm, ref, callback);
-            }, 1000, this);
+            }.bind(this), 1000);
           }
         });
       }
@@ -685,8 +676,8 @@ lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
  */
 lux.Map.prototype.showMarker = function(opt_options) {
   var options = opt_options || {};
-  var element = goog.dom.createDom(goog.dom.TagName.DIV);
-  var image = goog.dom.createDom(goog.dom.TagName.IMG);
+  var element = document.createElement('DIV');
+  var image = document.createElement('IMG');
   // Overlay compute the position where the image must be displayed using
   // the size of the element. But as the size of the image is only known
   // after the image is loaded, then we have to refresh the map, to be sure
@@ -855,9 +846,9 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
-        lux.WMSLayerFactory_ : lux.WMTSLayerFactory_;
-      var opacity = goog.isDef(opacities[index]) ? opacities[index] : 1;
-      var visible = goog.isDef(visibilities[index]) ? visibilities[index] : true;
+        lux.WMSLayerFactory : lux.WMTSLayerFactory;
+      var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
+      var visible = (visibilities[index] !== undefined) ? visibilities[index] : true;
       this.getLayers().push(fn(layerConf, opacity, visible));
     }
   }.bind(this));
@@ -870,14 +861,14 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
 lux.Map.prototype.checkForExclusion_ = function(event) {
   var layer1 = event.element;
 
-  if (!goog.isDef(layer1.get('metadata'))) {
+  if (layer1.get('metadata') === undefined) {
     return;
   }
 
   var exclusion1 = layer1.get('metadata')['exclusion'];
 
 
-  if (!goog.isDef(exclusion1)) {
+  if (exclusion1 === undefined) {
     return;
   }
 
@@ -889,13 +880,13 @@ lux.Map.prototype.checkForExclusion_ = function(event) {
   for (i = len - 1; i >= 0; i--) {
     layer2 = layers[i];
 
-    if (layer2 == layer1 || !goog.isDef(layer2.get('metadata')) ||
-        !goog.isDef(layer2.get('metadata')['exclusion'])) {
+    if (layer2 == layer1 || layer2.get('metadata') === undefined ||
+        layer2.get('metadata')['exclusion'] === undefined) {
       continue;
     }
 
     exclusion2 = layer2.get('metadata')['exclusion'];
-    if (lux.intersects_(exclusion1, exclusion2)) {
+    if (lux.intersects(exclusion1, exclusion2)) {
       // layer to exclude is not the current base layer
       if (i !== 0) {
         this.removeLayer(layer2);
@@ -920,8 +911,8 @@ lux.Map.prototype.checkForExclusion_ = function(event) {
  */
 lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
   this.layersPromise.then(function() {
-    var opacity = goog.isDef(opt_opacity) ? opt_opacity : 1;
-    var visibility = goog.isDef(opt_visibility) ? opt_visibility : true;
+    var opacity = (opt_opacity !== undefined) ? opt_opacity : 1;
+    var visibility = (opt_visibility === undefined) ? opt_visibility : true;
     this.addLayers_([layer], [opacity], [visibility]);
   }.bind(this));
 };
@@ -1000,7 +991,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     select.addEventListener('change', function() {
       if (select.value !== 'blank') {
         this.getLayers().setAt(
-          0, lux.WMTSLayerFactory_(this.layersConfig[select.value], 1, true)
+          0, lux.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
         );
       } else {
         this.getLayers().setAt(0, this.blankLayer_);
@@ -1297,7 +1288,7 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
      */
     var m = re[epsgKey].regex.exec(searchString);
 
-    if (goog.isDefAndNotNull(m)) {
+    if (m !== undefined && m !== null) {
       var epsgCode = re[epsgKey].epsgCode;
       var isDms = false;
       /**
@@ -1309,17 +1300,17 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
        */
       var northing = undefined;
       if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
-        if (goog.isDefAndNotNull(m[2]) && goog.isDefAndNotNull(m[4])) {
-          if (goog.array.contains(northArray, m[2].toUpperCase()) &&
-          goog.array.contains(eastArray, m[4].toUpperCase())) {
+        if (m[2] !== undefined && m[2] !== null && m[4] !== undefined && m[4] !== null) {
+          if (ol.array.includes(northArray, m[2].toUpperCase()) &&
+          ol.array.includes(eastArray, m[4].toUpperCase())) {
             easting = parseFloat(m[3].replace(',', '.'));
             northing = parseFloat(m[1].replace(',', '.'));
-          } else if (goog.array.contains(northArray, m[4].toUpperCase()) &&
-          goog.array.contains(eastArray, m[2].toUpperCase())) {
+          } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
+          ol.array.includes(eastArray, m[2].toUpperCase())) {
             easting = parseFloat(m[1].replace(',', '.'));
             northing = parseFloat(m[3].replace(',', '.'));
           }
-        } else if (!goog.isDef(m[2]) && !goog.isDef(m[4])) {
+        } else if (m[2] === undefined && m[4] === undefined) {
           easting = parseFloat(m[1].replace(',', '.'));
           northing = parseFloat(m[3].replace(',', '.'));
         }
@@ -1372,7 +1363,7 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
         this.maxExtent_, flippedPoint.getCoordinates())) {
           feature = new ol.Feature(flippedPoint);
         }
-        if (!goog.isNull(feature)) {
+        if (feature !== null) {
           var resultPoint =
             /** @type {ol.geom.Point} */ (feature.getGeometry());
           var resultString = lux.coordinateString_(
@@ -1535,9 +1526,11 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
    * @param {boolean=} opt_time Whether or not to add a timestamp to url.
    */
   function setSource(opt_time) {
-    var uri = goog.Uri.parse(url);
+    var uri = document.createElement('A');
+    uri.href = url;
+
     if (opt_time) {
-      uri.setParameterValue('salt', (new Date).getTime());
+      uri.search = 'salt=' + (new Date).getTime();
     }
     vector.setSource(new ol.source.Vector({
       url: uri.toString(),
@@ -1557,7 +1550,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
     var interval = opt_options && opt_options.reloadInterval;
     if (interval) {
-      goog.asserts.assertNumber(interval, 'Reload interval must be a number');
+      console.assert(typeof interval === 'number', 'Reload interval must be a number');
       window.setInterval(function() {
         setSource(true);
       }, interval * 1000);
@@ -1570,7 +1563,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
       ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
           function() {
             var size = this.getSize();
-            goog.asserts.assert(size !== undefined, 'size should be defined');
+            console.assert(size !== undefined, 'size should be defined');
             this.getView().fit(vector.getSource().getExtent(), {size: size});
           }.bind(this)
       );
@@ -1640,7 +1633,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
 /**
  * It shows a popup.
- * @param {ol.coordinate} position The position of the popup.
+ * @param {ol.Coordinate} position The position of the popup.
  * @param {string} title The popup title.
  * @param {string} content The popup content.
  * @return {ol.Overlay} The popup overlay.
@@ -1713,7 +1706,7 @@ lux.Map.prototype.removeInfoPopup = function() {
 /**
  * @param {string|number} layer Layer id
  * @param {Array<string|number>} ids The ids to retrieve.
- * @param {function()} callback The function to call.
+ * @param {function(Object)} callback The function to call.
  * @export
  */
 lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
@@ -1806,9 +1799,11 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
     'lang': lux.lang,
     'srs': 'EPSG:3857'
   };
-  var url = goog.Uri.parse(lux.queryUrl);
+  var url = document.createElement('A');
+  url.href = lux.queryUrl;
+
   Object.keys(params).forEach(function(key) {
-    url.setParameterValue(key, params[key]);
+    url.search = url.search + '&' + key + '=' + params[key];
   });
   fetch(url.toString()).then(function(resp) {
     return resp.json();

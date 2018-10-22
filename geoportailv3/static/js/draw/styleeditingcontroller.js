@@ -1,7 +1,6 @@
 goog.provide('app.draw.StyleEditingController');
 
 goog.require('app.module');
-goog.require('goog.color');
 goog.require('ol.geom.LineString');
 
 
@@ -241,18 +240,11 @@ app.draw.StyleEditingController.prototype.getSetOpacity = function(val) {
 
 /**
  * @param {string} val The color.
- * @return {*} The color.
  * @export
  */
 app.draw.StyleEditingController.prototype.setColor = function(val) {
-  if (this.feature === undefined) {
-    return;
-  }
-  if (arguments.length) {
+  if (this.feature !== undefined && arguments.length) {
     this.feature.set('color', val);
-  } else {
-    var color = /** @type {string} */ (this.feature.get('color'));
-    return goog.color.parseRgb(color);
   }
 };
 

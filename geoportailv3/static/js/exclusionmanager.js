@@ -63,7 +63,7 @@ app.ExclusionManager.prototype.intersects_ = function(one, two) {
   var arr1 = /** @type {Array} */ (JSON.parse(one));
   var arr2 = /** @type {Array} */ (JSON.parse(two));
   var concat = arr1.concat(arr2);
-  goog.array.sort(concat);
+  concat.sort();
   var i;
   var len = concat.length;
   for (i = 1; i < len; i++) {

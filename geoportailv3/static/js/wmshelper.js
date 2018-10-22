@@ -134,7 +134,7 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
       service in capability['Request'] &&
       'DCPType' in capability['Request']['GetMap']) {
     var dcpTypes = capability['Request']['GetMap']['DCPType'];
-    var dcpType = goog.array.find(dcpTypes, function(type, i) {
+    var dcpType = dcpTypes.find(function(type) {
       if ('HTTP' in type) {
         return true;
       }

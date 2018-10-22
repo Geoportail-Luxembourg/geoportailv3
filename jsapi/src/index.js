@@ -6,6 +6,7 @@ goog.require('ol.proj');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.WMTS');
 goog.require('ol.source.WMTSRequestEncoding');
+goog.require('ol.string');
 goog.require('ol.tilegrid.WMTS');
 goog.require('ol.layer.Image');
 goog.require('ol.source.ImageWMS');
@@ -235,28 +236,26 @@ lux.notify = function(msg) {
 
 /**
  * Builds the popup layout.
- * @param {string|goog.dom.Appendable} html The HTML/text or DOM Element to put
+ * @param {string|Node} html The HTML/text or DOM Element to put
  *    into the popup.
  * @param {function()=} closeCallback Optional callback function. If set a close
  *    button is added.
- * @param {string} title The  popup title.
+ * @param {string=} title The  popup title.
  * @return {Element} The created element.
  * @export
  * @api
  */
 lux.buildPopupLayout = function(html, closeCallback, title) {
-  var container = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup'
-  });
-  var arrow = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup-arrow'
-  });
+  var container = document.createElement('DIV');
+  container.classList.add('lux-popup');
+
+  var arrow = document.createElement('DIV');
+  arrow.classList.add('lux-popup-arrow');
 
   var elements = [arrow];
 
-  var content = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': 'lux-popup-content'
-  });
+  var content = document.createElement('DIV');
+  content.classList.add('lux-popup-content');
 
   if (lux.popupSize) {
     container.style.width = lux.popupSize[0] + 'px';
@@ -267,29 +266,31 @@ lux.buildPopupLayout = function(html, closeCallback, title) {
   if (typeof html == 'string') {
     content.innerHTML = html;
   } else {
-    goog.dom.append(content, html);
+    content.appendChild(html);
   }
 
   if (closeCallback) {
-    var header = goog.dom.createDom(goog.dom.TagName.H3, {
-      'class': 'lux-popup-header'
-    });
+    var header = document.createElement('DIV');
+    header.classList.add('lux-popup-header');
+
     if (title !== undefined) {
       header.innerHTML = title;
     }
-    var closeBtn = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-      'class': 'lux-popup-close'
-    });
+
+    var closeBtn = document.createElement('BUTTON');
+    closeBtn.classList.add('lux-popup-close');
+
     closeBtn.innerHTML = '&times;';
-    goog.dom.append(header, closeBtn);
+    header.appendChild(closeBtn);
     elements.push(header);
 
     ol.events.listen(closeBtn, ol.events.EventType.CLICK, closeCallback);
   }
 
   elements.push(content);
-
-  goog.dom.append(container, elements);
+  elements.forEach(function(element) {
+    container.appendChild(element);
+  });
   return container;
 };
 
@@ -298,9 +299,8 @@ lux.buildPopupLayout = function(html, closeCallback, title) {
  * @param {string} one The first list of exclusions.
  * @param {string} two The second list of exclusions.
  * @return {boolean} Whether the array intersect or not.
- * @private
  */
-lux.intersects_ = function(one, two) {
+lux.intersects = function(one, two) {
   var arr1 = /** @type {Array} */ (JSON.parse(one));
   var arr2 = /** @type {Array} */ (JSON.parse(two));
   return arr1.some(function(item) {
@@ -313,9 +313,8 @@ lux.intersects_ = function(one, two) {
  * @param {number} opacity The layer's opacity.
  * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Tile} The layer.
- * @private
  */
-lux.WMTSLayerFactory_ = function(config, opacity, visible) {
+lux.WMTSLayerFactory = function(config, opacity, visible) {
   var format = config['imageType'];
   var imageExt = format.split('/')[1];
 
@@ -387,9 +386,8 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
  * @param {number} opacity The layer's opacity.
  * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Image} The layer.
- * @private
  */
-lux.WMSLayerFactory_ = function(config, opacity, visible) {
+lux.WMSLayerFactory = function(config, opacity, visible) {
   var url = config.url || 'https://map.geoportail.lu/main/wsgi/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
@@ -439,10 +437,12 @@ lux.WMSLayerFactory_ = function(config, opacity, visible) {
  * @global
  */
 lux.geocode = function(obj, cb) {
-  var url = goog.Uri.parse(lux.geocodeUrl);
+  var url = document.createElement('A');
+  url.href = lux.geocodeUrl;
+
   goog.asserts.assertObject(obj);
   Object.keys(obj).forEach(function(key) {
-    url.setParameterValue(key, obj[key]);
+    url.search = url.search + '&' + key + '=' + obj[key];
   });
   return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
@@ -474,9 +474,10 @@ lux.geocode = function(obj, cb) {
  * @global
  */
 lux.reverseGeocode = function(coordinate, cb) {
-  var url = goog.Uri.parse(lux.reverseGeocodeUrl);
-  url.setParameterValue('easting', coordinate[0]);
-  url.setParameterValue('northing', coordinate[1]);
+  var url = document.createElement('A');
+  url.href = lux.reverseGeocodeUrl;
+  url.search = 'easting=' + coordinate[0] + '&northing=' + coordinate[1];
+
   return /** @type {Promise.<luxx.ReverseGeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(
@@ -547,7 +548,7 @@ lux.coordinateString_ = function(coordinate, sourceEpsgCode,
  * @return {string} Hemisphere, degrees, minutes and seconds.
  */
 lux.toStringHDMS_ = function(coordinate) {
-  if (goog.isDef(coordinate)) {
+  if (coordinate !== undefined) {
     return lux.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
         lux.degreesToStringHDMS_(coordinate[0], 'EW');
   } else {
@@ -561,7 +562,7 @@ lux.toStringHDMS_ = function(coordinate) {
  * @return {string} Hemisphere, degrees, decimal minutes.
  */
 lux.toStringHDMm_ = function(coordinate) {
-  if (goog.isDef(coordinate)) {
+  if (coordinate !== undefined) {
     return lux.degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
         lux.degreesToStringHDMm_(coordinate[0], 'EW');
   } else {
@@ -576,11 +577,11 @@ lux.toStringHDMm_ = function(coordinate) {
  * @return {string} String.
  */
 lux.degreesToStringHDMS_ = function(degrees, hemispheres) {
-  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var normalizedDegrees = ((degrees + 180) % 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   return Math.floor(x / 3600) + '\u00b0 ' +
-      goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      goog.string.padNumber(Math.floor(x % 60), 2) + ',' +
+      ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+      ol.string.padNumber(Math.floor(x % 60), 2) + ',' +
       Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
       '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
@@ -592,13 +593,13 @@ lux.degreesToStringHDMS_ = function(degrees, hemispheres) {
  * @return {string} String.
  */
 lux.degreesToStringHDMm_ = function(degrees, hemispheres) {
-  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var normalizedDegrees = ((degrees + 180) % 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dd = x / 3600;
   var m = (dd - Math.floor(dd)) * 60;
 
   var res = Math.floor(dd) + '\u00b0 ' +
-      goog.string.padNumber(Math.floor(m), 2) + ',' +
+      ol.string.padNumber(Math.floor(m), 2) + ',' +
       Math.floor((m - Math.floor(m)) * 100000) +
       '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   return res;

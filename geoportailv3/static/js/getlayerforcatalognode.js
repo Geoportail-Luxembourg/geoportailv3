@@ -5,7 +5,7 @@
 goog.provide('app.GetLayerForCatalogNode');
 
 goog.require('app.module');
-goog.require('goog.object');
+
 
 /**
  * @typedef {function(Object):ol.layer.Layer}
@@ -69,7 +69,7 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
     app.layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
     layer.set('queryable_id', node['id']);
-    if (goog.object.containsKey(node['metadata'], 'attribution')) {
+    if ('attribution' in node['metadata']) {
       var source = layer.getSource();
       source.setAttributions(
         node['metadata']['attribution']

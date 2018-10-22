@@ -18,8 +18,6 @@ goog.require('app.interaction.DrawRoute');
 goog.require('app.interaction.ClipLine');
 goog.require('app.interaction.ModifyCircle');
 goog.require('app.NotifyNotificationType');
-goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('ngeo.interaction.Measure');
 goog.require('ngeo.misc.decorate');
 goog.require('ol.CollectionEventType');
@@ -557,7 +555,7 @@ app.draw.DrawController.prototype.onDrawPolygonStart_ = function(event) {
         if (verticesCount > 2) {
           coord = geometry.getInteriorPoint().getCoordinates();
         }
-        if (!goog.isNull(coord)) {
+        if (coord !== null) {
           var output = this.getFormattedArea(geometry, proj);
           this.measureTooltipElement_.innerHTML = output;
           this.measureTooltipOverlay_.setPosition(coord);
@@ -582,7 +580,7 @@ app.draw.DrawController.prototype.onDrawLineStart_ = function(event) {
       ol.events.EventType.CHANGE,
       function() {
         var coord = geometry.getLastCoordinate();
-        if (!goog.isNull(coord)) {
+        if (coord !== null) {
           var output = this.getFormattedLength(geometry, proj);
           this.measureTooltipElement_.innerHTML = output;
           this.measureTooltipOverlay_.setPosition(coord);
@@ -608,7 +606,7 @@ app.draw.DrawController.prototype.onDrawCircleStart_ = function(event) {
       function() {
         var coord = geometry.getLastCoordinate();
         var center = geometry.getCenter();
-        if (!goog.isNull(center) && !goog.isNull(coord)) {
+        if (center !== null && coord !== null) {
           var output = this.getFormattedLength(
               new ol.geom.LineString([center, coord]), proj);
           this.measureTooltipElement_.innerHTML = output;
@@ -962,9 +960,10 @@ app.draw.DrawController.prototype.isEditing = function(type) {
  */
 app.draw.DrawController.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
-  this.measureTooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV);
-  goog.dom.classlist.addAll(this.measureTooltipElement_,
-      ['tooltip', 'ngeo-tooltip-measure']);
+  this.measureTooltipElement_ = document.createElement('DIV');
+  this.measureTooltipElement_.classList.add('tooltip');
+  this.measureTooltipElement_.classList.add('ngeo-tooltip-measure');
+
   this.measureTooltipOverlay_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
@@ -980,7 +979,7 @@ app.draw.DrawController.prototype.createMeasureTooltip_ = function() {
  * @private
  */
 app.draw.DrawController.prototype.removeMeasureTooltip_ = function() {
-  if (!goog.isNull(this.measureTooltipElement_)) {
+  if (this.measureTooltipElement_ !== null) {
     this.measureTooltipElement_.parentNode.removeChild(
         this.measureTooltipElement_);
     this.measureTooltipElement_ = null;

@@ -11,7 +11,7 @@
 goog.provide('app.share.ShareController');
 
 goog.require('app.module');
-goog.require('goog.Uri');
+goog.require('ngeo.utils');
 
 
 /**
@@ -67,15 +67,14 @@ app.share.ShareController = function($window, gettext, gettextCatalog) {
  */
 app.share.ShareController.prototype.openShareLink = function(service) {
   if (service in this.services_) {
-    var googUri = new goog.Uri(this.services_[service].url);
-    googUri.setQueryData(goog.Uri.QueryData.createFromMap({
+    var url = this.services_[service].url + '?' + ngeo.utils.encodeQueryString({
       //twitter params
       'text': this.window_.document.title,
       'via': 'geoportal_lux',
       'url': $('app-shorturl input').val()
-    }));
+    });
     var popup =
-        this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
+        this.window_.open(url, '_blank', this.windowOptions_);
     popup.focus();
   }
   return false;
@@ -87,17 +86,16 @@ app.share.ShareController.prototype.openShareLink = function(service) {
  * @return {boolean} Always return false.
  */
 app.share.ShareController.prototype.openFbLink = function() {
-  var googUri = new goog.Uri(this.services_['facebook'].url);
-  googUri.setQueryData(goog.Uri.QueryData.createFromMap({
+  var url = this.services_['facebook'].url + '?' + ngeo.utils.encodeQueryString({
     //fb params
     'app_id': '162604997404468',
     'caption': this.window_.document.title,
     'display': 'popup',
     'link': $('app-shorturl input').val(),
     'redirect_uri': 'https://www.facebook.com'
-  }));
+  });
   var popup =
-      this.window_.open(googUri.toString(), '_blank', this.windowOptions_);
+      this.window_.open(url, '_blank', this.windowOptions_);
   popup.focus();
   return false;
 };
@@ -108,14 +106,13 @@ app.share.ShareController.prototype.openFbLink = function() {
  * @return {boolean} Always return False.
  */
 app.share.ShareController.prototype.openMailLink = function() {
-  var googUri = new goog.Uri();
-  googUri.setScheme('mailto');
-  googUri.setQueryData(goog.Uri.QueryData.createFromMap({
+  var url = 'mailto:?' + ngeo.utils.encodeQueryString({
     'subject': this.window_.document.title +
         this.translate_.getString(this.emailString_),
     'body': $('app-shorturl input').val()
-  }));
-  this.window_.open(googUri.toString(), '_self', this.windowOptions_);
+  });
+
+  this.window_.open(url, '_self', this.windowOptions_);
   return false;
 };
 

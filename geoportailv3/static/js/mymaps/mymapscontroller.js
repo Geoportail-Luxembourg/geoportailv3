@@ -433,7 +433,7 @@ app.mymaps.MymapsController.prototype.toggleClippingLineMode = function() {
  * @export
  */
 app.mymaps.MymapsController.prototype.resetLayers = function() {
-  goog.array.clear(this.selectedLayers_);
+  this.selectedLayers_.length = 0;
   this.appMymaps_.updateLayers();
 };
 
@@ -1021,7 +1021,7 @@ app.mymaps.MymapsController.prototype.getFilteredCategories = function() {
     //All the categories of all user with at least one map
     categories = this.usersCategories;
   } else {
-    var userCateg = goog.array.find(this.usersCategories, function(item, i) {
+    var userCateg = this.usersCategories.find(function(item, i) {
       if (item['username'] === this.filterMapOwner) {
         return true;
       }
@@ -1033,8 +1033,8 @@ app.mymaps.MymapsController.prototype.getFilteredCategories = function() {
     }
   }
   if (this.appMymaps_.allcategories !== null) {
-    return goog.array.filter(this.appMymaps_.allcategories, function(category, i) {
-      var elem = goog.array.find(categories, function(userCategory, i) {
+    return this.appMymaps_.allcategories.filter(function(category, i) {
+      var elem = categories.find(function(userCategory, i) {
         if (userCategory['categories'].indexOf(category['id']) >= 0) {
           return true;
         }
@@ -1067,7 +1067,7 @@ app.mymaps.MymapsController.prototype.getFilteredUsersCategories = function() {
   if (this.filterCategoryId === null) {
     return this.usersCategories;
   }
-  return goog.array.filter(this.usersCategories, function(item, i) {
+  return this.usersCategories.filter(function(item, i) {
     if (item['categories'].indexOf(this.filterCategoryId) >= 0) {
       return true;
     }
@@ -1095,9 +1095,9 @@ app.mymaps.MymapsController.prototype.openChooseMapModal = function() {
       this.usersCategories = usersCategories;
       this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId)
         .then(function(mymaps) {
-          if (goog.isNull(mymaps)) {
+          if (mymaps === null) {
             this.askToConnect();
-          } else if (!goog.array.isEmpty(mymaps) || this.appUserManager_.getMymapsAdmin()) {
+          } else if (mymaps.length !== 0 || this.appUserManager_.getMymapsAdmin()) {
             this.choosing = true;
             this.maps = mymaps;
           } else {
@@ -1134,7 +1134,7 @@ app.mymaps.MymapsController.prototype.openCreateMapModal = function() {
  */
 app.mymaps.MymapsController.prototype.openMergeLinesModal = function() {
   if (this.getMymapsLinestringFeatures().length > 1) {
-    goog.array.clear(this.selectedLineString);
+    this.selectedLineString.length = 0;
     this.newLineName = this.gettextCatalog.getString('Nouvelle ligne');
 
     this.newLineDesc = '';
@@ -1222,18 +1222,20 @@ app.mymaps.MymapsController.prototype.deleteAMap = function(mapId) {
       this.closeMap();
     }
     this.appMymaps_.deleteAMap(mapId).then(function(resp) {
-      if (goog.isNull(resp)) {
+      if (resp === null) {
         this.askToConnect();
       } else {
         this.choosing = true;
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
-        goog.array.remove(this.maps,
-            goog.array.find(this.maps, function(item) {
-              if (item['uuid'] === mapId) {
-                return true;
-              }
-            }.bind(this)));
+        var curElem = this.maps.find(function(item) {
+          if (item['uuid'] === mapId) {
+            return true;
+          }
+        }.bind(this));
+        if (curElem !== undefined) {
+          this.maps.splice(this.maps.indexOf(curElem), 1);
+        }
       }
     }.bind(this));
   }
