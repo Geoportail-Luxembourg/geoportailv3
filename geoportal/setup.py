@@ -36,6 +36,7 @@ setup(
             'main = geoportailv3_geoportal:main',
         ],
         'console_scripts': [
+          'finalize23DataAdaptations = geoportailv3_geoportal.scripts.finalize_c2c_23_data_adaptations:main',
         ],
     },
 )
