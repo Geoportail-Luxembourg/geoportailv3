@@ -914,7 +914,7 @@ app.QueryController.prototype.hasAttributes = function(feature) {
  * @export
  */
 app.QueryController.prototype.hasValidFID = function(feature) {
-  if (this.isFIDValid_(feature['fid'])) {
+  if ('fid' in feature && this.isFIDValid_(feature['fid'])) {
     return true;
   }
   return false;
@@ -1038,6 +1038,9 @@ app.QueryController.prototype.openPreviewMesurage = function(townCode, filename,
  * @export
  */
 app.QueryController.prototype.trustAsHtml = function(content) {
+  if (typeof content !== 'string') {
+    return content;
+  }
   return this.sce_.trustAsHtml('' + content);
 };
 
@@ -1240,13 +1243,13 @@ app.QueryController.prototype.exportGpx = function(feature, name, isTrack) {
 
 /**
  * Check if the value is a link.
- * @param {string} value The value to test.
+ * @param {*} value The value to test.
  * @return {boolean} True if is a link.
  * @export
  */
 app.QueryController.prototype.isLink = function(value) {
-  return goog.string.caseInsensitiveStartsWith('' + value, 'http://') ||
-      goog.string.caseInsensitiveStartsWith('' + value, 'https://');
+  return (goog.string.caseInsensitiveStartsWith(String(value), 'http://') ||
+      goog.string.caseInsensitiveStartsWith(String(value), 'https://'));
 };
 
 
