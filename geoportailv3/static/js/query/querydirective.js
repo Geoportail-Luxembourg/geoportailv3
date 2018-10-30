@@ -1210,14 +1210,16 @@ app.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
 
 /**
  * Check if the value is empty.
- * @param {?string | undefined} value The value to test.
+ * @param {*} value The value to test.
  * @return {boolean} True if is empty.
  * @export
  */
 app.QueryController.prototype.isEmpty = function(value) {
-  return !value;
+  if (value === undefined || value === null) {
+    return true;
+  }
+  return String(value).length === 0;
 };
-
 
 /**
  * Export the feature
