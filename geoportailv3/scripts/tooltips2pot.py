@@ -11,6 +11,23 @@ from urllib import urlencode
 from geojson import loads as geojson_loads
 
 
+def _get_url_with_token(url):
+    try:
+        creds_re = re.compile('//(.*)@')
+        creds = creds_re.findall(url)[0]
+        user_password = creds.split(':')
+        baseurl = url.replace(creds + '@', '')
+        tokenurl = baseurl.split('rest/')[0] +\
+            'tokens?username=%s&password=%s'\
+            % (user_password[0], user_password[1])
+        token = urllib2.urlopen(tokenurl, None, 15).read()
+        return baseurl + "token=" + token
+    except:
+        print url
+        traceback.print_exc(file=sys.stdout)
+    return None
+
+
 def _get_external_data(url, bbox=None, layer=None):
     body = {'f': 'pjson',
             'geometry': '',
@@ -28,9 +45,14 @@ def _get_external_data(url, bbox=None, layer=None):
     body['geometryType'] = 'esriGeometryEnvelope'
     body['spatialRel'] = 'esriSpatialRelIntersects'
 
+    if url.find("@") > -1:
+        url = _get_url_with_token(url)
+        if url is None:
+            return None
+
     # construct url for get request
     separator = "?"
-    if url.find('?'):
+    if url.find(separator) > 0:
         separator = "&"
     query = '%s%s%s' % (url, separator, urlencode(body))
 
@@ -38,6 +60,7 @@ def _get_external_data(url, bbox=None, layer=None):
         result = urllib2.urlopen(query, None, 15)
         content = result.read()
     except:
+        print query
         traceback.print_exc(file=sys.stdout)
         return []
 
