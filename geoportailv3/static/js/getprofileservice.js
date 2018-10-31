@@ -10,7 +10,6 @@ const appModule = goog.require('app.module');
 const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
 
 
-
 /**
  * @param {angular.$http} $http The Angular $http service.
  * @param {string} profileServiceUrl The URL to the "profile" service.
@@ -72,6 +71,6 @@ function service($http, profileServiceUrl) {
           return resp.data['profile'];
         });
   }
-};
+}
 
 appModule.service('appGetProfile', service);

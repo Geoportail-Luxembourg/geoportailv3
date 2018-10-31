@@ -130,6 +130,6 @@ function factory($http, $sce, $rootScope,
     }
 
   }
-};
+}
 
 appModule.factory('appShowLayerinfo', factory);

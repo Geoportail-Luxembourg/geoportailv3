@@ -72,7 +72,7 @@ function factory(appGetWmtsLayer, appGetWmsLayer,
     }
     return layer;
   }
-};
+}
 
 
 appModule.factory('appGetLayerForCatalogNode', factory);

@@ -33,7 +33,7 @@ function measureDirective(appMeasureTemplateUrl) {
     bindToController: true,
     templateUrl: appMeasureTemplateUrl
   };
-};
+}
 
 
 appModule.directive('appMeasure', measureDirective);

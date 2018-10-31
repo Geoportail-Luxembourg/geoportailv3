@@ -12,7 +12,6 @@ const olLayerImage = goog.require('ol.layer.Image');
 const olSourceImageWMS = goog.require('ol.source.ImageWMS');
 
 
-
 /**
  * @param {string} proxyWmsUrl URL to the proxy wms.
  * @param {boolean} remoteProxyWms is the proxy wms remote or local.
@@ -59,7 +58,7 @@ function factory(proxyWmsUrl, remoteProxyWms,
 
     return layer;
   }
-};
+}
 
 
 appModule.factory('appGetWmsLayer', factory);

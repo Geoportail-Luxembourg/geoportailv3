@@ -132,7 +132,7 @@ function service() {
     return res;
   }
 
-};
+}
 
 
 appModule.service('appCoordinateString', service);
