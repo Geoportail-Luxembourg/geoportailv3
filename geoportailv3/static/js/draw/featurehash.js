@@ -57,7 +57,7 @@ FeatureHashStyleTypes[olGeomGeometryType.MULTI_POLYGON] =
  * @type {Object.<string, string>}
  * @private
  */
-const FeatureHashLegacyProperties = {};
+let FeatureHashLegacyProperties = {};
 
 
 /**
@@ -130,10 +130,6 @@ exports = function(opt_options) {
    */
   this.prevY_ = 0;
 
-  /**
-   * @type {Object.<string, string>}
-   * @private
-   */
   FeatureHashLegacyProperties = (options.propertiesType !== undefined) &&  options.propertiesType;
 
 };
