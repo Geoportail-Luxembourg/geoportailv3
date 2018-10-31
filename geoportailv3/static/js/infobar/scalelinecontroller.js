@@ -12,23 +12,24 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.ScalelineController');
+goog.module('app.infobar.ScalelineController');
 
-goog.require('app.module');
-goog.require('ol.control.ScaleLine');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olControlScaleLine = goog.require('ol.control.ScaleLine');
 
 
 /**
  * @ngInject
  * @constructor
  */
-app.infobar.ScalelineController = function() {
+exports = function() {
   /**
    * @type {ol.control.ScaleLine}
    */
-  this['control'] = new ol.control.ScaleLine();
+  this['control'] = new olControlScaleLine();
 };
 
 
-app.module.controller('AppScalelineController',
-    app.infobar.ScalelineController);
+appModule.controller('AppScalelineController',
+    exports);

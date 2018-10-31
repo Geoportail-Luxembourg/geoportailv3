@@ -1,24 +1,25 @@
-goog.provide('app.interaction.DrawRoute');
+goog.module('app.interaction.DrawRoute');
 
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.Object');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.condition');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.functions');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.DrawEventType');
-goog.require('ol.interaction.Pointer');
-goog.require('ol.interaction.Property');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
+goog.module.declareLegacyNamespace();
+const olBase = goog.require('ol');
+const olFeature = goog.require('ol.Feature');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olObject = goog.require('ol.Object');
+const olEvents = goog.require('ol.events');
+const olEventsEvent = goog.require('ol.events.Event');
+const olEventsCondition = goog.require('ol.events.condition');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olFunctions = goog.require('ol.functions');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
+const olInteractionDrawEventType = goog.require('ol.interaction.DrawEventType');
+const olInteractionPointer = goog.require('ol.interaction.Pointer');
+const olInteractionProperty = goog.require('ol.interaction.Property');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olSourceVector = goog.require('ol.source.Vector');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -31,12 +32,12 @@ goog.require('ol.style.Style');
  * @param {olx.interaction.DrawOptions} options Options.
  * @api
  */
-app.interaction.DrawRoute = function(options) {
+exports = function(options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: app.interaction.DrawRoute.handleDownEvent_,
-    handleEvent: app.interaction.DrawRoute.handleEvent,
-    handleUpEvent: app.interaction.DrawRoute.handleUpEvent_
+  olInteractionPointer.call(this, {
+    handleDownEvent: exports.handleDownEvent_,
+    handleEvent: exports.handleEvent,
+    handleUpEvent: exports.handleUpEvent_
   });
   /**
    * @type {angular.$http}
@@ -106,7 +107,7 @@ app.interaction.DrawRoute = function(options) {
    * @type {app.interaction.DrawRoute.Mode_}
    * @private
    */
-  this.mode_ = app.interaction.DrawRoute.getMode_(this.type_);
+  this.mode_ = exports.getMode_(this.type_);
 
   /**
    * The number of points that must be drawn before a polygon ring or line
@@ -117,7 +118,7 @@ app.interaction.DrawRoute = function(options) {
    */
   this.minPoints_ = options.minPoints ?
       options.minPoints :
-      (this.mode_ === app.interaction.DrawRoute.Mode_.POLYGON ? 3 : 2);
+      (this.mode_ === exports.Mode_.POLYGON ? 3 : 2);
 
   /**
    * The number of points that can be drawn before a polygon ring or line string
@@ -132,7 +133,7 @@ app.interaction.DrawRoute = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishCondition : ol.functions.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : olFunctions.TRUE;
 
   /**
    * @private
@@ -173,7 +174,7 @@ app.interaction.DrawRoute = function(options) {
           geometry.setCoordinates(coordinates);
         }
       } else {
-        geometry = new ol.geom.LineString(coordinates);
+        geometry = new olGeomLineString(coordinates);
       }
       return geometry;
     };
@@ -243,13 +244,13 @@ app.interaction.DrawRoute = function(options) {
    * @type {ol.layer.Vector}
    * @private
    */
-  this.overlay_ = new ol.layer.Vector({
-    source: new ol.source.Vector({
+  this.overlay_ = new olLayerVector({
+    source: new olSourceVector({
       useSpatialIndex: false,
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-        app.interaction.DrawRoute.getDefaultStyleFunction()
+        exports.getDefaultStyleFunction()
   });
 
   /**
@@ -264,7 +265,7 @@ app.interaction.DrawRoute = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+      options.condition : olEventsCondition.noModifierKeys;
 
   /**
    * @private
@@ -272,25 +273,25 @@ app.interaction.DrawRoute = function(options) {
    */
   this.freehandCondition_;
   if (options.freehand) {
-    this.freehandCondition_ = ol.events.condition.always;
+    this.freehandCondition_ = olEventsCondition.always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : ol.events.condition.shiftKeyOnly;
+        options.freehandCondition : olEventsCondition.shiftKeyOnly;
   }
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
+  olEvents.listen(this,
+      olObject.getChangeEventType(olInteractionProperty.ACTIVE),
       this.updateState_, this);
 
 };
-ol.inherits(app.interaction.DrawRoute, ol.interaction.Pointer);
+olBase.inherits(exports, olInteractionPointer);
 
 
 /**
  * @return {ol.StyleFunction} Styles.
  */
-app.interaction.DrawRoute.getDefaultStyleFunction = function() {
-  var styles = ol.style.Style.createDefaultEditing();
+exports.getDefaultStyleFunction = function() {
+  var styles = olStyleStyle.createDefaultEditing();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
@@ -300,8 +301,8 @@ app.interaction.DrawRoute.getDefaultStyleFunction = function() {
 /**
  * @inheritDoc
  */
-app.interaction.DrawRoute.prototype.setMap = function(map) {
-  ol.interaction.Pointer.prototype.setMap.call(this, map);
+exports.prototype.setMap = function(map) {
+  olInteractionPointer.prototype.setMap.call(this, map);
   this.updateState_();
 };
 
@@ -314,20 +315,20 @@ app.interaction.DrawRoute.prototype.setMap = function(map) {
  * @this {app.interaction.DrawRoute}
  * @api
  */
-app.interaction.DrawRoute.handleEvent = function(event) {
-  this.freehand_ = this.mode_ !== app.interaction.DrawRoute.Mode_.POINT && this.freehandCondition_(event);
+exports.handleEvent = function(event) {
+  this.freehand_ = this.mode_ !== exports.Mode_.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      event.type === ol.MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+      event.type === olMapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
     this.addToDrawing_(event);
     pass = false;
   } else if (event.type ===
-      ol.MapBrowserEventType.POINTERMOVE) {
+      olMapBrowserEventType.POINTERMOVE) {
     pass = this.handlePointerMove_(event);
-  } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
+  } else if (event.type === olMapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
+  return olInteractionPointer.handleEvent.call(this, event) && pass;
 };
 
 
@@ -337,7 +338,7 @@ app.interaction.DrawRoute.handleEvent = function(event) {
  * @this {app.interaction.DrawRoute}
  * @private
  */
-app.interaction.DrawRoute.handleDownEvent_ = function(event) {
+exports.handleDownEvent_ = function(event) {
   this.shouldHandle_ = !this.freehand_;
 
   if (this.freehand_) {
@@ -361,17 +362,17 @@ app.interaction.DrawRoute.handleDownEvent_ = function(event) {
  * @this {app.interaction.DrawRoute}
  * @private
  */
-app.interaction.DrawRoute.handleUpEvent_ = function(event) {
+exports.handleUpEvent_ = function(event) {
   var pass = true;
 
   this.handlePointerMove_(event);
 
-  var circleMode = this.mode_ === app.interaction.DrawRoute.Mode_.CIRCLE;
+  var circleMode = this.mode_ === exports.Mode_.CIRCLE;
 
   if (this.shouldHandle_) {
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
-      if (this.mode_ === app.interaction.DrawRoute.Mode_.POINT) {
+      if (this.mode_ === exports.Mode_.POINT) {
         this.finishDrawing();
       }
     } else if (this.freehand_ || circleMode) {
@@ -402,7 +403,7 @@ app.interaction.DrawRoute.handleUpEvent_ = function(event) {
  * @return {boolean} Pass the event to other interactions.
  * @private
  */
-app.interaction.DrawRoute.prototype.handlePointerMove_ = function(event) {
+exports.prototype.handlePointerMove_ = function(event) {
   if (this.downPx_ &&
       ((!this.freehand_ && this.shouldHandle_) ||
       (this.freehand_ && !this.shouldHandle_))) {
@@ -431,7 +432,7 @@ app.interaction.DrawRoute.prototype.handlePointerMove_ = function(event) {
  * @return {boolean} The event is within the snapping tolerance of the start.
  * @private
  */
-app.interaction.DrawRoute.prototype.atFinish_ = function(event) {
+exports.prototype.atFinish_ = function(event) {
   var at = false;
   if (this.sketchFeature_) {
     var potentiallyDone = false;
@@ -463,10 +464,10 @@ app.interaction.DrawRoute.prototype.atFinish_ = function(event) {
  * @param {ol.MapBrowserEvent} event Event.
  * @private
  */
-app.interaction.DrawRoute.prototype.createOrUpdateSketchPoint_ = function(event) {
+exports.prototype.createOrUpdateSketchPoint_ = function(event) {
   var coordinates = event.coordinate.slice();
   if (!this.sketchPoint_) {
-    this.sketchPoint_ = new ol.Feature(new ol.geom.Point(coordinates));
+    this.sketchPoint_ = new olFeature(new olGeomPoint(coordinates));
     this.updateSketchFeatures_();
   } else {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
@@ -480,33 +481,33 @@ app.interaction.DrawRoute.prototype.createOrUpdateSketchPoint_ = function(event)
  * @param {ol.MapBrowserEvent} event Event.
  * @private
  */
-app.interaction.DrawRoute.prototype.startDrawing_ = function(event) {
+exports.prototype.startDrawing_ = function(event) {
   var start = event.coordinate;
   this.finishCoordinate_ = start;
-  if (this.mode_ === app.interaction.DrawRoute.Mode_.POINT) {
+  if (this.mode_ === exports.Mode_.POINT) {
     this.sketchCoords_ = start.slice();
-  } else if (this.mode_ === app.interaction.DrawRoute.Mode_.POLYGON) {
+  } else if (this.mode_ === exports.Mode_.POLYGON) {
     this.sketchCoords_ = [[start.slice(), start.slice()]];
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === app.interaction.DrawRoute.Mode_.CIRCLE) {
+    if (this.mode_ === exports.Mode_.CIRCLE) {
       this.sketchLineCoords_ = this.sketchCoords_;
     }
   }
   if (this.sketchLineCoords_) {
-    this.sketchLine_ = new ol.Feature(
-        new ol.geom.LineString(this.sketchLineCoords_));
+    this.sketchLine_ = new olFeature(
+        new olGeomLineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
-  this.sketchFeature_ = new ol.Feature();
+  this.sketchFeature_ = new olFeature();
   if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new app.interaction.DrawRoute.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new exports.Event(
+      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -515,7 +516,7 @@ app.interaction.DrawRoute.prototype.startDrawing_ = function(event) {
  * @param {ol.MapBrowserEvent} event Event.
  * @private
  */
-app.interaction.DrawRoute.prototype.modifyDrawing_ = function(event) {
+exports.prototype.modifyDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, last;
@@ -533,10 +534,10 @@ app.interaction.DrawRoute.prototype.modifyDrawing_ = function(event) {
     sketchPointGeom.setCoordinates(coordinate);
   }
   var sketchLineGeom;
-  if (geometry instanceof ol.geom.Polygon &&
-      this.mode_ !== app.interaction.DrawRoute.Mode_.POLYGON) {
+  if (geometry instanceof olGeomPolygon &&
+      this.mode_ !== exports.Mode_.POLYGON) {
     if (!this.sketchLine_) {
-      this.sketchLine_ = new ol.Feature(new ol.geom.LineString(null));
+      this.sketchLine_ = new olFeature(new olGeomLineString(null));
     }
     var ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
@@ -555,7 +556,7 @@ app.interaction.DrawRoute.prototype.modifyDrawing_ = function(event) {
  * @param {ol.MapBrowserEvent} event Event.
  * @private
  */
-app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
+exports.prototype.addToDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var done;
@@ -580,15 +581,15 @@ app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
   } else {
     var last = coordinates[coordinates.length - 1];
     if (coordinates.length > 2) {
-      var penultimate = ol.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
-      var antepenultimate = ol.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
+      var penultimate = olBase.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
+      var antepenultimate = olBase.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
       var waypoints = antepenultimate[1] + ',' + antepenultimate[0] + ',' + penultimate[1] + ',' + penultimate[0];
       if (waypoints !== this.lastWaypoints_ && !this.isRequestingRoute_) {
         this.lastWaypoints_ = waypoints;
         var url = this.getRouteUrl_ + '?waypoints=' + waypoints;
         this.isRequestingRoute_ = true;
         this.$http_.get(url).then(function(resp) {
-          var parser = new ol.format.GeoJSON();
+          var parser = new olFormatGeoJSON();
           if (resp['data']['success']) {
             var routedGeometry = parser.readGeometry(resp['data']['geom']);
             this.pointsCnt_.push(/** @type {ol.geom.LineString} */ (routedGeometry).getCoordinates().length);
@@ -631,7 +632,7 @@ app.interaction.DrawRoute.prototype.addToDrawing_ = function(event) {
  * Activate or deactivate Map matching.
  * @param {boolean} actif Set to true to activate mapmatching.
  */
-app.interaction.DrawRoute.prototype.setMapMatching = function(actif) {
+exports.prototype.setMapMatching = function(actif) {
   this.mapMatching_ = actif;
 };
 
@@ -639,7 +640,7 @@ app.interaction.DrawRoute.prototype.setMapMatching = function(actif) {
  * Get the status of mapmatching.
  * @return {boolean} Return true if mapMatching is active.
  */
-app.interaction.DrawRoute.prototype.getMapMatching = function() {
+exports.prototype.getMapMatching = function() {
   return this.mapMatching_;
 };
 
@@ -647,7 +648,7 @@ app.interaction.DrawRoute.prototype.getMapMatching = function() {
  * Toggle the mapmatching status.
  * @return {boolean} Return true if mapMatching is active.
  */
-app.interaction.DrawRoute.prototype.toggleMapMatching = function() {
+exports.prototype.toggleMapMatching = function() {
   this.mapMatching_ = !this.mapMatching_;
   return this.mapMatching_;
 };
@@ -656,7 +657,7 @@ app.interaction.DrawRoute.prototype.toggleMapMatching = function() {
  * Remove last point of the feature currently being drawn.
  * @api
  */
-app.interaction.DrawRoute.prototype.removeLastPoints = function() {
+exports.prototype.removeLastPoints = function() {
   if (!this.sketchFeature_) {
     return;
   }
@@ -680,20 +681,20 @@ app.interaction.DrawRoute.prototype.removeLastPoints = function() {
  * Remove last point of the feature currently being drawn.
  * @api
  */
-app.interaction.DrawRoute.prototype.removeLastPoint = function() {
+exports.prototype.removeLastPoint = function() {
   if (!this.sketchFeature_) {
     return;
   }
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, sketchLineGeom;
-  if (this.mode_ === app.interaction.DrawRoute.Mode_.LINE_STRING) {
+  if (this.mode_ === exports.Mode_.LINE_STRING) {
     coordinates = this.sketchCoords_;
     coordinates.splice(-2, 1);
     this.geometryFunction_(coordinates, geometry);
     if (coordinates.length >= 2) {
       this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
     }
-  } else if (this.mode_ === app.interaction.DrawRoute.Mode_.POLYGON) {
+  } else if (this.mode_ === exports.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
@@ -715,12 +716,12 @@ app.interaction.DrawRoute.prototype.removeLastPoint = function() {
  * inserting the feature.
  * @api
  */
-app.interaction.DrawRoute.prototype.finishDrawing = function() {
+exports.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new app.interaction.DrawRoute.Event(
-      ol.interaction.DrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(new exports.Event(
+      olInteractionDrawEventType.DRAWEND, sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -737,7 +738,7 @@ app.interaction.DrawRoute.prototype.finishDrawing = function() {
  * @return {ol.Feature} The sketch feature (or null if none).
  * @private
  */
-app.interaction.DrawRoute.prototype.abortDrawing_ = function() {
+exports.prototype.abortDrawing_ = function() {
   this.finishCoordinate_ = null;
   var sketchFeature = this.sketchFeature_;
   this.pointsCnt_ = [];
@@ -758,7 +759,7 @@ app.interaction.DrawRoute.prototype.abortDrawing_ = function() {
  * @param {!ol.Feature} feature Feature to be extended.
  * @api
  */
-app.interaction.DrawRoute.prototype.extend = function(feature) {
+exports.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
   var lineString = /** @type {ol.geom.LineString} */ (geometry);
   this.sketchFeature_ = feature;
@@ -767,22 +768,22 @@ app.interaction.DrawRoute.prototype.extend = function(feature) {
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
-  this.dispatchEvent(new app.interaction.DrawRoute.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new exports.Event(
+      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
 /**
  * @inheritDoc
  */
-app.interaction.DrawRoute.prototype.shouldStopEvent = ol.functions.FALSE;
+exports.prototype.shouldStopEvent = olFunctions.FALSE;
 
 
 /**
  * Redraw the sketch features.
  * @private
  */
-app.interaction.DrawRoute.prototype.updateSketchFeatures_ = function() {
+exports.prototype.updateSketchFeatures_ = function() {
   var sketchFeatures = [];
   if (this.sketchFeature_) {
     sketchFeatures.push(this.sketchFeature_);
@@ -802,7 +803,7 @@ app.interaction.DrawRoute.prototype.updateSketchFeatures_ = function() {
 /**
  * @private
  */
-app.interaction.DrawRoute.prototype.updateState_ = function() {
+exports.prototype.updateState_ = function() {
   var map = this.getMap();
   var active = this.getActive();
   if (!map || !active) {
@@ -818,19 +819,19 @@ app.interaction.DrawRoute.prototype.updateState_ = function() {
  * @return {app.interaction.DrawRoute.Mode_} Drawing mode.
  * @private
  */
-app.interaction.DrawRoute.getMode_ = function(type) {
+exports.getMode_ = function(type) {
   var mode;
-  if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTI_POINT) {
-    mode = app.interaction.DrawRoute.Mode_.POINT;
-  } else if (type === ol.geom.GeometryType.LINE_STRING ||
-      type === ol.geom.GeometryType.MULTI_LINE_STRING) {
-    mode = app.interaction.DrawRoute.Mode_.LINE_STRING;
-  } else if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTI_POLYGON) {
-    mode = app.interaction.DrawRoute.Mode_.POLYGON;
-  } else if (type === ol.geom.GeometryType.CIRCLE) {
-    mode = app.interaction.DrawRoute.Mode_.CIRCLE;
+  if (type === olGeomGeometryType.POINT ||
+      type === olGeomGeometryType.MULTI_POINT) {
+    mode = exports.Mode_.POINT;
+  } else if (type === olGeomGeometryType.LINE_STRING ||
+      type === olGeomGeometryType.MULTI_LINE_STRING) {
+    mode = exports.Mode_.LINE_STRING;
+  } else if (type === olGeomGeometryType.POLYGON ||
+      type === olGeomGeometryType.MULTI_POLYGON) {
+    mode = exports.Mode_.POLYGON;
+  } else if (type === olGeomGeometryType.CIRCLE) {
+    mode = exports.Mode_.CIRCLE;
   }
   return /** @type {!app.interaction.DrawRoute.Mode_} */ (mode);
 };
@@ -842,7 +843,7 @@ app.interaction.DrawRoute.getMode_ = function(type) {
  * @enum {string}
  * @private
  */
-app.interaction.DrawRoute.Mode_ = {
+exports.Mode_ = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
@@ -860,9 +861,9 @@ app.interaction.DrawRoute.Mode_ = {
  * @param {ol.interaction.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
-app.interaction.DrawRoute.Event = function(type, feature) {
+exports.Event = function(type, feature) {
 
-  ol.events.Event.call(this, type);
+  olEventsEvent.call(this, type);
 
   /**
    * The feature being drawn.
@@ -872,4 +873,4 @@ app.interaction.DrawRoute.Event = function(type, feature) {
   this.feature = feature;
 
 };
-ol.inherits(app.interaction.DrawRoute.Event, ol.events.Event);
+olBase.inherits(exports.Event, olEventsEvent);

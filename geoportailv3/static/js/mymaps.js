@@ -4,25 +4,26 @@
  * return objects representing maps and features.
  */
 
-goog.provide('app.Mymaps');
+goog.module('app.Mymaps');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('ol.obj');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.Point');
-goog.require('ol.proj');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Text');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const olObj = goog.require('ol.obj');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const olGeomMultiPoint = goog.require('ol.geom.MultiPoint');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olProj = goog.require('ol.proj');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleIcon = goog.require('ol.style.Icon');
+const olStyleRegularShape = goog.require('ol.style.RegularShape');
+const olStyleText = goog.require('ol.style.Text');
+const olStyleStroke = goog.require('ol.style.Stroke');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -45,7 +46,7 @@ goog.require('ol.style.Style');
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
     appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
   /**
@@ -360,7 +361,7 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
 /**
  * @return {?Object} The raw response data of the map info query.
  */
-app.Mymaps.prototype.getMapInfo = function() {
+exports.prototype.getMapInfo = function() {
   return this.mapInfo_;
 };
 
@@ -368,7 +369,7 @@ app.Mymaps.prototype.getMapInfo = function() {
 /**
  * @return {?Object} The raw response data of the map features query.
  */
-app.Mymaps.prototype.getMapFeatures = function() {
+exports.prototype.getMapFeatures = function() {
   return this.mapFeatures_;
 };
 
@@ -377,7 +378,7 @@ app.Mymaps.prototype.getMapFeatures = function() {
  * @param {?number} categoryId the category id to get a category for
  * @return {?Object} The category.
  */
-app.Mymaps.prototype.getCategory = function(categoryId) {
+exports.prototype.getCategory = function(categoryId) {
   if (categoryId !== undefined && categoryId !== null) {
     var categ = this.allcategories.find(function(category) {
       return category.id === categoryId;
@@ -396,7 +397,7 @@ app.Mymaps.prototype.getCategory = function(categoryId) {
  * Set the mapId.
  * @param {string} mapId The map id.
  */
-app.Mymaps.prototype.setMapId = function(mapId) {
+exports.prototype.setMapId = function(mapId) {
   this.mapId_ = mapId;
   this.stateManager_.updateState({
     'map_id': this.mapId_
@@ -408,7 +409,7 @@ app.Mymaps.prototype.setMapId = function(mapId) {
  * Get the mapId.
  * @return {string} The map id.
  */
-app.Mymaps.prototype.getMapId = function() {
+exports.prototype.getMapId = function() {
   return this.mapId_;
 };
 
@@ -419,7 +420,7 @@ app.Mymaps.prototype.getMapId = function() {
  * @param {ol.Collection} collection The collection.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
+exports.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
   return this.loadMapInformation().then(function(mapinformation) {
@@ -438,7 +439,7 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
  * @param {ol.Collection} collection The collection of features to fill.
  * @return {ol.Collection} a collection of features with the new features.
  */
-app.Mymaps.prototype.setFeatures = function(features, collection) {
+exports.prototype.setFeatures = function(features, collection) {
   if (features !== null) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
@@ -446,7 +447,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
     });
 
     var featureStyleFunction = this.createStyleFunction(this.map);
-    var jsonFeatures = (new ol.format.GeoJSON()).
+    var jsonFeatures = (new olFormatGeoJSON()).
         readFeatures(features, encOpt);
     jsonFeatures.forEach(function(feature) {
       feature.set('altitudeMode', 'clampToGround');
@@ -463,7 +464,7 @@ app.Mymaps.prototype.setFeatures = function(features, collection) {
 /**
  * clear the mymaps service
  */
-app.Mymaps.prototype.clear = function() {
+exports.prototype.clear = function() {
   this.stateManager_.deleteParam('map_id');
   this.mapId_ = '';
   this.mapTitle = '';
@@ -484,7 +485,7 @@ app.Mymaps.prototype.clear = function() {
 /**
  * @return {boolean} Return true if is editable by the user
  */
-app.Mymaps.prototype.isEditable = function() {
+exports.prototype.isEditable = function() {
   if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
       this.mapIsEditable && !this.ngeoNetworkStatus_.isDisconnected()) {
     return true;
@@ -497,7 +498,7 @@ app.Mymaps.prototype.isEditable = function() {
  * Get the categories available for each user that the connected user can see.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.getUsersCategories = function() {
+exports.prototype.getUsersCategories = function() {
   var url = this.mymapsUserCategoriesUrl_;
   return this.$http_.get(url).then(
       function(resp) {
@@ -511,7 +512,7 @@ app.Mymaps.prototype.getUsersCategories = function() {
  * @param {?number} categoryId The category to restrict.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.getMaps = function(owner, categoryId) {
+exports.prototype.getMaps = function(owner, categoryId) {
   var url = this.mymapsMapsUrl_;
   var params = {};
   if (owner !== null) {
@@ -540,7 +541,7 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
         }
         var msg = this.gettextCatalog.getString(
            'Erreur inattendue lors du chargement de vos cartes.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -551,7 +552,7 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
  * Load the permissible categories from the webservice.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.loadCategories = function() {
+exports.prototype.loadCategories = function() {
   return this.$http_.get(this.mymapsCategoriesUrl_).then(
       /**
          * @param {angular.$http.Response} resp Ajax response.
@@ -574,7 +575,7 @@ app.Mymaps.prototype.loadCategories = function() {
  * Load the permissible categories from the webservice.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.loadAllCategories = function() {
+exports.prototype.loadAllCategories = function() {
   return this.$http_.get(this.mymapsAllCategoriesUrl_).then(
       /**
          * @param {angular.$http.Response} resp Ajax response.
@@ -598,7 +599,7 @@ app.Mymaps.prototype.loadAllCategories = function() {
  * @return {angular.$q.Promise} Promise.
  * @private
  */
-app.Mymaps.prototype.loadFeatures_ = function() {
+exports.prototype.loadFeatures_ = function() {
   return this.$http_.get(this.mymapsFeaturesUrl_ + this.mapId_).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -615,12 +616,12 @@ app.Mymaps.prototype.loadFeatures_ = function() {
         } else if (error.status == 404) {
           msg = this.gettextCatalog.getString(
             'La carte demandée n\'existe pas.');
-          this.notify_(msg, app.NotifyNotificationType.WARNING);
+          this.notify_(msg, appNotifyNotificationType.WARNING);
           return null;
         }
         msg = this.gettextCatalog.getString(
           'Erreur inattendue lors du chargement de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return null;
       }.bind(this)
   );
@@ -630,7 +631,7 @@ app.Mymaps.prototype.loadFeatures_ = function() {
 /**
  * update the map with layers
  */
-app.Mymaps.prototype.updateLayers = function() {
+exports.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
   this.appThemes_.getBgLayers().then(
       /**
@@ -682,7 +683,7 @@ app.Mymaps.prototype.updateLayers = function() {
  * Load the map information.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.loadMapInformation = function() {
+exports.prototype.loadMapInformation = function() {
   return this.getMapInformation().then(function(mapinformation) {
     return this.setMapInformation(mapinformation);
   }.bind(this));
@@ -694,7 +695,7 @@ app.Mymaps.prototype.loadMapInformation = function() {
  * @param {Object} mapinformation any
  * @return {Object} mapinformation any
  */
-app.Mymaps.prototype.setMapInformation = function(mapinformation) {
+exports.prototype.setMapInformation = function(mapinformation) {
   if (mapinformation !== null) {
     this.mapDescription = mapinformation['description'];
     this.mapTitle = mapinformation['title'];
@@ -784,7 +785,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
  * Get the map information.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.getMapInformation = function() {
+exports.prototype.getMapInformation = function() {
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -801,12 +802,12 @@ app.Mymaps.prototype.getMapInformation = function() {
         } else if (error.status == 404) {
           msg = this.gettextCatalog.getString(
             'La carte demandée n\'existe pas.');
-          this.notify_(msg, app.NotifyNotificationType.WARNING);
+          this.notify_(msg, appNotifyNotificationType.WARNING);
           return null;
         }
         msg = this.gettextCatalog.getString(
           'Erreur inattendue lors du chargement de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return null;
       }.bind(this)
   );
@@ -818,7 +819,7 @@ app.Mymaps.prototype.getMapInformation = function() {
  * @param {ol.Feature} feature the feature to delete.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteFeature = function(feature) {
+exports.prototype.deleteFeature = function(feature) {
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
       feature.get('fid')).then(
       /**
@@ -835,7 +836,7 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
 
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la suppression d\'un élement.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -850,7 +851,7 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  * @param {boolean} isPublic if the map is public or not.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.createMap =
+exports.prototype.createMap =
     function(title, description, categoryId, isPublic) {
       var req = $.param({
         'title': title,
@@ -875,7 +876,7 @@ app.Mymaps.prototype.createMap =
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la création de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -890,7 +891,7 @@ app.Mymaps.prototype.createMap =
  * @param {boolean} isPublic if the map is public or not.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.copyMap =
+exports.prototype.copyMap =
     function(title, description, categoryId, isPublic) {
       var req = $.param({
         'title': title,
@@ -916,7 +917,7 @@ app.Mymaps.prototype.copyMap =
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la copie de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this));
     };
@@ -927,7 +928,7 @@ app.Mymaps.prototype.copyMap =
  * @param {string} mapId The map id to delete.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteAMap = function(mapId) {
+exports.prototype.deleteAMap = function(mapId) {
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -942,7 +943,7 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la suppression de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -954,7 +955,7 @@ app.Mymaps.prototype.deleteAMap = function(mapId) {
  * @param {string} mapId The map id of the features to delete.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
+exports.prototype.deleteAllFeaturesAMap = function(mapId) {
   return this.$http_.delete(this.mymapsDeleteFeaturesUrl_ + mapId).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -969,7 +970,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la suppression des objets de la carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -980,7 +981,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
  * Delete the current map.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteMap = function() {
+exports.prototype.deleteMap = function() {
   return this.deleteAMap(this.mapId_);
 };
 
@@ -989,7 +990,7 @@ app.Mymaps.prototype.deleteMap = function() {
  * Delete all the features of the current map.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.deleteMapFeatures = function() {
+exports.prototype.deleteMapFeatures = function() {
   return this.deleteAllFeaturesAMap(this.mapId_);
 };
 
@@ -1002,7 +1003,7 @@ app.Mymaps.prototype.deleteMapFeatures = function() {
  * @param {boolean} isPublic is the map public.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.updateMap =
+exports.prototype.updateMap =
     function(title, description, categoryId, isPublic) {
 
       this.mapTitle = title;
@@ -1034,7 +1035,7 @@ app.Mymaps.prototype.updateMap =
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la mise à jour de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -1052,7 +1053,7 @@ app.Mymaps.prototype.updateMap =
  * @param {string} theme The theme.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.updateMapEnv =
+exports.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
         layers_visibility, layers_indices, theme) {
 
@@ -1083,7 +1084,7 @@ app.Mymaps.prototype.updateMapEnv =
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la mise à jour de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -1095,7 +1096,7 @@ app.Mymaps.prototype.updateMapEnv =
  * @param {Array<ol.Feature>} features The feature to save
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.saveFeaturesOrder = function(features) {
+exports.prototype.saveFeaturesOrder = function(features) {
 
   var orders = [];
   features.forEach(function(feature) {
@@ -1124,7 +1125,7 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la sauvegarde de votre modification.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -1136,13 +1137,13 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
  * @param {ol.Feature} feature The feature to save
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.saveFeature = function(feature) {
+exports.prototype.saveFeature = function(feature) {
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
     featureProjection: this.mapProjection
   });
   var req = $.param({
-    'feature': (new ol.format.GeoJSON()).writeFeature(feature, encOpt)
+    'feature': (new olFormatGeoJSON()).writeFeature(feature, encOpt)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1162,7 +1163,7 @@ app.Mymaps.prototype.saveFeature = function(feature) {
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la sauvegarde de votre modification.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -1174,13 +1175,13 @@ app.Mymaps.prototype.saveFeature = function(feature) {
  * @param {Array.<ol.Feature>} features The features to save.
  * @return {angular.$q.Promise} Promise.
  */
-app.Mymaps.prototype.saveFeatures = function(features) {
+exports.prototype.saveFeatures = function(features) {
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
     featureProjection: this.mapProjection
   });
   var req = $.param({
-    'features': (new ol.format.GeoJSON()).writeFeatures(features, encOpt)
+    'features': (new olFormatGeoJSON()).writeFeatures(features, encOpt)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1200,7 +1201,7 @@ app.Mymaps.prototype.saveFeatures = function(features) {
         }
         var msg = this.gettextCatalog.getString(
             'Erreur inattendue lors de la sauvegarde de votre modification.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
+        this.notify_(msg, appNotifyNotificationType.ERROR);
         return [];
       }.bind(this)
   );
@@ -1211,17 +1212,17 @@ app.Mymaps.prototype.saveFeatures = function(features) {
  * Notify the user he has to connect.
  * @export
  */
-app.Mymaps.prototype.notifyUnauthorized = function() {
+exports.prototype.notifyUnauthorized = function() {
   var msg = this.gettextCatalog.getString(
       'Votre utilisateur n\'a pas les autorisations suffisantes.');
-  this.notify_(msg, app.NotifyNotificationType.WARNING);
+  this.notify_(msg, appNotifyNotificationType.WARNING);
 };
 
 
 /**
  * @return {boolean} Return true if a map is selected.
  */
-app.Mymaps.prototype.isMymapsSelected = function() {
+exports.prototype.isMymapsSelected = function() {
   return !!this.mapId_;
 };
 
@@ -1231,19 +1232,19 @@ app.Mymaps.prototype.isMymapsSelected = function() {
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @export
  */
-app.Mymaps.prototype.createStyleFunction = function(curMap) {
+exports.prototype.createStyleFunction = function(curMap) {
 
   var styles = [];
 
-  var vertexStyle = new ol.style.Style({
-    image: new ol.style.RegularShape({
+  var vertexStyle = new olStyleStyle({
+    image: new olStyleRegularShape({
       radius: 6,
       points: 4,
       angle: Math.PI / 4,
-      fill: new ol.style.Fill({
+      fill: new olStyleFill({
         color: [255, 255, 255, 0.5]
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new olStyleStroke({
         color: [0, 0, 0, 1]
       })
     }),
@@ -1251,19 +1252,19 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       var geom = feature.getGeometry();
 
       var coordinates;
-      if (geom instanceof ol.geom.LineString) {
+      if (geom instanceof olGeomLineString) {
         coordinates = geom.getCoordinates();
-        return new ol.geom.MultiPoint(coordinates);
-      } else if (geom instanceof ol.geom.Polygon) {
+        return new olGeomMultiPoint(coordinates);
+      } else if (geom instanceof olGeomPolygon) {
         coordinates = geom.getCoordinates()[0];
-        return new ol.geom.MultiPoint(coordinates);
+        return new olGeomMultiPoint(coordinates);
       } else {
         return geom;
       }
     }
   });
 
-  var fillStyle = new ol.style.Fill();
+  var fillStyle = new olStyleFill();
   var symbolUrl = this.mymapsSymbolUrl_;
   var arrowUrl = this.arrowUrl_;
   const arrowModelUrl = this.arrowModelUrl_;
@@ -1297,7 +1298,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     rgbaColor[3] = opacity;
 
     fillStyle.setColor(rgbaColor);
-    if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
+    if (this.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
       var arrowColor = this.get('arrowcolor');
@@ -1305,7 +1306,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         arrowColor = color;
       }
       this.getGeometry().forEachSegment(function(start, end) {
-        var arrowPoint = new ol.geom.Point(
+        var arrowPoint = new olGeomPoint(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
@@ -1321,10 +1322,10 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           var src = arrowUrl + '?color=' + arrowColor.replace('#', '');
           const rotation =  Math.PI / 2 - Math.atan2(dy, dx);
           // arrows
-          styles.push(new ol.style.Style({
+          styles.push(new olStyleStyle({
             geometry: arrowPoint,
             zIndex: order,
-            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+            image: new olStyleIcon(/** @type {olx.style.IconOptions} */ ({
               rotation,
               src
             }))
@@ -1332,7 +1333,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           const modelColor = colorStringToRgba(arrowColor, 1);
           arrowPoint.set('olcs_model', () => {
             const coordinates = arrowPoint.getCoordinates();
-            const center = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+            const center = olProj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
             return {
               cesiumOptions: {
                 url: arrowModelUrl,
@@ -1373,7 +1374,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
       if (!this.get('__editable__') && this.get('__selected__')) {
         featureStroke = featureStroke + 3;
       }
-      stroke = new ol.style.Stroke({
+      stroke = new olStyleStroke({
         color: rgbColor,
         width: featureStroke,
         lineDash: lineDash
@@ -1386,7 +1387,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     }
     var imageOptions = {
       fill: fillStyle,
-      stroke: new ol.style.Stroke({
+      stroke: new olStyleStroke({
         color: rgbColor,
         width: featureSize / 7
       }),
@@ -1394,12 +1395,12 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
     };
     var image = null;
     if (this.get('symbolId')) {
-      ol.obj.assign(imageOptions, {
+      olObj.assign(imageOptions, {
         src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
         scale: 1,
         rotation: this.get('angle')
       });
-      image = new ol.style.Icon(imageOptions);
+      image = new olStyleIcon(imageOptions);
     } else {
       var shape = this.get('shape');
       if (!shape) {
@@ -1407,62 +1408,62 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
         shape = 'circle';
       }
       if (shape === 'circle') {
-        image = new ol.style.Circle(imageOptions);
+        image = new olStyleCircle(imageOptions);
       } else if (shape === 'square') {
-        ol.obj.assign(imageOptions, {
+        olObj.assign(imageOptions, {
           points: 4,
           angle: Math.PI / 4,
           rotation: this.get('angle')
         });
-        image = new ol.style.RegularShape(
+        image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {
-        ol.obj.assign(imageOptions, ({
+        olObj.assign(imageOptions, ({
           points: 3,
           angle: 0,
           rotation: this.get('angle')
         }));
-        image = new ol.style.RegularShape(
+        image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'star') {
-        ol.obj.assign(imageOptions, ({
+        olObj.assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
           radius2: featureSize
         }));
-        image = new ol.style.RegularShape(
+        image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (this.get('shape') == 'cross') {
-        ol.obj.assign(imageOptions, ({
+        olObj.assign(imageOptions, ({
           points: 4,
           angle: 0,
           rotation: this.get('angle'),
           radius2: 0
         }));
-        image = new ol.style.RegularShape(
+        image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       }
     }
 
     if (this.get('isLabel')) {
-      return [new ol.style.Style({
-        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
+      return [new olStyleStyle({
+        text: new olStyleText(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
           textAlign: 'left',
           font: 'normal ' + featureSize + 'px Sans-serif',
           rotation: this.get('angle'),
-          fill: new ol.style.Fill({
+          fill: new olStyleFill({
             color: rgbColor
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new olStyleStroke({
             color: [255, 255, 255],
             width: 2
           })
         }))
       })];
     } else {
-      styles.push(new ol.style.Style({
+      styles.push(new olStyleStyle({
         image: image,
         fill: fillStyle,
         stroke: stroke,
@@ -1474,4 +1475,4 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
   };
 };
 
-app.module.service('appMymaps', app.Mymaps);
+appModule.service('appMymaps', exports);

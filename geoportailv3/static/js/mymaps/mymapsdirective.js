@@ -6,9 +6,10 @@
  * <app-mymaps></app-mymaps>
  *
  */
-goog.provide('app.mymaps.mymapsDirective');
+goog.module('app.mymaps.mymapsDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -16,7 +17,7 @@ goog.require('app.module');
  * @param {string} appMymapsTemplateUrl The template url.
  * @ngInject
  */
-app.mymaps.mymapsDirective = function(appMymapsTemplateUrl) {
+exports = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -36,4 +37,5 @@ app.mymaps.mymapsDirective = function(appMymapsTemplateUrl) {
   };
 };
 
-app.module.directive('appMymaps', app.mymaps.mymapsDirective);
+
+appModule.directive('appMymaps', exports);

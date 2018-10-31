@@ -1,22 +1,23 @@
-goog.provide('app.interaction.ClipLine');
-goog.require('ol');
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.coordinate');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.Point');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.Pointer');
-goog.require('ol.interaction.ModifyEventType');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.structs.RBush');
-goog.require('ol.style.Style');
+goog.module('app.interaction.ClipLine');
+goog.module.declareLegacyNamespace();
+const olBase = goog.require('ol');
+const olCollection = goog.require('ol.Collection');
+const olFeature = goog.require('ol.Feature');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olMapBrowserPointerEvent = goog.require('ol.MapBrowserPointerEvent');
+const olCoordinate = goog.require('ol.coordinate');
+const olEvents = goog.require('ol.events');
+const olExtent = goog.require('ol.extent');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olInteractionInteraction = goog.require('ol.interaction.Interaction');
+const olInteractionModify = goog.require('ol.interaction.Modify');
+const olInteractionPointer = goog.require('ol.interaction.Pointer');
+const olInteractionModifyEventType = goog.require('ol.interaction.ModifyEventType');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olSourceVector = goog.require('ol.source.Vector');
+const olStructsRBush = goog.require('ol.structs.RBush');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -29,12 +30,12 @@ goog.require('ol.style.Style');
  * @fires app.interaction.ModifyCircleEvent
  * @api
  */
-app.interaction.ClipLine = function(options) {
+exports = function(options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: app.interaction.ClipLine.handleDownEvent_,
-    handleEvent: app.interaction.ClipLine.handleEvent,
-    handleUpEvent: app.interaction.ClipLine.handleUpEvent_
+  olInteractionPointer.call(this, {
+    handleDownEvent: exports.handleDownEvent_,
+    handleEvent: exports.handleEvent,
+    handleUpEvent: exports.handleUpEvent_
   });
 
   /**
@@ -61,7 +62,7 @@ app.interaction.ClipLine = function(options) {
    * @type {ol.structs.RBush.<Object>}
    * @private
    */
-  this.rBush_ = new ol.structs.RBush();
+  this.rBush_ = new olStructsRBush();
 
   /**
    * @type {number}
@@ -87,13 +88,13 @@ app.interaction.ClipLine = function(options) {
    * @type {ol.layer.Vector}
    * @private
    */
-  this.overlay_ = new ol.layer.Vector({
-    source: new ol.source.Vector({
+  this.overlay_ = new olLayerVector({
+    source: new olSourceVector({
       useSpatialIndex: false,
       wrapX: !!options.wrapX
     }),
     style: options.style ? options.style :
-        app.interaction.ClipLine.getDefaultStyleFunction(),
+        exports.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -106,21 +107,21 @@ app.interaction.ClipLine = function(options) {
   this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+  olEvents.listen(this.features_, olBase.CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+  olEvents.listen(this.features_, olBase.CollectionEventType.REMOVE,
       this.handleFeatureRemove_, this);
 
 };
-ol.inherits(app.interaction.ClipLine, ol.interaction.Pointer);
+olBase.inherits(exports, olInteractionPointer);
 
 
 /**
  * @param {ol.Feature} feature Feature.
  * @private
  */
-app.interaction.ClipLine.prototype.addFeature_ = function(feature) {
-  if (feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING) {
+exports.prototype.addFeature_ = function(feature) {
+  if (feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING) {
     var geometry = /** @type {ol.geom.LineString}*/ (feature.getGeometry());
     this.writeLineStringGeometry_(feature, geometry);
 
@@ -130,7 +131,7 @@ app.interaction.ClipLine.prototype.addFeature_ = function(feature) {
         this.handlePointerAtPixel_(this.lastPixel_, map);
       }
     }
-    ol.events.listen(feature, ol.events.EventType.CHANGE,
+    olEvents.listen(feature, olEvents.EventType.CHANGE,
         this.handleFeatureChange_, this);
   }
 };
@@ -140,7 +141,7 @@ app.interaction.ClipLine.prototype.addFeature_ = function(feature) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-app.interaction.ClipLine.prototype.removeFeature_ = function(feature) {
+exports.prototype.removeFeature_ = function(feature) {
   this.removeFeatureSegmentData_(feature);
   // Remove the vertex feature if the collection of canditate features
   // is empty.
@@ -148,7 +149,7 @@ app.interaction.ClipLine.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  ol.events.unlisten(feature, ol.events.EventType.CHANGE,
+  olEvents.unlisten(feature, olEvents.EventType.CHANGE,
       this.handleFeatureChange_, this);
 };
 
@@ -157,7 +158,7 @@ app.interaction.ClipLine.prototype.removeFeature_ = function(feature) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-app.interaction.ClipLine.prototype.removeFeatureSegmentData_ = function(feature) {
+exports.prototype.removeFeatureSegmentData_ = function(feature) {
   var rBush = this.rBush_;
   var /** @type {Array.<Object>} */ nodesToRemove = [];
   rBush.forEach(
@@ -178,9 +179,9 @@ app.interaction.ClipLine.prototype.removeFeatureSegmentData_ = function(feature)
 /**
  * @inheritDoc
  */
-app.interaction.ClipLine.prototype.setMap = function(map) {
+exports.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  ol.interaction.Interaction.prototype.setMap.call(this, map);
+  olInteractionInteraction.prototype.setMap.call(this, map);
 };
 
 
@@ -188,9 +189,9 @@ app.interaction.ClipLine.prototype.setMap = function(map) {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-app.interaction.ClipLine.prototype.handleFeatureAdd_ = function(evt) {
+exports.prototype.handleFeatureAdd_ = function(evt) {
   var feature = evt.element;
-  console.assert(feature instanceof ol.Feature,
+  console.assert(feature instanceof olFeature,
       'feature should be an ol.Feature');
   this.addFeature_(/** @type {ol.Feature} */ (feature));
 };
@@ -200,7 +201,7 @@ app.interaction.ClipLine.prototype.handleFeatureAdd_ = function(evt) {
  * @param {ol.events.Event} evt Event.
  * @private
  */
-app.interaction.ClipLine.prototype.handleFeatureChange_ = function(evt) {
+exports.prototype.handleFeatureChange_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.target);
   this.removeFeature_(feature);
   this.addFeature_(feature);
@@ -211,7 +212,7 @@ app.interaction.ClipLine.prototype.handleFeatureChange_ = function(evt) {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-app.interaction.ClipLine.prototype.handleFeatureRemove_ = function(evt) {
+exports.prototype.handleFeatureRemove_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.element);
   this.removeFeature_(feature);
 };
@@ -222,7 +223,7 @@ app.interaction.ClipLine.prototype.handleFeatureRemove_ = function(evt) {
  * @param {ol.geom.LineString} geometry Geometry.
  * @private
  */
-app.interaction.ClipLine.prototype.writeLineStringGeometry_ = function(feature, geometry) {
+exports.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -233,7 +234,7 @@ app.interaction.ClipLine.prototype.writeLineStringGeometry_ = function(feature, 
       index: i,
       segment: segment
     });
-    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+    this.rBush_.insert(olExtent.boundingExtent(segment), segmentData);
   }
 };
 
@@ -243,10 +244,10 @@ app.interaction.ClipLine.prototype.writeLineStringGeometry_ = function(feature, 
  * @return {ol.Feature} Vertex feature.
  * @private
  */
-app.interaction.ClipLine.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
+exports.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
+    vertexFeature = new olFeature(new olGeomPoint(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {
@@ -263,7 +264,7 @@ app.interaction.ClipLine.prototype.createOrUpdateVertexFeature_ = function(coord
  * @return {number} The difference in indexes.
  * @private
  */
-app.interaction.ClipLine.compareIndexes_ = function(a, b) {
+exports.compareIndexes_ = function(a, b) {
   return a.index - b.index;
 };
 
@@ -274,7 +275,7 @@ app.interaction.ClipLine.compareIndexes_ = function(a, b) {
  * @this {app.interaction.ClipLine}
  * @private
  */
-app.interaction.ClipLine.handleUpEvent_ = function(evt) {
+exports.handleUpEvent_ = function(evt) {
   this.handlingDownUpSequence = false;
   return false;
 };
@@ -286,7 +287,7 @@ app.interaction.ClipLine.handleUpEvent_ = function(evt) {
  * @this {app.interaction.ClipLine}
  * @private
  */
-app.interaction.ClipLine.handleDownEvent_ = function(evt) {
+exports.handleDownEvent_ = function(evt) {
   this.handlePointerAtPixel_(evt.pixel, evt.map);
   this.dragSegments_ = [];
   this.modified_ = false;
@@ -294,15 +295,15 @@ app.interaction.ClipLine.handleDownEvent_ = function(evt) {
   if (vertexFeature) {
     var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
-    var vertexExtent = ol.extent.boundingExtent([vertex]);
+    var vertexExtent = olExtent.boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
-    segmentDataMatches.sort(app.interaction.ClipLine.compareIndexes_);
+    segmentDataMatches.sort(exports.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       if (segmentDataMatch.feature !== undefined &&
           this.features_.getArray().indexOf(segmentDataMatch.feature) >= 0) {
-        var closestVertex = ol.coordinate.closestOnSegment(vertex, segmentDataMatch.segment);
-        if (!ol.coordinate.equals(closestVertex, vertex)) {
+        var closestVertex = olCoordinate.closestOnSegment(vertex, segmentDataMatch.segment);
+        if (!olCoordinate.equals(closestVertex, vertex)) {
           continue;
         }
         this.features_.remove(segmentDataMatch.feature);
@@ -321,8 +322,8 @@ app.interaction.ClipLine.handleDownEvent_ = function(evt) {
         this.features_.push(feature1);
         this.features_.push(feature2);
 
-        this.dispatchEvent(new  ol.interaction.Modify.Event(
-          ol.interaction.ModifyEventType.MODIFYEND, new ol.Collection([feature1, feature2, segmentDataMatch.feature]), evt));
+        this.dispatchEvent(new  olInteractionModify.Event(
+          olInteractionModifyEventType.MODIFYEND, new olCollection([feature1, feature2, segmentDataMatch.feature]), evt));
         this.modified_ = true;
       }
     }
@@ -340,25 +341,25 @@ app.interaction.ClipLine.handleDownEvent_ = function(evt) {
  * @this {app.interaction.ClipLine}
  * @api
  */
-app.interaction.ClipLine.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof ol.MapBrowserPointerEvent)) {
+exports.handleEvent = function(mapBrowserEvent) {
+  if (!(mapBrowserEvent instanceof olMapBrowserPointerEvent)) {
     return true;
   }
 
-  if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE &&
+  if (!mapBrowserEvent.map.getView().getHints()[olBase.ViewHint.INTERACTING] &&
+      mapBrowserEvent.type == olMapBrowserEventType.POINTERMOVE &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent);
+  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
 };
 
 
 /**
  * @inheritDoc
  */
-app.interaction.ClipLine.prototype.setActive = function(active) {
+exports.prototype.setActive = function(active) {
   this.handlingDownUpSequence = false;
   if (this.overlay_ !== undefined) {
     if (this.vertexFeature_) {
@@ -374,14 +375,14 @@ app.interaction.ClipLine.prototype.setActive = function(active) {
       map.getTargetElement().style.cursor = '';
     }
   }
-  ol.interaction.Interaction.prototype.setActive.call(this, active);
+  olInteractionInteraction.prototype.setActive.call(this, active);
 };
 
 /**
  * @param {ol.MapBrowserEvent} evt Event.
  * @private
  */
-app.interaction.ClipLine.prototype.handlePointerMove_ = function(evt) {
+exports.prototype.handlePointerMove_ = function(evt) {
   this.lastPixel_ = evt.pixel;
   this.handlePointerAtPixel_(evt.pixel, evt.map);
 };
@@ -391,18 +392,18 @@ app.interaction.ClipLine.prototype.handlePointerMove_ = function(evt) {
  * @param {ol.PluggableMap} map Map.
  * @private
  */
-app.interaction.ClipLine.prototype.handlePointerAtPixel_ = function(pixel, map) {
+exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
   if (!this.getActive()) {
     return;
   }
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
-        ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+    return olCoordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
+        olCoordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
-  var box = ol.extent.buffer(
-      ol.extent.createOrUpdateFromCoordinate(pixelCoordinate),
+  var box = olExtent.buffer(
+      olExtent.createOrUpdateFromCoordinate(pixelCoordinate),
       map.getView().getResolution() * this.pixelTolerance_);
 
   var rBush = this.rBush_;
@@ -411,15 +412,15 @@ app.interaction.ClipLine.prototype.handlePointerAtPixel_ = function(pixel, map) 
     nodes.sort(sortByDistance);
     var node = nodes[0];
     var closestSegment = node.segment;
-    var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
+    var vertex = (olCoordinate.closestOnSegment(pixelCoordinate,
         closestSegment));
     var vertexPixel = map.getPixelFromCoordinate(vertex);
-    if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
+    if (Math.sqrt(olCoordinate.squaredDistance(pixel, vertexPixel)) <=
         this.pixelTolerance_) {
       var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
+      var squaredDist1 = olCoordinate.squaredDistance(vertexPixel, pixel1);
+      var squaredDist2 = olCoordinate.squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {
@@ -441,9 +442,9 @@ app.interaction.ClipLine.prototype.handlePointerAtPixel_ = function(pixel, map) 
 /**
  * @return {ol.StyleFunction} Styles.
  */
-app.interaction.ClipLine.getDefaultStyleFunction = function() {
-  var style = ol.style.Style.createDefaultEditing();
+exports.getDefaultStyleFunction = function() {
+  var style = olStyleStyle.createDefaultEditing();
   return function(feature, resolution) {
-    return style[ol.geom.GeometryType.POINT];
+    return style[olGeomGeometryType.POINT];
   };
 };

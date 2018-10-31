@@ -10,27 +10,28 @@
  * appLayerOpacityManager.init(map);
  *
  */
-goog.provide('app.LayerOpacityManager');
+goog.module('app.LayerOpacityManager');
 
-goog.require('app.module');
-goog.require('ol.CollectionEventType');
-goog.require('ol.events');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olCollectionEventType = goog.require('ol.CollectionEventType');
+const olEvents = goog.require('ol.events');
 
 
 /**
  * @constructor
  * @ngInject
  */
-app.LayerOpacityManager = function() {
+exports = function() {
 };
 
 
 /**
  * @param {ol.Map} map The map.
  */
-app.LayerOpacityManager.prototype.init = function(map) {
+exports.prototype.init = function(map) {
   var layers = map.getLayers();
-  ol.events.listen(layers, ol.CollectionEventType.ADD,
+  olEvents.listen(layers, olCollectionEventType.ADD,
       /**
        * @param {ol.CollectionEventType} evt Collection event.
        */
@@ -45,4 +46,4 @@ app.LayerOpacityManager.prototype.init = function(map) {
 };
 
 
-app.module.service('appLayerOpacityManager', app.LayerOpacityManager);
+appModule.service('appLayerOpacityManager', exports);

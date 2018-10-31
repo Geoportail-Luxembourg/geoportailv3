@@ -1,8 +1,9 @@
-goog.provide('app.query.PdsreportController');
+goog.module('app.query.PdsreportController');
 
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -15,7 +16,7 @@ goog.require('app.NotifyNotificationType');
  * @export
  * @ngInject
  */
-app.query.PdsreportController = function($http, appNotify, gettextCatalog,
+exports = function($http, appNotify, gettextCatalog,
     appUserManager, pdsUrl) {
   /**
    * @type {app.UserManager}
@@ -74,7 +75,7 @@ app.query.PdsreportController = function($http, appNotify, gettextCatalog,
  * @return {*} True if terms and conditions are accepted.
  * @export
  */
-app.query.PdsreportController.prototype.getSetTAC = function(tac) {
+exports.prototype.getSetTAC = function(tac) {
   if (arguments.length) {
     this.tac_ = tac;
   } else {
@@ -88,7 +89,7 @@ app.query.PdsreportController.prototype.getSetTAC = function(tac) {
  * @return {*} The email.
  * @export
  */
-app.query.PdsreportController.prototype.getSetMail = function(mail) {
+exports.prototype.getSetMail = function(mail) {
   if (arguments.length) {
     this.mail_ = mail;
   } else {
@@ -101,12 +102,12 @@ app.query.PdsreportController.prototype.getSetMail = function(mail) {
  * Generate and send the repport.
  * @export
  */
-app.query.PdsreportController.prototype.generateRepport = function() {
+exports.prototype.generateRepport = function() {
 
   var msg = this.gettextCatalog.getString('Veuillez saisir une adresse email valide');
   var re = /^\S+@\S+\.\S+$/;
   if (this.mail_.length === 0 || !re.test(this.mail_)) {
-    this.notify_(msg, app.NotifyNotificationType.WARNING);
+    this.notify_(msg, appNotifyNotificationType.WARNING);
   } else {
     this.$http_.post(
       this.pdsUrl_ + '/report/' + this['ids'] + '.pdf?email=' + this.mail_ + '&staging=' + this['staging'],
@@ -114,10 +115,10 @@ app.query.PdsreportController.prototype.generateRepport = function() {
     );
     msg = this.gettextCatalog.getString('Votre attestation est en train d\'être généré. Un email vous sera envoyé à l\'adresse {{email}} dès qu\'il sera disponible',
         {'email': this.mail_});
-    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.notify_(msg, appNotifyNotificationType.INFO);
   }
 };
 
-app.module.controller('AppPdsreportController',
-                      app.query.PdsreportController);
+appModule.controller('AppPdsreportController',
+                      exports);
 

@@ -2,19 +2,15 @@
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.provide('app.GetWmsLayer');
+goog.module('app.GetWmsLayerFactory');
 
-goog.require('app.module');
-goog.require('app.olcs.Extent');
-goog.require('ngeo.misc.decorate');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageWMS');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appOlcsExtent = goog.require('app.olcs.Extent');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const olLayerImage = goog.require('ol.layer.Image');
+const olSourceImageWMS = goog.require('ol.source.ImageWMS');
 
-
-/**
- * @typedef {function(string, string, string, string=):ol.layer.Image}
- */
-app.GetWmsLayer;
 
 
 /**
@@ -25,7 +21,7 @@ app.GetWmsLayer;
  * @private
  * @ngInject
  */
-app.getWmsLayer_ = function(proxyWmsUrl, remoteProxyWms,
+function factory(proxyWmsUrl, remoteProxyWms,
     appGetDevice) {
   return getWmsLayer;
 
@@ -53,17 +49,17 @@ app.getWmsLayer_ = function(proxyWmsUrl, remoteProxyWms,
     if (opt_url !== undefined || remoteProxyWms) {
       optSource.crossOrigin = 'anonymous';
     }
-    var layer = new ol.layer.Image({
-      'olcs.extent': app.olcs.Extent,
-      source: new ol.source.ImageWMS(optSource)
+    var layer = new olLayerImage({
+      'olcs.extent': appOlcsExtent,
+      source: new olSourceImageWMS(optSource)
     });
 
     layer.set('label', name);
-    ngeo.misc.decorate.layer(layer);
+    ngeoMiscDecorate.layer(layer);
 
     return layer;
   }
 };
 
 
-app.module.factory('appGetWmsLayer', app.getWmsLayer_);
+appModule.factory('appGetWmsLayer', factory);

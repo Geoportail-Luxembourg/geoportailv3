@@ -7,9 +7,10 @@
  * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
-goog.provide('app.share.shorturlDirective');
+goog.module('app.share.shorturlDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -17,7 +18,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.share.shorturlDirective = function(appShorturlTemplateUrl) {
+exports = function(appShorturlTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -32,4 +33,4 @@ app.share.shorturlDirective = function(appShorturlTemplateUrl) {
   };
 };
 
-app.module.directive('appShorturl', app.share.shorturlDirective);
+appModule.directive('appShorturl', exports);

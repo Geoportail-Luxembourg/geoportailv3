@@ -13,9 +13,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.backgroundlayer.backgroundlayerDirective');
+goog.module('app.backgroundlayer.backgroundlayerDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -24,7 +25,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.backgroundlayer.backgroundlayerDirective = function(appBackgroundlayerTemplateUrl) {
+exports = function(appBackgroundlayerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.backgroundlayer.backgroundlayerDirective = function(appBackgroundlayerTempla
 };
 
 
-app.module.directive('appBackgroundlayer', app.backgroundlayer.backgroundlayerDirective);
+appModule.directive('appBackgroundlayer', exports);

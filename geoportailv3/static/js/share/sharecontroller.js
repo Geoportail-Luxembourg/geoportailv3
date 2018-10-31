@@ -8,10 +8,11 @@
  * <app-share app-share-active=":mainCtrl.active"></app-share>
  *
  */
-goog.provide('app.share.ShareController');
+goog.module('app.share.ShareController');
 
-goog.require('app.module');
-goog.require('ngeo.utils');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const ngeoUtils = goog.require('ngeo.utils');
 
 
 /**
@@ -22,7 +23,7 @@ goog.require('ngeo.utils');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  */
-app.share.ShareController = function($window, gettext, gettextCatalog) {
+exports = function($window, gettext, gettextCatalog) {
   /**
    * @type {Object}
    * @private
@@ -65,9 +66,9 @@ app.share.ShareController = function($window, gettext, gettextCatalog) {
  * @param {string} service Sharing Service Url.
  * @return {boolean} Always return false.
  */
-app.share.ShareController.prototype.openShareLink = function(service) {
+exports.prototype.openShareLink = function(service) {
   if (service in this.services_) {
-    var url = this.services_[service].url + '?' + ngeo.utils.encodeQueryString({
+    var url = this.services_[service].url + '?' + ngeoUtils.encodeQueryString({
       //twitter params
       'text': this.window_.document.title,
       'via': 'geoportal_lux',
@@ -85,8 +86,8 @@ app.share.ShareController.prototype.openShareLink = function(service) {
  * @export
  * @return {boolean} Always return false.
  */
-app.share.ShareController.prototype.openFbLink = function() {
-  var url = this.services_['facebook'].url + '?' + ngeo.utils.encodeQueryString({
+exports.prototype.openFbLink = function() {
+  var url = this.services_['facebook'].url + '?' + ngeoUtils.encodeQueryString({
     //fb params
     'app_id': '162604997404468',
     'caption': this.window_.document.title,
@@ -105,8 +106,8 @@ app.share.ShareController.prototype.openFbLink = function() {
  * @export
  * @return {boolean} Always return False.
  */
-app.share.ShareController.prototype.openMailLink = function() {
-  var url = 'mailto:?' + ngeo.utils.encodeQueryString({
+exports.prototype.openMailLink = function() {
+  var url = 'mailto:?' + ngeoUtils.encodeQueryString({
     'subject': this.window_.document.title +
         this.translate_.getString(this.emailString_),
     'body': $('app-shorturl input').val()
@@ -116,4 +117,4 @@ app.share.ShareController.prototype.openMailLink = function() {
   return false;
 };
 
-app.module.controller('AppShareController', app.share.ShareController);
+appModule.controller('AppShareController', exports);

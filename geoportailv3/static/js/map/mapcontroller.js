@@ -5,11 +5,12 @@
  *
  * <app-map app-map-map="::mainCtrl.map"><app-map>
  */
-goog.provide('app.map.MapController');
+goog.module('app.map.MapController');
 
-goog.require('app.module');
-goog.require('ol.MapProperty');
-goog.require('ol.proj');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olMapProperty = goog.require('ol.MapProperty');
+const olProj = goog.require('ol.proj');
 
 
 /**
@@ -18,8 +19,8 @@ goog.require('ol.proj');
  * @constructor
  * @ngInject
  */
-app.map.MapController = function(appStateManager, ngeoDebounce) {
-  var lurefToWebMercatorFn = ol.proj.getTransform('EPSG:2169', 'EPSG:3857');
+exports = function(appStateManager, ngeoDebounce) {
+  var lurefToWebMercatorFn = olProj.getTransform('EPSG:2169', 'EPSG:3857');
 
   /** @type {ol.Map} */
   var map = this['map'];
@@ -34,7 +35,7 @@ app.map.MapController = function(appStateManager, ngeoDebounce) {
   var viewZoom;
   if (zoom !== undefined) {
     viewZoom = version === 3 ? +zoom :
-        app.map.MapController.V2_ZOOM_TO_V3_ZOOM_[zoom];
+        exports.V2_ZOOM_TO_V3_ZOOM_[zoom];
   } else {
     viewZoom = 8;
   }
@@ -48,24 +49,24 @@ app.map.MapController = function(appStateManager, ngeoDebounce) {
     viewCenter = version === 3 ?
         [+x, +y] : lurefToWebMercatorFn([+y, +x], undefined, 2);
   } else {
-    viewCenter = ol.proj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857');
+    viewCenter = olProj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857');
   }
 
   view.setCenter(viewCenter);
   view.setZoom(viewZoom);
 
-  app.map.MapController.updateState_(appStateManager, view);
+  exports.updateState_(appStateManager, view);
   var updateStateFunc = ngeoDebounce(
       /**
        * @param {ol.Object.Event} e Object event.
        */
       function(e) {
-        app.map.MapController.updateState_(appStateManager, view);
+        exports.updateState_(appStateManager, view);
       }, 300, /* invokeApply */ true);
 
   view.on('propertychange', updateStateFunc);
   map.on('propertychange', function(event) {
-    if (event.key === ol.MapProperty.VIEW) {
+    if (event.key === olMapProperty.VIEW) {
       view.un('propertychange', updateStateFunc);
       view = map.getView();
       view.on('propertychange', updateStateFunc);
@@ -78,7 +79,7 @@ app.map.MapController = function(appStateManager, ngeoDebounce) {
  * @const
  * @private
  */
-app.map.MapController.V2_ZOOM_TO_V3_ZOOM_ = {
+exports.V2_ZOOM_TO_V3_ZOOM_ = {
   '0': 8,
   '1': 9,
   '2': 9,
@@ -101,7 +102,7 @@ app.map.MapController.V2_ZOOM_TO_V3_ZOOM_ = {
  * @param {ol.View} view Map view.
  * @private
  */
-app.map.MapController.updateState_ = function(appStateManager, view) {
+exports.updateState_ = function(appStateManager, view) {
   var viewZoom = view.getZoom();
   var viewCenter = view.getCenter();
   console.assert(viewCenter !== undefined);
@@ -117,4 +118,4 @@ app.map.MapController.updateState_ = function(appStateManager, view) {
 };
 
 
-app.module.controller('AppMapController', app.map.MapController);
+appModule.controller('AppMapController', exports);

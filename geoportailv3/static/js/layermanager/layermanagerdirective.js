@@ -13,16 +13,17 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.provide('app.layermanager.layermanagerDirective');
+goog.module('app.layermanager.layermanagerDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 /**
  * @param {string} appLayermanagerTemplateUrl Url to layermanager template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.layermanager.layermanagerDirective = function(appLayermanagerTemplateUrl) {
+exports = function(appLayermanagerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.layermanager.layermanagerDirective = function(appLayermanagerTemplateUrl) {
 };
 
 
-app.module.directive('appLayermanager', app.layermanager.layermanagerDirective);
+appModule.directive('appLayermanager', exports);

@@ -13,10 +13,11 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.provide('app.layermanager.LayermanagerController');
+goog.module('app.layermanager.LayermanagerController');
 
-goog.require('app.module');
-goog.require('ol');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olBase = goog.require('ol');
 
 /**
  * @param {ngeo.statemanager.Location} ngeoLocation Location service.
@@ -24,14 +25,14 @@ goog.require('ol');
  * @ngInject
  * @export
  */
-app.layermanager.LayermanagerController = function(ngeoLocation) {
+exports = function(ngeoLocation) {
   /**
    * @type {ngeo.statemanager.Location}
    * @private
    */
   this.ngeoLocation_ = ngeoLocation;
 
-  this['uid'] = ol.getUid(this);
+  this['uid'] = olBase.getUid(this);
 
   /**
    * Hash array to keep track of opacities set on layers.
@@ -46,7 +47,7 @@ app.layermanager.LayermanagerController = function(ngeoLocation) {
  * @param {ol.layer.Layer} layer Layer.
  * @export
  */
-app.layermanager.LayermanagerController.prototype.removeLayer = function(layer) {
+exports.prototype.removeLayer = function(layer) {
   this['map'].removeLayer(layer);
 };
 
@@ -56,7 +57,7 @@ app.layermanager.LayermanagerController.prototype.removeLayer = function(layer) 
  * @param {Array.<ol.layer.Layer>} layers Layers.
  * @export
  */
-app.layermanager.LayermanagerController.prototype.reorderCallback = function(element, layers) {
+exports.prototype.reorderCallback = function(element, layers) {
   for (var i = 0; i < layers.length; i++) {
     layers[i].setZIndex(layers.length - i);
   }
@@ -67,10 +68,10 @@ app.layermanager.LayermanagerController.prototype.reorderCallback = function(ele
  * @param {ol.layer.Layer} layer Layer.
  * @export
  */
-app.layermanager.LayermanagerController.prototype.changeVisibility = function(layer) {
+exports.prototype.changeVisibility = function(layer) {
   var currentOpacity = layer.getOpacity();
   var newOpacity;
-  var uid = ol.getUid(layer);
+  var uid = olBase.getUid(layer);
   if (currentOpacity === 0) {
     if (this.opacities_[uid] !== undefined) {
       newOpacity = this.opacities_[uid];
@@ -91,7 +92,7 @@ app.layermanager.LayermanagerController.prototype.changeVisibility = function(la
  * @return {boolean} Returns true when comparator is shown.
  * @export
  */
-app.layermanager.LayermanagerController.prototype.isLayersComparatorDisplayed = function() {
+exports.prototype.isLayersComparatorDisplayed = function() {
   return this['activeLC'] === true;
 };
 
@@ -99,7 +100,7 @@ app.layermanager.LayermanagerController.prototype.isLayersComparatorDisplayed = 
  * Toggle layers comparator.
  * @export
  */
-app.layermanager.LayermanagerController.prototype.toggleLayersComparator = function() {
+exports.prototype.toggleLayersComparator = function() {
   this['activeLC'] = !this['activeLC'];
   this.ngeoLocation_.updateParams({
     'lc': this['activeLC']
@@ -107,4 +108,4 @@ app.layermanager.LayermanagerController.prototype.toggleLayersComparator = funct
 };
 
 
-app.module.controller('AppLayermanagerController', app.layermanager.LayermanagerController);
+appModule.controller('AppLayermanagerController', exports);

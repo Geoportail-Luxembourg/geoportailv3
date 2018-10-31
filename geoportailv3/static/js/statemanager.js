@@ -3,11 +3,12 @@
  * state. The application state is written to both the URL and the local
  * storage.
  */
-goog.provide('app.StateManager');
+goog.module('app.StateManager');
 
-goog.require('app.module');
-goog.require('ol.math');
-goog.require('app.NotifyNotificationType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olMath = goog.require('ol.math');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -17,7 +18,7 @@ goog.require('app.NotifyNotificationType');
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
+exports = function(ngeoLocation, appNotify, gettextCatalog) {
   /**
    * @type {angularGettext.Catalog}
    * @private
@@ -112,7 +113,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
       this.initialState_[key] = ngeoLocation.getParam(key);
     }
     this.version_ = this.initialState_.hasOwnProperty('version') ?
-        ol.math.clamp(+this.initialState_['version'], 2, 3) : 2;
+        olMath.clamp(+this.initialState_['version'], 2, 3) : 2;
   }
   var mapId = this.ngeoLocation_.getParam('map_id');
   if (mapId === undefined &&
@@ -127,7 +128,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
     var msg = this.gettextCatalog_.getString(
         'Aucune couche n\'étant définie pour cette carte,' +
         ' une couche de fond a automatiquement été ajoutée.');
-    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.notify_(msg, appNotifyNotificationType.INFO);
   }
 
   console.assert(this.version_ != -1);
@@ -141,7 +142,7 @@ app.StateManager = function(ngeoLocation, appNotify, gettextCatalog) {
  * used to load the application in the browser).
  * @return {number} Version.
  */
-app.StateManager.prototype.getVersion = function() {
+exports.prototype.getVersion = function() {
   return this.version_;
 };
 
@@ -151,7 +152,7 @@ app.StateManager.prototype.getVersion = function() {
  * @param {string} key State key.
  * @return {string|undefined} State value.
  */
-app.StateManager.prototype.getInitialValue = function(key) {
+exports.prototype.getInitialValue = function(key) {
   return this.initialState_[key];
 };
 
@@ -161,7 +162,7 @@ app.StateManager.prototype.getInitialValue = function(key) {
  * @param {string} key State key.
  * @return {string|null} State value.
  */
-app.StateManager.prototype.getValueFromLocalStorage = function(key) {
+exports.prototype.getValueFromLocalStorage = function(key) {
   return window.localStorage[key];
 };
 
@@ -170,7 +171,7 @@ app.StateManager.prototype.getValueFromLocalStorage = function(key) {
  * Update the application state with the values in `object`.
  * @param {!Object.<string, string>} object Object.
  */
-app.StateManager.prototype.updateState = function(object) {
+exports.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
   if (this.useLocalStorage !== false) {
     var key;
@@ -185,7 +186,7 @@ app.StateManager.prototype.updateState = function(object) {
  * Update the application storage with the values in `object`.
  * @param {!Object.<string, string>} object Object.
  */
-app.StateManager.prototype.updateStorage = function(object) {
+exports.prototype.updateStorage = function(object) {
   if (this.useLocalStorage !== false) {
     var key;
     for (key in object) {
@@ -199,11 +200,11 @@ app.StateManager.prototype.updateStorage = function(object) {
  * Delete a parameter.
  * @param {string} key The key to remove.
  */
-app.StateManager.prototype.deleteParam = function(key) {
+exports.prototype.deleteParam = function(key) {
   this.ngeoLocation_.deleteParam(key);
   if (this.useLocalStorage !== false) {
     delete window.localStorage[key];
   }
 };
 
-app.module.service('appStateManager', app.StateManager);
+appModule.service('appStateManager', exports);

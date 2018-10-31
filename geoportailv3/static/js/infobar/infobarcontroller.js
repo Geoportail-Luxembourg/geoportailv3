@@ -10,9 +10,10 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.InfobarController');
+goog.module('app.infobar.InfobarController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -21,7 +22,7 @@ goog.require('app.module');
  * @constructor
  * @export
  */
-app.infobar.InfobarController = function(ngeoNetworkStatus) {
+exports = function(ngeoNetworkStatus) {
   /**
    * @type {boolean}
    */
@@ -38,9 +39,9 @@ app.infobar.InfobarController = function(ngeoNetworkStatus) {
 /**
  * @export
  */
-app.infobar.InfobarController.prototype.infobarSwitch = function() {
+exports.prototype.infobarSwitch = function() {
   this['infobarOpen'] = !this['infobarOpen'];
 };
 
-app.module.controller('AppInfobarController',
-    app.infobar.InfobarController);
+appModule.controller('AppInfobarController',
+    exports);

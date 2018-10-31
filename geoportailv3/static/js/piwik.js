@@ -1,7 +1,10 @@
-goog.provide('app.Piwik');
+goog.module('app.Piwik');
+
+
+goog.module.declareLegacyNamespace();
 
 
 /**
  * @typedef {{push: function(Array<string>)}}
  */
-app.Piwik;
+exports;

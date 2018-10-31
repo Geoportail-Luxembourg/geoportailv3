@@ -3,9 +3,10 @@
  * That directive is used to create the theme switcher in the page.
  *
  */
-goog.provide('app.themeswitcher.themeswitcherDirective');
+goog.module('app.themeswitcher.themeswitcherDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -13,7 +14,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.themeswitcher.themeswitcherDirective = function(appThemeswitcherTemplateUrl) {
+exports = function(appThemeswitcherTemplateUrl) {
   return {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
@@ -28,4 +29,4 @@ app.themeswitcher.themeswitcherDirective = function(appThemeswitcherTemplateUrl)
 };
 
 
-app.module.directive('appThemeswitcher', app.themeswitcher.themeswitcherDirective);
+appModule.directive('appThemeswitcher', exports);

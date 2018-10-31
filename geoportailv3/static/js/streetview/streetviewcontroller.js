@@ -8,13 +8,14 @@
  *  </app-streetview>
  *
  */
-goog.provide('app.streetview.StreetviewController');
+goog.module('app.streetview.StreetviewController');
 
-goog.require('app.module');
-goog.require('ol');
-goog.require('ol.geom.Point');
-goog.require('ol.interaction');
-goog.require('ol.style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olBase = goog.require('ol');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olInteraction = goog.require('ol.interaction');
+const olStyle = goog.require('ol.style');
 
 
 /**
@@ -30,7 +31,7 @@ goog.require('ol.style');
  * @param {angular.$window} $window Window.
  * @export
  */
-app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOverlayMgr,
+exports = function($element, $scope, ngeoFeatureOverlayMgr,
     appImagesPath, appLocationInfoOverlay, appActivetool, $window) {
   /**
    * @type {angular.$window}
@@ -50,7 +51,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
    */
   this.locationInfoOverlay_ = appLocationInfoOverlay;
 
-  this['uid'] = ol.getUid(this);
+  this['uid'] = olBase.getUid(this);
 
   /**
    * @type {string}
@@ -100,7 +101,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
    * @type {!ol.Feature}
    * @private
    */
-  this.feature_ = new ol.Feature();
+  this.feature_ = new olBase.Feature();
 
   /**
    * @type {ngeo.map.FeatureOverlay}
@@ -112,7 +113,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
-  this.features_ = new ol.Collection();
+  this.features_ = new olBase.Collection();
   this.featureOverlay_.setFeatures(this.features_);
 
   /**
@@ -175,7 +176,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
    * @type {ol.geom.Point}
    * @private
    */
-  this.point_ = new ol.geom.Point([0, 0]);
+  this.point_ = new olGeomPoint([0, 0]);
 
   this.feature_.setGeometry(this.point_);
 
@@ -195,7 +196,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectSingleClick_ = new ol.interaction.Select({
+  this.selectSingleClick_ = new olInteraction.Select({
     filter: function(feature, layer) {
       return this.features_.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -209,7 +210,7 @@ app.streetview.StreetviewController = function($element, $scope, ngeoFeatureOver
 
 };
 
-app.streetview.StreetviewController.prototype.$onInit = function() {
+exports.prototype.$onInit = function() {
   this.map_.addInteraction(this.selectSingleClick_);
   this.selectSingleClick_.on('select', function(e) {
     if (e.target.getFeatures().getLength() !== 0) {
@@ -299,7 +300,7 @@ app.streetview.StreetviewController.prototype.$onInit = function() {
       }
     }
   }.bind(this));
-  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
+  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE, function(evt) {
     if (this.isActive()) {
       var pixel = this.map_.getEventPixel(evt.originalEvent);
 
@@ -321,12 +322,12 @@ app.streetview.StreetviewController.prototype.$onInit = function() {
  * @param {?ol.Coordinate} oldLocation The previous location.
  * @private
  */
-app.streetview.StreetviewController.prototype.handleLocationChange_ = function(location, oldLocation) {
+exports.prototype.handleLocationChange_ = function(location, oldLocation) {
 
   // (1) No need to do anything if the old value equals the new value
   if (this.isInitialised_ && (location === oldLocation || (
     Array.isArray(location) && Array.isArray(oldLocation) &&
-      ol.array.equals(location, oldLocation)
+      olBase.array.equals(location, oldLocation)
   ))) {
     return;
   }
@@ -351,7 +352,7 @@ app.streetview.StreetviewController.prototype.handleLocationChange_ = function(l
  * @return {boolean} True if is active.
  * @export
  */
-app.streetview.StreetviewController.prototype.isActive = function() {
+exports.prototype.isActive = function() {
   return this.appActivetool_.streetviewActive;
 };
 
@@ -369,7 +370,7 @@ app.streetview.StreetviewController.prototype.isActive = function() {
  * @param {boolean} oldReady Previous ready value.
  * @private
  */
-app.streetview.StreetviewController.prototype.handleReadyChange_ = function(ready, oldReady) {
+exports.prototype.handleReadyChange_ = function(ready, oldReady) {
   if (!this.isInitialised_ && ready === oldReady) {
     return;
   }
@@ -384,7 +385,7 @@ app.streetview.StreetviewController.prototype.handleReadyChange_ = function(read
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @export
  */
-app.streetview.StreetviewController.prototype.createStyleFunction = function() {
+exports.prototype.createStyleFunction = function() {
   var arrowPath = this.arrowPath_;
   var imagePath = this.appImagesPath_;
   return function(resolution) {
@@ -407,15 +408,15 @@ app.streetview.StreetviewController.prototype.createStyleFunction = function() {
         pitch = 3;
       }
       var directionArrowPath = imagePath + '/direction_sv_zl' + curZoom + '_p' + pitch + '.png';
-      return [new ol.style.Style({
-        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+      return [new olStyle.Style({
+        image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
           src: directionArrowPath,
           rotation: this.get('heading') * Math.PI / 180
         }))
       })];
     }
-    return [new ol.style.Style({
-      image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+    return [new olStyle.Style({
+      image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
         anchor: [0.5, 50],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
@@ -431,7 +432,7 @@ app.streetview.StreetviewController.prototype.createStyleFunction = function() {
  * @param {google.maps.StreetViewStatus} status Status.
  * @private
  */
-app.streetview.StreetviewController.prototype.handleStreetViewServiceGetPanorama_ = function(data, status) {
+exports.prototype.handleStreetViewServiceGetPanorama_ = function(data, status) {
 
   var panorama = this.panorama_;
 
@@ -450,7 +451,7 @@ app.streetview.StreetviewController.prototype.handleStreetViewServiceGetPanorama
 /**
  * @private
  */
-app.streetview.StreetviewController.prototype.style_ = function() {
+exports.prototype.style_ = function() {
   this.features_.clear();
 
   var navigationLinks = this.panorama_.getLinks();
@@ -465,7 +466,7 @@ app.streetview.StreetviewController.prototype.style_ = function() {
   this.locationInfoOverlay_.clear();
   if (navigationLinks !== undefined) {
     navigationLinks.forEach(function(link) {
-      var curFeature = new ol.Feature();
+      var curFeature = new olBase.Feature();
       curFeature.setGeometry(this.point_);
       curFeature.set('heading', link.heading);
       curFeature.set('pano', link.pano);
@@ -481,7 +482,7 @@ app.streetview.StreetviewController.prototype.style_ = function() {
  * Called when the panorama position changes. Update the location.
  * @private
  */
-app.streetview.StreetviewController.prototype.handlePanoramaPositionChange_ = function() {
+exports.prototype.handlePanoramaPositionChange_ = function() {
   this.panoramaPositionChanging_ = true;
   var position = this.panorama_.getPosition();
   var lonLat = [position.lng(), position.lat()];
@@ -489,7 +490,7 @@ app.streetview.StreetviewController.prototype.handlePanoramaPositionChange_ = fu
   this.point_.setCoordinates(this.location);
   this.scope_.$apply();
 
-  if (!ol.extent.containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
+  if (!olBase.extent.containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
     this.map_.getView().setCenter(this.location);
   }
   this.panoramaPositionChanging_ = false;
@@ -500,8 +501,8 @@ app.streetview.StreetviewController.prototype.handlePanoramaPositionChange_ = fu
  * @param {!ol.Coordinate} lonLat LonLat coordinate.
  * @return {ol.Coordinate} Map view projection coordinate.
  */
-app.streetview.StreetviewController.prototype.fromLonLat_ = function(lonLat) {
-  return ol.proj.fromLonLat(
+exports.prototype.fromLonLat_ = function(lonLat) {
+  return olBase.proj.fromLonLat(
     lonLat,
     this.map_.getView().getProjection()
   );
@@ -511,8 +512,8 @@ app.streetview.StreetviewController.prototype.fromLonLat_ = function(lonLat) {
  * @param {!ol.Coordinate} coordinate Map view projection coordinate.
  * @return {ol.Coordinate} LonLat coordinate.
  */
-app.streetview.StreetviewController.prototype.toLonLat_ = function(coordinate) {
-  return ol.proj.toLonLat(
+exports.prototype.toLonLat_ = function(coordinate) {
+  return olBase.proj.toLonLat(
     coordinate,
     this.map_.getView().getProjection()
   );
@@ -523,7 +524,7 @@ app.streetview.StreetviewController.prototype.toLonLat_ = function(coordinate) {
  * Load the google api if not already loaded.
  * @return {Promise} The promise.
  */
-app.streetview.StreetviewController.prototype.loadGoogleapis_ = function() {
+exports.prototype.loadGoogleapis_ = function() {
   return new Promise(function(resolve, reject) {
     if (typeof google === 'undefined') {
       var script = document.createElement('script');
@@ -537,4 +538,4 @@ app.streetview.StreetviewController.prototype.loadGoogleapis_ = function() {
     }
   }.bind(this));
 };
-app.module.controller('AppStreetviewController', app.streetview.StreetviewController);
+appModule.controller('AppStreetviewController', exports);

@@ -2,12 +2,13 @@
  * @fileoverview This file defines the geolocation control.
  *
  */
-goog.provide('app.draw.RouteControl');
+goog.module('app.draw.RouteControl');
 
-goog.require('ol');
-goog.require('ol.css');
-goog.require('ol.control.Control');
-goog.require('ol.events');
+goog.module.declareLegacyNamespace();
+const olBase = goog.require('ol');
+const olCss = goog.require('ol.css');
+const olControlControl = goog.require('ol.control.Control');
+const olEvents = goog.require('ol.events');
 
 
 /**
@@ -17,7 +18,7 @@ goog.require('ol.events');
  * options.
  * @ngInject
  */
-app.draw.RouteControl = function(options) {
+exports = function(options) {
   var className = options.className !== undefined ? options.className :
       'route-button';
 
@@ -35,8 +36,8 @@ app.draw.RouteControl = function(options) {
   button.setAttribute('type', 'button');
   button.setAttribute('title', tipLabel);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL + ' ' +
+  var cssClasses = className + ' ' + olCss.CLASS_UNSELECTABLE + ' ' +
+      olCss.CLASS_CONTROL + ' ' +
       (this.drawLineInteraction_.getMapMatching() ? 'route-on' : '');
 
   /**
@@ -46,27 +47,27 @@ app.draw.RouteControl = function(options) {
   this.element.setAttribute('class', cssClasses);
   this.element.appendChild(button);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
+  olEvents.listen(button, olEvents.EventType.CLICK,
       this.handleClick_, this);
 
-  ol.events.listen(button, ol.events.EventType.MOUSEOUT, function() {
+  olEvents.listen(button, olEvents.EventType.MOUSEOUT, function() {
     this.blur();
   });
 
-  ol.control.Control.call(this, {
+  olControlControl.call(this, {
     element: this.element,
     target: options.target
   });
 
 };
-ol.inherits(app.draw.RouteControl, ol.control.Control);
+olBase.inherits(exports, olControlControl);
 
 
 /**
  * @param {ol.MapBrowserEvent} event The event to handle
  * @private
  */
-app.draw.RouteControl.prototype.handleClick_ = function(event) {
+exports.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.drawLineInteraction_.toggleMapMatching();
   this.element.classList.toggle('route-on');

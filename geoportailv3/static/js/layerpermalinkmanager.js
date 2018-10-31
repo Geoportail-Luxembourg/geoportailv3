@@ -3,14 +3,15 @@
  * selected layers permalinks
  */
 
-goog.provide('app.LayerPermalinkManager');
+goog.module('app.LayerPermalinkManager');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('app.events.ThemesEventType');
-goog.require('ol.events');
-goog.require('ol.ObjectEventType');
-goog.require('ol.array');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
+const olEvents = goog.require('ol.events');
+const olObjectEventType = goog.require('ol.ObjectEventType');
+const olArray = goog.require('ol.array');
 
 
 /**
@@ -29,7 +30,7 @@ goog.require('ol.array');
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-app.LayerPermalinkManager = function(appStateManager,
+exports = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
     ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, gettextCatalog) {
   /**
@@ -133,7 +134,7 @@ app.LayerPermalinkManager = function(appStateManager,
  * @const
  * @private
  */
-app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
+exports.V2_BGLAYER_TO_V3_ = {
   'webbasemap': 'basemap_2015_global',
   'pixelmaps-color': 'topogr_global',
   'pixelmaps-gray': 'topo_bw_jpeg',
@@ -146,9 +147,9 @@ app.LayerPermalinkManager.V2_BGLAYER_TO_V3_ = {
  * Remove the listeners for property change.
  * @private
  */
-app.LayerPermalinkManager.prototype.unListenProtertyChange_ = function() {
+exports.prototype.unListenProtertyChange_ = function() {
   this.layersListenerKeys_.forEach(function(key) {
-    ol.events.unlistenByKey(key);
+    olEvents.unlistenByKey(key);
   });
   this.layersListenerKeys_.length = 0;
 };
@@ -159,10 +160,10 @@ app.LayerPermalinkManager.prototype.unListenProtertyChange_ = function() {
  * @param {Array.<ol.layer.Layer>} layers The layers.
  * @private
  */
-app.LayerPermalinkManager.prototype.listenProtertyChange = function(layers) {
+exports.prototype.listenProtertyChange = function(layers) {
   layers.forEach(function(layer) {
-    this.layersListenerKeys_.push(ol.events.listen(
-        layer, ol.ObjectEventType.PROPERTYCHANGE,
+    this.layersListenerKeys_.push(olEvents.listen(
+        layer, olObjectEventType.PROPERTYCHANGE,
         function() {
           this.onLayerUpdate_(layers);
         }, this)
@@ -175,7 +176,7 @@ app.LayerPermalinkManager.prototype.listenProtertyChange = function(layers) {
  * @param {Array.<ol.layer.Layer>} layers The layers.
  * @private
  */
-app.LayerPermalinkManager.prototype.onLayerUpdate_ = function(layers) {
+exports.prototype.onLayerUpdate_ = function(layers) {
 
   // Check if a layer is added or removed;
   if (layers.length !== this.layersListenerKeys_.length) {
@@ -208,7 +209,7 @@ app.LayerPermalinkManager.prototype.onLayerUpdate_ = function(layers) {
  * @param {Array.<Object>} flatCatalogue The catalog.
  * @private
  */
-app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
+exports.prototype.applyLayerStateToMap_ = function(
     layerIds, opacities, flatCatalogue) {
   layerIds.reverse();
   opacities.reverse();
@@ -316,7 +317,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
   }, this);
   if (this.unavailableLayers_.length > 0) {
     var msg = this.gettextCatalog.getString('Certaines couches sont protégées. Veuillez vous connecter avec un utilisateur disposant les droits de visualiser cette couche.');
-    this.notify_(msg, app.NotifyNotificationType.WARNING);
+    this.notify_(msg, appNotifyNotificationType.WARNING);
   }
 };
 
@@ -324,7 +325,7 @@ app.LayerPermalinkManager.prototype.applyLayerStateToMap_ = function(
  * Tell if t leat one unavaillable layer is present.
  * @return {boolean} True if has at leat one unavaillable layer.
  */
-app.LayerPermalinkManager.prototype.hasUnavailableLayers = function() {
+exports.prototype.hasUnavailableLayers = function() {
   return (this.unavailableLayers_.length > 0);
 };
 
@@ -335,7 +336,7 @@ app.LayerPermalinkManager.prototype.hasUnavailableLayers = function() {
  * @param {number} layerIndex The index of the layer in the list.
  * @private
  */
-app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
+exports.prototype.setLayerAsUnavailable_ = function(
     addedLayers, layerId, opacity, layerIndex) {
   var layerToRemove = /** @type{ol.layer.Base} */
       (addedLayers.find(function(addedLayer) {
@@ -358,7 +359,7 @@ app.LayerPermalinkManager.prototype.setLayerAsUnavailable_ = function(
  * @private
  * @return {Array.<number>|undefined} The values.
  */
-app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
+exports.prototype.getStateValue_ = function(parameter) {
   var result = '';
   var response = this.stateManager_.getInitialValue(parameter);
   if (response !== undefined && response.length > 0) {
@@ -379,7 +380,7 @@ app.LayerPermalinkManager.prototype.getStateValue_ = function(parameter) {
  * @private
  * @return {Array.<number>|undefined} The values.
  */
-app.LayerPermalinkManager.prototype.splitNumbers_ =
+exports.prototype.splitNumbers_ =
     function(parameter, splitChar) {
       var items = [];
       if (parameter !== undefined) {
@@ -400,7 +401,7 @@ app.LayerPermalinkManager.prototype.splitNumbers_ =
  * @private
  * @return {Array.<number|string>|undefined} The values.
  */
-app.LayerPermalinkManager.prototype.splitLayers_ =
+exports.prototype.splitLayers_ =
     function(parameter, splitChar) {
       var items = [];
       if (parameter !== undefined) {
@@ -423,9 +424,9 @@ app.LayerPermalinkManager.prototype.splitLayers_ =
 /**
  * @private
  */
-app.LayerPermalinkManager.prototype.removeWatchers_ = function() {
+exports.prototype.removeWatchers_ = function() {
   if (this.backgroundLayerMgrLstn_ !== null) {
-    ol.events.unlistenByKey(this.backgroundLayerMgrLstn_);
+    olEvents.unlistenByKey(this.backgroundLayerMgrLstn_);
     this.backgroundLayerMgrLstn_ = null;
   }
   if (typeof this.scopeWatcher_ == 'function') {
@@ -439,9 +440,9 @@ app.LayerPermalinkManager.prototype.removeWatchers_ = function() {
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  * @private
  */
-app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
+exports.prototype.setupWatchers_ = function(selectedLayers) {
 
-  this.backgroundLayerMgrLstn_ = ol.events.listen(this.backgroundLayerMgr_, 'change',
+  this.backgroundLayerMgrLstn_ = olEvents.listen(this.backgroundLayerMgr_, 'change',
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({
@@ -465,11 +466,11 @@ app.LayerPermalinkManager.prototype.setupWatchers_ = function(selectedLayers) {
  * @return {Array} array The children.
  * @private
  */
-app.LayerPermalinkManager.getAllChildren_ = function(element) {
+exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      ol.array.extend(array, app.LayerPermalinkManager.getAllChildren_(
+      olArray.extend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -486,7 +487,7 @@ app.LayerPermalinkManager.getAllChildren_ = function(element) {
  * @param {ol.Map} map The map.
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  */
-app.LayerPermalinkManager.prototype.init =
+exports.prototype.init =
     function(scope, map, selectedLayers) {
   /**
    * @type {angular.Scope}
@@ -512,7 +513,7 @@ app.LayerPermalinkManager.prototype.init =
       this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-      ol.events.listen(this.appThemes_, app.events.ThemesEventType.LOAD,
+      olEvents.listen(this.appThemes_, appEventsThemesEventType.LOAD,
       function(evt) {
         this.appThemes_.getBgLayers().then(
             function(bgLayers) {
@@ -529,7 +530,7 @@ app.LayerPermalinkManager.prototype.init =
                   if (this.initialVersion_ === 2 &&
                       stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
                     stateBgLayerLabel =
-                        app.LayerPermalinkManager.
+                        exports.
                         V2_BGLAYER_TO_V3_[stateBgLayerLabel];
                   } else if (this.initialVersion_ === 2 &&
                       parseInt(stateBgLayerOpacity, 0) === 0) {
@@ -636,4 +637,4 @@ app.LayerPermalinkManager.prototype.init =
       }, this);
     };
 
-app.module.service('appLayerPermalinkManager', app.LayerPermalinkManager);
+appModule.service('appLayerPermalinkManager', exports);

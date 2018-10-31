@@ -9,17 +9,18 @@
  *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
-goog.provide('app.print.PrintController');
+goog.module('app.print.PrintController');
 
 
-goog.require('app.module');
-goog.require('app.print.Printservice');
-goog.require('ol.array');
-goog.require('ol.easing');
-goog.require('ol.events');
-goog.require('ol.Observable');
-goog.require('ol.proj');
-goog.require('ol.render.EventType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appPrintPrintservice = goog.require('app.print.Printservice');
+const olArray = goog.require('ol.array');
+const olEasing = goog.require('ol.easing');
+const olEvents = goog.require('ol.events');
+const olObservable = goog.require('ol.Observable');
+const olProj = goog.require('ol.proj');
+const olRenderEventType = goog.require('ol.render.EventType');
 
 
 /**
@@ -45,7 +46,7 @@ goog.require('ol.render.EventType');
  * @export
  * @ngInject
  */
-app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatalog,
+exports = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
@@ -110,7 +111,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
    * @type {ngeo.print.Service}
    * @private
    */
-  this.print_ = new app.print.Printservice(printServiceUrl, $http, ngeoLayerHelper);
+  this.print_ = new appPrintPrintservice(printServiceUrl, $http, ngeoLayerHelper);
 
   /**
    * @type {ngeo.print.Utils}
@@ -236,7 +237,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
           (function() {
             var layoutIdx = this['layouts'].indexOf(this['layout']);
             console.assert(layoutIdx >= 0);
-            return app.print.PrintController.MAP_SIZES_[layoutIdx];
+            return exports.MAP_SIZES_[layoutIdx];
           }).bind(this),
           /**
            * Return the scale of the map to print.
@@ -244,7 +245,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
            * @return {number} Scale.
            */
           (function(frameState) {
-            return app.print.PrintController.adjustScale_(
+            return exports.adjustScale_(
                 this.map_.getView(), this['scale']);
           }).bind(this));
 
@@ -265,10 +266,10 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
       this.featurePopup_.hide();
       this.useOptimalScale_();
       console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = ol.events.listen(this.map_,
-          ol.render.EventType.POSTCOMPOSE, postcomposeListener);
+      postcomposeListenerKey = olEvents.listen(this.map_,
+          olRenderEventType.POSTCOMPOSE, postcomposeListener);
     } else if (postcomposeListenerKey !== null) {
-      ol.Observable.unByKey(postcomposeListenerKey);
+      olObservable.unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
     }
     this.map_.render();
@@ -288,7 +289,7 @@ app.print.PrintController = function($scope, $window, $timeout, $q, gettextCatal
  * @type {Array.<number>}
  * @private
  */
-app.print.PrintController.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
+exports.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
   20000, 25000, 50000, 80000, 100000, 125000, 200000, 250000, 400000];
 
 
@@ -298,7 +299,7 @@ app.print.PrintController.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
  * @type {Array.<ol.Size>}
  * @private
  */
-app.print.PrintController.MAP_SIZES_ = [
+exports.MAP_SIZES_ = [
   // A4 portrait and landscape
   [715, 395], [470, 650],
   // A3 portrait and landscape
@@ -317,7 +318,7 @@ app.print.PrintController.MAP_SIZES_ = [
  * @type {number}
  * @private
  */
-app.print.PrintController.DPI_ = 127;
+exports.DPI_ = 127;
 
 
 /**
@@ -326,14 +327,14 @@ app.print.PrintController.DPI_ = 127;
  * @return {number} The point resolution.
  * @private
  */
-app.print.PrintController.getViewCenterResolution_ = function(view) {
+exports.getViewCenterResolution_ = function(view) {
   var viewCenter = view.getCenter();
   var viewProjection = view.getProjection();
   var viewResolution = view.getResolution();
   console.assert(viewCenter !== undefined);
   console.assert(viewProjection !== null);
   console.assert(viewResolution !== undefined);
-  return ol.proj.getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
+  return olProj.getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
 };
 
 
@@ -343,9 +344,9 @@ app.print.PrintController.getViewCenterResolution_ = function(view) {
  * @return {number} The adjusted scale.
  * @private
  */
-app.print.PrintController.adjustScale_ = function(view, scale) {
+exports.adjustScale_ = function(view, scale) {
   var viewResolution = view.getResolution();
-  var viewCenterResolution = app.print.PrintController.getViewCenterResolution_(view);
+  var viewCenterResolution = exports.getViewCenterResolution_(view);
   console.assert(viewResolution !== undefined);
   var factor = viewResolution / viewCenterResolution;
   return scale * factor;
@@ -358,7 +359,7 @@ app.print.PrintController.adjustScale_ = function(view, scale) {
  * @return {number} The nearest scale.
  * @private
  */
-app.print.PrintController.findNearestScale_ = function(scales, scale) {
+exports.findNearestScale_ = function(scales, scale) {
   if (scale <= scales[0]) {
     scale = scales[0];
   } else if (scale >= scales[scales.length - 1]) {
@@ -385,7 +386,7 @@ app.print.PrintController.findNearestScale_ = function(scales, scale) {
 /**
  * @export
  */
-app.print.PrintController.prototype.cancel = function() {
+exports.prototype.cancel = function() {
   // Cancel the latest request, if it's not finished yet.
   console.assert(this.requestCanceler_ !== null);
   this.requestCanceler_.resolve();
@@ -408,7 +409,7 @@ app.print.PrintController.prototype.cancel = function() {
  * @param {string} newLayout The name of the selected layout.
  * @export
  */
-app.print.PrintController.prototype.changeLayout = function(newLayout) {
+exports.prototype.changeLayout = function(newLayout) {
   this['layout'] = newLayout;
   this.useOptimalScale_();
   this.map_.render();
@@ -419,7 +420,7 @@ app.print.PrintController.prototype.changeLayout = function(newLayout) {
  * @param {number} newScale The new scale.
  * @export
  */
-app.print.PrintController.prototype.changeScale = function(newScale) {
+exports.prototype.changeScale = function(newScale) {
   this['scale'] = newScale;
 
   var map = this.map_;
@@ -431,7 +432,7 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
   console.assert(layoutIdx >= 0);
 
   var optimalResolution = this.printUtils_.getOptimalResolution(
-      /** @type {Array<number>} */ (mapSize), app.print.PrintController.MAP_SIZES_[layoutIdx], newScale);
+      /** @type {Array<number>} */ (mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
 
   var view = map.getView();
   var currentResolution = view.getResolution();
@@ -441,7 +442,7 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
-      easing: ol.easing.easeOut,
+      easing: olEasing.easeOut,
       resolution: currentResolution
     });
   }
@@ -454,12 +455,12 @@ app.print.PrintController.prototype.changeScale = function(newScale) {
  * @param {string} format The print format.
  * @export
  */
-app.print.PrintController.prototype.print = function(format) {
+exports.prototype.print = function(format) {
   this.featurePopup_.hide();
   var map = this.map_;
 
-  var dpi = app.print.PrintController.DPI_;
-  var scale = app.print.PrintController.adjustScale_(map.getView(), this['scale']);
+  var dpi = exports.DPI_;
+  var scale = exports.adjustScale_(map.getView(), this['scale']);
   var layout = this['layout'];
   var curFormat = format;
   var legend = [];
@@ -668,7 +669,7 @@ app.print.PrintController.prototype.print = function(format) {
  * @param {!angular.$http.Response} resp Response.
  * @private
  */
-app.print.PrintController.prototype.handleCreateReportSuccess_ = function(resp) {
+exports.prototype.handleCreateReportSuccess_ = function(resp) {
   var mfResp = /** @type {MapFishPrintReportResponse} */ (resp.data);
   var ref = mfResp.ref;
   console.assert(ref.length > 0);
@@ -681,7 +682,7 @@ app.print.PrintController.prototype.handleCreateReportSuccess_ = function(resp) 
  * @param {string} ref Ref.
  * @private
  */
-app.print.PrintController.prototype.getStatus_ = function(ref) {
+exports.prototype.getStatus_ = function(ref) {
   this.requestCanceler_ = this.$q_.defer();
   this.print_.getStatus(ref, /** @type {angular.$http.Config} */ ({
     timeout: this.requestCanceler_.promise
@@ -695,7 +696,7 @@ app.print.PrintController.prototype.getStatus_ = function(ref) {
  * @param {!angular.$http.Response} resp Response.
  * @private
  */
-app.print.PrintController.prototype.handleCreateReportError_ = function(resp) {
+exports.prototype.handleCreateReportError_ = function(resp) {
   this.resetPrintStates_();
 
   // FIXME display error message?
@@ -707,7 +708,7 @@ app.print.PrintController.prototype.handleCreateReportError_ = function(resp) {
  * @param {!angular.$http.Response} resp Response.
  * @private
  */
-app.print.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp) {
+exports.prototype.handleGetStatusSuccess_ = function(ref, resp) {
   var mfResp = /** @type {MapFishPrintStatusResponse} */ (resp.data);
   var done = mfResp.done;
   if (done) {
@@ -728,7 +729,7 @@ app.print.PrintController.prototype.handleGetStatusSuccess_ = function(ref, resp
  * @param {!angular.$http.Response} resp Response.
  * @private
  */
-app.print.PrintController.prototype.handleGetStatusError_ = function(resp) {
+exports.prototype.handleGetStatusError_ = function(resp) {
   this.resetPrintStates_();
 
   // FIXME display error message?
@@ -738,7 +739,7 @@ app.print.PrintController.prototype.handleGetStatusError_ = function(resp) {
 /**
  * @private
  */
-app.print.PrintController.prototype.resetPrintStates_ = function() {
+exports.prototype.resetPrintStates_ = function() {
   this['printing'] = false;
   this.curRef_ = '';
 };
@@ -748,7 +749,7 @@ app.print.PrintController.prototype.resetPrintStates_ = function() {
  * Set possible print scales based on the current theme.
  * @private
  */
-app.print.PrintController.prototype.setScales_ = function() {
+exports.prototype.setScales_ = function() {
   var currentTheme = this.appTheme_.getCurrentTheme();
   this.appThemes_.getThemeObject(currentTheme).then(
       /**
@@ -771,13 +772,13 @@ app.print.PrintController.prototype.setScales_ = function() {
               });
           scales.sort();
         } else {
-          scales = app.print.PrintController.DEFAULT_MAP_SCALES_;
+          scales = exports.DEFAULT_MAP_SCALES_;
         }
         this['scales'] = scales;
         var scale = this['scale'];
         if (scale != -1) {
           // find nearest scale to current scale
-          scale = app.print.PrintController.findNearestScale_(scales, scale);
+          scale = exports.findNearestScale_(scales, scale);
           if (scale != this['scale']) {
             this['scale'] = scale;
             this.map_.render();
@@ -792,20 +793,20 @@ app.print.PrintController.prototype.setScales_ = function() {
  * and for the selected print layout.
  * @private
  */
-app.print.PrintController.prototype.useOptimalScale_ = function() {
+exports.prototype.useOptimalScale_ = function() {
   var map = this.map_;
 
   var mapSize = map.getSize();
   console.assert(mapSize !== undefined && mapSize !== null);
 
-  var viewCenterResolution = app.print.PrintController.getViewCenterResolution_(
+  var viewCenterResolution = exports.getViewCenterResolution_(
       map.getView());
 
   var layoutIdx = this['layouts'].indexOf(this['layout']);
   console.assert(layoutIdx >= 0);
 
   var scale = this.printUtils_.getOptimalScale(/** @type {Array<number>} */ (mapSize),
-      viewCenterResolution, app.print.PrintController.MAP_SIZES_[layoutIdx],
+      viewCenterResolution, exports.MAP_SIZES_[layoutIdx],
       this['scales']);
 
   this['scale'] = scale != -1 ? scale : this['scales'][0];
@@ -818,7 +819,7 @@ app.print.PrintController.prototype.useOptimalScale_ = function() {
  * @return {string} the string as valid svg.
  * @private
  */
-app.print.PrintController.prototype.getSVGString_ = function(svgNode) {
+exports.prototype.getSVGString_ = function(svgNode) {
   svgNode.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
   var cssStyleText = this.getCSSStyles_(svgNode);
   this.appendCSS_(cssStyleText, svgNode);
@@ -837,7 +838,7 @@ app.print.PrintController.prototype.getSVGString_ = function(svgNode) {
  * @param {Element} element Element.
  * @private
  */
-app.print.PrintController.prototype.appendCSS_ = function(cssText, element) {
+exports.prototype.appendCSS_ = function(cssText, element) {
   var styleElement = document.createElement('style');
   styleElement.setAttribute('type', 'text/css');
   styleElement.innerHTML = cssText;
@@ -851,13 +852,13 @@ app.print.PrintController.prototype.appendCSS_ = function(cssText, element) {
  * @return {string} The extracted CSS Text.
  * @private
  */
-app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
+exports.prototype.getCSSStyles_ = function(parentElement) {
   var selectorTextArr = [];
 
   // Add Parent element Id and Classes to the list
   selectorTextArr.push('#' + parentElement.id);
   for (var c1 = 0; c1 < parentElement.classList.length; c1++) {
-    if (!ol.array.includes(selectorTextArr, '.' + parentElement.classList[c1])) {
+    if (!olArray.includes(selectorTextArr, '.' + parentElement.classList[c1])) {
       selectorTextArr.push('.' + parentElement.classList[c1]);
     }
   }
@@ -865,12 +866,12 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
   var nodes = parentElement.getElementsByTagName('*');
   for (var i1 = 0; i1 < nodes.length; i1++) {
     var id = nodes[i1].id;
-    if (!ol.array.includes(selectorTextArr, '#' + id)) {
+    if (!olArray.includes(selectorTextArr, '#' + id)) {
       selectorTextArr.push('#' + id);
     }
     var classes = nodes[i1].classList;
     for (var c2 = 0; c2 < classes.length; c2++) {
-      if (!ol.array.includes(selectorTextArr, '.' + classes[c2])) {
+      if (!olArray.includes(selectorTextArr, '.' + classes[c2])) {
         selectorTextArr.push('.' + classes[c2]);
       }
     }
@@ -893,7 +894,7 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
 
     var cssRules = s.cssRules;
     for (var r1 = 0; r1 < cssRules.length; r1++) {
-      if (ol.array.includes(selectorTextArr, cssRules[r1].selectorText)) {
+      if (olArray.includes(selectorTextArr, cssRules[r1].selectorText)) {
         extractedCSSText += cssRules[r1].cssText;
       }
     }
@@ -901,4 +902,4 @@ app.print.PrintController.prototype.getCSSStyles_ = function(parentElement) {
   return extractedCSSText;
 };
 
-app.module.controller('AppPrintController', app.print.PrintController);
+appModule.controller('AppPrintController', exports);

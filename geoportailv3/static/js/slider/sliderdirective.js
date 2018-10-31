@@ -1,6 +1,7 @@
-goog.provide('app.slider.SliderDirective');
+goog.module('app.slider.SliderDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -8,7 +9,7 @@ goog.require('app.module');
  * @return {angular.Directive} The directive specs.
  * @ngInject
  */
-app.slider.SliderDirective = function(appSliderTemplateUrl) {
+exports = function(appSliderTemplateUrl) {
   return {
     restrict: 'A',
     scope: {
@@ -23,4 +24,4 @@ app.slider.SliderDirective = function(appSliderTemplateUrl) {
 };
 
 
-app.module.directive('appSlider', app.slider.SliderDirective);
+appModule.directive('appSlider', exports);

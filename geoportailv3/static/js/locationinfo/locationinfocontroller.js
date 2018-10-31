@@ -2,21 +2,22 @@
  * @fileoverview This file provides a "location information" directive.
  */
 
-goog.provide('app.locationinfo.LocationinfoController');
+goog.module('app.locationinfo.LocationinfoController');
 
-goog.require('app.module');
-goog.require('ol.Feature');
-goog.require('ol.events');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.extent');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olFeature = goog.require('ol.Feature');
+const olEvents = goog.require('ol.events');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olProj = goog.require('ol.proj');
+const olSourceVector = goog.require('ol.source.Vector');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStroke = goog.require('ol.style.Stroke');
+const olStyleStyle = goog.require('ol.style.Style');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olExtent = goog.require('ol.extent');
 
 
 /**
@@ -45,7 +46,7 @@ goog.require('ol.extent');
  * @param {app.Activetool} appActivetool The activetool service.
  * @ngInject
  */
-app.locationinfo.LocationinfoController = function(
+exports = function(
         $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
@@ -74,7 +75,7 @@ app.locationinfo.LocationinfoController = function(
    * @type {ol.Extent}
    * @private
    */
-  this.lidarExtent_ = ol.proj.transformExtent(
+  this.lidarExtent_ = olProj.transformExtent(
     bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
 
   /**
@@ -130,21 +131,21 @@ app.locationinfo.LocationinfoController = function(
    * @type {ol.layer.Vector}
    * @private
    */
-  this.featureLayer_ = new ol.layer.Vector({
-    source: new ol.source.Vector(),
+  this.featureLayer_ = new olLayerVector({
+    source: new olSourceVector(),
     zIndex: 1000,
     'altitudeMode': 'clampToGround'
   });
   this['map'].addLayer(this.featureLayer_);
-  var defaultFill = new ol.style.Fill({
+  var defaultFill = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
-  var circleStroke = new ol.style.Stroke({
+  var circleStroke = new olStyleStroke({
     color: [255, 155, 55, 1],
     width: 3
   });
 
-  var pointStyle = new ol.style.Circle({
+  var pointStyle = new olStyleCircle({
     radius: 10,
     fill: defaultFill,
     stroke: circleStroke
@@ -157,7 +158,7 @@ app.locationinfo.LocationinfoController = function(
      * @return {Array.<ol.style.Style>} Array of styles.
      */
     function(feature, resolution) {
-      return [new ol.style.Style({
+      return [new olStyleStyle({
         image: pointStyle
       })];
     });
@@ -309,7 +310,7 @@ app.locationinfo.LocationinfoController = function(
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
           /** @type {ol.Coordinate} */ ([x, y]) :
-          /** @type {ol.Coordinate} */ (ol.proj.transform([y, x], 'EPSG:2169',
+          /** @type {ol.Coordinate} */ (olProj.transform([y, x], 'EPSG:2169',
               this['map'].getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
@@ -340,7 +341,7 @@ app.locationinfo.LocationinfoController = function(
       var results = data['results'];
       if (results !== undefined && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */
-            (ol.proj.transform(
+            (olProj.transform(
                 results[0]['geom']['coordinates'], 'EPSG:2169',
                 this['map'].getView().getProjection()));
         this['map'].getView().setZoom(17);
@@ -364,7 +365,7 @@ app.locationinfo.LocationinfoController = function(
     this.loadInfoPane_();
   }.bind(this));
 
-  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERDOWN,
+  olEvents.listen(this['map'], olMapBrowserEventType.POINTERDOWN,
     function(event) {
       if (!appSelectedFeatures.getLength()) {
         if (event.originalEvent.which === 3) { // if right mouse click
@@ -384,13 +385,13 @@ app.locationinfo.LocationinfoController = function(
       }
     }.bind(this), this);
 
-  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERUP,
+  olEvents.listen(this['map'], olMapBrowserEventType.POINTERUP,
       function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
       }.bind(this), this);
 
-  ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
+  olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
       function(event) {
         if (startPixel) {
           var pixel = event.pixel;
@@ -420,7 +421,7 @@ app.locationinfo.LocationinfoController = function(
  * @param {ol.Coordinate} coordinate The coordinate.
  * @private
  */
-app.locationinfo.LocationinfoController.prototype.updateLocation_ = function(coordinate) {
+exports.prototype.updateLocation_ = function(coordinate) {
   this['location'] = {};
   for (var key in this.projections_) {
     var value = this.projections_[key];
@@ -442,9 +443,9 @@ app.locationinfo.LocationinfoController.prototype.updateLocation_ = function(coo
 /**
  * @export
  */
-app.locationinfo.LocationinfoController.prototype.addRoutePoint = function() {
+exports.prototype.addRoutePoint = function() {
   var feature = /** @type {ol.Feature} */
-      (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
+      (new olFeature(new olGeomPoint(this.clickCoordinate)));
   if (this['address'].length > 0 &&  this['distance'] <= 100) {
     feature.set('label', this['address']);
   } else {
@@ -459,16 +460,16 @@ app.locationinfo.LocationinfoController.prototype.addRoutePoint = function() {
  * The coordinate.
  * @private
  */
-app.locationinfo.LocationinfoController.prototype.setClickCordinate_ = function(eventOrCoordinate) {
+exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
   if (eventOrCoordinate instanceof Array) {
     this.clickCoordinate = eventOrCoordinate;
   } else {
     eventOrCoordinate.preventDefault();
     this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
   }
-  this.clickCoordinateLuref_ = ol.proj.transform(
+  this.clickCoordinateLuref_ = olProj.transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
-  this.clickCoordinate4326_ = ol.proj.transform(
+  this.clickCoordinate4326_ = olProj.transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 };
 
@@ -477,13 +478,13 @@ app.locationinfo.LocationinfoController.prototype.setClickCordinate_ = function(
  * Load the information panel.
  * @private
  */
-app.locationinfo.LocationinfoController.prototype.loadInfoPane_ =
+exports.prototype.loadInfoPane_ =
     function() {
       this['appSelector'] = 'locationinfo';
       this.stateManager_.updateState({'crosshair': true});
       this.updateLocation_(this.clickCoordinate);
       var feature = /** @type {ol.Feature} */
-      (new ol.Feature(new ol.geom.Point(this.clickCoordinate)));
+      (new olFeature(new olGeomPoint(this.clickCoordinate)));
       this.featureLayer_.getSource().clear();
       this.featureLayer_.getSource().addFeature(feature);
 
@@ -492,7 +493,7 @@ app.locationinfo.LocationinfoController.prototype.loadInfoPane_ =
           this['elevation'] = elevation['formattedElevation'];
           this.rawElevation_ = elevation['rawElevation'];
           if (this.lidarDemoUrl_ !== undefined &&
-              this.lidarDemoUrl_.length > 0 && ol.extent.intersects(
+              this.lidarDemoUrl_.length > 0 && olExtent.intersects(
                 feature.getGeometry().getExtent(), this.lidarExtent_)) {
             this.isInBoxOfLidar = true;
           } else {
@@ -521,7 +522,7 @@ app.locationinfo.LocationinfoController.prototype.loadInfoPane_ =
  * @return {string} The lidar url.
  * @export
  */
-app.locationinfo.LocationinfoController.prototype.getLidarUrl = function() {
+exports.prototype.getLidarUrl = function() {
   if (this.lidarDemoUrl_ !== undefined && this.lidarDemoUrl_.length > 0 &&
       this.isInBoxOfLidar) {
     return this.lidarDemoUrl_ + '?COORD_X=' +
@@ -537,7 +538,7 @@ app.locationinfo.LocationinfoController.prototype.getLidarUrl = function() {
  * @return {*} The url to mobility from field.
  * @export
  */
-app.locationinfo.LocationinfoController.prototype.getMobilityUrl = function(dest) {
+exports.prototype.getMobilityUrl = function(dest) {
   if (this.clickCoordinate4326_ !== undefined) {
     var poi = 'POI%20G%C3%A9oportail';
     if (this['address'].length > 0 &&  this['distance'] <= 20) {
@@ -556,7 +557,7 @@ app.locationinfo.LocationinfoController.prototype.getMobilityUrl = function(dest
  * @return {boolean} True if is active.
  * @export
  */
-app.locationinfo.LocationinfoController.prototype.isStreetviewActive = function() {
+exports.prototype.isStreetviewActive = function() {
   return this.appActivetool_.streetviewActive;
 };
 
@@ -564,9 +565,9 @@ app.locationinfo.LocationinfoController.prototype.isStreetviewActive = function(
  * Change the status of streetview widget.
  * @export
  */
-app.locationinfo.LocationinfoController.prototype.toggleStreetview = function() {
+exports.prototype.toggleStreetview = function() {
   this.appActivetool_.streetviewActive = !this.appActivetool_.streetviewActive;
 };
 
 
-app.module.controller('AppLocationinfoController', app.locationinfo.LocationinfoController);
+appModule.controller('AppLocationinfoController', exports);

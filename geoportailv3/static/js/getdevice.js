@@ -2,9 +2,10 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "elevation" web service.
  */
-goog.provide('app.GetDevice');
+goog.module('app.GetDevice');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -14,7 +15,7 @@ goog.require('app.module');
  * @private
  * @ngInject
  */
-app.GetDevice = function($document, $window) {
+exports = function($document, $window) {
   /**
    * @type {Document}
    * @private
@@ -36,7 +37,7 @@ app.GetDevice = function($document, $window) {
 /**
   * @return {string} The device env.
  */
-app.GetDevice.prototype.findBootstrapEnvironment = function() {
+exports.prototype.findBootstrapEnvironment = function() {
   var envs = ['xs', 'sm', 'md', 'lg'];
   var el = $('<div>');
   angular.element(this.$document_[0].body).append(el);
@@ -57,7 +58,7 @@ app.GetDevice.prototype.findBootstrapEnvironment = function() {
   * @param {string} env to check.
   * @return {boolean} True if XS env screen.
  */
-app.GetDevice.prototype.testEnv = function(env) {
+exports.prototype.testEnv = function(env) {
   return this.findBootstrapEnvironment() === env;
 };
 
@@ -65,8 +66,8 @@ app.GetDevice.prototype.testEnv = function(env) {
 /**
   * @return {boolean} True if highdpi screen.
  */
-app.GetDevice.prototype.isHiDpi = function() {
+exports.prototype.isHiDpi = function() {
   return this.isHiDpi_;
 };
 
-app.module.service('appGetDevice', app.GetDevice);
+appModule.service('appGetDevice', exports);

@@ -11,16 +11,17 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.elevationDirective');
+goog.module('app.infobar.elevationDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.infobar.elevationDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -36,4 +37,4 @@ app.infobar.elevationDirective = function() {
 };
 
 
-app.module.directive('appElevation', app.infobar.elevationDirective);
+appModule.directive('appElevation', exports);

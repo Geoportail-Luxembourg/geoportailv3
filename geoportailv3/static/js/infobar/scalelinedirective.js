@@ -12,16 +12,17 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.scalelineDirective');
+goog.module('app.infobar.scalelineDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.infobar.scalelineDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -36,4 +37,4 @@ app.infobar.scalelineDirective = function() {
 };
 
 
-app.module.directive('appScaleline', app.infobar.scalelineDirective);
+appModule.directive('appScaleline', exports);

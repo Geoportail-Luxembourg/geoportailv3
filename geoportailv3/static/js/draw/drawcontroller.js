@@ -11,31 +11,32 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.draw.DrawController');
+goog.module('app.draw.DrawController');
 
-goog.require('app.module');
-goog.require('app.interaction.DrawRoute');
-goog.require('app.interaction.ClipLine');
-goog.require('app.interaction.ModifyCircle');
-goog.require('app.NotifyNotificationType');
-goog.require('ngeo.interaction.Measure');
-goog.require('ngeo.misc.decorate');
-goog.require('ol.CollectionEventType');
-goog.require('ol.Feature');
-goog.require('ol.Object');
-goog.require('ol.Observable');
-goog.require('ol.Overlay');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.Select');
-goog.require('ol.interaction.Translate');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appInteractionDrawRoute = goog.require('app.interaction.DrawRoute');
+const appInteractionClipLine = goog.require('app.interaction.ClipLine');
+const appInteractionModifyCircle = goog.require('app.interaction.ModifyCircle');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const olCollectionEventType = goog.require('ol.CollectionEventType');
+const olFeature = goog.require('ol.Feature');
+const olObject = goog.require('ol.Object');
+const olObservable = goog.require('ol.Observable');
+const olOverlay = goog.require('ol.Overlay');
+const olEvents = goog.require('ol.events');
+const olExtent = goog.require('ol.extent');
+const olProj = goog.require('ol.proj');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
+const olInteraction = goog.require('ol.interaction');
+const olInteractionDraw = goog.require('ol.interaction.Draw');
+const olInteractionModify = goog.require('ol.interaction.Modify');
+const olInteractionSelect = goog.require('ol.interaction.Select');
+const olInteractionTranslate = goog.require('ol.interaction.Translate');
 
 
 /**
@@ -56,7 +57,7 @@ goog.require('ol.interaction.Translate');
  * @export
  * @ngInject
  */
-app.draw.DrawController = function($scope,
+exports = function($scope,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
     appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
     appActivetool, appGetDevice, $http, getRouteUrl) {
@@ -212,8 +213,8 @@ app.draw.DrawController = function($scope,
    */
   this.featureStyleFunction_ = this.appMymaps_.createStyleFunction(this.map);
 
-  var drawPoint = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.POINT
+  var drawPoint = new olInteractionDraw({
+    type: olGeomGeometryType.POINT
   });
 
   /**
@@ -223,16 +224,16 @@ app.draw.DrawController = function($scope,
   this.drawPoint = drawPoint;
 
   drawPoint.setActive(false);
-  ngeo.misc.decorate.interaction(drawPoint);
+  ngeoMiscDecorate.interaction(drawPoint);
   this.map.addInteraction(drawPoint);
-  ol.events.listen(drawPoint, ol.Object.getChangeEventType(
-      ol.interaction.Property.ACTIVE),
+  olEvents.listen(drawPoint, olObject.getChangeEventType(
+      olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawPoint, ol.interaction.DrawEventType.DRAWEND,
+  olEvents.listen(drawPoint, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  var drawLabel = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.POINT
+  var drawLabel = new olInteractionDraw({
+    type: olGeomGeometryType.POINT
   });
 
   /**
@@ -242,16 +243,16 @@ app.draw.DrawController = function($scope,
   this.drawLabel = drawLabel;
 
   drawLabel.setActive(false);
-  ngeo.misc.decorate.interaction(drawLabel);
+  ngeoMiscDecorate.interaction(drawLabel);
   this.map.addInteraction(drawLabel);
-  ol.events.listen(drawLabel, ol.Object.getChangeEventType(
-      ol.interaction.Property.ACTIVE),
+  olEvents.listen(drawLabel, olObject.getChangeEventType(
+      olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawLabel, ol.interaction.DrawEventType.DRAWEND,
+  olEvents.listen(drawLabel, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
-  this.drawnFeatures_.drawLineInteraction = new app.interaction.DrawRoute({
-    type: ol.geom.GeometryType.LINE_STRING,
+  this.drawnFeatures_.drawLineInteraction = new appInteractionDrawRoute({
+    type: olGeomGeometryType.LINE_STRING,
     getRouteUrl: this.getRouteUrl_,
     $http: this.$http_,
     mapMatching: false
@@ -264,18 +265,18 @@ app.draw.DrawController = function($scope,
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
 
   this.drawLine.setActive(false);
-  ngeo.misc.decorate.interaction(this.drawLine);
+  ngeoMiscDecorate.interaction(this.drawLine);
   this.map.addInteraction(this.drawLine);
-  ol.events.listen(this.drawLine, ol.Object.getChangeEventType(
-      ol.interaction.Property.ACTIVE),
+  olEvents.listen(this.drawLine, olObject.getChangeEventType(
+      olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWEND,
+  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(this.drawLine, ol.interaction.DrawEventType.DRAWSTART,
+  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawLineStart_, this);
 
-  var drawPolygon = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.POLYGON
+  var drawPolygon = new olInteractionDraw({
+    type: olGeomGeometryType.POLYGON
   });
 
   /**
@@ -285,18 +286,18 @@ app.draw.DrawController = function($scope,
   this.drawPolygon = drawPolygon;
 
   drawPolygon.setActive(false);
-  ngeo.misc.decorate.interaction(drawPolygon);
+  ngeoMiscDecorate.interaction(drawPolygon);
   this.map.addInteraction(drawPolygon);
-  ol.events.listen(drawPolygon, ol.Object.getChangeEventType(
-      ol.interaction.Property.ACTIVE),
+  olEvents.listen(drawPolygon, olObject.getChangeEventType(
+      olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWEND,
+  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(drawPolygon, ol.interaction.DrawEventType.DRAWSTART,
+  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawPolygonStart_, this);
 
-  var drawCircle = new ol.interaction.Draw({
-    type: ol.geom.GeometryType.CIRCLE
+  var drawCircle = new olInteractionDraw({
+    type: olGeomGeometryType.CIRCLE
   });
 
   /**
@@ -306,14 +307,14 @@ app.draw.DrawController = function($scope,
   this.drawCircle = drawCircle;
 
   drawCircle.setActive(false);
-  ngeo.misc.decorate.interaction(drawCircle);
+  ngeoMiscDecorate.interaction(drawCircle);
   this.map.addInteraction(drawCircle);
-  ol.events.listen(drawCircle, ol.Object.getChangeEventType(
-      ol.interaction.Property.ACTIVE),
+  olEvents.listen(drawCircle, olObject.getChangeEventType(
+      olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWEND,
+  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  ol.events.listen(drawCircle, ol.interaction.DrawEventType.DRAWSTART,
+  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
@@ -342,7 +343,7 @@ app.draw.DrawController = function($scope,
     }
   }.bind(this));
 
-  var selectInteraction = new ol.interaction.Select({
+  var selectInteraction = new olInteractionSelect({
     features: appSelectedFeatures,
     hitTolerance: 20,
     filter: function(feature, layer) {
@@ -355,12 +356,12 @@ app.draw.DrawController = function($scope,
   this.drawnFeatures_.selectInteraction.setActive(false);
   appFeaturePopup.init(this.map);
 
-  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.ADD,
+  olEvents.listen(appSelectedFeatures, olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
       (function(evt) {
-        console.assert(evt.element instanceof ol.Feature);
+        console.assert(evt.element instanceof olFeature);
         var feature = /** @type {ol.Feature} */ (evt.element);
         feature.set('__selected__', true);
         if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
@@ -368,19 +369,19 @@ app.draw.DrawController = function($scope,
         }
         if (!this.featurePopup_.isDocked) {
           this.featurePopup_.show(feature, this.map,
-            ol.extent.getCenter(feature.getGeometry().getExtent()));
+            olExtent.getCenter(feature.getGeometry().getExtent()));
         }
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
         this.scope_.$applyAsync();
       }).bind(this));
 
-  ol.events.listen(appSelectedFeatures, ol.CollectionEventType.REMOVE,
+  olEvents.listen(appSelectedFeatures, olCollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
       (function(evt) {
-        console.assert(evt.element instanceof ol.Feature);
+        console.assert(evt.element instanceof olFeature);
         var feature = evt.element;
         feature.set('__selected__', false);
         feature.set('__editable__', false);
@@ -393,25 +394,25 @@ app.draw.DrawController = function($scope,
         this.scope_.$applyAsync();
       }), this);
 
-  this.drawnFeatures_.modifyInteraction = new ol.interaction.Modify({
+  this.drawnFeatures_.modifyInteraction = new olInteractionModify({
     features: appSelectedFeatures,
     pixelTolerance: 20,
     deleteCondition: function(event) {
-      return ol.events.condition.noModifierKeys(event) && ol.events.condition.singleClick(event);
+      return olEvents.condition.noModifierKeys(event) && olEvents.condition.singleClick(event);
     }
   });
 
   this.drawnFeatures_.clipLineInteraction =
-      new app.interaction.ClipLine({
+      new appInteractionClipLine({
         features: this.drawnFeatures_.getCollection()
       });
   this.drawnFeatures_.clipLineInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
-  ol.events.listen(this.drawnFeatures_.clipLineInteraction,
-      ol.interaction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
+  olEvents.listen(this.drawnFeatures_.clipLineInteraction,
+      olInteraction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
 
   this.drawnFeatures_.modifyCircleInteraction =
-      new app.interaction.ModifyCircle({
+      new appInteractionModifyCircle({
         features: appSelectedFeatures
       });
   /**
@@ -421,22 +422,22 @@ app.draw.DrawController = function($scope,
   this.modifyCircleInteraction_ = this.drawnFeatures_.modifyCircleInteraction;
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
-  ol.events.listen(this.modifyCircleInteraction_,
-      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+  olEvents.listen(this.modifyCircleInteraction_,
+      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
-  ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.interaction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+  olEvents.listen(this.drawnFeatures_.modifyInteraction,
+      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
-  this.drawnFeatures_.translateInteraction = new ol.interaction.Translate({
+  this.drawnFeatures_.translateInteraction = new olInteractionTranslate({
     features: appSelectedFeatures
   });
   this.drawnFeatures_.translateInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
-  ol.events.listen(
+  olEvents.listen(
       this.drawnFeatures_.translateInteraction,
-      ol.interaction.TranslateEventType.TRANSLATEEND,
+      olInteraction.TranslateEventType.TRANSLATEEND,
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
@@ -446,7 +447,7 @@ app.draw.DrawController = function($scope,
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 
-  ol.events.listen(this.map, ol.events.EventType.KEYDOWN,
+  olEvents.listen(this.map, olEvents.EventType.KEYDOWN,
       this.keyboardHandler_, this);
 
 };
@@ -456,7 +457,7 @@ app.draw.DrawController = function($scope,
  * @param {ol.events.Event} event Event.
  * @private
  */
-app.draw.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
+exports.prototype.onFeatureModifyEnd_ = function(event) {
   this.scope_.$applyAsync(function() {
     var feature = event.features.getArray()[0];
     this.drawnFeatures_.saveFeature(feature);
@@ -467,7 +468,7 @@ app.draw.DrawController.prototype.onFeatureModifyEnd_ = function(event) {
  * @param {ol.interaction.Draw.Event} event Event.
  * @private
  */
-app.draw.DrawController.prototype.onContinueLineEnd_ = function(event) {
+exports.prototype.onContinueLineEnd_ = function(event) {
   // Deactivating asynchronosly to prevent dbl-click to zoom in
   window.setTimeout(function() {
     this.scope_.$apply(function() {
@@ -488,7 +489,7 @@ app.draw.DrawController.prototype.onContinueLineEnd_ = function(event) {
  * @param {ol.Object.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onChangeActive_ = function(event) {
+exports.prototype.onChangeActive_ = function(event) {
   var active = this.drawPoint.getActive() || this.drawLine.getActive() ||
       this.drawPolygon.getActive() || this.drawCircle.getActive() ||
       this.drawLabel.getActive();
@@ -520,7 +521,7 @@ app.draw.DrawController.prototype.onChangeActive_ = function(event) {
       cntActive++;
     }
     if (cntActive === 1) {
-      this.notify_(msg, app.NotifyNotificationType.INFO);
+      this.notify_(msg, appNotifyNotificationType.INFO);
     }
   } else {
     this.appActivetool_.drawActive = false;
@@ -538,7 +539,7 @@ app.draw.DrawController.prototype.onChangeActive_ = function(event) {
  * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onDrawPolygonStart_ = function(event) {
+exports.prototype.onDrawPolygonStart_ = function(event) {
   this.createMeasureTooltip_();
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.Polygon} */
@@ -547,8 +548,8 @@ app.draw.DrawController.prototype.onDrawPolygonStart_ = function(event) {
   var proj = this.map.getView().getProjection();
 
 
-  this.changeEventKey_ = ol.events.listen(geometry,
-      ol.events.EventType.CHANGE,
+  this.changeEventKey_ = olEvents.listen(geometry,
+      olEvents.EventType.CHANGE,
       function() {
         var verticesCount = geometry.getCoordinates()[0].length;
         var coord = null;
@@ -568,7 +569,7 @@ app.draw.DrawController.prototype.onDrawPolygonStart_ = function(event) {
  * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onDrawLineStart_ = function(event) {
+exports.prototype.onDrawLineStart_ = function(event) {
   this.createMeasureTooltip_();
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.LineString} */
@@ -576,8 +577,8 @@ app.draw.DrawController.prototype.onDrawLineStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = ol.events.listen(geometry,
-      ol.events.EventType.CHANGE,
+  this.changeEventKey_ = olEvents.listen(geometry,
+      olEvents.EventType.CHANGE,
       function() {
         var coord = geometry.getLastCoordinate();
         if (coord !== null) {
@@ -593,7 +594,7 @@ app.draw.DrawController.prototype.onDrawLineStart_ = function(event) {
  * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onDrawCircleStart_ = function(event) {
+exports.prototype.onDrawCircleStart_ = function(event) {
   this.createMeasureTooltip_();
   var sketchFeature = event.feature;
   var geometry = /** @type {ol.geom.Circle} */ (sketchFeature.getGeometry());
@@ -601,14 +602,14 @@ app.draw.DrawController.prototype.onDrawCircleStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = ol.events.listen(geometry,
-      ol.events.EventType.CHANGE,
+  this.changeEventKey_ = olEvents.listen(geometry,
+      olEvents.EventType.CHANGE,
       function() {
         var coord = geometry.getLastCoordinate();
         var center = geometry.getCenter();
         if (center !== null && coord !== null) {
           var output = this.getFormattedLength(
-              new ol.geom.LineString([center, coord]), proj);
+              new olGeomLineString([center, coord]), proj);
           this.measureTooltipElement_.innerHTML = output;
           this.measureTooltipOverlay_.setPosition(coord);
         }
@@ -623,14 +624,14 @@ app.draw.DrawController.prototype.onDrawCircleStart_ = function(event) {
  * @param {ol.proj.Projection} projection Projection of the line string coords.
  * @return {string} Formatted string of length.
  */
-app.draw.DrawController.prototype.getFormattedLength =
+exports.prototype.getFormattedLength =
   function(lineString, projection) {
     var length = 0;
     var coordinates = lineString.getCoordinates();
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      var c1 = ol.proj.transform(coordinates[i], projection, 'EPSG:4326');
-      var c2 = ol.proj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-      length += ngeo.interaction.Measure.SPHERE_WGS84.haversineDistance(c1, c2);
+      var c1 = olProj.transform(coordinates[i], projection, 'EPSG:4326');
+      var c2 = olProj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+      length += ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(c1, c2);
     }
     var output;
     if (length > 1000) {
@@ -651,11 +652,11 @@ app.draw.DrawController.prototype.getFormattedLength =
  * @param {ol.proj.Projection} projection Projection of the polygon coords.
  * @return {string} Formatted string of the area.
  */
-app.draw.DrawController.prototype.getFormattedArea = function(polygon, projection) {
+exports.prototype.getFormattedArea = function(polygon, projection) {
   var geom = /** @type {ol.geom.Polygon} */ (
       polygon.clone().transform(projection, 'EPSG:4326'));
   var coordinates = geom.getLinearRing(0).getCoordinates();
-  var area = Math.abs(ngeo.interaction.Measure.SPHERE_WGS84.geodesicArea(coordinates));
+  var area = Math.abs(ngeoInteractionMeasure.SPHERE_WGS84.geodesicArea(coordinates));
   var output;
   if (area > 1000000) {
     output = parseFloat((area / 1000000).toPrecision(3)) +
@@ -671,11 +672,11 @@ app.draw.DrawController.prototype.getFormattedArea = function(polygon, projectio
  * @param {ol.interaction.Draw.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onDrawEnd_ = function(event) {
+exports.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
 
   if (this.changeEventKey_ !== null) {
-    ol.Observable.unByKey(this.changeEventKey_);
+    olObservable.unByKey(this.changeEventKey_);
     this.changeEventKey_ = null;
   }
   if (this.drawnFeatures_.continuingLine) {
@@ -684,11 +685,11 @@ app.draw.DrawController.prototype.onDrawEnd_ = function(event) {
     return;
   }
   var feature = event.feature;
-  if (feature.getGeometry().getType() === ol.geom.GeometryType.CIRCLE) {
+  if (feature.getGeometry().getType() === olGeomGeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
     feature.set('isCircle', true);
     feature.setGeometry(
-        ol.geom.Polygon.fromCircle(featureGeom, 64)
+        olGeomPolygon.fromCircle(featureGeom, 64)
     );
   }
 
@@ -782,7 +783,7 @@ app.draw.DrawController.prototype.onDrawEnd_ = function(event) {
  * @param {ol.interaction.Modify.Event} event The event.
  * @private
  */
-app.draw.DrawController.prototype.onClipLineEnd_ = function(event) {
+exports.prototype.onClipLineEnd_ = function(event) {
   var features = event.features.getArray();
 
   if (this.appMymaps_.isEditable()) {
@@ -812,7 +813,7 @@ app.draw.DrawController.prototype.onClipLineEnd_ = function(event) {
  * @param {ol.interaction.Draw | app.interaction.DrawRoute} interaction Set active or not.
  * @private
  */
-app.draw.DrawController.prototype.setActiveDraw_ = function(active, interaction) {
+exports.prototype.setActiveDraw_ = function(active, interaction) {
   if (this.selectedFeatures_.getLength() > 0) {
     var feature = this.selectedFeatures_.getArray()[0];
     feature.set('__editable__', false);
@@ -837,7 +838,7 @@ app.draw.DrawController.prototype.setActiveDraw_ = function(active, interaction)
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleDrawPoint = function() {
+exports.prototype.toggleDrawPoint = function() {
   var active = !this.isEditing('drawPoint');
   this.setActiveDraw_(active, this.drawPoint);
   return this.isEditing('drawPoint');
@@ -847,7 +848,7 @@ app.draw.DrawController.prototype.toggleDrawPoint = function() {
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleDrawLine = function() {
+exports.prototype.toggleDrawLine = function() {
   var active = !this.isEditing('drawLine');
   this.setActiveDraw_(active, this.drawLine);
 
@@ -858,7 +859,7 @@ app.draw.DrawController.prototype.toggleDrawLine = function() {
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleMapMatching = function() {
+exports.prototype.toggleMapMatching = function() {
   return this.drawLine.toggleMapMatching();
 };
 
@@ -866,7 +867,7 @@ app.draw.DrawController.prototype.toggleMapMatching = function() {
  * @return {boolean} True if mapmatching active.
  * @export
  */
-app.draw.DrawController.prototype.getMapMatching = function() {
+exports.prototype.getMapMatching = function() {
   return this.drawLine.getMapMatching();
 };
 
@@ -874,7 +875,7 @@ app.draw.DrawController.prototype.getMapMatching = function() {
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleDrawLabel = function() {
+exports.prototype.toggleDrawLabel = function() {
   var active = !this.isEditing('drawLabel');
   this.setActiveDraw_(active, this.drawLabel);
   return this.isEditing('drawLabel');
@@ -885,7 +886,7 @@ app.draw.DrawController.prototype.toggleDrawLabel = function() {
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleDrawPolygon = function() {
+exports.prototype.toggleDrawPolygon = function() {
   var active = !this.isEditing('drawPolygon');
   this.setActiveDraw_(active, this.drawPolygon);
   return this.isEditing('drawPolygon');
@@ -896,7 +897,7 @@ app.draw.DrawController.prototype.toggleDrawPolygon = function() {
  * @return {boolean} true if the feature is active.
  * @export
  */
-app.draw.DrawController.prototype.toggleDrawCircle = function() {
+exports.prototype.toggleDrawCircle = function() {
   var active = !this.isEditing('drawCircle');
   this.setActiveDraw_(active, this.drawCircle);
   return this.isEditing('drawCircle');
@@ -908,7 +909,7 @@ app.draw.DrawController.prototype.toggleDrawCircle = function() {
  * @return {boolean} true if the feature is being edited.
  * @export
  */
-app.draw.DrawController.prototype.isEditing = function(type) {
+exports.prototype.isEditing = function(type) {
   var feature;
   if (this.selectedFeatures_.getLength() > 0) {
     feature = this.selectedFeatures_.getArray()[0];
@@ -917,7 +918,7 @@ app.draw.DrawController.prototype.isEditing = function(type) {
     if (this.drawPoint.getActive() ||
         (feature !== undefined && feature.get('__editable__') === 1 &&
         !feature.get('isLabel') &&
-        feature.getGeometry().getType() === ol.geom.GeometryType.POINT)) {
+        feature.getGeometry().getType() === olGeomGeometryType.POINT)) {
       return true;
     }
   }
@@ -931,7 +932,7 @@ app.draw.DrawController.prototype.isEditing = function(type) {
   if ('drawLine' === type) {
     if (this.drawLine.getActive() ||
         (feature !== undefined && feature.get('__editable__') === 1 &&
-        feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)) {
+        feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING)) {
       return true;
     }
   }
@@ -939,7 +940,7 @@ app.draw.DrawController.prototype.isEditing = function(type) {
     if (this.drawPolygon.getActive() ||
         (feature !== undefined && feature.get('__editable__') === 1 &&
         !feature.get('isCircle') &&
-        feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON)) {
+        feature.getGeometry().getType() === olGeomGeometryType.POLYGON)) {
       return true;
     }
   }
@@ -958,13 +959,13 @@ app.draw.DrawController.prototype.isEditing = function(type) {
  * Creates a new measure tooltip
  * @private
  */
-app.draw.DrawController.prototype.createMeasureTooltip_ = function() {
+exports.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = document.createElement('DIV');
   this.measureTooltipElement_.classList.add('tooltip');
   this.measureTooltipElement_.classList.add('ngeo-tooltip-measure');
 
-  this.measureTooltipOverlay_ = new ol.Overlay({
+  this.measureTooltipOverlay_ = new olOverlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
     positioning: 'bottom-center',
@@ -978,7 +979,7 @@ app.draw.DrawController.prototype.createMeasureTooltip_ = function() {
  * Destroy the help tooltip
  * @private
  */
-app.draw.DrawController.prototype.removeMeasureTooltip_ = function() {
+exports.prototype.removeMeasureTooltip_ = function() {
   if (this.measureTooltipElement_ !== null) {
     this.measureTooltipElement_.parentNode.removeChild(
         this.measureTooltipElement_);
@@ -993,7 +994,7 @@ app.draw.DrawController.prototype.removeMeasureTooltip_ = function() {
  * @param {string} anchorId The id of the anchor.
  * @export
  */
-app.draw.DrawController.prototype.gotoAnchor = function(anchorId) {
+exports.prototype.gotoAnchor = function(anchorId) {
   this.anchorScroll_(anchorId);
 };
 
@@ -1003,7 +1004,7 @@ app.draw.DrawController.prototype.gotoAnchor = function(anchorId) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @private
  */
-app.draw.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
+exports.prototype.keyboardHandler_ = function(mapBrowserEvent) {
   var keyEvent = mapBrowserEvent.originalEvent;
   var prevent = false;
   if (this.appActivetool_.streetviewActive &&
@@ -1039,4 +1040,4 @@ app.draw.DrawController.prototype.keyboardHandler_ = function(mapBrowserEvent) {
   }
 };
 
-app.module.controller('AppDrawController', app.draw.DrawController);
+appModule.controller('AppDrawController', exports);

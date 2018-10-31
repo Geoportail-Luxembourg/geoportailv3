@@ -1,6 +1,7 @@
-goog.provide('app.infobar.scaleselectorDirective');
+goog.module('app.infobar.scaleselectorDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 // Use the default "scale selector" template.
@@ -14,7 +15,7 @@ goog.require('app.module');
  *
  * @return {angular.Directive} Directive Definition Object.
  */
-app.infobar.scaleselectorDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -30,4 +31,4 @@ app.infobar.scaleselectorDirective = function() {
 };
 
 
-app.module.directive('appScaleselector', app.infobar.scaleselectorDirective);
+appModule.directive('appScaleselector', exports);

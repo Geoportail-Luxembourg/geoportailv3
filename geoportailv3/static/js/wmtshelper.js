@@ -3,16 +3,17 @@
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.provide('app.WmtsHelper');
+goog.module('app.WmtsHelper');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('app.olcs.Extent');
-goog.require('ngeo.misc.decorate');
-goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.WMTS');
-goog.require('ol');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const appOlcsExtent = goog.require('app.olcs.Extent');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const olFormatWMTSCapabilities = goog.require('ol.format.WMTSCapabilities');
+const olLayerTile = goog.require('ol.layer.Tile');
+const olSourceWMTS = goog.require('ol.source.WMTS');
+const olBase = goog.require('ol');
 
 
 /**
@@ -25,7 +26,7 @@ goog.require('ol');
  * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
-app.WmtsHelper = function($sce, $http, appNotify, gettextCatalog,
+exports = function($sce, $http, appNotify, gettextCatalog,
     $window, httpsProxyUrl) {
 
   /**
@@ -75,7 +76,7 @@ app.WmtsHelper = function($sce, $http, appNotify, gettextCatalog,
  * @param {string} wmts The url of the wmts.
  * @return {!angular.$q.Promise} Promise providing the capabilities.
  */
-app.WmtsHelper.prototype.getCapabilities = function(wmts) {
+exports.prototype.getCapabilities = function(wmts) {
 
   var separator = '&';
   if (wmts.indexOf('?') === -1) {
@@ -88,13 +89,13 @@ app.WmtsHelper.prototype.getCapabilities = function(wmts) {
   if (!(wmts in this.wmtsCapa_)) {
     this.wmtsCapa_[wmts] = this.http_.get(this.proxyIfNeeded(wmts))
     .then(function(data) {
-      var capabilities = new ol.format.WMTSCapabilities().read(data.data);
+      var capabilities = new olFormatWMTSCapabilities().read(data.data);
       this.buildChildLayers_(wmts, capabilities);
       return capabilities;
     }.bind(this), function(e) {
       var msg = this.gettextCatalog.getString(
         'Impossible de contacter ce WMTS');
-      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      this.notify_(msg, appNotifyNotificationType.ERROR);
       return null;
     }.bind(this));
   }
@@ -108,7 +109,7 @@ app.WmtsHelper.prototype.getCapabilities = function(wmts) {
  * @return {string} Returns GetMap url if found.
  * @private
  */
-app.WmtsHelper.prototype.getOnlineResource_ = function(capability, service) {
+exports.prototype.getOnlineResource_ = function(capability, service) {
   var onlineResource;
   if ('Request' in capability &&
       service in capability['Request'] &&
@@ -136,7 +137,7 @@ app.WmtsHelper.prototype.getOnlineResource_ = function(capability, service) {
  * @param {Object} capabilities The capabilities.
  * @private
  */
-app.WmtsHelper.prototype.buildChildLayers_ = function(wmts, capabilities) {
+exports.prototype.buildChildLayers_ = function(wmts, capabilities) {
   var layers = capabilities['Contents']['Layer'];
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
@@ -144,10 +145,10 @@ app.WmtsHelper.prototype.buildChildLayers_ = function(wmts, capabilities) {
       'layer': layer['Identifier'],
       'crossOrigin': 'anonymous'
     };
-    var options = ol.source.WMTS.optionsFromCapabilities(capabilities, wmtsConfig);
+    var options = olSourceWMTS.optionsFromCapabilities(capabilities, wmtsConfig);
     layer['options'] = options;
     layer['isInvalid'] = false;
-    layer['uid'] = ol.getUid(layer).toString();
+    layer['uid'] = olBase.getUid(layer).toString();
     if (!layer['isInvalid']) {
       layer['wmtsUrl'] = wmts;
 
@@ -163,7 +164,7 @@ app.WmtsHelper.prototype.buildChildLayers_ = function(wmts, capabilities) {
  * @return {!angular.$q.Promise} Promise providing the layers.
  * @export
  */
-app.WmtsHelper.prototype.getLayers = function(wmts) {
+exports.prototype.getLayers = function(wmts) {
   return this.getCapabilities(wmts).then(function(capabilities) {
     if ('Layer' in capabilities['Contents']) {
       return capabilities['Contents']['Layer'];
@@ -177,7 +178,7 @@ app.WmtsHelper.prototype.getLayers = function(wmts) {
  * @return {!angular.$q.Promise} Promise providing the layer.
  * @export
  */
-app.WmtsHelper.prototype.getLayerById = function(id) {
+exports.prototype.getLayerById = function(id) {
 
   var values = id.split('%2D').join('-').split('||');
   var serviceType = values[0];
@@ -194,7 +195,7 @@ app.WmtsHelper.prototype.getLayerById = function(id) {
  * @return {!angular.$q.Promise} Promise providing the layer metadata.
  * @export
  */
-app.WmtsHelper.prototype.getMetadata = function(id) {
+exports.prototype.getMetadata = function(id) {
   return this.getLayerById(id).then(function(layer) {
     var hasLegend = false;
     var legendUrl = null;
@@ -313,7 +314,7 @@ app.WmtsHelper.prototype.getMetadata = function(id) {
  * @return {Object} Returns the layer object.
  * @private
  */
-app.WmtsHelper.prototype.getChildLayerById_ = function(layers, id) {
+exports.prototype.getChildLayerById_ = function(layers, id) {
   for (var i = 0; i < layers.length; i++) {
     var layer = layers[i];
     if (layer['id'] === id) {
@@ -331,7 +332,7 @@ app.WmtsHelper.prototype.getChildLayerById_ = function(layers, id) {
  * @return {boolean} return true if added to the map.
  * @export
  */
-app.WmtsHelper.prototype.addWmtsLayers = function(map, layer, url) {
+exports.prototype.addWmtsLayers = function(map, layer, url) {
   this.getCapabilities(url).then(function(capabilities) {
     map.addLayer(this.createWmtsLayers(map, layer, layer['options']));
   }.bind(this));
@@ -345,10 +346,10 @@ app.WmtsHelper.prototype.addWmtsLayers = function(map, layer, url) {
  * @param {olx.source.WMTSOptions} options The options.
  * @return {ol.layer.Layer} return the created layer.
  */
-app.WmtsHelper.prototype.createWmtsLayers = function(map, layer, options) {
-  var newLayer = new ol.layer.Tile({
-    'olcs.extent': app.olcs.Extent,
-    source: new ol.source.WMTS(options)
+exports.prototype.createWmtsLayers = function(map, layer, options) {
+  var newLayer = new olLayerTile({
+    'olcs.extent': appOlcsExtent,
+    source: new olSourceWMTS(options)
   });
 
   newLayer.set('label', layer['Title']);
@@ -360,7 +361,7 @@ app.WmtsHelper.prototype.createWmtsLayers = function(map, layer, options) {
   newLayer.set('metadata', curMetadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
-  ngeo.misc.decorate.layer(newLayer);
+  ngeoMiscDecorate.layer(newLayer);
 
   this.getMetadata(layer['id']).then(function(metadata) {
     if (metadata['hasImageLegend']) {
@@ -376,7 +377,7 @@ app.WmtsHelper.prototype.createWmtsLayers = function(map, layer, options) {
  * @param {string} url The url to proxy.
  * @return {string} returns the proxyed url if needed.
  */
-app.WmtsHelper.prototype.proxyIfNeeded = function(url) {
+exports.prototype.proxyIfNeeded = function(url) {
   if (url.indexOf('httpsproxy') > 0) {
     return url;
   }
@@ -388,4 +389,4 @@ app.WmtsHelper.prototype.proxyIfNeeded = function(url) {
   return url;
 };
 
-app.module.service('appWmtsHelper', app.WmtsHelper);
+appModule.service('appWmtsHelper', exports);

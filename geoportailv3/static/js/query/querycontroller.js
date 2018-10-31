@@ -1,19 +1,20 @@
-goog.provide('app.query.QueryController');
+goog.module('app.query.QueryController');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('ol');
-goog.require('ol.extent');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const olBase = goog.require('ol');
+const olExtent = goog.require('ol.extent');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olProj = goog.require('ol.proj');
+const olSourceVector = goog.require('ol.source.Vector');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStroke = goog.require('ol.style.Stroke');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -48,7 +49,7 @@ goog.require('ol.style.Style');
  * @export
  * @ngInject
  */
-app.query.QueryController = function($sce, $timeout, $scope, $http,
+exports = function($sce, $timeout, $scope, $http,
     appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
@@ -292,21 +293,21 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
    * @type {ol.layer.Vector}
    * @private
    */
-  this.featureLayer_ = new ol.layer.Vector({
-    source: new ol.source.Vector(),
+  this.featureLayer_ = new olLayerVector({
+    source: new olSourceVector(),
     zIndex: 1000,
     'altitudeMode': 'clampToGround'
   });
   this.map_.addLayer(this.featureLayer_);
-  var defaultFill = new ol.style.Fill({
+  var defaultFill = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
-  var circleStroke = new ol.style.Stroke({
+  var circleStroke = new olStyleStroke({
     color: [255, 155, 55, 1],
     width: 3
   });
 
-  var image = new ol.style.Circle({
+  var image = new olStyleCircle({
     radius: 10,
     fill: defaultFill,
     stroke: circleStroke
@@ -322,19 +323,19 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
         var lineColor = /** @type {string} */(feature.get('color') || '#ffcc33');
         var lineWidth = /** @type {number} */ (feature.get('width') || 3);
         var defaultStyle = [
-          new ol.style.Style({
-            fill: new ol.style.Fill({
+          new olStyleStyle({
+            fill: new olStyleFill({
               color: [255, 255, 0, 0.6]
             })
           }),
-          new ol.style.Style({
-            stroke: new ol.style.Stroke({
+          new olStyleStyle({
+            stroke: new olStyleStroke({
               color: '#ffffff',
               width: 5
             })
           }),
-          new ol.style.Style({
-            stroke: new ol.style.Stroke({
+          new olStyleStyle({
+            stroke: new olStyleStroke({
               color: lineColor,
               width: lineWidth
             })
@@ -342,9 +343,9 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
         ];
 
         var geometryType = feature.getGeometry().getType();
-        return geometryType == ol.geom.GeometryType.POINT ||
-            geometryType == ol.geom.GeometryType.MULTI_POINT ?
-            [new ol.style.Style({image: image})] : defaultStyle;
+        return geometryType == olGeomGeometryType.POINT ||
+            geometryType == olGeomGeometryType.MULTI_POINT ?
+            [new olStyleStyle({image: image})] : defaultStyle;
       });
 
   $scope.$watch(function() {
@@ -363,8 +364,8 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
     }
   }.bind(this));
 
-  ol.events.listen(this.map_.getLayers(),
-      ol.CollectionEventType.REMOVE,
+  olBase.events.listen(this.map_.getLayers(),
+      olBase.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -375,8 +376,8 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
       }, this);
 
 
-  ol.events.listen(this.map_,
-      ol.MapBrowserEventType.POINTERDOWN, function(evt) {
+  olBase.events.listen(this.map_,
+      olBase.MapBrowserEventType.POINTERDOWN, function(evt) {
         this.isLongPress_ = false;
         this.startPixel_ = evt.pixel;
         this.pointerDownTime_ = new Date().getTime();
@@ -384,8 +385,8 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
         $timeout.cancel(holdPromise);
       }, this);
 
-  ol.events.listen(this.map_,
-      ol.MapBrowserEventType.POINTERUP, function(evt) {
+  olBase.events.listen(this.map_,
+      olBase.MapBrowserEventType.POINTERUP, function(evt) {
         $timeout.cancel(holdPromise);
         var tempTime = new Date().getTime();
         if ((tempTime - this.pointerUpTime_) <= 499) {
@@ -432,7 +433,7 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
         }.bind(this), 500, false);
       }, this);
 
-  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
+  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE,
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;
@@ -484,7 +485,7 @@ app.query.QueryController = function($sce, $timeout, $scope, $http,
  * @return {boolean} True if someting is selected.
  * @private
  */
-app.query.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
+exports.prototype.selectMymapsFeature_ = function(pixel) {
   var selected = [];
   var opt = {
     hitTolerance: 5
@@ -521,32 +522,32 @@ app.query.QueryController.prototype.selectMymapsFeature_ = function(pixel) {
  * @return {{id: string, geom: ol.geom.MultiLineString}} An object.
  * @private
  */
-app.query.QueryController.prototype.filterValidProfileFeatures_ = function(feature) {
+exports.prototype.filterValidProfileFeatures_ = function(feature) {
   var validGeomArray = /** @type {Array} */ ([]);
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
     featureProjection: this.map_.getView().getProjection()
   });
   var activeFeature = /** @type {ol.Feature} */
-      ((new ol.format.GeoJSON()).readFeature(feature, encOpt));
+      ((new olFormatGeoJSON()).readFeature(feature, encOpt));
   switch (activeFeature.getGeometry().getType()) {
-    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+    case olGeomGeometryType.GEOMETRY_COLLECTION:
       var geomCollection = /** @type {ol.geom.GeometryCollection} */
           (activeFeature.getGeometry());
       geomCollection.getGeometriesArray().forEach(
           function(geometry) {
-            if (geometry.getType() === ol.geom.GeometryType.LINE_STRING) {
+            if (geometry.getType() === olGeomGeometryType.LINE_STRING) {
               var linestringGeom = /** @type {ol.geom.LineString} */ (geometry);
               validGeomArray.push(linestringGeom.getCoordinates());
             }
           });
       break;
-    case ol.geom.GeometryType.MULTI_LINE_STRING:
+    case olGeomGeometryType.MULTI_LINE_STRING:
       var geomMultiLineString = /** @type {ol.geom.MultiLineString} */
           (activeFeature.getGeometry());
       validGeomArray = geomMultiLineString.getCoordinates();
       break;
-    case ol.geom.GeometryType.LINE_STRING:
+    case olGeomGeometryType.LINE_STRING:
       var geomLineString = /** @type {ol.geom.LineString} */
           (activeFeature.getGeometry());
       validGeomArray.push(geomLineString.getCoordinates());
@@ -555,7 +556,7 @@ app.query.QueryController.prototype.filterValidProfileFeatures_ = function(featu
       break;
   }
   var id = /** {string} */ (feature['fid']);
-  return {id: id, geom: new ol.geom.MultiLineString(validGeomArray)};
+  return {id: id, geom: new olGeomMultiLineString(validGeomArray)};
 };
 
 
@@ -563,7 +564,7 @@ app.query.QueryController.prototype.filterValidProfileFeatures_ = function(featu
  * @param {string | undefined} appSelector the current app using the info panel
  * @private
  */
-app.query.QueryController.prototype.clearQueryResult_ = function(appSelector) {
+exports.prototype.clearQueryResult_ = function(appSelector) {
   this['appSelector'] = appSelector;
   this.content = [];
   this.clearFeatures_();
@@ -575,11 +576,11 @@ app.query.QueryController.prototype.clearQueryResult_ = function(appSelector) {
  * @return {Array} array The children.
  * @private
  */
-app.query.QueryController.getAllChildren_ = function(element) {
+exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      ol.array.extend(array, app.query.QueryController.getAllChildren_(
+      olBase.array.extend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -595,7 +596,7 @@ app.query.QueryController.getAllChildren_ = function(element) {
  * @param {string|undefined} fid The comma separated list of feature id.
  * @private
  */
-app.query.QueryController.prototype.getFeatureInfoById_ = function(fid) {
+exports.prototype.getFeatureInfoById_ = function(fid) {
   var fids = fid.split(',');
   fids.forEach(function(curFid) {
     var splittedFid = curFid.split('_');
@@ -659,7 +660,7 @@ app.query.QueryController.prototype.getFeatureInfoById_ = function(fid) {
  * @param {boolean} infoMymaps True if mymaps has to be checked.
  * @private
  */
-app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps) {
+exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   var layers = this.map_.getLayers().getArray();
   var layersList = [];
   var layerLabel = {};
@@ -680,7 +681,7 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
     var bigBuffer = 20 * resolution;
     var smallBuffer = 1 * resolution;
 
-    var point = ol.proj.transform(evt.coordinate,
+    var point = olProj.transform(evt.coordinate,
         this.map_.getView().getProjection(), 'EPSG:2169');
     var big_box = [
       [point[0] - bigBuffer, point[1] + bigBuffer],
@@ -755,7 +756,7 @@ app.query.QueryController.prototype.singleclickEvent_ = function(evt, infoMymaps
  * @param {boolean} fit True if the map is centered on the object.
  * @private
  */
-app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
+exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
     openInfoPanel, fit) {
   if (shiftKey) {
     resp.data.forEach(function(item) {
@@ -845,7 +846,7 @@ app.query.QueryController.prototype.showInfo_ = function(shiftKey, resp, layerLa
 /**
  * @private
  */
-app.query.QueryController.prototype.clearFeatures_ = function() {
+exports.prototype.clearFeatures_ = function() {
   this.featureLayer_.getSource().clear();
 };
 
@@ -856,7 +857,7 @@ app.query.QueryController.prototype.clearFeatures_ = function() {
  * @return {boolean} true if attribute is present.
  * @export
  */
-app.query.QueryController.prototype.hasAttributes = function(feature) {
+exports.prototype.hasAttributes = function(feature) {
   if (feature['attributes'] && Object.keys(feature['attributes']).length > 0) {
     return true;
   }
@@ -870,7 +871,7 @@ app.query.QueryController.prototype.hasAttributes = function(feature) {
  * @return {boolean} true if fid is valid.
  * @export
  */
-app.query.QueryController.prototype.hasValidFID = function(feature) {
+exports.prototype.hasValidFID = function(feature) {
   if ('fid' in feature && this.isFIDValid_(feature['fid'])) {
     return true;
   }
@@ -884,7 +885,7 @@ app.query.QueryController.prototype.hasValidFID = function(feature) {
  * @return {boolean} True if all fids are valid.
  * @private
  */
-app.query.QueryController.prototype.isFIDValid_ = function(fid) {
+exports.prototype.isFIDValid_ = function(fid) {
   var valid = true;
   if (fid === undefined || fid === null) {
     return false;
@@ -906,7 +907,7 @@ app.query.QueryController.prototype.isFIDValid_ = function(fid) {
  * @return {boolean} true Return if attribute is present.
  * @export
  */
-app.query.QueryController.prototype.hasFeatureAttribute = function(feature, name) {
+exports.prototype.hasFeatureAttribute = function(feature, name) {
   if (feature['attributes'] && Object.keys(feature['attributes']).length > 0 &&
       !!feature['attributes'][name]) {
     return true;
@@ -922,7 +923,7 @@ app.query.QueryController.prototype.hasFeatureAttribute = function(feature, name
  * @return {string} The string with joined attributes.
  * @export
  */
-app.query.QueryController.prototype.joinAttributes = function(features, attr, sep) {
+exports.prototype.joinAttributes = function(features, attr, sep) {
   return features.map(function(feature) {
     return feature.attributes[attr];
   }).join(sep);
@@ -937,7 +938,7 @@ app.query.QueryController.prototype.joinAttributes = function(features, attr, se
  * @return {string} the template path.
  * @export
  */
-app.query.QueryController.prototype.getTemplatePath = function(layer) {
+exports.prototype.getTemplatePath = function(layer) {
   if (layer['remote_template'] === true) {
     return this.remoteTemplateUrl_ + '?layer=' + layer['layer'];
   }
@@ -951,7 +952,7 @@ app.query.QueryController.prototype.getTemplatePath = function(layer) {
  * @return {*} the trusted url.
  * @export
  */
-app.query.QueryController.prototype.getTrustedUrl = function(url) {
+exports.prototype.getTrustedUrl = function(url) {
   return this.sce_.trustAsResourceUrl(url);
 };
 
@@ -961,7 +962,7 @@ app.query.QueryController.prototype.getTrustedUrl = function(url) {
  * @return {*} The trusted url.
  * @export
  */
-app.query.QueryController.prototype.getPreviewUrl = function() {
+exports.prototype.getPreviewUrl = function() {
   return this.sce_.trustAsResourceUrl(
     this.previewMesurementUrl + '?code=' +
     this.previewTownCode + '&filename=' +
@@ -977,7 +978,7 @@ app.query.QueryController.prototype.getPreviewUrl = function() {
  * @param {string} parcelId The technical parcel id.
  * @export
  */
-app.query.QueryController.prototype.openPreviewMesurage = function(townCode, filename, description, parcelId) {
+exports.prototype.openPreviewMesurage = function(townCode, filename, description, parcelId) {
   this.preview = true;
   this.previewTownCode = townCode;
   this.previewFilename = filename;
@@ -994,7 +995,7 @@ app.query.QueryController.prototype.openPreviewMesurage = function(townCode, fil
  * @return {*} the trusted content.
  * @export
  */
-app.query.QueryController.prototype.trustAsHtml = function(content) {
+exports.prototype.trustAsHtml = function(content) {
   if (typeof content !== 'string') {
     return content;
   }
@@ -1013,7 +1014,7 @@ app.query.QueryController.prototype.trustAsHtml = function(content) {
  * @return {*} the trusted url.
  * @export
  */
-app.query.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
+exports.prototype.getTrustedUrlByLang = function(urlFr,
     urlDe, urlEn, urlLb) {
   if (this['language'] == 'fr') {
     return this.sce_.trustAsResourceUrl(urlFr);
@@ -1045,24 +1046,24 @@ app.query.QueryController.prototype.getTrustedUrlByLang = function(urlFr,
  * @param {boolean} fit True to fit to the features.
  * @private
  */
-app.query.QueryController.prototype.highlightFeatures_ = function(features, fit) {
+exports.prototype.highlightFeatures_ = function(features, fit) {
   if (features !== undefined && features !== null) {
     var encOpt = /** @type {olx.format.ReadOptions} */ ({
       dataProjection: 'EPSG:2169',
       featureProjection: this.map_.getView().getProjection()
     });
-    var jsonFeatures = (new ol.format.GeoJSON()).readFeatures({
+    var jsonFeatures = (new olFormatGeoJSON()).readFeatures({
       'type': 'FeatureCollection',
       'features': features}, encOpt);
 
     if (jsonFeatures.length > 0) {
       var extent = jsonFeatures[0].getGeometry().getExtent();
       for (var i = 0; i < jsonFeatures.length; ++i) {
-        extent = ol.extent.extend(extent,
+        extent = olExtent.extend(extent,
             jsonFeatures[i].getGeometry().getExtent());
         var curFeature = jsonFeatures[i];
         if (curFeature.getGeometry().getType() ==
-            ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+            olGeomGeometryType.GEOMETRY_COLLECTION) {
           var geomCollection = /** @type {ol.geom.GeometryCollection} */
             (curFeature.getGeometry());
           geomCollection.getGeometriesArray().forEach(
@@ -1090,7 +1091,7 @@ app.query.QueryController.prototype.highlightFeatures_ = function(features, fit)
  * @return {string} Get the URL.
  * @export
  */
-app.query.QueryController.prototype.getDownloadMeasurementUrl = function() {
+exports.prototype.getDownloadMeasurementUrl = function() {
   return this.downloadmeasurementUrl_;
 };
 
@@ -1099,7 +1100,7 @@ app.query.QueryController.prototype.getDownloadMeasurementUrl = function() {
  * @return {string} Get the URL.
  * @export
  */
-app.query.QueryController.prototype.getDownloadsketchUrl = function() {
+exports.prototype.getDownloadsketchUrl = function() {
   return this.downloadsketchUrl_;
 };
 
@@ -1109,7 +1110,7 @@ app.query.QueryController.prototype.getDownloadsketchUrl = function() {
  * @return {Array<Object>} The translated attributes.
  * @export
  */
-app.query.QueryController.prototype.translateKeys =
+exports.prototype.translateKeys =
     function(attributes) {
       var results = [];
 
@@ -1128,7 +1129,7 @@ app.query.QueryController.prototype.translateKeys =
  * @return {Array<Object>} The attributes with prefix.
  * @export
  */
-app.query.QueryController.prototype.prefixKeys =
+exports.prototype.prefixKeys =
     function(attributes, prefix) {
       var results = [];
       angular.forEach(attributes, function(value, key) {
@@ -1145,7 +1146,7 @@ app.query.QueryController.prototype.prefixKeys =
  * @return {string} The path to the Mymaps Resource.
  * @export
  */
-app.query.QueryController.prototype.getMymapsPath = function(resource) {
+exports.prototype.getMymapsPath = function(resource) {
   if (resource) {
     return this.mymapsImageUrl_ + resource;
   }
@@ -1158,7 +1159,7 @@ app.query.QueryController.prototype.getMymapsPath = function(resource) {
  * @return {string} The url to qrcode.
  * @export
  */
-app.query.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
+exports.prototype.getQrCodeForMymapsUrl = function(mapId) {
   if (mapId !== undefined) {
     return this.qrServiceUrl + '?url=' + this.mymapsImageUrl_ + '?map_id=' + mapId;
   }
@@ -1171,7 +1172,7 @@ app.query.QueryController.prototype.getQrCodeForMymapsUrl = function(mapId) {
  * @return {boolean} True if is empty.
  * @export
  */
-app.query.QueryController.prototype.isEmpty = function(value) {
+exports.prototype.isEmpty = function(value) {
   return !value;
 };
 
@@ -1183,14 +1184,14 @@ app.query.QueryController.prototype.isEmpty = function(value) {
  * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.query.QueryController.prototype.exportGpx = function(feature, name, isTrack) {
+exports.prototype.exportGpx = function(feature, name, isTrack) {
   var encOpt_ = /** @type {olx.format.ReadOptions} */({
     dataProjection: 'EPSG:2169',
     featureProjection: this.map_.getView().getProjection()
   });
 
   var activeFeature = /** @type {ol.Feature} */
-      ((new ol.format.GeoJSON()).readFeature(feature, encOpt_));
+      ((new olFormatGeoJSON()).readFeature(feature, encOpt_));
   if (name === undefined) {
     name = 'kml';
   }
@@ -1204,7 +1205,7 @@ app.query.QueryController.prototype.exportGpx = function(feature, name, isTrack)
  * @return {boolean} True if is a link.
  * @export
  */
-app.query.QueryController.prototype.isLink = function(value) {
+exports.prototype.isLink = function(value) {
   return String(value).toLowerCase().indexOf('http://') === 0 ||
       String(value).toLowerCase().indexOf('https://') === 0;
 };
@@ -1216,7 +1217,7 @@ app.query.QueryController.prototype.isLink = function(value) {
  * @param {string} name The file name.
  * @export
  */
-app.query.QueryController.prototype.exportKml = function(feature, name) {
+exports.prototype.exportKml = function(feature, name) {
   if (name === undefined) {
     name = 'kml';
   }
@@ -1231,7 +1232,7 @@ app.query.QueryController.prototype.exportKml = function(feature, name) {
  * @return {string} The joined and translated text.
  * @export
  */
-app.query.QueryController.prototype.translateAndjoin = function(array, prefix) {
+exports.prototype.translateAndjoin = function(array, prefix) {
   if (array !== undefined) {
     var res = [];
     array.forEach(function(elem) {
@@ -1249,7 +1250,7 @@ app.query.QueryController.prototype.translateAndjoin = function(array, prefix) {
  * @return {string} The value.
  * @private
  */
-app.query.QueryController.prototype.getCookie_ = function(cname) {
+exports.prototype.getCookie_ = function(cname) {
   var name = cname + '=';
   var ca = document.cookie.split(';');
   for (var i = 0; i < ca.length; i++) {
@@ -1275,7 +1276,7 @@ app.query.QueryController.prototype.getCookie_ = function(cname) {
  * @param {string} numMesurage The measurement number.
  * @export
  */
-app.query.QueryController.prototype.orderAffaire = function(numCommune, numMesurage) {
+exports.prototype.orderAffaire = function(numCommune, numMesurage) {
   this.http_.get(
     'https://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
     {params: {
@@ -1284,7 +1285,7 @@ app.query.QueryController.prototype.orderAffaire = function(numCommune, numMesur
       'ticket': this.getCookie_(this.appAuthtktCookieName_)
     }}).then(function() {
       var msg = this.translate_.getString('Fichier GML commandé.');
-      this.notify_(msg, app.NotifyNotificationType.INFO);
+      this.notify_(msg, appNotifyNotificationType.INFO);
     }.bind(this));
 };
 
@@ -1294,11 +1295,11 @@ app.query.QueryController.prototype.orderAffaire = function(numCommune, numMesur
  * @param {string} color The line color. If undefined then use the default one.
  * @export
  */
-app.query.QueryController.prototype.showGeom = function(geom, color) {
+exports.prototype.showGeom = function(geom, color) {
   this.featureLayer_.getSource().clear();
   if (geom !== undefined) {
     var feature = /** @type {ol.Feature} */
-      ((new ol.format.GeoJSON()).readFeature(geom));
+      ((new olFormatGeoJSON()).readFeature(geom));
     if (color !== undefined) {
       feature.set('color', color);
     }
@@ -1309,5 +1310,5 @@ app.query.QueryController.prototype.showGeom = function(geom, color) {
 };
 
 
-app.module.controller('AppQueryController',
-                      app.query.QueryController);
+appModule.controller('AppQueryController',
+                      exports);

@@ -1,4 +1,6 @@
-goog.provide('app.imageupload.ImguploadDirective');
+goog.module('app.imageupload.ImguploadDirective');
+
+goog.module.declareLegacyNamespace();
 
 /**
  * @fileoverview This file provides a "mymaps" directive. This directive is
@@ -9,14 +11,14 @@ goog.provide('app.imageupload.ImguploadDirective');
  *
  */
 
-goog.require('app.module');
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.imageupload.ImguploadDirective = function() {
+exports = function() {
   return {
     restrict: 'A',
     link:
@@ -38,4 +40,4 @@ app.imageupload.ImguploadDirective = function() {
 };
 
 
-app.module.directive('appImgupload', app.imageupload.ImguploadDirective);
+appModule.directive('appImgupload', exports);

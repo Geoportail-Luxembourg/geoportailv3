@@ -3,19 +3,12 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "profile" web service.
  */
-goog.provide('app.GetProfile');
+goog.module('app.GetProfileService');
 
-goog.require('app.module');
-goog.require('ol.format.GeoJSON');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
 
-
-/**
- * @typedef {function(
- *  (ol.geom.MultiLineString|ol.geom.LineString),
- *  string=):!angular.$q.Promise
- *  }
- */
-app.GetProfile;
 
 
 /**
@@ -25,7 +18,7 @@ app.GetProfile;
  * @private
  * @ngInject
  */
-app.getProfile_ = function($http, profileServiceUrl) {
+function service($http, profileServiceUrl) {
   return getProfile;
 
   /**
@@ -39,7 +32,7 @@ app.getProfile_ = function($http, profileServiceUrl) {
       featureProjection: 'EPSG:3857'
     };
     var req = $.param({
-      'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
+      'geom': new olFormatGeoJSON().writeGeometry(geom, encOpt),
       'nbPoints': 100,
       'layers': 'dhm',
       'id': opt_id
@@ -81,4 +74,4 @@ app.getProfile_ = function($http, profileServiceUrl) {
   }
 };
 
-app.module.service('appGetProfile', app.getProfile_);
+appModule.service('appGetProfile', service);

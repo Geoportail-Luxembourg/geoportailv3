@@ -2,21 +2,16 @@
  * @fileoverview Provides a flash message service. That service helps
  * displaying general messages.
  */
-goog.provide('app.Notify');
+goog.module('app.NotifyFactory');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-
-/**
- * @typedef {function(string, app.NotifyNotificationType)}
- */
-app.Notify;
-
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 /**
  * @return {app.Notify} The notify function.
  */
-app.notifyFactory = function() {
+function factory() {
 
   var container = angular.element('<div class="notify"></div>');
   angular.element(document.body).append(container);
@@ -35,7 +30,7 @@ app.notifyFactory = function() {
     container.append(el);
     el.html(msg).addClass('in');
     var notifyDuration = 7000;
-    if (notificationType === app.NotifyNotificationType.WARNING) {
+    if (notificationType === appNotifyNotificationType.WARNING) {
       notifyDuration = 4000;
     }
 
@@ -45,4 +40,4 @@ app.notifyFactory = function() {
   }
 };
 
-app.module.factory('appNotify', app.notifyFactory);
+appModule.factory('appNotify', factory);

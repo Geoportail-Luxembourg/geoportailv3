@@ -3,13 +3,14 @@
  * with c2cgeoportal's "themes" web service and exposes functions that return
  * objects in the tree returned by the "themes" web service.
  */
-goog.provide('app.Themes');
+goog.module('app.Themes');
 
-goog.require('app.module');
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.events.EventTarget');
-goog.require('app.events.ThemesEventType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olBase = goog.require('ol');
+const olArray = goog.require('ol.array');
+const olEventsEventTarget = goog.require('ol.events.EventTarget');
+const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
 
 
 /**
@@ -24,9 +25,9 @@ goog.require('app.events.ThemesEventType');
  * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
-app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
+exports = function($window, $http, treeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice) {
-  ol.events.EventTarget.call(this);
+  olEventsEventTarget.call(this);
 
   /**
    * @type {angular.$http}
@@ -70,7 +71,7 @@ app.Themes = function($window, $http, treeUrl, isThemePrivateUrl,
    */
   this.promise_ = null;
 };
-ol.inherits(app.Themes, ol.events.EventTarget);
+olBase.inherits(exports, olEventsEventTarget);
 
 
 /**
@@ -80,7 +81,7 @@ ol.inherits(app.Themes, ol.events.EventTarget);
  * @return {Object} The object.
  * @private
  */
-app.Themes.findObjectByName_ = function(objects, objectName) {
+exports.findObjectByName_ = function(objects, objectName) {
   var obj = objects.find(function(object) {
     return object['name'] === objectName;
   });
@@ -98,8 +99,8 @@ app.Themes.findObjectByName_ = function(objects, objectName) {
  * @return {Object} The theme object.
  * @private
  */
-app.Themes.findTheme_ = function(themes, themeName) {
-  var theme = app.Themes.findObjectByName_(themes, themeName);
+exports.findTheme_ = function(themes, themeName) {
+  var theme = exports.findObjectByName_(themes, themeName);
   return theme;
 };
 
@@ -108,7 +109,7 @@ app.Themes.findTheme_ = function(themes, themeName) {
  * Get background layers.
  * @return {angular.$q.Promise} Promise.
  */
-app.Themes.prototype.getBgLayers = function() {
+exports.prototype.getBgLayers = function() {
   console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
@@ -145,7 +146,7 @@ app.Themes.prototype.getBgLayers = function() {
  * @param {string} themeName Theme name.
  * @return {angular.$q.Promise} Promise.
  */
-app.Themes.prototype.getThemeObject = function(themeName) {
+exports.prototype.getThemeObject = function(themeName) {
   console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
@@ -154,7 +155,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
        */
       function(data) {
         var themes = data['themes'];
-        return app.Themes.findTheme_(themes, themeName);
+        return exports.findTheme_(themes, themeName);
       });
 };
 
@@ -163,7 +164,7 @@ app.Themes.prototype.getThemeObject = function(themeName) {
  * Get an array of theme objects.
  * @return {angular.$q.Promise} Promise.
  */
-app.Themes.prototype.getThemesObject = function() {
+exports.prototype.getThemesObject = function() {
   console.assert(this.promise_ !== null);
   return this.promise_.then(
       /**
@@ -182,7 +183,7 @@ app.Themes.prototype.getThemesObject = function() {
  * Load themes from the "themes" service.
  * @return {?angular.$q.Promise} Promise.
  */
-app.Themes.prototype.loadThemes = function(roleId) {
+exports.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(this.treeUrl_, {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
@@ -192,7 +193,7 @@ app.Themes.prototype.loadThemes = function(roleId) {
        * @return {Object} The "themes" web service response.
        */
       (function(resp) {
-        this.dispatchEvent(app.events.ThemesEventType.LOAD);
+        this.dispatchEvent(appEventsThemesEventType.LOAD);
         return /** @type {app.ThemesResponse} */ (resp.data);
       }).bind(this));
   return this.promise_;
@@ -204,7 +205,7 @@ app.Themes.prototype.loadThemes = function(roleId) {
  * checks if the theme is protected or not.
  * @return {angular.$q.Promise} Promise.
  */
-app.Themes.prototype.isThemePrivate = function(themeId) {
+exports.prototype.isThemePrivate = function(themeId) {
   return this.$http_.get(this.isThemePrivateUrl_, {
     params: {'theme': themeId},
     cache: false
@@ -218,11 +219,11 @@ app.Themes.prototype.isThemePrivate = function(themeId) {
  * @return {Array} array The children.
  * @private
  */
-app.Themes.prototype.getAllChildren_ = function(element, theme) {
+exports.prototype.getAllChildren_ = function(element, theme) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      ol.array.extend(array, this.getAllChildren_(
+      olArray.extend(array, this.getAllChildren_(
           element[i].children, theme)
       );
     } else {
@@ -239,13 +240,13 @@ app.Themes.prototype.getAllChildren_ = function(element, theme) {
  * get the flat catlog
  * @return {angular.$q.Promise} Promise.
  */
-app.Themes.prototype.getFlatCatalog = function() {
+exports.prototype.getFlatCatalog = function() {
   return this.getThemesObject().then(
       function(themes) {
         var flatCatalogue = [];
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          ol.array.extend(flatCatalogue,
+          olArray.extend(flatCatalogue,
               this.getAllChildren_(theme.children, theme.name)
           );
         }
@@ -253,4 +254,4 @@ app.Themes.prototype.getFlatCatalog = function() {
       }.bind(this));
 };
 
-app.module.service('appThemes', app.Themes);
+appModule.service('appThemes', exports);

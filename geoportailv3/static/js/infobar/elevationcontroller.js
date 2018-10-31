@@ -11,9 +11,10 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.ElevationController');
+goog.module('app.infobar.ElevationController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -23,7 +24,7 @@ goog.require('app.module');
  * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {app.GetElevation} appGetElevation Elevation service.
  */
-app.infobar.ElevationController =
+exports =
     function($http, ngeoDebounce, appGetElevation) {
       var map = this['map'];
 
@@ -50,5 +51,5 @@ app.infobar.ElevationController =
     };
 
 
-app.module.controller('AppElevationController',
-    app.infobar.ElevationController);
+appModule.controller('AppElevationController',
+    exports);

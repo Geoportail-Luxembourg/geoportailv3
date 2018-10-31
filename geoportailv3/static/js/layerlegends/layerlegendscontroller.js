@@ -13,9 +13,10 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.provide('app.layerlegends.LayerlegendsController');
+goog.module('app.layerlegends.LayerlegendsController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -30,7 +31,7 @@ goog.require('app.module');
  * @ngInject
  * @export
  */
-app.layerlegends.LayerlegendsController = function($http, $sce, gettextCatalog,
+exports = function($http, $sce, gettextCatalog,
     getPngLegendUrl, getHtmlLegendUrl, ngeoBackgroundLayerMgr) {
   /**
    * @type {ol.Map}
@@ -92,7 +93,7 @@ app.layerlegends.LayerlegendsController = function($http, $sce, gettextCatalog,
  * @return {boolean} True if the layer as a legend.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.hasLegend = function(layer) {
+exports.prototype.hasLegend = function(layer) {
   if (layer !== undefined && layer !== null) {
     var localMetadata = /** @type {Object.<string, string>} */
         (layer.get('metadata'));
@@ -127,7 +128,7 @@ app.layerlegends.LayerlegendsController.prototype.hasLegend = function(layer) {
  * @return {boolean} True if the layer as a legend.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.isALegendAvailable = function() {
+exports.prototype.isALegendAvailable = function() {
 
   if (this.layers != undefined && this.layers.length > 0) {
     var elem = this.layers.find(function(layer) {
@@ -149,7 +150,7 @@ app.layerlegends.LayerlegendsController.prototype.isALegendAvailable = function(
  * @return {*} the legend url.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.getLegendUrl = function(layer) {
+exports.prototype.getLegendUrl = function(layer) {
   var localMetadata = /** @type {Object.<string, string>} */
     (layer.get('metadata'));
   var legend_name = ('legend_name' in localMetadata) ?
@@ -168,7 +169,7 @@ app.layerlegends.LayerlegendsController.prototype.getLegendUrl = function(layer)
  * @return {*} the legend url.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.getImageLegendUrl = function(layer) {
+exports.prototype.getImageLegendUrl = function(layer) {
   var localMetadata = /** @type {Object.<string, string>} */
     (layer.get('metadata'));
   var legend_name = ('legend_name' in localMetadata) ?
@@ -186,7 +187,7 @@ app.layerlegends.LayerlegendsController.prototype.getImageLegendUrl = function(l
  * @return {*} the trusted legend.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.getBgLayer = function() {
+exports.prototype.getBgLayer = function() {
   return this.backgroundLayerMgr_.get(this.map_);
 };
 
@@ -196,7 +197,7 @@ app.layerlegends.LayerlegendsController.prototype.getBgLayer = function() {
  * @return {*} the trusted legend.
  * @export
  */
-app.layerlegends.LayerlegendsController.prototype.getLegendHtml = function(layer) {
+exports.prototype.getLegendHtml = function(layer) {
   if (layer !== undefined && layer !== null) {
     var localMetadata = /** @type {Object.<string, string>} */
       (layer.get('metadata'));
@@ -214,4 +215,4 @@ app.layerlegends.LayerlegendsController.prototype.getLegendHtml = function(layer
   return '';
 };
 
-app.module.controller('AppLayerlegendsController', app.layerlegends.LayerlegendsController);
+appModule.controller('AppLayerlegendsController', exports);

@@ -1,6 +1,7 @@
-goog.provide('app.authentication.authenticationDirective');
+goog.module('app.authentication.authenticationDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -8,7 +9,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.authentication.authenticationDirective = function(appAuthenticationTemplateUrl) {
+exports = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -22,4 +23,4 @@ app.authentication.authenticationDirective = function(appAuthenticationTemplateU
   };
 };
 
-app.module.directive('appAuthentication', app.authentication.authenticationDirective);
+appModule.directive('appAuthentication', exports);

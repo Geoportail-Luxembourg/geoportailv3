@@ -2,16 +2,17 @@
  * @fileoverview This file provides an Angular service to share which tool is
  * active.
  */
-goog.provide('app.Activetool');
+goog.module('app.Activetool');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 /**
  * @param {app.draw.SelectedFeatures} appSelectedFeatures Selected features service.
  * @constructor
  * @ngInject
  */
-app.Activetool = function(appSelectedFeatures) {
+exports = function(appSelectedFeatures) {
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -40,8 +41,8 @@ app.Activetool = function(appSelectedFeatures) {
  * Is a tool activated
  * @return {boolean} The exploded features.
  */
-app.Activetool.prototype.isActive = function() {
+exports.prototype.isActive = function() {
   return (this.drawActive || this.measureActive || this.streetviewActive);
 };
 
-app.module.service('appActivetool', app.Activetool);
+appModule.service('appActivetool', exports);

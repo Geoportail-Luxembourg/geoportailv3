@@ -1,8 +1,9 @@
-goog.provide('app.query.PagreportController');
+goog.module('app.query.PagreportController');
 
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -15,7 +16,7 @@ goog.require('app.NotifyNotificationType');
  * @export
  * @ngInject
  */
-app.query.PagreportController = function($http, appNotify, gettextCatalog,
+exports = function($http, appNotify, gettextCatalog,
     appUserManager, pagUrl) {
   /**
    * @type {app.UserManager}
@@ -74,7 +75,7 @@ app.query.PagreportController = function($http, appNotify, gettextCatalog,
  * @return {*} True if terms and conditions are accepted.
  * @export
  */
-app.query.PagreportController.prototype.getSetTAC = function(tac) {
+exports.prototype.getSetTAC = function(tac) {
   if (arguments.length) {
     this.tac_ = tac;
   } else {
@@ -88,7 +89,7 @@ app.query.PagreportController.prototype.getSetTAC = function(tac) {
  * @return {*} The email.
  * @export
  */
-app.query.PagreportController.prototype.getSetMail = function(mail) {
+exports.prototype.getSetMail = function(mail) {
   if (arguments.length) {
     this.mail_ = mail;
   } else {
@@ -101,15 +102,15 @@ app.query.PagreportController.prototype.getSetMail = function(mail) {
  * Generate and send the repport.
  * @export
  */
-app.query.PagreportController.prototype.generateRepport = function() {
+exports.prototype.generateRepport = function() {
 
   var msg = this.gettextCatalog.getString('Veuillez saisir une adresse email valide');
   var re = /^\S+@\S+\.\S+$/;
   if (this.mail_.length === 0 || !re.test(this.mail_)) {
-    this.notify_(msg, app.NotifyNotificationType.WARNING);
+    this.notify_(msg, appNotifyNotificationType.WARNING);
   } else if (this.tac_ < 1) {
     msg = this.gettextCatalog.getString('Veuillez accepter les termes du rapport');
-    this.notify_(msg, app.NotifyNotificationType.WARNING);
+    this.notify_(msg, appNotifyNotificationType.WARNING);
   } else {
     this.$http_.post(
       this.pagUrl_ + '/report/' + this['ids'] + '.pdf?email=' + this.mail_ + '&staging=' + this['staging'],
@@ -117,9 +118,9 @@ app.query.PagreportController.prototype.generateRepport = function() {
     );
     msg = this.gettextCatalog.getString('Votre rapport est en train d\'être généré. Un email vous sera envoyé à l\'adresse {{email}} dès qu\'il sera disponible',
         {'email': this.mail_});
-    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.notify_(msg, appNotifyNotificationType.INFO);
   }
 };
 
-app.module.controller('AppPagreportController',
-                      app.query.PagreportController);
+appModule.controller('AppPagreportController',
+                      exports);

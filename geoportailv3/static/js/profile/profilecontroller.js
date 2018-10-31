@@ -12,19 +12,20 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.profile.ProfileController');
+goog.module('app.profile.ProfileController');
 
-goog.require('app.module');
-goog.require('ol.events');
-goog.require('ol.Feature');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.Overlay');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olEvents = goog.require('ol.events');
+const olFeature = goog.require('ol.Feature');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olOverlay = goog.require('ol.Overlay');
+const olGeomGeometryLayout = goog.require('ol.geom.GeometryLayout');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -37,7 +38,7 @@ goog.require('ol.style.Style');
  * @export
  * @ngInject
  */
-app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
+exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
     $document) {
 
   /**
@@ -114,10 +115,10 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   this.featureOverlay_.setStyle(
-      new ol.style.Style({
-        image: new ol.style.Circle({
+      new olStyleStyle({
+        image: new olStyleCircle({
           radius: 3,
-          fill: new ol.style.Fill({color: '#ffffff'})
+          fill: new olStyleFill({color: '#ffffff'})
         })
       }));
 
@@ -153,14 +154,14 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
    * @type {ol.Feature}
    * @private
    */
-  this.snappedPoint_ = new ol.Feature();
+  this.snappedPoint_ = new olFeature();
   this.featureOverlay_.addFeature(this.snappedPoint_);
 
   /**
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = ol.events.listen(this['map'], ol.MapBrowserEventType.POINTERMOVE,
+  this.event_ = olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -184,9 +185,9 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
       // An item in the list of points given to the profile.
       this['point'] = point;
       this.featureOverlay_.clear();
-      var curPoint = new ol.geom.Point([point['x'], point['y']]);
+      var curPoint = new olGeomPoint([point['x'], point['y']]);
       curPoint.transform('EPSG:2169', this['map'].getView().getProjection());
-      var positionFeature = new ol.Feature({
+      var positionFeature = new olFeature({
         geometry: curPoint
       });
       this.featureOverlay_.addFeature(positionFeature);
@@ -197,7 +198,7 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
           this.elevationLabel_ +
           this.formatElevation_(elevation['line1'], yUnits);
       this.measureTooltip_.setPosition(curPoint.getCoordinates());
-      this.snappedPoint_.setGeometry(new ol.geom.Point([point.x, point.y]));
+      this.snappedPoint_.setGeometry(new olGeomPoint([point.x, point.y]));
     }
   }.bind(this);
 
@@ -236,10 +237,10 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
     if (newVal !== undefined) {
       var i;
       var len = newVal.length;
-      var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
+      var lineString = new olGeomLineString([], olGeomGeometryLayout.XYM);
       for (i = 0; i < len; i++) {
         var p = newVal[i];
-        p = new ol.geom.Point([p['x'], p['y']]);
+        p = new olGeomPoint([p['x'], p['y']]);
         p.transform('EPSG:2169', this['map'].getView().getProjection());
         lineString.appendCoordinate(
             p.getCoordinates().concat(newVal[i]['dist']));
@@ -254,7 +255,7 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
   }.bind(this));
 
   this.scope_.$on('$destroy', function() {
-    ol.events.unlistenByKey(this.event_);
+    olEvents.unlistenByKey(this.event_);
     this.unwatchProfileData();
   }.bind(this));
 };
@@ -264,12 +265,12 @@ app.profile.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvU
  * Creates a new measure tooltip
  * @private
  */
-app.profile.ProfileController.prototype.createMeasureTooltip_ = function() {
+exports.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = document.createElement('DIV');
   this.measureTooltipElement_.classList.add('tooltip');
   this.measureTooltipElement_.classList.add('ngeo-tooltip-measure');
-  this.measureTooltip_ = new ol.Overlay({
+  this.measureTooltip_ = new olOverlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
     positioning: 'bottom-center'
@@ -282,7 +283,7 @@ app.profile.ProfileController.prototype.createMeasureTooltip_ = function() {
  * Destroy the help tooltip
  * @private
  */
-app.profile.ProfileController.prototype.removeMeasureTooltip_ = function() {
+exports.prototype.removeMeasureTooltip_ = function() {
   if (this.measureTooltipElement_  !== null) {
     this.measureTooltipElement_.parentNode.removeChild(
         this.measureTooltipElement_);
@@ -299,7 +300,7 @@ app.profile.ProfileController.prototype.removeMeasureTooltip_ = function() {
  * @return {string} The formatted distance.
  * @private
  */
-app.profile.ProfileController.prototype.formatDistance_ = function(dist, units) {
+exports.prototype.formatDistance_ = function(dist, units) {
   return parseFloat(dist.toPrecision(3)) + ' ' + units;
 };
 
@@ -311,7 +312,7 @@ app.profile.ProfileController.prototype.formatDistance_ = function(dist, units) 
  * @return {string} The elevation text.
  * @private
  */
-app.profile.ProfileController.prototype.formatElevation_ = function(elevation, units) {
+exports.prototype.formatElevation_ = function(elevation, units) {
   return parseFloat(elevation.toPrecision(4)) + ' ' + units;
 };
 
@@ -323,7 +324,7 @@ app.profile.ProfileController.prototype.formatElevation_ = function(elevation, u
  * @return {string} the elevation gain text.
  * @private
  */
-app.profile.ProfileController.prototype.formatElevationGain_ =
+exports.prototype.formatElevationGain_ =
     function(elevation, units) {
       return parseFloat(parseInt(elevation, 10)) + ' ' + units;
     };
@@ -334,7 +335,7 @@ app.profile.ProfileController.prototype.formatElevationGain_ =
  * @param {ol.geom.Geometry|undefined} geom The geometry to snap to.
  * @private
  */
-app.profile.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
+exports.prototype.snapToGeometry_ = function(coordinate, geom) {
   var closestPoint = geom.getClosestPoint(coordinate);
   // compute distance to line in pixels
   var dx = closestPoint[0] - coordinate[0];
@@ -357,7 +358,7 @@ app.profile.ProfileController.prototype.snapToGeometry_ = function(coordinate, g
  * Export the data as a csv file.
  * @export
  */
-app.profile.ProfileController.prototype.exportCSV = function() {
+exports.prototype.exportCSV = function() {
   var csv = 'dist,MNT,y,x\n';
   this['profileData'].forEach(function(item) {
     csv = csv + item['dist'] + ',' +
@@ -387,4 +388,4 @@ app.profile.ProfileController.prototype.exportCSV = function() {
   form.remove();
 };
 
-app.module.controller('AppProfileController', app.profile.ProfileController);
+appModule.controller('AppProfileController', exports);

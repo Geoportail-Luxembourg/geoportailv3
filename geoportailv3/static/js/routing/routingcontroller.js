@@ -8,18 +8,19 @@
  * </app-routing>
  *
  */
-goog.provide('app.routing.RoutingController');
+goog.module('app.routing.RoutingController');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('ngeo.search.createGeoJSONBloodhound');
-goog.require('ol');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.style');
-goog.require('ol.interaction');
-goog.require('ol.events');
-goog.require('ol.format.GeoJSON');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
+const olBase = goog.require('ol');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olStyle = goog.require('ol.style');
+const olInteraction = goog.require('ol.interaction');
+const olEvents = goog.require('ol.events');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
 
 
 /**
@@ -44,7 +45,7 @@ goog.require('ol.format.GeoJSON');
  * @ngInject
  * @export
  */
-app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServiceUrl,
+exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
     $window, appGeocoding, appUserManager, appNotify, appMymaps, $filter) {
@@ -95,7 +96,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
    * @private
    */
   this.maxExtent_ =
-      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      olBase.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.CoordinateString}
@@ -248,7 +249,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
     select: function(event, suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       var geometry = feature.getGeometry();
-      feature.setGeometry(new ol.geom.Point(ol.extent.getCenter(
+      feature.setGeometry(new olGeomPoint(olBase.extent.getCenter(
         geometry.getExtent())));
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
@@ -267,10 +268,10 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
   this.highlightOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   this.highlightOverlay_.setStyle(
-      new ol.style.Style({
-        image: new ol.style.Circle({
+      new olStyle.Style({
+        image: new olStyle.Circle({
           radius: 6,
-          fill: new ol.style.Fill({color: '#ff0000'})
+          fill: new olStyle.Fill({color: '#ff0000'})
         })
       }));
   /**
@@ -292,7 +293,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
    * @type {ol.Collection}
    * @private
    */
-  this.modyfyFeaturesCollection_ = new ol.Collection();
+  this.modyfyFeaturesCollection_ = new olBase.Collection();
 
   /**
    * Due to https://github.com/openlayers/openlayers/issues/7483
@@ -300,9 +301,9 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteraction_ = new ol.interaction.Select({
+  this.selectInteraction_ = new olInteraction.Select({
     features: this.modyfyFeaturesCollection_,
-    condition: ol.events.condition.click,
+    condition: olEvents.condition.click,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -315,8 +316,8 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteractionPM_ = new ol.interaction.Select({
-    condition: ol.events.condition.pointerMove,
+  this.selectInteractionPM_ = new olInteraction.Select({
+    condition: olEvents.condition.pointerMove,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -325,37 +326,37 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
   this.map.addInteraction(this.selectInteractionPM_);
 
   this.selectInteractionPM_.setActive(false);
-  ol.events.listen(this.selectInteractionPM_, 'select',
+  olEvents.listen(this.selectInteractionPM_, 'select',
     this.showHideTooltip_, this);
 
   /**
    * @type {ol.interaction.Modify}
    * @private
    */
-  this.modifyInteraction_ = new ol.interaction.Modify({
+  this.modifyInteraction_ = new olInteraction.Modify({
     features: this.modyfyFeaturesCollection_
   });
   this.map.addInteraction(this.modifyInteraction_);
   this.modifyInteraction_.setActive(true);
 
-  ol.events.listen(this.modifyInteraction_,
-    ol.interaction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
+  olEvents.listen(this.modifyInteraction_,
+    olInteraction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
   /**
    * @type {ol.source.Vector}
    * @private
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
-  ol.events.listen(this.appRouting.routeFeatures, ol.CollectionEventType.ADD,
+  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.ADD,
     this.showRoute_, this);
-  ol.events.listen(this.appRouting.routeFeatures, ol.CollectionEventType.REMOVE,
+  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.REMOVE,
     this.removeRoute_, this);
 
   /**
    * @type {ol.Geolocation}
    * @private
    */
-  this.geolocation_ = new ol.Geolocation({
+  this.geolocation_ = new olBase.Geolocation({
     projection: this.map.getView().getProjection(),
     trackingOptions: /** @type {GeolocationPositionOptions} */ ({
       enableHighAccuracy: true,
@@ -370,7 +371,7 @@ app.routing.RoutingController = function($scope, gettextCatalog, poiSearchServic
  * Init the routing service_.
  * @private
  */
-app.routing.RoutingController.prototype.initRoutingService_ = function() {
+exports.prototype.initRoutingService_ = function() {
   this.appRouting.map = this.map;
 };
 
@@ -379,7 +380,7 @@ app.routing.RoutingController.prototype.initRoutingService_ = function() {
  * @param {ol.interaction.Modify.Event} event The event.
  * @private
  */
-app.routing.RoutingController.prototype.modifyEndStepFeature_ = function(event) {
+exports.prototype.modifyEndStepFeature_ = function(event) {
   var lastIdx = this.appRouting.features.getLength() - 1;
   var lastFeature = this.appRouting.features.removeAt(lastIdx);
   var lastLabel = this.appRouting.routes[lastIdx];
@@ -416,12 +417,12 @@ app.routing.RoutingController.prototype.modifyEndStepFeature_ = function(event) 
  * @param {number} step The step.
  * @export
  */
-app.routing.RoutingController.prototype.whereAmI = function(step) {
+exports.prototype.whereAmI = function(step) {
   if (this.window_.location.protocol !== 'https:') {
     this['showRedirect'] = true;
   } else {
-    ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+    olEvents.listen(this.geolocation_,
+      olBase.Object.getChangeEventType(olBase.GeolocationProperty.POSITION),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -429,8 +430,8 @@ app.routing.RoutingController.prototype.whereAmI = function(step) {
         this.geolocation_.setTracking(false);
         var position = /** @type {ol.Coordinate} */
             (this.geolocation_.getPosition());
-        var feature = new ol.Feature({
-          geometry: new ol.geom.Point(position)
+        var feature = new olBase.Feature({
+          geometry: new olGeomPoint(position)
         });
         var label = this.coordinateString_(
                 position, 'EPSG:3857', 'EPSG:4326', false, true);
@@ -448,15 +449,15 @@ app.routing.RoutingController.prototype.whereAmI = function(step) {
  * @param {ol.interaction.Select.Event} e The event.
  * @private
  */
-app.routing.RoutingController.prototype.showHideTooltip_ = function(e) {
+exports.prototype.showHideTooltip_ = function(e) {
   this.highlightOverlay_.clear();
   var selectedFeatures = e.target.getFeatures();
   if (selectedFeatures.getLength() > 0) {
     var feature = selectedFeatures.getArray()[0];
 
     var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
-    var newFeature = new ol.Feature({
-      geometry: new ol.geom.Point(geometry)
+    var newFeature = new olBase.Feature({
+      geometry: new olGeomPoint(geometry)
     });
     this.highlightOverlay_.addFeature(newFeature);
     this.createTooltip_(geometry, feature.get('name'));
@@ -471,12 +472,12 @@ app.routing.RoutingController.prototype.showHideTooltip_ = function(e) {
  * @param {string} text The text to display.
  * @private
  */
-app.routing.RoutingController.prototype.createTooltip_ = function(position, text) {
+exports.prototype.createTooltip_ = function(position, text) {
   this.removeTooltip_();
   this.tooltipElement_ = document.createElement('div');
   this.tooltipElement_.classList.add('tooltip');
   this.tooltipElement_.innerHTML = text;
-  this.tooltipOverlay_ = new ol.Overlay({
+  this.tooltipOverlay_ = new olBase.Overlay({
     element: this.tooltipElement_,
     offset: [15, 0],
     positioning: 'center-left'
@@ -491,7 +492,7 @@ app.routing.RoutingController.prototype.createTooltip_ = function(position, text
  * @param {Array} array The array.
  * @export
  */
-app.routing.RoutingController.prototype.afterReorder = function(element, array) {
+exports.prototype.afterReorder = function(element, array) {
   var fromIdx = -1;
   var toIdx = -1;
   var i = 0;
@@ -533,7 +534,7 @@ app.routing.RoutingController.prototype.afterReorder = function(element, array) 
  * Destroy the tooltip.
  * @private
  */
-app.routing.RoutingController.prototype.removeTooltip_ = function() {
+exports.prototype.removeTooltip_ = function() {
   if (this.tooltipOverlay_ !== null) {
     this.map.removeOverlay(this.tooltipOverlay_);
   }
@@ -549,10 +550,10 @@ app.routing.RoutingController.prototype.removeTooltip_ = function() {
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
-app.routing.RoutingController.prototype.createAndInitPOIBloodhound_ =
+exports.prototype.createAndInitPOIBloodhound_ =
     function(searchServiceUrl) {
-      var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeo.search.createGeoJSONBloodhound(
+      var geojsonFormat = new olFormatGeoJSON();
+      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {
@@ -570,7 +571,7 @@ app.routing.RoutingController.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: ol.proj.get('EPSG:3857'),
+              featureProjection: olBase.proj.get('EPSG:3857'),
               dataProjection: undefined
             });
           }
@@ -585,7 +586,7 @@ app.routing.RoutingController.prototype.createAndInitPOIBloodhound_ =
  * @return {boolean} True if a route exists.
  * @export
  */
-app.routing.RoutingController.prototype.isRoute = function() {
+exports.prototype.isRoute = function() {
   return (this.routeDesc.length !== 0);
 };
 
@@ -593,7 +594,7 @@ app.routing.RoutingController.prototype.isRoute = function() {
  * Clear all fields and remove computed route.
  * @export
  */
-app.routing.RoutingController.prototype.clearRoutes = function() {
+exports.prototype.clearRoutes = function() {
   this.appRouting.routes = ['', ''];
   this.appRouting.routesOrder.splice(0);
   this.appRouting.routesOrder.push(0);
@@ -611,7 +612,7 @@ app.routing.RoutingController.prototype.clearRoutes = function() {
  * @param {number} routeIdx The route number.
  * @export
  */
-app.routing.RoutingController.prototype.clearRoute = function(routeIdx) {
+exports.prototype.clearRoute = function(routeIdx) {
 
   if (routeIdx > 0 && routeIdx < this.appRouting.features.getArray().length - 1) {
     this.appRouting.features.removeAt(routeIdx);
@@ -620,7 +621,7 @@ app.routing.RoutingController.prototype.clearRoute = function(routeIdx) {
     this.appRouting.reorderRoute();
   } else {
     this.appRouting.routes[routeIdx] = '';
-    var blankFeature = new ol.Feature();
+    var blankFeature = new olBase.Feature();
     blankFeature.set('name', '' + (routeIdx + 1));
     this.appRouting.features.setAt(routeIdx, blankFeature);
   }
@@ -636,7 +637,7 @@ app.routing.RoutingController.prototype.clearRoute = function(routeIdx) {
  * @return {number} The distance in meter.
  * @export
  */
-app.routing.RoutingController.prototype.getDistance = function() {
+exports.prototype.getDistance = function() {
   return this.distance_;
 };
 
@@ -644,7 +645,7 @@ app.routing.RoutingController.prototype.getDistance = function() {
  * @return {number} The total time in seconde.
  * @export
  */
-app.routing.RoutingController.prototype.getTime = function() {
+exports.prototype.getTime = function() {
   return this.time_;
 };
 
@@ -652,7 +653,7 @@ app.routing.RoutingController.prototype.getTime = function() {
  * @return {number} the elevation gain in meter.
  * @export
  */
-app.routing.RoutingController.prototype.getElevationGain = function() {
+exports.prototype.getElevationGain = function() {
   return this.elevationGain_;
 };
 
@@ -660,7 +661,7 @@ app.routing.RoutingController.prototype.getElevationGain = function() {
  * @return {number} the elevation gain in meter.
  * @export
  */
-app.routing.RoutingController.prototype.getElevationLoss = function() {
+exports.prototype.getElevationLoss = function() {
   return this.elevationLoss_;
 };
 
@@ -668,7 +669,7 @@ app.routing.RoutingController.prototype.getElevationLoss = function() {
  * Remove the route information.
  * @private
  */
-app.routing.RoutingController.prototype.removeRoute_ = function() {
+exports.prototype.removeRoute_ = function() {
   this.appRouting.stepFeatures.clear();
   this.selectInteraction_.setActive(false);
   this.selectInteractionPM_.setActive(false);
@@ -679,7 +680,7 @@ app.routing.RoutingController.prototype.removeRoute_ = function() {
 /**
  * @private
  */
-app.routing.RoutingController.prototype.showRoute_ = function() {
+exports.prototype.showRoute_ = function() {
   var routeArray = this.appRouting.routeFeatures.getArray();
   if (routeArray.length === 0) {
     this.removeRoute_();
@@ -707,9 +708,9 @@ app.routing.RoutingController.prototype.showRoute_ = function() {
   this.routeDesc.forEach(function(description) {
     var coordinate = [description.lon, description.lat];
     var geometry = /** @type {ol.Coordinate} */
-    (ol.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
-    var stepFeature = new ol.Feature({
-      geometry: new ol.geom.Point(geometry)
+    (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
+    var stepFeature = new olBase.Feature({
+      geometry: new olGeomPoint(geometry)
     });
     cumulativeDistance += description.distance;
     cumulativeTime += description.time;
@@ -731,9 +732,9 @@ app.routing.RoutingController.prototype.showRoute_ = function() {
  * @param {number} lat The latitude.
  * @export
  */
-app.routing.RoutingController.prototype.center = function(lon, lat) {
+exports.prototype.center = function(lon, lat) {
   var curView = this.map.getView();
-  var coordinate = ol.proj.transform([lon, lat], 'EPSG:4326', curView.getProjection());
+  var coordinate = olBase.proj.transform([lon, lat], 'EPSG:4326', curView.getProjection());
   curView.setCenter(coordinate);
 };
 
@@ -743,13 +744,13 @@ app.routing.RoutingController.prototype.center = function(lon, lat) {
  * @param {string} text The text to display.
  * @export
  */
-app.routing.RoutingController.prototype.highlightPosition = function(lon, lat, text) {
+exports.prototype.highlightPosition = function(lon, lat, text) {
   var coordinate = [lon, lat];
   var curView = this.map.getView();
   var geometry = /** @type {ol.Coordinate} */
-  (ol.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Point(geometry)
+  (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
+  var feature = new olBase.Feature({
+    geometry: new olGeomPoint(geometry)
   });
   this.highlightOverlay_.clear();
   this.highlightOverlay_.addFeature(feature);
@@ -759,7 +760,7 @@ app.routing.RoutingController.prototype.highlightPosition = function(lon, lat, t
 /**
  * @export
  */
-app.routing.RoutingController.prototype.clearHighlight = function() {
+exports.prototype.clearHighlight = function() {
   this.highlightOverlay_.clear();
   this.removeTooltip_();
 };
@@ -769,7 +770,7 @@ app.routing.RoutingController.prototype.clearHighlight = function() {
  * @return {string} Returns the corresponding class.
  * @export
  */
-app.routing.RoutingController.prototype.getIconDirectionClass = function(direction) {
+exports.prototype.getIconDirectionClass = function(direction) {
   switch (direction) {
     case 0:
       return 'north';
@@ -798,7 +799,7 @@ app.routing.RoutingController.prototype.getIconDirectionClass = function(directi
  * @return {number} Returns the mode.
  * @export
  */
-app.routing.RoutingController.prototype.getCriteria = function() {
+exports.prototype.getCriteria = function() {
   return this.appRouting.criteria;
 };
 
@@ -808,7 +809,7 @@ app.routing.RoutingController.prototype.getCriteria = function() {
  * 0 : fastest, 1 : shortest
  * @export
  */
-app.routing.RoutingController.prototype.setCriteria = function(criteria) {
+exports.prototype.setCriteria = function(criteria) {
   this.appRouting.criteria = criteria;
   this.appRouting.getRoute();
 };
@@ -821,7 +822,7 @@ app.routing.RoutingController.prototype.setCriteria = function(criteria) {
  * @return {number} Returns the mode.
  * @export
  */
-app.routing.RoutingController.prototype.getMode = function() {
+exports.prototype.getMode = function() {
   return this.appRouting.transportMode;
 };
 
@@ -830,7 +831,7 @@ app.routing.RoutingController.prototype.getMode = function() {
  * 1 : Pedestrian, 2 : Bike, 3 : Car
  * @export
  */
-app.routing.RoutingController.prototype.setMode = function(mode) {
+exports.prototype.setMode = function(mode) {
   this.appRouting.transportMode = mode;
   this.appRouting.getRoute();
 };
@@ -839,7 +840,7 @@ app.routing.RoutingController.prototype.setMode = function(mode) {
  * Exchange the first and last route.
  * @export
  */
-app.routing.RoutingController.prototype.exchangeRoutes = function() {
+exports.prototype.exchangeRoutes = function() {
   var lastFeature = this.appRouting.features.removeAt(this.appRouting.features.getLength() - 1);
   var firstFeature = this.appRouting.features.removeAt(0);
   if (firstFeature !== null && firstFeature !== undefined &&
@@ -859,7 +860,7 @@ app.routing.RoutingController.prototype.exchangeRoutes = function() {
  * Set the position text into the feature.
  * @private
  */
-app.routing.RoutingController.prototype.setPositionText_ = function() {
+exports.prototype.setPositionText_ = function() {
   var pos = 0;
   this.appRouting.features.forEach(function(feature) {
     pos++;
@@ -873,7 +874,7 @@ app.routing.RoutingController.prototype.setPositionText_ = function() {
  * @return {Array<string>} The adresses to search.
  * @export
  */
-app.routing.RoutingController.prototype.getRoutes = function() {
+exports.prototype.getRoutes = function() {
   return this.appRouting.routes;
 };
 
@@ -882,7 +883,7 @@ app.routing.RoutingController.prototype.getRoutes = function() {
  * @param {string | undefined} routeName The label of the route.
  * @export
  */
-app.routing.RoutingController.prototype.addRoute = function(routeName) {
+exports.prototype.addRoute = function(routeName) {
   this.appRouting.routes.push((routeName === undefined) ? '' : routeName);
   this.appRouting.routesOrder.push(this.appRouting.routesOrder.length);
 };
@@ -891,10 +892,10 @@ app.routing.RoutingController.prototype.addRoute = function(routeName) {
  * Export a Gpx file.
  * @export
  */
-app.routing.RoutingController.prototype.exportGpx = function() {
+exports.prototype.exportGpx = function() {
   var features = this.appRouting.routeFeatures.getArray().filter(
     function(feature) {
-      return (feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING);
+      return feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING;
     }, this);
   this.appExport_.exportGpx(features, 'Route', true);
 };
@@ -905,7 +906,7 @@ app.routing.RoutingController.prototype.exportGpx = function() {
  * @return {Array<ol.Feature>} The result.
  * @private
  */
-app.routing.RoutingController.prototype.matchCoordinate_ =
+exports.prototype.matchCoordinate_ =
     function(searchString) {
       searchString = searchString.replace(/,/gi, '.');
       var results = [];
@@ -949,12 +950,12 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (ol.array.includes(northArray, m[2].toUpperCase()) &&
-              ol.array.includes(eastArray, m[4].toUpperCase())) {
+              if (olBase.array.includes(northArray, m[2].toUpperCase()) &&
+              olBase.array.includes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
-              ol.array.includes(eastArray, m[2].toUpperCase())) {
+              } else if (olBase.array.includes(northArray, m[4].toUpperCase()) &&
+              olBase.array.includes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -999,18 +1000,18 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
             var mapEpsgCode =
             this['map'].getView().getProjection().getCode();
             var point = /** @type {ol.geom.Point} */
-            (new ol.geom.Point([easting, northing])
+            (new olGeomPoint([easting, northing])
            .transform(epsgCode, mapEpsgCode));
             var flippedPoint =  /** @type {ol.geom.Point} */
-            (new ol.geom.Point([northing, easting])
+            (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (ol.extent.containsCoordinate(
+            if (olBase.extent.containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
-              feature = new ol.Feature(point);
-            } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+              feature = new olBase.Feature(point);
+            } else if (epsgCode === 'EPSG:4326' && olBase.extent.containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new ol.Feature(flippedPoint);
+              feature = new olBase.Feature(flippedPoint);
             }
             if (feature !== null) {
               var resultPoint =
@@ -1032,7 +1033,7 @@ app.routing.RoutingController.prototype.matchCoordinate_ =
  * @return {Object | undefined} Returns the coordinate.
  * @private
  */
-app.routing.RoutingController.prototype.decDegFromMatch_ = function(m) {
+exports.prototype.decDegFromMatch_ = function(m) {
   var signIndex = {
     '-': -1,
     'N': 1,
@@ -1074,7 +1075,7 @@ app.routing.RoutingController.prototype.decDegFromMatch_ = function(m) {
  * Create a map from an route.
  * @export
  */
-app.routing.RoutingController.prototype.createMapFromRoute = function() {
+exports.prototype.createMapFromRoute = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -1099,7 +1100,7 @@ app.routing.RoutingController.prototype.createMapFromRoute = function() {
           return this.appMymaps_.saveFeatures(features.concat(stepFeatures));
         }.bind(this)).then(function(mapinformation) {
           var msg = this.gettextCatalog.getString('Une copie de votre route a été enregistrée dans Mymaps.');
-          this.notify_(msg, app.NotifyNotificationType.INFO);
+          this.notify_(msg, appNotifyNotificationType.INFO);
           this.appMymaps_.clear();
         }.bind(this));
   }
@@ -1109,15 +1110,15 @@ app.routing.RoutingController.prototype.createMapFromRoute = function() {
  * Notify the user he has to connect
  * @export
  */
-app.routing.RoutingController.prototype.askToConnect = function() {
+exports.prototype.askToConnect = function() {
   var msg = this.gettextCatalog.getString(
       'Veuillez vous identifier afin d\'accéder à vos cartes'
       );
-  this.notify_(msg, app.NotifyNotificationType.INFO);
+  this.notify_(msg, appNotifyNotificationType.INFO);
   this['useropen'] = true;
 };
 
-app.module.controller('AppRoutingController', app.routing.RoutingController);
+appModule.controller('AppRoutingController', exports);
 
 /**
  * @param {angular.$filter} $filter Angular filter.
@@ -1145,4 +1146,4 @@ app.secondsToHHmmss = function($filter) {
   };
 };
 
-app.module.filter('appSecondsToHHmmss', app.secondsToHHmmss);
+appModule.filter('appSecondsToHHmmss', app.secondsToHHmmss);

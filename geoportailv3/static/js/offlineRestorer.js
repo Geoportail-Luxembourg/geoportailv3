@@ -1,7 +1,7 @@
 goog.module('app.OfflineRestorer');
 goog.module.declareLegacyNamespace();
 
-goog.require('app.module');
+const appModule = goog.require('app.module');
 
 const restorer = goog.require('ngeo.offline.Restorer');
 
@@ -61,5 +61,5 @@ const OfflineRestorer = class extends restorer {
 
 };
 
-app.module.service('appOfflineRestorer', OfflineRestorer);
+appModule.service('appOfflineRestorer', OfflineRestorer);
 exports = OfflineRestorer;

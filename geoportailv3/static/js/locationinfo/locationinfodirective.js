@@ -2,9 +2,10 @@
  * @fileoverview This file provides a "location information" directive.
  */
 
-goog.provide('app.locationinfo.locationinfoDirective');
+goog.module('app.locationinfo.locationinfoDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -12,7 +13,7 @@ goog.require('app.module');
  * @return {angular.Directive} The directive.
  * @ngInject
  */
-app.locationinfo.locationinfoDirective = function(appLocationinfoTemplateUrl) {
+exports = function(appLocationinfoTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -29,4 +30,4 @@ app.locationinfo.locationinfoDirective = function(appLocationinfoTemplateUrl) {
   };
 };
 
-app.module.directive('appLocationinfo', app.locationinfo.locationinfoDirective);
+appModule.directive('appLocationinfo', exports);

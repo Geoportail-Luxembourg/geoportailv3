@@ -2,16 +2,17 @@
  * @fileoverview This file defines the Exclusion service. This service manages
  * the exclusion between layers.
  */
-goog.provide('app.ExclusionManager');
+goog.module('app.ExclusionManager');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('ol');
-goog.require('ol.Observable');
-goog.require('ol.Object');
-goog.require('ol.events');
-goog.require('ol.layer.Property');
-goog.require('ol.CollectionEventType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const olBase = goog.require('ol');
+const olObservable = goog.require('ol.Observable');
+const olObject = goog.require('ol.Object');
+const olEvents = goog.require('ol.events');
+const olLayerProperty = goog.require('ol.layer.Property');
+const olCollectionEventType = goog.require('ol.CollectionEventType');
 
 
 /**
@@ -23,7 +24,7 @@ goog.require('ol.CollectionEventType');
  * @constructor
  * @ngInject
  */
-app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
+exports = function(gettextCatalog, ngeoBackgroundLayerMgr,
     appBlankLayer, appNotify) {
 
   /**
@@ -59,7 +60,7 @@ app.ExclusionManager = function(gettextCatalog, ngeoBackgroundLayerMgr,
  * @return {boolean} Whether the array intersect or not.
  * @private
  */
-app.ExclusionManager.prototype.intersects_ = function(one, two) {
+exports.prototype.intersects_ = function(one, two) {
   var arr1 = /** @type {Array} */ (JSON.parse(one));
   var arr2 = /** @type {Array} */ (JSON.parse(two));
   var concat = arr1.concat(arr2);
@@ -81,7 +82,7 @@ app.ExclusionManager.prototype.intersects_ = function(one, two) {
  *     opacity property has changed.
  * @private
  */
-app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
+exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
   var opacity = layer1.getOpacity();
   // don't do anything if layer is not displayed on map
   if (opacity === 0) {
@@ -131,7 +132,7 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
                   /** @type {string} */(layer1.get('label')))
           }
             );
-        this.notify_(msg, app.NotifyNotificationType.WARNING);
+        this.notify_(msg, appNotifyNotificationType.WARNING);
       }
     }
   }
@@ -149,7 +150,7 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
         'layer': gettextCatalog.getString(
               /** @type {string} */(layer1.get('label')))
       });
-    this.notify_(msg, app.NotifyNotificationType.WARNING);
+    this.notify_(msg, appNotifyNotificationType.WARNING);
   }
 };
 
@@ -157,12 +158,12 @@ app.ExclusionManager.prototype.checkForLayerExclusion_ = function(map, layer1) {
 /**
  * @param {ol.Map} map The OpenLayers map.
  */
-app.ExclusionManager.prototype.init = function(map) {
+exports.prototype.init = function(map) {
   var layerOpacityListenerKeys = {};
 
   // listen on layers being added to the map
   // base layers switch should fire the event as well
-  ol.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
+  olEvents.listen(map.getLayers(), olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -171,24 +172,24 @@ app.ExclusionManager.prototype.init = function(map) {
         this.checkForLayerExclusion_(map, layer);
 
         // listen on opacity change
-        var key = ol.events.listen(layer,
-            ol.Object.getChangeEventType(ol.layer.Property.OPACITY),
+        var key = olEvents.listen(layer,
+            olObject.getChangeEventType(olLayerProperty.OPACITY),
             function(e) {
               this.checkForLayerExclusion_(map, layer);
             }, this);
-        layerOpacityListenerKeys[ol.getUid(layer)] = key;
+        layerOpacityListenerKeys[olBase.getUid(layer)] = key;
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
-  ol.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
+  olEvents.listen(map.getLayers(), olCollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
-        console.assert(ol.getUid(layer) in layerOpacityListenerKeys);
-        ol.Observable.unByKey(layerOpacityListenerKeys[ol.getUid(layer)]);
+        console.assert(olBase.getUid(layer) in layerOpacityListenerKeys);
+        olObservable.unByKey(layerOpacityListenerKeys[olBase.getUid(layer)]);
       }, this);
 };
 
-app.module.service('appExclusionManager', app.ExclusionManager);
+appModule.service('appExclusionManager', exports);
