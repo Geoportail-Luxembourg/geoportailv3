@@ -10,9 +10,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.externaldata.externalDataDirective');
+goog.module('app.externaldata.externalDataDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.externaldata.externalDataDirective = function(appExternalDataTemplateUrl) {
+exports = function(appExternalDataTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -34,4 +35,4 @@ app.externaldata.externalDataDirective = function(appExternalDataTemplateUrl) {
 };
 
 
-app.module.directive('appExternalData', app.externaldata.externalDataDirective);
+appModule.directive('appExternalData', exports);

@@ -1,6 +1,7 @@
-goog.provide('app.mymaps.filereaderDirective');
+goog.module('app.mymaps.filereaderDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -10,7 +11,7 @@ goog.require('app.module');
  * @ngdoc directive
  * @ngname appFilereader
  */
-app.mymaps.filereaderDirective = function($window) {
+exports = function($window) {
   return {
     restrict: 'A',
     scope: {
@@ -63,4 +64,4 @@ app.mymaps.filereaderDirective = function($window) {
 };
 
 
-app.module.directive('appFilereader', app.mymaps.filereaderDirective);
+appModule.directive('appFilereader', exports);

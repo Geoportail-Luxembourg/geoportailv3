@@ -1,6 +1,7 @@
-goog.provide('app.askredirect.AskredirectController');
+goog.module('app.askredirect.AskredirectController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 /**
  * @constructor
@@ -9,7 +10,7 @@ goog.require('app.module');
  * @export
  * @ngInject
  */
-app.askredirect.AskredirectController = function($window, ngeoLocation) {
+exports = function($window, ngeoLocation) {
   /**
    * @type {angular.$window}
    * @private
@@ -28,7 +29,7 @@ app.askredirect.AskredirectController = function($window, ngeoLocation) {
  * Redirect the map to the https version.
  * @export
  */
-app.askredirect.AskredirectController.prototype.redirect = function() {
+exports.prototype.redirect = function() {
   if (this.$window_.location.protocol !== 'https:') {
     var separator = '?';
     if (this.$window_.location.href.indexOf('?') >= 0) {
@@ -41,5 +42,5 @@ app.askredirect.AskredirectController.prototype.redirect = function() {
 };
 
 
-app.module.controller('AppAskredirectController',
-                      app.askredirect.AskredirectController);
+appModule.controller('AppAskredirectController',
+                      exports);

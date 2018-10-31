@@ -2,18 +2,19 @@
  * @fileoverview Provides a feature popup service.
  */
 
-goog.provide('app.draw.FeaturePopup');
+goog.module('app.draw.FeaturePopup');
 
-goog.require('app.module');
-goog.require('ol.Overlay');
-goog.require('ol.Observable');
-goog.require('ol.events');
-goog.require('ol.geom.LineString');
-goog.require('ngeo.interaction.Measure');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olOverlay = goog.require('ol.Overlay');
+const olObservable = goog.require('ol.Observable');
+const olEvents = goog.require('ol.events');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
 
 
 /**
@@ -26,7 +27,7 @@ goog.require('ol.geom.Polygon');
  * @constructor
  * @ngInject
  */
-app.draw.FeaturePopup = function($compile, $rootScope, $injector, $document,
+exports = function($compile, $rootScope, $injector, $document,
     appGetElevation, appGetProfile) {
   /**
    * @type {ngeox.unitPrefix}
@@ -110,7 +111,7 @@ app.draw.FeaturePopup = function($compile, $rootScope, $injector, $document,
    * @type {ol.Overlay?}
    * @private
    */
-  this.overlay_ = new ol.Overlay({
+  this.overlay_ = new olOverlay({
     element: this.element_[0],
     autoPan: true,
     autoPanAnimation: /** @type {olx.animation.PanOptions} */ ({
@@ -123,7 +124,7 @@ app.draw.FeaturePopup = function($compile, $rootScope, $injector, $document,
 /**
  * @param {ol.Map} map Map.
  */
-app.draw.FeaturePopup.prototype.init = function(map) {
+exports.prototype.init = function(map) {
   this.map = map;
   this.map.addOverlay(this.overlay_);
 };
@@ -132,14 +133,14 @@ app.draw.FeaturePopup.prototype.init = function(map) {
 /**
  * @param {angular.JQLite} element The element.
  */
-app.draw.FeaturePopup.prototype.setDraggable = function(element) {
-  this.mousedownEvent_ = ol.events.listen(element[0], 'mousedown',
+exports.prototype.setDraggable = function(element) {
+  this.mousedownEvent_ = olEvents.listen(element[0], 'mousedown',
       function(event) {
         this.element_.css({'transform': 'scale(1.1)',
           'transition': 'transform .3s'});
         if (this.mousemoveEvent_ !== null) {
-          this.mousemoveEvent_ = ol.events.listen(this.map,
-              ol.MapBrowserEventType.POINTERMOVE, function(e) {
+          this.mousemoveEvent_ = olEvents.listen(this.map,
+              olMapBrowserEventType.POINTERMOVE, function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
                   this.startingDragPoint_ = e.coordinate;
@@ -152,14 +153,14 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
                      this.startingDragPoint_[1]]);
               }.bind(this));
         }
-        ol.events.listenOnce(this.$document_[0],
+        olEvents.listenOnce(this.$document_[0],
             'mouseup', function() {
               this.element_.css({'transform': 'scale(1)'});
               this.startingAnchorPoint_ = null;
               this.startingDragPoint_ = null;
 
               if (this.mousemoveEvent_) {
-                ol.Observable.unByKey(this.mousemoveEvent_);
+                olObservable.unByKey(this.mousemoveEvent_);
               }
               this.mousemoveEvent_ = null;
             }.bind(this));
@@ -172,7 +173,7 @@ app.draw.FeaturePopup.prototype.setDraggable = function(element) {
  * @param {ol.Map} map The current map.
  * @param {ol.Coordinate=} opt_anchor The options.
  */
-app.draw.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
+exports.prototype.show = function(feature, map, opt_anchor) {
   this.scope_['feature'] = feature;
   this.scope_['map'] = map;
   var anchor = opt_anchor !== undefined ? opt_anchor : this.getAnchor(feature);
@@ -189,7 +190,7 @@ app.draw.FeaturePopup.prototype.show = function(feature, map, opt_anchor) {
 
 /**
  */
-app.draw.FeaturePopup.prototype.toggleDropdown = function() {
+exports.prototype.toggleDropdown = function() {
   this.element_.find('[data-toggle=dropdown]').dropdown('toggle');
 };
 
@@ -197,7 +198,7 @@ app.draw.FeaturePopup.prototype.toggleDropdown = function() {
 /**
  * @param {ol.Feature} feature The feature.
  */
-app.draw.FeaturePopup.prototype.fit = function(feature) {
+exports.prototype.fit = function(feature) {
   var viewSize = /** {ol.Size} **/ (this.map.getSize());
   console.assert(viewSize !== undefined);
   this.map.getView().fit(feature.getGeometry().getExtent(), {
@@ -209,11 +210,11 @@ app.draw.FeaturePopup.prototype.fit = function(feature) {
 /**
  * Hide the overlay.
  */
-app.draw.FeaturePopup.prototype.hide = function() {
+exports.prototype.hide = function() {
   delete this.scope_['feature'];
   delete this.scope_['map'];
   this.overlay_.setPosition(undefined);
-  ol.Observable.unByKey(this.mousedownEvent_);
+  olObservable.unByKey(this.mousedownEvent_);
   this.mousedownEvent_ = null;
 };
 
@@ -222,19 +223,19 @@ app.draw.FeaturePopup.prototype.hide = function() {
  * @param {ol.Feature} feature The feature.
  * @return {?ol.Coordinate} The coordinate for the anchor.
  */
-app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
+exports.prototype.getAnchor = function(feature) {
   var geometry = feature.getGeometry();
   switch (geometry.getType()) {
-    case ol.geom.GeometryType.POINT:
-      console.assert(geometry instanceof ol.geom.Point,
+    case olGeomGeometryType.POINT:
+      console.assert(geometry instanceof olGeomPoint,
           'geometry should be an ol.geom.Point');
       return /** @type {ol.geom.Point} */ (geometry).getFlatCoordinates();
-    case ol.geom.GeometryType.LINE_STRING:
-      console.assert(geometry instanceof ol.geom.LineString,
+    case olGeomGeometryType.LINE_STRING:
+      console.assert(geometry instanceof olGeomLineString,
           'geometry should be an ol.geom.LineString');
       return /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
-    case ol.geom.GeometryType.POLYGON:
-      console.assert(geometry instanceof ol.geom.Polygon,
+    case olGeomGeometryType.POLYGON:
+      console.assert(geometry instanceof olGeomPolygon,
           'geometry should be an ol.geom.Polygon');
       return /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
     default:
@@ -248,10 +249,10 @@ app.draw.FeaturePopup.prototype.getAnchor = function(feature) {
  * @param {!ol.geom.Polygon} polygon The polygon.
  * @return {string} The formatted area.
  */
-app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
+exports.prototype.formatArea = function(polygon) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeo.interaction.Measure.getFormattedArea(
+  return ngeoInteractionMeasure.getFormattedArea(
       polygon,
        /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -264,10 +265,10 @@ app.draw.FeaturePopup.prototype.formatArea = function(polygon) {
  * @param {!ol.geom.LineString} line The line.
  * @return {string} The formatted length.
  */
-app.draw.FeaturePopup.prototype.formatRadius = function(line) {
+exports.prototype.formatRadius = function(line) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeo.interaction.Measure.getFormattedLength(
+  return ngeoInteractionMeasure.getFormattedLength(
       line,
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -280,13 +281,13 @@ app.draw.FeaturePopup.prototype.formatRadius = function(line) {
  * @param {(!ol.geom.LineString|!ol.geom.Polygon)} line The geometry.
  * @return {string} The formatted length.
  */
-app.draw.FeaturePopup.prototype.formatLength = function(line) {
-  var coordinates = (line.getType() === ol.geom.GeometryType.POLYGON) ?
+exports.prototype.formatLength = function(line) {
+  var coordinates = (line.getType() === olGeomGeometryType.POLYGON) ?
       line.getCoordinates()[0] : line.getCoordinates();
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeo.interaction.Measure.getFormattedLength(
-      new ol.geom.LineString(coordinates),
+  return ngeoInteractionMeasure.getFormattedLength(
+      new olGeomLineString(coordinates),
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
       this.format_
@@ -298,7 +299,7 @@ app.draw.FeaturePopup.prototype.formatLength = function(line) {
  * @param {!ol.geom.Point} point The point.
  * @return {angular.$q.Promise} The promise for the elevation.
  */
-app.draw.FeaturePopup.prototype.getElevation = function(point) {
+exports.prototype.getElevation = function(point) {
   return this.getElevation_(point.getCoordinates());
 };
 
@@ -307,9 +308,9 @@ app.draw.FeaturePopup.prototype.getElevation = function(point) {
  * @param {!ol.geom.LineString} linestring The linestring geometry.
  * @return {angular.$q.Promise} The promise for the profile.
  */
-app.draw.FeaturePopup.prototype.getProfile = function(linestring) {
+exports.prototype.getProfile = function(linestring) {
   return this.getProfile_(linestring);
 };
 
 
-app.module.service('appFeaturePopup', app.draw.FeaturePopup);
+appModule.service('appFeaturePopup', exports);

@@ -2,10 +2,11 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "geocoding" web service.
  */
-goog.provide('app.Geocoding');
+goog.module('app.Geocoding');
 
-goog.require('app.module');
-goog.require('ol.proj');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olProj = goog.require('ol.proj');
 
 
 /**
@@ -15,7 +16,7 @@ goog.require('ol.proj');
  * @param {string} geocodingServiceUrl The url of the service.
  * @ngInject
  */
-app.Geocoding = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl) {
+exports = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl) {
   /**
    * @type {angular.$http}
    * @private
@@ -40,9 +41,9 @@ app.Geocoding = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl)
  * @param {ol.Coordinate} coordinate The coordinate.
  * @return {!angular.$q.Promise} Promise providing the reverse geocode.
  */
-app.Geocoding.prototype.reverseGeocode = function(coordinate) {
+exports.prototype.reverseGeocode = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
-      (ol.proj.transform(coordinate,
+      (olProj.transform(coordinate,
       'EPSG:3857', 'EPSG:2169'));
 
   return this.$http_.get(this.reverseGeocodingServiceUrl_, {
@@ -65,7 +66,7 @@ app.Geocoding.prototype.reverseGeocode = function(coordinate) {
  * @param {string} address The address to geocode.
  * @return {!angular.$q.Promise} Promise providing the coordinates.
  */
-app.Geocoding.prototype.geocode = function(address) {
+exports.prototype.geocode = function(address) {
 
   return this.$http_.get(this.geocodingServiceUrl_, {
     params: {
@@ -82,4 +83,4 @@ app.Geocoding.prototype.geocode = function(address) {
 };
 
 
-app.module.service('appGeocoding', app.Geocoding);
+appModule.service('appGeocoding', exports);

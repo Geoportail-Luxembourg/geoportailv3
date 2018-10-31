@@ -12,9 +12,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.profile.profileDirective');
+goog.module('app.profile.profileDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -22,7 +23,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.profile.profileDirective = function(appProfileTemplateUrl) {
+exports = function(appProfileTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.profile.profileDirective = function(appProfileTemplateUrl) {
   };
 };
 
-app.module.directive('appProfile', app.profile.profileDirective);
+appModule.directive('appProfile', exports);

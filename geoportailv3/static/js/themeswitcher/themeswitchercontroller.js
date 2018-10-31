@@ -3,12 +3,13 @@
  * That directive is used to create the theme switcher in the page.
  *
  */
-goog.provide('app.themeswitcher.ThemeswitcherController');
+goog.module('app.themeswitcher.ThemeswitcherController');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
-goog.require('app.events.ThemesEventType');
-goog.require('ol.events');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
+const olEvents = goog.require('ol.events');
 
 
 /**
@@ -22,7 +23,7 @@ goog.require('ol.events');
  * @export
  * @ngInject
  */
-app.themeswitcher.ThemeswitcherController = function(gettextCatalog, ngeoLocation,
+exports = function(gettextCatalog, ngeoLocation,
     appThemes, appTheme, appNotify, gettext) {
 
   /**
@@ -56,7 +57,7 @@ app.themeswitcher.ThemeswitcherController = function(gettextCatalog, ngeoLocatio
    */
   this.appNotify_ = appNotify;
 
-  ol.events.listen(appThemes, app.events.ThemesEventType.LOAD,
+  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */
@@ -80,7 +81,7 @@ app.themeswitcher.ThemeswitcherController = function(gettextCatalog, ngeoLocatio
  * @return {string} The current theme.
  * @export
  */
-app.themeswitcher.ThemeswitcherController.prototype.getCurrentTheme = function() {
+exports.prototype.getCurrentTheme = function() {
   return this.appTheme_.getCurrentTheme();
 };
 
@@ -91,7 +92,7 @@ app.themeswitcher.ThemeswitcherController.prototype.getCurrentTheme = function()
  * @return {string} The theme.
  * @export
  */
-app.themeswitcher.ThemeswitcherController.prototype.encodeThemeName = function(theme) {
+exports.prototype.encodeThemeName = function(theme) {
   return this.appTheme_.encodeThemeName(theme);
 };
 
@@ -99,7 +100,7 @@ app.themeswitcher.ThemeswitcherController.prototype.encodeThemeName = function(t
 /**
  * @private
  */
-app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
+exports.prototype.setThemes_ = function() {
   this.appThemes_.getThemesObject().then(
       /**
        * Keep only the themes dedicated to the theme switcher
@@ -128,7 +129,7 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
                   if (resp.data['is_private'] === true) {
                     this.appNotify_(this.translate_.
                         getString(this.privateThemeMsg_, {}),
-                        app.NotifyNotificationType.WARNING);
+                        appNotifyNotificationType.WARNING);
                     this['userOpen'] = true;
                   } else {
                     this.switchTheme(this.appTheme_.getDefaultTheme());
@@ -144,10 +145,10 @@ app.themeswitcher.ThemeswitcherController.prototype.setThemes_ = function() {
  * @param {string} themeId The id of the theme.
  * @export
  */
-app.themeswitcher.ThemeswitcherController.prototype.switchTheme = function(themeId) {
+exports.prototype.switchTheme = function(themeId) {
   this.appTheme_.setCurrentTheme(themeId);
 };
 
 
-app.module.controller('AppThemeswitcherController',
-    app.themeswitcher.ThemeswitcherController);
+appModule.controller('AppThemeswitcherController',
+    exports);

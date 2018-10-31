@@ -3,10 +3,11 @@
  * information about the drawn features throughout the application.
  */
 
-goog.provide('app.locationinfo.LocationInfoOverlay');
+goog.module('app.locationinfo.LocationInfoOverlay');
 
-goog.require('app.module');
-goog.require('ol.style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olStyle = goog.require('ol.style');
 
 
 /**
@@ -15,7 +16,7 @@ goog.require('ol.style');
  * manager
  * @ngInject
  */
-app.locationinfo.LocationInfoOverlay = function(ngeoFeatureOverlayMgr) {
+exports = function(ngeoFeatureOverlayMgr) {
 
   /**
    * @type {ngeo.map.FeatureOverlay}
@@ -23,15 +24,15 @@ app.locationinfo.LocationInfoOverlay = function(ngeoFeatureOverlayMgr) {
    */
   this.featureOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
-  var defaultFill = new ol.style.Fill({
+  var defaultFill = new olStyle.Fill({
     color: [255, 255, 0, 0.6]
   });
-  var circleStroke = new ol.style.Stroke({
+  var circleStroke = new olStyle.Stroke({
     color: [255, 155, 55, 1],
     width: 3
   });
 
-  var pointStyle = new ol.style.Circle({
+  var pointStyle = new olStyle.Circle({
     radius: 10,
     fill: defaultFill,
     stroke: circleStroke
@@ -44,7 +45,7 @@ app.locationinfo.LocationInfoOverlay = function(ngeoFeatureOverlayMgr) {
        * @return {Array.<ol.style.Style>} Array of styles.
        */
       function(feature, resolution) {
-        return [new ol.style.Style({
+        return [new olStyle.Style({
           image: pointStyle
         })];
       });
@@ -53,15 +54,15 @@ app.locationinfo.LocationInfoOverlay = function(ngeoFeatureOverlayMgr) {
 /**
  * Clear the feature overlay.
  */
-app.locationinfo.LocationInfoOverlay.prototype.clear = function() {
+exports.prototype.clear = function() {
   this.featureOverlay_.clear();
 };
 
 /**
  * @param {ol.Feature} feature The feature.
  */
-app.locationinfo.LocationInfoOverlay.prototype.addFeature = function(feature) {
+exports.prototype.addFeature = function(feature) {
   this.featureOverlay_.addFeature(feature);
 };
 
-app.module.service('appLocationInfoOverlay', app.locationinfo.LocationInfoOverlay);
+appModule.service('appLocationInfoOverlay', exports);

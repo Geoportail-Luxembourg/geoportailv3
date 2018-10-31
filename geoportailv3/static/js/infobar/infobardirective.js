@@ -10,9 +10,10 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.infobarDirective');
+goog.module('app.infobar.infobarDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('app.module');
  * @param {string} appInfobarTemplateUrl The template url.
  * @ngInject
  */
-app.infobar.infobarDirective = function(appInfobarTemplateUrl) {
+exports = function(appInfobarTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -34,4 +35,4 @@ app.infobar.infobarDirective = function(appInfobarTemplateUrl) {
 };
 
 
-app.module.directive('appInfobar', app.infobar.infobarDirective);
+appModule.directive('appInfobar', exports);

@@ -13,9 +13,10 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.provide('app.layerlegends.layerlegendsDirective');
+goog.module('app.layerlegends.layerlegendsDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -23,7 +24,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.layerlegends.layerlegendsDirective = function(appLayerlegendsTemplateUrl) {
+exports = function(appLayerlegendsTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.layerlegends.layerlegendsDirective = function(appLayerlegendsTemplateUrl) {
 };
 
 
-app.module.directive('appLayerlegends', app.layerlegends.layerlegendsDirective);
+appModule.directive('appLayerlegends', exports);

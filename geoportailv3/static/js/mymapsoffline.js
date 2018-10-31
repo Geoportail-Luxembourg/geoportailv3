@@ -1,6 +1,7 @@
-goog.provide('app.MymapsOffline');
+goog.module('app.MymapsOffline');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -10,7 +11,7 @@ goog.require('app.module');
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
  * @ngInject
  */
-app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
+exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
   /**
    * @type {app.Mymaps}
    * @private
@@ -39,7 +40,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
 /**
  * Save data into the storage system.
  */
-app.MymapsOffline.prototype.save = function() {
+exports.prototype.save = function() {
   var item = {
     'allCategories': this.appMymaps_.allcategories,
     'mapInfo': this.appMymaps_.getMapInfo(),
@@ -52,7 +53,7 @@ app.MymapsOffline.prototype.save = function() {
 /**
  * Restore on the map and on the mymaps component the data from the storage.
  */
-app.MymapsOffline.prototype.restore = function() {
+exports.prototype.restore = function() {
   this.ngeoOfflineConfiguration_.getItem(this.storageGroupeKey_).then((storedItem) => {
     if (!storedItem) {
       return;
@@ -82,4 +83,4 @@ app.MymapsOffline.prototype.restore = function() {
   });
 };
 
-app.module.service('appMymapsOffline', app.MymapsOffline);
+appModule.service('appMymapsOffline', exports);

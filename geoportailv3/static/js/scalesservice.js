@@ -3,10 +3,11 @@
  * @fileoverview This file provides a scale service to display scales
  * with ngeoScaleselector
  */
-goog.provide('app.ScalesService');
+goog.module('app.ScalesService');
 
-goog.require('app.module');
-goog.require('ol.obj');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olObj = goog.require('ol.obj');
 
 
 /**
@@ -14,7 +15,7 @@ goog.require('ol.obj');
  * @param {angular.$sce} $sce Angular sce service.
  * @ngInject
  */
-app.ScalesService = function($sce) {
+exports = function($sce) {
   /**
    * The zoom level/scale map object for the ngeoScaleselector directive.
    * The values need to be trusted as HTML.
@@ -41,7 +42,7 @@ app.ScalesService = function($sce) {
   /**
    * @type {Object.<string, string>}
    */
-  this.scales = ol.obj.assign({}, this.origScales);
+  this.scales = olObj.assign({}, this.origScales);
 };
 
 
@@ -50,7 +51,7 @@ app.ScalesService = function($sce) {
  * ngeoScaleselector directive.
  * @export
  */
-app.ScalesService.prototype.getScales = function() {
+exports.prototype.getScales = function() {
   return this.scales;
 };
 
@@ -59,7 +60,7 @@ app.ScalesService.prototype.getScales = function() {
  * Set maximum zoom level.
  * @param {number} maxScale The maximum zoom.
  */
-app.ScalesService.prototype.setMaxZoomLevel = function(maxScale) {
+exports.prototype.setMaxZoomLevel = function(maxScale) {
   for (var i = 9; i < 22; i++) {
     if (i <= maxScale) {
       if (!this.scales['' + i]) {
@@ -71,4 +72,4 @@ app.ScalesService.prototype.setMaxZoomLevel = function(maxScale) {
   }
 };
 
-app.module.service('appScalesService', app.ScalesService);
+appModule.service('appScalesService', exports);

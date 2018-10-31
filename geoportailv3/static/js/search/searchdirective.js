@@ -10,14 +10,15 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.search.searchDirective');
+goog.module('app.search.searchDirective');
 
-goog.require('app.module');
-goog.require('ngeo.search.createGeoJSONBloodhound');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
 
 
 // Add dependency into Angular module
-app.module.requires.push(ngeo.search.createGeoJSONBloodhound.module.name);
+appModule.requires.push(ngeoSearchCreateGeoJSONBloodhound.module.name);
 
 
 /**
@@ -25,7 +26,7 @@ app.module.requires.push(ngeo.search.createGeoJSONBloodhound.module.name);
  * @param {string} appSearchTemplateUrl The template url.
  * @ngInject
  */
-app.search.searchDirective = function(appSearchTemplateUrl) {
+exports = function(appSearchTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -80,4 +81,4 @@ app.search.searchDirective = function(appSearchTemplateUrl) {
 };
 
 
-app.module.directive('appSearch', app.search.searchDirective);
+appModule.directive('appSearch', exports);

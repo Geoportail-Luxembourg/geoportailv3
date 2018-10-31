@@ -2,13 +2,14 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "routing" web service.
  */
-goog.provide('app.Routing');
+goog.module('app.Routing');
 
-goog.require('app.module');
-goog.require('ol');
-goog.require('ol.style');
-goog.require('ol.geom.Point');
-goog.require('ol.format.GeoJSON');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olBase = goog.require('ol');
+const olStyle = goog.require('ol.style');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('ol.format.GeoJSON');
  * @param {app.StateManager} appStateManager The state manager service.
  * @ngInject
  */
-app.Routing = function($http, routingServiceUrl, gettextCatalog,
+exports = function($http, routingServiceUrl, gettextCatalog,
     ngeoFeatureOverlayMgr, appStateManager) {
   /**
    * @type {app.StateManager}
@@ -32,8 +33,8 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.roadStyle_ = new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  this.roadStyle_ = new olStyle.Style({
+    stroke: new olStyle.Stroke({
       color: [255, 0, 0],
       width: 5
     })
@@ -85,18 +86,18 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.routeFeatures = new ol.Collection();
+  this.routeFeatures = new olBase.Collection();
   this.routeOverlay.setFeatures(this.routeFeatures);
 
   /**
    * @type {ngeo.map.FeatureOverlay}
    */
   this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  var fillStyle = new ol.style.Fill({
+  var fillStyle = new olStyle.Fill({
     color: [41, 128, 185]
   });
 
-  var strokeStyle = new ol.style.Stroke({
+  var strokeStyle = new olStyle.Stroke({
     color: [255, 255, 255],
     width: 3
   });
@@ -105,11 +106,11 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.stepStyle_ = new ol.style.Style({
+  this.stepStyle_ = new olStyle.Style({
     fill: fillStyle,
     zIndex: 0,
     stroke: strokeStyle,
-    image: new ol.style.Circle({
+    image: new olStyle.Circle({
       radius: 7,
       fill: fillStyle,
       stroke: strokeStyle
@@ -120,7 +121,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.stepFeatures = new ol.Collection();
+  this.stepFeatures = new olBase.Collection();
   this.stepsOverlay.setFeatures(this.stepFeatures);
   this.stepsOverlay.setStyle(this.stepStyle_);
 
@@ -132,7 +133,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.features = new ol.Collection();
+  this.features = new olBase.Collection();
   this.routingOverlay.setFeatures(this.features);
 
   /**
@@ -146,7 +147,7 @@ app.Routing = function($http, routingServiceUrl, gettextCatalog,
  * @param {number} fromPosition The position.
  * @param {number} toPosition The position.
  */
-app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
+exports.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
   if (this.features.getLength() > fromPosition) {
     var feature = this.features.removeAt(fromPosition);
     if (feature !== undefined) {
@@ -158,7 +159,7 @@ app.Routing.prototype.moveFeaturePosition = function(fromPosition, toPosition) {
 /**
  * Reorder the route.
  */
-app.Routing.prototype.reorderRoute = function() {
+exports.prototype.reorderRoute = function() {
   this.routesOrder.splice(0, this.routesOrder.length);
 
   var idx = 1;
@@ -175,23 +176,23 @@ app.Routing.prototype.reorderRoute = function() {
  * @param {ol.Feature} feature The feature to insert.
  * @param {number} routeNumber The position.
  */
-app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
+exports.prototype.insertFeatureAt = function(feature, routeNumber) {
   feature.setStyle(function() {
     var styles = [];
-    var fillStyle = new ol.style.Fill({
+    var fillStyle = new olStyle.Fill({
       color: [255, 255, 255]
     });
 
-    var strokeStyle = new ol.style.Stroke({
+    var strokeStyle = new olStyle.Stroke({
       color: [41, 128, 185],
       width: 3
     });
 
-    styles.push(new ol.style.Style({
+    styles.push(new olStyle.Style({
       zIndex: 1,
       fill: fillStyle,
       stroke: strokeStyle,
-      image: new ol.style.Circle({
+      image: new olStyle.Circle({
         radius: 15,
         fill: fillStyle,
         stroke: strokeStyle
@@ -201,16 +202,16 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
     if (text === undefined) {
       text = '';
     }
-    styles.push(new ol.style.Style({
+    styles.push(new olStyle.Style({
       zIndex: 2,
-      text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
+      text: new olStyle.Text(/** @type {olx.style.TextOptions} */ ({
         text: text,
         textAlign: 'center',
         font: 'normal 10px Sans-serif',
-        fill: new ol.style.Fill({
+        fill: new olStyle.Fill({
           color: [41, 128, 185]
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new olStyle.Stroke({
           color: [255, 255, 255],
           width: 2
         })
@@ -224,7 +225,7 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
   if (routeNumber > featuresLength) {
     var j;
     for (j = featuresLength; j < routeNumber; ++j) {
-      var blankFeature = new ol.Feature();
+      var blankFeature = new olBase.Feature();
       blankFeature.set('name', '' + j);
       this.features.insertAt(j, blankFeature);
     }
@@ -236,7 +237,7 @@ app.Routing.prototype.insertFeatureAt = function(feature, routeNumber) {
  * Add a new routing step at the best place.
  * @param {ol.Feature} feature The Feature.
  */
-app.Routing.prototype.addRoutePoint = function(feature) {
+exports.prototype.addRoutePoint = function(feature) {
   var routeNum = -1;
   var i = 0;
   for (i = 0; i < this.routes.length; i++) {
@@ -260,7 +261,7 @@ app.Routing.prototype.addRoutePoint = function(feature) {
 /**
  * Get the route
  */
-app.Routing.prototype.getRoute = function() {
+exports.prototype.getRoute = function() {
   this.stateManager_.deleteParam('criteria');
   this.stateManager_.deleteParam('transportMode');
   this.stateManager_.deleteParam('waypoints');
@@ -271,9 +272,9 @@ app.Routing.prototype.getRoute = function() {
     var waypoints = [];
     this.features.forEach(function(feature) {
       var geom = feature.getGeometry();
-      if (geom instanceof ol.geom.Point) {
+      if (geom instanceof olGeomPoint) {
         var lonlat = /** @type {ol.Coordinate} */
-            (ol.proj.transform(geom.getFirstCoordinate(),
+            (olBase.proj.transform(geom.getFirstCoordinate(),
             'EPSG:3857', 'EPSG:4326'));
         waypoints.push(lonlat[1] + ',' + lonlat[0]);
       }
@@ -305,7 +306,7 @@ app.Routing.prototype.getRoute = function() {
           dataProjection: 'EPSG:4326',
           featureProjection: curView.getProjection()
         });
-        var jsonFeatures = (new ol.format.GeoJSON()).
+        var jsonFeatures = (new olFormatGeoJSON()).
             readFeatures(features, encOpt);
         if (jsonFeatures !== null && jsonFeatures !== undefined) {
           this.routeFeatures.clear();
@@ -322,4 +323,4 @@ app.Routing.prototype.getRoute = function() {
 };
 
 
-app.module.service('appRouting', app.Routing);
+appModule.service('appRouting', exports);

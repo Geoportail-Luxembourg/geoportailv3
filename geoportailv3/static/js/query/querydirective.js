@@ -1,10 +1,7 @@
-goog.provide('app.query.queryDirective');
+goog.module('app.query.queryDirective');
 
-goog.require('app.Activetool');
-goog.require('app.GetDevice');
-goog.require('app.LotChasse');
-goog.require('app.profileDirective');
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -12,7 +9,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.query.queryDirective = function(appQueryTemplateUrl) {
+exports = function(appQueryTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -33,4 +30,4 @@ app.query.queryDirective = function(appQueryTemplateUrl) {
   };
 };
 
-app.module.directive('appQuery', app.query.queryDirective);
+appModule.directive('appQuery', exports);

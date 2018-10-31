@@ -8,9 +8,10 @@
  * <app-share app-share-active=":mainCtrl.active"></app-share>
  *
  */
-goog.provide('app.share.ShareDirective');
+goog.module('app.share.ShareDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -18,7 +19,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.share.ShareDirective = function(appShareTemplateUrl) {
+exports = function(appShareTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -33,4 +34,4 @@ app.share.ShareDirective = function(appShareTemplateUrl) {
   };
 };
 
-app.module.directive('appShare', app.share.ShareDirective);
+appModule.directive('appShare', exports);

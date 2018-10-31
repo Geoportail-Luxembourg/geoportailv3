@@ -2,23 +2,18 @@
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.provide('app.GetWmtsLayer');
+goog.module('app.GetWmtsLayerFactory');
 
-goog.require('app.module');
-goog.require('app.olcs.Extent');
-goog.require('ngeo.misc.decorate');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.WMTS');
-goog.require('ol.source.WMTSRequestEncoding');
-goog.require('ol.tilegrid.WMTS');
-
-
-/**
- * @typedef {function(string, string, boolean):ol.layer.Tile}
- */
-app.GetWmtsLayer;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appOlcsExtent = goog.require('app.olcs.Extent');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const olExtent = goog.require('ol.extent');
+const olProj = goog.require('ol.proj');
+const olLayerTile = goog.require('ol.layer.Tile');
+const olSourceWMTS = goog.require('ol.source.WMTS');
+const olSourceWMTSRequestEncoding = goog.require('ol.source.WMTSRequestEncoding');
+const olTilegridWMTS = goog.require('ol.tilegrid.WMTS');
 
 
 /**
@@ -26,7 +21,7 @@ app.GetWmtsLayer;
  * @return {string} Image extensino (e.g. "png").
  * @private
  */
-app.getImageExtension_ = function(imageType) {
+function getImageExtension_(imageType) {
   console.assert(imageType.indexOf('/'));
   var imageExt = imageType.split('/')[1];
   console.assert(imageExt == 'png' || imageExt == 'jpeg');
@@ -40,7 +35,7 @@ app.getImageExtension_ = function(imageType) {
  * @private
  * @ngInject
  */
-app.getWmtsLayer_ = function(requestScheme) {
+function factory(requestScheme) {
   return getWmtsLayer;
 
   /**
@@ -51,7 +46,7 @@ app.getWmtsLayer_ = function(requestScheme) {
    */
   function getWmtsLayer(name, imageType, retina) {
 
-    var imageExt = app.getImageExtension_(imageType);
+    var imageExt = getImageExtension_(imageType);
     var retinaExtension = (retina ? '_hd' : '');
     var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
         retinaExtension +
@@ -62,20 +57,20 @@ app.getWmtsLayer_ = function(requestScheme) {
           retinaExtension +
           '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
     }
-    var projection = ol.proj.get('EPSG:3857');
+    var projection = olProj.get('EPSG:3857');
     var extent = projection.getExtent();
-    var layer = new ol.layer.Tile({
-      'olcs.extent': app.olcs.Extent,
-      source: new ol.source.WMTS({
+    var layer = new olLayerTile({
+      'olcs.extent': appOlcsExtent,
+      source: new olSourceWMTS({
         url: url,
         tilePixelRatio: (retina ? 2 : 1),
         layer: name,
         matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
         format: imageType,
-        requestEncoding: ol.source.WMTSRequestEncoding.REST,
+        requestEncoding: olSourceWMTSRequestEncoding.REST,
         projection: projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: ol.extent.getTopLeft(extent),
+        tileGrid: new olTilegridWMTS({
+          origin: olExtent.getTopLeft(extent),
           extent: extent,
           resolutions: [156543.033928, 78271.516964,
             39135.758482, 19567.879241, 9783.9396205,
@@ -97,11 +92,11 @@ app.getWmtsLayer_ = function(requestScheme) {
     });
 
     layer.set('label', name);
-    ngeo.misc.decorate.layer(layer);
+    ngeoMiscDecorate.layer(layer);
 
     return layer;
   }
 };
 
 
-app.module.factory('appGetWmtsLayer', app.getWmtsLayer_);
+appModule.factory('appGetWmtsLayer', factory);

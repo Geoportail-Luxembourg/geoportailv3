@@ -13,10 +13,11 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.backgroundlayer.BackgroundlayerController');
+goog.module('app.backgroundlayer.BackgroundlayerController');
 
-goog.require('app.module');
-goog.require('ol.events');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olEvents = goog.require('ol.events');
 
 
 /**
@@ -27,7 +28,7 @@ goog.require('ol.events');
  * @export
  * @ngInject
  */
-app.backgroundlayer.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
+exports = function(ngeoBackgroundLayerMgr, appThemes) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -45,7 +46,7 @@ app.backgroundlayer.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
         this.setLayer(this['bgLayer']);
       }).bind(this));
 
-  ol.events.listen(this.backgroundLayerMgr_, 'change',
+  olEvents.listen(this.backgroundLayerMgr_, 'change',
       function() {
         this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
       }, this);
@@ -56,11 +57,11 @@ app.backgroundlayer.BackgroundlayerController = function(ngeoBackgroundLayerMgr,
  * @param {ol.layer.Base} layer Layer.
  * @export
  */
-app.backgroundlayer.BackgroundlayerController.prototype.setLayer = function(layer) {
+exports.prototype.setLayer = function(layer) {
   this['bgLayer'] = layer;
   this.backgroundLayerMgr_.set(this['map'], layer);
 };
 
 
-app.module.controller('AppBackgroundlayerController',
-    app.backgroundlayer.BackgroundlayerController);
+appModule.controller('AppBackgroundlayerController',
+    exports);

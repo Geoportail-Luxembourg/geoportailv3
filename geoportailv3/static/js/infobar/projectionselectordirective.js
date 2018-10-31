@@ -12,9 +12,10 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.projectionselectorDirective');
+goog.module('app.infobar.projectionselectorDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -22,7 +23,7 @@ goog.require('app.module');
  * @param {string} appProjectionselectorTemplateUrl The template url.
  * @ngInject
  */
-app.infobar.projectionselectorDirective = function(appProjectionselectorTemplateUrl) {
+exports = function(appProjectionselectorTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -36,4 +37,4 @@ app.infobar.projectionselectorDirective = function(appProjectionselectorTemplate
 };
 
 
-app.module.directive('appProjectionselector', app.infobar.projectionselectorDirective);
+appModule.directive('appProjectionselector', exports);

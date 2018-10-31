@@ -1,6 +1,7 @@
-goog.provide('app.authentication.AuthenticationController');
+goog.module('app.authentication.AuthenticationController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -9,7 +10,7 @@ goog.require('app.module');
  * @export
  * @ngInject
  */
-app.authentication.AuthenticationController = function(appUserManager) {
+exports = function(appUserManager) {
 
   /**
    * @type {app.UserManager}
@@ -35,7 +36,7 @@ app.authentication.AuthenticationController = function(appUserManager) {
 /**
  * @export
  */
-app.authentication.AuthenticationController.prototype.authenticate = function() {
+exports.prototype.authenticate = function() {
   this.appUserManager_.authenticate(this.username, this.password).then(
       function(response) {
         if (response.status == 200) {
@@ -48,7 +49,7 @@ app.authentication.AuthenticationController.prototype.authenticate = function() 
 /**
  * @export
  */
-app.authentication.AuthenticationController.prototype.logout = function() {
+exports.prototype.logout = function() {
   this.appUserManager_.logout();
 };
 
@@ -56,7 +57,7 @@ app.authentication.AuthenticationController.prototype.logout = function() {
 /**
  * @export
  */
-app.authentication.AuthenticationController.prototype.getUserInfo = function() {
+exports.prototype.getUserInfo = function() {
   this.appUserManager_.getUserInfo();
 };
 
@@ -65,7 +66,7 @@ app.authentication.AuthenticationController.prototype.getUserInfo = function() {
  * @return {boolean} True if is authenticated.
  * @export
  */
-app.authentication.AuthenticationController.prototype.isAuthenticated = function() {
+exports.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
@@ -74,7 +75,7 @@ app.authentication.AuthenticationController.prototype.isAuthenticated = function
  * @return {string|undefined} The email.
  * @export
  */
-app.authentication.AuthenticationController.prototype.getEmail = function() {
+exports.prototype.getEmail = function() {
   return this.appUserManager_.getEmail();
 };
 
@@ -83,10 +84,10 @@ app.authentication.AuthenticationController.prototype.getEmail = function() {
  * @return {string|undefined} The username.
  * @export
  */
-app.authentication.AuthenticationController.prototype.getUsername = function() {
+exports.prototype.getUsername = function() {
   return this.appUserManager_.getUsername();
 };
 
 
-app.module.controller('AppAuthenticationController',
-    app.authentication.AuthenticationController);
+appModule.controller('AppAuthenticationController',
+    exports);

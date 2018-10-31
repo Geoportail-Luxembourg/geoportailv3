@@ -13,13 +13,14 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.catalog.CatalogController');
+goog.module('app.catalog.CatalogController');
 
-goog.require('app.module');
-goog.require('app.events.ThemesEventType');
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.View');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
+const olEvents = goog.require('ol.events');
+const olProj = goog.require('ol.proj');
+const olView = goog.require('ol.View');
 
 
 /**
@@ -35,7 +36,7 @@ goog.require('ol.View');
  * @export
  * @ngInject
  */
-app.catalog.CatalogController = function($scope, appThemes, appTheme,
+exports = function($scope, appThemes, appTheme,
     appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
   /**
    * @type {app.StateManager}
@@ -48,7 +49,7 @@ app.catalog.CatalogController = function($scope, appThemes, appTheme,
    * @private
    */
   this.maxExtent_ =
-      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.ScalesService}
@@ -74,7 +75,7 @@ app.catalog.CatalogController = function($scope, appThemes, appTheme,
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
 
-  ol.events.listen(appThemes, app.events.ThemesEventType.LOAD,
+  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */
@@ -100,7 +101,7 @@ app.catalog.CatalogController = function($scope, appThemes, appTheme,
  * @return {ol.layer.Layer} The OpenLayers layer.
  * @export
  */
-app.catalog.CatalogController.prototype.getLayer = function(node) {
+exports.prototype.getLayer = function(node) {
   var layer = this.getLayerFunc_(node);
   return layer;
 };
@@ -109,7 +110,7 @@ app.catalog.CatalogController.prototype.getLayer = function(node) {
 /**
  * @private
  */
-app.catalog.CatalogController.prototype.setTree_ = function() {
+exports.prototype.setTree_ = function() {
   this.appThemes_.getThemeObject(
       this.appTheme_.getCurrentTheme()).then(
       /**
@@ -126,7 +127,7 @@ app.catalog.CatalogController.prototype.setTree_ = function() {
  * @param {Object} tree Tree object for the theme.
  * Set the maximum scale regarding the loaded theme.
  */
-app.catalog.CatalogController.prototype.setThemeZooms = function(tree) {
+exports.prototype.setThemeZooms = function(tree) {
   var maxZoom = 19;
   if (tree !== null) {
     console.assert('metadata' in tree);
@@ -136,7 +137,7 @@ app.catalog.CatalogController.prototype.setThemeZooms = function(tree) {
     }
     var map = this['map'];
     var currentView = map.getView();
-    map.setView(new ol.View({
+    map.setView(new olView({
       maxZoom: maxZoom,
       minZoom: 8,
       extent: this.maxExtent_,
@@ -157,7 +158,7 @@ app.catalog.CatalogController.prototype.setThemeZooms = function(tree) {
  * @param {Object} node Tree node.
  * @export
  */
-app.catalog.CatalogController.prototype.toggle = function(node) {
+exports.prototype.toggle = function(node) {
   var layer = this.getLayerFunc_(node);
   var map = this['map'];
   if (map.getLayers().getArray().indexOf(layer) >= 0) {
@@ -173,4 +174,4 @@ app.catalog.CatalogController.prototype.toggle = function(node) {
 };
 
 
-app.module.controller('AppCatalogController', app.catalog.CatalogController);
+appModule.controller('AppCatalogController', exports);

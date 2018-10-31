@@ -9,10 +9,11 @@
  *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
-goog.provide('app.print.printDirective');
+goog.module('app.print.printDirective');
 
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.print.printDirective = function(appPrintTemplateUrl) {
+exports = function(appPrintTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.print.printDirective = function(appPrintTemplateUrl) {
 };
 
 
-app.module.directive('appPrint', app.print.printDirective);
+appModule.directive('appPrint', exports);

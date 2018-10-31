@@ -6,16 +6,17 @@
  * <app-mymaps></app-mymaps>
  *
  */
-goog.provide('app.mymaps.MymapsController');
+goog.module('app.mymaps.MymapsController');
 
-goog.require('app.module');
-goog.require('app.misc.file');
-goog.require('app.NotifyNotificationType');
-goog.require('ol.extent');
-goog.require('ol.format.GPX');
-goog.require('ol.format.KML');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appMiscFile = goog.require('app.misc.file');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const olExtent = goog.require('ol.extent');
+const olFormatGPX = goog.require('ol.format.GPX');
+const olFormatKML = goog.require('ol.format.KML');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olGeomLineString = goog.require('ol.geom.LineString');
 
 
 /**
@@ -40,7 +41,7 @@ goog.require('ol.geom.LineString');
  * @ngInject
  */
 
-app.mymaps.MymapsController = function($scope, $compile, $sce,
+exports = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
     appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
@@ -150,13 +151,13 @@ app.mymaps.MymapsController = function($scope, $compile, $sce,
    * @private
    * @type {ol.format.KML}
    */
-  this.kmlFormat_ = new ol.format.KML();
+  this.kmlFormat_ = new olFormatKML();
 
   /**
    * @private
    * @type {ol.format.GPX}
    */
-  this.gpxFormat_ = new ol.format.GPX();
+  this.gpxFormat_ = new olFormatGPX();
 
   /**
    * @type {Array.<ol.Feature>}
@@ -400,7 +401,7 @@ app.mymaps.MymapsController = function($scope, $compile, $sce,
  * @return {boolean} Returns true if clip line mode.
  * @export
  */
-app.mymaps.MymapsController.prototype.isClipLineMode = function() {
+exports.prototype.isClipLineMode = function() {
   return this.drawnFeatures_.clipLineInteraction.getActive();
 };
 
@@ -408,12 +409,12 @@ app.mymaps.MymapsController.prototype.isClipLineMode = function() {
 /**
  * @export
  */
-app.mymaps.MymapsController.prototype.toggleClippingLineMode = function() {
+exports.prototype.toggleClippingLineMode = function() {
   var clippingLineMode = !this.drawnFeatures_.clipLineInteraction.getActive();
   this.drawnFeatures_.clipLineInteraction.setActive(clippingLineMode);
   if (clippingLineMode) {
     var msg = this.gettextCatalog.getString('Vous êtes en mode découpage.<br> Veuillez cliquer sur une ligne pour la couper en deux.');
-    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.notify_(msg, appNotifyNotificationType.INFO);
     this.drawnFeatures_.clipLineInteraction.setActive(true);
     this.drawnFeatures_.selectInteraction.setActive(false);
     this.selectedFeatures_.clear();
@@ -432,7 +433,7 @@ app.mymaps.MymapsController.prototype.toggleClippingLineMode = function() {
  * Reset the layers & bglayer with the one of Mymaps.
  * @export
  */
-app.mymaps.MymapsController.prototype.resetLayers = function() {
+exports.prototype.resetLayers = function() {
   this.selectedLayers_.length = 0;
   this.appMymaps_.updateLayers();
 };
@@ -444,7 +445,7 @@ app.mymaps.MymapsController.prototype.resetLayers = function() {
  * @return {*} the trusted content.
  * @export
  */
-app.mymaps.MymapsController.prototype.trustAsHtml = function(content) {
+exports.prototype.trustAsHtml = function(content) {
   return this.sce_.trustAsHtml('' + content);
 };
 
@@ -454,7 +455,7 @@ app.mymaps.MymapsController.prototype.trustAsHtml = function(content) {
  * @return {angular.$q.Promise} Promise.
  * @export
  */
-app.mymaps.MymapsController.prototype.saveLayers = function() {
+exports.prototype.saveLayers = function() {
   var bgLayer = /** @type {string} */
       (this.backgroundLayerMgr_.get(this.map_).get('label'));
   var bgOpacity = '1';
@@ -489,7 +490,7 @@ app.mymaps.MymapsController.prototype.saveLayers = function() {
  * @return {boolean|undefined} false or true.
  * @export
  */
-app.mymaps.MymapsController.prototype.modalShownHidden = function(value) {
+exports.prototype.modalShownHidden = function(value) {
   if (value !== undefined && value === false) {
     this.modal = undefined;
     return false;
@@ -503,7 +504,7 @@ app.mymaps.MymapsController.prototype.modalShownHidden = function(value) {
  * Copy the map.
  * @export
  */
-app.mymaps.MymapsController.prototype.openCopyMapModal = function() {
+exports.prototype.openCopyMapModal = function() {
   this.newTitle = this.appMymaps_.mapTitle;
   this.newDescription = this.appMymaps_.mapDescription;
   this.modal = 'COPYING';
@@ -516,7 +517,7 @@ app.mymaps.MymapsController.prototype.openCopyMapModal = function() {
  * Copy the map.
  * @export
  */
-app.mymaps.MymapsController.prototype.copyMap = function() {
+exports.prototype.copyMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -534,7 +535,7 @@ app.mymaps.MymapsController.prototype.copyMap = function() {
           var map = {'uuid': mapId};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte copiée');
-          this.notify_(msg, app.NotifyNotificationType.INFO);
+          this.notify_(msg, appNotifyNotificationType.INFO);
           this.modal = undefined;
         }
       }
@@ -548,7 +549,7 @@ app.mymaps.MymapsController.prototype.copyMap = function() {
  * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.mymaps.MymapsController.prototype.exportGpx = function(isTrack) {
+exports.prototype.exportGpx = function(isTrack) {
 
   var features = this.drawnFeatures_.getCollection();
   var mymapsFeatures = features.getArray().filter(function(feature) {
@@ -562,7 +563,7 @@ app.mymaps.MymapsController.prototype.exportGpx = function(isTrack) {
  * Import a GPX file.
  * @export
  */
-app.mymaps.MymapsController.prototype.importGpx = function() {
+exports.prototype.importGpx = function() {
   var gpxFeatures = (this.gpxFormat_.readFeatures(this.gpxFileContent, {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
@@ -581,7 +582,7 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
       noNameElemCnt++;
     }
     var curGeometry = feature.getGeometry();
-    if (curGeometry.getType() === ol.geom.GeometryType.MULTI_LINE_STRING) {
+    if (curGeometry.getType() === olGeomGeometryType.MULTI_LINE_STRING) {
       var lines = /** @type {ol.geom.MultiLineString} */
           (curGeometry).getLineStrings();
       lines.forEach(function(line) {
@@ -593,7 +594,7 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
       featuresToSave.push(feature);
     }
     if (gpxExtent) {
-      ol.extent.extend(gpxExtent, curGeometry.getExtent());
+      olExtent.extend(gpxExtent, curGeometry.getExtent());
     } else {
       gpxExtent = curGeometry.getExtent();
     }
@@ -617,7 +618,7 @@ app.mymaps.MymapsController.prototype.importGpx = function() {
  * Export a KML file.
  * @export
  */
-app.mymaps.MymapsController.prototype.exportKml = function() {
+exports.prototype.exportKml = function() {
   var features = this.drawnFeatures_.getCollection();
   var mymapsFeatures = features.getArray().filter(function(feature) {
     return !!feature.get('__map_id__');
@@ -627,7 +628,7 @@ app.mymaps.MymapsController.prototype.exportKml = function() {
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
-      app.misc.file.sanitizeFilename(this.appMymaps_.mapTitle));
+      appMiscFile.sanitizeFilename(this.appMymaps_.mapTitle));
 };
 
 
@@ -636,7 +637,7 @@ app.mymaps.MymapsController.prototype.exportKml = function() {
  * @param {string=} kml The kml as text.
  * @export
  */
-app.mymaps.MymapsController.prototype.importKml = function(kml) {
+exports.prototype.importKml = function(kml) {
   if (kml === undefined) {
     kml = this.kmlFileContent;
   }
@@ -659,7 +660,7 @@ app.mymaps.MymapsController.prototype.importKml = function(kml) {
     var curGeometry = feature.getGeometry();
     if (curGeometry !== null) {
       if (kmlExtent) {
-        ol.extent.extend(kmlExtent, curGeometry.getExtent());
+        olExtent.extend(kmlExtent, curGeometry.getExtent());
       } else {
         kmlExtent = curGeometry.getExtent();
       }
@@ -693,7 +694,7 @@ app.mymaps.MymapsController.prototype.importKml = function(kml) {
  * @param {ol.Feature} feature The feature.
  * @private
  */
-app.mymaps.MymapsController.prototype.sanitizeFeature_ = function(feature) {
+exports.prototype.sanitizeFeature_ = function(feature) {
   // Could be removed as soon as
   // https://github.com/openlayers/openlayers/issues/6959
   // is solved
@@ -765,7 +766,7 @@ app.mymaps.MymapsController.prototype.sanitizeFeature_ = function(feature) {
  * Import a KMZ file.
  * @export
  */
-app.mymaps.MymapsController.prototype.importKmz = function() {
+exports.prototype.importKmz = function() {
   var zip = new JSZip();
   zip.loadAsync(this.kmzFileContent).then(function(pZip) {
     pZip.forEach(function(relativePath, file) {
@@ -783,7 +784,7 @@ app.mymaps.MymapsController.prototype.importKmz = function() {
  * Close the current map.
  * @export
  */
-app.mymaps.MymapsController.prototype.closeMap = function() {
+exports.prototype.closeMap = function() {
   this.drawnFeatures_.clearMymapsFeatures();
   this.selectedFeatures_.clear();
   this['layersChanged'] = false;
@@ -795,7 +796,7 @@ app.mymaps.MymapsController.prototype.closeMap = function() {
  * Open the confirmation dialog box.
  * @export
  */
-app.mymaps.MymapsController.prototype.openConfirmDelete = function() {
+exports.prototype.openConfirmDelete = function() {
   this.confirmDelete = true;
 };
 
@@ -804,7 +805,7 @@ app.mymaps.MymapsController.prototype.openConfirmDelete = function() {
  * Open the confirmation dialog box.
  * @export
  */
-app.mymaps.MymapsController.prototype.openConfirmDeleteObjects = function() {
+exports.prototype.openConfirmDeleteObjects = function() {
   this.confirmDeleteObjects = true;
 };
 
@@ -813,7 +814,7 @@ app.mymaps.MymapsController.prototype.openConfirmDeleteObjects = function() {
  * Open the delete map confirmation dialog box.
  * @export
  */
-app.mymaps.MymapsController.prototype.openConfirmDeleteMap = function() {
+exports.prototype.openConfirmDeleteMap = function() {
   this.confirmDeleteMap = true;
 };
 
@@ -823,7 +824,7 @@ app.mymaps.MymapsController.prototype.openConfirmDeleteMap = function() {
  * @param {string} mapTitle The map title to ask for deleting.
  * @export
  */
-app.mymaps.MymapsController.prototype.openConfirmDeleteAMap = function(mapId, mapTitle) {
+exports.prototype.openConfirmDeleteAMap = function(mapId, mapTitle) {
   this.confirmDeleteSelectedMap = true;
   this.requestedMapIdToDelete = mapId;
   this.requestedMapTitle = mapTitle;
@@ -834,7 +835,7 @@ app.mymaps.MymapsController.prototype.openConfirmDeleteAMap = function(mapId, ma
  * Closes the current anonymous drawing.
  * @export
  */
-app.mymaps.MymapsController.prototype.closeAnonymous = function() {
+exports.prototype.closeAnonymous = function() {
   this.drawnFeatures_.clearAnonymousFeatures();
   this.selectedFeatures_.clear();
   if (this.isDocked()) {
@@ -847,7 +848,7 @@ app.mymaps.MymapsController.prototype.closeAnonymous = function() {
  * Open the dialog to create a new new map from an anoymous drawing.
  * @export
  */
-app.mymaps.MymapsController.prototype.openNewMapFromAnonymous = function() {
+exports.prototype.openNewMapFromAnonymous = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -864,7 +865,7 @@ app.mymaps.MymapsController.prototype.openNewMapFromAnonymous = function() {
  * Add the anonymous drawing into the current map
  * @export
  */
-app.mymaps.MymapsController.prototype.addInMymaps = function() {
+exports.prototype.addInMymaps = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -884,7 +885,7 @@ app.mymaps.MymapsController.prototype.addInMymaps = function() {
  * Create a map from an anonymous drawing.
  * @export
  */
-app.mymaps.MymapsController.prototype.createMapFromAnonymous = function() {
+exports.prototype.createMapFromAnonymous = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -909,7 +910,7 @@ app.mymaps.MymapsController.prototype.createMapFromAnonymous = function() {
           var map = {'uuid': this.appMymaps_.getMapId()};
           this.onChosen(map, false);
           var msg = this.gettextCatalog.getString('Carte créée');
-          this.notify_(msg, app.NotifyNotificationType.INFO);
+          this.notify_(msg, appNotifyNotificationType.INFO);
           this.modal = undefined;
         }.bind(this));
   }
@@ -921,7 +922,7 @@ app.mymaps.MymapsController.prototype.createMapFromAnonymous = function() {
  * @return {boolean} Returns true if a mymaps is selected.
  * @export
  */
-app.mymaps.MymapsController.prototype.isMymapsSelected = function() {
+exports.prototype.isMymapsSelected = function() {
   return this.appMymaps_.isMymapsSelected();
 };
 
@@ -930,7 +931,7 @@ app.mymaps.MymapsController.prototype.isMymapsSelected = function() {
  * @return {string} Returns the description.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapDescription = function() {
+exports.prototype.getMapDescription = function() {
   return this.appMymaps_.mapDescription;
 };
 
@@ -939,7 +940,7 @@ app.mymaps.MymapsController.prototype.getMapDescription = function() {
  * @return {string} Returns the title.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapTitle = function() {
+exports.prototype.getMapTitle = function() {
   return this.appMymaps_.mapTitle;
 };
 
@@ -948,7 +949,7 @@ app.mymaps.MymapsController.prototype.getMapTitle = function() {
  * @return {string} Returns the map owner.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapOwner = function() {
+exports.prototype.getMapOwner = function() {
   return this.appMymaps_.mapOwner;
 };
 
@@ -958,7 +959,7 @@ app.mymaps.MymapsController.prototype.getMapOwner = function() {
  * @return {string} The category name.
  * @export
  */
-app.mymaps.MymapsController.prototype.getUserCategDesc = function(username) {
+exports.prototype.getUserCategDesc = function(username) {
   if (username !== undefined && username !== null && username.length > 0) {
     return username;
   } else {
@@ -971,7 +972,7 @@ app.mymaps.MymapsController.prototype.getUserCategDesc = function(username) {
  * @return {Object} The category name.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapCategoryFilter = function(id) {
+exports.prototype.getMapCategoryFilter = function(id) {
   var category = this.appMymaps_.getCategory(id);
   if (category !== undefined && category !== null) {
     return category;
@@ -989,7 +990,7 @@ app.mymaps.MymapsController.prototype.getMapCategoryFilter = function(id) {
  * @return {Object} The category name.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapCategory = function(id) {
+exports.prototype.getMapCategory = function(id) {
   var category = this.appMymaps_.getCategory(id);
   if (category !== undefined && category !== null) {
     return category;
@@ -1006,7 +1007,7 @@ app.mymaps.MymapsController.prototype.getMapCategory = function(id) {
  * @return {Object} The categories object.
  * @export
  */
-app.mymaps.MymapsController.prototype.getCategories = function() {
+exports.prototype.getCategories = function() {
   return this.appMymaps_.categories;
 };
 
@@ -1015,7 +1016,7 @@ app.mymaps.MymapsController.prototype.getCategories = function() {
  * @return {Object} The the filtered categories object.
  * @export
  */
-app.mymaps.MymapsController.prototype.getFilteredCategories = function() {
+exports.prototype.getFilteredCategories = function() {
   var categories = [];
   if (!(this.filterMapOwner !== undefined && this.filterMapOwner !== null)) {
     //All the categories of all user with at least one map
@@ -1054,7 +1055,7 @@ app.mymaps.MymapsController.prototype.getFilteredCategories = function() {
  * @return {Object} The user_categories object.
  * @export
  */
-app.mymaps.MymapsController.prototype.getUsersCategories = function() {
+exports.prototype.getUsersCategories = function() {
   return this.usersCategories;
 };
 
@@ -1063,7 +1064,7 @@ app.mymaps.MymapsController.prototype.getUsersCategories = function() {
  * @return {Object} The user_categories object.
  * @export
  */
-app.mymaps.MymapsController.prototype.getFilteredUsersCategories = function() {
+exports.prototype.getFilteredUsersCategories = function() {
   if (this.filterCategoryId === null) {
     return this.usersCategories;
   }
@@ -1080,7 +1081,7 @@ app.mymaps.MymapsController.prototype.getFilteredUsersCategories = function() {
  * Open a map. Actually opens the map selector.
  * @export
  */
-app.mymaps.MymapsController.prototype.openChooseMapModal = function() {
+exports.prototype.openChooseMapModal = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -1103,7 +1104,7 @@ app.mymaps.MymapsController.prototype.openChooseMapModal = function() {
           } else {
             this.notify_(this.gettextCatalog.getString(
                 'You have no existing Maps, please create a New Map'
-                ), app.NotifyNotificationType.WARNING);
+                ), appNotifyNotificationType.WARNING);
           }
         }.bind(this));
     }.bind(this));
@@ -1115,7 +1116,7 @@ app.mymaps.MymapsController.prototype.openChooseMapModal = function() {
  * Opens Create Map Dialog
  * @export
  */
-app.mymaps.MymapsController.prototype.openCreateMapModal = function() {
+exports.prototype.openCreateMapModal = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -1132,7 +1133,7 @@ app.mymaps.MymapsController.prototype.openCreateMapModal = function() {
  * Open the merge lines modal panel.
  * @export
  */
-app.mymaps.MymapsController.prototype.openMergeLinesModal = function() {
+exports.prototype.openMergeLinesModal = function() {
   if (this.getMymapsLinestringFeatures().length > 1) {
     this.selectedLineString.length = 0;
     this.newLineName = this.gettextCatalog.getString('Nouvelle ligne');
@@ -1142,7 +1143,7 @@ app.mymaps.MymapsController.prototype.openMergeLinesModal = function() {
     this.drawnFeatures_.clearEditMode();
   } else {
     var msg = this.gettextCatalog.getString('Il faut au moins 2 lignes disponibles pour pouvoir les fusionner.');
-    this.notify_(msg, app.NotifyNotificationType.INFO);
+    this.notify_(msg, appNotifyNotificationType.INFO);
   }
 };
 
@@ -1151,7 +1152,7 @@ app.mymaps.MymapsController.prototype.openMergeLinesModal = function() {
  *  Open the modification modal
  * @export
  */
-app.mymaps.MymapsController.prototype.openModifyMapModal = function() {
+exports.prototype.openModifyMapModal = function() {
   if (this.ol3dm.is3dEnabled()) {
     return;
   }
@@ -1169,7 +1170,7 @@ app.mymaps.MymapsController.prototype.openModifyMapModal = function() {
  * @return {boolean} Returns whether the map is public or not.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMapIsPublic = function() {
+exports.prototype.getMapIsPublic = function() {
   return this.appMymaps_.mapIsPublic;
 };
 
@@ -1178,7 +1179,7 @@ app.mymaps.MymapsController.prototype.getMapIsPublic = function() {
  * Creates and load a new map.
  * @export
  */
-app.mymaps.MymapsController.prototype.createMap = function() {
+exports.prototype.createMap = function() {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -1200,7 +1201,7 @@ app.mymaps.MymapsController.prototype.createMap = function() {
             this.saveLayers();
             this.onChosen(map, false);
             var msg = this.gettextCatalog.getString('Nouvelle carte créée');
-            this.notify_(msg, app.NotifyNotificationType.INFO);
+            this.notify_(msg, appNotifyNotificationType.INFO);
             this.modal = undefined;
           }
         }
@@ -1214,7 +1215,7 @@ app.mymaps.MymapsController.prototype.createMap = function() {
  * @param {string} mapId The map id to delete.
  * @export
  */
-app.mymaps.MymapsController.prototype.deleteAMap = function(mapId) {
+exports.prototype.deleteAMap = function(mapId) {
   if (!this.appUserManager_.isAuthenticated()) {
     this.askToConnect();
   } else {
@@ -1246,7 +1247,7 @@ app.mymaps.MymapsController.prototype.deleteAMap = function(mapId) {
  * Delete the current map.
  * @export
  */
-app.mymaps.MymapsController.prototype.deleteMap = function() {
+exports.prototype.deleteMap = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
@@ -1267,7 +1268,7 @@ app.mymaps.MymapsController.prototype.deleteMap = function() {
  * Delete the objetcs belonging to the current map.
  * @export
  */
-app.mymaps.MymapsController.prototype.deleteMymapsObjects = function() {
+exports.prototype.deleteMymapsObjects = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
@@ -1289,11 +1290,11 @@ app.mymaps.MymapsController.prototype.deleteMymapsObjects = function() {
  * Notify the user he has to connect
  * @export
  */
-app.mymaps.MymapsController.prototype.askToConnect = function() {
+exports.prototype.askToConnect = function() {
   var msg = this.gettextCatalog.getString(
       'Veuillez vous identifier afin d\'accéder à vos cartes'
       );
-  this.notify_(msg, app.NotifyNotificationType.INFO);
+  this.notify_(msg, appNotifyNotificationType.INFO);
   this['useropen'] = true;
 };
 
@@ -1305,7 +1306,7 @@ app.mymaps.MymapsController.prototype.askToConnect = function() {
  * @return {angular.$q.Promise} Promise.
  * @export
  */
-app.mymaps.MymapsController.prototype.onChosen = function(map, clear) {
+exports.prototype.onChosen = function(map, clear) {
   this.closeMap();
   if (clear) {
     this.map_.getLayers().clear();
@@ -1323,7 +1324,7 @@ app.mymaps.MymapsController.prototype.onChosen = function(map, clear) {
  * @param {Object} map The selected map.
  * @export
  */
-app.mymaps.MymapsController.prototype.selectMymaps = function(map) {
+exports.prototype.selectMymaps = function(map) {
   this.onChosen(map, true).then(function() {
     var extent = undefined;
     var layer = this.drawnFeatures_.getLayer();
@@ -1333,7 +1334,7 @@ app.mymaps.MymapsController.prototype.selectMymaps = function(map) {
     this.drawnFeatures_.getCollection().forEach(function(feature) {
       if (feature.get('__map_id__')) {
         if (extent !== undefined) {
-          extent = ol.extent.extend(extent, feature.getGeometry().getExtent());
+          extent = olExtent.extend(extent, feature.getGeometry().getExtent());
         } else {
           extent = feature.getGeometry().getExtent();
         }
@@ -1355,7 +1356,7 @@ app.mymaps.MymapsController.prototype.selectMymaps = function(map) {
  * @return {boolean} True if the map is editable.
  * @export
  */
-app.mymaps.MymapsController.prototype.isEditable = function() {
+exports.prototype.isEditable = function() {
   return this.appMymaps_.isEditable();
 };
 
@@ -1364,7 +1365,7 @@ app.mymaps.MymapsController.prototype.isEditable = function() {
  * Saves the modifications made using the modification modal.
  * @export
  */
-app.mymaps.MymapsController.prototype.saveModifications = function() {
+exports.prototype.saveModifications = function() {
   if (this.appMymaps_.isEditable()) {
     if (!this.appUserManager_.isAuthenticated()) {
       this.askToConnect();
@@ -1393,7 +1394,7 @@ app.mymaps.MymapsController.prototype.saveModifications = function() {
  * @return {string} The type as a string.
  * @export
  */
-app.mymaps.MymapsController.prototype.getFeatureType = function(feature) {
+exports.prototype.getFeatureType = function(feature) {
   return feature.getGeometry().getType();
 };
 
@@ -1403,7 +1404,7 @@ app.mymaps.MymapsController.prototype.getFeatureType = function(feature) {
  * @return {Array.<ol.Feature>?} The features array.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMymapsFeatures = function() {
+exports.prototype.getMymapsFeatures = function() {
   return this.featuresList.filter(function(feature) {
     return !!feature.get('__map_id__');
   });
@@ -1414,7 +1415,7 @@ app.mymaps.MymapsController.prototype.getMymapsFeatures = function() {
  * @return {Array.<ol.Feature>?} The features array.
  * @export
  */
-app.mymaps.MymapsController.prototype.getMymapsLinestringFeatures = function() {
+exports.prototype.getMymapsLinestringFeatures = function() {
   return this.featuresList.filter(function(feature) {
     return (feature.getGeometry().getType() === 'LineString');
   });
@@ -1426,7 +1427,7 @@ app.mymaps.MymapsController.prototype.getMymapsLinestringFeatures = function() {
  * @return {Array.<ol.Feature>?} The features array.
  * @export
  */
-app.mymaps.MymapsController.prototype.getAnonymousFeatures = function() {
+exports.prototype.getAnonymousFeatures = function() {
   return this.featuresList.filter(function(feature) {
     return !feature.get('__map_id__');
   });
@@ -1437,7 +1438,7 @@ app.mymaps.MymapsController.prototype.getAnonymousFeatures = function() {
  * @param {ol.Feature} feature The Feature.
  * @export
  */
-app.mymaps.MymapsController.prototype.toggleLinestring = function(feature) {
+exports.prototype.toggleLinestring = function(feature) {
   var position = this.selectedLineString.indexOf(feature);
   if (position === -1) {
     this.selectedLineString.push(feature);
@@ -1450,7 +1451,7 @@ app.mymaps.MymapsController.prototype.toggleLinestring = function(feature) {
  * Merge the selected features.
  * @export
  */
-app.mymaps.MymapsController.prototype.mergesSelectedLineString = function() {
+exports.prototype.mergesSelectedLineString = function() {
   if (this.selectedLineString.length > 0) {
     var firstFeature = this.selectedLineString[0];
     this.selectedLineString.splice(0, 1);
@@ -1468,11 +1469,11 @@ app.mymaps.MymapsController.prototype.mergesSelectedLineString = function() {
         var curGeom =  /** @type {ol.geom.LineString} */(curFeature.getGeometry());
         var firstCoordCurGeom = curGeom.getFirstCoordinate();
         var lastCoordCurGeom = curGeom.getLastCoordinate();
-        var line1 = new ol.geom.LineString([firstCoordFirstGeom, firstCoordCurGeom]);
-        var line4 = new ol.geom.LineString([lastCoordFirstGeom, lastCoordCurGeom]);
+        var line1 = new olGeomLineString([firstCoordFirstGeom, firstCoordCurGeom]);
+        var line4 = new olGeomLineString([lastCoordFirstGeom, lastCoordCurGeom]);
 
-        var line2 = new ol.geom.LineString([lastCoordFirstGeom, firstCoordCurGeom]);
-        var line3 = new ol.geom.LineString([firstCoordFirstGeom, lastCoordCurGeom]);
+        var line2 = new olGeomLineString([lastCoordFirstGeom, firstCoordCurGeom]);
+        var line3 = new olGeomLineString([firstCoordFirstGeom, lastCoordCurGeom]);
 
         var lengthLine1 = line1.getLength();
         var lengthLine2 = line2.getLength();
@@ -1520,7 +1521,7 @@ app.mymaps.MymapsController.prototype.mergesSelectedLineString = function() {
       this.selectedLineString.splice(idxCanditate, 1);
       var candidateGeom = /** @type {ol.geom.LineString} */(candidateFeature.getGeometry());
       if (reverseLine) {
-        candidateGeom = new ol.geom.LineString(candidateGeom.getCoordinates().reverse());
+        candidateGeom = new olGeomLineString(candidateGeom.getCoordinates().reverse());
       }
       if (exchange) {
         builtGeom.setCoordinates(candidateGeom.getCoordinates().concat(/** @type {ol.geom.LineString} */(builtGeom).getCoordinates()));
@@ -1543,7 +1544,7 @@ app.mymaps.MymapsController.prototype.mergesSelectedLineString = function() {
  * @param {ol.Feature} feature The Feature.
  * @export
  */
-app.mymaps.MymapsController.prototype.toggleFeatureSelection = function(feature) {
+exports.prototype.toggleFeatureSelection = function(feature) {
   if (this.selectedFeaturesList.indexOf(feature) === -1) {
     this.selectedFeatures_.clear();
     this.selectedFeatures_.push(feature);
@@ -1562,7 +1563,7 @@ app.mymaps.MymapsController.prototype.toggleFeatureSelection = function(feature)
  * @param {string} filename File name for the exported document.
  * @private
  */
-app.mymaps.MymapsController.prototype.exportFeatures_ = function(doc, format,
+exports.prototype.exportFeatures_ = function(doc, format,
   filename) {
   var formatInput = $('<input>').attr({
     type: 'hidden',
@@ -1594,7 +1595,7 @@ app.mymaps.MymapsController.prototype.exportFeatures_ = function(doc, format,
  * Open the share link.
  * @export
  */
-app.mymaps.MymapsController.prototype.shareMymapsLink = function() {
+exports.prototype.shareMymapsLink = function() {
   this['shareMymapsChecked'] = true;
   this['shareShowLongUrl'] = true;
   this['shareopen'] = true;
@@ -1605,7 +1606,7 @@ app.mymaps.MymapsController.prototype.shareMymapsLink = function() {
  * @return {boolean} True if the popup is docked.
  * @export
  */
-app.mymaps.MymapsController.prototype.isDocked = function() {
+exports.prototype.isDocked = function() {
   return this.appFeaturePopup_.isDocked;
 };
 
@@ -1613,7 +1614,7 @@ app.mymaps.MymapsController.prototype.isDocked = function() {
 /**
  * @param {ol.Extent} extent The extent to fit to.
  */
-app.mymaps.MymapsController.prototype.fit = function(extent) {
+exports.prototype.fit = function(extent) {
   var viewSize = /** {ol.Size} **/ (this.map_.getSize());
   console.assert(viewSize !== undefined);
   this.map_.getView().fit(extent, {
@@ -1628,8 +1629,8 @@ app.mymaps.MymapsController.prototype.fit = function(extent) {
  * @param {Array} array The array.
  * @export
  */
-app.mymaps.MymapsController.prototype.afterReorder = function(feature, array) {
+exports.prototype.afterReorder = function(feature, array) {
   this.drawnFeatures_.computeOrder();
 };
 
-app.module.controller('AppMymapsController', app.mymaps.MymapsController);
+appModule.controller('AppMymapsController', exports);

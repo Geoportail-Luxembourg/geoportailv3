@@ -3,15 +3,10 @@
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.provide('app.layerinfo.ShowLayerinfo');
+goog.module('app.layerinfo.ShowLayerinfoFactory');
 
-goog.require('app.module');
-
-
-/**
- * @typedef {function(ol.layer.Layer)}
- */
-app.layerinfo.ShowLayerinfo;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -25,7 +20,7 @@ app.layerinfo.ShowLayerinfo;
  * @return {app.layerinfo.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
-app.layerinfo.ShowLayerinfoFactory = function($http, $sce, $rootScope,
+function factory($http, $sce, $rootScope,
     gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
 
   /**
@@ -137,4 +132,4 @@ app.layerinfo.ShowLayerinfoFactory = function($http, $sce, $rootScope,
   }
 };
 
-app.module.factory('appShowLayerinfo', app.layerinfo.ShowLayerinfoFactory);
+appModule.factory('appShowLayerinfo', factory);

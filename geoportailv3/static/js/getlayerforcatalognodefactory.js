@@ -2,15 +2,10 @@
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.provide('app.GetLayerForCatalogNode');
+goog.module('app.GetLayerForCatalogNodeFactory');
 
-goog.require('app.module');
-
-
-/**
- * @typedef {function(Object):ol.layer.Layer}
- */
-app.GetLayerForCatalogNode;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -18,7 +13,7 @@ app.GetLayerForCatalogNode;
  * @type {Object.<string, ol.layer.Layer>}
  * @private
  */
-app.layerCache_ = {};
+const layerCache_ = {};
 
 
 /**
@@ -32,7 +27,7 @@ app.layerCache_ = {};
  * @private
  * @ngInject
  */
-app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
+function factory(appGetWmtsLayer, appGetWmsLayer,
     appGetDevice) {
   return getLayerForCatalogNode;
 
@@ -47,8 +42,8 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
     }
     type = node['type'];
     layerCacheKey = type + '_' + node['name'];
-    if (layerCacheKey in app.layerCache_) {
-      return app.layerCache_[layerCacheKey];
+    if (layerCacheKey in layerCache_) {
+      return layerCache_[layerCacheKey];
     }
     if (type.indexOf('WMS') != -1) {
       console.assert('name' in node);
@@ -66,7 +61,7 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
       return null;
     }
     console.assert(layer !== undefined && layer !== null);
-    app.layerCache_[layerCacheKey] = layer;
+    layerCache_[layerCacheKey] = layer;
     layer.set('metadata', node['metadata']);
     layer.set('queryable_id', node['id']);
     if ('attribution' in node['metadata']) {
@@ -80,4 +75,4 @@ app.getLayerForCatalogNode_ = function(appGetWmtsLayer, appGetWmsLayer,
 };
 
 
-app.module.factory('appGetLayerForCatalogNode', app.getLayerForCatalogNode_);
+appModule.factory('appGetLayerForCatalogNode', factory);

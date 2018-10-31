@@ -2,15 +2,10 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "shorturl" web service.
  */
-goog.provide('app.GetShorturl');
+goog.module('app.GetShorturlService');
 
-goog.require('app.module');
-
-
-/**
- * @typedef {function(ol.Coordinate=):!angular.$q.Promise}
- */
-app.GetShorturl;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -21,7 +16,7 @@ app.GetShorturl;
  * @private
  * @ngInject
  */
-app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
+function service($http, ngeoLocation, shorturlServiceUrl) {
   return (
       /**
        * @param {ol.Coordinate=} opt_coordinate
@@ -52,4 +47,4 @@ app.getShorturl_ = function($http, ngeoLocation, shorturlServiceUrl) {
 };
 
 
-app.module.service('appGetShorturl', app.getShorturl_);
+appModule.service('appGetShorturl', service);

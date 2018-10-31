@@ -10,9 +10,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.externaldata.ExternalDataController');
+goog.module('app.externaldata.ExternalDataController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -28,7 +29,7 @@ goog.require('app.module');
  * @export
  * @ngInject
  */
-app.externaldata.ExternalDataController = function(gettextCatalog, $http, appWmsHelper,
+exports = function(gettextCatalog, $http, appWmsHelper,
     appWmtsHelper, appShowLayerinfo, predefinedWmsUrl, appWmsTreeTemplateUrl,
     appWmtsTreeTemplateUrl) {
   /**
@@ -149,7 +150,7 @@ app.externaldata.ExternalDataController = function(gettextCatalog, $http, appWms
  * @return {Array<Object>} An array of predefined wms url.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getWmsUrls = function() {
+exports.prototype.getWmsUrls = function() {
   return this.wmsUrls;
 };
 
@@ -158,7 +159,7 @@ app.externaldata.ExternalDataController.prototype.getWmsUrls = function() {
  * Loads and update the list of predefined wms list.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.loadWmsUrls = function() {
+exports.prototype.loadWmsUrls = function() {
   this.$http_.get(this.predefinedWmsUrl_).then(function(result) {
     this.wmsUrls = result.data;
   }.bind(this));
@@ -169,7 +170,7 @@ app.externaldata.ExternalDataController.prototype.loadWmsUrls = function() {
  * @return {Array<Object>} An array of layers comming from remote wms.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getWmsLayers = function() {
+exports.prototype.getWmsLayers = function() {
   return this.wmsLayers;
 };
 
@@ -177,7 +178,7 @@ app.externaldata.ExternalDataController.prototype.getWmsLayers = function() {
  * @return {Array<Object>} An array of layers comming from remote wms.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getWmtsLayers = function() {
+exports.prototype.getWmtsLayers = function() {
   return this.wmtsLayers;
 };
 
@@ -185,7 +186,7 @@ app.externaldata.ExternalDataController.prototype.getWmtsLayers = function() {
  * @param {string} url The url of the service.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.detectServiceType = function(url) {
+exports.prototype.detectServiceType = function(url) {
   this.appWmsHelper_.getCapabilities(url).then(function(capabilities) {
     if (capabilities === null) {
       this.appWmtsHelper_.getCapabilities(url).then(function(capabilities) {
@@ -203,7 +204,7 @@ app.externaldata.ExternalDataController.prototype.detectServiceType = function(u
  * @param {string} wms The url of the wms.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.refreshWmsLayers = function(wms) {
+exports.prototype.refreshWmsLayers = function(wms) {
   this.curDataUrl = wms;
   this.wmsLayers = [];
   this.wmtsLayers = [];
@@ -237,7 +238,7 @@ app.externaldata.ExternalDataController.prototype.refreshWmsLayers = function(wm
  * @param {string} wmts The url of the wmts.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.refreshWmtsLayers = function(wmts) {
+exports.prototype.refreshWmtsLayers = function(wmts) {
   this.curDataUrl = wmts;
   this.wmsLayers = [];
   this.wmtsLayers = [];
@@ -263,7 +264,7 @@ app.externaldata.ExternalDataController.prototype.refreshWmtsLayers = function(w
  * @return {string} The predefined wms url.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getCurWms = function() {
+exports.prototype.getCurWms = function() {
   if (this.curDataUrl && this.curDataUrl.length > 0) {
     return this.curDataUrl;
   }
@@ -275,7 +276,7 @@ app.externaldata.ExternalDataController.prototype.getCurWms = function() {
  * @return {string} The template.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getWmsTreeTemplate = function() {
+exports.prototype.getWmsTreeTemplate = function() {
   return this.appWmsTreeTemplateUrl_;
 };
 
@@ -283,7 +284,7 @@ app.externaldata.ExternalDataController.prototype.getWmsTreeTemplate = function(
  * @return {string} The template.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getWmtsTreeTemplate = function() {
+exports.prototype.getWmtsTreeTemplate = function() {
   return this.appWmtsTreeTemplateUrl_;
 };
 
@@ -292,7 +293,7 @@ app.externaldata.ExternalDataController.prototype.getWmtsTreeTemplate = function
  * @return {boolean} return true if added to the map.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.addWmsLayers = function(layer) {
+exports.prototype.addWmsLayers = function(layer) {
 
   this.appWmsHelper_.addWmsLayers(this.map_, layer);
   return true;
@@ -303,7 +304,7 @@ app.externaldata.ExternalDataController.prototype.addWmsLayers = function(layer)
  * @return {boolean} return true if added to the map.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.addWmtsLayers = function(layer) {
+exports.prototype.addWmtsLayers = function(layer) {
 
   this.appWmtsHelper_.addWmtsLayers(this.map_, layer, this.curDataUrl);
   return true;
@@ -314,7 +315,7 @@ app.externaldata.ExternalDataController.prototype.addWmtsLayers = function(layer
  * @return {Array} return child layers.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getChildLayers = function(curLayer) {
+exports.prototype.getChildLayers = function(curLayer) {
   if ('Layer' in curLayer) {
     return curLayer['Layer'];
   }
@@ -327,7 +328,7 @@ app.externaldata.ExternalDataController.prototype.getChildLayers = function(curL
  * @return {boolean} return true if the property exists.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.hasProperty = function(
+exports.prototype.hasProperty = function(
     property, curLayer) {
   if (property in curLayer && curLayer[property].length > 0) {
     return true;
@@ -341,7 +342,7 @@ app.externaldata.ExternalDataController.prototype.hasProperty = function(
  * @return {string} return the string.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.trim = function(value) {
+exports.prototype.trim = function(value) {
   if (value !== null && value !== undefined) {
     return value.trim();
   }
@@ -354,7 +355,7 @@ app.externaldata.ExternalDataController.prototype.trim = function(value) {
  * @return {boolean} return true if the layer is already added.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.isLayerActive = function(layerId) {
+exports.prototype.isLayerActive = function(layerId) {
   if (layerId !== undefined) {
     var layer = this.map_.getLayers().getArray().find(function(layer, i) {
       if (layer.get('queryable_id') === layerId) {
@@ -375,7 +376,7 @@ app.externaldata.ExternalDataController.prototype.isLayerActive = function(layer
  * @param {String | undefined} pLayerType The kind of layer to add or remove from the map.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.toggleLayer = function(rawLayer, pLayerType) {
+exports.prototype.toggleLayer = function(rawLayer, pLayerType) {
   var layerType = (pLayerType === undefined) ? 'wms' : pLayerType;
   var layer = this.map_.getLayers().getArray().find(function(layer, i) {
     if (layer.get('queryable_id') === rawLayer['id']) {
@@ -400,7 +401,7 @@ app.externaldata.ExternalDataController.prototype.toggleLayer = function(rawLaye
  * @param {string} type of the service to getIngo.
  * @export
  */
-app.externaldata.ExternalDataController.prototype.getInfo = function(rawLayer, type) {
+exports.prototype.getInfo = function(rawLayer, type) {
   if (type === undefined) {
     type = 'wms';
   }
@@ -422,4 +423,4 @@ app.externaldata.ExternalDataController.prototype.getInfo = function(rawLayer, t
 };
 
 
-app.module.controller('AppExternalDataController', app.externaldata.ExternalDataController);
+appModule.controller('AppExternalDataController', exports);

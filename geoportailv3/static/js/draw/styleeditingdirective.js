@@ -1,6 +1,7 @@
-goog.provide('app.draw.styleEditingDirective');
+goog.module('app.draw.styleEditingDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -8,7 +9,7 @@ goog.require('app.module');
  * @return {angular.Directive} Directive Definition Object.
  * @ngInject
  */
-app.draw.styleEditingDirective = function(appStyleEditingTemplateUrl) {
+exports = function(appStyleEditingTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -22,4 +23,4 @@ app.draw.styleEditingDirective = function(appStyleEditingTemplateUrl) {
   };
 };
 
-app.module.directive('appStyleediting', app.draw.styleEditingDirective);
+appModule.directive('appStyleediting', exports);

@@ -11,10 +11,11 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.draw.drawDirective');
+goog.module('app.draw.drawDirective');
 
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -22,7 +23,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.draw.drawDirective = function(appDrawTemplateUrl) {
+exports = function(appDrawTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -40,4 +41,4 @@ app.draw.drawDirective = function(appDrawTemplateUrl) {
 };
 
 
-app.module.directive('appDraw', app.draw.drawDirective);
+appModule.directive('appDraw', exports);

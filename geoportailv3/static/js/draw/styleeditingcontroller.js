@@ -1,7 +1,8 @@
-goog.provide('app.draw.StyleEditingController');
+goog.module('app.draw.StyleEditingController');
 
-goog.require('app.module');
-goog.require('ol.geom.LineString');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olGeomLineString = goog.require('ol.geom.LineString');
 
 
 /**
@@ -12,7 +13,7 @@ goog.require('ol.geom.LineString');
  * @constructor
  * @ngInject
  */
-app.draw.StyleEditingController = function($scope, appDrawnFeatures,
+exports = function($scope, appDrawnFeatures,
     appUserManager, mymapsUrl) {
   /**
    * @type {string}
@@ -93,7 +94,7 @@ app.draw.StyleEditingController = function($scope, appDrawnFeatures,
  * @param {string} lineStyle The line style.
  * @export
  */
-app.draw.StyleEditingController.prototype.setLineDash = function(lineStyle) {
+exports.prototype.setLineDash = function(lineStyle) {
   if (this.feature === undefined) {
     return;
   }
@@ -105,7 +106,7 @@ app.draw.StyleEditingController.prototype.setLineDash = function(lineStyle) {
  * @param {string} symbol The symbol.
  * @export
  */
-app.draw.StyleEditingController.prototype.setShape = function(symbol) {
+exports.prototype.setShape = function(symbol) {
   if (this.feature === undefined) {
     return;
   }
@@ -117,7 +118,7 @@ app.draw.StyleEditingController.prototype.setShape = function(symbol) {
  * @return {*} The orientation.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetOrientation = function(orientation) {
+exports.prototype.getSetOrientation = function(orientation) {
   if (this.feature === undefined) {
     return;
   }
@@ -131,11 +132,11 @@ app.draw.StyleEditingController.prototype.getSetOrientation = function(orientati
 /**
  * @export
  */
-app.draw.StyleEditingController.prototype.reverseLine = function() {
+exports.prototype.reverseLine = function() {
   if (this.feature) {
     var coordinates = /** @type {ol.geom.LineString}*/
         (this.feature.getGeometry()).getCoordinates().reverse();
-    this.feature.setGeometry(new ol.geom.LineString(coordinates));
+    this.feature.setGeometry(new olGeomLineString(coordinates));
     this.drawnFeatures_.saveFeature(this.feature);
   }
 };
@@ -146,7 +147,7 @@ app.draw.StyleEditingController.prototype.reverseLine = function() {
  * @return {*} The color.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetColor = function(color) {
+exports.prototype.getSetColor = function(color) {
   if (this.feature === undefined) {
     return;
   }
@@ -163,7 +164,7 @@ app.draw.StyleEditingController.prototype.getSetColor = function(color) {
  * browser.
  * @export
  */
-app.draw.StyleEditingController.prototype.isHTML5ColorSupported = function() {
+exports.prototype.isHTML5ColorSupported = function() {
   return $('<input type="color">').prop('type') === 'color';
 };
 
@@ -173,7 +174,7 @@ app.draw.StyleEditingController.prototype.isHTML5ColorSupported = function() {
  * @return {*} The stroke.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetStroke = function(val) {
+exports.prototype.getSetStroke = function(val) {
   if (this.feature === undefined) {
     return;
   }
@@ -190,7 +191,7 @@ app.draw.StyleEditingController.prototype.getSetStroke = function(val) {
  * @return {*} The size.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetSize = function(val) {
+exports.prototype.getSetSize = function(val) {
   if (this.feature === undefined) {
     return;
   }
@@ -207,7 +208,7 @@ app.draw.StyleEditingController.prototype.getSetSize = function(val) {
  * @return {*} The rotation.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetRotation = function(val) {
+exports.prototype.getSetRotation = function(val) {
   if (this.feature === undefined) {
     return;
   }
@@ -225,7 +226,7 @@ app.draw.StyleEditingController.prototype.getSetRotation = function(val) {
  * @return {*} The opacity.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSetOpacity = function(val) {
+exports.prototype.getSetOpacity = function(val) {
   if (this.feature === undefined) {
     return;
   }
@@ -242,7 +243,7 @@ app.draw.StyleEditingController.prototype.getSetOpacity = function(val) {
  * @param {string} val The color.
  * @export
  */
-app.draw.StyleEditingController.prototype.setColor = function(val) {
+exports.prototype.setColor = function(val) {
   if (this.feature !== undefined && arguments.length) {
     this.feature.set('color', val);
   }
@@ -252,7 +253,7 @@ app.draw.StyleEditingController.prototype.setColor = function(val) {
 /**
  * @export
  */
-app.draw.StyleEditingController.prototype.saveFeature = function() {
+exports.prototype.saveFeature = function() {
   this.drawnFeatures_.saveFeature(this.feature);
   this.editingStyle = false;
 };
@@ -261,7 +262,7 @@ app.draw.StyleEditingController.prototype.saveFeature = function() {
 /**
  * @export
  */
-app.draw.StyleEditingController.prototype.close = function() {
+exports.prototype.close = function() {
   this.feature.set('color', this.featureOrig.get('color'));
   this.feature.set('opacity', this.featureOrig.get('opacity'));
   this.feature.set('angle', this.featureOrig.get('angle'));
@@ -280,7 +281,7 @@ app.draw.StyleEditingController.prototype.close = function() {
  * @return {string} The symbol path.
  * @export
  */
-app.draw.StyleEditingController.prototype.getSymbolPath = function(symbol) {
+exports.prototype.getSymbolPath = function(symbol) {
   if (symbol) {
     return this.mymapsUrl_ + '/symbol/' + symbol;
   }
@@ -292,8 +293,8 @@ app.draw.StyleEditingController.prototype.getSymbolPath = function(symbol) {
  * @return {boolean} True if is authenticated.
  * @export
  */
-app.draw.StyleEditingController.prototype.isAuthenticated = function() {
+exports.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
-app.module.controller('AppStyleEditingController', app.draw.StyleEditingController);
+appModule.controller('AppStyleEditingController', exports);

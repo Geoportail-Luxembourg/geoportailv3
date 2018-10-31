@@ -5,9 +5,10 @@
  *
  * <app-map app-map-map="::mainCtrl.map"><app-map>
  */
-goog.provide('app.map.mapDirective');
+goog.module('app.map.mapDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -15,7 +16,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.map.mapDirective = function(appMapTemplateUrl) {
+exports = function(appMapTemplateUrl) {
   return {
     scope: {
       'map': '=appMapMap'
@@ -28,4 +29,4 @@ app.map.mapDirective = function(appMapTemplateUrl) {
 };
 
 
-app.module.directive('appMap', app.map.mapDirective);
+appModule.directive('appMap', exports);

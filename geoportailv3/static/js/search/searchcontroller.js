@@ -10,23 +10,24 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.search.SearchController');
+goog.module('app.search.SearchController');
 
-goog.require('app.module');
-goog.require('app.events.ThemesEventType');
-goog.require('ngeo.search.createGeoJSONBloodhound');
-goog.require('ol.array');
-goog.require('ol.CollectionEventType');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.Feature');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Point');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
+const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
+const olArray = goog.require('ol.array');
+const olCollectionEventType = goog.require('ol.CollectionEventType');
+const olEvents = goog.require('ol.events');
+const olExtent = goog.require('ol.extent');
+const olProj = goog.require('ol.proj');
+const olFeature = goog.require('ol.Feature');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStyle = goog.require('ol.style.Style');
+const olStyleStroke = goog.require('ol.style.Stroke');
 
 
 /**
@@ -58,7 +59,7 @@ goog.require('ol.style.Stroke');
  * @param {app.Routing} appRouting The routing service.
  * @export
  */
-app.search.SearchController = function($scope, $window, $compile,
+exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
@@ -146,7 +147,7 @@ app.search.SearchController = function($scope, $window, $compile,
    * @private
    */
   this.maxExtent_ =
-      ol.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {Array.<ol.layer.Layer>}
@@ -175,20 +176,20 @@ app.search.SearchController = function($scope, $window, $compile,
    */
   this.map;
 
-  var fillStyle = new ol.style.Fill({
+  var fillStyle = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
 
-  var strokeStyle = new ol.style.Stroke({
+  var strokeStyle = new olStyleStroke({
     color: [255, 155, 55, 1],
     width: 3
   });
 
   this.featureOverlay.setStyle(
-      new ol.style.Style({
+      new olStyleStyle({
         fill: fillStyle,
         stroke: strokeStyle,
-        image: new ol.style.Circle({
+        image: new olStyleCircle({
           radius: 10,
           fill: fillStyle,
           stroke: strokeStyle
@@ -258,7 +259,7 @@ app.search.SearchController = function($scope, $window, $compile,
         appThemes, backgroundLayerEngine, this.gettextCatalog);
   }.bind(this));
 
-  ol.events.listen(appThemes, app.events.ThemesEventType.LOAD,
+  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
       /**
      * @param {ol.events.Event} evt Event
      */
@@ -477,11 +478,11 @@ app.search.SearchController = function($scope, $window, $compile,
   ];
 
   this['listeners'] = /** @type {ngeox.SearchDirectiveListeners} */ ({
-    select: app.search.SearchController.selected_.bind(this)
+    select: exports.selected_.bind(this)
   });
 
-  ol.events.listen(this['map'].getLayers(),
-      ol.CollectionEventType.ADD,
+  olEvents.listen(this['map'].getLayers(),
+      olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -497,7 +498,7 @@ app.search.SearchController = function($scope, $window, $compile,
  * @return {Array.<string>} The result.
  * @private
  */
-app.search.SearchController.prototype.matchLayers_ =
+exports.prototype.matchLayers_ =
     function(fuseEngine, searchString) {
       var fuseResults = /** @type {Array.<FuseResult>} */
       (fuseEngine.search(searchString.slice(0, 31)).slice(0, 5));
@@ -517,7 +518,7 @@ app.search.SearchController.prototype.matchLayers_ =
  * @return {Array<ol.Feature>} The result.
  * @private
  */
-app.search.SearchController.prototype.matchCoordinate_ =
+exports.prototype.matchCoordinate_ =
     function(searchString) {
       searchString = searchString.replace(/,/gi, '.');
       var results = [];
@@ -561,12 +562,12 @@ app.search.SearchController.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (ol.array.includes(northArray, m[2].toUpperCase()) &&
-              ol.array.includes(eastArray, m[4].toUpperCase())) {
+              if (olArray.includes(northArray, m[2].toUpperCase()) &&
+              olArray.includes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
-              ol.array.includes(eastArray, m[2].toUpperCase())) {
+              } else if (olArray.includes(northArray, m[4].toUpperCase()) &&
+              olArray.includes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -611,18 +612,18 @@ app.search.SearchController.prototype.matchCoordinate_ =
             var mapEpsgCode =
             this['map'].getView().getProjection().getCode();
             var point = /** @type {ol.geom.Point} */
-            (new ol.geom.Point([easting, northing])
+            (new olGeomPoint([easting, northing])
            .transform(epsgCode, mapEpsgCode));
             var flippedPoint =  /** @type {ol.geom.Point} */
-            (new ol.geom.Point([northing, easting])
+            (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (ol.extent.containsCoordinate(
+            if (olExtent.containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
-              feature = new ol.Feature(point);
-            } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+              feature = new olFeature(point);
+            } else if (epsgCode === 'EPSG:4326' && olExtent.containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new ol.Feature(flippedPoint);
+              feature = new olFeature(flippedPoint);
             }
             if (feature !== null) {
               var resultPoint =
@@ -644,7 +645,7 @@ app.search.SearchController.prototype.matchCoordinate_ =
  * @return {Object | undefined} Returns the coordinate.
  * @private
  */
-app.search.SearchController.prototype.decDegFromMatch_ = function(m) {
+exports.prototype.decDegFromMatch_ = function(m) {
   var signIndex = {
     '-': -1,
     'N': 1,
@@ -687,10 +688,10 @@ app.search.SearchController.prototype.decDegFromMatch_ = function(m) {
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
-app.search.SearchController.prototype.createAndInitPOIBloodhound_ =
+exports.prototype.createAndInitPOIBloodhound_ =
     function(searchServiceUrl) {
-      var geojsonFormat = new ol.format.GeoJSON();
-      var bloodhound = ngeo.search.createGeoJSONBloodhound(
+      var geojsonFormat = new olFormatGeoJSON();
+      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {
@@ -708,7 +709,7 @@ app.search.SearchController.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: ol.proj.get('EPSG:3857'),
+              featureProjection: olProj.get('EPSG:3857'),
               dataProjection: undefined
             });
           }
@@ -725,7 +726,7 @@ app.search.SearchController.prototype.createAndInitPOIBloodhound_ =
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
-app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
+exports.prototype.createAndInitLayerBloodhoundEngine_ =
   function(layerSearchServiceUrl) {
     var bloodhoundOptions = /** @type {BloodhoundOptions} */ ({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -749,7 +750,7 @@ app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
               result['themes'].push(element.theme);
             }.bind(this));
 
-            result['showThemeLink'] = !ol.array.includes(
+            result['showThemeLink'] = !olArray.includes(
               result['themes'], this.appTheme_.getCurrentTheme());
           }.bind(this));
 
@@ -766,7 +767,7 @@ app.search.SearchController.prototype.createAndInitLayerBloodhoundEngine_ =
  * @return {Bloodhound} The bloodhound engine.
  * @private
  */
-app.search.SearchController.prototype.createAndInitCMSBloodhoundEngine_ =
+exports.prototype.createAndInitCMSBloodhoundEngine_ =
   function(cmsSearchServiceUrl) {
     var bloodhoundOptions = /** @type {BloodhoundOptions} */ ({
       queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -796,7 +797,7 @@ app.search.SearchController.prototype.createAndInitCMSBloodhoundEngine_ =
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @private
  */
-app.search.SearchController.prototype.createLocalBackgroundLayerData_ =
+exports.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, fuse, gettextCatalog) {
       appThemes.getBgLayers().then(
       function(bgLayers) {
@@ -823,13 +824,13 @@ app.search.SearchController.prototype.createLocalBackgroundLayerData_ =
  * @param {app.Themes} appThemes Themes Service.
  * @private
  */
-app.search.SearchController.prototype.createLocalAllLayerData_ =
+exports.prototype.createLocalAllLayerData_ =
     function(appThemes) {
       this.layers_ = [];
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalogue) {
           this.layers_ = [];
-          ol.array.extend(this.layers_, flatCatalogue);
+          olArray.extend(this.layers_, flatCatalogue);
         }.bind(this));
     };
 
@@ -838,7 +839,7 @@ app.search.SearchController.prototype.createLocalAllLayerData_ =
  * @param {(app.search.BackgroundLayerSuggestion)} input The input.
  * @private
  */
-app.search.SearchController.prototype.setBackgroundLayer_ = function(input) {
+exports.prototype.setBackgroundLayer_ = function(input) {
   this.backgroundLayerMgr_.set(this['map'], input['bgLayer']);
 };
 
@@ -847,7 +848,7 @@ app.search.SearchController.prototype.setBackgroundLayer_ = function(input) {
  * @param {(Object|string)} input The input.
  * @private
  */
-app.search.SearchController.prototype.addLayerToMap_ = function(input) {
+exports.prototype.addLayerToMap_ = function(input) {
   var layer = {};
   if (typeof input === 'string') {
     var node = this.layers_.find(function(element) {
@@ -880,7 +881,7 @@ app.search.SearchController.prototype.addLayerToMap_ = function(input) {
  * @this {app.search.SearchController}
  * @private
  */
-app.search.SearchController.selected_ =
+exports.selected_ =
     function(event, suggestion) {
       var map = /** @type {ol.Map} */ (this['map']);
       var /** @type {string} */ dataset;
@@ -902,10 +903,10 @@ app.search.SearchController.selected_ =
         if (dataset === 'coordinates') {
           features.push(feature);
         } else if (dataset === 'pois') {
-          if (!(ol.array.includes(this.appExcludeThemeLayerSearch_,
+          if (!(olArray.includes(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (ol.array.includes(this.showGeom_, feature.get('layer_name'))) {
+            if (olArray.includes(this.showGeom_, feature.get('layer_name'))) {
               features.push(feature);
             }
             var layers = /** @type {Array<string>} */
@@ -915,7 +916,7 @@ app.search.SearchController.selected_ =
             }.bind(this));
           } else {
             feature.setGeometry(
-              new ol.geom.Point(ol.extent.getCenter(
+              new olGeomPoint(olExtent.getCenter(
                 featureGeometry.getExtent())));
             features.push(feature);
           }
@@ -939,10 +940,10 @@ app.search.SearchController.selected_ =
  * @param {ol.Feature} suggestion The feature.
  * @export
  */
-app.search.SearchController.prototype.addRoutePoint = function(suggestion) {
-  var coordinate = ol.extent.getCenter(suggestion.getGeometry().getExtent());
+exports.prototype.addRoutePoint = function(suggestion) {
+  var coordinate = olExtent.getCenter(suggestion.getGeometry().getExtent());
   var feature = /** @type {ol.Feature} */
-      (new ol.Feature(new ol.geom.Point(coordinate)));
+      (new olFeature(new olGeomPoint(coordinate)));
   feature.set('label', suggestion.get('label'));
   this.appRouting_.addRoutePoint(feature);
   this['routingOpen'] = true;
@@ -952,7 +953,7 @@ app.search.SearchController.prototype.addRoutePoint = function(suggestion) {
  * @return {boolean} true if a featuer is selected.
  * @export
  */
-app.search.SearchController.prototype.isSearchFeature = function() {
+exports.prototype.isSearchFeature = function() {
   return (this.lastSelectedSuggestion !== null);
 };
 
@@ -960,9 +961,9 @@ app.search.SearchController.prototype.isSearchFeature = function() {
  * Add to the routing the last suggested feature.
  * @export
  */
-app.search.SearchController.prototype.addLastSuggestedFeature = function() {
+exports.prototype.addLastSuggestedFeature = function() {
   this.addRoutePoint(this.lastSelectedSuggestion);
 };
 
-app.module.controller('AppSearchController',
-    app.search.SearchController);
+appModule.controller('AppSearchController',
+    exports);

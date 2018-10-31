@@ -1,6 +1,7 @@
-goog.provide('app.draw.SymbolSelectorController');
+goog.module('app.draw.SymbolSelectorController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -12,7 +13,7 @@ goog.require('app.module');
  * @constructor
  * @ngInject
  */
-app.draw.SymbolSelectorController = function($scope, $http, appUserManager,
+exports = function($scope, $http, appUserManager,
     mymapsUrl) {
 
   /**
@@ -96,7 +97,7 @@ app.draw.SymbolSelectorController = function($scope, $http, appUserManager,
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.close = function() {
+exports.prototype.close = function() {
   this.symbolSelector = false;
 };
 
@@ -106,7 +107,7 @@ app.draw.SymbolSelectorController.prototype.close = function() {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.selectSymbol = function(symbolId) {
+exports.prototype.selectSymbol = function(symbolId) {
   this.feature.set('symbolId', symbolId);
   this.feature.set('size', 100);
   this.feature.set('shape', undefined);
@@ -119,7 +120,7 @@ app.draw.SymbolSelectorController.prototype.selectSymbol = function(symbolId) {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.selectShape = function(shape) {
+exports.prototype.selectShape = function(shape) {
   this.feature.set('shape', shape);
   this.feature.set('symbolId', undefined);
   this.close();
@@ -130,7 +131,7 @@ app.draw.SymbolSelectorController.prototype.selectShape = function(shape) {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.openMySymbols = function() {
+exports.prototype.openMySymbols = function() {
   this.showPublicSymbols = false;
   this.showMySymbols = true;
 };
@@ -140,7 +141,7 @@ app.draw.SymbolSelectorController.prototype.openMySymbols = function() {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.openPublicSymbols = function() {
+exports.prototype.openPublicSymbols = function() {
   this.showPublicSymbols = true;
   this.showMySymbols = false;
 };
@@ -151,7 +152,7 @@ app.draw.SymbolSelectorController.prototype.openPublicSymbols = function() {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.getPublicSymbols = function() {
+exports.prototype.getPublicSymbols = function() {
   if ('public' in this.symboltypes_) {
     return this.symboltypes_['public'].then(function(response) {
       return response['data'];
@@ -167,7 +168,7 @@ app.draw.SymbolSelectorController.prototype.getPublicSymbols = function() {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.getMySymbols = function() {
+exports.prototype.getMySymbols = function() {
   if ('us' in this.symboltypes_) {
     return this.symboltypes_['us'].then(function(response) {
       return response['data'];
@@ -183,7 +184,7 @@ app.draw.SymbolSelectorController.prototype.getMySymbols = function() {
  * @export
  *
  */
-app.draw.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
+exports.prototype.openSymbols = function(symboltype) {
   this.tab = symboltype;
   if (symboltype !== 'stylable') {
     if (!(symboltype in this.symboltypes_) ||
@@ -211,7 +212,7 @@ app.draw.SymbolSelectorController.prototype.openSymbols = function(symboltype) {
  * @param {string} color The color to set.
  * @export
  */
-app.draw.SymbolSelectorController.prototype.setColor = function(color) {
+exports.prototype.setColor = function(color) {
   this.feature.set('color', color);
 };
 
@@ -221,7 +222,7 @@ app.draw.SymbolSelectorController.prototype.setColor = function(color) {
  * @return {*} The color of the feature.
  * @export
  */
-app.draw.SymbolSelectorController.prototype.getSetColor = function(color) {
+exports.prototype.getSetColor = function(color) {
   if (this.feature === undefined) {
     return;
   }
@@ -238,7 +239,7 @@ app.draw.SymbolSelectorController.prototype.getSetColor = function(color) {
  * @return {string} The url of the symbol.
  * @export
  */
-app.draw.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
+exports.prototype.getSymbolUrl = function(symbol) {
   return this.mymapsUrl_ + symbol;
 };
 
@@ -247,7 +248,7 @@ app.draw.SymbolSelectorController.prototype.getSymbolUrl = function(symbol) {
  * @return {boolean} True if the user is authenticated.
  * @export
  */
-app.draw.SymbolSelectorController.prototype.isAuthenticated = function() {
+exports.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
@@ -257,9 +258,9 @@ app.draw.SymbolSelectorController.prototype.isAuthenticated = function() {
  * browser.
  * @export
  */
-app.draw.SymbolSelectorController.prototype.isHTML5ColorSupported = function() {
+exports.prototype.isHTML5ColorSupported = function() {
   return $('[type="color"]').prop('type') === 'color';
 };
 
-app.module.controller('AppSymbolSelectorController',
-    app.draw.SymbolSelectorController);
+appModule.controller('AppSymbolSelectorController',
+    exports);

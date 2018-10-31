@@ -1,4 +1,6 @@
-goog.provide('app.imageupload.ImguploadController');
+goog.module('app.imageupload.ImguploadController');
+
+goog.module.declareLegacyNamespace();
 
 /**
  * @fileoverview This file provides a "mymaps" directive. This directive is
@@ -9,8 +11,9 @@ goog.provide('app.imageupload.ImguploadController');
  *
  */
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
+const appModule = goog.require('app.module');
+
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -22,7 +25,7 @@ goog.require('app.NotifyNotificationType');
  * @constructor
  * @ngInject
  */
-app.imageupload.ImguploadController = function($parse, $http, appNotify, gettextCatalog,
+exports = function($parse, $http, appNotify, gettextCatalog,
     mymapsUrl) {
 
   /**
@@ -62,7 +65,7 @@ app.imageupload.ImguploadController = function($parse, $http, appNotify, gettext
  * @param {!angular.Scope} scope Scope.
  * @param {angular.Attributes} attrs Attributes.
  */
-app.imageupload.ImguploadController.prototype.uploadFileToUrl = function(file, scope,
+exports.prototype.uploadFileToUrl = function(file, scope,
     attrs) {
   var path = '/upload_image';
   if ('appSymbolupload' in attrs) {
@@ -84,10 +87,10 @@ app.imageupload.ImguploadController.prototype.uploadFileToUrl = function(file, s
     }.bind(this), function() {
       var msg = this.gettextCatalog.getString(
               'Ce format d\'image n\'est as supporté.');
-      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      this.notify_(msg, appNotifyNotificationType.ERROR);
     }.bind(this));
   }
 };
 
-app.module.controller('AppImguploadController', app.imageupload.ImguploadController);
+appModule.controller('AppImguploadController', exports);
 

@@ -1,6 +1,7 @@
-goog.provide('app.layerinfo.LayerinfoController');
+goog.module('app.layerinfo.LayerinfoController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -9,7 +10,7 @@ goog.require('app.module');
  * @ngInject
  * @export
  */
-app.layerinfo.LayerinfoController = function(appShowLayerinfo) {
+exports = function(appShowLayerinfo) {
   /**
    * @private
    */
@@ -20,9 +21,9 @@ app.layerinfo.LayerinfoController = function(appShowLayerinfo) {
 /**
  * @export
  */
-app.layerinfo.LayerinfoController.prototype.getInfo = function() {
+exports.prototype.getInfo = function() {
   this.showLayerInfo_(this['layer']);
 };
 
 
-app.module.controller('AppLayerinfoController', app.layerinfo.LayerinfoController);
+appModule.controller('AppLayerinfoController', exports);

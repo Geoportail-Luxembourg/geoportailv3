@@ -10,9 +10,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.measure.MeasureDirective');
+goog.module('app.measure.MeasureDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -35,4 +36,4 @@ app.measure.measureDirective = function(appMeasureTemplateUrl) {
 };
 
 
-app.module.directive('appMeasure', app.measure.measureDirective);
+appModule.directive('appMeasure', app.measure.measureDirective);

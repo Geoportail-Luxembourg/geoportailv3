@@ -1,7 +1,8 @@
-goog.provide('app.slider.SliderController');
+goog.module('app.slider.SliderController');
 
-goog.require('app.module');
-goog.require('ol');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olBase = goog.require('ol');
 
 
 /**
@@ -12,7 +13,7 @@ goog.require('ol');
  * @constructor
  * @ngInject
  */
-app.slider.SliderController = function($element, ngeoLocation, $document, $scope) {
+exports = function($element, ngeoLocation, $document, $scope) {
 
   /**
    * @type {angular.Scope}
@@ -106,25 +107,25 @@ app.slider.SliderController = function($element, ngeoLocation, $document, $scope
  * Activate the slider on the line.
  * @param {boolean} active Is active.
  */
-app.slider.SliderController.prototype.activate = function(active) {
+exports.prototype.activate = function(active) {
   if (active) {
     if (this.ngeoLocation_.getParam('sliderRatio') === undefined) {
       this.ngeoLocation_.updateParams({'sliderRatio': 0.5});
     }
     this.moveLine_();
 
-    this.mapResizeEvent_ = ol.events.listen(this.map_, 'change:size', this.moveLine_, this);
-    this.mousedownEvent_ = ol.events.listen(this.element_[0], 'mousedown',
+    this.mapResizeEvent_ = olBase.events.listen(this.map_, 'change:size', this.moveLine_, this);
+    this.mousedownEvent_ = olBase.events.listen(this.element_[0], 'mousedown',
         function(event) {
           this.isDragging_ = true;
           if (this.mousemoveEvent_ === null) {
-            this.mousemoveEvent_ = ol.events.listen(this.map_,
-                ol.MapBrowserEventType.POINTERMOVE, this.drag_, this);
+            this.mousemoveEvent_ = olBase.events.listen(this.map_,
+                olBase.MapBrowserEventType.POINTERMOVE, this.drag_, this);
           }
-          ol.events.listenOnce(this.$document_[0],
+          olBase.events.listenOnce(this.$document_[0],
               'mouseup', function() {
                 if (this.mousemoveEvent_) {
-                  ol.Observable.unByKey(this.mousemoveEvent_);
+                  olBase.Observable.unByKey(this.mousemoveEvent_);
                 }
                 this.isDragging_ = false;
                 this.mousemoveEvent_ = null;
@@ -133,7 +134,7 @@ app.slider.SliderController.prototype.activate = function(active) {
 
     var layer = this['layers'][0];
     if (layer !== undefined) {
-      this.precomposeEvent_ = ol.events.listen(layer, 'precompose', function(event) {
+      this.precomposeEvent_ = olBase.events.listen(layer, 'precompose', function(event) {
         if (this['layers'][0] === layer) {
           var ratio = this.ngeoLocation_.getParam('sliderRatio');
           var ctx = event.context;
@@ -147,7 +148,7 @@ app.slider.SliderController.prototype.activate = function(active) {
         }
       }, this);
 
-      this.postcomposeEvent_ = ol.events.listen(layer, 'postcompose', function(event) {
+      this.postcomposeEvent_ = olBase.events.listen(layer, 'postcompose', function(event) {
         if (this['layers'][0] === layer) {
           var ctx = event.context;
           ctx.restore();
@@ -158,16 +159,16 @@ app.slider.SliderController.prototype.activate = function(active) {
     }
   } else {
     if (this.mousedownEvent_) {
-      ol.Observable.unByKey(this.mousedownEvent_);
+      olBase.Observable.unByKey(this.mousedownEvent_);
     }
     if (this.mapResizeEvent_) {
-      ol.Observable.unByKey(this.mapResizeEvent_);
+      olBase.Observable.unByKey(this.mapResizeEvent_);
     }
     if (this.precomposeEvent_ !== null) {
-      ol.Observable.unByKey(this.precomposeEvent_);
+      olBase.Observable.unByKey(this.precomposeEvent_);
     }
     if (this.postcomposeEvent_ !== null) {
-      ol.Observable.unByKey(this.postcomposeEvent_);
+      olBase.Observable.unByKey(this.postcomposeEvent_);
     }
   }
   this.map_.render();
@@ -177,7 +178,7 @@ app.slider.SliderController.prototype.activate = function(active) {
 /**
  * @private
  */
-app.slider.SliderController.prototype.moveLine_ = function() {
+exports.prototype.moveLine_ = function() {
   var curRatio = this.ngeoLocation_.getParam('sliderRatio');
 
   var offset = (curRatio * this.map_.getSize()[0]) -
@@ -191,7 +192,7 @@ app.slider.SliderController.prototype.moveLine_ = function() {
  * @param {ol.MapBrowserEvent} event The event.
  * @private
  */
-app.slider.SliderController.prototype.drag_ = function(event) {
+exports.prototype.drag_ = function(event) {
   if (this.isDragging_) {
     var mapOffset = angular.element(this.map_.getViewport()).offset().left;
 
@@ -214,4 +215,4 @@ app.slider.SliderController.prototype.drag_ = function(event) {
   }
 };
 
-app.module.controller('AppSliderController', app.slider.SliderController);
+appModule.controller('AppSliderController', exports);

@@ -2,15 +2,16 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "export" web service.
  */
-goog.provide('app.Export');
+goog.module('app.Export');
 
-goog.require('app.module');
-goog.require('ol.geom.GeometryType');
-goog.require('app.misc.file');
-goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.format.KML');
-goog.require('ol.geom.MultiLineString');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const appMiscFile = goog.require('app.misc.file');
+const olFormatGPX = goog.require('ol.format.GPX');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olFormatKML = goog.require('ol.format.KML');
+const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
 
 
 /**
@@ -19,7 +20,7 @@ goog.require('ol.geom.MultiLineString');
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @ngInject
  */
-app.Export = function($document, exportgpxkmlUrl) {
+exports = function($document, exportgpxkmlUrl) {
 
   /**
    * @type {ol.Map}
@@ -54,13 +55,13 @@ app.Export = function($document, exportgpxkmlUrl) {
    * @private
    * @type {ol.format.KML}
    */
-  this.kmlFormat_ = new ol.format.KML();
+  this.kmlFormat_ = new olFormatKML();
 
   /**
    * @private
    * @type {ol.format.GPX}
    */
-  this.gpxFormat_ = new ol.format.GPX();
+  this.gpxFormat_ = new olFormatGPX();
 
   /**
    * @private
@@ -75,7 +76,7 @@ app.Export = function($document, exportgpxkmlUrl) {
  * @param {ol.Map} map The Map.
  * @export
  */
-app.Export.prototype.init = function(map) {
+exports.prototype.init = function(map) {
   this.map = map;
   this.encOpt_ = /** @type {olx.format.ReadOptions} */({
     dataProjection: 'EPSG:2169',
@@ -91,7 +92,7 @@ app.Export.prototype.init = function(map) {
  * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.Export.prototype.exportGpx = function(features, name, isTrack) {
+exports.prototype.exportGpx = function(features, name, isTrack) {
   // LineString geometries, and tracks from MultiLineString
   var explodedFeatures = this.exploseFeature_(features);
   if (isTrack) {
@@ -106,7 +107,7 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
       featureProjection: this['map'].getView().getProjection()
     });
 
-  this.exportFeatures_(gpx, 'gpx', app.misc.file.sanitizeFilename(name));
+  this.exportFeatures_(gpx, 'gpx', appMiscFile.sanitizeFilename(name));
 };
 
 
@@ -116,15 +117,15 @@ app.Export.prototype.exportGpx = function(features, name, isTrack) {
  * @return {Array.<ol.Feature>} The changed features.
  * @private
  */
-app.Export.prototype.changeLineToMultiline_ = function(features) {
+exports.prototype.changeLineToMultiline_ = function(features) {
   var changedFeatures = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case ol.geom.GeometryType.LINE_STRING:
+      case olGeomGeometryType.LINE_STRING:
         var geom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
         var multilineFeature = feature.clone();
         multilineFeature.setGeometry(
-            new ol.geom.MultiLineString([geom.getCoordinates()]));
+            new olGeomMultiLineString([geom.getCoordinates()]));
         changedFeatures.push(multilineFeature);
         break;
       default :
@@ -142,11 +143,11 @@ app.Export.prototype.changeLineToMultiline_ = function(features) {
  * @return {Array.<ol.Feature>} The changed features.
  * @private
  */
-app.Export.prototype.changeMultilineToLine_ = function(features) {
+exports.prototype.changeMultilineToLine_ = function(features) {
   var changedFeatures = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case ol.geom.GeometryType.MULTI_LINE_STRING:
+      case olGeomGeometryType.MULTI_LINE_STRING:
         var geom = /** @type {ol.geom.MultiLineString} */
             (feature.getGeometry());
         var lines = /** @type {ol.geom.MultiLineString} */
@@ -173,11 +174,11 @@ app.Export.prototype.changeMultilineToLine_ = function(features) {
  * @return {Array.<ol.Feature>} The exploded features.
  * @private
  */
-app.Export.prototype.exploseFeature_ = function(features) {
+exports.prototype.exploseFeature_ = function(features) {
   var explodedFeatures = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      case olGeomGeometryType.GEOMETRY_COLLECTION:
         var geomCollection = /** @type {ol.geom.GeometryCollection} */
             (feature.getGeometry());
         geomCollection.getGeometriesArray().forEach(
@@ -187,7 +188,7 @@ app.Export.prototype.exploseFeature_ = function(features) {
               explodedFeatures.push(newFeature);
             });
         break;
-      case ol.geom.GeometryType.MULTI_LINE_STRING:
+      case olGeomGeometryType.MULTI_LINE_STRING:
         var multiLineString = /** @type {ol.geom.MultiLineString} */
             (feature.getGeometry());
         multiLineString.getLineStrings().forEach(
@@ -218,17 +219,17 @@ app.Export.prototype.exploseFeature_ = function(features) {
  * @return {Array.<ol.Feature>} The sorted features.
  * @private
  */
-app.Export.prototype.orderFeaturesForGpx_ = function(features) {
+exports.prototype.orderFeaturesForGpx_ = function(features) {
 
   var points = [];
   var lines = [];
   var others = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case ol.geom.GeometryType.POINT:
+      case olGeomGeometryType.POINT:
         points.push(feature);
         break;
-      case ol.geom.GeometryType.LINE_STRING:
+      case olGeomGeometryType.LINE_STRING:
         lines.push(feature);
         break;
       default :
@@ -247,17 +248,17 @@ app.Export.prototype.orderFeaturesForGpx_ = function(features) {
  * @param {string} name The file name.
  * @export
  */
-app.Export.prototype.exportKml = function(feature, name) {
+exports.prototype.exportKml = function(feature, name) {
 
   var activeFeature = /** @type {ol.Feature} */
-      ((new ol.format.GeoJSON()).readFeature(feature, this.encOpt_));
+      ((new olFormatGeoJSON()).readFeature(feature, this.encOpt_));
 
   var kml = this.kmlFormat_.writeFeatures(this.exploseFeature_([activeFeature]),
     {
       dataProjection: 'EPSG:4326',
       featureProjection: this['map'].getView().getProjection()
     });
-  this.exportFeatures_(kml, 'kml', app.misc.file.sanitizeFilename(name));
+  this.exportFeatures_(kml, 'kml', appMiscFile.sanitizeFilename(name));
 };
 
 
@@ -267,7 +268,7 @@ app.Export.prototype.exportKml = function(feature, name) {
  * @param {string} filename File name for the exported document.
  * @private
  */
-app.Export.prototype.exportFeatures_ =
+exports.prototype.exportFeatures_ =
     function(doc, format, filename) {
       var formatInput = $('<input>').attr({
         type: 'hidden',
@@ -294,4 +295,4 @@ app.Export.prototype.exportFeatures_ =
       form.remove();
     };
 
-app.module.service('appExport', app.Export);
+appModule.service('appExport', exports);

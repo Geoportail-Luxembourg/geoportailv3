@@ -3,18 +3,13 @@
  * correctly formatted coordinate strings in different projections.
  */
 
-goog.provide('app.CoordinateString');
+goog.module('app.CoordinateStringService');
 
-goog.require('app.module');
-goog.require('ol.coordinate');
-goog.require('ol.proj');
-goog.require('ol.string');
-
-
-/**
- * @typedef {function(ol.Coordinate, string, string, boolean, boolean):string}
- */
-app.CoordinateString;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olCoordinate = goog.require('ol.coordinate');
+const olProj = goog.require('ol.proj');
+const olString = goog.require('ol.string');
 
 
 /**
@@ -22,7 +17,7 @@ app.CoordinateString;
  * @return {app.CoordinateString} The coordinate string.
  * @ngInject
  */
-app.coordinateString_ = function() {
+function service() {
   return coordinateString;
 
   /**
@@ -38,16 +33,16 @@ app.coordinateString_ = function() {
     var str = '';
     if (targetEpsgCode === 'EPSG:3263*') {
       var lonlat = /** @type {ol.Coordinate} */
-          (ol.proj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+          (olProj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
       targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
     }
 
-    coordinate = ol.proj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+    coordinate = olProj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
 
     switch (targetEpsgCode) {
       default:
       case 'EPSG:2169':
-        str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
+        str = olCoordinate.format(coordinate, '{x} E | {y} N', 0);
         break;
       case 'EPSG:4326':
         if (opt_DMS) {
@@ -61,14 +56,14 @@ app.coordinateString_ = function() {
           var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
           str = xhdmm + ' | ' + yhdmm;
         } else {
-          str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
+          str = olCoordinate.format(coordinate, ' {x} E | {y} N', 5);
         }
         break;
       case 'EPSG:32632':
-        str = ol.coordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+        str = olCoordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
         break;
       case 'EPSG:32631':
-        str = ol.coordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+        str = olCoordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
         break;
     }
     return str;
@@ -112,8 +107,8 @@ app.coordinateString_ = function() {
     var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     return Math.floor(x / 3600) + '\u00b0 ' +
-        ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-        ol.string.padNumber(Math.floor(x % 60), 2) + ',' +
+        olString.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+        olString.padNumber(Math.floor(x % 60), 2) + ',' +
         Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
         '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
@@ -131,7 +126,7 @@ app.coordinateString_ = function() {
     var m = (dd - Math.floor(dd)) * 60;
 
     var res = Math.floor(dd) + '\u00b0 ' +
-        ol.string.padNumber(Math.floor(m), 2) + ',' +
+        olString.padNumber(Math.floor(m), 2) + ',' +
         Math.floor((m - Math.floor(m)) * 100000) +
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;
@@ -140,4 +135,4 @@ app.coordinateString_ = function() {
 };
 
 
-app.module.service('appCoordinateString', app.coordinateString_);
+appModule.service('appCoordinateString', service);

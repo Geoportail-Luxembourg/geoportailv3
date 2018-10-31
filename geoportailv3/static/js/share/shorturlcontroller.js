@@ -7,9 +7,10 @@
  * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
-goog.provide('app.share.ShorturlController');
+goog.module('app.share.ShorturlController');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -21,7 +22,7 @@ goog.require('app.module');
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  */
-app.share.ShorturlController = function($scope, ngeoLocation,
+exports = function($scope, ngeoLocation,
     appGetShorturl, appMymaps) {
   /**
    * @type {app.Mymaps}
@@ -78,7 +79,7 @@ app.share.ShorturlController = function($scope, ngeoLocation,
 /**
  * @private
  */
-app.share.ShorturlController.prototype.setUrl_ =
+exports.prototype.setUrl_ =
     function() {
       this.url = this.ngeoLocation_.getUriString();
       if (this['onlyMymaps']) {
@@ -100,7 +101,7 @@ app.share.ShorturlController.prototype.setUrl_ =
  * @return {boolean} true if a mymaps is selected
  * @export
  */
-app.share.ShorturlController.prototype.isMymapsSelected =
+exports.prototype.isMymapsSelected =
     function() {
       if (this.appMymaps_.getMapId()) {
         return true;
@@ -108,4 +109,4 @@ app.share.ShorturlController.prototype.isMymapsSelected =
       return false;
     };
 
-app.module.controller('AppShorturlController', app.share.ShorturlController);
+appModule.controller('AppShorturlController', exports);

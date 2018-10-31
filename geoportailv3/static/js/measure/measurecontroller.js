@@ -10,21 +10,22 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.measure.MeasureController');
+goog.module('app.measure.MeasureController');
 
-goog.require('app.module');
-goog.require('ngeo.misc.decorate');
-goog.require('ngeo.interaction.MeasureArea');
-goog.require('ngeo.interaction.MeasureAzimut');
-goog.require('ngeo.interaction.MeasureLength');
-goog.require('ol.Object');
-goog.require('ol.events');
-goog.require('ol.interaction.Property');
-goog.require('ol.proj');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const ngeoInteractionMeasureArea = goog.require('ngeo.interaction.MeasureArea');
+const ngeoInteractionMeasureAzimut = goog.require('ngeo.interaction.MeasureAzimut');
+const ngeoInteractionMeasureLength = goog.require('ngeo.interaction.MeasureLength');
+const olObject = goog.require('ol.Object');
+const olEvents = goog.require('ol.events');
+const olInteractionProperty = goog.require('ol.interaction.Property');
+const olProj = goog.require('ol.proj');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStroke = goog.require('ol.style.Stroke');
+const olStyleStyle = goog.require('ol.style.Style');
 
 
 /**
@@ -42,7 +43,7 @@ goog.require('ol.style.Style');
  * @export
  * @ngInject
  */
-app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
+exports = function($scope, $q, $http, $compile, gettext,
     appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
@@ -70,37 +71,37 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
-  var sketchStyle = new ol.style.Style({
-    fill: new ol.style.Fill({
+  var sketchStyle = new olStyleStyle({
+    fill: new olStyleFill({
       color: 'rgba(255, 255, 255, 0.4)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new olStyleStroke({
       color: 'rgba(0, 0, 0, 0.5)',
       lineDash: [10, 10],
       width: 2
     }),
-    image: new ol.style.Circle({
+    image: new olStyleCircle({
       radius: 5,
-      stroke: new ol.style.Stroke({
+      stroke: new olStyleStroke({
         color: 'rgba(0, 0, 0, 0.7)'
       }),
-      fill: new ol.style.Fill({
+      fill: new olStyleFill({
         color: 'rgba(255, 255, 255, 0.4)'
       })
     })
   });
 
-  var style = new ol.style.Style({
-    fill: new ol.style.Fill({
+  var style = new olStyleStyle({
+    fill: new olStyleFill({
       color: 'rgba(255, 204, 51, 0.3)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new olStyleStroke({
       color: 'rgba(255, 204, 51, 1)',
       width: 2
     }),
-    image: new ol.style.Circle({
+    image: new olStyleCircle({
       radius: 7,
-      fill: new ol.style.Fill({
+      fill: new olStyleFill({
         color: 'rgba(255, 204, 51, 0.3)'
       })
     })
@@ -116,7 +117,7 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
   var helpMsg = gettext('Click to start drawing profile');
   var contMsg = gettext('Click to continue drawing the line<br>' +
       'Double-click or click last point to finish');
-  var measureProfile = new ngeo.interaction.MeasureLength(
+  var measureProfile = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
     {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
@@ -129,11 +130,11 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
    */
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
-  ngeo.misc.decorate.interaction(measureProfile);
+  ngeoMiscDecorate.interaction(measureProfile);
   this.map_.addInteraction(measureProfile);
 
   helpMsg = gettext('Click to start drawing length');
-  var measureLength = new ngeo.interaction.MeasureLength(
+  var measureLength = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
     {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
@@ -152,13 +153,13 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureLength'] = measureLength;
 
   measureLength.setActive(false);
-  ngeo.misc.decorate.interaction(measureLength);
+  ngeoMiscDecorate.interaction(measureLength);
   this.map_.addInteraction(measureLength);
 
   helpMsg = gettext('Click to start drawing area');
   contMsg = gettext('Click to continue drawing the polygon<br>' +
       'Double-click or click last point to finish');
-  var measureArea = new ngeo.interaction.MeasureArea(
+  var measureArea = new ngeoInteractionMeasureArea(
     $filter('ngeoUnitPrefix'),
     {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
@@ -173,13 +174,13 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureArea'] = measureArea;
 
   measureArea.setActive(false);
-  ngeo.misc.decorate.interaction(measureArea);
+  ngeoMiscDecorate.interaction(measureArea);
   this.map_.addInteraction(measureArea);
 
   helpMsg = gettext('Click to start drawing azimut');
   contMsg = gettext('Click to finish');
   /** @type {ngeo.interaction.MeasureAzimut} */
-  var measureAzimut = new ngeo.interaction.MeasureAzimut(
+  var measureAzimut = new ngeoInteractionMeasureAzimut(
     $filter('ngeoUnitPrefix'), $filter('ngeoNumber'),
     {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
@@ -194,10 +195,10 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
   this['measureAzimut'] = measureAzimut;
 
   measureAzimut.setActive(false);
-  ngeo.misc.decorate.interaction(measureAzimut);
+  ngeoMiscDecorate.interaction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
-  ol.events.listen(measureAzimut, 'measureend',
+  olEvents.listen(measureAzimut, 'measureend',
       function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
@@ -219,7 +220,7 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
         }.bind(this));
       }.bind(this));
 
-  ol.events.listen(measureProfile, 'measureend',
+  olEvents.listen(measureProfile, 'measureend',
       function(evt) {
         var geom = /** @type {ol.geom.LineString} */
             (evt.detail.feature.getGeometry());
@@ -229,7 +230,7 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
             }.bind(this));
       }, this);
 
-  ol.events.listen(measureProfile, ol.Object.getChangeEventType('active'),
+  olEvents.listen(measureProfile, olObject.getChangeEventType('active'),
       /**
        * @param {ol.Object.Event} evt Change active event.
        */
@@ -255,17 +256,17 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
       this.appActivetool_.measureActive = false;
     }
   }.bind(this));
-  ol.events.listen(this['measureLength'], ol.Object.getChangeEventType(
-    ol.interaction.Property.ACTIVE),
+  olEvents.listen(this['measureLength'], olObject.getChangeEventType(
+    olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  ol.events.listen(this['measureArea'], ol.Object.getChangeEventType(
-    ol.interaction.Property.ACTIVE),
+  olEvents.listen(this['measureArea'], olObject.getChangeEventType(
+    olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  ol.events.listen(this['measureAzimut'], ol.Object.getChangeEventType(
-    ol.interaction.Property.ACTIVE),
+  olEvents.listen(this['measureAzimut'], olObject.getChangeEventType(
+    olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  ol.events.listen(this['measureProfile'], ol.Object.getChangeEventType(
-    ol.interaction.Property.ACTIVE),
+  olEvents.listen(this['measureProfile'], olObject.getChangeEventType(
+    olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
 };
 
@@ -274,7 +275,7 @@ app.measure.MeasureController = function($scope, $q, $http, $compile, gettext,
  * @param {ol.Object.Event} event The event.
  * @private
  */
-app.measure.MeasureController.prototype.onChangeActive_ = function(event) {
+exports.prototype.onChangeActive_ = function(event) {
   if (this['measureLength'].getActive() ||
       this['measureArea'].getActive() ||
       this['measureAzimut'].getActive() ||
@@ -291,9 +292,9 @@ app.measure.MeasureController.prototype.onChangeActive_ = function(event) {
  * @return {angular.$q.Promise} The promise.
  * @private
  */
-app.measure.MeasureController.prototype.getElevation_ = function(coordinates) {
+exports.prototype.getElevation_ = function(coordinates) {
   var eastnorth =
-      /** @type {ol.Coordinate} */ (ol.proj.transform(
+      /** @type {ol.Coordinate} */ (olProj.transform(
       coordinates,
       this.map_.getView().getProjection(),
       'EPSG:2169'));
@@ -303,4 +304,4 @@ app.measure.MeasureController.prototype.getElevation_ = function(coordinates) {
   });
 };
 
-app.module.controller('AppMeasureController', app.measure.MeasureController);
+appModule.controller('AppMeasureController', exports);

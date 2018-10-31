@@ -8,9 +8,10 @@
  *  </app-streetview>
  *
  */
-goog.provide('app.streetview.streetviewDirective');
+goog.module('app.streetview.streetviewDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -18,7 +19,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.streetview.streetviewDirective = function(appStreetviewTemplateUrl) {
+exports = function(appStreetviewTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -32,4 +33,4 @@ app.streetview.streetviewDirective = function(appStreetviewTemplateUrl) {
   };
 };
 
-app.module.directive('appStreetview', app.streetview.streetviewDirective);
+appModule.directive('appStreetview', exports);

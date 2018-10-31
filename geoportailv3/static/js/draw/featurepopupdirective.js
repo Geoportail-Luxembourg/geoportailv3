@@ -1,9 +1,10 @@
 /**
  * @fileoverview Provides a feature popup directive.
  */
-goog.provide('app.draw.featurePopupDirective');
+goog.module('app.draw.featurePopupDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -11,7 +12,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.draw.featurePopupDirective = function(appFeaturePopupTemplateUrl) {
+exports = function(appFeaturePopupTemplateUrl) {
   return {
     restrict: 'A',
     scope: {
@@ -25,4 +26,4 @@ app.draw.featurePopupDirective = function(appFeaturePopupTemplateUrl) {
   };
 };
 
-app.module.directive('appFeaturePopup', app.draw.featurePopupDirective);
+appModule.directive('appFeaturePopup', exports);

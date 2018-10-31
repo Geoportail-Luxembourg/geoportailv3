@@ -9,10 +9,11 @@
  * <div>
  */
 
-goog.provide('app.resizemapDirective');
+goog.module('app.resizemapDirective');
 
-goog.require('app.module');
-goog.require('ol.Map');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olMap = goog.require('ol.Map');
 
 
 /**
@@ -20,7 +21,7 @@ goog.require('ol.Map');
  * @return {angular.Directive} The directive specs.
  * @ngInject
  */
-app.resizemapDirective = function($window) {
+exports = function($window) {
   var /** @type {number} */ duration = 2000;
   return {
     restrict: 'A',
@@ -33,7 +34,7 @@ app.resizemapDirective = function($window) {
         function(scope, element, attrs) {
 
           var map = scope.$eval(attrs['appResizemap']);
-          console.assert(map instanceof ol.Map);
+          console.assert(map instanceof olMap);
 
           var stateExpr = attrs['appResizemapState'];
           console.assert(stateExpr !== undefined);
@@ -67,4 +68,4 @@ app.resizemapDirective = function($window) {
 };
 
 
-app.module.directive('appResizemap', app.resizemapDirective);
+appModule.directive('appResizemap', exports);

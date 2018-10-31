@@ -3,19 +3,20 @@
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.provide('app.WmsHelper');
+goog.module('app.WmsHelper');
 
-goog.require('app.module');
-goog.require('app.olcs.Extent');
-goog.require('app.NotifyNotificationType');
-goog.require('ngeo.misc.decorate');
-goog.require('ol.format.WMSCapabilities');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.ImageWMS');
-goog.require('ol.source.TileWMS');
-goog.require('ol');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appOlcsExtent = goog.require('app.olcs.Extent');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
+const olFormatWMSCapabilities = goog.require('ol.format.WMSCapabilities');
+const olLayerImage = goog.require('ol.layer.Image');
+const olLayerTile = goog.require('ol.layer.Tile');
+const olProj = goog.require('ol.proj');
+const olSourceImageWMS = goog.require('ol.source.ImageWMS');
+const olSourceTileWMS = goog.require('ol.source.TileWMS');
+const olBase = goog.require('ol');
 
 
 /**
@@ -28,7 +29,7 @@ goog.require('ol');
  * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
-app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
+exports = function($sce, $http, appNotify, gettextCatalog,
     $window, httpsProxyUrl) {
 
   /**
@@ -78,7 +79,7 @@ app.WmsHelper = function($sce, $http, appNotify, gettextCatalog,
  * @param {string} wms The url of the wms.
  * @return {!angular.$q.Promise} Promise providing the capabilities.
  */
-app.WmsHelper.prototype.getCapabilities = function(wms) {
+exports.prototype.getCapabilities = function(wms) {
   var basicWmsUrl = wms;
   var separator = '&';
   if (wms.indexOf('?') === -1) {
@@ -91,7 +92,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
   if (!(wms in this.wmsCapa_)) {
     this.wmsCapa_[wms] = this.http_.get(this.proxyIfNeeded(wms))
     .then(function(data) {
-      var capabilities = new ol.format.WMSCapabilities().read(data.data);
+      var capabilities = new olFormatWMSCapabilities().read(data.data);
       if (!('Capability' in capabilities)) {
         return null;
       }
@@ -114,7 +115,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
     }.bind(this), function(e) {
       var msg = this.gettextCatalog.getString(
         'Impossible de contacter ce WMS');
-      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      this.notify_(msg, appNotifyNotificationType.ERROR);
       return null;
     }.bind(this));
   }
@@ -128,7 +129,7 @@ app.WmsHelper.prototype.getCapabilities = function(wms) {
  * @return {string} Returns GetMap url if found.
  * @private
  */
-app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
+exports.prototype.getOnlineResource_ = function(capability, service) {
   var onlineResource;
   if ('Request' in capability &&
       service in capability['Request'] &&
@@ -159,13 +160,13 @@ app.WmsHelper.prototype.getOnlineResource_ = function(capability, service) {
  * @param {Object} parentLayer Parent layer object in capabilities tree.
  * @private
  */
-app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
+exports.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
     imageFormats, useTiles, parentLayer) {
 
   if (!layer['Name']) {
     layer['isInvalid'] = true;
   }
-  layer['uid'] = ol.getUid(layer).toString();
+  layer['uid'] = olBase.getUid(layer).toString();
   if (!layer['isInvalid']) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;
@@ -213,7 +214,7 @@ app.WmsHelper.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
  * @return {!angular.$q.Promise} Promise providing the layers.
  * @export
  */
-app.WmsHelper.prototype.getLayers = function(wms) {
+exports.prototype.getLayers = function(wms) {
   return this.getCapabilities(wms).then(function(capabilities) {
     if ('Layer' in capabilities['Capability']['Layer']) {
       return capabilities['Capability']['Layer']['Layer'];
@@ -230,7 +231,7 @@ app.WmsHelper.prototype.getLayers = function(wms) {
  * @return {!angular.$q.Promise} Promise providing the layer.
  * @export
  */
-app.WmsHelper.prototype.getLayerById = function(id) {
+exports.prototype.getLayerById = function(id) {
 
   var values = id.split('%2D').join('-').split('||');
   var serviceType = values[0];
@@ -247,7 +248,7 @@ app.WmsHelper.prototype.getLayerById = function(id) {
  * @return {!angular.$q.Promise} Promise providing the layer metadata.
  * @export
  */
-app.WmsHelper.prototype.getMetadata = function(id) {
+exports.prototype.getMetadata = function(id) {
   return this.getLayerById(id).then(function(layer) {
     var hasLegend = false;
     var legendUrl = null;
@@ -369,7 +370,7 @@ app.WmsHelper.prototype.getMetadata = function(id) {
  * @return {Object} Returns the layer object.
  * @private
  */
-app.WmsHelper.prototype.getChildLayerById_ = function(layer, id) {
+exports.prototype.getChildLayerById_ = function(layer, id) {
   if (layer['id'] === id) {
     return layer;
   }
@@ -395,7 +396,7 @@ app.WmsHelper.prototype.getChildLayerById_ = function(layer, id) {
  * @return {boolean} return true if added to the map.
  * @export
  */
-app.WmsHelper.prototype.addWmsLayers = function(map, layer) {
+exports.prototype.addWmsLayers = function(map, layer) {
   map.addLayer(this.createWmsLayers(map, layer));
   return true;
 };
@@ -406,7 +407,7 @@ app.WmsHelper.prototype.addWmsLayers = function(map, layer) {
  * @param {Object} layer The selected raw layer.
  * @return {ol.layer.Layer} return the created layer.
  */
-app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
+exports.prototype.createWmsLayers = function(map, layer) {
 
   var imageFormats = layer['imageFormats'];
 
@@ -467,20 +468,20 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
 
   var newLayer = null;
   if (layer['useTiles']) {
-    newLayer = new ol.layer.Tile({
-      'olcs.extent': app.olcs.Extent,
-      source: new ol.source.TileWMS(imgOptions)
+    newLayer = new olLayerTile({
+      'olcs.extent': appOlcsExtent,
+      source: new olSourceTileWMS(imgOptions)
     });
   } else {
-    newLayer = new ol.layer.Image({
-      'olcs.extent': app.olcs.Extent,
-      source: new ol.source.ImageWMS(imgOptions)
+    newLayer = new olLayerImage({
+      'olcs.extent': appOlcsExtent,
+      source: new olSourceImageWMS(imgOptions)
     });
   }
   if (has3857) {
-    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:3857'));
+    newLayer.getSource().set('olcs.projection', olProj.get('EPSG:3857'));
   } else if (hasWGS84) {
-    newLayer.getSource().set('olcs.projection', ol.proj.get('EPSG:4326'));
+    newLayer.getSource().set('olcs.projection', olProj.get('EPSG:4326'));
   }
   newLayer.set('label', layer['Title']);
   var curMatadata = {'isExternalWms': true,
@@ -490,7 +491,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
   newLayer.set('metadata', curMatadata);
   newLayer.setOpacity(1);
   newLayer.set('queryable_id', layer['id']);
-  ngeo.misc.decorate.layer(newLayer);
+  ngeoMiscDecorate.layer(newLayer);
 
   this.getMetadata(layer['id']).then(function(metadata) {
     if (metadata['hasImageLegend']) {
@@ -506,7 +507,7 @@ app.WmsHelper.prototype.createWmsLayers = function(map, layer) {
  * @param {string} url The url to proxy.
  * @return {string} returns the proxyed url if needed.
  */
-app.WmsHelper.prototype.proxyIfNeeded = function(url) {
+exports.prototype.proxyIfNeeded = function(url) {
   if (url.indexOf('httpsproxy') > 0) {
     return url;
   }
@@ -518,4 +519,4 @@ app.WmsHelper.prototype.proxyIfNeeded = function(url) {
   return url;
 };
 
-app.module.service('appWmsHelper', app.WmsHelper);
+appModule.service('appWmsHelper', exports);

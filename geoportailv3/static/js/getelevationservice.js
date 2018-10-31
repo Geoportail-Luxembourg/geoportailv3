@@ -2,16 +2,11 @@
  * @fileoverview This file provides an Angular service for interacting
  * with the "elevation" web service.
  */
-goog.provide('app.GetElevation');
+goog.module('app.GetElevationService');
 
-goog.require('app.module');
-goog.require('ol.proj');
-
-
-/**
- * @typedef {function(ol.Coordinate):!angular.$q.Promise}
- */
-app.GetElevation;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olProj = goog.require('ol.proj');
 
 
 /**
@@ -22,7 +17,7 @@ app.GetElevation;
  * @private
  * @ngInject
  */
-app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
+function service($http, gettextCatalog, elevationServiceUrl) {
   return getElevation;
 
   /**
@@ -31,7 +26,7 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
    */
   function getElevation(coordinate) {
     var lonlat = /** @type {ol.Coordinate} */
-        (ol.proj.transform(coordinate,
+        (olProj.transform(coordinate,
             'EPSG:3857', 'EPSG:2169'));
     return $http.get(elevationServiceUrl, {
       params: {
@@ -55,4 +50,4 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
 };
 
 
-app.module.service('appGetElevation', app.getElevation_);
+appModule.service('appGetElevation', service);

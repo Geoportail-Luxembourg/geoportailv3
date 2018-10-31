@@ -13,15 +13,16 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.catalog.catalogDirective');
+goog.module('app.catalog.catalogDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Definition Object.
  */
-app.catalog.catalogDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -38,4 +39,4 @@ app.catalog.catalogDirective = function() {
 };
 
 
-app.module.directive('appCatalog', app.catalog.catalogDirective);
+appModule.directive('appCatalog', exports);

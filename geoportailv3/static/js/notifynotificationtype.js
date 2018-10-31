@@ -1,9 +1,11 @@
-goog.provide('app.NotifyNotificationType');
+goog.module('app.NotifyNotificationType');
+
+goog.module.declareLegacyNamespace();
 
 /**
  * @enum {string}
  */
-app.NotifyNotificationType = {
+exports = {
   INFO: 'alert-info',
   WARNING: 'alert-warning',
   ERROR: 'alert-danger'

@@ -1,6 +1,8 @@
-goog.provide('app.query.ShowProfile');
+goog.module('app.query.ShowProfile');
+
+goog.module.declareLegacyNamespace();
 
 /**
  * @typedef {{active: boolean}}
  */
-app.query.ShowProfile;
+exports;

@@ -1,21 +1,22 @@
 /**
  * @fileoverview Provides a feature popup directive.
  */
-goog.provide('app.draw.FeaturePopupController');
+goog.module('app.draw.FeaturePopupController');
 
-goog.require('app.module');
-goog.require('app.misc.file');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.format.KML');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.interaction');
-goog.require('ngeo.interaction.Measure');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appMiscFile = goog.require('app.misc.file');
+const olEvents = goog.require('ol.events');
+const olExtent = goog.require('ol.extent');
+const olProj = goog.require('ol.proj');
+const olFormatKML = goog.require('ol.format.KML');
+const olGeomCircle = goog.require('ol.geom.Circle');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
+const olGeomLineString = goog.require('ol.geom.LineString');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olInteraction = goog.require('ol.interaction');
+const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
 
 
 /**
@@ -35,7 +36,7 @@ goog.require('ngeo.interaction.Measure');
  * @export
  * @ngInject
  */
-app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
+exports = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
     ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
 
@@ -73,7 +74,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @private
    * @type {ol.format.KML}
    */
-  this.kmlFormat_ = new ol.format.KML();
+  this.kmlFormat_ = new olFormatKML();
 
   /**
    * @private
@@ -253,8 +254,8 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = ol.events.listen(this.drawnFeatures_.modifyInteraction,
-      ol.interaction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
+  this.event_ = olEvents.listen(this.drawnFeatures_.modifyInteraction,
+      olInteraction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;
@@ -281,7 +282,7 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
   }.bind(this));
 
   $scope.$on('$destroy', function() {
-    ol.events.unlistenByKey(this.event_);
+    olEvents.unlistenByKey(this.event_);
     this.unwatch1_();
     this.unwatch2_();
     this.unwatch3_();
@@ -297,9 +298,9 @@ app.draw.FeaturePopupController = function($scope, $sce, appFeaturePopup,
  * @return {*} The radius.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getSetCircleRadius = function(radius) {
+exports.prototype.getSetCircleRadius = function(radius) {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     if (arguments.length === 0) {
       return this.getCircleRadius();
@@ -315,16 +316,16 @@ app.draw.FeaturePopupController.prototype.getSetCircleRadius = function(radius) 
  * @return {number} The radius.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getCircleRadius = function() {
+exports.prototype.getCircleRadius = function() {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    var center = ol.extent.getCenter(geom.getExtent());
+    var center = olExtent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
-    var p1 = ol.proj.transform(center, projection, 'EPSG:4326');
-    var p2 = ol.proj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
-    return Math.round(ngeo.interaction.Measure.SPHERE_WGS84.haversineDistance(p1, p2));
+    var p1 = olProj.transform(center, projection, 'EPSG:4326');
+    var p2 = olProj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
+    return Math.round(ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(p1, p2));
   }
   return 0;
 };
@@ -334,7 +335,7 @@ app.draw.FeaturePopupController.prototype.getCircleRadius = function() {
  * @param {number} radius The circle radius in meter.
  * @export
  */
-app.draw.FeaturePopupController.prototype.setCircleRadius = function(radius) {
+exports.prototype.setCircleRadius = function(radius) {
   this.setFeatureCircleRadius(this.feature, radius);
   this.drawnFeatures_.saveFeature(this.feature);
 };
@@ -345,20 +346,20 @@ app.draw.FeaturePopupController.prototype.setCircleRadius = function(radius) {
  * @param {number} radius The circle radius in meter.
  * @export
  */
-app.draw.FeaturePopupController.prototype.setFeatureCircleRadius = function(feature, radius) {
+exports.prototype.setFeatureCircleRadius = function(feature, radius) {
   if (this.feature !== undefined &&
-      feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (feature.getGeometry());
-    var center = ol.extent.getCenter(geom.getExtent());
+    var center = olExtent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
-    var pointResolution = ol.proj.getPointResolution(projection, /** @type {number} */ (resolution), center);
+    var pointResolution = olProj.getPointResolution(projection, /** @type {number} */ (resolution), center);
     var resolutionFactor = resolution / pointResolution;
-    radius = (radius / ol.proj.METERS_PER_UNIT.m) * resolutionFactor;
-    var featureGeom = new ol.geom.Circle(center, radius);
+    radius = (radius / olProj.METERS_PER_UNIT.m) * resolutionFactor;
+    var featureGeom = new olGeomCircle(center, radius);
     feature.setGeometry(
-        ol.geom.Polygon.fromCircle(featureGeom, 64)
+        olGeomPolygon.fromCircle(featureGeom, 64)
     );
   }
 };
@@ -368,7 +369,7 @@ app.draw.FeaturePopupController.prototype.setFeatureCircleRadius = function(feat
  * Creates a new circle from this one.
  * @export
  */
-app.draw.FeaturePopupController.prototype.createNewCircle = function(radius) {
+exports.prototype.createNewCircle = function(radius) {
   this.askRadius = false;
   this.appFeaturePopup_.hide();
   var newCircle = this.feature.clone();
@@ -389,13 +390,13 @@ app.draw.FeaturePopupController.prototype.createNewCircle = function(radius) {
  * Export a KML file.
  * @export
  */
-app.draw.FeaturePopupController.prototype.exportKml = function() {
+exports.prototype.exportKml = function() {
   var kml = this.kmlFormat_.writeFeatures([this.feature], {
     dataProjection: 'EPSG:4326',
     featureProjection: this['map'].getView().getProjection()
   });
   this.exportFeatures_(kml, 'kml',
-      app.misc.file.sanitizeFilename(/** @type {string} */(this.feature.get('name'))));
+      appMiscFile.sanitizeFilename(/** @type {string} */(this.feature.get('name'))));
   this.appFeaturePopup_.toggleDropdown();
 };
 
@@ -405,7 +406,7 @@ app.draw.FeaturePopupController.prototype.exportKml = function() {
  * @param {boolean} isTrack True if gpx should export tracks instead of routes.
  * @export
  */
-app.draw.FeaturePopupController.prototype.exportGpx = function(isTrack) {
+exports.prototype.exportGpx = function(isTrack) {
   this.appExport_.exportGpx([this.feature],
       /** @type {string} */(this.feature.get('name')), isTrack);
 
@@ -419,7 +420,7 @@ app.draw.FeaturePopupController.prototype.exportGpx = function(isTrack) {
  * @param {string} filename File name for the exported document.
  * @private
  */
-app.draw.FeaturePopupController.prototype.exportFeatures_ =
+exports.prototype.exportFeatures_ =
     function(doc, format, filename) {
       var formatInput = $('<input>').attr({
         type: 'hidden',
@@ -451,7 +452,7 @@ app.draw.FeaturePopupController.prototype.exportFeatures_ =
  * Update Elevation and Profile after feature geometry change.
  * @private
  */
-app.draw.FeaturePopupController.prototype.updateFeature_ = function() {
+exports.prototype.updateFeature_ = function() {
   this.updateElevation();
   this.updateProfile();
 };
@@ -460,7 +461,7 @@ app.draw.FeaturePopupController.prototype.updateFeature_ = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.removeImage = function() {
+exports.prototype.removeImage = function() {
   this.tempThumbnail = '';
   this.tempImage = '';
 };
@@ -469,7 +470,7 @@ app.draw.FeaturePopupController.prototype.removeImage = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.close = function() {
+exports.prototype.close = function() {
   this.dock();
 };
 
@@ -477,7 +478,7 @@ app.draw.FeaturePopupController.prototype.close = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.fitFeature = function() {
+exports.prototype.fitFeature = function() {
   this.appFeaturePopup_.fit(this.feature);
 };
 
@@ -486,9 +487,9 @@ app.draw.FeaturePopupController.prototype.fitFeature = function() {
  * @return {string} The area.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getArea = function() {
+exports.prototype.getArea = function() {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON) {
+      this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON) {
     var geom = /** @type {ol.geom.Polygon} */ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
     return this.appFeaturePopup_.formatArea(/** @type {!ol.geom.Polygon} */(geom));
@@ -502,14 +503,14 @@ app.draw.FeaturePopupController.prototype.getArea = function() {
  * @return {string} The radius.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getRadius = function() {
+exports.prototype.getRadius = function() {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON &&
+      this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    var center = ol.extent.getCenter(geom.getExtent());
-    var line = new ol.geom.LineString([center, geom.getLastCoordinate()]);
+    var center = olExtent.getCenter(geom.getExtent());
+    var line = new olGeomLineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
   } else {
     return '';
@@ -521,10 +522,10 @@ app.draw.FeaturePopupController.prototype.getRadius = function() {
  * @return {string} The length.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getLength = function() {
+exports.prototype.getLength = function() {
   if (this.feature !== undefined &&
-      (this.feature.getGeometry().getType() === ol.geom.GeometryType.POLYGON ||
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING)
+      (this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON ||
+      this.feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING)
   ) {
     var geom = /** @type {(ol.geom.LineString|ol.geom.Polygon)} **/
         (this.feature.getGeometry());
@@ -539,9 +540,9 @@ app.draw.FeaturePopupController.prototype.getLength = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.updateElevation = function() {
+exports.prototype.updateElevation = function() {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
+      this.feature.getGeometry().getType() === olGeomGeometryType.POINT &&
       !this.feature.get('isLabel') &&
       !this.ngeoNetworkStatus_.isDisconnected()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
@@ -559,9 +560,9 @@ app.draw.FeaturePopupController.prototype.updateElevation = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.updateProfile = function() {
+exports.prototype.updateProfile = function() {
   if (this.feature !== undefined &&
-      this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
+      this.feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
       !this.ngeoNetworkStatus_.isDisconnected()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
@@ -580,7 +581,7 @@ app.draw.FeaturePopupController.prototype.updateProfile = function() {
  * @return {boolean} return true if is editable by the user.
  * @export
  */
-app.draw.FeaturePopupController.prototype.isEditable = function() {
+exports.prototype.isEditable = function() {
   if (this.feature !== undefined &&
       !!this.feature.get('__map_id__')) {
     return this.appMymaps_.isEditable();
@@ -593,7 +594,7 @@ app.draw.FeaturePopupController.prototype.isEditable = function() {
  * Inits the attributes form (ie. gets the name and description from feature).
  * @private
  */
-app.draw.FeaturePopupController.prototype.initForm_ = function() {
+exports.prototype.initForm_ = function() {
   this.tempName = /** @type {string} */ (this.feature.get('name'));
   this.tempDesc = /** @type {string} */ (this.feature.get('description'));
   this.tempThumbnail = /** @type {string} */ (this.feature.get('thumbnail'));
@@ -605,7 +606,7 @@ app.draw.FeaturePopupController.prototype.initForm_ = function() {
  * Puts the temporary edited name and description back to the feature.
  * @export
  */
-app.draw.FeaturePopupController.prototype.validateModifications = function() {
+exports.prototype.validateModifications = function() {
   this.feature.set('name', this.tempName);
   this.feature.set('description', this.tempDesc);
   this.feature.set('thumbnail', this.tempThumbnail);
@@ -621,7 +622,7 @@ app.draw.FeaturePopupController.prototype.validateModifications = function() {
  * @return {string} The path to the mymaps resource.
  * @export
  */
-app.draw.FeaturePopupController.prototype.getMymapsPath = function(resource) {
+exports.prototype.getMymapsPath = function(resource) {
   if (resource) {
     return this.mymapsImageUrl_ + resource;
   }
@@ -633,7 +634,7 @@ app.draw.FeaturePopupController.prototype.getMymapsPath = function(resource) {
  * Puts the temporary edited name and description back to the feature.
  * @export
  */
-app.draw.FeaturePopupController.prototype.deleteFeature = function() {
+exports.prototype.deleteFeature = function() {
   this.appFeaturePopup_.hide();
   this.selectedFeatures_.remove(this.feature);
   this.drawnFeatures_.remove(this.feature);
@@ -647,7 +648,7 @@ app.draw.FeaturePopupController.prototype.deleteFeature = function() {
  * @return {*} The trusted content.
  * @export
  */
-app.draw.FeaturePopupController.prototype.trustAsHtml = function(content) {
+exports.prototype.trustAsHtml = function(content) {
   if (!(content !== undefined && content !== null)) {
     content = '';
   }
@@ -659,7 +660,7 @@ app.draw.FeaturePopupController.prototype.trustAsHtml = function(content) {
  * @return {boolean} True if is authenticated.
  * @export
  */
-app.draw.FeaturePopupController.prototype.isAuthenticated = function() {
+exports.prototype.isAuthenticated = function() {
   return this.appUserManager_.isAuthenticated();
 };
 
@@ -667,7 +668,7 @@ app.draw.FeaturePopupController.prototype.isAuthenticated = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.modifySelectedFeature = function() {
+exports.prototype.modifySelectedFeature = function() {
   if (this.feature) {
     this.drawnFeatures_.activateModifyIfNeeded(this.feature);
     if (this.isCircle() && this.isEditable()) {
@@ -681,7 +682,7 @@ app.draw.FeaturePopupController.prototype.modifySelectedFeature = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.endModifySelectedFeature = function() {
+exports.prototype.endModifySelectedFeature = function() {
   this.feature.set('__editable__', false);
   this.drawnFeatures_.modifyInteraction.setActive(false);
   this.drawnFeatures_.modifyCircleInteraction.setActive(false);
@@ -695,13 +696,13 @@ app.draw.FeaturePopupController.prototype.endModifySelectedFeature = function() 
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.continueLine = function() {
+exports.prototype.continueLine = function() {
   if (this.feature) {
     var lastCoordinate = /** @type {ol.geom.LineString}*/
         (this.feature.getGeometry()).getLastCoordinate();
     var viewSize = /** {ol.Size} **/ (this.map.getSize());
     console.assert(viewSize !== undefined);
-    this.map.getView().fit(new ol.geom.Point(lastCoordinate), {
+    this.map.getView().fit(new olGeomPoint(lastCoordinate), {
       size: viewSize
     });
 
@@ -719,11 +720,11 @@ app.draw.FeaturePopupController.prototype.continueLine = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.reverseLine = function() {
+exports.prototype.reverseLine = function() {
   if (this.feature) {
     var coordinates = /** @type {ol.geom.LineString}*/
         (this.feature.getGeometry()).getCoordinates().reverse();
-    this.feature.setGeometry(new ol.geom.LineString(coordinates));
+    this.feature.setGeometry(new olGeomLineString(coordinates));
     this.drawnFeatures_.saveFeature(this.feature);
   }
   this.updateProfile();
@@ -734,7 +735,7 @@ app.draw.FeaturePopupController.prototype.reverseLine = function() {
 /**
  * @export
  */
-app.draw.FeaturePopupController.prototype.modifyCircle = function() {
+exports.prototype.modifyCircle = function() {
   if (this.feature) {
     this.drawnFeatures_.activateModifyIfNeeded(this.feature);
   }
@@ -745,10 +746,10 @@ app.draw.FeaturePopupController.prototype.modifyCircle = function() {
  * @return {boolean} True if is line.
  * @export
  */
-app.draw.FeaturePopupController.prototype.isLineString = function() {
+exports.prototype.isLineString = function() {
   if (this.feature) {
     return this.feature.getGeometry().getType() ===
-        ol.geom.GeometryType.LINE_STRING;
+        olGeomGeometryType.LINE_STRING;
   }
   return false;
 };
@@ -758,7 +759,7 @@ app.draw.FeaturePopupController.prototype.isLineString = function() {
  * @return {boolean} True if circle.
  * @export
  */
-app.draw.FeaturePopupController.prototype.isCircle = function() {
+exports.prototype.isCircle = function() {
   if (this.feature) {
     return !!this.feature.get('isCircle');
   }
@@ -770,7 +771,7 @@ app.draw.FeaturePopupController.prototype.isCircle = function() {
  * Dock the popup to the left panel.
  * @export
  */
-app.draw.FeaturePopupController.prototype.dock = function() {
+exports.prototype.dock = function() {
   this.appFeaturePopup_.isDocked = true;
   this.appFeaturePopup_.hide();
 };
@@ -780,7 +781,7 @@ app.draw.FeaturePopupController.prototype.dock = function() {
  * Undock the popup and display it into the map.
  * @export
  */
-app.draw.FeaturePopupController.prototype.undock = function() {
+exports.prototype.undock = function() {
   this.appFeaturePopup_.isDocked = false;
   this.appFeaturePopup_.show(this.feature, this.map);
 };
@@ -790,8 +791,8 @@ app.draw.FeaturePopupController.prototype.undock = function() {
  * @return {boolean} True if the popup is docked.
  * @export
  */
-app.draw.FeaturePopupController.prototype.isDocked = function() {
+exports.prototype.isDocked = function() {
   return this.appFeaturePopup_.isDocked;
 };
 
-app.module.controller('AppFeaturePopupController', app.draw.FeaturePopupController);
+appModule.controller('AppFeaturePopupController', exports);

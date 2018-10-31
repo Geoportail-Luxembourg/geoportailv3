@@ -8,9 +8,10 @@
  * </app-routing>
  *
  */
-goog.provide('app.routing.routingDirective');
+goog.module('app.routing.routingDirective');
 
-goog.require('app.module');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -18,7 +19,7 @@ goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.routing.routingDirective = function(appRoutingTemplateUrl) {
+exports = function(appRoutingTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -34,4 +35,4 @@ app.routing.routingDirective = function(appRoutingTemplateUrl) {
 };
 
 
-app.module.directive('appRouting', app.routing.routingDirective);
+appModule.directive('appRouting', exports);

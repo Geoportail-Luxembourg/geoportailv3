@@ -1,12 +1,13 @@
-goog.provide('app.print.Printservice');
+goog.module('app.print.Printservice');
 
-goog.require('ngeo.print.Service');
-goog.require('ol.array');
-goog.require('ol.obj');
-goog.require('ol.math');
+goog.module.declareLegacyNamespace();
+const ngeoPrintService = goog.require('ngeo.print.Service');
+const olArray = goog.require('ol.array');
+const olObj = goog.require('ol.obj');
+const olMath = goog.require('ol.math');
 
 
-app.print.Printservice = class extends ngeo.print.Service {
+exports = class extends ngeoPrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
@@ -36,7 +37,7 @@ app.print.Printservice = class extends ngeo.print.Service {
     const attributes = /** @type {!MapFishPrintAttributes} */ ({
       map: specMap
     });
-    ol.obj.assign(attributes, customAttributes);
+    olObj.assign(attributes, customAttributes);
 
     const spec = /** @type {MapFishPrintSpec} */ ({
       attributes,
@@ -58,7 +59,7 @@ app.print.Printservice = class extends ngeo.print.Service {
     const viewCenter = view.getCenter();
     const viewProjection = view.getProjection();
     const viewResolution = view.getResolution();
-    const viewRotation = object.rotation || ol.math.toDegrees(view.getRotation());
+    const viewRotation = object.rotation || olMath.toDegrees(view.getRotation());
 
     console.assert(viewCenter !== undefined);
     console.assert(viewProjection !== undefined);
@@ -73,7 +74,7 @@ app.print.Printservice = class extends ngeo.print.Service {
     console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
-    ol.array.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
+    olArray.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
     layers = layers.slice().reverse();
 
     layers.forEach((layer) => {

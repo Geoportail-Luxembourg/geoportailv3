@@ -4,10 +4,11 @@
  * of the user.
  */
 
-goog.provide('app.UserManager');
+goog.module('app.UserManager');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -21,7 +22,7 @@ goog.require('app.NotifyNotificationType');
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
-app.UserManager = function($http, loginUrl, logoutUrl,
+exports = function($http, loginUrl, logoutUrl,
     getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
   /**
    * @type {string}
@@ -107,7 +108,7 @@ app.UserManager = function($http, loginUrl, logoutUrl,
  * @param {string} password The password.
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
-app.UserManager.prototype.authenticate = function(username, password) {
+exports.prototype.authenticate = function(username, password) {
 
   var req = $.param({
     'login': username,
@@ -122,19 +123,19 @@ app.UserManager.prototype.authenticate = function(username, password) {
           this.getUserInfo();
           var msg = this.gettextCatalog.getString(
               'Vous êtes maintenant correctement connecté.');
-          this.notify_(msg, app.NotifyNotificationType.INFO);
+          this.notify_(msg, appNotifyNotificationType.INFO);
         } else {
           this.clearUserInfo();
           this.notify_(this.gettextCatalog.getString(
               'Invalid username or password.'),
-              app.NotifyNotificationType.WARNING);
+              appNotifyNotificationType.WARNING);
         }
         return response;
       }.bind(this), function(response) {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
-            app.NotifyNotificationType.WARNING);
+            appNotifyNotificationType.WARNING);
         return response;
       }.bind(this));
 };
@@ -143,7 +144,7 @@ app.UserManager.prototype.authenticate = function(username, password) {
 /**
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
-app.UserManager.prototype.logout = function() {
+exports.prototype.logout = function() {
   return this.http_.get(this.logoutUrl_).then(
       function(response) {
         if (response.status == 200) {
@@ -152,7 +153,7 @@ app.UserManager.prototype.logout = function() {
           this.getUserInfo();
           this.notify_(this.gettextCatalog.getString(
               'Une erreur est survenue durant la déconnexion.'),
-              app.NotifyNotificationType.ERROR
+              appNotifyNotificationType.ERROR
               );
         }
         return response;
@@ -160,7 +161,7 @@ app.UserManager.prototype.logout = function() {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Une erreur est survenue durant la déconnexion.'),
-            app.NotifyNotificationType.ERROR);
+            appNotifyNotificationType.ERROR);
         return response;
       }.bind(this));
 };
@@ -169,7 +170,7 @@ app.UserManager.prototype.logout = function() {
 /**
  * @export
  */
-app.UserManager.prototype.getUserInfo = function() {
+exports.prototype.getUserInfo = function() {
   var req = {};
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -202,7 +203,7 @@ app.UserManager.prototype.getUserInfo = function() {
  * @return {boolean} True if authenticated.
  * @export
  */
-app.UserManager.prototype.isAuthenticated = function() {
+exports.prototype.isAuthenticated = function() {
   if (this.hasCookie(this.appAuthtktCookieName_)) {
     return (this.username.length > 0);
   }
@@ -215,7 +216,7 @@ app.UserManager.prototype.isAuthenticated = function() {
  * Clear the user information. This happens when logging out and in case
  * of error.
  */
-app.UserManager.prototype.clearUserInfo = function() {
+exports.prototype.clearUserInfo = function() {
   this.setUserInfo('', undefined, null, undefined, undefined, null, false);
 };
 
@@ -229,7 +230,7 @@ app.UserManager.prototype.clearUserInfo = function() {
  * @param {?number} mymapsRole The role used by mymaps.
  * @param {boolean} isAdmin True if is a mymaps admin.
  */
-app.UserManager.prototype.setUserInfo = function(
+exports.prototype.setUserInfo = function(
     username, role, roleId, mail, name, mymapsRole, isAdmin) {
   if (username !== undefined) {
     this.username = username;
@@ -247,35 +248,35 @@ app.UserManager.prototype.setUserInfo = function(
 /**
  * @return {string} The username.
  */
-app.UserManager.prototype.getUsername = function() {
+exports.prototype.getUsername = function() {
   return this.username;
 };
 
 /**
  * @return {string|undefined} The Email.
  */
-app.UserManager.prototype.getEmail = function() {
+exports.prototype.getEmail = function() {
   return this.email;
 };
 
 /**
  * @return {?number} The Role Id.
  */
-app.UserManager.prototype.getRoleId = function() {
+exports.prototype.getRoleId = function() {
   return this.roleId;
 };
 
 /**
  * @return {?number} The Role Id.
  */
-app.UserManager.prototype.getMymapsRole = function() {
+exports.prototype.getMymapsRole = function() {
   return this.mymapsRole;
 };
 
 /**
  * @return {boolean} True if is a mymaps admin.
  */
-app.UserManager.prototype.getMymapsAdmin = function() {
+exports.prototype.getMymapsAdmin = function() {
   return this.isMymapsAdmin;
 };
 
@@ -283,7 +284,7 @@ app.UserManager.prototype.getMymapsAdmin = function() {
  * @param {string} cname The cookie name.
  * @return {boolean} True if the cookie exists.
  */
-app.UserManager.prototype.hasCookie = function(cname) {
+exports.prototype.hasCookie = function(cname) {
   var name = cname + '=';
   var ca = document.cookie.split(';');
   for (var i = 0; i < ca.length; i++) {
@@ -299,4 +300,4 @@ app.UserManager.prototype.hasCookie = function(cname) {
 };
 
 
-app.module.service('appUserManager', app.UserManager);
+appModule.service('appUserManager', exports);

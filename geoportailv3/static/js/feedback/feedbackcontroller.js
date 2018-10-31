@@ -1,7 +1,8 @@
-goog.provide('app.feedback.FeedbackController');
+goog.module('app.feedback.FeedbackController');
 
-goog.require('app.module');
-goog.require('app.NotifyNotificationType');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
 
 
 /**
@@ -18,7 +19,7 @@ goog.require('app.NotifyNotificationType');
  * @ngInject
  * @export
  */
-app.feedback.FeedbackController = function($scope, $http, appNotify, appUserManager,
+exports = function($scope, $http, appNotify, appUserManager,
     gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackUrl) {
 
   /**
@@ -126,14 +127,14 @@ app.feedback.FeedbackController = function($scope, $http, appNotify, appUserMana
 /**
  * @private
  */
-app.feedback.FeedbackController.prototype.setUrl_ = function() {
+exports.prototype.setUrl_ = function() {
   this.url = this.ngeoLocation_.getUriString();
 };
 
 /**
  * @export
  */
-app.feedback.FeedbackController.prototype.activateDrawingTools = function() {
+exports.prototype.activateDrawingTools = function() {
   this['drawingTools'] = true;
 };
 
@@ -141,14 +142,14 @@ app.feedback.FeedbackController.prototype.activateDrawingTools = function() {
  * @param {ol.layer.Layer} layer Layer.
  * @export
  */
-app.feedback.FeedbackController.prototype.setConcernedLayer = function(layer) {
+exports.prototype.setConcernedLayer = function(layer) {
   this.concernedLayer = /** @type {string} */ (layer.get('label'));
 };
 
 /**
  * @export
  */
-app.feedback.FeedbackController.prototype.sendReport = function() {
+exports.prototype.sendReport = function() {
   var req = {
     url: this.url,
     email: this.email,
@@ -164,14 +165,14 @@ app.feedback.FeedbackController.prototype.sendReport = function() {
       var msg = this.gettextCatalog.getString(
         'Feedback sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
-      this.notify_(msg, app.NotifyNotificationType.INFO);
+      this.notify_(msg, appNotifyNotificationType.INFO);
       this['active'] = false;
     }.bind(this), function(response) {
       var msg = this.gettextCatalog.getString(
         'Feedback could not be sent to <a href="mailto:' + supportEmail + '">' +
         supportEmail + '</a>');
-      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      this.notify_(msg, appNotifyNotificationType.ERROR);
     }.bind(this));
 };
 
-app.module.controller('AppFeedbackController', app.feedback.FeedbackController);
+appModule.controller('AppFeedbackController', exports);

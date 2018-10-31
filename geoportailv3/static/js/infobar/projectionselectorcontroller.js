@@ -12,10 +12,11 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.infobar.ProjectionselectorController');
+goog.module('app.infobar.ProjectionselectorController');
 
-goog.require('app.module');
-goog.require('ol.control.MousePosition');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olControlMousePosition = goog.require('ol.control.MousePosition');
 
 
 /**
@@ -26,7 +27,7 @@ goog.require('ol.control.MousePosition');
  * @param {angular.$sce} $sce Angular sce service.
  * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
-app.infobar.ProjectionselectorController =
+exports =
     function($document, $sce, appCoordinateString) {
       /**
        * @type {app.CoordinateString}
@@ -46,7 +47,7 @@ app.infobar.ProjectionselectorController =
       ];
       this['projection'] = this['projectionOptions'][0];
       /** @type {ol.control.MousePostion} */
-      this['mousePositionControl'] = new ol.control.MousePosition({
+      this['mousePositionControl'] = new olControlMousePosition({
         className: 'custom-mouse-coordinates',
         coordinateFormat: /** @type {ol.CoordinateFormatType} */
         (this.mouseCoordinateFormat_.bind(this))
@@ -59,7 +60,7 @@ app.infobar.ProjectionselectorController =
  * @return {string} The mouse coordinate format.
  * @private
  */
-app.infobar.ProjectionselectorController.prototype.mouseCoordinateFormat_ =
+exports.prototype.mouseCoordinateFormat_ =
     function(coord) {
       var mapEpsgCode =
       this['map'].getView().getProjection().getCode();
@@ -78,7 +79,7 @@ app.infobar.ProjectionselectorController.prototype.mouseCoordinateFormat_ =
  * @export
  * @param {string} epsgCode The epsg code.
  */
-app.infobar.ProjectionselectorController.prototype.switchProjection =
+exports.prototype.switchProjection =
     function(epsgCode) {
       this['projection'] = this['projectionOptions'].find(
       function(obj) {
@@ -90,5 +91,5 @@ app.infobar.ProjectionselectorController.prototype.switchProjection =
       );
     };
 
-app.module.controller('AppProjectionselectorController',
-    app.infobar.ProjectionselectorController);
+appModule.controller('AppProjectionselectorController',
+    exports);
