@@ -1127,7 +1127,7 @@ appModule.controller('AppRoutingController', exports);
  * @ngdoc filter
  * @ngname appSecondsToHHmmss
  */
-app.secondsToHHmmss = function($filter) {
+function secondsToHHmmss($filter) {
   return function(seconds) {
     var hours   = Math.floor(seconds / 3600);
     var minutes = Math.floor((seconds - (hours * 3600)) / 60);
@@ -1146,4 +1146,4 @@ app.secondsToHHmmss = function($filter) {
   };
 };
 
-appModule.filter('appSecondsToHHmmss', app.secondsToHHmmss);
+appModule.filter('appSecondsToHHmmss', secondsToHHmmss);

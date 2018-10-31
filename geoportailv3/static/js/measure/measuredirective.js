@@ -21,7 +21,7 @@ const appModule = goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.measure.measureDirective = function(appMeasureTemplateUrl) {
+function measureDirective(appMeasureTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -36,4 +36,4 @@ app.measure.measureDirective = function(appMeasureTemplateUrl) {
 };
 
 
-appModule.directive('appMeasure', app.measure.measureDirective);
+appModule.directive('appMeasure', measureDirective);

@@ -26,7 +26,7 @@ const olStyleText = goog.require('ol.style.Text');
 /**
  * @enum {string}
  */
-app.draw.FeatureHashStyleType = {
+const FeatureHashStyleType = {
   LINE_STRING: 'LineString',
   POINT: 'Point',
   POLYGON: 'Polygon'
@@ -34,30 +34,30 @@ app.draw.FeatureHashStyleType = {
 
 
 /**
- * @type {Object.<ol.geom.GeometryType, app.draw.FeatureHashStyleType>}
+ * @type {Object.<ol.geom.GeometryType, FeatureHashStyleType>}
  * @private
  */
-app.draw.FeatureHashStyleTypes_ = {};
+const FeatureHashStyleTypes = {};
 
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.LINE_STRING] =
-    app.draw.FeatureHashStyleType.LINE_STRING;
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.POINT] =
-    app.draw.FeatureHashStyleType.POINT;
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.POLYGON] =
-    app.draw.FeatureHashStyleType.POLYGON;
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.MULTI_LINE_STRING] =
-    app.draw.FeatureHashStyleType.LINE_STRING;
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.MULTI_POINT] =
-    app.draw.FeatureHashStyleType.POINT;
-app.draw.FeatureHashStyleTypes_[olGeomGeometryType.MULTI_POLYGON] =
-    app.draw.FeatureHashStyleType.POLYGON;
+FeatureHashStyleTypes[olGeomGeometryType.LINE_STRING] =
+    FeatureHashStyleType.LINE_STRING;
+FeatureHashStyleTypes[olGeomGeometryType.POINT] =
+    FeatureHashStyleType.POINT;
+FeatureHashStyleTypes[olGeomGeometryType.POLYGON] =
+    FeatureHashStyleType.POLYGON;
+FeatureHashStyleTypes[olGeomGeometryType.MULTI_LINE_STRING] =
+    FeatureHashStyleType.LINE_STRING;
+FeatureHashStyleTypes[olGeomGeometryType.MULTI_POINT] =
+    FeatureHashStyleType.POINT;
+FeatureHashStyleTypes[olGeomGeometryType.MULTI_POLYGON] =
+    FeatureHashStyleType.POLYGON;
 
 
 /**
  * @type {Object.<string, string>}
  * @private
  */
-app.draw.FeatureHashLegacyProperties_ = {};
+const FeatureHashLegacyProperties = {};
 
 
 /**
@@ -134,7 +134,7 @@ exports = function(opt_options) {
    * @type {Object.<string, string>}
    * @private
    */
-  app.draw.FeatureHashLegacyProperties_ = (options.propertiesType !== undefined) &&  options.propertiesType;
+  FeatureHashLegacyProperties = (options.propertiesType !== undefined) &&  options.propertiesType;
 
 };
 olBase.inherits(exports, olFormatTextFeature);
@@ -255,7 +255,7 @@ exports.encodeNumber_ = function(num) {
  * @private
  */
 exports.encodeStyles_ = function(styles, geometryType, encodedStyles) {
-  var styleType = app.draw.FeatureHashStyleTypes_[geometryType];
+  var styleType = FeatureHashStyleTypes[geometryType];
   console.assert(styleType !== undefined);
   for (var i = 0; i < styles.length; ++i) {
     var style = styles[i];
@@ -263,16 +263,16 @@ exports.encodeStyles_ = function(styles, geometryType, encodedStyles) {
     var imageStyle = style.getImage();
     var strokeStyle = style.getStroke();
     var textStyle = style.getText();
-    if (styleType == app.draw.FeatureHashStyleType.POLYGON) {
+    if (styleType == FeatureHashStyleType.POLYGON) {
       if (fillStyle !== null) {
         exports.encodeStylePolygon_(
             fillStyle, strokeStyle, encodedStyles);
       }
-    } else if (styleType == app.draw.FeatureHashStyleType.LINE_STRING) {
+    } else if (styleType == FeatureHashStyleType.LINE_STRING) {
       if (strokeStyle !== null) {
         exports.encodeStyleLine_(strokeStyle, encodedStyles);
       }
-    } else if (styleType == app.draw.FeatureHashStyleType.POINT) {
+    } else if (styleType == FeatureHashStyleType.POINT) {
       if (imageStyle !== null) {
         exports.encodeStylePoint_(imageStyle, encodedStyles);
       }
@@ -685,8 +685,8 @@ exports.setStyleProperties_ = function(text, feature) {
   var clone = {};
   for (var key in properties) {
     var value = properties[key];
-    if (app.draw.FeatureHashLegacyProperties_[key]) {
-      clone[app.draw.FeatureHashLegacyProperties_[key]] = value;
+    if (FeatureHashLegacyProperties[key]) {
+      clone[FeatureHashLegacyProperties[key]] = value;
     } else {
       clone[key] = value;
     }
@@ -1053,8 +1053,8 @@ exports.prototype.readFeatureFromText = function(text, opt_options) {
         console.assert(keyVal.length === 2);
         var key = keyVal[0];
         var value = keyVal[1];
-        if (!this.setStyle_ && app.draw.FeatureHashLegacyProperties_[key]) {
-          key = app.draw.FeatureHashLegacyProperties_[key];
+        if (!this.setStyle_ && FeatureHashLegacyProperties[key]) {
+          key = FeatureHashLegacyProperties[key];
         }
         feature.set(key, value);
       }
