@@ -38,6 +38,6 @@ function factory() {
       el.alert('close');
     }, notifyDuration);
   }
-};
+}
 
 appModule.factory('appNotify', factory);

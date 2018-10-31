@@ -1144,6 +1144,6 @@ function secondsToHHmmss($filter) {
     }
     return hours + ':' + minutes + ':' + sec;
   };
-};
+}
 
 appModule.filter('appSecondsToHHmmss', secondsToHHmmss);

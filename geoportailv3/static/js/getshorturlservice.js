@@ -44,7 +44,7 @@ function service($http, ngeoLocation, shorturlServiceUrl) {
               return resp.data['short_url'];
             });
       });
-};
+}
 
 
 appModule.service('appGetShorturl', service);

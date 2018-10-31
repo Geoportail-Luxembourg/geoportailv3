@@ -47,7 +47,7 @@ function service($http, gettextCatalog, elevationServiceUrl) {
                 'rawElevation': resp.data['dhm']};
             });
   }
-};
+}
 
 
 appModule.service('appGetElevation', service);

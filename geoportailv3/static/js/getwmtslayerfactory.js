@@ -26,7 +26,7 @@ function getImageExtension_(imageType) {
   var imageExt = imageType.split('/')[1];
   console.assert(imageExt == 'png' || imageExt == 'jpeg');
   return imageExt;
-};
+}
 
 
 /**
@@ -96,7 +96,7 @@ function factory(requestScheme) {
 
     return layer;
   }
-};
+}
 
 
 appModule.factory('appGetWmtsLayer', factory);
