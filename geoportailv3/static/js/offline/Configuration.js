@@ -1,7 +1,6 @@
 goog.module('app.offline.Configuration');
 goog.module.declareLegacyNamespace();
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.layer.Vector');
 
@@ -21,9 +20,9 @@ exports = class extends NgeoConfiguration {
    */
   constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoLocation) {
     const gutter = ngeoLocation.hasParam('offline_gutter') ? ngeoLocation.getParamAsInt('offline_gutter') : 96;
-    goog.asserts.assert(gutter !== undefined);
+    console.assert(gutter !== undefined);
     ngeoOfflineModule.value('ngeoOfflineGutter', gutter);
-    super($rootScope, ngeoBackgroundLayerMgr, gutter);
+    super($rootScope, ngeoBackgroundLayerMgr, /** @type {number} */ (gutter));
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
