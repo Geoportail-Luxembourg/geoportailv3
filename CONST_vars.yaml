@@ -36,11 +36,16 @@ vars:
         PGPASSWORD: www-data
         # FIXME for lux, base was geomapfish
         PGDATABASE: lux
+        PGSCHEMA: main
+        PGSCHEMA_STATIC: main_static
         GEOPORTAL_INTERNAL_URL: http://geoportal:8080
+        TILECLOUDCHAIN_INTERNAL_URL: http://tilecloudchain:8080
         MAPCACHE_URL: http://mapcache:8080/mapcache/
         MAPSERVER_URL: http://mapserver:8080/
         MEMCACHED_HOST: memcached
         MEMCACHED_PORT: 11211
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
         TILEGENERATION_SQS_QUEUE: '<queue_name>'
     db:
       environment:
@@ -60,7 +65,7 @@ vars:
         # FIXME for lux, base was geomapfish
         PGDATABASE: lux
         # FIXME for lux, base was geov3
-        GSCHEMA: geov3
+        PGSCHEMA: geov3
         # FIXME for lux, base was geov3_static
         PGSCHEMA_STATIC: geov3_static
     geoportal:
@@ -84,8 +89,16 @@ vars:
         REDIS_PORT: 6379
         C2C_REDIS_URL: redis://redis:6379
         C2C_BROADCAST_PREFIX: broadcast_geoportal_
+        PGOPTIONS: '-c statement_timeout=30000'
+    mapserver:
+      environment:
+        PGOPTIONS: '-c statement_timeout=30000'
     qgisserver:
-      environment: *geo-run-env
+      environment:
+        <<: *geo-run-env
+        C2C_REDIS_URL: redis://redis:6379
+        C2C_BROADCAST_PREFIX: broadcast_geoportal_
+        PGOPTIONS: '-c statement_timeout=30000'
     tilecloudchain:
       environment:
         GUNICORN_PARAMS:
@@ -103,6 +116,7 @@ vars:
     print:
       environment:
         CATALINA_OPTS: -Xmx1024m
+        PGOPTIONS: '-c statement_timeout=30000'
     front:
       port: 80
 
@@ -414,22 +428,21 @@ vars:
 
   # For print proxy
   print_url: '{PRINT_URL}'
+
   mapserver_url: '{MAPSERVER_URL}'
   mapcache_url: '{MAPCACHE_URL}'
   devserver_url: http://{DEVSERVER_HOST}{entry_point}
   memcached_host: '{MEMCACHED_HOST}'
   memcached_port: '{MEMCACHED_PORT}'
   tilegeneration_sqs_queue: '{TILEGENERATION_SQS_QUEUE}'
+  tilegeneration_redis: 'redis://{REDIS_HOST}:{REDIS_PORT}'
 
   pdfreport:
     print_url: '{print_url}'
 
   # For base layers
   tiles_url:
-    - '{web_protocol}://a.tiles.{host}/tiles'
-    - '{web_protocol}://b.tiles.{host}/tiles'
-    - '{web_protocol}://c.tiles.{host}/tiles'
-    - '{web_protocol}://d.tiles.{host}/tiles'
+    - '{web_protocol}://{host}/{instance}/tiles/'
   wmtscapabilities_path: '{WMTSCAPABILITIES_PATH}'
 
   ogcproxy_enable: false
@@ -437,12 +450,32 @@ vars:
   lingua_extractor: {}
 
   global_headers:
-    X-Frame-Options: SAMEORIGIN
-    X-Xss-Protection: 1; mode=block
-    X-Content-Type-Options: nosniff
-    Referrer-Policy: origin
-    Strict-Transport-Security: max-age=31536000; includeSubDomains
-    Content-Security-Policy: script-src 'self'; frame-src 'self'; form-action 'self'
+    - pattern: '.*'
+      headers:
+        X-Frame-Options: SAMEORIGIN
+        X-Xss-Protection: 1; mode=block
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: origin
+        Strict-Transport-Security: max-age=31536000; includeSubDomains
+        Content-Security-Policy: "default-src 'self' https://*; \
+            script-src 'self' 'unsafe-inline' https://cdn.polyfill.io/ https://maps.googleapis.com/; \
+            style-src 'self' 'unsafe-inline'; \
+            img-src * data:; \
+            connect-src *"
+    - pattern: '^/apihelp.html'
+      headers:
+        Content-Security-Policy: "default-src 'self'; \
+            script-src 'self' 'unsafe-inline' 'unsafe-eval'; \
+            style-src 'self' 'unsafe-inline'; \
+            img-src *;"
+    - pattern: '^/admin/.*'
+      headers:
+        Referrer-Policy: same-origin
+        Content-Security-Policy: "default-src 'self'; \
+            script-src 'self' 'unsafe-inline'; \
+            style-src 'self' 'unsafe-inline'; \
+            img-src * data:; \
+            worker-src 'self' blob:"
 
   # Control the HTTP headers
   headers:
@@ -606,9 +639,9 @@ runtime_environment:
   - name: PGSCHEMA_STATIC
     default: main_static
   - name: TINYOWS_URL
-    default: http://tinyows/
+    default: http://tinyows:8080/
   - name: MAPSERVER_URL
-    default: http://mapserver/
+    default: http://mapserver:8080/
   - name: PRINT_URL
     default: http://print:8080/print/
   - name: MAPCACHE_URL

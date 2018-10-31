@@ -8,6 +8,7 @@ pyramid.debug_routematch = false
 pyramid.debug_templates = false
 mako.directories = geoportailv3_geoportal:templates
     c2cgeoportal_geoportal:templates
+authtk_secure = False
 authtkt_secret = ${authtkt["secret"]}
 authtkt_cookie_name = ${authtkt["cookie_name"]}
 % if "timeout" in authtkt:

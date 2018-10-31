@@ -1,4 +1,4 @@
-GEOMAPFISH_VERSION ?= 2.3.3
+GEOMAPFISH_VERSION ?= 2.3.4.dev8
 export GEOMAPFISH_VERSION
 export PACKAGE = geoportailv3
 
@@ -68,7 +68,7 @@ export PGSCHEMA
 PGSCHEMA_STATIC ?= main_static
 export PGSCHEMA_STATIC
 
-DEFAULT_WEB_RULE += $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT)
+DEFAULT_WEB_RULE += $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT) $(CSS_API_OUTPUT) $(CSS_XAPI_OUTPUT)
 ifneq ($(NGEO_INTERFACES), "")
 DEFAULT_WEB_RULE += $(NGEO_OUTPUT_FILES)
 CLIENT_CHECK_RULE ?= lint-ngeo
@@ -170,7 +170,7 @@ endif
 ifeq ($(CGXP_XAPI), TRUE)
 JSBUILD_OUTPUT_FILES += xapi.js
 JSBUILD_OUTPUT_FILES += $(addprefix lang-, $(addsuffix .js, $(LANGUAGES)))
-CSS_API_OUTPUT = $(OUTPUT_DIR)/xapi.css
+CSS_XAPI_OUTPUT = $(OUTPUT_DIR)/xapi.css
 endif
 ifeq ($(CGXP_API), TRUE)
 JSBUILD_OUTPUT_FILES += api.js
@@ -417,10 +417,21 @@ yamllint: $(YAML_FILES)
 .PHONY: spell
 spell:
 	codespell --quiet-level=2 --check-filenames --ignore-words=spell-ignore-words.txt \
-		$(shell find -name node_modules -prune -or -name .git -prune -or -name '__pycache__' -prune \
-		-or -name 'build' -prune -or -name '.build' -prune -or -name 'cgxp' -prune -or -name 'c2cgeoportal_*' -prune \
-		-or \( -type f -and -not -name '*.png' -and -not -name '*.mo' -and -not -name '*.po*' \
-		-and -not -name 'CONST_Makefile' -and -not -name 'package-lock.json' \) -print)
+		$(shell find \
+		-name node_modules -prune -or \
+		-name .git -prune -or \
+		-name '__pycache__' -prune -or \
+		-name 'build' -prune -or \
+		-name '.build' -prune -or \
+		-name 'cgxp' -prune -or \
+		-name 'c2cgeoportal_*' -prune -or \( \
+		-type f -and \
+		-not -name '*.png' -and \
+		-not -name '*.mo' -and \
+		-not -name '*.po*' -and \
+		-not -name '*.qgs*' -and \
+		-not -name 'CONST_Makefile' -and \
+		-not -name 'package-lock.json' \) -print)
 
 .PHONY: clean
 clean: template-clean
@@ -463,7 +474,7 @@ flake8:
 	flake8 $(PACKAGE)
 
 .PHONY: build-cgxp
-build-cgxp: $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT)
+build-cgxp: $(JSBUILD_OUTPUT_FILES) $(CSS_CGXP_OUTPUT) $(CSS_API_OUTPUT) $(CSS_XAPI_OUTPUT)
 
 .PHONY: lint-ngeo
 lint-ngeo: /build/eslint.timestamp
@@ -482,7 +493,7 @@ template-clean:
 		$(ALL_JINJA_FILES:.jinja=) \
 		geoportal/config.yaml
 
-/build/c2ctemplate-cache.json: $(VARS_DEPENDS) $(MAKE_FILES)
+/build/c2ctemplate-cache.json: .config $(VARS_DEPENDS) $(MAKE_FILES)
 	$(PRERULE_CMD)
 ifeq ($(origin VARS_FILE), undefined)
 	@echo "Error: the variable VARS_FILE is required."
@@ -619,6 +630,7 @@ $(APP_OUTPUT_DIR)/images/: /usr/lib/node_modules/jquery-ui/themes/base/images
 			$(NGEO_FONTS) \
 			$(APP_OUTPUT_DIR)/images/
 	$(PRERULE_CMD)
+	rm --force $(APP_OUTPUT_DIR)/$*.*
 	# Workaround to make Webpack working for ol/index.js
 	rm --force geoportal/node_modules
 	ln --symbolic /usr/lib/node_modules/ geoportal/
@@ -626,7 +638,11 @@ $(APP_OUTPUT_DIR)/images/: /usr/lib/node_modules/jquery-ui/themes/base/images
 	rm geoportal/node_modules
 ifeq ($(DOCKER), TRUE)
 	mv $(APP_OUTPUT_DIR)/$*.html $(APP_OUTPUT_DIR)/$*.html.tmpl
+ifeq ($(NODE_ENV), development)
+	mv $(APP_OUTPUT_DIR)/$*.css $(APP_OUTPUT_DIR)/$*.css.tmpl
+else
 	ls -1 $(APP_OUTPUT_DIR)/$*.*.css|while read file; do mv $${file} $${file}.tmpl; done
+endif
 endif
 	touch $@
 
@@ -714,7 +730,8 @@ docker-build-config: $(shell docker-required --path .) \
 docker-build-geoportal: $(shell docker-required --path geoportal) \
 		$(WEB_RULE) \
 		$(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_CLIENT_POSTFIX).mo, $(LANGUAGES))) \
-		geoportal/config.yaml
+		geoportal/config.yaml \
+		geoportal/alembic.yaml
 	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) geoportal
 ifdef CGXP_INTERFACES
 docker-build-geoportal: $(addprefix geoportal/$(PACKAGE)_geoportal/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)_geoportal-$(L10N_SERVER_POSTFIX).mo, $(LANGUAGES)))

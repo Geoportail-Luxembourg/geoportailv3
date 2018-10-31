@@ -10,22 +10,22 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: contribs/gmf/apps/desktop/Controller.js:101
-#: contribs/gmf/apps/desktop_alt/Controller.js:125
+#: contribs/gmf/apps/desktop/Controller.js:107
+#: contribs/gmf/apps/desktop_alt/Controller.js:132
 #: contribs/gmf/apps/oeedit/Controller.js:210
 #: contribs/gmf/apps/oeview/Controller.js:101
 msgid "Add a layer"
 msgstr "Ajouter une couche"
 
-#: contribs/gmf/apps/desktop/Controller.js:100
-#: contribs/gmf/apps/desktop_alt/Controller.js:124
+#: contribs/gmf/apps/desktop/Controller.js:106
+#: contribs/gmf/apps/desktop_alt/Controller.js:131
 #: contribs/gmf/apps/oeedit/Controller.js:209
 #: contribs/gmf/apps/oeview/Controller.js:100
 msgid "Add a sub theme"
 msgstr "Ajouter un sous thème"
 
-#: contribs/gmf/apps/desktop/Controller.js:99
-#: contribs/gmf/apps/desktop_alt/Controller.js:123
+#: contribs/gmf/apps/desktop/Controller.js:105
+#: contribs/gmf/apps/desktop_alt/Controller.js:130
 #: contribs/gmf/apps/oeedit/Controller.js:208
 #: contribs/gmf/apps/oeview/Controller.js:99
 msgid "Add a theme"
@@ -43,15 +43,15 @@ msgstr "Altitude (Aster)"
 msgid "Elevation (SRTM)"
 msgstr "Altitude (SRTM)"
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:122
+#: contribs/gmf/apps/desktop_alt/Controller.js:129
 msgid "Learning [merged]"
 msgstr "Formation [merged]"
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:121
+#: contribs/gmf/apps/desktop_alt/Controller.js:128
 msgid "OSM_time (merged)"
 msgstr "Temps OSM (merger)"
 
-#: contribs/gmf/apps/desktop_alt/Controller.js:120
+#: contribs/gmf/apps/desktop_alt/Controller.js:127
 msgid "OSM_time_merged"
 msgstr "Temps OSM (merger)"
 

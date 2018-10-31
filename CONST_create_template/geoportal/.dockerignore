@@ -9,3 +9,6 @@
 !setup.cfg
 !setup.py
 !geoportailv3_geoportal
+geoportailv3_geoportal/static/lib/cgxp
+!geoportailv3_geoportal/static/lib/cgxp/core/src/theme
+!geoportailv3_geoportal/static/lib/cgxp/openlayers/theme

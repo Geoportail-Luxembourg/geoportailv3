@@ -12,7 +12,6 @@ caches:
     local:
         type: filesystem
         folder: /var/sig/tiles
-        wmtscapabilities_file: ${wmtscapabilities_path}
         # for GetCapabilities
         http_url: ${web_protocol}://${host}${entry_point}
     s3:
@@ -101,6 +100,10 @@ generation:
     # maximum allowed consecutive errors, after it exit [default to 10]
     maxconsecutive_errors: 10
 
+redis:
+    url: '${tilegeneration_redis}'
+
+# Not used if the previous redis section is not commented out
 sqs:
     # The region where the SQS queue is
     region: eu-west-1

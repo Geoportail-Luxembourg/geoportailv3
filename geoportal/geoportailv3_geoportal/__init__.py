@@ -352,35 +352,35 @@ def main(global_config, **settings):
     config.add_route('isthemeprivate', '/isthemeprivate')
     config.add_route('download_resource', '/downloadresource')
 
-    # ldap
-    from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
-        get_user_from_request
-    ldap_settings = config.get_settings()['ldap']
-    if ldap_settings:
-        config.include('pyramid_ldap3')
+    # # ldap
+    # from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
+    #     get_user_from_request
+    # ldap_settings = config.get_settings()['ldap']
+    # if ldap_settings:
+    #     config.include('pyramid_ldap3')
 
-        """Config the ldap connection.
-        """
+    #     """Config the ldap connection.
+    #     """
 
-        config.ldap_setup(
-            ldap_settings['url'],
-            ldap_settings['bind'],
-            ldap_settings['passwd'],
-        )
+    #     config.ldap_setup(
+    #         ldap_settings['url'],
+    #         ldap_settings['bind'],
+    #         ldap_settings['passwd'],
+    #     )
 
-        config.ldap_set_login_query(
-            ldap_settings['base_dn'],
-            filter_tmpl='(login=%(login)s)',
-            scope=ldap.SUBTREE,
-            )
+    #     config.ldap_set_login_query(
+    #         ldap_settings['base_dn'],
+    #         filter_tmpl='(login=%(login)s)',
+    #         scope=ldap.SUBTREE,
+    #         )
 
-        config.set_request_property(
-            get_user_from_request,
-            name='user',
-            reify=True
-        )
+    #     config.set_request_property(
+    #         get_user_from_request,
+    #         name='user',
+    #         reify=True
+    #     )
 
-        set_user_validator(config, ldap_user_validator)
+    #     set_user_validator(config, ldap_user_validator)
 
     # json
     json_renderer = JSON()

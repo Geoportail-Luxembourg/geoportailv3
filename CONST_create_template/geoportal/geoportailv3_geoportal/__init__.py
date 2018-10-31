@@ -8,11 +8,11 @@ from geoportailv3_geoportal.resources import Root
 
 
 def main(global_config, **settings):
-    del global_config  # Unused
-
     """
     This function returns a Pyramid WSGI application.
     """
+    del global_config  # Unused
+
     config = Configurator(
         root_factory=Root, settings=settings,
         locale_negotiator=locale_negotiator,
