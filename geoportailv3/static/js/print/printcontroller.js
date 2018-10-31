@@ -606,7 +606,7 @@ app.print.PrintController.prototype.print = function(format) {
             layer.baseURL = layer.baseURL.replace('_hd', '');
             layer.matrixSet = layer.matrixSet.replace('_HD', '');
             // layer.layer = layer.layer + '_hd';
-            // goog.array.forEach(layer.matrices, function(matrice) {
+            // layer.matrices.forEach(function(matrice) {
             //   matrice.tileSize = [512, 512];
             // });
           }
