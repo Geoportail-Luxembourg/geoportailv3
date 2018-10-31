@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 /**
  * @typedef {{themes: Array.<Object>, background_layers: Array.<Object>}}
