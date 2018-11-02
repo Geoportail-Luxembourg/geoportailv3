@@ -1,0 +1,8 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3>{{feature.attributes.name}}</h3>
+  <iframe ng-if="ctrl.hasFeatureAttribute(feature, 'fr')" height=300 width=500 frameborder=0 ng-src="{{ctrl.getTrustedUrlByLang(feature.attributes.fr,feature.attributes.de,feature.attributes.en,feature.attributes.lb)}}"></iframe>
+  <iframe ng-if="ctrl.hasFeatureAttribute(feature, 'FR')" height=300 width=500 frameborder=0 ng-src="{{ctrl.getTrustedUrlByLang(feature.attributes.FR,feature.attributes.DE,feature.attributes.EN,feature.attributes.LB)}}"></iframe>
+  <iframe ng-if="!(ctrl.hasFeatureAttribute(feature, 'fr') || ctrl.hasFeatureAttribute(feature, 'FR')) && ctrl.hasFeatureAttribute(feature, 'url')" height=300 width=500 frameborder=0 ng-src="{{ctrl.getTrustedUrl(feature.attributes.url)}}"></iframe>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

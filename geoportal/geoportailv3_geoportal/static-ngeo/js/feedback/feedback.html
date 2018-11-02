@@ -1,0 +1,38 @@
+<div class="feedback-content">
+  <h3 translate>Report a map content problem:</h3>
+  <form ng-submit="ctrl.sendReport()">
+    <div class="form-group">
+      <label for="inputEmail" translate>Your email</label>
+      <input type="email" required ng-model="ctrl.email" class="form-control" id="inputEmail">
+    </div>
+    <div class="form-group">
+      <label for="dropdownLayerPicker" translate>Pick layer where problem occurs</label>
+      <div class="dropdown" id="dropdownLayerPicker">
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ctrl.concernedLayer | translate}}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+         <li>
+            <a href ng-click="ctrl.setConcernedLayer(ctrl.bgLayer)">{{ctrl.bgLayer.get('label')|translate}}</a>
+          </li>
+          <li ng-repeat="layer in ctrl.layers">
+            <a href ng-click="ctrl.setConcernedLayer(layer)">{{layer.get('label')|translate}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputDescription" translate>Describe the problem within the current map extent:</label>
+      <textarea rows="5" required  maxlength="500" ng-model="ctrl.description" class="form-control" id="inputDescription"></textarea>
+    </div>
+    <!-- <div class="form-group"> -->
+    <!--   <label for="exampleInputFile">Attach a file (optional)</label> -->
+    <!--   <input type="file" id="exampleInputFile"> -->
+    <!-- </div> -->
+    <div class="form-group">
+      <p translate>The following <a ng-href="{{ctrl.url}}" target="_blank">map link</a> will be sent to our support team.</p>
+      <p translate>You can also use the <a href ng-click="ctrl.activateDrawingTools()">Drawing Tools</a> to annotate the map send to the support team.<p></p>
+    </div>
+    <button type="submit" class="pull-right btn btn-default" translate>Send feedback to support team</button>
+  </form>
+</div>

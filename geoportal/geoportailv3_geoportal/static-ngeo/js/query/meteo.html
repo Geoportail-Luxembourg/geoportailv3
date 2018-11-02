@@ -1,0 +1,6 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3>{{feature.attributes.stationsname}} {{feature.attributes.sid}}</h3>
+  <iframe height=150 width=300 frameborder=0 src="{{ctrl.getTrustedUrl('http://217.5.174.45/cgi-bin/sinfoam.pl?c=92&nid=01&lid='+feature.attributes.sid)}}"></iframe>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

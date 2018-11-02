@@ -1,0 +1,7 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Nom</span> : {{feature.attributes.K_NAME }}<br>
+  <span translate>Statut</span> : <span translate>{{("rem_status_"+feature.attributes.K_STATUS) | translate}}</span><br>
+  <span translate>Type</span> : <span translate>{{("rem_typ_"+feature.attributes.K_TYP) | translate}}</span><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

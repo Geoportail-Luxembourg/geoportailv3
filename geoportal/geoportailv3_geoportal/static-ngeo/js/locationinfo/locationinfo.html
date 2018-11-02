@@ -1,0 +1,62 @@
+<div class="container-fluid printable" ng-show="ctrl.appSelector == 'locationinfo'">
+  <div class="row">
+    <div class="col-xs-8 locationinfo-shorturl no-print">
+      <h3 translate>Short Url</h3>
+      <input onclick="this.select();" type="text" class="form-control" name="shorturl" ng-model="ctrl.url" readonly="readonly" />
+    </div>
+    <div class="col-xs-4">
+      <img class="img-responsive" style="margin-top: 22px;" src="{{ ctrl.qrUrl }}"></img>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-14">
+      <h3 translate>Location Coordinates</h3>
+      <table class="table-condensed location-info-padding">
+        <tr ng-repeat="(key, value) in ctrl.location">
+          <th>{{key | translate}} </th> <td>{{ value }}</td>
+        </tr>
+        <tr>
+          <th translate>Elevation</th> <td>{{ ctrl.elevation }}</td>
+        </tr>
+        <tr>
+          <th translate>Adresse la plus proche</th> <td>{{ ctrl.address }}</td>
+        </tr>
+        <tr>
+          <th translate>Distance approximative</th> <td>{{ ctrl.distance }} <span translate> mètres</span></td>
+        </tr>
+        <tr class="no-print" ng-if="ctrl.isInBoxOfLidar">
+          <td colspan="2"><a class="fid-link" href="{{ctrl.getLidarUrl()}}" target="_blank" translate>Lien vers la démo lidar</a></td>
+        </tr>
+        <tr class="no-print">
+          <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('SID')}}" target="_blank" translate>Itinéraire mobilitéit.lu depuis ici</a></td>
+          <td><a class="fid-link" ng-href="{{ctrl.getMobilityUrl('ZID')}}" target="_blank" translate>Itinéraire mobilitéit.lu vers ici</a></td>
+        </tr>
+        <tr class="no-print">
+          <td colspan="2">
+            <button class="btn btn-default no-print" ng-click="ctrl.addRoutePoint()">
+              <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
+            </button>
+          </td>
+        </tr>
+        <tr class="no-print" ng-if="ctrl.isStreetviewActive()">
+          <td colspan="2">
+           <button class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
+             <span class="create-itinerary-text" translate>Désactiver Google Streetview</span>
+           </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <app-streetview
+        app-streetview-map="::ctrl.map"
+        app-streetview-location="ctrl.clickCoordinate">
+    </app-streetview>
+    <div class="streetview text-center" ng-show="!(ctrl.open && ctrl.isStreetviewActive())">
+      <button ng-if="!ctrl.isStreetviewActive()" class="btn btn-default no-print" ng-click="ctrl.toggleStreetview()">
+        <span class="create-itinerary-text" translate>Activer Google Streetview</span>
+      </button>
+    </div>
+  </div>
+</div>

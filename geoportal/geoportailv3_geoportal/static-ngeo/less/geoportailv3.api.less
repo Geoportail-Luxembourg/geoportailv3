@@ -1,0 +1,302 @@
+@import (inline) '../../../node_modules/openlayers/css/ol.css';
+@import (inline) '../../../node_modules/js-autocomplete/auto-complete.css';
+@import "../../../node_modules/bootstrap/less/mixins/vendor-prefixes.less";
+
+@bg: #fff;
+@border: 1px solid #8394a0;
+@border-radius: 2px;
+
+@popup-bg: @bg;
+@popup-border-color: rgba(0,0,0,0.2);
+@popup-arrow-outer-color: @popup-border-color;
+@popup-arrow-color: @popup-bg;
+@popup-arrow-width: 11px;
+
+@mouseposition-width: 10em;
+@mouseposition-height: 2em;
+
+@color: #2980b9;
+@padding: .5em;
+
+@font: DINNextLTPro-Condensed,Arial,sans-serif;
+
+@font-face {
+  @baseurl: '//map.geoportail.lu/main/wsgi/proj/api/webfonts';
+  font-family: DINNextLTPro-Condensed;
+  src:url('@{baseurl}/28867F_0_0.eot');
+  src:url('@{baseurl}/28867F_0_0.eot?#iefix') format('embedded-opentype'),url('@{baseurl}/28867F_0_0.woff') format('woff'),url('@{baseurl}/28867F_0_0.ttf') format('truetype');
+}
+
+.lux-map {
+  border: @border;
+  position: relative;
+  .ol-attribution {
+    bottom: .2em;
+    right: 0;
+  }
+  .ol-attribution li {
+    display: block;
+  }
+  .ol-attribution.ol-uncollapsible {
+    height: auto;
+  }
+  .lux-mouse-position {
+    background-color: @bg;
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    height: @mouseposition-height;
+    line-height: @mouseposition-height;
+    width: @mouseposition-width;
+    margin-left: -@mouseposition-width / 2;
+    left: 50%;
+    text-align: center;
+    font-size: 16px;
+    font-family: @font;
+    text-shadow: 0 0 2px #fff;
+    color: #000;
+    border-radius: @border-radius @border-radius 0 0;
+    border: @border;
+    border-width: 1px 1px 0;
+  }
+  .ol-zoom {
+    padding: 0;
+    background: transparent;
+  }
+  .ol-control {
+    button {
+      width: 41px;
+      height: 41px;
+      font-size: 1.5em;
+      font-weight: 400;
+      text-align: center;
+      text-indent: 0;
+      border: @border;
+      margin: -1px;
+      background-color: #fff;
+      color: @color;
+      &:hover {
+        background-color: @color;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+    .ol-zoom-in {
+      border-radius: @border-radius @border-radius 0 0;
+    }
+    .ol-zoom-in {
+      border-radius: 0 0 @border-radius @border-radius;
+    }
+  }
+  .lux-bg-selector {
+    background-color: @bg;
+    border-radius: @border-radius;
+    border: @border;
+    display: inline-block;
+    width: 10em;
+    position: absolute;
+    bottom: .5em;
+    left: .5em;
+    z-index: 3;
+    &::after {
+      font-family: @font;
+      font-weight: bold;
+      color: @color;
+      content: 'v';
+      position: absolute;
+      right: .6em;
+      top: .75em;
+      pointer-events: none;
+    }
+  }
+  .lux-bg-selector-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: @bg;
+    border: 0;
+    color: @color;
+    font-family: @font;
+    font-size: 19px;
+    padding: @padding;
+    width: 100%;
+  }
+
+  .lux-search {
+    position: absolute;
+    top: .45em;
+    left: 50%;
+    margin-left: -7em;
+    z-index: 10;
+  }
+  .ol-overlay-container > div:hover {
+    cursor: pointer;
+  }
+}
+
+
+.lux-search {
+  position: relative;
+  padding: 0;
+  width: 14em;
+}
+.lux-search-input,
+.lux-search-suggestions {
+  background-color: @bg;
+  border-radius: @border-radius;
+  border: @border;
+  font-family: @font;
+  font-size: 17px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.lux-search-input {
+  padding: @padding;
+}
+.lux-search-clear {
+  background: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+  font-family: @font;
+  font-size: 24px;
+  position: absolute;
+  right: .05em;
+  top: .10em;
+  z-index: 10;
+}
+
+.lux-popup {
+  background-color: @popup-bg;
+  background-clip: padding-box;
+  border: 1px solid @popup-border-color;
+  border-radius: 5px;
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  z-index: 2;
+  width: 250px;
+}
+
+.lux-popup-links a {
+  margin-right: 5px;
+}
+
+.lux-popup-arrow {
+  border-width: @popup-arrow-width;
+  left: 50%;
+  margin-left: -@popup-arrow-width;
+  border-bottom-width: 0;
+  border-top-color: @popup-arrow-color;
+  bottom: -@popup-arrow-width;
+
+  &,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  &:after {
+    border-width: @popup-arrow-width;
+    content: "";
+    bottom: 1px;
+    margin-left: -@popup-arrow-width;
+    border-bottom-width: 0;
+    border-top-color: @popup-arrow-color;
+  }
+}
+
+.lux-popup-header,
+.lux-profile-header {
+  padding: 5px;
+  margin: 0;
+}
+
+.lux-popup-content {
+  padding: 9px 14px;
+  clear: both;
+
+  font-family: @font;
+
+  table {
+    width: 100%;
+  }
+
+  overflow: auto;
+  max-height: 200px;
+}
+
+.lux-popup-close,
+.lux-profile-close {
+  -webkit-appearance: none;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+
+  float: right;
+  font-size: 21px;
+  line-height: 1;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .2;
+
+  &:hover {
+    text-decoration: none;
+    opacity: 0.5;
+  }
+}
+
+.lux-profile {
+  display: none;
+  font-family: @font;
+}
+
+.lux-profile-active {
+  display: flex;
+  flex-direction: column;
+}
+
+.lux-profile-header button {
+  float: right;
+  margin-left: 10px;
+}
+
+.lux-profile-content {
+  flex: 1;
+}
+
+.lux-layer-manager {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li label {
+    cursor: pointer;
+  }
+}
+
+.lux-tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+  font-family: @font;
+}
+.lux-tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+}
+.lux-tooltip-measure:before {
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
+}

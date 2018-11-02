@@ -1,0 +1,12 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h4>{{feature.attributes.num_affaire}}</h4>
+  <span translate>Numero</span> : {{feature.attributes.num_affaire}}<br>
+  <span translate>Numero cadastral</span> : {{feature.attributes.label}}<br>
+  <span translate>Geometre</span> : {{feature.attributes.geometre}}<br>
+  <span translate>Region</span> : {{feature.attributes.region}}<br>
+  <span translate>Type</span> : {{feature.attributes.type | translate}}<br>
+  <span translate>Statut</span> : {{feature.attributes.statut | translate}}<br>
+  <span translate>Date</span> : {{feature.attributes.date}}<br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

@@ -1,0 +1,7 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Numero</span> : {{feature.attributes.code_elem}}{{feature.attributes.parcelle_v}}<br>
+  <span translate>Commune</span> : {{feature.attributes.commune0}}<br>
+  <span translate>Section</span> : {{feature.attributes.section}}<br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

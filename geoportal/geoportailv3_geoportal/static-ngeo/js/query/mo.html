@@ -1,0 +1,10 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h2>{{feature.attributes.K_MEASUREMENTID}}</h2>
+  <span translate>Affaire</span> : {{feature.attributes.K_MEASUREMENTID}}<br>
+  <span translate>Commune administrative</span> : {{feature.attributes.K_NOM_COMMUNE_ADMINISTRATIVE}}<br>
+  <span translate>Commune cadastrale</span> : {{feature.attributes.K_NOM_COMMUNE_CADASTRALE}}<br>
+  <span translate>Mesurage</span> : {{feature.attributes.K_MEASUREMENTNUMBER}}<br>
+  <button class="btn btn-default no-print" ng-click="ctrl.orderAffaire(feature.attributes.K_KATASTERGEMEINDE, feature.attributes.K_MEASUREMENTNUMBER)" translate>Commander fichier GML</button>
+<br>  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

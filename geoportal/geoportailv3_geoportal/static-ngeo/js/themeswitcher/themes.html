@@ -1,0 +1,28 @@
+<div class="theme-selector" href=".themes-switcher" data-toggle="collapse">
+  <span translate>Theme</span>: <span>{{ctrl.getCurrentTheme() | translate}}</span>
+    <a href="#">
+      <span translate>Changer</span>
+        <table>
+            <tr>
+                <td style="background-color:#2980b9;"></td>
+                <td style="background-color:#f39c12;"></td>
+                <td style="background-color:#e74c3c;"></td>
+                <td style="background-color:#03a2ac;"></td>
+            </tr>
+            <tr>
+                <td style="background-color:#879c31;"></td>
+                <td style="background-color:#51976e;"></td>
+                <td style="background-color:#be8541;"></td>
+                <td style="background-color:#d10074;"></td>
+            </tr>
+        </table>
+    </a>
+</div>
+
+<div id="themes-content" class="collapse themes-switcher">
+    <ul class="themes-list clearfix">
+        <li ng-repeat='theme in ctrl.themes' class="theme-{{ctrl.encodeThemeName(theme.name)}}">
+            <a href=".themes-switcher" data-toggle="collapse" ng-class="(ctrl.encodeThemeName(ctrl.currentTheme) == ctrl.encodeThemeName(theme.name))? 'active': ''" ng-click="ctrl.switchTheme(theme.name)">{{theme.name | translate}}</a>
+        </li>
+    </ul>
+</div>

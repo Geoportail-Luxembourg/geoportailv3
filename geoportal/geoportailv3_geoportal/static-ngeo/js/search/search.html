@@ -1,0 +1,19 @@
+<button class="close-panel pull-right" ng-click="ctrl.mobileActive = false" ng-show="ctrl.mobileActive">
+  &#10005;
+</button>
+
+<div class="search-container">
+  <form class="navbar-form" role="search">
+      <div class="form-group">
+          <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
+              ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
+              <span class="clear-button" ng-click="click($event)">&#10005;</span>
+          </input>
+      </div>
+  </form>
+  <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group itinary-button">
+    <button ng-click="ctrl.addLastSuggestedFeature();" class="create-itinerary">
+      <span class="create-itinerary-text" translate>Ajouter étape à mon itinéraire</span>
+    </button>
+  </div>
+</div>

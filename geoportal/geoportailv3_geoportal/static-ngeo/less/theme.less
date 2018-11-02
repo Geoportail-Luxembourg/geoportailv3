@@ -1,0 +1,439 @@
+/** Themes related styling (mainly colors) **/
+.theme(@theme, @primary, @secondary, @tertiary, @icon, @font-family) {
+  [data-theme="@{theme}"] {
+    .theme_(@primary, @secondary, @tertiary);
+    .theme-icon:after {
+      color: @primary;
+      content: '\@{icon}';
+      font-family: @font-family !important;
+    }
+  }
+
+  .theme-@{theme} {
+    background-color: @primary;
+    a:after{
+      content: '\@{icon}';
+      font-family: @font-family !important;
+    }
+    a:hover,
+    a.active{
+      color: @primary !important;
+    }
+  }
+}
+
+.theme_(@primary, @secondary, @tertiary) {
+  .form-control {
+    background-color: @secondary !important;
+    .placeholder(white);
+    color: white;
+  }
+
+  .btn {
+    color: @primary;
+  }
+  .btn-primary {
+    background-color: @primary;
+    border-color: darken(@primary, 10%);
+    color: white;
+  }
+  &.no-touch .btn:hover {
+    color: white;
+    background-color: @primary;
+  }
+  &.no-touch .btn-primary:hover {
+    background-color: darken(@primary, 10%);
+  }
+
+  #sidebar {
+    background-color: @secondary;
+    .nav-tabs li {
+      a {
+        background-color: @tertiary;
+        color: @secondary;
+      }
+      &> a:hover,
+      &.active > a {
+        background-color: @primary;
+        color: white;
+      }
+    }
+    .tab-content {
+      background-color: @primary;
+    }
+  }
+
+  a,
+  .btn-link {
+    color: @secondary;
+  }
+
+  .sidebar-controls,
+  .toolbox {
+    li > a {
+      color: @primary;
+    }
+  }
+  .nav {
+    & > li > a {
+      background-color: white;
+    }
+    & > li.active > a {
+      color: white;
+      background-color: @primary;
+    }
+  }
+
+  &.no-touch .nav > li > a:hover {
+    color: white;
+    background-color: @primary;
+  }
+
+  .toolbox-panel-top > li > a {
+    background-color: @primary;
+    color: white;
+  }
+  &.no-touch .toolbox-panel-top > li > a:hover {
+    color: @primary;
+    background-color: white;
+  }
+  .toolbox-panel-top > li.active > a {
+    color: @primary;
+    background-color: white;
+  }
+
+  .footer .toolbox-panel > li {
+    > a {
+      background-color: @tertiary;
+      color: white;
+    }
+    &.active > a {
+      background-color: @primary;
+    }
+  }
+
+  &.no-touch .footer .toolbox-panel > li > a:hover {
+    background-color: @primary;
+  }
+
+  .footer .toolbox-panel-mapmatching > li {
+    > a {
+      background-color: @tertiary;
+      color: white;
+    }
+    &.active > a {
+      background-color: @primary;
+    }
+  }
+
+  &.no-touch .footer .toolbox-panel > li > a:hover {
+    background-color: @primary;
+  }
+
+  ul.catalog {
+    ul {
+      background-color: @secondary;
+    }
+    color: @tertiary;
+    a {
+      color: @tertiary;
+    }
+    > li.panel {
+      > a {
+        color: @secondary;
+        background-color: @tertiary;
+        &:after {
+          border-top-color: @primary;
+        }
+      }
+     ul > li.panel > a {
+        &:before,
+        &:after {
+          background-color: @tertiary;
+        }
+        background-color: lighten(@secondary, 20%);
+        &[aria-expanded=true] {
+          background-color: @secondary;
+        }
+      }
+    }
+  }
+  .theme-header {
+    color: @primary;
+  }
+  .standalone-routing-button {
+    background-color: @primary !important;
+  }
+  .routing.icon:before {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container:after {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container .route-number {
+    background-color: @primary;
+  }
+  .routing-component .routing-route-container .routing-tooltip .current-location {
+    color: @primary;
+  }
+  .routes-tip h3 {
+    color: @primary;
+  }
+  .route-info-wrapper .route-details .icon-Download:before {
+    color: @primary;
+  }
+  .route-info-wrapper .route-details .route-details-step:hover:before {
+    background-color: @primary;
+  }
+  .route-options .route-add {
+    background-color: lighten(@primary, 5%);
+  }
+  .route-options .route-fastest {
+    background-color: lighten(@primary, 10%);
+  }
+  .routing-rounded-button {
+    color: @primary;
+  }
+  ul.layermanager {
+    &, a {
+      color: @tertiary;
+    }
+    li {
+      background-color: @secondary;
+    }
+  }
+
+  .ol-control button {
+    background-color: white;
+    color: @primary;
+  }
+
+  .tracker-on button{
+    background-color: @primary;
+    color: white;
+  }
+  .route-on button{
+    background-color: @primary;
+    color: white;
+  }
+
+  &.no-touch .ol-control button:hover,
+  .ol-control.active button,
+  .ol-control button:active {
+    background-color: @primary;
+    color: white;
+  }
+
+  .navigation-account {
+    background-color: @secondary;
+    .account-content {
+      background-color: @primary;
+    }
+    input[type=submit] {
+      background-color: @secondary;
+    }
+    input[type=submit]:hover {
+      color: @tertiary;
+    }
+    .tab {
+      background-color: @primary;
+    }
+  }
+  .account-content ul li a {
+    background-color: @tertiary;
+    &:hover {
+      background-color: @secondary;
+    }
+  }
+  .account-content ul li p {
+    background-color: @secondary;
+  }
+  .navbar-default .navbar-nav > .active > a {
+    &:active, & {
+      background-color: @primary;
+      color: white;
+    }
+  }
+  &.no-touch .navbar-default .navbar-nav > .active > a:hover {
+    background-color: white;
+    color: @primary;
+  }
+  .theme-selector {
+    background-color: @tertiary;
+    & a{
+      background-color: @secondary;
+      color: white;
+    }
+  }
+  &.no-touch .theme-selector:hover {
+    background-color: white;
+    color: @primary;
+  }
+
+  app-share>div {
+    background-color: @primary;
+  }
+  app-print>div {
+    background-color: @primary;
+  }
+
+  .drawing-panel>div {
+    background-color: @primary;
+  }
+  .profile {
+    border-color: @primary;
+    .close {
+      color: @secondary;
+
+      opacity: 1;
+    }
+  }
+  &.no-touch .profile:hover {
+    color: @primary;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    background: @tertiary;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    background: @tertiary;
+  }
+
+  input[type=range]::-ms-thumb {
+    background: @tertiary;
+  }
+  .feature-popup {
+    & input[type=range]::-webkit-slider-runnable-track {
+      background: @secondary;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      background: @secondary;
+    }
+
+    & input[type=range]::-moz-range-track {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-fill-upper {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-upper {
+      background: @secondary;
+    }
+    & input[type=range]::-ms-thumb {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-lower {
+      background: @secondary;
+    }
+    & input[type=range]:focus::-ms-fill-upper {
+      background: @secondary;
+    }
+  }
+  .query-box{
+    background-color: @tertiary;
+    padding: 5px 5px 5px 5px;
+  }
+
+  .mymaps {
+    .map {
+      background-color: @primary;
+    }
+
+    .features {
+      .feature {
+        &.selected {
+          background-color: @tertiary;
+          color: white;
+        }
+      }
+    }
+    .navbar-nav > li > a.white-item {
+      &, &:hover {
+        background-color: transparent;
+        color: white;
+      }
+      opacity: 1;
+      &:hover {
+        color: @tertiary;
+      }
+    }
+
+    .navbar-nav > li > a {
+      &, &:hover {
+        background-color: transparent;
+        color: @primary;
+      }
+      opacity: 1;
+      &:hover {
+        color: @tertiary;
+      }
+    }
+  }
+  .create-itinerary {
+    background-color: @tertiary !important;
+  }
+  .slider-line, .slider-arrows {
+    background-color: @primary;
+  }
+  .ngeo-tools {
+    color: @primary;
+  }
+  .ngeo-zoom {
+    color: @primary;
+  }
+}
+
+.themes-list a {
+  color: rgba(255, 255, 255, 0.4) !important;
+  &.active{
+    background-color: white;
+  }
+  &:hover {
+    background-color: #ccc;
+  }
+}
+
+header.navbar-default {
+  background-color: white;
+}
+
+
+
+// Trick for choosing colors: Use colorbrewer2.org and define a 5 class
+// range. 
+// Then use the 3 darkest colors in the following order:
+// medium - light - dark
+
+.theme(municipalities,   #9e9ac8, #cbc9e2, #756bb1, e900, "Geoportail-Grande-Region");
+.theme(agriculture, #f39c11, #ffc363, #9c6101, e901, "Geoportail-Grande-Region");
+.theme(tourisme, #e84c3d, #e88c83, #a50f15, e90c, "Geoportail-Grande-Region");
+.theme(emwelt, #879d31, #bacd81, #627529, e909, "Geoportail-Grande-Region");
+.theme(Amenagement_du_territoire, #f4511e, #ff844c, #b91400, e902, "Geoportail-Grande-Region");
+.theme(Environnement_naturel, #879d31, #bacd81, #627529, e909, "Geoportail-Grande-Region");
+.theme(Environnement_humain, #558b2f, #85bb5c, #255d00, e906, "Geoportail-Grande-Region");
+.theme(Occupation_du_sol,  #8d6e63, #bd9b8f, #5e4238, e90f, "Geoportail-Grande-Region");
+.theme(Eau, #03a2ac, #45cdd6, #078f98, e016, "geoportail-icons");
+.theme(eau, #03a2ac, #45cdd6, #078f98, e016, "geoportail-icons");
+.theme(main, #2980b9, #97bbd3, #1f5d87, e02d, "geoportail-icons");
+
+.theme(at, #f4511e, #ff844c, #b91400, e902, "Geoportail-Grande-Region");
+.theme(intranet-at, #9e9ac8, #cbc9e2, #756bb1, e018, "geoportail-icons");
+.theme(pag,  #2b8cbe, #74a9cf, #045a8d, e018, "geoportail-icons");
+.theme(lenoz, #f4b72b, #f3d89b, #b3851d, e01A, "geoportail-icons");
+.theme(preizerdaul, #ad223b, #d87e8e, #711727, e00c, "geoportail-icons");
+.theme(wellenstein, #7ac573, #b0e4ab, #42803c, e00c, "geoportail-icons");
+.theme(lintgen, #f3c531, #f3d89b, #b3851d, e00c, "geoportail-icons");
+.theme(remich, #8ca229, #bacd63, #5c6b1b, e00c, "geoportail-icons");
+.theme(prof,  #006d2c, #99d8c9, #238b45, e00a, "geoportail-icons");
+.theme(go,  #555, #bbb, #756bb1, e00b, "geoportail-icons");
+.theme(cadastre_hertzien,   #689f38, #99d066, #387002, e02d, "geoportail-icons");
+.theme(ahc, #ff5722, #ff8a50, #c41c00, e016, "geoportail-icons");
+.theme(sig_secours, #2979ff,#75a7ff,#004ecb,e00a,"geoportail-icons");
+.theme_(#777, #ddd, #999);

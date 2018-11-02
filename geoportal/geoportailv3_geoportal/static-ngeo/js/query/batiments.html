@@ -1,0 +1,5 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Type</span> :<span translate>{{("bat_"+feature.attributes.type) | translate}}</span><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

@@ -1,0 +1,46 @@
+<h4 class="popover-title ngeo-popup-title">
+  <span ng-bind="title | translate"></span>
+  <button type="button" class="close" ng-click="open = false"> &times;</button>
+</h4>
+<div class="popover-content">
+
+<dl>
+  <dt ng-if="content.layerMetadata.name.length > 0" translate>Name</dt><dd ng-bind="content.layerMetadata.name"></dd>
+  <dt ng-if="content.layerMetadata.serviceDescription.length > 0" translate>Description du Service</dt>
+  <dd ng-if="content.layerMetadata.serviceDescription.length > 0" ng-bind="content.layerMetadata.serviceDescription"></dd>
+  <dt ng-if="content.layerMetadata.description.length > 0" translate>Description</dt>
+  <dd>
+      <span ng-if="content.layerMetadata.description.length > 220 && content.isShortDesc == true" ng-bind-html="content.layerMetadata.short_trusted_description"></span><a href="#" ng-if="content.layerMetadata.description.length > 220 && content.isShortDesc" ng-click="content.isShortDesc=false">&#8230;</a>
+      <span ng-if="content.layerMetadata.description.length <= 220 || !content.isShortDesc" ng-bind-html="content.layerMetadata.trusted_description"></span><a href="#" ng-if="content.layerMetadata.description.length > 220 && !content.isShortDesc" ng-click="content.isShortDesc=true">-</a>
+  </dd>
+  <dt ng-if="content.layerMetadata.accessConstraints.length > 0" translate>Contrainte d'utilisation</dt>
+  <dd ng-if="content.layerMetadata.accessConstraints.length > 0" ng-bind="content.layerMetadata.accessConstraints"></dd>
+  <dt ng-if="content.layerMetadata.onlineResource.length > 0" translate>Url vers la resource</dt>
+  <dd ng-if="content.layerMetadata.onlineResource.length > 0" ng-bind="content.layerMetadata.onlineResource"></dd>
+
+  <dt ng-if="content.layerMetadata.revisionDate.length > 0" translate>Revision date</dt><dd ng-bind="content.layerMetadata.revisionDate"></dd>
+  <dt ng-if="content.layerMetadata.keywords.length > 0" translate>Keywords</dt><dd ng-bind="content.layerMetadata.keywords"></dd>
+  <dt ng-if="content.layerMetadata.pocs.length > 0" translate>Contact</dt>
+  <dd ng-repeat="poc in content.layerMetadata.pocs">
+    <p ng-if="poc.organisation.length > 0" ng-bind="poc.organisation"></p>
+    <p ng-if="poc.name.length > 0" ng-bind="poc.name"></p>
+    <p ng-if="poc.deliverypoint.length > 0" ng-bind="poc.deliverypoint"></p>
+    <p><span ng-if="poc.postalcode.length > 0" ng-bind="poc.postalcode"></span> <span ng-if="poc.city.length > 0" ng-bind="poc.city"></span></p>
+    <p ng-if="poc.phone.length > 0" ng-bind="poc.phone"></p>
+    <a ng-if="poc.email.length > 0" ng-href="mailto:{{poc.email}}">{{poc.email}}</a>
+  </dd>
+  <dt ng-if="content.uid.length > 0" translate>Link to the metadata</dt>
+  <dd ng-if="content.uid.length > 0"><a target ="_blank" 
+         href="https://www.geoportail.lu/Portail/menuAction.do?lang=fr&dispatch=load&menuToLoad=inspireViewMetadataExt&uid={{content.uid}}">
+      link
+      </a>
+  </dd>
+</dl>
+<p ng-if="content.isError" translate>The metadata is right now not available</p>
+<h4 translate>Legend</h4>
+<iframe ng-if="content.hasLegend" width="100%" height="300" frameborder="0" ng-src="{{content.legendUrl}}">
+</iframe>
+<img ng-if="content.hasImageLegend" ng-src="{{content.legendUrl}}">
+
+<p ng-if="!content.hasLegend && !content.hasImageLegend" translate>The legend is not available for this layer</p>
+</div>

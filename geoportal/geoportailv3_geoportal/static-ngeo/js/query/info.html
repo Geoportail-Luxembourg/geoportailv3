@@ -1,0 +1,19 @@
+<div class="layer-info-content printable" ng-show="ctrl.appSelector == 'query'">
+  <ngeo-modal ng-model="ctrl.preview">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" translate>Prévisualisation du mesurage</h4>
+  </div>
+  <div class="modal-body" style="overflow: auto;">
+  <img ng-if="ctrl.preview" src="{{ctrl.getPreviewUrl()}}"/>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+    <a class="btn btn-default"  href="https://commande.geoportail.lu?&camefrom=mapv3&lang={{ctrl['language']}}&documents=MESURAGE&ids=['{{ctrl['previewParcelId']}}']&remark={{ctrl['previewDescription']}}" target="_blank" translate>Commander</a>
+  </div>
+  </ngeo-modal>
+
+  <div ng-repeat="layers in ctrl.content" >
+    <ng-include src="ctrl.getTemplatePath(layers)"></ng-include>
+  </div>
+</div>

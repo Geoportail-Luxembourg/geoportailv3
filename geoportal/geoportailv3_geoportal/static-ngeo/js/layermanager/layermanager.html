@@ -1,0 +1,22 @@
+<div ng-if="!ctrl.layers.length" translate>No layer selected</div>
+<ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
+  <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel">
+  <span class="sortable-handle fa fa-reorder"></span>
+    <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>
+    <div data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" data-target="#layermanager-item-{{$index}}" class="layer-label">
+    {{layer.get('label') | translate}}
+    </div>
+    <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>
+    <a class="options-button" data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
+      <span class="collapsed fa fa-ellipsis-h"></span>
+      <span class="expanded fa fa-remove"></span>
+    </a>
+    <div class="collapse options-body" id="layermanager-item-{{$index}}">
+      <a href ng-click="ctrl.changeVisibility(layer)"><span class="fa" ng-class="(layer.opacity > 0) ? 'fa-eye': 'fa-eye-slash'" ></span></a>
+      <input class="opacity" type="range" min="0" max="1" step="0.25" ng-model="layer.opacity" />
+      <a ng-show="layer == ctrl.layers[0]" class="options-button" ng-click="ctrl.toggleLayersComparator()">
+        <span class="fa" ng-class="(ctrl.isLayersComparatorDisplayed()) ? 'fa-adjust': 'fa-circle'"></span>
+      </a>
+    </div>
+  </li>
+</ul>

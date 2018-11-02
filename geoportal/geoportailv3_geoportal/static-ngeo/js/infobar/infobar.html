@@ -1,0 +1,15 @@
+<div class="ol-control infobar">
+  <span class="infobar-content" ng-class="ctrl.infobarOpen ? 'active' : ''">
+    <div class="scale-select hidden-3d">
+      <app-scaleselector app-scaleselector-map="::ctrl.map"></app-scaleselector>
+    </div>
+    <div class="scaleline-select hidden-3d">
+      <app-scaleline app-scaleline-map="::ctrl.map"></app-scaleline>
+    </div>
+    <app-projectionselector app-projectionselector-map="::ctrl.map" ></app-projectionselector>
+    <div ng-if="!ctrl.ngeoNetworkStatus.isDisconnected()" class="elevation-service hidden-xs hidden-sm">
+      <app-elevation app-elevation-map="::ctrl.map" app-elevation-active="ctrl.infobarOpen"></app-elevation>
+    </div>
+  </span>
+  <button class="infobar-button" ng-click="ctrl.infobarSwitch()"></button>
+</div>

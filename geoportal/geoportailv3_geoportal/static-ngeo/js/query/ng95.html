@@ -1,0 +1,10 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h4>{{feature.attributes.nom}}</h4>
+  <span translate>Elevation</span> : {{feature.attributes.coordonnee}}<br>
+  <span translate>Type</span> : {{feature.attributes.type_rivet}}<br>
+  <span translate>Croquis</span> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
+  <a class="no-print" target='_blank' download href='{{ctrl.getDownloadsketchUrl()}}?name={{feature.attributes.nom_croq}}' translate>Obtenir le fichier sous format pdf</a></span>
+  <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Croquis indisponible</span><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

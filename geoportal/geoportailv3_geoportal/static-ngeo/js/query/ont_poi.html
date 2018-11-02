@@ -1,0 +1,6 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Name</span> : {{feature.attributes.name}}<br>
+  <iframe height="300" width="430" frameborder="0" ng-src="{{ctrl.getTrustedUrl(feature.attributes.preview)}}"></iframe><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

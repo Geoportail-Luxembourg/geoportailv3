@@ -1,0 +1,28 @@
+<div class="navigation-account user-panel toolbox-panel toolbox-panel-top second-level">
+    <p class="menu-title" translate>My account</p>
+    <fieldset>
+        <legend class="tab tab-account active" translate>Login</legend>
+        <div class="account-content">
+            <form ng-if="!ctrl.isAuthenticated()" ng-submit="ctrl.authenticate()">
+              <input type="text" ng-model="ctrl.username" placeholder="{{'Username'| translate}}" />
+              <input type="password" ng-model="ctrl.password" placeholder="{{'Password'| translate}}" />
+              <input type="submit" value="{{'Submit'| translate}}" />
+                <div class="clearfix">
+                    <p><a target="_blank" href="https://myaccount.geoportail.lu/lostpassword?lang={{ctrl.lang}}" translate>I lost my password</a></p>
+                    <p><a target="_blank" href="https://myaccount.geoportail.lu/newaccount?lang={{ctrl.lang}}" translate>Create a new user account</a></p>
+                </div>
+            </form>
+            <div ng-if="ctrl.isAuthenticated()">
+                <ul>
+                    <li><p>{{ctrl.getUsername()}}</p></li>
+                    <li><p>{{ctrl.getEmail()}}</p></li>
+                </ul>
+                <div class="pull-right">
+                  <a target="_blank" href="https://myaccount.geoportail.lu?lang={{ctrl.lang}}" class="btn btn-link" translate>My account</a>
+                  <button class="btn btn-default" ng-click="ctrl.logout()" translate>Logout</button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </fieldset>
+<div>

@@ -1,0 +1,19 @@
+<ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom">
+  <li ng-class="{active: ctrl.measureLength.active}"  ng-show="!ctrl.measureProfile.active">
+    <a href translate ngeo-btn
+       ng-model="ctrl.measureLength.active">Length</a>
+  </li>
+  <li ng-class="{active: ctrl.measureArea.active}" ng-show="!ctrl.measureProfile.active">
+    <a href translate ngeo-btn
+       ng-model="ctrl.measureArea.active">Surface</a>
+  </li>
+  <li ng-class="{active: ctrl.measureAzimut.active}" ng-show="!ctrl.measureProfile.active">
+    <a href translate ngeo-btn
+       ng-model="ctrl.measureAzimut.active">Azimut</a>
+  </li>
+  <li ng-class="{active: ctrl.measureProfile.active}">
+      <a href translate ngeo-btn
+       ng-model="ctrl.measureProfile.active" ng-show="!ctrl.measureProfile.active">Profile</a>
+      <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.measureProfile" app-profile-map="::ctrl.map"></app-profile>
+  </li>
+</ul>

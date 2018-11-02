@@ -1,0 +1,36 @@
+<ul ngeo-btn-group class="nav toolbox-panel toolbox-panel-bottom">
+  <li ng-class="{active: ctrl.isEditing('drawPoint')}">
+    <a href translate ngeo-btn
+       ng-model="ctrl.drawPointActive"
+       ng-click="ctrl.toggleDrawPoint()">Point</a>
+  </li>
+  <li ng-class="{active: ctrl.isEditing('drawLabel')}">
+    <a href translate ngeo-btn
+       ng-model="ctrl.drawLabelActive"
+       ng-click="ctrl.toggleDrawLabel()">Label</a>
+  </li>
+  <li ng-class="{active: ctrl.isEditing('drawLine')}">
+    <a href translate ngeo-btn
+       ng-model="ctrl.drawLineActive"
+       ng-click="ctrl.toggleDrawLine()">Line</a>
+  </li>
+  <li ng-class="{active: ctrl.isEditing('drawPolygon')}">
+    <a href translate ngeo-btn
+       ng-model="ctrl.drawPolygonActive"
+       ng-click="ctrl.toggleDrawPolygon()">Polygon</a>
+  </li>
+  <li ng-class="{active: ctrl.isEditing('drawCircle')}">
+    <a href translate ngeo-btn
+       ng-model="ctrl.drawCircleActive"
+       ng-click="ctrl.toggleDrawCircle()">Circle</a>
+  </li>
+</ul>
+<ul ng-show="ctrl.showMapMatchingButton" ngeo-btn-group class="nav toolbox-panel-mapmatching toolbox-panel-mapmatching-bottom">
+  <li ng-class="{active: ctrl.getMapMatching()}">
+    <a href ngeo-btn
+    ng-model="ctrl.mapmatchingActive"
+    ng-click="ctrl.toggleMapMatching()">
+    <i class="fa" ng-class="(ctrl.getMapMatching()) ? 'fa-check-square' : 'fa-square'"></i>
+    {{"Suivre la route" | translate}}</a>
+  </li>
+</ul>

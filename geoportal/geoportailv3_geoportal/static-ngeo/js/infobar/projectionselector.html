@@ -1,0 +1,15 @@
+<div class="projection-container hidden-xs hidden-sm">
+  <div class="projection-select">
+    <div class="dropdown dropup">
+      <button type="button" class="btn btn-default projectionselector-button" data-toggle="dropdown">
+       <span>{{ctrl.projection.label}}</span>&nbsp;<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-repeat="projitem in ::ctrl.projectionOptions">
+          <a href ng-click="ctrl.switchProjection(projitem.value)" ng-bind-html="::projitem.label"></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="mouse-coordinates" ngeo-control="ctrl.mousePositionControl" ngeo-control-map="ctrl.map"></div>
+</div>

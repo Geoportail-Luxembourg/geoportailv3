@@ -1,0 +1,99 @@
+ul.catalog {
+  padding: 10px;
+
+  ul {
+    list-style-type: none;
+    padding-left: 10px;
+  }
+  // no padding for the second level
+  > li > ul {
+    padding: 0;
+  }
+  > .panel > a {
+    text-transform: uppercase;
+  }
+
+  .panel {
+    list-style: none;
+    border: 0;
+    margin-bottom: 1px;
+    background-color: transparent;
+    > a {
+      display: block;
+      position: relative;
+      padding: 5px 10px;
+      &:hover {
+        text-decoration: none;
+        &:after {
+          border-top-color: white;
+        }
+      }
+    }
+  }
+
+  > li.panel {
+    > a {
+      &:after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-top: 6px solid red;
+        border-right: 8px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 8px solid transparent;
+        position: absolute;
+        right: 10px;
+        top: 16px;
+      }
+      &:hover {
+        color: white;
+      }
+      &:hover:after {
+        border-top-color: white !important;
+      }
+
+      &[aria-expanded=true] {
+        color: white !important;
+        &:after {
+          border-top-color: transparent !important;
+          border-bottom-color: white;
+          top: 10px;
+        }
+      }
+    }
+    ul > li.panel {
+      > a {
+
+        &:after {
+          content: '';
+          display: block;
+          width: 17px;
+          height: 3px;
+          position: absolute;
+          top: 50%;
+          right: 10px;
+        }
+
+        &:before {
+          content: '';
+          display: block;
+          height: 17px;
+          width: 3px;
+          position: absolute;
+          top: 50%;
+          right: 17px;
+          margin-top: -7px;
+        }
+        &[aria-expanded=true]:before {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .checkbox {
+    float: right;
+    margin: 0;
+    margin-right: 4px;
+  }
+}

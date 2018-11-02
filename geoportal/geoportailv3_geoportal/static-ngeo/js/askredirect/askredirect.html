@@ -1,0 +1,13 @@
+<ngeo-modal ng-model="ctrl.showRedirect">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" translate>Confirmation de redirection</h4>
+  </div>
+  <div class="modal-body">
+  <h4 class="modal-title" translate>La geolocalisation n'est disponible que dans la version sécurisée du Geoportail (https). Voulez-vous être automatiquement redirigé?</h4>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.redirect()" translate>Oui</button>
+  </div>
+</ngeo-modal>

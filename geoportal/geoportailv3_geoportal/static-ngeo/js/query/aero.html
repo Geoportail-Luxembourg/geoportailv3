@@ -1,0 +1,9 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h3>{{feature.attributes.name}}</h3>
+  <a href="{{feature.attributes.path}}" target="_blank">
+    <img src="{{feature.attributes.thumbnail_path}}" width="250">
+  </a>
+  <span class="no-print" translate>Cliquez dans l'image pour agrandir</span>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

@@ -1,0 +1,185 @@
+@clear-button-width: 20px;
+
+// bugfix for IE textboxes who have own clear element
+input[type=text]::-ms-clear {
+  width: 0;
+  height: 0;
+}
+
+span.twitter-typeahead {
+  & + span.clear-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+    cursor: pointer;
+    cursor: hand;
+    color: white;
+    opacity: 0.5;
+    padding: @padding-base-vertical 5px;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .placeholder-text:-moz-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text::-moz-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text:-ms-input-placeholder {
+    opacity: 0.5;
+  }
+  .placeholder-text::-webkit-input-placeholder {
+    opacity: 0.5;
+  }
+  .form-control {
+    min-width: 250px;
+    position: relative;
+    padding-right: @clear-button-width;
+    padding-left: 32px;
+    width: auto;
+  }
+  .tt-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 400px;
+    padding: 5px 5px;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+  }
+  .tt-suggestion {
+    display: block;
+    clear: both;
+    padding: 10px 15px 10px 0;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0 0 0 0;
+  > p.suggestion-text {
+    float:left;
+    font-weight: normal;
+    color: #333333;
+    strong {
+      font-weight: bold;
+    }
+  }
+  > button {
+    float: right;
+    background: none;
+    border: 0;
+  }
+  }
+  .tt-suggestion:hover,
+  .tt-suggestion:focus {
+      cursor: pointer;
+      color: #ffffff;
+      text-decoration: none;
+      outline: 0;
+      background-color: #428bca;
+      color: #ffffff;
+      text-decoration: none;
+      outline: 0;
+    clear: both;
+      background-color: #428bca;
+  }
+  .tt-suggestion.tt-cursor {
+    color: #ffffff;
+    background-color: #428bca;
+  }
+  .tt-dataset > .header {
+    font-size: 16px;
+  font-weight: bold;
+  }
+  &:after {
+  content: '\f002';
+  font-family: FontAwesome;
+  position: absolute;
+  top: 0;
+  left: .5em;
+  height: 36px;
+  line-height: 36px;
+  color: white;
+  }
+}
+.routing-route-container span.twitter-typeahead {
+  &:after {
+    content: none;
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  header .search-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+  }
+
+  header .navbar-form {
+  padding-right: 15px;
+  span.twitter-typeahead,
+    .form-control {
+    width: 400px;
+    }
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .navbar-form {
+  border: 0;
+  }
+
+  body:not(.search-mobile) app-search {
+  display: none;
+  }
+
+  /* Class search is added to body when on mobile && search button has been
+   * clicked */
+  .search-mobile {
+  header {
+    .navbar-nav,
+    .brand {
+    display: none;
+    }
+  }
+  }
+
+  app-search {
+  .navbar-form {
+    margin: 2px 40px 0 2px;
+
+    span.twitter-typeahead,
+    .form-control {
+    width: 100%;
+    }
+
+    span.twitter-typeahead .tt-menu {
+  min-width: 100%;
+    }
+  }
+  }
+}
+.search-result-container {
+  display: table;
+}
+.search-result-label {
+  display: table-cell;
+  width: 380px;
+}
+.search-result-routing {
+  display: table-cell;
+}

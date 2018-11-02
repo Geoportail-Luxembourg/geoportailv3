@@ -1,0 +1,26 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h2>{{feature.attributes.PF.mainNumber}}/{{feature.attributes.PF.additionalNumber}}</h2>
+  <span translate>Commune</span> : {{feature.attributes.PF.townName}}<br>
+  <span translate>Section</span> : {{feature.attributes.PF.sectionDesignation}}<br>
+  <span translate>Numero cadastral</span> : {{feature.attributes.PF.mainNumber}}/{{feature.attributes.PF.additionalNumber}}<br>
+  <span translate>Contenance</span> : {{feature.attributes.PF.capacity}}<br>
+  <span translate>Lieudit</span> : {{feature.attributes.PF.locality}}<br>
+  <div ng-if="feature.attributes.PF.farmingTypes && feature.attributes.PF.farmingTypes.length > 0"><span translate>Nature</span> : {{ctrl.translateAndjoin(feature.attributes.PF.farmingTypes, 'pf')}}<br></div>
+  <div ng-if="feature.attributes.PF.occupations && feature.attributes.PF.occupations.length > 0"><span translate >Occupation</span> : {{ctrl.translateAndjoin(feature.attributes.PF.occupations, 'pf')}}<br></div>
+  <span translate>Dernier mesurage</span> : {{feature.attributes.PF.measurementNumber}}<br>
+  <span translate>Lien vers les mesurages</span> : 
+  <ul>
+  <div ng-repeat="measurement in feature.attributes.measurements">
+    <div ng-repeat="file in measurement.files">
+      <li><a target='_blank' ng-click="ctrl.openPreviewMesurage(measurement.town_info.town_code, file.filename,measurement.measurementType, measurement.parcelId)">No {{file.filename | limitTo : 5 :0}} <span translate>MES_TYPE_{{file.filename | limitTo : 1 :5}}</span> {{file.filename | limitTo : 2 :8}}/{{file.filename | limitTo : 2 :10}}/{{file.filename | limitTo : 4 :12}}</a></li>
+    </div>
+    <div ng-if="!measurement.files">
+      <li><span translate>Mesurage non disponible</span> : {{measurement.measurementNumber}}</li>
+    </div>
+  </div>
+  </ul><br>
+
+  <a class="btn btn-default" href="https://shop.geoportail.lu/Portail/express/?ids=['{{feature.attributes.textstring}}']&camefrom=mapv3&lang={{ctrl['language']}}" target="_blank" translate>Commander un extrait</a><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

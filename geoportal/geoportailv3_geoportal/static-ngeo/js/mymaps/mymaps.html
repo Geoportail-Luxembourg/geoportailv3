@@ -1,0 +1,354 @@
+<div ng-show="!ctrl.isMymapsSelected()">
+  <p translate>
+    Create, save and share your own maps.
+  </p>
+  <p class="text-center">
+    <button class="btn btn-default" ng-click="ctrl.openChooseMapModal()" translate>Ouvrir une carte</button>
+  </p>
+  <p class="hidden-2d" translate>Switch to 2D to create a map</p>
+  <p class="text-center hidden-3d">
+    <button class="btn btn-default" ng-click="ctrl.openCreateMapModal()" translate>Créer une nouvelle carte</button>
+  </p>
+</div>
+
+<!-- Map displayed -->
+<div ng-show="ctrl.isMymapsSelected()">
+  <div class="mymap-header">
+    <button type="button" class="close" aria-label="Close" ng-click="ctrl.closeMap();"><span aria-hidden="true">&times;</span></button>
+    <div class="title" ng-click="ctrl.openModifyMapModal()">{{ctrl.getMapTitle()}}</div>
+  </div>
+  <p class="description" ng-click="ctrl.openModifyMapModal()" ng-show="ctrl.getMapDescription()" ng-bind-html="ctrl.trustAsHtml(ctrl.getMapDescription())"></p>
+  <p class="no-description" ng-click="ctrl.openModifyMapModal()" ng-show="!ctrl.getMapDescription()" translate><em>Aucune description</em></p>
+
+
+  <div ng-show="ctrl.isEditable()" class="mymap-footer navbar">
+    <div ng-show="ctrl.layersChanged" class="alert alert-warning">
+      <strong translate>Attention!</strong>
+      <span translate>Les couches sélectionnées dans le catalogue sont différentes de celles chargées avec votre carte. Voulez vous sauvegarder ces modifications dans votre carte?</span>
+      <div>
+        <button ng-click="ctrl.resetLayers()" translate class="btn btn-default">Reset</button>
+        <button ng-click="ctrl.saveLayers()" translate class="btn btn-default">Oui</button>
+      </div>
+    </div>
+  </div>
+  <span ng-switch="ctrl.getMapIsPublic()">
+    <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
+    <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
+  </span>
+  <span class="map-owner" ng-show="ctrl.getMapOwner()">
+    {{'Carte créée par'|translate}} {{ctrl.getMapOwner()}}
+  </span>
+  <ul class="nav navbar-nav navbar-right hidden-3d">
+    <li id="dropdown-mymaps" class="dropdown">
+      <a href class="dropdown-toggle white-item" data-toggle="dropdown">
+        <span class="fa fa-caret-square-o-down"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li ng-click="ctrl.openCreateMapModal()"><a href translate>Créer une nouvelle carte</a></li>
+        <li ng-click="ctrl.openChooseMapModal()"><a href translate>Ouvrir une carte existante</a></li>
+        <li ng-click="ctrl.openCopyMapModal()"><a href translate>Créer une copie</a></li>
+        <li ng-click="ctrl.shareMymapsLink()"><a href translate>Partager la carte</a></li>
+        <li class="divider"></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteMap()"><a href translate>Supprimer la carte</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openConfirmDeleteObjects()"><a href translate>Supprimer tous les élements de la carte</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
+        <li ng-show="ctrl.isEditable()" ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
+        <li ng-show="ctrl.isEditable()" class="divider"></li>
+        <li ng-click="ctrl.closeMap()"><a href translate>Fermer</a></li>
+        <li class="divider"></li>
+        <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
+        <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+        <li ng-show="ctrl.isEditable()"><div class="mymapsFileUpload"><a href translate>Importer un GPX/KML/KMZ</a>
+          <input type="file" class="mymapsUpload"
+                 accept=".gpx, .kml, .kmz"
+                 app-filereader
+                 app-gpx-filereader="ctrl.gpxFileContent"
+                 app-kml-filereader="ctrl.kmlFileContent"
+                 app-kmz-filereader="ctrl.kmzFileContent"
+                 app-filereader-supported="ctrl.fileReaderSupported" /></div></li>
+      </ul>
+    </li>
+  </ul>
+ <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
+    <li ng-repeat="(key, feature) in ctrl.getMymapsFeatures()" class="feature"
+        id="feature-{{ctrl.featuresList.indexOf(feature)}}">
+      <span ng-hide="!ctrl.isEditable()" class="sortable-handle fa fa-reorder"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+      <span class="feature" ng-click="ctrl.toggleFeatureSelection(feature)"
+        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+      <!-- Information about selected features-->
+      <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
+        <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<hr ng-show="ctrl.getAnonymousFeatures().length">
+
+<div ng-show="ctrl.getAnonymousFeatures().length">
+  <div class="navbar">
+    {{'Dessins'|translate}}
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href class="dropdown-toggle white-item" data-toggle="dropdown">
+          <span class="fa fa-caret-square-o-down"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li ng-show="ctrl.isMymapsSelected()" ng-click="ctrl.addInMymaps()"><a href translate>Copier dans ma carte</a></li>
+          <li ng-click="ctrl.openConfirmDelete()"><a href translate>Effacer tous les dessins</a></li>
+          <li ng-click="ctrl.openNewMapFromAnonymous()"><a href translate>Créer une nouvelle carte à partir de ces dessins</a></li>
+          <li ng-click="ctrl.openMergeLinesModal()"><a href translate>Fusionner des lignes</a></li>
+          <li ng-click="ctrl.toggleClippingLineMode()"><a href><span ng-if="!ctrl.isClipLineMode()" translate>Couper une ligne</span><span ng-if="ctrl.isClipLineMode()" translate>Désactiver mode couper une ligne</span></a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
+    <li ng-repeat="(key, feature) in ctrl.getAnonymousFeatures()" class="feature"
+        id="feature-{{ctrl.featuresList.indexOf(feature)}}">
+      <span class="sortable-handle fa fa-reorder"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
+      <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
+
+      <span class="feature" ng-click="ctrl.toggleFeatureSelection(feature)"
+        ng-class="{'selected': ctrl.selectedFeaturesList.indexOf(feature) != -1}">{{ feature.get('name') }}&nbsp;</span>
+      <!-- Information about selected features-->
+      <div class="mymaps-info-content" ng-if="ctrl.selectedFeaturesList.indexOf(feature) != -1 && ctrl.isDocked()">
+        <div class="poi-feature" app-feature-popup app-feature-popup-feature="feature" app-feature-popup-map="ctrl.map"></div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<ngeo-modal ng-model="ctrl.confirmDelete">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Confirmation de suppression des dessins</h4>
+</div>
+<div class="modal-body">
+<h4 class="modal-title" translate>Etes-vous certain de vouloir effacer tous les dessins ?</h4>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.closeAnonymous()" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.confirmDeleteObjects">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Confirmation de suppression des éléments de la carte</h4>
+</div>
+<div class="modal-body">
+<h4 class="modal-title" translate>Etes-vous certain de vouloir effacer tous les éléments de la carte ?</h4>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.deleteMymapsObjects()" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.confirmDeleteMap">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Confirmation de suppression de la carte</h4>
+</div>
+<div class="modal-body">
+<h4 class="modal-title" translate>Etes-vous certain de vouloir effacer la carte courrante ?</h4>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.deleteMap()" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.confirmDeleteSelectedMap">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.choosing = true"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Confirmation de suppression de la carte</h4>
+</div>
+<div class="modal-body">
+<h4 class="modal-title">{{'Etes-vous certain de vouloir effacer la carte intitulée :' | translate}} {{ctrl.requestedMapTitle}}</h4>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.choosing = true" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.deleteAMap(ctrl.requestedMapIdToDelete)" translate>Effacer</button>
+</div>
+</ngeo-modal>
+
+<ngeo-modal ng-model="ctrl.mergingLines">
+
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Fusionner des lignes</h4>
+</div>
+
+<div class="mymaps-list-scroll modal-body">
+  <div class="row">
+    <div class="col-xs-8 form-group">
+      <label translate>Nouveau nom</label><input type="text" class="form-control" ng-model="ctrl.newLineName">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 form-group">
+      <label translate>Nouvelle description</label> <textarea class="form-control" rows="3" ng-model="ctrl.newLineDesc"></textarea>
+    </div>
+  </div>
+  <ul class="features list-unstyled" " >
+    <li ng-repeat="(key, feature) in ctrl.getMymapsLinestringFeatures()" class="feature">
+    <i class="fa fa-square" ng-click="ctrl.toggleLinestring(feature)" ng-class="(ctrl.selectedLineString.indexOf(feature)>=0) ? 'fa-check-square' : 'fa-square'"></i> {{ feature.get('name') }}
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.mergesSelectedLineString()" translate>Fusionner</button>
+</div>
+</ngeo-modal>
+
+<!-- Map Chooser Modal -->
+<ngeo-modal ng-model="ctrl.choosing">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <h4 class="modal-title" translate>Ouvrir une carte</h4>
+  <div class="row">
+    <form>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <div class="dropdown">
+            <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getMapCategoryFilter(ctrl.filterCategoryId).name | translate}}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a ng-click="ctrl.filterCategoryId = null" tabindex="-1" href="#">{{ 'Filter results by category' | translate}}</a></li>
+              <li ng-repeat="category in ctrl.getFilteredCategories() | orderBy:'name | translate' "><a ng-click="ctrl.filterCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="input-group">
+          <div class="dropdown">
+            <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getUserCategDesc(ctrl.filterMapOwner) }}<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a ng-click="ctrl.filterMapOwner = null" tabindex="-1" href="#">{{ 'Filter results by username' | translate}}</a></li>
+              <li ng-repeat="userCateg in ctrl.getFilteredUsersCategories() | orderBy:'username' "><a ng-click="ctrl.filterMapOwner = userCateg.username" tabindex="-1" href="#">{{userCateg.username}}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="mymaps-list-scroll modal-body">
+  <table class="table table-hover table-condensed mymaps-list" ng-init="sortReverse = true; sortType = 'last_feature_update'">
+    <thead>
+      <tr>
+        <td>
+          <a href="#" ng-click="sortType = 'title'; sortReverse = !sortReverse">
+            {{'Titre'|translate}}
+            <span ng-show="sortType == 'title' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'title' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td>
+          <a href="#" ng-click="sortType = 'category'; sortReverse = !sortReverse">
+            {{'Catégorie'|translate}}
+            <span ng-show="sortType == 'category' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'category' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td>
+          <a href="#" ng-click="sortType = 'owner'; sortReverse = !sortReverse">
+            {{'Créateur carte'|translate}}
+            <span ng-show="sortType == 'owner' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'owner' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td>
+          <a href="#" ng-click="sortType = 'last_feature_update'; sortReverse = !sortReverse">
+            {{'Dernière Actualisation'|translate}}
+            <span ng-show="sortType == 'last_feature_update' && !sortReverse">&#9660;</span>
+            <span ng-show="sortType == 'last_feature_update' && sortReverse">&#9650;</span>
+          </a>
+        </td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
+      <td ng-click="ctrl.selectMymaps(map)">
+        <span ng-switch="map.public">
+          <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
+          <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
+        </span>{{ map.title }}</td>
+      <td ng-click="ctrl.selectMymaps(map)">{{ map.category }}</td>
+      <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
+      <td ng-click="ctrl.selectMymaps(map)">{{ map.last_feature_update | date:'dd/MM/yyyy - H:mm' }}</td>
+      <td ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)"><span class="fa fa-trash-o"></span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Annuler</button>
+</div>
+</ngeo-modal>
+
+
+
+<!-- Modification Modal -->
+<ngeo-modal ng-model="ctrl.modalShownHidden" ng-model-options="{getterSetter: true}">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'MODIFY'" translate>Modify title and description of the map</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE'" translate>Title and description of the map</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'COPYING'" translate>Title and description of the map copy</h4>
+    <h4 class="modal-title" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" translate>Title and description of the map</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+    <div class="form-group">
+      <label translate>Titre de la carte</label>
+      <input type="text" onClick="this.select()" class="form-control" ng-model="ctrl.newTitle">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="ctrl.newIsPublic">
+          <span translate>Public Map</span>
+        </label>
+      </div>
+      <div class="dropdown">
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+          {{ ctrl.getMapCategory(ctrl.newCategoryId).name }}<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li ng-repeat="category in ctrl.getCategories() | orderBy:'name | translate' "><a ng-click="ctrl.newCategoryId = category.id" tabindex="-1" href="#">{{ category.name | translate}}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label translate>Description</label>
+      <textarea onClick="this.select()" class="form-control" rows="3" ng-model="ctrl.newDescription"></textarea>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" translate>Cancel</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'MODIFY'" ng-click="ctrl.saveModifications()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE'" ng-click="ctrl.createMap()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'CREATE_FROM_ANONYMOUS'" ng-click="ctrl.createMapFromAnonymous()" translate>Save changes</button>
+  <button type="button" class="btn btn-primary" ng-show="ctrl.modal === 'COPYING'" ng-click="ctrl.copyMap()" translate>Save new map</button>
+</div>
+</ngeo-modal>
+

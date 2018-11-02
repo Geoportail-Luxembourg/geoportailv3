@@ -1,0 +1,6 @@
+﻿<h1>{{layers.layerLabel | translate}}</h1>
+
+<div class="poi-feature">
+  <app-pagreport app-pagreport-staging="false"
+    app-pagreport-ids="ctrl.joinAttributes(layers.features, 'OBJECTID', ',')">
+</div>

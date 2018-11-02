@@ -1,0 +1,16 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <h2>{{feature.attributes.sentier}}</h2>
+  <a ng-if="ctrl.hasFeatureAttribute(feature, 'image')" ng-href="{{ctrl.getMymapsPath(feature.attributes.image)}}" target="_blank"><img ng-if="ctrl.hasFeatureAttribute(feature, 'thumbnail')" ng-src="{{ctrl.getMymapsPath(feature.attributes.thumbnail)}}"></a><br>
+  <span ng-if="feature.attributes.sentier"><span translate>sentier</span> : {{feature.attributes.sentier}}<br></span>
+  <span ng-if="feature.attributes.name"><span translate>Name</span> : {{feature.attributes.name}}<br></span>
+  <span ng-if="feature.attributes.description"><span translate>Description</span> : {{feature.attributes.description}}<br></span>
+  <span ng-if="feature.attributes.length"><span translate>Longeueur</span> : {{feature.attributes.length}} Km<br></span>
+  <div class="query-profile" ng-show="feature.attributes.showProfile.active">
+    <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+  </div>
+  <a class="btn btn-default no-print"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default no-print" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a><br>
+  <img ng-src="{{ctrl.getQrCodeForMymapsUrl(feature.attributes.map_id)}}"><br>
+  <a class="fid-link no-print" href="?map_id={{feature.attributes.map_id}}" target='_blank' translate>Lien vers la carte</a><br>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target='_blank' translate>Lien direct vers cet objet</a><br>
+</div>

@@ -1,0 +1,125 @@
+ngeo-offline {
+  div {
+    z-index: 1;
+  }
+  .main-button {
+    position: absolute;
+    right: 8px;
+    bottom: 15rem;
+    cursor: pointer;
+    .no-data {
+      color: black;
+    }
+    .no-data, .with-data {
+      background-color: white;
+      text-align: center;
+      font-size: 2.7rem;
+      font-family: FontAwesome;
+      line-height: 1.5em;
+      color: #2980b9;
+      width: 41px;
+      height: 41px;
+      border: 1px solid #8394a0;
+      &::after {
+        content: @fa-var-arrow-circle-o-down;
+      }
+    }
+    .with-data {
+      color: red;
+    }
+  }
+
+  &.offline-mode {
+    .main-button {
+      .no-data, .with-data{
+        color: green;
+      }
+    }
+  }
+
+  .validate-extent {
+    position: absolute;
+    top: 4.5rem;
+    width: 10rem;
+    left: calc(~"50% - 5rem");
+  }
+
+  .in-progress {
+    position: absolute;
+    left: calc(~"50% - 3.3rem");
+    top: calc(~"50% - 3rem");
+    color: white;
+    font-weight: bold;
+    background-color: #337ab7;
+    padding: 2rem 2rem;
+    border-radius: 1rem;
+  }
+
+  .modal-content {
+    width: 30rem;
+  }
+
+  .modal-body {
+    button {
+      display: block;
+      margin: 0.5rem auto;
+      width: 25rem;
+    }
+  }
+}
+
+.offline-msg {
+  display: none;
+}
+.offline-or-disconnected {
+
+  .offline-msg {
+    display: block;
+    position: absolute;
+    z-index: 10000;
+    width: 100vw;
+    text-align: center;
+    height: @topbar-height;
+    padding-left: 1rem;
+    line-height: @topbar-height;
+
+    @media (max-width: @screen-xs-max) {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+
+  .main-button {
+    bottom: 104px;
+  }
+}
+
+
+/** Disable components **/
+
+body.offline-or-disconnected {
+  .search-container,
+  .theme-icon,
+  .theme-header,
+  .lang,
+  .user,
+  .infos,
+  .legends,
+  .routing,
+  .toolbox,
+  .footer-navigation,
+  .catalog-tab,
+  .add-layers,
+   #dropdown-mymaps,
+  .ol-toogle3d,
+  app-mymaps>div:first-child,
+  .feature-popup-profile,
+  .feature-popup-footer .dropup,
+  .feature-popup-footer .dropdown {
+    display: none;
+  }
+  app-backgroundlayer,
+  app-layerinfo {
+    visibility: hidden;
+  }
+}

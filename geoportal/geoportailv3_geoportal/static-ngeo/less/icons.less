@@ -1,0 +1,152 @@
+@font-face {
+  font-family: "geoportail-icons";
+  src: url("../webfonts/geoportail-icons.eot");
+  src: url("../webfonts/geoportail-icons.eot?#iefix") format("embedded-opentype"),
+       url("../webfonts/geoportail-icons.woff") format("woff"),
+       url("../webfonts/geoportail-icons.ttf") format("truetype"),
+       url("../webfonts/geoportail-icons.svg#geoportail-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'apart-geoportail';
+  src: url('../webfonts/apart-geoportail.eot');
+  src: url('../webfonts/apart-geoportail.eot#iefix') format('embedded-opentype'),
+       url('../webfonts/apart-geoportail.ttf') format('truetype'),
+       url('../webfonts/apart-geoportail.woff') format('woff'),
+       url('../webfonts/apart-geoportail.svg?#apart-geoportail') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Geoportail-Grande-Region";
+  src: url("../webfonts/Geoportail-Grande-Region.eot");
+  src: url("../webfonts/Geoportail-Grande-Region.eot?#iefix") format("embedded-opentype"),
+       url("../webfonts/Geoportail-Grande-Region.woff") format("woff"),
+       url("../webfonts/Geoportail-Grande-Region.ttf") format("truetype"),
+       url("../webfonts/Geoportail-Grande-Region.svg#Geoportail-Grande-Region") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@icon-width: 63px;
+
+button.icon {
+  background: none;
+  border: 0;
+  text-indent: -9999px;
+}
+.theme-icon,
+button.icon,
+.infobar-button,
+li.icon > a {
+  &:after {
+    font-family: "geoportail-icons" !important;
+  }
+}
+.theme-icon {
+  line-height: 34px;
+  cursor: pointer;
+}
+div.icon,
+li.icon > a {
+  padding: 0;
+  position: relative;
+  width: @icon-width;
+  text-transform: uppercase;
+  text-align: center;
+
+  @media (max-width: @screen-xs-max) {
+    width: 48px;
+    font-size: 0.8em;
+  }
+
+  &:after {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    font-size: 2em;
+    text-indent: 0;
+    @media (max-width: @screen-xs-max) {
+      top: 10px;
+    }
+  }
+}
+
+button.search:after {
+  top: -10px;
+}
+li.icon > a {
+  padding-top: 32px;
+  @media (max-width: @screen-xs-max) {
+    padding-top: 30px;
+  }
+}
+header .navbar-nav li.icon a:after {
+  top: 15px;
+}
+
+button.icon.search:after,
+.icon.search a:after {
+  content: '\e00d';
+}
+.icon.layers a:after {
+  content: '\e00e';
+}
+.icon.mymaps a:after {
+  content: '\e01d';
+}
+.icon.infos a:after {
+  content: '\e01f';
+}
+.icon.legends a:after {
+  content: '\e041';
+}
+.icon.routing a:after {
+  content: '\e905';
+  font-family: 'apart-geoportail' !important;
+}
+.icon.draw > a:after {
+  content: '\e01e';
+}
+.icon.measure > a:after {
+  content: '\e021';
+}
+.icon.print > a:after {
+  content: '\e02f';
+}
+.icon.share > a:after {
+  content: '\e02a';
+}
+.icon.user > a:after {
+  content: '\e02e';
+}
+.icon.lang > a:after {
+  content: '\e012';
+}
+.icon.active > a:after {
+  content: '\e02c';
+  font-family: 'geoportail-icons' !important;
+}
+.icon.routing.active > a:after {
+  content: '\e02c';
+  font-family: 'geoportail-icons' !important;
+  font-size: 2em!important;
+}
+
+.infobar-button:after {
+  content: '\e600';
+}
+
+app-layerinfo {
+  margin: 0 5px;
+  .fa-info {
+    cursor: pointer;
+  }
+}
+
+.symbol-style {
+max-height: 40px;
+}

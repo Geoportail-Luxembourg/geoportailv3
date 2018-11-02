@@ -1,0 +1,236 @@
+.feature-popup {
+  position: absolute;
+  background-color: white;
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+  padding: 0px 10px 10px 10px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 340px;
+
+  &:after,
+  &:before {
+    top: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  &:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+  }
+  &:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+  }
+  .navbar-nav > li > a {
+    padding: 3px;
+  }
+
+  .description {
+    color: #777;
+  }
+
+  .measurements {
+    color: #777;
+    display: inline-block;
+  }
+
+  button.selected {
+    color: red;
+  }
+
+  @range-width: 70px;
+  @range-track-color: #1F5D87;
+  .form-control:focus input[type=range] {
+    box-shadow: none;
+  }
+  input[type=range] {
+    /*removes default webkit styles*/
+    -webkit-appearance: none;
+    
+    /*fix for FF unable to apply focus style bug */
+    border: none;
+    padding: 0 0 0 0;
+    /*required for proper track sizing in FF*/
+    width: @range-width;
+    margin-left: 10px;
+    float:none;
+    vertical-align: middle;
+    display: inline;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: @range-width;
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    margin-top: -4px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+
+  input[type=range]::-moz-range-track {
+    width: @range-width;
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+
+  input[type=range]::-ms-track {
+    width: @range-width;
+    height: 5px;
+    padding: 0 0 0 0;
+    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+    background: transparent;
+
+    /*leave room for the larger thumb to overflow with a transparent border */
+    border-color: transparent;
+    border-width: 6px 0;
+
+    /*remove default tick marks*/
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-fill-upper {
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  
+  input[type=range]::-ms-tooltip {
+    display: none;
+  }
+  a[ng-click] {
+    cursor: pointer;
+  }
+}
+.feature-popup-body {
+  min-height: 30px;
+}
+.feature-popup-heading {
+  width: 90%;
+  float: left;
+}
+.feature-popup-heading,
+.feature-popup-body,
+.feature-popup-footer {
+  clear: both;
+}
+.feature-popup-profile {
+  .profile {
+    border: none;
+  }
+  .close {
+    display: none;
+  }
+}
+.feature-popup-body textarea {
+  resize: vertical;
+}
+#sidebar .feature-popup-profile {
+  .profile {
+    border: none;
+    width: 240px;
+  }
+}
+#sidebar .feature-action-title {
+  float: right;
+  font-size: 5px;
+  font-weight: bold;
+  line-height: 1;
+  font-family: "geoportail-icons" !important;
+}
+
+.feature-popup-footer {
+  margin-bottom: 5px;
+}
+
+.feature-popup-heading {
+  cursor: pointer;
+  a {
+    color: #000000;
+    text-decoration: underline;
+  }
+}
+
+.palette {
+  border-collapse: collapse;
+  display: inline-block;
+}
+.palette td {
+  height: 14px;
+  width: 14px;
+  cursor: pointer;
+}
+.palette td.selected {
+  background: transparent;
+  -webkit-box-shadow: 0 1px 4px #000,inset 0 0 3px #fff;
+  box-shadow: 0 1px 4px #000,inset 0 0 3px #fff;
+  position: relative;
+}
+
+.feature-symbol-popup-body {
+  clear: both;
+  overflow-y: scroll;
+  max-height: 350px;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.btn-color {
+  padding: 0px 15px;
+}
+.range-number {
+  width: 50px;
+}

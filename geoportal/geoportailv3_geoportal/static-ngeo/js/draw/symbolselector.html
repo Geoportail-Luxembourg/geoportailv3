@@ -1,0 +1,105 @@
+<div class="feature-popup-heading" translate>Veuillez choisir un symbole dans une des catégories</div>
+<a href class="close" ng-click="ctrl.close()">&times;</a>
+<div class="feature-popup-body">
+  <div>
+    <ul class="nav nav-tabs">
+      <li ng-class="{active: ctrl.tab == 'stylable'}"><a href="#" ng-click="ctrl.openSymbols('stylable')" translate>Configurables</a></li>
+      <li ng-show="ctrl.isAuthenticated()" ng-class="{active: ctrl.tab == 'us'}"><a href="#" ng-click="ctrl.openSymbols('us')" translate>Mes symboles</a></li>
+      <li ng-class="{active: ctrl.tab == 'public'}"><a href="#" ng-click="ctrl.openSymbols('public')" translate>Publics</a></li>
+    </ul>
+  </div>
+  <br>
+  <div ng-show="ctrl.tab != 'stylable'" class="feature-symbol-popup-body">
+    <input type="text" class="form-control" placeholder="{{ 'Rechercher un symbole'|translate}}" ng-model="searchSymbols">
+    <table class="table table-hover table-condensed mymaps-list" ng-init="sortReverse = true">
+      <thead>
+        <tr>
+          <td>{{'Symbole'|translate}}</td>
+          <td>
+            <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+              {{'Nom'|translate}}
+              <span ng-show="sortType == 'name' && !sortReverse">&#9660;</span>
+              <span ng-show="sortType == 'name' && sortReverse">&#9650;</span>
+            </a>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+      <tr ng-click="ctrl.selectSymbol(symbol.id)" ng-repeat="symbol in ctrl.selectedSymbols| orderBy:sortType:sortReverse| filter:searchSymbols">
+        <td><img class="symbol-style" ng-src="{{ctrl.getSymbolUrl(symbol.url)}}"/></td>
+        <td>{{ symbol.name }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <span ng-show='!ctrl.selectedSymbols' translate>Aucun symbole disponible</span>
+  </div>
+  <div ng-show="ctrl.tab == 'stylable'" class="feature-popup-body">
+    <div class="form-inline">
+      <div class="form-group">
+        <button ng-click="ctrl.selectShape('circle')" 
+                ng-class="{selected: ctrl.feature.get('shape') == 'circle'}">
+         <svg height="18" width="18">
+            <circle cx="9" cy="9" r="9" stroke="{{ctrl.feature.get('color')}}" stroke-width="1" fill="{{ctrl.feature.get('color')}}" />
+          Circle
+          </svg>
+        </button>
+        <button ng-click="ctrl.selectShape('square')" 
+                ng-class="{selected: ctrl.feature.get('shape') == 'square'}">
+                <svg width="18" height="18">
+                  <rect width="18" height="18" style="fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};" />
+                Square
+                </svg>
+                </button>
+        <button ng-click="ctrl.selectShape('cross')" 
+                ng-class="{selected: ctrl.feature.get('shape') == 'cross'}">
+                <svg width="18" height="18">
+                  <text x="0" y="22" font-size='40' fill="{{ctrl.feature.get('color')}}">+</text>
+                Cross
+                </svg>
+        </button>
+        <button ng-click="ctrl.selectShape('triangle')" 
+                ng-class="{selected: ctrl.feature.get('shape') == 'triangle'}">
+                <svg width="18" height="18">
+                  <polygon points="0,18 9,0 18,18" style="fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1"></polygon>
+                 Triangle
+                </svg>
+        </button>
+      </div>
+    </div>
+    <div ng-if="ctrl.isHTML5ColorSupported()" class="form-inline">
+      <div class="form-group">
+        <label translate>Color</label>
+        <input type="color" ng-model="ctrl.getSetColor" ng-model-options="{getterSetter: true}">
+      </div>
+    </div>
+    <div ng-if="!ctrl.isHTML5ColorSupported()" class="form-inline">
+      <div class="form-group">
+        <label translate>Color</label>
+        <span class="dropdown">
+          <button class="btn btn-default btn-color dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:{{ctrl.feature.get('color')}}">
+            <span class="fa fa-caret-square-o-down"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <table class="palette">
+                <tr ng-repeat="colors in ::ctrl.colors">
+                  <td ng-repeat="color in colors" style="background-color:{{color}}" ng-click="ctrl.setColor(color)" ng-class="{selected: color == ctrl.feature.get('color')}">
+                  </td>
+                </tr>
+              </table>
+            </li>
+          </ul>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="feature-popup-footer pull-right">
+    <span ng-show="ctrl.isAuthenticated() && ctrl.tab == 'us'" class="btn btn-default btn-file">
+    {{'Importer un symbole'|translate}}<input type="file" accept="image/*" name="file" app-symbolupload app-imgupload="ctrl.newSymbol"/>
+    </span>
+  <button href class="btn btn-default" ng-click="ctrl.close()" translate>
+    Fermer
+  </button>
+</div>

@@ -1,0 +1,682 @@
+/** Main layout **/
+html, body {
+  position: relative;
+  height: 100%;
+}
+@topbar-height: 50px;
+@bottombar-height: 50px;
+@leftbar-width: 320px;
+body {
+  /* padding top by top bar height */
+  padding-top: @topbar-height;
+}
+
+@media (max-width: @screen-sm-min) {
+  .modal-backdrop {
+    display: none !important;
+  }
+  .modal-dialog {
+    margin: 30px auto;
+  }
+
+}
+[ng-cloak]
+{
+  display: none !important;
+}
+
+.navbar-nav {
+  // keep margin and padding the same as for media width > @screen-sm-min
+  margin: 0;
+  > li > a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: @bottombar-height;
+}
+
+#main-container {
+  height: 100%;
+  position: relative;
+}
+
+app-share > div {
+  padding-top: 15px;
+}
+
+app-map > div {
+  width: auto;
+  height: 100%;
+  overflow: hidden;
+  background-color: white;
+  position: relative;
+
+  &:-moz-full-screen {
+    height: 100%;
+    width: 100%;
+  }
+  &:-webkit-full-screen {
+    height: 100%;
+    width: 100%;
+  }
+  &:-ms-fullscreen {
+    height: 100%;
+    width: 100%;
+  }
+  &:full-screen {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.close-panel {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: none;
+  border: 0;
+  font-size: 36px;
+  padding: 2px;
+  line-height: 1;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+#sidebar {
+  display: block;
+  width: @leftbar-width;
+  height: 100%;
+  max-width: 100%;
+  float: left;
+  .transition(all 300ms ease-out 0s);
+  position: relative;
+
+  > div {
+    display: none;
+  }
+}
+
+#sidebar.open {
+  margin-left: 0;
+}
+
+@media (min-width: @screen-sm-min) {
+  #sidebar {
+    margin-left: -(@leftbar-width);
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  #sidebar {
+    margin-left: -100%;
+    width: 100%;
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  body {
+    /* padding bottom by footer height */
+    padding-bottom: @bottombar-height;
+  }
+}
+@media (max-width: @screen-xs-max) {
+  body {
+    padding-bottom: 0;
+    padding-top: 40px;
+    overflow: hidden;
+  }
+  #sidebar {
+    width: 100%;
+    position: absolute;
+    z-index: 3;
+  }
+  .footer {
+    position: absolute;
+    height: 0;
+    bottom: 0;
+  }
+
+  .theme-icon {
+    display: none;
+  }
+}
+
+.ol-control {
+  z-index: 2;
+  &, &:hover {
+    background-color: transparent;
+  }
+  button {
+    width: 41px;
+    height: 41px;
+    font-size: 1.5em;
+    font-weight: normal;
+    text-align: center;
+    text-indent: 0;
+    border: 1px solid #8394a0;
+    font-family: "geoportail-icons" !important;
+    margin: -1px;
+  }
+  &.infobar {
+    z-index: 2;
+    bottom: 8px;
+    right: 8px;
+    padding: 0px;
+    border: 1px solid #8394a0;
+    background-color: white;
+    .infobar-content {
+      float: left;
+      padding-right: 10px;
+      display: none;
+      height: 39px;
+      margin-left: 2px;
+    }
+    .infobar-content.active {
+      display: block;
+    }
+    .infobar-content .projection-select {
+      float: left;
+      margin-top: 1px;
+    }
+    .infobar-content .scale-select {
+      display: block;
+      float: left;
+      margin-top: 1px;
+    }
+    .infobar-content .scaleline-select {
+      display: block;
+      float: left;
+    }
+    .infobar-content .ol-scale-line {
+      margin-top: 10px;
+      display: inline-block;
+      position: inherit;
+      background: rgba(0,0,0,0);
+      padding: 0px 5px 0px 5px;
+      .ol-scale-line-inner {
+        border: 2px solid grey;
+        border-top: none;
+        color: black;
+        font-size: 12px;
+        text-align: center;
+        margin: 1px;
+      }
+    }
+    .projection-container {
+      display: block;
+      float: left;
+    }
+    .elevation-service {
+      height: 19px;
+      margin-top: 10px;
+      float: left;
+    }
+    .mouse-coordinates {
+      height: 19px;
+      margin-top: 10px;
+      margin-left: 3px;
+      width: 165px;
+      float: left;
+    }
+    .infobar-button {
+      float: right;
+    }
+    .btn {
+      border: 1px solid transparent;
+      height: 39px;
+      font-size: 16px;
+      min-width: 120px;
+      span {
+        font-size: 16px;
+        font-weight: normal;
+        text-align: center;
+        font-family:'DINNextLTPro-Condensed', Arial, sans-serif;
+      }
+    }
+    .dropdown ul {
+      display: none;
+    }
+    .dropdown.open ul {
+      display: block;
+    }
+  }
+}
+
+.ol-overviewmap:not(.ol-collapsed) button {
+  bottom: 1px;
+  left: initial;
+  position: absolute;
+  right: 0px;
+}
+
+.ol-overviewmap {
+  left: initial;
+  bottom: 104px;
+  padding: 0;
+  right: 8px;
+  border: 1px solid #8394a0;
+}
+
+.ol-toogle3d {
+  right: 9px;
+  padding: 0;
+  bottom: 104px;
+  z-index: 2;
+  button {
+    font-family: 'DINNextLTPro-Condensed', Arial, sans-serif !important;
+    line-height: 1.8em;
+  }
+}
+
+.location-button {
+  z-index: 2;
+  bottom: 55px;
+  padding: 0;
+  right: 8px;
+  border: 1px solid #8394a0;
+}
+
+.route-button {
+  top: 55px;
+  padding: 0;
+  right: 8px;
+  border: 1px solid #8394a0;
+}
+  
+.ol-zoom-extent {
+  left: 0.5em;
+  top: 88px;
+  .hidden-xs;
+}
+
+.ol-full-screen {
+  .hidden-xs;
+}
+
+div.ol-full-screen > button {
+  font-size: 1.2em;
+}
+
+div.ol-zoom-extent > button {
+  text-indent: 4px;
+}
+
+.user {
+  display: inline-block;
+  float: right;
+  margin: 0;
+  padding: 0;
+  & ul {
+    margin: 0;
+    padding: 0;
+  }
+  & li {
+    display: inline-block;
+    float: left;
+    background-repeat: no-repeat;
+    background-position: 1px top;
+  }
+  p {
+    line-height: normal;
+  }
+}
+
+& .second-level {
+  display: none;
+  position: absolute;
+  right: 0px;
+  text-align: left;
+  z-index: 10;
+  width: 320px;
+  & .open {
+    display:block;
+  }
+}
+
+.user .menu-title {
+  margin: 18px 0px;
+  padding-left: 10px;
+  text-transform: uppercase;
+  font-size: 40px;
+  color: white;
+  padding: 0px 20px;
+}
+
+.account-content {
+  padding: 10px;
+  clear:both;
+  & input {
+      color: white;
+      height: 43px;
+      border: none;
+      font-size: 16px;
+      &[type=password],
+      &[type=text] {
+        float:left;
+        width:100%;
+        margin-bottom: 10px;
+        padding: 17px 10px 10px;
+        background-color: rgba(46,65,78, 0.2);
+        -webkit-box-shadow: inset 0px 2px 4px -1px rgba(0, 57, 79, 0.25);
+        box-shadow: inset 0px 2px 4px -1px rgba(0, 57, 79, 0.25);
+      }
+      &[type=submit]{
+        float: right;
+        width: 91px;
+        height:44px;
+        line-height:44px;
+        text-align:center;
+        text-transform: uppercase;
+      }
+    }
+}
+
+.navigation-account .tab{
+  padding: 10px 0px 0px;
+  margin:0px;
+  float:left;
+  text-indent:-999em;
+  position:relative;
+  width: 41px;
+  height:41px;
+  line-height: 41px;
+  padding: 0px 10px 0px 20px;
+  margin-left:1px;
+  font-size:24px;
+  color: #fff;
+  cursor:pointer;
+  width:82px;
+}
+
+.navigation-account p {
+  margin: 0px;
+}
+.navigation-account .tab:after {
+    font-family: "geoportail-icons";
+    font-size:28px;
+    line-height:41px;
+    color:#fff;
+    position:absolute;
+    width:100%;
+    text-align:center;
+    text-indent:0;
+    position:absolute;
+    top:0;
+    left:0;
+    content:'\e02e';
+}
+
+.account-content ul li {
+  float: none;
+  display: block;
+  height: auto;
+  line-height: 31px;
+  margin-bottom: 1px;
+  position:relative;
+  & p, & a {
+    display: block;
+    height: auto;
+    line-height: 31px;
+    padding: 0px 50px 0px 10px;
+    color: #fff;
+    text-decoration: none;
+  }
+  & a{
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+.navigation-account fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+.navigation-account .account-content p {
+  white-space: normal;
+}
+
+.navigation-account legend {
+  border: 0 none;
+  padding: 0;
+  white-space: normal;
+}
+
+.popover{
+  max-width: 500px;
+  max-height: 500px;
+  overflow: hidden;
+  font-size: 13px;
+  font-family: Arial,sans-serif;
+  dl {
+    width: 100%;
+    float: left;
+    margin: 1em 0;
+    padding: 0;
+  }
+  dt {
+    float: left;
+    width: 30%;
+    clear: left;
+    margin-right: 0.8em;
+    padding: 5px;
+  }
+  dd {
+    float: left;
+    width: 65%;
+    margin: 0;
+    padding: 5px;
+  }
+  p {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.popover-content {
+  max-height: 460px;
+  overflow: auto;
+}
+.profile-popup {
+  background-color: white;
+  border: 1px solid;
+}
+.profile-title {
+  height: 25px;
+}
+.profile-export {
+  float: right;
+  padding-right: 5px;
+  opacity: 0.9;
+}
+@profile_height: 250px;
+.profile {
+  width: 450px;
+  height: @profile_height;
+  background-color: white;
+
+  background: url(../images/profile.png) no-repeat white;
+  background-position-x: 10px;
+  background-position-y: 10px;
+
+  svg {
+    background-color: white;
+  }
+
+  > div {
+    display: table;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgba(120, 120, 120, 0.5);
+    border-radius: 5px;
+  }
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+*:before, *:after {
+    box-sizing: border-box;
+}
+/** Theme Switcher **/
+.theme-selector {
+  padding: 8px 6px;
+  color: white;
+  margin: 10px;
+  cursor: pointer;
+  span {
+    text-transform: uppercase;
+  }
+  a {
+    float: right;
+    font-size: 0.8em;
+    padding: 2px 4px;
+    text-decoration: none;
+    margin-top: -2px;
+  }
+  table {
+    border-collapse: separate;
+    border-spacing: 1px;
+    display: inline-block;
+    vertical-align: middle;
+    & tr > td {
+      height: 10px;
+      width: 10px;
+    }
+  }
+
+}
+.themes-list {
+  list-style-type: none;
+  margin: 0 0 0 10px;
+  padding: 0;
+  width: 300px;
+  li {
+      float: left;
+      width: 50%;
+  }
+  a {
+    display: block;
+    font-size: 24px;
+    height: 150px;
+    padding: 20px 10px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  a:focus {
+    color: #fff;
+  }
+  a:after {
+    bottom: 0px;
+    font-family: "geoportail-icons" !important;
+    font-size: 2.5em;
+    left: 10px;
+    position: absolute;
+  }
+}
+
+.navbar-form .form-group {
+  position: relative;
+}
+
+
+@drawing-panel-width: 300px;
+.drawing-panel {
+  white-space: normal;
+  width: @drawing-panel-width;
+  padding: 10px 0;
+  margin-left: -(@drawing-panel-width / 2) + (@icon-width / 2);
+  >div {
+    height: @icon-width;
+    p {
+      margin-top: 10px;
+    }
+  }
+}
+
+.slider-line-area {
+  top: 0px;
+  position: absolute;
+  width: 32px;
+  height: 100%;
+  left: 50%;
+  margin-left: -2px;
+  cursor: w-resize;
+  user-select: none; 
+}
+
+.slider-line {
+  top: 0px;
+  position: absolute;
+  width: 4px;
+  height: 100%;
+  left: 50%;
+  margin-left: -2px;
+  cursor: w-resize;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+}
+
+.slider-layer-label {
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  position: absolute;
+  width: 120px;
+  bottom: 55px;
+  right: 30px;
+  padding: 5px 3px; 
+  font-weight: bold;
+  background-color: white;
+
+  &:before {
+    padding-right: 3px;
+  }
+}
+
+.slider-arrows {
+  position: absolute;
+  width: 35px;
+  height: 32px;
+  left: 0px;
+  top: 50%;
+  margin-top: -16px;
+  padding: 5px 4px;
+  user-select: none;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  div {
+    display: inline-block;
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+  }
+
+  .slider-arrow-right{
+    margin-left: 3px;
+    border-left: 10px solid white;
+  }
+
+  .slider-arrow-left {
+    border-right: 10px solid white;
+  }
+}

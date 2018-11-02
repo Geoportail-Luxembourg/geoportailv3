@@ -1,0 +1,315 @@
+/** Top and bottom bars (header and footer) **/
+
+@navbars-button-border-color: #8394a0;
+@grid-float-breakpoint-max: 0px;
+
+
+header {
+  &.navbar {
+    border-width: 0;
+    @media (max-width: @screen-xs-max) {
+      min-height: 40px;
+    }
+  }
+  .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .theme-header {
+    font-size: 15px;
+    margin-right: 10px;
+    margin-top: 10px;
+    line-height: 34px;
+    cursor: pointer;
+    text-transform: uppercase;
+    @media (max-width: @screen-md-max) {
+      display: none;
+    }
+  }
+}
+.nav {
+  > li {
+    /* force items to appear on the same line even for small screens */
+    display: inline-block;
+  }
+}
+.navbar-right {
+  float: right!important;
+}
+.navbar-right .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+
+/***************/
+/* positioning */
+/***************/
+
+.toolbox {
+  float: none;
+  // FIXME to be set to real width (may depend on media width)
+  width: 300px;
+  .enabled-3d & {
+    width: 48px;
+    li a {
+      border-left: 1px solid @navbars-button-border-color;
+    }
+  }
+  // center the toolbox bar
+  margin: 0 auto;
+  > li {
+    /* force items to appear on the same line even for small screens */
+    display: inline-block;
+  }
+}
+
+.toolbox-panel-mapmatching {
+  display: none;
+  z-index: 2;
+  position: absolute;
+  top: auto;
+  bottom: ~"calc(100% + 63px)";
+  white-space: nowrap;
+  padding-left: 128px;
+  > li {
+    display: block;
+    float: left;
+    > a {
+      padding: 0;
+      text-align: center;
+      margin-right: 1px;
+    }
+  }
+}
+
+.toolbox-panel {
+  display: none;
+  z-index: 2;
+  position: absolute;
+  top: auto;
+  bottom: 100%;
+  white-space: nowrap;
+
+  > li {
+    display: block;
+    float: left;
+    > a {
+      padding: 0;
+      text-align: center;
+      margin-right: 1px;
+    }
+  }
+}
+
+.toolbox-panel-top {
+  top: 100%;
+  bottom: auto;
+  right: 0px;
+
+  > li {
+    display: block;
+    float: right;
+  }
+}
+
+.active .toolbox-panel {
+  display: block;
+}
+
+.active .toolbox-panel-mapmatching {
+  display: block;
+}
+
+.sidebar-controls {
+  left: 0;
+  .transition(left 300ms 0 ease-out);
+  z-index: 1;
+}
+
+@media (max-width: @screen-xs-max) {
+  .sidebar-controls,
+  .toolbox {
+    position: absolute;
+  }
+  .sidebar-controls,
+  .toolbox {
+    > li {
+      display: block;
+    }
+  }
+  .sidebar-controls {
+    bottom: 100px;
+    .enabled-3d &{
+      bottom: 61px;
+    }
+  }
+  .toolbox {
+    width: auto;
+    margin: 0;
+    left: 0;
+    bottom: 20px;
+  }
+  footer {
+    .sidebar-controls.open {
+      left: 100%;
+    }
+  }
+}
+
+/* Push user icon to right across all screens */
+.navbar-nav > li.user {
+  float: right;
+}
+
+/* Keep items in one line, even with not enough room for links */
+.footer-navigation {
+  margin-left: -125px;
+}
+/***********/
+/* Sizing  */
+/***********/
+
+.navbar-nav > li > a {
+  line-height: 17px;
+}
+
+.footer-navigation > li > a {
+  padding-right: 7px;
+  padding-left: 7px;
+}
+.toolbox-panel-mapmatching > li > a {
+  width: (@icon-width * 3) + 2;
+  line-height: 39px;
+}
+
+.toolbox-panel > li > a {
+  width: @icon-width;
+  line-height: @icon-width;
+}
+
+.toolbox-panel-bottom > li > a {
+  margin-right: 1px;
+}
+
+.toolbox-panel-mapmatching-bottom > li > a {
+  margin-bottom: 1px;
+}
+
+.toolbox-panel-top > li > a {
+  margin-right: 1px;
+}
+
+.draw .toolbox-panel {
+  /* 4 draw tools */
+  width: 5 + (5 * @icon-width);
+}
+
+.measure .toolbox-panel {
+  /* 4 measure tools */
+  width: 4 + (4 * @icon-width);
+}
+
+.share .toolbox-panel {
+  width: 4 + (4 * @icon-width);
+}
+
+.measure .profile-open {
+  li {
+    display: none;
+  }
+}
+
+.lang .toolbox-panel {
+  /* 4 languages */
+  width: 4 + (4 * @icon-width);
+  a {
+    text-transform: uppercase;
+  }
+}
+
+@media (min-width: @screen-xs-max){
+  .brand > img {
+    margin: 5px;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .brand,
+  .navbar-nav,
+  .navbar-nav > li > a {
+    line-height: 10px;
+  }
+  > .brand {
+    height: 40px;
+  }
+  .brand {
+    margin-right: -200px;
+  }
+}
+
+/***********/
+/* styling */
+/***********/
+
+
+header {
+  .navbar-form {
+    padding: 0;
+  }
+  .navbar-nav > li > a {
+    border-left: 1px solid @navbars-button-border-color;
+    text-indent: -9999px;
+  }
+}
+.toolbox > li:first-child > a {
+  border-left: 1px solid @navbars-button-border-color;
+}
+.toolbox,
+.sidebar-controls {
+  > li > a {
+    border-right: 1px solid @navbars-button-border-color;
+  }
+}
+
+.footer-navigation > li > a {
+  color: #6b818f;
+  text-transform: uppercase;
+}
+
+@media (min-width: @screen-sm-min) {
+  footer {
+    .box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .sidebar-controls,
+  .toolbox {
+    > li {
+      background-color: white;
+      > a {
+        border-right: 1px solid @navbars-button-border-color;
+        border-bottom: 1px solid @navbars-button-border-color;
+        width: 150px;
+      }
+    }
+    > li:first-child > a {
+        border-left: 0;
+    }
+  }
+  .enabled-3d .toolbox > li > a {
+    border-left: none;
+  }
+  .sidebar-controls {
+      > li:first-child > a {
+      border-top: 1px solid @navbars-button-border-color;
+    }
+  }
+  .toolbox {
+      > li:first-child > a {
+      border-top: 0px;
+    }
+  }
+}

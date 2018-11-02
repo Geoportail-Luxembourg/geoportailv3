@@ -1,0 +1,5 @@
+<div id="streetview-{{::ctrl.uid}}" class="streetview" ng-show="ctrl.isActive() && !ctrl.noDataAtLocation">
+</div>
+<div class="streetview" ng-show="ctrl.isActive() && ctrl.noDataAtLocation">
+  <span translate>Il n'y a pas de panorama google disponible à cet endroit</span>
+</div>

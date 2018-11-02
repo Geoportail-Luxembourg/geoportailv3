@@ -1,0 +1,19 @@
+<div class="nav toolbox-panel toolbox-panel-bottom">
+  <ul class="nav toolbox-panel">
+    <li>
+    <a href ng-click="ctrl.openFbLink()" translate>Facebook</a>
+    </li>
+    <li>
+    <a href ng-click="ctrl.openShareLink('twitter')" translate>Twitter</a>
+    </li>
+    <li>
+    <a href ng-click="ctrl.openShareLink('googlePlus')" translate>Google Plus</a>
+    </li>
+    <li>
+    <a href ng-click="ctrl.openMailLink()" translate>Email</a>
+    </li>
+  </ul>
+  <app-shorturl app-shorturl-active="ctrl.active"
+    app-shorturl-active-mymaps="ctrl.activeMymaps"
+    app-shorturl-show-long-url="ctrl.showLongUrl"></app-shorturl>
+</div>

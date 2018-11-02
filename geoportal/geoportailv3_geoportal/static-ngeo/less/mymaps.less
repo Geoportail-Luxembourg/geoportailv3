@@ -1,0 +1,132 @@
+.mymaps {
+  .mymapsFileUpload {
+      position: relative;
+      overflow: hidden;
+      color: #333333;
+      &:hover, &:focus {
+        text-decoration: none;
+        color: #262626;
+        background-color: #f5f5f5;
+      }
+      & a {
+         display: block;
+         padding: 3px 20px;
+         clear: both;
+         font-weight: normal;
+         color: #333333;
+         white-space: nowrap;
+      }
+  }
+
+  .mymapsFileUpload input.mymapsUpload {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      padding: 0;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0;
+      filter: alpha(opacity=0);
+  }
+
+  app-mymaps {
+    display: block;
+    height: 100%;
+    overflow: auto;
+  }
+
+  app-mymaps > div {
+    padding: 10px;
+  }
+
+  hr {
+    margin: 0;
+  }
+
+  .mymap-header .title {
+    width: auto;
+    max-width: ~"calc(100% - 15px)";
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .map-owner {
+    font-style: italic;
+    font-size: 0.9em;
+  }
+
+  .title,
+  .description,
+  .no-description {
+    cursor: pointer;
+  }
+
+  .features {
+    > li {
+      padding-left: 10px;
+    }
+    .feature {
+      cursor: pointer;
+
+      .icon {
+        font-family: "geoportail-icons" !important;
+
+        &.point:before {
+          content: '\e901';
+        }
+        &.line:before {
+          content: '\e900';
+        }
+        &.point:before {
+          content: '\e901';
+        }
+        &.line:before {
+          content: '\e900';
+        }
+        &.polygon:before {
+          content: '\e902';
+        }
+      }
+    }
+  }
+
+  .navbar {
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
+  .navbar-nav > li > a {
+    padding: 3px;
+    background-color: transparent;
+  }
+  .navbar-nav > li > button {
+    margin: 0px 0px 5px 0px;
+  }
+}
+table.mymaps-list > tbody > tr {
+  cursor: pointer;
+}
+
+.mymaps-list-scroll.modal-body{
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+@media (min-height: 500px) {
+    .mymaps-list-scroll.modal-body { 
+        max-height: 400px;
+    }
+}
+
+@media (min-height: 800px) {
+    .mymaps-list-scroll.modal-body {
+        max-height: 600px;
+    }
+}
+
+.modal-open .modal {
+    color: #333333;
+}

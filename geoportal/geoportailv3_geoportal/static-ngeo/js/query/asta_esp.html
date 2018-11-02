@@ -1,0 +1,7 @@
+<h1>{{layers.layerLabel | translate}}</h1>
+<div ng-repeat="feature in layers.features" class="poi-feature">
+  <span translate>Numero EFA</span> : {{feature.attributes.code_elem}}{{feature.attributes.efa}}<br>
+  <div ng-if="feature.attributes.surface"><span translate>Surface</span> : {{(feature.attributes.surface/100) | number:1}} a<br></div>
+  <div ng-if="feature.attributes.longueur"><span translate>Longueur</span> : {{feature.attributes.longueur | number:1}} m<br></div>
+  <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
+</div>

@@ -1,0 +1,15 @@
+<div class="layer-info-content" ng-if="ctrl.hasLegend(ctrl.getBgLayer())">
+  <h1>{{ctrl.getBgLayer().get('label') | translate}}</h1>
+  <div ng-bind-html="ctrl.getLegendHtml(ctrl.getBgLayer())">
+  </div>
+</div>
+<div ng-if="!ctrl.isALegendAvailable()">
+ <span translate>Aucune légende n'est disponible pour les couches sélectionnées.</span>
+</div>
+<div ng-repeat="layer in ctrl.layers">
+  <div class="layer-info-content" ng-if="ctrl.hasLegend(layer)">
+    <h1>{{layer.get('label') | translate}}</h1>
+    <div ng-bind-html="ctrl.getLegendHtml(layer)">
+    </div>
+  </div>
+</div>

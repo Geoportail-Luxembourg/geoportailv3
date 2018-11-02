@@ -1,0 +1,68 @@
+#mylayers {
+  margin-top: 5px;
+}
+ul.layermanager {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+.layer-label {
+  display: inline-block;
+  cursor: pointer;
+  width: 70%;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+li.layermanager-panel {
+  list-style-type: none;
+  margin-bottom: 1px;
+  padding: 5px 10px;
+
+  .delete {
+    cursor: pointer;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .options-button {
+    float: right;
+    line-height: inherit;
+  }
+
+  a .expanded {
+    display: none;
+  }
+
+  a[aria-expanded=true] {
+    .collapsed {
+      display: none;
+    }
+    .expanded {
+      display: block;
+    }
+  }
+
+  input.opacity {
+    width: 50px;
+    display: inline-block;
+  }
+}
+
+.sortable-handle {
+  cursor: move;
+  -moz-user-select: none;
+}
+
+.sortable-dragger {
+  white-space: nowrap;
+  .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+
+  app-layerinfo {
+    visibility: hidden;
+  }
+  .poi-feature, .mymaps-info-content, .delete, .options-button, .options-body {
+    display: none;
+  }
+
+}

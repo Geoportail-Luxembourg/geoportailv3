@@ -1,0 +1,290 @@
+#sidebar {
+  h2 {
+    font-size: 40px;
+    line-height: 1;
+    padding: 12px 0 12px 12px;
+    margin: 0;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .close-panel {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    color: #fff;
+  }
+
+  app-backgroundlayer {
+    > div {
+      margin-bottom: 15px;
+      .dropdown {
+        display: inline-block;
+        button {
+          min-width: 120px;
+        }
+      }
+    }
+  }
+
+  &> div {
+    height: 100%;
+  }
+
+  .nav-tabs>li {
+    padding-right: 5px;
+    &>a {
+      text-transform: uppercase;
+      font-size: 24px;
+      line-height: 1;
+      border: 0;
+    }
+  }
+
+  #layers .tab-content {
+    // Height calculation:
+    // 100% - h2 font-size - padding-top - padding-bottom -
+    //   (app-backgroundlayer) @input-height-base - margin-bottom -
+    //   tab font-size - tab padding*2;
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - 40px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #mymaps .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #FFFFFF;
+  }
+
+  #mymaps .modal-content {
+    color: #333333;
+  }
+
+  #routing .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #infos .tab-content {
+    // FIXME: use variables for the calculation
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  #legends .tab-content {
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  #feedback .tab-content {
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  .themes-switcher {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: ~"calc(100% - 105px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
+    position: absolute;
+    width:100%;
+    -webkit-transition: none;
+    transition: none;
+  }
+
+  .external-data-selector {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+
+  .layer-info-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+  .feedback-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+
+  .mymaps-info-content {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  #infos .container-fluid {
+    overflow-y: initial;
+  }
+  #routing .container-fluid {
+    overflow-y: auto;
+  }
+  .layer-info-content .poi-feature {
+    background-color: rgba(255, 255, 255, 0.5);
+    margin: 5px 5px 5px 5px;
+    padding: 10px 0px 10px 10px;
+  }
+  .layer-info-content .poi-feature a.fid-link{
+    color: #000000;
+    text-decoration: underline;
+  }
+  .layer-info-content .poi-feature a{
+    color: #000000;
+    text-decoration: underline;
+  }
+  .layer-info-content .profile-popup {
+    width: 96%;
+  }
+
+  .mymaps-info-content .poi-feature {
+    margin: 5px 5px 5px 5px;
+    padding: 10px 0px 10px 10px;
+  }
+  .mymaps-info-content .poi-feature a.fid-link{
+    color: #000000;
+  }
+  .mymaps-info-content .profile-popup {
+    width: 96%;
+  }
+
+  @range-width: 70px;
+  @range-track-color: #fff;
+  input[type=range] {
+    /*removes default webkit styles*/
+    -webkit-appearance: none;
+    
+    /*fix for FF unable to apply focus style bug */
+    border: 0 solid white;
+    padding: 0 0 0 0;
+    /*required for proper track sizing in FF*/
+    width: @range-width;
+    margin-left: 10px;
+    float:none;
+    vertical-align: middle;
+    display: inline;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: @range-width;
+    height: 5px;
+    background: @range-track-color;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    margin-top: -4px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: @range-track-color;
+  }
+
+  input[type=range]::-moz-range-track {
+    width: @range-width;
+    height: 5px;
+    background: @range-track-color;
+    border: none;
+    border-radius: 3px;
+  }
+  input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+
+  input[type=range]::-ms-track {
+    width: @range-width;
+    height: 5px;
+    padding: 0 0 0 0;
+    /*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */
+    background: transparent;
+
+    /*leave room for the larger thumb to overflow with a transparent border */
+    border-color: transparent;
+    border-width: 6px 0;
+
+    /*remove default tick marks*/
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: @range-track-color;
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-fill-upper {
+    background: @range-track-color;
+    border-radius: 10px;
+  }
+  input[type=range]::-ms-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: @range-track-color;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: @range-track-color;
+  }
+  input[type=range]::-ms-tooltip {
+    display: none;
+  }
+  #infos .streetview {
+    height: 500px;
+    background: url('../images/sv_bg.png') no-repeat;
+    padding-top: 15px;
+  }
+  .location-info-padding > tbody > tr > td,
+  .location-info-padding > tbody > tr > th {
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    font-size: 15px;
+  }
+}
+
+app-query {
+  .query-profile {
+    .profile {
+      width: 97%;
+      border: none;
+    }
+    .close {
+      display: none;
+    }
+  }
+}
+app-locationinfo {
+  .locationinfo-shorturl {
+    padding-left: 0px;
+  }
+}

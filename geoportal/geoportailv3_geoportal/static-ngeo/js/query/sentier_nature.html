@@ -1,0 +1,26 @@
+﻿<div class="row">
+  <div class="col-xs-12">
+    <h1>{{layers.layerLabel | translate}}</h1>
+    <div ng-repeat="feature in layers.features" class="poi-feature">
+      <h4>{{feature.attributes.sentier}}</h4>
+      <div ng-if="ctrl.hasAttributes(feature)">
+        <label translate>Longueur du parcours</label> : <span>{{feature.attributes.formatted_length }}</span>
+        <div ng-if="ctrl.hasFeatureAttribute(feature, 'link')">
+          <a class="btn btn-default" ng-href="{{ctrl.proxyresourceUrl}}?fid={{feature.fid}}&attribute=link" target="_blank" translate>Télécharger la brochure</a>
+        </div>
+      </div>
+      <div class='query-profile' ng-show="feature.attributes.showProfile.active">
+        <app-profile app-profile-data="feature.attributes.profile" app-profile-map="::ctrl.map" app-profile-interaction="feature.attributes.showProfile">
+      </div>
+      <div ng-show="feature.attributes.showProfile.active">
+        <a class="btn btn-default no-print"  ng-click="ctrl.exportKml(feature, feature.attributes.name)" translate>Exporter KMl</a> &nbsp;<a class="btn btn-default no-print" ng-click="ctrl.exportGpx(feature, feature.attributes.name, true)" translate>Exporter GPX</a>
+      </div>
+      <div ng-if="!ctrl.hasAttributes(feature)">
+        <span translate>Aucune information disponible pour cette couche</span>
+      </div>
+      <div ng-if="ctrl.hasValidFID(feature)">
+        <span><a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a></span>
+      </div>
+    </div>
+  </div>
+</div>

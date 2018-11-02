@@ -1,0 +1,143 @@
+<div ng-show="!ctrl.editingAttributes && !ctrl.editingStyle && !ctrl.deletingFeature && !ctrl.askRadius">
+
+  <div class="feature-popup-heading" ng-hide="ctrl.isDocked()">{{ ctrl.feature.get('name') }}&nbsp;</div>
+  <a ng-if="!ctrl.isDocked()" class="close" ng-click="ctrl.close()">&times;</a>
+  <span ng-if="ctrl.isDocked()" class="fa fa-object-ungroup" role="button" ng-click="ctrl.undock()">&nbsp;</span>
+  <div class="{{ctrl.isDocked()?'feature-popup-heading':'feature-popup-body description'}}" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description')+'&nbsp;')"></div>
+
+  <div class="feature-popup-body measurements">
+    <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
+    <div ng-hide="ctrl.getLength() == false"><span translate>Length: </span>
+      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span></div>
+    <div ng-hide="ctrl.getArea() == false">
+      <span translate>Area: </span>
+      <span ng-bind-html="ctrl.trustAsHtml(ctrl.getArea())"></span>
+    </div>
+    <div ng-show="ctrl.isCircle()" class="form-inline">
+      <div class="form-group">
+        <span translate>Rayon: </span>
+        <span ng-show="!ctrl.editCircleRadius" ng-bind-html="ctrl.trustAsHtml(ctrl.getRadius())"></span>
+        <span ng-show="ctrl.isEditable() && ctrl.editCircleRadius">
+        <input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"><button class="btn btn-primary" ng-click="ctrl.setCircleRadius(ctrl.tempCircleRadius.replace(',','.'))" translate>Valider</button></span>
+      </div>
+    </div>
+    <span ng-show="ctrl.featureElevation" translate>Elevation: {{ ctrl.featureElevation }}</span>
+    <div class="feature-popup-profile" ng-show="ctrl.showFeatureProfile.active">
+      <app-profile app-profile-data="ctrl.featureProfile" app-profile-map="::ctrl.map" app-profile-interaction="ctrl.showFeatureProfile"
+        app-profile-show-tooltip="!ctrl.isEditable()" app-profile-is-loading-msg="true">
+    </div>
+  </div>
+
+  <div class="feature-popup-footer hidden-3d">
+    <ul class="nav navbar-nav pull-left">
+      <li ng-show="ctrl.isEditable() && !ctrl.feature.get('__editable__')" ng-click="ctrl.modifySelectedFeature()"><button class="btn btn-primary" translate>Editer l'objet</button></li>
+      <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')" ng-click="ctrl.endModifySelectedFeature()"><button class="btn btn-primary" translate>Terminer édition</button></li>
+    </ul>
+    <ul class="nav navbar-nav pull-right">
+      <li>
+        <a href ng-click="ctrl.fitFeature()">
+          <span class="fa fa-search"></span>
+        </a>
+      </li>
+      <li ng-show="ctrl.isEditable()">
+        <a href ng-click="ctrl.editingAttributes = true">
+          <span class="fa fa-pencil"></span>
+        </a>
+      </li>
+      <li ng-show="ctrl.isEditable()">
+        <a href ng-click="ctrl.editingStyle = true">
+          <span class="fa fa-paint-brush"></span>
+        </a>
+      </li>
+      <li ng-show="ctrl.isEditable()">
+        <a href href ng-click="ctrl.deletingFeature = true">
+          <span class="fa fa-trash"></span></a>
+      </li>
+      <li class="{{ctrl.isDocked()?'dropup':'dropdown'}}">
+        <a href class="dropdown-toggle" data-toggle="dropdown">
+          <span class="fa fa-caret-square-o-down"></span>
+        </a>
+        <ul class="dropdown-menu {{ctrl.isDocked()?'dropdown-menu-right':''}}" role="menu">
+          <li ng-click="ctrl.exportGpx(true)"><a href translate>Exporter un GPX</a></li>
+          <li ng-click="ctrl.exportKml()"><a href translate>Exporter un KML</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.continueLine()"><a href translate>Continuer la ligne</a></li>
+          <li ng-show="ctrl.isEditable() && ctrl.isLineString()" ng-click="ctrl.reverseLine()"><a href translate>Changer sens de la ligne</a></li>
+          <li ng-show="ctrl.isCircle()" ng-click="ctrl.tempCircleRadius = ctrl.getCircleRadius() ; ctrl.askRadius = true"><a href translate>Créer cercle concentrique</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+<div ng-show="ctrl.editingAttributes">
+  <div class="feature-popup-heading" translate>Modification des informations</div>
+  <a class="close" ng-click="ctrl.close()">&times;</a>
+  <div class="feature-popup-body">
+    <div class="row">
+      <div class="col-xs-8 form-group">
+        <input type="text" class="form-control" ng-model="ctrl.tempName">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 form-group">
+        <textarea class="form-control" rows="3" ng-model="ctrl.tempDesc"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-8 form-group" ng-show="ctrl.isAuthenticated()">
+        <span ng-hide="ctrl.tempThumbnail" class="btn btn-default btn-file">
+          {{'Ajouter vignette'|translate}}<input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
+        </span>
+        <img ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.tempThumbnail)}}"/>
+        <button class="btn btn-default" ng-show="ctrl.tempThumbnail" ng-click="ctrl.removeImage()" translate>Retirer vignette</button>
+      </div>
+    </div>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-default" ng-click="ctrl.editingAttributes = false" translate>
+      Cancel
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.validateModifications()" translate>
+      Validate
+    </button>
+  </div>
+</div>
+<div ng-show="ctrl.editingStyle">
+  <div class="feature-popup-body">
+    <app-styleediting app-style-editing-feature="ctrl.feature"
+                       app-style-editing-style="ctrl.editingStyle">
+    </app-styleediting>
+  </div>
+</div>
+<div ng-show="ctrl.deletingFeature">
+  <div class="feature-popup-body">
+    <span translate>Êtes-vous certain de vouloir effacer cet élément de la carte ?</span>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-primary" ng-click="ctrl.deletingFeature = false" translate>
+      Annuler
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.deleteFeature()" translate>
+      OK
+    </button>
+  </div>
+</div>
+<div ng-show="ctrl.askRadius">
+  <div class="feature-popup-body">
+    <span translate>Veuillez entrer les caractéristiques de votre nouveau cercle</span>
+    <div class="form-inline">
+      <div class="form-group">
+        <span translate>Rayon: </span>
+        <span><input type="text" ng-model="ctrl.tempCircleRadius" class="form-control"></span>
+        <span translate>mètres</span>
+      </div>
+    </div>
+  </div>
+  <div class="feature-popup-footer pull-right">
+    <button href class="btn btn-primary" ng-click="ctrl.askRadius = false" translate>
+      Annuler
+    </button>
+    <button href class="btn btn-primary" ng-click="ctrl.createNewCircle(ctrl.tempCircleRadius.replace(',','.'))" translate>
+      OK
+    </button>
+  </div>
+</div>

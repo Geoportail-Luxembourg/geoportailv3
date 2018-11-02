@@ -1,0 +1,16 @@
+<label translate>Ici vous pouvez commander le rapport relatif aux règles urbanistiques applicables au terrain séctionné</label>
+
+<br>
+<br>
+<table>
+<tr>
+    <td width="20px" ></td>
+    <td colspan=2><label translate>Adresse Email</label> <input type='type' ng-model="ctrl.getSetMail " style="width:165px" ng-model-options="{getterSetter: true}"></td>
+</tr>
+<tr >
+    <td width="20px" style="vertical-align:top"><td width="20px" style="vertical-align:top"><input type="checkbox" ng-model="ctrl.getSetTAC" ng-model-options="{getterSetter: true}"></td>
+    <td><label translate>En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté les <a href='pagfiles/Disclaimer.pdf'>conditions générales d'utilisation </a>de ce site web.</label></td>
+</tr>
+</table>
+<br>
+<button ng-click="ctrl.generateRepport()" target="_blank" translate>Commander rapport</button>
