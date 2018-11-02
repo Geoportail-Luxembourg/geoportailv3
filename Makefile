@@ -7,6 +7,9 @@ endif
 API_LESS_FILES = $(shell find $(PACKAGE)/static/less -type f -name '*.api.less' 2> /dev/null)
 API_JS_FILES = $(shell find jsapi/src/ -type f -name '*.js')
 
+DOCKER_WEB_HOST = localhost:8042
+DOCKER_WEB_PROTOCOL = http
+
 TEMPLATE_EXCLUDE += LUX_alembic/script.py.mako node_modules
 
 # FIXME add lb language
@@ -37,8 +40,6 @@ CONFIG_VARS += routing
 CONFIG_VARS += referrer
 CONFIG_VARS += excluded_themes_from_search
 APACHE_VHOST ?= luxembourg-geomapfish
-
-VISIBLE_WEB_HOST ?= localhost
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
 NGEO_LIBS_JS_FILES += node_modules/jszip/dist/jszip.min.js
