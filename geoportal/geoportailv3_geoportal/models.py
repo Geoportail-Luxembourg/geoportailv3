@@ -80,6 +80,30 @@ class LuxLayerInternalWMS(LayerWMS):
     })
 
 
+    def __init__(
+        self, name='', layer='', public=True,
+        time_mode='disabled',
+        time_widget='slider',
+        url='',
+        layers='',
+        is_poi=False,
+        collection_id=0,
+        rest_url=''
+    ):
+        LayerWMS.__init__(self, name=name, layer=layer, public=public,
+        time_mode=time_mode, time_widget=time_widget)
+        self.url = url
+        self.layers = layers
+        self.is_poi = is_poi
+        self.collection_id = collection_id
+        self.rest_url = rest_url
+
+    def get_default(dbsession):
+        return dbsession.query(LuxLayerInternalWMS).filter(
+                LuxLayerInternalWMS.name == 'lux_layer_internal_wms-defaults'
+                ).one_or_none()
+
+
 class LuxLayerExternalWMS(LayerWMS):
     __tablename__ = 'lux_layer_external_wms'
     __table_args__ = {'schema': _schema}
@@ -97,6 +121,21 @@ class LuxLayerExternalWMS(LayerWMS):
     category_id = Column(Integer, info={
         'colanderalchemy': {'title': _('Category ID')}
     })
+
+    def __init__(
+        self, name='', layer='', public=True,
+        time_mode='disabled',
+        time_widget='slider',
+        category_id=0
+    ):
+        LayerWMS.__init__(self, name=name, layer=layer, public=public,
+        time_mode=time_mode, time_widget=time_widget)
+        self.category_id = category_id
+
+    def get_default(dbsession):
+        return dbsession.query(LuxLayerInternalWMS).filter(
+                LuxLayerInternalWMS.name == 'lux_layer_external_wms-defaults'
+                ).one_or_none()
 
 
 class LuxGetfeatureDefinition(Base):

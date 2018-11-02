@@ -51,8 +51,10 @@ def main():
 
     # must be done only once we have loaded the project config
     from c2cgeoportal_commons.models import DBSession, main, static
-    from c2cgeoportal_commons.models.main import OGCSERVER_TYPE_MAPSERVER, OGCSERVER_TYPE_GEOSERVER, OGCSERVER_AUTH_NOAUTH, OGCServer, Metadata, TreeItem, TreeGroup, LayerGroup, LayerWMS;
-    from geoportailv3_geoportal.models import LuxLayerInternalWMS;
+    from c2cgeoportal_commons.models.main import OGCSERVER_TYPE_MAPSERVER, \
+        OGCSERVER_TYPE_GEOSERVER,OGCSERVER_AUTH_NOAUTH, OGCServer, Metadata, \
+        TreeItem, TreeGroup, LayerGroup, LayerWMS, RestrictionArea
+    from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
     session = DBSession()
 
@@ -60,6 +62,12 @@ def main():
     for metadata in session.query(Metadata).filter(Metadata.name == 'link' and Metadata.value == '').all():
       metadata.value = 'http://example.com'
       session.add(metadata)
+
+    # Restriction area must have a name.
+    for r_area in session.query(RestrictionArea).all():
+      if r_area.name is None:
+        r_area.name = 'restrictionarea-{}'.format(r_area.id)
+        session.add(r_area)
 
     # Insert group background (in GMF) if it not already exists.
     treeitem = session.query(TreeItem).filter(TreeItem.name == 'background').one_or_none()
