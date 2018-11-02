@@ -25,6 +25,7 @@ __pycache__/
 /geoportal/development.ini
 /geoportal/production.ini
 /geoportal/config.yaml
+/geoportal/lux_alembic.ini
 /geoportal/geoportailv3_geoportal.egg-info
 /geoportal/geoportailv3_geoportal/static/lib/cgxp/
 /geoportal/geoportailv3_geoportal/locale/*/LC_MESSAGES/*.mo
