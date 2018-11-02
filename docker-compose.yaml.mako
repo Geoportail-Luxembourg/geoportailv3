@@ -28,13 +28,6 @@ ${service_defaults('print', 8080)}\
     entrypoint: []
 ${service_defaults('mapserver', 8080)}\
 
-##  qgisserver:
-##    image: camptocamp/geomapfish-qgisserver:gmf2.3-qgis3.2
-##    user: www-data
-##    volumes_from:
-##      - config:ro
-##${service_defaults('qgisserver', 8080)}
-
   tinyows:
     image: camptocamp/tinyows
     user: www-data
@@ -42,21 +35,6 @@ ${service_defaults('mapserver', 8080)}\
       - config:ro
     entrypoint: []
 ${service_defaults('tinyows', 8080)}\
-
-  mapcache:
-    image: camptocamp/mapcache:1.6
-    user: www-data
-    volumes_from:
-      - config:ro
-${service_defaults('mapcache', 8080)}\
-
-  memcached:
-    image: memcached:1.5
-    user: www-data
-    command:
-      - memcached
-      - --memory-limit=512
-${service_defaults('memcached', 11211)}\
 
   redis:
     image: redis:3.2
@@ -72,24 +50,6 @@ ${service_defaults('memcached', 11211)}\
       - --maxmemory-policy
       - allkeys-lru
 ${service_defaults('redis', 6379)}\
-
-  tilecloudchain:
-    image: camptocamp/tilecloud-chain:1.6
-    user: www-data
-    volumes_from:
-      - config:ro
-${service_defaults('tilecloudchain', 8080)}\
-
-  tilegeneration_slave:
-    image: camptocamp/tilecloud-chain:1.6
-    user: www-data
-    volumes_from:
-      - config:ro
-${service_defaults('tilecloudchain')}\
-    entrypoint:
-      - generate_tiles
-      - --role=slave
-      - --daemon
 
   geoportal:
     image: ${docker_base}-geoportal:${docker_tag}
