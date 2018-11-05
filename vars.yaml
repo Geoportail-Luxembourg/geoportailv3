@@ -1,433 +1,435 @@
+---
 extends: CONST_vars.yaml
 
 vars:
-    excluded_themes_from_search:
-    referrer:
+  excluded_themes_from_search:
+  referrer:
 
-    no_proxy: localhost
-    #OverviewMap
-    overview_map:
-        show: false
-        base_layer: 'basemap_2015_global'
-    lidar:
-      minx: 71500
-      miny: 98600
-      maxx: 81500
-      maxy: 108600
-      srs: 'EPSG:2169'
-      demo_url: ''
-    #Theme 
-    exclude_theme_layer_search:
-    # database name
-    db: lux
-    # database schema
-    schema: geov3
+  no_proxy: localhost
+  # OverviewMap
+  overview_map:
+    show: false
+    &overviewMapBaseLayer base_layer: basemap_2015_global
+  lidar:
+    minx: 71500
+    miny: 98600
+    maxx: 81500
+    maxy: 108600
+    &lidarSrs srs: 'EPSG:2169'
+    &lidarDemoUrl demo_url: ''
+  # Theme
+  exclude_theme_layer_search:
+  # database name
+  db: lux
+  # database schema
+  schema: geov3
 
-    srid: 2169
+  srid: 2169
 
-    ########################################
-    # FIXME added for gmf 2.3
+  # #######################################
+  # FIXME added for gmf 2.3
 
-    interfaces:
-      - desktop
-    
-    mapserverproxy:
-      default_ogc_server: source for image/jpeg
+  interfaces:
+    - main
 
-    welcome_email:
-      # Used to send a welcome email for new user
-      # You should be able to use {user} from smtp.user
-      email_from: info@camptocamp.com
-      email_subject: Welcome to GeoMapFish
-      email_body: |
-        Hello user,
+  mapserverproxy:
+    default_ogc_server: source for image/jpeg
 
-        You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
-        Your user name is: user
-        Your password is: password
+  welcome_email:
+    # Used to send a welcome email for new user
+    # You should be able to use {user} from smtp.user
+    email_from: info@camptocamp.com
+    email_subject: Welcome to GeoMapFish
+    email_body: |
+      Hello user,
 
-        Sincerely yours
-        The GeoMapfish team
+      You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
+      Your user name is: user
+      Your password is: password
 
-    reset_password:
-      # Used to send a reset password email
-      email_from: info@camptocamp.com
-      email_subject: New password generated for GeoMapFish
-      email_body: |
-        Hello user,
+      Sincerely yours
+      The GeoMapfish team
 
-        You have asked for an new password,
-        the newly generated password is: password
+  reset_password:
+    # Used to send a reset password email
+    email_from: info@camptocamp.com
+    email_subject: New password generated for GeoMapFish
+    email_body: |
+      Hello user,
 
-        Sincerely yours
-        The GeoMapfish team
+      You have asked for an new password,
+      the newly generated password is: password
 
-    shortener:
-      # Used to send a confirmation email
-      email_from: info@camptocamp.com
-      email_subject: "Geoportal URL"
-      email_body: |
-        Hello,
+      Sincerely yours
+      The GeoMapfish team
 
-        Somebody sent you the following link:
-        short_url
+  shortener:
+    # Used to send a confirmation email
+    email_from: info@camptocamp.com
+    email_subject: "Geoportal URL"
+    email_body: |
+      Hello,
 
-        With the message:
-        message
+      Somebody sent you the following link:
+      short_url
 
-        Sincerely yours
-        The GeoMapfish team
-      allowed_hosts:
-        - localhost
+      With the message:
+      message
 
-    smtp:
-      host: echo 'no-set'
-      ssl: True
-      user: echo 'not-set'
-      password: echo 'not-set'
+      Sincerely yours
+      The GeoMapfish team
+    allowed_hosts:
+      - localhost
 
-    default_interface: desktop
+  smtp:
+    host: echo 'no-set'
+    ssl: True
+    user: echo 'not-set'
+    password: echo 'not-set'
 
-    interfaces_config:
-      default: &interface
-        static: &static
-          assetsBaseUrl: '{package}_geoportal:static-ngeo/'
-          # langUrls:
-          #   fr: 'geoportailv3:static/build/locale/fr/geoportailv3.json'
-          #   en: 'geoportailv3:static/build/locale/en/geoportailv3.json'
-          #   de: 'geoportailv3:static/build/locale/de/geoportailv3.json'
-          #   lb: 'geoportailv3:static/build/locale/lb/geoportailv3.json'
-          arrowModelUrl: '{package}_geoportal:static/models/arrow5.gl'
-          appQueryTemplatesPath: '{package}_geoportal:static/js/query/'
-          appImagesPath: '{package}_geoportal:static/images/'
-          # FIXME add all missing node_modules pagackages
-        constants: &constants
-          defaultTheme: main
-          defaultLang: en
-          sentryUrl: ''
-          gmfSearchActions: []
-          gmfExternalOGCServers: []
-          fulltextsearch_param: {}
-          remoteProxyWms: false
-          defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
-          maxExtent: [2.6, 47.7, 8.6, 51]
-          requestScheme: 'main'  # request.scheme, how FIXME
-          appExcludeThemeLayerSearch: FIXME
-          appAuthtktCookieName: FIXME
-          bboxLidar: FIXME
-          bboxSrsLidar: FIXME
-          lidarDemoUrl: FIXME
-          tiles3dLayers: ['buildings25d', 'buildings3d', 'bridges3d']
-          tiles3dUrl: 'https://3dtiles.geoportail.lu/3dtiles/'
-          appOverviewMapShow: true
-          ngeoLayertreeTemplateUrl: 'catalog/layertree.html'
-          ngeoPopupTemplateUrl: 'layerinfo/popup.html'
-          ngeoScaleselectorTemplateUrl: 'infobar/scaleselector.html'
-          ngeoOfflineTestUrl: 'infobar/scaleselector.html'
-          ngeoOfflineTemplateUrl: 'js/offlineNgeoComponent.html'  # FIXME was a function
-          ngeoOlcsControls3dTemplateUrl: 'olcs/controls3d.html'
-          appBackgroundlayerTemplateUrl: 'backgroundlayer/backgroundlayer.html'
-          appLayermanagerTemplateUrl: 'layermanager/layermanager.html'
-          appLayerlegendsTemplateUrl: 'layerlegends/layerlegends.html'
-          appStreetviewTemplateUrl: 'streetview/streetview.html'
-          appSliderTemplateUrl: 'slider/slider.html'
-          appMeasureTemplateUrl: 'measure/measure.html'
-          appDrawTemplateUrl: 'draw/draw.html'
-          appFeaturePopupTemplateUrl: 'draw/featurepopup.html'
-          appStyleEditingTemplateUrl: 'draw/styleediting.html'
-          appSymbolSelectorTemplateUrl: 'draw/symbolselector.html'
-          appLayerinfoTemplateUrl: 'layerinfo/layerinfo.html'
-          appAuthenticationTemplateUrl: 'authentication/authentication.html'
-          appInfobarTemplateUrl: 'infobar/infobar.html'
-          appProjectionselectorTemplateUrl: 'infobar/projectionselector.html'
-          appMapTemplateUrl: 'map/map.html'
-          appThemeswitcherTemplateUrl: 'themeswitcher/themes.html'
-          appProfileTemplateUrl: 'profile/profile.html'
-          appPrintTemplateUrl: 'print/print.html'
-          appSearchTemplateUrl: 'search/search.html'
-          appShareTemplateUrl: 'share/share.html'
-          appShorturlTemplateUrl: 'share/shorturl.html'
-          appQueryTemplateUrl: 'query/info.html'
-          appLocationinfoTemplateUrl: 'locationinfo/locationinfo.html'
-          appMymapsTemplateUrl: 'mymaps/mymaps.html'
-          appRoutingTemplateUrl: 'routing/routing.html'
-          appPagreportTemplateUrl: 'query/pagreport.html'
-          appCasiporeportTemplateUrl: 'query/casiporeport.html'
-          appPdsreportTemplateUrl: 'query/pdsreport.html'
-          appExternalDataTemplateUrl: 'externaldata/externaldata.html'
-          appWmsTreeTemplateUrl: 'externaldata/wmstree.html'
-          appWmtsTreeTemplateUrl: 'externaldata/wmtstree.html'
-          appFeedbackTemplateUrl: 'feedback/feedback.html'
-          appAskredirectTemplateUrl: 'askredirect/askredirect.html'
+  default_interface: main
 
-        routes: &routes
-          gmfProfileJsonUrl: profile.json
-          gmfPrintUrl: printproxy
-          authenticationBaseUrl: base  # FIXME was not existing ?
-          gmfLayersUrl: layers_root  # FIXME was not existing ?
-          gmfRasterUrl: raster  # FIXME was not existing ?
-          gmfProfileCsvUrl: profile.csv  # FIXME was not existing ?
-          gmfShortenerCreateUrl: shortener_create  # FIXME was not existing ?
-          proxyWmsUrl: wms
-          httpsProxyUrl: https_proxy
-          mymapsMapsUrl: mymaps_getmaps
-          mymapsUrl: mymaps
-          mymapsImageUrl: mymaps_image
-          loginUrl: login
-          logoutUrl: logout
-          getuserinfoUrl: getuserinfo
-          elevationServiceUrl: raster
-          profileServiceUrl: profile.json
-          poiSearchServiceUrl: fulltextsearch
-          layerSearchServiceUrl: layersearch
-          cmsSearchServiceUrl: cmssearch
-          printServiceUrl: printproxy
-          shorturlServiceUrl: shortener_create
-          postFeedbackUrl: feedback
-          getInfoServiceUrl: getfeatureinfo
-          getRemoteTemplateServiceUrl: getremotetemplate
-          isThemePrivateUrl: isthemeprivate
-          qrServiceUrl: qr
-          reverseGeocodingServiceUrl: reverse_geocode
-          routingServiceUrl: getremoteroute
-          geocodingServiceUrl: geocode
-          downloadmeasurementUrl: download_measurement
-          downloadsketchUrl: download_sketch
-          downloadresourceUrl: download_resource
-          exportgpxkmlUrl: exportgpxkml
-          getPngLegendUrl: get_png
-          getHtmlLegendUrl: get_html
-          echocsvUrl: echocsv
-          getRouteUrl: getroute
-          predefinedWmsUrl: predefined_wms
-          previewMesurementUrl: preview_measurement
-          pagUrl: pag_url
-          casipoUrl: casipo_url
-          pdsUrl: pds_url
-          arrowUrl: get_arrow_color
+  interfaces_config:
+    main: &interface
+      static: &static
+        assetsBaseUrl: '{package}_geoportal:static-ngeo/'
+        # langUrls:
+        #   fr: 'geoportailv3:static/build/locale/fr/geoportailv3.json'
+        #   en: 'geoportailv3:static/build/locale/en/geoportailv3.json'
+        #   de: 'geoportailv3:static/build/locale/de/geoportailv3.json'
+        #   lb: 'geoportailv3:static/build/locale/lb/geoportailv3.json'
+        arrowModelUrl: '{package}_geoportal:static/models/arrow5.glb'
+        appQueryTemplatesPath: '{package}_geoportal:static/js/query/'
+        appImagesPath: '{package}_geoportal:static/images/'
+        cesiumURL: '{package}_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
+        # FIXME add all missing node_modules pagackages
+      constants: &constants
+        tags:
+          service: js
+          interface: main
+        bboxLidar: [71500, 98600, 81500, 108600]  # see above
+        bboxSrsLidar: *lidarSrs
+        lidarDemoUrl: *lidarDemoUrl
+        appOverviewMapBaseLayer: *overviewMapBaseLayer
+        appExcludeThemeLayerSearch: []  # see above
+        defaultTheme: main
+        defaultLang: en
+        sentryUrl: ''
+        gmfSearchActions: []
+        gmfExternalOGCServers: []
+        fulltextsearch_param: {}
+        remoteProxyWms: false
+        defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
+        maxExtent: [2.6, 47.7, 8.6, 51]
+        requestScheme: 'https'  # hardcode https, why use http anyway?
+        appAuthtktCookieName: auth_tkt_{instance}
+        tiles3dLayers: ['buildings25d', 'buildings3d', 'bridges3d']
+        tiles3dUrl: 'https://3dtiles.geoportail.lu/3dtiles/'
+        appOverviewMapShow: true  # FIXME if overview_map_show else false
+        ngeoLayertreeTemplateUrl: 'catalog/layertree.html'
+        ngeoPopupTemplateUrl: 'layerinfo/popup.html'
+        ngeoScaleselectorTemplateUrl: 'infobar/scaleselector.html'
+        ngeoOfflineTestUrl: 'infobar/scaleselector.html'
+        ngeoOfflineTemplateUrl: 'js/offlineNgeoComponent.html'  # FIXME was a function
+        ngeoOlcsControls3dTemplateUrl: 'olcs/controls3d.html'
+        appBackgroundlayerTemplateUrl: 'backgroundlayer/backgroundlayer.html'
+        appLayermanagerTemplateUrl: 'layermanager/layermanager.html'
+        appLayerlegendsTemplateUrl: 'layerlegends/layerlegends.html'
+        appStreetviewTemplateUrl: 'streetview/streetview.html'
+        appSliderTemplateUrl: 'slider/slider.html'
+        appMeasureTemplateUrl: 'measure/measure.html'
+        appDrawTemplateUrl: 'draw/draw.html'
+        appFeaturePopupTemplateUrl: 'draw/featurepopup.html'
+        appStyleEditingTemplateUrl: 'draw/styleediting.html'
+        appSymbolSelectorTemplateUrl: 'draw/symbolselector.html'
+        appLayerinfoTemplateUrl: 'layerinfo/layerinfo.html'
+        appAuthenticationTemplateUrl: 'authentication/authentication.html'
+        appInfobarTemplateUrl: 'infobar/infobar.html'
+        appProjectionselectorTemplateUrl: 'infobar/projectionselector.html'
+        appMapTemplateUrl: 'map/map.html'
+        appThemeswitcherTemplateUrl: 'themeswitcher/themes.html'
+        appProfileTemplateUrl: 'profile/profile.html'
+        appPrintTemplateUrl: 'print/print.html'
+        appSearchTemplateUrl: 'search/search.html'
+        appShareTemplateUrl: 'share/share.html'
+        appShorturlTemplateUrl: 'share/shorturl.html'
+        appQueryTemplateUrl: 'query/info.html'
+        appLocationinfoTemplateUrl: 'locationinfo/locationinfo.html'
+        appMymapsTemplateUrl: 'mymaps/mymaps.html'
+        appRoutingTemplateUrl: 'routing/routing.html'
+        appPagreportTemplateUrl: 'query/pagreport.html'
+        appCasiporeportTemplateUrl: 'query/casiporeport.html'
+        appPdsreportTemplateUrl: 'query/pdsreport.html'
+        appExternalDataTemplateUrl: 'externaldata/externaldata.html'
+        appWmsTreeTemplateUrl: 'externaldata/wmstree.html'
+        appWmtsTreeTemplateUrl: 'externaldata/wmtstree.html'
+        appFeedbackTemplateUrl: 'feedback/feedback.html'
+        appAskredirectTemplateUrl: 'askredirect/askredirect.html'
 
-        fulltextsearch_params:
-          limit: 30
-          partitionlimit: 5
-          authenticationBaseUrl: base
-          fulltextsearchUrl: fulltextsearch
-          gmfLayersUrl: layers_root
-          gmfRasterUrl: raster
-          gmfProfileCsvUrl: profile.csv
-          gmfShortenerCreateUrl: shortener_create
-          assetsBaseUrl: '{package}_geoportal:static-ngeo/'
-        wfs_permalink:
-          wfsTypes:
-            - featureType: fuel
-              label: display_name
-            - featureType: osm_scale
-              label: display_name
-          defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
-          defaultFeaturePrefix: feature
-      desktop:
-        <<: *interface
-        constants:
-          <<: *constants
-          tags:
-              service: js
-              interface: desktop
+      routes: &routes
+        gmfProfileJsonUrl: profile.json
+        gmfPrintUrl: printproxy
+        authenticationBaseUrl: base  # FIXME was not existing ?
+        gmfLayersUrl: layers_root  # FIXME was not existing ?
+        gmfRasterUrl: raster  # FIXME was not existing ?
+        gmfProfileCsvUrl: profile.csv  # FIXME was not existing ?
+        gmfShortenerCreateUrl: shortener_create  # FIXME was not existing ?
+        proxyWmsUrl: wms
+        httpsProxyUrl: https_proxy
+        mymapsMapsUrl: mymaps_getmaps
+        mymapsUrl: mymaps
+        mymapsImageUrl: mymaps_image
+        # FIXME: 'themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true',
+        # 'interface': 'main', 'background': 'bglayers'})}");
+        treeUrl: themes
+        loginUrl: login
+        logoutUrl: logout
+        getuserinfoUrl: getuserinfo
+        elevationServiceUrl: raster
+        profileServiceUrl: profile.json
+        poiSearchServiceUrl: fulltextsearch
+        layerSearchServiceUrl: layersearch
+        cmsSearchServiceUrl: cmssearch
+        printServiceUrl: printproxy
+        shorturlServiceUrl: shortener_create
+        postFeedbackUrl: feedback
+        getInfoServiceUrl: getfeatureinfo
+        getRemoteTemplateServiceUrl: getremotetemplate
+        isThemePrivateUrl: isthemeprivate
+        qrServiceUrl: qr
+        reverseGeocodingServiceUrl: reverse_geocode
+        routingServiceUrl: getremoteroute
+        geocodingServiceUrl: geocode
+        downloadmeasurementUrl: download_measurement
+        downloadsketchUrl: download_sketch
+        downloadresourceUrl: download_resource
+        exportgpxkmlUrl: exportgpxkml
+        getPngLegendUrl: get_png
+        getHtmlLegendUrl: get_html
+        echocsvUrl: echocsv
+        getRouteUrl: getroute
+        predefinedWmsUrl: predefined_wms
+        previewMesurementUrl: preview_measurement
+        pagUrl: pag_url
+        casipoUrl: casipo_url
+        pdsUrl: pds_url
+        arrowUrl: get_arrow_color
 
-    admin_interface:
-      available_metadata:
-        - name: attribution
-        - name: bg_layer
-        - name: bg_opacity
-          type: float
-        - name: css
-        - name: display_in_switcher
-          type: boolean
-        - name: exclusion
-        - name: fake_scales  # FIXME adatp type or data ?
-          type: list
-        - name: hasRetina
-          type: boolean
-        - name: is_queryable
-          type: boolean
-        - name: legend_name
-        - name: link
-          type: url
-        - name: link_title
-        - name: max_dpi
-          type: float
-        - name: metadata_id
-        - name: page_title
-        - name: print_img
-        - name: print_long_txt_de
-        - name: print_long_txt_en
-        - name: print_long_txt_fr
-        - name: print_long_txt_lu
-        - name: print_scales
-          type: list
-        - name: print_short_txt_de
-        - name: print_short_txt_en
-        - name: print_short_txt_fr
-        - name: print_short_txt_lu
-        - name: resolutions
-          type: list
-        - name: show_in_mobile
-          type: boolean
-        - name: start_layers
-          type: list
-        - name: start_opacity
-          type: float
-        - name: start_x
-          type: float
-        - name: start_y
-          type: float
-        - name: start_zoom
-          type: float
+      fulltextsearch_params:
+        limit: 30
+        partitionlimit: 5
+        authenticationBaseUrl: base
+        fulltextsearchUrl: fulltextsearch
+        gmfLayersUrl: layers_root
+        gmfRasterUrl: raster
+        gmfProfileCsvUrl: profile.csv
+        gmfShortenerCreateUrl: shortener_create
+        assetsBaseUrl: '{package}_geoportal:static-ngeo/'
+      wfs_permalink:
+        wfsTypes:
+          - featureType: fuel
+            label: display_name
+          - featureType: osm_scale
+            label: display_name
+        defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
+        defaultFeaturePrefix: feature
 
-    ########################################
+  admin_interface:
+    available_metadata:
+      - name: attribution
+      - name: bg_layer
+      - name: bg_opacity
+        type: float
+      - name: css
+      - name: display_in_switcher
+        type: boolean
+      - name: exclusion
+      - name: fake_scales  # FIXME adatp type or data ?
+        type: list
+      - name: hasRetina
+        type: boolean
+      - name: is_queryable
+        type: boolean
+      - name: legend_name
+      - name: link
+        type: url
+      - name: link_title
+      - name: max_dpi
+        type: float
+      - name: metadata_id
+      - name: page_title
+      - name: print_img
+      - name: print_long_txt_de
+      - name: print_long_txt_en
+      - name: print_long_txt_fr
+      - name: print_long_txt_lu
+      - name: print_scales
+        type: list
+      - name: print_short_txt_de
+      - name: print_short_txt_en
+      - name: print_short_txt_fr
+      - name: print_short_txt_lu
+      - name: resolutions
+        type: list
+      - name: show_in_mobile
+        type: boolean
+      - name: start_layers
+        type: list
+      - name: start_opacity
+        type: float
+      - name: start_x
+        type: float
+      - name: start_y
+        type: float
+      - name: start_zoom
+        type: float
 
-    # Administration interface activation
-    enable_admin_interface: true
+  # #######################################
 
-    # database replication activation
-    enable_auth_replication: false
-    # database replication connection
-    dbhost_replication: to_be_defined
-    dbport_replication: to_be_defined
-    db_replication: to_be_defined
-    dbuser_replication: to_be_defined
-    dbpassword_replication: to_be_defined
+  # Administration interface activation
+  enable_admin_interface: true
 
-    #sentry dsn
-    sentry_dsn:
+  # database replication activation
+  enable_auth_replication: false
+  # database replication connection
+  dbhost_replication: to_be_defined
+  dbport_replication: to_be_defined
+  db_replication: to_be_defined
+  dbuser_replication: to_be_defined
+  dbpassword_replication: to_be_defined
 
-    #elasticsearch settings
-    search_host: workshop3-local.geoportal.lu:9200
-    search_index: index
+  # sentry dsn
+  sentry_dsn:
 
-    support_email_address: support@geoportail.lu
+  # elasticsearch settings
+  search_host: workshop3-local.geoportal.lu:9200
+  search_index: index
 
-    # closure paths - FIXME here in 'interpreted'
-    # closure_library_path: 'process.stdout.write(require("@camptocamp/closure-util").getLibraryPath())'
-    closure_library_path: node_modules/@camptocamp/closure-util
+  support_email_address: support@geoportail.lu
 
-    servers:
-        my_maps: //ws.geoportail.lu/mymaps
+  # closure paths - FIXME here in 'interpreted'
+  # closure_library_path: 'process.stdout.write(require("@camptocamp/closure-util").getLibraryPath())'
+  closure_library_path: node_modules/@camptocamp/closure-util
 
-    available_locale_names:
-      - en
-      - de
-      - fr
-      # - lb FIXME
-    print_urls:
-    ldap:
-      url: 'ldap://willie.geoportal.lu:3890'
-      bind: 'cn=system,dc=act,dc=lu'
-      passwd: 'to_be_defined'
-      base_dn: 'ou=portail,dc=act,dc=lu'
+  servers:
+    my_maps: //ws.geoportail.lu/mymaps
 
-    mailer:
-      transport.use: smtp
-      transport.host: keendo
-      message.encoding: UTF-8
+  available_locale_names:
+    - en
+    - de
+    - fr
+    # - lb FIXME
+  print_urls:
+  ldap:
+    url: 'ldap://willie.geoportal.lu:3890'
+    bind: 'cn=system,dc=act,dc=lu'
+    passwd: 'to_be_defined'
+    base_dn: 'ou=portail,dc=act,dc=lu'
 
-    proxy_wms_url:
+  mailer:
+    transport.use: smtp
+    transport.host: keendo
+    message.encoding: UTF-8
 
-    dbsessions:
-      mymaps:
-        url: 'postgresql://localhost:5432/mymaps'
-      pgroute:
-        url: 'postgresql://localhost:5432/pgroute'
-      ecadastre:
-        url: 'postgresql://localhost:5432/ecadastre'
+  proxy_wms_url:
 
-    raster:
-      dhm:
-        file: /var/sig/bt.shp
-        round: 1
+  dbsessions:
+    mymaps:
+      url: 'postgresql://localhost:5432/mymaps'
+    pgroute:
+      url: 'postgresql://localhost:5432/pgroute'
+    ecadastre:
+      url: 'postgresql://localhost:5432/ecadastre'
 
-    # Checker configuration
-    checker:
-        fulltextsearch:
-          search: bat
-        print:
-          spec: 
-            layout: A4 portrait
-            outputFormat: pdf
-            attributes:
-                name: Exemple
-                description: Carte exemple
-                scale: 60000
-                url: "http://g-o.lu/0mf4r"
-                qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
-                legend: {}
-                scalebar:
-                  projection: EPSG:2169
-                map:
-                  bbox: [668126, 6368118, 689717, 6389761]
-                  projection: EPSG:3857
-                  dpi: 128
-                  rotation: 0
-                  layers: []
+  raster:
+    dhm:
+      file: /var/sig/bt.shp
+      round: 1
 
-    # Commented for 2.3 FIXME
-    #    check_collector:
-    #        disabled:
-    #        - checker_main
-    #        - checker_viewer
-    #        - checker_theme_errors # TODO configure and enable it
-    #        - checker_edit
-    #        - checker_edit_js
-    #        - checker_api
-    #        - checker_xapi
-    #        - checker_fts
-    #        - checker_pdf
-    #        - checker_wmscapabilities
-    #        - checker_wfscapabilities
-    #        # actually don't works for MapFish Print v3
-    #        - checker_printcapabilities
-    https_proxy:
-      unauthorized_ips: 10.0.0.0/8, 127.0.0.1
-    authorized_ips:
+  # Checker configuration
+  checker:
+    fulltextsearch:
+      search: bat
+    print:
+      spec:
+        layout: A4 portrait
+        outputFormat: pdf
+        attributes:
+          name: Exemple
+          description: Carte exemple
+          scale: 60000
+          url: "http://g-o.lu/0mf4r"
+          qrimage: "http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r"
+          legend: {}
+          scalebar:
+            projection: EPSG:2169
+          map:
+            bbox: [668126, 6368118, 689717, 6389761]
+            projection: EPSG:3857
+            dpi: 128
+            rotation: 0
+            layers: []
 
-    modify_notification:
-      url:
-      admin_email:
-      email_cc:
+  # Commented for 2.3 FIXME
+  #    check_collector:
+  #        disabled:
+  #        - checker_main
+  #        - checker_viewer
+  #        - checker_theme_errors # TODO configure and enable it
+  #        - checker_edit
+  #        - checker_edit_js
+  #        - checker_api
+  #        - checker_xapi
+  #        - checker_fts
+  #        - checker_pdf
+  #        - checker_wmscapabilities
+  #        - checker_wfscapabilities
+  #        # actually don't works for MapFish Print v3
+  #        - checker_printcapabilities
+  https_proxy:
+    unauthorized_ips: 10.0.0.0/8, 127.0.0.1
+  authorized_ips:
 
-    pag: 
-      staging_url:
-      prod_url:
-      fme_token: 
-      owncloud_internal_url:
-      owncloud_external_url:
-      owncloud_user:
-      owncloud_password:
-      smtp_server: 
-      bcc_address: 
-      file_server:
+  modify_notification:
+    url:
+    admin_email:
+    email_cc:
 
-    casipo:
-      staging_url:
-      prod_url:
-      fme_token:
-      owncloud_internal_url:
-      owncloud_external_url:
-      owncloud_user:
-      owncloud_password:
-      smtp_server:
-      bcc_address:
-    routing:
-      graphhopper:
-        url: 'https://graphhopper.com/api/1/route'
-        api_key: 
-      mapquest:
-        url: 'http://open.mapquestapi.com/directions/v2/route'
-        api_key:
+  pag:
+    staging_url:
+    prod_url:
+    fme_token:
+    owncloud_internal_url:
+    owncloud_external_url:
+    owncloud_user:
+    owncloud_password:
+    smtp_server:
+    bcc_address:
+    file_server:
 
-    deploy:                                                                      
-        code_source: not_set
-        code_destination: not_set
+  casipo:
+    staging_url:
+    prod_url:
+    fme_token:
+    owncloud_internal_url:
+    owncloud_external_url:
+    owncloud_user:
+    owncloud_password:
+    smtp_server:
+    bcc_address:
+  routing:
+    graphhopper:
+      url: 'https://graphhopper.com/api/1/route'
+      api_key:
+    mapquest:
+      url: 'http://open.mapquestapi.com/directions/v2/route'
+      api_key:
 
-########################################
+  deploy:
+    code_source: not_set
+    code_destination: not_set
+
+# #######################################
 # FIXME added for gmf 2.3
 interpreted:
   bash:
@@ -437,15 +439,15 @@ interpreted:
 #   vars:
 #    - closure_library_path
 #     cmd: ["node", "-e"]
-########################################
+# #######################################
 
 update_paths:
-- checker.defaults
-- checker.all
-- checker.disabled
-- checker.fulltextsearch
-- checker.print
-- check_collector.hosts
-- admin_interface
-- admin_interface.available_metadata
-- shortener
+  - checker.defaults
+  - checker.all
+  - checker.disabled
+  - checker.fulltextsearch
+  - checker.print
+  - check_collector.hosts
+  - admin_interface
+  - admin_interface.available_metadata
+  - shortener

@@ -20,6 +20,8 @@ MOBILE = FALSE
 NGEO = TRUE
 TILECLOUD_CHAIN = FALSE
 
+NGEO_INTERFACES = main
+
 DISABLE_BUILD_RULES += test-packages test-packages-ngeo
 
 CONFIG_VARS += ldap

@@ -1,5 +1,5 @@
 /**
- * @module app.MainController
+ * @module app.Controllermain
  */
 /**
  * @fileoverview This file defines the controller class for the application's
@@ -11,26 +11,23 @@
  * management of the sidebar for example).
  */
 
-import appModule from './module.js';
-import appLocationControl from './LocationControl.js';
-import appMap from './Map.js';
+import appModule from '../module.js';
+import appLocationControl from '../LocationControl.js';
+import appMap from '../Map.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olMapProperty from 'ol/MapProperty.js';
-import olInteraction from 'ol/interaction.js';
+import {default as interactionDefaults} from 'ol/interaction.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoMiscSyncArrays from 'ngeo/misc/syncArrays.js';
-import olEvents from 'ol/events.js';
-import olObject from 'ol/Object.js';
 import olView from 'ol/View.js';
 import olControlAttribution from 'ol/control/Attribution.js';
 import olControlFullScreen from 'ol/control/FullScreen.js';
 import olControlOverviewMap from 'ol/control/OverviewMap.js';
 import olControlZoom from 'ol/control/Zoom.js';
-import appOlcsZoomToExtent from './olcs/ZoomToExtent.js';
-import appOlcsLux3DManager from './olcs/Lux3DManager.js';
-import olProj from 'ol/proj.js';
-import olMath from 'ol/math.js';
+import appOlcsZoomToExtent from '../olcs/ZoomToExtent.js';
+import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
+import {transform, transformExtent} from 'ol/proj.js';
+import {toRadians} from 'ol/math.js';
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -221,7 +218,7 @@ const exports = function(
    * @private
    */
   this.maxExtent_ =
-      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {angularGettext.Catalog}
@@ -492,8 +489,7 @@ const exports = function(
       var position = [
         parseFloat(coordinates[i + 1]), parseFloat(coordinates[i])];
       var feature = new olFeature({
-        geometry: new olGeomPoint((olProj.transform(position,
-          'EPSG:4326', 'EPSG:3857')))
+        geometry: new olGeomPoint((transform(position, 'EPSG:4326', 'EPSG:3857')))
       });
       feature.set('label', '' + routeNumber);
       this.appRouting_.insertFeatureAt(feature, routeNumber);
@@ -543,30 +539,28 @@ exports.prototype.enable3dCallback_ = function(active) {
  * @param {ngeo.map.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
-exports.prototype.addLocationControl_ =
-    function(featureOverlayMgr) {
-      var isActive = false;
-      var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
-      if (activateGeoLocation && 'true' === activateGeoLocation) {
-        isActive = true;
-        this.ngeoLocation_.deleteParam('tracking');
-      }
-      var locationControl = new appLocationControl(/** @type {app.LocationControlOptions} */({
-        label: '\ue800',
-        featureOverlayMgr: featureOverlayMgr,
-        notify: this.notify_,
-        gettextCatalog: this.gettextCatalog_,
-        scope: this.scope_,
-        window: this.window_
-      }));
-      this.map_.addControl(locationControl);
-      if (isActive) {
-        olEvents.listenOnce(this.map_,
-          olObject.getChangeEventType(olMapProperty.VIEW), function(e) {
-            locationControl.handleCenterToLocation();
-          }.bind(this));
-      }
-    };
+exports.prototype.addLocationControl_ = function(featureOverlayMgr) {
+    var isActive = false;
+    var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
+    if (activateGeoLocation && 'true' === activateGeoLocation) {
+      isActive = true;
+      this.ngeoLocation_.deleteParam('tracking');
+    }
+    var locationControl = new appLocationControl(/** @type {app.LocationControlOptions} */({
+      label: '\ue800',
+      featureOverlayMgr: featureOverlayMgr,
+      notify: this.notify_,
+      gettextCatalog: this.gettextCatalog_,
+      scope: this.scope_,
+      window: this.window_
+    }));
+    this.map_.addControl(locationControl);
+    if (isActive) {
+      this.map_.once('change:view', (e) => {
+        locationControl.handleCenterToLocation();
+      });
+    }
+  };
 
 
 /**
@@ -574,7 +568,7 @@ exports.prototype.addLocationControl_ =
  * @return {!app.Map} The extended ol.Map.
  */
 exports.prototype.createMap_ = function() {
-  var interactions = olInteraction.defaults({
+  var interactions = interactionDefaults({
     altShiftDragRotate: false,
     pinchRotate: false,
     constrainResolution: true
@@ -612,7 +606,7 @@ exports.prototype.createMap_ = function() {
 exports.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
   // [minx, miny, maxx, maxy]
   console.assert(this.map_ !== null && this.map_ !== undefined);
-  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(olMath.toRadians);
+  const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
   return new appOlcsLux3DManager(cesiumURL, cameraExtentInRadians, this.map_, this.ngeoLocation_,
     $rootScope, this.tiles3dLayers_, this.tiles3dUrl_);
 };
@@ -818,10 +812,9 @@ exports.prototype.initMymaps_ = function() {
   }
   this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
-  olEvents.listen(this.map_.getLayerGroup(), 'change',
-      function() {
-        this.compareLayers_();
-      }.bind(this), this);
+  this.map_.getLayerGroup().on('change',() => {
+    this.compareLayers_();
+  });
 };
 
 

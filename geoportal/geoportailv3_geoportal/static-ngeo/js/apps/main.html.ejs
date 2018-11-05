@@ -1,15 +1,4 @@
 ## -*- coding: utf-8 -*-
-<%
-    settings = request.registry.settings
-    proxy_wms_url = settings.get('proxy_wms_url')
-    node_modules_path = settings.get('node_modules_path')
-    closure_library_path = settings.get('closure_library_path')
-    exclude_theme_layer_search = settings.get('exclude_theme_layer_search')
-    authtkt_cookie_name = settings.get('authtkt_cookie_name')
-    overview_map_show = settings.get('overview_map')['show']
-    overview_map_base_layer = settings.get('overview_map')['base_layer']
-    lidar = settings.get('lidar')
-%>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl">
   <head>
@@ -22,18 +11,12 @@
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" type="image/x-icon" href="https://www.geoportail.lu/static/img/favicon-16x16.ico" />
-    <link rel="apple-touch-icon" sizes="57x57" href="${request.static_url('geoportailv3:static/images/apple-icon-57x57.png')}" />
-    <link rel="apple-touch-icon" sizes="72x72" href="${request.static_url('geoportailv3:static/images/apple-icon-72x72.png')}" />
-    <link rel="apple-touch-icon" sizes="114x114" href="${request.static_url('geoportailv3:static/images/apple-icon-114x114.png')}" />
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="${request.static_url('geoportailv3:static/images/apple-icon-57x57-precomposed.png')}" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="${request.static_url('geoportailv3:static/images/apple-icon-72x72-precomposed.png')}" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="${request.static_url('geoportailv3:static/images/apple-icon-114x114-precomposed.png')}" />
-
-% if debug:
-    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.css')}" type="text/css">
-% else:
-    <link rel="stylesheet" href="${request.static_url('geoportailv3:static/build/build.min.css')}" type="text/css">
-    % endif
+    <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114-precomposed.png" />
  </head>
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
     <!-- Begin fixed top bar -->
@@ -312,153 +295,6 @@
         </li>
       </ul>
     </footer>
-% if debug:
-    <script>
-      // We should really use the empty string for CLOSURE_BASE_PATH for there
-      // is a bug in Closure Library preventing us from doing it. See
-      // <https://github.com/google/closure-library/pull/418>.
-      window.CLOSURE_BASE_PATH = ' ';
-      window.CLOSURE_NO_DEPS = true;
-    </script>
-    <script src="${request.static_url('%s/proj4/dist/proj4-src.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/ngeo/third-party/jquery-ui/jquery-ui.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-touch/angular-touch.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-sanitize/angular-sanitize.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-ui-date/dist/date.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/angular-float-thead/angular-floatThead.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
-    <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.js' % node_modules_path)}"></script>
-    <script src="${request.route_url('deps.js')}"></script>
-    <script src="${request.static_url('geoportailv3:static/js/main.js')}"></script>
-    <script src="${request.static_url('%s/ngeo/utils/watchwatchers.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/d3/build/d3.min.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/corejs-typeahead/dist/typeahead.bundle.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('%s/fuse.js/src/fuse.js' % node_modules_path)}"></script>
-    <script src="${request.static_url('geoportailv3:static/build/templatecache.js')}"></script>
-    <script src="${request.static_url('%s/jszip/dist/jszip.min.js' % node_modules_path)}"></script>
-% else:
-    <script src="${request.static_url('geoportailv3:static/build/build.js')}"></script>
-% endif
-    <script>
-      (function() {
-         var appModule = angular.module('app');
-         appModule.constant('langUrls', {
-           'fr': '${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}',
-           'en': '${request.static_url('geoportailv3:static/build/locale/en/geoportailv3.json')}',
-           'de': '${request.static_url('geoportailv3:static/build/locale/de/geoportailv3.json')}',
-           'lb': '${request.static_url('geoportailv3:static/build/locale/lb/geoportailv3.json')}'
-         });
-
-% if proxy_wms_url:
-         appModule.constant('proxyWmsUrl', "${proxy_wms_url}");
-         appModule.constant('remoteProxyWms', true);
-% else:
-         appModule.constant('proxyWmsUrl', "${request.route_url('wms')}");
-         appModule.constant('remoteProxyWms', false);
-% endif
-
-% if debug:
-        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/CesiumUnminified/Cesium.js' % node_modules_path)}");
-% else:
-        appModule.constant('cesiumURL', "${request.static_url('%s/@camptocamp/cesium/Build/Cesium/Cesium.js' % node_modules_path)}");
-% endif
-         appModule.constant('httpsProxyUrl', "${request.route_url('https_proxy')}");
-         appModule.constant('mymapsMapsUrl', "${request.route_url('mymaps_getmaps')}");
-         appModule.constant('mymapsUrl', "${request.route_url('mymaps')}");
-         appModule.constant('mymapsImageUrl', "${request.route_url('mymaps_image')}");
-         appModule.constant('treeUrl', "${request.route_url('themes', _query={'version': 2, 'min_levels': 1, 'catalogue': 'true', 'interface': 'desktop', 'background': 'bglayers'})}");
-         appModule.constant('loginUrl', "${request.route_url('login')}");
-         appModule.constant('logoutUrl', "${request.route_url('logout')}");
-         appModule.constant('getuserinfoUrl', "${request.route_url('getuserinfo')}");
-         appModule.constant('elevationServiceUrl', "${request.route_url('raster')}");
-         appModule.constant('profileServiceUrl', "${request.route_url('profile.json')}");
-         appModule.constant('poiSearchServiceUrl', "${request.route_url('fulltextsearch')}");
-         appModule.constant('layerSearchServiceUrl', "${request.route_url('layersearch')}");
-         appModule.constant('cmsSearchServiceUrl', "${request.route_url('cmssearch')}");
-         appModule.constant('printServiceUrl', "${request.route_url('printproxy')}");
-         appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
-         appModule.constant('postFeedbackUrl', "${request.route_url('feedback')}");
-         appModule.constant('getInfoServiceUrl', "${request.route_url('getfeatureinfo')}");
-         appModule.constant('getRemoteTemplateServiceUrl', "${request.route_url('getremotetemplate')}");
-         appModule.constant('isThemePrivateUrl', "${request.route_url('isthemeprivate')}");
-         appModule.constant('qrServiceUrl', "${request.route_url('qr')}");
-         appModule.constant('reverseGeocodingServiceUrl', "${request.route_url('reverse_geocode')}");
-         appModule.constant('routingServiceUrl', "${request.route_url('getremoteroute')}");
-         appModule.constant('geocodingServiceUrl', "${request.route_url('geocode')}");
-         appModule.constant('downloadmeasurementUrl', "${request.route_url('download_measurement')}");
-         appModule.constant('downloadsketchUrl', "${request.route_url('download_sketch')}");
-         appModule.constant('downloadresourceUrl', "${request.route_url('download_resource')}");
-         appModule.constant('exportgpxkmlUrl', "${request.route_url('exportgpxkml')}");
-         appModule.constant('getPngLegendUrl', "${request.route_url('get_png')}");
-         appModule.constant('getHtmlLegendUrl', "${request.route_url('get_html')}");
-         appModule.constant('echocsvUrl', "${request.route_url('echocsv')}");
-         appModule.constant('getRouteUrl', "${request.route_url('getroute')}");
-         appModule.constant('predefinedWmsUrl', "${request.route_url('predefined_wms')}");
-         appModule.constant('defaultExtent', [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]);
-         appModule.constant('maxExtent', [2.6, 47.7, 8.6, 51]);
-         appModule.constant('requestScheme', "${request.scheme}");
-         appModule.constant('pagUrl', "${request.route_url('pag_url')}");
-         appModule.constant('casipoUrl', "${request.route_url('casipo_url')}");
-         appModule.constant('appExcludeThemeLayerSearch', "${exclude_theme_layer_search}".split(','));
-         appModule.constant('appAuthtktCookieName', "${authtkt_cookie_name}");
-         appModule.constant('bboxLidar', [${lidar['minx']},${lidar['miny']} ,${lidar['maxx']} ,${lidar['maxy']}]);
-         appModule.constant('bboxSrsLidar', "${lidar['srs']}");
-         appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
-         appModule.constant('tiles3dLayers', ['buildings25d', 'buildings3d', 'bridges3d']);
-         // 'vegetation_model','vegetation_mesh','buildings25d_provisoire'
-         appModule.constant('tiles3dUrl', 'https://3dtiles.geoportail.lu/3dtiles/');
-
-% if overview_map_show:
-         appModule.constant('appOverviewMapShow', true);
-% else:
-         appModule.constant('appOverviewMapShow', false);
-% endif
-         appModule.value('arrowUrl', '${request.route_url('get_arrow_color')}');
-         appModule.constant('arrowModelUrl', '${request.static_url('geoportailv3:static/models/arrow5.glb')}');
-         appModule.constant('appOverviewMapBaseLayer', "${overview_map_base_layer}");
-         appModule.value('appQueryTemplatesPath', '${request.static_url('geoportailv3:static/js/query/')}');
-         appModule.value('ngeoLayertreeTemplateUrl', 'catalog/layertree.html');
-         appModule.value('ngeoPopupTemplateUrl', 'layerinfo/popup.html');
-         appModule.value('ngeoScaleselectorTemplateUrl', 'infobar/scaleselector.html');
-         appModule.value('ngeoOlcsControls3dTemplateUrl', 'olcs/controls3d.html');
-         appModule.value('appBackgroundlayerTemplateUrl', 'backgroundlayer/backgroundlayer.html');
-         appModule.value('appLayermanagerTemplateUrl', 'layermanager/layermanager.html');
-         appModule.value('appLayerlegendsTemplateUrl', 'layerlegends/layerlegends.html');
-         appModule.value('appStreetviewTemplateUrl', 'streetview/streetview.html');
-         appModule.value('appSliderTemplateUrl', 'slider/slider.html');
-         appModule.value('appMeasureTemplateUrl', 'measure/measure.html');
-         appModule.value('appDrawTemplateUrl', 'draw/draw.html');
-         appModule.value('appFeaturePopupTemplateUrl', 'draw/featurepopup.html');
-         appModule.value('appStyleEditingTemplateUrl', 'draw/styleediting.html');
-         appModule.value('appSymbolSelectorTemplateUrl', 'draw/symbolselector.html');
-         appModule.value('appLayerinfoTemplateUrl', 'layerinfo/layerinfo.html');
-         appModule.value('appAuthenticationTemplateUrl', 'authentication/authentication.html');
-         appModule.value('appInfobarTemplateUrl', 'infobar/infobar.html');
-         appModule.value('appProjectionselectorTemplateUrl', 'infobar/projectionselector.html');
-         appModule.value('appMapTemplateUrl', 'map/map.html');
-         appModule.value('appThemeswitcherTemplateUrl', 'themeswitcher/themes.html');
-         appModule.value('appProfileTemplateUrl', 'profile/profile.html');
-         appModule.value('appPrintTemplateUrl', 'print/print.html');
-         appModule.value('appSearchTemplateUrl', 'search/search.html');
-         appModule.value('appShareTemplateUrl', 'share/share.html');
-         appModule.value('appShorturlTemplateUrl', 'share/shorturl.html');
-         appModule.value('appQueryTemplateUrl', 'query/info.html');
-         appModule.value('appLocationinfoTemplateUrl', 'locationinfo/locationinfo.html');
-         appModule.value('appMymapsTemplateUrl', 'mymaps/mymaps.html');
-         appModule.value('appRoutingTemplateUrl', 'routing/routing.html');
-         appModule.value('appPagreportTemplateUrl', 'query/pagreport.html');
-         appModule.value('appCasiporeportTemplateUrl', 'query/casiporeport.html');
-         appModule.value('appExternalDataTemplateUrl', 'externaldata/externaldata.html');
-         appModule.value('appWmsTreeTemplateUrl', 'externaldata/wmstree.html');
-         appModule.value('appWmtsTreeTemplateUrl', 'externaldata/wmtstree.html');
-         appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html');
-         appModule.value('appAskredirectTemplateUrl', 'askredirect/askredirect.html');
-         appModule.value('appImagesPath', '${request.static_url('geoportailv3:static/images/')}');
-       })();
-    </script>
 
     <!-- Piwik -->
       <script type="text/javascript">

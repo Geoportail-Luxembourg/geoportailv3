@@ -31,8 +31,7 @@ __pycache__/
 /geoportal/geoportailv3_geoportal/locale/*/LC_MESSAGES/*.mo
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-*.pot
 /geoportal/geoportailv3_geoportal/static-ngeo/build/
-/geoportal/geoportailv3_geoportal/static-ngeo/js/apps/desktop.html
-/geoportal/geoportailv3_geoportal/static-ngeo/js/apps/mobile.html
+/geoportal/geoportailv3_geoportal/static-ngeo/js/apps/main.html
 /geoportal/geoportailv3_geoportal/static-ngeo/fonts/gmf-icons.*
 /geoportal/geoportailv3_geoportal/static-ngeo/fonts/fontawesome-webfont.*
 /geoportal/geoportailv3_geoportal/static/build/

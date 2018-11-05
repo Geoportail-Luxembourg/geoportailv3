@@ -1,3 +1,10 @@
 extends: /usr/lib/node_modules/ngeo/.eslintrc.yaml
 globals:
   'geoportailv3': false
+  'olcs': false
+rules:
+  'prefer-arrow-callback': 0
+  'indent': 0
+  'no-var': 0
+  'prefer-template': 0
+  'prefer-const': 0

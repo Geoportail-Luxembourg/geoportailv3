@@ -20,4 +20,4 @@ services:
       - --watch
       - --progress
 ${service_defaults('geoportal')}\
-      - INTERFACE=desktop
+      - INTERFACE=main

@@ -7,7 +7,7 @@
  * module.
  */
 
-import olHas from 'ol/has.js';
+import {TOUCH} from 'ol/has.js';
 import ngeoBase from 'ngeo.js';
 import ngeoDatasourceModule from 'ngeo/datasource/module.js';
 import ngeoDownloadModule from 'ngeo/download/module.js';
@@ -59,7 +59,7 @@ const exports = angular.module('app', [
   ngeoStatemanagerModule.name,
   ngeoStatemanagerWfsPermalink.module.name,
   'gettext']).run(function() {
-    if (!olHas.TOUCH) {
+    if (!TOUCH) {
       document.body.classList.add('no-touch');
     }
   });

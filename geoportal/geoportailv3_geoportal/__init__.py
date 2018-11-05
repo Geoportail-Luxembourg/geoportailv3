@@ -68,13 +68,7 @@ def main(global_config, **settings):
 
     config.add_translation_dirs('geoportailv3_geoportal:locale/')
 
-    # FIXME default c2c entries add the interfaces
-    add_interface(config, 'desktop', INTERFACE_TYPE_NGEO, default=True)
-    add_interface(config, 'mobile', INTERFACE_TYPE_NGEO)
-
-    # Custom lux
-    # add the interfaces
-    # add_interface(config, interface_type=INTERFACE_TYPE_NGEO_CATALOGUE)
+    add_interface(config, 'main', INTERFACE_TYPE_NGEO_CATALOGUE, default=True)
 
     # overwrite print routes
     config.add_route(
