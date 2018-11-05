@@ -18,7 +18,7 @@
  */
 
 import appModule from '../module.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 
 /**
  * @constructor
@@ -46,7 +46,7 @@ const exports = function(ngeoBackgroundLayerMgr, appThemes) {
         this.setLayer(this['bgLayer']);
       }).bind(this));
 
-  olEvents.listen(this.backgroundLayerMgr_, 'change',
+  listen(this.backgroundLayerMgr_, 'change',
       function() {
         this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
       }, this);

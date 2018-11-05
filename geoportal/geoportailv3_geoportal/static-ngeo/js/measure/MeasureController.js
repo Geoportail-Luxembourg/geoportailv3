@@ -19,8 +19,8 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
-import olObject from 'ol/Object.js';
-import olEvents from 'ol/events.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {listen} from 'ol/events.js';
 import olInteractionProperty from 'ol/interaction/Property.js';
 import olProj from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
@@ -198,7 +198,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   ngeoMiscDecorate.interaction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
-  olEvents.listen(measureAzimut, 'measureend',
+  listen(measureAzimut, 'measureend',
       function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
@@ -220,7 +220,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
         }.bind(this));
       }.bind(this));
 
-  olEvents.listen(measureProfile, 'measureend',
+  listen(measureProfile, 'measureend',
       function(evt) {
         var geom = /** @type {ol.geom.LineString} */
             (evt.detail.feature.getGeometry());
@@ -230,7 +230,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
             }.bind(this));
       }, this);
 
-  olEvents.listen(measureProfile, olObject.getChangeEventType('active'),
+  listen(measureProfile, getChangeEventType('active'),
       /**
        * @param {ol.Object.Event} evt Change active event.
        */
@@ -256,16 +256,16 @@ const exports = function($scope, $q, $http, $compile, gettext,
       this.appActivetool_.measureActive = false;
     }
   }.bind(this));
-  olEvents.listen(this['measureLength'], olObject.getChangeEventType(
+  listen(this['measureLength'], getChangeEventType(
     olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureArea'], olObject.getChangeEventType(
+  listen(this['measureArea'], getChangeEventType(
     olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureAzimut'], olObject.getChangeEventType(
+  listen(this['measureAzimut'], getChangeEventType(
     olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureProfile'], olObject.getChangeEventType(
+  listen(this['measureProfile'], getChangeEventType(
     olInteractionProperty.ACTIVE),
     this.onChangeActive_, this);
 };

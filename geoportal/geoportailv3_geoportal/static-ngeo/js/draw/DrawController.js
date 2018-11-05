@@ -24,10 +24,10 @@ import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olFeature from 'ol/Feature.js';
-import olObject from 'ol/Object.js';
+import {getChangeEventType} from 'ol/Object.js';
 import olObservable from 'ol/Observable.js';
 import olOverlay from 'ol/Overlay.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olProj from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -226,10 +226,10 @@ const exports = function($scope,
   drawPoint.setActive(false);
   ngeoMiscDecorate.interaction(drawPoint);
   this.map.addInteraction(drawPoint);
-  olEvents.listen(drawPoint, olObject.getChangeEventType(
+  listen(drawPoint, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  olEvents.listen(drawPoint, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPoint, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
   var drawLabel = new olInteractionDraw({
@@ -245,10 +245,10 @@ const exports = function($scope,
   drawLabel.setActive(false);
   ngeoMiscDecorate.interaction(drawLabel);
   this.map.addInteraction(drawLabel);
-  olEvents.listen(drawLabel, olObject.getChangeEventType(
+  listen(drawLabel, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  olEvents.listen(drawLabel, olInteraction.DrawEventType.DRAWEND,
+  listen(drawLabel, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
 
   this.drawnFeatures_.drawLineInteraction = new appInteractionDrawRoute({
@@ -267,12 +267,12 @@ const exports = function($scope,
   this.drawLine.setActive(false);
   ngeoMiscDecorate.interaction(this.drawLine);
   this.map.addInteraction(this.drawLine);
-  olEvents.listen(this.drawLine, olObject.getChangeEventType(
+  listen(this.drawLine, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWEND,
+  listen(this.drawLine, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWSTART,
+  listen(this.drawLine, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawLineStart_, this);
 
   var drawPolygon = new olInteractionDraw({
@@ -288,12 +288,12 @@ const exports = function($scope,
   drawPolygon.setActive(false);
   ngeoMiscDecorate.interaction(drawPolygon);
   this.map.addInteraction(drawPolygon);
-  olEvents.listen(drawPolygon, olObject.getChangeEventType(
+  listen(drawPolygon, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPolygon, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawPolygon, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawPolygonStart_, this);
 
   var drawCircle = new olInteractionDraw({
@@ -309,12 +309,12 @@ const exports = function($scope,
   drawCircle.setActive(false);
   ngeoMiscDecorate.interaction(drawCircle);
   this.map.addInteraction(drawCircle);
-  olEvents.listen(drawCircle, olObject.getChangeEventType(
+  listen(drawCircle, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWEND,
+  listen(drawCircle, olInteraction.DrawEventType.DRAWEND,
       this.onDrawEnd_, this);
-  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawCircle, olInteraction.DrawEventType.DRAWSTART,
       this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
@@ -356,7 +356,7 @@ const exports = function($scope,
   this.drawnFeatures_.selectInteraction.setActive(false);
   appFeaturePopup.init(this.map);
 
-  olEvents.listen(appSelectedFeatures, olCollectionEventType.ADD,
+  listen(appSelectedFeatures, olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -376,7 +376,7 @@ const exports = function($scope,
         this.scope_.$applyAsync();
       }).bind(this));
 
-  olEvents.listen(appSelectedFeatures, olCollectionEventType.REMOVE,
+  listen(appSelectedFeatures, olCollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -408,7 +408,7 @@ const exports = function($scope,
       });
   this.drawnFeatures_.clipLineInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
-  olEvents.listen(this.drawnFeatures_.clipLineInteraction,
+  listen(this.drawnFeatures_.clipLineInteraction,
       olInteraction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
 
   this.drawnFeatures_.modifyCircleInteraction =
@@ -422,11 +422,11 @@ const exports = function($scope,
   this.modifyCircleInteraction_ = this.drawnFeatures_.modifyCircleInteraction;
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
-  olEvents.listen(this.modifyCircleInteraction_,
+  listen(this.modifyCircleInteraction_,
       olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
-  olEvents.listen(this.drawnFeatures_.modifyInteraction,
+  listen(this.drawnFeatures_.modifyInteraction,
       olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new olInteractionTranslate({
@@ -435,7 +435,7 @@ const exports = function($scope,
   this.drawnFeatures_.translateInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
-  olEvents.listen(
+  listen(
       this.drawnFeatures_.translateInteraction,
       olInteraction.TranslateEventType.TRANSLATEEND,
       /**
@@ -447,7 +447,7 @@ const exports = function($scope,
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 
-  olEvents.listen(this.map, olEvents.EventType.KEYDOWN,
+  listen(this.map, olEvents.EventType.KEYDOWN,
       this.keyboardHandler_, this);
 
 };
@@ -548,7 +548,7 @@ exports.prototype.onDrawPolygonStart_ = function(event) {
   var proj = this.map.getView().getProjection();
 
 
-  this.changeEventKey_ = olEvents.listen(geometry,
+  this.changeEventKey_ = listen(geometry,
       olEvents.EventType.CHANGE,
       function() {
         var verticesCount = geometry.getCoordinates()[0].length;
@@ -577,7 +577,7 @@ exports.prototype.onDrawLineStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = olEvents.listen(geometry,
+  this.changeEventKey_ = listen(geometry,
       olEvents.EventType.CHANGE,
       function() {
         var coord = geometry.getLastCoordinate();
@@ -602,7 +602,7 @@ exports.prototype.onDrawCircleStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = olEvents.listen(geometry,
+  this.changeEventKey_ = listen(geometry,
       olEvents.EventType.CHANGE,
       function() {
         var coord = geometry.getLastCoordinate();

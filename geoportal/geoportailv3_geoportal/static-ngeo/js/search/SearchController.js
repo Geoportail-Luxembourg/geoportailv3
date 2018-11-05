@@ -19,7 +19,7 @@ import appEventsThemesEventType from '../events/ThemesEventType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
 import olArray from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olProj from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
@@ -259,7 +259,7 @@ const exports = function($scope, $window, $compile,
         appThemes, backgroundLayerEngine, this.gettextCatalog);
   }.bind(this));
 
-  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
+  listen(appThemes, appEventsThemesEventType.LOAD,
       /**
      * @param {ol.events.Event} evt Event
      */
@@ -481,7 +481,7 @@ const exports = function($scope, $window, $compile,
     select: exports.selected_.bind(this)
   });
 
-  olEvents.listen(this['map'].getLayers(),
+  listen(this['map'].getLayers(),
       olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.

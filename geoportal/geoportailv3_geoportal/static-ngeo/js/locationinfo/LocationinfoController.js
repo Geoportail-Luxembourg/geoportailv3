@@ -7,7 +7,7 @@
 
 import appModule from '../module.js';
 import olFeature from 'ol/Feature.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olProj from 'ol/proj.js';
@@ -364,7 +364,7 @@ const exports = function(
     this.loadInfoPane_();
   }.bind(this));
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERDOWN,
+  listen(this['map'], olMapBrowserEventType.POINTERDOWN,
     function(event) {
       if (!appSelectedFeatures.getLength()) {
         if (event.originalEvent.which === 3) { // if right mouse click
@@ -384,13 +384,13 @@ const exports = function(
       }
     }.bind(this), this);
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERUP,
+  listen(this['map'], olMapBrowserEventType.POINTERUP,
       function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
       }.bind(this), this);
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  listen(this['map'], olMapBrowserEventType.POINTERMOVE,
       function(event) {
         if (startPixel) {
           var pixel = event.pixel;

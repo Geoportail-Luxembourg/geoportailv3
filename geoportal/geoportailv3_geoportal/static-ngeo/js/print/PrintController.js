@@ -17,7 +17,7 @@ import appModule from '../module.js';
 import appPrintPrintservice from '../print/Printservice.js';
 import olArray from 'ol/array.js';
 import olEasing from 'ol/easing.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olObservable from 'ol/Observable.js';
 import olProj from 'ol/proj.js';
 import olRenderEventType from 'ol/render/EventType.js';
@@ -265,7 +265,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.featurePopup_.hide();
       this.useOptimalScale_();
       console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = olEvents.listen(this.map_,
+      postcomposeListenerKey = listen(this.map_,
           olRenderEventType.POSTCOMPOSE, postcomposeListener);
     } else if (postcomposeListenerKey !== null) {
       olObservable.unByKey(postcomposeListenerKey);

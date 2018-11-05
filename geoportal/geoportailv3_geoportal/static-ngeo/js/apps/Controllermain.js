@@ -1,5 +1,5 @@
 /**
- * @module app.Controllermain
+ * @module app.apps.Controllermain
  */
 /**
  * @fileoverview This file defines the controller class for the application's
@@ -16,7 +16,7 @@ import appLocationControl from '../LocationControl.js';
 import appMap from '../Map.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import {default as interactionDefaults} from 'ol/interaction.js';
+import {defaults as interactionDefaults} from 'ol/interaction.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoMiscSyncArrays from 'ngeo/misc/syncArrays.js';
 import olView from 'ol/View.js';

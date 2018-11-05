@@ -9,7 +9,7 @@
 import olBase from 'ol.js';
 import olCss from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 
 /**
  * @constructor
@@ -47,10 +47,10 @@ const exports = function(options) {
   this.element.setAttribute('class', cssClasses);
   this.element.appendChild(button);
 
-  olEvents.listen(button, olEvents.EventType.CLICK,
+  listen(button, olEvents.EventType.CLICK,
       this.handleClick_, this);
 
-  olEvents.listen(button, olEvents.EventType.MOUSEOUT, function() {
+  listen(button, olEvents.EventType.MOUSEOUT, function() {
     this.blur();
   });
 

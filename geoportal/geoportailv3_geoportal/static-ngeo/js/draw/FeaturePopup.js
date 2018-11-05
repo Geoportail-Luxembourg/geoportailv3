@@ -8,7 +8,7 @@
 import appModule from '../module.js';
 import olOverlay from 'ol/Overlay.js';
 import olObservable from 'ol/Observable.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
@@ -133,12 +133,12 @@ exports.prototype.init = function(map) {
  * @param {angular.JQLite} element The element.
  */
 exports.prototype.setDraggable = function(element) {
-  this.mousedownEvent_ = olEvents.listen(element[0], 'mousedown',
+  this.mousedownEvent_ = listen(element[0], 'mousedown',
       function(event) {
         this.element_.css({'transform': 'scale(1.1)',
           'transition': 'transform .3s'});
         if (this.mousemoveEvent_ !== null) {
-          this.mousemoveEvent_ = olEvents.listen(this.map,
+          this.mousemoveEvent_ = listen(this.map,
               olMapBrowserEventType.POINTERMOVE, function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
@@ -152,7 +152,7 @@ exports.prototype.setDraggable = function(element) {
                      this.startingDragPoint_[1]]);
               }.bind(this));
         }
-        olEvents.listenOnce(this.$document_[0],
+        listenOnce(this.$document_[0],
             'mouseup', function() {
               this.element_.css({'transform': 'scale(1)'});
               this.startingAnchorPoint_ = null;

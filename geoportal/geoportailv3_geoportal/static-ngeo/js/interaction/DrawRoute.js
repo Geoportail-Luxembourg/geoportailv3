@@ -4,8 +4,8 @@
 import olBase from 'ol.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
-import olObject from 'ol/Object.js';
-import olEvents from 'ol/events.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {listen} from 'ol/events.js';
 import olEventsEvent from 'ol/events/Event.js';
 import olEventsCondition from 'ol/events/condition.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -278,8 +278,8 @@ const exports = function(options) {
         options.freehandCondition : olEventsCondition.shiftKeyOnly;
   }
 
-  olEvents.listen(this,
-      olObject.getChangeEventType(olInteractionProperty.ACTIVE),
+  listen(this,
+      getChangeEventType(olInteractionProperty.ACTIVE),
       this.updateState_, this);
 
 };

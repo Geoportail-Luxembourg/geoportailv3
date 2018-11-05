@@ -20,7 +20,7 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olStyle from 'ol/style.js';
 import olInteraction from 'ol/interaction.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 /**
@@ -326,7 +326,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.map.addInteraction(this.selectInteractionPM_);
 
   this.selectInteractionPM_.setActive(false);
-  olEvents.listen(this.selectInteractionPM_, 'select',
+  listen(this.selectInteractionPM_, 'select',
     this.showHideTooltip_, this);
 
   /**
@@ -339,7 +339,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.map.addInteraction(this.modifyInteraction_);
   this.modifyInteraction_.setActive(true);
 
-  olEvents.listen(this.modifyInteraction_,
+  listen(this.modifyInteraction_,
     olInteraction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
   /**
    * @type {ol.source.Vector}
@@ -347,9 +347,9 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
-  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.ADD,
+  listen(this.appRouting.routeFeatures, olBase.CollectionEventType.ADD,
     this.showRoute_, this);
-  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.REMOVE,
+  listen(this.appRouting.routeFeatures, olBase.CollectionEventType.REMOVE,
     this.removeRoute_, this);
 
   /**
@@ -421,7 +421,7 @@ exports.prototype.whereAmI = function(step) {
   if (this.window_.location.protocol !== 'https:') {
     this['showRedirect'] = true;
   } else {
-    olEvents.listen(this.geolocation_,
+    listen(this.geolocation_,
       olBase.Object.getChangeEventType(olBase.GeolocationProperty.POSITION),
       /**
        * @param {ol.Object.Event} e Object event.

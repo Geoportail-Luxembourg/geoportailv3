@@ -10,7 +10,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 
 /**
  * @constructor
@@ -57,7 +57,7 @@ const exports = function(gettextCatalog, ngeoLocation,
    */
   this.appNotify_ = appNotify;
 
-  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
+  listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */

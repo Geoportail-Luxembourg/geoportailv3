@@ -7,7 +7,7 @@ import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -107,9 +107,9 @@ const exports = function(options) {
   this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
-  olEvents.listen(this.features_, olBase.CollectionEventType.ADD,
+  listen(this.features_, olBase.CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
-  olEvents.listen(this.features_, olBase.CollectionEventType.REMOVE,
+  listen(this.features_, olBase.CollectionEventType.REMOVE,
       this.handleFeatureRemove_, this);
 
 };
@@ -132,7 +132,7 @@ exports.prototype.addFeature_ = function(feature) {
         this.handlePointerAtPixel_(this.lastPixel_, map);
       }
     }
-    olEvents.listen(feature, olEvents.EventType.CHANGE,
+    listen(feature, olEvents.EventType.CHANGE,
         this.handleFeatureChange_, this);
   }
 };

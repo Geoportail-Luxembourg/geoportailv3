@@ -19,7 +19,7 @@
 
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olProj from 'ol/proj.js';
 import olView from 'ol/View.js';
 
@@ -75,7 +75,7 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
 
-  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
+  listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */

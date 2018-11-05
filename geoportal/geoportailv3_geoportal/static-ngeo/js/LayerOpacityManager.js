@@ -16,7 +16,7 @@
 
 import appModule from './module.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 
 /**
  * @constructor
@@ -31,7 +31,7 @@ const exports = function() {
  */
 exports.prototype.init = function(map) {
   var layers = map.getLayers();
-  olEvents.listen(layers, olCollectionEventType.ADD,
+  listen(layers, olCollectionEventType.ADD,
       /**
        * @param {ol.CollectionEventType} evt Collection event.
        */

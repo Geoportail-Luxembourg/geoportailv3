@@ -9,7 +9,7 @@
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olObjectEventType from 'ol/ObjectEventType.js';
 import olArray from 'ol/array.js';
 
@@ -161,7 +161,7 @@ exports.prototype.unListenProtertyChange_ = function() {
  */
 exports.prototype.listenProtertyChange = function(layers) {
   layers.forEach(function(layer) {
-    this.layersListenerKeys_.push(olEvents.listen(
+    this.layersListenerKeys_.push(listen(
         layer, olObjectEventType.PROPERTYCHANGE,
         function() {
           this.onLayerUpdate_(layers);
@@ -441,7 +441,7 @@ exports.prototype.removeWatchers_ = function() {
  */
 exports.prototype.setupWatchers_ = function(selectedLayers) {
 
-  this.backgroundLayerMgrLstn_ = olEvents.listen(this.backgroundLayerMgr_, 'change',
+  this.backgroundLayerMgrLstn_ = listen(this.backgroundLayerMgr_, 'change',
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({
@@ -512,7 +512,7 @@ exports.prototype.init =
       this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-      olEvents.listen(this.appThemes_, appEventsThemesEventType.LOAD,
+      listen(this.appThemes_, appEventsThemesEventType.LOAD,
       function(evt) {
         this.appThemes_.getBgLayers().then(
             function(bgLayers) {

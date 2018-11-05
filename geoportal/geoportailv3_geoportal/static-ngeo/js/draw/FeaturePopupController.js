@@ -7,7 +7,7 @@
 
 import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olProj from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
@@ -254,7 +254,7 @@ const exports = function($scope, $sce, appFeaturePopup,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = olEvents.listen(this.drawnFeatures_.modifyInteraction,
+  this.event_ = listen(this.drawnFeatures_.modifyInteraction,
       olInteraction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {

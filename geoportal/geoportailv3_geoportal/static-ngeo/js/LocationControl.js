@@ -8,14 +8,14 @@
 
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import olBase from 'ol.js';
-import olCss from 'ol/css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeolocation from 'ol/Geolocation.js';
 import olGeolocationProperty from 'ol/GeolocationProperty.js';
-import olObject from 'ol/Object.js';
+import {getChangeEventType} from 'ol/Object.js';
 
 /**
  * @constructor
@@ -84,8 +84,8 @@ const exports = function(options) {
   button.setAttribute('type', 'button');
   button.setAttribute('title', tipLabel);
 
-  var cssClasses = className + ' ' + olCss.CLASS_UNSELECTABLE + ' ' +
-      olCss.CLASS_CONTROL + ' ' + 'tracker-off';
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' +
+      CLASS_CONTROL + ' ' + 'tracker-off';
 
   /**
    * @type {!Element}
@@ -94,10 +94,10 @@ const exports = function(options) {
   this.element.setAttribute('class', cssClasses);
   this.element.appendChild(button);
 
-  olEvents.listen(button, olEvents.EventType.CLICK,
+  listen(button, olEvents.EventType.CLICK,
       this.handleClick_, this);
 
-  olEvents.listen(button, olEvents.EventType.MOUSEOUT, function() {
+  listen(button, olEvents.EventType.MOUSEOUT, function() {
     this.blur();
   });
   olControlControl.call(this, {
@@ -157,8 +157,8 @@ exports.prototype.initGeoLocation_ = function() {
     })
   });
 
-  olEvents.listen(this.geolocation_,
-      olObject.getChangeEventType(olGeolocationProperty.TRACKING),
+  listen(this.geolocation_,
+      getChangeEventType(olGeolocationProperty.TRACKING),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -172,8 +172,8 @@ exports.prototype.initGeoLocation_ = function() {
         }
       }, this);
 
-  olEvents.listen(this.geolocation_,
-      olObject.getChangeEventType(olGeolocationProperty.POSITION),
+  listen(this.geolocation_,
+      getChangeEventType(olGeolocationProperty.POSITION),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -184,8 +184,8 @@ exports.prototype.initGeoLocation_ = function() {
         this.getMap().getView().setCenter(position);
       }, this);
 
-  olEvents.listen(this.geolocation_,
-      olObject.getChangeEventType(olGeolocationProperty.ACCURACY_GEOMETRY),
+  listen(this.geolocation_,
+      getChangeEventType(olGeolocationProperty.ACCURACY_GEOMETRY),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -194,7 +194,7 @@ exports.prototype.initGeoLocation_ = function() {
             this.geolocation_.getAccuracyGeometry());
       }, this);
 
-  olEvents.listen(this.geolocation_,
+  listen(this.geolocation_,
       olEvents.EventType.ERROR,
       function(e) {
         this.featureOverlay_.clear();

@@ -17,7 +17,7 @@
  */
 
 import appModule from '../module.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olOverlay from 'ol/Overlay.js';
@@ -161,7 +161,7 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  this.event_ = listen(this['map'], olMapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
