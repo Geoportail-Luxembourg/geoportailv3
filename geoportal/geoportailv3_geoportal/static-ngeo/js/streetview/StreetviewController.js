@@ -19,6 +19,7 @@ import olInteraction from 'ol/interaction.js';
 import olStyle from 'ol/style.js';
 import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
 import {listen} from 'ol/events.js';
+import {equals as arrayEquals} from 'ol/array.js';
 
 /**
  * @ngInject
@@ -329,7 +330,7 @@ exports.prototype.handleLocationChange_ = function(location, oldLocation) {
   // (1) No need to do anything if the old value equals the new value
   if (this.isInitialised_ && (location === oldLocation || (
     Array.isArray(location) && Array.isArray(oldLocation) &&
-      olBase.array.equals(location, oldLocation)
+      arrayEquals(location, oldLocation)
   ))) {
     return;
   }

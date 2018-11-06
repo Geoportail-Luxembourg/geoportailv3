@@ -4,6 +4,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import {listen} from 'ol/events.js';
+import {extend as arrayExtend} from 'ol/array.js';
 import olExtent from 'ol/extent.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -579,7 +580,7 @@ exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      olBase.array.extend(array, exports.getAllChildren_(
+      arrayExtend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {

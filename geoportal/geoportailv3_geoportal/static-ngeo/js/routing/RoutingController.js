@@ -23,6 +23,7 @@ import olInteraction from 'ol/interaction.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import {array as arrayIncludes} from 'ol/array.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -951,12 +952,12 @@ exports.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (olBase.array.includes(northArray, m[2].toUpperCase()) &&
-              olBase.array.includes(eastArray, m[4].toUpperCase())) {
+              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
+              arrayIncludes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (olBase.array.includes(northArray, m[4].toUpperCase()) &&
-              olBase.array.includes(eastArray, m[2].toUpperCase())) {
+              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
+              arrayIncludes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
