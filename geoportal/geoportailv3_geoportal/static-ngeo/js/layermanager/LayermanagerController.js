@@ -18,6 +18,7 @@
  */
 
 import appModule from '../module.js';
+import {getUid} from 'ol/index.js';
 
 
 /**

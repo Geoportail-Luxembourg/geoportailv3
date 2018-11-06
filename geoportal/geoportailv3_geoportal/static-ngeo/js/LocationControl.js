@@ -7,7 +7,7 @@
  */
 
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import {inherits} from 'ol/util.js';
+import {inherits} from 'ol/index.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
 import {listen} from 'ol/events.js';

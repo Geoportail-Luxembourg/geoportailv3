@@ -4,7 +4,6 @@
 
 import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
 import {listen} from 'ol/events.js';
@@ -19,6 +18,8 @@ import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
 import olStyleStyle from 'ol/style/Style.js';
+import {inherits} from 'ol/index.js';
+
 
 /**
  * @classdesc

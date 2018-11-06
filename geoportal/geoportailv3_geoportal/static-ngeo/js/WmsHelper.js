@@ -16,6 +16,7 @@ import olLayerTile from 'ol/layer/Tile.js';
 import olProj from 'ol/proj.js';
 import olSourceImageWMS from 'ol/source/ImageWMS.js';
 import olSourceTileWMS from 'ol/source/TileWMS.js';
+import {getUid} from 'ol/index.js';
 
 
 /**

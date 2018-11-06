@@ -20,6 +20,7 @@ import olInteractionProperty from 'ol/interaction/Property.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleStyle from 'ol/style/Style.js';
+import {inherits} from 'ol/index.js';
 
 /**
  * @classdesc

@@ -13,6 +13,7 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olFormatWMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import olLayerTile from 'ol/layer/Tile.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
+import {getUid} from 'ol/index.js';
 
 
 /**

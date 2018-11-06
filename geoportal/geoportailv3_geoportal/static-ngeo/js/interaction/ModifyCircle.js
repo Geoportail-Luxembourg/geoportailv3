@@ -19,6 +19,7 @@ import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
 import olStyleStyle from 'ol/style/Style.js';
+import {inherits, getUid} from 'ol/index.js';
 
 
 /**

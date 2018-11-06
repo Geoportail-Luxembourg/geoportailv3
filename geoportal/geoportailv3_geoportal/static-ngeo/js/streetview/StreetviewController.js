@@ -22,6 +22,8 @@ import {listen} from 'ol/events.js';
 import {equals as arrayEquals} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
+import {getUid} from 'ol/index.js';
+
 
 /**
  * @ngInject
