@@ -165,7 +165,7 @@ vars:
   mapfile_data_noarea_subselect: "SELECT rra.role_id FROM {mapserver_join_tables} \
     WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id \
     AND lra.layer_id = la.id AND la.name = "
-  enable_admin_interface: True
+  enable_admin_interface: true
 
   project_directory: '{PROJECT_DIRECTORY}'
   ps: __import__('os').path.sep
@@ -248,7 +248,7 @@ vars:
       port: '{REDIS_PORT}'
       db: 0
       redis_expiration_time: 86400  # One day
-      distributed_lock: True
+      distributed_lock: true
 
   admin_interface:
     # Default values for the admin interface's maps.
@@ -281,7 +281,7 @@ vars:
       - name: metadataUrl
         type: url
       - name: disclaimer
-        translate: True
+        translate: true
       - name: isChecked
         type: boolean
       - name: identifierAttributeField
@@ -408,7 +408,7 @@ vars:
 
   # Used by enumeration in the query builder
   layers:
-    geometry_validation: True
+    geometry_validation: true
 
   # Used by reset_password and shortener to send emails
   smtp: {}

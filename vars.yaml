@@ -83,7 +83,7 @@ vars:
 
   smtp:
     host: echo 'no-set'
-    ssl: True
+    ssl: true
     user: echo 'not-set'
     password: echo 'not-set'
 

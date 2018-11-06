@@ -396,7 +396,7 @@ checks: flake8 $(CLIENT_CHECK_RULE) git-attributes yamllint spell printlint
 git-attributes:
 	git --no-pager diff --check `git log --oneline | tail -1 | cut --fields=1 --delimiter=' '`
 
-PRINT_REPORTS_FILES ?= $(shell find print/print-apps -name "*.jsrml" -print)
+PRINT_REPORTS_FILES ?= $(shell find print/print-apps -name "*.jrxml" -print)
 .PHONY: printlint
 printlint: $(PRINT_REPORTS_FILES)
 	xmllint --valid --encode utf-8 $(PRINT_REPORTS_FILES)

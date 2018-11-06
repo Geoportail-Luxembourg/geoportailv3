@@ -78,7 +78,7 @@ vars:
     desktop:
       <<: *interface
       redirect_interface: mobile
-      do_redirect: True
+      do_redirect: true
       constants:
         <<: *constants
         gmfPrintOptions:
@@ -197,7 +197,7 @@ vars:
       - default_basemap
 
   layers:
-    geometry_validation: True
+    geometry_validation: true
 
   # For base layers
   tiles_url:

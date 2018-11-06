@@ -209,3 +209,9 @@ clean-js-api:
 .PRECIOUS: .build/locale/%/LC_MESSAGES/ngeo.po
 .build/locale/%/LC_MESSAGES/ngeo.po: $(TX_DEPENDENCIES)
 	$(PRERULE_CMD)
+
+git-attributes:
+	echo "Disabled"
+
+spell:
+	echo "Spell checking disabled"
