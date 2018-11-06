@@ -1,9 +1,8 @@
 /**
  * @module app.interaction.ModifyCircle
  */
-import olBase from 'ol.js';
+import ViewHint from 'ol/ViewHint.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
 import {listen} from 'ol/events.js';
@@ -414,7 +413,7 @@ exports.handleEvent = function(mapBrowserEvent) {
   }
 
   var handled;
-  if (!mapBrowserEvent.map.getView().getHints()[olBase.ViewHint.INTERACTING] &&
+  if (!mapBrowserEvent.map.getView().getHints()[ViewHint.INTERACTING] &&
       mapBrowserEvent.type == 'pointermove' &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
