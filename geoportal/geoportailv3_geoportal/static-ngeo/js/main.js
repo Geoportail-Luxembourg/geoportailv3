@@ -13,6 +13,7 @@ let exports = {};
  * by the HTML page.
  */
 
+ /* eslint-disable no-unused-vars */
 import appAskredirectAskredirectDirective from './askredirect/askredirectDirective.js';
 import appAskredirectAskredirectController from './askredirect/AskredirectController.js';
 import appAuthenticationAuthenticationDirective from './authentication/authenticationDirective.js';
@@ -143,5 +144,6 @@ import appWmsHelper from './WmsHelper.js';
 import appWmtsHelper from './WmtsHelper.js';
 import appMiscFile from './misc/file.js';
 
+/* eslint-enable no-unused-vars */
 
 export default exports;

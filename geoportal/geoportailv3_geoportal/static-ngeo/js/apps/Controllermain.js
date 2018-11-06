@@ -11,6 +11,11 @@
  * management of the sidebar for example).
  */
 
+import 'jquery';
+import 'angular';
+import 'angular-gettext';
+import 'angular-dynamic-locale';
+
 import appModule from '../module.js';
 import appLocationControl from '../LocationControl.js';
 import appMap from '../Map.js';
