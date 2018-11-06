@@ -347,9 +347,9 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
-  listen(this.appRouting.routeFeatures, olBase.CollectionEventType.ADD,
+  listen(this.appRouting.routeFeatures, 'add',
     this.showRoute_, this);
-  listen(this.appRouting.routeFeatures, olBase.CollectionEventType.REMOVE,
+  listen(this.appRouting.routeFeatures, 'remove',
     this.removeRoute_, this);
 
   /**

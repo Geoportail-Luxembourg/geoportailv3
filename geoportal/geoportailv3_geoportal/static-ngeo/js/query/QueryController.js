@@ -364,7 +364,7 @@ const exports = function($sce, $timeout, $scope, $http,
   }.bind(this));
 
   olBase.events.listen(this.map_.getLayers(),
-      olBase.CollectionEventType.REMOVE,
+      'remove',
       /**
        * @param {ol.Collection.Event} e Collection event.
        */

@@ -128,9 +128,9 @@ const exports = function(options) {
   this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
-  listen(this.features_, olBase.CollectionEventType.ADD,
+  listen(this.features_, 'add',
       this.handleFeatureAdd_, this);
-  listen(this.features_, olBase.CollectionEventType.REMOVE,
+  listen(this.features_, 'remove',
       this.handleFeatureRemove_, this);
 
 };
