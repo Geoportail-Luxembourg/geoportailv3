@@ -8,7 +8,7 @@
  */
 
 import appModule from './module.js';
-import olBase from 'ol.js';
+
 import olArray from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';

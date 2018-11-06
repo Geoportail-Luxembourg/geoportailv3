@@ -3,7 +3,7 @@
  */
 import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
 import ngeoUtils from 'ngeo/utils.js';
-import olBase from 'ol.js';
+
 import olFeature from 'ol/Feature.js';
 import olArray from 'ol/array.js';
 import olColor from 'ol/color.js';

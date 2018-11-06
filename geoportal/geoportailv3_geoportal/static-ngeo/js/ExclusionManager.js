@@ -8,7 +8,7 @@
 
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import olBase from 'ol.js';
+
 import olObservable from 'ol/Observable.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';

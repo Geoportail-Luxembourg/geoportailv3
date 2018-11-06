@@ -6,7 +6,7 @@
  *
  */
 
-import olBase from 'ol.js';
+
 import olCss from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
 import {listen} from 'ol/events.js';

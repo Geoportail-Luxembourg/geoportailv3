@@ -18,7 +18,7 @@
  */
 
 import appModule from '../module.js';
-import olBase from 'ol.js';
+
 
 /**
  * @param {ngeo.statemanager.Location} ngeoLocation Location service.

@@ -1,7 +1,7 @@
 /**
  * @module app.interaction.DrawRoute
  */
-import olBase from 'ol.js';
+
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {getChangeEventType} from 'ol/Object.js';

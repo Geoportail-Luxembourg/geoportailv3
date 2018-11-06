@@ -27,6 +27,7 @@ import {array as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
+import Overlay from 'ol/Overlay.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -426,8 +427,7 @@ exports.prototype.whereAmI = function(step) {
   if (this.window_.location.protocol !== 'https:') {
     this['showRedirect'] = true;
   } else {
-    listen(this.geolocation_,
-      olBase.Object.getChangeEventType('position'),
+    listen(this.geolocation_, 'change:position',
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -482,7 +482,7 @@ exports.prototype.createTooltip_ = function(position, text) {
   this.tooltipElement_ = document.createElement('div');
   this.tooltipElement_.classList.add('tooltip');
   this.tooltipElement_.innerHTML = text;
-  this.tooltipOverlay_ = new olBase.Overlay({
+  this.tooltipOverlay_ = new Overlay({
     element: this.tooltipElement_,
     offset: [15, 0],
     positioning: 'center-left'

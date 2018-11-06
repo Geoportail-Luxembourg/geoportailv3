@@ -1,7 +1,7 @@
 /**
  * @module app.interaction.ClipLine
  */
-import olBase from 'ol.js';
+
 import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
