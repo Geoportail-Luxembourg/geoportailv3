@@ -13,7 +13,7 @@
  */
 
 import appModule from '../module.js';
-import olBase from 'ol.js';
+import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteraction from 'ol/interaction.js';
 import olStyle from 'ol/style.js';
@@ -502,7 +502,7 @@ exports.prototype.handlePanoramaPositionChange_ = function() {
  * @return {ol.Coordinate} Map view projection coordinate.
  */
 exports.prototype.fromLonLat_ = function(lonLat) {
-  return olBase.proj.fromLonLat(
+  return fromLonLat(
     lonLat,
     this.map_.getView().getProjection()
   );
@@ -513,7 +513,7 @@ exports.prototype.fromLonLat_ = function(lonLat) {
  * @return {ol.Coordinate} LonLat coordinate.
  */
 exports.prototype.toLonLat_ = function(coordinate) {
-  return olBase.proj.toLonLat(
+  return toLonLat(
     coordinate,
     this.map_.getView().getProjection()
   );

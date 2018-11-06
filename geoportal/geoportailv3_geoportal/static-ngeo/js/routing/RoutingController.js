@@ -15,7 +15,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
-import olBase from 'ol.js';
+import {get as projGet} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olStyle from 'ol/style.js';
@@ -571,7 +571,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: olBase.proj.get('EPSG:3857'),
+              featureProjection: projGet('EPSG:3857'),
               dataProjection: undefined
             });
           }
