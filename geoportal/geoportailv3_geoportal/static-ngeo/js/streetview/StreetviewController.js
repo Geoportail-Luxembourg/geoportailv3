@@ -21,6 +21,7 @@ import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
 import {listen} from 'ol/events.js';
 import {equals as arrayEquals} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
 
 /**
  * @ngInject
@@ -105,7 +106,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {!ol.Feature}
    * @private
    */
-  this.feature_ = new olBase.Feature();
+  this.feature_ = new Feature();
 
   /**
    * @type {ngeo.map.FeatureOverlay}
@@ -470,7 +471,7 @@ exports.prototype.style_ = function() {
   this.locationInfoOverlay_.clear();
   if (navigationLinks !== undefined) {
     navigationLinks.forEach(function(link) {
-      var curFeature = new olBase.Feature();
+      var curFeature = new Feature();
       curFeature.setGeometry(this.point_);
       curFeature.set('heading', link.heading);
       curFeature.set('pano', link.pano);

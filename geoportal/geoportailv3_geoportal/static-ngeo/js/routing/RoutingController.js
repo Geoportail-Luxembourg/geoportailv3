@@ -25,6 +25,7 @@ import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import {array as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -433,7 +434,7 @@ exports.prototype.whereAmI = function(step) {
         this.geolocation_.setTracking(false);
         var position = /** @type {ol.Coordinate} */
             (this.geolocation_.getPosition());
-        var feature = new olBase.Feature({
+        var feature = new Feature({
           geometry: new olGeomPoint(position)
         });
         var label = this.coordinateString_(
@@ -459,7 +460,7 @@ exports.prototype.showHideTooltip_ = function(e) {
     var feature = selectedFeatures.getArray()[0];
 
     var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
-    var newFeature = new olBase.Feature({
+    var newFeature = new Feature({
       geometry: new olGeomPoint(geometry)
     });
     this.highlightOverlay_.addFeature(newFeature);
@@ -624,7 +625,7 @@ exports.prototype.clearRoute = function(routeIdx) {
     this.appRouting.reorderRoute();
   } else {
     this.appRouting.routes[routeIdx] = '';
-    var blankFeature = new olBase.Feature();
+    var blankFeature = new Feature();
     blankFeature.set('name', '' + (routeIdx + 1));
     this.appRouting.features.setAt(routeIdx, blankFeature);
   }
@@ -712,7 +713,7 @@ exports.prototype.showRoute_ = function() {
     var coordinate = [description.lon, description.lat];
     var geometry = /** @type {ol.Coordinate} */
     (transform(coordinate, 'EPSG:4326', curView.getProjection()));
-    var stepFeature = new olBase.Feature({
+    var stepFeature = new Feature({
       geometry: new olGeomPoint(geometry)
     });
     cumulativeDistance += description.distance;
@@ -752,7 +753,7 @@ exports.prototype.highlightPosition = function(lon, lat, text) {
   var curView = this.map.getView();
   var geometry = /** @type {ol.Coordinate} */
   (transform(coordinate, 'EPSG:4326', curView.getProjection()));
-  var feature = new olBase.Feature({
+  var feature = new Feature({
     geometry: new olGeomPoint(geometry)
   });
   this.highlightOverlay_.clear();
@@ -1011,10 +1012,10 @@ exports.prototype.matchCoordinate_ =
             var feature = /** @type {ol.Feature} */ (null);
             if (containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
-              feature = new olBase.Feature(point);
+              feature = new Feature(point);
             } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new olBase.Feature(flippedPoint);
+              feature = new Feature(flippedPoint);
             }
             if (feature !== null) {
               var resultPoint =

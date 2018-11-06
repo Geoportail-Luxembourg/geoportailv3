@@ -8,6 +8,7 @@
 
 import appModule from './module.js';
 import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
 import olStyle from 'ol/style.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -225,7 +226,7 @@ exports.prototype.insertFeatureAt = function(feature, routeNumber) {
   if (routeNumber > featuresLength) {
     var j;
     for (j = featuresLength; j < routeNumber; ++j) {
-      var blankFeature = new olBase.Feature();
+      var blankFeature = new Feature();
       blankFeature.set('name', '' + j);
       this.features.insertAt(j, blankFeature);
     }
