@@ -16,7 +16,6 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olInteraction from 'ol/interaction.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 
 /**
@@ -255,7 +254,7 @@ const exports = function($scope, $sce, appFeaturePopup,
    * @private
    */
   this.event_ = listen(this.drawnFeatures_.modifyInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
+      'modifyend', this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;

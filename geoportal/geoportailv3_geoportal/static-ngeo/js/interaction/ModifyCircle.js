@@ -166,7 +166,7 @@ exports.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
     this.dispatchEvent(new olInteractionModify.Event(
-        olInteraction.ModifyEventType.MODIFYSTART, this.features_, evt));
+        'modifystart', this.features_, evt));
   }
 };
 
@@ -393,7 +393,7 @@ exports.handleUpEvent_ = function(evt) {
 
   if (this.modified_) {
     this.dispatchEvent(new olInteractionModify.Event(
-        olInteraction.ModifyEventType.MODIFYEND, this.features_, evt));
+        'modifyend', this.features_, evt));
     this.modified_ = false;
   }
   return false;

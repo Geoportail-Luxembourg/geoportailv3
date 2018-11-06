@@ -13,7 +13,6 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
-import olInteractionModifyEventType from 'ol/interaction/ModifyEventType.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
@@ -324,7 +323,7 @@ exports.handleDownEvent_ = function(evt) {
         this.features_.push(feature2);
 
         this.dispatchEvent(new  olInteractionModify.Event(
-          olInteractionModifyEventType.MODIFYEND, new olCollection([feature1, feature2, segmentDataMatch.feature]), evt));
+          'modifyend', new olCollection([feature1, feature2, segmentDataMatch.feature]), evt));
         this.modified_ = true;
       }
     }

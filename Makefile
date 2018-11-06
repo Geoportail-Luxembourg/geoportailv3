@@ -215,3 +215,6 @@ git-attributes:
 
 spell:
 	echo "Spell checking disabled"
+
+printlint:
+	echo "Disabled printlint"

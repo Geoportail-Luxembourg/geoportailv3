@@ -347,7 +347,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.modifyInteraction_.setActive(true);
 
   listen(this.modifyInteraction_,
-    olInteraction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
+    'modifyend', this.modifyEndStepFeature_, this);
   /**
    * @type {ol.source.Vector}
    * @private

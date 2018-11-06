@@ -14,7 +14,6 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteractionDrawEventType from 'ol/interaction/DrawEventType.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olInteractionProperty from 'ol/interaction/Property.js';
 import olLayerVector from 'ol/layer/Vector.js';
@@ -509,7 +508,7 @@ exports.prototype.startDrawing_ = function(event) {
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
   this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
+      'drawstart', this.sketchFeature_));
 };
 
 
@@ -714,7 +713,7 @@ exports.prototype.removeLastPoint = function() {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
+ * The drawend event is dispatched before
  * inserting the feature.
  * @api
  */
@@ -722,8 +721,7 @@ exports.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(new exports.Event('drawend', sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -771,7 +769,7 @@ exports.prototype.extend = function(feature) {
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
   this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
+      'drawstart', this.sketchFeature_));
 };
 
 
@@ -860,7 +858,7 @@ exports.Mode_ = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
+ * @param {string} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
 exports.Event = function(type, feature) {

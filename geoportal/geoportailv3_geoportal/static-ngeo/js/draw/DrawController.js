@@ -230,7 +230,7 @@ const exports = function($scope,
   listen(drawPoint, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  listen(drawPoint, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPoint, 'drawend',
       this.onDrawEnd_, this);
 
   var drawLabel = new olInteractionDraw({
@@ -249,7 +249,7 @@ const exports = function($scope,
   listen(drawLabel, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  listen(drawLabel, olInteraction.DrawEventType.DRAWEND,
+  listen(drawLabel, 'drawend',
       this.onDrawEnd_, this);
 
   this.drawnFeatures_.drawLineInteraction = new appInteractionDrawRoute({
@@ -271,9 +271,9 @@ const exports = function($scope,
   listen(this.drawLine, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  listen(this.drawLine, olInteraction.DrawEventType.DRAWEND,
+  listen(this.drawLine, 'drawend',
       this.onDrawEnd_, this);
-  listen(this.drawLine, olInteraction.DrawEventType.DRAWSTART,
+  listen(this.drawLine, 'drawstart',
       this.onDrawLineStart_, this);
 
   var drawPolygon = new olInteractionDraw({
@@ -292,9 +292,9 @@ const exports = function($scope,
   listen(drawPolygon, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  listen(drawPolygon, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPolygon, 'drawend',
       this.onDrawEnd_, this);
-  listen(drawPolygon, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawPolygon, 'drawstart',
       this.onDrawPolygonStart_, this);
 
   var drawCircle = new olInteractionDraw({
@@ -313,9 +313,9 @@ const exports = function($scope,
   listen(drawCircle, getChangeEventType(
       olInteraction.Property.ACTIVE),
       this.onChangeActive_, this);
-  listen(drawCircle, olInteraction.DrawEventType.DRAWEND,
+  listen(drawCircle, 'drawend',
       this.onDrawEnd_, this);
-  listen(drawCircle, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawCircle, 'drawstart',
       this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
@@ -410,7 +410,7 @@ const exports = function($scope,
   this.drawnFeatures_.clipLineInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
   listen(this.drawnFeatures_.clipLineInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
+      'modifyend', this.onClipLineEnd_, this);
 
   this.drawnFeatures_.modifyCircleInteraction =
       new appInteractionModifyCircle({
@@ -424,11 +424,11 @@ const exports = function($scope,
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
   listen(this.modifyCircleInteraction_,
-      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      'modifyend', this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
   listen(this.drawnFeatures_.modifyInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+      'modifyend', this.onFeatureModifyEnd_, this);
 
   this.drawnFeatures_.translateInteraction = new olInteractionTranslate({
     features: appSelectedFeatures
