@@ -302,7 +302,7 @@ exports.prototype.$onInit = function() {
       }
     }
   }.bind(this));
- listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE, function(evt) {
+ listen(this.map_, 'pointermove', function(evt) {
     if (this.isActive()) {
       var pixel = this.map_.getEventPixel(evt.originalEvent);
 

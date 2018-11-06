@@ -376,7 +376,7 @@ const exports = function($sce, $timeout, $scope, $http,
 
 
  listen(this.map_,
-      olBase.MapBrowserEventType.POINTERDOWN, function(evt) {
+      'pointerdown', function(evt) {
         this.isLongPress_ = false;
         this.startPixel_ = evt.pixel;
         this.pointerDownTime_ = new Date().getTime();
@@ -385,7 +385,7 @@ const exports = function($sce, $timeout, $scope, $http,
       }, this);
 
  listen(this.map_,
-      olBase.MapBrowserEventType.POINTERUP, function(evt) {
+      'pointerup', function(evt) {
         $timeout.cancel(holdPromise);
         var tempTime = new Date().getTime();
         if ((tempTime - this.pointerUpTime_) <= 499) {
@@ -432,7 +432,7 @@ const exports = function($sce, $timeout, $scope, $http,
         }.bind(this), 500, false);
       }, this);
 
- listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE,
+ listen(this.map_, 'pointermove',
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;

@@ -119,7 +119,7 @@ exports.prototype.activate = function(active) {
           this.isDragging_ = true;
           if (this.mousemoveEvent_ === null) {
             this.mousemoveEvent_ =listen(this.map_,
-                olBase.MapBrowserEventType.POINTERMOVE, this.drag_, this);
+                'pointermove', this.drag_, this);
           }
          listenOnce(this.$document_[0],
               'mouseup', function() {
