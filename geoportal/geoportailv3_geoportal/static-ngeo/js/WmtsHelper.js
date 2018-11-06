@@ -147,7 +147,7 @@ exports.prototype.buildChildLayers_ = function(wmts, capabilities) {
     var options = olSourceWMTS.optionsFromCapabilities(capabilities, wmtsConfig);
     layer['options'] = options;
     layer['isInvalid'] = false;
-    layer['uid'] = olBase.getUid(layer).toString();
+    layer['uid'] = getUid(layer).toString();
     if (!layer['isInvalid']) {
       layer['wmtsUrl'] = wmts;
 

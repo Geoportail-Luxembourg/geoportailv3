@@ -7,7 +7,7 @@
  */
 
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import olBase from 'ol.js';
+import {inherits} from 'ol/util.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
 import {listen} from 'ol/events.js';
@@ -107,7 +107,7 @@ const exports = function(options) {
 
 };
 
-olBase.inherits(exports, olControlControl);
+inherits(exports, olControlControl);
 
 
 /**

@@ -135,7 +135,7 @@ const exports = function(opt_options) {
 
 };
 
-olBase.inherits(exports, olFormatTextFeature);
+inherits(exports, olFormatTextFeature);
 
 
 /**

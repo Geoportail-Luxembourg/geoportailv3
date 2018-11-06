@@ -177,7 +177,7 @@ exports.prototype.init = function(map) {
             function(e) {
               this.checkForLayerExclusion_(map, layer);
             }, this);
-        layerOpacityListenerKeys[olBase.getUid(layer)] = key;
+        layerOpacityListenerKeys[getUid(layer)] = key;
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
@@ -187,8 +187,8 @@ exports.prototype.init = function(map) {
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
-        console.assert(olBase.getUid(layer) in layerOpacityListenerKeys);
-        olObservable.unByKey(layerOpacityListenerKeys[olBase.getUid(layer)]);
+        console.assert(getUid(layer) in layerOpacityListenerKeys);
+        olObservable.unByKey(layerOpacityListenerKeys[getUid(layer)]);
       }, this);
 };
 

@@ -135,7 +135,7 @@ const exports = function(options) {
 
 };
 
-olBase.inherits(exports, olInteractionPointer);
+inherits(exports, olInteractionPointer);
 
 
 /**
@@ -331,7 +331,7 @@ exports.handleDownEvent_ = function(evt) {
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      var uid = olBase.getUid(segmentDataMatch.feature);
+      var uid = getUid(segmentDataMatch.feature);
       var depth = segmentDataMatch.depth;
       if (depth) {
         uid += '-' + depth.join('-'); // separate feature components
@@ -415,7 +415,7 @@ exports.handleEvent = function(mapBrowserEvent) {
 
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[olBase.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == olMapBrowserEventType.POINTERMOVE &&
+      mapBrowserEvent.type == 'pointermove' &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
@@ -475,7 +475,7 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
             closestSegment[1] : closestSegment[0];
         this.createOrUpdateVertexFeature_(vertex);
         var vertexSegments = {};
-        vertexSegments[olBase.getUid(closestSegment)] = true;
+        vertexSegments[getUid(closestSegment)] = true;
         var segment;
         for (var i = 1, ii = nodes.length; i < ii; ++i) {
           segment = nodes[i].segment;
@@ -483,7 +483,7 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
               olCoordinate.equals(closestSegment[1], segment[1]) ||
               (olCoordinate.equals(closestSegment[0], segment[1]) &&
               olCoordinate.equals(closestSegment[1], segment[0])))) {
-            vertexSegments[olBase.getUid(segment)] = true;
+            vertexSegments[getUid(segment)] = true;
           } else {
             break;
           }

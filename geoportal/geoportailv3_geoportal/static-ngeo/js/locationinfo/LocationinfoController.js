@@ -390,7 +390,7 @@ const exports = function(
         startPixel = null;
       }.bind(this), this);
 
-  listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  listen(this['map'], 'pointermove',
       function(event) {
         if (startPixel) {
           var pixel = event.pixel;

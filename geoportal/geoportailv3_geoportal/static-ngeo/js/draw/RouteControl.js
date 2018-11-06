@@ -61,7 +61,7 @@ const exports = function(options) {
 
 };
 
-olBase.inherits(exports, olControlControl);
+inherits(exports, olControlControl);
 
 
 /**

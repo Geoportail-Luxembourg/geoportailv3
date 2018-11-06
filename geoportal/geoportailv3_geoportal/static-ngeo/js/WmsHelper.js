@@ -165,7 +165,7 @@ exports.prototype.buildChildLayers_ = function(wms, layer, wmsVersion,
   if (!layer['Name']) {
     layer['isInvalid'] = true;
   }
-  layer['uid'] = olBase.getUid(layer).toString();
+  layer['uid'] = getUid(layer).toString();
   if (!layer['isInvalid']) {
     layer['wmsUrl'] = wms;
     layer['wmsVersion'] = wmsVersion;

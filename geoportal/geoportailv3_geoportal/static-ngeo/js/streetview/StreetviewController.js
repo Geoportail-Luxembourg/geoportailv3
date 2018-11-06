@@ -51,7 +51,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    */
   this.locationInfoOverlay_ = appLocationInfoOverlay;
 
-  this['uid'] = olBase.getUid(this);
+  this['uid'] = getUid(this);
 
   /**
    * @type {string}

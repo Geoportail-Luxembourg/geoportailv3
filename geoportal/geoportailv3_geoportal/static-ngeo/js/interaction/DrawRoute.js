@@ -284,7 +284,7 @@ const exports = function(options) {
 
 };
 
-olBase.inherits(exports, olInteractionPointer);
+inherits(exports, olInteractionPointer);
 
 
 /**
@@ -323,7 +323,7 @@ exports.handleEvent = function(event) {
     this.addToDrawing_(event);
     pass = false;
   } else if (event.type ===
-      olMapBrowserEventType.POINTERMOVE) {
+      'pointermove') {
     pass = this.handlePointerMove_(event);
   } else if (event.type === olMapBrowserEventType.DBLCLICK) {
     pass = false;
@@ -873,7 +873,7 @@ exports.Event = function(type, feature) {
   this.feature = feature;
 
 };
-olBase.inherits(exports.Event, olEventsEvent);
+inherits(exports.Event, olEventsEvent);
 
 
 export default exports;

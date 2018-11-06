@@ -107,14 +107,12 @@ const exports = function(options) {
   this.features_ = /** @type {!ol.Collection.<ol.Feature>} */ (options.features);
 
   this.features_.forEach(this.addFeature_, this);
-  listen(this.features_, olBase.CollectionEventType.ADD,
-      this.handleFeatureAdd_, this);
-  listen(this.features_, olBase.CollectionEventType.REMOVE,
-      this.handleFeatureRemove_, this);
+  listen(this.features_, 'add', this.handleFeatureAdd_, this);
+  listen(this.features_, 'remove', this.handleFeatureRemove_, this);
 
 };
 
-olBase.inherits(exports, olInteractionPointer);
+inherits(exports, olInteractionPointer);
 
 
 /**
@@ -347,8 +345,8 @@ exports.handleEvent = function(mapBrowserEvent) {
     return true;
   }
 
-  if (!mapBrowserEvent.map.getView().getHints()[olBase.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == olMapBrowserEventType.POINTERMOVE &&
+  if (!mapBrowserEvent.map.getView().getHints()[ViewHint.INTERACTING] &&
+      mapBrowserEvent.type == 'pointermove' &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }

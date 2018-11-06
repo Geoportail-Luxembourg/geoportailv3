@@ -139,7 +139,7 @@ exports.prototype.setDraggable = function(element) {
           'transition': 'transform .3s'});
         if (this.mousemoveEvent_ !== null) {
           this.mousemoveEvent_ = listen(this.map,
-              olMapBrowserEventType.POINTERMOVE, function(e) {
+              'pointermove', function(e) {
                 if (!this.startingDragPoint_) {
                   this.startingAnchorPoint_ = this.overlay_.getPosition();
                   this.startingDragPoint_ = e.coordinate;

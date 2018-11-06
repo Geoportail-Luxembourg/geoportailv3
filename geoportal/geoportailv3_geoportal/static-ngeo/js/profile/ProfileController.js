@@ -161,7 +161,7 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  this.event_ = listen(this['map'], 'pointermove',
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */

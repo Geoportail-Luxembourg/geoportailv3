@@ -72,7 +72,7 @@ const exports = function($window, $http, treeUrl, isThemePrivateUrl,
   this.promise_ = null;
 };
 
-olBase.inherits(exports, olEventsEventTarget);
+inherits(exports, olEventsEventTarget);
 
 
 /**

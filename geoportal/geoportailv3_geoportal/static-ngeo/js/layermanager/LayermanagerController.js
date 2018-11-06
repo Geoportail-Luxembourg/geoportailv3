@@ -33,7 +33,7 @@ const exports = function(ngeoLocation) {
    */
   this.ngeoLocation_ = ngeoLocation;
 
-  this['uid'] = olBase.getUid(this);
+  this['uid'] = getUid(this);
 
   /**
    * Hash array to keep track of opacities set on layers.
@@ -72,7 +72,7 @@ exports.prototype.reorderCallback = function(element, layers) {
 exports.prototype.changeVisibility = function(layer) {
   var currentOpacity = layer.getOpacity();
   var newOpacity;
-  var uid = olBase.getUid(layer);
+  var uid = getUid(layer);
   if (currentOpacity === 0) {
     if (this.opacities_[uid] !== undefined) {
       newOpacity = this.opacities_[uid];
