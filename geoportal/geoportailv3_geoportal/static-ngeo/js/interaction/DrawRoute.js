@@ -581,8 +581,8 @@ exports.prototype.addToDrawing_ = function(event) {
   } else {
     var last = coordinates[coordinates.length - 1];
     if (coordinates.length > 2) {
-      var penultimate = olBase.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
-      var antepenultimate = olBase.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
+      var penultimate = transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
+      var antepenultimate = transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
       var waypoints = antepenultimate[1] + ',' + antepenultimate[0] + ',' + penultimate[1] + ',' + penultimate[0];
       if (waypoints !== this.lastWaypoints_ && !this.isRequestingRoute_) {
         this.lastWaypoints_ = waypoints;

@@ -96,7 +96,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @private
    */
   this.maxExtent_ =
-      olBase.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.CoordinateString}
@@ -708,7 +708,7 @@ exports.prototype.showRoute_ = function() {
   this.routeDesc.forEach(function(description) {
     var coordinate = [description.lon, description.lat];
     var geometry = /** @type {ol.Coordinate} */
-    (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
+    (transform(coordinate, 'EPSG:4326', curView.getProjection()));
     var stepFeature = new olBase.Feature({
       geometry: new olGeomPoint(geometry)
     });
@@ -734,7 +734,7 @@ exports.prototype.showRoute_ = function() {
  */
 exports.prototype.center = function(lon, lat) {
   var curView = this.map.getView();
-  var coordinate = olBase.proj.transform([lon, lat], 'EPSG:4326', curView.getProjection());
+  var coordinate = transform([lon, lat], 'EPSG:4326', curView.getProjection());
   curView.setCenter(coordinate);
 };
 
@@ -748,7 +748,7 @@ exports.prototype.highlightPosition = function(lon, lat, text) {
   var coordinate = [lon, lat];
   var curView = this.map.getView();
   var geometry = /** @type {ol.Coordinate} */
-  (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
+  (transform(coordinate, 'EPSG:4326', curView.getProjection()));
   var feature = new olBase.Feature({
     geometry: new olGeomPoint(geometry)
   });

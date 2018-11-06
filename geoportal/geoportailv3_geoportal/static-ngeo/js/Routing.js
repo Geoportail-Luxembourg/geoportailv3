@@ -274,7 +274,7 @@ exports.prototype.getRoute = function() {
       var geom = feature.getGeometry();
       if (geom instanceof olGeomPoint) {
         var lonlat = /** @type {ol.Coordinate} */
-            (olBase.proj.transform(geom.getFirstCoordinate(),
+            (transform(geom.getFirstCoordinate(),
             'EPSG:3857', 'EPSG:4326'));
         waypoints.push(lonlat[1] + ',' + lonlat[0]);
       }
