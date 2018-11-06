@@ -3,6 +3,7 @@
  */
 import appModule from '../module.js';
 import {listen, listenOnce} from 'ol/events.js';
+import {unByKey} from 'ol/Observable.js';
 
 /**
  * @param {angular.JQLite} $element Element.
@@ -124,7 +125,7 @@ exports.prototype.activate = function(active) {
          listenOnce(this.$document_[0],
               'mouseup', function() {
                 if (this.mousemoveEvent_) {
-                  olBase.Observable.unByKey(this.mousemoveEvent_);
+                  unByKey(this.mousemoveEvent_);
                 }
                 this.isDragging_ = false;
                 this.mousemoveEvent_ = null;
@@ -158,16 +159,16 @@ exports.prototype.activate = function(active) {
     }
   } else {
     if (this.mousedownEvent_) {
-      olBase.Observable.unByKey(this.mousedownEvent_);
+      unByKey(this.mousedownEvent_);
     }
     if (this.mapResizeEvent_) {
-      olBase.Observable.unByKey(this.mapResizeEvent_);
+      unByKey(this.mapResizeEvent_);
     }
     if (this.precomposeEvent_ !== null) {
-      olBase.Observable.unByKey(this.precomposeEvent_);
+      unByKey(this.precomposeEvent_);
     }
     if (this.postcomposeEvent_ !== null) {
-      olBase.Observable.unByKey(this.postcomposeEvent_);
+      unByKey(this.postcomposeEvent_);
     }
   }
   this.map_.render();
