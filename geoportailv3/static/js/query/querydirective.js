@@ -929,7 +929,7 @@ app.QueryController.prototype.hasValidFID = function(feature) {
  */
 app.QueryController.prototype.isFIDValid_ = function(fid) {
   var valid = true;
-  if (fid === undefined) {
+  if (fid === undefined || fid === null) {
     return false;
   }
   var fids = fid.split(',');
