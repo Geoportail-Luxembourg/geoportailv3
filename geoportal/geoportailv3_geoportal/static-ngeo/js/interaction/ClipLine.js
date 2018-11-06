@@ -131,7 +131,7 @@ exports.prototype.addFeature_ = function(feature) {
         this.handlePointerAtPixel_(this.lastPixel_, map);
       }
     }
-    listen(feature, olEvents.EventType.CHANGE,
+    listen(feature, 'change',
         this.handleFeatureChange_, this);
   }
 };
@@ -149,7 +149,7 @@ exports.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  olEvents.unlisten(feature, olEvents.EventType.CHANGE,
+  olEvents.unlisten(feature, 'change',
       this.handleFeatureChange_, this);
 };
 

@@ -447,7 +447,7 @@ const exports = function($scope,
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 
-  listen(this.map, olEvents.EventType.KEYDOWN,
+  listen(this.map, 'keydown',
       this.keyboardHandler_, this);
 
 };
@@ -549,7 +549,7 @@ exports.prototype.onDrawPolygonStart_ = function(event) {
 
 
   this.changeEventKey_ = listen(geometry,
-      olEvents.EventType.CHANGE,
+      'change',
       function() {
         var verticesCount = geometry.getCoordinates()[0].length;
         var coord = null;
@@ -578,7 +578,7 @@ exports.prototype.onDrawLineStart_ = function(event) {
   var proj = this.map.getView().getProjection();
 
   this.changeEventKey_ = listen(geometry,
-      olEvents.EventType.CHANGE,
+      'change',
       function() {
         var coord = geometry.getLastCoordinate();
         if (coord !== null) {
@@ -603,7 +603,7 @@ exports.prototype.onDrawCircleStart_ = function(event) {
   var proj = this.map.getView().getProjection();
 
   this.changeEventKey_ = listen(geometry,
-      olEvents.EventType.CHANGE,
+      'change',
       function() {
         var coord = geometry.getLastCoordinate();
         var center = geometry.getCenter();

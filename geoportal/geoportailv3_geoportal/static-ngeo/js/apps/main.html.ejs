@@ -10,7 +10,13 @@
     <meta name="apple-mobile-web-app-title" content="geoportail.lu">
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="shortcut icon" type="image/x-icon" href="https://www.geoportail.lu/static/img/favicon-16x16.ico" />
+
+    <link rel="shortcut icon" href="<%=require("../../images/favicon.ico")%>" />
+
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+    <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+    <% } %>
+
     <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
     <link rel="apple-touch-icon" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114.png" />
@@ -295,6 +301,11 @@
         </li>
       </ul>
     </footer>
+
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+    <% } %>
+    <script src="/dynamic.js?interface=main"></script>
 
     <!-- Piwik -->
       <script type="text/javascript">

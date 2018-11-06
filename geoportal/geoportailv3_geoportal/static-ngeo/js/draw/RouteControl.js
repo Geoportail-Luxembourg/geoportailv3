@@ -48,10 +48,10 @@ const exports = function(options) {
   this.element.setAttribute('class', cssClasses);
   this.element.appendChild(button);
 
-  listen(button, olEvents.EventType.CLICK,
+  listen(button, 'click',
       this.handleClick_, this);
 
-  listen(button, olEvents.EventType.MOUSEOUT, function() {
+  listen(button, 'mouseout', function() {
     this.blur();
   });
 
