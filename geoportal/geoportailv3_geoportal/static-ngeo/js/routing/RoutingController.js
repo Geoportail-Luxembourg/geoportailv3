@@ -24,6 +24,7 @@ import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import {array as arrayIncludes} from 'ol/array.js';
+import Collection from 'ol/Collection.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -295,7 +296,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.Collection}
    * @private
    */
-  this.modyfyFeaturesCollection_ = new olBase.Collection();
+  this.modyfyFeaturesCollection_ = new Collection();
 
   /**
    * Due to https://github.com/openlayers/openlayers/issues/7483

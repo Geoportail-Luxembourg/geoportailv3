@@ -20,6 +20,7 @@ import olStyle from 'ol/style.js';
 import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
 import {listen} from 'ol/events.js';
 import {equals as arrayEquals} from 'ol/array.js';
+import Collection from 'ol/Collection.js';
 
 /**
  * @ngInject
@@ -116,7 +117,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
-  this.features_ = new olBase.Collection();
+  this.features_ = new Collection();
   this.featureOverlay_.setFeatures(this.features_);
 
   /**

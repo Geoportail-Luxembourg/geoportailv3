@@ -7,7 +7,7 @@
  */
 
 import appModule from './module.js';
-import olBase from 'ol.js';
+import Collection from 'ol/Collection.js';
 import olStyle from 'ol/style.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -86,7 +86,7 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.routeFeatures = new olBase.Collection();
+  this.routeFeatures = new Collection();
   this.routeOverlay.setFeatures(this.routeFeatures);
 
   /**
@@ -121,7 +121,7 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.stepFeatures = new olBase.Collection();
+  this.stepFeatures = new Collection();
   this.stepsOverlay.setFeatures(this.stepFeatures);
   this.stepsOverlay.setStyle(this.stepStyle_);
 
@@ -133,7 +133,7 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.features = new olBase.Collection();
+  this.features = new Collection();
   this.routingOverlay.setFeatures(this.features);
 
   /**
