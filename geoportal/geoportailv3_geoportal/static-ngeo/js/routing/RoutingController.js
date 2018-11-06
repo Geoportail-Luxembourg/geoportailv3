@@ -26,6 +26,7 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import {array as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
+import Geolocation from 'ol/Geolocation.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -360,7 +361,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.Geolocation}
    * @private
    */
-  this.geolocation_ = new olBase.Geolocation({
+  this.geolocation_ = new Geolocation({
     projection: this.map.getView().getProjection(),
     trackingOptions: /** @type {GeolocationPositionOptions} */ ({
       enableHighAccuracy: true,
@@ -426,7 +427,7 @@ exports.prototype.whereAmI = function(step) {
     this['showRedirect'] = true;
   } else {
     listen(this.geolocation_,
-      olBase.Object.getChangeEventType(olBase.GeolocationProperty.POSITION),
+      olBase.Object.getChangeEventType('position'),
       /**
        * @param {ol.Object.Event} e Object event.
        */
