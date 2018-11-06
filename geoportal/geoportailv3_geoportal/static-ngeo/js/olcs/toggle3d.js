@@ -35,7 +35,7 @@ const toggle3d = {
     </div>`
 };
 
-angular.module('app').component('appToggle3d', toggle3d);
+angular.module('Appmain').component('appToggle3d', toggle3d);
 
 
 export default exports;

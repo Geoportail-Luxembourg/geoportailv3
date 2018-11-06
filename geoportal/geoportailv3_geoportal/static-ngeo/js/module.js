@@ -33,10 +33,13 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 
+const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
+
 /**
  * @type {!angular.Module}
  */
-const exports = angular.module('app', [
+const exports = angular.module('Appmain', [
+  fakeGmfAbstractAppControllerModule.name,
   ngeoDatasourceModule.name,
   ngeoDownloadModule.name,
   ngeoDrawModule.name,
