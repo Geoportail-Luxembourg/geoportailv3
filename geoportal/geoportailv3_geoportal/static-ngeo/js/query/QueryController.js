@@ -3,7 +3,7 @@
  */
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import olBase from 'ol.js';
+import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -363,7 +363,7 @@ const exports = function($sce, $timeout, $scope, $http,
     }
   }.bind(this));
 
-  olBase.events.listen(this.map_.getLayers(),
+ listen(this.map_.getLayers(),
       'remove',
       /**
        * @param {ol.Collection.Event} e Collection event.
@@ -375,7 +375,7 @@ const exports = function($sce, $timeout, $scope, $http,
       }, this);
 
 
-  olBase.events.listen(this.map_,
+ listen(this.map_,
       olBase.MapBrowserEventType.POINTERDOWN, function(evt) {
         this.isLongPress_ = false;
         this.startPixel_ = evt.pixel;
@@ -384,7 +384,7 @@ const exports = function($sce, $timeout, $scope, $http,
         $timeout.cancel(holdPromise);
       }, this);
 
-  olBase.events.listen(this.map_,
+ listen(this.map_,
       olBase.MapBrowserEventType.POINTERUP, function(evt) {
         $timeout.cancel(holdPromise);
         var tempTime = new Date().getTime();
@@ -432,7 +432,7 @@ const exports = function($sce, $timeout, $scope, $http,
         }.bind(this), 500, false);
       }, this);
 
-  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE,
+ listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE,
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;

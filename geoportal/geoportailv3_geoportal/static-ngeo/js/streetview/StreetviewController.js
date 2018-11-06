@@ -18,6 +18,7 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olInteraction from 'ol/interaction.js';
 import olStyle from 'ol/style.js';
 import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
+import {listen} from 'ol/events.js';
 
 /**
  * @ngInject
@@ -301,7 +302,7 @@ exports.prototype.$onInit = function() {
       }
     }
   }.bind(this));
-  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE, function(evt) {
+ listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE, function(evt) {
     if (this.isActive()) {
       var pixel = this.map_.getEventPixel(evt.originalEvent);
 
