@@ -17,6 +17,7 @@ import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteraction from 'ol/interaction.js';
 import olStyle from 'ol/style.js';
+import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
 
 /**
  * @ngInject
@@ -490,7 +491,7 @@ exports.prototype.handlePanoramaPositionChange_ = function() {
   this.point_.setCoordinates(this.location);
   this.scope_.$apply();
 
-  if (!olBase.extent.containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
+  if (!containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
     this.map_.getView().setCenter(this.location);
   }
   this.panoramaPositionChanging_ = false;

@@ -1,7 +1,7 @@
 /**
  * @module app.offline.Configuration
  */
-import olBase from 'ol.js';
+import {boundingExtent, getWidth} from 'ol/extent.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoOfflineModule from 'ngeo/offline/module.js';
 import NgeoConfiguration from 'ngeo/offline/Configuration.js';
@@ -102,7 +102,7 @@ const exports = class extends NgeoConfiguration {
     if (this.isBgLayer_(layer, map)) {
       const zooms = [8, 9, 10, 11, 12, 13, 14, 15, ...zoomRange.filter(dz => dz > 15)];
       const view = map.getView();
-      const userExtentSideInMeters = olBase.extent.getWidth(userExtent);
+      const userExtentSideInMeters = getWidth(userExtent);
       const fakeViewportSideInPixels = 2 * 1024;
       return zooms.map((z) => {
         const resolution = view.getResolutionForZoom(z);
@@ -110,8 +110,8 @@ const exports = class extends NgeoConfiguration {
         let extent = userExtent;
         if (fakeViewportSideInMeters > userExtentSideInMeters) {
           // the fake viewport at this resolution covers a bigger area than the user extent
-          extent = olBase.extent.boundingExtent([olBase.extent.getCenter(userExtent)]);
-          olBase.extent.buffer(extent, fakeViewportSideInMeters / 2, extent);
+          extent = boundingExtent([getCenter(userExtent)]);
+          buffer(extent, fakeViewportSideInMeters / 2, extent);
         }
         return {
           zoom: z,

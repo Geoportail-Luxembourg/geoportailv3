@@ -21,6 +21,7 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olStyle from 'ol/style.js';
 import olInteraction from 'ol/interaction.js';
 import {listen} from 'ol/events.js';
+import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 /**
@@ -249,7 +250,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     select: function(event, suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       var geometry = feature.getGeometry();
-      feature.setGeometry(new olGeomPoint(olBase.extent.getCenter(
+      feature.setGeometry(new olGeomPoint(getCenter(
         geometry.getExtent())));
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
@@ -1006,10 +1007,10 @@ exports.prototype.matchCoordinate_ =
             (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (olBase.extent.containsCoordinate(
+            if (containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
               feature = new olBase.Feature(point);
-            } else if (epsgCode === 'EPSG:4326' && olBase.extent.containsCoordinate(
+            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
               feature = new olBase.Feature(flippedPoint);
             }
