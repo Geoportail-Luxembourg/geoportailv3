@@ -812,7 +812,7 @@ exports.prototype.initMymaps_ = function() {
   }
   this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
-  this.map_.getLayerGroup().on('change',() => {
+  this.map_.getLayerGroup().on('change', () => {
     this.compareLayers_();
   });
 };

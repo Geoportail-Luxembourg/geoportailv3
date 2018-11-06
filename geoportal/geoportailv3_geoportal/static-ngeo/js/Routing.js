@@ -12,6 +12,7 @@ import Feature from 'ol/Feature.js';
 import olStyle from 'ol/style.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import {transform} from 'ol/proj.js';
 
 /**
  * @constructor

@@ -7,7 +7,7 @@
 
 import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
-import {listen} from 'ol/events.js';
+import {listen, unlistenByKey} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olProj from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
@@ -282,7 +282,7 @@ const exports = function($scope, $sce, appFeaturePopup,
   }.bind(this));
 
   $scope.$on('$destroy', function() {
-    olEvents.unlistenByKey(this.event_);
+    unlistenByKey(this.event_);
     this.unwatch1_();
     this.unwatch2_();
     this.unwatch3_();

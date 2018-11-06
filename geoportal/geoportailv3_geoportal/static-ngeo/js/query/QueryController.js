@@ -832,9 +832,8 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
   }
   this.lastHighlightedFeatures_ = [];
   for (var i = 0; i < this.responses_.length; i++) {
-    this.lastHighlightedFeatures_.push.apply(
-        this.lastHighlightedFeatures_,
-        this.responses_[i].features
+    this.lastHighlightedFeatures_.push(
+      ...this.responses_[i].features
     );
   }
   this.highlightFeatures_(this.lastHighlightedFeatures_, fit);

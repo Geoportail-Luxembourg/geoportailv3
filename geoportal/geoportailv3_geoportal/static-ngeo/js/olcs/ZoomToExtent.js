@@ -9,7 +9,8 @@ const exports = class extends olControlZoomToExtent {
    * @param {app.olcs.Lux3DManager} ol3dm Manager getter
    */
   constructor(extent, ol3dm) {
-    super({label: '\ue01b', extent});
+    const label = '\ue01b';
+    super({label, extent});
     /**
      * @const {app.olcs.Lux3DManager}
      * @private

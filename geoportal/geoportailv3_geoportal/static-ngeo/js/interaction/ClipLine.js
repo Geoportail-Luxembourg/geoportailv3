@@ -6,7 +6,7 @@ import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
-import {listen} from 'ol/events.js';
+import {listen, unlisten} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -19,6 +19,7 @@ import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
 import olStyleStyle from 'ol/style/Style.js';
 import {inherits} from 'ol/index.js';
+import ViewHint from 'ol/ViewHint.js';
 
 
 /**
@@ -149,7 +150,7 @@ exports.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  olEvents.unlisten(feature, 'change',
+  unlisten(feature, 'change',
       this.handleFeatureChange_, this);
 };
 

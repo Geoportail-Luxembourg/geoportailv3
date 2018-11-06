@@ -44,7 +44,7 @@ const exports = function($http, ngeoDebounce, appGetElevation) {
       return;
     }
     this.getElevation_(e.coordinate).then(
-      (elevation) => (this['elevation'] = elevation['formattedElevation'])
+      elevation => this['elevation'] = elevation['formattedElevation']
     );
   }, 300, true), this);
 };

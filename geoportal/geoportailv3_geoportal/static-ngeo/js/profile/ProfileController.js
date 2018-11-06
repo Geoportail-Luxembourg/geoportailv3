@@ -17,9 +17,8 @@
  */
 
 import appModule from '../module.js';
-import {listen} from 'ol/events.js';
+import {listen, unlistenByKey} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olOverlay from 'ol/Overlay.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -255,7 +254,7 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   }.bind(this));
 
   this.scope_.$on('$destroy', function() {
-    olEvents.unlistenByKey(this.event_);
+    unlistenByKey(this.event_);
     this.unwatchProfileData();
   }.bind(this));
 };

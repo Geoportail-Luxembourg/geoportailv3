@@ -14,6 +14,8 @@ import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import olLayerProperty from 'ol/layer/Property.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
+import {getUid} from 'ol/index.js';
+
 
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.

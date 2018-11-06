@@ -135,7 +135,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Visibility.
    */
   set3dTilesetVisible(visible) {
-    this.tilesets3d.forEach((tileset) => tileset.show = visible);
+    this.tilesets3d.forEach(tileset => tileset.show = visible);
   }
 
   /**

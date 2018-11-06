@@ -15,7 +15,7 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
-import {get as projGet} from 'ol/proj.js';
+import {get as projGet, transform, transformExtent} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olStyle from 'ol/style.js';
@@ -28,6 +28,7 @@ import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';
 import Overlay from 'ol/Overlay.js';
+import {click, pointerMove} from 'ol/events/condition.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -309,7 +310,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    */
   this.selectInteraction_ = new olInteraction.Select({
     features: this.modyfyFeaturesCollection_,
-    condition: olEvents.condition.click,
+    condition: click,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -323,7 +324,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @private
    */
   this.selectInteractionPM_ = new olInteraction.Select({
-    condition: olEvents.condition.pointerMove,
+    condition: pointerMove,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)

@@ -7,7 +7,7 @@ import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import olEventsEvent from 'ol/events/Event.js';
-import olEventsCondition from 'ol/events/condition.js';
+import {noModifierKeys, always, shiftKeyOnly} from 'ol/events/condition.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olFunctions from 'ol/functions.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -21,6 +21,7 @@ import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleStyle from 'ol/style/Style.js';
 import {inherits} from 'ol/index.js';
+import {transform} from 'ol/proj.js';
 
 /**
  * @classdesc
@@ -265,7 +266,7 @@ const exports = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : olEventsCondition.noModifierKeys;
+      options.condition : noModifierKeys;
 
   /**
    * @private
@@ -273,10 +274,10 @@ const exports = function(options) {
    */
   this.freehandCondition_;
   if (options.freehand) {
-    this.freehandCondition_ = olEventsCondition.always;
+    this.freehandCondition_ = always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : olEventsCondition.shiftKeyOnly;
+        options.freehandCondition : shiftKeyOnly;
   }
 
   listen(this,

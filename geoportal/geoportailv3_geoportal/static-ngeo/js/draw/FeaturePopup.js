@@ -8,10 +8,9 @@
 import appModule from '../module.js';
 import olOverlay from 'ol/Overlay.js';
 import olObservable from 'ol/Observable.js';
-import {listen} from 'ol/events.js';
+import {listen, listenOnce} from 'ol/events.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';

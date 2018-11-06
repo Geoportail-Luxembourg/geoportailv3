@@ -9,8 +9,7 @@
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
-import {listen} from 'ol/events.js';
-import olObjectEventType from 'ol/ObjectEventType.js';
+import {listen, unlistenByKey} from 'ol/events.js';
 import olArray from 'ol/array.js';
 
 /**
@@ -148,7 +147,7 @@ exports.V2_BGLAYER_TO_V3_ = {
  */
 exports.prototype.unListenProtertyChange_ = function() {
   this.layersListenerKeys_.forEach(function(key) {
-    olEvents.unlistenByKey(key);
+    unlistenByKey(key);
   });
   this.layersListenerKeys_.length = 0;
 };
@@ -162,7 +161,7 @@ exports.prototype.unListenProtertyChange_ = function() {
 exports.prototype.listenProtertyChange = function(layers) {
   layers.forEach(function(layer) {
     this.layersListenerKeys_.push(listen(
-        layer, olObjectEventType.PROPERTYCHANGE,
+        layer, 'propertychange',
         function() {
           this.onLayerUpdate_(layers);
         }, this)
@@ -425,7 +424,7 @@ exports.prototype.splitLayers_ =
  */
 exports.prototype.removeWatchers_ = function() {
   if (this.backgroundLayerMgrLstn_ !== null) {
-    olEvents.unlistenByKey(this.backgroundLayerMgrLstn_);
+    unlistenByKey(this.backgroundLayerMgrLstn_);
     this.backgroundLayerMgrLstn_ = null;
   }
   if (typeof this.scopeWatcher_ == 'function') {

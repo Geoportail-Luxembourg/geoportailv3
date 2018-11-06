@@ -38,6 +38,7 @@ import olInteractionDraw from 'ol/interaction/Draw.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionSelect from 'ol/interaction/Select.js';
 import olInteractionTranslate from 'ol/interaction/Translate.js';
+import {noModifierKeys, singleClick} from 'ol/events/condition.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -398,7 +399,7 @@ const exports = function($scope,
     features: appSelectedFeatures,
     pixelTolerance: 20,
     deleteCondition: function(event) {
-      return olEvents.condition.noModifierKeys(event) && olEvents.condition.singleClick(event);
+      return noModifierKeys(event) && singleClick(event);
     }
   });
 

@@ -114,12 +114,12 @@ exports.prototype.activate = function(active) {
     }
     this.moveLine_();
 
-    this.mapResizeEvent_ =listen(this.map_, 'change:size', this.moveLine_, this);
-    this.mousedownEvent_ =listen(this.element_[0], 'mousedown',
+    this.mapResizeEvent_ = listen(this.map_, 'change:size', this.moveLine_, this);
+    this.mousedownEvent_ = listen(this.element_[0], 'mousedown',
         function(event) {
           this.isDragging_ = true;
           if (this.mousemoveEvent_ === null) {
-            this.mousemoveEvent_ =listen(this.map_,
+            this.mousemoveEvent_ = listen(this.map_,
                 'pointermove', this.drag_, this);
           }
          listenOnce(this.$document_[0],
@@ -134,7 +134,7 @@ exports.prototype.activate = function(active) {
 
     var layer = this['layers'][0];
     if (layer !== undefined) {
-      this.precomposeEvent_ =listen(layer, 'precompose', function(event) {
+      this.precomposeEvent_ = listen(layer, 'precompose', function(event) {
         if (this['layers'][0] === layer) {
           var ratio = this.ngeoLocation_.getParam('sliderRatio');
           var ctx = event.context;
@@ -148,7 +148,7 @@ exports.prototype.activate = function(active) {
         }
       }, this);
 
-      this.postcomposeEvent_ =listen(layer, 'postcompose', function(event) {
+      this.postcomposeEvent_ = listen(layer, 'postcompose', function(event) {
         if (this['layers'][0] === layer) {
           var ctx = event.context;
           ctx.restore();

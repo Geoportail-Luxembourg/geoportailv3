@@ -1,7 +1,7 @@
 /**
  * @module app.offline.Configuration
  */
-import {boundingExtent, getWidth} from 'ol/extent.js';
+import {boundingExtent, getWidth, getCenter, buffer} from 'ol/extent.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoOfflineModule from 'ngeo/offline/module.js';
 import NgeoConfiguration from 'ngeo/offline/Configuration.js';
@@ -56,7 +56,7 @@ const exports = class extends NgeoConfiguration {
     console.log(msg, key, start);
     promise.then(
       () => console.log('OK', msg, key, new Date() - start),
-      (err) => console.log('ERROR', msg, key, err, new Date() - start)
+      err => console.log('ERROR', msg, key, err, new Date() - start)
     );
     return promise;
   }
@@ -113,8 +113,9 @@ const exports = class extends NgeoConfiguration {
           extent = boundingExtent([getCenter(userExtent)]);
           buffer(extent, fakeViewportSideInMeters / 2, extent);
         }
+        const zoom = z;
         return {
-          zoom: z,
+          zoom,
           extent
         };
       });

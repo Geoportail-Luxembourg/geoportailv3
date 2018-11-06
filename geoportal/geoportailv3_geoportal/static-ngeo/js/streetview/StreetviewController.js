@@ -17,7 +17,7 @@ import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteraction from 'ol/interaction.js';
 import olStyle from 'ol/style.js';
-import {containsCoordinate, getWidth, getCenter, buffer} from 'ol/extent.js';
+import {containsCoordinate} from 'ol/extent.js';
 import {listen} from 'ol/events.js';
 import {equals as arrayEquals} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
