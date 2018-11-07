@@ -10,7 +10,7 @@ import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
 import olLayerVector from 'ol/layer/Vector.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
@@ -681,7 +681,7 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     var bigBuffer = 20 * resolution;
     var smallBuffer = 1 * resolution;
 
-    var point = olProj.transform(evt.coordinate,
+    var point = transform(evt.coordinate,
         this.map_.getView().getProjection(), 'EPSG:2169');
     var big_box = [
       [point[0] - bigBuffer, point[1] + bigBuffer],

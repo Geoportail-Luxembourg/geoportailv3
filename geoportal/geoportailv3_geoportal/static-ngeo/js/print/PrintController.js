@@ -19,7 +19,7 @@ import olArray from 'ol/array.js';
 import olEasing from 'ol/easing.js';
 import {listen} from 'ol/events.js';
 import olObservable from 'ol/Observable.js';
-import olProj from 'ol/proj.js';
+import {getPointResolution} from 'ol/proj.js';
 import olRenderEventType from 'ol/render/EventType.js';
 
 /**
@@ -333,7 +333,7 @@ exports.getViewCenterResolution_ = function(view) {
   console.assert(viewCenter !== undefined);
   console.assert(viewProjection !== null);
   console.assert(viewResolution !== undefined);
-  return olProj.getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
+  return getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
 };
 
 

@@ -9,7 +9,7 @@ import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
 import {listen, unlistenByKey} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {transform, getPointResolution, METERS_PER_UNIT} from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -322,8 +322,8 @@ exports.prototype.getCircleRadius = function() {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
     var center = olExtent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
-    var p1 = olProj.transform(center, projection, 'EPSG:4326');
-    var p2 = olProj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
+    var p1 = transform(center, projection, 'EPSG:4326');
+    var p2 = transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
     return Math.round(ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(p1, p2));
   }
   return 0;
@@ -353,9 +353,9 @@ exports.prototype.setFeatureCircleRadius = function(feature, radius) {
     var center = olExtent.getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
-    var pointResolution = olProj.getPointResolution(projection, /** @type {number} */ (resolution), center);
+    var pointResolution = getPointResolution(projection, /** @type {number} */ (resolution), center);
     var resolutionFactor = resolution / pointResolution;
-    radius = (radius / olProj.METERS_PER_UNIT.m) * resolutionFactor;
+    radius = (radius / METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new olGeomCircle(center, radius);
     feature.setGeometry(
         olGeomPolygon.fromCircle(featureGeom, 64)

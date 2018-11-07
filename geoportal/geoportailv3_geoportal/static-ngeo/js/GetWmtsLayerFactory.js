@@ -12,7 +12,7 @@ import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {get as getProjection} from 'ol/proj.js';
 import olLayerTile from 'ol/layer/Tile.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
 import olSourceWMTSRequestEncoding from 'ol/source/WMTSRequestEncoding.js';
@@ -60,7 +60,7 @@ function factory(requestScheme) {
           retinaExtension +
           '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
     }
-    var projection = olProj.get('EPSG:3857');
+    var projection = getProjection('EPSG:3857');
     var extent = projection.getExtent();
     var layer = new olLayerTile({
       'olcs.extent': appOlcsExtent,

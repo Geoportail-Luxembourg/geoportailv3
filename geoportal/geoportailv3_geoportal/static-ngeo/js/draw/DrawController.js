@@ -29,7 +29,7 @@ import olObservable from 'ol/Observable.js';
 import olOverlay from 'ol/Overlay.js';
 import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
@@ -630,8 +630,8 @@ exports.prototype.getFormattedLength =
     var length = 0;
     var coordinates = lineString.getCoordinates();
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      var c1 = olProj.transform(coordinates[i], projection, 'EPSG:4326');
-      var c2 = olProj.transform(coordinates[i + 1], projection, 'EPSG:4326');
+      var c1 = transform(coordinates[i], projection, 'EPSG:4326');
+      var c2 = transform(coordinates[i + 1], projection, 'EPSG:4326');
       length += ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(c1, c2);
     }
     var output;

@@ -13,7 +13,7 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olFormatWMSCapabilities from 'ol/format/WMSCapabilities.js';
 import olLayerImage from 'ol/layer/Image.js';
 import olLayerTile from 'ol/layer/Tile.js';
-import olProj from 'ol/proj.js';
+import {get as getProjection} from 'ol/proj.js';
 import olSourceImageWMS from 'ol/source/ImageWMS.js';
 import olSourceTileWMS from 'ol/source/TileWMS.js';
 import {getUid} from 'ol/index.js';
@@ -479,9 +479,9 @@ exports.prototype.createWmsLayers = function(map, layer) {
     });
   }
   if (has3857) {
-    newLayer.getSource().set('olcs.projection', olProj.get('EPSG:3857'));
+    newLayer.getSource().set('olcs.projection', getProjection('EPSG:3857'));
   } else if (hasWGS84) {
-    newLayer.getSource().set('olcs.projection', olProj.get('EPSG:4326'));
+    newLayer.getSource().set('olcs.projection', getProjection('EPSG:4326'));
   }
   newLayer.set('label', layer['Title']);
   var curMatadata = {'isExternalWms': true,

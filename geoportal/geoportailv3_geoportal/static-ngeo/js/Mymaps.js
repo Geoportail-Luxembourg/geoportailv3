@@ -16,7 +16,7 @@ import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleIcon from 'ol/style/Icon.js';
@@ -1332,7 +1332,7 @@ exports.prototype.createStyleFunction = function(curMap) {
           const modelColor = colorStringToRgba(arrowColor, 1);
           arrowPoint.set('olcs_model', () => {
             const coordinates = arrowPoint.getCoordinates();
-            const center = olProj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+            const center = transform(coordinates, 'EPSG:3857', 'EPSG:4326');
             return {
               cesiumOptions: {
                 url: arrowModelUrl,

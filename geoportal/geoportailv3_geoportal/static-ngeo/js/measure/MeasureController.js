@@ -22,7 +22,7 @@ import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import olInteractionProperty from 'ol/interaction/Property.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
@@ -294,7 +294,7 @@ exports.prototype.onChangeActive_ = function(event) {
  */
 exports.prototype.getElevation_ = function(coordinates) {
   var eastnorth =
-      /** @type {ol.Coordinate} */ (olProj.transform(
+      /** @type {ol.Coordinate} */ (transform(
       coordinates,
       this.map_.getView().getProjection(),
       'EPSG:2169'));

@@ -10,7 +10,7 @@ let exports = {};
 
 import appModule from './module.js';
 import olCoordinate from 'ol/coordinate.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import {padNumber} from 'ol/string.js';
 
 
@@ -35,11 +35,11 @@ function service() {
     var str = '';
     if (targetEpsgCode === 'EPSG:3263*') {
       var lonlat = /** @type {ol.Coordinate} */
-          (olProj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+          (transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
       targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
     }
 
-    coordinate = olProj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+    coordinate = transform(coordinate, sourceEpsgCode, targetEpsgCode);
 
     switch (targetEpsgCode) {
       default:
