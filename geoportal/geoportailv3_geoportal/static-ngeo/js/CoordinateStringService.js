@@ -11,7 +11,7 @@ let exports = {};
 import appModule from './module.js';
 import olCoordinate from 'ol/coordinate.js';
 import olProj from 'ol/proj.js';
-import olString from 'ol/string.js';
+import {padNumber} from 'ol/string.js';
 
 
 /**
@@ -109,8 +109,8 @@ function service() {
     var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     return Math.floor(x / 3600) + '\u00b0 ' +
-        olString.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-        olString.padNumber(Math.floor(x % 60), 2) + ',' +
+        padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+        padNumber(Math.floor(x % 60), 2) + ',' +
         Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
         '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
@@ -128,7 +128,7 @@ function service() {
     var m = (dd - Math.floor(dd)) * 60;
 
     var res = Math.floor(dd) + '\u00b0 ' +
-        olString.padNumber(Math.floor(m), 2) + ',' +
+        padNumber(Math.floor(m), 2) + ',' +
         Math.floor((m - Math.floor(m)) * 100000) +
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;
