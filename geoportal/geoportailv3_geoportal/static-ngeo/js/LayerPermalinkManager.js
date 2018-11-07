@@ -10,7 +10,7 @@ import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {listen, unlistenByKey} from 'ol/events.js';
-import olArray from 'ol/array.js';
+import {extend as arrayExtend} from 'ol/array.js';
 
 /**
  * @constructor
@@ -468,7 +468,7 @@ exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      olArray.extend(array, exports.getAllChildren_(
+      arrayExtend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {

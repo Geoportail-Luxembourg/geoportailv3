@@ -17,7 +17,7 @@
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
-import olArray from 'ol/array.js';
+import {includes as arrayIncludes, extend as arrayExtend} from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent.js';
@@ -562,12 +562,12 @@ exports.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (olArray.includes(northArray, m[2].toUpperCase()) &&
-              olArray.includes(eastArray, m[4].toUpperCase())) {
+              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
+              arrayIncludes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (olArray.includes(northArray, m[4].toUpperCase()) &&
-              olArray.includes(eastArray, m[2].toUpperCase())) {
+              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
+              arrayIncludes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -750,7 +750,7 @@ exports.prototype.createAndInitLayerBloodhoundEngine_ =
               result['themes'].push(element.theme);
             }.bind(this));
 
-            result['showThemeLink'] = !olArray.includes(
+            result['showThemeLink'] = !arrayIncludes(
               result['themes'], this.appTheme_.getCurrentTheme());
           }.bind(this));
 
@@ -830,7 +830,7 @@ exports.prototype.createLocalAllLayerData_ =
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalogue) {
           this.layers_ = [];
-          olArray.extend(this.layers_, flatCatalogue);
+          arrayExtend(this.layers_, flatCatalogue);
         }.bind(this));
     };
 
@@ -903,10 +903,10 @@ exports.selected_ =
         if (dataset === 'coordinates') {
           features.push(feature);
         } else if (dataset === 'pois') {
-          if (!(olArray.includes(this.appExcludeThemeLayerSearch_,
+          if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (olArray.includes(this.showGeom_, feature.get('layer_name'))) {
+            if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
               features.push(feature);
             }
             var layers = /** @type {Array<string>} */

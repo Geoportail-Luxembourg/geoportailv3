@@ -15,7 +15,7 @@
 
 import appModule from '../module.js';
 import appPrintPrintservice from '../print/Printservice.js';
-import olArray from 'ol/array.js';
+import {includes as arrayIncludes} from 'ol/array.js';
 import olEasing from 'ol/easing.js';
 import {listen} from 'ol/events.js';
 import olObservable from 'ol/Observable.js';
@@ -857,7 +857,7 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
   // Add Parent element Id and Classes to the list
   selectorTextArr.push('#' + parentElement.id);
   for (var c1 = 0; c1 < parentElement.classList.length; c1++) {
-    if (!olArray.includes(selectorTextArr, '.' + parentElement.classList[c1])) {
+    if (!arrayIncludes(selectorTextArr, '.' + parentElement.classList[c1])) {
       selectorTextArr.push('.' + parentElement.classList[c1]);
     }
   }
@@ -865,12 +865,12 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
   var nodes = parentElement.getElementsByTagName('*');
   for (var i1 = 0; i1 < nodes.length; i1++) {
     var id = nodes[i1].id;
-    if (!olArray.includes(selectorTextArr, '#' + id)) {
+    if (!arrayIncludes(selectorTextArr, '#' + id)) {
       selectorTextArr.push('#' + id);
     }
     var classes = nodes[i1].classList;
     for (var c2 = 0; c2 < classes.length; c2++) {
-      if (!olArray.includes(selectorTextArr, '.' + classes[c2])) {
+      if (!arrayIncludes(selectorTextArr, '.' + classes[c2])) {
         selectorTextArr.push('.' + classes[c2]);
       }
     }
@@ -893,7 +893,7 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
 
     var cssRules = s.cssRules;
     for (var r1 = 0; r1 < cssRules.length; r1++) {
-      if (olArray.includes(selectorTextArr, cssRules[r1].selectorText)) {
+      if (arrayIncludes(selectorTextArr, cssRules[r1].selectorText)) {
         extractedCSSText += cssRules[r1].cssText;
       }
     }

@@ -9,7 +9,7 @@
 
 import appModule from './module.js';
 
-import olArray from 'ol/array.js';
+import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
@@ -226,7 +226,7 @@ exports.prototype.getAllChildren_ = function(element, theme) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      olArray.extend(array, this.getAllChildren_(
+      arrayExtend(array, this.getAllChildren_(
           element[i].children, theme)
       );
     } else {
@@ -249,7 +249,7 @@ exports.prototype.getFlatCatalog = function() {
         var flatCatalogue = [];
         for (var i = 0; i < themes.length; i++) {
           var theme = themes[i];
-          olArray.extend(flatCatalogue,
+          arrayExtend(flatCatalogue,
               this.getAllChildren_(theme.children, theme.name)
           );
         }

@@ -5,7 +5,7 @@ import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
 import ngeoUtils from 'ngeo/utils.js';
 
 import olFeature from 'ol/Feature.js';
-import olArray from 'ol/array.js';
+import {includes as arrayIncludes} from 'ol/array.js';
 import olColor from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
 import olFormatFeature from 'ol/format/Feature.js';
@@ -722,9 +722,9 @@ exports.castValue_ = function(key, value) {
     'showMeasure'
   ];
 
-  if (olArray.includes(numProperties, key)) {
+  if (arrayIncludes(numProperties, key)) {
     return +value;
-  } else if (olArray.includes(boolProperties, key)) {
+  } else if (arrayIncludes(boolProperties, key)) {
     return (value === 'true') ? true : false;
   } else {
     return value;

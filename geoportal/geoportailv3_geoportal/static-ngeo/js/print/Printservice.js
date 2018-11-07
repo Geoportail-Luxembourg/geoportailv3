@@ -2,7 +2,7 @@
  * @module app.print.Printservice
  */
 import ngeoPrintService from 'ngeo/print/Service.js';
-import olArray from 'ol/array.js';
+import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
 import olMath from 'ol/math.js';
 
@@ -73,7 +73,7 @@ const exports = class extends ngeoPrintService {
     console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
-    olArray.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
+    stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
     layers = layers.slice().reverse();
 
     layers.forEach((layer) => {
