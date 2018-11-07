@@ -17,7 +17,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
-import olExtent from 'ol/extent.js';
+import {intersects} from 'ol/extent.js';
 
 /**
  * @constructor
@@ -492,7 +492,7 @@ exports.prototype.loadInfoPane_ =
           this['elevation'] = elevation['formattedElevation'];
           this.rawElevation_ = elevation['rawElevation'];
           if (this.lidarDemoUrl_ !== undefined &&
-              this.lidarDemoUrl_.length > 0 && olExtent.intersects(
+              this.lidarDemoUrl_.length > 0 && intersects(
                 feature.getGeometry().getExtent(), this.lidarExtent_)) {
             this.isInBoxOfLidar = true;
           } else {

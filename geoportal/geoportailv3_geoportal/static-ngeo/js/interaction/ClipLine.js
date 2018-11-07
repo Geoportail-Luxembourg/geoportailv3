@@ -7,7 +7,7 @@ import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
-import olExtent from 'ol/extent.js';
+import {buffer, boundingExtent, createOrUpdateFromCoordinate} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
@@ -234,7 +234,7 @@ exports.prototype.writeLineStringGeometry_ = function(feature, geometry) {
       index: i,
       segment: segment
     });
-    this.rBush_.insert(olExtent.boundingExtent(segment), segmentData);
+    this.rBush_.insert(boundingExtent(segment), segmentData);
   }
 };
 
@@ -295,7 +295,7 @@ exports.handleDownEvent_ = function(evt) {
   if (vertexFeature) {
     var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
-    var vertexExtent = olExtent.boundingExtent([vertex]);
+    var vertexExtent = boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     segmentDataMatches.sort(exports.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
@@ -402,8 +402,8 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
         olCoordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
-  var box = olExtent.buffer(
-      olExtent.createOrUpdateFromCoordinate(pixelCoordinate),
+  var box = buffer(
+      createOrUpdateFromCoordinate(pixelCoordinate),
       map.getView().getResolution() * this.pixelTolerance_);
 
   var rBush = this.rBush_;

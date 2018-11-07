@@ -28,7 +28,7 @@ import {getChangeEventType} from 'ol/Object.js';
 import olObservable from 'ol/Observable.js';
 import olOverlay from 'ol/Overlay.js';
 import {listen} from 'ol/events.js';
-import olExtent from 'ol/extent.js';
+import {getCenter} from 'ol/extent.js';
 import {transform} from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -370,7 +370,7 @@ const exports = function($scope,
         }
         if (!this.featurePopup_.isDocked) {
           this.featurePopup_.show(feature, this.map,
-            olExtent.getCenter(feature.getGeometry().getExtent()));
+            getCenter(feature.getGeometry().getExtent()));
         }
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));

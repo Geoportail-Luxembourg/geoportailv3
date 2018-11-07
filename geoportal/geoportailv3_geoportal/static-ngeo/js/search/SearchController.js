@@ -20,7 +20,7 @@ import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhou
 import olArray from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
-import olExtent from 'ol/extent.js';
+import {getCenter, containsCoordinate} from 'ol/extent.js';
 import {transformExtent, get} from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -618,10 +618,10 @@ exports.prototype.matchCoordinate_ =
             (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (olExtent.containsCoordinate(
+            if (containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
               feature = new olFeature(point);
-            } else if (epsgCode === 'EPSG:4326' && olExtent.containsCoordinate(
+            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
               feature = new olFeature(flippedPoint);
             }
@@ -916,7 +916,7 @@ exports.selected_ =
             }.bind(this));
           } else {
             feature.setGeometry(
-              new olGeomPoint(olExtent.getCenter(
+              new olGeomPoint(getCenter(
                 featureGeometry.getExtent())));
             features.push(feature);
           }
@@ -941,7 +941,7 @@ exports.selected_ =
  * @export
  */
 exports.prototype.addRoutePoint = function(suggestion) {
-  var coordinate = olExtent.getCenter(suggestion.getGeometry().getExtent());
+  var coordinate = getCenter(suggestion.getGeometry().getExtent());
   var feature = /** @type {ol.Feature} */
       (new olFeature(new olGeomPoint(coordinate)));
   feature.set('label', suggestion.get('label'));

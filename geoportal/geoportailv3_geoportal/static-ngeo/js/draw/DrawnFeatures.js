@@ -11,7 +11,7 @@ import appDrawFeatureHash from '../draw/FeatureHash.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olExtent from 'ol/extent.js';
+import {createEmpty, extend} from 'ol/extent.js';
 import olCollection from 'ol/Collection.js';
 
 /**
@@ -463,10 +463,10 @@ exports.prototype.activateModifyIfNeeded = function(feature) {
  * @return {ol.Extent} The extent of all features
  */
 exports.prototype.getExtent = function() {
-  var extent = olExtent.createEmpty();
+  var extent = createEmpty();
   this.features.forEach(function(feature) {
     if (feature.getGeometry()) {
-      extent = olExtent.extend(extent, feature.getGeometry().getExtent());
+      extent = extend(extent, feature.getGeometry().getExtent());
     }
   }, this);
 

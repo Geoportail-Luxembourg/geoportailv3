@@ -6,7 +6,7 @@ import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
 import olCoordinate from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
-import olExtent from 'ol/extent.js';
+import {boundingExtent, getCenter} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -276,7 +276,7 @@ exports.prototype.writeCircleGeometry_ = function(feature, geometry) {
         index: i,
         segment: segment
       });
-      this.rBush_.insert(olExtent.boundingExtent(segment), segmentData);
+      this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
 };
@@ -327,7 +327,7 @@ exports.handleDownEvent_ = function(evt) {
   if (vertexFeature) {
     var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
-    var vertexExtent = olExtent.boundingExtent([vertex]);
+    var vertexExtent = boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     var componentSegments = {};
     segmentDataMatches.sort(exports.compareIndexes_);
@@ -367,7 +367,7 @@ exports.handleDragEvent_ = function(evt) {
   var vertex = evt.coordinate;
   var geometry =
       /** @type {ol.geom.Polygon}*/ (this.dragSegments_[0][0].geometry);
-  var center = olExtent.getCenter(geometry.getExtent());
+  var center = getCenter(geometry.getExtent());
 
   var line = new olGeomLineString([center, vertex]);
 
@@ -454,7 +454,7 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
       [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
   var upperRight = map.getCoordinateFromPixel(
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
-  var box = olExtent.boundingExtent([lowerLeft, upperRight]);
+  var box = boundingExtent([lowerLeft, upperRight]);
 
   var rBush = this.rBush_;
   var nodes = rBush.getInExtent(box);

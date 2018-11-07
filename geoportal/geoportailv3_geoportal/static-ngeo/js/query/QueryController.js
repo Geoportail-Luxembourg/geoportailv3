@@ -5,7 +5,7 @@ import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import {listen} from 'ol/events.js';
 import {extend as arrayExtend} from 'ol/array.js';
-import olExtent from 'ol/extent.js';
+import {extend as extentExtend} from 'ol/extent.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
@@ -1058,7 +1058,7 @@ exports.prototype.highlightFeatures_ = function(features, fit) {
     if (jsonFeatures.length > 0) {
       var extent = jsonFeatures[0].getGeometry().getExtent();
       for (var i = 0; i < jsonFeatures.length; ++i) {
-        extent = olExtent.extend(extent,
+        extent = extentExtend(extent,
             jsonFeatures[i].getGeometry().getExtent());
         var curFeature = jsonFeatures[i];
         if (curFeature.getGeometry().getType() ==

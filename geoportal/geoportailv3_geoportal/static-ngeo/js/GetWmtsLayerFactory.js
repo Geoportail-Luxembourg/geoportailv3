@@ -11,7 +11,7 @@ let exports = {};
 import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
-import olExtent from 'ol/extent.js';
+import {getTopLeft} from 'ol/extent.js';
 import {get as getProjection} from 'ol/proj.js';
 import olLayerTile from 'ol/layer/Tile.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
@@ -73,7 +73,7 @@ function factory(requestScheme) {
         requestEncoding: olSourceWMTSRequestEncoding.REST,
         projection: projection,
         tileGrid: new olTilegridWMTS({
-          origin: olExtent.getTopLeft(extent),
+          origin: getTopLeft(extent),
           extent: extent,
           resolutions: [156543.033928, 78271.516964,
             39135.758482, 19567.879241, 9783.9396205,

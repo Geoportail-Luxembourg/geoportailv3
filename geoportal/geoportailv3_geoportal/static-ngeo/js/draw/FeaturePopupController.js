@@ -8,7 +8,7 @@
 import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
 import {listen, unlistenByKey} from 'ol/events.js';
-import olExtent from 'ol/extent.js';
+import {getCenter} from 'ol/extent.js';
 import {transform, getPointResolution, METERS_PER_UNIT} from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomCircle from 'ol/geom/Circle.js';
@@ -320,7 +320,7 @@ exports.prototype.getCircleRadius = function() {
       this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var p1 = transform(center, projection, 'EPSG:4326');
     var p2 = transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
@@ -350,7 +350,7 @@ exports.prototype.setFeatureCircleRadius = function(feature, radius) {
       feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (feature.getGeometry());
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
     var pointResolution = getPointResolution(projection, /** @type {number} */ (resolution), center);
@@ -508,7 +508,7 @@ exports.prototype.getRadius = function() {
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var line = new olGeomLineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
   } else {
