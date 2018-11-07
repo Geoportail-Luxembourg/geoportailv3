@@ -9,7 +9,7 @@ import {listen} from 'ol/events.js';
 import olEventsEvent from 'ol/events/Event.js';
 import {noModifierKeys, always, shiftKeyOnly} from 'ol/events/condition.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import olFunctions from 'ol/functions.js';
+import {TRUE, FALSE} from 'ol/functions.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -133,7 +133,7 @@ const exports = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishCondition : olFunctions.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : TRUE;
 
   /**
    * @private
@@ -776,7 +776,7 @@ exports.prototype.extend = function(feature) {
 /**
  * @inheritDoc
  */
-exports.prototype.shouldStopEvent = olFunctions.FALSE;
+exports.prototype.shouldStopEvent = FALSE;
 
 
 /**
