@@ -10,7 +10,7 @@ import olFeature from 'ol/Feature.js';
 import {listen} from 'ol/events.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olLayerVector from 'ol/layer/Vector.js';
-import olProj from 'ol/proj.js';
+import {transform, transformExtent} from 'ol/proj.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
@@ -74,7 +74,7 @@ const exports = function(
    * @type {ol.Extent}
    * @private
    */
-  this.lidarExtent_ = olProj.transformExtent(
+  this.lidarExtent_ = transformExtent(
     bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
 
   /**
@@ -309,7 +309,7 @@ const exports = function(
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
           /** @type {ol.Coordinate} */ ([x, y]) :
-          /** @type {ol.Coordinate} */ (olProj.transform([y, x], 'EPSG:2169',
+          /** @type {ol.Coordinate} */ (transform([y, x], 'EPSG:2169',
               this['map'].getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
@@ -340,7 +340,7 @@ const exports = function(
       var results = data['results'];
       if (results !== undefined && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */
-            (olProj.transform(
+            (transform(
                 results[0]['geom']['coordinates'], 'EPSG:2169',
                 this['map'].getView().getProjection()));
         this['map'].getView().setZoom(17);
@@ -466,9 +466,9 @@ exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
     eventOrCoordinate.preventDefault();
     this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
   }
-  this.clickCoordinateLuref_ = olProj.transform(
+  this.clickCoordinateLuref_ = transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
-  this.clickCoordinate4326_ = olProj.transform(
+  this.clickCoordinate4326_ = transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 };
 

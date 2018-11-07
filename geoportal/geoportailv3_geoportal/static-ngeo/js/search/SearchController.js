@@ -21,7 +21,7 @@ import olArray from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
 import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {transformExtent, get} from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -147,7 +147,7 @@ const exports = function($scope, $window, $compile,
    * @private
    */
   this.maxExtent_ =
-      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {Array.<ol.layer.Layer>}
@@ -709,7 +709,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: olProj.get('EPSG:3857'),
+              featureProjection: get('EPSG:3857'),
               dataProjection: undefined
             });
           }

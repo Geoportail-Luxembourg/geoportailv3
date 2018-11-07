@@ -20,7 +20,7 @@
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import {listen} from 'ol/events.js';
-import olProj from 'ol/proj.js';
+import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
 
 /**
@@ -49,7 +49,7 @@ const exports = function($scope, appThemes, appTheme,
    * @private
    */
   this.maxExtent_ =
-      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.ScalesService}
