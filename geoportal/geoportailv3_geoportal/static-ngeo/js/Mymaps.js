@@ -9,7 +9,7 @@
 
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import olObj from 'ol/obj.js';
+import {assign} from 'ol/obj.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
@@ -1394,7 +1394,7 @@ exports.prototype.createStyleFunction = function(curMap) {
     };
     var image = null;
     if (this.get('symbolId')) {
-      olObj.assign(imageOptions, {
+      assign(imageOptions, {
         src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
         scale: 1,
         rotation: this.get('angle')
@@ -1409,7 +1409,7 @@ exports.prototype.createStyleFunction = function(curMap) {
       if (shape === 'circle') {
         image = new olStyleCircle(imageOptions);
       } else if (shape === 'square') {
-        olObj.assign(imageOptions, {
+        assign(imageOptions, {
           points: 4,
           angle: Math.PI / 4,
           rotation: this.get('angle')
@@ -1417,7 +1417,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {
-        olObj.assign(imageOptions, ({
+        assign(imageOptions, ({
           points: 3,
           angle: 0,
           rotation: this.get('angle')
@@ -1425,7 +1425,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'star') {
-        olObj.assign(imageOptions, ({
+        assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
@@ -1434,7 +1434,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (this.get('shape') == 'cross') {
-        olObj.assign(imageOptions, ({
+        assign(imageOptions, ({
           points: 4,
           angle: 0,
           rotation: this.get('angle'),

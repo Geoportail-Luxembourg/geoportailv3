@@ -3,7 +3,7 @@
  */
 import ngeoPrintService from 'ngeo/print/Service.js';
 import olArray from 'ol/array.js';
-import olObj from 'ol/obj.js';
+import {assign} from 'ol/obj.js';
 import olMath from 'ol/math.js';
 
 const exports = class extends ngeoPrintService {
@@ -36,7 +36,7 @@ const exports = class extends ngeoPrintService {
     const attributes = /** @type {!MapFishPrintAttributes} */ ({
       map: specMap
     });
-    olObj.assign(attributes, customAttributes);
+    assign(attributes, customAttributes);
 
     const spec = /** @type {MapFishPrintSpec} */ ({
       attributes,
