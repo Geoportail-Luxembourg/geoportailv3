@@ -9,7 +9,10 @@
 import appModule from './module.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
-import olStyle from 'ol/style.js';
+import Style from 'ol/style/Style.js';
+import Circle from 'ol/style/Circle.js';
+import Stroke from 'ol/style/Stroke.js';
+import Fill from 'ol/style/Fill.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import {transform} from 'ol/proj.js';
@@ -35,8 +38,8 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.roadStyle_ = new olStyle.Style({
-    stroke: new olStyle.Stroke({
+  this.roadStyle_ = new Style({
+    stroke: new Stroke({
       color: [255, 0, 0],
       width: 5
     })
@@ -95,11 +98,11 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
    * @type {ngeo.map.FeatureOverlay}
    */
   this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  var fillStyle = new olStyle.Fill({
+  var fillStyle = new Fill({
     color: [41, 128, 185]
   });
 
-  var strokeStyle = new olStyle.Stroke({
+  var strokeStyle = new Stroke({
     color: [255, 255, 255],
     width: 3
   });
@@ -108,11 +111,11 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.stepStyle_ = new olStyle.Style({
+  this.stepStyle_ = new Style({
     fill: fillStyle,
     zIndex: 0,
     stroke: strokeStyle,
-    image: new olStyle.Circle({
+    image: new Circle({
       radius: 7,
       fill: fillStyle,
       stroke: strokeStyle
@@ -181,20 +184,20 @@ exports.prototype.reorderRoute = function() {
 exports.prototype.insertFeatureAt = function(feature, routeNumber) {
   feature.setStyle(function() {
     var styles = [];
-    var fillStyle = new olStyle.Fill({
+    var fillStyle = new Fill({
       color: [255, 255, 255]
     });
 
-    var strokeStyle = new olStyle.Stroke({
+    var strokeStyle = new Stroke({
       color: [41, 128, 185],
       width: 3
     });
 
-    styles.push(new olStyle.Style({
+    styles.push(new Style({
       zIndex: 1,
       fill: fillStyle,
       stroke: strokeStyle,
-      image: new olStyle.Circle({
+      image: new Circle({
         radius: 15,
         fill: fillStyle,
         stroke: strokeStyle
@@ -204,16 +207,16 @@ exports.prototype.insertFeatureAt = function(feature, routeNumber) {
     if (text === undefined) {
       text = '';
     }
-    styles.push(new olStyle.Style({
+    styles.push(new Style({
       zIndex: 2,
-      text: new olStyle.Text(/** @type {olx.style.TextOptions} */ ({
+      text: new Text(/** @type {olx.style.TextOptions} */ ({
         text: text,
         textAlign: 'center',
         font: 'normal 10px Sans-serif',
-        fill: new olStyle.Fill({
+        fill: new Fill({
           color: [41, 128, 185]
         }),
-        stroke: new olStyle.Stroke({
+        stroke: new Stroke({
           color: [255, 255, 255],
           width: 2
         })

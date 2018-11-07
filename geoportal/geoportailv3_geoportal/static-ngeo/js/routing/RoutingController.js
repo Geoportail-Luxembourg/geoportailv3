@@ -18,7 +18,9 @@ import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhou
 import {get as projGet, transform, transformExtent} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olStyle from 'ol/style.js';
+import Style from 'ol/style/Style.js';
+import Circle from 'ol/style/Circle.js';
+import Fill from 'ol/style/Fill.js';
 import olInteraction from 'ol/interaction.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent';
@@ -275,10 +277,10 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.highlightOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   this.highlightOverlay_.setStyle(
-      new olStyle.Style({
-        image: new olStyle.Circle({
+      new Style({
+        image: new Circle({
           radius: 6,
-          fill: new olStyle.Fill({color: '#ff0000'})
+          fill: new Fill({color: '#ff0000'})
         })
       }));
   /**

@@ -16,7 +16,8 @@ import appModule from '../module.js';
 import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteraction from 'ol/interaction.js';
-import olStyle from 'ol/style.js';
+import Style from 'ol/style/Style.js';
+import Icon from 'ol/style/Icon.js';
 import {containsCoordinate} from 'ol/extent.js';
 import {listen} from 'ol/events.js';
 import {equals as arrayEquals} from 'ol/array.js';
@@ -415,15 +416,15 @@ exports.prototype.createStyleFunction = function() {
         pitch = 3;
       }
       var directionArrowPath = imagePath + '/direction_sv_zl' + curZoom + '_p' + pitch + '.png';
-      return [new olStyle.Style({
-        image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
+      return [new Style({
+        image: new Icon(/** @type {olx.style.IconOptions} */({
           src: directionArrowPath,
           rotation: this.get('heading') * Math.PI / 180
         }))
       })];
     }
-    return [new olStyle.Style({
-      image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
+    return [new Style({
+      image: new Icon(/** @type {olx.style.IconOptions} */({
         anchor: [0.5, 50],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',

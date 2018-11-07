@@ -31,6 +31,7 @@ import {inherits, getUid} from 'ol/index.js';
  *            segment: Array.<ol.Extent>
  * }}
  */
+// eslint-disable-next-line no-unused-vars
 let SegmentDataType;
 
 
