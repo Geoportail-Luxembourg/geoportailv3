@@ -4,7 +4,7 @@
 import ngeoPrintService from 'ngeo/print/Service.js';
 import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
-import olMath from 'ol/math.js';
+import {toDegrees} from 'ol/math.js';
 
 const exports = class extends ngeoPrintService {
   /**
@@ -58,7 +58,7 @@ const exports = class extends ngeoPrintService {
     const viewCenter = view.getCenter();
     const viewProjection = view.getProjection();
     const viewResolution = view.getResolution();
-    const viewRotation = object.rotation || olMath.toDegrees(view.getRotation());
+    const viewRotation = object.rotation || toDegrees(view.getRotation());
 
     console.assert(viewCenter !== undefined);
     console.assert(viewProjection !== undefined);

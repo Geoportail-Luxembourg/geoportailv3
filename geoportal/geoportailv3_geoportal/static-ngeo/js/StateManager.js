@@ -8,7 +8,7 @@
  */
 
 import appModule from './module.js';
-import olMath from 'ol/math.js';
+import {clamp} from 'ol/math.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 
 /**
@@ -113,7 +113,7 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
       this.initialState_[key] = ngeoLocation.getParam(key);
     }
     this.version_ = this.initialState_.hasOwnProperty('version') ?
-        olMath.clamp(+this.initialState_['version'], 2, 3) : 2;
+        clamp(+this.initialState_['version'], 2, 3) : 2;
   }
   var mapId = this.ngeoLocation_.getParam('map_id');
   if (mapId === undefined &&

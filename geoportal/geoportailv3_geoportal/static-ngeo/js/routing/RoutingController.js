@@ -26,7 +26,7 @@ import Modify from 'ol/interaction/Modify.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import {array as arrayIncludes} from 'ol/array.js';
+import {includes as arrayIncludes} from 'ol/array.js';
 import Collection from 'ol/Collection.js';
 import Feature from 'ol/Feature.js';
 import Geolocation from 'ol/Geolocation.js';

@@ -6,7 +6,7 @@ import ngeoUtils from 'ngeo/utils.js';
 
 import olFeature from 'ol/Feature.js';
 import {includes as arrayIncludes} from 'ol/array.js';
-import olColor from 'ol/color.js';
+import {asArray as colorAsArray} from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
 import olFormatFeature from 'ol/format/Feature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
@@ -353,7 +353,7 @@ exports.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) 
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
     console.assert(Array.isArray(fillColor), 'only supporting fill colors');
-    var fillColorRgba = olColor.asArray(/** @type {Array<number>} */ (fillColor));
+    var fillColorRgba = colorAsArray(/** @type {Array<number>} */ (fillColor));
     console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
     var fillColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (fillColorRgba));
     if (encodedStyles.length > 0) {
@@ -376,7 +376,7 @@ exports.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
     console.assert(Array.isArray(strokeColor));
-    var strokeColorRgba = olColor.asArray(/** @type {Array<number>} */ (strokeColor));
+    var strokeColorRgba = colorAsArray(/** @type {Array<number>} */ (strokeColor));
     console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
     var strokeColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (strokeColorRgba));
     if (encodedStyles.length > 0) {

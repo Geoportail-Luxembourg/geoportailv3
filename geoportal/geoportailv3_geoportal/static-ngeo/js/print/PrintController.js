@@ -16,7 +16,7 @@
 import appModule from '../module.js';
 import appPrintPrintservice from '../print/Printservice.js';
 import {includes as arrayIncludes} from 'ol/array.js';
-import olEasing from 'ol/easing.js';
+import {easeOut} from 'ol/easing.js';
 import {listen} from 'ol/events.js';
 import olObservable from 'ol/Observable.js';
 import {getPointResolution} from 'ol/proj.js';
@@ -441,7 +441,7 @@ exports.prototype.changeScale = function(newScale) {
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
-      easing: olEasing.easeOut,
+      easing: easeOut,
       resolution: currentResolution
     });
   }

@@ -342,11 +342,11 @@ exports.handleDownEvent_ = function(evt) {
       if (!componentSegments[uid]) {
         componentSegments[uid] = new Array(2);
       }
-      if (olCoordinate.equals(segment[0], vertex) &&
+      if (equals(segment[0], vertex) &&
           !componentSegments[uid][0]) {
         this.dragSegments_.push([segmentDataMatch, 0]);
         componentSegments[uid][0] = segmentDataMatch;
-      } else if (olCoordinate.equals(segment[1], vertex) &&
+      } else if (equals(segment[1], vertex) &&
           !componentSegments[uid][1]) {
         this.dragSegments_.push([segmentDataMatch, 1]);
         componentSegments[uid][1] = segmentDataMatch;
@@ -446,8 +446,8 @@ exports.prototype.handlePointerMove_ = function(evt) {
 exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return olCoordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
-        olCoordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+    return squaredDistanceToSegment(pixelCoordinate, a.segment) -
+        squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
   var lowerLeft = map.getCoordinateFromPixel(
@@ -462,15 +462,15 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
     var closestSegment = node.segment;
-    var vertex = (olCoordinate.closestOnSegment(pixelCoordinate,
+    var vertex = (closestOnSegment(pixelCoordinate,
         closestSegment));
     var vertexPixel = map.getPixelFromCoordinate(vertex);
-    if (Math.sqrt(olCoordinate.squaredDistance(pixel, vertexPixel)) <=
+    if (Math.sqrt(squaredDistance(pixel, vertexPixel)) <=
         this.pixelTolerance_) {
       var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = olCoordinate.squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = olCoordinate.squaredDistance(vertexPixel, pixel2);
+      var squaredDist1 = squaredDistance(vertexPixel, pixel1);
+      var squaredDist2 = squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {
@@ -482,10 +482,10 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
         var segment;
         for (var i = 1, ii = nodes.length; i < ii; ++i) {
           segment = nodes[i].segment;
-          if ((olCoordinate.equals(closestSegment[0], segment[0]) &&
-              olCoordinate.equals(closestSegment[1], segment[1]) ||
-              (olCoordinate.equals(closestSegment[0], segment[1]) &&
-              olCoordinate.equals(closestSegment[1], segment[0])))) {
+          if ((equals(closestSegment[0], segment[0]) &&
+              equals(closestSegment[1], segment[1]) ||
+              (equals(closestSegment[0], segment[1]) &&
+              equals(closestSegment[1], segment[0])))) {
             vertexSegments[getUid(segment)] = true;
           } else {
             break;
