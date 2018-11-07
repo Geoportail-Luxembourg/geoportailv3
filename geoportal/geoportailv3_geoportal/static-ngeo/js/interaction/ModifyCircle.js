@@ -4,7 +4,7 @@
 import ViewHint from 'ol/ViewHint.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
-import olCoordinate from 'ol/coordinate.js';
+import {equals, squaredDistanceToSegment, closestOnSegment, squaredDistance} from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
 import {boundingExtent, getCenter} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -13,7 +13,7 @@ import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import Interaction from 'ol/interaction/Interaction.js';
-import olInteractionModify, {ModifyEvent} from 'ol/interaction/Modify.js';
+import {ModifyEvent} from 'ol/interaction/Modify.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';

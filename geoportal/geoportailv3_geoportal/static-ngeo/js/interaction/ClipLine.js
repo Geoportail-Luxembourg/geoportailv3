@@ -5,7 +5,7 @@
 import olCollection from 'ol/Collection.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
-import olCoordinate from 'ol/coordinate.js';
+import {closestOnSegment, equals, squaredDistance, squaredDistanceToSegment} from 'ol/coordinate.js';
 import {listen, unlisten} from 'ol/events.js';
 import {buffer, boundingExtent, createOrUpdateFromCoordinate} from 'ol/extent.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -302,8 +302,8 @@ exports.handleDownEvent_ = function(evt) {
       var segmentDataMatch = segmentDataMatches[i];
       if (segmentDataMatch.feature !== undefined &&
           this.features_.getArray().indexOf(segmentDataMatch.feature) >= 0) {
-        var closestVertex = olCoordinate.closestOnSegment(vertex, segmentDataMatch.segment);
-        if (!olCoordinate.equals(closestVertex, vertex)) {
+        var closestVertex = closestOnSegment(vertex, segmentDataMatch.segment);
+        if (!equals(closestVertex, vertex)) {
           continue;
         }
         this.features_.remove(segmentDataMatch.feature);
@@ -398,8 +398,8 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
   }
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return olCoordinate.squaredDistanceToSegment(pixelCoordinate, a.segment) -
-        olCoordinate.squaredDistanceToSegment(pixelCoordinate, b.segment);
+    return squaredDistanceToSegment(pixelCoordinate, a.segment) -
+        squaredDistanceToSegment(pixelCoordinate, b.segment);
   };
 
   var box = buffer(
@@ -412,15 +412,15 @@ exports.prototype.handlePointerAtPixel_ = function(pixel, map) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
     var closestSegment = node.segment;
-    var vertex = (olCoordinate.closestOnSegment(pixelCoordinate,
+    var vertex = (closestOnSegment(pixelCoordinate,
         closestSegment));
     var vertexPixel = map.getPixelFromCoordinate(vertex);
-    if (Math.sqrt(olCoordinate.squaredDistance(pixel, vertexPixel)) <=
+    if (Math.sqrt(squaredDistance(pixel, vertexPixel)) <=
         this.pixelTolerance_) {
       var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = olCoordinate.squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = olCoordinate.squaredDistance(vertexPixel, pixel2);
+      var squaredDist1 = squaredDistance(vertexPixel, pixel1);
+      var squaredDist2 = squaredDistance(vertexPixel, pixel2);
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {

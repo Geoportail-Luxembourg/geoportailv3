@@ -9,7 +9,7 @@ let exports = {};
  */
 
 import appModule from './module.js';
-import olCoordinate from 'ol/coordinate.js';
+import {format} from 'ol/coordinate.js';
 import {transform} from 'ol/proj.js';
 import {padNumber} from 'ol/string.js';
 
@@ -44,7 +44,7 @@ function service() {
     switch (targetEpsgCode) {
       default:
       case 'EPSG:2169':
-        str = olCoordinate.format(coordinate, '{x} E | {y} N', 0);
+        str = format(coordinate, '{x} E | {y} N', 0);
         break;
       case 'EPSG:4326':
         if (opt_DMS) {
@@ -58,14 +58,14 @@ function service() {
           var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
           str = xhdmm + ' | ' + yhdmm;
         } else {
-          str = olCoordinate.format(coordinate, ' {x} E | {y} N', 5);
+          str = format(coordinate, ' {x} E | {y} N', 5);
         }
         break;
       case 'EPSG:32632':
-        str = olCoordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+        str = format(coordinate, '{x} | {y} (UTM32N)', 0);
         break;
       case 'EPSG:32631':
-        str = olCoordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+        str = format(coordinate, '{x} | {y} (UTM31N)', 0);
         break;
     }
     return str;
