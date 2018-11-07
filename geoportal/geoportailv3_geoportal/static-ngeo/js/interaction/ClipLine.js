@@ -11,7 +11,7 @@ import {buffer, boundingExtent, createOrUpdateFromCoordinate} from 'ol/extent.js
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
-import olInteractionModify from 'ol/interaction/Modify.js';
+import {ModifyEvent} from 'ol/interaction/Modify.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
@@ -322,7 +322,7 @@ exports.handleDownEvent_ = function(evt) {
         this.features_.push(feature1);
         this.features_.push(feature2);
 
-        this.dispatchEvent(new  olInteractionModify.Event(
+        this.dispatchEvent(new ModifyEvent(
           'modifyend', new olCollection([feature1, feature2, segmentDataMatch.feature]), evt));
         this.modified_ = true;
       }

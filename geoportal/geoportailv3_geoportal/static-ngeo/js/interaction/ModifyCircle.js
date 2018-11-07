@@ -12,8 +12,8 @@ import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteraction from 'ol/interaction.js';
-import olInteractionModify from 'ol/interaction/Modify.js';
+import Interaction from 'ol/interaction/Interaction.js';
+import olInteractionModify, {ModifyEvent} from 'ol/interaction/Modify.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
@@ -168,7 +168,7 @@ exports.prototype.addFeature_ = function(feature) {
 exports.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
-    this.dispatchEvent(new olInteractionModify.Event(
+    this.dispatchEvent(new ModifyEvent(
         'modifystart', this.features_, evt));
   }
 };
@@ -218,7 +218,7 @@ exports.prototype.removeFeatureSegmentData_ = function(feature) {
  */
 exports.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  olInteraction.Interaction.prototype.setMap.call(this, map);
+  Interaction.prototype.setMap.call(this, map);
 };
 
 
@@ -395,7 +395,7 @@ exports.handleUpEvent_ = function(evt) {
       this.dragSegments_[0][0].geometry);
 
   if (this.modified_) {
-    this.dispatchEvent(new olInteractionModify.Event(
+    this.dispatchEvent(new ModifyEvent(
         'modifyend', this.features_, evt));
     this.modified_ = false;
   }

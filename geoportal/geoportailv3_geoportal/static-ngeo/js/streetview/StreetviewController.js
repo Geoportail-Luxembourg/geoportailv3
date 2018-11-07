@@ -15,7 +15,7 @@
 import appModule from '../module.js';
 import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olInteraction from 'ol/interaction.js';
+import Select from 'ol/interaction/Select.js';
 import Style from 'ol/style/Style.js';
 import Icon from 'ol/style/Icon.js';
 import {containsCoordinate} from 'ol/extent.js';
@@ -204,7 +204,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectSingleClick_ = new olInteraction.Select({
+  this.selectSingleClick_ = new Select({
     filter: function(feature, layer) {
       return this.features_.getArray().indexOf(feature) != -1;
     }.bind(this)

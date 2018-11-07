@@ -21,7 +21,6 @@ import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
-import olInteractionProperty from 'ol/interaction/Property.js';
 import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
@@ -257,16 +256,16 @@ const exports = function($scope, $q, $http, $compile, gettext,
     }
   }.bind(this));
   listen(this['measureLength'], getChangeEventType(
-    olInteractionProperty.ACTIVE),
+    'active'),
     this.onChangeActive_, this);
   listen(this['measureArea'], getChangeEventType(
-    olInteractionProperty.ACTIVE),
+    'active'),
     this.onChangeActive_, this);
   listen(this['measureAzimut'], getChangeEventType(
-    olInteractionProperty.ACTIVE),
+    'active'),
     this.onChangeActive_, this);
   listen(this['measureProfile'], getChangeEventType(
-    olInteractionProperty.ACTIVE),
+    'active'),
     this.onChangeActive_, this);
 };
 

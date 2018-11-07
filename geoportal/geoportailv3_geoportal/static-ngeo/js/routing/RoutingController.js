@@ -21,7 +21,8 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import Style from 'ol/style/Style.js';
 import Circle from 'ol/style/Circle.js';
 import Fill from 'ol/style/Fill.js';
-import olInteraction from 'ol/interaction.js';
+import Select from 'ol/interaction/Select.js';
+import Modify from 'ol/interaction/Modify.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
@@ -310,7 +311,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteraction_ = new olInteraction.Select({
+  this.selectInteraction_ = new Select({
     features: this.modyfyFeaturesCollection_,
     condition: click,
     filter: function(feature, layer) {
@@ -325,7 +326,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteractionPM_ = new olInteraction.Select({
+  this.selectInteractionPM_ = new Select({
     condition: pointerMove,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
@@ -342,7 +343,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.interaction.Modify}
    * @private
    */
-  this.modifyInteraction_ = new olInteraction.Modify({
+  this.modifyInteraction_ = new Modify({
     features: this.modyfyFeaturesCollection_
   });
   this.map.addInteraction(this.modifyInteraction_);

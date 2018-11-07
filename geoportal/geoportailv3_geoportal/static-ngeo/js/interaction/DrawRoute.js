@@ -15,7 +15,6 @@ import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import olInteractionPointer from 'ol/interaction/Pointer.js';
-import olInteractionProperty from 'ol/interaction/Property.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleStyle from 'ol/style/Style.js';
@@ -280,7 +279,7 @@ const exports = function(options) {
   }
 
   listen(this,
-      getChangeEventType(olInteractionProperty.ACTIVE),
+      getChangeEventType('active'),
       this.updateState_, this);
 
 };

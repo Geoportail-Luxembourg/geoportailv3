@@ -33,7 +33,6 @@ import {transform} from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteraction from 'ol/interaction.js';
 import olInteractionDraw from 'ol/interaction/Draw.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionSelect from 'ol/interaction/Select.js';
@@ -228,7 +227,7 @@ const exports = function($scope,
   ngeoMiscDecorate.interaction(drawPoint);
   this.map.addInteraction(drawPoint);
   listen(drawPoint, getChangeEventType(
-      olInteraction.Property.ACTIVE),
+      'active'),
       this.onChangeActive_, this);
   listen(drawPoint, 'drawend',
       this.onDrawEnd_, this);
@@ -247,7 +246,7 @@ const exports = function($scope,
   ngeoMiscDecorate.interaction(drawLabel);
   this.map.addInteraction(drawLabel);
   listen(drawLabel, getChangeEventType(
-      olInteraction.Property.ACTIVE),
+      'active'),
       this.onChangeActive_, this);
   listen(drawLabel, 'drawend',
       this.onDrawEnd_, this);
@@ -269,7 +268,7 @@ const exports = function($scope,
   ngeoMiscDecorate.interaction(this.drawLine);
   this.map.addInteraction(this.drawLine);
   listen(this.drawLine, getChangeEventType(
-      olInteraction.Property.ACTIVE),
+      'active'),
       this.onChangeActive_, this);
   listen(this.drawLine, 'drawend',
       this.onDrawEnd_, this);
@@ -290,7 +289,7 @@ const exports = function($scope,
   ngeoMiscDecorate.interaction(drawPolygon);
   this.map.addInteraction(drawPolygon);
   listen(drawPolygon, getChangeEventType(
-      olInteraction.Property.ACTIVE),
+      'active'),
       this.onChangeActive_, this);
   listen(drawPolygon, 'drawend',
       this.onDrawEnd_, this);
@@ -311,7 +310,7 @@ const exports = function($scope,
   ngeoMiscDecorate.interaction(drawCircle);
   this.map.addInteraction(drawCircle);
   listen(drawCircle, getChangeEventType(
-      olInteraction.Property.ACTIVE),
+      'active'),
       this.onChangeActive_, this);
   listen(drawCircle, 'drawend',
       this.onDrawEnd_, this);
@@ -437,8 +436,7 @@ const exports = function($scope,
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
   listen(
-      this.drawnFeatures_.translateInteraction,
-      olInteraction.TranslateEventType.TRANSLATEEND,
+      this.drawnFeatures_.translateInteraction, 'translateend'
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
