@@ -778,15 +778,20 @@ class Mymaps(object):
 
             for feature in feature_collection['features']:
                 feature_id = feature.properties.get('fid')
-                obj = Feature(feature)
-                obj.last_modified_by = self.request.user.username
-                if feature_id:
-                    cur_feature = self.request.db_mymaps.query(Feature).\
-                        get(feature_id)
-                    self.request.db_mymaps.delete(cur_feature)
-                    obj.id = feature_id
+                obj = None
+                try:
+                    obj = Feature(feature)
+                    obj.last_modified_by = self.request.user.username
+                except Exception as e:
+                    log.exception(e)
+                if obj is not None:
+                    if feature_id:
+                        cur_feature = self.request.db_mymaps.query(Feature).\
+                            get(feature_id)
+                        self.request.db_mymaps.delete(cur_feature)
+                        obj.id = feature_id
 
-                map.features.append(obj)
+                    map.features.append(obj)
 
             self.request.db_mymaps.commit()
 
