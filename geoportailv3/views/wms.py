@@ -42,18 +42,25 @@ class Wms(object):
     def _check_ip_for_httpsproxy(self, url):
         parsedurl = urlparse(url)
         hostname = parsedurl.netloc.split(":")
-
         remote_ip = IPv4Network(socket.gethostbyname(hostname[0])).ip
         config = self.request.registry.settings
         if "https_proxy" in config:
             if "unauthorized_ips" in config["https_proxy"]:
                 unauthorized_ips =\
-                    config["https_proxy"]['unauthorized_ips'].split(",")
+                    config["https_proxy"]["unauthorized_ips"].split(",")
                 for unauthorized_ip in unauthorized_ips:
                     a_ip = IPv4Network(unauthorized_ip.strip())
                     if (remote_ip == a_ip.network) or (
                        (remote_ip >= a_ip.network) and
                        (remote_ip < a_ip.broadcast)):
+                        if "authorized_hosts" in config["https_proxy"]:
+                            authorized_hosts =\
+                                config["https_proxy"]["authorized_hosts"].\
+                                split(",")
+                            for authorized_host in authorized_hosts:
+                                if hostname[0].lstrip().rstrip().lower() ==\
+                                   authorized_host.lstrip().rstrip().lower():
+                                    return True
                         return False
         return True
 
