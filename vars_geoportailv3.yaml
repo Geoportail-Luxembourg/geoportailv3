@@ -122,6 +122,7 @@ vars:
         - checker_printcapabilities
     https_proxy:
       unauthorized_ips: 10.0.0.0/8, 127.0.0.1
+      authorized_hosts: ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu
     authorized_ips:
 
     modify_notification:
