@@ -9,6 +9,7 @@ from c2cgeoportal_commons.models import Base
 from c2cgeoportal_commons.models.main import _schema, LayerWMS
 from sqlalchemy import ForeignKey, Column
 from sqlalchemy.types import Integer, Boolean, Unicode, String, DateTime
+from deform.widget import HiddenWidget, TextInputWidget
 
 _ = TranslationStringFactory('geoportailv3-server')
 LOG = logging.getLogger(__name__)
@@ -210,8 +211,22 @@ class LuxPrintServers(Base):
 class LuxPredefinedWms(Base):
     __tablename__ = 'lux_predefined_wms'
     __table_args__ = {'schema': _schema}
-    id = Column(String, primary_key=True)
+    __colanderalchemy_config__ = {
+        'title': _('Lux predefined wms'),
+        'plural': _('Lux predefined wms')
+    }
+    id = Column(Integer, primary_key=True, info={
+        'colanderalchemy': {
+            'widget': HiddenWidget()
+        }
+    })
     url = Column(Unicode, unique=True, info={
         'colanderalchemy': {'title': _('Url')}
     })
-    label = Column(Unicode)
+    label = Column(Unicode, info={
+        'colanderalchemy': {
+            'title': _('Label'),
+             # Possible workaround to 'label' css problem (but not for grid).
+             # 'widget': TextInputWidget(css_class='label-class', item_css_class='item-label-class')
+        }
+    })
