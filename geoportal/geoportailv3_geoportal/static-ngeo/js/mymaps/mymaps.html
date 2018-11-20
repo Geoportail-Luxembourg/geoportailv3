@@ -199,7 +199,7 @@
       <label translate>Nouvelle description</label> <textarea class="form-control" rows="3" ng-model="ctrl.newLineDesc"></textarea>
     </div>
   </div>
-  <ul class="features list-unstyled" " >
+  <ul class="features list-unstyled" >
     <li ng-repeat="(key, feature) in ctrl.getMymapsLinestringFeatures()" class="feature">
     <i class="fa fa-square" ng-click="ctrl.toggleLinestring(feature)" ng-class="(ctrl.selectedLineString.indexOf(feature)>=0) ? 'fa-check-square' : 'fa-square'"></i> {{ feature.get('name') }}
     </li>
