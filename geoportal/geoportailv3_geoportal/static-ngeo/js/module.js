@@ -93,6 +93,7 @@ exports.config(['$httpProvider', function($httpProvider) {
     request: function(config) {
       if (config.method == 'GET' &&
           config.url.indexOf('geoportailv3.json') === -1 && // static files already have cache control
+          config.url.indexOf('templatecache/') !== 0 && // template cache URLs should not be tempered (see below)
           config.url.indexOf('.html') === -1) {
         var separator = config.url.indexOf('?') === -1 ? '?' : '&';
         config.url = config.url + separator + 'noCache=' + new Date().getTime();
@@ -101,5 +102,93 @@ exports.config(['$httpProvider', function($httpProvider) {
     }};
 });
 
+
+exports.constant('ngeoLayertreeTemplateUrl', 'templatecache/ngeoLayertreeTemplateUrl');
+exports.constant('ngeoPopupTemplateUrl', 'templatecache/ngeoPopupTemplateUrl');
+exports.constant('ngeoScaleselectorTemplateUrl', 'templatecache/ngeoScaleselectorTemplateUrl');
+exports.constant('ngeoOfflineTestUrl', 'templatecache/ngeoOfflineTestUrl');
+exports.constant('ngeoOfflineTemplateUrl', 'templatecache/ngeoOfflineTemplateUrl');
+exports.constant('ngeoOlcsControls3dTemplateUrl', 'templatecache/ngeoOlcsControls3dTemplateUrl');
+exports.constant('appBackgroundlayerTemplateUrl', 'templatecache/appBackgroundlayerTemplateUrl');
+exports.constant('appLayermanagerTemplateUrl', 'templatecache/appLayermanagerTemplateUrl');
+exports.constant('appLayerlegendsTemplateUrl', 'templatecache/appLayerlegendsTemplateUrl');
+exports.constant('appStreetviewTemplateUrl', 'templatecache/appStreetviewTemplateUrl');
+exports.constant('appSliderTemplateUrl', 'templatecache/appSliderTemplateUrl');
+exports.constant('appMeasureTemplateUrl', 'templatecache/appMeasureTemplateUrl');
+exports.constant('appDrawTemplateUrl', 'templatecache/appDrawTemplateUrl');
+exports.constant('appFeaturePopupTemplateUrl', 'templatecache/appFeaturePopupTemplateUrl');
+exports.constant('appStyleEditingTemplateUrl', 'templatecache/appStyleEditingTemplateUrl');
+exports.constant('appSymbolSelectorTemplateUrl', 'templatecache/appSymbolSelectorTemplateUrl');
+exports.constant('appLayerinfoTemplateUrl', 'templatecache/appLayerinfoTemplateUrl');
+exports.constant('appAuthenticationTemplateUrl', 'templatecache/appAuthenticationTemplateUrl');
+exports.constant('appInfobarTemplateUrl', 'templatecache/appInfobarTemplateUrl');
+exports.constant('appProjectionselectorTemplateUrl', 'templatecache/appProjectionselectorTemplateUrl');
+exports.constant('appMapTemplateUrl', 'templatecache/appMapTemplateUrl');
+exports.constant('appThemeswitcherTemplateUrl', 'templatecache/appThemeswitcherTemplateUrl');
+exports.constant('appProfileTemplateUrl', 'templatecache/appProfileTemplateUrl');
+exports.constant('appPrintTemplateUrl', 'templatecache/appPrintTemplateUrl');
+exports.constant('appSearchTemplateUrl', 'templatecache/appSearchTemplateUrl');
+exports.constant('appShareTemplateUrl', 'templatecache/appShareTemplateUrl');
+exports.constant('appShorturlTemplateUrl', 'templatecache/appShorturlTemplateUrl');
+exports.constant('appQueryTemplateUrl', 'templatecache/appQueryTemplateUrl');
+exports.constant('appLocationinfoTemplateUrl', 'templatecache/appLocationinfoTemplateUrl');
+exports.constant('appMymapsTemplateUrl', 'templatecache/appMymapsTemplateUrl');
+exports.constant('appRoutingTemplateUrl', 'templatecache/appRoutingTemplateUrl');
+exports.constant('appPagreportTemplateUrl', 'templatecache/appPagreportTemplateUrl');
+exports.constant('appCasiporeportTemplateUrl', 'templatecache/appCasiporeportTemplateUrl');
+exports.constant('appPdsreportTemplateUrl', 'templatecache/appPdsreportTemplateUrl');
+exports.constant('appExternalDataTemplateUrl', 'templatecache/appExternalDataTemplateUrl');
+exports.constant('appWmsTreeTemplateUrl', 'templatecache/appWmsTreeTemplateUrl');
+exports.constant('appWmtsTreeTemplateUrl', 'templatecache/appWmtsTreeTemplateUrl');
+exports.constant('appFeedbackTemplateUrl', 'templatecache/appFeedbackTemplateUrl');
+exports.constant('appAskredirectTemplateUrl', 'templatecache/appAskredirectTemplateUrl');
+
+/**
+ * @ngInject
+ * @param {any} $templateCache The template cache
+ */
+function templateRunner($templateCache) {
+  $templateCache.put('templatecache/ngeoLayertreeTemplateUrl', require('./catalog/layertree.html'));
+  $templateCache.put('templatecache/ngeoPopupTemplateUrl', require('./layerinfo/popup.html'));
+  $templateCache.put('templatecache/ngeoScaleselectorTemplateUrl', require('./infobar/scaleselector.html'));
+  $templateCache.put('templatecache/ngeoOfflineTestUrl', 'infobar/scaleselector.html'); // This one is special, it is polled and must not be part of the bundle
+  $templateCache.put('templatecache/ngeoOfflineTemplateUrl', require('./offlineNgeoComponent.html')); //  # FIXME was a function
+  $templateCache.put('templatecache/ngeoOlcsControls3dTemplateUrl', require('./olcs/controls3d.html'));
+  $templateCache.put('templatecache/appBackgroundlayerTemplateUrl', require('./backgroundlayer/backgroundlayer.html'));
+  $templateCache.put('templatecache/appLayermanagerTemplateUrl', require('./layermanager/layermanager.html'));
+  $templateCache.put('templatecache/appLayerlegendsTemplateUrl', require('./layerlegends/layerlegends.html'));
+  $templateCache.put('templatecache/appStreetviewTemplateUrl', require('./streetview/streetview.html'));
+  $templateCache.put('templatecache/appSliderTemplateUrl', require('./slider/slider.html'));
+  $templateCache.put('templatecache/appMeasureTemplateUrl', require('./measure/measure.html'));
+  $templateCache.put('templatecache/appDrawTemplateUrl', require('./draw/draw.html'));
+  $templateCache.put('templatecache/appFeaturePopupTemplateUrl', require('./draw/featurepopup.html'));
+  $templateCache.put('templatecache/appStyleEditingTemplateUrl', require('./draw/styleediting.html'));
+  $templateCache.put('templatecache/appSymbolSelectorTemplateUrl', require('./draw/symbolselector.html'));
+  $templateCache.put('templatecache/appLayerinfoTemplateUrl', require('./layerinfo/layerinfo.html'));
+  $templateCache.put('templatecache/appAuthenticationTemplateUrl', require('./authentication/authentication.html'));
+  $templateCache.put('templatecache/appInfobarTemplateUrl', require('./infobar/infobar.html'));
+  $templateCache.put('templatecache/appProjectionselectorTemplateUrl', require('./infobar/projectionselector.html'));
+  $templateCache.put('templatecache/appMapTemplateUrl', require('./map/map.html'));
+  $templateCache.put('templatecache/appThemeswitcherTemplateUrl', require('./themeswitcher/themes.html'));
+  $templateCache.put('templatecache/appProfileTemplateUrl', require('./profile/profile.html'));
+  $templateCache.put('templatecache/appPrintTemplateUrl', require('./print/print.html'));
+  $templateCache.put('templatecache/appSearchTemplateUrl', require('./search/search.html'));
+  $templateCache.put('templatecache/appShareTemplateUrl', require('./share/share.html'));
+  $templateCache.put('templatecache/appShorturlTemplateUrl', require('./share/shorturl.html'));
+  $templateCache.put('templatecache/appQueryTemplateUrl', require('./query/info.html'));
+  $templateCache.put('templatecache/appLocationinfoTemplateUrl', require('./locationinfo/locationinfo.html'));
+  $templateCache.put('templatecache/appMymapsTemplateUrl', require('./mymaps/mymaps.html'));
+  $templateCache.put('templatecache/appRoutingTemplateUrl', require('./routing/routing.html'));
+  $templateCache.put('templatecache/appPagreportTemplateUrl', require('./query/pagreport.html'));
+  $templateCache.put('templatecache/appCasiporeportTemplateUrl', require('./query/casiporeport.html'));
+  $templateCache.put('templatecache/appPdsreportTemplateUrl', require('./query/pdsreport.html'));
+  $templateCache.put('templatecache/appExternalDataTemplateUrl', require('./externaldata/externaldata.html'));
+  $templateCache.put('templatecache/appWmsTreeTemplateUrl', require('./externaldata/wmstree.html'));
+  $templateCache.put('templatecache/appWmtsTreeTemplateUrl', require('./externaldata/wmtstree.html'));
+  $templateCache.put('templatecache/appFeedbackTemplateUrl', require('./feedback/feedback.html'));
+  $templateCache.put('templatecache/appAskredirectTemplateUrl', require('./askredirect/askredirect.html'));
+}
+
+exports.run(templateRunner);
 
 export default exports;
