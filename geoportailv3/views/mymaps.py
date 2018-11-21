@@ -14,7 +14,7 @@ except:
 
 from turbomail import Message
 from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images,\
-    RoleCategories
+    RoleCategories, MapUser
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 from pyramid_ldap import get_ldap_connector
@@ -381,11 +381,11 @@ class Mymaps(object):
                         if category not in allowed_categories:
                             return HTTPUnauthorized()
                         else:
-                            query = session.query(Map).filter(
+                            query = session.query(Map.uuid).filter(
                                 func.coalesce(Map.category_id, 999) ==
                                 category)
                     else:
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                     allowed_categories),
@@ -398,7 +398,7 @@ class Mymaps(object):
                         user, 'mymaps_role', user.role.id) != 1:
                     if category is not None:
                         if category in allowed_categories:
-                            query = session.query(Map).filter(
+                            query = session.query(Map.uuid).filter(
                                 or_(
                                     and_(func.coalesce(Map.category_id, 999) ==
                                          category,
@@ -411,13 +411,13 @@ class Mymaps(object):
                                          func.lower(user.username))
                                     )) # noqa
                         else:
-                            query = session.query(Map).filter(
+                            query = session.query(Map.uuid).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category,
                                      func.lower(Map.user_login) ==
                                      func.lower(user.username)))
                     else:
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             or_(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
@@ -434,19 +434,19 @@ class Mymaps(object):
                         if owner != user.username and\
                            category not in allowed_categories:
                             return HTTPUnauthorized()
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             func.coalesce(Map.category_id, 999) == category)\
                             .filter(func.lower(Map.user_login) ==
                                     func.lower(owner))
                     else:
                         if owner != user.username:
-                            query = session.query(Map).filter(
+                            query = session.query(Map.uuid).filter(
                                 and_(func.coalesce(Map.category_id, 999).in_(
                                      allowed_categories),
                                      func.lower(Map.user_login) ==
                                      func.lower(owner)))
                         else:
-                            query = session.query(Map).\
+                            query = session.query(Map.uuid).\
                                 filter(func.lower(Map.user_login) ==
                                        func.lower(user.username))
 
@@ -454,13 +454,13 @@ class Mymaps(object):
                         user, 'mymaps_role', user.role.id) != 1\
                    and owner == user.username:
                     if category is not None:
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
                                  category,
                                  func.lower(Map.user_login) ==
                                  func.lower(user.username)))
                     else:
-                        query = session.query(Map).\
+                        query = session.query(Map.uuid).\
                             filter(func.lower(Map.user_login) ==
                                    func.lower(user.username))
                 if getattr(user, 'is_admin', False) and getattr(
@@ -468,7 +468,7 @@ class Mymaps(object):
                    and owner != user.username:
                     if category is not None:
                         if category in allowed_categories:
-                            query = session.query(Map).filter(
+                            query = session.query(Map.uuid).filter(
                                 and_(func.coalesce(Map.category_id, 999) ==
                                      category, Map.public == True,
                                      func.lower(Map.user_login) == func.lower(owner))) # noqa
@@ -476,22 +476,28 @@ class Mymaps(object):
                             return HTTPUnauthorized()
 
                     else:
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             and_(Map.public == True,
                                  func.lower(Map.user_login) == func.lower(owner))) # noqa
                 if not getattr(user, 'is_admin', False) and\
                    owner == user.username:
                     if category is not None:
-                        query = session.query(Map).filter(
+                        query = session.query(Map.uuid).filter(
                             and_(func.coalesce(Map.category_id, 999) ==
                                  category,
                                  func.lower(Map.user_login) == func.lower(owner))) # noqa
                     else:
-                        query = session.query(Map).\
+                        query = session.query(Map.uuid).\
                             filter(func.lower(Map.user_login) ==
                                    func.lower(owner))
 
         if query is not None:
+            # Get all the mymaps id shared with the current user
+            query = session.query(Map).filter(or_(
+                Map.uuid.in_(session.query(MapUser.map_uuid).filter(
+                    func.lower(MapUser.user_login) == func.lower(owner))),
+                Map.uuid.in_(query)))
+
             db_mymaps = self.request.db_mymaps
             maps = query.order_by("category_id asc,title asc").all()
             return [{'title': map.title,
@@ -688,7 +694,7 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
 
-        if not self.has_permission(self.request.user, map):
+        if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         return self.save(map, id)
@@ -728,7 +734,7 @@ class Mymaps(object):
             if map is None:
                 return HTTPNotFound()
 
-            if not self.has_permission(self.request.user, map):
+            if not self.has_write_permission(self.request.user, map):
                 return HTTPUnauthorized()
 
             if 'feature' not in self.request.params:
@@ -765,7 +771,7 @@ class Mymaps(object):
             if map is None:
                 return HTTPNotFound()
 
-            if not self.has_permission(self.request.user, map):
+            if not self.has_write_permission(self.request.user, map):
                 return HTTPUnauthorized()
 
             if 'features' not in self.request.params:
@@ -809,7 +815,7 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
 
-        if not self.has_permission(self.request.user, map):
+        if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         if 'orders' not in self.request.params:
@@ -840,7 +846,7 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
 
-        if not self.has_permission(self.request.user, map):
+        if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         self.request.db_mymaps.delete(feature)
@@ -848,11 +854,17 @@ class Mymaps(object):
 
         return {'success': True}
 
-    def has_permission(self, user, map):
+    def has_write_permission(self, user, map):
         if user is None:
             return False
         if map.user_login.lower() != user.username.lower():
             user = self.request.user
+            map_count = self.request.db_mymaps.query(MapUser).filter(
+                MapUser.read_only == False).filter( # noqa
+                func.lower(MapUser.user_login) == func.lower(user.username))\
+                .filter(MapUser.map_uuid == map.uuid).count()
+            if map_count > 0:
+                return True
             if not getattr(user, 'is_admin', False):
                 return False
             user_role = self.request.db_mymaps.query(Role).get(getattr(
@@ -872,8 +884,11 @@ class Mymaps(object):
         map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
-        if not self.has_permission(self.request.user, map):
+        if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
+        # Remove the shared users
+        self.request.db_mymaps.query(MapUser).\
+            filter(MapUser.map_uuid == map.uuid).delete()
 
         # remove the features associated to the map
         features = self.request.db_mymaps.query(Feature).filter(
@@ -892,7 +907,7 @@ class Mymaps(object):
         map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
-        if not self.has_permission(self.request.user, map):
+        if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
         # remove the features associated to the map
@@ -983,7 +998,8 @@ class Mymaps(object):
         if map is None:
             return HTTPNotFound()
         params = dict(map)
-        params["is_editable"] = self.has_permission(self.request.user, map)
+        params["is_editable"] = self.has_write_permission(
+            self.request.user, map)
 
         if 'cb' in self.request.params:
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
