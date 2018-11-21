@@ -405,8 +405,9 @@ def main(global_config, **settings):
         Role, LayerWMS, LayerWMTS, Theme, LayerGroup, LayerV1, Interface, OGCServer,
         Functionality, RestrictionArea)
     from c2cgeoportal_commons.models.static import User
-    from geoportailv3_geoportal.models import LuxPredefinedWms
-    
+    from geoportailv3_geoportal.models import LuxDownloadUrl, \
+        LuxMeasurementLoginCommune, LuxMeasurementDirectory, LuxGetfeatureDefinition, \
+        LuxPrintServers, LuxPredefinedWms
 
     register_models(config, (
         ('themes', Theme),
@@ -420,6 +421,11 @@ def main(global_config, **settings):
         ('roles', Role),
         ('functionalities', Functionality),
         ('interfaces', Interface),
+        ('lux_download_url', LuxDownloadUrl),
+        ('lux_measurement_login_commune', LuxMeasurementLoginCommune),
+        ('lux_measurement_directory', LuxMeasurementDirectory),
+        ('lux_getfeature_definition', LuxGetfeatureDefinition),
+        ('lux_print_servers', LuxPrintServers),
         ('lux_predefined_wms', LuxPredefinedWms),
     ))
 
