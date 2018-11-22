@@ -371,3 +371,11 @@ class MapUser(Base):
     map_uuid = Column(Unicode, ForeignKey('map.uuid'), primary_key=True)
     user_login = Column(Unicode(50), primary_key=True)
     read_only = Column(Boolean)
+
+
+class CategoryUser(Base):
+    __tablename__ = 'shared_category_user'
+
+    category_id = Column(Integer, ForeignKey('category.id'), primary_key=True)
+    user_login = Column(Unicode(50), primary_key=True)
+    read_only = Column(Boolean)

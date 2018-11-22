@@ -14,7 +14,7 @@ except:
 
 from turbomail import Message
 from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images,\
-    RoleCategories, MapUser
+    RoleCategories, MapUser, CategoryUser
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 from pyramid_ldap import get_ldap_connector
@@ -496,7 +496,13 @@ class Mymaps(object):
             query = session.query(Map).filter(or_(
                 Map.uuid.in_(session.query(MapUser.map_uuid).filter(
                     func.lower(MapUser.user_login) == func.lower(owner))),
-                Map.uuid.in_(query)))
+                Map.uuid.in_(query),
+                Map.uuid.in_(session.query(Map.uuid).filter(
+                    func.coalesce(Map.category_id, 999).in_(
+                        session.query(CategoryUser.category_id).filter(
+                            func.lower(CategoryUser.user_login) ==
+                            func.lower(owner))
+                    )))))
 
             db_mymaps = self.request.db_mymaps
             maps = query.order_by("category_id asc,title asc").all()
@@ -865,6 +871,16 @@ class Mymaps(object):
                 .filter(MapUser.map_uuid == map.uuid).count()
             if map_count > 0:
                 return True
+
+            map_count = self.request.db_mymaps.query(CategoryUser).filter(
+                CategoryUser.read_only == False).filter( # noqa
+                func.lower(CategoryUser.user_login) ==
+                func.lower(user.username))\
+                .filter(CategoryUser.category_id ==
+                        func.coalesce(map.category_id, 999)).count()
+            if map_count > 0:
+                return True
+
             if not getattr(user, 'is_admin', False):
                 return False
             user_role = self.request.db_mymaps.query(Role).get(getattr(
