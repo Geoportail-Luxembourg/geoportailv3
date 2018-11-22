@@ -363,3 +363,19 @@ class Item(Base):
     wms_profiles_guichet = Column(Unicode(255))
     is_poi = Column(Boolean)
     id_collection = Column(Integer)
+
+
+class MapUser(Base):
+    __tablename__ = 'shared_map_user'
+
+    map_uuid = Column(Unicode, ForeignKey('map.uuid'), primary_key=True)
+    user_login = Column(Unicode(50), primary_key=True)
+    read_only = Column(Boolean)
+
+
+class CategoryUser(Base):
+    __tablename__ = 'shared_category_user'
+
+    category_id = Column(Integer, ForeignKey('category.id'), primary_key=True)
+    user_login = Column(Unicode(50), primary_key=True)
+    read_only = Column(Boolean)
