@@ -12,6 +12,15 @@ app.Map = class extends ol.Map {
   /**
    * @override
    */
+  removeLayer(layer) {
+    // Reset the Zindex when removing the layer from the map.
+    layer.setZIndex(Infinity);
+    super.removeLayer(layer);
+  }
+
+  /**
+   * @override
+   */
   getCoordinateFromPixel(pixel) {
     if (Number.isNaN(pixel[0]) || Number.isNaN(pixel[1])) {
       // OpenLayers calls us on keyboard events...
