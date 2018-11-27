@@ -10,12 +10,23 @@ goog.require('ol.Map');
 app.Map = class extends ol.Map {
 
   /**
+   * Currently the zIndex is used to order the layers.
+   * Rremoving a layer does not reset the zindex.
+   * So adding a previously removed layer, will not add the layer on top
+   * of the map but at the last Zindex position.
+   * Thus we have to reset the zindex.
    * @override
    */
-  removeLayer(layer) {
-    // Reset the Zindex when removing the layer from the map.
-    layer.setZIndex(Infinity);
-    super.removeLayer(layer);
+  addLayer(layer) {
+    super.addLayer(layer);
+    var i = 0;
+    this.getLayers().forEach(function(layer) {
+      // Layers having zIndex equal to 1000 are overlays.
+      if (layer.getZIndex() < 1000) {
+        layer.setZIndex(i);
+        i++;
+      }
+    });
   }
 
   /**
