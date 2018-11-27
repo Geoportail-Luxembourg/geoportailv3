@@ -1,6 +1,0 @@
----
-extends: vars.yaml
-
-vars:
-  modwsgi_user: apache
-  db: mapv3

@@ -1,8 +1,0 @@
-*
-!bin/
-!front/
-!mapserver/
-!qgisserver/
-!mapcache/
-!tilegeneration/
-!print/print-apps/

@@ -46,7 +46,9 @@ Build
 
 ```bash
 cd geoportailv3
-make -f <user>.mk build
+cp .env-default .env
+# Do some change in .env if needed
+make build
 ```
 
 Local run
@@ -55,12 +57,28 @@ Local run
 To some extent, it is possible to simulate the services needed by the
 application using git@github.com:camptocamp/luxembourg_dev_db.git
 
+Debug c2cgeoportal
+------------------
+
+Checkout or copy `c2cgeoportal` in `geoportal/c2cgeoportal` and checkout the right branch.
+
+In the `geoportal/Dockerfile` file just before the application pip install add:
+```
+RUN \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/commons && \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/geoportal && \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/admin
+```
+
+In the `geoportal/.dockerignore` file add:
+```
+!c2cgeoportal/commons
+!c2cgeoportal/geoportal
+!c2cgeoportal/admin
+```
 
 Automatic deployement
 ---------------------
 
 3D demo: https://3d-demo.geoportail.lu/
 3D dev: https://3d-test.geoportail.lu/
-
-
-   

@@ -1,0 +1,438 @@
+environment:
+- {default: localhost, name: VISIBLE_WEB_HOST}
+- {default: https, name: VISIBLE_WEB_PROTOCOL}
+- {default: /, name: VISIBLE_ENTRY_POINT}
+- {name: PGHOST}
+- {name: PGHOST_SLAVE}
+- {default: '5432', name: PGPORT}
+- {name: PGUSER}
+- {name: PGPASSWORD}
+- {default: geomapfish, name: PGDATABASE}
+- {default: main, name: PGSCHEMA}
+- {default: main_static, name: PGSCHEMA_STATIC}
+- {default: 'http://tinyows:8080/', name: TINYOWS_URL}
+- {default: 'http://mapserver:8080/', name: MAPSERVER_URL}
+- {default: 'http://print:8080/print/', name: PRINT_URL}
+- {default: 'http://mapcache:8080/', name: MAPCACHE_URL}
+- {default: 'webpack-dev-server:8080', name: DEVSERVER_HOST}
+- {default: redis, name: REDIS_HOST}
+- {default: '6372', name: REDIS_PORT}
+- {default: memcached, name: MEMCACHED_HOST}
+- {default: '11211', name: MEMCACHED_PORT}
+- {default: queue_name, name: TILEGENERATION_SQS_QUEUE}
+interpreted: {}
+no_interpreted: []
+postprocess:
+- expression: int({})
+  vars: [cache.arguments.port]
+vars:
+  admin_interface:
+    available_functionalities: [default_basemap, default_theme, print_template, mapserver_substitution,
+      filterable_layers, preset_layer_filter, open_panel]
+    available_metadata:
+    - {name: isExpanded, type: boolean}
+    - {name: printNativeAngle, type: boolean}
+    - {name: copyTo}
+    - {name: copyable, type: boolean}
+    - {name: legend, type: boolean}
+    - {name: isLegendExpanded, type: boolean}
+    - {name: legendRule}
+    - {name: legendImage, type: url}
+    - {name: iconUrl, type: url}
+    - {name: metadataUrl, type: url}
+    - {name: disclaimer, translate: true}
+    - {name: isChecked, type: boolean}
+    - {name: identifierAttributeField}
+    - {name: maxResolution, type: float}
+    - {name: minResolution, type: float}
+    - {name: opacity, type: float}
+    - {name: thumbnail, type: url}
+    - {name: timeAttribute}
+    - {name: lastUpdateDateColumn}
+    - {name: lastUpdateUserColumn}
+    - {name: snappingConfig, type: json}
+    - {name: geometryValidation, type: boolean}
+    - {name: excludeProperties}
+    - {name: customOpenLayersOptions, type: json}
+    - {name: directedFilterAttributes, type: list}
+    - {name: enumeratedAttributes, type: list}
+    - {name: ogcServer}
+    - {name: wmsLayers}
+    - {name: queryLayers}
+    - {name: printLayers}
+    - {name: attribution}
+    - {name: bg_layer}
+    - {name: bg_opacity, type: float}
+    - {name: css}
+    - {name: display_in_switcher, type: boolean}
+    - {name: exclusion}
+    - {name: fake_scales, type: list}
+    - {name: hasRetina, type: boolean}
+    - {name: is_queryable, type: boolean}
+    - {name: legend_name}
+    - {name: link, type: url}
+    - {name: link_title}
+    - {name: max_dpi, type: float}
+    - {name: metadata_id}
+    - {name: page_title}
+    - {name: print_img}
+    - {name: print_long_txt_de}
+    - {name: print_long_txt_en}
+    - {name: print_long_txt_fr}
+    - {name: print_long_txt_lu}
+    - {name: print_scales, type: list}
+    - {name: print_short_txt_de}
+    - {name: print_short_txt_en}
+    - {name: print_short_txt_fr}
+    - {name: print_short_txt_lu}
+    - {name: resolutions, type: list}
+    - {name: show_in_mobile, type: boolean}
+    - {name: start_layers, type: list}
+    - {name: start_opacity, type: float}
+    - {name: start_x, type: float}
+    - {name: start_y, type: float}
+    - {name: start_zoom, type: float}
+    layer_tree_max_nodes: 1000
+    map_x: 740000
+    map_y: 5860000
+    map_zoom: 10
+  authorized_ips: null
+  authorized_referers: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/']
+  available_locale_names: [en, de, fr]
+  c2c.base_path: /c2c
+  cache:
+    arguments: {db: 0, distributed_lock: true, host: '{REDIS_HOST}', port: '{REDIS_PORT}',
+      redis_expiration_time: 86400}
+    backend: dogpile.cache.redis
+  casipo: {bcc_address: null, fme_token: null, owncloud_external_url: null, owncloud_internal_url: null,
+    owncloud_password: null, owncloud_user: null, prod_url: null, smtp_server: null,
+    staging_url: null}
+  check_collector:
+    hosts:
+    - {display: Main, url: '{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}{VISIBLE_ENTRY_POINT}'}
+    level: 10
+    max_level: 1
+  checker:
+    fulltextsearch: {level: 1, search: bat}
+    lang:
+      files: [ngeo, cgxp-api]
+      level: 1
+    phantomjs:
+      disable: []
+      routes:
+      - level: 3
+        name: desktop
+        params: {no_redirect: 'true'}
+      - level: 3
+        name: mobile
+        params: {no_redirect: 'true'}
+    print:
+      level: 3
+      spec:
+        attributes:
+          description: Carte exemple
+          legend: {}
+          map:
+            bbox: [668126, 6368118, 689717, 6389761]
+            dpi: 128
+            layers: []
+            projection: EPSG:3857
+            rotation: 0
+          name: Exemple
+          qrimage: http://dev.geoportail.lu/shorten/qr?url=http://g-o.lu/0mf4r
+          scale: 60000
+          scalebar: {projection: 'EPSG:2169'}
+          url: http://g-o.lu/0mf4r
+        layout: A4 portrait
+        outputFormat: pdf
+    routes:
+      disable: []
+      routes:
+      - {level: 3, name: apijs}
+      - {level: 3, name: xapijs}
+      - {level: 3, name: printproxy_capabilities}
+      - display_name: mapserverproxy_wms
+        level: 3
+        name: mapserverproxy
+        params: {REQUEST: GetCapabilities, SERVICE: WMS, VERSION: 1.1.1}
+      - display_name: mapserverproxy_wfs
+        level: 3
+        name: mapserverproxy
+        params: {REQUEST: GetCapabilities, SERVICE: WFS, VERSION: 1.1.0}
+    themes:
+      interfaces: {}
+      level: 1
+      params: {version: '2'}
+  db_chooser:
+    master: [GET /short/.*]
+    slave: [\w+ /printproxy/.*]
+  dbsessions:
+    ecadastre: {url: 'postgresql://localhost:5432/ecadastre'}
+    mymaps: {url: 'postgresql://localhost:5432/mymaps'}
+    pgroute: {url: 'postgresql://localhost:5432/pgroute'}
+  default_interface: main
+  default_locale_name: fr
+  default_max_age: 864000
+  devserver_url: http://{DEVSERVER_HOST}{VISIBLE_ENTRY_POINT}
+  enable_admin_interface: true
+  exclude_theme_layer_search: null
+  excluded_themes_from_search: null
+  fulltextsearch:
+    defaultlimit: 30
+    languages: {de: german, en: english, fr: french}
+    maxlimit: 200
+  functionalities:
+    anonymous:
+      default_basemap: plan
+      default_theme: null
+      print_template: [1 A4 portrait, 2 A3 landscape]
+    available_in_templates: [default_basemap, default_theme, filterable_layers, print_template,
+      preset_layer_filter, open_panel]
+    registered: {}
+  global_headers:
+  - headers: {Content-Security-Policy: 'default-src ''self'' https://*; script-src
+        ''self'' ''unsafe-inline'' https://cdn.polyfill.io/ https://maps.googleapis.com/;
+        style-src ''self'' ''unsafe-inline''; img-src * data:; connect-src *', Referrer-Policy: origin,
+      Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
+      X-Frame-Options: SAMEORIGIN, X-Xss-Protection: 1; mode=block}
+    pattern: .*
+  - headers: {Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
+        'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src *;}
+    pattern: ^/apihelp.html
+  - headers: {Content-Security-Policy: 'default-src ''self''; script-src ''self''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; img-src * data:;
+        worker-src ''self'' blob:', Referrer-Policy: same-origin}
+    pattern: ^/admin/.*
+  headers:
+    api:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    config:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    csvecho:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    echo:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    error:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    exportgpxkml:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    fulltextsearch:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    index:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    layers:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    login:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    mapserver:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    print:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    profile:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    raster:
+      access_control_allow_origin: ['*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    shortener:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    themes:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+    tinyows:
+      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+        '*']
+      access_control_max_age: 600
+      cache_control_max_age: 600
+  hide_capabilities: false
+  hooks: {}
+  host: '{VISIBLE_WEB_HOST}'
+  host_forward_host: []
+  https_proxy: {unauthorized_ips: '10.0.0.0/8, 127.0.0.1'}
+  interfaces: [main]
+  interfaces_config:
+    main:
+      constants:
+        appAuthtktCookieName: auth_tkt_main
+        appExcludeThemeLayerSearch: []
+        appOverviewMapBaseLayer: base_layer
+        appOverviewMapShow: true
+        bboxLidar: [71500, 98600, 81500, 108600]
+        bboxSrsLidar: srs
+        defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
+        defaultLang: en
+        defaultTheme: main
+        fulltextsearch_param: {}
+        gmfExternalOGCServers: []
+        gmfSearchActions: []
+        lidarDemoUrl: demo_url
+        maxExtent: [2.6, 47.7, 8.6, 51]
+        remoteProxyWms: false
+        requestScheme: https
+        sentryUrl: ''
+        tags: {interface: main, service: js}
+        tiles3dLayers: [buildings25d, buildings3d, bridges3d]
+        tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
+      fulltextsearch_params: {assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
+        authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
+        gmfProfileCsvUrl: profile.csv, gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create,
+        limit: 30, partitionlimit: 5}
+      routes: {arrowUrl: get_arrow_color, authenticationBaseUrl: base, casipoUrl: casipo_url,
+        cmsSearchServiceUrl: cmssearch, downloadmeasurementUrl: download_measurement,
+        downloadresourceUrl: download_resource, downloadsketchUrl: download_sketch,
+        echocsvUrl: echocsv, elevationServiceUrl: raster, exportgpxkmlUrl: exportgpxkml,
+        geocodingServiceUrl: geocode, getHtmlLegendUrl: get_html, getInfoServiceUrl: getfeatureinfo,
+        getPngLegendUrl: get_png, getRemoteTemplateServiceUrl: getremotetemplate,
+        getRouteUrl: getroute, getuserinfoUrl: getuserinfo, gmfLayersUrl: layers_root,
+        gmfPrintUrl: printproxy, gmfProfileCsvUrl: profile.csv, gmfProfileJsonUrl: profile.json,
+        gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create, httpsProxyUrl: https_proxy,
+        isThemePrivateUrl: isthemeprivate, layerSearchServiceUrl: layersearch, loginUrl: login,
+        logoutUrl: logout, mymapsImageUrl: mymaps_image, mymapsMapsUrl: mymaps_getmaps,
+        mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
+        postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
+        printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
+        qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
+        shorturlServiceUrl: shortener_create, treeUrl: themes}
+      static: {appImagesPath: 'geoportailv3_geoportal:static/images/', appQueryTemplatesPath: 'geoportailv3_geoportal:static/js/query/',
+        arrowModelUrl: 'geoportailv3_geoportal:static/models/arrow5.glb', assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
+        cesiumURL: 'geoportailv3_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
+      wfs_permalink:
+        defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
+        defaultFeaturePrefix: feature
+        wfsTypes:
+        - {featureType: fuel, label: display_name}
+        - {featureType: osm_scale, label: display_name}
+  jsbuild: {config: /src/jsbuild/app.cfg, root_dir: /src}
+  layers: {geometry_validation: true}
+  ldap: {base_dn: 'ou=portail,dc=act,dc=lu', bind: 'cn=system,dc=act,dc=lu', passwd: to_be_defined,
+    url: 'ldap://willie.geoportal.lu:3890'}
+  lidar: {demo_url: '', maxx: 81500, maxy: 108600, minx: 71500, miny: 98600, srs: 'EPSG:2169'}
+  lingua_extractor: {}
+  mailer: {message.encoding: UTF-8, transport.host: keendo, transport.use: smtp}
+  mapserverproxy: {default_ogc_server: source for image/jpeg}
+  modify_notification: {admin_email: null, email_cc: null, url: null}
+  no_proxy: localhost
+  ogcproxy_enable: false
+  overview_map: {base_layer: basemap_2015_global, show: false}
+  package: geoportailv3
+  pag: {bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
+    owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,
+    smtp_server: null, staging_url: null}
+  print_url: '{PRINT_URL}'
+  print_urls: null
+  proxy_wms_url: null
+  raster:
+    dhm: {file: /var/sig/bt.shp, round: 1}
+  referrer: null
+  reset_password: {email_body: 'Hello user,
+
+
+      You have asked for an new password,
+
+      the newly generated password is: password
+
+
+      Sincerely yours
+
+      The GeoMapfish team
+
+      ', email_from: info@camptocamp.com, email_subject: New password generated for
+      GeoMapFish}
+  resourceproxy:
+    targets: {}
+  routing:
+    graphhopper: {api_key: null, url: 'https://graphhopper.com/api/1/route'}
+    mapquest: {api_key: null, url: 'http://open.mapquestapi.com/directions/v2/route'}
+  schema: geov3
+  schema_static: '{PGSCHEMA_STATIC}'
+  servers: {my_maps: //ws.geoportail.lu/mymaps}
+  shortener:
+    allowed_hosts: [localhost]
+    base_url: '{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}{VISIBLE_ENTRY_POINT}s/'
+    email_body: 'Hello,
+
+
+      Somebody sent you the following link:
+
+      short_url
+
+
+      With the message:
+
+      message
+
+
+      Sincerely yours
+
+      The GeoMapfish team
+
+      '
+    email_from: info@camptocamp.com
+    email_subject: Geoportal URL
+  smtp: {host: echo 'no-set', password: not-set, ssl: true, user: not-set}
+  sqlalchemy.max_overflow: 25
+  sqlalchemy.pool_recycle: 30
+  sqlalchemy.pool_size: 5
+  sqlalchemy.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST}:{PGPORT}/lux
+  sqlalchemy.use_batch_mode: true
+  sqlalchemy_slave.max_overflow: 25
+  sqlalchemy_slave.pool_recycle: 30
+  sqlalchemy_slave.pool_size: 5
+  sqlalchemy_slave.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST_SLAVE}:{PGPORT}/lux
+  sqlalchemy_slave.use_batch_mode: true
+  srid: 2169
+  stats: {}
+  tiles_url: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/main/tiles/']
+  tinyowsproxy: {tinyows_url: '{TINYOWS_URL}'}
+  urllogin: {}
+  welcome_email: {email_body: 'Hello user,
+
+
+      You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
+
+      Your user name is: user
+
+      Your password is: password
+
+
+      Sincerely yours
+
+      The GeoMapfish team
+
+      ', email_from: info@camptocamp.com, email_subject: Welcome to GeoMapFish}

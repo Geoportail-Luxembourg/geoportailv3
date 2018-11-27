@@ -1,0 +1,36 @@
+environment:
+- {default: localhost, name: VISIBLE_WEB_HOST}
+- {default: https, name: VISIBLE_WEB_PROTOCOL}
+- {default: /, name: VISIBLE_ENTRY_POINT}
+- {name: PGHOST}
+- {name: PGHOST_SLAVE}
+- {default: '5432', name: PGPORT}
+- {name: PGUSER}
+- {name: PGPASSWORD}
+- {default: geomapfish, name: PGDATABASE}
+- {default: main, name: PGSCHEMA}
+- {default: main_static, name: PGSCHEMA_STATIC}
+- {default: 'http://tinyows:8080/', name: TINYOWS_URL}
+- {default: 'http://mapserver:8080/', name: MAPSERVER_URL}
+- {default: 'http://print:8080/print/', name: PRINT_URL}
+- {default: 'http://mapcache:8080/', name: MAPCACHE_URL}
+- {default: 'webpack-dev-server:8080', name: DEVSERVER_HOST}
+- {default: redis, name: REDIS_HOST}
+- {default: '6372', name: REDIS_PORT}
+- {default: memcached, name: MEMCACHED_HOST}
+- {default: '11211', name: MEMCACHED_PORT}
+- {default: queue_name, name: TILEGENERATION_SQS_QUEUE}
+interpreted: {}
+no_interpreted: []
+postprocess:
+- expression: int({})
+  vars: [cache.arguments.port]
+vars:
+  cache:
+    arguments: {db: 0, distributed_lock: true, host: '{REDIS_HOST}', port: '{REDIS_PORT}',
+      redis_expiration_time: 86400}
+    backend: dogpile.cache.redis
+  schema: geov3
+  schema_static: '{PGSCHEMA_STATIC}'
+  sqlalchemy.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST}:{PGPORT}/lux
+  srid: 2169
