@@ -243,9 +243,12 @@ class Getfeatureinfo(object):
                            'right': coordinates_small_box[2],
                            'top': coordinates_small_box[3],
                            'geom': luxgetfeaturedefinition.geometry_column}
-
-                    query = query_point + " UNION ALL " + query_others +\
-                        " LIMIT 20"
+                    query_limit = 20
+                    if luxgetfeaturedefinition.query_limit is not None:
+                        query_limit = luxgetfeaturedefinition.query_limit
+                    query = query_point + " UNION ALL " + query_others
+                    if query_limit > 0:
+                        query = query + " LIMIT " + str(query_limit)
                 else:
                     if luxgetfeaturedefinition.id_column is not None:
                         query = query_1 + luxgetfeaturedefinition.id_column +\

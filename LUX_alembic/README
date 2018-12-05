@@ -1,1 +1,2 @@
 Generic single-database configuration.
+alembic -c lux_alembic.ini revision -m "query_limit in getfeatureinfo"
