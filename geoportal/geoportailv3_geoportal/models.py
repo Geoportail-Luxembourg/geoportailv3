@@ -170,6 +170,9 @@ class LuxGetfeatureDefinition(Base):
         'title': _('Getfeature definition'),
         'plural': _('Getfeature definitions')
     }
+    __c2cgeoform_config__ = {
+        'duplicate': True
+    }
     id = Column(Integer, primary_key=True, info={
         'colanderalchemy': {'widget': HiddenWidget()}     
     })
