@@ -128,7 +128,9 @@ class LuxGetfeatureDefinition(Base):
     columns_order = Column(Unicode, label=_(u'Order of columns'))
     id_column = Column(Unicode, label=_(u'ID column name'))
     has_profile = Column(Boolean,
-                         label=_(u"Is a profile displayed in template ?"))
+                         label=_(u'Is a profile displayed in template ?'))
+    query_limit = Column(Integer,
+                         label=_(u'Limit the results. If < 0 then not limit.'))
 
 
 class LuxPrintJob(Base):
