@@ -407,12 +407,12 @@ def main(global_config, **settings):
     from c2cgeoportal_commons.models.static import User
     from geoportailv3_geoportal.models import LuxDownloadUrl, \
         LuxMeasurementLoginCommune, LuxMeasurementDirectory, LuxGetfeatureDefinition, \
-        LuxPrintServers, LuxPredefinedWms
+        LuxPrintServers, LuxPredefinedWms, LuxLayerExternalWMS, LuxLayerInternalWMS
 
     register_models(config, (
         ('themes', Theme),
         ('layer_groups', LayerGroup),
-        ('layers_wms', LayerWMS),
+        # ('layers_wms', LayerWMS), removed we use LuxLayerExternalWMS and LuxLayerInternalWMS instead
         ('layers_wmts', LayerWMTS),
         ('layers_v1', LayerV1),
         ('ogc_servers', OGCServer),
@@ -427,6 +427,8 @@ def main(global_config, **settings):
         ('lux_getfeature_definition', LuxGetfeatureDefinition),
         ('lux_print_servers', LuxPrintServers),
         ('lux_predefined_wms', LuxPredefinedWms),
+        ('lux_layer_external_wms', LuxLayerExternalWMS),
+        ('lux_layer_internal_wms', LuxLayerInternalWMS),
     ))
 
     with PermissionSetter(config):

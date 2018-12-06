@@ -84,11 +84,12 @@ class LuxLayerInternalWMS(LayerWMS):
         'plural': _('Internal WMS layers')
     }
 
-    id = Column(
-        Integer,
-        ForeignKey(_schema + '.layer_wms.id'),
-        primary_key=True
-    )
+    id = Column(Integer, ForeignKey(_schema + ".layer_wms.id",
+          ondelete='CASCADE'), primary_key=True, info={
+            'colanderalchemy': {
+              'missing': None,
+              'widget': HiddenWidget()
+         }})
     url = Column(Unicode, info={
         'colanderalchemy': {'title': _('Url')}
     })
@@ -138,11 +139,12 @@ class LuxLayerExternalWMS(LayerWMS):
         'title': _('External WMS layer'),
         'plural': _('External WMS layers')
     }
-    id = Column(
-        Integer,
-        ForeignKey(_schema + ".layer_wms.id"),
-        primary_key=True
-    )
+    id = Column(Integer, ForeignKey(_schema + ".layer_wms.id",
+          ondelete='CASCADE'), primary_key=True, info={
+            'colanderalchemy': {
+              'missing': None,
+              'widget': HiddenWidget()
+         }})
     category_id = Column(Integer, info={
         'colanderalchemy': {'title': _('Category ID')}
     })
@@ -158,8 +160,8 @@ class LuxLayerExternalWMS(LayerWMS):
         self.category_id = category_id
 
     def get_default(dbsession):
-        return dbsession.query(LuxLayerInternalWMS).filter(
-                LuxLayerInternalWMS.name == 'lux_layer_external_wms-defaults'
+        return dbsession.query(LuxLayerExternalWMS).filter(
+                LuxLayerExternalWMS.name == 'lux_layer_external_wms-defaults'
                 ).one_or_none()
 
 
