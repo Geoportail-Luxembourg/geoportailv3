@@ -55,7 +55,34 @@ docker-build-geoportal:
 docker-build-config:
 	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) .
 
+DOCKER_COMPOSE_PROJECT ?= geoportalv3
+DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1
+PACKAGE ?= geoportalv3
+NGEO_INTERFACES ?= main
+APP_JS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
+APP_HTML_FILES += $(addprefix geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/, $(addsuffix .html.ejs, $(NGEO_INTERFACES)))
+APP_DIRECTIVES_PARTIALS_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
+I18N_SOURCE_FILES += $(APP_HTML_FILES) \
+	$(APP_JS_FILES) \
+	$(APP_DIRECTIVES_PARTIALS_FILES) \
+	geoportal/config.yaml \
+	geoportal/development.ini \
+	$(PRINT_CONFIG_FILE)
 
+
+.PHONY: update-po
+update-po:
+	docker cp geoportal/geoportailv3_geoportal/locale/en/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/en.po
+	docker cp geoportal/geoportailv3_geoportal/locale/fr/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/fr.po
+	docker cp geoportal/geoportailv3_geoportal/locale/de/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/de.po
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/geoportailv3_geoportal-client.pot $(I18N_SOURCE_FILES)
+	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/en.po /tmp/geoportailv3_geoportal-client.pot
+	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/fr.po /tmp/geoportailv3_geoportal-client.pot
+	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/de.po /tmp/geoportailv3_geoportal-client.pot
+	docker cp $(DOCKER_CONTAINER):/tmp/en.po geoportal/geoportailv3_geoportal/locale/en/LC_MESSAGES/geoportailv3_geoportal-client.po
+	docker cp $(DOCKER_CONTAINER):/tmp/fr.po geoportal/geoportailv3_geoportal/locale/fr/LC_MESSAGES/geoportailv3_geoportal-client.po
+	docker cp $(DOCKER_CONTAINER):/tmp/de.po geoportal/geoportailv3_geoportal/locale/de/LC_MESSAGES/geoportailv3_geoportal-client.po
 
 # Targets related to the JS API
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
