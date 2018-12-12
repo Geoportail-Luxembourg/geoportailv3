@@ -181,3 +181,10 @@ clean: clean-js-api
 clean-js-api:
 	rm -rf $(API_OUTPUT_DIR)/apiv3.*
 
+.PHONY: run
+run: build
+	docker-compose up
+
+.PHONY: attach
+attach:
+	docker-compose exec geoportal bash
