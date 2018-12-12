@@ -18,11 +18,12 @@ RUN \
   node_modules/.bin/ttf2woff node_modules/ngeo/contribs/gmf/fonts/gmf-icons.ttf \
     node_modules/ngeo/contribs/gmf/fonts/gmf-icons.woff
 
+COPY ./ng_locale_downloader.sh /app
 RUN \
   mkdir --parents /opt/angular-locale && \
   for LANG in en de fr lb; \
   do \
-    curl --output /opt/angular-locale/angular-locale_$LANG.js https://raw.githubusercontent.com/angular/angular.js/v`grep '"angular"' /usr/lib/node_modules/ngeo/package.json | cut --delimiter \" --fields 4 | tr --delete '\r\n'`/src/ngLocale/angular-locale_$LANG.js; \
+    ./ng_locale_downloader.sh $LANG; \
   done && \
   adduser www-data root
 

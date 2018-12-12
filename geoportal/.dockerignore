@@ -8,6 +8,7 @@
 !CONST_config-schema.yaml
 !alembic.yaml
 !production.ini
+!ng_locale_downloader.sh
 !development.ini
 !setup.cfg
 !setup.py
