@@ -11,7 +11,7 @@ services:
     volumes:
       - /home/external/workspace/geoportailv3/geoportal/geoportailv3_geoportal/static-ngeo:/app/geoportailv3_geoportal/static-ngeo
     command:
-      - webpack-dev-server
+      - node_modules/.bin/webpack-dev-server
       - --mode=development
       - --host=webpack-dev-server
       - --port=8080

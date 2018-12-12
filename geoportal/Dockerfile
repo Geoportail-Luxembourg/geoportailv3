@@ -31,6 +31,7 @@ RUN \
 RUN mkdir -p /app/geoportailv3_geoportal
 COPY ./geoportailv3_geoportal/static-ngeo/ /app/geoportailv3_geoportal/static-ngeo/
 COPY ./webpack.apps.js ./webpack.config.js /app/
+#RUN INTERFACE=main NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
 RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 
 COPY . /app

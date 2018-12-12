@@ -185,6 +185,10 @@ clean-js-api:
 run: build
 	docker-compose up
 
+.PHONY: dev
+dev: build
+	docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
+
 .PHONY: attach
 attach:
 	docker-compose exec geoportal bash
