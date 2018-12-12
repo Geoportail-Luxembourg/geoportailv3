@@ -36,13 +36,14 @@ def main():
         "--version", default=config.get("version", "2.3"),
         help="The docker image version to use"
     )
+    parser.add_argument("--hash", metavar="hash", help="The docker image hash to run")
     parser.add_argument("cmd", metavar="CMD", help="The command to run")
     parser.add_argument("args", metavar="...", nargs=argparse.REMAINDER, help="The command arguments")
     options = parser.parse_args()
 
     docker_cmd = ['docker', 'run']
 
-    if options.ti:
+    if options.ti or options.hash:
         docker_cmd.append("-ti")
 
     for share in options.share:
@@ -156,9 +157,14 @@ def main():
     if options.root:
         docker_cmd.extend(["--entrypoint", options.cmd])
 
-    docker_cmd.append("{}:{}".format(options.image, options.version))
+    if options.hash:
+        docker_cmd.append(options.hash)
+    else:
+        docker_cmd.append("{}:{}".format(options.image, options.version))
+
     if not options.root:
         docker_cmd.append(options.cmd)
+
     docker_cmd.extend(options.args)
     try:
         subprocess.check_call(docker_cmd)
