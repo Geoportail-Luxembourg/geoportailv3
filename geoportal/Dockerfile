@@ -27,29 +27,15 @@ RUN \
   done && \
   adduser www-data root
 
-#ENV NODE_PATH=/usr/lib/node_modules \
-#    LOG_LEVEL=INFO \
-#    GUNICORN_ACCESS_LOG_LEVEL=INFO \
-#    C2CGEOPORTAL_LOG_LEVEL=WARN \
-#    PGHOST=db \
-#    PGHOST_SLAVE=db \
-#    PGPORT=5432 \
-#    PGUSER=www-data \
-#    PGPASSWORD=www-data \
-#    PGDATABASE=geomapfish \
-#    PGSCHEMA=main \
-#    PGSCHEMA_STATIC=main_static \
-#    TINYOWS_URL=http://tinyows/ \
-#    MAPSERVER_URL=http://mapserver/ \
-#    PRINT_URL=http://print:8080/print/
+
+RUN mkdir -p /app/geoportailv3_geoportal
+COPY ./geoportailv3_geoportal/static-ngeo/ /app/geoportailv3_geoportal/static-ngeo/
+COPY ./webpack.apps.js ./webpack.config.js /app/
+RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 
 COPY . /app
 
-ENV INTERFACES=main
-
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
-
-RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 
 RUN \
     ls -1 geoportailv3_geoportal/static-ngeo/build/*.html|while read file; do mv ${file} ${file}.tmpl; done && \
