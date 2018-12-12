@@ -2,6 +2,9 @@ environment:
 - {default: localhost, name: VISIBLE_WEB_HOST}
 - {default: https, name: VISIBLE_WEB_PROTOCOL}
 - {default: /, name: VISIBLE_ENTRY_POINT}
+- {name: DB_MYMAPS}
+- {name: DB_PGROUTE}
+- {name: DB_ECADASTRE}
 - {name: PGHOST}
 - {name: PGHOST_SLAVE}
 - {default: '5432', name: PGPORT}
@@ -167,9 +170,9 @@ vars:
     master: [GET /short/.*]
     slave: [\w+ /printproxy/.*]
   dbsessions:
-    ecadastre: {url: 'postgresql://localhost:5432/ecadastre'}
-    mymaps: {url: 'postgresql://localhost:5432/mymaps'}
-    pgroute: {url: 'postgresql://localhost:5432/pgroute'}
+    ecadastre: {url: '{DB_ECADASTRE}'}
+    mymaps: {url: '{DB_MYMAPS}'}
+    pgroute: {url: '{DB_PGROUTE}'}
   default_interface: main
   default_locale_name: fr
   default_max_age: 864000

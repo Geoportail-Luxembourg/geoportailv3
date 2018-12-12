@@ -30,6 +30,9 @@ services:
       - /var/sig:/var/sig:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - DB_MYMAPS
+      - DB_PGROUTE
+      - DB_ECADASTRE
       - VISIBLE_ENTRY_POINT
       - VISIBLE_WEB_HOST
       - VISIBLE_WEB_PROTOCOL
