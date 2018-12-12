@@ -3,3 +3,6 @@
 *.pyo
 __pycache__/
 /.env
+/geoportal/geoportailv3_geoportal/static-ngeo/fonts/
+/geoportal/geoportailv3_geoportal.egg-info/
+/geoportal/geoportailv3_geoportal/locale/*/LC_MESSAGES/*.mo
