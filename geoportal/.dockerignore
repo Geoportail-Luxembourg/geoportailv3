@@ -14,3 +14,6 @@
 !setup.py
 !geoportailv3_geoportal
 !LUX_alembic
+!c2cgeoportal/commons
+!c2cgeoportal/geoportal
+!c2cgeoportal/admin

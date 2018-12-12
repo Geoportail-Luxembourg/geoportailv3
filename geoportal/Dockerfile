@@ -60,6 +60,11 @@ RUN mv webpack.apps.js webpack.apps.js.tmpl
 
 ARG GIT_HASH
 
+RUN \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/commons && \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/geoportal && \
+    pip install --disable-pip-version-check --no-cache-dir --editable=/app/c2cgeoportal/admin
+
 RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
