@@ -79,8 +79,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {ol.Map}
    * @private
    */
-  this.map_ = this['map'];
-  console.assert(this.map_ !== undefined && this.map_ !== null);
+  this.map_;
 
   /**
    * @type {angular.$timeout}
@@ -414,6 +413,13 @@ exports.prototype.changeLayout = function(newLayout) {
   this.map_.render();
 };
 
+/**
+ * @export
+ */
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+  console.assert(this.map_ !== undefined && this.map_ !== null);
+};
 
 /**
  * @param {number} newScale The new scale.
