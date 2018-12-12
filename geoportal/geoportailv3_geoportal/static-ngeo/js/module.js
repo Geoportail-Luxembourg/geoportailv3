@@ -189,6 +189,12 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appAskredirectTemplateUrl', require('./askredirect/askredirect.html'));
 }
 
+// activate pre-assigning bindings
+// See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
+exports.config(['$compileProvider', function($compileProvider) {
+  $compileProvider.preAssignBindingsEnabled(true);
+}]);
+
 exports.run(templateRunner);
 
 export default exports;
