@@ -8,6 +8,7 @@
 !CONST_config-schema.yaml
 !alembic.yaml
 !production.ini
+!development.ini
 !setup.cfg
 !setup.py
 !geoportailv3_geoportal
