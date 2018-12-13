@@ -11,14 +11,14 @@ switch (nodeEnv) {
     devProdConfig = require('ngeo/buildtools/webpack.dev');
     break;
   case 'production':
-    devProdConfig = require('ngeo/buildtools/webpack.prod');
+    devProdConfig = require('ngeo/buildtools/webpack.prod')(false);
     break;
   default:
     console.log(`The 'NODE_ENV' environment variable is set to an invalid value: ${process.env.NODE_ENV}.` );
     process.exit(2);
 }
 
-config = webpackMerge(config, apps, devProdConfig(false));
+config = webpackMerge(config, apps, devProdConfig);
 
 
 module.exports = config;
