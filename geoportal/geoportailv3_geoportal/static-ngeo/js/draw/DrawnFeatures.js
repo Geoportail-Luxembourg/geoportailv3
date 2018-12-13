@@ -62,7 +62,7 @@ const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
   this.clipLineInteraction;
 
   /**
-   * @type {ol.interaction.Translate}
+   * @type {ngeo.interaction.Translate}
    */
   this.translateInteraction;
 

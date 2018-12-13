@@ -21,6 +21,7 @@ import appInteractionClipLine from '../interaction/ClipLine.js';
 import appInteractionModifyCircle from '../interaction/ModifyCircle.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import ngeoInteractionTranslate from 'ngeo/interaction/Translate.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olFeature from 'ol/Feature.js';
@@ -36,7 +37,6 @@ import olGeomPolygon from 'ol/geom/Polygon.js';
 import olInteractionDraw from 'ol/interaction/Draw.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionSelect from 'ol/interaction/Select.js';
-import olInteractionTranslate from 'ol/interaction/Translate.js';
 import {noModifierKeys, singleClick} from 'ol/events/condition.js';
 
 /**
@@ -429,14 +429,14 @@ const exports = function($scope,
   listen(this.drawnFeatures_.modifyInteraction,
       'modifyend', this.onFeatureModifyEnd_, this);
 
-  this.drawnFeatures_.translateInteraction = new olInteractionTranslate({
+  this.drawnFeatures_.translateInteraction = new ngeoInteractionTranslate({
     features: appSelectedFeatures
   });
   this.drawnFeatures_.translateInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
   listen(
-      this.drawnFeatures_.translateInteraction, 'translateend'
+      this.drawnFeatures_.translateInteraction, 'translateend',
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
