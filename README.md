@@ -61,6 +61,8 @@ Debug c2cgeoportal
 ------------------
 
 Checkout or copy `c2cgeoportal` in `geoportal/c2cgeoportal` and checkout the right branch.
+Then `cd geoportal/c2cgeoportal` and build it: `make docker-build` as specified
+on the c2cgeoportal server-side development page.
 
 In the `geoportal/Dockerfile` file just before the application pip install add:
 ```

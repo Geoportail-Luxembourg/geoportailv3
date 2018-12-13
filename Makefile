@@ -33,7 +33,7 @@ help:
 	@echo
 	@echo "Main targets:"
 	@echo
-	@echo  "- build		Build the porject"
+	@echo  "- build		Build the project"
 	@echo
 	@echo "Utility targets:"
 	@echo
