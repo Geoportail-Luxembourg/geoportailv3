@@ -297,7 +297,7 @@ vars:
         appOverviewMapBaseLayer: base_layer
         appOverviewMapShow: true
         bboxLidar: [71500, 98600, 81500, 108600]
-        bboxSrsLidar: srs
+        bboxSrsLidar: 'EPSG:2169'
         defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
         defaultLang: en
         defaultTheme: main
