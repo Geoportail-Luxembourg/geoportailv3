@@ -1,6 +1,7 @@
 /**
  * @module app.interaction.ModifyCircle
  */
+import ngeoInteractionCommon from 'ngeo/interaction/common.js';
 import ViewHint from 'ol/ViewHint.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
@@ -18,7 +19,6 @@ import olInteractionPointer from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
-import olStyleStyle from 'ol/style/Style.js';
 import {inherits, getUid} from 'ol/index.js';
 
 
@@ -519,7 +519,7 @@ exports.prototype.setGeometryCoordinates_ =
  * @return {ol.StyleFunction} Styles.
  */
 exports.getDefaultStyleFunction = function() {
-  var style = olStyleStyle.createDefaultEditing();
+  var style = ngeoInteractionCommon.getDefaultModifyStyleFunction();
   return function(feature, resolution) {
     return style[olGeomGeometryType.POINT];
   };
