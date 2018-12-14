@@ -312,11 +312,14 @@ vars:
         tags: {interface: main, service: js}
         tiles3dLayers: [buildings25d, buildings3d, bridges3d]
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
-      fulltextsearch_params: {assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
+      fulltextsearch_params: {
+        assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
         gmfProfileCsvUrl: profile.csv, gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create,
         limit: 30, partitionlimit: 5}
-      routes: {arrowUrl: get_arrow_color, authenticationBaseUrl: base, casipoUrl: casipo_url,
+      routes: {
+        ping: ping,
+        arrowUrl: get_arrow_color, authenticationBaseUrl: base, casipoUrl: casipo_url,
         cmsSearchServiceUrl: cmssearch, downloadmeasurementUrl: download_measurement,
         downloadresourceUrl: download_resource, downloadsketchUrl: download_sketch,
         echocsvUrl: echocsv, elevationServiceUrl: raster, exportgpxkmlUrl: exportgpxkml,
@@ -343,7 +346,8 @@ vars:
         - {featureType: osm_scale, label: display_name}
   jsbuild: {config: /src/jsbuild/app.cfg, root_dir: /src}
   layers: {geometry_validation: true}
-  ldap: {base_dn: 'ou=portail,dc=act,dc=lu', bind: 'cn=system,dc=act,dc=lu', passwd: to_be_defined,
+  ldap: {
+    base_dn: 'ou=portail,dc=act,dc=lu', bind: 'cn=system,dc=act,dc=lu', passwd: to_be_defined,
     url: 'ldap://willie.geoportal.lu:3890'}
   lidar: {demo_url: '', maxx: 81500, maxy: 108600, minx: 71500, miny: 98600, srs: 'EPSG:2169'}
   lingua_extractor: {}
@@ -354,7 +358,8 @@ vars:
   ogcproxy_enable: false
   overview_map: {base_layer: basemap_2015_global, show: false}
   package: geoportailv3
-  pag: {bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
+  pag: {
+    bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
     owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,
     smtp_server: null, staging_url: null}
   print_url: '{PRINT_URL}'

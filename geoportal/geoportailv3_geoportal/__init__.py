@@ -92,6 +92,12 @@ def main(global_config, **settings):
         request_method="DELETE"
     )
 
+    # ping routes
+    config.add_route(
+        "ping",
+        "/ping"
+    )
+
     # mymaps routes
     config.add_route(
         "mymaps",

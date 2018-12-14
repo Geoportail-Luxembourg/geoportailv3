@@ -106,7 +106,7 @@ exports.config(['$httpProvider', function($httpProvider) {
 exports.constant('ngeoLayertreeTemplateUrl', 'templatecache/ngeoLayertreeTemplateUrl');
 exports.constant('ngeoPopupTemplateUrl', 'templatecache/ngeoPopupTemplateUrl');
 exports.constant('ngeoScaleselectorTemplateUrl', 'templatecache/ngeoScaleselectorTemplateUrl');
-exports.constant('ngeoOfflineTestUrl', 'templatecache/ngeoOfflineTestUrl');
+exports.constant('ngeoOfflineTestUrl', '/ping');
 exports.constant('ngeoOfflineTemplateUrl', 'templatecache/ngeoOfflineTemplateUrl');
 exports.constant('ngeoOlcsControls3dTemplateUrl', 'templatecache/ngeoOlcsControls3dTemplateUrl');
 exports.constant('appBackgroundlayerTemplateUrl', 'templatecache/appBackgroundlayerTemplateUrl');
@@ -151,7 +151,6 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/ngeoLayertreeTemplateUrl', require('./catalog/layertree.html'));
   $templateCache.put('templatecache/ngeoPopupTemplateUrl', require('./layerinfo/popup.html'));
   $templateCache.put('templatecache/ngeoScaleselectorTemplateUrl', require('./infobar/scaleselector.html'));
-  $templateCache.put('templatecache/ngeoOfflineTestUrl', 'infobar/scaleselector.html'); // This one is special, it is polled and must not be part of the bundle
   $templateCache.put('templatecache/ngeoOfflineTemplateUrl', require('./offlineNgeoComponent.html')); //  # FIXME was a function
   $templateCache.put('templatecache/ngeoOlcsControls3dTemplateUrl', require('./olcs/controls3d.html'));
   $templateCache.put('templatecache/appBackgroundlayerTemplateUrl', require('./backgroundlayer/backgroundlayer.html'));
