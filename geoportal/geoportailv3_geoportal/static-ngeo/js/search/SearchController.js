@@ -29,6 +29,7 @@ import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
+import Fuse from 'fuse.js';
 
 /**
  * @ngInject
