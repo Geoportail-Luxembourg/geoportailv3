@@ -33,6 +33,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {angular.$http} $http Angular http service.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {!angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.GetProfile} appGetProfile The profile service.
  * interaction service.
  * @param {string} elevationServiceUrl The url of the service.
@@ -43,7 +44,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @ngInject
  */
 const exports = function($scope, $q, $http, $compile, gettext,
-    appGetProfile, elevationServiceUrl,
+    gettextCatalog, appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
   /**
@@ -118,7 +119,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       'Double-click or click last point to finish');
   var measureProfile = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle
@@ -135,7 +136,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   helpMsg = gettext('Click to start drawing length');
   var measureLength = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle
@@ -160,7 +161,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       'Double-click or click last point to finish');
   var measureArea = new ngeoInteractionMeasureArea(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
