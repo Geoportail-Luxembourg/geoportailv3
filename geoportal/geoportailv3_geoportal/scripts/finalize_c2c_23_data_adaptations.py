@@ -53,7 +53,7 @@ def main():
     from c2cgeoportal_commons.models import DBSession, main, static
     from c2cgeoportal_commons.models.main import OGCSERVER_TYPE_MAPSERVER, \
         OGCSERVER_TYPE_GEOSERVER,OGCSERVER_AUTH_NOAUTH, OGCServer, Metadata, \
-        TreeItem, TreeGroup, LayerGroup, LayerWMS, RestrictionArea
+        TreeItem, TreeGroup, LayerGroup, LayerWMS, RestrictionArea, Interface
     from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
     session = DBSession()
@@ -69,16 +69,18 @@ def main():
         r_area.name = 'restrictionarea-{}'.format(r_area.id)
         session.add(r_area)
 
-    # Insert group background (in GMF) if it not already exists.
-    treeitem = session.query(TreeItem).filter(TreeItem.name == 'background').one_or_none()
-    if treeitem is None:
-      layergroup = LayerGroup(
-        name='background',
-        is_expanded=False,
-        is_internal_wms=True,
-        is_base_layer=False
-      )
-      session.add(layergroup)
+    # Rename group bglayers to background (in GMF).
+    treeitem = session.query(TreeItem).filter(TreeItem.name == 'bglayers').one_or_none()
+    if treeitem is not None:
+      treeitem.name = 'background'
+      session.add(treeitem)
+
+    # Rename interface "desktop" to "main"
+    interface = session.query(Interface).filter(Interface.name == 'desktop').one_or_none()
+    if interface is not None:
+      interface.name = 'main'
+      interface.description = 'main'
+      session.add(interface)
 
     transaction.commit()
 
