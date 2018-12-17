@@ -294,7 +294,7 @@ vars:
       constants:
         appAuthtktCookieName: auth_tkt_main
         appExcludeThemeLayerSearch: []
-        appOverviewMapBaseLayer: base_layer
+        appOverviewMapBaseLayer: basemap_2015_global
         appOverviewMapShow: true
         bboxLidar: [71500, 98600, 81500, 108600]
         bboxSrsLidar: 'EPSG:2169'
