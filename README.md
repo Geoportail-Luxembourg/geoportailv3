@@ -51,11 +51,16 @@ cp .env-default .env
 make build
 ```
 
-Local run
----------
+Local run and development
+-------------------------
 
 To some extent, it is possible to simulate the services needed by the
 application using git@github.com:camptocamp/luxembourg_dev_db.git
+Clone that repository and there run: `make`.
+
+To start the composition use: `make run` and open http://localhost:8080.
+To start the dev composition use: `make dev` and open http://localhost:8080/dev/main.html.
+
 
 Debug c2cgeoportal
 ------------------
