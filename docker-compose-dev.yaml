@@ -9,7 +9,7 @@ services:
   webpack-dev-server:
     image: camptocamp/geoportailv3-geoportal:latest
     volumes:
-      - /home/external/workspace/geoportailv3/geoportal/geoportailv3_geoportal/static-ngeo:/app/geoportailv3_geoportal/static-ngeo
+      - ./geoportal/geoportailv3_geoportal/static-ngeo:/app/geoportailv3_geoportal/static-ngeo
     command:
       - node_modules/.bin/webpack-dev-server
       - --mode=development
