@@ -48,7 +48,7 @@ services:
       - PGSCHEMA_STATIC
       - PGOPTIONS
       - PRINT_URL
-      - GUNICORN_PARAMS=--bind=:8080 --worker-class=gthread --threads=10 --workers=5 --timeout=60 --max-requests=1000 --max-requests-jitter=100
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload
       - LOG_LEVEL=INFO
       - C2CGEOPORTAL_LOG_LEVEL=INFO
       - C2CWSGIUTILS_CONFIG=/app/development.ini
