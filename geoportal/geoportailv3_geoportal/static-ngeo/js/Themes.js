@@ -20,14 +20,14 @@ import {inherits} from 'ol/index.js';
  * @extends {ol.events.EventTarget}
  * @param {angular.$window} $window Window.
  * @param {angular.$http} $http Angular http service.
- * @param {string} treeUrl URL to "themes" web service.
+ * @param {string} gmfTreeUrl URL to "themes" web service.
  * @param {string} isThemePrivateUrl URL to check if theme is public.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank Layer service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
-const exports = function($window, $http, treeUrl, isThemePrivateUrl,
+const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice) {
   olEventsEventTarget.call(this);
 
@@ -59,7 +59,7 @@ const exports = function($window, $http, treeUrl, isThemePrivateUrl,
    * @type {string}
    * @private
    */
-  this.treeUrl_ = treeUrl;
+  this.treeUrl_ = gmfTreeUrl;
 
   /**
    * @type {string}

@@ -316,7 +316,9 @@ vars:
         assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
         gmfProfileCsvUrl: profile.csv, gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create,
-        limit: 30, partitionlimit: 5}
+        limit: 30,
+        partitionlimit: 5
+      }
       routes: {
         ping: ping,
         arrowUrl: get_arrow_color, authenticationBaseUrl: base, casipoUrl: casipo_url,
@@ -334,7 +336,8 @@ vars:
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
-        shorturlServiceUrl: shortener_create, treeUrl: themes}
+        shorturlServiceUrl: shortener_create
+      }
       static: {appImagesPath: 'geoportailv3_geoportal:static/images/', appQueryTemplatesPath: 'geoportailv3_geoportal:static/js/query/',
         arrowModelUrl: 'geoportailv3_geoportal:static/models/arrow5.glb', assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         cesiumURL: 'geoportailv3_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
