@@ -132,7 +132,7 @@ exports.prototype.setThemeZooms = function(tree) {
   if (tree !== null) {
     console.assert('metadata' in tree);
     if (tree['metadata']['resolutions']) {
-      var resolutions = tree['metadata']['resolutions'].split(',');
+      var resolutions = tree['metadata']['resolutions'];
       maxZoom = resolutions.length + 7;
     }
     var map = this['map'];

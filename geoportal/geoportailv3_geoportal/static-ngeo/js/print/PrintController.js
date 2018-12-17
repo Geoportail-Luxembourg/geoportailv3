@@ -766,15 +766,7 @@ exports.prototype.setScales_ = function() {
           this.needScaleRefresh = true;
         }
         if (tree !== null && tree['metadata']['print_scales']) {
-          var printScalesStr = tree['metadata']['print_scales'];
-          scales = printScalesStr.trim().split(',').map(
-              /**
-               * @param {string} scale Scale value as a string.
-               * @return {number} Scale value as a number.
-               */
-              function(scale) {
-                return +scale;
-              });
+          scales = tree['metadata']['print_scales'];
           scales.sort();
         } else {
           scales = exports.DEFAULT_MAP_SCALES_;
