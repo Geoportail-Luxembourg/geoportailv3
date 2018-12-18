@@ -108,7 +108,7 @@ exports.prototype.setThemes_ = function() {
        */
       (function(themes) {
         this['themes'] = themes.filter(function(object) {
-          return 'true' == object['metadata']['display_in_switcher'];
+          return object['metadata']['display_in_switcher'] === true;
         });
         // Check whether the current theme is valid or is protected;
         // and if it's not, use the default theme.
