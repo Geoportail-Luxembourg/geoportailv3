@@ -376,6 +376,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
       this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(goog.bind(function(mymaps) {
         this.choosing = true;
         this.maps = mymaps;
+        this.setDragHandler();
       }, this));
     }
   }, this));
@@ -388,6 +389,7 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
         this.choosing = true;
         this.maps = mymaps;
         this.filterMapOwner = null;
+        this.setDragHandler();
       }, this));
     }
   }, this));
@@ -426,7 +428,6 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
       $('#dropdown-mymaps').removeClass('open');
     }
   }, this));
-
 };
 
 
@@ -529,6 +530,7 @@ app.MymapsDirectiveController.prototype.modalShownHidden = function(value) {
     this.modal = undefined;
     return false;
   } else if (goog.isDef(this.modal)) {
+    this.setDragHandler();
     return true;
   }
 };
@@ -832,6 +834,7 @@ app.MymapsDirectiveController.prototype.closeMap = function() {
  */
 app.MymapsDirectiveController.prototype.openConfirmDelete = function() {
   this.confirmDelete = true;
+  this.setDragHandler();
 };
 
 
@@ -841,6 +844,7 @@ app.MymapsDirectiveController.prototype.openConfirmDelete = function() {
  */
 app.MymapsDirectiveController.prototype.openConfirmDeleteObjects = function() {
   this.confirmDeleteObjects = true;
+  this.setDragHandler();
 };
 
 
@@ -850,6 +854,7 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteObjects = function() {
  */
 app.MymapsDirectiveController.prototype.openConfirmDeleteMap = function() {
   this.confirmDeleteMap = true;
+  this.setDragHandler();
 };
 
 /**
@@ -863,6 +868,7 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteAMap = function(mapId, 
   this.requestedMapIdToDelete = mapId;
   this.requestedMapTitle = mapTitle;
   this.choosing = false;
+  this.setDragHandler();
 };
 
 /**
@@ -1135,6 +1141,7 @@ app.MymapsDirectiveController.prototype.openChooseMapModal = function() {
           } else if (!goog.array.isEmpty(mymaps) || this.appUserManager_.getMymapsAdmin()) {
             this.choosing = true;
             this.maps = mymaps;
+            this.setDragHandler();
           } else {
             this.notify_(this.gettextCatalog.getString(
                 'You have no existing Maps, please create a New Map'
@@ -1179,6 +1186,7 @@ app.MymapsDirectiveController.prototype.openMergeLinesModal = function() {
     var msg = this.gettextCatalog.getString('Il faut au moins 2 lignes disponibles pour pouvoir les fusionner.');
     this.notify_(msg, app.NotifyNotificationType.INFO);
   }
+  this.setDragHandler();
 };
 
 
@@ -1197,6 +1205,7 @@ app.MymapsDirectiveController.prototype.openModifyMapModal = function() {
     this.newIsPublic = this.appMymaps_.mapIsPublic;
     this.modal = 'MODIFY';
   }
+  this.setDragHandler();
 };
 
 
@@ -1261,6 +1270,7 @@ app.MymapsDirectiveController.prototype.deleteAMap = function(mapId) {
         this.askToConnect();
       } else {
         this.choosing = true;
+        this.setDragHandler();
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
         goog.array.remove(this.maps,
@@ -1664,6 +1674,14 @@ app.MymapsDirectiveController.prototype.fit = function(extent) {
  */
 app.MymapsDirectiveController.prototype.afterReorder = function(feature, array) {
   this.drawnFeatures_.computeOrder();
+};
+
+/**
+ * Set the drag handle on element H4.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.setDragHandler = function() {
+  $('.modal-dialog').draggable('option', 'handle', 'h4');
 };
 
 app.module.controller('AppMymapsController', app.MymapsDirectiveController);
