@@ -1,0 +1,42 @@
+CACHE MANIFEST
+
+<%
+  settings = request.registry.settings
+  import os
+  import glob
+  fonts = os.listdir('/app/geoportailv3_geoportal/static-ngeo/fonts/')
+  webfonts = os.listdir('/app/geoportailv3_geoportal/static-ngeo/webfonts/')
+  import time
+  main_js = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/main.*.js')[0]
+  main_js_url = 'geoportailv3_geoportal:static-ngeo/build/' + os.path.basename(main_js)
+  main_css = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/main.*.css')[0]
+  main_css_url = 'geoportailv3_geoportal:static-ngeo/build/' + os.path.basename(main_css)
+%>
+
+% if 'skip_appcache' in settings:
+# Dev mode: prevent caching on a 10s basis ${int(time.time()) / 10}
+% endif
+
+CACHE:
+
+${request.static_url(main_js_url)}
+${request.static_url(main_css_url)}
+
+<%
+#FIXME: restore when locales are handled ${request.static_url('geoportailv3_geoportal:static/build/locale/fr/geoportailv3.json')}
+%>
+% for font in fonts:
+${request.static_url('geoportailv3_geoportal:static-ngeo/fonts/' + font)}
+% endfor
+% for webfont in webfonts:
+${request.static_url('geoportailv3_geoportal:static-ngeo/webfonts/' + webfont)}
+% endfor
+
+NETWORK:
+*
+
+FALLBACK:
+/theme/main /theme/main
+/themes ${request.route_url('themes', _query={'version': '2', 'background': 'bglayers', 'interface': 'desktop', 'catalogue': 'true', 'min_levels': '1'})}
+${request.route_url('mymaps_getallcategories')} ${request.route_url('mymaps_getallcategories')}
+/predefined_wms /predefined_wms

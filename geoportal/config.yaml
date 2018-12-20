@@ -338,9 +338,11 @@ vars:
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
         shorturlServiceUrl: shortener_create
       }
-      static: {appImagesPath: 'geoportailv3_geoportal:static/images/', appQueryTemplatesPath: 'geoportailv3_geoportal:static/js/query/',
+      static: {
+        appImagesPath: 'geoportailv3_geoportal:static/images/', appQueryTemplatesPath: 'geoportailv3_geoportal:static/js/query/',
         arrowModelUrl: 'geoportailv3_geoportal:static/models/arrow5.glb', assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
-        cesiumURL: 'geoportailv3_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
+        cesiumURL: 'geoportailv3_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
+      }
       wfs_permalink:
         defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
         defaultFeaturePrefix: feature

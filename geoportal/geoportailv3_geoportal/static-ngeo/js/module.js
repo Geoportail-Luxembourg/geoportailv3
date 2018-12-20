@@ -107,7 +107,7 @@ exports.constant('ngeoLayertreeTemplateUrl', 'templatecache/ngeoLayertreeTemplat
 exports.constant('ngeoPopupTemplateUrl', 'templatecache/ngeoPopupTemplateUrl');
 exports.constant('ngeoScaleselectorTemplateUrl', 'templatecache/ngeoScaleselectorTemplateUrl');
 exports.constant('ngeoOfflineTestUrl', '/ping');
-exports.constant('ngeoOfflineTemplateUrl', 'templatecache/ngeoOfflineTemplateUrl');
+exports.constant('ngeoOfflineTemplateUrl', () => 'templatecache/ngeoOfflineTemplateUrl');
 exports.constant('ngeoOlcsControls3dTemplateUrl', 'templatecache/ngeoOlcsControls3dTemplateUrl');
 exports.constant('appBackgroundlayerTemplateUrl', 'templatecache/appBackgroundlayerTemplateUrl');
 exports.constant('appLayermanagerTemplateUrl', 'templatecache/appLayermanagerTemplateUrl');

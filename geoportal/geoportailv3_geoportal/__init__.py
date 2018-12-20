@@ -8,6 +8,8 @@ from c2cgeoportal_geoportal.lib.authentication import create_authentication
 from geoportailv3_geoportal.resources import Root
 
 from pyramid.renderers import JSON
+from pyramid_mako import add_mako_renderer
+
 from decimal import Decimal
 from marrow.mailer import Mailer
 # from pyramid.events import NewRequest
@@ -67,6 +69,8 @@ def main(global_config, **settings):
     distutils.core._setup_stop_after = 'config'
     config.include('c2cgeoportal_geoportal')
     distutils.core._setup_stop_after = None
+
+    add_mako_renderer(config, '.appcache')
 
     config.add_translation_dirs('geoportailv3_geoportal:locale/')
 
@@ -354,6 +358,11 @@ def main(global_config, **settings):
     config.add_route('isthemeprivate', '/isthemeprivate')
     config.add_route('download_resource', '/downloadresource')
 
+    # Appcache manifest
+    config.add_route(
+        'appcache',
+        '/geoportailv3.appcache'
+    )
     # # ldap
     # from geoportailv3_geoportal.views.authentication import ldap_user_validator, \
     #     get_user_from_request

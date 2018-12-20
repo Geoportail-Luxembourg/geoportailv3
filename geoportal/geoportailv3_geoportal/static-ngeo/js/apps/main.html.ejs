@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl">
+<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
   <head>
-  <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
+    <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport"
-          content="initial-scale=1.0, user-scalable=no, width=device-width">
+        content="initial-scale=1.0, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-title" content="geoportail.lu">
     <meta name="application-name" content="geoportail.lu">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,15 +22,23 @@
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114-precomposed.png" />
- </head>
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
+  </head>
+
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-inner">
           <div class="pull-left brand">
-            <img src="//cdn.public.lu/skizz/govbar/logos/gov-light.png" alt="Gouvernement du Grand-Duché de Luxembourg">
+            <img src="<%=require("../../images/gov-light.png")%>"> alt="Gouvernement du Grand-Duché de Luxembourg">
           </div>
+        </div>
+
+        <div class="offline-msg alert-danger" translate>
+          <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
+            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
+          </span>
+          <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
         </div>
 
         <ul class="nav navbar-nav pull-right">
@@ -91,13 +99,13 @@
             <span translate>Afficher les modèles 3D</span>
           </div>
           <ul class="nav nav-tabs">
-            <li role="presentation">
-            <a href="#mylayers" data-toggle="tab">
-              <span translate>my_layers</span>
-              <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+            <li role="presentation" class="my-layers-tab">
+              <a href="#mylayers" data-toggle="tab">
+                <span translate>my_layers</span>
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
               </a>
             </li>
-            <li role="presentation" class="active">
+            <li role="presentation" class="active catalog-tab">
               <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
           </ul>
@@ -107,7 +115,7 @@
                 app-layermanager-layers="::mainCtrl.selectedLayers"
                 app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
               </app-layermanager>
-              <div class="text-center">
+              <div class="text-center add-layers">
                 <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
                 <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
               </div>
@@ -140,7 +148,7 @@
         </div>
 
         <!-- Infos -->
-        <div id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+        <div ng-if="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
           <h2 translate>infos</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
@@ -228,7 +236,7 @@
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
-      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
+      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
            app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
         <div class="slider-line"></div>
         <div class="slider-arrows">
@@ -237,6 +245,14 @@
         </div>
         <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
       </div>
+      <ngeo-offline
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-mask-margin="::100"
+          ngeo-offline-min-zoom="::12"
+          ngeo-offline-max-zoom="::16"
+          ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
+      >
+      </ngeo-offline>
     </div>
   </div>
     <!-- Begin bottom bar -->
@@ -288,7 +304,7 @@
         <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
-            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
+            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"
             app-print-info-open="mainCtrl.infosOpen"
             app-print-routing-open="mainCtrl.routingOpen"></app-print>
         </li>
@@ -302,25 +318,25 @@
     </footer>
 
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
-    <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
-    <% } %>
-    <script src="/dynamic.js?interface=main"></script>
+        <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+        <% } %>
+        <script src="/dynamic.js?interface=main"></script>
 
-    <!-- Piwik -->
-      <script type="text/javascript">
-        var _paq = _paq || [];
-        // We do the page track in themeservice to capture any theme changes
-        //_paq.push(['trackPageView']); 
-        _paq.push(['enableLinkTracking']);
-        (function() {
-          var u="https://statistics.geoportail.lu/";
-          _paq.push(['setTrackerUrl', u+'piwik.php']);
-          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-          g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-        })();
-      </script>
-      <noscript><p><img src="https://statistics.geoportail.lu/piwik.php?idsite=18" style="border:0;" alt="" /></p></noscript>
-    <!-- End Piwik Code -->
+        <!-- Piwik -->
+          <script type="text/javascript">
+            var _paq = _paq || [];
+            // We do the page track in themeservice to capture any theme changes
+            //_paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+              var u="https://statistics.geoportail.lu/";
+              _paq.push(['setTrackerUrl', u+'piwik.php']);
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+            })();
+          </script>
+          <noscript><p><img src="https://statistics.geoportail.lu/piwik.php?idsite=18" style="border:0;" alt="" /></p></noscript>
+        <!-- End Piwik Code -->
 
   </body>
 </html>
