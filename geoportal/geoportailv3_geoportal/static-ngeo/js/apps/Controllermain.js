@@ -12,6 +12,7 @@
  */
 
 import 'jquery';
+import 'bootstrap';
 import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
