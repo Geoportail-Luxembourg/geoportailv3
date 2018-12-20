@@ -431,8 +431,8 @@ def main(global_config, **settings):
         ('lux_layer_internal_wms', LuxLayerInternalWMS),
     ))
 
-    with PermissionSetter(config):
+    # with PermissionSetter(config):
       # scan view decorator for adding routes
-      config.scan()
+    config.scan()
 
     return config.make_wsgi_app()
