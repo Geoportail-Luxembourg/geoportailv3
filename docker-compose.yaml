@@ -30,6 +30,10 @@ services:
       - /var/sig:/var/sig:ro
       - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
       - DB_MYMAPS

@@ -1,0 +1,36 @@
+CACHE MANIFEST
+
+<%
+  settings = request.registry.settings
+  import os
+  jsbuild_root_dir = settings.get('jsbuild')['root_dir']
+  fonts = os.listdir(jsbuild_root_dir + '/geoportailv3/static/build/fonts/')
+  webfonts = os.listdir(jsbuild_root_dir + '/geoportailv3/static/webfonts/')
+  import time
+%>
+
+% if 'skip_appcache' in settings:
+# Dev mode: prevent caching on a 10s basis ${int(time.time()) / 10}
+% endif
+
+CACHE:
+${request.static_url('geoportailv3:static/build/build.js')}
+${request.static_url('geoportailv3:static/build/locale/fr/geoportailv3.json')}
+${request.static_url('geoportailv3:static/build/build.min.css')}
+${request.static_url('geoportailv3:static/images/gov-light.png')}
+% for font in fonts:
+${request.static_url('geoportailv3:static/build/fonts/' + font)}
+% endfor
+% for webfont in webfonts:
+${request.static_url('geoportailv3:static/webfonts/' + webfont)}
+% endfor
+${request.static_url('geoportailv3:static/build/fonts/fontawesome-webfont.woff2')}?v=4.7.0
+
+NETWORK:
+*
+
+FALLBACK:
+/theme/main /theme/main
+/themes ${request.route_url('themes', _query={'version': '2', 'background': 'bglayers', 'interface': 'desktop', 'catalogue': 'true', 'min_levels': '1'})}
+${request.route_url('mymaps_getallcategories')} ${request.route_url('mymaps_getallcategories')}
+/predefined_wms /predefined_wms
