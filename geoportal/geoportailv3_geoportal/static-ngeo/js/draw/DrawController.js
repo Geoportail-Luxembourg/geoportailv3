@@ -26,7 +26,7 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olFeature from 'ol/Feature.js';
 import {getChangeEventType} from 'ol/Object.js';
-import olObservable from 'ol/Observable.js';
+import {unByKey} from 'ol/Observable.js';
 import olOverlay from 'ol/Overlay.js';
 import {listen} from 'ol/events.js';
 import {getCenter} from 'ol/extent.js';
@@ -675,7 +675,7 @@ exports.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
 
   if (this.changeEventKey_ !== null) {
-    olObservable.unByKey(this.changeEventKey_);
+    unByKey(this.changeEventKey_);
     this.changeEventKey_ = null;
   }
   if (this.drawnFeatures_.continuingLine) {

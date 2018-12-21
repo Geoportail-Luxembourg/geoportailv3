@@ -2,12 +2,12 @@
  * @module app.OfflineDownloader
  */
 import appModule from './module.js';
-import downloader from 'ngeo/offline/Downloader.js';
+import Downloader from 'ngeo/offline/Downloader.js';
 
 /**
  * @extends {ngeo.offline.Downloader}
  */
-const OfflineDownloader = class extends downloader {
+const OfflineDownloader = class extends Downloader {
   /**
    * @ngInject
    * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
@@ -38,7 +38,8 @@ const OfflineDownloader = class extends downloader {
   save(extent, map) {
     this.appMymapsOffline_.save();
     var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-    piwik.push(['setDocumentTitle',
+    piwik.push([
+      'setDocumentTitle',
       'saveOfflineMap'
     ]);
     piwik.push(['trackPageView']);

@@ -9,7 +9,7 @@
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 
-import olObservable from 'ol/Observable.js';
+import {unByKey} from 'ol/Observable.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import olLayerProperty from 'ol/layer/Property.js';
@@ -190,10 +190,9 @@ exports.prototype.init = function(map) {
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
         console.assert(getUid(layer) in layerOpacityListenerKeys);
-        olObservable.unByKey(layerOpacityListenerKeys[getUid(layer)]);
+        unByKey(layerOpacityListenerKeys[getUid(layer)]);
       }, this);
 };
-
 appModule.service('appExclusionManager', exports);
 
 

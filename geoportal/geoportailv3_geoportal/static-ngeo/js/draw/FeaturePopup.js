@@ -7,7 +7,7 @@
 
 import appModule from '../module.js';
 import olOverlay from 'ol/Overlay.js';
-import olObservable from 'ol/Observable.js';
+import {unByKey} from 'ol/Observable.js';
 import {listen, listenOnce} from 'ol/events.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
@@ -158,7 +158,7 @@ exports.prototype.setDraggable = function(element) {
               this.startingDragPoint_ = null;
 
               if (this.mousemoveEvent_) {
-                olObservable.unByKey(this.mousemoveEvent_);
+                unByKey(this.mousemoveEvent_);
               }
               this.mousemoveEvent_ = null;
             }.bind(this));
@@ -212,7 +212,7 @@ exports.prototype.hide = function() {
   delete this.scope_['feature'];
   delete this.scope_['map'];
   this.overlay_.setPosition(undefined);
-  olObservable.unByKey(this.mousedownEvent_);
+  unByKey(this.mousedownEvent_);
   this.mousedownEvent_ = null;
 };
 

@@ -163,7 +163,10 @@ import '../../less/geoportailv3.less'
  import appWmtsHelper from '../WmtsHelper.js';
  import appMiscFile from '../misc/file.js';
 
+ import OfflineDownloader from '../OfflineDownloader.js';
+ import OfflineRestorer from '../OfflineRestorer.js';
  /* eslint-enable no-unused-vars */
+
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -208,7 +211,7 @@ import '../../less/geoportailv3.less'
  * @export
  * @ngInject
  */
-const exports = function(
+const MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
@@ -216,7 +219,8 @@ const exports = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
+    appOfflineDownloader, appOfflineRestorer) {
   /**
    * @type {boolean}
    * @export
@@ -648,8 +652,9 @@ const exports = function(
       this.showTab('a[href=\'#mylayers\']');
     }
   });
-  ngeoOfflineServiceManager.setSaveService('appOfflineDownloader');
-  ngeoOfflineServiceManager.setRestoreService('appOfflineRestorer');
+
+  ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
+  ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
 };
 
 
@@ -657,7 +662,7 @@ const exports = function(
  * @private
  * @param {boolean} active 3d state
  */
-exports.prototype.enable3dCallback_ = function(active) {
+MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
     return;
   }
@@ -675,7 +680,7 @@ exports.prototype.enable3dCallback_ = function(active) {
  * @param {ngeo.map.FeatureOverlayMgr} featureOverlayMgr Feature overlay manager.
  * @private
  */
-exports.prototype.addLocationControl_ = function(featureOverlayMgr) {
+MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
     var isActive = false;
     var activateGeoLocation = this.ngeoLocation_.getParam('tracking');
     if (activateGeoLocation && 'true' === activateGeoLocation) {
@@ -703,7 +708,7 @@ exports.prototype.addLocationControl_ = function(featureOverlayMgr) {
  * @private
  * @return {!app.Map} The extended ol.Map.
  */
-exports.prototype.createMap_ = function() {
+MainController.prototype.createMap_ = function() {
   var interactions = interactionDefaults({
     altShiftDragRotate: false,
     pinchRotate: false,
@@ -739,7 +744,7 @@ exports.prototype.createMap_ = function() {
  * @param {angular.Scope} $rootScope The root scope
  * @return {!app.olcs.Lux3DManager} The created manager.
  */
-exports.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
+MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
   // [minx, miny, maxx, maxy]
   console.assert(this.map_ !== null && this.map_ !== undefined);
   const cameraExtentInRadians = [5.31, 49.38, 6.64, 50.21].map(toRadians);
@@ -752,7 +757,7 @@ exports.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) {
  * @export
  * @return {boolean} Whether 3D is active.
  */
-exports.prototype.is3dEnabled = function() {
+MainController.prototype.is3dEnabled = function() {
   return this.ol3dm_.is3dEnabled();
 };
 
@@ -763,7 +768,7 @@ exports.prototype.is3dEnabled = function() {
  * @param {angular.Scope} scope Scope.
  * @private
  */
-exports.prototype.manageUserRoleChange_ = function(scope) {
+MainController.prototype.manageUserRoleChange_ = function(scope) {
   scope.$watch(function() {
     return this.appUserManager_.roleId;
   }.bind(this), function(newVal, oldVal) {
@@ -784,7 +789,7 @@ exports.prototype.manageUserRoleChange_ = function(scope) {
  * @private
  * @return {?angular.$q.Promise} Promise.
  */
-exports.prototype.loadThemes_ = function() {
+MainController.prototype.loadThemes_ = function() {
   return this.appThemes_.loadThemes(this.appUserManager_.roleId);
 };
 
@@ -793,7 +798,7 @@ exports.prototype.loadThemes_ = function() {
  * @param {angular.Scope} scope Scope
  * @private
  */
-exports.prototype.manageSelectedLayers_ =
+MainController.prototype.manageSelectedLayers_ =
     function(scope) {
       ngeoMiscSyncArrays(this.map_.getLayers().getArray(),
       this['selectedLayers'], true, scope,
@@ -828,7 +833,7 @@ exports.prototype.manageSelectedLayers_ =
 /**
  * @export
  */
-exports.prototype.openFeedback = function() {
+MainController.prototype.openFeedback = function() {
   if (this.sidebarOpen()) {
     this.closeSidebar();
     this['feedbackOpen'] = true;
@@ -840,7 +845,7 @@ exports.prototype.openFeedback = function() {
 /**
  * @export
  */
-exports.prototype.closeSidebar = function() {
+MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] = false;
 };
@@ -850,7 +855,7 @@ exports.prototype.closeSidebar = function() {
  * @return {boolean} `true` if the sidebar should be open, otherwise `false`.
  * @export
  */
-exports.prototype.sidebarOpen = function() {
+MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'];
 };
@@ -861,7 +866,7 @@ exports.prototype.sidebarOpen = function() {
  * @param {boolean=} track track page view
  * @export
  */
-exports.prototype.switchLanguage = function(lang, track) {
+MainController.prototype.switchLanguage = function(lang, track) {
   if (typeof track !== 'boolean') {
     track = true;
   }
@@ -883,7 +888,7 @@ exports.prototype.switchLanguage = function(lang, track) {
  * @return {string} the current theme.
  * @export
  */
-exports.prototype.getCurrentTheme = function() {
+MainController.prototype.getCurrentTheme = function() {
   return this.appTheme_.getCurrentTheme();
 };
 
@@ -891,14 +896,14 @@ exports.prototype.getCurrentTheme = function() {
  * @return {string} the current theme.
  * @export
  */
-exports.prototype.getEncodedCurrentTheme = function() {
+MainController.prototype.getEncodedCurrentTheme = function() {
   return this.appTheme_.encodeThemeName(this.appTheme_.getCurrentTheme());
 };
 
 /**
  * @private
  */
-exports.prototype.initLanguage_ = function() {
+MainController.prototype.initLanguage_ = function() {
   this.scope_.$watch(function() {
     return this['lang'];
   }.bind(this), function(newValue) {
@@ -925,7 +930,7 @@ exports.prototype.initLanguage_ = function() {
 /**
  * @private
  */
-exports.prototype.initMymaps_ = function() {
+MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
 
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
@@ -960,7 +965,7 @@ exports.prototype.initMymaps_ = function() {
  * between the displayed layers and the mymaps layers
  * @private
  */
-exports.prototype.compareLayers_ = function() {
+MainController.prototype.compareLayers_ = function() {
   if (this.appMymaps_.isEditable()) {
     this['layersChanged'] = false;
     var backgroundLayer = this.backgroundLayerMgr_.get(this.map_);
@@ -999,7 +1004,7 @@ exports.prototype.compareLayers_ = function() {
  * @param {string} selector JQuery selector for the tab link.
  * @export
  */
-exports.prototype.showTab = function(selector) {
+MainController.prototype.showTab = function(selector) {
   $(selector).tab('show');
 };
 
@@ -1007,7 +1012,7 @@ exports.prototype.showTab = function(selector) {
 /**
  * @export
  */
-exports.prototype.toggleThemeSelector = function() {
+MainController.prototype.toggleThemeSelector = function() {
   var layerTree = $('app-catalog .themes-switcher');
   var themesSwitcher = $('app-themeswitcher #themes-content');
   var themeTab = $('#catalog');
@@ -1030,7 +1035,7 @@ exports.prototype.toggleThemeSelector = function() {
 /**
  * @export
  */
-exports.prototype.toggleTiles3dVisibility = function() {
+MainController.prototype.toggleTiles3dVisibility = function() {
   this.tiles3dVisible = !this.tiles3dVisible;
   this.ol3dm_.set3dTilesetVisible(this.tiles3dVisible);
   this.stateManager_.updateState({
@@ -1048,11 +1053,11 @@ exports.prototype.toggleTiles3dVisibility = function() {
  * @return {boolean} the state.
  * @export
  */
-exports.prototype.isDisconnectedOrOffline = function() {
+MainController.prototype.isDisconnectedOrOffline = function() {
   return this.offlineMode.isEnabled() || !!this.networkStatus_.isDisconnected();
 };
 
-appModule.controller('MainController', exports);
+appModule.controller('MainController', MainController);
 
 
-export default exports;
+export default MainController;
