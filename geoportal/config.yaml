@@ -189,20 +189,24 @@ vars:
       default_basemap: plan
       default_theme: null
       print_template: [1 A4 portrait, 2 A3 landscape]
-    available_in_templates: [default_basemap, default_theme, filterable_layers, print_template,
+    available_in_templates: [
+      default_basemap, default_theme, filterable_layers, print_template,
       preset_layer_filter, open_panel]
     registered: {}
   global_headers:
-  - headers: {Content-Security-Policy: 'default-src ''self'' https://*; script-src
+  - headers: {
+      Content-Security-Policy: 'default-src ''self'' https://*; script-src
         ''self'' ''unsafe-inline'' https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/;
         style-src ''self'' ''unsafe-inline''; img-src * data:; connect-src *', Referrer-Policy: origin,
       Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
       X-Frame-Options: SAMEORIGIN, X-Xss-Protection: 1; mode=block}
     pattern: .*
-  - headers: {Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
+  - headers: {
+      Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
         'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src *;}
     pattern: ^/apihelp.html
-  - headers: {Content-Security-Policy: 'default-src ''self''; script-src ''self''
+  - headers: {
+      Content-Security-Policy: 'default-src ''self''; script-src ''self''
         ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; img-src * data:;
         worker-src ''self'' blob:', Referrer-Policy: same-origin}
     pattern: ^/admin/.*
@@ -212,7 +216,8 @@ vars:
       access_control_max_age: 600
       cache_control_max_age: 600
     config:
-      access_control_allow_origin: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
+      access_control_allow_origin: [
+        '{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}',
         '*']
       access_control_max_age: 600
       cache_control_max_age: 600
@@ -291,6 +296,7 @@ vars:
   interfaces: [main]
   interfaces_config:
     main:
+      tree_params: {version: '2', catalogue: 'true', min_levels: '1'}
       constants:
         appAuthtktCookieName: auth_tkt_main
         appExcludeThemeLayerSearch: []
@@ -339,9 +345,11 @@ vars:
         shorturlServiceUrl: shortener_create
       }
       static: {
-        appImagesPath: 'geoportailv3_geoportal:static/images/', appQueryTemplatesPath: 'geoportailv3_geoportal:static/js/query/',
-        arrowModelUrl: 'geoportailv3_geoportal:static/models/arrow5.glb', assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
-        cesiumURL: 'geoportailv3_geoportal:node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
+        appImagesPath: 'geoportailv3_geoportal:static-ngeo/images/',
+        appQueryTemplatesPath: 'geoportailv3_geoportal:static-ngeo/js/query/',
+        arrowModelUrl: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb',
+        assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
+        cesiumURL: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
       }
       wfs_permalink:
         defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
