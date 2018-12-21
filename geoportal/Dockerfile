@@ -36,6 +36,8 @@ RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=producti
 
 COPY . /app
 
+RUN cd /app/geoportailv3_geoportal/static-ngeo && ln -s ../../node_modules
+
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
 
 RUN \
