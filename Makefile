@@ -34,14 +34,11 @@ help:
 	@echo "Main targets:"
 	@echo
 	@echo  "- build		Build the project"
+	@echo  "- run		  Run the project"
 	@echo
 	@echo "Utility targets:"
 	@echo
 	@echo $(UTILITY_HELP)
-	@echo
-	@echo "Secondary targets:"
-	@echo
-	@echo $(SECONDARY_HELP)
 
 
 .PHONY: build
