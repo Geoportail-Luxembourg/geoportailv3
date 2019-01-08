@@ -48,6 +48,7 @@ class Mymaps(object):
         self.request = request
         self.config = self.request.registry.settings
         self.db_mymaps = DBSessions['mymaps']
+        self.db_pgroute = DBSessions['pgroute']
 
     @view_config(route_name="get_arrow_color")
     def get_arrow_color(self):
@@ -165,10 +166,10 @@ class Mymaps(object):
                                    wp1=waypoints[1],
                                    wp0=waypoints[0])
         try:
-            lines = self.request.db_pgroute.execute(lines_sql)
+            lines = self.db_pgroute.execute(lines_sql)
         except Exception as e:
             log.exception(e)
-            self.request.db_pgroute.rollback()
+            self.db_pgroute.rollback()
             lines = []
             the_line = fallback_line
         new_line = None
