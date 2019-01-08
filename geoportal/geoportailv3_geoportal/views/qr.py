@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadRequest, HTTPNotAcceptable
-from io import StringIO
+from io import BytesIO
 import logging
 import qrcode
 import re
@@ -35,7 +35,7 @@ class Qr(object):
         qr.add_data(url)
         qr.make(fit=True)
         im = qr.make_image()
-        output = StringIO()
+        output = BytesIO()
         im.save(output)
         headers = {"Content-Type": 'image/png'}
         return Response(output.getvalue(), headers=headers)
