@@ -9,6 +9,7 @@
 !alembic.yaml
 !production.ini
 !ng_locale_downloader.sh
+!generate_i18n.sh
 !development.ini
 !setup.cfg
 !setup.py
@@ -17,3 +18,4 @@
 !c2cgeoportal/commons
 !c2cgeoportal/geoportal
 !c2cgeoportal/admin
+!.tx

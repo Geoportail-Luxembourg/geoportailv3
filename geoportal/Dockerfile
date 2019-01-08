@@ -38,6 +38,8 @@ COPY . /app
 
 RUN cd /app/geoportailv3_geoportal/static-ngeo && ln -s ../../node_modules
 
+RUN ./generate_i18n.sh
+
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
 
 RUN \
