@@ -19,3 +19,4 @@
 !c2cgeoportal/geoportal
 !c2cgeoportal/admin
 !.tx
+!fix-db.sh

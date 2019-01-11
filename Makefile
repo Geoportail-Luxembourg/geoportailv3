@@ -191,3 +191,7 @@ dev: build
 .PHONY: attach
 attach:
 	docker-compose exec geoportal bash
+
+.PHONY: fix-db
+fix-db:
+	docker-compose exec geoportal ./fix-db.sh
