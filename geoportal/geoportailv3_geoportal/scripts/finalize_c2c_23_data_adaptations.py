@@ -6,9 +6,8 @@ import argparse
 import warnings
 import transaction
 
-from pyramid.paster import get_app
-from logging.config import fileConfig
 from sqlalchemy import text
+from . import get_session
 
 
 def main():
@@ -30,7 +29,7 @@ def main():
         default="app", dest="app_name",
         help="The application name (optional, default is 'app')"
     )
-    
+
     options = parser.parse_args()
     app_config = options.app_config
     app_name = options.app_name
@@ -46,17 +45,12 @@ def main():
     # Ignores pyramid deprecation warnings
     warnings.simplefilter("ignore", DeprecationWarning)
 
-    fileConfig(app_config, defaults=os.environ)
-    get_app(app_config, options.app_name, options=os.environ)
-
-    # must be done only once we have loaded the project config
+    session = get_session(app_config, app_name)
     from c2cgeoportal_commons.models import DBSession, main, static
     from c2cgeoportal_commons.models.main import OGCSERVER_TYPE_MAPSERVER, \
         OGCSERVER_TYPE_GEOSERVER,OGCSERVER_AUTH_NOAUTH, OGCServer, Metadata, \
         TreeItem, TreeGroup, LayerGroup, LayerWMS, RestrictionArea, Interface
     from geoportailv3_geoportal.models import LuxLayerInternalWMS
-
-    session = DBSession()
 
     # Column link can't be NULL in GMF metadata. Fill it.
     for metadata in session.query(Metadata).filter(Metadata.name == 'link' and Metadata.value == '').all():
@@ -116,7 +110,7 @@ def main():
 
     # End note:
     # Now the the column 'url' in LuxLayerInternalWMS must be manually removed.
-      
+
 
 if __name__ == "__main__":
     main()

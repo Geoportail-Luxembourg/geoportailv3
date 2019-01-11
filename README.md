@@ -13,26 +13,8 @@ System-level dependencies
 The following must be installed on the system:
 
 * ``git``
-* ``python-virtualenv``
-* ``httpd``
-* ``mod_wsgi``
-* ``postgresql-devel`` (or ``libpq-dev`` on Debian)
-* ``python-devel``
-* ``gcc``
 * ``npm``
-* ``openldap-devel`` (or ``libldap2-dev`` and ``libsasl2-dev`` on Debian)
-* ``libjpeg-devel``
-
-For the print to work, you will need
-* ``jdk`` (java-1.7.0-openjdk-devel)
-* ``tomcat``
-
-For the legend, we will need
-* ``libffl-devel``
-* ``libxml2-devel``
-* ``libxslt-devel``
-
-Make sure ``pg_config`` (from the ``postgresql-devel``) is in your ``PATH``.
+* ``gettext``
 
 Checkout
 --------
@@ -57,9 +39,12 @@ Local run and development
 To some extent, it is possible to simulate the services needed by the
 application using git@github.com:camptocamp/luxembourg_dev_db.git
 Clone that repository and there run: `make`.
+In order to work with a database dump, simply put the sql file there before running `make`.
 
 To start the composition use: `make run` and open http://localhost:8080.
-To start the dev composition use: `make dev` and open http://localhost:8080/dev/main.html.
+Alternatively, to start the dev composition use: `make dev` and open http://localhost:8080/dev/main.html.
+
+Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
 
 Debug c2cgeoportal
@@ -83,6 +68,17 @@ In the `geoportal/.dockerignore` file add:
 !c2cgeoportal/geoportal
 !c2cgeoportal/admin
 ```
+
+Translations
+------------
+
+The translation worflow is as follows:
+- make update-pots # Replace pot files with new ones using a running composition
+- make update-translations # push new pots to transifex
+- make pull-translations # retrieve pos from transifex
+- # commit updated po files
+- make build # build image using updated po files
+
 
 Automatic deployement
 ---------------------

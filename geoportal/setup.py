@@ -37,6 +37,10 @@ setup(
         ],
         'console_scripts': [
           'finalize23DataAdaptations = geoportailv3_geoportal.scripts.finalize_c2c_23_data_adaptations:main',
+          'create_db = geoportailv3_geoportal.scripts.create_db:main',
+          'db2es = geoportailv3_geoportal.scripts.db2es:main',
+          'layers2es = geoportailv3_geoportal.scripts.layers2es:main',
+          'tooltips2pot = geoportailv3_geoportal.scripts.tooltips2pot:main',
         ],
     },
 )

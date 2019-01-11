@@ -2,16 +2,22 @@
 DOCKER_BASE ?= camptocamp/geoportailv3
 DOCKER_TAG ?= latest
 GIT_HASH ?= $(shell git rev-parse HEAD)
+PACKAGE ?= geoportailv3
 
 
 UTILITY_HELP = -e "- update-translations	Synchronize the translations with Transifex" \
         "\n- recreate-search-poi	Recreate the ElasticSearch POI Index" \
         "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index" \
         "\n- update-search-layers	Update the ElasticSearch Layers Index" \
-        "\n- update-tooltips	Update the automatic generated tooltips fields" \
+        "\n- update-pots	Update client, server and tooltips pots (to be run from internal network)" \
         "\n- pull-translations	Pull the translation"
 
-SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py $(PACKAGE)/views/luxprintproxy.py
+SERVER_LOCALISATION_SOURCES_FILES = \
+  geoportal/$(PACKAGE)_geoportal/models.py \
+  $(shell find geoportal/$(PACKAGE)_geoportal/templates -type f -name '*.html') \
+  $(shell find geoportal/$(PACKAGE)_geoportal/views -type f -name '*.py') \
+  geoportal/$(PACKAGE)_geoportal/views/pag.py \
+  geoportal/$(PACKAGE)_geoportal/views/luxprintproxy.py
 
 TOOLTIPS_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-tooltips.mo, $(LANGUAGES)))
 
@@ -52,34 +58,34 @@ docker-build-geoportal:
 docker-build-config:
 	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) .
 
-DOCKER_COMPOSE_PROJECT ?= geoportalv3
+DOCKER_COMPOSE_PROJECT ?= luxembourg
 DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1
-PACKAGE ?= geoportalv3
-NGEO_INTERFACES ?= main
 APP_JS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
-APP_HTML_FILES += $(addprefix geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/, $(addsuffix .html.ejs, $(NGEO_INTERFACES)))
-APP_DIRECTIVES_PARTIALS_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+APP_HTML_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
+APP_HTML_FILES += geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
-I18N_SOURCE_FILES += $(APP_HTML_FILES) \
-	$(APP_JS_FILES) \
-	$(APP_DIRECTIVES_PARTIALS_FILES) \
-	geoportal/config.yaml \
+
+I18N_SOURCE_FILES += \
 	geoportal/development.ini \
-	$(PRINT_CONFIG_FILE)
+	geoportal/print-config.yaml.tmpl \
+  $(APP_HTML_FILES) \
+	$(APP_JS_FILES)
 
 
-.PHONY: update-po
-update-po:
-	docker cp geoportal/geoportailv3_geoportal/locale/en/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/en.po
-	docker cp geoportal/geoportailv3_geoportal/locale/fr/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/fr.po
-	docker cp geoportal/geoportailv3_geoportal/locale/de/LC_MESSAGES/geoportailv3_geoportal-client.po $(DOCKER_CONTAINER):/tmp/de.po
-	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/geoportailv3_geoportal-client.pot $(I18N_SOURCE_FILES)
-	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/en.po /tmp/geoportailv3_geoportal-client.pot
-	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/fr.po /tmp/geoportailv3_geoportal-client.pot
-	docker exec $(DOCKER_CONTAINER) msgmerge --backup=none --update --sort-output --no-location /tmp/de.po /tmp/geoportailv3_geoportal-client.pot
-	docker cp $(DOCKER_CONTAINER):/tmp/en.po geoportal/geoportailv3_geoportal/locale/en/LC_MESSAGES/geoportailv3_geoportal-client.po
-	docker cp $(DOCKER_CONTAINER):/tmp/fr.po geoportal/geoportailv3_geoportal/locale/fr/LC_MESSAGES/geoportailv3_geoportal-client.po
-	docker cp $(DOCKER_CONTAINER):/tmp/de.po geoportal/geoportailv3_geoportal/locale/de/LC_MESSAGES/geoportailv3_geoportal-client.po
+.PHONY: update-pots
+update-pots:
+	echo "This target must be run inside Luxembourg internal network"
+	# Handle client.pot
+	docker cp ./print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
+	docker cp $(DOCKER_CONTAINER):/tmp/client.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
+	# Handle server.pot
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
+	docker cp $(DOCKER_CONTAINER):/tmp/server.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
+	# Handle tooltips.pot
+	docker exec $(DOCKER_CONTAINER) tooltips2pot.py
+	docker exec $(DOCKER_CONTAINER) msguniq /tmp/tooltips.pot -o /tmp/tooltips.pot
+	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
 # Targets related to the JS API
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build

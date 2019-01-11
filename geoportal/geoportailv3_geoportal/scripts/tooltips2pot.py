@@ -8,8 +8,9 @@ import re
 from os import path
 from pyramid.paster import bootstrap
 from geojson import loads as geojson_loads
-from c2cgeoportal_commons.models import DBSession
+from . import get_session
 
+TIMEOUT=15
 
 def _get_external_data(url, bbox=None, layer=None):
     body = {'f': 'pjson',
@@ -35,7 +36,8 @@ def _get_external_data(url, bbox=None, layer=None):
     query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
 
     try:
-        result = urllib.request.urlopen(query, None, 15)
+        print('Requesting %s' % query)
+        result = urllib.request.urlopen(query, None, TIMEOUT)
         content = result.read()
     except:
         traceback.print_exc(file=sys.stdout)
@@ -46,12 +48,12 @@ def _get_external_data(url, bbox=None, layer=None):
     except:
         return []
     if 'fieldAliases' not in esricoll:
-        print("Error with the layer:  %s using query : %s response: %s"
-              % (layer, query, esricoll))
+        print(("Error with the layer:  %s using query : %s response: %s"
+              % (layer, query, esricoll)))
         return []
     else:
         return dict((value, key)
-                    for key, value in esricoll['fieldAliases'].iteritems())
+                    for key, value in esricoll['fieldAliases'].items())
 
 
 def remove_attributes(attributes, attributes_to_remove,
@@ -70,16 +72,13 @@ def remove_attributes(attributes, attributes_to_remove,
 
 
 def main():  # pragma: nocover
-    env = bootstrap("development.ini")
+    session = get_session('development.ini', 'app')
+    from c2cgeoportal_commons.models import DBSession, DBSessions
     from geoportailv3_geoportal.models import LuxGetfeatureDefinition
 
-    package = env["registry"].settings["package"]
-    directory = "%s/locale/" % package
-    destination = path.join(directory, "%s-tooltips.pot" % package)
-
-    w = codecs.open(destination, "wt", encoding="utf-8")
+    w = codecs.open("/tmp/tooltips.pot", "w", encoding="utf-8")
     w.write(
-        u'''#, fuzzy
+        '''#, fuzzy
         msgid ""
         msgstr ""
         "MIME-Version: 1.0\\n"
@@ -88,21 +87,21 @@ def main():  # pragma: nocover
         '''
     )
 
-    results = DBSession.query(LuxGetfeatureDefinition).\
+    results = session.query(LuxGetfeatureDefinition).\
         filter(LuxGetfeatureDefinition.remote_template == False).filter(
             LuxGetfeatureDefinition.template.in_
             (['default.html', 'default_table.html'])).all()  # noqa
 
     fields = []
+    print("%d results" % len(results))
     for result in results:
-        engine = sqlahelper.get_engine(result.engine_gfi)
+        engine = DBSessions[result.engine_gfi]
         first_row = None
         if result.query is not None and len(result.query) > 0:
             if "SELECT" in result.query.upper():
-                first_row = DBSession.execute(result.query).first()
+                first_row = engine.execute(result.query).first()
             else:
-                first_row =\
-                    DBSession.execute("SELECT * FROM " + result.query).first()
+                first_row = engine.execute("SELECT * FROM " + result.query).first()
         if result.rest_url is not None and len(result.rest_url) > 0:
             first_row = _get_external_data(
                 result.rest_url,
@@ -124,7 +123,7 @@ def main():  # pragma: nocover
                 if attribute not in fields:
                     fields.append(attribute)
                     w.write(
-                        u'''#: engine:%(engine)s Layer:%(layer)s Role:%(role)s
+                        '''#: engine:%(engine)s Layer:%(layer)s Role:%(role)s
         msgid "f_%(name)s"
         msgstr ""
         ''' % {
@@ -134,4 +133,4 @@ def main():  # pragma: nocover
                             "name": attribute,
                         }
                     )
-    print("tooltips Pot file updated: %s" % destination)
+    print(("tooltips Pot file updated: %s" % destination))

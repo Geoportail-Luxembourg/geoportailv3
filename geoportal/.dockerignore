@@ -19,4 +19,7 @@
 !c2cgeoportal/geoportal
 !c2cgeoportal/admin
 !.tx
+!lingua-client.cfg
+!lingua-server.cfg
+!print-config.yaml.tmpl
 !fix-db.sh

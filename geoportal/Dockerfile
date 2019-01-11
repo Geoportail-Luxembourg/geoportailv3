@@ -38,6 +38,7 @@ COPY . /app
 
 RUN cd /app/geoportailv3_geoportal/static-ngeo && ln -s ../../node_modules
 
+# The translations (json) are expected to be up-to-date
 RUN ./generate_i18n.sh
 
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
@@ -59,6 +60,9 @@ RUN \
 RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
+
+COPY ./c2cgeoportal/geoportal/c2cgeoportal_geoportal/scaffolds/create/tools /app/tools
+RUN ln -s . geoportal
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]

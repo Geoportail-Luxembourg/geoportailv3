@@ -2,8 +2,7 @@
   "name": "lux",
   "version": "2.3.0",
   "description": "Luxembourg webmap",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/Geoportail-Luxembourg/geoportailv3.git"
@@ -103,4 +102,3 @@
   },
   "dependencies": {}
 }
-
