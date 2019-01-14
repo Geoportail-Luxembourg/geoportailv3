@@ -38,7 +38,6 @@ COPY . /app
 
 RUN cd /app/geoportailv3_geoportal/static-ngeo && ln -s ../../node_modules
 
-# The translations (json) are expected to be up-to-date
 RUN ./generate_i18n.sh
 
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml

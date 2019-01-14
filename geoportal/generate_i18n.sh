@@ -11,7 +11,7 @@ blue() {
 
 prefix() {
   lang=$1
-  prefix="geoportal/geoportailv3_geoportal/locale/$lang/LC_MESSAGES"
+  prefix="geoportailv3_geoportal/locale/$lang/LC_MESSAGES"
   echo $prefix
 }
 
@@ -23,7 +23,7 @@ create_ui_jsons() {
     c2cprefix="$prefix/geoportailv3_geoportal"
     files="$c2cprefix-client.po $prefix/ngeo.po" 
     echo "-> $APP_OUTPUT_DIR/$lang.json"
-    node geoportal/node_modules/.bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
+    node node_modules/.bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
   done
 }
 
@@ -42,7 +42,7 @@ create_mo_files() {
 }
 
 clean_ngeo_en_po() {
-  blue "Retrieve transifex translations"
+  blue "Clean ngeo en po file"
   rm -f `prefix en`/ngeo.po # For English it is enough (and working) to use keys as values
 }
 
@@ -50,4 +50,4 @@ clean_ngeo_en_po() {
 clean_ngeo_en_po
 create_mo_files
 create_ui_jsons
-echo done
+echo all done

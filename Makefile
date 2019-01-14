@@ -96,12 +96,12 @@ API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
 .PHONY: update-translations
 update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
-	$(VENV_BIN)/tx push -s
-	$(VENV_BIN)/tx pull -f
+	tx push --source
+	tx pull --force
 
 .PHONY: pull-translations
 pull-translations:
-	$(VENV_BIN)/tx pull -f
+	tx pull --force
 
 .PHONY: update-search-layers
 update-search-layers:
@@ -114,15 +114,6 @@ recreate-search-layers:
 .PHONY: recreate-search-poi
 recreate-search-poi:
 	$(VENV_BIN)/db2es --reset --index
-
-update-tooltips:
-	$(VENV_BIN)/tooltips2pot
-
-.PHONY: $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
-$(PACKAGE)/locale/$(PACKAGE)-tooltips.pot:
-	mkdir -p $(dir $@)
-	$(VENV_BIN)/tooltips2pot
-	msguniq $@ -o $@
 
 .PHONY: build-api
 build-api: \
