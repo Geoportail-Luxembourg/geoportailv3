@@ -101,7 +101,7 @@ vars:
     map_zoom: 10
   authorized_ips: null
   authorized_referers: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/']
-  available_locale_names: [en, de, fr]
+  available_locale_names: [en, de, fr, lb]
   c2c.base_path: /c2c
   cache:
     arguments: {db: 0, distributed_lock: true, host: '{REDIS_HOST}', port: '{REDIS_PORT}',

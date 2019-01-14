@@ -4,28 +4,28 @@
 # dhorper <danielle.horper@act.etat.lu>, 2017-2019
 # dhorper <danielle.horper@act.etat.lu>, 2017
 # dhorper <danielle.horper@act.etat.lu>, 2017
+# Francis Kaell <francis.kaell@act.etat.lu>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015
 # Jeff Konnen <jaykayone@gmail.com>, 2015-2018
-# Jeff Konnen <jeff.konnen@act.etat.lu>, 2015
 # Loubnabarra <loubna064@yahoo.fr>, 2017
 # Loubnabarra <loubna064@yahoo.fr>, 2017
 # Patrick Weber <pweber@spatialbit.com>, 2015
-# Patrick Weber <pweber@spatialbit.com>, 2015-2016
+# Patrick Weber <pweber@spatialbit.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: portail\n"
-"PO-Revision-Date: 2019-01-11 14:27+0000\n"
+"PO-Revision-Date: 2019-01-11 14:29+0000\n"
 "Last-Translator: dhorper <danielle.horper@act.etat.lu>\n"
-"Language-Team: French (http://www.transifex.com/geoportail/geoportailv3-lu/language/fr/)\n"
+"Language-Team: Luxembourgish (http://www.transifex.com/geoportail/geoportailv3-lu/language/lb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: lb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: engineecadastre Layer:537 RoleNone
 msgid "f_Nom"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:537 RoleNone
 msgid "f_Code national"
@@ -61,31 +61,31 @@ msgstr ""
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_name"
-msgstr "Label"
+msgstr "Numm"
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_address"
-msgstr "Adresse"
+msgstr "Adress"
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_available_bikes"
-msgstr "Vélos disponibles"
+msgstr "Verfügbar Veloën"
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_available_ebikes"
-msgstr "Vélos électriques disponibles"
+msgstr "Verfügbar E-Bikes"
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_available_docks"
-msgstr "Ancrages vélos disponibles"
+msgstr "Verfügbar Statiounen"
 
 #: engineecadastre Layer:1386 RoleNone
 msgid "f_docks"
-msgstr "Ancrages vélos"
+msgstr "Total Statiounen"
 
 #: engineecadastre Layer:265 RoleNone
 msgid "f_numero"
-msgstr "Numéro"
+msgstr "Nummer"
 
 #: engineecadastre Layer:457 RoleNone
 msgid "f_tiff"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: engineecadastre Layer:1370 RoleNone
 msgid "f_nom"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:1370 RoleNone
 msgid "f_geoloc_type"
@@ -129,55 +129,55 @@ msgstr ""
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_commune"
-msgstr "Nom actuel de la commune abritant la plus grande partie du biotope"
+msgstr "Aktuellen Numm vun der Gemeng, an där sech den gréissten Deel vum Biotop befënnt"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_code"
-msgstr "Type du biotope"
+msgstr "Type vum Biotop"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_url_fiche"
-msgstr "Fiche descriptive"
+msgstr "Informatiounsfiche"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_biotope"
-msgstr "Code unique du biotope"
+msgstr "Eendeitege Code vum Biotop"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_annee_evaluation"
-msgstr "Année de l’inventaire initial "
+msgstr "Joer vum initialen Inventar "
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_label_fr"
-msgstr "Nom français du biotope"
+msgstr "Franséischen Numm vum Biotop"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_label_de"
-msgstr "Nom allemand du biotope "
+msgstr "Däitschen Numm vum Biotop"
 
 #: engineecadastre Layer:1367 Role:664
 msgid "f_evaluation"
-msgstr "Evaluation globale du biotope"
+msgstr "Gesamtbewertung vum Biotop"
 
 #: engineecadastre Layer:1368 RoleNone
 msgid "f_surface_ares"
-msgstr "Surfaces en ares (100m2) arrondie au mètre-carré"
+msgstr "Fläech an Ar (100m²) opgeronnt op de Meter-Carré "
 
 #: engineecadastre Layer:1360 RoleNone
 msgid "f_Etat"
-msgstr "Etat"
+msgstr "Status"
 
 #: engineecadastre Layer:1360 RoleNone
 msgid "f_P_kW"
-msgstr "Puissance électrique nominale (kVA)"
+msgstr "Elektresch Nennleeschtung (kVA)"
 
 #: engineecadastre Layer:1360 RoleNone
 msgid "f_D_rotor_m"
-msgstr "Diamètre de l'hélice (mètres)"
+msgstr "Duerchmiesser vum Propeller (Meter)"
 
 #: engineecadastre Layer:1360 RoleNone
 msgid "f_H_Moy_m"
-msgstr "Hauteur du moyeu (mètres)"
+msgstr "Nabenhéicht (Meter)"
 
 #: engineecadastre Layer:664 RoleNone
 msgid "f_Exploitant"
@@ -209,75 +209,75 @@ msgstr ""
 
 #: engineecadastre Layer:805 RoleNone
 msgid "f_no_zpin"
-msgstr "Numéro"
+msgstr "Nummer"
 
 #: engineecadastre Layer:805 RoleNone
 msgid "f_interets_principaux"
-msgstr "Intérêts principaux"
+msgstr "Haapt Interêten"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_interdiction_zone_c"
-msgstr "Interdiction zone C"
+msgstr "Verbuet Zone C"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_interdiction_zone_a"
-msgstr "Interdiction zone A"
+msgstr "Verbuet Zone A"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_date_classement"
-msgstr "Date de classement"
+msgstr "Datum vun der Klasséirung"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_interdiction_zone_b"
-msgstr "Interdiction zone B"
+msgstr "Verbuet Zone B"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_commentaire"
-msgstr "Commentaire"
+msgstr "Kommentar"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_sous_zone"
-msgstr "Sous-zone"
+msgstr "Ënner-zon"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_link"
-msgstr "Lien"
+msgstr "Link"
 
 #: engineecadastre Layer:804 RoleNone
 msgid "f_code_national"
-msgstr "Code national"
+msgstr "Nationalen Code"
 
 #: engineecadastre Layer:1381 RoleNone
 msgid "f_Name"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:1381 RoleNone
 msgid "f_description"
-msgstr "Description"
+msgstr "Beschreiwung"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_CadastrePa"
-msgstr "Parcelle cadastrale"
+msgstr "Kadasterparzell"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_CadastreSe"
-msgstr "Section cadastrale"
+msgstr "Kadastersectioun"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_ArreteAEV"
-msgstr "Autorisation du Ministre de l’Environnement / Commodo"
+msgstr "Autorisatioun vum Ëmweltminister / Commodo"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_Installati"
-msgstr "Installation"
+msgstr "Installatioun"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_ArretNum"
-msgstr "Numéro Arrêté"
+msgstr "Arrêtésnummer"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_SiteOperat"
-msgstr "Site Opérateur"
+msgstr "Site"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_Adresse"
@@ -285,19 +285,19 @@ msgstr "Adresse"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_Reception"
-msgstr "Réception"
+msgstr "Réceptioun"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_Explicatio"
-msgstr "Explications générales"
+msgstr "Allgemeng Erklärungen"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_ArreteITM"
-msgstr "Autorisation du Ministre du Travail"
+msgstr "Autorisatioun vum Aarbechtsminister"
 
 #: engineecadastre Layer:801 RoleNone
 msgid "f_Reception2"
-msgstr "Réception 2"
+msgstr "Réceptioun 2"
 
 #: engineecadastre Layer:802 RoleNone
 msgid "f_PointMesur"
@@ -309,15 +309,15 @@ msgstr ""
 
 #: engineecadastre Layer:1383 RoleNone
 msgid "f_Km2"
-msgstr "Surface (km2)"
+msgstr "Fläch (km2)"
 
 #: engineecadastre Layer:1383 RoleNone
 msgid "f_Steckbri_1"
-msgstr "Fiche descriptive"
+msgstr "Steckbréif"
 
 #: engineecadastre Layer:1383 RoleNone
 msgid "f_Legende"
-msgstr "Type Zone"
+msgstr "Typ vun der Zone"
 
 #: engineecadastre Layer:1383 RoleNone
 msgid "f_Id"
@@ -337,7 +337,7 @@ msgstr "Opérateur"
 
 #: engineecadastre Layer:811 RoleNone
 msgid "f_Commune"
-msgstr "Commune"
+msgstr "Gemeng"
 
 #: engineecadastre Layer:811 RoleNone
 msgid "f_Technologi"
@@ -357,11 +357,11 @@ msgstr "Code postal"
 
 #: engineecadastre Layer:427 RoleNone
 msgid "f_telephone"
-msgstr "Téléphone"
+msgstr "Telefon"
 
 #: engineecadastre Layer:427 RoleNone
 msgid "f_rue"
-msgstr "Rue"
+msgstr "Strooss"
 
 #: engineecadastre Layer:427 RoleNone
 msgid "f_boite_postale"
@@ -369,7 +369,7 @@ msgstr "Boîte postale"
 
 #: engineecadastre Layer:427 RoleNone
 msgid "f_localite"
-msgstr "Localité"
+msgstr "Uertschaft"
 
 #: engineecadastre Layer:1426 RoleNone
 msgid "f_STA_AQIAPP_ID"
@@ -377,7 +377,7 @@ msgstr ""
 
 #: engineecadastre Layer:1426 RoleNone
 msgid "f_RPT_FILE"
-msgstr "Rapport annuel (complété mensuellement)"
+msgstr "Joeresbericht (monatlech aktualiseiert)"
 
 #: engineecadastre Layer:1426 RoleNone
 msgid "f_ATM_INFO"
@@ -401,7 +401,7 @@ msgstr ""
 
 #: engineecadastre Layer:1426 RoleNone
 msgid "f_STA_F_ACTIVE"
-msgstr "Etat (en service = 1, hors service =0)"
+msgstr "Status (an Betriib = 1, ausser Betrieb = 0)"
 
 #: engineecadastre Layer:1426 RoleNone
 msgid "f_ADR_NUM_STREET"
@@ -417,11 +417,11 @@ msgstr "Rue"
 
 #: engineecadastre Layer:1425 RoleNone
 msgid "f_pm10_index_w_leg"
-msgstr "Sous-indice PM10"
+msgstr "PM10 Sub-Index"
 
 #: engineecadastre Layer:1425 RoleNone
 msgid "f_date_et_heure"
-msgstr "Date et heure"
+msgstr "Datum an Auerzait"
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_nom_section"
@@ -429,23 +429,23 @@ msgstr ""
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_district"
-msgstr "District"
+msgstr "Distrikt"
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_commune_cad"
-msgstr "Commune cadastrale"
+msgstr "Kadastergemeng"
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_commune_admin"
-msgstr "Commune"
+msgstr "Gemeng"
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_code_section"
-msgstr "Section"
+msgstr "Sektioun"
 
 #: engineecadastre Layer:355 RoleNone
 msgid "f_canton"
-msgstr "Canton"
+msgstr "Kanton"
 
 #: engineecadastre Layer:540 RoleNone
 msgid "f_InspireID"
@@ -461,7 +461,7 @@ msgstr "FID"
 
 #: engineecadastre Layer:540 RoleNone
 msgid "f_SITENAME"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:540 RoleNone
 msgid "f_TYPE"
@@ -477,7 +477,7 @@ msgstr "Projet"
 
 #: engineecadastre Layer:408 RoleNone
 msgid "f_Nr_Projet"
-msgstr "N° Projet"
+msgstr "Projets-Nr."
 
 #: engineecadastre Layer:8811 RoleNone
 msgid "f_PERIMETER"
@@ -501,23 +501,23 @@ msgstr ""
 
 #: engineecadastre Layer:1434 RoleNone
 msgid "f_communeDDP"
-msgstr "Commune"
+msgstr "Gemeng"
 
 #: engineecadastre Layer:1434 RoleNone
 msgid "f_plan"
-msgstr "Plan"
+msgstr "Plang"
 
 #: engineecadastre Layer:1434 RoleNone
 msgid "f_num_cadast"
-msgstr "Numéro cadastral"
+msgstr "Parzellennummer"
 
 #: engineecadastre Layer:401 RoleNone
 msgid "f_Nom_Site"
-msgstr "Nom Site"
+msgstr "Numm vum Site"
 
 #: engineecadastre Layer:401 RoleNone
 msgid "f_SurfaceHa"
-msgstr "Surface en ha"
+msgstr "Surface an ha"
 
 #: engineecadastre Layer:410 RoleNone
 msgid "f_Projet"
@@ -525,11 +525,11 @@ msgstr "Projet"
 
 #: engineecadastre Layer:410 RoleNone
 msgid "f_Type"
-msgstr "Type"
+msgstr "Typ"
 
 #: engineecadastre Layer:410 RoleNone
 msgid "f_Priorite"
-msgstr "Priorité"
+msgstr "Prioritéit"
 
 #: engineecadastre Layer:585 RoleNone
 msgid "f_Code cours eau"
@@ -549,7 +549,7 @@ msgstr ""
 
 #: engineecadastre Layer:407 RoleNone
 msgid "f_Categorie"
-msgstr "Catégorie"
+msgstr "Kategorie"
 
 #: engineecadastre Layer:402 RoleNone
 msgid "f_Remarque"
@@ -573,27 +573,27 @@ msgstr ""
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_Nbre_mes"
-msgstr "Nombre de mesures"
+msgstr "Unzuel vun den Miessungen"
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_Act_min"
-msgstr "Activité min."
+msgstr "Aktivitéit min."
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_Activite"
-msgstr "Activité moyenne"
+msgstr "Duerchschnëttlech Aktivitéit"
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_CANTON"
-msgstr "Canton"
+msgstr "Kanton"
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_Act_max"
-msgstr "Activité max."
+msgstr "Aktivitéit max."
 
 #: engineecadastre Layer:1468 RoleNone
 msgid "f_LAU2"
-msgstr "Code LAU2"
+msgstr "LAU2 Code"
 
 #: engineecadastre Layer:582 RoleNone
 msgid "f_grundwasser.GISADMIN.OuvragesWISKI.Drkg_Wtr_Prot_Zone"
@@ -685,7 +685,7 @@ msgstr ""
 
 #: engineecadastre Layer:1409 RoleNone
 msgid "f_Cours d'eau"
-msgstr "Cours d'eau"
+msgstr "Waasserleef"
 
 #: engineecadastre Layer:656 RoleNone
 msgid "f_Profil"
@@ -697,19 +697,19 @@ msgstr ""
 
 #: engineecadastre Layer:682 RoleNone
 msgid "f_localisation"
-msgstr "Localisation"
+msgstr "Standuert"
 
 #: engineecadastre Layer:682 RoleNone
 msgid "f_parkup"
-msgstr "Parking vélo double étage"
+msgstr "Etagenparking"
 
 #: engineecadastre Layer:682 RoleNone
 msgid "f_capacity_inside"
-msgstr "Capacité"
+msgstr "Kapazitéit"
 
 #: engineecadastre Layer:713 RoleNone
 msgid "f_Tronçon"
-msgstr "Tronçon"
+msgstr "Sektioun"
 
 #: engineecadastre Layer:713 RoleNone
 msgid "f_Numéro"
@@ -717,7 +717,7 @@ msgstr "ID Site"
 
 #: engineecadastre Layer:713 RoleNone
 msgid "f_YEAR"
-msgstr "Année"
+msgstr "Joer"
 
 #: engineecadastre Layer:444 RoleNone
 msgid "f_label_line"
@@ -729,7 +729,7 @@ msgstr "LABEL_SECTION"
 
 #: engineecadastre Layer:539 RoleNone
 msgid "f_label"
-msgstr "Parcelle "
+msgstr "Parzell"
 
 #: engineecadastre Layer:352 RoleNone
 msgid "f_ligne"
@@ -753,15 +753,15 @@ msgstr ""
 
 #: engineecadastre Layer:428 RoleNone
 msgid "f_heures_appel"
-msgstr "Heures d'appel"
+msgstr "Urufszäiten"
 
 #: engineecadastre Layer:428 RoleNone
 msgid "f_arrondissement"
-msgstr "Arrondissement"
+msgstr "Arrondissementer"
 
 #: engineecadastre Layer:428 RoleNone
 msgid "f_preposes_forestiers"
-msgstr "Préposés forestiers"
+msgstr "Fieschter"
 
 #: engineecadastre Layer:428 RoleNone
 msgid "f_gsm"
@@ -777,11 +777,11 @@ msgstr ""
 
 #: engineecadastre Layer:389 RoleNone
 msgid "f_propriete"
-msgstr "PROPRIETE"
+msgstr "BESITZ"
 
 #: engineecadastre Layer:690 RoleNone
 msgid "f_secteur"
-msgstr "SECTEUR"
+msgstr "SEKTOR"
 
 #: engineecadastre Layer:690 RoleNone
 msgid "f_region"
@@ -797,39 +797,39 @@ msgstr ""
 
 #: engineecadastre Layer:163 RoleNone
 msgid "f_LEG_FR"
-msgstr "Type"
+msgstr "Typ"
 
 #: engineecadastre Layer:331 RoleNone
 msgid "f_type"
-msgstr "Type"
+msgstr "Typ"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_essence_la"
-msgstr "Essence (lat)"
+msgstr "Art (lat)"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_nom_de"
-msgstr "Nom (all)"
+msgstr "Numm (de)"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_nom_la"
-msgstr "Nom (lat)"
+msgstr "Numm (lat)"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_essence_fr"
-msgstr "Essence (fr)"
+msgstr "Art (fr)"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_abreviation"
-msgstr "Abbréviation"
+msgstr "Ofkierzung"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_nom_fr"
-msgstr "Nom (fr)"
+msgstr "Numm (fr)"
 
 #: engineecadastre Layer:524 RoleNone
 msgid "f_essence_de"
-msgstr "Essence (all)"
+msgstr "Art (de)"
 
 #: engineecadastre Layer:8811 RoleNone
 msgid "f_EtudeChiro"
@@ -869,7 +869,7 @@ msgstr ""
 
 #: engineecadastre Layer:8811 RoleNone
 msgid "f_NomZone"
-msgstr "Nom Zone"
+msgstr "Zonen-Numm"
 
 #: engineecadastre Layer:8811 RoleNone
 msgid "f_TARGET_FID"
@@ -909,7 +909,7 @@ msgstr ""
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_No"
-msgstr "Numéro"
+msgstr "No"
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_Niveau d'assainissement"
@@ -921,7 +921,7 @@ msgstr "Contamination résiduelle"
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_Ancien No"
-msgstr "Ancien numéro"
+msgstr "Ancien No"
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_Description"
@@ -941,7 +941,7 @@ msgstr "Commentaire"
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_Identifiant surface"
-msgstr "Identifiant de surface"
+msgstr "Identifiant surface"
 
 #: engineecadastre Layer:680 RoleNone
 msgid "f_Méthode"
@@ -949,83 +949,83 @@ msgstr "Méthode"
 
 #: engineecadastre Layer:365 RoleNone
 msgid "f_Leg_Fr"
-msgstr "Code de la zone tampon en français : \"ZT\""
+msgstr "Franséisch Legende vun der Pufferzone: \"PZ\""
 
 #: engineecadastre Layer:365 RoleNone
 msgid "f_Leg_Gr"
-msgstr "Code de la zone tampon en allemand : \"PZ\""
+msgstr "Däitsch Legende vun der Pufferzone: \"PZ\""
 
 #: engineecadastre Layer:365 RoleNone
 msgid "f_Buffer_Id"
-msgstr "Code unique de la zone tampon"
+msgstr "Eendeitege Code vun der Pufferzone"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BKGemeinde"
-msgstr "Nom de la commune de l’année de l'inventaire"
+msgstr "Gemengennumm während dem Kartéierungsjoer"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP1_Code"
-msgstr "Code du premier biotope"
+msgstr "Code vum éischte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_Shape_ares"
-msgstr "Surface en ares (100m²) arrondie au mètre-carré"
+msgstr "Fläech an Ar (100m²) opgeronnt op de Meter-Carré"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_GEOCODE"
-msgstr "Code unique du biotope"
+msgstr "Eendeitege Code vum Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP3_Nom"
-msgstr "Nom français du troisième biotope"
+msgstr "Franséischen Numm vum drëtte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP2_Code"
-msgstr "Code du deuxième biotope"
+msgstr "Code vum zweete Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BKJahr"
-msgstr "Année de l'inventaire"
+msgstr "Kartéierungsjoer"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP2_Nom"
-msgstr "Nom français du deuxième biotope"
+msgstr "Franséischen Numm vum zweete Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP1_Name"
-msgstr "Nom allemand du premier biotope"
+msgstr "Däitschen Numm vum éischte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP3_Code"
-msgstr "Code du troisième biotope"
+msgstr "Code vum drëtte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BEWERTUNG3"
-msgstr "Évaluation totale du troisième biotope"
+msgstr "Bewäertung vum drëtte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BEWERTUNG2"
-msgstr "Évaluation totale du deuxième biotope"
+msgstr "Bewäertung vum zweete Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BEWERTUNG1"
-msgstr "Évaluation totale du premier biotope"
+msgstr "Bewäertung vum éischte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP3_Name"
-msgstr "Nom allemand du troisième biotope"
+msgstr "Däitschen Numm vum drëtte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP1_Nom"
-msgstr "Nom français du premier biotope"
+msgstr "Franséischen Numm vum éischte Biotop"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_GEMEINDE"
-msgstr "Nom actuel de la commune abritant la plus grande partie du biotope"
+msgstr "Aktuellen Numm vun der Gemeng, di de gréissten Deel vum Biotop ophëllt"
 
 #: engineecadastre Layer:364 RoleNone
 msgid "f_BTYP2_Name"
-msgstr "Nom allemand du deuxième biotope"
+msgstr "Däitschen Numm vum zweete Biotop"
 
 #: engineecadastre Layer:490 RoleNone
 msgid "f_Partie numéro"
@@ -1037,7 +1037,7 @@ msgstr ""
 
 #: engineecadastre Layer:670 RoleNone
 msgid "f_COMMUNE"
-msgstr "Commune"
+msgstr "Gemeng"
 
 #: engineecadastre Layer:670 RoleNone
 msgid "f_UHD3"
@@ -1061,15 +1061,15 @@ msgstr ""
 
 #: engineecadastre Layer:685 RoleNone
 msgid "f_kml_name"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:685 RoleNone
 msgid "f_kml_description"
-msgstr "Description"
+msgstr "Beschreiwung"
 
 #: engineecadastre Layer:678 RoleNone
 msgid "f_station_biologique"
-msgstr "Station biologique"
+msgstr "Biologesch Statioun"
 
 #: engineecadastre Layer:581 RoleNone
 msgid "f_Qualité"
@@ -1089,11 +1089,11 @@ msgstr ""
 
 #: engineecadastre Layer:691 RoleNone
 msgid "f_lot_numero"
-msgstr "NUMERO"
+msgstr "NUMMER"
 
 #: engineecadastre Layer:167 RoleNone
 msgid "f_CodeDesc"
-msgstr "Type"
+msgstr "Typ"
 
 #: engineecadastre Layer:255 RoleNone
 msgid "f_LNGT"
@@ -1121,7 +1121,7 @@ msgstr "Notaire"
 
 #: engineecadastre Layer:367 RoleNone
 msgid "f_paechter"
-msgstr "Exploitant"
+msgstr "Operator"
 
 #: engineecadastre Layer:367 RoleNone
 msgid "f_id"
@@ -1157,7 +1157,7 @@ msgstr "Remarque"
 
 #: engineecadastre Layer:367 RoleNone
 msgid "f_gemeinde"
-msgstr "Commune"
+msgstr "Gemeng"
 
 #: engineecadastre Layer:367 RoleNone
 msgid "f_kadasternu"
@@ -1185,7 +1185,7 @@ msgstr ""
 
 #: engineecadastre Layer:378 RoleNone
 msgid "f_station"
-msgstr "Station"
+msgstr "Statioun"
 
 #: engineecadastre Layer:378 RoleNone
 msgid "f_operateur"
@@ -1201,19 +1201,19 @@ msgstr "Service"
 
 #: engineecadastre Layer:368 RoleNone
 msgid "f_adress"
-msgstr "Adresse"
+msgstr "Adress"
 
 #: engineecadastre Layer:368 RoleNone
 msgid "f_reservation"
-msgstr "Réservation"
+msgstr "Reservatioun"
 
 #: engineecadastre Layer:368 RoleNone
 msgid "f_bornes"
-msgstr "Bornes"
+msgstr "Bornen"
 
 #: engineecadastre Layer:368 RoleNone
 msgid "f_ouvert"
-msgstr "Disponible"
+msgstr "Erreechbar"
 
 #: engineecadastre Layer:643 RoleNone
 msgid "f_Syndicat"
@@ -1221,7 +1221,7 @@ msgstr ""
 
 #: engineecadastre Layer:659 RoleNone
 msgid "f_NAME"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:441 RoleNone
 msgid "f_Cause mauvais etat"
@@ -1233,15 +1233,15 @@ msgstr ""
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_no2_index_w_leg"
-msgstr "Sous-indice NO2"
+msgstr "NO2 Sub-Index"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_o3_index_w_leg"
-msgstr "Sous-indice O3"
+msgstr "O3 Sub-Index"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_o3_index"
-msgstr "Sous-Indice O3"
+msgstr "Sub-Index O3"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_pm25_value"
@@ -1249,7 +1249,7 @@ msgstr ""
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_o3_value"
-msgstr "Concentration O3 (ug/m3)"
+msgstr "Konzentratioun O3 (ug/m3)"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_pm25_index"
@@ -1257,15 +1257,15 @@ msgstr ""
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_pm10_value"
-msgstr "Concentration de particules PM10 (ug/m3) - Moyenne 24h glissante"
+msgstr "PM10 Partikel-Konzentratioun (ug/m3) - Gleitenden 24-Stonnenmëttelwert"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_pm25_index_w_leg"
-msgstr "Sous-indice PM2.5"
+msgstr "PM2.5 Sub-Index"
 
 #: engineecadastre Layer:1432 RoleNone
 msgid "f_no2_value"
-msgstr "Concentration de dioxyde d'azote NO2 (ug/m3) - Moyenne horaire"
+msgstr "Stéckstoffdioxid NO2 Konzentratioun (ug/m3) - Stonnenmëttelwert"
 
 #: engineecadastre Layer:726 RoleNone
 msgid "f_code_dossier"
@@ -1293,7 +1293,7 @@ msgstr ""
 
 #: engineecadastre Layer:747 RoleNone
 msgid "f_Naturpark"
-msgstr "Parc naturel"
+msgstr "Naturpark"
 
 #: engineecadastre Layer:1465 RoleNone
 msgid "f_type_d_i_2"
@@ -1537,7 +1537,7 @@ msgstr ""
 
 #: engineecadastre Layer:1465 RoleNone
 msgid "f_date"
-msgstr "Date"
+msgstr "Datum"
 
 #: engineecadastre Layer:1465 RoleNone
 msgid "f_sect_indus"
@@ -1577,11 +1577,11 @@ msgstr ""
 
 #: engineecadastre Layer:808 RoleNone
 msgid "f_N_PC"
-msgstr "Numéro"
+msgstr "Nummer"
 
 #: engineecadastre Layer:808 RoleNone
 msgid "f_NOM PC"
-msgstr "Nom"
+msgstr "Numm"
 
 #: engineecadastre Layer:1476 RoleNone
 msgid "f_EWA"
@@ -1593,7 +1593,7 @@ msgstr ""
 
 #: engineecadastre Layer:1476 RoleNone
 msgid "f_UCZ"
-msgstr "ID du point noir"
+msgstr "Hotspot ID"
 
 #: engineecadastre Layer:1476 RoleNone
 msgid "f_EWC"
@@ -1685,51 +1685,51 @@ msgstr ""
 
 #: engineecadastre Layer:1503 RoleNone
 msgid "f_UCEden"
-msgstr "Exposition UCEden"
+msgstr "UCEden Belastung"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_adr_street"
-msgstr "Rue"
+msgstr "Strooss"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_link_to_emwelt"
-msgstr "Lien"
+msgstr "Link"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_pm10_value_w_leg"
-msgstr "Concentration de particules PM10 (ug/m3) - Moyenne 24h glissante"
+msgstr "PM10 Partikel-Konzentratioun (ug/m3) - Gleitenden 24-Stonnenmëttelwert"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_adr_city"
-msgstr "Localité"
+msgstr "Uertschaft"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_ozone_value"
-msgstr "Concentration d'ozone O3 (ug/m3) - Moyenne horaire"
+msgstr "Ozon O3 Konzentratioun (ug/m3) - Stonnenmëttelwert"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_index"
-msgstr "Indice global"
+msgstr "Gesamtindex"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_ozone_index_w_leg"
-msgstr "Sous-Indice O3"
+msgstr "Sub-Index O3"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_no2_value_w_leg"
-msgstr "Concentration de dioxyde d'azote NO2 (ug/m3) - Moyenne horaire"
+msgstr "Stéckstoffdioxid NO2 Konzentratioun (ug/m3) - Stonnenmëttelwert"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_ozone_value_w_leg"
-msgstr "Concentration d'ozone O3 (ug/m3) - Moyenne horaire"
+msgstr "Ozon O3 Konzentratioun (ug/m3) - Stonnenmëttelwert"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_luref_x"
-msgstr "Coordonnée X"
+msgstr "X-Koordinate"
 
 #: engineecadastre Layer:1357 RoleNone
 msgid "f_luref_y"
-msgstr "Coordonnée Y"
+msgstr "Y-Koordinate"
 
 #: engineecadastre Layer:1479 RoleNone
 msgid "f_Créé le"
@@ -1789,7 +1789,7 @@ msgstr ""
 
 #: engineecadastre Layer:1494 RoleNone
 msgid "f_fournisseur"
-msgstr "Gestionnaire de réseau"
+msgstr "Netzbedreiwer"
 
 #: engineecadastre Layer:1494 RoleNone
 msgid "f_texte_fr"
@@ -1801,15 +1801,15 @@ msgstr "Rendez-vous"
 
 #: engineecadastre Layer:1496 RoleNone
 msgid "f_adresse"
-msgstr "Adresse"
+msgstr "Adress"
 
 #: engineecadastre Layer:1496 RoleNone
 msgid "f_responsable"
-msgstr "Responsable"
+msgstr "Responsabel"
 
 #: engineecadastre Layer:1496 RoleNone
 msgid "f_horaire"
-msgstr "Horaire"
+msgstr "Ëffnungszäiten"
 
 #: engineecadastre Layer:1507 RoleNone
 msgid "f_Descrip"
@@ -1857,55 +1857,55 @@ msgstr ""
 
 #: engineecadastre Layer:1477 RoleNone
 msgid "f_LUREF_X"
-msgstr "Coordonnée X"
+msgstr "X-Koordinate"
 
 #: engineecadastre Layer:1477 RoleNone
 msgid "f_Moy2018"
-msgstr "Moyenne NO2 (ug/m3)"
+msgstr "NO2 Mëttelwert (ug/m3)"
 
 #: engineecadastre Layer:1477 RoleNone
 msgid "f_LUREF_Y"
-msgstr "Coordonnée Y"
+msgstr "Y-Koordinate"
 
 #: engineecadastre Layer:1477 RoleNone
 msgid "f_Localité"
-msgstr "Localité"
+msgstr "Uertschaft"
 
 #: engineecadastre Layer:1511 RoleNone
 msgid "f_AGE"
-msgstr "Nombre d‘années d‘enherbement"
+msgstr "Unzuel Jore vun der Begréngung"
 
 #: engineecadastre Layer:1511 RoleNone
 msgid "f_FLAECHE_AR"
-msgstr "Surface (en are)"
+msgstr "Fläch (an Ar)"
 
 #: engineecadastre Layer:1538 RoleNone
 msgid "f_Allemands"
-msgstr "Population allemande"
+msgstr "Däitsch Bevëlkerung"
 
 #: engineecadastre Layer:1538 RoleNone
 msgid "f_F__Alleman"
-msgstr "Part des Allemands en %"
+msgstr "Undeel vun Däitschen a %"
 
 #: engineecadastre Layer:1537 RoleNone
 msgid "f_F__Afrique"
-msgstr "Part des ressortissants d'Afrique en %"
+msgstr "Undeel vun Afrikaner a %"
 
 #: engineecadastre Layer:1537 RoleNone
 msgid "f_Afrique"
-msgstr "Population africaine"
+msgstr "Afrikanesch Bevëlkerung"
 
 #: engineecadastre Layer:1514 RoleNone
 msgid "f_type_proprietaire"
-msgstr "Type de propriétaire"
+msgstr "Besëtzerverhältnis"
 
 #: engineecadastre Layer:1514 RoleNone
 msgid "f_nom_proprietaire"
-msgstr "Nom du propriétaire"
+msgstr "Numm vum Besëtzer"
 
 #: engineecadastre Layer:1514 RoleNone
 msgid "f_annee_inventaire"
-msgstr "Année inventaire d'aménagement"
+msgstr "Joër vum Bëschinventaire"
 
 #: engineecadastre Layer:1512 RoleNone
 msgid "f_NO2_I1G"
@@ -1913,275 +1913,275 @@ msgstr "NO2 (ug/m3)"
 
 #: engineecadastre Layer:1512 RoleNone
 msgid "f_STR_NAME"
-msgstr "Rue"
+msgstr "Strooss"
 
 #: engineecadastre Layer:1536 RoleNone
 msgid "f_F__Portuga"
-msgstr "Part des Portuguais"
+msgstr "Undeel vu Portugisen a %"
 
 #: engineecadastre Layer:1536 RoleNone
 msgid "f_Portugais"
-msgstr "Population portugaise"
+msgstr "Portugisesch Bevëlkerung"
 
 #: engineecadastre Layer:1539 RoleNone
 msgid "f_Amérique"
-msgstr "Population américaine"
+msgstr "Amerikanesch Bevëlkerung"
 
 #: engineecadastre Layer:1539 RoleNone
 msgid "f_F__Amériq"
-msgstr "Part des ressortissants d'Amérique en %"
+msgstr "Undeel vun Amerikaner a %"
 
 #: engineecadastre Layer:1532 RoleNone
 msgid "f_CODE_LAU2"
-msgstr "Code LAU2"
+msgstr "LAU2 Code"
 
 #: engineecadastre Layer:1579 RoleNone
 msgid "f_Etranger"
-msgstr "Population étrangère"
+msgstr "Auslännesch Bevëlkerung"
 
 #: engineecadastre Layer:1579 RoleNone
 msgid "f_F__étrang"
-msgstr "Part des étrangers en %"
+msgstr "Undeel vun Auslänner a %"
 
 #: engineecadastre Layer:1579 RoleNone
 msgid "f_Luxembourg"
-msgstr "Population luxembourgeoise"
+msgstr "Lëtzebuerger Bevëlkerung"
 
 #: engineecadastre Layer:1579 RoleNone
 msgid "f_F__luxembo"
-msgstr "Part des Luxembourgeois en %"
+msgstr "Undeel vu Lëtzebuerger a %"
 
 #: engineecadastre Layer:1544 RoleNone
 msgid "f_F__Italien"
-msgstr "Part des Italiens en %"
+msgstr "Undeel vun Italiener a %"
 
 #: engineecadastre Layer:1544 RoleNone
 msgid "f_Italiens"
-msgstr "Population italienne"
+msgstr "Italienesch Bevëlkerung"
 
 #: engineecadastre Layer:1543 RoleNone
 msgid "f_F__UE28"
-msgstr "Part des Européens (UE-28) en %"
+msgstr "Undeel vun Europäer (EU-28) a %"
 
 #: engineecadastre Layer:1543 RoleNone
 msgid "f_UE28"
-msgstr "Population UE-28"
+msgstr "Bevëlkerung aus der EU-28"
 
 #: engineecadastre Layer:1542 RoleNone
 msgid "f_Européens"
-msgstr "Population européenne (non UE-28)"
+msgstr "Europäesch Bevëlkerung (Net-EU-28)"
 
 #: engineecadastre Layer:1542 RoleNone
 msgid "f_F__non_UE"
-msgstr "Part des Européens (non UE-28) en %"
+msgstr "Undeel vun Europäer (Net-EU-28) a %"
 
 #: engineecadastre Layer:1541 RoleNone
 msgid "f_Belges"
-msgstr "Population belge"
+msgstr "Belsch Bevëlkerung"
 
 #: engineecadastre Layer:1541 RoleNone
 msgid "f_F__Belges"
-msgstr "Part des Belges en %"
+msgstr "Undeel vu Belsch a %"
 
 #: engineecadastre Layer:1540 RoleNone
 msgid "f_AsieOcéan"
-msgstr "Population asiatique et océanienne"
+msgstr "Asiatesch an Ozeanesch Bevëlkerung"
 
 #: engineecadastre Layer:1540 RoleNone
 msgid "f_F__Asie_et"
-msgstr "Part des ressortissants d'Asie et d'Océanie en %"
+msgstr "Undeel vun Asiaten an Ozeanier a %"
 
 #: engineecadastre Layer:1577 RoleNone
 msgid "f_Population_com"
-msgstr "Population par commune"
+msgstr "Bevëlkerung pro Gemeng"
 
 #: engineecadastre Layer:1534 RoleNone
 msgid "f_F__França"
-msgstr "Part des Français en %"
+msgstr "Undeel vu Fransousen a %"
 
 #: engineecadastre Layer:1534 RoleNone
 msgid "f_Français"
-msgstr "Population française"
+msgstr "Franséisch Bevëlkerung"
 
 #: engineecadastre Layer:1567 RoleNone
 msgid "f_total_m_3"
-msgstr "Population âgée de moins de 3 ans"
+msgstr "Bevëlkerung ënner 3 Joer"
 
 #: engineecadastre Layer:1567 RoleNone
 msgid "f_part_m_3"
-msgstr "Part de la population âgée de moins de 3 ans"
+msgstr "Undeel vun der Bevëlkerung ënner 3 Joer a %"
 
 #: engineecadastre Layer:1569 RoleNone
 msgid "f_part_6_10"
-msgstr "Part de la population âgée entre 6 et 10 ans"
+msgstr "Undeel vun der Bevëlkerung tëscht 6 an 10 Joer a %"
 
 #: engineecadastre Layer:1569 RoleNone
 msgid "f_total_6_10"
-msgstr "Population âgée entre 6 et 10 ans"
+msgstr "Bevëlkerung tëscht 6 an 10 Joer"
 
 #: engineecadastre Layer:1568 RoleNone
 msgid "f_part_3_5"
-msgstr "Part de la population âgée entre 3 et 5 ans"
+msgstr "Undeel vun der Bevëlkerung tëscht 3 a 5 Joer a %"
 
 #: engineecadastre Layer:1568 RoleNone
 msgid "f_total_3_5"
-msgstr "Population âgée entre 3 et 5 ans"
+msgstr "Bevëlkerung tëscht 3 a 5 Joer"
 
 #: engineecadastre Layer:1570 RoleNone
 msgid "f_tot_11_17"
-msgstr "Population âgée entre 11 et 17 ans"
+msgstr "Bevëlkerung tëscht 11 an 17 Joer"
 
 #: engineecadastre Layer:1570 RoleNone
 msgid "f_part_11_17"
-msgstr "Part de la population âgée entre 11 et 17 ans"
+msgstr "Undeel vun der Bevëlkerung tëscht 11 an 17 Joer a %"
 
 #: engineecadastre Layer:1572 RoleNone
 msgid "f_p_75_89"
-msgstr "Part de la population âgée entre 75 et 89 ans"
+msgstr "Undeel vun der Bevëlkerung tëscht 75 an 89 Joer a %"
 
 #: engineecadastre Layer:1572 RoleNone
 msgid "f_t_75_89"
-msgstr "Population âgée entre 75 et 89 ans"
+msgstr "Bevëlkerung tëscht 75 an 89 Joer"
 
 #: engineecadastre Layer:1573 RoleNone
 msgid "f_t_90"
-msgstr "Population âgée de 90 ans et plus"
+msgstr "Bevëlkerung mat 90 Joer a méi"
 
 #: engineecadastre Layer:1573 RoleNone
 msgid "f_p_90"
-msgstr "Part de la population âgée de 90 ans et plus"
+msgstr "Undeel vun der Bevëlkerung mat 90 Joer a méi a %"
 
 #: engineecadastre Layer:1583 RoleNone
 msgid "f_dep_jeunes"
-msgstr "Rapport de dépendance des jeunes (0-19 ans)"
+msgstr "Jugendquotient (0-19 Joer)"
 
 #: engineecadastre Layer:1583 RoleNone
 msgid "f_pers_jeune"
-msgstr "Personnes jeunes (0-19 ans)"
+msgstr "Jonk Persounen (0-19 Joer)"
 
 #: engineecadastre Layer:1583 RoleNone
 msgid "f_age_trav"
-msgstr "Personnes en âge de travailler (20-64 ans)"
+msgstr "Persounen am erwerbsfähegen Alter (20-64 Joer)"
 
 #: engineecadastre Layer:1584 RoleNone
 msgid "f_rapp_j_a"
-msgstr "Rapport de dépendance total"
+msgstr "Ofhängegkeetsquotient"
 
 #: engineecadastre Layer:1584 RoleNone
 msgid "f_pers_agees"
-msgstr "Personnes âgées (65+ ans)"
+msgstr "Eeler Persounen (65+ Joer)"
 
 #: engineecadastre Layer:1585 RoleNone
 msgid "f_Célibatai"
-msgstr "Célibataires"
+msgstr "Leedeg Persounen"
 
 #: engineecadastre Layer:1585 RoleNone
 msgid "f_Célibat_1"
-msgstr "Part des célibataires en %"
+msgstr "Undeel u leedege Persounen a %"
 
 #: engineecadastre Layer:1586 RoleNone
 msgid "f_Marié_e_1"
-msgstr "Part des personnes mariées/pacsées en %"
+msgstr "Undeel u bestuete/a Partnerschaft liewende Persounen a %"
 
 #: engineecadastre Layer:1586 RoleNone
 msgid "f_Marié_e__"
-msgstr "Personnes mariées/pacsées"
+msgstr "Bestuete/a Partnerschaft liewend Persounen"
 
 #: engineecadastre Layer:1587 RoleNone
 msgid "f_Divorcé_e"
-msgstr "Personnes divorcées/séparées"
+msgstr "Gescheet/getrennt Persounen"
 
 #: engineecadastre Layer:1587 RoleNone
 msgid "f_Divorcé_1"
-msgstr "Part des personnes divorcées/séparées en %"
+msgstr "Undeel u gescheete/getrennte Persounen a %"
 
 #: engineecadastre Layer:1563 RoleNone
 msgid "f_age_moyen"
-msgstr "Âge moyen (deux sexes confondus)"
+msgstr "Duerchschnëttsalter (béid Geschlechter zesummen)"
 
 #: engineecadastre Layer:1562 RoleNone
 msgid "f_age_h"
-msgstr "Âge moyen des hommes"
+msgstr "Duerchschnëttsalter vun de Männer"
 
 #: engineecadastre Layer:1564 RoleNone
 msgid "f_moins20"
-msgstr "Population de moins de 20 ans"
+msgstr "Bevëlkerung ënner 20 Joer"
 
 #: engineecadastre Layer:1564 RoleNone
 msgid "f_p_moins20"
-msgstr "Part de la population de moins de 20 ans en %"
+msgstr "Undeel vun der Bevëlkerung ënner 20 Joer a %"
 
 #: engineecadastre Layer:1565 RoleNone
 msgid "f_a20_64"
-msgstr "Population âgée entre 20 et 64 ans"
+msgstr "Bevëlkerung tëscht 20 a 64 Joer"
 
 #: engineecadastre Layer:1565 RoleNone
 msgid "f_p20_64"
-msgstr "Part de la population âgée entre 20 et 64 ans en %"
+msgstr "Undeel vun der Bevëlkerung tëscht 20 a 64 Joer a %"
 
 #: engineecadastre Layer:1574 RoleNone
 msgid "f_pole_urbai"
-msgstr "Pôle urbain"
+msgstr "Urbanen Zentrum"
 
 #: engineecadastre Layer:1574 RoleNone
 msgid "f_Population_villes"
-msgstr "Population"
+msgstr "Bevëlkerung"
 
 #: engineecadastre Layer:1576 RoleNone
 msgid "f_Population_can"
-msgstr "Population par canton"
+msgstr "Bevëlkerung pro Kanton"
 
 #: engineecadastre Layer:1578 RoleNone
 msgid "f_prop_f"
-msgstr "Proportion de femmes en %"
+msgstr "Undeel vu Fraen a %"
 
 #: engineecadastre Layer:1581 RoleNone
 msgid "f_Luxemb_nbre"
-msgstr "Population née au Luxembourg"
+msgstr "Bevëlkerung déi zu Lëtzebuerg gebuer ass"
 
 #: engineecadastre Layer:1581 RoleNone
 msgid "f_Etrangers_nbre"
-msgstr "Population née à l'étranger"
+msgstr "Bevëlkerung déi am Ausland gebuer ass"
 
 #: engineecadastre Layer:1581 RoleNone
 msgid "f_Etrangers_pourcent"
-msgstr "Part de la population née à l'étranger"
+msgstr "Undeel vun der Bevëlkerung déi am Ausland gebuer ass a %"
 
 #: engineecadastre Layer:1581 RoleNone
 msgid "f_Luxemb_pourcent"
-msgstr "Part de la population née au Luxembourg en %"
+msgstr "Undeel vun der Bevëlkerung déi zu Lëtzebuerg gebuer ass a %"
 
 #: engineecadastre Layer:1561 RoleNone
 msgid "f_age_f"
-msgstr "Âge moyen des femmes"
+msgstr "Duerchschnëttsalter vun de Fraen"
 
 #: engineecadastre Layer:1588 RoleNone
 msgid "f_Veuf_veuve"
-msgstr "Veufs/veuves"
+msgstr "Witmänner/Witfraen"
 
 #: engineecadastre Layer:1588 RoleNone
 msgid "f_Veuf_veu_1"
-msgstr "Part des veufs/veuves en %"
+msgstr "Undeel u Witmänner/Witfraen a %"
 
 #: engineecadastre Layer:1531 RoleNone
 msgid "f_Annee_fusi"
-msgstr "Date d'entrée en vigueur de la fusion communale"
+msgstr "Datum vum Akraafttrieden vun der Gemengefusioun"
 
 #: engineecadastre Layer:1531 RoleNone
 msgid "f_Nouv_comm"
-msgstr "Nom de la commune après fusion"
+msgstr "Numm vun der Gemeng no der Fusioun"
 
 #: engineecadastre Layer:1531 RoleNone
 msgid "f_Anc_comm"
-msgstr "Nom de la commune avant fusion"
+msgstr "Numm vun der Gemeng virun der Fusioun"
 
 #: engineecadastre Layer:1598 RoleNone
 msgid "f_F__des_nai"
-msgstr "Part des naissances dans le mariage (%) (2013-2017)"
+msgstr "Undeel u Gebuerten innerhalb vum Bestietnis (%) (2013-2017)"
 
 #: engineecadastre Layer:1599 RoleNone
 msgid "f_Age_moyen"
-msgstr "Age moyen à la maternité (moyenne 2013-2017)"
+msgstr "Duerchschnëttsalter vun der Mamm bei der Gebuert (Duerchschnëtt 2013-2017)"
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Décès_24"
@@ -2193,7 +2193,7 @@ msgstr ""
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Moyenne_d"
-msgstr "Nombre de décès moyen (2013-2017)"
+msgstr "Duerchschnëttlech Unzuel u Stierffäll (2013-2017)"
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Décès_20"
@@ -2217,7 +2217,7 @@ msgstr ""
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Taux_de_na"
-msgstr "Taux de natalité moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlech Gebuerterat (‰) (2013-2017)"
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_F10"
@@ -2253,11 +2253,11 @@ msgstr ""
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Moyenne_na"
-msgstr "Nombre de naissances moyen (2013-2017)"
+msgstr "Duerchschnëttlech Gebuertenzuel (2013-2017)"
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Taux_de_mo"
-msgstr "Taux de mortalité moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlech Stierflechkeetsrat (‰) (2013-2017)"
 
 #: engineecadastre Layer:1600 RoleNone
 msgid "f_Naissanc_4"
@@ -2265,139 +2265,139 @@ msgstr ""
 
 #: engineecadastre Layer:1601 RoleNone
 msgid "f_Taux de solde naturel moyen (‰)"
-msgstr "Taux de solde naturel moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlechen Taux vum natierleche Saldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1601 RoleNone
 msgid "f_Solde_natu"
-msgstr "Solde naturel moyen (‰) (2013-2017)"
+msgstr "Taux vum natierleche Saldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1603 RoleNone
 msgid "f_Solde_mi_5"
-msgstr "Solde migratoire interne moyen (2013-2017)"
+msgstr "Duerchschnëttlechen internen Wanderungssaldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1603 RoleNone
 msgid "f_Taux de solde migratoire interne moyen (‰)"
-msgstr "Taux de solde migratoire interne moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlechen Taux vum internen Wanderungssaldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1605 RoleNone
 msgid "f_Taux de solde migratoire total moyen (‰)"
-msgstr "Solde migratoire total moyen (2013-2017)"
+msgstr "Taux vum totalen Wanderungssaldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1613 RoleNone
 msgid "f_Ital_"
-msgstr "Italien est la langue principale (%)"
+msgstr "Italienesch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1613 RoleNone
 msgid "f_Italienisc"
-msgstr "Italien est la langue principale (personnes)"
+msgstr "Italienesch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1566 RoleNone
 msgid "f_a64plus"
-msgstr "Population âgée de 65 ans et plus"
+msgstr "Bevëlkerung mat 65 Joer a méi"
 
 #: engineecadastre Layer:1566 RoleNone
 msgid "f_p64plus"
-msgstr "Part de la population âgée de 65 ans et plus"
+msgstr "Undeel vun der Bevëlkerung mat 65 Joer a méi a %"
 
 #: engineecadastre Layer:1604 RoleNone
 msgid "f_Taux de solde migratoire international moyen (‰)"
-msgstr "Taux de solde migratoire international moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlechen Taux vum internationalen Wanderungssaldo (‰) (2013-2017)"
 
 #: engineecadastre Layer:1571 RoleNone
 msgid "f_t_65_74"
-msgstr "Population âgée entre 65 et 74 ans"
+msgstr "Bevëlkerung tëscht 65 an 74 Joer"
 
 #: engineecadastre Layer:1571 RoleNone
 msgid "f_p_65_74"
-msgstr "Part de la population âgée entre 65 et 74 ans"
+msgstr "Undeel vun der Bevëlkerung tëscht 65 an 74 Joer a %"
 
 #: engineecadastre Layer:1606 RoleNone
 msgid "f_Taux_de__1"
-msgstr "Taux de nuptialité moyen (‰) (2013-2017)"
+msgstr "Duerchschnëttlech Bestietnisrat (‰) (2013-2017)"
 
 #: engineecadastre Layer:1606 RoleNone
 msgid "f_Mariages_1"
-msgstr "Nombre de mariages moyen (2013-2017)"
+msgstr "Duerchschnëttlech Unzuel un Hochzäiten (2013-2017)"
 
 #: engineecadastre Layer:1607 RoleNone
 msgid "f_Age moyen des femmes au mariage"
-msgstr "Age moyen des femmes au mariage (moyenne 2013-2017)"
+msgstr "Duerchschnëttlecht Bestietnisalter vun de Fraen (Duerchschnëtt 2013-2017)"
 
 #: engineecadastre Layer:1533 RoleNone
 msgid "f_Chiffres absolus (1981)"
-msgstr "Nombre d'habitants en 1981"
+msgstr "Zuel vun de Awunner am Joer 1981"
 
 #: engineecadastre Layer:1533 RoleNone
 msgid "f_Taux_acc"
-msgstr "Taux d'accroissement de la population en % (1981-2018)"
+msgstr "Wuesstemstaux vun der Bevëlkerung a % (1981-2018)"
 
 #: engineecadastre Layer:1533 RoleNone
 msgid "f_Chiffres absolus (2018)"
-msgstr "Nombre d'habitants en 2018"
+msgstr "Zuel vun de Awunner am Joer 2018"
 
 #: engineecadastre Layer:1535 RoleNone
 msgid "f_Densité_d"
-msgstr "Densité de population en 2018 (hab./km2)"
+msgstr "Bevëlkerungsdicht am Joer 2018"
 
 #: engineecadastre Layer:1535 RoleNone
 msgid "f_Chiffres_a"
-msgstr "Nombre d'habitants en 2018"
+msgstr "Zuel vun de Awunner am Joer 2018"
 
 #: engineecadastre Layer:1608 RoleNone
 msgid "f_Age moyen des hommes au mariage"
-msgstr "Age moyen des hommes au mariage (moyenne 2013-2017)"
+msgstr "Duerchschnëttlecht Bestietnisalter vun de Männer (Duerchschnëtt 2013-2017)"
 
 #: engineecadastre Layer:1609 RoleNone
 msgid "f_Luxemburgi"
-msgstr "Luxembourgeois est la langue principale (personnes)"
+msgstr "Lëtzebuergesch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1609 RoleNone
 msgid "f_Lux_"
-msgstr "Luxembourgeois est la langue principale (%)"
+msgstr "Lëtzebuergesch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1610 RoleNone
 msgid "f_Französis"
-msgstr "Français est la langue principale (personnes)"
+msgstr "Franséisch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1610 RoleNone
 msgid "f_Fran_"
-msgstr "Français est la langue principale (%)"
+msgstr "Franséisch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1611 RoleNone
 msgid "f_Deutsch"
-msgstr "Allemand est la langue principale (personnes)"
+msgstr "Däitsch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1611 RoleNone
 msgid "f_Deu_"
-msgstr "Allemand est la langue principale (%)"
+msgstr "Däitsch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1612 RoleNone
 msgid "f_Portugiesi"
-msgstr "Portugais est la langue principale (personnes)"
+msgstr "Portugisesch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1612 RoleNone
 msgid "f_Port_"
-msgstr "Portugais est la langue principale (%)"
+msgstr "Portugisesch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1614 RoleNone
 msgid "f_Englisch"
-msgstr "Anglais est la langue principale (personnes)"
+msgstr "Englesch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1614 RoleNone
 msgid "f_Eng_"
-msgstr "Anglais est la langue principale (%)"
+msgstr "Englesch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1615 RoleNone
 msgid "f_sonstige"
-msgstr "Autre langue est la langue principale (personnes)"
+msgstr "Aner Sprooch ass d'Haaptsprooch (Persounen)"
 
 #: engineecadastre Layer:1615 RoleNone
 msgid "f_Sonstige_"
-msgstr "Autre langue est la langue principale (%)"
+msgstr "Aner Sprooch ass d'Haaptsprooch (%)"
 
 #: engineecadastre Layer:1582 RoleNone
 msgid "f_dep_age"
-msgstr "Rapport de dépendance des personnes âgées (65+ ans)"
+msgstr "Alequotient (65+ Joer)"
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_DATE_MEASU"
@@ -2421,7 +2421,7 @@ msgstr ""
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_COORD_Y_WG"
-msgstr "Coordonnée Y"
+msgstr "Y-Koordinat"
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_ID_STRING"
@@ -2429,15 +2429,15 @@ msgstr ""
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_REFERENCE_"
-msgstr "Dénomination"
+msgstr "Numm"
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_COORD_X_WG"
-msgstr "Coordonnée X"
+msgstr "X-Koordinat"
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_REMARQUE"
-msgstr "Dénomination"
+msgstr "Numm"
 
 #: engineecadastre Layer:1621 RoleNone
 msgid "f_ID"
