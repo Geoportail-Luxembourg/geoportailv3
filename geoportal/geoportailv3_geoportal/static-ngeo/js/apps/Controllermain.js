@@ -23,6 +23,7 @@ import appMap from '../Map.js';
 import olFeature from 'ol/Feature.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import {defaults as interactionDefaults} from 'ol/interaction.js';
+import LayerGroup from 'ol/layer/Group';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoMiscSyncArrays from 'ngeo/misc/syncArrays.js';
 import olView from 'ol/View.js';
@@ -800,15 +801,19 @@ MainController.prototype.loadThemes_ = function() {
  */
 MainController.prototype.manageSelectedLayers_ =
     function(scope) {
-      ngeoMiscSyncArrays(this.map_.getLayers().getArray(),
-      this['selectedLayers'], true, scope,
-      function(layer) {
-        if (layer instanceof olLayerVector && layer.get('altitudeMode') === 'clampToGround') {
-          return false;
-        }
-        return this.map_.getLayers().getArray().indexOf(layer) !== 0;
-      }.bind(this)
-  );
+      ngeoMiscSyncArrays(
+        this.map_.getLayers().getArray(),
+        this['selectedLayers'], true, scope,
+        function(layer) {
+          if (layer instanceof olLayerVector && layer.get('altitudeMode') === 'clampToGround') {
+            return false;
+          }
+          if (layer instanceof LayerGroup && layer.get('groupName') === 'background') {
+            return false;
+          }
+          return this.map_.getLayers().getArray().indexOf(layer) !== 0;
+        }.bind(this)
+      );
       scope.$watchCollection(function() {
         return this['selectedLayers'];
       }.bind(this), function(newSelectedLayers, oldSelectedLayers) {
