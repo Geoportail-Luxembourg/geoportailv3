@@ -396,15 +396,15 @@ exports.prototype.handleReadyChange_ = function(ready, oldReady) {
 exports.prototype.createStyleFunction = function() {
   var arrowPath = this.arrowPath_;
   var imagePath = this.appImagesPath_;
-  return function(resolution) {
-    if (this.get('isDirection')) {
-      var curZoom = this.get('zoom');
+  return function(feature, resolution) {
+    if (feature.get('isDirection')) {
+      var curZoom = feature.get('zoom');
       if (curZoom < 1) {
         curZoom = 1;
       } else if (curZoom > 4) {
         curZoom = 4;
       }
-      var curPitch = Math.abs(this.get('pitch'));
+      var curPitch = Math.abs(feature.get('pitch'));
       var pitch = 0;
       if (curPitch >= 0 && curPitch <= 23) {
         pitch = 0;
@@ -419,7 +419,7 @@ exports.prototype.createStyleFunction = function() {
       return [new Style({
         image: new Icon(/** @type {olx.style.IconOptions} */({
           src: directionArrowPath,
-          rotation: this.get('heading') * Math.PI / 180
+          rotation: feature.get('heading') * Math.PI / 180
         }))
       })];
     }
@@ -429,7 +429,7 @@ exports.prototype.createStyleFunction = function() {
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         src: arrowPath,
-        rotation: this.get('heading') * Math.PI / 180
+        rotation: feature.get('heading') * Math.PI / 180
       }))
     })];
   };
