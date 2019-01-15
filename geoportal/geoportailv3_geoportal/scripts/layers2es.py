@@ -37,6 +37,7 @@ import sys
 import yaml
 import requests
 import json
+import os
 from argparse import ArgumentParser
 from pyramid.paster import get_app, bootstrap
 from pyramid.i18n import TranslationStringFactory, make_localizer
@@ -127,7 +128,7 @@ def main():
     app_name = options.app_name
     if app_name is None and "#" in app_config:
         app_config, app_name = app_config.split("#", 1)
-    get_app(app_config, name=app_name)
+    get_app(app_config, name=app_name, options=os.environ)
 
     Import(options)
 
@@ -139,11 +140,11 @@ class Import:
         self.layers = []
 
         settings = {}
-        with open(".build/config.yaml") as f:
+        with open("config.yaml") as f:
             settings = yaml.load(f)
 
-        self.languages = settings["available_locale_names"]
-        exluded_themes_string = settings["excluded_themes_from_search"]
+        self.languages = settings["vars"]["available_locale_names"]
+        exluded_themes_string = settings["var"]["excluded_themes_from_search"]
         exluded_themes = []
         if exluded_themes_string is not None:
             exluded_themes = exluded_themes_string.split(",")
@@ -157,12 +158,14 @@ class Import:
         self._ = {}
         self.metadata_service_url = \
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp'
-        registry = bootstrap(self.options.app_config)['registry']
-        request = bootstrap(self.options.app_config)['request']
+
+        with bootstrap(self.options.app_config, options=os.environ) as env:
+            registry = env['registry']
+            request = env['request']
 
         self.es_layer_index = get_index(request) + '_layers'
         self.tdirs = registry.queryUtility(ITranslationDirectories, default=[])
-        self.tsf = TranslationStringFactory('geoportailv3-client')
+        self.tsf = TranslationStringFactory('geoportailv3_geoportal-client')
 
         self.interfaces = self.session.query(Interface).filter(
             Interface.name.in_(options.interfaces)
