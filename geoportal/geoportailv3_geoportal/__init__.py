@@ -38,7 +38,8 @@ def add_cors_headers_response_callback(event):
 def locale_negotiator(request):
     lang = request.params.get("lang")
     if "/printproxy/report/" in request.path:
-        from geoportailv3_geoportal.models import DBSession, LuxPrintJob
+        from geoportailv3_geoportal.models import LuxPrintJob
+        from c2cgeoportal_commons.models import DBSession
         # Language is stored in the database
         ref = request.path.split("/printproxy/report/")[1]
         if ref is not None:
