@@ -1275,21 +1275,21 @@ exports.prototype.createStyleFunction = function(curMap) {
     return [r, g, b, opacity];
   };
 
-  return function(resolution) {
+  return function(feature, resolution) {
 
     // clear the styles
     styles.length = 0;
 
-    if (this.get('__editable__') && this.get('__selected__')) {
+    if (feature.get('__editable__') && feature.get('__selected__')) {
       styles.push(vertexStyle);
     }
-    var order = this.get('display_order');
+    var order = feature.get('display_order');
     if (order === undefined) {
       order = 0;
     }
-    var color = this.get('color') || '#FF0000';
+    var color = feature.get('color') || '#FF0000';
     var rgbColor = colorStringToRgba(color, 1);
-    var opacity = this.get('opacity');
+    var opacity = feature.get('opacity');
     if (opacity === undefined) {
       opacity = 1;
     }
@@ -1297,14 +1297,14 @@ exports.prototype.createStyleFunction = function(curMap) {
     rgbaColor[3] = opacity;
 
     fillStyle.setColor(rgbaColor);
-    if (this.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
-        this.get('showOrientation') === true) {
+    if (feature.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
+        feature.get('showOrientation') === true) {
       var prevArrow, distance;
-      var arrowColor = this.get('arrowcolor');
+      var arrowColor = feature.get('arrowcolor');
       if (arrowColor === undefined || arrowColor === null) {
         arrowColor = color;
       }
-      this.getGeometry().forEachSegment(function(start, end) {
+      feature.getGeometry().forEachSegment(function(start, end) {
         var arrowPoint = new olGeomPoint(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
@@ -1354,8 +1354,8 @@ exports.prototype.createStyleFunction = function(curMap) {
       });
     }
     var lineDash;
-    if (this.get('linestyle')) {
-      switch (this.get('linestyle')) {
+    if (feature.get('linestyle')) {
+      switch (feature.get('linestyle')) {
         case 'dashed':
           lineDash = [10, 10];
           break;
@@ -1368,9 +1368,9 @@ exports.prototype.createStyleFunction = function(curMap) {
     }
 
     var stroke;
-    var featureStroke = this.get('stroke');
+    var featureStroke = feature.get('stroke');
     if (featureStroke > 0) {
-      if (!this.get('__editable__') && this.get('__selected__')) {
+      if (!feature.get('__editable__') && feature.get('__selected__')) {
         featureStroke = featureStroke + 3;
       }
       stroke = new olStyleStroke({
@@ -1380,8 +1380,8 @@ exports.prototype.createStyleFunction = function(curMap) {
       });
     }
 
-    var featureSize = this.get('size');
-    if (!this.get('__editable__') && this.get('__selected__')) {
+    var featureSize = feature.get('size');
+    if (!feature.get('__editable__') && feature.get('__selected__')) {
       featureSize = featureSize + 3;
     }
     var imageOptions = {
@@ -1393,17 +1393,17 @@ exports.prototype.createStyleFunction = function(curMap) {
       radius: featureSize
     };
     var image = null;
-    if (this.get('symbolId')) {
+    if (feature.get('symbolId')) {
       assign(imageOptions, {
-        src: symbolUrl + this.get('symbolId') + '?scale=' + featureSize,
+        src: symbolUrl + feature.get('symbolId') + '?scale=' + featureSize,
         scale: 1,
-        rotation: this.get('angle')
+        rotation: feature.get('angle')
       });
       image = new olStyleIcon(imageOptions);
     } else {
-      var shape = this.get('shape');
+      var shape = feature.get('shape');
       if (!shape) {
-        this.set('shape', 'circle');
+        feature.set('shape', 'circle');
         shape = 'circle';
       }
       if (shape === 'circle') {
@@ -1412,7 +1412,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         assign(imageOptions, {
           points: 4,
           angle: Math.PI / 4,
-          rotation: this.get('angle')
+          rotation: feature.get('angle')
         });
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
@@ -1420,7 +1420,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         assign(imageOptions, ({
           points: 3,
           angle: 0,
-          rotation: this.get('angle')
+          rotation: feature.get('angle')
         }));
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
@@ -1428,16 +1428,16 @@ exports.prototype.createStyleFunction = function(curMap) {
         assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
-          rotation: this.get('angle'),
+          rotation: feature.get('angle'),
           radius2: featureSize
         }));
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
-      } else if (this.get('shape') == 'cross') {
+      } else if (feature.get('shape') == 'cross') {
         assign(imageOptions, ({
           points: 4,
           angle: 0,
-          rotation: this.get('angle'),
+          rotation: feature.get('angle'),
           radius2: 0
         }));
         image = new olStyleRegularShape(
@@ -1445,13 +1445,13 @@ exports.prototype.createStyleFunction = function(curMap) {
       }
     }
 
-    if (this.get('isLabel')) {
+    if (feature.get('isLabel')) {
       return [new olStyleStyle({
         text: new olStyleText(/** @type {olx.style.TextOptions} */ ({
-          text: this.get('name'),
+          text: feature.get('name'),
           textAlign: 'left',
           font: 'normal ' + featureSize + 'px Sans-serif',
-          rotation: this.get('angle'),
+          rotation: feature.get('angle'),
           fill: new olStyleFill({
             color: rgbColor
           }),

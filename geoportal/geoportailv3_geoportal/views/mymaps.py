@@ -20,7 +20,7 @@ from pyramid_ldap3 import get_ldap_connector
 from pyramid.response import Response
 from pyramid.view import view_config
 from PIL import Image
-from io import StringIO
+from io import BytesIO
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
 from shapely.wkt import loads
@@ -65,20 +65,20 @@ class Mymaps(object):
         # gets the default one, colorizes it and saves it
         if not os.path.exists(temp_file_path):
             url = self.request.static_url(
-                'geoportailv3:static/images/arrow.png')
+                'geoportailv3_geoportal:static-ngeo/images/arrow.png')
             orig_arrow = urllib.request.urlopen(url, None, 15)
             content = orig_arrow.read()
-            image = Image.open(StringIO(content))
+            image = Image.open(BytesIO(content))
 
             pixdata = image.load()
-            for y in xrange(image.size[1]):
-                for x in xrange(image.size[0]):
+            for y in range(image.size[1]):
+                for x in range(image.size[0]):
                     if pixdata[x, y] == (255, 255, 255, 255):
                         pixdata[x, y] =\
                             tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
             image.save(temp_file_path)
 
-        f = open(temp_file_path, "r")
+        f = open(temp_file_path, "rb")
 
         return Response(f.read(), headers={'Content-Type': 'image/png'})
 
@@ -1188,7 +1188,7 @@ class Mymaps(object):
             img = Image.new('RGBA', (40, 40))
             ImageDraw.Draw(img)
 
-            buf = StringIO()
+            buf = BytesIO()
             img.save(buf, 'GIF', transparency=0)
             content = buf.getvalue()
             buf.close()
