@@ -5,12 +5,12 @@ GIT_HASH ?= $(shell git rev-parse HEAD)
 PACKAGE ?= geoportailv3
 
 
-UTILITY_HELP = -e "- update-translations	Synchronize the translations with Transifex" \
-        "\n- recreate-search-poi	Recreate the ElasticSearch POI Index" \
-        "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index" \
-        "\n- update-search-layers	Update the ElasticSearch Layers Index" \
-        "\n- update-pots	Update client, server and tooltips pots (to be run from internal network)" \
-        "\n- pull-translations	Pull the translation"
+UTILITY_HELP = -e "- update-translations	Synchronize the translations with Transifex (host)" \
+        "\n- pull-translations	Pull the translation (host)" \
+        "\n- recreate-search-poi	Recreate the ElasticSearch POI Index (docker)" \
+        "\n- recreate-search-layers	Recreate the ElasticSearch Layers Index (docker)" \
+        "\n- update-search-layers	Update the ElasticSearch Layers Index (docker)" \
+        "\n- update-pots	Update client, server and tooltips pots (docker, to be run from internal network)"
 
 SERVER_LOCALISATION_SOURCES_FILES = \
   geoportal/$(PACKAGE)_geoportal/models.py \
@@ -105,15 +105,15 @@ pull-translations:
 
 .PHONY: update-search-layers
 update-search-layers:
-	$(VENV_BIN)/layers2es --interfaces desktop --no-themes --no-blocks --no-folders
+	docker exec $(DOCKER_CONTAINER) layers2es --interfaces desktop --no-themes --no-blocks --no-folders
 
 .PHONY: recreate-search-layers
 recreate-search-layers:
-	$(VENV_BIN)/layers2es --interfaces desktop --no-themes --no-blocks --no-folders --recreate-index
+	docker exec $(DOCKER_CONTAINER) layers2es --interfaces desktop --no-themes --no-blocks --no-folders --recreate-index
 
 .PHONY: recreate-search-poi
 recreate-search-poi:
-	$(VENV_BIN)/db2es --reset --index
+	docker exec $(DOCKER_CONTAINER) db2es --reset --index
 
 .PHONY: build-api
 build-api: \
