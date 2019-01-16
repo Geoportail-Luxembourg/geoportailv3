@@ -55,7 +55,7 @@ RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
     python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
 
-COPY ./c2cgeoportal/geoportal/c2cgeoportal_geoportal/scaffolds/create/tools /app/tools
+COPY ./tools/ /app/tools
 RUN ln -s . geoportal
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
