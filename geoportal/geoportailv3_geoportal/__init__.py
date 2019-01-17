@@ -15,8 +15,6 @@ from marrow.mailer import Mailer
 # from pyramid.events import NewRequest
 from geoportailv3_geoportal.adapters import datetime_adapter, decimal_adapter
 
-from c2cgeoportal_admin import PermissionSetter
-
 import datetime
 import json
 import ldap3 as ldap
@@ -439,10 +437,9 @@ def main(global_config, **settings):
         ('lux_predefined_wms', LuxPredefinedWms),
         ('lux_layer_external_wms', LuxLayerExternalWMS),
         ('lux_layer_internal_wms', LuxLayerInternalWMS),
-    ))
+    ), 'admin')
 
-    # with PermissionSetter(config):
-      # scan view decorator for adding routes
+    # scan view decorator for adding routes
     config.scan()
 
     return config.make_wsgi_app()
