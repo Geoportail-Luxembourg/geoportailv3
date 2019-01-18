@@ -54,7 +54,7 @@ UTILITY_HELP = 	-e "- update-translations	Synchronize the translations with Tran
 # Add rule that copies the font-awesome fonts to the static/build directory.
 POST_RULES = .build/fonts.timestamp
 
-SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/pag.py $(PACKAGE)/views/luxprintproxy.py
+SERVER_LOCALISATION_SOURCES_FILES += $(PACKAGE)/views/casipo.py $(PACKAGE)/views/pag.py $(PACKAGE)/views/luxprintproxy.py
 
 TOOLTIPS_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-tooltips.mo, $(LANGUAGES)))
 
