@@ -63,13 +63,7 @@ class Casipo(object):
         if self.link == 'error':
             mailtext = _("CASIPO Error during report generation")
         else:
-            mailtext = _("""Bonjour!
-
-Votre extrait du Cadastre des sites potentiellement pollués est finalisé.
-Cliquez-ici pour télécharger le résultat: %s
-
-Meilleures salutations
-L'équipe du géoportail et de l'Administration de l'Environnement""" ${link}",
+            mailtext = _("CASIPO Mail the report link ${link}" ${link}",
                          mapping={'link': self.link})
         msg = MIMEText(self.localizer.translate(mailtext), 'html', 'utf-8')
         me = 'support@geoportail.lu'
