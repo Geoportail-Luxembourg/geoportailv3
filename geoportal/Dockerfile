@@ -1,10 +1,15 @@
-FROM camptocamp/geomapfish-build-dev:2.3.5.3
+FROM camptocamp/geomapfish-build-dev:2.3.5.21
 LABEL maintainer Camptocamp "info@camptocamp.com"
 
 WORKDIR /app
 
 COPY requirements.txt /app
 RUN pip install --disable-pip-version-check --no-cache-dir --no-deps -r requirements.txt
+
+RUN mkdir -p /app/admin
+COPY geoportailv3_geoportal/admin/package.json /app/admin
+RUN cd /app/admin && npm install --global && npm cache clear
+RUN rm -rf /app/admin
 
 COPY package.json /app
 RUN npm install --no-optional && \
