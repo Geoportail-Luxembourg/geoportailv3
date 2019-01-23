@@ -6,10 +6,9 @@ WORKDIR /app
 COPY requirements.txt /app
 RUN pip install --disable-pip-version-check --no-cache-dir --no-deps -r requirements.txt
 
-RUN mkdir -p /app/admin
-COPY geoportailv3_geoportal/admin/package.json /app/admin
-RUN cd /app/admin && npm install --global && npm cache clear
-RUN rm -rf /app/admin
+RUN mkdir -p /app/geoportailv3_geoportal/admin
+COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin
+RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear
 
 COPY package.json /app
 RUN npm install --no-optional && \
