@@ -29,7 +29,6 @@ from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
 _list_field = partial(ListField, LuxLayerInternalWMS)
 
-base_schema = GeoFormSchemaNode(LuxLayerInternalWMS)
 base_schema = GeoFormSchemaNode(LuxLayerInternalWMS, widget=FormWidget(fields_template='layer_fields'))
 base_schema.add(dimensions_schema_node.clone())
 base_schema.add(metadatas_schema_node.clone())
