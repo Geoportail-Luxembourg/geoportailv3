@@ -46,7 +46,7 @@ app.getElevation_ = function($http, gettextCatalog, elevationServiceUrl) {
             function(resp) {
               var text = gettextCatalog.getString('N/A');
               if (resp.data['dhm'] > 0) {
-                text = parseInt(resp.data['dhm'] / 100, 0).toString() + ' m';
+                text = Number(resp.data['dhm']).toFixed(2) + ' m';
               }
               return {'formattedElevation': text,
                 'rawElevation': resp.data['dhm']};
