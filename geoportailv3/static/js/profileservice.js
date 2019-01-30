@@ -61,7 +61,7 @@ app.getProfile_ = function($http, profileServiceUrl) {
 
           goog.array.forEach(resp.data['profile'], function(element) {
             element['id'] = id;
-            var curElevation = (element['values']['dhm']) / 100;
+            var curElevation = (element['values']['dhm']) ;
             if (lastElevation !== undefined) {
               var elevation = curElevation - lastElevation;
               cumulativeElevation = cumulativeElevation + elevation;
