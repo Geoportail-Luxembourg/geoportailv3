@@ -1,5 +1,9 @@
 FROM camptocamp/geomapfish-build-dev:2.3.5.25
 LABEL maintainer Camptocamp "info@camptocamp.com"
+ARG HTTP_PROXY_URL
+ENV http_proxy $HTTP_PROXY_URL
+ARG HTTPS_PROXY_URL
+ENV https_proxy $HTTPS_PROXY_URL
 
 WORKDIR /app
 
