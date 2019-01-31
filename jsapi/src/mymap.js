@@ -549,7 +549,7 @@ lux.MyMap.prototype.getMeasures = function(feature) {
         if (json['dhm'] > 0) {
           goog.dom.setTextContent(elevationEl,
               lux.translate('Elevation') + ': ' +
-              parseInt(json['dhm'] / 100, 0).toString() + ' m');
+              parseInt(json['dhm'], 0).toString() + ' m');
         }
       }
     );
@@ -662,7 +662,7 @@ lux.MyMap.prototype.initProfile_ = function(target, opt_addCloseBtn) {
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return parseFloat((item['values']['dhm'] / 100).toPrecision(5));
+      return parseFloat((item['values']['dhm']).toPrecision(5));
     }
     return 0;
   };
@@ -794,7 +794,7 @@ lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
       lineString.appendCoordinate(
           p.getCoordinates().concat(data.profile[i]['dist']));
 
-      var curElevation = (data.profile[i]['values']['dhm']) / 100;
+      var curElevation = (data.profile[i]['values']['dhm']);
       if (lastElevation !== undefined) {
         var elevation = curElevation - lastElevation;
         cumulativeElevation = cumulativeElevation + elevation;
@@ -824,7 +824,7 @@ lux.MyMap.prototype.exportCSV_ = function() {
   var csv = 'dist,MNT,y,x\n';
   this.selection_.datum().forEach(function(item) {
     csv += item['dist'] + ',' +
-          (item['values']['dhm']) / 100 + ',' +
+          (item['values']['dhm']) + ',' +
           item['x'] + ',' +
           item['y'] + '\n';
   });
