@@ -55,7 +55,7 @@ exports = class AbstractLocalforageWrapper {
       'args': args,
       'id': id
     };
-    console.log('sending action', command, id);
+    console.log('sending action', JSON.stringify(action, null, '\t'));
     const waitingPromise = {};
     const promise = new Promise(function(resolve, reject) {
       waitingPromise['resolve'] = resolve;
@@ -80,7 +80,7 @@ exports = class AbstractLocalforageWrapper {
     const args = action['args'] || [];
     const context = action['context'];
     const msg = action['msg'];
-    console.log('received action', command, id);
+    console.log('received action', JSON.stringify(action, null, '\t'));
 
     const waitingPromise = this.waitingPromises_.get(id);
     if (command === 'error') {
@@ -90,7 +90,7 @@ exports = class AbstractLocalforageWrapper {
         this.waitingPromises_.delete(id);
       }
     } else if (command === 'response') {
-      console.log('Received response message from cordova');
+      console.log('Received response message from backend');
       waitingPromise.resolve(...args);
       this.waitingPromises_.delete(id);
     } else {
