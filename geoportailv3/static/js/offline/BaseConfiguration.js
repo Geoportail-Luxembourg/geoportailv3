@@ -13,6 +13,8 @@ goog.require('ol.source.TileWMS');
 goog.require('ol.tilegrid');
 const SerializerDeserializer = goog.require('ngeo.offline.SerializerDeserializer');
 const LocalforageCordovaWrapper = goog.require('app.offline.LocalforageCordovaWrapper');
+const LocalforageAndroidWrapper = goog.require('app.offline.LocalforageAndroidWrapper');
+
 
 goog.require('ngeo.CustomEvent');
 
@@ -119,6 +121,9 @@ exports = class extends ol.Observable {
     if (location.search.includes('cordova')) {
       console.log('Using cordova localforage');
       return new LocalforageCordovaWrapper();
+    } else if (location.search.includes('android')) {
+      console.log('Using android localforage');
+      return new LocalforageAndroidWrapper();
     }
     return localforage;
   }
