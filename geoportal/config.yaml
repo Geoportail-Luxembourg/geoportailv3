@@ -430,12 +430,12 @@ vars:
   sqlalchemy.max_overflow: 25
   sqlalchemy.pool_recycle: 30
   sqlalchemy.pool_size: 5
-  sqlalchemy.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST}:{PGPORT}/lux
+  sqlalchemy.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST}:{PGPORT}/{PGDATABASE}
   sqlalchemy.use_batch_mode: true
   sqlalchemy_slave.max_overflow: 25
   sqlalchemy_slave.pool_recycle: 30
   sqlalchemy_slave.pool_size: 5
-  sqlalchemy_slave.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST_SLAVE}:{PGPORT}/lux
+  sqlalchemy_slave.url: postgresql://{PGUSER}:{PGPASSWORD}@{PGHOST_SLAVE}:{PGPORT}/{PGDATABASE}
   sqlalchemy_slave.use_batch_mode: true
   srid: 2169
   stats: {}
