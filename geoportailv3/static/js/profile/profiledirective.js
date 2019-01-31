@@ -164,7 +164,7 @@ app.ProfileController = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return parseFloat((item['values']['dhm'] ).toPrecision(5));
+      return parseFloat((item['values']['dhm']).toPrecision(5));
     }
     return 0;
   };
