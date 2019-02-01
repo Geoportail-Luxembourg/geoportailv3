@@ -40,15 +40,6 @@ exports = class extends ol.Observable {
     this.configureLocalforage();
 
     /**
-     * @param {number} progress new progress.
-     */
-    this.dispatchProgress_ = (progress) => {
-      this.dispatchEvent(new ngeo.CustomEvent('progress', {
-        'progress': progress
-      }));
-    };
-
-    /**
      * @private
      * @type {!angular.Scope}
      */
@@ -78,6 +69,16 @@ exports = class extends ol.Observable {
      * @type {number}
      */
     this.gutter_ = ngeoOfflineGutter;
+  }
+
+  /**
+   * @private
+   * @param {number} progress new progress.
+   */
+  dispatchProgress_(progress) {
+    this.dispatchEvent(new ngeo.CustomEvent('progress', {
+      'progress': progress
+    }));
   }
 
   /**
