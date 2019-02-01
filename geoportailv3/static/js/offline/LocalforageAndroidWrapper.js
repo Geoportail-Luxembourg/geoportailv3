@@ -26,6 +26,6 @@ exports = class AndroidWrapper extends AbstractWrapper {
     const action = JSON.parse(actionString);
     this.receiveMessage({
       'data': action
-    })
+    });
   }
 };
