@@ -5,11 +5,11 @@ goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.asserts');
 
 const ngeoOfflineModule = goog.require('ngeo.offline.module');
-const AppBaseConfiguration = goog.require('app.offline.BaseConfiguration');
+const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
 
 /**
  */
-exports = class extends AppBaseConfiguration {
+exports = class extends NgeoConfiguration {
 
   /**
    * @ngInject
@@ -64,6 +64,7 @@ exports = class extends AppBaseConfiguration {
 
 
  /**
+   * @export
    * @override
    * @param {!ol.Map} map the map
    * @return {number} an estimated size in MB
