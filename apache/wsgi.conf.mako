@@ -50,4 +50,5 @@ WSGIScriptAlias /${instanceid}/wsgi ${directory}/apache/application.wsgi
     WSGIProcessGroup c2cgeoportal:${instanceid}
     WSGIApplicationGroup %{GLOBAL}
     SetEnvIf X-Https on HTTPS=1
+    Require all granted
 </Location>
