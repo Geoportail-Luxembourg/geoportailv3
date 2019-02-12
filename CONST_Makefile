@@ -702,7 +702,7 @@ $(VENV_BIN)/flake8: .build/dev-requirements.timestamp
 	mkdir -p $(dir $@)
 	virtualenv --setuptools --no-site-packages .build/venv
 	$(PIP_CMD) install \
-		'pip==7.1.2' 'setuptools==21.0.0'
+		'pip==19.0.2' 'setuptools==21.0.0'
 	touch $@
 
 .build/requirements.timestamp: $(EGGS_DEPENDENCIES)
