@@ -3,8 +3,9 @@ LABEL maintainer Camptocamp "info@camptocamp.com"
 
 WORKDIR /app
 
-COPY requirements.txt /app
-RUN pip install --disable-pip-version-check --no-cache-dir --no-deps -r requirements.txt
+RUN pip install --disable-pip-version-check --no-cache-dir 'pip==19.0.2' 'setuptools==40.8.0'
+COPY setup.py /app
+RUN python3 setup.py install
 
 RUN mkdir -p /app/geoportailv3_geoportal/admin
 COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin

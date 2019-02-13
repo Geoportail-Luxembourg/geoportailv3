@@ -11,8 +11,9 @@ setup(
     author_email='info@geoportailv3.com',
     url='http://www.geoportailv3.com/',
     install_requires=[
-        'c2cgeoportal_geoportal',
-        'c2cgeoportal_admin',
+        'c2cgeoportal_commons==2.3.5.25',
+        'c2cgeoportal_geoportal==2.3.5.25',
+        'c2cgeoportal_admin==2.3.5.25',
         'pyocclient==0.2',
         'suds-jurko==0.6',
         'ipaddr==2.2.0',
@@ -22,8 +23,9 @@ setup(
         'qrcode==5.1',
         'bleach==2.1.4',
         'html5lib==1.0.1',
+        'CairoSVG==1.0.22',
         'weasyprint==v0.42.3',
-        'PyPDF2==1.24',
+        'PyPDF2==1.26',
         'marrow.mailer',
         'webtest',
         'beautifulsoup4==4.5.1'
