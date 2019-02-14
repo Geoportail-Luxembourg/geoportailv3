@@ -35,6 +35,7 @@ app.MapsResponse;
 /**
  * @constructor
  * @param {angular.$http} $http The angular http service.
+ * @param {angular.$q} $q The q service.
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.StateManager} appStateManager The state manager service.
@@ -52,9 +53,15 @@ app.MapsResponse;
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
     appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
+  /**
+   * @type {angular.$q}
+   * @private
+   */
+  this.$q_ = $q;
+
   /**
    * @type {string}
    * @private
@@ -236,6 +243,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsGetFullMymapsUrl_ = mymapsUrl + '/get_full_mymaps';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -334,6 +347,18 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {?Array.<Object>}
    */
   this.allcategories = null;
+
+  /**
+   * The raw response data of the map info query.
+   * @type {app.MapsResponse}
+   */
+  this.maps_ = null;
+
+  /**
+   * The raw response data of the get user categories query.
+   * @type {Array.<Object>}
+   */
+  this.usersCategories_ = null;
 
   /**
    * The raw response data of the map info query.
@@ -498,25 +523,50 @@ app.Mymaps.prototype.isEditable = function() {
 
 /**
  * Get the categories available for each user that the connected user can see.
+ * If offline, return the current usersCategories in this class.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getUsersCategories = function() {
-  var url = this.mymapsUserCategoriesUrl_;
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.usersCategories_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsUserCategoriesUrl_;
   return this.$http_.get(url).then(
-      function(resp) {
-        return resp.data;
-      }.bind(this));
+    (resp) => {
+      this.setUsersCategories(resp.data);
+      return this.usersCategories_;
+    }
+  );
 };
 
 /**
+ * Set the categories available for each user that the connected user can see.
+ * @param {Array.<Object>} userCategories user categories
+ */
+app.Mymaps.prototype.setUsersCategories = function(userCategories) {
+  this.usersCategories_ = userCategories;
+};
+
+
+/**
  * Get an array of map objects.
+ * If offline, return the current maps object in this class.
  * @param {?string} owner The map owner to restrict.
  * @param {?number} categoryId The category to restrict.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMaps = function(owner, categoryId) {
-  var url = this.mymapsMapsUrl_;
-  var params = {};
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.maps_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsMapsUrl_;
+  const params = {};
   if (owner !== null) {
     params['owner'] = owner;
   }
@@ -524,30 +574,42 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
     params['category'] = categoryId;
   }
 
-  return this.$http_.get(url, {params: params}).then(goog.bind(
+  return this.$http_.get(url, {params: params}).then(
+    (
       /**
        * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
+       * @return {app.MapsResponse} The "mymaps" web service object.
        */
-      function(resp) {
-        goog.array.forEach(resp.data, function(map) {
-          if (goog.isNull(map['update_date'])) {
-            map['update_date'] = map['create_date'];
-          }
-        });
-        return resp.data;
-      }, this), goog.bind(
-      function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-           'Erreur inattendue lors du chargement de vos cartes.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
-        return [];
-      }, this)
+      (resp) => {
+        this.setMaps(resp.data);
+        return this.maps_;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+         'Erreur inattendue lors du chargement de vos cartes.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }
   );
+};
+
+
+/**
+ * Set the maps object.
+ * @param {app.MapsResponse} maps The "mymaps" web service response.
+ */
+app.Mymaps.prototype.setMaps = function(maps) {
+  goog.array.forEach(maps, function(map) {
+    if (goog.isNull(map['update_date'])) {
+      map['update_date'] = map['create_date'];
+    }
+  });
+  this.maps_ = maps;
 };
 
 
@@ -1493,6 +1555,38 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
     return styles;
   };
+};
+
+
+/**
+ * Get full mymaps informations.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.getFullMymaps = function() {
+  const config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.get(this.mymapsGetFullMymapsUrl_, config).then(
+    (
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {Object} The "get_full_mymaps" web service response.
+       */
+      (resp) => {
+        return resp.data;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+          'Erreur lors du téléchargement de tous les mymaps.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }
+  );
 };
 
 app.module.service('appMymaps', app.Mymaps);

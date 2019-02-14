@@ -42,13 +42,13 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
  * Save data into the storage system.
  */
 app.MymapsOffline.prototype.save = function() {
-  var item = {
-    'allCategories': this.appMymaps_.allcategories,
-    'mapInfo': this.appMymaps_.getMapInfo(),
-    'mapFeatures': this.appMymaps_.getMapFeatures(),
-    'mapId': this.appMymaps_.getMapId()
-  };
-  this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
+  this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
+    var item = {};
+    if (full_mymaps) {
+      item['full_mymaps'] = full_mymaps;
+    }
+    this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
+  }.bind(this));
 };
 
 /**
@@ -60,27 +60,42 @@ app.MymapsOffline.prototype.restore = function() {
       return;
     }
 
-    var allcategories = /** @type {Array<(Object|null)>} */ (storedItem['allCategories']);
-    if (allcategories) {
-      this.appMymaps_.allcategories = (allcategories);
+    var full_mymaps = /** @type {Object} */ (storedItem['full_mymaps']);
+    if (!full_mymaps) {
+      return;
     }
 
-    var mapInfo = /** @type {Object} */ (storedItem['mapInfo']);
-    if (mapInfo) {
-      this.appMymaps_.setMapInformation(mapInfo);
+    var maps = /** @type {app.MapsResponse|undefined} */ (full_mymaps['maps']);
+    if (maps) {
+      this.appMymaps_.setMaps(maps);
     }
 
-    var mapFeatures = storedItem['mapFeatures'];
-    if (mapFeatures) {
-      const collection = this.drawnFeatures_.getCollection();
-      collection.clear();
-      this.appMymaps_.setFeatures(mapFeatures, collection);
+    var users_categories = /** @type {Array<(Object)>} */ (full_mymaps['users_categories']);
+    if (users_categories) {
+      this.appMymaps_.setUsersCategories(users_categories);
     }
 
-    var mapId = storedItem['mapId'];
-    if (mapId) {
-      this.appMymaps_.setMapId(mapId);
-    }
+    // var allcategories = /** @type {Array<(Object|null)>} */ (storedItem['allCategories']);
+    // if (allcategories) {
+    //   this.appMymaps_.allcategories = (allcategories);
+    // }
+
+    // var mapInfo = /** @type {Object} */ (storedItem['mapInfo']);
+    // if (mapInfo) {
+    //   this.appMymaps_.setMapInformation(mapInfo);
+    // }
+
+    // var mapFeatures = storedItem['mapFeatures'];
+    // if (mapFeatures) {
+    //   const collection = this.drawnFeatures_.getCollection();
+    //   collection.clear();
+    //   this.appMymaps_.setFeatures(mapFeatures, collection);
+    // }
+
+    // var mapId = storedItem['mapId'];
+    // if (mapId) {
+    //   this.appMymaps_.setMapId(mapId);
+    // }
   });
 };
 
