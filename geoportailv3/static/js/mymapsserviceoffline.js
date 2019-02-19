@@ -70,32 +70,15 @@ app.MymapsOffline.prototype.restore = function() {
       this.appMymaps_.setMaps(maps);
     }
 
-    var users_categories = /** @type {Array<(Object)>} */ (full_mymaps['users_categories']);
-    if (users_categories) {
-      this.appMymaps_.setUsersCategories(users_categories);
+    var usersCategories = /** @type {Array<(Object)>} */ (full_mymaps['users_categories']);
+    if (usersCategories) {
+      this.appMymaps_.setUsersCategories(usersCategories);
     }
 
-    // var allcategories = /** @type {Array<(Object|null)>} */ (storedItem['allCategories']);
-    // if (allcategories) {
-    //   this.appMymaps_.allcategories = (allcategories);
-    // }
-
-    // var mapInfo = /** @type {Object} */ (storedItem['mapInfo']);
-    // if (mapInfo) {
-    //   this.appMymaps_.setMapInformation(mapInfo);
-    // }
-
-    // var mapFeatures = storedItem['mapFeatures'];
-    // if (mapFeatures) {
-    //   const collection = this.drawnFeatures_.getCollection();
-    //   collection.clear();
-    //   this.appMymaps_.setFeatures(mapFeatures, collection);
-    // }
-
-    // var mapId = storedItem['mapId'];
-    // if (mapId) {
-    //   this.appMymaps_.setMapId(mapId);
-    // }
+    var mapsElements = /** @type {Object} */ (full_mymaps['maps_elements']);
+    if (mapsElements) {
+      this.appMymaps_.setMapsElements(mapsElements);
+    }
   });
 };
 

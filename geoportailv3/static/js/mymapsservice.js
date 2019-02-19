@@ -373,6 +373,12 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.mapFeatures_ = null;
 
   /**
+   * Full mymaps maps_elements.
+   * @type {?Object}
+   */
+  this.mapsElements_ = null;
+
+  /**
    * @const
    * @private
    */
@@ -450,6 +456,10 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    return this.setCurrentMapIdWhenOffline_(mapId, collection);
+  }
+
   return this.loadMapInformation().then(goog.bind(function(mapinformation) {
     if (mapinformation !== null) {
       return this.loadFeatures_().then(goog.bind(function(features) {
@@ -459,6 +469,31 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
     return null;
   }, this));
 };
+
+
+/**
+ * Set the mapId and load map information when offline.
+ * @param {string} mapId The map id.
+ * @param {ol.Collection} collection The collection.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.setCurrentMapIdWhenOffline_ = function(mapId, collection) {
+  const deferred = this.$q_.defer();
+  let mapinformation = null;
+  let features = null;
+  if (this.mapsElements_) {
+    const element = this.mapsElements_[mapId];
+    if (element) {
+      mapinformation = element['map'];
+      features = element['features'];
+    }
+  }
+  this.setMapInformation(mapinformation);
+  this.setFeatures(features, collection);
+  deferred.resolve(mapinformation);
+  return deferred.promise;
+};
+
 
 /**
  * Fill a collection of features with features objects.
@@ -760,7 +795,6 @@ app.Mymaps.prototype.loadMapInformation = function() {
 
 
 /**
- * FIXME
  * @param {Object} mapinformation any
  * @return {Object} mapinformation any
  */
@@ -1559,7 +1593,7 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
 
 /**
- * Get full mymaps informations.
+ * Get full mymaps information.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getFullMymaps = function() {
@@ -1587,6 +1621,15 @@ app.Mymaps.prototype.getFullMymaps = function() {
       return [];
     }
   );
+};
+
+
+/**
+ * Set full mymaps maps_elements object.
+ * @param {Object} mapsElements getFullMymaps service maps_elements object
+ */
+app.Mymaps.prototype.setMapsElements = function(mapsElements) {
+  this.mapsElements_ = mapsElements;
 };
 
 app.module.service('appMymaps', app.Mymaps);
