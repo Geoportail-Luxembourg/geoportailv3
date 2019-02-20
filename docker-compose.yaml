@@ -52,7 +52,7 @@ services:
       - PGSCHEMA_STATIC
       - PGOPTIONS
       - PRINT_URL
-      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
       - LOG_LEVEL=INFO
       - C2CGEOPORTAL_LOG_LEVEL=INFO
       - C2CWSGIUTILS_CONFIG=/app/development.ini
