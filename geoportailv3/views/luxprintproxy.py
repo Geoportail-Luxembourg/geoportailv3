@@ -277,17 +277,17 @@ class LuxPrintProxy(PrintProxy):
                     attributes["firstPagesUrls"] is not None and\
                     len(attributes["firstPagesUrls"]) > 0:
                 attributes["firstPagesUrls"].reverse()
-                for pageUrl in attributes["firstPagesUrls"]:
+                for page_url in attributes["firstPagesUrls"]:
                     try:
                         merger = PdfFileMerger(strict=False)
-                        if pageUrl['type'].lower() == 'pdf':
+                        if page_url['type'].lower() == 'pdf':
                             opener = urllib2.build_opener(
                                 urllib2.HTTPHandler())
-                            pdf_content = opener.open(pageUrl['url']).read()
+                            pdf_content = opener.open(page_url['url']).read()
                             merger.append(StringIO(pdf_content))
                         else:
                             first_page = StringIO()
-                            weasyprint.HTML(pageUrl['url']).write_pdf(
+                            weasyprint.HTML(page_url['url']).write_pdf(
                                 first_page
                             )
                             merger.append(first_page)

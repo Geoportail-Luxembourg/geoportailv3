@@ -112,8 +112,8 @@ class FullTextSearchView(object):
         filters['must'].append({"type": {"value": "poi"}})
 
         if layer:
-            for curLayer in layer.split(","):
-                filters['should'].append({"term": {"layer_name": curLayer}})
+            for cur_layer in layer.split(","):
+                filters['should'].append({"term": {"layer_name": cur_layer}})
 
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
