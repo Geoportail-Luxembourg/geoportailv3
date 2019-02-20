@@ -59,6 +59,16 @@ class Feedback(object):
             map = self.request.db_mymaps.query(Map).get(map_id)
             if map is None:
                 return HTTPNotFound()
+            sanitized_description = bleach.clean(vars['description'])
+            message = u"L\'utilisateur <a href=\"mailto:{0}\">{0}</a> " \
+                u"a remarqué le problème suivant:<p>{1}</p>" \
+                .format(vars['email'],
+                        sanitized_description,
+                        vars['layer'],
+                        vars['url'],
+                        vars['name'],
+                        "http://map.geoportail.lu?map_id=" + map_id,
+                        )
 
             features = vars['features'].\
                 replace(u'\ufffd', '?')
@@ -69,13 +79,14 @@ class Feedback(object):
                 obj = None
                 try:
                     obj = Feature(feature)
+                    obj.name = vars['name']
+                    obj.description = message
                 except Exception as e:
                     log.exception(e)
                 if obj is not None:
                     map.features.append(obj)
                 self.request.db_mymaps.commit()
 
-            sanitized_description = bleach.clean(vars['description'])
             html_body = u"<h3>L\'utilisateur <a href=\"mailto:{0}\">{4}</a> " \
                 u"a remarqué le problème suivant:</h3><p>{1}</p>" \
                 u"<p><a href=\"{3}\">Ouvrir le lien vers la carte</a></p>" \
