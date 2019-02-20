@@ -57,7 +57,8 @@ app.drawDirective = function(appDrawTemplateUrl) {
       'map': '=appDrawMap',
       'active': '=appDrawActive',
       'activateMymaps': '=appDrawActivateMymaps',
-      'mymapsOpen': '=appDrawMymapsOpen'
+      'mymapsOpen': '=appDrawMymapsOpen',
+      'feedbackanfOpen': '=appDrawFeedbackAnfOpen'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',
@@ -369,7 +370,9 @@ app.DrawController = function($scope,
     } else {
       this.appActivetool_.drawActive = false;
       if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-        this['mymapsOpen'] = true;
+        if (this['feedbackanfOpen'] !== true) {
+          this['mymapsOpen'] = true;
+        }
       }
     }
   }, this));

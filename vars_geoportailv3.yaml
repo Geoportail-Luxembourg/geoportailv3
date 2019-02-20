@@ -129,8 +129,10 @@ vars:
       url:
       admin_email:
       email_cc:
-
-    pag: 
+    anf:
+      email:
+      map_id:
+    pag:
       staging_url:
       prod_url:
       fme_token: 
