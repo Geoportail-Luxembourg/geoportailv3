@@ -95,7 +95,7 @@ app.ShareDirectiveController.prototype.openShareLink = function(service) {
     googUri.setQueryData(goog.Uri.QueryData.createFromMap({
       //twitter params
       'text': this.window_.document.title,
-      'via': 'geoportal_lux',
+      'via': 'geoportail_lux',
       'url': $('app-shorturl input').val()
     }));
     var popup =
