@@ -799,87 +799,114 @@ app.Mymaps.prototype.loadMapInformation = function() {
  * @return {Object} mapinformation any
  */
 app.Mymaps.prototype.setMapInformation = function(mapinformation) {
-  if (mapinformation !== null) {
-    this.mapDescription = mapinformation['description'];
-    this.mapTitle = mapinformation['title'];
-    this.mapOwner = mapinformation['user_login'];
-    this.mapIsPublic = mapinformation['public'];
-    this.mapCategoryId = mapinformation['category_id'];
-    this.mapBgLayer = mapinformation['bg_layer'];
-    this.mapTheme = mapinformation['theme'];
-    this.mapIsEditable = mapinformation['is_editable'];
-
-    if (!this.mapBgLayer) {
-      if (this.mapTheme === 'tourisme') {
-        this.mapBgLayer = 'topo_bw_jpeg';
-      } else {
-        this.mapBgLayer = 'topogr_global';
-      }
-      mapinformation['bg_layer'] = this.mapBgLayer;
-    }
-    if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
-      this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
-    }
-
-    this.mapBgOpacity = mapinformation['bg_opacity'];
-    if ('layers' in mapinformation && mapinformation['layers']) {
-      this.mapLayers = mapinformation['layers'].split(',');
-      this.mapLayers.reverse();
-      if ('layers_opacity' in mapinformation &&
-          mapinformation['layers_opacity']) {
-        this.mapLayersOpacities =
-            mapinformation['layers_opacity'].split(',');
-      } else {
-        this.mapLayersOpacities = [];
-      }
-      this.mapLayersOpacities.reverse();
-      if ('layers_visibility' in mapinformation &&
-          mapinformation['layers_visibility']) {
-        this.mapLayersVisibilities =
-            mapinformation['layers_visibility'].split(',');
-      } else {
-        this.mapLayersVisibilities = [];
-      }
-      this.mapLayersVisibilities.reverse();
-      if ('layers_indices' in mapinformation &&
-          mapinformation['layers_indices']) {
-        this.mapLayersIndicies =
-            mapinformation['layers_indices'].split(',');
-      } else {
-        this.mapLayersIndicies = [];
-      }
-      this.mapLayersIndicies.reverse();
-
-      // remove layers with no name
-      var iToRemove = [];
-      this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
-        if (item.length === 0) {
-          iToRemove.push(i);
-          return false;
-        }
-        return true;
-      }, this);
-      goog.array.forEachRight(iToRemove, function(item) {
-        if (this.mapLayersIndicies) {
-          this.mapLayersIndicies.splice(item, 1);
-        }
-        if (this.mapLayersVisibilities) {
-          this.mapLayersVisibilities.splice(item, 1);
-        }
-        if (this.mapLayersOpacities) {
-          this.mapLayersOpacities.splice(item, 1);
-        }
-      }, this);
-    } else {
-      this.mapLayers = [];
-      this.mapOpacities = [];
-      this.mapVisibilities = [];
-      this.mapLayersIndicies = [];
-    }
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    // Avoid to restore not saved layers
+    this.setMapMetaInformation_(mapinformation);
+    return mapinformation;
   }
+  this.setMapMetaInformation_(mapinformation);
+  this.setMapInformation_(mapinformation);
   this.updateLayers();
   this.layersChanged = false;
   return mapinformation;
+};
+
+
+/**
+ * @param {Object} mapinformation any
+ */
+app.Mymaps.prototype.setMapMetaInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  };
+  this.mapDescription = mapinformation['description'];
+  this.mapTitle = mapinformation['title'];
+  this.mapOwner = mapinformation['user_login'];
+  this.mapIsPublic = mapinformation['public'];
+  this.mapCategoryId = mapinformation['category_id'];
+  this.mapTheme = mapinformation['theme'];
+  this.mapIsEditable = mapinformation['is_editable'];
+};
+
+
+/**
+ * @param {Object} mapinformation any
+ */
+app.Mymaps.prototype.setMapInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  };
+
+  this.mapBgLayer = mapinformation['bg_layer'];
+
+  if (!this.mapBgLayer) {
+    if (this.mapTheme === 'tourisme') {
+      this.mapBgLayer = 'topo_bw_jpeg';
+    } else {
+      this.mapBgLayer = 'topogr_global';
+    }
+    mapinformation['bg_layer'] = this.mapBgLayer;
+  }
+
+  if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+    this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+  }
+
+  this.mapBgOpacity = mapinformation['bg_opacity'];
+  if ('layers' in mapinformation && mapinformation['layers']) {
+    this.mapLayers = mapinformation['layers'].split(',');
+    this.mapLayers.reverse();
+    if ('layers_opacity' in mapinformation &&
+        mapinformation['layers_opacity']) {
+      this.mapLayersOpacities =
+          mapinformation['layers_opacity'].split(',');
+    } else {
+      this.mapLayersOpacities = [];
+    }
+    this.mapLayersOpacities.reverse();
+    if ('layers_visibility' in mapinformation &&
+        mapinformation['layers_visibility']) {
+      this.mapLayersVisibilities =
+          mapinformation['layers_visibility'].split(',');
+    } else {
+      this.mapLayersVisibilities = [];
+    }
+    this.mapLayersVisibilities.reverse();
+    if ('layers_indices' in mapinformation &&
+        mapinformation['layers_indices']) {
+      this.mapLayersIndicies =
+          mapinformation['layers_indices'].split(',');
+    } else {
+      this.mapLayersIndicies = [];
+    }
+    this.mapLayersIndicies.reverse();
+
+    // remove layers with no name
+    var iToRemove = [];
+    this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
+      if (item.length === 0) {
+        iToRemove.push(i);
+        return false;
+      }
+      return true;
+    }, this);
+    goog.array.forEachRight(iToRemove, function(item) {
+      if (this.mapLayersIndicies) {
+        this.mapLayersIndicies.splice(item, 1);
+      }
+      if (this.mapLayersVisibilities) {
+        this.mapLayersVisibilities.splice(item, 1);
+      }
+      if (this.mapLayersOpacities) {
+        this.mapLayersOpacities.splice(item, 1);
+      }
+    }, this);
+  } else {
+    this.mapLayers = [];
+    this.mapOpacities = [];
+    this.mapVisibilities = [];
+    this.mapLayersIndicies = [];
+  }
 };
 
 
