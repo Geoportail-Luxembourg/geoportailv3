@@ -458,6 +458,10 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
 
   if (this.ngeoNetworkStatus_.isDisconnected()) {
     return this.setCurrentMapIdWhenOffline_(mapId, collection);
+  } else {
+    // Clear map to removes the alreay selected layers
+    // Don't do it offline because other layer won't be loaded.
+    this.map.getLayers().clear();
   }
 
   return this.loadMapInformation().then(goog.bind(function(mapinformation) {
@@ -818,7 +822,7 @@ app.Mymaps.prototype.setMapInformation = function(mapinformation) {
 app.Mymaps.prototype.setMapMetaInformation_ = function(mapinformation) {
   if (mapinformation === null) {
     return;
-  };
+  }
   this.mapDescription = mapinformation['description'];
   this.mapTitle = mapinformation['title'];
   this.mapOwner = mapinformation['user_login'];
@@ -835,7 +839,7 @@ app.Mymaps.prototype.setMapMetaInformation_ = function(mapinformation) {
 app.Mymaps.prototype.setMapInformation_ = function(mapinformation) {
   if (mapinformation === null) {
     return;
-  };
+  }
 
   this.mapBgLayer = mapinformation['bg_layer'];
 
