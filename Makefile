@@ -3,8 +3,6 @@ DOCKER_BASE ?= camptocamp/geoportailv3
 DOCKER_TAG ?= latest
 GIT_HASH ?= $(shell git rev-parse HEAD)
 PACKAGE ?= geoportailv3
-HTTP_PROXY_URL ?= http://proxy:3128
-HTTPS_PROXY_URL ?= http://proxy:3128
 
 
 UTILITY_HELP = -e "- update-translations	Synchronize the translations with Transifex (host)" \
@@ -54,11 +52,11 @@ build: docker-build-geoportal docker-build-config
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
-	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) --build-arg=HTTP_PROXY_URL=$(HTTP_PROXY_URL) --build-arg=HTTPS_PROXY_URL=$(HTTPS_PROXY_URL) geoportal
+	docker build --tag=$(DOCKER_BASE)-geoportal:$(DOCKER_TAG) --build-arg=GIT_HASH=$(GIT_HASH) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) geoportal
 
 .PHONY: docker-build-config
 docker-build-config:
-	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(HTTP_PROXY_URL) --build-arg=HTTPS_PROXY_URL=$(HTTPS_PROXY_URL) .
+	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
 
 DOCKER_COMPOSE_PROJECT ?= luxembourg
 DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1
