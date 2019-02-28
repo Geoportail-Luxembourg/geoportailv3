@@ -275,6 +275,10 @@ def main(global_config, **settings):
         "feedback",
         "/feedback"
     )
+    config.add_route(
+        "feedbackanf",
+        "/feedbackanf"
+    )
     # pag routes
     config.add_route(
         "pag_url",

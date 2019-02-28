@@ -97,9 +97,9 @@ class Pds(object):
         resp = _("PDS webservice response ${email}",
                  mapping={'email': email.encode('utf-8')})
         oids = oid.split(",")
-        for curOid in oids:
+        for cur_oid in oids:
             try:
-                self.__download(curOid)
+                self.__download(cur_oid)
             except:
                 log.error(sys.exc_info()[0])
         self.__send_mail(email, self.filenames)
