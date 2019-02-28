@@ -102,9 +102,9 @@ class PF():
 
             mes = self._add_char_before(5, measurement_number)
             files_list = []
-            for curFile in files:
-                if curFile.startswith(mes):
-                    files_list.append({'filename': curFile,
+            for cur_file in files:
+                if cur_file.startswith(mes):
+                    files_list.append({'filename': cur_file,
                                        'is_downloadable':
                                        self._is_download_authorized(
                                            town_info.get('name'),

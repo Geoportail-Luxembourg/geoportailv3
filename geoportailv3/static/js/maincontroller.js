@@ -301,6 +301,11 @@ app.MainController = function(
   /**
    * @type {boolean}
    */
+  this['feedbackAnfOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -455,6 +460,7 @@ app.MainController = function(
                     label: '\u00AB'}));
             }
           }.bind(this));
+    this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = goog.isDefAndNotNull(urlLocationInfo) &&
       urlLocationInfo === 'true';
@@ -462,10 +468,12 @@ app.MainController = function(
     !this['routingOpen'] &&
     !goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
     !infoOpen &&
+    !this['feedbackAnfOpen'] &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         goog.isDef(this.ngeoLocation_.getParam('map_id')) &&
+        !this['feedbackAnfOpen'] &&
         !infoOpen) ? true : false;
     $scope.$watch(goog.bind(function() {
       return this['layersOpen'];
@@ -733,9 +741,22 @@ app.MainController.prototype.openFeedback = function() {
 /**
  * @export
  */
+app.MainController.prototype.openFeedbackAnf = function() {
+  if (this.sidebarOpen()) {
+    this.closeSidebar();
+    this['feedbackAnfOpen'] = true;
+  } else {
+    this['feedbackAnfOpen'] = true;
+  }
+};
+
+/**
+ * @export
+ */
 app.MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
-      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] = false;
+      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
+      this['feedbackAnfOpen'] = false;
 };
 
 
@@ -745,7 +766,8 @@ app.MainController.prototype.closeSidebar = function() {
  */
 app.MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-      this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'];
+      this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'] ||
+      this['feedbackAnfOpen'];
 };
 
 
