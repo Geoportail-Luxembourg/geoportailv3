@@ -1024,11 +1024,6 @@ lux.MyMap.prototype.exportGpx_ = function(feature, filename) {
       dataProjection: 'EPSG:4326',
       featureProjection: this.map_.getView().getProjection()
     });
-  gpx = gpx.replace('<gpx ',
-      '<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
-      ' version="1.1" ' +
-      'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-      'http://www.topografix.com/GPX/1/1/gpx.xsd" creator="geoportail.lu" ');
   this.exportFeatures_(gpx, 'gpx',
       this.sanitizeFilename_(filename));
 };
