@@ -9,6 +9,9 @@
     overview_map_show = settings.get('overview_map')['show']
     overview_map_base_layer = settings.get('overview_map')['base_layer']
     lidar = settings.get('lidar')
+    show_anf_link = 'ng-hide'
+    if 'show_link' in settings.get('anf') and settings.get('anf')['show_link'] == True:
+      show_anf_link = 'ng-show'
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl"
@@ -307,7 +310,7 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
-        <li><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li class="${show_anf_link}" ng-cloak><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
