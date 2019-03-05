@@ -248,7 +248,7 @@
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
       <app-map app-map-map="::mainCtrl.map"></app-map>
       <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
-      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator" 
+      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
            app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
         <div class="slider-line"></div>
         <div class="slider-arrows">
@@ -316,7 +316,7 @@
         <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
           <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
           <app-print app-print-map="::mainCtrl.map"
-            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers" 
+            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"
             app-print-info-open="mainCtrl.infosOpen"
             app-print-routing-open="mainCtrl.routingOpen"></app-print>
         </li>
@@ -428,6 +428,7 @@
          appModule.constant('bboxSrsLidar', "${lidar['srs']}");
          appModule.constant('lidarDemoUrl', "${lidar['demo_url']}");
          appModule.constant('tiles3dLayers', ['buildings25d', 'buildings3d', 'bridges3d']);
+         appModule.constant('dataVersion', '1.0');
          // 'vegetation_model','vegetation_mesh','buildings25d_provisoire'
          appModule.constant('tiles3dUrl', 'https://3dtiles.geoportail.lu/3dtiles/');
 
@@ -487,7 +488,7 @@
       <script type="text/javascript">
         var _paq = _paq || [];
         // We do the page track in themeservice to capture any theme changes
-        //_paq.push(['trackPageView']); 
+        //_paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
           var u="//statistics.geoportail.lu/";

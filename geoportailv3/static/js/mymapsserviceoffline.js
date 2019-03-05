@@ -10,9 +10,10 @@ goog.require('ngeo.offline.Configuration');
  * @param {app.Mymaps} appMymaps app mymaps service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
+ * @param {String} dataVersion The data version used in the localstorage.
  * @ngInject
  */
-app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
+app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration, dataVersion) {
   /**
    * @type {app.Mymaps}
    * @private
@@ -36,6 +37,15 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
    * @private
    */
   this.storageGroupeKey_ = 'offline_mymaps';
+
+  /**
+   * @type {String}
+   * @private
+   */
+  this.dataVersion_ = dataVersion;
+
+  // Check if data in local storage are in the multi-mymaps format.
+  this.checkDataFormat();
 };
 
 /**
@@ -47,6 +57,7 @@ app.MymapsOffline.prototype.save = function() {
     if (full_mymaps) {
       item['full_mymaps'] = full_mymaps;
     }
+    item['data_version'] = this.dataVersion_;
     this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
   }.bind(this));
 };
@@ -78,6 +89,22 @@ app.MymapsOffline.prototype.restore = function() {
     var mapsElements = /** @type {Object} */ (full_mymaps['maps_elements']);
     if (mapsElements) {
       this.appMymaps_.setMapsElements(mapsElements);
+    }
+  });
+};
+
+/**
+ * Check if the stored data has the new format (multi-mymaps)
+ * If no, clear the cache
+ */
+app.MymapsOffline.prototype.checkDataFormat = function() {
+  this.ngeoOfflineConfiguration_.getItem(this.storageGroupeKey_).then((storedItem) => {
+    if (!storedItem) {
+      return;
+    }
+
+    if (storedItem['data_version'] !== this.dataVersion_) {
+      this.ngeoOfflineConfiguration_.clear();
     }
   });
 };
