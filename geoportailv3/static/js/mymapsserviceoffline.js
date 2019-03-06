@@ -10,10 +10,9 @@ goog.require('ngeo.offline.Configuration');
  * @param {app.Mymaps} appMymaps app mymaps service.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
- * @param {String} dataVersion The data version used in the localstorage.
  * @ngInject
  */
-app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration, dataVersion) {
+app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
   /**
    * @type {app.Mymaps}
    * @private
@@ -42,7 +41,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
    * @type {String}
    * @private
    */
-  this.dataVersion_ = dataVersion;
+  this.dataVersion_ = '1.0';
 
   // Check if data in local storage are in the multi-mymaps format.
   this.checkDataFormat();
