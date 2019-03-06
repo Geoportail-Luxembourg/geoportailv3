@@ -569,7 +569,7 @@ app.MymapsDirectiveController.prototype.copyMap = function() {
         var mapId = resp['uuid'];
         if (goog.isDef(mapId)) {
           var map = {'uuid': mapId};
-          this.onChosen(map, false);
+          this.onChosen_(map);
           var msg = this.gettextCatalog.getString('Carte copiée');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
@@ -644,7 +644,7 @@ app.MymapsDirectiveController.prototype.importGpx = function() {
   this.appMymaps_.saveFeatures(featuresToSave).then(
       goog.bind(function() {
         var map = {'uuid': mapId};
-        this.onChosen(map, false);
+        this.onChosen_(map);
       }, this)
   );
 };
@@ -718,7 +718,7 @@ app.MymapsDirectiveController.prototype.importKml = function(kml) {
   this.appMymaps_.saveFeatures(kmlFeatures).then(
       goog.bind(function() {
         var map = {'uuid': mapId};
-        this.onChosen(map, false);
+        this.onChosen_(map);
       }, this)
   );
 };
@@ -914,7 +914,7 @@ app.MymapsDirectiveController.prototype.addInMymaps = function() {
           goog.bind(function(mapinformation) {
             var mapId = this.appMymaps_.getMapId();
             var map = {'uuid': mapId};
-            this.onChosen(map, false);
+            this.onChosen_(map);
           }, this));
     }
   }
@@ -948,7 +948,7 @@ app.MymapsDirectiveController.prototype.createMapFromAnonymous = function() {
         }, this))
         .then(goog.bind(function(mapinformation) {
           var map = {'uuid': this.appMymaps_.getMapId()};
-          this.onChosen(map, false);
+          this.onChosen_(map);
           var msg = this.gettextCatalog.getString('Carte créée');
           this.notify_(msg, app.NotifyNotificationType.INFO);
           this.modal = undefined;
@@ -1242,7 +1242,7 @@ app.MymapsDirectiveController.prototype.createMap = function() {
             var map = {'uuid': mapId};
             this.appMymaps_.setMapId(mapId);
             this.saveLayers();
-            this.onChosen(map, false);
+            this.onChosen_(map);
             var msg = this.gettextCatalog.getString('Nouvelle carte créée');
             this.notify_(msg, app.NotifyNotificationType.INFO);
             this.modal = undefined;
@@ -1344,15 +1344,11 @@ app.MymapsDirectiveController.prototype.askToConnect = function() {
 /**
  * Called when a map is choosen.
  * @param {Object} map The selected map.
- * @param {boolean} clear It removes the alreay selected layers.
  * @return {angular.$q.Promise} Promise.
- * @export
+ * @private
  */
-app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
+app.MymapsDirectiveController.prototype.onChosen_ = function(map) {
   this.closeMap();
-  if (clear) {
-    this.map_.getLayers().clear();
-  }
   var promise = this.appMymaps_.setCurrentMapId(map['uuid'],
       this.drawnFeatures_.getCollection());
   this['drawopen'] = true;
@@ -1367,7 +1363,7 @@ app.MymapsDirectiveController.prototype.onChosen = function(map, clear) {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
-  this.onChosen(map, true).then(function() {
+  this.onChosen_(map).then(function() {
     var extent = undefined;
     var layer = this.drawnFeatures_.getLayer();
     if (this.map_.getLayers().getArray().indexOf(layer) === -1) {

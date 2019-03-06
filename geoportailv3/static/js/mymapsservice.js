@@ -35,6 +35,7 @@ app.MapsResponse;
 /**
  * @constructor
  * @param {angular.$http} $http The angular http service.
+ * @param {angular.$q} $q The q service.
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.StateManager} appStateManager The state manager service.
@@ -52,9 +53,15 @@ app.MapsResponse;
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
     appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
+  /**
+   * @type {angular.$q}
+   * @private
+   */
+  this.$q_ = $q;
+
   /**
    * @type {string}
    * @private
@@ -236,6 +243,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsGetFullMymapsUrl_ = mymapsUrl + '/get_full_mymaps';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -337,6 +350,18 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
 
   /**
    * The raw response data of the map info query.
+   * @type {app.MapsResponse}
+   */
+  this.maps_ = null;
+
+  /**
+   * The raw response data of the get user categories query.
+   * @type {Array.<Object>}
+   */
+  this.usersCategories_ = null;
+
+  /**
+   * The raw response data of the map info query.
    * @type {?Object}
    */
   this.mapInfo_ = null;
@@ -346,6 +371,12 @@ app.Mymaps = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {?Object}
    */
   this.mapFeatures_ = null;
+
+  /**
+   * Full mymaps maps_elements.
+   * @type {?Object}
+   */
+  this.mapsElements_ = null;
 
   /**
    * @const
@@ -425,6 +456,14 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    return this.setCurrentMapIdWhenOffline_(mapId, collection);
+  } else {
+    // Clear map to removes the alreay selected layers
+    // Don't do it offline because other layer won't be loaded.
+    this.map.getLayers().clear();
+  }
+
   return this.loadMapInformation().then(goog.bind(function(mapinformation) {
     if (mapinformation !== null) {
       return this.loadFeatures_().then(goog.bind(function(features) {
@@ -434,6 +473,31 @@ app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
     return null;
   }, this));
 };
+
+
+/**
+ * Set the mapId and load map information when offline.
+ * @param {string} mapId The map id.
+ * @param {ol.Collection} collection The collection.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.setCurrentMapIdWhenOffline_ = function(mapId, collection) {
+  const deferred = this.$q_.defer();
+  let mapinformation = null;
+  let features = null;
+  if (this.mapsElements_) {
+    const element = this.mapsElements_[mapId];
+    if (element) {
+      mapinformation = element['map'];
+      features = element['features'];
+    }
+  }
+  this.setMapInformation(mapinformation);
+  this.setFeatures(features, collection);
+  deferred.resolve(mapinformation);
+  return deferred.promise;
+};
+
 
 /**
  * Fill a collection of features with features objects.
@@ -498,25 +562,50 @@ app.Mymaps.prototype.isEditable = function() {
 
 /**
  * Get the categories available for each user that the connected user can see.
+ * If offline, return the current usersCategories in this class.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getUsersCategories = function() {
-  var url = this.mymapsUserCategoriesUrl_;
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.usersCategories_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsUserCategoriesUrl_;
   return this.$http_.get(url).then(
-      function(resp) {
-        return resp.data;
-      }.bind(this));
+    (resp) => {
+      this.setUsersCategories(resp.data);
+      return this.usersCategories_;
+    }
+  );
 };
 
 /**
+ * Set the categories available for each user that the connected user can see.
+ * @param {Array.<Object>} userCategories user categories
+ */
+app.Mymaps.prototype.setUsersCategories = function(userCategories) {
+  this.usersCategories_ = userCategories;
+};
+
+
+/**
  * Get an array of map objects.
+ * If offline, return the current maps object in this class.
  * @param {?string} owner The map owner to restrict.
  * @param {?number} categoryId The category to restrict.
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMaps = function(owner, categoryId) {
-  var url = this.mymapsMapsUrl_;
-  var params = {};
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.maps_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsMapsUrl_;
+  const params = {};
   if (owner !== null) {
     params['owner'] = owner;
   }
@@ -524,30 +613,42 @@ app.Mymaps.prototype.getMaps = function(owner, categoryId) {
     params['category'] = categoryId;
   }
 
-  return this.$http_.get(url, {params: params}).then(goog.bind(
+  return this.$http_.get(url, {params: params}).then(
+    (
       /**
        * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
+       * @return {app.MapsResponse} The "mymaps" web service object.
        */
-      function(resp) {
-        goog.array.forEach(resp.data, function(map) {
-          if (goog.isNull(map['update_date'])) {
-            map['update_date'] = map['create_date'];
-          }
-        });
-        return resp.data;
-      }, this), goog.bind(
-      function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-           'Erreur inattendue lors du chargement de vos cartes.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
-        return [];
-      }, this)
+      (resp) => {
+        this.setMaps(resp.data);
+        return this.maps_;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+         'Erreur inattendue lors du chargement de vos cartes.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }
   );
+};
+
+
+/**
+ * Set the maps object.
+ * @param {app.MapsResponse} maps The "mymaps" web service response.
+ */
+app.Mymaps.prototype.setMaps = function(maps) {
+  goog.array.forEach(maps, function(map) {
+    if (goog.isNull(map['update_date'])) {
+      map['update_date'] = map['create_date'];
+    }
+  });
+  this.maps_ = maps;
 };
 
 
@@ -698,92 +799,118 @@ app.Mymaps.prototype.loadMapInformation = function() {
 
 
 /**
- * FIXME
  * @param {Object} mapinformation any
  * @return {Object} mapinformation any
  */
 app.Mymaps.prototype.setMapInformation = function(mapinformation) {
-  if (mapinformation !== null) {
-    this.mapDescription = mapinformation['description'];
-    this.mapTitle = mapinformation['title'];
-    this.mapOwner = mapinformation['user_login'];
-    this.mapIsPublic = mapinformation['public'];
-    this.mapCategoryId = mapinformation['category_id'];
-    this.mapBgLayer = mapinformation['bg_layer'];
-    this.mapTheme = mapinformation['theme'];
-    this.mapIsEditable = mapinformation['is_editable'];
-
-    if (!this.mapBgLayer) {
-      if (this.mapTheme === 'tourisme') {
-        this.mapBgLayer = 'topo_bw_jpeg';
-      } else {
-        this.mapBgLayer = 'topogr_global';
-      }
-      mapinformation['bg_layer'] = this.mapBgLayer;
-    }
-    if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
-      this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
-    }
-
-    this.mapBgOpacity = mapinformation['bg_opacity'];
-    if ('layers' in mapinformation && mapinformation['layers']) {
-      this.mapLayers = mapinformation['layers'].split(',');
-      this.mapLayers.reverse();
-      if ('layers_opacity' in mapinformation &&
-          mapinformation['layers_opacity']) {
-        this.mapLayersOpacities =
-            mapinformation['layers_opacity'].split(',');
-      } else {
-        this.mapLayersOpacities = [];
-      }
-      this.mapLayersOpacities.reverse();
-      if ('layers_visibility' in mapinformation &&
-          mapinformation['layers_visibility']) {
-        this.mapLayersVisibilities =
-            mapinformation['layers_visibility'].split(',');
-      } else {
-        this.mapLayersVisibilities = [];
-      }
-      this.mapLayersVisibilities.reverse();
-      if ('layers_indices' in mapinformation &&
-          mapinformation['layers_indices']) {
-        this.mapLayersIndicies =
-            mapinformation['layers_indices'].split(',');
-      } else {
-        this.mapLayersIndicies = [];
-      }
-      this.mapLayersIndicies.reverse();
-
-      // remove layers with no name
-      var iToRemove = [];
-      this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
-        if (item.length === 0) {
-          iToRemove.push(i);
-          return false;
-        }
-        return true;
-      }, this);
-      goog.array.forEachRight(iToRemove, function(item) {
-        if (this.mapLayersIndicies) {
-          this.mapLayersIndicies.splice(item, 1);
-        }
-        if (this.mapLayersVisibilities) {
-          this.mapLayersVisibilities.splice(item, 1);
-        }
-        if (this.mapLayersOpacities) {
-          this.mapLayersOpacities.splice(item, 1);
-        }
-      }, this);
-    } else {
-      this.mapLayers = [];
-      this.mapOpacities = [];
-      this.mapVisibilities = [];
-      this.mapLayersIndicies = [];
-    }
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    // Avoid to restore not saved layers
+    this.setMapMetaInformation_(mapinformation);
+    return mapinformation;
   }
+  this.setMapMetaInformation_(mapinformation);
+  this.setMapInformation_(mapinformation);
   this.updateLayers();
   this.layersChanged = false;
   return mapinformation;
+};
+
+
+/**
+ * @param {Object} mapinformation any
+ */
+app.Mymaps.prototype.setMapMetaInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  }
+  this.mapDescription = mapinformation['description'];
+  this.mapTitle = mapinformation['title'];
+  this.mapOwner = mapinformation['user_login'];
+  this.mapIsPublic = mapinformation['public'];
+  this.mapCategoryId = mapinformation['category_id'];
+  this.mapTheme = mapinformation['theme'];
+  this.mapIsEditable = mapinformation['is_editable'];
+};
+
+
+/**
+ * @param {Object} mapinformation any
+ */
+app.Mymaps.prototype.setMapInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  }
+
+  this.mapBgLayer = mapinformation['bg_layer'];
+
+  if (!this.mapBgLayer) {
+    if (this.mapTheme === 'tourisme') {
+      this.mapBgLayer = 'topo_bw_jpeg';
+    } else {
+      this.mapBgLayer = 'topogr_global';
+    }
+    mapinformation['bg_layer'] = this.mapBgLayer;
+  }
+
+  if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+    this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+  }
+
+  this.mapBgOpacity = mapinformation['bg_opacity'];
+  if ('layers' in mapinformation && mapinformation['layers']) {
+    this.mapLayers = mapinformation['layers'].split(',');
+    this.mapLayers.reverse();
+    if ('layers_opacity' in mapinformation &&
+        mapinformation['layers_opacity']) {
+      this.mapLayersOpacities =
+          mapinformation['layers_opacity'].split(',');
+    } else {
+      this.mapLayersOpacities = [];
+    }
+    this.mapLayersOpacities.reverse();
+    if ('layers_visibility' in mapinformation &&
+        mapinformation['layers_visibility']) {
+      this.mapLayersVisibilities =
+          mapinformation['layers_visibility'].split(',');
+    } else {
+      this.mapLayersVisibilities = [];
+    }
+    this.mapLayersVisibilities.reverse();
+    if ('layers_indices' in mapinformation &&
+        mapinformation['layers_indices']) {
+      this.mapLayersIndicies =
+          mapinformation['layers_indices'].split(',');
+    } else {
+      this.mapLayersIndicies = [];
+    }
+    this.mapLayersIndicies.reverse();
+
+    // remove layers with no name
+    var iToRemove = [];
+    this.mapLayers = goog.array.filter(this.mapLayers, function(item, i) {
+      if (item.length === 0) {
+        iToRemove.push(i);
+        return false;
+      }
+      return true;
+    }, this);
+    goog.array.forEachRight(iToRemove, function(item) {
+      if (this.mapLayersIndicies) {
+        this.mapLayersIndicies.splice(item, 1);
+      }
+      if (this.mapLayersVisibilities) {
+        this.mapLayersVisibilities.splice(item, 1);
+      }
+      if (this.mapLayersOpacities) {
+        this.mapLayersOpacities.splice(item, 1);
+      }
+    }, this);
+  } else {
+    this.mapLayers = [];
+    this.mapOpacities = [];
+    this.mapVisibilities = [];
+    this.mapLayersIndicies = [];
+  }
 };
 
 
@@ -1493,6 +1620,47 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
 
     return styles;
   };
+};
+
+
+/**
+ * Get full mymaps information.
+ * @return {angular.$q.Promise} Promise.
+ */
+app.Mymaps.prototype.getFullMymaps = function() {
+  const config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.get(this.mymapsGetFullMymapsUrl_, config).then(
+    (
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {Object} The "get_full_mymaps" web service response.
+       */
+      (resp) => {
+        return resp.data;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+          'Erreur lors du téléchargement de tous les mymaps.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }
+  );
+};
+
+
+/**
+ * Set full mymaps maps_elements object.
+ * @param {Object} mapsElements getFullMymaps service maps_elements object
+ */
+app.Mymaps.prototype.setMapsElements = function(mapsElements) {
+  this.mapsElements_ = mapsElements;
 };
 
 app.module.service('appMymaps', app.Mymaps);

@@ -3,5 +3,6 @@
   // /!\ this option will be removed in the next major release of jshint
   "sub": true,
   // suppresses errors that occur when adding @typedef
-  "-W030": true
+  "-W030": true,
+  "esversion": 6
 }

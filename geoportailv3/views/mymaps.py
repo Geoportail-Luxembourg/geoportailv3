@@ -274,21 +274,32 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_getcategories", renderer="json")
     def categories(self):
-        if self.request.user is None:
+        user = self.request.user
+        if user is None:
             return HTTPUnauthorized()
-        if getattr(self.request.user, 'is_admin', False):
-            unique_categ = []
-            categories = []
-            for usercateg in self.getuserscategories():
-                for categ in usercateg['categories']:
-                    if categ not in unique_categ:
-                        unique_categ.append(categ)
-                        query = self.request.db_mymaps.query(Category).\
-                            filter(Category.id == categ).all()
-                        for category in query:
-                            categories.append(category.todict())
-            return categories
-        return Category.belonging_to(self.request.user, self.request.db_mymaps)
+        return self._categories(self.request.db_mymaps, user)
+
+    def _categories(self, session, user):
+        if getattr(user, 'is_admin', False):
+            self._categories_for_admin(session)
+        else:
+            self._categories_for_non_admin(session, user)
+
+    def _categories_for_admin(self, session):
+        unique_categ = []
+        categories = []
+        for usercateg in self.getuserscategories():
+            for categ in usercateg['categories']:
+                if categ not in unique_categ:
+                    unique_categ.append(categ)
+                    query = session.query(Category).\
+                        filter(Category.id == categ).all()
+                    for category in query:
+                        categories.append(category.todict())
+        return categories
+
+    def _categories_for_non_admin(self, session, user):
+        return Category.belonging_to(user, session)
 
     @view_config(route_name="mymaps_getallcategories", renderer="json")
     def allcategories(self):
@@ -352,20 +363,21 @@ class Mymaps(object):
     def maps(self):
         session = self.request.db_mymaps
         user = self.request.user
-        if user is None:
-            return HTTPUnauthorized()
+        params = self.request.params
         owner = None
-        if 'owner' in self.request.params and\
-           len(self.request.params['owner']) > 0:
-            owner = self.request.params['owner']
+        category = None
+        if 'owner' in params:
+            owner = params['owner']
+        if 'category' in params:
+            category = params['category']
+        return self._maps(session, user, owner, category)
+
+    def _maps(self, session, user, owner=None, category=None):
+        query = None
+
         if not getattr(user, 'is_admin', False):
             owner = user.username
 
-        query = None
-        category = None
-        if 'category' in self.request.params and\
-           self.request.params['category'] > 0:
-            category = int(self.request.params["category"])
         user_role = session.query(Role).get(
             getattr(user, 'mymaps_role', user.role.id))
         if user_role is None:
@@ -504,17 +516,16 @@ class Mymaps(object):
                             func.lower(owner))
                     )))))
 
-            db_mymaps = self.request.db_mymaps
             maps = query.order_by("category_id asc,title asc").all()
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
                      'create_date': map.create_date,
                      'update_date': map.update_date,
-                     'last_feature_update': db_mymaps.query(
+                     'last_feature_update': session.query(
                         func.max(Feature.update_date)).filter(
                         Feature.map_id == map.uuid).one()[0]
-                     if db_mymaps.query(func.max(Feature.update_date)).
+                     if session.query(func.max(Feature.update_date)).
                      filter(Feature.map_id == map.uuid).one()[0]
                      is not None else map.update_date,
                      'category': map.category.name
@@ -527,58 +538,71 @@ class Mymaps(object):
         user = self.request.user
         if user is None:
             return HTTPUnauthorized()
-        user_role = self.request.db_mymaps.query(Role).get(
-            getattr(user, 'mymaps_role', user.role.id))
+        session = self.request.db_mymaps
+        return self._getuserscategories(session, user)
 
-        if getattr(user, 'is_admin', False) and getattr(
-                user, 'mymaps_role', user.role.id) == 1:
-            users = self.request.db_mymaps.query(
-                    func.lower(Map.user_login).label("user_login"),
-                    func.coalesce(Map.category_id, 999).label("category_id")).\
-                filter(func.coalesce(Map.category_id, 999).in_(
-                    [c.id for c in user_role.categories])).\
-                group_by(func.lower(Map.user_login),
-                         func.coalesce(Map.category_id, 999)).all()
-            user_categories = {}
-            for cur_user in users:
-                if cur_user.user_login not in user_categories:
-                    user_categories[cur_user.user_login] =\
-                        [cur_user.category_id]
-                else:
-                    user_categories[cur_user.user_login].append(
-                        cur_user.category_id)
+    def _getuserscategories(self, session, user):
+        is_admin = getattr(user, 'is_admin', False)
+        role_id = getattr(user, 'mymaps_role', user.role.id)
+        user_role = session.query(Role).get(role_id)
+        if is_admin:
+            if role_id == 1:
+                return self._getuserscategories_for_first_admin(
+                        session, user_role)
+            else:
+                return self._getuserscategories_for_admin(
+                        session, user_role, user)
 
-            return [{'username': cur_user,
-                     'categories': user_categories[cur_user]}
-                    for cur_user in user_categories]
+        return self._getuserscategories_for_non_admin(session, user)
 
-        if getattr(user, 'is_admin', False) and getattr(
-                user, 'mymaps_role', user.role.id) != 1:
-            users = self.request.db_mymaps.query(
-                    func.lower(Map.user_login).label("user_login"),
-                    func.coalesce(Map.category_id, 999).label("category_id")).\
-                filter((and_(func.coalesce(Map.category_id, 999).in_(
-                    [c.id for c in user_role.categories]),
-                    Map.public == True)) |
-                    and_(Map.public == False,
-                         func.lower(Map.user_login) ==
-                         func.lower(user.username))).\
-                group_by(func.lower(Map.user_login),
-                         func.coalesce(Map.category_id, 999)).all() # noqa
-            user_categories = {}
-            for cur_user in users:
-                if cur_user.user_login not in user_categories:
-                    user_categories[cur_user.user_login] =\
-                        [cur_user.category_id]
-                else:
-                    user_categories[cur_user.user_login].append(
-                        cur_user.category_id)
+    def _getuserscategories_for_first_admin(self, session, user_role):
+        users = session.query(
+                func.lower(Map.user_login).label("user_login"),
+                func.coalesce(Map.category_id, 999).label("category_id")).\
+            filter(func.coalesce(Map.category_id, 999).in_(
+                [c.id for c in user_role.categories])).\
+            group_by(func.lower(Map.user_login),
+                     func.coalesce(Map.category_id, 999)).all()
+        user_categories = {}
+        for cur_user in users:
+            if cur_user.user_login not in user_categories:
+                user_categories[cur_user.user_login] =\
+                    [cur_user.category_id]
+            else:
+                user_categories[cur_user.user_login].append(
+                    cur_user.category_id)
 
-            return [{'username': cur_user,
-                     'categories': user_categories[cur_user]}
-                    for cur_user in user_categories]
+        return [{'username': cur_user,
+                 'categories': user_categories[cur_user]}
+                for cur_user in user_categories]
 
-        categies_id = self.request.db_mymaps.query(
+    def _getuserscategories_for_admin(self, session, user_role, user):
+        users = session.query(
+                func.lower(Map.user_login).label("user_login"),
+                func.coalesce(Map.category_id, 999).label("category_id")).\
+            filter((and_(func.coalesce(Map.category_id, 999).in_(
+                [c.id for c in user_role.categories]),
+                Map.public == True)) |
+                and_(Map.public == False,
+                     func.lower(Map.user_login) ==
+                     func.lower(user.username))).\
+            group_by(func.lower(Map.user_login),
+                     func.coalesce(Map.category_id, 999)).all() # noqa
+        user_categories = {}
+        for cur_user in users:
+            if cur_user.user_login not in user_categories:
+                user_categories[cur_user.user_login] =\
+                    [cur_user.category_id]
+            else:
+                user_categories[cur_user.user_login].append(
+                    cur_user.category_id)
+
+        return [{'username': cur_user,
+                 'categories': user_categories[cur_user]}
+                for cur_user in user_categories]
+
+    def _getuserscategories_for_non_admin(self, session, user):
+        categies_id = session.query(
             func.coalesce(Map.category_id, 999).label("category_id")).\
             filter(func.lower(Map.user_login) == func.lower(user.username)).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
@@ -589,23 +613,32 @@ class Mymaps(object):
     @view_config(route_name="mymaps_features")
     def features(self):
         id = self.request.matchdict.get("map_id")
-        map = self.request.db_mymaps.query(Map).get(id)
-        if map is None:
+        features = self._features(self.request.db_mymaps, id)
+
+        if features is None:
             return HTTPNotFound()
 
-        features = self.request.db_mymaps.query(Feature).filter(
-            Feature.map_id == map.uuid).order_by(Feature.display_order).all()
+        gjson_features = geojson.dumps(geojson.FeatureCollection(features))
+
         if 'cb' in self.request.params:
+            cb = self.request.params['cb']
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
-            return Response("%s(%s);"
-                            % (self.request.params['cb'],
-                               geojson.dumps(
-                                   geojson.FeatureCollection(features))),
-                            headers=headers)
+            return Response("%s(%s);" % (cb, gjson_features), headers=headers)
 
         headers = {'Content-Type': 'application/json'}
-        return Response(geojson.dumps(geojson.FeatureCollection(features)),
-                        headers=headers)
+        return Response(gjson_features, headers=headers)
+
+    def _features(self, session, id):
+        map = Map.get(id, session)
+
+        if map is None:
+            return None
+
+        return session.query(Feature).filter(
+                Feature.map_id == map.uuid
+            ).order_by(
+                Feature.display_order
+            ).all()
 
     @view_config(route_name="mymaps_map_info")
     def map_info(self):
@@ -1010,21 +1043,31 @@ class Mymaps(object):
     @view_config(route_name="mymaps_map", renderer='json')
     def map(self):
         id = self.request.matchdict.get("map_id")
-        map = Map.get(id, self.request.db_mymaps)
+        user = self.request.user
+        map = self._map(self.request.db_mymaps, user, id)
+
         if map is None:
             return HTTPNotFound()
-        params = dict(map)
-        params["is_editable"] = self.has_write_permission(
-            self.request.user, map)
+
+        json = json_dumps(map)
 
         if 'cb' in self.request.params:
+            cb = self.request.params['cb']
             headers = {'Content-Type': 'text/javascript; charset=utf-8'}
-            return Response("%s(%s);"
-                            % (self.request.params['cb'],
-                               json_dumps(params)), headers=headers)
-        else:
-            headers = {'Content-Type': 'application/json'}
-            return Response(json_dumps(params), headers=headers)
+            return Response("%s(%s);" % (cb, json), headers=headers)
+
+        headers = {'Content-Type': 'application/json'}
+        return Response(json, headers=headers)
+
+    def _map(self, session, user, id):
+        map = Map.get(id, session)
+
+        if map is None:
+            return None
+
+        dict_map = dict(map)
+        dict_map["is_editable"] = self.has_write_permission(user, map)
+        return dict_map
 
     @view_config(route_name="mymaps_get_image")
     def image(self):
@@ -1443,3 +1486,35 @@ class Mymaps(object):
                 req = urllib2.Request(url)
                 req.add_header('Content-Type', 'application/json')
                 urllib2.urlopen(req, json.dumps(data))
+
+    @view_config(route_name="mymaps_get_full_mymaps", renderer='json')
+    def get_all_maps(self):
+        user = self.request.user
+        if user is None:
+            return HTTPUnauthorized()
+        session = self.request.db_mymaps
+        return self._get_all_maps(session, user)
+
+    def _get_all_maps(self, session, user):
+        full_mymaps = {}
+        full_mymaps['users_categories'] = self._getuserscategories(session,
+                                                                   user)
+        maps = self._maps(session, user)
+        full_mymaps['maps'] = maps
+        maps_elements = {}
+
+        for map in maps:
+            uuid = map['uuid']
+            try:
+                element = {}
+                element['map'] = self._map(session, user, uuid)
+                features = self._features(session, uuid)
+                element['features'] = geojson.dumps(
+                    geojson.FeatureCollection(features)
+                )
+                maps_elements[uuid] = element
+            except Exception as e:
+                log.warn(e)
+
+        full_mymaps['maps_elements'] = maps_elements
+        return full_mymaps
