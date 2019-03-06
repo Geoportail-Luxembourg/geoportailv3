@@ -40,6 +40,21 @@ exports = class extends NgeoConfiguration {
      * @private
      */
     this.appMymaps_ = appMymaps;
+
+    const isMobile = location.search.includes('localforage=android') || location.search.includes('localforage=ios');
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.maxNumberOfDownloads_ = isMobile ? 5 : 11;
+  }
+
+  /**
+   * @override
+   */
+  getMaxNumberOfParallelDownloads() {
+    return this.maxNumberOfDownloads_;
   }
 
   /**
