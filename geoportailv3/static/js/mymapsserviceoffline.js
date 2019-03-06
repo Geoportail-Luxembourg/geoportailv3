@@ -38,7 +38,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
   this.storageGroupeKey_ = 'offline_mymaps';
 
   /**
-   * @type {String}
+   * @type {string}
    * @private
    */
   this.dataVersion_ = '1.0';
