@@ -1,4 +1,5 @@
 --find-links http://pypi.camptocamp.net/internal-pypi/index/c2cgeoportal
+cairocffi==0.9.0
 -r CONST_versions.txt
 psycopg2==2.7.3.2
 Shapely==1.5.6
