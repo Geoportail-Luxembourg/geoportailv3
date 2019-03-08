@@ -5,13 +5,12 @@
   "scripts": {},
   "license": "BSD",
   "dependencies": {
-    "acorn": "^5.0.3",
+    "acorn": "^5.7.3",
     "async": "^2.3.0",
     "fuse.js": "git+https://github.com/petzlux/Fuse.git#master",
     "send": "^0.15.0"
   },
   "devDependencies": {
-    "acorn": "5.7.3",
     "@camptocamp/cesium": "1.43.1",
     "@camptocamp/closure-util": "https://api.github.com/repos/camptocamp/closure-util/tarball/1573206",
     "angular": "1.6.6",
@@ -32,7 +31,6 @@
     "eslint-config-openlayers": "7.0.0",
     "floatthead": "1.4.2",
     "font-awesome": "4.7.0",
-    "fs-extra": "^4.0.2",
     "fuse": "git+https://github.com/petzlux/Fuse#master",
     "gaze": "1.1.2",
     "jquery": "3.2.1",
