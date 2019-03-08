@@ -48,6 +48,7 @@ app.queryDirective = function(appQueryTemplateUrl) {
       'mymapsOpen': '=appQueryMymapsOpen',
       'appSelector': '=appQueryAppselector',
       'routingOpen': '=appQueryRoutingOpen',
+      'feedbackAnfOpen': '=appQueryFeedbackAnfOpen',
       'language': '=appQueryLanguage',
       'hiddenContent': '=appQueryHiddenInfo'
     },
@@ -1009,6 +1010,16 @@ app.QueryController.prototype.getPreviewUrl = function() {
     this.previewMesurementUrl + '?code=' +
     this.previewTownCode + '&filename=' +
     this.previewFilename);
+};
+
+
+/**
+ * Open the feedback anf tool.
+ * @export
+ */
+app.QueryController.prototype.openFeedbackAnf = function() {
+  this['infoOpen'] = false;
+  this['feedbackAnfOpen'] = true;
 };
 
 
