@@ -49,15 +49,18 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
 
 /**
  * Save data into the storage system.
+ * @return {Promise|angular.$q.Promise}
  */
 app.MymapsOffline.prototype.save = function() {
-  this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
-    var item = {};
+  return this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
+    var item = {
+      'data_version': this.dataVersion_
+    };
     if (full_mymaps) {
       item['full_mymaps'] = full_mymaps;
     }
-    item['data_version'] = this.dataVersion_;
-    this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
+
+    return this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
   }.bind(this));
 };
 

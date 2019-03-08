@@ -38,13 +38,13 @@ const OfflineDownloader = class extends downloader {
    * @override
    */
   save(extent, map) {
-    this.appMymapsOffline_.save();
     var piwik = /** @type {Piwik} */ (this.window_['_paq']);
-    piwik.push(['setDocumentTitle',
-      'saveOfflineMap'
-    ]);
+    piwik.push(['setDocumentTitle', 'saveOfflineMap']);
     piwik.push(['trackPageView']);
-    return super.save(extent, map);
+    const superMethod = super.save.bind(this);
+    return this.appMymapsOffline_.save().then(function() {
+      return superMethod(extent, map);
+    });
   }
 };
 
