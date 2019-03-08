@@ -822,6 +822,7 @@ app.MainController.prototype.initLanguage_ = function() {
 app.MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
 
+  this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
   if (goog.isDef(mapId)) {
     this.appMymaps_.setCurrentMapId(mapId,
@@ -840,7 +841,6 @@ app.MainController.prototype.initMymaps_ = function() {
   } else {
     this.appMymaps_.clear();
   }
-  this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
   ol.events.listen(this.map_.getLayerGroup(), 'change',
       goog.bind(function() {
