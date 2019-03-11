@@ -224,7 +224,7 @@
           <input type="text" class="form-control" placeholder="{{ 'Search Maps'|translate}}" ng-model="searchMaps">
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-4" ng-if="!ctrl.ngeoOfflineMode.isEnabled()">
         <div class="input-group">
           <div class="dropdown">
             <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getMapCategoryFilter(ctrl.filterCategoryId).name | translate}}<span class="caret"></span>
@@ -236,7 +236,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-4" ng-if="!ctrl.ngeoOfflineMode.isEnabled()">
         <div class="input-group">
           <div class="dropdown">
             <button type="button" class="btn btn-default" data-toggle="dropdown">{{ ctrl.getUserCategDesc(ctrl.filterMapOwner) }}<span class="caret"></span>
