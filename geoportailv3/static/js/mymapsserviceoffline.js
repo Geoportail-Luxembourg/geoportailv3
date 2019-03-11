@@ -49,7 +49,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
 
 /**
  * Save data into the storage system.
- * @return {Promise|angular.$q.Promise}
+ * @return {Promise|angular.$q.Promise} a promise.
  */
 app.MymapsOffline.prototype.save = function() {
   return this.appMymaps_.getFullMymaps().then(function(full_mymaps) {

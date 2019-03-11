@@ -113,7 +113,7 @@ app.UserManager = function($http, loginUrl, logoutUrl,
  */
 app.UserManager.prototype.setOfflineMode = function(ngeoOfflineMode) {
   this.ngeoOfflineMode_ = ngeoOfflineMode;
-}
+};
 
 /**
  * @param {string} username The username.
