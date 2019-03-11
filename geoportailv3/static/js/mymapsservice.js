@@ -566,7 +566,7 @@ app.Mymaps.prototype.isEditable = function() {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getUsersCategories = function() {
-  if (this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.usersCategories_) {
     const deferred = this.$q_.defer();
     deferred.resolve(this.usersCategories_);
     return deferred.promise;
@@ -598,7 +598,7 @@ app.Mymaps.prototype.setUsersCategories = function(userCategories) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMaps = function(owner, categoryId) {
-  if (this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.maps_) {
     const deferred = this.$q_.defer();
     deferred.resolve(this.maps_);
     return deferred.promise;

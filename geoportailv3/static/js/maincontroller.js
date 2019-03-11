@@ -106,6 +106,7 @@ app.MainController = function(
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode) {
+  appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   /**
    * @type {boolean}
    * @export

@@ -8,6 +8,7 @@ goog.provide('app.UserManager');
 
 goog.require('app');
 goog.require('app.Notify');
+goog.require('ngeo.offline.ServiceManager');
 
 
 /**
@@ -28,6 +29,12 @@ app.UserManager = function($http, loginUrl, logoutUrl,
    * @private
    */
   this.appAuthtktCookieName_ = appAuthtktCookieName;
+
+  /**
+   * @type {ngeo.offline.Mode}
+   * @private
+   */
+  this.ngeoOfflineMode_;
 
   /**
    * @type {string}
@@ -101,6 +108,12 @@ app.UserManager = function($http, loginUrl, logoutUrl,
   this.gettextCatalog = gettextCatalog;
 };
 
+/**
+ * @param {ngeo.offline.Mode} ngeoOfflineMode offline mode service.
+ */
+app.UserManager.prototype.setOfflineMode = function(ngeoOfflineMode) {
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
+}
 
 /**
  * @param {string} username The username.
@@ -204,7 +217,10 @@ app.UserManager.prototype.getUserInfo = function() {
  */
 app.UserManager.prototype.isAuthenticated = function() {
   if (this.hasCookie(this.appAuthtktCookieName_)) {
-    return (this.username.length > 0);
+    return this.username.length > 0;
+  }
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return true;
   }
   this.clearUserInfo();
   return false;
