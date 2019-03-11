@@ -3,6 +3,7 @@ goog.provide('app.queryDirective');
 
 goog.require('app.Activetool');
 goog.require('app.GetDevice');
+goog.require('app.LotChasse');
 goog.require('app.profileDirective');
 goog.require('goog.array');
 goog.require('goog.string');
@@ -90,6 +91,7 @@ app.module.directive('appQuery', app.queryDirective);
  * @param {string} downloadresourceUrl The url to download a resource.
  * @param {string} qrServiceUrl The qr service url.
  * @param {string} previewMesurementUrl The preview service url.
+ * @param {app.LotChasse} appLotChasse The selected lot de chasse.
  * @export
  * @ngInject
  */
@@ -99,7 +101,14 @@ app.QueryController = function($sce, $timeout, $scope, $http,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
-    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl) {
+    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl,
+    appLotChasse) {
+  /**
+   * @type {app.LotChasse}
+   * @private
+   */
+  this.appLotChasse_ = appLotChasse;
+
   /**
    * @type {string}
    * @export
@@ -1015,9 +1024,11 @@ app.QueryController.prototype.getPreviewUrl = function() {
 
 /**
  * Open the feedback anf tool.
+ * @param {string} lot The lot number.
  * @export
  */
-app.QueryController.prototype.openFeedbackAnf = function() {
+app.QueryController.prototype.openFeedbackAnf = function(lot) {
+  this.appLotChasse_.setLotChasse(lot);
   this['infoOpen'] = false;
   this['feedbackAnfOpen'] = true;
 };

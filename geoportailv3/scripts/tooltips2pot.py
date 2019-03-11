@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import codecs
 import sqlahelper
 import traceback
 import sys
 import urllib2
 import re
+import polib
+import os.path
 from os import path
 from pyramid.paster import bootstrap
 from urllib import urlencode
@@ -92,6 +93,13 @@ def remove_attributes(attributes, attributes_to_remove,
     return attributes
 
 
+def is_in_po(po, search):
+    for entry in po:
+        if entry.msgid == search:
+            return True
+    return False
+
+
 def main():  # pragma: nocover
     env = bootstrap("development.ini")
     from geoportailv3.models import LuxGetfeatureDefinition
@@ -100,22 +108,21 @@ def main():  # pragma: nocover
     directory = "%s/locale/" % package
     destination = path.join(directory, "%s-tooltips.pot" % package)
 
-    w = codecs.open(destination, "wt", encoding="utf-8")
-    w.write(
-        u'''#, fuzzy
-        msgid ""
-        msgstr ""
-        "MIME-Version: 1.0\\n"
-        "Content-Type: text/plain; charset=utf-8\\n"
-        "Content-Transfer-Encoding: 8bit\\n"
-        '''
-    )
+    if not os.path.isfile(destination):
+        po = polib.POFile()
+        po.metadata = {
+            'MIME-Version': '1.0',
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Content-Transfer-Encoding': '8bit',
+        }
+    else:
+        po = polib.pofile(destination, encoding="utf-8")
 
     dbsession = sqlahelper.get_session()
     results = dbsession.query(LuxGetfeatureDefinition).\
         filter(LuxGetfeatureDefinition.remote_template == False).filter(
             LuxGetfeatureDefinition.template.in_
-            (['default.html', 'default_table.html'])).all()  # noqa
+            (['default.html', 'default_table.html', 'feedbackanf.html'])).all()  # noqa
 
     fields = []
     for result in results:
@@ -147,15 +154,17 @@ def main():  # pragma: nocover
             for attribute in attributes:
                 if attribute not in fields:
                     fields.append(attribute)
-                    w.write(
-                        u'''#: engine:%(engine)s Layer:%(layer)s Role:%(role)s
-        msgid "f_%(name)s"
-        msgstr ""
-        ''' % {
-                            "engine": result.engine_gfi,
-                            "layer": result.layer,
-                            "role": result.role,
-                            "name": attribute,
-                        }
-                    )
+                    if not is_in_po(po, u'f_%(name)s' % {'name': attribute}):
+                        entry = polib.POEntry(
+                            msgid=u'f_%(name)s' % {'name': attribute},
+                            msgstr=u'',
+                            comment=("engine:%(engine)s Layer:%(layer)s *"
+                                     "Role:%(role)s" % {
+                                        "engine": result.engine_gfi,
+                                        "layer": result.layer,
+                                        "role": result.role,
+                                        })
+                        )
+                        po.append(entry)
+                        po.save(destination)
     print("tooltips Pot file updated: %s" % destination)

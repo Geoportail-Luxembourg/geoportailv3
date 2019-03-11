@@ -2,6 +2,7 @@ goog.provide('app.FeedbackanfController');
 goog.provide('app.feedbackanfDirective');
 
 goog.require('app');
+goog.require('app.LotChasse');
 goog.require('app.Notify');
 goog.require('app.UserManager');
 goog.require('ngeo.map.BackgroundLayerMgr');
@@ -45,12 +46,19 @@ app.module.directive('appFeedbackanf', app.feedbackanfDirective);
  * service.
  * @param {string} postFeedbackAnfUrl the feedbackanf post url.
  * @param {app.DrawnFeatures} appDrawnFeatures Drawn features service.
+ * @param {app.LotChasse} appLotChasse The selected lot de chasse.
  * @ngInject
  * @export
  */
 app.FeedbackanfController = function($scope, $http, appNotify, appUserManager,
     gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackAnfUrl,
-    appDrawnFeatures) {
+    appDrawnFeatures, appLotChasse) {
+  /**
+   * @type {app.LotChasse}
+   * @private
+   */
+  this.appLotChasse_ = appLotChasse;
+
   /**
    * @type {app.DrawnFeatures}
    * @private
@@ -114,6 +122,12 @@ app.FeedbackanfController = function($scope, $http, appNotify, appUserManager,
    * @type {string}
    * @export
    */
+  this.lot = '';
+
+  /**
+   * @type {string}
+   * @export
+   */
   this.description = '';
 
   /**
@@ -141,6 +155,7 @@ app.FeedbackanfController = function($scope, $http, appNotify, appUserManager,
       if (this.appUserManager_.isAuthenticated()) {
         this.email = this.appUserManager_.getEmail();
       }
+      this.lot = this.appLotChasse_.getLotChasse();
       this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
       this.concernedLayer =
         this.gettextCatalog.getString('Please pick a layer');
@@ -209,6 +224,7 @@ app.FeedbackanfController.prototype.sendReport = function() {
     'email': this.email,
     'name': this.name,
     'description': this.description,
+    'lot': this.lot,
     'layer': this.concernedLayer,
     'features': (new ol.format.GeoJSON()).writeFeatures(features, encOpt)
   };
