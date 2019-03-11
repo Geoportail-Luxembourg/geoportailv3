@@ -81,6 +81,7 @@ API_DIR = jsapi
 API_TOOLS_DIR = $(API_DIR)/tools
 API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
+REQUIREMENTS += "polib==1.0.6"
 REQUIREMENTS += "suds>=0.4"
 REQUIREMENTS += "ipaddr==2.1.11"
 REQUIREMENTS += "pyocclient==0.2"
