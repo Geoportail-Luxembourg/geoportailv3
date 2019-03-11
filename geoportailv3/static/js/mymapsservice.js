@@ -1466,13 +1466,14 @@ app.Mymaps.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
-          var src = arrowUrl + '?color=' + arrowColor.replace('#', '');
+          var src = arrowUrl;
           const rotation =  Math.PI / 2 - Math.atan2(dy, dx);
           // arrows
           styles.push(new ol.style.Style({
             geometry: arrowPoint,
             zIndex: order,
             image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+              color: arrowColor,
               rotation,
               src
             }))
