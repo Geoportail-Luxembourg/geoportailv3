@@ -60,14 +60,17 @@ class Feedback(object):
             if map is None:
                 return HTTPNotFound()
             sanitized_description = bleach.clean(vars['description'])
+            sanitized_lot = bleach.clean(vars['lot'])
             message = u"L\'utilisateur <a href=\"mailto:{0}\">{0}</a> " \
-                u"a remarqué le problème suivant:<p>{1}</p>" \
+                u"a remarqué le problème suivant:<p>{1}</p> sur le lot" \
+                u" {6}" \
                 .format(vars['email'],
                         sanitized_description,
                         vars['layer'],
                         vars['url'],
                         vars['name'],
                         "http://map.geoportail.lu?map_id=" + map_id,
+                        sanitized_lot,
                         )
 
             features = vars['features'].\
@@ -79,7 +82,7 @@ class Feedback(object):
                 obj = None
                 try:
                     obj = Feature(feature)
-                    obj.name = vars['name']
+                    obj.name = vars['name'] + " : " + sanitized_lot
                     obj.description = message
                 except Exception as e:
                     log.exception(e)
@@ -89,6 +92,7 @@ class Feedback(object):
 
             html_body = u"<h3>L\'utilisateur <a href=\"mailto:{0}\">{4}</a> " \
                 u"a remarqué le problème suivant:</h3><p>{1}</p>" \
+                u" sur le lot {6}" \
                 u"<p><a href=\"{3}\">Ouvrir le lien vers la carte</a></p>" \
                 u"<p>L'incident a été enregistré dans cette <a href=\"{5}\">" \
                 u"mymaps</a>:</p>" \
@@ -98,6 +102,7 @@ class Feedback(object):
                         vars['url'],
                         vars['name'],
                         "http://map.geoportail.lu?map_id=" + map_id,
+                        sanitized_lot,
                         )
 
             support_email = self.config['anf']['email']
