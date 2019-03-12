@@ -2,25 +2,26 @@
   <h3 translate>Proposition de modification de limite ou signalisation d'un problème:</h3>
   <form ng-submit="ctrl.sendReport()">
     <div class="form-group">
-      <label for="inputEmail" translate>Your email</label>
-      <input type="email" required ng-model="ctrl.email" class="form-control">
+      <label for="inputAnfEmail" translate>Your email</label>
+      <input type="email" required ng-model="ctrl.email" class="form-control" id="inputAnfEmail">
     </div>
     <div class="form-group">
-      <label for="inputEmail" translate>Votre nom et prénom</label>
-      <input type="text" required ng-model="ctrl.name" class="form-control">
+      <label for="inputName" translate>Votre nom et prénom</label>
+      <input type="text" required ng-model="ctrl.name" class="form-control" id="inputName">
     </div>
     <div class="form-group">
-      <label for="inputParcel" translate>Lot concerné:</label>
-      <input type="text" required ng-model="ctrl.lot" class="form-control">
+      <label for="inputLot" translate>Lot concerné:</label>
+      <input type="text" required ng-model="ctrl.lot" class="form-control" id="inputLot">
     </div>
     <div class="form-group">
-      <label for="inputDescription" translate>Veuillez motiver votre proposition:</label>
-      <textarea rows="5" required  maxlength="500" ng-model="ctrl.description" class="form-control"></textarea>
+      <label for="inputAnfDescription" translate>Veuillez motiver votre proposition:</label>
+      <textarea rows="5" required  maxlength="500" ng-model="ctrl.description" class="form-control" id="inputAnfDescription"></textarea>
     </div>
     <div class="form-group">
       <p translate>Ce <a ng-href="{{ctrl.url}}" target="_blank">lien</a> sera envoyé à l'équipe de l'ANF.</p>
-      <p translate>Vous pouvez aussi activer les <a href ng-click="ctrl.activateDrawingTools()">outils de dessin</a> pour annoter la carte.<p></p>
+      <p translate>Vous pouvez aussi activer les <a href ng-click="ctrl.activateDrawingTools()">outils de dessin</a> pour annoter la carte.</p>
+      <p translate><a href="https://youtu.be/oGuhqVg21wQ" target="_blank">Cliquez ici pour voir une vidéo expliquant comment donner votre feedback</a></p>
     </div>
-    <button type="submit" class="pull-right btn btn-default" translate>Envoyer un feedback à l'ANF</button>
+    <button type="submit" class="pull-right btn btn-default" translate id="submitanffeedback">Envoyer un feedback à l'ANF</button>
   </form>
 </div>
