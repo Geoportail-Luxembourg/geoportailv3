@@ -9,6 +9,7 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
+
 goog.require('ngeo.offline.NetworkStatus');
 goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.array');
@@ -25,6 +26,7 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Text');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+
 
 /**
  * @typedef {Array.<Object>}
@@ -55,7 +57,21 @@ app.MapsResponse;
  */
 app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl,
+    arrowModelUrl) {
+
+  /**
+   * @private
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode_;
+
+  /**
+   * @private
+   * @type {app.MymapsOffline}
+   */
+  this.myMapsOffline_;
+
   /**
    * @type {angular.$q}
    * @private
@@ -394,6 +410,19 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   this.loadAllCategories();
 };
 
+/**
+ * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode service.
+ */
+app.Mymaps.prototype.setOfflineMode = function(ngeoOfflineMode) {
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
+};
+
+/**
+ * @param {app.MymapsOffline} appMymapsOffline Offline service.
+ */
+app.Mymaps.prototype.setOfflineService = function(appMymapsOffline) {
+  this.myMapsOffline_ = appMymapsOffline;
+};
 
 /**
  * @return {?Object} The raw response data of the map info query.
@@ -456,7 +485,7 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
-  if (this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
     return this.setCurrentMapIdWhenOffline_(mapId, collection);
   } else {
     // Clear map to removes the alreay selected layers
@@ -552,8 +581,8 @@ app.Mymaps.prototype.clear = function() {
  * @return {boolean} Return true if is editable by the user
  */
 app.Mymaps.prototype.isEditable = function() {
-  if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      this.mapIsEditable && !this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.isMymapsSelected() && this.mapIsEditable &&
+      (this.appUserManager_.isAuthenticated() || this.ngeoOfflineMode_.isEnabled())) {
     return true;
   }
   return false;
@@ -916,9 +945,14 @@ app.Mymaps.prototype.setMapInformation_ = function(mapinformation) {
 
 /**
  * Get the map information.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.getMapInformation = function() {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.getMapOffline(this.mapId_);
+  }
+
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -984,40 +1018,45 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
-app.Mymaps.prototype.createMap =
-    function(title, description, categoryId, isPublic) {
-      var req = $.param({
-        'title': title,
-        'description': description,
-        'category_id': categoryId,
-        'public': isPublic
-      });
-      var config = {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      };
-      return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
-      goog.bind(
-      /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
-       */
-      function(resp) {
-        return resp.data;
-      }, this), goog.bind(
-      function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-            'Erreur inattendue lors de la création de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
-        return [];
-      }, this)
+app.Mymaps.prototype.createMap = function(title, description, categoryId, isPublic) {
+  const spec = {
+    'title': title,
+    'description': description,
+    'category_id': categoryId,
+    'public': isPublic
+  };
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.createMapOffline(spec);
+  }
+
+  var req = $.param(spec);
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
+    goog.bind(
+    /**
+     * @param {angular.$http.Response} resp Ajax response.
+     * @return {app.MapsResponse} The "mymaps" web service response.
+     */
+    function(resp) {
+      return resp.data;
+    }, this), goog.bind(
+    function(error) {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      var msg = this.gettextCatalog.getString(
+          'Erreur inattendue lors de la création de votre carte.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }, this)
   );
-    };
+};
 
 
 /**
@@ -1143,7 +1182,7 @@ app.Mymaps.prototype.deleteMapFeatures = function() {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category of the map.
  * @param {boolean} isPublic is the map public.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.updateMap =
     function(title, description, categoryId, isPublic) {
@@ -1153,12 +1192,18 @@ app.Mymaps.prototype.updateMap =
       this.mapCategoryId = categoryId;
       this.mapIsPublic = isPublic;
 
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
         'public': isPublic
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1182,7 +1227,7 @@ app.Mymaps.prototype.updateMap =
         return [];
       }, this)
   );
-    };
+};
 
 
 /**
@@ -1194,13 +1239,13 @@ app.Mymaps.prototype.updateMap =
  * @param {string} layers_visibility The layer visibility.
  * @param {string} layers_indices The layer indices.
  * @param {string} theme The theme.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
         layers_visibility, layers_indices, theme) {
 
-      var req = $.param({
+      const spec = {
         'bgLayer': bgLayer,
         'bgOpacity': bgOpacity,
         'layers': layers,
@@ -1208,7 +1253,13 @@ app.Mymaps.prototype.updateMapEnv =
         'layers_visibility': layers_visibility,
         'layers_indices': layers_indices,
         'theme': theme
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };

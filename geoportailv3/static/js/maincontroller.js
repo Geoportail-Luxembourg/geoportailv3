@@ -21,6 +21,7 @@ goog.require('app.Mymaps');
 goog.require('app.Notify');
 goog.require('app.OfflineDownloader');
 goog.require('app.OfflineRestorer');
+goog.require('app.MymapsOffline');
 goog.require('ngeo.offline.Mode');
 goog.require('app.Routing');
 goog.require('app.StateManager');
@@ -93,6 +94,7 @@ goog.require('ngeo.olcs.Manager');
  * @param {string} tiles3dUrl 3D tiles server url.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
  * @constructor
  * @export
  * @ngInject
@@ -105,8 +107,12 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus,
+    ngeoOfflineMode, appMymapsOffline) {
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
+  appMymaps.setOfflineMode(ngeoOfflineMode);
+  appMymaps.setOfflineService(appMymapsOffline);
+
   /**
    * @type {boolean}
    * @export
