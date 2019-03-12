@@ -106,17 +106,24 @@ body.offline-or-disconnected {
   .infos,
   .legends,
   .routing,
-  .toolbox,
   .footer-navigation,
   .catalog-tab,
   .add-layers,
-   #dropdown-mymaps,
   .ol-toogle3d,
   .feature-popup-profile,
   .feature-popup-footer .dropup,
   .feature-popup-footer .dropdown {
     display: none;
   }
+
+  .toolbox {
+    .print,
+    .share,
+    .measure {
+      display: none;
+    }
+  }
+
   app-backgroundlayer,
   app-layerinfo {
     visibility: hidden;

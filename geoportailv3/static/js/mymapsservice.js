@@ -1289,9 +1289,17 @@ app.Mymaps.prototype.updateMapEnv =
 /**
  * Save features order into a map.
  * @param {Array<ol.Feature>} features The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeaturesOrder = function(features) {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    var encOpt = /** @type {olx.format.ReadOptions} */ ({
+      dataProjection: 'EPSG:2169',
+      featureProjection: this.mapProjection
+    });
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, encOpt);
+  }
 
   var orders = [];
   goog.array.forEach(features, function(feature) {
@@ -1331,15 +1339,20 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
 /**
  * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
     featureProjection: this.mapProjection
   });
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], encOpt);
+  }
+
   var req = $.param({
-    'feature': (new ol.format.GeoJSON()).writeFeature(feature, encOpt)
+    'feature': new ol.format.GeoJSON().writeFeature(feature, encOpt)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1370,15 +1383,20 @@ app.Mymaps.prototype.saveFeature = function(feature) {
 /**
  * Save an array of features into the current map.
  * @param {Array.<ol.Feature>} features The features to save.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeatures = function(features) {
   var encOpt = /** @type {olx.format.ReadOptions} */ ({
     dataProjection: 'EPSG:2169',
     featureProjection: this.mapProjection
   });
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, encOpt);
+  }
+
   var req = $.param({
-    'features': (new ol.format.GeoJSON()).writeFeatures(features, encOpt)
+    'features': new ol.format.GeoJSON().writeFeatures(features, encOpt)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
