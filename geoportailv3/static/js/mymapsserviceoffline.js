@@ -160,7 +160,7 @@ app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec) {
     for (const key in maps) {
       const m = maps[key];
       if (m['uuid'] === uuid) {
-        Object.assign(m, spec)
+        Object.assign(m, spec);
         return conf.setItem('mymaps_maps', maps);
       }
     }

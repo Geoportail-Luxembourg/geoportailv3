@@ -1227,7 +1227,7 @@ app.Mymaps.prototype.updateMap =
         return [];
       }, this)
   );
-};
+    };
 
 
 /**
