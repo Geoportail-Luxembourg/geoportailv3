@@ -93,6 +93,8 @@ goog.require('ngeo.olcs.Manager');
  * @param {string} tiles3dUrl 3D tiles server url.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * catalog service.
  * @constructor
  * @export
  * @ngInject
@@ -105,7 +107,14 @@ app.MainController = function(
     ngeoLocation, appExport, appGetDevice,
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
-    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode) {
+    $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus,
+    ngeoOfflineMode, appGetLayerForCatalogNode) {
+  /**
+   * @type {app.GetLayerForCatalogNode}
+   * @private
+   */
+  this.getLayerFunc_ = appGetLayerForCatalogNode;
+
   /**
    * @type {boolean}
    * @export
@@ -738,10 +747,25 @@ app.MainController.prototype.openFeedback = function() {
   }
 };
 
+
 /**
  * @export
  */
 app.MainController.prototype.openFeedbackAnf = function() {
+  this.appThemes_.getFlatCatalog().then(
+    function(flatCatalogue) {
+      var node = flatCatalogue.find(function(catItem) {
+        return catItem.id == 1640;
+      });
+      if (node !== undefined && node !== null) {
+        var layer = this.getLayerFunc_(node);
+        var idx = this.map_.getLayers().getArray().indexOf(layer);
+        if (idx === -1) {
+          this.map_.addLayer(layer);
+        }
+      }
+    }.bind(this));
+
   if (this.sidebarOpen()) {
     this.closeSidebar();
     this['feedbackAnfOpen'] = true;
