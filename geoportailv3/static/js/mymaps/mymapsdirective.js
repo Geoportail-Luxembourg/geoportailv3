@@ -435,6 +435,17 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
       $('#dropdown-mymaps').removeClass('open');
     }
   }, this));
+
+  // Reopen active map when going offline
+  $scope.$watch(
+    () => ngeoOfflineMode.isEnabled(),
+    (newVal, oldVal) => {
+    if (newVal && this.appMymaps_.getMapId()) {
+      this.onChosen_({
+        'uuid': this.appMymaps_.getMapId()
+      });
+    }
+  });
 };
 
 
