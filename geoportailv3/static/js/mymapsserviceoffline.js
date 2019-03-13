@@ -130,6 +130,7 @@ app.MymapsOffline.prototype.checkDataFormat = function() {
  */
 app.MymapsOffline.prototype.createMapOffline = function(spec) {
   const now = new Date().toISOString();
+  spec['is_editable'] = true;
   spec['create_date'] = now;
   spec['update_date'] = now;
   spec['last_feature_update'] = now;
@@ -227,7 +228,7 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
     existingFeatures.push(...features);
 
     existingFeatures.forEach((feature, idx) => {
-      feature.set('display_order', idx);
+      feature.set('display_order', idx, true);
     });
 
     // Removing private properties from features as they should not be stored in the db
