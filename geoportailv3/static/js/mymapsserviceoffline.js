@@ -203,10 +203,15 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
     const existingFeatures = format.readFeatures(myElements['features'], encOpt);
 
     features.forEach(newFeature => {
-      const newFeatureId = newFeature.get('fid') || newFeature.getId();
-      console.assert(newFeatureId !== undefined);
+      let newFeatureId = newFeature.get('fid') || newFeature.getId();
+      if (!newFeatureId) {
+        newFeatureId = -Math.random();
+        newFeature.set('fid', newFeatureId, true);
+        newFeature.setId(newFeatureId);
+      }
       for (let i = 0; i < existingFeatures.length; ++i) {
         const curFeatureId = existingFeatures[i].get('fid') || existingFeatures[i].getId();
+        console.assert(curFeatureId);
         if (curFeatureId === newFeatureId) {
           existingFeatures.splice(i, 1);
           return; // continue
