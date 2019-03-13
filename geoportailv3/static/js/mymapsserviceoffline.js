@@ -129,6 +129,10 @@ app.MymapsOffline.prototype.checkDataFormat = function() {
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
 app.MymapsOffline.prototype.createMapOffline = function(spec) {
+  const now = new Date().toISOString();
+  spec['create_date'] = now;
+  spec['update_date'] = now;
+  spec['last_feature_update'] = now;
   const fakeUuid = `-${Math.random()}`;
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((m) => {
@@ -155,6 +159,8 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
 app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec) {
+  const now = new Date().toISOString();
+  spec['update_date'] = now;
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((maps) => {
     for (const key in maps) {
@@ -240,7 +246,13 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
     features.forEach((f, idx) => {
       f.setProperties(previousProperties[idx], true);
     });
-    return conf.setItem(key, myElements);
+    return conf.setItem(key, myElements).then(() => {
+      const now = new Date().toISOString();
+      const spec = {
+        'last_feature_update': now
+      };
+      return this.updateMapOffline(uuid, spec);
+    });
   });
 };
 
