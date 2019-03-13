@@ -224,7 +224,22 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
       feature.set('display_order', idx);
     });
 
+    // Removing private properties from features as they should not be stored in the db
+    const previousProperties = features.map(f => {
+      const properties = f.getProperties();
+      const newProperties = {};
+      for (const k in properties) {
+        if (!k.startsWith('__')) {
+          newProperties[k] = properties[k];
+        }
+      }
+      f.setProperties(newProperties, true);
+      return properties;
+    });
     myElements['features'] = format.writeFeatures(existingFeatures, encOpt);
+    features.forEach((f, idx) => {
+      f.setProperties(previousProperties[idx], true);
+    });
     return conf.setItem(key, myElements);
   });
 };
