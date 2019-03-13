@@ -891,6 +891,15 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteAMap = function(mapId, 
 };
 
 /**
+ * Call the map synchronisation when in offline state.
+ * @param {Object} map The selected map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.syncOfflineMaps = function(map) {
+  this.appMymaps_.syncOfflineMaps(map);
+};
+
+/**
  * Closes the current anonymous drawing.
  * @export
  */

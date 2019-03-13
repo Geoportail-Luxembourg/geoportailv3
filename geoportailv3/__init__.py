@@ -246,6 +246,11 @@ def main(global_config, **settings):
         request_method="POST"
     )
     config.add_route(
+        "mymaps_save_offline",
+        "/mymaps/save_offline/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
         "mymaps_copy",
         "/mymaps/copy/{map_id}",
         request_method="POST"

@@ -802,6 +802,10 @@ class Mymaps(object):
             db_mymaps.rollback()
             return {'success': False, 'id': None}
 
+    @view_config(route_name="mymaps_save_offline", renderer='json')
+    def save_offline(self):
+        return self
+
     @view_config(route_name="mymaps_save_features", renderer='json')
     def save_features(self):
         try:

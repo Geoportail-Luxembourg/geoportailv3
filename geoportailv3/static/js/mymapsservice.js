@@ -265,6 +265,12 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSaveOfflineUrl_ = mymapsUrl + '/save_offline/';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -422,6 +428,15 @@ app.Mymaps.prototype.setOfflineMode = function(ngeoOfflineMode) {
  */
 app.Mymaps.prototype.setOfflineService = function(appMymapsOffline) {
   this.myMapsOffline_ = appMymapsOffline;
+};
+
+/**
+ * Synchronize the map when in offline state.
+ * @param {Object} map The map to synchronize.
+ */
+app.Mymaps.prototype.syncOfflineMaps = function(map) {
+  console.log(this.mymapsSaveOfflineUrl_);
+  console.log(map);
 };
 
 /**
