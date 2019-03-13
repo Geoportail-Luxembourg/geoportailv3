@@ -440,12 +440,13 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
   $scope.$watch(
     () => ngeoOfflineMode.isEnabled(),
     (newVal, oldVal) => {
-    if (newVal && this.appMymaps_.getMapId()) {
-      this.onChosen_({
-        'uuid': this.appMymaps_.getMapId()
-      });
+      if (newVal && this.appMymaps_.getMapId()) {
+        this.onChosen_({
+          'uuid': this.appMymaps_.getMapId()
+        });
+      }
     }
-  });
+  );
 };
 
 
