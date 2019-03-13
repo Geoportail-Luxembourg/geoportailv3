@@ -140,12 +140,15 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
     const maps = m || [];
     spec['uuid'] = fakeUuid;
     maps.unshift(spec);
-    return conf.setItem('mymaps_maps', maps)
-    .then(() => conf.setItem(`mymaps_element_${fakeUuid}`, {
+    const element = {
       'map': spec,
       'features': '{"type": "FeatureCollection", "features": []}'
-    }))
+    };
+    return conf.setItem('mymaps_maps', maps)
+    .then(() => conf.setItem(`mymaps_element_${fakeUuid}`, element))
     .then(() => {
+      this.appMymaps_.setMaps(maps);
+      this.appMymaps_.updateMapsElements(fakeUuid, element);
       return {
         'uuid': fakeUuid,
         'success': true
