@@ -103,7 +103,7 @@ class MapquestRouter:
             if "shape" in result["route"]:
                 line = []
 
-                for i in xrange(
+                for i in range(
                         0,
                         len(result["route"]["shape"]["shapePoints"]),
                         2):
