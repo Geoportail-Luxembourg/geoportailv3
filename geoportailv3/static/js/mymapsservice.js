@@ -1733,4 +1733,13 @@ app.Mymaps.prototype.setMapsElements = function(mapsElements) {
   this.mapsElements_ = mapsElements;
 };
 
+/**
+ * Override partial mymaps maps_elements object.
+ * @param {string} uuid element id.
+ * @param {Object} element single element
+ */
+app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
+  this.mapsElements_[uuid] = element;
+};
+
 app.module.service('appMymaps', app.Mymaps);
