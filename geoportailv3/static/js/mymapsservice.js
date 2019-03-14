@@ -1094,16 +1094,22 @@ app.Mymaps.prototype.createMap = function(title, description, categoryId, isPubl
  * @param {string} description The description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.copyMap =
     function(title, description, categoryId, isPublic) {
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
         'public': isPublic
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.copyMapOffline(this.mapId_, spec, this.encOpt_);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };

@@ -263,6 +263,51 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
 
 
 /**
+ * @param {string} uuid The source map uuid.
+ * @param {Object} spec A map description.
+ * @param {olx.format.ReadOptions} encOpt Encoding options.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.copyMapOffline = function(uuid, spec, encOpt) {
+  const conf = this.ngeoOfflineConfiguration_;
+  const newMapUuid = (-Math.random()).toString();
+  return conf.getItem(`mymaps_element_${uuid}`).then(element => {
+    // Copy and add the element to mymaps_element_xx
+    const features = this.format_.readFeatures(element['features'], encOpt);
+    features.forEach(f => {
+      const newFeatureId = -Math.random();
+      f.setId(newFeatureId);
+      f.set('fid', newFeatureId);
+    });
+    element['features'] = this.format_.writeFeatures(features, encOpt);
+    element['map']['uuid'] = newMapUuid;
+    this.setUpdatedNow_(spec);
+    Object.assign(element['map'], spec);
+    this.appMymaps_.updateMapsElements(newMapUuid, element);
+    return conf.setItem(`mymaps_element_${newMapUuid}`, element);
+  }).then(() => {
+    // Copy and add the summary to mymaps_maps
+    return conf.getItem('mymaps_maps').then(maps => {
+      const idx = maps.findIndex(m => m['uuid'] === uuid);
+      if (idx >= 0) {
+        const newSummary = Object.assign({}, maps[idx], spec);
+        newSummary['uuid'] = newMapUuid;
+        this.setUpdatedNow_(newSummary);
+        maps.unshift(newSummary);
+        this.appMymaps_.setMaps(maps);
+        return conf.setItem('mymaps_maps', maps);
+      }
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }).then(() => {
+      return {
+        'uuid': newMapUuid,
+        'success': true
+      };
+    });
+  });
+};
+
+/**
  * Remove the map from the storage.
  * @param {string} uuid The uuid of the map to delete.
  * @return {Promise} a promise resolving to a fake response when done.
