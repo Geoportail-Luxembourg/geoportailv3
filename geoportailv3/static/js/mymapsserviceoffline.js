@@ -45,6 +45,11 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
 
   // Check if data in local storage are in the multi-mymaps format.
   this.checkDataFormat();
+
+  /**
+   * @private
+   */
+  this.format_ = new ol.format.GeoJSON();
 };
 
 /**
@@ -200,14 +205,13 @@ app.MymapsOffline.prototype.getMapOffline = function(uuid) {
  */
 app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOpt) {
   const conf = this.ngeoOfflineConfiguration_;
-  const format = new ol.format.GeoJSON();
   const key = `mymaps_element_${uuid}`;
 
   return conf.getItem(key).then(myElements => {
     if (!myElements) {
       return Promise.reject(`Map with uuid ${uuid} not found`);
     }
-    const existingFeatures = format.readFeatures(myElements['features'], encOpt);
+    const existingFeatures = this.format_.readFeatures(myElements['features'], encOpt);
 
     features.forEach(newFeature => {
       let newFeatureId = newFeature.get('fid') || newFeature.getId();
@@ -243,7 +247,7 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
       f.setProperties(newProperties, true);
       return properties;
     });
-    myElements['features'] = format.writeFeatures(existingFeatures, encOpt);
+    myElements['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
     features.forEach((f, idx) => {
       f.setProperties(previousProperties[idx], true);
     });
