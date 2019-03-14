@@ -1301,12 +1301,13 @@ app.MymapsDirectiveController.prototype.deleteAMap = function(mapId) {
         this.setDragHandler();
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
-        goog.array.remove(this.maps,
-            goog.array.find(this.maps, goog.bind(function(item) {
-              if (item['uuid'] === mapId) {
-                return true;
-              }
-            }, this)));
+        if (!this.ngeoOfflineMode.isEnabled()) {
+          // Only remove from the list if not offline
+          goog.array.remove(this.maps,
+            goog.array.find(this.maps, function(item) {
+              return item['uuid'] === mapId;
+            }));
+        }
       }
     }, this));
   }
@@ -1391,6 +1392,9 @@ app.MymapsDirectiveController.prototype.onChosen_ = function(map) {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
+  if (map['deletedWhileOffline']) {
+    return;
+  }
   this.onChosen_(map).then(function() {
     var extent = undefined;
     var layer = this.drawnFeatures_.getLayer();

@@ -696,7 +696,17 @@ app.Mymaps.prototype.setMaps = function(maps) {
       map['update_date'] = map['create_date'];
     }
   });
-  this.maps_ = maps;
+
+  // The maps referenced is holded in mymapsdirective.
+  // To avoid having to introduce a maps changed notification mechanism
+  // we just repopulate the existing maps array.
+
+  if (this.ngeoOfflineMode_.isEnabled() && this.maps_ && maps && this.maps_ !== maps) {
+    this.maps_.length = 0;
+    this.maps_.push(...maps);
+  } else {
+    this.maps_ = maps;
+  }
 };
 
 
@@ -1122,9 +1132,13 @@ app.Mymaps.prototype.copyMap =
 /**
  * Delete a map.
  * @param {string} mapId The map id to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteAMap = function(mapId) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteMapOffline(mapId);
+  }
+
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
       goog.bind(
       /**
@@ -1179,7 +1193,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
 
 /**
  * Delete the current map.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteMap = function() {
   return this.deleteAMap(this.mapId_);

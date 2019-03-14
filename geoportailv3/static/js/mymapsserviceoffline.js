@@ -261,6 +261,35 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
   });
 };
 
+
+/**
+ * Remove the map from the storage.
+ * @param {string} uuid The uuid of the map to delete.
+ * @return {Promise} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  return Promise.all([
+    conf.removeItem(`mymaps_element_${uuid}`),
+    conf.getItem('mymaps_maps').then(maps => {
+      const idx = maps.findIndex(m => m['uuid'] === uuid);
+      if (idx < 0) {
+        return Promise.reject(`Map with uuid ${uuid} not found`);
+      }
+      if (parseFloat(uuid) < 0) {
+        // Simply delete a pure offline map
+        maps.splice(idx, 1);
+      } else {
+        // Mark the map as deleted so that we can propose to sync when back online
+        maps[idx]['deletedWhileOffline'] = true;
+        maps[idx]['last_update'] = new Date().toISOString();
+      }
+      this.appMymaps_.setMaps(maps);
+      return conf.setItem('mymaps_maps', maps);
+    })
+  ]);
+};
+
 /**
  * @private
  * @param {Object} obj Any object.

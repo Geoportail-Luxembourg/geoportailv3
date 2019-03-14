@@ -287,8 +287,9 @@
       </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="map in ctrl.maps| orderBy:sortType:sortReverse| filter:searchMaps">
-      <td ng-click="ctrl.selectMymaps(map)">
+    <tr ng-repeat="map in ctrl.maps | orderBy:sortType:sortReverse| filter:searchMaps"
+        ng-class="{noclick: map.deletedWhileOffline}">
+      <td ng-click="!map.deletedWhileOffline && ctrl.selectMymaps(map)">
         <span ng-switch="map.public">
           <i ng-switch-when="false" class="fa fa-lock"></i>&nbsp;
           <i ng-switch-when="true" class="fa fa-unlock"></i>&nbsp;
@@ -296,6 +297,9 @@
       <td ng-click="ctrl.selectMymaps(map)">{{ map.category }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.last_feature_update | date:'dd/MM/yyyy - H:mm' }}</td>
+      <td>
+        <span ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)" ng-if="!map.deletedWhileOffline" class="fa fa-trash-o"></span>
+      </td>
       <td ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)"><span class="fa fa-trash-o"></span></td>
       <td ng-click="ctrl.syncOfflineMaps(map)"><span class="fa fa-refresh"></span></td>
     </tr>
