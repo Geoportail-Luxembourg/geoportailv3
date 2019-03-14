@@ -129,11 +129,8 @@ app.MymapsOffline.prototype.checkDataFormat = function() {
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
 app.MymapsOffline.prototype.createMapOffline = function(spec) {
-  const now = new Date().toISOString();
+  this.setUpdatedNow_(spec);
   spec['is_editable'] = true;
-  spec['create_date'] = now;
-  spec['update_date'] = now;
-  spec['last_feature_update'] = now;
   const fakeUuid = `-${Math.random()}`;
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((m) => {
@@ -258,6 +255,17 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
       return this.updateMapOffline(uuid, spec);
     });
   });
+};
+
+/**
+ * @private
+ * @param {Object} obj Any object.
+ */
+app.MymapsOffline.prototype.setUpdatedNow_ = function(obj) {
+  const now = new Date().toISOString();
+  obj['create_date'] = now;
+  obj['update_date'] = now;
+  obj['last_feature_update'] = now;
 };
 
 app.module.service('appMymapsOffline', app.MymapsOffline);
