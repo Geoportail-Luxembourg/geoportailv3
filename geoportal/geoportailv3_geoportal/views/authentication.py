@@ -25,7 +25,7 @@ def ldap_user_validator(request, username, password):
         connection.action = "CONNECT"
         DBSession.add(connection)
         DBSession.commit()
-        return data[0]
+        return username
     else:
         connection.action = "CONNECT ERROR"
         DBSession.add(connection)
