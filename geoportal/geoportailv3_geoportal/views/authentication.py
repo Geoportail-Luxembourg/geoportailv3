@@ -56,15 +56,16 @@ def get_user_from_request(request):
         user.mymaps_role = 999
         user.ogc_role = -1
         user.sn = None
-
+        user.is_password_changed = None
+        user.role_name = None
         connector = get_ldap_connector(request)
         cm = connector.manager
 
         # 0 means 'Tous publics'
         roletheme = 0
         with cm.connection() as conn:
-            result = conn.search_s('ou=portail,dc=act,dc=lu',
-                                   ldap.SCOPE_SUBTREE, '(login=%s)' % username)
+            result = conn.search('ou=portail,dc=act,dc=lu',
+                                 '(login=%s)' % username)
             if len(result) == 1:
                 if 'roleTheme' in result[0][1]:
                     roletheme = result[0][1]['roleTheme'][0]
