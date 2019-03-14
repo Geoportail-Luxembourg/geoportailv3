@@ -663,7 +663,7 @@ app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
 
 
 /**
- * Puts the temporary edited name and description back to the feature.
+ * Delete feature.
  * @export
  */
 app.FeaturePopupController.prototype.deleteFeature = function() {
