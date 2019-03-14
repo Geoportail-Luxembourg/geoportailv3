@@ -26,6 +26,7 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Text');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.proj');
 
 
 /**
@@ -355,7 +356,7 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   /**
    * @type {ol.proj.Projection}
    */
-  this.mapProjection;
+  this.mapProjection = ol.proj.get('EPSG:3857');
 
   /**
    * The list of categories objects, depending on user role.
@@ -414,6 +415,14 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   };
 
   this.loadAllCategories();
+
+  /**
+   * @private
+   */
+  this.encOpt_ = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.mapProjection
+  });
 };
 
 /**
@@ -551,14 +560,9 @@ app.Mymaps.prototype.setCurrentMapIdWhenOffline_ = function(mapId, collection) {
  */
 app.Mymaps.prototype.setFeatures = function(features, collection) {
   if (features !== null) {
-    var encOpt = /** @type {olx.format.ReadOptions} */ ({
-      dataProjection: 'EPSG:2169',
-      featureProjection: this.mapProjection
-    });
-
     var featureStyleFunction = this.createStyleFunction(this.map);
     var jsonFeatures = (new ol.format.GeoJSON()).
-        readFeatures(features, encOpt);
+        readFeatures(features, this.encOpt_);
     goog.array.forEach(jsonFeatures, function(feature) {
       feature.set('altitudeMode', 'clampToGround');
       feature.set('__map_id__', this.getMapId());
@@ -1309,11 +1313,7 @@ app.Mymaps.prototype.updateMapEnv =
 app.Mymaps.prototype.saveFeaturesOrder = function(features) {
 
   if (this.ngeoOfflineMode_.isEnabled()) {
-    var encOpt = /** @type {olx.format.ReadOptions} */ ({
-      dataProjection: 'EPSG:2169',
-      featureProjection: this.mapProjection
-    });
-    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, encOpt);
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
   }
 
   var orders = [];
@@ -1357,17 +1357,12 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
  * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
-
   if (this.ngeoOfflineMode_.isEnabled()) {
-    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], encOpt);
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_);
   }
 
   var req = $.param({
-    'feature': new ol.format.GeoJSON().writeFeature(feature, encOpt)
+    'feature': new ol.format.GeoJSON().writeFeature(feature, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1401,17 +1396,12 @@ app.Mymaps.prototype.saveFeature = function(feature) {
  * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeatures = function(features) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
-
   if (this.ngeoOfflineMode_.isEnabled()) {
-    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, encOpt);
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
   }
 
   var req = $.param({
-    'features': new ol.format.GeoJSON().writeFeatures(features, encOpt)
+    'features': new ol.format.GeoJSON().writeFeatures(features, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
