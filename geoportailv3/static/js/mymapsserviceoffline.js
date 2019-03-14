@@ -185,8 +185,8 @@ app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec) {
 app.MymapsOffline.prototype.getMapOffline = function(uuid) {
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((maps) => {
-    for (const key in maps) {
-      const m = maps[key];
+    for (let i = 0; i < maps.length; ++i) {
+      const m = maps[i];
       if (m['uuid'] === uuid) {
         return m;
       }
