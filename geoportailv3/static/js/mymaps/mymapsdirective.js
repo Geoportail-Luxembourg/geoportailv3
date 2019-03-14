@@ -71,6 +71,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {app.Export} appExport The export service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @constructor
  * @export
  * @ngInject
@@ -79,13 +80,20 @@ app.module.directive('appMymaps', app.mymapsDirective);
 app.MymapsDirectiveController = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
-    appDrawnFeatures, $document, exportgpxkmlUrl, appExport, ngeoOfflineMode) {
+    appDrawnFeatures, $document, exportgpxkmlUrl, appExport, ngeoOfflineMode,
+    ngeoNetworkStatus) {
 
   /**
    * @export
    * @type {ngeo.offline.Mode}
    */
   this.ngeoOfflineMode = ngeoOfflineMode;
+
+  /**
+   * @export
+   * @type {ngeo.offline.NetworkStatus}
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @export
