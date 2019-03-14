@@ -1014,9 +1014,13 @@ app.Mymaps.prototype.getMapInformation = function() {
 /**
  * Delete a map
  * @param {ol.Feature} feature the feature to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_);
+  }
+
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
       feature.get('fid')).then(goog.bind(
       /**

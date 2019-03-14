@@ -261,6 +261,42 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
   });
 };
 
+/**
+ * @param {ol.Feature} feature The features to save.
+ * @param {olx.format.ReadOptions} encOpt Encoding options.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.deleteFeatureOffline = function(feature, encOpt) {
+  const uuid = /** @type{string} */ (feature.get('__map_id__'));
+  const conf = this.ngeoOfflineConfiguration_;
+  const key = `mymaps_element_${uuid}`;
+
+  return conf.getItem(key).then(myElements => {
+    if (!myElements) {
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }
+
+    const featureId = feature.getId();
+    const existingFeatures = this.format_.readFeatures(myElements['features'], encOpt);
+    const idx = existingFeatures.findIndex(f => f.getId() === featureId);
+    if (idx < 0) {
+      return Promise.reject(`The feature with id ${featureId} was not found in map with uuid ${uuid}`);
+    }
+    delete existingFeatures[idx];
+    existingFeatures.forEach((feature, idx) => {
+      feature.set('display_order', idx, true);
+    });
+    myElements['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
+
+    return conf.setItem(key, myElements).then(() => {
+      const now = new Date().toISOString();
+      const spec = {
+        'last_feature_update': now
+      };
+      return this.updateMapOffline(uuid, spec);
+    });
+  });
+};
 
 /**
  * @param {string} uuid The source map uuid.
