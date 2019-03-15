@@ -266,7 +266,7 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
-  this.mymapsSaveOfflineUrl_ = mymapsUrl + '/save_offline/';
+  this.mymapsSaveOfflineUrl_ = mymapsUrl + '/save_offline';
 
   /**
    * @type {string}
@@ -437,15 +437,6 @@ app.Mymaps.prototype.setOfflineMode = function(ngeoOfflineMode) {
  */
 app.Mymaps.prototype.setOfflineService = function(appMymapsOffline) {
   this.myMapsOffline_ = appMymapsOffline;
-};
-
-/**
- * Synchronize the map when in offline state.
- * @param {Object} map The map to synchronize.
- */
-app.Mymaps.prototype.syncOfflineMaps = function(map) {
-  console.log(this.mymapsSaveOfflineUrl_);
-  console.log(map);
 };
 
 /**
@@ -1769,6 +1760,26 @@ app.Mymaps.prototype.setMapsElements = function(mapsElements) {
  */
 app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
   this.mapsElements_[uuid] = element;
+};
+
+
+/**
+ * Synchronize the map when in offline state.
+ * @param {Object} map The map to synchronize.
+ */
+app.Mymaps.prototype.syncOfflineMaps = function(map) {
+  const req = this.mapsElements_[map.uuid];
+  const config = {
+    headers: {'Content-Type': 'application/json'}
+  };
+
+  this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((res) => {
+    console.log(res);
+    return res;
+  }, (err) => {
+    console.log(err);
+    return err;
+  });
 };
 
 app.module.service('appMymaps', app.Mymaps);

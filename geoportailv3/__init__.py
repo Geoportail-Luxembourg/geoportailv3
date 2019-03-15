@@ -247,7 +247,7 @@ def main(global_config, **settings):
     )
     config.add_route(
         "mymaps_save_offline",
-        "/mymaps/save_offline/{map_id}",
+        "/mymaps/save_offline",
         request_method="POST"
     )
     config.add_route(
