@@ -6,7 +6,9 @@
   <div class="{{ctrl.isDocked()?'feature-popup-heading':'feature-popup-body description'}}" ng-bind-html="ctrl.trustAsHtml(ctrl.feature.get('description')+'&nbsp;')"></div>
 
   <div class="feature-popup-body measurements">
-    <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank"><img ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/></a>
+    <a ng-show="ctrl.feature.get('thumbnail')" ng-href="{{ctrl.getMymapsPath(ctrl.feature.get('image'))}}" target="_blank">
+      <img class="mymaps-thumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.feature.get('thumbnail'))}}"/>
+    </a>
     <div ng-hide="ctrl.getLength() == false"><span translate>Length: </span>
       <span ng-bind-html="ctrl.trustAsHtml(ctrl.getLength())"></span></div>
     <div ng-hide="ctrl.getArea() == false">
@@ -83,11 +85,11 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-8 form-group" ng-show="ctrl.isAuthenticated()">
+      <div class="form-group" ng-show="ctrl.isAuthenticated()">
         <span ng-hide="ctrl.tempThumbnail" class="btn btn-default btn-file">
           {{'Ajouter vignette'|translate}}<input type="file" accept="image/*" name="file" app-imgupload="ctrl.image"/>
         </span>
-        <img ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.tempThumbnail)}}"/>
+        <img class="mymaps-thumbnail" ng-show="ctrl.tempThumbnail" ng-src="{{ctrl.getMymapsPath(ctrl.tempThumbnail)}}"/>
         <button class="btn btn-default" ng-show="ctrl.tempThumbnail" ng-click="ctrl.removeImage()" translate>Retirer vignette</button>
       </div>
     </div>

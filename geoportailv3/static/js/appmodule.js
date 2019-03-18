@@ -36,10 +36,13 @@ app.module = angular.module('app', [ngeo.module.name, 'gettext', ngeo.olcs.olcsM
 app.module.config(ngeo.statemanager.Location.MockProvider);
 
 
-// activate pre-assigning bindings
-// See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
 app.module.config(['$compileProvider', function($compileProvider) {
+  // activate pre-assigning bindings
+  // See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
   $compileProvider.preAssignBindingsEnabled(true);
+
+  // allow clicking the thumbnail link while offline
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?:|s?ftp:|mailto:|tel:|file:|data:image)/);
 }]);
 
 
