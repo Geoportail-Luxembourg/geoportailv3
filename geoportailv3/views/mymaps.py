@@ -32,7 +32,6 @@ from c2cgeoportal.lib.caching import set_common_headers, NO_CACHE
 
 import logging
 import urllib2
-import json
 
 log = logging.getLogger(__name__)
 
@@ -816,7 +815,8 @@ class Mymaps(object):
             else:
                 log.warn('Map to modify')
 
-            db_features = self.request.db_mymaps.query(Feature).filter(Feature.map_id == map_id)
+            db_features = self.request.db_mymaps.query(
+                Feature).filter(Feature.map_id == map_id)
             if db_features is None:
                 return HTTPNotFound()
 
