@@ -11,6 +11,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from geoportailv3_geoportal.portail import RoutingStats
 from c2cgeoportal_commons.models import DBSession
 
+import transaction
 import logging
 log = logging.getLogger(__name__)
 
@@ -76,10 +77,10 @@ class RouterController(object):
             routing_stats.transport_mode = transport_mode
             routing_stats.transport_criteria = criteria
             DBSession.add(routing_stats)
-            DBSession.commit()
+            transaction.commit()
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            transaction.rollback()
 
         if routing_success:
             json = {

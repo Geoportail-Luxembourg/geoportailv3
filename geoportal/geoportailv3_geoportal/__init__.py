@@ -378,9 +378,10 @@ def main(global_config, **settings):
             ldap_settings['passwd'],
         )
 
+        ldap_settings['filter_tmpl'] = ldap_settings['filter_tmpl'].replace('%%', '%')
         config.ldap_set_login_query(
             ldap_settings['base_dn'],
-            filter_tmpl='(login=%(login)s)',
+            filter_tmpl=ldap_settings['filter_tmpl'],
             scope=ldap.SUBTREE,
             )
 
