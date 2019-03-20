@@ -47,6 +47,23 @@ Alternatively, to start the dev composition use: `make dev` and open http://loca
 Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
 
+Ldap configuration
+------------------
+
+User management is handled by the LDAP, both in production and on the local machine during developments.
+The LDAP access is configured with the LDAP\_\* environment variables. See .env,
+.env-default, docker-compose.yaml and geoportal/config.yaml.
+
+For local dev the .env file should contain:
+```
+LDAP_BASE_DN=dc=example,dc=org
+LDAP_BIND=cn=admin,dc=example,dc=org
+LDAP_PASSWD=admin
+LDAP_URL=ldap://ldap:389
+LDAP_FILTER_TMPL=(cn=%%(login)s)
+DEFAULT_MYMAPS_ROLE=645
+```
+
 Debug c2cgeoportal
 ------------------
 

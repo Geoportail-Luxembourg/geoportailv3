@@ -7,6 +7,11 @@ ENV https_proxy $HTTPS_PROXY_URL
 
 WORKDIR /app
 
+RUN apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ldap-utils && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
 RUN pip install --disable-pip-version-check --no-cache-dir 'pip==19.0.2' 'setuptools==40.8.0'
 COPY setup.py /app
 RUN python3 setup.py install

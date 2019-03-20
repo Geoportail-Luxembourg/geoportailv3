@@ -25,7 +25,7 @@ Base = declarative_base()
 class Map(Base):
     __tablename__ = 'map'
     uuid = Column(Unicode, primary_key=True,
-                  default=lambda: unicode(uuid.uuid4().hex))
+                  default=lambda: str(uuid.uuid4().hex))
     user_login = Column(Unicode(50))
     title = Column(Unicode(50))
     description = Column(Unicode)
@@ -150,7 +150,7 @@ class Feature(Base):
             if linestyle == 'dotted' else 0
         self.shape = feature.properties.get('shape')
         size = feature.properties.get('size')
-        self.size = size if size is not None and unicode(size).isnumeric()\
+        self.size = size if size is not None and str(size).isnumeric()\
             else 10
         angle = feature.properties.get('angle')
         try:
@@ -159,15 +159,15 @@ class Feature(Base):
             self.angle = 0
         font_size = feature.properties.get('fontSize')
         self.font_size = font_size if font_size is not None and\
-            unicode(font_size).isnumeric() else 15
+            str(font_size).isnumeric() else 15
         symbol_id = feature.properties.get('symbolId')
         self.symbol_id = None if symbol_id is not None and\
-            len(unicode(symbol_id)) == 0\
+            len(str(symbol_id)) == 0\
             else symbol_id
 
         opacity = feature.properties.get('opacity')
         self.opacity = opacity if opacity is not None and\
-            unicode(opacity).isnumeric() else 0.5
+            str(opacity).isnumeric() else 0.5
 
         if hasattr(feature.geometry, "__geo_interface__"):
             ob = feature.geometry.__geo_interface__

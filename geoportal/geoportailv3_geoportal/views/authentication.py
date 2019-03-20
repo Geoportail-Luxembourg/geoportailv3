@@ -24,12 +24,10 @@ def ldap_user_validator(request, username, password):
     if data is not None:
         connection.action = "CONNECT"
         DBSession.add(connection)
-        DBSession.commit()
-        return data[0]
+        return username
     else:
         connection.action = "CONNECT ERROR"
         DBSession.add(connection)
-        DBSession.commit()
 
     return None
 
@@ -53,34 +51,40 @@ def get_user_from_request(request):
         user.username = username
         user.email = None
         user.is_admin = False
-        user.mymaps_role = 999
+        user.mymaps_role = int(request.registry.settings['default_mymaps_role'])
         user.ogc_role = -1
         user.sn = None
-
+        user.is_password_changed = None
+        user.role_name = None
         connector = get_ldap_connector(request)
         cm = connector.manager
 
         # 0 means 'Tous publics'
         roletheme = 0
         with cm.connection() as conn:
-            result = conn.search_s('ou=portail,dc=act,dc=lu',
-                                   ldap.SCOPE_SUBTREE, '(login=%s)' % username)
-            if len(result) == 1:
-                if 'roleTheme' in result[0][1]:
-                    roletheme = result[0][1]['roleTheme'][0]
-                if 'mail' in result[0][1]:
-                    user.mail = result[0][1]['mail'][0]
-                if 'sn' in result[0][1]:
-                    user.sn = result[0][1]['sn'][0]
+            ldap_settings = request.registry.settings['ldap']
+            base_dn = ldap_settings['base_dn']
+            filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+            result = conn.search(base_dn, filter_tmpl)
+
+            bypass_checks = False
+
+            if not bypass_checks and len(result) == 1:
+                obj = result[0][1]
+                if 'roleTheme' in obj:
+                    roletheme = obj['roleTheme'][0]
+                if 'mail' in obj:
+                    user.mail = obj['mail'][0]
+                if 'sn' in obj:
+                    user.sn = obj['sn'][0]
                 else:
                     user.sn = user.mail
-                if 'isMymapsAdmin' in result[0][1]:
-                    user.is_admin =\
-                        "TRUE" == (result[0][1]['isMymapsAdmin'][0]).upper()
-                if 'roleMymaps' in result[0][1]:
-                    user.mymaps_role = int(result[0][1]['roleMymaps'][0])
-                if 'roleOGC' in result[0][1]:
-                    user.ogc_role = result[0][1]['roleOGC'][0]
+                if 'isMymapsAdmin' in obj:
+                    user.is_admin = "TRUE" == (obj['isMymapsAdmin'][0]).upper()
+                if 'roleMymaps' in obj:
+                    user.mymaps_role = int(obj['roleMymaps'][0])
+                if 'roleOGC' in obj:
+                    user.ogc_role = obj['roleOGC'][0]
         try:
             user.role = DBSession.query(Role).filter_by(id=roletheme).one()
         except Exception as e:

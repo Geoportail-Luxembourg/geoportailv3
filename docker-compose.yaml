@@ -64,6 +64,12 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - C2C_REDIS_URL
+      - LDAP_BASE_DN
+      - LDAP_BIND
+      - LDAP_PASSWD
+      - LDAP_URL
+      - LDAP_FILTER_TMPL
+      - DEFAULT_MYMAPS_ROLE
     ports:
       - 8080:8080
 
@@ -81,6 +87,9 @@ services:
       - 512mb
       - --maxmemory-policy
       - allkeys-lru
+
+  ldap:
+    image: osixia/openldap:1.2.4
 
 #  alembic:
 #    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}

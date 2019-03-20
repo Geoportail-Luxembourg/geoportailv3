@@ -1,7 +1,13 @@
 environment:
+- {default: 'ou=portail,dc=act,dc=lu', name: LDAP_BASE_DN}
+- {default: 'cn=system,dc=act,dc=lu', name: LDAP_BIND}
+- {default: to_be_defined, name: LDAP_PASSWD}
+- {default: 'ldap://willie.geoportal.lu:3890', name: LDAP_URL}
+- {name: LDAP_FILTER_TMPL}
 - {default: localhost, name: VISIBLE_WEB_HOST}
 - {default: https, name: VISIBLE_WEB_PROTOCOL}
 - {default: /, name: VISIBLE_ENTRY_POINT}
+- {default: '999', name: DEFAULT_MYMAPS_ROLE}
 - {name: DB_MYMAPS}
 - {name: DB_PGROUTE}
 - {name: DB_ECADASTRE}
@@ -360,8 +366,13 @@ vars:
   jsbuild: {config: /src/jsbuild/app.cfg, root_dir: /src}
   layers: {geometry_validation: true}
   ldap: {
-    base_dn: 'ou=portail,dc=act,dc=lu', bind: 'cn=system,dc=act,dc=lu', passwd: to_be_defined,
-    url: 'ldap://willie.geoportal.lu:3890'}
+    base_dn: '{LDAP_BASE_DN}',
+    bind: '{LDAP_BIND}',
+    passwd: '{LDAP_PASSWD}',
+    filter_tmpl: '{LDAP_FILTER_TMPL}',
+    url: '{LDAP_URL}'
+  }
+  default_mymaps_role: '{DEFAULT_MYMAPS_ROLE}'
   lidar: {demo_url: '', maxx: 81500, maxy: 108600, minx: 71500, miny: 98600, srs: 'EPSG:2169'}
   lingua_extractor: {}
   mailer: {message.encoding: UTF-8, transport.host: keendo, transport.use: smtp}
