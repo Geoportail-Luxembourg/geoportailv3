@@ -13,10 +13,10 @@ import {transform, getPointResolution, METERS_PER_UNIT} from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
+import {fromCircle} from 'ol/geom/Polygon.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import {getDistance as haversineDistance} from 'ol/sphere.js';
 
 /**
  * @constructor
@@ -324,7 +324,7 @@ exports.prototype.getCircleRadius = function() {
     var projection = this.map.getView().getProjection();
     var p1 = transform(center, projection, 'EPSG:4326');
     var p2 = transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
-    return Math.round(ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(p1, p2));
+    return Math.round(haversineDistance(p1, p2));
   }
   return 0;
 };
@@ -357,8 +357,7 @@ exports.prototype.setFeatureCircleRadius = function(feature, radius) {
     var resolutionFactor = resolution / pointResolution;
     radius = (radius / METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new olGeomCircle(center, radius);
-    feature.setGeometry(
-        olGeomPolygon.fromCircle(featureGeom, 64)
+    feature.setGeometry(fromCircle(featureGeom, 64)
     );
   }
 };

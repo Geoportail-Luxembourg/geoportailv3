@@ -13,7 +13,7 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olInteractionInteraction from 'ol/interaction/Interaction.js';
 import {ModifyEvent} from 'ol/interaction/Modify.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
@@ -352,7 +352,7 @@ exports.handleEvent = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent);
+  return pointerHandleEvent.call(this, mapBrowserEvent);
 };
 
 

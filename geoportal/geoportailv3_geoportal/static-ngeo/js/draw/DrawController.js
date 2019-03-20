@@ -20,7 +20,6 @@ import appInteractionDrawRoute from '../interaction/DrawRoute.js';
 import appInteractionClipLine from '../interaction/ClipLine.js';
 import appInteractionModifyCircle from '../interaction/ModifyCircle.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 import ngeoInteractionTranslate from 'ngeo/interaction/Translate.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
@@ -33,11 +32,12 @@ import {getCenter} from 'ol/extent.js';
 import {transform} from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
+import {fromCircle} from 'ol/geom/Polygon.js';
 import olInteractionDraw from 'ol/interaction/Draw.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionSelect from 'ol/interaction/Select.js';
 import {noModifierKeys, singleClick} from 'ol/events/condition.js';
+import {getDistance as haversineDistance, getArea} from 'ol/sphere.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -630,7 +630,7 @@ exports.prototype.getFormattedLength =
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       var c1 = transform(coordinates[i], projection, 'EPSG:4326');
       var c2 = transform(coordinates[i + 1], projection, 'EPSG:4326');
-      length += ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(c1, c2);
+      length += haversineDistance(c1, c2);
     }
     var output;
     if (length > 1000) {
@@ -654,8 +654,7 @@ exports.prototype.getFormattedLength =
 exports.prototype.getFormattedArea = function(polygon, projection) {
   var geom = /** @type {ol.geom.Polygon} */ (
       polygon.clone().transform(projection, 'EPSG:4326'));
-  var coordinates = geom.getLinearRing(0).getCoordinates();
-  var area = Math.abs(ngeoInteractionMeasure.SPHERE_WGS84.geodesicArea(coordinates));
+  var area = Math.abs(getArea(geom));
   var output;
   if (area > 1000000) {
     output = parseFloat((area / 1000000).toPrecision(3)) +
@@ -687,8 +686,7 @@ exports.prototype.onDrawEnd_ = function(event) {
   if (feature.getGeometry().getType() === olGeomGeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
     feature.set('isCircle', true);
-    feature.setGeometry(
-        olGeomPolygon.fromCircle(featureGeom, 64)
+    feature.setGeometry(fromCircle(featureGeom, 64)
     );
   }
 

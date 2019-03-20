@@ -12,10 +12,10 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
+import {fromCircle} from 'ol/geom/Polygon.js';
 import Interaction from 'ol/interaction/Interaction.js';
 import {ModifyEvent} from 'ol/interaction/Modify.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStructsRBush from 'ol/structs/RBush.js';
@@ -376,7 +376,7 @@ exports.handleDragEvent_ = function(evt) {
    * @type {ol.geom.Circle}
    */
   var circle = new olGeomCircle(center, line.getLength());
-  var coordinates = olGeomPolygon.fromCircle(circle, 64).getCoordinates();
+  var coordinates = fromCircle(circle, 64).getCoordinates();
   this.setGeometryCoordinates_(geometry, coordinates);
 
   this.createOrUpdateVertexFeature_(vertex);
@@ -423,8 +423,7 @@ exports.handleEvent = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent) &&
-      !handled;
+  return pointerHandleEvent.call(this, mapBrowserEvent) && !handled;
 };
 
 

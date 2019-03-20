@@ -15,7 +15,7 @@ import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import {inherits} from 'ol/index.js';
@@ -328,7 +328,7 @@ exports.handleEvent = function(event) {
   } else if (event.type === olMapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return olInteractionPointer.handleEvent.call(this, event) && pass;
+  return pointerHandleEvent.call(this, event) && pass;
 };
 
 
