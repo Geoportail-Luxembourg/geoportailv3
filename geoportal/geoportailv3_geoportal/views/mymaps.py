@@ -7,6 +7,8 @@ import ldap3 as ldap
 import geojson
 import transaction
 
+from sqlalchemy.sql import text
+
 try:
     from json import dumps as json_dumps
 except:
@@ -493,7 +495,7 @@ class Mymaps(object):
 
         if query is not None:
             db_mymaps = self.db_mymaps
-            maps = query.order_by("category_id asc,title asc").all()
+            maps = query.order_by(text("category_id asc,title asc")).all()
             return [{'title': map.title,
                      'uuid': map.uuid,
                      'public': map.public,
