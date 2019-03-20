@@ -80,7 +80,7 @@ class RouterController(object):
             transaction.commit()
         except Exception as e:
             log.exception(e)
-            transaction.rollback()
+            transaction.abort()
 
         if routing_success:
             json = {

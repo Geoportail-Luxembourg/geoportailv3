@@ -422,7 +422,7 @@ class Geocode(object):
             return result
         except Exception as e:
             log.exception(e)
-            self.db_ecadastre.rollback()
+            transaction.abort()
         return None
 
     # Returns true if zip code exists in database
@@ -680,7 +680,7 @@ class Geocode(object):
                             feature.accuracy = 7
                             results.append(self.encode_result(feature))
                 except:
-                    p_session.rollback()
+                    transaction.abort()
                     log.error("Zip code is not correct: " + p_zip)
             if len(results) == 0 and p_locality is not None:
                 for feature in\
@@ -710,7 +710,7 @@ class Geocode(object):
 
         except Exception as e:
             log.exception(e)
-            p_session.rollback()
+            transaction.abort()
 
         return results
 
@@ -1113,7 +1113,7 @@ class Geocode(object):
 
         except Exception as e:
             log.exception(e)
-            self.db_ecadastre.rollback()
+            transaction.abort()
             results = [self.encoded_country_result()]
 
         if 'cb' not in self.request.params:

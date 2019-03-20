@@ -170,7 +170,7 @@ class Mymaps(object):
             lines = self.db_pgroute.execute(lines_sql)
         except Exception as e:
             log.exception(e)
-            self.db_pgroute.rollback()
+            transaction.abort()
             lines = []
             the_line = fallback_line
         new_line = None
@@ -749,12 +749,14 @@ class Mymaps(object):
                 obj.id = feature_id
 
             map.features.append(obj)
-            db_mymaps.commit()
+            db_mymaps.add(obj)
+            db_mymaps.flush()
+            transaction.commit()
 
             return {'success': True, 'id': obj.id}
         except Exception as e:
             log.exception(e)
-            db_mymaps.rollback()
+            transaction.abort()
             return {'success': False, 'id': None}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
@@ -793,7 +795,7 @@ class Mymaps(object):
             return {'success': True}
         except Exception as e:
             log.exception(e)
-            self.db_mymaps.rollback()
+            transaction.abort()
             return {'success': False}
 
     @view_config(route_name="mymaps_save_order", renderer='json')
@@ -816,10 +818,10 @@ class Mymaps(object):
             try:
                 cur_feature = db_mymaps.query(Feature).get(feature_id)
                 cur_feature.display_order = display_order
-                db_mymaps.commit()
+                transaction.commit()
             except Exception as e:
                 log.exception(e)
-                db_mymaps.rollback()
+                transaction.abort()
                 return {'success': False}
         return {'success': True}
 
@@ -1306,7 +1308,7 @@ class Mymaps(object):
             self.generate_symbol_file()
         except Exception as e:
             log.exception(e)
-            self.db_mymaps.rollback()
+            transaction.abort()
 
         return {'success': 'true',
                 'description': 'file added',

@@ -90,10 +90,9 @@ class Pag(object):
         pag_download.download_link = download_link
         try:
             DBSession.add(pag_download)
-            DBSession.commit()
         except Exception as e:
             log.exception(e)
-            DBSession.rollback()
+            transaction.abort()
 
     @view_config(route_name='pag_files')
     def pag_files(self, ):
