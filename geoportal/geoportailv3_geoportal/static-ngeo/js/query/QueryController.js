@@ -446,9 +446,7 @@ const exports = function($sce, $timeout, $scope, $http,
             if (layer !== undefined && layer !== null) {
               var metadata = layer.get('metadata');
               if (metadata !== undefined && metadata !== null) {
-                if (metadata['is_queryable'] !== undefined && metadata['is_queryable'] !== null &&
-                    metadata['is_queryable'] &&
-                    layer.getVisible() && layer.getOpacity() > 0) {
+                if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
                   return true;
                 }
               }
@@ -668,8 +666,7 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
     if (metadata !== undefined && metadata !== null) {
-      if (metadata['is_queryable'] == 'true' &&
-          layers[i].getVisible() && layers[i].getOpacity() > 0) {
+      if (metadata['is_queryable'] && layers[i].getVisible() && layers[i].getOpacity() > 0) {
         var queryableId = layers[i].get('queryable_id');
         layersList.push(queryableId);
         layerLabel[queryableId] = layers[i].get('label');
