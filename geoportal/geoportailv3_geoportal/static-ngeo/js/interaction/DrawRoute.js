@@ -2,7 +2,7 @@
  * @module app.interaction.DrawRoute
  */
 
-import ngeoInteractionCommon from 'ngeo/interaction/common.js';
+import {getDefaultStyleFunction} from 'ol/style/Style.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {getChangeEventType} from 'ol/Object.js';
@@ -248,8 +248,7 @@ const exports = function(options) {
       useSpatialIndex: false,
       wrapX: options.wrapX ? options.wrapX : false
     }),
-    style: options.style ? options.style :
-        ngeoInteractionCommon.getDefaultModifyStyleFunction()
+    style: options.style ? options.style : getDefaultStyleFunction()
   });
 
   /**
@@ -285,17 +284,6 @@ const exports = function(options) {
 };
 
 inherits(exports, olInteractionPointer);
-
-
-/**
- * @return {ol.StyleFunction} Styles.
- */
-exports.getDefaultStyleFunction = function() {
-  var styles = ngeoInteractionCommon.getDefaultModifyStyleFunction();
-  return function(feature, resolution) {
-    return styles[feature.getGeometry().getType()];
-  };
-};
 
 
 /**
