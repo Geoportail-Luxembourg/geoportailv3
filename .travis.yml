@@ -8,4 +8,5 @@ addons:
       - python3-netifaces
 
 script:
+  - ln -s env-localdev .env
   - make build
