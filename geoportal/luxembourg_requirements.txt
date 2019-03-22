@@ -1,6 +1,6 @@
-c2cgeoportal_commons==2.3.5.25
-c2cgeoportal_geoportal==2.3.5.25
-c2cgeoportal_admin==2.3.5.25
+c2cgeoportal_commons==2.3.5.55
+c2cgeoportal_geoportal==2.3.5.55
+c2cgeoportal_admin==2.3.5.55
 pyocclient==0.2
 suds-jurko==0.6
 ipaddr==2.2.0
