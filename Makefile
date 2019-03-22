@@ -56,7 +56,7 @@ docker-build-geoportal:
 
 .PHONY: docker-build-config
 docker-build-config:
-	docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
+	cd config && docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
 
 DOCKER_COMPOSE_PROJECT ?= luxembourg
 DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1

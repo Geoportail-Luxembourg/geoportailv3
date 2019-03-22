@@ -1,28 +1,59 @@
-FROM camptocamp/geomapfish-build-dev:2.3.5.25
+FROM camptocamp/c2cwsgiutils:2
 LABEL maintainer Camptocamp "info@camptocamp.com"
 ARG HTTP_PROXY_URL
 ENV http_proxy $HTTP_PROXY_URL
 ARG HTTPS_PROXY_URL
 ENV https_proxy $HTTPS_PROXY_URL
 
-WORKDIR /app
-
-RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ldap-utils && \
+# Install Debian packages
+RUN \
+  . /etc/os-release && \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+    slapd ldap-utils \
+    gettext libxml2-utils \
+  && \
+  apt-get purge python3-pip python3-setuptools python3-wheel --assume-yes && \
+  echo "deb https://deb.nodesource.com/node_10.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
+  curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+    nodejs && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-RUN pip install --disable-pip-version-check --no-cache-dir 'pip==19.0.2' 'setuptools==40.8.0'
-COPY setup.py /app
-RUN python3 setup.py install
+
+WORKDIR /app
+
+# Install python dependencies
+RUN \
+  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+  python3 get-pip.py pip==19.0.3 wheel==0.33.1 setuptools==40.8.0
+
+COPY upstream_requirements.txt /app/
+RUN pip install --disable-pip-version-check --no-cache-dir --requirement upstream_requirements.txt
+
+COPY luxembourg_requirements.txt /app/
+RUN pip install --disable-pip-version-check --no-cache-dir --requirement luxembourg_requirements.txt
+
+COPY setup.py /app/
+RUN \
+  python3 setup.py install && \
+  # for mypy
+  touch /usr/local/lib/python3.6/dist-packages/zope/__init__.py && \
+  touch /usr/local/lib/python3.6/dist-packages/c2c/__init__.py && \
+  rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
+
+
+COPY bin/* /usr/bin/
 
 RUN mkdir -p /app/geoportailv3_geoportal/admin
 COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin
-RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear
+RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear --force
 
 COPY package.json /app
 RUN npm install --no-optional && \
-  npm cache clear
+  npm cache clear --force
 
 RUN \
   node_modules/.bin/svg2ttf node_modules/ngeo/contribs/gmf/fonts/gmf-icons.svg \

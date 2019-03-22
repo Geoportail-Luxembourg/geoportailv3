@@ -1,5 +1,5 @@
 *
-!requirements.txt
+!*_requirements.txt
 !package.json
 !alembic.ini
 !webpack.apps.js
@@ -24,3 +24,4 @@
 !print-config.yaml.tmpl
 !fix-db.sh
 !tools
+!bin/*

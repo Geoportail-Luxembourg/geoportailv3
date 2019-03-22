@@ -8,7 +8,7 @@ import olFeature from 'ol/Feature.js';
 import {includes as arrayIncludes} from 'ol/array.js';
 import {asArray as colorAsArray} from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
-import olFormatFeature from 'ol/format/Feature.js';
+import {transformWithOptions} from 'ol/format/Feature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -1226,7 +1226,7 @@ exports.prototype.writeGeometryText = function(geometry, opt_options) {
       geometry.getType()];
   console.assert(geometryWriter !== undefined);
   var transformedGeometry = /** @type {ol.geom.Geometry} */
-      (olFormatFeature.transformWithOptions(geometry, true, opt_options));
+      (transformWithOptions(geometry, true, opt_options));
   this.prevX_ = 0;
   this.prevY_ = 0;
   return geometryWriter.call(this, transformedGeometry);

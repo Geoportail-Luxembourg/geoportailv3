@@ -2,7 +2,7 @@
  * @module app.interaction.DrawRoute
  */
 
-import {getDefaultStyleFunction} from 'ol/style/Style.js';
+import {createEditingStyle} from 'ol/style/Style.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import {getChangeEventType} from 'ol/Object.js';
@@ -20,6 +20,18 @@ import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import {inherits} from 'ol/index.js';
 import {transform} from 'ol/proj.js';
+
+
+/**
+ * @return {ol.StyleFunction} Styles.
+ */
+function getDefaultStyleFunction() {
+  var styles = createEditingStyle();
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
+};
+
 
 /**
  * @classdesc

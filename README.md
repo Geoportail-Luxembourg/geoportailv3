@@ -88,8 +88,11 @@ The translation worflow is as follows:
 - make build # build image using updated po files
 
 
-Automatic deployement
+Updating c2cgeoportal
 ---------------------
 
-3D demo: https://3d-demo.geoportail.lu/
-3D dev: https://3d-test.geoportail.lu/
+Update version in:
+- geoportal/luxembourg_requirements.txt
+- replace geoportal/upstrean_requirements.txt using the corresponding version
+  https://github.com/camptocamp/c2cgeoportal/blob/_C2C_GEOPORTAL_VERSION_/geoportal/requirements.txt
+- check the docs / adapt the code
