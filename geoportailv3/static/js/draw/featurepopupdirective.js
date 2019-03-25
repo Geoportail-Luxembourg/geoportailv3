@@ -57,12 +57,20 @@ app.module.directive('appFeaturePopup', app.featurePopupDirective);
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {Document} $document Document.
  * @param {app.Export} appExport The export service.
+ * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode.
  * @export
  * @ngInject
  */
 app.FeaturePopupController = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
-    ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
+    ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport,
+    ngeoOfflineMode) {
+
+  /**
+   * @private
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
 
   /**
    * @type {ngeo.offline.NetworkStatus}
@@ -568,7 +576,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.POINT &&
       !this.feature.get('isLabel') &&
-      !this.ngeoNetworkStatus_.isDisconnected()) {
+      !this.ngeoOfflineMode_.isEnabled()) {
     var geom = /** @type {ol.geom.Point} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);
     this.appFeaturePopup_.getElevation(geom).then(
@@ -587,7 +595,7 @@ app.FeaturePopupController.prototype.updateElevation = function() {
 app.FeaturePopupController.prototype.updateProfile = function() {
   if (goog.isDef(this.feature) &&
       this.feature.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
-      !this.ngeoNetworkStatus_.isDisconnected()) {
+      !this.ngeoOfflineMode_.isEnabled()) {
     this.showFeatureProfile.active = true;
     var geom = /** @type {ol.geom.LineString} */ (this.feature.getGeometry());
     goog.asserts.assert(geom);
@@ -648,6 +656,9 @@ app.FeaturePopupController.prototype.validateModifications = function() {
  */
 app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
   if (resource) {
+    if (resource.startsWith('data:image')) {
+      return resource;
+    }
     return this.mymapsImageUrl_ + resource;
   }
   return '';
@@ -655,7 +666,7 @@ app.FeaturePopupController.prototype.getMymapsPath = function(resource) {
 
 
 /**
- * Puts the temporary edited name and description back to the feature.
+ * Delete feature.
  * @export
  */
 app.FeaturePopupController.prototype.deleteFeature = function() {

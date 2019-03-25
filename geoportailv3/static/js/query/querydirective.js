@@ -1190,6 +1190,9 @@ app.QueryController.prototype.prefixKeys =
  */
 app.QueryController.prototype.getMymapsPath = function(resource) {
   if (resource) {
+    if (resource.startsWith('data:image')) {
+      return resource;
+    }
     return this.mymapsImageUrl_ + resource;
   }
   return '';

@@ -9,6 +9,7 @@ goog.provide('app.Mymaps');
 goog.require('app');
 goog.require('app.Notify');
 goog.require('app.UserManager');
+
 goog.require('ngeo.offline.NetworkStatus');
 goog.require('ngeo.map.BackgroundLayerMgr');
 goog.require('goog.array');
@@ -25,6 +26,8 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Text');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.proj');
+
 
 /**
  * @typedef {Array.<Object>}
@@ -55,7 +58,21 @@ app.MapsResponse;
  */
 app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl,
+    arrowModelUrl) {
+
+  /**
+   * @private
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode_;
+
+  /**
+   * @private
+   * @type {app.MymapsOffline}
+   */
+  this.myMapsOffline_;
+
   /**
    * @type {angular.$q}
    * @private
@@ -249,6 +266,12 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsSaveOfflineUrl_ = mymapsUrl + '/save_offline';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -333,7 +356,7 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   /**
    * @type {ol.proj.Projection}
    */
-  this.mapProjection;
+  this.mapProjection = ol.proj.get('EPSG:3857');
 
   /**
    * The list of categories objects, depending on user role.
@@ -392,8 +415,29 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
   };
 
   this.loadAllCategories();
+
+  /**
+   * @private
+   */
+  this.encOpt_ = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.mapProjection
+  });
 };
 
+/**
+ * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode service.
+ */
+app.Mymaps.prototype.setOfflineMode = function(ngeoOfflineMode) {
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
+};
+
+/**
+ * @param {app.MymapsOffline} appMymapsOffline Offline service.
+ */
+app.Mymaps.prototype.setOfflineService = function(appMymapsOffline) {
+  this.myMapsOffline_ = appMymapsOffline;
+};
 
 /**
  * @return {?Object} The raw response data of the map info query.
@@ -456,7 +500,7 @@ app.Mymaps.prototype.getMapId = function() {
 app.Mymaps.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
-  if (this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
     return this.setCurrentMapIdWhenOffline_(mapId, collection);
   } else {
     // Clear map to removes the alreay selected layers
@@ -507,14 +551,9 @@ app.Mymaps.prototype.setCurrentMapIdWhenOffline_ = function(mapId, collection) {
  */
 app.Mymaps.prototype.setFeatures = function(features, collection) {
   if (features !== null) {
-    var encOpt = /** @type {olx.format.ReadOptions} */ ({
-      dataProjection: 'EPSG:2169',
-      featureProjection: this.mapProjection
-    });
-
     var featureStyleFunction = this.createStyleFunction(this.map);
     var jsonFeatures = (new ol.format.GeoJSON()).
-        readFeatures(features, encOpt);
+        readFeatures(features, this.encOpt_);
     goog.array.forEach(jsonFeatures, function(feature) {
       feature.set('altitudeMode', 'clampToGround');
       feature.set('__map_id__', this.getMapId());
@@ -552,8 +591,8 @@ app.Mymaps.prototype.clear = function() {
  * @return {boolean} Return true if is editable by the user
  */
 app.Mymaps.prototype.isEditable = function() {
-  if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      this.mapIsEditable && !this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.isMymapsSelected() && this.mapIsEditable &&
+      (this.appUserManager_.isAuthenticated() || this.ngeoOfflineMode_.isEnabled())) {
     return true;
   }
   return false;
@@ -648,7 +687,17 @@ app.Mymaps.prototype.setMaps = function(maps) {
       map['update_date'] = map['create_date'];
     }
   });
-  this.maps_ = maps;
+
+  // The maps referenced is holded in mymapsdirective.
+  // To avoid having to introduce a maps changed notification mechanism
+  // we just repopulate the existing maps array.
+
+  if (this.ngeoOfflineMode_.isEnabled() && this.maps_ && maps && this.maps_ !== maps) {
+    this.maps_.length = 0;
+    this.maps_.push(...maps);
+  } else {
+    this.maps_ = maps;
+  }
 };
 
 
@@ -916,9 +965,14 @@ app.Mymaps.prototype.setMapInformation_ = function(mapinformation) {
 
 /**
  * Get the map information.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.getMapInformation = function() {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.getMapOffline(this.mapId_);
+  }
+
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(goog.bind(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -951,9 +1005,13 @@ app.Mymaps.prototype.getMapInformation = function() {
 /**
  * Delete a map
  * @param {ol.Feature} feature the feature to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_);
+  }
+
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
       feature.get('fid')).then(goog.bind(
       /**
@@ -984,40 +1042,45 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
-app.Mymaps.prototype.createMap =
-    function(title, description, categoryId, isPublic) {
-      var req = $.param({
-        'title': title,
-        'description': description,
-        'category_id': categoryId,
-        'public': isPublic
-      });
-      var config = {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      };
-      return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
-      goog.bind(
-      /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
-       */
-      function(resp) {
-        return resp.data;
-      }, this), goog.bind(
-      function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-            'Erreur inattendue lors de la création de votre carte.');
-        this.notify_(msg, app.NotifyNotificationType.ERROR);
-        return [];
-      }, this)
+app.Mymaps.prototype.createMap = function(title, description, categoryId, isPublic) {
+  const spec = {
+    'title': title,
+    'description': description,
+    'category_id': categoryId,
+    'public': isPublic
+  };
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.createMapOffline(spec);
+  }
+
+  var req = $.param(spec);
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
+    goog.bind(
+    /**
+     * @param {angular.$http.Response} resp Ajax response.
+     * @return {app.MapsResponse} The "mymaps" web service response.
+     */
+    function(resp) {
+      return resp.data;
+    }, this), goog.bind(
+    function(error) {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      var msg = this.gettextCatalog.getString(
+          'Erreur inattendue lors de la création de votre carte.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return [];
+    }, this)
   );
-    };
+};
 
 
 /**
@@ -1026,16 +1089,22 @@ app.Mymaps.prototype.createMap =
  * @param {string} description The description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.copyMap =
     function(title, description, categoryId, isPublic) {
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
         'public': isPublic
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.copyMapOffline(this.mapId_, spec, this.encOpt_);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1064,9 +1133,13 @@ app.Mymaps.prototype.copyMap =
 /**
  * Delete a map.
  * @param {string} mapId The map id to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteAMap = function(mapId) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteMapOffline(mapId);
+  }
+
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
       goog.bind(
       /**
@@ -1121,7 +1194,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
 
 /**
  * Delete the current map.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteMap = function() {
   return this.deleteAMap(this.mapId_);
@@ -1143,7 +1216,7 @@ app.Mymaps.prototype.deleteMapFeatures = function() {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category of the map.
  * @param {boolean} isPublic is the map public.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.updateMap =
     function(title, description, categoryId, isPublic) {
@@ -1153,12 +1226,18 @@ app.Mymaps.prototype.updateMap =
       this.mapCategoryId = categoryId;
       this.mapIsPublic = isPublic;
 
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
         'public': isPublic
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1194,13 +1273,13 @@ app.Mymaps.prototype.updateMap =
  * @param {string} layers_visibility The layer visibility.
  * @param {string} layers_indices The layer indices.
  * @param {string} theme The theme.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
         layers_visibility, layers_indices, theme) {
 
-      var req = $.param({
+      const spec = {
         'bgLayer': bgLayer,
         'bgOpacity': bgOpacity,
         'layers': layers,
@@ -1208,7 +1287,13 @@ app.Mymaps.prototype.updateMapEnv =
         'layers_visibility': layers_visibility,
         'layers_indices': layers_indices,
         'theme': theme
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1238,9 +1323,13 @@ app.Mymaps.prototype.updateMapEnv =
 /**
  * Save features order into a map.
  * @param {Array<ol.Feature>} features The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeaturesOrder = function(features) {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
+  }
 
   var orders = [];
   goog.array.forEach(features, function(feature) {
@@ -1280,15 +1369,15 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
 /**
  * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_);
+  }
+
   var req = $.param({
-    'feature': (new ol.format.GeoJSON()).writeFeature(feature, encOpt)
+    'feature': new ol.format.GeoJSON().writeFeature(feature, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1319,15 +1408,15 @@ app.Mymaps.prototype.saveFeature = function(feature) {
 /**
  * Save an array of features into the current map.
  * @param {Array.<ol.Feature>} features The features to save.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.saveFeatures = function(features) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
+  }
+
   var req = $.param({
-    'features': (new ol.format.GeoJSON()).writeFeatures(features, encOpt)
+    'features': new ol.format.GeoJSON().writeFeatures(features, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1662,6 +1751,35 @@ app.Mymaps.prototype.getFullMymaps = function() {
  */
 app.Mymaps.prototype.setMapsElements = function(mapsElements) {
   this.mapsElements_ = mapsElements;
+};
+
+/**
+ * Override partial mymaps maps_elements object.
+ * @param {string} uuid element id.
+ * @param {Object} element single element
+ */
+app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
+  this.mapsElements_[uuid] = element;
+};
+
+
+/**
+ * Synchronize the map when in offline state.
+ * @param {Object} map The map to synchronize.
+ */
+app.Mymaps.prototype.syncOfflineMaps = function(map) {
+  const req = this.mapsElements_[map.uuid];
+  const config = {
+    headers: {'Content-Type': 'application/json'}
+  };
+
+  this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((res) => {
+    console.log(res);
+    return res;
+  }, (err) => {
+    console.log(err);
+    return err;
+  });
 };
 
 app.module.service('appMymaps', app.Mymaps);

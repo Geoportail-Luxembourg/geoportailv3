@@ -71,6 +71,7 @@ app.module.directive('appMymaps', app.mymapsDirective);
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @param {app.Export} appExport The export service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode The offline mode.
+ * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @constructor
  * @export
  * @ngInject
@@ -79,13 +80,20 @@ app.module.directive('appMymaps', app.mymapsDirective);
 app.MymapsDirectiveController = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
-    appDrawnFeatures, $document, exportgpxkmlUrl, appExport, ngeoOfflineMode) {
+    appDrawnFeatures, $document, exportgpxkmlUrl, appExport, ngeoOfflineMode,
+    ngeoNetworkStatus) {
 
   /**
    * @export
    * @type {ngeo.offline.Mode}
    */
   this.ngeoOfflineMode = ngeoOfflineMode;
+
+  /**
+   * @export
+   * @type {ngeo.offline.NetworkStatus}
+   */
+  this.ngeoNetworkStatus = ngeoNetworkStatus;
 
   /**
    * @export
@@ -435,6 +443,18 @@ app.MymapsDirectiveController = function($scope, $compile, $sce,
       $('#dropdown-mymaps').removeClass('open');
     }
   }, this));
+
+  // Reopen active map when going offline
+  $scope.$watch(
+    () => ngeoOfflineMode.isEnabled(),
+    (newVal, oldVal) => {
+      if (newVal && this.appMymaps_.getMapId()) {
+        this.onChosen_({
+          'uuid': this.appMymaps_.getMapId()
+        });
+      }
+    }
+  );
 };
 
 
@@ -879,6 +899,15 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteAMap = function(mapId, 
 };
 
 /**
+ * Call the map synchronisation when in offline state.
+ * @param {Object} map The selected map.
+ * @export
+ */
+app.MymapsDirectiveController.prototype.syncOfflineMaps = function(map) {
+  this.appMymaps_.syncOfflineMaps(map);
+};
+
+/**
  * Closes the current anonymous drawing.
  * @export
  */
@@ -1280,12 +1309,13 @@ app.MymapsDirectiveController.prototype.deleteAMap = function(mapId) {
         this.setDragHandler();
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
-        goog.array.remove(this.maps,
-            goog.array.find(this.maps, goog.bind(function(item) {
-              if (item['uuid'] === mapId) {
-                return true;
-              }
-            }, this)));
+        if (!this.ngeoOfflineMode.isEnabled()) {
+          // Only remove from the list if not offline
+          goog.array.remove(this.maps,
+            goog.array.find(this.maps, function(item) {
+              return item['uuid'] === mapId;
+            }));
+        }
       }
     }, this));
   }
@@ -1370,6 +1400,9 @@ app.MymapsDirectiveController.prototype.onChosen_ = function(map) {
  * @export
  */
 app.MymapsDirectiveController.prototype.selectMymaps = function(map) {
+  if (map['deletedWhileOffline']) {
+    return;
+  }
   this.onChosen_(map).then(function() {
     var extent = undefined;
     var layer = this.drawnFeatures_.getLayer();

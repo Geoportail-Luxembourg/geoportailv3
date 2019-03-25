@@ -216,12 +216,14 @@ app.UserManager.prototype.getUserInfo = function() {
  * @export
  */
 app.UserManager.prototype.isAuthenticated = function() {
-  if (this.hasCookie(this.appAuthtktCookieName_)) {
-    return this.username.length > 0;
-  }
   if (this.ngeoOfflineMode_.isEnabled()) {
     return true;
   }
+
+  if (this.hasCookie(this.appAuthtktCookieName_)) {
+    return this.username.length > 0;
+  }
+
   this.clearUserInfo();
   return false;
 };

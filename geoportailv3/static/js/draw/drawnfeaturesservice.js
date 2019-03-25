@@ -249,7 +249,7 @@ app.DrawnFeatures.prototype.saveFeaturesOrder = function() {
 
 /**
  * Move anonymous features to mymaps
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 app.DrawnFeatures.prototype.moveAnonymousFeaturesToMymaps = function() {
   var newMymapsFeatures = [];
@@ -347,7 +347,7 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
 
 /**
  * @param {Array.<ol.Feature>} features An array of features to save in mymaps.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  * @private
  */
 app.DrawnFeatures.prototype.saveFeaturesInMymaps_ = function(features) {

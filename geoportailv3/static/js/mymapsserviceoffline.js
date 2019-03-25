@@ -35,7 +35,7 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
    * @type {string}
    * @private
    */
-  this.storageGroupeKey_ = 'offline_mymaps';
+  this.storageGroupKey_ = 'offline_mymaps';
 
   /**
    * @type {string}
@@ -45,6 +45,11 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
 
   // Check if data in local storage are in the multi-mymaps format.
   this.checkDataFormat();
+
+  /**
+   * @private
+   */
+  this.format_ = new ol.format.GeoJSON();
 };
 
 /**
@@ -52,15 +57,22 @@ app.MymapsOffline = function(appMymaps, appDrawnFeatures, ngeoOfflineConfigurati
  * @return {Promise|angular.$q.Promise} a promise.
  */
 app.MymapsOffline.prototype.save = function() {
+  const conf = this.ngeoOfflineConfiguration_;
   return this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
-    var item = {
-      'data_version': this.dataVersion_
-    };
-    if (full_mymaps) {
-      item['full_mymaps'] = full_mymaps;
+    const maps = full_mymaps['maps'];
+    const mapsElements = full_mymaps['maps_elements'];
+    const categories = full_mymaps['users_categories'];
+    const promises = [
+      conf.setItem('mymaps_data_version', this.dataVersion_),
+      conf.setItem('mymaps_maps', maps),
+      conf.setItem('mymaps_users_categories', categories)
+    ];
+    for (const mapElementKey in mapsElements) {
+      const mapElement = mapsElements[mapElementKey];
+      promises.push(conf.setItem(`mymaps_element_${mapElementKey}`, mapElement));
     }
 
-    return this.ngeoOfflineConfiguration_.setItem(this.storageGroupeKey_, item);
+    return Promise.all(promises);
   }.bind(this));
 };
 
@@ -68,30 +80,36 @@ app.MymapsOffline.prototype.save = function() {
  * Restore on the map and on the mymaps component the data from the storage.
  */
 app.MymapsOffline.prototype.restore = function() {
-  this.ngeoOfflineConfiguration_.getItem(this.storageGroupeKey_).then((storedItem) => {
-    if (!storedItem) {
+  const conf = this.ngeoOfflineConfiguration_;
+  conf.getItem('mymaps_maps').then((maps) => {
+    if (!maps) {
       return;
     }
 
-    var full_mymaps = /** @type {Object} */ (storedItem['full_mymaps']);
-    if (!full_mymaps) {
-      return;
-    }
+    this.appMymaps_.setMaps(maps);
 
-    var maps = /** @type {app.MapsResponse|undefined} */ (full_mymaps['maps']);
-    if (maps) {
-      this.appMymaps_.setMaps(maps);
-    }
-
-    var usersCategories = /** @type {Array<(Object)>} */ (full_mymaps['users_categories']);
-    if (usersCategories) {
-      this.appMymaps_.setUsersCategories(usersCategories);
-    }
-
-    var mapsElements = /** @type {Object} */ (full_mymaps['maps_elements']);
-    if (mapsElements) {
+    const uuids = maps.map(obj => obj['uuid']);
+    const promises = uuids.map(uuid => conf.getItem(`mymaps_element_${uuid}`));
+    const allElementsPromise = Promise.all(promises).then(elementsArray => {
+      const mapsElements = {};
+      elementsArray.forEach((element, idx) => {
+        const uuid = uuids[idx];
+        mapsElements[uuid] = element;
+      });
       this.appMymaps_.setMapsElements(mapsElements);
-    }
+    });
+
+    const userCategoriesPromise = conf.getItem('mymaps_users_categories').then(usersCategories => {
+      if (usersCategories) {
+        if (usersCategories) {
+          this.appMymaps_.setUsersCategories(usersCategories);
+        }
+      }
+    });
+    return Promise.all([
+      allElementsPromise,
+      userCategoriesPromise
+    ]);
   });
 };
 
@@ -100,15 +118,268 @@ app.MymapsOffline.prototype.restore = function() {
  * If no, clear the cache
  */
 app.MymapsOffline.prototype.checkDataFormat = function() {
-  this.ngeoOfflineConfiguration_.getItem(this.storageGroupeKey_).then((storedItem) => {
-    if (!storedItem) {
+  this.ngeoOfflineConfiguration_.getItem('mymaps_data_version').then(version => {
+    if (!version) {
       return;
     }
 
-    if (storedItem['data_version'] !== this.dataVersion_) {
+    if (version !== this.dataVersion_) {
       this.ngeoOfflineConfiguration_.clear();
     }
   });
+};
+
+/**
+ * @param {Object} spec The spec.
+ * @return {Promise<app.MapsResponse>} a promise resolving when done.
+ */
+app.MymapsOffline.prototype.createMapOffline = function(spec) {
+  this.setUpdatedNow_(spec);
+  spec['is_editable'] = true;
+  const fakeUuid = `-${Math.random()}`;
+  const conf = this.ngeoOfflineConfiguration_;
+  return conf.getItem('mymaps_maps').then((m) => {
+    const maps = m || [];
+    spec['uuid'] = fakeUuid;
+    maps.unshift(spec);
+    const element = {
+      'map': spec,
+      'features': '{"type": "FeatureCollection", "features": []}'
+    };
+    return conf.setItem('mymaps_maps', maps)
+    .then(() => conf.setItem(`mymaps_element_${fakeUuid}`, element))
+    .then(() => {
+      this.appMymaps_.setMaps(maps);
+      this.appMymaps_.updateMapsElements(fakeUuid, element);
+      return {
+        'uuid': fakeUuid,
+        'success': true
+      };
+    });
+  });
+};
+
+/**
+ * @param {string} uuid The map uuid.
+ * @param {Object} spec The spec.
+ * @return {Promise<app.MapsResponse>} a promise resolving when done.
+ */
+app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec) {
+  const now = new Date().toISOString();
+  spec['update_date'] = now;
+  const conf = this.ngeoOfflineConfiguration_;
+  return conf.getItem('mymaps_maps').then((maps) => {
+    for (const key in maps) {
+      const m = maps[key];
+      if (m['uuid'] === uuid) {
+        Object.assign(m, spec);
+        return conf.setItem('mymaps_maps', maps);
+      }
+    }
+    return Promise.reject(`Map with uuid ${uuid} not found`);
+  });
+};
+
+/**
+ * @param {string} uuid The map uuid.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.getMapOffline = function(uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  return conf.getItem('mymaps_maps').then((maps) => {
+    for (let i = 0; i < maps.length; ++i) {
+      const m = maps[i];
+      if (m['uuid'] === uuid) {
+        return m;
+      }
+    }
+    return Promise.reject(`Map with uuid ${uuid} not found`);
+  });
+};
+
+/**
+ * @param {string} uuid The map uuid.
+ * @param {Array.<ol.Feature>} features The features to save.
+ * @param {olx.format.ReadOptions} encOpt Encoding options.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOpt) {
+  const conf = this.ngeoOfflineConfiguration_;
+  const key = `mymaps_element_${uuid}`;
+
+  return conf.getItem(key).then(myElements => {
+    if (!myElements) {
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }
+    const existingFeatures = this.format_.readFeatures(myElements['features'], encOpt);
+
+    features.forEach(newFeature => {
+      let newFeatureId = newFeature.get('fid') || newFeature.getId();
+      if (!newFeatureId) {
+        newFeatureId = -Math.random();
+        newFeature.set('fid', newFeatureId, true);
+        newFeature.setId(newFeatureId);
+      }
+      for (let i = 0; i < existingFeatures.length; ++i) {
+        const curFeatureId = existingFeatures[i].get('fid') || existingFeatures[i].getId();
+        console.assert(curFeatureId);
+        if (curFeatureId === newFeatureId) {
+          existingFeatures.splice(i, 1);
+          return; // continue
+        }
+      }
+    });
+    existingFeatures.push(...features);
+
+    existingFeatures.forEach((feature, idx) => {
+      feature.set('display_order', idx, true);
+    });
+
+    // Removing private properties from features as they should not be stored in the db
+    const previousProperties = features.map(f => {
+      const properties = f.getProperties();
+      const newProperties = {};
+      for (const k in properties) {
+        if (!k.startsWith('__')) {
+          newProperties[k] = properties[k];
+        }
+      }
+      f.setProperties(newProperties, true);
+      return properties;
+    });
+    myElements['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
+    features.forEach((f, idx) => {
+      f.setProperties(previousProperties[idx], true);
+    });
+    return conf.setItem(key, myElements).then(() => {
+      const now = new Date().toISOString();
+      const spec = {
+        'last_feature_update': now
+      };
+      return this.updateMapOffline(uuid, spec);
+    });
+  });
+};
+
+/**
+ * @param {ol.Feature} feature The features to save.
+ * @param {olx.format.ReadOptions} encOpt Encoding options.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.deleteFeatureOffline = function(feature, encOpt) {
+  const uuid = /** @type{string} */ (feature.get('__map_id__'));
+  const conf = this.ngeoOfflineConfiguration_;
+  const key = `mymaps_element_${uuid}`;
+
+  return conf.getItem(key).then(myElements => {
+    if (!myElements) {
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }
+
+    const featureId = feature.getId();
+    const existingFeatures = this.format_.readFeatures(myElements['features'], encOpt);
+    const idx = existingFeatures.findIndex(f => f.getId() === featureId);
+    if (idx < 0) {
+      return Promise.reject(`The feature with id ${featureId} was not found in map with uuid ${uuid}`);
+    }
+    delete existingFeatures[idx];
+    existingFeatures.forEach((feature, idx) => {
+      feature.set('display_order', idx, true);
+    });
+    myElements['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
+
+    return conf.setItem(key, myElements).then(() => {
+      const now = new Date().toISOString();
+      const spec = {
+        'last_feature_update': now
+      };
+      return this.updateMapOffline(uuid, spec);
+    });
+  });
+};
+
+/**
+ * @param {string} uuid The source map uuid.
+ * @param {Object} spec A map description.
+ * @param {olx.format.ReadOptions} encOpt Encoding options.
+ * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.copyMapOffline = function(uuid, spec, encOpt) {
+  const conf = this.ngeoOfflineConfiguration_;
+  const newMapUuid = (-Math.random()).toString();
+  return conf.getItem(`mymaps_element_${uuid}`).then(element => {
+    // Copy and add the element to mymaps_element_xx
+    const features = this.format_.readFeatures(element['features'], encOpt);
+    features.forEach(f => {
+      const newFeatureId = -Math.random();
+      f.setId(newFeatureId);
+      f.set('fid', newFeatureId);
+    });
+    element['features'] = this.format_.writeFeatures(features, encOpt);
+    element['map']['uuid'] = newMapUuid;
+    this.setUpdatedNow_(spec);
+    Object.assign(element['map'], spec);
+    this.appMymaps_.updateMapsElements(newMapUuid, element);
+    return conf.setItem(`mymaps_element_${newMapUuid}`, element);
+  }).then(() => {
+    // Copy and add the summary to mymaps_maps
+    return conf.getItem('mymaps_maps').then(maps => {
+      const idx = maps.findIndex(m => m['uuid'] === uuid);
+      if (idx >= 0) {
+        const newSummary = Object.assign({}, maps[idx], spec);
+        newSummary['uuid'] = newMapUuid;
+        this.setUpdatedNow_(newSummary);
+        maps.unshift(newSummary);
+        this.appMymaps_.setMaps(maps);
+        return conf.setItem('mymaps_maps', maps);
+      }
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }).then(() => {
+      return {
+        'uuid': newMapUuid,
+        'success': true
+      };
+    });
+  });
+};
+
+/**
+ * Remove the map from the storage.
+ * @param {string} uuid The uuid of the map to delete.
+ * @return {Promise} a promise resolving to a fake response when done.
+ */
+app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  return Promise.all([
+    conf.removeItem(`mymaps_element_${uuid}`),
+    conf.getItem('mymaps_maps').then(maps => {
+      const idx = maps.findIndex(m => m['uuid'] === uuid);
+      if (idx < 0) {
+        return Promise.reject(`Map with uuid ${uuid} not found`);
+      }
+      if (parseFloat(uuid) < 0) {
+        // Simply delete a pure offline map
+        maps.splice(idx, 1);
+      } else {
+        // Mark the map as deleted so that we can propose to sync when back online
+        maps[idx]['deletedWhileOffline'] = true;
+        maps[idx]['last_update'] = new Date().toISOString();
+      }
+      this.appMymaps_.setMaps(maps);
+      return conf.setItem('mymaps_maps', maps);
+    })
+  ]);
+};
+
+/**
+ * @private
+ * @param {Object} obj Any object.
+ */
+app.MymapsOffline.prototype.setUpdatedNow_ = function(obj) {
+  const now = new Date().toISOString();
+  obj['create_date'] = now;
+  obj['update_date'] = now;
+  obj['last_feature_update'] = now;
 };
 
 app.module.service('appMymapsOffline', app.MymapsOffline);
