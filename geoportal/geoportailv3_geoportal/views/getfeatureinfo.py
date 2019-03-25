@@ -17,7 +17,7 @@ from os.path import isfile
 from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
-from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models import DBSession, DBSessions
 from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
 from shapely.geometry import MultiLineString, mapping, shape
 
@@ -1014,4 +1014,4 @@ class Getfeatureinfo(object):
         return None
 
     def _get_session(self, engine_name):
-        return getattr(self.request, 'db_' + engine_name)
+        return DBSessions[engine_name]
