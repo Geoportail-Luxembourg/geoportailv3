@@ -18,6 +18,7 @@ from geoportailv3_geoportal.adapters import datetime_adapter, decimal_adapter
 import datetime
 import json
 import ldap3 as ldap
+import os
 
 
 def add_cors_headers_response_callback(event):
@@ -63,6 +64,10 @@ def main(global_config, **settings):
         locale_negotiator=locale_negotiator,
         authentication_policy=create_authentication(settings)
     )
+
+    if os.environ.get('DEBUG_TOOLBAR', '0') == '1':
+        config.get_settings()['debugtoolbar.hosts'] = ['0.0.0.0/0']
+        config.include('pyramid_debugtoolbar')
 
     # Workaround to not have the error: distutils.errors.DistutilsArgError: no commands supplied
     distutils.core._setup_stop_after = 'config'

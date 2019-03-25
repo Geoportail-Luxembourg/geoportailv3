@@ -36,6 +36,7 @@ services:
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - DEBUG_TOOLBAR=1
       - DB_MYMAPS
       - DB_PGROUTE
       - DB_ECADASTRE
