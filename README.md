@@ -47,6 +47,7 @@ Alternatively, to start the dev composition use: `make dev` and open http://loca
 
 Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
+The local ldap contains a single user: c2c/test1234 with admin rights.
 
 Ldap configuration
 ------------------
