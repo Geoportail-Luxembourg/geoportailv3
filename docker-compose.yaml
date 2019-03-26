@@ -90,7 +90,7 @@ services:
       - allkeys-lru
 
   ldap:
-    image: osixia/openldap:1.2.4
+    image: lux-dev-ldap
 
 #  alembic:
 #    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}

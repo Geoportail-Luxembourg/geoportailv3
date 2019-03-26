@@ -46,12 +46,13 @@ def get_user_from_request(request):
         pass
     username = unauthenticated_userid(request)
     if username is not None:
+        default_mymaps_role = int(request.registry.settings['default_mymaps_role'])
         user = O()
         user.id = 0
         user.username = username
         user.email = None
         user.is_admin = False
-        user.mymaps_role = int(request.registry.settings['default_mymaps_role'])
+        user.mymaps_role = default_mymaps_role
         user.ogc_role = -1
         user.sn = None
         user.is_password_changed = None
@@ -65,31 +66,34 @@ def get_user_from_request(request):
             ldap_settings = request.registry.settings['ldap']
             base_dn = ldap_settings['base_dn']
             filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
-            result = conn.search(base_dn, filter_tmpl)
+            message_id = conn.search(
+                base_dn, filter_tmpl, ldap.SUBTREE,
+                ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
+            result = conn.get_response(message_id)[0]
 
-            bypass_checks = False
-
-            if not bypass_checks and len(result) == 1:
-                obj = result[0][1]
+            if len(result) == 1:
+                obj = result[0]['raw_attributes']
                 if 'roleTheme' in obj:
-                    roletheme = obj['roleTheme'][0]
+                    roletheme = obj['roleTheme'][0].decode()
                 if 'mail' in obj:
-                    user.mail = obj['mail'][0]
+                    user.mail = obj['mail'][0].decode()
                 if 'sn' in obj:
-                    user.sn = obj['sn'][0]
+                    user.sn = obj['sn'][0].decode()
                 else:
                     user.sn = user.mail
                 if 'isMymapsAdmin' in obj:
-                    user.is_admin = "TRUE" == (obj['isMymapsAdmin'][0]).upper()
+                    user.is_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
                 if 'roleMymaps' in obj:
                     user.mymaps_role = int(obj['roleMymaps'][0])
                 if 'roleOGC' in obj:
-                    user.ogc_role = obj['roleOGC'][0]
+                    user.ogc_role = int(obj['roleOGC'][0])
         try:
-            user.role = DBSession.query(Role).filter_by(id=roletheme).one()
+            user.role = DBSession.query(Role).filter_by(id=user.mymaps_role).one()
         except Exception as e:
-            user.role = DBSession.query(Role).filter_by(id=0).one()
+            user.role = DBSession.query(Role).filter_by(id=default_mymaps_role).one()
             log.exception(e)
+
+        user.role_name = user.role.name
 
         user.functionalities = []
         return user

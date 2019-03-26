@@ -48,7 +48,7 @@ help:
 
 
 .PHONY: build
-build: docker-build-geoportal docker-build-config
+build: docker-build-geoportal docker-build-config docker-build-ldap
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
@@ -57,6 +57,10 @@ docker-build-geoportal:
 .PHONY: docker-build-config
 docker-build-config:
 	cd config && docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
+
+.PHONY: docker-build-ldap
+docker-build-ldap:
+	cd ldap && docker build --tag=lux-dev-ldap --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
 
 DOCKER_COMPOSE_PROJECT ?= luxembourg
 DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1

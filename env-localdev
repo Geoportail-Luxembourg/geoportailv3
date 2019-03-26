@@ -20,9 +20,8 @@ DEVSERVER_HOST=webpack-dev-server:8080
 REDIS_HOST=redis
 REDIS_PORT=6379
 C2C_REDIS_URL=redis://redis:6379
-LDAP_BASE_DN=dc=example,dc=org
-LDAP_BIND=cn=admin,dc=example,dc=org
-LDAP_PASSWD=admin
+LDAP_PASSWD=test1234
 LDAP_URL=ldap://ldap:389
-LDAP_FILTER_TMPL=(cn=%%(login)s)
+LDAP_BIND=login=c2c,ou=portail,dc=act,dc=lu
+LDAP_FILTER_TMPL=(login=%%(login)s)
 DEFAULT_MYMAPS_ROLE=645
