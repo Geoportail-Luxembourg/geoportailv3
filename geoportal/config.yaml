@@ -29,6 +29,8 @@ environment:
 - {default: memcached, name: MEMCACHED_HOST}
 - {default: '11211', name: MEMCACHED_PORT}
 - {default: queue_name, name: TILEGENERATION_SQS_QUEUE}
+- {default: /var/sig/bt.shp, name: DHM_DEM_FILE}
+- {default: shp_index, name: DHM_DEM_TYPE}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -390,7 +392,7 @@ vars:
   print_urls: null
   proxy_wms_url: null
   raster:
-    dhm: {file: /var/sig/bt.shp, round: 1}
+    dhm: {file: '{DHM_DEM_FILE}', round: 1, type: '{DHM_DEM_TYPE}'}
   referrer: null
   reset_password: {email_body: 'Hello user,
 

@@ -28,6 +28,7 @@ services:
 #    user: www-data
     volumes:
       - /var/sig:/var/sig:ro
+      - ./data:/var/luxdata:ro
       - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:ro
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
@@ -71,6 +72,8 @@ services:
       - LDAP_URL
       - LDAP_FILTER_TMPL
       - DEFAULT_MYMAPS_ROLE
+      - DHM_DEM_FILE=/var/luxdata/dem500.tif
+      - DHM_DEM_TYPE=gdal
     ports:
       - 8080:8080
 
