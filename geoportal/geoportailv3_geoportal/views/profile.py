@@ -123,7 +123,7 @@ class Profile(Raster):
         # C'est celle qui a son premier ou dernier point
         # le plus loin de tous les autres points.
         for i in range(len(lines)):
-            shortest_distance = None
+            shortest_distance = 999999999
             is_reverse_loc = False
             for j in range(len(lines)):
                 if i == j:
@@ -132,8 +132,7 @@ class Profile(Raster):
                                     lines[j].coordinates[0])
                 dist1b = self._dist(lines[i].coordinates[0],
                                     lines[j].coordinates[-1])
-                if shortest_distance is None \
-                        or dist1a < shortest_distance or dist1b:
+                if dist1a < shortest_distance or dist1b:
                     shortest_distance = dist1a
                     is_reverse_loc = False
                 if dist1b < shortest_distance:
@@ -150,8 +149,7 @@ class Profile(Raster):
                                     lines[j].coordinates[0])
                 dist1b = self._dist(lines[i].coordinates[-1],
                                     lines[j].coordinates[-1])
-                if shortest_distance is None \
-                        or dist1a < shortest_distance or dist1b:
+                if dist1a < shortest_distance or dist1b:
                     shortest_distance = dist1a
                     is_reverse_loc = True
                 if dist1b < shortest_distance:
@@ -172,7 +170,7 @@ class Profile(Raster):
                     list(ordered_lines[-1].coordinates)[::-1]
 
         while (len(lines) > 0):
-            shortest_dist = None
+            shortest_dist = 999999999
             line_index = None
             i = 0
             for line in lines:
@@ -184,7 +182,7 @@ class Profile(Raster):
                 if d1a >= d1b:
                     line.coordinates = list(line.coordinates)[::-1]
                     d1 = d1b
-                if shortest_dist is None or d1 <= shortest_dist:
+                if d1 <= shortest_dist:
                     shortest_dist = d1
                     line_index = i
                 i = i + 1
