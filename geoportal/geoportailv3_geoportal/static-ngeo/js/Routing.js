@@ -13,6 +13,7 @@ import Style from 'ol/style/Style.js';
 import Circle from 'ol/style/Circle.js';
 import Stroke from 'ol/style/Stroke.js';
 import Fill from 'ol/style/Fill.js';
+import Text from 'ol/style/Text.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import {transform} from 'ol/proj.js';
@@ -203,7 +204,7 @@ exports.prototype.insertFeatureAt = function(feature, routeNumber) {
         stroke: strokeStyle
       })
     }));
-    var text = this.get('name');
+    var text = feature.get('name');
     if (text === undefined) {
       text = '';
     }
