@@ -88,9 +88,9 @@ def get_user_from_request(request):
                 if 'roleOGC' in obj:
                     user.ogc_role = int(obj['roleOGC'][0])
         try:
-            user.role = DBSession.query(Role).filter_by(id=user.mymaps_role).one()
+            user.role = DBSession.query(Role).filter_by(id=roletheme).one()
         except Exception as e:
-            user.role = DBSession.query(Role).filter_by(id=default_mymaps_role).one()
+            user.role = DBSession.query(Role).filter_by(id=0).one()
             log.exception(e)
 
         user.role_name = user.role.name
