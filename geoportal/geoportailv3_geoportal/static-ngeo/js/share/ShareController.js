@@ -31,7 +31,6 @@ const exports = function($window, gettext, gettextCatalog) {
   this.services_ = {
     'facebook': {url: 'https://www.facebook.com/dialog/feed'},
     'twitter': {url: 'https://www.twitter.com/intent/tweet'},
-    'googlePlus': {url: 'https://plus.google.com/share'}
   };
 
   /**
