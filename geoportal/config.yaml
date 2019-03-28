@@ -31,6 +31,8 @@ environment:
 - {default: queue_name, name: TILEGENERATION_SQS_QUEUE}
 - {default: /var/sig/bt.shp, name: DHM_DEM_FILE}
 - {default: shp_index, name: DHM_DEM_TYPE}
+- {name: SHORTENER_ALLOWED_HOST}
+- {name: SHORTENER_BASE_URL}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -417,8 +419,8 @@ vars:
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: //ws.geoportail.lu/mymaps}
   shortener:
-    allowed_hosts: [localhost]
-    base_url: '{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}{VISIBLE_ENTRY_POINT}s/'
+    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}']
+    base_url: '{SHORTENER_BASE_URL}'
     email_body: 'Hello,
 
 

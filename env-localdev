@@ -25,3 +25,5 @@ LDAP_URL=ldap://ldap:389
 LDAP_BIND=login=c2c,ou=portail,dc=act,dc=lu
 LDAP_FILTER_TMPL=(login=%%(login)s)
 DEFAULT_MYMAPS_ROLE=645
+SHORTENER_BASE_URL=http://localhost:8080/s/coco/../
+SHORTENER_ALLOWED_HOST=localhost
