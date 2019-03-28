@@ -396,20 +396,7 @@ vars:
   raster:
     dhm: {file: '{DHM_DEM_FILE}', round: 1, type: '{DHM_DEM_TYPE}'}
   referrer: null
-  reset_password: {email_body: 'Hello user,
-
-
-      You have asked for an new password,
-
-      the newly generated password is: password
-
-
-      Sincerely yours
-
-      The GeoMapfish team
-
-      ', email_from: info@camptocamp.com, email_subject: New password generated for
-      GeoMapFish}
+  reset_password: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
   resourceproxy:
     targets: {}
   routing:
@@ -421,26 +408,9 @@ vars:
   shortener:
     allowed_hosts: ['{SHORTENER_ALLOWED_HOST}']
     base_url: '{SHORTENER_BASE_URL}'
-    email_body: 'Hello,
-
-
-      Somebody sent you the following link:
-
-      short_url
-
-
-      With the message:
-
-      message
-
-
-      Sincerely yours
-
-      The GeoMapfish team
-
-      '
-    email_from: info@camptocamp.com
-    email_subject: Geoportal URL
+    email_body: 'unused'
+    email_from: unused
+    email_subject: unused
   smtp: {host: echo 'no-set', password: not-set, ssl: true, user: not-set}
   sqlalchemy.max_overflow: 25
   sqlalchemy.pool_recycle: 30
@@ -457,18 +427,4 @@ vars:
   tiles_url: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/main/tiles/']
   tinyowsproxy: {tinyows_url: '{TINYOWS_URL}'}
   urllogin: {}
-  welcome_email: {email_body: 'Hello user,
-
-
-      You have a new account on GeoMapFish: https://geomapfish-demo.camptocamp.com/2.3
-
-      Your user name is: user
-
-      Your password is: password
-
-
-      Sincerely yours
-
-      The GeoMapfish team
-
-      ', email_from: info@camptocamp.com, email_subject: Welcome to GeoMapFish}
+  welcome_email: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
