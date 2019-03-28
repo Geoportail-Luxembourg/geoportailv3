@@ -11,6 +11,8 @@ from pyramid.httpexceptions import HTTPBadRequest
 from geoportailv3_geoportal.portail import RoutingStats
 from c2cgeoportal_commons.models import DBSession
 
+import os
+import json
 import transaction
 import logging
 log = logging.getLogger(__name__)
@@ -40,6 +42,11 @@ class RouterController(object):
             routing_success = False
             return HTTPBadRequest("Not enough waypoints (At least 2 required)")
         else:
+            if os.environ.get('FAKE_GETROUTE', None):
+                fake_response = \
+'{"type": "FeatureCollection", "features": [{"geometry": {"type": "LineString", "coordinates": [[6.133983, 49.600628], [6.134012, 49.600857], [6.134012, 49.600857], [6.133503, 49.600929], [6.133347, 49.600864], [6.133347, 49.600864], [6.133135, 49.60191], [6.133033, 49.603046], [6.13364, 49.605274], [6.133626, 49.606693], [6.133626, 49.606693], [6.133451, 49.607311], [6.13295, 49.608166], [6.13276, 49.608936], [6.132754, 49.609619], [6.1331, 49.611263], [6.133089, 49.611778], [6.132948, 49.612358], [6.132702, 49.612854], [6.132126, 49.613533], [6.130913, 49.614372], [6.130913, 49.614372], [6.130574, 49.614582], [6.13038, 49.61462], [6.13038, 49.61462], [6.130032, 49.614574], [6.127786, 49.613766], [6.127786, 49.613766], [6.126136, 49.616936], [6.126136, 49.616936], [6.137467, 49.618546], [6.137467, 49.618546], [6.138996, 49.618622], [6.141353, 49.619118], [6.141353, 49.619118], [6.141753, 49.617985]]}, "type": "Feature", "properties": {"attribution": "<p>Routing Data OpenStreetMap contributors</p><p>Directions Courtesy of <a href=\'http://www.mapquest.com/\' target=\'_blank\'>MapQuest</a> <img src=\'http://developer.mapquest.com/content/osm/mq_logo.png\'></p>", "success": true, "errorMessages": [], "time": 337, "dist": 3534, "desc": [{"distance": 25, "direction": 0, "description": "Pour commencer, allez dans la direction nord à Gare Centrale - Quai 5 vers Place de la Gare.", "leg": 0, "lon": 6.133983, "time": 4, "lat": 49.600628}, {"distance": 51, "direction": 2, "description": "Tournez à gauche sur Place de la Gare.", "leg": 0, "lon": 6.134012, "time": 27, "lat": 49.600857}, {"distance": 655, "direction": 6, "description": "Tournez à droite sur N50/Avenue de la Gare. Continuez sur N50.", "leg": 0, "lon": 6.133347, "time": 75, "lat": 49.600864}, {"distance": 915, "direction": 0, "description": "Continuez tout droit pour aller sur N57/Tunnel René Konen.", "leg": 0, "lon": 6.133626, "time": 58, "lat": 49.606693}, {"distance": 48, "direction": 1, "description": "Continuez à gauche à la bifurcation pour continuer sur N57/Tunnel René Konen.", "leg": 0, "lon": 6.130913, "time": 9, "lat": 49.614372}, {"distance": 210, "direction": 1, "description": "Tournez légèrement à gauche sur N7/Boulevard Royal/E421.", "leg": 0, "lon": 6.13038, "time": 22, "lat": 49.61462}, {"distance": 371, "direction": 6, "description": "Tournez à droite sur N52/Avenue de la Porte-Neuve.", "leg": 0, "lon": 6.127786, "time": 42, "lat": 49.613766}, {"distance": 836, "direction": 6, "description": "Tournez à droite sur N51/Boulevard Robert Schuman. Continuez sur N51.", "leg": 0, "lon": 6.126136, "time": 58, "lat": 49.616936}, {"distance": 289, "direction": 7, "description": "Continuez à droite à la bifurcation pour aller sur N51/Avenue John F. Kennedy.", "leg": 0, "lon": 6.137467, "time": 25, "lat": 49.618546}, {"distance": 128, "direction": 6, "description": "Tournez à droite sur Desserte Schuman.", "leg": 0, "lon": 6.141353, "time": 17, "lat": 49.619118}, {"distance": 0, "direction": 0, "description": "Vous êtes arrivé à destination.", "leg": 0, "lon": 6.141753, "time": 0, "lat": 49.617985}]}}]}' #  noqa
+                return json.loads(fake_response)
+
             # Use Graphhopper for bicycle routing, Mapquest for all other modes
             if len(coords) <= 10 and transport_mode in [2]:
                 r = GraphhopperRouter(self.config['routing']['graphhopper'])
@@ -83,7 +90,7 @@ class RouterController(object):
             transaction.abort()
 
         if routing_success:
-            json = {
+            json_response = {
                 "type": "FeatureCollection",
                 "features": [
                     {'type': "Feature",
@@ -95,7 +102,7 @@ class RouterController(object):
                         'attribution': r.attribution},
                      'geometry': r.geom}]}
         else:
-            json = {'success': routing_success,
+            json_response = {'success': routing_success,
                     'geometry': None,
                     'desc': [],
                     'dist': 0,
@@ -103,7 +110,7 @@ class RouterController(object):
                     'errorMessages': r.errorMessages,
                     'attribution': r.attribution}
 
-        return json
+        return json_response
 
     def __setup_router(
             self, coords, lang, transport_mode, criteria,
