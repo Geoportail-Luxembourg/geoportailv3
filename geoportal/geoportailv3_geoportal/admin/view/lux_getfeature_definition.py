@@ -19,6 +19,8 @@ class LuxGetfeatureDefinitionViews(AbstractViews):
         _list_field('engine_gfi'),
         _list_field('query'),
         _list_field('template'),
+        _list_field('rest_url'),
+        _list_field('layer'),
     ]
     _id_field = 'id'
     _model = LuxGetfeatureDefinition
