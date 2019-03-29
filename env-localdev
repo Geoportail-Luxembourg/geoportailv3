@@ -27,6 +27,8 @@ LDAP_FILTER_TMPL=(login=%%(login)s)
 DEFAULT_MYMAPS_ROLE=645
 SHORTENER_BASE_URL=http://localhost:8080/s/coco/../
 SHORTENER_ALLOWED_HOST=localhost
+ELASTIC_SERVERS=
+ELASTIC_INDEX=
 # Guillaume's routing keys
 # Use them only for local dev
 ROUTING_GRAPHHOPPER_API_KEY=239fa42d-e0ef-482a-b1ca-68e84df1660b
