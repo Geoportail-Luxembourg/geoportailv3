@@ -3,8 +3,8 @@
 # reviewed by koje
 # reviewed by mire
 
-from geoportailv3_geoportal.mapquestrouter import MapquestRouter
-from geoportailv3_geoportal.graphhopperrouter import GraphhopperRouter
+from geoportailv3_geoportal.routing.mapquestrouter import MapquestRouter
+from geoportailv3_geoportal.routing.graphhopperrouter import GraphhopperRouter
 from pyramid.view import view_config
 from urllib.error import HTTPError
 from pyramid.httpexceptions import HTTPBadRequest

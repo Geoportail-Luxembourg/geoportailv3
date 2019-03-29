@@ -30,7 +30,8 @@ services:
       - /var/sig:/var/sig:ro
       - ./data:/var/luxdata:ro
       - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
-      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/views:ro
+      - ./geoportal/geoportailv3_geoportal/routing:/app/geoportailv3_geoportal/routing:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:ro
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
       - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
       - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
@@ -82,6 +83,8 @@ services:
       - SHORTENER_ALLOWED_HOST
       - ELASTIC_SERVERS
       - ELASTIC_INDEX
+      - ROUTING_GRAPHHOPPER_API_KEY
+      - ROUTING_MAPQUEST_API_KEY
     ports:
       - 8080:8080
 

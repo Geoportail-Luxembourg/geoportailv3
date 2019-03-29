@@ -35,7 +35,8 @@ environment:
 - {name: SHORTENER_BASE_URL}
 - {name: ELASTIC_SERVERS}
 - {name: ELASTIC_INDEX}
-
+- {default: null, name: ROUTING_GRAPHHOPPER_API_KEY}
+- {default: null, name: ROUTING_MAPQUEST_API_KEY}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -403,8 +404,8 @@ vars:
   resourceproxy:
     targets: {}
   routing:
-    graphhopper: {api_key: null, url: 'https://graphhopper.com/api/1/route'}
-    mapquest: {api_key: null, url: 'http://open.mapquestapi.com/directions/v2/route'}
+    graphhopper: {api_key: '{ROUTING_GRAPHHOPPER_API_KEY}', url: 'https://graphhopper.com/api/1/route'}
+    mapquest: {api_key: '{ROUTING_MAPQUEST_API_KEY}', url: 'http://open.mapquestapi.com/directions/v2/route'}
   schema: geov3
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: //ws.geoportail.lu/mymaps}
