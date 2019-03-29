@@ -33,6 +33,9 @@ environment:
 - {default: shp_index, name: DHM_DEM_TYPE}
 - {name: SHORTENER_ALLOWED_HOST}
 - {name: SHORTENER_BASE_URL}
+- {name: ELASTIC_SERVERS}
+- {name: ELASTIC_INDEX}
+
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -428,3 +431,5 @@ vars:
   tinyowsproxy: {tinyows_url: '{TINYOWS_URL}'}
   urllogin: {}
   welcome_email: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
+  elastic.servers: '{ELASTIC_SERVERS}'
+  elastic.index: '{ELASTIC_INDEX}'

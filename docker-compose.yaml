@@ -80,6 +80,8 @@ services:
       - FAKE_GETROUTE=1
       - SHORTENER_BASE_URL
       - SHORTENER_ALLOWED_HOST
+      - ELASTIC_SERVERS
+      - ELASTIC_INDEX
     ports:
       - 8080:8080
 
