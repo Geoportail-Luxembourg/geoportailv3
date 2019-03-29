@@ -15,11 +15,11 @@ isProfessionnel: false
 l: Luxembourg
 langue: FR
 login: c2c
-mail: c2c@example.com
+mail: cc2c@example.com
 o: 2
 postalCode: 1470
 rca: FALSE
-roleMymaps: 999
+roleMymaps: 0
 roleOGC: 0
 roleTheme: 0
 sn: test user
