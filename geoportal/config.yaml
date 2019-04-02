@@ -408,7 +408,7 @@ vars:
     mapquest: {api_key: '{ROUTING_MAPQUEST_API_KEY}', url: 'http://open.mapquestapi.com/directions/v2/route'}
   schema: geov3
   schema_static: '{PGSCHEMA_STATIC}'
-  servers: {my_maps: //ws.geoportail.lu/mymaps}
+  servers: {my_maps: https://ws.geoportail.lu/mymaps}
   shortener:
     allowed_hosts: ['{SHORTENER_ALLOWED_HOST}']
     base_url: '{SHORTENER_BASE_URL}'
