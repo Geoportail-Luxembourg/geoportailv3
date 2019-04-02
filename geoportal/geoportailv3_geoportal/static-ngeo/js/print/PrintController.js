@@ -533,10 +533,9 @@ exports.prototype.print = function(format) {
         });
 
         var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
-        if (routingAttributions !== undefined && routingAttributions !== null) {
-          routingAttributions.forEach(function(attribution) {
-            dataOwners.push(attribution.getHTML());
-          }, this);
+        if (routingAttributions) {
+          const htmls = routingAttributions();
+          dataOwners.push(...htmls);
         }
         //Remove duplicates.
         dataOwners = dataOwners.filter(function(item, pos, self) {
