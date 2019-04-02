@@ -24,7 +24,7 @@ LDAP_PASSWD=test1234
 LDAP_URL=ldap://ldap:389
 LDAP_BIND=login=c2c,ou=portail,dc=act,dc=lu
 LDAP_FILTER_TMPL=(login=%%(login)s)
-SHORTENER_BASE_URL=http://localhost:8080/s/coco/../
+SHORTENER_BASE_URL=http://localhost:8080/s/
 SHORTENER_ALLOWED_HOST=localhost
 ELASTIC_SERVERS=
 ELASTIC_INDEX=
