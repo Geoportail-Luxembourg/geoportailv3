@@ -1,3 +1,4 @@
+---
 pdfConfig: !pdfConfig
   compressed: false
   author: "Jeff Konnen"
@@ -6,18 +7,21 @@ pdfConfig: !pdfConfig
 
 throwErrorOnExtraParameters: true
 
+
 templates:
   A4 portrait: !template
     pdfConfig: !pdfConfig
       title: "A4 Portrait by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a4_portrait.jrxml
-    attributes:
+    attributes: &attributes
       name: !string {}
       scale: !string {}
       url: !string {}
       qrimage: !string {}
       dataOwner: !string
+        default: ""
+      queryResults: !string
         default: ""
       disclaimer: !string
         default: ""
@@ -35,375 +39,168 @@ templates:
       lang: !string {}
       legend: !datasource
         attributes:
-            name: !string {}
+          name: !string {}
         default: []
       scalebar: !scalebar
         width: 150
         height: 30
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: &processors
+      - !reportBuilder  # compile all reports in current directory
+        directory: '.'
+      - !configureHttpRequests
+        httpProcessors:
+          - !mapUri  # Rule to rewrite the local dev queries
+            mapping:
+              http://localhost:8080/(.*): "http://geoportal:8080/$1"
+          - !forwardHeaders  # Rule to forward the referer
+            headers:
+              - Referer
+              - X-Request-ID
+      - !createMap
+        inputMapper: {map: map}
+        outputMapper: {mapSubReport: mapSubReport}
+      - !createScalebar {}
   A4 landscape: !template
     pdfConfig: !pdfConfig
       title: "A4 Landscape by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a4_landscape.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 715
         height: 395
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 150
         height: 30
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A3 portrait: !template
     pdfConfig: !pdfConfig
       title: "A3 Portrait by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a3_portrait.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 715
         height: 975
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A3 landscape: !template
     pdfConfig: !pdfConfig
       title: "A3 Landscape by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a3_landscape.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1064
         height: 640
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A2 portrait: !template
     pdfConfig: !pdfConfig
       title: "A2 Portrait by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a2_portrait.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1064
         height: 1475
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A2 landscape: !template
     pdfConfig: !pdfConfig
       title: "A2 Landscape by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a2_landscape.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1558
         height: 985
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A1 portrait: !template
     pdfConfig: !pdfConfig
       title: "A1 Portrait by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a1_portrait.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 1558
         height: 2175
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A1 landscape: !template
     pdfConfig: !pdfConfig
       title: "A1 Landscape by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a1_landscape.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 2255
         height: 1482
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A0 portrait: !template
     pdfConfig: !pdfConfig
       title: "A0 Portrait by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a0_portrait.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 2254
         height: 3155
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
   A0 landscape: !template
     pdfConfig: !pdfConfig
       title: "A0 Landscape by geoportail.lu"
       keywords: ["map"]
     reportTemplate: a0_landscape.jrxml
     attributes:
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
-      dataOwner: !string
-        default: ""
-      disclaimer: !string
-        default: ""
-      dateText: !string
-        default: ""
-      scaleTitle: !string
-        default: ""
-      appTitle: !string
-        default: ""
+      <<: *attributes
       map: !map
         maxDpi: 400
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 3241
         height: 2173
-      lang: !string {}
-      legend: !datasource
-        attributes:
-            name: !string {}
-        default: []
       scalebar: !scalebar
         width: 230
         height: 40
-    processors:
-    - !reportBuilder # compile all reports in current directory
-      directory: '.'
-    - !createMap
-      inputMapper: {map: map}
-      outputMapper: {mapSubReport: mapSubReport}
-    - !createScalebar {}
+    processors: *processors
