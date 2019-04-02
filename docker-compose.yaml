@@ -15,7 +15,7 @@ services:
       - GEOPORTAL_INTERNAL_URL
 
   print:
-    image: camptocamp/mapfish_print:3.14
+    image: camptocamp/mapfish_print:3.18.4
     user: www-data
     volumes_from:
       - config:ro
