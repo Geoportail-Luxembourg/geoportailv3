@@ -389,12 +389,18 @@ app.ProfileController.prototype.snapToGeometry_ = function(coordinate, geom) {
  * @export
  */
 app.ProfileController.prototype.exportCSV = function() {
-  var csv = 'dist,MNT,y,x\n';
+  var csv = 'dist,MNT,y,x,lon,lat\n';
   this['profileData'].forEach(goog.bind(function(item) {
+    var lonlat = ol.proj.toLonLat(
+      [item['x'], item['y']],
+      'EPSG:2169'
+    );
     csv = csv + item['dist'] + ',' +
           (item['values']['dhm']) / 100 + ',' +
           item['x'] + ',' +
-          item['y'] + '\n';
+          item['y'] + ',' +
+          lonlat[0] + ',' +
+          lonlat[1] + ',' + '\n';
   }, this));
 
   var csvInput = $('<input>').attr({
