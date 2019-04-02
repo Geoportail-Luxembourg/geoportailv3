@@ -22,6 +22,13 @@ services:
     environment:
       - CATALINA_OPTS=-Xmx1024m
       - PGOPTIONS=-c statement_timeout=30000
+#      - DEFAULT_LOG_LEVEL=DEBUG
+#      - TOMCAT_LOG_LEVEL=DEBUG
+#      - LOG_LEVEL=DEBUG
+#      - SPRING_LOG_LEVEL=DEBUG
+#      - JASPER_LOG_LEVEL=DEBUG
+#      - APACHE_LOG_LEVEL=DEBUG
+#      - SQL_LOG_LEVEL=DEBUG
 
   geoportal:
     image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
