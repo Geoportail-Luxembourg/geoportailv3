@@ -1314,6 +1314,9 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
     var visible = this.getLayers().getArray().some(function(l) {
       return l.get('id') === lid;
     });
+    if (!Array.isArray(ids)) {
+      ids = [ids];
+    }
     ids.forEach(function(id) {
       var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
@@ -2168,6 +2171,9 @@ lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
 
   this.layersPromise.then(function() {
     var lid = this.findLayerConf_(layer).id;
+    if (!Array.isArray(ids)) {
+      ids = [ids];
+    }
     ids.forEach(function(id) {
       var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
