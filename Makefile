@@ -181,13 +181,13 @@ clean-js-api:
 
 .PHONY: run
 run: build
-	docker-compose up
+	docker-compose down; docker-compose up
 
 .PHONY: dev
 dev: build
 	echo "Once the composition is up open the following URL:"
 	echo "browse http://localhost:8080/dev/main.html"
-	docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
+	docker-compose down; docker-compose -f docker-compose.yaml -f docker-compose-dev.yaml up
 
 .PHONY: attach
 attach:
