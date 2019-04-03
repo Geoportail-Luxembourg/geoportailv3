@@ -299,6 +299,18 @@ lux.notify = function(msg) {
 lux.Map = function(options) {
   /**
    * @private
+   * @type {Array}
+   */
+  this.addedKmlLayers_ = [];
+
+  /**
+   * @private
+   * @type {Array}
+   */
+  this.addedKmlOnClick_ = [];
+
+  /**
+   * @private
    * @type {ol.Overlay | undefined}
    */
   this.lastpopup_ = undefined;
@@ -1839,6 +1851,8 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     }
     setSource();
     this.addLayer(vector);
+    this.addedKmlLayers_.push(vector);
+    this.addedKmlOnClick_.push(opt_options.onClick);
     if (fit) {
       ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
           function() {
@@ -1851,13 +1865,18 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
 
     if (opt_options && opt_options.click) {
       var interaction = new ol.interaction.Select({
-        layers: [vector]
+        layers: this.addedKmlLayers_
       });
       this.addInteraction(interaction);
       if (opt_options.onClick) {
         interaction.on('select', function(e) {
           var features = e.target.getFeatures();
-          opt_options.onClick.call(null, features, e.mapBrowserEvent.coordinate);
+          var curLayer = interaction.getLayer(features.getArray()[0]);
+          for (var iLayer = 0; iLayer < this.addedKmlLayers_.length; iLayer++) {
+            if (this.addedKmlLayers_[iLayer] == curLayer) {
+              this.addedKmlOnClick_[iLayer].call(null, features, e.mapBrowserEvent.coordinate);
+            }
+          }
           interaction.getFeatures().clear();
         }.bind(this));
       } else {
