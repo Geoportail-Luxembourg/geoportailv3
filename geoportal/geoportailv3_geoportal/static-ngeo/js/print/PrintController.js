@@ -290,7 +290,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
  * @type {Array.<number>}
  * @private
  */
-exports.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
+const DEFAULT_MAP_SCALES = [1500, 2500, 5000, 10000, 15000,
   20000, 25000, 50000, 80000, 100000, 125000, 200000, 250000, 400000];
 
 
@@ -762,20 +762,20 @@ exports.prototype.setScales_ = function() {
       /**
        * @param {Object} tree Tree object for the theme.
        */
-      (function(tree) {
+      tree => {
         var scales;
-        if (tree === null) {
+        if (!tree) {
           this.needScaleRefresh = true;
         }
-        if (tree !== null && tree['metadata']['print_scales']) {
-          scales = tree['metadata']['print_scales'];
-          scales.sort();
+        if (tree && tree['metadata']['print_scales']) {
+          scales = tree['metadata']['print_scales'].map(s => +s);
+          scales.sort((a, b) => a - b); // sort numerically
         } else {
-          scales = exports.DEFAULT_MAP_SCALES_;
+          scales = DEFAULT_MAP_SCALES;
         }
         this['scales'] = scales;
         var scale = this['scale'];
-        if (scale != -1) {
+        if (scale !== -1) {
           // find nearest scale to current scale
           scale = exports.findNearestScale_(scales, scale);
           if (scale != this['scale']) {
@@ -783,7 +783,7 @@ exports.prototype.setScales_ = function() {
             this.map_.render();
           }
         }
-      }).bind(this));
+      });
 };
 
 
