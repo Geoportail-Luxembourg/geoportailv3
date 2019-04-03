@@ -21,6 +21,7 @@ CACHE:
 
 ${request.static_url(main_js_url)}
 ${request.static_url(main_css_url)}
+${request.static_url('geoportailv3_geoportal:static-ngeo/images/arrow.png')}
 
 <%
 #FIXME: restore when locales are handled ${request.static_url('geoportailv3_geoportal:static/build/locale/fr/geoportailv3.json')}

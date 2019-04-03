@@ -41,13 +41,21 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
+ * @param {string} appImagesPath Path the the static images.
  * @param {string} arrowUrl URL to the arrow.
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
 const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus,
+    appImagesPath, arrowUrl, arrowModelUrl) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.whiteArrowUrl_ = appImagesPath + 'arrow.png';
+
   /**
    * @type {string}
    * @private
@@ -1265,7 +1273,7 @@ exports.prototype.createStyleFunction = function(curMap) {
 
   var fillStyle = new olStyleFill();
   var symbolUrl = this.mymapsSymbolUrl_;
-  var arrowUrl = this.arrowUrl_;
+  var whiteArrowUrl = this.whiteArrowUrl_;
   const arrowModelUrl = this.arrowModelUrl_;
 
   const colorStringToRgba = (colorString, opacity = 1) => {
@@ -1318,13 +1326,14 @@ exports.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
-          var src = arrowUrl + '?color=' + arrowColor.replace('#', '');
+          var src = whiteArrowUrl;
           const rotation =  Math.PI / 2 - Math.atan2(dy, dx);
           // arrows
           styles.push(new olStyleStyle({
             geometry: arrowPoint,
             zIndex: order,
             image: new olStyleIcon(/** @type {olx.style.IconOptions} */ ({
+              color: arrowColor,
               rotation,
               src
             }))

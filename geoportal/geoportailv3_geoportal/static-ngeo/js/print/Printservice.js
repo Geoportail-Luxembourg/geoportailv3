@@ -6,13 +6,53 @@ import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
 
+import VectorEncoder from 'ngeo/print/VectorEncoder.js';
+
+function rgbToHex(r, g, b) {
+  return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+class AppVectorEncoder extends VectorEncoder {
+  /**
+   * @param {string} appImagesPath Path the the static images.
+   * @param {string} arrowUrl URL to the arrow.
+   */
+  constructor(appImagesPath, arrowUrl) {
+    super();
+    this.whiteArrowUrl_ = appImagesPath + 'arrow.png';
+    this.arrowUrl_ = arrowUrl;
+  }
+
+  /**
+   * @param {Array.<MapFishPrintSymbolizer>} symbolizers Array of MapFish Print symbolizers.
+   * @param {!ol.style.Image} imageStyle Image style.
+   * @protected
+   * @override
+   */
+  encodeVectorStylePoint(symbolizers, imageStyle) {
+    const len = symbolizers.length;
+    super.encodeVectorStylePoint(symbolizers, imageStyle);
+    const newLen = symbolizers.length;
+    if (newLen > len) {
+      const last = symbolizers[newLen - 1];
+      if (last.externalGraphic === this.whiteArrowUrl_) {
+        const rgba = imageStyle.getColor();
+        const color = rgbToHex(rgba[0], rgba[1], rgba[2]);
+        last.externalGraphic = `${this.arrowUrl_}?color=${color}`;
+      }
+    }
+  }
+}
+
 const exports = class extends ngeoPrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
    * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper service.
+   * @param {string} appImagesPath Path the the static images.
+   * @param {string} arrowUrl URL to the arrow.
    */
-  constructor(url, $http, ngeoLayerHelper) {
+  constructor(url, $http, ngeoLayerHelper, appImagesPath, arrowUrl) {
     super(url, $http, ngeoLayerHelper);
     /**
      * @type {ngeo.map.LayerHelper}
@@ -20,7 +60,10 @@ const exports = class extends ngeoPrintService {
      */
     this.ngeoLayerHelper2_ = ngeoLayerHelper;
 
+    // Replace encoder with our own
+    this.vectorEncoder = new AppVectorEncoder(appImagesPath, arrowUrl);
   }
+
   /**
    * @override
    */

@@ -41,6 +41,8 @@ import olRenderEventType from 'ol/render/EventType.js';
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @param {angular.$http} $http Angular $http service.
  * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper.
+ * @param {string} appImagesPath Path the the static images.
+ * @param {string} arrowUrl URL to the arrow.
  * @constructor
  * @export
  * @ngInject
@@ -49,7 +51,8 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
-    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper) {
+    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
+    arrowUrl) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -109,7 +112,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {ngeo.print.Service}
    * @private
    */
-  this.print_ = new appPrintPrintservice(printServiceUrl, $http, ngeoLayerHelper);
+  this.print_ = new appPrintPrintservice(printServiceUrl, $http, ngeoLayerHelper, appImagesPath, arrowUrl);
 
   /**
    * @type {ngeo.print.Utils}
