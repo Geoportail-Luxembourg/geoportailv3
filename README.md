@@ -48,7 +48,9 @@ Alternatively, to start the dev composition use: `make dev` and open http://loca
 Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
 The local ldap contains a single user: c2c/test1234 with admin rights.
-See docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=act,dc=lu -D "login=c2c,ou=portail,dc=act,dc=lu" -w test1234 -LL '*'
+See docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=act,dc=lu -D "login=c2c,ou=portail,dc=act,dc=lu" -w test1234 -LL '\*'
+
+The print service is available directly at http://localhost:28080/.
 
 Ldap configuration
 ------------------
