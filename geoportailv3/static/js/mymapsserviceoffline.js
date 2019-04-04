@@ -114,6 +114,39 @@ app.MymapsOffline.prototype.restore = function() {
 };
 
 /**
+ * Get mymaps_maps object
+ */
+app.MymapsOffline.prototype.getMyMapsMapStorage = function() {
+  const conf = this.ngeoOfflineConfiguration_;
+  conf.getItem('mymaps_maps').then((maps) => {
+    if (!maps) {
+      return;
+    }
+    return maps;
+  });
+};
+
+/**
+ * Update the item in storage
+ * @param {Object} mapsElement myMapsElement.
+ * @param {Float} old_uuid Old uuid before database insert.
+ */
+app.MymapsOffline.prototype.updateMyMapsElementStorage = function(mapsElement, old_uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  const old_key = `mymaps_element_${old_uuid}`;
+  const new_key = `mymaps_element_${mapsElement['map']['uuid']}`;
+  conf.removeItem(old_key).then(() => {
+    conf.setItem(new_key, mapsElement)
+      .then(() => {
+        return {
+          'uuid': new_key,
+          'success': true
+        };
+      });
+  });
+};
+
+/**
  * Check if the stored data has the new format (multi-mymaps)
  * If no, clear the cache
  */
@@ -377,9 +410,12 @@ app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
  */
 app.MymapsOffline.prototype.setUpdatedNow_ = function(obj) {
   const now = new Date().toISOString();
-  obj['create_date'] = now;
+  if (!('create_date' in obj)) {
+    obj['create_date'] = now;
+  }
   obj['update_date'] = now;
   obj['last_feature_update'] = now;
+  obj['dirty'] = true;
 };
 
 app.module.service('appMymapsOffline', app.MymapsOffline);

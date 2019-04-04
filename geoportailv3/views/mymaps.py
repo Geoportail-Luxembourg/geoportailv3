@@ -808,32 +808,32 @@ class Mymaps(object):
             data = self.request.json_body
             map_id = data['map']['uuid']
             req_features = json.loads(data['features'])
-            log.warn(req_features)
 
-            if map_id < 0:
-                log.warn('Map to create')
+            if map_id[0] == '-':
+                log.warn('Map to create and add features')
             else:
                 log.warn('Map to modify')
 
-            db_features = self.request.db_mymaps.query(
-                Feature).filter(Feature.map_id == map_id)
-            if db_features is None:
-                return HTTPNotFound()
+                db_features = self.request.db_mymaps.query(Feature).filter(Feature.map_id == map_id)
+                if db_features is None:
+                    return HTTPNotFound()
 
-            found_db_feature = None
-            for db_feature in db_features:
-                found_req_feature = None
-                for req_feature in req_features['features']:
-                    if req_feature['id'] == db_feature.id:
-                        found_req_feature = req_feature
-                        found_db_feature = db_feature
-                        break
-                if found_req_feature:
-                    log.warn('Modify feature in db')
-                else:
-                    log.warn('Add feature in db')
-            if not found_db_feature:
-                log.warn('Suppress feature in db')
+                found_db_feature = None
+                for db_feature in db_features:
+                    found_req_feature = None
+                    for req_feature in req_features['features']:
+                        if req_feature['id'] == db_feature.id:
+                            found_req_feature = req_feature
+                            found_db_feature = db_feature
+                            break
+                    if found_req_feature:
+                        log.warn('Modify feature in db')
+                    else:
+                        log.warn('Add feature in db')
+                if not found_db_feature:
+                    log.warn('Suppress feature in db')
+
+            # del data['map']['dirty']
             return {'success': True, 'data': data}
 
         except Exception:

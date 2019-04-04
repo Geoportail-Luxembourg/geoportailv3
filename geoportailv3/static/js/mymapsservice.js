@@ -692,6 +692,9 @@ app.Mymaps.prototype.setMaps = function(maps) {
   // To avoid having to introduce a maps changed notification mechanism
   // we just repopulate the existing maps array.
 
+  console.log(this.ngeoOfflineMode_.isEnabled());
+  console.log(this.map_);
+  console.log(maps);
   if (this.ngeoOfflineMode_.isEnabled() && this.maps_ && maps && this.maps_ !== maps) {
     this.maps_.length = 0;
     this.maps_.push(...maps);
@@ -1768,14 +1771,30 @@ app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
  * @param {Object} map The map to synchronize.
  */
 app.Mymaps.prototype.syncOfflineMaps = function(map) {
-  const req = this.mapsElements_[map.uuid];
+  const old_uuid = map.uuid;
+  const req = this.mapsElements_[old_uuid];
   const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
-  this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((res) => {
-    console.log(res);
-    return res;
+  this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+    const map = resp.data.data.map;
+    const featureCollection = resp.data.data.features;
+    const myMapsElement = resp.data.data;
+
+    this.myMapsOffline_.updateMapOffline(map.uuid, map);
+    this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, old_uuid);
+    this.mapsElements_[old_uuid] = null;
+    this.mapsElements_[map.uuid] = myMapsElement;
+
+    //const mapOffline = this.myMapsOffline_.getMyMapsMapStorage();
+    //this.updateMapsElements(map.uuid, myMapsElement);
+    //this.setMaps(mapOffline);
+    if (this.mapId_ === old_uuid) {
+      this.setCurrentMapId(map.uuid, []);
+    }
+
+    return map;
   }, (err) => {
     console.log(err);
     return err;
