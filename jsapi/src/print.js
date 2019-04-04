@@ -196,7 +196,10 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
     var element = layer.getElement();
     if (element !== undefined) {
       var image = element.firstChild;
-      var url = image.getAttribute('src');
+      var url;
+      if (image.getAttribute !== undefined) {
+        url = image.getAttribute('src');
+      }
       if (url !== undefined && url !== null && url.length > 0) {
         if (url.toLowerCase().indexOf('http') !== 0 &&
             url.toLowerCase().indexOf('//') === 0) {
