@@ -776,10 +776,14 @@ lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
             // The report is ready. Open it by changing the window location.
             if (mfResp.status !== 'error') {
               window.location.href = pm.getReportUrl(ref);
-              callback.call(this, mfResp.status);
+              if (callback !== undefined) {
+                callback.call(this, mfResp.status);
+              }
             } else {
               console.log(mfResp.error);
-              callback.call(this, mfResp.status);
+              if (callback !== undefined) {
+                callback.call(this, mfResp.status);
+              }
             }
           } else {
             goog.Timer.callOnce(function() {
