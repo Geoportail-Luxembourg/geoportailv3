@@ -667,7 +667,7 @@ class Mymaps(object):
         map = Map()
         map.user_login = user.username
 
-        return self.save(map)
+        return self.save(map, self.request.params)
 
     @view_config(route_name="mymaps_copy", renderer='json')
     def copy(self):
@@ -736,7 +736,7 @@ class Mymaps(object):
         if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
-        return self.save(map, id)
+        return self.save(map, self.request.params, id)
 
     @view_config(route_name="mymaps_rate", renderer='json')
     def rate(self):
@@ -804,45 +804,76 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_save_offline", renderer='json')
     def save_offline(self):
-        try:
-            data = self.request.json_body
-            map_id = data['map']['uuid']
-            req_features = json.loads(data['features'])
+        user = self.request.user
+        if user is None:
+            return HTTPUnauthorized()
 
-            if map_id[0] == '-':
-                log.warn('Map to create and add features')
-            else:
-                log.warn('Map to modify')
+        data = self.request.json_body
+        map_id = data['map']['uuid']
+        req_features = json.loads(data['features'])
+        log.warn(data['map'])
+        if map_id[0] == '-':  # starts with a minus / is a new map
+            map = Map()
+            map.user_login = user.username
+            success = self.save(map, data['map'])
+            if not success['success']:
+                log.error('Error with saving the map.')
+            map_uuid = success.get('uuid')
+            success = self._save_features_helper(map_uuid, data['features'])
+            if not success['success']:
+                log.error('Error saving the features in the map.')
+        elif data['map']['deletedWhileOffline']:
+            log.warn('Map to delete')
+        else:
+            log.warn('Map to modify')
 
-                db_features = self.request.db_mymaps.query(Feature).filter(Feature.map_id == map_id)
-                if db_features is None:
-                    return HTTPNotFound()
+            db_features = self.request.db_mymaps.query(Feature).filter(
+                Feature.map_id == map_id
+            )
+            if db_features is None:
+                return HTTPNotFound()
 
-                found_db_feature = None
-                for db_feature in db_features:
-                    found_req_feature = None
-                    for req_feature in req_features['features']:
-                        if req_feature['id'] == db_feature.id:
-                            found_req_feature = req_feature
-                            found_db_feature = db_feature
-                            break
-                    if found_req_feature:
-                        log.warn('Modify feature in db')
-                    else:
-                        log.warn('Add feature in db')
-                if not found_db_feature:
-                    log.warn('Suppress feature in db')
+            found_db_feature = None
+            for db_feature in db_features:
+                found_req_feature = None
+                for req_feature in req_features['features']:
+                    if req_feature['id'] == db_feature.id:
+                        found_req_feature = req_feature
+                        found_db_feature = db_feature
+                        break
+                if found_req_feature:
+                    log.warn('Modify feature in db')
+                else:
+                    log.warn('Add feature in db')
+            if not found_db_feature:
+                log.warn('Suppress feature in db')
 
-            # del data['map']['dirty']
-            return {'success': True, 'data': data}
-
-        except Exception:
-            return {'success': False}
+        data['map'] = {
+            'title': map.title,
+            'uuid': map.uuid,
+            'public': map.public,
+            'create_date': map.create_date,
+            'update_date': map.update_date,
+            'category': map.category.name
+            if map.category_id is not None else None,
+            'owner': map.user_login.lower()
+        }
+        return {'success': True, 'data': data}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
     def save_features(self):
         try:
             map_id = self.request.matchdict.get("map_id")
+            features = self.request.params.get('features'). \
+                replace(u'\ufffd', '?')
+            return self._save_features_helper(map_id, features)
+        except Exception as e:
+            log.exception(e)
+            self.request.db_mymaps.rollback()
+        return {'success': False}
+
+    def _save_features_helper(self, map_id, features):
+        try:
             map = self.request.db_mymaps.query(Map).get(map_id)
             if map is None:
                 return HTTPNotFound()
@@ -850,11 +881,9 @@ class Mymaps(object):
             if not self.has_write_permission(self.request.user, map):
                 return HTTPUnauthorized()
 
-            if 'features' not in self.request.params:
+            if not features:
                 return HTTPBadRequest()
 
-            features = self.request.params.get('features').\
-                replace(u'\ufffd', '?')
             feature_collection = geojson.\
                 loads(features, object_hook=geojson.GeoJSON.to_instance)
 
@@ -870,8 +899,9 @@ class Mymaps(object):
                     if feature_id:
                         cur_feature = self.request.db_mymaps.query(Feature).\
                             get(feature_id)
-                        self.request.db_mymaps.delete(cur_feature)
-                        obj.id = feature_id
+                        if cur_feature:
+                            self.request.db_mymaps.delete(cur_feature)
+                        # obj.id = feature_id
 
                     map.features.append(obj)
 
@@ -1005,8 +1035,7 @@ class Mymaps(object):
 
         return {'success': True}
 
-    def save(self, map, id=None):
-        params = self.request.params
+    def save(self, map, params, id=None):
         #
         # deal with the map itself
         #
@@ -1020,11 +1049,11 @@ class Mymaps(object):
                 map.y = float(params.get('Y'))
             except ValueError:
                 return HTTPBadRequest()
-        if 'zoom' in params:
-            try:
-                map.zoom = int(params.get('zoom'))
-            except ValueError:
-                return HTTPBadRequest()
+        # if 'zoom' in params:
+        #    try:
+        #        map.zoom = int(params.get('zoom'))
+        #    except ValueError:
+        #        return HTTPBadRequest()
         if 'title' in params:
             map.title = unicode(params.get('title'))
         if 'description' in params:
@@ -1538,6 +1567,7 @@ class Mymaps(object):
                                                                    user)
         maps = self._maps(session, user)
         full_mymaps['maps'] = maps
+        log.warn(maps)
         maps_elements = {}
 
         for map in maps:

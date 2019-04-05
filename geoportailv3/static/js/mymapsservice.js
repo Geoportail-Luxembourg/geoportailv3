@@ -692,9 +692,6 @@ app.Mymaps.prototype.setMaps = function(maps) {
   // To avoid having to introduce a maps changed notification mechanism
   // we just repopulate the existing maps array.
 
-  console.log(this.ngeoOfflineMode_.isEnabled());
-  console.log(this.map_);
-  console.log(maps);
   if (this.ngeoOfflineMode_.isEnabled() && this.maps_ && maps && this.maps_ !== maps) {
     this.maps_.length = 0;
     this.maps_.push(...maps);
@@ -1771,33 +1768,38 @@ app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
  * @param {Object} map The map to synchronize.
  */
 app.Mymaps.prototype.syncOfflineMaps = function(map) {
-  const old_uuid = map.uuid;
-  const req = this.mapsElements_[old_uuid];
+  const oldUuid = map.uuid;
+  const req = this.mapsElements_[oldUuid];
   const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
+  console.log(req);
   this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+    console.log(resp);
     const map = resp.data.data.map;
-    const featureCollection = resp.data.data.features;
     const myMapsElement = resp.data.data;
 
-    this.myMapsOffline_.updateMapOffline(map.uuid, map);
-    this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, old_uuid);
-    this.mapsElements_[old_uuid] = null;
-    this.mapsElements_[map.uuid] = myMapsElement;
+    // Update features and map in local storage
+    this.myMapsOffline_.updateMapOffline(oldUuid, map);
+    this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid);
 
-    //const mapOffline = this.myMapsOffline_.getMyMapsMapStorage();
-    //this.updateMapsElements(map.uuid, myMapsElement);
-    //this.setMaps(mapOffline);
-    if (this.mapId_ === old_uuid) {
-      this.setCurrentMapId(map.uuid, []);
+    // Update features visible in this map
+    //const idx = this.mapsElements_.findIndex(el => el['uuid'] === oldUuid);
+    //this.mapsElements_.splice(idx, 1, myMapsElement);
+    delete this.mapsElements_[oldUuid];
+    this.mapsElements_[map.uuid] = myMapsElement;
+    console.log(this.mapsElements_);
+
+    if (this.mapId_ === oldUuid) {
+      this.setCurrentMapId(map.uuid, null);
     }
 
     return map;
   }, (err) => {
-    console.log(err);
-    return err;
+    var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la map.');
+    this.notify_(msg, app.NotifyNotificationType.ERROR);
+    return [];
   });
 };
 

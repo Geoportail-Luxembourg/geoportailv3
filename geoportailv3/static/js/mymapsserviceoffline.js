@@ -129,7 +129,7 @@ app.MymapsOffline.prototype.getMyMapsMapStorage = function() {
 /**
  * Update the item in storage
  * @param {Object} mapsElement myMapsElement.
- * @param {Float} old_uuid Old uuid before database insert.
+ * @param {number} old_uuid Old uuid before database insert.
  */
 app.MymapsOffline.prototype.updateMyMapsElementStorage = function(mapsElement, old_uuid) {
   const conf = this.ngeoOfflineConfiguration_;
