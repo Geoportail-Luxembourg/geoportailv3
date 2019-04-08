@@ -94,6 +94,8 @@ exports.config(['$httpProvider', function($httpProvider) {
       if (config.method == 'GET' &&
           config.url.indexOf('geoportailv3.json') === -1 && // static files already have cache control
           config.url.indexOf('templatecache/') !== 0 && // template cache URLs should not be tempered (see below)
+          config.url.indexOf('fr.json') !== -1 && config.url.indexOf('de.json') !== -1 &&
+          config.url.indexOf('lb.json') !== -1 && config.url.indexOf('en.json') !== -1 &&
           config.url.indexOf('.html') === -1) {
         var separator = config.url.indexOf('?') === -1 ? '?' : '&';
         config.url = config.url + separator + 'noCache=' + new Date().getTime();
