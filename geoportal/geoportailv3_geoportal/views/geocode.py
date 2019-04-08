@@ -15,6 +15,8 @@ from geoalchemy2.shape import to_shape
 import re
 import difflib
 
+import os
+import json
 
 import logging
 log = logging.getLogger(__name__)
@@ -44,6 +46,9 @@ class Geocode(object):
             "x": easting,
             "y": northing
         }, srid=2169), Address.geom)
+
+        if os.environ.get('FAKE_REVERSE_GEOCODING') == '1':
+            return json.loads('{"count": 1, "results": [{"id_caclr_street": "461", "distance": 33.7389366951768, "street": "Rue Jean-Pierre Brasseur", "postal_code": "1258", "id_caclr_bat": "21478", "geom": {"type": "Point", "coordinates": [76302.2077999998, 75334.6180995487]}, "locality": "Luxembourg", "number": "16"}]}')  # noqa
 
         results = []
 

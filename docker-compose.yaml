@@ -84,6 +84,7 @@ services:
       - DEFAULT_MYMAPS_ROLE
       - DHM_DEM_FILE=/var/luxdata/dem500.tif
       - DHM_DEM_TYPE=gdal
+      - FAKE_REVERSE_GEOCODING=1
       - FAKE_FULLTEXT_SEARCH=1
       - FAKE_LAYERSEARCH=1
       - FAKE_CMSSEARCH=1
