@@ -822,7 +822,7 @@ class Mymaps(object):
             success = self._save_features_helper(map_uuid, data['features'])
             if not success['success']:
                 log.error('Error saving the features in the map.')
-        elif data['map']['deletedWhileOffline']:
+        elif data['map']['deletedWhileOffline'] and data['map']['dirty']:
             log.warn('Map to delete')
         else:
             log.warn('Map to modify')
@@ -1049,19 +1049,24 @@ class Mymaps(object):
                 map.y = float(params.get('Y'))
             except ValueError:
                 return HTTPBadRequest()
-        # if 'zoom' in params:
-        #    try:
-        #        map.zoom = int(params.get('zoom'))
-        #    except ValueError:
-        #        return HTTPBadRequest()
+        if 'zoom' in params:
+            try:
+                if params.get('zoom') is None:  # offline map
+                    map.zoom = 0
+                else:
+                    map.zoom = int(params.get('zoom'))
+            except ValueError:
+                return HTTPBadRequest()
         if 'title' in params:
             map.title = unicode(params.get('title'))
         if 'description' in params:
             map.description = unicode(params.get('description'))
         if 'theme' in params:
             map.theme = unicode(params.get('theme'))
-        if 'bgLayer' in params:
+        if 'bgLayer' in params:  # online (permalink) save a map
             map.bg_layer = unicode(params.get('bgLayer'))
+        if 'bg_layer' in params:  # offline save a map
+            map.bg_layer = unicode(params.get('bg_layer'))
         if 'bgOpacity' in params:
             map.bg_opacity = params.get('bgOpacity')\
                 if params.get('bgOpacity') != '' else 100
@@ -1088,6 +1093,8 @@ class Mymaps(object):
                 map.public = True
             elif str == u'false':
                 map.public = False
+            else:  # offline save a map
+                map.public = params.get('public')
         if 'label' in params:
             map.label = unicode(params.get('label'))
 
@@ -1567,7 +1574,6 @@ class Mymaps(object):
                                                                    user)
         maps = self._maps(session, user)
         full_mymaps['maps'] = maps
-        log.warn(maps)
         maps_elements = {}
 
         for map in maps:

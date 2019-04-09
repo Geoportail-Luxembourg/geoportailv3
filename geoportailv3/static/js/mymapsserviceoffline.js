@@ -127,16 +127,17 @@ app.MymapsOffline.prototype.getMyMapsMapStorage = function() {
 };
 
 /**
- * Update the item in storage
+ * Update the map element in storage
  * @param {Object} mapsElement myMapsElement.
  * @param {number} old_uuid Old uuid before database insert.
+ * @return {Promise} a shiny promise.
  */
 app.MymapsOffline.prototype.updateMyMapsElementStorage = function(mapsElement, old_uuid) {
   const conf = this.ngeoOfflineConfiguration_;
   const old_key = `mymaps_element_${old_uuid}`;
   const new_key = `mymaps_element_${mapsElement['map']['uuid']}`;
-  conf.removeItem(old_key).then(() => {
-    conf.setItem(new_key, mapsElement)
+  return conf.removeItem(old_key).then(() => {
+    return conf.setItem(new_key, mapsElement)
       .then(() => {
         return {
           'uuid': new_key,
@@ -195,17 +196,24 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
 /**
  * @param {string} uuid The map uuid.
  * @param {Object} spec The spec.
+ * @param {boolean} isNewObject If the update merge the old object.
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
-app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec) {
+app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec, isNewObject = false) {
   const now = new Date().toISOString();
   spec['update_date'] = now;
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((maps) => {
     for (const key in maps) {
-      const m = maps[key];
+      let m = maps[key];
       if (m['uuid'] === uuid) {
-        Object.assign(m, spec);
+        if (!isNewObject) {
+          // Merge object
+          Object.assign(m, spec);
+        } else {
+          // Not merge, just replace object
+          maps[key] = spec;
+        }
         return conf.setItem('mymaps_maps', maps);
       }
     }
@@ -396,6 +404,7 @@ app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
       } else {
         // Mark the map as deleted so that we can propose to sync when back online
         maps[idx]['deletedWhileOffline'] = true;
+        maps[idx]['dirty'] = true;
         maps[idx]['last_update'] = new Date().toISOString();
       }
       this.appMymaps_.setMaps(maps);

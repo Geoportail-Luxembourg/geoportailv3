@@ -1060,6 +1060,7 @@ app.Mymaps.prototype.createMap = function(title, description, categoryId, isPubl
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
+  console.log(req);
   return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
     goog.bind(
     /**
@@ -1241,6 +1242,7 @@ app.Mymaps.prototype.updateMap =
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
+      console.log(req);
       return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
@@ -1766,6 +1768,7 @@ app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
 /**
  * Synchronize the map when in offline state.
  * @param {Object} map The map to synchronize.
+ * @return {Promise} a promise
  */
 app.Mymaps.prototype.syncOfflineMaps = function(map) {
   const oldUuid = map.uuid;
@@ -1774,32 +1777,38 @@ app.Mymaps.prototype.syncOfflineMaps = function(map) {
     headers: {'Content-Type': 'application/json'}
   };
 
-  console.log(req);
-  this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
-    console.log(resp);
+  //console.log(req);
+  return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+    //console.log(resp);
     const map = resp.data.data.map;
     const myMapsElement = resp.data.data;
 
     // Update features and map in local storage
-    this.myMapsOffline_.updateMapOffline(oldUuid, map);
-    this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid);
+    return this.myMapsOffline_.updateMapOffline(oldUuid, map, true).then(() => { // the summary of maps
 
-    // Update features visible in this map
-    //const idx = this.mapsElements_.findIndex(el => el['uuid'] === oldUuid);
-    //this.mapsElements_.splice(idx, 1, myMapsElement);
-    delete this.mapsElements_[oldUuid];
-    this.mapsElements_[map.uuid] = myMapsElement;
-    console.log(this.mapsElements_);
+      return this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid).then(() => { // map and its features
+        // Update features visible on this map
+        delete this.mapsElements_[oldUuid];
+        this.mapsElements_[map.uuid] = myMapsElement;
 
-    if (this.mapId_ === oldUuid) {
-      this.setCurrentMapId(map.uuid, null);
-    }
+        //if (this.mapId_ === oldUuid) {
+        //this.setCurrentMapId(map.uuid, null);
+        //}
 
-    return map;
+        let result = [];
+        for (let idx in this.mapsElements_) {
+          result.push(this.mapsElements_[idx]['map']);
+        }
+
+        this.setMaps(result);
+        return this.maps;
+      });
+    });
+
   }, (err) => {
     var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la map.');
     this.notify_(msg, app.NotifyNotificationType.ERROR);
-    return [];
+    return Promise.reject();
   });
 };
 
