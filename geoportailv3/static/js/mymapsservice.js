@@ -688,7 +688,7 @@ app.Mymaps.prototype.setMaps = function(maps) {
     }
   });
 
-  // The maps referenced is holded in mymapsdirective.
+  // The maps referenced is held in mymapsdirective.
   // To avoid having to introduce a maps changed notification mechanism
   // we just repopulate the existing maps array.
 
@@ -1060,7 +1060,6 @@ app.Mymaps.prototype.createMap = function(title, description, categoryId, isPubl
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
-  console.log(req);
   return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
     goog.bind(
     /**
@@ -1242,7 +1241,6 @@ app.Mymaps.prototype.updateMap =
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
-      console.log(req);
       return this.$http_.put(this.mymapsUpdateMapUrl_ + this.mapId_,
       req, config).then(goog.bind(
       /**
@@ -1768,48 +1766,67 @@ app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
 /**
  * Synchronize the map when in offline state.
  * @param {Object} map The map to synchronize.
+ * @param {?string} owner The map owner to restrict.
+ * @param {?number} categoryId The category to restrict.
  * @return {Promise|angular.$q.Promise} a promise
  */
-app.Mymaps.prototype.syncOfflineMaps = function(map) {
+app.Mymaps.prototype.syncOfflineMaps = function(map, owner, categoryId) {
   const oldUuid = map.uuid;
   const req = this.mapsElements_[oldUuid];
   const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
-  //console.log(req);
-  return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
-    //console.log(resp);
-    const map = resp.data.data.map;
-    const myMapsElement = resp.data.data;
+  return this.getMaps(owner, categoryId).then(mymap => {
 
-    // Update features and map in local storage
-    return this.myMapsOffline_.updateMapOffline(oldUuid, map, true).then(() => { // the summary of maps
-
-      return this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid).then(() => { // map and its features
-        // Update features visible on this map
-        delete this.mapsElements_[oldUuid];
-        this.mapsElements_[map.uuid] = myMapsElement;
-
-        //if (this.mapId_ === oldUuid) {
-        //this.setCurrentMapId(map.uuid, null);
-        //}
-
-        let result = [];
-        for (let idx in this.mapsElements_) {
-          result.push(this.mapsElements_[idx]['map']);
-        }
-
-        this.setMaps(result);
-        return this.maps;
-      });
+    let myMapsIdx = null;
+    mymap.forEach((m, idx) => {
+      if (m.uuid === oldUuid) {
+        myMapsIdx = idx;
+      }
     });
 
-  }, (err) => {
-    var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la map.');
-    this.notify_(msg, app.NotifyNotificationType.ERROR);
-    return Promise.reject();
+    console.log(req);
+    return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+      const map = resp.data.data.map;
+      const myMapsElement = resp.data.data;
+
+      // Update features and map in local storage
+      return this.myMapsOffline_.updateMapOffline(oldUuid, map, true).then(() => { // the summary of maps
+
+        return this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid).then(() => { // map and its features
+          // Update features visible on this map
+          delete this.mapsElements_[oldUuid];
+          this.mapsElements_[map.uuid] = myMapsElement;
+
+          if (this.mapId_ === oldUuid) {
+            //this.setCurrentMapId(map.uuid, null);
+            this.setMapId(map.uuid);
+          }
+
+          if (map.deletedWhileOffline) {
+            // Remove the mymaps_map entry
+            console.log('map to delete');
+          }
+
+          for (let idx in this.mapsElements_) {
+            if (idx === map.uuid) {
+              mymap[myMapsIdx] = this.mapsElements_[idx]['map'];
+            }
+          }
+
+          this.setMaps(mymap);
+          return this.maps;
+        });
+      });
+
+    }, (err) => {
+      var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la map.');
+      this.notify_(msg, app.NotifyNotificationType.ERROR);
+      return Promise.reject();
+    });
   });
+
 };
 
 app.module.service('appMymaps', app.Mymaps);

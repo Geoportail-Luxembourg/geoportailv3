@@ -811,7 +811,6 @@ class Mymaps(object):
         data = self.request.json_body
         map_id = data['map']['uuid']
         req_features = json.loads(data['features'])
-        log.warn(data['map'])
         if map_id[0] == '-':  # starts with a minus / is a new map
             map = Map()
             map.user_login = user.username
@@ -856,7 +855,22 @@ class Mymaps(object):
             'update_date': map.update_date,
             'category': map.category.name
             if map.category_id is not None else None,
-            'owner': map.user_login.lower()
+            'owner': map.user_login.lower(),
+            'label': map.label,
+            'last_update_feature': None,
+            'layers': map.layers,
+            'layers_indices': map.layers_indices,
+            'layers_opacity': map.layers_opacity,
+            'layers_visibility': map.layers_visibility,
+            'bg_layer': map.bg_layer,
+            'bg_opacity': map.bg_opacity,
+            'description': map.description,
+            'last_feature_update': self.request.db_mymaps.query(
+                func.max(Feature.update_date)).filter(
+                Feature.map_id == map.uuid).one()[0],
+            'x': map.x,
+            'y': map.y,
+            'zoom': map.zoom
         }
         return {'success': True, 'data': data}
 

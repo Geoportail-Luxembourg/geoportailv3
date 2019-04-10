@@ -114,19 +114,6 @@ app.MymapsOffline.prototype.restore = function() {
 };
 
 /**
- * Get mymaps_maps object
- */
-app.MymapsOffline.prototype.getMyMapsMapStorage = function() {
-  const conf = this.ngeoOfflineConfiguration_;
-  conf.getItem('mymaps_maps').then((maps) => {
-    if (!maps) {
-      return;
-    }
-    return maps;
-  });
-};
-
-/**
  * Update the map element in storage
  * @param {Object} mapsElement myMapsElement.
  * @param {number} old_uuid Old uuid before database insert.
@@ -392,7 +379,7 @@ app.MymapsOffline.prototype.copyMapOffline = function(uuid, spec, encOpt) {
 app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
   const conf = this.ngeoOfflineConfiguration_;
   return Promise.all([
-    conf.removeItem(`mymaps_element_${uuid}`),
+    //conf.removeItem(`mymaps_element_${uuid}`),
     conf.getItem('mymaps_maps').then(maps => {
       const idx = maps.findIndex(m => m['uuid'] === uuid);
       if (idx < 0) {
