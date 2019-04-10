@@ -1768,7 +1768,7 @@ app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
 /**
  * Synchronize the map when in offline state.
  * @param {Object} map The map to synchronize.
- * @return {Promise} a promise
+ * @return {Promise|angular.$q.Promise} a promise
  */
 app.Mymaps.prototype.syncOfflineMaps = function(map) {
   const oldUuid = map.uuid;
