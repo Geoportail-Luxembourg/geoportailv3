@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@camptocamp/cesium": "1.43.1",
-    "@camptocamp/closure-util": "https://api.github.com/repos/camptocamp/closure-util/tarball/2348c13",
+    "@camptocamp/closure-util": "https://api.github.com/repos/camptocamp/closure-util/tarball/1cd7d30",
     "angular": "1.6.6",
     "angular-animate": "1.6.6",
     "angular-dynamic-locale": "0.1.32",
