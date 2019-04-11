@@ -728,7 +728,7 @@ exports.prototype.openFeedback = function() {
 /**
  * @export
  */
-app.MainController.prototype.openFeedbackAnf = function() {
+exports.prototype.openFeedbackAnf = function() {
   this.appThemes_.getFlatCatalog().then(
     function(flatCatalogue) {
       var node = flatCatalogue.find(function(catItem) {

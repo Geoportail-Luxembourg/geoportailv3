@@ -342,6 +342,7 @@ exports = function($scope, $compile, $sce,
       this.appMymaps_.getMaps(this.filterMapOwner, this.filterCategoryId).then(function(mymaps) {
         this.choosing = true;
         this.maps = mymaps;
+        this.setDragHandler();
       }.bind(this));
     }
   }.bind(this));
@@ -354,6 +355,7 @@ exports = function($scope, $compile, $sce,
         this.choosing = true;
         this.maps = mymaps;
         this.filterMapOwner = null;
+        this.setDragHandler();
       }.bind(this));
     }
   }.bind(this));
@@ -495,6 +497,7 @@ exports.prototype.modalShownHidden = function(value) {
     this.modal = undefined;
     return false;
   } else if (this.modal !== undefined) {
+    this.setDragHandler();
     return true;
   }
 };
@@ -797,6 +800,7 @@ exports.prototype.closeMap = function() {
  * @export
  */
 exports.prototype.openConfirmDelete = function() {
+  this.setDragHandler();
   this.confirmDelete = true;
 };
 
@@ -806,6 +810,7 @@ exports.prototype.openConfirmDelete = function() {
  * @export
  */
 exports.prototype.openConfirmDeleteObjects = function() {
+  this.setDragHandler();
   this.confirmDeleteObjects = true;
 };
 
@@ -829,6 +834,7 @@ exports.prototype.openConfirmDeleteAMap = function(mapId, mapTitle) {
   this.requestedMapIdToDelete = mapId;
   this.requestedMapTitle = mapTitle;
   this.choosing = false;
+  this.setDragHandler();
 };
 
 /**
@@ -1101,6 +1107,7 @@ exports.prototype.openChooseMapModal = function() {
           } else if (mymaps.length !== 0 || this.appUserManager_.getMymapsAdmin()) {
             this.choosing = true;
             this.maps = mymaps;
+            this.setDragHandler();
           } else {
             this.notify_(this.gettextCatalog.getString(
                 'You have no existing Maps, please create a New Map'
@@ -1145,6 +1152,7 @@ exports.prototype.openMergeLinesModal = function() {
     var msg = this.gettextCatalog.getString('Il faut au moins 2 lignes disponibles pour pouvoir les fusionner.');
     this.notify_(msg, appNotifyNotificationType.INFO);
   }
+  this.setDragHandler();
 };
 
 
@@ -1163,6 +1171,7 @@ exports.prototype.openModifyMapModal = function() {
     this.newIsPublic = this.appMymaps_.mapIsPublic;
     this.modal = 'MODIFY';
   }
+  this.setDragHandler();
 };
 
 
@@ -1227,6 +1236,7 @@ exports.prototype.deleteAMap = function(mapId) {
         this.askToConnect();
       } else {
         this.choosing = true;
+        this.setDragHandler();
         this.requestedMapTitle = undefined;
         this.requestedMapIdToDelete = undefined;
         var curElem = this.maps.find(function(item) {
@@ -1631,6 +1641,15 @@ exports.prototype.fit = function(extent) {
  */
 exports.prototype.afterReorder = function(feature, array) {
   this.drawnFeatures_.computeOrder();
+};
+
+
+/**
+ * Set the drag handle on element H4.
+ * @export
+ */
+exports.prototype.setDragHandler = function() {
+  $('.modal-dialog').draggable('option', 'handle', 'h4');
 };
 
 appModule.controller('AppMymapsController', exports);
