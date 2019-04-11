@@ -529,9 +529,10 @@ exports.prototype.init =
                     parseInt(stateBgLayerOpacity, 0) === 0)) {
                   if (this.initialVersion_ === 2 &&
                       stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
-                    stateBgLayerLabel =
-                        exports.
-                        V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+                    stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+                    if (stateBgLayerLabel === undefined) {
+                      stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_['webbasemap'];
+                    }
                   } else if (this.initialVersion_ === 2 &&
                       parseInt(stateBgLayerOpacity, 0) === 0) {
                     stateBgLayerLabel = 'orthogr_2013_global';

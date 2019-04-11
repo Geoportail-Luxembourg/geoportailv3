@@ -365,7 +365,9 @@ exports = function($scope,
         var feature = /** @type {ol.Feature} */ (evt.element);
         feature.set('__selected__', true);
         if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-          this['mymapsOpen'] = true;
+          if (this['feedbackanfOpen'] !== true) {
+            this['mymapsOpen'] = true;
+          }
         }
         if (!this.featurePopup_.isDocked) {
           this.featurePopup_.show(feature, this.map,
@@ -774,7 +776,9 @@ exports.prototype.onDrawEnd_ = function(event) {
   this.drawnFeatures_.saveFeature(feature);
   this.drawnFeatures_.activateModifyIfNeeded(event.feature);
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-    this['mymapsOpen'] = true;
+    if (this['feedbackanfOpen'] !== true) {
+      this['mymapsOpen'] = true;
+    }
   }
 };
 
@@ -802,7 +806,9 @@ exports.prototype.onClipLineEnd_ = function(event) {
   this.drawnFeatures_.saveFeature(features[0]);
   this.drawnFeatures_.saveFeature(features[1]);
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-    this['mymapsOpen'] = true;
+    if (this['feedbackanfOpen'] !== true) {
+      this['mymapsOpen'] = true;
+    }
   }
   this.drawnFeatures_.clipLineInteraction.setActive(false);
 };

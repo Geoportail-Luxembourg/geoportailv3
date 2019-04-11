@@ -46,6 +46,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @param {string} downloadresourceUrl The url to download a resource.
  * @param {string} qrServiceUrl The qr service url.
  * @param {string} previewMesurementUrl The preview service url.
+ * @param {app.LotChasse} appLotChasse The selected lot de chasse.
  * @export
  * @ngInject
  */
@@ -55,7 +56,14 @@ exports = function($sce, $timeout, $scope, $http,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
-    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl) {
+    appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl,
+    appLotChasse) {
+  /**
+   * @type {app.LotChasse}
+   * @private
+   */
+  this.appLotChasse_ = appLotChasse;
+
   /**
    * @type {string}
    * @export
@@ -969,6 +977,16 @@ exports.prototype.getPreviewUrl = function() {
     this.previewFilename);
 };
 
+/**
+ * Open the feedback anf tool.
+ * @param {string} lot The lot number.
+ * @export
+ */
+exports.prototype.openFeedbackAnf = function(lot) {
+  this.appLotChasse_.setLotChasse(lot);
+  this['infoOpen'] = false;
+  this['feedbackAnfOpen'] = true;
+};
 
 /**
  * Open preview mesurement popup.

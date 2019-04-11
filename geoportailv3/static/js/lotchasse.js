@@ -1,17 +1,18 @@
+goog.module('app.LotChasse');
 /**
  * @fileoverview This file defines the Blank Layer service. This service
  * creates an empty layer and the corresponding spec.
  */
-goog.provide('app.LotChasse');
 
-goog.require('app');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @constructor
  * @ngInject
  */
-app.LotChasse = function() {
+exports = function() {
   /**
    * @typedef {String}
    * @private
@@ -25,7 +26,7 @@ app.LotChasse = function() {
  * Set the current "lot de chasse".
  * @param {string} lot The lot de chasse.
  */
-app.LotChasse.prototype.setLotChasse = function(lot) {
+exports.prototype.setLotChasse = function(lot) {
   this.lotChasse_ = lot;
 };
 
@@ -33,8 +34,8 @@ app.LotChasse.prototype.setLotChasse = function(lot) {
  * Get the current "lot de chasse".
  * @return {string} The lot de chasse.
  */
-app.LotChasse.prototype.getLotChasse = function() {
+exports.prototype.getLotChasse = function() {
   return this.lotChasse_;
 };
 
-app.module.service('appLotChasse', app.LotChasse);
+appModule.service('appLotChasse', exports);
