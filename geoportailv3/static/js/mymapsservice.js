@@ -1786,8 +1786,17 @@ app.Mymaps.prototype.syncOfflineMaps = function(map, owner, categoryId) {
       }
     });
 
-    console.log(req);
     return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+
+      if (resp.data.data.deletedWhileOffline) {
+        const uuid = resp.data.data.uuid;
+        this.myMapsOffline_.removeStorage(uuid);
+        delete this.mapsElements_[uuid];
+        mymap.splice(uuid, 1);
+        this.setMaps(mymap);
+        return this.maps;
+      }
+
       const map = resp.data.data.map;
       const myMapsElement = resp.data.data;
 
@@ -1804,14 +1813,9 @@ app.Mymaps.prototype.syncOfflineMaps = function(map, owner, categoryId) {
             this.setMapId(map.uuid);
           }
 
-          if (map.deletedWhileOffline) {
-            // Remove the mymaps_map entry
-            console.log('map to delete');
-          }
-
           for (let idx in this.mapsElements_) {
             if (idx === map.uuid) {
-              mymap[myMapsIdx] = this.mapsElements_[idx]['map'];
+              mymap[myMapsIdx] = this.mapsElements_[idx]['map']; // TODO simplify ? remove ?
             }
           }
 

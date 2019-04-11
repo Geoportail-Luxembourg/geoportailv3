@@ -821,8 +821,38 @@ class Mymaps(object):
             success = self._save_features_helper(map_uuid, data['features'])
             if not success['success']:
                 log.error('Error saving the features in the map.')
+            data['map'] = {
+                'title': map.title,
+                'uuid': map.uuid,
+                'public': map.public,
+                'create_date': map.create_date,
+                'update_date': map.update_date,
+                'category': map.category.name
+                if map.category_id is not None else None,
+                'owner': map.user_login.lower(),
+                'label': map.label,
+                'last_update_feature': None,
+                'layers': map.layers,
+                'layers_indices': map.layers_indices,
+                'layers_opacity': map.layers_opacity,
+                'layers_visibility': map.layers_visibility,
+                'bg_layer': map.bg_layer,
+                'bg_opacity': map.bg_opacity,
+                'description': map.description,
+                'last_feature_update': self.request.db_mymaps.query(
+                    func.max(Feature.update_date)).filter(
+                    Feature.map_id == map.uuid).one()[0],
+                'x': map.x,
+                'y': map.y,
+                'zoom': map.zoom
+            }
         elif data['map']['deletedWhileOffline'] and data['map']['dirty']:
-            log.warn('Map to delete')
+            data = {
+                'uuid': map_id,
+                'deletedWhileOffline': True
+            }
+
+            self._delete_helper(map_id)
         else:
             log.warn('Map to modify')
 
@@ -847,31 +877,6 @@ class Mymaps(object):
             if not found_db_feature:
                 log.warn('Suppress feature in db')
 
-        data['map'] = {
-            'title': map.title,
-            'uuid': map.uuid,
-            'public': map.public,
-            'create_date': map.create_date,
-            'update_date': map.update_date,
-            'category': map.category.name
-            if map.category_id is not None else None,
-            'owner': map.user_login.lower(),
-            'label': map.label,
-            'last_update_feature': None,
-            'layers': map.layers,
-            'layers_indices': map.layers_indices,
-            'layers_opacity': map.layers_opacity,
-            'layers_visibility': map.layers_visibility,
-            'bg_layer': map.bg_layer,
-            'bg_opacity': map.bg_opacity,
-            'description': map.description,
-            'last_feature_update': self.request.db_mymaps.query(
-                func.max(Feature.update_date)).filter(
-                Feature.map_id == map.uuid).one()[0],
-            'x': map.x,
-            'y': map.y,
-            'zoom': map.zoom
-        }
         return {'success': True, 'data': data}
 
     @view_config(route_name="mymaps_save_features", renderer='json')
@@ -1010,7 +1015,9 @@ class Mymaps(object):
     @view_config(route_name="mymaps_delete", renderer='json')
     def delete(self):
         id = self.request.matchdict.get("map_id")
+        self._delete_helper(id)
 
+    def _delete_helper(self, id):
         map = self.request.db_mymaps.query(Map).get(id)
         if map is None:
             return HTTPNotFound()
