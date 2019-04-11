@@ -56,18 +56,23 @@ def main():
     for metadata in session.query(Metadata).filter(Metadata.name == 'link' and Metadata.value == '').all():
       metadata.value = 'http://example.com'
       session.add(metadata)
+    ##### select * from geov3.ui_metadata where name = 'link' and value = '';
 
     # Restriction area must have a name.
     for r_area in session.query(RestrictionArea).all():
       if r_area.name is None:
         r_area.name = 'restrictionarea-{}'.format(r_area.id)
         session.add(r_area)
+    ###### select * from geov3.restrictionarea where name is null or name = '';
+    ###### do we need a unique name?
 
     # Rename group bglayers to background (in GMF).
+    # Since it is the standard name
     treeitem = session.query(TreeItem).filter(TreeItem.name == 'bglayers').one_or_none()
     if treeitem is not None:
       treeitem.name = 'background'
       session.add(treeitem)
+    ###### |!\ select * from geov3.treeitem where name = 'bglayers';
 
     # Rename interface "desktop" to "main"
     interface = session.query(Interface).filter(Interface.name == 'desktop').one_or_none()
@@ -75,6 +80,7 @@ def main():
       interface.name = 'main'
       interface.description = 'main'
       session.add(interface)
+    ####### |!\ select * from geov3.interface where name = 'desktop';
 
     transaction.commit()
 

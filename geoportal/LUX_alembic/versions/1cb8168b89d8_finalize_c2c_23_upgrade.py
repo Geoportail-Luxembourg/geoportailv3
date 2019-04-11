@@ -43,25 +43,21 @@ down_revision = '42b291c446cd'
 branch_labels = None
 depends_on = None
 
-
 def upgrade():
-    schema = config['schema']
-    staticschema = config['schema_static']
 
-    # Operation on data, because sqlalchemy can't modify inconsistent table
-    # (The model define that 'none' should not exist for auth, so
-    # sqlalchemy can't do anything for us).
-    # Use 'No auth' instead if 'none' as auth for GMF ogc_server;
+    op.execute("""
+        UPDATE geov3.treeitem SET name = 'background' WHERE name = 'bglayers';
+        UPDATE geov3.interface SET name='main' WHERE name = 'desktop';
+    """)
+
+    # Auth is now an enum.
     op.execute(
-      "UPDATE {schema}.ogc_server SET auth = 'No auth' WHERE auth = 'none';".format(schema=schema)
+      "UPDATE geov3.ogc_server SET auth = 'No auth' WHERE auth = 'none';"
     )
-
-    # End note:
-    # Some other data movement are done by:
-    # geoportal/geoportailv3_geoportal/scripts/finalize_c2c_23_data_adaptations.py
 
 
 def downgrade():
 
-    # Do nothing, as the upgrade is only on wrong data or not problematic additions.
+    # We are not planning to come back from 2.3 et 1.6.
+    # Please do some backups and restore these if needed.
     pass

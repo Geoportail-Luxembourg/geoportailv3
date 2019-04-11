@@ -25,3 +25,4 @@
 !fix-db.sh
 !tools
 !bin/*
+!alembic_upgrade_heads.sh

@@ -41,7 +41,7 @@ class LuxMeasurementLoginCommune(Base):
         'plural': _('Surveying logins')
     }
     login = Column(Unicode, primary_key=True, info={
-        'colanderalchemy': {'title': _('Login')}    
+        'colanderalchemy': {'title': _('Login')}
     })
     num_commune = Column(Unicode, primary_key=True, info={
         'colanderalchemy': {'title': _('Commune number')}
@@ -56,7 +56,7 @@ class LuxMeasurementDirectory(Base):
         'plural': _('Surveying file configs')
     }
     id = Column(Integer, primary_key=True, info={
-        'colanderalchemy': {'widget': HiddenWidget()}    
+        'colanderalchemy': {'widget': HiddenWidget()}
     })
     name = Column(Unicode, nullable=False, info={
         'colanderalchemy': {'title': _('Name')}
@@ -176,7 +176,7 @@ class LuxGetfeatureDefinition(Base):
         'duplicate': True
     }
     id = Column(Integer, primary_key=True, info={
-        'colanderalchemy': {'widget': HiddenWidget()}     
+        'colanderalchemy': {'widget': HiddenWidget()}
     })
     query = Column(Unicode, info={
         'colanderalchemy': {'title': _('Table name')}

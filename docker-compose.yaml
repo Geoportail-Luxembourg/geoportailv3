@@ -115,21 +115,17 @@ services:
   ldap:
     image: lux-dev-ldap
 
-#  alembic:
-#    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
-##    user: www-data
-#    command:
-#      - alembic
-#      - --name=static
-#      - upgrade
-#      - head
-#    environment:
-#      - PGHOST
-#      - PGHOST_SLAVE
-#      - PGPORT
-#      - PGUSER
-#      - PGPASSWORD
-#      - PGDATABASE
-#      - PGSCHEMA
-#      - PGSCHEMA_STATIC
-#      - PGOPTIONS
+  alembic:
+    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
+#    user: www-data
+    command: ./bin/alembic_upgrade_all.sh
+    environment:
+      - PGHOST
+      - PGHOST_SLAVE
+      - PGPORT
+      - PGUSER
+      - PGPASSWORD
+      - PGDATABASE
+      - PGSCHEMA
+      - PGSCHEMA_STATIC
+      - PGOPTIONS
