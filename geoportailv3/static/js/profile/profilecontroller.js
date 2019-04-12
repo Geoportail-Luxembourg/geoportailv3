@@ -26,6 +26,7 @@ const olGeomPoint = goog.require('ol.geom.Point');
 const olStyleCircle = goog.require('ol.style.Circle');
 const olStyleFill = goog.require('ol.style.Fill');
 const olStyleStyle = goog.require('ol.style.Style');
+const olProj = goog.require('ol.proj');
 
 
 /**
@@ -359,12 +360,18 @@ exports.prototype.snapToGeometry_ = function(coordinate, geom) {
  * @export
  */
 exports.prototype.exportCSV = function() {
-  var csv = 'dist,MNT,y,x\n';
+  var csv = 'dist,MNT,y,x,lon,lat\n';
   this['profileData'].forEach(function(item) {
+    var lonlat = olProj.toLonLat(
+      [item['x'], item['y']],
+      'EPSG:2169'
+    );
     csv = csv + item['dist'] + ',' +
           (item['values']['dhm']) / 100 + ',' +
           item['x'] + ',' +
-          item['y'] + '\n';
+          item['y'] + ',' +
+          lonlat[0] + ',' +
+          lonlat[1] + ',' + '\n';
   }.bind(this));
 
   var csvInput = $('<input>').attr({
