@@ -13,13 +13,10 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.provide('app.BackgroundlayerController');
-goog.provide('app.backgroundlayerDirective');
+goog.module('app.backgroundlayer.backgroundlayerDirective');
 
-goog.require('app');
-goog.require('app.Themes');
-goog.require('ol.events');
-goog.require('ngeo.map.BackgroundLayerMgr');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
@@ -28,7 +25,7 @@ goog.require('ngeo.map.BackgroundLayerMgr');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-app.backgroundlayerDirective = function(appBackgroundlayerTemplateUrl) {
+exports = function(appBackgroundlayerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -42,51 +39,4 @@ app.backgroundlayerDirective = function(appBackgroundlayerTemplateUrl) {
 };
 
 
-app.module.directive('appBackgroundlayer', app.backgroundlayerDirective);
-
-
-/**
- * @constructor
- * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
- *     manager.
- * @param {app.Themes} appThemes Themes service.
- * @export
- * @ngInject
- */
-app.BackgroundlayerController = function(ngeoBackgroundLayerMgr, appThemes) {
-
-  /**
-   * @type {ngeo.map.BackgroundLayerMgr}
-   * @private
-   */
-  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
-
-  appThemes.getBgLayers().then(goog.bind(
-      /**
-       * @param {Array.<Object>} bgLayers Array of background layer objects.
-       */
-      function(bgLayers) {
-        this['bgLayers'] = bgLayers;
-        this['bgLayer'] = this['bgLayers'][0];
-        this.setLayer(this['bgLayer']);
-      }, this));
-
-  ol.events.listen(this.backgroundLayerMgr_, 'change',
-      function() {
-        this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
-      }, this);
-};
-
-
-/**
- * @param {ol.layer.Base} layer Layer.
- * @export
- */
-app.BackgroundlayerController.prototype.setLayer = function(layer) {
-  this['bgLayer'] = layer;
-  this.backgroundLayerMgr_.set(this['map'], layer);
-};
-
-
-app.module.controller('AppBackgroundlayerController',
-    app.BackgroundlayerController);
+appModule.directive('appBackgroundlayer', exports);

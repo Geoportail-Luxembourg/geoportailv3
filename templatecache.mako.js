@@ -25,7 +25,7 @@
  * GENERATED FILE. DO NOT EDIT.
  */
 
-goog.require('app');
+goog.require('app.module');
 
 (function() {
   /**

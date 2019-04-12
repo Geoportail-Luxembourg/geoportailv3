@@ -1,5 +1,8 @@
 {
-  "extends": "openlayers",
+  "extends": [
+    "openlayers",
+    ".eslintrc-googshift.yaml"
+  ],
   "env": {
     "jquery": true
   },
@@ -12,7 +15,8 @@
     "sourceType": "module"
   },
   "rules": {
-    "no-console": 0
+    "no-console": 0,
+    "no-unused-vars": warn
   },
   "globals": {
     "angular": false,

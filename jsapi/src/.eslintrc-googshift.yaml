@@ -1,0 +1,30 @@
+{
+  plugins: [
+    'googshift'
+  ],
+  rules: {
+    'googshift/no-duplicate-requires': 'error',
+
+    'googshift/no-missing-requires': ['error', {
+      prefixes: ['lux', 'ol'],
+      exceptions: ['ngeo.module.requires.push']
+    }],
+
+    'googshift/no-unused-requires': 'error',
+
+    'googshift/one-provide-or-module': ['error', {
+      entryPoints: ['lux'],
+      root: 'jsapi/src/'
+    }],
+
+    'googshift/requires-first': 'error',
+
+    'googshift/valid-provide-and-module': ['error', {
+      entryPoints: ['lux'],
+      replace: 'src|lux',
+      root: 'jsapi'
+    }],
+
+    'googshift/valid-requires': 'error'
+  }
+}

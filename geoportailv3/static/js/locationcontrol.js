@@ -2,34 +2,20 @@
  * @fileoverview This file defines the geolocation control.
  *
  */
-goog.provide('app.LocationControl');
-
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.dom.classlist');
-goog.require('ngeo.map.FeatureOverlay');
-goog.require('ngeo.map.FeatureOverlayMgr');
-goog.require('ol.Feature');
-goog.require('ol.Geolocation');
-goog.require('ol.Object');
-goog.require('ol.control.Control');
-goog.require('ol.events');
-goog.require('ol.geom.Point');
+goog.module('app.LocationControl');
 
 
-/**
- * @typedef {{className: (string|undefined),
- *     label: (string|undefined),
- *     tipLabel: (string|undefined),
- *     target: (Element|undefined),
- *     featureOverlayMgr: ngeo.map.FeatureOverlayMgr,
- *     notify: app.Notify,
- *     gettextCatalog: angularGettext.Catalog,
- *     scope: angular.Scope,
- *     window: angular.$window
- * }}
- */
-app.LocationControlOptions;
+goog.module.declareLegacyNamespace();
+const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+const olBase = goog.require('ol');
+const olCss = goog.require('ol.css');
+const olControlControl = goog.require('ol.control.Control');
+const olEvents = goog.require('ol.events');
+const olFeature = goog.require('ol.Feature');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olGeolocation = goog.require('ol.Geolocation');
+const olGeolocationProperty = goog.require('ol.GeolocationProperty');
+const olObject = goog.require('ol.Object');
 
 
 /**
@@ -39,8 +25,8 @@ app.LocationControlOptions;
  * options.
  * @ngInject
  */
-app.LocationControl = function(options) {
-  var className = goog.isDef(options.className) ? options.className :
+exports = function(options) {
+  var className = (options.className !== undefined) ? options.className :
       'location-button';
   /**
    * @type {angular.$window}
@@ -70,13 +56,13 @@ app.LocationControl = function(options) {
    * @type {ol.Feature}
    * @private
    */
-  this.accuracyFeature_ = new ol.Feature();
+  this.accuracyFeature_ = new olFeature();
 
   /**
    * @type {ol.Feature}
    * @private
    */
-  this.positionFeature_ = new ol.Feature();
+  this.positionFeature_ = new olFeature();
 
   /**
    * @type {ol.Geolocation}
@@ -90,43 +76,45 @@ app.LocationControl = function(options) {
    */
   this.featureOverlay_ = options.featureOverlayMgr.getFeatureOverlay();
 
-  var label = goog.isDef(options.label) ? options.label : 'L';
-  var tipLabel = goog.isDef(options.tipLabel) ?
+  var label = (options.label !== undefined) ? options.label : 'L';
+  var tipLabel = (options.tipLabel !== undefined) ?
       options.tipLabel : 'Location';
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
-    'type': 'button',
-    'title': tipLabel
-  }, label);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL + ' ' + 'tracker-off';
+  var button = document.createElement('BUTTON');
+  button.appendChild(document.createTextNode(label));
+  button.setAttribute('type', 'button');
+  button.setAttribute('title', tipLabel);
+
+  var cssClasses = className + ' ' + olCss.CLASS_UNSELECTABLE + ' ' +
+      olCss.CLASS_CONTROL + ' ' + 'tracker-off';
 
   /**
    * @type {!Element}
    */
-  this.element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  this.element = document.createElement('DIV');
+  this.element.setAttribute('class', cssClasses);
+  this.element.appendChild(button);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
+  olEvents.listen(button, olEvents.EventType.CLICK,
       this.handleClick_, this);
 
-  ol.events.listen(button, ol.events.EventType.MOUSEOUT, function() {
+  olEvents.listen(button, olEvents.EventType.MOUSEOUT, function() {
     this.blur();
   });
-
-  goog.base(this, {
+  olControlControl.call(this, {
     element: this.element,
     target: options.target
   });
 
 };
-goog.inherits(app.LocationControl, ol.control.Control);
+olBase.inherits(exports, olControlControl);
 
 
 /**
  * @param {ol.MapBrowserEvent} event The event to handle
  * @private
  */
-app.LocationControl.prototype.handleClick_ = function(event) {
+exports.prototype.handleClick_ = function(event) {
   event.preventDefault();
   if (this.window_.location.protocol !== 'https:') {
     this.scope_['mainCtrl']['showRedirect'] = true;
@@ -139,8 +127,8 @@ app.LocationControl.prototype.handleClick_ = function(event) {
 /**
  * Active or unactive the tracking.
  */
-app.LocationControl.prototype.handleCenterToLocation = function() {
-  if (goog.isNull(this.geolocation_)) {
+exports.prototype.handleCenterToLocation = function() {
+  if (this.geolocation_ === null) {
     this.initGeoLocation_();
   }
   if (!this.geolocation_.getTracking()) {
@@ -158,9 +146,9 @@ app.LocationControl.prototype.handleCenterToLocation = function() {
  *
  * @private
  */
-app.LocationControl.prototype.initGeoLocation_ = function() {
+exports.prototype.initGeoLocation_ = function() {
 
-  this.geolocation_ = new ol.Geolocation({
+  this.geolocation_ = new olGeolocation({
     projection: this.getMap().getView().getProjection(),
     trackingOptions: /** @type {GeolocationPositionOptions} */ ({
       enableHighAccuracy: true,
@@ -169,33 +157,35 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
     })
   });
 
-  ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
+  olEvents.listen(this.geolocation_,
+      olObject.getChangeEventType(olGeolocationProperty.TRACKING),
       /**
        * @param {ol.Object.Event} e Object event.
        */
       function(e) {
         if (this.geolocation_.getTracking()) {
-          goog.dom.classlist.swap(this.element, 'tracker-off', 'tracker-on');
+          this.element.classList.remove('tracker-off');
+          this.element.classList.add('tracker-on');
         } else {
-          goog.dom.classlist.swap(this.element, 'tracker-on', 'tracker-off');
+          this.element.classList.remove('tracker-on');
+          this.element.classList.add('tracker-off');
         }
       }, this);
 
-  ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.POSITION),
+  olEvents.listen(this.geolocation_,
+      olObject.getChangeEventType(olGeolocationProperty.POSITION),
       /**
        * @param {ol.Object.Event} e Object event.
        */
       function(e) {
         var position = /** @type {ol.Coordinate} */
             (this.geolocation_.getPosition());
-        this.positionFeature_.setGeometry(new ol.geom.Point(position));
+        this.positionFeature_.setGeometry(new olGeomPoint(position));
         this.getMap().getView().setCenter(position);
       }, this);
 
-  ol.events.listen(this.geolocation_,
-      ol.Object.getChangeEventType(ol.GeolocationProperty.ACCURACY_GEOMETRY),
+  olEvents.listen(this.geolocation_,
+      olObject.getChangeEventType(olGeolocationProperty.ACCURACY_GEOMETRY),
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -204,15 +194,15 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
             this.geolocation_.getAccuracyGeometry());
       }, this);
 
-  ol.events.listen(this.geolocation_,
-      ol.events.EventType.ERROR,
+  olEvents.listen(this.geolocation_,
+      olEvents.EventType.ERROR,
       function(e) {
         this.featureOverlay_.clear();
         if (e.message && e.message.length > 0) {
           var msg = this.gettextCatalog_.getString(
               'Erreur lors de l\'acquisition de la position :');
           msg = msg + e.message;
-          this.notify_(msg, app.NotifyNotificationType.ERROR);
+          this.notify_(msg, appNotifyNotificationType.ERROR);
         }
       }.bind(this));
 
@@ -222,7 +212,7 @@ app.LocationControl.prototype.initGeoLocation_ = function() {
 /**
  * @private
  */
-app.LocationControl.prototype.initFeatureOverlay_ = function() {
+exports.prototype.initFeatureOverlay_ = function() {
   this.featureOverlay_.clear();
   this.accuracyFeature_.setGeometry(null);
   this.positionFeature_.setGeometry(null);
@@ -234,6 +224,6 @@ app.LocationControl.prototype.initFeatureOverlay_ = function() {
 /**
  * @private
  */
-app.LocationControl.prototype.clearFeatureOverlay_ = function() {
+exports.prototype.clearFeatureOverlay_ = function() {
   this.featureOverlay_.clear();
 };

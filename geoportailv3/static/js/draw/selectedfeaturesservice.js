@@ -2,22 +2,17 @@
  * @fileoverview Provides a drawn features service.
  */
 
-goog.provide('app.SelectedFeatures');
+goog.module('app.draw.SelectedFeaturesService');
 
-goog.require('app');
-goog.require('ol.Collection');
-
-
-/**
- * @typedef {ol.Collection<ol.Feature>}
- */
-app.SelectedFeatures;
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
+const olCollection = goog.require('ol.Collection');
 
 
 /**
  * The selected features collection.
  * @private
  */
-app.selectedFeatures_ = new ol.Collection();
+const value = new olCollection();
 
-app.module.value('appSelectedFeatures', app.selectedFeatures_);
+appModule.value('appSelectedFeatures', value);

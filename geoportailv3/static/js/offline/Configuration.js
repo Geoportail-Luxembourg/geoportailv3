@@ -1,8 +1,8 @@
 goog.module('app.offline.Configuration');
 goog.module.declareLegacyNamespace();
 
-goog.require('ngeo.map.BackgroundLayerMgr');
-goog.require('goog.asserts');
+const olBase = goog.require('ol');
+const olLayerVector = goog.require('ol.layer.Vector');
 
 const ngeoOfflineModule = goog.require('ngeo.offline.module');
 const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
@@ -20,9 +20,9 @@ exports = class extends NgeoConfiguration {
    */
   constructor($rootScope, $injector, ngeoBackgroundLayerMgr, ngeoLocation) {
     const gutter = ngeoLocation.hasParam('offline_gutter') ? ngeoLocation.getParamAsInt('offline_gutter') : 96;
-    goog.asserts.assert(gutter !== undefined);
+    console.assert(gutter !== undefined);
     ngeoOfflineModule.value('ngeoOfflineGutter', gutter);
-    super($rootScope, ngeoBackgroundLayerMgr, gutter);
+    super($rootScope, ngeoBackgroundLayerMgr, /** @type {number} */ (gutter));
 
     /**
      * @type {ngeo.map.BackgroundLayerMgr}
@@ -74,7 +74,7 @@ exports = class extends NgeoConfiguration {
     const sizeOfANormalLayer = 20;
     const sizeOfABgLayer = bgFactor * sizeOfANormalLayer;
     map.getLayers().forEach((layer) => {
-      if (!(layer instanceof ol.layer.Vector)) {
+      if (!(layer instanceof olLayerVector)) {
         if (this.isBgLayer_(layer, map)) {
           estimation += (layer.get('label') === 'blank') ? 0 : sizeOfABgLayer;
         } else {
@@ -103,7 +103,7 @@ exports = class extends NgeoConfiguration {
     if (this.isBgLayer_(layer, map)) {
       const zooms = [8, 9, 10, 11, 12, 13, 14, 15, ...zoomRange.filter(dz => dz > 15)];
       const view = map.getView();
-      const userExtentSideInMeters = ol.extent.getWidth(userExtent);
+      const userExtentSideInMeters = olBase.extent.getWidth(userExtent);
       const fakeViewportSideInPixels = 2 * 1024;
       return zooms.map((z) => {
         const resolution = view.getResolutionForZoom(z);
@@ -111,8 +111,8 @@ exports = class extends NgeoConfiguration {
         let extent = userExtent;
         if (fakeViewportSideInMeters > userExtentSideInMeters) {
           // the fake viewport at this resolution covers a bigger area than the user extent
-          extent = ol.extent.boundingExtent([ol.extent.getCenter(userExtent)]);
-          ol.extent.buffer(extent, fakeViewportSideInMeters / 2, extent);
+          extent = olBase.extent.boundingExtent([olBase.extent.getCenter(userExtent)]);
+          olBase.extent.buffer(extent, fakeViewportSideInMeters / 2, extent);
         }
         return {
           zoom: z,

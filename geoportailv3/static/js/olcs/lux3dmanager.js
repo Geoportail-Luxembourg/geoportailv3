@@ -1,9 +1,10 @@
-goog.provide('app.olcs.Lux3DManager');
+goog.module('app.olcs.Lux3DManager');
 
-goog.require('ngeo.olcs.Manager');
+goog.module.declareLegacyNamespace();
+const ngeoOlcsManager = goog.require('ngeo.olcs.Manager');
 
 
-app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
+exports = class extends ngeoOlcsManager {
   /**
    *
    * @param {string} cesiumUrl Cesium URL.
@@ -82,11 +83,11 @@ app.olcs.Lux3DManager = class extends ngeo.olcs.Manager {
    * @override
    */
   instantiateOLCesium() {
-    goog.asserts.assert(this.map);
+    console.assert(this.map !== null && this.map !== undefined);
     const terrainExaggeration = parseFloat(this.ngeoLocation_.getParam('terrain_exaggeration') || '1.0');
 
     const sceneOptions = /** @type {!Cesium.SceneOptions} */ ({terrainExaggeration});
-    const map = this.map;
+    const map = /** @type {!ol.Map} */ (this.map);
     const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+0200'));
     const time = () => niceIlluminationDate;
     const ol3d = new olcs.OLCesium({map, time, sceneOptions});
