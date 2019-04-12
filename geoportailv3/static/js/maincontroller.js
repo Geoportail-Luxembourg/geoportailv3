@@ -73,7 +73,7 @@ goog.require('app.OfflineRestorer');
  * @param {string} tiles3dUrl 3D tiles server url.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
  * @constructor
  * @export

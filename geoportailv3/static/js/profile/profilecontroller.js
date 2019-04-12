@@ -135,7 +135,7 @@ exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    */
   var z = function(item) {
     if ('values' in item && 'dhm' in item['values']) {
-      return parseFloat((item['values']['dhm'] / 100).toPrecision(5));
+      return parseFloat((item['values']['dhm']).toPrecision(5));
     }
     return 0;
   };
@@ -367,7 +367,7 @@ exports.prototype.exportCSV = function() {
       'EPSG:2169'
     );
     csv = csv + item['dist'] + ',' +
-          (item['values']['dhm']) / 100 + ',' +
+          (item['values']['dhm']) + ',' +
           item['x'] + ',' +
           item['y'] + ',' +
           lonlat[0] + ',' +

@@ -71,7 +71,7 @@ exports.prototype.openShareLink = function(service) {
     var url = this.services_[service].url + '?' + ngeoUtils.encodeQueryString({
       //twitter params
       'text': this.window_.document.title,
-      'via': 'geoportal_lux',
+      'via': 'geoportail_lux',
       'url': $('app-shorturl input').val()
     });
     var popup =
