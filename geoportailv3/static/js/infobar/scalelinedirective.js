@@ -12,18 +12,17 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.ScalelineDirectiveController');
-goog.provide('app.scalelineDirective');
+goog.module('app.infobar.scalelineDirective');
 
-goog.require('app');
-goog.require('ol.control.ScaleLine');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.scalelineDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -38,20 +37,4 @@ app.scalelineDirective = function() {
 };
 
 
-app.module.directive('appScaleline', app.scalelineDirective);
-
-
-/**
- * @ngInject
- * @constructor
- */
-app.ScalelineDirectiveController = function() {
-  /**
-   * @type {ol.control.ScaleLine}
-   */
-  this['control'] = new ol.control.ScaleLine();
-};
-
-
-app.module.controller('AppScalelineController',
-    app.ScalelineDirectiveController);
+appModule.directive('appScaleline', exports);

@@ -11,20 +11,17 @@
  * during the lifetime of the application.
  *
  */
-goog.provide('app.ElevationDirectiveController');
-goog.provide('app.elevationDirective');
+goog.module('app.infobar.elevationDirective');
 
-goog.require('app');
-goog.require('app.GetElevation');
-goog.require('app.projections');
-goog.require('ngeo.misc.debounce');
+goog.module.declareLegacyNamespace();
+const appModule = goog.require('app.module');
 
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-app.elevationDirective = function() {
+exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -40,42 +37,4 @@ app.elevationDirective = function() {
 };
 
 
-app.module.directive('appElevation', app.elevationDirective);
-
-
-/**
- * @ngInject
- * @constructor
- * @param {angular.$http} $http The angular http service.
- * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
- * @param {app.GetElevation} appGetElevation Elevation service.
- */
-app.ElevationDirectiveController =
-    function($http, ngeoDebounce, appGetElevation) {
-      var map = this['map'];
-
-      /**
-       * @type {app.GetElevation}
-       * @private
-       */
-      this.getElevation_ = appGetElevation;
-
-      /**
-       * @type {string}
-       */
-      this['elevation'] = '';
-
-      // 2D
-      map.on('pointermove', ngeoDebounce(function(e) {
-        if (!this['active'] || !e.coordinate) {
-          return;
-        }
-        this.getElevation_(e.coordinate).then(
-          (elevation) => (this['elevation'] = elevation['formattedElevation'])
-        );
-      }, 300, true), this);
-    };
-
-
-app.module.controller('AppElevationController',
-    app.ElevationDirectiveController);
+appModule.directive('appElevation', exports);

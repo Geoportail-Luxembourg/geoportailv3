@@ -1,8 +1,11 @@
 goog.provide('lux.LayerManager');
 
-goog.require('goog.dom');
-goog.require('goog.dom.classlist');
+goog.require('lux');
+goog.require('ol');
 goog.require('ol.control.Control');
+goog.require('ol.events');
+goog.require('ol.CollectionEventType');
+
 
 /**
  * @constructor
@@ -11,7 +14,7 @@ goog.require('ol.control.Control');
  * @export
  */
 lux.LayerManager = function(options) {
-  var element = goog.dom.createDom('UL');
+  var element = document.createElement('UL');
   element.classList.add('lux-layer-manager');
 
   ol.control.Control.call(this, {
@@ -20,7 +23,7 @@ lux.LayerManager = function(options) {
   });
 };
 
-goog.inherits(lux.LayerManager, ol.control.Control);
+ol.inherits(lux.LayerManager, ol.control.Control);
 
 
 /**
@@ -45,7 +48,9 @@ lux.LayerManager.prototype.setMap = function(map) {
  * Update the component adequately.
  */
 lux.LayerManager.prototype.update = function() {
-  goog.dom.removeChildren(this.element);
+  while (this.element.firstChild) {
+    this.element.removeChild(this.element.firstChild);
+  }
   // get the layers list in reverse order and with background excluded
   var layers = this.getMap().getLayers().getArray().slice(1).reverse();
   layers.forEach(function(layer) {

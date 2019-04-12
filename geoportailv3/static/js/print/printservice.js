@@ -1,12 +1,13 @@
-goog.provide('app.Printservice');
+goog.module('app.print.Printservice');
 
-goog.require('app');
-goog.require('app');
-goog.require('ngeo.print.Service');
-goog.require('ol.array');
+goog.module.declareLegacyNamespace();
+const ngeoPrintService = goog.require('ngeo.print.Service');
+const olArray = goog.require('ol.array');
+const olObj = goog.require('ol.obj');
+const olMath = goog.require('ol.math');
 
 
-app.Printservice = class extends ngeo.print.Service {
+exports = class extends ngeoPrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
@@ -36,7 +37,7 @@ app.Printservice = class extends ngeo.print.Service {
     const attributes = /** @type {!MapFishPrintAttributes} */ ({
       map: specMap
     });
-    ol.obj.assign(attributes, customAttributes);
+    olObj.assign(attributes, customAttributes);
 
     const spec = /** @type {MapFishPrintSpec} */ ({
       attributes,
@@ -58,28 +59,28 @@ app.Printservice = class extends ngeo.print.Service {
     const viewCenter = view.getCenter();
     const viewProjection = view.getProjection();
     const viewResolution = view.getResolution();
-    const viewRotation = object.rotation || ol.math.toDegrees(view.getRotation());
+    const viewRotation = object.rotation || olMath.toDegrees(view.getRotation());
 
-    goog.asserts.assert(viewCenter !== undefined);
-    goog.asserts.assert(viewProjection !== undefined);
+    console.assert(viewCenter !== undefined);
+    console.assert(viewProjection !== undefined);
 
-    object.center = viewCenter;
+    object.center = /** @type{Array<number>} */(viewCenter);
     object.projection = viewProjection.getCode();
     object.rotation = viewRotation;
     object.scale = scale;
     object.layers = [];
 
     const mapLayerGroup = map.getLayerGroup();
-    goog.asserts.assert(mapLayerGroup);
+    console.assert(mapLayerGroup !== undefined && mapLayerGroup !== null);
 
     let layers = this.ngeoLayerHelper2_.getFlatLayers(mapLayerGroup);
-    ol.array.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
+    olArray.stableSort(layers, (layer_a, layer_b) => layer_a.getZIndex() - layer_b.getZIndex());
     layers = layers.slice().reverse();
 
     layers.forEach((layer) => {
       if (layer.getVisible()) {
-        goog.asserts.assert(viewResolution !== undefined);
-        this.encodeLayer(object.layers, layer, viewResolution);
+        console.assert(viewResolution !== undefined);
+        this.encodeLayer(object.layers, layer, /** @type{number} */(viewResolution));
       }
     });
   }

@@ -1,9 +1,10 @@
-goog.provide('app.olcs.ZoomToExtent');
+goog.module('app.olcs.ZoomToExtent');
 
-goog.require('ol.control.ZoomToExtent');
+goog.module.declareLegacyNamespace();
+const olControlZoomToExtent = goog.require('ol.control.ZoomToExtent');
 
 
-app.olcs.ZoomToExtent = class extends ol.control.ZoomToExtent {
+exports = class extends olControlZoomToExtent {
   /**
    * @param {ol.Extent} extent Extent
    * @param {app.olcs.Lux3DManager} ol3dm Manager getter
