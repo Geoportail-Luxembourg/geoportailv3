@@ -117,21 +117,15 @@ app.MymapsOffline.prototype.restore = function() {
  * Update the map element in storage
  * @param {Object} mapsElement myMapsElement.
  * @param {number} old_uuid Old uuid before database insert.
- * @return {Promise} a shiny promise.
+ * @return {Promise} Promise.
  */
 app.MymapsOffline.prototype.updateMyMapsElementStorage = function(mapsElement, old_uuid) {
   const conf = this.ngeoOfflineConfiguration_;
   const old_key = `mymaps_element_${old_uuid}`;
   const new_key = `mymaps_element_${mapsElement['map']['uuid']}`;
-  return conf.removeItem(old_key).then(() => {
-    return conf.setItem(new_key, mapsElement)
-      .then(() => {
-        return {
-          'uuid': new_key,
-          'success': true
-        };
-      });
-  });
+  this.appMymaps_.deleteMapsElement(String(old_uuid));
+  this.appMymaps_.updateMapsElement(mapsElement['map']['uuid'], mapsElement);
+  return Promise.all([conf.removeItem(old_key), conf.setItem(new_key, mapsElement)]);
 };
 
 /**
@@ -171,7 +165,7 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
     .then(() => conf.setItem(`mymaps_element_${fakeUuid}`, element))
     .then(() => {
       this.appMymaps_.setMaps(maps);
-      this.appMymaps_.updateMapsElements(fakeUuid, element);
+      this.appMymaps_.updateMapsElement(fakeUuid, element);
       return {
         'uuid': fakeUuid,
         'success': true
@@ -183,10 +177,10 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
 /**
  * @param {string} uuid The map uuid.
  * @param {Object} spec The spec.
- * @param {boolean} isNewObject If the update merge the old object.
+ * @param {boolean} replace If the update merge the old object.
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
-app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec, isNewObject = false) {
+app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec, replace = false) {
   const now = new Date().toISOString();
   spec['update_date'] = now;
   const conf = this.ngeoOfflineConfiguration_;
@@ -194,12 +188,10 @@ app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec, isNewObject 
     for (const key in maps) {
       let m = maps[key];
       if (m['uuid'] === uuid) {
-        if (!isNewObject) {
-          // Merge object
-          Object.assign(m, spec);
-        } else {
-          // Not merge, just replace object
+        if (replace) {
           maps[key] = spec;
+        } else {
+          Object.assign(m, spec);
         }
         return conf.setItem('mymaps_maps', maps);
       }
@@ -279,7 +271,7 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
     features.forEach((f, idx) => {
       f.setProperties(previousProperties[idx], true);
     });
-    this.appMymaps_.updateMapsElements(uuid, myElement);
+    this.appMymaps_.updateMapsElement(uuid, myElement);
     return conf.setItem(key, myElement).then(() => {
       const now = new Date().toISOString();
       const spec = {
@@ -348,7 +340,7 @@ app.MymapsOffline.prototype.copyMapOffline = function(uuid, spec, encOpt) {
     element['map']['uuid'] = newMapUuid;
     this.setUpdatedNow_(spec);
     Object.assign(element['map'], spec);
-    this.appMymaps_.updateMapsElements(newMapUuid, element);
+    this.appMymaps_.updateMapsElement(newMapUuid, element);
     return conf.setItem(`mymaps_element_${newMapUuid}`, element);
   }).then(() => {
     // Copy and add the summary to mymaps_maps
@@ -399,7 +391,7 @@ app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
         element['map']['dirty'] = true;
         element['map']['deletedWhileOffline'] = true;
         element['map']['last_feature_update'] = new Date().toISOString();
-        this.appMymaps_.updateMapsElements(uuid, element);
+        this.appMymaps_.updateMapsElement(uuid, element);
       });
 
       this.appMymaps_.setMaps(maps);
@@ -411,20 +403,18 @@ app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
 /**
  * Remove a map from storage.
  * @param {string} uuid The uuid of the map to delete.
- *  @return {null} An object.
+ *  @return {Promise} An object.
  */
-app.MymapsOffline.prototype.removeStorage = function(uuid) {
+app.MymapsOffline.prototype.removeMapAndFeaturesFromStorage = function(uuid) {
   const conf = this.ngeoOfflineConfiguration_;
-  conf.getItem('mymaps_maps').then(maps => {
-    for (let idx in maps) {
-      if (maps[idx].uuid === uuid) {
-        maps.splice(idx, 1);
-        conf.setItem('mymaps_maps', maps);
-        conf.removeItem(`mymaps_element_${uuid}`);
-      }
-    }
+  return conf.getItem('mymaps_maps').then(maps => {
+    let idx = maps.findIndex((idx) => maps[idx].uuid === uuid);
+    maps.splice(idx, 1);
+    return Promise.all([
+      conf.setItem('mymaps_maps', maps),
+      conf.removeItem(`mymaps_element_${uuid}`)
+    ]);
   });
-  return null;
 };
 
 /**

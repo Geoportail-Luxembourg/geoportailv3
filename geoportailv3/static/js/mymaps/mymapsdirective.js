@@ -904,7 +904,7 @@ app.MymapsDirectiveController.prototype.openConfirmDeleteAMap = function(mapId, 
  * @export
  */
 app.MymapsDirectiveController.prototype.syncOfflineMaps = function(map) {
-  this.appMymaps_.syncOfflineMaps(map, this.filterMapOwner, this.filterCategoryId);
+  this.appMymaps_.syncOfflineMaps(map);
 };
 
 /**

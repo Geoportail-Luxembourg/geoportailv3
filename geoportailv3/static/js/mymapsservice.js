@@ -39,6 +39,7 @@ app.MapsResponse;
  * @constructor
  * @param {angular.$http} $http The angular http service.
  * @param {angular.$q} $q The q service.
+ * @param {angular.Scope} $rootScope The rootScope service.
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.StateManager} appStateManager The state manager service.
@@ -56,7 +57,7 @@ app.MapsResponse;
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
+app.Mymaps = function($http, $q, $rootScope, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
     appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl,
     arrowModelUrl) {
@@ -78,6 +79,12 @@ app.Mymaps = function($http, $q, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @private
    */
   this.$q_ = $q;
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.$rootscope_ = $rootScope;
 
   /**
    * @type {string}
@@ -1758,77 +1765,60 @@ app.Mymaps.prototype.setMapsElements = function(mapsElements) {
  * @param {string} uuid element id.
  * @param {Object} element single element
  */
-app.Mymaps.prototype.updateMapsElements = function(uuid, element) {
+app.Mymaps.prototype.updateMapsElement = function(uuid, element) {
   this.mapsElements_[uuid] = element;
 };
 
+/**
+ * Delete the mymaps maps_elements object.
+ * @param {string} uuid element id.
+ */
+app.Mymaps.prototype.deleteMapsElement = function(uuid) {
+  delete this.mapsElements_[uuid];
+};
 
 /**
  * Synchronize the map when in offline state.
  * @param {Object} map The map to synchronize.
- * @param {?string} owner The map owner to restrict.
- * @param {?number} categoryId The category to restrict.
  * @return {Promise|angular.$q.Promise} a promise
  */
-app.Mymaps.prototype.syncOfflineMaps = function(map, owner, categoryId) {
+app.Mymaps.prototype.syncOfflineMaps = function(map) {
   const oldUuid = map.uuid;
   const req = this.mapsElements_[oldUuid];
   const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
-  return this.getMaps(owner, categoryId).then(mymap => {
+  return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
 
-    let myMapsIdx = null;
-    mymap.forEach((m, idx) => {
-      if (m.uuid === oldUuid) {
-        myMapsIdx = idx;
+    if (map.deletedWhileOffline) {
+      const uuid = map.uuid;
+      this.myMapsOffline_.removeMapAndFeaturesFromStorage(uuid);
+      delete this.mapsElements_[uuid];
+      this.maps_.splice(uuid, 1);
+      return this.maps_;
+    }
+
+    const synchedMap = resp.data.data.map;
+    const sychedMapsElement = resp.data.data;
+
+    return Promise.all([
+      this.myMapsOffline_.updateMapOffline(oldUuid, synchedMap, true),
+      this.myMapsOffline_.updateMyMapsElementStorage(sychedMapsElement, oldUuid).then(() => {
+        let mapsIdx = this.maps_.findIndex(e => e.uuid === oldUuid);
+        this.maps_[mapsIdx] = synchedMap;
+        return this.maps_;
+      })
+    ]).then(() => {
+      if (this.mapId_ === oldUuid) {
+        this.setMapId(synchedMap.uuid);
       }
+      this.$rootscope_.$apply();
     });
-
-    return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
-
-      if (resp.data.data.deletedWhileOffline) {
-        const uuid = resp.data.data.uuid;
-        this.myMapsOffline_.removeStorage(uuid);
-        delete this.mapsElements_[uuid];
-        mymap.splice(uuid, 1);
-        this.setMaps(mymap);
-        return this.maps;
-      }
-
-      const map = resp.data.data.map;
-      const myMapsElement = resp.data.data;
-
-      // Update features and map in local storage
-      return this.myMapsOffline_.updateMapOffline(oldUuid, map, true).then(() => { // the summary of maps
-
-        return this.myMapsOffline_.updateMyMapsElementStorage(myMapsElement, oldUuid).then(() => { // map and its features
-          // Update features visible on this map
-          delete this.mapsElements_[oldUuid];
-          this.mapsElements_[map.uuid] = myMapsElement;
-
-          if (this.mapId_ === oldUuid) {
-            //this.setCurrentMapId(map.uuid, null);
-            this.setMapId(map.uuid);
-          }
-
-          for (let idx in this.mapsElements_) {
-            if (idx === map.uuid) {
-              mymap[myMapsIdx] = this.mapsElements_[idx]['map']; // TODO simplify ? remove ?
-            }
-          }
-
-          this.setMaps(mymap);
-          return this.maps;
-        });
-      });
-
-    }, (err) => {
-      var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la map.');
-      this.notify_(msg, app.NotifyNotificationType.ERROR);
-      return Promise.reject();
-    });
+  }, (err) => {
+    var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la carte.');
+    this.notify_(msg, app.NotifyNotificationType.ERROR);
+    return Promise.reject();
   });
 
 };
