@@ -370,7 +370,7 @@ class Mymaps(object):
         query = None
         category = None
         if 'category' in self.request.params and\
-           self.request.params['category'] > 0:
+           int(self.request.params['category']) > 0:
             category = int(self.request.params["category"])
         user_role_id = getattr(user, 'mymaps_role', user.role.id)
         user_role = session.query(Role).get(user_role_id)
@@ -655,14 +655,14 @@ class Mymaps(object):
         trigger_fme = False
 
         if 'public' in params:
-            str = str(params.get('public'))
-            if str.lower() == u'true':
+            public_str = str(params.get('public'))
+            if public_str.lower() == u'true':
                 map.public = True
                 trigger_fme = True
         map.create_date = None
         map.update_date = None
         self.db_mymaps.add(map)
-        transaction.commit()
+        self.db_mymaps.flush()
 
         if map.uuid is not None:
             features = self.db_mymaps.query(Feature).filter(
@@ -672,7 +672,7 @@ class Mymaps(object):
                 make_transient(f)
                 f.id = None
                 map.features.append(f)
-            transaction.commit()
+            self.db_mymaps.flush()
         try:
             if trigger_fme:
                 self.notify_at_save(map, map.user_login, map.uuid, map.title,
@@ -753,8 +753,6 @@ class Mymaps(object):
             map.features.append(obj)
             db_mymaps.add(obj)
             db_mymaps.flush()
-            transaction.commit()
-
             return {'success': True, 'id': obj.id}
         except Exception as e:
             log.exception(e)
