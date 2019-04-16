@@ -195,4 +195,4 @@ attach:
 
 .PHONY: fix-db
 fix-db:
-	docker-compose exec geoportal ./fix-db.sh
+	docker-compose exec geoportal finalize23DataAdaptations
