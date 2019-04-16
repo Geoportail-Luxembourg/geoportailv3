@@ -1783,7 +1783,7 @@ app.Mymaps.prototype.deleteMapsElement = function(uuid) {
  * @return {Promise|angular.$q.Promise} a promise
  */
 app.Mymaps.prototype.syncOfflineMaps = function(map) {
-  const oldUuid = map.uuid;
+  const oldUuid = map['uuid'];
   const req = this.mapsElements_[oldUuid];
   const config = {
     headers: {'Content-Type': 'application/json'}
@@ -1791,8 +1791,8 @@ app.Mymaps.prototype.syncOfflineMaps = function(map) {
 
   return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
 
-    if (map.deletedWhileOffline) {
-      const uuid = map.uuid;
+    if (map['deletedWhileOffline']) {
+      const uuid = map['uuid'];
       this.myMapsOffline_.removeMapAndFeaturesFromStorage(uuid);
       delete this.mapsElements_[uuid];
       this.maps_.splice(uuid, 1);
@@ -1805,13 +1805,13 @@ app.Mymaps.prototype.syncOfflineMaps = function(map) {
     return Promise.all([
       this.myMapsOffline_.updateMapOffline(oldUuid, synchedMap, true),
       this.myMapsOffline_.updateMyMapsElementStorage(sychedMapsElement, oldUuid).then(() => {
-        let mapsIdx = this.maps_.findIndex(e => e.uuid === oldUuid);
+        let mapsIdx = this.maps_.findIndex(e => e['uuid'] === oldUuid);
         this.maps_[mapsIdx] = synchedMap;
         return this.maps_;
       })
     ]).then(() => {
       if (this.mapId_ === oldUuid) {
-        this.setMapId(synchedMap.uuid);
+        this.setMapId(synchedMap['uuid']);
       }
       this.$rootscope_.$apply();
     });

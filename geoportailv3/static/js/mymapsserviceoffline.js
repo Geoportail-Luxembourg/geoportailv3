@@ -408,7 +408,7 @@ app.MymapsOffline.prototype.deleteMapOffline = function(uuid) {
 app.MymapsOffline.prototype.removeMapAndFeaturesFromStorage = function(uuid) {
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then(maps => {
-    let idx = maps.findIndex((map) => map.uuid === uuid);
+    let idx = maps.findIndex(map => map['uuid'] === uuid);
     maps.splice(idx, 1);
     return Promise.all([
       conf.setItem('mymaps_maps', maps),

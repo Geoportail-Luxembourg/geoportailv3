@@ -817,13 +817,17 @@ class Mymaps(object):
                 map.user_login = user.username
                 success = self.save(map, data['map'])
                 if not success['success']:
-                    log.error('Error with saving the map.')
+                    raise HTTPInternalServerError(
+                        'Error with saving the map.'
+                    )
                 map_uuid = success.get('uuid')
                 success = self._save_features_helper(
                     map_uuid, data['features']
                 )
                 if not success['success']:
-                    log.error('Error saving the features in the map.')
+                    raise HTTPInternalServerError(
+                        'Error saving the features in the map.'
+                    )
                 db_features = db_mymaps.query(Feature).filter(
                     Feature.map_id == map.uuid
                 ).order_by(
