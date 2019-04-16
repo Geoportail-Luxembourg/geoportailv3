@@ -804,80 +804,95 @@ class Mymaps(object):
 
     @view_config(route_name="mymaps_save_offline", renderer='json')
     def save_offline(self):
-        user = self.request.user
-        if user is None:
-            return HTTPUnauthorized()
+        db_mymaps = self.request.db_mymaps
+        try:
+            user = self.request.user
+            if user is None:
+                return HTTPUnauthorized()
+            data = self.request.json_body
+            map_id = data['map']['uuid']
+            req_features = json.loads(data['features'])
+            if map_id[0] == '-':  # starts with a minus / is a new map
+                map = Map()
+                map.user_login = user.username
+                success = self.save(map, data['map'])
+                if not success['success']:
+                    log.error('Error with saving the map.')
+                map_uuid = success.get('uuid')
+                success = self._save_features_helper(
+                    map_uuid, data['features']
+                )
+                if not success['success']:
+                    log.error('Error saving the features in the map.')
+                db_features = db_mymaps.query(Feature).filter(
+                    Feature.map_id == map.uuid
+                ).order_by(
+                    Feature.display_order
+                ).all()
+                synched_map = dict()
+                synched_map['map'] = self._map_formatter(map)
+                synched_map['features'] = geojson.dumps(
+                    geojson.FeatureCollection(db_features)
+                )
+            elif data['map']['deletedWhileOffline']:
+                self._delete_helper(map_id)
+                synched_map = {
+                    'uuid': map_id,
+                    'deletedWhileOffline': True
+                }
+            else:
+                log.warn('Map to modify')
+                db_features = db_mymaps.query(Feature).filter(
+                    Feature.map_id == map_id
+                )
+                if db_features is None:
+                    return HTTPNotFound()
+                found_db_feature = None
+                for db_feature in db_features:
+                    found_req_feature = None
+                    for req_feature in req_features['features']:
+                        if req_feature['id'] == db_feature.id:
+                            found_req_feature = req_feature
+                            found_db_feature = db_feature
+                            break
+                    if found_req_feature:
+                        log.warn('Modify feature in db')
+                    else:
+                        log.warn('Add feature in db')
+                if not found_db_feature:
+                    log.warn('Suppress feature in db')
+            return {'success': True, 'data': synched_map}
+        except Exception as e:
+            log.exception(e)
+            db_mymaps.rollback()
+            return {'success': False, 'id': None}
 
-        data = self.request.json_body
-        map_id = data['map']['uuid']
-        req_features = json.loads(data['features'])
-        if map_id[0] == '-':  # starts with a minus / is a new map
-            map = Map()
-            map.user_login = user.username
-            success = self.save(map, data['map'])
-            if not success['success']:
-                log.error('Error with saving the map.')
-            map_uuid = success.get('uuid')
-            success = self._save_features_helper(map_uuid, data['features'])
-            if not success['success']:
-                log.error('Error saving the features in the map.')
-            data['map'] = {
-                'title': map.title,
-                'uuid': map.uuid,
-                'public': map.public,
-                'create_date': map.create_date,
-                'update_date': map.update_date,
-                'category': map.category.name
-                if map.category_id is not None else None,
-                'owner': map.user_login.lower(),
-                'label': map.label,
-                'last_update_feature': None,
-                'layers': map.layers,
-                'layers_indices': map.layers_indices,
-                'layers_opacity': map.layers_opacity,
-                'layers_visibility': map.layers_visibility,
-                'bg_layer': map.bg_layer,
-                'bg_opacity': map.bg_opacity,
-                'description': map.description,
-                'last_feature_update': self.request.db_mymaps.query(
-                    func.max(Feature.update_date)).filter(
-                    Feature.map_id == map.uuid).one()[0],
-                'x': map.x,
-                'y': map.y,
-                'zoom': map.zoom
-            }
-        elif data['map']['deletedWhileOffline'] and data['map']['dirty']:
-            data = {
-                'uuid': map_id,
-                'deletedWhileOffline': True
-            }
-
-            self._delete_helper(map_id)
-        else:
-            log.warn('Map to modify')
-
-            db_features = self.request.db_mymaps.query(Feature).filter(
-                Feature.map_id == map_id
-            )
-            if db_features is None:
-                return HTTPNotFound()
-
-            found_db_feature = None
-            for db_feature in db_features:
-                found_req_feature = None
-                for req_feature in req_features['features']:
-                    if req_feature['id'] == db_feature.id:
-                        found_req_feature = req_feature
-                        found_db_feature = db_feature
-                        break
-                if found_req_feature:
-                    log.warn('Modify feature in db')
-                else:
-                    log.warn('Add feature in db')
-            if not found_db_feature:
-                log.warn('Suppress feature in db')
-
-        return {'success': True, 'data': data}
+    def _map_formatter(self, map):
+        return {
+            'title': map.title,
+            'uuid': map.uuid,
+            'public': map.public,
+            'create_date': map.create_date,
+            'update_date': map.update_date,
+            'category': map.category.name
+            if map.category_id is not None else None,
+            'owner': map.user_login.lower(),
+            'label': map.label,
+            'last_update_feature': None,
+            'layers': map.layers,
+            'layers_indices': map.layers_indices,
+            'layers_opacity': map.layers_opacity,
+            'layers_visibility': map.layers_visibility,
+            'bg_layer': map.bg_layer,
+            'bg_opacity': map.bg_opacity,
+            'description': map.description,
+            'last_feature_update': self.request.db_mymaps.query(
+                func.max(Feature.update_date)).filter(
+                Feature.map_id == map.uuid).one()[0],
+            'x': map.x,
+            'y': map.y,
+            'zoom': map.zoom
+        }
 
     @view_config(route_name="mymaps_save_features", renderer='json')
     def save_features(self):
@@ -1071,13 +1086,7 @@ class Mymaps(object):
             except ValueError:
                 return HTTPBadRequest()
         if 'zoom' in params:
-            try:
-                if params.get('zoom') is None:  # offline map
-                    map.zoom = 0
-                else:
-                    map.zoom = int(params.get('zoom'))
-            except ValueError:
-                return HTTPBadRequest()
+            map.zoom = int(params.get('zoom') or '0')
         if 'title' in params:
             map.title = unicode(params.get('title'))
         if 'description' in params:
@@ -1107,15 +1116,13 @@ class Mymaps(object):
             map.category_id = None if cat == '' else cat
         trigger_fme = False
         if 'public' in params:
-            str = unicode(params.get('public'))
-            if str == u'true':
+            public_str = str(params.get('public')).lower()
+            if public_str == u'true':
                 if not map.public:
                     trigger_fme = True
                 map.public = True
-            elif str == u'false':
+            elif public_str == u'false':
                 map.public = False
-            else:  # offline save a map
-                map.public = params.get('public')
         if 'label' in params:
             map.label = unicode(params.get('label'))
 
