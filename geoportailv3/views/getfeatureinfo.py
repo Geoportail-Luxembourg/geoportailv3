@@ -674,10 +674,11 @@ class Getfeatureinfo(object):
                 "commune::INTEGER  = %s and section0 = '%s'"
                 % (code_commune, code_section))
             rows = res.fetchall()
-            feature['attributes'][key_commune] = rows[0][1]
-            feature['attributes'][key_section] = \
-                '%s (%s)' % (rows[0][0], code_section)
-            output_features.append(feature)
+            if len(rows) > 0:
+                feature['attributes'][key_commune] = rows[0][1]
+                feature['attributes'][key_section] = \
+                    '%s (%s)' % (rows[0][0], code_section)
+                output_features.append(feature)
         return output_features
 
     def get_commune_from_shortname(self, features, key_commune, key_section):
@@ -691,10 +692,11 @@ class Getfeatureinfo(object):
                 "substring(star,1,4)  = '%s' and section0 = '%s'"
                 % (code_commune, code_section))
             rows = res.fetchall()
-            feature['attributes'][key_commune] = rows[0][1]
-            feature['attributes'][key_section] = \
-                '%s (%s)' % (rows[0][0], code_section)
-            output_features.append(feature)
+            if len(rows) > 0:
+                feature['attributes'][key_commune] = rows[0][1]
+                feature['attributes'][key_section] = \
+                    '%s (%s)' % (rows[0][0], code_section)
+                output_features.append(feature)
         return output_features
 
     def get_additional_info_for_ng95(self, layer_id, rows):
