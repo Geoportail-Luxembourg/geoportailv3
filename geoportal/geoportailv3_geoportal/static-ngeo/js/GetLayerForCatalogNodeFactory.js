@@ -30,8 +30,7 @@ const layerCache_ = {};
  * @private
  * @ngInject
  */
-function factory(appGetWmtsLayer, appGetWmsLayer,
-    appGetDevice) {
+function factory(appGetWmtsLayer, appGetWmsLayer, appGetDevice) {
   return getLayerForCatalogNode;
 
   /**
@@ -48,17 +47,15 @@ function factory(appGetWmtsLayer, appGetWmsLayer,
     if (layerCacheKey in layerCache_) {
       return layerCache_[layerCacheKey];
     }
-    if (type.indexOf('WMS') != -1) {
+    if (type.indexOf('WMS') !== -1) {
       console.assert('name' in node);
       console.assert('layers' in node);
       console.assert('imageType' in node);
-      layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'],
-          node['url']);
+      layer = appGetWmsLayer(node['name'], node['layers'], node['imageType'], node['url']);
     } else if (type == 'WMTS') {
       console.assert('name' in node);
       console.assert('imageType' in node);
-      var hasRetina = (node['metadata']['hasRetina'] === 'true' &&
-        appGetDevice.isHiDpi());
+      var hasRetina = (node['metadata']['hasRetina'] === 'true' && appGetDevice.isHiDpi());
       layer = appGetWmtsLayer(node['name'], node['imageType'], hasRetina);
     } else {
       return null;

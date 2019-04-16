@@ -101,43 +101,39 @@ exports.prototype.encodeThemeName = function(theme) {
  * @private
  */
 exports.prototype.setThemes_ = function() {
-  this.appThemes_.getThemesObject().then(
-      /**
-       * Keep only the themes dedicated to the theme switcher
-       * @param {Array.<Object>} themes Array of theme objects.
-       */
-      (function(themes) {
-        this['themes'] = themes.filter(function(object) {
-          return object['metadata']['display_in_switcher'] === true;
-        });
-        // Check whether the current theme is valid or is protected;
-        // and if it's not, use the default theme.
-        // A theme is valid if it is present in the list of themes.
-        // A theme is protected if the related WS returns true
-        var curTheme = themes.find(function(theme) {
-          return theme['name'] == this.appTheme_.getCurrentTheme();
-        }, this);
-        if (curTheme !== undefined) {
-          var themeIndex = themes.indexOf(curTheme);
-          if (themeIndex < 0) {
-            this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
-                .then(
-                /**
-                 * @param {angular.$http.Response} resp Ajax response.
-                 */
-                (function(resp) {
-                  if (resp.data['is_private'] === true) {
-                    this.appNotify_(this.translate_.
-                        getString(this.privateThemeMsg_, {}),
-                        appNotifyNotificationType.WARNING);
-                    this['userOpen'] = true;
-                  } else {
-                    this.switchTheme(this.appTheme_.getDefaultTheme());
-                  }
-                }).bind(this));
-          }
-        }
-      }).bind(this));
+  this.appThemes_.getThemesPromise().then((root) => {
+    const themes = root.themes;
+    this['themes'] = themes.filter(function(object) {
+      return object['metadata']['display_in_switcher'] === true;
+    });
+    // Check whether the current theme is valid or is protected;
+    // and if it's not, use the default theme.
+    // A theme is valid if it is present in the list of themes.
+    // A theme is protected if the related WS returns true
+    var curTheme = themes.find(function(theme) {
+      return theme['name'] == this.appTheme_.getCurrentTheme();
+    }, this);
+    if (curTheme !== undefined) {
+      var themeIndex = themes.indexOf(curTheme);
+      if (themeIndex < 0) {
+        this.appThemes_.isThemePrivate(this.appTheme_.getCurrentTheme())
+            .then(
+            /**
+             * @param {angular.$http.Response} resp Ajax response.
+             */
+            (function(resp) {
+              if (resp.data['is_private'] === true) {
+                this.appNotify_(this.translate_.
+                    getString(this.privateThemeMsg_, {}),
+                    appNotifyNotificationType.WARNING);
+                this['userOpen'] = true;
+              } else {
+                this.switchTheme(this.appTheme_.getDefaultTheme());
+              }
+            }).bind(this));
+      }
+    }
+  });
 };
 
 

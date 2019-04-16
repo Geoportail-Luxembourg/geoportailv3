@@ -322,10 +322,10 @@ const exports = function(
     }
   }
   if (this.ngeoLocation_.getParam('address') !== undefined) {
-    this.appThemes_.getFlatCatalog().then(function(flatCatalogue) {
-      var node = flatCatalogue.find(
-        function(catalogueLayer) {
-          return catalogueLayer['name'] === 'addresses';
+    this.appThemes_.getFlatCatalog().then(function(flatCatalog) {
+      var node = flatCatalog.find(
+        function(catalogLayer) {
+          return catalogLayer['name'] === 'addresses';
         }, this);
       if (node !== undefined && node  !== null) {
         var layer = this.getLayerFunc_(node);
