@@ -51,7 +51,7 @@ def get_user_from_request(request):
         user.id = 0
         user.username = username
         user.email = None
-        user.is_admin = False
+        user.is_mymaps_admin = False
         user.mymaps_role = default_mymaps_role
         user.ogc_role = -1
         user.sn = None
@@ -74,6 +74,9 @@ def get_user_from_request(request):
             if len(result) == 1:
                 obj = result[0]['raw_attributes']
                 if 'roleTheme' in obj:
+                    # This is the plain c2cgeoportal role used for authentication.
+                    # Notably in the admin interface.
+                    # The role with name role_admin has id 645.
                     roletheme = obj['roleTheme'][0].decode()
                 if 'mail' in obj:
                     user.mail = obj['mail'][0].decode()
@@ -82,19 +85,22 @@ def get_user_from_request(request):
                 else:
                     user.sn = user.mail
                 if 'isMymapsAdmin' in obj:
-                    user.is_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
+                    user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
                 if 'roleMymaps' in obj:
+                    # This role is used for myMaps.
                     user.mymaps_role = int(obj['roleMymaps'][0])
                 if 'roleOGC' in obj:
+                    # This role is used by the print proxy and internal WMS proxy.
                     user.ogc_role = int(obj['roleOGC'][0])
         try:
+            # Loading the plain c2cgeoportal role used for authentication.
             user.role = DBSession.query(Role).filter_by(id=roletheme).one()
         except Exception as e:
+            # Fallback to the "Tous publics" role
             user.role = DBSession.query(Role).filter_by(id=0).one()
             log.exception(e)
 
         user.role_name = user.role.name
-
         user.functionalities = []
         return user
 
@@ -118,5 +124,5 @@ class Authentication(object):
                     "sn": getattr(
                         self.request.user, 'sn',
                         self.request.user.username),
-                    "is_admin": getattr(self.request.user, 'is_admin', False)}
+                    "is_admin": getattr(self.request.user, 'is_mymaps_admin', False)}
         return {}
