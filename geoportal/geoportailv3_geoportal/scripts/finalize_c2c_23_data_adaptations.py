@@ -11,36 +11,11 @@ from . import get_session
 
 
 def main():
-    """
-    Manage data right after the migration to c2cgeoportal 2.3.
-    Don't run it after that (It will do nothing)
-    """
-    parser = argparse.ArgumentParser(
-        description="Manage data right after the migration to c2cgeoportal 2.3."
-    )
-    parser.add_argument(
-        "-i", "--app-config",
-        default="production.ini", dest="app_config",
-        help="The application .ini config file (optional, default is "
-        "'production.ini')"
-    )
-    parser.add_argument(
-        "-n", "--app-name",
-        default="app", dest="app_name",
-        help="The application name (optional, default is 'app')"
-    )
+    app_config = "production.ini"
+    app_name = "app"
 
-    options = parser.parse_args()
-    app_config = options.app_config
-    app_name = options.app_name
-
-    if app_name is None and "#" in app_config:
-        app_config, app_name = app_config.split("#", 1)
     if not os.path.isfile(app_config):
-        parser.error("Cannot find config file: {0!s}".format(app_config))
-
-    # loading schema name from config and setting its value to the
-    # corresponding global variable from c2cgeoportal_geoportal
+        "Cannot find config file: {0!s}".format(app_config) + 0
 
     # Ignores pyramid deprecation warnings
     warnings.simplefilter("ignore", DeprecationWarning)
@@ -52,11 +27,15 @@ def main():
         TreeItem, TreeGroup, LayerGroup, LayerWMS, RestrictionArea, Interface
     from geoportailv3_geoportal.models import LuxLayerInternalWMS
 
+
+
     # Column link can't be NULL in GMF metadata. Fill it.
     for metadata in session.query(Metadata).filter(Metadata.name == 'link' and Metadata.value == '').all():
       metadata.value = 'http://example.com'
       session.add(metadata)
     ##### select * from geov3.ui_metadata where name = 'link' and value = '';
+
+
 
     # Restriction area must have a name.
     for r_area in session.query(RestrictionArea).all():
@@ -66,21 +45,6 @@ def main():
     ###### select * from geov3.restrictionarea where name is null or name = '';
     ###### do we need a unique name?
 
-    # Rename group bglayers to background (in GMF).
-    # Since it is the standard name
-    treeitem = session.query(TreeItem).filter(TreeItem.name == 'bglayers').one_or_none()
-    if treeitem is not None:
-      treeitem.name = 'background'
-      session.add(treeitem)
-    ###### |!\ select * from geov3.treeitem where name = 'bglayers';
-
-    # Rename interface "desktop" to "main"
-    interface = session.query(Interface).filter(Interface.name == 'desktop').one_or_none()
-    if interface is not None:
-      interface.name = 'main'
-      interface.description = 'main'
-      session.add(interface)
-    ####### |!\ select * from geov3.interface where name = 'desktop';
 
     transaction.commit()
 
@@ -103,6 +67,8 @@ def main():
 
     transaction.commit()
 
+
+
     # Set correct ogc_server for LuxLayerInternalWMS with url.
     for luxwms in session.query(LuxLayerInternalWMS).all():
       url = luxwms.url
@@ -113,6 +79,8 @@ def main():
         session.add(layer_wms)
 
     transaction.commit()
+
+
 
     # End note:
     # Now the the column 'url' in LuxLayerInternalWMS must be manually removed.
