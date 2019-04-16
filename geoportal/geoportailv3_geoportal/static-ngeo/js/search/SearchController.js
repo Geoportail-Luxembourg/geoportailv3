@@ -329,24 +329,27 @@ const exports = function($scope, $window, $compile,
       return suggestion['translatedName'];
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: function() {
+      header() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Background Layers') +
             '</div>';
-      }.bind(this),
+      },
       suggestion:
           /**
            * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
            * @return {*} The result.
            */
-          (function(suggestion) {
-            var scope = $scope.$new(true);
-            scope['object'] = suggestion;
-            var html = '<p>' + suggestion['translatedName'];
-            html += ' (' + this.gettextCatalog.getString('Background') + ') ';
-            html += '</p>';
-            return $compile(html)(scope);
-          }).bind(this)
+          (suggestion => {
+            if (suggestion) {
+              var scope = $scope.$new(true);
+              scope['object'] = suggestion;
+              var html = '<p>' + suggestion['translatedName'];
+              html += ' (' + this.gettextCatalog.getString('Background') + ') ';
+              html += '</p>';
+              return $compile(html)(scope);
+            }
+
+          })
     })
   }, {
     name: 'pois',
