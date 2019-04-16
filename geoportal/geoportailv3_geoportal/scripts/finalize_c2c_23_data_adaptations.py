@@ -29,14 +29,6 @@ def main():
 
 
 
-    # Column link can't be NULL in GMF metadata. Fill it.
-    for metadata in session.query(Metadata).filter(Metadata.name == 'link' and Metadata.value == '').all():
-      metadata.value = 'http://example.com'
-      session.add(metadata)
-    ##### select * from geov3.ui_metadata where name = 'link' and value = '';
-
-
-
     # Restriction area must have a name.
     for r_area in session.query(RestrictionArea).all():
       if r_area.name is None:
