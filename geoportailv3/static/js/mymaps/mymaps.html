@@ -301,7 +301,7 @@
         <span ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)" ng-if="!map.deletedWhileOffline" class="fa fa-trash-o"></span>
       </td>
       <td>
-        <span ng-if="!ctrl.ngeoNetworkStatus.isDisconnected() && ctrl.ngeoOfflineMode.isEnabled()" ng-click="ctrl.syncOfflineMaps(map)" class="fa fa-refresh"></span>
+        <span ng-if="!ctrl.ngeoNetworkStatus.isDisconnected() && ctrl.ngeoOfflineMode.isEnabled() && map.dirty" ng-click="ctrl.syncOfflineMaps(map)" class="fa fa-refresh"></span>
       </td>
     </tr>
     </tbody>
