@@ -30,7 +30,7 @@
 """finalize_c2c_23_upgrade
 
 Revision ID: 1cb8168b89d8
-Revises: 42b291c446cd
+Revises: 84b558deac2
 Create Date: 2018-10-18 09:48:12.655466
 """
 
@@ -39,7 +39,7 @@ from c2cgeoportal_commons.config import config
 
 # revision identifiers, used by Alembic.
 revision = '1cb8168b89d8'
-down_revision = '42b291c446cd'
+down_revision = '84b558deac2'
 branch_labels = None
 depends_on = None
 
