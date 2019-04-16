@@ -220,6 +220,9 @@ class LuxGetfeatureDefinition(Base):
     has_profile = Column(Boolean, info={
         'colanderalchemy': {'title': _('Is a profile displayed ?')}
     })
+    query_limit = Column(Integer, info={
+        'colanderalchemy': {'title': _('Limit the results. If < 0 then not limit.')}
+    })
 
 
 class LuxPrintJob(Base):
