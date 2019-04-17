@@ -3,7 +3,7 @@ extends: CONST_vars.yaml
 vars:
     excluded_themes_from_search:
     referrer:
-
+    sync_ms_path: /app/scripts/sync_ms.sh
     no_proxy: localhost
     #OverviewMap
     overview_map:

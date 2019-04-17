@@ -36,6 +36,7 @@ CONFIG_VARS += lidar
 CONFIG_VARS += routing
 CONFIG_VARS += referrer
 CONFIG_VARS += excluded_themes_from_search
+CONFIG_VARS += sync_ms_path
 APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js
