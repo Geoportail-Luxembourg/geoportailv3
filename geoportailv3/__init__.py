@@ -125,6 +125,12 @@ def main(global_config, **settings):
     )
 
     config.add_route(
+        "generate_symbol_file",
+        "/mymaps/generate_symbol_file",
+        request_method="GET"
+    )
+
+    config.add_route(
         "mymaps_getpublicmaps",
         "/mymaps/public_maps",
         request_method="GET"
