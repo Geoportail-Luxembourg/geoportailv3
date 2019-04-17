@@ -1,5 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 import os
+import stat
 import uuid
 import imghdr
 import ldap
@@ -1130,6 +1131,7 @@ class Mymaps(object):
                 'image': '/mymaps/images/' + image_name,
                 'thumbnail': '/mymaps/images/' + thumbnail_name}
 
+    @view_config(route_name="generate_symbol_file")
     def generate_symbol_file(self):
 
         user = self.request.user
@@ -1153,8 +1155,11 @@ class Mymaps(object):
         the_file = open(dir+"/symbols.map", 'w+')
         the_file.write(symbolsmap)
         the_file.close()
-        os.system('sh ./scripts/sync_ms.sh %s' % (dir + "/" + "/symbols.map"))
-
+        script_file = open(dir+"/script.sh", 'w+')
+        script_ms = self.config["sync_ms_path"]
+        print script_ms
+        script_file.write('sh %s %s \n'
+                          % (script_ms, dir + "/" + "/symbols.map"))
         for symbol in self.request.db_mymaps.query(Symbols).\
                 filter(Symbols.synchronized == False).all():  # noqa
 
@@ -1167,8 +1172,13 @@ class Mymaps(object):
             the_file.close()
             symbol.synchronized = True
             self.request.db_mymaps.commit()
-            os.system('sh ./scripts/sync_ms.sh %s remove'
-                      % (dir + "/" + the_name))
+            script_file.write('sh %s %s remove \n'
+                              % (script_ms, dir + "/" + the_name))
+        script_file.close()
+
+        st = os.stat("%s/script.sh" % (dir))
+        os.chmod("%s/script.sh" % (dir),
+                 st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     @view_config(route_name="mymaps_get_symbol")
     def get_symbol(self):
