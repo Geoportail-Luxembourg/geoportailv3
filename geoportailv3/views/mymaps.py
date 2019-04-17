@@ -1138,7 +1138,7 @@ class Mymaps(object):
         if user is None:
             return HTTPUnauthorized()
 
-        dir = "/tmp/mapfile"
+        dir = self.config["temp_mapfile"]
         if not os.path.exists(dir):
             os.mkdir(dir)
         symbolsmap = ""
@@ -1157,7 +1157,7 @@ class Mymaps(object):
         the_file.close()
         script_file = open(dir+"/script.sh", 'w+')
         script_ms = self.config["sync_ms_path"]
-        print script_ms
+
         script_file.write('sh %s %s \n'
                           % (script_ms, dir + "/" + "/symbols.map"))
         for symbol in self.request.db_mymaps.query(Symbols).\
