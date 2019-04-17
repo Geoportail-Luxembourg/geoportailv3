@@ -115,11 +115,11 @@ app.MymapsOffline.prototype.restore = function() {
 
 /**
  * Update the map element in storage
- * @param {Object} mapsElement myMapsElement.
  * @param {number} old_uuid Old uuid before database insert.
+ * @param {Object} mapsElement myMapsElement.
  * @return {Promise} Promise.
  */
-app.MymapsOffline.prototype.updateMyMapsElementStorage = function(mapsElement, old_uuid) {
+app.MymapsOffline.prototype.updateMyMapsElementStorage = function(old_uuid, mapsElement) {
   const conf = this.ngeoOfflineConfiguration_;
   const old_key = `mymaps_element_${old_uuid}`;
   const new_key = `mymaps_element_${mapsElement['map']['uuid']}`;
@@ -181,8 +181,7 @@ app.MymapsOffline.prototype.createMapOffline = function(spec) {
  * @return {Promise<app.MapsResponse>} a promise resolving when done.
  */
 app.MymapsOffline.prototype.updateMapOffline = function(uuid, spec, replace = false) {
-  const now = new Date().toISOString();
-  spec['update_date'] = now;
+  spec['update_date'] = new Date().toISOString();
   const conf = this.ngeoOfflineConfiguration_;
   return conf.getItem('mymaps_maps').then((maps) => {
     for (const key in maps) {
@@ -214,6 +213,17 @@ app.MymapsOffline.prototype.getMapOffline = function(uuid) {
       }
     }
     return Promise.reject(`Map with uuid ${uuid} not found`);
+  });
+};
+
+/**
+ * @param {string} uuid The map uuid.
+ * @returns {Promise} The result promise.
+ */
+app.MymapsOffline.prototype.getElementOffline = function(uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  return conf.getItem(`mymaps_element_${uuid}`).then(result => {
+    return result;
   });
 };
 
@@ -303,18 +313,20 @@ app.MymapsOffline.prototype.deleteFeatureOffline = function(feature, encOpt) {
     if (idx < 0) {
       return Promise.reject(`The feature with id ${featureId} was not found in map with uuid ${uuid}`);
     }
-    delete existingFeatures[idx];
+    existingFeatures.splice(idx, 1);
     existingFeatures.forEach((feature, idx) => {
       feature.set('display_order', idx, true);
     });
     myElements['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
+    myElements['map']['dirty'] = true;
 
     return conf.setItem(key, myElements).then(() => {
       const now = new Date().toISOString();
       const spec = {
-        'last_feature_update': now
+        'last_feature_update': now,
+        'dirty': true
       };
-      return this.updateMapOffline(uuid, spec);
+      return this.updateMapOffline(uuid, spec, false);
     });
   });
 };

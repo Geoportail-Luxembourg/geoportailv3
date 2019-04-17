@@ -1237,11 +1237,12 @@ app.Mymaps.prototype.updateMap =
         'title': title,
         'description': description,
         'category_id': categoryId,
-        'public': isPublic
+        'public': isPublic,
+        'dirty': true
       };
 
       if (this.ngeoOfflineMode_.isEnabled()) {
-        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false);
       }
 
       var req = $.param(spec);
@@ -1297,7 +1298,7 @@ app.Mymaps.prototype.updateMapEnv =
       };
 
       if (this.ngeoOfflineMode_.isEnabled()) {
-        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec);
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false);
       }
 
       var req = $.param(spec);
@@ -1796,25 +1797,24 @@ app.Mymaps.prototype.syncOfflineMaps = function(map) {
       this.myMapsOffline_.removeMapAndFeaturesFromStorage(uuid);
       delete this.mapsElements_[uuid];
       this.maps_.splice(uuid, 1);
-      return this.maps_;
+      return Promise.resolve();
+    } else {
+      const synchedMap = resp.data.data.map;
+      const sychedMapsElement = resp.data.data;
+
+      return Promise.all([
+        this.myMapsOffline_.updateMapOffline(oldUuid, synchedMap, true),
+        this.myMapsOffline_.updateMyMapsElementStorage(oldUuid, sychedMapsElement).then(() => {
+          let mapsIdx = this.maps_.findIndex(e => e['uuid'] === oldUuid);
+          this.maps_[mapsIdx] = synchedMap;
+        })
+      ]).then(() => {
+        if (this.mapId_ === oldUuid) {
+          this.setMapId(synchedMap['uuid']);
+        }
+        this.$rootscope_.$apply();
+      });
     }
-
-    const synchedMap = resp.data.data.map;
-    const sychedMapsElement = resp.data.data;
-
-    return Promise.all([
-      this.myMapsOffline_.updateMapOffline(oldUuid, synchedMap, true),
-      this.myMapsOffline_.updateMyMapsElementStorage(sychedMapsElement, oldUuid).then(() => {
-        let mapsIdx = this.maps_.findIndex(e => e['uuid'] === oldUuid);
-        this.maps_[mapsIdx] = synchedMap;
-        return this.maps_;
-      })
-    ]).then(() => {
-      if (this.mapId_ === oldUuid) {
-        this.setMapId(synchedMap['uuid']);
-      }
-      this.$rootscope_.$apply();
-    });
   }, (err) => {
     var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la carte.');
     this.notify_(msg, app.NotifyNotificationType.ERROR);

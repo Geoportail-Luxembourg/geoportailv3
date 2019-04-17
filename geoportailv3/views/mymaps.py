@@ -811,7 +811,6 @@ class Mymaps(object):
                 return HTTPUnauthorized()
             data = self.request.json_body
             map_id = data['map']['uuid']
-            req_features = json.loads(data['features'])
             if map_id[0] == '-':  # starts with a minus / is a new map
                 map = Map()
                 map.user_login = user.username
@@ -834,7 +833,8 @@ class Mymaps(object):
                     Feature.display_order
                 ).all()
                 synched_map = dict()
-                synched_map['map'] = self._map_formatter(map)
+                # synched_map['map'] = self._map(db_mymaps, user, map.uuid)
+                synched_map['map'] = self._map_formatter(user, map)
                 synched_map['features'] = geojson.dumps(
                     geojson.FeatureCollection(db_features)
                 )
@@ -845,33 +845,41 @@ class Mymaps(object):
                     'deletedWhileOffline': True
                 }
             else:
-                log.warn('Map to modify')
-                db_features = db_mymaps.query(Feature).filter(
+                features = db_mymaps.query(Feature).filter(
                     Feature.map_id == map_id
+                ).all()
+                for f in features:
+                    db_mymaps.delete(f)
+                db_mymaps.commit()
+
+                success = self._save_features_helper(
+                    map_id, data['features']
                 )
-                if db_features is None:
-                    return HTTPNotFound()
-                found_db_feature = None
-                for db_feature in db_features:
-                    found_req_feature = None
-                    for req_feature in req_features['features']:
-                        if req_feature['id'] == db_feature.id:
-                            found_req_feature = req_feature
-                            found_db_feature = db_feature
-                            break
-                    if found_req_feature:
-                        log.warn('Modify feature in db')
-                    else:
-                        log.warn('Add feature in db')
-                if not found_db_feature:
-                    log.warn('Suppress feature in db')
+                if not success['success']:
+                    raise HTTPInternalServerError(
+                        'Error updating the features in the map.'
+                    )
+
+                # TODO update map in db
+
+                db_features = db_mymaps.query(Feature).filter(
+                    Feature.map_id == map.uuid
+                ).order_by(
+                    Feature.display_order
+                ).all()
+                synched_map = dict()
+                synched_map['map'] = self._map_formatter(user, map)
+                synched_map['features'] = geojson.dumps(
+                    geojson.FeatureCollection(db_features)
+                )
+
             return {'success': True, 'data': synched_map}
         except Exception as e:
             log.exception(e)
             db_mymaps.rollback()
             return {'success': False, 'id': None}
 
-    def _map_formatter(self, map):
+    def _map_formatter(self, user, map):
         return {
             'title': map.title,
             'uuid': map.uuid,
@@ -880,6 +888,7 @@ class Mymaps(object):
             'update_date': map.update_date,
             'category': map.category.name
             if map.category_id is not None else None,
+            'is_editable': self.has_write_permission(user, map),
             'owner': map.user_login.lower(),
             'label': map.label,
             'last_update_feature': None,
@@ -939,7 +948,6 @@ class Mymaps(object):
                             get(feature_id)
                         if cur_feature:
                             self.request.db_mymaps.delete(cur_feature)
-                        # obj.id = feature_id
 
                     map.features.append(obj)
 
