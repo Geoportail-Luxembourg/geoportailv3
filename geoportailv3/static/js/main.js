@@ -18,6 +18,8 @@ goog.require('app.backgroundlayer.BackgroundlayerController');
 goog.require('app.backgroundlayer.BlankLayer');
 goog.require('app.catalog.CatalogController');
 goog.require('app.catalog.catalogDirective');
+goog.require('app.imageupload.ImguploadController');
+goog.require('app.imageupload.ImguploadDirective');
 goog.require('app.draw.drawDirective');
 goog.require('app.draw.DrawController');
 goog.require('app.draw.DrawnFeatures');
