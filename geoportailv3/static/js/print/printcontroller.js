@@ -770,7 +770,7 @@ exports.prototype.setScales_ = function() {
               function(scale) {
                 return +scale;
               });
-          scales.sort();
+          scales.sort((a, b) => a - b);
         } else {
           scales = exports.DEFAULT_MAP_SCALES_;
         }
