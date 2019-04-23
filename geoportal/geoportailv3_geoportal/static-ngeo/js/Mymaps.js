@@ -1283,11 +1283,14 @@ exports.prototype.createStyleFunction = function(curMap) {
     return [r, g, b, opacity];
   };
 
-  return function(feature, resolution) {
+  return function(feature, _) {
 
     // clear the styles
     styles.length = 0;
 
+    if (typeof feature == "number") {
+      feature = this; // older OpenLayers version
+    }
     if (feature.get('__editable__') && feature.get('__selected__')) {
       styles.push(vertexStyle);
     }
