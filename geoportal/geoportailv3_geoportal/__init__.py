@@ -381,6 +381,7 @@ def main(global_config, **settings):
             ldap_settings['url'],
             ldap_settings['bind'],
             ldap_settings['passwd'],
+            use_pool=False,  # avoid errors like LDAPMaximumRetriesError and LDAPResponseTimeoutError
         )
 
         ldap_settings['filter_tmpl'] = ldap_settings['filter_tmpl'].replace('%%', '%')
