@@ -236,7 +236,7 @@ class Import:
                     'description': '',
                     'metadata_name': ''
                 }
-                for metadata in item.ui_metadata:
+                for metadata in item.metadatas:
                     if metadata.name == 'metadata_id':
                         params = dict(
                             uid=metadata.value,
@@ -245,6 +245,7 @@ class Import:
                         try:
                             resp = requests.get(url=self.metadata_service_url,
                                                 params=params)
+                            data = {}
                             try:
                                 data = json.loads(resp.text)
                             except:

@@ -26,8 +26,8 @@ LDAP_BIND=login=c2c,ou=portail,dc=act,dc=lu
 LDAP_FILTER_TMPL=(login=%%(login)s)
 SHORTENER_BASE_URL=http://localhost:8080/s/
 SHORTENER_ALLOWED_HOST=localhost
-ELASTIC_SERVERS=
-ELASTIC_INDEX=
+ELASTIC_SERVERS=elasticsearch:9200
+ELASTIC_INDEX=index
 # Guillaume's routing keys
 # Use them only for local dev
 ROUTING_GRAPHHOPPER_API_KEY=239fa42d-e0ef-482a-b1ca-68e84df1660b

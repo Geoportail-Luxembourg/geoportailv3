@@ -109,11 +109,11 @@ pull-translations:
 
 .PHONY: update-search-layers
 update-search-layers:
-	docker exec $(DOCKER_CONTAINER) layers2es --interfaces desktop --no-themes --no-blocks --no-folders
+	docker exec $(DOCKER_CONTAINER) layers2es --interfaces main --no-themes --no-blocks --no-folders
 
 .PHONY: recreate-search-layers
 recreate-search-layers:
-	docker exec $(DOCKER_CONTAINER) layers2es --interfaces desktop --no-themes --no-blocks --no-folders --recreate-index
+	docker exec $(DOCKER_CONTAINER) layers2es --interfaces main --no-themes --no-blocks --no-folders --recreate-index
 
 .PHONY: recreate-search-poi
 recreate-search-poi:

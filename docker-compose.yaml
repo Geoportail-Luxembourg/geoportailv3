@@ -43,6 +43,7 @@ services:
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:ro
       - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
       - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/scripts:/app/geoportailv3_geoportal/scripts:ro
       - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
@@ -86,7 +87,7 @@ services:
       - DHM_DEM_TYPE=gdal
       - FAKE_REVERSE_GEOCODING=1
       - FAKE_FULLTEXT_SEARCH=1
-      - FAKE_LAYERSEARCH=1
+      - FAKE_LAYERSEARCH=0
       - FAKE_CMSSEARCH=1
       - SHORTENER_BASE_URL
       - SHORTENER_ALLOWED_HOST
@@ -114,6 +115,15 @@ services:
 
   ldap:
     image: lux-dev-ldap
+
+  elasticsearch:
+    image: elasticsearch:5.0
+    environment:
+      ES_JAVA_OPTS: -Xmx512m -Xms512m
+    volumes:
+      - ./config/elasticsearch-config:/usr/share/elasticsearch/config:ro
+    ports:
+      - 9200:9200
 
   alembic:
     image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
