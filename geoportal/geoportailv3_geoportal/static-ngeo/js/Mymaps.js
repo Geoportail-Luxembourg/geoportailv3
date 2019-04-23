@@ -664,8 +664,8 @@ exports.prototype.updateLayers = function() {
   .then(function(flatCatalogue) {
     curMapLayers.forEach(function(item, layerIndex) {
       var node = flatCatalogue.find(
-              function(catalogueLayer) {
-                return catalogueLayer['name'] === item;
+              function(catalogLayer) {
+                return catalogLayer['name'] === item;
               });
       if (node) {
         var layer = this.getLayerFunc_(node);
