@@ -324,9 +324,11 @@ const exports = function($scope, $window, $compile,
      * @return {string} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return suggestion['translatedName'];
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return suggestion['translatedName'];
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
       header() {
@@ -398,9 +400,11 @@ const exports = function($scope, $window, $compile,
      * @return {(string|*)} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return gettextCatalog.getString(suggestion.name);
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return gettextCatalog.getString(suggestion.name);
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -459,9 +463,11 @@ const exports = function($scope, $window, $compile,
      * @return {(string|*)} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return gettextCatalog.getString(suggestion.name);
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return gettextCatalog.getString(suggestion.name);
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
