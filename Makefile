@@ -196,3 +196,7 @@ attach:
 .PHONY: fix-db
 fix-db:
 	docker-compose exec geoportal finalize23DataAdaptations
+
+.PHONY: reload
+reload:
+	docker-compose exec geoportal pkill --signal HUP gunicorn
