@@ -48,6 +48,7 @@ def upgrade():
     op.execute("""
         UPDATE geov3.treeitem SET name = 'background' WHERE name = 'bglayers';
         UPDATE geov3.interface SET name='main' WHERE name = 'desktop';
+        ALTER TABLE geov3.lux_print_job ALTER COLUMN id TYPE VARCHAR(120);
     """)
 
     # Auth is now an enum.

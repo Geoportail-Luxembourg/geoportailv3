@@ -89,6 +89,7 @@ services:
       - FAKE_FULLTEXT_SEARCH=1
       - FAKE_LAYERSEARCH=0
       - FAKE_CMSSEARCH=1
+      - FAKE_PRINT_URLS=http://print:8080/print/geoportailv3,http://print:8080/print/geoportailv3
       - SHORTENER_BASE_URL
       - SHORTENER_ALLOWED_HOST
       - ELASTIC_SERVERS

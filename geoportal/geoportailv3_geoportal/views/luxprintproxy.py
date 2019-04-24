@@ -45,13 +45,14 @@
 # as representing official policies,
 # either expressed or implied, of the FreeBSD Project.
 
+import os
 import json
 import logging
 import re
 import random
 import urllib.parse
 import urllib.request
-from io import StringIO
+from io import BytesIO
 from datetime import datetime
 
 from pyramid.i18n import get_localizer, TranslationStringFactory
@@ -81,7 +82,10 @@ class LuxPrintProxy(PrintProxy):
     def lux_report_create(self):
         token = self.config["authtkt_secret"]
         print_servers = DBSession.query(LuxPrintServers).all()
-        print_urls = [print_server.url for print_server in print_servers]
+        if os.environ.get('FAKE_PRINT_URLS'):
+            print_urls = os.environ.get('FAKE_PRINT_URLS').split(',')
+        else:
+            print_urls = [print_server.url for print_server in print_servers]
         urllib.request.getproxies = lambda: {}
         valid_print_urls = []
         if print_urls is not None and len(print_urls) > 0:
@@ -136,7 +140,7 @@ class LuxPrintProxy(PrintProxy):
 
         job = LuxPrintJob()
         job.spec = json.dumps(spec)
-        self.request.body = job.spec
+        self.request.body = str.encode(job.spec)
 
         resp, content = self._proxy("%s/report.%s" % (
             print_url,
@@ -209,7 +213,7 @@ class LuxPrintProxy(PrintProxy):
 
         log.info("Get legend from URL:\n%s." % url)
 
-        legend_buffer = StringIO()
+        legend_buffer = BytesIO()
         html_access_constraints = ""
         if access_constraints is not None and\
            len(access_constraints) > 0:
@@ -248,7 +252,7 @@ class LuxPrintProxy(PrintProxy):
             (lang, name)
         log.info("Get legend from URL:\n%s." % url)
 
-        legend_buffer = StringIO()
+        legend_buffer = BytesIO()
         weasyprint.HTML(url).write_pdf(
             legend_buffer,
             stylesheets=[css]
@@ -285,15 +289,15 @@ class LuxPrintProxy(PrintProxy):
                             opener = urllib.request.build_opener(
                                 urllib.request.HTTPHandler())
                             pdf_content = opener.open(pageUrl['url']).read()
-                            merger.append(StringIO(pdf_content))
+                            merger.append(BytesIO(pdf_content))
                         else:
-                            first_page = StringIO()
+                            first_page = BytesIO()
                             weasyprint.HTML(pageUrl['url']).write_pdf(
                                 first_page
                             )
                             merger.append(first_page)
-                        merger.append(StringIO(content))
-                        content = StringIO()
+                        merger.append(BytesIO(content))
+                        content = BytesIO()
                         merger.write(content)
                         content = content.getvalue()
                     except Exception as e:
@@ -302,7 +306,7 @@ class LuxPrintProxy(PrintProxy):
             if is_pdf and "legend" in attributes and\
                     attributes["legend"] is not None:
                 merger = PdfFileMerger(strict=False)
-                merger.append(StringIO(content))
+                merger.append(BytesIO(content))
 
                 lang = attributes.get("lang")
 
@@ -324,7 +328,7 @@ class LuxPrintProxy(PrintProxy):
                     elif "name" in item and item["name"] is not None:
                         merger.append(self._get_legend(item["name"], lang))
 
-                content = StringIO()
+                content = BytesIO()
                 merger.write(content)
                 content = content.getvalue()
 
@@ -369,15 +373,15 @@ class LuxPrintProxy(PrintProxy):
                            ".s-e {transform: rotate(45deg);} "
                 )
                 merger = PdfFileMerger(strict=False)
-                merger.append(StringIO(content))
-                query_results = StringIO()
+                merger.append(BytesIO(content))
+                query_results = BytesIO()
                 weasyprint.HTML(string=attributes["queryResults"]).write_pdf(
                     query_results,
                     stylesheets=[css]
                 )
                 merger.append(query_results)
 
-                content = StringIO()
+                content = BytesIO()
                 merger.write(content)
                 content = content.getvalue()
 

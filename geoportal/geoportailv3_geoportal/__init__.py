@@ -71,15 +71,6 @@ def main(global_config, **settings):
 
     # Workaround to not have the error: distutils.errors.DistutilsArgError: no commands supplied
     distutils.core._setup_stop_after = 'config'
-    config.include('c2cgeoportal_geoportal')
-    distutils.core._setup_stop_after = None
-
-    add_mako_renderer(config, '.appcache')
-
-    config.add_translation_dirs('geoportailv3_geoportal:locale/')
-
-    add_interface(config, 'main', INTERFACE_TYPE_NGEO_CATALOGUE, default=True)
-
     # overwrite print routes
     config.add_route(
         "lux_printproxy_report_create",
@@ -101,6 +92,15 @@ def main(global_config, **settings):
         "/printproxy/cancel/{ref}",
         request_method="DELETE"
     )
+
+    config.include('c2cgeoportal_geoportal')
+    distutils.core._setup_stop_after = None
+
+    add_mako_renderer(config, '.appcache')
+
+    config.add_translation_dirs('geoportailv3_geoportal:locale/')
+
+    add_interface(config, 'main', INTERFACE_TYPE_NGEO_CATALOGUE, default=True)
 
     # ping routes
     config.add_route(
