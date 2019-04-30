@@ -1391,7 +1391,17 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
   if (this.ngeoOfflineMode_.isEnabled()) {
-    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_);
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_).then(promiseResult => {
+      const uuid = /** @type{string} */ (feature.get('__map_id__'));
+      const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
+      this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+        this.updateMapsElement(uuid, myMapsElement);
+        this.maps_[mapsIdx] = myMapsElement['map'];
+        this.$rootscope_.$apply();
+        return Promise.resolve();
+      }));
+      return promiseResult;
+    });
   }
 
   var req = $.param({

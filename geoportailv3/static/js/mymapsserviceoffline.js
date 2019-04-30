@@ -266,26 +266,31 @@ app.MymapsOffline.prototype.saveFeaturesOffline = function(uuid, features, encOp
     });
 
     // Removing private properties from features as they should not be stored in the db
-    const previousProperties = features.map(f => {
+    const previousProperties = existingFeatures.map(f => {
       const properties = f.getProperties();
       const newProperties = {};
       for (const k in properties) {
         if (!k.startsWith('__')) {
           newProperties[k] = properties[k];
         }
+        f.unset(k, true);
       }
       f.setProperties(newProperties, true);
       return properties;
     });
     myElement['features'] = this.format_.writeFeatures(existingFeatures, encOpt);
-    features.forEach((f, idx) => {
+    existingFeatures.forEach((f, idx) => {
+      f.getKeys().forEach(k => f.unset(k, true));
       f.setProperties(previousProperties[idx], true);
+      f.set('__saving__', false, true);
     });
+    myElement['map']['dirty'] = true;
     this.appMymaps_.updateMapsElement(uuid, myElement);
     return conf.setItem(key, myElement).then(() => {
       const now = new Date().toISOString();
       const spec = {
-        'last_feature_update': now
+        'last_feature_update': now,
+        'dirty': true
       };
       return this.updateMapOffline(uuid, spec);
     });

@@ -134,6 +134,7 @@ app.DrawnFeatures = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
           delete properties['__editable__'];
           delete properties['__selected__'];
           delete properties['__map_id__'];
+          delete properties['__saving__']; // ugly hack?
           for (var key in properties) {
             if (properties[key] === null || properties[key] === undefined) {
               delete properties[key];
@@ -340,7 +341,9 @@ app.DrawnFeatures.prototype.saveFeatureInMymaps_ = function(feature) {
         var featureId = resp['id'];
         currentFeature.set('fid', featureId);
         feature.set('__saving__', false);
-      }, this));
+      }, this), () => {
+        feature.set('__saving__', false);
+      });
   }
 };
 
