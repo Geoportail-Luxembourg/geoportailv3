@@ -736,7 +736,7 @@ class Mymaps(object):
         if not self.has_write_permission(self.request.user, map):
             return HTTPUnauthorized()
 
-        return self.save(map, self.request.params, id)
+        return self.save(map, self.request.params)
 
     @view_config(route_name="mymaps_rate", renderer='json')
     def rate(self):
@@ -838,7 +838,7 @@ class Mymaps(object):
                 synched_map['features'] = geojson.dumps(
                     geojson.FeatureCollection(db_features)
                 )
-            elif data['map']['deletedWhileOffline']:
+            elif data['map'].get('deletedWhileOffline', False):
                 self._delete_helper(map_id)
                 synched_map = {
                     'uuid': map_id,
@@ -860,10 +860,17 @@ class Mymaps(object):
                         'Error updating the features in the map.'
                     )
 
-                # TODO update map in db
+                map = self.request.db_mymaps.query(Map).get(map_id)
+                map.user_login = user.username
+                log.warn(data['map'])
+                success = self.save(map, data['map'])
+                if not success['success']:
+                    raise HTTPInternalServerError(
+                        'Error with saving the map.'
+                    )
 
                 db_features = db_mymaps.query(Feature).filter(
-                    Feature.map_id == map.uuid
+                    Feature.map_id == map_id
                 ).order_by(
                     Feature.display_order
                 ).all()
@@ -891,7 +898,6 @@ class Mymaps(object):
             'is_editable': self.has_write_permission(user, map),
             'owner': map.user_login.lower(),
             'label': map.label,
-            'last_update_feature': None,
             'layers': map.layers,
             'layers_indices': map.layers_indices,
             'layers_opacity': map.layers_opacity,
