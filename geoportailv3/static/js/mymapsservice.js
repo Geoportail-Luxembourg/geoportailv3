@@ -644,7 +644,7 @@ app.Mymaps.prototype.setUsersCategories = function(userCategories) {
  * @return {angular.$q.Promise} Promise.
  */
 app.Mymaps.prototype.getMaps = function(owner, categoryId) {
-  if (this.maps_) {
+  if (this.maps_ && this.ngeoOfflineMode_.isEnabled()) {
     const deferred = this.$q_.defer();
     deferred.resolve(this.maps_);
     return deferred.promise;
