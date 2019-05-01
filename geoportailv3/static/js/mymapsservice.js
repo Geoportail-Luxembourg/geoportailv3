@@ -1016,14 +1016,14 @@ app.Mymaps.prototype.getMapInformation = function() {
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
   if (this.ngeoOfflineMode_.isEnabled()) {
-    this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_).then(() => {
+    this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_).then((promiseResult) => {
       const uuid = /** @type{string} */ (feature.get('__map_id__'));
       const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
       this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
         this.updateMapsElement(uuid, myMapsElement);
         this.maps_[mapsIdx] = myMapsElement['map'];
         this.$rootscope_.$apply();
-        return Promise.resolve();
+        return promiseResult;
       }));
     });
     return Promise.resolve();
@@ -1252,7 +1252,23 @@ app.Mymaps.prototype.updateMap =
       };
 
       if (this.ngeoOfflineMode_.isEnabled()) {
-        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false);
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false).then((promiseResult) => {
+          const uuid = this.mapId_;
+          this.myMapsOffline_.getMapOffline(uuid).then(myMaps => {
+            const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
+            this.maps_[mapsIdx] = myMaps;
+            this.$rootscope_.$apply();
+
+            this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+              myMapsElement['map'] = myMaps;
+              this.updateMapsElement(uuid, myMapsElement);
+              return Promise.resolve();
+            }));
+
+            return Promise.resolve();
+          });
+          return promiseResult;
+        });
       }
 
       var req = $.param(spec);

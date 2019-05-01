@@ -862,7 +862,6 @@ class Mymaps(object):
 
                 map = self.request.db_mymaps.query(Map).get(map_id)
                 map.user_login = user.username
-                log.warn(data['map'])
                 success = self.save(map, data['map'])
                 if not success['success']:
                     raise HTTPInternalServerError(
