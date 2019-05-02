@@ -833,7 +833,6 @@ class Mymaps(object):
                     Feature.display_order
                 ).all()
                 synched_map = dict()
-                # synched_map['map'] = self._map(db_mymaps, user, map.uuid)
                 synched_map['map'] = self._map_formatter(user, map)
                 synched_map['features'] = geojson.dumps(
                     geojson.FeatureCollection(db_features)
