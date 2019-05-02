@@ -698,17 +698,7 @@ exports.prototype.importKml = function(kml) {
  * @private
  */
 exports.prototype.sanitizeFeature_ = function(feature) {
-  // Could be removed as soon as
-  // https://github.com/openlayers/openlayers/issues/6959
-  // is solved
-  var properties = feature.getProperties();
-  for (var key in properties) {
-    if (key !== 'geometry' &&
-        key !== 'name' &&
-        key !== 'description') {
-      feature.unset(key, true);
-    }
-  }
+
   if (feature.getId()) {
     feature.setId(undefined);
   }
@@ -732,6 +722,11 @@ exports.prototype.sanitizeFeature_ = function(feature) {
   }
   if (feature.get('__selected__') !== undefined) {
     feature.unset('__selected__', true);
+  }
+
+  var color = /** @type {string} */ (feature.get('color'));
+  if (color === undefined) {
+    feature.set('color', '#FF0000');
   }
 
   var opacity = /** @type {string} */ (feature.get('opacity'));
