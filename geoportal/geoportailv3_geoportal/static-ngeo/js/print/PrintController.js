@@ -20,6 +20,7 @@ import {easeOut} from 'ol/easing.js';
 import {listen} from 'ol/events.js';
 import {unByKey} from 'ol/Observable.js';
 import {getPointResolution} from 'ol/proj.js';
+import LayerGroup from 'ol/layer/Group.js';
 import olRenderEventType from 'ol/render/EventType.js';
 
 /**
@@ -511,6 +512,24 @@ exports.prototype.print = function(format) {
     }
   });
 
+  function recursiveGetLayerAttributions(layer, dataOwners) {
+    if (layer instanceof LayerGroup) {
+      layer.getLayers().forEach(l => recursiveGetLayerAttributions(l, dataOwners));
+    } else {
+      let source = undefined;
+      if (/** @type {Object} */ (layer).getSource instanceof Function) {
+        source = /** @type {Object} */ (layer).getSource();
+      }
+      if (source != undefined) {
+        const attributions = source.getAttributions();
+        if (attributions !== null) {
+          const htmls = attributions();
+          dataOwners.push(...htmls);
+        }
+      }
+    }
+  }
+
   this.getShorturl_().then(
       /**
        * @param {string} shorturl The short URL.
@@ -520,20 +539,7 @@ exports.prototype.print = function(format) {
         this['printing'] = true;
         var format = curFormat;
         var dataOwners = [];
-        map.getLayers().forEach(function(layer) {
-          var source = undefined;
-          if (/** @type{Object} */ (layer).getSource instanceof Function) {
-            source = /** @type{Object} */ (layer).getSource();
-          }
-          if (source != undefined) {
-            var attributions = source.getAttributions();
-            if (attributions !== null) {
-              attributions.forEach(function(attribution) {
-                dataOwners.push(attribution.getHTML());
-              }.bind(this));
-            }
-          }
-        });
+        recursiveGetLayerAttributions(map.getLayerGroup(), dataOwners);
 
         var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
         if (routingAttributions) {
