@@ -99,7 +99,7 @@ API_TOOLS_DIR = $(API_DIR)/tools
 API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
 .PHONY: update-translations
-update-translations: $(PACKAGE)/locale/$(PACKAGE)-server.pot $(PACKAGE)/locale/$(PACKAGE)-client.pot $(PACKAGE)/locale/$(PACKAGE)-tooltips.pot
+update-translations:
 	tx push --source
 	tx pull --force
 
