@@ -123,7 +123,7 @@ exports.prototype.getBgLayers = function() {
        */
       (function(data) {
         var bgLayers = data['background_layers'].map(function(item) {
-          var hasRetina = item['metadata']['hasRetina'] === 'true' && this.isHiDpi_;
+          var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
           console.assert('name' in item);
           console.assert('imageType' in item);
           var layer = this.getWmtsLayer_(

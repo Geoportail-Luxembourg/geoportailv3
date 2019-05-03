@@ -725,7 +725,7 @@ exports.castValue_ = function(key, value) {
   if (arrayIncludes(numProperties, key)) {
     return +value;
   } else if (arrayIncludes(boolProperties, key)) {
-    return (value === 'true') ? true : false;
+    return value === 'true';
   } else {
     return value;
   }

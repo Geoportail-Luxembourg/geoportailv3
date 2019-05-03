@@ -1978,7 +1978,7 @@ lux.WMTSLayerFactory_ = function(config, opacity, visible) {
               '(min-resolution: 192dpi)'
       ).matches;
 
-  var retina = isHiDpi && config['metadata']['hasRetina'] === 'true';
+  var retina = isHiDpi && !!config['metadata']['hasRetina'];
 
   var retinaExtension = (retina ? '_hd' : '');
   var url = 'http://wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
@@ -2192,8 +2192,7 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   if (this.queryableLayers_ === undefined) {
     layers.forEach(function(layer) {
       var metadata = layer.get('metadata');
-      if (metadata && metadata['is_queryable'] === 'true' &&
-          layer.getVisible()) {
+      if (metadata && !!metadata['is_queryable'] && layer.getVisible()) {
         layersToQuery.push(layer.get('id'));
       }
     });
