@@ -561,6 +561,74 @@ exports.prototype.exportGpx = function(isTrack) {
   this.appExport_.exportGpx(mymapsFeatures, this.appMymaps_.mapTitle, isTrack);
 };
 
+/**
+ * Import the features into mymaps.
+ * @param {Array} features The features to import.
+ * @private
+ */
+exports.prototype.importFeatures_ = function(features) {
+  var mapId = this.appMymaps_.getMapId();
+  var featuresToSave = [];
+  var badfeatures = [];
+  var noNameElemCnt = 0;
+  var curExtent;
+  features.forEach(function(feature) {
+    this.sanitizeFeature_(feature);
+    feature.set('__map_id__', mapId);
+
+    if (feature.get('name') === undefined) {
+      feature.set('name', 'Element ' + noNameElemCnt);
+      noNameElemCnt++;
+    }
+    var curGeometry = feature.getGeometry();
+    if (curGeometry !== null) {
+      feature.setStyle(this.featureStyleFunction_);
+      if (curGeometry.getType() === olGeomGeometryType.MULTI_POLYGON) {
+        var polygones = /** @type {ol.geom.MultiPolygon} */
+          (curGeometry).getPolygons();
+        polygones.forEach(function(polygon) {
+          var clonedFeature = feature.clone();
+          clonedFeature.setGeometry(polygon);
+          featuresToSave.push(clonedFeature);
+        });
+      } else if (curGeometry.getType() === olGeomGeometryType.MULTI_LINE_STRING) {
+        var lines = /** @type {ol.geom.MultiLineString} */
+          (curGeometry).getLineStrings();
+        lines.forEach(function(line) {
+          var clonedFeature = feature.clone();
+          clonedFeature.setGeometry(line);
+          featuresToSave.push(clonedFeature);
+        });
+      } else {
+        featuresToSave.push(feature);
+      }
+      if (curExtent) {
+        olExtent.extend(curExtent, curGeometry.getExtent());
+      } else {
+        curExtent = curGeometry.getExtent();
+      }
+    } else {
+      badfeatures.push(feature);
+    }
+  }, this);
+  badfeatures.forEach(function(feature) {
+    var index = features.indexOf(feature);
+    if (index > -1) {
+      features.splice(index, 1);
+    }
+  }, this);
+
+  if (curExtent) {
+    this.fit(curExtent);
+  }
+
+  this.appMymaps_.saveFeatures(featuresToSave).then(
+      function() {
+        var map = {'uuid': mapId};
+        this.onChosen(map, false);
+      }.bind(this)
+  );
+};
 
 /**
  * Import a GPX file.
@@ -572,48 +640,7 @@ exports.prototype.importGpx = function() {
     featureProjection: this['map'].getView().getProjection()
   }));
   this.gpxFileContent = '';
-  var mapId = this.appMymaps_.getMapId();
-  var featuresToSave = [];
-  var noNameElemCnt = 0;
-  var gpxExtent;
-  gpxFeatures.forEach(function(feature) {
-    this.sanitizeFeature_(feature);
-    feature.set('__map_id__', mapId);
-
-    if (feature.get('name') === undefined) {
-      feature.set('name', 'Element ' + noNameElemCnt);
-      noNameElemCnt++;
-    }
-    var curGeometry = feature.getGeometry();
-    if (curGeometry.getType() === olGeomGeometryType.MULTI_LINE_STRING) {
-      var lines = /** @type {ol.geom.MultiLineString} */
-          (curGeometry).getLineStrings();
-      lines.forEach(function(line) {
-        var clonedFeature = feature.clone();
-        clonedFeature.setGeometry(line);
-        featuresToSave.push(clonedFeature);
-      });
-    } else {
-      featuresToSave.push(feature);
-    }
-    if (gpxExtent) {
-      olExtent.extend(gpxExtent, curGeometry.getExtent());
-    } else {
-      gpxExtent = curGeometry.getExtent();
-    }
-    feature.setStyle(this.featureStyleFunction_);
-  }, this);
-
-  if (gpxExtent) {
-    this.fit(gpxExtent);
-  }
-
-  this.appMymaps_.saveFeatures(featuresToSave).then(
-      function() {
-        var map = {'uuid': mapId};
-        this.onChosen(map, false);
-      }.bind(this)
-  );
+  this.importFeatures_(gpxFeatures);
 };
 
 
@@ -649,45 +676,7 @@ exports.prototype.importKml = function(kml) {
     featureProjection: this['map'].getView().getProjection()
   }));
   this.kmlFileContent = '';
-  var noNameElemCnt = 0;
-  var kmlExtent;
-  var mapId = this.appMymaps_.getMapId();
-  var badfeatures = [];
-  kmlFeatures.forEach(function(feature) {
-    this.sanitizeFeature_(feature);
-    feature.set('__map_id__', mapId);
-    if (feature.get('name') === undefined) {
-      feature.set('name', 'Element ' + noNameElemCnt);
-      noNameElemCnt++;
-    }
-    var curGeometry = feature.getGeometry();
-    if (curGeometry !== null) {
-      if (kmlExtent) {
-        olExtent.extend(kmlExtent, curGeometry.getExtent());
-      } else {
-        kmlExtent = curGeometry.getExtent();
-      }
-    } else {
-      badfeatures.push(feature);
-    }
-  }, this);
-  badfeatures.forEach(function(feature) {
-    var index = kmlFeatures.indexOf(feature);
-    if (index > -1) {
-      kmlFeatures.splice(index, 1);
-    }
-  }, this);
-
-  if (kmlExtent) {
-    this.fit(kmlExtent);
-  }
-
-  this.appMymaps_.saveFeatures(kmlFeatures).then(
-      function() {
-        var map = {'uuid': mapId};
-        this.onChosen(map, false);
-      }.bind(this)
-  );
+  this.importFeatures_(kmlFeatures);
 };
 
 
