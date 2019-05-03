@@ -1016,7 +1016,7 @@ app.Mymaps.prototype.getMapInformation = function() {
  */
 app.Mymaps.prototype.deleteFeature = function(feature) {
   if (this.ngeoOfflineMode_.isEnabled()) {
-    this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_).then((promiseResult) => {
+    return this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_).then((promiseResult) => {
       const uuid = /** @type{string} */ (feature.get('__map_id__'));
       const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
       this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
@@ -1026,7 +1026,6 @@ app.Mymaps.prototype.deleteFeature = function(feature) {
         return promiseResult;
       }));
     });
-    return Promise.resolve();
   }
 
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
@@ -1214,6 +1213,7 @@ app.Mymaps.prototype.deleteAllFeaturesAMap = function(mapId) {
  * @return {angular.$q.Promise|Promise} Promise.
  */
 app.Mymaps.prototype.deleteMap = function() {
+  console.log(this.mapId_);
   return this.deleteAMap(this.mapId_);
 };
 
@@ -1252,22 +1252,19 @@ app.Mymaps.prototype.updateMap =
       };
 
       if (this.ngeoOfflineMode_.isEnabled()) {
-        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false).then((promiseResult) => {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false).then(() => {
           const uuid = this.mapId_;
-          this.myMapsOffline_.getMapOffline(uuid).then(myMaps => {
+          return this.myMapsOffline_.getMapOffline(uuid).then(myMaps => {
             const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
             this.maps_[mapsIdx] = myMaps;
             this.$rootscope_.$apply();
 
-            this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+            return this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
               myMapsElement['map'] = myMaps;
               this.updateMapsElement(uuid, myMapsElement);
               return Promise.resolve();
             }));
-
-            return Promise.resolve();
           });
-          return promiseResult;
         });
       }
 
@@ -1407,16 +1404,15 @@ app.Mymaps.prototype.saveFeaturesOrder = function(features) {
  */
 app.Mymaps.prototype.saveFeature = function(feature) {
   if (this.ngeoOfflineMode_.isEnabled()) {
-    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_).then(promiseResult => {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_).then(() => {
       const uuid = /** @type{string} */ (feature.get('__map_id__'));
       const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
-      this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+      return this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
         this.updateMapsElement(uuid, myMapsElement);
         this.maps_[mapsIdx] = myMapsElement['map'];
         this.$rootscope_.$apply();
         return Promise.resolve();
       }));
-      return promiseResult;
     });
   }
 

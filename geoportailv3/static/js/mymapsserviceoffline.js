@@ -222,9 +222,7 @@ app.MymapsOffline.prototype.getMapOffline = function(uuid) {
  */
 app.MymapsOffline.prototype.getElementOffline = function(uuid) {
   const conf = this.ngeoOfflineConfiguration_;
-  return conf.getItem(`mymaps_element_${uuid}`).then(result => {
-    return result;
-  });
+  return conf.getItem(`mymaps_element_${uuid}`);
 };
 
 /**

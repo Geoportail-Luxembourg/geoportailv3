@@ -838,17 +838,17 @@ class Mymaps(object):
                     geojson.FeatureCollection(db_features)
                 )
             elif data['map'].get('deletedWhileOffline', False):
-                self._delete_helper(map_id)
+                delete_result = self._delete_helper(map_id)
+                if isinstance(delete_result, Exception):
+                    return Exception()
                 synched_map = {
                     'uuid': map_id,
                     'deletedWhileOffline': True
                 }
             else:
-                features = db_mymaps.query(Feature).filter(
+                db_mymaps.query(Feature).filter(
                     Feature.map_id == map_id
-                ).all()
-                for f in features:
-                    db_mymaps.delete(f)
+                ).delete()
                 db_mymaps.commit()
 
                 success = self._save_features_helper(
@@ -1046,7 +1046,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_delete", renderer='json')
     def delete(self):
         id = self.request.matchdict.get("map_id")
-        self._delete_helper(id)
+        return self._delete_helper(id)
 
     def _delete_helper(self, id):
         map = self.request.db_mymaps.query(Map).get(id)
