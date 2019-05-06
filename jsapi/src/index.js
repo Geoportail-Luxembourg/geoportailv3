@@ -55,6 +55,8 @@ exports.languages = {};
 exports.wmtsCrossOrigin = 'anonymous';
 
 
+const ref = exports;
+
 /**
  * Sets the basic url of the rest services such as :
  * <lu><li>Search service</li>
@@ -69,30 +71,30 @@ exports.wmtsCrossOrigin = 'anonymous';
  */
 exports.setBaseUrl = function(url, requestScheme) {
   if (requestScheme !== undefined) {
-    exports.requestScheme = requestScheme;
+    ref.requestScheme = requestScheme;
   }
 
   if (!url) {
-    exports.layersUrl = '../layers.json';
-    exports.i18nUrl = '../lang_xx.json';
+    ref.layersUrl = '../layers.json';
+    ref.i18nUrl = '../lang_xx.json';
 
     url = 'https://apiv3.geoportail.lu/';
   } else {
-    exports.layersUrl = url + exports.layersUrl;
-    exports.i18nUrl = url + exports.i18nUrl;
+    ref.layersUrl = url + ref.layersUrl;
+    ref.i18nUrl = url + ref.i18nUrl;
   }
 
-  exports.searchUrl = url + exports.searchUrl;
-  exports.mymapsUrl = url + exports.mymapsUrl;
-  exports.elevationUrl = url + exports.elevationUrl;
-  exports.geocodeUrl = url + exports.geocodeUrl;
-  exports.reverseGeocodeUrl = url + exports.reverseGeocodeUrl;
-  exports.queryUrl = url + exports.queryUrl;
-  exports.profileUrl = url + exports.profileUrl;
-  exports.exportCsvUrl = url + exports.exportCsvUrl;
-  exports.printUrl = url + exports.printUrl;
-  exports.pagUrl = url + exports.pagUrl;
-  exports.baseUrl = url;
+  ref.searchUrl = url + ref.searchUrl;
+  ref.mymapsUrl = url + ref.mymapsUrl;
+  ref.elevationUrl = url + ref.elevationUrl;
+  ref.geocodeUrl = url + ref.geocodeUrl;
+  ref.reverseGeocodeUrl = url + ref.reverseGeocodeUrl;
+  ref.queryUrl = url + ref.queryUrl;
+  ref.profileUrl = url + ref.profileUrl;
+  ref.exportCsvUrl = url + ref.exportCsvUrl;
+  ref.printUrl = url + ref.printUrl;
+  ref.pagUrl = url + ref.pagUrl;
+  ref.baseUrl = url;
 };
 
 /**
@@ -136,7 +138,7 @@ exports.printUrl = 'printproxy';
  * @api
  */
 exports.setLayersUrl = function(url) {
-  exports.layersUrl = url;
+  ref.layersUrl = url;
 };
 
 /**
@@ -145,7 +147,7 @@ exports.setLayersUrl = function(url) {
  * @api
  */
 exports.setWmtsCrossOrigin = function(crossorigin) {
-  exports.wmtsCrossOrigin = crossorigin;
+  ref.wmtsCrossOrigin = crossorigin;
 };
 
 /**
@@ -183,7 +185,7 @@ exports.translate = function(text) {
  * @api
  */
 exports.setPopupSize = function(size) {
-  exports.popupSize = size;
+  ref.popupSize = size;
 };
 
 /**
@@ -192,7 +194,7 @@ exports.setPopupSize = function(size) {
  * @api
  */
 exports.setI18nUrl = function(url) {
-  exports.i18nUrl = url;
+  ref.i18nUrl = url;
 };
 
 /**
