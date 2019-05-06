@@ -42,7 +42,6 @@ proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666
 
 /**
  * @type {lux.Piwik}
- * @export
  */
 var _paq = [];
 
