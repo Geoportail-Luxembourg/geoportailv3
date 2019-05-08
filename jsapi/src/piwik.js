@@ -1,6 +1,8 @@
-goog.provide('lux.Piwik');
+goog.module('lux.Piwik');
+
+goog.module.declareLegacyNamespace();
 
 /**
  * @typedef {{push: function(Array<string>)}}
  */
-lux.Piwik;
+exports;
