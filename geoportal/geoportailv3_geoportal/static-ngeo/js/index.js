@@ -1,5 +1,10 @@
 /* eslint-disable */
 
+goog.require('app.query.casiporeportDirective');
+goog.require('app.draw.FeatureHash');
+goog.require('app.layerinfo.layerinfoDirective');
+
+
 /**
  * @typedef {{themes: Array.<Object>, background_layers: Array.<Object>}}
  */

@@ -13,7 +13,8 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olFormatWMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import olLayerTile from 'ol/layer/Tile.js';
 import olSourceWMTS from 'ol/source/WMTS.js';
-import olBase from 'ol.js';
+import {getUid} from 'ol/index.js';
+
 
 /**
  * @constructor
@@ -147,7 +148,7 @@ exports.prototype.buildChildLayers_ = function(wmts, capabilities) {
     var options = olSourceWMTS.optionsFromCapabilities(capabilities, wmtsConfig);
     layer['options'] = options;
     layer['isInvalid'] = false;
-    layer['uid'] = olBase.getUid(layer).toString();
+    layer['uid'] = getUid(layer).toString();
     if (!layer['isInvalid']) {
       layer['wmtsUrl'] = wmts;
 

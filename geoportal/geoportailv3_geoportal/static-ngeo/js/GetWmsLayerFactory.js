@@ -29,15 +29,13 @@ function factory(proxyWmsUrl, remoteProxyWms,
 
   /**
    * @param {string} name WMS layer name.
-   * @param {string} layers Comma-separated list of layer names for that WMS
-   *     layer.
+   * @param {string} layers Comma-separated list of layer names for that WMS layer.
    * @param {string} imageType Image type (e.g. "image/png").
    * @param {string=} opt_url WMS URL.
    * @return {ol.layer.Image} The layer.
    */
   function getWmsLayer(name, layers, imageType, opt_url) {
-    var url = opt_url !== undefined ?
-        opt_url : proxyWmsUrl;
+    var url = opt_url || proxyWmsUrl;
     var optSource = {
       url: url,
       hidpi: appGetDevice.isHiDpi(),

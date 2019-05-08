@@ -1,25 +1,37 @@
 /**
  * @module app.interaction.DrawRoute
  */
-import olBase from 'ol.js';
+
+import {createEditingStyle} from 'ol/style/Style.js';
 import olFeature from 'ol/Feature.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
-import olObject from 'ol/Object.js';
-import olEvents from 'ol/events.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {listen} from 'ol/events.js';
 import olEventsEvent from 'ol/events/Event.js';
-import olEventsCondition from 'ol/events/condition.js';
+import {noModifierKeys, always, shiftKeyOnly} from 'ol/events/condition.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import olFunctions from 'ol/functions.js';
+import {TRUE, FALSE} from 'ol/functions.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteractionDrawEventType from 'ol/interaction/DrawEventType.js';
-import olInteractionPointer from 'ol/interaction/Pointer.js';
-import olInteractionProperty from 'ol/interaction/Property.js';
+import olInteractionPointer, {handleEvent as pointerHandleEvent} from 'ol/interaction/Pointer.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
-import olStyleStyle from 'ol/style/Style.js';
+import {inherits} from 'ol/index.js';
+import {transform} from 'ol/proj.js';
+
+
+/**
+ * @return {ol.StyleFunction} Styles.
+ */
+function getDefaultStyleFunction() {
+  var styles = createEditingStyle();
+  return function(feature, resolution) {
+    return styles[feature.getGeometry().getType()];
+  };
+};
+
 
 /**
  * @classdesc
@@ -132,7 +144,7 @@ const exports = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishCondition : olFunctions.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : TRUE;
 
   /**
    * @private
@@ -248,8 +260,7 @@ const exports = function(options) {
       useSpatialIndex: false,
       wrapX: options.wrapX ? options.wrapX : false
     }),
-    style: options.style ? options.style :
-        exports.getDefaultStyleFunction()
+    style: options.style ? options.style : getDefaultStyleFunction()
   });
 
   /**
@@ -264,7 +275,7 @@ const exports = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : olEventsCondition.noModifierKeys;
+      options.condition : noModifierKeys;
 
   /**
    * @private
@@ -272,30 +283,19 @@ const exports = function(options) {
    */
   this.freehandCondition_;
   if (options.freehand) {
-    this.freehandCondition_ = olEventsCondition.always;
+    this.freehandCondition_ = always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : olEventsCondition.shiftKeyOnly;
+        options.freehandCondition : shiftKeyOnly;
   }
 
-  olEvents.listen(this,
-      olObject.getChangeEventType(olInteractionProperty.ACTIVE),
+  listen(this,
+      getChangeEventType('active'),
       this.updateState_, this);
 
 };
 
-olBase.inherits(exports, olInteractionPointer);
-
-
-/**
- * @return {ol.StyleFunction} Styles.
- */
-exports.getDefaultStyleFunction = function() {
-  var styles = olStyleStyle.createDefaultEditing();
-  return function(feature, resolution) {
-    return styles[feature.getGeometry().getType()];
-  };
-};
+inherits(exports, olInteractionPointer);
 
 
 /**
@@ -323,12 +323,12 @@ exports.handleEvent = function(event) {
     this.addToDrawing_(event);
     pass = false;
   } else if (event.type ===
-      olMapBrowserEventType.POINTERMOVE) {
+      'pointermove') {
     pass = this.handlePointerMove_(event);
   } else if (event.type === olMapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return olInteractionPointer.handleEvent.call(this, event) && pass;
+  return pointerHandleEvent.call(this, event) && pass;
 };
 
 
@@ -507,7 +507,7 @@ exports.prototype.startDrawing_ = function(event) {
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
   this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
+      'drawstart', this.sketchFeature_));
 };
 
 
@@ -581,8 +581,8 @@ exports.prototype.addToDrawing_ = function(event) {
   } else {
     var last = coordinates[coordinates.length - 1];
     if (coordinates.length > 2) {
-      var penultimate = olBase.proj.transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
-      var antepenultimate = olBase.proj.transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
+      var penultimate = transform(coordinates[coordinates.length - 2], 'EPSG:3857', 'EPSG:4326');
+      var antepenultimate = transform(coordinates[coordinates.length - 3], 'EPSG:3857', 'EPSG:4326');
       var waypoints = antepenultimate[1] + ',' + antepenultimate[0] + ',' + penultimate[1] + ',' + penultimate[0];
       if (waypoints !== this.lastWaypoints_ && !this.isRequestingRoute_) {
         this.lastWaypoints_ = waypoints;
@@ -712,7 +712,7 @@ exports.prototype.removeLastPoint = function() {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
+ * The drawend event is dispatched before
  * inserting the feature.
  * @api
  */
@@ -720,8 +720,7 @@ exports.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(new exports.Event('drawend', sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -769,14 +768,14 @@ exports.prototype.extend = function(feature) {
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
   this.dispatchEvent(new exports.Event(
-      olInteractionDrawEventType.DRAWSTART, this.sketchFeature_));
+      'drawstart', this.sketchFeature_));
 };
 
 
 /**
  * @inheritDoc
  */
-exports.prototype.shouldStopEvent = olFunctions.FALSE;
+exports.prototype.shouldStopEvent = FALSE;
 
 
 /**
@@ -858,7 +857,7 @@ exports.Mode_ = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
+ * @param {string} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
 exports.Event = function(type, feature) {
@@ -873,7 +872,7 @@ exports.Event = function(type, feature) {
   this.feature = feature;
 
 };
-olBase.inherits(exports.Event, olEventsEvent);
+inherits(exports.Event, olEventsEvent);
 
 
 export default exports;

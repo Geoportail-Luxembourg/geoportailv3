@@ -7,17 +7,17 @@
 
 import appModule from '../module.js';
 import olFeature from 'ol/Feature.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olLayerVector from 'ol/layer/Vector.js';
-import olProj from 'ol/proj.js';
+import {transform, transformExtent} from 'ol/proj.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
-import olExtent from 'ol/extent.js';
+import {intersects} from 'ol/extent.js';
 
 /**
  * @constructor
@@ -74,7 +74,7 @@ const exports = function(
    * @type {ol.Extent}
    * @private
    */
-  this.lidarExtent_ = olProj.transformExtent(
+  this.lidarExtent_ = transformExtent(
     bboxLidar, bboxSrsLidar, this['map'].getView().getProjection());
 
   /**
@@ -309,7 +309,7 @@ const exports = function(
     if (x !== undefined && y !== undefined) {
       var coordinate = version === 3 ?
           /** @type {ol.Coordinate} */ ([x, y]) :
-          /** @type {ol.Coordinate} */ (olProj.transform([y, x], 'EPSG:2169',
+          /** @type {ol.Coordinate} */ (transform([y, x], 'EPSG:2169',
               this['map'].getView().getProjection()));
       this.setClickCordinate_(coordinate);
       this.loadInfoPane_();
@@ -322,10 +322,10 @@ const exports = function(
     }
   }
   if (this.ngeoLocation_.getParam('address') !== undefined) {
-    this.appThemes_.getFlatCatalog().then(function(flatCatalogue) {
-      var node = flatCatalogue.find(
-        function(catalogueLayer) {
-          return catalogueLayer['name'] === 'addresses';
+    this.appThemes_.getFlatCatalog().then(function(flatCatalog) {
+      var node = flatCatalog.find(
+        function(catalogLayer) {
+          return catalogLayer['name'] === 'addresses';
         }, this);
       if (node !== undefined && node  !== null) {
         var layer = this.getLayerFunc_(node);
@@ -340,7 +340,7 @@ const exports = function(
       var results = data['results'];
       if (results !== undefined && results.length > 0) {
         var coordinates = /** @type {ol.Coordinate} */
-            (olProj.transform(
+            (transform(
                 results[0]['geom']['coordinates'], 'EPSG:2169',
                 this['map'].getView().getProjection()));
         this['map'].getView().setZoom(17);
@@ -364,7 +364,7 @@ const exports = function(
     this.loadInfoPane_();
   }.bind(this));
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERDOWN,
+  listen(this['map'], olMapBrowserEventType.POINTERDOWN,
     function(event) {
       if (!appSelectedFeatures.getLength()) {
         if (event.originalEvent.which === 3) { // if right mouse click
@@ -384,13 +384,13 @@ const exports = function(
       }
     }.bind(this), this);
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERUP,
+  listen(this['map'], olMapBrowserEventType.POINTERUP,
       function(event) {
         $timeout.cancel(holdPromise);
         startPixel = null;
       }.bind(this), this);
 
-  olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  listen(this['map'], 'pointermove',
       function(event) {
         if (startPixel) {
           var pixel = event.pixel;
@@ -466,9 +466,9 @@ exports.prototype.setClickCordinate_ = function(eventOrCoordinate) {
     eventOrCoordinate.preventDefault();
     this.clickCoordinate = this['map'].getEventCoordinate(eventOrCoordinate);
   }
-  this.clickCoordinateLuref_ = olProj.transform(
+  this.clickCoordinateLuref_ = transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:2169');
-  this.clickCoordinate4326_ = olProj.transform(
+  this.clickCoordinate4326_ = transform(
     this.clickCoordinate, this['map'].getView().getProjection(), 'EPSG:4326');
 };
 
@@ -492,7 +492,7 @@ exports.prototype.loadInfoPane_ =
           this['elevation'] = elevation['formattedElevation'];
           this.rawElevation_ = elevation['rawElevation'];
           if (this.lidarDemoUrl_ !== undefined &&
-              this.lidarDemoUrl_.length > 0 && olExtent.intersects(
+              this.lidarDemoUrl_.length > 0 && intersects(
                 feature.getGeometry().getExtent(), this.lidarExtent_)) {
             this.isInBoxOfLidar = true;
           } else {

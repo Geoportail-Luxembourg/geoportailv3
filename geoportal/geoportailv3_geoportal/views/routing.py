@@ -3,14 +3,15 @@
 # reviewed by koje
 # reviewed by mire
 
-from geoportailv3.mapquestrouter import MapquestRouter
-from geoportailv3.graphhopperrouter import GraphhopperRouter
+from geoportailv3_geoportal.routing.mapquestrouter import MapquestRouter
+from geoportailv3_geoportal.routing.graphhopperrouter import GraphhopperRouter
 from pyramid.view import view_config
-from urllib2 import HTTPError
+from urllib.error import HTTPError
 from pyramid.httpexceptions import HTTPBadRequest
-from geoportailv3.portail import PortailSession
-from geoportailv3.portail import RoutingStats
+from geoportailv3_geoportal.portail import RoutingStats
+from c2cgeoportal_commons.models import DBSession
 
+import transaction
 import logging
 log = logging.getLogger(__name__)
 
@@ -75,14 +76,14 @@ class RouterController(object):
             routing_stats = RoutingStats()
             routing_stats.transport_mode = transport_mode
             routing_stats.transport_criteria = criteria
-            PortailSession.add(routing_stats)
-            PortailSession.commit()
+            DBSession.add(routing_stats)
+            transaction.commit()
         except Exception as e:
             log.exception(e)
-            PortailSession.rollback()
+            transaction.abort()
 
         if routing_success:
-            json = {
+            json_response = {
                 "type": "FeatureCollection",
                 "features": [
                     {'type': "Feature",
@@ -94,7 +95,7 @@ class RouterController(object):
                         'attribution': r.attribution},
                      'geometry': r.geom}]}
         else:
-            json = {'success': routing_success,
+            json_response = {'success': routing_success,
                     'geometry': None,
                     'desc': [],
                     'dist': 0,
@@ -102,7 +103,7 @@ class RouterController(object):
                     'errorMessages': r.errorMessages,
                     'attribution': r.attribution}
 
-        return json
+        return json_response
 
     def __setup_router(
             self, coords, lang, transport_mode, criteria,

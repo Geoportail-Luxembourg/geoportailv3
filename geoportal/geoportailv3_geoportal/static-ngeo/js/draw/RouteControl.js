@@ -6,10 +6,11 @@
  *
  */
 
-import olBase from 'ol.js';
-import olCss from 'ol/css.js';
+
+import {CLASS_UNSELECTABLE, CLASS_CONTROL} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
-import olEvents from 'ol/events.js';
+import {listen} from 'ol/events.js';
+import {inherits} from 'ol/index.js';
 
 /**
  * @constructor
@@ -36,8 +37,8 @@ const exports = function(options) {
   button.setAttribute('type', 'button');
   button.setAttribute('title', tipLabel);
 
-  var cssClasses = className + ' ' + olCss.CLASS_UNSELECTABLE + ' ' +
-      olCss.CLASS_CONTROL + ' ' +
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' +
+      CLASS_CONTROL + ' ' +
       (this.drawLineInteraction_.getMapMatching() ? 'route-on' : '');
 
   /**
@@ -47,10 +48,10 @@ const exports = function(options) {
   this.element.setAttribute('class', cssClasses);
   this.element.appendChild(button);
 
-  olEvents.listen(button, olEvents.EventType.CLICK,
+  listen(button, 'click',
       this.handleClick_, this);
 
-  olEvents.listen(button, olEvents.EventType.MOUSEOUT, function() {
+  listen(button, 'mouseout', function() {
     this.blur();
   });
 
@@ -61,7 +62,7 @@ const exports = function(options) {
 
 };
 
-olBase.inherits(exports, olControlControl);
+inherits(exports, olControlControl);
 
 
 /**

@@ -3,12 +3,12 @@
  */
 import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
 import ngeoUtils from 'ngeo/utils.js';
-import olBase from 'ol.js';
+
 import olFeature from 'ol/Feature.js';
-import olArray from 'ol/array.js';
-import olColor from 'ol/color.js';
+import {includes as arrayIncludes} from 'ol/array.js';
+import {asArray as colorAsArray} from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
-import olFormatFeature from 'ol/format/Feature.js';
+import {transformWithOptions} from 'ol/format/Feature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -22,6 +22,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleText from 'ol/style/Text.js';
+import {inherits} from 'ol/index.js';
 
 
 /**
@@ -135,7 +136,7 @@ const exports = function(opt_options) {
 
 };
 
-olBase.inherits(exports, olFormatTextFeature);
+inherits(exports, olFormatTextFeature);
 
 
 /**
@@ -352,7 +353,7 @@ exports.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) 
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
     console.assert(Array.isArray(fillColor), 'only supporting fill colors');
-    var fillColorRgba = olColor.asArray(/** @type {Array<number>} */ (fillColor));
+    var fillColorRgba = colorAsArray(/** @type {Array<number>} */ (fillColor));
     console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
     var fillColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (fillColorRgba));
     if (encodedStyles.length > 0) {
@@ -375,7 +376,7 @@ exports.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
     console.assert(Array.isArray(strokeColor));
-    var strokeColorRgba = olColor.asArray(/** @type {Array<number>} */ (strokeColor));
+    var strokeColorRgba = colorAsArray(/** @type {Array<number>} */ (strokeColor));
     console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
     var strokeColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (strokeColorRgba));
     if (encodedStyles.length > 0) {
@@ -721,10 +722,10 @@ exports.castValue_ = function(key, value) {
     'showMeasure'
   ];
 
-  if (olArray.includes(numProperties, key)) {
+  if (arrayIncludes(numProperties, key)) {
     return +value;
-  } else if (olArray.includes(boolProperties, key)) {
-    return (value === 'true') ? true : false;
+  } else if (arrayIncludes(boolProperties, key)) {
+    return value === 'true';
   } else {
     return value;
   }
@@ -1225,7 +1226,7 @@ exports.prototype.writeGeometryText = function(geometry, opt_options) {
       geometry.getType()];
   console.assert(geometryWriter !== undefined);
   var transformedGeometry = /** @type {ol.geom.Geometry} */
-      (olFormatFeature.transformWithOptions(geometry, true, opt_options));
+      (transformWithOptions(geometry, true, opt_options));
   this.prevX_ = 0;
   this.prevY_ = 0;
   return geometryWriter.call(this, transformedGeometry);

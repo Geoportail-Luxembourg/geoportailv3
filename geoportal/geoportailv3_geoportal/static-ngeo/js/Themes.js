@@ -8,24 +8,26 @@
  */
 
 import appModule from './module.js';
-import olBase from 'ol.js';
-import olArray from 'ol/array.js';
+
+import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
+import {inherits} from 'ol/index.js';
+
 
 /**
  * @constructor
  * @extends {ol.events.EventTarget}
  * @param {angular.$window} $window Window.
  * @param {angular.$http} $http Angular http service.
- * @param {string} treeUrl URL to "themes" web service.
+ * @param {string} gmfTreeUrl URL to "themes" web service.
  * @param {string} isThemePrivateUrl URL to check if theme is public.
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank Layer service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
-const exports = function($window, $http, treeUrl, isThemePrivateUrl,
+const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice) {
   olEventsEventTarget.call(this);
 
@@ -57,7 +59,7 @@ const exports = function($window, $http, treeUrl, isThemePrivateUrl,
    * @type {string}
    * @private
    */
-  this.treeUrl_ = treeUrl;
+  this.treeUrl_ = gmfTreeUrl;
 
   /**
    * @type {string}
@@ -70,9 +72,11 @@ const exports = function($window, $http, treeUrl, isThemePrivateUrl,
    * @private
    */
   this.promise_ = null;
+
+  this.flatCatalog = null;
 };
 
-olBase.inherits(exports, olEventsEventTarget);
+inherits(exports, olEventsEventTarget);
 
 
 /**
@@ -119,7 +123,7 @@ exports.prototype.getBgLayers = function() {
        */
       (function(data) {
         var bgLayers = data['background_layers'].map(function(item) {
-          var hasRetina = item['metadata']['hasRetina'] === 'true' && this.isHiDpi_;
+          var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
           console.assert('name' in item);
           console.assert('imageType' in item);
           var layer = this.getWmtsLayer_(
@@ -162,20 +166,12 @@ exports.prototype.getThemeObject = function(themeName) {
 
 
 /**
- * Get an array of theme objects.
+ * Get the promise resolving to the themes root object.
  * @return {angular.$q.Promise} Promise.
  */
-exports.prototype.getThemesObject = function() {
+exports.prototype.getThemesPromise = function() {
   console.assert(this.promise_ !== null);
-  return this.promise_.then(
-      /**
-       * @param {app.ThemesResponse} data The "themes" web service response.
-       * @return {Array.<Object>} The themes object.
-       */
-      function(data) {
-        var themes = data['themes'];
-        return themes;
-      });
+  return this.promise_;
 };
 
 
@@ -188,15 +184,21 @@ exports.prototype.loadThemes = function(roleId) {
   this.promise_ = this.$http_.get(this.treeUrl_, {
     params: (roleId !== undefined) ? {'role': roleId} : {},
     cache: false
-  }).then(
-      /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {Object} The "themes" web service response.
-       */
-      (function(resp) {
-        this.dispatchEvent(appEventsThemesEventType.LOAD);
-        return /** @type {app.ThemesResponse} */ (resp.data);
-      }).bind(this));
+  }).then((resp) => {
+    const root = /** @type {app.ThemesResponse} */ (resp.data);
+    const themes = root.themes;
+    const flatCatalogue = [];
+    for (var i = 0; i < themes.length; i++) {
+      const theme = themes[i];
+      const children = this.getAllChildren_(theme.children, theme.name, root.ogcServers);
+      arrayExtend(flatCatalogue, children);
+    }
+
+    this.flatCatalog = flatCatalogue;
+
+    this.dispatchEvent(appEventsThemesEventType.LOAD);
+    return root;
+  });
   return this.promise_;
 };
 
@@ -217,20 +219,28 @@ exports.prototype.isThemePrivate = function(themeId) {
 /**
  * @param {Array} element The element.
  * @param {string} theme Theme name.
+ * @param {Object} ogcServers All OGC servers definitions.
+ * @param {Object} lastOgcServer The last OGC server.
  * @return {Array} array The children.
  * @private
  */
-exports.prototype.getAllChildren_ = function(element, theme) {
+exports.prototype.getAllChildren_ = function(elements, theme, ogcServers, lastOgcServer) {
   var array = [];
-  for (var i = 0; i < element.length; i++) {
-    if (element[i].hasOwnProperty('children')) {
-      olArray.extend(array, this.getAllChildren_(
-          element[i].children, theme)
+  for (var i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    if (element.hasOwnProperty('children')) {
+      arrayExtend(array, this.getAllChildren_(
+          element.children, theme, ogcServers, element.ogcServer || lastOgcServer)
       );
     } else {
-      // element[i].id = element[i].id;
-      element[i].theme = theme;
-      array.push(element[i]);
+      // Rewrite url to match the behaviour of c2cgeoportal 1.6
+      const ogcServer = element.ogcServer || lastOgcServer;
+      if (ogcServer) {
+        const def = ogcServers[ogcServer];
+        element.url = def.credential ? null : def.url;
+      }
+      element.theme = theme;
+      array.push(element);
     }
   }
   return array;
@@ -242,17 +252,7 @@ exports.prototype.getAllChildren_ = function(element, theme) {
  * @return {angular.$q.Promise} Promise.
  */
 exports.prototype.getFlatCatalog = function() {
-  return this.getThemesObject().then(
-      function(themes) {
-        var flatCatalogue = [];
-        for (var i = 0; i < themes.length; i++) {
-          var theme = themes[i];
-          olArray.extend(flatCatalogue,
-              this.getAllChildren_(theme.children, theme.name)
-          );
-        }
-        return flatCatalogue;
-      }.bind(this));
+  return this.promise_.then(() => this.flatCatalog);
 };
 
 appModule.service('appThemes', exports);

@@ -7,7 +7,7 @@ import owncloud
 import shutil
 import os
 import smtplib
-import urllib2
+import urllib.request
 from email.mime.text import MIMEText
 import time
 import sys
@@ -35,7 +35,7 @@ class Casipo(object):
                  num,
                  self.config["casipo"]["fme_token"])
         try:
-            f = urllib2.urlopen(url, None, 1800)
+            f = urllib.request.urlopen(url, None, 1800)
             data = f
             self.filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
             with open(self.filename, 'wb') as fp:

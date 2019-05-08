@@ -13,7 +13,7 @@
 import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import olExtent from 'ol/extent.js';
+import {extend} from 'ol/extent.js';
 import olFormatGPX from 'ol/format/GPX.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
@@ -597,7 +597,7 @@ exports.prototype.importGpx = function() {
       featuresToSave.push(feature);
     }
     if (gpxExtent) {
-      olExtent.extend(gpxExtent, curGeometry.getExtent());
+      extend(gpxExtent, curGeometry.getExtent());
     } else {
       gpxExtent = curGeometry.getExtent();
     }
@@ -663,7 +663,7 @@ exports.prototype.importKml = function(kml) {
     var curGeometry = feature.getGeometry();
     if (curGeometry !== null) {
       if (kmlExtent) {
-        olExtent.extend(kmlExtent, curGeometry.getExtent());
+        extend(kmlExtent, curGeometry.getExtent());
       } else {
         kmlExtent = curGeometry.getExtent();
       }
@@ -722,11 +722,6 @@ exports.prototype.sanitizeFeature_ = function(feature) {
   }
   if (feature.get('__selected__') !== undefined) {
     feature.unset('__selected__', true);
-  }
-
-  var color = /** @type {string} */ (feature.get('color'));
-  if (color === undefined) {
-    feature.set('color', '#FF0000');
   }
 
   var opacity = /** @type {string} */ (feature.get('opacity'));
@@ -1339,7 +1334,7 @@ exports.prototype.selectMymaps = function(map) {
     this.drawnFeatures_.getCollection().forEach(function(feature) {
       if (feature.get('__map_id__')) {
         if (extent !== undefined) {
-          extent = olExtent.extend(extent, feature.getGeometry().getExtent());
+          extent = extend(extent, feature.getGeometry().getExtent());
         } else {
           extent = feature.getGeometry().getExtent();
         }

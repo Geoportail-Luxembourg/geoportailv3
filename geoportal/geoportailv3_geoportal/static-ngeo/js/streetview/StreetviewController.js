@@ -13,10 +13,18 @@
  */
 
 import appModule from '../module.js';
-import olBase from 'ol.js';
+import {fromLonLat, toLonLat} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olInteraction from 'ol/interaction.js';
-import olStyle from 'ol/style.js';
+import Select from 'ol/interaction/Select.js';
+import Style from 'ol/style/Style.js';
+import Icon from 'ol/style/Icon.js';
+import {containsCoordinate} from 'ol/extent.js';
+import {listen} from 'ol/events.js';
+import {equals as arrayEquals} from 'ol/array.js';
+import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
+import {getUid} from 'ol/index.js';
+
 
 /**
  * @ngInject
@@ -51,7 +59,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    */
   this.locationInfoOverlay_ = appLocationInfoOverlay;
 
-  this['uid'] = olBase.getUid(this);
+  this['uid'] = getUid(this);
 
   /**
    * @type {string}
@@ -101,7 +109,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {!ol.Feature}
    * @private
    */
-  this.feature_ = new olBase.Feature();
+  this.feature_ = new Feature();
 
   /**
    * @type {ngeo.map.FeatureOverlay}
@@ -113,7 +121,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {ol.Collection<ol.Feature>}
    * @private
    */
-  this.features_ = new olBase.Collection();
+  this.features_ = new Collection();
   this.featureOverlay_.setFeatures(this.features_);
 
   /**
@@ -196,7 +204,7 @@ const exports = function($element, $scope, ngeoFeatureOverlayMgr,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectSingleClick_ = new olInteraction.Select({
+  this.selectSingleClick_ = new Select({
     filter: function(feature, layer) {
       return this.features_.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -300,7 +308,7 @@ exports.prototype.$onInit = function() {
       }
     }
   }.bind(this));
-  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE, function(evt) {
+ listen(this.map_, 'pointermove', function(evt) {
     if (this.isActive()) {
       var pixel = this.map_.getEventPixel(evt.originalEvent);
 
@@ -327,7 +335,7 @@ exports.prototype.handleLocationChange_ = function(location, oldLocation) {
   // (1) No need to do anything if the old value equals the new value
   if (this.isInitialised_ && (location === oldLocation || (
     Array.isArray(location) && Array.isArray(oldLocation) &&
-      olBase.array.equals(location, oldLocation)
+      arrayEquals(location, oldLocation)
   ))) {
     return;
   }
@@ -388,15 +396,15 @@ exports.prototype.handleReadyChange_ = function(ready, oldReady) {
 exports.prototype.createStyleFunction = function() {
   var arrowPath = this.arrowPath_;
   var imagePath = this.appImagesPath_;
-  return function(resolution) {
-    if (this.get('isDirection')) {
-      var curZoom = this.get('zoom');
+  return function(feature, resolution) {
+    if (feature.get('isDirection')) {
+      var curZoom = feature.get('zoom');
       if (curZoom < 1) {
         curZoom = 1;
       } else if (curZoom > 4) {
         curZoom = 4;
       }
-      var curPitch = Math.abs(this.get('pitch'));
+      var curPitch = Math.abs(feature.get('pitch'));
       var pitch = 0;
       if (curPitch >= 0 && curPitch <= 23) {
         pitch = 0;
@@ -408,20 +416,20 @@ exports.prototype.createStyleFunction = function() {
         pitch = 3;
       }
       var directionArrowPath = imagePath + '/direction_sv_zl' + curZoom + '_p' + pitch + '.png';
-      return [new olStyle.Style({
-        image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
+      return [new Style({
+        image: new Icon(/** @type {olx.style.IconOptions} */({
           src: directionArrowPath,
-          rotation: this.get('heading') * Math.PI / 180
+          rotation: feature.get('heading') * Math.PI / 180
         }))
       })];
     }
-    return [new olStyle.Style({
-      image: new olStyle.Icon(/** @type {olx.style.IconOptions} */({
+    return [new Style({
+      image: new Icon(/** @type {olx.style.IconOptions} */({
         anchor: [0.5, 50],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
         src: arrowPath,
-        rotation: this.get('heading') * Math.PI / 180
+        rotation: feature.get('heading') * Math.PI / 180
       }))
     })];
   };
@@ -466,7 +474,7 @@ exports.prototype.style_ = function() {
   this.locationInfoOverlay_.clear();
   if (navigationLinks !== undefined) {
     navigationLinks.forEach(function(link) {
-      var curFeature = new olBase.Feature();
+      var curFeature = new Feature();
       curFeature.setGeometry(this.point_);
       curFeature.set('heading', link.heading);
       curFeature.set('pano', link.pano);
@@ -490,7 +498,7 @@ exports.prototype.handlePanoramaPositionChange_ = function() {
   this.point_.setCoordinates(this.location);
   this.scope_.$apply();
 
-  if (!olBase.extent.containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
+  if (!containsCoordinate(this.map_.getView().calculateExtent(this.map_.getSize()), this.location)) {
     this.map_.getView().setCenter(this.location);
   }
   this.panoramaPositionChanging_ = false;
@@ -502,7 +510,7 @@ exports.prototype.handlePanoramaPositionChange_ = function() {
  * @return {ol.Coordinate} Map view projection coordinate.
  */
 exports.prototype.fromLonLat_ = function(lonLat) {
-  return olBase.proj.fromLonLat(
+  return fromLonLat(
     lonLat,
     this.map_.getView().getProjection()
   );
@@ -513,7 +521,7 @@ exports.prototype.fromLonLat_ = function(lonLat) {
  * @return {ol.Coordinate} LonLat coordinate.
  */
 exports.prototype.toLonLat_ = function(coordinate) {
-  return olBase.proj.toLonLat(
+  return toLonLat(
     coordinate,
     this.map_.getView().getProjection()
   );

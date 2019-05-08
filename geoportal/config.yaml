@@ -121,6 +121,16 @@ vars:
     arguments: {db: 0, distributed_lock: true, host: '{REDIS_HOST}', port: '{REDIS_PORT}',
       redis_expiration_time: 86400}
     backend: dogpile.cache.redis
+  pds:
+    staging_url:
+    prod_url:
+    fme_token:
+    owncloud_internal_url:
+    owncloud_external_url:
+    owncloud_user:
+    owncloud_password:
+    smtp_server:
+    bcc_address:
   casipo: {bcc_address: null, fme_token: null, owncloud_external_url: null, owncloud_internal_url: null,
     owncloud_password: null, owncloud_user: null, prod_url: null, smtp_server: null,
     staging_url: null}
@@ -306,7 +316,9 @@ vars:
   hooks: {}
   host: '{VISIBLE_WEB_HOST}'
   host_forward_host: []
-  https_proxy: {unauthorized_ips: '10.0.0.0/8, 127.0.0.1'}
+  https_proxy:
+    unauthorized_ips: '10.0.0.0/8, 127.0.0.1'
+    authorized_hosts: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu'
   interfaces: [main]
   interfaces_config:
     main:
@@ -390,6 +402,9 @@ vars:
   ogcproxy_enable: false
   overview_map: {base_layer: basemap_2015_global, show: false}
   package: geoportailv3
+  anf:
+    email:
+    map_id:
   pag: {
     bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
     owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,

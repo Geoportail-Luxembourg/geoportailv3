@@ -2,7 +2,8 @@
  * @module app.slider.SliderController
  */
 import appModule from '../module.js';
-import olBase from 'ol.js';
+import {listen, listenOnce} from 'ol/events.js';
+import {unByKey} from 'ol/Observable.js';
 
 /**
  * @param {angular.JQLite} $element Element.
@@ -113,18 +114,18 @@ exports.prototype.activate = function(active) {
     }
     this.moveLine_();
 
-    this.mapResizeEvent_ = olBase.events.listen(this.map_, 'change:size', this.moveLine_, this);
-    this.mousedownEvent_ = olBase.events.listen(this.element_[0], 'mousedown',
+    this.mapResizeEvent_ = listen(this.map_, 'change:size', this.moveLine_, this);
+    this.mousedownEvent_ = listen(this.element_[0], 'mousedown',
         function(event) {
           this.isDragging_ = true;
           if (this.mousemoveEvent_ === null) {
-            this.mousemoveEvent_ = olBase.events.listen(this.map_,
-                olBase.MapBrowserEventType.POINTERMOVE, this.drag_, this);
+            this.mousemoveEvent_ = listen(this.map_,
+                'pointermove', this.drag_, this);
           }
-          olBase.events.listenOnce(this.$document_[0],
+         listenOnce(this.$document_[0],
               'mouseup', function() {
                 if (this.mousemoveEvent_) {
-                  olBase.Observable.unByKey(this.mousemoveEvent_);
+                  unByKey(this.mousemoveEvent_);
                 }
                 this.isDragging_ = false;
                 this.mousemoveEvent_ = null;
@@ -133,7 +134,7 @@ exports.prototype.activate = function(active) {
 
     var layer = this['layers'][0];
     if (layer !== undefined) {
-      this.precomposeEvent_ = olBase.events.listen(layer, 'precompose', function(event) {
+      this.precomposeEvent_ = listen(layer, 'precompose', function(event) {
         if (this['layers'][0] === layer) {
           var ratio = this.ngeoLocation_.getParam('sliderRatio');
           var ctx = event.context;
@@ -147,7 +148,7 @@ exports.prototype.activate = function(active) {
         }
       }, this);
 
-      this.postcomposeEvent_ = olBase.events.listen(layer, 'postcompose', function(event) {
+      this.postcomposeEvent_ = listen(layer, 'postcompose', function(event) {
         if (this['layers'][0] === layer) {
           var ctx = event.context;
           ctx.restore();
@@ -158,16 +159,16 @@ exports.prototype.activate = function(active) {
     }
   } else {
     if (this.mousedownEvent_) {
-      olBase.Observable.unByKey(this.mousedownEvent_);
+      unByKey(this.mousedownEvent_);
     }
     if (this.mapResizeEvent_) {
-      olBase.Observable.unByKey(this.mapResizeEvent_);
+      unByKey(this.mapResizeEvent_);
     }
     if (this.precomposeEvent_ !== null) {
-      olBase.Observable.unByKey(this.precomposeEvent_);
+      unByKey(this.precomposeEvent_);
     }
     if (this.postcomposeEvent_ !== null) {
-      olBase.Observable.unByKey(this.postcomposeEvent_);
+      unByKey(this.postcomposeEvent_);
     }
   }
   this.map_.render();

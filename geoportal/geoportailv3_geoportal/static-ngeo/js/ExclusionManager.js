@@ -8,12 +8,14 @@
 
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import olBase from 'ol.js';
-import olObservable from 'ol/Observable.js';
-import olObject from 'ol/Object.js';
-import olEvents from 'ol/events.js';
+
+import {unByKey} from 'ol/Observable.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {listen} from 'ol/events.js';
 import olLayerProperty from 'ol/layer/Property.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
+import {getUid} from 'ol/index.js';
+
 
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
@@ -163,7 +165,7 @@ exports.prototype.init = function(map) {
 
   // listen on layers being added to the map
   // base layers switch should fire the event as well
-  olEvents.listen(map.getLayers(), olCollectionEventType.ADD,
+  listen(map.getLayers(), olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -172,26 +174,25 @@ exports.prototype.init = function(map) {
         this.checkForLayerExclusion_(map, layer);
 
         // listen on opacity change
-        var key = olEvents.listen(layer,
-            olObject.getChangeEventType(olLayerProperty.OPACITY),
+        var key = listen(layer,
+            getChangeEventType(olLayerProperty.OPACITY),
             function(e) {
               this.checkForLayerExclusion_(map, layer);
             }, this);
-        layerOpacityListenerKeys[olBase.getUid(layer)] = key;
+        layerOpacityListenerKeys[getUid(layer)] = key;
       }, this);
 
   // remove any listener on opacity change when layer is removed from map
-  olEvents.listen(map.getLayers(), olCollectionEventType.REMOVE,
+  listen(map.getLayers(), olCollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
       function(e) {
         var layer = /** @type {ol.layer.Layer} */ (e.element);
-        console.assert(olBase.getUid(layer) in layerOpacityListenerKeys);
-        olObservable.unByKey(layerOpacityListenerKeys[olBase.getUid(layer)]);
+        console.assert(getUid(layer) in layerOpacityListenerKeys);
+        unByKey(layerOpacityListenerKeys[getUid(layer)]);
       }, this);
 };
-
 appModule.service('appExclusionManager', exports);
 
 

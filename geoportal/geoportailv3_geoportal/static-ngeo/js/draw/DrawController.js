@@ -20,24 +20,24 @@ import appInteractionDrawRoute from '../interaction/DrawRoute.js';
 import appInteractionClipLine from '../interaction/ClipLine.js';
 import appInteractionModifyCircle from '../interaction/ModifyCircle.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import ngeoInteractionTranslate from 'ngeo/interaction/Translate.js';
 import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olFeature from 'ol/Feature.js';
-import olObject from 'ol/Object.js';
-import olObservable from 'ol/Observable.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {unByKey} from 'ol/Observable.js';
 import olOverlay from 'ol/Overlay.js';
-import olEvents from 'ol/events.js';
-import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {listen} from 'ol/events.js';
+import {getCenter} from 'ol/extent.js';
+import {transform} from 'ol/proj.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
-import olInteraction from 'ol/interaction.js';
+import {fromCircle} from 'ol/geom/Polygon.js';
 import olInteractionDraw from 'ol/interaction/Draw.js';
 import olInteractionModify from 'ol/interaction/Modify.js';
 import olInteractionSelect from 'ol/interaction/Select.js';
-import olInteractionTranslate from 'ol/interaction/Translate.js';
+import {noModifierKeys, singleClick} from 'ol/events/condition.js';
+import {getDistance as haversineDistance, getArea} from 'ol/sphere.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -226,10 +226,10 @@ const exports = function($scope,
   drawPoint.setActive(false);
   ngeoMiscDecorate.interaction(drawPoint);
   this.map.addInteraction(drawPoint);
-  olEvents.listen(drawPoint, olObject.getChangeEventType(
-      olInteraction.Property.ACTIVE),
+  listen(drawPoint, getChangeEventType(
+      'active'),
       this.onChangeActive_, this);
-  olEvents.listen(drawPoint, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPoint, 'drawend',
       this.onDrawEnd_, this);
 
   var drawLabel = new olInteractionDraw({
@@ -245,10 +245,10 @@ const exports = function($scope,
   drawLabel.setActive(false);
   ngeoMiscDecorate.interaction(drawLabel);
   this.map.addInteraction(drawLabel);
-  olEvents.listen(drawLabel, olObject.getChangeEventType(
-      olInteraction.Property.ACTIVE),
+  listen(drawLabel, getChangeEventType(
+      'active'),
       this.onChangeActive_, this);
-  olEvents.listen(drawLabel, olInteraction.DrawEventType.DRAWEND,
+  listen(drawLabel, 'drawend',
       this.onDrawEnd_, this);
 
   this.drawnFeatures_.drawLineInteraction = new appInteractionDrawRoute({
@@ -267,12 +267,12 @@ const exports = function($scope,
   this.drawLine.setActive(false);
   ngeoMiscDecorate.interaction(this.drawLine);
   this.map.addInteraction(this.drawLine);
-  olEvents.listen(this.drawLine, olObject.getChangeEventType(
-      olInteraction.Property.ACTIVE),
+  listen(this.drawLine, getChangeEventType(
+      'active'),
       this.onChangeActive_, this);
-  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWEND,
+  listen(this.drawLine, 'drawend',
       this.onDrawEnd_, this);
-  olEvents.listen(this.drawLine, olInteraction.DrawEventType.DRAWSTART,
+  listen(this.drawLine, 'drawstart',
       this.onDrawLineStart_, this);
 
   var drawPolygon = new olInteractionDraw({
@@ -288,12 +288,12 @@ const exports = function($scope,
   drawPolygon.setActive(false);
   ngeoMiscDecorate.interaction(drawPolygon);
   this.map.addInteraction(drawPolygon);
-  olEvents.listen(drawPolygon, olObject.getChangeEventType(
-      olInteraction.Property.ACTIVE),
+  listen(drawPolygon, getChangeEventType(
+      'active'),
       this.onChangeActive_, this);
-  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWEND,
+  listen(drawPolygon, 'drawend',
       this.onDrawEnd_, this);
-  olEvents.listen(drawPolygon, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawPolygon, 'drawstart',
       this.onDrawPolygonStart_, this);
 
   var drawCircle = new olInteractionDraw({
@@ -309,12 +309,12 @@ const exports = function($scope,
   drawCircle.setActive(false);
   ngeoMiscDecorate.interaction(drawCircle);
   this.map.addInteraction(drawCircle);
-  olEvents.listen(drawCircle, olObject.getChangeEventType(
-      olInteraction.Property.ACTIVE),
+  listen(drawCircle, getChangeEventType(
+      'active'),
       this.onChangeActive_, this);
-  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWEND,
+  listen(drawCircle, 'drawend',
       this.onDrawEnd_, this);
-  olEvents.listen(drawCircle, olInteraction.DrawEventType.DRAWSTART,
+  listen(drawCircle, 'drawstart',
       this.onDrawCircleStart_, this);
 
   // Watch the "active" property, and disable the draw interactions
@@ -356,7 +356,7 @@ const exports = function($scope,
   this.drawnFeatures_.selectInteraction.setActive(false);
   appFeaturePopup.init(this.map);
 
-  olEvents.listen(appSelectedFeatures, olCollectionEventType.ADD,
+  listen(appSelectedFeatures, olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -371,14 +371,14 @@ const exports = function($scope,
         }
         if (!this.featurePopup_.isDocked) {
           this.featurePopup_.show(feature, this.map,
-            olExtent.getCenter(feature.getGeometry().getExtent()));
+            getCenter(feature.getGeometry().getExtent()));
         }
         this.gotoAnchor(
             'feature-' + this.drawnFeatures_.getArray().indexOf(feature));
         this.scope_.$applyAsync();
       }).bind(this));
 
-  olEvents.listen(appSelectedFeatures, olCollectionEventType.REMOVE,
+  listen(appSelectedFeatures, olCollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} evt The event.
        */
@@ -400,7 +400,7 @@ const exports = function($scope,
     features: appSelectedFeatures,
     pixelTolerance: 20,
     deleteCondition: function(event) {
-      return olEvents.condition.noModifierKeys(event) && olEvents.condition.singleClick(event);
+      return noModifierKeys(event) && singleClick(event);
     }
   });
 
@@ -410,8 +410,8 @@ const exports = function($scope,
       });
   this.drawnFeatures_.clipLineInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.clipLineInteraction);
-  olEvents.listen(this.drawnFeatures_.clipLineInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.onClipLineEnd_, this);
+  listen(this.drawnFeatures_.clipLineInteraction,
+      'modifyend', this.onClipLineEnd_, this);
 
   this.drawnFeatures_.modifyCircleInteraction =
       new appInteractionModifyCircle({
@@ -424,22 +424,21 @@ const exports = function($scope,
   this.modifyCircleInteraction_ = this.drawnFeatures_.modifyCircleInteraction;
   this.map.addInteraction(this.drawnFeatures_.modifyCircleInteraction);
   this.modifyCircleInteraction_.setActive(false);
-  olEvents.listen(this.modifyCircleInteraction_,
-      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+  listen(this.modifyCircleInteraction_,
+      'modifyend', this.onFeatureModifyEnd_, this);
 
   this.map.addInteraction(this.drawnFeatures_.modifyInteraction);
-  olEvents.listen(this.drawnFeatures_.modifyInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.onFeatureModifyEnd_, this);
+  listen(this.drawnFeatures_.modifyInteraction,
+      'modifyend', this.onFeatureModifyEnd_, this);
 
-  this.drawnFeatures_.translateInteraction = new olInteractionTranslate({
+  this.drawnFeatures_.translateInteraction = new ngeoInteractionTranslate({
     features: appSelectedFeatures
   });
   this.drawnFeatures_.translateInteraction.setActive(false);
   this.map.addInteraction(this.drawnFeatures_.translateInteraction);
 
-  olEvents.listen(
-      this.drawnFeatures_.translateInteraction,
-      olInteraction.TranslateEventType.TRANSLATEEND,
+  listen(
+      this.drawnFeatures_.translateInteraction, 'translateend',
       /**
        * @param {ol.interaction.Translate.Event} evt The event.
        */
@@ -449,7 +448,7 @@ const exports = function($scope,
 
   this.drawnFeatures_.drawFeaturesInUrl(this.featureStyleFunction_);
 
-  olEvents.listen(this.map, olEvents.EventType.KEYDOWN,
+  listen(this.map, 'keydown',
       this.keyboardHandler_, this);
 
 };
@@ -550,8 +549,8 @@ exports.prototype.onDrawPolygonStart_ = function(event) {
   var proj = this.map.getView().getProjection();
 
 
-  this.changeEventKey_ = olEvents.listen(geometry,
-      olEvents.EventType.CHANGE,
+  this.changeEventKey_ = listen(geometry,
+      'change',
       function() {
         var verticesCount = geometry.getCoordinates()[0].length;
         var coord = null;
@@ -579,8 +578,8 @@ exports.prototype.onDrawLineStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = olEvents.listen(geometry,
-      olEvents.EventType.CHANGE,
+  this.changeEventKey_ = listen(geometry,
+      'change',
       function() {
         var coord = geometry.getLastCoordinate();
         if (coord !== null) {
@@ -604,8 +603,8 @@ exports.prototype.onDrawCircleStart_ = function(event) {
   console.assert(geometry !== undefined);
   var proj = this.map.getView().getProjection();
 
-  this.changeEventKey_ = olEvents.listen(geometry,
-      olEvents.EventType.CHANGE,
+  this.changeEventKey_ = listen(geometry,
+      'change',
       function() {
         var coord = geometry.getLastCoordinate();
         var center = geometry.getCenter();
@@ -631,9 +630,9 @@ exports.prototype.getFormattedLength =
     var length = 0;
     var coordinates = lineString.getCoordinates();
     for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      var c1 = olProj.transform(coordinates[i], projection, 'EPSG:4326');
-      var c2 = olProj.transform(coordinates[i + 1], projection, 'EPSG:4326');
-      length += ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(c1, c2);
+      var c1 = transform(coordinates[i], projection, 'EPSG:4326');
+      var c2 = transform(coordinates[i + 1], projection, 'EPSG:4326');
+      length += haversineDistance(c1, c2);
     }
     var output;
     if (length > 1000) {
@@ -657,8 +656,7 @@ exports.prototype.getFormattedLength =
 exports.prototype.getFormattedArea = function(polygon, projection) {
   var geom = /** @type {ol.geom.Polygon} */ (
       polygon.clone().transform(projection, 'EPSG:4326'));
-  var coordinates = geom.getLinearRing(0).getCoordinates();
-  var area = Math.abs(ngeoInteractionMeasure.SPHERE_WGS84.geodesicArea(coordinates));
+  var area = Math.abs(getArea(geom));
   var output;
   if (area > 1000000) {
     output = parseFloat((area / 1000000).toPrecision(3)) +
@@ -678,7 +676,7 @@ exports.prototype.onDrawEnd_ = function(event) {
   this.removeMeasureTooltip_();
 
   if (this.changeEventKey_ !== null) {
-    olObservable.unByKey(this.changeEventKey_);
+    unByKey(this.changeEventKey_);
     this.changeEventKey_ = null;
   }
   if (this.drawnFeatures_.continuingLine) {
@@ -690,8 +688,7 @@ exports.prototype.onDrawEnd_ = function(event) {
   if (feature.getGeometry().getType() === olGeomGeometryType.CIRCLE) {
     var featureGeom = /** @type {ol.geom.Circle} */ (feature.getGeometry());
     feature.set('isCircle', true);
-    feature.setGeometry(
-        olGeomPolygon.fromCircle(featureGeom, 64)
+    feature.setGeometry(fromCircle(featureGeom, 64)
     );
   }
 

@@ -9,7 +9,7 @@ let exports = {};
  */
 
 import appModule from './module.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 
 
 /**
@@ -29,7 +29,7 @@ function service($http, gettextCatalog, elevationServiceUrl) {
    */
   function getElevation(coordinate) {
     var lonlat = /** @type {ol.Coordinate} */
-        (olProj.transform(coordinate,
+        (transform(coordinate,
             'EPSG:3857', 'EPSG:2169'));
     return $http.get(elevationServiceUrl, {
       params: {

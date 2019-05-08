@@ -7,10 +7,16 @@
  */
 
 import appModule from './module.js';
-import olBase from 'ol.js';
-import olStyle from 'ol/style.js';
+import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
+import Style from 'ol/style/Style.js';
+import Circle from 'ol/style/Circle.js';
+import Stroke from 'ol/style/Stroke.js';
+import Fill from 'ol/style/Fill.js';
+import Text from 'ol/style/Text.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import {transform} from 'ol/proj.js';
 
 /**
  * @constructor
@@ -33,8 +39,8 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.roadStyle_ = new olStyle.Style({
-    stroke: new olStyle.Stroke({
+  this.roadStyle_ = new Style({
+    stroke: new Stroke({
       color: [255, 0, 0],
       width: 5
     })
@@ -86,18 +92,18 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.routeFeatures = new olBase.Collection();
+  this.routeFeatures = new Collection();
   this.routeOverlay.setFeatures(this.routeFeatures);
 
   /**
    * @type {ngeo.map.FeatureOverlay}
    */
   this.stepsOverlay = ngeoFeatureOverlayMgr.getFeatureOverlay();
-  var fillStyle = new olStyle.Fill({
+  var fillStyle = new Fill({
     color: [41, 128, 185]
   });
 
-  var strokeStyle = new olStyle.Stroke({
+  var strokeStyle = new Stroke({
     color: [255, 255, 255],
     width: 3
   });
@@ -106,11 +112,11 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
    * @type {ol.style.Style}
    * @private
    */
-  this.stepStyle_ = new olStyle.Style({
+  this.stepStyle_ = new Style({
     fill: fillStyle,
     zIndex: 0,
     stroke: strokeStyle,
-    image: new olStyle.Circle({
+    image: new Circle({
       radius: 7,
       fill: fillStyle,
       stroke: strokeStyle
@@ -121,7 +127,7 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.stepFeatures = new olBase.Collection();
+  this.stepFeatures = new Collection();
   this.stepsOverlay.setFeatures(this.stepFeatures);
   this.stepsOverlay.setStyle(this.stepStyle_);
 
@@ -133,7 +139,7 @@ const exports = function($http, routingServiceUrl, gettextCatalog,
   /**
    * @type {ol.Collection<ol.Feature>}
    */
-  this.features = new olBase.Collection();
+  this.features = new Collection();
   this.routingOverlay.setFeatures(this.features);
 
   /**
@@ -179,39 +185,39 @@ exports.prototype.reorderRoute = function() {
 exports.prototype.insertFeatureAt = function(feature, routeNumber) {
   feature.setStyle(function() {
     var styles = [];
-    var fillStyle = new olStyle.Fill({
+    var fillStyle = new Fill({
       color: [255, 255, 255]
     });
 
-    var strokeStyle = new olStyle.Stroke({
+    var strokeStyle = new Stroke({
       color: [41, 128, 185],
       width: 3
     });
 
-    styles.push(new olStyle.Style({
+    styles.push(new Style({
       zIndex: 1,
       fill: fillStyle,
       stroke: strokeStyle,
-      image: new olStyle.Circle({
+      image: new Circle({
         radius: 15,
         fill: fillStyle,
         stroke: strokeStyle
       })
     }));
-    var text = this.get('name');
+    var text = feature.get('name');
     if (text === undefined) {
       text = '';
     }
-    styles.push(new olStyle.Style({
+    styles.push(new Style({
       zIndex: 2,
-      text: new olStyle.Text(/** @type {olx.style.TextOptions} */ ({
+      text: new Text(/** @type {olx.style.TextOptions} */ ({
         text: text,
         textAlign: 'center',
         font: 'normal 10px Sans-serif',
-        fill: new olStyle.Fill({
+        fill: new Fill({
           color: [41, 128, 185]
         }),
-        stroke: new olStyle.Stroke({
+        stroke: new Stroke({
           color: [255, 255, 255],
           width: 2
         })
@@ -225,7 +231,7 @@ exports.prototype.insertFeatureAt = function(feature, routeNumber) {
   if (routeNumber > featuresLength) {
     var j;
     for (j = featuresLength; j < routeNumber; ++j) {
-      var blankFeature = new olBase.Feature();
+      var blankFeature = new Feature();
       blankFeature.set('name', '' + j);
       this.features.insertAt(j, blankFeature);
     }
@@ -274,7 +280,7 @@ exports.prototype.getRoute = function() {
       var geom = feature.getGeometry();
       if (geom instanceof olGeomPoint) {
         var lonlat = /** @type {ol.Coordinate} */
-            (olBase.proj.transform(geom.getFirstCoordinate(),
+            (transform(geom.getFirstCoordinate(),
             'EPSG:3857', 'EPSG:4326'));
         waypoints.push(lonlat[1] + ',' + lonlat[0]);
       }

@@ -1,5 +1,6 @@
 from pyramid.view import view_config
-from c2cgeoportal.models import DBSession, Theme
+from c2cgeoportal_commons.models import DBSession
+from c2cgeoportal_commons.models.main import Theme
 import logging
 
 log = logging.getLogger(__name__)

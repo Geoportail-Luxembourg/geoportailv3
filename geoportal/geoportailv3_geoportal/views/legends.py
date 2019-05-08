@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from pyramid.view import view_config
 from pyramid.response import Response
-from cStringIO import StringIO
+from io import StringIO
 from bs4 import BeautifulSoup
 import weasyprint
-import urllib2
+import urllib.request
 import httplib2
 
 
@@ -48,16 +48,17 @@ class Legends(object):
             "id=%s:legend:%s&do=export_html" % \
             (lang, name)
 
-        f = urllib2.urlopen(httplib2.iri2uri(url), None, 15)
+        f = urllib.request.urlopen(httplib2.iri2uri(url), None, 15)
         data = f.read()
         data = data.replace(
-            "/lib/exe/fetch.php",
-            "https://wiki.geoportail.lu/lib/exe/fetch.php")
+            b"/lib/exe/fetch.php",
+            b"https://wiki.geoportail.lu/lib/exe/fetch.php")
         data = data.replace(
-            "src=\"img/", "src=\"https://wiki.geoportail.lu/img/")
+            b"src=\"img/",
+            b"src=\"https://wiki.geoportail.lu/img/")
         data = data.replace(
-            "/lib/exe/detail.php",
-            "https://wiki.geoportail.lu/lib/exe/detail.php")
+            b"/lib/exe/detail.php",
+            b"https://wiki.geoportail.lu/lib/exe/detail.php")
 
         soup = BeautifulSoup(data, "lxml")
         a_tags = soup.find_all("a")

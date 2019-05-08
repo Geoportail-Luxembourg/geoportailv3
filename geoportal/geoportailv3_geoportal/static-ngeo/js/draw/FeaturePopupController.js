@@ -7,17 +7,16 @@
 
 import appModule from '../module.js';
 import appMiscFile from '../misc/file.js';
-import olEvents from 'ol/events.js';
-import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {listen, unlistenByKey} from 'ol/events.js';
+import {getCenter} from 'ol/extent.js';
+import {transform, getPointResolution, METERS_PER_UNIT} from 'ol/proj.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomCircle from 'ol/geom/Circle.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
+import {fromCircle} from 'ol/geom/Polygon.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olInteraction from 'ol/interaction.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import {getDistance as haversineDistance} from 'ol/sphere.js';
 
 /**
  * @constructor
@@ -254,8 +253,8 @@ const exports = function($scope, $sce, appFeaturePopup,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = olEvents.listen(this.drawnFeatures_.modifyInteraction,
-      olInteraction.ModifyEventType.MODIFYEND, this.updateFeature_, this);
+  this.event_ = listen(this.drawnFeatures_.modifyInteraction,
+      'modifyend', this.updateFeature_, this);
 
   this.unwatch4_ = $scope.$watch(function() {
     return this.image;
@@ -282,7 +281,7 @@ const exports = function($scope, $sce, appFeaturePopup,
   }.bind(this));
 
   $scope.$on('$destroy', function() {
-    olEvents.unlistenByKey(this.event_);
+    unlistenByKey(this.event_);
     this.unwatch1_();
     this.unwatch2_();
     this.unwatch3_();
@@ -321,11 +320,11 @@ exports.prototype.getCircleRadius = function() {
       this.feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
-    var p1 = olProj.transform(center, projection, 'EPSG:4326');
-    var p2 = olProj.transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
-    return Math.round(ngeoInteractionMeasure.SPHERE_WGS84.haversineDistance(p1, p2));
+    var p1 = transform(center, projection, 'EPSG:4326');
+    var p2 = transform(geom.getLastCoordinate(), projection, 'EPSG:4326');
+    return Math.round(haversineDistance(p1, p2));
   }
   return 0;
 };
@@ -351,15 +350,14 @@ exports.prototype.setFeatureCircleRadius = function(feature, radius) {
       feature.getGeometry().getType() === olGeomGeometryType.POLYGON &&
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (feature.getGeometry());
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var projection = this.map.getView().getProjection();
     var resolution = this.map.getView().getResolution();
-    var pointResolution = olProj.getPointResolution(projection, /** @type {number} */ (resolution), center);
+    var pointResolution = getPointResolution(projection, /** @type {number} */ (resolution), center);
     var resolutionFactor = resolution / pointResolution;
-    radius = (radius / olProj.METERS_PER_UNIT.m) * resolutionFactor;
+    radius = (radius / METERS_PER_UNIT.m) * resolutionFactor;
     var featureGeom = new olGeomCircle(center, radius);
-    feature.setGeometry(
-        olGeomPolygon.fromCircle(featureGeom, 64)
+    feature.setGeometry(fromCircle(featureGeom, 64)
     );
   }
 };
@@ -509,7 +507,7 @@ exports.prototype.getRadius = function() {
       this.isCircle()) {
     var geom = /** @type {ol.geom.Polygon} **/ (this.feature.getGeometry());
     console.assert(geom !== null && geom !== undefined);
-    var center = olExtent.getCenter(geom.getExtent());
+    var center = getCenter(geom.getExtent());
     var line = new olGeomLineString([center, geom.getLastCoordinate()]);
     return this.appFeaturePopup_.formatRadius(line);
   } else {

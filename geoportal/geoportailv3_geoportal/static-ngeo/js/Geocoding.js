@@ -7,7 +7,7 @@
  */
 
 import appModule from './module.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 
 /**
  * @constructor
@@ -43,7 +43,7 @@ const exports = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl)
  */
 exports.prototype.reverseGeocode = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
-      (olProj.transform(coordinate,
+      (transform(coordinate,
       'EPSG:3857', 'EPSG:2169'));
 
   return this.$http_.get(this.reverseGeocodingServiceUrl_, {

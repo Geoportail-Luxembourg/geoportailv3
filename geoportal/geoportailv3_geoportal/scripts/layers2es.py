@@ -37,11 +37,13 @@ import sys
 import yaml
 import requests
 import json
+import os
 from argparse import ArgumentParser
 from pyramid.paster import get_app, bootstrap
 from pyramid.i18n import TranslationStringFactory, make_localizer
 from pyramid.interfaces import ITranslationDirectories
-from geoportailv3.lib.search import get_elasticsearch, get_index, ensure_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, \
+    ensure_index
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
@@ -126,7 +128,7 @@ def main():
     app_name = options.app_name
     if app_name is None and "#" in app_config:
         app_config, app_name = app_config.split("#", 1)
-    get_app(app_config, name=app_name)
+    get_app(app_config, name=app_name, options=os.environ)
 
     Import(options)
 
@@ -138,29 +140,32 @@ class Import:
         self.layers = []
 
         settings = {}
-        with open(".build/config.yaml") as f:
+        with open("config.yaml") as f:
             settings = yaml.load(f)
 
-        self.languages = settings["available_locale_names"]
-        exluded_themes_string = settings["excluded_themes_from_search"]
+        self.languages = settings["vars"]["available_locale_names"]
+        exluded_themes_string = settings["vars"]["excluded_themes_from_search"]
         exluded_themes = []
         if exluded_themes_string is not None:
             exluded_themes = exluded_themes_string.split(",")
 
         # must be done only once we have loaded the project config
-        from c2cgeoportal.models import DBSession, Interface, Theme, Role
+        from c2cgeoportal_commons.models import DBSession
+        from c2cgeoportal_commons.models.main import Interface, Theme, Role
 
         self.session = DBSession()
 
         self._ = {}
         self.metadata_service_url = \
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp'
-        registry = bootstrap(self.options.app_config)['registry']
-        request = bootstrap(self.options.app_config)['request']
+
+        with bootstrap(self.options.app_config, options=os.environ) as env:
+            registry = env['registry']
+            request = env['request']
 
         self.es_layer_index = get_index(request) + '_layers'
         self.tdirs = registry.queryUtility(ITranslationDirectories, default=[])
-        self.tsf = TranslationStringFactory('geoportailv3-client')
+        self.tsf = TranslationStringFactory('geoportailv3_geoportal-client')
 
         self.interfaces = self.session.query(Interface).filter(
             Interface.name.in_(options.interfaces)
@@ -231,7 +236,7 @@ class Import:
                     'description': '',
                     'metadata_name': ''
                 }
-                for metadata in item.ui_metadata:
+                for metadata in item.metadatas:
                     if metadata.name == 'metadata_id':
                         params = dict(
                             uid=metadata.value,
@@ -240,6 +245,7 @@ class Import:
                         try:
                             resp = requests.get(url=self.metadata_service_url,
                                                 params=params)
+                            data = {}
                             try:
                                 data = json.loads(resp.text)
                             except:
@@ -279,7 +285,7 @@ class Import:
         return self._add_group(group, interface, self.options.folders, role)
 
     def _add_group(self, group, interface, export, role):
-        from c2cgeoportal.models import LayerGroup
+        from c2cgeoportal_commons.models.main import LayerGroup
 
         fill = False
         if hasattr(group, 'children'):
@@ -307,7 +313,7 @@ class Import:
         return False
 
     def _add_layer(self, layer, interface, role):
-        from c2cgeoportal.models import LayerV1
+        from c2cgeoportal_commons.models.main import LayerV1
 
         if isinstance(layer, LayerV1):
             return False
