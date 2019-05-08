@@ -1,40 +1,41 @@
-goog.provide('lux.Map');
+goog.module('lux.Map');
 
-goog.require('lux');
-goog.require('lux.LayerManager');
-goog.require('lux.MyMap');
-goog.require('lux.PrintManager');
-goog.require('lux.StateManager');
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.Map');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.control.MousePosition');
-goog.require('ol.events');
-goog.require('ol.format.GPX');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.format.KML');
-goog.require('ol.geom.Point');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.extent');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Circle');
-goog.require('ol.source.Vector');
-goog.require('ol.proj');
-goog.require('ol.Collection');
-goog.require('ol.asserts');
-goog.require('ol.control.Attribution');
-goog.require('ol.control');
-goog.require('ol.CollectionEventType');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.Feature');
-goog.require('ol.geom.Polygon');
-goog.require('ol.source.VectorEventType');
+goog.module.declareLegacyNamespace();
+const luxBase = goog.require('lux');
+const luxLayerManager = goog.require('lux.LayerManager');
+const luxMyMap = goog.require('lux.MyMap');
+const luxPrintManager = goog.require('lux.PrintManager');
+const luxStateManager = goog.require('lux.StateManager');
+const olBase = goog.require('ol');
+const olArray = goog.require('ol.array');
+const olMap = goog.require('ol.Map');
+const olOverlay = goog.require('ol.Overlay');
+const olView = goog.require('ol.View');
+const olControlMousePosition = goog.require('ol.control.MousePosition');
+const olEvents = goog.require('ol.events');
+const olFormatGPX = goog.require('ol.format.GPX');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olFormatKML = goog.require('ol.format.KML');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olInteractionSelect = goog.require('ol.interaction.Select');
+const olLayerTile = goog.require('ol.layer.Tile');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olExtent = goog.require('ol.extent');
+const olStyleFill = goog.require('ol.style.Fill');
+const olStyleStroke = goog.require('ol.style.Stroke');
+const olStyleStyle = goog.require('ol.style.Style');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olSourceVector = goog.require('ol.source.Vector');
+const olProj = goog.require('ol.proj');
+const olCollection = goog.require('ol.Collection');
+const olAsserts = goog.require('ol.asserts');
+const olControlAttribution = goog.require('ol.control.Attribution');
+const olControl = goog.require('ol.control');
+const olCollectionEventType = goog.require('ol.CollectionEventType');
+const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
+const olFeature = goog.require('ol.Feature');
+const olGeomPolygon = goog.require('ol.geom.Polygon');
+const olSourceVectorEventType = goog.require('ol.source.VectorEventType');
 
 
 proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
@@ -77,7 +78,7 @@ _paq.push(['setSiteId', 22]);
  * @export
  * @api stable
  */
-lux.Map = function(options) {
+exports = function(options) {
   /**
    * @private
    * @type {Array}
@@ -107,7 +108,7 @@ lux.Map = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.featureExtent_ = ol.extent.createEmpty();
+  this.featureExtent_ = olExtent.createEmpty();
 
   /**
    * @private
@@ -140,7 +141,7 @@ lux.Map = function(options) {
    */
   this.showLayerInfoPopup_ = options.showLayerInfoPopup ? true : false;
 
-  this.setLanguage(lux.lang);
+  this.setLanguage(luxBase.lang);
 
   /**
    * @private
@@ -148,11 +149,11 @@ lux.Map = function(options) {
    */
   this.searchLayer_ = null;
 
-  var fillStyle = new ol.style.Fill({
+  var fillStyle = new olStyleFill({
     color: [255, 255, 0, 0.6]
   });
 
-  var strokeStyle = new ol.style.Stroke({
+  var strokeStyle = new olStyleStroke({
     color: [255, 155, 55, 1],
     width: 3
   });
@@ -161,10 +162,10 @@ lux.Map = function(options) {
    * @private
    * @type {ol.style.Style}
    */
-  this.vectorStyle_ = new ol.style.Style({
+  this.vectorStyle_ = new olStyleStyle({
     fill: fillStyle,
     stroke: strokeStyle,
-    image: new ol.style.Circle({
+    image: new olStyleCircle({
       radius: 10,
       fill: fillStyle,
       stroke: strokeStyle
@@ -175,8 +176,8 @@ lux.Map = function(options) {
    * @private
    * @type {ol.layer.Vector}
    */
-  this.showLayer_ = new ol.layer.Vector({
-    source: new ol.source.Vector()
+  this.showLayer_ = new olLayerVector({
+    source: new olSourceVector()
   });
 
   this.showLayer_.setStyle(this.vectorStyle_);
@@ -185,7 +186,7 @@ lux.Map = function(options) {
    * @private
    * @type {ol.layer.Tile}
    */
-  this.blankLayer_ = new ol.layer.Tile();
+  this.blankLayer_ = new olLayerTile();
   this.blankLayer_.set('name', 'blank');
 
   /**
@@ -233,7 +234,7 @@ lux.Map = function(options) {
     delete options.layerVisibilities;
   }
 
-  this.layersPromise = fetch(lux.layersUrl).then(function(resp) {
+  this.layersPromise = fetch(luxBase.layersUrl).then(function(resp) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
@@ -252,7 +253,7 @@ lux.Map = function(options) {
       var el = typeof target === 'string' ?
            document.getElementById(target) :
            target;
-      this.layerManagerControl_ = new lux.LayerManager({
+      this.layerManagerControl_ = new luxLayerManager({
         target: el
       });
       this.addControl(this.layerManagerControl_);
@@ -273,14 +274,14 @@ lux.Map = function(options) {
   }
 
   if (options.view === undefined) {
-    options.view = new ol.View();
+    options.view = new olView();
   }
 
   if (options.position) {
     var position = [parseFloat(
       options.position[0]),
       parseFloat(options.position[1])];
-    options.view.setCenter(ol.proj.transform(
+    options.view.setCenter(olProj.transform(
       position,
       (options.positionSrs) ?
           'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
@@ -296,7 +297,7 @@ lux.Map = function(options) {
 
   if (options.view.getCenter() === undefined ||
       options.view.getCenter() === null) {
-    options.view.setCenter(ol.proj.fromLonLat([6.215, 49.845]));
+    options.view.setCenter(olProj.fromLonLat([6.215, 49.845]));
   }
   if (options.view.getZoom() === undefined ||
       options.view.getZoom() === null) {
@@ -306,17 +307,17 @@ lux.Map = function(options) {
   var controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
-      controls = new ol.Collection(options.controls.slice());
+      controls = new olCollection(options.controls.slice());
     } else {
-      ol.asserts.assert(options.controls instanceof ol.Collection,
+      olAsserts.assert(options.controls instanceof olCollection,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
   } else {
-    var attribution = new ol.control.Attribution({
+    var attribution = new olControlAttribution({
       collapsible: false
     });
-    controls = ol.control.defaults({attribution: false}).extend([attribution]);
+    controls = olControl.defaults({attribution: false}).extend([attribution]);
   }
 
   var target;
@@ -329,10 +330,10 @@ lux.Map = function(options) {
          document.getElementById(target) :
          target;
     if (el instanceof Element) {
-      controls.push(new ol.control.MousePosition({
+      controls.push(new olControlMousePosition({
         target: el,
         className: 'lux-mouse-position',
-        projection: ol.proj.get(srs),
+        projection: olProj.get(srs),
         coordinateFormat: function(coord) {
           var decimal = 1;
           if (srs == 'EPSG:4326') {
@@ -359,11 +360,11 @@ lux.Map = function(options) {
     src: 'https://www.geoportail.lu/static/img/favicon-16x16.ico'
   };
 
-  ol.Map.call(this, options);
+  olMap.call(this, options);
 
   this.getTargetElement().classList.add('lux-map');
 
-  ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
+  olEvents.listen(this.getLayers(), olCollectionEventType.ADD,
       this.checkForExclusion_, this);
 
   /**
@@ -373,16 +374,16 @@ lux.Map = function(options) {
   this.popupTarget_ = undefined;
   this.setPopupTarget(options.popupTarget);
 
-  ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
+  olEvents.listen(this, olMapBrowserEventType.SINGLECLICK,
       this.handleSingleclickEvent_, this);
 
-  this.stateManager_ = new lux.StateManager();
+  this.stateManager_ = new luxStateManager();
   this.stateManager_.setMap(this);
 
   this.showLayer_.setMap(this);
 
   // change cursor on mouseover feature
-  ol.events.listen(this, ol.MapBrowserEventType.POINTERMOVE, function(evt) {
+  olEvents.listen(this, olMapBrowserEventType.POINTERMOVE, function(evt) {
     var pixel = this.getEventPixel(evt.originalEvent);
     var hit = this.hasFeatureAtPixel(pixel);
     var pixelHit = this.forEachLayerAtPixel(pixel, function(colors) {
@@ -400,7 +401,7 @@ lux.Map = function(options) {
   }
 };
 
-ol.inherits(lux.Map, ol.Map);
+olBase.inherits(exports, olMap);
 
 /**
  * Adds the given layer to the top of this map. If you want to add a layer
@@ -411,9 +412,9 @@ ol.inherits(lux.Map, ol.Map);
  * @export
  * @api
  */
-lux.Map.prototype.addLayer = function(layer) {
+exports.prototype.addLayer = function(layer) {
   this.layersPromise.then(function() {
-    ol.Map.prototype.addLayer.call(this, layer);
+    olMap.prototype.addLayer.call(this, layer);
   }.bind(this));
 
 };
@@ -424,7 +425,7 @@ lux.Map.prototype.addLayer = function(layer) {
  * @export
  * @api
  */
-lux.Map.prototype.getMapReadyPromise = function() {
+exports.prototype.getMapReadyPromise = function() {
   return Promise.all([this.i18nPromise, this.layersPromise]);
 };
 
@@ -447,11 +448,11 @@ lux.Map.prototype.getMapReadyPromise = function() {
  * @export
  * @api
  */
-lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback) {
+exports.prototype.print = function(name, layout, scale, firstPagesUrls, callback) {
   var dpi = 127;
   var format = 'pdf';
 
-  var pm = new lux.PrintManager(lux.printUrl, this);
+  var pm = new luxPrintManager(luxBase.printUrl, this);
   if (firstPagesUrls === undefined || firstPagesUrls === null) {
     firstPagesUrls = [];
   }
@@ -460,7 +461,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
   }
   var curLayout = '';
   if (layout === undefined || layout === null ||
-      lux.PrintManager.LAYOUTS.indexOf(layout) === -1) {
+      luxPrintManager.LAYOUTS.indexOf(layout) === -1) {
     var size = this.getSize();
     if (size !== undefined && size[0] > size[1]) {
       curLayout = 'A4 landscape';
@@ -491,10 +492,10 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
     return self.indexOf(item) == pos;
   });
 
-  var disclaimer = lux.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
-  var dateText = lux.translate('Date d\'impression: ');
-  var scaleTitle = lux.translate('Echelle approximative 1:');
-  var appTitle = lux.translate('Le géoportail national du Grand-Duché du Luxembourg');
+  var disclaimer = luxBase.translate('www.geoportail.lu est un portail d\'accès aux informations géolocalisées, données et services qui sont mis à disposition par les administrations publiques luxembourgeoises. Responsabilité: Malgré la grande attention qu’elles portent à la justesse des informations diffusées sur ce site, les autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces informations. Information dépourvue de foi publique. Droits d\'auteur: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright');
+  var dateText = luxBase.translate('Date d\'impression: ');
+  var scaleTitle = luxBase.translate('Echelle approximative 1:');
+  var appTitle = luxBase.translate('Le géoportail national du Grand-Duché du Luxembourg');
   var longUrl = this.stateManager_.getUrl();
   if (longUrl.toLowerCase().indexOf('http') !== 0 &&
       longUrl.toLowerCase().indexOf('//') === 0) {
@@ -511,7 +512,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
     'scale': scale,
     'name': name,
     'longUrl': longUrl,
-    'lang': lux.lang,
+    'lang': luxBase.lang,
     'legend': '',
     'scalebar': {'geodetic': true},
     'dataOwner': dataOwners.join(' '),
@@ -539,7 +540,7 @@ lux.Map.prototype.print = function(name, layout, scale, firstPagesUrls, callback
  * @param {function(string)=} callback Optional callback function.
  * @private
  */
-lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
+exports.prototype.getStatus_ = function(pm, ref, callback) {
   pm.getStatus(ref).then(
     function(resp) {
       if (resp.status === 200) {
@@ -576,7 +577,7 @@ lux.Map.prototype.getStatus_ = function(pm, ref, callback) {
  * @api
  * @return {ol.layer.Vector} The show layer.
  */
-lux.Map.prototype.getShowLayer = function() {
+exports.prototype.getShowLayer = function() {
   return this.showLayer_;
 };
 
@@ -585,8 +586,8 @@ lux.Map.prototype.getShowLayer = function() {
  * @param {Object} translations Set the new translations.
  * @export
  */
-lux.Map.prototype.addNewLanguage = function(lang, translations) {
-  lux.languages[lang.toLowerCase()] = translations;
+exports.prototype.addNewLanguage = function(lang, translations) {
+  luxBase.languages[lang.toLowerCase()] = translations;
 };
 
 /**
@@ -594,21 +595,21 @@ lux.Map.prototype.addNewLanguage = function(lang, translations) {
  * @export
  * @api
  */
-lux.Map.prototype.setLanguage = function(lang) {
-  var previousLang = lux.lang;
+exports.prototype.setLanguage = function(lang) {
+  var previousLang = luxBase.lang;
   if (lang === undefined) {
-    lang = lux.lang;
+    lang = luxBase.lang;
   }
-  lux.lang = lang.toLowerCase();
+  luxBase.lang = lang.toLowerCase();
   var curLang = lang.toLowerCase();
-  if (curLang in lux.languages) {
+  if (curLang in luxBase.languages) {
     if (this.layerManagerControl_ !== null &&
         this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
     return;
   }
-  var langUrl = lux.i18nUrl.replace('xx', curLang);
+  var langUrl = luxBase.i18nUrl.replace('xx', curLang);
   this.i18nPromise = fetch(langUrl).then(function(resp) {
     if (resp === null || resp === undefined) {
       throw new Error('Invalid response');
@@ -618,14 +619,14 @@ lux.Map.prototype.setLanguage = function(lang) {
     }
     throw new Error('' + resp.status + ' ' + resp.statusText);
   }).then(function(json) {
-    lux.languages[curLang] = json[curLang];
+    luxBase.languages[curLang] = json[curLang];
     if (this.layerManagerControl_ !== null &&
         this.layerManagerControl_ !== undefined) {
       this.layerManagerControl_.update();
     }
   }.bind(this)).catch(function(error) {
     console.log(error);
-    lux.lang = previousLang;
+    luxBase.lang = previousLang;
   }.bind(this));
 };
 
@@ -637,7 +638,7 @@ lux.Map.prototype.setLanguage = function(lang) {
  * @export
  * @api
  */
-lux.Map.prototype.setQueryableLayers = function(queryableLayers) {
+exports.prototype.setQueryableLayers = function(queryableLayers) {
   this.queryableLayers_ = queryableLayers;
 };
 
@@ -648,7 +649,7 @@ lux.Map.prototype.setQueryableLayers = function(queryableLayers) {
  * @export
  * @api
  */
-lux.Map.prototype.showLayerInfoPopup = function(show) {
+exports.prototype.showLayerInfoPopup = function(show) {
   this.showLayerInfoPopup_ = show;
 };
 
@@ -660,7 +661,7 @@ lux.Map.prototype.showLayerInfoPopup = function(show) {
  * @export
  * @api
  */
-lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
+exports.prototype.setPopupTarget = function(optPopupTarget) {
   this.popupTarget_ = typeof optPopupTarget === 'string' ?
       document.getElementById(optPopupTarget) :
       optPopupTarget;
@@ -674,7 +675,7 @@ lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
  * @export
  * @api
  */
-lux.Map.prototype.showMarker = function(opt_options) {
+exports.prototype.showMarker = function(opt_options) {
   var options = opt_options || {};
   var element = document.createElement('DIV');
   var image = document.createElement('IMG');
@@ -704,7 +705,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
 
   var position;
   if (options.position) {
-    position = ol.proj.transform(
+    position = olProj.transform(
         options.position,
         (options.positionSrs) ?
             'EPSG:' + options.positionSrs.toString() : 'EPSG:2169',
@@ -713,7 +714,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
   } else {
     position = this.getView().getCenter();
   }
-  var markerOverlay = new ol.Overlay({
+  var markerOverlay = new olOverlay({
     element: element,
     position: position,
     positioning: options.positioning || 'center-center'
@@ -727,8 +728,8 @@ lux.Map.prototype.showMarker = function(opt_options) {
   if (options.html) {
     var popup;
     var showPopupEvent = options.click ?
-        ol.events.EventType.CLICK : ol.events.EventType.MOUSEMOVE;
-    ol.events.listen(element, showPopupEvent, (function(event) {
+        olEvents.EventType.CLICK : olEvents.EventType.MOUSEMOVE;
+    olEvents.listen(element, showPopupEvent, (function(event) {
       var curMarker = markerOverlay.getElement().firstChild;
       var isTransparent = false;
       if (options.noPopupOnTransparency === true) {
@@ -759,8 +760,8 @@ lux.Map.prototype.showMarker = function(opt_options) {
         var cb = !options.click ? undefined : function() {
           this.removeOverlay(popup);
         }.bind(this);
-        var element = lux.buildPopupLayout(options.html, cb);
-        popup = new ol.Overlay({
+        var element = luxBase.buildPopupLayout(options.html, cb);
+        popup = new olOverlay({
           element: element,
           position: markerOverlay.getPosition(),
           positioning: 'bottom-center',
@@ -774,7 +775,7 @@ lux.Map.prototype.showMarker = function(opt_options) {
     }).bind(this));
 
     if (!options.click) {
-      ol.events.listen(element, ol.events.EventType.MOUSEOUT, function() {
+      olEvents.listen(element, olEvents.EventType.MOUSEOUT, function() {
         if (options.target) {
           el.innerHTML = '';
           return;
@@ -794,11 +795,11 @@ lux.Map.prototype.showMarker = function(opt_options) {
  * @export
  * @api
  */
-lux.getElevation = function(coordinate) {
+luxBase.getElevation = function(coordinate) {
   var lonlat = /** @type {ol.Coordinate} */
-        (ol.proj.transform(coordinate,
+        (olProj.transform(coordinate,
             'EPSG:3857', 'EPSG:2169'));
-  var url = lux.elevationUrl;
+  var url = luxBase.elevationUrl;
   url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
 
   return fetch(url).then(function(resp) {
@@ -811,13 +812,13 @@ lux.getElevation = function(coordinate) {
  * @return {Object} The layer config
  * @private
  */
-lux.Map.prototype.findLayerConf_ = function(layer) {
+exports.prototype.findLayerConf_ = function(layer) {
   var conf = this.layersConfig;
   var layerConf;
   if (typeof layer == 'number' || !isNaN(parseInt(layer, 10))) {
     layerConf = conf[layer];
   } else if (typeof layer == 'string') {
-    layerConf = lux.findLayerByName_(layer, conf);
+    layerConf = luxBase.findLayerByName_(layer, conf);
   }
   if (!layerConf) {
     console.error('Layer "' + layer + '" not present in layers list');
@@ -832,7 +833,7 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
  * @param {Array<boolean>} visibilities Array of layer visibility.
  * @private
  */
-lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
+exports.prototype.addLayers_ = function(layers, opacities, visibilities) {
 
   var conf = this.layersConfig;
   if (!conf) {
@@ -846,7 +847,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
-        lux.WMSLayerFactory : lux.WMTSLayerFactory;
+        luxBase.WMSLayerFactory : luxBase.WMTSLayerFactory;
       var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
       var visible = (visibilities[index] !== undefined) ? visibilities[index] : true;
       this.getLayers().push(fn(layerConf, opacity, visible));
@@ -858,7 +859,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
  * @param {ol.CollectionEventType} event The event.
  * @private
  */
-lux.Map.prototype.checkForExclusion_ = function(event) {
+exports.prototype.checkForExclusion_ = function(event) {
   var layer1 = event.element;
 
   if (layer1.get('metadata') === undefined) {
@@ -886,7 +887,7 @@ lux.Map.prototype.checkForExclusion_ = function(event) {
     }
 
     exclusion2 = layer2.get('metadata')['exclusion'];
-    if (lux.intersects(exclusion1, exclusion2)) {
+    if (luxBase.intersects(exclusion1, exclusion2)) {
       // layer to exclude is not the current base layer
       if (i !== 0) {
         this.removeLayer(layer2);
@@ -909,7 +910,7 @@ lux.Map.prototype.checkForExclusion_ = function(event) {
  * @export
  * @api
  */
-lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
+exports.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
   this.layersPromise.then(function() {
     var opacity = (opt_opacity !== undefined) ? opt_opacity : 1;
     var visibility = (opt_visibility === undefined) ? opt_visibility : true;
@@ -923,7 +924,7 @@ lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
  * @return {luxx.LayersOptions|undefined} The layer config.
  * @private
  */
-lux.findLayerByName_ = function(name, layers) {
+luxBase.findLayerByName_ = function(name, layers) {
   for (var i in layers) {
     var layer = layers[i];
     if (layer.name == name) {
@@ -941,7 +942,7 @@ lux.findLayerByName_ = function(name, layers) {
  * @export
  * @api
  */
-lux.Map.prototype.addBgSelector = function(target) {
+exports.prototype.addBgSelector = function(target) {
   this.layersPromise.then(function() {
     if (!this.layersConfig) {
       return;
@@ -969,7 +970,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     backgrounds.forEach(function(background) {
       var option = document.createElement('option');
       option.value = background.id;
-      option.innerText = lux.translate(background.name);
+      option.innerText = luxBase.translate(background.name);
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -979,7 +980,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     // add blank layer
     var blankOption = document.createElement('option');
     blankOption.value = 'blank';
-    blankOption.innerText = lux.translate('blank');
+    blankOption.innerText = luxBase.translate('blank');
     if (active == 'blank') {
       blankOption.setAttribute('selected', 'selected');
     }
@@ -991,7 +992,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     select.addEventListener('change', function() {
       if (select.value !== 'blank') {
         this.getLayers().setAt(
-          0, lux.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
+          0, luxBase.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
         );
       } else {
         this.getLayers().setAt(0, this.blankLayer_);
@@ -999,7 +1000,7 @@ lux.Map.prototype.addBgSelector = function(target) {
     }.bind(this));
 
     // update the selector if blank layer is set (after exclusion)
-    ol.events.listen(this.getLayers(), ol.CollectionEventType.ADD,
+    olEvents.listen(this.getLayers(), olCollectionEventType.ADD,
         function(event) {
           var layer = this.getLayers().getArray()[0];
           if (layer == this.blankLayer_) {
@@ -1020,7 +1021,7 @@ lux.Map.prototype.addBgSelector = function(target) {
  * @export
  * @api
  */
-lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker, maxZoom) {
+exports.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isShowMarker, maxZoom) {
   // remove any highlighted feature
   this.showLayer_.getSource().clear();
   this.layersPromise.then(function() {
@@ -1034,7 +1035,7 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
       ids = [ids];
     }
     ids.forEach(function(id) {
-      var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      var uri = luxBase.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
@@ -1050,13 +1051,13 @@ lux.Map.prototype.showFeatures = function(layer, ids, opt_click, opt_target, isS
  * @return {Array<ol.Feature>} the features.
  * @private
  */
-lux.Map.prototype.readJsonFeatures_ = function(json) {
+exports.prototype.readJsonFeatures_ = function(json) {
   var features = [];
   if (json.features != undefined) {
     json.features.forEach(function(f) {
       f.properties = f.attributes;
     });
-    features = new ol.format.GeoJSON().readFeatures({
+    features = new olFormatGeoJSON().readFeatures({
       type: 'FeatureCollection',
       features: json.features
     }, {
@@ -1076,7 +1077,7 @@ lux.Map.prototype.readJsonFeatures_ = function(json) {
  * @param {number | undefined} maxZoom The maxZoom to fit.
  * @private
  */
-lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker, maxZoom) {
+exports.prototype.addFeature_ = function(json, highlight, opt_click, opt_target, isShowMarker, maxZoom) {
   var curMaxZoom = (maxZoom !== undefined) ? maxZoom : 17;
 
   if (json.length === 0) {
@@ -1095,7 +1096,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
   features.forEach(function(feature) {
     if (isShowMarker) {
       this.showMarker({
-        position: ol.extent.getCenter(feature.getGeometry().getExtent()),
+        position: olExtent.getCenter(feature.getGeometry().getExtent()),
         positionSrs: '3857',
         autoCenter: true,
         click: opt_click,
@@ -1103,7 +1104,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
         html: tooltip
       });
     }
-    this.featureExtent_ = ol.extent.extend(
+    this.featureExtent_ = olExtent.extend(
       this.featureExtent_,
       feature.getGeometry().getExtent()
     );
@@ -1129,7 +1130,7 @@ lux.Map.prototype.addFeature_ = function(json, highlight, opt_click, opt_target,
  * @export
  * @api
  */
-lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
+exports.prototype.addSearch = function(target, dataSets, onSelect) {
   var layers = [];
   var searchCoordinates = false;
   if (dataSets !== undefined && dataSets.length > 0) {
@@ -1161,14 +1162,14 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
       var coord = item.getAttribute('data-coord').split(',').map(parseFloat);
       var extent = item.getAttribute('data-extent').split(',').map(parseFloat);
       this.searchLayer_.getSource().clear();
-      this.searchLayer_.getSource().addFeature(new ol.Feature(
-        new ol.geom.Point(
-          ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')
+      this.searchLayer_.getSource().addFeature(new olFeature(
+        new olGeomPoint(
+          olProj.transform(coord, 'EPSG:4326', 'EPSG:3857')
         )
       ));
       this.getView().fit(
-        ol.geom.Polygon.fromExtent(
-          ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
+        olGeomPolygon.fromExtent(
+          olProj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857')
         ),
         /** @type {olx.view.FitOptions} */ ({
           size: /** @type {Array<number>} */ (this.getSize()),
@@ -1183,7 +1184,7 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
 
   var input = document.createElement('input');
   input.classList.add('lux-search-input');
-  input.setAttribute('placeholder', lux.translate('search'));
+  input.setAttribute('placeholder', luxBase.translate('search'));
   container.appendChild(input);
   var clear = document.createElement('button');
   clear.classList.add('lux-search-clear');
@@ -1201,14 +1202,14 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
     clear.style.display = (input.value == '') ? '' : 'block';
   });
 
-  this.searchLayer_ = new ol.layer.Vector({
-    source: new ol.source.Vector()
+  this.searchLayer_ = new olLayerVector({
+    source: new olSourceVector()
   });
 
   this.searchLayer_.setStyle(this.vectorStyle_);
   this.searchLayer_.setMap(this);
 
-  var format = new ol.format.GeoJSON();
+  var format = new olFormatGeoJSON();
 
 
   new autoComplete({
@@ -1224,7 +1225,7 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
       }
       if (layers.length > 0) {
         term = term.toLowerCase();
-        fetch(lux.searchUrl + 'limit=5&layer=' + layers.join(',') + '&query=' + term).then(function(resp) {
+        fetch(luxBase.searchUrl + 'limit=5&layer=' + layers.join(',') + '&query=' + term).then(function(resp) {
           return resp.json();
         }).then(function(json) {
           suggest(coordResults.concat(json.features));
@@ -1257,10 +1258,10 @@ lux.Map.prototype.addSearch = function(target, dataSets, onSelect) {
  * @return {Array<ol.Feature>} The result.
  * @private
  */
-lux.Map.prototype.matchCoordinate_ = function(searchString) {
+exports.prototype.matchCoordinate_ = function(searchString) {
   searchString = searchString.replace(/,/gi, '.');
   var results = [];
-  var format = new ol.format.GeoJSON();
+  var format = new olFormatGeoJSON();
   var re = {
     'EPSG:2169': {
       regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
@@ -1301,12 +1302,12 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
       var northing = undefined;
       if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
         if (m[2] !== undefined && m[2] !== null && m[4] !== undefined && m[4] !== null) {
-          if (ol.array.includes(northArray, m[2].toUpperCase()) &&
-          ol.array.includes(eastArray, m[4].toUpperCase())) {
+          if (olArray.includes(northArray, m[2].toUpperCase()) &&
+          olArray.includes(eastArray, m[4].toUpperCase())) {
             easting = parseFloat(m[3].replace(',', '.'));
             northing = parseFloat(m[1].replace(',', '.'));
-          } else if (ol.array.includes(northArray, m[4].toUpperCase()) &&
-          ol.array.includes(eastArray, m[2].toUpperCase())) {
+          } else if (olArray.includes(northArray, m[4].toUpperCase()) &&
+          olArray.includes(eastArray, m[2].toUpperCase())) {
             easting = parseFloat(m[1].replace(',', '.'));
             northing = parseFloat(m[3].replace(',', '.'));
           }
@@ -1350,23 +1351,23 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
       if (easting !== undefined && northing !== undefined) {
         var mapEpsgCode = 'EPSG:4326';
         var point = /** @type {ol.geom.Point} */
-        (new ol.geom.Point([easting, northing])
+        (new olGeomPoint([easting, northing])
        .transform(epsgCode, mapEpsgCode));
         var flippedPoint =  /** @type {ol.geom.Point} */
-        (new ol.geom.Point([northing, easting])
+        (new olGeomPoint([northing, easting])
        .transform(epsgCode, mapEpsgCode));
         var feature = /** @type {ol.Feature} */ (null);
-        if (ol.extent.containsCoordinate(
+        if (olExtent.containsCoordinate(
         this.maxExtent_, point.getCoordinates())) {
-          feature = new ol.Feature(point);
-        } else if (epsgCode === 'EPSG:4326' && ol.extent.containsCoordinate(
+          feature = new olFeature(point);
+        } else if (epsgCode === 'EPSG:4326' && olExtent.containsCoordinate(
         this.maxExtent_, flippedPoint.getCoordinates())) {
-          feature = new ol.Feature(flippedPoint);
+          feature = new olFeature(flippedPoint);
         }
         if (feature !== null) {
           var resultPoint =
             /** @type {ol.geom.Point} */ (feature.getGeometry());
-          var resultString = lux.coordinateString_(
+          var resultString = luxBase.coordinateString_(
           resultPoint.getCoordinates(), mapEpsgCode, epsgCode, isDms, false);
           feature.set('label', resultString);
           feature.set('epsgLabel', re[epsgKey].label);
@@ -1383,7 +1384,7 @@ lux.Map.prototype.matchCoordinate_ = function(searchString) {
  * @return {Object | undefined} Returns the coordinate.
  * @private
  */
-lux.Map.prototype.decDegFromMatch_ = function(m) {
+exports.prototype.decDegFromMatch_ = function(m) {
   var signIndex = {
     '-': -1,
     'N': 1,
@@ -1429,7 +1430,7 @@ lux.Map.prototype.decDegFromMatch_ = function(m) {
  * @export
  * @api
  */
-lux.Map.prototype.addGPX = function(url, opt_options) {
+exports.prototype.addGPX = function(url, opt_options) {
 
   /** @type {ol.StyleFunction | undefined}*/
   var styleFunction;
@@ -1437,26 +1438,26 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
     styleFunction = opt_options.style;
   } else {
     var style = {
-      'Point': new ol.style.Style({
-        image: new ol.style.Circle({
-          fill: new ol.style.Fill({
+      'Point': new olStyleStyle({
+        image: new olStyleCircle({
+          fill: new olStyleFill({
             color: 'rgba(255,255,0,0.4)'
           }),
           radius: 5,
-          stroke: new ol.style.Stroke({
+          stroke: new olStyleStroke({
             color: '#ff0',
             width: 1
           })
         })
       }),
-      'LineString': new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      'LineString': new olStyleStyle({
+        stroke: new olStyleStroke({
           color: '#f00',
           width: 3
         })
       }),
-      'MultiLineString': new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      'MultiLineString': new olStyleStyle({
+        stroke: new olStyleStroke({
           color: '#f00',
           width: 3
         })
@@ -1467,7 +1468,7 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
     };
   }
 
-  this.addVector_(url, new ol.format.GPX(), {
+  this.addVector_(url, new olFormatGPX(), {
     style: styleFunction,
     reloadInterval: opt_options && opt_options.reloadInterval,
     click: opt_options.click,
@@ -1484,8 +1485,8 @@ lux.Map.prototype.addGPX = function(url, opt_options) {
  * @export
  * @api
  */
-lux.Map.prototype.addKML = function(url, opt_options) {
-  this.addVector_(url, new ol.format.KML(), opt_options);
+exports.prototype.addKML = function(url, opt_options) {
+  this.addVector_(url, new olFormatKML(), opt_options);
 };
 
 /**
@@ -1495,8 +1496,8 @@ lux.Map.prototype.addKML = function(url, opt_options) {
  * @export
  * @api
  */
-lux.Map.prototype.addGeoJSON = function(url, opt_options) {
-  this.addVector_(url, new ol.format.GeoJSON(), opt_options);
+exports.prototype.addGeoJSON = function(url, opt_options) {
+  this.addVector_(url, new olFormatGeoJSON(), opt_options);
 };
 
 /**
@@ -1506,7 +1507,7 @@ lux.Map.prototype.addGeoJSON = function(url, opt_options) {
  * @param {luxx.VectorOptions=} opt_options Options.
  * @private
  */
-lux.Map.prototype.addVector_ = function(url, format, opt_options) {
+exports.prototype.addVector_ = function(url, format, opt_options) {
   var popup;
   var vector;
   var el;
@@ -1532,7 +1533,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     if (opt_time) {
       uri.search = 'salt=' + (new Date).getTime();
     }
-    vector.setSource(new ol.source.Vector({
+    vector.setSource(new olSourceVector({
       url: uri.toString(),
       format: format
     }));
@@ -1546,7 +1547,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     options.name = opt_options.name;
   }
   this.layersPromise.then(function() {
-    vector = new ol.layer.Vector(options);
+    vector = new olLayerVector(options);
 
     var interval = opt_options && opt_options.reloadInterval;
     if (interval) {
@@ -1560,7 +1561,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     this.addedKmlLayers_.push(vector);
     this.addedKmlOnClick_.push(opt_options.onClick);
     if (fit) {
-      ol.events.listen(vector.getSource(), ol.source.VectorEventType.ADDFEATURE,
+      olEvents.listen(vector.getSource(), olSourceVectorEventType.ADDFEATURE,
           function() {
             var size = this.getSize();
             console.assert(size !== undefined, 'size should be defined');
@@ -1570,7 +1571,7 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
     }
 
     if (opt_options && opt_options.click) {
-      var interaction = new ol.interaction.Select({
+      var interaction = new olInteractionSelect({
         layers: this.addedKmlLayers_
       });
       this.addInteraction(interaction);
@@ -1613,11 +1614,11 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
             el.innerHTML = html;
             return;
           }
-          var element = lux.buildPopupLayout(html, function() {
+          var element = luxBase.buildPopupLayout(html, function() {
             this.removeOverlay(popup);
             interaction.getFeatures().clear();
           }.bind(this));
-          popup = new ol.Overlay({
+          popup = new olOverlay({
             element: element,
             position: e.mapBrowserEvent.coordinate,
             positioning: 'bottom-center',
@@ -1640,14 +1641,14 @@ lux.Map.prototype.addVector_ = function(url, format, opt_options) {
  * @export
  * @api
  */
-lux.Map.prototype.showPopup = function(position, title, content) {
+exports.prototype.showPopup = function(position, title, content) {
   var popup;
-  var element = lux.buildPopupLayout(content, function() {
+  var element = luxBase.buildPopupLayout(content, function() {
     if (popup !== undefined) {
       this.removeOverlay(popup);
     }
   }.bind(this), title);
-  popup = new ol.Overlay({
+  popup = new olOverlay({
     element: element,
     position: position,
     positioning: 'bottom-center',
@@ -1680,10 +1681,10 @@ lux.Map.prototype.showPopup = function(position, title, content) {
  * @export
  * @api
  */
-lux.Map.prototype.addMyMapLayer = function(options) {
+exports.prototype.addMyMapLayer = function(options) {
   this.stateManager_.setMyMap(options.mapId);
   return Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
-    var mymap = new lux.MyMap(options);
+    var mymap = new luxMyMap(options);
     mymap.setMap(this);
     return mymap;
   }.bind(this));
@@ -1693,7 +1694,7 @@ lux.Map.prototype.addMyMapLayer = function(options) {
  * Removes the popup or the information content.
  * @export
  */
-lux.Map.prototype.removeInfoPopup = function() {
+exports.prototype.removeInfoPopup = function() {
   if (this.queryPopup_) {
     this.removeOverlay(this.queryPopup_);
   }
@@ -1709,7 +1710,7 @@ lux.Map.prototype.removeInfoPopup = function() {
  * @param {function(Object)} callback The function to call.
  * @export
  */
-lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
+exports.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
 
   this.layersPromise.then(function() {
     var lid = this.findLayerConf_(layer).id;
@@ -1717,7 +1718,7 @@ lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
       ids = [ids];
     }
     ids.forEach(function(id) {
-      var uri = lux.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
+      var uri = luxBase.queryUrl + 'fid=' + lid + '_' + id + '&tooltip';
       fetch(uri).then(function(resp) {
         return resp.json();
       }).then(function(json) {
@@ -1732,7 +1733,7 @@ lux.Map.prototype.getFeatureInfoByIds = function(layer, ids, callback) {
  * @param {function(?)} callback The function to call.
  * @export
  */
-lux.Map.prototype.getFeatureInfo = function(evt, callback) {
+exports.prototype.getFeatureInfo = function(evt, callback) {
   var layers = this.getLayers().getArray();
 
   // collect the queryable layers
@@ -1761,21 +1762,21 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   var bigBuffer = 20;
   var smallBuffer = 1;
 
-  var lb = ol.proj.transform(
+  var lb = olProj.transform(
       this.getCoordinateFromPixel(
       [evt.pixel[0] - bigBuffer, evt.pixel[1] + bigBuffer]),
       this.getView().getProjection(), 'EPSG:2169');
-  var rt = ol.proj.transform(
+  var rt = olProj.transform(
       this.getCoordinateFromPixel(
       [evt.pixel[0] + bigBuffer, evt.pixel[1] - bigBuffer]),
       this.getView().getProjection(), 'EPSG:2169');
   var big_box = lb.concat(rt);
 
-  lb = ol.proj.transform(
+  lb = olProj.transform(
       this.getCoordinateFromPixel(
       [evt.pixel[0] - smallBuffer, evt.pixel[1] + smallBuffer]),
       this.getView().getProjection(), 'EPSG:2169');
-  rt = ol.proj.transform(
+  rt = olProj.transform(
       this.getCoordinateFromPixel(
       [evt.pixel[0] + smallBuffer, evt.pixel[1] - smallBuffer]),
       this.getView().getProjection(), 'EPSG:2169');
@@ -1796,11 +1797,11 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
     'X': evt.pixel[0],
     'Y': evt.pixel[1],
     'tooltip': 1,
-    'lang': lux.lang,
+    'lang': luxBase.lang,
     'srs': 'EPSG:3857'
   };
   var url = document.createElement('A');
-  url.href = lux.queryUrl;
+  url.href = luxBase.queryUrl;
 
   Object.keys(params).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + params[key];
@@ -1819,7 +1820,7 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
  * @export
  * @api
  */
-lux.Map.prototype.setShowlayerStyle = function(style) {
+exports.prototype.setShowlayerStyle = function(style) {
   this.showLayer_.setStyle(style);
 };
 
@@ -1827,7 +1828,7 @@ lux.Map.prototype.setShowlayerStyle = function(style) {
  * @param {Object} evt The event.
  * @private
  */
-lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
+exports.prototype.handleSingleclickEvent_ = function(evt) {
   this.removeInfoPopup();
   if (!this.showLayerInfoPopup_) {
     return;
@@ -1853,10 +1854,10 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     if (this.popupTarget_) {
       this.popupTarget_.innerHTML = htmls.join('');
     } else {
-      var element = lux.buildPopupLayout(htmls.join('<hr>'), function() {
+      var element = luxBase.buildPopupLayout(htmls.join('<hr>'), function() {
         this.removeOverlay(this.queryPopup_);
       }.bind(this));
-      this.queryPopup_ = new ol.Overlay({
+      this.queryPopup_ = new olOverlay({
         element: element,
         position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
         positioning: 'bottom-center',

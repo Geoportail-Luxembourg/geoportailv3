@@ -1,28 +1,29 @@
-goog.provide('lux.PrintManager');
+goog.module('lux.PrintManager');
 
-goog.require('goog.color.alpha');
-goog.require('ol');
-goog.require('ol.color');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.math');
-goog.require('ol.size');
-goog.require('ol.source.ImageWMS');
-goog.require('ol.source.TileWMS');
-goog.require('ol.source.Vector');
-goog.require('ol.source.WMTS');
-goog.require('ol.style.Circle');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Style');
-goog.require('ol.tilegrid.WMTS');
-goog.require('ol.obj');
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.style.Icon');
-goog.require('ol.layer.Group');
+goog.module.declareLegacyNamespace();
+const googColorAlpha = goog.require('goog.color.alpha');
+const olBase = goog.require('ol');
+const olColor = goog.require('ol.color');
+const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+const olGeomGeometryType = goog.require('ol.geom.GeometryType');
+const olLayerImage = goog.require('ol.layer.Image');
+const olLayerTile = goog.require('ol.layer.Tile');
+const olLayerVector = goog.require('ol.layer.Vector');
+const olMath = goog.require('ol.math');
+const olSize = goog.require('ol.size');
+const olSourceImageWMS = goog.require('ol.source.ImageWMS');
+const olSourceTileWMS = goog.require('ol.source.TileWMS');
+const olSourceVector = goog.require('ol.source.Vector');
+const olSourceWMTS = goog.require('ol.source.WMTS');
+const olStyleCircle = goog.require('ol.style.Circle');
+const olStyleRegularShape = goog.require('ol.style.RegularShape');
+const olStyleStyle = goog.require('ol.style.Style');
+const olTilegridWMTS = goog.require('ol.tilegrid.WMTS');
+const olObj = goog.require('ol.obj');
+const olFeature = goog.require('ol.Feature');
+const olGeomPoint = goog.require('ol.geom.Point');
+const olStyleIcon = goog.require('ol.style.Icon');
+const olLayerGroup = goog.require('ol.layer.Group');
 
 
 /**
@@ -32,7 +33,7 @@ goog.require('ol.layer.Group');
  * @constructor
  * @export
  */
-lux.PrintManager = function(url, map) {
+exports = function(url, map) {
   /**
    * @type {lux.Map}
    * @private
@@ -74,29 +75,29 @@ lux.PrintStyleType = {
  */
 lux.PrintStyleTypes_ = {};
 
-lux.PrintStyleTypes_[ol.geom.GeometryType.LINE_STRING] =
+lux.PrintStyleTypes_[olGeomGeometryType.LINE_STRING] =
     lux.PrintStyleType.LINE_STRING;
-lux.PrintStyleTypes_[ol.geom.GeometryType.POINT] =
+lux.PrintStyleTypes_[olGeomGeometryType.POINT] =
     lux.PrintStyleType.POINT;
-lux.PrintStyleTypes_[ol.geom.GeometryType.POLYGON] =
+lux.PrintStyleTypes_[olGeomGeometryType.POLYGON] =
     lux.PrintStyleType.POLYGON;
-lux.PrintStyleTypes_[ol.geom.GeometryType.MULTI_LINE_STRING] =
+lux.PrintStyleTypes_[olGeomGeometryType.MULTI_LINE_STRING] =
     lux.PrintStyleType.LINE_STRING;
-lux.PrintStyleTypes_[ol.geom.GeometryType.MULTI_POINT] =
+lux.PrintStyleTypes_[olGeomGeometryType.MULTI_POINT] =
     lux.PrintStyleType.POINT;
-lux.PrintStyleTypes_[ol.geom.GeometryType.MULTI_POLYGON] =
+lux.PrintStyleTypes_[olGeomGeometryType.MULTI_POLYGON] =
     lux.PrintStyleType.POLYGON;
 
 /**
  * @private
  */
-lux.PrintManager.FEAT_STYLE_PROP_PREFIX_ = '_ngeo_style_';
+exports.FEAT_STYLE_PROP_PREFIX_ = '_ngeo_style_';
 
 /**
  * @const
  * @type {Array.<string>}
 */
-lux.PrintManager.LAYOUTS = [
+exports.LAYOUTS = [
   'A4 landscape',
   'A4 portrait',
   'A3 landscape',
@@ -115,7 +116,7 @@ lux.PrintManager.LAYOUTS = [
  * @return {Promise} HTTP promise.
  * @export
  */
-lux.PrintManager.prototype.cancel = function(ref) {
+exports.prototype.cancel = function(ref) {
   return fetch(this.url_ + '/cancel/' + ref, {
     method: 'DELTE'
   });
@@ -131,7 +132,7 @@ lux.PrintManager.prototype.cancel = function(ref) {
  * @return {MapFishPrintSpec} The print spec.
  * @export
  */
-lux.PrintManager.prototype.createSpec = function(
+exports.prototype.createSpec = function(
     scale, dpi, layout, format, customAttributes) {
   this.dpi_ = dpi;
   this.scale_ = scale;
@@ -145,7 +146,7 @@ lux.PrintManager.prototype.createSpec = function(
   var attributes = /** @type {!MapFishPrintAttributes} */ ({
     map: specMap
   });
-  ol.obj.assign(attributes, customAttributes);
+  olObj.assign(attributes, customAttributes);
 
   var spec = /** @type {MapFishPrintSpec} */ ({
     attributes: attributes,
@@ -162,12 +163,12 @@ lux.PrintManager.prototype.createSpec = function(
  * @param {MapFishPrintMap} object Object.
  * @private
  */
-lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
+exports.prototype.encodeMap_ = function(scale, object) {
   var view = this.map_.getView();
   var viewCenter = view.getCenter();
   var viewProjection = view.getProjection();
   var viewResolution = view.getResolution();
-  var viewRotation = object.rotation || ol.math.toDegrees(view.getRotation());
+  var viewRotation = object.rotation || olMath.toDegrees(view.getRotation());
 
   goog.asserts.assert(viewCenter !== undefined);
   goog.asserts.assert(viewProjection !== undefined);
@@ -207,19 +208,19 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
             url.toLowerCase().indexOf('//') === 0) {
           url = 'http:' + url;
         }
-        var markerStyle = new ol.style.Style({
-          image: new ol.style.Icon({
+        var markerStyle = new olStyleStyle({
+          image: new olStyleIcon({
             anchor: [0.5, 1],
             src: url
           })
         });
         var position = layer.getPosition();
         if (position !== undefined && position !== null) {
-          var geoMarker = new ol.Feature({
-            geometry: new ol.geom.Point(position)
+          var geoMarker = new olFeature({
+            geometry: new olGeomPoint(position)
           });
-          var vectorLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({
+          var vectorLayer = new olLayerVector({
+            source: new olSourceVector({
               features: [geoMarker]
             }),
             style: markerStyle
@@ -239,12 +240,12 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
  * @param {ol.layer.Base} layer Layer.
  * @param {number} resolution Resolution.
  */
-lux.PrintManager.prototype.encodeLayer = function(arr, layer, resolution) {
-  if (layer instanceof ol.layer.Image) {
+exports.prototype.encodeLayer = function(arr, layer, resolution) {
+  if (layer instanceof olLayerImage) {
     this.encodeImageLayer_(arr, layer);
-  } else if (layer instanceof ol.layer.Tile) {
+  } else if (layer instanceof olLayerTile) {
     this.encodeTileLayer_(arr, layer);
-  } else if (layer instanceof ol.layer.Vector) {
+  } else if (layer instanceof olLayerVector) {
     this.encodeVectorLayer_(arr, layer, resolution);
   }
 };
@@ -255,10 +256,10 @@ lux.PrintManager.prototype.encodeLayer = function(arr, layer, resolution) {
  * @param {ol.layer.Image} layer Layer.
  * @private
  */
-lux.PrintManager.prototype.encodeImageLayer_ = function(arr, layer) {
-  goog.asserts.assertInstanceof(layer, ol.layer.Image);
+exports.prototype.encodeImageLayer_ = function(arr, layer) {
+  goog.asserts.assertInstanceof(layer, olLayerImage);
   var source = layer.getSource();
-  if (source instanceof ol.source.ImageWMS) {
+  if (source instanceof olSourceImageWMS) {
     this.encodeImageWmsLayer_(arr, layer);
   }
 };
@@ -269,11 +270,11 @@ lux.PrintManager.prototype.encodeImageLayer_ = function(arr, layer) {
  * @param {ol.layer.Image} layer Layer.
  * @private
  */
-lux.PrintManager.prototype.encodeImageWmsLayer_ = function(arr, layer) {
+exports.prototype.encodeImageWmsLayer_ = function(arr, layer) {
   var source = layer.getSource();
 
-  goog.asserts.assertInstanceof(layer, ol.layer.Image);
-  goog.asserts.assertInstanceof(source, ol.source.ImageWMS);
+  goog.asserts.assertInstanceof(layer, olLayerImage);
+  goog.asserts.assertInstanceof(source, olSourceImageWMS);
 
   var url = source.getUrl();
   if (url !== undefined) {
@@ -290,9 +291,9 @@ lux.PrintManager.prototype.encodeImageWmsLayer_ = function(arr, layer) {
  * @param {Object} params Url parameters
  * @private
  */
-lux.PrintManager.prototype.encodeWmsLayer_ = function(arr, opacity, url, params) {
+exports.prototype.encodeWmsLayer_ = function(arr, opacity, url, params) {
   var customParams = {'TRANSPARENT': true, 'MAP_RESOLUTION': this.dpi_};
-  ol.obj.assign(customParams, params);
+  olObj.assign(customParams, params);
 
   delete customParams['LAYERS'];
   delete customParams['FORMAT'];
@@ -318,7 +319,7 @@ lux.PrintManager.prototype.encodeWmsLayer_ = function(arr, opacity, url, params)
  * @return {string} Absolute URL.
  * @private
  */
-lux.PrintManager.prototype.getAbsoluteUrl_ = function(url) {
+exports.prototype.getAbsoluteUrl_ = function(url) {
   var a = document.createElement('a');
   a.href = encodeURI(url);
   return decodeURI(a.href);
@@ -330,12 +331,12 @@ lux.PrintManager.prototype.getAbsoluteUrl_ = function(url) {
  * @param {ol.layer.Tile} layer Layer.
  * @private
  */
-lux.PrintManager.prototype.encodeTileLayer_ = function(arr, layer) {
-  goog.asserts.assertInstanceof(layer, ol.layer.Tile);
+exports.prototype.encodeTileLayer_ = function(arr, layer) {
+  goog.asserts.assertInstanceof(layer, olLayerTile);
   var source = layer.getSource();
-  if (source instanceof ol.source.WMTS) {
+  if (source instanceof olSourceWMTS) {
     this.encodeTileWmtsLayer_(arr, layer);
-  } else if (source instanceof ol.source.TileWMS) {
+  } else if (source instanceof olSourceTileWMS) {
     this.encodeTileWmsLayer_(arr, layer);
   }
 };
@@ -346,13 +347,13 @@ lux.PrintManager.prototype.encodeTileLayer_ = function(arr, layer) {
  * @param {ol.layer.Tile} layer Layer.
  * @private
  */
-lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
-  goog.asserts.assertInstanceof(layer, ol.layer.Tile);
+exports.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
+  goog.asserts.assertInstanceof(layer, olLayerTile);
   var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.WMTS);
+  goog.asserts.assertInstanceof(source, olSourceWMTS);
   var projection = source.getProjection();
   var tileGrid = source.getTileGrid();
-  goog.asserts.assertInstanceof(tileGrid, ol.tilegrid.WMTS);
+  goog.asserts.assertInstanceof(tileGrid, olTilegridWMTS);
   var matrixIds = tileGrid.getMatrixIds();
   /** @type {Array.<MapFishPrintWmtsMatrix>} */
   var matrices = [];
@@ -369,7 +370,7 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
       identifier: matrixIds[i],
       scaleDenominator: tileGrid.getResolution(i) *
           projection.getMetersPerUnit() / 0.28E-3,
-      tileSize: ol.size.toSize(tileGrid.getTileSize(i)),
+      tileSize: olSize.toSize(tileGrid.getTileSize(i)),
       topLeftCorner: tileGrid.getOrigin(i),
       matrixSize: matrixSize
     }));
@@ -412,11 +413,11 @@ lux.PrintManager.prototype.encodeTileWmtsLayer_ = function(arr, layer) {
  * @param {ol.layer.Tile} layer Layer.
  * @private
  */
-lux.PrintManager.prototype.encodeTileWmsLayer_ = function(arr, layer) {
+exports.prototype.encodeTileWmsLayer_ = function(arr, layer) {
   var source = layer.getSource();
 
-  goog.asserts.assertInstanceof(layer, ol.layer.Tile);
-  goog.asserts.assertInstanceof(source, ol.source.TileWMS);
+  goog.asserts.assertInstanceof(layer, olLayerTile);
+  goog.asserts.assertInstanceof(source, olSourceTileWMS);
 
   this.encodeWmsLayer_(
       arr, layer.getOpacity(), source.getUrls()[0], source.getParams());
@@ -429,13 +430,13 @@ lux.PrintManager.prototype.encodeTileWmsLayer_ = function(arr, layer) {
  * @param {number} resolution Resolution.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution) {
+exports.prototype.encodeVectorLayer_ = function(arr, layer, resolution) {
   var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.Vector);
+  goog.asserts.assertInstanceof(source, olSourceVector);
 
   var features = source.getFeatures();
 
-  var geojsonFormat = new ol.format.GeoJSON();
+  var geojsonFormat = new olFormatGeoJSON();
 
   var /** @type {Array.<GeoJSONFeature>} */ geojsonFeatures = [];
   var mapfishStyleObject = /** @type {MapFishPrintVectorStyle} */ ({
@@ -467,7 +468,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
       var isOriginalFeatureAdded = false;
       for (var j = 0, jj = styles.length; j < jj; ++j) {
         var style = styles[j];
-        var styleId = ol.getUid(style).toString();
+        var styleId = olBase.getUid(style).toString();
         var geometry = style.getGeometry();
         var geojsonFeature;
         if (!geometry) {
@@ -496,7 +497,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
         }
         this.replaceNullValues(geojsonFeature.properties);
 
-        var featureStyleProp = lux.PrintManager.FEAT_STYLE_PROP_PREFIX_ + j;
+        var featureStyleProp = exports.FEAT_STYLE_PROP_PREFIX_ + j;
         this.encodeVectorStyle_(
             mapfishStyleObject, geometryType, style, styleId, featureStyleProp);
         geojsonFeature.properties[featureStyleProp] = styleId;
@@ -528,7 +529,7 @@ lux.PrintManager.prototype.encodeVectorLayer_ = function(arr, layer, resolution)
  * @param {Object} object Object to replace the null values.
  * @private
  */
-lux.PrintManager.prototype.replaceNullValues = function(object) {
+exports.prototype.replaceNullValues = function(object) {
   // Mapfish print does not support null properties.
   for (var idx in object) {
     if (object[idx] === null) {
@@ -548,7 +549,7 @@ lux.PrintManager.prototype.replaceNullValues = function(object) {
  * @param {string} featureStyleProp Feature style property name.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, style, styleId, featureStyleProp) {
+exports.prototype.encodeVectorStyle_ = function(object, geometryType, style, styleId, featureStyleProp) {
   if (!(geometryType in lux.PrintStyleTypes_)) {
     // unsupported geometry type
     return;
@@ -611,12 +612,12 @@ lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, s
  * @param {!ol.style.Fill} fillStyle Fill style.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStyleFill_ = function(symbolizer, fillStyle) {
+exports.prototype.encodeVectorStyleFill_ = function(symbolizer, fillStyle) {
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
     if (typeof (fillColor) === 'string') {
-      var hex = goog.color.alpha.parse(fillColor).hex;
-      fillColor = goog.color.alpha.hexToRgba(hex);
+      var hex = googColorAlpha.parse(fillColor).hex;
+      fillColor = googColorAlpha.hexToRgba(hex);
     }
     goog.asserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
     symbolizer.fillColor = this.rgbArrayToHex(fillColor);
@@ -631,7 +632,7 @@ lux.PrintManager.prototype.encodeVectorStyleFill_ = function(symbolizer, fillSty
  * @param {!ol.style.Stroke} strokeStyle Stroke style.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStyleLine_ = function(symbolizers, strokeStyle) {
+exports.prototype.encodeVectorStyleLine_ = function(symbolizers, strokeStyle) {
   var symbolizer = /** @type {MapFishPrintSymbolizerLine} */ ({
     type: 'line'
   });
@@ -646,9 +647,9 @@ lux.PrintManager.prototype.encodeVectorStyleLine_ = function(symbolizers, stroke
  * @param {!ol.style.Image} imageStyle Image style.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStylePoint_ = function(symbolizers, imageStyle) {
+exports.prototype.encodeVectorStylePoint_ = function(symbolizers, imageStyle) {
   var symbolizer;
-  if (imageStyle instanceof ol.style.Circle) {
+  if (imageStyle instanceof olStyleCircle) {
     symbolizer = /** @type {MapFishPrintSymbolizerPoint} */ ({
       type: 'point'
     });
@@ -661,7 +662,7 @@ lux.PrintManager.prototype.encodeVectorStylePoint_ = function(symbolizers, image
     if (strokeStyle !== null) {
       this.encodeVectorStyleStroke_(symbolizer, strokeStyle);
     }
-  } else if (imageStyle instanceof ol.style.Icon) {
+  } else if (imageStyle instanceof olStyleIcon) {
     var src = imageStyle.getSrc();
     if (src !== undefined) {
       symbolizer = /** @type {MapFishPrintSymbolizerPoint} */ ({
@@ -685,9 +686,9 @@ lux.PrintManager.prototype.encodeVectorStylePoint_ = function(symbolizers, image
       if (isNaN(rotation)) {
         rotation = 0;
       }
-      symbolizer.rotation = ol.math.toDegrees(rotation);
+      symbolizer.rotation = olMath.toDegrees(rotation);
     }
-  } else if (imageStyle instanceof ol.style.RegularShape) {
+  } else if (imageStyle instanceof olStyleRegularShape) {
     /**
      * Mapfish Print does not support image defined with ol.style.RegularShape.
      * As a workaround, I try to map the image on a well-known image name.
@@ -713,7 +714,7 @@ lux.PrintManager.prototype.encodeVectorStylePoint_ = function(symbolizers, image
       }
       var rotationShape = imageStyle.getRotation();
       if (!isNaN(rotationShape) && rotationShape !== 0) {
-        symbolizer.rotation = ol.math.toDegrees(rotationShape);
+        symbolizer.rotation = olMath.toDegrees(rotationShape);
       }
       var opacityShape = imageStyle.getOpacity();
       if (opacityShape !== null) {
@@ -742,7 +743,7 @@ lux.PrintManager.prototype.encodeVectorStylePoint_ = function(symbolizers, image
  * @param {ol.style.Stroke} strokeStyle Stroke style.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStylePolygon_ = function(symbolizers, fillStyle, strokeStyle) {
+exports.prototype.encodeVectorStylePolygon_ = function(symbolizers, fillStyle, strokeStyle) {
   var symbolizer = /** @type {MapFishPrintSymbolizerPolygon} */ ({
     type: 'polygon'
   });
@@ -760,11 +761,11 @@ lux.PrintManager.prototype.encodeVectorStylePolygon_ = function(symbolizers, fil
  * @param {!ol.style.Stroke} strokeStyle Stroke style.
  * @private
  */
-lux.PrintManager.prototype.encodeVectorStyleStroke_ = function(symbolizer, strokeStyle) {
+exports.prototype.encodeVectorStyleStroke_ = function(symbolizer, strokeStyle) {
   var strokeColor = strokeStyle.getColor();
   if (strokeColor !== null) {
     goog.asserts.assert(Array.isArray(strokeColor));
-    var strokeColorRgba = ol.color.asArray(strokeColor);
+    var strokeColorRgba = olColor.asArray(strokeColor);
     goog.asserts.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
     symbolizer.strokeColor = this.rgbArrayToHex(strokeColorRgba);
     symbolizer.strokeOpacity = strokeColorRgba[3];
@@ -786,7 +787,7 @@ lux.PrintManager.prototype.encodeVectorStyleStroke_ = function(symbolizer, strok
  * @param {!ol.style.Text} textStyle Text style.
  * @private
  */
-lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
+exports.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
   var symbolizer = /** @type {MapFishPrintSymbolizerText} */ ({
     type: 'Text'
   });
@@ -821,7 +822,7 @@ lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
     if (strokeStyle !== null) {
       var strokeColor = strokeStyle.getColor();
       goog.asserts.assert(Array.isArray(strokeColor));
-      var strokeColorRgba = ol.color.asArray(strokeColor);
+      var strokeColorRgba = olColor.asArray(strokeColor);
       goog.asserts.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
       symbolizer.haloColor = this.rgbArrayToHex(strokeColorRgba);
       symbolizer.haloOpacity = strokeColorRgba[3];
@@ -835,7 +836,7 @@ lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
     if (fillStyle !== null) {
       var fillColor = fillStyle.getColor();
       goog.asserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
-      var fillColorRgba = ol.color.asArray(fillColor);
+      var fillColorRgba = olColor.asArray(fillColor);
       goog.asserts.assert(Array.isArray(fillColorRgba), 'only supporting fill colors');
       symbolizer.fontColor = this.rgbArrayToHex(fillColorRgba);
     }
@@ -859,7 +860,7 @@ lux.PrintManager.prototype.encodeTextStyle_ = function(symbolizers, textStyle) {
  * @return {string} URL.
  * @private
  */
-lux.PrintManager.prototype.getWmtsUrl_ = function(source) {
+exports.prototype.getWmtsUrl_ = function(source) {
   var urls = source.getUrls();
   goog.asserts.assert(urls.length > 0);
   var url = urls[0];
@@ -879,7 +880,7 @@ lux.PrintManager.prototype.getWmtsUrl_ = function(source) {
  * @return {Promise} HTTP promise.
  * @export
  */
-lux.PrintManager.prototype.createReport = function(printSpec) {
+exports.prototype.createReport = function(printSpec) {
   var format = printSpec.format || 'pdf';
   var url = this.url_ + '/report.' + format;
 
@@ -899,7 +900,7 @@ lux.PrintManager.prototype.createReport = function(printSpec) {
  * @return {Promise} HTTP promise.
  * @export
  */
-lux.PrintManager.prototype.getStatus = function(ref) {
+exports.prototype.getStatus = function(ref) {
   var url = this.url_ + '/status/' + ref + '.json';
   return fetch(url);
 };
@@ -911,7 +912,7 @@ lux.PrintManager.prototype.getStatus = function(ref) {
  * @return {string} The report URL for this ref.
  * @export
  */
-lux.PrintManager.prototype.getReportUrl = function(ref) {
+exports.prototype.getReportUrl = function(ref) {
   return this.url_ + '/report/' + ref;
 };
 
@@ -922,7 +923,7 @@ lux.PrintManager.prototype.getReportUrl = function(ref) {
  * @return {Array.<ol.layer.Layer>} Layers.
  * @export
  */
-lux.PrintManager.prototype.getFlatLayers = function(layer) {
+exports.prototype.getFlatLayers = function(layer) {
   return this.getFlatLayers_(layer, []);
 };
 
@@ -935,8 +936,8 @@ lux.PrintManager.prototype.getFlatLayers = function(layer) {
  * @return {Array.<ol.layer.Layer>} Layers.
  * @private
  */
-lux.PrintManager.prototype.getFlatLayers_ = function(layer, array) {
-  if (layer instanceof ol.layer.Group) {
+exports.prototype.getFlatLayers_ = function(layer, array) {
+  if (layer instanceof olLayerGroup) {
     var sublayers = layer.getLayers();
     sublayers.forEach(function(l) {
       this.getFlatLayers_(l, array);
@@ -954,7 +955,7 @@ lux.PrintManager.prototype.getFlatLayers_ = function(layer, array) {
  * @param {!Array.<number>} rgb rgb representation of the color.
  * @return {string} hex representation of the color.
  */
-lux.PrintManager.prototype.rgbArrayToHex = function(rgb) {
+exports.prototype.rgbArrayToHex = function(rgb) {
   var r = rgb[0];
   var g = rgb[1];
   var b = rgb[2];
@@ -974,6 +975,6 @@ lux.PrintManager.prototype.rgbArrayToHex = function(rgb) {
  * @return {string} hex value prepended with zero if it was single digit,
  *     otherwise the same value that was passed in.
  */
-lux.PrintManager.prototype.colorZeroPadding = function(hex) {
+exports.prototype.colorZeroPadding = function(hex) {
   return hex.length == 1 ? '0' + hex : hex;
 };

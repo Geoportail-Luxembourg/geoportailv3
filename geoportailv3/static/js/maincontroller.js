@@ -30,8 +30,8 @@ const appOlcsZoomToExtent = goog.require('app.olcs.ZoomToExtent');
 const appOlcsLux3DManager = goog.require('app.olcs.Lux3DManager');
 const olProj = goog.require('ol.proj');
 const olMath = goog.require('ol.math');
-goog.require('app.OfflineDownloader');
-goog.require('app.OfflineRestorer');
+const appOfflineDownloader = goog.require('app.OfflineDownloader');
+const appOfflineRestorer = goog.require('app.OfflineRestorer');
 
 
 /**
