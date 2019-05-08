@@ -1,30 +1,29 @@
-goog.module('lux.PrintManager');
-
-goog.module.declareLegacyNamespace();
-const googColorAlpha = goog.require('goog.color.alpha');
-const olBase = goog.require('ol');
-const olColor = goog.require('ol.color');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olLayerImage = goog.require('ol.layer.Image');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olMath = goog.require('ol.math');
-const olSize = goog.require('ol.size');
-const olSourceImageWMS = goog.require('ol.source.ImageWMS');
-const olSourceTileWMS = goog.require('ol.source.TileWMS');
-const olSourceVector = goog.require('ol.source.Vector');
-const olSourceWMTS = goog.require('ol.source.WMTS');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleRegularShape = goog.require('ol.style.RegularShape');
-const olStyleStyle = goog.require('ol.style.Style');
-const olTilegridWMTS = goog.require('ol.tilegrid.WMTS');
-const olObj = goog.require('ol.obj');
-const olFeature = goog.require('ol.Feature');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olStyleIcon = goog.require('ol.style.Icon');
-const olLayerGroup = goog.require('ol.layer.Group');
-
+/**
+ * @module lux.PrintManager
+ */
+import googColorAlpha from 'goog/color/alpha.js';
+import olBase from 'ol.js';
+import olColor from 'ol/color.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olLayerImage from 'ol/layer/Image.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olMath from 'ol/math.js';
+import olSize from 'ol/size.js';
+import olSourceImageWMS from 'ol/source/ImageWMS.js';
+import olSourceTileWMS from 'ol/source/TileWMS.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleRegularShape from 'ol/style/RegularShape.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olTilegridWMTS from 'ol/tilegrid/WMTS.js';
+import olObj from 'ol/obj.js';
+import olFeature from 'ol/Feature.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olStyleIcon from 'ol/style/Icon.js';
+import olLayerGroup from 'ol/layer/Group.js';
 
 /**
  * @classdesc
@@ -33,7 +32,7 @@ const olLayerGroup = goog.require('ol.layer.Group');
  * @constructor
  * @export
  */
-exports = function(url, map) {
+const exports = function(url, map) {
   /**
    * @type {lux.Map}
    * @private
@@ -978,3 +977,6 @@ exports.prototype.rgbArrayToHex = function(rgb) {
 exports.prototype.colorZeroPadding = function(hex) {
   return hex.length == 1 ? '0' + hex : hex;
 };
+
+
+export default exports;

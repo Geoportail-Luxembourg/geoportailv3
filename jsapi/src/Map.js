@@ -1,41 +1,41 @@
-goog.module('lux.Map');
-
-goog.module.declareLegacyNamespace();
-const luxBase = goog.require('lux');
-const luxLayerManager = goog.require('lux.LayerManager');
-const luxMyMap = goog.require('lux.MyMap');
-const luxPrintManager = goog.require('lux.PrintManager');
-const luxStateManager = goog.require('lux.StateManager');
-const olBase = goog.require('ol');
-const olArray = goog.require('ol.array');
-const olMap = goog.require('ol.Map');
-const olOverlay = goog.require('ol.Overlay');
-const olView = goog.require('ol.View');
-const olControlMousePosition = goog.require('ol.control.MousePosition');
-const olEvents = goog.require('ol.events');
-const olFormatGPX = goog.require('ol.format.GPX');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olFormatKML = goog.require('ol.format.KML');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olInteractionSelect = goog.require('ol.interaction.Select');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olExtent = goog.require('ol.extent');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olSourceVector = goog.require('ol.source.Vector');
-const olProj = goog.require('ol.proj');
-const olCollection = goog.require('ol.Collection');
-const olAsserts = goog.require('ol.asserts');
-const olControlAttribution = goog.require('ol.control.Attribution');
-const olControl = goog.require('ol.control');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olFeature = goog.require('ol.Feature');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olSourceVectorEventType = goog.require('ol.source.VectorEventType');
+/**
+ * @module lux.Map
+ */
+import luxBase from './index.js';
+import luxLayerManager from './LayerManager.js';
+import luxMyMap from './MyMap.js';
+import luxPrintManager from './PrintManager.js';
+import luxStateManager from './StateManager.js';
+import olBase from 'ol.js';
+import olArray from 'ol/array.js';
+import olMap from 'ol/Map.js';
+import olOverlay from 'ol/Overlay.js';
+import olView from 'ol/View.js';
+import olControlMousePosition from 'ol/control/MousePosition.js';
+import olEvents from 'ol/events.js';
+import olFormatGPX from 'ol/format/GPX.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olFormatKML from 'ol/format/KML.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olInteractionSelect from 'ol/interaction/Select.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olExtent from 'ol/extent.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olProj from 'ol/proj.js';
+import olCollection from 'ol/Collection.js';
+import olAsserts from 'ol/asserts.js';
+import olControlAttribution from 'ol/control/Attribution.js';
+import olControl from 'ol/control.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olFeature from 'ol/Feature.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olSourceVectorEventType from 'ol/source/VectorEventType.js';
 
 
 proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
@@ -77,7 +77,7 @@ _paq.push(['setSiteId', 22]);
  * @export
  * @api stable
  */
-exports = function(options) {
+const exports = function(options) {
   /**
    * @private
    * @type {Array}
@@ -1870,3 +1870,6 @@ exports.prototype.handleSingleclickEvent_ = function(evt) {
   }.bind(this));
 
 };
+
+
+export default exports;

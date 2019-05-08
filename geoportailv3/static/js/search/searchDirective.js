@@ -1,4 +1,7 @@
 /**
+ * @module app.search.searchDirective
+ */
+/**
  * @fileoverview This file provides a "search" directive. This directive is
  * used to insert a Search bar into a HTML page.
  * Example:
@@ -10,11 +13,9 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.search.searchDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
+import appModule from '../module.js';
+import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
 
 
 // Add dependency into Angular module
@@ -26,7 +27,7 @@ appModule.requires.push(ngeoSearchCreateGeoJSONBloodhound.module.name);
  * @param {string} appSearchTemplateUrl The template url.
  * @ngInject
  */
-exports = function(appSearchTemplateUrl) {
+const exports = function(appSearchTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -82,3 +83,6 @@ exports = function(appSearchTemplateUrl) {
 
 
 appModule.directive('appSearch', exports);
+
+
+export default exports;

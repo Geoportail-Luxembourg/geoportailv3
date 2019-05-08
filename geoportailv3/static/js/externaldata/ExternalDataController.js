@@ -1,4 +1,7 @@
 /**
+ * @module app.externaldata.ExternalDataController
+ */
+/**
  * @fileoverview This file provides a external data directive. This directive
  * is used to create a external data panel in the page.
  *
@@ -10,11 +13,8 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.externaldata.ExternalDataController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
@@ -29,7 +29,7 @@ const appModule = goog.require('app.module');
  * @export
  * @ngInject
  */
-exports = function(gettextCatalog, $http, appWmsHelper,
+const exports = function(gettextCatalog, $http, appWmsHelper,
     appWmtsHelper, appShowLayerinfo, predefinedWmsUrl, appWmsTreeTemplateUrl,
     appWmtsTreeTemplateUrl) {
   /**
@@ -424,3 +424,6 @@ exports.prototype.getInfo = function(rawLayer, type) {
 
 
 appModule.controller('AppExternalDataController', exports);
+
+
+export default exports;

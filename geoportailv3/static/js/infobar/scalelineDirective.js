@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.scalelineDirective
+ */
+/**
  * @fileoverview This file provides a "scaleline" directive. This directive is
  * used to insert an OpenLayers ScaleLine control into the HTML page. It is
  * based on the "ngeo-control" directive.
@@ -12,17 +15,14 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.scalelineDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-exports = function() {
+const exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -38,3 +38,6 @@ exports = function() {
 
 
 appModule.directive('appScaleline', exports);
+
+
+export default exports;

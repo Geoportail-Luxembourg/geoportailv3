@@ -1,20 +1,20 @@
 /**
+ * @module app.backgroundlayer.BlankLayer
+ */
+/**
  * @fileoverview This file defines the Blank Layer service. This service
  * creates an empty layer and the corresponding spec.
  */
-goog.module('app.backgroundlayer.BlankLayer');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olLayerTile = goog.require('ol.layer.Tile');
-
+import appModule from '../module.js';
+import olLayerTile from 'ol/layer/Tile.js';
 
 /**
  * @constructor
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-exports = function(gettextCatalog) {
+const exports = function(gettextCatalog) {
 
   /**
    * @typedef {ol.layer.Tile}
@@ -35,3 +35,6 @@ exports.prototype.getLayer = function() {
 };
 
 appModule.service('appBlankLayer', exports);
+
+
+export default exports;

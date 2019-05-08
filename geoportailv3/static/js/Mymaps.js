@@ -1,30 +1,29 @@
 /**
+ * @module app.Mymaps
+ */
+/**
  * @fileoverview This file defines the mymaps webservice. this service
  * interacts with the Geoportail MyMaps webservice and exposes functions that
  * return objects representing maps and features.
  */
 
-goog.module('app.Mymaps');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olObj = goog.require('ol.obj');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomMultiPoint = goog.require('ol.geom.MultiPoint');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olProj = goog.require('ol.proj');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleIcon = goog.require('ol.style.Icon');
-const olStyleRegularShape = goog.require('ol.style.RegularShape');
-const olStyleText = goog.require('ol.style.Text');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import olObj from 'ol/obj.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olProj from 'ol/proj.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleIcon from 'ol/style/Icon.js';
+import olStyleRegularShape from 'ol/style/RegularShape.js';
+import olStyleText from 'ol/style/Text.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
 
 /**
  * @constructor
@@ -46,7 +45,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
     appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl, arrowModelUrl) {
   /**
@@ -1476,3 +1475,6 @@ exports.prototype.createStyleFunction = function(curMap) {
 };
 
 appModule.service('appMymaps', exports);
+
+
+export default exports;

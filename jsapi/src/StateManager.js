@@ -1,17 +1,16 @@
-goog.module('lux.StateManager');
-
-goog.module.declareLegacyNamespace();
-const luxBase = goog.require('lux');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-const olEvents = goog.require('ol.events');
-const olObj = goog.require('ol.obj');
-
+/**
+ * @module lux.StateManager
+ */
+import luxBase from './index.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
+import olEvents from 'ol/events.js';
+import olObj from 'ol/obj.js';
 
 /**
  * @classdesc
  * @constructor
  */
-exports = function() {
+const exports = function() {
 
   /**
    * @type {lux.Map}
@@ -136,3 +135,6 @@ exports.prototype.updateState = function(object) {
 exports.prototype.getUrl = function() {
   return this.url_;
 };
+
+
+export default exports;

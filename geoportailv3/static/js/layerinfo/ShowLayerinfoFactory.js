@@ -1,12 +1,14 @@
 /**
+ * @module app.layerinfo.ShowLayerinfoFactory
+ */
+let exports = {};
+
+/**
  * @fileoverview Provides a layer info service. That service is a function used
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.module('app.layerinfo.ShowLayerinfoFactory');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+import appModule from '../module.js';
 
 
 /**
@@ -133,3 +135,6 @@ function factory($http, $sce, $rootScope,
 }
 
 appModule.factory('appShowLayerinfo', factory);
+
+
+export default exports;

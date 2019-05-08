@@ -1,17 +1,17 @@
 /**
+ * @module app.Themes
+ */
+/**
  * @fileoverview This file defines the Themes service. This service interacts
  * with c2cgeoportal's "themes" web service and exposes functions that return
  * objects in the tree returned by the "themes" web service.
  */
-goog.module('app.Themes');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olBase = goog.require('ol');
-const olArray = goog.require('ol.array');
-const olEventsEventTarget = goog.require('ol.events.EventTarget');
-const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
-
+import appModule from './module.js';
+import olBase from 'ol.js';
+import olArray from 'ol/array.js';
+import olEventsEventTarget from 'ol/events/EventTarget.js';
+import appEventsThemesEventType from './events/ThemesEventType.js';
 
 /**
  * @constructor
@@ -25,7 +25,7 @@ const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
  * @param {app.GetDevice} appGetDevice The device service.
  * @ngInject
  */
-exports = function($window, $http, treeUrl, isThemePrivateUrl,
+const exports = function($window, $http, treeUrl, isThemePrivateUrl,
     appGetWmtsLayer, appBlankLayer, appGetDevice) {
   olEventsEventTarget.call(this);
 
@@ -71,6 +71,7 @@ exports = function($window, $http, treeUrl, isThemePrivateUrl,
    */
   this.promise_ = null;
 };
+
 olBase.inherits(exports, olEventsEventTarget);
 
 
@@ -255,3 +256,6 @@ exports.prototype.getFlatCatalog = function() {
 };
 
 appModule.service('appThemes', exports);
+
+
+export default exports;

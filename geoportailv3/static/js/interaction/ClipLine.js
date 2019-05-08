@@ -1,24 +1,24 @@
-goog.module('app.interaction.ClipLine');
-goog.module.declareLegacyNamespace();
-const olBase = goog.require('ol');
-const olCollection = goog.require('ol.Collection');
-const olFeature = goog.require('ol.Feature');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olMapBrowserPointerEvent = goog.require('ol.MapBrowserPointerEvent');
-const olCoordinate = goog.require('ol.coordinate');
-const olEvents = goog.require('ol.events');
-const olExtent = goog.require('ol.extent');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olInteractionInteraction = goog.require('ol.interaction.Interaction');
-const olInteractionModify = goog.require('ol.interaction.Modify');
-const olInteractionPointer = goog.require('ol.interaction.Pointer');
-const olInteractionModifyEventType = goog.require('ol.interaction.ModifyEventType');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olSourceVector = goog.require('ol.source.Vector');
-const olStructsRBush = goog.require('ol.structs.RBush');
-const olStyleStyle = goog.require('ol.style.Style');
-
+/**
+ * @module app.interaction.ClipLine
+ */
+import olBase from 'ol.js';
+import olCollection from 'ol/Collection.js';
+import olFeature from 'ol/Feature.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olMapBrowserPointerEvent from 'ol/MapBrowserPointerEvent.js';
+import olCoordinate from 'ol/coordinate.js';
+import olEvents from 'ol/events.js';
+import olExtent from 'ol/extent.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olInteractionInteraction from 'ol/interaction/Interaction.js';
+import olInteractionModify from 'ol/interaction/Modify.js';
+import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionModifyEventType from 'ol/interaction/ModifyEventType.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olStructsRBush from 'ol/structs/RBush.js';
+import olStyleStyle from 'ol/style/Style.js';
 
 /**
  * @classdesc
@@ -30,7 +30,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @fires app.interaction.ModifyCircleEvent
  * @api
  */
-exports = function(options) {
+const exports = function(options) {
 
   olInteractionPointer.call(this, {
     handleDownEvent: exports.handleDownEvent_,
@@ -113,6 +113,7 @@ exports = function(options) {
       this.handleFeatureRemove_, this);
 
 };
+
 olBase.inherits(exports, olInteractionPointer);
 
 
@@ -448,3 +449,6 @@ exports.getDefaultStyleFunction = function() {
     return style[olGeomGeometryType.POINT];
   };
 };
+
+
+export default exports;

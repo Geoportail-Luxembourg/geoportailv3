@@ -1,10 +1,12 @@
-goog.module('app.events.ThemesEventType');
-
-goog.module.declareLegacyNamespace();
-
+/**
+ * @module app.events.ThemesEventType
+ */
 /**
  * @enum {string}
  */
-exports = {
+const exports = {
   LOAD: 'load'
 };
+
+
+export default exports;

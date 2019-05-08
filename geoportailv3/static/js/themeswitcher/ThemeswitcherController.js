@@ -1,16 +1,16 @@
 /**
+ * @module app.themeswitcher.ThemeswitcherController
+ */
+/**
  * @fileoverview This file provides the "themeswitcher" directive.
  * That directive is used to create the theme switcher in the page.
  *
  */
-goog.module('app.themeswitcher.ThemeswitcherController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
-const olEvents = goog.require('ol.events');
-
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import appEventsThemesEventType from '../events/ThemesEventType.js';
+import olEvents from 'ol/events.js';
 
 /**
  * @constructor
@@ -23,7 +23,7 @@ const olEvents = goog.require('ol.events');
  * @export
  * @ngInject
  */
-exports = function(gettextCatalog, ngeoLocation,
+const exports = function(gettextCatalog, ngeoLocation,
     appThemes, appTheme, appNotify, gettext) {
 
   /**
@@ -152,3 +152,6 @@ exports.prototype.switchTheme = function(themeId) {
 
 appModule.controller('AppThemeswitcherController',
     exports);
+
+
+export default exports;

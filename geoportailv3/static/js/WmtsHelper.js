@@ -1,20 +1,19 @@
 /**
+ * @module app.WmtsHelper
+ */
+/**
  * @fileoverview Provides a wmts helper iservice. That service is a function used
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.module('app.WmtsHelper');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const appOlcsExtent = goog.require('app.olcs.Extent');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const olFormatWMTSCapabilities = goog.require('ol.format.WMTSCapabilities');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olSourceWMTS = goog.require('ol.source.WMTS');
-const olBase = goog.require('ol');
-
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import appOlcsExtent from './olcs/Extent.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import olFormatWMTSCapabilities from 'ol/format/WMTSCapabilities.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
+import olBase from 'ol.js';
 
 /**
  * @constructor
@@ -26,7 +25,7 @@ const olBase = goog.require('ol');
  * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
-exports = function($sce, $http, appNotify, gettextCatalog,
+const exports = function($sce, $http, appNotify, gettextCatalog,
     $window, httpsProxyUrl) {
 
   /**
@@ -390,3 +389,6 @@ exports.prototype.proxyIfNeeded = function(url) {
 };
 
 appModule.service('appWmtsHelper', exports);
+
+
+export default exports;

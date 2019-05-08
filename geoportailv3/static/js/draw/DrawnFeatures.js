@@ -1,19 +1,18 @@
 /**
+ * @module app.draw.DrawnFeatures
+ */
+/**
  * @fileoverview Provides a drawn features service useful to share
  * information about the drawn features throughout the application.
  */
 
-goog.module('app.draw.DrawnFeatures');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appDrawFeatureHash = goog.require('app.draw.FeatureHash');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olSourceVector = goog.require('ol.source.Vector');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olExtent = goog.require('ol.extent');
-const olCollection = goog.require('ol.Collection');
-
+import appModule from '../module.js';
+import appDrawFeatureHash from '../draw/FeatureHash.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olExtent from 'ol/extent.js';
+import olCollection from 'ol/Collection.js';
 
 /**
  * @constructor
@@ -23,7 +22,7 @@ const olCollection = goog.require('ol.Collection');
  * manager
  * @ngInject
  */
-exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
+const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
 
   /**
    * @type {ngeo.map.FeatureOverlayMgr}
@@ -482,3 +481,6 @@ exports.prototype.getLayer = function() {
 };
 
 appModule.service('appDrawnFeatures', exports);
+
+
+export default exports;

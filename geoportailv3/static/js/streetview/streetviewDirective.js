@@ -1,4 +1,7 @@
 /**
+ * @module app.streetview.streetviewDirective
+ */
+/**
  * @fileoverview This file provides a streetview overview.
  *
  * Example:
@@ -8,18 +11,15 @@
  *  </app-streetview>
  *
  */
-goog.module('app.streetview.streetviewDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appStreetviewTemplateUrl Url to streetview template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appStreetviewTemplateUrl) {
+const exports = function(appStreetviewTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -34,3 +34,6 @@ exports = function(appStreetviewTemplateUrl) {
 };
 
 appModule.directive('appStreetview', exports);
+
+
+export default exports;

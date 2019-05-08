@@ -1,23 +1,23 @@
 /**
+ * @module app.draw.FeaturePopupController
+ */
+/**
  * @fileoverview Provides a feature popup directive.
  */
-goog.module('app.draw.FeaturePopupController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appMiscFile = goog.require('app.misc.file');
-const olEvents = goog.require('ol.events');
-const olExtent = goog.require('ol.extent');
-const olProj = goog.require('ol.proj');
-const olFormatKML = goog.require('ol.format.KML');
-const olGeomCircle = goog.require('ol.geom.Circle');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olInteraction = goog.require('ol.interaction');
-const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
-
+import appModule from '../module.js';
+import appMiscFile from '../misc/file.js';
+import olEvents from 'ol/events.js';
+import olExtent from 'ol/extent.js';
+import olProj from 'ol/proj.js';
+import olFormatKML from 'ol/format/KML.js';
+import olGeomCircle from 'ol/geom/Circle.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olInteraction from 'ol/interaction.js';
+import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
 
 /**
  * @constructor
@@ -36,7 +36,7 @@ const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
  * @export
  * @ngInject
  */
-exports = function($scope, $sce, appFeaturePopup,
+const exports = function($scope, $sce, appFeaturePopup,
     appDrawnFeatures, appMymaps, appSelectedFeatures, appUserManager,
     ngeoNetworkStatus, mymapsImageUrl, exportgpxkmlUrl, $document, appExport) {
 
@@ -796,3 +796,6 @@ exports.prototype.isDocked = function() {
 };
 
 appModule.controller('AppFeaturePopupController', exports);
+
+
+export default exports;

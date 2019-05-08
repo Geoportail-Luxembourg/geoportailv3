@@ -1,13 +1,13 @@
 /**
+ * @module app.Geocoding
+ */
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "geocoding" web service.
  */
-goog.module('app.Geocoding');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olProj = goog.require('ol.proj');
-
+import appModule from './module.js';
+import olProj from 'ol/proj.js';
 
 /**
  * @constructor
@@ -16,7 +16,7 @@ const olProj = goog.require('ol.proj');
  * @param {string} geocodingServiceUrl The url of the service.
  * @ngInject
  */
-exports = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl) {
+const exports = function($http, reverseGeocodingServiceUrl, geocodingServiceUrl) {
   /**
    * @type {angular.$http}
    * @private
@@ -84,3 +84,6 @@ exports.prototype.geocode = function(address) {
 
 
 appModule.service('appGeocoding', exports);
+
+
+export default exports;

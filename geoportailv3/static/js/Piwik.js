@@ -1,10 +1,13 @@
-goog.module('app.Piwik');
-
-
-goog.module.declareLegacyNamespace();
+/**
+ * @module app.Piwik
+ */
+let exports = {};
 
 
 /**
  * @typedef {{push: function(Array<string>)}}
  */
 exports;
+
+
+export default exports;

@@ -1,20 +1,20 @@
 /**
+ * @module app.themeswitcher.themeswitcherDirective
+ */
+/**
  * @fileoverview This file provides the "themeswitcher" directive.
  * That directive is used to create the theme switcher in the page.
  *
  */
-goog.module('app.themeswitcher.themeswitcherDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appThemeswitcherTemplateUrl Url to themes template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appThemeswitcherTemplateUrl) {
+const exports = function(appThemeswitcherTemplateUrl) {
   return {
     restrict: 'E',
     controller: 'AppThemeswitcherController',
@@ -30,3 +30,6 @@ exports = function(appThemeswitcherTemplateUrl) {
 
 
 appModule.directive('appThemeswitcher', exports);
+
+
+export default exports;

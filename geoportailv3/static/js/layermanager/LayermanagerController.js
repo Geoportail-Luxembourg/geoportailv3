@@ -1,4 +1,7 @@
 /**
+ * @module app.layermanager.LayermanagerController
+ */
+/**
  * @fileoverview This file provides the layer manager directive. That directive
  * is used to create the list of selected layers in the page.
  *
@@ -13,11 +16,9 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.module('app.layermanager.LayermanagerController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olBase = goog.require('ol');
+import appModule from '../module.js';
+import olBase from 'ol.js';
 
 /**
  * @param {ngeo.statemanager.Location} ngeoLocation Location service.
@@ -25,7 +26,7 @@ const olBase = goog.require('ol');
  * @ngInject
  * @export
  */
-exports = function(ngeoLocation) {
+const exports = function(ngeoLocation) {
   /**
    * @type {ngeo.statemanager.Location}
    * @private
@@ -109,3 +110,6 @@ exports.prototype.toggleLayersComparator = function() {
 
 
 appModule.controller('AppLayermanagerController', exports);
+
+
+export default exports;

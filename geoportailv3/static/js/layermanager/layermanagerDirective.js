@@ -1,4 +1,7 @@
 /**
+ * @module app.layermanager.layermanagerDirective
+ */
+/**
  * @fileoverview This file provides the layer manager directive. That directive
  * is used to create the list of selected layers in the page.
  *
@@ -13,17 +16,15 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.module('app.layermanager.layermanagerDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+import appModule from '../module.js';
 
 /**
  * @param {string} appLayermanagerTemplateUrl Url to layermanager template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appLayermanagerTemplateUrl) {
+const exports = function(appLayermanagerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -40,3 +41,6 @@ exports = function(appLayermanagerTemplateUrl) {
 
 
 appModule.directive('appLayermanager', exports);
+
+
+export default exports;

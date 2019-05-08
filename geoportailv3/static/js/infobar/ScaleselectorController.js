@@ -1,8 +1,7 @@
-goog.module('app.infobar.ScaleselectorController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.infobar.ScaleselectorController
+ */
+import appModule from '../module.js';
 
 // Use the default "scale selector" template.
 //app.module.value('ngeoScaleselectorTemplateUrl',
@@ -14,7 +13,7 @@ const appModule = goog.require('app.module');
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @ngInject
  */
-exports = function(appScalesService) {
+const exports = function(appScalesService) {
 
   /**
    * @type {app.ScalesService}
@@ -33,3 +32,6 @@ exports = function(appScalesService) {
 
 appModule.controller('AppScaleselectorController',
     exports);
+
+
+export default exports;

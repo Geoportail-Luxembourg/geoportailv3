@@ -1,14 +1,14 @@
-goog.module('app.feedbackanf.feedbackanfDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+/**
+ * @module app.feedbackanf.feedbackanfDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appFeedbackanfTemplateUrl Url to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appFeedbackanfTemplateUrl) {
+const exports = function(appFeedbackanfTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -26,3 +26,6 @@ exports = function(appFeedbackanfTemplateUrl) {
 };
 
 appModule.directive('appFeedbackanf', exports);
+
+
+export default exports;

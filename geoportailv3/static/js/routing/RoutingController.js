@@ -1,4 +1,7 @@
 /**
+ * @module app.routing.RoutingController
+ */
+/**
  * @fileoverview This file provides the routing directive. That directive
  * is used to create the routing panel in the side panel.
  *
@@ -8,20 +11,17 @@
  * </app-routing>
  *
  */
-goog.module('app.routing.RoutingController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
-const olBase = goog.require('ol');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olStyle = goog.require('ol.style');
-const olInteraction = goog.require('ol.interaction');
-const olEvents = goog.require('ol.events');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
+import olBase from 'ol.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olStyle from 'ol/style.js';
+import olInteraction from 'ol/interaction.js';
+import olEvents from 'ol/events.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -45,7 +45,7 @@ const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
  * @ngInject
  * @export
  */
-exports = function($scope, gettextCatalog, poiSearchServiceUrl,
+const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     $compile, appRouting, appGetProfile,
     ngeoFeatureOverlayMgr, appExport, appCoordinateString, maxExtent,
     $window, appGeocoding, appUserManager, appNotify, appMymaps, $filter) {
@@ -1147,3 +1147,6 @@ function secondsToHHmmss($filter) {
 }
 
 appModule.filter('appSecondsToHHmmss', secondsToHHmmss);
+
+
+export default exports;

@@ -1,8 +1,7 @@
-goog.module('app.authentication.AuthenticationController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.authentication.AuthenticationController
+ */
+import appModule from '../module.js';
 
 /**
  * @param {app.UserManager} appUserManager The usermanager service.
@@ -10,7 +9,7 @@ const appModule = goog.require('app.module');
  * @export
  * @ngInject
  */
-exports = function(appUserManager) {
+const exports = function(appUserManager) {
 
   /**
    * @type {app.UserManager}
@@ -91,3 +90,6 @@ exports.prototype.getUsername = function() {
 
 appModule.controller('AppAuthenticationController',
     exports);
+
+
+export default exports;

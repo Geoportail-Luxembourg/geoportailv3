@@ -1,10 +1,9 @@
-goog.module('app.feedbackanf.FeedbackanfController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-
+/**
+ * @module app.feedbackanf.FeedbackanfController
+ */
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 /**
  * @constructor
@@ -22,7 +21,7 @@ const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
  * @ngInject
  * @export
  */
-exports = function($scope, $http, appNotify, appUserManager,
+const exports = function($scope, $http, appNotify, appUserManager,
     gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackAnfUrl,
     appDrawnFeatures, appLotChasse) {
   /**
@@ -152,31 +151,31 @@ exports = function($scope, $http, appNotify, appUserManager,
   }, this));
 };
 
- /**
- * @private
- */
+/**
+* @private
+*/
 exports.prototype.setUrl_ = function() {
   this.url = this.ngeoLocation_.getUriString();
 };
 
- /**
- * @export
- */
+/**
+* @export
+*/
 exports.prototype.activateDrawingTools = function() {
   this['drawingTools'] = true;
 };
 
- /**
- * @param {ol.layer.Layer} layer Layer.
- * @export
- */
+/**
+* @param {ol.layer.Layer} layer Layer.
+* @export
+*/
 exports.prototype.setConcernedLayer = function(layer) {
   this.concernedLayer = /** @type {string} */ (layer.get('label'));
 };
 
- /**
- * @export
- */
+/**
+* @export
+*/
 exports.prototype.sendReport = function() {
   var features = this.drawnFeatures_.getCollection().getArray();
   if (features.length === 0) {
@@ -217,3 +216,6 @@ exports.prototype.sendReport = function() {
 
 
 appModule.controller('AppFeedbackanfController', exports);
+
+
+export default exports;

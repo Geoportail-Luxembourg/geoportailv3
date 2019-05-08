@@ -1,7 +1,6 @@
-goog.module('app.imageupload.ImguploadController');
-
-goog.module.declareLegacyNamespace();
-
+/**
+ * @module app.imageupload.ImguploadController
+ */
 /**
  * @fileoverview This file provides a "mymaps" directive. This directive is
  * used to insert a MyMaps block  into the HTML page.
@@ -11,10 +10,9 @@ goog.module.declareLegacyNamespace();
  *
  */
 
-const appModule = goog.require('app.module');
+import appModule from '../module.js';
 
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-
+import appNotifyNotificationType from '../NotifyNotificationType.js';
 
 /**
  * @param {angular.$parse} $parse The parse service.
@@ -25,7 +23,7 @@ const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
  * @constructor
  * @ngInject
  */
-exports = function($parse, $http, appNotify, gettextCatalog,
+const exports = function($parse, $http, appNotify, gettextCatalog,
     mymapsUrl) {
 
   /**
@@ -94,3 +92,5 @@ exports.prototype.uploadFileToUrl = function(file, scope,
 
 appModule.controller('AppImguploadController', exports);
 
+
+export default exports;

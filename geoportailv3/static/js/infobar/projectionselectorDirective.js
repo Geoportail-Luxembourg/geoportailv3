@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.projectionselectorDirective
+ */
+/**
  * @fileoverview This file provides a "projectionselector" directive
  * This directive is used to insert an Projection Selector and
  * Coordinate Display into the HTML page.
@@ -12,18 +15,15 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.projectionselectorDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @param {string} appProjectionselectorTemplateUrl The template url.
  * @ngInject
  */
-exports = function(appProjectionselectorTemplateUrl) {
+const exports = function(appProjectionselectorTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -38,3 +38,6 @@ exports = function(appProjectionselectorTemplateUrl) {
 
 
 appModule.directive('appProjectionselector', exports);
+
+
+export default exports;

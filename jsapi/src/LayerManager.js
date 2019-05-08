@@ -1,12 +1,11 @@
-goog.module('lux.LayerManager');
-
-goog.module.declareLegacyNamespace();
-const luxBase = goog.require('lux');
-const olBase = goog.require('ol');
-const olControlControl = goog.require('ol.control.Control');
-const olEvents = goog.require('ol.events');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-
+/**
+ * @module lux.LayerManager
+ */
+import luxBase from './index.js';
+import olBase from 'ol.js';
+import olControlControl from 'ol/control/Control.js';
+import olEvents from 'ol/events.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
 
 /**
  * @constructor
@@ -14,7 +13,7 @@ const olCollectionEventType = goog.require('ol.CollectionEventType');
  * @param {olx.control.ControlOptions} options Layer manager options.
  * @export
  */
-exports = function(options) {
+const exports = function(options) {
   var element = document.createElement('UL');
   element.classList.add('lux-layer-manager');
 
@@ -80,3 +79,6 @@ exports.prototype.update = function() {
     this.element.appendChild(li);
   }, this);
 };
+
+
+export default exports;

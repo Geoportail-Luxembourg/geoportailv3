@@ -1,4 +1,7 @@
 /**
+ * @module app.backgroundlayer.BackgroundlayerController
+ */
+/**
  * @fileoverview This file provides the "backgroundlayer" directive. This
  * directive is used to create a dropdown for selecting the map's background
  * layer. This directive is based on Bootstrap's "dropdown" component, and
@@ -13,12 +16,9 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.backgroundlayer.BackgroundlayerController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olEvents = goog.require('ol.events');
-
+import appModule from '../module.js';
+import olEvents from 'ol/events.js';
 
 /**
  * @constructor
@@ -28,7 +28,7 @@ const olEvents = goog.require('ol.events');
  * @export
  * @ngInject
  */
-exports = function(ngeoBackgroundLayerMgr, appThemes) {
+const exports = function(ngeoBackgroundLayerMgr, appThemes) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -65,3 +65,6 @@ exports.prototype.setLayer = function(layer) {
 
 appModule.controller('AppBackgroundlayerController',
     exports);
+
+
+export default exports;

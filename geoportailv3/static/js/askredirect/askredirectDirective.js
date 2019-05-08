@@ -1,14 +1,14 @@
-goog.module('app.askredirect.askredirectDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+/**
+ * @module app.askredirect.askredirectDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appAskredirectTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appAskredirectTemplateUrl) {
+const exports = function(appAskredirectTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -20,4 +20,8 @@ exports = function(appAskredirectTemplateUrl) {
     templateUrl: appAskredirectTemplateUrl
   };
 };
+
 appModule.directive('appAskredirect', exports);
+
+
+export default exports;

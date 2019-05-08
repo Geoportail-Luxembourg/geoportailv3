@@ -1,15 +1,18 @@
 /**
+ * @module app.GetWmsLayerFactory
+ */
+let exports = {};
+
+/**
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.module('app.GetWmsLayerFactory');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appOlcsExtent = goog.require('app.olcs.Extent');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const olLayerImage = goog.require('ol.layer.Image');
-const olSourceImageWMS = goog.require('ol.source.ImageWMS');
+import appModule from './module.js';
+import appOlcsExtent from './olcs/Extent.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import olLayerImage from 'ol/layer/Image.js';
+import olSourceImageWMS from 'ol/source/ImageWMS.js';
 
 
 /**
@@ -62,3 +65,6 @@ function factory(proxyWmsUrl, remoteProxyWms,
 
 
 appModule.factory('appGetWmsLayer', factory);
+
+
+export default exports;

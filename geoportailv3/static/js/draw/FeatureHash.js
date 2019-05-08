@@ -1,26 +1,27 @@
-goog.module('app.draw.FeatureHash');
-goog.module.declareLegacyNamespace();
-const ngeoFormatFeatureProperties = goog.require('ngeo.format.FeatureProperties');
-const ngeoUtils = goog.require('ngeo.utils');
-const olBase = goog.require('ol');
-const olFeature = goog.require('ol.Feature');
-const olArray = goog.require('ol.array');
-const olColor = goog.require('ol.color');
-const olFormatTextFeature = goog.require('ol.format.TextFeature');
-const olFormatFeature = goog.require('ol.format.Feature');
-const olGeomGeometryLayout = goog.require('ol.geom.GeometryLayout');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
-const olGeomMultiPoint = goog.require('ol.geom.MultiPoint');
-const olGeomMultiPolygon = goog.require('ol.geom.MultiPolygon');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-const olStyleText = goog.require('ol.style.Text');
+/**
+ * @module app.draw.FeatureHash
+ */
+import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
+import ngeoUtils from 'ngeo/utils.js';
+import olBase from 'ol.js';
+import olFeature from 'ol/Feature.js';
+import olArray from 'ol/array.js';
+import olColor from 'ol/color.js';
+import olFormatTextFeature from 'ol/format/TextFeature.js';
+import olFormatFeature from 'ol/format/Feature.js';
+import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
+import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
+import olGeomMultiPolygon from 'ol/geom/MultiPolygon.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olStyleText from 'ol/style/Text.js';
 
 
 /**
@@ -85,7 +86,7 @@ let FeatureHashLegacyProperties = {};
  * @param {ngeox.format.FeatureHashOptions=} opt_options Options.
  * @export
  */
-exports = function(opt_options) {
+const exports = function(opt_options) {
 
   olFormatTextFeature.call(this);
 
@@ -133,6 +134,7 @@ exports = function(opt_options) {
   FeatureHashLegacyProperties = (options.propertiesType !== undefined) &&  options.propertiesType;
 
 };
+
 olBase.inherits(exports, olFormatTextFeature);
 
 
@@ -1228,3 +1230,6 @@ exports.prototype.writeGeometryText = function(geometry, opt_options) {
   this.prevY_ = 0;
   return geometryWriter.call(this, transformedGeometry);
 };
+
+
+export default exports;

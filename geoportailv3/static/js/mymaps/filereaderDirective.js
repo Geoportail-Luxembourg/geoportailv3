@@ -1,8 +1,7 @@
-goog.module('app.mymaps.filereaderDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.mymaps.filereaderDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {angular.$window} $window The Angular $window service.
@@ -11,7 +10,7 @@ const appModule = goog.require('app.module');
  * @ngdoc directive
  * @ngname appFilereader
  */
-exports = function($window) {
+const exports = function($window) {
   return {
     restrict: 'A',
     scope: {
@@ -65,3 +64,6 @@ exports = function($window) {
 
 
 appModule.directive('appFilereader', exports);
+
+
+export default exports;

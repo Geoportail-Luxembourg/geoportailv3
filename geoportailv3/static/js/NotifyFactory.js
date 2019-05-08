@@ -1,12 +1,15 @@
 /**
+ * @module app.NotifyFactory
+ */
+let exports = {};
+
+/**
  * @fileoverview Provides a flash message service. That service helps
  * displaying general messages.
  */
-goog.module('app.NotifyFactory');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
 
 /**
  * @return {app.Notify} The notify function.
@@ -41,3 +44,6 @@ function factory() {
 }
 
 appModule.factory('appNotify', factory);
+
+
+export default exports;

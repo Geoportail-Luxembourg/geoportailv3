@@ -1,4 +1,7 @@
 /**
+ * @module app.streetview.StreetviewController
+ */
+/**
  * @fileoverview This file provides a streetview overview.
  *
  * Example:
@@ -8,15 +11,12 @@
  *  </app-streetview>
  *
  */
-goog.module('app.streetview.StreetviewController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olBase = goog.require('ol');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olInteraction = goog.require('ol.interaction');
-const olStyle = goog.require('ol.style');
-
+import appModule from '../module.js';
+import olBase from 'ol.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olInteraction from 'ol/interaction.js';
+import olStyle from 'ol/style.js';
 
 /**
  * @ngInject
@@ -31,7 +31,7 @@ const olStyle = goog.require('ol.style');
  * @param {angular.$window} $window Window.
  * @export
  */
-exports = function($element, $scope, ngeoFeatureOverlayMgr,
+const exports = function($element, $scope, ngeoFeatureOverlayMgr,
     appImagesPath, appLocationInfoOverlay, appActivetool, $window) {
   /**
    * @type {angular.$window}
@@ -539,3 +539,6 @@ exports.prototype.loadGoogleapis_ = function() {
   }.bind(this));
 };
 appModule.controller('AppStreetviewController', exports);
+
+
+export default exports;

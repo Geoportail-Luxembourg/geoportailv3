@@ -1,4 +1,7 @@
 /**
+ * @module app.resizemapDirective
+ */
+/**
  * @fileoverview Provides a directive that resizes the map in an animation
  * loop during 2 second when the value of "state" changes.
  *
@@ -9,19 +12,15 @@
  * <div>
  */
 
-goog.module('app.resizemapDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olMap = goog.require('ol.Map');
-
+import appModule from './module.js';
+import olMap from 'ol/Map.js';
 
 /**
  * @param {angular.$window} $window Angular window service.
  * @return {angular.Directive} The directive specs.
  * @ngInject
  */
-exports = function($window) {
+const exports = function($window) {
   var /** @type {number} */ duration = 2000;
   return {
     restrict: 'A',
@@ -69,3 +68,6 @@ exports = function($window) {
 
 
 appModule.directive('appResizemap', exports);
+
+
+export default exports;

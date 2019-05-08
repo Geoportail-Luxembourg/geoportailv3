@@ -1,15 +1,14 @@
-goog.module('app.draw.symbolSelectorDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.draw.symbolSelectorDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appSymbolSelectorTemplateUrl Url to style editing partial.
  * @return {angular.Directive} Directive Definition Object.
  * @ngInject
  */
-exports = function(appSymbolSelectorTemplateUrl) {
+const exports = function(appSymbolSelectorTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -24,3 +23,6 @@ exports = function(appSymbolSelectorTemplateUrl) {
 };
 
 appModule.directive('appSymbolSelector', exports);
+
+
+export default exports;

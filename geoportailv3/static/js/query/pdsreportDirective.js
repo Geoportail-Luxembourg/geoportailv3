@@ -1,16 +1,14 @@
-goog.module('app.query.pdsreportDirective');
-
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.query.pdsreportDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appPdsreportTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appPdsreportTemplateUrl) {
+const exports = function(appPdsreportTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -23,4 +21,8 @@ exports = function(appPdsreportTemplateUrl) {
     templateUrl: appPdsreportTemplateUrl
   };
 };
+
 appModule.directive('appPdsreport', exports);
+
+
+export default exports;

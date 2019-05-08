@@ -1,8 +1,7 @@
-goog.module('app.MymapsOffline');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.MymapsOffline
+ */
+import appModule from './module.js';
 
 /**
  * @constructor
@@ -11,7 +10,7 @@ const appModule = goog.require('app.module');
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
  * @ngInject
  */
-exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
+const exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
   /**
    * @type {app.Mymaps}
    * @private
@@ -84,3 +83,6 @@ exports.prototype.restore = function() {
 };
 
 appModule.service('appMymapsOffline', exports);
+
+
+export default exports;

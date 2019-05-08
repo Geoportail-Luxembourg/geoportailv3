@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.elevationDirective
+ */
+/**
  * @fileoverview This file provides a "elevation" directive. This directive is
  * used to insert Elevation information into the HTML page.
  * Example:
@@ -11,17 +14,14 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.elevationDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-exports = function() {
+const exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -38,3 +38,6 @@ exports = function() {
 
 
 appModule.directive('appElevation', exports);
+
+
+export default exports;

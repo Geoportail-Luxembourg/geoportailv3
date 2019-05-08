@@ -1,9 +1,8 @@
-goog.module('app.slider.SliderController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olBase = goog.require('ol');
-
+/**
+ * @module app.slider.SliderController
+ */
+import appModule from '../module.js';
+import olBase from 'ol.js';
 
 /**
  * @param {angular.JQLite} $element Element.
@@ -13,7 +12,7 @@ const olBase = goog.require('ol');
  * @constructor
  * @ngInject
  */
-exports = function($element, ngeoLocation, $document, $scope) {
+const exports = function($element, ngeoLocation, $document, $scope) {
 
   /**
    * @type {angular.Scope}
@@ -216,3 +215,6 @@ exports.prototype.drag_ = function(event) {
 };
 
 appModule.controller('AppSliderController', exports);
+
+
+export default exports;

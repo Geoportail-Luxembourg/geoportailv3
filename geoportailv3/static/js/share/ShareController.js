@@ -1,4 +1,7 @@
 /**
+ * @module app.share.ShareController
+ */
+/**
  * @fileoverview This file provides a list of social sharing options.
  * This directive is used
  * to create a sharing panel in the page.
@@ -8,12 +11,9 @@
  * <app-share app-share-active=":mainCtrl.active"></app-share>
  *
  */
-goog.module('app.share.ShareController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const ngeoUtils = goog.require('ngeo.utils');
-
+import appModule from '../module.js';
+import ngeoUtils from 'ngeo/utils.js';
 
 /**
  * @ngInject
@@ -23,7 +23,7 @@ const ngeoUtils = goog.require('ngeo.utils');
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  */
-exports = function($window, gettext, gettextCatalog) {
+const exports = function($window, gettext, gettextCatalog) {
   /**
    * @type {Object}
    * @private
@@ -118,3 +118,6 @@ exports.prototype.openMailLink = function() {
 };
 
 appModule.controller('AppShareController', exports);
+
+
+export default exports;

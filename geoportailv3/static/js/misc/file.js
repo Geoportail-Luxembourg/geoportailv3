@@ -1,6 +1,7 @@
-goog.module('app.misc.file');
-
-goog.module.declareLegacyNamespace();
+/**
+ * @module app.misc.file
+ */
+let exports = {};
 
 /**
  * @param {string} name The string to sanitize.
@@ -10,3 +11,6 @@ exports.sanitizeFilename = function(name) {
   name = name.replace(/\s+/g, '_'); // Replace white space with _.
   return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special character.
 };
+
+
+export default exports;

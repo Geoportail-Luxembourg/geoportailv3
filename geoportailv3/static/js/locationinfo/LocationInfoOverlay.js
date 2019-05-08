@@ -1,14 +1,13 @@
 /**
+ * @module app.locationinfo.LocationInfoOverlay
+ */
+/**
  * @fileoverview Provides a location features service useful to share
  * information about the drawn features throughout the application.
  */
 
-goog.module('app.locationinfo.LocationInfoOverlay');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olStyle = goog.require('ol.style');
-
+import appModule from '../module.js';
+import olStyle from 'ol/style.js';
 
 /**
  * @constructor
@@ -16,7 +15,7 @@ const olStyle = goog.require('ol.style');
  * manager
  * @ngInject
  */
-exports = function(ngeoFeatureOverlayMgr) {
+const exports = function(ngeoFeatureOverlayMgr) {
 
   /**
    * @type {ngeo.map.FeatureOverlay}
@@ -66,3 +65,6 @@ exports.prototype.addFeature = function(feature) {
 };
 
 appModule.service('appLocationInfoOverlay', exports);
+
+
+export default exports;

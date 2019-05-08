@@ -1,13 +1,14 @@
 /**
+ * @module app.Map
+ */
+/**
  * @fileoverview This file provides the "app.Map" class.
  * it extends "ol.Map" to support 3D in `getCoordinateFromPixel` method.
  */
-goog.module('app.Map');
 
-goog.module.declareLegacyNamespace();
-const olMap = goog.require('ol.Map');
+import olMap from 'ol/Map.js';
 
-exports = class extends olMap {
+const exports = class extends olMap {
 
   /**
    * Currently the zIndex is used to order the layers.
@@ -53,3 +54,6 @@ exports = class extends olMap {
     return [cartesian.x, cartesian.y, cartesian.z];
   }
 };
+
+
+export default exports;

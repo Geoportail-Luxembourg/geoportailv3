@@ -1,8 +1,8 @@
-goog.module('app.OfflineDownloader');
-goog.module.declareLegacyNamespace();
-
-const appModule = goog.require('app.module');
-const downloader = goog.require('ngeo.offline.Downloader');
+/**
+ * @module app.OfflineDownloader
+ */
+import appModule from './module.js';
+import downloader from 'ngeo/offline/Downloader.js';
 
 /**
  * @extends {ngeo.offline.Downloader}
@@ -47,4 +47,7 @@ const OfflineDownloader = class extends downloader {
 };
 
 appModule.service('appOfflineDownloader', OfflineDownloader);
-exports = OfflineDownloader;
+const exports = OfflineDownloader;
+
+
+export default exports;

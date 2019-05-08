@@ -1,4 +1,7 @@
 /**
+ * @module app.mymaps.MymapsController
+ */
+/**
  * @fileoverview This file provides a "mymaps" directive. This directive is
  * used to insert a MyMaps block  into the HTML page.
  * Example:
@@ -6,18 +9,15 @@
  * <app-mymaps></app-mymaps>
  *
  */
-goog.module('app.mymaps.MymapsController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appMiscFile = goog.require('app.misc.file');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olExtent = goog.require('ol.extent');
-const olFormatGPX = goog.require('ol.format.GPX');
-const olFormatKML = goog.require('ol.format.KML');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomLineString = goog.require('ol.geom.LineString');
-
+import appModule from '../module.js';
+import appMiscFile from '../misc/file.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import olExtent from 'ol/extent.js';
+import olFormatGPX from 'ol/format/GPX.js';
+import olFormatKML from 'ol/format/KML.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomLineString from 'ol/geom/LineString.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -41,7 +41,7 @@ const olGeomLineString = goog.require('ol.geom.LineString');
  * @ngInject
  */
 
-exports = function($scope, $compile, $sce,
+const exports = function($scope, $compile, $sce,
     gettextCatalog, ngeoBackgroundLayerMgr, appMymaps, appNotify,
     appFeaturePopup, appSelectedFeatures, appTheme, appUserManager,
     appDrawnFeatures, $document, exportgpxkmlUrl, appExport) {
@@ -1648,3 +1648,6 @@ exports.prototype.setDragHandler = function() {
 };
 
 appModule.controller('AppMymapsController', exports);
+
+
+export default exports;

@@ -1,4 +1,7 @@
 /**
+ * @module app.draw.DrawController
+ */
+/**
  * @fileoverview This file provides a draw directive. This directive is used
  * to create a draw panel in the page.
  *
@@ -11,33 +14,30 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.draw.DrawController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appInteractionDrawRoute = goog.require('app.interaction.DrawRoute');
-const appInteractionClipLine = goog.require('app.interaction.ClipLine');
-const appInteractionModifyCircle = goog.require('app.interaction.ModifyCircle');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-const olFeature = goog.require('ol.Feature');
-const olObject = goog.require('ol.Object');
-const olObservable = goog.require('ol.Observable');
-const olOverlay = goog.require('ol.Overlay');
-const olEvents = goog.require('ol.events');
-const olExtent = goog.require('ol.extent');
-const olProj = goog.require('ol.proj');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olInteraction = goog.require('ol.interaction');
-const olInteractionDraw = goog.require('ol.interaction.Draw');
-const olInteractionModify = goog.require('ol.interaction.Modify');
-const olInteractionSelect = goog.require('ol.interaction.Select');
-const olInteractionTranslate = goog.require('ol.interaction.Translate');
-
+import appModule from '../module.js';
+import appInteractionDrawRoute from '../interaction/DrawRoute.js';
+import appInteractionClipLine from '../interaction/ClipLine.js';
+import appInteractionModifyCircle from '../interaction/ModifyCircle.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
+import olFeature from 'ol/Feature.js';
+import olObject from 'ol/Object.js';
+import olObservable from 'ol/Observable.js';
+import olOverlay from 'ol/Overlay.js';
+import olEvents from 'ol/events.js';
+import olExtent from 'ol/extent.js';
+import olProj from 'ol/proj.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olInteraction from 'ol/interaction.js';
+import olInteractionDraw from 'ol/interaction/Draw.js';
+import olInteractionModify from 'ol/interaction/Modify.js';
+import olInteractionSelect from 'ol/interaction/Select.js';
+import olInteractionTranslate from 'ol/interaction/Translate.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -57,7 +57,7 @@ const olInteractionTranslate = goog.require('ol.interaction.Translate');
  * @export
  * @ngInject
  */
-exports = function($scope,
+const exports = function($scope,
     appFeaturePopup, appDrawnFeatures, appSelectedFeatures,
     appMymaps, gettextCatalog, $compile, appNotify, $anchorScroll,
     appActivetool, appGetDevice, $http, getRouteUrl) {
@@ -1047,3 +1047,6 @@ exports.prototype.keyboardHandler_ = function(mapBrowserEvent) {
 };
 
 appModule.controller('AppDrawController', exports);
+
+
+export default exports;

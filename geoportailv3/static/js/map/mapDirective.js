@@ -1,22 +1,22 @@
 /**
+ * @module app.map.mapDirective
+ */
+/**
  * @fileoverview This file provides the "map" directive.
  *
  * Example:
  *
  * <app-map app-map-map="::mainCtrl.map"><app-map>
  */
-goog.module('app.map.mapDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appMapTemplateUrl URL to map template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appMapTemplateUrl) {
+const exports = function(appMapTemplateUrl) {
   return {
     scope: {
       'map': '=appMapMap'
@@ -30,3 +30,6 @@ exports = function(appMapTemplateUrl) {
 
 
 appModule.directive('appMap', exports);
+
+
+export default exports;

@@ -1,15 +1,14 @@
-goog.module('app.query.casiporeportDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.query.casiporeportDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appCasiporeportTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appCasiporeportTemplateUrl) {
+const exports = function(appCasiporeportTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -22,4 +21,8 @@ exports = function(appCasiporeportTemplateUrl) {
     templateUrl: appCasiporeportTemplateUrl
   };
 };
+
 appModule.directive('appCasiporeport', exports);
+
+
+export default exports;

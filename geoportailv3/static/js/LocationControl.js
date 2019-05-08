@@ -1,22 +1,21 @@
 /**
+ * @module app.LocationControl
+ */
+/**
  * @fileoverview This file defines the geolocation control.
  *
  */
-goog.module('app.LocationControl');
 
-
-goog.module.declareLegacyNamespace();
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olBase = goog.require('ol');
-const olCss = goog.require('ol.css');
-const olControlControl = goog.require('ol.control.Control');
-const olEvents = goog.require('ol.events');
-const olFeature = goog.require('ol.Feature');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeolocation = goog.require('ol.Geolocation');
-const olGeolocationProperty = goog.require('ol.GeolocationProperty');
-const olObject = goog.require('ol.Object');
-
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import olBase from 'ol.js';
+import olCss from 'ol/css.js';
+import olControlControl from 'ol/control/Control.js';
+import olEvents from 'ol/events.js';
+import olFeature from 'ol/Feature.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeolocation from 'ol/Geolocation.js';
+import olGeolocationProperty from 'ol/GeolocationProperty.js';
+import olObject from 'ol/Object.js';
 
 /**
  * @constructor
@@ -25,7 +24,7 @@ const olObject = goog.require('ol.Object');
  * options.
  * @ngInject
  */
-exports = function(options) {
+const exports = function(options) {
   var className = (options.className !== undefined) ? options.className :
       'location-button';
   /**
@@ -107,6 +106,7 @@ exports = function(options) {
   });
 
 };
+
 olBase.inherits(exports, olControlControl);
 
 
@@ -227,3 +227,6 @@ exports.prototype.initFeatureOverlay_ = function() {
 exports.prototype.clearFeatureOverlay_ = function() {
   this.featureOverlay_.clear();
 };
+
+
+export default exports;

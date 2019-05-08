@@ -1,7 +1,6 @@
-goog.module('app.imageupload.ImguploadDirective');
-
-goog.module.declareLegacyNamespace();
-
+/**
+ * @module app.imageupload.ImguploadDirective
+ */
 /**
  * @fileoverview This file provides a "mymaps" directive. This directive is
  * used to insert a MyMaps block  into the HTML page.
@@ -11,14 +10,13 @@ goog.module.declareLegacyNamespace();
  *
  */
 
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @ngInject
  */
-exports = function() {
+const exports = function() {
   return {
     restrict: 'A',
     link:
@@ -41,3 +39,6 @@ exports = function() {
 
 
 appModule.directive('appImgupload', exports);
+
+
+export default exports;

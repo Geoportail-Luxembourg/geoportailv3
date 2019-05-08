@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.infobarDirective
+ */
+/**
  * @fileoverview This file provides a "infobar" directive. This directive is
  * used to insert an Info Bar into the HTML page.
  * Example:
@@ -10,18 +13,15 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.infobarDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @param {string} appInfobarTemplateUrl The template url.
  * @ngInject
  */
-exports = function(appInfobarTemplateUrl) {
+const exports = function(appInfobarTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -36,3 +36,6 @@ exports = function(appInfobarTemplateUrl) {
 
 
 appModule.directive('appInfobar', exports);
+
+
+export default exports;

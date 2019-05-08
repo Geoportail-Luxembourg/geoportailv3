@@ -1,17 +1,17 @@
 /**
+ * @module app.map.MapController
+ */
+/**
  * @fileoverview This file provides the "map" directive.
  *
  * Example:
  *
  * <app-map app-map-map="::mainCtrl.map"><app-map>
  */
-goog.module('app.map.MapController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olMapProperty = goog.require('ol.MapProperty');
-const olProj = goog.require('ol.proj');
-
+import appModule from '../module.js';
+import olMapProperty from 'ol/MapProperty.js';
+import olProj from 'ol/proj.js';
 
 /**
  * @param {app.StateManager} appStateManager State manager service.
@@ -19,7 +19,7 @@ const olProj = goog.require('ol.proj');
  * @constructor
  * @ngInject
  */
-exports = function(appStateManager, ngeoDebounce) {
+const exports = function(appStateManager, ngeoDebounce) {
   var lurefToWebMercatorFn = olProj.getTransform('EPSG:2169', 'EPSG:3857');
 
   /** @type {ol.Map} */
@@ -119,3 +119,6 @@ exports.updateState_ = function(appStateManager, view) {
 
 
 appModule.controller('AppMapController', exports);
+
+
+export default exports;

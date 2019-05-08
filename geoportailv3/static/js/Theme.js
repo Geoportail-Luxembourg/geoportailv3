@@ -1,10 +1,11 @@
 /**
+ * @module app.Theme
+ */
+/**
  * @fileoverview This service keeps and share the state of the theme.
  */
-goog.module('app.Theme');
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
 
+import appModule from './module.js';
 
 /**
  * @constructor
@@ -13,7 +14,7 @@ const appModule = goog.require('app.module');
  * @param {app.Themes} appThemes The themes services.
  * @ngInject
  */
-exports = function($window, ngeoLocation, appThemes) {
+const exports = function($window, ngeoLocation, appThemes) {
 
   /**
    * @const
@@ -148,3 +149,6 @@ exports.prototype.themeInUrl = function(pathElements) {
 exports.DEFAULT_THEME_ = 'main';
 
 appModule.service('appTheme', exports);
+
+
+export default exports;

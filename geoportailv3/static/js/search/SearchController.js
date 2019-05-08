@@ -1,4 +1,7 @@
 /**
+ * @module app.search.SearchController
+ */
+/**
  * @fileoverview This file provides a "search" directive. This directive is
  * used to insert a Search bar into a HTML page.
  * Example:
@@ -10,25 +13,22 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.search.SearchController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
-const ngeoSearchCreateGeoJSONBloodhound = goog.require('ngeo.search.createGeoJSONBloodhound');
-const olArray = goog.require('ol.array');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-const olEvents = goog.require('ol.events');
-const olExtent = goog.require('ol.extent');
-const olProj = goog.require('ol.proj');
-const olFeature = goog.require('ol.Feature');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStyle = goog.require('ol.style.Style');
-const olStyleStroke = goog.require('ol.style.Stroke');
-
+import appModule from '../module.js';
+import appEventsThemesEventType from '../events/ThemesEventType.js';
+import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
+import olArray from 'ol/array.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
+import olEvents from 'ol/events.js';
+import olExtent from 'ol/extent.js';
+import olProj from 'ol/proj.js';
+import olFeature from 'ol/Feature.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olStyleStroke from 'ol/style/Stroke.js';
 
 /**
  * @ngInject
@@ -59,7 +59,7 @@ const olStyleStroke = goog.require('ol.style.Stroke');
  * @param {app.Routing} appRouting The routing service.
  * @export
  */
-exports = function($scope, $window, $compile,
+const exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
     appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
@@ -967,3 +967,6 @@ exports.prototype.addLastSuggestedFeature = function() {
 
 appModule.controller('AppSearchController',
     exports);
+
+
+export default exports;

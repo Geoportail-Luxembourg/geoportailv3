@@ -1,4 +1,7 @@
 /**
+ * @module app.profile.profileDirective
+ */
+/**
  * @fileoverview This file provides a profile directive. This directive is used
  * to create a profile panel in the page.
  *
@@ -12,18 +15,15 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.profile.profileDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appProfileTemplateUrl Url to layermanager template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appProfileTemplateUrl) {
+const exports = function(appProfileTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -40,3 +40,6 @@ exports = function(appProfileTemplateUrl) {
 };
 
 appModule.directive('appProfile', exports);
+
+
+export default exports;

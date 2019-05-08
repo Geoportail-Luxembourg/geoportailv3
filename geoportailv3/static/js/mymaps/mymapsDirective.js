@@ -1,4 +1,7 @@
 /**
+ * @module app.mymaps.mymapsDirective
+ */
+/**
  * @fileoverview This file provides a "mymaps" directive. This directive is
  * used to insert a MyMaps block  into the HTML page.
  * Example:
@@ -6,18 +9,15 @@
  * <app-mymaps></app-mymaps>
  *
  */
-goog.module('app.mymaps.mymapsDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Object Definition.
  * @param {string} appMymapsTemplateUrl The template url.
  * @ngInject
  */
-exports = function(appMymapsTemplateUrl) {
+const exports = function(appMymapsTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -39,3 +39,6 @@ exports = function(appMymapsTemplateUrl) {
 
 
 appModule.directive('appMymaps', exports);
+
+
+export default exports;

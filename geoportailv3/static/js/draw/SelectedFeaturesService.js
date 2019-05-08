@@ -1,12 +1,14 @@
 /**
+ * @module app.draw.SelectedFeaturesService
+ */
+let exports = {};
+
+/**
  * @fileoverview Provides a drawn features service.
  */
 
-goog.module('app.draw.SelectedFeaturesService');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olCollection = goog.require('ol.Collection');
+import appModule from '../module.js';
+import olCollection from 'ol/Collection.js';
 
 
 /**
@@ -16,3 +18,6 @@ const olCollection = goog.require('ol.Collection');
 const value = new olCollection();
 
 appModule.value('appSelectedFeatures', value);
+
+
+export default exports;

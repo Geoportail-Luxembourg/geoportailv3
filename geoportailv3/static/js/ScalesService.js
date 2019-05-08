@@ -1,21 +1,20 @@
-
+/**
+ * @module app.ScalesService
+ */
 /**
  * @fileoverview This file provides a scale service to display scales
  * with ngeoScaleselector
  */
-goog.module('app.ScalesService');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olObj = goog.require('ol.obj');
-
+import appModule from './module.js';
+import olObj from 'ol/obj.js';
 
 /**
  * @constructor
  * @param {angular.$sce} $sce Angular sce service.
  * @ngInject
  */
-exports = function($sce) {
+const exports = function($sce) {
   /**
    * The zoom level/scale map object for the ngeoScaleselector directive.
    * The values need to be trusted as HTML.
@@ -73,3 +72,6 @@ exports.prototype.setMaxZoomLevel = function(maxScale) {
 };
 
 appModule.service('appScalesService', exports);
+
+
+export default exports;

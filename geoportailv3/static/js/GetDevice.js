@@ -1,12 +1,12 @@
 /**
+ * @module app.GetDevice
+ */
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "elevation" web service.
  */
-goog.module('app.GetDevice');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from './module.js';
 
 /**
  * @constructor
@@ -15,7 +15,7 @@ const appModule = goog.require('app.module');
  * @private
  * @ngInject
  */
-exports = function($document, $window) {
+const exports = function($document, $window) {
   /**
    * @type {Document}
    * @private
@@ -71,3 +71,6 @@ exports.prototype.isHiDpi = function() {
 };
 
 appModule.service('appGetDevice', exports);
+
+
+export default exports;

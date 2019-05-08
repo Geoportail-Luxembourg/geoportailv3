@@ -1,4 +1,7 @@
 /**
+ * @module app.LayerOpacityManager
+ */
+/**
  * @fileoverview This file defines the "appLayerOpacityManager" service. This
  * service (re-)sets the opacity of layers added to the map. The opacity is
  * read from the layer's "start_opacity" metadata. If there's no metadata or
@@ -10,19 +13,16 @@
  * appLayerOpacityManager.init(map);
  *
  */
-goog.module('app.LayerOpacityManager');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-const olEvents = goog.require('ol.events');
-
+import appModule from './module.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
+import olEvents from 'ol/events.js';
 
 /**
  * @constructor
  * @ngInject
  */
-exports = function() {
+const exports = function() {
 };
 
 
@@ -47,3 +47,6 @@ exports.prototype.init = function(map) {
 
 
 appModule.service('appLayerOpacityManager', exports);
+
+
+export default exports;
