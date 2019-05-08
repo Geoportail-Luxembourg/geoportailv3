@@ -1,0 +1,30 @@
+dn: login=c2c,ou=portail,dc=act,dc=lu
+objectClass: utilisateurRacine
+objectClass: utilisateur
+accesOGC: FALSE
+adm: FALSE
+cLigne1: 470 route de la Quetschentaart
+fL: Luxembourg
+fLigne1: 470 route de la Quetschentaart
+fLigne2: c2c
+fournisseur: FALSE
+fPostalCode: 1470
+fSt: renaud.michaelis3
+gestionComm: TRUE
+isProfessionnel: false
+l: Luxembourg
+langue: FR
+login: c2c
+mail: cc2c@example.com
+o: 2
+postalCode: 1470
+rca: FALSE
+roleMymaps: 0
+roleOGC: 0
+roleTheme: 645
+sn: test user
+st: Luxembourg
+telephoneNumber: +351234567
+typeUtilisateur: PRIVE
+userPassword:: e1NIQX1tOE5GU2RWbDJWQmJLSDNnelNDc2Q3NGRQeXc9
+

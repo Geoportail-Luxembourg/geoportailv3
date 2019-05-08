@@ -1,0 +1,7087 @@
+# 
+# Translators:
+# Andrea Donno <andrea.donno@me.com>, 2015-2016
+# Andrea Donno <andrea.donno@me.com>, 2015
+# Andrea Donno <andrea.donno@me.com>, 2015-2018
+# Andrea Donno <andrea.donno@me.com>, 2016
+# dhorper <danielle.horper@act.etat.lu>, 2017-2019
+# dhorper <danielle.horper@act.etat.lu>, 2017
+# dhorper <danielle.horper@act.etat.lu>, 2017
+# eRenaud Michaëlis <renaud.michaelis@act.etat.lu>, 2015-2016
+# Francis Kaell <francis.kaell@act.etat.lu>, 2015
+# Jeff Konnen <jaykayone@gmail.com>, 2015-2016
+# Jeff Konnen <jaykayone@gmail.com>, 2016-2018
+# Loubnabarra <loubna064@yahoo.fr>, 2017
+# Loubnabarra <loubna064@yahoo.fr>, 2017
+# Patrick Weber <pweber@spatialbit.com>, 2015
+# Patrick Weber <pweber@spatialbit.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: portail\n"
+"PO-Revision-Date: 2019-01-09 13:24+0000\n"
+"Last-Translator: dhorper <danielle.horper@act.etat.lu>\n"
+"Language-Team: English (http://www.transifex.com/geoportail/geoportailv3-lu/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: geoportailv3/static/js/profile/profile.html:5
+msgid "&Delta; +"
+msgstr "&Delta; +"
+
+#: geoportailv3/static/js/profile/profile.html:6
+msgid "&Delta; -"
+msgstr "&Delta; -"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:2
+msgid "+ Add external Wms"
+msgstr "+ Add external WM(T)S"
+
+#: geoportailv3/templates/index.html:131
+msgid "+ Add layers"
+msgstr "+ Add layers"
+
+#: geoportailv3/templates/index.html:17
+msgid "- Geoportal Luxembourg"
+msgstr "- Geoportal Luxembourg"
+
+#: geoportailv3/static/js/share/sharedirective.js:83
+msgid "- link from geoportail.lu"
+msgstr "Map from geoportal.lu"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:21
+msgid "<em>Aucune description</em>"
+msgstr "<em>No description</em>"
+
+#: geoportailv3/templates/index.html:49
+msgid ""
+"<span ng-if=\"!mainCtrl.offlineMode.isEnabled()\">You are currently disconnected.\n"
+"            <a ng-click=\"mainCtrl.offlineMode.activateOfflineMode()\" ng-if=\"mainCtrl.offlineMode.hasData()\" translate=\"\">Enable offline mode</a>\n"
+"          </span>\n"
+"          <span ng-if=\"mainCtrl.offlineMode.isEnabled()\">You are currently offline.</span>"
+msgstr "<span ng-if=\"!mainCtrl.offlineMode.isEnabled()\">You are currently disconnected.\n            <a ng-click=\"mainCtrl.offlineMode.activateOfflineMode()\" ng-if=\"mainCtrl.offlineMode.hasData()\" translate=\"\">Enable offline mode</a>\n          </span>\n          <span ng-if=\"mainCtrl.offlineMode.isEnabled()\">You are currently offline.</span>"
+
+#: geoportailv3/templates/index.html:188
+msgid ""
+"A <em>right click</em> (tap and hold on mobile) will display information "
+"about the current location."
+msgstr "A <em>right click</em> (tap and hold on mobile) will display information about the current location."
+
+#: geoportailv3/templates/index.html:191
+msgid ""
+"A <em>short click</em> (tap on mobile) on a map feature will select the "
+"feature and show more information."
+msgstr "A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information."
+
+#: geoportailv3/templates/index.html:294
+msgid "A Propos"
+msgstr "About Us"
+
+#: geoportailv3/static/js/print/printdirective.js:218
+msgid "A0 landscape"
+msgstr "A0 landscape"
+
+#: geoportailv3/static/js/print/printdirective.js:219
+msgid "A0 portrait"
+msgstr "A0 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js:216
+msgid "A1 landscape"
+msgstr "A1 landscape"
+
+#: geoportailv3/static/js/print/printdirective.js:217
+msgid "A1 portrait"
+msgstr "A1 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js:214
+msgid "A2 landscape"
+msgstr "A2 landscape"
+
+#: geoportailv3/static/js/print/printdirective.js:215
+msgid "A2 portrait"
+msgstr "A2 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js:212
+msgid "A3 landscape"
+msgstr "A3 landscape"
+
+#: geoportailv3/static/js/print/printdirective.js:213
+msgid "A3 portrait"
+msgstr "A3 portrait"
+
+#: geoportailv3/static/js/print/printdirective.js:210
+msgid "A4 landscape"
+msgstr "A4 landscape"
+
+#: geoportailv3/static/js/print/printdirective.js:211
+msgid "A4 portrait"
+msgstr "A4 portrait"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:12
+#: geoportailv3/static/js/print/print.html:45
+msgid "Abort"
+msgstr "Abort"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:25
+msgid "Access constraints :"
+msgstr "Access constraints"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:31
+msgid "Activate offline mode"
+msgstr "Activate offline mode"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:58
+msgid "Activer Google Streetview"
+msgstr "Enable Google Street View"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:8
+msgid "Add external data"
+msgstr "Add external data"
+
+#: geoportailv3/static/js/routing/routingdirective.js:249
+#: geoportailv3/static/js/search/searchdirective.js:447
+msgid "Addresses"
+msgstr "Adressess"
+
+#: geoportailv3/static/js/query/casiporeport.html:8
+#: geoportailv3/static/js/query/pagreport.html:8
+#: geoportailv3/static/js/query/pdsreport.html:8
+msgid "Adresse Email"
+msgstr "Email address"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:22
+msgid "Adresse la plus proche"
+msgstr "Closest addess"
+
+#: geoportailv3/static/js/query/mo.html:4
+msgid "Affaire"
+msgstr "Case"
+
+#: geoportailv3/templates/index.html:111
+msgid "Afficher les modèles 3D"
+msgstr "Show 3D models"
+
+#: geoportailv3/templates/index.html:295
+msgid "Aide"
+msgstr "Help"
+
+#: geoportailv3/static/js/routing/routing.html:45
+msgid "Ajouter une étape"
+msgstr "Add a stop"
+
+#: geoportailv3/static/js/draw/featurepopup.html:88
+msgid "Ajouter vignette"
+msgstr "Add thumbnail"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:37
+#: geoportailv3/static/js/search/search.html:16
+msgid "Ajouter étape à mon itinéraire"
+msgstr "Add a stop to my route"
+
+#: node_modules/ngeo/src/filter/component.js:154
+msgid "All"
+msgstr "All"
+
+#: geoportailv3/static/js/draw/styleediting.html:100
+#: geoportailv3/static/js/draw/styleediting.html:114
+msgid "Angle"
+msgstr "Angle"
+
+#: geoportailv3/static/js/askredirect/askredirect.html:10
+#: geoportailv3/static/js/draw/featurepopup.html:116
+#: geoportailv3/static/js/draw/featurepopup.html:136
+#: geoportailv3/static/js/draw/styleediting.html:121
+#: geoportailv3/static/js/mymaps/mymaps.html:137
+#: geoportailv3/static/js/mymaps/mymaps.html:151
+#: geoportailv3/static/js/mymaps/mymaps.html:165
+#: geoportailv3/static/js/mymaps/mymaps.html:179
+#: geoportailv3/static/js/mymaps/mymaps.html:210
+#: geoportailv3/static/js/mymaps/mymaps.html:305
+#: geoportailv3/static/js/query/info.html:11
+msgid "Annuler"
+msgstr "Cancel"
+
+#: geoportailv3/static/js/draw/featurepopup.html:13
+msgid "Area:"
+msgstr "Area:"
+
+#: node_modules/ngeo/src/filter/component.js:158
+msgid "At least one"
+msgstr "At least one"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:26
+msgid "Attention!"
+msgstr "Attention!"
+
+#: geoportailv3/static/js/draw/symbolselector.html:34
+msgid "Aucun symbole disponible"
+msgstr "No symbol available"
+
+#: geoportailv3/static/js/query/default.html:20
+#: geoportailv3/static/js/query/default_no_prefix.html:20
+#: geoportailv3/static/js/query/default_table.html:28
+#: geoportailv3/static/js/query/default_table_no_prefix.html:28
+#: geoportailv3/static/js/query/sentier_nature.html:19
+msgid "Aucune information disponible pour cette couche"
+msgstr "No information available for this layer"
+
+#: geoportailv3/static/js/layerlegends/layerlegends.html:7
+msgid "Aucune légende n'est disponible pour les couches sélectionnées."
+msgstr "There is no legend defined for the selected layers"
+
+#: geoportailv3/static/js/measure/measure.html:11
+msgid "Azimut"
+msgstr "Azimut"
+
+#: geoportailv3/static/js/search/searchdirective.js:426
+msgid "Background"
+msgstr "Background"
+
+#: geoportailv3/static/js/search/searchdirective.js:414
+msgid "Background Layers"
+msgstr "Background Layers"
+
+#: geoportailv3/static/js/exclusionmanagerservice.js:127
+msgid ""
+"Background has been deactivated because the layer {{layer}} cannot be "
+"displayed on top of it."
+msgstr "Background has been deactivated because the layer {{layer}} cannot be displayed on top of it."
+
+#: geoportailv3/static/js/backgroundlayer/backgroundlayer.html:2
+msgid "Background layer:"
+msgstr "Background layer"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:171
+msgid "Begins at"
+msgstr "Begins at"
+
+#: geoportailv3/static/js/draw/featurepopup.html:96
+#: geoportailv3/static/js/mymaps/mymaps.html:347
+#: geoportailv3/static/js/offlineNgeoComponent.html:105
+#: geoportailv3/static/js/offlineNgeoComponent.html:123
+#: geoportailv3/static/js/offlineNgeoComponent.html:74
+msgid "Cancel"
+msgstr "Cancel"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:573
+msgid "Carte copiée"
+msgstr "Map copied"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:952
+msgid "Carte créée"
+msgstr "Map created"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:39
+msgid "Carte créée par"
+msgstr "Map created by"
+
+#: geoportailv3/templates/index.html:121
+msgid "Catalog"
+msgstr "Catalog"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:267
+msgid "Catégorie"
+msgstr "Category "
+
+#: geoportailv3/static/js/imageupload/imguploaddirective.js:116
+msgid "Ce format d'image n'est as supporté."
+msgstr "This image format is not supported"
+
+#: geoportailv3/static/js/themeswitcher/themeswitcherdirective.js:72
+msgid "Ce thème est protégé. Veuillez vous connecter."
+msgstr "This theme is protected. Please login"
+
+#: geoportailv3/static/js/layerpermalinkservice.js:324
+msgid ""
+"Certaines couches sont protégées. Veuillez vous connecter avec un "
+"utilisateur disposant les droits de visualiser cette couche."
+msgstr "Some layers are protected. Please login with a user who has the rights to view this layer."
+
+#: geoportailv3/static/js/themeswitcher/themes.html:4
+msgid "Changer"
+msgstr "Change"
+
+#: geoportailv3/static/js/draw/featurepopup.html:64
+#: geoportailv3/static/js/draw/styleediting.html:73
+msgid "Changer sens de la ligne"
+msgstr "Change line direction"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:23
+msgid "Chargement des informations"
+msgstr "Loading information"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:15
+msgid "Choose or write a WMS url"
+msgstr "Choose or write a WM(T)S URL"
+
+#: geoportailv3/static/js/draw/draw.html:23
+#: geoportailv3/static/js/draw/drawdirective.js:760
+#: node_modules/ngeo/src/draw/Controller.js:70
+msgid "Circle"
+msgstr "Circle"
+
+#: geoportailv3/static/js/measure/measuredirective.js:143
+msgid ""
+"Click to continue drawing the line<br>Double-click or click last point to "
+"finish"
+msgstr "Click to continue drawing the line<br>Double-click to finish"
+
+#: geoportailv3/static/js/measure/measuredirective.js:185
+msgid ""
+"Click to continue drawing the polygon<br>Double-click or click last point to"
+" finish"
+msgstr "Click to continue drawing the polygon<br>Double-click to finish"
+
+#: node_modules/ngeo/src/editing/createfeaturecomponent.js:196
+#: node_modules/ngeo/src/measure/length.js:45
+msgid ""
+"Click to continue drawing<br/>Double-click or click last point to finish"
+msgstr "Click to continue drawing<br/>Double-click or click last point to finish"
+
+#: node_modules/ngeo/src/editing/createfeaturecomponent.js:213
+#: node_modules/ngeo/src/measure/area.js:44
+msgid ""
+"Click to continue drawing<br/>Double-click or click starting point to finish"
+msgstr "Click to continue drawing<br/>Double-click or click starting point to finish"
+
+#: geoportailv3/static/js/draw/drawdirective.js:534
+msgid "Click to draw the point"
+msgstr "Click to draw the point"
+
+#: geoportailv3/static/js/measure/measuredirective.js:206
+#: node_modules/ngeo/src/measure/azimut.js:48
+msgid "Click to finish"
+msgstr "Click to finish"
+
+#: geoportailv3/static/js/draw/drawdirective.js:552
+msgid "Click to place the label"
+msgstr "Click to place the label"
+
+#: geoportailv3/static/js/measure/measuredirective.js:184
+#: node_modules/ngeo/src/editing/createfeaturecomponent.js:212
+msgid "Click to start drawing area"
+msgstr "Click to start measuring an area"
+
+#: geoportailv3/static/js/measure/measuredirective.js:205
+msgid "Click to start drawing azimut"
+msgstr "Click to start measuring an azimut"
+
+#: geoportailv3/static/js/draw/drawdirective.js:548
+#: node_modules/ngeo/src/measure/azimut.js:47
+msgid "Click to start drawing circle"
+msgstr "Click to start drawing a circle"
+
+#: geoportailv3/static/js/measure/measuredirective.js:161
+#: node_modules/ngeo/src/editing/createfeaturecomponent.js:195
+msgid "Click to start drawing length"
+msgstr "Click to start measuring a distance"
+
+#: node_modules/ngeo/src/measure/length.js:44
+msgid "Click to start drawing line"
+msgstr "Click to start drawing line"
+
+#: geoportailv3/static/js/draw/drawdirective.js:538
+msgid "Click to start drawing line<br>Double-click to finish"
+msgstr "Click to start drawing line<br>Double-click or ESC to finish<br> Hit ⌫ to remove the last drawn point<br>Select the option \"follow roads\" to make your line follow the existing road network"
+
+#: node_modules/ngeo/src/measure/area.js:43
+msgid "Click to start drawing polygon"
+msgstr "Click to start drawing polygon"
+
+#: geoportailv3/static/js/draw/drawdirective.js:543
+msgid ""
+"Click to start drawing polygon<br>Double-click or click last point to finish"
+msgstr "Click to start drawing polygon<br>Double-click, ESC, or click last point to finish<br>Hit ⌫ to remove the last drawn point"
+
+#: geoportailv3/static/js/measure/measuredirective.js:142
+msgid "Click to start drawing profile"
+msgstr "Click to start measuring a profile"
+
+#: geoportailv3/static/js/query/aero.html:7
+#: geoportailv3/static/js/query/urplang.html:7
+msgid "Cliquez dans l'image pour agrandir"
+msgstr "Clic on the image to see a bigger version"
+
+#: geoportailv3/static/js/routing/routing.html:99
+msgid ""
+"Cliquez droit (ou appui long sur mobile) à un endroit sur la carte pour "
+"ajouter rapidement une adresse."
+msgstr "Right-clic to a point on the map to rapidly add a new stop. \nOn a mobile device, simply clic a bit longer"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:36
+#: geoportailv3/static/js/offlineNgeoComponent.html:24
+#: node_modules/ngeo/src/message/Disclaimer.js:154
+msgid "Close"
+msgstr "Close"
+
+#: geoportailv3/static/js/draw/styleediting.html:14
+#: geoportailv3/static/js/draw/styleediting.html:8
+#: geoportailv3/static/js/draw/symbolselector.html:71
+#: geoportailv3/static/js/draw/symbolselector.html:77
+msgid "Color"
+msgstr "Color"
+
+#: geoportailv3/static/js/query/info.html:12
+msgid "Commander"
+msgstr "Order"
+
+#: geoportailv3/static/js/query/mo.html:8
+msgid "Commander fichier GML"
+msgstr "Order a GML file"
+
+#: geoportailv3/static/js/query/casiporeport.html:16
+#: geoportailv3/static/js/query/pagreport.html:16
+#: geoportailv3/static/js/query/pdsreport.html:12
+msgid "Commander rapport"
+msgstr "Order a report"
+
+#: geoportailv3/static/js/query/parcels.html:24
+msgid "Commander un extrait"
+msgstr "Order an extract"
+
+#: geoportailv3/static/js/query/parcels.html:4
+#: geoportailv3/static/js/query/parcels_go.html:4
+#: geoportailv3/static/js/query/parcels_prof.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:4
+msgid "Commune"
+msgstr "Municipality"
+
+#: geoportailv3/static/js/query/mo.html:5
+msgid "Commune administrative"
+msgstr "Administrative Commune"
+
+#: geoportailv3/static/js/query/mo.html:6
+#: geoportailv3/static/js/query/viti_flik.html:4
+msgid "Commune cadastrale"
+msgstr "Cadastral Commune"
+
+#: geoportailv3/static/js/draw/symbolselector.html:6
+msgid "Configurables"
+msgstr "Customizable"
+
+#: geoportailv3/static/js/askredirect/askredirect.html:4
+msgid "Confirmation de redirection"
+msgstr "Redirection confirmation"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:159
+#: geoportailv3/static/js/mymaps/mymaps.html:173
+msgid "Confirmation de suppression de la carte"
+msgstr "Confirm map deletion"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:131
+msgid "Confirmation de suppression des dessins"
+msgstr "Confirm drawing deletion"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:145
+msgid "Confirmation de suppression des éléments de la carte"
+msgstr "Do you want to delete all the elements of the map?"
+
+#: geoportailv3/static/js/query/parcels_go.html:12
+msgid "Constitution de dossier de mesurage"
+msgstr "Create surveying dossier"
+
+#: geoportailv3/static/js/layerinfo/popup.html:23
+#: geoportailv3/templates/index.html:296
+msgid "Contact"
+msgstr "Contact"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:167
+#: node_modules/ngeo/src/filter/rulecomponent.js:168
+msgid "Contains"
+msgstr "Contains"
+
+#: geoportailv3/static/js/query/parcels.html:7
+#: geoportailv3/static/js/query/parcels_go.html:7
+#: geoportailv3/static/js/query/parcels_prof.html:7
+msgid "Contenance"
+msgstr "Capacity"
+
+#: geoportailv3/static/js/draw/featurepopup.html:63
+msgid "Continuer la ligne"
+msgstr "Continue line"
+
+#: geoportailv3/static/js/layerinfo/popup.html:16
+msgid "Contrainte d'utilisation"
+msgstr "Access constraints"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:100
+msgid "Copier dans ma carte"
+msgstr "Copy to my map"
+
+#: geoportailv3/templates/index.html:277
+msgid "Couches"
+msgstr "Layers"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:104
+#: geoportailv3/static/js/mymaps/mymaps.html:55
+msgid "Couper une ligne"
+msgstr "Cut a line"
+
+#: geoportailv3/static/js/authentication/authentication.html:12
+msgid "Create a new user account"
+msgstr "Create a new user account"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:2
+msgid "Create, save and share your own maps."
+msgstr "Create, save and share your own maps."
+
+#: geoportailv3/static/js/query/ng95.html:6
+msgid "Croquis"
+msgstr "Sketch"
+
+#: geoportailv3/static/js/query/ng95.html:8
+msgid "Croquis indisponible"
+msgstr "Sketch not available"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:274
+msgid "Créateur carte"
+msgstr "Map creator"
+
+#: geoportailv3/static/js/draw/featurepopup.html:65
+msgid "Créer cercle concentrique"
+msgstr "Create circle with same center"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:49
+msgid "Créer une copie"
+msgstr "Create a copy"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:10
+#: geoportailv3/static/js/mymaps/mymaps.html:47
+msgid "Créer une nouvelle carte"
+msgstr "Create a new map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:102
+msgid "Créer une nouvelle carte à partir de ces dessins"
+msgstr "Create a new map from drawings"
+
+#: geoportailv3/static/js/draw/styleediting.html:60
+msgid "Dashed"
+msgstr "Dashed"
+
+#: geoportailv3/static/js/query/affaires.html:10
+msgid "Date"
+msgstr "Date"
+
+#: geoportailv3/static/js/print/printdirective.js:580
+msgid "Date d'impression:"
+msgstr "Print date:"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:36
+msgid "Deactivate offline mode"
+msgstr "Deactivate offline mode"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:48
+msgid "Delete data"
+msgstr "Delete data"
+
+#: geoportailv3/static/js/query/parcels.html:11
+#: geoportailv3/static/js/query/parcels_go.html:11
+#: geoportailv3/static/js/query/parcels_prof.html:11
+msgid "Dernier mesurage"
+msgstr "Last measurement"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:281
+msgid "Dernière Actualisation"
+msgstr "Last Update"
+
+#: geoportailv3/static/js/feedback/feedback.html:25
+msgid "Describe the problem within the current map extent:"
+msgstr "Describe the problem within the current map extent:"
+
+#: geoportailv3/static/js/layerinfo/popup.html:11
+#: geoportailv3/static/js/mymaps/mymaps.html:341
+#: geoportailv3/static/js/query/lignes_bus.html:3
+#: geoportailv3/static/js/query/mymaps.html:7
+msgid "Description"
+msgstr "Description"
+
+#: geoportailv3/static/js/layerinfo/popup.html:9
+msgid "Description du Service"
+msgstr "Service description"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:24
+msgid "Description du service :"
+msgstr "Service description"
+
+#: geoportailv3/templates/index.html:302
+msgid "Dessin"
+msgstr "Draw"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:93
+msgid "Dessins"
+msgstr "Drawings"
+
+#: geoportailv3/static/js/routing/routing.html:60
+msgid "Distance"
+msgstr "Distance"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:25
+msgid "Distance approximative"
+msgstr "Approximative distance"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:117
+#: geoportailv3/static/js/offlineNgeoComponent.html:99
+msgid "Do you really want to remove your data ?"
+msgstr "Do you really want to remove your data ?"
+
+#: geoportailv3/static/js/draw/styleediting.html:61
+msgid "Dotted"
+msgstr "Dotted"
+
+#: geoportailv3/static/js/query/tracing.html:7
+msgid "DownStream"
+msgstr "DownStream"
+
+#: geoportailv3/static/js/profile/profile.html:13
+msgid "Draw a line on the map to display an elevation profile."
+msgstr "Draw a line on the map to display an elevation profile."
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:172
+msgid "During"
+msgstr "During"
+
+#: geoportailv3/static/js/routing/routing.html:70
+msgid "Dénivelé lors de votre trajet"
+msgstr "Height difference on your route"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:44
+msgid "Désactiver Google Streetview"
+msgstr "Disable Google Street View"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:104
+#: geoportailv3/static/js/mymaps/mymaps.html:55
+msgid "Désactiver mode couper une ligne"
+msgstr "Deactivate cutting mode"
+
+#: geoportailv3/static/js/routing/routing.html:75
+msgid "Détail de votre trajet"
+msgstr "Route details"
+
+#: geoportailv3/static/js/print/printdirective.js:581
+msgid "Echelle approximative 1:"
+msgstr "Approximate scale 1:"
+
+#: geoportailv3/static/js/draw/featurepopup.html:33
+msgid "Editer l'objet"
+msgstr "Edit object"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:138
+#: geoportailv3/static/js/mymaps/mymaps.html:152
+#: geoportailv3/static/js/mymaps/mymaps.html:166
+#: geoportailv3/static/js/mymaps/mymaps.html:180
+#: geoportailv3/static/js/query/tracing.html:8
+msgid "Effacer"
+msgstr "Delete"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:101
+msgid "Effacer tous les dessins"
+msgstr "Delete all drawings"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:19
+#: geoportailv3/static/js/query/ng95.html:4
+msgid "Elevation"
+msgstr "Elevation"
+
+#: geoportailv3/static/js/draw/featurepopup.html:24
+msgid "Elevation: {{ ctrl.featureElevation }}"
+msgstr "Elevation: {{ ctrl.featureElevation }}"
+
+#: geoportailv3/static/js/share/share.html:13
+msgid "Email"
+msgstr "Email"
+
+#: geoportailv3/static/js/query/casiporeport.html:12
+msgid ""
+"En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté "
+"les <a href=\"casipofiles/Disclaimer.pdf\">conditions générales "
+"d'utilisation </a>de ce site web."
+msgstr "En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté les <a href=\"casipofiles/Disclaimer.pdf\">conditions générales d'utilisation </a>de ce site web."
+
+#: geoportailv3/static/js/query/pagreport.html:12
+msgid ""
+"En cochant cette case, l'utilisateur déclare avoir lu, compris et accepté "
+"les <a href=\"pagfiles/Disclaimer.pdf\">conditions générales d'utilisation "
+"</a>de ce site web."
+msgstr "By checking this box, the user declares that he has read, understood and accepted the <a href=\"/main/wsgi/pag/files/Disclaimer.pdf\">general terms of use of this website."
+
+#: geoportailv3/templates/index.html:51
+msgid "Enable offline mode"
+msgstr "Enable offline mode"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:173
+msgid "Ends at"
+msgstr "Ends at"
+
+#: geoportailv3/static/js/mymapsservice.js:929
+msgid "Erreur inattendue lors de la copie de votre carte."
+msgstr "An unexpected error occured while copying your map"
+
+#: geoportailv3/static/js/mymapsservice.js:887
+msgid "Erreur inattendue lors de la création de votre carte."
+msgstr "An unexpected error occured while creating your map"
+
+#: geoportailv3/static/js/mymapsservice.js:1052
+#: geoportailv3/static/js/mymapsservice.js:1102
+msgid "Erreur inattendue lors de la mise à jour de votre carte."
+msgstr "An unexpected error occured while updating your map"
+
+#: geoportailv3/static/js/mymapsservice.js:1144
+#: geoportailv3/static/js/mymapsservice.js:1183
+#: geoportailv3/static/js/mymapsservice.js:1222
+msgid "Erreur inattendue lors de la sauvegarde de votre modification."
+msgstr "An unexpected error occured while saving your modifcations"
+
+#: geoportailv3/static/js/mymapsservice.js:845
+msgid "Erreur inattendue lors de la suppression d'un élement."
+msgstr "An unexpected error occured while deleting an element"
+
+#: geoportailv3/static/js/mymapsservice.js:957
+msgid "Erreur inattendue lors de la suppression de votre carte."
+msgstr "An unexpected error occured while deleting your map"
+
+#: geoportailv3/static/js/mymapsservice.js:986
+msgid "Erreur inattendue lors de la suppression des objets de la carte."
+msgstr "Unexpected error while deleting the objects of the map."
+
+#: geoportailv3/static/js/mymapsservice.js:545
+msgid "Erreur inattendue lors du chargement de vos cartes."
+msgstr "An unexpected error occured while loading your maps"
+
+#: geoportailv3/static/js/mymapsservice.js:628
+#: geoportailv3/static/js/mymapsservice.js:815
+msgid "Erreur inattendue lors du chargement de votre carte."
+msgstr "An unexpected error occured while loading your map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:162
+msgid "Etes-vous certain de vouloir effacer la carte courrante ?"
+msgstr "Are you sure you want to delete the current map?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:176
+msgid "Etes-vous certain de vouloir effacer la carte intitulée :"
+msgstr "Do you really want to delete the map with the title: "
+
+#: geoportailv3/static/js/mymaps/mymaps.html:134
+msgid "Etes-vous certain de vouloir effacer tous les dessins ?"
+msgstr "Are you sure you want to delete all the drawings?"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:148
+msgid "Etes-vous certain de vouloir effacer tous les éléments de la carte ?"
+msgstr "Are you sure you want to delete all the elements of this map?"
+
+#: geoportailv3/static/js/profile/profile.html:4
+msgid "Export csv"
+msgstr "Export CSV"
+
+#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/default_no_prefix.html:17
+#: geoportailv3/static/js/query/default_table.html:25
+#: geoportailv3/static/js/query/default_table_no_prefix.html:25
+#: geoportailv3/static/js/query/mymaps.html:12
+#: geoportailv3/static/js/query/sentier_nature.html:16
+msgid "Exporter GPX"
+msgstr "Export GPX"
+
+#: geoportailv3/static/js/query/default.html:17
+#: geoportailv3/static/js/query/default_no_prefix.html:17
+#: geoportailv3/static/js/query/default_table.html:25
+#: geoportailv3/static/js/query/default_table_no_prefix.html:25
+#: geoportailv3/static/js/query/mymaps.html:12
+#: geoportailv3/static/js/query/sentier_nature.html:16
+msgid "Exporter KMl"
+msgstr "Export KML"
+
+#: geoportailv3/static/js/draw/featurepopup.html:61
+#: geoportailv3/static/js/mymaps/mymaps.html:59
+msgid "Exporter un GPX"
+msgstr "Export GPX"
+
+#: geoportailv3/static/js/draw/featurepopup.html:62
+#: geoportailv3/static/js/mymaps/mymaps.html:60
+msgid "Exporter un KML"
+msgstr "Export KML"
+
+#: geoportailv3/static/js/share/share.html:4
+msgid "Facebook"
+msgstr "Facebook"
+
+#: geoportailv3/templates/index.html:231 geoportailv3/templates/index.html:293
+msgid "Feedback"
+msgstr "Feedback"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:199
+msgid "Feedback could not be sent to <a href=\"mailto:\"></a>"
+msgstr "Feedback could not be sent to <a href=\"mailto:\"></a>"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:193
+msgid "Feedback sent to <a href=\"mailto:\"></a>"
+msgstr "Feedback sent to <a href=\"mailto:\"></a>"
+
+#: geoportailv3/static/js/draw/symbolselector.html:102
+#: geoportailv3/static/js/mymaps/mymaps.html:57
+msgid "Fermer"
+msgstr "Close"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:233
+msgid "Filter results by category"
+msgstr "Filter results by category"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:245
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1006
+msgid "Filter results by username"
+msgstr "Filter results by username"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:211
+msgid "Fusionner"
+msgstr "Merge"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:103
+#: geoportailv3/static/js/mymaps/mymaps.html:188
+#: geoportailv3/static/js/mymaps/mymaps.html:54
+msgid "Fusionner des lignes"
+msgstr "Merge lines"
+
+#: geoportailv3/static/js/query/pcn_pag.html:7
+msgid "Generer Rapport (peut prendre 30 sec)"
+msgstr "Generate report (can take up to 30 sec)"
+
+#: geoportailv3/static/js/query/pcn_pag.html:3
+msgid "Generer un rapport pour toutes les selections"
+msgstr "Generate report for all the selections"
+
+#: node_modules/ngeo/src/geolocation/mobile.js:148
+msgid "Geolocation: An unknown error occurred."
+msgstr "Geolocation: An unknown error occurred."
+
+#: geoportailv3/static/js/query/affaires.html:6
+msgid "Geometre"
+msgstr "Surveyor"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:16
+msgid "Get the layers"
+msgstr "Get the layers"
+
+#: geoportailv3/static/js/share/share.html:10
+msgid "Google Plus"
+msgstr "Google Plus"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:45
+msgid "Hide extent"
+msgstr "Hide extent"
+
+#: geoportailv3/static/js/authentication/authentication.html:11
+msgid "I lost my password"
+msgstr "I lost my password"
+
+#: geoportailv3/static/js/query/tracing.html:4
+msgid "ID"
+msgstr "ID"
+
+#: geoportailv3/static/js/query/pdsreport.html:1
+msgid ""
+"Ici vous pouvez commander l'attestation \"plans directeurs sectoriels\" par "
+"rapport au terrain séctionné"
+msgstr ""
+
+#: geoportailv3/static/js/query/pagreport.html:1
+msgid ""
+"Ici vous pouvez commander le rapport relatif aux règles urbanistiques "
+"applicables au terrain séctionné"
+msgstr "Hereby you can order a report concerning the municipal planning rules for a selected site."
+
+#: geoportailv3/static/js/query/casiporeport.html:1
+msgid ""
+"Ici vous pouvez commander le rapport relatif aux site potentiellement "
+"contaminés"
+msgstr ""
+
+#: geoportailv3/static/js/query/pcn_pag.html:6
+msgid "Identifiant"
+msgstr "User ID"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1186
+msgid "Il faut au moins 2 lignes disponibles pour pouvoir les fusionner."
+msgstr "You have to select at least 2 existing lines to be able to merge them"
+
+#: geoportailv3/static/js/streetview/streetview.html:4
+msgid "Il n'y a pas de panorama google disponible à cet endroit"
+msgstr "There is no Google panorama available at this location"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:61
+msgid "Importer un GPX/KML/KMZ"
+msgstr "Import a GPX/KML/KMZ file"
+
+#: geoportailv3/static/js/draw/symbolselector.html:100
+msgid "Importer un symbole"
+msgstr "Import symbol"
+
+#: geoportailv3/static/js/wmsservice.js:114
+msgid "Impossible de contacter ce WMS"
+msgstr "Not possible to contact WM(T)S Server"
+
+#: geoportailv3/static/js/wmtsservice.js:98
+msgid "Impossible de contacter ce WMTS"
+msgstr "Impossible to contact this WMTS"
+
+#: geoportailv3/templates/index.html:317
+msgid "Imprimer"
+msgstr "Print"
+
+#: geoportailv3/static/js/routing/routing.html:27
+msgid "Indiquez une adresse, un lieu"
+msgstr "Specify an address, a place"
+
+#: geoportailv3/templates/index.html:283
+msgid "Infos<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
+msgstr "Info<span ng-show=\"mainCtrl.infosHiddenContent\">(*)</span>"
+
+#: geoportailv3/static/js/routing/routing.html:37
+msgid "Insérez rapidement"
+msgstr "Quickly add"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:169
+msgid "Intersects"
+msgstr "Intersects"
+
+#: geoportailv3/static/js/usermanagerservice.js:128
+#: geoportailv3/static/js/usermanagerservice.js:135
+msgid "Invalid username or password."
+msgstr "Invalid username or password."
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:159
+#: node_modules/ngeo/src/filter/rulecomponent.js:174
+msgid "Is equal to"
+msgstr "Is equal to"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:160
+msgid "Is greater than"
+msgstr "Is greater than"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:161
+msgid "Is greater than or equal to"
+msgstr ""
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:170
+msgid "Is inside of"
+msgstr "Is inside of"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:163
+msgid "Is lesser than"
+msgstr "Is lesser than"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:164
+msgid "Is lesser than or equal to"
+msgstr "Is lesser than or equal to"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:166
+msgid "Is not equal to"
+msgstr "Is not equal to"
+
+#: geoportailv3/templates/index.html:95
+msgid "Itinéraire en détail"
+msgstr "Route details"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:31
+msgid "Itinéraire mobilitéit.lu depuis ici"
+msgstr ""
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:32
+msgid "Itinéraire mobilitéit.lu vers ici"
+msgstr ""
+
+#: geoportailv3/static/js/layerinfo/popup.html:22
+msgid "Keywords"
+msgstr "Keywords"
+
+#: geoportailv3/static/js/mymapsservice.js:623
+#: geoportailv3/static/js/mymapsservice.js:810
+msgid "La carte demandée n'existe pas."
+msgstr "The map that you have chosen does not exist"
+
+#: geoportailv3/static/js/askredirect/askredirect.html:7
+msgid ""
+"La geolocalisation n'est disponible que dans la version sécurisée du "
+"Geoportail (https). Voulez-vous être automatiquement redirigé?"
+msgstr "Geolocation is only available in the secure version of geoportal.lu (https).\nDo you want to be redirected?"
+
+#: geoportailv3/static/js/draw/draw.html:8
+#: geoportailv3/static/js/draw/drawdirective.js:735
+msgid "Label"
+msgstr "Label"
+
+#: geoportailv3/static/js/search/searchdirective.js:485
+msgid "Layers"
+msgstr "Layers"
+
+#: geoportailv3/static/js/print/printdirective.js:582
+msgid "Le géoportail national du Grand-Duché du Luxembourg"
+msgstr "The official geoportal for the Grand-Duchy of Luxembourg"
+
+#: geoportailv3/static/js/routing/routing.html:51
+msgid "Le plus court"
+msgstr "Shortest"
+
+#: geoportailv3/static/js/routing/routing.html:50
+msgid "Le plus rapide"
+msgstr "Fastest"
+
+#: geoportailv3/templates/index.html:297
+msgid "Legalites"
+msgstr "T & C"
+
+#: geoportailv3/static/js/layerinfo/popup.html:40
+msgid "Legend"
+msgstr "with legend"
+
+#: geoportailv3/templates/index.html:286
+msgid "Legends"
+msgstr "Legends"
+
+#: geoportailv3/static/js/measure/measure.html:3
+msgid "Length"
+msgstr "Length"
+
+#: geoportailv3/static/js/draw/featurepopup.html:10
+msgid "Length:"
+msgstr "Lenght:"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:27
+msgid ""
+"Les couches sélectionnées dans le catalogue sont différentes de celles "
+"chargées avec votre carte. Voulez vous sauvegarder ces modifications dans "
+"votre carte?"
+msgstr "The layers selected in the catalog are different than the ones loaded in your map.<br>would you like to save this changes in your map?"
+
+#: geoportailv3/static/js/query/adresse.html:6
+#: geoportailv3/static/js/query/aero.html:8
+#: geoportailv3/static/js/query/affaires.html:11
+#: geoportailv3/static/js/query/asta_esp.html:6
+#: geoportailv3/static/js/query/batiments.html:4
+#: geoportailv3/static/js/query/bus.html:7
+#: geoportailv3/static/js/query/bus_wo_title.html:5
+#: geoportailv3/static/js/query/cfl_hecto.html:4
+#: geoportailv3/static/js/query/default.html:23
+#: geoportailv3/static/js/query/default_no_prefix.html:23
+#: geoportailv3/static/js/query/default_table.html:31
+#: geoportailv3/static/js/query/default_table_no_prefix.html:31
+#: geoportailv3/static/js/query/flik.html:6
+#: geoportailv3/static/js/query/inst_pub.html:5
+#: geoportailv3/static/js/query/meteo.html:5
+#: geoportailv3/static/js/query/mo.html:9
+#: geoportailv3/static/js/query/mymaps.html:15
+#: geoportailv3/static/js/query/ng95.html:9
+#: geoportailv3/static/js/query/ont_poi.html:5
+#: geoportailv3/static/js/query/parcels.html:25
+#: geoportailv3/static/js/query/parcels_go.html:26
+#: geoportailv3/static/js/query/parcels_prof.html:25
+#: geoportailv3/static/js/query/pcn_pag.html:8
+#: geoportailv3/static/js/query/pegel.html:5
+#: geoportailv3/static/js/query/poi.html:4
+#: geoportailv3/static/js/query/remembrements.html:6
+#: geoportailv3/static/js/query/sentier_nature.html:22
+#: geoportailv3/static/js/query/urplang.html:8
+#: geoportailv3/static/js/query/viti_flik.html:7
+#: geoportailv3/static/js/query/viti_kleinlage.html:4
+#: geoportailv3/static/js/query/viti_name.html:4
+#: geoportailv3/static/js/query/viti_parcels.html:6
+msgid "Lien direct vers cet objet"
+msgstr "Direct link to object"
+
+#: geoportailv3/static/js/query/mymaps.html:14
+msgid "Lien vers la carte"
+msgstr "Link to the map"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:28
+msgid "Lien vers la démo lidar"
+msgstr "Link to the LIDAR demo"
+
+#: geoportailv3/static/js/query/parcels.html:12
+#: geoportailv3/static/js/query/parcels_go.html:14
+#: geoportailv3/static/js/query/parcels_prof.html:13
+msgid "Lien vers les mesurages"
+msgstr "Link to measurements"
+
+#: geoportailv3/static/js/query/parcels.html:8
+#: geoportailv3/static/js/query/parcels_go.html:8
+#: geoportailv3/static/js/query/parcels_prof.html:8
+msgid "Lieudit"
+msgstr "Place name"
+
+#: geoportailv3/static/js/draw/draw.html:13
+msgid "Line"
+msgstr "Line"
+
+#: geoportailv3/static/js/draw/drawdirective.js:756
+#: node_modules/ngeo/src/draw/Controller.js:68
+msgid "LineString"
+msgstr "Line"
+
+#: geoportailv3/static/js/layerinfo/popup.html:32
+msgid "Link to the metadata"
+msgstr "Link to the metadata"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:13
+msgid "Location Coordinates"
+msgstr "Location coordinates"
+
+#: node_modules/ngeo/src/geolocation/mobile.js:142
+msgid "Location information is unavailable."
+msgstr ""
+
+#: geoportailv3/static/js/authentication/authentication.html:4
+msgid "Login"
+msgstr "Username"
+
+#: geoportailv3/static/js/authentication/authentication.html:22
+msgid "Logout"
+msgstr "Logout"
+
+#: geoportailv3/static/js/query/mymaps.html:8
+msgid "Longeueur"
+msgstr "Length"
+
+#: geoportailv3/static/js/query/asta_esp.html:5
+msgid "Longueur"
+msgstr "Length"
+
+#: geoportailv3/static/js/query/sentier_nature.html:7
+msgid "Longueur du parcours"
+msgstr "Length"
+
+#: node_modules/ngeo/src/misc/WMSTime.js:62
+msgid "M/d/yyyy"
+msgstr "M/d/yyyy"
+
+#: node_modules/ngeo/src/misc/WMSTime.js:61
+msgid "M/yyyy"
+msgstr "M/yyyy"
+
+#: geoportailv3/static/js/query/parcels.html:16
+#: geoportailv3/static/js/query/parcels_go.html:18
+#: geoportailv3/static/js/query/parcels_go.html:19
+#: geoportailv3/static/js/query/parcels_prof.html:17
+#: geoportailv3/static/js/query/parcels_prof.html:18
+msgid "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
+msgstr "MES_TYPE_{{file.filename | limitTo : 1 :5}}"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1165
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:896
+msgid "Map without Title"
+msgstr "Map without title"
+
+#: geoportailv3/static/js/draw/symbolselector.html:7
+msgid "Mes symboles"
+msgstr "My symbols"
+
+#: geoportailv3/static/js/query/mo.html:7
+msgid "Mesurage"
+msgstr "Surveying Dossier"
+
+#: geoportailv3/static/js/query/parcels.html:19
+#: geoportailv3/static/js/query/parcels_go.html:22
+#: geoportailv3/static/js/query/parcels_prof.html:21
+msgid "Mesurage non disponible"
+msgstr "Measurement unavailable"
+
+#: geoportailv3/templates/index.html:310
+msgid "Mesurer"
+msgstr "Measure"
+
+#: geoportailv3/static/js/draw/featurepopup.html:72
+msgid "Modification des informations"
+msgstr "Modify information"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:315
+msgid "Modify title and description of the map"
+msgstr "Modify title and description of the map"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:826
+msgid "Move"
+msgstr "Move"
+
+#: geoportailv3/templates/index.html:280
+msgid "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
+msgstr "My Maps<span ng-show=\"mainCtrl.layersChanged\">(*)</span>"
+
+#: geoportailv3/static/js/authentication/authentication.html:2
+#: geoportailv3/static/js/authentication/authentication.html:21
+msgid "My account"
+msgstr "My account"
+
+#: geoportailv3/static/js/elevationservice.js:47
+msgid "N/A"
+msgstr "N/A"
+
+#: geoportailv3/static/js/layerinfo/popup.html:8
+#: geoportailv3/static/js/query/mymaps.html:6
+#: geoportailv3/static/js/query/ont_poi.html:3
+msgid "Name"
+msgstr "Name"
+
+#: geoportailv3/static/js/query/parcels.html:9
+#: geoportailv3/static/js/query/parcels_go.html:9
+#: geoportailv3/static/js/query/parcels_prof.html:9
+msgid "Nature"
+msgstr "Nature"
+
+#: geoportailv3/static/js/layermanager/layermanager.html:1
+msgid "No layer selected"
+msgstr "No layer selected"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:86
+msgid "No maps selected for saving."
+msgstr "No maps selected for saving."
+
+#: geoportailv3/static/js/draw/symbolselector.html:20
+#: geoportailv3/static/js/query/cfl_hecto.html:3
+#: geoportailv3/static/js/query/remembrements.html:3
+#: geoportailv3/static/js/query/viti_kleinlage.html:3
+#: geoportailv3/static/js/query/viti_name.html:3
+msgid "Nom"
+msgstr "Name"
+
+#: node_modules/ngeo/src/filter/component.js:162
+msgid "None"
+msgstr "None"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:194
+msgid "Nouveau nom"
+msgstr "New name"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1246
+msgid "Nouvelle carte créée"
+msgstr "New map created"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:199
+msgid "Nouvelle description"
+msgstr "New description"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1180
+msgid "Nouvelle ligne"
+msgstr "New line"
+
+#: geoportailv3/static/js/query/lignes_bus.html:3
+msgid "Num ligne"
+msgstr "Line number"
+
+#: geoportailv3/static/js/query/affaires.html:4
+#: geoportailv3/static/js/query/tracing.html:3
+#: geoportailv3/static/js/query/viti_parcels.html:3
+msgid "Numero"
+msgstr "Number"
+
+#: geoportailv3/static/js/query/asta_esp.html:3
+msgid "Numero EFA"
+msgstr "EFA Number"
+
+#: geoportailv3/static/js/query/flik.html:3
+#: geoportailv3/static/js/query/viti_flik.html:3
+msgid "Numero FLIK"
+msgstr "FLIK number"
+
+#: geoportailv3/static/js/query/affaires.html:5
+#: geoportailv3/static/js/query/parcels.html:6
+#: geoportailv3/static/js/query/parcels_go.html:6
+#: geoportailv3/static/js/query/parcels_prof.html:6
+msgid "Numero cadastral"
+msgstr "cadastral parcel number"
+
+#: geoportailv3/static/js/draw/featurepopup.html:119
+#: geoportailv3/static/js/draw/featurepopup.html:139
+#: geoportailv3/static/js/draw/styleediting.html:124
+msgid "OK"
+msgstr "OK"
+
+#: geoportailv3/static/js/query/ng95.html:7
+msgid "Obtenir le fichier sous format pdf"
+msgstr "Get File as a PDF"
+
+#: geoportailv3/static/js/query/parcels.html:10
+#: geoportailv3/static/js/query/parcels_go.html:10
+#: geoportailv3/static/js/query/parcels_prof.html:10
+msgid "Occupation"
+msgstr "Occupation"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:27
+msgid "Offline map"
+msgstr "Offline map"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:100
+#: geoportailv3/static/js/offlineNgeoComponent.html:118
+#: geoportailv3/static/js/offlineNgeoComponent.html:69
+#: geoportailv3/static/js/offlineNgeoComponent.html:87
+msgid "Ok"
+msgstr "Ok"
+
+#: node_modules/ngeo/src/misc/File.js:54
+msgid "Operation canceled"
+msgstr "Operation canceled"
+
+#: geoportailv3/static/js/askredirect/askredirect.html:11
+#: geoportailv3/static/js/mymaps/mymaps.html:30
+msgid "Oui"
+msgstr "Yes"
+
+#: geoportailv3/static/js/query/parcels_go.html:13
+#: geoportailv3/static/js/query/parcels_prof.html:12
+msgid "Ouvrir la PF"
+msgstr "Open PF"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:219
+#: geoportailv3/static/js/mymaps/mymaps.html:6
+msgid "Ouvrir une carte"
+msgstr "Open a map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:48
+msgid "Ouvrir une carte existante"
+msgstr "Open an exsisting map"
+
+#: geoportailv3/templates/index.html:324
+msgid "Partager"
+msgstr "Share"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:50
+msgid "Partager la carte"
+msgstr "Share map"
+
+#: geoportailv3/static/js/authentication/authentication.html:8
+msgid "Password"
+msgstr "Password"
+
+#: geoportailv3/static/js/query/flik.html:5
+msgid "Perimetre"
+msgstr "Perimeter"
+
+#: geoportailv3/static/js/routing/routing.html:98
+msgid "Petite astuce!"
+msgstr "Tip!"
+
+#: geoportailv3/static/js/feedback/feedback.html:9
+msgid "Pick layer where problem occurs"
+msgstr "Pick layer where problem occurs"
+
+#: geoportailv3/static/js/draw/styleediting.html:59
+msgid "Plain"
+msgstr "Plain"
+
+#: geoportailv3/static/js/feedback/feedbackdirective.js:110
+#: geoportailv3/static/js/feedback/feedbackdirective.js:133
+msgid "Please pick a layer"
+msgstr "Please pick a layer"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1040
+msgid "Please select a Category"
+msgstr "Please select a category"
+
+#: geoportailv3/static/js/profile/profile.html:16
+msgid "Please wait, the profile is loading."
+msgstr "Please wait, the profile is loading."
+
+#: geoportailv3/static/js/draw/draw.html:3
+#: geoportailv3/static/js/draw/drawdirective.js:737
+#: node_modules/ngeo/src/draw/Controller.js:67
+msgid "Point"
+msgstr "Point"
+
+#: geoportailv3/static/js/draw/draw.html:18
+#: geoportailv3/static/js/draw/drawdirective.js:765
+#: node_modules/ngeo/src/draw/Controller.js:69
+msgid "Polygon"
+msgstr "Polygon"
+
+#: geoportailv3/static/js/externaldata/externaldata.html:14
+msgid "Predefined wms"
+msgstr "Predefined WM(T)S"
+
+#: geoportailv3/static/js/measure/measure.html:15
+msgid "Profile"
+msgstr "Height profile"
+
+#: geoportailv3/static/js/query/inst_pub.html:4
+msgid "Proprietaire"
+msgstr "Owner"
+
+#: geoportailv3/static/js/query/info.html:5
+msgid "Prévisualisation du mesurage"
+msgstr "Preview the survey plan"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:328
+msgid "Public Map"
+msgstr "Public Map"
+
+#: geoportailv3/static/js/draw/symbolselector.html:8
+msgid "Publics"
+msgstr "Public"
+
+#: geoportailv3/static/js/draw/featurepopup.html:129
+#: geoportailv3/static/js/draw/featurepopup.html:18
+msgid "Rayon:"
+msgstr "Radius:"
+
+#: node_modules/ngeo/src/misc/File.js:54
+msgid "Read failed"
+msgstr ""
+
+#: geoportailv3/static/js/search/search.html:8
+msgid "Recherche adresse, parcelles, couches ..."
+msgstr "Search addresses, parcels, layers ... "
+
+#: geoportailv3/static/js/draw/symbolselector.html:13
+msgid "Rechercher un symbole"
+msgstr "Search symbol"
+
+#: node_modules/ngeo/src/draw/Controller.js:71
+msgid "Rectangle"
+msgstr ""
+
+#: geoportailv3/static/js/query/affaires.html:7
+msgid "Region"
+msgstr "Region"
+
+#: geoportailv3/static/js/feedback/feedback.html:2
+msgid "Report a map content problem:"
+msgstr "Report a map content problem:"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:29
+msgid "Reset"
+msgstr "Reset"
+
+#: geoportailv3/static/js/draw/featurepopup.html:91
+msgid "Retirer vignette"
+msgstr "Remove thumbnail"
+
+#: geoportailv3/static/js/layerinfo/popup.html:21
+msgid "Revision date"
+msgstr "Revision date"
+
+#: node_modules/ngeo/src/filter/rulecomponent.js:835
+msgid "Rotate"
+msgstr ""
+
+#: geoportailv3/static/js/routing/routingdirective.js:1100
+msgid "Route du"
+msgstr "Calculated way from"
+
+#: geoportailv3/templates/index.html:215 geoportailv3/templates/index.html:289
+msgid "Routing"
+msgstr "Routing"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:348
+#: geoportailv3/static/js/mymaps/mymaps.html:349
+#: geoportailv3/static/js/mymaps/mymaps.html:350
+msgid "Save changes"
+msgstr "Save changes"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:11
+msgid "Save map"
+msgstr "Save map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:351
+#: geoportailv3/static/js/offlineNgeoComponent.html:55
+msgid "Save new map"
+msgstr "Save new map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:224
+msgid "Search Maps"
+msgstr "Search Maps"
+
+#: geoportailv3/static/js/query/parcels.html:5
+#: geoportailv3/static/js/query/parcels_go.html:5
+#: geoportailv3/static/js/query/parcels_prof.html:5
+#: geoportailv3/static/js/query/viti_parcels.html:5
+msgid "Section"
+msgstr "Section"
+
+#: geoportailv3/static/js/query/viti_flik.html:5
+msgid "Section cadastrale"
+msgstr "Cadastral section"
+
+#: geoportailv3/static/js/feedback/feedback.html:36
+msgid "Send feedback to support team"
+msgstr "Send feedback to support team"
+
+#: geoportailv3/static/js/share/shorturl.html:16
+msgid "Share only Mymaps"
+msgstr "Only share mymaps link"
+
+#: geoportailv3/static/js/locationinfo/locationinfo.html:4
+#: geoportailv3/static/js/share/shorturl.html:4
+msgid "Short Url"
+msgstr "Url"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:46
+msgid "Show extent"
+msgstr "Show extent"
+
+#: geoportailv3/static/js/share/shorturl.html:12
+msgid "Show long url"
+msgstr "Show long URL"
+
+#: geoportailv3/static/js/draw/styleediting.html:66
+msgid "Show orientation"
+msgstr "Show orientation"
+
+#: geoportailv3/static/js/draw/styleediting.html:108
+#: geoportailv3/static/js/draw/styleediting.html:94
+msgid "Size"
+msgstr "Size"
+
+#: geoportailv3/static/js/query/affaires.html:9
+#: geoportailv3/static/js/query/remembrements.html:4
+msgid "Statut"
+msgstr "Status"
+
+#: geoportailv3/static/js/draw/styleediting.html:35
+#: geoportailv3/static/js/draw/styleediting.html:50
+msgid "Stroke width"
+msgstr "Stroke width"
+
+#: geoportailv3/static/js/draw/styleediting.html:58
+msgid "Style"
+msgstr "Style"
+
+#: geoportailv3/static/js/draw/styleediting.html:3
+msgid "Style your drawing"
+msgstr "Style your drawing"
+
+#: geoportailv3/static/js/authentication/authentication.html:9
+msgid "Submit"
+msgstr "Submit"
+
+#: geoportailv3/static/js/draw/draw.html:34
+msgid "Suivre la route"
+msgstr "Follow roads"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:52
+msgid "Supprimer la carte"
+msgstr "Delete map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:53
+msgid "Supprimer tous les élements de la carte"
+msgstr "Delete all the elements of the map"
+
+#: geoportailv3/static/js/measure/measure.html:7
+#: geoportailv3/static/js/query/asta_esp.html:4
+#: geoportailv3/static/js/query/flik.html:4
+#: geoportailv3/static/js/query/viti_flik.html:6
+msgid "Surface"
+msgstr "Surface"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:8
+msgid "Switch to 2D to create a map"
+msgstr "Switch to 2D to create a map"
+
+#: geoportailv3/static/js/draw/styleediting.html:79
+msgid "Symbol"
+msgstr "Symbol"
+
+#: geoportailv3/static/js/draw/styleediting.html:82
+msgid ""
+"Symbol\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'square'\" width=\"18\" height=\"18\"><rect width=\"18\" height=\"18\" style=\"fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};\"/></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'cross'\" width=\"18\" height=\"18\"><text x=\"0\" y=\"22\" font-size=\"40\" fill=\"{{ctrl.feature.get('color')}}\">+</text></svg>\n"
+"            <svg ng-show=\"ctrl.feature.get('shape') == 'triangle'\" width=\"18\" height=\"18\"><polygon points=\"0,18 9,0 18,18\" style=\"fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1\"/></svg>"
+msgstr "Symbol\n            <svg ng-show=\"ctrl.feature.get('shape') == 'circle'\" height=\"18\" width=\"18\"><circle cx=\"9\" cy=\"9\" r=\"9\" stroke=\"{{ctrl.feature.get('color')}}\" stroke-width=\"1\" fill=\"{{ctrl.feature.get('color')}}\"/></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'square'\" width=\"18\" height=\"18\"><rect width=\"18\" height=\"18\" style=\"fill:{{ctrl.feature.get('color')}};stroke-width:1;stroke:{{ctrl.feature.get('color')}};\"/></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'cross'\" width=\"18\" height=\"18\"><text x=\"0\" y=\"22\" font-size=\"40\" fill=\"{{ctrl.feature.get('color')}}\">+</text></svg>\n            <svg ng-show=\"ctrl.feature.get('shape') == 'triangle'\" width=\"18\" height=\"18\"><polygon points=\"0,18 9,0 18,18\" style=\"fill:{{ctrl.feature.get('color')}};stroke:{{ctrl.feature.get('color')}};stroke-width:1\"/></svg>"
+
+#: geoportailv3/static/js/draw/symbolselector.html:17
+msgid "Symbole"
+msgstr "Symbol"
+
+#: geoportailv3/static/js/routing/routing.html:64
+msgid "Temps"
+msgstr "Time"
+
+#: geoportailv3/static/js/draw/featurepopup.html:34
+msgid "Terminer édition"
+msgstr "Quit edit mode"
+
+#: node_modules/ngeo/src/draw/Controller.js:72
+msgid "Text"
+msgstr ""
+
+#: geoportailv3/static/js/feedback/feedback.html:33
+msgid ""
+"The following <a ng-href=\"{{ctrl.url}}\" target=\"_blank\">map link</a> "
+"will be sent to our support team."
+msgstr "The following <a ng-href=\"{{ctrl.url}}\" target=\"_blank\">map link</a> will be sent to our support team."
+
+#: geoportailv3/static/js/exclusionmanagerservice.js:140
+msgid ""
+"The layer <b>{{layersToRemove}}</b> has been removed because it cannot be "
+"displayed while the layer <b>{{layer}}</b> is displayed"
+msgid_plural ""
+"The layers <b>{{layersToRemove}}</b> have been removed because they cannot "
+"be displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr[0] "The layer <b>{{layersToRemove}}</b> has been removed because it cannot be displayed while the layer <b>{{layer}}</b> is displayed"
+msgstr[1] "The layers <b>{{layersToRemove}}</b> have been removed because they cannot be displayed while the layer <b>{{layer}}</b> is displayed"
+
+#: geoportailv3/static/js/layerinfo/popup.html:45
+msgid "The legend is not available for this layer"
+msgstr "The legend is not available for this layer."
+
+#: geoportailv3/static/js/layerinfo/popup.html:39
+msgid "The metadata is right now not available"
+msgstr "The metadata is actually not available."
+
+#: node_modules/ngeo/src/geolocation/mobile.js:145
+msgid "The request to get user location timed out."
+msgstr "The request to get user location timed out."
+
+#: geoportailv3/static/js/themeswitcher/themes.html:2
+msgid "Theme"
+msgstr "Theme"
+
+#: geoportailv3/static/js/print/print.html:6
+msgid "Title"
+msgstr "Title"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:316
+#: geoportailv3/static/js/mymaps/mymaps.html:318
+msgid "Title and description of the map"
+msgstr "Title and description of the map"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:317
+msgid "Title and description of the map copy"
+msgstr "Title and description of the map copy"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:260
+msgid "Titre"
+msgstr "Title"
+
+#: geoportailv3/static/js/mymaps/mymaps.html:323
+msgid "Titre de la carte"
+msgstr "Title of the map"
+
+#: geoportailv3/static/js/draw/styleediting.html:41
+msgid "Transparency"
+msgstr "Transparency"
+
+#: geoportailv3/static/js/share/share.html:7
+msgid "Twitter"
+msgstr "Twitter"
+
+#: geoportailv3/static/js/query/affaires.html:8
+#: geoportailv3/static/js/query/batiments.html:3
+#: geoportailv3/static/js/query/ng95.html:5
+#: geoportailv3/static/js/query/remembrements.html:5
+msgid "Type"
+msgstr "Type"
+
+#: geoportailv3/static/js/routing/routing.html:77
+msgid "Télécharger"
+msgstr "Download"
+
+#: geoportailv3/static/js/query/sentier_nature.html:9
+msgid "Télécharger la brochure"
+msgstr "Download flyer"
+
+#: geoportailv3/static/js/routing/routingdirective.js:1120
+msgid "Une copie de votre route a été enregistrée dans Mymaps."
+msgstr "A copy of your route has been saved into your maps (My Maps)"
+
+#: geoportailv3/static/js/usermanagerservice.js:153
+#: geoportailv3/static/js/usermanagerservice.js:161
+msgid "Une erreur est survenue durant la déconnexion."
+msgstr "An error occured while disconnecting"
+
+#: geoportailv3/static/js/query/tracing.html:6
+msgid "UpStream"
+msgstr "UpStream"
+
+#: node_modules/ngeo/src/misc/File.js:87
+msgid "Upload failed"
+msgstr "Upload failed"
+
+#: geoportailv3/static/js/layerinfo/popup.html:18
+msgid "Url vers la resource"
+msgstr "Ressource URL"
+
+#: node_modules/ngeo/src/geolocation/mobile.js:139
+msgid "User denied the request for Geolocation."
+msgstr "User denied the request for Geolocation."
+
+#: geoportailv3/static/js/authentication/authentication.html:7
+msgid "Username"
+msgstr "Username"
+
+#: geoportailv3/static/js/draw/featurepopup.html:99
+msgid "Validate"
+msgstr "Validate"
+
+#: geoportailv3/static/js/draw/featurepopup.html:21
+msgid "Valider"
+msgstr "Validate"
+
+#: geoportailv3/static/js/query/reportdirective.js:135
+#: geoportailv3/static/js/query/reportdirective.js:275
+msgid "Veuillez accepter les termes du rapport"
+msgstr "Please accept the terms of the report"
+
+#: geoportailv3/static/js/draw/symbolselector.html:1
+msgid "Veuillez choisir un symbole dans une des catégories"
+msgstr "Chose a symbol from a category"
+
+#: geoportailv3/static/js/draw/featurepopup.html:126
+msgid "Veuillez entrer les caractéristiques de votre nouveau cercle"
+msgstr "Please specify the details of your new circle"
+
+#: geoportailv3/static/js/query/reportdirective.js:130
+#: geoportailv3/static/js/query/reportdirective.js:270
+#: geoportailv3/static/js/query/reportdirective.js:410
+msgid "Veuillez saisir une adresse email valide"
+msgstr "Please enter a valid email address"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1336
+#: geoportailv3/static/js/routing/routingdirective.js:1132
+msgid "Veuillez vous identifier afin d'accéder à vos cartes"
+msgstr "Please login to access your maps"
+
+#: geoportailv3/static/js/query/tracing.html:6
+#: geoportailv3/static/js/query/tracing.html:7
+msgid "Visualiser"
+msgstr "View"
+
+#: geoportailv3/templates/index.html:225
+msgid "Voir le plan"
+msgstr "To the map"
+
+#: geoportailv3/static/js/query/reportdirective.js:419
+msgid ""
+"Votre attestation est en train d'être généré. Un email vous sera envoyé à "
+"l'adresse {{email}} dès qu'il sera disponible"
+msgstr "Votre attestation est en train d'être généré. Un email vous sera envoyé à l'adresse {{email}} dès qu'il sera disponible"
+
+#: geoportailv3/static/js/query/reportdirective.js:142
+#: geoportailv3/static/js/query/reportdirective.js:282
+msgid ""
+"Votre rapport est en train d'être généré. Un email vous sera envoyé à "
+"l'adresse {{email}} dès qu'il sera disponible"
+msgstr "Your report is being generated. \nYou will receive an email at your address {{email}} as soon as it is available"
+
+#: geoportailv3/static/js/mymapsservice.js:1236
+msgid "Votre utilisateur n'a pas les autorisations suffisantes."
+msgstr "Your user has not enough privileges"
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:451
+msgid ""
+"Vous êtes en mode découpage.<br> Veuillez cliquer sur une ligne pour la "
+"couper en deux."
+msgstr "You are in cutting mode<br>Please clic on a line to cut it into two pieces"
+
+#: geoportailv3/static/js/usermanagerservice.js:123
+msgid "Vous êtes maintenant correctement connecté."
+msgstr "You are now logged in"
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:114
+#: geoportailv3/static/js/offlineNgeoComponent.html:65
+#: geoportailv3/static/js/offlineNgeoComponent.html:83
+#: geoportailv3/static/js/offlineNgeoComponent.html:96
+msgid "Warning"
+msgstr ""
+
+#: geoportailv3/static/js/search/searchdirective.js:538
+msgid "Website Pages"
+msgstr ""
+
+#: geoportailv3/static/js/print/print.html:13
+msgid "With legend"
+msgstr "With legend"
+
+#: geoportailv3/static/js/feedback/feedback.html:34
+msgid ""
+"You can also use the <a href=\"\" ng-"
+"click=\"ctrl.activateDrawingTools()\">Drawing Tools</a> to annotate the map "
+"send to the support team."
+msgstr "You can also use the <a href=\"\" ng-click=\"ctrl.activateDrawingTools()\">Drawing Tools</a> to annotate the map sent to the support team."
+
+#: geoportailv3/static/js/mymaps/mymapsdirective.js:1146
+msgid "You have no existing Maps, please create a New Map"
+msgstr "You have no existing maps, please create a new map"
+
+#: geoportailv3/static/js/feedback/feedback.html:5
+msgid "Your email"
+msgstr "Your email"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:6
+msgid "bat_100"
+msgstr "public building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:7
+msgid "bat_101"
+msgstr "residential building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:8
+msgid "bat_102"
+msgstr "industrial building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:9
+msgid "bat_103"
+msgstr "commercial building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:10
+msgid "bat_104"
+msgstr "agricultural building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:11
+msgid "bat_105"
+msgstr "special or classified building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:12
+msgid "bat_106"
+msgstr "building for religious use"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:13
+msgid "bat_107"
+msgstr "mixed building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:14
+msgid "bat_108"
+msgstr "train station or stop"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:15
+msgid "bat_109"
+msgstr "greenhouse"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:16
+msgid "bat_110"
+msgstr "light construction"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:17
+msgid "bat_111"
+msgstr "special construction"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:18
+msgid "bat_112"
+msgstr "monument"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:19
+msgid "bat_113"
+msgstr "fuel tank"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:20
+msgid "bat_114"
+msgstr "ruin"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:21
+msgid "bat_115"
+msgstr "sport center"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:22
+msgid "bat_116"
+msgstr "power station"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:23
+msgid "bat_117"
+msgstr "transformator"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:24
+msgid "bat_118"
+msgstr "pump station"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:25
+msgid "bat_119"
+msgstr "water tower"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:26
+msgid "bat_120"
+msgstr "water tank"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:27
+msgid "bat_121"
+msgstr "waste water purification plant"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:28
+msgid "bat_122"
+msgstr "school building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:29
+msgid "bat_123"
+msgstr "health and social services"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:30
+msgid "bat_124"
+msgstr "multi-purpose building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:31
+msgid "bat_125"
+msgstr "rail infrastructure"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:32
+msgid "bat_126"
+msgstr "underground building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:33
+msgid "bat_127"
+msgstr "fountain"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:34
+msgid "bat_128"
+msgstr "garage"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:35
+msgid "bat_129"
+msgstr "light construction"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:36
+msgid "bat_145"
+msgstr "administrative building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:37
+msgid "bat_146"
+msgstr "part of building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:38
+msgid "bat_147"
+msgstr "building in shared ownership"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:39
+msgid "bat_148"
+msgstr "partly finished building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:40
+msgid "bat_149"
+msgstr "undefined building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:41
+msgid "bat_154"
+msgstr "building completed from orthoimagery"
+
+#: geoportailv3/static/js/backgroundlayer/blanklayerservice.js:23
+msgid "blank"
+msgstr "White background"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:129
+msgid "f_formatted_length"
+msgstr ""
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:128
+msgid "f_percentage"
+msgstr "Prozentsatz"
+
+#: geoportailv3/templates/index.html:164
+msgid "infos"
+msgstr "infos"
+
+#: geoportailv3/templates/index.html:70
+msgid "lang"
+msgstr "Language"
+
+#: geoportailv3/templates/index.html:104
+msgid "layers"
+msgstr "Layers"
+
+#: geoportailv3/templates/index.html:201
+msgid "legends"
+msgstr "legends"
+
+#: geoportailv3/templates/index.html:116
+msgid "my_layers"
+msgstr "My layers"
+
+#: geoportailv3/templates/index.html:145
+msgid "my_maps"
+msgstr "My Maps"
+
+#: geoportailv3/static/js/draw/featurepopup.html:131
+#: geoportailv3/static/js/locationinfo/locationinfo.html:25
+msgid "mètres"
+msgstr "meters"
+
+#: geoportailv3/static/js/search/searchdirective.js:498
+msgid "open in theme"
+msgstr "open in theme"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:70
+msgid "pf_aire de loisirs"
+msgstr "place for leasure time"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:75
+msgid "pf_autoroute"
+msgstr "Highway"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:84
+msgid "pf_aéroport"
+msgstr "Airport"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:91
+msgid "pf_bande écologique"
+msgstr "Bande écologique"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:48
+msgid "pf_bassin"
+msgstr "basin"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:57
+msgid "pf_bois"
+msgstr "forest"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:58
+msgid "pf_broussailles"
+msgstr "shrubbery"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:124
+msgid "pf_bât. en état fut. achèvement"
+msgstr "Building in future achievement"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:96
+msgid "pf_bât. industriel/artisanal"
+msgstr "Industrial or craftbuilding"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:99
+msgid "pf_bât. remarquable/classé"
+msgstr "Remarkable or classified building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:127
+msgid "pf_bâtiment administratif"
+msgstr "Administrative building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:98
+msgid "pf_bâtiment agricole"
+msgstr "agricultural building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:125
+msgid "pf_bâtiment autre"
+msgstr "Other building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:126
+msgid "pf_bâtiment bdtopo"
+msgstr "BDTopo building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:97
+msgid "pf_bâtiment commercial"
+msgstr "commercial building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:94
+msgid "pf_bâtiment public"
+msgstr "Public building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:100
+msgid "pf_bâtiment religieux"
+msgstr "building for religious use"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:114
+msgid "pf_bâtiment scolaire"
+msgstr "school building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:123
+msgid "pf_bâtiment à appartements"
+msgstr "Building with flats"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:95
+msgid "pf_bâtiment à habitation"
+msgstr "residential building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:101
+msgid "pf_bâtiment à usage mixte"
+msgstr "mixed building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:74
+msgid "pf_camp militaire"
+msgstr "Mlitary terrain"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:69
+msgid "pf_camping"
+msgstr "camping place"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:45
+msgid "pf_canal"
+msgstr "canal"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:61
+msgid "pf_carrière"
+msgstr "stone quarry"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:116
+msgid "pf_centre polyvalent"
+msgstr "multi-purpose building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:108
+msgid "pf_centre sportif"
+msgstr "sport center"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:71
+msgid "pf_champ de tir"
+msgstr "Shooting stand"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:78
+msgid "pf_chemin d'exploitation"
+msgstr "agricultural road"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:77
+msgid "pf_chemin repris"
+msgstr "rural road"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:111
+msgid "pf_château d'eau"
+msgstr "Water castle"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:66
+msgid "pf_cimetière"
+msgstr "cemetery"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:121
+msgid "pf_construction légère"
+msgstr "light construction"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:118
+msgid "pf_construction souterraine"
+msgstr "underground building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:104
+msgid "pf_construction spéciale"
+msgstr "special construction"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:62
+msgid "pf_crassier"
+msgstr "slag dump"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:63
+msgid "pf_décharge"
+msgstr "garbage dump"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:119
+msgid "pf_fontaine"
+msgstr "fountain"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:120
+msgid "pf_garage"
+msgstr "garage"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:102
+msgid "pf_gare"
+msgstr "Train station"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:59
+msgid "pf_haie"
+msgstr "hedge"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:117
+msgid "pf_infrastructure ferroviaire"
+msgstr "rail infrastructure"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:55
+msgid "pf_jardin"
+msgstr "garden"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:105
+msgid "pf_monument"
+msgstr "monument"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:90
+msgid "pf_nature multiple"
+msgstr "multiple usage"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:67
+msgid "pf_parc"
+msgstr "parc"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:122
+msgid "pf_partie bâtiment"
+msgstr "part of building"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:79
+msgid "pf_piste cyclable"
+msgstr "Bicycle track"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:72
+msgid "pf_piste d'essai"
+msgstr "test track"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:64
+msgid "pf_place"
+msgstr "place"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:65
+msgid "pf_place (occupée)"
+msgstr "Built place"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:68
+msgid "pf_place verte"
+msgstr "Green zone"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:82
+msgid "pf_place voirie"
+msgstr "Place belonging to the roads"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:60
+msgid "pf_plantation"
+msgstr "plantation"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:87
+msgid "pf_point géodésique"
+msgstr "geodetic point"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:86
+msgid "pf_port"
+msgstr "port"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:109
+msgid "pf_poste électrique"
+msgstr "power station"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:52
+msgid "pf_pré"
+msgstr "grassland"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:51
+msgid "pf_pâture"
+msgstr "pasture land"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:43
+msgid "pf_rivière"
+msgstr "river"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:89
+msgid "pf_rochers"
+msgstr "rocks"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:76
+msgid "pf_route nationale"
+msgstr "national road"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:81
+msgid "pf_rue"
+msgstr "road"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:107
+msgid "pf_ruine"
+msgstr "ruin"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:44
+msgid "pf_ruisseau"
+msgstr "creek"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:92
+msgid "pf_réserve naturelle"
+msgstr "natural reservation"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:112
+msgid "pf_réservoir d'eau"
+msgstr "Water container"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:106
+msgid "pf_réservoir d'hydrocarbures"
+msgstr "Fuel container"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:80
+msgid "pf_sentier"
+msgstr "path"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:103
+msgid "pf_serre"
+msgstr "greenhouse"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:115
+msgid "pf_services de santé/sociaux"
+msgstr "Health or social services"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:88
+msgid "pf_site archéologique"
+msgstr "archeological site"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:113
+msgid "pf_station d'épuration"
+msgstr "wastewater treatment plant"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:110
+msgid "pf_station de pompage"
+msgstr "pump station"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:49
+msgid "pf_surface hydrographique"
+msgstr "water surface"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:73
+msgid "pf_terrain des sports"
+msgstr "sports terrain"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:50
+msgid "pf_terre labourable"
+msgstr "farmland"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:53
+msgid "pf_vaine"
+msgstr "fallow land"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:56
+msgid "pf_verger"
+msgstr "orchard"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:54
+msgid "pf_vigne"
+msgstr "viticultural land"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:83
+msgid "pf_voie ferrée"
+msgstr "Railway"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:47
+msgid "pf_zone humide"
+msgstr "wetland"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:85
+msgid "pf_écluse"
+msgstr "sluice"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:46
+msgid "pf_étang"
+msgstr "mere"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:1
+msgid "rem_status_5000"
+msgstr "in progress"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:2
+msgid "rem_status_5001"
+msgstr "finished"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:3
+msgid "rem_typ_5000"
+msgstr "agricultural"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:4
+msgid "rem_typ_5001"
+msgstr "forestry"
+
+#: geoportailv3/static/js/query/attribute_values_for_translation.html:5
+msgid "rem_typ_5002"
+msgstr "viticultural"
+
+#: geoportailv3/templates/index.html:57
+msgid "search"
+msgstr "Search"
+
+#: geoportailv3/static/js/query/mymaps.html:5
+msgid "sentier"
+msgstr "Path:"
+
+#: geoportailv3/templates/index.html:63
+msgid "user"
+msgstr "User"
+
+#: geoportailv3/static/js/routing/routing.html:37
+msgid "votre position actuelle"
+msgstr "Your current position"
+
+#: geoportailv3/static/js/print/printdirective.js:579
+msgid ""
+"www.geoportail.lu est un portail d'accès aux informations géolocalisées, "
+"données et services qui sont mis à disposition par les administrations "
+"publiques luxembourgeoises. Responsabilité: Malgré la grande attention "
+"qu’elles portent à la justesse des informations diffusées sur ce site, les "
+"autorités ne peuvent endosser aucune responsabilité quant à la fidélité, à "
+"l’exactitude, à l’actualité, à la fiabilité et à l’intégralité de ces "
+"informations. Information dépourvue de foi publique. Droits d'auteur: "
+"Administration du Cadastre et de la Topographie. http://g-o.lu/copyright"
+msgstr "www.geoportal.lu offers spatial data & services provided by Luxembourg government bodies. Responsibiliy: Despite the great care taken by the official instances regarding the exactitude of the published data, the authorities cannot assume any responsibility regarding fidelity, exactitude, up-to-dateness, reliability and integrity of these informations. Information without legal value.\nCopyright: Administration du Cadastre et de la Topographie. http://g-o.lu/copyright"
+
+#: node_modules/ngeo/src/misc/WMSTime.js:60
+msgid "yyyy"
+msgstr ""
+
+#: geoportailv3/static/js/query/batiments.html:3
+msgid "{{(\"bat_\"+feature.attributes.type) | translate}}"
+msgstr "{{(\"bat_\"+feature.attributes.type) | translate}}"
+
+#: geoportailv3/static/js/query/remembrements.html:4
+msgid "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
+msgstr "{{(\"rem_status_\"+feature.attributes.K_STATUS) | translate}}"
+
+#: geoportailv3/static/js/query/remembrements.html:5
+msgid "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
+msgstr "{{(\"rem_typ_\"+feature.attributes.K_TYP) | translate}}"
+
+#: geoportailv3/static/js/query/lignes_bus.html:6
+#: geoportailv3/static/js/query/lignes_bus.html:7
+#: geoportailv3/static/js/query/lignes_bus.html:8
+msgid "{{feature.attributes.label}}"
+msgstr "Results of the LIDAR prototype of the A.C.T."
+
+#: geoportailv3/static/js/query/lignes_bus.html:9
+msgid "{{feature.attributes.map_description}}"
+msgstr ""
+
+#: geoportailv3/static/js/offlineNgeoComponent.html:68
+msgid ""
+"~{{$ctrl.estimatedLoadDataSize}}MB of maps will be downloaded - Don't lock "
+"your device or navigate away from this site during the download process. "
+"Deactivate \"private\" mode of your browser."
+msgstr "~{{$ctrl.estimatedLoadDataSize}}MB of maps will be downloaded - Don't lock your device or navigate away from this site during the download process. Deactivate \"private\" mode of your browser."
+
+#: geoportailv3/static/js/draw/featurepopup.html:113
+msgid "Êtes-vous certain de vouloir effacer cet élément de la carte ?"
+msgstr "Are you sure you want to delete this element from the map?"
+
+#: theme.101
+msgid "preemption"
+msgstr "Section"
+
+#: theme.102
+msgid "mobiliteit"
+msgstr "Park + Ride"
+
+#: theme.103
+msgid "tourisme_mobile"
+msgstr "Tourism"
+
+#: theme.104
+msgid "topo_mobile"
+msgstr "Topography"
+
+#: theme.105
+msgid "emwelt"
+msgstr "Environment"
+
+#: theme.106
+msgid "theme-test"
+msgstr "Spatial planning"
+
+#: theme.107 lu_ext_wms.289
+msgid "nordstad"
+msgstr "Nordstad"
+
+#: theme.108
+msgid "go"
+msgstr "Official surveyors"
+
+#: theme.109
+msgid "prof"
+msgstr "Professional"
+
+#: theme.110
+msgid "main_mobile"
+msgstr "General"
+
+#: theme.111
+msgid "user_content_mobile"
+msgstr "User maps"
+
+#: theme.112
+msgid "api"
+msgstr "API"
+
+#: theme.113
+msgid "arbed"
+msgstr "ARBED"
+
+#: theme.114
+msgid "commande"
+msgstr "Gemeng"
+
+#: theme.115
+msgid "ortho_mobile"
+msgstr "Aerial images"
+
+#: theme.116
+msgid "main"
+msgstr "Main"
+
+#: theme.117
+msgid "cadastre_mobile"
+msgstr "Cadastre"
+
+#: theme.118
+msgid "emwelt_mobile"
+msgstr "Environment"
+
+#: theme.119
+msgid "eau_mobile"
+msgstr "Water"
+
+#: theme.120
+msgid "remich"
+msgstr "Remich"
+
+#: theme.121 lu_int_wms.739
+msgid "test"
+msgstr "test"
+
+#: theme.122
+msgid "tourisme"
+msgstr "Tourism"
+
+#: theme.123
+msgid "at"
+msgstr "Urban planning"
+
+#: theme.124
+msgid "preizerdaul"
+msgstr "Préizerdaul"
+
+#: theme.125
+msgid "wellenstein"
+msgstr "Wellenstein"
+
+#: theme.126
+msgid "agriculture"
+msgstr "Agriculture"
+
+#: theme.127
+msgid "at_mobile"
+msgstr "Urban planning"
+
+#: theme.128
+msgid "eau"
+msgstr "Water"
+
+#: theme.129
+msgid "intranet-at"
+msgstr "Intranet AT"
+
+#: theme.130
+msgid "pag"
+msgstr "PAG"
+
+#: theme.131
+msgid "lintgen"
+msgstr "Lintgen"
+
+#: theme.132
+msgid "lenoz"
+msgstr "Lenoz"
+
+#: theme.133
+msgid "municipalities"
+msgstr "Municipalities"
+
+#: theme.134
+msgid "presidence2015"
+msgstr "Présidence 2015"
+
+#: theme.135 lu_int_wms.456
+msgid "olos"
+msgstr "Parcelles OLOS"
+
+#: group.136
+msgid "emwelt_biotop_kadaster_mobile"
+msgstr "Biotope cadaster of the open landscapes"
+
+#: lu_int_wms.137
+msgid "ac_preizerdaul_ortho_2009"
+msgstr "Orthophoto Préizerdaul"
+
+#: lu_int_wms.138
+msgid "asta_esp_lisiere"
+msgstr "Forest edges"
+
+#: lu_int_wms.139
+msgid "asta_esp_esp"
+msgstr "Landscape features"
+
+#: lu_int_wms.140
+msgid "aero_1963_20k"
+msgstr "Aerial images from 1963 (1:20k)"
+
+#: l_wmts.141
+msgid "emwelt_biotop_kadaster_f_mobile"
+msgstr "Biotope cadastre of the open landscapes: Surface elements without orchards"
+
+#: l_wmts.142
+msgid "emwelt_biotop_kadaster_b_mobile"
+msgstr "Biotope cadastre of the open landscapes: Buffer"
+
+#: l_wmts.143
+msgid "emwelt_biotop_kadaster_p_mobile"
+msgstr "Biotope cadastre of the open landscapes: Point elements"
+
+#: l_wmts.144
+msgid "emwelt_biotop_kadaster_s_mobile"
+msgstr "Biotope cadastre of the open landscapes: Orchards"
+
+#: group.145
+msgid "group_nordstad"
+msgstr "Nordstad"
+
+#: group.146
+msgid "env_natura2000"
+msgstr "Natura 2000"
+
+#: lu_int_wms.147
+msgid "arrets_bus"
+msgstr " Public Transport - Stops"
+
+#: lu_ext_wms.148
+msgid "user_content_vtt"
+msgstr "Mountainbiking"
+
+#: l_wmts.149
+msgid "topo_tour_20k"
+msgstr "Regional tourist map 1:20000 R"
+
+#: lu_ext_wms.150
+msgid "tour_nordic_walking"
+msgstr "Nordic Walking Parcs"
+
+#: lu_int_wms.151
+msgid "parcelles_preemption"
+msgstr "Parcels preemption"
+
+#: l_wmts.152
+msgid "addresses"
+msgstr "Addresses"
+
+#: lu_ext_wms.154
+msgid "user_content_velo"
+msgstr "Cycling"
+
+#: l_wmts.155
+msgid "topo_50k"
+msgstr "Topographical Map 1:50000"
+
+#: l_wmts.156
+msgid "TOPO_CARTESHISTO_1979"
+msgstr "Topographical Map 1:20k 1979 B/W"
+
+#: lu_int_wms.157
+msgid "env_bruit_air_lden"
+msgstr "Major airport 2011 (Lden)"
+
+#: lu_ext_wms.158
+msgid "tour_cfl"
+msgstr "CFL: Rail, Walk, Cycle"
+
+#: lu_ext_wms.159
+msgid "tour_pistes_velo"
+msgstr "Cycling Trails"
+
+#: group.160
+msgid "eau_luft_sat_bilder"
+msgstr "Aerial and satellite photographs"
+
+#: group.161
+msgid "env_obs"
+msgstr "Land use"
+
+#: l_wmts.162
+msgid "ac_wellenstein_pag_volumes_batiments"
+msgstr "Buildings"
+
+#: group.164
+msgid "mittal_bg"
+msgstr "Geographical location"
+
+#: group.165
+msgid "adressen"
+msgstr "Addresses"
+
+#: group.166
+msgid "env_bruit"
+msgstr "Environmental Noise"
+
+#: lu_int_wms.167
+msgid "env_corine"
+msgstr "Corine Landcover 2006"
+
+#: lu_ext_wms.168
+msgid "tour_quality_trails"
+msgstr "other quality trails"
+
+#: group.169
+msgid "eau_zones_protegees"
+msgstr "Protected Areas"
+
+#: group.170
+msgid "mittal_group"
+msgstr "Parcels of the Mittal Group"
+
+#: group.171
+msgid "anf_data"
+msgstr "Data of the nature and forest administration"
+
+#: group.172
+msgid "oberflachendarstellung_mobile"
+msgstr "Land surface"
+
+#: l_wmts.173
+msgid "TOPO_CARTESHISTO_1964_RGB"
+msgstr "Topographical Map 1:20k 1964"
+
+#: lu_int_wms.174
+msgid "PRM_PCN"
+msgstr "Parkraummanagement (PCN)"
+
+#: lu_ext_wms.176
+msgid "tour_autopedestre"
+msgstr "Rambling routes"
+
+#: lu_ext_wms.177
+msgid "tour_sentiers_communaux"
+msgstr "Municipality Trails"
+
+#: group.178
+msgid "luft_und_satellitenbilder"
+msgstr "Orthophoto-images"
+
+#: group.179
+msgid "tour_sentiers_locaux"
+msgstr "Local Footpaths (not maintained by the DG Tourism)"
+
+#: group.180
+msgid "anf_secteurs_ecologiques_group"
+msgstr "Ecological sectors"
+
+#: l_wmts.182
+msgid "ac_wellenstein_pag_zones"
+msgstr "Zones"
+
+#: group.183
+msgid "env_bruit_axes_ferroviaires"
+msgstr "Railroads"
+
+#: group.184
+msgid "eau_morphometrie"
+msgstr "Morphometric attributes"
+
+#: l_wmts.185
+msgid "TOPO_CARTESHISTO_1990_50k"
+msgstr "Topographical Map 1:50k 1990"
+
+#: group.186
+msgid "eau_grenzen"
+msgstr "Boundaries"
+
+#: group.187
+msgid "unwelt_biologie_geologie"
+msgstr "Environment, Biology and Geology"
+
+#: l_wmts.188
+msgid "topo_decoupage_tc"
+msgstr "Regional mapsheets"
+
+#: lu_ext_wms.189
+msgid "tour_mullerthal_trail"
+msgstr "Mullerthal Trail"
+
+#: group.190
+msgid "env_bruit_air"
+msgstr "Airport"
+
+#: l_wmts.191
+msgid "TOPO_CARTESHISTO_1979_RGB"
+msgstr "Topographical Map 1:20k 1979"
+
+#: group.192
+msgid "hohe"
+msgstr "Height"
+
+#: l_wmts.193
+msgid "topo_decoupage_5000"
+msgstr "Regional Mapsheets"
+
+#: group.194
+msgid "infrastrucktur_une_kommunikation"
+msgstr "Infrastructure and communication"
+
+#: l_wmts.195
+msgid "topo_5k"
+msgstr "Topographical Map 1:5000"
+
+#: group.196
+msgid "verkehrsnetze"
+msgstr "Transport networks"
+
+#: lu_ext_wms.197
+msgid "tour_sentiers_ajl"
+msgstr "Youthhostel Trails"
+
+#: group.198
+msgid "asta_prof"
+msgstr "Agricultural data"
+
+#: l_wmts.199
+msgid "buildings"
+msgstr "Buildings"
+
+#: l_wmts.200
+msgid "topo_decoupage_100k"
+msgstr "Regional mapsheets"
+
+#: l_wmts.201
+msgid "TOPO_CARTESHISTO_1964"
+msgstr "Topographical Map 1:20k 1964 B/W"
+
+#: l_wmts.202
+msgid "wg_relief"
+msgstr "Relief"
+
+#: l_wmts.203
+msgid "wg_relief_dhm_2m"
+msgstr "Relief DEM 2"
+
+#: group.204
+msgid "asta_meteo_group"
+msgstr "Weather data"
+
+#: lu_ext_wms.205
+msgid "tour_escape_ardenne"
+msgstr "Escapardenne"
+
+#: l_wmts.206
+msgid "topo_20k"
+msgstr "Topographical Map 1:20000"
+
+#: group.207
+msgid "eau_zones_protegees_nationales"
+msgstr "National protected areas"
+
+#: group.208
+msgid "eau_zones_protegees_communautaires"
+msgstr "International protected areas"
+
+#: group.209
+msgid "eau_env_natura2000"
+msgstr "Natura 2000"
+
+#: l_wmts.210
+msgid "ac_wellenstein_pag_complet"
+msgstr "Complete plan"
+
+#: l_wmts.211
+msgid "decoupage_geo25_50k"
+msgstr "Mapsheets  geological plan 1:25.000 / 1:50.000"
+
+#: group.212
+msgid "verkehrsnetze_tourisme"
+msgstr "Transport networks"
+
+#: group.213
+msgid "flurstucke_grundstucke_comm"
+msgstr "Cadastral data"
+
+#: lu_int_wms.214
+msgid "eau_new_Provisorische_ZPS"
+msgstr "Provisional ZPS"
+
+#: theme.1388
+msgid "sig_secours"
+msgstr "Secours"
+
+#: l_wmts.217
+msgid "TOPO_CARTESHISTO_1966-74_50k"
+msgstr "Topographical Map 1:50k 1966"
+
+#: lu_ext_wms.218
+msgid "tour_saint_jacques"
+msgstr "Way of St. James"
+
+#: l_wmts.219
+msgid "topo_decoupage_50k"
+msgstr "Regional mapsheets"
+
+#: l_wmts.220
+msgid "TOPO_CARTES_1944"
+msgstr "German War map 1:25k 1939"
+
+#: group.222
+msgid "basisden_mobile"
+msgstr "Geographical location"
+
+#: l_wmts.223
+msgid "topo_250k"
+msgstr "Topographical Map 1:250000"
+
+#: l_wmts.224
+msgid "ortho_2004"
+msgstr "Orthophoto 2004"
+
+#: l_wmts.225
+msgid "ortho_2001"
+msgstr "Orthophoto 2001"
+
+#: lu_int_wms.226
+msgid "parcels_go"
+msgstr "Cadastral parcels"
+
+#: lu_ext_wms.227
+msgid "tour_sentiers_nationaux"
+msgstr "National Footpaths"
+
+#: group.228
+msgid "flurstucke_grundstucke_go"
+msgstr "Cadastral data"
+
+#: lu_int_wms.229
+msgid "aero_1951_25k"
+msgstr "Aerial images from 1951 (1:25k)"
+
+#: lu_int_wms.230
+msgid "mittal"
+msgstr "Parcels of the Mittal Group"
+
+#: l_wmts.231
+msgid "ortho_2007"
+msgstr "Orthophoto 2007"
+
+#: group.232
+msgid "env_bruit_axes_routiers"
+msgstr "Roads"
+
+#: group.233
+msgid "geologie_"
+msgstr "Geology"
+
+#: group.234
+msgid "eau_basisdaten"
+msgstr "Geographical location"
+
+#: lu_ext_wms.235
+msgid "tour_sentiers_gr"
+msgstr "Long distance footpaths"
+
+#: lu_int_wms.175
+msgid "ivv_grosslagen"
+msgstr "Winegrowing areas"
+
+#: l_wmts.215
+msgid "env_obs2007"
+msgstr "Landcover 2007"
+
+#: l_wmts.163
+msgid "env_obs1999"
+msgstr "Landcover 1999"
+
+#: group.236
+msgid "group_ac_remich_pag"
+msgstr "Land use plan"
+
+#: l_wmts.237
+msgid "TOPO_CARTESHISTO_2000"
+msgstr "Topographical Map 1:20k 2000"
+
+#: l_wmts.238
+msgid "ign_topo"
+msgstr "Automatical topographical map"
+
+#: group.239
+msgid "user_generated_content"
+msgstr "User generated public maps"
+
+#: group.241
+msgid "anf_forets"
+msgstr "Forests"
+
+#: group.242
+msgid "basisden"
+msgstr "Geographical location"
+
+#: l_wmts.243
+msgid "geologie"
+msgstr "Geological overview map"
+
+#: group.244
+msgid "env_zones_protegees_nationales"
+msgstr "National protected areas"
+
+#: group.245
+msgid "env_zones_protegees"
+msgstr "Protected areas"
+
+#: lu_ext_wms.246
+msgid "tour_sentiers_syndicats"
+msgstr "Local Syndicate Trails"
+
+#: group.247
+msgid "infrastrucktur_une_kommunikation_prof"
+msgstr "Infrastructure and communication"
+
+#: group.248
+msgid "flurstucke_grundstucke"
+msgstr "Cadastral data"
+
+#: group.249
+msgid "mymaps"
+msgstr "My Maps"
+
+#: lu_ext_wms.250
+msgid "tour_DeLux"
+msgstr "Naturwanderpark Delux"
+
+#: l_wmts.251
+msgid "ign_ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.252
+msgid "1927_CAHANSEN"
+msgstr "Topographical Map 1927"
+
+#: lu_ext_wms.254
+msgid "tour_touring"
+msgstr "Mullerthal Touring"
+
+#: l_wmts.257
+msgid "ac_wellenstein_pag_limites"
+msgstr "Limits"
+
+#: l_wmts.258
+msgid "ac_wellenstein_pag_voies_acces"
+msgstr "Roads"
+
+#: group.260
+msgid "tour_rando_v2"
+msgstr "Foot trails"
+
+#: l_wmts.261
+msgid "topo_100k"
+msgstr "Topographical Map 1:100000"
+
+#: l_wmts.262
+msgid "cadastre"
+msgstr "Cadastre plan"
+
+#: l_wmts.263
+msgid "wg_exposition"
+msgstr "Exposition"
+
+#: lu_int_wms.264
+msgid "PA"
+msgstr "Land use plan"
+
+#: l_wmts.265
+msgid "topo_decoupage_r"
+msgstr "Regional Mapsheets"
+
+#: l_wmts.267
+msgid "ac_remich_ortho"
+msgstr "Orthophoto Remich"
+
+#: lu_ext_wms.270
+msgid "user_content"
+msgstr "Not categorized content"
+
+#: lu_ext_wms.271
+msgid "user_content_poi"
+msgstr "Points of interest"
+
+#: l_wmts.272
+msgid "pedologie_100k"
+msgstr "Soil map 1:100'000"
+
+#: group.273
+msgid "anf_data_map"
+msgstr "Data of the nature and forest administration"
+
+#: l_wmts.274
+msgid "TOPO25K1954C24"
+msgstr "Topographical Map 1954"
+
+#: group.275
+msgid "prof_daten"
+msgstr "Geographical location"
+
+#: group.276
+msgid "env_sentiers"
+msgstr "Thematic trails"
+
+#: group.277
+msgid "group_mobiliteit"
+msgstr "Park + Ride"
+
+#: l_wmts.278
+msgid "TOPO_CARTESHISTO_2000_50k"
+msgstr "Topographical Map 1:50k 2000"
+
+#: group.279
+msgid "group_ac_wellenstein_pag"
+msgstr "Land use plan"
+
+#: group.280
+msgid "anf_unites_admin"
+msgstr "Administrative units of forest adminisration"
+
+#: group.281
+msgid "tour_velo_v2"
+msgstr "Cycling & Mountainbike Trails"
+
+#: l_wmts.282
+msgid "ac_wellenstein_pag_alignements_a_preserver"
+msgstr "Alignments to be saved"
+
+#: group.284
+msgid "gebaude_prof"
+msgstr "Buildings"
+
+#: l_wmts.285
+msgid "TOPO_CARTESHISTO_1989"
+msgstr "Topographical Map 1:20k 1989"
+
+#: l_wmts.286
+msgid "wg_hohenlinien_10m"
+msgstr "Contour 10 m"
+
+#: group.287
+msgid "group_ac_preizerdaul_pag"
+msgstr "LUP Préizerdaul"
+
+#: l_wmts.288
+msgid "wg_hangneigung_"
+msgstr "Slope"
+
+#: group.290
+msgid "flurstucke_grundstucke_mittal"
+msgstr "Cadastral data"
+
+#: group.291
+msgid "topographische_karten"
+msgstr "Topographical maps"
+
+#: l_wmts.292
+msgid "wg_ikonos_satellitendaten"
+msgstr "Satellite pictures Ikonos"
+
+#: lu_ext_wms.293
+msgid "tour_pistes_vtt"
+msgstr "Mountainbike Trails"
+
+#: l_wmts.294
+msgid "geologie_ancienne_edition"
+msgstr "Geological map, old edition"
+
+#: l_wmts.295
+msgid "topo"
+msgstr "Automatical Topographical Map"
+
+#: lu_int_wms.296
+msgid "buildings_eau"
+msgstr "Buildings"
+
+#: lu_int_wms.298
+msgid "toponymes_go"
+msgstr "Cadastral region names"
+
+#: l_wmts.299
+msgid "TOPO_CARTESHISTO_1993_50k"
+msgstr "Topographical Map 1:50k 1993"
+
+#: l_wmts.300
+msgid "ac_wellenstein_pag_perimetres_zones"
+msgstr "Zone contours"
+
+#: l_wmts.301
+msgid "wg_landnutzung"
+msgstr "Land use"
+
+#: group.303
+msgid "anf_reserves"
+msgstr "Reserves"
+
+#: group.304
+msgid "tour_quality"
+msgstr "Quality Label Trails"
+
+#: l_wmts.305
+msgid "ac_wellenstein_pag_volumes_a_sauvegarder"
+msgstr "Spaces to be saved"
+
+#: l_wmts.306
+msgid "decoupage_geo25k"
+msgstr "Regional mapsheets"
+
+#: group.307
+msgid "asta"
+msgstr "Agricultural data"
+
+#: l_wmts.308
+msgid "wg_versiegelungsklassen"
+msgstr "Sealing"
+
+#: group.309
+msgid "administrative_einheiten"
+msgstr "Administrative units"
+
+#: l_wmts.311
+msgid "ortho_irc"
+msgstr "Orthophoto 2010 (infrared)"
+
+#: group.312
+msgid "umweltuberwachung"
+msgstr "Environmental survey"
+
+#: group.313
+msgid "topo_carteshisto"
+msgstr "Historical topographical Maps"
+
+#: l_wmts.314
+msgid "geologie_nouvelle_edition"
+msgstr "Geological map, new edition"
+
+#: group.315
+msgid "tour_mymaps"
+msgstr "Foot trails"
+
+#: group.317
+msgid "eau_topographie"
+msgstr "Topography"
+
+#: group.318
+msgid "eau_landnutzung"
+msgstr "Land use after Corine"
+
+#: group.319
+msgid "eau_anf_reserves"
+msgstr "Reserves"
+
+#: l_wmts.320
+msgid "toponymes"
+msgstr "Cadastral region names"
+
+#: group.321
+msgid "pedologie"
+msgstr "Soil maps"
+
+#: group.322
+msgid "anf_chasse"
+msgstr "Hunting"
+
+#: group.323
+msgid "go_daten"
+msgstr "Geographical location"
+
+#: group.324
+msgid "oberflachendarstellung"
+msgstr "Land surface"
+
+#: group.325
+msgid "unwelt_biologie_geologie_mobile"
+msgstr "Environment, Biology and Geology"
+
+#: lu_int_wms.327
+msgid "env_bruit_air_lngt"
+msgstr "Major airport 2011 (Lngt)"
+
+#: l_wmts.328
+msgid "1907_CAHANSEN"
+msgstr "Topographical Map 1907"
+
+#: group.330
+msgid "geodesy"
+msgstr "Geodesy"
+
+#: lu_int_wms.331
+msgid "ac_preizerdaul_pag"
+msgstr "Land use plan"
+
+#: group.332
+msgid "ign"
+msgstr "Viticultural land"
+
+#: group.333
+msgid "bodennutzung"
+msgstr "Land use"
+
+#: group.334
+msgid "env_zones_protegees_communautaires"
+msgstr "International protected areas"
+
+#: group.335
+msgid "weinbau"
+msgstr "Viticulture"
+
+#: group.336
+msgid "tour_auto_moto_v2"
+msgstr "Oldtimer- & Motorbike Trails"
+
+#: group.337
+msgid "group_preemption"
+msgstr "Preemption"
+
+#: group.338
+msgid "lebensraume_une_biotope"
+msgstr "Habitats and biotopes"
+
+#: group.339
+msgid "gebaude"
+msgstr "Buildings"
+
+#: group.340
+msgid "asta_zones_prot"
+msgstr "Protected sites"
+
+#: lu_int_wms.341
+msgid "aero_1951_10k"
+msgstr "Aerial images from 1951 (1:10k)"
+
+#: l_wmts.342
+msgid "ortho_2010"
+msgstr "Orthophoto 2010"
+
+#: l_wmts.343
+msgid "ortho"
+msgstr "Orthophoto 2013"
+
+#: l_wmts.344
+msgid "ac_remich_pag"
+msgstr "Land Use Plan Remich"
+
+#: l_wmts.345
+msgid "topo_decoupage_ortho"
+msgstr "Orthophoto Grid"
+
+#: lu_int_wms.347
+msgid "all_maps_root_account"
+msgstr "All public maps of my root account"
+
+#: lu_int_wms.348
+msgid "all_my_maps"
+msgstr "All my public maps"
+
+#: lu_int_wms.352
+msgid "cfl_hecto"
+msgstr "Mileage of the CFL tracks"
+
+#: l_wmts.353
+msgid "parcels_labels"
+msgstr "Cadastral parcels (numbers)"
+
+#: lu_ext_wms.356
+msgid "user_content_rando"
+msgstr "Rambling"
+
+#: lu_ext_wms.357
+msgid "user_content_autre"
+msgstr "Others"
+
+#: lu_int_wms.358
+msgid "FERRARIS"
+msgstr "Ferraris Map 1:20k 1778"
+
+#: l_wmts.359
+msgid "parcels"
+msgstr "Cadastral parcels"
+
+#: l_wmts.360
+msgid "ortho_2013"
+msgstr "Orthophoto 2013"
+
+#: group.361
+msgid "natur_an_emwelt"
+msgstr "Natur & Emwelt"
+
+#: lu_int_wms.362
+msgid "affaires"
+msgstr "Surveying dossiers"
+
+#: lu_int_wms.363
+msgid "ac_preizerdaul_ortho"
+msgstr "Orthophoto Préizerdaul"
+
+#: l_wmts.364
+msgid "emwelt_biotop_kadaster_f"
+msgstr "Surface elements without orchards"
+
+#: l_wmts.365
+msgid "emwelt_biotop_kadaster_b"
+msgstr "Buffer"
+
+#: group.366
+msgid "emwelt_biotop_kadaster"
+msgstr "Biotope cadaster of the open landscapes"
+
+#: lu_int_wms.329
+msgid "cantons"
+msgstr "Cantons"
+
+#: lu_int_wms.269
+msgid "communes_labels"
+msgstr "Municipalities (names)"
+
+#: lu_int_wms.266
+msgid "sections_cadastrales_labels"
+msgstr "Cadastral sections  (names)"
+
+#: lu_int_wms.268
+msgid "districts_labels"
+msgstr "Districts (names)"
+
+#: lu_int_wms.349
+msgid "country"
+msgstr "Country"
+
+#: lu_int_wms.256 lu_int_wms.822
+msgid "feuilles_cadastrales"
+msgstr "Historical cadastral sheets"
+
+#: lu_int_wms.283
+msgid "asta_meteo"
+msgstr "Weatherstations"
+
+#: lu_int_wms.240
+msgid "ivv_kleinlagen"
+msgstr "Small winegrowing areas"
+
+#: lu_int_wms.297
+msgid "ivv_flik_parcels"
+msgstr "FLIK reference parcels for Vineyards 2017"
+
+#: l_wmts.326
+msgid "env_bruit_axes_routiers_lden"
+msgstr "Major Roads 2011 (Lden)"
+
+#: l_wmts.255
+msgid "env_bruit_axes_routiers_lngt"
+msgstr "Major Roads 2011 (Lngt)"
+
+#: l_wmts.259
+msgid "env_bruit_axes_ferroviaires_lngt"
+msgstr "Major Railways 2011 (Lngt)"
+
+#: l_wmts.310
+msgid "env_bruit_axes_ferroviaires_lden"
+msgstr "Major Railways  2011 (Lden)"
+
+#: lu_int_wms.367
+msgid "natur_an_emwelt_terrains"
+msgstr "Natur & Ëmwelt"
+
+#: lu_int_wms.368
+msgid "mobiliteit_bikeshare"
+msgstr "Bike sharing "
+
+#: lu_int_wms.369
+msgid "eau_natura2000_habitats"
+msgstr "Habitats Natura 2000"
+
+#: lu_ext_wms.370
+msgid "luxembourg_on_horse"
+msgstr "Luxemburg on horse"
+
+#: l_wmts.371
+msgid "emwelt_biotop_kadaster_p"
+msgstr "Point elements"
+
+#: l_wmts.372
+msgid "emwelt_biotop_kadaster_s"
+msgstr "Orchards"
+
+#: group.253
+msgid "commande_grp"
+msgstr "Commande"
+
+#: group.373
+msgid "eau_new_Trinkwasser_Schutzzonen_(ZPS)"
+msgstr "Drinking water safeguard zones [ZPS]"
+
+#: lu_int_wms.374
+msgid "topo_decoupage_ortho_2013"
+msgstr "Orthophoto grid"
+
+#: lu_int_wms.375
+msgid "prpl_luref"
+msgstr "Geodetic network points : LUREF system"
+
+#: lu_int_wms.376
+msgid "prpl_ntl"
+msgstr "Geodetic network points : NTL system"
+
+#: lu_int_wms.377
+msgid "mobiliteit_pr"
+msgstr "Park + Ride"
+
+#: lu_int_wms.378
+msgid "mobiliteit_bornes"
+msgstr "Electric charging points"
+
+#: lu_int_wms.379
+msgid "eau_anf_reserves_naturelles_totalite"
+msgstr "Classified nature reserves (complete)"
+
+#: lu_ext_wms.380
+msgid "Merovingien"
+msgstr "Merovingien"
+
+#: group.381
+msgid "Archeo"
+msgstr "Archéologie"
+
+#: lu_ext_wms.382
+msgid "Prehistoire"
+msgstr "Préhistoire"
+
+#: lu_ext_wms.383
+msgid "Moyen Age"
+msgstr "Middle age"
+
+#: lu_ext_wms.384
+msgid "Temps modernes"
+msgstr "Temps modernes"
+
+#: lu_ext_wms.385
+msgid "Epoque indefinie"
+msgstr "Epoque indéfinie"
+
+#: lu_ext_wms.386
+msgid "tour_pistes_velo_mymaps"
+msgstr "National cycling paths"
+
+#: lu_int_wms.387
+msgid "eau_anf_reserves_forestieres"
+msgstr "Forest reserves"
+
+#: lu_int_wms.388
+msgid "eau_anf_reserves_dig"
+msgstr "Nature reserves (DIG)"
+
+#: lu_int_wms.389
+msgid "anf_peuplements_semenciers"
+msgstr "Forests seed stands"
+
+#: lu_ext_wms.390
+msgid "Protohistoire"
+msgstr "Protohistoire"
+
+#: lu_ext_wms.391
+msgid "Gallo-Romain"
+msgstr "Gallo-Romain"
+
+#: group.392
+msgid "at_pst"
+msgstr "SMP transport"
+
+#: group.393
+msgid "at_pszae"
+msgstr "SMP business and industrial parks"
+
+#: group.394
+msgid "at_ps"
+msgstr "Sectoral master plans (SMP) - Projects"
+
+#: lu_int_wms.395
+msgid "at_psp_gep"
+msgstr "Large landscape units"
+
+#: lu_int_wms.396
+msgid "at_psp_cv"
+msgstr "Green belts"
+
+#: lu_int_wms.397
+msgid "at_psp_zm_tot"
+msgstr "Multifunctional zones (total)"
+
+#: group.398
+msgid "at_psp"
+msgstr "SMP landscapes"
+
+#: group.399
+msgid "at_psp_zm"
+msgstr "Multifunctional zones"
+
+#: group.400
+msgid "at_psl"
+msgstr "SMP housing"
+
+#: lu_int_wms.401
+msgid "at_psl1"
+msgstr "Priority zones for housing "
+
+#: lu_int_wms.402
+msgid "at_pszae2"
+msgstr "Planned business and industrial parks"
+
+#: lu_int_wms.403
+msgid "at_pszae3"
+msgstr "Existing business and industrial parks to be reclassified"
+
+#: lu_int_wms.404
+msgid "at_pszae4"
+msgstr "Economic activity zones with transitional provisions"
+
+#: group.405
+msgid "at_pst_prm"
+msgstr "Parking space management"
+
+#: lu_int_wms.406
+msgid "at_psp_re"
+msgstr "Ecological network"
+
+#: lu_int_wms.407
+msgid "at_pszae1"
+msgstr "Existing business and industrial parks"
+
+#: lu_int_wms.408
+msgid "at_pst2"
+msgstr "Superimposed corridors and zones"
+
+#: lu_int_wms.409
+msgid "at_psp_zvi"
+msgstr "Interurban green zone"
+
+#: lu_int_wms.410
+msgid "at_pst1"
+msgstr "SPT projects"
+
+#: lu_int_wms.411
+msgid "ng"
+msgstr "Height reference points"
+
+#: l_wmts.415
+msgid "wg_hohenlinien_10m_map"
+msgstr "Contour 10 m"
+
+#: group.416
+msgid "map_morphometrie"
+msgstr "Morphometric attributes"
+
+#: lu_int_wms.417
+msgid "remembrements"
+msgstr "Land consolidation zones"
+
+#: lu_int_wms.418
+msgid "repere_alti"
+msgstr "Height bolts"
+
+#: lu_int_wms.419
+msgid "anf_arbres_remarquables"
+msgstr "Remarkable trees ANF"
+
+#: group.421
+msgid "eau_4_lintgen"
+msgstr "Water data"
+
+#: group.422
+msgid "pag_lintgen"
+msgstr "Land use plan"
+
+#: lu_int_wms.423
+msgid "mobiliteit_cfl"
+msgstr "CFL train stations"
+
+#: lu_int_wms.424
+msgid "PRM"
+msgstr "PRE"
+
+#: lu_int_wms.425
+msgid "pag_lintgen_layer"
+msgstr "Land use plan of the municipality of Lintgen"
+
+#: group.426
+msgid "eau_new_Projekt_TIMIS_(usage_interne)"
+msgstr "TIMIS Project"
+
+#: lu_int_wms.427
+msgid "anf_arrondissements"
+msgstr "Regional nature and forest districts"
+
+#: lu_int_wms.428
+msgid "anf_triages"
+msgstr "Local nature and forest districts"
+
+#: group.429
+msgid "group_lenoz"
+msgstr "Lenoz"
+
+#: lu_int_wms.430
+msgid "anf_reserves_naturelles_totalite"
+msgstr "Classified Nature reserves (totality)"
+
+#: lu_int_wms.431
+msgid "anf_reserves_dig"
+msgstr "Nature reserves (DIG)"
+
+#: lu_int_wms.432
+msgid "at_pst3"
+msgstr "Parking space categories"
+
+#: group.433
+msgid "eau_new_Projekt_Hochwasserrisikokarten_2010_(usage_interne)"
+msgstr "Project flood risk maps 2010"
+
+#: l_wmts.434
+msgid "communes_cadastrales_labels_eau"
+msgstr "Cadastral municipalities (names)"
+
+#: group.435
+msgid "eau_new_Grundwasser_2009"
+msgstr "Groundwater 2009"
+
+#: lu_int_wms.436
+msgid "MO"
+msgstr "Official Surveying Data"
+
+#: l_wmts.437
+msgid "sections_cadastrales_labels_eau"
+msgstr "Cadastral sections  (names)"
+
+#: l_wmts.438
+msgid "feuilles_cadastrales_eau"
+msgstr "Historical cadastral sheets"
+
+#: l_wmts.439
+msgid "sections_cadastrales_eau"
+msgstr "Cadastral sections"
+
+#: l_wmts.440
+msgid "toponymes_eau"
+msgstr "Cadastral region names"
+
+#: lu_int_wms.441
+msgid "eau_new_Chemischer_Zustand_der_WK_2009"
+msgstr "Chemical status of the WB 2009"
+
+#: lu_int_wms.442
+msgid "env_corridors"
+msgstr "Corridors"
+
+#: lu_int_wms.443
+msgid "env_iba"
+msgstr "Important Bird Areas"
+
+#: lu_int_wms.444
+msgid "anf_dates_battues"
+msgstr "Battue hunts"
+
+#: l_wmts.445
+msgid "eau_new_HQ100_merged_2013"
+msgstr "HQ100 [floods with medium probability]"
+
+#: group.446
+msgid "flurstucke_grundstucke_eau"
+msgstr "Cadastral data"
+
+#: l_wmts.447
+msgid "communes_cadastrales_eau"
+msgstr "Cadastral municipalities"
+
+#: group.448
+msgid "eau_new_Trinkwasser"
+msgstr "Drinking water"
+
+#: lu_int_wms.449
+msgid "parcels_labels_eau"
+msgstr "Cadastral parcels (numbers)"
+
+#: group.450
+msgid "eau_new_Gewaessernetz"
+msgstr "Stream Network"
+
+#: group.451
+msgid "eau_new_Fischerei"
+msgstr "Fishery service"
+
+#: lu_int_wms.1387
+msgid "logt_bauluecken_2016_restricted"
+msgstr "Baulücken 2016"
+
+#: group.453
+msgid "eau_new_Messstationen"
+msgstr "Monitoring stations"
+
+#: lu_int_wms.454
+msgid "parcels_eau"
+msgstr "Cadastral parcels"
+
+#: group.455
+msgid "olos_group"
+msgstr "Parcelles OLOS"
+
+#: lu_int_wms.457
+msgid "topo_decoupage_5000_ed2015"
+msgstr "Mapsheets topographic plan 1:5000 edition 2015"
+
+#: group.1389
+msgid "secours_act"
+msgstr "ACT"
+
+#: group.459
+msgid "eau_new_Oberflaechengewaesser_2021"
+msgstr "Surface waters 2021"
+
+#: group.460
+msgid "eau_new_Klimatologische_Messstationen"
+msgstr "Precipitation measurement"
+
+#: group.461
+msgid "eau_new_Historische_Ueberschwemmungsgebiete"
+msgstr "Historic floodplains"
+
+#: group.1391
+msgid "secours_age"
+msgstr "AGE"
+
+#: group.463
+msgid "eau_new_Zusaetzliche_Informationen"
+msgstr "Additional Informations"
+
+#: group.464
+msgid "eau_new_Oberflaechengewaesser_2009"
+msgstr "Surface waters 2009"
+
+#: group.465
+msgid "eau_new_Messstationen_(WRRL)"
+msgstr "Monitoring stations [WFD]"
+
+#: group.466
+msgid "eau_new_Qualitaetskomponenten_des_oekologischen_Zustands_2015"
+msgstr "Quality elements of the ecological status 2015"
+
+#: group.467
+msgid "eau_new_Grundwasser_2021"
+msgstr "Groundwater 2021"
+
+#: group.468
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2009"
+msgstr "Water bodies [WB] status 2009"
+
+#: group.469
+msgid "eau_new_Schutzgebiete"
+msgstr "Protected sites"
+
+#: group.470
+msgid "eau_new_Gewaesserschutz"
+msgstr "Prevention of water pollution"
+
+#: group.471
+msgid "eau_new_Grundwasser_2015"
+msgstr "Groundwater 2015"
+
+#: group.472
+msgid "eau_new_Oberflaechengewaesser_Messstationen"
+msgstr "Surface water monitoring stations"
+
+#: group.473
+msgid "eau_new_Grundwasser_Messstationen"
+msgstr "Groundwater monitoring stations"
+
+#: group.474
+msgid "eau_new_Wasserrahmenrichtlinie"
+msgstr "Water framework directive [WFD]"
+
+#: group.475
+msgid "eau_new_Bewirtschaftungsplan_2009"
+msgstr "River Basin Management Plan 2009"
+
+#: group.476
+msgid "eau_new_Zustand_der_Wasserkoerper_(WK)_2015"
+msgstr "Water bodies  [WB] status 2015"
+
+#: group.477
+msgid "eau_new_Projekt_Hochwassergefahrenkarten_2010_(usage_interne)"
+msgstr "Project flood hazard maps 2010"
+
+#: group.478
+msgid "eau_new_Plan_im_Fall_einer_Trockenheit"
+msgstr "Water scarcity plan"
+
+#: group.479
+msgid "eau_new_Oberflaechengewaesser_2015"
+msgstr "Surface waters 2015"
+
+#: group.480
+msgid "eau_new_Bewirtschaftungsplan_2015"
+msgstr "River Basin Management Plan 2015"
+
+#: lu_int_wms.481
+msgid "eau_new_Erhoehte_Trinkwasserknappheit_(Zustand_rot)"
+msgstr "Drinking water shortage at critical level (level \"red\")"
+
+#: group.482
+msgid "eau_new_Nitratrichtlinie"
+msgstr "Nitrates directive"
+
+#: group.483
+msgid "eau_new_Grundwasser"
+msgstr "Groundwater"
+
+#: lu_int_wms.1396
+msgid "siden_eaux_usees_dom_ind_sep"
+msgstr "Eaux usées domestiques, industriels et séparatifs"
+
+#: group.485
+msgid "eau_new_Hydrologische_Messstationen"
+msgstr "Hydrological stations"
+
+#: lu_int_wms.1398
+msgid "siden_couvercles_regard"
+msgstr "Couvercles de regard"
+
+#: group.487
+msgid "eau_new_Stehende_Gewaesser_(usage_interne)"
+msgstr "Standing waters"
+
+#: group.488
+msgid "eau_new_Historische_Karten_(usage_interne)"
+msgstr "Historic maps"
+
+#: group.489
+msgid "tourisme_poi"
+msgstr "Points of interest by ONT"
+
+#: lu_int_wms.1400
+msgid "siden_eaux_usees_mixtes"
+msgstr "Eaux usées mixtes"
+
+#: lu_int_wms.491
+msgid "eau_new_Intensitaet_-_HQ_extrem_(usage_interne)"
+msgstr "Extreme flood intensity"
+
+#: lu_int_wms.492
+msgid "eau_new_Gefaehrdete_Gebiete_(Nitratrichtlinie)"
+msgstr "Vulnerable zones  [Nitrates directive]"
+
+#: lu_int_wms.153
+msgid "communes_cadastrales"
+msgstr "Cadastral municipalities"
+
+#: group.1404
+msgid "sebes_zones_protection"
+msgstr "Zones de protection"
+
+#: lu_int_wms.493
+msgid "eau_new_Oberflaechenwasserabhaengige_Oekosysteme"
+msgstr "Ecosystems dep. on SW"
+
+#: lu_int_wms.494
+msgid "lenoz_lmg"
+msgstr "Groceries stores"
+
+#: lu_int_wms.495
+msgid "lenoz_ecoles"
+msgstr "Ecoles"
+
+#: lu_int_wms.496
+msgid "lenoz_creches"
+msgstr "Nurseries"
+
+#: lu_int_wms.497
+msgid "ont_poi_3"
+msgstr "Nature & excursions"
+
+#: lu_int_wms.498
+msgid "ont_poi_5"
+msgstr "Sports & leisure"
+
+#: lu_int_wms.499
+msgid "ont_poi_7"
+msgstr "Shopping"
+
+#: lu_int_wms.500
+msgid "ont_poi_6"
+msgstr "Family & Kids"
+
+#: l_wmts.501
+msgid "streets_jpeg"
+msgstr "Hybrid map"
+
+#: l_wmts.502
+msgid "topo_bw_jpeg"
+msgstr "Topographic map B/W"
+
+#: lu_int_wms.503
+msgid "mobi_pickup"
+msgstr "PickUp-Stations"
+
+#: lu_int_wms.504
+msgid "lenoz_Ärzte"
+msgstr "Doctors"
+
+#: lu_int_wms.505
+msgid "lenoz_Lycees"
+msgstr "High schools"
+
+#: lu_int_wms.506
+msgid "lenoz_Tankstelle"
+msgstr "Gas stations"
+
+#: group.507
+msgid "wrrl_intern_hs"
+msgstr "Hydromorphologische Strukturkartierung"
+
+#: group.508
+msgid "wrrl_intern_group"
+msgstr "WRRL intern"
+
+#: group.509
+msgid "asta_esp_group"
+msgstr "Ecological focus areas "
+
+#: lu_int_wms.511
+msgid "lenoz_Post"
+msgstr "Post offices"
+
+#: lu_ext_wms.512
+msgid "tour_pistes_velo_mymaps2"
+msgstr "Regional cycling paths"
+
+#: lu_int_wms.513
+msgid "ont_poi"
+msgstr "Eat & Sleep"
+
+#: lu_int_wms.514
+msgid "ont_poi_2"
+msgstr "Art & culture"
+
+#: lu_int_wms.515
+msgid "eau_new_UeSG_100-jaehrlich_(usage_interne)"
+msgstr "Floodplain 100 year flood"
+
+#: lu_int_wms.516
+msgid "lenoz_Banken"
+msgstr "Banks"
+
+#: lu_int_wms.517
+msgid "logt_bauluecken"
+msgstr "Baulücken (alle Gemeinden)"
+
+#: group.518
+msgid "logt"
+msgstr "Logement"
+
+#: lu_int_wms.519
+msgid "lenoz_Restaurants"
+msgstr "Restaurants"
+
+#: group.520
+msgid "osm"
+msgstr "Name"
+
+#: lu_int_wms.521
+msgid "buildings_go"
+msgstr "Buildings"
+
+#: lu_int_wms.522
+msgid "osm_mq"
+msgstr "OSM Mapquest"
+
+#: lu_int_wms.523
+msgid "ont_poi_4"
+msgstr "Go out"
+
+#: lu_int_wms.524
+msgid "anf_carte_simpl_forets"
+msgstr "simplified map of the natural forests"
+
+#: lu_int_wms.525
+msgid "asta_flik_parcels_2016_prof"
+msgstr "FLIK Parcels 2016"
+
+#: lu_int_wms.526
+msgid "parcels_labels_go"
+msgstr "Cadastral parcels (numbers)"
+
+#: group.528
+msgid "bglayers"
+msgstr "Background layers"
+
+#: l_wmts.529
+msgid "topogr_global"
+msgstr "Topographic map"
+
+#: l_wmts.530
+msgid "orthogr_2013_global"
+msgstr "Aerial Imagery"
+
+#: lu_ext_wms.531
+msgid "operations_archeo"
+msgstr "Archeological operations"
+
+#: lu_ext_wms.532
+msgid "projets_amen"
+msgstr "Urban planning projects"
+
+#: lu_int_wms.533
+msgid "natura2000_oiseaux"
+msgstr "Bird protection zones Natura 2000"
+
+#: lu_int_wms.534
+msgid "eau_natura2000_oiseaux"
+msgstr "Bird protection zones Natura 2000"
+
+#: lu_int_wms.535
+msgid "mobi_avm"
+msgstr "Vending Stations"
+
+#: lu_int_wms.536
+msgid "eau_new_Oberflaechenwasserkoerper_2015"
+msgstr "Surface water bodies 2015"
+
+#: lu_int_wms.537
+msgid "eau_new_Pumpstationen_(usage_interne)"
+msgstr "Pumping stations"
+
+#: lu_int_wms.538
+msgid "eau_new_Trinkwassersyndikate"
+msgstr "Drinking water syndicates"
+
+#: lu_int_wms.539
+msgid "parcelles_etat"
+msgstr "Parcels belonging to public authorities"
+
+#: lu_int_wms.540
+msgid "natura2000_habitats"
+msgstr "Habitats Natura 2000"
+
+#: lu_int_wms.541
+msgid "parcels_prof"
+msgstr "Cadastral parcels"
+
+#: lu_int_wms.542
+msgid "editus_poi_299"
+msgstr "Administration and other services"
+
+#: lu_int_wms.543
+msgid "editus_poi_286"
+msgstr "Bank, finance, insurance"
+
+#: lu_int_wms.544
+msgid "editus_poi_285"
+msgstr "Beauty, sports and wellness"
+
+#: lu_int_wms.545
+msgid "editus_poi_287"
+msgstr "Trading"
+
+#: lu_int_wms.546
+msgid "editus_poi_289"
+msgstr "Communication and multimedia"
+
+#: lu_int_wms.547
+msgid "editus_poi_290"
+msgstr "Culture, leisure and tourism"
+
+#: lu_int_wms.548
+msgid "editus_poi_294"
+msgstr "Hotel, restaurant, tavern"
+
+#: lu_int_wms.549
+msgid "editus_poi_291"
+msgstr "Education, training and employment"
+
+#: lu_int_wms.550
+msgid "editus_poi_292"
+msgstr "Garage, transport and mobility"
+
+#: lu_int_wms.551
+msgid "editus_poi_293"
+msgstr "Living"
+
+#: lu_int_wms.552
+msgid "editus_poi_295"
+msgstr "Industrial"
+
+#: lu_int_wms.553
+msgid "editus_poi_296"
+msgstr "Medicine and health"
+
+#: lu_int_wms.554
+msgid "editus_poi_298"
+msgstr "Services at the specialists"
+
+#: group.555
+msgid "editus_pois"
+msgstr "Points of interest (editus)"
+
+#: l_wmts.556
+msgid "basemap_2015_global"
+msgstr "Road map"
+
+#: lu_int_wms.557
+msgid "eau_new_Kuenstliche_Wasserkoerper_2015"
+msgstr "Artificial water bodies 2015"
+
+#: lu_int_wms.558
+msgid "eau_new_Einschaetzung_guter_Zustand_2021"
+msgstr "Assessement good status 2021"
+
+#: lu_int_wms.559
+msgid "eau_new_Zones_interdiction_utilisation_metazachlore"
+msgstr "Areas in which the application of Metazachlor is forbidden"
+
+#: lu_int_wms.561
+msgid "eau_new_HQextrem_merged_2010"
+msgstr "HQ extreme [floods with a low probability] 2010"
+
+#: lu_int_wms.562
+msgid "eau_new_HQ10_merged_2010"
+msgstr "HQ10 [floods with a high probability] 2010"
+
+#: lu_int_wms.563
+msgid "eau_new_Luftdruck"
+msgstr "Air pressure"
+
+#: lu_int_wms.564
+msgid "eau_new_HQ100_merged_2010"
+msgstr "HQ100 [floods with medium probability] 2010"
+
+#: l_wmts.565
+msgid "eau_new_HQextrem_merged_2013"
+msgstr "HQ extreme (floods with a low probability)"
+
+#: l_wmts.566
+msgid "eau_new_HQ10_merged_2013"
+msgstr "HQ10 [floods with a high probability]"
+
+#: lu_int_wms.567
+msgid "eau_new_Trinkwasserentnahmepunkte"
+msgstr "Drinking water abstraction points"
+
+#: lu_int_wms.568
+msgid "eau_new_Gefahrenklassen_(usage_interne)"
+msgstr "Hazard classification"
+
+#: lu_int_wms.569
+msgid "eau_new_Stausee_Sauer"
+msgstr "Upper Sure Lake"
+
+#: l_wmts.527
+msgid "asta_flik_parcels"
+msgstr "FLIK parcels 2018"
+
+#: lu_int_wms.571
+msgid "eau_new_Kuenstliche_(Bassin)_(usage_interne)"
+msgstr "Artificial basin"
+
+#: lu_int_wms.572
+msgid "eau_new_Einschraenkung_Waermepumpe_(usage_interne)"
+msgstr "Restrictions geothermal heat pumps"
+
+#: lu_int_wms.573
+msgid "eau_new_ZPS_durch_grosshrzgl._Verordnung_festgelegt"
+msgstr "ZPS created by grand-ducal regulation"
+
+#: lu_int_wms.574
+msgid "wrrl_intern_mn"
+msgstr "WRRL und HWRM - Massnahmen"
+
+#: lu_int_wms.575
+msgid "wrrl_intern_gb_k7"
+msgstr "Gesamtbewertung K7"
+
+#: lu_int_wms.576
+msgid "wrrl_intern_5b_sk"
+msgstr "5-Band-Strukturkartierung"
+
+#: lu_int_wms.577
+msgid "eau_new_Intensitaet_-_HQ_100_(usage_interne)"
+msgstr "100 year flood intensity"
+
+#: lu_int_wms.578
+msgid "eau_new_UeSG_extrem_(usage_interne)"
+msgstr "Floodplain extreme depth"
+
+#: lu_int_wms.579
+msgid "eau_new_Einschraenkung_Waermepumpe"
+msgstr "Restrictions geothermal heat pumps"
+
+#: lu_int_wms.580
+msgid "eau_new_Intensitaet_-_HQ_10_(usage_interne)"
+msgstr "10 year flood intensity"
+
+#: lu_int_wms.581
+msgid "eau_new_Badegewaesser_-_Qualitaet"
+msgstr "Bathing Water Quality"
+
+#: lu_int_wms.582
+msgid "eau_new_Messstationen_Grundwasser_-_Nitratrichtlinie"
+msgstr "Nitrates concentrations groundwater "
+
+#: lu_int_wms.583
+msgid "eau_new_Physiko-Chemie_2015"
+msgstr "Physico-chemistry 2015"
+
+#: lu_int_wms.584
+msgid "eau_new_Querprofile"
+msgstr "Cross sections"
+
+#: lu_int_wms.585
+msgid "eau_new_Gesamtzustand_2009"
+msgstr "Global status 2009"
+
+#: lu_int_wms.586
+msgid "eau_new_Chemischer_Zustand_2009"
+msgstr "Chemical status 2009"
+
+#: lu_int_wms.588
+msgid "eau_new_Typologie_Gewaesser_2015"
+msgstr "Types of watercourses 2015"
+
+#: lu_int_wms.589
+msgid "eau_new_Messstationen_Oberflaechengewaesser_-_Nitratrichtlinie"
+msgstr "Nitrates concentrations surface water"
+
+#: lu_int_wms.590
+msgid "eau_new_Hydromorphologischer_Zustand_2015"
+msgstr "Hydromorphological status 2015"
+
+#: lu_int_wms.591
+msgid "eau_new_Zustand_der_WK_2015"
+msgstr "Status of the WB 2015"
+
+#: lu_int_wms.592
+msgid "eau_new_Quantitativer_Zustand_der_WK_2015"
+msgstr "Quantitative status of the WB 2015"
+
+#: lu_int_wms.593
+msgid "eau_new_Hydromorphologischer_Zustand_2009"
+msgstr "Hydromorphological status 2009"
+
+#: lu_int_wms.594
+msgid "eau_new_HQ_extrem_(niedrige_Wahrscheinlichkeit)_2010"
+msgstr "HQ extreme [low probability] 2010"
+
+#: lu_int_wms.595
+msgid "eau_new_Lufttemperatur"
+msgstr "Air temperature"
+
+#: lu_int_wms.596
+msgid "eau_new_Wassertiefe_-_HQ_extrem_(usage_interne)"
+msgstr "Extreme flood event"
+
+#: lu_int_wms.597
+msgid "eau_new_UeSG_10-jaehrlich_(usage_interne)"
+msgstr "Floodplain 10 year flood"
+
+#: lu_int_wms.598
+msgid "eau_new_Trinkwasserbehaelter"
+msgstr "Drinking water tanks"
+
+#: lu_int_wms.709
+msgid "pag_ssmn"
+msgstr "national protected sites and monuments"
+
+#: lu_int_wms.600
+msgid "eau_new_Makro-Invertebraten_2015"
+msgstr "Macrobenthos 2015"
+
+#: lu_int_wms.601
+msgid "eau_new_Oberflaechenwasserkoerper_2009"
+msgstr "Surface water bodies 2009"
+
+#: lu_int_wms.602
+msgid "eau_new_Gewaesserentwicklungsfaehigkeit_2009_(usage_interne)"
+msgstr "Development capacity 2009"
+
+#: lu_int_wms.603
+msgid "eau_new_Grundwasserkoerper_2009"
+msgstr "Groundwater bodies 2009"
+
+#: lu_int_wms.604
+msgid "eau_new_HQ10_(hohe_Wahrscheinlichkeit)_2010"
+msgstr "HQ10 [high probability] 2010"
+
+#: lu_int_wms.605
+msgid "eau_new_Quantitativer_Zustand_der_WK_2009"
+msgstr "Quantitative status of the WB 2009"
+
+#: lu_int_wms.607
+msgid "eau_new_Typologie_Oberflaechengewasser_2009"
+msgstr "Surface water typology 2009"
+
+#: lu_int_wms.608
+msgid "eau_new_HQ100_(mittlere_Wahrscheinlichkeit)_2010"
+msgstr "HQ100 [medium probability] 2010"
+
+#: lu_int_wms.609
+msgid "eau_new_Niederschlag"
+msgstr "Precipitation"
+
+#: lu_int_wms.610
+msgid "eau_new_Schneehoehe"
+msgstr "Snow height"
+
+#: lu_int_wms.611
+msgid "eau_new_Phytobenthos_2015"
+msgstr "Phytobenthos 2015"
+
+#: lu_int_wms.612
+msgid "eau_new_Empfindliche_Gebiete_(Kommunalabwasserrichtlinie)"
+msgstr "Sensitive areas [Urban waste water treatment directive]"
+
+#: lu_int_wms.613
+msgid "eau_new_Wassertiefe_-_HQ_10_(usage_interne)"
+msgstr "10 year flood depth"
+
+#: lu_int_wms.614
+msgid "eau_new_Oekologischer_Zustand_2009"
+msgstr "Ecological status 2009"
+
+#: lu_int_wms.615
+msgid "eau_new_Luftfeucht"
+msgstr "Air humidity"
+
+#: lu_int_wms.616
+msgid "eau_new_Globalstrahlung"
+msgstr "Global radiation "
+
+#: lu_int_wms.617
+msgid "eau_new_Trinkwasserknappheit_(Zustand_orange)"
+msgstr "Drinking water shortage (level \"orange\")"
+
+#: lu_int_wms.618
+msgid "eau_new_Wassertiefe_-_HQ_100_(usage_interne)"
+msgstr "100 year flood depth"
+
+#: lu_int_wms.619
+msgid "eau_new_Betrachtungsraeume_2015"
+msgstr "Study zones 2015"
+
+#: lu_int_wms.620
+msgid "eau_new_Bodentemperatur"
+msgstr "Soil temperature"
+
+#: lu_int_wms.622
+msgid "eau_new_Oekologischer_Zustand_2015"
+msgstr "Ecological status 2015"
+
+#: lu_int_wms.623
+msgid "eau_new_Temporaer_fliessende_Baeche"
+msgstr "Temporary watercourses"
+
+#: lu_int_wms.626
+msgid "eau_new_Fischereiabschnitte"
+msgstr "Fishing sections"
+
+#: lu_int_wms.627
+msgid "eau_new_WRRL_-_Ueberblicksueberwachung"
+msgstr "WFD  - surveillance monitoring"
+
+#: lu_int_wms.628
+msgid "eau_new_Bohrungen"
+msgstr "Drills"
+
+#: lu_int_wms.629
+msgid "eau_new_Quellen"
+msgstr "Springs"
+
+#: lu_int_wms.630
+msgid "eau_new_Online_Messstationen"
+msgstr "Online stations"
+
+#: lu_int_wms.631
+msgid "eau_new_Grundwasserleiter"
+msgstr "Aquifers"
+
+#: lu_int_wms.632
+msgid "eau_new_Chemischer_Zustand_der_WK_2015"
+msgstr "Chemical status of the WB 2015"
+
+#: lu_int_wms.633
+msgid "eau_new_UESG_Sauer_1995"
+msgstr "Floodplain Sauer 1995"
+
+#: lu_int_wms.635
+msgid "eau_new_Natuerliche_(Bassin)_(usage_interne)"
+msgstr "Natural basin"
+
+#: lu_int_wms.636
+msgid "eau_new_Einzugsgebiete"
+msgstr "Catchment areas"
+
+#: lu_int_wms.637
+msgid "eau_new_UESG_1983_-_Mosel"
+msgstr "Floodplain 1983 - Mosel"
+
+#: lu_int_wms.638
+msgid "eau_new_Feuchtgebiete_(usage_interne)"
+msgstr "Wetlands"
+
+#: lu_int_wms.639
+msgid "eau_new_Durchgaengigkeit"
+msgstr "Continuity"
+
+#: lu_int_wms.640
+msgid "eau_new_Kontrollpunkte_(usage_interne)"
+msgstr "Monitoring points"
+
+#: lu_int_wms.641
+msgid "eau_new_UESG_1993_(ausser_Mosel)"
+msgstr "Floodplain 1993 [without Mosel]"
+
+#: lu_int_wms.642
+msgid "eau_new_UESG_Alzette_1995"
+msgstr "Floodplain Alzette 1995"
+
+#: lu_int_wms.643
+msgid "eau_new_Abwassersyndikate"
+msgstr "Waste water syndicats"
+
+#: lu_int_wms.644
+msgid "eau_new_Betrachtungsraeume_2009"
+msgstr "Catchment areas 2009"
+
+#: lu_int_wms.645
+msgid "eau_new_Klaeranlagen"
+msgstr "Waste water treatment plants"
+
+#: lu_int_wms.646
+msgid "eau_new_Fische_2015"
+msgstr "Fish 2015"
+
+#: lu_int_wms.647
+msgid "eau_new_Bauwerke"
+msgstr "Buildings"
+
+#: lu_int_wms.648
+msgid "eau_new_Grundwasserabhaengige_terrestriche_Oekosysteme"
+msgstr "Groundwater Dependent Terrestrial Ecosystems"
+
+#: lu_int_wms.649
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Quantitaet"
+msgstr "Groundwater [WFD] - Quantitative monitoring"
+
+#: lu_int_wms.650
+msgid "eau_new_Grundwasser_(WRRL)_-_Ueberwachung_der_Qualitaet"
+msgstr "Groundwater [WFD] - Qualitative monitoring"
+
+#: lu_int_wms.651
+msgid "eau_new_Kanal_-__Muehlgraben"
+msgstr "Channel - Millchannel"
+
+#: lu_int_wms.652
+msgid "eau_new_Waermepumpe_(usage_interne)"
+msgstr "Heat pumps"
+
+#: lu_int_wms.653
+msgid "eau_new_Alluvialer_Grundwasserspiegel"
+msgstr "Alluvial groundwater level"
+
+#: lu_int_wms.655
+msgid "eau_new_Wasserstand"
+msgstr "Water level"
+
+#: lu_int_wms.656
+msgid "eau_new_Badegewaesser"
+msgstr "Bathing Waters"
+
+#: lu_int_wms.657
+msgid "eau_new_Zustand_der_WK_2009"
+msgstr "Status of the WB 2009"
+
+#: lu_int_wms.659
+msgid "eau_new_Grundwasserkoerper_2015"
+msgstr "Ground water bodies 2015"
+
+#: lu_int_wms.662
+msgid "eau_new_Makrophyten_2015"
+msgstr "Macrophytes and phytobenthos 2015"
+
+#: lu_int_wms.663
+msgid "eau_new_Gesamtzustand_2015"
+msgstr "Ecological Potential 2015"
+
+#: lu_int_wms.664
+msgid "eau_new_ZPS_laufende_oeffentliche_Verfahrungsweise"
+msgstr " ZPS ongoing public procedure"
+
+#: lu_int_wms.665
+msgid "aero_1977_30k"
+msgstr "Aerial images from 1977 (1:30k)"
+
+#: group.666
+msgid "uhd"
+msgstr "Broadband internet"
+
+#: lu_ext_wms.667
+msgid "tour_restrictions_autre"
+msgstr "Other temporary restrictions"
+
+#: group.668
+msgid "tour_restrictions"
+msgstr "Temporary restrictions"
+
+#: lu_int_wms.669
+msgid "uhd2"
+msgstr "Coverage ≥ 100 Mbit/s & < 1 Gbit/s"
+
+#: lu_int_wms.670
+msgid "uhd1"
+msgstr "Coverage 1 Gbit/s"
+
+#: lu_int_wms.671
+msgid "uhd3"
+msgstr "Coverage ≥ 30 Mbit/s & < 100 Mbit/s"
+
+#: lu_int_wms.672
+msgid "at_intra_1"
+msgstr "at_intra_1"
+
+#: group.673
+msgid "at_intra_pst"
+msgstr "SP transport"
+
+#: lu_int_wms.674
+msgid "at_intra_pst2"
+msgstr "Reserved corridors"
+
+#: lu_int_wms.675
+msgid "at_intra_pst1"
+msgstr "SPT projects"
+
+#: lu_ext_wms.676
+msgid "tour_velo_route"
+msgstr "Road bike routes"
+
+#: lu_int_wms.677
+msgid "anf_proprietes_forestieres"
+msgstr "Public forests"
+
+#: lu_int_wms.678
+msgid "anf_stations_biologiques"
+msgstr "Regional biological stations"
+
+#: lu_int_wms.679
+msgid "logt_bauluecken_restricted"
+msgstr "Baulücken 2013 (no feedback needed)"
+
+#: lu_int_wms.680
+msgid "aev_decharges"
+msgstr "Landfills (Internal)"
+
+#: lu_ext_wms.681
+msgid "tour_moto"
+msgstr "ADAC Motorbike Tour"
+
+#: lu_int_wms.682
+msgid "mobi_mbox"
+msgstr "mBox"
+
+#: lu_ext_wms.683
+msgid "tour_vespa"
+msgstr "Vespa Tours"
+
+#: group.684
+msgid "editus_pois_tourisme"
+msgstr "POI Yellow Pages (editus)"
+
+#: lu_int_wms.685
+msgid "cita_chantiers_actuel"
+msgstr "current road works (CITA)"
+
+#: lu_int_wms.686
+msgid "cita_chantiers_futur"
+msgstr "future road works (CITA)"
+
+#: lu_ext_wms.687
+msgid "sites_classes_archeo"
+msgstr "Sites classés"
+
+#: lu_ext_wms.688
+msgid "tour_ivv_perm"
+msgstr "IVV Permanent paths"
+
+#: lu_int_wms.689
+msgid "anf_reserves_forestieres"
+msgstr "Forest reserves"
+
+#: lu_int_wms.690
+msgid "anf_secteurs_ecologiques"
+msgstr "Ecological sectors"
+
+#: lu_int_wms.691
+msgid "anf_lots_chasse"
+msgstr "Hunting lots"
+
+#: group.692
+msgid "tour_ivv"
+msgstr "FLMP-IVV Walking Paths"
+
+#: lu_ext_wms.693
+msgid "tour_ivv_temp"
+msgstr "IVV Rambling paths"
+
+#: group.694
+msgid "pag_group"
+msgstr "Réglementation urbanistique communale"
+
+#: group.695
+msgid "pag_addtional_layers"
+msgstr "National planning data"
+
+#: lu_int_wms.696
+msgid "pag_pap_approuves"
+msgstr "approved PAP plans"
+
+#: lu_int_wms.697
+msgid "pag_pcn"
+msgstr "Base plan"
+
+#: lu_int_wms.698
+msgid "pag_pag"
+msgstr "PAG"
+
+#: lu_int_wms.699
+msgid "PAG_"
+msgstr "Land use plan"
+
+#: lu_int_wms.700
+msgid "pag_pcn_staging"
+msgstr "Fond de plan (staging)"
+
+#: lu_ext_wms.701
+msgid "logt_baul_feedback"
+msgstr "Baulücken-Feedback 2016"
+
+#: lu_int_wms.702
+msgid "asta_pedologie_new"
+msgstr "Soil map 1:25'000"
+
+#: lu_int_wms.703
+msgid "asta_pedologie_ph"
+msgstr "Soil acidity (pHCaCl2)"
+
+#: lu_int_wms.704
+msgid "asta_pedologie_humus"
+msgstr "Topsoil Organic Carbon Content"
+
+#: group.705
+msgid "flurstucke_grundstucke_prof"
+msgstr "Cadastral data"
+
+#: group.706
+msgid "basisden_pag"
+msgstr "Geographical location"
+
+#: group.707
+msgid "comm_daten"
+msgstr "Geographical location"
+
+#: lu_int_wms.708
+msgid "parcelles_etat_comm"
+msgstr "Parcelles des instances publiques"
+
+#: lu_int_wms.710
+msgid "pag_pos"
+msgstr "Plans d'occupation du sol"
+
+#: lu_int_wms.711
+msgid "logt_bauluecken_demo"
+msgstr "Baulücken (restricted)"
+
+#: lu_int_wms.712
+msgid "pag_pag_staging"
+msgstr "Plan aménagement général (staging)"
+
+#: lu_int_wms.713
+msgid "pch_radars"
+msgstr "Localisation of traffic radars"
+
+#: lu_int_wms.714
+msgid "pag_pap_approuves_staging"
+msgstr "PAP approuvés (staging)"
+
+#: group.716
+msgid "pag_at"
+msgstr "Land planning"
+
+#: group.717
+msgid "pag_env"
+msgstr "Environmental protection"
+
+#: group.718
+msgid "pag_hum"
+msgstr "human environment"
+
+#: group.719
+msgid "pag_sites_et_monuments"
+msgstr "Protected sites"
+
+#: group.720
+msgid "pag_eau"
+msgstr "Wasserwirtschaft"
+
+#: lu_int_wms.346
+msgid "cantons_labels"
+msgstr "Cantons (names)"
+
+#: lu_int_wms.715
+msgid "parcels_daily_old"
+msgstr ""
+
+#: lu_int_wms.302
+msgid "communes"
+msgstr "Municipalities"
+
+#: lu_int_wms.350
+msgid "communes_cadastrales_labels"
+msgstr "Cadastral municipalities (names)"
+
+#: lu_int_wms.354
+msgid "districts"
+msgstr "Districts"
+
+#: lu_int_wms.355
+msgid "sections_cadastrales"
+msgstr "Cadastral sections"
+
+#: lu_int_wms.221
+msgid "ivv_klimakarte"
+msgstr "Climate map"
+
+#: lu_int_wms.510
+msgid "ivv_parcels"
+msgstr "Vineyards 2017"
+
+#: l_wmts.420
+msgid "eau_new_HQ100_mittlere_Wahrscheinlichkeit"
+msgstr "HQ100 [medium probability]"
+
+#: l_wmts.560
+msgid "eau_new_HQ10_hohe_Wahrscheinlichkeit"
+msgstr "HQ10 [high probability]"
+
+#: l_wmts.606
+msgid "eau_new_HQ_extrem_niedrige_Wahrscheinlichkeit"
+msgstr "HQ extreme [low probability]"
+
+#: group.721
+msgid "at_intra_zae"
+msgstr "PS ZAE"
+
+#: lu_int_wms.722
+msgid "ps_zae_nouv"
+msgstr "New ZAE and extensions"
+
+#: lu_int_wms.724
+msgid "ps_zae_exist"
+msgstr "Existing ZAE"
+
+#: lu_int_wms.723
+msgid "ps_zae_nouv_test"
+msgstr "New ZAE and extensions - Test"
+
+#: lu_ext_wms.725
+msgid "tour_tdl"
+msgstr "Skoda Tour de Luxembourg 2018"
+
+#: group.727
+msgid "contrats biodiversité MDDI"
+msgstr "contrats biodiversité MDDI"
+
+#: lu_int_wms.726
+msgid "anf_contrats_biodiversite"
+msgstr "Contrats biodiversité"
+
+#: group.728
+msgid "Atlas Hydro-Climatologique"
+msgstr "Atlas Hydro-Climatologique"
+
+#: lu_int_wms.729
+msgid "atl_hydclim_temp_2012_00"
+msgstr "atl_hydclim_temp_2012_00"
+
+#: lu_int_wms.730
+msgid "atl_hydclim_temp_2012_01"
+msgstr "atl_hydclim_temp_2012_01"
+
+#: lu_int_wms.731
+msgid "atl_hydclim_temp_2012_02"
+msgstr "atl_hydclim_temp_2012_02"
+
+#: lu_int_wms.732
+msgid "limadmin_judiciaire"
+msgstr " Judicial districts"
+
+#: lu_int_wms.733
+msgid "limadmin_legislatif"
+msgstr "Legislative circonscriptions"
+
+#: lu_int_wms.734
+msgid "utm_grid"
+msgstr "UTM Grid"
+
+#: lu_ext_wms.735
+msgid "Catastrophe naturelle 22/07/16 (informations protégées)"
+msgstr "Catastrophe naturelle 22/07/16 (informations protégées)"
+
+#: lu_ext_wms.736
+msgid "police_group_canin"
+msgstr "police_group_canin"
+
+#: lu_int_wms.738
+msgid "luref_graticules"
+msgstr "Graticules in LUREF "
+
+#: lu_int_wms.740
+msgid "asta_herbages_sensibles"
+msgstr "Herbages sensibles"
+
+#: lu_ext_wms.741
+msgid "Données saisies par l'armée luxembourgeoise"
+msgstr "Données saisies par l'armée luxembourgeoise"
+
+#: group.742
+msgid "Armée luxembourgeoise"
+msgstr "Armée luxembourgeoise"
+
+#: lu_int_wms.743
+msgid "aero_1987_30k"
+msgstr "Aerial images from 1987 (1:30k)"
+
+#: lu_int_wms.744
+msgid "tour_ort"
+msgstr "Regional Tourist Offices"
+
+#: l_wmts.745
+msgid "ortho_2016"
+msgstr "Orthophoto 2016"
+
+#: lu_int_wms.746
+msgid "tour_leader"
+msgstr " LEADER Areas"
+
+#: lu_int_wms.747
+msgid "tour_parcsnaturels"
+msgstr "Nature Parks"
+
+#: lu_int_wms.748
+msgid "aero_1994_30k"
+msgstr "Aerial images from 1994 (1:30k)"
+
+#: lu_int_wms.316
+msgid "env_sentiersnature"
+msgstr "Nature trails"
+
+#: group.458
+msgid "eau_new_Risikobeurteilung"
+msgstr "Risk assessment"
+
+#: group.462
+msgid "eau_new_Hochwassergefahrenkarten_2013"
+msgstr "Flood hazard maps 2013"
+
+#: group.452
+msgid "eau_new_Hochwasserrisikokarten_2013"
+msgstr "Flood risk maps 2013"
+
+#: lu_int_wms.752
+msgid "eau_new_Bauwerke im Abwasserbereich"
+msgstr "Wastewater structures"
+
+#: lu_int_wms.753
+msgid "eau_new_Abwassernetze"
+msgstr "Wastewater network"
+
+#: lu_int_wms.755
+msgid "eau_new_Gewässer mit einem signifikanten Hochwasserrisiko"
+msgstr "Watercourses with significant flood risks"
+
+#: lu_int_wms.754
+msgid "eau_new_Abwassergebiet"
+msgstr "Agglomerations in wastewater"
+
+#: lu_int_wms.756
+msgid "eau_new_Hochwasser Brennpunkte"
+msgstr "Flood foci"
+
+#: lu_int_wms.757
+msgid "eau_new_Hochwasserschutzmassnahmen"
+msgstr "Flood protection measures"
+
+#: lu_int_wms.758
+msgid "eau_new_Maßnahmens des Hochwasserrisikomanagementplans"
+msgstr "Programme of measures FRMP 2015"
+
+#: lu_int_wms.759
+msgid "eau_new_Strukturgütekartierung 2015 [7-stufige Bewertung]"
+msgstr "Structural quality mapping 2015 [7-stage evaluation]"
+
+#: lu_int_wms.760
+msgid "eau_new_Strukturgütekartierung 2015 [5-stufige Bewertung]"
+msgstr "Structural quality mapping 2015 [5-stage evaluation]"
+
+#: lu_int_wms.761
+msgid "eau_new_Struktukartierung 2015 in 5 Band [7-stufige Bewertung]"
+msgstr "Structural quality mapping 2015 in 5 stripes [7-stage evaluation]"
+
+#: lu_int_wms.763
+msgid "eau_new_Struktukartierung 2015 in 5 Band [5-stufige Bewertung]"
+msgstr "Structural quality mapping 2015 in 5 stripes [5-stage evaluation]"
+
+#: lu_int_wms.764
+msgid ""
+"eau_new_Chemischer Zustand ohne ubiquitäre Stoffe 2015 [Richtlinie "
+"2008/105/EG]"
+msgstr "Chemical status without ubiquitous substances 2015  [Directive 2008/105/EC]"
+
+#: lu_int_wms.765
+msgid "eau_new_Chemischer Zustand 2015 [Richtlinie 2013/39/EU]"
+msgstr "Chemical status 2015 [Directive 2013/39/EU]"
+
+#: lu_int_wms.766
+msgid ""
+"eau_new_Chemischer Zustand ohne ubiquitäre Stoffe 2015 [Richtlinie "
+"2013/39/EU]"
+msgstr "Chemical status without ubiquitous substances 2015  [Directive 2013/39/EU]"
+
+#: lu_int_wms.767
+msgid "eau_new_Hydromorphologische Gesamtbewertung 2015"
+msgstr "Hydromorphology 2015"
+
+#: lu_int_wms.749
+msgid "eau_new_Gewässer"
+msgstr "Watercourses"
+
+#: lu_int_wms.750
+msgid "eau_new_Kilometrierung der Gewässer"
+msgstr "Watercourses kilometrage"
+
+#: lu_int_wms.751
+msgid "eau_new_ZPS provisorische Gutachten"
+msgstr "ZPS provisional report"
+
+#: lu_int_wms.768
+msgid "eau_new_Überwachungsprogramme - Resultate"
+msgstr "Monitoringprogramms - Results"
+
+#: lu_int_wms.769
+msgid "eau_new_Morphologie 2015"
+msgstr "Morphology 2015"
+
+#: lu_int_wms.770
+msgid "eau_new_Durchgängigkeit 2015"
+msgstr "Continuity 2015"
+
+#: lu_int_wms.771
+msgid "eau_new_Phytoplankton 2015"
+msgstr "Phytoplankton 2015"
+
+#: group.772 lu_int_wms.775
+msgid "eau_new_Grundwasser 2027"
+msgstr "Groundwater 2027"
+
+#: lu_int_wms.773
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"Zustandes 2021"
+msgstr "Risk assessment of the WB to reach good status 2021"
+
+#: lu_int_wms.774
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"Zustandes 2027"
+msgstr "Risk assessment of the WB to reach good status 2027"
+
+#: lu_int_wms.776
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"mengenmäßigen Zustandes 2027"
+msgstr "Risk assessment of the WB to reach good quantitative status 2027"
+
+#: lu_int_wms.777
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"chemischen Zustandes 2027"
+msgstr "Risk assessment of the WB to reach good chemical status 2027"
+
+#: lu_int_wms.654
+msgid "eau_new_Oberflächengewässer Nitratrichtlinie 91/676/CEE"
+msgstr "Surface water Nitrates Directive 91/676/CEE"
+
+#: lu_int_wms.570
+msgid "eau_new_Grundwasser Nitratrichtlinie 91/676/CEE"
+msgstr "Groundwater Nitrates Directive 91/676/CEE"
+
+#: group.484
+msgid "eau_new_Hydrografie"
+msgstr "Surface waters"
+
+#: lu_int_wms.490
+msgid "eau_new_Sanitäre Schutzzonen Stausee Esch/Sauer"
+msgstr "Sanitary protection zones Esch-sur-Sûre dam"
+
+#: group.486
+msgid "eau_new_Hochwasserrisikomanagement-Richtlinie [HWRM-RL]"
+msgstr "Floods directive [FD]"
+
+#: lu_int_wms.634
+msgid "eau_new_Erheblich veränderte Wasserkörper 2009"
+msgstr "Heavily modified waterbodies 2009"
+
+#: lu_int_wms.658
+msgid "eau_new_Erheblich veränderte Wasserkörper 2015"
+msgstr "Heavily modified waterbodies 2015"
+
+#: lu_int_wms.621
+msgid "eau_new_Chemischer Zustand 2015 [Richtlinie 2008/105/EG]"
+msgstr "Chemical status 2015 [Directive 2008/105/EC]"
+
+#: lu_int_wms.661
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"mengenmäßigen Zustandes 2021"
+msgstr "Risk assessment of the WB to reach good quantitative status 2021"
+
+#: lu_int_wms.660
+msgid ""
+"eau_new_Risikobeurteilung des WK hinsichtlich der Verfehlung des guten "
+"chemischen Zustandes 2021"
+msgstr "Risk assessment of the WB to reach good chemical status 2021"
+
+#: lu_int_wms.785
+msgid "eau_new_WRRL und HWRM-RL Massnahmen"
+msgstr "Detailed programme of measures HY"
+
+#: group.784
+msgid "eau_new_Usage interne"
+msgstr "Usage interne"
+
+#: lu_int_wms.779
+msgid "eau_new_Regionalisierte MNQ-Werte"
+msgstr "Regionalization of mean low water values"
+
+#: lu_int_wms.781
+msgid "eau_new_Regionalisierte MQ-Werte"
+msgstr "Regionalization of mean water values"
+
+#: lu_int_wms.782
+msgid "eau_new_Regionalisierte HQ-Werte"
+msgstr "Regionalization of high water values"
+
+#: lu_int_wms.786
+msgid "Orthophoto_Infrarouge_2016"
+msgstr "Infrared Orthophoto 2016"
+
+#: lu_int_wms.787
+msgid "Orthophoto_Infrarouge_2013"
+msgstr "Infrared Orthophoto 2013"
+
+#: lu_int_wms.788
+msgid "Orthophoto_Infrarouge_2010"
+msgstr "Infrared Orthophoto 2010"
+
+#: lu_int_wms.789
+msgid "Orthophoto_Infrarouge"
+msgstr "Orthophoto infrared"
+
+#: group.790
+msgid "Orthophotos Infrarouge"
+msgstr "Orthophoto infrared"
+
+#: l_wmts.791
+msgid "ortho_2010_irc"
+msgstr "Orthophoto 2010 infrared"
+
+#: l_wmts.792
+msgid "ortho_2013_irc"
+msgstr "Orthophoto 2013 infrared"
+
+#: l_wmts.793
+msgid "ortho_2016_irc"
+msgstr "Orthophoto 2016 infrared"
+
+#: lu_ext_wms.794
+msgid "Scouts_Hikes"
+msgstr "Scouts Hikes"
+
+#: group.795
+msgid "Scouts"
+msgstr "Scouts"
+
+#: lu_ext_wms.796
+msgid "Schleck Gran Fondo"
+msgstr "Schleck Gran Fondo"
+
+#: lu_int_wms.797
+msgid "eau_new_trockenheit_gelb"
+msgstr "Prevention phase (Phase yellow) "
+
+#: lu_int_wms.798
+msgid "seveso"
+msgstr "SEVESO Sites"
+
+#: l_wmts.799
+msgid "basemap_2015_global_old"
+msgstr "Road map 2D"
+
+#: theme.800
+msgid "cadastre_hertzien"
+msgstr "Cellular phone cadastre"
+
+#: lu_int_wms.802
+msgid "mat_points_mesure"
+msgstr "Measuring points"
+
+#: group.803
+msgid "cadastre_hertzien_group"
+msgstr "Cellular phone cadastre"
+
+#: lu_int_wms.804
+msgid "anf_zpin_declarees"
+msgstr "Designated protected areas"
+
+#: lu_int_wms.805
+msgid "anf_zpin_a_declarer"
+msgstr "Protected areas in view of designation"
+
+#: lu_int_wms.806
+msgid "anf_zpin_en_procedure"
+msgstr "Protected areas undergoing the official designation procedure"
+
+#: group.807
+msgid "zpin_group"
+msgstr "Protected areas"
+
+#: lu_int_wms.808
+msgid "velo_by_pch"
+msgstr "National cycling paths"
+
+#: lu_ext_wms.809
+msgid "lvi_circuits_cyclables"
+msgstr "Cycling tours"
+
+#: lu_int_wms.810
+msgid "TOPO_CARTEHISTO_1950"
+msgstr "Topographical Map 1:150k 1950"
+
+#: lu_int_wms.801
+msgid "mat_antennes_plus_50_watt"
+msgstr "Base stations for public mobile communication networks ≥ 50 Watt"
+
+#: lu_int_wms.811
+msgid "mat_antennes_moins_50_watt"
+msgstr "Base stations for public mobile communication networks < 50 Watt"
+
+#: lu_int_wms.813
+msgid "cdt_lignes_all"
+msgstr "Public Transport Network"
+
+#: lu_ext_wms.814
+msgid "cdt_lignes_avl"
+msgstr "Bus lines AVL"
+
+#: lu_ext_wms.815
+msgid "cdt_lignes_rgtr"
+msgstr "Bus lines RGTR"
+
+#: lu_ext_wms.816
+msgid "cdt_lignes_tice"
+msgstr "Bus lines TICE"
+
+#: lu_ext_wms.817
+msgid "cdt_lignes_cfl"
+msgstr "Train Lines CFL"
+
+#: group.812
+msgid "cdt_lignes_bus_par_operateur"
+msgstr "Public transport network by operator"
+
+#: theme.818
+msgid "API_ONLY"
+msgstr ""
+
+#: lu_int_wms.819 lu_int_wms.1381
+msgid "chargy"
+msgstr "Chargy stations"
+
+#: group.820
+msgid "API_ONLY_LAYERS"
+msgstr ""
+
+#: lu_int_wms.821 lu_int_wms.823
+msgid "feuilles_cadastrales_urplang"
+msgstr " Historical cadastral sheets"
+
+#: lu_int_wms.830
+msgid "lux_norm1971_2000_00_pluvio_sum"
+msgstr "1971-2000 - Reference period 1971-2000, Precipitation, yearly sum [mm] "
+
+#: lu_int_wms.833
+msgid "lux_norm1971_2000_01_pluvio_sum"
+msgstr "Jan. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.836
+msgid "lux_norm1971_2000_02_pluvio_sum"
+msgstr "Feb. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.839
+msgid "lux_norm1971_2000_03_pluvio_sum"
+msgstr "Mar. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.842
+msgid "lux_norm1971_2000_04_pluvio_sum"
+msgstr "Apr. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.845
+msgid "lux_norm1971_2000_05_pluvio_sum"
+msgstr "May 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.848
+msgid "lux_norm1971_2000_06_pluvio_sum"
+msgstr "Jun. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.851
+msgid "lux_norm1971_2000_07_pluvio_sum"
+msgstr "Jul. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.854
+msgid "lux_norm1971_2000_08_pluvio_sum"
+msgstr "Aug. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.857
+msgid "lux_norm1971_2000_09_pluvio_sum"
+msgstr "Sep. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.860
+msgid "lux_norm1971_2000_10_pluvio_sum"
+msgstr "Oct. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.863
+msgid "lux_norm1971_2000_11_pluvio_sum"
+msgstr "Nov. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.866
+msgid "lux_norm1971_2000_12_pluvio_sum"
+msgstr "Dec. 1971-2000 - Reference period 1971-2000, Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.872
+msgid "lux_2012_00_temp_minimum"
+msgstr "2012 - Temperature yearly minimum [ºC] "
+
+#: lu_int_wms.875
+msgid "lux_2012_01_temp_minimum"
+msgstr "Jan. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.878
+msgid "lux_2012_02_temp_minimum"
+msgstr "Feb. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.881
+msgid "lux_2012_03_temp_minimum"
+msgstr "Mar. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.884
+msgid "lux_2012_04_temp_minimum"
+msgstr "Apr. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.887
+msgid "lux_2012_05_temp_minimum"
+msgstr "May 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.890
+msgid "lux_2012_06_temp_minimum"
+msgstr "Jun. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.893
+msgid "lux_2012_07_temp_minimum"
+msgstr "Jul. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.896
+msgid "lux_2012_08_temp_minimum"
+msgstr "Aug. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.899
+msgid "lux_2012_09_temp_minimum"
+msgstr "Sep. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.902
+msgid "lux_2012_10_temp_minimum"
+msgstr "Oct. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.905
+msgid "lux_2012_11_temp_minimum"
+msgstr "Nov. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.908
+msgid "lux_2012_12_temp_minimum"
+msgstr "Dec. 2012 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.912
+msgid "lux_2012_00_temp_average"
+msgstr "2012 - Temperature yearly average [ºC] "
+
+#: lu_int_wms.915
+msgid "lux_2012_01_temp_average"
+msgstr "Jan. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.918
+msgid "lux_2012_02_temp_average"
+msgstr "Feb. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.921
+msgid "lux_2012_03_temp_average"
+msgstr "Mar. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.924
+msgid "lux_2012_04_temp_average"
+msgstr "Apr. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.927
+msgid "lux_2012_05_temp_average"
+msgstr "May 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.930
+msgid "lux_2012_06_temp_average"
+msgstr "Jun. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.933
+msgid "lux_2012_07_temp_average"
+msgstr "Jul. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.936
+msgid "lux_2012_08_temp_average"
+msgstr "Aug. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.939
+msgid "lux_2012_09_temp_average"
+msgstr "Sep. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.942
+msgid "lux_2012_10_temp_average"
+msgstr "Oct. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.945
+msgid "lux_2012_11_temp_average"
+msgstr "Nov. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.948
+msgid "lux_2012_12_temp_average"
+msgstr "Dec. 2012 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.952
+msgid "lux_2012_00_temp_maximum"
+msgstr "2012 - Average annual maximum temperatures [ºC] "
+
+#: lu_int_wms.955
+msgid "lux_2012_01_temp_maximum"
+msgstr "Jan. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.958
+msgid "lux_2012_02_temp_maximum"
+msgstr "Feb. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.961
+msgid "lux_2012_03_temp_maximum"
+msgstr "Mar. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.964
+msgid "lux_2012_04_temp_maximum"
+msgstr "Apr. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.967
+msgid "lux_2012_05_temp_maximum"
+msgstr "May 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.970
+msgid "lux_2012_06_temp_maximum"
+msgstr "Jun. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.973
+msgid "lux_2012_07_temp_maximum"
+msgstr "Jul. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.976
+msgid "lux_2012_08_temp_maximum"
+msgstr "Aug. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.979
+msgid "lux_2012_09_temp_maximum"
+msgstr "Sep. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.982
+msgid "lux_2012_10_temp_maximum"
+msgstr "Oct. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.985
+msgid "lux_2012_11_temp_maximum"
+msgstr "Nov. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.988
+msgid "lux_2012_12_temp_maximum"
+msgstr "Dec. 2012 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.993
+msgid "lux_2012_00_pluvio_sum"
+msgstr "2012 - Precipitation, yearly sum [mm] "
+
+#: lu_int_wms.996
+msgid "lux_2012_01_pluvio_sum"
+msgstr "Jan. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.999
+msgid "lux_2012_02_pluvio_sum"
+msgstr "Feb. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1002
+msgid "lux_2012_03_pluvio_sum"
+msgstr "Mar. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1005
+msgid "lux_2012_04_pluvio_sum"
+msgstr "Apr. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1008
+msgid "lux_2012_05_pluvio_sum"
+msgstr "May 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1011
+msgid "lux_2012_06_pluvio_sum"
+msgstr "Jun. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1014
+msgid "lux_2012_07_pluvio_sum"
+msgstr "Jul. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1017
+msgid "lux_2012_08_pluvio_sum"
+msgstr "Aug. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1020
+msgid "lux_2012_09_pluvio_sum"
+msgstr "Sep. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1023
+msgid "lux_2012_10_pluvio_sum"
+msgstr "Oct. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1026
+msgid "lux_2012_11_pluvio_sum"
+msgstr "Nov. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1029
+msgid "lux_2012_12_pluvio_sum"
+msgstr "Dec. 2012 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1036
+msgid "lux_2012_01_pluvio_diff_mm"
+msgstr "Jan. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1039
+msgid "lux_2012_02_pluvio_diff_mm"
+msgstr "Feb. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1042
+msgid "lux_2012_03_pluvio_diff_mm"
+msgstr "Mar. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1045
+msgid "lux_2012_04_pluvio_diff_mm"
+msgstr "Apr. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1048
+msgid "lux_2012_05_pluvio_diff_mm"
+msgstr "May 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1051
+msgid "lux_2012_06_pluvio_diff_mm"
+msgstr "Jun. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1054
+msgid "lux_2012_07_pluvio_diff_mm"
+msgstr "Jul. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1057
+msgid "lux_2012_08_pluvio_diff_mm"
+msgstr "Aug. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1060
+msgid "lux_2012_09_pluvio_diff_mm"
+msgstr "Sep. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1063
+msgid "lux_2012_10_pluvio_diff_mm"
+msgstr "Oct. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1066
+msgid "lux_2012_11_pluvio_diff_mm"
+msgstr "Nov. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1069
+msgid "lux_2012_12_pluvio_diff_mm"
+msgstr "Dec. 2012 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1076
+msgid "lux_2012_01_pluvio_diff_perc"
+msgstr "Jan. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1079
+msgid "lux_2012_02_pluvio_diff_perc"
+msgstr "Feb. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1082
+msgid "lux_2012_03_pluvio_diff_perc"
+msgstr "Mar. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1085
+msgid "lux_2012_04_pluvio_diff_perc"
+msgstr "Apr. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1088
+msgid "lux_2012_05_pluvio_diff_perc"
+msgstr "May 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1091
+msgid "lux_2012_06_pluvio_diff_perc"
+msgstr "Jun. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1094
+msgid "lux_2012_07_pluvio_diff_perc"
+msgstr "Jul. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1097
+msgid "lux_2012_08_pluvio_diff_perc"
+msgstr "Aug. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1100
+msgid "lux_2012_09_pluvio_diff_perc"
+msgstr "Sep. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: theme.824
+msgid "ahc"
+msgstr "Hydro-climatological atlas"
+
+#: lu_int_wms.1103
+msgid "lux_2012_10_pluvio_diff_perc"
+msgstr "Oct. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1106
+msgid "lux_2012_11_pluvio_diff_perc"
+msgstr "Nov. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1109
+msgid "lux_2012_12_pluvio_diff_perc"
+msgstr "Dec. 2012 - Precipitation, monthly difference to reference  [%] "
+
+#: lu_int_wms.1115
+msgid "lux_2013_00_temp_minimum"
+msgstr "2013 - Average annual minimum temperatures [ºC] "
+
+#: lu_int_wms.1118
+msgid "lux_2013_01_temp_minimum"
+msgstr "Jan. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1121
+msgid "lux_2013_02_temp_minimum"
+msgstr "Feb. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1124
+msgid "lux_2013_03_temp_minimum"
+msgstr "Mar. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1127
+msgid "lux_2013_04_temp_minimum"
+msgstr "Apr. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1130
+msgid "lux_2013_05_temp_minimum"
+msgstr "May 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1133
+msgid "lux_2013_06_temp_minimum"
+msgstr "Jun. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1136
+msgid "lux_2013_07_temp_minimum"
+msgstr "Jul. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1139
+msgid "lux_2013_08_temp_minimum"
+msgstr "Aug. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1142
+msgid "lux_2013_09_temp_minimum"
+msgstr "Sep. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1145
+msgid "lux_2013_10_temp_minimum"
+msgstr "Oct. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1148
+msgid "lux_2013_11_temp_minimum"
+msgstr "Nov. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1151
+msgid "lux_2013_12_temp_minimum"
+msgstr "Dec. 2013 - Average monthly minimum temperatures [ºC] "
+
+#: lu_int_wms.1155
+msgid "lux_2013_00_temp_average"
+msgstr "2013 - Temperature yearly average [ºC] "
+
+#: lu_int_wms.1158
+msgid "lux_2013_01_temp_average"
+msgstr "Jan. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1161
+msgid "lux_2013_02_temp_average"
+msgstr "Feb. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1164
+msgid "lux_2013_03_temp_average"
+msgstr "Mar. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1167
+msgid "lux_2013_04_temp_average"
+msgstr "Apr. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1170
+msgid "lux_2013_05_temp_average"
+msgstr "May 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1173
+msgid "lux_2013_06_temp_average"
+msgstr "Jun. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1176
+msgid "lux_2013_07_temp_average"
+msgstr "Jul. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1179
+msgid "lux_2013_08_temp_average"
+msgstr "Aug. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1182
+msgid "lux_2013_09_temp_average"
+msgstr "Sep. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1185
+msgid "lux_2013_10_temp_average"
+msgstr "Oct. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1188
+msgid "lux_2013_11_temp_average"
+msgstr "Nov. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1191
+msgid "lux_2013_12_temp_average"
+msgstr "Dec. 2013 - Temperature monthly average [ºC] "
+
+#: lu_int_wms.1195
+msgid "lux_2013_00_temp_maximum"
+msgstr "2013 - Average annual maximum temperatures [ºC] "
+
+#: lu_int_wms.1198
+msgid "lux_2013_01_temp_maximum"
+msgstr "Jan. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1201
+msgid "lux_2013_02_temp_maximum"
+msgstr "Feb. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1204
+msgid "lux_2013_03_temp_maximum"
+msgstr "Mar. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1207
+msgid "lux_2013_04_temp_maximum"
+msgstr "Apr. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1210
+msgid "lux_2013_05_temp_maximum"
+msgstr "May 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1213
+msgid "lux_2013_06_temp_maximum"
+msgstr "Jun. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1216
+msgid "lux_2013_07_temp_maximum"
+msgstr "Jul. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1219
+msgid "lux_2013_08_temp_maximum"
+msgstr "Aug. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1222
+msgid "lux_2013_09_temp_maximum"
+msgstr "Sep. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1225
+msgid "lux_2013_10_temp_maximum"
+msgstr "Oct. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1228
+msgid "lux_2013_11_temp_maximum"
+msgstr "Nov. 2013 - Average monthly maximum temperatures [ºC] "
+
+#: lu_int_wms.1231
+msgid "lux_2013_12_temp_maximum"
+msgstr "Dec. 2013 - Average annual maximum temperatures [ºC] "
+
+#: lu_int_wms.1236
+msgid "lux_2013_00_pluvio_sum"
+msgstr "2013 - Precipitation, yearly sum [mm] "
+
+#: lu_int_wms.1239
+msgid "lux_2013_01_pluvio_sum"
+msgstr "Jan. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1242
+msgid "lux_2013_02_pluvio_sum"
+msgstr "Feb. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1245
+msgid "lux_2013_03_pluvio_sum"
+msgstr "Mar. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1248
+msgid "lux_2013_04_pluvio_sum"
+msgstr "Apr. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1251
+msgid "lux_2013_05_pluvio_sum"
+msgstr "May 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1254
+msgid "lux_2013_06_pluvio_sum"
+msgstr "Jun. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1257
+msgid "lux_2013_07_pluvio_sum"
+msgstr "Jul. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1260
+msgid "lux_2013_08_pluvio_sum"
+msgstr "Aug. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1263
+msgid "lux_2013_09_pluvio_sum"
+msgstr "Sep. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1266
+msgid "lux_2013_10_pluvio_sum"
+msgstr "Oct. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1269
+msgid "lux_2013_11_pluvio_sum"
+msgstr "Nov. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1272
+msgid "lux_2013_12_pluvio_sum"
+msgstr "Dec. 2013 - Precipitation, monthly sum [mm] "
+
+#: lu_int_wms.1279
+msgid "lux_2013_01_pluvio_diff_mm"
+msgstr "Jan. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1282
+msgid "lux_2013_02_pluvio_diff_mm"
+msgstr "Feb. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1285
+msgid "lux_2013_03_pluvio_diff_mm"
+msgstr "Mar. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1288
+msgid "lux_2013_04_pluvio_diff_mm"
+msgstr "Apr. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1291
+msgid "lux_2013_05_pluvio_diff_mm"
+msgstr "May 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1294
+msgid "lux_2013_06_pluvio_diff_mm"
+msgstr "Jun. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1297
+msgid "lux_2013_07_pluvio_diff_mm"
+msgstr "Jul. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1300
+msgid "lux_2013_08_pluvio_diff_mm"
+msgstr "Aug. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1303
+msgid "lux_2013_09_pluvio_diff_mm"
+msgstr "Sep. 2013 - Precipitation, monthly difference to reference period in percent [mm] "
+
+#: lu_int_wms.1306
+msgid "lux_2013_10_pluvio_diff_mm"
+msgstr "Oct. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1309
+msgid "lux_2013_11_pluvio_diff_mm"
+msgstr "Nov. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1312
+msgid "lux_2013_12_pluvio_diff_mm"
+msgstr "Dec. 2013 - Precipitation, monthly difference to reference period [mm] "
+
+#: lu_int_wms.1319
+msgid "lux_2013_01_pluvio_diff_perc"
+msgstr "Jan. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1322
+msgid "lux_2013_02_pluvio_diff_perc"
+msgstr "Feb. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1325
+msgid "lux_2013_03_pluvio_diff_perc"
+msgstr "Mar. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1328
+msgid "lux_2013_04_pluvio_diff_perc"
+msgstr "Apr. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1331
+msgid "lux_2013_05_pluvio_diff_perc"
+msgstr "May 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1334
+msgid "lux_2013_06_pluvio_diff_perc"
+msgstr "Jun. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1337
+msgid "lux_2013_07_pluvio_diff_perc"
+msgstr "Jul. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1340
+msgid "lux_2013_08_pluvio_diff_perc"
+msgstr "Aug. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1343
+msgid "lux_2013_09_pluvio_diff_perc"
+msgstr "Sep. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1346
+msgid "lux_2013_10_pluvio_diff_perc"
+msgstr "Oct. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1349
+msgid "lux_2013_11_pluvio_diff_perc"
+msgstr "Nov. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1352
+msgid "lux_2013_12_pluvio_diff_perc"
+msgstr "Dec. 2013 - Precipitation, monthly difference to reference period [%] "
+
+#: lu_int_wms.1033
+msgid "lux_2012_00_pluvio_diff_mm"
+msgstr "2012 - Precipitation, yearly difference to reference period [mm] "
+
+#: lu_int_wms.1073
+msgid "lux_2012_00_pluvio_diff_perc"
+msgstr "2012 - Precipitation, yearly difference to reference  [%] "
+
+#: lu_int_wms.1276
+msgid "lux_2013_00_pluvio_diff_mm"
+msgstr "2013 - Precipitation, yearly difference to reference period [mm] "
+
+#: lu_int_wms.1316
+msgid "lux_2013_00_pluvio_diff_perc"
+msgstr "2013 - Precipitation, yearly difference to reference period [%] "
+
+#: group.826
+msgid "30 years reference period 1971-2000"
+msgstr "30 years reference period 1971-2000"
+
+#: group.827 group.990 group.1233
+msgid "Precipitation"
+msgstr "Precipitation"
+
+#: group.828
+msgid "lux_norm1971_2000_pluvio_sum"
+msgstr "Reference period 1971-2000, Precipitation, sum [mm]"
+
+#: group.868
+msgid "2012"
+msgstr "2012"
+
+#: group.869 group.1112
+msgid "Temperature"
+msgstr "Temperature"
+
+#: group.870
+msgid "lux_2012_temp_minimum"
+msgstr "Temperature minimum [ºC]"
+
+#: group.910
+msgid "lux_2012_temp_average"
+msgstr "Temperature average [ºC]"
+
+#: group.950
+msgid "lux_2012_temp_maximum"
+msgstr "Average maximum temperatures [ºC]"
+
+#: group.991
+msgid "lux_2012_pluvio_sum"
+msgstr "Precipitation, sum [mm]"
+
+#: group.1031
+msgid "lux_2012_pluvio_diff_mm"
+msgstr "Precipitation, monthly difference to reference period [mm]"
+
+#: group.1071
+msgid "lux_2012_pluvio_diff_perc"
+msgstr "Precipitation, monthly difference to reference  [%]"
+
+#: group.1111
+msgid "2013"
+msgstr "2013"
+
+#: group.1113
+msgid "lux_2013_temp_minimum"
+msgstr "Average minimum temperatures [ºC]"
+
+#: group.1153
+msgid "lux_2013_temp_average"
+msgstr "Temperature average [ºC]"
+
+#: group.1193
+msgid "lux_2013_temp_maximum"
+msgstr "Average maximum temperatures [ºC]"
+
+#: group.1234
+msgid "lux_2013_pluvio_sum"
+msgstr "Precipitation, sum [mm]"
+
+#: group.1274
+msgid "lux_2013_pluvio_diff_mm"
+msgstr "Precipitation, monthly difference to reference period [mm]"
+
+#: group.1314
+msgid "lux_2013_pluvio_diff_perc"
+msgstr "Precipitation, monthly difference to reference period [%]"
+
+#: group.1355
+msgid "aev_qualite_air"
+msgstr "Air quality"
+
+#: group.1356
+msgid "aev_eoliennes"
+msgstr "Wind turbines (Internal)"
+
+#: lu_int_wms.1357
+msgid "aev_reseau_telemetrique"
+msgstr "Telemetry Network"
+
+#: lu_int_wms.1358
+msgid "aev_poussieres_fines"
+msgstr "Particulate Matter (filter reference method)"
+
+#: lu_int_wms.1359
+msgid "aev_reseau_bergerhoff"
+msgstr "Dust deposition (Bergerhoff Network)"
+
+#: lu_int_wms.1360
+msgid "aev_emplacements_eoliennes"
+msgstr "Wind turbines (Internal)"
+
+#: group.1361
+msgid "aev_casipo_group"
+msgstr "CASIPO (Internal)"
+
+#: lu_int_wms.1362
+msgid "aev_casipo"
+msgstr "Cadastre des sites potentiellement pollués (Internal) "
+
+#: lu_int_wms.1363
+msgid "reagis"
+msgstr ""
+
+#: lu_int_wms.1364
+msgid "act_frontieres_isodistances"
+msgstr "Distances from the (country) border"
+
+#: lu_ext_wms.1365
+msgid "sentiers_thematiques"
+msgstr "Thematic trails"
+
+#: lu_int_wms.1366
+msgid "pag_infos_supp"
+msgstr "Additional information"
+
+#: lu_int_wms.1367
+msgid "anf_biotopes_points"
+msgstr "Point elements"
+
+#: lu_int_wms.1368
+msgid "anf_biotopes_vergers"
+msgstr "Orchards"
+
+#: lu_int_wms.1369
+msgid "anf_biotopes_surfaces"
+msgstr "Surface elements without orchards"
+
+#: lu_int_wms.1370
+msgid "anf_biotopes_tampons"
+msgstr "Buffer"
+
+#: l_wmts.1371
+msgid "ortho_2017"
+msgstr "Orthophoto 2017"
+
+#: l_wmts.1372
+msgid "ortho_2017_irc"
+msgstr "Orthophoto 2017 infrared"
+
+#: lu_int_wms.1373
+msgid "pag_infos_supp_staging"
+msgstr ""
+
+#: lu_ext_wms.1374
+msgid "cdt_lignes_tram"
+msgstr "Tram lines"
+
+#: lu_int_wms.1375
+msgid "makerspaces"
+msgstr ""
+
+#: lu_int_wms.1376
+msgid "parcels_daily"
+msgstr "Cadastral parcels"
+
+#: lu_int_wms.216
+msgid "decoupage_communes"
+msgstr "Municipality code"
+
+#: lu_int_wms.1377
+msgid "lidar_mns"
+msgstr "Digital Surface Model of the Nordstad region"
+
+#: lu_int_wms.1378
+msgid "lidar_mnt"
+msgstr "Digital Height Model of the Nordstad region"
+
+#: lu_int_wms.1379
+msgid "lidar_ortho"
+msgstr "High resolution aerial imagery of the Nordstad region"
+
+#: group.1380
+msgid "lidar_prototype"
+msgstr "Results of the LIDAR prototype of the A.C.T."
+
+#: lu_int_wms.1383
+msgid "aev_zones_calmes_rurales"
+msgstr "Potential quiet rural areas"
+
+#: lu_int_wms.1384
+msgid "aev_zones_calmes_urbaines"
+msgstr "Potential quiet urban areas"
+
+#: lu_int_wms.1385
+msgid "aev_oases_urbaines"
+msgstr "Potential quiet urban oases "
+
+#: group.1382
+msgid "aev_zones_calmes"
+msgstr "Quiet areas"
+
+#: lu_int_wms.1386
+msgid "mobiliteit_livebikes"
+msgstr "Bike sharing (live data)"
+
+#: group.1390
+msgid "secours_siden"
+msgstr "SIDEN"
+
+#: group.1392
+msgid "secours_sebes"
+msgstr "SEBES"
+
+#: group.1393
+msgid "secours_pch"
+msgstr "PCH"
+
+#: group.1394
+msgid "siden_canalisation"
+msgstr "Canalisation"
+
+#: lu_int_wms.1395
+msgid "siden_conduites_de_refoulement"
+msgstr "Conduites de refoulement"
+
+#: lu_int_wms.1397
+msgid "siden_ouvrages"
+msgstr "Ouvrages"
+
+#: lu_int_wms.1399
+msgid "siden_eaux_pluviales"
+msgstr "Eaux pluviales"
+
+#: group.1401
+msgid "sebes_reseau_adduction"
+msgstr "Réseau d'adduction"
+
+#: group.1402
+msgid "sebes_lac_haute_sure"
+msgstr "Lac de la Haute-Sûre"
+
+#: group.1403
+msgid "sebes_bassins_versants"
+msgstr "Bassins versants"
+
+#: lu_int_wms.1405
+msgid "sebes_reseau_adduction_sebes"
+msgstr "Réseau d'adduction SEBES"
+
+#: lu_int_wms.1406
+msgid "sebes_volume_structure_lac"
+msgstr "Volume et structure du lac"
+
+#: lu_int_wms.1407
+msgid "sebes_bassinversant_sure_lux_bel"
+msgstr "Bassin versant luxembourgeois et belge pour la Sûre"
+
+#: lu_int_wms.1408
+msgid "sebes_bassinversant_sure_bel"
+msgstr "Bassin versant belge"
+
+#: lu_int_wms.1409
+msgid "sebes_bassinversant_sous_bassins"
+msgstr "Sous-bassins versants"
+
+#: lu_int_wms.1410
+msgid "sebes_zoneprotection_haute_sure"
+msgstr "Lac de la Haute-Sûre"
+
+#: group.1411
+msgid "pch_infrastructure"
+msgstr "Infrastructure"
+
+#: group.1412
+msgid "pch_origine_pollution"
+msgstr "Origine de la pollution"
+
+#: lu_int_wms.1413
+msgid "pch_reseau_routier_avec_pk"
+msgstr "Réseau routier "
+
+#: lu_int_wms.1414
+msgid "pch_chemins_acces"
+msgstr "Chemins d'accès"
+
+#: lu_int_wms.1415
+msgid "pch_ancrage_barrage_flottant"
+msgstr "Points d'ancrage pour barrage flottant"
+
+#: lu_int_wms.1416
+msgid "pch_zones_acces"
+msgstr "Zones d'accès"
+
+#: lu_int_wms.1417
+msgid "pch_ouvrages_art_eau"
+msgstr "Ouvrages d'art sur cours d'eau"
+
+#: lu_int_wms.1419
+msgid "pch_camion_pompe"
+msgstr "Camion pompe"
+
+#: lu_int_wms.1420
+msgid "pch_stockage_materiaux_depolluants"
+msgstr "Stockage de matériaux dépolluants"
+
+#: lu_int_wms.1421
+msgid "pch_place_potentielle_retenue_antipollution"
+msgstr "Place potentielle de retenue antipollution"
+
+#: lu_int_wms.1422
+msgid "pch_stations_services"
+msgstr "Stations-services"
+
+#: group.1423
+msgid "secours_basisdaten"
+msgstr ""
+
+#: lu_int_wms.181
+msgid "roads"
+msgstr "Road Network"
+
+#: lu_int_wms.351
+msgid "roads_labels"
+msgstr "Road Names"
+
+#: lu_ext_wms.1424
+msgid "logt_baul_feedback_2013"
+msgstr "Baulücken-Feedback 2013"
+
+#: lu_int_wms.1426
+msgid "aev_reseau_biosurveillance"
+msgstr "Biomonitoring Network (Internal)"
+
+#: lu_int_wms.1427
+msgid "aev_mesures_tubes_passifs"
+msgstr "Passive tubes (Internal)"
+
+#: lu_int_wms.1425
+msgid "air_quality_pm10"
+msgstr "Geostatistical Interpolation PM10"
+
+#: lu_int_wms.1429
+msgid "air_quality_no2"
+msgstr "Geostatistical Interpolation NO2"
+
+#: lu_int_wms.1430
+msgid "air_quality_o3"
+msgstr "Geostatistical Interpolation O3"
+
+#: group.737
+msgid "Groupes canins"
+msgstr ""
+
+#: lu_ext_wms.1431
+msgid "cgdis_groupe_cynotechnique"
+msgstr ""
+
+#: lu_int_wms.1432
+msgid "air_quality_global"
+msgstr ""
+
+#: lu_int_wms.1434
+msgid "at_pst_droit_preemption"
+msgstr "Pre-emptive right"
+
+#: lu_int_wms.1435
+msgid "at_pszae_droit_preemption"
+msgstr "Pre-emptive right"
+
+#: lu_int_wms.1436
+msgid "at_psl_droit_preemption"
+msgstr "Pre-emptive right"
+
+#: lu_int_wms.1438
+msgid "Habitations"
+msgstr ""
+
+#: group.1440
+msgid "APRG Zones de protection du Lac de la Haute Sûre"
+msgstr ""
+
+#: lu_int_wms.1441
+msgid "Zones urbanisées"
+msgstr ""
+
+#: lu_int_wms.1442
+msgid "Bâtiments industriels / commerciaux"
+msgstr ""
+
+#: group.1444
+msgid "Altlasten"
+msgstr ""
+
+#: lu_int_wms.1446
+msgid "Sites potentiellement contaminés"
+msgstr ""
+
+#: lu_int_wms.1447
+msgid "Axes routiers"
+msgstr ""
+
+#: lu_int_wms.1448
+msgid "Zones de protection d'eaux de surfaces"
+msgstr ""
+
+#: lu_int_wms.1449
+msgid "Vulnérabilité selon méthode SIRIS"
+msgstr ""
+
+#: lu_int_wms.1451
+msgid "Sites de baignade"
+msgstr ""
+
+#: lu_int_wms.1452
+msgid "Etang à poissons"
+msgstr ""
+
+#: lu_int_wms.1453
+msgid "Chemin risque de contamination des eaux par chiens promenés"
+msgstr ""
+
+#: lu_int_wms.1454
+msgid "Pêche"
+msgstr ""
+
+#: lu_int_wms.1455
+msgid "Trafic bateaux "
+msgstr ""
+
+#: lu_int_wms.1445
+msgid "Sites contaminés"
+msgstr ""
+
+#: group.1456
+msgid "Autres utilisations"
+msgstr ""
+
+#: l_wmts.1457 lu_int_wms.1458 lu_ext_wms.1459
+msgid "OSM_MQ"
+msgstr ""
+
+#: lu_int_wms.1463
+msgid "lidar_mnh"
+msgstr "Digital height model"
+
+#: lu_int_wms.1462
+msgid "wg_exposition_map"
+msgstr "Exposition"
+
+#: lu_int_wms.1461
+msgid "wg_hangneigung_map"
+msgstr "Slope"
+
+#: lu_int_wms.1460
+msgid "wg_relief_map"
+msgstr "Relief"
+
+#: lu_int_wms.1464
+msgid "eau_prgd_zones_protection_lac"
+msgstr "Draft of the grand-ducal regulation regarding the safeguard zones around the Upper Sûre Lake"
+
+#: lu_int_wms.1465
+msgid "aev_medium_combustion_plants"
+msgstr ""
+
+#: group.1466
+msgid "aev_facilities_registers"
+msgstr ""
+
+#: group.1467
+msgid "radon"
+msgstr ""
+
+#: lu_int_wms.1468
+msgid "carte_radon_communes"
+msgstr "Radon concentrations per municipality"
+
+#: lu_int_wms.1469
+msgid "eau_strahlwirkungskonzept"
+msgstr "Concept of aquatic habitat connectivity"
+
+#: lu_int_wms.1470
+msgid "eau_fliessgewaessertypen_2015"
+msgstr "Types of watercourses 2015 (LAWA)"
+
+#: lu_int_wms.1471
+msgid "eau_detailliertes_massnahmenprogramm_sww"
+msgstr "Detailed programme of measures SWW"
+
+#: group.1472
+msgid "aev_modelisation"
+msgstr "Modelling"
+
+#: group.1473
+msgid "aev_air_mesures"
+msgstr "Measurement networks"
+
+#: lu_int_wms.1474
+msgid "cantons_voodoo_test"
+msgstr ""
+
+#: lu_int_wms.1475
+msgid "env_bruit_axes_routiers_hotspots"
+msgstr "Priority noise hotspots - road traffic 2011"
+
+#: lu_int_wms.1476
+msgid "env_bruit_axes_ferroviaires_hotspots"
+msgstr "Priority noise hotspots - railway traffic 2011"
+
+#: lu_int_wms.1477
+msgid "aev_pacte_climat_2018"
+msgstr "Climate pact 2018 - NO2 (Internal)"
+
+#: group.1478
+msgid "aev_air_campagnes_mesure"
+msgstr "NO2 Hotspots (Internal)"
+
+#: lu_int_wms.1479
+msgid "aev_casipo_attributs_internes"
+msgstr ""
+
+#: lu_int_wms.1480
+msgid "air_quality_pm2_5"
+msgstr "Geostatistical Interpolation PM2.5"
+
+#: group.1481
+msgid "asta_projet_rgd"
+msgstr "Draft of the grand-ducal regulation regarding the safeguard zones around the Upper Sûre Lake"
+
+#: lu_int_wms.1482
+msgid "asta_contrainte_stockage_engrais"
+msgstr "Contraintes pour le stockage d’engrais organiques et de silos taupinières (pentes > 5%)"
+
+#: lu_int_wms.1483
+msgid "asta_contrainte_utilisation_engrais"
+msgstr "Contraintes pour l’épandage d’engrais organiques à action rapide et mesures contre l’érosion (pentes > 10%)"
+
+#: lu_int_wms.1484
+msgid "eau_asta_prgd_zones_protection_lac"
+msgstr "Safeguard zones"
+
+#: lu_int_wms.1485
+msgid "env_bruit_axes_routiers_agglomeration"
+msgstr "Priority noise hotspots - road traffic 2011 agglomeration"
+
+#: lu_int_wms.1486
+msgid "env_bruit_routes_lden_2016"
+msgstr "Major Roads 2016 (Lden) (Internal)"
+
+#: lu_int_wms.1487
+msgid "env_bruit_routes_lngt_2016"
+msgstr "Major Roads 2016 (Lngt) (Internal)"
+
+#: lu_int_wms.1488
+msgid "env_bruit_ferroviaire_lden_2016"
+msgstr "Major Railways 2016 (Lden) (Internal)"
+
+#: lu_int_wms.1489
+msgid "env_bruit_ferroviaire_lngt_2016"
+msgstr "Major Railways 2016 (Lngt) (Internal)"
+
+#: lu_int_wms.1490
+msgid "env_bruit_air_lden_2016"
+msgstr "Major Airport 2016 (Lden) (Internal)"
+
+#: lu_int_wms.1491
+msgid "env_bruit_air_lngt_2016"
+msgstr "Major Airport 2016 (Lngt) (Internal)"
+
+#: lu_int_wms.1492
+msgid "at_pds_parcels"
+msgstr "Certificate SMP"
+
+#: group.1493
+msgid "at_pds_parcels_group"
+msgstr "SMP Additional documents"
+
+#: lu_int_wms.1494
+msgid "gaz_naturel"
+msgstr "Disponibility of natural gas"
+
+#: group.1495
+msgid "fourniture_energie"
+msgstr "Energy supply"
+
+#: lu_int_wms.1496
+msgid "anf_centre_ramassage"
+msgstr "Collection centres for wild roadkill and guts"
+
+#: l_wmts.1497
+msgid "env_bruit2016_axes_routiers_lden"
+msgstr "Major Roads 2016 (Lden)"
+
+#: l_wmts.1498
+msgid "env_bruit2016_axes_ferroviaires_lden"
+msgstr "Major Railways 2016 (Lden)"
+
+#: l_wmts.1499
+msgid "env_bruit2016_axes_aeroport_lngt"
+msgstr "Major Airport 2016 (Lngt)"
+
+#: l_wmts.1500
+msgid "env_bruit2016_axes_routiers_lngt"
+msgstr "Major Roads 2016 (Lngt)"
+
+#: l_wmts.1501
+msgid "env_bruit2016_axes_aeroport_lden"
+msgstr "Major Airport 2016 (Lden)"
+
+#: l_wmts.1502
+msgid "env_bruit2016_axes_ferroviaires_lngt"
+msgstr "Major Railways 2016 (Lngt)"
+
+#: lu_int_wms.1503
+msgid "env_bruit_axes_ferroviaires_hotspots_2016"
+msgstr "Priority noise hotspots - railway traffic 2016 (Internal)"
+
+#: lu_int_wms.1504
+msgid "env_bruit_axes_routiers_hotspots_2016"
+msgstr "Priority noise hotspots - road traffic 2016 (Internal)"
+
+#: lu_int_wms.1505
+msgid "env_bruit_axes_routiers_agglomeration_2016"
+msgstr "Priority noise hotspots - road traffic 2016 agglomeration (Internal)"
+
+#: lu_int_wms.1506
+msgid "aev_dechets_composting"
+msgstr ""
+
+#: lu_int_wms.1507
+msgid "aev_dechets_inert_waste"
+msgstr ""
+
+#: lu_int_wms.1508
+msgid "aev_dechets_recycling"
+msgstr ""
+
+#: lu_int_wms.1509
+msgid "aev_dechets_biogas"
+msgstr ""
+
+#: group.1510
+msgid "aev_dechets"
+msgstr ""
+
+#: lu_int_wms.1511
+msgid "asta_prairies_permanentes"
+msgstr "Status Permanent Grassland"
+
+#: lu_int_wms.1512
+msgid "aev_no2_grobscreening_2016"
+msgstr "NO2 Grobscreening 2016"
+
+#: lu_ext_wms.1513
+msgid "tourisme_neue_nationale_wanderwege"
+msgstr "Neue Nationale Wanderwege"
+
+#: lu_int_wms.1514
+msgid "anf_forets_publiques_fsc_pefc"
+msgstr "Public forest certification FSC and/or PEFC"
+
+#: lu_ext_wms.1515
+msgid "tourisme_ortal_belaege"
+msgstr "Beläge "
+
+#: lu_ext_wms.1516
+msgid "tourisme_ortal_escapardenne"
+msgstr "Escapardenne"
+
+#: lu_ext_wms.1517
+msgid "tourisme_ortal_naturwanderpark_delux"
+msgstr "NaturWanderPark delux"
+
+#: lu_ext_wms.1518
+msgid "tourisme_ortal_qualitaetstouren"
+msgstr "Qualitätstouren"
+
+#: lu_ext_wms.1519
+msgid "tourisme_ortal_lokale_wanderwege"
+msgstr "Lokale Wanderwege"
+
+#: lu_ext_wms.1520
+msgid "tourisme_ortal_grosse_lokale_wanderwege"
+msgstr "Große lokale Wanderwege"
+
+#: lu_ext_wms.1521
+msgid "tourisme_ortal_kleine_lokale_wanderwege"
+msgstr "Kleine lokale Wanderwege POI"
+
+#: lu_ext_wms.1522
+msgid "tourisme_ortal_autopedestres"
+msgstr "Auto-Pédestre Wanderwege"
+
+#: lu_ext_wms.1523
+msgid "tourisme_ortal_cfl"
+msgstr "CFL-Bahnwanderwege"
+
+#: lu_ext_wms.1524
+msgid "tourisme_ortal_wanderwege_thema"
+msgstr "Wanderwege mit Thema "
+
+#: lu_ext_wms.1525
+msgid "tourisme_ortal_themenwege"
+msgstr "Themenwege"
+
+#: group.1526
+msgid "tourisme_wanderwege_ortal"
+msgstr "Qualitätswanderregion Éislek"
+
+#: l_wmts.1527
+msgid "ortho_2018"
+msgstr "Orthophoto 2018"
+
+#: lu_int_wms.1529
+msgid "ortho2018_IR"
+msgstr "Orthophoto 2018 infrared"
+
+#: theme.1528
+msgid "atlas_demographique_old"
+msgstr ""
+
+#: theme.1530
+msgid "atlas_demographique"
+msgstr ""
+
+#: lu_int_wms.1531
+msgid "ad_fusions_communes"
+msgstr "Overview of the fusions of the municipalities since 1920"
+
+#: lu_int_wms.1532
+msgid "ad_communes_cantons"
+msgstr "The 12 cantons and 102 municipalities on 1st January 2018"
+
+#: lu_int_wms.1533
+msgid "ad_evol_pop_1981_2018"
+msgstr "Evolution of the population"
+
+#: lu_int_wms.1534
+msgid "ad_part_francais_commune"
+msgstr "Frenchmen"
+
+#: lu_int_wms.1535
+msgid "ad_densite_pop_comm"
+msgstr "Population density per municipality on the 1st January 2018"
+
+#: lu_int_wms.1536
+msgid "ad_part_portugais_commune"
+msgstr "Portuguese"
+
+#: lu_int_wms.1537
+msgid "ad_part_africains_commune"
+msgstr "Africans"
+
+#: lu_int_wms.1538
+msgid "ad_part_allemands_commune"
+msgstr "Germans"
+
+#: lu_int_wms.1539
+msgid "ad_part_americains_commune"
+msgstr "Americans"
+
+#: lu_int_wms.1540
+msgid "ad_part_asiates_commune"
+msgstr "Asians and Oceanians"
+
+#: lu_int_wms.1541
+msgid "ad_part_belges_commune"
+msgstr "Belgians"
+
+#: lu_int_wms.1542
+msgid "ad_part_nonUE28_commune"
+msgstr "Europeans (no EU-28)"
+
+#: lu_int_wms.1543
+msgid "ad_part_UE28_commune"
+msgstr "Europeans (EU-28)"
+
+#: lu_int_wms.1544
+msgid "ad_part_italiens_commune"
+msgstr "Italians"
+
+#: group.1545
+msgid "ad_part_etrangers_comm"
+msgstr "Proportion of foreign persons among the population"
+
+#: group.1546
+msgid "ad_org_territoriale"
+msgstr "Territorial organisation"
+
+#: group.1547
+msgid "ad_org_terr_lux"
+msgstr "Territoiral organisation of Luxembourg"
+
+#: group.1548
+msgid "ad_etat_population"
+msgstr "State of population"
+
+#: group.1549
+msgid "ad_population_stock_evolution_densite"
+msgstr "Stock, evolution and density of the population"
+
+#: group.1550
+msgid "ad_evolution_pop_comm"
+msgstr "Evolution of population of the municipalities between 1981 and 2018"
+
+#: group.1551
+msgid "ad_densite_pop"
+msgstr "Population density per municipality on the 1st January"
+
+#: group.1552
+msgid "ad_rapport_hommes_femmes"
+msgstr "Proportion of women"
+
+#: group.1553
+msgid "ad_prop_femmes_comm_2018_group"
+msgstr ""
+
+#: group.1554
+msgid "ad_etrangers_lieu_naissance"
+msgstr "Foreign nationalities and place of birth"
+
+#: group.1555
+msgid "ad_nationalites_commune_2018"
+msgstr "Most frequent nationalities per municipality on the 1st january 2018"
+
+#: group.1556
+msgid "ad_structure_age"
+msgstr "Age structure"
+
+#: group.1557
+msgid "ad_age_moyen"
+msgstr "Average age per sex and in total, per municipality on the 1st January 2018"
+
+#: group.1558
+msgid "ad_proportion_classes_age"
+msgstr "Proportion of the different age groups per municipality on the 1st January 2018"
+
+#: group.1559
+msgid "ad_proportion_jeunes"
+msgstr "Proportion of youth (-18) per groups per municipality on the 1st January 2018"
+
+#: group.1560
+msgid "ad_proportion_ages"
+msgstr "Proportion of elderly people per groups per municipality on the 1st January 2018"
+
+#: lu_int_wms.1561
+msgid "ad_age_moyen_femmes"
+msgstr "Average age of women"
+
+#: lu_int_wms.1562
+msgid "ad_age_moyen_hommes"
+msgstr "Average age of men"
+
+#: lu_int_wms.1563
+msgid "ad_age_moyen_2"
+msgstr "Average age (total)"
+
+#: lu_int_wms.1564
+msgid "ad_moins20"
+msgstr "Proportion of under 20-year-old people"
+
+#: lu_int_wms.1565
+msgid "ad_20_64"
+msgstr "Proportion of 20 to 64 year-old people"
+
+#: lu_int_wms.1566
+msgid "ad_65plus"
+msgstr "Proportion of people aged 65 years and more"
+
+#: lu_int_wms.1567
+msgid "ad_moins3"
+msgstr "Proportion of people aged less than 3 years"
+
+#: lu_int_wms.1568
+msgid "ad_3_5"
+msgstr "Proportion of people aged 3-5 years"
+
+#: lu_int_wms.1569
+msgid "ad_6_10"
+msgstr "Proportion of people aged 6-10 years"
+
+#: lu_int_wms.1570
+msgid "ad_11_17"
+msgstr "Proportion of people aged 11-17 years"
+
+#: lu_int_wms.1571
+msgid "ad_65_74"
+msgstr "Proportion of people aged 65-74 years"
+
+#: lu_int_wms.1572
+msgid "ad_75_89"
+msgstr "Proportion of people aged 75-89 years"
+
+#: lu_int_wms.1573
+msgid "ad_90plus"
+msgstr "Proportion of people aged 90 years and more"
+
+#: lu_int_wms.1574
+msgid "ad_poles_urbains"
+msgstr "The three urban centres in Luxembourg"
+
+#: group.1575
+msgid "ad_population_commune_canton"
+msgstr "Population per canton and municipality on the 1st January 2018"
+
+#: lu_int_wms.1576
+msgid "ad_population_canton"
+msgstr "Population per canton"
+
+#: lu_int_wms.1577
+msgid "ad_population_commune"
+msgstr "Population per municipality"
+
+#: lu_int_wms.1578
+msgid "ad_prop_femmes_comm_2018"
+msgstr "Proportion of women per municipality on the 1st January 2018"
+
+#: lu_int_wms.1579
+msgid "ad_structure_pop_comm"
+msgstr "Age structure per municipality on the 1st January 2018"
+
+#: group.1580
+msgid "ad_lieu_naissance_lux_etr"
+msgstr "Place of birth (Luxembourg/abroad)"
+
+#: lu_int_wms.1581
+msgid "ad_lieu_naissance_commune"
+msgstr "Place of birth per municipality on the 1st January 2018"
+
+#: lu_int_wms.1582
+msgid "ad_rapport_dependance_personnes_agees"
+msgstr "Dependency of the elderly people"
+
+#: lu_int_wms.1583
+msgid "ad_rapport_dependance_jeunes"
+msgstr "Dependency of the youth per municipality"
+
+#: lu_int_wms.1584
+msgid "ad_rapport_dependance_total"
+msgstr "Total dependency ratio"
+
+#: lu_int_wms.1585
+msgid "ad_celibataires"
+msgstr "Unmarried people"
+
+#: lu_int_wms.1586
+msgid "ad_maries_pacses"
+msgstr "Married people/people living in civil partnership"
+
+#: lu_int_wms.1587
+msgid "ad_divorces_separes"
+msgstr "Divorced people"
+
+#: lu_int_wms.1588
+msgid "ad_veufs_veuves"
+msgstr "Widowed people"
+
+#: group.1589
+msgid "ad_rapport_dependance"
+msgstr "Dependency ratio per municipality on the 1st January 2018"
+
+#: group.1590
+msgid "ad_situation_matrimoniale"
+msgstr "Marital status of the adults (18+)"
+
+#: group.1591
+msgid "ad_mouvement_population"
+msgstr "Population movement"
+
+#: group.1592
+msgid "ad_naissances"
+msgstr "Births"
+
+#: group.1593
+msgid "ad_deces"
+msgstr "Deaths"
+
+#: group.1594
+msgid "ad_solde_naturel"
+msgstr "Natural balance"
+
+#: group.1595
+msgid "ad_migrations"
+msgstr "Migrations"
+
+#: group.1596
+msgid "ad_mariages"
+msgstr "Marriages"
+
+#: lu_int_wms.1597
+msgid "ad_naissances_taux_natalite"
+msgstr "Births and birth rate per municipality (average 2013-2017)"
+
+#: lu_int_wms.1598
+msgid "ad_naissances_mariage"
+msgstr "Proportion of births within mariage per municipality (average 2013-2017)"
+
+#: lu_int_wms.1599
+msgid "ad_naissances_age_maternite"
+msgstr "Average age at the birth per municipality (average 2013-2017)"
+
+#: lu_int_wms.1600
+msgid "ad_deces_taux_mortalite"
+msgstr "Deaths and mortality rate per municipality (average 2013-2017)"
+
+#: lu_int_wms.1601
+msgid "ad_solde_naturel_nombre_absolu"
+msgstr "Natural balance and natural balance rate per municipality (average 2013-2017)"
+
+#: group.1602
+msgid "ad_langues_lux"
+msgstr "Languages in Luxembourg"
+
+#: lu_int_wms.1603
+msgid "ad_migrations_solde_interne"
+msgstr "Internal migratory balance and internal migratory balance rate per municipality (average 2013-2017)"
+
+#: lu_int_wms.1604
+msgid "ad_migrations_solde_international"
+msgstr "International migratory balance and international migratory balance rate per municipality (average 2013-2017)"
+
+#: lu_int_wms.1605
+msgid "ad_migrations_solde_total"
+msgstr "Total migratory balance and total migratory balance rate per municipality (average 2013-2017)"
+
+#: lu_int_wms.1606
+msgid "ad_mariages_taux_nuptialite"
+msgstr "Marriages and rate of marriage per municipality (average 2013-2017)"
+
+#: lu_int_wms.1607
+msgid "ad_mariages_age_femme"
+msgstr "Women's average age at the marriage per municipality (average 2013-2017)"
+
+#: lu_int_wms.1608
+msgid "ad_mariage_age_hommes"
+msgstr "Men's average age at the marriage per municipality (average 2013-2017)"
+
+#: lu_int_wms.1609
+msgid "ad_langues_luxembourgeois"
+msgstr "Luxembourgish"
+
+#: lu_int_wms.1610
+msgid "ad_langues_francais"
+msgstr "French"
+
+#: lu_int_wms.1611
+msgid "ad_langues_allemand"
+msgstr "German"
+
+#: lu_int_wms.1612
+msgid "ad_langues_portugais"
+msgstr "Portuguese"
+
+#: lu_int_wms.1613
+msgid "ad_langues_italien"
+msgstr "Italian"
+
+#: lu_int_wms.1614
+msgid "ad_langues_anglais"
+msgstr "English"
+
+#: lu_int_wms.1615
+msgid "ad_langues_autre"
+msgstr "Other language"
+
+#: group.1616
+msgid "ad_langue_principale_2018"
+msgstr "Main language"
+
+#: lu_ext_wms.1617
+msgid "levee_sans_operation"
+msgstr ""
+
+#: group.1620
+msgid "points_sauvetage_group"
+msgstr "Emergency spots"
+
+#: lu_int_wms.1621
+msgid "points_sauvetage_vdl"
+msgstr "Emergency spots - Luxembourg city"
+
+#: group.1622
+msgid "ortal_kriterienauswertung"
+msgstr "Kriterienauswertung"
+
+#: group.1623
+msgid "ortal_wanderwege"
+msgstr "Wanderwege"
+
+#: lu_ext_wms.1624
+msgid "tourisme_ortal_5_strasse"
+msgstr "Kriterium 5% auf Straße"
+
+#: lu_ext_wms.1625
+msgid "tourisme_ortal_10_nebenstrasse"
+msgstr "Kriterium 10% neben Straße"
+
+#: lu_ext_wms.1626
+msgid "tourisme_ortal_75_abdeckung"
+msgstr "Kriterium 75% Abdeckung"
+
+#: lu_ext_wms.1627
+msgid "tourisme_ortal_schlecht_begehbar"
+msgstr "Kriterium schlecht begehbar"
+
+#: lu_ext_wms.1628
+msgid "tourisme_ortal_ausgangspunkte"
+msgstr "Kriterium Ausgangspunkte"
+
+#: lu_ext_wms.1629
+msgid "tourisme_ortal_knotenpunkte"
+msgstr "Kriterium Knotenpunkte"
+
+#: lu_ext_wms.1630
+msgid "tourisme_ortal_wegweiserstandorte"
+msgstr "Kriterium Wegweiserstandorte "
+
+#: lu_ext_wms.1631
+msgid "tourisme_ortal_verpflegung"
+msgstr "Kriterium Verpflegung"
+
+#: lu_ext_wms.1632
+msgid "tourisme_ortal_gastgeber"
+msgstr "Kriterium Gastgeber"
+
+#: lu_ext_wms.1633
+msgid "tourisme_ortal_touristinfo"
+msgstr "Kriterium Tourist-Informationen"
+
+#: lu_ext_wms.1634
+msgid "tourisme_ortal_wanderziele"
+msgstr "Wanderziele & Sehnsuchtsorte"
+
+#: lu_ext_wms.1635
+msgid "tourisme_ortal_mobilitaet"
+msgstr "Kriterium Mobilität"
+
+#: lu_ext_wms.1636
+msgid "tourisme_ortal_servicestellen"
+msgstr "Kriterium Servicestellen"

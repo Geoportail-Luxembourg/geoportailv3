@@ -1,0 +1,142 @@
+---
+
+# The project Docker compose file for development.
+
+version: '2'
+
+services:
+  config:
+    image: camptocamp/geoportailv3-config:${DOCKER_TAG}
+#    user: www-data
+    environment:
+      - VISIBLE_WEB_HOST
+      - VISIBLE_WEB_PROTOCOL
+      - VISIBLE_ENTRY_POINT
+      - GEOPORTAL_INTERNAL_URL
+
+  print:
+    image: camptocamp/mapfish_print:3.18.4
+    user: www-data
+    volumes_from:
+      - config:ro
+    ports:
+      - 28080:8080
+    environment:
+      - CATALINA_OPTS=-Xmx1024m
+      - PGOPTIONS=-c statement_timeout=30000
+#      - DEFAULT_LOG_LEVEL=DEBUG
+#      - TOMCAT_LOG_LEVEL=DEBUG
+#      - LOG_LEVEL=DEBUG
+#      - SPRING_LOG_LEVEL=DEBUG
+#      - JASPER_LOG_LEVEL=DEBUG
+#      - APACHE_LOG_LEVEL=DEBUG
+#      - SQL_LOG_LEVEL=DEBUG
+
+  geoportal:
+    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
+#    user: www-data
+    volumes:
+      - /var/sig:/var/sig:ro
+      - ./data:/var/luxdata:ro
+      - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
+      - ./geoportal/geoportailv3_geoportal/routing:/app/geoportailv3_geoportal/routing:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:ro
+      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
+      - ./geoportal/geoportailv3_geoportal/scripts:/app/geoportailv3_geoportal/scripts:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
+      - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
+#    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
+    environment:
+      - DEBUG_TOOLBAR=1
+      - DB_MYMAPS
+      - DB_PGROUTE
+      - DB_ECADASTRE
+      - VISIBLE_ENTRY_POINT
+      - VISIBLE_WEB_HOST
+      - VISIBLE_WEB_PROTOCOL
+      - PGHOST
+      - PGHOST_SLAVE
+      - PGPORT
+      - PGUSER
+      - PGPASSWORD
+      - PGDATABASE
+      - PGSCHEMA
+      - PGSCHEMA_STATIC
+      - PGOPTIONS
+      - PRINT_URL
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
+      - LOG_LEVEL=INFO
+      - C2CGEOPORTAL_LOG_LEVEL=INFO
+      - C2CWSGIUTILS_CONFIG=/app/development.ini
+      - SQL_LOG_LEVEL=INFO
+      - GUNICORN_LOG_LEVEL=INFO
+      - GUNICORN_ACCESS_LOG_LEVEL=INFO
+      - OTHER_LOG_LEVEL=WARN
+      - DEVSERVER_HOST
+      - REDIS_HOST
+      - REDIS_PORT
+      - C2C_REDIS_URL
+      - LDAP_BASE_DN
+      - LDAP_BIND
+      - LDAP_PASSWD
+      - LDAP_URL
+      - LDAP_FILTER_TMPL
+      - DEFAULT_MYMAPS_ROLE
+      - DHM_DEM_FILE=/var/luxdata/dem500.tif
+      - DHM_DEM_TYPE=gdal
+      - FAKE_REVERSE_GEOCODING=1
+      - FAKE_FULLTEXT_SEARCH=1
+      - FAKE_LAYERSEARCH=0
+      - FAKE_CMSSEARCH=1
+      - FAKE_PRINT_URLS=http://print:8080/print/geoportailv3,http://print:8080/print/geoportailv3
+      - SHORTENER_BASE_URL
+      - SHORTENER_ALLOWED_HOST
+      - ELASTIC_SERVERS
+      - ELASTIC_INDEX
+      - ROUTING_GRAPHHOPPER_API_KEY
+      - ROUTING_MAPQUEST_API_KEY
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:3.2
+    user: www-data
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --save
+      - ''
+      - --appendonly
+      - 'no'
+      - --maxmemory
+      - 512mb
+      - --maxmemory-policy
+      - allkeys-lru
+
+  ldap:
+    image: lux-dev-ldap
+
+  elasticsearch:
+    image: elasticsearch:5.0
+    environment:
+      ES_JAVA_OPTS: -Xmx512m -Xms512m
+    volumes:
+      - ./config/elasticsearch-config:/usr/share/elasticsearch/config:ro
+    ports:
+      - 9200:9200
+
+  alembic:
+    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
+#    user: www-data
+    command: ./bin/alembic_upgrade_all.sh
+    environment:
+      - PGHOST
+      - PGHOST_SLAVE
+      - PGPORT
+      - PGUSER
+      - PGPASSWORD
+      - PGDATABASE
+      - PGSCHEMA
+      - PGSCHEMA_STATIC
+      - PGOPTIONS

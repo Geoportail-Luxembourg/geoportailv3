@@ -1,0 +1,634 @@
+---
+type: map
+mapping:
+  no_interpreted:
+    type: seq
+    required: true
+    sequence:
+      - type: str
+  environment:
+    type: seq
+    required: true
+    sequence:
+      - type: map
+        mapping:
+          name:
+            type: str
+            required: true
+          default:
+            type: str
+  interpreted:
+    type: map
+    required: true
+    mapping:
+      regex;(.+):
+        type: any
+  postprocess:
+    type: seq
+    required: true
+    sequence:
+      - type: map
+        mapping:
+          expression:
+            type: str
+            required: true
+          vars:
+            type: seq
+            required: true
+            sequence:
+              - type: str
+  vars:
+    type: map
+    required: true
+    mapping:
+      package:
+        type: str
+        required: true
+      host:
+        type: str
+        required: true
+      enable_admin_interface:
+        type: bool
+        required: true
+      ogcproxy_enable:
+        type: bool
+        required: true
+      c2c.base_path:
+        type: str
+        required: true
+      sqlalchemy.url:
+        type: str
+        required: true
+      sqlalchemy.pool_recycle:
+        type: int
+      sqlalchemy.pool_size:
+        type: int
+      sqlalchemy.pool_overflow:
+        type: int
+      sqlalchemy.use_batch_mode:
+        type: bool
+      sqlalchemy_slave.url:
+        type: str
+        required: true
+      sqlalchemy_slave.pool_recycle:
+        type: int
+      sqlalchemy_slave.pool_size:
+        type: int
+      sqlalchemy_slave.pool_overflow:
+        type: int
+      sqlalchemy_slave.use_batch_mode:
+        type: bool
+      default_max_age:
+        type: int
+        required: true
+      srid:
+        type: int
+        required: true
+      schema:
+        type: str
+        required: true
+
+      dbsessions:
+        type: map
+        required: true
+        mapping:
+          regex;([a-z0-9-]+):
+            type: map
+            mapping:
+              url:
+                type: str
+                required: true
+
+      jsbuild:
+        type: map
+        mapping:
+          config:
+            type: str
+            required: true
+          root_dir:
+            type: str
+            required: true
+      default_locale_name:
+        type: str
+        pattern: '[a-z][a-z]'
+        required: true
+      available_locale_names:
+        type: seq
+        required: true
+        sequence:
+          - type: str
+            pattern: '[a-z][a-z]'
+      interfaces:
+        required: true
+        type: seq
+        sequence:
+          - type: str
+      default_interface:
+        required: true
+        type: str
+      interfaces_config:
+        required: true
+        type: map
+        mapping:
+          regex;.+:
+            type: map
+            mapping:
+              constants:
+                required: true
+                type: map
+                mapping:
+                  regex;.+:
+                    type: any
+              routes:
+                required: true
+                type: map
+                mapping:
+                  regex;.+:
+                    type: str
+              static:
+                type: map
+                mapping:
+                  regex;.+:
+                    type: str
+              fulltextsearch_params:
+                required: true
+                type: map
+                mapping:
+                  regex;.+:
+                    type: scalar
+              tree_params:
+                type: map
+                mapping:
+                  regex;.+:
+                    type: scalar
+              wfs_permalink:
+                type: map
+                mapping:
+                  regex;.+:
+                    type: any
+              redirect_interface:
+                type: str
+              do_redirect:
+                type: bool
+      authorized_referers:
+        type: seq
+        sequence:
+          - type: str
+      global_headers:
+        type: seq
+        sequence:
+          - type: map
+            mapping:
+              pattern:
+                type: str
+                required: true
+              headers:
+                type: map
+                required: true
+                mapping:
+                  regex;.+:
+                    type: str
+      headers:
+        type: map
+        required: true
+        mapping:
+          login: &header
+            type: map
+            required: true
+            mapping:
+              access_control_allow_origin:
+                type: seq
+                sequence:
+                  - type: str
+              access_control_max_age:
+                required: true
+                type: int
+              cache_control_max_age:
+                required: true
+                type: int
+          index: *header
+          config: *header
+          api: *header
+          themes: *header
+          fulltextsearch: *header
+          mapserver: *header
+          tinyows: *header
+          layers: *header
+          print: *header
+          profile: *header
+          raster: *header
+          shortener: *header
+          echo: *header
+          csvecho: *header
+          exportgpxkml: *header
+          error: *header
+
+      urllogin:
+        type: map
+        required: true
+        mapping:
+          aes_key:
+            type: str
+
+      cache:
+        type: map
+        required: true
+        mapping:
+          backend:
+            required: true
+            type: str
+          arguments:
+            type: map
+            mapping:
+              regex;.+:
+                type: any
+      admin_interface:
+        type: map
+        required: true
+        mapping:
+          layer_tree_max_nodes:
+            type: int
+          map_base_layer:
+            type: str
+          map_x:
+            type: int
+            required: true
+          map_y:
+            type: int
+            required: true
+          map_zoom:
+            type: int
+            required: true
+          map_fit_max_zoom:
+            type: int
+          available_metadata:
+            type: seq
+            required: true
+            sequence: &types
+              - type: map
+                mapping:
+                  name:
+                    type: str
+                    required: true
+                  type:
+                    type: str
+                  regex:
+                    type: str
+                  error_message:
+                    type: str
+                  translate:
+                    type: bool
+          available_functionalities:
+            type: seq
+            required: true
+            sequence:
+              - type: str
+      layers:
+        type: map
+        required: true
+        mapping:
+          geometry_validation:
+            type: bool
+            required: true
+          enum:
+            type: map
+            mapping:
+              defaults: &free_dict
+                type: map
+                mapping:
+                  regex;(.+):
+                    type: any
+              regex;(.+):
+                type: map
+                mapping:
+                  defaults: *free_dict
+                  dbsession:
+                    type: str
+                  attributes:
+                    type: map
+                    required: true
+                    mapping:
+                      regex;(.+):
+                        type: map
+                        mapping:
+                          table:
+                            type: str
+                            required: true
+                          column_name:
+                            type: str
+                          separator:
+                            type: str
+      functionalities:
+        type: map
+        required: true
+        mapping:
+          anonymous:
+            <<: *free_dict
+            required: true
+          registered:
+            <<: *free_dict
+            required: true
+          available_in_templates:
+            type: seq
+            required: true
+            sequence:
+              - type: str
+      mapserverproxy:
+        type: map
+        required: true
+        mapping:
+          default_ogc_server:
+            type: str
+            required: true
+          default_external_ogc_server:
+            type: str
+      tinyowsproxy:
+        type: map
+        required: true
+        mapping:
+          tinyows_url:
+            type: str
+            required: true
+          proxy_online_resource:
+            type: str
+          online_resource:
+            type: str
+          tinyows_host:
+            type: str
+      fulltextsearch:
+        type: map
+        required: true
+        mapping:
+          defaultlimit:
+            type: int
+            required: true
+          maxlimit:
+            type: int
+            required: true
+          languages:
+            type: map
+            required: true
+            mapping:
+              regex;([a-z][a-z]):
+                type: str
+      reset_password:
+        type: map
+        required: true
+        mapping: &send_email
+          email_from:
+            required: true
+            type: str
+          email_body:
+            required: true
+            type: str
+          email_subject:
+            required: true
+            type: str
+      welcome_email:
+        type: map
+        required: true
+        mapping: *send_email
+      smtp:
+        type: map
+        mapping:
+          host:
+            type: str
+            required: true
+          ssl:
+            type: bool
+          user:
+            type: str
+          password:
+            type: str
+          starttls:
+            type: bool
+
+      servers:
+        <<: *free_dict
+        required: true
+      host_forward_host:
+        type: seq
+        sequence:
+          - type: str
+      raster:
+        <<: *free_dict
+        required: true
+      shortener:
+        type: map
+        required: true
+        mapping:
+          <<: *send_email
+          base_url:
+            type: str
+            required: true
+          allowed_hosts:
+            type: seq
+            sequence:
+              - type: str
+          length:
+            type: int
+      hide_capabilities:
+        type: bool
+        required: true
+      resourceproxy:
+        type: map
+        required: true
+        mapping:
+          targets:
+            type: map
+            required: true
+            mapping:
+              regex;(.+):
+                type: str
+          allowed_headers:
+            type: seq
+            sequence:
+              - type: str
+                unique: true
+      print_url:
+        type: str
+        required: true
+      pdfreport:
+        type: map
+        mapping:
+          print_url:
+            type: str
+          layer-defaults: *free_dict
+          map-defaults: *free_dict
+          layers:
+            type: map
+            mapping:
+              regex;(.+):
+                type: map
+                mapping:
+                  check_credentials:
+                    type: bool
+                    required: true
+                  srs:
+                    type: int
+                    required: true
+                  spec:
+                    type: any
+                  map: &map
+                    type: map
+                    mapping:
+                      backgroundlayers:
+                        type: seq
+                        required: true
+                        sequence:
+                          - type: str
+                      imageformat:
+                        type: str
+                        required: true
+                        pattern: '[a-z]+/[a-z]+'
+                      zoomType:
+                        type: str
+                        required: true
+                      minScale:
+                        type: int
+                        required: true
+                      style:
+                        type: any
+                        required: true
+                  maps:
+                    type: seq
+                    sequence:
+                      - *map
+      subdomain_url_template:
+        type: str
+      subdomains:
+        type: seq
+        sequence:
+          - type: str
+
+      lingua_extractor:
+        type: map
+        mapping:
+          host_map:
+            type: map
+            mapping:
+              regex;(.+):
+                type: map
+                mapping:
+                  netloc:
+                    type: str
+                  scheme:
+                    type: str
+                  verify:
+                    type: any
+                  headers:
+                    type: map
+                    mapping:
+                      regex;(.+):
+                        type: str
+
+      checker:
+        type: map
+        required: true
+        mapping:
+          fulltextsearch:
+            type: map
+            required: true
+            mapping:
+              level:
+                type: int
+                required: true
+              search:
+                type: str
+                required: true
+          lang:
+            type: map
+            required: true
+            mapping:
+              level:
+                type: int
+                required: true
+              files:
+                type: seq
+                required: true
+                sequence:
+                  - type: str
+          print:
+            type: map
+            required: true
+            mapping:
+              level:
+                type: int
+                required: true
+              spec:
+                type: any
+                required: true
+          routes: &routes
+            type: map
+            required: true
+            mapping:
+              disable:
+                type: seq
+                required: true
+                seq:
+                  - type: str
+              routes:
+                type: seq
+                required: true
+                seq:
+                  - type: map
+                    mapping:
+                      level:
+                        type: int
+                        required: true
+                      name:
+                        type: str
+                        required: true
+                      display_name:
+                        type: str
+                      params: &params
+                        type: map
+                        mapping:
+                          regex;([a-zA-Z0-9_\-~\.]+):
+                            type: str
+                            pattern: |-
+                              [a-zA-Z0-9_\-~\.]+
+          phantomjs: *routes
+          themes:
+            type: map
+            required: true
+            mapping:
+              level:
+                type: int
+                required: true
+              params: *params
+              interfaces:
+                type: map
+                mapping:
+                  regex;([a-z]+):
+                    type: map
+                    mapping:
+                      params: *params
+          regex;(.+):
+            type: any
+      check_collector:
+        type: map
+        required: true
+        mapping:
+          hosts:
+            type: seq
+            required: true
+            sequence:
+              - type: map
+                mapping:
+                  display:
+                    type: str
+                    required: true
+                  url:
+                    type: str
+                    required: true
+                  level:
+                    type: int
+          max_level:
+            type: int
+            required: true
+          level:
+            type: int
+            required: true
+      regex;(.+):
+        type: any
