@@ -1,4 +1,7 @@
 /**
+ * @module app.layerlegends.LayerlegendsController
+ */
+/**
  * @fileoverview This file provides the layer manager directive. That directive
  * is used to create the list of selected layers in the page.
  *
@@ -13,11 +16,8 @@
  * of layers are not going to change during the lifetime of the application.
  * The content of the array of layers may change, but not the array itself.
  */
-goog.module('app.layerlegends.LayerlegendsController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {angular.$http} $http The angular http service.
@@ -31,7 +31,7 @@ const appModule = goog.require('app.module');
  * @ngInject
  * @export
  */
-exports = function($http, $sce, gettextCatalog,
+const exports = function($http, $sce, gettextCatalog,
     getPngLegendUrl, getHtmlLegendUrl, ngeoBackgroundLayerMgr) {
   /**
    * @type {ol.Map}
@@ -216,3 +216,6 @@ exports.prototype.getLegendHtml = function(layer) {
 };
 
 appModule.controller('AppLayerlegendsController', exports);
+
+
+export default exports;

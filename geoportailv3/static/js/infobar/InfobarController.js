@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.InfobarController
+ */
+/**
  * @fileoverview This file provides a "infobar" directive. This directive is
  * used to insert an Info Bar into the HTML page.
  * Example:
@@ -10,11 +13,8 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.InfobarController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
@@ -22,7 +22,7 @@ const appModule = goog.require('app.module');
  * @constructor
  * @export
  */
-exports = function(ngeoNetworkStatus) {
+const exports = function(ngeoNetworkStatus) {
   /**
    * @type {boolean}
    */
@@ -45,3 +45,6 @@ exports.prototype.infobarSwitch = function() {
 
 appModule.controller('AppInfobarController',
     exports);
+
+
+export default exports;

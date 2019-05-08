@@ -1,13 +1,12 @@
-goog.module('app.print.Printservice');
+/**
+ * @module app.print.Printservice
+ */
+import ngeoPrintService from 'ngeo/print/Service.js';
+import olArray from 'ol/array.js';
+import olObj from 'ol/obj.js';
+import olMath from 'ol/math.js';
 
-goog.module.declareLegacyNamespace();
-const ngeoPrintService = goog.require('ngeo.print.Service');
-const olArray = goog.require('ol.array');
-const olObj = goog.require('ol.obj');
-const olMath = goog.require('ol.math');
-
-
-exports = class extends ngeoPrintService {
+const exports = class extends ngeoPrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
@@ -85,3 +84,6 @@ exports = class extends ngeoPrintService {
     });
   }
 };
+
+
+export default exports;

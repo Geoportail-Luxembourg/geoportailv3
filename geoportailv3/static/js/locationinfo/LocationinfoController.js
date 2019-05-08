@@ -1,24 +1,23 @@
 /**
+ * @module app.locationinfo.LocationinfoController
+ */
+/**
  * @fileoverview This file provides a "location information" directive.
  */
 
-goog.module('app.locationinfo.LocationinfoController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olFeature = goog.require('ol.Feature');
-const olEvents = goog.require('ol.events');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olProj = goog.require('ol.proj');
-const olSourceVector = goog.require('ol.source.Vector');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olExtent = goog.require('ol.extent');
-
+import appModule from '../module.js';
+import olFeature from 'ol/Feature.js';
+import olEvents from 'ol/events.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olProj from 'ol/proj.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olExtent from 'ol/extent.js';
 
 /**
  * @constructor
@@ -46,7 +45,7 @@ const olExtent = goog.require('ol.extent');
  * @param {app.Activetool} appActivetool The activetool service.
  * @ngInject
  */
-exports = function(
+const exports = function(
         $scope, $timeout,
         appGetShorturl, appGetElevation, appCoordinateString, appStateManager,
         qrServiceUrl, appLocationinfoTemplateUrl, appSelectedFeatures,
@@ -571,3 +570,6 @@ exports.prototype.toggleStreetview = function() {
 
 
 appModule.controller('AppLocationinfoController', exports);
+
+
+export default exports;

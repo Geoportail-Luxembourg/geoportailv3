@@ -1,18 +1,17 @@
 /**
+ * @module app.LayerPermalinkManager
+ */
+/**
  * @fileoverview This files defines an Angular Service for managing the
  * selected layers permalinks
  */
 
-goog.module('app.LayerPermalinkManager');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
-const olEvents = goog.require('ol.events');
-const olObjectEventType = goog.require('ol.ObjectEventType');
-const olArray = goog.require('ol.array');
-
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import appEventsThemesEventType from './events/ThemesEventType.js';
+import olEvents from 'ol/events.js';
+import olObjectEventType from 'ol/ObjectEventType.js';
+import olArray from 'ol/array.js';
 
 /**
  * @constructor
@@ -30,7 +29,7 @@ const olArray = goog.require('ol.array');
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-exports = function(appStateManager,
+const exports = function(appStateManager,
     appGetLayerForCatalogNode, appThemes, appTheme, ngeoBackgroundLayerMgr,
     ngeoLocation, appWmsHelper, appWmtsHelper, appNotify, gettextCatalog) {
   /**
@@ -639,3 +638,6 @@ exports.prototype.init =
     };
 
 appModule.service('appLayerPermalinkManager', exports);
+
+
+export default exports;

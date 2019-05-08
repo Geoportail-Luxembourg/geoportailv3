@@ -1,10 +1,8 @@
-goog.module('app.query.PagreportController');
-
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-
+/**
+ * @module app.query.PagreportController
+ */
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
 
 /**
  * @constructor
@@ -16,7 +14,7 @@ const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
  * @export
  * @ngInject
  */
-exports = function($http, appNotify, gettextCatalog,
+const exports = function($http, appNotify, gettextCatalog,
     appUserManager, pagUrl) {
   /**
    * @type {app.UserManager}
@@ -124,3 +122,6 @@ exports.prototype.generateRepport = function() {
 
 appModule.controller('AppPagreportController',
                       exports);
+
+
+export default exports;

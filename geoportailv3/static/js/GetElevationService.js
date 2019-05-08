@@ -1,12 +1,15 @@
 /**
+ * @module app.GetElevationService
+ */
+let exports = {};
+
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "elevation" web service.
  */
-goog.module('app.GetElevationService');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olProj = goog.require('ol.proj');
+import appModule from './module.js';
+import olProj from 'ol/proj.js';
 
 
 /**
@@ -51,3 +54,6 @@ function service($http, gettextCatalog, elevationServiceUrl) {
 
 
 appModule.service('appGetElevation', service);
+
+
+export default exports;

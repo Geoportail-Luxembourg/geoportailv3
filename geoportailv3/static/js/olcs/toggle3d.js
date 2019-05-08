@@ -1,11 +1,15 @@
 /**
+ * @module app.olcs.toggle3d
+ */
+let exports = {};
+
+/**
  * @fileoverview This file provides the "app-toggle-3d" component.
  *
  * Example:
  *
  * <app-toggle-3d><app-toggle-3d>
  */
-goog.module('app.olcs.toggle3d');
 
 
 class Controller {
@@ -32,3 +36,6 @@ const toggle3d = {
 };
 
 angular.module('app').component('appToggle3d', toggle3d);
+
+
+export default exports;

@@ -1,4 +1,7 @@
 /**
+ * @module app.catalog.CatalogController
+ */
+/**
  * @fileoverview This file provides the "catalog" directive. That directive is
  * used to create the catalog tree in the page. It is based on the
  * "ngeo-layertree" directive. And it relies on c2cgeoportal's "themes" web
@@ -13,15 +16,12 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.catalog.CatalogController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appEventsThemesEventType = goog.require('app.events.ThemesEventType');
-const olEvents = goog.require('ol.events');
-const olProj = goog.require('ol.proj');
-const olView = goog.require('ol.View');
-
+import appModule from '../module.js';
+import appEventsThemesEventType from '../events/ThemesEventType.js';
+import olEvents from 'ol/events.js';
+import olProj from 'ol/proj.js';
+import olView from 'ol/View.js';
 
 /**
  * @constructor
@@ -36,7 +36,7 @@ const olView = goog.require('ol.View');
  * @export
  * @ngInject
  */
-exports = function($scope, appThemes, appTheme,
+const exports = function($scope, appThemes, appTheme,
     appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
   /**
    * @type {app.StateManager}
@@ -175,3 +175,6 @@ exports.prototype.toggle = function(node) {
 
 
 appModule.controller('AppCatalogController', exports);
+
+
+export default exports;

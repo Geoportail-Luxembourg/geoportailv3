@@ -1,15 +1,15 @@
 /**
+ * @module app.StateManager
+ */
+/**
  * @fileoverview This files provides a service for managing the application
  * state. The application state is written to both the URL and the local
  * storage.
  */
-goog.module('app.StateManager');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olMath = goog.require('ol.math');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-
+import appModule from './module.js';
+import olMath from 'ol/math.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
 
 /**
  * @constructor
@@ -18,7 +18,7 @@ const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
  * @param {angularGettext.Catalog} gettextCatalog Gettext service.
  * @ngInject
  */
-exports = function(ngeoLocation, appNotify, gettextCatalog) {
+const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   /**
    * @type {angularGettext.Catalog}
    * @private
@@ -208,3 +208,6 @@ exports.prototype.deleteParam = function(key) {
 };
 
 appModule.service('appStateManager', exports);
+
+
+export default exports;

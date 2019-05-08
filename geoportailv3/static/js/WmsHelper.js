@@ -1,23 +1,22 @@
 /**
+ * @module app.WmsHelper
+ */
+/**
  * @fileoverview Provides a wms helper iservice. That service is a function used
  * to retrieve and display the info (metadata) for a layer.
  */
 
-goog.module('app.WmsHelper');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appOlcsExtent = goog.require('app.olcs.Extent');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const olFormatWMSCapabilities = goog.require('ol.format.WMSCapabilities');
-const olLayerImage = goog.require('ol.layer.Image');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olProj = goog.require('ol.proj');
-const olSourceImageWMS = goog.require('ol.source.ImageWMS');
-const olSourceTileWMS = goog.require('ol.source.TileWMS');
-const olBase = goog.require('ol');
-
+import appModule from './module.js';
+import appOlcsExtent from './olcs/Extent.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import olFormatWMSCapabilities from 'ol/format/WMSCapabilities.js';
+import olLayerImage from 'ol/layer/Image.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olProj from 'ol/proj.js';
+import olSourceImageWMS from 'ol/source/ImageWMS.js';
+import olSourceTileWMS from 'ol/source/TileWMS.js';
+import olBase from 'ol.js';
 
 /**
  * @constructor
@@ -29,7 +28,7 @@ const olBase = goog.require('ol');
  * @param {string} httpsProxyUrl URL to https proxy.
  * @ngInject
  */
-exports = function($sce, $http, appNotify, gettextCatalog,
+const exports = function($sce, $http, appNotify, gettextCatalog,
     $window, httpsProxyUrl) {
 
   /**
@@ -520,3 +519,6 @@ exports.prototype.proxyIfNeeded = function(url) {
 };
 
 appModule.service('appWmsHelper', exports);
+
+
+export default exports;

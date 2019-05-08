@@ -1,17 +1,18 @@
-goog.module('lux');
-
-goog.module.declareLegacyNamespace();
-const olEvents = goog.require('ol.events');
-const olEventsEventType = goog.require('ol.events.EventType');
-const olProj = goog.require('ol.proj');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olSourceWMTS = goog.require('ol.source.WMTS');
-const olSourceWMTSRequestEncoding = goog.require('ol.source.WMTSRequestEncoding');
-const olString = goog.require('ol.string');
-const olTilegridWMTS = goog.require('ol.tilegrid.WMTS');
-const olLayerImage = goog.require('ol.layer.Image');
-const olSourceImageWMS = goog.require('ol.source.ImageWMS');
-const olCoordinate = goog.require('ol.coordinate');
+/**
+ * @module lux
+ */
+let exports = {};
+import olEvents from 'ol/events.js';
+import olEventsEventType from 'ol/events/EventType.js';
+import olProj from 'ol/proj.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
+import olSourceWMTSRequestEncoding from 'ol/source/WMTSRequestEncoding.js';
+import olString from 'ol/string.js';
+import olTilegridWMTS from 'ol/tilegrid/WMTS.js';
+import olLayerImage from 'ol/layer/Image.js';
+import olSourceImageWMS from 'ol/source/ImageWMS.js';
+import olCoordinate from 'ol/coordinate.js';
 
 /**
  * @type {string}
@@ -638,3 +639,6 @@ exports.generatePagRepport = function(ids, mail, eula) {
     exports.notify(msg);
   }
 };
+
+
+export default exports;

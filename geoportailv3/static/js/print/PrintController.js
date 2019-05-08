@@ -1,4 +1,7 @@
 /**
+ * @module app.print.PrintController
+ */
+/**
  * @fileoverview This file provides a print directive. This directive is used
  * to create a print form panel in the page.
  *
@@ -9,19 +12,15 @@
  *            app-print-layers="mainCtrl.selectedLayers">
  * </app-print>
  */
-goog.module('app.print.PrintController');
 
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appPrintPrintservice = goog.require('app.print.Printservice');
-const olArray = goog.require('ol.array');
-const olEasing = goog.require('ol.easing');
-const olEvents = goog.require('ol.events');
-const olObservable = goog.require('ol.Observable');
-const olProj = goog.require('ol.proj');
-const olRenderEventType = goog.require('ol.render.EventType');
-
+import appModule from '../module.js';
+import appPrintPrintservice from '../print/Printservice.js';
+import olArray from 'ol/array.js';
+import olEasing from 'ol/easing.js';
+import olEvents from 'ol/events.js';
+import olObservable from 'ol/Observable.js';
+import olProj from 'ol/proj.js';
+import olRenderEventType from 'ol/render/EventType.js';
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -46,7 +45,7 @@ const olRenderEventType = goog.require('ol.render.EventType');
  * @export
  * @ngInject
  */
-exports = function($scope, $window, $timeout, $q, gettextCatalog,
+const exports = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
@@ -903,3 +902,6 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
 };
 
 appModule.controller('AppPrintController', exports);
+
+
+export default exports;

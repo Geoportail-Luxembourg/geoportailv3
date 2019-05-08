@@ -1,18 +1,18 @@
 /**
+ * @module app.Export
+ */
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "export" web service.
  */
-goog.module('app.Export');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const appMiscFile = goog.require('app.misc.file');
-const olFormatGPX = goog.require('ol.format.GPX');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olFormatKML = goog.require('ol.format.KML');
-const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
-
+import appModule from './module.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import appMiscFile from './misc/file.js';
+import olFormatGPX from 'ol/format/GPX.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olFormatKML from 'ol/format/KML.js';
+import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
 
 /**
  * @constructor
@@ -20,7 +20,7 @@ const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
  * @param {string} exportgpxkmlUrl URL to echo web service.
  * @ngInject
  */
-exports = function($document, exportgpxkmlUrl) {
+const exports = function($document, exportgpxkmlUrl) {
 
   /**
    * @type {ol.Map}
@@ -296,3 +296,6 @@ exports.prototype.exportFeatures_ =
     };
 
 appModule.service('appExport', exports);
+
+
+export default exports;

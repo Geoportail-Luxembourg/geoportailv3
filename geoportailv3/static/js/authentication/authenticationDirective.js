@@ -1,15 +1,14 @@
-goog.module('app.authentication.authenticationDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.authentication.authenticationDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appAuthenticationTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appAuthenticationTemplateUrl) {
+const exports = function(appAuthenticationTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -24,3 +23,6 @@ exports = function(appAuthenticationTemplateUrl) {
 };
 
 appModule.directive('appAuthentication', exports);
+
+
+export default exports;

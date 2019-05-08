@@ -1,8 +1,7 @@
-goog.module('app.layerinfo.LayerinfoController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.layerinfo.LayerinfoController
+ */
+import appModule from '../module.js';
 
 /**
  * @constructor
@@ -10,7 +9,7 @@ const appModule = goog.require('app.module');
  * @ngInject
  * @export
  */
-exports = function(appShowLayerinfo) {
+const exports = function(appShowLayerinfo) {
   /**
    * @private
    */
@@ -27,3 +26,6 @@ exports.prototype.getInfo = function() {
 
 
 appModule.controller('AppLayerinfoController', exports);
+
+
+export default exports;

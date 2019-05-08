@@ -1,15 +1,17 @@
 /**
+ * @module app.CoordinateStringService
+ */
+let exports = {};
+
+/**
  * @fileoverview Provides a coordinate string output service, useful for
  * correctly formatted coordinate strings in different projections.
  */
 
-goog.module('app.CoordinateStringService');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olCoordinate = goog.require('ol.coordinate');
-const olProj = goog.require('ol.proj');
-const olString = goog.require('ol.string');
+import appModule from './module.js';
+import olCoordinate from 'ol/coordinate.js';
+import olProj from 'ol/proj.js';
+import olString from 'ol/string.js';
 
 
 /**
@@ -136,3 +138,6 @@ function service() {
 
 
 appModule.service('appCoordinateString', service);
+
+
+export default exports;

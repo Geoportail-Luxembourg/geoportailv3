@@ -1,15 +1,15 @@
 /**
+ * @module app.draw.RouteControl
+ */
+/**
  * @fileoverview This file defines the geolocation control.
  *
  */
-goog.module('app.draw.RouteControl');
 
-goog.module.declareLegacyNamespace();
-const olBase = goog.require('ol');
-const olCss = goog.require('ol.css');
-const olControlControl = goog.require('ol.control.Control');
-const olEvents = goog.require('ol.events');
-
+import olBase from 'ol.js';
+import olCss from 'ol/css.js';
+import olControlControl from 'ol/control/Control.js';
+import olEvents from 'ol/events.js';
 
 /**
  * @constructor
@@ -18,7 +18,7 @@ const olEvents = goog.require('ol.events');
  * options.
  * @ngInject
  */
-exports = function(options) {
+const exports = function(options) {
   var className = options.className !== undefined ? options.className :
       'route-button';
 
@@ -60,6 +60,7 @@ exports = function(options) {
   });
 
 };
+
 olBase.inherits(exports, olControlControl);
 
 
@@ -72,3 +73,6 @@ exports.prototype.handleClick_ = function(event) {
   this.drawLineInteraction_.toggleMapMatching();
   this.element.classList.toggle('route-on');
 };
+
+
+export default exports;

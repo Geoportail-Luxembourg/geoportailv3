@@ -1,4 +1,9 @@
 /**
+ * @module app.measure.MeasureDirective
+ */
+let exports = {};
+
+/**
  * @fileoverview This file provides a measure directive. This directive is used
  * to create a measure panel in the page.
  *
@@ -10,10 +15,8 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.measure.MeasureDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+import appModule from '../module.js';
 
 
 /**
@@ -37,3 +40,6 @@ function measureDirective(appMeasureTemplateUrl) {
 
 
 appModule.directive('appMeasure', measureDirective);
+
+
+export default exports;

@@ -1,19 +1,22 @@
 /**
+ * @module app.GetWmtsLayerFactory
+ */
+let exports = {};
+
+/**
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.module('app.GetWmtsLayerFactory');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appOlcsExtent = goog.require('app.olcs.Extent');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const olExtent = goog.require('ol.extent');
-const olProj = goog.require('ol.proj');
-const olLayerTile = goog.require('ol.layer.Tile');
-const olSourceWMTS = goog.require('ol.source.WMTS');
-const olSourceWMTSRequestEncoding = goog.require('ol.source.WMTSRequestEncoding');
-const olTilegridWMTS = goog.require('ol.tilegrid.WMTS');
+import appModule from './module.js';
+import appOlcsExtent from './olcs/Extent.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import olExtent from 'ol/extent.js';
+import olProj from 'ol/proj.js';
+import olLayerTile from 'ol/layer/Tile.js';
+import olSourceWMTS from 'ol/source/WMTS.js';
+import olSourceWMTSRequestEncoding from 'ol/source/WMTSRequestEncoding.js';
+import olTilegridWMTS from 'ol/tilegrid/WMTS.js';
 
 
 /**
@@ -100,3 +103,6 @@ function factory(requestScheme) {
 
 
 appModule.factory('appGetWmtsLayer', factory);
+
+
+export default exports;

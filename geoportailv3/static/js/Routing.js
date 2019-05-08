@@ -1,16 +1,16 @@
 /**
+ * @module app.Routing
+ */
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "routing" web service.
  */
-goog.module('app.Routing');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olBase = goog.require('ol');
-const olStyle = goog.require('ol.style');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-
+import appModule from './module.js';
+import olBase from 'ol.js';
+import olStyle from 'ol/style.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 /**
  * @constructor
@@ -21,7 +21,7 @@ const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
  * @param {app.StateManager} appStateManager The state manager service.
  * @ngInject
  */
-exports = function($http, routingServiceUrl, gettextCatalog,
+const exports = function($http, routingServiceUrl, gettextCatalog,
     ngeoFeatureOverlayMgr, appStateManager) {
   /**
    * @type {app.StateManager}
@@ -324,3 +324,6 @@ exports.prototype.getRoute = function() {
 
 
 appModule.service('appRouting', exports);
+
+
+export default exports;

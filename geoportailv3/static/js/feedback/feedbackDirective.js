@@ -1,14 +1,14 @@
-goog.module('app.feedback.feedbackDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+/**
+ * @module app.feedback.feedbackDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appFeedbackTemplateUrl Url to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appFeedbackTemplateUrl) {
+const exports = function(appFeedbackTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -26,3 +26,6 @@ exports = function(appFeedbackTemplateUrl) {
 };
 
 appModule.directive('appFeedback', exports);
+
+
+export default exports;

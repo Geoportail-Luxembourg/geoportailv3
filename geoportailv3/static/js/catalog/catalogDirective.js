@@ -1,4 +1,7 @@
 /**
+ * @module app.catalog.catalogDirective
+ */
+/**
  * @fileoverview This file provides the "catalog" directive. That directive is
  * used to create the catalog tree in the page. It is based on the
  * "ngeo-layertree" directive. And it relies on c2cgeoportal's "themes" web
@@ -13,16 +16,13 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.catalog.catalogDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @return {angular.Directive} The Directive Definition Object.
  */
-exports = function() {
+const exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -40,3 +40,6 @@ exports = function() {
 
 
 appModule.directive('appCatalog', exports);
+
+
+export default exports;

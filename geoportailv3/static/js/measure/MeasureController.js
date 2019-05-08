@@ -1,4 +1,7 @@
 /**
+ * @module app.measure.MeasureController
+ */
+/**
  * @fileoverview This file provides a measure directive. This directive is used
  * to create a measure panel in the page.
  *
@@ -10,23 +13,20 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.measure.MeasureController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const ngeoMiscDecorate = goog.require('ngeo.misc.decorate');
-const ngeoInteractionMeasureArea = goog.require('ngeo.interaction.MeasureArea');
-const ngeoInteractionMeasureAzimut = goog.require('ngeo.interaction.MeasureAzimut');
-const ngeoInteractionMeasureLength = goog.require('ngeo.interaction.MeasureLength');
-const olObject = goog.require('ol.Object');
-const olEvents = goog.require('ol.events');
-const olInteractionProperty = goog.require('ol.interaction.Property');
-const olProj = goog.require('ol.proj');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-
+import appModule from '../module.js';
+import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
+import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
+import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
+import olObject from 'ol/Object.js';
+import olEvents from 'ol/events.js';
+import olInteractionProperty from 'ol/interaction/Property.js';
+import olProj from 'ol/proj.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -43,7 +43,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @export
  * @ngInject
  */
-exports = function($scope, $q, $http, $compile, gettext,
+const exports = function($scope, $q, $http, $compile, gettext,
     appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
@@ -305,3 +305,6 @@ exports.prototype.getElevation_ = function(coordinates) {
 };
 
 appModule.controller('AppMeasureController', exports);
+
+
+export default exports;

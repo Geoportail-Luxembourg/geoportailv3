@@ -1,15 +1,14 @@
 /**
+ * @module app.UserManager
+ */
+/**
  * @fileoverview This file defines the user manager service. this service
  * interacts with the Geoportail webservice to login logout and keep the state
  * of the user.
  */
 
-goog.module('app.UserManager');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
 
 /**
  * @constructor
@@ -22,7 +21,7 @@ const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
-exports = function($http, loginUrl, logoutUrl,
+const exports = function($http, loginUrl, logoutUrl,
     getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
   /**
    * @type {string}
@@ -301,3 +300,6 @@ exports.prototype.hasCookie = function(cname) {
 
 
 appModule.service('appUserManager', exports);
+
+
+export default exports;

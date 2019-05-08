@@ -1,4 +1,7 @@
 /**
+ * @module app.draw.drawDirective
+ */
+/**
  * @fileoverview This file provides a draw directive. This directive is used
  * to create a draw panel in the page.
  *
@@ -11,19 +14,15 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.draw.drawDirective');
 
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appDrawTemplateUrl Url to draw template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appDrawTemplateUrl) {
+const exports = function(appDrawTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -42,3 +41,6 @@ exports = function(appDrawTemplateUrl) {
 
 
 appModule.directive('appDraw', exports);
+
+
+export default exports;

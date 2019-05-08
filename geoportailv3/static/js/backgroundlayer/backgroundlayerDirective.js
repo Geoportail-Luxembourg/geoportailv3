@@ -1,4 +1,7 @@
 /**
+ * @module app.backgroundlayer.backgroundlayerDirective
+ */
+/**
  * @fileoverview This file provides the "backgroundlayer" directive. This
  * directive is used to create a dropdown for selecting the map's background
  * layer. This directive is based on Bootstrap's "dropdown" component, and
@@ -13,11 +16,8 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.backgroundlayer.backgroundlayerDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appBackgroundlayerTemplateUrl URL to backgroundlayer
@@ -25,7 +25,7 @@ const appModule = goog.require('app.module');
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appBackgroundlayerTemplateUrl) {
+const exports = function(appBackgroundlayerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -40,3 +40,6 @@ exports = function(appBackgroundlayerTemplateUrl) {
 
 
 appModule.directive('appBackgroundlayer', exports);
+
+
+export default exports;

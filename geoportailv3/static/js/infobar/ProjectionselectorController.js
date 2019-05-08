@@ -1,4 +1,7 @@
 /**
+ * @module app.infobar.ProjectionselectorController
+ */
+/**
  * @fileoverview This file provides a "projectionselector" directive
  * This directive is used to insert an Projection Selector and
  * Coordinate Display into the HTML page.
@@ -12,12 +15,9 @@
  * during the lifetime of the application.
  *
  */
-goog.module('app.infobar.ProjectionselectorController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olControlMousePosition = goog.require('ol.control.MousePosition');
-
+import appModule from '../module.js';
+import olControlMousePosition from 'ol/control/MousePosition.js';
 
 /**
  * @ngInject
@@ -27,32 +27,31 @@ const olControlMousePosition = goog.require('ol.control.MousePosition');
  * @param {angular.$sce} $sce Angular sce service.
  * @param {app.CoordinateString} appCoordinateString The coordinate string.
  */
-exports =
-    function($document, $sce, appCoordinateString) {
-      /**
-       * @type {app.CoordinateString}
-       * @private
-       */
-      this.coordinateString_ = appCoordinateString;
-
+const exports = function($document, $sce, appCoordinateString) {
   /**
-   * @type {Array.<Object>}
+   * @type {app.CoordinateString}
+   * @private
    */
-      this['projectionOptions'] = [
-    {'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
-    {'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
-    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
-    {'label': $sce.trustAsHtml('Lon/Lat WGS84 DM'), 'value': 'EPSG:4326:DMm'},
-    {'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
-      ];
-      this['projection'] = this['projectionOptions'][0];
-      /** @type {ol.control.MousePostion} */
-      this['mousePositionControl'] = new olControlMousePosition({
-        className: 'custom-mouse-coordinates',
-        coordinateFormat: /** @type {ol.CoordinateFormatType} */
-        (this.mouseCoordinateFormat_.bind(this))
-      });
-    };
+  this.coordinateString_ = appCoordinateString;
+
+/**
+* @type {Array.<Object>}
+*/
+  this['projectionOptions'] = [
+{'label': $sce.trustAsHtml('LUREF'), 'value': 'EPSG:2169'},
+{'label': $sce.trustAsHtml('Lon/Lat WGS84'), 'value': 'EPSG:4326'},
+{'label': $sce.trustAsHtml('Lon/Lat WGS84 DMS'), 'value': 'EPSG:4326:DMS'},
+{'label': $sce.trustAsHtml('Lon/Lat WGS84 DM'), 'value': 'EPSG:4326:DMm'},
+{'label': $sce.trustAsHtml('WGS84 UTM 32|31'), 'value': 'EPSG:3263*'}
+  ];
+  this['projection'] = this['projectionOptions'][0];
+  /** @type {ol.control.MousePostion} */
+  this['mousePositionControl'] = new olControlMousePosition({
+    className: 'custom-mouse-coordinates',
+    coordinateFormat: /** @type {ol.CoordinateFormatType} */
+    (this.mouseCoordinateFormat_.bind(this))
+  });
+};
 
 
 /**
@@ -93,3 +92,6 @@ exports.prototype.switchProjection =
 
 appModule.controller('AppProjectionselectorController',
     exports);
+
+
+export default exports;

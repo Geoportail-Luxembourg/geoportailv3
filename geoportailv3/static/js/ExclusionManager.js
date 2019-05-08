@@ -1,19 +1,19 @@
 /**
+ * @module app.ExclusionManager
+ */
+/**
  * @fileoverview This file defines the Exclusion service. This service manages
  * the exclusion between layers.
  */
-goog.module('app.ExclusionManager');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olBase = goog.require('ol');
-const olObservable = goog.require('ol.Observable');
-const olObject = goog.require('ol.Object');
-const olEvents = goog.require('ol.events');
-const olLayerProperty = goog.require('ol.layer.Property');
-const olCollectionEventType = goog.require('ol.CollectionEventType');
-
+import appModule from './module.js';
+import appNotifyNotificationType from './NotifyNotificationType.js';
+import olBase from 'ol.js';
+import olObservable from 'ol/Observable.js';
+import olObject from 'ol/Object.js';
+import olEvents from 'ol/events.js';
+import olLayerProperty from 'ol/layer/Property.js';
+import olCollectionEventType from 'ol/CollectionEventType.js';
 
 /**
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
@@ -24,7 +24,7 @@ const olCollectionEventType = goog.require('ol.CollectionEventType');
  * @constructor
  * @ngInject
  */
-exports = function(gettextCatalog, ngeoBackgroundLayerMgr,
+const exports = function(gettextCatalog, ngeoBackgroundLayerMgr,
     appBlankLayer, appNotify) {
 
   /**
@@ -193,3 +193,6 @@ exports.prototype.init = function(map) {
 };
 
 appModule.service('appExclusionManager', exports);
+
+
+export default exports;

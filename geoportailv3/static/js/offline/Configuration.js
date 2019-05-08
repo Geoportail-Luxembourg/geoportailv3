@@ -1,15 +1,14 @@
-goog.module('app.offline.Configuration');
-goog.module.declareLegacyNamespace();
-
-const olBase = goog.require('ol');
-const olLayerVector = goog.require('ol.layer.Vector');
-
-const ngeoOfflineModule = goog.require('ngeo.offline.module');
-const NgeoConfiguration = goog.require('ngeo.offline.Configuration');
+/**
+ * @module app.offline.Configuration
+ */
+import olBase from 'ol.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import ngeoOfflineModule from 'ngeo/offline/module.js';
+import NgeoConfiguration from 'ngeo/offline/Configuration.js';
 
 /**
  */
-exports = class extends NgeoConfiguration {
+const exports = class extends NgeoConfiguration {
 
   /**
    * @ngInject
@@ -150,3 +149,6 @@ exports = class extends NgeoConfiguration {
     return layer === this.backgroundLayerMgr_.get(map);
   }
 };
+
+
+export default exports;

@@ -1,11 +1,14 @@
 /**
+ * @module app.GetLayerForCatalogNodeFactory
+ */
+let exports = {};
+
+/**
  * @fileoverview This file defines Angular services to use to get OpenLayers
  * layers for the application.
  */
-goog.module('app.GetLayerForCatalogNodeFactory');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+import appModule from './module.js';
 
 
 /**
@@ -76,3 +79,6 @@ function factory(appGetWmtsLayer, appGetWmsLayer,
 
 
 appModule.factory('appGetLayerForCatalogNode', factory);
+
+
+export default exports;

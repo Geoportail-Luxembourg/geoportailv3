@@ -1,16 +1,14 @@
-goog.module('app.query.pagreportDirective');
-
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.query.pagreportDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appPagreportTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appPagreportTemplateUrl) {
+const exports = function(appPagreportTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -23,4 +21,8 @@ exports = function(appPagreportTemplateUrl) {
     templateUrl: appPagreportTemplateUrl
   };
 };
+
 appModule.directive('appPagreport', exports);
+
+
+export default exports;

@@ -1,18 +1,18 @@
-goog.module('app.LotChasse');
+/**
+ * @module app.LotChasse
+ */
 /**
  * @fileoverview This file defines the Blank Layer service. This service
  * creates an empty layer and the corresponding spec.
  */
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from './module.js';
 
 /**
  * @constructor
  * @ngInject
  */
-exports = function() {
+const exports = function() {
   /**
    * @typedef {String}
    * @private
@@ -39,3 +39,6 @@ exports.prototype.getLotChasse = function() {
 };
 
 appModule.service('appLotChasse', exports);
+
+
+export default exports;

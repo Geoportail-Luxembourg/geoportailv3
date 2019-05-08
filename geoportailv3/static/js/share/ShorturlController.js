@@ -1,4 +1,7 @@
 /**
+ * @module app.share.ShorturlController
+ */
+/**
  * @fileoverview This file provides a shorturl directive
  * This directive is used to create a short url panel in the page.
  *
@@ -7,11 +10,8 @@
  * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
-goog.module('app.share.ShorturlController');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @ngInject
@@ -22,7 +22,7 @@ const appModule = goog.require('app.module');
  * @param {app.Mymaps} appMymaps Mymaps service.
  * @export
  */
-exports = function($scope, ngeoLocation,
+const exports = function($scope, ngeoLocation,
     appGetShorturl, appMymaps) {
   /**
    * @type {app.Mymaps}
@@ -110,3 +110,6 @@ exports.prototype.isMymapsSelected =
     };
 
 appModule.controller('AppShorturlController', exports);
+
+
+export default exports;

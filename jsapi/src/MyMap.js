@@ -1,37 +1,36 @@
-goog.module('lux.MyMap');
-
-goog.module.declareLegacyNamespace();
-const luxBase = goog.require('lux');
-const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
-const ngeoProfileD3Elevation = goog.require('ngeo.profile.d3Elevation');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olInteractionSelect = goog.require('ol.interaction.Select');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleIcon = goog.require('ol.style.Icon');
-const olStyleRegularShape = goog.require('ol.style.RegularShape');
-const olStyleStyle = goog.require('ol.style.Style');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleText = goog.require('ol.style.Text');
-const olSourceVector = goog.require('ol.source.Vector');
-const olFormatKML = goog.require('ol.format.KML');
-const olFormatGPX = goog.require('ol.format.GPX');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olEvents = goog.require('ol.events');
-const olObj = goog.require('ol.obj');
-const olOverlay = goog.require('ol.Overlay');
-const olEventsEventType = goog.require('ol.events.EventType');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olGeomMultiPoint = goog.require('ol.geom.MultiPoint');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olGeomGeometryLayout = goog.require('ol.geom.GeometryLayout');
-const olFeature = goog.require('ol.Feature');
-const olExtent = goog.require('ol.extent');
-const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
-
+/**
+ * @module lux.MyMap
+ */
+import luxBase from './index.js';
+import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import ngeoProfileD3Elevation from 'ngeo/profile/d3Elevation.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olInteractionSelect from 'ol/interaction/Select.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleIcon from 'ol/style/Icon.js';
+import olStyleRegularShape from 'ol/style/RegularShape.js';
+import olStyleStyle from 'ol/style/Style.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleText from 'ol/style/Text.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olFormatKML from 'ol/format/KML.js';
+import olFormatGPX from 'ol/format/GPX.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olEvents from 'ol/events.js';
+import olObj from 'ol/obj.js';
+import olOverlay from 'ol/Overlay.js';
+import olEventsEventType from 'ol/events/EventType.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
+import olFeature from 'ol/Feature.js';
+import olExtent from 'ol/extent.js';
+import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
 
 /**
  * @classdesc
@@ -41,7 +40,7 @@ const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
  * @param {luxx.MyMapOptions} options The options.
  * @api stable
  */
-exports = function(options) {
+const exports = function(options) {
 
   /**
    * @type {string}
@@ -1194,3 +1193,6 @@ exports.prototype.orderFeaturesForGpx_ = function(features) {
 
   return points.concat(lines, others);
 };
+
+
+export default exports;

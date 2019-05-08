@@ -1,21 +1,20 @@
 /**
+ * @module app.draw.FeaturePopup
+ */
+/**
  * @fileoverview Provides a feature popup service.
  */
 
-goog.module('app.draw.FeaturePopup');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olOverlay = goog.require('ol.Overlay');
-const olObservable = goog.require('ol.Observable');
-const olEvents = goog.require('ol.events');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const ngeoInteractionMeasure = goog.require('ngeo.interaction.Measure');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-
+import appModule from '../module.js';
+import olOverlay from 'ol/Overlay.js';
+import olObservable from 'ol/Observable.js';
+import olEvents from 'ol/events.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
 
 /**
  * @param {angular.$compile} $compile The compile provider.
@@ -27,7 +26,7 @@ const olGeomPolygon = goog.require('ol.geom.Polygon');
  * @constructor
  * @ngInject
  */
-exports = function($compile, $rootScope, $injector, $document,
+const exports = function($compile, $rootScope, $injector, $document,
     appGetElevation, appGetProfile) {
   /**
    * @type {ngeox.unitPrefix}
@@ -314,3 +313,6 @@ exports.prototype.getProfile = function(linestring) {
 
 
 appModule.service('appFeaturePopup', exports);
+
+
+export default exports;

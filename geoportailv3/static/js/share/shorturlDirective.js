@@ -1,4 +1,7 @@
 /**
+ * @module app.share.shorturlDirective
+ */
+/**
  * @fileoverview This file provides a shorturl directive
  * This directive is used to create a short url panel in the page.
  *
@@ -7,18 +10,15 @@
  * <app-shorturl app-shorturl-active="::mainCtrl.active"></app-shorturl>
  *
  */
-goog.module('app.share.shorturlDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appShorturlTemplateUrl Url to share template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appShorturlTemplateUrl) {
+const exports = function(appShorturlTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -34,3 +34,6 @@ exports = function(appShorturlTemplateUrl) {
 };
 
 appModule.directive('appShorturl', exports);
+
+
+export default exports;

@@ -1,42 +1,42 @@
 /**
+ * @module app.module
+ */
+/**
  * @fileoverview This file provides the "app" namespace, which is the
  * application's main namespace. And it defines the application's Angular
  * module.
  */
-goog.module('app.module');
 
-goog.module.declareLegacyNamespace();
-const olHas = goog.require('ol.has');
-const ngeoBase = goog.require('ngeo');
-const ngeoDatasourceModule = goog.require('ngeo.datasource.module');
-const ngeoDownloadModule = goog.require('ngeo.download.module');
-const ngeoDrawModule = goog.require('ngeo.draw.module');
-const ngeoEditingModule = goog.require('ngeo.editing.module');
-const ngeoFilterModule = goog.require('ngeo.filter.module');
-const ngeoGooglestreetviewModule = goog.require('ngeo.googlestreetview.module');
-const ngeoGridModule = goog.require('ngeo.grid.module');
-const ngeoLayertreeModule = goog.require('ngeo.layertree.module');
-const ngeoMapModule = goog.require('ngeo.map.module');
-const ngeoMapExtraModule = goog.require('ngeo.map.extraModule');
-const ngeoMiscExtraModule = goog.require('ngeo.misc.extraModule');
-const ngeoMeasureModule = goog.require('ngeo.measure.module');
-const ngeoMessageExtraModule = goog.require('ngeo.message.extraModule');
-const appOfflineConfiguration = goog.require('app.offline.Configuration');
-const ngeoOfflineModule = goog.require('ngeo.offline.module');
-const ngeoOlcsOlcsModule = goog.require('ngeo.olcs.olcsModule');
-const ngeoPrintModule = goog.require('ngeo.print.module');
-const ngeoProfileModule = goog.require('ngeo.profile.module');
-const ngeoQueryModule = goog.require('ngeo.query.module');
-const ngeoSearchModule = goog.require('ngeo.search.module');
-const ngeoStatemanagerLocation = goog.require('ngeo.statemanager.Location');
-const ngeoStatemanagerModule = goog.require('ngeo.statemanager.module');
-const ngeoStatemanagerWfsPermalink = goog.require('ngeo.statemanager.WfsPermalink');
-
+import olHas from 'ol/has.js';
+import ngeoBase from 'ngeo.js';
+import ngeoDatasourceModule from 'ngeo/datasource/module.js';
+import ngeoDownloadModule from 'ngeo/download/module.js';
+import ngeoDrawModule from 'ngeo/draw/module.js';
+import ngeoEditingModule from 'ngeo/editing/module.js';
+import ngeoFilterModule from 'ngeo/filter/module.js';
+import ngeoGooglestreetviewModule from 'ngeo/googlestreetview/module.js';
+import ngeoGridModule from 'ngeo/grid/module.js';
+import ngeoLayertreeModule from 'ngeo/layertree/module.js';
+import ngeoMapModule from 'ngeo/map/module.js';
+import ngeoMapExtraModule from 'ngeo/map/extraModule.js';
+import ngeoMiscExtraModule from 'ngeo/misc/extraModule.js';
+import ngeoMeasureModule from 'ngeo/measure/module.js';
+import ngeoMessageExtraModule from 'ngeo/message/extraModule.js';
+import appOfflineConfiguration from './offline/Configuration.js';
+import ngeoOfflineModule from 'ngeo/offline/module.js';
+import ngeoOlcsOlcsModule from 'ngeo/olcs/olcsModule.js';
+import ngeoPrintModule from 'ngeo/print/module.js';
+import ngeoProfileModule from 'ngeo/profile/module.js';
+import ngeoQueryModule from 'ngeo/query/module.js';
+import ngeoSearchModule from 'ngeo/search/module.js';
+import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
+import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
+import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
 
 /**
  * @type {!angular.Module}
  */
-exports = angular.module('app', [
+const exports = angular.module('app', [
   ngeoDatasourceModule.name,
   ngeoDownloadModule.name,
   ngeoDrawModule.name,
@@ -105,3 +105,5 @@ exports.config(['$httpProvider', function($httpProvider) {
     }};
 });
 
+
+export default exports;

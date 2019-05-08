@@ -1,7 +1,7 @@
-goog.module('app.askredirect.AskredirectController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+/**
+ * @module app.askredirect.AskredirectController
+ */
+import appModule from '../module.js';
 
 /**
  * @constructor
@@ -10,7 +10,7 @@ const appModule = goog.require('app.module');
  * @export
  * @ngInject
  */
-exports = function($window, ngeoLocation) {
+const exports = function($window, ngeoLocation) {
   /**
    * @type {angular.$window}
    * @private
@@ -44,3 +44,6 @@ exports.prototype.redirect = function() {
 
 appModule.controller('AppAskredirectController',
                       exports);
+
+
+export default exports;

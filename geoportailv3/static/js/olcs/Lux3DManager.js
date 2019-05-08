@@ -1,10 +1,9 @@
-goog.module('app.olcs.Lux3DManager');
+/**
+ * @module app.olcs.Lux3DManager
+ */
+import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 
-goog.module.declareLegacyNamespace();
-const ngeoOlcsManager = goog.require('ngeo.olcs.Manager');
-
-
-exports = class extends ngeoOlcsManager {
+const exports = class extends ngeoOlcsManager {
   /**
    *
    * @param {string} cesiumUrl Cesium URL.
@@ -155,3 +154,6 @@ exports = class extends ngeoOlcsManager {
     super.setHeading(super.getHeading());
   }
 };
+
+
+export default exports;

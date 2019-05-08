@@ -1,9 +1,8 @@
-goog.module('app.feedback.FeedbackController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-
+/**
+ * @module app.feedback.FeedbackController
+ */
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
 
 /**
  * @constructor
@@ -19,7 +18,7 @@ const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
  * @ngInject
  * @export
  */
-exports = function($scope, $http, appNotify, appUserManager,
+const exports = function($scope, $http, appNotify, appUserManager,
     gettextCatalog, ngeoLocation, ngeoBackgroundLayerMgr, postFeedbackUrl) {
 
   /**
@@ -176,3 +175,6 @@ exports.prototype.sendReport = function() {
 };
 
 appModule.controller('AppFeedbackController', exports);
+
+
+export default exports;

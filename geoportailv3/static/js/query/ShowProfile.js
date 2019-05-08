@@ -1,8 +1,12 @@
-goog.module('app.query.ShowProfile');
-
-goog.module.declareLegacyNamespace();
+/**
+ * @module app.query.ShowProfile
+ */
+let exports = {};
 
 /**
  * @typedef {{active: boolean}}
  */
 exports;
+
+
+export default exports;

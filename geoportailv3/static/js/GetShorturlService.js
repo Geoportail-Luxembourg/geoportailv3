@@ -1,11 +1,14 @@
 /**
+ * @module app.GetShorturlService
+ */
+let exports = {};
+
+/**
  * @fileoverview This file provides an Angular service for interacting
  * with the "shorturl" web service.
  */
-goog.module('app.GetShorturlService');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
+import appModule from './module.js';
 
 
 /**
@@ -48,3 +51,6 @@ function service($http, ngeoLocation, shorturlServiceUrl) {
 
 
 appModule.service('appGetShorturl', service);
+
+
+export default exports;

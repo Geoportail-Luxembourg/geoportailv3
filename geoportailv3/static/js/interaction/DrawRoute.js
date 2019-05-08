@@ -1,26 +1,25 @@
-goog.module('app.interaction.DrawRoute');
-
-goog.module.declareLegacyNamespace();
-const olBase = goog.require('ol');
-const olFeature = goog.require('ol.Feature');
-const olMapBrowserEventType = goog.require('ol.MapBrowserEventType');
-const olObject = goog.require('ol.Object');
-const olEvents = goog.require('ol.events');
-const olEventsEvent = goog.require('ol.events.Event');
-const olEventsCondition = goog.require('ol.events.condition');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olFunctions = goog.require('ol.functions');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomLineString = goog.require('ol.geom.LineString');
-const olGeomPoint = goog.require('ol.geom.Point');
-const olGeomPolygon = goog.require('ol.geom.Polygon');
-const olInteractionDrawEventType = goog.require('ol.interaction.DrawEventType');
-const olInteractionPointer = goog.require('ol.interaction.Pointer');
-const olInteractionProperty = goog.require('ol.interaction.Property');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olSourceVector = goog.require('ol.source.Vector');
-const olStyleStyle = goog.require('ol.style.Style');
-
+/**
+ * @module app.interaction.DrawRoute
+ */
+import olBase from 'ol.js';
+import olFeature from 'ol/Feature.js';
+import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
+import olObject from 'ol/Object.js';
+import olEvents from 'ol/events.js';
+import olEventsEvent from 'ol/events/Event.js';
+import olEventsCondition from 'ol/events/condition.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olFunctions from 'ol/functions.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomLineString from 'ol/geom/LineString.js';
+import olGeomPoint from 'ol/geom/Point.js';
+import olGeomPolygon from 'ol/geom/Polygon.js';
+import olInteractionDrawEventType from 'ol/interaction/DrawEventType.js';
+import olInteractionPointer from 'ol/interaction/Pointer.js';
+import olInteractionProperty from 'ol/interaction/Property.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olStyleStyle from 'ol/style/Style.js';
 
 /**
  * @classdesc
@@ -32,7 +31,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @param {olx.interaction.DrawOptions} options Options.
  * @api
  */
-exports = function(options) {
+const exports = function(options) {
 
   olInteractionPointer.call(this, {
     handleDownEvent: exports.handleDownEvent_,
@@ -284,6 +283,7 @@ exports = function(options) {
       this.updateState_, this);
 
 };
+
 olBase.inherits(exports, olInteractionPointer);
 
 
@@ -874,3 +874,6 @@ exports.Event = function(type, feature) {
 
 };
 olBase.inherits(exports.Event, olEventsEvent);
+
+
+export default exports;

@@ -1,21 +1,20 @@
-goog.module('app.query.QueryController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const appNotifyNotificationType = goog.require('app.NotifyNotificationType');
-const olBase = goog.require('ol');
-const olExtent = goog.require('ol.extent');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
-const olGeomGeometryType = goog.require('ol.geom.GeometryType');
-const olGeomMultiLineString = goog.require('ol.geom.MultiLineString');
-const olLayerVector = goog.require('ol.layer.Vector');
-const olProj = goog.require('ol.proj');
-const olSourceVector = goog.require('ol.source.Vector');
-const olStyleCircle = goog.require('ol.style.Circle');
-const olStyleFill = goog.require('ol.style.Fill');
-const olStyleStroke = goog.require('ol.style.Stroke');
-const olStyleStyle = goog.require('ol.style.Style');
-
+/**
+ * @module app.query.QueryController
+ */
+import appModule from '../module.js';
+import appNotifyNotificationType from '../NotifyNotificationType.js';
+import olBase from 'ol.js';
+import olExtent from 'ol/extent.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import olGeomGeometryType from 'ol/geom/GeometryType.js';
+import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olProj from 'ol/proj.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olStyleCircle from 'ol/style/Circle.js';
+import olStyleFill from 'ol/style/Fill.js';
+import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleStyle from 'ol/style/Style.js';
 
 /**
  * @constructor
@@ -50,7 +49,7 @@ const olStyleStyle = goog.require('ol.style.Style');
  * @export
  * @ngInject
  */
-exports = function($sce, $timeout, $scope, $http,
+const exports = function($sce, $timeout, $scope, $http,
     appGetProfile, ngeoLocation,
     appQueryTemplatesPath, getInfoServiceUrl, getRemoteTemplateServiceUrl,
     downloadmeasurementUrl, downloadsketchUrl, gettextCatalog, appThemes,
@@ -1333,3 +1332,6 @@ exports.prototype.showGeom = function(geom, color) {
 
 appModule.controller('AppQueryController',
                       exports);
+
+
+export default exports;

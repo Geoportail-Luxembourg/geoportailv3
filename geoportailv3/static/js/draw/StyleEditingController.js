@@ -1,9 +1,8 @@
-goog.module('app.draw.StyleEditingController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olGeomLineString = goog.require('ol.geom.LineString');
-
+/**
+ * @module app.draw.StyleEditingController
+ */
+import appModule from '../module.js';
+import olGeomLineString from 'ol/geom/LineString.js';
 
 /**
  * @param {angular.Scope} $scope The scope.
@@ -13,7 +12,7 @@ const olGeomLineString = goog.require('ol.geom.LineString');
  * @constructor
  * @ngInject
  */
-exports = function($scope, appDrawnFeatures,
+const exports = function($scope, appDrawnFeatures,
     appUserManager, mymapsUrl) {
   /**
    * @type {string}
@@ -298,3 +297,6 @@ exports.prototype.isAuthenticated = function() {
 };
 
 appModule.controller('AppStyleEditingController', exports);
+
+
+export default exports;

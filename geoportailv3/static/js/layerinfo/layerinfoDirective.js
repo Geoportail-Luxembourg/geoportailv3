@@ -1,15 +1,14 @@
-goog.module('app.layerinfo.layerinfoDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.layerinfo.layerinfoDirective
+ */
+import appModule from '../module.js';
 
 /**
  * @param {string} appLayerinfoTemplateUrl URL to directive template.
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appLayerinfoTemplateUrl) {
+const exports = function(appLayerinfoTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -23,3 +22,6 @@ exports = function(appLayerinfoTemplateUrl) {
 };
 
 appModule.directive('appLayerinfo', exports);
+
+
+export default exports;

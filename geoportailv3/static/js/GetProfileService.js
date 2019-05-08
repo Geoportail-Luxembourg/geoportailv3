@@ -1,13 +1,15 @@
+/**
+ * @module app.GetProfileService
+ */
+let exports = {};
 
 /**
  * @fileoverview This file provides an Angular service for interacting
  * with the "profile" web service.
  */
-goog.module('app.GetProfileService');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-const olFormatGeoJSON = goog.require('ol.format.GeoJSON');
+import appModule from './module.js';
+import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 
 
 /**
@@ -74,3 +76,6 @@ function service($http, profileServiceUrl) {
 }
 
 appModule.service('appGetProfile', service);
+
+
+export default exports;

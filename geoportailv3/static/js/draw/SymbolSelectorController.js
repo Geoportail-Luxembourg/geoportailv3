@@ -1,8 +1,7 @@
-goog.module('app.draw.SymbolSelectorController');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.draw.SymbolSelectorController
+ */
+import appModule from '../module.js';
 
 /**
  * The constructor.
@@ -13,7 +12,7 @@ const appModule = goog.require('app.module');
  * @constructor
  * @ngInject
  */
-exports = function($scope, $http, appUserManager,
+const exports = function($scope, $http, appUserManager,
     mymapsUrl) {
 
   /**
@@ -264,3 +263,6 @@ exports.prototype.isHTML5ColorSupported = function() {
 
 appModule.controller('AppSymbolSelectorController',
     exports);
+
+
+export default exports;

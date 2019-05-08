@@ -1,4 +1,7 @@
 /**
+ * @module app.externaldata.externalDataDirective
+ */
+/**
  * @fileoverview This file provides a external data directive. This directive
  * is used to create a external data panel in the page.
  *
@@ -10,18 +13,15 @@
  * One-time binding is used because we know the map is not going to change
  * during the lifetime of the application.
  */
-goog.module('app.externaldata.externalDataDirective');
 
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+import appModule from '../module.js';
 
 /**
  * @param {string} appExternalDataTemplateUrl Url to measure template
  * @return {angular.Directive} The Directive Definition Object.
  * @ngInject
  */
-exports = function(appExternalDataTemplateUrl) {
+const exports = function(appExternalDataTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
@@ -36,3 +36,6 @@ exports = function(appExternalDataTemplateUrl) {
 
 
 appModule.directive('appExternalData', exports);
+
+
+export default exports;

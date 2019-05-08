@@ -1,8 +1,7 @@
-goog.module('app.infobar.scaleselectorDirective');
-
-goog.module.declareLegacyNamespace();
-const appModule = goog.require('app.module');
-
+/**
+ * @module app.infobar.scaleselectorDirective
+ */
+import appModule from '../module.js';
 
 // Use the default "scale selector" template.
 //app.module.value('ngeoScaleselectorTemplateUrl',
@@ -15,7 +14,7 @@ const appModule = goog.require('app.module');
  *
  * @return {angular.Directive} Directive Definition Object.
  */
-exports = function() {
+const exports = function() {
   return {
     restrict: 'E',
     scope: {
@@ -32,3 +31,6 @@ exports = function() {
 
 
 appModule.directive('appScaleselector', exports);
+
+
+export default exports;
