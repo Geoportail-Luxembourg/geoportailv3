@@ -1,0 +1,5 @@
+dn: ou=portail,dc=act,dc=lu
+ou: portail
+objectClass: top
+objectClass: organizationalUnit
+

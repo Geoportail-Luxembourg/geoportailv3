@@ -1,0 +1,370 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/filter/component.html:64
+msgid "+ Add a new criteria"
+msgstr "+ Add a new criteria"
+
+#: src/routing/routing.html:47
+msgid "Add via"
+msgstr "Add via"
+
+#: src/filter/component.js:181
+msgid "All"
+msgstr "All"
+
+#: src/filter/rulecomponent.html:210
+msgid "Apply"
+msgstr "Apply"
+
+#: src/filter/component.html:94
+msgid "Apply filter"
+msgstr "Apply filter"
+
+#: src/filter/component.js:185
+msgid "At least one"
+msgstr "At least one"
+
+#: src/filter/ruleComponent.js:200
+msgid "Begins at"
+msgstr "Begins at"
+
+#: src/filter/rulecomponent.html:288
+msgid "Between"
+msgstr "Between"
+
+#: src/filter/rulecomponent.html:214
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/draw/Controller.js:71
+msgid "Circle"
+msgstr "Circle"
+
+#: src/routing/routing.html:41
+msgid "Clear"
+msgstr "Clear"
+
+#: src/googlestreetview/component.html:1
+msgid "Click on a road on the map to start StreetView."
+msgstr "Click on a road on the map to start StreetView."
+
+#: src/interaction/MeasureLength.js:32
+msgid "Click to continue drawing the line."
+msgstr "Click to continue drawing the line."
+
+#: src/interaction/MeasureArea.js:37
+msgid "Click to continue drawing the polygon."
+msgstr "Click to continue drawing the polygon."
+
+#: src/editing/createfeatureComponent.js:193
+msgid ""
+"Click to continue drawing<br/>Double-click or click last point to finish"
+msgstr ""
+"Click to continue drawing<br/>Double-click or click last point to finish"
+
+#: src/editing/createfeatureComponent.js:211
+msgid ""
+"Click to continue drawing<br/>Double-click or click starting point to finish"
+msgstr ""
+"Click to continue drawing<br/>Double-click or click starting point to finish"
+
+#: src/measure/length.js:43
+msgid ""
+"Click to continue drawing<br>Double-click or click last point to finish"
+msgstr ""
+"Click to continue drawing<br>Double-click or click last point to finish"
+
+#: src/measure/area.js:41
+msgid ""
+"Click to continue drawing<br>Double-click or click starting point to finish"
+msgstr ""
+"Click to continue drawing<br>Double-click or click starting point to finish"
+
+#: src/measure/azimut.js:45
+msgid "Click to finish"
+msgstr "Click to finish"
+
+#: src/editing/createfeatureComponent.js:210
+msgid "Click to start drawing area"
+msgstr "Click to start drawing area"
+
+#: src/measure/azimut.js:44
+msgid "Click to start drawing circle"
+msgstr "Click to start drawing circle"
+
+#: src/editing/createfeatureComponent.js:192
+msgid "Click to start drawing length"
+msgstr "Click to start drawing length"
+
+#: src/measure/length.js:42
+msgid "Click to start drawing line"
+msgstr "Click to start drawing line"
+
+#: src/measure/area.js:40
+msgid "Click to start drawing polygon"
+msgstr "Click to start drawing polygon"
+
+#: src/message/Disclaimer.js:157
+msgid "Close"
+msgstr "Close"
+
+#: src/filter/ruleComponent.js:196 src/filter/ruleComponent.js:197
+msgid "Contains"
+msgstr "Contains"
+
+#: src/filter/component.html:12
+msgid "Criteria taken into account"
+msgstr "Criteria taken into account"
+
+#: src/misc/datepickerComponent.html:6
+msgid "Date:"
+msgstr "Date:"
+
+#: src/routing/routing.html:88
+msgid "Distance"
+msgstr "Distance"
+
+#: src/interaction/MeasureLength.js:34
+msgid "Double-click or click last point to finish."
+msgstr "Double-click or click last point to finish."
+
+#: src/interaction/MeasureArea.js:39
+msgid "Double-click or click starting point to finish."
+msgstr "Double-click or click starting point to finish."
+
+#: src/filter/rulecomponent.html:113
+msgid "Draw a circle on the map"
+msgstr "Draw a circle on the map"
+
+#: src/filter/rulecomponent.html:148
+msgid "Draw a circle on the map."
+msgstr "Draw a circle on the map."
+
+#: src/filter/rulecomponent.html:90
+msgid "Draw a line on the map"
+msgstr "Draw a line on the map"
+
+#: src/filter/rulecomponent.html:142
+msgid "Draw a line string on the map."
+msgstr "Draw a line string on the map."
+
+#: src/filter/rulecomponent.html:78
+msgid "Draw a point on the map"
+msgstr "Draw a point on the map"
+
+#: src/filter/rulecomponent.html:139
+msgid "Draw a point on the map."
+msgstr "Draw a point on the map."
+
+#: src/filter/rulecomponent.html:102
+msgid "Draw a polygon on the map"
+msgstr "Draw a polygon on the map"
+
+#: src/filter/rulecomponent.html:145
+msgid "Draw a polygon on the map."
+msgstr "Draw a polygon on the map."
+
+#: src/filter/rulecomponent.html:124
+msgid "Draw a rectangle on the map"
+msgstr "Draw a rectangle on the map"
+
+#: src/filter/rulecomponent.html:151
+msgid "Draw a rectangle on the map."
+msgstr "Draw a rectangle on the map."
+
+#: src/routing/routing.html:79
+msgid "Duration"
+msgstr "Duration"
+
+#: src/filter/ruleComponent.js:201
+msgid "During"
+msgstr "During"
+
+#: src/filter/ruleComponent.js:202
+msgid "Ends at"
+msgstr "Ends at"
+
+#: src/filter/rulecomponent.html:241
+msgid "From"
+msgstr "From"
+
+#: src/misc/datepickerComponent.html:5
+msgid "From:"
+msgstr "From:"
+
+#: src/geolocation/mobile.js:145
+msgid "Geolocation: An unknown error occurred."
+msgstr "Geolocation: An unknown error occurred."
+
+#: src/filter/component.html:103
+msgid "Get data"
+msgstr "Get data"
+
+#: src/filter/ruleComponent.js:198
+msgid "Intersects"
+msgstr "Intersects"
+
+#: src/filter/ruleComponent.js:188 src/filter/ruleComponent.js:203
+msgid "Is equal to"
+msgstr "Is equal to"
+
+#: src/filter/ruleComponent.js:189
+msgid "Is greater than"
+msgstr "Is greater than"
+
+#: src/filter/ruleComponent.js:190
+msgid "Is greater than or equal to"
+msgstr "Is greater than or equal to"
+
+#: src/filter/ruleComponent.js:199
+msgid "Is inside of"
+msgstr "Is inside of"
+
+#: src/filter/ruleComponent.js:192
+msgid "Is lesser than"
+msgstr "Is lesser than"
+
+#: src/filter/ruleComponent.js:193
+msgid "Is lesser than or equal to"
+msgstr "Is lesser than or equal to"
+
+#: src/filter/ruleComponent.js:195
+msgid "Is not equal to"
+msgstr "Is not equal to"
+
+#: src/draw/Controller.js:69
+msgid "LineString"
+msgstr "LineString"
+
+#: src/geolocation/mobile.js:139
+msgid "Location information is unavailable."
+msgstr "Location information is unavailable."
+
+#: src/misc/WMSTime.js:62
+msgid "M/d/yyyy"
+msgstr "M/d/yyyy"
+
+#: src/misc/WMSTime.js:61
+msgid "M/yyyy"
+msgstr "M/yyyy"
+
+#: src/filter/ruleComponent.js:869
+msgid "Move"
+msgstr "Move"
+
+#: src/filter/component.js:189
+msgid "None"
+msgstr "None"
+
+#: src/misc/File.js:52
+msgid "Operation canceled"
+msgstr "Operation canceled"
+
+#: src/draw/Controller.js:68
+msgid "Point"
+msgstr "Point"
+
+#: src/draw/Controller.js:70
+msgid "Polygon"
+msgstr "Polygon"
+
+#: src/routing/routing.html:56
+msgid "Profile"
+msgstr "Profile"
+
+#: src/misc/File.js:52
+msgid "Read failed"
+msgstr "Read failed"
+
+#: src/draw/Controller.js:72
+msgid "Rectangle"
+msgstr "Rectangle"
+
+#: src/routing/routing.html:44
+msgid "Reverse"
+msgstr "Reverse"
+
+#: src/filter/ruleComponent.js:878
+msgid "Rotate"
+msgstr "Rotate"
+
+#: src/routing/routing.html:75
+msgid "Route statistics"
+msgstr "Route statistics"
+
+#: src/routing/routingfeature.html:5
+msgid "Search..."
+msgstr "Search..."
+
+#: src/filter/component.html:72
+msgid "Spatial filter"
+msgstr "Spatial filter"
+
+#: src/googlestreetview/component.html:7
+msgid "Street View data not found for this location."
+msgstr "Street View data not found for this location."
+
+#: src/draw/Controller.js:73
+msgid "Text"
+msgstr "Text"
+
+#: src/geolocation/mobile.js:142
+msgid "The request to get user location timed out."
+msgstr "The request to get user location timed out."
+
+#: src/editing/attributescomponent.html:116
+msgid "This field is required"
+msgstr "This field is required"
+
+#: src/misc/datepickerComponent.html:12
+msgid "To:"
+msgstr "To:"
+
+#: src/misc/File.js:85
+msgid "Upload failed"
+msgstr "Upload failed"
+
+#: src/geolocation/mobile.js:136
+msgid "User denied the request for Geolocation."
+msgstr "User denied the request for Geolocation."
+
+#: src/filter/rulecomponent.html:290
+msgid "and"
+msgstr "and"
+
+#: src/misc/filters.js:365
+msgid "day"
+msgid_plural "days"
+msgstr[0] "day"
+msgstr[1] "days"
+
+#: src/misc/filters.js:362
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "hour"
+msgstr[1] "hours"
+
+#: src/misc/filters.js:359
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minute"
+msgstr[1] "minutes"
+
+#: src/misc/filters.js:356
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] "second"
+msgstr[1] "seconds"
+
+#: src/filter/rulecomponent.html:243
+msgid "to"
+msgstr "to"
+
+#: src/misc/WMSTime.js:60
+msgid "yyyy"
+msgstr "yyyy"

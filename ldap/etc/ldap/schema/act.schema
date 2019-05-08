@@ -1,0 +1,210 @@
+attributetype ( 1.3.6.1.4.1.99999.2.2.1
+    NAME 'login'
+    DESC 'login de la personne'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.2
+    NAME 'contact'
+    DESC 'contact'
+    SUP name )
+attributetype ( 1.3.6.1.4.1.99999.2.2.3
+    NAME 'url'
+    DESC 'url'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.4
+    NAME 'cLigne1'
+    DESC 'cLigne1'
+    SUP name )
+attributetype ( 1.3.6.1.4.1.99999.2.2.5
+    NAME 'cLigne2'
+    DESC 'cLigne1'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.6
+    NAME 'fLigne1'
+    DESC 'cLigne1'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.7
+    NAME 'fLigne2'
+    DESC 'cLigne1'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.8
+    NAME ( 'fSt' 'fStateOrProvinceName' )
+	DESC 'RFC2256: state or province which this object resides in'
+	SUP stateOrProvinceName )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.9
+    NAME 'fPostalCode'
+	DESC 'RFC2256: postal code'
+	SUP postalCode )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.10
+    NAME ( 'fL' 'fLocalityName' )
+	DESC 'RFC2256: locality which this object resides in'
+	SUP localityName )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.11
+    NAME 'compteRacine'
+	DESC 'comtpe racine pour un utilisateur affilié'
+	SUP name SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.12
+    NAME 'fournisseur'
+	DESC 'Permet de savoir si l utilisateur est fournisseur'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.13
+    NAME 'rca'
+	DESC 'Permet de savoir si l utilisateur peut créer des comptes affiliés'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.14
+    NAME 'voirCartes'
+	DESC 'Permet de savoir si l utilisateur peut voir les cartes'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.15
+    NAME 'produits'
+	DESC 'Permet de savoir si l utilisateur peut gérer les produits'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.16
+    NAME 'gestionComm'
+	DESC 'Permet de savoir si l utilisateur peut gérer les commandes'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.17
+    NAME 'accesOGC'
+	DESC 'Permet de savoir si l utilisateur peut a acces ogc'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.18
+    NAME 'rp'
+	DESC 'Permet de savoir si l utilisateur est responsable produit'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.19
+    NAME 're'
+	DESC 'Permet de savoir si l utilisateur est responsable extraction'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.33
+    NAME 'rea'
+        DESC 'Permet de savoir si l utilisateur est responsable encodage affaire'
+        EQUALITY booleanMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.20
+    NAME 'rr'
+	DESC 'Permet de savoir si l utilisateur est responsable de renseignement'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.21
+    NAME 'rco'
+	DESC 'Permet de savoir si l utilisateur est responsable de convention'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.22
+    NAME 'ren'
+	DESC 'Permet de savoir si l utilisateur est responsable de l envoi'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.23
+    NAME 'rf'
+	DESC 'Permet de savoir si l utilisateur est responsable de la facturation'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.24
+    NAME 'rmd'
+	DESC 'Permet de savoir si l utilisateur est responsable média'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.25
+    NAME 'adm'
+	DESC 'Permet de savoir si l utilisateur a le droit d admin'
+	EQUALITY booleanMatch
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.26
+    NAME 'roleOGC'
+	    DESC 'Permet de connaittre le role de l utilisateur'
+	    SUP name)
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.27
+    NAME 'langue'
+	DESC 'Langue de la personne'
+	 SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.30
+    NAME 'representants'
+    DESC 'representants'
+    SUP name )
+
+attributetype ( 1.3.6.1.4.1.99999.2.2.31
+    NAME 'isProfessionnel'
+    DESC 'utilisateur de type professionnel'
+    SUP name )
+attributetype ( 1.3.6.1.4.1.99999.2.2.32
+    NAME 'typeUtilisateur'
+    DESC 'commune, grand public , etat , ...'
+    SUP name )
+attributetype ( 1.3.6.1.4.1.99999.2.2.35
+    NAME 'roleTheme'
+    DESC 'Permet de connaitre le role theme de l utilisateur'
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+    )
+attributetype ( 1.3.6.1.4.1.99999.2.2.34
+    NAME 'roleMymaps'
+    DESC 'Permet de connaitre le role mymaps de l utilisateur'
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+    )
+attributetype ( 1.3.6.1.4.1.99999.2.2.37
+    NAME 'isMymapsAdmin'
+    DESC 'Is mymaps admin'
+    EQUALITY booleanMatch
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
+
+
+
+objectclass ( 2.5.6.6.1
+    NAME 'entreprise'
+    DESC 'entreprise'
+    MUST ( uid $ name ) )
+
+objectclass ( 2.5.6.6.2
+    NAME 'utilisateur'
+    DESC 'LDAP utilisateur'
+    MUST login
+    MAY ( sn $ contact $ telephoneNumber $ mail $ facsimileTelephoneNumber $ url $ cLigne1 $ cLigne2 $ postalCode $ l $ st $
+        login $ userPassword $ fournisseur $ o $ gestionComm $ accesOGC $ adm $ roleOGC $ langue $ representants $ isProfessionnel $ typeUtilisateur $ roleTheme $ roleMymaps $ isMymapsAdmin) )
+
+objectclass ( 2.5.6.6.3
+    NAME 'utilisateurAff' SUP utilisateur STRUCTURAL
+    DESC 'LDAP utilisateur affilié'
+    MAY ( compteRacine $ voirCartes $ produits ) )
+
+objectclass ( 2.5.6.6.4
+    NAME 'utilisateurRacine' SUP utilisateur STRUCTURAL
+    DESC 'LDAP utilisateur racine'
+    MAY ( rca $ fLigne1 $ fLigne2 $ fPostalCode $ fL $ fSt ) )
+
+objectclass ( 2.5.6.6.5
+    NAME 'utilisateurDiff' SUP utilisateur STRUCTURAL
+    DESC 'LDAP utilisateur diffusion'
+    MAY ( rp $ re $ rea $ rr $ rco $ ren $ rf $ rmd ) )

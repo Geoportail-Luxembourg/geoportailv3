@@ -1,0 +1,2444 @@
+# 
+# Translators:
+# Andrea Donno <andrea.donno@me.com>, 2015-2016
+# dhorper <danielle.horper@act.etat.lu>, 2017-2019
+# dhorper <danielle.horper@act.etat.lu>, 2017
+# dhorper <danielle.horper@act.etat.lu>, 2017
+# Francis Kaell <francis.kaell@act.etat.lu>, 2015
+# Jeff Konnen <jaykayone@gmail.com>, 2015
+# Jeff Konnen <jaykayone@gmail.com>, 2015-2018
+# Loubnabarra <loubna064@yahoo.fr>, 2017
+# Loubnabarra <loubna064@yahoo.fr>, 2017
+# Patrick Weber <pweber@spatialbit.com>, 2015
+# Patrick Weber <pweber@spatialbit.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: portail\n"
+"PO-Revision-Date: 2019-01-11 14:29+0000\n"
+"Last-Translator: dhorper <danielle.horper@act.etat.lu>\n"
+"Language-Team: Luxembourgish (http://www.transifex.com/geoportail/geoportailv3-lu/language/lb/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: engineecadastre Layer:537 RoleNone
+msgid "f_Nom"
+msgstr "Numm"
+
+#: engineecadastre Layer:537 RoleNone
+msgid "f_Code national"
+msgstr ""
+
+#: engineecadastre Layer:763 RoleNone
+msgid "f_Photo"
+msgstr ""
+
+#: engineecadastre Layer:763 RoleNone
+msgid "f_Hyperlinks"
+msgstr ""
+
+#: engineecadastre Layer:763 RoleNone
+msgid "f_Abschnitt"
+msgstr ""
+
+#: engineecadastre Layer:584 RoleNone
+msgid "f_Cours eau"
+msgstr ""
+
+#: engineecadastre Layer:584 RoleNone
+msgid "f_Profil en travers"
+msgstr ""
+
+#: engineecadastre Layer:607 RoleNone
+msgid "f_Fiche descriptive"
+msgstr ""
+
+#: engineecadastre Layer:607 RoleNone
+msgid "f_Type LAWA"
+msgstr ""
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_name"
+msgstr "Numm"
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_address"
+msgstr "Adress"
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_available_bikes"
+msgstr "Verfügbar Veloën"
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_available_ebikes"
+msgstr "Verfügbar E-Bikes"
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_available_docks"
+msgstr "Verfügbar Statiounen"
+
+#: engineecadastre Layer:1386 RoleNone
+msgid "f_docks"
+msgstr "Total Statiounen"
+
+#: engineecadastre Layer:265 RoleNone
+msgid "f_numero"
+msgstr "Nummer"
+
+#: engineecadastre Layer:457 RoleNone
+msgid "f_tiff"
+msgstr ""
+
+#: engineecadastre Layer:1370 RoleNone
+msgid "f_nom"
+msgstr "Numm"
+
+#: engineecadastre Layer:1370 RoleNone
+msgid "f_geoloc_type"
+msgstr ""
+
+#: engineecadastre Layer:1370 RoleNone
+msgid "f_leg_fr"
+msgstr ""
+
+#: engineecadastre Layer:1370 RoleNone
+msgid "f_leg_gr"
+msgstr ""
+
+#: engineecadastre Layer:216 RoleNone
+msgid "f_nuts5"
+msgstr ""
+
+#: engineecadastre Layer:216 RoleNone
+msgid "f_c_canton"
+msgstr ""
+
+#: engineecadastre Layer:216 RoleNone
+msgid "f_habitants"
+msgstr ""
+
+#: engineecadastre Layer:216 RoleNone
+msgid "f_chef_lieu"
+msgstr ""
+
+#: engineecadastre Layer:216 RoleNone
+msgid "f_c_district"
+msgstr ""
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_commune"
+msgstr "Aktuellen Numm vun der Gemeng, an där sech den gréissten Deel vum Biotop befënnt"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_code"
+msgstr "Type vum Biotop"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_url_fiche"
+msgstr "Informatiounsfiche"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_biotope"
+msgstr "Eendeitege Code vum Biotop"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_annee_evaluation"
+msgstr "Joer vum initialen Inventar "
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_label_fr"
+msgstr "Franséischen Numm vum Biotop"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_label_de"
+msgstr "Däitschen Numm vum Biotop"
+
+#: engineecadastre Layer:1367 Role:664
+msgid "f_evaluation"
+msgstr "Gesamtbewertung vum Biotop"
+
+#: engineecadastre Layer:1368 RoleNone
+msgid "f_surface_ares"
+msgstr "Fläech an Ar (100m²) opgeronnt op de Meter-Carré "
+
+#: engineecadastre Layer:1360 RoleNone
+msgid "f_Etat"
+msgstr "Status"
+
+#: engineecadastre Layer:1360 RoleNone
+msgid "f_P_kW"
+msgstr "Elektresch Nennleeschtung (kVA)"
+
+#: engineecadastre Layer:1360 RoleNone
+msgid "f_D_rotor_m"
+msgstr "Duerchmiesser vum Propeller (Meter)"
+
+#: engineecadastre Layer:1360 RoleNone
+msgid "f_H_Moy_m"
+msgstr "Nabenhéicht (Meter)"
+
+#: engineecadastre Layer:664 RoleNone
+msgid "f_Exploitant"
+msgstr ""
+
+#: engineecadastre Layer:664 RoleNone
+msgid "f_Code"
+msgstr ""
+
+#: engineecadastre Layer:664 RoleNone
+msgid "f_Nom(s) du/des captages(s) concerné(s)"
+msgstr ""
+
+#: engineecadastre Layer:664 RoleNone
+msgid "f_Projet de Règlement grand-ducal"
+msgstr ""
+
+#: engineecadastre Layer:647 RoleNone
+msgid "f_Photo station"
+msgstr ""
+
+#: engineecadastre Layer:573 RoleNone
+msgid "f_Publication du règlement grand-duca"
+msgstr ""
+
+#: engineecadastre Layer:797 RoleNone
+msgid "f_site de la commune"
+msgstr ""
+
+#: engineecadastre Layer:805 RoleNone
+msgid "f_no_zpin"
+msgstr "Nummer"
+
+#: engineecadastre Layer:805 RoleNone
+msgid "f_interets_principaux"
+msgstr "Haapt Interêten"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_interdiction_zone_c"
+msgstr "Verbuet Zone C"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_interdiction_zone_a"
+msgstr "Verbuet Zone A"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_date_classement"
+msgstr "Datum vun der Klasséirung"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_interdiction_zone_b"
+msgstr "Verbuet Zone B"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_commentaire"
+msgstr "Kommentar"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_sous_zone"
+msgstr "Ënner-zon"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_link"
+msgstr "Link"
+
+#: engineecadastre Layer:804 RoleNone
+msgid "f_code_national"
+msgstr "Nationalen Code"
+
+#: engineecadastre Layer:1381 RoleNone
+msgid "f_Name"
+msgstr "Numm"
+
+#: engineecadastre Layer:1381 RoleNone
+msgid "f_description"
+msgstr "Beschreiwung"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_CadastrePa"
+msgstr "Kadasterparzell"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_CadastreSe"
+msgstr "Kadastersectioun"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_ArreteAEV"
+msgstr "Autorisatioun vum Ëmweltminister / Commodo"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_Installati"
+msgstr "Installatioun"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_ArretNum"
+msgstr "Arrêtésnummer"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_SiteOperat"
+msgstr "Site"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_Adresse"
+msgstr "Adresse"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_Reception"
+msgstr "Réceptioun"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_Explicatio"
+msgstr "Allgemeng Erklärungen"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_ArreteITM"
+msgstr "Autorisatioun vum Aarbechtsminister"
+
+#: engineecadastre Layer:801 RoleNone
+msgid "f_Reception2"
+msgstr "Réceptioun 2"
+
+#: engineecadastre Layer:802 RoleNone
+msgid "f_PointMesur"
+msgstr ""
+
+#: engineecadastre Layer:802 RoleNone
+msgid "f_URL"
+msgstr ""
+
+#: engineecadastre Layer:1383 RoleNone
+msgid "f_Km2"
+msgstr "Fläch (km2)"
+
+#: engineecadastre Layer:1383 RoleNone
+msgid "f_Steckbri_1"
+msgstr "Steckbréif"
+
+#: engineecadastre Layer:1383 RoleNone
+msgid "f_Legende"
+msgstr "Typ vun der Zone"
+
+#: engineecadastre Layer:1383 RoleNone
+msgid "f_Id"
+msgstr ""
+
+#: engineecadastre Layer:662 RoleNone
+msgid "f_Code masse eau"
+msgstr ""
+
+#: engineecadastre Layer:662 RoleNone
+msgid "f_Fiches descriptives"
+msgstr ""
+
+#: engineecadastre Layer:811 RoleNone
+msgid "f_Operateur"
+msgstr "Opérateur"
+
+#: engineecadastre Layer:811 RoleNone
+msgid "f_Commune"
+msgstr "Gemeng"
+
+#: engineecadastre Layer:811 RoleNone
+msgid "f_Technologi"
+msgstr "Technologie"
+
+#: engineecadastre Layer:811 RoleNone
+msgid "f_Site"
+msgstr "Site"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_fax"
+msgstr "Fax"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_code_postal"
+msgstr "Code postal"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_telephone"
+msgstr "Telefon"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_rue"
+msgstr "Strooss"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_boite_postale"
+msgstr "Boîte postale"
+
+#: engineecadastre Layer:427 RoleNone
+msgid "f_localite"
+msgstr "Uertschaft"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_STA_AQIAPP_ID"
+msgstr ""
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_RPT_FILE"
+msgstr "Joeresbericht (monatlech aktualiseiert)"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ATM_INFO"
+msgstr ""
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ADR_LUREF_X"
+msgstr "Coordonnée X"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ADR_LUREF_Y"
+msgstr "Coordonnée Y"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ADR_CITY"
+msgstr "Localité"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ATM_INFO_RAW"
+msgstr ""
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_STA_F_ACTIVE"
+msgstr "Status (an Betriib = 1, ausser Betrieb = 0)"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ADR_NUM_STREET"
+msgstr "Numéro"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_STA_CODE"
+msgstr "Code"
+
+#: engineecadastre Layer:1426 RoleNone
+msgid "f_ADR_STREET"
+msgstr "Rue"
+
+#: engineecadastre Layer:1425 RoleNone
+msgid "f_pm10_index_w_leg"
+msgstr "PM10 Sub-Index"
+
+#: engineecadastre Layer:1425 RoleNone
+msgid "f_date_et_heure"
+msgstr "Datum an Auerzait"
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_nom_section"
+msgstr ""
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_district"
+msgstr "Distrikt"
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_commune_cad"
+msgstr "Kadastergemeng"
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_commune_admin"
+msgstr "Gemeng"
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_code_section"
+msgstr "Sektioun"
+
+#: engineecadastre Layer:355 RoleNone
+msgid "f_canton"
+msgstr "Kanton"
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_InspireID"
+msgstr ""
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_CODE"
+msgstr ""
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_FID"
+msgstr "FID"
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_SITENAME"
+msgstr "Numm"
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_TYPE"
+msgstr ""
+
+#: engineecadastre Layer:540 RoleNone
+msgid "f_SITECODE"
+msgstr "Code"
+
+#: engineecadastre Layer:408 RoleNone
+msgid "f_Nom_Projet"
+msgstr "Projet"
+
+#: engineecadastre Layer:408 RoleNone
+msgid "f_Nr_Projet"
+msgstr "Projets-Nr."
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_PERIMETER"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Reclasseme"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Classement"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_AREA"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_ORIG_FID"
+msgstr ""
+
+#: engineecadastre Layer:1434 RoleNone
+msgid "f_communeDDP"
+msgstr "Gemeng"
+
+#: engineecadastre Layer:1434 RoleNone
+msgid "f_plan"
+msgstr "Plang"
+
+#: engineecadastre Layer:1434 RoleNone
+msgid "f_num_cadast"
+msgstr "Parzellennummer"
+
+#: engineecadastre Layer:401 RoleNone
+msgid "f_Nom_Site"
+msgstr "Numm vum Site"
+
+#: engineecadastre Layer:401 RoleNone
+msgid "f_SurfaceHa"
+msgstr "Surface an ha"
+
+#: engineecadastre Layer:410 RoleNone
+msgid "f_Projet"
+msgstr "Projet"
+
+#: engineecadastre Layer:410 RoleNone
+msgid "f_Type"
+msgstr "Typ"
+
+#: engineecadastre Layer:410 RoleNone
+msgid "f_Priorite"
+msgstr "Prioritéit"
+
+#: engineecadastre Layer:585 RoleNone
+msgid "f_Code cours eau"
+msgstr ""
+
+#: engineecadastre Layer:585 RoleNone
+msgid "f_Code station"
+msgstr ""
+
+#: engineecadastre Layer:1464 RoleNone
+msgid "f_Operator"
+msgstr ""
+
+#: engineecadastre Layer:1464 RoleNone
+msgid "f_OBJECTID"
+msgstr ""
+
+#: engineecadastre Layer:407 RoleNone
+msgid "f_Categorie"
+msgstr "Kategorie"
+
+#: engineecadastre Layer:402 RoleNone
+msgid "f_Remarque"
+msgstr "Remarque"
+
+#: engineecadastre Layer:655 Role:1
+msgid "f_Fiche station"
+msgstr ""
+
+#: engineecadastre Layer:626 RoleNone
+msgid "f_lot"
+msgstr ""
+
+#: engineecadastre Layer:626 RoleNone
+msgid "f_Gewaesser"
+msgstr ""
+
+#: engineecadastre Layer:768 RoleNone
+msgid "f_Résultats"
+msgstr ""
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_Nbre_mes"
+msgstr "Unzuel vun den Miessungen"
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_Act_min"
+msgstr "Aktivitéit min."
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_Activite"
+msgstr "Duerchschnëttlech Aktivitéit"
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_CANTON"
+msgstr "Kanton"
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_Act_max"
+msgstr "Aktivitéit max."
+
+#: engineecadastre Layer:1468 RoleNone
+msgid "f_LAU2"
+msgstr "LAU2 Code"
+
+#: engineecadastre Layer:582 RoleNone
+msgid "f_grundwasser.GISADMIN.OuvragesWISKI.Drkg_Wtr_Prot_Zone"
+msgstr ""
+
+#: engineecadastre Layer:582 RoleNone
+msgid "f_Nitrates (mg/l)"
+msgstr ""
+
+#: engineecadastre Layer:1405 RoleNone
+msgid "f_Années de construction"
+msgstr ""
+
+#: engineecadastre Layer:1405 RoleNone
+msgid "f_Type conduite"
+msgstr ""
+
+#: engineecadastre Layer:1405 RoleNone
+msgid "f_Longueur géométrique (m)"
+msgstr ""
+
+#: engineecadastre Layer:1405 RoleNone
+msgid "f_Matériel conduite"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Cycle_pdm"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_WK_Nr"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_WK_Bezeich"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Planungszu"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Projekt_Co"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_result__Ge"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_RW_erster"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Lux_ID"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_F8"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Bezeichnun"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Kurzbezeic"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Maßnahmen"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_HW_erster"
+msgstr ""
+
+#: engineecadastre Layer:752 RoleNone
+msgid "f_Fiche"
+msgstr ""
+
+#: engineecadastre Layer:1409 RoleNone
+msgid "f_Superficie (km²)"
+msgstr ""
+
+#: engineecadastre Layer:1409 RoleNone
+msgid "f_Code AGE du point d'analyse"
+msgstr ""
+
+#: engineecadastre Layer:1409 RoleNone
+msgid "f_Cours d'eau"
+msgstr "Waasserleef"
+
+#: engineecadastre Layer:656 RoleNone
+msgid "f_Profil"
+msgstr ""
+
+#: engineecadastre Layer:656 RoleNone
+msgid "f_Nom de la station"
+msgstr ""
+
+#: engineecadastre Layer:682 RoleNone
+msgid "f_localisation"
+msgstr "Standuert"
+
+#: engineecadastre Layer:682 RoleNone
+msgid "f_parkup"
+msgstr "Etagenparking"
+
+#: engineecadastre Layer:682 RoleNone
+msgid "f_capacity_inside"
+msgstr "Kapazitéit"
+
+#: engineecadastre Layer:713 RoleNone
+msgid "f_Tronçon"
+msgstr "Sektioun"
+
+#: engineecadastre Layer:713 RoleNone
+msgid "f_Numéro"
+msgstr "ID Site"
+
+#: engineecadastre Layer:713 RoleNone
+msgid "f_YEAR"
+msgstr "Joer"
+
+#: engineecadastre Layer:444 RoleNone
+msgid "f_label_line"
+msgstr "LABEL_LINE"
+
+#: engineecadastre Layer:444 RoleNone
+msgid "f_label_section"
+msgstr "LABEL_SECTION"
+
+#: engineecadastre Layer:539 RoleNone
+msgid "f_label"
+msgstr "Parzell"
+
+#: engineecadastre Layer:352 RoleNone
+msgid "f_ligne"
+msgstr ""
+
+#: engineecadastre Layer:352 RoleNone
+msgid "f_ligneshort"
+msgstr ""
+
+#: engineecadastre Layer:352 RoleNone
+msgid "f_no_ligne"
+msgstr ""
+
+#: engineecadastre Layer:352 RoleNone
+msgid "f_pk"
+msgstr ""
+
+#: engineecadastre Layer:352 RoleNone
+msgid "f_pk_text"
+msgstr ""
+
+#: engineecadastre Layer:428 RoleNone
+msgid "f_heures_appel"
+msgstr "Urufszäiten"
+
+#: engineecadastre Layer:428 RoleNone
+msgid "f_arrondissement"
+msgstr "Arrondissementer"
+
+#: engineecadastre Layer:428 RoleNone
+msgid "f_preposes_forestiers"
+msgstr "Fieschter"
+
+#: engineecadastre Layer:428 RoleNone
+msgid "f_gsm"
+msgstr "Gsm"
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_SelectTest"
+msgstr ""
+
+#: engineecadastre Layer:389 RoleNone
+msgid "f_essence"
+msgstr ""
+
+#: engineecadastre Layer:389 RoleNone
+msgid "f_propriete"
+msgstr "BESITZ"
+
+#: engineecadastre Layer:690 RoleNone
+msgid "f_secteur"
+msgstr "SEKTOR"
+
+#: engineecadastre Layer:690 RoleNone
+msgid "f_region"
+msgstr "REGION"
+
+#: engineecadastre Layer:645 RoleNone
+msgid "f_Analyses"
+msgstr ""
+
+#: engineecadastre Layer:645 RoleNone
+msgid "f_CAPA"
+msgstr ""
+
+#: engineecadastre Layer:163 RoleNone
+msgid "f_LEG_FR"
+msgstr "Typ"
+
+#: engineecadastre Layer:331 RoleNone
+msgid "f_type"
+msgstr "Typ"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_essence_la"
+msgstr "Art (lat)"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_nom_de"
+msgstr "Numm (de)"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_nom_la"
+msgstr "Numm (lat)"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_essence_fr"
+msgstr "Art (fr)"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_abreviation"
+msgstr "Ofkierzung"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_nom_fr"
+msgstr "Numm (fr)"
+
+#: engineecadastre Layer:524 RoleNone
+msgid "f_essence_de"
+msgstr "Art (de)"
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_EtudeChiro"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_EtudeChir"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Ext_Nouv"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_SUP2017"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Join_Count"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Area_ha"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Print0719"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_SHAPE_Leng"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_OBJECTID_1"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_NomZone"
+msgstr "Zonen-Numm"
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_TARGET_FID"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_PrintModif"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_NumeroRGD"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_AREA_DEF"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Specifique"
+msgstr "Remarque"
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_Select_"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_NomZone2"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_ElimComp"
+msgstr ""
+
+#: engineecadastre Layer:8811 RoleNone
+msgid "f_SHAPE_Le_1"
+msgstr ""
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_No"
+msgstr "No"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Niveau d'assainissement"
+msgstr "Niveau d'assainissement"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Contamination résiduelle"
+msgstr "Contamination résiduelle"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Ancien No"
+msgstr "Ancien No"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Description"
+msgstr "Description"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Nom du site"
+msgstr "Nom du site"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Année de saisie"
+msgstr "Année de saisie"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Commentaire"
+msgstr "Commentaire"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Identifiant surface"
+msgstr "Identifiant surface"
+
+#: engineecadastre Layer:680 RoleNone
+msgid "f_Méthode"
+msgstr "Méthode"
+
+#: engineecadastre Layer:365 RoleNone
+msgid "f_Leg_Fr"
+msgstr "Franséisch Legende vun der Pufferzone: \"PZ\""
+
+#: engineecadastre Layer:365 RoleNone
+msgid "f_Leg_Gr"
+msgstr "Däitsch Legende vun der Pufferzone: \"PZ\""
+
+#: engineecadastre Layer:365 RoleNone
+msgid "f_Buffer_Id"
+msgstr "Eendeitege Code vun der Pufferzone"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BKGemeinde"
+msgstr "Gemengennumm während dem Kartéierungsjoer"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP1_Code"
+msgstr "Code vum éischte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_Shape_ares"
+msgstr "Fläech an Ar (100m²) opgeronnt op de Meter-Carré"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_GEOCODE"
+msgstr "Eendeitege Code vum Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP3_Nom"
+msgstr "Franséischen Numm vum drëtte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP2_Code"
+msgstr "Code vum zweete Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BKJahr"
+msgstr "Kartéierungsjoer"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP2_Nom"
+msgstr "Franséischen Numm vum zweete Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP1_Name"
+msgstr "Däitschen Numm vum éischte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP3_Code"
+msgstr "Code vum drëtte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BEWERTUNG3"
+msgstr "Bewäertung vum drëtte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BEWERTUNG2"
+msgstr "Bewäertung vum zweete Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BEWERTUNG1"
+msgstr "Bewäertung vum éischte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP3_Name"
+msgstr "Däitschen Numm vum drëtte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP1_Nom"
+msgstr "Franséischen Numm vum éischte Biotop"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_GEMEINDE"
+msgstr "Aktuellen Numm vun der Gemeng, di de gréissten Deel vum Biotop ophëllt"
+
+#: engineecadastre Layer:364 RoleNone
+msgid "f_BTYP2_Name"
+msgstr "Däitschen Numm vum zweete Biotop"
+
+#: engineecadastre Layer:490 RoleNone
+msgid "f_Partie numéro"
+msgstr ""
+
+#: engineecadastre Layer:490 RoleNone
+msgid "f_Loi"
+msgstr ""
+
+#: engineecadastre Layer:670 RoleNone
+msgid "f_COMMUNE"
+msgstr "Gemeng"
+
+#: engineecadastre Layer:670 RoleNone
+msgid "f_UHD3"
+msgstr ""
+
+#: engineecadastre Layer:493 RoleNone
+msgid "f_Nom écosystème"
+msgstr ""
+
+#: engineecadastre Layer:419 RoleNone
+msgid "f_coord_y"
+msgstr ""
+
+#: engineecadastre Layer:419 RoleNone
+msgid "f_arbre_baum"
+msgstr ""
+
+#: engineecadastre Layer:419 RoleNone
+msgid "f_coord_x"
+msgstr ""
+
+#: engineecadastre Layer:685 RoleNone
+msgid "f_kml_name"
+msgstr "Numm"
+
+#: engineecadastre Layer:685 RoleNone
+msgid "f_kml_description"
+msgstr "Beschreiwung"
+
+#: engineecadastre Layer:678 RoleNone
+msgid "f_station_biologique"
+msgstr "Biologesch Statioun"
+
+#: engineecadastre Layer:581 RoleNone
+msgid "f_Qualité"
+msgstr ""
+
+#: engineecadastre Layer:581 RoleNone
+msgid "f_messstationen.GISADMIN.Badegewaesser.Baignade"
+msgstr ""
+
+#: engineecadastre Layer:157 RoleNone
+msgid "f_LDEN"
+msgstr "dB"
+
+#: engineecadastre Layer:627 RoleNone
+msgid "f_Station"
+msgstr ""
+
+#: engineecadastre Layer:691 RoleNone
+msgid "f_lot_numero"
+msgstr "NUMMER"
+
+#: engineecadastre Layer:167 RoleNone
+msgid "f_CodeDesc"
+msgstr "Typ"
+
+#: engineecadastre Layer:255 RoleNone
+msgid "f_LNGT"
+msgstr "dB"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_flurname"
+msgstr "Lieu-dit"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_vendeur"
+msgstr "Vendeur"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_rem_p"
+msgstr "Remarque Bail"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_datum"
+msgstr "Date d''achat"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_notar"
+msgstr "Notaire"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_paechter"
+msgstr "Operator"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_id"
+msgstr "PF"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_jagdlos"
+msgstr "Lot de chasse"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_sektion"
+msgstr "Section"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_fischereil"
+msgstr "Lot de peche"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_num_flik"
+msgstr "Num. FLIK"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_aff"
+msgstr "Affectation"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_fl_che"
+msgstr "Surface cadastrale"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_rem"
+msgstr "Remarque"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_gemeinde"
+msgstr "Gemeng"
+
+#: engineecadastre Layer:367 RoleNone
+msgid "f_kadasternu"
+msgstr "Num. cadastral"
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_voiture_emprises"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_velo_connection1"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_cout"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_velo_emprises"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_velo_connection"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_station"
+msgstr "Statioun"
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_operateur"
+msgstr ""
+
+#: engineecadastre Layer:378 RoleNone
+msgid "f_open"
+msgstr ""
+
+#: engineecadastre Layer:368 RoleNone
+msgid "f_systeme"
+msgstr "Service"
+
+#: engineecadastre Layer:368 RoleNone
+msgid "f_adress"
+msgstr "Adress"
+
+#: engineecadastre Layer:368 RoleNone
+msgid "f_reservation"
+msgstr "Reservatioun"
+
+#: engineecadastre Layer:368 RoleNone
+msgid "f_bornes"
+msgstr "Bornen"
+
+#: engineecadastre Layer:368 RoleNone
+msgid "f_ouvert"
+msgstr "Erreechbar"
+
+#: engineecadastre Layer:643 RoleNone
+msgid "f_Syndicat"
+msgstr ""
+
+#: engineecadastre Layer:659 RoleNone
+msgid "f_NAME"
+msgstr "Numm"
+
+#: engineecadastre Layer:441 RoleNone
+msgid "f_Cause mauvais etat"
+msgstr ""
+
+#: engineecadastre Layer:536 RoleNone
+msgid "f_km2"
+msgstr ""
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_no2_index_w_leg"
+msgstr "NO2 Sub-Index"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_o3_index_w_leg"
+msgstr "O3 Sub-Index"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_o3_index"
+msgstr "Sub-Index O3"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_pm25_value"
+msgstr ""
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_o3_value"
+msgstr "Konzentratioun O3 (ug/m3)"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_pm25_index"
+msgstr ""
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_pm10_value"
+msgstr "PM10 Partikel-Konzentratioun (ug/m3) - Gleitenden 24-Stonnenmëttelwert"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_pm25_index_w_leg"
+msgstr "PM2.5 Sub-Index"
+
+#: engineecadastre Layer:1432 RoleNone
+msgid "f_no2_value"
+msgstr "Stéckstoffdioxid NO2 Konzentratioun (ug/m3) - Stonnenmëttelwert"
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_code_dossier"
+msgstr ""
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_date_fin"
+msgstr ""
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_annexe"
+msgstr ""
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_date_debut"
+msgstr ""
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_etat_libelle"
+msgstr ""
+
+#: engineecadastre Layer:726 RoleNone
+msgid "f_aide"
+msgstr ""
+
+#: engineecadastre Layer:747 RoleNone
+msgid "f_Naturpark"
+msgstr "Naturpark"
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_type_d_i_2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_charges__1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_type_d_i_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_ru"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_charges__2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_b_"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_easting"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_owner"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_northing"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_bois"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_numero_arr"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_type_d_ins"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_decommissi"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_master"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_periode__1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_periode_de"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_organisme_"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_mazout"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_cha"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_nu"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_apres_2018"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_no"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_latitude"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_c_4"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_c_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_c_3"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_c_2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_installa_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_gaz_nature"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_m_3"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_m_2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_longitude"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_coordonn_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_m_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_organisme1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_code_nace"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_conforme"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_remarque"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_coordonnee"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_site_local"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_installate"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_ch_1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_ch_3"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_ch_2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_ch_4"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_sect_artis"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_heures_mot"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_co"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_diesel"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_rapport"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_mot1"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_mot3"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_mot2"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_mot5"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_mot4"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_biogaz"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_sect_comme"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_contact_lo"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_batiment"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_site_rue"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_date"
+msgstr "Datum"
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_sect_indus"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_sect_admin"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_exemption"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_avant_2018"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_site_code_"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_puiss_chau"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_site_numer"
+msgstr ""
+
+#: engineecadastre Layer:1465 RoleNone
+msgid "f_charges_mo"
+msgstr ""
+
+#: engineecadastre Layer:808 RoleNone
+msgid "f_ITINERAIRE"
+msgstr ""
+
+#: engineecadastre Layer:808 RoleNone
+msgid "f_N_PC"
+msgstr "Nummer"
+
+#: engineecadastre Layer:808 RoleNone
+msgid "f_NOM PC"
+msgstr "Numm"
+
+#: engineecadastre Layer:1476 RoleNone
+msgid "f_EWA"
+msgstr ""
+
+#: engineecadastre Layer:1476 RoleNone
+msgid "f_E75N"
+msgstr ""
+
+#: engineecadastre Layer:1476 RoleNone
+msgid "f_UCZ"
+msgstr "Hotspot ID"
+
+#: engineecadastre Layer:1476 RoleNone
+msgid "f_EWC"
+msgstr ""
+
+#: engineecadastre Layer:1469 RoleNone
+msgid "f_Code de l'élément fonctionnel"
+msgstr ""
+
+#: engineecadastre Layer:1469 RoleNone
+msgid "f_Elément fonctionnel"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_Code de la masse eau de surface"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_Type de mesure"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_ID de la mesure"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_Nom de la masse d'eau de surface"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_Taille de la mesure"
+msgstr ""
+
+#: engineecadastre Layer:785 RoleNone
+msgid "f_Description de la mesure"
+msgstr ""
+
+#: engineecadastre Layer:758 RoleNone
+msgid "f_Type de la mesure"
+msgstr ""
+
+#: engineecadastre Layer:758 RoleNone
+msgid "f_Longueur (m)"
+msgstr ""
+
+#: engineecadastre Layer:1471 RoleNone
+msgid "f_Code de la masse d'eau de surface"
+msgstr ""
+
+#: engineecadastre Layer:669 RoleNone
+msgid "f_UHD2"
+msgstr ""
+
+#: engineecadastre Layer:1359 RoleNone
+msgid "f_RPT_FILE_NEW"
+msgstr ""
+
+#: engineecadastre Layer:1475 RoleNone
+msgid "f_E70N"
+msgstr ""
+
+#: engineecadastre Layer:1475 RoleNone
+msgid "f_E75L"
+msgstr ""
+
+#: engineecadastre Layer:1475 RoleNone
+msgid "f_E65N"
+msgstr ""
+
+#: engineecadastre Layer:671 RoleNone
+msgid "f_UHD1"
+msgstr ""
+
+#: engineecadastre Layer:710 RoleNone
+msgid "f_LienMemori"
+msgstr ""
+
+#: engineecadastre Layer:710 RoleNone
+msgid "f_nom_fichier"
+msgstr ""
+
+#: engineecadastre Layer:710 RoleNone
+msgid "f_Area"
+msgstr ""
+
+#: engineecadastre Layer:710 RoleNone
+msgid "f_NomProjet"
+msgstr ""
+
+#: engineecadastre Layer:1503 RoleNone
+msgid "f_UCEden"
+msgstr "UCEden Belastung"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_adr_street"
+msgstr "Strooss"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_link_to_emwelt"
+msgstr "Link"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_pm10_value_w_leg"
+msgstr "PM10 Partikel-Konzentratioun (ug/m3) - Gleitenden 24-Stonnenmëttelwert"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_adr_city"
+msgstr "Uertschaft"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_ozone_value"
+msgstr "Ozon O3 Konzentratioun (ug/m3) - Stonnenmëttelwert"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_index"
+msgstr "Gesamtindex"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_ozone_index_w_leg"
+msgstr "Sub-Index O3"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_no2_value_w_leg"
+msgstr "Stéckstoffdioxid NO2 Konzentratioun (ug/m3) - Stonnenmëttelwert"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_ozone_value_w_leg"
+msgstr "Ozon O3 Konzentratioun (ug/m3) - Stonnenmëttelwert"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_luref_x"
+msgstr "X-Koordinate"
+
+#: engineecadastre Layer:1357 RoleNone
+msgid "f_luref_y"
+msgstr "Y-Koordinate"
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Créé le"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Publiée"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Abandonné"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Séquence"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Catégorie d'SPC"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Créé par"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Traité"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Effacé"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_st_area(sur_shape)"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Type de surface"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Modifié le"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_st_length(sur_shape)"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Sous type"
+msgstr ""
+
+#: engineecadastre Layer:1479 RoleNone
+msgid "f_Modifié par"
+msgstr ""
+
+#: engineecadastre Layer:1494 RoleNone
+msgid "f_fournisseur"
+msgstr "Netzbedreiwer"
+
+#: engineecadastre Layer:1494 RoleNone
+msgid "f_texte_fr"
+msgstr " Démarche"
+
+#: engineecadastre Layer:1496 RoleNone
+msgid "f_rdv"
+msgstr "Rendez-vous"
+
+#: engineecadastre Layer:1496 RoleNone
+msgid "f_adresse"
+msgstr "Adress"
+
+#: engineecadastre Layer:1496 RoleNone
+msgid "f_responsable"
+msgstr "Responsabel"
+
+#: engineecadastre Layer:1496 RoleNone
+msgid "f_horaire"
+msgstr "Ëffnungszäiten"
+
+#: engineecadastre Layer:1507 RoleNone
+msgid "f_Descrip"
+msgstr ""
+
+#: engineecadastre Layer:1506 RoleNone
+msgid "f_Field1"
+msgstr ""
+
+#: engineecadastre Layer:1506 RoleNone
+msgid "f_Code_posta"
+msgstr ""
+
+#: engineecadastre Layer:1506 RoleNone
+msgid "f_Longitude"
+msgstr ""
+
+#: engineecadastre Layer:1506 RoleNone
+msgid "f_Latitude"
+msgstr ""
+
+#: engineecadastre Layer:1506 RoleNone
+msgid "f_Addresse"
+msgstr ""
+
+#: engineecadastre Layer:1508 RoleNone
+msgid "f_Centre_de"
+msgstr ""
+
+#: engineecadastre Layer:1508 RoleNone
+msgid "f_Y"
+msgstr ""
+
+#: engineecadastre Layer:1508 RoleNone
+msgid "f_X"
+msgstr ""
+
+#: engineecadastre Layer:1509 RoleNone
+msgid "f_F1"
+msgstr ""
+
+#: engineecadastre Layer:1477 RoleNone
+msgid "f_IdAEV"
+msgstr ""
+
+#: engineecadastre Layer:1477 RoleNone
+msgid "f_LUREF_X"
+msgstr "X-Koordinate"
+
+#: engineecadastre Layer:1477 RoleNone
+msgid "f_Moy2018"
+msgstr "NO2 Mëttelwert (ug/m3)"
+
+#: engineecadastre Layer:1477 RoleNone
+msgid "f_LUREF_Y"
+msgstr "Y-Koordinate"
+
+#: engineecadastre Layer:1477 RoleNone
+msgid "f_Localité"
+msgstr "Uertschaft"
+
+#: engineecadastre Layer:1511 RoleNone
+msgid "f_AGE"
+msgstr "Unzuel Jore vun der Begréngung"
+
+#: engineecadastre Layer:1511 RoleNone
+msgid "f_FLAECHE_AR"
+msgstr "Fläch (an Ar)"
+
+#: engineecadastre Layer:1538 RoleNone
+msgid "f_Allemands"
+msgstr "Däitsch Bevëlkerung"
+
+#: engineecadastre Layer:1538 RoleNone
+msgid "f_F__Alleman"
+msgstr "Undeel vun Däitschen a %"
+
+#: engineecadastre Layer:1537 RoleNone
+msgid "f_F__Afrique"
+msgstr "Undeel vun Afrikaner a %"
+
+#: engineecadastre Layer:1537 RoleNone
+msgid "f_Afrique"
+msgstr "Afrikanesch Bevëlkerung"
+
+#: engineecadastre Layer:1514 RoleNone
+msgid "f_type_proprietaire"
+msgstr "Besëtzerverhältnis"
+
+#: engineecadastre Layer:1514 RoleNone
+msgid "f_nom_proprietaire"
+msgstr "Numm vum Besëtzer"
+
+#: engineecadastre Layer:1514 RoleNone
+msgid "f_annee_inventaire"
+msgstr "Joër vum Bëschinventaire"
+
+#: engineecadastre Layer:1512 RoleNone
+msgid "f_NO2_I1G"
+msgstr "NO2 (ug/m3)"
+
+#: engineecadastre Layer:1512 RoleNone
+msgid "f_STR_NAME"
+msgstr "Strooss"
+
+#: engineecadastre Layer:1536 RoleNone
+msgid "f_F__Portuga"
+msgstr "Undeel vu Portugisen a %"
+
+#: engineecadastre Layer:1536 RoleNone
+msgid "f_Portugais"
+msgstr "Portugisesch Bevëlkerung"
+
+#: engineecadastre Layer:1539 RoleNone
+msgid "f_Amérique"
+msgstr "Amerikanesch Bevëlkerung"
+
+#: engineecadastre Layer:1539 RoleNone
+msgid "f_F__Amériq"
+msgstr "Undeel vun Amerikaner a %"
+
+#: engineecadastre Layer:1532 RoleNone
+msgid "f_CODE_LAU2"
+msgstr "LAU2 Code"
+
+#: engineecadastre Layer:1579 RoleNone
+msgid "f_Etranger"
+msgstr "Auslännesch Bevëlkerung"
+
+#: engineecadastre Layer:1579 RoleNone
+msgid "f_F__étrang"
+msgstr "Undeel vun Auslänner a %"
+
+#: engineecadastre Layer:1579 RoleNone
+msgid "f_Luxembourg"
+msgstr "Lëtzebuerger Bevëlkerung"
+
+#: engineecadastre Layer:1579 RoleNone
+msgid "f_F__luxembo"
+msgstr "Undeel vu Lëtzebuerger a %"
+
+#: engineecadastre Layer:1544 RoleNone
+msgid "f_F__Italien"
+msgstr "Undeel vun Italiener a %"
+
+#: engineecadastre Layer:1544 RoleNone
+msgid "f_Italiens"
+msgstr "Italienesch Bevëlkerung"
+
+#: engineecadastre Layer:1543 RoleNone
+msgid "f_F__UE28"
+msgstr "Undeel vun Europäer (EU-28) a %"
+
+#: engineecadastre Layer:1543 RoleNone
+msgid "f_UE28"
+msgstr "Bevëlkerung aus der EU-28"
+
+#: engineecadastre Layer:1542 RoleNone
+msgid "f_Européens"
+msgstr "Europäesch Bevëlkerung (Net-EU-28)"
+
+#: engineecadastre Layer:1542 RoleNone
+msgid "f_F__non_UE"
+msgstr "Undeel vun Europäer (Net-EU-28) a %"
+
+#: engineecadastre Layer:1541 RoleNone
+msgid "f_Belges"
+msgstr "Belsch Bevëlkerung"
+
+#: engineecadastre Layer:1541 RoleNone
+msgid "f_F__Belges"
+msgstr "Undeel vu Belsch a %"
+
+#: engineecadastre Layer:1540 RoleNone
+msgid "f_AsieOcéan"
+msgstr "Asiatesch an Ozeanesch Bevëlkerung"
+
+#: engineecadastre Layer:1540 RoleNone
+msgid "f_F__Asie_et"
+msgstr "Undeel vun Asiaten an Ozeanier a %"
+
+#: engineecadastre Layer:1577 RoleNone
+msgid "f_Population_com"
+msgstr "Bevëlkerung pro Gemeng"
+
+#: engineecadastre Layer:1534 RoleNone
+msgid "f_F__França"
+msgstr "Undeel vu Fransousen a %"
+
+#: engineecadastre Layer:1534 RoleNone
+msgid "f_Français"
+msgstr "Franséisch Bevëlkerung"
+
+#: engineecadastre Layer:1567 RoleNone
+msgid "f_total_m_3"
+msgstr "Bevëlkerung ënner 3 Joer"
+
+#: engineecadastre Layer:1567 RoleNone
+msgid "f_part_m_3"
+msgstr "Undeel vun der Bevëlkerung ënner 3 Joer a %"
+
+#: engineecadastre Layer:1569 RoleNone
+msgid "f_part_6_10"
+msgstr "Undeel vun der Bevëlkerung tëscht 6 an 10 Joer a %"
+
+#: engineecadastre Layer:1569 RoleNone
+msgid "f_total_6_10"
+msgstr "Bevëlkerung tëscht 6 an 10 Joer"
+
+#: engineecadastre Layer:1568 RoleNone
+msgid "f_part_3_5"
+msgstr "Undeel vun der Bevëlkerung tëscht 3 a 5 Joer a %"
+
+#: engineecadastre Layer:1568 RoleNone
+msgid "f_total_3_5"
+msgstr "Bevëlkerung tëscht 3 a 5 Joer"
+
+#: engineecadastre Layer:1570 RoleNone
+msgid "f_tot_11_17"
+msgstr "Bevëlkerung tëscht 11 an 17 Joer"
+
+#: engineecadastre Layer:1570 RoleNone
+msgid "f_part_11_17"
+msgstr "Undeel vun der Bevëlkerung tëscht 11 an 17 Joer a %"
+
+#: engineecadastre Layer:1572 RoleNone
+msgid "f_p_75_89"
+msgstr "Undeel vun der Bevëlkerung tëscht 75 an 89 Joer a %"
+
+#: engineecadastre Layer:1572 RoleNone
+msgid "f_t_75_89"
+msgstr "Bevëlkerung tëscht 75 an 89 Joer"
+
+#: engineecadastre Layer:1573 RoleNone
+msgid "f_t_90"
+msgstr "Bevëlkerung mat 90 Joer a méi"
+
+#: engineecadastre Layer:1573 RoleNone
+msgid "f_p_90"
+msgstr "Undeel vun der Bevëlkerung mat 90 Joer a méi a %"
+
+#: engineecadastre Layer:1583 RoleNone
+msgid "f_dep_jeunes"
+msgstr "Jugendquotient (0-19 Joer)"
+
+#: engineecadastre Layer:1583 RoleNone
+msgid "f_pers_jeune"
+msgstr "Jonk Persounen (0-19 Joer)"
+
+#: engineecadastre Layer:1583 RoleNone
+msgid "f_age_trav"
+msgstr "Persounen am erwerbsfähegen Alter (20-64 Joer)"
+
+#: engineecadastre Layer:1584 RoleNone
+msgid "f_rapp_j_a"
+msgstr "Ofhängegkeetsquotient"
+
+#: engineecadastre Layer:1584 RoleNone
+msgid "f_pers_agees"
+msgstr "Eeler Persounen (65+ Joer)"
+
+#: engineecadastre Layer:1585 RoleNone
+msgid "f_Célibatai"
+msgstr "Leedeg Persounen"
+
+#: engineecadastre Layer:1585 RoleNone
+msgid "f_Célibat_1"
+msgstr "Undeel u leedege Persounen a %"
+
+#: engineecadastre Layer:1586 RoleNone
+msgid "f_Marié_e_1"
+msgstr "Undeel u bestuete/a Partnerschaft liewende Persounen a %"
+
+#: engineecadastre Layer:1586 RoleNone
+msgid "f_Marié_e__"
+msgstr "Bestuete/a Partnerschaft liewend Persounen"
+
+#: engineecadastre Layer:1587 RoleNone
+msgid "f_Divorcé_e"
+msgstr "Gescheet/getrennt Persounen"
+
+#: engineecadastre Layer:1587 RoleNone
+msgid "f_Divorcé_1"
+msgstr "Undeel u gescheete/getrennte Persounen a %"
+
+#: engineecadastre Layer:1563 RoleNone
+msgid "f_age_moyen"
+msgstr "Duerchschnëttsalter (béid Geschlechter zesummen)"
+
+#: engineecadastre Layer:1562 RoleNone
+msgid "f_age_h"
+msgstr "Duerchschnëttsalter vun de Männer"
+
+#: engineecadastre Layer:1564 RoleNone
+msgid "f_moins20"
+msgstr "Bevëlkerung ënner 20 Joer"
+
+#: engineecadastre Layer:1564 RoleNone
+msgid "f_p_moins20"
+msgstr "Undeel vun der Bevëlkerung ënner 20 Joer a %"
+
+#: engineecadastre Layer:1565 RoleNone
+msgid "f_a20_64"
+msgstr "Bevëlkerung tëscht 20 a 64 Joer"
+
+#: engineecadastre Layer:1565 RoleNone
+msgid "f_p20_64"
+msgstr "Undeel vun der Bevëlkerung tëscht 20 a 64 Joer a %"
+
+#: engineecadastre Layer:1574 RoleNone
+msgid "f_pole_urbai"
+msgstr "Urbanen Zentrum"
+
+#: engineecadastre Layer:1574 RoleNone
+msgid "f_Population_villes"
+msgstr "Bevëlkerung"
+
+#: engineecadastre Layer:1576 RoleNone
+msgid "f_Population_can"
+msgstr "Bevëlkerung pro Kanton"
+
+#: engineecadastre Layer:1578 RoleNone
+msgid "f_prop_f"
+msgstr "Undeel vu Fraen a %"
+
+#: engineecadastre Layer:1581 RoleNone
+msgid "f_Luxemb_nbre"
+msgstr "Bevëlkerung déi zu Lëtzebuerg gebuer ass"
+
+#: engineecadastre Layer:1581 RoleNone
+msgid "f_Etrangers_nbre"
+msgstr "Bevëlkerung déi am Ausland gebuer ass"
+
+#: engineecadastre Layer:1581 RoleNone
+msgid "f_Etrangers_pourcent"
+msgstr "Undeel vun der Bevëlkerung déi am Ausland gebuer ass a %"
+
+#: engineecadastre Layer:1581 RoleNone
+msgid "f_Luxemb_pourcent"
+msgstr "Undeel vun der Bevëlkerung déi zu Lëtzebuerg gebuer ass a %"
+
+#: engineecadastre Layer:1561 RoleNone
+msgid "f_age_f"
+msgstr "Duerchschnëttsalter vun de Fraen"
+
+#: engineecadastre Layer:1588 RoleNone
+msgid "f_Veuf_veuve"
+msgstr "Witmänner/Witfraen"
+
+#: engineecadastre Layer:1588 RoleNone
+msgid "f_Veuf_veu_1"
+msgstr "Undeel u Witmänner/Witfraen a %"
+
+#: engineecadastre Layer:1531 RoleNone
+msgid "f_Annee_fusi"
+msgstr "Datum vum Akraafttrieden vun der Gemengefusioun"
+
+#: engineecadastre Layer:1531 RoleNone
+msgid "f_Nouv_comm"
+msgstr "Numm vun der Gemeng no der Fusioun"
+
+#: engineecadastre Layer:1531 RoleNone
+msgid "f_Anc_comm"
+msgstr "Numm vun der Gemeng virun der Fusioun"
+
+#: engineecadastre Layer:1598 RoleNone
+msgid "f_F__des_nai"
+msgstr "Undeel u Gebuerten innerhalb vum Bestietnis (%) (2013-2017)"
+
+#: engineecadastre Layer:1599 RoleNone
+msgid "f_Age_moyen"
+msgstr "Duerchschnëttsalter vun der Mamm bei der Gebuert (Duerchschnëtt 2013-2017)"
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Décès_24"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Communes"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Moyenne_d"
+msgstr "Duerchschnëttlech Unzuel u Stierffäll (2013-2017)"
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Décès_20"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Décès_21"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Décès_22"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Décès_23"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Naissances"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Taux_de_na"
+msgstr "Duerchschnëttlech Gebuerterat (‰) (2013-2017)"
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_F10"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_F11"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Moyenne_po"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Naissanc_1"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Naissanc_3"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Communes_1"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Moyenne__1"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Naissanc_2"
+msgstr ""
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Moyenne_na"
+msgstr "Duerchschnëttlech Gebuertenzuel (2013-2017)"
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Taux_de_mo"
+msgstr "Duerchschnëttlech Stierflechkeetsrat (‰) (2013-2017)"
+
+#: engineecadastre Layer:1600 RoleNone
+msgid "f_Naissanc_4"
+msgstr ""
+
+#: engineecadastre Layer:1601 RoleNone
+msgid "f_Taux de solde naturel moyen (‰)"
+msgstr "Duerchschnëttlechen Taux vum natierleche Saldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1601 RoleNone
+msgid "f_Solde_natu"
+msgstr "Taux vum natierleche Saldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1603 RoleNone
+msgid "f_Solde_mi_5"
+msgstr "Duerchschnëttlechen internen Wanderungssaldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1603 RoleNone
+msgid "f_Taux de solde migratoire interne moyen (‰)"
+msgstr "Duerchschnëttlechen Taux vum internen Wanderungssaldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1605 RoleNone
+msgid "f_Taux de solde migratoire total moyen (‰)"
+msgstr "Taux vum totalen Wanderungssaldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1613 RoleNone
+msgid "f_Ital_"
+msgstr "Italienesch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1613 RoleNone
+msgid "f_Italienisc"
+msgstr "Italienesch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1566 RoleNone
+msgid "f_a64plus"
+msgstr "Bevëlkerung mat 65 Joer a méi"
+
+#: engineecadastre Layer:1566 RoleNone
+msgid "f_p64plus"
+msgstr "Undeel vun der Bevëlkerung mat 65 Joer a méi a %"
+
+#: engineecadastre Layer:1604 RoleNone
+msgid "f_Taux de solde migratoire international moyen (‰)"
+msgstr "Duerchschnëttlechen Taux vum internationalen Wanderungssaldo (‰) (2013-2017)"
+
+#: engineecadastre Layer:1571 RoleNone
+msgid "f_t_65_74"
+msgstr "Bevëlkerung tëscht 65 an 74 Joer"
+
+#: engineecadastre Layer:1571 RoleNone
+msgid "f_p_65_74"
+msgstr "Undeel vun der Bevëlkerung tëscht 65 an 74 Joer a %"
+
+#: engineecadastre Layer:1606 RoleNone
+msgid "f_Taux_de__1"
+msgstr "Duerchschnëttlech Bestietnisrat (‰) (2013-2017)"
+
+#: engineecadastre Layer:1606 RoleNone
+msgid "f_Mariages_1"
+msgstr "Duerchschnëttlech Unzuel un Hochzäiten (2013-2017)"
+
+#: engineecadastre Layer:1607 RoleNone
+msgid "f_Age moyen des femmes au mariage"
+msgstr "Duerchschnëttlecht Bestietnisalter vun de Fraen (Duerchschnëtt 2013-2017)"
+
+#: engineecadastre Layer:1533 RoleNone
+msgid "f_Chiffres absolus (1981)"
+msgstr "Zuel vun de Awunner am Joer 1981"
+
+#: engineecadastre Layer:1533 RoleNone
+msgid "f_Taux_acc"
+msgstr "Wuesstemstaux vun der Bevëlkerung a % (1981-2018)"
+
+#: engineecadastre Layer:1533 RoleNone
+msgid "f_Chiffres absolus (2018)"
+msgstr "Zuel vun de Awunner am Joer 2018"
+
+#: engineecadastre Layer:1535 RoleNone
+msgid "f_Densité_d"
+msgstr "Bevëlkerungsdicht am Joer 2018"
+
+#: engineecadastre Layer:1535 RoleNone
+msgid "f_Chiffres_a"
+msgstr "Zuel vun de Awunner am Joer 2018"
+
+#: engineecadastre Layer:1608 RoleNone
+msgid "f_Age moyen des hommes au mariage"
+msgstr "Duerchschnëttlecht Bestietnisalter vun de Männer (Duerchschnëtt 2013-2017)"
+
+#: engineecadastre Layer:1609 RoleNone
+msgid "f_Luxemburgi"
+msgstr "Lëtzebuergesch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1609 RoleNone
+msgid "f_Lux_"
+msgstr "Lëtzebuergesch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1610 RoleNone
+msgid "f_Französis"
+msgstr "Franséisch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1610 RoleNone
+msgid "f_Fran_"
+msgstr "Franséisch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1611 RoleNone
+msgid "f_Deutsch"
+msgstr "Däitsch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1611 RoleNone
+msgid "f_Deu_"
+msgstr "Däitsch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1612 RoleNone
+msgid "f_Portugiesi"
+msgstr "Portugisesch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1612 RoleNone
+msgid "f_Port_"
+msgstr "Portugisesch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1614 RoleNone
+msgid "f_Englisch"
+msgstr "Englesch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1614 RoleNone
+msgid "f_Eng_"
+msgstr "Englesch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1615 RoleNone
+msgid "f_sonstige"
+msgstr "Aner Sprooch ass d'Haaptsprooch (Persounen)"
+
+#: engineecadastre Layer:1615 RoleNone
+msgid "f_Sonstige_"
+msgstr "Aner Sprooch ass d'Haaptsprooch (%)"
+
+#: engineecadastre Layer:1582 RoleNone
+msgid "f_dep_age"
+msgstr "Alequotient (65+ Joer)"
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_DATE_MEASU"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_DATE_CREAT"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_ELEVATION"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_POINT_CLAS"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_IMG_DIRECT"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_COORD_Y_WG"
+msgstr "Y-Koordinat"
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_ID_STRING"
+msgstr ""
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_REFERENCE_"
+msgstr "Numm"
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_COORD_X_WG"
+msgstr "X-Koordinat"
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_REMARQUE"
+msgstr "Numm"
+
+#: engineecadastre Layer:1621 RoleNone
+msgid "f_ID"
+msgstr ""

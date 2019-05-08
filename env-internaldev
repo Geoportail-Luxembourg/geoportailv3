@@ -1,0 +1,25 @@
+DB_ECADASTRE=postgresql://172.17.0.1:5433/dummy
+DB_MYMAPS=postgresql://172.17.0.1:5433/lux
+DB_PGROUTE=postgresql://172.17.0.1:5433/dummy
+DOCKER_TAG=latest
+VISIBLE_WEB_HOST=localhost:8080
+VISIBLE_WEB_PROTOCOL=http
+VISIBLE_ENTRY_POINT=/
+PGHOST=172.17.0.1
+PGHOST_SLAVE=172.17.0.1
+PGPORT=5433
+PGUSER=www-data
+PGPASSWORD=www-data
+PGDATABASE=lux
+PGSCHEMA=geov3
+PGSCHEMA_STATIC=geov3_static
+PGOPTIONS=-c statement_timeout=30000
+GEOPORTAL_INTERNAL_URL=http://geoportal:8080
+PRINT_URL=http://print:8080/print/
+DEVSERVER_HOST=webpack-dev-server:8080
+REDIS_HOST=redis
+REDIS_PORT=6379
+C2C_REDIS_URL=redis://redis:6379
+LDAP_FILTER_TMPL=(login=%(login)s)
+SHORTENER_BASE_URL=http://localhost:8080/s/
+SHORTENER_ALLOWED_HOST=localhost

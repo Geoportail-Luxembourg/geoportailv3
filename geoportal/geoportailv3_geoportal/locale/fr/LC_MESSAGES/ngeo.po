@@ -1,0 +1,383 @@
+# Translators:
+# Frédéric Junod <frederic.junod@gmail.com>, 2017
+# Jacolin <yjacolin@free.fr>, 2018
+# Stéphane Brunner <stephane.brunner@camptocamp.com>, 2018
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Last-Translator: Stéphane Brunner <stephane.brunner@camptocamp.com>, 2018\n"
+"Language-Team: French (https://www.transifex.com/camptocamp/teams/36764/fr/)\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/filter/component.html:64
+msgid "+ Add a new criteria"
+msgstr "Ajouter un nouveau critère"
+
+#: src/routing/routing.html:47
+msgid "Add via"
+msgstr "Ajouter point de passage"
+
+#: src/filter/component.js:181
+msgid "All"
+msgstr "Tout"
+
+#: src/filter/rulecomponent.html:210
+msgid "Apply"
+msgstr "Appliquer"
+
+#: src/filter/component.html:94
+msgid "Apply filter"
+msgstr "Appliquer filtre"
+
+#: src/filter/component.js:185
+msgid "At least one"
+msgstr "Au moins un"
+
+#: src/filter/ruleComponent.js:200
+msgid "Begins at"
+msgstr "Commence à"
+
+#: src/filter/rulecomponent.html:288
+msgid "Between"
+msgstr "Entre"
+
+#: src/filter/rulecomponent.html:214
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/draw/Controller.js:71
+msgid "Circle"
+msgstr "Cercle"
+
+#: src/routing/routing.html:41
+msgid "Clear"
+msgstr "Réinitialiser"
+
+#: src/googlestreetview/component.html:1
+msgid "Click on a road on the map to start StreetView."
+msgstr ""
+"Cliquer sur une route dans la carte pour afficher les images StreetView "
+
+#: src/interaction/MeasureLength.js:32
+msgid "Click to continue drawing the line."
+msgstr "Cliquez pour continuer le dessin de la ligne."
+
+#: src/interaction/MeasureArea.js:37
+msgid "Click to continue drawing the polygon."
+msgstr "Cliquez pour continuer le dessin du poligone."
+
+#: src/editing/createfeatureComponent.js:193
+msgid ""
+"Click to continue drawing<br/>Double-click or click last point to finish"
+msgstr ""
+"Cliquer pour continuer le dessin<br />Double cliquer ou cliquer sur le "
+"dernier point pour finir le dessin"
+
+#: src/editing/createfeatureComponent.js:211
+msgid ""
+"Click to continue drawing<br/>Double-click or click starting point to finish"
+msgstr ""
+"Cliquez pour continuer le dessin<br />Double cliquez ou cliquez sur le point"
+" de départ pour finir terminer"
+
+#: src/measure/length.js:43
+msgid ""
+"Click to continue drawing<br>Double-click or click last point to finish"
+msgstr ""
+"Cliquer pour continuer le dessin<br />Double cliquer ou cliquer sur le "
+"dernier point pour finir le dessin"
+
+#: src/measure/area.js:41
+msgid ""
+"Click to continue drawing<br>Double-click or click starting point to finish"
+msgstr ""
+"Cliquer pour continuer le dessin<br />Double cliquer ou cliquer sur le "
+"dernier point de départ pour finir le dessin"
+
+#: src/measure/azimut.js:45
+msgid "Click to finish"
+msgstr "Cliquez pour finir"
+
+#: src/editing/createfeatureComponent.js:210
+msgid "Click to start drawing area"
+msgstr "Cliquez pour commencer la zone de dessin"
+
+#: src/measure/azimut.js:44
+msgid "Click to start drawing circle"
+msgstr "Cliquez pour commencer à dessiner un circle"
+
+#: src/editing/createfeatureComponent.js:192
+msgid "Click to start drawing length"
+msgstr "Cliquez pour commencer à dessiner une longueur"
+
+#: src/measure/length.js:42
+msgid "Click to start drawing line"
+msgstr "Cliquez pour commencer à dessiner une ligne"
+
+#: src/measure/area.js:40
+msgid "Click to start drawing polygon"
+msgstr "Cliquez pour commencer à dessiner un polygone"
+
+#: src/message/Disclaimer.js:157
+msgid "Close"
+msgstr "Fermer"
+
+#: src/filter/ruleComponent.js:196 src/filter/ruleComponent.js:197
+msgid "Contains"
+msgstr "Contient"
+
+#: src/filter/component.html:12
+msgid "Criteria taken into account"
+msgstr "Critère pris en compte"
+
+#: src/misc/datepickerComponent.html:6
+msgid "Date:"
+msgstr "Date :"
+
+#: src/routing/routing.html:88
+msgid "Distance"
+msgstr "Distance"
+
+#: src/interaction/MeasureLength.js:34
+msgid "Double-click or click last point to finish."
+msgstr "Double cliquer ou cliquer sur le dernier point pour terminer."
+
+#: src/interaction/MeasureArea.js:39
+msgid "Double-click or click starting point to finish."
+msgstr "Double cliquer ou cliquer sur le premier point pour terminer."
+
+#: src/filter/rulecomponent.html:113
+msgid "Draw a circle on the map"
+msgstr "Dessiner un cercle"
+
+#: src/filter/rulecomponent.html:148
+msgid "Draw a circle on the map."
+msgstr "Dessiner un cercle."
+
+#: src/filter/rulecomponent.html:90
+msgid "Draw a line on the map"
+msgstr "Dessiner une ligne"
+
+#: src/filter/rulecomponent.html:142
+msgid "Draw a line string on the map."
+msgstr "Dessiner une ligne."
+
+#: src/filter/rulecomponent.html:78
+msgid "Draw a point on the map"
+msgstr "Dessiner un point"
+
+#: src/filter/rulecomponent.html:139
+msgid "Draw a point on the map."
+msgstr "Dessiner un point."
+
+#: src/filter/rulecomponent.html:102
+msgid "Draw a polygon on the map"
+msgstr "Dessiner un polygone"
+
+#: src/filter/rulecomponent.html:145
+msgid "Draw a polygon on the map."
+msgstr "Dessiner un polygone."
+
+#: src/filter/rulecomponent.html:124
+msgid "Draw a rectangle on the map"
+msgstr "Dessiner un rectangle"
+
+#: src/filter/rulecomponent.html:151
+msgid "Draw a rectangle on the map."
+msgstr "Dessiner un rectangle."
+
+#: src/routing/routing.html:79
+msgid "Duration"
+msgstr "Durée"
+
+#: src/filter/ruleComponent.js:201
+msgid "During"
+msgstr "Durant"
+
+#: src/filter/ruleComponent.js:202
+msgid "Ends at"
+msgstr "Se termine à"
+
+#: src/filter/rulecomponent.html:241
+msgid "From"
+msgstr "Depuis"
+
+#: src/misc/datepickerComponent.html:5
+msgid "From:"
+msgstr "De :"
+
+#: src/geolocation/mobile.js:145
+msgid "Geolocation: An unknown error occurred."
+msgstr "Géolocalisation: Délais de recherche dépassé."
+
+#: src/filter/component.html:103
+msgid "Get data"
+msgstr "Obtenir données"
+
+#: src/filter/ruleComponent.js:198
+msgid "Intersects"
+msgstr "Intersection avec"
+
+#: src/filter/ruleComponent.js:188 src/filter/ruleComponent.js:203
+msgid "Is equal to"
+msgstr "Est equal à"
+
+#: src/filter/ruleComponent.js:189
+msgid "Is greater than"
+msgstr "Est plus grand que"
+
+#: src/filter/ruleComponent.js:190
+msgid "Is greater than or equal to"
+msgstr "Est plus grand ou égal à"
+
+#: src/filter/ruleComponent.js:199
+msgid "Is inside of"
+msgstr "Est à l'intérieur de"
+
+#: src/filter/ruleComponent.js:192
+msgid "Is lesser than"
+msgstr "Est plus petit que"
+
+#: src/filter/ruleComponent.js:193
+msgid "Is lesser than or equal to"
+msgstr "Est plus petit ou égal à"
+
+#: src/filter/ruleComponent.js:195
+msgid "Is not equal to"
+msgstr "N'est pas égal à"
+
+#: src/draw/Controller.js:69
+msgid "LineString"
+msgstr "Ligne"
+
+#: src/geolocation/mobile.js:139
+msgid "Location information is unavailable."
+msgstr "Géolocalisation: Délais de recherche dépassé."
+
+#: src/misc/WMSTime.js:62
+msgid "M/d/yyyy"
+msgstr "d-M-yyyy"
+
+#: src/misc/WMSTime.js:61
+msgid "M/yyyy"
+msgstr "M-yyyy"
+
+#: src/filter/ruleComponent.js:869
+msgid "Move"
+msgstr "Déplacer"
+
+#: src/filter/component.js:189
+msgid "None"
+msgstr "Aucun"
+
+#: src/misc/File.js:52
+msgid "Operation canceled"
+msgstr "Opération annulée"
+
+#: src/draw/Controller.js:68
+msgid "Point"
+msgstr "Point"
+
+#: src/draw/Controller.js:70
+msgid "Polygon"
+msgstr "Polygone"
+
+#: src/routing/routing.html:56
+msgid "Profile"
+msgstr "Profil"
+
+#: src/misc/File.js:52
+msgid "Read failed"
+msgstr "Échec de lecture"
+
+#: src/draw/Controller.js:72
+msgid "Rectangle"
+msgstr "Rectangle"
+
+#: src/routing/routing.html:44
+msgid "Reverse"
+msgstr "Inverser"
+
+#: src/filter/ruleComponent.js:878
+msgid "Rotate"
+msgstr "Rotation"
+
+#: src/routing/routing.html:75
+msgid "Route statistics"
+msgstr "Statistiques"
+
+#: src/routing/routingfeature.html:5
+msgid "Search..."
+msgstr "Recherche…"
+
+#: src/filter/component.html:72
+msgid "Spatial filter"
+msgstr "Filtre spatial"
+
+#: src/googlestreetview/component.html:7
+msgid "Street View data not found for this location."
+msgstr "Données Street View non trouvées pour cette position."
+
+#: src/draw/Controller.js:73
+msgid "Text"
+msgstr "Texte"
+
+#: src/geolocation/mobile.js:142
+msgid "The request to get user location timed out."
+msgstr "Géolocalisation: Délais de recherche dépassé."
+
+#: src/editing/attributescomponent.html:116
+msgid "This field is required"
+msgstr "Ce champ est requis"
+
+#: src/misc/datepickerComponent.html:12
+msgid "To:"
+msgstr "À :"
+
+#: src/misc/File.js:85
+msgid "Upload failed"
+msgstr "Envoie échoué"
+
+#: src/geolocation/mobile.js:136
+msgid "User denied the request for Geolocation."
+msgstr "Géolocalisation: Vous n’avez pas donné la permission."
+
+#: src/filter/rulecomponent.html:290
+msgid "and"
+msgstr "et"
+
+#: src/misc/filters.js:365
+msgid "day"
+msgid_plural "days"
+msgstr[0] "jour"
+msgstr[1] "jours"
+
+#: src/misc/filters.js:362
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "heure"
+msgstr[1] "heures"
+
+#: src/misc/filters.js:359
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minute"
+msgstr[1] "minutes"
+
+#: src/misc/filters.js:356
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] "seconde"
+msgstr[1] "secondes"
+
+#: src/filter/rulecomponent.html:243
+msgid "to"
+msgstr "à"
+
+#: src/misc/WMSTime.js:60
+msgid "yyyy"
+msgstr "yyyy"

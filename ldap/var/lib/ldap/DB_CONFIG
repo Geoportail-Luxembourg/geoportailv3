@@ -1,0 +1,8 @@
+# these are the values suggested in
+# /usr/share/doc/slapd/examples/DB_CONFIG
+set_cachesize   0       2097152         0
+set_lg_bsize    524288
+set_lk_max_objects      5000
+set_lk_max_locks        5000
+set_lk_max_lockers      5000
+set_flags          DB_LOG_AUTOREMOVE
