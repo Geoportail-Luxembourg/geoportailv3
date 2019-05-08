@@ -19,10 +19,9 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
-import olObject from 'ol/Object.js';
-import olEvents from 'ol/events.js';
-import olInteractionProperty from 'ol/interaction/Property.js';
-import olProj from 'ol/proj.js';
+import {getChangeEventType} from 'ol/Object.js';
+import {listen} from 'ol/events.js';
+import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
@@ -34,6 +33,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {angular.$http} $http Angular http service.
  * @param {angular.$compile} $compile The compile provider.
  * @param {gettext} gettext Gettext service.
+ * @param {!angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.GetProfile} appGetProfile The profile service.
  * interaction service.
  * @param {string} elevationServiceUrl The url of the service.
@@ -44,7 +44,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @ngInject
  */
 const exports = function($scope, $q, $http, $compile, gettext,
-    appGetProfile, elevationServiceUrl,
+    gettextCatalog, appGetProfile, elevationServiceUrl,
     appActivetool, $filter) {
 
   /**
@@ -119,7 +119,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       'Double-click or click last point to finish');
   var measureProfile = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle
@@ -136,7 +136,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   helpMsg = gettext('Click to start drawing length');
   var measureLength = new ngeoInteractionMeasureLength(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle
@@ -161,7 +161,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
       'Double-click or click last point to finish');
   var measureArea = new ngeoInteractionMeasureArea(
     $filter('ngeoUnitPrefix'),
-    {
+    gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
@@ -198,7 +198,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   ngeoMiscDecorate.interaction(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
-  olEvents.listen(measureAzimut, 'measureend',
+  listen(measureAzimut, 'measureend',
       function(evt) {
         var geometryCollection =
             /** @type {ol.geom.GeometryCollection} */
@@ -220,7 +220,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
         }.bind(this));
       }.bind(this));
 
-  olEvents.listen(measureProfile, 'measureend',
+  listen(measureProfile, 'measureend',
       function(evt) {
         var geom = /** @type {ol.geom.LineString} */
             (evt.detail.feature.getGeometry());
@@ -230,7 +230,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
             }.bind(this));
       }, this);
 
-  olEvents.listen(measureProfile, olObject.getChangeEventType('active'),
+  listen(measureProfile, getChangeEventType('active'),
       /**
        * @param {ol.Object.Event} evt Change active event.
        */
@@ -256,17 +256,17 @@ const exports = function($scope, $q, $http, $compile, gettext,
       this.appActivetool_.measureActive = false;
     }
   }.bind(this));
-  olEvents.listen(this['measureLength'], olObject.getChangeEventType(
-    olInteractionProperty.ACTIVE),
+  listen(this['measureLength'], getChangeEventType(
+    'active'),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureArea'], olObject.getChangeEventType(
-    olInteractionProperty.ACTIVE),
+  listen(this['measureArea'], getChangeEventType(
+    'active'),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureAzimut'], olObject.getChangeEventType(
-    olInteractionProperty.ACTIVE),
+  listen(this['measureAzimut'], getChangeEventType(
+    'active'),
     this.onChangeActive_, this);
-  olEvents.listen(this['measureProfile'], olObject.getChangeEventType(
-    olInteractionProperty.ACTIVE),
+  listen(this['measureProfile'], getChangeEventType(
+    'active'),
     this.onChangeActive_, this);
 };
 
@@ -294,7 +294,7 @@ exports.prototype.onChangeActive_ = function(event) {
  */
 exports.prototype.getElevation_ = function(coordinates) {
   var eastnorth =
-      /** @type {ol.Coordinate} */ (olProj.transform(
+      /** @type {ol.Coordinate} */ (transform(
       coordinates,
       this.map_.getView().getProjection(),
       'EPSG:2169'));

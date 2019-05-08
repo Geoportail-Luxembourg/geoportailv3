@@ -22,7 +22,7 @@ import appModule from './module.js';
 function service($http, ngeoLocation, shorturlServiceUrl) {
   return (
       /**
-       * @param {ol.Coordinate=} opt_coordinate
+       * @param {ol.Coordinate=} opt_coordinate coordinates.
        * @return {!angular.$q.Promise} Promise providing the short URL.
        */
       function getShorturl(opt_coordinate) {

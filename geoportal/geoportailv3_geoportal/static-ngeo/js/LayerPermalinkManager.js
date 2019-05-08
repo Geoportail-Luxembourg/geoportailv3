@@ -9,9 +9,8 @@
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
-import olEvents from 'ol/events.js';
-import olObjectEventType from 'ol/ObjectEventType.js';
-import olArray from 'ol/array.js';
+import {listen, unlistenByKey} from 'ol/events.js';
+import {extend as arrayExtend} from 'ol/array.js';
 
 /**
  * @constructor
@@ -148,7 +147,7 @@ exports.V2_BGLAYER_TO_V3_ = {
  */
 exports.prototype.unListenProtertyChange_ = function() {
   this.layersListenerKeys_.forEach(function(key) {
-    olEvents.unlistenByKey(key);
+    unlistenByKey(key);
   });
   this.layersListenerKeys_.length = 0;
 };
@@ -161,8 +160,8 @@ exports.prototype.unListenProtertyChange_ = function() {
  */
 exports.prototype.listenProtertyChange = function(layers) {
   layers.forEach(function(layer) {
-    this.layersListenerKeys_.push(olEvents.listen(
-        layer, olObjectEventType.PROPERTYCHANGE,
+    this.layersListenerKeys_.push(listen(
+        layer, 'propertychange',
         function() {
           this.onLayerUpdate_(layers);
         }, this)
@@ -205,11 +204,10 @@ exports.prototype.onLayerUpdate_ = function(layers) {
 /**
  * @param {Array.<number|string>} layerIds The ids.
  * @param {Array.<number>} opacities The opacities.
- * @param {Array.<Object>} flatCatalogue The catalog.
+ * @param {Array.<Object>} flatCatalog The catalog.
  * @private
  */
-exports.prototype.applyLayerStateToMap_ = function(
-    layerIds, opacities, flatCatalogue) {
+exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCatalog) {
   layerIds.reverse();
   opacities.reverse();
   this.unavailableLayerIndex_.forEach(function(elem, index) {
@@ -225,7 +223,7 @@ exports.prototype.applyLayerStateToMap_ = function(
   layerIds.forEach(
   function(layerId, layerIndex) {
     if (typeof layerId == 'number' && !isNaN(layerId)) {
-      var node = flatCatalogue.find(function(catItem) {
+      var node = flatCatalog.find(function(catItem) {
         return catItem.id === layerId;
       });
       if (node !== undefined && node !== null) {
@@ -425,7 +423,7 @@ exports.prototype.splitLayers_ =
  */
 exports.prototype.removeWatchers_ = function() {
   if (this.backgroundLayerMgrLstn_ !== null) {
-    olEvents.unlistenByKey(this.backgroundLayerMgrLstn_);
+    unlistenByKey(this.backgroundLayerMgrLstn_);
     this.backgroundLayerMgrLstn_ = null;
   }
   if (typeof this.scopeWatcher_ == 'function') {
@@ -441,7 +439,7 @@ exports.prototype.removeWatchers_ = function() {
  */
 exports.prototype.setupWatchers_ = function(selectedLayers) {
 
-  this.backgroundLayerMgrLstn_ = olEvents.listen(this.backgroundLayerMgr_, 'change',
+  this.backgroundLayerMgrLstn_ = listen(this.backgroundLayerMgr_, 'change',
       function() {
         var bgLayer = this.backgroundLayerMgr_.get(this.map_);
         this.stateManager_.updateState({
@@ -469,7 +467,7 @@ exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      olArray.extend(array, exports.getAllChildren_(
+      arrayExtend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -486,157 +484,144 @@ exports.getAllChildren_ = function(element) {
  * @param {ol.Map} map The map.
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  */
-exports.prototype.init =
-    function(scope, map, selectedLayers) {
+exports.prototype.init = function(scope, map, selectedLayers) {
   /**
    * @type {angular.Scope}
    */
-      this.scope_ = scope;
+  this.scope_ = scope;
 
   /**
    * @type {ol.Map}
    * @private
    */
-      this.map_ = map;
+  this.map_ = map;
 
   /**
    * @type {number}
    * @private
    */
-      this.initialVersion_ = this.stateManager_.getVersion();
+  this.initialVersion_ = this.stateManager_.getVersion();
 
   /**
    * @type {boolean}
    * @private
    */
-      this.initialized_ = false;
+  this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-      olEvents.listen(this.appThemes_, appEventsThemesEventType.LOAD,
-      function(evt) {
-        this.appThemes_.getBgLayers().then(
-            function(bgLayers) {
-              var stateBgLayerLabel, stateBgLayerOpacity;
-              var mapId = this.ngeoLocation_.getParam('map_id');
-              if (!this.initialized_) {
-                stateBgLayerLabel =
-                    this.stateManager_.getInitialValue('bgLayer');
-                stateBgLayerOpacity =
-                    this.stateManager_.getInitialValue('bgOpacity');
-                if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
-                    ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) &&
-                    parseInt(stateBgLayerOpacity, 0) === 0)) {
-                  if (this.initialVersion_ === 2 &&
-                      stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
-                    stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
-                    if (stateBgLayerLabel === undefined) {
-                      stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_['webbasemap'];
-                    }
-                  } else if (this.initialVersion_ === 2 &&
-                      parseInt(stateBgLayerOpacity, 0) === 0) {
-                    stateBgLayerLabel = 'orthogr_2013_global';
-                  }
+  listen(this.appThemes_, appEventsThemesEventType.LOAD, (_) => {
+    this.initBgLayers_().then(() =>{
+      this.initFlatCatalog_(selectedLayers);
+    })
+  });
+};
+
+exports.prototype.initBgLayers_ = function() {
+  return this.appThemes_.getBgLayers().then((bgLayers) => {
+    var stateBgLayerLabel, stateBgLayerOpacity;
+    var mapId = this.ngeoLocation_.getParam('map_id');
+    if (!this.initialized_) {
+      stateBgLayerLabel = this.stateManager_.getInitialValue('bgLayer');
+      stateBgLayerOpacity = this.stateManager_.getInitialValue('bgOpacity');
+      if ((stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) ||
+          ((stateBgLayerOpacity !== undefined && stateBgLayerOpacity !== null) && parseInt(stateBgLayerOpacity, 0) === 0)) {
+        if (this.initialVersion_ === 2 && stateBgLayerLabel !== undefined && stateBgLayerLabel !== null) {
+          stateBgLayerLabel = exports.V2_BGLAYER_TO_V3_[stateBgLayerLabel];
+        } else if (this.initialVersion_ === 2 && parseInt(stateBgLayerOpacity, 0) === 0) {
+          stateBgLayerLabel = 'orthogr_2013_global';
+        }
+      } else {
+        if (mapId === undefined) {
+          stateBgLayerLabel = 'basemap_2015_global';
+        } else {
+          if (this.appTheme_.getCurrentTheme() === 'tourisme') {
+            stateBgLayerLabel = 'topo_bw_jpeg';
+          } else {
+            stateBgLayerLabel = 'topogr_global';
+          }
+        }
+        stateBgLayerOpacity = 0;
+      }
+    } else {
+      stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
+      stateBgLayerOpacity = this.ngeoLocation_.getParam('bgOpacity');
+    }
+    var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
+    if (mapId === undefined || hasBgLayerInUrl) {
+      var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
+      this.backgroundLayerMgr_.set(this.map_, layer);
+    }
+  });
+}
+
+/**
+ * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
+ */
+exports.prototype.initFlatCatalog_ = function(selectedLayers) {
+  return this.appThemes_.getThemesPromise().then((root) => {
+    const flatCatalog = this.appThemes_.flatCatalog;
+    const ogcServers = root.ogcServers;
+    /**
+     * @type {Array.<number>|undefined}
+     */
+    var layerIds = [];
+    /**
+     * @type {Array.<number>|undefined}
+     */
+    var opacities = [];
+    if (!this.initialized_) {
+      if (this.initialVersion_ === 2) {
+        var layerString = this.stateManager_.getInitialValue('layers');
+        if (layerString) {
+          var layers = layerString.split(',');
+          layers.forEach(stateLayerLabel => {
+            var layer = flatCatalog.find(catalogueLayer => catalogueLayer['name'] === stateLayerLabel);
+            layerIds.push(layer['id']);
+          });
+        }
+        var opacitiesString = this.stateManager_.getInitialValue('layers_opacity');
+        var visibilitiesString = this.stateManager_.getInitialValue('layers_visibility');
+        if (opacitiesString !== undefined && opacitiesString !== null &&
+            visibilitiesString !== undefined && visibilitiesString !== null &&
+            visibilitiesString && opacitiesString) {
+          var visibilities = visibilitiesString.split(',');
+          opacitiesString.split(',').forEach(
+              function(opacity, index) {
+                if (visibilities[index] === 'true') {
+                  opacities.push(parseFloat(opacity));
                 } else {
-                  if (mapId === undefined) {
-                    stateBgLayerLabel = 'basemap_2015_global';
-                  } else {
-                    if (this.appTheme_.getCurrentTheme() === 'tourisme') {
-                      stateBgLayerLabel = 'topo_bw_jpeg';
-                    } else {
-                      stateBgLayerLabel = 'topogr_global';
-                    }
-                  }
-                  stateBgLayerOpacity = 0;
+                  opacities.push(0);
                 }
-              } else {
-                stateBgLayerLabel = this.ngeoLocation_.getParam('bgLayer');
-                stateBgLayerOpacity =
-                    this.ngeoLocation_.getParam('bgOpacity');
-              }
-              var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
-              if (mapId === undefined || hasBgLayerInUrl) {
-                var layer = /** @type {ol.layer.Base} */
-                    (bgLayers.find(function(layer) {
-                      return layer.get('label') === stateBgLayerLabel;
-                    }));
-                this.backgroundLayerMgr_.set(this.map_, layer);
-              }
-              this.appThemes_.getFlatCatalog().then(
-                  function(flatCatalogue) {
-                    /**
-                     * @type {Array.<number>|undefined}
-                     */
-                    var layerIds = [];
-                    /**
-                     * @type {Array.<number>|undefined}
-                     */
-                    var opacities = [];
-                    if (!this.initialized_) {
-                      if (this.initialVersion_ === 2) {
-                        var layerString = this.stateManager_.
-                            getInitialValue('layers');
-                        if (layerString) {
-                          var layers = layerString.split(',');
-                          layers.forEach(
-                              function(stateLayerLabel) {
-                                var layer = flatCatalogue.find(
-                                    function(catalogueLayer) {
-                                      return catalogueLayer['name'] ===
-                                          stateLayerLabel;
-                                    }, this);
-                                layerIds.push(layer['id']);
-                              }, this);
-                        }
-                        var opacitiesString = this.stateManager_.
-                            getInitialValue('layers_opacity');
-                        var visibilitiesString = this.stateManager_.
-                            getInitialValue('layers_visibility');
-                        if (opacitiesString !== undefined && opacitiesString !== null &&
-                            visibilitiesString !== undefined && visibilitiesString !== null &&
-                            visibilitiesString &&
-                            opacitiesString) {
-                          var visibilities = visibilitiesString.split(',');
-                          opacitiesString.split(',').forEach(
-                              function(opacity, index) {
-                                if (visibilities[index] === 'true') {
-                                  opacities.push(parseFloat(opacity));
-                                } else {
-                                  opacities.push(0);
-                                }
-                              });
-                        }
-                        layerIds.reverse();
-                        opacities.reverse();
+              });
+        }
+        layerIds.reverse();
+        opacities.reverse();
 
-                        this.stateManager_.deleteParam('layers_indices');
-                        this.stateManager_.deleteParam('layers_opacity');
-                        this.stateManager_.deleteParam('layers_visibility');
-                        this.stateManager_.deleteParam('bgOpacity');
+        this.stateManager_.deleteParam('layers_indices');
+        this.stateManager_.deleteParam('layers_opacity');
+        this.stateManager_.deleteParam('layers_visibility');
+        this.stateManager_.deleteParam('bgOpacity');
 
-                      } else {
-                        layerIds = this.getStateValue_('layers');
-                        opacities = this.getStateValue_('opacities');
-                      }
-                      this.initialized_ = true;
-                    } else {
-                      layerIds = this.splitLayers_(
-                          this.ngeoLocation_.getParam('layers'), '-');
-                      opacities = this.splitNumbers_(
-                          this.ngeoLocation_.getParam('opacities'), '-');
-                    }
-                    this.removeWatchers_();
-                    if (layerIds !== undefined && opacities !== undefined &&
-                        layerIds.length > 0 &&
-                        layerIds.length === opacities.length) {
-                      this.applyLayerStateToMap_(layerIds, opacities,
-                          flatCatalogue);
-                    }
-                    this.setupWatchers_(selectedLayers);
-                  }.bind(this));
-            }.bind(this));
-      }, this);
-    };
-
+      } else {
+        layerIds = this.getStateValue_('layers');
+        opacities = this.getStateValue_('opacities');
+      }
+      this.initialized_ = true;
+    } else {
+      layerIds = this.splitLayers_(
+          this.ngeoLocation_.getParam('layers'), '-');
+      opacities = this.splitNumbers_(
+          this.ngeoLocation_.getParam('opacities'), '-');
+    }
+    this.removeWatchers_();
+    if (layerIds !== undefined && opacities !== undefined &&
+        layerIds.length > 0 &&
+        layerIds.length === opacities.length) {
+      this.applyLayerStateToMap_(layerIds, opacities, flatCatalog, ogcServers);
+    }
+    this.setupWatchers_(selectedLayers);
+  });
+}
 appModule.service('appLayerPermalinkManager', exports);
 
 

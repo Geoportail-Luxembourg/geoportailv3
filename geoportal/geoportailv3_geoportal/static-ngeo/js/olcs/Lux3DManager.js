@@ -3,6 +3,8 @@
  */
 import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 
+import OLCesium from 'olcs/OLCesium.js'
+
 const exports = class extends ngeoOlcsManager {
   /**
    *
@@ -89,7 +91,7 @@ const exports = class extends ngeoOlcsManager {
     const map = /** @type {!ol.Map} */ (this.map);
     const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+0200'));
     const time = () => niceIlluminationDate;
-    const ol3d = new olcs.OLCesium({map, time, sceneOptions});
+    const ol3d = new OLCesium({map, time, sceneOptions});
 
     const scene = ol3d.getCesiumScene();
 
@@ -135,7 +137,7 @@ const exports = class extends ngeoOlcsManager {
    * @param {boolean} visible Visibility.
    */
   set3dTilesetVisible(visible) {
-    this.tilesets3d.forEach((tileset) => tileset.show = visible);
+    this.tilesets3d.forEach(tileset => tileset.show = visible);
   }
 
   /**

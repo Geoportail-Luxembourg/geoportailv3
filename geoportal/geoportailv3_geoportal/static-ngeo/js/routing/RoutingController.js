@@ -15,13 +15,23 @@
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
-import olBase from 'ol.js';
+import {get as projGet, transform, transformExtent} from 'ol/proj.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olStyle from 'ol/style.js';
-import olInteraction from 'ol/interaction.js';
-import olEvents from 'ol/events.js';
+import Style from 'ol/style/Style.js';
+import Circle from 'ol/style/Circle.js';
+import Fill from 'ol/style/Fill.js';
+import Select from 'ol/interaction/Select.js';
+import Modify from 'ol/interaction/Modify.js';
+import {listen} from 'ol/events.js';
+import {getCenter, containsCoordinate} from 'ol/extent';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
+import {includes as arrayIncludes} from 'ol/array.js';
+import Collection from 'ol/Collection.js';
+import Feature from 'ol/Feature.js';
+import Geolocation from 'ol/Geolocation.js';
+import Overlay from 'ol/Overlay.js';
+import {click, pointerMove} from 'ol/events/condition.js';
 
 /**
  * @param {angular.Scope} $scope Angular root scope.
@@ -96,7 +106,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @private
    */
   this.maxExtent_ =
-      olBase.proj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.CoordinateString}
@@ -249,7 +259,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
     select: function(event, suggestion) {
       var feature = /** @type {ol.Feature} */ (suggestion);
       var geometry = feature.getGeometry();
-      feature.setGeometry(new olGeomPoint(olBase.extent.getCenter(
+      feature.setGeometry(new olGeomPoint(getCenter(
         geometry.getExtent())));
       var routeNumber = parseInt($(event.currentTarget).attr('route-number'), 10);
       this.appRouting.insertFeatureAt(feature, routeNumber);
@@ -268,10 +278,10 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.highlightOverlay_ = ngeoFeatureOverlayMgr.getFeatureOverlay();
 
   this.highlightOverlay_.setStyle(
-      new olStyle.Style({
-        image: new olStyle.Circle({
+      new Style({
+        image: new Circle({
           radius: 6,
-          fill: new olStyle.Fill({color: '#ff0000'})
+          fill: new Fill({color: '#ff0000'})
         })
       }));
   /**
@@ -293,7 +303,7 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.Collection}
    * @private
    */
-  this.modyfyFeaturesCollection_ = new olBase.Collection();
+  this.modyfyFeaturesCollection_ = new Collection();
 
   /**
    * Due to https://github.com/openlayers/openlayers/issues/7483
@@ -301,9 +311,9 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteraction_ = new olInteraction.Select({
+  this.selectInteraction_ = new Select({
     features: this.modyfyFeaturesCollection_,
-    condition: olEvents.condition.click,
+    condition: click,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -316,8 +326,8 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
    * @type {ol.interaction.Select}
    * @private
    */
-  this.selectInteractionPM_ = new olInteraction.Select({
-    condition: olEvents.condition.pointerMove,
+  this.selectInteractionPM_ = new Select({
+    condition: pointerMove,
     filter: function(feature, layer) {
       return this.appRouting.stepFeatures.getArray().indexOf(feature) != -1;
     }.bind(this)
@@ -326,37 +336,37 @@ const exports = function($scope, gettextCatalog, poiSearchServiceUrl,
   this.map.addInteraction(this.selectInteractionPM_);
 
   this.selectInteractionPM_.setActive(false);
-  olEvents.listen(this.selectInteractionPM_, 'select',
+  listen(this.selectInteractionPM_, 'select',
     this.showHideTooltip_, this);
 
   /**
    * @type {ol.interaction.Modify}
    * @private
    */
-  this.modifyInteraction_ = new olInteraction.Modify({
+  this.modifyInteraction_ = new Modify({
     features: this.modyfyFeaturesCollection_
   });
   this.map.addInteraction(this.modifyInteraction_);
   this.modifyInteraction_.setActive(true);
 
-  olEvents.listen(this.modifyInteraction_,
-    olInteraction.ModifyEventType.MODIFYEND, this.modifyEndStepFeature_, this);
+  listen(this.modifyInteraction_,
+    'modifyend', this.modifyEndStepFeature_, this);
   /**
    * @type {ol.source.Vector}
    * @private
    */
   this.source_ = ngeoFeatureOverlayMgr.getLayer().getSource();
 
-  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.ADD,
+  listen(this.appRouting.routeFeatures, 'add',
     this.showRoute_, this);
-  olEvents.listen(this.appRouting.routeFeatures, olBase.CollectionEventType.REMOVE,
+  listen(this.appRouting.routeFeatures, 'remove',
     this.removeRoute_, this);
 
   /**
    * @type {ol.Geolocation}
    * @private
    */
-  this.geolocation_ = new olBase.Geolocation({
+  this.geolocation_ = new Geolocation({
     projection: this.map.getView().getProjection(),
     trackingOptions: /** @type {GeolocationPositionOptions} */ ({
       enableHighAccuracy: true,
@@ -421,8 +431,7 @@ exports.prototype.whereAmI = function(step) {
   if (this.window_.location.protocol !== 'https:') {
     this['showRedirect'] = true;
   } else {
-    olEvents.listen(this.geolocation_,
-      olBase.Object.getChangeEventType(olBase.GeolocationProperty.POSITION),
+    listen(this.geolocation_, 'change:position',
       /**
        * @param {ol.Object.Event} e Object event.
        */
@@ -430,7 +439,7 @@ exports.prototype.whereAmI = function(step) {
         this.geolocation_.setTracking(false);
         var position = /** @type {ol.Coordinate} */
             (this.geolocation_.getPosition());
-        var feature = new olBase.Feature({
+        var feature = new Feature({
           geometry: new olGeomPoint(position)
         });
         var label = this.coordinateString_(
@@ -456,7 +465,7 @@ exports.prototype.showHideTooltip_ = function(e) {
     var feature = selectedFeatures.getArray()[0];
 
     var geometry = /** @type {ol.Coordinate} */ (feature.getGeometry().getFirstCoordinate());
-    var newFeature = new olBase.Feature({
+    var newFeature = new Feature({
       geometry: new olGeomPoint(geometry)
     });
     this.highlightOverlay_.addFeature(newFeature);
@@ -477,7 +486,7 @@ exports.prototype.createTooltip_ = function(position, text) {
   this.tooltipElement_ = document.createElement('div');
   this.tooltipElement_.classList.add('tooltip');
   this.tooltipElement_.innerHTML = text;
-  this.tooltipOverlay_ = new olBase.Overlay({
+  this.tooltipOverlay_ = new Overlay({
     element: this.tooltipElement_,
     offset: [15, 0],
     positioning: 'center-left'
@@ -571,7 +580,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: olBase.proj.get('EPSG:3857'),
+              featureProjection: projGet('EPSG:3857'),
               dataProjection: undefined
             });
           }
@@ -621,7 +630,7 @@ exports.prototype.clearRoute = function(routeIdx) {
     this.appRouting.reorderRoute();
   } else {
     this.appRouting.routes[routeIdx] = '';
-    var blankFeature = new olBase.Feature();
+    var blankFeature = new Feature();
     blankFeature.set('name', '' + (routeIdx + 1));
     this.appRouting.features.setAt(routeIdx, blankFeature);
   }
@@ -708,8 +717,8 @@ exports.prototype.showRoute_ = function() {
   this.routeDesc.forEach(function(description) {
     var coordinate = [description.lon, description.lat];
     var geometry = /** @type {ol.Coordinate} */
-    (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
-    var stepFeature = new olBase.Feature({
+    (transform(coordinate, 'EPSG:4326', curView.getProjection()));
+    var stepFeature = new Feature({
       geometry: new olGeomPoint(geometry)
     });
     cumulativeDistance += description.distance;
@@ -734,7 +743,7 @@ exports.prototype.showRoute_ = function() {
  */
 exports.prototype.center = function(lon, lat) {
   var curView = this.map.getView();
-  var coordinate = olBase.proj.transform([lon, lat], 'EPSG:4326', curView.getProjection());
+  var coordinate = transform([lon, lat], 'EPSG:4326', curView.getProjection());
   curView.setCenter(coordinate);
 };
 
@@ -748,8 +757,8 @@ exports.prototype.highlightPosition = function(lon, lat, text) {
   var coordinate = [lon, lat];
   var curView = this.map.getView();
   var geometry = /** @type {ol.Coordinate} */
-  (olBase.proj.transform(coordinate, 'EPSG:4326', curView.getProjection()));
-  var feature = new olBase.Feature({
+  (transform(coordinate, 'EPSG:4326', curView.getProjection()));
+  var feature = new Feature({
     geometry: new olGeomPoint(geometry)
   });
   this.highlightOverlay_.clear();
@@ -950,12 +959,12 @@ exports.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (olBase.array.includes(northArray, m[2].toUpperCase()) &&
-              olBase.array.includes(eastArray, m[4].toUpperCase())) {
+              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
+              arrayIncludes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (olBase.array.includes(northArray, m[4].toUpperCase()) &&
-              olBase.array.includes(eastArray, m[2].toUpperCase())) {
+              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
+              arrayIncludes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -1006,12 +1015,12 @@ exports.prototype.matchCoordinate_ =
             (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (olBase.extent.containsCoordinate(
+            if (containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
-              feature = new olBase.Feature(point);
-            } else if (epsgCode === 'EPSG:4326' && olBase.extent.containsCoordinate(
+              feature = new Feature(point);
+            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
-              feature = new olBase.Feature(flippedPoint);
+              feature = new Feature(flippedPoint);
             }
             if (feature !== null) {
               var resultPoint =

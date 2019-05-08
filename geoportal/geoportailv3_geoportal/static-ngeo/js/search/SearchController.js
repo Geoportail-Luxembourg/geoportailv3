@@ -17,11 +17,11 @@
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
 import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
-import olArray from 'ol/array.js';
+import {includes as arrayIncludes, extend as arrayExtend} from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
-import olEvents from 'ol/events.js';
-import olExtent from 'ol/extent.js';
-import olProj from 'ol/proj.js';
+import {listen} from 'ol/events.js';
+import {getCenter, containsCoordinate} from 'ol/extent.js';
+import {transformExtent, get} from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -29,6 +29,7 @@ import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleStroke from 'ol/style/Stroke.js';
+import Fuse from 'fuse.js';
 
 /**
  * @ngInject
@@ -147,7 +148,7 @@ const exports = function($scope, $window, $compile,
    * @private
    */
   this.maxExtent_ =
-      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {Array.<ol.layer.Layer>}
@@ -259,7 +260,7 @@ const exports = function($scope, $window, $compile,
         appThemes, backgroundLayerEngine, this.gettextCatalog);
   }.bind(this));
 
-  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
+  listen(appThemes, appEventsThemesEventType.LOAD,
       /**
      * @param {ol.events.Event} evt Event
      */
@@ -323,29 +324,34 @@ const exports = function($scope, $window, $compile,
      * @return {string} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return suggestion['translatedName'];
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return suggestion['translatedName'];
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
-      header: function() {
+      header() {
         return '<div class="header">' +
             this.gettextCatalog.getString('Background Layers') +
             '</div>';
-      }.bind(this),
+      },
       suggestion:
           /**
            * @param {app.search.BackgroundLayerSuggestion} suggestion The suggestion.
            * @return {*} The result.
            */
-          (function(suggestion) {
-            var scope = $scope.$new(true);
-            scope['object'] = suggestion;
-            var html = '<p>' + suggestion['translatedName'];
-            html += ' (' + this.gettextCatalog.getString('Background') + ') ';
-            html += '</p>';
-            return $compile(html)(scope);
-          }).bind(this)
+          (suggestion => {
+            if (suggestion) {
+              var scope = $scope.$new(true);
+              scope['object'] = suggestion;
+              var html = '<p>' + suggestion['translatedName'];
+              html += ' (' + this.gettextCatalog.getString('Background') + ') ';
+              html += '</p>';
+              return $compile(html)(scope);
+            }
+
+          })
     })
   }, {
     name: 'pois',
@@ -394,9 +400,11 @@ const exports = function($scope, $window, $compile,
      * @return {(string|*)} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return gettextCatalog.getString(suggestion.name);
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return gettextCatalog.getString(suggestion.name);
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -455,9 +463,11 @@ const exports = function($scope, $window, $compile,
      * @return {(string|*)} The result.
      * @this {TypeaheadDataset}
      */
-    display: function(suggestion) {
-      suggestion['dataset'] = this.name;
-      return gettextCatalog.getString(suggestion.name);
+    display(suggestion) {
+      if (suggestion) {
+        suggestion['dataset'] = this.name;
+        return gettextCatalog.getString(suggestion.name);
+      }
     },
     templates: /** @type {TypeaheadTemplates} */({
       header: function() {
@@ -481,7 +491,7 @@ const exports = function($scope, $window, $compile,
     select: exports.selected_.bind(this)
   });
 
-  olEvents.listen(this['map'].getLayers(),
+  listen(this['map'].getLayers(),
       olCollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} e Collection event.
@@ -562,12 +572,12 @@ exports.prototype.matchCoordinate_ =
           var northing = undefined;
           if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
-              if (olArray.includes(northArray, m[2].toUpperCase()) &&
-              olArray.includes(eastArray, m[4].toUpperCase())) {
+              if (arrayIncludes(northArray, m[2].toUpperCase()) &&
+              arrayIncludes(eastArray, m[4].toUpperCase())) {
                 easting = parseFloat(m[3].replace(',', '.'));
                 northing = parseFloat(m[1].replace(',', '.'));
-              } else if (olArray.includes(northArray, m[4].toUpperCase()) &&
-              olArray.includes(eastArray, m[2].toUpperCase())) {
+              } else if (arrayIncludes(northArray, m[4].toUpperCase()) &&
+              arrayIncludes(eastArray, m[2].toUpperCase())) {
                 easting = parseFloat(m[1].replace(',', '.'));
                 northing = parseFloat(m[3].replace(',', '.'));
               }
@@ -618,10 +628,10 @@ exports.prototype.matchCoordinate_ =
             (new olGeomPoint([northing, easting])
            .transform(epsgCode, mapEpsgCode));
             var feature = /** @type {ol.Feature} */ (null);
-            if (olExtent.containsCoordinate(
+            if (containsCoordinate(
             this.maxExtent_, point.getCoordinates())) {
               feature = new olFeature(point);
-            } else if (epsgCode === 'EPSG:4326' && olExtent.containsCoordinate(
+            } else if (epsgCode === 'EPSG:4326' && containsCoordinate(
             this.maxExtent_, flippedPoint.getCoordinates())) {
               feature = new olFeature(flippedPoint);
             }
@@ -709,7 +719,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 (parsedResponse);
 
             return geojsonFormat.readFeatures(featureCollection, {
-              featureProjection: olProj.get('EPSG:3857'),
+              featureProjection: get('EPSG:3857'),
               dataProjection: undefined
             });
           }
@@ -750,7 +760,7 @@ exports.prototype.createAndInitLayerBloodhoundEngine_ =
               result['themes'].push(element.theme);
             }.bind(this));
 
-            result['showThemeLink'] = !olArray.includes(
+            result['showThemeLink'] = !arrayIncludes(
               result['themes'], this.appTheme_.getCurrentTheme());
           }.bind(this));
 
@@ -830,7 +840,7 @@ exports.prototype.createLocalAllLayerData_ =
       this.appThemes_.getFlatCatalog().then(
         function(flatCatalogue) {
           this.layers_ = [];
-          olArray.extend(this.layers_, flatCatalogue);
+          arrayExtend(this.layers_, flatCatalogue);
         }.bind(this));
     };
 
@@ -903,10 +913,10 @@ exports.selected_ =
         if (dataset === 'coordinates') {
           features.push(feature);
         } else if (dataset === 'pois') {
-          if (!(olArray.includes(this.appExcludeThemeLayerSearch_,
+          if (!(arrayIncludes(this.appExcludeThemeLayerSearch_,
                  this.appTheme_.getCurrentTheme()) &&
                  feature.get('layer_name') === 'Parcelle')) {
-            if (olArray.includes(this.showGeom_, feature.get('layer_name'))) {
+            if (arrayIncludes(this.showGeom_, feature.get('layer_name'))) {
               features.push(feature);
             }
             var layers = /** @type {Array<string>} */
@@ -916,7 +926,7 @@ exports.selected_ =
             }.bind(this));
           } else {
             feature.setGeometry(
-              new olGeomPoint(olExtent.getCenter(
+              new olGeomPoint(getCenter(
                 featureGeometry.getExtent())));
             features.push(feature);
           }
@@ -941,7 +951,7 @@ exports.selected_ =
  * @export
  */
 exports.prototype.addRoutePoint = function(suggestion) {
-  var coordinate = olExtent.getCenter(suggestion.getGeometry().getExtent());
+  var coordinate = getCenter(suggestion.getGeometry().getExtent());
   var feature = /** @type {ol.Feature} */
       (new olFeature(new olGeomPoint(coordinate)));
   feature.set('label', suggestion.get('label'));

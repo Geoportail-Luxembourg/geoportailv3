@@ -13,6 +13,7 @@ let exports = {};
  * by the HTML page.
  */
 
+ /* eslint-disable no-unused-vars */
 import appAskredirectAskredirectDirective from './askredirect/askredirectDirective.js';
 import appAskredirectAskredirectController from './askredirect/AskredirectController.js';
 import appAuthenticationAuthenticationDirective from './authentication/authenticationDirective.js';
@@ -22,8 +23,6 @@ import appBackgroundlayerBackgroundlayerController from './backgroundlayer/Backg
 import appBackgroundlayerBlankLayer from './backgroundlayer/BlankLayer.js';
 import appCatalogCatalogController from './catalog/CatalogController.js';
 import appCatalogCatalogDirective from './catalog/catalogDirective.js';
-import appImageuploadImguploadController from './imageupload/ImguploadController.js';
-import appImageuploadImguploadDirective from './imageupload/ImguploadDirective.js';
 import appDrawDrawDirective from './draw/drawDirective.js';
 import appDrawDrawController from './draw/DrawController.js';
 import appDrawDrawnFeatures from './draw/DrawnFeatures.js';
@@ -34,7 +33,7 @@ import appDrawFeaturePopupDirective from './draw/featurePopupDirective.js';
 import appDrawRouteControl from './draw/RouteControl.js';
 
 //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
-import appDrawSelectedFeaturesService from './draw/SelectedFeaturesService.js';
+import appDrawSelectedFeatures from './draw/SelectedFeaturesService.js';
 
 import appDrawStyleEditingController from './draw/StyleEditingController.js';
 import appDrawStyleEditingDirective from './draw/styleEditingDirective.js';
@@ -60,7 +59,7 @@ import appInfobarScaleselectorController from './infobar/ScaleselectorController
 import appLayerinfoLayerinfoDirective from './layerinfo/layerinfoDirective.js';
 import appLayerinfoLayerinfoController from './layerinfo/LayerinfoController.js';
 import appLocationinfoLocationInfoOverlay from './locationinfo/LocationInfoOverlay.js';
-import appLayerinfoShowLayerinfoFactory from './layerinfo/ShowLayerinfoFactory.js';
+import appLayerinfoShowLayerinfo from './layerinfo/ShowLayerinfoFactory.js';
 import appLayermanagerLayermanagerDirective from './layermanager/layermanagerDirective.js';
 import appLayermanagerLayermanagerController from './layermanager/LayermanagerController.js';
 import appLayerlegendsLayerlegendsDirective from './layerlegends/layerlegendsDirective.js';
@@ -75,7 +74,7 @@ import appMeasureMeasureController from './measure/MeasureController.js';
 import appMeasureMeasureDirective from './measure/MeasureDirective.js';
 import appMymapsMymapsDirective from './mymaps/mymapsDirective.js';
 import appMymapsMymapsController from './mymaps/MymapsController.js';
-import appNotifyFactory from './NotifyFactory.js';
+import appNotify from './NotifyFactory.js';
 import appPrintPrintDirective from './print/printDirective.js';
 import appPrintPrintController from './print/PrintController.js';
 import appPrintPrintservice from './print/Printservice.js';
@@ -108,16 +107,16 @@ import appStreetviewStreetviewController from './streetview/StreetviewController
 import appThemeswitcherThemeswitcherDirective from './themeswitcher/themeswitcherDirective.js';
 import appThemeswitcherThemeswitcherController from './themeswitcher/ThemeswitcherController.js';
 import appActivetool from './Activetool.js';
-import appCoordinateStringService from './CoordinateStringService.js';
+import appCoordinateString from './CoordinateStringService.js';
 import appExport from './Export.js';
 import appGeocoding from './Geocoding.js';
 import appGetDevice from './GetDevice.js';
-import appGetElevationService from './GetElevationService.js';
-import appGetLayerForCatalogNodeFactory from './GetLayerForCatalogNodeFactory.js';
-import appGetProfileService from './GetProfileService.js';
-import appGetShorturlService from './GetShorturlService.js';
-import appGetWmsLayerFactory from './GetWmsLayerFactory.js';
-import appGetWmtsLayerFactory from './GetWmtsLayerFactory.js';
+import appGetElevation from './GetElevationService.js';
+import appGetLayerForCatalogNode from './GetLayerForCatalogNodeFactory.js';
+import appGetProfile from './GetProfileService.js';
+import appGetShorturl from './GetShorturlService.js';
+import appGetWmsLayer from './GetWmsLayerFactory.js';
+import appGetWmtsLayer from './GetWmtsLayerFactory.js';
 import appLayerOpacityManager from './LayerOpacityManager.js';
 import appLayerPermalinkManager from './LayerPermalinkManager.js';
 import appLocationControl from './LocationControl.js';
@@ -148,5 +147,6 @@ import appWmtsHelper from './WmtsHelper.js';
 import appMiscFile from './misc/file.js';
 import appLotChasse from './LotChasse.js';
 
+/* eslint-enable no-unused-vars */
 
 export default exports;

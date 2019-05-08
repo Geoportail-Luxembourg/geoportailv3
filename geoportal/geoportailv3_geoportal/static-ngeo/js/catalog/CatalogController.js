@@ -19,8 +19,8 @@
 
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
-import olEvents from 'ol/events.js';
-import olProj from 'ol/proj.js';
+import {listen} from 'ol/events.js';
+import {transformExtent} from 'ol/proj.js';
 import olView from 'ol/View.js';
 
 /**
@@ -49,7 +49,7 @@ const exports = function($scope, appThemes, appTheme,
    * @private
    */
   this.maxExtent_ =
-      olProj.transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
+      transformExtent(maxExtent, 'EPSG:4326', 'EPSG:3857');
 
   /**
    * @type {app.ScalesService}
@@ -75,7 +75,7 @@ const exports = function($scope, appThemes, appTheme,
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
 
-  olEvents.listen(appThemes, appEventsThemesEventType.LOAD,
+  listen(appThemes, appEventsThemesEventType.LOAD,
       /**
        * @param {ol.events.Event} evt Event.
        */
@@ -132,7 +132,7 @@ exports.prototype.setThemeZooms = function(tree) {
   if (tree !== null) {
     console.assert('metadata' in tree);
     if (tree['metadata']['resolutions']) {
-      var resolutions = tree['metadata']['resolutions'].split(',');
+      var resolutions = tree['metadata']['resolutions'];
       maxZoom = resolutions.length + 7;
     }
     var map = this['map'];

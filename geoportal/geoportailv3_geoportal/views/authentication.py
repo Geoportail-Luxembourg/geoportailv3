@@ -1,10 +1,10 @@
 ﻿# -*- coding: utf-8 -*-
 from pyramid.view import view_config
-from pyramid_ldap import get_ldap_connector
+from pyramid_ldap3 import get_ldap_connector
 from pyramid.security import unauthenticated_userid
-from geoportailv3.portail import Connections
-from geoportailv3.portail import PortailSession
-import ldap
+from geoportailv3_geoportal.portail import Connections
+from c2cgeoportal_commons.models import DBSession
+import ldap3 as ldap
 import logging
 
 log = logging.getLogger(__name__)
@@ -23,13 +23,11 @@ def ldap_user_validator(request, username, password):
 
     if data is not None:
         connection.action = "CONNECT"
-        PortailSession.add(connection)
-        PortailSession.commit()
-        return data[0]
+        DBSession.add(connection)
+        return username
     else:
         connection.action = "CONNECT ERROR"
-        PortailSession.add(connection)
-        PortailSession.commit()
+        DBSession.add(connection)
 
     return None
 
@@ -41,51 +39,68 @@ but from ldap
 
 
 def get_user_from_request(request):
-    from c2cgeoportal.models import DBSession, Role
+    from c2cgeoportal_commons.models import DBSession
+    from c2cgeoportal_commons.models.main import Role
 
     class O(object):
         pass
     username = unauthenticated_userid(request)
     if username is not None:
+        default_mymaps_role = int(request.registry.settings['default_mymaps_role'])
         user = O()
         user.id = 0
         user.username = username
         user.email = None
-        user.is_admin = False
-        user.mymaps_role = 999
+        user.is_mymaps_admin = False
+        user.mymaps_role = default_mymaps_role
         user.ogc_role = -1
         user.sn = None
-
+        user.is_password_changed = None
+        user.role_name = None
         connector = get_ldap_connector(request)
         cm = connector.manager
 
         # 0 means 'Tous publics'
         roletheme = 0
         with cm.connection() as conn:
-            result = conn.search_s('ou=portail,dc=act,dc=lu',
-                                   ldap.SCOPE_SUBTREE, '(login=%s)' % username)
+            ldap_settings = request.registry.settings['ldap']
+            base_dn = ldap_settings['base_dn']
+            filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+            message_id = conn.search(
+                base_dn, filter_tmpl, ldap.SUBTREE,
+                ldap.DEREF_ALWAYS, ldap.ALL_ATTRIBUTES)
+            result = conn.get_response(message_id)[0]
+
             if len(result) == 1:
-                if 'roleTheme' in result[0][1]:
-                    roletheme = result[0][1]['roleTheme'][0]
-                if 'mail' in result[0][1]:
-                    user.mail = result[0][1]['mail'][0]
-                if 'sn' in result[0][1]:
-                    user.sn = result[0][1]['sn'][0]
+                obj = result[0]['raw_attributes']
+                if 'roleTheme' in obj:
+                    # This is the plain c2cgeoportal role used for authentication.
+                    # Notably in the admin interface.
+                    # The role with name role_admin has id 645.
+                    roletheme = obj['roleTheme'][0].decode()
+                if 'mail' in obj:
+                    user.mail = obj['mail'][0].decode()
+                if 'sn' in obj:
+                    user.sn = obj['sn'][0].decode()
                 else:
                     user.sn = user.mail
-                if 'isMymapsAdmin' in result[0][1]:
-                    user.is_admin =\
-                        "TRUE" == (result[0][1]['isMymapsAdmin'][0]).upper()
-                if 'roleMymaps' in result[0][1]:
-                    user.mymaps_role = int(result[0][1]['roleMymaps'][0])
-                if 'roleOGC' in result[0][1]:
-                    user.ogc_role = result[0][1]['roleOGC'][0]
+                if 'isMymapsAdmin' in obj:
+                    user.is_mymaps_admin = "TRUE" == obj['isMymapsAdmin'][0].upper().decode()
+                if 'roleMymaps' in obj:
+                    # This role is used for myMaps.
+                    user.mymaps_role = int(obj['roleMymaps'][0])
+                if 'roleOGC' in obj:
+                    # This role is used by the print proxy and internal WMS proxy.
+                    user.ogc_role = int(obj['roleOGC'][0])
         try:
+            # Loading the plain c2cgeoportal role used for authentication.
             user.role = DBSession.query(Role).filter_by(id=roletheme).one()
         except Exception as e:
+            # Fallback to the "Tous publics" role
             user.role = DBSession.query(Role).filter_by(id=0).one()
             log.exception(e)
 
+        user.role_name = user.role.name
         user.functionalities = []
         return user
 
@@ -109,5 +124,5 @@ class Authentication(object):
                     "sn": getattr(
                         self.request.user, 'sn',
                         self.request.user.username),
-                    "is_admin": getattr(self.request.user, 'is_admin', False)}
+                    "is_admin": getattr(self.request.user, 'is_mymaps_admin', False)}
         return {}

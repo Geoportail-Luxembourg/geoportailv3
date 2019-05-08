@@ -7,7 +7,7 @@
  */
 
 import appModule from './module.js';
-import olObj from 'ol/obj.js';
+import {assign} from 'ol/obj.js';
 
 /**
  * @constructor
@@ -41,7 +41,7 @@ const exports = function($sce) {
   /**
    * @type {Object.<string, string>}
    */
-  this.scales = olObj.assign({}, this.origScales);
+  this.scales = assign({}, this.origScales);
 };
 
 

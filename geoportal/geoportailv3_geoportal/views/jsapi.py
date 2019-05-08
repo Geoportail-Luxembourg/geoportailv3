@@ -1,7 +1,7 @@
 from pyramid.view import view_config
 
 import logging
-from c2cgeoportal.views.entry import Entry
+from c2cgeoportal_geoportal.views.entry import Entry
 
 log = logging.getLogger(__name__)
 

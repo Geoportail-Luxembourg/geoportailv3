@@ -131,6 +131,12 @@ def main(global_config, **settings):
     )
 
     config.add_route(
+        "generate_symbol_file",
+        "/mymaps/generate_symbol_file",
+        request_method="GET"
+    )
+
+    config.add_route(
         "mymaps_getpublicmaps",
         "/mymaps/public_maps",
         request_method="GET"
@@ -280,6 +286,10 @@ def main(global_config, **settings):
     config.add_route(
         "feedback",
         "/feedback"
+    )
+    config.add_route(
+        "feedbackanf",
+        "/feedbackanf"
     )
     # pag routes
     config.add_route(

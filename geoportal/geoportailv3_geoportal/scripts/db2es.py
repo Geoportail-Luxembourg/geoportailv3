@@ -9,7 +9,8 @@ import json
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
-from geoportailv3.lib.search import get_elasticsearch, get_index, ensure_index
+from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, \
+    ensure_index
 
 """
 Utility functions for importing data into Elasticsearch from database
@@ -61,7 +62,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'ri', ['reset', 'index'])
     except getopt.GetoptError as err:
-        print str(err)
+        print(str(err))
         sys.exit(2)
     index = False
     reset = False
@@ -99,7 +100,7 @@ def main():
                              chunk_size=multiple,
                              raise_on_error=True)
             except (BulkIndexError, ConnectionTimeout) as e:
-                print "\n %s" % e
+                print("\n {}".format(e))
             if not results:
                 statuslog("\n")
                 break

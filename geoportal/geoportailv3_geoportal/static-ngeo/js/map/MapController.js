@@ -11,7 +11,7 @@
 
 import appModule from '../module.js';
 import olMapProperty from 'ol/MapProperty.js';
-import olProj from 'ol/proj.js';
+import {getTransform, transform} from 'ol/proj.js';
 
 /**
  * @param {app.StateManager} appStateManager State manager service.
@@ -20,7 +20,7 @@ import olProj from 'ol/proj.js';
  * @ngInject
  */
 const exports = function(appStateManager, ngeoDebounce) {
-  var lurefToWebMercatorFn = olProj.getTransform('EPSG:2169', 'EPSG:3857');
+  var lurefToWebMercatorFn = getTransform('EPSG:2169', 'EPSG:3857');
 
   /** @type {ol.Map} */
   var map = this['map'];
@@ -49,7 +49,7 @@ const exports = function(appStateManager, ngeoDebounce) {
     viewCenter = version === 3 ?
         [+x, +y] : lurefToWebMercatorFn([+y, +x], undefined, 2);
   } else {
-    viewCenter = olProj.transform([6, 49.7], 'EPSG:4326', 'EPSG:3857');
+    viewCenter = transform([6, 49.7], 'EPSG:4326', 'EPSG:3857');
   }
 
   view.setCenter(viewCenter);

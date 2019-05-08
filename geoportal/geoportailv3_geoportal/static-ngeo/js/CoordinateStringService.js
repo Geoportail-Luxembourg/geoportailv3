@@ -9,9 +9,9 @@ let exports = {};
  */
 
 import appModule from './module.js';
-import olCoordinate from 'ol/coordinate.js';
-import olProj from 'ol/proj.js';
-import olString from 'ol/string.js';
+import {format} from 'ol/coordinate.js';
+import {transform} from 'ol/proj.js';
+import {padNumber} from 'ol/string.js';
 
 
 /**
@@ -35,16 +35,16 @@ function service() {
     var str = '';
     if (targetEpsgCode === 'EPSG:3263*') {
       var lonlat = /** @type {ol.Coordinate} */
-          (olProj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+          (transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
       targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
     }
 
-    coordinate = olProj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+    coordinate = transform(coordinate, sourceEpsgCode, targetEpsgCode);
 
     switch (targetEpsgCode) {
       default:
       case 'EPSG:2169':
-        str = olCoordinate.format(coordinate, '{x} E | {y} N', 0);
+        str = format(coordinate, '{x} E | {y} N', 0);
         break;
       case 'EPSG:4326':
         if (opt_DMS) {
@@ -58,14 +58,14 @@ function service() {
           var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
           str = xhdmm + ' | ' + yhdmm;
         } else {
-          str = olCoordinate.format(coordinate, ' {x} E | {y} N', 5);
+          str = format(coordinate, ' {x} E | {y} N', 5);
         }
         break;
       case 'EPSG:32632':
-        str = olCoordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+        str = format(coordinate, '{x} | {y} (UTM32N)', 0);
         break;
       case 'EPSG:32631':
-        str = olCoordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+        str = format(coordinate, '{x} | {y} (UTM31N)', 0);
         break;
     }
     return str;
@@ -109,8 +109,8 @@ function service() {
     var normalizedDegrees = ((degrees + 180) % 360) - 180;
     var x = Math.abs(3600 * normalizedDegrees);
     return Math.floor(x / 3600) + '\u00b0 ' +
-        olString.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-        olString.padNumber(Math.floor(x % 60), 2) + ',' +
+        padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+        padNumber(Math.floor(x % 60), 2) + ',' +
         Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
         '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   }
@@ -128,7 +128,7 @@ function service() {
     var m = (dd - Math.floor(dd)) * 60;
 
     var res = Math.floor(dd) + '\u00b0 ' +
-        olString.padNumber(Math.floor(m), 2) + ',' +
+        padNumber(Math.floor(m), 2) + ',' +
         Math.floor((m - Math.floor(m)) * 100000) +
         '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     return res;

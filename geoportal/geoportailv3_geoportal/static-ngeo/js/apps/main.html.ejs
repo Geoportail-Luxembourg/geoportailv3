@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
+  <head>
+    <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport"
+        content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-title" content="geoportail.lu">
+    <meta name="application-name" content="geoportail.lu">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="shortcut icon" href="<%=require("../../images/favicon.ico")%>" />
+
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+    <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+    <% } %>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114-precomposed.png" />
+  </head>
+
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
+    <!-- Begin fixed top bar -->
+    <header class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-inner">
+          <div class="pull-left brand">
+            <img src="<%=require("../../images/gov-light.png")%>" alt="Gouvernement du Grand-Duché de Luxembourg">
+          </div>
+        </div>
+
+        <div class="offline-msg alert-danger" translate>
+          <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
+            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
+          </span>
+          <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
+        </div>
+
+        <ul class="nav navbar-nav pull-right">
+          <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
+          <li ng-click="mainCtrl.toggleThemeSelector();">
+            <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
+          </li>
+
+          <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
+            <app-authentication app-authentication-lang="mainCtrl.lang"
+                app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
+          </li>
+
+
+          <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
+            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
+            <ul class="nav toolbox-panel toolbox-panel-top">
+              <li ng-class="{active: mainCtrl.lang == 'lb'}">
+                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lu</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'fr'}">
+                <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'de'}">
+                <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
+              </li>
+              <li ng-class="{active: mainCtrl.lang == 'en'}">
+                <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
+        <app-search app-search-map="::mainCtrl.map"
+                    app-search-language="mainCtrl.lang"
+                    app-search-mobileactive="mainCtrl.mobileSearchActive"
+                    app-search-routing-open="mainCtrl.routingOpen"></app-search>
+      </div>
+    </header>
+    <div class="routing-goto-route" ng-if="mainCtrl.hasRoutingResult">
+      <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>
+    </div>
+    <!-- Begin page content (ie. map + left sidebar) -->
+    <div id="main-container">
+      <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
+           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
+
+        <!-- Layers -->
+        <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
+          <h2 translate>layers</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
+            <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
+            <span translate>Afficher les modèles 3D</span>
+          </div>
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="my-layers-tab">
+              <a href="#mylayers" data-toggle="tab">
+                <span translate>my_layers</span>
+                <span ng-if="mainCtrl.selectedLayers.length > 0">({{mainCtrl.selectedLayers.length}})</span>
+              </a>
+            </li>
+            <li role="presentation" class="active catalog-tab">
+              <a href="#catalog" data-toggle="tab" translate>Catalog</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div id="mylayers" class="tab-pane col-xs-12">
+              <app-layermanager app-layermanager-map="::mainCtrl.map"
+                app-layermanager-layers="::mainCtrl.selectedLayers"
+                app-layermanager-active-layers-comparator="mainCtrl.activeLayersComparator">
+              </app-layermanager>
+              <div class="text-center add-layers">
+                <button class="btn btn-default" ng-click="mainCtrl.showTab('a[href=\'#catalog\']');" translate>+ Add layers</button>
+                <app-external-data app-external-data-map="::mainCtrl.map"></app-external-data>
+              </div>
+            </div>
+            <div id="catalog" class="tab-pane active">
+              <app-themeswitcher app-themeswitcher-useropen="mainCtrl.userOpen"
+                                 app-themeswitcher-map="::mainCtrl.map"></app-themeswitcher>
+              <app-catalog app-catalog-map="::mainCtrl.map"></app-catalog>
+            </div>
+          </div>
+        </div>
+
+        <!-- MyMaps -->
+        <div id="mymaps" class="mymaps" ng-class="mainCtrl.mymapsOpen ? 'show' : 'hide'">
+          <h2 translate>my_maps</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="tab-content">
+            <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
+                        app-mymaps-drawopen="mainCtrl.drawOpen"
+                        app-mymaps-shareopen="mainCtrl.shareOpen"
+                        app-mymaps-share-mymaps-checked="mainCtrl.shareMymapsChecked"
+                        app-mymaps-share-show-long-url="mainCtrl.shareShowLongUrl"
+                        app-mymaps-layers-changed="mainCtrl.layersChanged"
+                        app-mymaps-selected-layers="mainCtrl.selectedLayers"
+                        app-mymaps-map="::mainCtrl.map"></app-mymaps>
+          </div>
+        </div>
+
+        <!-- Infos -->
+        <div ng-if="!mainCtrl.isDisconnectedOrOffline()" id="infos" ng-class="mainCtrl.infosOpen ? 'show' : 'hide'">
+          <h2 translate>infos</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-query app-query-map="::mainCtrl.map"
+                       app-query-open="mainCtrl.infosOpen"
+                       app-query-mymaps-open="mainCtrl.mymapsOpen"
+                       app-query-layers-open="mainCtrl.layersOpen"
+                       app-query-routing-open="mainCtrl.routingOpen"
+                       app-query-appselector="mainCtrl.infosAppSelector"
+                       app-query-language="mainCtrl.lang"
+                       app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
+
+            <app-locationinfo app-locationinfo-map="::mainCtrl.map"
+                              app-locationinfo-open="mainCtrl.infosOpen"
+                              app-locationinfo-routing-open="mainCtrl.routingOpen"
+                              app-locationinfo-appselector="mainCtrl.infosAppSelector"
+                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent">
+            </app-locationinfo>
+            <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
+              <div class="col-xs-12">
+                <ul>
+                  <li translate>
+                  A <em>right click</em> (tap and hold on mobile) will display information about the current location.
+                  </li>
+                  <li translate>
+                  A <em>short click</em> (tap on mobile) on a map feature will select the feature and show more information.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Legend -->
+        <div id="legends" ng-class="mainCtrl.legendsOpen ? 'show' : 'hide'">
+          <h2 translate>legends</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-layerlegends
+              app-layerlegends-layers="::mainCtrl.selectedLayers"
+              app-layerlegends-map="::mainCtrl.map">
+            </app-layerlegends>
+          </div>
+        </div>
+        <!-- Routing -->
+        <div id="routing" ng-class="mainCtrl.routingOpen ? 'show' : 'hide'">
+          <h2 translate>Routing</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="tab-content">
+            <app-routing app-routing-map="::mainCtrl.map"
+              app-routing-has-result="mainCtrl.hasRoutingResult"
+              app-routing-show-redirect="mainCtrl.showRedirect"></app-routing>
+            <div class="routing-goto-plan" ng-if="mainCtrl.hasRoutingResult">
+              <button class="routing-rounded-button"  ng-click="mainCtrl.closeSidebar()" translate>Voir le plan</button>
+            </div>
+          </div>
+        </div>
+        <!-- Feedback -->
+        <div id="feedback" ng-class="mainCtrl.feedbackOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedback
+              app-feedback-drawing-active="mainCtrl.drawOpen",
+              app-feedback-sidebar-active="mainCtrl.sidebarActive",
+              app-feedback-active="mainCtrl.feedbackOpen"
+              app-feedback-map="::mainCtrl.map"
+              app-feedback-layers="::mainCtrl.selectedLayers">
+            </app-feedback>
+          </div>
+        </div>
+      </div>
+    <div class="map-wrapper">
+      <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
+      <app-map app-map-map="::mainCtrl.map"></app-map>
+      <ngeo-olcs-controls3d ng-if="mainCtrl.is3dEnabled()" ol3dm="::mainCtrl.ol3dm"></ngeo-olcs-controls3d>
+      <div ng-show="mainCtrl.activeLayersComparator" app-slider app-slider-map="::mainCtrl.map" app-slider-active="mainCtrl.activeLayersComparator"
+           app-slider-layers="::mainCtrl.selectedLayers" class="slider-line-area ng-hide" ng-cloak>
+        <div class="slider-line"></div>
+        <div class="slider-arrows">
+          <div class="slider-arrow-left"></div>
+          <div class="slider-arrow-right"></div>
+        </div>
+        <div ng-if="mainCtrl.selectedLayers.length>0" class="slider-layer-label"><i class="fa fa-arrow-left"></i> <span>{{mainCtrl.selectedLayers[0].get('label') | translate}}</span></div>
+      </div>
+      <ngeo-offline
+          ngeo-offline-map="::mainCtrl.map"
+          ngeo-offline-mask-margin="::100"
+          ngeo-offline-min-zoom="::12"
+          ngeo-offline-max-zoom="::16"
+          ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
+      >
+      </ngeo-offline>
+    </div>
+  </div>
+    <!-- Begin bottom bar -->
+    <footer class="footer">
+      <ul class="sidebar-controls nav navbar-nav pull-left"
+          ng-class="{open: mainCtrl.sidebarOpen()}"
+          ngeo-btn-group-active="mainCtrl.sidebarActive"
+          ngeo-btn-group>
+        <li ngeo-btn ng-model="mainCtrl.layersOpen" class="layers icon">
+          <a href translate>Couches</a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.mymapsOpen" class="mymaps icon">
+          <a href translate>My Maps<span ng-show="mainCtrl.layersChanged">(*)</span></a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.infosOpen" class="infos icon">
+          <a href translate>Infos<span ng-show="mainCtrl.infosHiddenContent">(*)</span></a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.legendsOpen" class="legends icon">
+          <a href translate>Legends</a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.routingOpen" class="routing icon">
+          <a href translate>Routing</a>
+        </li>
+      </ul>
+      <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" translate>Contact</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" translate>Legalites</a></li>
+        <li><a ng-href="http://www.act.public.lu/">ACT</a></li>
+      </ul>
+      <ul class="toolbox nav navbar-nav" ngeo-btn-group>
+        <li class="draw icon hidden-3d" ng-class="mainCtrl.drawOpen ? 'active' : ''">
+        <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
+          <app-draw app-draw-map="::mainCtrl.map"
+            app-draw-active="mainCtrl.drawOpen"
+            app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
+            app-draw-mymaps-open="mainCtrl.mymapsOpen">
+          </app-draw>
+        </li>
+        <li class="hidden-xs measure icon hidden-3d" ng-class="mainCtrl.measureOpen ? 'active' : ''">
+        <a href translate ngeo-btn ng-model="mainCtrl.measureOpen">Mesurer</a>
+          <app-measure app-measure-map="::mainCtrl.map"
+            app-measure-active="mainCtrl.measureOpen" app-profile-data="mainCtrl.profileData"
+            app-profile-open="mainCtrl.profileOpen">
+          </app-measure>
+        </li>
+        <li class="hidden-xs hidden-3d print icon" ng-class="mainCtrl.printOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.printOpen">Imprimer</a>
+          <app-print app-print-map="::mainCtrl.map"
+            app-print-open="mainCtrl.printOpen" app-print-layers="::mainCtrl.selectedLayers"
+            app-print-info-open="mainCtrl.infosOpen"
+            app-print-routing-open="mainCtrl.routingOpen"></app-print>
+        </li>
+        <li class="share icon" ng-class="mainCtrl.shareOpen ? 'active' : ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.shareOpen">Partager</a>
+          <app-share app-share-active="mainCtrl.shareOpen"
+            app-share-active-mymaps="mainCtrl.shareMymapsChecked"
+            app-share-show-long-url="mainCtrl.shareShowLongUrl"></app-share>
+        </li>
+      </ul>
+    </footer>
+
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+        <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+        <% } %>
+        <script src="/dynamic.js?interface=main"></script>
+
+        <!-- Piwik -->
+          <script type="text/javascript">
+            var _paq = _paq || [];
+            // We do the page track in themeservice to capture any theme changes
+            //_paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+              var u="https://statistics.geoportail.lu/";
+              _paq.push(['setTrackerUrl', u+'piwik.php']);
+              var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+            })();
+          </script>
+          <noscript><p><img src="https://statistics.geoportail.lu/piwik.php?idsite=18" style="border:0;" alt="" /></p></noscript>
+        <!-- End Piwik Code -->
+
+  </body>
+</html>

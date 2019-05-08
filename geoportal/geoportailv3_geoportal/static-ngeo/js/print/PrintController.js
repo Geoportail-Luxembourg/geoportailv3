@@ -15,11 +15,12 @@
 
 import appModule from '../module.js';
 import appPrintPrintservice from '../print/Printservice.js';
-import olArray from 'ol/array.js';
-import olEasing from 'ol/easing.js';
-import olEvents from 'ol/events.js';
-import olObservable from 'ol/Observable.js';
-import olProj from 'ol/proj.js';
+import {includes as arrayIncludes} from 'ol/array.js';
+import {easeOut} from 'ol/easing.js';
+import {listen} from 'ol/events.js';
+import {unByKey} from 'ol/Observable.js';
+import {getPointResolution} from 'ol/proj.js';
+import LayerGroup from 'ol/layer/Group.js';
 import olRenderEventType from 'ol/render/EventType.js';
 
 /**
@@ -41,6 +42,8 @@ import olRenderEventType from 'ol/render/EventType.js';
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * @param {angular.$http} $http Angular $http service.
  * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper.
+ * @param {string} appImagesPath Path the the static images.
+ * @param {string} arrowUrl URL to the arrow.
  * @constructor
  * @export
  * @ngInject
@@ -49,7 +52,8 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
     ngeoFeatureOverlayMgr, ngeoPrintUtils,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
-    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper) {
+    ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
+    arrowUrl) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
@@ -79,8 +83,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {ol.Map}
    * @private
    */
-  this.map_ = this['map'];
-  console.assert(this.map_ !== undefined && this.map_ !== null);
+  this.map_;
 
   /**
    * @type {angular.$timeout}
@@ -110,7 +113,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @type {ngeo.print.Service}
    * @private
    */
-  this.print_ = new appPrintPrintservice(printServiceUrl, $http, ngeoLayerHelper);
+  this.print_ = new appPrintPrintservice(printServiceUrl, $http, ngeoLayerHelper, appImagesPath, arrowUrl);
 
   /**
    * @type {ngeo.print.Utils}
@@ -265,10 +268,10 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.featurePopup_.hide();
       this.useOptimalScale_();
       console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = olEvents.listen(this.map_,
+      postcomposeListenerKey = listen(this.map_,
           olRenderEventType.POSTCOMPOSE, postcomposeListener);
     } else if (postcomposeListenerKey !== null) {
-      olObservable.unByKey(postcomposeListenerKey);
+      unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
     }
     this.map_.render();
@@ -288,7 +291,7 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
  * @type {Array.<number>}
  * @private
  */
-exports.DEFAULT_MAP_SCALES_ = [1500, 2500, 5000, 10000, 15000,
+const DEFAULT_MAP_SCALES = [1500, 2500, 5000, 10000, 15000,
   20000, 25000, 50000, 80000, 100000, 125000, 200000, 250000, 400000];
 
 
@@ -333,7 +336,7 @@ exports.getViewCenterResolution_ = function(view) {
   console.assert(viewCenter !== undefined);
   console.assert(viewProjection !== null);
   console.assert(viewResolution !== undefined);
-  return olProj.getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
+  return getPointResolution(viewProjection, /** @type{number} */(viewResolution),  /** @type{Array<number>} */(viewCenter));
 };
 
 
@@ -414,6 +417,13 @@ exports.prototype.changeLayout = function(newLayout) {
   this.map_.render();
 };
 
+/**
+ * @export
+ */
+exports.prototype.$onInit = function() {
+  this.map_ = this['map'];
+  console.assert(this.map_ !== undefined && this.map_ !== null);
+};
 
 /**
  * @param {number} newScale The new scale.
@@ -441,7 +451,7 @@ exports.prototype.changeScale = function(newScale) {
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
-      easing: olEasing.easeOut,
+      easing: easeOut,
       resolution: currentResolution
     });
   }
@@ -502,6 +512,24 @@ exports.prototype.print = function(format) {
     }
   });
 
+  function recursiveGetLayerAttributions(layer, dataOwners) {
+    if (layer instanceof LayerGroup) {
+      layer.getLayers().forEach(l => recursiveGetLayerAttributions(l, dataOwners));
+    } else {
+      let source = undefined;
+      if (/** @type {Object} */ (layer).getSource instanceof Function) {
+        source = /** @type {Object} */ (layer).getSource();
+      }
+      if (source != undefined) {
+        const attributions = source.getAttributions();
+        if (attributions !== null) {
+          const htmls = attributions();
+          dataOwners.push(...htmls);
+        }
+      }
+    }
+  }
+
   this.getShorturl_().then(
       /**
        * @param {string} shorturl The short URL.
@@ -511,26 +539,12 @@ exports.prototype.print = function(format) {
         this['printing'] = true;
         var format = curFormat;
         var dataOwners = [];
-        map.getLayers().forEach(function(layer) {
-          var source = undefined;
-          if (/** @type{Object} */ (layer).getSource instanceof Function) {
-            source = /** @type{Object} */ (layer).getSource();
-          }
-          if (source != undefined) {
-            var attributions = source.getAttributions();
-            if (attributions !== null) {
-              attributions.forEach(function(attribution) {
-                dataOwners.push(attribution.getHTML());
-              }.bind(this));
-            }
-          }
-        });
+        recursiveGetLayerAttributions(map.getLayerGroup(), dataOwners);
 
         var routingAttributions = this.featureOverlayLayer_.getSource().getAttributions();
-        if (routingAttributions !== undefined && routingAttributions !== null) {
-          routingAttributions.forEach(function(attribution) {
-            dataOwners.push(attribution.getHTML());
-          }, this);
+        if (routingAttributions) {
+          const htmls = routingAttributions();
+          dataOwners.push(...htmls);
         }
         //Remove duplicates.
         dataOwners = dataOwners.filter(function(item, pos, self) {
@@ -754,28 +768,20 @@ exports.prototype.setScales_ = function() {
       /**
        * @param {Object} tree Tree object for the theme.
        */
-      (function(tree) {
+      tree => {
         var scales;
-        if (tree === null) {
+        if (!tree) {
           this.needScaleRefresh = true;
         }
-        if (tree !== null && tree['metadata']['print_scales']) {
-          var printScalesStr = tree['metadata']['print_scales'];
-          scales = printScalesStr.trim().split(',').map(
-              /**
-               * @param {string} scale Scale value as a string.
-               * @return {number} Scale value as a number.
-               */
-              function(scale) {
-                return +scale;
-              });
-          scales.sort((a, b) => a - b);
+        if (tree && tree['metadata']['print_scales']) {
+          scales = tree['metadata']['print_scales'].map(s => +s);
+          scales.sort((a, b) => a - b); // sort numerically
         } else {
-          scales = exports.DEFAULT_MAP_SCALES_;
+          scales = DEFAULT_MAP_SCALES;
         }
         this['scales'] = scales;
         var scale = this['scale'];
-        if (scale != -1) {
+        if (scale !== -1) {
           // find nearest scale to current scale
           scale = exports.findNearestScale_(scales, scale);
           if (scale != this['scale']) {
@@ -783,7 +789,7 @@ exports.prototype.setScales_ = function() {
             this.map_.render();
           }
         }
-      }).bind(this));
+      });
 };
 
 
@@ -857,7 +863,7 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
   // Add Parent element Id and Classes to the list
   selectorTextArr.push('#' + parentElement.id);
   for (var c1 = 0; c1 < parentElement.classList.length; c1++) {
-    if (!olArray.includes(selectorTextArr, '.' + parentElement.classList[c1])) {
+    if (!arrayIncludes(selectorTextArr, '.' + parentElement.classList[c1])) {
       selectorTextArr.push('.' + parentElement.classList[c1]);
     }
   }
@@ -865,12 +871,12 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
   var nodes = parentElement.getElementsByTagName('*');
   for (var i1 = 0; i1 < nodes.length; i1++) {
     var id = nodes[i1].id;
-    if (!olArray.includes(selectorTextArr, '#' + id)) {
+    if (!arrayIncludes(selectorTextArr, '#' + id)) {
       selectorTextArr.push('#' + id);
     }
     var classes = nodes[i1].classList;
     for (var c2 = 0; c2 < classes.length; c2++) {
-      if (!olArray.includes(selectorTextArr, '.' + classes[c2])) {
+      if (!arrayIncludes(selectorTextArr, '.' + classes[c2])) {
         selectorTextArr.push('.' + classes[c2]);
       }
     }
@@ -893,7 +899,7 @@ exports.prototype.getCSSStyles_ = function(parentElement) {
 
     var cssRules = s.cssRules;
     for (var r1 = 0; r1 < cssRules.length; r1++) {
-      if (olArray.includes(selectorTextArr, cssRules[r1].selectorText)) {
+      if (arrayIncludes(selectorTextArr, cssRules[r1].selectorText)) {
         extractedCSSText += cssRules[r1].cssText;
       }
     }

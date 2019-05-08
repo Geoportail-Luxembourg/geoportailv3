@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-import sqlahelper
+import codecs
 import traceback
 import sys
-import urllib2
+import urllib.request
+import urllib.parse
 import re
 import polib
-import os.path
+import os
 from os import path
 from pyramid.paster import bootstrap
-from urllib import urlencode
 from geojson import loads as geojson_loads
+from . import get_session
 
 
 def _get_url_with_token(url):
@@ -24,10 +25,11 @@ def _get_url_with_token(url):
         token = urllib2.urlopen(tokenurl, None, 15).read()
         return baseurl + "token=" + token
     except:
-        print url
+        print(url)
         traceback.print_exc(file=sys.stdout)
     return None
 
+TIMEOUT=15
 
 def _get_external_data(url, bbox=None, layer=None):
     body = {'f': 'pjson',
@@ -55,13 +57,14 @@ def _get_external_data(url, bbox=None, layer=None):
     separator = "?"
     if url.find(separator) > 0:
         separator = "&"
-    query = '%s%s%s' % (url, separator, urlencode(body))
+    query = '%s%s%s' % (url, separator, urllib.parse.urlencode(body))
 
     try:
-        result = urllib2.urlopen(query, None, 15)
+        print('Requesting %s' % query)
+        result = urllib.request.urlopen(query, None, TIMEOUT)
         content = result.read()
     except:
-        print query
+        print(query)
         traceback.print_exc(file=sys.stdout)
         return []
 
@@ -70,12 +73,12 @@ def _get_external_data(url, bbox=None, layer=None):
     except:
         return []
     if 'fieldAliases' not in esricoll:
-        print("Error with the layer:  %s using query : %s response: %s"
-              % (layer, query, esricoll))
+        print(("Error with the layer:  %s using query : %s response: %s"
+              % (layer, query, esricoll)))
         return []
     else:
         return dict((value, key)
-                    for key, value in esricoll['fieldAliases'].iteritems())
+                    for key, value in esricoll['fieldAliases'].items())
 
 
 def remove_attributes(attributes, attributes_to_remove,
@@ -101,13 +104,11 @@ def is_in_po(po, search):
 
 
 def main():  # pragma: nocover
-    env = bootstrap("development.ini")
-    from geoportailv3.models import LuxGetfeatureDefinition
+    destination = "/tmp/tooltips.pot"
 
-    package = env["registry"].settings["package"]
-    directory = "%s/locale/" % package
-    destination = path.join(directory, "%s-tooltips.pot" % package)
-
+    session = get_session('development.ini', 'app')
+    from c2cgeoportal_commons.models import DBSession, DBSessions
+    from geoportailv3_geoportal.models import LuxGetfeatureDefinition
     if not os.path.isfile(destination):
         po = polib.POFile()
         po.metadata = {
@@ -118,22 +119,21 @@ def main():  # pragma: nocover
     else:
         po = polib.pofile(destination, encoding="utf-8")
 
-    dbsession = sqlahelper.get_session()
-    results = dbsession.query(LuxGetfeatureDefinition).\
+    results = session.query(LuxGetfeatureDefinition).\
         filter(LuxGetfeatureDefinition.remote_template == False).filter(
             LuxGetfeatureDefinition.template.in_
             (['default.html', 'default_table.html', 'feedbackanf.html'])).all()  # noqa
 
     fields = []
+    print("%d results" % len(results))
     for result in results:
-        engine = sqlahelper.get_engine(result.engine_gfi)
+        engine = DBSessions[result.engine_gfi]
         first_row = None
         if result.query is not None and len(result.query) > 0:
             if "SELECT" in result.query.upper():
                 first_row = engine.execute(result.query).first()
             else:
-                first_row =\
-                    engine.execute("SELECT * FROM " + result.query).first()
+                first_row = engine.execute("SELECT * FROM " + result.query).first()
         if result.rest_url is not None and len(result.rest_url) > 0:
             first_row = _get_external_data(
                 result.rest_url,

@@ -6,7 +6,7 @@ import logging
 import shutil
 import os
 import smtplib
-import urllib2
+import urllib.request
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -32,7 +32,7 @@ class Pds(object):
              num
              )
         try:
-            f = urllib2.urlopen(url, None, 1800)
+            f = urllib.request.urlopen(url, None, 1800)
             data = f
             filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
             with open(filename, 'wb') as fp:
@@ -69,7 +69,7 @@ class Pds(object):
             msg['BCC'] = bcc
             mails.append(bcc)
         else:
-            print "no bcc_address in" + str(self.config["pds"])
+            print("no bcc_address in" + str(self.config["pds"]))
         msg['Subject'] = 'Attestation PDS '
         msg['From'] = me
         msg['To'] = you

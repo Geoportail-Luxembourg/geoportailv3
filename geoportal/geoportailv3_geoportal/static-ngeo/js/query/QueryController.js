@@ -3,13 +3,14 @@
  */
 import appModule from '../module.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
-import olBase from 'ol.js';
-import olExtent from 'ol/extent.js';
+import {listen} from 'ol/events.js';
+import {extend as arrayExtend} from 'ol/array.js';
+import {extend as extentExtend} from 'ol/extent.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
 import olLayerVector from 'ol/layer/Vector.js';
-import olProj from 'ol/proj.js';
+import {transform} from 'ol/proj.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
@@ -371,8 +372,8 @@ const exports = function($sce, $timeout, $scope, $http,
     }
   }.bind(this));
 
-  olBase.events.listen(this.map_.getLayers(),
-      olBase.CollectionEventType.REMOVE,
+ listen(this.map_.getLayers(),
+      'remove',
       /**
        * @param {ol.Collection.Event} e Collection event.
        */
@@ -383,8 +384,8 @@ const exports = function($sce, $timeout, $scope, $http,
       }, this);
 
 
-  olBase.events.listen(this.map_,
-      olBase.MapBrowserEventType.POINTERDOWN, function(evt) {
+ listen(this.map_,
+      'pointerdown', function(evt) {
         this.isLongPress_ = false;
         this.startPixel_ = evt.pixel;
         this.pointerDownTime_ = new Date().getTime();
@@ -392,8 +393,8 @@ const exports = function($sce, $timeout, $scope, $http,
         $timeout.cancel(holdPromise);
       }, this);
 
-  olBase.events.listen(this.map_,
-      olBase.MapBrowserEventType.POINTERUP, function(evt) {
+ listen(this.map_,
+      'pointerup', function(evt) {
         $timeout.cancel(holdPromise);
         var tempTime = new Date().getTime();
         if ((tempTime - this.pointerUpTime_) <= 499) {
@@ -440,7 +441,7 @@ const exports = function($sce, $timeout, $scope, $http,
         }.bind(this), 500, false);
       }, this);
 
-  olBase.events.listen(this.map_, olBase.MapBrowserEventType.POINTERMOVE,
+ listen(this.map_, 'pointermove',
       function(evt) {
         if (evt.dragging || this.isQuerying_) {
           return;
@@ -453,9 +454,7 @@ const exports = function($sce, $timeout, $scope, $http,
             if (layer !== undefined && layer !== null) {
               var metadata = layer.get('metadata');
               if (metadata !== undefined && metadata !== null) {
-                if (metadata['is_queryable'] !== undefined && metadata['is_queryable'] !== null &&
-                    metadata['is_queryable'] &&
-                    layer.getVisible() && layer.getOpacity() > 0) {
+                if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
                   return true;
                 }
               }
@@ -587,7 +586,7 @@ exports.getAllChildren_ = function(element) {
   var array = [];
   for (var i = 0; i < element.length; i++) {
     if (element[i].hasOwnProperty('children')) {
-      olBase.array.extend(array, exports.getAllChildren_(
+      arrayExtend(array, exports.getAllChildren_(
           element[i].children)
       );
     } else {
@@ -675,8 +674,7 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
   for (var i = layers.length - 1; i >= 0; i--) {
     var metadata = layers[i].get('metadata');
     if (metadata !== undefined && metadata !== null) {
-      if (metadata['is_queryable'] == 'true' &&
-          layers[i].getVisible() && layers[i].getOpacity() > 0) {
+      if (metadata['is_queryable'] && layers[i].getVisible() && layers[i].getOpacity() > 0) {
         var queryableId = layers[i].get('queryable_id');
         layersList.push(queryableId);
         layerLabel[queryableId] = layers[i].get('label');
@@ -688,7 +686,7 @@ exports.prototype.singleclickEvent_ = function(evt, infoMymaps) {
     var bigBuffer = 20 * resolution;
     var smallBuffer = 1 * resolution;
 
-    var point = olProj.transform(evt.coordinate,
+    var point = transform(evt.coordinate,
         this.map_.getView().getProjection(), 'EPSG:2169');
     var big_box = [
       [point[0] - bigBuffer, point[1] + bigBuffer],
@@ -839,9 +837,8 @@ exports.prototype.showInfo_ = function(shiftKey, resp, layerLabel,
   }
   this.lastHighlightedFeatures_ = [];
   for (var i = 0; i < this.responses_.length; i++) {
-    this.lastHighlightedFeatures_.push.apply(
-        this.lastHighlightedFeatures_,
-        this.responses_[i].features
+    this.lastHighlightedFeatures_.push(
+      ...this.responses_[i].features
     );
   }
   this.highlightFeatures_(this.lastHighlightedFeatures_, fit);
@@ -1076,7 +1073,7 @@ exports.prototype.highlightFeatures_ = function(features, fit) {
     if (jsonFeatures.length > 0) {
       var extent = jsonFeatures[0].getGeometry().getExtent();
       for (var i = 0; i < jsonFeatures.length; ++i) {
-        extent = olExtent.extend(extent,
+        extent = extentExtend(extent,
             jsonFeatures[i].getGeometry().getExtent());
         var curFeature = jsonFeatures[i];
         if (curFeature.getGeometry().getType() ==
@@ -1185,15 +1182,12 @@ exports.prototype.getQrCodeForMymapsUrl = function(mapId) {
 
 /**
  * Check if the value is empty.
- * @param {*} value The value to test.
+ * @param {?string | undefined} value The value to test.
  * @return {boolean} True if is empty.
  * @export
  */
 exports.prototype.isEmpty = function(value) {
-  if (value === undefined || value === null) {
-    return true;
-  }
-  return String(value).length === 0;
+  return !value;
 };
 
 

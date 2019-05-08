@@ -17,9 +17,8 @@
  */
 
 import appModule from '../module.js';
-import olEvents from 'ol/events.js';
+import {listen, unlistenByKey} from 'ol/events.js';
 import olFeature from 'ol/Feature.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
 import olOverlay from 'ol/Overlay.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -27,7 +26,6 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStyle from 'ol/style/Style.js';
-import olProj from 'ol/proj.js';
 
 /**
  * @constructor
@@ -162,7 +160,7 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
    * @type {ol.EventsKey}
    * @private
    */
-  this.event_ = olEvents.listen(this['map'], olMapBrowserEventType.POINTERMOVE,
+  this.event_ = listen(this['map'], 'pointermove',
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -256,7 +254,7 @@ const exports = function($scope, ngeoFeatureOverlayMgr, echocsvUrl,
   }.bind(this));
 
   this.scope_.$on('$destroy', function() {
-    olEvents.unlistenByKey(this.event_);
+    unlistenByKey(this.event_);
     this.unwatchProfileData();
   }.bind(this));
 };

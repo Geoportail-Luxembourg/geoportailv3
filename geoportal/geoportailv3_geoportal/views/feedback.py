@@ -2,13 +2,13 @@
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound
-from turbomail import Message
-from geoportailv3.mymaps import Map, Feature
-
+from geoportailv3_geoportal.mymaps import Map, Feature
+import geojson
+from marrow.mailer import Message
 import geojson
 import bleach
 import logging
-
+from c2cgeoportal_commons.models import DBSessions
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -20,6 +20,8 @@ class Feedback(object):
         self.request = request
         self.config = self.request.registry.settings
         self.localizer = get_localizer(self.request)
+        self.db_mymaps = DBSessions['mymaps']
+
 
     @view_config(route_name='feedback', renderer='json')
     def feedback(self):
@@ -56,7 +58,7 @@ class Feedback(object):
         try:
             vars = self.request.json_body
             map_id = self.config['anf']['map_id']
-            map = self.request.db_mymaps.query(Map).get(map_id)
+            map = self.db_mymaps.query(Map).get(map_id)
             if map is None:
                 return HTTPNotFound()
             sanitized_description = bleach.clean(vars['description'])
@@ -88,7 +90,7 @@ class Feedback(object):
                     log.exception(e)
                 if obj is not None:
                     map.features.append(obj)
-                self.request.db_mymaps.commit()
+                self.db_mymaps.commit()
 
             html_body = u"<h3>L\'utilisateur <a href=\"mailto:{0}\">{4}</a> " \
                 u"a remarqué le problème suivant:</h3><p>{1}</p>" \
