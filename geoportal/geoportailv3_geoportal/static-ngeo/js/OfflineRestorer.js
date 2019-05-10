@@ -2,12 +2,12 @@
  * @module app.OfflineRestorer
  */
 import appModule from './module.js';
-import restorer from 'ngeo/offline/Restorer.js';
+import Restorer from 'ngeo/offline/Restorer.js';
 
 /**
- * @extends {ngeo.offline.Restorer}
+ * @extends {Restorer}
  */
-const OfflineRestorer = class extends restorer {
+const OfflineRestorer = class extends Restorer {
   /**
    * @ngInject
    * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
@@ -29,6 +29,11 @@ const OfflineRestorer = class extends restorer {
      * @type {app.draw.DrawnFeatures}
      */
     this.appDrawnFeatures_ = appDrawnFeatures;
+
+    /**
+     * @type {boolean}
+     */
+    this.restoring = false;
   }
 
   /**
@@ -37,9 +42,11 @@ const OfflineRestorer = class extends restorer {
    * @override
    */
   restore(map) {
+    this.restoring = true;
     return super.restore(map).then((extent) => {
       this.appMymapsOffline_.restore();
       map.addLayer(this.appDrawnFeatures_.drawLayer);
+      this.restoring = false;
       return extent;
     });
   }

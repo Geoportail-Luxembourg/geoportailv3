@@ -230,6 +230,11 @@ const MainController = function(
   this.activeLayersComparator = false;
 
   /**
+   * @private
+   */
+  this.appOfflineRestorer_ = appOfflineRestorer;
+
+  /**
    * @type {Document}
    * @private
    */
@@ -960,14 +965,16 @@ MainController.prototype.initMymaps_ = function() {
   this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
-    this.compareLayers_();
+    if (!this.appOfflineRestorer_.restoring) {
+      this.compareLayers_();
+    }
   });
 };
 
 
 /**
  * Compare the layers of mymaps with selected layers
- * and set layersChanged to true if there there is a difference
+ * and set layersChanged to true if there is a difference
  * between the displayed layers and the mymaps layers
  * @private
  */
