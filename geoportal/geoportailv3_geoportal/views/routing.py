@@ -77,7 +77,6 @@ class RouterController(object):
             routing_stats.transport_mode = transport_mode
             routing_stats.transport_criteria = criteria
             DBSession.add(routing_stats)
-            transaction.commit()
         except Exception as e:
             log.exception(e)
             transaction.abort()
