@@ -771,7 +771,6 @@ class Mymaps(object):
         map.rating_count = map.rating_count + 1
         try:
             self.db_mymaps.add(map)
-            transaction.commit()
             return {
                 'success': True,
                 'rating': map.rating,
@@ -829,6 +828,7 @@ class Mymaps(object):
             map_id = data['map']['uuid']
             if map_id[0] == '-':  # starts with a minus / is a new map
                 map = Map()
+                self.db_mymaps.add(map)
                 map.user_login = user.username
                 success = self.save(map, data['map'])
                 if not success['success']:
@@ -844,11 +844,12 @@ class Mymaps(object):
                         'Error saving the features in the map.'
                     )
                 db_features = db_mymaps.query(Feature).filter(
-                    Feature.map_id == map.uuid
+                    Feature.map_id == map_uuid
                 ).order_by(
                     Feature.display_order
                 ).all()
                 synched_map = dict()
+                self.db_mymaps.flush()
                 synched_map['map'] = self._map_formatter(user, map)
                 synched_map['features'] = geojson.dumps(
                     geojson.FeatureCollection(db_features)
@@ -865,7 +866,7 @@ class Mymaps(object):
                 db_mymaps.query(Feature).filter(
                     Feature.map_id == map_id
                 ).delete()
-                transaction.commit()
+                self.db_mymaps.flush()
 
                 success = self._save_features_helper(
                     map_id, data['features']
@@ -971,7 +972,7 @@ class Mymaps(object):
 
                     map.features.append(obj)
 
-            transaction.commit()
+            self.db_mymaps.flush()
 
             return {'success': True}
         except Exception as e:
@@ -999,7 +1000,6 @@ class Mymaps(object):
             try:
                 cur_feature = db_mymaps.query(Feature).get(feature_id)
                 cur_feature.display_order = display_order
-                transaction.commit()
             except Exception as e:
                 log.exception(e)
                 transaction.abort()
@@ -1022,8 +1022,6 @@ class Mymaps(object):
             return HTTPUnauthorized()
 
         self.db_mymaps.delete(feature)
-        transaction.commit()
-
         return {'success': True}
 
     def has_write_permission(self, user, map):
@@ -1080,7 +1078,7 @@ class Mymaps(object):
         for f in features:
             self.db_mymaps.delete(f)
         self.db_mymaps.delete(map)
-        transaction.commit()
+        self.db_mymaps.flush()
 
         return {'success': True}
 
@@ -1099,7 +1097,6 @@ class Mymaps(object):
             Feature.map_id == map.uuid).all()
         for f in features:
             self.db_mymaps.delete(f)
-        transaction.commit()
 
         return {'success': True}
 
@@ -1285,14 +1282,12 @@ class Mymaps(object):
             cur_file.image = f_image.read()
             cur_file.login_owner = user
             self.db_mymaps.add(cur_file)
-            transaction.commit()
 
             cur_file = Images()
             cur_file.name = thumbnail_name
             cur_file.image = f_thumbnail.read()
             cur_file.login_owner = user
             self.db_mymaps.add(cur_file)
-            transaction.commit()
 
         except:
             return {'success': False, 'msg': 'Bad image'}
@@ -1349,7 +1344,6 @@ class Mymaps(object):
             the_file.write(symbol.symbol)
             the_file.close()
             symbol.synchronized = True
-            transaction.commit()
             script_file.write('sh %s %s remove \n'
                               % (script_ms, dir + "/" + the_name))
         script_file.close()
@@ -1519,7 +1513,6 @@ class Mymaps(object):
         cur_file.is_public = False
 
         self.db_mymaps.add(cur_file)
-        transaction.commit()
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
