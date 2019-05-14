@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import httplib2shim
+httplib2shim.patch()
 import distutils.core
 from pyramid.config import Configurator
 from c2cgeoportal_geoportal import locale_negotiator, add_interface, \
