@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import httplib2shim
+httplib2shim.patch()
 from pyramid.config import Configurator
 from pyramid_mako import add_mako_renderer
 
