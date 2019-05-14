@@ -1168,6 +1168,21 @@ exports.prototype.deleteAMap = function(mapId) {
  * @return {angular.$q.Promise} Promise.
  */
 exports.prototype.deleteAllFeaturesAMap = function(mapId) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteAllFeaturesOffline(mapId).then(() => {
+      return this.myMapsOffline_.getMapOffline(mapId).then(myMaps => {
+        const mapsIdx = this.maps_.findIndex(e => e['uuid'] === mapId);
+        this.maps_[mapsIdx] = myMaps;
+        this.$rootscope_.$apply();
+
+        return this.myMapsOffline_.getElementOffline(mapId).then(myMapsElement => {
+          myMapsElement['map'] = myMaps;
+          return this.updateMapsElement(mapId, myMapsElement);
+        });
+      });
+    });
+  }
+
   return this.$http_.delete(this.mymapsDeleteFeaturesUrl_ + mapId).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -1241,8 +1256,7 @@ exports.prototype.updateMap =
 
             return this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
               myMapsElement['map'] = myMaps;
-              this.updateMapsElement(uuid, myMapsElement);
-              return Promise.resolve();
+              return this.updateMapsElement(uuid, myMapsElement);
             }));
           });
         });

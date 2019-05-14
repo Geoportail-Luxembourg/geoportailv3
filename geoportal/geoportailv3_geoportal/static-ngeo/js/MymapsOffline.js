@@ -335,6 +335,32 @@ exports.prototype.deleteFeatureOffline = function(feature, encOpt) {
 
 /**
  * @param {string} uuid The source map uuid.
+ */
+exports.prototype.deleteAllFeaturesOffline = function(uuid) {
+  const conf = this.ngeoOfflineConfiguration_;
+  const key = `mymaps_element_${uuid}`;
+
+  return conf.getItem(key).then(myElements => {
+    if (!myElements) {
+      return Promise.reject(`Map with uuid ${uuid} not found`);
+    }
+
+    myElements['features'] = ""; // "features" is a string, it is emptied
+    myElements['map']['dirty'] = true;
+
+    return conf.setItem(key, myElements).then(() => {
+      const now = new Date().toISOString();
+      const spec = {
+        'last_feature_update': now,
+        'dirty': true
+      };
+      return this.updateMapOffline(uuid, spec, false);
+    });
+  });
+};
+
+/**
+ * @param {string} uuid The source map uuid.
  * @param {Object} spec A map description.
  * @param {olx.format.ReadOptions} encOpt Encoding options.
  * @return {Promise<app.MapsResponse>} a promise resolving to a fake response when done.

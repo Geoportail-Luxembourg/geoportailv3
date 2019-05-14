@@ -864,13 +864,14 @@ class Mymaps(object):
                 ).delete()
                 self.db_mymaps.flush()
 
-                success = self._save_features_helper(
-                    map_id, data['features']
-                )
-                if not success['success']:
-                    raise HTTPInternalServerError(
-                        'Error updating the features in the map.'
+                if data['features'] is not "":
+                    success = self._save_features_helper(
+                        map_id, data['features']
                     )
+                    if not success['success']:
+                        raise HTTPInternalServerError(
+                            'Error updating the features in the map.'
+                        )
 
                 map = self.db_mymaps.query(Map).get(map_id)
                 map.user_login = user.username
