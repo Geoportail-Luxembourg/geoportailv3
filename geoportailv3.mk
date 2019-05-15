@@ -38,6 +38,7 @@ CONFIG_VARS += referrer
 CONFIG_VARS += excluded_themes_from_search
 CONFIG_VARS += sync_ms_path
 CONFIG_VARS += temp_mapfile
+CONFIG_VARS += poi_server
 APACHE_VHOST ?= luxembourg-geomapfish
 
 NGEO_LIBS_JS_FILES += node_modules/fuse.js/src/fuse.min.js

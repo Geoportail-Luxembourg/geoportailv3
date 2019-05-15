@@ -1,6 +1,7 @@
 extends: CONST_vars.yaml
 
 vars:
+    poi_server:
     excluded_themes_from_search:
     referrer:
     sync_ms_path: /app/scripts/sync_ms.sh
