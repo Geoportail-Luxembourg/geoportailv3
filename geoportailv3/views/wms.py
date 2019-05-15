@@ -64,6 +64,39 @@ class Wms(object):
                         return False
         return True
 
+    @view_config(route_name='wmspoi')
+    def wmspoi(self):
+        config = self.request.registry.settings
+
+        remote_host = config["poi_server"]
+
+        param_wms = ''
+        for param in self.request.params:
+            if param.lower() != 'id_collection':
+                param_wms = param_wms + param + '=' + \
+                    self.request.params.get(param, '') + '&'
+            else:
+                public = ''
+                if self.request.params.get('is_public', 'true').lower() == \
+                   'true':
+                    public = 'public/'
+                remote_host = remote_host + "map=/home/mapserv/" + public + \
+                    self.request.params.get(param, '') + "/generic.map"
+
+        url = ""
+        if remote_host[:-1] == '?':
+            url = remote_host + param_wms[:-1]
+        else:
+            url = remote_host + "&" + param_wms[:-1]
+        try:
+            f = urllib2.urlopen(url)
+            data = f.read()
+        except:
+            log.debug(url)
+        headers = {"Content-Type": f.info()['Content-Type']}
+
+        return Response(data, headers=headers)
+
     @view_config(route_name='wms')
     def internal_proxy_wms(self):
         layers = self.request.params.get('LAYERS', '')
