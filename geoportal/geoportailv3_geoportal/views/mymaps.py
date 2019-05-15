@@ -32,6 +32,7 @@ from shapely.ops import linemerge
 from shapely.geometry import Point, LineString
 from c2cgeoportal_geoportal.lib.caching import set_common_headers, NO_CACHE
 from c2cgeoportal_commons.models import DBSessions
+from geoportailv3_geoportal import mailer
 
 import logging
 import urllib.request
@@ -1403,7 +1404,7 @@ class Mymaps(object):
             log.exception(e)
             return HTTPNotFound()
         message.encoding = 'utf-8'
-        message.send()
+        mailer.send(message)
         return {'success': True}
 
     def strip_accents(self, string):

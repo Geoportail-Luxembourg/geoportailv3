@@ -647,7 +647,7 @@ exports.prototype.deleteFeature = function() {
  * @export
  */
 exports.prototype.trustAsHtml = function(content) {
-  if (!(content !== undefined && content !== null)) {
+  if (!content) {
     content = '';
   }
   return this.sce_.trustAsHtml(content);

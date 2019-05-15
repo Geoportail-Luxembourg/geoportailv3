@@ -1162,6 +1162,9 @@ exports.prototype.prefixKeys =
  */
 exports.prototype.getMymapsPath = function(resource) {
   if (resource) {
+    if (resource.startsWith('data:image')) {
+      return resource;
+    }
     return this.mymapsImageUrl_ + resource;
   }
   return '';
@@ -1187,7 +1190,10 @@ exports.prototype.getQrCodeForMymapsUrl = function(mapId) {
  * @export
  */
 exports.prototype.isEmpty = function(value) {
-  return !value;
+  if (!value) {
+    return true;
+  }
+  return String(value).length === 0;
 };
 
 

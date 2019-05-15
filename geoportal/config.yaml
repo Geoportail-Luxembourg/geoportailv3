@@ -35,6 +35,8 @@ environment:
 - {name: SHORTENER_BASE_URL}
 - {name: ELASTIC_SERVERS}
 - {name: ELASTIC_INDEX}
+- {name: ANF_MAP_ID}
+- {name: ANF_EMAIL}
 - {default: null, name: ROUTING_GRAPHHOPPER_API_KEY}
 - {default: null, name: ROUTING_MAPQUEST_API_KEY}
 interpreted: {}
@@ -365,6 +367,7 @@ vars:
         isThemePrivateUrl: isthemeprivate, layerSearchServiceUrl: layersearch, loginUrl: login,
         logoutUrl: logout, mymapsImageUrl: mymaps_image, mymapsMapsUrl: mymaps_getmaps,
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
+        postFeedbackAnfUrl: feedbackanf,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
@@ -403,8 +406,8 @@ vars:
   overview_map: {base_layer: basemap_2015_global, show: false}
   package: geoportailv3
   anf:
-    email:
-    map_id:
+    email: '{ANF_EMAIL}'
+    map_id: '{ANF_MAP_ID}'
   pag: {
     bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
     owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,

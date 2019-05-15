@@ -119,10 +119,9 @@ const exports = function($scope, $http, appNotify, appUserManager,
    */
   this.url = '';
 
-  $scope.$watch(goog.bind(function() {
-    return this['active'];
-  }, this), goog.bind(function(newVal) {
-    if (newVal === true) {
+  $scope.$watch(
+    () => this['active'], newVal => {
+    if (newVal) {
       if (this.appUserManager_.isAuthenticated()) {
         this.email = this.appUserManager_.getEmail();
       }
@@ -132,23 +131,21 @@ const exports = function($scope, $http, appNotify, appUserManager,
         this.gettextCatalog.getString('Please pick a layer');
       this.setUrl_();
       this.removeListener =
-      $scope.$on('ngeoLocationChange', goog.bind(function(event) {
+      $scope.$on('ngeoLocationChange', event => {
         this.setUrl_();
         this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
-      }, this));
-    } else if (newVal === false && this.removeListener) {
+      });
+    } else if (!newVal && this.removeListener) {
       this.removeListener();
       this.email = this.description = this.url = '';
     }
-  }, this));
+  });
 
-  $scope.$watch(goog.bind(function() {
-    return this['sidebarActive'];
-  }, this), goog.bind(function(newVal) {
+  $scope.$watch(() => this['sidebarActive'], newVal => {
     if (newVal) {
       this['active'] = false;
     }
-  }, this));
+  });
 };
 
 /**
@@ -203,15 +200,15 @@ exports.prototype.sendReport = function() {
     headers: {'Content-Type': 'application/json; charset=utf-8'}
   };
   this.$http_.post(this.postFeedbackanfUrl_, req, config)
-    .then(goog.bind(function(response) {
+    .then(response => {
       var msg = this.gettextCatalog.getString(
         'Le feedback a bien été envoyé à l\'ANF.');
       this.notify_(msg, appNotifyNotificationType.INFO);
       this['active'] = false;
-    }, this), goog.bind(function(response) {
+    }, response => {
       var msg = this.gettextCatalog.getString('Feedback to ANF could not be sent.');
       this.notify_(msg, appNotifyNotificationType.ERROR);
-    }, this));
+    });
 };
 
 
