@@ -162,6 +162,7 @@
                        app-query-routing-open="mainCtrl.routingOpen"
                        app-query-appselector="mainCtrl.infosAppSelector"
                        app-query-language="mainCtrl.lang"
+                       app-query-feedback-anf-open="mainCtrl.feedbackAnfOpen"
                        app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
 
             <app-locationinfo app-locationinfo-map="::mainCtrl.map"
@@ -231,6 +232,23 @@
             </app-feedback>
           </div>
         </div>
+        <!-- Feedback ANF-->
+        <div id="feedbackanf" ng-class="mainCtrl.feedbackAnfOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback ANF</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedbackanf
+              app-feedbackanf-drawing-active="mainCtrl.drawOpen",
+              app-feedbackanf-sidebar-active="mainCtrl.sidebarActive",
+              app-feedbackanf-active="mainCtrl.feedbackAnfOpen"
+              app-feedbackanf-map="::mainCtrl.map"
+              app-feedbackanf-layers="::mainCtrl.selectedLayers">
+            </app-feedbackanf>
+          </div>
+        </div>
       </div>
     <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
@@ -278,6 +296,7 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
@@ -291,7 +310,8 @@
           <app-draw app-draw-map="::mainCtrl.map"
             app-draw-active="mainCtrl.drawOpen"
             app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
-            app-draw-mymaps-open="mainCtrl.mymapsOpen">
+            app-draw-mymaps-open="mainCtrl.mymapsOpen"
+            app-draw-feedback-anf-open="mainCtrl.feedbackAnfOpen">
           </app-draw>
         </li>
         <li class="hidden-xs measure icon hidden-3d" ng-class="mainCtrl.measureOpen ? 'active' : ''">

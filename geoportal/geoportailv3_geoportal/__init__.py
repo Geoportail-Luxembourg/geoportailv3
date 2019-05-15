@@ -22,6 +22,7 @@ import json
 import ldap3 as ldap
 import os
 
+mailer = None
 
 def add_cors_headers_response_callback(event):
     def cors_headers(request, response):
@@ -419,11 +420,15 @@ def main(global_config, **settings):
     config.add_renderer('json', json_renderer)
 
     # mailer
-    mail_config = config.get_settings()['mailer']
-    if mail_config:
-        mailer = Mailer(mail_config)
-        mailer.start()
-
+    mail_config = config.get_settings()['mailer'].copy()
+    maildir = os.environ.get('MAILER_DIRECTORY', None)
+    if maildir:
+        # To deliver emails to a directory (for local dev)
+        mail_config['transport.use'] = 'maildir'
+        mail_config['transport.directory'] = maildir
+    global mailer
+    mailer = Mailer(mail_config)
+    mailer.start()
 
     # Add custom table in admin interace, that means re-add all normal table
 

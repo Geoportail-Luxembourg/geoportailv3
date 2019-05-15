@@ -32,3 +32,6 @@ ELASTIC_INDEX=index
 # Use them only for local dev
 ROUTING_GRAPHHOPPER_API_KEY=239fa42d-e0ef-482a-b1ca-68e84df1660b
 ROUTING_MAPQUEST_API_KEY=74Thu9D5G9eT1v8qEa9WBnx5zPcBejje
+ANF_MAP_ID=3c57c3cf122f46f4bf096d3a17b66412
+ANF_EMAIL=un_email_bidon@example.org
+MAILER_DIRECTORY=/var/mail/root
