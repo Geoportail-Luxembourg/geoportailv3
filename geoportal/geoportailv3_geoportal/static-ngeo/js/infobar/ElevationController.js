@@ -39,14 +39,14 @@ const exports = function($http, ngeoDebounce, appGetElevation) {
   this['elevation'] = '';
 
   // 2D
-  map.on('pointermove', ngeoDebounce(function(e) {
+  map.on('pointermove', ngeoDebounce((e) => {
     if (!this['active'] || !e.coordinate) {
       return;
     }
     this.getElevation_(e.coordinate).then(
       elevation => this['elevation'] = elevation['formattedElevation']
     );
-  }, 300, true), this);
+  }, 300, true));
 };
 
 
