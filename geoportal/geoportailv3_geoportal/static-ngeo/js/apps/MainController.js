@@ -197,6 +197,7 @@ import '../../less/geoportailv3.less'
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
+ * @param {boolean} showAnfLink Enable the ANF link.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$window} $window Window.
@@ -221,7 +222,7 @@ const MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
+    appOverviewMapShow, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     appOfflineDownloader, appOfflineRestorer) {
@@ -230,6 +231,12 @@ const MainController = function(
    * @export
    */
   this.activeLayersComparator = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showAnfLink = showAnfLink;
 
   /**
    * @private
