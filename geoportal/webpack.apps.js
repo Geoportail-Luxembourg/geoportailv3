@@ -14,10 +14,10 @@ const nodeEnv = process.env['NODE_ENV'] || 'development';
 const dev = nodeEnv == 'development'
 process.traceDeprecation = true;
 
-const name = process.env.INTERFACE;
+const name = 'main';
 process.env.THEME = INTERFACE_THEME[name];
 
-entry[name] = 'geoportailv3/apps/Controller' + name + '.js';
+entry[name] = 'geoportailv3/apps/MainController.js';
 plugins.push(
   new HtmlWebpackPlugin({
     inject: false,

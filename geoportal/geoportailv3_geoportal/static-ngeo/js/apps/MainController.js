@@ -1,5 +1,5 @@
 /**
- * @module app.apps.Controllermain
+ * @module app.apps.MainController
  */
 /**
  * @fileoverview This file defines the controller class for the application's
@@ -69,6 +69,8 @@ import '../../less/geoportailv3.less'
  import appExternaldataExternalDataController from '../externaldata/ExternalDataController.js';
  import appFeedbackFeedbackDirective from '../feedback/feedbackDirective.js';
  import appFeedbackFeedbackController from '../feedback/FeedbackController.js';
+ import appFeedbackanfFeedbackanfDirective from '../feedbackanf/feedbackanfDirective.js';
+ import appFeedbackanfFeedbackanfController from '../feedbackanf/FeedbackanfController.js';
  import appInfobarElevationDirective from '../infobar/elevationDirective.js';
  import appInfobarElevationController from '../infobar/ElevationController.js';
  import appInfobarInfobarController from '../infobar/InfobarController.js';
@@ -92,7 +94,7 @@ import '../../less/geoportailv3.less'
  import appLotChasse from '../LotChasse.js';
  import appMapMapDirective from '../map/mapDirective.js';
  import appMapMapController from '../map/MapController.js';
- import appMainController from '../apps/Controllermain.js';
+ import appMainController from './MainController.js';
  import appMymapsFilereaderDirective from '../mymaps/filereaderDirective.js';
  import appMeasureMeasureController from '../measure/MeasureController.js';
  import appMeasureMeasureDirective from '../measure/MeasureDirective.js';
@@ -195,6 +197,7 @@ import '../../less/geoportailv3.less'
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
+ * @param {boolean} showAnfLink Enable the ANF link.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
  * @param {angular.$window} $window Window.
@@ -219,7 +222,7 @@ const MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
+    appOverviewMapShow, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     appOfflineDownloader, appOfflineRestorer) {
@@ -228,6 +231,12 @@ const MainController = function(
    * @export
    */
   this.activeLayersComparator = false;
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showAnfLink = showAnfLink;
 
   /**
    * @private
@@ -423,6 +432,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['feedbackAnfOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -577,6 +591,7 @@ const MainController = function(
                     label: '\u00AB'}));
             }
           }.bind(this));
+    this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
@@ -584,10 +599,12 @@ const MainController = function(
     !this['routingOpen'] &&
     this.ngeoLocation_.getParam('map_id') === undefined &&
     !infoOpen &&
+    !this['feedbackAnfOpen'] &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         this.ngeoLocation_.getParam('map_id') !== undefined &&
+        !this['feedbackAnfOpen'] &&
         !infoOpen) ? true : false;
     $scope.$watch(function() {
       return this['layersOpen'];
@@ -853,12 +870,41 @@ MainController.prototype.openFeedback = function() {
   }
 };
 
+
+/**
+ * @export
+ */
+MainController.prototype.openFeedbackAnf = function() {
+  this.appThemes_.getFlatCatalog().then(
+    function(flatCatalogue) {
+      var node = flatCatalogue.find(function(catItem) {
+        return catItem.id == 1640;
+      });
+      if (node !== undefined && node !== null) {
+        var layer = this.getLayerFunc_(node);
+        var idx = this.map_.getLayers().getArray().indexOf(layer);
+        if (idx === -1) {
+          this.map_.addLayer(layer);
+        }
+      }
+    }.bind(this));
+
+  if (this.sidebarOpen()) {
+    this.closeSidebar();
+    this['feedbackAnfOpen'] = true;
+  } else {
+    this['feedbackAnfOpen'] = true;
+  }
+};
+
+
 /**
  * @export
  */
 MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
-      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] = false;
+      this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
+      this['feedbackAnfOpen'] = false;
 };
 
 
@@ -868,7 +914,7 @@ MainController.prototype.closeSidebar = function() {
  */
 MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
-      this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'];
+      this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] || this['routingOpen'];
 };
 
 

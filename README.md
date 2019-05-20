@@ -52,6 +52,9 @@ See docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=
 
 The print service is available directly at http://localhost:28080/.
 
+Emails are sent to /var/mail/root. The `mutt` application is part of the image
+and can be used to visualize sent emails.
+
 Ldap configuration
 ------------------
 

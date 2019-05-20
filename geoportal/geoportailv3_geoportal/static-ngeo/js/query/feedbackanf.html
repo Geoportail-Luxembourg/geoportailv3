@@ -5,7 +5,7 @@
       <h4>{{feature.attributes.label | translate }}</h4>
       <div ng-if="ctrl.hasAttributes(feature)" ng-repeat="entry in attributes | orderBy: (layers.ordered ? '' : 'key')">
         <span ng-if="!ctrl.isEmpty(entry['value'])">
-          <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label> 
+          <label ng-if="!ctrl.isLink(entry['value'])">{{entry['key'] | translate}} :</label>
           <span ng-if="!ctrl.isLink(entry['value'])" ng-bind-html="ctrl.trustAsHtml(entry['value'])"></span>
           <a ng-if="ctrl.isLink(entry['value'])" ng-href="{{entry['value']}}" target="_blank">{{entry['key'] | translate}}</a>
         </span>
