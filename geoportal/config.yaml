@@ -403,6 +403,8 @@ vars:
   modify_notification: {admin_email: null, email_cc: null, url: null}
   no_proxy: localhost
   ogcproxy_enable: false
+  sync_ms_path: /app/scripts/sync_ms.sh
+  temp_mapfile: /mapfile
   overview_map: {base_layer: basemap_2015_global, show: false}
   package: geoportailv3
   anf:
