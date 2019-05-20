@@ -48,6 +48,8 @@ services:
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - ANF_EMAIL
+      - ANF_MAP_ID
       - DEBUG_TOOLBAR=1
       - DB_MYMAPS
       - DB_PGROUTE
@@ -82,6 +84,7 @@ services:
       - LDAP_PASSWD
       - LDAP_URL
       - LDAP_FILTER_TMPL
+      - MAILER_DIRECTORY
       - DEFAULT_MYMAPS_ROLE
       - DHM_DEM_FILE=/var/luxdata/dem500.tif
       - DHM_DEM_TYPE=gdal

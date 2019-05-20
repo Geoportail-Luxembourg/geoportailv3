@@ -9,6 +9,7 @@ import geojson
 import bleach
 import logging
 from c2cgeoportal_commons.models import DBSessions
+from geoportailv3_geoportal import mailer
 
 _ = TranslationStringFactory("geoportailv3-server")
 log = logging.getLogger(__name__)
@@ -47,7 +48,7 @@ class Feedback(object):
             message.plain = html_body
             message.rich = html_body
             message.encoding = 'utf-8'
-            message.send()
+            mailer.send(message)
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()
@@ -90,7 +91,7 @@ class Feedback(object):
                     log.exception(e)
                 if obj is not None:
                     map.features.append(obj)
-                self.db_mymaps.commit()
+            self.db_mymaps.flush()
 
             html_body = u"<h3>L\'utilisateur <a href=\"mailto:{0}\">{4}</a> " \
                 u"a remarqué le problème suivant:</h3><p>{1}</p>" \
@@ -115,7 +116,7 @@ class Feedback(object):
             message.plain = html_body
             message.rich = html_body
             message.encoding = 'utf-8'
-            message.send()
+            mailer.send(message)
         except Exception as e:
             log.exception(e)
             return HTTPNotFound()

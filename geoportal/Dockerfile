@@ -11,6 +11,7 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
     slapd ldap-utils \
+    mutt \
     gettext libxml2-utils \
   && \
   apt-get purge python3-pip python3-setuptools python3-wheel --assume-yes && \
