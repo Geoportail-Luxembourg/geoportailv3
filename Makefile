@@ -81,10 +81,10 @@ update-pots:
 	echo "This target must be run inside Luxembourg internal network"
 	# Handle client.pot
 	docker cp ./config/print/print-apps/geoportailv3/config.yaml.tmpl $(DOCKER_CONTAINER):/app/geoportal/print-config.yaml.tmpl
-	docker exec -e IGNORE_I18N_ERRORS=TRUE $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-client.cfg --output /tmp/client.pot $(I18N_SOURCE_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/client.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 	# Handle server.pot
-	docker exec -e IGNORE_I18N_ERRORS=TRUE $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/server.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
 	# Handle tooltips.pot
 	docker exec $(DOCKER_CONTAINER) tooltips2pot
