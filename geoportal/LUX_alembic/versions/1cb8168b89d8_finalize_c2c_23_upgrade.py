@@ -53,8 +53,18 @@ def upgrade():
 
     # Auth is now an enum.
     op.execute(
-      "UPDATE geov3.ogc_server SET auth = 'No auth' WHERE auth = 'none';"
+        "UPDATE geov3.ogc_server SET auth = 'No auth' WHERE auth = 'none';"
     )
+
+    # Internal WMS layers need to have a no-url ogc server to go through the lux proxy.
+    op.execute("""
+        INSERT
+        INTO geov3.ogc_server (name, description, url, type, image_type, auth)
+        VALUES ('Internal WMS', 'Use Luxembourg proxy', '', 'mapserver', 'image/png', 'No auth');
+        UPDATE geov3.layer_wms
+        SET ogc_server_id = (SELECT id FROM geov3.ogc_server WHERE url = '' limit 1)
+        WHERE id IN (SELECT id FROM geov3.lux_layer_internal_wms);
+    """)
 
 
 def downgrade():
