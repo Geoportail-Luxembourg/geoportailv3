@@ -47,18 +47,18 @@ class Pds(object):
 
     def __send_mail(self, email, files):
         if self.error is True:
-            mailtext = _(u'Bonjour,\n Il y a eu un souci lors de la '
-                         + u'creation de votre '
-                         + u'attestation "Plans directeurs '
-                         + u'sectoriels".\n\nVeuillez essayer '
-                         + u'plus tard".\n\nMeilleures salutations,\n'
-                         + u'L\'Equipe de geoportail.lu et du DAT'
+            mailtext = _(u'Bonjour,\n Il y a eu un souci lors de la \
+                         creation de votre \
+                         attestation "Plans directeurs \
+                         sectoriels".\n\nVeuillez essayer \
+                         plus tard".\n\nMeilleures salutations,\n \
+                         L\'Equipe de geoportail.lu et du DAT'
                          )
         else:
-            mailtext = _(u'Bonjour,\n Veuillez trouver en annexe '
-                         + u'votre attestation "Plans directeurs '
-                         + u'sectoriels".\n\nMeilleures salutations,\n'
-                         + u'L\'Equipe de geoportail.lu et du DAT'
+            mailtext = _(u'Bonjour,\n Veuillez trouver en annexe \
+                         votre attestation "Plans directeurs \
+                         sectoriels".\n\nMeilleures salutations,\n \
+                         L\'Equipe de geoportail.lu et du DAT'
                          )
         msg = MIMEMultipart()
         me = 'support@geoportail.lu'
