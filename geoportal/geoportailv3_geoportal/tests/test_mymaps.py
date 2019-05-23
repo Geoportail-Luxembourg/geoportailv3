@@ -3,12 +3,13 @@ from pyramid import testing
 from pyramid.paster import get_app
 from webtest import TestApp
 from json import dumps as json_dumps
+from geoportailv3_geoportal.scripts import lux_get_app
 
 
 class TestMymaps(unittest.TestCase):
 
     def setUp(self):  # noqa
-        self.app = get_app('../../development.ini')
+        self.app = lux_get_app('../../development.ini', 'name')
         self.user_login = ""
         self.user_password = ""
 

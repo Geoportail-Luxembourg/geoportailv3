@@ -3,9 +3,22 @@ from logging.config import fileConfig
 import os
 
 
+def _escape_variables(environ):
+    """
+    Escape environment variables so that they can be interpreted correctly by python configparser.
+    """
+    return {key: environ[key].replace('%', '%%') for key in environ}
+
+
+def lux_get_app(app_config, app_name):
+    environ = _escape_variables(os.environ)
+    return get_app(app_config, app_name, options=environ)
+
+
 def get_session(app_config, app_name):
-    fileConfig(app_config, defaults=os.environ)
-    get_app(app_config, app_name, options=os.environ)
+    environ = _escape_variables(os.environ)
+    fileConfig(app_config, defaults=environ)
+    lux_get_app(app_config, app_name)
 
     # must be done afterwe have loaded the project config
     from c2cgeoportal_commons.models import DBSession

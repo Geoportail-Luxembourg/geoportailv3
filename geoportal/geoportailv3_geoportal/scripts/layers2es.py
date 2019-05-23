@@ -47,6 +47,7 @@ from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, \
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
+from . import lux_get_app
 
 
 def statuslog(text):
@@ -128,7 +129,7 @@ def main():
     app_name = options.app_name
     if app_name is None and "#" in app_config:
         app_config, app_name = app_config.split("#", 1)
-    get_app(app_config, name=app_name, options=os.environ)
+    lux_get_app(app_config, name=app_name)
 
     Import(options)
 
