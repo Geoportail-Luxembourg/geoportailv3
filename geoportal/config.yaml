@@ -11,6 +11,7 @@ environment:
 - {name: DB_MYMAPS}
 - {name: DB_PGROUTE}
 - {name: DB_ECADASTRE}
+- {name: DB_POI}
 - {name: PGHOST}
 - {name: PGHOST_SLAVE}
 - {default: '5432', name: PGPORT}
@@ -196,9 +197,11 @@ vars:
     master: [GET /short/.*]
     slave: [\w+ /printproxy/.*]
   dbsessions:
+    db_ecadastre: {url: '{DB_ECADASTRE}'}
     ecadastre: {url: '{DB_ECADASTRE}'}
     mymaps: {url: '{DB_MYMAPS}'}
     pgroute: {url: '{DB_PGROUTE}'}
+    poi: {url: '{DB_POI}'}
   default_interface: main
   default_locale_name: fr
   default_max_age: 864000
