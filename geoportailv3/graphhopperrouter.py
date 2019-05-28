@@ -165,6 +165,7 @@ class GraphhopperRouter:
 
     def __lu_turn_type(self, turn_type):
         turn_type_mapping = {
+            -98: 98,  # turn
             -3: 3,  # sharp left
             -2: 2,  # left
             -1: 1,  # slight left
