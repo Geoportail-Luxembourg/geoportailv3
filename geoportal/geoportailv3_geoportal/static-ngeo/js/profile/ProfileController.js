@@ -26,6 +26,7 @@ import olGeomPoint from 'ol/geom/Point.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStyle from 'ol/style/Style.js';
+import {toLonLat} from 'ol/proj.js';
 
 /**
  * @constructor
@@ -360,7 +361,7 @@ exports.prototype.snapToGeometry_ = function(coordinate, geom) {
 exports.prototype.exportCSV = function() {
   var csv = 'dist,MNT,y,x,lon,lat\n';
   this['profileData'].forEach(function(item) {
-    var lonlat = olProj.toLonLat(
+    var lonlat = toLonLat(
       [item['x'], item['y']],
       'EPSG:2169'
     );
