@@ -12,6 +12,11 @@
     show_anf_link = 'ng-hide'
     if 'show_link' in settings.get('anf') and settings.get('anf')['show_link'] == True:
       show_anf_link = 'ng-show'
+    show_age_link = 'ng-hide'
+    age_layers = ''
+    if 'show_link' in settings.get('age') and settings.get('age')['show_link'] == True:
+      show_age_link = 'ng-show'
+      age_layers = settings.get('age')['layers']
 %>\
 <!DOCTYPE html>
 <html lang={{mainCtrl.lang}} ng-app="app" ng-controller="MainController as mainCtrl"
@@ -264,6 +269,23 @@
             </app-feedbackanf>
           </div>
         </div>
+        <!-- Feedback AGE-->
+        <div id="feedbackage" ng-class="mainCtrl.feedbackAgeOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback AGE</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedbackage
+              app-feedbackage-drawing-active="mainCtrl.drawOpen",
+              app-feedbackage-sidebar-active="mainCtrl.sidebarActive",
+              app-feedbackage-active="mainCtrl.feedbackAgeOpen"
+              app-feedbackage-map="::mainCtrl.map"
+              app-feedbackage-layers="::mainCtrl.ageLayers">
+            </app-feedbackage>
+          </div>
+        </div>
       </div>
     <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
@@ -312,6 +334,7 @@
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
         <li class="${show_anf_link}" ng-cloak><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li class="${show_age_link}" ng-cloak><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
@@ -326,6 +349,7 @@
             app-draw-active="mainCtrl.drawOpen"
             app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
             app-draw-mymaps-open="mainCtrl.mymapsOpen"
+            app-draw-feedback-age-open="mainCtrl.feedbackAgeOpen"
             app-draw-feedback-anf-open="mainCtrl.feedbackAnfOpen">
           </app-draw>
         </li>
@@ -423,6 +447,7 @@
          appModule.constant('shorturlServiceUrl', "${request.route_url('shortener_create')}");
          appModule.constant('postFeedbackUrl', "${request.route_url('feedback')}");
          appModule.constant('postFeedbackAnfUrl', "${request.route_url('feedbackanf')}");
+         appModule.constant('postFeedbackAgeUrl', "${request.route_url('feedbackage')}");
          appModule.constant('getInfoServiceUrl', "${request.route_url('getfeatureinfo')}");
          appModule.constant('getRemoteTemplateServiceUrl', "${request.route_url('getremotetemplate')}");
          appModule.constant('isThemePrivateUrl', "${request.route_url('isthemeprivate')}");
@@ -454,7 +479,7 @@
          appModule.constant('tiles3dLayers', ['buildings25d', 'buildings3d', 'bridges3d']);
          // 'vegetation_model','vegetation_mesh','buildings25d_provisoire'
          appModule.constant('tiles3dUrl', 'https://3dtiles.geoportail.lu/3dtiles/');
-
+         appModule.constant('ageLayerIds', [${age_layers}]);
 % if overview_map_show:
          appModule.constant('appOverviewMapShow', true);
 % else:
@@ -503,6 +528,7 @@
          appModule.value('appWmtsTreeTemplateUrl', 'externaldata/wmtstree.html');
          appModule.value('appFeedbackTemplateUrl', 'feedback/feedback.html');
          appModule.value('appFeedbackanfTemplateUrl', 'feedbackanf/feedback.html');
+         appModule.value('appFeedbackageTemplateUrl', 'feedbackage/feedback.html');
          appModule.value('appAskredirectTemplateUrl', 'askredirect/askredirect.html');
          appModule.value('appImagesPath', '${request.static_url('geoportailv3:static/images/')}');
        })();

@@ -95,7 +95,16 @@
     padding-top: 10px;
     color: #FFFFFF;
   }
+
   #feedbackanf .tab-content {
+    height: ~"calc(100% - @{input-height-base} - 120px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  #feedbackage .tab-content {
     height: ~"calc(100% - @{input-height-base} - 120px)";
     overflow-y: auto;
     overflow-x: hidden;
@@ -124,12 +133,20 @@
     overflow-x: hidden;
     color: #333;
   }
+
   .feedback-content {
     overflow-y: auto;
     overflow-x: hidden;
     color: #333;
   }
+
   .feedbackanf-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+
+  .feedbackage-content {
     overflow-y: auto;
     overflow-x: hidden;
     color: #333;

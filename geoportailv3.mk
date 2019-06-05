@@ -24,6 +24,7 @@ CONFIG_VARS += turbomail
 CONFIG_VARS += authorized_ips
 CONFIG_VARS += pag
 CONFIG_VARS += anf
+CONFIG_VARS += age
 CONFIG_VARS += casipo
 CONFIG_VARS += pds 
 CONFIG_VARS += exclude_theme_layer_search
