@@ -20,9 +20,15 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
     nodejs && \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+    ghostscript \
+    libgs-dev \
+    imagemagick && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
+RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
 
 WORKDIR /app
 
