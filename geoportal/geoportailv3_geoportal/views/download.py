@@ -10,6 +10,10 @@ import logging
 import mimetypes
 import geoportailv3_geoportal.PF
 import urllib.request
+import tempfile
+import subprocess
+import os
+from PyPDF2 import PdfFileReader
 
 log = logging.getLogger(__name__)
 
@@ -134,7 +138,7 @@ class Download(object):
             subprocess.call(["/usr/bin/convert", "-sample",
                              str(width) + "x" + str(height),
                              measurement_filepath, tempfilename])
-            tfile = open(tempfilename, "r")
+            tfile = open(tempfilename, "rb")
             data = tfile.read()
         finally:
             os.close(fd)
