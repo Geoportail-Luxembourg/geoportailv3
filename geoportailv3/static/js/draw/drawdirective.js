@@ -31,7 +31,8 @@ exports = function(appDrawTemplateUrl) {
       'active': '=appDrawActive',
       'activateMymaps': '=appDrawActivateMymaps',
       'mymapsOpen': '=appDrawMymapsOpen',
-      'feedbackanfOpen': '=appDrawFeedbackAnfOpen'
+      'feedbackanfOpen': '=appDrawFeedbackAnfOpen',
+      'feedbackageOpen': '=appDrawFeedbackAgeOpen'
     },
     controller: 'AppDrawController',
     controllerAs: 'ctrl',

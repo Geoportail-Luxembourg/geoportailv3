@@ -41,6 +41,8 @@ goog.require('app.feedback.feedbackDirective');
 goog.require('app.feedback.FeedbackController');
 goog.require('app.feedbackanf.feedbackanfDirective');
 goog.require('app.feedbackanf.FeedbackanfController');
+goog.require('app.feedbackage.feedbackageDirective');
+goog.require('app.feedbackage.FeedbackageController');
 goog.require('app.infobar.elevationDirective');
 goog.require('app.infobar.ElevationController');
 goog.require('app.infobar.InfobarController');

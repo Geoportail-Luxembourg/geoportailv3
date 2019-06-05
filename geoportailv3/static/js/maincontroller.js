@@ -75,6 +75,7 @@ goog.require('app.OfflineRestorer');
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
+ * @param {Array<number>} ageLayerIds ID of AGE layers.
  * @constructor
  * @export
  * @ngInject
@@ -88,7 +89,7 @@ exports = function(
     appOverviewMapShow, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus,
-    ngeoOfflineMode, appGetLayerForCatalogNode) {
+    ngeoOfflineMode, appGetLayerForCatalogNode, ageLayerIds) {
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
@@ -295,6 +296,11 @@ exports = function(
   /**
    * @type {boolean}
    */
+  this['feedbackAgeOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -361,6 +367,11 @@ exports = function(
    * @type {Array}
    */
   this['selectedLayers'] = [];
+
+  /**
+   * @type {Array}
+   */
+  this['ageLayers'] = [];
 
   /**
    * Set to true to display the change icon in Mymaps.
@@ -449,6 +460,21 @@ exports = function(
                     label: '\u00AB'}));
             }
           }.bind(this));
+    this['ageLayers'].splice(0, this['ageLayers'].length);
+
+    this.appThemes_.getFlatCatalog().then(
+    function(flatCatalogue) {
+      flatCatalogue.forEach(function(catItem) {
+        if (ageLayerIds.indexOf(catItem.id) >= 0) {
+          var layer = this.getLayerFunc_(catItem);
+          if (this['ageLayers'].indexOf(layer) < 0) {
+            this['ageLayers'].push (layer);
+          }
+        }
+      }.bind(this));
+    }.bind(this));
+
+    this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
@@ -458,11 +484,13 @@ exports = function(
     this.ngeoLocation_.getParam('map_id') === undefined &&
     !infoOpen &&
     !this['feedbackAnfOpen'] &&
+    !this['feedbackAgeOpen'] &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         this.ngeoLocation_.getParam('map_id') !== undefined &&
         !this['feedbackAnfOpen'] &&
+        !this['feedbackAgeOpen'] &&
         !infoOpen) ? true : false;
     $scope.$watch(function() {
       return this['layersOpen'];
@@ -756,10 +784,22 @@ exports.prototype.openFeedbackAnf = function() {
 /**
  * @export
  */
+exports.prototype.openFeedbackAge = function() {
+  if (this.sidebarOpen()) {
+    this.closeSidebar();
+    this['feedbackAgeOpen'] = true;
+  } else {
+    this['feedbackAgeOpen'] = true;
+  }
+};
+
+/**
+ * @export
+ */
 exports.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
-      this['feedbackAnfOpen'] = false;
+      this['feedbackAnfOpen'] = this['feedbackAgeOpen'] = false;
 };
 
 
@@ -770,7 +810,7 @@ exports.prototype.closeSidebar = function() {
 exports.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['routingOpen'] ||
-      this['feedbackAnfOpen'];
+      this['feedbackAnfOpen'] || this['feedbackAgeOpen'];
 };
 
 

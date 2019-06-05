@@ -134,6 +134,10 @@ vars:
     anf:
       email:
       map_id:
+    age:
+      email:
+      map_ids:
+      layers:
     pag:
       staging_url:
       prod_url:

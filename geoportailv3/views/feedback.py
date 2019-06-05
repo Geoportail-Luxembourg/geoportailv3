@@ -118,3 +118,76 @@ class Feedback(object):
             log.exception(e)
             return HTTPNotFound()
         return {'success': True}
+
+    @view_config(route_name='feedbackage', renderer='json')
+    def feedbackage(self):
+        try:
+            vars = self.request.json_body
+            map_ids = self.config['age']['map_ids']
+            layers = self.config['age']['layers']
+            print (map_ids)
+            map_id = map_ids.split(',')[layers.split(',').
+                                        index(vars['layerId'])]
+            print (map_id)
+            map = self.request.db_mymaps.query(Map).get(map_id)
+            if map is None:
+                return HTTPNotFound()
+            sanitized_description = bleach.clean(vars['description'])
+
+            message = u"L\'utilisateur <a href=\"mailto:{0}\">{4}({0})</a> " \
+                u"a remarqué le problème suivant:<p>{1}</p> sur les couches" \
+                u" suivantes" \
+                u" {2}" \
+                .format(vars['email'],
+                        sanitized_description,
+                        vars['layer'],
+                        vars['url'],
+                        vars['name'],
+                        "http://map.geoportail.lu?map_id=" + map_id,
+                        )
+
+            features = vars['features'].\
+                replace(u'\ufffd', '?')
+            feature_collection = geojson.\
+                loads(features, object_hook=geojson.GeoJSON.to_instance)
+
+            for feature in feature_collection['features']:
+                obj = None
+                try:
+                    obj = Feature(feature)
+                    obj.name = vars['name']
+                    obj.description = message
+                except Exception as e:
+                    log.exception(e)
+                if obj is not None:
+                    map.features.append(obj)
+                self.request.db_mymaps.commit()
+
+            html_body = u"<h3>L\'utilisateur <a href=\"mailto:{0}\">" \
+                u"{4}({0})</a> " \
+                u"a remarqué le problème suivant:</h3><p>{1}</p>" \
+                u" sur les couches suivantes {2}" \
+                u"<p><a href=\"{3}\">Ouvrir le lien vers la carte</a></p>" \
+                u"<p>L'incident a été enregistré dans cette <a href=\"{5}\">" \
+                u"mymaps</a>:</p>" \
+                .format(vars['email'],
+                        sanitized_description,
+                        vars['layer'],
+                        vars['url'],
+                        vars['name'],
+                        "http://map.geoportail.lu?map_id=" + map_id,
+                        )
+
+            support_email = self.config['anf']['email']
+            message = Message(
+                author=vars['email'],
+                to=support_email,
+                subject=u'Un utilisateur a signalé un problème')
+            message.plain = html_body
+            message.rich = html_body
+            message.encoding = 'utf-8'
+            message.send()
+        except Exception as e:
+            log.exception(e)
+            return HTTPNotFound()
+        return {'success': True}
