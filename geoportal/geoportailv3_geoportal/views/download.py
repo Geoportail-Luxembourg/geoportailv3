@@ -13,6 +13,7 @@ import urllib.request
 import tempfile
 import subprocess
 import os
+import transaction
 from PyPDF2 import PdfFileReader
 
 log = logging.getLogger(__name__)
@@ -67,11 +68,11 @@ class Download(object):
         sketch_filepath = "%s/%s.pdf" % (dirname, filename)
         f = None
         try:
-            f = open(sketch_filepath, 'r')
+            f = open(sketch_filepath, 'rb')
         except:
             try:
                 sketch_filepath = "%s/%s.PDF" % (dirname, filename)
-                f = open(sketch_filepath, 'r')
+                f = open(sketch_filepath, 'rb')
             except:
                 f = None
 
@@ -108,7 +109,7 @@ class Download(object):
             return HTTPBadRequest("Invalid Town name")
         measurement_filepath = "%s/%s" % (cur_record.path, filename)
 
-        f = open(measurement_filepath, 'r')
+        f = open(measurement_filepath, 'rb')
 
         parcel = self.request.params.get("parcel", "UNKNOWN")
 
@@ -157,7 +158,7 @@ class Download(object):
         sketch_download.directory = town
 
         DBSession.add(sketch_download)
-        DBSession.commit()
+        transaction.commit()
 
     def _log_download_measurement_stats(self, filename, town, parcel):
         mesurage_download = MesurageDownload()
@@ -172,4 +173,4 @@ class Download(object):
         mesurage_download.parcelle = parcel
 
         DBSession.add(mesurage_download)
-        DBSession.commit()
+        transaction.commit()
