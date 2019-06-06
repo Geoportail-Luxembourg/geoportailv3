@@ -83,8 +83,8 @@ exports.prototype.setUrl_ =
     function() {
       this.url = this.ngeoLocation_.getUriString();
       if (this['onlyMymaps']) {
-        this.url += location.search ? '&' : '?';
-        this.url += 'map_id=' + this.appMymaps_.getMapId();
+        this.url = this.url.replace(location.search, '');
+        this.url += '?map_id=' + this.appMymaps_.getMapId();
       }
       this.longurl = this.url;
       this.getShorturl_().then(
