@@ -215,7 +215,7 @@ exports = function($scope, $q, $http, $compile, gettext,
             var el = evt.target.getTooltipElement();
             var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
             el.innerHTML += '<br> &Delta;h : ' +
-                parseInt(elevationOffset / 100, 0) + 'm';
+                parseInt(elevationOffset, 0) + 'm';
           }
         }.bind(this));
       }.bind(this));
