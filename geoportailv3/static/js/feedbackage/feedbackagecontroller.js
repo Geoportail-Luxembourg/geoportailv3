@@ -93,7 +93,7 @@ exports = function($scope, $http, appNotify, appUserManager,
    * @type {string}
    * @export
    */
-  this.concernedLayer = this.gettextCatalog.getString('Please pick a layer');
+  this.concernedLayer = this.gettextCatalog.getString('Please pick an AGE layer');
 
   /**
    * @type {string}
@@ -122,7 +122,7 @@ exports = function($scope, $http, appNotify, appUserManager,
       }
       this.bgLayer = this.backgroundLayerMgr_.get(this['map']);
       this.concernedLayer =
-        this.gettextCatalog.getString('Please pick a layer');
+        this.gettextCatalog.getString('Please pick an AGE layer');
       this.concernedLayerId = '0';
       this.setUrl_();
       this.removeListener =
