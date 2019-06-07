@@ -178,7 +178,7 @@ class Feedback(object):
                         "http://map.geoportail.lu?map_id=" + map_id,
                         )
 
-            support_email = self.config['anf']['email']
+            support_email = self.config['age']['email']
             message = Message(
                 author=vars['email'],
                 to=support_email,
