@@ -175,7 +175,7 @@ exports.prototype.reorderRoute = function() {
       curFeature.set('name', '' + idx);
       idx++;
     }
-  }, this);
+  }.bind(this));
 };
 
 /**
