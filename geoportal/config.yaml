@@ -38,6 +38,10 @@ environment:
 - {name: ELASTIC_INDEX}
 - {name: ANF_MAP_ID}
 - {name: ANF_EMAIL}
+- {name: AGE_EMAIL, default: ''}
+- {name: AGE_MAP_IDS, default: ''}
+- {name: AGE_SHOW_LINK, default: 'false'}
+- {name: AGE_LAYERS, default: ''}
 - {default: null, name: ROUTING_GRAPHHOPPER_API_KEY}
 - {default: null, name: ROUTING_MAPQUEST_API_KEY}
 interpreted: {}
@@ -333,7 +337,9 @@ vars:
         appExcludeThemeLayerSearch: []
         appOverviewMapBaseLayer: basemap_2015_global
         appOverviewMapShow: true
-        showAnfLink: true
+        showAnfLink: false
+        showAgeLink: {AGE_SHOW_LINK}
+        ageLayerIds: '{AGE_LAYERS}'
         bboxLidar: [71500, 98600, 81500, 108600]
         bboxSrsLidar: 'EPSG:2169'
         defaultExtent: [425152.9429259216, 6324465.99999133, 914349.9239510496, 6507914.867875754]
@@ -371,7 +377,7 @@ vars:
         isThemePrivateUrl: isthemeprivate, layerSearchServiceUrl: layersearch, loginUrl: login,
         logoutUrl: logout, mymapsImageUrl: mymaps_image, mymapsMapsUrl: mymaps_getmaps,
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
-        postFeedbackAnfUrl: feedbackanf,
+        postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
@@ -409,11 +415,17 @@ vars:
   ogcproxy_enable: false
   sync_ms_path: /app/scripts/sync_ms.sh
   temp_mapfile: /mapfile
-  overview_map: {base_layer: basemap_2015_global, show: false}
+  overview_map: {base_layer: basemap_2015_global, show: true}
   package: geoportailv3
   anf:
     email: '{ANF_EMAIL}'
     map_id: '{ANF_MAP_ID}'
+  age:
+    email: '{AGE_EMAIL}'
+    map_ids: '{AGE_MAP_IDS}'
+    show_link: '{AGE_SHOW_LINK}'
+    layers: '{AGE_LAYERS}'
+
   pag: {
     bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
     owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,
