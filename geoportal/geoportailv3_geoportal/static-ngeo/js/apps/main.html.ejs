@@ -249,6 +249,23 @@
             </app-feedbackanf>
           </div>
         </div>
+        <!-- Feedback AGE-->
+        <div id="feedbackage" ng-class="mainCtrl.feedbackAgeOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback AGE</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedbackage
+              app-feedbackage-drawing-active="mainCtrl.drawOpen",
+              app-feedbackage-sidebar-active="mainCtrl.sidebarActive",
+              app-feedbackage-active="mainCtrl.feedbackAgeOpen"
+              app-feedbackage-map="::mainCtrl.map"
+              app-feedbackage-layers="::mainCtrl.ageLayers">
+            </app-feedbackage>
+          </div>
+        </div>
       </div>
     <div class="map-wrapper">
       <app-askredirect app-askredirect-show="mainCtrl.showRedirect"></app-askredirect>
@@ -297,6 +314,7 @@
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
         <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" translate>A Propos</a></li>
         <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" translate>Aide</a></li>
@@ -312,6 +330,7 @@
             app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
             app-draw-mymaps-open="mainCtrl.mymapsOpen"
             app-draw-feedback-anf-open="mainCtrl.feedbackAnfOpen">
+            app-draw-feedback-age-open="mainCtrl.feedbackAgeOpen"
           </app-draw>
         </li>
         <li class="hidden-xs measure icon hidden-3d" ng-class="mainCtrl.measureOpen ? 'active' : ''">
