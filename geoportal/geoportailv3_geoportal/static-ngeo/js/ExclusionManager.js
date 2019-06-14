@@ -101,6 +101,14 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
   }
 
   var layers = map.getLayers().getArray();
+  layers = layers.reduce((all, layer) => {
+    if (layer.getLayers) {
+      all.push(...layer.getLayers().getArray());
+    } else {
+      all.push(layer);
+    }
+    return all;
+  }, []);
   var len = layers.length;
   var i;
   var layer2;
@@ -119,7 +127,8 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
     opacity = layer2.getOpacity();
     if (this.intersects_(exclusion1, exclusion2) && opacity > 0) {
       // layer to exclude is not the current base layer
-      if (i !== 0) {
+      var currentBgLayer = this.backgroundLayerMgr_.get(map);
+      if (layer2 !== currentBgLayer) {
         layersToRemove.push(
             gettextCatalog.getString(/** @type {string} */(layer2.get('label')))
         );
