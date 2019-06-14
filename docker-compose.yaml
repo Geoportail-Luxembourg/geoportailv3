@@ -54,6 +54,7 @@ services:
       - DB_MYMAPS
       - DB_PGROUTE
       - DB_ECADASTRE
+      - DB_POI
       - VISIBLE_ENTRY_POINT
       - VISIBLE_WEB_HOST
       - VISIBLE_WEB_PROTOCOL
