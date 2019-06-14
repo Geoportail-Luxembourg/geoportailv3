@@ -34,6 +34,13 @@ class Geocode(object):
     def reverse(self):
         easting = self.request.params.get('easting', None)
         northing = self.request.params.get('northing', None)
+        lat = self.request.params.get('lat', None)
+        lon = self.request.params.get('lon', None)
+
+        if lat is not None and lon is not None:
+            result = self.transform_to_luref(lon, lat)
+            easting = str(result.geom.centroid.x)
+            northing = str(result.geom.centroid.y)
 
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
@@ -428,6 +435,22 @@ class Geocode(object):
         except Exception as e:
             log.exception(e)
             transaction.abort()
+        return None
+
+    def transform_to_luref(self, lon, lat):
+        try:
+            geomwgs = func.ST_AsText(func.ST_Centroid(func.ST_Transform(
+                WKTElement(
+                    'POINT(%(x)s %(y)s)' % {"x": lon, "y": lat}, 4326), 2169)))
+            result = self.request.db_ecadastre.query(geomwgs.label(
+                "geom"), WKPOI.geom.label("geom2")).first()
+            if isinstance(result.geom, unicode) or\
+               isinstance(result.geom, str):
+                result.geom = loads(result.geom)
+            return result
+        except Exception as e:
+            log.exception(e)
+            self.request.db_ecadastre.rollback()
         return None
 
     # Returns true if zip code exists in database
