@@ -26,6 +26,7 @@ class FullTextSearchView(object):
         query = self.request.params.get('query')
 
         maxlimit = self.settings.get('maxlimit', 200)
+        fuzziness = int(self.request.params.get('fuzziness', 1))
 
         try:
             limit = int(self.request.params.get(
@@ -76,7 +77,7 @@ class FullTextSearchView(object):
                                     "label.ngram",
                                     "label.simplified"
                                 ],
-                                "fuzziness": 1,
+                                "fuzziness": fuzziness,
                                 "operator": "and",
                                 "query": query
                             }
