@@ -112,6 +112,13 @@ const exports = function($scope, $http, appNotify, appUserManager,
    */
   this.url = '';
 
+  $scope.$on('gettextLanguageChanged', function() {
+    if (this['active'] && this.concernedLayerId == 0) {
+      this.concernedLayer =
+        this.gettextCatalog.getString('Please pick an AGE layer');
+    }
+  }.bind(this));
+
   $scope.$watch(function() {
     return this['active'];
   }.bind(this), function(newVal) {
