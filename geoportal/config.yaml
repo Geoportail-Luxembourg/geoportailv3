@@ -8,6 +8,8 @@ environment:
 - {default: https, name: VISIBLE_WEB_PROTOCOL}
 - {default: /, name: VISIBLE_ENTRY_POINT}
 - {default: '999', name: DEFAULT_MYMAPS_ROLE}
+- {name: AUTHTKT_SECURE}
+- {name: AUTHTKT_SECRET}
 - {name: DB_MYMAPS}
 - {name: DB_PGROUTE}
 - {name: DB_ECADASTRE}
