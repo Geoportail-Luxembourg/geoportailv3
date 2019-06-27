@@ -462,6 +462,8 @@ runtime_environment:
     default: /
   - PGHOST
   - PGHOST_SLAVE
+  - AUTHTKT_SECURE
+  - AUTHTKT_SECRET
   - name: PGPORT
     default: '5432'
   - PGUSER
