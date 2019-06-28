@@ -121,10 +121,14 @@ exports.prototype.setOfflineMode = function(ngeoOfflineMode) {
  * @return {!angular.$q.Promise} Promise providing the authentication.
  */
 exports.prototype.authenticate = function(username, password) {
-
+  const isApp =
+    location.search.includes('localforage=android') ||
+    location.search.includes('localforage=ios') ||
+    location.search.includes('applogin=yes');
   var req = $.param({
-    'login': username,
-    'password': password
+    login: username,
+    password: password,
+    app: isApp,
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
