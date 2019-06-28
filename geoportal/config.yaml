@@ -54,15 +54,38 @@ vars:
     available_functionalities: [default_basemap, default_theme, print_template, mapserver_substitution,
       filterable_layers, preset_layer_filter, open_panel]
     available_metadata:
+    - {name: attribution}
+    - {name: bg_layer}
+    - {name: bg_opacity, type: float}
+    - {name: css}
     - {name: display_in_switcher, type: boolean}
-    - {name: start_opacity, type: float}
-    - {name: is_queryable, type: boolean}
-    - {name: metadata_id}
-    - {name: print_scales, type: list}
-    - {name: legend_name}
     - {name: exclusion}
+    - {name: fake_scales, type: list}
     - {name: hasRetina, type: boolean}
-    - {name: ogcServer}
+    - {name: is_queryable, type: boolean}
+    - {name: legend_name}
+    - {name: link, type: url}
+    - {name: link_title}
+    - {name: max_dpi, type: float}
+    - {name: metadata_id}
+    - {name: page_title}
+    - {name: print_img}
+    - {name: print_long_txt_de}
+    - {name: print_long_txt_en}
+    - {name: print_long_txt_fr}
+    - {name: print_long_txt_lu}
+    - {name: print_scales, type: list}
+    - {name: print_short_txt_de}
+    - {name: print_short_txt_en}
+    - {name: print_short_txt_fr}
+    - {name: print_short_txt_lu}
+    - {name: resolutions, type: list}
+    - {name: show_in_mobile, type: boolean}
+    - {name: start_layers, type: list}
+    - {name: start_opacity, type: float}
+    - {name: start_x, type: float}
+    - {name: start_y, type: float}
+    - {name: start_zoom, type: float}
     layer_tree_max_nodes: 1000
     map_x: 740000
     map_y: 5860000
