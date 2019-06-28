@@ -6,8 +6,10 @@ import distutils.core
 from pyramid.config import Configurator
 from c2cgeoportal_geoportal import locale_negotiator, add_interface, \
     INTERFACE_TYPE_NGEO, INTERFACE_TYPE_NGEO_CATALOGUE, set_user_validator
-from c2cgeoportal_geoportal.lib.authentication import create_authentication
+# from c2cgeoportal_geoportal.lib.authentication import create_authentication
 from geoportailv3_geoportal.resources import Root
+
+from geoportal.geoportailv3_geoportal.lib.lux_authentication import create_authentication
 
 from pyramid.renderers import JSON
 from pyramid_mako import add_mako_renderer
