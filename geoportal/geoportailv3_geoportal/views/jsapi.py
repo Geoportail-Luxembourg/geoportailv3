@@ -15,7 +15,7 @@ class JsapiEntry(Entry):
         View to return a list of layers.
         Same as the theme service but in a flat representation.
         '''
-        themes, errors = self._themes(None, u'desktop', True, 2, True)
+        themes, errors = self._themes(None, None, u'main', True, 2, True)
 
         layers = {}
 
@@ -24,7 +24,7 @@ class JsapiEntry(Entry):
             self._extract_layers(theme, layers)
 
         # get background layers
-        group, errors = self._get_group(u'bglayers', None, u'desktop', 2)
+        group, errors = self._get_group(None, u'background', None, u'main', 2)
         self._extract_layers(group, layers, True)
         return layers
 
