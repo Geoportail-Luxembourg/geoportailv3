@@ -1,7 +1,25 @@
 # -*- coding: utf-8 -*-
 
+import urllib3
+import os
 import httplib2shim
-httplib2shim.patch()
+
+def _default_make_pool(http, proxy_info):
+    """Creates a urllib3.PoolManager object that has SSL verification enabled
+    and uses the certifi certificates."""
+
+    ssl_disabled = http.disable_ssl_certificate_validation
+
+    cert_reqs = 'CERT_REQUIRED' if http.ca_certs and not ssl_disabled else None
+
+    return urllib3.PoolManager(
+        ca_certs=http.ca_certs,
+        cert_reqs=cert_reqs,
+    )
+
+httplib2shim.patch(_default_make_pool)
+
+
 import distutils.core
 from pyramid.config import Configurator
 from c2cgeoportal_geoportal import locale_negotiator, add_interface, \
@@ -20,7 +38,7 @@ from geoportailv3_geoportal.adapters import datetime_adapter, decimal_adapter
 import datetime
 import json
 import ldap3 as ldap
-import os
+
 
 mailer = None
 
