@@ -110,5 +110,5 @@ RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
 COPY ./tools/ /app/tools
 RUN ln -s . geoportal
 
-ENTRYPOINT [ "/usr/bin/eval-templates" ]
+ENTRYPOINT ["tx pull --force && /app/generate_i18n.sh && /usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
