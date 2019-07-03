@@ -111,4 +111,4 @@ COPY ./tools/ /app/tools
 RUN ln -s . geoportal
 
 ENTRYPOINT ["/usr/bin/eval-templates" ]
-CMD ["tx pull --force && /app/generate_i18n.sh && c2cwsgiutils_run"]
+CMD ["c2cwsgiutils_run"]
