@@ -44,6 +44,8 @@ environment:
 - {name: AGE_LAYERS, default: ''}
 - {default: null, name: ROUTING_GRAPHHOPPER_API_KEY}
 - {default: null, name: ROUTING_MAPQUEST_API_KEY}
+- {name: HTTPS_PROXY_UNAUTHORIZED_IPS, default: '10.0.0.0/8, 127.0.0.1'}
+- {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -297,8 +299,8 @@ vars:
   host_forward_host: []
   poi_server: ''
   https_proxy:
-    unauthorized_ips: '10.0.0.0/8, 127.0.0.1'
-    authorized_hosts: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu'
+    unauthorized_ips: '{HTTPS_PROXY_UNAUTHORIZED_IPS}'
+    authorized_hosts: '{HTTPS_PROXY_AUTHORIZED_HOSTS}'
   interfaces: [main]
   interfaces_config:
     main:
