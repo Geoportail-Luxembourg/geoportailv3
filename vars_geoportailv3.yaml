@@ -169,6 +169,9 @@ vars:
       owncloud_password:
       smtp_server:
       bcc_address:
+    reverse_geocode:
+      url: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'
+      api_key: 
     routing:
       graphhopper:
         url: 'https://graphhopper.com/api/1/route'
