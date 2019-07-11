@@ -5,6 +5,14 @@ from geoalchemy2 import Geometry
 from c2cgeoportal_commons.models import Base
 
 
+class CountryLimAdm(Base):
+    __table_args__ = ({'schema': 'diffdata', 'autoload': False})
+    __tablename__ = 'limadm_pays'
+
+    id = Column(Unicode, primary_key=True)
+    geom = Column(Geometry(srid=2169))
+
+
 class Parcel(Base):
     __table_args__ = ({'schema': 'diffdata', 'autoload': False})
     __tablename__ = 'pcnpar_s'
