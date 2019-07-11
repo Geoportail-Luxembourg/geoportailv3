@@ -46,6 +46,9 @@ environment:
 - {default: null, name: ROUTING_MAPQUEST_API_KEY}
 - {name: HTTPS_PROXY_UNAUTHORIZED_IPS, default: '10.0.0.0/8, 127.0.0.1'}
 - {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
+- {name: REVERSE_GEOCODE_API_KEY, default: ''}
+- {name: REVERSE_GEOCODE_URL, default: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'}
+
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -415,6 +418,7 @@ vars:
   routing:
     graphhopper: {api_key: '{ROUTING_GRAPHHOPPER_API_KEY}', url: 'https://graphhopper.com/api/1/route'}
     mapquest: {api_key: '{ROUTING_MAPQUEST_API_KEY}', url: 'http://open.mapquestapi.com/directions/v2/route'}
+  reverse_geocode: {api_key: '{REVERSE_GEOCODE_API_KEY}', url: '{REVERSE_GEOCODE_URL}'}
   schema: geov3
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: 'https://ws.geoportail.lu/mymaps'}
