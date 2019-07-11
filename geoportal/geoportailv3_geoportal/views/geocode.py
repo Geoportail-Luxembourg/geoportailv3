@@ -6,12 +6,15 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3_geoportal.geocode import Address, WKPOI, Neighbourhood, Parcel
+from geoportailv3_geoportal.geocode import CountryLimAdm, Address, WKPOI, \
+    Neighbourhood, Parcel
 from c2cgeoportal_commons.models import DBSessions
 from shapely.wkt import loads
+from shapely.wkb import loads as wkb_loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
 
+import urllib.request
 import re
 import difflib
 
@@ -28,6 +31,7 @@ class Geocode(object):
         self.request = request
         self.returnParcelInfo = False
         self.db_ecadastre = DBSessions['ecadastre']
+        self.config = self.request.registry.settings
 
     # View used to get an adress from a coordinate.
     @view_config(route_name="reverse_geocode", renderer="json")
@@ -38,9 +42,9 @@ class Geocode(object):
         lon = self.request.params.get('lon', None)
 
         if lat is not None and lon is not None:
-            result = self.transform_to_luref(lon, lat)
-            easting = str(result.geom.centroid.x)
-            northing = str(result.geom.centroid.y)
+            pointgeom = self.transform_to_luref(lon, lat)
+            easting = str(pointgeom.centroid.x)
+            northing = str(pointgeom.centroid.y)
 
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
@@ -57,26 +61,72 @@ class Geocode(object):
         if os.environ.get('FAKE_REVERSE_GEOCODING') == '1':
             return json.loads('{"count": 1, "results": [{"id_caclr_street": "461", "distance": 33.7389366951768, "street": "Rue Jean-Pierre Brasseur", "postal_code": "1258", "id_caclr_bat": "21478", "geom": {"type": "Point", "coordinates": [76302.2077999998, 75334.6180995487]}, "locality": "Luxembourg", "number": "16"}]}')  # noqa
 
+        cnt = self.db_ecadastre.query(CountryLimAdm.id). \
+            filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
+                "x": easting,
+                "y": northing
+            }, srid=2169), CountryLimAdm.geom)
+        ).all()
         results = []
+        # Check if point is inside luxembourg or not
+        if len(cnt) == 0:
+            if lat is None and lon is None:
+                pointgeom = self.transform_to_latlon(easting, northing)
+                lon = pointgeom.centroid.x
+                lat = pointgeom.centroid.y
 
-        for feature in self.db_ecadastre.query(
-                Address.id_caclr_rue.label("id_caclr_rue"),
-                Address.id_caclr_bat.label("id_caclr_bat"),
-                Address.rue.label("rue"),
-                Address.numero.label("numero"),
-                Address.localite.label("localite"),
-                Address.code_postal.label("code_postal"),
-                func.ST_AsGeoJSON(Address.geom).label("geom"),
-                distcol.label("distance")).order_by(distcol).limit(1):
-            results.append({"id_caclr_street": feature.id_caclr_rue,
-                            "id_caclr_bat": feature.id_caclr_bat,
-                            "street": feature.rue,
-                            "number": feature.numero,
-                            "locality": feature.localite,
-                            "postal_code": feature.code_postal,
-                            "distance": feature.distance,
-                            "geom": geojson_loads(feature.geom)
+            request_url = \
+                "%(url)s?key=%(api_key)s&format=json&lat=%(lat)s&lon=%(lon)s" \
+                % {"lat": lat, "lon": lon, 'api_key': self.config['reverse_geocode']['api_key'],
+                   "url": self.config['reverse_geocode']['url']}
+            res = geojson_loads(urllib.request.urlopen(request_url).read())
+            if 'address' in res:
+                address = res['address']
+            results.append({"id_caclr_street": None,
+                            "id_caclr_bat": None,
+                            "street": address['road'] if 'road' in address else "",
+                            "number": address['house_number'] if 'house_number' in address else "",
+                            "locality": address['town'] if 'town' in address else "",
+                            "postal_code": address['postcode'] if 'postcode' in address else "",
+                            "country": address['country'] if 'country' in address else "",
+                            "country_code": address['country_code'] if 'country_code' in address else "",
+                            "distance": 0,
+                            "contributor": res['licence'] if 'licence' in res else "",
+                            "geom": None,
+                            "geomlonlat": {
+                                "type": "Point",
+                                "coordinates": [res['lon'], res['lat']]}
                             })
+        else:
+            distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
+                "x": easting,
+                "y": northing
+            }, srid=2169), Address.geom)
+
+            for feature in self.db_ecadastre.query(
+                    Address.id_caclr_rue.label("id_caclr_rue"),
+                    Address.id_caclr_bat.label("id_caclr_bat"),
+                    Address.rue.label("rue"),
+                    Address.numero.label("numero"),
+                    Address.localite.label("localite"),
+                    Address.code_postal.label("code_postal"),
+                    func.ST_AsGeoJSON(Address.geom).label("geom"),
+                    func.ST_AsGeoJSON((func.ST_Transform(Address.geom, 4326))).
+                    label("geomlonlat"),
+                    distcol.label("distance")).order_by(distcol).limit(1):
+                results.append({"id_caclr_street": feature.id_caclr_rue,
+                                "id_caclr_bat": feature.id_caclr_bat,
+                                "street": feature.rue,
+                                "number": feature.numero,
+                                "locality": feature.localite,
+                                "postal_code": feature.code_postal,
+                                "country": "Luxembourg",
+                                "country_code": "lu",
+                                "distance": feature.distance,
+                                "contributor": "ACT",
+                                "geom": geojson_loads(feature.geom),
+                                "geomlonlat": geojson_loads(feature.geomlonlat)
+                                })
 
         return {'count': len(results), 'results': results}
 
@@ -214,7 +264,7 @@ class Geocode(object):
         if locality_info is not None and locality_info['geom'] is not None\
            and locality_info['geom'].centroid is not None and\
            locality_info['locality'] is not None:
-            result = self.transform_to_latlon(
+            pointgeom = self.transform_to_latlon(
                 locality_info['geom'].centroid.x,
                 locality_info['geom'].centroid.y)
 
@@ -228,7 +278,7 @@ class Geocode(object):
                      "easting": locality_info['geom'].centroid.x,
                      "northing": locality_info['geom'].centroid.y,
                      "geom": locality_info['geom'].centroid,
-                     "geomlonlat": result.geom.centroid,
+                     "geomlonlat": pointgeom.centroid,
                      'AddressDetails': {
                 "postnumber": None,
                 "street": None,
@@ -259,7 +309,7 @@ class Geocode(object):
 
         if res is not None and res.geom is not None and\
            res.geom.centroid is not None:
-            result = self.transform_to_latlon(
+            pointgeom = self.transform_to_latlon(
                 res.geom.centroid.x, res.geom.centroid.y)
             return ({'name': self.get_formatted_address(
                         None, None, res.localite, p_zip),
@@ -271,7 +321,7 @@ class Geocode(object):
                      'easting': res.geom.centroid.x,
                      'northing': res.geom.centroid.y,
                      'geom': res.geom.centroid,
-                     "geomlonlat": result.geom.centroid,
+                     "geomlonlat": pointgeom.centroid,
                      'AddressDetails': {
                 "postnumber": None,
                 "street": None,
@@ -317,7 +367,7 @@ class Geocode(object):
         if res.localite is not None:
             res.localite = res.localite.strip()
         if res.geom is not None:
-            result = self.transform_to_latlon(
+            pointgeom = self.transform_to_latlon(
                 res.geom.centroid.x, res.geom.centroid.y)
 
             return ({'name': self.get_formatted_address(
@@ -330,7 +380,7 @@ class Geocode(object):
                      'easting': res.geom.centroid.x,
                      'northing': res.geom.centroid.y,
                      'geom': res.geom.centroid,
-                     "geomlonlat": result.geom.centroid,
+                     "geomlonlat": pointgeom.centroid,
                      'AddressDetails': {
                 "postnumber": None,
                 "street": None,
@@ -384,7 +434,7 @@ class Geocode(object):
         if code_postal is None:
             code_postal = ""
 
-        result = self.transform_to_latlon(
+        pointgeom = self.transform_to_latlon(
             cur_geom.centroid.x, cur_geom.centroid.y)
         resp = {'name': self.get_formatted_address(
             str(numero).strip(),
@@ -402,7 +452,7 @@ class Geocode(object):
                  "easting": cur_geom.centroid.x,
                  "northing": cur_geom.centroid.y,
                  "geom": cur_geom.centroid,
-                 "geomlonlat": result.geom.centroid,
+                 "geomlonlat": pointgeom.centroid,
                  'AddressDetails': {
             "postnumber": str(feature.numero).strip(),
             "street": feature.rue.encode('utf-8').strip(),
@@ -428,10 +478,10 @@ class Geocode(object):
                     'POINT(%(x)s %(y)s)' % {"x": x, "y": y}, 2169), 4326)))
             result = self.db_ecadastre.query(geomwgs.label(
                 "geom"), WKPOI.geom.label("geom2")).first()
-            if isinstance(result.geom, unicode) or\
-               isinstance(result.geom, str):
-                result.geom = loads(result.geom)
-            return result
+            geom = result.geom
+            if isinstance(geom, str):
+                geom = loads(geom)
+            return geom
         except Exception as e:
             log.exception(e)
             transaction.abort()
@@ -442,15 +492,15 @@ class Geocode(object):
             geomwgs = func.ST_AsText(func.ST_Centroid(func.ST_Transform(
                 WKTElement(
                     'POINT(%(x)s %(y)s)' % {"x": lon, "y": lat}, 4326), 2169)))
-            result = self.request.db_ecadastre.query(geomwgs.label(
+            result = self.db_ecadastre.query(geomwgs.label(
                 "geom"), WKPOI.geom.label("geom2")).first()
-            if isinstance(result.geom, unicode) or\
-               isinstance(result.geom, str):
-                result.geom = loads(result.geom)
-            return result
+            geom = result.geom
+            if isinstance(geom, str):
+                geom = loads(geom)
+            return geom
         except Exception as e:
             log.exception(e)
-            self.request.db_ecadastre.rollback()
+            self.db_ecadastre.rollback()
         return None
 
     # Returns true if zip code exists in database
