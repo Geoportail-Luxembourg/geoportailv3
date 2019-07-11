@@ -6,13 +6,20 @@ from pyramid.response import Response
 from geojson import loads as geojson_loads
 from geoalchemy2 import func
 from geoalchemy2.elements import WKTElement, WKBElement
-from geoportailv3.geocode import Address, WKPOI, Neighbourhood, Parcel
+from geoportailv3.geocode import CountryLimAdm, Address, WKPOI, \
+    Neighbourhood, Parcel
 from shapely.wkt import loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
 
+import urllib2
 import re
 import difflib
+
+try:
+    from json import loads as json_loads
+except:
+    from simplejson import loads as json_loads
 
 
 import logging
@@ -24,6 +31,7 @@ class Geocode(object):
     def __init__(self, request):
         self.request = request
         self.returnParcelInfo = False
+        self.config = self.request.registry.settings['reverse_geocode']
 
     # View used to get an adress from a coordinate.
     @view_config(route_name="reverse_geocode", renderer="json")
@@ -46,32 +54,79 @@ class Geocode(object):
            re.match("^[0-9]*[.]{0,1}[0-9]*$", northing) is None:
 
             return HTTPBadRequest("Missing or invalid coordinates")
-
-        distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
-            "x": easting,
-            "y": northing
-        }, srid=2169), Address.geom)
-
+        cnt = self.request.db_ecadastre.query(CountryLimAdm.id). \
+            filter(func.ST_within(WKTElement('POINT(%(x)s %(y)s)' % {
+                "x": easting,
+                "y": northing
+            }, srid=2169), CountryLimAdm.geom)
+        ).all()
         results = []
+        # Check if point is inside luxembourg or not
+        if len(cnt) == 0:
+            if lat is None and lon is None:
+                result = self.transform_to_latlon(easting, northing)
+                lon = result.geom.centroid.x
+                lat = result.geom.centroid.y
 
-        for feature in self.request.db_ecadastre.query(
-                Address.id_caclr_rue.label("id_caclr_rue"),
-                Address.id_caclr_bat.label("id_caclr_bat"),
-                Address.rue.label("rue"),
-                Address.numero.label("numero"),
-                Address.localite.label("localite"),
-                Address.code_postal.label("code_postal"),
-                func.ST_AsGeoJSON(Address.geom).label("geom"),
-                distcol.label("distance")).order_by(distcol).limit(1):
-            results.append({"id_caclr_street": feature.id_caclr_rue,
-                            "id_caclr_bat": feature.id_caclr_bat,
-                            "street": feature.rue,
-                            "number": feature.numero,
-                            "locality": feature.localite,
-                            "postal_code": feature.code_postal,
-                            "distance": feature.distance,
-                            "geom": geojson_loads(feature.geom)
+            request_url = \
+                "%(url)s?key=%(api_key)s&format=json&lat=%(lat)s&lon=%(lon)s" \
+                % {"lat": lat, "lon": lon, 'api_key': self.config['api_key'],
+                   "url": self.config['url']}
+            res = json_loads(urllib2.urlopen(request_url).read())
+            if 'address' in res:
+                address = res['address']
+            results.append({"id_caclr_street": None,
+                            "id_caclr_bat": None,
+                            "street": address['road']
+                            if 'road' in address else "",
+                            "number": address['house_number']
+                            if 'house_number' in address else "",
+                            "locality": address['town']
+                            if 'town' in address else "",
+                            "postal_code": address['postcode']
+                            if 'postcode' in address else "",
+                            "country": address['country']
+                            if 'country' in address else "",
+                            "country_code": address['country_code']
+                            if 'country_code' in address else "",
+                            "distance": 0,
+                            "contributor": res['licence']
+                            if 'licence' in res else "",
+                            "geom": None,
+                            "geomlonlat": {
+                                "type": "Point",
+                                "coordinates": [res['lon'], res['lat']]}
                             })
+        else:
+            distcol = func.ST_distance(WKTElement('POINT(%(x)s %(y)s)' % {
+                "x": easting,
+                "y": northing
+            }, srid=2169), Address.geom)
+
+            for feature in self.request.db_ecadastre.query(
+                    Address.id_caclr_rue.label("id_caclr_rue"),
+                    Address.id_caclr_bat.label("id_caclr_bat"),
+                    Address.rue.label("rue"),
+                    Address.numero.label("numero"),
+                    Address.localite.label("localite"),
+                    Address.code_postal.label("code_postal"),
+                    func.ST_AsGeoJSON(Address.geom).label("geom"),
+                    func.ST_AsGeoJSON((func.ST_Transform(Address.geom, 4326))).
+                    label("geomlonlat"),
+                    distcol.label("distance")).order_by(distcol).limit(1):
+                results.append({"id_caclr_street": feature.id_caclr_rue,
+                                "id_caclr_bat": feature.id_caclr_bat,
+                                "street": feature.rue,
+                                "number": feature.numero,
+                                "locality": feature.localite,
+                                "postal_code": feature.code_postal,
+                                "country": "Luxembourg",
+                                "country_code": "lu",
+                                "distance": feature.distance,
+                                "contributor": "ACT",
+                                "geom": geojson_loads(feature.geom),
+                                "geomlonlat": geojson_loads(feature.geomlonlat)
+                                })
 
         return {'count': len(results), 'results': results}
 

@@ -34,6 +34,7 @@ CONFIG_VARS += https_proxy
 CONFIG_VARS += print_urls
 CONFIG_VARS += no_proxy
 CONFIG_VARS += lidar
+CONFIG_VARS += reverse_geocode
 CONFIG_VARS += routing
 CONFIG_VARS += referrer
 CONFIG_VARS += excluded_themes_from_search
