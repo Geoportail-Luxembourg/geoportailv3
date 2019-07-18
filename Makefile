@@ -63,7 +63,7 @@ docker-build-ldap:
 	cd ldap && docker build --tag=lux-dev-ldap --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
 
 DOCKER_COMPOSE_PROJECT ?= luxembourg
-DOCKER_CONTAINER = $(DOCKER_COMPOSE_PROJECT)_geoportal_1
+DOCKER_CONTAINER ?= $(DOCKER_COMPOSE_PROJECT)_geoportal_1
 APP_JS_FILES = $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.js' 2> /dev/null)
 APP_HTML_FILES += $(shell find geoportal/$(PACKAGE)_geoportal/static-ngeo/js -type f -name '*.html' 2> /dev/null)
 APP_HTML_FILES += geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.ejs
