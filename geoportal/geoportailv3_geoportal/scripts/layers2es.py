@@ -129,7 +129,7 @@ def main():
     app_name = options.app_name
     if app_name is None and "#" in app_config:
         app_config, app_name = app_config.split("#", 1)
-    lux_get_app(app_config, name=app_name)
+    lux_get_app(app_config, app_name=app_name)
 
     Import(options)
 
