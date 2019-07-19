@@ -22,8 +22,8 @@ def _get_url_with_token(url):
         tokenurl = baseurl.split('rest/')[0] +\
             'tokens?username=%s&password=%s'\
             % (user_password[0], user_password[1])
-        token = urllib2.urlopen(tokenurl, None, 15).read()
-        return baseurl + "token=" + token
+        token = urllib.request.urlopen(tokenurl, None, 15).read()
+        return baseurl + "token=" + str(token, 'utf-8')
     except:
         print(url)
         traceback.print_exc(file=sys.stdout)
