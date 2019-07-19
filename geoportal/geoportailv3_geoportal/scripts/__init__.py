@@ -16,7 +16,7 @@ def lux_get_app(app_config, app_name):
 
 
 def get_session(app_config, app_name):
-    environ = _escape_variables(os.environ)
+    environ = escape_variables(os.environ)
     fileConfig(app_config, defaults=environ)
     lux_get_app(app_config, app_name)
 
