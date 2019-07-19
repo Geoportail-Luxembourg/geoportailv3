@@ -15,7 +15,7 @@ except:
 
 from turbomail import Message
 from geoportailv3.mymaps import Category, Map, Feature, Role, Symbols, Images,\
-    RoleCategories, MapUser, CategoryUser
+    MapUser, CategoryUser
 from pyramid.httpexceptions import HTTPBadRequest, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
 from pyramid_ldap import get_ldap_connector
@@ -329,12 +329,7 @@ class Mymaps(object):
         db_mymaps = self.request.db_mymaps
         categories = self.request.db_mymaps.query(Category)
         categories = categories.filter(Category.id != 999).\
-            filter(Category.id.in_(
-                db_mymaps.query(RoleCategories.category_id).filter(
-                    ~or_(and_(RoleCategories.category_id >= 70,
-                              RoleCategories.category_id <= 80),
-                         and_(RoleCategories.category_id >= 200,
-                              RoleCategories.category_id <= 302))).all()))
+            filter(Category.list == True) # noqa
         categories = categories.order_by("name asc")
         categ = []
         for category in categories.all():
