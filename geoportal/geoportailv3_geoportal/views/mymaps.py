@@ -335,12 +335,7 @@ class Mymaps(object):
         db_mymaps = self.db_mymaps
         categories = self.db_mymaps.query(Category)
         categories = categories.filter(Category.id != 999).\
-            filter(Category.id.in_(
-                db_mymaps.query(RoleCategories.category_id).filter(
-                    ~or_(and_(RoleCategories.category_id >= 70,
-                              RoleCategories.category_id <= 80),
-                         and_(RoleCategories.category_id >= 200,
-                              RoleCategories.category_id <= 302))).all()))
+            filter(Category.list == True) # noqa
         categories = categories.order_by("name asc")
         categ = []
         for category in categories.all():
