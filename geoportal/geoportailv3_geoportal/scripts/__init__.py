@@ -3,7 +3,7 @@ from logging.config import fileConfig
 import os
 
 
-def _escape_variables(environ):
+def escape_variables(environ):
     """
     Escape environment variables so that they can be interpreted correctly by python configparser.
     """
@@ -11,7 +11,7 @@ def _escape_variables(environ):
 
 
 def lux_get_app(app_config, app_name):
-    environ = _escape_variables(os.environ)
+    environ = escape_variables(os.environ)
     return get_app(app_config, app_name, options=environ)
 
 
