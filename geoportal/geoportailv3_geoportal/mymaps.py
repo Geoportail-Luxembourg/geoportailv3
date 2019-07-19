@@ -280,6 +280,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(255))
     allow_labeling = Column(Boolean)
+    list = Column(Boolean)
 
     def __init__(self, name):
         self.name = name
