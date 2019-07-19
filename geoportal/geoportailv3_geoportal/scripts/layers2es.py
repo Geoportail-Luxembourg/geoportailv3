@@ -47,7 +47,7 @@ from geoportailv3_geoportal.lib.search import get_elasticsearch, get_index, \
 from elasticsearch import helpers
 from elasticsearch.helpers import BulkIndexError
 from elasticsearch.exceptions import ConnectionTimeout
-from . import lux_get_app
+from . import lux_get_app, escape_variables
 
 
 def statuslog(text):
@@ -160,7 +160,7 @@ class Import:
         self.metadata_service_url = \
             'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp'
 
-        with bootstrap(self.options.app_config, options=os.environ) as env:
+        with bootstrap(self.options.app_config, options=escape_variables(os.environ)) as env:
             registry = env['registry']
             request = env['request']
 
