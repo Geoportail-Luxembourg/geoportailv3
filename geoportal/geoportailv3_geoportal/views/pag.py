@@ -42,8 +42,8 @@ class Pag(object):
             self.filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
             with open(self.filename, 'wb') as fp:
                 shutil.copyfileobj(data, fp)
-        except:
-            log.error(sys.exc_info()[0])
+        except Exception as e:
+            log.exception(e)
             data = None
             log.debug(url)
         return
@@ -107,8 +107,8 @@ class Pag(object):
             req.add_header('Cache-Control', 'max-age=0')
             f = urllib.request.urlopen(req, None, 15)
             data = f.read()
-        except:
-            log.error(sys.exc_info()[0])
+        except Exception as e:
+            log.exception(e)
             data = None
             log.debug(url)
         headers = {'Content-Type': 'document/pdf'}
@@ -125,8 +125,8 @@ class Pag(object):
         try:
             self.__download(oid)
             self.__upload2owncloud()
-        except:
-            log.error(sys.exc_info()[0])
+        except Exception as e:
+            log.exception(e)
             self.link = 'error'
         self.__log_download_stats(oid, self.link)
         self.__send_mail(email)
