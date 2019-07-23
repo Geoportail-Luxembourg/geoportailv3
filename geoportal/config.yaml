@@ -48,6 +48,30 @@ environment:
 - {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
 - {name: REVERSE_GEOCODE_API_KEY, default: ''}
 - {name: REVERSE_GEOCODE_URL, default: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'}
+- {name: PAG_STAGING_URL}
+- {name: PAG_PROD_URL}
+- {name: PAG_FME_TOKEN}
+- {name: PAG_OWNCLOUD_INTERNAL_URL}
+- {name: PAG_OWNCLOUD_EXTERNAL_URL}
+- {name: PAG_OWNCLOUD_USER}
+- {name: PAG_OWNCLOUD_PASSWORD}
+- {name: PAG_SMTP_SERVER}
+- {name: PAG_BCC_ADDRESS}
+- {name: PAG_FILE_SERVER}
+- {name: PDS_STAGING_URL}
+- {name: PDS_PROD_URL}
+- {name: PDS_SMTP_SERVER}
+- {name: PDS_BCC_ADDRESS}
+- {name: CASIPO_STAGING_URL}
+- {name: CASIPO_PROD_URL}
+- {name: CASIPO_FME_TOKEN}
+- {name: CASIPO_OWNCLOUD_INTERNAL_URL}
+- {name: CASIPO_OWNCLOUD_EXTERNAL_URL}
+- {name: CASIPO_OWNCLOUD_USER}
+- {name: CASIPO_OWNCLOUD_PASSWORD}
+- {name: CASIPO_SMTP_SERVER}
+- {name: CASIPO_BCC_ADDRESS}
+
 
 interpreted: {}
 no_interpreted: []
@@ -104,18 +128,18 @@ vars:
       redis_expiration_time: 86400}
     backend: dogpile.cache.redis
   pds:
-    staging_url:
-    prod_url:
-    fme_token:
+    staging_url: {PDS_STAGING_URL}
+    prod_url: {PDS_PROD_URL}
+    fme_token: 
     owncloud_internal_url:
     owncloud_external_url:
     owncloud_user:
     owncloud_password:
-    smtp_server:
-    bcc_address:
-  casipo: {bcc_address: null, fme_token: null, owncloud_external_url: null, owncloud_internal_url: null,
-    owncloud_password: null, owncloud_user: null, prod_url: null, smtp_server: null,
-    staging_url: null}
+    smtp_server: {PDS_SMTP_SERVE}
+    bcc_address: {PDS_BCC_ADDRESS}
+  casipo: {bcc_address: '{CASIPO_BCC_ADDRESS}', fme_token: '{CASIPO_FME_TOKEN}', owncloud_external_url: '{CASIPO_OWNCLOUD_EXTERNAL_URL}', owncloud_internal_url: '{CASIPO_OWNCLOUD_INTERNAL_URL}',
+    owncloud_password: '{CASIPO_OWNCLOUD_PASSWORD}', owncloud_user: '{CASIPO_OWNCLOUD_USER}', prod_url: '{CASIPO_PROD_URL}', smtp_server: '{CASIPO_SMTP_SERVER}',
+    staging_url: '{CASIPO_STAGING_URL}'}
   check_collector:
     hosts:
     - {display: Main, url: '{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}{VISIBLE_ENTRY_POINT}'}
@@ -403,9 +427,9 @@ vars:
     layers: '{AGE_LAYERS}'
 
   pag: {
-    bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
-    owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,
-    smtp_server: null, staging_url: null}
+    bcc_address: '{PAG_BCC_ADDRESS}', file_server: '{PAG_FILE_SERVER}', fme_token: '{PAG_FME_TOKEN}', owncloud_external_url: '{PAG_OWNCLOUD_EXTERNAL_URL}',
+    owncloud_internal_url: '{PAG_OWNCLOUD_INTERNAL_URL}', owncloud_password: '{PAG_OWNCLOUD_PASSWORD}', owncloud_user: '{PAG_OWNCLOUD_USER}', prod_url: '{PAG_PROD_URL}',
+    smtp_server: '{PAG_SMTP_SERVER}', staging_url: '{PAG_STAGING_URL}'}
   print_url: '{PRINT_URL}'
   print_urls: null
   proxy_wms_url: null
