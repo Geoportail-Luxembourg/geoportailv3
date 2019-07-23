@@ -48,6 +48,16 @@ environment:
 - {name: HTTPS_PROXY_AUTHORIZED_HOSTS, default: 'ws.geoportal.lu, ws.geoportail.lu, wms.inspire.geoportail.lu, wms.inspire.geoportal.lu, wmts1.geoportail.lu, wmts1.geoportal.lu'}
 - {name: REVERSE_GEOCODE_API_KEY, default: ''}
 - {name: REVERSE_GEOCODE_URL, default: 'http://open.mapquestapi.com/nominatim/v1/reverse.php'}
+- {name: PAG_STAGING_URL}
+- {name: PAG_PROD_URL}
+- {name: PAG_FME_TOKEN}
+- {name: PAG_OWNCLOUD_INTERNAL_URL}
+- {name: PAG_OWNCLOUD_EXTERNAL_URL}
+- {name: PAG_OWNCLOUD_USER}
+- {name: PAG_OWNCLOUD_PASSWORD}
+- {name: PAG_SMTP_SERVER}
+- {name: PAG_BCC_ADDRESS}
+- {name: PAG_FILE_SERVER}
 
 interpreted: {}
 no_interpreted: []
@@ -403,9 +413,9 @@ vars:
     layers: '{AGE_LAYERS}'
 
   pag: {
-    bcc_address: null, file_server: null, fme_token: null, owncloud_external_url: null,
-    owncloud_internal_url: null, owncloud_password: null, owncloud_user: null, prod_url: null,
-    smtp_server: null, staging_url: null}
+    bcc_address: '{PAG_BCC_ADDRESS}', file_server: '{PAG_FILE_SERVER}', fme_token: '{PAG_FME_TOKEN}', owncloud_external_url: '{PAG_OWNCLOUD_EXTERNAL_URL}',
+    owncloud_internal_url: '{PAG_OWNCLOUD_INTERNAL_URL}', owncloud_password: '{PAG_OWNCLOUD_PASSWORD}', owncloud_user: '{PAG_OWNCLOUD_USER}', prod_url: '{PAG_PROD_URL}',
+    smtp_server: '{PAG_SMTP_SERVER}', staging_url: '{PAG_STAGING_URL}'}
   print_url: '{PRINT_URL}'
   print_urls: null
   proxy_wms_url: null
