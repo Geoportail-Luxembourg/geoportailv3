@@ -14,7 +14,7 @@ import sys
 from geoportailv3_geoportal.portail import PagDownload
 from c2cgeoportal_commons.models import DBSession
 
-_ = TranslationStringFactory("geoportailv3-server")
+_ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 
 

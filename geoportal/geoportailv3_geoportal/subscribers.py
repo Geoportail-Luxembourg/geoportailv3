@@ -5,7 +5,7 @@ from pyramid.events import subscriber, BeforeRender, NewRequest
 
 
 # use two translator to translate each strings in Make
-tsf_server = TranslationStringFactory('geoportailv3-server')
+tsf_server = TranslationStringFactory('geoportailv3_geoportal-server')
 tsf_geoportal = TranslationStringFactory('c2cgeoportal')
 tsf_admin = TranslationStringFactory('c2cgeoportal_admin')
 tsf_c2cgeoform = TranslationStringFactory('c2cgeoform')

@@ -416,7 +416,7 @@ class Getfeatureinfo(object):
         if self.request.params.get('tooltip', None) is not None:
             path = 'templates/tooltip/'
             localizer = get_localizer(self.request)
-            server = TranslationStringFactory("geoportailv3-server")
+            server = TranslationStringFactory("geoportailv3_geoportal-server")
             tooltips = TranslationStringFactory("geoportailv3-tooltips")
             client = TranslationStringFactory("geoportailv3-client")
 
