@@ -11,7 +11,7 @@ import logging
 from c2cgeoportal_commons.models import DBSessions
 from geoportailv3_geoportal import mailer
 
-_ = TranslationStringFactory("geoportailv3-server")
+_ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 
 
