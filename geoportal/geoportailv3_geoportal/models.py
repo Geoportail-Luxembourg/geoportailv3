@@ -11,7 +11,7 @@ from sqlalchemy import ForeignKey, Column
 from sqlalchemy.types import Integer, Boolean, Unicode, String, DateTime
 from deform.widget import HiddenWidget, TextInputWidget
 
-_ = TranslationStringFactory('geoportailv3-server')
+_ = TranslationStringFactory('geoportailv3_geoportal-server')
 LOG = logging.getLogger(__name__)
 
 

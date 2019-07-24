@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 import time
 import sys
 
-_ = TranslationStringFactory("geoportailv3-server")
+_ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 
 
