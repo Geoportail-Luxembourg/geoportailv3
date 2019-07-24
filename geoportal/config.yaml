@@ -135,7 +135,7 @@ vars:
     owncloud_external_url:
     owncloud_user:
     owncloud_password:
-    smtp_server: {PDS_SMTP_SERVE}
+    smtp_server: {PDS_SMTP_SERVER}
     bcc_address: {PDS_BCC_ADDRESS}
   casipo: {bcc_address: '{CASIPO_BCC_ADDRESS}', fme_token: '{CASIPO_FME_TOKEN}', owncloud_external_url: '{CASIPO_OWNCLOUD_EXTERNAL_URL}', owncloud_internal_url: '{CASIPO_OWNCLOUD_INTERNAL_URL}',
     owncloud_password: '{CASIPO_OWNCLOUD_PASSWORD}', owncloud_user: '{CASIPO_OWNCLOUD_USER}', prod_url: '{CASIPO_PROD_URL}', smtp_server: '{CASIPO_SMTP_SERVER}',
