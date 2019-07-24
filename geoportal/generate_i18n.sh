@@ -21,7 +21,7 @@ create_ui_jsons() {
   do
     prefix="`prefix $lang`"
     c2cprefix="$prefix/geoportailv3_geoportal"
-    files="$c2cprefix-client.po $prefix/ngeo.po" 
+    files="$c2cprefix-client.po $c2cprefix-tooltips.po $prefix/ngeo.po" 
     echo "-> $APP_OUTPUT_DIR/$lang.json"
     node node_modules/.bin/compile-catalog $files > $APP_OUTPUT_DIR/$lang.json
   done
