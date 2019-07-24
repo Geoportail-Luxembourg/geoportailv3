@@ -71,7 +71,7 @@ from c2cgeoportal_geoportal.lib.caching import NO_CACHE, get_region
 from geoportailv3_geoportal.models import LuxPrintJob, LuxPrintServers, \
     LuxLayerInternalWMS
 
-_ = TranslationStringFactory("geoportailv3-server")
+_ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
 cache_region = get_region()
 
