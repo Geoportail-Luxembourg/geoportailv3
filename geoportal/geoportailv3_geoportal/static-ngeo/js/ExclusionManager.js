@@ -171,6 +171,10 @@ exports.prototype.checkForLayerExclusion_ = function(map, layer1) {
  */
 exports.prototype.init = function(map) {
   var layerOpacityListenerKeys = {};
+  this.backgroundLayerMgr_.on('change', function(e) {
+    var curBgLayer = this.backgroundLayerMgr_.get(map);
+    this.checkForLayerExclusion_(map, curBgLayer);
+  }.bind(this));
 
   // listen on layers being added to the map
   // base layers switch should fire the event as well
