@@ -48,6 +48,29 @@ services:
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - PAG_STAGING_URL
+      - PAG_PROD_URL
+      - PAG_FME_TOKEN
+      - PAG_OWNCLOUD_INTERNAL_URL
+      - PAG_OWNCLOUD_EXTERNAL_URL
+      - PAG_OWNCLOUD_USER
+      - PAG_OWNCLOUD_PASSWORD
+      - PAG_SMTP_SERVER
+      - PAG_BCC_ADDRESS
+      - PAG_FILE_SERVER
+      - PDS_STAGING_URL
+      - PDS_PROD_URL
+      - PDS_SMTP_SERVER
+      - PDS_BCC_ADDRESS
+      - CASIPO_STAGING_URL
+      - CASIPO_PROD_URL
+      - CASIPO_FME_TOKEN
+      - CASIPO_OWNCLOUD_INTERNAL_URL
+      - CASIPO_OWNCLOUD_EXTERNAL_URL
+      - CASIPO_OWNCLOUD_USER
+      - CASIPO_OWNCLOUD_PASSWORD
+      - CASIPO_SMTP_SERVER
+      - CASIPO_BCC_ADDRESS
       - ANF_EMAIL
       - ANF_MAP_ID
       - DEBUG_TOOLBAR=1
