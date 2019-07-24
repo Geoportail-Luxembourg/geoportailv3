@@ -417,8 +417,8 @@ class Getfeatureinfo(object):
             path = 'templates/tooltip/'
             localizer = get_localizer(self.request)
             server = TranslationStringFactory("geoportailv3_geoportal-server")
-            tooltips = TranslationStringFactory("geoportailv3-tooltips")
-            client = TranslationStringFactory("geoportailv3-client")
+            tooltips = TranslationStringFactory("geoportailv3_geoportal-tooltips")
+            client = TranslationStringFactory("geoportailv3_geoportal-client")
 
             for r in results:
                 l_template = r['template']
