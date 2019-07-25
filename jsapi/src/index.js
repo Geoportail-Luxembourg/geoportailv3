@@ -388,7 +388,7 @@ lux.WMTSLayerFactory = function(config, opacity, visible) {
  * @return {ol.layer.Image} The layer.
  */
 lux.WMSLayerFactory = function(config, opacity, visible) {
-  var url = config.url || 'https://map.geoportail.lu/main/wsgi/ogcproxywms?';
+  var url = config.url || 'https://map.geoportail.lu/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
     url: url,
