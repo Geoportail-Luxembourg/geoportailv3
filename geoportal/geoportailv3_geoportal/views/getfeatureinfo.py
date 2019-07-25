@@ -155,7 +155,7 @@ class Getfeatureinfo(object):
         return HTTPBadRequest()
 
     def unescape_html(self, features, key):
-        from HTMLParser import HTMLParser
+        from html.parser import HTMLParser
         h = HTMLParser()
         modified_features = []
 
