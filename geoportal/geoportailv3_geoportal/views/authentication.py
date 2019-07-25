@@ -26,8 +26,8 @@ def ldap_user_validator(request, username, password):
             base_dn, filter_tmpl, ldap.SUBTREE,
             ldap.DEREF_ALWAYS)
         result = conn.get_response(message_id)[0]
-
-        data = result[0]['dn']
+        if len(result) > 0:
+            data = result[0]['dn']
         conn.unbind()
     try:
         conn = cm.connection(data, password)
