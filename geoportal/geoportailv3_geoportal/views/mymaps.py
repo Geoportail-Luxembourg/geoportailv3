@@ -1429,7 +1429,7 @@ class Mymaps(object):
              mail_address = attributes['mail'][0]
              if not mail_address:
                  return HTTPNotFound()
-
+             conn.unbind()
              return (user, mail_address)
 
     def notify_at_save(self, map, username, id, name, category):
