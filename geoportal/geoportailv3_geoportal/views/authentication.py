@@ -16,7 +16,25 @@ Validates the user against the ldap server
 
 def ldap_user_validator(request, username, password):
     connector = get_ldap_connector(request)
-    data = connector.authenticate(username, password)
+    cm = connector.manager
+    data = None
+    with cm.connection() as conn:
+        ldap_settings = request.registry.settings['ldap']
+        base_dn = ldap_settings['base_dn']
+        filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+        message_id = conn.search(
+            base_dn, filter_tmpl, ldap.SUBTREE,
+            ldap.DEREF_ALWAYS)
+        result = conn.get_response(message_id)[0]
+
+        data = result[0]['dn']
+        conn.unbind()
+    try:
+        conn = cm.connection(data, password)
+        conn.unbind()
+    except:
+        data = None
+
     connection = Connections()
     connection.login = username
     connection.application = request.host
