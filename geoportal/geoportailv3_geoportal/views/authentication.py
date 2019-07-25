@@ -92,6 +92,7 @@ def get_user_from_request(request):
                 if 'roleOGC' in obj:
                     # This role is used by the print proxy and internal WMS proxy.
                     user.ogc_role = int(obj['roleOGC'][0])
+            conn.unbind()
         try:
             # Loading the plain c2cgeoportal role used for authentication.
             user.role = DBSession.query(Role).filter_by(id=roletheme).one()
