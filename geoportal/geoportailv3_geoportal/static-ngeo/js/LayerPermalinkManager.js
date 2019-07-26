@@ -626,8 +626,11 @@ exports.prototype.initFlatCatalog_ = function(selectedLayers) {
           this.ngeoLocation_.getParam('opacities'), '-');
     }
     this.removeWatchers_();
-    if (layerIds !== undefined && opacities !== undefined &&
-        layerIds.length > 0 &&
+    if (layerIds === undefined) {
+      layerIds = [];
+      opacities = [];
+    }
+    if ((layerIds.length > 0 || this.unavailableLayerIndex_.length > 0) &&
         layerIds.length === opacities.length) {
       this.applyLayerStateToMap_(layerIds, opacities, flatCatalog, ogcServers);
     }
