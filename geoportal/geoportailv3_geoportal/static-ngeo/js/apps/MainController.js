@@ -70,6 +70,8 @@ import '../../less/geoportailv3.less'
  import appFeedbackFeedbackDirective from '../feedback/feedbackDirective.js';
  import appFeedbackFeedbackController from '../feedback/FeedbackController.js';
  import appFeedbackanfFeedbackanfDirective from '../feedbackanf/feedbackanfDirective.js';
+ import appFeedbackcruesFeedbackcruesDirective from '../feedbackcrues/feedbackcruesDirective.js';
+ import appFeedbackageFeedbackcruesController from '../feedbackcrues/FeedbackcruesController.js';
  import appFeedbackageFeedbackageDirective from '../feedbackage/feedbackageDirective.js';
  import appFeedbackanfFeedbackanfController from '../feedbackanf/FeedbackanfController.js';
  import appFeedbackageFeedbackageController from '../feedbackage/FeedbackageController.js';
@@ -199,6 +201,7 @@ import '../../less/geoportailv3.less'
  * @param {app.Export} appExport The export GPX/KML service.
  * @param {app.GetDevice} appGetDevice The device service.
  * @param {boolean} appOverviewMapShow Add or not the overview control.
+ * @param {string} showCruesLink Enable the Crues link.
  * @param {boolean} showAnfLink Enable the ANF link.
  * @param {string} appOverviewMapBaseLayer The layer displayed in overview.
  * @param {app.Notify} appNotify Notify service.
@@ -215,7 +218,7 @@ import '../../less/geoportailv3.less'
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo network status service.
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {string} ageLayerIds ID of AGE layers.
- * @param {boolean} showAgeLink Enable the AGE link.
+ * @param {string} showAgeLink Enable the AGE link.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
  * catalog service.
  * @constructor
@@ -228,7 +231,7 @@ const MainController = function(
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
-    appOverviewMapShow, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
+    appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     appOfflineDownloader, appOfflineRestorer, ageLayerIds, showAgeLink, appGetLayerForCatalogNode) {
@@ -248,13 +251,19 @@ const MainController = function(
    * @type {boolean}
    * @export
    */
+  this.showCruesLink = (showCruesLink === 'true');
+
+  /**
+   * @type {boolean}
+   * @export
+   */
   this.showAnfLink = showAnfLink;
 
   /**
    * @type {boolean}
    * @export
    */
-  this.showAgeLink = showAgeLink;
+  this.showAgeLink = (showAgeLink === 'true');
 
   /**
    * @private
@@ -450,6 +459,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['feedbackCruesOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['feedbackAnfOpen'] = false;
 
   /**
@@ -636,6 +650,7 @@ const MainController = function(
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
+    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
@@ -643,12 +658,14 @@ const MainController = function(
     !this['routingOpen'] &&
     this.ngeoLocation_.getParam('map_id') === undefined &&
     !infoOpen &&
+    !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
     !this['feedbackAgeOpen'] &&
     this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
     true : false;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         this.ngeoLocation_.getParam('map_id') !== undefined &&
+        !this['feedbackCruesOpen'] &&
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen) ? true : false;
@@ -956,6 +973,17 @@ MainController.prototype.openFeedbackAge = function() {
   }
 };
 
+/**
+ * @export
+ */
+MainController.prototype.openFeedbackCrues = function() {
+  if (this.sidebarOpen()) {
+    this.closeSidebar();
+    this['feedbackCruesOpen'] = true;
+  } else {
+    this['feedbackCruesOpen'] = true;
+  }
+};
 
 /**
  * @export
@@ -963,7 +991,8 @@ MainController.prototype.openFeedbackAge = function() {
 MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
-      this['feedbackAnfOpen'] = this['feedbackAgeOpen'] = false;
+      this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
+      this['feedbackCruesOpen'] = false;
 };
 
 
@@ -974,7 +1003,7 @@ MainController.prototype.closeSidebar = function() {
 MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
-      this['routingOpen'] || this['feedbackAgeOpen'];
+      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'];
 };
 
 

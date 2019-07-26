@@ -143,6 +143,7 @@ exports.constant('appExternalDataTemplateUrl', 'templatecache/appExternalDataTem
 exports.constant('appWmsTreeTemplateUrl', 'templatecache/appWmsTreeTemplateUrl');
 exports.constant('appWmtsTreeTemplateUrl', 'templatecache/appWmtsTreeTemplateUrl');
 exports.constant('appFeedbackTemplateUrl', 'templatecache/appFeedbackTemplateUrl');
+exports.constant('appFeedbackcruesTemplateUrl', 'templatecache/appFeedbackcruesTemplateUrl');
 exports.constant('appFeedbackanfTemplateUrl', 'templatecache/appFeedbackanfTemplateUrl');
 exports.constant('appFeedbackageTemplateUrl', 'templatecache/appFeedbackageTemplateUrl');
 exports.constant('appAskredirectTemplateUrl', 'templatecache/appAskredirectTemplateUrl');
@@ -189,6 +190,7 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/appWmsTreeTemplateUrl', require('./externaldata/wmstree.html'));
   $templateCache.put('templatecache/appWmtsTreeTemplateUrl', require('./externaldata/wmtstree.html'));
   $templateCache.put('templatecache/appFeedbackTemplateUrl', require('./feedback/feedback.html'));
+  $templateCache.put('templatecache/appFeedbackcruesTemplateUrl', require('./feedbackcrues/feedback.html'));
   $templateCache.put('templatecache/appFeedbackanfTemplateUrl', require('./feedbackanf/feedback.html'));
   $templateCache.put('templatecache/appFeedbackageTemplateUrl', require('./feedbackage/feedback.html'));
   $templateCache.put('templatecache/appAskredirectTemplateUrl', require('./askredirect/askredirect.html'));
