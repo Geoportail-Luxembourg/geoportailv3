@@ -38,6 +38,10 @@ environment:
 - {name: ELASTIC_INDEX}
 - {name: ANF_MAP_ID}
 - {name: ANF_EMAIL}
+- {name: AGE_CRUES_EMAIL, default: ''}
+- {name: AGE_CRUES_MAP_ID, default: ''}
+- {name: AGE_CRUES_SHOW_LINK, default: 'false'}
+- {name: AGE_CRUES_LAYERS, default: ''}
 - {name: AGE_EMAIL, default: ''}
 - {name: AGE_MAP_IDS, default: ''}
 - {name: AGE_SHOW_LINK, default: 'false'}
@@ -338,7 +342,8 @@ vars:
         appOverviewMapBaseLayer: basemap_2015_global
         appOverviewMapShow: true
         showAnfLink: false
-        showAgeLink: {AGE_SHOW_LINK}
+        showAgeLink: '{AGE_SHOW_LINK}'
+        showCruesLink: '{AGE_CRUES_SHOW_LINK}'
         ageLayerIds: '{AGE_LAYERS}'
         bboxLidar: [71500, 98600, 81500, 108600]
         bboxSrsLidar: 'EPSG:2169'
@@ -377,7 +382,7 @@ vars:
         isThemePrivateUrl: isthemeprivate, layerSearchServiceUrl: layersearch, loginUrl: login,
         logoutUrl: logout, mymapsImageUrl: mymaps_image, mymapsMapsUrl: mymaps_getmaps,
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
-        postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,
+        postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,postFeedbackCruesUrl: feedbackcrues,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
@@ -425,7 +430,11 @@ vars:
     map_ids: '{AGE_MAP_IDS}'
     show_link: '{AGE_SHOW_LINK}'
     layers: '{AGE_LAYERS}'
-
+  age_crues:
+    email: '{AGE_CRUES_EMAIL}'
+    map_id: '{AGE_CRUES_MAP_ID}'
+    show_link: '{AGE_CRUES_SHOW_LINK}'
+    layers: '{AGE_CRUES_LAYERS}'
   pag: {
     bcc_address: '{PAG_BCC_ADDRESS}', file_server: '{PAG_FILE_SERVER}', fme_token: '{PAG_FME_TOKEN}', owncloud_external_url: '{PAG_OWNCLOUD_EXTERNAL_URL}',
     owncloud_internal_url: '{PAG_OWNCLOUD_INTERNAL_URL}', owncloud_password: '{PAG_OWNCLOUD_PASSWORD}', owncloud_user: '{PAG_OWNCLOUD_USER}', prod_url: '{PAG_PROD_URL}',

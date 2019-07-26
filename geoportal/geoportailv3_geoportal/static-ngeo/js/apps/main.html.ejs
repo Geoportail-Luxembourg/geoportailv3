@@ -163,6 +163,7 @@
                        app-query-appselector="mainCtrl.infosAppSelector"
                        app-query-language="mainCtrl.lang"
                        app-query-feedback-anf-open="mainCtrl.feedbackAnfOpen"
+                       app-query-feedback-crues-open="mainCtrl.feedbackCruesOpen"
                        app-query-hidden-info="mainCtrl.infosHiddenContent"></app-query>
 
             <app-locationinfo app-locationinfo-map="::mainCtrl.map"
@@ -230,6 +231,23 @@
               app-feedback-map="::mainCtrl.map"
               app-feedback-layers="::mainCtrl.selectedLayers">
             </app-feedback>
+          </div>
+        </div>
+        <!-- Feedback Crues-->
+        <div id="feedbackcrues" ng-class="mainCtrl.feedbackCruesOpen ? 'show' : 'hide'">
+          <h2 translate>Feedback Crues</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <div class="container-fluid tab-content">
+            <app-feedbackcrues
+              app-feedbackcrues-drawing-active="mainCtrl.drawOpen",
+              app-feedbackcrues-sidebar-active="mainCtrl.sidebarActive",
+              app-feedbackcrues-active="mainCtrl.feedbackCruesOpen"
+              app-feedbackcrues-map="::mainCtrl.map"
+              app-feedbackcrues-layers="::mainCtrl.selectedLayers">
+            </app-feedbackcrues>
           </div>
         </div>
         <!-- Feedback ANF-->
@@ -313,6 +331,7 @@
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
+        <li ng-if="::mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
         <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
         <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
         <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
@@ -330,6 +349,7 @@
             app-draw-activate-mymaps="!mainCtrl.feedbackOpen"
             app-draw-mymaps-open="mainCtrl.mymapsOpen"
             app-draw-feedback-anf-open="mainCtrl.feedbackAnfOpen"
+            app-draw-feedback-crues-open="mainCtrl.feedbackCruesOpen"
             app-draw-feedback-age-open="mainCtrl.feedbackAgeOpen">
           </app-draw>
         </li>

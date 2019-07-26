@@ -30,6 +30,7 @@ const exports = function(appDrawTemplateUrl) {
       'active': '=appDrawActive',
       'activateMymaps': '=appDrawActivateMymaps',
       'mymapsOpen': '=appDrawMymapsOpen',
+      'feedbackcruesOpen': '=appDrawFeedbackCruesOpen',
       'feedbackanfOpen': '=appDrawFeedbackAnfOpen',
       'feedbackageOpen': '=appDrawFeedbackAgeOpen'
     },
