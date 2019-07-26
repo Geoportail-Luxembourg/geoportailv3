@@ -214,6 +214,11 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
     layerIds.splice(elem, 0,  this.unavailableLayers_[index]);
     opacities.splice(elem, 0, this.unavailableOpacities_[index]);
   }, this);
+  if (this.unavailableLayerIndex_.length > 0) {
+    while(this.selectedLayers.length > 0) {
+      this.map_.removeLayer(this.selectedLayers.pop());
+    }
+  }
   this.unavailableLayerIndex_ = [];
   this.unavailableLayers_ = [];
   this.unavailableOpacities_ = [];
@@ -486,6 +491,11 @@ exports.getAllChildren_ = function(element) {
  */
 exports.prototype.init = function(scope, map, selectedLayers) {
   /**
+   * @type {Array.<ol.layer.Layer>}
+   */
+  this.selectedLayers = selectedLayers;
+
+  /**
    * @type {angular.Scope}
    */
   this.scope_ = scope;
@@ -549,7 +559,9 @@ exports.prototype.initBgLayers_ = function() {
     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
     if (mapId === undefined || hasBgLayerInUrl) {
       var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-      this.backgroundLayerMgr_.set(this.map_, layer);
+      if (layer !== undefined) {
+        this.backgroundLayerMgr_.set(this.map_, layer);
+      }
     }
   });
 }

@@ -338,7 +338,9 @@ const exports = function($scope,
     } else {
       this.appActivetool_.drawActive = false;
       if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-        if (this['feedbackanfOpen'] !== true && this['feedbackageOpen'] !== true) {
+        if (this['feedbackanfOpen'] !== true &&
+            this['feedbackageOpen'] !== true &&
+            this['feedbackcruesOpen'] !== true) {
           this['mymapsOpen'] = true;
         }
       }
@@ -367,7 +369,9 @@ const exports = function($scope,
         var feature = /** @type {ol.Feature} */ (evt.element);
         feature.set('__selected__', true);
         if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-          if (this['feedbackanfOpen'] !== true && this['feedbackageOpen'] !== true) {
+          if (this['feedbackanfOpen'] !== true &&
+              this['feedbackageOpen'] !== true &&
+              this['feedbackcruesOpen'] !== true) {
             this['mymapsOpen'] = true;
           }
         }
@@ -775,7 +779,9 @@ exports.prototype.onDrawEnd_ = function(event) {
   this.drawnFeatures_.saveFeature(feature);
   this.drawnFeatures_.activateModifyIfNeeded(event.feature);
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-    if (this['feedbackanfOpen'] !== true && this['feedbackageOpen'] !== true) {
+    if (this['feedbackanfOpen'] !== true &&
+        this['feedbackageOpen'] !== true &&
+        this['feedbackcruesOpen'] !== true) {
       this['mymapsOpen'] = true;
     }
   }
@@ -805,7 +811,9 @@ exports.prototype.onClipLineEnd_ = function(event) {
   this.drawnFeatures_.saveFeature(features[0]);
   this.drawnFeatures_.saveFeature(features[1]);
   if (this['activateMymaps'] && !this.appGetDevice_.testEnv('xs')) {
-    if (this['feedbackanfOpen'] !== true && this['feedbackageOpen'] !== true) {
+    if (this['feedbackanfOpen'] !== true &&
+        this['feedbackageOpen'] !== true &&
+        this['feedbackcruesOpen'] !== true) {
       this['mymapsOpen'] = true;
     }
   }

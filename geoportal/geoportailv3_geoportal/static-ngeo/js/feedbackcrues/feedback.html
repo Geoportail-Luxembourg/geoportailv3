@@ -1,0 +1,19 @@
+<div class="feedbackcrues-content">
+  <h3 translate>Proposition de modification de limite ou signalisation d'un problème de crues à l'AGE:</h3>
+  <form ng-submit="ctrl.sendReport()">
+    <div class="form-group">
+      <label for="inputCruesEmail" translate>Your email</label>
+      <input type="email" required ng-model="ctrl.email" class="form-control" id="inputCruesEmail">
+    </div>
+    <div class="form-group">
+      <label for="inputName" translate>Votre nom et prénom</label>
+      <input type="text" required ng-model="ctrl.name" class="form-control" id="inputCruesName">
+    </div>
+    <div class="form-group">
+      <p translate>Ce <a ng-href="{{ctrl.url}}" target="_blank">lien</a> sera envoyé à l'équipe de l'AGE.</p>
+      <p translate>Vous pouvez aussi activer les <a href="#" ng-click="ctrl.activateDrawingTools()">outils de dessin</a> pour annoter la carte.</p>
+      <p translate><a href="https://eau.public.lu/actualites/2019/07---Juillet/DIV_Manual_Starkregenatlas_CME_190625_0_5.pdf" target="_blank">Cliquez ici pour visualiser le pdf expliquant comment donner votre feedback</a></p>
+    </div>
+    <button type="submit" class="pull-right btn btn-default" translate id="submitcruesfeedback">Envoyer un feedback à l'AGE</button>
+  </form>
+</div>
