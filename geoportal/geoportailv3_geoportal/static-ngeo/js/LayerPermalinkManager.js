@@ -549,7 +549,9 @@ exports.prototype.initBgLayers_ = function() {
     var hasBgLayerInUrl = (this.ngeoLocation_.getParam('bgLayer') !== undefined);
     if (mapId === undefined || hasBgLayerInUrl) {
       var layer = /** @type {ol.layer.Base} */ (bgLayers.find(layer => layer.get('label') === stateBgLayerLabel));
-      this.backgroundLayerMgr_.set(this.map_, layer);
+      if (layer !== undefined) {
+        this.backgroundLayerMgr_.set(this.map_, layer);
+      }
     }
   });
 }

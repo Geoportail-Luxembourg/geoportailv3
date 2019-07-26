@@ -13,6 +13,7 @@ from shapely.wkt import loads
 from shapely.wkb import loads as wkb_loads
 from geojson import dumps as geojson_dumps
 from geoalchemy2.shape import to_shape
+from sqlalchemy.sql import text
 
 import urllib.request
 import re
@@ -227,7 +228,7 @@ class Geocode(object):
     def get_zips_code_from_locality(self, locality, p_session):
         zips = []
         for feature in p_session.query(Address.code_postal, Address.localite).\
-                filter("code_postal is not null").\
+                filter(text("code_postal is not null")).\
                 group_by(Address.code_postal, Address.localite):
             ratio = difflib.SequenceMatcher(
                 None, self.supprime_accent(locality.strip().lower()),
@@ -250,13 +251,12 @@ class Geocode(object):
                 features = self.db_ecadastre.query((func.ST_AsText(
                     func.ST_Centroid(
                         func.ST_Collect(Address.geom)))).label("geom"),
-                            Address.localite).filter(
-                            " lower(localite) = lower('" + locality + "')").\
+                            Address.localite).filter(text(
+                            " lower(localite) = lower('" + locality + "')")).\
                             group_by(Address.localite).all()
                 for feature in features:
                     locality_info.locality = feature.localite
-                    if isinstance(feature.geom, unicode) or\
-                       isinstance(feature.geom, str):
+                    if isinstance(feature.geom, str):
                         locality_info['geom'] = loads(feature.geom)
                         if isinstance(feature.geom, WKBElement):
                             locality_info['geom'] = to_shape(feature.geom)
@@ -294,15 +294,14 @@ class Geocode(object):
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label("geom"),
             Address.localite).\
-            filter(" lower(code_postal) = lower('" + p_zip + "')").\
+            filter(text(" lower(code_postal) = lower('" + p_zip + "')")).\
             group_by(Address.localite).all()
         res = Address()
         for feature in features:
             res.localite = feature.localite
             if res.localite is not None:
                 res.localite = res.localite.strip()
-            if isinstance(feature.geom, unicode) or\
-               isinstance(feature.geom, str):
+            if isinstance(feature.geom, str):
                 res.geom = loads(feature.geom)
             if isinstance(feature.geom, WKBElement):
                 res.geom = to_shape(feature.geom)
@@ -335,14 +334,13 @@ class Geocode(object):
         features = self.db_ecadastre.query(
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label("geom"), Address.localite).\
-            filter(" lower(code_postal) = lower('" + p_zip + "')").\
+            filter(text(" lower(code_postal) = lower('" + p_zip + "')")).\
             group_by(Address.localite)
 
         res = Address()
         for feature in features.all():
             res.localite = feature.localite
-            if isinstance(feature.geom, unicode) or\
-               isinstance(feature.geom, str):
+            if isinstance(feature.geom, str):
                 res.geom = loads(feature.geom)
             if isinstance(feature.geom, WKBElement):
                 res.geom = to_shape(feature.geom)
@@ -353,13 +351,12 @@ class Geocode(object):
                 (func.ST_AsText(func.ST_Centroid(
                     func.ST_Collect(Address.geom)))).
                 label("geom"), Address.localite).\
-                filter(" lower(localite) = lower('" + p_locality + "')").\
+                filter(text(" lower(localite) = lower('" + p_locality + "')")).\
                 group_by(Address.localite)
             for feature in features.all():
                 res.localite = feature.localite
                 p_zip = ""
-                if isinstance(feature.geom, unicode) or\
-                   isinstance(feature.geom, str):
+                if isinstance(feature.geom, str):
                     res.geom = loads(feature.geom)
                 if isinstance(feature.geom, WKBElement):
                     res.geom = to_shape(feature.geom)
@@ -406,7 +403,9 @@ class Geocode(object):
         }
         })
 
-    def encode_result(self, feature):
+    def encode_result(self, result):
+        feature = result['feature']
+        
         numero = feature.numero
         if numero is None:
             numero = ""
@@ -424,7 +423,7 @@ class Geocode(object):
             caclr_bat = ""
 
         cur_geom = feature.geom
-        if isinstance(cur_geom, unicode) or isinstance(cur_geom, str):
+        if isinstance(cur_geom, str):
             cur_geom = loads(cur_geom)
 
         if isinstance(cur_geom, WKBElement):
@@ -441,14 +440,14 @@ class Geocode(object):
             str(feature.rue.encode('utf-8')).strip(),
             str(code_postal).strip(),
             str(feature.localite.encode('utf-8')).strip()),
-                 'accuracy': feature.accuracy,
+                 'accuracy': result['accuracy'],
                  'address':
                  str(numero).strip() + " " +
                  str(feature.rue.encode('utf-8')).strip() + "," +
                  str(code_postal).strip() + " " +
                  str(feature.localite.encode('utf-8')).strip(),
                  'matching street': feature.rue.strip(),
-                 'ratio': feature.ratio,
+                 'ratio': result['ratio'],
                  "easting": cur_geom.centroid.x,
                  "northing": cur_geom.centroid.y,
                  "geom": cur_geom.centroid,
@@ -484,7 +483,6 @@ class Geocode(object):
             return geom
         except Exception as e:
             log.exception(e)
-            transaction.abort()
         return None
 
     def transform_to_luref(self, lon, lat):
@@ -514,7 +512,7 @@ class Geocode(object):
             pass
 
         return p_session.query(Address).\
-            filter("code_postal = '" + p_zip + "'").count() > 0
+            filter(text("code_postal = '" + p_zip + "'")).count() > 0
 
     # Returns the best matching loçcality name.
     # For instance Esch/Alzette should return Esch sur Alzette
@@ -573,8 +571,7 @@ class Geocode(object):
         if "luxembourg" in best_locality_name:
             best_locality_name = "luxembourg"
 
-        if isinstance(best_locality_geom, unicode) or\
-           isinstance(best_locality_geom, str):
+        if isinstance(best_locality_geom, str):
             best_locality_geom = loads(best_locality_geom)
         if isinstance(best_locality_geom, WKBElement):
             best_locality_geom = to_shape(best_locality_geom)
@@ -604,8 +601,7 @@ class Geocode(object):
                         best_locality_geom = feature.geom
                         best_locality_name = feature.localite.strip().lower()
 
-            if isinstance(best_locality_geom, unicode) or\
-               isinstance(best_locality_geom, str):
+            if isinstance(best_locality_geom, str):
                 best_locality_geom = loads(best_locality_geom)
             if isinstance(best_locality_geom, WKBElement):
                 best_locality_geom = to_shape(best_locality_geom)
@@ -644,6 +640,7 @@ class Geocode(object):
                 if (cur_ratio > ratio):
                     feature.ratio = cur_ratio
                     feature.accuracy = 8
+                    
                     results.append(feature)
         return results
 
@@ -654,10 +651,10 @@ class Geocode(object):
         zips = self.get_zips_code_from_locality(p_locality, p_session)
         if len(zips) > 0:
             features =\
-                p_session.query(Address).filter(
+                p_session.query(Address).filter(text(
                     " code_postal::integer  in (" + (",".join(zips)) +
                     ") and lower('" + str(p_num).replace("'", "") +
-                    "') = ANY  (regexp_split_to_array (lower(numero), '-'))").\
+                    "') = ANY  (regexp_split_to_array (lower(numero), '-'))")).\
                 all()
 
             if len(features) > 0:
@@ -678,10 +675,10 @@ class Geocode(object):
         results = []
         # List of zip code belonging to the locality
         if len(p_locality) > 0:
-            features = p_session.query(Address).filter(
-                " lower(localite) = '" + p_locality +
-                "' and lower('" + str(p_num).replace("'", "") +
-                "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
+            filter = " lower(localite) = '" + p_locality + \
+                "' and lower('" + str(p_num).replace("'", "") + \
+                "') = ANY  (regexp_split_to_array (lower(numero), '-'))"
+            features = p_session.query(Address).filter(text(filter)).all()
 
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -706,7 +703,7 @@ class Geocode(object):
                     Address.geom)))).label("geom"),
                 Address.id_caclr_rue, Address.rue,
                 Address.code_postal, Address.localite).filter(
-                " lower(localite) = lower('" + p_locality + "')").\
+                text(" lower(localite) = lower('" + p_locality + "')")).\
                 group_by(
                     Address.id_caclr_rue,
                     Address.rue,
@@ -737,7 +734,7 @@ class Geocode(object):
                 try:
                     p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
                     for feature in p_session.query(WKPOI).\
-                            filter(" zip = " + p_zip).all():
+                            filter(text(" zip = " + p_zip)).all():
                         cur_ratio = difflib.SequenceMatcher(
                             None,
                             self.supprime_accent(
@@ -757,14 +754,14 @@ class Geocode(object):
 
                             feature.accuracy = 7
                             results.append(self.encode_result(feature))
-                except:
-                    transaction.abort()
+                except Exception as e:
+                    log.exception(e)
                     log.error("Zip code is not correct: " + p_zip)
             if len(results) == 0 and p_locality is not None:
                 for feature in\
                         p_session.query(WKPOI).\
-                        filter(
-                        " lower(locality) = lower('" + p_locality + "')").\
+                        filter(text(
+                        " lower(locality) = lower('" + p_locality + "')")).\
                         all():
                     cur_ratio = difflib.SequenceMatcher(
                         None,
@@ -788,7 +785,6 @@ class Geocode(object):
 
         except Exception as e:
             log.exception(e)
-            transaction.abort()
 
         return results
 
@@ -803,8 +799,8 @@ class Geocode(object):
                     func.ST_Collect(Address.geom)))).label("geom"),
                 Address.id_caclr_rue, Address.rue,
                 Address.code_postal, Address.localite).\
-                filter(
-                    " code_postal::integer  in (" + (",".join(zips)) + ")").\
+                filter(text(
+                    " code_postal::integer  in (" + (",".join(zips)) + ")")).\
                 group_by(
                     Address.id_caclr_rue,
                     Address.rue,
@@ -838,7 +834,7 @@ class Geocode(object):
             Address.localite,
             (func.ST_AsText(func.ST_Centroid(func.ST_Collect(Address.geom)))).
             label('geom')).\
-            filter(" code_postal::integer  = (" + str(p_zip) + ") ").\
+            filter(text(" code_postal::integer  = (" + str(p_zip) + ") ")).\
             group_by(
                 Address.id_caclr_rue,
                 Address.rue,
@@ -891,9 +887,9 @@ class Geocode(object):
     def search_by_house_number(self, p_ratio, p_num, p_street, p_session):
         results = []
         if p_num is not None and len(p_num) > 0:
-            features = p_session.query(Address).filter(
+            features = p_session.query(Address).filter(text(
                 " lower('" + str(p_num).replace("'", "") +
-                "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
+                "') = ANY  (regexp_split_to_array (lower(numero), '-'))")).all()
 
             if len(features) > 0:
                 features = self.search_for_street(features, p_street, p_ratio)
@@ -914,10 +910,10 @@ class Geocode(object):
             return results
 
         features = p_session.query(Address).\
-            filter(
+            filter(text(
                 " code_postal::integer  = (" + str(p_zip) +
                 ") and lower(numero) = (lower('" +
-                str(p_num).replace("'", "") + "'))").all()
+                str(p_num).replace("'", "") + "'))")).all()
 
         if len(features) > 0:
             # accuracy = 8   Address level accuracy.
@@ -936,10 +932,10 @@ class Geocode(object):
         except:
             return results
 
-        features = p_session.query(Address).filter(
+        features = p_session.query(Address).filter(text(
             " code_postal::integer  = (" + str(p_zip) +
             ") and lower('" + str(p_num).replace("'", "") +
-            "') = ANY  (regexp_split_to_array (lower(numero), '-'))").all()
+            "') = ANY  (regexp_split_to_array (lower(numero), '-'))")).all()
 
         if len(features) > 0:
             for feature in features:
@@ -1021,7 +1017,7 @@ class Geocode(object):
                    u'i': [u'î', u'ï'],
                    u'u': [u'ù', u'ü', u'û'],
                    u'o': [u'ô', u'ö']}
-        for (char, accented_chars) in accents.iteritems():
+        for (char, accented_chars) in accents.items():
             for accented_char in accented_chars:
                 ligne = ligne.replace(accented_char, char)
         return ligne
@@ -1191,7 +1187,6 @@ class Geocode(object):
 
         except Exception as e:
             log.exception(e)
-            transaction.abort()
             results = [self.encoded_country_result()]
 
         if 'cb' not in self.request.params:
@@ -1710,8 +1705,8 @@ class Geocode(object):
                 'locality': locality}
 
     def get_locality_from_zip(self, p_zip):
-        features = self.db_ecadastre.query(Address.localite).filter(
-            " lower(code_postal) = lower('" + p_zip + "')").\
+        features = self.db_ecadastre.query(Address.localite).filter(text(
+            " lower(code_postal) = lower('" + p_zip + "')")).\
             group_by(Address.localite).all()
 
         for feature in features:

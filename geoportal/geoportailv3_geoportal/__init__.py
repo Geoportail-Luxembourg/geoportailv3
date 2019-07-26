@@ -295,6 +295,10 @@ def main(global_config, **settings):
         "/feedbackanf"
     )
     config.add_route(
+        "feedbackcrues",
+        "/feedbackcrues"
+    )
+    config.add_route(
         "feedbackage",
         "/feedbackage"
     )

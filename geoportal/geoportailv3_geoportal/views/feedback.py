@@ -192,3 +192,60 @@ class Feedback(object):
             log.exception(e)
             return HTTPNotFound()
         return {'success': True}
+
+    @view_config(route_name='feedbackcrues', renderer='json')
+    def feedbackcrues(self):
+        try:
+            vars = self.request.json_body
+            map_id = self.config['age_crues']['map_id']
+            map = self.db_mymaps.query(Map).get(map_id)
+            if map is None:
+                return HTTPNotFound()
+
+            message = u"L\'utilisateur {1} <a href=\"mailto:{0}\">({0})</a> " \
+                u"a remarqué le problème dessiné sur la carte :</p>" \
+                .format(vars['email'],
+                        vars['name']
+                        )
+
+            features = vars['features'].\
+                replace(u'\ufffd', '?')
+            feature_collection = geojson.\
+                loads(features, object_hook=geojson.GeoJSON.to_instance)
+
+            for feature in feature_collection['features']:
+                obj = None
+                try:
+                    obj = Feature(feature)
+                    obj.name = vars['name']
+                    obj.description = message
+                except Exception as e:
+                    log.exception(e)
+                if obj is not None:
+                    map.features.append(obj)
+                self.db_mymaps.flush()
+
+            html_body = u"<h3>L\'utilisateur {2}<a href=\"mailto:{0}\">" \
+                u"({0})</a> " \
+                u"<p><a href=\"{1}\">Ouvrir le lien vers la carte</a></p>" \
+                u"<p>L'incident a été enregistré dans cette <a href=\"{3}\">" \
+                u"mymaps</a>:</p>" \
+                .format(vars['email'],
+                        vars['url'],
+                        vars['name'],
+                        "http://map.geoportail.lu?map_id=" + map_id,
+                        )
+
+            support_email = self.config['age_crues']['email']
+            message = Message(
+                author=vars['email'],
+                to=support_email,
+                subject=u'Un utilisateur a signalé un problème')
+            message.plain = html_body
+            message.rich = html_body
+            message.encoding = 'utf-8'
+            mailer.send(message)
+        except Exception as e:
+            log.exception(e)
+            return HTTPNotFound()
+        return {'success': True}
