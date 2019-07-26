@@ -214,6 +214,11 @@ exports.prototype.applyLayerStateToMap_ = function(layerIds, opacities, flatCata
     layerIds.splice(elem, 0,  this.unavailableLayers_[index]);
     opacities.splice(elem, 0, this.unavailableOpacities_[index]);
   }, this);
+  if (this.unavailableLayerIndex_.length > 0) {
+    while(this.selectedLayers.length > 0) {
+      this.map_.removeLayer(this.selectedLayers.pop());
+    }
+  }
   this.unavailableLayerIndex_ = [];
   this.unavailableLayers_ = [];
   this.unavailableOpacities_ = [];
@@ -485,6 +490,11 @@ exports.getAllChildren_ = function(element) {
  * @param {Array.<ol.layer.Layer>} selectedLayers The selected layers.
  */
 exports.prototype.init = function(scope, map, selectedLayers) {
+  /**
+   * @type {Array.<ol.layer.Layer>}
+   */
+  this.selectedLayers = selectedLayers;
+
   /**
    * @type {angular.Scope}
    */
