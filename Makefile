@@ -70,6 +70,7 @@ APP_HTML_FILES += geoportal/$(PACKAGE)_geoportal/static-ngeo/js/apps/main.html.e
 PRINT_CONFIG_FILE ?= print/print-apps/$(PACKAGE)/config.yaml.tmpl
 
 I18N_SOURCE_FILES += \
+    geoportal/development.ini \
 	geoportal/print-config.yaml.tmpl \
   $(APP_HTML_FILES) \
 	$(APP_JS_FILES)
