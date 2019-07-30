@@ -221,6 +221,7 @@ import '../../less/geoportailv3.less'
  * @param {string} showAgeLink Enable the AGE link.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
  * catalog service.
+ * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @constructor
  * @export
  * @ngInject
@@ -234,7 +235,8 @@ const MainController = function(
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    appOfflineDownloader, appOfflineRestorer, ageLayerIds, showAgeLink, appGetLayerForCatalogNode) {
+    appOfflineDownloader, appOfflineRestorer, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
+    showCruesRoles) {
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
@@ -251,7 +253,19 @@ const MainController = function(
    * @type {boolean}
    * @export
    */
-  this.showCruesLink = (showCruesLink === 'true');
+  this.showCruesLinkOrig = (showCruesLink === 'true');
+
+  /**
+   * @type {boolean}
+   * @export
+   */
+  this.showCruesLink = false;
+
+  /**
+   * @type {string}
+   * @export
+   */
+  this.showCruesRoles = showCruesRoles;
 
   /**
    * @type {boolean}
@@ -863,6 +877,14 @@ MainController.prototype.manageUserRoleChange_ = function(scope) {
       // This happens at init time. We don't want to reload the themes
       // at this point, as the constructor already loaded them.
       return;
+    }
+    this.showCruesLink = false;
+    if (this.showCruesLinkOrig && newVal !== null) {
+      var roles = this.showCruesRoles.split(',');
+      var found = roles.find(function(element) {
+        return element === ('' + newVal);
+      }, this);
+      this.showCruesLink = (found !== undefined);
     }
     this.loadThemes_();
     if (this.appMymaps_.isMymapsSelected()) {
