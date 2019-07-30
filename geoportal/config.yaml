@@ -42,6 +42,7 @@ environment:
 - {name: AGE_CRUES_MAP_ID, default: ''}
 - {name: AGE_CRUES_SHOW_LINK, default: 'false'}
 - {name: AGE_CRUES_LAYERS, default: ''}
+- {name: AGE_CRUES_ROLES, default: ''}
 - {name: AGE_EMAIL, default: ''}
 - {name: AGE_MAP_IDS, default: ''}
 - {name: AGE_SHOW_LINK, default: 'false'}
@@ -344,6 +345,7 @@ vars:
         showAnfLink: false
         showAgeLink: '{AGE_SHOW_LINK}'
         showCruesLink: '{AGE_CRUES_SHOW_LINK}'
+        showCruesRoles: '{AGE_CRUES_ROLES}'
         ageLayerIds: '{AGE_LAYERS}'
         bboxLidar: [71500, 98600, 81500, 108600]
         bboxSrsLidar: 'EPSG:2169'
@@ -435,6 +437,7 @@ vars:
     map_id: '{AGE_CRUES_MAP_ID}'
     show_link: '{AGE_CRUES_SHOW_LINK}'
     layers: '{AGE_CRUES_LAYERS}'
+    roles: '{AGE_CRUES_ROLES}'
   pag: {
     bcc_address: '{PAG_BCC_ADDRESS}', file_server: '{PAG_FILE_SERVER}', fme_token: '{PAG_FME_TOKEN}', owncloud_external_url: '{PAG_OWNCLOUD_EXTERNAL_URL}',
     owncloud_internal_url: '{PAG_OWNCLOUD_INTERNAL_URL}', owncloud_password: '{PAG_OWNCLOUD_PASSWORD}', owncloud_user: '{PAG_OWNCLOUD_USER}', prod_url: '{PAG_PROD_URL}',
