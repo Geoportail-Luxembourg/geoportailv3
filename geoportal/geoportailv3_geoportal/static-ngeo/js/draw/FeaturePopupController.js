@@ -622,6 +622,10 @@ exports.prototype.validateModifications = function() {
  */
 exports.prototype.getMymapsPath = function(resource) {
   if (resource) {
+    if (resource.startsWith('/') &&
+        this.mymapsImageUrl_.endsWith('/')) {
+      resource = '.' + resource;
+    }
     return this.mymapsImageUrl_ + resource;
   }
   return '';
