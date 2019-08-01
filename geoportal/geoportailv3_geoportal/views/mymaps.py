@@ -1223,8 +1223,8 @@ class Mymaps(object):
                 img_byte_arr = io.BytesIO()
 
                 thumbnail = image.resize(
-                    (image.size[0] * int(scale)/100,
-                     image.size[1] * int(scale)/100))
+                    (round(image.size[0] * int(scale)/100),
+                     round(image.size[1] * int(scale)/100)))
                 thumbnail.save(img_byte_arr, format=format)
                 return Response(img_byte_arr.getvalue(), headers=headers)
             return Response(symbol.symbol, headers=headers)
@@ -1326,25 +1326,30 @@ class Mymaps(object):
         scaled_width = 900
         scaled_height = 900
 
-        cur_file = Symbols()
-
         width, height = im1.size
         if width > scaled_width:
             ratio = width/scaled_width
-            scaled_height = height / ratio
+            scaled_height = round(height / ratio)
             im2 = im1.resize((scaled_width, scaled_height), Image.NEAREST)
             im2.save(file_path)
-            f = open(file_path)
+            f = open(file_path, "rb")
         else:
-            f = open(temp_file_path)
+            f = open(temp_file_path, "rb")
+        try:
+            cur_file = Symbols()
+            cur_file.symbol_name = file.filename
+            cur_file.symbol = f.read()
+            cur_file.login_owner = username
+            cur_file.is_public = False
+            self.db_mymaps.add(cur_file)
+            self.db_mymaps.flush()
+            file_id = cur_file.id
+            transaction.commit()
 
-        cur_file.symbol_name = file.filename
-        cur_file.symbol = f.read()
-        cur_file.login_owner = username
-        cur_file.is_public = False
+        except Exception as e:
+            log.exception(e)
+            transaction.abort()
 
-        self.db_mymaps.add(cur_file)
-        transaction.commit()
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
@@ -1360,10 +1365,10 @@ class Mymaps(object):
         return {'success': 'true',
                 'description': 'file added',
                 'result': {
-                    'url': "/symbol/" + str(cur_file.id),
-                    'id': cur_file.id,
+                    'url': "/symbol/" + str(file_id),
+                    'id': file_id,
                     'symboltype': 'us',
-                    'name': cur_file.symbol_name}}
+                    'name': filename}}
 
     @view_config(route_name="mymaps_comment", renderer='json')
     def comment(self):
