@@ -1064,7 +1064,7 @@ class Mymaps(object):
 
         # type checking
         if file != '' and not imghdr.what(file.file):
-            return {'success': True, 'msg': 'Bad image'}
+            return {'success': False, 'msg': 'Bad image'}
 
         # image resizing
         image = Image.open(file.file)
@@ -1091,44 +1091,46 @@ class Mymaps(object):
             os.makedirs(path)
 
         try:
-            image.save(os.path.join(path, image_name))
-            thumbnail.save(os.path.join(path, thumbnail_name))
-        except:
+            image.save(os.path.join(path, image_name.decode('utf-8')))
+            thumbnail.save(os.path.join(path, thumbnail_name.decode('utf-8')))
+        except Exception as e:
+            log.exception(e)
             return {'success': False, 'msg': 'Bad image'}
         finally:
             file.file.close()
-        f_image = open(os.path.join(path, image_name))
-        f_thumbnail = open(os.path.join(path, thumbnail_name))
 
         try:
+            f_image = open(os.path.join(path, image_name.decode('utf-8')), 'rb')
+            f_thumbnail = open(os.path.join(path, thumbnail_name.decode('utf-8')), 'rb')
             user = self.request.user.username
 
             cur_file = Images()
-            cur_file.name = image_name
+            cur_file.name = image_name.decode('utf-8')
             cur_file.image = f_image.read()
             cur_file.login_owner = user
             self.db_mymaps.add(cur_file)
             transaction.commit()
 
             cur_file = Images()
-            cur_file.name = thumbnail_name
+            cur_file.name = thumbnail_name.decode('utf-8')
             cur_file.image = f_thumbnail.read()
             cur_file.login_owner = user
             self.db_mymaps.add(cur_file)
             transaction.commit()
 
-        except:
+        except Exception as e:
+            log.exception(e)
             return {'success': False, 'msg': 'Bad image'}
         finally:
             f_image.close()
             f_thumbnail.close()
 
-        os.remove(os.path.join(path, image_name))
-        os.remove(os.path.join(path, thumbnail_name))
+        os.remove(os.path.join(path, image_name.decode('utf-8')))
+        os.remove(os.path.join(path, thumbnail_name.decode('utf-8')))
 
         return {'success': True,
-                'image': '/mymaps/images/' + image_name,
-                'thumbnail': '/mymaps/images/' + thumbnail_name}
+                'image': '/mymaps/images/' + image_name.decode('utf-8'),
+                'thumbnail': '/mymaps/images/' + thumbnail_name.decode('utf-8')}
 
 
     @view_config(route_name="generate_symbol_file")
