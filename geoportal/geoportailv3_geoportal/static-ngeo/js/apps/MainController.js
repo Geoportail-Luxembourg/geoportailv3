@@ -60,7 +60,8 @@ import '../../less/geoportailv3.less'
 
  //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
  import appDrawSelectedFeatures from '../draw/SelectedFeaturesService.js';
-
+ import AppImguploadController from '../imageupload/ImguploadController.js'
+ import appImgupload from '../imageupload/ImguploadDirective.js'
  import appDrawStyleEditingController from '../draw/StyleEditingController.js';
  import appDrawStyleEditingDirective from '../draw/styleEditingDirective.js';
  import appDrawSymbolSelectorController from '../draw/SymbolSelectorController.js';
