@@ -11,6 +11,7 @@
  * management of the sidebar for example).
  */
 
+import 'core-js';
 import 'jquery';
 import 'bootstrap';
 import 'angular';
