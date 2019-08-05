@@ -224,6 +224,7 @@ import '../../less/geoportailv3.less'
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
  * catalog service.
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
+ * @param {string} ageCruesLayerIds ID of flashflood layers.
  * @constructor
  * @export
  * @ngInject
@@ -238,7 +239,13 @@ const MainController = function(
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     appOfflineDownloader, appOfflineRestorer, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
-    showCruesRoles) {
+    showCruesRoles, ageCruesLayerIds) {
+  /**
+   * @type {string}
+   * @private
+   */
+  this.ageCruesLayerIds_ = ageCruesLayerIds;
+
   /**
    * @type {app.GetLayerForCatalogNode}
    * @private
@@ -1001,6 +1008,20 @@ MainController.prototype.openFeedbackAge = function() {
  * @export
  */
 MainController.prototype.openFeedbackCrues = function() {
+  this.appThemes_.getFlatCatalog().then(
+    function(flatCatalogue) {
+      var node = flatCatalogue.find(function(catItem) {
+        return catItem.id == this.ageCruesLayerIds_;
+      }.bind(this));
+      if (node !== undefined && node !== null) {
+        var layer = this.getLayerFunc_(node);
+        var idx = this.map_.getLayers().getArray().indexOf(layer);
+        if (idx === -1) {
+          this.map_.addLayer(layer);
+        }
+      }
+    }.bind(this));
+
   if (this.sidebarOpen()) {
     this.closeSidebar();
     this['feedbackCruesOpen'] = true;
