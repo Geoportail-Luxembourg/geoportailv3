@@ -19,6 +19,7 @@ import olFormatGPX from 'ol/format/GPX.js';
 import olFormatKML from 'ol/format/KML.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
+import * as olExtent from 'ol/extent.js';
 
 /**
  * @param {!angular.Scope} $scope Scope.
