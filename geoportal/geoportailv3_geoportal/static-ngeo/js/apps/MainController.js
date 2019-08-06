@@ -18,6 +18,9 @@ import 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
+import * as Sentry from '@sentry/browser';
+import * as Integrations from '@sentry/integrations';
+
 import appModule from '../module.js';
 import appLocationControl from '../LocationControl.js';
 import appMap from '../Map.js';
@@ -765,6 +768,13 @@ const MainController = function(
 
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
+
+  Sentry.init({
+    dsn: 'https://a74e513e9cb84d5a9a2cd24a46d260a8@sentry.geoportail.lu/4',
+    integrations: [
+      new Integrations.Angular(),
+    ],
+  });
 };
 
 
