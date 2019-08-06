@@ -76,7 +76,7 @@ environment:
 - {name: CASIPO_OWNCLOUD_PASSWORD}
 - {name: CASIPO_SMTP_SERVER}
 - {name: CASIPO_BCC_ADDRESS}
-
+- {name: AUTHTKT_TIMEOUT}
 
 interpreted: {}
 no_interpreted: []
