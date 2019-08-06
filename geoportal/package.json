@@ -12,6 +12,8 @@
     "url": "https://github.com/Geoportail-Luxembourg/geoportailv3/issues"
   },
   "devDependencies": {
+    "@sentry/browser": "5.5.0",
+    "@sentry/integrations": "5.5.0",
     "@camptocamp/babel-plugin-angularjs-annotate": "0.8.2",
     "@camptocamp/cesium": "1.45.0",
     "angular": "1.6.10",
