@@ -48,6 +48,7 @@ services:
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
+      - AUTHTKT_TIMEOUT
       - AGE_CRUES_EMAIL
       - AGE_CRUES_MAP_ID
       - AGE_CRUES_SHOW_LINK
