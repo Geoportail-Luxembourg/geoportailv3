@@ -447,7 +447,7 @@ vars:
   print_urls: null
   proxy_wms_url: null
   raster:
-    dhm: {file: '{DHM_DEM_FILE}', round: 1, type: '{DHM_DEM_TYPE}'}
+    dhm: {file: '{DHM_DEM_FILE}', round: 0.01, type: '{DHM_DEM_TYPE}'}
   referrer: null
   reset_password: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
   resourceproxy:
