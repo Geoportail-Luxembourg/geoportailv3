@@ -30,13 +30,14 @@ class Wms(object):
         client_ip = IPv4Network(client_ip).ip
         config = self.request.registry.settings
         if "authorized_ips" in config:
-            authorized_ips = config["authorized_ips"].split(",")
-            for authorized_ip in authorized_ips:
-                a_ip = IPv4Network(authorized_ip.strip())
-                if (client_ip == a_ip.network) or (
-                   (client_ip >= a_ip.network) and
-                   (client_ip < a_ip.broadcast)):
-                    return True
+            if config["authorized_ips"] is not None:
+                authorized_ips = config["authorized_ips"].split(",")
+                for authorized_ip in authorized_ips:
+                    a_ip = IPv4Network(authorized_ip.strip())
+                    if (client_ip == a_ip.network) or (
+                       (client_ip >= a_ip.network) and
+                       (client_ip < a_ip.broadcast)):
+                        return True
         return False
 
     def _check_ip_for_httpsproxy(self, url):
