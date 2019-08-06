@@ -21,6 +21,9 @@ import datetime
 import json
 import ldap3 as ldap
 import os
+import sentry_sdk
+
+from sentry_sdk.integrations.pyramid import PyramidIntegration
 
 mailer = None
 
@@ -59,6 +62,12 @@ def locale_negotiator(request):
 def main(global_config, **settings):
     del global_config  # Unused
 
+    if len(os.environ.get('SENTRY_URL', '')) > 0:
+        sentry_sdk.init(
+            dsn=os.environ.get('SENTRY_URL', ''),
+            integrations=[PyramidIntegration()]
+        )
+
     """
     This function returns a Pyramid WSGI application.
     """
@@ -67,7 +76,6 @@ def main(global_config, **settings):
         locale_negotiator=locale_negotiator,
         authentication_policy=create_authentication(settings)
     )
-
     if os.environ.get('DEBUG_TOOLBAR', '0') == '1':
         config.get_settings()['debugtoolbar.hosts'] = ['0.0.0.0/0']
         config.include('pyramid_debugtoolbar')
