@@ -356,7 +356,7 @@ vars:
         fulltextsearch_param: {}
         gmfExternalOGCServers: []
         gmfSearchActions: []
-        lidarDemoUrl: demo_url
+        lidarDemoUrl: https://lidar-demo.geoportail.lu
         maxExtent: [2.6, 47.7, 8.6, 51]
         remoteProxyWms: false
         requestScheme: https
