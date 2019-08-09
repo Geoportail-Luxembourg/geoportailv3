@@ -660,9 +660,7 @@ exports.prototype.getFormattedLength =
  * @return {string} Formatted string of the area.
  */
 exports.prototype.getFormattedArea = function(polygon, projection) {
-  var geom = /** @type {ol.geom.Polygon} */ (
-      polygon.clone().transform(projection, 'EPSG:4326'));
-  var area = Math.abs(getArea(geom));
+  var area = Math.abs(getArea(polygon));
   var output;
   if (area > 1000000) {
     output = parseFloat((area / 1000000).toPrecision(3)) +
