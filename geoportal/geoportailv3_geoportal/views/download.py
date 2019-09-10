@@ -56,9 +56,6 @@ class Download(object):
 
     @view_config(route_name='download_sketch')
     def download_sketch(self):
-
-        if self.request.user is None:
-            return HTTPUnauthorized()
         filename = self.request.params.get('name', None)
         if filename is None:
             return HTTPBadRequest()
@@ -66,6 +63,9 @@ class Download(object):
         dirname = "/publication/CRAL_PDF"
 
         sketch_filepath = "%s/%s.pdf" % (dirname, filename)
+        if os.path.dirname(sketch_filepath) != dirname:
+            return HTTPBadRequest()
+
         f = None
         try:
             f = open(sketch_filepath, 'rb')
