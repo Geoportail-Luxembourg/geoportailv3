@@ -37,6 +37,7 @@ from geoportailv3_geoportal import mailer
 import logging
 import urllib.request
 import json
+import base64
 
 log = logging.getLogger(__name__)
 
@@ -953,6 +954,22 @@ class Mymaps(object):
                 loads(features, object_hook=geojson.GeoJSON.to_instance)
 
             for feature in feature_collection['features']:
+                if 'image' in feature['properties'] and \
+                   feature['properties']['image'] is not None and \
+                   feature['properties']['image'].startswith('data:image'):
+                   # ICI
+                    imgstring = feature['properties']['image'].split(",", 1)
+                    ext = "." + imgstring[0][11:imgstring[0].find(";base64")]
+
+                    image_name = uuid.uuid4().hex + ext
+                    image_name = "/mymaps/images/" + image_name
+                    cur_file = Images()
+                    cur_file.name = image_name
+                    cur_file.image = base64.b64decode(imgstring[1])
+                    cur_file.login_owner = self.request.user.username
+                    self.db_mymaps.add(cur_file)
+                    feature['properties']['image'] = image_name
+                    feature['properties']['thumbnail'] = image_name
                 feature_id = feature.properties.get('fid')
                 obj = None
                 try:

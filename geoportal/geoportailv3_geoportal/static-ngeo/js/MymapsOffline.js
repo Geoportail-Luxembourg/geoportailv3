@@ -58,20 +58,22 @@ const exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) 
 exports.prototype.save = function() {
   const conf = this.ngeoOfflineConfiguration_;
   return this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
-    const maps = full_mymaps['maps'];
-    const mapsElements = full_mymaps['maps_elements'];
-    const categories = full_mymaps['users_categories'];
-    const promises = [
-      conf.setItem('mymaps_data_version', this.dataVersion_),
-      conf.setItem('mymaps_maps', maps),
-      conf.setItem('mymaps_users_categories', categories)
-    ];
-    for (const mapElementKey in mapsElements) {
-      const mapElement = mapsElements[mapElementKey];
-      promises.push(conf.setItem(`mymaps_element_${mapElementKey}`, mapElement));
+    if (full_mymaps !== null && full_mymaps !== undefined) {
+      const maps = full_mymaps['maps'];
+      const mapsElements = full_mymaps['maps_elements'];
+      const categories = full_mymaps['users_categories'];
+      const promises = [
+        conf.setItem('mymaps_data_version', this.dataVersion_),
+        conf.setItem('mymaps_maps', maps),
+        conf.setItem('mymaps_users_categories', categories)
+      ];
+      for (const mapElementKey in mapsElements) {
+        const mapElement = mapsElements[mapElementKey];
+        promises.push(conf.setItem(`mymaps_element_${mapElementKey}`, mapElement));
+      }
+     return Promise.all(promises);
     }
-
-    return Promise.all(promises);
+    return;
   }.bind(this));
 };
 
