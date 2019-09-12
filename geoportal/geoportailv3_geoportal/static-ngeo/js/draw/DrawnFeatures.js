@@ -335,9 +335,11 @@ exports.prototype.saveFeatureInMymaps_ = function(feature) {
     feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
       .then(resp => {
-        var featureId = resp['id'];
-        currentFeature.set('fid', featureId);
-        feature.set('__saving__', false);
+        if (resp != undefined) {
+          var featureId = resp['id'];
+          currentFeature.set('fid', featureId);
+          feature.set('__saving__', false);
+        }
       }, () => {
         feature.set('__saving__', false);
       });
