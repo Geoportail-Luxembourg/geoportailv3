@@ -89,7 +89,9 @@ exports.config(['$sceDelegateProvider', function($sceDelegateProvider) {
     // Allow same origin resource loads.
     'self',
     // trust data from shop.geoportail.lu
-    'http*://shop.geoportail.lu/Portail/inspire/webservices/**'
+    'http*://shop.geoportail.lu/Portail/inspire/webservices/**',
+    // trust data from shop.app.geoportail.lu
+    'http*://shop.app.geoportail.lu/Portail/inspire/webservices/**'
   ]);
 }]);
 

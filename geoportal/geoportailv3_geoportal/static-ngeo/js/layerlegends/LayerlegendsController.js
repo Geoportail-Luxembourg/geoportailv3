@@ -156,8 +156,11 @@ exports.prototype.getLegendUrl = function(layer) {
   var legend_name = ('legend_name' in localMetadata) ?
       localMetadata['legend_name'] : '';
   var currentLanguage = this.gettextCatalog.currentLanguage;
+    const isIpv6 = location.search.includes('ipv6=true');
+    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
+
   return this.sce_.trustAsResourceUrl(
-      '//wiki.geoportail.lu/doku.php?id=' +
+      '//wiki.' + domain +'/doku.php?id=' +
       currentLanguage + ':legend:' +
       legend_name + '&do=export_html'
   );

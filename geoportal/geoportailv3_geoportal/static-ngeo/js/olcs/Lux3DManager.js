@@ -104,8 +104,11 @@ const exports = class extends ngeoOlcsManager {
     const availableLevels = unparsedTerrainLevels ? unparsedTerrainLevels.split(',').map(e => parseInt(e, 10)) : undefined;
     const rectangle = this.getCameraExtentRectangle();
     const terrainToDisplay = this.ngeoLocation_.getParam('3d_terrain') || 'own';
+    const isIpv6 = location.search.includes('ipv6=true');
+    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
+
     const url = terrainToDisplay === 'own' ?
-      'https://3dtiles.geoportail.lu/tiles' :
+      'https://3dtiles.' + domain + '/tiles' :
       'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles';
     if (!this.ngeoLocation_.hasParam('no_terrain')) {
       scene.terrainProvider = new Cesium.CesiumTerrainProvider({rectangle, url, availableLevels});

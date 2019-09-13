@@ -48,15 +48,17 @@ function factory(requestScheme) {
    * @return {ol.layer.Tile} The layer.
    */
   function getWmtsLayer(name, imageType, retina) {
+    const isIpv6 = location.search.includes('ipv6=true');
+    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
     var imageExt = getImageExtension_(imageType);
     var retinaExtension = (retina ? '_hd' : '');
-    var url = '//wmts{1-2}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+    var url = '//wmts{1-2}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
         retinaExtension +
         '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
     if (requestScheme === 'https') {
-      url = '//wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
+      url = '//wmts{3-4}.' + domain + '/mapproxy_4_v3/wmts/{Layer}' +
           retinaExtension +
           '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
     }
