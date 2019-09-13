@@ -24,6 +24,8 @@ import appModule from '../module.js';
  */
 function factory($http, $sce, $rootScope,
     gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
+    const isIpv6 = location.search.includes('ipv6=true');
+    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
   /**
    * @type {ngeo.message.Popup}
@@ -74,7 +76,7 @@ function factory($http, $sce, $rootScope,
         // TODO: remove the quotes around jsonpCallbackParam when
         // https://github.com/google/closure-compiler/pull/2400 is merged
         promises_[promiseKey] = $http.jsonp(
-            '//shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp',
+            '//shop.' + domain + '/Portail/inspire/webservices/getMD.jsp',
           {params: {
             'uid': metadataUid,
             'lang': currentLanguage
@@ -103,7 +105,7 @@ function factory($http, $sce, $rootScope,
                     currentLanguage =
                     currentLanguage === 'lb' ? 'lu' : currentLanguage;
                     content['legendUrl'] = $sce.trustAsResourceUrl(
-                        '//wiki.geoportail.lu/doku.php?id=' +
+                        '//wiki.' + domain + '/doku.php?id=' +
                         currentLanguage + ':legend:' +
                         localMetadata['legend_name'] + '&do=export_html'
                     );
