@@ -131,6 +131,7 @@ const exports = function(ngeoLocation, appMymaps, ngeoFeatureOverlayMgr) {
           delete properties['__editable__'];
           delete properties['__selected__'];
           delete properties['__map_id__'];
+          delete properties['__saving__']; // ugly hack?
           for (var key in properties) {
             if (properties[key] === null || properties[key] === undefined) {
               delete properties[key];
@@ -246,7 +247,7 @@ exports.prototype.saveFeaturesOrder = function() {
 
 /**
  * Move anonymous features to mymaps
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.moveAnonymousFeaturesToMymaps = function() {
   var newMymapsFeatures = [];
@@ -333,18 +334,22 @@ exports.prototype.saveFeatureInMymaps_ = function(feature) {
   if (this.appMymaps_.isEditable() && !feature.get('__saving__')) {
     feature.set('__saving__', true);
     this.appMymaps_.saveFeature(feature)
-      .then(function(resp) {
-        var featureId = resp['id'];
-        currentFeature.set('fid', featureId);
+      .then(resp => {
+        if (resp != undefined) {
+          var featureId = resp['id'];
+          currentFeature.set('fid', featureId);
+          feature.set('__saving__', false);
+        }
+      }, () => {
         feature.set('__saving__', false);
-      }.bind(this));
+      });
   }
 };
 
 
 /**
  * @param {Array.<ol.Feature>} features An array of features to save in mymaps.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  * @private
  */
 exports.prototype.saveFeaturesInMymaps_ = function(features) {

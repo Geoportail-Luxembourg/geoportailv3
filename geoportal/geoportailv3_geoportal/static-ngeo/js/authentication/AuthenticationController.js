@@ -37,11 +37,11 @@ const exports = function(appUserManager) {
  */
 exports.prototype.authenticate = function() {
   this.appUserManager_.authenticate(this.username, this.password).then(
-      function(response) {
+      response => {
         if (response.status == 200) {
           this['userOpen'] = false;
         }
-      }.bind(this));
+      })
 };
 
 

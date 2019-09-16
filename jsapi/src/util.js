@@ -1,5 +1,5 @@
 /**
- * @module lux
+ * @module lux.util
  */
 let exports = {};
 import olEvents from 'ol/events.js';
@@ -415,25 +415,25 @@ exports.WMSLayerFactory = function(config, opacity, visible) {
 
 /**
  * It geocodes an address. The found position is transmitted to the callback function as parameter.
- * @param {luxx.GeocodeOptions} obj The hash object representing the address to geocode.
+ * @param {luxx.GeocodeOptions!} obj The hash object representing the address to geocode.
  * @param {function(ol.Coordinate)} cb The callback to call. Called with the
  *     position in EPSG:2169 (LUREF) of the geocoded address.
  * @return {Promise.<luxx.GeocodeResponse>} Promise that returns the geocoding response.
  * @example
- * lux.geocode({
+ * lux.util.geocode({
  *   queryString: '54 avenue gaston diderich 1420 luxembourg'
  * }, function(position) {
  *	 console.log (position);
  * });
  *
  * @example
- * lux.geocode({
+ * lux.util.geocode({
  * num: 54,
  *   street: 'avenue gaston diderich',
  *   zip: 1420,
  *   locality: 'luxembourg'
  * }, function(position) {
- *	console.log (position);
+ * console.log (position);
  * });
  * @export
  * @api
@@ -444,14 +444,14 @@ exports.geocode = function(obj, cb) {
   var url = document.createElement('A');
   url.href = exports.geocodeUrl;
 
-  goog.asserts.assertObject(obj);
+  console.assert(obj instanceof Object);
   Object.keys(obj).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + obj[key];
   });
   return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
-    goog.asserts.assert(json.results.length, 'No address was found');
+    console.assert(json.results.length > 0, 'No address was found');
 
     var result = json.results[0];
     if (cb !== undefined) {
@@ -468,7 +468,7 @@ exports.geocode = function(obj, cb) {
  *    Called with the address represented by [luxx.ReverseGeocodeResult](luxx.html#ReverseGeocodeResult).
  * @return {Promise.<luxx.ReverseGeocodeResponse>} Promise that returns the reverse geocoding response.
  * @example
- * lux.reverseGeocode([75979,75067], function(address) {
+ * lux.util.reverseGeocode([75979,75067], function(address) {
  *   var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
  *   console.log(html);console.log(address);
  * });
@@ -489,7 +489,7 @@ exports.reverseGeocode = function(coordinate, cb) {
        * @param {luxx.ReverseGeocodeResponse} json The JSON.
        */
       function(json) {
-        goog.asserts.assert(json.count, 'No result found');
+        console.assert(json.count > 0, 'No result found');
         if (cb !== undefined) {
           cb.call(null, json.results[0]);
         }
@@ -638,6 +638,25 @@ exports.generatePagRepport = function(ids, mail, eula) {
     fetch(exports.pagUrl + '/report/' + ids + '.pdf?email=' + mail + '&staging=false', request);
     exports.notify(msg);
   }
+};
+
+/**
+ * Get the elevation for coordinates.
+ * @param {ol.Coordinate} coordinate The coordinate of the point.
+ * @return {Promise} Promise of the elevation request.
+ * @export
+ * @api
+ */
+exports.getElevation = function(coordinate) {
+  var lonlat = /** @type {ol.Coordinate} */
+        (olProj.transform(coordinate,
+            'EPSG:3857', 'EPSG:2169'));
+  var url = exports.elevationUrl;
+  url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
+
+  return fetch(url).then(function(resp) {
+    return resp.json();
+  });
 };
 
 
