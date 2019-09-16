@@ -60,6 +60,7 @@ import '../../less/geoportailv3.less'
  import appDrawFeaturePopupController from '../draw/FeaturePopupController.js';
  import appDrawFeaturePopupDirective from '../draw/featurePopupDirective.js';
  import appDrawRouteControl from '../draw/RouteControl.js';
+ import appGetLayerForCatalogNodeFactory from '../GetLayerForCatalogNodeFactory.js';
 
  //const appDrawRouteControlOptions = goog.require('app.draw.RouteControlOptions');
  import appDrawSelectedFeatures from '../draw/SelectedFeaturesService.js';
@@ -147,7 +148,6 @@ import '../../less/geoportailv3.less'
  import appGeocoding from '../Geocoding.js';
  import appGetDevice from '../GetDevice.js';
  import appGetElevation from '../GetElevationService.js';
- import appGetLayerForCatalogNode from '../GetLayerForCatalogNodeFactory.js';
  import appGetProfile from '../GetProfileService.js';
  import appGetShorturl from '../GetShorturlService.js';
  import appGetWmsLayer from '../GetWmsLayerFactory.js';
@@ -228,6 +228,7 @@ import '../../less/geoportailv3.less'
  * catalog service.
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @param {string} ageCruesLayerIds ID of flashflood layers.
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
  * @constructor
  * @export
  * @ngInject
@@ -241,8 +242,13 @@ const MainController = function(
     appOverviewMapShow, showCruesLink, showAnfLink, appOverviewMapBaseLayer, appNotify, $window,
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
-    appOfflineDownloader, appOfflineRestorer, ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
-    showCruesRoles, ageCruesLayerIds) {
+    ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
+    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline) {
+
+  appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
+  appMymaps.setOfflineMode(ngeoOfflineMode);
+  appMymaps.setOfflineService(appMymapsOffline);
+
   /**
    * @type {string}
    * @private
@@ -1134,6 +1140,7 @@ MainController.prototype.initLanguage_ = function() {
 MainController.prototype.initMymaps_ = function() {
   var mapId = this.ngeoLocation_.getParam('map_id');
 
+  this.appMymaps_.map = this.map_;
   this.appMymaps_.mapProjection = this.map_.getView().getProjection();
   if (mapId !== undefined) {
     this.appMymaps_.setCurrentMapId(mapId,
@@ -1152,7 +1159,6 @@ MainController.prototype.initMymaps_ = function() {
   } else {
     this.appMymaps_.clear();
   }
-  this.appMymaps_.map = this.map_;
   this.appMymaps_.layersChanged = this['layersChanged'];
   this.map_.getLayerGroup().on('change', () => {
     if (!this.appOfflineRestorer_.restoring) {

@@ -9,14 +9,12 @@
 
 import appModule from './module.js';
 import appNotifyNotificationType from './NotifyNotificationType.js';
-import {assign} from 'ol/obj.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomLineString from 'ol/geom/LineString.js';
 import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
-import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleIcon from 'ol/style/Icon.js';
@@ -24,10 +22,13 @@ import olStyleRegularShape from 'ol/style/RegularShape.js';
 import olStyleText from 'ol/style/Text.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
+import {get as getProj, transform} from 'ol/proj.js';
 
 /**
  * @constructor
  * @param {angular.$http} $http The angular http service.
+ * @param {angular.$q} $q The q service.
+ * @param {angular.Scope} $rootScope The rootScope service.
  * @param {string} mymapsMapsUrl URL to "mymaps" Maps service.
  * @param {string} mymapsUrl URL to "mymaps" Features service.
  * @param {app.StateManager} appStateManager The state manager service.
@@ -41,20 +42,38 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr The background layer
  * manager.
  * @param {ngeo.offline.NetworkStatus} ngeoNetworkStatus ngeo Network Status.
- * @param {string} appImagesPath Path the the static images.
  * @param {string} arrowUrl URL to the arrow.
  * @param {string} arrowModelUrl URL to the Cesium arrow model.
  * @ngInject
  */
-const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
+const exports = function($http, $q, $rootScope, mymapsMapsUrl, mymapsUrl, appStateManager,
     appUserManager, appNotify, appGetLayerForCatalogNode, gettextCatalog,
-    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus,
-    appImagesPath, arrowUrl, arrowModelUrl) {
+    appThemes, appTheme, ngeoBackgroundLayerMgr, ngeoNetworkStatus, arrowUrl,
+    arrowModelUrl) {
+
   /**
-   * @type {string}
+   * @private
+   * @type {ngeo.offline.Mode}
+   */
+  this.ngeoOfflineMode_;
+
+  /**
+   * @private
+   * @type {app.MymapsOffline}
+   */
+  this.myMapsOffline_;
+
+  /**
+   * @type {angular.$q}
    * @private
    */
-  this.whiteArrowUrl_ = appImagesPath + 'arrow.png';
+  this.$q_ = $q;
+
+  /**
+   * @type {angular.Scope}
+   * @private
+   */
+  this.$rootscope_ = $rootScope;
 
   /**
    * @type {string}
@@ -237,6 +256,18 @@ const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {string}
    * @private
    */
+  this.mymapsGetFullMymapsUrl_ = mymapsUrl + '/get_full_mymaps';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.mymapsSaveOfflineUrl_ = mymapsUrl + '/save_offline';
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = '';
 
   /**
@@ -321,7 +352,7 @@ const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   /**
    * @type {ol.proj.Projection}
    */
-  this.mapProjection;
+  this.mapProjection = getProj('EPSG:3857');
 
   /**
    * The list of categories objects, depending on user role.
@@ -338,6 +369,18 @@ const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
 
   /**
    * The raw response data of the map info query.
+   * @type {app.MapsResponse}
+   */
+  this.maps_ = null;
+
+  /**
+   * The raw response data of the get user categories query.
+   * @type {Array.<Object>}
+   */
+  this.usersCategories_ = null;
+
+  /**
+   * The raw response data of the map info query.
    * @type {?Object}
    */
   this.mapInfo_ = null;
@@ -347,6 +390,12 @@ const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
    * @type {?Object}
    */
   this.mapFeatures_ = null;
+
+  /**
+   * Full mymaps maps_elements.
+   * @type {?Object}
+   */
+  this.mapsElements_ = null;
 
   /**
    * @const
@@ -362,8 +411,29 @@ const exports = function($http, mymapsMapsUrl, mymapsUrl, appStateManager,
   };
 
   this.loadAllCategories();
+
+  /**
+   * @private
+   */
+  this.encOpt_ = /** @type {olx.format.ReadOptions} */ ({
+    dataProjection: 'EPSG:2169',
+    featureProjection: this.mapProjection
+  });
 };
 
+/**
+ * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode service.
+ */
+exports.prototype.setOfflineMode = function(ngeoOfflineMode) {
+  this.ngeoOfflineMode_ = ngeoOfflineMode;
+};
+
+/**
+ * @param {app.MymapsOffline} appMymapsOffline Offline service.
+ */
+exports.prototype.setOfflineService = function(appMymapsOffline) {
+  this.myMapsOffline_ = appMymapsOffline;
+};
 
 /**
  * @return {?Object} The raw response data of the map info query.
@@ -430,6 +500,14 @@ exports.prototype.getMapId = function() {
 exports.prototype.setCurrentMapId = function(mapId, collection) {
   this.setMapId(mapId);
 
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.setCurrentMapIdWhenOffline_(mapId, collection);
+  } else {
+    // Clear map to removes the alreay selected layers
+    // Don't do it offline because other layer won't be loaded.
+    this.map.getLayers().clear();
+  }
+
   return this.loadMapInformation().then(function(mapinformation) {
     if (mapinformation !== null) {
       return this.loadFeatures_().then(function(features) {
@@ -440,6 +518,31 @@ exports.prototype.setCurrentMapId = function(mapId, collection) {
   }.bind(this));
 };
 
+
+/**
+ * Set the mapId and load map information when offline.
+ * @param {string} mapId The map id.
+ * @param {ol.Collection} collection The collection.
+ * @return {angular.$q.Promise} Promise.
+ */
+exports.prototype.setCurrentMapIdWhenOffline_ = function(mapId, collection) {
+  const deferred = this.$q_.defer();
+  let mapinformation = null;
+  let features = null;
+  if (this.mapsElements_) {
+    const element = this.mapsElements_[mapId];
+    if (element) {
+      mapinformation = element['map'];
+      features = element['features'];
+    }
+  }
+  this.setMapInformation(mapinformation);
+  this.setFeatures(features, collection);
+  deferred.resolve(mapinformation);
+  return deferred.promise;
+};
+
+
 /**
  * Fill a collection of features with features objects.
  * @param {app.MapsResponse} features An array of feature object.
@@ -448,14 +551,8 @@ exports.prototype.setCurrentMapId = function(mapId, collection) {
  */
 exports.prototype.setFeatures = function(features, collection) {
   if (features !== null) {
-    var encOpt = /** @type {olx.format.ReadOptions} */ ({
-      dataProjection: 'EPSG:2169',
-      featureProjection: this.mapProjection
-    });
-
     var featureStyleFunction = this.createStyleFunction(this.map);
-    var jsonFeatures = (new olFormatGeoJSON()).
-        readFeatures(features, encOpt);
+    var jsonFeatures = new olFormatGeoJSON().readFeatures(features, this.encOpt_);
     jsonFeatures.forEach(function(feature) {
       feature.set('altitudeMode', 'clampToGround');
       feature.set('__map_id__', this.getMapId());
@@ -493,8 +590,8 @@ exports.prototype.clear = function() {
  * @return {boolean} Return true if is editable by the user
  */
 exports.prototype.isEditable = function() {
-  if (this.isMymapsSelected() && this.appUserManager_.isAuthenticated() &&
-      this.mapIsEditable && !this.ngeoNetworkStatus_.isDisconnected()) {
+  if (this.isMymapsSelected() && this.mapIsEditable &&
+      (this.appUserManager_.isAuthenticated() || this.ngeoOfflineMode_.isEnabled())) {
     return true;
   }
   return false;
@@ -503,25 +600,50 @@ exports.prototype.isEditable = function() {
 
 /**
  * Get the categories available for each user that the connected user can see.
+ * If offline, return the current usersCategories in this class.
  * @return {angular.$q.Promise} Promise.
  */
 exports.prototype.getUsersCategories = function() {
-  var url = this.mymapsUserCategoriesUrl_;
+  if (this.usersCategories_) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.usersCategories_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsUserCategoriesUrl_;
   return this.$http_.get(url).then(
-      function(resp) {
-        return resp.data;
-      }.bind(this));
+    (resp) => {
+      this.setUsersCategories(resp.data);
+      return this.usersCategories_;
+    }
+  );
 };
 
 /**
+ * Set the categories available for each user that the connected user can see.
+ * @param {Array.<Object>} userCategories user categories
+ */
+exports.prototype.setUsersCategories = function(userCategories) {
+  this.usersCategories_ = userCategories;
+};
+
+
+/**
  * Get an array of map objects.
+ * If offline, return the current maps object in this class.
  * @param {?string} owner The map owner to restrict.
  * @param {?number} categoryId The category to restrict.
  * @return {angular.$q.Promise} Promise.
  */
 exports.prototype.getMaps = function(owner, categoryId) {
-  var url = this.mymapsMapsUrl_;
-  var params = {};
+  if (this.maps_ && this.ngeoOfflineMode_.isEnabled()) {
+    const deferred = this.$q_.defer();
+    deferred.resolve(this.maps_);
+    return deferred.promise;
+  }
+
+  const url = this.mymapsMapsUrl_;
+  const params = {};
   if (owner !== null) {
     params['owner'] = owner;
   }
@@ -530,28 +652,51 @@ exports.prototype.getMaps = function(owner, categoryId) {
   }
 
   return this.$http_.get(url, {params: params}).then(
+    (
       /**
        * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
+       * @return {app.MapsResponse} The "mymaps" web service object.
        */
-      (function(resp) {
-        resp.data.forEach(function(map) {
-          if (map['update_date'] === null) {
-            map['update_date'] = map['create_date'];
-          }
-        });
-        return resp.data;
-      }).bind(this), function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-           'Erreur inattendue lors du chargement de vos cartes.');
-        this.notify_(msg, appNotifyNotificationType.ERROR);
-        return [];
-      }.bind(this)
+      (resp) => {
+        this.setMaps(resp.data);
+        return this.maps_;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+         'Erreur inattendue lors du chargement de vos cartes.');
+      this.notify_(msg, appNotifyNotificationType.ERROR);
+      return [];
+    }
   );
+};
+
+
+/**
+ * Set the maps object.
+ * @param {app.MapsResponse} maps The "mymaps" web service response.
+ */
+exports.prototype.setMaps = function(maps) {
+  maps.forEach(function(map) {
+    if (map['update_date']) {
+      map['update_date'] = map['create_date'];
+    }
+  });
+
+  // The maps referenced is held in mymapsdirective.
+  // To avoid having to introduce a maps changed notification mechanism
+  // we just repopulate the existing maps array.
+
+  if (this.ngeoOfflineMode_.isEnabled() && this.maps_ && maps && this.maps_ !== maps) {
+    this.maps_.length = 0;
+    this.maps_.push(...maps);
+  } else {
+    this.maps_ = maps;
+  }
 };
 
 
@@ -664,8 +809,8 @@ exports.prototype.updateLayers = function() {
   .then(function(flatCatalogue) {
     curMapLayers.forEach(function(item, layerIndex) {
       var node = flatCatalogue.find(
-              function(catalogLayer) {
-                return catalogLayer['name'] === item;
+              function(catalogueLayer) {
+                return catalogueLayer['name'] === item;
               });
       if (node) {
         var layer = this.getLayerFunc_(node);
@@ -698,90 +843,17 @@ exports.prototype.loadMapInformation = function() {
 
 
 /**
- * FIXME
  * @param {Object} mapinformation any
  * @return {Object} mapinformation any
  */
 exports.prototype.setMapInformation = function(mapinformation) {
-  if (mapinformation !== null) {
-    this.mapDescription = mapinformation['description'];
-    this.mapTitle = mapinformation['title'];
-    this.mapOwner = mapinformation['user_login'];
-    this.mapIsPublic = mapinformation['public'];
-    this.mapCategoryId = mapinformation['category_id'];
-    this.mapBgLayer = mapinformation['bg_layer'];
-    this.mapTheme = mapinformation['theme'];
-    this.mapIsEditable = mapinformation['is_editable'];
-
-    if (!this.mapBgLayer) {
-      if (this.mapTheme === 'tourisme') {
-        this.mapBgLayer = 'topo_bw_jpeg';
-      } else {
-        this.mapBgLayer = 'topogr_global';
-      }
-      mapinformation['bg_layer'] = this.mapBgLayer;
-    }
-    if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
-      this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
-    }
-
-    this.mapBgOpacity = mapinformation['bg_opacity'];
-    if ('layers' in mapinformation && mapinformation['layers']) {
-      this.mapLayers = mapinformation['layers'].split(',');
-      this.mapLayers.reverse();
-      if ('layers_opacity' in mapinformation &&
-          mapinformation['layers_opacity']) {
-        this.mapLayersOpacities =
-            mapinformation['layers_opacity'].split(',');
-      } else {
-        this.mapLayersOpacities = [];
-      }
-      this.mapLayersOpacities.reverse();
-      if ('layers_visibility' in mapinformation &&
-          mapinformation['layers_visibility']) {
-        this.mapLayersVisibilities =
-            mapinformation['layers_visibility'].split(',');
-      } else {
-        this.mapLayersVisibilities = [];
-      }
-      this.mapLayersVisibilities.reverse();
-      if ('layers_indices' in mapinformation &&
-          mapinformation['layers_indices']) {
-        this.mapLayersIndicies =
-            mapinformation['layers_indices'].split(',');
-      } else {
-        this.mapLayersIndicies = [];
-      }
-      this.mapLayersIndicies.reverse();
-
-      // remove layers with no name
-      var iToRemove = [];
-      this.mapLayers = this.mapLayers.filter(function(item, i) {
-        if (item.length === 0) {
-          iToRemove.push(i);
-          return false;
-        }
-        return true;
-      }, this);
-      for (var i = iToRemove.length - 1; i >= 0; --i) {
-        var item = iToRemove[i];
-        if (this.mapLayersIndicies) {
-          this.mapLayersIndicies.splice(item, 1);
-        }
-        if (this.mapLayersVisibilities) {
-          this.mapLayersVisibilities.splice(item, 1);
-        }
-        if (this.mapLayersOpacities) {
-          this.mapLayersOpacities.splice(item, 1);
-        }
-      }
-    } else {
-      this.mapLayers = [];
-      this.mapOpacities = [];
-      this.mapVisibilities = [];
-      this.mapLayersIndicies = [];
-    }
+  if (this.ngeoNetworkStatus_.isDisconnected()) {
+    // Avoid to restore not saved layers
+    this.setMapMetaInformation_(mapinformation);
+    return mapinformation;
   }
+  this.setMapMetaInformation_(mapinformation);
+  this.setMapInformation_(mapinformation);
   this.updateLayers();
   this.layersChanged = false;
   return mapinformation;
@@ -789,10 +861,114 @@ exports.prototype.setMapInformation = function(mapinformation) {
 
 
 /**
+ * @param {Object} mapinformation any
+ */
+exports.prototype.setMapMetaInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  }
+  this.mapDescription = mapinformation['description'];
+  this.mapTitle = mapinformation['title'];
+  this.mapOwner = mapinformation['user_login'];
+  this.mapIsPublic = mapinformation['public'];
+  this.mapCategoryId = mapinformation['category_id'];
+  this.mapTheme = mapinformation['theme'];
+  this.mapIsEditable = mapinformation['is_editable'];
+};
+
+
+/**
+ * @param {Object} mapinformation any
+ */
+exports.prototype.setMapInformation_ = function(mapinformation) {
+  if (mapinformation === null) {
+    return;
+  }
+
+  this.mapBgLayer = mapinformation['bg_layer'];
+
+  if (!this.mapBgLayer) {
+    if (this.mapTheme === 'tourisme') {
+      this.mapBgLayer = 'topo_bw_jpeg';
+    } else {
+      this.mapBgLayer = 'topogr_global';
+    }
+    mapinformation['bg_layer'] = this.mapBgLayer;
+  }
+
+  if (this.mapBgLayer in this.V2_BGLAYER_TO_V3_) {
+    this.mapBgLayer = this.V2_BGLAYER_TO_V3_[this.mapBgLayer];
+  }
+  mapinformation['bg_layer'] = this.mapBgLayer;
+
+  this.mapBgOpacity = mapinformation['bg_opacity'];
+  if ('layers' in mapinformation && mapinformation['layers']) {
+    this.mapLayers = mapinformation['layers'].split(',');
+    this.mapLayers.reverse();
+    if ('layers_opacity' in mapinformation &&
+        mapinformation['layers_opacity']) {
+      this.mapLayersOpacities =
+          mapinformation['layers_opacity'].split(',');
+    } else {
+      this.mapLayersOpacities = [];
+    }
+    this.mapLayersOpacities.reverse();
+    if ('layers_visibility' in mapinformation &&
+        mapinformation['layers_visibility']) {
+      this.mapLayersVisibilities =
+          mapinformation['layers_visibility'].split(',');
+    } else {
+      this.mapLayersVisibilities = [];
+    }
+    this.mapLayersVisibilities.reverse();
+    if ('layers_indices' in mapinformation &&
+        mapinformation['layers_indices']) {
+      this.mapLayersIndicies =
+          mapinformation['layers_indices'].split(',');
+    } else {
+      this.mapLayersIndicies = [];
+    }
+    this.mapLayersIndicies.reverse();
+
+    // remove layers with no name
+    var iToRemove = [];
+    this.mapLayers = this.mapLayers.filter((item, i) => {
+      if (item.length === 0) {
+        iToRemove.unshift(i);
+        return false;
+      }
+      return true;
+    });
+    iToRemove.forEach(item => {
+      if (this.mapLayersIndicies) {
+        this.mapLayersIndicies.splice(item, 1);
+      }
+      if (this.mapLayersVisibilities) {
+        this.mapLayersVisibilities.splice(item, 1);
+      }
+      if (this.mapLayersOpacities) {
+        this.mapLayersOpacities.splice(item, 1);
+      }
+    });
+  } else {
+    this.mapLayers = [];
+    this.mapOpacities = [];
+    this.mapVisibilities = [];
+    this.mapLayersIndicies = [];
+  }
+};
+
+
+/**
  * Get the map information.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.getMapInformation = function() {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.getMapOffline(this.mapId_);
+  }
+
   return this.$http_.get(this.mymapsMapInfoUrl_ + this.mapId_).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -824,9 +1000,22 @@ exports.prototype.getMapInformation = function() {
 /**
  * Delete a map
  * @param {ol.Feature} feature the feature to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.deleteFeature = function(feature) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteFeatureOffline(feature, this.encOpt_).then((promiseResult) => {
+      const uuid = /** @type{string} */ (feature.get('__map_id__'));
+      const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
+      this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+        this.updateMapsElement(uuid, myMapsElement);
+        this.maps_[mapsIdx] = myMapsElement['map'];
+        this.$rootscope_.$apply();
+        return promiseResult;
+      }));
+    });
+  }
+
   return this.$http_.delete(this.mymapsDeleteFeatureUrl_ +
       feature.get('fid')).then(
       /**
@@ -856,38 +1045,44 @@ exports.prototype.deleteFeature = function(feature) {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
-exports.prototype.createMap =
-    function(title, description, categoryId, isPublic) {
-      var req = $.param({
-        'title': title,
-        'description': description,
-        'category_id': categoryId,
-        'public': isPublic
-      });
-      var config = {
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      };
-      return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
-      /**
-       * @param {angular.$http.Response} resp Ajax response.
-       * @return {app.MapsResponse} The "mymaps" web service response.
-       */
-      (function(resp) {
-        return resp.data;
-      }).bind(this), function(error) {
-        if (error.status == 401) {
-          this.notifyUnauthorized();
-          return null;
-        }
-        var msg = this.gettextCatalog.getString(
-            'Erreur inattendue lors de la création de votre carte.');
-        this.notify_(msg, appNotifyNotificationType.ERROR);
-        return [];
-      }.bind(this)
+exports.prototype.createMap = function(title, description, categoryId, isPublic) {
+  const spec = {
+    'title': title,
+    'description': description,
+    'category_id': categoryId,
+    'public': isPublic
+  };
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.createMapOffline(spec);
+  }
+
+  var req = $.param(spec);
+  var config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.post(this.mymapsCreateMapUrl_, req, config).then(
+    /**
+     * @param {angular.$http.Response} resp Ajax response.
+     * @return {app.MapsResponse} The "mymaps" web service response.
+     */
+    resp => {
+      return resp.data;
+    },
+    error => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      var msg = this.gettextCatalog.getString(
+          'Erreur inattendue lors de la création de votre carte.');
+      this.notify_(msg, appNotifyNotificationType.ERROR);
+      return [];
+    }
   );
-    };
+};
 
 
 /**
@@ -896,16 +1091,22 @@ exports.prototype.createMap =
  * @param {string} description The description about the map.
  * @param {?number} categoryId the category id of the map.
  * @param {boolean} isPublic if the map is public or not.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.copyMap =
     function(title, description, categoryId, isPublic) {
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
         'public': isPublic
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.copyMapOffline(this.mapId_, spec, this.encOpt_);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -933,9 +1134,13 @@ exports.prototype.copyMap =
 /**
  * Delete a map.
  * @param {string} mapId The map id to delete.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.deleteAMap = function(mapId) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteMapOffline(mapId);
+  }
+
   return this.$http_.delete(this.mymapsDeleteMapUrl_ + mapId).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -963,6 +1168,21 @@ exports.prototype.deleteAMap = function(mapId) {
  * @return {angular.$q.Promise} Promise.
  */
 exports.prototype.deleteAllFeaturesAMap = function(mapId) {
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.deleteAllFeaturesOffline(mapId).then(() => {
+      return this.myMapsOffline_.getMapOffline(mapId).then(myMaps => {
+        const mapsIdx = this.maps_.findIndex(e => e['uuid'] === mapId);
+        this.maps_[mapsIdx] = myMaps;
+        this.$rootscope_.$apply();
+
+        return this.myMapsOffline_.getElementOffline(mapId).then(myMapsElement => {
+          myMapsElement['map'] = myMaps;
+          return this.updateMapsElement(mapId, myMapsElement);
+        });
+      });
+    });
+  }
+
   return this.$http_.delete(this.mymapsDeleteFeaturesUrl_ + mapId).then(
       /**
        * @param {angular.$http.Response} resp Ajax response.
@@ -986,7 +1206,7 @@ exports.prototype.deleteAllFeaturesAMap = function(mapId) {
 
 /**
  * Delete the current map.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.deleteMap = function() {
   return this.deleteAMap(this.mapId_);
@@ -1008,7 +1228,7 @@ exports.prototype.deleteMapFeatures = function() {
  * @param {string} description a description about the map.
  * @param {?number} categoryId the category of the map.
  * @param {boolean} isPublic is the map public.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.updateMap =
     function(title, description, categoryId, isPublic) {
@@ -1018,12 +1238,31 @@ exports.prototype.updateMap =
       this.mapCategoryId = categoryId;
       this.mapIsPublic = isPublic;
 
-      var req = $.param({
+      const spec = {
         'title': title,
         'description': description,
         'category_id': categoryId,
-        'public': isPublic
-      });
+        'public': isPublic,
+        'dirty': true
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false).then(() => {
+          const uuid = this.mapId_;
+          return this.myMapsOffline_.getMapOffline(uuid).then(myMaps => {
+            const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
+            this.maps_[mapsIdx] = myMaps;
+            this.$rootscope_.$apply();
+
+            return this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+              myMapsElement['map'] = myMaps;
+              return this.updateMapsElement(uuid, myMapsElement);
+            }));
+          });
+        });
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1058,13 +1297,13 @@ exports.prototype.updateMap =
  * @param {string} layers_visibility The layer visibility.
  * @param {string} layers_indices The layer indices.
  * @param {string} theme The theme.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.updateMapEnv =
     function(bgLayer, bgOpacity, layers, layers_opacity,
         layers_visibility, layers_indices, theme) {
 
-      var req = $.param({
+      const spec = {
         'bgLayer': bgLayer,
         'bgOpacity': bgOpacity,
         'layers': layers,
@@ -1072,7 +1311,13 @@ exports.prototype.updateMapEnv =
         'layers_visibility': layers_visibility,
         'layers_indices': layers_indices,
         'theme': theme
-      });
+      };
+
+      if (this.ngeoOfflineMode_.isEnabled()) {
+        return this.myMapsOffline_.updateMapOffline(this.mapId_, spec, false);
+      }
+
+      var req = $.param(spec);
       var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       };
@@ -1101,9 +1346,13 @@ exports.prototype.updateMapEnv =
 /**
  * Save features order into a map.
  * @param {Array<ol.Feature>} features The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.saveFeaturesOrder = function(features) {
+
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
+  }
 
   var orders = [];
   features.forEach(function(feature) {
@@ -1142,15 +1391,24 @@ exports.prototype.saveFeaturesOrder = function(features) {
 /**
  * Save a feature into a map.
  * @param {ol.Feature} feature The feature to save
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.saveFeature = function(feature) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, [feature], this.encOpt_).then(() => {
+      const uuid = /** @type{string} */ (feature.get('__map_id__'));
+      const mapsIdx = this.maps_.findIndex(e => e['uuid'] === uuid);
+      return this.myMapsOffline_.getElementOffline(uuid).then((myMapsElement => {
+        this.updateMapsElement(uuid, myMapsElement);
+        this.maps_[mapsIdx] = myMapsElement['map'];
+        this.$rootscope_.$apply();
+        return Promise.resolve();
+      }));
+    });
+  }
+
   var req = $.param({
-    'feature': (new olFormatGeoJSON()).writeFeature(feature, encOpt)
+    'feature': new olFormatGeoJSON().writeFeature(feature, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1180,15 +1438,15 @@ exports.prototype.saveFeature = function(feature) {
 /**
  * Save an array of features into the current map.
  * @param {Array.<ol.Feature>} features The features to save.
- * @return {angular.$q.Promise} Promise.
+ * @return {angular.$q.Promise|Promise} Promise.
  */
 exports.prototype.saveFeatures = function(features) {
-  var encOpt = /** @type {olx.format.ReadOptions} */ ({
-    dataProjection: 'EPSG:2169',
-    featureProjection: this.mapProjection
-  });
+  if (this.ngeoOfflineMode_.isEnabled()) {
+    return this.myMapsOffline_.saveFeaturesOffline(this.mapId_, features, this.encOpt_);
+  }
+
   var req = $.param({
-    'features': (new olFormatGeoJSON()).writeFeatures(features, encOpt)
+    'features': new olFormatGeoJSON().writeFeatures(features, this.encOpt_)
   });
   var config = {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -1273,7 +1531,7 @@ exports.prototype.createStyleFunction = function(curMap) {
 
   var fillStyle = new olStyleFill();
   var symbolUrl = this.mymapsSymbolUrl_;
-  var whiteArrowUrl = this.whiteArrowUrl_;
+  var arrowUrl = this.arrowUrl_;
   const arrowModelUrl = this.arrowModelUrl_;
 
   const colorStringToRgba = (colorString, opacity = 1) => {
@@ -1283,14 +1541,11 @@ exports.prototype.createStyleFunction = function(curMap) {
     return [r, g, b, opacity];
   };
 
-  return function(feature, _) {
+  return function(feature, resolution) {
 
     // clear the styles
     styles.length = 0;
 
-    if (typeof feature == "number") {
-      feature = this; // older OpenLayers version
-    }
     if (feature.get('__editable__') && feature.get('__selected__')) {
       styles.push(vertexStyle);
     }
@@ -1329,7 +1584,7 @@ exports.prototype.createStyleFunction = function(curMap) {
           distance = Math.sqrt(w * w + h * h);
         }
         if (!prevArrow || distance > 600) {
-          var src = whiteArrowUrl;
+          var src = arrowUrl;
           const rotation =  Math.PI / 2 - Math.atan2(dy, dx);
           // arrows
           styles.push(new olStyleStyle({
@@ -1406,7 +1661,7 @@ exports.prototype.createStyleFunction = function(curMap) {
     };
     var image = null;
     if (feature.get('symbolId')) {
-      assign(imageOptions, {
+      Object.assign(imageOptions, {
         src: symbolUrl + feature.get('symbolId') + '?scale=' + featureSize,
         scale: 1,
         rotation: feature.get('angle')
@@ -1421,7 +1676,7 @@ exports.prototype.createStyleFunction = function(curMap) {
       if (shape === 'circle') {
         image = new olStyleCircle(imageOptions);
       } else if (shape === 'square') {
-        assign(imageOptions, {
+        Object.assign(imageOptions, {
           points: 4,
           angle: Math.PI / 4,
           rotation: feature.get('angle')
@@ -1429,7 +1684,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {
-        assign(imageOptions, ({
+        Object.assign(imageOptions, ({
           points: 3,
           angle: 0,
           rotation: feature.get('angle')
@@ -1437,7 +1692,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'star') {
-        assign(imageOptions, ({
+        Object.assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
           rotation: feature.get('angle'),
@@ -1446,7 +1701,7 @@ exports.prototype.createStyleFunction = function(curMap) {
         image = new olStyleRegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (feature.get('shape') == 'cross') {
-        assign(imageOptions, ({
+        Object.assign(imageOptions, ({
           points: 4,
           angle: 0,
           rotation: feature.get('angle'),
@@ -1484,6 +1739,110 @@ exports.prototype.createStyleFunction = function(curMap) {
 
     return styles;
   };
+};
+
+
+/**
+ * Get full mymaps information.
+ * @return {angular.$q.Promise} Promise.
+ */
+exports.prototype.getFullMymaps = function() {
+  const config = {
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  };
+  return this.$http_.get(this.mymapsGetFullMymapsUrl_, config).then(
+    (
+      /**
+       * @param {angular.$http.Response} resp Ajax response.
+       * @return {Object} The "get_full_mymaps" web service response.
+       */
+      (resp) => {
+        return resp.data;
+      }
+    ),
+    (error) => {
+      if (error.status == 401) {
+        this.notifyUnauthorized();
+        return null;
+      }
+      const msg = this.gettextCatalog.getString(
+          'Erreur lors du téléchargement de tous les mymaps.');
+      this.notify_(msg, appNotifyNotificationType.ERROR);
+      return [];
+    }
+  );
+};
+
+
+/**
+ * Set full mymaps maps_elements object.
+ * @param {Object} mapsElements getFullMymaps service maps_elements object
+ */
+exports.prototype.setMapsElements = function(mapsElements) {
+  this.mapsElements_ = mapsElements;
+};
+
+
+/**
+ * Override partial mymaps maps_elements object.
+ * @param {string} uuid element id.
+ * @param {Object} element single element
+ */
+exports.prototype.updateMapsElement = function(uuid, element) {
+  this.mapsElements_[uuid] = element;
+};
+
+/**
+ * Delete the mymaps maps_elements object.
+ * @param {string} uuid element id.
+ */
+exports.prototype.deleteMapsElement = function(uuid) {
+  delete this.mapsElements_[uuid];
+};
+
+/**
+ * Synchronize the map when in offline state.
+ * @param {Object} map The map to synchronize.
+ * @return {Promise|angular.$q.Promise} a promise
+ */
+exports.prototype.syncOfflineMaps = function(map) {
+  const oldUuid = map['uuid'];
+  const req = this.mapsElements_[oldUuid];
+  const config = {
+    headers: {'Content-Type': 'application/json'}
+  };
+
+  return this.$http_.post(this.mymapsSaveOfflineUrl_, req, config).then((resp) => {
+
+    if (map['deletedWhileOffline']) {
+      const uuid = map['uuid'];
+      this.myMapsOffline_.removeMapAndFeaturesFromStorage(uuid);
+      delete this.mapsElements_[uuid];
+      this.maps_.splice(uuid, 1);
+      return Promise.resolve();
+    } else {
+      const synchedMap = resp.data.data.map;
+      const sychedMapsElement = resp.data.data;
+
+      return Promise.all([
+        this.myMapsOffline_.updateMapOffline(oldUuid, synchedMap, true),
+        this.myMapsOffline_.updateMyMapsElementStorage(oldUuid, sychedMapsElement).then(() => {
+          let mapsIdx = this.maps_.findIndex(e => e['uuid'] === oldUuid);
+          this.maps_[mapsIdx] = synchedMap;
+        })
+      ]).then(() => {
+        if (this.mapId_ === oldUuid) {
+          this.setMapId(synchedMap['uuid']);
+        }
+        this.$rootscope_.$apply();
+      });
+    }
+  }, (err) => {
+    var msg = this.gettextCatalog.getString('Erreur lors de la synchronisation de la carte.');
+    this.notify_(msg, appNotifyNotificationType.ERROR);
+    return Promise.reject();
+  });
+
 };
 
 appModule.service('appMymaps', exports);

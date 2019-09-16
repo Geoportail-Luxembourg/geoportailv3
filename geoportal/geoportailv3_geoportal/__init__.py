@@ -6,8 +6,10 @@ import distutils.core
 from pyramid.config import Configurator
 from c2cgeoportal_geoportal import locale_negotiator, add_interface, \
     INTERFACE_TYPE_NGEO, INTERFACE_TYPE_NGEO_CATALOGUE, set_user_validator
-from c2cgeoportal_geoportal.lib.authentication import create_authentication
+# from c2cgeoportal_geoportal.lib.authentication import create_authentication
 from geoportailv3_geoportal.resources import Root
+
+from geoportal.geoportailv3_geoportal.lib.lux_authentication import create_authentication
 
 from pyramid.renderers import JSON
 from pyramid_mako import add_mako_renderer
@@ -129,6 +131,11 @@ def main(global_config, **settings):
         "mymaps_image",
         "/",
         request_method="HEAD"
+    )
+    config.add_route(
+        "mymaps_get_full_mymaps",
+        "mymaps/get_full_mymaps",
+        request_method="GET"
     )
     config.add_route(
         "mymaps_getcategories",
@@ -261,6 +268,11 @@ def main(global_config, **settings):
     config.add_route(
         "mymaps_save_order",
         "/mymaps/save_order/{map_id}",
+        request_method="POST"
+    )
+    config.add_route(
+        "mymaps_save_offline",
+        "/mymaps/save_offline",
         request_method="POST"
     )
     config.add_route(

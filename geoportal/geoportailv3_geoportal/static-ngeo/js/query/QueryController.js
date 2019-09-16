@@ -1301,8 +1301,11 @@ exports.prototype.getCookie_ = function(cname) {
  * @export
  */
 exports.prototype.orderAffaire = function(numCommune, numMesurage) {
+    const isIpv6 = location.search.includes('ipv6=true');
+    const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
+
   this.http_.get(
-    'https://shop.geoportail.lu/Portail/commande/webservices/orderAffaireV3.jsp',
+    'https://shop.' + domain + '/Portail/commande/webservices/orderAffaireV3.jsp',
     {params: {
       'numCommune': numCommune,
       'numMesurage': numMesurage,

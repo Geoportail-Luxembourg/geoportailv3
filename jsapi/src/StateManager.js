@@ -1,7 +1,7 @@
 /**
  * @module lux.StateManager
  */
-import luxBase from './index.js';
+import luxUtil from './util.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olEvents from 'ol/events.js';
 import olObj from 'ol/obj.js';
@@ -50,7 +50,7 @@ exports.prototype.setMap = function(map) {
   onViewUpdate.call(this);
 
   olEvents.listen(view, 'propertychange',
-      luxBase.debounce(onViewUpdate, 250).bind(this));
+      luxUtil.debounce(onViewUpdate, 250).bind(this));
 
   var layersListenerKeys = [];
 
@@ -111,7 +111,7 @@ exports.prototype.updateState = function(object) {
   if (this.state_ !== null) {
     olObj.assign(this.state_, object);
 
-    goog.asserts.assertObject(this.state_);
+    console.assert(this.state_ instanceof Object);
 
     var el = this.map_.getTargetElement();
     var logo = el.querySelectorAll('.ol-attribution a')[0];

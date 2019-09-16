@@ -1,7 +1,7 @@
 /**
  * @module lux.LayerManager
  */
-import luxBase from './index.js';
+import luxUtil from './util.js';
 import olBase from 'ol.js';
 import olControlControl from 'ol/control/Control.js';
 import olEvents from 'ol/events.js';
@@ -59,9 +59,9 @@ exports.prototype.update = function() {
     var label = document.createElement('label');
     var name = /** @type {string} */ (layer.get('name'));
 
-    if (luxBase.lang in luxBase.languages &&
-        luxBase.languages[luxBase.lang][name] !== undefined) {
-      label.innerHTML = luxBase.languages[luxBase.lang][name];
+    if (luxUtil.lang in luxUtil.languages &&
+        luxUtil.languages[luxUtil.lang][name] !== undefined) {
+      label.innerHTML = luxUtil.languages[luxUtil.lang][name];
     } else {
       label.innerHTML = name;
     }
