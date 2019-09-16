@@ -9,9 +9,17 @@ import appModule from './module.js';
  * @param {app.Mymaps} appMymaps app mymaps service.
  * @param {app.draw.DrawnFeatures} appDrawnFeatures Drawn features service.
  * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration ngeo Offline Configuration
+ * @param {app.UserManager} appUserManager The user manager service.
  * @ngInject
  */
-const exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) {
+const exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration, appUserManager) {
+
+  /**
+   * @type {app.UserManager}
+   * @private
+   */
+  this.appUserManager_ = appUserManager;
+
   /**
    * @type {app.Mymaps}
    * @private
@@ -56,6 +64,9 @@ const exports = function(appMymaps, appDrawnFeatures, ngeoOfflineConfiguration) 
  * @return {Promise|angular.$q.Promise} a promise.
  */
 exports.prototype.save = function() {
+  if (!this.appUserManager_.isAuthenticated()) {
+    return Promise.all([]);
+  }
   const conf = this.ngeoOfflineConfiguration_;
   return this.appMymaps_.getFullMymaps().then(function(full_mymaps) {
     if (full_mymaps !== null && full_mymaps !== undefined) {
