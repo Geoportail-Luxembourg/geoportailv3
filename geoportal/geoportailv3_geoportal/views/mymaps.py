@@ -289,9 +289,9 @@ class Mymaps(object):
 
     def _categories(self, session, user):
         if getattr(user, 'is_mymaps_admin', False):
-            self._categories_for_admin(session)
+            return self._categories_for_admin(session)
         else:
-            self._categories_for_non_admin(session, user)
+            return self._categories_for_non_admin(session, user)
 
     def _categories_for_admin(self, session):
         unique_categ = []
