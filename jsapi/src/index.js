@@ -70,14 +70,16 @@ lux.setBaseUrl = function(url, requestScheme) {
   if (requestScheme !== undefined) {
     lux.requestScheme = requestScheme;
   }
-
+  var wsBaseUrl = 'https://map.geoportail.lu/';
+  // wsBaseUrl = url;
   if (!url) {
     lux.layersUrl = '../layers.json';
     lux.i18nUrl = '../lang_xx.json';
 
     url = 'https://apiv3.geoportail.lu/';
   } else {
-    lux.layersUrl = url + lux.layersUrl;
+    lux.layersUrl = wsBaseUrl + lux.layersUrl;
+    // lux.layersUrl = url + lux.layersUrl;
     lux.i18nUrl = url + lux.i18nUrl;
   }
 
@@ -86,7 +88,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   lux.elevationUrl = url + lux.elevationUrl;
   lux.geocodeUrl = url + lux.geocodeUrl;
   lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
-  lux.queryUrl = url + lux.queryUrl;
+  lux.queryUrl = wsBaseUrl + lux.queryUrl;
   lux.profileUrl = url + lux.profileUrl;
   lux.exportCsvUrl = url + lux.exportCsvUrl;
   lux.printUrl = url + lux.printUrl;

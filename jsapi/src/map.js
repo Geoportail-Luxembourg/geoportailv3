@@ -1740,7 +1740,8 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   if (this.queryableLayers_ === undefined) {
     layers.forEach(function(layer) {
       var metadata = layer.get('metadata');
-      if (metadata && metadata['is_queryable'] === 'true' &&
+
+      if (metadata && metadata['is_queryable'] === true &&
           layer.getVisible()) {
         layersToQuery.push(layer.get('id'));
       }
