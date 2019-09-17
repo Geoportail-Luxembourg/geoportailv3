@@ -422,7 +422,7 @@ class Getfeatureinfo(object):
 
             for r in results:
                 l_template = r['template']
-                filename = resource_filename('geoportailv3', path + l_template)
+                filename = resource_filename('geoportailv3_geoportal', path + l_template)
                 template = l_template if isfile(filename) else 'default.html'
                 features = r['features']
                 context = {
@@ -451,7 +451,7 @@ class Getfeatureinfo(object):
 
                 else:
                     r['tooltip'] = render(
-                        'geoportailv3:' + path + template, context)
+                        'geoportailv3_geoportal:' + path + template, context)
 
         return results
 
