@@ -75,6 +75,12 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   var i, key;
 
   if (paramKeys.length === 0 ||
+      (paramKeys.length === 1 && (paramKeys.indexOf('ipv6') >= 0 ||
+      paramKeys.indexOf('applogin') >= 0 || paramKeys.indexOf('localforage') >= 0)) ||
+      (paramKeys.length === 3 && (paramKeys.indexOf('ipv6') >= 0 &&
+      paramKeys.indexOf('applogin') >= 0 && paramKeys.indexOf('localforage') >= 0)) ||
+      (paramKeys.length === 2 && (paramKeys.indexOf('applogin') >= 0 &&
+      paramKeys.indexOf('localforage') >= 0)) ||
       (paramKeys.length === 1 && (paramKeys.indexOf('debug') >= 0 ||
       paramKeys.indexOf('fid') >= 0 || paramKeys.indexOf('lang') >= 0)) ||
       (paramKeys.length === 1 && (paramKeys.indexOf('debug') >= 0 ||
