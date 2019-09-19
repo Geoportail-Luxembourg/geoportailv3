@@ -40,7 +40,7 @@ import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 
-import '../../less/geoportailv3.less'
+import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
  import appAskredirectAskredirectDirective from '../askredirect/askredirectDirective.js';
@@ -651,7 +651,7 @@ const MainController = function(
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then(function() {
-    this.appThemes_.getBgLayers().then(
+    this.appThemes_.getBgLayers(this.map_).then(
           function(bgLayers) {
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */

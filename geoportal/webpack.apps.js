@@ -61,6 +61,12 @@ devServer = dev && !noDevServer;
 console.log("Use dev mode: " + dev)
 console.log("Use dev server mode: " + devServer)
 
+rules.push({
+  test: /\.js$/,
+  use: ["source-map-loader"],
+  enforce: "pre"
+});
+
 module.exports = {
   output: {
     path: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/build/'),
