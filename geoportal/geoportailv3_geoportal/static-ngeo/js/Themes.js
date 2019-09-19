@@ -13,6 +13,33 @@ import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
+import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+
+
+function onFirstTargetChange(map) {
+  return new Promise(function(resolve) {
+    if (map.getTarget()) {
+      resolve(map.getTarget());
+    }
+    map.once('change:target', () => {
+      resolve(map.getTarget());
+    });
+  });
+}
+
+/**
+ */
+function prependMapBoxBackgroundLayer(bgLayers, target) {
+  // add MapBox layer
+  console.log('Creating a MapBoxLayer');
+  const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json'
+  const layer = new MapBoxLayer({
+    style: mapBoxStyle,
+    container: target,
+    label: 'MVT'
+  });
+  bgLayers.unshift(layer);
+}
 
 
 /**
@@ -114,14 +141,16 @@ exports.findTheme_ = function(themes, themeName) {
  * Get background layers.
  * @return {angular.$q.Promise} Promise.
  */
-exports.prototype.getBgLayers = function() {
-  console.assert(this.promise_ !== null);
-  return this.promise_.then(
+exports.prototype.getBgLayers = function(map) {
+  console.assert(this.promise_);
+  console.assert(map);
+  if (!this.getBgLayersPromise_) {
+    this.getBgLayersPromise_ = this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
        * @return {Array.<Object>} Array of background layer objects.
        */
-      (function(data) {
+      data => {
         var bgLayers = data['background_layers'].map(function(item) {
           var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
           console.assert('name' in item);
@@ -141,8 +170,15 @@ exports.prototype.getBgLayers = function() {
 
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
-        return bgLayers;
-      }).bind(this));
+
+        // add MVT layer
+        return onFirstTargetChange(map).then(target => {
+          prependMapBoxBackgroundLayer(bgLayers, target);
+          return bgLayers;
+        })
+      });
+  }
+  return this.getBgLayersPromise_;
 };
 
 

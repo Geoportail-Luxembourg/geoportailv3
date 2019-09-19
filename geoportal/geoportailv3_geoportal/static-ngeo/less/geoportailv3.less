@@ -111,3 +111,25 @@ body.enabled-3d {
 .olcs-hideoverlay .ol-overlay-container {
   visibility:hidden;
 }
+
+
+// Canvas container
+.app-map {
+  z-index: 0;
+}
+
+// MapBox canvas
+.mapboxgl-canvas {
+  z-index: -1;
+  top: 0;
+}
+
+// OL canvas
+.ol-viewport canvas.ol-unselectable {
+    z-index: -4;
+}
+
+// Cesium canvas
+.ol-viewport canvas:not(.ol-unselectable) {
+    z-index: 0;
+}
