@@ -7,9 +7,16 @@
  */
 
 import olMap from 'ol/Map.js';
+import {MapBoxLayerRenderer} from '@geoblocks/mapboxlayer-legacy';
 
 const exports = class extends olMap {
 
+  constructor(...args) {
+    super(...args);
+    this.getRenderer().registerLayerRenderers([
+      MapBoxLayerRenderer
+    ]);
+  }
   /**
    * Currently the zIndex is used to order the layers.
    * Rremoving a layer does not reset the zindex.

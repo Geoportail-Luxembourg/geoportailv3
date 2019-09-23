@@ -809,7 +809,7 @@ exports.prototype.createAndInitCMSBloodhoundEngine_ =
  */
 exports.prototype.createLocalBackgroundLayerData_ =
     function(appThemes, fuse, gettextCatalog) {
-      appThemes.getBgLayers().then(
+      appThemes.getBgLayers(this.map).then(
       function(bgLayers) {
         var suggestions = bgLayers.map(
             /**
