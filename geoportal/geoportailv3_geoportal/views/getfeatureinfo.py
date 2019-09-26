@@ -442,7 +442,7 @@ class Getfeatureinfo(object):
                         log.error(l_template)
                         return HTTPBadGateway()
                     remote_template = Template(data)
-                    if "${features" in data:
+                    if "${features" in data.decode('utf-8'):
                         r['tooltip'] =\
                             remote_template.render(features=features)
                     else:
