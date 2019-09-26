@@ -49,8 +49,6 @@ class JsapiEntry(Entry):
             if 'ogcServer' in layers[id]:
                 if 'source for' in layers[id]['ogcServer']:
                     for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[id]['ogcServer']).all():
-                        print (layers[id]['ogcServer'])
-
                         # required to do every time to validate the url.
                         if ogc_server.auth != main.OGCSERVER_AUTH_NOAUTH:
                             url = self.request.route_url("mapserverproxy", _query={"ogcserver": ogc_server.name})
