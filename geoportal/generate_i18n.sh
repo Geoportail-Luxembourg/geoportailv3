@@ -32,7 +32,7 @@ create_mo_files() {
   for lang in $LANGS
   do
     c2cprefix="`prefix $lang`/geoportailv3_geoportal"
-    files="$c2cprefix-server $c2cprefix-tooltips"
+    files="$c2cprefix-server $c2cprefix-tooltips $c2cprefix-client"
     for f in $files
     do
       echo "-> $f.mo"
