@@ -33,8 +33,10 @@ function prependMapBoxBackgroundLayer(bgLayers, target) {
   // add MapBox layer
   console.log('Creating a MapBoxLayer');
   const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json'
+  const xyz = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
   const layer = new MapBoxLayer({
     style: mapBoxStyle,
+    xyz,
     container: target,
     label: 'MVT'
   });
