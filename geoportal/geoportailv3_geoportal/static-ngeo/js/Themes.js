@@ -28,19 +28,27 @@ function onFirstTargetChange(map) {
 }
 
 /**
+ * @param {import('ol/layer/Layer.js').default[]} bgLayers
  */
-function prependMapBoxBackgroundLayer(bgLayers, target) {
+function replaceWithMVTLayer(bgLayers, target) {
+  const label = 'basemap_2015_global';
   // add MapBox layer
-  console.log('Creating a MapBoxLayer');
   const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json'
   const xyz = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
-  const layer = new MapBoxLayer({
+  const mvtLayer = new MapBoxLayer({
     style: mapBoxStyle,
     xyz,
     container: target,
-    label: 'MVT'
+    label: label,
   });
-  bgLayers.unshift(layer);
+
+  bgLayers.forEach((l, i) => {
+    if (l.get('label') === label) {
+      console.log('Replacing layer with harcoded MVT one', label);
+      mvtLayer.set('metadata', l.get('metadata'));
+      bgLayers[i] = mvtLayer;
+    }
+  })
 }
 
 
@@ -175,7 +183,7 @@ exports.prototype.getBgLayers = function(map) {
 
         // add MVT layer
         return onFirstTargetChange(map).then(target => {
-          prependMapBoxBackgroundLayer(bgLayers, target);
+          replaceWithMVTLayer(bgLayers, target);
           return bgLayers;
         })
       });
