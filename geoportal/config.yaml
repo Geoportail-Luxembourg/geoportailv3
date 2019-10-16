@@ -366,6 +366,7 @@ vars:
         tags: {interface: main, service: js}
         tiles3dLayers: [buildings25d, buildings3d, bridges3d]
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
+        proxyWmsUrl: https://wmsproxy.geoportail.lu/ogcproxywms
       fulltextsearch_params: {
         assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
@@ -389,7 +390,7 @@ vars:
         mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
         postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,postFeedbackCruesUrl: feedbackcrues,
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
-        printServiceUrl: printproxy, profileServiceUrl: profile.json, proxyWmsUrl: wms,
+        printServiceUrl: printproxy, profileServiceUrl: profile.json,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
         shorturlServiceUrl: shortener_create
       }
