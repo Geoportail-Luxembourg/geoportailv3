@@ -46,7 +46,7 @@ function factory(proxyWmsUrl, remoteProxyWms,
       }
     };
 
-    if (opt_url !== undefined || remoteProxyWms) {
+    if ((opt_url !== undefined && opt_url !== null) || remoteProxyWms) {
       optSource.crossOrigin = 'anonymous';
     }
     var layer = new olLayerImage({
