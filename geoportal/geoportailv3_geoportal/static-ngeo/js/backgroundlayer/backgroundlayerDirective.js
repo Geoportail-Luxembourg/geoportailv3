@@ -41,5 +41,19 @@ const exports = function(appBackgroundlayerTemplateUrl) {
 
 appModule.directive('appBackgroundlayer', exports);
 
+ // Custom directive for the  "vector tiles style" change button
+appModule.directive('customOnChange', function() {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      var onChangeHandler = scope.$eval(attrs.customOnChange);
+      element.on('change', onChangeHandler);
+      element.on('$destroy', function() {
+        element.off();
+      });
+    }
+  };
+});
+
 
 export default exports;
