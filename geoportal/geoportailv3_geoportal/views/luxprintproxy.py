@@ -130,7 +130,7 @@ class LuxPrintProxy(PrintProxy):
             opener = urllib.request.build_opener(urllib.request.HTTPHandler())
             data = urllib.parse.urlencode({"url": spec["attributes"]["longUrl"]})
             content = opener.open(
-                "https://map.geoportail.lu/wsgi/short/create",
+                "https://map.geoportail.lu/short/create",
                 data=data.encode('utf-8')).read()
             shortner = json.loads(content)
             spec["attributes"]["url"] = shortner["short_url"]
