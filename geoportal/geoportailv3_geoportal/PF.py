@@ -19,8 +19,7 @@ log = logging.getLogger(__name__)
 class PF():
     def __init__(self):
         self.client = \
-            Client('https://titan.etat.lu/xxpfoWS/ParcelDetailVer1' +
-                   'Service/META-INF/wsdl/ParcelDetailVer1Service.wsdl')
+            Client('https://titan.etat.lu/xxpfoWS/ParcelDetailVer1Service/ParcelDetailVer1Service.wsdl')
         self.client_mesurage = \
             Client('https://titan.etat.lu/xxpfoWS/Measure' +
                    'mentVer1Service/META-INF/wsdl/MeasurementVer1Service.wsdl')
