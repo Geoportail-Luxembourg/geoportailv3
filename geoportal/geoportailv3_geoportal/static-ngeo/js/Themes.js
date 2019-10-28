@@ -33,8 +33,8 @@ function onFirstTargetChange(map) {
 function replaceWithMVTLayer(bgLayers, target) {
   const label = 'basemap_2015_global';
   // add MapBox layer
-  const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json'
-  const xyz = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
+  const mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json'
+  const xyz = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
   const mvtLayer = new MapBoxLayer({
     style: mapBoxStyle,
     xyz,
