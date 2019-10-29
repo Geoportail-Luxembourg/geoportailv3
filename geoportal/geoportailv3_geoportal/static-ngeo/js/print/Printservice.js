@@ -93,7 +93,7 @@ const exports = class extends ngeoPrintService {
 
 
   encodeXYZLayer_(arr, url) {
-    // https://vectortiles-staging.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png
+    // https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png
     const i = url.indexOf('/{z}/{x}/{y}');
     const j = url.lastIndexOf('.');
     if (i === -1 || j === -1) {
