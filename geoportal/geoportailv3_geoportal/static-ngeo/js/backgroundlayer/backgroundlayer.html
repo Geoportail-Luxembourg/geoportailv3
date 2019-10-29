@@ -11,3 +11,14 @@
     </ul>
   </div>
 </div>
+
+<div class="mvt-style-loader" ng-if="ctrl.activeMvt">
+  <label for="uploadMvtStyle" class="btn" translate>Changer style vectorielle</label>
+  <input
+    class="btn btn-default"
+    type="file"
+    name="uploadMvtStyle"
+    id="uploadMvtStyle"
+    custom-on-change="ctrl.setCustomStyle">
+  <a class="btn btn-default" id="clearMvtStyle" ng-click="ctrl.clearCustomStyle()" ng-if="ctrl.hasCustomStyle()" translate>Supprimer</a>
+</div>

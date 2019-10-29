@@ -16,6 +16,9 @@ import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 
+const VECTOR_TILES_STYLE = 'vector-tiles-style';
+
+
 function onFirstTargetChange(map) {
   return new Promise(function(resolve) {
     if (map.getTarget()) {
@@ -33,10 +36,19 @@ function onFirstTargetChange(map) {
 function replaceWithMVTLayer(bgLayers, target) {
   const label = 'basemap_2015_global';
   // add MapBox layer
-  const mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json'
+  const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json'
+
+  let style = defaultMapBoxStyle;
+  if (localStorage.getItem(VECTOR_TILES_STYLE)) {
+    console.log('Load mvt style from local storage');
+    const storedStyle = localStorage.getItem(VECTOR_TILES_STYLE);
+    style = JSON.parse(storedStyle);
+  }
+
   const xyz = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
   const mvtLayer = new MapBoxLayer({
-    style: mapBoxStyle,
+    style,
+    defaultMapBoxStyle,
     xyz,
     container: target,
     label: label,
@@ -48,9 +60,9 @@ function replaceWithMVTLayer(bgLayers, target) {
       mvtLayer.set('metadata', l.get('metadata'));
       bgLayers[i] = mvtLayer;
     }
-  })
-}
+  });
 
+}
 
 /**
  * @constructor
@@ -191,6 +203,21 @@ exports.prototype.getBgLayers = function(map) {
   return this.getBgLayersPromise_;
 };
 
+exports.prototype.setCustomVectorTileStyle = function(bgLayer, customStyle) {
+  if (customStyle) {
+    console.log('Load custom mvt style and save it to local storage');
+    window.localStorage.setItem(VECTOR_TILES_STYLE, customStyle);
+    bgLayer.getMapBoxMap().setStyle(JSON.parse(customStyle));
+  } else {
+    console.log('Reload default mvt style and remove custom style from local storage');
+    window.localStorage.removeItem(VECTOR_TILES_STYLE);
+    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
+  }
+};
+
+exports.prototype.hasCustomStyleLocalStorage = function () {
+  return !!window.localStorage.getItem(VECTOR_TILES_STYLE);
+}
 
 /**
  * Get a theme object by its name.

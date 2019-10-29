@@ -301,6 +301,33 @@
     padding-bottom: 0px;
     font-size: 15px;
   }
+
+  .mvt-style-loader {
+    margin-bottom: 15px;
+    float: left;
+
+    label.btn {
+      border-color: #ccc;
+      background-color: white;
+      margin-left: 1rem;
+      &:hover {
+        background-color: #207EB5;
+      }
+    }
+    input {
+      visibility:hidden;
+      background:transparent;
+      border:none;
+      outline:none;
+      display:block;
+      width: 0;
+      height: 0;
+    }
+
+    label, input, #clearMvtStyle {
+      float: left;
+    }
+  }
 }
 
 app-query {
