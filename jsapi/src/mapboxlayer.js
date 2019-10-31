@@ -56,11 +56,11 @@ class MapBoxLayerRenderer extends ol.Observable {
     // Adjust view parameters in mapbox
     const viewState = frameState.viewState;
     const rotation = viewState.rotation || 0;
-    map.jumpTo({
-      bearing: ol.math.toDegrees(-rotation),
-      center: ol.proj.toLonLat(viewState.center),
-      zoom: viewState.zoom - 1,
-      animate: false
+    map['jumpTo']({
+      'bearing': ol.math.toDegrees(-rotation),
+      'center': ol.proj.toLonLat(viewState.center),
+      'zoom': viewState.zoom - 1,
+      'animate': false
     });
 
     this.triggerSynchronousMapboxRendering_(map);
@@ -74,11 +74,11 @@ class MapBoxLayerRenderer extends ol.Observable {
    */
   triggerSynchronousMapboxRendering_(map) {
 
-    if (map._frame) {
-      map._frame.cancel();
-      map._frame = null;
+    if (map['_frame']) {
+      map['_frame']['cancel']();
+      map['_frame'] = null;
     }
-    map._render();
+    map['_render']();
   }
 }
 
@@ -88,18 +88,18 @@ lux.MapBoxLayer = class MapBoxLayer extends ol.layer.Layer {
 
     const baseOptions = Object.assign({}, options);
 
-    delete baseOptions.accessToken;
-    delete baseOptions.style;
-    delete baseOptions.container;
+    delete baseOptions['accessToken'];
+    delete baseOptions['style'];
+    delete baseOptions['container'];
     super(baseOptions);
 
     if (options.accessToken) {
-      mapboxgl.accessToken = options.accessToken;
+      window['mapboxgl']['accessToken'] = options['accessToken'];
     }
 
-    this.container_ = options.container;
-    this.style_ = options.style;
-    this.xyz_ = options.xyz;
+    this.container_ = options['container'];
+    this.style_ = options['style'];
+    this.xyz_ = options['xyz'];
 
     /**
      * @type {mapboxgl.Map}
@@ -129,19 +129,19 @@ lux.MapBoxLayer = class MapBoxLayer extends ol.layer.Layer {
    */
   getMapBoxMap() {
     if (!this.mapboxMap) {
-      this.mapboxMap = new mapboxgl.Map({
-        container: this.container_,
-        style: this.style_,
-        attributionControl: false,
-        boxZoom: false,
-        doubleClickZoom: false,
-        dragPan: false,
-        dragRotate: false,
-        interactive: false,
-        keyboard: false,
-        pitchWithRotate: false,
-        scrollZoom: false,
-        touchZoomRotate: false
+      this.mapboxMap = new window['mapboxgl']['Map']({
+        'container': this.container_,
+        'style': this.style_,
+        'attributionControl': false,
+        'boxZoom': false,
+        'doubleClickZoom': false,
+        'dragPan': false,
+        'dragRotate': false,
+        'interactive': false,
+        'keyboard': false,
+        'pitchWithRotate': false,
+        'scrollZoom': false,
+        'touchZoomRotate': false
       });
       this.updateVisibility_();
     }
