@@ -20,10 +20,12 @@ class MapBoxLayerRenderer extends ol.Observable {
 
   /**
    * Determine if this renderer handles the provided layer.
+   * @param {*} _ .
    * @param {ol.layer.Layer} layer The candidate layer.
    * @return {boolean} The renderer can render the layer.
+   * @export
    */
-  static handles(layer) {
+  static handles(_, layer) {
     return layer instanceof lux.MapBoxLayer;
   }
 
@@ -32,6 +34,7 @@ class MapBoxLayerRenderer extends ol.Observable {
    * @param {ol.Map} _ The map renderer.
    * @param {ol.layer.Layer} layer The layer to be rendererd.
    * @return {MapBoxLayerRenderer} The layer renderer.
+   * @export
    */
   static create(_, layer) {
     return new MapBoxLayerRenderer(/** @type {MapBoxLayer} */ (layer));
