@@ -5,6 +5,7 @@ goog.require('lux.LayerManager');
 goog.require('lux.MyMap');
 goog.require('lux.PrintManager');
 goog.require('lux.StateManager');
+goog.require('lux.MapBoxLayer');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.Map');
@@ -35,6 +36,8 @@ goog.require('ol.MapBrowserEventType');
 goog.require('ol.Feature');
 goog.require('ol.geom.Polygon');
 goog.require('ol.source.VectorEventType');
+goog.require('ol.plugins');
+goog.require('ol.PluginType');
 
 
 proj4.defs('EPSG:2169', '+proj=tmerc +lat_0=49.83333333333334 +lon_0=6.166666666666667 +k=1 +x_0=80000 +y_0=100000 +ellps=intl +towgs84=-189.681,18.3463,-42.7695,-0.33746,-3.09264,2.53861,0.4598 +units=m +no_defs');
@@ -360,6 +363,7 @@ lux.Map = function(options) {
   };
 
   ol.Map.call(this, options);
+  ol.plugins.register(ol.PluginType.LAYER_RENDERER, window['MapBoxLayerRenderer']);
 
   this.getTargetElement().classList.add('lux-map');
 
@@ -827,6 +831,17 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
   return layerConf;
 };
 
+
+lux.Map.prototype.prependMapBoxBackgroundLayer = function(target) {
+  console.log('Creating a MapBoxLayer');
+  const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json';
+  return new lux.MapBoxLayer({
+    style: mapBoxStyle,
+    container: target,
+    label: 'MVT'
+  });
+};
+
 /**
  * @param {Array<string|number>} layers Array of layer names.
  * @param {Array<number>} opacities Array of layer opacities.
@@ -842,6 +857,12 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
   layers.forEach(function(layer, index) {
     if (layer == 'blank') {
       this.getLayers().push(this.blankLayer_);
+      return;
+    }
+    if (layer == 'basemap_2015_global') {
+      const target = this.getTargetElement();
+      const mvtLayer = this.prependMapBoxBackgroundLayer(target);
+      this.getLayers().push(mvtLayer);
       return;
     }
     var layerConf = this.findLayerConf_(layer);
