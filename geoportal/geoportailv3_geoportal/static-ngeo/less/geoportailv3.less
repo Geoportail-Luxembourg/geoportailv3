@@ -133,3 +133,11 @@ body.enabled-3d {
 .ol-viewport canvas:not(.ol-unselectable) {
     z-index: 0;
 }
+
+// Fix panel being moved right by vector style button
+#routing, #layers, #mymaps, #infos, #legends {
+  div.tab-content {
+    float: left;
+    width: 100%;
+  }
+}
