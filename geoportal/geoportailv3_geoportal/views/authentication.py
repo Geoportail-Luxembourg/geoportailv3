@@ -19,20 +19,27 @@ def ldap_user_validator(request, username, password):
     cm = connector.manager
     data = None
     with cm.connection() as conn:
-        ldap_settings = request.registry.settings['ldap']
-        base_dn = ldap_settings['base_dn']
-        filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
-        message_id = conn.search(
-            base_dn, filter_tmpl, ldap.SUBTREE,
-            ldap.DEREF_ALWAYS)
-        result = conn.get_response(message_id)[0]
-        if len(result) > 0:
-            data = result[0]['dn']
-        conn.unbind()
+        try:
+            ldap_settings = request.registry.settings['ldap']
+            base_dn = ldap_settings['base_dn']
+            filter_tmpl = ldap_settings['filter_tmpl'].replace('%(login)s', username)
+            message_id = conn.search(
+                base_dn, filter_tmpl, ldap.SUBTREE,
+                ldap.DEREF_ALWAYS)
+            result = conn.get_response(message_id)[0]
+            if len(result) > 0:
+                data = result[0]['dn']
+            conn.unbind()
+        except Exception as e:
+            log.exception(e)
+    conn = None
     try:
         conn = cm.connection(data, password)
         conn.unbind()
-    except:
+    except Exception as e:
+        log.exception(e)
+        if conn is not None:
+            conn.unbind()
         data = None
 
     connection = Connections()
