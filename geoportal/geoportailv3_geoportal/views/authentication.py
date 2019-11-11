@@ -32,6 +32,7 @@ def ldap_user_validator(request, username, password):
             conn.unbind()
         except Exception as e:
             log.exception(e)
+            conn.unbind()
     conn = None
     try:
         conn = cm.connection(data, password)
