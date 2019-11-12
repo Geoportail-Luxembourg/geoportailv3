@@ -461,7 +461,7 @@ vars:
   reverse_geocode: {api_key: '{REVERSE_GEOCODE_API_KEY}', url: '{REVERSE_GEOCODE_URL}'}
   schema: geov3
   schema_static: '{PGSCHEMA_STATIC}'
-  servers: {my_maps: 'https://ws.geoportail.lu/mymaps', mapserver: 'https://ws.geoportail.lu'}
+  servers: {my_maps: 'https://ws.app.geoportail.lu/mymaps', mapserver: 'https://ws.app.geoportail.lu'}
   shortener:
     allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu']
     base_url: '{SHORTENER_BASE_URL}'
