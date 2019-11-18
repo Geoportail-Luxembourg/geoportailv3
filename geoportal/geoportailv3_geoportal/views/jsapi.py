@@ -9,10 +9,36 @@ from c2cgeoportal_commons import models
 from c2cgeoportal_commons.models import main, static
 from c2cgeoportal_geoportal.lib import get_url2
 
+
 log = logging.getLogger(__name__)
 
 
 class JsapiEntry(Entry):
+    @view_config(route_name='jsapithemesfull',
+                 renderer='json')
+    def apithemes_full(self):
+        t = []
+        themes, errors = self._themes(None, 1, u'main', True, 2, True)
+        client = TranslationStringFactory("geoportailv3_geoportal-client")
+        registry = get_current_registry()
+        dir = registry.queryUtility(ITranslationDirectories, default=[])
+        localizer_fr = make_localizer("fr", dir)
+        localizer_de = make_localizer("de", dir)
+        localizer_en = make_localizer("en", dir)
+        localizer_lb = make_localizer("lb", dir)
+
+        for theme in themes:
+            entry = models.DBSession.query(main.Theme).filter(main.Theme.id == theme['id']).one()
+            t.append({
+                'id': entry.id,
+                'public': entry.public,
+                'name': entry.name,
+                'name_fr': localizer_fr.translate(client(entry.name)),
+                'name_de': localizer_de.translate(client(entry.name)),
+                'name_en': localizer_en.translate(client(entry.name)),
+                'name_lb': localizer_lb.translate(client(entry.name))
+            })
+        return t
 
     @view_config(route_name='jsapilayersfull',
                  renderer='json')
@@ -23,7 +49,6 @@ class JsapiEntry(Entry):
         '''
         themes, errors = self._themes(None, 1, u'main', True, 2, True)
 
-        layers = {}
 
         # get themes layers
         for theme in themes:
@@ -58,8 +83,12 @@ class JsapiEntry(Entry):
                                 ogc_server.url, self.request, errors=all_errors
                             )
 
+            entry = models.DBSession.query(main.Layer).filter(main.Layer.id == id).one()
+            is_public = entry.public
+
             l.append({
                 'id': layers[id]['id'],
+                'public': is_public,
                 'name': layers[id]['name'],
                 'name_fr': localizer_fr.translate(client(layers[id]['name'])),
                 'name_de': localizer_de.translate(client(layers[id]['name'])),
