@@ -49,7 +49,7 @@ class JsapiEntry(Entry):
         '''
         themes, errors = self._themes(None, 1, u'main', True, 2, True)
 
-
+        layers = {}
         # get themes layers
         for theme in themes:
             self._extract_layers_with_path(theme, layers, [theme['name']])
