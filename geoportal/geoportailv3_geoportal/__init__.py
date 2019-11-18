@@ -391,6 +391,10 @@ def main(global_config, **settings):
         'jsapilayersfull',
         '/jsapilayersfull'
     )
+    config.add_route(
+        'jsapithemesfull',
+        '/jsapithemesfull'
+    )
 
     config.add_route("echocsv", "/profile/echocsv", request_method="POST")
     config.add_route('getuserinfo', '/getuserinfo')
