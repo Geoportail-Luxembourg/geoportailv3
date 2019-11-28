@@ -404,6 +404,12 @@ def main(global_config, **settings):
     config.add_route('isthemeprivate', '/isthemeprivate')
     config.add_route('download_resource', '/downloadresource')
 
+    # Service worker
+    config.add_route(
+        'sw',
+        '/sw.js'
+    )
+
     # Appcache manifest
     config.add_route(
         'appcache',
