@@ -1,5 +1,5 @@
 sentry-sdk==0.10.2
-urllib3[secure]==1.23
+urllib3[secure]==1.24.2
 httplib2shim==0.0.3
 c2cgeoportal_commons==2.3.6.28
 c2cgeoportal_geoportal==2.3.6.28
