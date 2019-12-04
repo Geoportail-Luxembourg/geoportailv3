@@ -970,6 +970,7 @@ class Getfeatureinfo(object):
             content = result.read()
         except Exception as e:
             log.exception(e)
+            log.error(url)
             return []
 
         features = []
