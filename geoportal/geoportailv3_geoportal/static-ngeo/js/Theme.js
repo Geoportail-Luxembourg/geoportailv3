@@ -72,6 +72,13 @@ exports.prototype.setCurrentTheme = function(themeId) {
   this.currentTheme_ = themeId;
 
   var piwikSiteId = this.piwikSiteIdLookup_[this.currentTheme_];
+  var isApp =
+    location.search.includes('localforage=android') ||
+    location.search.includes('localforage=ios') ||
+    location.search.includes('applogin=yes');
+  if (isApp) {
+    piwikSiteId = this.piwikSiteIdLookup_['m'];
+  }
   if (piwikSiteId === undefined || piwikSiteId === null) {
     piwikSiteId = this.piwikSiteIdLookup_[exports.DEFAULT_THEME_];
   }
