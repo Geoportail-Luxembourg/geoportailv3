@@ -419,7 +419,7 @@ vars:
   default_mymaps_role: '{DEFAULT_MYMAPS_ROLE}'
   lidar: {demo_url: '', maxx: 81500, maxy: 108600, minx: 71500, miny: 98600, srs: 'EPSG:2169'}
   lingua_extractor: {}
-  mailer: {message.encoding: UTF-8, transport.host: keendo, transport.use: smtp}
+  mailer: {message.encoding: UTF-8, transport.host: server-relay.mail.etat.lu, transport.use: smtp}
   mapserverproxy: {default_ogc_server: source for image/jpeg}
   modify_notification: {admin_email: null, email_cc: null, url: null}
   no_proxy: localhost
