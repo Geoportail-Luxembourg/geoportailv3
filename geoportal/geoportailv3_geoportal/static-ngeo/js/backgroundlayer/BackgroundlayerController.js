@@ -64,43 +64,6 @@ class Controller {
      * @type {boolean}
      */
     this.activeMvt;
-
-    this.setCustomStyle = (event) => {
-      let file = event.target.files[0];
-
-      // If the file is not a JSON, stop here
-      if (file.type !== 'application/json') {
-        return;
-      }
-    
-      // Read the json file, save it to local storage and load it to the map
-      this.readFile_(file, (e) => {
-        const result = e.target.result;
-        this.appThemes_.setCustomVectorTileStyle(this.bgLayer, result);
-      });
-    
-      // Reset form value
-      event.target.value = null;
-      file = null;
-    };
-
-    this.clearCustomStyle = () => {
-      this.appThemes_.setCustomVectorTileStyle(this.bgLayer, undefined);
-    };
-
-    /**
-     * Read a file as text
-     * @private
-     */
-    this.readFile_ = function(file, callback) {
-      const reader = new FileReader();
-      reader.onload = callback;
-      reader.readAsText(file);
-    };
-
-    this.hasCustomStyle = () => {
-      return this.appThemes_.hasCustomStyleLocalStorage();
-    }
   }
 
 
