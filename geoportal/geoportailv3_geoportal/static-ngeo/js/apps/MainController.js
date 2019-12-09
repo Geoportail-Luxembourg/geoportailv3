@@ -506,6 +506,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this['vectorEditorOpen'] = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -612,6 +617,22 @@ const MainController = function(
   this.map_ = this.createMap_();
 
   /**
+   * @type {string}
+   */
+  this.lastPanelOpened = undefined;
+
+  /**
+   * @type {boolean}
+   */
+  this.activeMvt;
+
+  /**
+   * @type {import('ol/layer/Base').default}
+   */
+  this.bgLayer;
+
+
+  /**
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
@@ -653,6 +674,7 @@ const MainController = function(
   this.loadThemes_().then(function() {
     this.appThemes_.getBgLayers(this.map_).then(
           function(bgLayers) {
+            this.bgLayer = this.backgroundLayerMgr_.get(this.map);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(function(layer) {
@@ -682,7 +704,7 @@ const MainController = function(
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
-    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackcrues'));
+    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('f§eedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
@@ -771,6 +793,47 @@ const MainController = function(
       this.showTab('a[href=\'#mylayers\']');
     }
   });
+
+  /**
+   * Read a json file and store custom style to local storage
+   */
+  this.setCustomStyle = (event) => {
+    let file = event.target.files[0];
+
+    if (file.type !== 'application/json') {
+      return;
+    }
+
+    this.readFile_(file, (e) => {
+      const result = e.target.result;
+      this.appThemes_.setCustomVectorTileStyle(this.bgLayer, result);
+    });
+
+    // Reset form value
+    event.target.value = null;
+    file = null;
+  };
+
+  this.clearCustomStyle = () => {
+    this.appThemes_.setCustomVectorTileStyle(this.bgLayer, undefined);
+  };
+
+  /**
+   * Read a file as text
+   * @private
+   */
+  this.readFile_ = function(file, callback) {
+    const reader = new FileReader();
+    reader.onload = callback;
+    reader.readAsText(file);
+  };
+
+  /**
+   * Check if a custom style is in the local storage
+   */
+  this.hasCustomStyle = () => {
+    return this.appThemes_.hasCustomStyleLocalStorage();
+  }
 
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
@@ -1053,7 +1116,7 @@ MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
-      this['feedbackCruesOpen'] = false;
+      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = false;
 };
 
 
@@ -1064,9 +1127,27 @@ MainController.prototype.closeSidebar = function() {
 MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
-      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'];
+      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+      this['vectorEditorOpen'];
 };
 
+
+/**
+ * Memorize the last panel opened when opening vector editor panel
+ * Allow to get back to last panel when closing the tool.
+ * @param {string} tab A tab name.
+ */
+MainController.prototype.toggleVectorEditor = function (tab) {
+  if (tab !== undefined) {
+    this.lastPanelOpened = tab;
+  } else {
+    if (this.lastPanelOpened) {
+      this[this.lastPanelOpened] = true;
+    } else {
+      new Error('The panel to open does not exists...');
+    }
+  }
+};
 
 /**
  * @param {string} lang Language code.

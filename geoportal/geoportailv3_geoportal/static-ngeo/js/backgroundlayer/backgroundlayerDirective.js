@@ -9,7 +9,7 @@
  *
  * Example:
  *
- * <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map">
+ * <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt">
  * </app-backgroundlayer>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
@@ -29,7 +29,8 @@ const exports = function(appBackgroundlayerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appBackgroundlayerMap'
+      'map': '=appBackgroundlayerMap',
+      'activeMvt': '='
     },
     controller: 'AppBackgroundlayerController',
     controllerAs: 'ctrl',

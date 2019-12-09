@@ -16,6 +16,8 @@
   }
 
   app-backgroundlayer {
+    float: left;
+    margin: 0 20px;
     > div {
       margin-bottom: 15px;
       .dropdown {
@@ -116,6 +118,40 @@
     padding-top: 10px;
     color: #FFFFFF;
   }
+  #vectoreditor .tab-content {
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  .tab-content {
+    width: 100%;
+  }
+
+  .btn-vector-editor {
+    position: relative;
+    float: left;
+    padding: 5px;
+    border: solid lightgrey 1px;
+
+    &::after {
+      content: '\f1fc';
+      font-family: FontAwesome;
+      font-size: 1em;
+    }
+  }
+
+  .btn-vector-editor-active {
+    background-color: #207EB5;
+    color: #FFFFFF;
+  }
+
+  .btn-vector-editor-inactive {
+    background-color: #FFFFFF;
+    color: #207EB5;
+  }
 
   .themes-switcher {
     overflow-y: auto;
@@ -149,6 +185,11 @@
     color: #333;
   }
   .feedbackage-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+  .vectoreditor-content {
     overflow-y: auto;
     overflow-x: hidden;
     color: #333;
@@ -302,30 +343,85 @@
     font-size: 15px;
   }
 
-  .mvt-style-loader {
-    margin-bottom: 15px;
-    float: left;
+  div#expert-editor {
+    position: relative;
+    width: 220px;
+    height: 150px;
+    border: #ccc solid 2px;
+    text-align: center;
 
-    label.btn {
-      border-color: #ccc;
-      background-color: white;
-      margin-left: 1rem;
-      &:hover {
-        background-color: #207EB5;
+    .launch-editor-button,
+    .upload-style-button {
+      height: 100px;
+      width: 85px;
+      display: block;
+      z-index: 5; // Allow the button to be clicked on the icon area
+      border: #ccc solid 2px;
+      color: white;
+
+      font-size: 0.8em;
+      line-height: 1em;
+      text-decoration: none;
+
+      margin: 0px 10px;
+      position: relative;
+      float: left;
+
+      &:after{
+        font-family: FontAwesome;
+        font-size: 3em;
+        width: 100%;
+        text-indent: 0;
+
+        position: absolute;
+        z-index: -1; // Allow the button to be clicked on the icon area
+        top: 25px;
+        left: 0;
+        text-align: center;
+      }
+
+      span {
+        position: absolute;
+        width: 100%;
+        right: 0;
+        top: 70px;
+        font-size: 1.2em;
       }
     }
-    input {
-      visibility:hidden;
-      background:transparent;
-      border:none;
-      outline:none;
-      display:block;
-      width: 0;
-      height: 0;
+
+    .launch-editor-button:after {
+      content: url(../images/palette.svg);
+      width: 1.2em;
+      top: 10px;
+      left: 20px;
+      color: white;
+    }
+    .upload-style-button:after {
+      content: '\f0ee';
     }
 
-    label, input, #clearMvtStyle {
+    .upload-style-button {
+      margin-bottom: 15px;
       float: left;
+
+      // Invisible, as we click on the label
+      input {
+        visibility:hidden;
+        background:transparent;
+        border:none;
+        outline:none;
+        display:block;
+        width: 0;
+        height: 0;
+      }
+
+      // Clickable element in the form
+      label {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        font-weight: 500;
+      }
     }
   }
 }
