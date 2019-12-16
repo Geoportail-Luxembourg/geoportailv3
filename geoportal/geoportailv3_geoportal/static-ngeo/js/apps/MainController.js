@@ -666,6 +666,15 @@ const MainController = function(
     }
   }.bind(this));
 
+  // Hide the vector editor panel when we choose non-vt layer with the selector
+  $scope.$watch(() => {
+    return this.activeMvt;
+  }, (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null && newVal !== oldVal) {
+      this.toggleVectorEditor();
+    }
+  });
+
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
