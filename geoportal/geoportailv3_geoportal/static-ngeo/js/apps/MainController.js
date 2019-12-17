@@ -1155,6 +1155,10 @@ MainController.prototype.initMymaps_ = function() {
                 size: /** @type {ol.Size} */ (this.map_.getSize())
               });
             }
+            var layer = this.drawnFeatures_.getLayer();
+            if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
+              this.map_.addLayer(layer);
+            }
           }.bind(this));
   } else {
     this.appMymaps_.clear();
