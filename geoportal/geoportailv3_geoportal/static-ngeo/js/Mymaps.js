@@ -503,7 +503,7 @@ exports.prototype.setCurrentMapId = function(mapId, collection) {
   if (this.ngeoOfflineMode_.isEnabled()) {
     return this.setCurrentMapIdWhenOffline_(mapId, collection);
   } else {
-    // Clear map to removes the alreay selected layers
+    // Clear map to remove the alreay selected layers
     // Don't do it offline because other layer won't be loaded.
     this.map.getLayers().clear();
   }
