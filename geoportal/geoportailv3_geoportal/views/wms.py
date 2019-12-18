@@ -11,6 +11,7 @@ import urllib.request
 import urllib.parse
 import socket
 import base64
+import os
 
 log = logging.getLogger(__name__)
 
@@ -68,8 +69,7 @@ class Wms(object):
     @view_config(route_name='wmspoi')
     def wmspoi(self):
         config = self.request.registry.settings
-        remote_host = config["poi_server"]
-
+        remote_host = os.environ["poi_server"]
         param_wms = ''
         for param in self.request.params:
             if param.lower() != 'id_collection':
@@ -90,8 +90,10 @@ class Wms(object):
         try:
             f = urllib.request.urlopen(url)
             data = f.read()
-        except:
-            log.debug(url)
+        except Exception as e:
+            log.exception(e)
+            log.error(url)
+
         headers = {"Content-Type": f.info()['Content-Type']}
         return Response(data, headers=headers)
 
