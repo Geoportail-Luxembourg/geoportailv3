@@ -33,6 +33,7 @@ function normalizeUrl(url) {
   return url;
 }
 
+const urlKeys = urls.map(normalizeUrl);
 
 /**
  * Fetch the resource and store it in the cache using a normalized key.
@@ -82,11 +83,56 @@ function getCachedFile(url) {
 }
 
 
+function openIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("myDatabase");
+    request.onsuccess = event => {
+      resolve(request.result);
+    };
+    request.onerror = () => {
+      reject(request.error);
+    };
+    request.onupgradeneeded = () => {
+      reject('Error, the indexedDB should exist');
+    };
+  });
+}
+
+function readFromIndexedDB(db, url) {
+  return new Promise((resolve, reject) => {
+    console.log('indexedDB is up, cool!');
+    const dbRequest = db.transaction("responses").objectStore("responses").get(url);
+    dbRequest.onsuccess = function(dbEvent) {
+      const init = {"status" : 200 , "statusText" : "OK"};
+      const body = dbEvent.target.result.content;
+      if (body) {
+        console.log('found content!');
+        resolve(new Response(body, init));
+      } else {
+        console.log('no content!');
+        reject();
+      }
+    };
+    dbRequest.onerror = function(dbEvent) {
+      console.error('sw db error', dbEvent.target.errorCode);
+      reject();
+    };
+  });
+}
+
 if (typeof self === 'object') {
   console.log('In the sw');
+
+  // Install the service worker (download website files)
   self.addEventListener('install', e => {
     console.log('SW installation');
     e.waitUntil(downloadAndCacheWebsiteFiles());
+  });
+
+  // Immediately claim the clients so that they can go offline without reloading the page.
+  self.addEventListener('activate', event => {
+    console.log('SW activating and claiming clients');
+    clients.claim();
   });
 
   // Intercept the network queries from the main thread and the workers
@@ -94,15 +140,27 @@ if (typeof self === 'object') {
   // - to serve the website without network connectivity;
   // - to inject offline MVT data into MapBox without modifying MapBox.
   self.addEventListener('fetch', function(event) {
-    // console.log('sw intercept fetch', event.request.url)
-    // TODO:
+    const url = event.request.url;
+
     // should normalize the url
+    const urlKey = normalizeUrl(url);
+    if (urlKeys.includes(urlKey)) {
+      // if in the website files => fetch from network, and fallback to the cache
+      const promise = fetch(url).catch(() => getCachedFile(url).then(r => r ? r : Promise.reject()));
+      event.respondWith(promise);
+      return;
+    }
+
+    if (offlineEnabled) {
+      // if offline enabled => get from the indexedDb (no fallback)
+      const promise = openIndexedDB().then(db => readFromIndexedDB(db, urlKey));
+      event.respondWith(promise);
+      return;
+    }
+
+    // In all other cases forward to network
     // if in the website files => fetch in the cache (and forward fetch if not found?)
-    // if offline enabled
-    // -> get from the indexedDb (no fallback)
-    event.respondWith(
-        getCachedFile(event.request.url).then(response => response || fetch(event.request))
-    );
+    event.respondWith(fetch(event.request));
   });
 
   // Listen for messages from the applications
