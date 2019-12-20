@@ -3,6 +3,7 @@
  */
 import appModule from './module.js';
 import Downloader from 'ngeo/offline/Downloader.js';
+import MapBoxOffline from './offline/MapboxOffline.js';
 
 /**
  * @extends {ngeo.offline.Downloader}
@@ -13,14 +14,22 @@ const OfflineDownloader = class extends Downloader {
    * @param {ngeo.offline.Configuration} ngeoOfflineConfiguration A service for customizing offline behaviour.
    * @param {app.MymapsOffline} appMymapsOffline mymaps offline service.
    * @param {angular.$window} $window Window.
+   * @param {import('./offline/MapboxOffline').default} appMapBoxOffline The MapBox offline service.
+   * @param {ngeo.BackgroundLayerMgr} ngeoBackgroundLayerMgr The ngeo background manager.
    */
-  constructor(ngeoOfflineConfiguration, appMymapsOffline, $window) {
+  constructor(ngeoOfflineConfiguration, appMymapsOffline, $window, appMapBoxOffline,ngeoBackgroundLayerMgr) {
     super(ngeoOfflineConfiguration);
     /**
      * @type {app.MymapsOffline}
      * @private
      */
     this.appMymapsOffline_ = appMymapsOffline;
+
+    this.appMapBoxOffline_ = appMapBoxOffline;
+
+    this.configuration_ = ngeoOfflineConfiguration;
+
+    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
     /**
      * @type {angular.$window}
@@ -42,9 +51,25 @@ const OfflineDownloader = class extends Downloader {
       'saveOfflineMap'
     ]);
     piwik.push(['trackPageView']);
+
+    // Keep a reference to the original mapbox layer
+    let mapBoxLayer = null;
+    const bgLayer = this.backgroundLayerMgr_.get(map);
+    if (bgLayer.getMapBoxMap) {
+        mapBoxLayer = bgLayer;
+    }
     const superMethod = super.save.bind(this);
-    return this.appMymapsOffline_.save().then(function() {
-      return superMethod(extent, map);
+    return this.appMymapsOffline_.save().then(() => {
+      let doFirst = Promise.resolve();
+      if (mapBoxLayer) {
+        // When we reach 100%
+        const style = mapBoxLayer.getMapBoxMap().getStyle();
+        const styleUrl = mapBoxLayer.get('defaultMapBoxStyle');
+        const progressCb = p => this.configuration_.onTileDownloadError(p * 0.9);
+        const extentByZoom = this.configuration_.getExtentByZoom(map, mapBoxLayer, [], extent);
+        doFirst = this.appMapBoxOffline_.save(styleUrl, style, extentByZoom, progressCb);
+      }
+      return doFirst.then(() => superMethod(extent, map));
     });
   }
 };
