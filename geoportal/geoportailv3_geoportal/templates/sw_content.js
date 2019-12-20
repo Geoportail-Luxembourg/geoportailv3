@@ -85,7 +85,7 @@ function getCachedFile(url) {
 
 function openIndexedDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("myDatabase");
+    const request = indexedDB.open("swdb", 1);
     request.onsuccess = event => {
       resolve(request.result);
     };
@@ -98,19 +98,48 @@ function openIndexedDB() {
   });
 }
 
+function dataURItoBlob(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  var byteString = atob(dataURI.split(',')[1]);
+
+  // separate out the mime component
+  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+  // write the bytes of the string to an ArrayBuffer
+  var ab = new ArrayBuffer(byteString.length);
+
+  // create a view into the buffer
+  var ia = new Uint8Array(ab);
+
+  // set the bytes of the buffer to the correct values
+  for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+
+  // write the ArrayBuffer to a blob, and you're done
+  var blob = new Blob([ab], {type: mimeString});
+  return blob;
+}
+
 function readFromIndexedDB(db, url) {
+  url = decodeURI(url);
   return new Promise((resolve, reject) => {
     console.log('indexedDB is up, cool!');
     const dbRequest = db.transaction("responses").objectStore("responses").get(url);
     dbRequest.onsuccess = function(dbEvent) {
       const init = {"status" : 200 , "statusText" : "OK"};
-      const body = dbEvent.target.result.content;
-      if (body) {
-        console.log('found content!');
-        resolve(new Response(body, init));
+      const result = dbEvent.target.result;
+      if (result && result.content) {
+        console.log('found content! for ' + url);
+        let d = result.content
+        if (d.startsWith('data')) {
+          d = dataURItoBlob(d);
+        }
+        resolve(new Response(d, init));
       } else {
         console.log('no content!');
-        reject();
+        reject('Could not find url ' + url + ' in indexedDB');
       }
     };
     dbRequest.onerror = function(dbEvent) {
@@ -153,7 +182,7 @@ if (typeof self === 'object') {
 
     if (offlineEnabled) {
       // if offline enabled => get from the indexedDb (no fallback)
-      const promise = openIndexedDB().then(db => readFromIndexedDB(db, urlKey));
+      const promise = openIndexedDB().then(db => readFromIndexedDB(db, url));
       event.respondWith(promise);
       return;
     }

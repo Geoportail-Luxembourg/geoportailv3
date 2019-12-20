@@ -19,11 +19,17 @@ def get_urls(request):
         '/',
         '/dynamic.js?interface=main',
         '/getuserinfo',
+        '/themes?version=2&background=background&interface=main&catalogue=true&min_levels=1',
         request.static_path('geoportailv3_geoportal:static-ngeo/images/arrow.png'),
         main_js_url,
         main_css_url,
         gov_light_url
     ]
+
+    if 'dev' in request.params:
+        urls.append('/dev/main.html')
+        urls.append('/dev/main.css')
+        urls.append('/dev/main.js')
 
     woffs = glob.glob('/app/geoportailv3_geoportal/static-ngeo/build/*.woff')
     for stuff in get_built_filenames('*.woff'):

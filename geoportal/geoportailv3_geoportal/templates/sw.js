@@ -8,9 +8,6 @@
 % endif
 
 const urls = [
-  // '/dev/main.html',
-  // '/dev/main.css',
-  // '/dev/main.js',
 % for url in urls:
   '${url}',
 % endfor
