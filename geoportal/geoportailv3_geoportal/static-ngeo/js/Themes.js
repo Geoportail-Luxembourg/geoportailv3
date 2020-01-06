@@ -215,9 +215,17 @@ exports.prototype.setCustomVectorTileStyle = function(bgLayer, customStyle) {
   }
 };
 
+exports.prototype.getCustomVectorTileStyle = function() {
+  return window.localStorage.getItem(VECTOR_TILES_STYLE);
+};
+
+exports.prototype.getCustomVectorTileSTyleForDownload = function (bgLayer) {
+  return JSON.stringify(bgLayer.getMapBoxMap().getStyle());
+};
+
 exports.prototype.hasCustomStyleLocalStorage = function () {
   return !!window.localStorage.getItem(VECTOR_TILES_STYLE);
-}
+};
 
 /**
  * Get a theme object by its name.

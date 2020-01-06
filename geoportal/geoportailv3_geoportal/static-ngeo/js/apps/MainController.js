@@ -224,11 +224,12 @@ import '../../less/geoportailv3.less';
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {string} ageLayerIds ID of AGE layers.
  * @param {string} showAgeLink Enable the AGE link.
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @param {string} ageCruesLayerIds ID of flashflood layers.
- * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service.
+ * @param {ngeo.download.service} ngeoDownload ngeo Download service.
  * @constructor
  * @export
  * @ngInject
@@ -243,7 +244,8 @@ const MainController = function(
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
-    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline) {
+    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
+    ngeoDownload) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -631,6 +633,10 @@ const MainController = function(
    */
   this.bgLayer;
 
+  /**
+   * @type {ngeo.download.service}
+   */
+  this.download_ = ngeoDownload;
 
   /**
    * @const {?app.olcs.Lux3DManager}
@@ -843,6 +849,17 @@ const MainController = function(
   this.hasCustomStyle = () => {
     return this.appThemes_.hasCustomStyleLocalStorage();
   }
+
+  this.downloadCustomStyleFile = () => {
+    const content = this.appThemes_.getCustomVectorTileSTyleForDownload(this.bgLayer);
+    const fileName = 'styles.json';
+    if (content === null) {
+      console.log('No custom mvt to load');
+      return;
+    }
+    return this.download_(content, fileName);
+  }
+
 
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);

@@ -351,21 +351,30 @@
             ng-if="mainCtrl.activeMvt"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
-            <p>beginner</p>
-            <p>medium</p>
-            <div id="expert-editor">
-              <p>Lancer editeurs externe ou importer json</p>
-              <a href class="launch-editor-button"><span translate>Launch editor</span></a>
-              <div class="upload-style-button">
-                <label for="uploadMvtStyle"><span translate>Upload style</span></label>
-                <input
-                  type="file"
-                  name="uploadMvtStyle"
-                  id="uploadMvtStyle"
-                  custom-on-change="mainCtrl.setCustomStyle">
-                <a class="btn btn-default" id="clearMvtStyle" ng-click="mainCtrl.clearCustomStyle()" ng-if="mainCtrl.hasCustomStyle()" translate>Supprimer</a>
+            <div data-toggle="collapse" data-target="#editor-beginner" class="editor-list">Beginner (one-click)</div>
+            <div class="collapse editor-expert" id="editor-beginner">1</div>
+
+            <!-- <div data-toggle="collapse" data-target="#editor-medium" class="editor-list">Medium</div>  -->
+            <!-- <div class="collapse" id="editor-medium">2</div> -->
+
+            <div data-toggle="collapse" data-target="#editor-expert" class="editor-list">Expert (style.json)</div>
+            <div class="collapse" id="editor-expert">
+              <div class="content-wrapper">
+                <div id="editor-expert-content">
+                  <p>Lancer editeurs externe ou importer json</p>
+                  <a href class="launch-editor-button" ng-click="mainCtrl.downloadCustomStyleFile()"><span translate>Download style</span></a>
+                  <div class="upload-style-button">
+                    <label for="uploadMvtStyle"><span translate>Upload style</span></label>
+                    <input
+                      type="file"
+                      name="uploadMvtStyle"
+                      id="uploadMvtStyle"
+                      custom-on-change="mainCtrl.setCustomStyle">
+                  </div>
+                </div>
               </div>
             </div>
+            <a class="btn btn-default clear-style-btn" ng-click="mainCtrl.clearCustomStyle()" ng-if="mainCtrl.hasCustomStyle()" translate>Supprimer</a>
           </div>
         </div>
       </div>
