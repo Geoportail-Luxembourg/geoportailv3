@@ -590,7 +590,7 @@ exports.prototype.print = function(format) {
           'scale': this['scale'],
           'name': this['title'],
           'url': shorturl,
-          'qrimage': this.qrServiceUrl_ + '?url=' + shorturl,
+          'qrimage': this.qrServiceUrl_.replace('map.app.', 'map.') + '?url=' + shorturl,
           'lang': this.gettextCatalog.currentLanguage,
           'legend': this['legend'] ? legend : null,
           'scalebar': {'geodetic': true},
