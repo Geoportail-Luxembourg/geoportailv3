@@ -249,6 +249,13 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
+  if (navigator.serviceWorker) {
+    // Force online state on load since iOS/Safari does not support clientIds.
+    navigator.serviceWorker.getRegistration().then(() => {
+      fetch('/switch-lux-online');
+    })
+  }
+
   /**
    * @type {string}
    * @private

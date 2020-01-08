@@ -188,11 +188,7 @@ export default class MapBoxOffline {
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
-    navigator.serviceWorker.controller.postMessage({
-      offline: true
-    })
-    setTimeout(() => {
-      // I guess we must wait a bit??
+    fetch('/switch-lux-offline').then(() => {
       const style = map.getStyle();
       map.setStyle(null);
       map.setStyle(style);
