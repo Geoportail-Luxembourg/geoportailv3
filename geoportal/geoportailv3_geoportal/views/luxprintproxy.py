@@ -102,7 +102,7 @@ class LuxPrintProxy(PrintProxy):
         else:
             print_url = self.config["print_url"]
 
-        spec = json.loads(self.request.body)
+        spec = json.loads(self.request.body.decode("utf-8").replace(".app.geoportail", ".geoportail"))
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
