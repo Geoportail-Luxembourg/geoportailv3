@@ -1,4 +1,4 @@
-let offlineEnabled = false;
+let offlineEnabled = {};
 
 /**
  * Normalise URL so that it can be used as key in the cache.
@@ -170,6 +170,15 @@ if (typeof self === 'object') {
   // - to inject offline MVT data into MapBox without modifying MapBox.
   self.addEventListener('fetch', function(event) {
     const url = event.request.url;
+    const switchOffline = url.includes('/switch-lux-offline');
+    const switchOnline = url.includes('/switch-lux-online');
+    if (switchOffline || switchOnline) {
+      const value = offlineEnabled[event.clientId] = switchOffline;
+      console.log('Offline of ', event.clientId, 'is now', value);
+      const promise = Promise.resolve(new Response(value.toString()));
+      event.respondWith(promise);
+      return;
+    }
 
     // should normalize the url
     const urlKey = normalizeUrl(url);
@@ -180,7 +189,7 @@ if (typeof self === 'object') {
       return;
     }
 
-    if (offlineEnabled) {
+    if (offlineEnabled[event.clientId]) {
       // if offline enabled => get from the indexedDb (no fallback)
       const promise = openIndexedDB().then(db => readFromIndexedDB(db, url));
       event.respondWith(promise);
@@ -196,7 +205,7 @@ if (typeof self === 'object') {
   // This is used to toggle the "offline mode".
   self.addEventListener('message', function(event) {
     if ('offline' in event.data) {
-      offlineEnabled = !!event.data.offline;
+      offlineEnabled[event.clientId] = !!event.data.offline;
       console.log('Offline is now', offlineEnabled);
     }
   });
