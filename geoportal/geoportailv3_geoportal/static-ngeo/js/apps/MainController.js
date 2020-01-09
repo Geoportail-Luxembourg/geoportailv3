@@ -168,6 +168,7 @@ import '../../less/geoportailv3.less';
  import appStateManager from '../StateManager.js';
  import appTheme from '../Theme.js';
  import appThemes from '../Themes.js';
+ import appMvtStylingService from '../mvtstyling/MvtStylingService.js';
 
  //const appThemesResponse = goog.require('app.ThemesResponse');
  import appUserManager from '../UserManager.js';
@@ -179,26 +180,23 @@ import '../../less/geoportailv3.less';
  import OfflineDownloader from '../OfflineDownloader.js';
  import OfflineRestorer from '../OfflineRestorer.js';
 
- import './mvtstyling/MediumStyleController.js';
- import './mvtstyling/SimpleStyleController.js';
+ import '../mvtstyling/MediumStyleController.js';
+ import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
 // See intermediate_editor_spec.md
-function getDefaultMediumStyling(gettext) {
+function getDefaultMediumStyling() {
+  const gettext = t => t;
   return [{
-    "type": "line",
     "label": gettext("Primary road"),
     "path": "road_trunk_primary",
     "color": "#bc1515",
-    "width": 2,
-    "visibile": true
+    "visible": true
   }, {
-    "type": "line",
     "label": gettext("Lux Primary road"),
     "path": "lu_road_trunk_primary",
     "color": "#bc1515",
-    "width": 2,
-    "visibile": true
+    "visible": true
   }];
 }
 
@@ -210,12 +208,12 @@ const simpleStylings = [
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.Http} $http Http.
  * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
  * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
- * @param {function(string): string} gettext Gettext function.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
@@ -258,13 +256,14 @@ const simpleStylings = [
  * @param {string} ageCruesLayerIds ID of flashflood layers.
  * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service.
  * @param {ngeo.download.service} ngeoDownload ngeo Download service.
+ * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
  * @constructor
  * @export
  * @ngInject
  */
 const MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
-    gettext, gettextCatalog, appExclusionManager, appLayerOpacityManager,
+    $scope, $http, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
+    gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
@@ -273,13 +272,13 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload) {
+    ngeoDownload, appMvtStylingService) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
-  this.mediumStylingData = getDefaultMediumStyling(gettext);
+  this.mediumStylingData = getDefaultMediumStyling();
   const simpleStylingKeys = this.mediumStylingData.map(item => item.path)
 
   this.simpleStylingData = simpleStylings;
@@ -291,21 +290,28 @@ const MainController = function(
       mbMap.setPaintProperty(key, 'line-color', color);
       mbMap.setLayoutProperty(key, 'visibility', 'visible');
     }
+    this.appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
+    this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
+      item.color = colors[idx];
+      item.visible = true;
+      return item;
+    })
   };
 
 
   // FIXME: we must store the current rules of medium styling and override the default with them
   // to be decided: do we loose the user config when default values change?
   // when the structure change?
-  Object.assign(this.mediumStylingData, JSON.parse(localStorage.getItem('mediumStyling') || '{}'));
+  const mediumStyle = appMvtStylingService.getMediumStyle();
+  Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
 
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
     // mbMap.setPaintProperty(item.path, 'fill-color', item.color);
     mbMap.setPaintProperty(item.path, 'line-color', item.color);
     mbMap.setLayoutProperty(item.path, 'visibility', item.visible ? 'visible' : 'none');
-    localStorage.setItem('mediumStyling', JSON.stringify(this.mediumStylingData));
-    // FIXME: store updated styling
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
+    appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
   };
 
   if (navigator.serviceWorker) {
@@ -445,6 +451,12 @@ const MainController = function(
    * @private
    */
   this.scope_ = $scope;
+
+  /**
+   * @type {angular.http}
+   * @private
+   */
+  this.http_ = $http;
 
   /**
    * @type {app.StateManager}
@@ -703,6 +715,11 @@ const MainController = function(
   this.saveAs_ = ngeoDownload;
 
   /**
+   * @type{app.Mvtstyling}
+   */
+  this.appMvtStylingService = appMvtStylingService;
+
+  /**
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
@@ -885,7 +902,8 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      this.appThemes_.setCustomVectorTileStyle(this.bgLayer, result);
+      this.appMvtStylingService.saveBgStyle(result);
+      this.bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
     });
 
     // Reset form value
@@ -893,7 +911,10 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    this.appThemes_.setCustomVectorTileStyle(this.bgLayer, undefined);
+    console.log('Mvt styles cleared from local storage, database, and map');
+    this.appMvtStylingService.removeStyles();
+    this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
+    this.mediumStylingData = getDefaultMediumStyling();
   };
 
   /**
@@ -905,13 +926,6 @@ const MainController = function(
     reader.onload = callback;
     reader.readAsText(file);
   };
-
-  /**
-   * Check if a custom style is in the local storage
-   */
-  this.hasCustomStyle = () => {
-    return this.appThemes_.hasCustomStyleLocalStorage();
-  }
 
   this.downloadCustomStyleFile = () => {
     const content = this.appThemes_.getCustomVectorTileSTyleForDownload(this.bgLayer);
