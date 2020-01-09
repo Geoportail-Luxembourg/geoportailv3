@@ -508,7 +508,7 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['vectorEditorOpen'] = false;
+  this.vectorEditorOpen = false;
 
   /**
    * @type {boolean}
@@ -636,7 +636,7 @@ const MainController = function(
   /**
    * @type {ngeo.download.service}
    */
-  this.download_ = ngeoDownload;
+  this.saveAs_ = ngeoDownload;
 
   /**
    * @const {?app.olcs.Lux3DManager}
@@ -677,7 +677,7 @@ const MainController = function(
     return this.activeMvt;
   }, (newVal, oldVal) => {
     if (newVal !== null && oldVal !== null && newVal !== oldVal) {
-      this.toggleVectorEditor();
+      this.restoreLastOpenedPanel();
     }
   });
 
@@ -719,7 +719,7 @@ const MainController = function(
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
-    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('f§eedbackcrues'));
+    this['feedbackCruesOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackcrues'));
     var urlLocationInfo = appStateManager.getInitialValue('crosshair');
     var infoOpen = urlLocationInfo !== undefined && urlLocationInfo !== null &&
       urlLocationInfo === 'true';
@@ -813,7 +813,7 @@ const MainController = function(
    * Read a json file and store custom style to local storage
    */
   this.setCustomStyle = (event) => {
-    let file = event.target.files[0];
+    const file = event.target.files[0];
 
     if (file.type !== 'application/json') {
       return;
@@ -826,7 +826,6 @@ const MainController = function(
 
     // Reset form value
     event.target.value = null;
-    file = null;
   };
 
   this.clearCustomStyle = () => {
@@ -853,11 +852,11 @@ const MainController = function(
   this.downloadCustomStyleFile = () => {
     const content = this.appThemes_.getCustomVectorTileSTyleForDownload(this.bgLayer);
     const fileName = 'styles.json';
-    if (content === null) {
+    if (!content) {
       console.log('No custom mvt to load');
       return;
     }
-    return this.download_(content, fileName);
+    return this.saveAs_(content, fileName);
   }
 
 
@@ -1159,19 +1158,26 @@ MainController.prototype.sidebarOpen = function() {
 
 
 /**
- * Memorize the last panel opened when opening vector editor panel
- * Allow to get back to last panel when closing the tool.
+ * Remember the last panel opened when opening vector editor panel
  * @param {string} tab A tab name.
  */
-MainController.prototype.toggleVectorEditor = function (tab) {
-  if (tab !== undefined) {
-    this.lastPanelOpened = tab;
+MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
+  if (tab === this.lastPanelOpened) {
+    this.restoreLastOpenedPanel();
   } else {
-    if (this.lastPanelOpened) {
-      this[this.lastPanelOpened] = true;
-    } else {
-      new Error('The panel to open does not exists...');
-    }
+    this.lastPanelOpened = tab;
+  }
+};
+
+/**
+ * Allows to get back to last panel when closing the vector editor panel.
+ */
+MainController.prototype.restoreLastOpenedPanel = function () {
+  if (this.lastPanelOpened) {
+    this[this.lastPanelOpened] = true;
+    this.lastPanelOpened = undefined;
+  } else {
+    new Error('The panel to open does not exist...');
   }
 };
 
