@@ -30,14 +30,6 @@ function blobToDataUrl(blob) {
 }
 
 
-
-function boundsToExtent(bounds) {
-  const sw = fromLonLat(bounds.getSouthWest().toArray())
-  const ne = fromLonLat(bounds.getNorthEast().toArray())
-  return [...sw, ...ne];
-}
-
-
 function storeData(dbPromise, url, dataUrl) {
   return dbPromise.then(db => new Promise((resolve, reject) => {
     const objectStore = db.transaction(["responses"], "readwrite").objectStore("responses");
@@ -82,9 +74,6 @@ function fetchBlobsAndStore(urls, progressCallback) {
     })
   }));
 }
-
-  // const offlineStyle = map.getStyle();
-  // const extent = boundsToExtent(map.getBounds());
 
 
 export default class MapBoxOffline {
@@ -132,8 +121,6 @@ export default class MapBoxOffline {
         tileGrid.forEachTileCoord(extent, zoom, coord => {
           const url = tileUrlFunction(coord, devicePixelRatio, projection);
           urls.push(url);
-          console.log(url);
-          // const tile = {coord, url, response: null};
         });
       }
     }
