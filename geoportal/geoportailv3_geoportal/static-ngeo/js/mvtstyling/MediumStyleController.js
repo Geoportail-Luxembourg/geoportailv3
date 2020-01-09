@@ -1,5 +1,5 @@
 // @ts-check
-import appModule from '../../module.js';
+import appModule from '../module.js';
 
 appModule.component('appMediumStyle', {
   template: `

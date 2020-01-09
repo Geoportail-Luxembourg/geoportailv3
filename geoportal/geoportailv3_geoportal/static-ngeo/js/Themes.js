@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * @module app.Themes
  */
@@ -14,9 +15,8 @@ import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+import {defaultMapBoxStyle, defaultMapBoxStyleXYZ} from './mvtstyling/MvtStylingService.js';
 
-
-const VECTOR_TILES_STYLE = 'vector-tiles-style';
 
 function hasLocalStorage() {
   return 'localStorage' in window && localStorage;
@@ -36,23 +36,15 @@ function onFirstTargetChange(map) {
 /**
  * @param {import('ol/layer/Layer.js').default[]} bgLayers
  */
-function replaceWithMVTLayer(bgLayers, target) {
+function replaceWithMVTLayer(bgLayers, target, storedStyle) {
   const label = 'basemap_2015_global';
   // add MapBox layer
-  const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json'
 
-  let style = defaultMapBoxStyle;
-  if (hasLocalStorage() && localStorage.getItem(VECTOR_TILES_STYLE)) {
-    console.log('Load mvt style from local storage');
-    const storedStyle = localStorage.getItem(VECTOR_TILES_STYLE);
-    style = JSON.parse(storedStyle);
-  }
-
-  const xyz = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
+  const style = storedStyle;
   const mvtLayer = new MapBoxLayer({
     style,
     defaultMapBoxStyle,
-    xyz,
+    xyz: defaultMapBoxStyleXYZ,
     container: target,
     label: label,
   });
@@ -69,7 +61,6 @@ function replaceWithMVTLayer(bgLayers, target) {
 
 /**
  * @constructor
- * @extends {ol.events.EventTarget}
  * @param {angular.$window} $window Window.
  * @param {angular.$http} $http Angular http service.
  * @param {string} gmfTreeUrl URL to "themes" web service.
@@ -77,10 +68,11 @@ function replaceWithMVTLayer(bgLayers, target) {
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank Layer service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {app.Mvtstyling} appMvtStylingService The mvt styling service.
  * @ngInject
  */
 const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
-    appGetWmtsLayer, appBlankLayer, appGetDevice) {
+    appGetWmtsLayer, appBlankLayer, appGetDevice, appMvtStylingService) {
   olEventsEventTarget.call(this);
 
   /**
@@ -126,6 +118,13 @@ const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
   this.promise_ = null;
 
   this.flatCatalog = null;
+
+  /**
+   * @type {app.Mvtstyling}
+   * @private
+   */
+  this.appMvtStylingService_ = appMvtStylingService;
+
 };
 
 inherits(exports, olEventsEventTarget);
@@ -176,7 +175,7 @@ exports.prototype.getBgLayers = function(map) {
        * @return {Array.<Object>} Array of background layer objects.
        */
       data => {
-        var bgLayers = data['background_layers'].map(function(item) {
+        var bgLayers = data['background_layers'].map(item => {
           var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
           console.assert('name' in item);
           console.assert('imageType' in item);
@@ -191,49 +190,21 @@ exports.prototype.getBgLayers = function(map) {
             );
           }
           return layer;
-        }.bind(this));
+        });
 
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
 
         // add MVT layer
         return onFirstTargetChange(map).then(target => {
-          replaceWithMVTLayer(bgLayers, target);
-          return bgLayers;
-        })
+          return this.appMvtStylingService_.getBgStyle().then(style => {
+            replaceWithMVTLayer(bgLayers, target, style);
+            return bgLayers;
+          });
+        });
       });
   }
   return this.getBgLayersPromise_;
-};
-
-exports.prototype.setCustomVectorTileStyle = function(bgLayer, customStyle) {
-  if (customStyle) {
-    console.log('Load custom mvt style and save it to local storage');
-    if (hasLocalStorage()) {
-      window.localStorage.setItem(VECTOR_TILES_STYLE, customStyle);
-    }
-    bgLayer.getMapBoxMap().setStyle(JSON.parse(customStyle));
-  } else {
-    console.log('Reload default mvt style and remove custom style from local storage');
-    if (hasLocalStorage()) {
-      window.localStorage.removeItem(VECTOR_TILES_STYLE);
-    }
-    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
-  }
-};
-
-exports.prototype.getCustomVectorTileStyle = function() {
-  if (hasLocalStorage()) {
-    return window.localStorage.getItem(VECTOR_TILES_STYLE);
-  }
-};
-
-exports.prototype.getCustomVectorTileSTyleForDownload = function (bgLayer) {
-  return JSON.stringify(bgLayer.getMapBoxMap().getStyle());
-};
-
-exports.prototype.hasCustomStyleLocalStorage = function () {
-  return hasLocalStorage() && !!window.localStorage.getItem(VECTOR_TILES_STYLE);
 };
 
 /**
