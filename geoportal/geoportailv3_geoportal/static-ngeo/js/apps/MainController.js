@@ -224,11 +224,12 @@ import '../../less/geoportailv3.less';
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {string} ageLayerIds ID of AGE layers.
  * @param {string} showAgeLink Enable the AGE link.
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @param {string} ageCruesLayerIds ID of flashflood layers.
- * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service.
+ * @param {ngeo.download.service} ngeoDownload ngeo Download service.
  * @constructor
  * @export
  * @ngInject
@@ -243,7 +244,8 @@ const MainController = function(
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
-    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline) {
+    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
+    ngeoDownload) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -506,6 +508,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this.vectorEditorOpen = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -612,6 +619,26 @@ const MainController = function(
   this.map_ = this.createMap_();
 
   /**
+   * @type {string}
+   */
+  this.lastPanelOpened = undefined;
+
+  /**
+   * @type {boolean}
+   */
+  this.activeMvt;
+
+  /**
+   * @type {import('ol/layer/Base').default}
+   */
+  this.bgLayer;
+
+  /**
+   * @type {ngeo.download.service}
+   */
+  this.saveAs_ = ngeoDownload;
+
+  /**
    * @const {?app.olcs.Lux3DManager}
    * @export
    */
@@ -645,6 +672,15 @@ const MainController = function(
     }
   }.bind(this));
 
+  // Hide the vector editor panel when we choose non-vt layer with the selector
+  $scope.$watch(() => {
+    return this.activeMvt;
+  }, (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null && newVal !== oldVal) {
+      this.restoreLastOpenedPanel();
+    }
+  });
+
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
@@ -653,6 +689,7 @@ const MainController = function(
   this.loadThemes_().then(function() {
     this.appThemes_.getBgLayers(this.map_).then(
           function(bgLayers) {
+            this.bgLayer = this.backgroundLayerMgr_.get(this.map);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(function(layer) {
@@ -771,6 +808,57 @@ const MainController = function(
       this.showTab('a[href=\'#mylayers\']');
     }
   });
+
+  /**
+   * Read a json file and store custom style to local storage
+   */
+  this.setCustomStyle = (event) => {
+    const file = event.target.files[0];
+
+    if (file.type !== 'application/json') {
+      return;
+    }
+
+    this.readFile_(file, (e) => {
+      const result = e.target.result;
+      this.appThemes_.setCustomVectorTileStyle(this.bgLayer, result);
+    });
+
+    // Reset form value
+    event.target.value = null;
+  };
+
+  this.clearCustomStyle = () => {
+    this.appThemes_.setCustomVectorTileStyle(this.bgLayer, undefined);
+  };
+
+  /**
+   * Read a file as text
+   * @private
+   */
+  this.readFile_ = function(file, callback) {
+    const reader = new FileReader();
+    reader.onload = callback;
+    reader.readAsText(file);
+  };
+
+  /**
+   * Check if a custom style is in the local storage
+   */
+  this.hasCustomStyle = () => {
+    return this.appThemes_.hasCustomStyleLocalStorage();
+  }
+
+  this.downloadCustomStyleFile = () => {
+    const content = this.appThemes_.getCustomVectorTileSTyleForDownload(this.bgLayer);
+    const fileName = 'styles.json';
+    if (!content) {
+      console.log('No custom mvt to load');
+      return;
+    }
+    return this.saveAs_(content, fileName);
+  }
+
 
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
@@ -1053,7 +1141,7 @@ MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
-      this['feedbackCruesOpen'] = false;
+      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = false;
 };
 
 
@@ -1064,9 +1152,34 @@ MainController.prototype.closeSidebar = function() {
 MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
-      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'];
+      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+      this['vectorEditorOpen'];
 };
 
+
+/**
+ * Remember the last panel opened when opening vector editor panel
+ * @param {string} tab A tab name.
+ */
+MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
+  if (tab === this.lastPanelOpened) {
+    this.restoreLastOpenedPanel();
+  } else {
+    this.lastPanelOpened = tab;
+  }
+};
+
+/**
+ * Allows to get back to last panel when closing the vector editor panel.
+ */
+MainController.prototype.restoreLastOpenedPanel = function () {
+  if (this.lastPanelOpened) {
+    this[this.lastPanelOpened] = true;
+    this.lastPanelOpened = undefined;
+  } else {
+    new Error('The panel to open does not exist...');
+  }
+};
 
 /**
  * @param {string} lang Language code.

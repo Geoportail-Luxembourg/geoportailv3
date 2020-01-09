@@ -92,7 +92,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('layersOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
             <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
             <span translate>Afficher les modèles 3D</span>
@@ -133,7 +139,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('mymapsOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="tab-content">
             <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
                         app-mymaps-drawopen="mainCtrl.drawOpen"
@@ -152,7 +164,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('infosOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
@@ -191,7 +209,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('legendsOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-layerlegends
               app-layerlegends-layers="::mainCtrl.selectedLayers"
@@ -205,7 +229,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('routingOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="tab-content">
             <app-routing app-routing-map="::mainCtrl.map"
               app-routing-has-result="mainCtrl.hasRoutingResult"
@@ -221,7 +251,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedback
               app-feedback-drawing-active="mainCtrl.drawOpen",
@@ -238,7 +274,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackCruesOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackcrues
               app-feedbackcrues-drawing-active="mainCtrl.drawOpen",
@@ -255,7 +297,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAnfOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackanf
               app-feedbackanf-drawing-active="mainCtrl.drawOpen",
@@ -272,7 +320,13 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map"></app-backgroundlayer>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAgeOpen')" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackage
               app-feedbackage-drawing-active="mainCtrl.drawOpen",
@@ -281,6 +335,46 @@
               app-feedbackage-map="::mainCtrl.map"
               app-feedbackage-layers="::mainCtrl.ageLayers">
             </app-feedbackage>
+          </div>
+        </div>
+        <!-- Vector editor -->
+        <div id="vectoreditor" ng-class="mainCtrl.vectorEditorOpen ? 'show' : 'hide'">
+          <h2 translate>Vector tiles editor</h2>
+          <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
+            ✕
+          </button>
+          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
+          <button ngeo-btn 
+            ng-model="mainCtrl.vectorEditorOpen" 
+            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel(mainCtrl.lastPanelOpened)" 
+            ng-if="mainCtrl.activeMvt"
+            class="btn-vector-editor"></button>
+          <div class="container-fluid tab-content">
+            <div data-toggle="collapse" data-target="#editor-beginner" class="editor-list" translate>Beginner (one-click)</div>
+            <div class="collapse editor-expert" id="editor-beginner">1</div>
+
+            <!-- <div data-toggle="collapse" data-target="#editor-medium" class="editor-list" translate>Medium</div>  -->
+            <!-- <div class="collapse" id="editor-medium">2</div> -->
+
+            <div data-toggle="collapse" data-target="#editor-expert" class="editor-list" translate>Expert (style.json)</div>
+            <div class="collapse" id="editor-expert">
+              <div class="content-wrapper">
+                <div id="editor-expert-content">
+                  <p translate>Lancer éditeur externe ou importer json</p>
+                  <a href class="launch-editor-button" ng-click="mainCtrl.downloadCustomStyleFile()"><span translate>Download style</span></a>
+                  <div class="upload-style-button">
+                    <label for="uploadMvtStyle"><span translate>Upload style</span></label>
+                    <input
+                      type="file"
+                      name="uploadMvtStyle"
+                      id="uploadMvtStyle"
+                      custom-on-change="mainCtrl.setCustomStyle">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a class="btn btn-default clear-style-btn" ng-click="mainCtrl.clearCustomStyle()" ng-if="mainCtrl.hasCustomStyle()" translate>Supprimer</a>
           </div>
         </div>
       </div>
@@ -327,6 +421,9 @@
         </li>
         <li ngeo-btn ng-model="mainCtrl.routingOpen" class="routing icon">
           <a href translate>Routing</a>
+        </li>
+        <li ngeo-btn ng-model="mainCtrl.vectorEditorOpen" class="hidden">
+          <a href translate>Vector Editor</a>
         </li>
       </ul>
       <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
