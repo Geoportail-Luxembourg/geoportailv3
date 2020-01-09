@@ -125,13 +125,11 @@ function dataURItoBlob(dataURI) {
 function readFromIndexedDB(db, url) {
   url = decodeURI(url);
   return new Promise((resolve, reject) => {
-    console.log('indexedDB is up, cool!');
     const dbRequest = db.transaction("responses").objectStore("responses").get(url);
     dbRequest.onsuccess = function(dbEvent) {
       const init = {"status" : 200 , "statusText" : "OK"};
       const result = dbEvent.target.result;
       if (result && result.content) {
-        console.log('found content! for ' + url);
         let d = result.content
         if (d.startsWith('data')) {
           d = dataURItoBlob(d);
@@ -174,7 +172,7 @@ if (typeof self === 'object') {
     const switchOnline = url.includes('/switch-lux-online');
     if (switchOffline || switchOnline) {
       const value = offlineEnabled[event.clientId] = switchOffline;
-      console.log('Offline of ', event.clientId, 'is now', value);
+      console.log('Offline of mode of client', event.clientId, 'is now', value);
       const promise = Promise.resolve(new Response(value.toString()));
       event.respondWith(promise);
       return;
@@ -199,14 +197,5 @@ if (typeof self === 'object') {
     // In all other cases forward to network
     // if in the website files => fetch in the cache (and forward fetch if not found?)
     event.respondWith(fetch(event.request));
-  });
-
-  // Listen for messages from the applications
-  // This is used to toggle the "offline mode".
-  self.addEventListener('message', function(event) {
-    if ('offline' in event.data) {
-      offlineEnabled[event.clientId] = !!event.data.offline;
-      console.log('Offline is now', offlineEnabled);
-    }
   });
 }
