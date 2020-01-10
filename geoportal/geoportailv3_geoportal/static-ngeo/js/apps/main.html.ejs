@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl" manifest="/geoportailv3.appcache">
+<html lang={{mainCtrl.lang}} ng-app="Appmain" ng-controller="MainController as mainCtrl">
   <head>
     <title ng-bind-template="{{ mainCtrl.getCurrentTheme()|translate }}{{ ' - Geoportal Luxembourg'|translate}}"></title>
     <meta charset="utf-8">
@@ -21,6 +21,14 @@
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://www.geoportail.lu/static/images/apple-icon-57x57-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114-precomposed.png" />
+    <script>
+        var dev = document.location.href.indexOf('dev/main') !== -1;
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker
+            .register('/sw.js' + (dev ? '?dev' : ''))
+            .then(function() { console.log("Service Worker Registered"); });
+        }
+    </script>
   </head>
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
@@ -35,7 +43,7 @@
 
         <div class="offline-msg alert-danger" translate>
           <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
-            <a ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
+            <a href ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
           </span>
           <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
         </div>
