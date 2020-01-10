@@ -60,7 +60,7 @@ const OfflineRestorer = class extends Restorer {
       this.appMymapsOffline_.restore();
       if (mapBoxLayer) {
         console.log('Restoring MapBox');
-        this.appMapBoxOffline_.restore(mapBoxLayer.getMapBoxMap());
+        this.appMapBoxOffline_.restore(mapBoxLayer);
         this.ngeoBackgroundLayerMgr_.set(map, mapBoxLayer);
       }
       map.addLayer(this.appDrawnFeatures_.drawLayer);

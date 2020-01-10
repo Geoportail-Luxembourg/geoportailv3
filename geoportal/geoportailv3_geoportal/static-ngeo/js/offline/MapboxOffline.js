@@ -170,13 +170,20 @@ export default class MapBoxOffline {
     this.getUrlsPromise(style, extentByZoom).then(urls => fetchBlobsAndStore(urls, progressCallback)));
   }
 
-  restore(map) {
+  restore(layer) {
     console.log('Activate MapBox offline data');
+    const map = layer.getMapBoxMap();
     if (!navigator.serviceWorker.controller) {
       alert('You must reload the page before entering offline mode');
     }
     fetch('/switch-lux-offline').then(() => {
-      const style = map.getStyle();
+      let style;
+      try {
+        style = map.getStyle();
+      } catch (e) {
+        console.log('No defined style, using default one');
+        style = layer.get('defaultMapBoxStyle');
+      }
       map.setStyle(null);
       map.setStyle(style);
     }, 0);
