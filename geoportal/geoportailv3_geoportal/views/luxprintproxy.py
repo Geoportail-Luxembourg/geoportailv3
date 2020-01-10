@@ -54,6 +54,7 @@ import urllib.parse
 import urllib.request
 from io import BytesIO
 from datetime import datetime
+from json import dumps, loads
 
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
@@ -64,12 +65,11 @@ from PyPDF2 import PdfFileMerger
 import weasyprint
 
 from c2cgeoportal_commons.models import DBSession
-from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, LayerWMTS
 from c2cgeoportal_geoportal.views.printproxy import PrintProxy
 from c2cgeoportal_geoportal.lib.caching import NO_CACHE, get_region
-
 from geoportailv3_geoportal.models import LuxPrintJob, LuxPrintServers, \
-    LuxLayerInternalWMS
+    LuxLayerInternalWMS, LuxLayerExternalWMS
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
@@ -77,6 +77,79 @@ cache_region = get_region()
 
 
 class LuxPrintProxy(PrintProxy):
+    @view_config(route_name="lux_get_thumbnail")
+    def lux_get_thumbnail(self):
+        layer_id = self.request.params.get('layerid', None)
+        internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
+            LuxLayerInternalWMS.id == layer_id).first()
+        if internal_wms is not None:
+            center = [692624.7270623132,6397723.26758461]
+            scale = 123735.742114244
+            base_url = "https://wmsproxy.geoportail.lu/ogcproxywms"
+            spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":base_url,"imageFormat":"image/png","layers":[internal_wms.layer],"customParams":{"TRANSPARENT":True,"MAP_RESOLUTION":127},"type":"wms","opacity":1,"useNativeAngle":True}]},"queryResults":None},"format":"png","layout":"thumbnail"}
+        else :
+            external_wms = DBSession.query(LuxLayerExternalWMS).filter(
+                LuxLayerExternalWMS.id == layer_id).first()
+            if external_wms is not None:
+                base_url = "https://ws.geoportail.lu/mymaps"
+                category_id = external_wms.category_id
+                center = [719316.6101472869,6412045.849047819]
+                scale = 619740.133346982
+                spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL": base_url,"imageFormat":"image/png","layers":["category"],"customParams":{"TRANSPARENT":True,"category_id": category_id,"MAP_RESOLUTION":127},"type":"wms","opacity":1,"useNativeAngle":True}]}},"format":"png","layout":"thumbnail"}
+            else:
+                layer_wmts = DBSession.query(LayerWMTS).filter(
+                    LayerWMTS.id == layer_id).first()
+                if layer_wmts is not None:
+                    center = [692625, 6397723]
+                    scale = 193337.09086566497
+                    spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":"https://wmts3.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png","dimensions":[],"dimensionParams":{},"imageFormat":"image/png","layer":layer_wmts.layer,"matrices":[{"identifier":"13","scaleDenominator":68247.34668321429,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[8191,8191]},{"identifier":"14","scaleDenominator":34123.673341607144,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[16383,16383]},{"identifier":"15","scaleDenominator":17061.836670785713,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[32767,32767]},{"identifier":"16","scaleDenominator":8530.918335392857,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[65535,65535]},{"identifier":"17","scaleDenominator":4265.459167714285,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[131071,131071]},{"identifier":"18","scaleDenominator":2132.7295838500004,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[262143,262143]},{"identifier":"19","scaleDenominator":1066.3647919250002,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[524287,524287]},{"identifier":"20","scaleDenominator":533.1823959625001,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[1048575,1048575]},{"identifier":"21","scaleDenominator":266.59119798125005,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[2097151,2097151]}],"matrixSet":"GLOBAL_WEBMERCATOR_4_V3","opacity":1,"requestEncoding":"REST","style":"default","type":"WMTS","version":"1.0.0"}]}},"format":"png","layout":"thumbnail"}
+        for map_layer in spec["attributes"]["map"]["layers"]:
+            if "baseURL" in map_layer and\
+               "ogcproxywms" in map_layer["baseURL"]:
+                token = self.config["authtkt_secret"]
+                if "customParams" in map_layer:
+                    map_layer["customParams"]["GP_TOKEN"] = token
+                else:
+                    map_layer["customParams"] = {"GP_TOKEN": token}
+                if self.request.user and\
+                   self.request.user.ogc_role is not None and\
+                   self.request.user.ogc_role != -1:
+                    if "customParams" in map_layer:
+                        map_layer["customParams"]["roleOGC"] =\
+                            str(self.request.user.ogc_role)
+                    else:
+                        map_layer["customParams"] =\
+                            {"roleOGC": str(self.request.user.ogc_role)}
+
+                for layer in map_layer["layers"]:
+                    internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
+                        LuxLayerInternalWMS.layer == layer).first()
+                    if internal_wms is not None and\
+                       not self._is_authorized(internal_wms):
+                            return HTTPUnauthorized()
+
+        print_servers = DBSession.query(LuxPrintServers).all()
+        print_urls = [print_server.url for print_server in print_servers]
+        urllib.request.getproxies = lambda: {}
+        valid_print_urls = []
+        if print_urls is not None and len(print_urls) > 0:
+            for url in print_urls:
+                try:
+                    test_url = url.replace("/print/geoportailv3", "")
+                    urllib.request.urlopen(test_url)
+                    valid_print_urls.append(url)
+                except Exception as e:
+                    log.exception(e)
+                    log.error("Print server not available : " + url)
+            print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
+        else:
+            print_url = self.config["print_url"]
+        resp, content = self._proxy("%s/buildreport.png" % (print_url), method="POST", body=str.encode(dumps(spec)))
+        resp["content-disposition"] =\
+            "attachment; filename=%s.png" % (str(layer_id))
+        return self._build_response(
+            resp, content, False, "print"
+        )
 
     @view_config(route_name="lux_printproxy_report_create")
     def lux_report_create(self):
@@ -150,6 +223,7 @@ class LuxPrintProxy(PrintProxy):
         job.print_url = print_url
         job.creation = datetime.now()
         DBSession.add(job)
+
         return self._build_response(
             resp, content, False, "print"
         )
