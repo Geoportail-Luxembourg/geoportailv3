@@ -84,6 +84,12 @@ def main(global_config, **settings):
 
     # Workaround to not have the error: distutils.errors.DistutilsArgError: no commands supplied
     distutils.core._setup_stop_after = 'config'
+
+    config.add_route(
+        "lux_get_thumbnail",
+        "/printproxy/thumbnail",
+        request_method="GET"
+    )
     # overwrite print routes
     config.add_route(
         "lux_printproxy_report_create",
