@@ -41,9 +41,9 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   /**
    * @type {boolean}
    */
-  this.useLocalStorage;
+  this.useLocalStorage = true;
   try {
-    if ('localStorage' in window) {
+    if ('localStorage' in window && window.localStorage) {
       window.localStorage.setItem('test', '');
       window.localStorage.removeItem('test');
     } else {
@@ -100,7 +100,7 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
       paramKeys.indexOf('debug') >= 0 && paramKeys.indexOf('address') >= 0 &&
       paramKeys.indexOf('lang') >= 0
       )) {
-    if (this.useLocalStorage !== false) {
+    if (this.useLocalStorage) {
       for (const key in window.localStorage) {
         const value = window.localStorage[key];
         if (paramKeys.indexOf('lang') >= 0 && key === 'lang') {
@@ -169,7 +169,9 @@ exports.prototype.getInitialValue = function(key) {
  * @return {string|null} State value.
  */
 exports.prototype.getValueFromLocalStorage = function(key) {
-  return window.localStorage[key];
+  if (this.useLocalStorage) {
+    return window.localStorage[key];
+  }
 };
 
 
@@ -179,7 +181,7 @@ exports.prototype.getValueFromLocalStorage = function(key) {
  */
 exports.prototype.updateState = function(object) {
   this.ngeoLocation_.updateParams(object);
-  if (this.useLocalStorage !== false) {
+  if (this.useLocalStorage) {
     var key;
     for (key in object) {
       window.localStorage[key] = object[key];
@@ -193,7 +195,7 @@ exports.prototype.updateState = function(object) {
  * @param {!Object.<string, string>} object Object.
  */
 exports.prototype.updateStorage = function(object) {
-  if (this.useLocalStorage !== false) {
+  if (this.useLocalStorage) {
     var key;
     for (key in object) {
       window.localStorage[key] = object[key];
@@ -208,7 +210,7 @@ exports.prototype.updateStorage = function(object) {
  */
 exports.prototype.deleteParam = function(key) {
   this.ngeoLocation_.deleteParam(key);
-  if (this.useLocalStorage !== false) {
+  if (this.useLocalStorage) {
     delete window.localStorage[key];
   }
 };
