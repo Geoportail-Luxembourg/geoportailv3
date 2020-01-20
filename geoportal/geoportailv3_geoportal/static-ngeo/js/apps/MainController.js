@@ -178,8 +178,28 @@ import '../../less/geoportailv3.less';
 
  import OfflineDownloader from '../OfflineDownloader.js';
  import OfflineRestorer from '../OfflineRestorer.js';
+
+ import MediumStyle from './mvtstyling/MediumStyleController.js';
  /* eslint-enable no-unused-vars */
 
+// See intermediate_editor_spec.md
+function getDefaultMediumStyling(gettext) {
+  return [{
+    "type": "line",
+    "label": gettext("Primary road"),
+    "path": "road_trunk_primary",
+    "color": "#bc1515",
+    "width": 2,
+    "visibile": true
+  }, {
+    "type": "line",
+    "label": gettext("Lux Primary road"),
+    "path": "lu_road_trunk_primary",
+    "color": "#bc1515",
+    "width": 2,
+    "visibile": true
+  }];
+}
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -188,6 +208,7 @@ import '../../less/geoportailv3.less';
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
  * manager.
  * @param {ngeo.offline.ServiceManager} ngeoOfflineServiceManager offline service manager service.
+ * @param {function(string): string} gettext Gettext function.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @param {app.ExclusionManager} appExclusionManager Exclusion manager service.
  * @param {app.LayerOpacityManager} appLayerOpacityManager Layer opacity.
@@ -236,7 +257,7 @@ import '../../less/geoportailv3.less';
  */
 const MainController = function(
     $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
-    gettextCatalog, appExclusionManager, appLayerOpacityManager,
+    gettext, gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
     ngeoLocation, appExport, appGetDevice,
@@ -250,6 +271,21 @@ const MainController = function(
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
+
+  this.mediumStylingData = getDefaultMediumStyling(gettext);
+  // FIXME: we must store the current rules of medium styling and override the default with them
+  // to be decided: do we loose the user config when default values change?
+  // when the structure change?
+  Object.assign(this.mediumStylingData, JSON.parse(localStorage.getItem('mediumStyling') || '{}'));
+
+  this.onMediumStylingChanged = item => {
+    const mbMap =  this.bgLayer.getMapBoxMap();
+    // mbMap.setPaintProperty(item.path, 'fill-color', item.color);
+    mbMap.setPaintProperty(item.path, 'line-color', item.color);
+    mbMap.setLayoutProperty(item.path, 'visibility', item.visible ? 'visible' : 'none');
+    localStorage.setItem('mediumStyling', JSON.stringify(this.mediumStylingData));
+    // FIXME: store updated styling
+  };
 
   if (navigator.serviceWorker) {
     // Force online state on load since iOS/Safari does not support clientIds.
