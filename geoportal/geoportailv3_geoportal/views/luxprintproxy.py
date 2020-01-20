@@ -60,6 +60,7 @@ from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPInternalServerError
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.response import Response
 
 from PyPDF2 import PdfFileMerger
 import weasyprint
@@ -79,14 +80,14 @@ cache_region = get_region()
 class LuxPrintProxy(PrintProxy):
     @view_config(route_name="lux_get_thumbnail")
     def lux_get_thumbnail(self):
-        layer_id = self.request.params.get('layerid', None)
+        layer_id = self.request.params.get('layerid', 359)
         internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.id == layer_id).first()
         if internal_wms is not None:
             center = [692624.7270623132,6397723.26758461]
             scale = 123735.742114244
             base_url = "https://wmsproxy.geoportail.lu/ogcproxywms"
-            spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":base_url,"imageFormat":"image/png","layers":[internal_wms.layer],"customParams":{"TRANSPARENT":True,"MAP_RESOLUTION":127},"type":"wms","opacity":1,"useNativeAngle":True}]},"queryResults":None},"format":"png","layout":"thumbnail"}
+            spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":base_url,"imageFormat":"image/png","layers":[internal_wms.layer],"customParams":{"TRANSPARENT":True,"MAP_RESOLUTION":127},"type":"wms","opacity":1,"useNativeAngle":True}]}},"format":"png","layout":"thumbnail"}
         else :
             external_wms = DBSession.query(LuxLayerExternalWMS).filter(
                 LuxLayerExternalWMS.id == layer_id).first()
@@ -100,9 +101,12 @@ class LuxPrintProxy(PrintProxy):
                 layer_wmts = DBSession.query(LayerWMTS).filter(
                     LayerWMTS.id == layer_id).first()
                 if layer_wmts is not None:
-                    center = [692625, 6397723]
+                    center = [692624.7270623132,6397723.26758461]
                     scale = 193337.09086566497
-                    spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":"https://wmts3.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png","dimensions":[],"dimensionParams":{},"imageFormat":"image/png","layer":layer_wmts.layer,"matrices":[{"identifier":"13","scaleDenominator":68247.34668321429,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[8191,8191]},{"identifier":"14","scaleDenominator":34123.673341607144,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[16383,16383]},{"identifier":"15","scaleDenominator":17061.836670785713,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[32767,32767]},{"identifier":"16","scaleDenominator":8530.918335392857,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[65535,65535]},{"identifier":"17","scaleDenominator":4265.459167714285,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[131071,131071]},{"identifier":"18","scaleDenominator":2132.7295838500004,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[262143,262143]},{"identifier":"19","scaleDenominator":1066.3647919250002,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[524287,524287]},{"identifier":"20","scaleDenominator":533.1823959625001,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[1048575,1048575]},{"identifier":"21","scaleDenominator":266.59119798125005,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[2097151,2097151]}],"matrixSet":"GLOBAL_WEBMERCATOR_4_V3","opacity":1,"requestEncoding":"REST","style":"default","type":"WMTS","version":"1.0.0"}]}},"format":"png","layout":"thumbnail"}
+                    image_type = layer_wmts.image_type
+                    image_ext = layer_wmts.image_type.split("/")[1]
+                    spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":"https://wmts3.geoportail.lu/mapproxy_4_v3/wmts/{Layer}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}."+image_ext,"dimensions":[],"dimensionParams":{},"imageFormat": image_type,"layer":layer_wmts.layer,"matrices":[{"identifier":"13","scaleDenominator":68247.34668321429,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[8191,8191]},{"identifier":"14","scaleDenominator":34123.673341607144,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[16383,16383]},{"identifier":"15","scaleDenominator":17061.836670785713,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[32767,32767]},{"identifier":"16","scaleDenominator":8530.918335392857,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[65535,65535]},{"identifier":"17","scaleDenominator":4265.459167714285,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[131071,131071]},{"identifier":"18","scaleDenominator":2132.7295838500004,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[262143,262143]},{"identifier":"19","scaleDenominator":1066.3647919250002,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[524287,524287]},{"identifier":"20","scaleDenominator":533.1823959625001,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[1048575,1048575]},{"identifier":"21","scaleDenominator":266.59119798125005,"tileSize":[256,256],"topLeftCorner":[-20037508.342789244,20037508.342789244],"matrixSize":[2097151,2097151]}],"matrixSet":"GLOBAL_WEBMERCATOR_4_V3","opacity":1,"requestEncoding":"REST","style":"default","type":"WMTS","version":"1.0.0"}]}},"format":"png","layout":"thumbnail"}
+
         for map_layer in spec["attributes"]["map"]["layers"]:
             if "baseURL" in map_layer and\
                "ogcproxywms" in map_layer["baseURL"]:
@@ -144,11 +148,12 @@ class LuxPrintProxy(PrintProxy):
             print_url = valid_print_urls[random.randint(0, len(valid_print_urls) - 1)]
         else:
             print_url = self.config["print_url"]
-        resp, content = self._proxy("%s/buildreport.png" % (print_url), method="POST", body=str.encode(dumps(spec)))
-        resp["content-disposition"] =\
-            "attachment; filename=%s.png" % (str(layer_id))
+
+        resp, content = self._proxy("%s/buildreport.png" % (print_url), params="", method="POST", body=str.encode(dumps(spec)), headers={"Referer": "http://print.geoportail.lu/"})
+        resp["content-disposition"] = "filename=%s.png" % (str(layer_id))
+
         return self._build_response(
-            resp, content, False, "print"
+            resp, content, NO_CACHE, "print"
         )
 
     @view_config(route_name="lux_printproxy_report_create")
