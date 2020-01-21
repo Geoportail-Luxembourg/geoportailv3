@@ -142,8 +142,19 @@ body.enabled-3d {
   }
 }
 
+app-simple-style div {
+  app-simple-style-item {
+    display: flex;
+    cursor: pointer;
+    span {
+      display: inherit;
+      flex: 1;
+    }
+  }
+}
+
 app-medium-style-item div {
-  padding-left: 10px;
+  margin-left: 10px;
   .stylinglabel {
     display: inline-block;
     width: 150px;
@@ -159,4 +170,12 @@ app-medium-style-item div {
 
 div[data-toggle="collapse"] {
   cursor: pointer;
+}
+
+
+#editor-simple-content {
+  position: relative;
+  width: 100%;
+  border: #ccc solid 2px;
+  text-align: center;
 }
