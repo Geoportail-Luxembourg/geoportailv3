@@ -154,7 +154,6 @@ app-simple-style div {
 }
 
 app-medium-style-item div {
-  margin-left: 10px;
   .stylinglabel {
     display: inline-block;
     width: 150px;
@@ -173,9 +172,12 @@ div[data-toggle="collapse"] {
 }
 
 
-#editor-simple-content {
+.editor-content {
   position: relative;
   width: 100%;
   border: #ccc solid 2px;
-  text-align: center;
+  p {
+      text-align: center;
+  }
+  padding: 10px;
 }
