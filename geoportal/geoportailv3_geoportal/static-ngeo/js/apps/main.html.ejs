@@ -359,8 +359,18 @@
             ng-if="mainCtrl.activeMvt"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
-            <div data-toggle="collapse" data-target="#editor-beginner" class="editor-list" translate>Beginner (one-click)</div>
-            <div class="collapse editor-expert" id="editor-beginner">1</div>
+            <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" translate>Simple</div>
+            <div class="collapse" id="editor-simple">
+              <div class="content-wrapper">
+                <div id="editor-simple-content">
+                  <p translate>Sélectionner un set de couleurs</p>
+                  <app-simple-style
+                    on-styling-selected="mainCtrl.onSimpleStylingSelected"
+                    stylings="mainCtrl.simpleStylingData">
+                  </app-simple-style>
+                </div>
+              </div>
+            </div>
 
             <div data-toggle="collapse" data-target="#editor-medium" class="editor-list" translate>Medium</div>
             <div class="collapse" id="editor-medium">

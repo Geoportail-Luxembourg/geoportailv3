@@ -179,7 +179,8 @@ import '../../less/geoportailv3.less';
  import OfflineDownloader from '../OfflineDownloader.js';
  import OfflineRestorer from '../OfflineRestorer.js';
 
- import MediumStyle from './mvtstyling/MediumStyleController.js';
+ import './mvtstyling/MediumStyleController.js';
+ import './mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
 // See intermediate_editor_spec.md
@@ -200,6 +201,12 @@ function getDefaultMediumStyling(gettext) {
     "visibile": true
   }];
 }
+
+const simpleStylings = [
+  ["#bc1515", "#bc1515"],
+  ["#bc1515", "#bcffdd"],
+  ["#ff1515", "#aaccdd"],
+];
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -273,6 +280,20 @@ const MainController = function(
   appMymaps.setOfflineService(appMymapsOffline);
 
   this.mediumStylingData = getDefaultMediumStyling(gettext);
+  const simpleStylingKeys = this.mediumStylingData.map(item => item.path)
+
+  this.simpleStylingData = simpleStylings;
+  this.onSimpleStylingSelected = colors => {
+    const mbMap =  this.bgLayer.getMapBoxMap();
+    for (let i = 0; i < colors.length; ++i) {
+      const key = simpleStylingKeys[i];
+      const color = colors[i];
+      mbMap.setPaintProperty(key, 'line-color', color);
+      mbMap.setLayoutProperty(key, 'visibility', 'visible');
+    }
+  };
+
+
   // FIXME: we must store the current rules of medium styling and override the default with them
   // to be decided: do we loose the user config when default values change?
   // when the structure change?
