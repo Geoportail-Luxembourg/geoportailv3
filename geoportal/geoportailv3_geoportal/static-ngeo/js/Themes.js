@@ -18,6 +18,9 @@ import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 const VECTOR_TILES_STYLE = 'vector-tiles-style';
 
+function hasLocalStorage() {
+  return 'localStorage' in window && localStorage;
+}
 
 function onFirstTargetChange(map) {
   return new Promise(function(resolve) {
@@ -39,7 +42,7 @@ function replaceWithMVTLayer(bgLayers, target) {
   const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json'
 
   let style = defaultMapBoxStyle;
-  if (localStorage.getItem(VECTOR_TILES_STYLE)) {
+  if (hasLocalStorage() && localStorage.getItem(VECTOR_TILES_STYLE)) {
     console.log('Load mvt style from local storage');
     const storedStyle = localStorage.getItem(VECTOR_TILES_STYLE);
     style = JSON.parse(storedStyle);
@@ -206,17 +209,23 @@ exports.prototype.getBgLayers = function(map) {
 exports.prototype.setCustomVectorTileStyle = function(bgLayer, customStyle) {
   if (customStyle) {
     console.log('Load custom mvt style and save it to local storage');
-    window.localStorage.setItem(VECTOR_TILES_STYLE, customStyle);
+    if (hasLocalStorage()) {
+      window.localStorage.setItem(VECTOR_TILES_STYLE, customStyle);
+    }
     bgLayer.getMapBoxMap().setStyle(JSON.parse(customStyle));
   } else {
     console.log('Reload default mvt style and remove custom style from local storage');
-    window.localStorage.removeItem(VECTOR_TILES_STYLE);
+    if (hasLocalStorage()) {
+      window.localStorage.removeItem(VECTOR_TILES_STYLE);
+    }
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
   }
 };
 
 exports.prototype.getCustomVectorTileStyle = function() {
-  return window.localStorage.getItem(VECTOR_TILES_STYLE);
+  if (hasLocalStorage()) {
+    return window.localStorage.getItem(VECTOR_TILES_STYLE);
+  }
 };
 
 exports.prototype.getCustomVectorTileSTyleForDownload = function (bgLayer) {
@@ -224,7 +233,7 @@ exports.prototype.getCustomVectorTileSTyleForDownload = function (bgLayer) {
 };
 
 exports.prototype.hasCustomStyleLocalStorage = function () {
-  return !!window.localStorage.getItem(VECTOR_TILES_STYLE);
+  return hasLocalStorage() && !!window.localStorage.getItem(VECTOR_TILES_STYLE);
 };
 
 /**
