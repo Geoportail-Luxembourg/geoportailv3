@@ -76,7 +76,7 @@ function factory($http, $sce, $rootScope,
         // TODO: remove the quotes around jsonpCallbackParam when
         // https://github.com/google/closure-compiler/pull/2400 is merged
         promises_[promiseKey] = $http.jsonp(
-            '//shop.' + domain + '/Portail/inspire/webservices/getMD.jsp',
+            '/getMetadata',
           {params: {
             'uid': metadataUid,
             'lang': currentLanguage
@@ -91,13 +91,13 @@ function factory($http, $sce, $rootScope,
                     'layerMetadata': null
                   };
 
-                  var remoteMetadata = resp.data['root'][0];
+                  var remoteMetadata = resp.data['metadata'];
                   content['layerMetadata'] = remoteMetadata;
-                  if ('description' in content['layerMetadata']) {
+                  if ('abstract' in content['layerMetadata']) {
                     content['layerMetadata']['trusted_description'] =
-                    $sce.trustAsHtml(content['layerMetadata']['description']);
+                    $sce.trustAsHtml(content['layerMetadata']['abstract']);
                     content['layerMetadata']['short_trusted_description'] =
-                    $sce.trustAsHtml(content['layerMetadata']['description'].
+                    $sce.trustAsHtml(content['layerMetadata']['abstract'].
                     substring(0, 220));
                   }
                   if ('legend_name' in localMetadata) {
