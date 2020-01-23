@@ -22,7 +22,7 @@ class Metadata(object):
         langs = {'fr': 'fre',
                  'de': 'ger',
                  'en': 'eng',
-                 'lb': 'lux'}
+                 'lb': 'ltz'}
 
         id = self.request.params.get("uid", None)
         callback_param =  self.request.params.get("cb", None)
