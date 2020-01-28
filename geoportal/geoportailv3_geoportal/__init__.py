@@ -322,6 +322,22 @@ def main(global_config, **settings):
         "feedbackage",
         "/feedbackage"
     )
+    # user config routes
+    config.add_route(
+        "get_userconfig",
+        "/get_userconfig",
+        request_method="GET"
+    )
+    config.add_route(
+        "save_userconfig",
+        "/save_userconfig",
+        request_method="POST"
+    )
+    config.add_route(
+        "delete_userconfig",
+        "/delete_userconfig",
+        request_method="DELETE"
+    )
     # pag routes
     config.add_route(
         "pag_url",
