@@ -24,5 +24,6 @@
 !print-config.yaml.tmpl
 !fix-db.sh
 !tools
+!jsapi
 !bin/*
 !alembic_upgrade_heads.sh

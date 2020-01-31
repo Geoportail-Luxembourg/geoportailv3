@@ -5,10 +5,11 @@ from c2cgeoportal_geoportal.views.entry import Entry
 from pyramid.i18n import make_localizer, TranslationStringFactory
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry
+from pyramid.renderers import render
 from c2cgeoportal_commons import models
 from c2cgeoportal_commons.models import main, static
 from c2cgeoportal_geoportal.lib import get_url2
-
+from pyramid.response import Response
 
 log = logging.getLogger(__name__)
 
@@ -120,8 +121,7 @@ class JsapiEntry(Entry):
         self._extract_layers(group, layers, True)
         return layers
 
-    @view_config(route_name='jsapiloader',
-                 renderer='geoportailv3:templates/api/apiv3loader.js')
+    @view_config(route_name='jsapiloader')
     def apiloader(self):
         config = self.settings
         referrer = config["referrer"]
@@ -135,11 +135,14 @@ class JsapiEntry(Entry):
             cookie_domain = referrer["cookie_domain"]
             self.request.response.set_cookie(
                 cookie_name, value=cookie_value, domain=cookie_domain)
-
-        return {}
+        result = render('geoportailv3_geoportal:templates/api/apiv3loader.js',{},
+                request=self.request)
+        response = Response(result)
+        response.content_type = 'application/javascript'
+        return response
 
     @view_config(route_name='jsapiexample',
-                 renderer='geoportailv3:templates/api/apiv3example.html')
+                 renderer='geoportailv3_geoportal:templates/api/apiv3example.html')
     def apiexample(self):
         return {}
     def _extract_layers_with_path(self, node, layers, came_from):
