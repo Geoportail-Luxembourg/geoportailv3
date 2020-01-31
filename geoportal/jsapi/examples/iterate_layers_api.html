@@ -74,7 +74,7 @@
           i18n = json['en'];
       }.bind(this));
 
-			var layersPromise = fetch("//apiv3.geoportail.lu/jsapilayers").then(function(resp) {
+			var layersPromise = fetch("https://map.geoportail.lu/jsapilayers").then(function(resp) {
         return resp.json();
       }).then(function(json) {
           layersJson = json;

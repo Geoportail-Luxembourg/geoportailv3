@@ -1,11 +1,11 @@
-/**
- * @module lux.LayerManager
- */
-import luxUtil from './util.js';
-import olBase from 'ol.js';
-import olControlControl from 'ol/control/Control.js';
-import olEvents from 'ol/events.js';
-import olCollectionEventType from 'ol/CollectionEventType.js';
+goog.provide('lux.LayerManager');
+
+goog.require('lux');
+goog.require('ol');
+goog.require('ol.control.Control');
+goog.require('ol.events');
+goog.require('ol.CollectionEventType');
+
 
 /**
  * @constructor
@@ -13,30 +13,30 @@ import olCollectionEventType from 'ol/CollectionEventType.js';
  * @param {olx.control.ControlOptions} options Layer manager options.
  * @export
  */
-const exports = function(options) {
+lux.LayerManager = function(options) {
   var element = document.createElement('UL');
   element.classList.add('lux-layer-manager');
 
-  olControlControl.call(this, {
+  ol.control.Control.call(this, {
     element: element,
     target: options.target
   });
 };
 
-olBase.inherits(exports, olControlControl);
+ol.inherits(lux.LayerManager, ol.control.Control);
 
 
 /**
  * @inheritDoc
  */
-exports.prototype.setMap = function(map) {
-  olControlControl.prototype.setMap.call(this, map);
+lux.LayerManager.prototype.setMap = function(map) {
+  ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     var layers = map.getLayers();
     this.listenerKeys.push(
-        olEvents.listen(layers, olCollectionEventType.ADD,
+        ol.events.listen(layers, ol.CollectionEventType.ADD,
             this.update, this),
-        olEvents.listen(layers, olCollectionEventType.REMOVE,
+        ol.events.listen(layers, ol.CollectionEventType.REMOVE,
             this.update, this)
     );
     this.update();
@@ -47,7 +47,7 @@ exports.prototype.setMap = function(map) {
 /**
  * Update the component adequately.
  */
-exports.prototype.update = function() {
+lux.LayerManager.prototype.update = function() {
   while (this.element.firstChild) {
     this.element.removeChild(this.element.firstChild);
   }
@@ -59,9 +59,9 @@ exports.prototype.update = function() {
     var label = document.createElement('label');
     var name = /** @type {string} */ (layer.get('name'));
 
-    if (luxUtil.lang in luxUtil.languages &&
-        luxUtil.languages[luxUtil.lang][name] !== undefined) {
-      label.innerHTML = luxUtil.languages[luxUtil.lang][name];
+    if (lux.lang in lux.languages &&
+        lux.languages[lux.lang][name] !== undefined) {
+      label.innerHTML = lux.languages[lux.lang][name];
     } else {
       label.innerHTML = name;
     }
@@ -79,6 +79,3 @@ exports.prototype.update = function() {
     this.element.appendChild(li);
   }, this);
 };
-
-
-export default exports;

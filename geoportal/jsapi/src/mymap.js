@@ -1,36 +1,36 @@
-/**
- * @module lux.MyMap
- */
-import luxUtil from './util.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
-import ngeoProfileD3Elevation from 'ngeo/profile/d3Elevation.js';
-import olFormatGeoJSON from 'ol/format/GeoJSON.js';
-import olInteractionSelect from 'ol/interaction/Select.js';
-import olLayerVector from 'ol/layer/Vector.js';
-import olStyleFill from 'ol/style/Fill.js';
-import olStyleIcon from 'ol/style/Icon.js';
-import olStyleRegularShape from 'ol/style/RegularShape.js';
-import olStyleStyle from 'ol/style/Style.js';
-import olStyleStroke from 'ol/style/Stroke.js';
-import olStyleText from 'ol/style/Text.js';
-import olSourceVector from 'ol/source/Vector.js';
-import olFormatKML from 'ol/format/KML.js';
-import olFormatGPX from 'ol/format/GPX.js';
-import olStyleCircle from 'ol/style/Circle.js';
-import olEvents from 'ol/events.js';
-import olObj from 'ol/obj.js';
-import olOverlay from 'ol/Overlay.js';
-import olEventsEventType from 'ol/events/EventType.js';
-import olGeomLineString from 'ol/geom/LineString.js';
-import olGeomPolygon from 'ol/geom/Polygon.js';
-import olGeomMultiPoint from 'ol/geom/MultiPoint.js';
-import olGeomPoint from 'ol/geom/Point.js';
-import olGeomGeometryType from 'ol/geom/GeometryType.js';
-import olMapBrowserEventType from 'ol/MapBrowserEventType.js';
-import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
-import olFeature from 'ol/Feature.js';
-import olExtent from 'ol/extent.js';
-import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
+goog.provide('lux.MyMap');
+
+goog.require('lux');
+goog.require('ngeo.interaction.Measure');
+goog.require('ngeo.profile.d3Elevation');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.interaction.Select');
+goog.require('ol.layer.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Text');
+goog.require('ol.source.Vector');
+goog.require('ol.format.KML');
+goog.require('ol.format.GPX');
+goog.require('ol.style.Circle');
+goog.require('ol.events');
+goog.require('ol.obj');
+goog.require('ol.Overlay');
+goog.require('ol.events.EventType');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.MapBrowserEventType');
+goog.require('ol.geom.GeometryLayout');
+goog.require('ol.Feature');
+goog.require('ol.extent');
+goog.require('ol.geom.MultiLineString');
+
 
 /**
  * @classdesc
@@ -40,7 +40,7 @@ import olGeomMultiLineString from 'ol/geom/MultiLineString.js';
  * @param {luxx.MyMapOptions} options The options.
  * @api stable
  */
-const exports = function(options) {
+lux.MyMap = function(options) {
 
   /**
    * @type {string}
@@ -70,7 +70,7 @@ const exports = function(options) {
 
   this.profile_ = null;
 
-  this.featureOverlay_ = new olSourceVector();
+  this.featureOverlay_ = new ol.source.Vector();
 
   /**
    * @type {ol.geom.LineString}
@@ -112,18 +112,18 @@ const exports = function(options) {
    * @private
    * @type {ol.format.KML}
    */
-  this.kmlFormat_ = new olFormatKML();
+  this.kmlFormat_ = new ol.format.KML();
 
   /**
    * @private
    * @type {ol.format.GPX}
    */
-  this.gpxFormat_ = new olFormatGPX();
+  this.gpxFormat_ = new ol.format.GPX();
 
-  this.mymapsSymbolUrl_ = [luxUtil.mymapsUrl, 'symbol/'].join('/');
-  this.arrowUrl_ = [luxUtil.mymapsUrl, 'getarrow'].join('/');
-  this.exportGpxUrl_ = [luxUtil.mymapsUrl, 'exportgpxkml'].join('/');
-  this.exportCsvUrl_ = luxUtil.exportCsvUrl;
+  this.mymapsSymbolUrl_ = [lux.mymapsUrl, 'symbol/'].join('/');
+  this.arrowUrl_ = [lux.mymapsUrl, 'getarrow'].join('/');
+  this.exportGpxUrl_ = [lux.mymapsUrl, 'exportgpxkml'].join('/');
+  this.exportCsvUrl_ = lux.exportCsvUrl;
 
   /**
    * @private
@@ -138,7 +138,7 @@ const exports = function(options) {
  * @export
  * @api
  */
-exports.prototype.setMap = function(map) {
+lux.MyMap.prototype.setMap = function(map) {
 
   /**
    * @type {lux.Map}
@@ -146,21 +146,21 @@ exports.prototype.setMap = function(map) {
    */
   this.map_ = map;
 
-  var layer = new olLayerVector({
+  var layer = new ol.layer.Vector({
     source: this.featureOverlay_
   });
 
   layer.setStyle([
-    new olStyleStyle({
-      image: new olStyleCircle({
+    new ol.style.Style({
+      image: new ol.style.Circle({
         radius: 6,
-        fill: new olStyleFill({color: '#ff0000'})
+        fill: new ol.style.Fill({color: '#ff0000'})
       })
     }),
-    new olStyleStyle({
-      image: new olStyleCircle({
+    new ol.style.Style({
+      image: new ol.style.Circle({
         radius: 5,
-        fill: new olStyleFill({color: '#ffffff'})
+        fill: new ol.style.Fill({color: '#ffffff'})
       })
     })]);
   layer.setMap(this.map_);
@@ -174,15 +174,15 @@ exports.prototype.setMap = function(map) {
  * Load the features.
  * @private
  */
-exports.prototype.loadFeatures_ = function() {
+lux.MyMap.prototype.loadFeatures_ = function() {
 
-  var url = [luxUtil.mymapsUrl, 'features', this.id_].join('/');
+  var url = [lux.mymapsUrl, 'features', this.id_].join('/');
   fetch(url).then(function(resp) {
     return resp.json();
   }).then(function(json) {
-    var format = new olFormatGeoJSON();
-    this.sourceFeatures_ = new olSourceVector();
-    var vector = new olLayerVector({
+    var format = new ol.format.GeoJSON();
+    this.sourceFeatures_ = new ol.source.Vector();
+    var vector = new ol.layer.Vector({
       source: this.sourceFeatures_
     });
     this.map_.addLayer(vector);
@@ -202,11 +202,11 @@ exports.prototype.loadFeatures_ = function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
     this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
 
-    this.selectInteraction_ = new olInteractionSelect({
+    this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
     });
     this.map_.addInteraction(this.selectInteraction_);
-    olEvents.listen(
+    ol.events.listen(
       this.selectInteraction_,
       'select',
       this.onFeatureSelected_, this);
@@ -217,7 +217,7 @@ exports.prototype.loadFeatures_ = function() {
  * @param {ol.interaction.Select.Event} event The select event.
  * @private
  */
-exports.prototype.onFeatureSelected_ = function(event) {
+lux.MyMap.prototype.onFeatureSelected_ = function(event) {
   var features = event.selected;
 
   if (this.popup_) {
@@ -242,11 +242,11 @@ exports.prototype.onFeatureSelected_ = function(event) {
   }
   if (properties.thumbnail) {
     var link = document.createElement('A');
-    link.setAttribute('href', luxUtil.baseUrl + properties.image);
+    link.setAttribute('href', lux.baseUrl + properties.image);
     link.setAttribute('target', '_blank');
 
     var thumb = document.createElement('IMG');
-    thumb.setAttribute('src', luxUtil.baseUrl + properties.thumbnail);
+    thumb.setAttribute('src', lux.baseUrl + properties.thumbnail);
 
     link.appendChild(thumb);
     content.appendChild(link);
@@ -255,9 +255,9 @@ exports.prototype.onFeatureSelected_ = function(event) {
     content.appendChild(element);
   });
 
-  var element = luxUtil.buildPopupLayout(content, function() {});
+  var element = lux.buildPopupLayout(content, function() {});
 
-  this.popup_ = new olOverlay({
+  this.popup_ = new ol.Overlay({
     element: element,
     positioning: 'bottom-center',
     offset: [0, -20],
@@ -266,7 +266,7 @@ exports.prototype.onFeatureSelected_ = function(event) {
   });
 
   var closeBtn = element.querySelectorAll('.lux-popup-close')[0];
-  olEvents.listen(closeBtn, olEventsEventType.CLICK, function() {
+  ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
     this.map_.removeOverlay(this.popup_);
     this.popup_ = null;
     this.selectInteraction_.getFeatures().clear();
@@ -281,19 +281,19 @@ exports.prototype.onFeatureSelected_ = function(event) {
  * @return {ol.FeatureStyleFunction} The Function to style.
  * @private
  */
-exports.prototype.createStyleFunction_ = function(curMap) {
+lux.MyMap.prototype.createStyleFunction_ = function(curMap) {
 
   var styles = [];
 
-  var vertexStyle = new olStyleStyle({
-    image: new olStyleRegularShape({
+  var vertexStyle = new ol.style.Style({
+    image: new ol.style.RegularShape({
       radius: 6,
       points: 4,
       angle: Math.PI / 4,
-      fill: new olStyleFill({
+      fill: new ol.style.Fill({
         color: [255, 255, 255, 0.5]
       }),
-      stroke: new olStyleStroke({
+      stroke: new ol.style.Stroke({
         color: [0, 0, 0, 1]
       })
     }),
@@ -301,19 +301,19 @@ exports.prototype.createStyleFunction_ = function(curMap) {
       var geom = feature.getGeometry();
 
       var coordinates;
-      if (geom instanceof olGeomLineString) {
+      if (geom instanceof ol.geom.LineString) {
         coordinates = geom.getCoordinates();
-        return new olGeomMultiPoint(coordinates);
-      } else if (geom instanceof olGeomPolygon) {
+        return new ol.geom.MultiPoint(coordinates);
+      } else if (geom instanceof ol.geom.Polygon) {
         coordinates = geom.getCoordinates()[0];
-        return new olGeomMultiPoint(coordinates);
+        return new ol.geom.MultiPoint(coordinates);
       } else {
         return geom;
       }
     }
   });
 
-  var fillStyle = new olStyleFill();
+  var fillStyle = new ol.style.Fill();
   var symbolUrl = this.mymapsSymbolUrl_;
   var arrowUrl = this.arrowUrl_;
   return function(resolution) {
@@ -339,7 +339,7 @@ exports.prototype.createStyleFunction_ = function(curMap) {
     rgbaColor.push(opacity);
 
     fillStyle.setColor(rgbaColor);
-    if (this.getGeometry().getType() === olGeomGeometryType.LINE_STRING &&
+    if (this.getGeometry().getType() === ol.geom.GeometryType.LINE_STRING &&
         this.get('showOrientation') === true) {
       var prevArrow, distance;
       var arrowColor = this.get('arrowcolor');
@@ -347,7 +347,7 @@ exports.prototype.createStyleFunction_ = function(curMap) {
         arrowColor = color;
       }
       this.getGeometry().forEachSegment(function(start, end) {
-        var arrowPoint = new olGeomPoint(
+        var arrowPoint = new ol.geom.Point(
             [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2]);
         var dx = end[0] - start[0];
         var dy = end[1] - start[1];
@@ -362,9 +362,9 @@ exports.prototype.createStyleFunction_ = function(curMap) {
         if (!prevArrow || distance > 600) {
           var coloredArrowUrl = arrowUrl + '?color=' + arrowColor.replace('#', '');
           // arrows
-          styles.push(new olStyleStyle({
+          styles.push(new ol.style.Style({
             geometry: arrowPoint,
-            image: new olStyleIcon(/** @type {olx.style.IconOptions} */ ({
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
               rotation: Math.PI / 2 - Math.atan2(dy, dx),
               src: coloredArrowUrl
             }))
@@ -393,7 +393,7 @@ exports.prototype.createStyleFunction_ = function(curMap) {
       if (!this.get('__editable__') && this.get('__selected__')) {
         featureStroke = featureStroke + 3;
       }
-      stroke = new olStyleStroke({
+      stroke = new ol.style.Stroke({
         color: rgbColor,
         width: featureStroke,
         lineDash: lineDash
@@ -406,7 +406,7 @@ exports.prototype.createStyleFunction_ = function(curMap) {
     }
     var imageOptions = {
       fill: fillStyle,
-      stroke: new olStyleStroke({
+      stroke: new ol.style.Stroke({
         color: rgbColor,
         width: featureSize / 7
       }),
@@ -414,12 +414,12 @@ exports.prototype.createStyleFunction_ = function(curMap) {
     };
     var image = null;
     if (this.get('symbolId')) {
-      olObj.assign(imageOptions, {
+      ol.obj.assign(imageOptions, {
         src: symbolUrl + this.get('symbolId'),
         scale: featureSize / 100,
         rotation: this.get('angle')
       });
-      image = new olStyleIcon(imageOptions);
+      image = new ol.style.Icon(imageOptions);
     } else {
       var shape = this.get('shape');
       if (!shape) {
@@ -427,62 +427,62 @@ exports.prototype.createStyleFunction_ = function(curMap) {
         shape = 'circle';
       }
       if (shape === 'circle') {
-        image = new olStyleCircle(imageOptions);
+        image = new ol.style.Circle(imageOptions);
       } else if (shape === 'square') {
-        olObj.assign(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 4,
           angle: Math.PI / 4,
           rotation: this.get('angle')
         }));
-        image = new olStyleRegularShape(
+        image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'triangle') {
-        olObj.assign(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 3,
           angle: 0,
           rotation: this.get('angle')
         }));
-        image = new olStyleRegularShape(
+        image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (shape === 'star') {
-        olObj.assign(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 5,
           angle: Math.PI / 4,
           rotation: this.get('angle'),
           radius2: featureSize
         }));
-        image = new olStyleRegularShape(
+        image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       } else if (this.get('shape') == 'cross') {
-        olObj.assign(imageOptions, ({
+        ol.obj.assign(imageOptions, ({
           points: 4,
           angle: 0,
           rotation: this.get('angle'),
           radius2: 0
         }));
-        image = new olStyleRegularShape(
+        image = new ol.style.RegularShape(
             /** @type {olx.style.RegularShapeOptions} */ (imageOptions));
       }
     }
 
     if (this.get('isLabel')) {
-      return [new olStyleStyle({
-        text: new olStyleText(/** @type {olx.style.TextOptions} */ ({
+      return [new ol.style.Style({
+        text: new ol.style.Text(/** @type {olx.style.TextOptions} */ ({
           text: this.get('name'),
           textAlign: 'start',
           font: 'normal ' + featureSize + 'px Sans-serif',
           rotation: this.get('angle'),
-          fill: new olStyleFill({
+          fill: new ol.style.Fill({
             color: rgbColor
           }),
-          stroke: new olStyleStroke({
+          stroke: new ol.style.Stroke({
             color: [255, 255, 255],
             width: 2
           })
         }))
       })];
     } else {
-      styles.push(new olStyleStyle({
+      styles.push(new ol.style.Style({
         image: image,
         fill: fillStyle,
         stroke: stroke
@@ -497,37 +497,37 @@ exports.prototype.createStyleFunction_ = function(curMap) {
  * @param {ol.Feature} feature The feature.
  * @return {Array<Element>} The formatted measure.
  */
-exports.prototype.getMeasures = function(feature) {
+lux.MyMap.prototype.getMeasures = function(feature) {
   var elements = [];
   var geom = feature.getGeometry();
   var projection = this.map_.getView().getProjection();
   console.assert(projection);
-  if (geom.getType() === olGeomGeometryType.POLYGON ||
-      geom.getType() === olGeomGeometryType.LINE_STRING) {
+  if (geom.getType() === ol.geom.GeometryType.POLYGON ||
+      geom.getType() === ol.geom.GeometryType.LINE_STRING) {
     var lengthEl = document.createElement('P');
 
-    console.assert(geom instanceof olGeomLineString ||
-        geom instanceof olGeomPolygon);
+    console.assert(geom instanceof ol.geom.LineString ||
+        geom instanceof ol.geom.Polygon);
 
-    var coordinates = (geom.getType() === olGeomGeometryType.POLYGON) ?
+    var coordinates = (geom.getType() === ol.geom.GeometryType.POLYGON) ?
       /** @type{ol.geom.Polygon}*/(geom).getCoordinates()[0] : /** @type{ol.geom.LineString}*/(geom).getCoordinates();
-    var length = ngeoInteractionMeasure.getFormattedLength(
-      new olGeomLineString(coordinates),
+    var length = ngeo.interaction.Measure.getFormattedLength(
+      new ol.geom.LineString(coordinates),
       /** @type{!ol.proj.Projection} */(projection),
       undefined,
       function(measure) {
         return measure.toString();
       }
     );
-    lengthEl.appendChild(document.createTextNode(luxUtil.translate('Length:') + ' ' + length));
+    lengthEl.appendChild(document.createTextNode(lux.translate('Length:') + ' ' + length));
     elements.push(lengthEl);
   }
-  if (geom.getType() === olGeomGeometryType.POLYGON) {
+  if (geom.getType() === ol.geom.GeometryType.POLYGON) {
     var areaEl = document.createElement('P');
 
-    console.assert(geom instanceof olGeomPolygon);
+    console.assert(geom instanceof ol.geom.Polygon);
 
-    var area = ngeoInteractionMeasure.getFormattedArea(
+    var area = ngeo.interaction.Measure.getFormattedArea(
       /** @type{!ol.geom.Polygon} */(geom),
       /** @type{!ol.proj.Projection} */(projection),
       undefined,
@@ -535,16 +535,16 @@ exports.prototype.getMeasures = function(feature) {
         return measure.toString();
       }
     );
-    areaEl.appendChild(document.createTextNode(luxUtil.translate('Area:') + ' ' + area));
+    areaEl.appendChild(document.createTextNode(lux.translate('Area:') + ' ' + area));
     elements.push(areaEl);
   }
-  if (geom.getType() === olGeomGeometryType.POLYGON &&
+  if (geom.getType() === ol.geom.GeometryType.POLYGON &&
       !!feature.get('isCircle')) {
     var radiusEl = document.createElement('P');
-    console.assert(geom instanceof olGeomPolygon);
-    var center = olExtent.getCenter(geom.getExtent());
-    var line = new olGeomLineString([center, /** @type{ol.geom.Polygon} */(geom).getLastCoordinate()]);
-    var radius = ngeoInteractionMeasure.getFormattedLength(
+    console.assert(geom instanceof ol.geom.Polygon);
+    var center = ol.extent.getCenter(geom.getExtent());
+    var line = new ol.geom.LineString([center, /** @type{ol.geom.Polygon} */(geom).getLastCoordinate()]);
+    var radius = ngeo.interaction.Measure.getFormattedLength(
       line,
       /** @type{!ol.proj.Projection} */(projection),
       undefined,
@@ -552,20 +552,20 @@ exports.prototype.getMeasures = function(feature) {
         return measure.toString();
       }
     );
-    radiusEl.appendChild(document.createTextNode(luxUtil.translate('Rayon:') + ' ' + radius));
+    radiusEl.appendChild(document.createTextNode(lux.translate('Rayon:') + ' ' + radius));
     elements.push(radiusEl);
   }
-  if (geom.getType() === olGeomGeometryType.POINT &&
+  if (geom.getType() === ol.geom.GeometryType.POINT &&
       !feature.get('isLabel')) {
     var elevationEl = document.createElement('P');
 
-    console.assert(geom instanceof olGeomPoint);
+    console.assert(geom instanceof ol.geom.Point);
 
     elevationEl.appendChild(document.createTextNode('N/A'));
-    luxUtil.getElevation(/** @type{!ol.geom.Point} */ (geom).getCoordinates()).then(
+    lux.getElevation(/** @type{!ol.geom.Point} */ (geom).getCoordinates()).then(
       function(json) {
         if (json['dhm'] > 0) {
-          elevationEl.appendChild(document.createTextNode(luxUtil.translate('Elevation') + ': ' +
+          elevationEl.appendChild(document.createTextNode(lux.translate('Elevation') + ': ' +
               parseInt(json['dhm'], 0).toString() + ' m'));
         }
       }
@@ -578,24 +578,24 @@ exports.prototype.getMeasures = function(feature) {
 
   var link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxUtil.translate('Zoom to')));
+  link.appendChild(document.createTextNode(lux.translate('Zoom to')));
   links.appendChild(link);
-  olEvents.listen(link, olEventsEventType.CLICK, function() {
+  ol.events.listen(link, ol.events.EventType.CLICK, function() {
     var size = /** @type {Array<number>} */ (this.map_.getSize());
     var extent = /** @type {Array<number>} */ (geom.getExtent());
     this.map_.getView().fit(extent, {size: size});
   }.bind(this));
 
   if (this.profileContainer_ &&
-      geom.getType() === olGeomGeometryType.LINE_STRING) {
-    console.assert(geom instanceof olGeomLineString);
+      geom.getType() === ol.geom.GeometryType.LINE_STRING) {
+    console.assert(geom instanceof ol.geom.LineString);
     link = document.createElement('A');
     link.setAttribute('href', 'javascript:void(0);');
-    link.appendChild(document.createTextNode(luxUtil.translate('Profile')));
+    link.appendChild(document.createTextNode(lux.translate('Profile')));
     links.appendChild(link);
 
-    olEvents.listen(link, olEventsEventType.CLICK, function() {
-      console.assert(geom instanceof olGeomLineString);
+    ol.events.listen(link, ol.events.EventType.CLICK, function() {
+      console.assert(geom instanceof ol.geom.LineString);
       console.assert(this.profileContainer_ instanceof Element);
       this.loadProfile(
         /** @type{ol.geom.LineString} */ (geom),
@@ -603,7 +603,7 @@ exports.prototype.getMeasures = function(feature) {
       var closeBtn = this.profileContainer_.querySelectorAll(
         '.lux-profile-header .lux-profile-close')[0];
       closeBtn.style.display = 'block';
-      olEvents.listen(closeBtn, olEventsEventType.CLICK, function() {
+      ol.events.listen(closeBtn, ol.events.EventType.CLICK, function() {
         this.hideProfile_();
       }.bind(this));
     }.bind(this));
@@ -612,19 +612,19 @@ exports.prototype.getMeasures = function(feature) {
 
   link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxUtil.translate('Exporter KMl')));
+  link.appendChild(document.createTextNode(lux.translate('Exporter KMl')));
 
   links.appendChild(link);
-  olEvents.listen(link, olEventsEventType.CLICK, function() {
+  ol.events.listen(link, ol.events.EventType.CLICK, function() {
     this.exportKml_(feature, undefined);
   }.bind(this));
 
   link = document.createElement('A');
   link.setAttribute('href', 'javascript:void(0);');
-  link.appendChild(document.createTextNode(luxUtil.translate('Exporter GPX')));
+  link.appendChild(document.createTextNode(lux.translate('Exporter GPX')));
 
   links.appendChild(link);
-  olEvents.listen(link, olEventsEventType.CLICK, function() {
+  ol.events.listen(link, ol.events.EventType.CLICK, function() {
     this.exportGpx_(feature, undefined);
   }.bind(this));
 
@@ -638,7 +638,7 @@ exports.prototype.getMeasures = function(feature) {
  *     not.
  * @private
  */
-exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
+lux.MyMap.prototype.initProfile_ = function(target, opt_addCloseBtn) {
   while (target.firstChild) {
     target.removeChild(target.firstChild);
   }
@@ -662,8 +662,8 @@ exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
   header.appendChild(metadata);
 
   var exportCSV = document.createElement('BUTTON');
-  exportCSV.innerHTML = luxUtil.translate('Export csv');
-  olEvents.listen(exportCSV, olEventsEventType.CLICK, function() {
+  exportCSV.innerHTML = lux.translate('Export csv');
+  ol.events.listen(exportCSV, ol.events.EventType.CLICK, function() {
     this.exportCSV_();
   }.bind(this));
   header.appendChild(exportCSV);
@@ -698,7 +698,7 @@ exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
     return 0;
   };
 
-  olEvents.listen(this.map_, olMapBrowserEventType.POINTERMOVE,
+  ol.events.listen(this.map_, ol.MapBrowserEventType.POINTERMOVE,
       /**
        * @param {ol.MapBrowserPointerEvent} evt Map browser event.
        */
@@ -717,7 +717,7 @@ exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
     }
   };
 
-  this.profile_ = ngeoProfileD3Elevation({
+  this.profile_ = ngeo.profile.d3Elevation({
     linesConfiguration: linesConfiguration,
     distanceExtractor: dist,
     hoverCallback: this.profileHoverCallback_.bind(this),
@@ -732,7 +732,7 @@ exports.prototype.initProfile_ = function(target, opt_addCloseBtn) {
  * Clears the data in the profile and hide it.
  * @private
  */
-exports.prototype.hideProfile_ = function() {
+lux.MyMap.prototype.hideProfile_ = function() {
   if (!this.profileContainer_) {
     return;
   }
@@ -751,14 +751,14 @@ exports.prototype.hideProfile_ = function() {
  * @export
  * @api
  */
-exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
+lux.MyMap.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
   if (typeof target === 'string') {
     target = document.getElementById(target);
   }
   this.profileContainer_ = target;
   this.initProfile_(target, opt_addCloseBtn);
 
-  console.assert(geom instanceof olGeomLineString,
+  console.assert(geom instanceof ol.geom.LineString,
       'geometry should be a linestring');
 
   target.classList.add('lux-profile-active');
@@ -768,7 +768,7 @@ exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     featureProjection: 'EPSG:3857'
   };
   var params = {
-    'geom': new olFormatGeoJSON().writeGeometry(geom, encOpt),
+    'geom': new ol.format.GeoJSON().writeGeometry(geom, encOpt),
     'nbPoints': 100,
     'layer': 'dhm',
     'id': null
@@ -792,7 +792,7 @@ exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     body: body
   });
 
-  fetch(luxUtil.profileUrl, request
+  fetch(lux.profileUrl, request
   ).then(function(resp) {
     return resp.json();
   }).then(function(data) {
@@ -806,10 +806,10 @@ exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
     var lastElevation;
     var i;
     var len = data.profile.length;
-    var lineString = new olGeomLineString([], olGeomGeometryLayout.XYM);
+    var lineString = new ol.geom.LineString([], ol.geom.GeometryLayout.XYM);
     for (i = 0; i < len; i++) {
       var p = data.profile[i];
-      p = new olGeomPoint([p['x'], p['y']]);
+      p = new ol.geom.Point([p['x'], p['y']]);
       p.transform('EPSG:2169', this.map_.getView().getProjection());
       lineString.appendCoordinate(
           p.getCoordinates().concat(data.profile[i]['dist']));
@@ -840,7 +840,7 @@ exports.prototype.loadProfile = function(geom, target, opt_addCloseBtn) {
 /**
  * @private
  */
-exports.prototype.exportCSV_ = function() {
+lux.MyMap.prototype.exportCSV_ = function() {
   var csv = 'dist,MNT,y,x\n';
   this.selection_.datum().forEach(function(item) {
     csv += item['dist'] + ',' +
@@ -874,11 +874,11 @@ exports.prototype.exportCSV_ = function() {
  * Creates a new measure tooltip
  * @private
  */
-exports.prototype.createMeasureTooltip_ = function() {
+lux.MyMap.prototype.createMeasureTooltip_ = function() {
   this.removeMeasureTooltip_();
   this.measureTooltipElement_ = document.createElement('DIV');
   this.measureTooltipElement_.classList.add('lux-tooltip', 'lux-tooltip-measure');
-  this.measureTooltip_ = new olOverlay({
+  this.measureTooltip_ = new ol.Overlay({
     element: this.measureTooltipElement_,
     offset: [0, -15],
     positioning: 'bottom-center'
@@ -890,7 +890,7 @@ exports.prototype.createMeasureTooltip_ = function() {
  * Destroy the measure tooltip
  * @private
  */
-exports.prototype.removeMeasureTooltip_ = function() {
+lux.MyMap.prototype.removeMeasureTooltip_ = function() {
   if (this.measureTooltipElement_ !== null) {
     this.measureTooltipElement_.parentNode.removeChild(
         this.measureTooltipElement_);
@@ -907,11 +907,11 @@ exports.prototype.removeMeasureTooltip_ = function() {
  * @param {string} yUnits The y unit.
  * @private
  */
-exports.prototype.profileHoverCallback_ = function(point, dist, xUnits, elevation, yUnits) {
+lux.MyMap.prototype.profileHoverCallback_ = function(point, dist, xUnits, elevation, yUnits) {
   this.featureOverlay_.clear();
-  var curPoint = new olGeomPoint([point['x'], point['y']]);
+  var curPoint = new ol.geom.Point([point['x'], point['y']]);
   curPoint.transform('EPSG:2169', this.map_.getView().getProjection());
-  var positionFeature = new olFeature({
+  var positionFeature = new ol.Feature({
     geometry: curPoint
   });
   this.featureOverlay_.addFeature(positionFeature);
@@ -931,7 +931,7 @@ exports.prototype.profileHoverCallback_ = function(point, dist, xUnits, elevatio
  * @return {string} The formatted distance.
  * @private
  */
-exports.prototype.formatDistance_ = function(dist, units) {
+lux.MyMap.prototype.formatDistance_ = function(dist, units) {
   return parseFloat(dist.toPrecision(3)) + ' ' + units;
 };
 
@@ -943,7 +943,7 @@ exports.prototype.formatDistance_ = function(dist, units) {
  * @return {string} The elevation text.
  * @private
  */
-exports.prototype.formatElevation_ = function(elevation, units) {
+lux.MyMap.prototype.formatElevation_ = function(elevation, units) {
   return parseFloat(elevation.toPrecision(4)) + ' ' + units;
 };
 
@@ -954,7 +954,7 @@ exports.prototype.formatElevation_ = function(elevation, units) {
  * @return {string} the elevation gain text.
  * @private
  */
-exports.prototype.formatElevationGain_ =
+lux.MyMap.prototype.formatElevationGain_ =
     function(elevation, units) {
       return parseFloat(parseInt(elevation, 10)) + ' ' + units;
     };
@@ -964,7 +964,7 @@ exports.prototype.formatElevationGain_ =
  * @param {ol.geom.Geometry|undefined} geom The geometry to snap to.
  * @private
  */
-exports.prototype.snapToGeometry_ = function(coordinate, geom) {
+lux.MyMap.prototype.snapToGeometry_ = function(coordinate, geom) {
   var closestPoint = geom.getClosestPoint(coordinate);
   // compute distance to line in pixels
   var dx = closestPoint[0] - coordinate[0];
@@ -985,7 +985,7 @@ exports.prototype.snapToGeometry_ = function(coordinate, geom) {
  * @param {string | undefined} filename The filename.
  * @export
  */
-exports.prototype.exportMymapsAsKml = function(filename) {
+lux.MyMap.prototype.exportMymapsAsKml = function(filename) {
   this.exportKml_(this.sourceFeatures_.getFeatures(), filename);
 };
 
@@ -995,9 +995,9 @@ exports.prototype.exportMymapsAsKml = function(filename) {
  * @param {string | undefined} filename The filename.
  * @private
  */
-exports.prototype.exportKml_ = function(feature, filename) {
+lux.MyMap.prototype.exportKml_ = function(feature, filename) {
   var features = feature;
-  if (features instanceof olFeature) {
+  if (features instanceof ol.Feature) {
     features = [feature];
   }
   if (filename === undefined) {
@@ -1016,7 +1016,7 @@ exports.prototype.exportKml_ = function(feature, filename) {
  * @param {string | undefined} filename The filename.
  * @export
  */
-exports.prototype.exportMymapsAsGpx = function(filename) {
+lux.MyMap.prototype.exportMymapsAsGpx = function(filename) {
   this.exportGpx_(this.sourceFeatures_.getFeatures(), filename);
 };
 
@@ -1026,10 +1026,10 @@ exports.prototype.exportMymapsAsGpx = function(filename) {
  * @param {string | undefined} filename The filename.
  * @private
  */
-exports.prototype.exportGpx_ = function(feature, filename) {
+lux.MyMap.prototype.exportGpx_ = function(feature, filename) {
   // LineString geometries, and tracks from MultiLineString
   var features = feature;
-  if (features instanceof olFeature) {
+  if (features instanceof ol.Feature) {
     features = [feature];
   }
   if (filename === undefined) {
@@ -1054,7 +1054,7 @@ exports.prototype.exportGpx_ = function(feature, filename) {
  * @param {string} filename File name for the exported document.
  * @private
  */
-exports.prototype.exportFeatures_ = function(doc, format, filename) {
+lux.MyMap.prototype.exportFeatures_ = function(doc, format, filename) {
 
   var formatInput = document.createElement('INPUT');
   formatInput.type = 'hidden';
@@ -1088,7 +1088,7 @@ exports.prototype.exportFeatures_ = function(doc, format, filename) {
  * @return {string} The sanitized string.
  * @private
  */
-exports.prototype.sanitizeFilename_ = function(name) {
+lux.MyMap.prototype.sanitizeFilename_ = function(name) {
   name = name.replace(/\s+/g, '_'); // Replace white space with _.
   return name.replace(/[^a-z0-9\-\_]/gi, ''); // Strip any special charactere.
 };
@@ -1101,11 +1101,11 @@ exports.prototype.sanitizeFilename_ = function(name) {
  * @return {Array.<ol.Feature>} The exploded features.
  * @private
  */
-exports.prototype.exploseFeature_ = function(features) {
+lux.MyMap.prototype.exploseFeature_ = function(features) {
   var explodedFeatures = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case olGeomGeometryType.GEOMETRY_COLLECTION:
+      case ol.geom.GeometryType.GEOMETRY_COLLECTION:
         var geomCollection = /** @type {ol.geom.GeometryCollection} */
             (feature.getGeometry());
         geomCollection.getGeometriesArray().forEach(
@@ -1115,7 +1115,7 @@ exports.prototype.exploseFeature_ = function(features) {
               explodedFeatures.push(newFeature);
             });
         break;
-      case olGeomGeometryType.MULTI_LINE_STRING:
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
         var multiLineString = /** @type {ol.geom.MultiLineString} */
             (feature.getGeometry());
         multiLineString.getLineStrings().forEach(
@@ -1141,15 +1141,15 @@ exports.prototype.exploseFeature_ = function(features) {
  * @return {Array.<ol.Feature>} The changed features.
  * @private
  */
-exports.prototype.changeLineToMultiline_ = function(features) {
+lux.MyMap.prototype.changeLineToMultiline_ = function(features) {
   var changedFeatures = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case olGeomGeometryType.LINE_STRING:
+      case ol.geom.GeometryType.LINE_STRING:
         var geom = /** @type {ol.geom.LineString} */ (feature.getGeometry());
         var multilineFeature = feature.clone();
         multilineFeature.setGeometry(
-            new olGeomMultiLineString([geom.getCoordinates()]));
+            new ol.geom.MultiLineString([geom.getCoordinates()]));
         changedFeatures.push(multilineFeature);
         break;
       default :
@@ -1172,17 +1172,17 @@ exports.prototype.changeLineToMultiline_ = function(features) {
  * @return {Array.<ol.Feature>} The sorted features.
  * @private
  */
-exports.prototype.orderFeaturesForGpx_ = function(features) {
+lux.MyMap.prototype.orderFeaturesForGpx_ = function(features) {
 
   var points = [];
   var lines = [];
   var others = [];
   features.forEach(function(feature) {
     switch (feature.getGeometry().getType()) {
-      case olGeomGeometryType.POINT:
+      case ol.geom.GeometryType.POINT:
         points.push(feature);
         break;
-      case olGeomGeometryType.LINE_STRING:
+      case ol.geom.GeometryType.LINE_STRING:
         lines.push(feature);
         break;
       default :
@@ -1193,6 +1193,3 @@ exports.prototype.orderFeaturesForGpx_ = function(features) {
 
   return points.concat(lines, others);
 };
-
-
-export default exports;
