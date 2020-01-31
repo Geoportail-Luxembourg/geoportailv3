@@ -417,6 +417,7 @@ def main(global_config, **settings):
     config.add_route('getremotetemplate', '/getremotetemplate')
     config.add_route('isthemeprivate', '/isthemeprivate')
     config.add_route('download_resource', '/downloadresource')
+    config.add_route('upload_vt_style', '/uploadvtstyle')
     config.add_static_view('proj/{version}', path='geoportailv3_geoportal:jsapi/')
     
     # Appcache manifest
