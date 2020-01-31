@@ -10,7 +10,7 @@ var taffy = require('taffydb').taffy;
 var template = require('jsdoc/template');
 var util = require('util');
 var jsdocType = require("jsdoc/tag/type")
-var jsdocOl3 = require('../../../../.build/jsdocOl3.js');
+var jsdocOl3 = require('/app/apiv3/.build/jsdocOl3.js');
 
 var htmlsafe = helper.htmlsafe;
 var linkto = helper.linkto;
@@ -527,7 +527,7 @@ exports.publish = function(taffyData, opts, tutorials) {
         var toFile = fileName.replace(fromDir, outdir);
         var toDir = fs.toDir( toFile );
         fs.mkPath(toDir);
-        fs.copyFileSync(fileName, toFile);
+        fs.copyFileSync(fileName, '', toFile);
     });
 
     // copy user-specified static files to outdir

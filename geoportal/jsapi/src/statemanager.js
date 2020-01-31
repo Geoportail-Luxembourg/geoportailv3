@@ -1,16 +1,16 @@
-/**
- * @module lux.StateManager
- */
-import luxUtil from './util.js';
-import olCollectionEventType from 'ol/CollectionEventType.js';
-import olEvents from 'ol/events.js';
-import olObj from 'ol/obj.js';
+goog.provide('lux.StateManager');
+
+goog.require('lux');
+goog.require('ol.CollectionEventType');
+goog.require('ol.events');
+goog.require('ol.obj');
+
 
 /**
  * @classdesc
  * @constructor
  */
-const exports = function() {
+lux.StateManager = function() {
 
   /**
    * @type {lux.Map}
@@ -32,7 +32,7 @@ const exports = function() {
 /**
  * @param {lux.Map} map The map.
  */
-exports.prototype.setMap = function(map) {
+lux.StateManager.prototype.setMap = function(map) {
   this.map_ = map;
   var view = map.getView();
 
@@ -49,15 +49,15 @@ exports.prototype.setMap = function(map) {
   // make sure the state is updated the first time
   onViewUpdate.call(this);
 
-  olEvents.listen(view, 'propertychange',
-      luxUtil.debounce(onViewUpdate, 250).bind(this));
+  ol.events.listen(view, 'propertychange',
+      lux.debounce(onViewUpdate, 250).bind(this));
 
   var layersListenerKeys = [];
 
   function onLayersUpdate() {
     // remove any listener on visibility change
     layersListenerKeys.forEach(function(key) {
-      olEvents.unlistenByKey(key);
+      ol.events.unlistenByKey(key);
     });
     layersListenerKeys.length = 0;
 
@@ -71,7 +71,7 @@ exports.prototype.setMap = function(map) {
       } else {
         layers.unshift(layer.get('id'));
         opacities.unshift(layer.get('visible') ? layer.getOpacity() : 0);
-        layersListenerKeys[layer.get('id')] = olEvents.listen(
+        layersListenerKeys[layer.get('id')] = ol.events.listen(
           layer,
           'change:visible',
           onLayersUpdate,
@@ -90,16 +90,16 @@ exports.prototype.setMap = function(map) {
     this.updateState(object);
   }
 
-  olEvents.listen(map.getLayers(), olCollectionEventType.ADD,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.ADD,
     onLayersUpdate, this);
-  olEvents.listen(map.getLayers(), olCollectionEventType.REMOVE,
+  ol.events.listen(map.getLayers(), ol.CollectionEventType.REMOVE,
     onLayersUpdate, this);
 };
 
 /**
  * @param {string} id The mymap id.
  */
-exports.prototype.setMyMap = function(id) {
+lux.StateManager.prototype.setMyMap = function(id) {
   this.updateState({'map_id': id});
 };
 
@@ -107,11 +107,11 @@ exports.prototype.setMyMap = function(id) {
  * Updates the attribution logo href.
  * @param {luxx.State} object The params to update.
  */
-exports.prototype.updateState = function(object) {
+lux.StateManager.prototype.updateState = function(object) {
   if (this.state_ !== null) {
-    olObj.assign(this.state_, object);
+    ol.obj.assign(this.state_, object);
 
-    console.assert(this.state_ instanceof Object);
+    goog.asserts.assertObject(this.state_);
 
     var el = this.map_.getTargetElement();
     var logo = el.querySelectorAll('.ol-attribution a')[0];
@@ -132,9 +132,6 @@ exports.prototype.updateState = function(object) {
 /**
  * @return {string} the url to the map
  */
-exports.prototype.getUrl = function() {
+lux.StateManager.prototype.getUrl = function() {
   return this.url_;
 };
-
-
-export default exports;
