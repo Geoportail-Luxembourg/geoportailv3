@@ -15,7 +15,7 @@ RUN \
     gettext libxml2-utils \
   && \
   apt-get purge python3-pip python3-setuptools python3-wheel --assume-yes && \
-  echo "deb https://deb.nodesource.com/node_8.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
+  echo "deb https://deb.nodesource.com/node_10.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
   curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
