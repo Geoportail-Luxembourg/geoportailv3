@@ -19,7 +19,8 @@ class Upload(object):
             dir = os.environ['VT_DIR']
         else:
             dir = "/tmp"
-        file_path = os.path.join(dir, '%s.json' % uuid.uuid4())
+        id = uuid.uuid4()
+        file_path = os.path.join(dir, '%s.json' %id)
 
         input_file.seek(0)
         with open(file_path, 'wb') as output_file:
@@ -30,6 +31,19 @@ class Upload(object):
             input_file.seek(0)
             shutil.copyfileobj(input_file, output_file)
 
-            return {"status":"OK"}
-        return {"status":"KO"}
+            return {"status":"OK", "id": str(id)}
+
+    @view_config(route_name='delete_vt_style', renderer='json')
+    def delete_vt_style(self):
+        id = self.request.params.get("id")
+        if 'VT_DIR' in os.environ:
+            dir = os.environ['VT_DIR']
+        else:
+            dir = "/tmp"
+
+        file_path = os.path.join(dir, '%s.json' %id)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        return {"status":"OK"}
 
