@@ -928,7 +928,7 @@ const MainController = function(
   };
 
   this.downloadCustomStyleFile = () => {
-    const content = this.appThemes_.getCustomVectorTileSTyleForDownload(this.bgLayer);
+    const content = JSON.stringify(this.bgLayer.getMapBoxMap().getStyle());;
     const fileName = 'styles.json';
     if (!content) {
       console.log('No custom mvt to load');
