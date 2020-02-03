@@ -74,7 +74,7 @@ lux.setBaseUrl = function(url, requestScheme) {
   // wsBaseUrl = url;
   if (!url) {
     lux.layersUrl = '../layers.json';
-    lux.i18nUrl = '../lang_xx.json';
+    lux.i18nUrl = '../lang_fr.json';
     url = 'https://apiv3.geoportail.lu/';
   } else {
     lux.layersUrl = wsBaseUrl + lux.layersUrl;

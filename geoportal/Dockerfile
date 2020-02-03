@@ -134,6 +134,8 @@ RUN mkdir -p /app/geoportailv3_geoportal/jsapi/build/fonts
 RUN mkdir -p /app/geoportailv3_geoportal/jsapi/webfonts
 RUN cp node_modules/font-awesome/fonts/* /app/geoportailv3_geoportal/jsapi/build/fonts/
 RUN cp node_modules/font-awesome/fonts/* /app/geoportailv3_geoportal/jsapi/webfonts/
+RUN cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geoportal/jsapi/build/fonts/
+RUN cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geoportal/jsapi/webfonts/
 RUN node node_modules/openlayers/tasks/build.js /app/apiv3/jsapi/config.json apiv3.js
 RUN cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/build/d3.min.js \
     node_modules/js-autocomplete/auto-complete.min.js \
