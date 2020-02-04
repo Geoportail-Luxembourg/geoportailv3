@@ -35,7 +35,8 @@ const exports = function($window, ngeoLocation, appThemes) {
     'pag': 19,
     'cadastre_hertzien': 25,
     'atlas_demographique': 29,
-    'urban_farming': 30
+    'urban_farming': 30,
+    'logement': 32
   };
 
   /**
@@ -71,6 +72,13 @@ exports.prototype.setCurrentTheme = function(themeId) {
   this.currentTheme_ = themeId;
 
   var piwikSiteId = this.piwikSiteIdLookup_[this.currentTheme_];
+  var isApp =
+    location.search.includes('localforage=android') ||
+    location.search.includes('localforage=ios') ||
+    location.search.includes('applogin=yes');
+  if (isApp) {
+    piwikSiteId = this.piwikSiteIdLookup_['m'];
+  }
   if (piwikSiteId === undefined || piwikSiteId === null) {
     piwikSiteId = this.piwikSiteIdLookup_[exports.DEFAULT_THEME_];
   }

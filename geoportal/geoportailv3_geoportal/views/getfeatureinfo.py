@@ -442,7 +442,7 @@ class Getfeatureinfo(object):
                         log.error(l_template)
                         return HTTPBadGateway()
                     remote_template = Template(data)
-                    if "${features" in data:
+                    if "${features" in data.decode('utf-8'):
                         r['tooltip'] =\
                             remote_template.render(features=features)
                     else:
@@ -618,14 +618,25 @@ class Getfeatureinfo(object):
         proxy_url = self.request.route_url('download')
         for feature in features:
             for key in attributes:
-                value = feature['attributes'][key]
-                entries = DBSession.query(LuxDownloadUrl).all()
-                for entry in entries:
-                    if value is not None and entry.url in value:
-                        feature['attributes'][key] =\
-                            proxy_url + "?id=" + str(entry.id) +\
-                            "&filename=" + value.split(entry.url)[1]
-                        break
+                if 'attributes' in feature:
+                    if key in feature['attributes']:
+                        value = feature['attributes'][key]
+                        entries = DBSession.query(LuxDownloadUrl).all()
+                        for entry in entries:
+                            if value is not None and entry.url in value:
+                                feature['attributes'][key] =\
+                                    proxy_url + "?id=" + str(entry.id) +\
+                                    "&filename=" + value.split(entry.url)[1]
+                                break
+                else:
+                    value = feature[key]
+                    entries = DBSession.query(LuxDownloadUrl).all()
+                    for entry in entries:
+                        if value is not None and entry.url in value:
+                            feature[key] =\
+                                proxy_url + "?id=" + str(entry.id) +\
+                                "&filename=" + value.split(entry.url)[1]
+                            break
             modified_features.append(feature)
         return modified_features
 
@@ -959,6 +970,7 @@ class Getfeatureinfo(object):
             content = result.read()
         except Exception as e:
             log.exception(e)
+            log.error(url)
             return []
 
         features = []

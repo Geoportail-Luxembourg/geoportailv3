@@ -1,0 +1,60 @@
+{
+  "src": [
+    "node_modules/proj4/dist/proj4.js",
+	"node_modules/openlayers/src/*.js",
+    "node_modules/openlayers/src/**/*.js",
+	"node_modules/openlayers/build/ol.ext/*.js",
+    "node_modules/openlayers/build/ol.ext/**/*.js",
+    "node_modules/ngeo/src/d3-ext/**/*.js",
+	"node_modules/ngeo/src/interaction/MeasureBaseOptions.js",
+	"node_modules/ngeo/src/customevent.js",
+    "node_modules/ngeo/src/interaction/measure.js",
+	"node_modules/ngeo/src/interaction/drawazimut.js",
+    "node_modules/ngeo/src/interaction/measureazimut.js",
+    "node_modules/ngeo/src/interaction/mobiledraw.js",
+	"node_modules/ngeo/src/profile/d3Elevation.js",
+    "jsapi/src/**/*.js"
+  ],
+  "exports": ["*"],
+  "compile": {
+    "externs": [
+      "/app/apiv3/node_modules/openlayers/externs/bingmaps.js",
+      "/app/apiv3/node_modules/openlayers/externs/cartodb.js",
+      "/app/apiv3/node_modules/openlayers/externs/closure-compiler.js",
+      "/app/apiv3/node_modules/openlayers/externs/esrijson.js",
+      "/app/apiv3/node_modules/openlayers/externs/geojson.js",
+      "/app/apiv3/node_modules/openlayers/externs/proj4js.js",
+      "/app/apiv3/node_modules/openlayers/externs/tilejson.js",
+      "/app/apiv3/node_modules/openlayers/externs/topojson.js",
+	  "/app/apiv3/node_modules/ngeo/options/ngeox.js",
+      "/app/apiv3/node_modules/openlayers/externs/olx.js",
+      "/app/apiv3/node_modules/openlayers/externs/oli.js",
+      "/app/apiv3/node_modules/ngeo/externs/d3.js",
+      "/app/apiv3/node_modules/ngeo/externs/twbootstrap.js",
+      "/app/apiv3/node_modules/ngeo/externs/typeahead.js",
+	  "/app/apiv3/node_modules/ngeo/externs/mapfish-print-v3.js",
+      "/app/apiv3/.build/externs/angular-1.6.js",
+      "/app/apiv3/.build/externs/angular-1.6-q_templated.js",
+      "/app/apiv3/.build/externs/angular-1.6-http-promise_templated.js",
+      "/app/apiv3/jsapi/externs/fuse.js",
+      "/app/apiv3/.build/externs/jquery-1.9.js",
+      "/app/apiv3/jsapi/externs/autocompletex.js",
+      "/app/apiv3/jsapi/externs/luxx.js"
+    ],
+    "define": [
+      "goog.DEBUG=false",
+      "ol.ENABLE_WEBGL=false"
+    ],
+    "extra_annotation_name": [
+      "api", "observable", "ngdoc", "ngname", "htmlAttribute"
+    ],
+    "generate_exports": true,
+    "compilation_level": "ADVANCED",
+    "export_local_property_definitions": true,
+    "warning_level": "VERBOSE",
+    "language_in": "ECMASCRIPT6_STRICT",
+    "language_out": "ECMASCRIPT5_STRICT",
+    "output_wrapper": "(function(){%output%}).call(window);",
+    "use_types_for_optimization": true
+  }
+}

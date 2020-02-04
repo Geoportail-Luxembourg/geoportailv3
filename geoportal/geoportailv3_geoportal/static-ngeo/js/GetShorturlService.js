@@ -32,8 +32,20 @@ function service($http, ngeoLocation, shorturlServiceUrl) {
             'Y': Math.round(opt_coordinate[1])
           });
         }
+        var url = ngeoLocation.getUriString();
+        //Replace the specific app parameter
+        var isApp =
+        location.search.includes('localforage=android') ||
+        location.search.includes('localforage=ios') ||
+        location.search.includes('applogin=yes');
+
+        if (isApp) {
+            url = url.replace('localforage=android', '')
+            url = url.replace('localforage=ios', '')
+            url = url.replace('applogin=yes', '')
+        }
         var req = $.param({
-          'url': ngeoLocation.getUriString()
+          'url': url
         });
         var config = {
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}

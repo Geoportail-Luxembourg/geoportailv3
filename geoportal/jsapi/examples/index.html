@@ -553,7 +553,7 @@ var map12 = new lux.Map({
   zoom: 17
 });
 
-lux.util.geocode({
+lux.geocode({
   num: 54,
   street: 'avenue gaston diderich',
   zip: 1420,
@@ -589,7 +589,7 @@ var map13 = new lux.Map({
 
 map13.on('click', function(evt) {
   var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
-  lux.util.reverseGeocode(coordinate, function(address) {
+  lux.reverseGeocode(coordinate, function(address) {
     var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
     document.getElementById('address').innerHTML = html;
   });
@@ -736,7 +736,7 @@ map17.on('click', function(evt) {
 
 <script type='text/javascript'>
 
-lux.util.setPopupSize([400, 150]);
+lux.setPopupSize([400, 150]);
 
 var map1 = new lux.Map({
   target: 'map1',
@@ -1035,7 +1035,7 @@ var map12 = new lux.Map({
   zoom: 17
 });
 
-lux.util.geocode({
+lux.geocode({
   num: 54,
   street: 'avenue gaston diderich',
   zip: 1420,
@@ -1058,7 +1058,7 @@ var map13 = new lux.Map({
 
 map13.on('click', function(evt) {
   var coordinate = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:2169');
-  lux.util.reverseGeocode(coordinate, function(address) {
+  lux.reverseGeocode(coordinate, function(address) {
     var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
     document.getElementById('address').innerHTML = html;
   });

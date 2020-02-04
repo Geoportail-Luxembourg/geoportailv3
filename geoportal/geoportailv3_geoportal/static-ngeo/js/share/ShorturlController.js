@@ -82,6 +82,17 @@ const exports = function($scope, ngeoLocation,
 exports.prototype.setUrl_ =
     function() {
       this.url = this.ngeoLocation_.getUriString();
+      //Replace the specific app parameter
+      var isApp =
+        location.search.includes('localforage=android') ||
+        location.search.includes('localforage=ios') ||
+        location.search.includes('applogin=yes');
+
+      if (isApp) {
+        this.url = this.url.replace('localforage=android', '')
+        this.url = this.url.replace('localforage=ios', '')
+        this.url = this.url.replace('applogin=yes', '')
+      }
       if (this['onlyMymaps']) {
         this.url = this.url.replace(location.search, '')
         this.url += '?map_id=' + this.appMymaps_.getMapId();
