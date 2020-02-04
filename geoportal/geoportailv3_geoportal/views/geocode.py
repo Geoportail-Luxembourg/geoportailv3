@@ -404,8 +404,11 @@ class Geocode(object):
         })
 
     def encode_result(self, result):
-        feature = result['feature']
-        
+        try:
+            feature = result['feature']
+        except Exception as e:
+            feature = result
+
         numero = feature.numero
         if numero is None:
             numero = ""
@@ -440,14 +443,14 @@ class Geocode(object):
             str(feature.rue.encode('utf-8')).strip(),
             str(code_postal).strip(),
             str(feature.localite.encode('utf-8')).strip()),
-                 'accuracy': result['accuracy'],
+                 'accuracy': result.accuracy,
                  'address':
                  str(numero).strip() + " " +
                  str(feature.rue.encode('utf-8')).strip() + "," +
                  str(code_postal).strip() + " " +
                  str(feature.localite.encode('utf-8')).strip(),
                  'matching street': feature.rue.strip(),
-                 'ratio': result['ratio'],
+                 'ratio': result.ratio,
                  "easting": cur_geom.centroid.x,
                  "northing": cur_geom.centroid.y,
                  "geom": cur_geom.centroid,
