@@ -141,7 +141,7 @@ class Geocode(object):
             p_locality = ""
         if p_zip is None:
             p_zip = ""
-        return num + "," + p_street + " " + p_locality + " " + p_zip
+        return "{} , {} {} {}".format(num, p_street, p_locality, p_zip)
 
     def replace_words(self, p_string):
         if p_string is None:
@@ -408,8 +408,8 @@ class Geocode(object):
             feature = result['feature']
         except Exception as e:
             feature = result
-
-        numero = feature.numero
+        
+        numero = getattr(feature, 'numero', '')
         if numero is None:
             numero = ""
 
@@ -439,27 +439,23 @@ class Geocode(object):
         pointgeom = self.transform_to_latlon(
             cur_geom.centroid.x, cur_geom.centroid.y)
         resp = {'name': self.get_formatted_address(
-            str(numero).strip(),
-            str(feature.rue.encode('utf-8')).strip(),
-            str(code_postal).strip(),
-            str(feature.localite.encode('utf-8')).strip()),
-                 'accuracy': result.accuracy,
-                 'address':
-                 str(numero).strip() + " " +
-                 str(feature.rue.encode('utf-8')).strip() + "," +
-                 str(code_postal).strip() + " " +
-                 str(feature.localite.encode('utf-8')).strip(),
+            numero.strip(),
+            feature.rue.strip(),
+            code_postal.strip(),
+            feature.localite.strip()),
+                 'accuracy': result['accuracy'],
+                 'address': "{}, {} {} {}".format(str(numero).strip(), str(feature.rue).strip(), str(code_postal).strip(), str(feature.localite).strip()),
                  'matching street': feature.rue.strip(),
-                 'ratio': result.ratio,
+                 'ratio': result['ratio'],
                  "easting": cur_geom.centroid.x,
                  "northing": cur_geom.centroid.y,
                  "geom": cur_geom.centroid,
                  "geomlonlat": pointgeom.centroid,
                  'AddressDetails': {
-            "postnumber": str(feature.numero).strip(),
-            "street": feature.rue.encode('utf-8').strip(),
+            "postnumber": str(numero).strip(),
+            "street": feature.rue.strip(),
             "zip": str(code_postal).strip(),
-            "locality": str(feature.localite.encode('utf-8')).strip(),
+            "locality": str(feature.localite).strip(),
             "id_caclr_street": str(caclr_rue),
             "id_caclr_building": str(caclr_bat)
         }}
@@ -634,6 +630,7 @@ class Geocode(object):
             string1 = self.replace_words(
                 search.lower()).strip()
             mw1 = self.get_main_word(string1, True)
+
             for feature in features:
                 string2 = self.replace_words(self.supprime_accent(
                     feature.rue.lower()).strip())
@@ -641,10 +638,10 @@ class Geocode(object):
                 cur_ratio = difflib.SequenceMatcher(None, mw1, mw2).ratio()
 
                 if (cur_ratio > ratio):
-                    feature.ratio = cur_ratio
-                    feature.accuracy = 8
-                    
-                    results.append(feature)
+                    # feature.ratio = cur_ratio
+                    # feature.accuracy = 8
+                    result = {'ratio' : cur_ratio, 'accuracy': 8, 'feature': feature}
+                    results.append(result)
         return results
 
     def search_by_zips_and_house_number(
@@ -666,8 +663,9 @@ class Geocode(object):
                 if len(features) > 0:
                     for feature in features:
                         # accuracy = 8   Address level accuracy.
-                        feature.accuracy = 8
-                        results.append(self.encode_result(feature))
+                        # feature.accuracy = 8
+                        result = {'ratio' : feature['ratio'], 'accuracy': 8, 'feature': feature['feature']}
+                        results.append(self.encode_result(result))
 
         return results
 
@@ -689,10 +687,11 @@ class Geocode(object):
                 if len(features) > 0:
                     for feature in features:
                         # accuracy = 8   Address level accuracy.
-                        if feature.ratio is not None and ratio_malus != 1:
-                            feature.ratio = feature.ratio * ratio_malus
-                        feature.accuracy = 8
-                        results.append(self.encode_result(feature))
+                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                        if result['ratio'] is not None and ratio_malus != 1:
+                            result['ratio'] = result['ratio'] * ratio_malus
+                        result['accuracy'] = 8
+                        results.append(self.encode_result(result))
         return results
 
     def search_by_locality(
@@ -720,12 +719,13 @@ class Geocode(object):
                 if len(features) > 0:
                     for feature in features:
                         # accuracy = 6   Street level accuracy.
-                        if feature.ratio is not None and ratio_malus != 1:
-                            feature.ratio = feature.ratio * ratio_malus
+                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                        if result['ratio'] is not None and ratio_malus != 1:
+                            result['ratio'] = result['ratio'] * ratio_malus
 
-                        feature.accuracy = 6
-                        feature.numero = None
-                        results.append(self.encode_result(feature))
+                        result['accuracy'] = 6
+                        #feature['feature'].numero = None
+                        results.append(self.encode_result(result))
 
         return results
 
@@ -746,7 +746,8 @@ class Geocode(object):
                             self.replace_words(self.supprime_accent(p_street)).
                             strip().lower()).ratio()
                         if (cur_ratio > p_ratio):
-                            feature.ratio = cur_ratio
+                            result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
+                            result['ratio'] = cur_ratio
                             feature.numero = None
                             feature.localite = feature.locality
                             feature.code_postal = feature.zip
@@ -755,8 +756,8 @@ class Geocode(object):
                             else:
                                 feature.rue = feature.name
 
-                            feature.accuracy = 7
-                            results.append(self.encode_result(feature))
+                            result['accuracy'] = 7
+                            results.append(self.encode_result(result))
                 except Exception as e:
                     log.exception(e)
                     log.error("Zip code is not correct: " + p_zip)
@@ -774,7 +775,8 @@ class Geocode(object):
                             self.supprime_accent(p_street)).strip().lower()).\
                         ratio()
                     if (cur_ratio > p_ratio):
-                        feature.ratio = cur_ratio
+                        result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
+                        result['ratio'] = cur_ratio
                         feature.numero = None
                         feature.localite = feature.locality
                         feature.code_postal = feature.zip
@@ -783,8 +785,8 @@ class Geocode(object):
                         else:
                             feature.rue = feature.name
 
-                        feature.accuracy = 7
-                        results.append(self.encode_result(feature))
+                        result['accuracy'] = 7
+                        results.append(self.encode_result(result))
 
         except Exception as e:
             log.exception(e)
@@ -818,9 +820,10 @@ class Geocode(object):
                         """
                             accuracy = 6   Street level accuracy.
                         """
-                        feature.accuracy = 6
-                        feature.numero = None
-                        results.append(self.encode_result(feature))
+                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                        result['accuracy'] = 6
+                        feature['feature'].numero = None
+                        results.append(self.encode_result(result))
 
         return results
 
@@ -853,12 +856,13 @@ class Geocode(object):
                     """
                         accuracy = 6  Street level accuracy
                     """
-                    if feature.ratio is not None and ratio_malus != 1:
-                        feature.ratio = feature.ratio * ratio_malus
+                    result = {'ratio' : 0, 'accuracy': 0, 'feature': feature['feature']}
+                    if feature['ratio'] is not None and ratio_malus != 1:
+                        result['ratio'] = feature['ratio'] * ratio_malus
 
-                    feature.accuracy = 6
-                    feature.numero = None
-                    results.append(self.encode_result(feature))
+                    result['accuracy'] = 6
+                    feature['feature'].numero = None
+                    results.append(self.encode_result(result))
 
         return results
 
@@ -882,9 +886,10 @@ class Geocode(object):
             if len(features) > 0:
                 # accuracy = 6   Street level accuracy.
                 for feature in features:
-                    feature.accuracy = 6
-                    feature.numero = ""
-                    results.append(self.encode_result(feature))
+                    result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                    result['accuracy'] = 6
+                    feature['feature'].numero = ""
+                    results.append(self.encode_result(result))
         return results
 
     def search_by_house_number(self, p_ratio, p_num, p_street, p_session):
@@ -900,8 +905,9 @@ class Geocode(object):
                 if len(features) > 0:
                     # accuracy = 8   Address level accuracy.
                     for feature in features:
-                        feature.accuracy = 8
-                        results.append(self.encode_result(feature))
+                        result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                        result['accuracy'] = 8
+                        results.append(self.encode_result(result))
         return results
 
     def search_alternative_by_zip_and_house_num(
@@ -921,9 +927,10 @@ class Geocode(object):
         if len(features) > 0:
             # accuracy = 8   Address level accuracy.
             for feature in features:
-                feature.accuracy = 8
-                feature.ratio = 0.5
-                results.append(self.encode_result(feature))
+                result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
+                result['accuracy'] = 8
+                result['ratio'] = 0.5
+                results.append(self.encode_result(result))
 
         return results
 
@@ -942,7 +949,7 @@ class Geocode(object):
 
         if len(features) > 0:
             for feature in features:
-
+                result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
                 cur_ratio = difflib.SequenceMatcher(
                     None,
                     self.supprime_accent(
@@ -956,9 +963,9 @@ class Geocode(object):
                         self.replace_words(
                             p_street.strip())))
                     cur_ratio = difflib.SequenceMatcher(None, mw1, mw2).ratio()
-                    feature.ratio = cur_ratio
-                    feature.accuracy = 8
-                    results.append(self.encode_result(feature))
+                    result['ratio'] = cur_ratio
+                    result['accuracy'] = 8
+                    results.append(self.encode_result(result))
 
         if len(results) == 0 and len(features) > 0:
             features = self.search_for_street(
@@ -968,8 +975,9 @@ class Geocode(object):
             if len(features) > 0:
                 # accuracy = 8   Address level accuracy.
                 for feature in features:
-                    feature.accuracy = 8
-                    results.append(self.encode_result(feature))
+                    result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
+                    result['accuracy'] = 8
+                    results.append(self.encode_result(result))
         return results
 
     # Compare with the streets in parameter
