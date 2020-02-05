@@ -134,7 +134,7 @@ exports.prototype.authenticate = function(username, password) {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   };
   return this.http_.post(this.loginUrl_, req, config).then(
-      function(response) {
+      response => {
         if (response.status == 200) {
           this.getUserInfo();
           var msg = this.gettextCatalog.getString(
@@ -147,13 +147,13 @@ exports.prototype.authenticate = function(username, password) {
               appNotifyNotificationType.WARNING);
         }
         return response;
-      }.bind(this), function(response) {
+      }, response => {
         this.clearUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Invalid username or password.'),
             appNotifyNotificationType.WARNING);
         return response;
-      }.bind(this));
+      });
 };
 
 
@@ -162,7 +162,7 @@ exports.prototype.authenticate = function(username, password) {
  */
 exports.prototype.logout = function() {
   return this.http_.get(this.logoutUrl_).then(
-      function(response) {
+      response => {
         if (response.status == 200) {
           this.getUserInfo();
         } else {
@@ -173,13 +173,13 @@ exports.prototype.logout = function() {
               );
         }
         return response;
-      }.bind(this), function(response) {
+      }, response => {
         this.getUserInfo();
         this.notify_(this.gettextCatalog.getString(
             'Une erreur est survenue durant la déconnexion.'),
             appNotifyNotificationType.ERROR);
         return response;
-      }.bind(this));
+      });
 };
 
 
@@ -193,7 +193,7 @@ exports.prototype.getUserInfo = function() {
   };
 
   this.http_.post(this.getuserinfoUrl_, req, config).then(
-      function(response) {
+      response => {
         if (response.status == 200) {
           this.setUserInfo(
               response.data['login'],
@@ -208,10 +208,10 @@ exports.prototype.getUserInfo = function() {
           this.clearUserInfo();
         }
         return response;
-      }.bind(this), function(response) {
+      }, response => {
         this.clearUserInfo();
         return response;
-      }.bind(this));
+      });
 };
 
 
