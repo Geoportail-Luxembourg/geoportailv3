@@ -735,29 +735,31 @@ class Geocode(object):
         try:
             if p_zip is not None and len(p_zip) > 0:
                 try:
-                    p_zip = str(int(float(re.sub("[^0-9]", "", p_zip))))
-                    for feature in p_session.query(WKPOI).\
-                            filter(text(" zip = " + p_zip)).all():
-                        cur_ratio = difflib.SequenceMatcher(
-                            None,
-                            self.supprime_accent(
-                                self.replace_words(
-                                    feature.name).strip().lower()),
-                            self.replace_words(self.supprime_accent(p_street)).
-                            strip().lower()).ratio()
-                        if (cur_ratio > p_ratio):
-                            result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
-                            result['ratio'] = cur_ratio
-                            feature.numero = None
-                            feature.localite = feature.locality
-                            feature.code_postal = feature.zip
-                            if feature.street is not None:
-                                feature.rue = feature.street
-                            else:
-                                feature.rue = feature.name
+                    tmp_zip = re.sub("[^0-9]", "", p_zip)
+                    if len(tmp_zip) >= 4:
+                        p_zip = str(int(float(tmp_zip)))
+                        for feature in p_session.query(WKPOI).\
+                                filter(text(" zip = " + p_zip)).all():
+                            cur_ratio = difflib.SequenceMatcher(
+                                None,
+                                self.supprime_accent(
+                                    self.replace_words(
+                                        feature.name).strip().lower()),
+                                self.replace_words(self.supprime_accent(p_street)).
+                                strip().lower()).ratio()
+                            if (cur_ratio > p_ratio):
+                                result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
+                                result['ratio'] = cur_ratio
+                                # feature.numero = None
+                                feature.localite = feature.locality
+                                feature.code_postal = feature.zip
+                                if feature.street is not None:
+                                    feature.rue = feature.street
+                                else:
+                                    feature.rue = feature.name
 
-                            result['accuracy'] = 7
-                            results.append(self.encode_result(result))
+                                result['accuracy'] = 7
+                                results.append(self.encode_result(result))
                 except Exception as e:
                     log.exception(e)
                     log.error("Zip code is not correct: " + p_zip)
@@ -777,7 +779,7 @@ class Geocode(object):
                     if (cur_ratio > p_ratio):
                         result = {'ratio' : 0, 'accuracy': 0, 'feature': feature}
                         result['ratio'] = cur_ratio
-                        feature.numero = None
+                        # feature.numero = None
                         feature.localite = feature.locality
                         feature.code_postal = feature.zip
                         if feature.street is not None:
@@ -822,7 +824,7 @@ class Geocode(object):
                         """
                         result = {'ratio' : feature['ratio'], 'accuracy': 0, 'feature': feature['feature']}
                         result['accuracy'] = 6
-                        feature['feature'].numero = None
+                        # feature['feature'].numero = None
                         results.append(self.encode_result(result))
 
         return results
@@ -861,7 +863,7 @@ class Geocode(object):
                         result['ratio'] = feature['ratio'] * ratio_malus
 
                     result['accuracy'] = 6
-                    feature['feature'].numero = None
+                    # feature['feature'].numero = None
                     results.append(self.encode_result(result))
 
         return results
