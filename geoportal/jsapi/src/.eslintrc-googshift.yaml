@@ -10,7 +10,7 @@
       exceptions: ['ngeo.module.requires.push']
     }],
 
-    'googshift/no-unused-requires': 'warn',
+    'googshift/no-unused-requires': 'error',
 
     'googshift/one-provide-or-module': ['error', {
       entryPoints: ['lux'],

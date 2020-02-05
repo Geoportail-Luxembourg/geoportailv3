@@ -1339,7 +1339,12 @@ exports.prototype.askToConnect = function() {
 exports.prototype.onChosen_ = function(map) {
   this.closeMap();
   var promise = this.appMymaps_.setCurrentMapId(map['uuid'],
-      this.drawnFeatures_.getCollection());
+      this.drawnFeatures_.getCollection()).then(function() {
+        var layer = this.drawnFeatures_.getLayer();
+        if (this.map_.getLayers().getArray().indexOf(layer) === -1) {
+          this.map_.addLayer(layer);
+        }
+      }.bind(this));
   this['drawopen'] = true;
   this.choosing = false;
   return promise;

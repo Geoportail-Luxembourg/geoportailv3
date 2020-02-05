@@ -1,62 +1,58 @@
-/**
- * @module lux.util
- */
-let exports = {};
-import olEvents from 'ol/events.js';
-import olEventsEventType from 'ol/events/EventType.js';
-import olProj from 'ol/proj.js';
-import olLayerTile from 'ol/layer/Tile.js';
-import olSourceWMTS from 'ol/source/WMTS.js';
-import olSourceWMTSRequestEncoding from 'ol/source/WMTSRequestEncoding.js';
-import olString from 'ol/string.js';
-import olTilegridWMTS from 'ol/tilegrid/WMTS.js';
-import olLayerImage from 'ol/layer/Image.js';
-import olSourceImageWMS from 'ol/source/ImageWMS.js';
-import olCoordinate from 'ol/coordinate.js';
+goog.provide('lux');
+
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.proj');
+goog.require('ol.layer.Tile');
+goog.require('ol.source.WMTS');
+goog.require('ol.source.WMTSRequestEncoding');
+goog.require('ol.string');
+goog.require('ol.tilegrid.WMTS');
+goog.require('ol.layer.Image');
+goog.require('ol.source.ImageWMS');
+goog.require('ol.coordinate');
 
 /**
  * @type {string}
  */
-exports.requestScheme = 'http';
+lux.requestScheme = 'http';
 
 /**
  * @type {string}
  */
-exports.layersUrl = 'jsapilayers';
+lux.layersUrl = 'jsapilayers';
 
 /**
  * @type {string}
  */
-exports.searchUrl = 'fulltextsearch?';
+lux.searchUrl = 'fulltextsearch?';
 
 /**
  * @type {string}
  */
-exports.profileUrl = 'profile.json';
+lux.profileUrl = 'profile.json';
 
 /**
  * @type {string}
  */
-exports.exportCsvUrl = 'profile/echocsv';
+lux.exportCsvUrl = 'profile/echocsv';
 
 /**
  * @type {string?}
  */
-exports.baseUrl = null;
+lux.baseUrl = null;
 
 /**
  * @type {Object}
  * @export
  */
-exports.languages = {};
+lux.languages = {};
 
 /**
  * @type {string?}
  */
-exports.wmtsCrossOrigin = 'anonymous';
+lux.wmtsCrossOrigin = 'anonymous';
 
-
-const ref = exports;
 
 /**
  * Sets the basic url of the rest services such as :
@@ -70,76 +66,77 @@ const ref = exports;
  * @param {string | undefined} requestScheme The request scheme. Default is http.
  * @export
  */
-exports.setBaseUrl = function(url, requestScheme) {
+lux.setBaseUrl = function(url, requestScheme) {
   if (requestScheme !== undefined) {
-    ref.requestScheme = requestScheme;
+    lux.requestScheme = requestScheme;
   }
-
+  var wsBaseUrl = 'https://map.geoportail.lu/';
+  // wsBaseUrl = url;
   if (!url) {
-    ref.layersUrl = '../layers.json';
-    ref.i18nUrl = '../lang_xx.json';
-
+    lux.layersUrl = '../layers.json';
+    lux.i18nUrl = '../lang_fr.json';
     url = 'https://apiv3.geoportail.lu/';
   } else {
-    ref.layersUrl = url + ref.layersUrl;
-    ref.i18nUrl = url + ref.i18nUrl;
+    lux.layersUrl = wsBaseUrl + lux.layersUrl;
+    // lux.layersUrl = url + lux.layersUrl;
+    lux.i18nUrl = url + lux.i18nUrl;
   }
 
-  ref.searchUrl = url + ref.searchUrl;
-  ref.mymapsUrl = url + ref.mymapsUrl;
-  ref.elevationUrl = url + ref.elevationUrl;
-  ref.geocodeUrl = url + ref.geocodeUrl;
-  ref.reverseGeocodeUrl = url + ref.reverseGeocodeUrl;
-  ref.queryUrl = url + ref.queryUrl;
-  ref.profileUrl = url + ref.profileUrl;
-  ref.exportCsvUrl = url + ref.exportCsvUrl;
-  ref.printUrl = url + ref.printUrl;
-  ref.pagUrl = url + ref.pagUrl;
-  ref.baseUrl = url;
+  lux.searchUrl = url + lux.searchUrl;
+  lux.mymapsUrl = url + lux.mymapsUrl;
+  lux.elevationUrl = url + lux.elevationUrl;
+  lux.geocodeUrl = url + lux.geocodeUrl;
+  lux.reverseGeocodeUrl = url + lux.reverseGeocodeUrl;
+  lux.queryUrl = wsBaseUrl + lux.queryUrl;
+  lux.profileUrl = url + lux.profileUrl;
+  lux.exportCsvUrl = url + lux.exportCsvUrl;
+  lux.printUrl = url + lux.printUrl;
+  lux.pagUrl = url + lux.pagUrl;
+  lux.baseUrl = url;
 };
 
 /**
  * @type {string}
  */
-exports.pagUrl = 'pag';
+lux.pagUrl = 'pag';
 
 /**
  * @type {string}
  */
-exports.mymapsUrl = 'mymaps';
+lux.mymapsUrl = 'mymaps';
 
 /**
  * @type {string}
  */
-exports.elevationUrl = 'raster';
+lux.elevationUrl = 'raster';
 
 /**
  * @type {string}
  */
-exports.queryUrl = 'getfeatureinfo?';
+lux.queryUrl = 'getfeatureinfo?';
 
 /**
  * @type {string}
  */
-exports.geocodeUrl = 'geocode/search';
+lux.geocodeUrl = 'geocode/search';
 
 /**
  * @type {string}
  */
-exports.reverseGeocodeUrl = 'geocode/reverse';
+lux.reverseGeocodeUrl = 'geocode/reverse';
 
 /**
  * @type {string}
  */
-exports.printUrl = 'printproxy';
+lux.printUrl = 'printproxy';
 
 /**
  * @param {string} url Url to jsapilayers service.
  * @export
  * @api
  */
-exports.setLayersUrl = function(url) {
-  ref.layersUrl = url;
+lux.setLayersUrl = function(url) {
+  lux.layersUrl = url;
 };
 
 /**
@@ -147,24 +144,24 @@ exports.setLayersUrl = function(url) {
  * @export
  * @api
  */
-exports.setWmtsCrossOrigin = function(crossorigin) {
-  ref.wmtsCrossOrigin = crossorigin;
+lux.setWmtsCrossOrigin = function(crossorigin) {
+  lux.wmtsCrossOrigin = crossorigin;
 };
 
 /**
  * @type {string}
  */
-exports.i18nUrl = 'proj/api/build/locale/xx/geoportailv3.json';
+lux.i18nUrl = 'proj/api/build/locale/xx/geoportailv3.json';
 
 /**
  * @type {string}
  */
-exports.lang = 'fr';
+lux.lang = 'fr';
 
 /**
  * @type {Array<number>?}
  */
-exports.popupSize = null;
+lux.popupSize = null;
 
 
 /**
@@ -173,9 +170,9 @@ exports.popupSize = null;
  * @return {string} The translated text.
  * @export
  */
-exports.translate = function(text) {
-  if (exports.lang in exports.languages) {
-    return exports.languages[exports.lang][text] || text;
+lux.translate = function(text) {
+  if (lux.lang in lux.languages) {
+    return lux.languages[lux.lang][text] || text;
   }
   return text;
 };
@@ -185,8 +182,8 @@ exports.translate = function(text) {
  * @export
  * @api
  */
-exports.setPopupSize = function(size) {
-  ref.popupSize = size;
+lux.setPopupSize = function(size) {
+  lux.popupSize = size;
 };
 
 /**
@@ -194,8 +191,8 @@ exports.setPopupSize = function(size) {
  * @export
  * @api
  */
-exports.setI18nUrl = function(url) {
-  ref.i18nUrl = url;
+lux.setI18nUrl = function(url) {
+  lux.i18nUrl = url;
 };
 
 /**
@@ -209,7 +206,7 @@ exports.setI18nUrl = function(url) {
  * @return {function()} The function.
  * @api
  */
-exports.debounce = function(func, wait, opt_immediate) {
+lux.debounce = function(func, wait, opt_immediate) {
   var timeout;
   return function() {
     var context = this;
@@ -234,7 +231,7 @@ exports.debounce = function(func, wait, opt_immediate) {
  * @param {string} msg The message to notify.
  * @api
  */
-exports.notify = function(msg) {
+lux.notify = function(msg) {
   alert(msg);
 };
 
@@ -249,7 +246,7 @@ exports.notify = function(msg) {
  * @export
  * @api
  */
-exports.buildPopupLayout = function(html, closeCallback, title) {
+lux.buildPopupLayout = function(html, closeCallback, title) {
   var container = document.createElement('DIV');
   container.classList.add('lux-popup');
 
@@ -261,9 +258,9 @@ exports.buildPopupLayout = function(html, closeCallback, title) {
   var content = document.createElement('DIV');
   content.classList.add('lux-popup-content');
 
-  if (exports.popupSize) {
-    container.style.width = exports.popupSize[0] + 'px';
-    content.style.height = exports.popupSize[1] + 'px';
+  if (lux.popupSize) {
+    container.style.width = lux.popupSize[0] + 'px';
+    content.style.height = lux.popupSize[1] + 'px';
     content.style.maxHeight = 'none';
   }
 
@@ -288,7 +285,7 @@ exports.buildPopupLayout = function(html, closeCallback, title) {
     header.appendChild(closeBtn);
     elements.push(header);
 
-    olEvents.listen(closeBtn, olEventsEventType.CLICK, closeCallback);
+    ol.events.listen(closeBtn, ol.events.EventType.CLICK, closeCallback);
   }
 
   elements.push(content);
@@ -304,7 +301,7 @@ exports.buildPopupLayout = function(html, closeCallback, title) {
  * @param {string} two The second list of exclusions.
  * @return {boolean} Whether the array intersect or not.
  */
-exports.intersects = function(one, two) {
+lux.intersects = function(one, two) {
   var arr1 = /** @type {Array} */ (JSON.parse(one));
   var arr2 = /** @type {Array} */ (JSON.parse(two));
   return arr1.some(function(item) {
@@ -318,7 +315,7 @@ exports.intersects = function(one, two) {
  * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Tile} The layer.
  */
-exports.WMTSLayerFactory = function(config, opacity, visible) {
+lux.WMTSLayerFactory = function(config, opacity, visible) {
   var format = config['imageType'];
   var imageExt = format.split('/')[1];
 
@@ -335,29 +332,29 @@ exports.WMTSLayerFactory = function(config, opacity, visible) {
   retinaExtension +
   '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
 
-  if (exports.requestScheme === 'https') {
+  if (lux.requestScheme === 'https') {
     url = 'https://wmts{3-4}.geoportail.lu/mapproxy_4_v3/wmts/{Layer}' +
     retinaExtension +
     '/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.' + imageExt;
   }
-  var projection = olProj.get('EPSG:3857');
+  var projection = ol.proj.get('EPSG:3857');
   var extent = projection.getExtent();
 
-  var layer = new olLayerTile({
+  var layer = new ol.layer.Tile({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
-    source: new olSourceWMTS({
-      crossOrigin: exports.wmtsCrossOrigin,
+    source: new ol.source.WMTS({
+      crossOrigin: lux.wmtsCrossOrigin,
       url: url,
       attributions: [''],
       tilePixelRatio: (retina ? 2 : 1),
       layer: config['name'],
       matrixSet: 'GLOBAL_WEBMERCATOR_4_V3' + (retina ? '_HD' : ''),
       format: format,
-      requestEncoding: olSourceWMTSRequestEncoding.REST,
+      requestEncoding: ol.source.WMTSRequestEncoding.REST,
       projection: projection,
-      tileGrid: new olTilegridWMTS({
+      tileGrid: new ol.tilegrid.WMTS({
         origin: [
           -20037508.3428, 20037508.3428
         ],
@@ -391,8 +388,8 @@ exports.WMTSLayerFactory = function(config, opacity, visible) {
  * @param {boolean} visible The layer's visibility.
  * @return {ol.layer.Image} The layer.
  */
-exports.WMSLayerFactory = function(config, opacity, visible) {
-  var url = config.url || 'https://map.geoportail.lu/main/wsgi/ogcproxywms?';
+lux.WMSLayerFactory = function(config, opacity, visible) {
+  var url = config.url || 'https://map.geoportail.lu/ogcproxywms?';
   var optSource = {
     crossOrigin: 'anonymous',
     url: url,
@@ -401,11 +398,11 @@ exports.WMSLayerFactory = function(config, opacity, visible) {
       'LAYERS': config['layers']
     }
   };
-  var layer = new olLayerImage({
+  var layer = new ol.layer.Image({
     name: config['name'],
     id: config['id'],
     metadata: config['metadata'],
-    source: new olSourceImageWMS(optSource),
+    source: new ol.source.ImageWMS(optSource),
     opacity: opacity,
     visible: visible
   });
@@ -415,43 +412,43 @@ exports.WMSLayerFactory = function(config, opacity, visible) {
 
 /**
  * It geocodes an address. The found position is transmitted to the callback function as parameter.
- * @param {luxx.GeocodeOptions!} obj The hash object representing the address to geocode.
+ * @param {luxx.GeocodeOptions} obj The hash object representing the address to geocode.
  * @param {function(ol.Coordinate)} cb The callback to call. Called with the
  *     position in EPSG:2169 (LUREF) of the geocoded address.
  * @return {Promise.<luxx.GeocodeResponse>} Promise that returns the geocoding response.
  * @example
- * lux.util.geocode({
+ * lux.geocode({
  *   queryString: '54 avenue gaston diderich 1420 luxembourg'
  * }, function(position) {
  *	 console.log (position);
  * });
  *
  * @example
- * lux.util.geocode({
+ * lux.geocode({
  * num: 54,
  *   street: 'avenue gaston diderich',
  *   zip: 1420,
  *   locality: 'luxembourg'
  * }, function(position) {
- * console.log (position);
+ *	console.log (position);
  * });
  * @export
  * @api
  * @static
  * @global
  */
-exports.geocode = function(obj, cb) {
+lux.geocode = function(obj, cb) {
   var url = document.createElement('A');
-  url.href = exports.geocodeUrl;
+  url.href = lux.geocodeUrl;
 
-  console.assert(obj instanceof Object);
+  goog.asserts.assertObject(obj);
   Object.keys(obj).forEach(function(key) {
     url.search = url.search + '&' + key + '=' + obj[key];
   });
   return /** @type {Promise.<luxx.GeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
     return resp.json();
   }).then(function(json) {
-    console.assert(json.results.length > 0, 'No address was found');
+    goog.asserts.assert(json.results.length, 'No address was found');
 
     var result = json.results[0];
     if (cb !== undefined) {
@@ -468,7 +465,7 @@ exports.geocode = function(obj, cb) {
  *    Called with the address represented by [luxx.ReverseGeocodeResult](luxx.html#ReverseGeocodeResult).
  * @return {Promise.<luxx.ReverseGeocodeResponse>} Promise that returns the reverse geocoding response.
  * @example
- * lux.util.reverseGeocode([75979,75067], function(address) {
+ * lux.reverseGeocode([75979,75067], function(address) {
  *   var html = [address.number, address.street, address.postal_code + ' ' + address.locality] .join(', ');
  *   console.log(html);console.log(address);
  * });
@@ -477,9 +474,9 @@ exports.geocode = function(obj, cb) {
  * @static
  * @global
  */
-exports.reverseGeocode = function(coordinate, cb) {
+lux.reverseGeocode = function(coordinate, cb) {
   var url = document.createElement('A');
-  url.href = exports.reverseGeocodeUrl;
+  url.href = lux.reverseGeocodeUrl;
   url.search = 'easting=' + coordinate[0] + '&northing=' + coordinate[1];
 
   return /** @type {Promise.<luxx.ReverseGeocodeResponse>} */ (fetch(url.toString()).then(function(resp) {
@@ -489,7 +486,7 @@ exports.reverseGeocode = function(coordinate, cb) {
        * @param {luxx.ReverseGeocodeResponse} json The JSON.
        */
       function(json) {
-        console.assert(json.count > 0, 'No result found');
+        goog.asserts.assert(json.count, 'No result found');
         if (cb !== undefined) {
           cb.call(null, json.results[0]);
         }
@@ -505,42 +502,42 @@ exports.reverseGeocode = function(coordinate, cb) {
  * @param {boolean} opt_DMm True if Degree decimal minutes.
  * @return {string} The coordinate string.
  */
-exports.coordinateString_ = function(coordinate, sourceEpsgCode,
+lux.coordinateString_ = function(coordinate, sourceEpsgCode,
     targetEpsgCode, opt_DMS, opt_DMm) {
   var str = '';
   if (targetEpsgCode === 'EPSG:3263*') {
     var lonlat = /** @type {ol.Coordinate} */
-        (olProj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
+        (ol.proj.transform(coordinate, sourceEpsgCode, 'EPSG:4326'));
     targetEpsgCode = Math.floor(lonlat[0]) >= 6 ? 'EPSG:32632' : 'EPSG:32631';
   }
 
-  coordinate = olProj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
+  coordinate = ol.proj.transform(coordinate, sourceEpsgCode, targetEpsgCode);
 
   switch (targetEpsgCode) {
     default:
     case 'EPSG:2169':
-      str = olCoordinate.format(coordinate, '{x} E | {y} N', 0);
+      str = ol.coordinate.format(coordinate, '{x} E | {y} N', 0);
       break;
     case 'EPSG:4326':
       if (opt_DMS) {
-        var hdms = exports.toStringHDMS_(coordinate);
+        var hdms = lux.toStringHDMS_(coordinate);
         var yhdms = hdms.split(' ').slice(0, 4).join(' ');
         var xhdms = hdms.split(' ').slice(4, 8).join(' ');
         str = xhdms + ' | ' + yhdms;
       } else if (opt_DMm) {
-        var hdmm = exports.toStringHDMm_(coordinate);
+        var hdmm = lux.toStringHDMm_(coordinate);
         var yhdmm = hdmm.split(' ').slice(0, 3).join(' ');
         var xhdmm = hdmm.split(' ').slice(3, 6).join(' ');
         str = xhdmm + ' | ' + yhdmm;
       } else {
-        str = olCoordinate.format(coordinate, ' {x} E | {y} N', 5);
+        str = ol.coordinate.format(coordinate, ' {x} E | {y} N', 5);
       }
       break;
     case 'EPSG:32632':
-      str = olCoordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
+      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM32N)', 0);
       break;
     case 'EPSG:32631':
-      str = olCoordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
+      str = ol.coordinate.format(coordinate, '{x} | {y} (UTM31N)', 0);
       break;
   }
   return str;
@@ -551,10 +548,10 @@ exports.coordinateString_ = function(coordinate, sourceEpsgCode,
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  */
-exports.toStringHDMS_ = function(coordinate) {
+lux.toStringHDMS_ = function(coordinate) {
   if (coordinate !== undefined) {
-    return exports.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
-        exports.degreesToStringHDMS_(coordinate[0], 'EW');
+    return lux.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
+        lux.degreesToStringHDMS_(coordinate[0], 'EW');
   } else {
     return '';
   }
@@ -565,10 +562,10 @@ exports.toStringHDMS_ = function(coordinate) {
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
  * @return {string} Hemisphere, degrees, decimal minutes.
  */
-exports.toStringHDMm_ = function(coordinate) {
+lux.toStringHDMm_ = function(coordinate) {
   if (coordinate !== undefined) {
-    return exports.degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
-        exports.degreesToStringHDMm_(coordinate[0], 'EW');
+    return lux.degreesToStringHDMm_(coordinate[1], 'NS') + ' ' +
+        lux.degreesToStringHDMm_(coordinate[0], 'EW');
   } else {
     return '';
   }
@@ -580,12 +577,12 @@ exports.toStringHDMm_ = function(coordinate) {
  * @param {string} hemispheres Hemispheres.
  * @return {string} String.
  */
-exports.degreesToStringHDMS_ = function(degrees, hemispheres) {
+lux.degreesToStringHDMS_ = function(degrees, hemispheres) {
   var normalizedDegrees = ((degrees + 180) % 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   return Math.floor(x / 3600) + '\u00b0 ' +
-      olString.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      olString.padNumber(Math.floor(x % 60), 2) + ',' +
+      ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
+      ol.string.padNumber(Math.floor(x % 60), 2) + ',' +
       Math.floor((x - (x < 0 ? Math.ceil(x) : Math.floor(x))) * 10) +
       '\u2033 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
@@ -596,14 +593,14 @@ exports.degreesToStringHDMS_ = function(degrees, hemispheres) {
  * @param {string} hemispheres Hemispheres.
  * @return {string} String.
  */
-exports.degreesToStringHDMm_ = function(degrees, hemispheres) {
+lux.degreesToStringHDMm_ = function(degrees, hemispheres) {
   var normalizedDegrees = ((degrees + 180) % 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dd = x / 3600;
   var m = (dd - Math.floor(dd)) * 60;
 
   var res = Math.floor(dd) + '\u00b0 ' +
-      olString.padNumber(Math.floor(m), 2) + ',' +
+      ol.string.padNumber(Math.floor(m), 2) + ',' +
       Math.floor((m - Math.floor(m)) * 100000) +
       '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
   return res;
@@ -616,15 +613,15 @@ exports.degreesToStringHDMm_ = function(degrees, hemispheres) {
  * @param {boolean} eula Has user accepted the end user licence agreement?.
  * @export
  */
-exports.generatePagRepport = function(ids, mail, eula) {
-  var msg = exports.translate('Votre rapport est en train d\'être généré. Un email vous sera envoyé dès qu\'il sera disponible');
+lux.generatePagRepport = function(ids, mail, eula) {
+  var msg = lux.translate('Votre rapport est en train d\'être généré. Un email vous sera envoyé dès qu\'il sera disponible');
   var re = /^\S+@\S+\.\S+$/;
   if (mail.length === 0 || !re.test(mail)) {
-    msg = exports.translate('Veuillez saisir une adresse email valide');
-    exports.notify(msg);
+    msg = lux.translate('Veuillez saisir une adresse email valide');
+    lux.notify(msg);
   } else if (!eula) {
-    msg = exports.translate('Veuillez accepter les termes du rapport');
-    exports.notify(msg);
+    msg = lux.translate('Veuillez accepter les termes du rapport');
+    lux.notify(msg);
   } else {
     /**
      * @type {!RequestInit}
@@ -635,29 +632,7 @@ exports.generatePagRepport = function(ids, mail, eula) {
         'Content-Type': 'application/x-www-form-urlencoded'
       })
     });
-    fetch(exports.pagUrl + '/report/' + ids + '.pdf?email=' + mail + '&staging=false', request);
-    exports.notify(msg);
+    fetch(lux.pagUrl + '/report/' + ids + '.pdf?email=' + mail + '&staging=false', request);
+    lux.notify(msg);
   }
 };
-
-/**
- * Get the elevation for coordinates.
- * @param {ol.Coordinate} coordinate The coordinate of the point.
- * @return {Promise} Promise of the elevation request.
- * @export
- * @api
- */
-exports.getElevation = function(coordinate) {
-  var lonlat = /** @type {ol.Coordinate} */
-        (olProj.transform(coordinate,
-            'EPSG:3857', 'EPSG:2169'));
-  var url = exports.elevationUrl;
-  url += '?lon=' + lonlat[0] + '&lat=' + lonlat[1];
-
-  return fetch(url).then(function(resp) {
-    return resp.json();
-  });
-};
-
-
-export default exports;
