@@ -44,8 +44,9 @@ class Geocode(object):
 
         if lat is not None and lon is not None:
             pointgeom = self.transform_to_luref(lon, lat)
-            easting = str(pointgeom.centroid.x)
-            northing = str(pointgeom.centroid.y)
+            if pointgeom is not None:
+                easting = str(pointgeom.centroid.x)
+                northing = str(pointgeom.centroid.y)
 
         if easting is None or northing is None or\
            len(easting) == 0 or len(northing) == 0 or\
@@ -496,7 +497,6 @@ class Geocode(object):
                 geom = loads(geom)
             return geom
         except Exception as e:
-            log.exception(e)
             self.db_ecadastre.rollback()
         return None
 
