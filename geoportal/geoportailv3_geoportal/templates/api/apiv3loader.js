@@ -9,15 +9,15 @@
 
 (function() {
   document.write('<link rel="stylesheet" type="text/css" href="'
-          + "${request.static_url('geoportailv3:static/build/apiv3.css')}" + '" />');
+          + "${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv3.css')}" + '" />');
   document.write('<scr' + 'ipt type="text/javascript" src="'
-          + "${request.static_url('geoportailv3:static/build/apiv3.js')}" + '"></scr' + 'ipt>');
+          + "${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv3.js')}" + '"></scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.util.setBaseUrl('${request.route_url('home')}', '${request.scheme}');" + '</scr' + 'ipt>');
+          + "lux.setBaseUrl('${request.route_url('base')}', '${request.scheme}');" + '</scr' + 'ipt>');
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.util.setI18nUrl('${request.static_url('geoportailv3:static/build/locale/xx/geoportailv3.json')}');" + '</scr' + 'ipt>');
+          + "lux.setI18nUrl('${request.static_url('geoportailv3_geoportal:static-ngeo/build/fr.json')}');" + '</scr' + 'ipt>');
 % if hasSC:
   document.write('<scr' + 'ipt type="text/javascript">'
-          + "lux.util.setWmtsCrossOrigin(null);" + '</scr' + 'ipt>');
+          + "lux.setWmtsCrossOrigin(null);" + '</scr' + 'ipt>');
 % endif
 })();

@@ -450,22 +450,27 @@ const exports = function($sce, $timeout, $scope, $http,
           this.map_.getViewport().style.cursor = '';
         } else {
           var pixel = this.map_.getEventPixel(evt.originalEvent);
-          var hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
-            if (layer !== undefined && layer !== null) {
-              var metadata = layer.get('metadata');
-              if (metadata !== undefined && metadata !== null) {
-                if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
-                  return true;
+          var hit = false;
+          try {
+            hit = this.map_.forEachLayerAtPixel(pixel, function(layer) {
+              if (layer !== undefined && layer !== null) {
+                var metadata = layer.get('metadata');
+                if (metadata !== undefined && metadata !== null) {
+                  if (metadata['is_queryable'] && layer.getVisible() && layer.getOpacity() > 0) {
+                    return true;
+                  }
                 }
               }
-            }
-            return false;
-          }, this, function(layer) {
-            if (!layer.getSource()) {
               return false;
-            }
-            return true;
-          });
+            }, this, function(layer) {
+              if (!layer.getSource()) {
+                return false;
+              }
+              return true;
+            });
+          } catch (error) {
+            hit = false;
+          }
           this.map_.getViewport().style.cursor = hit ? 'pointer' : '';
         }
       }, this);
