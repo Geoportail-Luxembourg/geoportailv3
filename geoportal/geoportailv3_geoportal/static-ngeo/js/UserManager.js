@@ -14,6 +14,7 @@ import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
 /**
  * @constructor
  * @param {angular.$http} $http Angular http service.
+ * @param {angular.$rootScope} $rootScope Angular rootScope service.
  * @param {string} loginUrl The application login URL.
  * @param {string} logoutUrl The application logout URL.
  * @param {string} getuserinfoUrl The url to get information about the user.
@@ -22,7 +23,7 @@ import ngeoOfflineServiceManager from 'ngeo/offline/ServiceManager.js';
  * @param {string} appAuthtktCookieName The authentication cookie name.
  * @ngInject
  */
-const exports = function($http, loginUrl, logoutUrl,
+const exports = function($http, $rootScope, loginUrl, logoutUrl,
     getuserinfoUrl, appNotify, gettextCatalog, appAuthtktCookieName) {
   /**
    * @type {string}
@@ -106,6 +107,11 @@ const exports = function($http, loginUrl, logoutUrl,
    * @type {angularGettext.Catalog}
    */
   this.gettextCatalog = gettextCatalog;
+
+  /**
+   * @type {angular.$rootScope}
+   */
+  this.$rootScope = $rootScope;
 };
 
 /**
@@ -204,6 +210,7 @@ exports.prototype.getUserInfo = function() {
               response.data['mymaps_role'],
               response.data['is_admin']
           );
+          this.$rootScope.$broadcast('authenticated');
         } else {
           this.clearUserInfo();
         }
