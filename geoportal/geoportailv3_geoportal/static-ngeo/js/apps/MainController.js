@@ -891,6 +891,15 @@ const MainController = function(
   });
 
   /**
+   * Listen on login to finish to reload the mvt style
+   */
+  $scope.$on('authenticated', () => {
+    this.appMvtStylingService.getBgStyle().then(style => {
+      this.bgLayer.getMapBoxMap().setStyle(style);
+    });
+  });
+
+  /**
    * Read a json file and store custom style to local storage
    */
   this.setCustomStyle = (event) => {
@@ -911,7 +920,6 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    console.log('Mvt styles cleared from local storage, database, and map');
     this.appMvtStylingService.removeStyles();
     this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
