@@ -94,8 +94,12 @@ service.prototype.saveMediumStyle = function(style) {
 service.prototype.removeStyles = function() {
     this.deleteLS_(LS_KEY_EXPERT);
     this.deleteLS_(LS_KEY_MEDIUM);
-    this.deleteDB_(LS_KEY_EXPERT);
-    this.deleteDB_(LS_KEY_MEDIUM);
+    console.log('Removed mvt style from local storage');
+    if (this.appUserManager_.isAuthenticated()) {
+        this.deleteDB_(LS_KEY_EXPERT);
+        this.deleteDB_(LS_KEY_MEDIUM);
+        console.log('Removed mvt style from database');
+    }
     this.isCustomStyle = false;
 };
 

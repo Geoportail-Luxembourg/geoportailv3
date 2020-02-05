@@ -911,7 +911,6 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    console.log('Mvt styles cleared from local storage, database, and map');
     this.appMvtStylingService.removeStyles();
     this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
