@@ -441,7 +441,7 @@ class Geocode(object):
         resp = {'name': self.get_formatted_address(
             numero.strip(),
             feature.rue.strip(),
-            code_postal.strip(),
+            str(code_postal).strip(),
             feature.localite.strip()),
                  'accuracy': result['accuracy'],
                  'address': "{}, {} {} {}".format(str(numero).strip(), str(feature.rue).strip(), str(code_postal).strip(), str(feature.localite).strip()),
