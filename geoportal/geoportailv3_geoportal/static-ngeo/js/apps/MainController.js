@@ -188,22 +188,31 @@ import '../../less/geoportailv3.less';
 function getDefaultMediumStyling() {
   const gettext = t => t;
   return [{
-    "label": gettext("Primary road"),
-    "path": "road_trunk_primary",
-    "color": "#bc1515",
-    "visible": true
+    label: gettext("Primary road"),
+    path: "road_trunk_primary",
+    color: "#bc1515",
+    type: "line",
+    visible: true
   }, {
-    "label": gettext("Lux Primary road"),
-    "path": "lu_road_trunk_primary",
-    "color": "#bc1515",
-    "visible": true
-  }];
+    label: gettext("Lux Primary road"),
+    path: "lu_road_trunk_primary",
+    color: "#bc1515",
+    type: "line",
+    visible: true
+  },{
+    label: gettext("Lux Landcover wood"),
+    path: "lu_landcover_wood",
+    color: "#bc1515",
+    type: "fill",
+    visible: true
+  },
+];
 }
 
 const simpleStylings = [
-  ["#bc1515", "#bc1515"],
-  ["#bc1515", "#bcffdd"],
-  ["#ff1515", "#aaccdd"],
+  ["#bc1515", "#bc1515", "#bc1515"],
+  ["#bc1515", "#bcffdd", "#bc1515"],
+  ["#ff1515", "#aaccdd", "#bc1515"],
 ];
 
 /**
@@ -307,8 +316,12 @@ const MainController = function(
 
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
-    // mbMap.setPaintProperty(item.path, 'fill-color', item.color);
-    mbMap.setPaintProperty(item.path, 'line-color', item.color);
+    if (item.type === 'fill') {
+      mbMap.setPaintProperty(item.path, 'fill-color', item.color);
+    }
+    if (item.type === 'line') {
+      mbMap.setPaintProperty(item.path, 'line-color', item.color);
+    }
     mbMap.setLayoutProperty(item.path, 'visibility', item.visible ? 'visible' : 'none');
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
     appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
