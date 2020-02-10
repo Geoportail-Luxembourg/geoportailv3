@@ -906,11 +906,14 @@ const MainController = function(
   /**
    * Listen on login to finish to reload the mvt style
    */
-  $scope.$on('authenticated', () => {
-    this.appMvtStylingService.getBgStyle().then(style => {
-      this.bgLayer.getMapBoxMap().setStyle(style);
+    $scope.$on('authenticated', () => {
+      // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+      if (this.bgLayer !== undefined) {
+        this.appMvtStylingService.getBgStyle().then(style => {
+          this.bgLayer.getMapBoxMap().setStyle(style);
+        });
+      }
     });
-  });
 
   /**
    * Read a json file and store custom style to local storage
