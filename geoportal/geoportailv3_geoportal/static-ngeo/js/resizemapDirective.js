@@ -14,6 +14,20 @@
 
 import appModule from './module.js';
 import olMap from 'ol/Map.js';
+import offlineUtils from 'ngeo/offline/utils.js';
+
+
+function resizeMap(map) {
+  map.updateSize();
+  map.renderSync();
+  offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
+    if (layer.getMapBoxMap) {
+      const mbm = layer.getMapBoxMap();
+      mbm.resize();
+    }
+    return true;
+  });
+}
 
 /**
  * @param {angular.$window} $window Angular window service.
@@ -42,8 +56,7 @@ const exports = function($window) {
           var animationDelayKey;
           var animationDelay = () => {
             console.assert(start != -1);
-            map.updateSize();
-            map.renderSync();
+            resizeMap(map);
 
             if (Date.now() - start < duration) {
               animationDelayKey = $window.requestAnimationFrame(animationDelay);
@@ -51,8 +64,7 @@ const exports = function($window) {
           };
 
           element.bind('transitionend', function() {
-            map.updateSize();
-            map.renderSync();
+            resizeMap(map);
           });
 
           scope.$watch(stateExpr, function(newVal, oldVal) {
