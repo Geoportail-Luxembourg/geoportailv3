@@ -236,7 +236,7 @@ vars:
   - headers: {
       Content-Security-Policy: 'default-src ''self'' https://*; script-src
         ''self'' ''unsafe-inline'' https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu;
-        style-src ''self'' ''unsafe-inline''; img-src * data: blob: ; connect-src *; worker-src ''self'' blob: ; child-src blob: ; ', Referrer-Policy: origin,
+        style-src ''self'' ''unsafe-inline'' https://api.mapbox.com/; img-src * data: blob: ; connect-src *; worker-src ''self'' blob: ; child-src blob: ; ', Referrer-Policy: origin,
       Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
       X-Frame-Options: SAMEORIGIN, X-Xss-Protection: 1; mode=block}
     pattern: .*
