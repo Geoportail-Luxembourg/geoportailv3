@@ -834,7 +834,7 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 
 lux.Map.prototype.prependMapBoxBackgroundLayer = function(target) {
   console.log('Creating a MapBoxLayer');
-  const mapBoxStyle = 'https://vectortiles-staging.geoportail.lu/styles/roadmap/style.json';
+  const mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
   return new lux.MapBoxLayer({
     style: mapBoxStyle,
     container: target,
