@@ -119,6 +119,22 @@ class JsapiEntry(Entry):
         # get background layers
         group, errors = self._get_group(None, u'background', None, u'main', 2)
         self._extract_layers(group, layers, True)
+        all_errors = set()
+        for id in layers:
+            url = None
+            if 'ogcServer' in layers[id]:
+                if 'source for' in layers[id]['ogcServer']:
+                    for ogc_server in models.DBSession.query(main.OGCServer).filter(main.OGCServer.name == layers[id]['ogcServer']).all():
+                        # required to do every time to validate the url.
+                        if ogc_server.auth != main.OGCSERVER_AUTH_NOAUTH:
+                            url = self.request.route_url("mapserverproxy", _query={"ogcserver": ogc_server.name})
+                        else:
+                            url = get_url2(
+                                "The OGC server '{}'".format(ogc_server.name),
+                                ogc_server.url, self.request, errors=all_errors
+                            )
+                    layers[id]['url'] = url
+
         return layers
 
     @view_config(route_name='jsapiloader')
