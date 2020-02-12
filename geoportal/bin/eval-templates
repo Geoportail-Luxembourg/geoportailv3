@@ -2,7 +2,7 @@
 
 export DOLLAR=$
 
-find /app/ -name '*.tmpl' -print | while read file
+find /app/ -name '*.tmpl' -print |grep -v jsdoc| while read file
 do
     echo "Evaluate: ${file}"
     envsubst < ${file} > ${file%.tmpl}
