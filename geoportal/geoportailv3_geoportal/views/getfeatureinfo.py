@@ -947,7 +947,14 @@ class Getfeatureinfo(object):
             if id_column == 'objectid':
                 body['objectIds'] = featureid
             else:
-                body['where'] = id_column + ' = \'' + featureid + '\''
+                if 'featuresByArcGISQuery' in url:
+                    body = ""
+                    url = url.replace('featuresByArcGISQuery', 'featuresByKeyValue')
+                    if "?" in url:
+                        url = url.replace("?","")
+                    url = url + "/2169" + "/" + id_column + "/" + featureid + "/"
+                else:
+                    body['where'] = id_column + ' = \'' + featureid + '\''
         elif bbox is not None:
             body['geometry'] = bbox
             body['geometryType'] = 'esriGeometryEnvelope'
