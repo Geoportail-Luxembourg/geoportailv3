@@ -47,6 +47,7 @@ services:
       - ./geoportal/geoportailv3_geoportal/lib:/app/geoportailv3_geoportal/lib:ro
       - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
       - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
+      - ./geoportal/jsapi:/app/apiv3/jsapi:ro
 #    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
     environment:
       - AUTHTKT_TIMEOUT
