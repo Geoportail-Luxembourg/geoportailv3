@@ -61,6 +61,7 @@ class MapBoxLayerRenderer extends ol.Observable {
     const rotation = viewState.rotation || 0;
     map['jumpTo']({
       'bearing': ol.math.toDegrees(-rotation),
+      // Note: Mapbox GL uses longitude, latitude coordinate order (see https://docs.mapbox.com/mapbox-gl-js/api/).
       'center': ol.proj.toLonLat(viewState.center),
       'zoom': viewState.zoom - 1,
       'animate': false
@@ -176,3 +177,4 @@ lux.MapBoxLayer = class MapBoxLayer extends ol.layer.Layer {
 };
 
 lux.MapBoxLayer.MapBoxLayerRenderer = MapBoxLayerRenderer;
+window.MapBoxLayerRenderer = MapBoxLayerRenderer;
