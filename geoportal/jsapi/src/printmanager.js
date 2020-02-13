@@ -1,6 +1,5 @@
 goog.provide('lux.PrintManager');
 
-goog.require('goog.color.alpha');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.format.GeoJSON');
@@ -614,10 +613,8 @@ lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, s
 lux.PrintManager.prototype.encodeVectorStyleFill_ = function(symbolizer, fillStyle) {
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
-    if (typeof (fillColor) === 'string') {
-      var hex = goog.color.alpha.parse(fillColor).hex;
-      fillColor = goog.color.alpha.hexToRgba(hex);
-    }
+    goog.asserts.assert(typeof fillColor === 'string' || Array.isArray(fillColor));
+    fillColor = ol.color.asArray(fillColor);
     goog.asserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
     symbolizer.fillColor = this.rgbArrayToHex(fillColor);
     symbolizer.fillOpacity = fillColor[3];
@@ -969,7 +966,6 @@ lux.PrintManager.prototype.rgbArrayToHex = function(rgb) {
 
 /**
  * Takes a hex value and prepends a zero if it's a single digit.
- * Small helper method for use by goog.color and friends.
  * @param {string} hex Hex value to prepend if single digit.
  * @return {string} hex value prepended with zero if it was single digit,
  *     otherwise the same value that was passed in.

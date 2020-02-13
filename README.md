@@ -59,6 +59,12 @@ To rebuild the JS API inside docker, do:
 `make attach`
 `cd app/apiv3/ && /app/apiv3/jsapi/rebuild_api.sh`
 
+To open jsapi:
+http://localhost:8080/proj/1.0/build/apidoc/examples/
+
+To open jsapi in debug mode:
+http://localhost:8080/proj/1.0/build/apidoc/examples/?debug
+
 
 Ldap configuration
 ------------------
