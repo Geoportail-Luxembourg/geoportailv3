@@ -21,3 +21,4 @@ __pycache__/
 /apache/
 /print/WEB-INF/
 /geoportailv3.egg-info/
+/geoportal/jsapi/node_modules/
