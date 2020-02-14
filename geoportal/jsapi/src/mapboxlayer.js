@@ -4,11 +4,10 @@ goog.require('ol.layer.Layer');
 goog.require('ol.math');
 goog.require('ol.proj');
 
-//import mapboxgl from 'mapbox-gl';
-goog.require('ol.Observable');
+goog.require('ol.renderer.canvas.Layer');
 
 
-class MapBoxLayerRenderer extends ol.Observable {
+class MapBoxLayerRenderer extends ol.renderer.canvas.Layer {
 
   /**
    * @param {MapBoxLayer} layer .
@@ -43,6 +42,7 @@ class MapBoxLayerRenderer extends ol.Observable {
   /**
    * Called by the OpenLayer renderer on render if the layer is visible.
    * @param {ol.PluggableMap.FrameState} frameState .
+   * @override
    */
   prepareFrame(frameState) {
     const layer = this.layer;
@@ -50,7 +50,7 @@ class MapBoxLayerRenderer extends ol.Observable {
     // Eventually initialze the MapBox map.
     const map = layer.getMapBoxMap();
 
-    const canvas = map.getCanvas();
+    const canvas = map['getCanvas']();
     const opacity = layer.getOpacity().toString();
     if (opacity !== canvas.style.opacity) {
       canvas.style.opacity = opacity;
@@ -156,7 +156,7 @@ lux.MapBoxLayer = class MapBoxLayer extends ol.layer.Layer {
     const map = this.getMapBoxMap();
     const visible = this.getVisible();
     const visibility = visible ? 'block' : 'none';
-    const canvas = map.getCanvas();
+    const canvas = map['getCanvas']();
     if (canvas.style.display !== visibility) {
       canvas.style.display = visibility;
     }
