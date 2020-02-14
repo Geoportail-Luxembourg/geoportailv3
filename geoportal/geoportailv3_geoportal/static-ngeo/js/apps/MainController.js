@@ -188,31 +188,23 @@ import '../../less/geoportailv3.less';
 function getDefaultMediumStyling() {
   const gettext = t => t;
   return [{
-    label: gettext("Primary road"),
-    path: "road_trunk_primary",
+    label: gettext("Roads"),
     color: "#bc1515",
-    type: "line",
+    lines: ["road_trunk_primary", "lu_road_trunk_primary"],
     visible: true
   }, {
-    label: gettext("Lux Primary road"),
-    path: "lu_road_trunk_primary",
-    color: "#bc1515",
-    type: "line",
-    visible: true
-  },{
     label: gettext("Lux Landcover wood"),
     path: "lu_landcover_wood",
     color: "#bc1515",
-    type: "fill",
+    fills: ['lu_landcover_wood'],
     visible: true
   },
 ];
 }
 
 const simpleStylings = [
-  ["#bc1515", "#bc1515", "#bc1515"],
-  ["#bc1515", "#bcffdd", "#bc1515"],
-  ["#ff1515", "#aaccdd", "#bc1515"],
+  ["#bc1515", "#bcffdd"],
+  ["#ff1515", "#aaccdd"],
 ];
 
 /**
@@ -288,16 +280,26 @@ const MainController = function(
   appMymaps.setOfflineService(appMymapsOffline);
 
   this.mediumStylingData = getDefaultMediumStyling();
-  const simpleStylingKeys = this.mediumStylingData.map(item => item.path)
+
+  function applyStyleToItem(mbMap, item) {
+    (item.fills || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'fill-color', item.color);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.lines || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'line-color', item.color);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+  }
 
   this.simpleStylingData = simpleStylings;
   this.onSimpleStylingSelected = colors => {
     const mbMap =  this.bgLayer.getMapBoxMap();
     for (let i = 0; i < colors.length; ++i) {
-      const key = simpleStylingKeys[i];
-      const color = colors[i];
-      mbMap.setPaintProperty(key, 'line-color', color);
-      mbMap.setLayoutProperty(key, 'visibility', 'visible');
+      const item = this.mediumStylingData[i];
+      item.color = colors[i];
+      item.visible = true;
+      applyStyleToItem(mbMap, item);
     }
     this.appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
@@ -308,21 +310,12 @@ const MainController = function(
   };
 
 
-  // FIXME: we must store the current rules of medium styling and override the default with them
-  // to be decided: do we loose the user config when default values change?
-  // when the structure change?
   const mediumStyle = appMvtStylingService.getMediumStyle();
   Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
 
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
-    if (item.type === 'fill') {
-      mbMap.setPaintProperty(item.path, 'fill-color', item.color);
-    }
-    if (item.type === 'line') {
-      mbMap.setPaintProperty(item.path, 'line-color', item.color);
-    }
-    mbMap.setLayoutProperty(item.path, 'visibility', item.visible ? 'visible' : 'none');
+    applyStyleToItem(mbMap, item);
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
     appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
   };
