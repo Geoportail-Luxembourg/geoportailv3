@@ -15,7 +15,8 @@
   if (document.location.search.indexOf('debug') !== -1) {
     writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/base.js')}");
     writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/deps.js')}");
-    writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/concatenated.js')}");
+    writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/vendor.js')}");
+    writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv3.js')}");
     document.write(
       '<script>' +
       '  goog.define("goog.DEBUG", true);' +
@@ -23,6 +24,7 @@
       '  goog.require("lux.Map");' +
       '</script>');
   } else {
+    writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/vendor.js')}");
     writeScript("${request.static_url('geoportailv3_geoportal:static-ngeo/build/apiv3.js')}");
   }
 
