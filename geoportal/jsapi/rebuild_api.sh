@@ -10,7 +10,9 @@ cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geopor
 cp /app/geoportailv3_geoportal/static-ngeo/webfonts/*.* /app/geoportailv3_geoportal/jsapi/webfonts/
 
 node node_modules/openlayers/tasks/build.js /app/apiv3/jsapi/config.json /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js
-echo '//# sourceMappingURL=apiv3.js.map' >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js
+# The sourcemap is nonsensical, probably due to a GCC version way too old
+# so it is better to disable it
+# echo '//# sourceMappingURL=apiv3.js.map' >> /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js
 
 sed -i /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js.map \
   -e 'sY/app/apiv3/node_modules/Y./jsapi_node_modules/Yg' \
@@ -35,8 +37,6 @@ cd /app/geoportailv3_geoportal/static-ngeo/build/
 rm -f jsapi_node_modules; ln -s /app/apiv3/node_modules jsapi_node_modules
 rm -f jsapi_src; ln -s /app/apiv3/jsapi/src/ jsapi_src
 rm -f jsapi_closure; ln -s /app/apiv3/jsapi/closure/ jsapi_closure
-
-ls -lh jsapi_node_modules/*
 
 python3 /app/apiv3/jsapi/closure/depswriter.py --root_with_prefix=". ../../.." \
   --root_with_prefix="jsapi_node_modules/openlayers/src ./jsapi_node_modules/openlayers/src" \
