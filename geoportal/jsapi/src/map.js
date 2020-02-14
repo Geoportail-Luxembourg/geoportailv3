@@ -836,9 +836,9 @@ lux.Map.prototype.prependMapBoxBackgroundLayer = function(target) {
   console.log('Creating a MapBoxLayer');
   const mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
   return new lux.MapBoxLayer({
-    style: mapBoxStyle,
-    container: target,
-    label: 'MVT'
+    'style': mapBoxStyle,
+    'container': target,
+    'label': 'MVT'
   });
 };
 
