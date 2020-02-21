@@ -27,6 +27,7 @@ from PIL import Image
 from io import BytesIO
 from sqlalchemy.orm import make_transient
 from sqlalchemy import and_, or_, func
+from sqlalchemy import text
 from shapely.wkt import loads
 from shapely.ops import linemerge
 from shapely.geometry import Point, LineString
@@ -326,7 +327,7 @@ class Mymaps(object):
             query = query.filter(
                 func.coalesce(Map.category_id, 999) == category)
         query = query.join(Feature).group_by(Map)
-        maps = query.order_by("title asc").all()
+        maps = query.order_by(text("title asc")).all()
         return [{'title': map.title,
                  'uuid': map.uuid,
                  'public': map.public,
@@ -348,7 +349,7 @@ class Mymaps(object):
         categories = self.db_mymaps.query(Category)
         categories = categories.filter(Category.id != 999).\
             filter(Category.list == True) # noqa
-        categories = categories.order_by("name asc")
+        categories = categories.order_by(text("name asc"))
         categ = []
         for category in categories.all():
             map_cnt = db_mymaps.query(Map).\
