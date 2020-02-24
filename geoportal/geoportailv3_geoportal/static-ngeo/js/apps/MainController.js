@@ -258,6 +258,7 @@ const simpleStylings = [
  * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service.
  * @param {ngeo.download.service} ngeoDownload ngeo Download service.
  * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @constructor
  * @export
  * @ngInject
@@ -273,7 +274,7 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -313,11 +314,19 @@ const MainController = function(
   const mediumStyle = appMvtStylingService.getMediumStyle();
   Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
 
+  this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
+  }, 500, false);
+  this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
+    const mbMap =  this.bgLayer.getMapBoxMap();
+    appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
+  }, 500, false);  
+
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
     applyStyleToItem(mbMap, item);
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
-    appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
+    this.debouncedSaveMediumStyle_();
+    this.debouncedSaveBgStyle_();
   };
 
   if (navigator.serviceWorker) {
