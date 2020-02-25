@@ -240,7 +240,7 @@ lux.Map = function(options) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
-    this.addLayers_(layers, layerOpacities, layerVisibilities);
+    this.addLayers_(layers, layerOpacities, layerVisibilities, options.bgLayerStyle);
   }.bind(this));
 
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
@@ -832,9 +832,13 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 };
 
 
-lux.Map.prototype.prependMapBoxBackgroundLayer = function(target) {
+lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, bgLayerStyle) {
   console.log('Creating a MapBoxLayer');
-  const mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
+  let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
+  if (bgLayerStyle) {
+    console.log('Apply custom style for mvt');
+    mapBoxStyle = bgLayerStyle;
+  }
   return new lux.MapBoxLayer({
     'style': mapBoxStyle,
     'container': target,
@@ -846,9 +850,10 @@ lux.Map.prototype.prependMapBoxBackgroundLayer = function(target) {
  * @param {Array<string|number>} layers Array of layer names.
  * @param {Array<number>} opacities Array of layer opacities.
  * @param {Array<boolean>} visibilities Array of layer visibility.
+ * @param {string} bgLayerStyle Style of background vector tile layer.
  * @private
  */
-lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
+lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, bgLayerStyle) {
 
   var conf = this.layersConfig;
   if (!conf) {
@@ -861,7 +866,7 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities) {
     }
     if (layer == 'basemap_2015_global') {
       const target = this.getTargetElement();
-      const mvtLayer = this.prependMapBoxBackgroundLayer(target);
+      const mvtLayer = this.prependMapBoxBackgroundLayer(target, bgLayerStyle);
       this.getLayers().push(mvtLayer);
       return;
     }

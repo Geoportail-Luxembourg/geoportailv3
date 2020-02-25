@@ -736,6 +736,79 @@ map17.on('click', function(evt) {
         <div class='map' id='map17'></div>
     </div>
 
+    <div class='sample'>
+      <a name="example18" />
+      <div class='description' id='desc1'>
+        <h2>Example with custom style url</h2>
+        <pre>
+          var map18 = new lux.Map({
+            target: 'map18',
+            bgLayer: 'basemap_2015_global',
+            bgLayerStyle: 'https://vectortiles.geoportail.lu/styles/roadmap/style.json',
+            zoom: 18,
+            position: [75977, 75099]
+          });
+        </pre>
+      </div>
+  
+      <div class='map' id='map18'></div>
+    </div>
+
+    <div class='sample'>
+      <a name="example19" />
+      <div class='description' id='desc1'>
+        <h2>Example with custom inline style</h2>
+        <pre>
+          const customJson = {
+            "version": 8,
+            "name": "Geoportail.lu Road Map",
+            "sources": {
+              "geoportail.lu_layers": {
+                "type": "vector",
+                "url": "https://vectortiles.geoportail.lu/data/omt-geoportail-lu.json"
+              }
+            },
+            "layers": [
+              {
+                "id": "background",
+                "type": "background",
+                "layout": {"visibility": "visible"},
+                "paint": {"background-color": "rgba(248, 248, 248, 1)"}
+              },
+              {
+                "id": "lu_landcover_wood",
+                "type": "fill",
+                "source": "geoportail.lu_layers",
+                "source-layer": "landcover",
+                "filter": ["==", "class", "wood"],
+                "paint": {"fill-color": "rgba(115, 179, 28, 1)", "fill-opacity": 0.55}
+              },
+              {
+                "id": "lu_water",
+                "type": "fill",
+                "source": "geoportail.lu_layers",
+                "source-layer": "water",
+                "filter": ["all", ["==", "$type", "Polygon"], ["!=", "intermittent", 1]],
+                "layout": {"visibility": "visible"},
+                "paint": {"fill-color": "rgba(0, 27, 255, 1)"}
+              },
+            ],
+            "id": "+geoportail_lu_road_map"
+          };
+
+          const map19 = new lux.Map({
+            target: 'map19',
+            bgLayer: 'basemap_2015_global',
+            bgLayerStyle: customJson,
+            zoom: 10,
+            position: [75977, 75099]
+          });
+        </pre>
+      </div>
+  
+      <div class='map' id='map19'></div>
+    </div>
+
 <script type='text/javascript'>
 
 lux.setPopupSize([400, 150]);
@@ -1146,6 +1219,58 @@ map17.on('click', function(evt) {
     onInfo17 = true;
     map17.setPopupTarget(undefined);
   }
+});
+let map18 = new lux.Map({
+  target: 'map18',
+  bgLayer: 'basemap_2015_global',
+  bgLayerStyle: 'https://vectortiles.geoportail.lu/styles/roadmap/style.json',
+  zoom: 18,
+  position: [75977, 75099]
+});
+
+const customJson = {
+  "version": 8,
+  "name": "Geoportail.lu Road Map",
+  "sources": {
+    "geoportail.lu_layers": {
+      "type": "vector",
+      "url": "https://vectortiles.geoportail.lu/data/omt-geoportail-lu.json"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "layout": {"visibility": "visible"},
+      "paint": {"background-color": "rgba(248, 248, 248, 1)"}
+    },
+    {
+      "id": "lu_landcover_wood",
+      "type": "fill",
+      "source": "geoportail.lu_layers",
+      "source-layer": "landcover",
+      "filter": ["==", "class", "wood"],
+      "paint": {"fill-color": "rgba(115, 179, 28, 1)", "fill-opacity": 0.55}
+    },
+    {
+      "id": "lu_water",
+      "type": "fill",
+      "source": "geoportail.lu_layers",
+      "source-layer": "water",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "intermittent", 1]],
+      "layout": {"visibility": "visible"},
+      "paint": {"fill-color": "rgba(0, 27, 255, 1)"}
+    },
+  ],
+  "id": "+geoportail_lu_road_map"
+};
+
+let map19 = new lux.Map({
+  target: 'map19',
+  bgLayer: 'basemap_2015_global',
+  bgLayerStyle: customJson,
+  zoom: 10,
+  position: [75977, 75099]
 });
 </script>
 </body>
