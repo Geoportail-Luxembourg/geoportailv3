@@ -187,24 +187,50 @@ import '../../less/geoportailv3.less';
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling() {
   const gettext = t => t;
-  return [{
-    label: gettext("Roads"),
+  return [{ 
+    label: gettext("Roads primary"),
     color: "#bc1515",
-    lines: ["road_trunk_primary", "lu_road_trunk_primary"],
+    lines: ["lu_road_trunk_primary", "lu_bridge_major","lu_tunnel_major","lu_road_major_motorway"],
     visible: true
-  }, {
-    label: gettext("Lux Landcover wood"),
-    path: "lu_landcover_wood",
+  },{ 
+    label: gettext("Roads secondary"),
     color: "#bc1515",
-    fills: ['lu_landcover_wood'],
+    lines: ["lu_road_minor", "lu_road_secondary_tertiary","lu_bridge_minor","lu_road_path","lu_bridge_path"],
+    visible: true
+  },{ 
+    label: gettext("Vegetation2"),
+    //path: "lu_landcover_wood",
+    color: "#bc1515",
+	opacity : "1",
+    fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium'],
+    visible: true
+  },{
+    label: gettext("Buildings"),
+    //path: "lu_landcover_wood",
+    color: "#bc1515",
+    fills: ['lu_buildings-3d_public','lu_buildings-3d'],
+    visible: true
+  },{ 
+    label: gettext("Water"),
+    //path: "lu_landcover_wood",
+    color: "#bc1515",
+    lines: ["lu_waterway","lu_waterway-tunnel","lu_waterway_intermittent"],
+    fills: ['lu_water'],
     visible: true
   },
+
 ];
 }
 
 const simpleStylings = [
-  ["#bc1515", "#bcffdd"],
-  ["#ff1515", "#aaccdd"],
+//["Roads primary","Roads secondary","Vegetation","Buildings","Water"]
+//  ["#bc1515", "#bcffdd","#bcffdd","#bc1133","#bc1133"], 
+  ["#ffffff", "#ffffff","#d6e0d7","#e1e1e1","#cccccc"], // light grey
+  ["#808080", "#808080","#494b4a","#505052","#232426"], // dark grey
+  ["#9e9375", "#9e9375","#6b6249","#403928","#b8aa84"], // dark sand
+  ["#f9c50d", "#ffffff","#839836","#d6d3ce","#2a5ba8"], // kids
+  ["#f3edf5", "#f3edf5","#9d7da8","#caa9d1","#613b5c"], // Light mauve
+  ["#dceaf5", "#dceaf5","#5598cf","#81b7e3","#3b576e"], // Light Blue
 ];
 
 /**
