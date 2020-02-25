@@ -24,6 +24,13 @@ luxx.MapOptions.prototype.callback;
 luxx.MapOptions.prototype.bgLayer;
 
 /**
+ * Style to apply to vector tile background layer.
+ * @type {string|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.bgLayerStyle;
+
+/**
  * Set the presence of a background selector control in the map.
  * (not included by default).
  * @type {luxx.BgSelectorOptions|undefined}
