@@ -1,6 +1,5 @@
 import appModule from '../module.js';
 
-
 function hasLocalStorage() {
     return 'localStorage' in window && localStorage;
 }
@@ -19,16 +18,20 @@ export const defaultMapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/r
  * @constructor
  * @param {angular.$http} $http Angular http service.
  * @param {app.UserManager} appUserManager User manager service.
+ * @paran {String} uploadvtstyleUrl URL to provision a style
+ * @paran {String} deletevtstyleUrl URL to delete a provisionned style
  * @ngInject
  */
-const service = function($http, appUserManager) {
+class Service {
+  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl) {
     this.http_ = $http;
     this.appUserManager_ = appUserManager;
     this.isCustomStyle = false;
-}
+    this.uploadvtstyleUrl_ = uploadvtstyleUrl;
+    this.deletevtstyleUrl_ = deletevtstyleUrl;
+  }
 
-
-service.prototype.getBgStyle = function() {
+  getBgStyle() {
     if (this.appUserManager_.isAuthenticated()) {
         return this.getDB_(LS_KEY_EXPERT).then(resultFromDB => {
             if (resultFromDB.data.length > 0) {
@@ -53,9 +56,48 @@ service.prototype.getBgStyle = function() {
         this.isCustomStyle = false;
         return Promise.resolve(defaultMapBoxStyle);
     }
-};
+}
 
-service.prototype.saveBgStyle = function(data) {
+publishStyle(layer, data) {
+  const label = layer.get('label');
+  const newHash = hashCode(data);
+  const itemKey = 'remoteIdForStyle_' + label;
+  let {id, hash} = JSON.parse(localStorage.getItem(itemKey) || '{}');
+  if (hash === newHash) {
+    return Promise.resolve(id);
+  }
+  this.unpublishStyle(layer);
+  const formData = new FormData();
+  const blob = new Blob([data], {type: "application/json"});
+  formData.append('style', blob, 'style.json');
+  const options = {
+    method: 'POST',
+    body: formData,
+  };
+  return fetch(this.uploadvtstyleUrl_, options)
+    .then(response => response.json())
+    .then(result => {
+      localStorage.setItem(itemKey, JSON.stringify({id: result.id, hash: newHash}));
+      layer.set('xyz_custom', `https://vectortiles.geoportail.lu/styles/${result.id}/{z}/{x}/{y}.png`);
+      return result.id;
+    });
+}
+
+unpublishStyle(layer) {
+  const label = layer.get('label');
+  const itemKey = 'remoteIdForStyle_' + label;
+  let {id} = JSON.parse(localStorage.getItem(itemKey) || '{}');
+  if (id) {
+    localStorage.removeItem(itemKey);
+    const url = `${this.deletevtstyleUrl_}?id=${id}`;
+    layer.unset('xyz_custom');
+    fetch(url);
+  }
+}
+
+saveBgStyle(layer) {
+    const mbMap =  layer.getMapBoxMap();
+    const data = JSON.stringify(mbMap.getStyle());
     if (this.appUserManager_.isAuthenticated()) {
         this.saveDB_(LS_KEY_EXPERT, data);
         console.log('Expert style saved in database');
@@ -63,9 +105,13 @@ service.prototype.saveBgStyle = function(data) {
     this.isCustomStyle = true;
     this.saveLS_(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
-};
+    this.publishStyle(layer, data).then(id => {
+      layer.set('custom_style_id', id);
+      console.log('Updated custom style provisionning');
+    });
+}
 
-service.prototype.getMediumStyle = function() {
+getMediumStyle() {
     if (this.appUserManager_.isAuthenticated()) {
         return this.getDB_(LS_KEY_MEDIUM).then(resultFromDB => {
             const styleFromDB = resultFromDB.data;
@@ -80,20 +126,21 @@ service.prototype.getMediumStyle = function() {
         console.log('Load mvt medium style from local storage');
         return this.getLS_(LS_KEY_MEDIUM);
     }
-};
+}
 
-service.prototype.saveMediumStyle = function(style) {
+saveMediumStyle(style) {
     if (this.appUserManager_.isAuthenticated()) {
         this.saveDB_(LS_KEY_MEDIUM, style);
         console.log('Medium style saved in database');
     }
     this.saveLS_(LS_KEY_MEDIUM, style);
     console.log('Medium style saved in local storage');
-};
+}
 
-service.prototype.removeStyles = function() {
+removeStyles(layer) {
     this.deleteLS_(LS_KEY_EXPERT);
     this.deleteLS_(LS_KEY_MEDIUM);
+    this.unpublishStyle(layer);
     console.log('Removed mvt style from local storage');
     if (this.appUserManager_.isAuthenticated()) {
         this.deleteDB_(LS_KEY_EXPERT);
@@ -101,50 +148,50 @@ service.prototype.removeStyles = function() {
         console.log('Removed mvt style from database');
     }
     this.isCustomStyle = false;
-};
+}
 
 // Local Storage methods
 /**
  * @private
  */
-service.prototype.getLS_ = function(key) {
+getLS_(key) {
     return ls_.getItem(key);
-};
+}
 
 /**
  * @private
  */
-service.prototype.saveLS_ = function(key, value) {
+saveLS_(key, value) {
     return ls_.setItem(key, value);
-};
+}
 
 /**
  * @private
  */
-service.prototype.deleteLS_ = function(key) {
+deleteLS_(key) {
     return ls_.removeItem(key);
-};
+}
 
 /**
  * @private
  */
-service.prototype.hasLS_ = function(key) {
+hasLS_(key) {
     return !!ls_.getItem(key);
-};
+}
 
 
 // Database methods
 /**
  * @private
  */
-service.prototype.getDB_ = function(key) {
+getDB_(key) {
     return this.http_.get(url_get + "?key=" + key);
-};
+}
 
 /**
  * @private
  */
-service.prototype.saveDB_ = function(key, value) {
+saveDB_(key, value) {
     const config = {
         headers: {'Content-Type': 'application/json'}
       };
@@ -153,16 +200,28 @@ service.prototype.saveDB_ = function(key, value) {
         value
     };
     return this.http_.post(url_save, data, config);
-};
+}
 
 /**
  * @private
  */
-service.prototype.deleteDB_ = function(key) {
+deleteDB_(key) {
     return this.http_.delete(url_delete + "?key=" + key);
+  }
+}
+
+appModule.service('appMvtStylingService', Service);
+
+export default Service;
+
+// https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+function hashCode(str) {
+  var hash = 0, i, chr;
+  if (str.length === 0) return hash;
+  for (i = 0; i < str.length; i++) {
+    chr   = str.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
 };
-
-
-appModule.service('appMvtStylingService', service);
-
-export default service;

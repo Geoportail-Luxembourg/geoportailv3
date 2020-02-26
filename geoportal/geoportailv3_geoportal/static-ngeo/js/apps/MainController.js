@@ -187,17 +187,17 @@ import '../../less/geoportailv3.less';
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling() {
   const gettext = t => t;
-  return [{ 
+  return [{
     label: gettext("Roads primary"),
     color: "#bc1515",
     lines: ["lu_road_trunk_primary", "lu_bridge_major","lu_tunnel_major","lu_road_major_motorway"],
     visible: true
-  },{ 
+  },{
     label: gettext("Roads secondary"),
     color: "#bc1515",
     lines: ["lu_road_minor", "lu_road_secondary_tertiary","lu_bridge_minor","lu_road_path","lu_bridge_path"],
     visible: true
-  },{ 
+  },{
     label: gettext("Vegetation2"),
     //path: "lu_landcover_wood",
     color: "#bc1515",
@@ -210,7 +210,7 @@ function getDefaultMediumStyling() {
     color: "#bc1515",
     fills: ['lu_buildings-3d_public','lu_buildings-3d'],
     visible: true
-  },{ 
+  },{
     label: gettext("Water"),
     //path: "lu_landcover_wood",
     color: "#bc1515",
@@ -224,7 +224,7 @@ function getDefaultMediumStyling() {
 
 const simpleStylings = [
 //["Roads primary","Roads secondary","Vegetation","Buildings","Water"]
-//  ["#bc1515", "#bcffdd","#bcffdd","#bc1133","#bc1133"], 
+//  ["#bc1515", "#bcffdd","#bcffdd","#bc1133","#bc1133"],
   ["#ffffff", "#ffffff","#d6e0d7","#e1e1e1","#cccccc"], // light grey
   ["#808080", "#808080","#494b4a","#505052","#232426"], // dark grey
   ["#9e9375", "#9e9375","#6b6249","#403928","#b8aa84"], // dark sand
@@ -328,7 +328,7 @@ const MainController = function(
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
-    this.appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
+    this.appMvtStylingService.saveBgStyle(this.bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
       item.color = colors[idx];
       item.visible = true;
@@ -344,9 +344,8 @@ const MainController = function(
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 500, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
-    const mbMap =  this.bgLayer.getMapBoxMap();
-    appMvtStylingService.saveBgStyle(JSON.stringify(mbMap.getStyle()));
-  }, 500, false);  
+    appMvtStylingService.saveBgStyle(this.bgLayer);
+  }, 500, false);
 
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
@@ -955,8 +954,8 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      this.appMvtStylingService.saveBgStyle(result);
       this.bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
+      this.appMvtStylingService.saveBgStyle(this.bgLayer);
     });
 
     // Reset form value
@@ -964,7 +963,7 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    this.appMvtStylingService.removeStyles();
+    this.appMvtStylingService.removeStyles(this.bgLayer);
     this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
   };
