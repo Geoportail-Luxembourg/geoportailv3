@@ -60,12 +60,8 @@ class Service {
 
 publishStyle(layer, data) {
   const label = layer.get('label');
-  const newHash = hashCode(data);
   const itemKey = 'remoteIdForStyle_' + label;
-  let {id, hash} = JSON.parse(localStorage.getItem(itemKey) || '{}');
-  if (hash === newHash) {
-    return Promise.resolve(id);
-  }
+  let id = localStorage.getItem(itemKey);
   this.unpublishStyle(layer);
   const formData = new FormData();
   const blob = new Blob([data], {type: "application/json"});
@@ -77,7 +73,7 @@ publishStyle(layer, data) {
   return fetch(this.uploadvtstyleUrl_, options)
     .then(response => response.json())
     .then(result => {
-      localStorage.setItem(itemKey, JSON.stringify({id: result.id, hash: newHash}));
+      localStorage.setItem(itemKey, result.id);
       layer.set('xyz_custom', `https://vectortiles.geoportail.lu/styles/${result.id}/{z}/{x}/{y}.png`);
       return result.id;
     });
@@ -86,7 +82,7 @@ publishStyle(layer, data) {
 unpublishStyle(layer) {
   const label = layer.get('label');
   const itemKey = 'remoteIdForStyle_' + label;
-  let {id} = JSON.parse(localStorage.getItem(itemKey) || '{}');
+  let id = localStorage.getItem(itemKey);
   if (id) {
     localStorage.removeItem(itemKey);
     const url = `${this.deletevtstyleUrl_}?id=${id}`;
@@ -105,10 +101,7 @@ saveBgStyle(layer) {
     this.isCustomStyle = true;
     this.saveLS_(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
-    this.publishStyle(layer, data).then(id => {
-      layer.set('custom_style_id', id);
-      console.log('Updated custom style provisionning');
-    });
+    this.publishStyle(layer, data);
 }
 
 getMediumStyle() {
@@ -213,15 +206,3 @@ deleteDB_(key) {
 appModule.service('appMvtStylingService', Service);
 
 export default Service;
-
-// https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
-function hashCode(str) {
-  var hash = 0, i, chr;
-  if (str.length === 0) return hash;
-  for (i = 0; i < str.length; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
