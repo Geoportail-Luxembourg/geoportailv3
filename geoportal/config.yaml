@@ -392,7 +392,7 @@ vars:
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
-        shorturlServiceUrl: shortener_create
+        shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style
       }
       static: {
         appImagesPath: 'geoportailv3_geoportal:static-ngeo/images/',
