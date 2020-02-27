@@ -141,9 +141,12 @@ const exports = class extends ngeoPrintService {
     layers.forEach((layer) => {
       if (layer.getVisible()) {
         console.assert(viewResolution !== undefined);
-        if (layer instanceof MapBoxLayer && layer.getXYZ()) {
-          this.encodeXYZLayer_(object.layers, layer.getXYZ());
-          return;
+        if (layer instanceof MapBoxLayer) {
+          const xyz = layer.get('xyz_custom') || layer.getXYZ();
+          if (xyz) {
+            this.encodeXYZLayer_(object.layers, xyz);
+            return;
+          }
         }
         this.encodeLayer(object.layers, layer, /** @type{number} */(viewResolution));
       }
