@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+BASEDIR=$(dirname "$0")
+cd $BASEDIR/..
+
 set -x
 
 mkdir -p /app/geoportailv3_geoportal/jsapi/build/fonts
