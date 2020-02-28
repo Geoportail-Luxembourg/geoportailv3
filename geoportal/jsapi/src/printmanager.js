@@ -157,7 +157,7 @@ lux.PrintManager.prototype.createSpec = function(
 };
 
 lux.PrintManager.prototype.encodeXYZLayer_ = function(arr, url) {
-  // https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png
+  // https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png
   const i = url.indexOf('/{z}/{x}/{y}');
   const j = url.lastIndexOf('.');
   if (i === -1 || j === -1) {
