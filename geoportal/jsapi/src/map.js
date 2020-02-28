@@ -866,8 +866,9 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options
         const target = this.getTargetElement();
         // FIXME: should be taken from the layer config
         // TODO: when config is handled by c2cgeoportal
-        let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
-        let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
+        // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
+        let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json';
+        let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png';
         options.bgLayerStyle && (mapBoxStyle = options.bgLayerStyle);
         options.bgLayerStyleXYZ && (mapBoxStyleXYZ = options.bgLayerStyleXYZ);
         const mvtLayer = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
