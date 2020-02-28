@@ -612,8 +612,10 @@ lux.Map.prototype.setLanguage = function(lang) {
     }
     return;
   }
+
   var langUrl = lux.i18nUrl.replace(previousLang + '.json', curLang + '.json');
-  langUrl = lux.i18nUrl.replace('xx' + '.json', curLang + '.json');
+  langUrl = langUrl.replace('xx' + '.json', curLang + '.json');
+
   this.i18nPromise = fetch(langUrl).then(function(resp) {
     if (resp === null || resp === undefined) {
       throw new Error('Invalid response');
