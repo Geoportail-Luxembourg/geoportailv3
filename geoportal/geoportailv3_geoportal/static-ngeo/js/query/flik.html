@@ -1,6 +1,6 @@
 <h1>{{layers.layerLabel | translate}}</h1>
 <div ng-repeat="feature in layers.features" class="poi-feature">
-  <span translate>Numero FLIK</span> : {{feature.attributes.code_elem}}{{feature.attributes.flik}}<br>
+  <span translate>Numero FLIK</span> : {{feature.attributes.element}}{{feature.attributes.flik}}<br>
   <span translate>Surface</span> : {{feature.attributes.surface}} a<br>
   <span translate>Perimetre</span> : {{feature.attributes.perimetre}} m<br>
   <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>

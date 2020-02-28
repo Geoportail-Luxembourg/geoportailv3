@@ -237,6 +237,8 @@ vars:
       Content-Security-Policy: 'default-src ''self'' https://*; script-src
         ''self'' ''unsafe-inline'' https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu https://api.mapbox.com;
         style-src ''self'' ''unsafe-inline'' https://api.mapbox.com/; img-src * data: blob: ; connect-src *; worker-src ''self'' blob: ; child-src blob: ; ', Referrer-Policy: origin,
+        ''self'' ''unsafe-inline'' ''unsafe-eval'' https://stackpath.bootstrapcdn.com https://devrm.geoportail.lu https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu https://api.mapbox.com;
+        style-src ''self'' ''unsafe-inline'' https://stackpath.bootstrapcdn.com https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://api.mapbox.com; img-src * data:; connect-src *; worker-src ''self'' blob: ; child-src blob: ; ', Referrer-Policy: origin,
       Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
       X-Frame-Options: SAMEORIGIN, X-Xss-Protection: 1; mode=block}
     pattern: .*
