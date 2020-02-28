@@ -63,7 +63,7 @@ class Service {
         console.log('Load mvt expert style from local storage');
         this.isCustomStyle = true;
         config.customStyle = this.isCustomStyle;
-        config.style = JSON.parse(JSON.parse(this.getLS_(LS_KEY_EXPERT)));
+        config.style = JSON.parse(this.getLS_(LS_KEY_EXPERT));
         return Promise.resolve(config);
     } else {
         // Default style if no existing in LS or DB
