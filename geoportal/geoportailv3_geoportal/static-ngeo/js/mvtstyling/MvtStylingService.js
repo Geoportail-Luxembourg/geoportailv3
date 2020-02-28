@@ -32,35 +32,58 @@ class Service {
   }
 
   getBgStyle() {
+    const label = 'basemap_2015_global';
+    const itemKey = this.createRemoteItemKey_(label);
+    let id = localStorage.getItem(itemKey);
+    const xyz_custom = id ? this.createXYZCustom_(id) : undefined;
+
+    const config = {
+      label,
+      defaultMapBoxStyle,
+      defaultMapBoxStyleXYZ,
+      xyz_custom,
+      style: defaultMapBoxStyle
+    };
     if (this.appUserManager_.isAuthenticated()) {
         return this.getDB_(LS_KEY_EXPERT).then(resultFromDB => {
             if (resultFromDB.data.length > 0) {
                 console.log('Load mvt expert style from database and save it to local storage');
                 this.isCustomStyle = true;
                 this.saveLS_(LS_KEY_EXPERT, resultFromDB.data[0].value);
-                return JSON.parse(resultFromDB.data[0].value);
+                config.style = JSON.parse(resultFromDB.data[0].value)
+                return config;
             } else {
                 // Default style if no existing in LS or DB
                 console.log('Default mvt style loaded');
                 this.isCustomStyle = false;
-                return defaultMapBoxStyle;
+                return config;
             }
         });
     } else if (hasLocalStorage() && this.hasLS_(LS_KEY_EXPERT)) {
         console.log('Load mvt expert style from local storage');
         this.isCustomStyle = true;
-        return Promise.resolve(JSON.parse(this.getLS_(LS_KEY_EXPERT)));
+        config.customStyle = this.isCustomStyle;
+        config.style = JSON.parse(JSON.parse(this.getLS_(LS_KEY_EXPERT)));
+        return Promise.resolve(config);
     } else {
         // Default style if no existing in LS or DB
         console.log('Default mvt style loaded');
         this.isCustomStyle = false;
-        return Promise.resolve(defaultMapBoxStyle);
+        return Promise.resolve(config);
     }
+}
+
+createXYZCustom_(id) {
+  return `https://vectortiles.geoportail.lu/styles/${id}/{z}/{x}/{y}.png`;
+}
+
+createRemoteItemKey_(label) {
+  return 'remoteIdForStyle_' + label;
 }
 
 publishStyle(layer, data) {
   const label = layer.get('label');
-  const itemKey = 'remoteIdForStyle_' + label;
+  const itemKey = this.createRemoteItemKey_(label);
   let id = localStorage.getItem(itemKey);
   this.unpublishStyle(layer);
   const formData = new FormData();
@@ -74,14 +97,14 @@ publishStyle(layer, data) {
     .then(response => response.json())
     .then(result => {
       localStorage.setItem(itemKey, result.id);
-      layer.set('xyz_custom', `https://vectortiles.geoportail.lu/styles/${result.id}/{z}/{x}/{y}.png`);
+      layer.set('xyz_custom', this.createXYZCustom_(result.id));
       return result.id;
     });
 }
 
 unpublishStyle(layer) {
   const label = layer.get('label');
-  const itemKey = 'remoteIdForStyle_' + label;
+  const itemKey = this.createRemoteItemKey_(label);
   let id = localStorage.getItem(itemKey);
   if (id) {
     localStorage.removeItem(itemKey);

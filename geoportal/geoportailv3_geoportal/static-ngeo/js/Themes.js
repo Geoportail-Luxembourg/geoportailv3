@@ -15,8 +15,6 @@ import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
-import {defaultMapBoxStyle, defaultMapBoxStyleXYZ} from './mvtstyling/MvtStylingService.js';
-
 
 function hasLocalStorage() {
   return 'localStorage' in window && localStorage;
@@ -36,27 +34,22 @@ function onFirstTargetChange(map) {
 /**
  * @param {import('ol/layer/Layer.js').default[]} bgLayers
  */
-function replaceWithMVTLayer(bgLayers, target, storedStyle) {
-  const label = 'basemap_2015_global';
+function replaceWithMVTLayer(bgLayers, target, styleConfig) {
   // add MapBox layer
-
-  const style = storedStyle;
-  const mvtLayer = new MapBoxLayer({
-    style,
-    defaultMapBoxStyle,
-    xyz: defaultMapBoxStyleXYZ,
-    container: target,
-    label: label,
-  });
+  const label = styleConfig.label;
 
   bgLayers.forEach((l, i) => {
     if (l.get('label') === label) {
+      const options = Object.assign({
+        container: target,
+      }, styleConfig)
+      const mvtLayer = new MapBoxLayer(options);
+
       console.log('Replacing layer with harcoded MVT one', label);
       mvtLayer.set('metadata', l.get('metadata'));
       bgLayers[i] = mvtLayer;
     }
   });
-
 }
 
 /**
@@ -197,8 +190,8 @@ exports.prototype.getBgLayers = function(map) {
 
         // add MVT layer
         return onFirstTargetChange(map).then(target => {
-          return this.appMvtStylingService_.getBgStyle().then(style => {
-            replaceWithMVTLayer(bgLayers, target, style);
+          return this.appMvtStylingService_.getBgStyle().then(styleConfig => {
+            replaceWithMVTLayer(bgLayers, target, styleConfig);
             return bgLayers;
           });
         });
