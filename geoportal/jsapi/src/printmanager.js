@@ -22,6 +22,7 @@ goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Icon');
 goog.require('ol.layer.Group');
+goog.require('lux.MapBoxLayer');
 
 
 /**
@@ -155,6 +156,22 @@ lux.PrintManager.prototype.createSpec = function(
   return spec;
 };
 
+lux.PrintManager.prototype.encodeXYZLayer_ = function(arr, url) {
+  // https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png
+  const i = url.indexOf('/{z}/{x}/{y}');
+  const j = url.lastIndexOf('.');
+  if (i === -1 || j === -1) {
+    return;
+  }
+  const baseURL = url.substr(0, i);
+  const imageExtension = url.substr(j + 1);
+  const object = {
+    baseURL: baseURL,
+    type: "OSM",
+    'imageExtension': imageExtension
+  };
+  arr.push(object);
+}
 
 /**
  * @param {number} scale Scale.
@@ -187,6 +204,13 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
   layers.forEach(function(layer) {
     if (layer.getVisible()) {
       goog.asserts.assert(viewResolution !== undefined);
+      if (layer instanceof lux.MapBoxLayer) {
+        const xyz = layer.get('xyz_custom') || layer.getXYZ();
+        if (xyz) {
+          this.encodeXYZLayer_(object.layers, xyz);
+          return;
+        }
+      }
       this.encodeLayer(object.layers, layer, viewResolution);
     }
   }, this);
