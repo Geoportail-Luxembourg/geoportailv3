@@ -156,7 +156,7 @@ exports.findTheme_ = function(themes, themeName) {
 
 /**
  * Get background layers.
- * @return {angular.$q.Promise} Promise.
+ * @return {Promise<any[]>} Promise.
  */
 exports.prototype.getBgLayers = function(map) {
   console.assert(this.promise_);
@@ -188,12 +188,21 @@ exports.prototype.getBgLayers = function(map) {
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
 
+        // TODO: MVT is disabled on IOS native app
+        // this will require change when migrating to c2cgeoportal 2.5 and
+        // having the layer configured as MVT
+        const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
+        if (isIOS) {
+          return bgLayers;
+        }
         // add MVT layer
-        return onFirstTargetChange(map).then(target => {
-          return this.appMvtStylingService_.getBgStyle().then(styleConfig => {
-            replaceWithMVTLayer(bgLayers, target, styleConfig);
-            return bgLayers;
-          });
+        const bothPromises = Promise.all([
+          onFirstTargetChange(map),
+          this.appMvtStylingService_.getBgStyle()
+        ]);
+        return bothPromises.then(([target, styleConfig]) => {
+          replaceWithMVTLayer(bgLayers, target, styleConfig);
+          return bgLayers;
         });
       });
   }
