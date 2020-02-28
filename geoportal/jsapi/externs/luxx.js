@@ -31,6 +31,14 @@ luxx.MapOptions.prototype.bgLayer;
 luxx.MapOptions.prototype.bgLayerStyle;
 
 /**
+ * XYZ layer to apply to vector tile background layer when printing.
+ * Ex: 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png'.
+ * @type {string|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.bgLayerStyleXYZ;
+
+/**
  * Set the presence of a background selector control in the map.
  * (not included by default).
  * @type {luxx.BgSelectorOptions|undefined}

@@ -240,7 +240,7 @@ lux.Map = function(options) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
-    this.addLayers_(layers, layerOpacities, layerVisibilities, options.bgLayerStyle);
+    this.addLayers_(layers, layerOpacities, layerVisibilities, options);
   }.bind(this));
 
   Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
@@ -832,15 +832,11 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 };
 
 
-lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, bgLayerStyle) {
+lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, mapBoxStyle, mapBoxStyleXYZ) {
   console.log('Creating a MapBoxLayer');
-  let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
-  if (bgLayerStyle) {
-    console.log('Apply custom style for mvt');
-    mapBoxStyle = bgLayerStyle;
-  }
   return new lux.MapBoxLayer({
     'style': mapBoxStyle,
+    'xyz': mapBoxStyleXYZ,
     'container': target,
     'label': 'MVT'
   });
@@ -850,10 +846,10 @@ lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, bgLayerStyle) 
  * @param {Array<string|number>} layers Array of layer names.
  * @param {Array<number>} opacities Array of layer opacities.
  * @param {Array<boolean>} visibilities Array of layer visibility.
- * @param {string} bgLayerStyle Style of background vector tile layer.
+ * @param {Object} options The map options.
  * @private
  */
-lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, bgLayerStyle) {
+lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options) {
 
   var conf = this.layersConfig;
   if (!conf) {
@@ -864,14 +860,21 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, bgLayer
       this.getLayers().push(this.blankLayer_);
       return;
     }
-    if (layer == 'basemap_2015_global') {
-      const target = this.getTargetElement();
-      const mvtLayer = this.prependMapBoxBackgroundLayer(target, bgLayerStyle);
-      this.getLayers().push(mvtLayer);
-      return;
-    }
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
+      if (layer == 'basemap_2015_global') {
+        const target = this.getTargetElement();
+        // FIXME: should be taken from the layer config
+        // TODO: when config is handled by c2cgeoportal
+        // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
+        let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json';
+        let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png';
+        options.bgLayerStyle && (mapBoxStyle = options.bgLayerStyle);
+        options.bgLayerStyleXYZ && (mapBoxStyleXYZ = options.bgLayerStyleXYZ);
+        const mvtLayer = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
+        this.getLayers().push(mvtLayer);
+        return;
+      }
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
         lux.WMSLayerFactory : lux.WMTSLayerFactory;
       var opacity = (opacities[index] !== undefined) ? opacities[index] : 1;
@@ -937,7 +940,7 @@ lux.Map.prototype.checkForExclusion_ = function(event) {
  * @api
  */
 lux.Map.prototype.addLayerById = function(layer, opt_opacity, opt_visibility) {
-  this.layersPromise.then(function() {
+  this.layersPromise.then(function(layers) {
     var opacity = (opt_opacity !== undefined) ? opt_opacity : 1;
     var visibility = (opt_visibility === undefined) ? opt_visibility : true;
     this.addLayers_([layer], [opacity], [visibility]);
