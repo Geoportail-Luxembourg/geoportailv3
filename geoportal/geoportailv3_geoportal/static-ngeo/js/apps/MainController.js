@@ -199,20 +199,17 @@ function getDefaultMediumStyling() {
     visible: true
   },{
     label: gettext("Vegetation2"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
 	opacity : "1",
     fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium'],
     visible: true
   },{
     label: gettext("Buildings"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
-    fills: ['lu_buildings-3d_public','lu_buildings-3d'],
+    fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
     visible: true
   },{
     label: gettext("Water"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
     lines: ["lu_waterway","lu_waterway-tunnel","lu_waterway_intermittent"],
     fills: ['lu_water'],
@@ -311,13 +308,27 @@ const MainController = function(
   function applyStyleToItem(mbMap, item) {
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.lines || []).forEach(path => {
       mbMap.setPaintProperty(path, 'line-color', item.color);
+      mbMap.setPaintProperty(path, 'line-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.fillExtrusions || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
   }
+
+  this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
+  }, 2000, false);
+  this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveBgStyle(this.bgLayer);
+  }, 2000, false);
 
   this.simpleStylingData = simpleStylings;
   this.onSimpleStylingSelected = colors => {
@@ -328,7 +339,7 @@ const MainController = function(
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
-    this.appMvtStylingService.saveBgStyle(this.bgLayer);
+    this.debouncedSaveBgStyle_(this.bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
       item.color = colors[idx];
       item.visible = true;
@@ -336,16 +347,8 @@ const MainController = function(
     })
   };
 
-
   const mediumStyle = appMvtStylingService.getMediumStyle();
   Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
-
-  this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
-  }, 500, false);
-  this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveBgStyle(this.bgLayer);
-  }, 500, false);
 
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
