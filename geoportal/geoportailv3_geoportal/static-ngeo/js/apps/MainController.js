@@ -199,20 +199,17 @@ function getDefaultMediumStyling() {
     visible: true
   },{
     label: gettext("Vegetation2"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
 	opacity : "1",
     fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium'],
     visible: true
   },{
     label: gettext("Buildings"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
-    fills: ['lu_buildings-3d_public','lu_buildings-3d'],
+    fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
     visible: true
   },{
     label: gettext("Water"),
-    //path: "lu_landcover_wood",
     color: "#bc1515",
     lines: ["lu_waterway","lu_waterway-tunnel","lu_waterway_intermittent"],
     fills: ['lu_water'],
@@ -311,10 +308,17 @@ const MainController = function(
   function applyStyleToItem(mbMap, item) {
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
     (item.lines || []).forEach(path => {
       mbMap.setPaintProperty(path, 'line-color', item.color);
+      mbMap.setPaintProperty(path, 'line-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.fillExtrusions || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
   }
