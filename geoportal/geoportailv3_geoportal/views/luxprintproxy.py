@@ -87,10 +87,10 @@ class LuxPrintProxy(PrintProxy):
         scale = 77166.59993240683
         spec = None
         if internal_wms is not None:
-            if os.environ.get('PROXYWMSURL'):
-                base_url = "https://wmsproxy.geoportail.lu/ogcproxywms"
-            else:
+            if 'PROXYWMSURL' in os.environ:
                 base_url = os.environ.get('PROXYWMSURL')
+            else:
+                base_url = "https://wmsproxy.geoportail.lu/ogcproxywms"
             spec = {"attributes":{"map":{"dpi":127,"rotation":0,"center":center,"projection":"EPSG:3857","scale":scale,"layers":[{"baseURL":base_url,"imageFormat":"image/png","layers":[internal_wms.layer],"customParams":{"TRANSPARENT":True,"MAP_RESOLUTION":127},"type":"wms","opacity":1,"useNativeAngle":True}]}},"format":"png","layout":"thumbnail"}
         else :
             external_wms = DBSession.query(LuxLayerExternalWMS).filter(
