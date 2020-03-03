@@ -204,3 +204,26 @@ templates:
         width: 230
         height: 40
     processors: *processors
+  thumbnail: !template
+    reportTemplate: thumbnail.jrxml
+    attributes: &attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 470
+        height: 650
+    processors: &processors
+      - !reportBuilder  # compile all reports in current directory
+        directory: '.'
+      - !configureHttpRequests
+        httpProcessors:
+          - !mapUri  # Rule to rewrite the local dev queries
+            mapping:
+              http://localhost:8080/(.*): "http://geoportal:8080/$1"
+          - !forwardHeaders  # Rule to forward the referer
+            headers:
+              - Referer
+              - X-Request-ID
+      - !createMap
+        inputMapper: {map: map}
+        outputMapper: {mapSubReport: mapSubReport}
