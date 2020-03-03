@@ -193,6 +193,11 @@ function getDefaultMediumStyling() {
     lines: ["lu_road_trunk_primary", "lu_bridge_major","lu_tunnel_major","lu_road_major_motorway"],
     visible: true
   },{
+    label: gettext("Background"),
+    color: "#bc1515",
+    backgrounds: ["background"],
+    visible: true
+  },{
     label: gettext("Roads secondary"),
     color: "#bc1515",
     lines: ["lu_road_minor", "lu_road_secondary_tertiary","lu_bridge_minor","lu_road_path","lu_bridge_path"],
@@ -319,6 +324,11 @@ const MainController = function(
     (item.fillExtrusions || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
       mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.backgrounds || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'background-color', item.color);
+      mbMap.setPaintProperty(path, 'background-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
   }
