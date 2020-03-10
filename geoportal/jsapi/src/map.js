@@ -941,10 +941,13 @@ lux.findLayerByName_ = function(name, layers) {
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example3}
  * @param {Element|string} target Dom element or id of the element to render
  * bgSelector in.
+ * @param {Array<string|number>|undefined} bglayers Array of overlay layer identifiers.
+ * 'blank' acts as blank layer.
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html?background}
  * @export
  * @api
  */
-lux.Map.prototype.addBgSelector = function(target) {
+lux.Map.prototype.addBgSelector = function(target, bglayers) {
   this.layersPromise.then(function() {
     if (!this.layersConfig) {
       return;
@@ -964,7 +967,13 @@ lux.Map.prototype.addBgSelector = function(target) {
 
     var conf = this.layersConfig;
     var backgrounds = Object.keys(conf).filter(function(l) {
-      return conf[l].isBgLayer;
+      if (bglayers === undefined) {
+          return conf[l].isBgLayer;
+      }
+      if (conf[l].isBgLayer) {
+          return bglayers.indexOf(conf[l].id) != -1;
+      }
+      return false;
     }).map(function(l) {
       return conf[l];
     });
@@ -978,16 +987,20 @@ lux.Map.prototype.addBgSelector = function(target) {
       }
       select.appendChild(option);
     });
-
-    // add blank layer
-    var blankOption = document.createElement('option');
-    blankOption.value = 'blank';
-    blankOption.innerText = lux.translate('blank');
-    if (active == 'blank') {
-      blankOption.setAttribute('selected', 'selected');
+    var showBlankLayer = true;
+    if (bglayers !== undefined && bglayers.indexOf('blank') == -1) {
+        showBlankLayer = false;
     }
-    select.appendChild(blankOption);
-
+    if (showBlankLayer) {
+        // add blank layer
+        var blankOption = document.createElement('option');
+        blankOption.value = 'blank';
+        blankOption.innerText = lux.translate('blank');
+        if (active == 'blank') {
+          blankOption.setAttribute('selected', 'selected');
+        }
+        select.appendChild(blankOption);
+    }
     container.appendChild(select);
     el.appendChild(container);
 
