@@ -83,8 +83,11 @@ class LuxPrintProxy(PrintProxy):
         layer_id = self.request.params.get('layerid', 359)
         internal_wms = DBSession.query(LuxLayerInternalWMS).filter(
             LuxLayerInternalWMS.id == layer_id).first()
-        center = [684675.0594454071,6379501.028468124]
-        scale = 77166.59993240683
+        x = float(self.request.params.get('x', '684675.0594454071'))
+        y = float(self.request.params.get('y', '6379501.028468124'))
+        scale = float(self.request.params.get('scale', '77166.59993240683'))
+        center = [x, y]
+
         spec = None
         if internal_wms is not None:
             if os.environ.get('PROXYWMSURL'):
