@@ -189,37 +189,38 @@ function getDefaultMediumStyling() {
   const gettext = t => t;
   return [{
     label: gettext("Roads primary"),
-    color: "#bc1515",
+    color: "#F8F8F8",
     lines: ["lu_road_trunk_primary", "lu_bridge_major","lu_tunnel_major","lu_road_major_motorway"],
     visible: true
   },{
-    label: gettext("Background"),
-    color: "#bc1515",
-    backgrounds: ["background"],
-    visible: true
-  },{
     label: gettext("Roads secondary"),
-    color: "#bc1515",
+    color: "#F8F8F8",
     lines: ["lu_road_minor", "lu_road_secondary_tertiary","lu_bridge_minor","lu_road_path","lu_bridge_path"],
     visible: true
   },{
-    label: gettext("Vegetation2"),
-    color: "#bc1515",
-	opacity : "1",
+    label: gettext("Vegetation"),
+    color: "#B8D293",
+    opacity : "1",
     fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium'],
     visible: true
   },{
     label: gettext("Buildings"),
-    color: "#bc1515",
+    color: "#D6AA85",
     fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
+    fills: ['lu_building','lu_building_public'],
     visible: true
   },{
-    label: gettext("Water"),
-    color: "#bc1515",
+    label: gettext("Water2"),
+    color: "#94c1e1",
     lines: ["lu_waterway","lu_waterway-tunnel","lu_waterway_intermittent"],
     fills: ['lu_water'],
     visible: true
-  },
+  },{
+    label: gettext("Background"),
+    color: "#f7f7f7",
+    backgrounds: ["background"],
+    visible: true
+  }
 
 ];
 }
@@ -227,12 +228,12 @@ function getDefaultMediumStyling() {
 const simpleStylings = [
 //["Roads primary","Roads secondary","Vegetation","Buildings","Water"]
 //  ["#bc1515", "#bcffdd","#bcffdd","#bc1133","#bc1133"],
-  ["#ffffff", "#ffffff","#d6e0d7","#e1e1e1","#cccccc"], // light grey
-  ["#808080", "#808080","#494b4a","#505052","#232426"], // dark grey
-  ["#9e9375", "#9e9375","#6b6249","#403928","#b8aa84"], // dark sand
-  ["#f9c50d", "#ffffff","#839836","#d6d3ce","#2a5ba8"], // kids
-  ["#f3edf5", "#f3edf5","#9d7da8","#caa9d1","#613b5c"], // Light mauve
-  ["#dceaf5", "#dceaf5","#5598cf","#81b7e3","#3b576e"], // Light Blue
+  ["#ffffff", "#ffffff","#d6e0d7","#e1e1e1","#cccccc","#f2f2f2"], // light grey
+  ["#808080", "#808080","#494b4a","#505052","#232426","#454545"], // dark grey
+  ["#9e9375", "#9e9375","#6b6249","#403928","#b8aa84","#1a1814"], // dark sand
+  ["#f9c50d", "#ffffff","#839836","#d6d3ce","#2a5ba8","#eeeeee"], // kids
+  ["#f3edf5", "#f3edf5","#9d7da8","#caa9d1","#613b5c","#e5d3e6"], // Light mauve
+  ["#dceaf5", "#dceaf5","#5598cf","#81b7e3","#3b576e","#b6cde0"] // Light Blue
 ];
 
 /**
