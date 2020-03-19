@@ -1852,6 +1852,7 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
 
   this.getFeatureInfo(evt, function(json) {
     if (!json || !json.length) {
+      this.showLayer_.getSource().clear();
       return;
     }
     // each item in the result corresponds to a layer
