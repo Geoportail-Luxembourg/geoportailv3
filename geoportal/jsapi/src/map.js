@@ -213,7 +213,7 @@ lux.Map = function(options) {
     layers.push(defaultBg);
   }
   // Add opacity for background
-  layerOpacities.push([1]);
+  layerOpacities.push(1);
 
   if (options.layers) {
     layers = layers.concat(options.layers);
@@ -221,14 +221,14 @@ lux.Map = function(options) {
   }
   if (options.layerOpacities) {
     layerOpacities = layerOpacities.concat(options.layerOpacities);
-    console.assert(layers.length !== layerOpacities.length,
+    console.assert(layers.length === layerOpacities.length,
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
   if (options.layerVisibilities) {
     layerVisibilities.push(true);
     layerVisibilities = layerVisibilities.concat(options.layerVisibilities);
-    console.assert(layers.length !== layerVisibilities.length,
+    console.assert(layers.length === layerVisibilities.length,
         'Layers and visibility should have the same number of items');
     delete options.layerVisibilities;
   }
@@ -1756,9 +1756,8 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   if (this.queryableLayers_ === undefined) {
     layers.forEach(function(layer) {
       var metadata = layer.get('metadata');
-
       if (metadata && metadata['is_queryable'] === true &&
-          layer.getVisible()) {
+          layer.getVisible() && layer.getOpacity() > 0) {
         layersToQuery.push(layer.get('id'));
       }
     });
@@ -1772,6 +1771,7 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   }
 
   if (!layersToQuery.length) {
+    callback.call(this, []);
     return;
   }
 
@@ -1849,7 +1849,7 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   if (!this.showLayerInfoPopup_) {
     return;
   }
-
+  this.showLayer_.getSource().clear();
   this.getFeatureInfo(evt, function(json) {
     if (!json || !json.length) {
       this.showLayer_.getSource().clear();
@@ -1862,7 +1862,6 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         htmls.push(resultLayer['tooltip']);
       }
       var features = this.readJsonFeatures_(resultLayer);
-      this.showLayer_.getSource().clear();
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
       }
