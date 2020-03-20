@@ -355,7 +355,8 @@ const MainController = function(
       item.color = colors[idx];
       item.visible = true;
       return item;
-    })
+    });
+    this.debouncedSaveMediumStyle_();
   };
 
   const mediumStyle = appMvtStylingService.getMediumStyle();
