@@ -874,6 +874,8 @@ class Getfeatureinfo(object):
     def get_additional_external_data(
             self, features, geometry_name, layer_id, url, id_column,
             attributes_to_remove, columns_order, where_key):
+        groups = []
+        modified_features = []
         for feature in features:
             if where_key in feature['attributes'] or\
                     ('alias' in feature and where_key in feature['alias']):
@@ -883,16 +885,22 @@ class Getfeatureinfo(object):
                 else:
                     where_clause = where_key + '=\'' +\
                         feature['attributes'][where_key] + '\''
-                new_features = self._get_external_data(
-                    layer_id, url, id_column, None, None, None,
-                    attributes_to_remove, columns_order, where_clause)
-                lines = []
-                for new_feature in new_features:
-                    for line in shape(new_feature[geometry_name]):
-                        lines.append(line)
-                multi_line = MultiLineString(lines)
-                feature[geometry_name] = mapping(multi_line)
-        return features
+                group = where_clause + where_key + url
+                if group not in groups:
+                    groups.append(group)
+                    new_features = self._get_external_data(
+                        layer_id, url, id_column, None, None, None,
+                        attributes_to_remove, columns_order, where_clause)
+                    lines = []
+                    for new_feature in new_features:
+                        for line in shape(new_feature[geometry_name]):
+                            lines.append(line)
+                    multi_line = MultiLineString(lines)
+                    feature[geometry_name] = mapping(multi_line)
+                    modified_features.append(feature)
+            else:
+                modified_features.append(feature)
+        return modified_features
 
     def _get_external_data(self, layer_id, url, id_column='objectid',
                            bbox=None, featureid=None, cfg=None,
