@@ -11,7 +11,7 @@ elasticsearch
 ldap3==2.5.1
 pyramid_ldap3==0.3.2
 qrcode==5.1
-bleach==2.1.4
+bleach==3.1.2
 html5lib==1.0.1
 CairoSVG==1.0.22
 weasyprint==v0.42.3
