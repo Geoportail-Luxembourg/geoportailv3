@@ -340,6 +340,17 @@ const MainController = function(
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     appMvtStylingService.saveBgStyle(this.bgLayer);
   }, 2000, false);
+  this.debouncedResetLayerFor3d_ = ngeoDebounce(() => {
+    this.resetLayerFor3d_();
+  }, 2000, false);
+
+  this.resetLayerFor3d_ = () => {
+    this.map_.getLayerGroup().getLayers().forEach((layer, index) => {
+      if (layer.get('groupName') === 'background') {
+        this.map_.getLayerGroup().getLayers().setAt(index, layer);
+      }
+    });
+  };
 
   this.simpleStylingData = simpleStylings;
   this.onSimpleStylingSelected = colors => {
@@ -350,6 +361,7 @@ const MainController = function(
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
+    this.debouncedResetLayerFor3d_();
     this.debouncedSaveBgStyle_(this.bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
       item.color = colors[idx];
@@ -365,6 +377,7 @@ const MainController = function(
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
     applyStyleToItem(mbMap, item);
+    this.debouncedResetLayerFor3d_();
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
   };
@@ -981,6 +994,7 @@ const MainController = function(
     this.appMvtStylingService.removeStyles(this.bgLayer);
     this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
+    this.resetLayerFor3d_();
   };
 
   /**
