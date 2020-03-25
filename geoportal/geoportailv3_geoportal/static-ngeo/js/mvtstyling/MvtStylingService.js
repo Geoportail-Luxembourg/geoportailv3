@@ -41,6 +41,7 @@ class Service {
       label,
       defaultMapBoxStyle,
       defaultMapBoxStyleXYZ,
+      xyz: xyz_custom || defaultMapBoxStyleXYZ,
       xyz_custom,
       style: defaultMapBoxStyle
     };
