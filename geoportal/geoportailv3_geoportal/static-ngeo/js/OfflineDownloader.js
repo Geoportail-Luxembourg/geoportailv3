@@ -4,6 +4,9 @@
 import appModule from './module.js';
 import Downloader from 'ngeo/offline/Downloader.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import SourceXYZ from 'ol/source/XYZ.js'
+import TileLayer from 'ol/layer/Tile.js'
+
 
 /**
  * @extends {ngeo.offline.Downloader}
@@ -52,12 +55,28 @@ const OfflineDownloader = class extends Downloader {
     ]);
     piwik.push(['trackPageView']);
 
+    // FIXME: MVT is disabled on IOS native app
+    const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
     // Keep a reference to the original mapbox layer
     let mapBoxLayer = null;
+    let fakeXYZLayer = null;
     const bgLayer = this.backgroundLayerMgr_.get(map);
     if (bgLayer.getMapBoxMap) {
+      if (isIOS) {
+        const xyz = bgLayer.get('xyz_custom') || bgLayer.getXYZ();
+//        const xyz = bgLayer.getXYZ();
+
+        fakeXYZLayer = new TileLayer({
+          source: new SourceXYZ({
+            url: xyz
+          })
+        });
+        this.backgroundLayerMgr_.set(map, fakeXYZLayer);
+      } else {
         mapBoxLayer = bgLayer;
+      }
     }
+
     const superMethod = super.save.bind(this);
     return this.appMymapsOffline_.save().then(() => {
       let doFirst = Promise.resolve();
@@ -69,7 +88,12 @@ const OfflineDownloader = class extends Downloader {
         const extentByZoom = this.configuration_.getExtentByZoom(map, mapBoxLayer, [], extent);
         doFirst = this.appMapBoxOffline_.save(styleUrl, style, extentByZoom, progressCb);
       }
-      return doFirst.then(() => superMethod(extent, map));
+
+      return doFirst.then(() => superMethod(extent, map)).finally(() => {
+        if (fakeXYZLayer) {
+          this.backgroundLayerMgr_.set(map, bgLayer);
+        }
+      });
     });
   }
 };

@@ -4,7 +4,7 @@
 import {boundingExtent, getWidth, getCenter, buffer} from 'ol/extent.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import ngeoOfflineModule from 'ngeo/offline/module.js';
-import NgeoConfiguration from 'ngeo/offline/Configuration.js';
+import NgeoConfiguration from './NgeoConfiguration.js';
 import localforage from 'localforage';
 window['localforage'] = localforage;
 

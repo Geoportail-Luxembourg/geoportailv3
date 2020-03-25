@@ -53,8 +53,16 @@ const OfflineRestorer = class extends Restorer {
     return super.restore(map).then((extent) => {
       // Keep a reference to the original mapbox layer
       let mapBoxLayer = null;
+      const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
       if (bgLayer.getMapBoxMap) {
-        mapBoxLayer = bgLayer;
+        if (!isIOS) {
+          mapBoxLayer = bgLayer;
+        } else {
+          // Get rid of the Mapbox map
+          //bgLayer.getMapBoxMap().remove();
+          console.log(bgLayer.getMapBoxMap());
+        }
+
       }
 
       this.appMymapsOffline_.restore();

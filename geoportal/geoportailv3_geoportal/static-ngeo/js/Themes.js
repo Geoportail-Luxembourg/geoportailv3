@@ -16,6 +16,9 @@ import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+
 function hasLocalStorage() {
   return 'localStorage' in window && localStorage;
 }
@@ -48,6 +51,14 @@ function replaceWithMVTLayer(bgLayers, target, styleConfig) {
       console.log('Replacing layer with harcoded MVT one', label);
       mvtLayer.set('metadata', l.get('metadata'));
       bgLayers[i] = mvtLayer;
+
+      // console.log('Replacing layer with hardcoded XYZ one', label);
+      // bgLayers[i] = new TileLayer({
+      //   label,
+      //   source: new XYZ({
+      //     url: styleConfig.xyz
+      //   })
+      // });
     }
   });
 }
@@ -188,13 +199,6 @@ exports.prototype.getBgLayers = function(map) {
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
 
-        // TODO: MVT is disabled on IOS native app
-        // this will require change when migrating to c2cgeoportal 2.5 and
-        // having the layer configured as MVT
-        const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
-        if (isIOS) {
-          return bgLayers;
-        }
         // add MVT layer
         const bothPromises = Promise.all([
           onFirstTargetChange(map),
