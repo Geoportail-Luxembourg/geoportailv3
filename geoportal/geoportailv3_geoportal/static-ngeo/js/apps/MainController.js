@@ -338,10 +338,8 @@ const MainController = function(
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveBgStyle(this.bgLayer);
-  }, 2000, false);
-  this.debouncedResetLayerFor3d_ = ngeoDebounce(() => {
-    this.resetLayerFor3d_();
+    appMvtStylingService.saveBgStyle(this.bgLayer)
+    .then(() => this.resetLayerFor3d_());
   }, 2000, false);
 
   this.resetLayerFor3d_ = () => {
@@ -361,7 +359,6 @@ const MainController = function(
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
-    this.debouncedResetLayerFor3d_();
     this.debouncedSaveBgStyle_(this.bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
       item.color = colors[idx];
@@ -377,7 +374,6 @@ const MainController = function(
   this.onMediumStylingChanged = item => {
     const mbMap =  this.bgLayer.getMapBoxMap();
     applyStyleToItem(mbMap, item);
-    this.debouncedResetLayerFor3d_();
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
   };
