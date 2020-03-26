@@ -188,13 +188,6 @@ exports.prototype.getBgLayers = function(map) {
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
 
-        // TODO: MVT is disabled on IOS native app
-        // this will require change when migrating to c2cgeoportal 2.5 and
-        // having the layer configured as MVT
-        const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
-        if (isIOS) {
-          return bgLayers;
-        }
         // add MVT layer
         const bothPromises = Promise.all([
           onFirstTargetChange(map),
