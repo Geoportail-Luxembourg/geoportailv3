@@ -14,15 +14,15 @@ export const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/road
 export const defaultMapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
 
 
-/**
- * @constructor
- * @param {angular.$http} $http Angular http service.
- * @param {app.UserManager} appUserManager User manager service.
- * @paran {String} uploadvtstyleUrl URL to provision a style
- * @paran {String} deletevtstyleUrl URL to delete a provisionned style
- * @ngInject
- */
-class Service {
+
+class MvtStylingService {
+  /**
+   * @param {angular.$http} $http Angular http service.
+   * @param {app.UserManager} appUserManager User manager service.
+   * @paran {String} uploadvtstyleUrl URL to provision a style
+   * @paran {String} deletevtstyleUrl URL to delete a provisionned style
+   * @ngInject
+   */
   constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl) {
     this.http_ = $http;
     this.appUserManager_ = appUserManager;
@@ -86,21 +86,22 @@ publishStyle(layer, data) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
   let id = localStorage.getItem(itemKey);
-  this.unpublishStyle(layer);
-  const formData = new FormData();
-  const blob = new Blob([data], {type: "application/json"});
-  formData.append('style', blob, 'style.json');
-  const options = {
-    method: 'POST',
-    body: formData,
-  };
-  return fetch(this.uploadvtstyleUrl_, options)
-    .then(response => response.json())
-    .then(result => {
-      localStorage.setItem(itemKey, result.id);
-      layer.set('xyz_custom', this.createXYZCustom_(result.id));
-      return result.id;
-    });
+  return this.unpublishStyle(layer).then(() => {
+    const formData = new FormData();
+    const blob = new Blob([data], {type: "application/json"});
+    formData.append('style', blob, 'style.json');
+    const options = {
+      method: 'POST',
+      body: formData,
+    };
+    return fetch(this.uploadvtstyleUrl_, options)
+      .then(response => response.json())
+      .then(result => {
+        localStorage.setItem(itemKey, result.id);
+        layer.set('xyz_custom', this.createXYZCustom_(result.id));
+        return result.id;
+      });
+  });
 }
 
 unpublishStyle(layer) {
@@ -111,21 +112,24 @@ unpublishStyle(layer) {
     localStorage.removeItem(itemKey);
     const url = `${this.deletevtstyleUrl_}?id=${id}`;
     layer.unset('xyz_custom');
-    fetch(url);
+    return fetch(url).catch(() => '');
   }
+  return Promise.resolve();
 }
 
 saveBgStyle(layer) {
     const mbMap =  layer.getMapBoxMap();
     const data = JSON.stringify(mbMap.getStyle());
+    const promises = [];
     if (this.appUserManager_.isAuthenticated()) {
-        this.saveDB_(LS_KEY_EXPERT, data);
-        console.log('Expert style saved in database');
+      console.log('Saving expert style in database');
+      promises.push(this.saveDB_(LS_KEY_EXPERT, data));
     }
     this.isCustomStyle = true;
     this.saveLS_(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
-    this.publishStyle(layer, data);
+    promises.push(this.publishStyle(layer, data));
+    return Promise.all(promises);
 }
 
 getMediumStyle() {
@@ -146,25 +150,29 @@ getMediumStyle() {
 }
 
 saveMediumStyle(style) {
+    const promises = [];
     if (this.appUserManager_.isAuthenticated()) {
-        this.saveDB_(LS_KEY_MEDIUM, style);
+        promises.push(this.saveDB_(LS_KEY_MEDIUM, style));
         console.log('Medium style saved in database');
     }
     this.saveLS_(LS_KEY_MEDIUM, style);
     console.log('Medium style saved in local storage');
+    return Promise.all(promises);
 }
 
 removeStyles(layer) {
     this.deleteLS_(LS_KEY_EXPERT);
     this.deleteLS_(LS_KEY_MEDIUM);
-    this.unpublishStyle(layer);
+    const promises = [];
+    promises.push(this.unpublishStyle(layer));
     console.log('Removed mvt style from local storage');
     if (this.appUserManager_.isAuthenticated()) {
-        this.deleteDB_(LS_KEY_EXPERT);
-        this.deleteDB_(LS_KEY_MEDIUM);
+        promises.push(this.deleteDB_(LS_KEY_EXPERT));
+        promises.push(this.deleteDB_(LS_KEY_MEDIUM));
         console.log('Removed mvt style from database');
     }
     this.isCustomStyle = false;
+    return Promise.all(promises);
 }
 
 // Local Storage methods
@@ -227,6 +235,6 @@ deleteDB_(key) {
   }
 }
 
-appModule.service('appMvtStylingService', Service);
+appModule.service('appMvtStylingService', MvtStylingService);
 
-export default Service;
+export default MvtStylingService;
