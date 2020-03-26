@@ -65,12 +65,17 @@
     <h4 class="modal-title" translate>Warning</h4>
   </div>
   <div class="modal-body">
-      <p translate>~{{$ctrl.estimatedLoadDataSize}}MB of maps will be downloaded - Don't lock your device or navigate away from this site during the download process. Deactivate "private" mode of your browser.</p>
-      <button type="button" class="validate btn btn-primary"
-              data-dismiss="modal"
-              ng-click="$ctrl.validateExtent()"
-              translate>Ok
-      </button>
+      <div ng-if="!$ctrl.map.superHackIsItOKToSaveOffline()">
+        <p translate>Choose another background layer to be able to save map for offline usage.</p>
+      </div>
+      <div ng-if="$ctrl.map.superHackIsItOKToSaveOffline()">
+        <p translate>~{{$ctrl.estimatedLoadDataSize}}MB of maps will be downloaded - Don't lock your device or navigate away from this site during the download process. Deactivate "private" mode of your browser.</p>
+        <button type="button" class="validate btn btn-primary"
+                data-dismiss="modal"
+                ng-click="$ctrl.validateExtent()"
+                translate>Ok
+        </button>
+      </div>
       <button type="button" class="delete btn btn-default"
               data-dismiss="modal"
               translate>Cancel
