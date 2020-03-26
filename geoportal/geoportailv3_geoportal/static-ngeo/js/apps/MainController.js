@@ -338,8 +338,17 @@ const MainController = function(
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveBgStyle(this.bgLayer);
+    appMvtStylingService.saveBgStyle(this.bgLayer)
+    .then(() => this.resetLayerFor3d_());
   }, 2000, false);
+
+  this.resetLayerFor3d_ = () => {
+    this.map_.getLayerGroup().getLayers().forEach((layer, index) => {
+      if (layer.get('groupName') === 'background') {
+        this.map_.getLayerGroup().getLayers().setAt(index, layer);
+      }
+    });
+  };
 
   this.simpleStylingData = simpleStylings;
   this.onSimpleStylingSelected = colors => {
@@ -981,6 +990,7 @@ const MainController = function(
     this.appMvtStylingService.removeStyles(this.bgLayer);
     this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
+    this.resetLayerFor3d_();
   };
 
   /**
