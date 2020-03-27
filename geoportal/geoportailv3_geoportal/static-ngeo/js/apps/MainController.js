@@ -338,7 +338,8 @@ const MainController = function(
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveBgStyle(this.bgLayer)
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    appMvtStylingService.saveBgStyle(bgLayer)
     .then(() => this.resetLayerFor3d_());
   }, 2000, false);
 
@@ -352,14 +353,15 @@ const MainController = function(
 
   this.simpleStylingData = simpleStylings;
   this.onSimpleStylingSelected = colors => {
-    const mbMap =  this.bgLayer.getMapBoxMap();
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < colors.length; ++i) {
       const item = this.mediumStylingData[i];
       item.color = colors[i];
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
-    this.debouncedSaveBgStyle_(this.bgLayer);
+    this.debouncedSaveBgStyle_(bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
       item.color = colors[idx];
       item.visible = true;
@@ -372,7 +374,8 @@ const MainController = function(
   Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
 
   this.onMediumStylingChanged = item => {
-    const mbMap =  this.bgLayer.getMapBoxMap();
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
     applyStyleToItem(mbMap, item);
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
@@ -775,11 +778,6 @@ const MainController = function(
   this.activeMvt;
 
   /**
-   * @type {import('ol/layer/Base').default}
-   */
-  this.bgLayer;
-
-  /**
    * @type {ngeo.download.service}
    */
   this.saveAs_ = ngeoDownload;
@@ -840,7 +838,6 @@ const MainController = function(
   this.loadThemes_().then(function() {
     this.appThemes_.getBgLayers(this.map_).then(
           function(bgLayers) {
-            this.bgLayer = this.backgroundLayerMgr_.get(this.map);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(function(layer) {
@@ -965,9 +962,10 @@ const MainController = function(
    */
     $scope.$on('authenticated', () => {
       // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-      if (this.bgLayer !== undefined) {
+      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      if (bgLayer) {
         this.appMvtStylingService.getBgStyle().then(style => {
-          this.bgLayer.getMapBoxMap().setStyle(style);
+          bgLayer.getMapBoxMap().setStyle(style);
         });
       }
     });
@@ -984,8 +982,9 @@ const MainController = function(
 
     this.readFile_(file, (e) => {
       const result = e.target.result;
-      this.bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.appMvtStylingService.saveBgStyle(this.bgLayer);
+      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
+      this.appMvtStylingService.saveBgStyle(bgLayer);
     });
 
     // Reset form value
@@ -993,8 +992,9 @@ const MainController = function(
   };
 
   this.clearCustomStyle = () => {
-    this.appMvtStylingService.removeStyles(this.bgLayer);
-    this.bgLayer.getMapBoxMap().setStyle(this.bgLayer.get('defaultMapBoxStyle'));
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.appMvtStylingService.removeStyles(bgLayer);
+    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
     this.resetLayerFor3d_();
   };
@@ -1010,7 +1010,8 @@ const MainController = function(
   };
 
   this.downloadCustomStyleFile = () => {
-    const content = JSON.stringify(this.bgLayer.getMapBoxMap().getStyle());;
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());;
     const fileName = 'styles.json';
     if (!content) {
       console.log('No custom mvt to load');
