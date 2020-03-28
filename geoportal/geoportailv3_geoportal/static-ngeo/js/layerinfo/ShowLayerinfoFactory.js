@@ -19,11 +19,12 @@ import appModule from '../module.js';
  * @param {ngeox.PopupFactory} ngeoCreatePopup Ngeo popup factory service
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
+ * @param {string} geonetworkBaseUrl catalog base server url.
  * @return {app.layerinfo.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 function factory($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
+    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl) {
     const isIpv6 = location.search.includes('ipv6=true');
     const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
@@ -88,7 +89,8 @@ function factory($http, $sce, $rootScope,
                     'hasLegend': false,
                     'isError': false,
                     'isShortDesc': true,
-                    'layerMetadata': null
+                    'layerMetadata': null,
+                    'geonetworkBaseUrl': geonetworkBaseUrl
                   };
 
                   var remoteMetadata = resp.data['metadata'];

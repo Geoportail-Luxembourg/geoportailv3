@@ -229,6 +229,7 @@ import '../../less/geoportailv3.less'
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @param {string} ageCruesLayerIds ID of flashflood layers.
  * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
+ * @param {string} geonetworkBaseUrl catalog base server url.
  * @constructor
  * @export
  * @ngInject
@@ -243,12 +244,18 @@ const MainController = function(
     appSelectedFeatures, $locale, appRouting, $document, cesiumURL,
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
-    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline) {
+    showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
+    geonetworkBaseUrl) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
+  /**
+   * @type {string}
+   * @export
+   */
+  this.geonetworkBaseUrl = geonetworkBaseUrl;
   /**
    * @type {string}
    * @private
