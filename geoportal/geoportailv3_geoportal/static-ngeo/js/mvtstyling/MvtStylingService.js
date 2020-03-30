@@ -10,6 +10,7 @@ const url_delete = '/delete_userconfig';
 const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
+const LS_KEY_HILLSHADE = 'hillshadeStyling';
 export const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
 export const defaultMapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
 
@@ -147,6 +148,34 @@ getMediumStyle() {
         console.log('Load mvt medium style from local storage');
         return this.getLS_(LS_KEY_MEDIUM);
     }
+}
+
+getHillshadeStyle() {
+    if (this.appUserManager_.isAuthenticated()) {
+        return this.getDB_(LS_KEY_HILLSHADE).then(resultFromDB => {
+            const styleFromDB = resultFromDB.data;
+            if (styleFromDB.length > 0) {
+                console.log('Load mvt hillshade style from database and save it to local storage');
+                this.isCustomStyle = true;
+                this.saveLS_(LS_KEY_HILLSHADE, styleFromDB.value);
+                return styleFromDB;
+            }
+        });
+    } else if (hasLocalStorage() && this.hasLS_(LS_KEY_HILLSHADE)) {
+        console.log('Load mvt medium style from local storage');
+        return this.getLS_(LS_KEY_HILLSHADE);
+    }
+}
+
+saveHillshadeStyle(style) {
+    const promises = [];
+    if (this.appUserManager_.isAuthenticated()) {
+        promises.push(this.saveDB_(LS_KEY_HILLSHADE, style));
+        console.log('Medium style saved in database');
+    }
+    this.saveLS_(LS_KEY_HILLSHADE, style);
+    console.log('Medium style saved in local storage');
+    return Promise.all(promises);
 }
 
 saveMediumStyle(style) {
