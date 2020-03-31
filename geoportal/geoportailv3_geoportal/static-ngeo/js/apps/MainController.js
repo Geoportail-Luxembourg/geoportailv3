@@ -184,6 +184,14 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
+function getDefaultHillshadeStyling() {
+  const gettext = t => t;
+  return [{
+    label: gettext("Hillshade"),
+    hillshades: ["hillshade"],
+    visible: true
+  }];
+}
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling() {
   const gettext = t => t;
@@ -309,6 +317,7 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
+  this.hillshadeStylingData = getDefaultHillshadeStyling();
   this.mediumStylingData = getDefaultMediumStyling();
 
   function applyStyleToItem(mbMap, item) {
@@ -332,7 +341,14 @@ const MainController = function(
       mbMap.setPaintProperty(path, 'background-opacity', 1);
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
+    (item.hillshades || []).forEach(path => {
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
   }
+
+  this.debouncedSaveHillshadeStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData));
+  }, 2000, false);
 
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
@@ -372,6 +388,8 @@ const MainController = function(
 
   const mediumStyle = appMvtStylingService.getMediumStyle();
   Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
+  const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+  Object.assign(this.hillshadeStylingData, JSON.parse(hillshadeStyle || '{}'));
 
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
@@ -380,6 +398,16 @@ const MainController = function(
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
   };
+
+  this.onHillshadeVisibilityChanged = function(visible) {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
+    const item = this.hillshadeStylingData[0];
+    item.visible = visible;
+    applyStyleToItem(mbMap, item);
+    this.debouncedSaveHillshadeStyle_();
+    this.debouncedSaveBgStyle_();
+};
 
   if (navigator.serviceWorker) {
     // Force online state on load since iOS/Safari does not support clientIds.
@@ -1032,6 +1060,20 @@ const MainController = function(
   });
 };
 
+/**
+ * @param {string} visible The item visibility.
+ * @return {string} The visibility of the item.
+ * @export
+ */
+MainController.prototype.getSetHillshadeVisible = function(visible) {
+  const item = this.hillshadeStylingData[0];
+  if (arguments.length) {
+    item.visible = visible;
+    this.onHillshadeVisibilityChanged(visible);
+  } else {
+    return item.visible;
+  }
+};
 
 /**
  * @private
