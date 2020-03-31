@@ -255,11 +255,22 @@ class Import:
                                 statuslog("\n %s" % str(resp.status_code))
                             try:
                                 keywords = []
-                                for keyword in data['summary']['keywords']:
-                                    keywords.append(keyword['@label'])
+                                if 'keywords' in data['summary']:
+                                    for keyword in data['summary']['keywords']:
+                                        keywords.append(keyword['@label'])
                                 fts['keywords'] = keywords
-                                fts['description'] = data['metadata']['abstract']
-                                fts['metadata_name'] = data['metadata']['title']
+                                if 'metadata' in data:
+                                    if 'abstract' in data['metadata']:
+                                        fts['description'] = data['metadata']['abstract']
+                                    elif 'defaultAbstract' in data['metadata']:
+                                        fts['description'] = data['metadata']['defaultAbstract']
+                                    else:
+                                        statuslog("\nAbstract is missing in  %s" % url)
+                                    if 'title' in data['metadata']:
+                                        fts['metadata_name'] = data['metadata']['title']
+                                    else:
+                                        statuslog("\nTitle is missing in  %s" % url)
+
                             except KeyError as e:
                                 statuslog("\n %s" % e)
                         except requests.exceptions.RequestException as e:
