@@ -186,17 +186,17 @@ class Import:
                 if theme.name not in exluded_themes:
                     self._add_theme(theme, role)
 
-        #ensure_index(
-        #    get_elasticsearch(request),
-        #    self.es_layer_index,
-        #    options.recreate_index
-        #)
-        #try:
-        #    helpers.bulk(actions=self.layers,
-        #                 client=get_elasticsearch(request),
-        #                 raise_on_error=True)
-        #except (BulkIndexError, ConnectionTimeout) as e:
-        #    statuslog("\n %s" % e)
+        ensure_index(
+            get_elasticsearch(request),
+            self.es_layer_index,
+            options.recreate_index
+        )
+        try:
+            helpers.bulk(actions=self.layers,
+                         client=get_elasticsearch(request),
+                         raise_on_error=True)
+        except (BulkIndexError, ConnectionTimeout) as e:
+            statuslog("\n %s" % e)
 
     def _update_document(self, obj=None):
         doc = {
