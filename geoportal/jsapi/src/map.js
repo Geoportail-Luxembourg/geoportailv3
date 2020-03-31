@@ -216,7 +216,7 @@ lux.Map = function(options) {
     layers.push(defaultBg);
   }
   // Add opacity for background
-  layerOpacities.push([1]);
+  layerOpacities.push(1);
 
   if (options.layers) {
     layers = layers.concat(options.layers);
@@ -224,14 +224,14 @@ lux.Map = function(options) {
   }
   if (options.layerOpacities) {
     layerOpacities = layerOpacities.concat(options.layerOpacities);
-    console.assert(layers.length !== layerOpacities.length,
+    console.assert(layers.length === layerOpacities.length,
         'Layers and opacities should have the same number of items');
     delete options.layerOpacities;
   }
   if (options.layerVisibilities) {
     layerVisibilities.push(true);
     layerVisibilities = layerVisibilities.concat(options.layerVisibilities);
-    console.assert(layers.length !== layerVisibilities.length,
+    console.assert(layers.length === layerVisibilities.length,
         'Layers and visibility should have the same number of items');
     delete options.layerVisibilities;
   }
@@ -970,10 +970,13 @@ lux.findLayerByName_ = function(name, layers) {
  * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/index.html#example3}
  * @param {Element|string} target Dom element or id of the element to render
  * bgSelector in.
+ * @param {Array<string|number>|undefined} bglayers Array of overlay layer identifiers.
+ * 'blank' acts as blank layer.
+ * @see {@link https://apiv3.geoportail.lu/proj/1.0/build/apidoc/examples/iterate_layers_api.html?background}
  * @export
  * @api
  */
-lux.Map.prototype.addBgSelector = function(target) {
+lux.Map.prototype.addBgSelector = function(target, bglayers) {
   this.layersPromise.then(function() {
     if (!this.layersConfig) {
       return;
@@ -993,7 +996,13 @@ lux.Map.prototype.addBgSelector = function(target) {
 
     var conf = this.layersConfig;
     var backgrounds = Object.keys(conf).filter(function(l) {
-      return conf[l].isBgLayer;
+      if (bglayers === undefined) {
+          return conf[l].isBgLayer;
+      }
+      if (conf[l].isBgLayer) {
+          return bglayers.indexOf(conf[l].id) != -1;
+      }
+      return false;
     }).map(function(l) {
       return conf[l];
     });
@@ -1007,16 +1016,20 @@ lux.Map.prototype.addBgSelector = function(target) {
       }
       select.appendChild(option);
     });
-
-    // add blank layer
-    var blankOption = document.createElement('option');
-    blankOption.value = 'blank';
-    blankOption.innerText = lux.translate('blank');
-    if (active == 'blank') {
-      blankOption.setAttribute('selected', 'selected');
+    var showBlankLayer = true;
+    if (bglayers !== undefined && bglayers.indexOf('blank') == -1) {
+        showBlankLayer = false;
     }
-    select.appendChild(blankOption);
-
+    if (showBlankLayer) {
+        // add blank layer
+        var blankOption = document.createElement('option');
+        blankOption.value = 'blank';
+        blankOption.innerText = lux.translate('blank');
+        if (active == 'blank') {
+          blankOption.setAttribute('selected', 'selected');
+        }
+        select.appendChild(blankOption);
+    }
     container.appendChild(select);
     el.appendChild(container);
 
@@ -1772,9 +1785,8 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   if (this.queryableLayers_ === undefined) {
     layers.forEach(function(layer) {
       var metadata = layer.get('metadata');
-
       if (metadata && metadata['is_queryable'] === true &&
-          layer.getVisible()) {
+          layer.getVisible() && layer.getOpacity() > 0) {
         layersToQuery.push(layer.get('id'));
       }
     });
@@ -1788,6 +1800,7 @@ lux.Map.prototype.getFeatureInfo = function(evt, callback) {
   }
 
   if (!layersToQuery.length) {
+    callback.call(this, []);
     return;
   }
 
@@ -1865,9 +1878,10 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
   if (!this.showLayerInfoPopup_) {
     return;
   }
-
+  this.showLayer_.getSource().clear();
   this.getFeatureInfo(evt, function(json) {
     if (!json || !json.length) {
+      this.showLayer_.getSource().clear();
       return;
     }
     // each item in the result corresponds to a layer
@@ -1877,7 +1891,6 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         htmls.push(resultLayer['tooltip']);
       }
       var features = this.readJsonFeatures_(resultLayer);
-      this.showLayer_.getSource().clear();
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
       }
