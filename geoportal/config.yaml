@@ -80,6 +80,7 @@ environment:
 - {name: CASIPO_BCC_ADDRESS}
 - {name: AUTHTKT_TIMEOUT}
 - {name: PROXYWMSURL, default: 'https://wmsproxy.geoportail.lu/ogcproxywms'}
+- {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork/srv'}
 interpreted: {}
 no_interpreted: []
 postprocess:
@@ -367,6 +368,7 @@ vars:
         tiles3dLayers: [buildings25d, buildings3d, bridges3d]
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
+        geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
       fulltextsearch_params: {
         assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
         authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
@@ -463,7 +465,7 @@ vars:
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: 'https://ws.geoportail.lu/mymaps', mapserver: 'https://ws.geoportail.lu'}
   shortener:
-    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu']
+    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'devrm.geoportail.lu']
     base_url: '{SHORTENER_BASE_URL}'
     email_body: 'unused'
     email_from: unused

@@ -19,11 +19,12 @@ import appModule from '../module.js';
  * @param {ngeox.PopupFactory} ngeoCreatePopup Ngeo popup factory service
  * @param {app.WmsHelper} appWmsHelper The wms herlper service.
  * @param {app.WmtsHelper} appWmtsHelper The wmts herlper service.
+ * @param {string} geonetworkBaseUrl catalog base server url.
  * @return {app.layerinfo.ShowLayerinfo} The show layer info function.
  * @ngInject
  */
 function factory($http, $sce, $rootScope,
-    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper) {
+    gettextCatalog, ngeoCreatePopup, appWmsHelper, appWmtsHelper, geonetworkBaseUrl) {
     const isIpv6 = location.search.includes('ipv6=true');
     const domain = (isIpv6) ? "app.geoportail.lu" : "geoportail.lu";
 
@@ -76,7 +77,7 @@ function factory($http, $sce, $rootScope,
         // TODO: remove the quotes around jsonpCallbackParam when
         // https://github.com/google/closure-compiler/pull/2400 is merged
         promises_[promiseKey] = $http.jsonp(
-            '//shop.' + domain + '/Portail/inspire/webservices/getMD.jsp',
+            '/getMetadata',
           {params: {
             'uid': metadataUid,
             'lang': currentLanguage
@@ -88,16 +89,17 @@ function factory($http, $sce, $rootScope,
                     'hasLegend': false,
                     'isError': false,
                     'isShortDesc': true,
-                    'layerMetadata': null
+                    'layerMetadata': null,
+                    'geonetworkBaseUrl': geonetworkBaseUrl
                   };
 
-                  var remoteMetadata = resp.data['root'][0];
+                  var remoteMetadata = resp.data['metadata'];
                   content['layerMetadata'] = remoteMetadata;
-                  if ('description' in content['layerMetadata']) {
+                  if ('abstract' in content['layerMetadata']) {
                     content['layerMetadata']['trusted_description'] =
-                    $sce.trustAsHtml(content['layerMetadata']['description']);
+                    $sce.trustAsHtml(content['layerMetadata']['abstract']);
                     content['layerMetadata']['short_trusted_description'] =
-                    $sce.trustAsHtml(content['layerMetadata']['description'].
+                    $sce.trustAsHtml(content['layerMetadata']['abstract'].
                     substring(0, 220));
                   }
                   if ('legend_name' in localMetadata) {
