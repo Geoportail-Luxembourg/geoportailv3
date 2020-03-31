@@ -265,12 +265,16 @@ class Import:
                                     elif 'defaultAbstract' in data['metadata']:
                                         fts['description'] = data['metadata']['defaultAbstract']
                                     else:
+                                        fts['description'] = ''
                                         statuslog("\nAbstract is missing in  %s" % url)
                                     if 'title' in data['metadata']:
                                         fts['metadata_name'] = data['metadata']['title']
                                     else:
+                                        fts['metadata_name'] = ''
                                         statuslog("\nTitle is missing in  %s" % url)
                                 else:
+                                    fts['description'] = ''
+                                    fts['metadata_name'] = ''
                                     statuslog("\nMetadata is missing in %s" % url)
                             except KeyError as e:
                                 statuslog("\n %s" % e)
