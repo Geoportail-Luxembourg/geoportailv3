@@ -270,7 +270,8 @@ class Import:
                                         fts['metadata_name'] = data['metadata']['title']
                                     else:
                                         statuslog("\nTitle is missing in  %s" % url)
-
+                                else:
+                                    statuslog("\nMetadata is missing in %s" % url)
                             except KeyError as e:
                                 statuslog("\n %s" % e)
                         except requests.exceptions.RequestException as e:
