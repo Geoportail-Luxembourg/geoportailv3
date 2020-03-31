@@ -527,7 +527,7 @@ exports.prototype.getLidarUrl = function() {
     return this.lidarDemoUrl_ + '?COORD_X=' +
       this.clickCoordinateLuref_[0] + '&COORD_Y=' +
       this.clickCoordinateLuref_[1] + '&COORD_Z=' +
-      parseInt(this.rawElevation_ / 100, 0);
+      parseInt(this.rawElevation_ / 1, 0);
   }
   return '';
 };

@@ -204,3 +204,14 @@ templates:
         width: 230
         height: 40
     processors: *processors
+  thumbnail: !template
+    reportTemplate: thumbnail.jrxml
+    attributes:
+      <<: *attributes
+      map: !map
+        maxDpi: 400
+        dpiSuggestions: [72, 91, 128, 254, 300, 400]
+        width: 470
+        height: 650
+    processors: *processors
+
