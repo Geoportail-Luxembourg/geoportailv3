@@ -80,7 +80,7 @@ environment:
 - {name: CASIPO_BCC_ADDRESS}
 - {name: AUTHTKT_TIMEOUT}
 - {name: PROXYWMSURL, default: 'https://wmsproxy.geoportail.lu/ogcproxywms'}
-- {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork'}
+- {name: GEONETWORK_BASE_URL, default: 'https://geocatalogue.geoportail.lu/geonetwork/srv'}
 interpreted: {}
 no_interpreted: []
 postprocess:

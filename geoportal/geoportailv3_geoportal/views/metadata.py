@@ -29,7 +29,7 @@ class Metadata(object):
         if id is None:
             return HTTPBadRequest()
         base_url = os.environ["GEONETWORK_BASE_URL"]
-        url = "{}/srv/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs[lang], id)
+        url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(base_url, langs[lang], id)
         timeout = 15
         try:
             f = urllib.request.urlopen(url, None, timeout)
