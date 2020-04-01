@@ -102,6 +102,16 @@ function factory($http, $sce, $rootScope,
                     $sce.trustAsHtml(content['layerMetadata']['abstract'].
                     substring(0, 220));
                   }
+                  var links = [];
+                  if ('link' in content['layerMetadata']) {
+                    content['layerMetadata']['link'].forEach (function(link) {
+                        var currentLink = link.split('|');
+                        if (currentLink[3]=='WWW:LINK-1.0-http--link' && links.indexOf(currentLink[2]) == -1) {
+                            links.push(currentLink[2]);
+                        }
+                    }, this);
+                    content['layerMetadata']['link'] = links;
+                  }
                   if ('legend_name' in localMetadata) {
                     var currentLanguage = gettextCatalog.currentLanguage;
                     currentLanguage =
