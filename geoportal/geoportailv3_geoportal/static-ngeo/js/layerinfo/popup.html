@@ -18,7 +18,7 @@
   <dt ng-if="content.layerMetadata.link.length > 0" translate>Url vers la resource</dt>
   <dd ng-if="content.layerMetadata.link.length > 0">
     <span ng-repeat="link in content.layerMetadata.link">
-        <a ng-if="link.split('|')[3]=='WWW:LINK-1.0-http--link'" href="{{link.split('|')[2]}}" target="_blank">{{link.split("|")[2]}}</a>
+        <a href="{{link}}" target="_blank">{{link}}</a>
     </span>
   </dd>
   <dt ng-if="content.layerMetadata.revisionDate.length > 0" translate>Revision date</dt><dd>{{content.layerMetadata.revisionDate | date : 'dd/MM/yyyy'}}</dd>
