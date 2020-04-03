@@ -104,13 +104,23 @@ function factory($http, $sce, $rootScope,
                   }
                   var links = [];
                   if ('link' in content['layerMetadata']) {
-                    content['layerMetadata']['link'].forEach (function(link) {
-                        var currentLink = link.split('|');
-                        if (currentLink[3]=='WWW:LINK-1.0-http--link' && links.indexOf(currentLink[2]) == -1) {
-                            links.push(currentLink[2]);
-                        }
-                    }, this);
+                    var splitLink = function(link) {
+                      var currentLink = link.split('|');
+                      if (currentLink[3]=='WWW:LINK-1.0-http--link' && links.indexOf(currentLink[2]) == -1) {
+                        links.push(currentLink[2]);
+                      }
+                    };
+                    if (Array.isArray(content['layerMetadata']['link'])) {
+                      content['layerMetadata']['link'].forEach (splitLink, this);
+                    } else {
+                      splitLink(content['layerMetadata']['link']);
+                    }
                     content['layerMetadata']['link'] = links;
+                  }
+                  if ('responsibleParty' in content['layerMetadata']) {
+                    if (!Array.isArray(content['layerMetadata']['responsibleParty'])) {
+                      content['layerMetadata']['responsibleParty'] = [content['layerMetadata']['responsibleParty']];
+                    }
                   }
                   if ('legend_name' in localMetadata) {
                     var currentLanguage = gettextCatalog.currentLanguage;
