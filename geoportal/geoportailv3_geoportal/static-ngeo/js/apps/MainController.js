@@ -296,6 +296,7 @@ const simpleStylings = [
  * @param {ngeo.download.service} ngeoDownload ngeo Download service.
  * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
  * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
+ * @param {string} geonetworkBaseUrl catalog base server url.
  * @constructor
  * @export
  * @ngInject
@@ -311,7 +312,7 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    ngeoDownload, appMvtStylingService, ngeoDebounce) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
@@ -416,6 +417,11 @@ const MainController = function(
     })
   }
 
+  /**
+   * @type {string}
+   * @export
+   */
+  this.geonetworkBaseUrl = geonetworkBaseUrl;
   /**
    * @type {string}
    * @private

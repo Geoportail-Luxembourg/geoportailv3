@@ -390,7 +390,10 @@ def main(global_config, **settings):
         "get_html",
         "/legends/get_html"
     )
-
+    config.add_route(
+        "get_metadata",
+        "/getMetadata"
+    )
     # full text search routes
     config.add_route("fulltextsearch", "/fulltextsearch")
 
