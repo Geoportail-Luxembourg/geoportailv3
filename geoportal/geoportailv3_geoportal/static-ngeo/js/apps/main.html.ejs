@@ -105,7 +105,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('layersOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn btn-vector-editor"></button>
           <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
             <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
@@ -222,7 +222,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('legendsOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-layerlegends
@@ -242,7 +242,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('routingOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="tab-content">
             <app-routing app-routing-map="::mainCtrl.map"
@@ -264,7 +264,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedback
@@ -287,7 +287,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackCruesOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackcrues
@@ -310,7 +310,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAnfOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackanf
@@ -333,7 +333,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAgeOpen')"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackage
@@ -356,7 +356,7 @@
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
             ng-click="mainCtrl.rememberCurrentlyOpenedPanel(mainCtrl.lastPanelOpened)"
-            ng-if="mainCtrl.activeMvt"
+            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <div data-toggle="collapse" data-target="#editor-simple" class="editor-list" translate>Simple</div>
