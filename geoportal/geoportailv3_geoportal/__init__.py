@@ -439,6 +439,7 @@ def main(global_config, **settings):
     config.add_route('download_resource', '/downloadresource')
     config.add_route('upload_vt_style', '/uploadvtstyle')
     config.add_route('delete_vt_style', '/deletevtstyle')
+    config.add_route('get_vt_style', '/getvtstyle')
 
     # Service worker
     config.add_route('sw', '/sw.js')
