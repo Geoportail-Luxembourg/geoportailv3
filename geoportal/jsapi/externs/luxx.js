@@ -106,6 +106,13 @@ luxx.MapOptions.prototype.mousePosition;
 luxx.MapOptions.prototype.popupTarget;
 
 /**
+ * The css class of the element that contains each row
+ * @type {string|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.popupClassPrefix;
+
+/**
  * The initial position of the center for the map view. The coordinate system
  * for the center is specified with the `positionSrs` option.
  * If a center is defined in the view, then this parameter will override the center defined in the view.

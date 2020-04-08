@@ -375,7 +375,14 @@ lux.Map = function(options) {
    * @type {Element|string|undefined}
    */
   this.popupTarget_ = undefined;
-  this.setPopupTarget(options.popupTarget);
+
+  /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.popupClass_ = undefined;
+
+  this.setPopupTarget(options.popupTarget, options.popupClassPrefix);
 
   ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
       this.handleSingleclickEvent_, this);
@@ -664,13 +671,15 @@ lux.Map.prototype.showLayerInfoPopup = function(show) {
  * @param {Element|string|undefined} optPopupTarget The container for map
  * popups, either the element itself or the `id` of the element. Undefined lets
  * the popup be created by the api.
+ * @param {string|undefined} optPopupClass The css class of the row.
  * @export
  * @api
  */
-lux.Map.prototype.setPopupTarget = function(optPopupTarget) {
+lux.Map.prototype.setPopupTarget = function(optPopupTarget, optPopupClass) {
   this.popupTarget_ = typeof optPopupTarget === 'string' ?
       document.getElementById(optPopupTarget) :
       optPopupTarget;
+  this.popupClass_ = optPopupClass;
 };
 
 /**
@@ -1888,7 +1897,13 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     var htmls = [];
     json.forEach(function(resultLayer) {
       if ('tooltip' in resultLayer) {
-        htmls.push(resultLayer['tooltip']);
+        if (this.popupTarget_ !== undefined && this.popupClass_ !== undefined) {
+          htmls.push('<div class="' + this.popupClass_ +
+            '_' + resultLayer['layer'] + '">' +
+            resultLayer['tooltip'] + '</div>');
+        } else{
+          htmls.push(resultLayer['tooltip']);
+        }
       }
       var features = this.readJsonFeatures_(resultLayer);
       if (features.length != 0) {

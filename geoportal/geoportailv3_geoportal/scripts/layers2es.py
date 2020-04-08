@@ -157,8 +157,7 @@ class Import:
         self.session = DBSession()
 
         self._ = {}
-        self.metadata_service_url = \
-            'http://shop.geoportail.lu/Portail/inspire/webservices/getMD.jsp'
+        self.metadata_service_url = base_url = os.environ["GEONETWORK_BASE_URL"]
 
         with bootstrap(self.options.app_config, options=escape_variables(os.environ)) as env:
             registry = env['registry']
@@ -239,13 +238,15 @@ class Import:
                 }
                 for metadata in item.metadatas:
                     if metadata.name == 'metadata_id':
-                        params = dict(
-                            uid=metadata.value,
-                            lang=lang
-                        )
                         try:
-                            resp = requests.get(url=self.metadata_service_url,
-                                                params=params)
+                            id = metadata.value
+                            langs = {'fr': 'fre',
+                                     'de': 'ger',
+                                     'en': 'eng',
+                                     'lb': 'ltz'}
+                            url = "{}/{}/q?_content_type=json&_isTemplate=y+or+n&_uuid_OR__id={}&fast=index".format(self.metadata_service_url, langs[lang], id)
+
+                            resp = requests.get(url=url)
                             data = {}
                             try:
                                 data = json.loads(resp.text)
@@ -253,10 +254,28 @@ class Import:
                                 statuslog("\n %s" % self.metadata_service_url)
                                 statuslog("\n %s" % str(resp.status_code))
                             try:
-                                fts['keywords'] = data['root'][0]['keywords']
-                                fts['description'] = \
-                                    data['root'][0]['description']
-                                fts['metadata_name'] = data['root'][0]['name']
+                                keywords = []
+                                if 'keywords' in data['summary']:
+                                    for keyword in data['summary']['keywords']:
+                                        keywords.append(keyword['@label'])
+                                fts['keywords'] = keywords
+                                if 'metadata' in data:
+                                    if 'abstract' in data['metadata']:
+                                        fts['description'] = data['metadata']['abstract']
+                                    elif 'defaultAbstract' in data['metadata']:
+                                        fts['description'] = data['metadata']['defaultAbstract']
+                                    else:
+                                        fts['description'] = ''
+                                        statuslog("\nAbstract is missing in  %s" % url)
+                                    if 'title' in data['metadata']:
+                                        fts['metadata_name'] = data['metadata']['title']
+                                    else:
+                                        fts['metadata_name'] = ''
+                                        statuslog("\nTitle is missing in  %s" % url)
+                                else:
+                                    fts['description'] = ''
+                                    fts['metadata_name'] = ''
+                                    statuslog("\nMetadata is missing in %s" % url)
                             except KeyError as e:
                                 statuslog("\n %s" % e)
                         except requests.exceptions.RequestException as e:
