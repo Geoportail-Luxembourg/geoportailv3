@@ -777,6 +777,11 @@ const MainController = function(
   this.tiles3dVisible = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
 
   /**
+   * @type{app.Mvtstyling}
+   */
+  this.appMvtStylingService = appMvtStylingService;
+
+  /**
    * @type {app.Mymaps}
    * @private
    */
@@ -809,11 +814,6 @@ const MainController = function(
    * @type {ngeo.download.service}
    */
   this.saveAs_ = ngeoDownload;
-
-  /**
-   * @type{app.Mvtstyling}
-   */
-  this.appMvtStylingService = appMvtStylingService;
 
   /**
    * @const {?app.olcs.Lux3DManager}
@@ -1058,6 +1058,19 @@ const MainController = function(
       new Integrations.Angular(),
     ],
   });
+};
+
+
+/**
+ * @return {string} The public url for sharing the vt style json file.
+ * @export
+ */
+MainController.prototype.getUrlVtStyle = function() {
+  const bgLayer = this.backgroundLayerMgr_.get(this.map);
+  if (bgLayer !== null) {
+    return this.appMvtStylingService.getUrlVtStyle(bgLayer);
+  }
+  return "";
 };
 
 /**
