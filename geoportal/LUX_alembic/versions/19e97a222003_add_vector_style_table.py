@@ -20,7 +20,7 @@ depends_on = None
 def upgrade():
     schema = context.get_context().config.get_main_option("schema")
     op.create_table(
-        "userconfig",
+        "lux_userconfig",
         Column("id", INTEGER, primary_key=True),
         Column("key", Unicode, nullable=False),
         Column("style", VARCHAR, nullable=False),
@@ -31,4 +31,4 @@ def upgrade():
 
 def downgrade():
     schema = context.get_context().config.get_main_option("schema")
-    op.drop_table("userconfig", schema=schema)
+    op.drop_table("lux_userconfig", schema=schema)

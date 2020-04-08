@@ -1,6 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from c2cgeoportal_commons.models import DBSessions
+from c2cgeoportal_commons.models import DBSession
 from geoportailv3_geoportal.userconfig import UserConfig
 
 import json
@@ -14,7 +14,7 @@ class Config(object):
     def __init__(self, request):
         self.request = request
         self.config = self.request.registry.settings
-        self.db_userconfig = DBSessions['mymaps']
+        self.db_userconfig = DBSession
 
     @view_config(route_name="get_userconfig", renderer='json')
     def get_userconfig(self):
