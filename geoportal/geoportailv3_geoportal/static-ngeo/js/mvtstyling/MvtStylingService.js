@@ -22,14 +22,16 @@ class MvtStylingService {
    * @param {app.UserManager} appUserManager User manager service.
    * @paran {String} uploadvtstyleUrl URL to provision a style
    * @paran {String} deletevtstyleUrl URL to delete a provisionned style
+   * @paran {String} getvtstyleUrl URL to get a provisionned style
    * @ngInject
    */
-  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl) {
+  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl) {
     this.http_ = $http;
     this.appUserManager_ = appUserManager;
     this.isCustomStyle = false;
     this.uploadvtstyleUrl_ = uploadvtstyleUrl;
     this.deletevtstyleUrl_ = deletevtstyleUrl;
+    this.getvtstyleUrl_ = getvtstyleUrl;
   }
 
   getBgStyle() {
@@ -83,10 +85,12 @@ createRemoteItemKey_(label) {
   return 'remoteIdForStyle_' + label;
 }
 
+
 publishStyle(layer, data) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
   let id = localStorage.getItem(itemKey);
+
   return this.unpublishStyle(layer).then(() => {
     const formData = new FormData();
     const blob = new Blob([data], {type: "application/json"});
@@ -98,7 +102,7 @@ publishStyle(layer, data) {
     return fetch(this.uploadvtstyleUrl_, options)
       .then(response => response.json())
       .then(result => {
-        localStorage.setItem(itemKey, result.id);
+        localStorage.setItem(this.createRemoteItemKey_(label), result.id);
         layer.set('xyz_custom', this.createXYZCustom_(result.id));
         return result.id;
       });
@@ -109,8 +113,9 @@ unpublishStyle(layer) {
   const label = layer.get('label');
   const itemKey = this.createRemoteItemKey_(label);
   let id = localStorage.getItem(itemKey);
+
   if (id) {
-    localStorage.removeItem(itemKey);
+    localStorage.removeItem(this.createRemoteItemKey_(label));
     const url = `${this.deletevtstyleUrl_}?id=${id}`;
     layer.unset('xyz_custom');
     return fetch(url).catch(() => '');
@@ -148,6 +153,15 @@ getMediumStyle() {
         console.log('Load mvt medium style from local storage');
         return this.getLS_(LS_KEY_MEDIUM);
     }
+}
+
+getUrlVtStyle(layer) {
+  const label = layer.get('label');
+  const itemKey = this.createRemoteItemKey_(label);
+  let id = localStorage.getItem(itemKey);
+
+  if (id == null) return defaultMapBoxStyle;
+  return this.getvtstyleUrl_ + '?id=' + id;
 }
 
 getHillshadeStyle() {
