@@ -242,7 +242,7 @@ vars:
         img-src * data: blob: ;
         connect-src *;
         worker-src ''self'' blob: ;
-        child-src blob: ; ',
+        child-src ''self'' https://* blob: ; ',
       Referrer-Policy: origin,
       Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
       X-Frame-Options: SAMEORIGIN,
