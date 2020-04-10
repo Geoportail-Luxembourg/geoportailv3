@@ -145,13 +145,13 @@ getMediumStyle() {
             if (styleFromDB.length > 0) {
                 console.log('Load mvt medium style from database and save it to local storage');
                 this.isCustomStyle = true;
-                this.saveLS_(LS_KEY_MEDIUM, styleFromDB.value);
-                return styleFromDB;
+                this.saveLS_(LS_KEY_MEDIUM, styleFromDB[0].value);
+                return styleFromDB[0].value;
             }
         });
     } else if (hasLocalStorage() && this.hasLS_(LS_KEY_MEDIUM)) {
         console.log('Load mvt medium style from local storage');
-        return this.getLS_(LS_KEY_MEDIUM);
+        return Promise.resolve(this.getLS_(LS_KEY_MEDIUM));
     }
 }
 
@@ -171,13 +171,13 @@ getHillshadeStyle() {
             if (styleFromDB.length > 0) {
                 console.log('Load mvt hillshade style from database and save it to local storage');
                 this.isCustomStyle = true;
-                this.saveLS_(LS_KEY_HILLSHADE, styleFromDB.value);
-                return styleFromDB;
+                this.saveLS_(LS_KEY_HILLSHADE, styleFromDB[0].value);
+                return styleFromDB[0].value;
             }
         });
     } else if (hasLocalStorage() && this.hasLS_(LS_KEY_HILLSHADE)) {
         console.log('Load mvt medium style from local storage');
-        return this.getLS_(LS_KEY_HILLSHADE);
+        return Promise.resolve(this.getLS_(LS_KEY_HILLSHADE));
     }
 }
 
@@ -206,12 +206,14 @@ saveMediumStyle(style) {
 removeStyles(layer) {
     this.deleteLS_(LS_KEY_EXPERT);
     this.deleteLS_(LS_KEY_MEDIUM);
+    this.deleteLS_(LS_KEY_HILLSHADE);
     const promises = [];
     promises.push(this.unpublishStyle(layer));
     console.log('Removed mvt style from local storage');
     if (this.appUserManager_.isAuthenticated()) {
         promises.push(this.deleteDB_(LS_KEY_EXPERT));
         promises.push(this.deleteDB_(LS_KEY_MEDIUM));
+        promises.push(this.deleteDB_(LS_KEY_HILLSHADE));
         console.log('Removed mvt style from database');
     }
     this.isCustomStyle = false;

@@ -388,10 +388,17 @@ const MainController = function(
   };
 
   const mediumStyle = appMvtStylingService.getMediumStyle();
-  Object.assign(this.mediumStylingData, JSON.parse(mediumStyle || '{}'));
+  if (mediumStyle !== undefined) {
+    mediumStyle.then((style) => {
+        Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+      });
+  }
   const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-  Object.assign(this.hillshadeStylingData, JSON.parse(hillshadeStyle || '{}'));
-
+  if (hillshadeStyle !== undefined) {
+    hillshadeStyle.then((style) => {
+      Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+    });
+  }
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
@@ -1001,6 +1008,18 @@ const MainController = function(
         this.appMvtStylingService.getBgStyle().then(config => {
           bgLayer.getMapBoxMap().setStyle(config.style);
         });
+      }
+      let mediumStyle = appMvtStylingService.getMediumStyle();
+      if (mediumStyle !== undefined) {
+        mediumStyle.then((style) => {
+            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+          });
+      }
+      let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+      if (hillshadeStyle !== undefined) {
+        hillshadeStyle.then((style) => {
+            Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+          });
       }
     });
 
