@@ -183,6 +183,7 @@ getHillshadeStyle() {
 
 saveHillshadeStyle(style) {
     const promises = [];
+    this.isCustomStyle = true;
     if (this.appUserManager_.isAuthenticated()) {
         promises.push(this.saveDB_(LS_KEY_HILLSHADE, style));
         console.log('Medium style saved in database');
@@ -194,6 +195,7 @@ saveHillshadeStyle(style) {
 
 saveMediumStyle(style) {
     const promises = [];
+    this.isCustomStyle = true;
     if (this.appUserManager_.isAuthenticated()) {
         promises.push(this.saveDB_(LS_KEY_MEDIUM, style));
         console.log('Medium style saved in database');
