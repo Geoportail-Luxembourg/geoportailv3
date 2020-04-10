@@ -322,6 +322,7 @@ const MainController = function(
   this.mediumStylingData = getDefaultMediumStyling();
 
   function applyStyleToItem(mbMap, item) {
+    appMvtStylingService.isCustomStyle = true;
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
       mbMap.setPaintProperty(path, 'fill-opacity', 1);
