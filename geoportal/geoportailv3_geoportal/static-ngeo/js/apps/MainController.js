@@ -998,8 +998,8 @@ const MainController = function(
       // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       if (bgLayer) {
-        this.appMvtStylingService.getBgStyle().then(style => {
-          bgLayer.getMapBoxMap().setStyle(style);
+        this.appMvtStylingService.getBgStyle().then(config => {
+          bgLayer.getMapBoxMap().setStyle(config.style);
         });
       }
     });
