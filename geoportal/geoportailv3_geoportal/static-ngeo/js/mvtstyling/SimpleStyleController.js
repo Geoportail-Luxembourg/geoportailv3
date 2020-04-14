@@ -3,8 +3,8 @@ import appModule from '../module.js';
 
 appModule.component('appSimpleStyle', {
   template: `
-  <div ng-repeat="item in $ctrl.stylings">
-    <app-simple-style-item ng-click="$ctrl.onStylingSelected(item)" item="item"></<app-medium-style-item>
+  <div ng-repeat="item in $ctrl.stylings" class="{{item['selected']?'selectedstyleline':''}}">
+<span>{{item['label']}} : </span><app-simple-style-item ng-click="$ctrl.onStylingSelected(item)" item="item['colors']"></<app-medium-style-item>
   </div>
   `,
   bindings: {
