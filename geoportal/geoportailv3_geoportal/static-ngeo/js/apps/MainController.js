@@ -187,8 +187,8 @@ import '../../less/geoportailv3.less';
 function getDefaultHillshadeStyling() {
   const gettext = t => t;
   return [{
-    label: gettext("Hillshade"),
-    hillshades: ["hillshade"],
+    label: gettext('Hillshade'),
+    hillshades: ['hillshade'],
     visible: true
   }];
 }
@@ -196,53 +196,57 @@ function getDefaultHillshadeStyling() {
 function getDefaultMediumStyling() {
   const gettext = t => t;
   return [{
-    label: gettext("Roads primary"),
-    color: "#F8F8F8",
-    lines: ["lu_road_trunk_primary", "lu_bridge_major","lu_tunnel_major","lu_road_major_motorway"],
+    label: gettext('Roads primary'),
+    color: '#f7f7f7',
+    lines: ['lu_road_trunk_primary', 'lu_bridge_major','lu_tunnel_major','lu_road_major_motorway'],
     visible: true
   },{
-    label: gettext("Roads secondary"),
-    color: "#F8F8F8",
-    lines: ["lu_road_minor", "lu_road_secondary_tertiary","lu_bridge_minor","lu_road_path","lu_bridge_path"],
+    label: gettext('Roads secondary'),
+    color: '#f7f7f7',
+    lines: ['lu_road_minor', 'lu_road_secondary_tertiary','lu_bridge_minor','lu_road_path','lu_bridge_path','lu_bridge_railway case','lu_bridge_path case'],
     visible: true
   },{
-    label: gettext("Vegetation"),
-    color: "#B8D293",
-    opacity : "1",
-    fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium'],
+    label: gettext('Vegetation'),
+    color: '#B8D293',
+    opacity : '1',
+    fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium','lu_landuse_cemetery'],
     visible: true
   },{
-    label: gettext("Buildings"),
-    color: "#D6AA85",
+    label: gettext('Buildings'),
+    color: '#D6AA85',
     fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
     fills: ['lu_building','lu_building_public'],
+    lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
     visible: true
   },{
-    label: gettext("Water2"),
-    color: "#94c1e1",
-    lines: ["lu_waterway","lu_waterway-tunnel","lu_waterway_intermittent"],
+    label: gettext('Water'),
+    color: '#94c1e1',
+    lines: ['lu_waterway','lu_waterway-tunnel','lu_waterway_intermittent'],
     fills: ['lu_water'],
     visible: true
   },{
-    label: gettext("Background"),
-    color: "#f7f7f7",
-    backgrounds: ["background"],
+    label: gettext('Background'),
+    color: '#e7e7e7',
+    backgrounds: ['background'],
     visible: true
   }
 
 ];
 }
 
-const simpleStylings = [
-//["Roads primary","Roads secondary","Vegetation","Buildings","Water"]
-//  ["#bc1515", "#bcffdd","#bcffdd","#bc1133","#bc1133"],
-  ["#ffffff", "#ffffff","#d6e0d7","#e1e1e1","#cccccc","#f2f2f2"], // light grey
-  ["#808080", "#808080","#494b4a","#505052","#232426","#454545"], // dark grey
-  ["#9e9375", "#9e9375","#6b6249","#403928","#b8aa84","#1a1814"], // dark sand
-  ["#f9c50d", "#ffffff","#839836","#d6d3ce","#2a5ba8","#eeeeee"], // kids
-  ["#f3edf5", "#f3edf5","#9d7da8","#caa9d1","#613b5c","#e5d3e6"], // Light mauve
-  ["#dceaf5", "#dceaf5","#5598cf","#81b7e3","#3b576e","#b6cde0"] // Light Blue
-];
+function getSimpleStylings() {
+  const gettext = t => t;
+  return [
+// ['Roads primary','Roads secondary','Vegetation','Buildings','Water']
+// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133'],
+    {label: gettext('Light grey'), hillshade: false, colors: ['#ffffff', '#ffffff','#d6e0d7','#e1e1e1','#cccccc','#f2f2f2'], selected: false},
+    {label: gettext('Dark grey'), hillshade: false, colors: ['#808080', '#808080','#494b4a','#505052','#232426','#454545'], selected: false},
+    {label: gettext('Dark sand'), hillshade: false, colors: ['#9e9375', '#9e9375','#6b6249','#403928','#b8aa84','#1a1814'], selected: false},
+    {label: gettext('Kids'), hillshade: false, colors: ['#f9c50d', '#ffffff','#839836','#d6d3ce','#2a5ba8','#eeeeee'], selected: false},
+    {label: gettext('Light mauve'), hillshade: false, colors: ['#f3edf5', '#f3edf5','#9d7da8','#caa9d1','#613b5c','#e5d3e6'], selected: false},
+    {label: gettext('Light Blue'), hillshade: false, colors: ['#dceaf5', '#dceaf5','#5598cf','#81b7e3','#3b576e','#b6cde0'], selected: false}
+  ];
+}
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -368,36 +372,62 @@ const MainController = function(
       }
     });
   };
+  this.simpleStylingData = getSimpleStylings();
+  this.resetSelectedSimpleData = () => {
+    this.simpleStylingData.forEach(function(data) {data['selected'] = false;});
+  };
 
-  this.simpleStylingData = simpleStylings;
-  this.onSimpleStylingSelected = colors => {
+  this.checkSelectedSimpleData = () => {
+    this.simpleStylingData.forEach(function(simpleStyle) {
+        var found = true;
+        simpleStyle['selected'] = false;
+        for (let i = 0; i < simpleStyle['colors'].length; ++i) {
+          if (!this.mediumStylingData[i].visible ||
+              this.mediumStylingData[i].color !== simpleStyle['colors'][i]) {
+            found = false;
+            break;
+          }
+        }
+        if (found && simpleStyle['hillshade'] === this.hillshadeStylingData[0].visible) {
+          simpleStyle['selected'] = true;
+        }
+    }, this);
+  };
+
+
+
+  this.onSimpleStylingSelected = selectedItem => {
+    selectedItem['selected'] = true;
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
-    for (let i = 0; i < colors.length; ++i) {
+    for (let i = 0; i < selectedItem['colors'].length; ++i) {
       const item = this.mediumStylingData[i];
-      item.color = colors[i];
+      item.color = selectedItem['colors'][i];
       item.visible = true;
       applyStyleToItem(mbMap, item);
     }
     this.debouncedSaveBgStyle_(bgLayer);
     this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
-      item.color = colors[idx];
+      item.color = selectedItem['colors'][idx];
       item.visible = true;
       return item;
     });
     this.debouncedSaveMediumStyle_();
+    this.onHillshadeVisibilityChanged(selectedItem['hillshade']);
   };
 
   const mediumStyle = appMvtStylingService.getMediumStyle();
   if (mediumStyle !== undefined) {
     mediumStyle.then((style) => {
         Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+        this.checkSelectedSimpleData();
       });
   }
   const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
   if (hillshadeStyle !== undefined) {
     hillshadeStyle.then((style) => {
       Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+      this.checkSelectedSimpleData();
     });
   }
   this.onMediumStylingChanged = item => {
@@ -406,6 +436,7 @@ const MainController = function(
     applyStyleToItem(mbMap, item);
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
+    this.checkSelectedSimpleData();
   };
 
   this.onHillshadeVisibilityChanged = function(visible) {
@@ -416,6 +447,7 @@ const MainController = function(
     applyStyleToItem(mbMap, item);
     this.debouncedSaveHillshadeStyle_();
     this.debouncedSaveBgStyle_();
+    this.checkSelectedSimpleData();
 };
 
   if (navigator.serviceWorker) {
@@ -1014,12 +1046,14 @@ const MainController = function(
       if (mediumStyle !== undefined) {
         mediumStyle.then((style) => {
             Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+            this.checkSelectedSimpleData();
           });
       }
       let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
       if (hillshadeStyle !== undefined) {
         hillshadeStyle.then((style) => {
             Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+            this.checkSelectedSimpleData();
           });
       }
     });
@@ -1050,6 +1084,7 @@ const MainController = function(
     this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
+    this.hillshadeStylingData = getDefaultHillshadeStyling();
     this.resetLayerFor3d_();
   };
 
