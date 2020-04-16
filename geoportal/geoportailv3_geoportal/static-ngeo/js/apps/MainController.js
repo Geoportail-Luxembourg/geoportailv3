@@ -1086,6 +1086,8 @@ const MainController = function(
     this.mediumStylingData = getDefaultMediumStyling();
     this.hillshadeStylingData = getDefaultHillshadeStyling();
     this.resetLayerFor3d_();
+    this.resetSelectedSimpleData();
+    this.checkSelectedSimpleData();
   };
 
   /**
