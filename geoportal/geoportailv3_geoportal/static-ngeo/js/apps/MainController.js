@@ -414,6 +414,7 @@ const MainController = function(
     });
     this.debouncedSaveMediumStyle_();
     this.onHillshadeVisibilityChanged(selectedItem['hillshade']);
+    this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
   const mediumStyle = appMvtStylingService.getMediumStyle();
@@ -1121,6 +1122,16 @@ const MainController = function(
       new Integrations.Angular(),
     ],
   });
+
+  $('#editor-simple').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTSimpleEditor');
+  }.bind(this));
+  $('#editor-medium').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTMediumEditor');
+  }.bind(this));
+  $('#editor-expert').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTExpertEditor');
+  }.bind(this));
 };
 
 
@@ -1437,8 +1448,22 @@ MainController.prototype.sidebarOpen = function() {
 
 
 /**
+ * Track Vector Tiles Editor.
+ * @param {string} documentTitle The document title.
+
+ * @export
+ */
+MainController.prototype.trackOpenVTEditor = function (documentTitle) {
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', documentTitle]);
+  piwik.push(['trackPageView']);
+};
+
+
+/**
  * Remember the last panel opened when opening vector editor panel
  * @param {string} tab A tab name.
+ * @export
  */
 MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
   if (tab === this.lastPanelOpened) {
@@ -1450,6 +1475,7 @@ MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
 
 /**
  * Allows to get back to last panel when closing the vector editor panel.
+ * @export
  */
 MainController.prototype.restoreLastOpenedPanel = function () {
   if (this.lastPanelOpened) {
