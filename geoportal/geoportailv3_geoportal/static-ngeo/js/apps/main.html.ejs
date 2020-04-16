@@ -104,7 +104,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('layersOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('layersOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn btn-vector-editor"></button>
           <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
@@ -151,7 +151,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('mymapsOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('mymapsOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt"
             class="btn-vector-editor"></button>
           <div class="tab-content">
@@ -176,7 +176,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('infosOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('infosOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -221,7 +221,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('legendsOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('legendsOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -241,7 +241,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('routingOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('routingOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="tab-content">
@@ -263,7 +263,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -286,7 +286,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackCruesOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackCruesOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -309,7 +309,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAnfOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAnfOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -332,7 +332,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAgeOpen')"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAgeOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
@@ -355,7 +355,7 @@
           <button ngeo-btn
             ng-model="mainCtrl.vectorEditorOpen"
             ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel(mainCtrl.lastPanelOpened)"
+            ng-click="mainCtrl.rememberCurrentlyOpenedPanel(mainCtrl.lastPanelOpened);mainCtrl.trackOpenVTEditor('openVTEditor');"
             ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
             class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
