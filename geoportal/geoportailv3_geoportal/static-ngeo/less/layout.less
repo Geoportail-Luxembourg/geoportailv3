@@ -2,6 +2,7 @@
 html, body {
   position: relative;
   height: 100%;
+  touch-action: none;
 }
 @topbar-height: 50px;
 @bottombar-height: 50px;
@@ -153,6 +154,7 @@ app-map > div {
 }
 
 .ol-control {
+  touch-action: none;
   z-index: 2;
   &, &:hover {
     background-color: transparent;
