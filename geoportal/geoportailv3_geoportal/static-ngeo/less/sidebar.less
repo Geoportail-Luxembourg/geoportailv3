@@ -1,4 +1,5 @@
 #sidebar {
+  touch-action: none;
   h2 {
     font-size: 40px;
     line-height: 1;
@@ -47,8 +48,14 @@
       border: 0;
     }
   }
-
+  .tab-content {
+    touch-action: none;
+  }
+  #mylayers, #catalog {
+    touch-action: none;
+  }
   #layers .tab-content {
+    touch-action: none;
     // Height calculation:
     // 100% - h2 font-size - padding-top - padding-bottom -
     //   (app-backgroundlayer) @input-height-base - margin-bottom -
@@ -60,6 +67,7 @@
   }
 
   #mymaps .tab-content {
+    touch-action: none;
     // FIXME: use variables for the calculation
     height: ~"calc(100% - @{input-height-base} - 79px)";
     overflow-y: auto;
@@ -150,6 +158,7 @@
 
 
   .themes-switcher {
+    touch-action: none;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: ~"calc(100% - 105px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
