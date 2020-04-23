@@ -23,6 +23,7 @@ sed -i /app/geoportailv3_geoportal/static-ngeo/build/apiv3.js.map \
   -e 'sY/app/apiv3/jsapi/closure/Y./jsapi_closure/Yg'
 
 cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/build/d3.min.js \
+node_modules/mapbox-gl/dist/mapbox-gl.js \
 node_modules/js-autocomplete/auto-complete.min.js \
 node_modules/promise-polyfill/promise.min.js \
 node_modules/url-polyfill/url-polyfill.min.js > /app/geoportailv3_geoportal/static-ngeo/build/vendor.js
@@ -35,6 +36,7 @@ cp -R /app/apiv3/jsapi/examples /app/geoportailv3_geoportal/jsapi/build/apidoc/
 
 
 cp /app/apiv3/node_modules/@camptocamp/closure-util/.deps/library/*/closure/goog/base.js /app/geoportailv3_geoportal/static-ngeo/build/
+cp /app/apiv3/node_modules/mapbox-gl/dist/mapbox-gl.js.map /app/geoportailv3_geoportal/static-ngeo/build/
 
 cd /app/geoportailv3_geoportal/static-ngeo/build/
 rm -f jsapi_node_modules; ln -s /app/apiv3/node_modules jsapi_node_modules
