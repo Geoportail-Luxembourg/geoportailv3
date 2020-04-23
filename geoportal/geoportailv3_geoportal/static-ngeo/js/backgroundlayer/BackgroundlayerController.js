@@ -20,51 +20,91 @@
 import appModule from '../module.js';
 import {listen} from 'ol/events.js';
 
+
+/**
+ * @typedef {import('ol/layer/Base').default} BaseLayer
+ */
+
+
 /**
  * @constructor
- * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
- *     manager.
- * @param {app.Themes} appThemes Themes service.
- * @export
+ * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
+ * @param {import('../Themes').default} appThemes The app themes.
  * @ngInject
  */
-const exports = function(ngeoBackgroundLayerMgr, appThemes) {
+class Controller {
+  constructor(ngeoBackgroundLayerMgr, appThemes) {
+    /**
+     * @type {ngeo.map.BackgroundLayerMgr}
+     * @private
+     */
+    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+    /**
+     * @type {import('../Themes').default}
+     */
+    this.appThemes_ = appThemes;
+
+    /**
+     * @type {import('ol/layer/Base').default[]}
+     */
+    this.bgLayers;
+
+    /**
+     * @type {import('ol/layer/Base').default}
+     */
+    this.bgLayer;
+
+    /**
+     * @type {import('ol/Map').default}
+     */
+    this.map;
+
+    /**
+     * @type {boolean}
+     */
+    this.activeMvt;
+  }
+
+
+  $onInit() {
+    this.appThemes_.getBgLayers(this.map).then(bgLayers => {
+      this.bgLayers = bgLayers;
+      this.bgLayer = this.backgroundLayerMgr_.get(this.map);
+    });
+
+    listen(this.backgroundLayerMgr_, 'change', evt => {
+      /**
+       * @type {BaseLayer}
+       */
+      const previous = evt.detail.previous;
+
+      /**
+       * @type {BaseLayer}
+       */
+      const current = evt.detail.current;
+
+      if (previous) {
+        previous.setVisible(false);
+      }
+      current.setVisible(true);
+      this.bgLayer = current;
+
+      this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
+    });
+  };
 
   /**
-   * @type {ngeo.map.BackgroundLayerMgr}
-   * @private
+   * @param {BaseLayer} layer Layer.
+   * @export
    */
-  this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+  setLayer(layer) {
+    this.bgLayer = layer;
+    this.backgroundLayerMgr_.set(this.map, layer);
+    this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
+  };
 
-  appThemes.getBgLayers().then(
-      /**
-       * @param {Array.<Object>} bgLayers Array of background layer objects.
-       */
-      (function(bgLayers) {
-        this['bgLayers'] = bgLayers;
-        this['bgLayer'] = this['bgLayers'][0];
-        this.setLayer(this['bgLayer']);
-      }).bind(this));
-
-  listen(this.backgroundLayerMgr_, 'change',
-      function() {
-        this['bgLayer'] = this.backgroundLayerMgr_.get(this['map']);
-      }, this);
 };
 
-
-/**
- * @param {ol.layer.Base} layer Layer.
- * @export
- */
-exports.prototype.setLayer = function(layer) {
-  this['bgLayer'] = layer;
-  this.backgroundLayerMgr_.set(this['map'], layer);
-};
-
-
-appModule.controller('AppBackgroundlayerController',
-    exports);
-
-
-export default exports;
+appModule.controller('AppBackgroundlayerController', Controller);
+export default Controller;

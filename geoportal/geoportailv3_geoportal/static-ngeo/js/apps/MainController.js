@@ -40,7 +40,7 @@ import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 
-import '../../less/geoportailv3.less'
+import '../../less/geoportailv3.less';
 
  /* eslint-disable no-unused-vars */
  import appAskredirectAskredirectDirective from '../askredirect/askredirectDirective.js';
@@ -168,6 +168,7 @@ import '../../less/geoportailv3.less'
  import appStateManager from '../StateManager.js';
  import appTheme from '../Theme.js';
  import appThemes from '../Themes.js';
+ import appMvtStylingService from '../mvtstyling/MvtStylingService.js';
 
  //const appThemesResponse = goog.require('app.ThemesResponse');
  import appUserManager from '../UserManager.js';
@@ -178,11 +179,78 @@ import '../../less/geoportailv3.less'
 
  import OfflineDownloader from '../OfflineDownloader.js';
  import OfflineRestorer from '../OfflineRestorer.js';
+
+ import '../mvtstyling/MediumStyleController.js';
+ import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
+function getDefaultHillshadeStyling() {
+  const gettext = t => t;
+  return [{
+    label: gettext('Hillshade'),
+    hillshades: ['hillshade'],
+    visible: true
+  }];
+}
+// See intermediate_editor_spec.md
+function getDefaultMediumStyling() {
+  const gettext = t => t;
+  return [{
+    label: gettext('Roads primary'),
+    color: '#f7f7f7',
+    lines: ['lu_road_trunk_primary', 'lu_bridge_major','lu_tunnel_major','lu_road_major_motorway'],
+    visible: true
+  },{
+    label: gettext('Roads secondary'),
+    color: '#f7f7f7',
+    lines: ['lu_road_minor', 'lu_road_secondary_tertiary','lu_bridge_minor','lu_road_path','lu_bridge_path','lu_bridge_railway case','lu_bridge_path case'],
+    visible: true
+  },{
+    label: gettext('Vegetation'),
+    color: '#B8D293',
+    opacity : '1',
+    fills: ['lu_landcover_wood','lu_landcover_grass','lu_landuse_stadium','lu_landuse_cemetery'],
+    visible: true
+  },{
+    label: gettext('Buildings'),
+    color: '#D6AA85',
+    fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
+    fills: ['lu_building','lu_building_public'],
+    lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
+    visible: true
+  },{
+    label: gettext('Water'),
+    color: '#94c1e1',
+    lines: ['lu_waterway','lu_waterway-tunnel','lu_waterway_intermittent'],
+    fills: ['lu_water'],
+    visible: true
+  },{
+    label: gettext('Background'),
+    color: '#e7e7e7',
+    backgrounds: ['background'],
+    visible: true
+  }
+
+];
+}
+
+function getSimpleStylings() {
+  const gettext = t => t;
+  return [
+// ['Roads primary','Roads secondary','Vegetation','Buildings','Water']
+// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133'],
+    {label: gettext('Light grey'), hillshade: false, colors: ['#ffffff', '#ffffff','#d6e0d7','#e1e1e1','#cccccc','#f2f2f2'], selected: false},
+    {label: gettext('Dark grey'), hillshade: false, colors: ['#808080', '#808080','#494b4a','#505052','#232426','#454545'], selected: false},
+    {label: gettext('Dark sand'), hillshade: false, colors: ['#9e9375', '#9e9375','#6b6249','#403928','#b8aa84','#1a1814'], selected: false},
+    {label: gettext('Kids'), hillshade: false, colors: ['#f9c50d', '#ffffff','#839836','#d6d3ce','#2a5ba8','#eeeeee'], selected: false},
+    {label: gettext('Light mauve'), hillshade: false, colors: ['#f3edf5', '#f3edf5','#9d7da8','#caa9d1','#613b5c','#e5d3e6'], selected: false},
+    {label: gettext('Light Blue'), hillshade: false, colors: ['#dceaf5', '#dceaf5','#5598cf','#81b7e3','#3b576e','#b6cde0'], selected: false}
+  ];
+}
 
 /**
  * @param {angular.Scope} $scope Scope.
+ * @param {angular.Http} $http Http.
  * @param {ngeo.map.FeatureOverlayMgr} ngeoFeatureOverlayMgr Feature overlay
  * manager.
  * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
@@ -224,18 +292,21 @@ import '../../less/geoportailv3.less'
  * @param {ngeo.offline.Mode} ngeoOfflineMode Offline mode manager.
  * @param {string} ageLayerIds ID of AGE layers.
  * @param {string} showAgeLink Enable the AGE link.
- * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode Tje layer
+ * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
  * catalog service.
  * @param {string} showCruesRoles Enable the Crues link only for these roles.
  * @param {string} ageCruesLayerIds ID of flashflood layers.
- * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service
+ * @param {app.MymapsOffline} appMymapsOffline Offline mymaps service.
+ * @param {ngeo.download.service} ngeoDownload ngeo Download service.
+ * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
+ * @param {ngeox.miscDebounce} ngeoDebounce ngeoDebounce service.
  * @param {string} geonetworkBaseUrl catalog base server url.
  * @constructor
  * @export
  * @ngInject
  */
 const MainController = function(
-    $scope, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
+    $scope, $http, ngeoFeatureOverlayMgr, ngeoBackgroundLayerMgr, ngeoOfflineServiceManager,
     gettextCatalog, appExclusionManager, appLayerOpacityManager,
     appLayerPermalinkManager, appMymaps, appStateManager, appThemes, appTheme,
     appUserManager, appDrawnFeatures, langUrls, maxExtent, defaultExtent,
@@ -245,11 +316,147 @@ const MainController = function(
     $rootScope, ngeoOlcsService, tiles3dLayers, tiles3dUrl, ngeoNetworkStatus, ngeoOfflineMode,
     ageLayerIds, showAgeLink, appGetLayerForCatalogNode,
     showCruesRoles, ageCruesLayerIds, appOfflineDownloader, appOfflineRestorer, appMymapsOffline,
-    geonetworkBaseUrl) {
+    ngeoDownload, appMvtStylingService, ngeoDebounce, geonetworkBaseUrl) {
 
   appUserManager.setOfflineMode(ngeoOfflineMode); // avoid circular dependency
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
+
+  this.hillshadeStylingData = getDefaultHillshadeStyling();
+  this.mediumStylingData = getDefaultMediumStyling();
+
+  function applyStyleToItem(mbMap, item) {
+    appMvtStylingService.isCustomStyle = true;
+    (item.fills || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'fill-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.lines || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'line-color', item.color);
+      mbMap.setPaintProperty(path, 'line-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.fillExtrusions || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'fill-extrusion-color', item.color);
+      mbMap.setPaintProperty(path, 'fill-extrusion-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.backgrounds || []).forEach(path => {
+      mbMap.setPaintProperty(path, 'background-color', item.color);
+      mbMap.setPaintProperty(path, 'background-opacity', 1);
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+    (item.hillshades || []).forEach(path => {
+      mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
+    });
+  }
+
+  this.debouncedSaveHillshadeStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData));
+  }, 2000, false);
+
+  this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
+  }, 2000, false);
+  this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    appMvtStylingService.saveBgStyle(bgLayer)
+    .then(() => this.resetLayerFor3d_());
+  }, 2000, false);
+
+  this.resetLayerFor3d_ = () => {
+    this.map_.getLayerGroup().getLayers().forEach((layer, index) => {
+      if (layer.get('groupName') === 'background') {
+        this.map_.getLayerGroup().getLayers().setAt(index, layer);
+      }
+    });
+  };
+  this.simpleStylingData = getSimpleStylings();
+  this.resetSelectedSimpleData = () => {
+    this.simpleStylingData.forEach(function(data) {data['selected'] = false;});
+  };
+
+  this.checkSelectedSimpleData = () => {
+    this.simpleStylingData.forEach(function(simpleStyle) {
+        var found = true;
+        simpleStyle['selected'] = false;
+        for (let i = 0; i < simpleStyle['colors'].length; ++i) {
+          if (!this.mediumStylingData[i].visible ||
+              this.mediumStylingData[i].color !== simpleStyle['colors'][i]) {
+            found = false;
+            break;
+          }
+        }
+        if (found && simpleStyle['hillshade'] === this.hillshadeStylingData[0].visible) {
+          simpleStyle['selected'] = true;
+        }
+    }, this);
+  };
+
+
+
+  this.onSimpleStylingSelected = selectedItem => {
+    selectedItem['selected'] = true;
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
+    for (let i = 0; i < selectedItem['colors'].length; ++i) {
+      const item = this.mediumStylingData[i];
+      item.color = selectedItem['colors'][i];
+      item.visible = true;
+      applyStyleToItem(mbMap, item);
+    }
+    this.debouncedSaveBgStyle_(bgLayer);
+    this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
+      item.color = selectedItem['colors'][idx];
+      item.visible = true;
+      return item;
+    });
+    this.debouncedSaveMediumStyle_();
+    this.onHillshadeVisibilityChanged(selectedItem['hillshade']);
+    this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
+  };
+
+  const mediumStyle = appMvtStylingService.getMediumStyle();
+  if (mediumStyle !== undefined) {
+    mediumStyle.then((style) => {
+        Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+        this.checkSelectedSimpleData();
+      });
+  }
+  const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+  if (hillshadeStyle !== undefined) {
+    hillshadeStyle.then((style) => {
+      Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+      this.checkSelectedSimpleData();
+    });
+  }
+  this.onMediumStylingChanged = item => {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
+    applyStyleToItem(mbMap, item);
+    this.debouncedSaveMediumStyle_();
+    this.debouncedSaveBgStyle_();
+    this.checkSelectedSimpleData();
+  };
+
+  this.onHillshadeVisibilityChanged = function(visible) {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const mbMap =  bgLayer.getMapBoxMap();
+    const item = this.hillshadeStylingData[0];
+    item.visible = visible;
+    applyStyleToItem(mbMap, item);
+    this.debouncedSaveHillshadeStyle_();
+    this.debouncedSaveBgStyle_();
+    this.checkSelectedSimpleData();
+};
+
+  if (navigator.serviceWorker) {
+    // Force online state on load since iOS/Safari does not support clientIds.
+    navigator.serviceWorker.getRegistration().then(() => {
+      fetch('/switch-lux-online');
+    })
+  }
 
   /**
    * @type {string}
@@ -388,6 +595,12 @@ const MainController = function(
   this.scope_ = $scope;
 
   /**
+   * @type {angular.http}
+   * @private
+   */
+  this.http_ = $http;
+
+  /**
    * @type {app.StateManager}
    * @private
    */
@@ -513,6 +726,11 @@ const MainController = function(
   /**
    * @type {boolean}
    */
+  this.vectorEditorOpen = false;
+
+  /**
+   * @type {boolean}
+   */
   this['legendsOpen'] = false;
 
   /**
@@ -606,6 +824,11 @@ const MainController = function(
   this.tiles3dVisible = initial3dTilesVisibleValue !== undefined ? initial3dTilesVisibleValue === 'true' : true;
 
   /**
+   * @type{app.Mvtstyling}
+   */
+  this.appMvtStylingService = appMvtStylingService;
+
+  /**
    * @type {app.Mymaps}
    * @private
    */
@@ -617,6 +840,27 @@ const MainController = function(
    * @private
    */
   this.map_ = this.createMap_();
+
+  // Super hack because we do not have access to the offline button controller
+  this.map_.superHackIsItOKToSaveOffline = () => {
+    const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
+    return !isIOS || !this.backgroundLayerMgr_.get(this.map).getMapBoxMap
+  };
+
+  /**
+   * @type {string}
+   */
+  this.lastPanelOpened = undefined;
+
+  /**
+   * @type {boolean}
+   */
+  this.activeMvt;
+
+  /**
+   * @type {ngeo.download.service}
+   */
+  this.saveAs_ = ngeoDownload;
 
   /**
    * @const {?app.olcs.Lux3DManager}
@@ -652,13 +896,22 @@ const MainController = function(
     }
   }.bind(this));
 
+  // Hide the vector editor panel when we choose non-vt layer with the selector
+  $scope.$watch(() => {
+    return this.activeMvt;
+  }, (newVal, oldVal) => {
+    if (newVal !== null && oldVal !== null && newVal !== oldVal) {
+      this.restoreLastOpenedPanel();
+    }
+  });
+
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
   this.loadThemes_().then(function() {
-    this.appThemes_.getBgLayers().then(
+    this.appThemes_.getBgLayers(this.map_).then(
           function(bgLayers) {
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
@@ -779,6 +1032,87 @@ const MainController = function(
     }
   });
 
+  /**
+   * Listen on login to finish to reload the mvt style
+   */
+    $scope.$on('authenticated', () => {
+      // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      if (bgLayer) {
+        this.appMvtStylingService.getBgStyle().then(config => {
+          bgLayer.getMapBoxMap().setStyle(config.style);
+        });
+      }
+      let mediumStyle = appMvtStylingService.getMediumStyle();
+      if (mediumStyle !== undefined) {
+        mediumStyle.then((style) => {
+            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+            this.checkSelectedSimpleData();
+          });
+      }
+      let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+      if (hillshadeStyle !== undefined) {
+        hillshadeStyle.then((style) => {
+            Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+            this.checkSelectedSimpleData();
+          });
+      }
+    });
+
+  /**
+   * Read a json file and store custom style to local storage
+   */
+  this.setCustomStyle = (event) => {
+    const file = event.target.files[0];
+
+    if (file.type !== 'application/json') {
+      return;
+    }
+
+    this.readFile_(file, (e) => {
+      const result = e.target.result;
+      const bgLayer = this.backgroundLayerMgr_.get(this.map);
+      bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
+      this.appMvtStylingService.saveBgStyle(bgLayer);
+    });
+
+    // Reset form value
+    event.target.value = null;
+  };
+
+  this.clearCustomStyle = () => {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.appMvtStylingService.removeStyles(bgLayer);
+    bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
+    this.mediumStylingData = getDefaultMediumStyling();
+    this.hillshadeStylingData = getDefaultHillshadeStyling();
+    this.resetLayerFor3d_();
+    this.resetSelectedSimpleData();
+    this.checkSelectedSimpleData();
+  };
+
+  /**
+   * Read a file as text
+   * @private
+   */
+  this.readFile_ = function(file, callback) {
+    const reader = new FileReader();
+    reader.onload = callback;
+    reader.readAsText(file);
+  };
+
+  this.downloadCustomStyleFile = () => {
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    const content = JSON.stringify(bgLayer.getMapBoxMap().getStyle());;
+    const fileName = 'styles.json';
+    if (!content) {
+      console.log('No custom mvt to load');
+      return;
+    }
+    return this.saveAs_(content, fileName);
+  }
+
+
   ngeoOfflineServiceManager.setSaveService(appOfflineDownloader);
   ngeoOfflineServiceManager.setRestoreService(appOfflineRestorer);
 
@@ -788,8 +1122,45 @@ const MainController = function(
       new Integrations.Angular(),
     ],
   });
+
+  $('#editor-simple').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTSimpleEditor');
+  }.bind(this));
+  $('#editor-medium').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTMediumEditor');
+  }.bind(this));
+  $('#editor-expert').on('show.bs.collapse', function(){
+    this.trackOpenVTEditor('openVTExpertEditor');
+  }.bind(this));
 };
 
+
+/**
+ * @return {string} The public url for sharing the vt style json file.
+ * @export
+ */
+MainController.prototype.getUrlVtStyle = function() {
+  const bgLayer = this.backgroundLayerMgr_.get(this.map);
+  if (bgLayer !== null) {
+    return this.appMvtStylingService.getUrlVtStyle(bgLayer);
+  }
+  return "";
+};
+
+/**
+ * @param {string} visible The item visibility.
+ * @return {string} The visibility of the item.
+ * @export
+ */
+MainController.prototype.getSetHillshadeVisible = function(visible) {
+  const item = this.hillshadeStylingData[0];
+  if (arguments.length) {
+    item.visible = visible;
+    this.onHillshadeVisibilityChanged(visible);
+  } else {
+    return item.visible;
+  }
+};
 
 /**
  * @private
@@ -1060,7 +1431,7 @@ MainController.prototype.closeSidebar = function() {
   this['mymapsOpen'] = this['layersOpen'] = this['infosOpen'] =
       this['feedbackOpen'] = this['legendsOpen'] = this['routingOpen'] =
       this['feedbackAnfOpen'] = this['feedbackAgeOpen'] =
-      this['feedbackCruesOpen'] = false;
+      this['feedbackCruesOpen'] = this['vectorEditorOpen'] = false;
 };
 
 
@@ -1071,9 +1442,49 @@ MainController.prototype.closeSidebar = function() {
 MainController.prototype.sidebarOpen = function() {
   return this['mymapsOpen'] || this['layersOpen'] || this['infosOpen'] ||
       this['legendsOpen'] || this['feedbackOpen'] || this['feedbackAnfOpen'] ||
-      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'];
+      this['routingOpen'] || this['feedbackAgeOpen'] || this['feedbackCruesOpen'] ||
+      this['vectorEditorOpen'];
 };
 
+
+/**
+ * Track Vector Tiles Editor.
+ * @param {string} documentTitle The document title.
+
+ * @export
+ */
+MainController.prototype.trackOpenVTEditor = function (documentTitle) {
+  var piwik = /** @type {Piwik} */ (this.window_['_paq']);
+  piwik.push(['setDocumentTitle', documentTitle]);
+  piwik.push(['trackPageView']);
+};
+
+
+/**
+ * Remember the last panel opened when opening vector editor panel
+ * @param {string} tab A tab name.
+ * @export
+ */
+MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
+  if (tab === this.lastPanelOpened) {
+    this.restoreLastOpenedPanel();
+  } else {
+    this.lastPanelOpened = tab;
+  }
+};
+
+/**
+ * Allows to get back to last panel when closing the vector editor panel.
+ * @export
+ */
+MainController.prototype.restoreLastOpenedPanel = function () {
+  if (this.lastPanelOpened) {
+    this[this.lastPanelOpened] = true;
+    this.lastPanelOpened = undefined;
+  } else {
+    new Error('The panel to open does not exist...');
+  }
+};
 
 /**
  * @param {string} lang Language code.

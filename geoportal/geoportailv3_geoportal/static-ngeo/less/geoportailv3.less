@@ -106,8 +106,91 @@ body.enabled-3d {
   }
   .hidden-2d {
     display: inherit;
+    float: left;
+    width: 100%;
   }
 }
 .olcs-hideoverlay .ol-overlay-container {
   visibility:hidden;
+}
+
+
+// Canvas container
+.app-map {
+  z-index: 0;
+}
+
+// MapBox canvas
+.mapboxgl-canvas {
+  z-index: -1;
+  top: 0;
+}
+
+// OL canvas
+.ol-viewport canvas.ol-unselectable {
+    z-index: -4;
+}
+
+// Cesium canvas
+.ol-viewport canvas:not(.ol-unselectable) {
+    z-index: 0;
+}
+
+// Fix panel being moved right by vector style button
+#routing, #layers, #mymaps, #infos, #legends {
+  div.tab-content {
+    float: left;
+    width: 100%;
+  }
+}
+
+app-simple-style div {
+  app-simple-style-item {
+    display: flex;
+    padding: 2px 0;
+    cursor: pointer;
+    span {
+      display: inherit;
+      flex: 1;
+      padding: 1px;
+    }
+  }
+}
+
+app-medium-style-item div {
+  .stylinglabel {
+    display: inline-block;
+    width: 150px;
+  }
+  .color {
+    cursor: pointer;
+    width: 44px;
+    height: 23px;
+    background-color: buttonface;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    border-image: initial;
+    padding: 1px 2px;
+  }
+  .visible {
+    cursor: pointer;
+    float: right;
+    margin-right: 11px;
+  }
+}
+
+div[data-toggle="collapse"] {
+  cursor: pointer;
+}
+
+
+.editor-content {
+  position: relative;
+  width: 100%;
+  border: #ccc solid 2px;
+  p {
+      text-align: center;
+  }
+  padding: 10px;
 }

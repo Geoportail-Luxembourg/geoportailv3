@@ -12,6 +12,7 @@
 import appModule from '../module.js';
 import olMapProperty from 'ol/MapProperty.js';
 import {getTransform, transform} from 'ol/proj.js';
+import offlineUtils from 'ngeo/offline/utils.js';
 
 /**
  * @param {app.StateManager} appStateManager State manager service.
@@ -72,6 +73,20 @@ const exports = function(appStateManager, ngeoDebounce) {
       view.on('propertychange', updateStateFunc);
     }
   });
+  const check = function() {
+    map.updateSize();
+    map.renderSync();
+    offlineUtils.traverseLayer(map.getLayerGroup(), [], layer => {
+      if (layer.getMapBoxMap) {
+        const mbm = layer.getMapBoxMap();
+        mbm.resize();
+      }
+      return true;
+    });
+  };
+  ["", "webkit", "moz", "ms"].forEach(
+      prefix => document.addEventListener(prefix + 'fullscreenchange', check, false)
+  );
 };
 
 

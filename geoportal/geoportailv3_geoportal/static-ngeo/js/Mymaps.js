@@ -785,7 +785,7 @@ exports.prototype.loadFeatures_ = function() {
  */
 exports.prototype.updateLayers = function() {
   var curBgLayer = this.mapBgLayer;
-  this.appThemes_.getBgLayers().then(
+  this.appThemes_.getBgLayers(this.map).then(
       /**
        * @param {Array.<ol.layer.Base>} bgLayers The bg layer.
        */

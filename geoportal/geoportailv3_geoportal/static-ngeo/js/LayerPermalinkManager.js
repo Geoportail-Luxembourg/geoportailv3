@@ -519,7 +519,7 @@ exports.prototype.init = function(scope, map, selectedLayers) {
   this.initialized_ = false;
 
   // Wait for themes to load before adding layers from state
-  listen(this.appThemes_, appEventsThemesEventType.LOAD, (_) => {
+  listen(this.appThemes_, appEventsThemesEventType.LOAD, () => {
     this.initBgLayers_().then(() =>{
       this.initFlatCatalog_(selectedLayers);
     })
@@ -527,7 +527,7 @@ exports.prototype.init = function(scope, map, selectedLayers) {
 };
 
 exports.prototype.initBgLayers_ = function() {
-  return this.appThemes_.getBgLayers().then((bgLayers) => {
+  return this.appThemes_.getBgLayers(this.map_).then((bgLayers) => {
     var stateBgLayerLabel, stateBgLayerOpacity;
     var mapId = this.ngeoLocation_.getParam('map_id');
     if (!this.initialized_) {

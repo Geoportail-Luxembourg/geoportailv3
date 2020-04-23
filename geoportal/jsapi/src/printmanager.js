@@ -1,6 +1,5 @@
 goog.provide('lux.PrintManager');
 
-goog.require('goog.color.alpha');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.format.GeoJSON');
@@ -23,6 +22,7 @@ goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Icon');
 goog.require('ol.layer.Group');
+goog.require('lux.MapBoxLayer');
 
 
 /**
@@ -156,6 +156,22 @@ lux.PrintManager.prototype.createSpec = function(
   return spec;
 };
 
+lux.PrintManager.prototype.encodeXYZLayer_ = function(arr, url) {
+  // https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png
+  const i = url.indexOf('/{z}/{x}/{y}');
+  const j = url.lastIndexOf('.');
+  if (i === -1 || j === -1) {
+    return;
+  }
+  const baseURL = url.substr(0, i);
+  const imageExtension = url.substr(j + 1);
+  const object = {
+    baseURL: baseURL,
+    type: "OSM",
+    'imageExtension': imageExtension
+  };
+  arr.push(object);
+}
 
 /**
  * @param {number} scale Scale.
@@ -188,6 +204,13 @@ lux.PrintManager.prototype.encodeMap_ = function(scale, object) {
   layers.forEach(function(layer) {
     if (layer.getVisible()) {
       goog.asserts.assert(viewResolution !== undefined);
+      if (layer instanceof lux.MapBoxLayer) {
+        const xyz = layer.get('xyz_custom') || layer.getXYZ();
+        if (xyz) {
+          this.encodeXYZLayer_(object.layers, xyz);
+          return;
+        }
+      }
       this.encodeLayer(object.layers, layer, viewResolution);
     }
   }, this);
@@ -614,10 +637,8 @@ lux.PrintManager.prototype.encodeVectorStyle_ = function(object, geometryType, s
 lux.PrintManager.prototype.encodeVectorStyleFill_ = function(symbolizer, fillStyle) {
   var fillColor = fillStyle.getColor();
   if (fillColor !== null) {
-    if (typeof (fillColor) === 'string') {
-      var hex = goog.color.alpha.parse(fillColor).hex;
-      fillColor = goog.color.alpha.hexToRgba(hex);
-    }
+    goog.asserts.assert(typeof fillColor === 'string' || Array.isArray(fillColor));
+    fillColor = ol.color.asArray(fillColor);
     goog.asserts.assert(Array.isArray(fillColor), 'only supporting fill colors');
     symbolizer.fillColor = this.rgbArrayToHex(fillColor);
     symbolizer.fillOpacity = fillColor[3];
@@ -969,7 +990,6 @@ lux.PrintManager.prototype.rgbArrayToHex = function(rgb) {
 
 /**
  * Takes a hex value and prepends a zero if it's a single digit.
- * Small helper method for use by goog.color and friends.
  * @param {string} hex Hex value to prepend if single digit.
  * @return {string} hex value prepended with zero if it was single digit,
  *     otherwise the same value that was passed in.

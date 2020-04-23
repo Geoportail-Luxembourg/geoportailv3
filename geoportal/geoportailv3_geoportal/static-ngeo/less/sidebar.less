@@ -1,4 +1,5 @@
 #sidebar {
+  touch-action: none;
   h2 {
     font-size: 40px;
     line-height: 1;
@@ -16,6 +17,8 @@
   }
 
   app-backgroundlayer {
+    float: left;
+    margin: 0 20px;
     > div {
       margin-bottom: 15px;
       .dropdown {
@@ -31,6 +34,11 @@
     height: 100%;
   }
 
+  .nav-tabs {
+    float: left;
+    width: 100%;
+  }
+  
   .nav-tabs>li {
     padding-right: 5px;
     &>a {
@@ -40,8 +48,14 @@
       border: 0;
     }
   }
-
+  .tab-content {
+    touch-action: none;
+  }
+  #mylayers, #catalog {
+    touch-action: none;
+  }
   #layers .tab-content {
+    touch-action: none;
     // Height calculation:
     // 100% - h2 font-size - padding-top - padding-bottom -
     //   (app-backgroundlayer) @input-height-base - margin-bottom -
@@ -53,6 +67,7 @@
   }
 
   #mymaps .tab-content {
+    touch-action: none;
     // FIXME: use variables for the calculation
     height: ~"calc(100% - @{input-height-base} - 79px)";
     overflow-y: auto;
@@ -116,8 +131,34 @@
     padding-top: 10px;
     color: #FFFFFF;
   }
+  #vectoreditor .tab-content {
+    height: ~"calc(100% - @{input-height-base} - 79px)";
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 10px;
+    color: #FFFFFF;
+  }
+
+  .tab-content {
+    width: 100%;
+  }
+
+  .btn-vector-editor {
+    position: relative;
+    float: left;
+    padding: 5px;
+    border: solid lightgrey 1px;
+
+    &::after {
+      content: '\f1fc';
+      font-family: FontAwesome;
+      font-size: 1em;
+    }
+  }
+
 
   .themes-switcher {
+    touch-action: none;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: ~"calc(100% - 105px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
@@ -149,6 +190,11 @@
     color: #333;
   }
   .feedbackage-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #333;
+  }
+  .vectoreditor-content {
     overflow-y: auto;
     overflow-x: hidden;
     color: #333;
@@ -199,7 +245,7 @@
   input[type=range] {
     /*removes default webkit styles*/
     -webkit-appearance: none;
-    
+
     /*fix for FF unable to apply focus style bug */
     border: 0 solid white;
     padding: 0 0 0 0;
@@ -301,6 +347,140 @@
     padding-bottom: 0px;
     font-size: 15px;
   }
+
+  .editor-list {
+    text-transform: uppercase;
+    padding: 5px 10px;
+    margin-bottom: 1px;
+    position: relative;
+  }
+
+  .editor-list {
+    &:after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-top: 6px solid;
+      border-right: 8px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 8px solid transparent;
+
+      position: absolute;
+      right: 10px;
+      top: 15px;
+    }
+    &:hover {
+      color: white;
+    }
+    &:hover:after {
+      border-top-color: white !important;
+    }
+
+    &[aria-expanded=true] {
+      color: white !important;
+      &:after {
+        border-top-color: transparent !important;
+        border-bottom-color: white;
+        top: 10px;
+      }
+    }
+  }
+
+  .content-wrapper {
+    padding: 10px;
+  }
+
+  #editor-expert-content {
+    padding: 10px;
+    width: 100%;
+    position: relative;
+    border: #ccc solid 2px;
+    text-align: center;
+    float: left;
+
+    .launch-editor-button,
+    .upload-style-button {
+      height: 100px;
+      width: 85px;
+      display: block;
+      z-index: 5; // Allow the button to be clicked on the icon area
+      border: #ccc solid 2px;
+      color: white;
+
+      font-size: 0.8em;
+      line-height: 1em;
+      text-decoration: none;
+
+      margin: 0px 10px;
+      position: relative;
+      float: left;
+
+      &:after{
+        font-family: FontAwesome;
+        font-size: 3em;
+        width: 100%;
+        text-indent: 0;
+
+        position: absolute;
+        z-index: -1; // Allow the button to be clicked on the icon area
+        top: 25px;
+        left: 0;
+        text-align: center;
+      }
+
+      span {
+        position: absolute;
+        width: 100%;
+        right: 0;
+        top: 70px;
+        font-size: 1.2em;
+      }
+    }
+
+    .launch-editor-button:after {
+      content: url(../images/palette.svg);
+      width: 1.2em;
+      top: 10px;
+      left: 20px;
+      color: white;
+    }
+    .upload-style-button:after {
+      content: '\f0ee';
+    }
+
+    .upload-style-button {
+      margin-bottom: 15px;
+      float: left;
+
+      // Invisible, as we click on the label
+      input {
+        visibility:hidden;
+        background:transparent;
+        border:none;
+        outline:none;
+        display:block;
+        width: 0;
+        height: 0;
+      }
+
+      // Clickable element in the form
+      label {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .clear-style-btn {
+    margin-top: 10px;
+  }
+  
+  .hillshade-visible {
+    float: right;
+    margin-right: 11px;
+  }
 }
 
 app-query {
@@ -318,4 +498,18 @@ app-locationinfo {
   .locationinfo-shorturl {
     padding-left: 0px;
   }
+}
+app-simple-style {
+  .selectedstyleline {
+    border-style: dotted;
+  }
+}
+#accordion .panel {
+	margin-bottom: initial;
+    background-color:initial;
+    border: initial;
+    border-radius: initial;
+    -webkit-box-shadow: initial;
+    box-shadow: initial;
+    
 }

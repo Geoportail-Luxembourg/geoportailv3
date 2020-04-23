@@ -30,6 +30,7 @@
 .lux-map {
   border: @border;
   position: relative;
+  z-index: 0;
   .ol-attribution {
     bottom: .2em;
     right: 0;
@@ -299,4 +300,9 @@
   bottom: -6px;
   margin-left: -7px;
   left: 50%;
+}
+
+.mapboxgl-canvas {
+  top: 0;
+  z-index: -1;
 }

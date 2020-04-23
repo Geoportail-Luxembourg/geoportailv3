@@ -9,7 +9,7 @@
  *
  * Example:
  *
- * <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map">
+ * <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt">
  * </app-backgroundlayer>
  *
  * Note the use of the one-time binding operator (::) in the map expression.
@@ -29,7 +29,8 @@ const exports = function(appBackgroundlayerTemplateUrl) {
   return {
     restrict: 'E',
     scope: {
-      'map': '=appBackgroundlayerMap'
+      'map': '=appBackgroundlayerMap',
+      'activeMvt': '='
     },
     controller: 'AppBackgroundlayerController',
     controllerAs: 'ctrl',
@@ -40,6 +41,20 @@ const exports = function(appBackgroundlayerTemplateUrl) {
 
 
 appModule.directive('appBackgroundlayer', exports);
+
+ // Custom directive for the  "vector tiles style" change button
+appModule.directive('customOnChange', function() {
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      var onChangeHandler = scope.$eval(attrs.customOnChange);
+      element.on('change', onChangeHandler);
+      element.on('$destroy', function() {
+        element.off();
+      });
+    }
+  };
+});
 
 
 export default exports;

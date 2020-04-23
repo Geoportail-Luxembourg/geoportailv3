@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * @module app.Themes
  */
@@ -13,11 +14,46 @@ import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
+import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
+function hasLocalStorage() {
+  return 'localStorage' in window && localStorage;
+}
+
+function onFirstTargetChange(map) {
+  return new Promise(function(resolve) {
+    if (map.getTarget()) {
+      resolve(map.getTarget());
+    }
+    map.once('change:target', () => {
+      resolve(map.getTarget());
+    });
+  });
+}
+
+/**
+ * @param {import('ol/layer/Layer.js').default[]} bgLayers
+ */
+function replaceWithMVTLayer(bgLayers, target, styleConfig) {
+  // add MapBox layer
+  const label = styleConfig.label;
+
+  bgLayers.forEach((l, i) => {
+    if (l.get('label') === label) {
+      const options = Object.assign({
+        container: target,
+      }, styleConfig)
+      const mvtLayer = new MapBoxLayer(options);
+
+      console.log('Replacing layer with harcoded MVT one', label);
+      mvtLayer.set('metadata', l.get('metadata'));
+      bgLayers[i] = mvtLayer;
+    }
+  });
+}
 
 /**
  * @constructor
- * @extends {ol.events.EventTarget}
  * @param {angular.$window} $window Window.
  * @param {angular.$http} $http Angular http service.
  * @param {string} gmfTreeUrl URL to "themes" web service.
@@ -25,10 +61,11 @@ import {inherits} from 'ol/index.js';
  * @param {app.GetWmtsLayer} appGetWmtsLayer Get WMTS layer function.
  * @param {app.backgroundlayer.BlankLayer} appBlankLayer Blank Layer service.
  * @param {app.GetDevice} appGetDevice The device service.
+ * @param {app.Mvtstyling} appMvtStylingService The mvt styling service.
  * @ngInject
  */
 const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
-    appGetWmtsLayer, appBlankLayer, appGetDevice) {
+    appGetWmtsLayer, appBlankLayer, appGetDevice, appMvtStylingService) {
   olEventsEventTarget.call(this);
 
   /**
@@ -74,6 +111,13 @@ const exports = function($window, $http, gmfTreeUrl, isThemePrivateUrl,
   this.promise_ = null;
 
   this.flatCatalog = null;
+
+  /**
+   * @type {app.Mvtstyling}
+   * @private
+   */
+  this.appMvtStylingService_ = appMvtStylingService;
+
 };
 
 inherits(exports, olEventsEventTarget);
@@ -112,17 +156,19 @@ exports.findTheme_ = function(themes, themeName) {
 
 /**
  * Get background layers.
- * @return {angular.$q.Promise} Promise.
+ * @return {Promise<any[]>} Promise.
  */
-exports.prototype.getBgLayers = function() {
-  console.assert(this.promise_ !== null);
-  return this.promise_.then(
+exports.prototype.getBgLayers = function(map) {
+  console.assert(this.promise_);
+  console.assert(map);
+  if (!this.getBgLayersPromise_) {
+    this.getBgLayersPromise_ = this.promise_.then(
       /**
        * @param {app.ThemesResponse} data The "themes" web service response.
        * @return {Array.<Object>} Array of background layer objects.
        */
-      (function(data) {
-        var bgLayers = data['background_layers'].map(function(item) {
+      data => {
+        var bgLayers = data['background_layers'].map(item => {
           var hasRetina = !!item['metadata']['hasRetina'] && this.isHiDpi_;
           console.assert('name' in item);
           console.assert('imageType' in item);
@@ -137,14 +183,24 @@ exports.prototype.getBgLayers = function() {
             );
           }
           return layer;
-        }.bind(this));
+        });
 
         // add the blank layer
         bgLayers.push(this.blankLayer_.getLayer());
-        return bgLayers;
-      }).bind(this));
-};
 
+        // add MVT layer
+        const bothPromises = Promise.all([
+          onFirstTargetChange(map),
+          this.appMvtStylingService_.getBgStyle()
+        ]);
+        return bothPromises.then(([target, styleConfig]) => {
+          replaceWithMVTLayer(bgLayers, target, styleConfig);
+          return bgLayers;
+        });
+      });
+  }
+  return this.getBgLayersPromise_;
+};
 
 /**
  * Get a theme object by its name.

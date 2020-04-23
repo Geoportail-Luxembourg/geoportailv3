@@ -55,6 +55,16 @@ The print service is available directly at http://localhost:28080/.
 Emails are sent to /var/mail/root. The `mutt` application is part of the image
 and can be used to visualize sent emails.
 
+To rebuild the JS API inside docker, do:
+`make rebuild-js-api`
+
+To open jsapi:
+http://localhost:8080/proj/1.0/build/apidoc/examples/
+
+To open jsapi in debug mode:
+http://localhost:8080/proj/1.0/build/apidoc/examples/?debug
+
+
 Ldap configuration
 ------------------
 

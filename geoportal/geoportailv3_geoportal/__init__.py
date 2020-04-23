@@ -332,6 +332,22 @@ def main(global_config, **settings):
         "feedbackage",
         "/feedbackage"
     )
+    # user config routes
+    config.add_route(
+        "get_userconfig",
+        "/get_userconfig",
+        request_method="GET"
+    )
+    config.add_route(
+        "save_userconfig",
+        "/save_userconfig",
+        request_method="POST"
+    )
+    config.add_route(
+        "delete_userconfig",
+        "/delete_userconfig",
+        request_method="DELETE"
+    )
     # pag routes
     config.add_route(
         "pag_url",
@@ -426,6 +442,11 @@ def main(global_config, **settings):
     config.add_route('download_resource', '/downloadresource')
     config.add_route('upload_vt_style', '/uploadvtstyle')
     config.add_route('delete_vt_style', '/deletevtstyle')
+    config.add_route('get_vt_style', '/getvtstyle')
+
+    # Service worker
+    config.add_route('sw', '/sw.js')
+
     config.add_static_view('proj/{version}', path='geoportailv3_geoportal:jsapi/')
     
     # Appcache manifest
