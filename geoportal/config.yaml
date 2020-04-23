@@ -138,7 +138,7 @@ vars:
   pds:
     staging_url: '{PDS_STAGING_URL}'
     prod_url: '{PDS_PROD_URL}'
-    fme_token: 
+    fme_token:
     owncloud_internal_url:
     owncloud_external_url:
     owncloud_user:
@@ -235,11 +235,19 @@ vars:
     registered: {}
   global_headers:
   - headers: {
-      Content-Security-Policy: 'default-src ''self'' https://*; script-src
-        ''self'' ''unsafe-inline'' ''unsafe-eval'' https://stackpath.bootstrapcdn.com https://devrm.geoportail.lu https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu;
-        style-src ''self'' ''unsafe-inline'' https://stackpath.bootstrapcdn.com https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/; img-src * data:; connect-src *', Referrer-Policy: origin,
+      Content-Security-Policy: '
+        default-src ''self'' https://*;
+        script-src ''self'' ''unsafe-inline'' ''unsafe-eval'' https://map.geoportail.lu https://vt-staging.geoportail.lu https://stackpath.bootstrapcdn.com https://devrm.geoportail.lu https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://cdn.polyfill.io/ https://maps.googleapis.com/ https://statistics.geoportail.lu/ https://statistics.app.geoportail.lu/ https://shop.geoportail.lu https://shop.app.geoportail.lu https://wmsproxy.app.geoportail.lu https://themes.app.geoportail.lu https://api.mapbox.com;
+        style-src ''self'' ''unsafe-inline'' https://stackpath.bootstrapcdn.com https://apiv3.geoportail.lu https://cdnjs.cloudflare.com/ https://api.mapbox.com/;
+        img-src * data: blob: ;
+        connect-src *;
+        worker-src ''self'' blob: ;
+        child-src ''self'' https://* blob: ; ',
+      Referrer-Policy: origin,
       Strict-Transport-Security: max-age=31536000; includeSubDomains, X-Content-Type-Options: nosniff,
-      X-Frame-Options: SAMEORIGIN, X-Xss-Protection: 1; mode=block}
+      X-Frame-Options: SAMEORIGIN,
+      X-Xss-Protection: 1; mode=block
+  }
     pattern: .*
   - headers: {
       Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
@@ -394,7 +402,8 @@ vars:
         postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
         printServiceUrl: printproxy, profileServiceUrl: profile.json,
         qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
-        shorturlServiceUrl: shortener_create
+        shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style,
+        getvtstyleUrl: get_vt_style
       }
       static: {
         appImagesPath: 'geoportailv3_geoportal:static-ngeo/images/',
@@ -465,7 +474,7 @@ vars:
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: 'https://ws.geoportail.lu/mymaps', mapserver: 'https://ws.geoportail.lu'}
   shortener:
-    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'devrm.geoportail.lu']
+    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'vt-staging.geoportail.lu', 'devrm.geoportail.lu']
     base_url: '{SHORTENER_BASE_URL}'
     email_body: 'unused'
     email_from: unused

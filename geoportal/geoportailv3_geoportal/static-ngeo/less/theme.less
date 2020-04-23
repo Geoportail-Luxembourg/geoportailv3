@@ -204,6 +204,7 @@
   }
 
   .ol-control button {
+    touch-action: none;
     background-color: white;
     color: @primary;
   }
@@ -388,6 +389,19 @@
   .ngeo-zoom {
     color: @primary;
   }
+  .editor-list {
+    color: @secondary;
+    background-color: @tertiary;
+  }
+
+  .btn-vector-editor-active {
+    background-color: @primary;
+    color: white;
+  }
+  .btn-vector-editor-inactive {
+    background-color: white;
+    color: @primary;
+  }
 }
 
 .themes-list a {
@@ -403,7 +417,6 @@
 header.navbar-default {
   background-color: white;
 }
-
 
 
 // Trick for choosing colors: Use colorbrewer2.org and define a 5 class

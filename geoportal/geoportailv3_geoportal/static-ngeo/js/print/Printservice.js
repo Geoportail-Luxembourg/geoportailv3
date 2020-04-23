@@ -7,6 +7,7 @@ import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
 
 import VectorEncoder from 'ngeo/print/VectorEncoder.js';
+import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 function rgbToHex(r, g, b) {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -90,6 +91,24 @@ const exports = class extends ngeoPrintService {
     return spec;
   }
 
+
+  encodeXYZLayer_(arr, url) {
+    // https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png
+    const i = url.indexOf('/{z}/{x}/{y}');
+    const j = url.lastIndexOf('.');
+    if (i === -1 || j === -1) {
+      return;
+    }
+    const baseURL = url.substr(0, i);
+    const imageExtension = url.substr(j + 1);
+    const object = {
+      baseURL,
+      type: "OSM",
+      imageExtension
+    };
+    arr.push(object);
+  }
+
   /**
    * @param {ol.Map} map Map.
    * @param {number} scale Scale.
@@ -122,6 +141,13 @@ const exports = class extends ngeoPrintService {
     layers.forEach((layer) => {
       if (layer.getVisible()) {
         console.assert(viewResolution !== undefined);
+        if (layer instanceof MapBoxLayer) {
+          const xyz = layer.get('xyz_custom') || layer.getXYZ();
+          if (xyz) {
+            this.encodeXYZLayer_(object.layers, xyz);
+            return;
+          }
+        }
         this.encodeLayer(object.layers, layer, /** @type{number} */(viewResolution));
       }
     });

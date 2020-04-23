@@ -21,18 +21,6 @@ SERVER_LOCALISATION_SOURCES_FILES = \
 
 TOOLTIPS_LOCALISATION_FILES = $(addprefix $(PACKAGE)/locale/, $(addsuffix /LC_MESSAGES/$(PACKAGE)-tooltips.mo, $(LANGUAGES)))
 
-# Add JS API target to "help" target
-SECONDARY_HELP = -e ""
-SECONDARY_HELP += "\n"
-SECONDARY_HELP += "JS API targets:\n"
-SECONDARY_HELP += "\n"
-SECONDARY_HELP += "- build-api			Build CSS & JS for the API.\n"
-SECONDARY_HELP += "- build-js-api		Build the JS API project.\n"
-SECONDARY_HELP += "- build-css-api		Build the CSS API project.\n"
-SECONDARY_HELP += "- lint-js-api		Run the linter on the JS API code.\n"
-SECONDARY_HELP += "- clean-js-api		Remove generated files of the JS API project.\n"
-SECONDARY_HELP += "- serve-js-api		Start a development server for the JS API project."
-
 .PHONY: help
 help:
 	@echo "Usage: make <target>"
@@ -48,7 +36,7 @@ help:
 
 
 .PHONY: build
-build: docker-build-geoportal docker-build-config
+build: docker-build-geoportal docker-build-config docker-build-ldap
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
@@ -91,12 +79,7 @@ update-pots:
 	docker exec $(DOCKER_CONTAINER) msguniq /tmp/tooltips.pot -o /tmp/tooltips.pot
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
-# Targets related to the JS API
 OUTPUT_DIR = geoportal/geoportailv3_geoportal/static/build
-API_OUTPUT_DIR =  $(OUTPUT_DIR)
-API_DIR = jsapi
-API_TOOLS_DIR = $(API_DIR)/tools
-API_SRC_JS_FILES := $(shell find jsapi -type f -name '*.js')
 
 .PHONY: update-translations
 update-translations:
@@ -119,66 +102,6 @@ recreate-search-layers:
 recreate-search-poi:
 	docker exec $(DOCKER_CONTAINER) db2es --reset --index
 
-.PHONY: build-api
-build-api: \
-	# lint-js-api \
-	# build-js-api \
-	# build-css-api \
-	# build-js-apidoc \
-	# create-xx-lang
-
-.PHONY: create-xx-lang
-create-xx-lang:
-	mkdir -p $(OUTPUT_DIR)/locale/xx
-	cp -rf $(OUTPUT_DIR)/locale/fr/$(PACKAGE).json $(OUTPUT_DIR)/locale/xx/$(PACKAGE).json
-
-.PHONY: build-js-api
-build-js-api: \
-	$(API_OUTPUT_DIR)/apiv3.js
-
-.PHONY: build-css-api
-build-css-api: \
-	$(API_OUTPUT_DIR)/apiv3.css
-
-$(API_OUTPUT_DIR)/apiv3.css: $(API_LESS_FILES) .build/node_modules.timestamp
-	mkdir -p $(dir $@)
-	./node_modules/.bin/lessc --clean-css $(PACKAGE)/static/less/$(PACKAGE).api.less $@
-
-$(API_OUTPUT_DIR)/apiv3.js: $(API_DIR)/config.json \
-		$(API_SRC_JS_FILES) \
-		.build/node_modules.timestamp
-	mkdir -p $(dir $@)
-	node node_modules/openlayers/tasks/build.js $< $@
-	cat node_modules/proj4/dist/proj4.js node_modules/whatwg-fetch/fetch.js node_modules/d3/build/d3.min.js \
-	node_modules/js-autocomplete/auto-complete.min.js \
-	node_modules/promise-polyfill/promise.min.js \
-	node_modules/url-polyfill/url-polyfill.min.js \
-	$@ > concatenated.js
-	mv concatenated.js $@
-
-.build/jsdocOl3.js: jsapi/jsdoc/get-ol3-doc-ref.js
-	node $< > $@.tmp
-	mv $@.tmp $@
-
-.PHONY: serve-js-api
-serve-js-api: .build/node_modules.timestamp
-	node $(API_TOOLS_DIR)/serve.js
-
-.PHONY: lint-js-api
-lint-js-api: ./node_modules/.bin/eslint .build/node_modules.timestamp .build/api.eslint.timestamp
-
-.build/api.eslint.timestamp: $(API_JS_FILES)
-	mkdir -p $(dir $@)
-	./node_modules/.bin/eslint $(filter-out .build/node_modules.timestamp, $?)
-	touch $@
-
-# Add new dependency to clean target
-clean: clean-js-api
-
-.PHONY: clean-js-api
-clean-js-api:
-	rm -rf $(API_OUTPUT_DIR)/apiv3.*
-
 .PHONY: run
 run: build
 	docker-compose down; docker-compose up
@@ -195,8 +118,14 @@ attach:
 
 .PHONY: fix-db
 fix-db:
+	echo 'Removing internal layers and fixing old db'
+	psql -p 5433 -U www-data -h 127.0.0.1 lux -c 'delete from geov3.lux_layer_internal_wms'
 	docker-compose exec geoportal finalize23DataAdaptations
 
 .PHONY: reload
 reload:
 	docker-compose exec geoportal pkill --signal HUP gunicorn
+
+.PHONY: rebuild-js-api
+rebuild-js-api:
+	docker-compose exec geoportal /app/apiv3/jsapi/rebuild_api.sh

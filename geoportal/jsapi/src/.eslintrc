@@ -18,6 +18,7 @@
     "no-console": 0
   },
   "globals": {
+    "mapboxgl": false,
     "angular": false,
     "goog": false,
     "d3": false,

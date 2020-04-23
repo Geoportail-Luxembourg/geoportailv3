@@ -4,7 +4,9 @@
     <title>geoportail.lu API v3 samples</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="theme.css">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
     <script src="/apiv3loader.js"  type="text/javascript"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
 </head>
 <body>
     <div class='titlebar'><h1>API Samples</h1></div>
@@ -21,7 +23,7 @@ var map = new lux.Map({
   position: [75977, 75099]
 });
         </pre>
-        
+
         </div>
         <div class='map' id='map1'></div>
     </div>
@@ -60,7 +62,7 @@ var map1b = new lux.Map({
 },
 });
         </pre>
-        
+
         </div>
         <div class='map' id='map1b'></div>
 
@@ -86,7 +88,7 @@ var map1c = new lux.Map({
         <div class='coord' id='coord1c'></div>
         </div>
         <div class='map' id='map1c'></div>
-          
+
     </div>
 <div class='sample'>
     <a name="example2"/>
@@ -102,13 +104,13 @@ var map2 = new lux.Map({
   position: position
 });
 
-map2.showMarker(  
+map2.showMarker(
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
         </pre>
-        
+
         </div>
         <div class='map' id='map2'></div>
     </div>
@@ -128,14 +130,14 @@ var map2a = new lux.Map({
   position: position
 });
 
-map2a.showMarker(  
+map2a.showMarker(
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    click: true,
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
         </pre>
-        
+
         </div>
         <div class='map' id='map2a'></div>
     </div>
@@ -156,14 +158,14 @@ var map2b = new lux.Map({
 });
 
 var position2 = [75977, 75099];
-map2b.showMarker(  
+map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    html: '&lt;h2>The popover&lt;/h2>&lt;p>With some content&lt;/p>&lt;ul>&lt;li>Item 1&lt;/li>&lt;li>Item 2&lt;/li>&lt;/ul>'
 });
         </pre>
-        
+
         </div>
         <div class='map' id='map2b'></div>
     </div>
@@ -182,7 +184,7 @@ var map2c = new lux.Map({
   position: position
 });
 
-map2c.showMarker(  
+map2c.showMarker(
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    click: true,
@@ -210,7 +212,7 @@ var map2d = new lux.Map({
   position: position2d2169
 });
 
-map2d.showMarker(  
+map2d.showMarker(
   {
   position: position2d2169,
   positioning: 'center-center',
@@ -237,7 +239,7 @@ map2d.showMarker(
  <a name="example3"/>
         <div class='description' id='desc3'>
         <h2>Example with overlay, layermanager and bgSelector</h2>
-        This is a basic example with overlay-layers, 
+        This is a basic example with overlay-layers,
         a layer manager in a div and a bgSelector in a div.
         The layer visibility can be set with layerVisibilities parameter.
         If not set, ech layer is visible.
@@ -269,7 +271,7 @@ var map3 = new lux.Map({
         <div class='description' id='desc4'>
         <h2>Example with GPX</h2>
         This is a basic example with a GPX file. It can only contain lines
-        and points. 
+        and points.
         <pre>
 var map4 = new lux.Map({
   target: 'map4',
@@ -322,7 +324,7 @@ map4.addGPX('DemoGPX.gpx', {click:true, target:'info4'});
       })
     })
   };
-  
+
   var styleFunction = function(feature) {
     return style[feature.getGeometry().getType()];
   };
@@ -338,7 +340,7 @@ map4.addGPX('DemoGPX.gpx', {click:true, target:'info4'});
         <h2>Example with KML</h2>
         This is a basic example with a KML file. It can contain points, lines
         and polygons.
-        
+
         <pre>
 var map5 = new lux.Map({
   target: 'map5',
@@ -358,7 +360,7 @@ map5.addKML('//cita.lu/kml/chantiers_actuel.kml',
         <div class='description' id='desc6'>
         <h2>Example with Search in Map</h2>
         This is a basic example with a search widget inside the map
-        
+
         <pre>
 var map6 = new lux.Map({
   target: 'map6',
@@ -495,7 +497,7 @@ var map11 = new lux.Map({
         <a name="example11b"/>
         <div class='description' id='desc11b'>
         <h2>Example with recenter on feature with click</h2>
-        This is a basic example with a feature ID that we want to zoom on, 
+        This is a basic example with a feature ID that we want to zoom on,
         infos on click
 
         <pre>
@@ -519,7 +521,7 @@ var map11b = new lux.Map({
         <a name="example11c"/>
         <div class='description' id='desc11c'>
         <h2>Example with recenter on feature with click rendered in div</h2>
-        This is a basic example with a feature ID that we want to zoom on, 
+        This is a basic example with a feature ID that we want to zoom on,
         infos on click, rendered in div
         <pre>
 var map11c = new lux.Map({
@@ -543,8 +545,8 @@ var map11c = new lux.Map({
         <a name="example12"/>
         <div class='description' id='desc12'>
         <h2>Example with geocoding</h2>
-        This is a map that will zoom using a textual address rather than 
-        coordinates 
+        This is a map that will zoom using a textual address rather than
+        coordinates
 
         <pre>
 var map12 = new lux.Map({
@@ -577,7 +579,7 @@ lux.geocode({
         <a name="example13"/>
         <div class='description' id='desc13'>
         <h2>Example with reverse geocoding</h2>
-        Click in the map to see the address 
+        Click in the map to see the address
 
         <pre>
 var map13 = new lux.Map({
@@ -702,9 +704,9 @@ map16.addLayer(vectorLayer);
         <div class='description' id='desc17'>
         <h2>Programatically activate the layer information popup.</h2>
         The example displays the layer information either on map or on div.<br>
-        <input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked);">Activate/Unactivate layer query. 
+        <input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked);">Activate/Unactivate layer query.
         <pre>
-&lt;input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked)"&gt;Activate/Unactivate layer query. 
+&lt;input type="checkbox" id="cbInfo17" onclick="map17.showLayerInfoPopup(this.checked)"&gt;Activate/Unactivate layer query.
 var map17 = new lux.Map({
    target: 'map17',
    bgLayer     : 'blank',
@@ -734,6 +736,81 @@ map17.on('click', function(evt) {
         <div class='map' id='map17'></div>
     </div>
 
+    <div class='sample'>
+      <a name="example18" />
+      <div class='description' id='desc1'>
+        <h2>Example with custom style url</h2>
+        <pre>
+          var map18 = new lux.Map({
+            target: 'map18',
+            bgLayer: 'basemap_2015_global',
+            bgLayerStyle: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json',
+            // Eventually, to allow printing
+            // bgLayerStyleXYZ: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png',
+            zoom: 18,
+            position: [75977, 75099]
+          });
+        </pre>
+      </div>
+
+      <div class='map' id='map18'></div>
+    </div>
+
+    <div class='sample'>
+      <a name="example19" />
+      <div class='description' id='desc1'>
+        <h2>Example with custom inline style</h2>
+        <pre>
+          const customJson = {
+            "version": 8,
+            "name": "Geoportail.lu Road Map",
+            "sources": {
+              "geoportail.lu_layers": {
+                "type": "vector",
+                "url": "https://vectortiles.geoportail.lu/data/omt-geoportail-lu.json"
+              }
+            },
+            "layers": [
+              {
+                "id": "background",
+                "type": "background",
+                "layout": {"visibility": "visible"},
+                "paint": {"background-color": "rgba(248, 248, 248, 1)"}
+              },
+              {
+                "id": "lu_landcover_wood",
+                "type": "fill",
+                "source": "geoportail.lu_layers",
+                "source-layer": "landcover",
+                "filter": ["==", "class", "wood"],
+                "paint": {"fill-color": "rgba(115, 179, 28, 1)", "fill-opacity": 0.55}
+              },
+              {
+                "id": "lu_water",
+                "type": "fill",
+                "source": "geoportail.lu_layers",
+                "source-layer": "water",
+                "filter": ["all", ["==", "$type", "Polygon"], ["!=", "intermittent", 1]],
+                "layout": {"visibility": "visible"},
+                "paint": {"fill-color": "rgba(0, 27, 255, 1)"}
+              },
+            ],
+            "id": "+geoportail_lu_road_map"
+          };
+
+          const map19 = new lux.Map({
+            target: 'map19',
+            bgLayer: 'basemap_2015_global',
+            bgLayerStyle: customJson,
+            zoom: 10,
+            position: [75977, 75099]
+          });
+        </pre>
+      </div>
+
+      <div class='map' id='map19'></div>
+    </div>
+
 <script type='text/javascript'>
 
 lux.setPopupSize([400, 150]);
@@ -741,7 +818,7 @@ lux.setPopupSize([400, 150]);
 var map1 = new lux.Map({
   target: 'map1',
   bgLayer     : 'basemap_2015_global',
-  
+
 
   zoom: 18,
   position: [   75977 , 75099 ]
@@ -762,7 +839,7 @@ var map1b = new lux.Map({
   position: [75977, 75099],
   mousePosition    : {
     target: 'map1b',
-    srs : 2169 
+    srs : 2169
 },
 });
 
@@ -785,7 +862,7 @@ var map2 = new lux.Map({
   position: position
 });
 
-map2.showMarker(  
+map2.showMarker(
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    html: '<h2>The popover</h2><p>With some content</p><ul><li>Item 1</li><li>Item 2</li></ul>'
@@ -800,8 +877,8 @@ var map2a = new lux.Map({
   position: position
 });
 
-map2a.showMarker(  
-  
+map2a.showMarker(
+
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    click: true,
@@ -817,7 +894,7 @@ var map2b = new lux.Map({
 });
 
 var position2 = [75977, 75099];
-map2b.showMarker(  
+map2b.showMarker(
   {position: position2,
    positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
@@ -831,7 +908,7 @@ var map2c = new lux.Map({
   position: position
 });
 
-map2c.showMarker(  
+map2c.showMarker(
   {positioning: 'center-center',
    iconURL: '//apps.geoportail.lu/exemple_api/exemplesWikiGeoAPI/lion.png',
    click: true,
@@ -848,7 +925,7 @@ var map2d = new lux.Map({
   position: position2d2169
 });
 
-map2d.showMarker(  
+map2d.showMarker(
   {
   position: position2d2169,
   positioning: 'center-center',
@@ -929,7 +1006,7 @@ var styleFunction = function(feature) {
   return style[feature.getGeometry().getType()];
 };
 map4b.addGPX('DemoGPX.gpx', {style: styleFunction, click:true});
-  
+
 var map5 = new lux.Map({
   target: 'map5',
   bgLayer: 'streets_jpeg',
@@ -1144,6 +1221,61 @@ map17.on('click', function(evt) {
     onInfo17 = true;
     map17.setPopupTarget(undefined);
   }
+});
+let map18 = new lux.Map({
+  target: 'map18',
+  bgLayer: 'basemap_2015_global',
+  bgLayerStyle: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json',
+  // Eventually, to allow printing
+  // bgLayerStyleXYZ: 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png',
+  zoom: 18,
+  position: [75977, 75099]
+});
+
+const customJson = {
+  "version": 8,
+  "name": "Geoportail.lu Road Map",
+  "sources": {
+    "geoportail.lu_layers": {
+      "type": "vector",
+      "url": "https://vectortiles.geoportail.lu/data/omt-geoportail-lu.json"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "layout": {"visibility": "visible"},
+      "paint": {"background-color": "rgba(248, 248, 248, 1)"}
+    },
+    {
+      "id": "lu_landcover_wood",
+      "type": "fill",
+      "source": "geoportail.lu_layers",
+      "source-layer": "landcover",
+      "filter": ["==", "class", "wood"],
+      "paint": {"fill-color": "rgba(115, 179, 28, 1)", "fill-opacity": 0.55}
+    },
+    {
+      "id": "lu_water",
+      "type": "fill",
+      "source": "geoportail.lu_layers",
+      "source-layer": "water",
+      "filter": ["all", ["==", "$type", "Polygon"], ["!=", "intermittent", 1]],
+      "layout": {"visibility": "visible"},
+      "paint": {"fill-color": "rgba(0, 27, 255, 1)"}
+    },
+  ],
+  "id": "+geoportail_lu_road_map"
+};
+
+let map19 = new lux.Map({
+  target: 'map19',
+  bgLayer: 'basemap_2015_global',
+  bgLayerStyle: customJson,
+  // printing will not work here without bgLayerStyleXYZ
+  zoom: 10,
+  position: [75977, 75099]
 });
 </script>
 </body>

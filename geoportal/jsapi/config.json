@@ -55,6 +55,7 @@
     "language_in": "ECMASCRIPT6_STRICT",
     "language_out": "ECMASCRIPT5_STRICT",
     "output_wrapper": "(function(){%output%}).call(window);",
+    "create_source_map": "/app/geoportailv3_geoportal/static-ngeo/build/apiv3.js.map",
     "use_types_for_optimization": true
   }
 }

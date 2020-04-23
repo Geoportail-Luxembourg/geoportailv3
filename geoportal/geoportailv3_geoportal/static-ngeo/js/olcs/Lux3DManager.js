@@ -4,6 +4,8 @@
 import ngeoOlcsManager from 'ngeo/olcs/Manager.js';
 
 import OLCesium from 'olcs/OLCesium.js'
+import LuxRasterSynchronizer from './LuxRasterSynchronizer';
+import VectorSynchronizer from 'olcs/VectorSynchronizer';
 
 const exports = class extends ngeoOlcsManager {
   /**
@@ -91,8 +93,13 @@ const exports = class extends ngeoOlcsManager {
     const map = /** @type {!ol.Map} */ (this.map);
     const niceIlluminationDate = Cesium.JulianDate['fromDate'](new Date('June 21, 2018 12:00:00 GMT+0200'));
     const time = () => niceIlluminationDate;
-    const ol3d = new OLCesium({map, time, sceneOptions});
-
+    function createSynchronizers(map, scene) {
+      return [
+        new LuxRasterSynchronizer(map, scene),
+        new VectorSynchronizer(map, scene),
+      ];
+    }
+    const ol3d = new OLCesium({map, time, createSynchronizers});
     const scene = ol3d.getCesiumScene();
 
     if (this.ngeoLocation_.hasParam('tile_coordinates')) {
