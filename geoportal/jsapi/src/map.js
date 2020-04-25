@@ -81,6 +81,8 @@ _paq.push(['setSiteId', 22]);
  * @api stable
  */
 lux.Map = function(options) {
+
+  this.mvtLayer_ = undefined;
   /**
    * @private
    * @type {Array}
@@ -240,6 +242,7 @@ lux.Map = function(options) {
     return resp.json();
   }).then(function(json) {
     this.layersConfig = /** @type {luxx.LayersOptions} */ (json);
+    // Replace by mapbox
     this.addLayers_(layers, layerOpacities, layerVisibilities, options);
   }.bind(this));
 
@@ -844,7 +847,7 @@ lux.Map.prototype.findLayerConf_ = function(layer) {
 
 
 lux.Map.prototype.prependMapBoxBackgroundLayer = function(target, mapBoxStyle, mapBoxStyleXYZ) {
-  console.log('Creating a MapBoxLayer');
+
   return new lux.MapBoxLayer({
     'style': mapBoxStyle,
     'xyz': mapBoxStyleXYZ,
@@ -874,16 +877,10 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options
     var layerConf = this.findLayerConf_(layer);
     if (layerConf !== null) {
       if (layer == 'basemap_2015_global') {
-        const target = this.getTargetElement();
-        // FIXME: should be taken from the layer config
-        // TODO: when config is handled by c2cgeoportal
-        // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
-        let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json';
-        let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png';
-        options.bgLayerStyle && (mapBoxStyle = options.bgLayerStyle);
-        options.bgLayerStyleXYZ && (mapBoxStyleXYZ = options.bgLayerStyleXYZ);
-        const mvtLayer = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
-        this.getLayers().push(mvtLayer);
+        if (this.mvtLayer_ === undefined) {
+          this.mvtLayer_ = this.MVTLayerFactory_(options);
+        }
+        this.getLayers().push(this.mvtLayer_);
         return;
       }
       var fn = (layerConf.type.indexOf('WMS') != -1) ?
@@ -894,6 +891,25 @@ lux.Map.prototype.addLayers_ = function(layers, opacities, visibilities, options
     }
   }.bind(this));
 };
+
+lux.Map.prototype.MVTLayerFactory_ = function(options) {
+  const target = this.getTargetElement();
+  // FIXME: should be taken from the layer config
+  // TODO: when config is handled by c2cgeoportal
+  // Here we use roadmap_jsapi due to https://jira.camptocamp.com/browse/GSLUX-264
+  let mapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/style.json';
+  let mapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap_jsapi/{z}/{x}/{y}.png';
+  if (options && options.bgLayerStyle) {
+    mapBoxStyle = options.bgLayerStyle;
+  }
+  if (options && options.bgLayerStyleXYZ) {
+    mapBoxStyleXYZ = options.bgLayerStyleXYZ;
+  }
+  let mvtLayer_ = this.prependMapBoxBackgroundLayer(target, mapBoxStyle, mapBoxStyleXYZ);
+  mvtLayer_.set('name', 'basemap_2015_global');
+  return (mvtLayer_);
+};
+
 
 /**
  * @param {ol.CollectionEventType} event The event.
@@ -1020,6 +1036,7 @@ lux.Map.prototype.addBgSelector = function(target, bglayers) {
       var option = document.createElement('option');
       option.value = background.id;
       option.innerText = lux.translate(background.name);
+
       if (active == background.name) {
         option.setAttribute('selected', 'selected');
       }
@@ -1043,12 +1060,21 @@ lux.Map.prototype.addBgSelector = function(target, bglayers) {
     el.appendChild(container);
 
     select.addEventListener('change', function() {
-      if (select.value !== 'blank') {
+      if (this.mvtLayer_ !== undefined) {
+        this.mvtLayer_.setVisible(false);
+      }
+      if (this.layersConfig[select.value] && this.layersConfig[select.value].name === 'basemap_2015_global') {
+        if (this.mvtLayer_ === undefined) {
+          this.mvtLayer_ = this.MVTLayerFactory_();
+        }
+        this.getLayers().setAt(0, this.mvtLayer_);
+        this.mvtLayer_.setVisible(true);
+      } else if (select.value === 'blank') {
+        this.getLayers().setAt(0, this.blankLayer_);
+      } else {
         this.getLayers().setAt(
           0, lux.WMTSLayerFactory(this.layersConfig[select.value], 1, true)
         );
-      } else {
-        this.getLayers().setAt(0, this.blankLayer_);
       }
     }.bind(this));
 
