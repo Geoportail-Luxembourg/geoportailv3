@@ -271,7 +271,27 @@ exports.prototype.moveAnonymousFeaturesToMymaps = function() {
 exports.prototype.drawFeaturesInUrl = function(featureStyleFunction) {
   var encodedFeatures = this.ngeoLocation_.getParam('features');
   if (encodedFeatures !== undefined) {
-    var remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
+    var remoteFeatures = null;
+    try {
+      remoteFeatures = this.fhFormat_.readFeatures(encodedFeatures);
+    } catch (e) {
+      // Sometimes we get url with a unencoded character # corresponding on a color into the feature.
+      // It means that the querryData is not properly fullfiled and the feature is not properly decoded.
+      // That's why in case of errror we try to pick up the parameter directly from the url.
+      if (location.href.indexOf('#') >= 0) {
+        let pairs = location.href.replaceAll('#','%23').substring(1).split('&');
+        for (const pair of pairs) {
+          const indexOfEquals = pair.indexOf('=');
+          if (indexOfEquals >= 0) {
+            const name = pair.substring(0, indexOfEquals);
+            const value = pair.substring(indexOfEquals + 1);
+            if (name === 'features') {
+              remoteFeatures = this.fhFormat_.readFeatures(decodeURIComponent(value));
+            }
+          }
+        }
+      }
+    }
     console.assert(remoteFeatures !== null);
     remoteFeatures.forEach(function(feature) {
       var properties = feature.getProperties();
