@@ -19,6 +19,7 @@ import appNotifyNotificationType from './NotifyNotificationType.js';
  * @ngInject
  */
 const exports = function(ngeoLocation, appNotify, gettextCatalog) {
+
   /**
    * @type {angularGettext.Catalog}
    * @private
@@ -72,6 +73,13 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
   // is no state in the location URL.
 
   var paramKeys = ngeoLocation.getParamKeys();
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.initialparamKeys_ = paramKeys;
+
   var i, key;
 
   if (paramKeys.length === 0 ||
@@ -150,6 +158,15 @@ const exports = function(ngeoLocation, appNotify, gettextCatalog) {
  */
 exports.prototype.getVersion = function() {
   return this.version_;
+};
+
+
+/**
+ * Get the initial parameters.
+ * @return {Array.<String>} The paramter keys.
+ */
+exports.prototype.getInitialParamKeys = function() {
+  return this.initialparamKeys_;
 };
 
 
