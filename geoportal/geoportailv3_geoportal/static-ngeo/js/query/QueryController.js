@@ -47,6 +47,7 @@ import olStyleStyle from 'ol/style/Style.js';
  * @param {string} qrServiceUrl The qr service url.
  * @param {string} previewMesurementUrl The preview service url.
  * @param {app.LotChasse} appLotChasse The selected lot de chasse.
+ * @param {app.StateManager} appStateManager The state service.
  * @export
  * @ngInject
  */
@@ -57,7 +58,7 @@ const exports = function($sce, $timeout, $scope, $http,
     appGetLayerForCatalogNode, appGetDevice, mymapsImageUrl, appExport,
     appActivetool, appSelectedFeatures, appDrawnFeatures, appAuthtktCookieName,
     appNotify, downloadresourceUrl, qrServiceUrl, previewMesurementUrl,
-    appLotChasse) {
+    appLotChasse, appStateManager) {
   /**
    * @type {app.LotChasse}
    * @private
@@ -485,8 +486,9 @@ const exports = function($sce, $timeout, $scope, $http,
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
 
-  if (this.isFIDValid_(fid)) {
+  if (appStateManager.getInitialParamKeys().length == 1 && this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
+    this.ngeoLocation_.deleteParam('fid');
   }
 };
 
