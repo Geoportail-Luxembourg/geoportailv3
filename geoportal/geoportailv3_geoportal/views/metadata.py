@@ -58,7 +58,7 @@ class Metadata(object):
                     data['metadata']['responsibleParty'].append(data_fr['metadata']['responsibleParty'])
         if callback_param is None:
             headers = {"Content-Type": f.info()['Content-Type']}
-            return Response(data, headers=headers)
+            return Response(json.dumps(data), headers=headers)
 
         headers = {"Content-Type": "text/javascript"}
         return Response("{}({})".format(callback_param, json.dumps(data)), headers=headers)
