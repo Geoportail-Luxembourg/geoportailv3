@@ -6,9 +6,9 @@ For any assistance as well as for request access, please contact our support her
 <p>To help the developers, some examples and use cases are available on our <a href="./examples/">demo page</a></p>
 <p>A catalog of public layers is available on the <a href="./examples/iterate_layers_api.html">List of layers page.</a></p>
 <p>A catalog of public mymaps is available on the <a href="./examples/public_mymaps.html">List of public Mymaps page.</a></p>
-<p>The Geoportail.lu V3 API is built on top of the <a href="https://openlayers.org/en/v3.20.1/apidoc/">OpenLayers 3 API</a>.
+<p>The Geoportail.lu V3 API is built on top of the <a href="https://openlayers.org/en/v3.20.1/apidoc/" target="_blank">OpenLayers 3 API</a>.
 The Geoportail.lu V3 offers classes, methods, and properties to ease the build of geographical applications using luxembourg data.</p>
-<p>Feel free to visit our <a href="https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/jsapi">Github repository</a> to have a look on our source code.</p>
+<p>Feel free to visit our <a href="https://github.com/Geoportail-Luxembourg/geoportailv3/tree/master/geoportal/jsapi" target="_blank">Github repository</a> to have a look on our source code.</p>
 <p>All the needed resources are loaded by including the following js script.</p>
 <pre>
 &lt;script src="//apiv3.geoportail.lu/apiv3loader.js"  type="text/javascript"&gt;&lt;/script&gt;
