@@ -348,6 +348,11 @@ def main(global_config, **settings):
         "/delete_userconfig",
         request_method="DELETE"
     )
+    config.add_route(
+        "apply_mvt_config",
+        "/apply_mvt_config",
+        request_method="GET"
+    )
     # pag routes
     config.add_route(
         "pag_url",

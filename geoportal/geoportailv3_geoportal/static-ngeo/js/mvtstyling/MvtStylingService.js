@@ -7,6 +7,7 @@ function hasLocalStorage() {
 const url_get = '/get_userconfig';
 const url_save = '/save_userconfig';
 const url_delete = '/delete_userconfig';
+const url_config_mvt = '/apply_mvt_config'
 const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
@@ -47,7 +48,7 @@ class MvtStylingService {
     const itemKey = this.createRemoteItemKey_(label);
     let id = localStorage.getItem(itemKey);
     const xyz_custom = id ? this.createXYZCustom_(id) : undefined;
-
+    const serial = new URLSearchParams(window.location.search).get('serial');
     const config = {
       label,
       defaultMapBoxStyle,
@@ -56,7 +57,22 @@ class MvtStylingService {
       xyz_custom,
       style: defaultMapBoxStyle
     };
-    if (this.appUserManager_.isAuthenticated()) {
+    if (serial) {
+        // if serial is number id, retrieve style form it
+        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
+        if (serial.match(isValidUUIDv4Regex) !== null) {
+            console.log('Load mvt style from serial uuid');
+            this.isCustomStyle = true;
+            const style_url = `${this.getvtstyleUrl_}?id=${serial}`
+            config.style = style_url;
+            return config;
+        } else {
+            console.log('Load mvt style from serialized config');
+            this.isCustomStyle = true;
+            config.style = this.apply_mvt_config(serial);
+            return config;
+        }
+    } else if (this.appUserManager_.isAuthenticated()) {
         return this.getDB_(LS_KEY_EXPERT).then(resultFromDB => {
             if (resultFromDB.data.length > 0) {
                 console.log('Load mvt expert style from database and save it to local storage');
@@ -228,6 +244,14 @@ removeStyles(layer) {
     }
     this.isCustomStyle = false;
     return Promise.all(promises);
+}
+
+apply_mvt_config(mvt_config) {
+    const url = new URL(window.location);
+    let params = new URLSearchParams();
+    params.set('config', JSON.stringify(mvt_config));
+    params.set('style_url', defaultMapBoxStyle);
+    return `${url.origin}${url_config_mvt}?${params.toString()}`;
 }
 
 // Local Storage methods
