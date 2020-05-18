@@ -105,6 +105,8 @@ vars:
     - {name: link_title}
     - {name: max_dpi, type: float}
     - {name: metadata_id}
+    - {name: ogc_info_format}
+    - {name: ogc_info_srs}
     - {name: page_title}
     - {name: print_img}
     - {name: print_long_txt_de}

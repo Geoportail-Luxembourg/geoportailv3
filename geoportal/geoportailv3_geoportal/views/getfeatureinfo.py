@@ -3,6 +3,8 @@ import logging
 import re
 
 import urllib.request
+import geojson
+import pyproj
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -18,8 +20,12 @@ from geojson import loads as geojson_loads
 from shapely.geometry import asShape, box
 from shapely.geometry.polygon import LinearRing
 from c2cgeoportal_commons.models import DBSession, DBSessions
-from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer, Metadata
 from shapely.geometry import MultiLineString, mapping, shape
+from shapely.ops import transform
+from functools import partial
+
+
 
 log = logging.getLogger(__name__)
 
@@ -842,11 +848,20 @@ class Getfeatureinfo(object):
             'HEIGHT': height,
             'BBOX': bbox
         }
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_info_format").first()
+        if metadata is not None:
+            body['INFO_FORMAT'] = metadata.value
+        ogc_info_srs = "epsg:2169"
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_info_srs").first()
+        if metadata is not None:
+            ogc_info_srs = metadata.value
+
         separator = "?"
         if url.find(separator) > 0:
             separator = "&"
         query = '%s%s%s' % (url, separator, urlencode(body))
-
         content = ""
         try:
             result = urllib.request.urlopen(query, None, 15)
@@ -859,8 +874,11 @@ class Getfeatureinfo(object):
             ogc_features = geojson_loads(content)
 
             for feature in ogc_features['features']:
+                geometry = feature['geometry']
+                if ogc_info_srs.lower() != "epsg:2169":
+                    geometry = self.transform_(geometry, ogc_info_srs, "epsg:2169")
                 f = self.to_feature(layer_id, None,
-                                    feature['geometry'],
+                                    geometry,
                                     feature['properties'],
                                     attributes_to_remove,
                                     columns_order)
@@ -1081,3 +1099,14 @@ class Getfeatureinfo(object):
 
     def _get_session(self, engine_name):
         return DBSessions[engine_name]
+
+    def transform_(self, geometry, source, dest):
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=source), # source coordinate system
+            pyproj.Proj(init=dest)) # destination coordinate system
+
+        g2 = transform(project, shape(geometry))  # apply projection
+
+        return geojson_loads(geojson.dumps(mapping(g2)))
+
