@@ -30,7 +30,8 @@ const exports = function(appLayermanagerTemplateUrl) {
     scope: {
       'map': '=appLayermanagerMap',
       'layers': '=appLayermanagerLayers',
-      'activeLC': '=appLayermanagerActiveLayersComparator'
+      'activeLC': '=appLayermanagerActiveLayersComparator',
+      'background': '=appLayermanagerBackgroundLayer',
     },
     controller: 'AppLayermanagerController',
     controllerAs: 'ctrl',
