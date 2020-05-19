@@ -482,6 +482,12 @@ const MainController = function(
   this.activeLayersComparator = false;
 
   /**
+   * @type {string}
+   * @export
+   */
+  this.selectedBackgroundLayer;
+
+  /**
    * @type {boolean}
    * @export
    */
@@ -910,12 +916,13 @@ const MainController = function(
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-  this.loadThemes_().then(function() {
+  this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
-          function(bgLayers) {
+          bgLayers => {
+            this.selectedBackgroundLayer = this.backgroundLayerMgr_.get(this.map);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
-                (bgLayers.find(function(layer) {
+                (bgLayers.find(layer => {
                   return layer.get('label') === appOverviewMapBaseLayer;
                 }));
               this.map_.addControl(
@@ -924,7 +931,7 @@ const MainController = function(
                     collapseLabel: '\u00BB',
                     label: '\u00AB'}));
             }
-          }.bind(this));
+          });
     this['ageLayers'].splice(0, this['ageLayers'].length);
 
     this.appThemes_.getFlatCatalog().then(
@@ -991,7 +998,7 @@ const MainController = function(
           this.map_.getView().setZoom(zoom);
         }
       }.bind(this));
-  }.bind(this));
+  });
   var waypoints = appStateManager.getInitialValue('waypoints');
   if (waypoints !== undefined && waypoints !== null) {
     this['routingOpen'] = true;

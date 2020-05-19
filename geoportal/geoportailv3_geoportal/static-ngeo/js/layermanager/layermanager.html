@@ -20,3 +20,12 @@
     </div>
   </li>
 </ul>
+
+<ul id="layermanager-{{::ctrl.uid}}" class="layermanager" >
+  <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel">
+    <app-layerinfo app-layerinfo-layer="::background"></app-layerinfo>
+    <div class="layer-label">
+    {{background.get('label') | translate}}
+    </div>
+  </li>
+</ul>
