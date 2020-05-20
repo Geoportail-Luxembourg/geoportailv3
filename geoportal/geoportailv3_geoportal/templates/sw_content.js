@@ -177,7 +177,11 @@ if (typeof self === 'object') {
       event.respondWith(promise);
       return;
     }
-
+    if (url.includes('/exportgpxkml') ||
+        url.includes('/printproxy')) {
+      // Due to some troubles with Safari, exclue these urls.
+      return;
+    }
     // should normalize the url
     const urlKey = normalizeUrl(url);
     if (urlKeys.includes(urlKey)) {
