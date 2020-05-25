@@ -20,9 +20,9 @@ class MvtStylingService {
   /**
    * @param {angular.$http} $http Angular http service.
    * @param {app.UserManager} appUserManager User manager service.
-   * @paran {String} uploadvtstyleUrl URL to provision a style
-   * @paran {String} deletevtstyleUrl URL to delete a provisionned style
-   * @paran {String} getvtstyleUrl URL to get a provisionned style
+   * @param {String} uploadvtstyleUrl URL to provision a style
+   * @param {String} deletevtstyleUrl URL to delete a provisionned style
+   * @param {String} getvtstyleUrl URL to get a provisionned style
    * @ngInject
    */
   constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl) {
