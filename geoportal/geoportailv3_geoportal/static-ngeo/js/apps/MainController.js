@@ -482,12 +482,6 @@ const MainController = function(
   this.activeLayersComparator = false;
 
   /**
-   * @type {string}
-   * @export
-   */
-  this.selectedBackgroundLayer;
-
-  /**
    * @type {boolean}
    * @export
    */
@@ -919,7 +913,6 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
-            this.selectedBackgroundLayer = this.backgroundLayerMgr_.get(this.map);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -935,8 +928,8 @@ const MainController = function(
     this['ageLayers'].splice(0, this['ageLayers'].length);
 
     this.appThemes_.getFlatCatalog().then(
-      function(flatCatalogue) {
-      flatCatalogue.forEach(function(catItem) {
+      flatCatalogue => {
+      flatCatalogue.forEach(catItem => {
         var layerIdsArray = ageLayerIds.split(',');
         if (layerIdsArray.indexOf('' + catItem.id) >= 0) {
           var layer = this.getLayerFunc_(catItem);
@@ -944,8 +937,8 @@ const MainController = function(
             this['ageLayers'].push (layer);
           }
         }
-      }.bind(this));
-    }.bind(this));
+      });
+    });
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
@@ -968,19 +961,19 @@ const MainController = function(
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen) ? true : false;
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this['layersOpen'];
-    }.bind(this), function(newVal) {
+    }, newVal => {
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
       }
-    }.bind(this));
+    });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
 
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this.sidebarOpen();
-    }.bind(this), function(newVal) {
+    }, newVal => {
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -989,15 +982,15 @@ const MainController = function(
         var feature = this.selectedFeatures_.getArray()[0];
         feature.set('__refreshProfile__', true);
       }
-    }.bind(this));
+    });
 
     this.appThemes_.getThemeObject(
-      this.appTheme_.getCurrentTheme()).then(function() {
+      this.appTheme_.getCurrentTheme()).then(() => {
         var zoom = Number(appStateManager.getInitialValue('zoom'));
         if (zoom > 19) {
           this.map_.getView().setZoom(zoom);
         }
-      }.bind(this));
+      });
   });
   var waypoints = appStateManager.getInitialValue('waypoints');
   if (waypoints !== undefined && waypoints !== null) {
