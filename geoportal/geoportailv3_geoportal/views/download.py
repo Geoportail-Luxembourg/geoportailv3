@@ -14,6 +14,7 @@ import tempfile
 import subprocess
 import os
 import transaction
+import json
 from PyPDF2 import PdfFileReader
 
 log = logging.getLogger(__name__)
@@ -54,8 +55,48 @@ class Download(object):
                 return Response(data.read(), headers=headers)
         return HTTPBadRequest()
 
+    def download_sketch_by_id(self):
+        id = self.request.params.get('id', None)
+        timeout = 15
+        ng_url = os.environ["NG_URL"]
+
+        url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+        pdf_id = None
+        pdf_name = None
+        try:
+            f = urllib.request.urlopen(url1, None, timeout)
+            data = f.read()
+            attachmentInfos = json.loads(data)["attachmentInfos"]
+            for info in attachmentInfos:
+                if info["contentType"] == "application/pdf":
+                    pdf_id = info["id"]
+                    pdf_name = info["name"]
+        except:
+            print (url1)
+            return HTTPBadRequest()
+        if pdf_name is None or pdf_id is None:
+            print (url1)
+            return HTTPBadRequest()
+        url2 = ng_url + "%(id)s/attachments/%(pdf_id)s" %{'id': id, 'pdf_id': pdf_id}
+
+        try:
+            f = urllib.request.urlopen(url2, None, timeout)
+            data = f.read()
+        except:
+            print (url2)
+            return HTTPBadRequest()
+
+        headers = {"Content-Type": "application/pdf",
+                   "Content-Disposition": "attachment; filename=\"%(pdf_name)s.pdf\"" %{'pdf_name': pdf_name}}
+
+        return Response(data, headers=headers)
+
     @view_config(route_name='download_sketch')
     def download_sketch(self):
+        type = self.request.params.get('type', None)
+        if type == 'new':
+            return self.download_sketch_by_id()
+
         filename = self.request.params.get('name', None)
         if filename is None:
             return HTTPBadRequest()
