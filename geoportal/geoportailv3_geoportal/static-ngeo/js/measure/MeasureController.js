@@ -19,12 +19,14 @@ import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
+import draw from '../draw/DrawController.js';
 import {getChangeEventType} from 'ol/Object.js';
 import {listen} from 'ol/events.js';
 import {transform} from 'ol/proj.js';
 import olStyleCircle from 'ol/style/Circle.js';
 import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
+import olStyleText from 'ol/style/Text.js';
 import olStyleStyle from 'ol/style/Style.js';
 
 /**
@@ -71,7 +73,13 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this.elevationServiceUrl_ = elevationServiceUrl;
 
-  var sketchStyle = new olStyleStyle({
+  /**
+   * @type {ol.Map}
+   * @private
+   */
+  this.map_ = this['map'];
+
+  var sketchStyle_ = new olStyleStyle({
     fill: new olStyleFill({
       color: 'rgba(255, 255, 255, 0.4)'
     }),
@@ -88,10 +96,42 @@ const exports = function($scope, $q, $http, $compile, gettext,
       fill: new olStyleFill({
         color: 'rgba(255, 255, 255, 0.4)'
       })
+    }),
+    text: new olStyleText({
+      font: '12px Calibri,sans-serif',
+      fill: new olStyleFill({
+        color: 'rgba(255, 255, 255, 1)'
+      }),
+      stroke: new olStyleStroke({
+        color: 'rgba(0, 0, 0, 0.8)',
+        width: 3
+      }),
+      overflow: true
     })
   });
 
-  var style = new olStyleStyle({
+  const generateStyle = style => f => {
+    const method = this['measureLength'].getActive()
+      ? 'getFormattedLength'
+      : this['measureArea'].getActive() ? 'getFormattedArea': undefined
+
+    if (!method) {
+      return style;
+    }
+    if (this['measureArea'].getActive() && (f.getGeometry().getType() !== 'Polygon')) {
+      style.getText().setText('')
+      return style;
+    }
+
+    let text = draw.prototype[method](
+      f.getGeometry(), this.map_.getView().getProjection()
+    ).replace('<sup>2</sup>', '²')
+    style.getText().setText(text.startsWith('NaN') ? '' : text)
+    return style
+  }
+  let sketchStyle = generateStyle(sketchStyle_)
+
+  let style_ = new olStyleStyle({
     fill: new olStyleFill({
       color: 'rgba(255, 204, 51, 0.3)'
     }),
@@ -104,14 +144,20 @@ const exports = function($scope, $q, $http, $compile, gettext,
       fill: new olStyleFill({
         color: 'rgba(255, 204, 51, 0.3)'
       })
+    }),
+    text: new olStyleText({
+      font: 'bold 12px Calibri,sans-serif',
+      fill: new olStyleFill({
+        color: 'rgb(0 0 0 / 100)'
+      }),
+      stroke: new olStyleStroke({
+        color: 'rgba(255, 204, 51, 1)',
+        width: 4
+      }),
+      overflow: true
     })
   });
-
-  /**
-   * @type {ol.Map}
-   * @private
-   */
-  this.map_ = this['map'];
+  var style = generateStyle(style_)
 
 
   var helpMsg = gettext('Click to start drawing profile');
@@ -139,7 +185,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
-      sketchStyle: sketchStyle
+      sketchStyle: sketchStyle,
+      style: style
     });
 
   /**
