@@ -864,7 +864,6 @@ class Getfeatureinfo(object):
         query = '%s%s%s' % (url, separator, urlencode(body))
         content = ""
         try:
-            print (query)
             result = urllib.request.urlopen(query, None, 15)
             content = result.read()
         except Exception as e:
