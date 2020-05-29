@@ -5,6 +5,8 @@ import re
 import urllib.request
 import geojson
 import pyproj
+import os
+import json
 from urllib.parse import urlencode
 from pyramid.renderers import render
 from pyramid.view import view_config
@@ -716,6 +718,27 @@ class Getfeatureinfo(object):
                     '%s (%s)' % (rows[0][0], code_section)
                 output_features.append(feature)
         return output_features
+
+    def get_additional_info_for_new_ng95(self, features):
+        ng_url = os.environ["NG_URL"]
+        features2 = []
+        timeout = 15
+        for feature in features:
+            feature['attributes']['has_sketch'] = False
+            id = feature['attributes']['OBJECTID']
+            url1 = ng_url + "%(id)s/attachments?f=pjson" %{'id': id}
+            try:
+                f = urllib.request.urlopen(url1, None, timeout)
+                data = f.read()
+                attachmentInfos = json.loads(data)["attachmentInfos"]
+                for info in attachmentInfos:
+                    if info["contentType"] == "application/pdf":
+                        feature['attributes']['has_sketch'] = True
+            except Exception as e:
+                log.exception(e)
+                feature['attributes']['has_sketch'] = False
+            features2.append(feature)
+        return features2
 
     def get_additional_info_for_ng95(self, layer_id, rows):
         features = []
