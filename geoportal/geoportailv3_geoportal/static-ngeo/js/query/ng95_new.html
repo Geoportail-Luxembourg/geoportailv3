@@ -3,7 +3,8 @@
   <h4>{{feature.attributes.Nom}}</h4>
   <span translate>Elevation</span> : {{feature.attributes['nouv. cote']}}<br>
   <span translate>Type</span> : {{feature.attributes['type rivet']}}<br>
-  <span translate>Croquis</span> : <span>
-  <a class="no-print" target='_blank' download href='{{ctrl.getDownloadsketchUrl()}}?id={{feature.attributes.OBJECTID}}&type=new' translate>Obtenir le fichier sous format pdf</a></span><br>
+  <span translate>Croquis</span> : <span ng-show="feature.attributes.has_sketch" class="ng-hide">
+  <a class="no-print" target='_blank' download href='{{ctrl.getDownloadsketchUrl()}}?id={{feature.attributes.OBJECTID}}&type=new' translate>Obtenir le fichier sous format pdf</a></span>
+  <span ng-hide="feature.attributes.has_sketch" class="ng-hide" translate>Croquis indisponible</span><br>
   <a class="fid-link no-print" href="?fid={{feature.fid}}" target="_blank" translate>Lien direct vers cet objet</a><br>
 </div>
