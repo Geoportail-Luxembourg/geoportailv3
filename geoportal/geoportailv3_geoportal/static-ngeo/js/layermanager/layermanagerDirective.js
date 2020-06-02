@@ -31,7 +31,6 @@ const exports = function(appLayermanagerTemplateUrl) {
       'map': '=appLayermanagerMap',
       'layers': '=appLayermanagerLayers',
       'activeLC': '=appLayermanagerActiveLayersComparator',
-      'background': '=appLayermanagerBackgroundLayer',
     },
     controller: 'AppLayermanagerController',
     controllerAs: 'ctrl',
