@@ -39,8 +39,8 @@ class Controller {
     this.background = {};
   };
 
-  onInit() {
-    this.background = ngeoBackgroundLayerMgr.get(this.map);
+  $onInit() {
+    this.background = this.ngeoBackgroundLayerMgr_.get(this.map);
   }
 
   removeLayer(layer) {
