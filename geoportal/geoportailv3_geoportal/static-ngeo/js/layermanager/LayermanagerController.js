@@ -35,12 +35,14 @@ class Controller {
      * Hash array to keep track of opacities set on layers.
      */
     this.opacities_ = {};
-
-    this.background = {};
   };
 
-  $onInit() {
-    this.background = this.ngeoBackgroundLayerMgr_.get(this.map);
+  get background() {
+    let background = this.ngeoBackgroundLayerMgr_.get(this.map);
+    if (background) {
+      return background.get('label');
+    }
+    return null;
   }
 
   removeLayer(layer) {
