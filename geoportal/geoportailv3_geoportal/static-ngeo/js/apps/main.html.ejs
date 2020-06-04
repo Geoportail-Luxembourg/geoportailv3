@@ -368,6 +368,10 @@
           ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
       >
       </ngeo-offline>
+      <app-backgroundselector
+        class="background-layer"
+        app-backgroundselector-map="::mainCtrl.map">
+      </app-backgroundselector>
     </div>
   </div>
     <!-- Begin bottom bar -->

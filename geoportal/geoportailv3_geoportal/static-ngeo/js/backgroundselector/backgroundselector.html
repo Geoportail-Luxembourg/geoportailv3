@@ -1,0 +1,9 @@
+<div ng-repeat="layer in ctrl.bgLayers"
+     ng-click="setBackgroundLayer(layer)"
+     class="lux-bg-layer lux-bg-layer-{{$index}}">
+  <div>{{layer.get('label') | translate}}</div>
+</div>
+<div class="">
+  <div>{{bg_selector_label | translate }}</div>
+  <i class="fa fa-chevron-sign-right"></i>
+</div>
