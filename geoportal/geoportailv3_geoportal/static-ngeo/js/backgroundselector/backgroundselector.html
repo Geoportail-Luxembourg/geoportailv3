@@ -1,6 +1,7 @@
 <div ng-repeat="layer in ctrl.bgLayers"
      ng-click="ctrl.setBackgroundLayer(layer)"
-     class="bg-selector-layer bg-selector-layer-{{$index}}">
+     class="bg-selector-layer bg-selector-layer-{{$index}}"
+     ng-class="{active: ctrl.bgLayer === layer}">
   <div>{{layer.get('label') | translate}}</div>
 </div>
 <div class="bg-selector-btn">
