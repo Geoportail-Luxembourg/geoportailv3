@@ -1,10 +1,16 @@
-<div ng-repeat="layer in ctrl.bgLayers"
-     ng-click="ctrl.setBackgroundLayer(layer)"
-     class="bg-selector-layer bg-selector-layer-{{$index}}"
-     ng-class="{active: ctrl.bgLayer === layer}">
-  <div>{{layer.get('label') | translate}}</div>
+<div ng-if="ctrl.isOpened">
+  <div ng-repeat="layer in ctrl.bgLayers"
+    ng-click="ctrl.setBackgroundLayer(layer)"
+    class="bg-selector-layer bg-selector-layer-{{$index}}"
+    ng-class="{active: ctrl.bgLayer === layer}">
+    <div>{{layer.get('label') | translate}}</div>
+  </div>
+  <div class="bg-selector-closer" ng-click="ctrl.toggleSelector()">
+    <div>{{'bg_selector_label' | translate}}</div>
+    <i class="fa fa-chevron-circle-right"></i>
+  </div>
 </div>
-<div class="bg-selector-btn">
-  <div>{{'bg_selector_label' | translate }}</div>
-  <i class="fa fa-chevron-circle-right"></i>
+
+<div class="bg-selector-opener" ng-if="!ctrl.isOpened" ng-click="ctrl.toggleSelector()">
+  <div>{{'backgrounds' | translate}}</div>
 </div>

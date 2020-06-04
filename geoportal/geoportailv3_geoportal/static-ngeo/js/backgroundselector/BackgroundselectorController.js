@@ -32,15 +32,17 @@ class Controller {
          * @type {import('ol/layer/Base').default}
          */
         this.bgLayer;
+
+        /**
+         * @type {boolean}
+         */
+        this.isOpened = false;
     }
 
     $onInit() {
         this.appThemes_.getBgLayers(this.map).then(bgLayers => {
             this.bgLayers = bgLayers;
             this.bgLayer = this.backgroundLayerMgr_.get(this.map);
-
-            console.log(this.bgLayers);
-            console.log(this.bgLayer);
         });
     
         listen(this.backgroundLayerMgr_, 'change', evt => {
@@ -60,7 +62,6 @@ class Controller {
             current.setVisible(true);
             this.bgLayer = current;
 
-            //this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
         });
       };
 
@@ -71,8 +72,13 @@ class Controller {
     setBackgroundLayer(layer) {
         this.bgLayer = layer;
         this.backgroundLayerMgr_.set(this.map, layer);
-        console.log(layer);
-        //this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
+    };
+
+    /**
+     * @export
+     */
+    toggleSelector() {
+        this.isOpened = !this.isOpened;
     };
 };
 
