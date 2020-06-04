@@ -50,6 +50,8 @@ import '../../less/geoportailv3.less';
  import appBackgroundlayerBackgroundlayerDirective from '../backgroundlayer/backgroundlayerDirective.js';
  import appBackgroundlayerBackgroundlayerController from '../backgroundlayer/BackgroundlayerController.js';
  import appBackgroundlayerBlankLayer from '../backgroundlayer/BlankLayer.js';
+ import appBackgroundselectorController from '../backgroundselector/BackgroundselectorController.js';
+ import appBackgroundselectorDirective from '../backgroundselector/BackgroundselectorDirective.js';
  import appCatalogCatalogController from '../catalog/CatalogController.js';
  import appCatalogCatalogDirective from '../catalog/catalogDirective.js';
  import appDrawDrawDirective from '../draw/drawDirective.js';
