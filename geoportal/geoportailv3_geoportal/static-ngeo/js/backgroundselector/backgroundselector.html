@@ -1,4 +1,4 @@
-<div ng-if="ctrl.isOpened">
+<div ng-class="{closed: !ctrl.isOpened, opened: ctrl.isOpened}">
   <div ng-repeat="layer in ctrl.bgLayers"
     ng-click="ctrl.setBackgroundLayer(layer)"
     class="bg-selector-layer bg-selector-layer-{{$index}}"
@@ -10,6 +10,6 @@
   </div>
 </div>
 
-<div class="bg-selector-opener" ng-if="!ctrl.isOpened" ng-click="ctrl.toggleSelector()">
+<div class="bg-selector-opener" ng-click="ctrl.toggleSelector()" ng-class="{closed: ctrl.isOpened}">
   <div>{{'Backgrounds' | translate}}</div>
 </div>

@@ -4,38 +4,59 @@
 
     position: absolute;
     top: 4em;
-    right: 0.5em;
+    right: .5em;
 
     text-align: center;
 
     .bg-selector-layer,
     .bg-selector-closer {
         float: left;
-        height: 75px;
-        margin: 0 3px;
+        height: 64px;
+        margin: 0 2px;
 
         border: 1px solid black;
         background-color: white;
     }
 
     .bg-selector-layer {
-        width: 100px;
+        width: 96px;
     }
 
     .bg-selector-closer {
         width: 20px;
         display: inline-block;
+        padding-top: 1.25em;
     }
 
-    .active {
+    .active{
         border: 3px solid red;
     }
 
+    .bg-selector-layer:hover {
+        border: 3px solid black;
+    }
+
     .bg-selector-opener {
-        height: 75px;
-        width: 100px;
+        width: 96px;
+        height: 64px;
 
         border: 1px solid black;
         background-color: white;
+
+        position: absolute;
+        right: 0;
+    }
+
+    .opened {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 0s, opacity 0s,transform .5s;
+        transform: translateX(0);
+    }
+
+    .closed {
+        visibility: hidden;
+        opacity: 0;
+        transform: translateX(100%);
     }
 }  
