@@ -279,7 +279,7 @@ lux.Map = function(options) {
   }
 
   if (options.view === undefined) {
-    options.view = new ol.View();
+    options.view = new ol.View({enableRotation: false});
   }
 
   if (options.position) {
