@@ -63,6 +63,14 @@ class Controller {
             this.bgLayer = current;
 
         });
+
+        // $('.bg-selector-opener').on('click', evt => {
+        //     console.log(evt);
+        // });
+
+        // $('.bg-selector-closer').on('click', evt => {
+        //     console.log(evt);
+        // });
       };
 
     /**
@@ -72,6 +80,7 @@ class Controller {
     setBackgroundLayer(layer) {
         this.bgLayer = layer;
         this.backgroundLayerMgr_.set(this.map, layer);
+        this.toggleSelector();
     };
 
     /**
