@@ -58,10 +58,9 @@
     touch-action: none;
     // Height calculation:
     // 100% - h2 font-size - padding-top - padding-bottom -
-    //   (app-backgroundlayer) @input-height-base - margin-bottom -
-    //   tab font-size - tab padding*2;
+    //  tab font-size - tab padding*2;
     // FIXME: use variables for the calculation
-    height: ~"calc(100% - 40px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
+    height: ~"calc(100% - 40px - 2 * 12px - 24px - 2 * 10px)";
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -69,7 +68,7 @@
   #mymaps .tab-content {
     touch-action: none;
     // FIXME: use variables for the calculation
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     color: #FFFFFF;
@@ -81,14 +80,14 @@
 
   #routing .tab-content {
     // FIXME: use variables for the calculation
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
   }
 
   #infos .tab-content {
     // FIXME: use variables for the calculation
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -96,7 +95,7 @@
   }
 
   #legends .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -104,35 +103,35 @@
   }
 
   #feedback .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackanf .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 120px)";
+    height: ~"calc(100% - 120px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackcrues .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackage .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #vectoreditor .tab-content {
-    height: ~"calc(100% - @{input-height-base} - 79px)";
+    height: ~"calc(100% - 64px)";
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
