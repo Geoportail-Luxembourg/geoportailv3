@@ -58,10 +58,9 @@
     touch-action: none;
     // Height calculation:
     // 100% - h2 font-size - padding-top - padding-bottom -
-    //   (app-backgroundlayer) @input-height-base - margin-bottom -
-    //   tab font-size - tab padding*2;
+    //  tab font-size - tab padding*2;
     // FIXME: use variables for the calculation
-    height: ~"calc(100% - 40px - 2 * 12px - @{input-height-base} - 15px - 24px - 2 * 10px)";
+    height: ~"calc(100% - 40px - 2 * 12px - 24px - 2 * 10px)";
     overflow-y: auto;
     overflow-x: hidden;
   }
