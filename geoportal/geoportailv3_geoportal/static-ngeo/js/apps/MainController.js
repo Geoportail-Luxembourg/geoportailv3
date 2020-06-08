@@ -910,12 +910,12 @@ const MainController = function(
   this.addLocationControl_(ngeoFeatureOverlayMgr);
 
   this.manageUserRoleChange_($scope);
-  this.loadThemes_().then(function() {
+  this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
-          function(bgLayers) {
+          bgLayers => {
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
-                (bgLayers.find(function(layer) {
+                (bgLayers.find(layer => {
                   return layer.get('label') === appOverviewMapBaseLayer;
                 }));
               this.map_.addControl(
@@ -924,12 +924,12 @@ const MainController = function(
                     collapseLabel: '\u00BB',
                     label: '\u00AB'}));
             }
-          }.bind(this));
+          });
     this['ageLayers'].splice(0, this['ageLayers'].length);
 
     this.appThemes_.getFlatCatalog().then(
-      function(flatCatalogue) {
-      flatCatalogue.forEach(function(catItem) {
+      flatCatalogue => {
+      flatCatalogue.forEach(catItem => {
         var layerIdsArray = ageLayerIds.split(',');
         if (layerIdsArray.indexOf('' + catItem.id) >= 0) {
           var layer = this.getLayerFunc_(catItem);
@@ -937,8 +937,8 @@ const MainController = function(
             this['ageLayers'].push (layer);
           }
         }
-      }.bind(this));
-    }.bind(this));
+      });
+    });
 
     this['feedbackAgeOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackage'));
     this['feedbackAnfOpen'] = ('true' === this.ngeoLocation_.getParam('feedbackanf'));
@@ -961,19 +961,19 @@ const MainController = function(
         !this['feedbackAnfOpen'] &&
         !this['feedbackAgeOpen'] &&
         !infoOpen) ? true : false;
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this['layersOpen'];
-    }.bind(this), function(newVal) {
+    }, newVal => {
       if (newVal === false) {
         $('app-catalog .themes-switcher').collapse('show');
         $('app-themeswitcher #themes-content').collapse('hide');
       }
-    }.bind(this));
+    });
     this.activeLayersComparator = (this.ngeoLocation_.getParam('lc') === 'true');
 
-    $scope.$watch(function() {
+    $scope.$watch(() => {
       return this.sidebarOpen();
-    }.bind(this), function(newVal) {
+    }, newVal => {
       this.stateManager_.updateStorage({
         'layersOpen': newVal
       });
@@ -982,16 +982,16 @@ const MainController = function(
         var feature = this.selectedFeatures_.getArray()[0];
         feature.set('__refreshProfile__', true);
       }
-    }.bind(this));
+    });
 
     this.appThemes_.getThemeObject(
-      this.appTheme_.getCurrentTheme()).then(function() {
+      this.appTheme_.getCurrentTheme()).then(() => {
         var zoom = Number(appStateManager.getInitialValue('zoom'));
         if (zoom > 19) {
           this.map_.getView().setZoom(zoom);
         }
-      }.bind(this));
-  }.bind(this));
+      });
+  });
   var waypoints = appStateManager.getInitialValue('waypoints');
   if (waypoints !== undefined && waypoints !== null) {
     this['routingOpen'] = true;
@@ -1035,29 +1035,35 @@ const MainController = function(
   /**
    * Listen on login to finish to reload the mvt style
    */
-    $scope.$on('authenticated', () => {
-      // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-      const bgLayer = this.backgroundLayerMgr_.get(this.map);
-      if (bgLayer) {
-        this.appMvtStylingService.getBgStyle().then(config => {
-          bgLayer.getMapBoxMap().setStyle(config.style);
+  $scope.$on('authenticated', () => {
+    // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    if (bgLayer) {
+      this.appMvtStylingService.getBgStyle().then(config => {
+        bgLayer.getMapBoxMap().setStyle(config.style);
+      });
+    }
+    let mediumStyle = appMvtStylingService.getMediumStyle();
+    if (mediumStyle !== undefined) {
+      mediumStyle.then((style) => {
+          Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+          this.checkSelectedSimpleData();
         });
-      }
-      let mediumStyle = appMvtStylingService.getMediumStyle();
-      if (mediumStyle !== undefined) {
-        mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-      let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-      if (hillshadeStyle !== undefined) {
-        hillshadeStyle.then((style) => {
-            Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-    });
+    }
+    let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+    if (hillshadeStyle !== undefined) {
+      hillshadeStyle.then((style) => {
+          Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+          this.checkSelectedSimpleData();
+        });
+    }
+  });
+
+  $scope.$on('mvtPanelOpen', () => {
+    this.vectorEditorOpen = true;
+    this.rememberCurrentlyOpenedPanel('mylayers');
+    this.trackOpenVTEditor('openVTEditor');
+  });
 
   /**
    * Read a json file and store custom style to local storage

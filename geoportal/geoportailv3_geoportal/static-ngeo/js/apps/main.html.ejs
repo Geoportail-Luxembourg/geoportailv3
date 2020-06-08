@@ -100,13 +100,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('layersOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn btn-vector-editor"></button>
           <div class="hidden-2d text-center" ng-click="mainCtrl.toggleTiles3dVisibility()">
             <i class="fa" ng-class="mainCtrl.tiles3dVisible ? 'fa-check-square' : 'fa-square'"></i>
             <span translate>Afficher les modèles 3D</span>
@@ -147,13 +140,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('mymapsOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt"
-            class="btn-vector-editor"></button>
           <div class="tab-content">
             <app-mymaps app-mymaps-useropen="mainCtrl.userOpen"
                         app-mymaps-drawopen="mainCtrl.drawOpen"
@@ -172,13 +158,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('infosOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-query app-query-map="::mainCtrl.map"
                        app-query-open="mainCtrl.infosOpen"
@@ -217,13 +196,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('legendsOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-layerlegends
               app-layerlegends-layers="::mainCtrl.selectedLayers"
@@ -237,13 +209,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('routingOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="tab-content">
             <app-routing app-routing-map="::mainCtrl.map"
               app-routing-has-result="mainCtrl.hasRoutingResult"
@@ -259,13 +224,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedback
               app-feedback-drawing-active="mainCtrl.drawOpen",
@@ -282,13 +240,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackCruesOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackcrues
               app-feedbackcrues-drawing-active="mainCtrl.drawOpen",
@@ -305,13 +256,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAnfOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackanf
               app-feedbackanf-drawing-active="mainCtrl.drawOpen",
@@ -328,13 +272,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel('feedbackAgeOpen');mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
             <app-feedbackage
               app-feedbackage-drawing-active="mainCtrl.drawOpen",
@@ -351,13 +288,6 @@
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
           </button>
-          <app-backgroundlayer app-backgroundlayer-map="::mainCtrl.map" active-mvt="mainCtrl.activeMvt"></app-backgroundlayer>
-          <button ngeo-btn
-            ng-model="mainCtrl.vectorEditorOpen"
-            ng-class="mainCtrl.vectorEditorOpen ? 'btn-vector-editor-active': 'btn-vector-editor-inactive'"
-            ng-click="mainCtrl.rememberCurrentlyOpenedPanel(mainCtrl.lastPanelOpened);mainCtrl.trackOpenVTEditor('openVTEditor');"
-            ng-if="mainCtrl.activeMvt && !mainCtrl.isDisconnectedOrOffline()"
-            class="btn-vector-editor"></button>
           <div class="container-fluid tab-content">
           <div class="accordion" id="accordion">
             <div class="panel">

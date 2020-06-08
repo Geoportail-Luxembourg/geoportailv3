@@ -20,3 +20,13 @@
     </div>
   </li>
 </ul>
+
+<ul id="layermanager-background" class="layermanager" >
+  <li class="panel layermanager-panel">
+    <app-layerinfo app-layerinfo-layer="background"></app-layerinfo>
+    <div class="layer-label">
+    {{ctrl.background | translate}}
+    </div>
+    <a class="mvt" ng-if="ctrl.activeMvt" ng-click="ctrl.openMvtEditorPanel();"><span class="fa fa-pencil"></span></a>
+  </li>
+</ul>

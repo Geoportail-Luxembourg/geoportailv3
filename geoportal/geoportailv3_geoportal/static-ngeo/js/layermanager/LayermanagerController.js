@@ -1,7 +1,4 @@
 /**
- * @module app.layermanager.LayermanagerController
- */
-/**
  * @fileoverview This file provides the layer manager directive. That directive
  * is used to create the list of selected layers in the page.
  *
@@ -20,97 +17,88 @@
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
 
-
-/**
- * @param {ngeo.statemanager.Location} ngeoLocation Location service.
- * @constructor
- * @ngInject
- * @export
- */
-const exports = function(ngeoLocation) {
+class Controller {
   /**
-   * @type {ngeo.statemanager.Location}
-   * @private
+   * @param {ngeo.statemanager.Location} ngeoLocation Location service.
+   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
+   * @param {angular.$rootScope} $rootScope Angular rootScope service.
+   * @ngInject
    */
-  this.ngeoLocation_ = ngeoLocation;
+  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope){
 
-  this['uid'] = getUid(this);
+    this.ngeoLocation_ = ngeoLocation;
 
-  /**
-   * Hash array to keep track of opacities set on layers.
-   * @type {Object.<number, number>}
-   * @private
-   */
-  this.opacities_ = {};
-};
+    this.ngeoBackgroundLayerMgr_ = ngeoBackgroundLayerMgr;
 
+    this.uid = getUid(this);
 
-/**
- * @param {ol.layer.Layer} layer Layer.
- * @export
- */
-exports.prototype.removeLayer = function(layer) {
-  this['map'].removeLayer(layer);
-};
+    /**
+     * Hash array to keep track of opacities set on layers.
+     */
+    this.opacities_ = {};
 
+    this.activeMvt = false;
 
-/**
- * @param {angular.JQLite} element Element.
- * @param {Array.<ol.layer.Layer>} layers Layers.
- * @export
- */
-exports.prototype.reorderCallback = function(element, layers) {
-  for (var i = 0; i < layers.length; i++) {
-    layers[i].setZIndex(layers.length - i);
-  }
-};
+    /**
+     * @type {angular.$rootScope}
+     */
+    this.$rootScope = $rootScope;
+  };
 
-
-/**
- * @param {ol.layer.Layer} layer Layer.
- * @export
- */
-exports.prototype.changeVisibility = function(layer) {
-  var currentOpacity = layer.getOpacity();
-  var newOpacity;
-  var uid = getUid(layer);
-  if (currentOpacity === 0) {
-    if (this.opacities_[uid] !== undefined) {
-      newOpacity = this.opacities_[uid];
-    } else {
-      newOpacity = 1;
+  get background() {
+    let background = this.ngeoBackgroundLayerMgr_.get(this.map);
+    if (background) {
+      this.activeMvt = background.getType() === 'GEOBLOCKS_MVT';
+      return background.get('label');
     }
-    // reset old opacity for later use
-    delete this.opacities_[uid];
-  } else {
-    this.opacities_[uid] = currentOpacity;
-    newOpacity = 0;
+    return null;
   }
-  layer.setOpacity(newOpacity);
+
+  removeLayer(layer) {
+    this.map.removeLayer(layer);
+  }
+
+  reorderCallback(element, layers){
+    for (var i = 0; i < layers.length; i++) {
+      layers[i].setZIndex(layers.length - i);
+    }
+  }
+
+  changeVisibility(layer) {
+    var currentOpacity = layer.getOpacity();
+    var newOpacity;
+    var uid = getUid(layer);
+    if (currentOpacity === 0) {
+      if (this.opacities_[uid] !== undefined) {
+        newOpacity = this.opacities_[uid];
+      } else {
+        newOpacity = 1;
+      }
+      // reset old opacity for later use
+      delete this.opacities_[uid];
+    } else {
+      this.opacities_[uid] = currentOpacity;
+      newOpacity = 0;
+    }
+    layer.setOpacity(newOpacity);
+  }
+
+  isLayersComparatorDisplayed() {
+    return this['activeLC'] === true;
+  }
+
+  toggleLayersComparator() {
+    this['activeLC'] = !this['activeLC'];
+    this.ngeoLocation_.updateParams({
+      'lc': this['activeLC']
+    });
+  }
+
+  openMvtEditorPanel() {
+    this.$rootScope.$broadcast('mvtPanelOpen');
+  }
 };
 
-/**
- * Is layers comparator displayed.
- * @return {boolean} Returns true when comparator is shown.
- * @export
- */
-exports.prototype.isLayersComparatorDisplayed = function() {
-  return this['activeLC'] === true;
-};
+appModule.controller('AppLayermanagerController', Controller);
 
-/**
- * Toggle layers comparator.
- * @export
- */
-exports.prototype.toggleLayersComparator = function() {
-  this['activeLC'] = !this['activeLC'];
-  this.ngeoLocation_.updateParams({
-    'lc': this['activeLC']
-  });
-};
-
-
-appModule.controller('AppLayermanagerController', exports);
-
-
-export default exports;
+export default Controller;
