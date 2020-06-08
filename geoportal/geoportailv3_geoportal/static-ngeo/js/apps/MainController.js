@@ -1035,29 +1035,35 @@ const MainController = function(
   /**
    * Listen on login to finish to reload the mvt style
    */
-    $scope.$on('authenticated', () => {
-      // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
-      const bgLayer = this.backgroundLayerMgr_.get(this.map);
-      if (bgLayer) {
-        this.appMvtStylingService.getBgStyle().then(config => {
-          bgLayer.getMapBoxMap().setStyle(config.style);
+  $scope.$on('authenticated', () => {
+    // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+    const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    if (bgLayer) {
+      this.appMvtStylingService.getBgStyle().then(config => {
+        bgLayer.getMapBoxMap().setStyle(config.style);
+      });
+    }
+    let mediumStyle = appMvtStylingService.getMediumStyle();
+    if (mediumStyle !== undefined) {
+      mediumStyle.then((style) => {
+          Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
+          this.checkSelectedSimpleData();
         });
-      }
-      let mediumStyle = appMvtStylingService.getMediumStyle();
-      if (mediumStyle !== undefined) {
-        mediumStyle.then((style) => {
-            Object.assign(this.mediumStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-      let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-      if (hillshadeStyle !== undefined) {
-        hillshadeStyle.then((style) => {
-            Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-            this.checkSelectedSimpleData();
-          });
-      }
-    });
+    }
+    let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
+    if (hillshadeStyle !== undefined) {
+      hillshadeStyle.then((style) => {
+          Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
+          this.checkSelectedSimpleData();
+        });
+    }
+  });
+
+  $scope.$on('mvtPanelOpen', () => {
+    this.vectorEditorOpen = true;
+    this.rememberCurrentlyOpenedPanel('mylayers');
+    this.trackOpenVTEditor('openVTEditor');
+  });
 
   /**
    * Read a json file and store custom style to local storage

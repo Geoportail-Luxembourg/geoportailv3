@@ -21,9 +21,10 @@ class Controller {
   /**
    * @param {ngeo.statemanager.Location} ngeoLocation Location service.
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
+   * @param {angular.$rootScope} $rootScope Angular rootScope service.
    * @ngInject
    */
-  constructor(ngeoLocation, ngeoBackgroundLayerMgr){
+  constructor(ngeoLocation, ngeoBackgroundLayerMgr, $rootScope){
 
     this.ngeoLocation_ = ngeoLocation;
 
@@ -35,11 +36,19 @@ class Controller {
      * Hash array to keep track of opacities set on layers.
      */
     this.opacities_ = {};
+
+    this.activeMvt = false;
+
+    /**
+     * @type {angular.$rootScope}
+     */
+    this.$rootScope = $rootScope;
   };
 
   get background() {
     let background = this.ngeoBackgroundLayerMgr_.get(this.map);
     if (background) {
+      this.activeMvt = background.getType() === 'GEOBLOCKS_MVT';
       return background.get('label');
     }
     return null;
@@ -83,6 +92,10 @@ class Controller {
     this.ngeoLocation_.updateParams({
       'lc': this['activeLC']
     });
+  }
+
+  openMvtEditorPanel() {
+    this.$rootScope.$broadcast('mvtPanelOpen');
   }
 };
 
