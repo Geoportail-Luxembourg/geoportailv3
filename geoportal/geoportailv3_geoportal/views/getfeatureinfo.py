@@ -203,7 +203,12 @@ class Getfeatureinfo(object):
             return HTTPBadRequest()
 
         coordinates_big_box = big_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_big_box):
+            return HTTPBadRequest()
         coordinates_small_box = small_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
+            return HTTPBadRequest()
+
         return self.get_info(
             fid, coordinates_big_box,
             coordinates_small_box, results, layers, big_box)
