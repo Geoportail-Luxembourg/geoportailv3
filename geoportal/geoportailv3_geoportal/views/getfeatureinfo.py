@@ -872,6 +872,16 @@ class Getfeatureinfo(object):
             'BBOX': bbox
         }
         metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_layers").first()
+        if metadata is not None:
+            body['LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_query_layers").first()
+        if metadata is not None:
+            body['QUERY_LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
             filter(Metadata.name == "ogc_info_format").first()
         if metadata is not None:
             body['INFO_FORMAT'] = metadata.value
