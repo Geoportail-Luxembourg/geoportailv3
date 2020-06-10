@@ -28,6 +28,10 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleText from 'ol/style/Text.js';
 import olStyleStyle from 'ol/style/Style.js';
+import olLayerVector from 'ol/layer/Vector.js';
+import olSourceVector from 'ol/source/Vector.js';
+import olFeature from 'ol/Feature.js';
+
 
 /**
  * @param {!angular.Scope} $scope Scope.
@@ -110,23 +114,41 @@ const exports = function($scope, $q, $http, $compile, gettext,
     })
   });
 
-  const generateStyle = style => f => {
-    const method = this['measureLength'].getActive()
-      ? 'getFormattedLength'
-      : this['measureArea'].getActive() ? 'getFormattedArea': undefined
+  const clearText = text => {
+    text = text.replace('&nbsp;', ' ')
+    text = text.replace('<sup>2</sup>', '²')
+    text = text.replace('<br>', '\n')
+    return text.startsWith('NaN') ? '' : text
+  }
+  const generateStyle = baseStyle => f => {
+    const style = baseStyle.clone()
+    const geomType = f.getGeometry().getType()
+    style.getText().setText('')
 
-    if (!method) {
+    if (['Point', 'Circle'].includes(geomType)) {
+      style.getText().setText('')
       return style;
     }
-    if (this['measureArea'].getActive() && (f.getGeometry().getType() !== 'Polygon')) {
+    if (this['measureArea'].getActive() && (geomType !== 'Polygon')) {
       style.getText().setText('')
       return style;
     }
 
-    let text = draw.prototype[method](
-      f.getGeometry(), this.map_.getView().getProjection()
-    ).replace('<sup>2</sup>', '²')
-    style.getText().setText(text.startsWith('NaN') ? '' : text)
+    let text = this[
+      this['measureLength'].getActive() ? 'measureLength' :
+      this['measureArea'].getActive() ? 'measureArea' :
+      this['measureAzimut'].getActive() ? 'measureAzimut' :
+      this['measureProfile'].getActive() ? 'measureProfile' : ''
+    ].getTooltipElement().innerHTML
+
+    style.getText().setText(clearText(text))
+    if (geomType === 'GeometryCollection') {
+      let clone = style.clone()
+      clone.getText().setText('')
+      clone.setGeometry(f.getGeometry().getGeometries()[1]);
+      style.setGeometry(f.getGeometry().getGeometries()[0]);
+      return [ style, clone ]
+    }
     return style
   }
   let sketchStyle = generateStyle(sketchStyle_)
@@ -168,7 +190,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
-      sketchStyle: sketchStyle
+      sketchStyle: sketchStyle,
+      style: style
     });
 
   /**
@@ -186,7 +209,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
 
   /**
@@ -206,13 +230,23 @@ const exports = function($scope, $q, $http, $compile, gettext,
   helpMsg = gettext('Click to start drawing area');
   contMsg = gettext('Click to continue drawing the polygon<br>' +
       'Double-click or click last point to finish');
+  const layer = new olLayerVector({
+    source: new olSourceVector(),
+    style: style
+  })
+  var features = []
+  window.map = this.map_
+  this.map_.addLayer(layer)
+  // layer.getSource().on('addfeature', e => features.push(e.feature))
+  // layer.getSource().on('clear', () => layer.getSource().addFeatures(features))
   var measureArea = new ngeoInteractionMeasureArea(
     $filter('ngeoUnitPrefix'),
     gettextCatalog, {
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
 
   /**
@@ -233,7 +267,8 @@ const exports = function($scope, $q, $http, $compile, gettext,
       startMsg: $compile('<div translate>' + helpMsg + '</div>')($scope)[0],
       continueMsg: $compile('<div translate>' + contMsg + '</div>')($scope)[0],
       sketchStyle: sketchStyle,
-      style: style
+      style: style,
+      layer: layer
     });
 
   /**
@@ -259,10 +294,11 @@ const exports = function($scope, $q, $http, $compile, gettext,
           this.getElevation_(radiusCoordinates[1])]
         ).then(function(data) {
           if (data[0].data['dhm'] >= 0 && data[1].data['dhm'] >= 0) {
-            var el = evt.target.getTooltipElement();
+            var el = measureAzimut.getTooltipElement();
             var elevationOffset = data[1].data['dhm'] - data[0].data['dhm'];
             el.innerHTML += '<br> &Delta;h : ' +
                 parseInt(elevationOffset, 0) + 'm';
+            layer.changed()
           }
         }.bind(this));
       }.bind(this));
