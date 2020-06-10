@@ -127,7 +127,6 @@ exports.constant('ngeoScaleselectorTemplateUrl', 'templatecache/ngeoScaleselecto
 exports.constant('ngeoOfflineTestUrl', '/ping');
 exports.constant('ngeoOfflineTemplateUrl', () => 'templatecache/ngeoOfflineTemplateUrl');
 exports.constant('ngeoOlcsControls3dTemplateUrl', 'templatecache/ngeoOlcsControls3dTemplateUrl');
-exports.constant('appBackgroundlayerTemplateUrl', 'templatecache/appBackgroundlayerTemplateUrl');
 exports.constant('appBackgroundselectorTemplateUrl', 'templatecache/appBackgroundselectorTemplateUrl');
 exports.constant('appLayermanagerTemplateUrl', 'templatecache/appLayermanagerTemplateUrl');
 exports.constant('appLayerlegendsTemplateUrl', 'templatecache/appLayerlegendsTemplateUrl');
@@ -175,7 +174,6 @@ function templateRunner($templateCache) {
   $templateCache.put('templatecache/ngeoScaleselectorTemplateUrl', require('./infobar/scaleselector.html'));
   $templateCache.put('templatecache/ngeoOfflineTemplateUrl', require('./offlineNgeoComponent.html')); //  # FIXME was a function
   $templateCache.put('templatecache/ngeoOlcsControls3dTemplateUrl', require('./olcs/controls3d.html'));
-  $templateCache.put('templatecache/appBackgroundlayerTemplateUrl', require('./backgroundlayer/backgroundlayer.html'));
   $templateCache.put('templatecache/appBackgroundselectorTemplateUrl', require('./backgroundselector/backgroundselector.html'));
   $templateCache.put('templatecache/appLayermanagerTemplateUrl', require('./layermanager/layermanager.html'));
   $templateCache.put('templatecache/appLayerlegendsTemplateUrl', require('./layerlegends/layerlegends.html'));

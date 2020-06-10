@@ -47,8 +47,6 @@ import '../../less/geoportailv3.less';
  import appAskredirectAskredirectController from '../askredirect/AskredirectController.js';
  import appAuthenticationAuthenticationDirective from '../authentication/authenticationDirective.js';
  import appAuthenticationAuthenticationController from '../authentication/AuthenticationController.js';
- import appBackgroundlayerBackgroundlayerDirective from '../backgroundlayer/backgroundlayerDirective.js';
- import appBackgroundlayerBackgroundlayerController from '../backgroundlayer/BackgroundlayerController.js';
  import appBackgroundlayerBlankLayer from '../backgroundlayer/BlankLayer.js';
  import appBackgroundselectorController from '../backgroundselector/BackgroundselectorController.js';
  import appBackgroundselectorDirective from '../backgroundselector/BackgroundselectorDirective.js';
