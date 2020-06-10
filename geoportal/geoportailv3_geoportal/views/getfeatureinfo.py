@@ -197,6 +197,9 @@ class Getfeatureinfo(object):
         layers = self.request.params.get('layers', None)
         if layers is None:
             return HTTPBadRequest()
+        if not all(x.isdigit() for x in layers.split(',')):
+            return HTTPBadRequest()
+
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
         if big_box is None or small_box is None:
