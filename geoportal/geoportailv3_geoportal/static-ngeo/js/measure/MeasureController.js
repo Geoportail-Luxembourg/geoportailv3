@@ -121,18 +121,15 @@ const exports = function($scope, $q, $http, $compile, gettext,
     return text.startsWith('NaN') ? '' : text
   }
   const generateStyle = baseStyle => f => {
-    const style = baseStyle.clone()
     const geomType = f.getGeometry().getType()
-    style.getText().setText('')
 
     if (['Point', 'Circle'].includes(geomType)) {
-      style.getText().setText('')
-      return style;
+      return baseStyle;
     }
     if (this['measureArea'].getActive() && (geomType !== 'Polygon')) {
-      style.getText().setText('')
-      return style;
+      return baseStyle;
     }
+    const style = baseStyle.clone()
 
     let text = this[
       this['measureLength'].getActive() ? 'measureLength' :
@@ -235,7 +232,6 @@ const exports = function($scope, $q, $http, $compile, gettext,
     style: style
   })
   var features = []
-  window.map = this.map_
   this.map_.addLayer(layer)
   // layer.getSource().on('addfeature', e => features.push(e.feature))
   // layer.getSource().on('clear', () => layer.getSource().addFeatures(features))
