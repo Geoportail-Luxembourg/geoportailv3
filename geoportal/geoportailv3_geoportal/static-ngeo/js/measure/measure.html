@@ -16,4 +16,7 @@
        ng-model="ctrl.measureProfile.active" ng-show="!ctrl.measureProfile.active">Profile</a>
       <app-profile app-profile-data="ctrl.profileData" app-profile-interaction="ctrl.measureProfile" app-profile-map="::ctrl.map"></app-profile>
   </li>
+  <li ng-show="!ctrl.measureProfile.active">
+      <a href translate ng-click="ctrl.removeFeatures()">Reset</a>
+  </li>
 </ul>
