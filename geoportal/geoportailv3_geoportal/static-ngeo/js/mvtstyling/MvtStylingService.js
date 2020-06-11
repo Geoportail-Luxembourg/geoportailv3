@@ -11,7 +11,14 @@ const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
 const LS_KEY_HILLSHADE = 'hillshadeStyling';
-export const defaultMapBoxStyle = 'https://vectortiles.geoportail.lu/styles/roadmap/style.json';
+
+function getDefaultMapBoxStyleUrl() {
+  const searchParams = new URLSearchParams(document.location.search);
+  const embeddedServer = searchParams.get('embeddedserver');
+  const url = (embeddedServer ? 'http://' + embeddedServer : 'https://vectortiles.geoportail.lu') + '/styles/roadmap/style.json';
+  return url;
+}
+export const defaultMapBoxStyle = getDefaultMapBoxStyleUrl();
 export const defaultMapBoxStyleXYZ = 'https://vectortiles.geoportail.lu/styles/roadmap/{z}/{x}/{y}.png';
 
 

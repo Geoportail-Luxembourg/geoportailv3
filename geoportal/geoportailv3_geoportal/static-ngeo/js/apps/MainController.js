@@ -844,7 +844,11 @@ const MainController = function(
   // Super hack because we do not have access to the offline button controller
   this.map_.superHackIsItOKToSaveOffline = () => {
     const isIOS = document.location.search.includes("localforage=ios") || document.location.search.includes("fakeios");
-    return !isIOS || !this.backgroundLayerMgr_.get(this.map).getMapBoxMap
+    if (isIOS) {
+      const layer = this.backgroundLayerMgr_.get(this.map);
+      return layer && !layer.getMapBoxMap;
+    }
+    return true;
   };
 
   /**
