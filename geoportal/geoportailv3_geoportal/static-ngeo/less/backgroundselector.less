@@ -5,7 +5,6 @@
     position: absolute;
     top: .5em;
     right: .5em;
-    transition: left 300ms ease-out;
 
     text-align: center;
 
@@ -75,20 +74,16 @@
     }
 
     .opened {
-        opacity: 1;
+        opacity: 1; // cannot use display:hidden with transition
         transition: opacity .5s,transform .5s ease-out;
         transform: translateX(0);
     }
 
     .closed {
-        opacity: 0;
+        opacity: 0; // cannot use display:hidden with transition
         transform: translateX(120%);
         transition: opacity .5s,transform .5s ease-out;
     }
-}
-
-.panelOpen {
-    left: 20.5em;
 }
 
 @media (max-width: @screen-xs-max) {
