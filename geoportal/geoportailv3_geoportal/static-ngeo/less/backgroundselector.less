@@ -5,31 +5,31 @@
     position: absolute;
     top: 9em;
     left: .5em;
+    transition: left 300ms ease-out;
 
     text-align: center;
-
 
     /*
     placeholder color
     */
     .bg-selector-layer-0 {
         background-color: blue;
-    };
+    }
     .bg-selector-layer-1 {
         background-color: green;
-    };
+    }
     .bg-selector-layer-2 {
         background-color: red;
-    };
+    }
     .bg-selector-layer-3 {
         background-color: yellow;
-    };
+    }
     .bg-selector-layer-4 {
         background-color: purple;
-    };
+    }
     .bg-selector-layer-5 {
         background-color: white;
-    };
+    }
 
     .bg-selector-layer-0,
     .bg-selector-layer-1,
@@ -93,14 +93,14 @@
     .opened {
         visibility: visible;
         opacity: 1;
-        transition: visibility 0s, opacity 0s,transform .5s;
+        transition: visibility 0s, opacity 0s,transform .5s ease-out;
         transform: translateX(0);
     }
 
     .closed {
         visibility: hidden;
         opacity: 0;
-        transform: translateX(-100%);
+        transform: translateX(-150%);
     }
 
     .bg-selector-closer-mobile {
@@ -108,6 +108,10 @@
         width: 41px;
         height: 20px;
     }
+}
+
+.panelOpen {
+    left: 20.5em;
 }
 
 @media (max-width: @screen-xs-max) {

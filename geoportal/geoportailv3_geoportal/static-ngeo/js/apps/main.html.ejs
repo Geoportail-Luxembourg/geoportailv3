@@ -370,6 +370,7 @@
       </ngeo-offline>
       <app-backgroundselector
         class="background-layer"
+        ng-class="{panelOpen: mainCtrl.sidebarOpen()}"
         app-backgroundselector-map="::mainCtrl.map">
       </app-backgroundselector>
     </div>
