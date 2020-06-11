@@ -3,8 +3,8 @@
     height: auto;
 
     position: absolute;
-    top: 9em;
-    left: .5em;
+    top: .5em;
+    right: .5em;
     transition: left 300ms ease-out;
 
     text-align: center;
@@ -44,12 +44,13 @@
     }
 
     .bg-selector-layer {
+        float: left;
+        height: 41px;
+        width: 41px;
         padding: 3px;
     }
 
     .bg-selector-layer,
-    .bg-selector-closer,
-    .bg-selector-closer-mobile,
     .bg-selector-opener {
         cursor: pointer;
         border: 1px solid black;
@@ -62,24 +63,7 @@
     }
 
     .bg-selector-layer:hover {
-        border: 3px solid black;
-    }
-
-    .bg-selector-layer,
-    .bg-selector-closer {
-        float: left;
-        height: 41px;
-        margin: 0 2px;
-    }
-
-    .bg-selector-layer {
-        width: 41px;
-    }
-
-    .bg-selector-closer {
-        width: 20px;
-        display: inline-block;
-        padding-top: .5em;
+        background-color: #2980b9;
     }
 
     .bg-selector-opener {
@@ -87,26 +71,19 @@
         height: 41px;
 
         position: absolute;
-        left: 0;
+        right: 0;
     }
 
     .opened {
-        visibility: visible;
         opacity: 1;
-        transition: visibility 0s, opacity 0s,transform .5s ease-out;
+        transition: opacity .5s,transform .5s ease-out;
         transform: translateX(0);
     }
 
     .closed {
-        visibility: hidden;
         opacity: 0;
-        transform: translateX(-150%);
-    }
-
-    .bg-selector-closer-mobile {
-        display: none;
-        width: 41px;
-        height: 20px;
+        transform: translateX(120%);
+        transition: opacity .5s,transform .5s ease-out;
     }
 }
 
@@ -116,24 +93,10 @@
 
 @media (max-width: @screen-xs-max) {
     .background-layer {
-        top: 6.5em;
         width: 41px;
-
-        .bg-selector-layer,
-        .bg-selector-closer {
-            margin: 2px 0;
-        }
 
         .bg-selector-opener {
             top: 0;
-        }
-
-        .bg-selector-closer-mobile {
-            display: inline-block;
-        }
-
-        .bg-selector-closer {
-            display: none;
         }
     }
 }

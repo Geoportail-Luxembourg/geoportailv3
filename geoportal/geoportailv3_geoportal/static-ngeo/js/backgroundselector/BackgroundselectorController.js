@@ -63,14 +63,6 @@ class Controller {
             this.bgLayer = current;
 
         });
-
-        // $('.bg-selector-opener').on('click', evt => {
-        //     console.log(evt);
-        // });
-
-        // $('.bg-selector-closer').on('click', evt => {
-        //     console.log(evt);
-        // });
       };
 
     /**
