@@ -45,8 +45,8 @@
 
     .bg-selector-layer {
         float: left;
-        height: 41px;
-        width: 41px;
+        width: 90px;
+        height: 58px;
         padding: 3px;
     }
 
@@ -67,8 +67,8 @@
     }
 
     .bg-selector-opener {
-        width: 41px;
-        height: 41px;
+        width: 90px;
+        height: 58px;
 
         position: absolute;
         right: 0;
@@ -93,7 +93,13 @@
 
 @media (max-width: @screen-xs-max) {
     .background-layer {
-        width: 41px;
+        width: 41px; // force top-bottom alignement
+
+        .bg-selector-layer,
+        .bg-selector-opener {
+            width: 41px;
+            height: 41px;
+        }
 
         .bg-selector-opener {
             top: 0;
