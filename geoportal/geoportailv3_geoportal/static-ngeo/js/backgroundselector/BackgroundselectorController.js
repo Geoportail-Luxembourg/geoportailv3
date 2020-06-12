@@ -37,6 +37,11 @@ class Controller {
          * @type {boolean}
          */
         this.isOpened = false;
+
+        /**
+         * @type {string}
+         */
+        this.openerClass = 'bg-selector-layer-0';
     }
 
     $onInit() {
@@ -81,6 +86,14 @@ class Controller {
     toggleSelector() {
         this.isOpened = !this.isOpened;
     };
+
+    /**
+    * @param {number} index Index.
+    * @export
+     */
+    setOpenerClass(index) {
+        this.openerClass = 'bg-selector-layer-' + index;
+    }
 };
 
 appModule.controller('AppBackgroundselectorController', Controller);
