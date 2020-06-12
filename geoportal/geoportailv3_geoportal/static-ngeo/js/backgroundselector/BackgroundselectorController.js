@@ -67,6 +67,9 @@ class Controller {
             current.setVisible(true);
             this.bgLayer = current;
 
+            // Set initial opener class with loaded theme
+            const idx = this.bgLayers.findIndex(layer => layer === current);
+            this.openerClass = `bg-selector-layer-${idx}`;
         });
       };
 
@@ -86,14 +89,6 @@ class Controller {
     toggleSelector() {
         this.isOpened = !this.isOpened;
     };
-
-    /**
-    * @param {number} index Index.
-    * @export
-     */
-    setOpenerClass(index) {
-        this.openerClass = 'bg-selector-layer-' + index;
-    }
 };
 
 appModule.controller('AppBackgroundselectorController', Controller);
