@@ -799,6 +799,13 @@ const MainController = function(
   this['selectedLayers'] = [];
 
   /**
+   * @type {function}
+   */
+  this['selectedLayersLength'] = function() {
+    return this['selectedLayers'].filter(l => !l.get('metadata').hidden).length
+  }
+
+  /**
    * @type {Array}
    */
   this['ageLayers'] = [];
