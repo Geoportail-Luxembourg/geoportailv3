@@ -242,7 +242,10 @@ const exports = function($scope, $q, $http, $compile, gettext,
       'Double-click or click last point to finish');
   const layer = new olLayerVector({
     source: new olSourceVector(),
-    style: style
+    style: style,
+    metadata: {
+      hidden: true
+    }
   })
   this.map_.addLayer(layer)
 
