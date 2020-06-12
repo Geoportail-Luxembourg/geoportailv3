@@ -1,10 +1,12 @@
 <div ng-class="ctrl.isOpened == true ? 'opened' : 'closed'">
   <div ng-repeat="layer in ctrl.bgLayers"
-    ng-click="ctrl.setBackgroundLayer(layer)"
+    ng-click="ctrl.setBackgroundLayer(layer); ctrl.setOpenerClass($index)"
     class="bg-selector-layer"
     ng-class="{active: ctrl.bgLayer === layer}">
     <span class="bg-selector-layer-{{$index}}"></span>
   </div>
 </div>
 
-<div class="bg-selector-opener" ng-click="ctrl.toggleSelector()" ng-class="ctrl.isOpened == true ? 'closed' : 'opened'"></div>
+<div class="bg-selector-opener" ng-click="ctrl.toggleSelector()" ng-class="ctrl.isOpened == true ? 'closed' : 'opened'">
+  <span ng-class="ctrl.openerClass"></span>
+</div>
