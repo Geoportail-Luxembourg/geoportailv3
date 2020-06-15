@@ -486,7 +486,7 @@ const exports = function($sce, $timeout, $scope, $http,
   // Load info window if fid has a valid value
   var fid = this.ngeoLocation_.getParam('fid');
 
-  if (appStateManager.getInitialParamKeys().length == 1 && this.isFIDValid_(fid)) {
+  if (this.isFIDValid_(fid)) {
     this.getFeatureInfoById_(fid);
     this.ngeoLocation_.deleteParam('fid');
   }
