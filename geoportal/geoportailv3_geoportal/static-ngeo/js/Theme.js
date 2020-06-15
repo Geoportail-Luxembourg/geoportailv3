@@ -36,7 +36,8 @@ const exports = function($window, ngeoLocation, appThemes) {
     'cadastre_hertzien': 25,
     'atlas_demographique': 29,
     'urban_farming': 30,
-    'logement': 32
+    'logement': 32,
+    'energie': 40
   };
 
   /**
