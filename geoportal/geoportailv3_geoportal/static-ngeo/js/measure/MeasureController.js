@@ -191,6 +191,14 @@ const exports = function($scope, $q, $http, $compile, gettext,
   });
   var style = generateStyle(style_)
 
+  const layer = new olLayerVector({
+    source: new olSourceVector(),
+    style: style,
+    metadata: {
+      hidden: true
+    }
+  })
+  this.map_.addLayer(layer)
 
   var helpMsg = gettext('Click to start drawing profile');
   var contMsg = gettext('Click to continue drawing the line<br>' +
@@ -240,14 +248,6 @@ const exports = function($scope, $q, $http, $compile, gettext,
   helpMsg = gettext('Click to start drawing area');
   contMsg = gettext('Click to continue drawing the polygon<br>' +
       'Double-click or click last point to finish');
-  const layer = new olLayerVector({
-    source: new olSourceVector(),
-    style: style,
-    metadata: {
-      hidden: true
-    }
-  })
-  this.map_.addLayer(layer)
 
   /**
    * @type {ol.layer.Vector}
