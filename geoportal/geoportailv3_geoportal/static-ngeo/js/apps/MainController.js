@@ -801,8 +801,8 @@ const MainController = function(
   /**
    * @type {function}
    */
-  this['selectedLayersLength'] = function() {
-    return this['selectedLayers'].filter(l => !l.get('metadata').hidden).length
+  this.selectedLayersLength = function() {
+    return this.selectedLayers.filter(l => !l.get('metadata').hidden).length
   }
 
   /**
