@@ -180,7 +180,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
     text: new olStyleText({
       font: 'bold 12px Calibri,sans-serif',
       fill: new olStyleFill({
-        color: 'rgb(0 0 0 / 100)'
+        color: 'rgb(0 0 0)'
       }),
       stroke: new olStyleStroke({
         color: 'rgba(255, 204, 51, 1)',
