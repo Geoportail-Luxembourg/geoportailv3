@@ -31,9 +31,9 @@
     </script>
   </head>
 
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled()}">
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded}">
     <!-- Begin fixed top bar -->
-    <header class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
         <div class="navbar-inner">
           <div class="pull-left brand">
@@ -92,7 +92,7 @@
     <!-- Begin page content (ie. map + left sidebar) -->
     <div id="main-container">
       <div id="sidebar" ng-class="{open: mainCtrl.sidebarOpen()}"
-           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
+           app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()" ng-show="::!mainCtrl.embedded">
 
         <!-- Layers -->
         <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
@@ -366,6 +366,7 @@
           ngeo-offline-min-zoom="::12"
           ngeo-offline-max-zoom="::16"
           ng-class="{'offline-mode': mainCtrl.offlineMode.isEnabled()}"
+          ng-show="!mainCtrl.embedded"
       >
       </ngeo-offline>
       <app-backgroundselector
@@ -375,7 +376,7 @@
     </div>
   </div>
     <!-- Begin bottom bar -->
-    <footer class="footer">
+    <footer class="footer" ng-show="::!mainCtrl.embedded">
       <ul class="sidebar-controls nav navbar-nav pull-left"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"

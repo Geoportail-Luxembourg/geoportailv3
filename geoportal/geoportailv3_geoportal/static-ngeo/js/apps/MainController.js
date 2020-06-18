@@ -836,6 +836,11 @@ const MainController = function(
   this.appUserManager_.getUserInfo();
 
   /**
+   * @type {boolean}
+   */
+  this.embedded = !!(new URL(window.location).searchParams.get('embedded'))
+
+  /**
    * @const {!app.Map}
    * @private
    */
