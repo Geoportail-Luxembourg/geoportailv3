@@ -18,12 +18,13 @@ import ngeoUtils from 'ngeo/utils.js';
 /**
  * @ngInject
  * @constructor
+ * @param {angular.$scope} $scope The scope service.
  * @param {angular.$window} $window The window service.
  * @param {gettext} gettext The gettext service.
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
  * @export
  */
-const exports = function($window, gettext, gettextCatalog) {
+const exports = function($scope, $window, gettext, gettextCatalog) {
   /**
    * @type {Object}
    * @private
@@ -57,6 +58,26 @@ const exports = function($window, gettext, gettextCatalog) {
    * @private
    */
   this.emailString_ = gettext(' - link from geoportail.lu');
+
+  // Update integration link on location change when component is active.
+  $scope.$watch(() => this['active'], (newVal) => {
+    if (newVal === true) {
+      this.setUrl_();
+      this.removeListener = $scope.$on('ngeoLocationChange', () => this.setUrl_());
+    } else if (newVal === false && this.removeListener) {
+      this.removeListener();
+    }
+  });
+};
+
+/**
+ * @private
+ */
+exports.prototype.setUrl_ = function() {
+  const input = document.querySelector(".embedded-input");
+  const url = new URL(window.location);
+  url.searchParams.set('embedded', 'true');
+  input.value = `<iframe src='${url.toString()}' width='400' height='300' frameborder='0' style='border:0'></iframe>`;
 };
 
 
@@ -114,6 +135,15 @@ exports.prototype.openMailLink = function() {
 
   this.window_.open(url, '_self', this.windowOptions_);
   return false;
+};
+
+/**
+ * Copy to clipboard
+ */
+exports.prototype.copyLink = function() {
+  const input = document.querySelector(".embedded-input");
+  input.select();
+  document.execCommand("copy");
 };
 
 appModule.controller('AppShareController', exports);

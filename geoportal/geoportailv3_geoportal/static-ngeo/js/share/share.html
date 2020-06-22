@@ -1,16 +1,26 @@
 <div class="nav toolbox-panel toolbox-panel-bottom">
   <ul class="nav toolbox-panel">
     <li>
-    <a href ng-click="ctrl.openFbLink()" translate>Facebook</a>
+      <a href ng-click="ctrl.openFbLink()" translate>Facebook</a>
     </li>
     <li>
-    <a href ng-click="ctrl.openShareLink('twitter')" translate>Twitter</a>
+      <a href ng-click="ctrl.openShareLink('twitter')" translate>Twitter</a>
     </li>
     <li>
-    <a href ng-click="ctrl.openMailLink()" translate>Email</a>
+      <a href ng-click="ctrl.openMailLink()" translate>Email</a>
     </li>
   </ul>
-  <app-shorturl app-shorturl-active="ctrl.active"
+  <app-shorturl
+    app-shorturl-active="ctrl.active"
     app-shorturl-active-mymaps="ctrl.activeMymaps"
-    app-shorturl-show-long-url="ctrl.showLongUrl"></app-shorturl>
+    app-shorturl-show-long-url="ctrl.showLongUrl"
+  ></app-shorturl>
+  <hr>
+  <form class="form-horizontal share-embedded">
+    <label class="col-sm-12" translate>Integrate</label>
+    <div class="input-group col-sm-12">
+      <input type="text" class="form-control embedded-input" />
+      <button class="input-group-addon" ng-click="ctrl.copyLink()" translate>Copy</button>
+    </div>
+  </form>
 </div>
