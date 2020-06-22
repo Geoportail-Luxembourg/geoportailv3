@@ -836,6 +836,11 @@ const MainController = function(
   this.appUserManager_.getUserInfo();
 
   /**
+   * @type {boolean}
+   */
+  this.embedded = !!(new URL(window.location).searchParams.get('embedded'))
+
+  /**
    * @const {!app.Map}
    * @private
    */
@@ -957,8 +962,8 @@ const MainController = function(
     !this['feedbackCruesOpen'] &&
     !this['feedbackAnfOpen'] &&
     !this['feedbackAgeOpen'] &&
-    this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') ?
-    true : false;
+    this.stateManager_.getValueFromLocalStorage('layersOpen') !== 'false') &&
+    !this.embedded;
     this['mymapsOpen'] = (!this.appGetDevice_.testEnv('xs') &&
         this.ngeoLocation_.getParam('map_id') !== undefined &&
         !this['feedbackCruesOpen'] &&

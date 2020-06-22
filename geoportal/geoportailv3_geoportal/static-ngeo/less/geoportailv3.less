@@ -35,6 +35,10 @@ body {
   font-family: 'DINNextLTPro-Condensed', Arial, sans-serif;
 }
 
+body.embedded {
+  padding: 0;
+}
+
 .map-wrapper {
   height: 100%;
 }
@@ -113,6 +117,16 @@ body.enabled-3d {
 }
 .olcs-hideoverlay .ol-overlay-container {
   visibility:hidden;
+}
+
+body.embedded {
+  app-backgroundselector,
+  app-toggle-3d,
+  app-infobar,
+  .location-button,
+  .ol-full-screen {
+    display: none;
+  }
 }
 
 
