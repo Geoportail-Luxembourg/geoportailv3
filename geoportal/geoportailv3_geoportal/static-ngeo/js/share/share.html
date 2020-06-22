@@ -15,4 +15,12 @@
     app-shorturl-active-mymaps="ctrl.activeMymaps"
     app-shorturl-show-long-url="ctrl.showLongUrl"
   ></app-shorturl>
+  <hr>
+  <form class="form-horizontal share-embedded">
+    <label class="col-sm-12">Integrate</label>
+    <div class="input-group col-sm-12">
+      <input type="text" class="form-control embedded-input" />
+      <button class="input-group-addon" ng-click="ctrl.copyLink()">Copy</button>
+    </div>
+  </form>
 </div>
