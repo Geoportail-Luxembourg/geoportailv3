@@ -22,11 +22,22 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://www.geoportail.lu/static/images/apple-icon-72x72-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://www.geoportail.lu/static/images/apple-icon-114x114-precomposed.png" />
     <script>
-        var dev = document.location.href.indexOf('dev/main') !== -1;
         if ('serviceWorker' in navigator) {
-          navigator.serviceWorker
-            .register('/sw.js' + (dev ? '?dev' : ''))
-            .then(function() { console.log("Service Worker Registered"); });
+          var dev = document.location.href.indexOf('dev/main') !== -1;
+          var fakeios = document.location.href.indexOf('fakeios') !== -1;
+          if (fakeios) {
+            navigator.serviceWorker.getRegistrations().then(
+              function(registrations) {
+                for(let registration of registrations) {
+                  registration.unregister()
+                }
+              }
+            );
+          } else {
+            navigator.serviceWorker
+              .register('/sw.js' + (dev ? '?dev' : ''))
+              .then(function() { console.log("Service Worker Registered"); });
+          }
         }
     </script>
   </head>
