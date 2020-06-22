@@ -77,7 +77,7 @@ exports.prototype.setUrl_ = function() {
   const input = document.querySelector(".embedded-input");
   const url = new URL(window.location);
   url.searchParams.set('embedded', 'true');
-  input.value = url.toString();
+  input.value = `<iframe src='${url.toString()}' width='400' height='300' frameborder='0' style='border:0'></iframe>`;
 };
 
 
