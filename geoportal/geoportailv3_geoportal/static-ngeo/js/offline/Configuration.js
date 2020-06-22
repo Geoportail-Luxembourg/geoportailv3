@@ -42,7 +42,7 @@ const exports = class extends NgeoConfiguration {
      */
     this.appMymaps_ = appMymaps;
 
-    const isMobile = location.search.includes('localforage=android') || location.search.includes('localforage=ios');
+    const isMobile = location.search.includes('localforage=android') || location.search.includes('localforage=ios') || location.search.includes('fakeios');
 
     /**
      * @type {number}
