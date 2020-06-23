@@ -31,6 +31,7 @@ import olStyleStyle from 'ol/style/Style.js';
 import olLayerVector from 'ol/layer/Vector.js';
 import olSourceVector from 'ol/source/Vector.js';
 import olFeature from 'ol/Feature.js';
+import { fromCircle } from 'ol/geom/Polygon';
 
 
 /**
@@ -131,12 +132,15 @@ const exports = function($scope, $q, $http, $compile, gettext,
     }
     // Clone style because text style should not be shared
     const style = baseStyle.clone()
-    const getCollectionStyle = s => {
+    const getCollectionStyle = (s, transform) => {
       let clone = s.clone()
       clone.getText().setText('')
-      clone.setGeometry(f.getGeometry().getGeometries()[1]); // Radius
-      s.setGeometry(f.getGeometry().getGeometries()[0]); // Circle
-      return [ s, clone ]
+      let geometries = f.getGeometry().getGeometries()
+      let radius = geometries.find(g => g.getType() === 'LineString')
+      let circle = geometries.find(g => g.getType() === 'Circle')
+      s.setGeometry(radius);
+      clone.setGeometry(transform ? fromCircle(circle, 64) : circle);
+      return [ clone, s ]
     }
 
     // once interaction is deactivated, one cannot access to its tooltip,
@@ -144,7 +148,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
     if (f.get('text')) {
       style.getText().setText(f.get('text'))
       if (geomType === 'GeometryCollection') {
-        return getCollectionStyle(style)
+        return getCollectionStyle(style, true)
       }
       return style
     }
@@ -165,7 +169,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
 
   let style_ = new olStyleStyle({
     fill: new olStyleFill({
-      color: 'rgba(255, 204, 51, 0.3)'
+      color: 'rgba(255, 204, 51, 0.2)'
     }),
     stroke: new olStyleStroke({
       color: 'rgba(255, 204, 51, 1)',
