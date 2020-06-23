@@ -119,6 +119,13 @@ body.enabled-3d {
   visibility:hidden;
 }
 
+header,
+footer,
+.routing-goto-route,
+.routing-rounded-button {
+  display: none;
+}
+
 body.embedded {
   app-backgroundselector,
   app-toggle-3d,
@@ -127,6 +134,13 @@ body.embedded {
   .ol-full-screen {
     display: none;
   }
+}
+
+body.full header,
+body.full footer,
+body.full .routing-goto-route,
+body.full .routing-rounded-button {
+  display: block;
 }
 
 
