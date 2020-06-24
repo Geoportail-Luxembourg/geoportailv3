@@ -134,6 +134,29 @@ body.embedded {
   .ol-full-screen {
     display: none;
   }
+  #sidebar {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    height: 40vh;
+    background: white;
+    z-index: 100;
+    display: none;
+    .close-panel,
+    h2 {
+      color: #111;
+      background: #eee;
+    }
+    #infos {
+      .tab-content {
+        background: white;
+        color: #333;
+      }
+    }
+    &.open {
+      display: block;
+    }
+  }
 }
 
 body.full header,
