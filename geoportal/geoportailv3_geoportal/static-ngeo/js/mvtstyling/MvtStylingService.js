@@ -14,8 +14,9 @@ const LS_KEY_HILLSHADE = 'hillshadeStyling';
 
 function getDefaultMapBoxStyleUrl() {
   const searchParams = new URLSearchParams(document.location.search);
-  const embeddedServer = searchParams.get('embeddedserver');
-  const url = (embeddedServer ? 'http://' + embeddedServer : 'https://vectortiles.geoportail.lu') + '/styles/roadmap/style.json';
+  const server = searchParams.get('embeddedserver');
+  const proto = searchParams.get('embeddedserverprotocol') || 'http';
+  const url = (server ? `${proto}://${server}` : 'https://vectortiles.geoportail.lu') + '/styles/roadmap/style.json';
   return url;
 }
 export const defaultMapBoxStyle = getDefaultMapBoxStyleUrl();
