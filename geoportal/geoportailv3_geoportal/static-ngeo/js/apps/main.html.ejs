@@ -42,7 +42,7 @@
     </script>
   </head>
 
-  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded}">
+  <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
       <div class="container-fluid">
@@ -185,7 +185,8 @@
                               app-locationinfo-open="mainCtrl.infosOpen"
                               app-locationinfo-routing-open="mainCtrl.routingOpen"
                               app-locationinfo-appselector="mainCtrl.infosAppSelector"
-                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent">
+                              app-locationinfo-hidden-content="mainCtrl.infosHiddenContent"
+                              ng-if="::!mainCtrl.embedded">
             </app-locationinfo>
             <div class="row" ng-show="mainCtrl.infosAppSelector === undefined">
               <div class="col-xs-12">
