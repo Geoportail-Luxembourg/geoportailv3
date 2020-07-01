@@ -138,7 +138,8 @@ body.embedded {
     position: absolute;
     top: 0.5em;
     left: 0.5em;
-    height: 40vh;
+    max-height: ~"calc(100% - 1em)";
+    width: ~"calc(50% - 0.5em)";
     background: white;
     z-index: 100;
     display: none;
@@ -146,8 +147,20 @@ body.embedded {
     h2 {
       color: #111;
       background: #eee;
+      font-size: 20px;
+    }
+    h2 {
+      padding: 8px 0 8px 8px;
+    }
+    .close-panel {
+      top: 6px;
+      right: 6px;
     }
     #infos {
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
       .tab-content {
         background: white;
         color: #333;
