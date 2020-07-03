@@ -184,6 +184,9 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
+import DragRotate from 'ol/interaction/DragRotate';
+import { shiftKeyOnly, altShiftKeyOnly } from 'ol/events/condition';
+
 function getDefaultHillshadeStyling() {
   const gettext = t => t;
   return [{
@@ -1233,6 +1236,11 @@ MainController.prototype.createMap_ = function() {
     pinchRotate: false,
     constrainResolution: true
   });
+  const rotate = new DragRotate({
+    condition: new URL(window.location).searchParams.has('shiftKeyRotate')
+      ? shiftKeyOnly
+      : altShiftKeyOnly
+  });
   var map = this['map'] = new appMap({
     logo: false,
     controls: [
@@ -1242,14 +1250,14 @@ MainController.prototype.createMap_ = function() {
       new olControlAttribution({collapsible: false,
         collapsed: false, className: 'geoportailv3-attribution'})
     ],
-    interactions: interactions,
+    interactions: interactions.extend([rotate]),
     keyboardEventTarget: document,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new olView({
       maxZoom: 19,
       minZoom: 8,
-      enableRotation: false,
+      enableRotation: true,
       extent: this.maxExtent_
     })
   });
