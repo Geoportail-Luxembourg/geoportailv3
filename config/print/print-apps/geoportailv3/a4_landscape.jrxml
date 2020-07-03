@@ -11,6 +11,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
+	<parameter name="northArrowSubReport" class="java.lang.String"/>
 	<parameter name="disclaimer" class="java.lang.String"/>
 	<parameter name="dateText" class="java.lang.String"/>
 	<parameter name="scaleTitle" class="java.lang.String"/>
@@ -51,6 +52,10 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<subreportExpression><![CDATA[$P{mapSubReport}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="670" y="60" width="40" height="40" uuid="0fae1157-6844-4e51-9e64-b0cf1fdfcc86"/>
+				<subreportExpression><![CDATA[$P{northArrowSubReport}]]></subreportExpression>
 			</subreport>
 			<subreport>
 				<reportElement x="427" y="463" width="230" height="40" uuid="fa145068-76a5-4834-98ed-ce65b1976b3d">
