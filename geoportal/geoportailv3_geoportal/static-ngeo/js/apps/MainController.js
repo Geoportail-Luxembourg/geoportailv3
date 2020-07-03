@@ -1237,7 +1237,7 @@ MainController.prototype.createMap_ = function() {
     constrainResolution: true
   });
   const rotate = new DragRotate({
-    condition: new URL(window.location).searchParams.has('shiftKeyRotate')
+    condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
       ? shiftKeyOnly
       : altShiftKeyOnly
   });
