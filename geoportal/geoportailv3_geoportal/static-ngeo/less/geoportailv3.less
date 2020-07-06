@@ -99,6 +99,22 @@ app-map {
   .ngeo-tooltip-static:before {
     border-top-color: #ffcc33;
   }
+  .ol-rotate {
+    right: auto;
+    left: 8px;
+    top: 196px;
+    button {
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .ol-viewport .ol-rotate {
+    top: 96px;
+  }
 }
 
 .hidden-2d {
