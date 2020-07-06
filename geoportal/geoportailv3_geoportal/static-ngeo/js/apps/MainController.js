@@ -184,6 +184,10 @@ import '../../less/geoportailv3.less';
  import '../mvtstyling/SimpleStyleController.js';
  /* eslint-enable no-unused-vars */
 
+import DragRotate from 'ol/interaction/DragRotate';
+import { shiftKeyOnly, altShiftKeyOnly } from 'ol/events/condition';
+import Rotate from 'ol/control/Rotate';
+
 function getDefaultHillshadeStyling() {
   const gettext = t => t;
   return [{
@@ -1240,6 +1244,11 @@ MainController.prototype.createMap_ = function() {
     pinchRotate: false,
     constrainResolution: true
   });
+  const rotate = new DragRotate({
+    condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
+      ? shiftKeyOnly
+      : altShiftKeyOnly
+  });
   var map = this['map'] = new appMap({
     logo: false,
     controls: [
@@ -1247,16 +1256,17 @@ MainController.prototype.createMap_ = function() {
       // the zoom to extent control will be added later since it depends on ol3dm
       new olControlFullScreen({label: '\ue01c', labelActive: '\ue02c'}),
       new olControlAttribution({collapsible: false,
-        collapsed: false, className: 'geoportailv3-attribution'})
+        collapsed: false, className: 'geoportailv3-attribution'}),
+      new Rotate({})
     ],
-    interactions: interactions,
+    interactions: interactions.extend([rotate]),
     keyboardEventTarget: document,
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new olView({
       maxZoom: 19,
       minZoom: 8,
-      enableRotation: false,
+      enableRotation: true,
       extent: this.maxExtent_
     })
   });

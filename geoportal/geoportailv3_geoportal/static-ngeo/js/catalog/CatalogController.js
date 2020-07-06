@@ -142,7 +142,7 @@ exports.prototype.setThemeZooms = function(tree) {
       minZoom: 8,
       extent: this.maxExtent_,
       center: currentView.getCenter(),
-      enableRotation: false,
+      enableRotation: true,
       zoom: currentView.getZoom()
     }));
   }

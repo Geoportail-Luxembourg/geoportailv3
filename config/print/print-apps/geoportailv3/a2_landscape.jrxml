@@ -11,6 +11,7 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
 	<parameter name="mapSubReport" class="java.lang.String"/>
 	<parameter name="scalebarSubReport" class="java.lang.String"/>
+	<parameter name="northArrowSubReport" class="java.lang.String"/>
 	<parameter name="disclaimer" class="java.lang.String"/>
 	<parameter name="dateText" class="java.lang.String"/>
 	<parameter name="scaleTitle" class="java.lang.String"/>
@@ -133,6 +134,10 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dateText}+(new SimpleDateFormat("dd/MM/yyyy HH:mm")).format(new java.util.Date())]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="1500" y="70" width="40" height="40" uuid="a5576139-6e3d-42c0-a298-38a0121ab125"/>
+				<subreportExpression><![CDATA[$P{northArrowSubReport}]]></subreportExpression>
+			</subreport>
 		</band>
 	</title>
 </jasperReport>
