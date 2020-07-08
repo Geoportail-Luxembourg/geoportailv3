@@ -48,11 +48,19 @@ luxx.MapOptions.prototype.bgSelector;
 
 /**
  * Controls initially added to the map. If not specified,
- * {@link ol.control.defaults ol.control.defaults()} is used.
+ * {@link ol.control.defaults ol.control.defaults()} is used plus a {@link ol.control.Rotate rotate control}.
  * @type {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined}
  * @api
  */
 luxx.MapOptions.prototype.controls;
+
+/**
+ * Interactions initially added to the map. If not specified,
+ * {@link ol.interaction.defaults ol.interaction.defaults()} is used, plus a {@link ol.interaction.DragRotate dragRotate interaction}.
+ * @type {ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.interactions;
 
 /**
  * Set the presence of features to recenter on & to show markers for.
