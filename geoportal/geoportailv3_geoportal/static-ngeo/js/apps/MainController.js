@@ -366,7 +366,15 @@ const MainController = function(
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     appMvtStylingService.saveBgStyle(bgLayer)
-    .then(() => this.resetLayerFor3d_());
+    .then(result => {
+      const config = JSON.stringify(this.mediumStylingData);
+      this.ngeoLocation_.updateParams({
+        'serial': config
+      });
+      this.appMvtStylingService.apply_mvt_config(config);
+      this.ngeoLocation_.refresh();
+      this.resetLayerFor3d_();
+    });
   }, 2000, false);
 
   this.resetLayerFor3d_ = () => {
@@ -1099,7 +1107,13 @@ const MainController = function(
       const result = e.target.result;
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.appMvtStylingService.saveBgStyle(bgLayer);
+      this.appMvtStylingService.saveBgStyle(bgLayer).then(result => {
+        const id = result[0];
+        this.ngeoLocation_.updateParams({
+          'serial': id
+        });
+        this.ngeoLocation_.refresh();
+      });
     });
 
     // Reset form value
@@ -1115,6 +1129,7 @@ const MainController = function(
     this.resetLayerFor3d_();
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();
+    this.ngeoLocation_.deleteParam('serial');
   };
 
   /**
