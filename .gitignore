@@ -22,3 +22,4 @@ __pycache__/
 /print/WEB-INF/
 /geoportailv3.egg-info/
 /geoportal/jsapi/node_modules/
+/ios_bundle/
