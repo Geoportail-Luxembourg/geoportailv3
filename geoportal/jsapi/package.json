@@ -50,8 +50,6 @@
     "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/9bc93a85a2cf25fbec11905597f3c5cbc18acea5",
     "olcs": "0.0.2",
     "openlayers": "https://api.github.com/repos/openlayers/openlayers/tarball/72ca7b2",
-    "phantomjs": "~1.9.7-5",
-    "phantomjs-prebuilt": "2.1.12",
     "proj4": "2.4.4",
     "promise-polyfill": "5.2.1",
     "temp": "0.8.3",

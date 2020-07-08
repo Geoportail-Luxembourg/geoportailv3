@@ -2,7 +2,7 @@ const webpackMerge = require('webpack-merge');
 const apps = require('./webpack.apps.js');
 const commons = require('ngeo/buildtools/webpack.commons');
 
-let config = commons.config({}, false);
+let config = commons();
 let devProdConfig;
 
 const nodeEnv = process.env['NODE_ENV'] || 'development';
