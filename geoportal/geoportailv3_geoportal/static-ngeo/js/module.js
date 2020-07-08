@@ -7,7 +7,7 @@
  * module.
  */
 
-import {TOUCH} from 'ol/has.js';
+const TOUCH = 'ontouchstart' in window;
 
 import ngeoDatasourceModule from 'ngeo/datasource/module.js';
 import ngeoDownloadModule from 'ngeo/download/module.js';

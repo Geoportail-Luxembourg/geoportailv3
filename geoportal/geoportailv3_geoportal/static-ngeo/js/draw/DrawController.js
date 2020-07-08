@@ -21,7 +21,7 @@ import appInteractionClipLine from '../interaction/ClipLine.js';
 import appInteractionModifyCircle from '../interaction/ModifyCircle.js';
 import appNotifyNotificationType from '../NotifyNotificationType.js';
 import ngeoInteractionTranslate from 'ngeo/interaction/Translate.js';
-import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import {interactionDecoration} from 'ngeo/misc/decorate.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import olFeature from 'ol/Feature.js';
 import {getChangeEventType} from 'ol/Object.js';
@@ -224,7 +224,7 @@ const exports = function($scope,
   this.drawPoint = drawPoint;
 
   drawPoint.setActive(false);
-  ngeoMiscDecorate.interaction(drawPoint);
+  interactionDecoration(drawPoint);
   this.map.addInteraction(drawPoint);
   listen(drawPoint, getChangeEventType(
       'active'),
@@ -243,7 +243,7 @@ const exports = function($scope,
   this.drawLabel = drawLabel;
 
   drawLabel.setActive(false);
-  ngeoMiscDecorate.interaction(drawLabel);
+  interactionDecoration(drawLabel);
   this.map.addInteraction(drawLabel);
   listen(drawLabel, getChangeEventType(
       'active'),
@@ -265,7 +265,7 @@ const exports = function($scope,
   this.drawLine = this.drawnFeatures_.drawLineInteraction;
 
   this.drawLine.setActive(false);
-  ngeoMiscDecorate.interaction(this.drawLine);
+  interactionDecoration(this.drawLine);
   this.map.addInteraction(this.drawLine);
   listen(this.drawLine, getChangeEventType(
       'active'),
@@ -286,7 +286,7 @@ const exports = function($scope,
   this.drawPolygon = drawPolygon;
 
   drawPolygon.setActive(false);
-  ngeoMiscDecorate.interaction(drawPolygon);
+  interactionDecoration(drawPolygon);
   this.map.addInteraction(drawPolygon);
   listen(drawPolygon, getChangeEventType(
       'active'),
@@ -307,7 +307,7 @@ const exports = function($scope,
   this.drawCircle = drawCircle;
 
   drawCircle.setActive(false);
-  ngeoMiscDecorate.interaction(drawCircle);
+  interactionDecoration(drawCircle);
   this.map.addInteraction(drawCircle);
   listen(drawCircle, getChangeEventType(
       'active'),

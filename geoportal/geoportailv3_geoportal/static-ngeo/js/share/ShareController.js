@@ -13,7 +13,7 @@
  */
 
 import appModule from '../module.js';
-import ngeoUtils from 'ngeo/utils.js';
+import {encodeQueryString} from 'ngeo/utils.js';
 
 /**
  * @ngInject
@@ -88,7 +88,7 @@ exports.prototype.setUrl_ = function() {
  */
 exports.prototype.openShareLink = function(service) {
   if (service in this.services_) {
-    var url = this.services_[service].url + '?' + ngeoUtils.encodeQueryString({
+    var url = this.services_[service].url + '?' + encodeQueryString({
       //twitter params
       'text': this.window_.document.title,
       'via': 'geoportail_lux',
@@ -107,7 +107,7 @@ exports.prototype.openShareLink = function(service) {
  * @return {boolean} Always return false.
  */
 exports.prototype.openFbLink = function() {
-  var url = this.services_['facebook'].url + '?' + ngeoUtils.encodeQueryString({
+  var url = this.services_['facebook'].url + '?' + encodeQueryString({
     //fb params
     'app_id': '162604997404468',
     'caption': this.window_.document.title,
@@ -127,7 +127,7 @@ exports.prototype.openFbLink = function() {
  * @return {boolean} Always return False.
  */
 exports.prototype.openMailLink = function() {
-  var url = 'mailto:?' + ngeoUtils.encodeQueryString({
+  var url = 'mailto:?' + encodeQueryString({
     'subject': this.window_.document.title +
         this.translate_.getString(this.emailString_),
     'body': $('app-shorturl input').val()

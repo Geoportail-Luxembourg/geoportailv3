@@ -15,7 +15,7 @@
  */
 
 import appModule from '../module.js';
-import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import {interactionDecoration} from 'ngeo/misc/decorate.js';
 import ngeoInteractionMeasureArea from 'ngeo/interaction/MeasureArea.js';
 import ngeoInteractionMeasureAzimut from 'ngeo/interaction/MeasureAzimut.js';
 import ngeoInteractionMeasureLength from 'ngeo/interaction/MeasureLength.js';
@@ -221,7 +221,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
    */
   this['measureProfile'] = measureProfile;
   measureProfile.setActive(false);
-  ngeoMiscDecorate.interaction(measureProfile);
+  interactionDecoration(measureProfile);
   this.map_.addInteraction(measureProfile);
 
   helpMsg = gettext('Click to start drawing length');
@@ -246,7 +246,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureLength'] = measureLength;
 
   measureLength.setActive(false);
-  ngeoMiscDecorate.interaction(measureLength);
+  interactionDecoration(measureLength);
   this.map_.addInteraction(measureLength);
 
   helpMsg = gettext('Click to start drawing area');
@@ -284,7 +284,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureArea'] = measureArea;
 
   measureArea.setActive(false);
-  ngeoMiscDecorate.interaction(measureArea);
+  interactionDecoration(measureArea);
   this.map_.addInteraction(measureArea);
 
   helpMsg = gettext('Click to start drawing azimut');
@@ -306,7 +306,7 @@ const exports = function($scope, $q, $http, $compile, gettext,
   this['measureAzimut'] = measureAzimut;
 
   measureAzimut.setActive(false);
-  ngeoMiscDecorate.interaction(measureAzimut);
+  interactionDecoration(measureAzimut);
   this.map_.addInteraction(measureAzimut);
 
   listen(measureAzimut, 'measureend',

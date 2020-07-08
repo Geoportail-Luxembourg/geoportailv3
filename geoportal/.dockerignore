@@ -27,3 +27,7 @@
 !jsapi
 !bin/*
 !alembic_upgrade_heads.sh
+geoportailv3_geoportal/node_modules/
+geoportailv3_geoportal/node_modules/
+/jsapi/node_modules/
+/geoportailv3_geoportal/static-ngeo/node_modules/
