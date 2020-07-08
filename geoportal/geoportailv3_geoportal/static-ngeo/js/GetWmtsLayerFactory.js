@@ -10,7 +10,7 @@ let exports = {};
 
 import appModule from './module.js';
 import appOlcsExtent from './olcs/Extent.js';
-import ngeoMiscDecorate from 'ngeo/misc/decorate.js';
+import {layerDecoration} from 'ngeo/misc/decorate.js';
 import {getTopLeft} from 'ol/extent.js';
 import {get as getProjection} from 'ol/proj.js';
 import olLayerTile from 'ol/layer/Tile.js';
@@ -97,7 +97,7 @@ function factory(requestScheme) {
     });
 
     layer.set('label', name);
-    ngeoMiscDecorate.layer(layer);
+    layerDecoration(layer);
 
     return layer;
   }

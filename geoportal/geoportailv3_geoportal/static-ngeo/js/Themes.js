@@ -11,9 +11,9 @@
 import appModule from './module.js';
 
 import {extend as arrayExtend} from 'ol/array.js';
-import olEventsEventTarget from 'ol/events/EventTarget.js';
+import olEventsEventTarget from 'ol/events/Target.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
-import {inherits} from 'ol/index.js';
+import {inherits} from './utils.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
 
 function hasLocalStorage() {

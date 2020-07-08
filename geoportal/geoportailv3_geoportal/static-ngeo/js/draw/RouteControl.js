@@ -10,7 +10,7 @@
 import {CLASS_UNSELECTABLE, CLASS_CONTROL} from 'ol/css.js';
 import olControlControl from 'ol/control/Control.js';
 import {listen} from 'ol/events.js';
-import {inherits} from 'ol/index.js';
+import {inherits} from '../utils.js';
 
 /**
  * @constructor

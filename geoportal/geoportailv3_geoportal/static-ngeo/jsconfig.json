@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
       "module": "esnext",
+      "moduleResolution": "node",
       "baseUrl": ".",
       "paths": {
-        "cesium/*": ["./node_modules/cesium/Source/*"]
+        "cesium/*": ["./node_modules/cesium/Source/*"],
+        "ngeo/*": ["./node_modules/ngeo/src/*"],
       },
       "target": "es6"
     },
     "include": [
         "js/**/*",
-        "./node_modules/cesium/Source/**/*"
+        "./node_modules/cesium/Source/**/*",
+        "./node_modules/ngeo/**/*",
     ]
   }

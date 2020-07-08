@@ -2,13 +2,13 @@
  * @module app.draw.FeatureHash
  */
 import ngeoFormatFeatureProperties from 'ngeo/format/FeatureProperties.js';
-import ngeoUtils from 'ngeo/utils.js';
+import {rgbArrayToHex} from 'ngeo/utils.js';
 
 import olFeature from 'ol/Feature.js';
 import {includes as arrayIncludes} from 'ol/array.js';
 import {asArray as colorAsArray} from 'ol/color.js';
 import olFormatTextFeature from 'ol/format/TextFeature.js';
-import {transformWithOptions} from 'ol/format/Feature.js';
+import {transformGeometryWithOptions} from 'ol/format/Feature.js';
 import olGeomGeometryLayout from 'ol/geom/GeometryLayout.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomLineString from 'ol/geom/LineString.js';
@@ -22,7 +22,7 @@ import olStyleFill from 'ol/style/Fill.js';
 import olStyleStroke from 'ol/style/Stroke.js';
 import olStyleStyle from 'ol/style/Style.js';
 import olStyleText from 'ol/style/Text.js';
-import {inherits} from 'ol/index.js';
+import {inherits} from '../utils.js';
 
 
 /**
@@ -355,7 +355,7 @@ exports.encodeStyleFill_ = function(fillStyle, encodedStyles, opt_propertyName) 
     console.assert(Array.isArray(fillColor), 'only supporting fill colors');
     var fillColorRgba = colorAsArray(/** @type {Array<number>} */ (fillColor));
     console.assert(Array.isArray(fillColorRgba), 'fill color must be an array');
-    var fillColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (fillColorRgba));
+    var fillColorHex = rgbArrayToHex(/** @type {!Array<number>} */ (fillColorRgba));
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
     }
@@ -378,7 +378,7 @@ exports.encodeStyleStroke_ = function(strokeStyle, encodedStyles) {
     console.assert(Array.isArray(strokeColor));
     var strokeColorRgba = colorAsArray(/** @type {Array<number>} */ (strokeColor));
     console.assert(Array.isArray(strokeColorRgba), 'only supporting stroke colors');
-    var strokeColorHex = ngeoUtils.rgbArrayToHex(/** @type {!Array<number>} */ (strokeColorRgba));
+    var strokeColorHex = rgbArrayToHex(/** @type {!Array<number>} */ (strokeColorRgba));
     if (encodedStyles.length > 0) {
       encodedStyles.push('\'');
     }
@@ -1226,7 +1226,7 @@ exports.prototype.writeGeometryText = function(geometry, opt_options) {
       geometry.getType()];
   console.assert(geometryWriter !== undefined);
   var transformedGeometry = /** @type {ol.geom.Geometry} */
-      (transformWithOptions(geometry, true, opt_options));
+      (transformGeometryWithOptions(geometry, true, opt_options));
   this.prevX_ = 0;
   this.prevY_ = 0;
   return geometryWriter.call(this, transformedGeometry);
