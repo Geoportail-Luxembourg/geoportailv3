@@ -48,7 +48,7 @@
   font-weight: normal;
   font-style: normal;
 }
-@icon-width: 63px;
+$icon-width: 63px;
 
 button.icon {
   background: none;
@@ -71,11 +71,11 @@ div.icon,
 li.icon > a {
   padding: 0;
   position: relative;
-  width: @icon-width;
+  width: $icon-width;
   text-transform: uppercase;
   text-align: center;
 
-  @media (max-width: @screen-xs-max) {
+  @media (max-width: $screen-xs-max) {
     width: 48px;
     font-size: 0.8em;
   }
@@ -88,7 +88,7 @@ li.icon > a {
     width: 100%;
     font-size: 2em;
     text-indent: 0;
-    @media (max-width: @screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       top: 10px;
     }
   }
@@ -99,7 +99,7 @@ button.search:after {
 }
 li.icon > a {
   padding-top: 32px;
-  @media (max-width: @screen-xs-max) {
+  @media (max-width: $screen-xs-max) {
     padding-top: 30px;
   }
 }

@@ -462,7 +462,7 @@
   left: 50%;
   margin: 0 0 0 -12px;
 }
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .routing-goto-route {
     bottom: 8px;
 	position: absolute;
@@ -472,13 +472,13 @@
 	display:block;
   }
 }
-@media (min-width: @screen-md-min) {
+@media (min-width: $screen-md-min) {
   .routing-goto-route {
 	display:none;
   }
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .routing-goto-plan {
     bottom: 8px;
 	position: absolute;
@@ -487,7 +487,7 @@
 	display:block;
   }
 }
-@media (min-width: @screen-md-min) {
+@media (min-width: $screen-md-min) {
   .routing-goto-plan {
 	display:none;
   }

@@ -4,15 +4,15 @@ html, body {
   height: 100%;
   touch-action: none;
 }
-@topbar-height: 50px;
-@bottombar-height: 50px;
-@leftbar-width: 320px;
+$topbar-height: 50px;
+$bottombar-height: 50px;
+$leftbar-width: 320px;
 body {
   /* padding top by top bar height */
-  padding-top: @topbar-height;
+  padding-top: $topbar-height;
 }
 
-@media (max-width: @screen-sm-min) {
+@media (max-width: $screen-sm-min) {
   .modal-backdrop {
     display: none !important;
   }
@@ -26,7 +26,7 @@ body {
 }
 
 .navbar-nav {
-  // keep margin and padding the same as for media width > @screen-sm-min
+  // keep margin and padding the same as for media width > $screen-sm-min
   margin: 0;
   > li > a {
     padding-top: 15px;
@@ -39,7 +39,7 @@ body {
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: @bottombar-height;
+  height: $bottombar-height;
 }
 
 #main-container {
@@ -110,42 +110,42 @@ app-map > div {
 
 #sidebar {
   display: block;
-  width: @leftbar-width;
+  width: $leftbar-width;
   height: 100%;
   max-width: 100%;
   float: left;
-  .transition(all 300ms ease-out 0s);
-  position: relative;
+  @mixin transition(all 300ms ease-out 0s),
+  position: relative,
 
   > div {
-    display: none;
+    display: none,
   }
 }
 
 #sidebar.open {
-  margin-left: 0;
+  margin-left: 0,
 }
 
-@media (min-width: @screen-sm-min) {
+@media (min-width: $screen-sm-min) {
   #sidebar {
-    margin-left: -(@leftbar-width);
+    margin-left: -($leftbar-width);
   }
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   #sidebar {
     margin-left: -100%;
     width: 100%;
   }
 }
 
-@media (min-width: @screen-sm-min) {
+@media (min-width: $screen-sm-min) {
   body {
     /* padding bottom by footer height */
-    padding-bottom: @bottombar-height;
+    padding-bottom: $bottombar-height;
   }
 }
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   body {
     padding-bottom: 0;
     padding-top: 40px;
@@ -313,11 +313,11 @@ app-map > div {
 .ol-zoom-extent {
   left: 0.5em;
   top: 88px;
-  .hidden-xs;
+  @include hidden-xs;
 }
 
 .ol-full-screen {
-  .hidden-xs;
+  @include hidden-xs;
   left: .5em;
   top: 9em;
 }
@@ -522,10 +522,10 @@ div.ol-zoom-extent > button {
   padding-right: 5px;
   opacity: 0.9;
 }
-@profile_height: 250px;
+$profile_height: 250px;
 .profile {
   width: 450px;
-  height: @profile_height;
+  height: $profile_height;
   background-color: white;
 
   background: url(../images/profile.png) no-repeat white;
@@ -615,14 +615,14 @@ div.ol-zoom-extent > button {
 }
 
 
-@drawing-panel-width: 300px;
+$drawing-panel-width: 300px;
 .drawing-panel {
   white-space: normal;
-  width: @drawing-panel-width;
+  width: $drawing-panel-width;
   padding: 10px 0;
-  margin-left: -(@drawing-panel-width / 2) + (@icon-width / 2);
+  margin-left: -($drawing-panel-width / 2) + ($icon-width / 2);
   >div {
-    height: @icon-width;
+    height: $icon-width;
     p {
       margin-top: 10px;
     }

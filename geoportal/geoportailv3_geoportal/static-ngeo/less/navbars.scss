@@ -1,17 +1,17 @@
 /** Top and bottom bars (header and footer) **/
 
-@navbars-button-border-color: #8394a0;
-@grid-float-breakpoint-max: 0px;
+$navbars-button-border-color: #8394a0;
+$grid-float-breakpoint-max: 0px;
 
 
 header {
   &.navbar {
     border-width: 0;
-    @media (max-width: @screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       min-height: 40px;
     }
   }
-  .box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+  @include box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
 
   .container-fluid {
     padding-left: 0;
@@ -24,7 +24,7 @@ header {
     line-height: 34px;
     cursor: pointer;
     text-transform: uppercase;
-    @media (max-width: @screen-md-max) {
+    @media (max-width: $screen-md-max) {
       display: none;
     }
   }
@@ -54,7 +54,7 @@ header {
   .enabled-3d & {
     width: 48px;
     li a {
-      border-left: 1px solid @navbars-button-border-color;
+      border-left: 1px solid $navbars-button-border-color;
     }
   }
   // center the toolbox bar
@@ -70,7 +70,7 @@ header {
   z-index: 2;
   position: absolute;
   top: auto;
-  bottom: ~"calc(100% + 63px)";
+  bottom: "calc(100% + 63px)";
   white-space: nowrap;
   padding-left: 128px;
   > li {
@@ -125,11 +125,11 @@ header {
 .sidebar-controls {
   touch-action: none;
   left: 0;
-  .transition(left 300ms 0 ease-out);
-  z-index: 1;
+  @mixin transition(left 300ms 0 ease-out),
+  z-index: 1,
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .sidebar-controls,
   .toolbox {
     position: absolute;
@@ -181,13 +181,13 @@ header {
   padding-left: 7px;
 }
 .toolbox-panel-mapmatching > li > a {
-  width: (@icon-width * 3) + 2;
+  width: ($icon-width * 3) + 2;
   line-height: 39px;
 }
 
 .toolbox-panel > li > a {
-  width: @icon-width;
-  line-height: @icon-width;
+  width: $icon-width;
+  line-height: $icon-width;
 }
 
 .toolbox-panel-bottom > li > a {
@@ -204,16 +204,16 @@ header {
 
 .draw .toolbox-panel {
   /* 4 draw tools */
-  width: 5 + (5 * @icon-width);
+  width: 5 + (5 * $icon-width);
 }
 
 .measure .toolbox-panel {
-  /* 4 measure tools */
-  width: 5 + (5 * @icon-width);
+  /* 5 measure tools */
+  width: 5 + (5 * $icon-width);
 }
 
 .share .toolbox-panel {
-  width: 4 + (4 * @icon-width);
+  width: 4 + (4 * $icon-width);
 }
 
 .measure .profile-open {
@@ -224,19 +224,19 @@ header {
 
 .lang .toolbox-panel {
   /* 4 languages */
-  width: 4 + (4 * @icon-width);
+  width: 4 + (4 * $icon-width);
   a {
     text-transform: uppercase;
   }
 }
 
-@media (min-width: @screen-xs-max){
+@media (min-width: $screen-xs-max){
   .brand > img {
     margin: 5px;
   }
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .brand,
   .navbar-nav,
   .navbar-nav > li > a {
@@ -260,17 +260,17 @@ header {
     padding: 0;
   }
   .navbar-nav > li > a {
-    border-left: 1px solid @navbars-button-border-color;
+    border-left: 1px solid $navbars-button-border-color;
     text-indent: -9999px;
   }
 }
 .toolbox > li:first-child > a {
-  border-left: 1px solid @navbars-button-border-color;
+  border-left: 1px solid $navbars-button-border-color;
 }
 .toolbox,
 .sidebar-controls {
   > li > a {
-    border-right: 1px solid @navbars-button-border-color;
+    border-right: 1px solid $navbars-button-border-color;
   }
 }
 
@@ -279,20 +279,20 @@ header {
   text-transform: uppercase;
 }
 
-@media (min-width: @screen-sm-min) {
+@media (min-width: $screen-sm-min) {
   footer {
-    .box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
+    @include box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
   }
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: $screen-xs-max) {
   .sidebar-controls,
   .toolbox {
     > li {
       background-color: white;
       > a {
-        border-right: 1px solid @navbars-button-border-color;
-        border-bottom: 1px solid @navbars-button-border-color;
+        border-right: 1px solid $navbars-button-border-color;
+        border-bottom: 1px solid $navbars-button-border-color;
         width: 150px;
       }
     }
@@ -305,7 +305,7 @@ header {
   }
   .sidebar-controls {
       > li:first-child > a {
-      border-top: 1px solid @navbars-button-border-color;
+      border-top: 1px solid $navbars-button-border-color;
     }
   }
   .toolbox {
