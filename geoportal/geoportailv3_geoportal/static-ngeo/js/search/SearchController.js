@@ -499,6 +499,8 @@ const exports = function($scope, $window, $compile,
       (function(e) {
         this.featureOverlay.clear();
       }), this);
+
+  this['facetsPanelOpen'] = false;
 };
 
 
