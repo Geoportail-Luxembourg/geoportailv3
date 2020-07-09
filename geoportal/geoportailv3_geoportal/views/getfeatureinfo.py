@@ -898,6 +898,10 @@ class Getfeatureinfo(object):
             filter(Metadata.name == "ogc_info_srs").first()
         if metadata is not None:
             ogc_info_srs = metadata.value
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_info_url").first()
+        if metadata is not None:
+            url = metadata.value
 
         separator = "?"
         if url.find(separator) > 0:
@@ -916,8 +920,15 @@ class Getfeatureinfo(object):
 
             for feature in ogc_features['features']:
                 geometry = feature['geometry']
-                if ogc_info_srs.lower() != "epsg:2169":
+
+                if geometry is not None and ogc_info_srs.lower() != "epsg:2169":
                     geometry = self.transform_(geometry, ogc_info_srs, "epsg:2169")
+                if geometry is None:
+                    box2 = self.request.params.get('box2', None)
+                    coords = box2.split(',')
+                    the_box = box(float(coords[0]), float(coords[1]),
+                        float(coords[2]), float(coords[3]))
+                    geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
                 f = self.to_feature(layer_id, None,
                                     geometry,
                                     feature['properties'],
