@@ -21,7 +21,7 @@ ngeo-offline {
       height: 41px;
       border: 1px solid #8394a0;
       &::after {
-        content: @fa-var-arrow-circle-o-down;
+        content: $fa-var-arrow-circle-o-down;
       }
     }
     .with-data {
@@ -41,13 +41,13 @@ ngeo-offline {
     position: absolute;
     top: 4.5rem;
     width: 12rem;
-    left: calc(~"50% - 6rem");
+    left: calc("50% - 6rem");
   }
 
   .in-progress {
     position: absolute;
-    left: calc(~"50% - 3.3rem");
-    top: calc(~"50% - 3rem");
+    left: calc("50% - 3.3rem");
+    top: calc("50% - 3rem");
     color: white;
     font-weight: bold;
     background-color: #337ab7;
@@ -79,11 +79,11 @@ ngeo-offline {
     z-index: 10000;
     width: 100vw;
     text-align: center;
-    height: @topbar-height;
+    height: $topbar-height;
     padding-left: 1rem;
-    line-height: @topbar-height;
+    line-height: $topbar-height;
 
-    @media (max-width: @screen-xs-max) {
+    @media (max-width: $screen-xs-max) {
       height: 40px;
       line-height: 40px;
     }

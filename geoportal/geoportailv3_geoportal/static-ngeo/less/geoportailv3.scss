@@ -1,26 +1,26 @@
 @import (inline) "../../../node_modules/openlayers/css/ol.css";
 
-@import "../../../node_modules/bootstrap/less/bootstrap.less";
-@import "../../../node_modules/font-awesome/less/font-awesome.less";
+@import "../../../node_modules/bootstrap/less/bootstrap.scss";
+@import "../../../node_modules/font-awesome/less/font-awesome.scss";
 
-@import "controls3d.less";
-@import "variables.less";
-@import "layout.less";
-@import "sidebar.less";
-@import "offline.less";
-@import "navbars.less";
-@import "icons.less";
-@import "catalog.less";
-@import "layermanager.less";
-@import "popup.less";
-@import "theme.less";
-@import "notify.less";
-@import "print.less";
-@import "search.less";
-@import "mymaps.less";
-@import "featurepopup.less";
-@import "routing.less";
-@import "backgroundselector.less";
+@import "controls3d.scss";
+@import "variables.scss";
+@import "layout.scss";
+@import "sidebar.scss";
+@import "offline.scss";
+@import "navbars.scss";
+@import "icons.scss";
+@import "catalog.scss";
+@import "layermanager.scss";
+@import "popup.scss";
+@import "theme.scss";
+@import "notify.scss";
+@import "print.scss";
+@import "search.scss";
+@import "mymaps.scss";
+@import "featurepopup.scss";
+@import "routing.scss";
+@import "backgroundselector.scss";
 
 
 @font-face {
