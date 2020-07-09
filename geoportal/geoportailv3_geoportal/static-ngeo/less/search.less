@@ -9,8 +9,8 @@ input[type=text]::-ms-clear {
 span.twitter-typeahead {
   & + span.clear-button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 1px;
+    right: 1.75em;
     display: none;
     cursor: pointer;
     cursor: hand;
@@ -121,6 +121,22 @@ span.twitter-typeahead {
     content: none;
   }
 }
+
+.search-container {
+  position: relative;
+  .facet-toggle {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    top: 1px;
+    height: ~"calc(100% - 2px)";
+    padding: 6px 12px 6px 6px;
+    .fa {
+      color: white;
+    }
+  }
+}
+
 
 @media (min-width: @screen-sm-min) {
   header .search-container {
