@@ -134,6 +134,37 @@ span.twitter-typeahead {
     .fa {
       color: white;
     }
+    &.active {
+      .fa {
+        color: var(--primary);
+      }
+      &:hover .fa {
+        color: white;
+      }
+    }
+  }
+  .facet-container {
+    position: absolute;
+    width: 100%;
+    top: 2.25em;
+    height: 40vh;
+    overflow-y: auto;
+    background: white;
+    padding: 5px 5px;
+    margin: 2px 0 0;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    .checkbox {
+      display: block;
+    }
+    h3 {
+      text-transform: uppercase;
+      margin-top: 11px;
+    }
+    h5 {
+      text-transform: uppercase;
+    }
   }
 }
 

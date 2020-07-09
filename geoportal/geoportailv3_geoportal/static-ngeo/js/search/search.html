@@ -4,13 +4,51 @@
 
 <div class="search-container">
   <form class="navbar-form" role="search">
-      <div class="form-group">
-          <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
-              ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
-              <span class="clear-button" ng-click="click($event)">&#10005;</span>
-          </input>
+    <div class="form-group">
+        <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
+            ngeo-search="ctrl.options" ngeo-search-datasets="ctrl.datasets" ngeo-search-listeners="ctrl.listeners">
+            <span class="clear-button" ng-click="click($event)">&#10005;</span>
+        </input>
+    </div>
+    <button
+      class="btn btn-link facet-toggle"
+      ng-click="ctrl.facetsPanelOpen = !ctrl.facetsPanelOpen"
+      ng-class="{active: ctrl.facetsPanelOpen}">
+      <i class="fa fa-filter"></i>
+    </button>
+    <div class="facet-container" ng-show="ctrl.facetsPanelOpen">
+      <h3 translate>Paramètres de recherche</h3>
+      <h5 translate>Limiter la recherche à</h5>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> <span translate>Adresses</span>
+        </label>
       </div>
-      <button class="btn btn-link facet-toggle"><i class="fa fa-filter"></i></button>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> <span translate>Numéros parcelles</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> <span translate>Adresses FLIK</span>
+        </label>
+      </div>
+      <hr>
+      <h5 translate>Étendue</h5>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> <span translate>Uniquement dans la partie actuellement visible de la carte</span>
+        </label>
+      </div>
+      <hr>
+      <h5 translate>Avancée</h5>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> <span translate>Chercher dans les couches actives</span>
+        </label>
+      </div>
+    </div>
   </form>
   <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group itinary-button">
     <button ng-click="ctrl.addLastSuggestedFeature();" class="create-itinerary">
