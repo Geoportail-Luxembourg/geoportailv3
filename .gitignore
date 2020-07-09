@@ -16,7 +16,7 @@ __pycache__/
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 /geoportal/geoportailv3_geoportal/locale/ngeo.pot
 /.build/
-/node_modules/
+node_modules/
 /geoportailv3/
 /apache/
 /print/WEB-INF/
