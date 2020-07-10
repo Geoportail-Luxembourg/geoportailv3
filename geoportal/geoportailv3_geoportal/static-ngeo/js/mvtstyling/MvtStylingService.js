@@ -147,7 +147,7 @@ unpublishStyle(layer) {
   return Promise.resolve();
 }
 
-saveBgStyle(layer) {
+saveBgStyle(layer, isPublished) {
     const mbMap =  layer.getMapBoxMap();
     const data = JSON.stringify(mbMap.getStyle());
     const promises = [];
@@ -158,7 +158,9 @@ saveBgStyle(layer) {
     this.isCustomStyle = true;
     this.saveLS_(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
-    promises.push(this.publishStyle(layer, data));
+    if (isPublished) {
+        promises.push(this.publishStyle(layer, data));
+    }
     return Promise.all(promises);
 }
 

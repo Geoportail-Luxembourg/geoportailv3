@@ -365,8 +365,9 @@ const MainController = function(
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    appMvtStylingService.saveBgStyle(bgLayer)
-    .then(result => {
+    const isPublished = false;
+    appMvtStylingService.saveBgStyle(bgLayer, isPublished)
+    .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
       this.ngeoLocation_.updateParams({
         'serial': config
@@ -1107,7 +1108,8 @@ const MainController = function(
       const result = e.target.result;
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.appMvtStylingService.saveBgStyle(bgLayer).then(result => {
+      const isPublished = true;
+      this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
           'serial': id
