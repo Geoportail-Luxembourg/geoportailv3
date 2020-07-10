@@ -501,6 +501,13 @@ const exports = function($scope, $window, $compile,
       }), this);
 
   this['facetsPanelOpen'] = false;
+  this['facets'] = {
+    address: false,
+    parcels: false,
+    flik: false,
+    extent: false,
+    activeLayers: false
+  };
 };
 
 
