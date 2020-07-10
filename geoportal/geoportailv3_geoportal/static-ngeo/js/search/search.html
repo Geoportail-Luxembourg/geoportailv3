@@ -21,33 +21,45 @@
       <h5 translate>Limiter la recherche à</h5>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> <span translate>Adresses</span>
+          <i class="fa" ng-class="ctrl.facets.address ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.address">
+          <span translate>Adresses</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> <span translate>Numéros parcelles</span>
+          <i class="fa" ng-class="ctrl.facets.parcels ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.parcels">
+          <span translate>Numéros parcelles</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> <span translate>Adresses FLIK</span>
+          <i class="fa" ng-class="ctrl.facets.flik ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.flik">
+          <span translate>Adresses FLIK</span>
         </label>
       </div>
       <hr>
       <h5 translate>Étendue</h5>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> <span translate>Uniquement dans la partie actuellement visible de la carte</span>
+          <i class="fa" ng-class="ctrl.facets.extent ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.extent">
+          <span translate>Uniquement dans la partie actuellement visible de la carte</span>
         </label>
       </div>
       <hr>
       <h5 translate>Avancée</h5>
       <div class="checkbox">
         <label>
-          <input type="checkbox"> <span translate>Chercher dans les couches actives</span>
+          <i class="fa" ng-class="ctrl.facets.activeLayers ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.activeLayers">
+          <span translate>Chercher dans les couches actives</span>
         </label>
       </div>
+      <hr>
+      <button class="btn btn-primary pull-right" translate>Sauvegarder la recherche</button>
     </div>
   </form>
   <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group itinary-button">
