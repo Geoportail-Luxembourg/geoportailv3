@@ -44,6 +44,7 @@ import olRenderEventType from 'ol/render/EventType.js';
  * @param {ngeo.map.LayerHelper} ngeoLayerHelper Ngeo Layer Helper.
  * @param {string} appImagesPath Path the the static images.
  * @param {string} arrowUrl URL to the arrow.
+ * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
  * @constructor
  * @export
  * @ngInject
@@ -53,13 +54,19 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
     appThemes, appTheme, appFeaturePopup, appGetShorturl,
     printServiceUrl, qrServiceUrl, appSelectedFeatures,
     ngeoBackgroundLayerMgr, $http, ngeoLayerHelper, appImagesPath,
-    arrowUrl) {
+    arrowUrl, appMvtStylingService) {
 
   /**
    * @type {ngeo.map.BackgroundLayerMgr}
    * @private
    */
   this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+
+  /**
+   * @type{app.Mvtstyling}
+   * @private
+   */
+  this.appMvtStylingService_ = appMvtStylingService;
 
   /**
    * @type {ol.Collection<ol.Feature>}
@@ -270,9 +277,15 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       console.assert(postcomposeListenerKey === null);
       postcomposeListenerKey = listen(this.map_,
           olRenderEventType.POSTCOMPOSE, postcomposeListener);
+      const bgLayer = this.backgroundLayerMgr_.get(this.map_);
+      const mbMap =  bgLayer.getMapBoxMap();
+      const data = JSON.stringify(mbMap.getStyle());
+      this.appMvtStylingService_.publishStyle(bgLayer, data);
     } else if (postcomposeListenerKey !== null) {
       unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
+      const bgLayer = this.backgroundLayerMgr_.get(this.map_);
+      this.appMvtStylingService_.unpublishStyle(bgLayer);
     }
     this.map_.render();
   }.bind(this));

@@ -48,7 +48,7 @@ class Controller {
           const bgLayer = this.backgroundLayerMgr_.get(this.map);
           const mbMap =  bgLayer.getMapBoxMap();
           const data = JSON.stringify(mbMap.getStyle());
-          if (this.manager.isCurrentlyEnabled) {
+          if (!this.manager.ol3d.getEnabled()) {
             return this.appMvtStylingService_.publishStyle(bgLayer, data).then(() => {
               return this.manager.toggle3d();
             });
