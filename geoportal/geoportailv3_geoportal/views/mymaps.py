@@ -610,7 +610,9 @@ class Mymaps(object):
             else:
                 user_categories[cur_user.user_login].append(
                     cur_user.category_id)
-
+        user_categories[user.username] = []
+        for categ in self._categories_for_non_admin(session, user):
+            user_categories[user.username].append(categ['id'])
         return [{'username': cur_user,
                  'categories': user_categories[cur_user]}
                 for cur_user in user_categories]
@@ -620,7 +622,6 @@ class Mymaps(object):
             func.coalesce(Map.category_id, 999).label("category_id")).\
             filter(func.lower(Map.user_login) == func.lower(user.username)).\
             group_by(func.coalesce(Map.category_id, 999)).all() # noqa
-
         return [{'username': user.username, 'categories':
                 [c.category_id for c in categies_id]}]
 
