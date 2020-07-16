@@ -16,10 +16,9 @@ class Controller {
   /**
    * @ngInject
    * @param {ngeo.olcs.Service} ngeoOlcsService The service.
-   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer manager.
    * @param {app.MvtStylingService} appMvtStylingService Mvt styling service.
    */
-  constructor(ngeoOlcsService, ngeoBackgroundLayerMgr, appMvtStylingService) {
+  constructor(ngeoOlcsService, appMvtStylingService) {
     /**
      * @export
      */
@@ -30,37 +29,15 @@ class Controller {
      * @private
      */
     this.appMvtStylingService_ = appMvtStylingService;
-
-    /**
-     * @type {ngeo.map.BackgroundLayerMgr}
-     * @private
-     */
-    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   }
 
   luxToggle3d() {
-      const serial = new URLSearchParams(window.location.search).get('serial');
-      if (serial) {
-        const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
-
-        // check if simple/medium styling
-        if (serial.match(isValidUUIDv4Regex) === null) {
-          const bgLayer = this.backgroundLayerMgr_.get(this.map);
-          const mbMap =  bgLayer.getMapBoxMap();
-          const data = JSON.stringify(mbMap.getStyle());
-          if (!this.manager.ol3d.getEnabled()) {
-            return this.appMvtStylingService_.publishStyle(bgLayer, data).then(() => {
-              return this.manager.toggle3d();
-            });
-          } else {
-            return this.appMvtStylingService_.unpublishStyle(bgLayer).then(() => {
-              return this.manager.toggle3d();
-            });
-          }
+        if (!this.manager.ol3d.getEnabled()) {
+          this.appMvtStylingService_.publishIfSerial(this.map);
+        } else {
+          this.appMvtStylingService_.unpublishIfSerial(this.map);
         }
-      } else {
-        this.manager.toggle3d();
-      }
+        return this.manager.toggle3d();
   }
 }
 

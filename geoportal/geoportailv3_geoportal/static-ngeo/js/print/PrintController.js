@@ -277,15 +277,11 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       console.assert(postcomposeListenerKey === null);
       postcomposeListenerKey = listen(this.map_,
           olRenderEventType.POSTCOMPOSE, postcomposeListener);
-      const bgLayer = this.backgroundLayerMgr_.get(this.map_);
-      const mbMap =  bgLayer.getMapBoxMap();
-      const data = JSON.stringify(mbMap.getStyle());
-      this.appMvtStylingService_.publishStyle(bgLayer, data);
+      this.appMvtStylingService_.publishIfSerial(this.map_);
     } else if (postcomposeListenerKey !== null) {
       unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
-      const bgLayer = this.backgroundLayerMgr_.get(this.map_);
-      this.appMvtStylingService_.unpublishStyle(bgLayer);
+      this.appMvtStylingService_.unpublishIfSerial(this.map_);
     }
     this.map_.render();
   }.bind(this));

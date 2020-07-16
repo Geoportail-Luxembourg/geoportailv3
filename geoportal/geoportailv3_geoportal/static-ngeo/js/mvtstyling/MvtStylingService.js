@@ -32,15 +32,17 @@ class MvtStylingService {
    * @param {String} uploadvtstyleUrl URL to provision a style
    * @param {String} deletevtstyleUrl URL to delete a provisionned style
    * @param {String} getvtstyleUrl URL to get a provisionned style
+   * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
    * @ngInject
    */
-  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl) {
+  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, ngeoBackgroundLayerMgr) {
     this.http_ = $http;
     this.appUserManager_ = appUserManager;
     this.isCustomStyle = false;
     this.uploadvtstyleUrl_ = uploadvtstyleUrl;
     this.deletevtstyleUrl_ = deletevtstyleUrl;
     this.getvtstyleUrl_ = getvtstyleUrl;
+    this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
   }
 
   getBgStyle() {
@@ -107,6 +109,32 @@ createXYZCustom_(id) {
 
 createRemoteItemKey_(label) {
   return 'remoteIdForStyle_' + label;
+}
+
+publishIfSerial(map) {
+    const serial = new URLSearchParams(window.location.search).get('serial');
+    const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
+    if (serial) {
+        // check if simple/medium styling
+        if (serial.match(isValidUUIDv4Regex) === null) {
+            const bgLayer = this.backgroundLayerMgr_.get(map);
+            const mbMap =  bgLayer.getMapBoxMap();
+            const data = JSON.stringify(mbMap.getStyle());
+            return this.publishStyle(bgLayer, data);
+        }
+    }
+}
+
+unpublishIfSerial(map) {
+    const serial = new URLSearchParams(window.location.search).get('serial');
+    const isValidUUIDv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/gi;
+    if (serial) {
+        // check if simple/medium styling
+        if (serial.match(isValidUUIDv4Regex) === null) {
+            const bgLayer = this.backgroundLayerMgr_.get(map);
+            return this.unpublishStyle(bgLayer);
+        }
+    }
 }
 
 
