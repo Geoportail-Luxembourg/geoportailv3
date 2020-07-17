@@ -119,8 +119,16 @@ publishIfSerial(map) {
         if (serial.match(isValidUUIDv4Regex) === null) {
             const bgLayer = this.backgroundLayerMgr_.get(map);
             const mbMap =  bgLayer.getMapBoxMap();
-            const data = JSON.stringify(mbMap.getStyle());
-            return this.publishStyle(bgLayer, data);
+            const interval = setInterval(() => {
+                try {
+                    const data = JSON.stringify(mbMap.getStyle());
+                    clearInterval(interval);
+                    this.publishStyle(bgLayer, data);
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+            }, 50);
         }
     }
 }
@@ -132,6 +140,9 @@ unpublishIfSerial(map) {
         // check if simple/medium styling
         if (serial.match(isValidUUIDv4Regex) === null) {
             const bgLayer = this.backgroundLayerMgr_.get(map);
+            if (!bgLayer) { // 3D enable watch is run before bgLayer is initialized...
+                return;
+            }
             return this.unpublishStyle(bgLayer);
         }
     }
