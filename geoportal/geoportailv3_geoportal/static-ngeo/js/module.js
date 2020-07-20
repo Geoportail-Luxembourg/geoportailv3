@@ -33,8 +33,11 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
+import angular from 'angular.js';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
+
+angular.lowercase = text => text.toLowerCase();
 
 /**
  * @type {!angular.Module}
