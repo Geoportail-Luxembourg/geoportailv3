@@ -123,7 +123,9 @@ span.twitter-typeahead {
 }
 
 .search-container {
-  position: relative;
+  form {
+    position: relative;
+  }
   .facet-toggle {
     position: absolute;
     right: 0;
@@ -147,7 +149,7 @@ span.twitter-typeahead {
     position: absolute;
     width: 100%;
     top: 2.25em;
-    height: 40vh;
+    height: auto;
     overflow-y: auto;
     background: white;
     padding: 5px 5px;
@@ -231,6 +233,9 @@ span.twitter-typeahead {
   min-width: 100%;
     }
   }
+  }
+  .search-container .facet-container {
+    width: ~"calc(100% + 2.3em)";
   }
 }
 .search-result-container {
