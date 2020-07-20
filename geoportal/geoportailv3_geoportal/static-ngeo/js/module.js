@@ -33,16 +33,15 @@ import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
-import angular from 'angular.js';
+import angular from 'angular';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
-
-angular.lowercase = text => text.toLowerCase();
 
 /**
  * @type {!angular.Module}
  */
 const exports = angular.module('Appmain', [
+  ngeoStatemanagerWfsPermalinkModule.name,
   fakeGmfAbstractAppControllerModule.name,
   ngeoDatasourceModule.name,
   ngeoDownloadModule.name,
@@ -64,23 +63,18 @@ const exports = angular.module('Appmain', [
   ngeoQueryModule.name,
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
-  ngeoStatemanagerWfsPermalinkModule.name,
   'gettext']).run(function() {
     if (!TOUCH) {
       document.body.classList.add('no-touch');
     }
   });
 
-// Use ngeo's mockLocationProvider to work around a problem in Angular
-// and avoid problems when using both ngeoLocation and ng-include in
-// the application.
-exports.config(ngeoStatemanagerLocation.MockProvider);
-
 
 exports.config(['$compileProvider', function($compileProvider) {
   // activate pre-assigning bindings
   // See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
-  $compileProvider.preAssignBindingsEnabled(true);
+  // $compileProvider.preAssignBindingsEnabled(true);
+  console.log('No luck, there is this pre-assigning bindings stuff...');
 
   // allow clicking the thumbnail link while offline
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?:|s?ftp:|mailto:|tel:|file:|data:image)/);
