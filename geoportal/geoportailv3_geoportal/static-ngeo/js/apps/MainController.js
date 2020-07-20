@@ -365,8 +365,9 @@ const MainController = function(
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    appMvtStylingService.saveBgStyle(bgLayer)
-    .then(result => {
+    const isPublished = false;
+    appMvtStylingService.saveBgStyle(bgLayer, isPublished)
+    .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
       this.ngeoLocation_.updateParams({
         'serial': config
@@ -469,6 +470,10 @@ const MainController = function(
       fetch('/switch-lux-online');
     })
   }
+
+  this.ngeoOlcsService_ = ngeoOlcsService;
+
+  this.$rootScope_ = $rootScope
 
   /**
    * @type {string}
@@ -899,12 +904,7 @@ const MainController = function(
     this.ol3dm_.init3dTiles(this.tiles3dVisible);
   });
 
-  ngeoOlcsService.initialize(this.ol3dm_);
-  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
-  this.map_.set('ol3dm', this.ol3dm_);
-
-  // Add the zoom to extent control in a second step since it depends on ol3dm.
-  this.map_.addControl(new appOlcsZoomToExtent(this.defaultExtent_, this.ol3dm_));
+  this.ngeoOlcsService_.initialize(this.ol3dm_);
 
   this.initLanguage_();
 
@@ -941,6 +941,7 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
+            this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
                 (bgLayers.find(layer => {
@@ -1107,7 +1108,8 @@ const MainController = function(
       const result = e.target.result;
       const bgLayer = this.backgroundLayerMgr_.get(this.map);
       bgLayer.getMapBoxMap().setStyle(JSON.parse(result));
-      this.appMvtStylingService.saveBgStyle(bgLayer).then(result => {
+      const isPublished = true;
+      this.appMvtStylingService.saveBgStyle(bgLayer, isPublished).then(result => {
         const id = result[0];
         this.ngeoLocation_.updateParams({
           'serial': id
@@ -1209,8 +1211,11 @@ MainController.prototype.getSetHillshadeVisible = function(visible) {
  */
 MainController.prototype.enable3dCallback_ = function(active) {
   if (!active) {
+    this.appMvtStylingService.unpublishIfSerial(this.map_);
     return;
   }
+  this.appMvtStylingService.publishIfSerial(this.map_);
+
   var piwik = /** @type {Piwik} */ (this.window_['_paq']);
   piwik.push(['setDocumentTitle', 'enable3d']);
   piwik.push(['trackPageView']);
@@ -1309,7 +1314,7 @@ MainController.prototype.createCesiumManager_ = function(cesiumURL, $rootScope) 
  * @return {boolean} Whether 3D is active.
  */
 MainController.prototype.is3dEnabled = function() {
-  return this.ol3dm_.is3dEnabled();
+  return this.ol3dm_ && this.ol3dm_.is3dEnabled();
 };
 
 
@@ -1634,6 +1639,14 @@ MainController.prototype.initMymaps_ = function() {
       this.compareLayers_();
     }
   });
+};
+
+MainController.prototype.initCesium3D_ = function(cesiumURL, $rootScope, $scope) {
+  $scope.$watch(() => this.is3dEnabled(), this.enable3dCallback_.bind(this));
+  this.map_.set('ol3dm', this.ol3dm_);
+
+  // Add the zoom to extent control in a second step since it depends on ol3dm.
+  this.map_.addControl(new appOlcsZoomToExtent(this.defaultExtent_, this.ol3dm_));
 };
 
 
