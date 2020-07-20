@@ -8,24 +8,19 @@ ENV https_proxy $HTTPS_PROXY_URL
 # Install Debian packages
 RUN \
   . /etc/os-release && \
+  echo "deb https://deb.nodesource.com/node_12.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
+  curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
     wget openjdk-8-jdk \
     slapd ldap-utils \
     mutt \
     gettext libxml2-utils \
-  && \
-  apt-get purge python3-pip python3-setuptools python3-wheel --assume-yes && \
-  echo "deb https://deb.nodesource.com/node_10.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
-  curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
-    nodejs && \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --no-install-recommends \
+    nodejs \
     ghostscript \
     libgs-dev \
     imagemagick && \
+  apt-get purge python3-pip python3-setuptools python3-wheel --assume-yes && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -94,8 +89,8 @@ RUN \
 RUN mkdir -p /app/geoportailv3_geoportal
 COPY ./geoportailv3_geoportal/static-ngeo/ /app/geoportailv3_geoportal/static-ngeo/
 COPY ./webpack.apps.js ./webpack.config.js /app/
-#RUN INTERFACE=main NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
-RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
+RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
+#RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 
 COPY . /app
 
