@@ -1,7 +1,7 @@
 $popup-width-sm: 500px;
 $popup-height: 400px;
 $popup-width-md: 700px;
-$popup-title-height: $font-size-h4 + 8px * 2;
+$popup-title-height: 10px + 8px * 2;
 [ngeo-popup] {
   top: 20px;
   max-width: $popup-width-sm;
@@ -17,7 +17,7 @@ $popup-title-height: $font-size-h4 + 8px * 2;
   }
 }
 
-@media (min-width: $screen-md-min) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   [ngeo-popup] {
     max-width: $popup-width-md;
     width: $popup-width-md;
@@ -25,7 +25,7 @@ $popup-title-height: $font-size-h4 + 8px * 2;
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   [ngeo-popup] {
     position: fixed;
     top: 0;

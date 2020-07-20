@@ -14,7 +14,7 @@
 import 'core-js';
 import 'jquery';
 import 'bootstrap';
-import 'angular';
+import angular from 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
 
@@ -40,7 +40,7 @@ import appOlcsLux3DManager from '../olcs/Lux3DManager.js';
 import {transform, transformExtent} from 'ol/proj.js';
 import {toRadians} from 'ol/math.js';
 
-import '../../less/geoportailv3.less';
+import '../../less/geoportailv3.scss';
 
  /* eslint-disable no-unused-vars */
  import appAskredirectAskredirectDirective from '../askredirect/askredirectDirective.js';

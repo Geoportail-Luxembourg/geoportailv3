@@ -16,7 +16,7 @@
 
 import appModule from '../module.js';
 import appEventsThemesEventType from '../events/ThemesEventType.js';
-import ngeoSearchCreateGeoJSONBloodhound from 'ngeo/search/createGeoJSONBloodhound.js';
+import {createGeoJSONBloodhound} from 'ngeo/search/createGeoJSONBloodhound.js';
 import {includes as arrayIncludes, extend as arrayExtend} from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
@@ -46,7 +46,7 @@ import Fuse from 'fuse.js';
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
  * @param {ngeo.search.createGeoJSONBloodhound.Function}
- * ngeoSearchCreateGeoJSONBloodhound The GeoJSON Bloodhound factory.
+ * createGeoJSONBloodhound The GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
@@ -62,7 +62,7 @@ import Fuse from 'fuse.js';
  */
 const exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, ngeoSearchCreateGeoJSONBloodhound, appThemes, appTheme,
+    appCoordinateString, createGeoJSONBloodhound, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl,
     appExcludeThemeLayerSearch, appRouting) {
@@ -701,7 +701,7 @@ exports.prototype.decDegFromMatch_ = function(m) {
 exports.prototype.createAndInitPOIBloodhound_ =
     function(searchServiceUrl) {
       var geojsonFormat = new olFormatGeoJSON();
-      var bloodhound = ngeoSearchCreateGeoJSONBloodhound(
+      var bloodhound = createGeoJSONBloodhound(
       '', undefined, undefined, undefined,
       /** @type {BloodhoundOptions} */ ({
         remote: {

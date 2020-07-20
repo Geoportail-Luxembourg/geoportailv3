@@ -92,13 +92,13 @@
     }
 }
 
-@media (max-width: $screen-xs-max) and (orientation: portrait) {
+@media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: portrait) {
     .background-layer {
         width: 41px; // force top-bottom alignement
     }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
     .background-layer {
         .bg-selector-layer,
         .bg-selector-opener {

@@ -17,7 +17,6 @@ services:
       - --port=8080
       - --debug
       - --watch
-      - --progress
     environment:
       - VISIBLE_ENTRY_POINT
       - VISIBLE_WEB_HOST

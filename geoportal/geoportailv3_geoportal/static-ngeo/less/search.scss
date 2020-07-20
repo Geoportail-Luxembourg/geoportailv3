@@ -16,7 +16,7 @@ span.twitter-typeahead {
     cursor: hand;
     color: white;
     opacity: 0.5;
-    padding: $padding-base-vertical 5px;
+    padding: 5px;
     vertical-align: middle;
     border: 1px solid transparent;
     &:hover {
@@ -122,7 +122,7 @@ span.twitter-typeahead {
   }
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, "sm")) {
   header .search-container {
     white-space: nowrap;
     margin-left: auto;
@@ -139,7 +139,7 @@ span.twitter-typeahead {
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .navbar-form {
   border: 0;
   }

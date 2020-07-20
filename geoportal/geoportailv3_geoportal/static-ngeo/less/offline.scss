@@ -21,7 +21,7 @@ ngeo-offline {
       height: 41px;
       border: 1px solid #8394a0;
       &::after {
-        content: $fa-var-arrow-circle-o-down;
+        content: \f0ab;
       }
     }
     .with-data {
@@ -83,7 +83,7 @@ ngeo-offline {
     padding-left: 1rem;
     line-height: $topbar-height;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, "sm")) {
       height: 40px;
       line-height: 40px;
     }

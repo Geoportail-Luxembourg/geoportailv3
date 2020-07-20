@@ -7,7 +7,7 @@ $grid-float-breakpoint-max: 0px;
 header {
   &.navbar {
     border-width: 0;
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: map-get($grid-breakpoints, "sm")) {
       min-height: 40px;
     }
   }
@@ -24,7 +24,7 @@ header {
     line-height: 34px;
     cursor: pointer;
     text-transform: uppercase;
-    @media (max-width: $screen-md-max) {
+    @media (max-width: map-get($grid-breakpoints, "md")) {
       display: none;
     }
   }
@@ -125,11 +125,11 @@ header {
 .sidebar-controls {
   touch-action: none;
   left: 0;
-  @mixin transition(left 300ms 0 ease-out),
-  z-index: 1,
+  transition: left 300ms 0 ease-out;
+  z-index: 1;
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .sidebar-controls,
   .toolbox {
     position: absolute;
@@ -230,13 +230,13 @@ header {
   }
 }
 
-@media (min-width: $screen-xs-max){
+@media (min-width: map-get($grid-breakpoints, "sm")){
   .brand > img {
     margin: 5px;
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .brand,
   .navbar-nav,
   .navbar-nav > li > a {
@@ -279,13 +279,13 @@ header {
   text-transform: uppercase;
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, "sm")) {
   footer {
     @include box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .sidebar-controls,
   .toolbox {
     > li {

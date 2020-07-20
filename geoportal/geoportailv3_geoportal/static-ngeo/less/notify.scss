@@ -11,7 +11,7 @@ $alert-warning-bg: #fcf850;
   z-index: $zindex-popover;
 }
 
-@media (min-width: $screen-md-min) {
+@media (min-width: map-get($grid-breakpoints, "md")) {
   .notify {
 	width: $notify-width-md;
 	top: 40px;
@@ -19,14 +19,14 @@ $alert-warning-bg: #fcf850;
   }
 }
 
-@media (max-width: $screen-xs-max) and (orientation: portrait) {
+@media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: portrait) {
   .notify {
 	top: 40px;
 	max-width: 80%;
     width: "calc(#{$notify-width-sm} - 10px)";
   }
 }
-@media (max-width: $screen-xs-max) and (orientation: landscape) {
+@media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: landscape) {
   .notify {
 	left: 35%;
 	top: 40px;

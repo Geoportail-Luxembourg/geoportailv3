@@ -12,7 +12,7 @@ body {
   padding-top: $topbar-height;
 }
 
-@media (max-width: $screen-sm-min) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   .modal-backdrop {
     display: none !important;
   }
@@ -26,7 +26,7 @@ body {
 }
 
 .navbar-nav {
-  // keep margin and padding the same as for media width > $screen-sm-min
+  // keep margin and padding the same as for media width > map-get($grid-breakpoints, "sm")
   margin: 0;
   > li > a {
     padding-top: 15px;
@@ -114,8 +114,8 @@ app-map > div {
   height: 100%;
   max-width: 100%;
   float: left;
-  @mixin transition(all 300ms ease-out 0s),
-  position: relative,
+  transition: all 300ms ease-out 0s;
+  position: relative;
 
   > div {
     display: none,
@@ -126,26 +126,26 @@ app-map > div {
   margin-left: 0,
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, "sm")) {
   #sidebar {
     margin-left: -($leftbar-width);
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   #sidebar {
     margin-left: -100%;
     width: 100%;
   }
 }
 
-@media (min-width: $screen-sm-min) {
+@media (min-width: map-get($grid-breakpoints, "sm")) {
   body {
     /* padding bottom by footer height */
     padding-bottom: $bottombar-height;
   }
 }
-@media (max-width: $screen-xs-max) {
+@media (max-width: map-get($grid-breakpoints, "sm")) {
   body {
     padding-bottom: 0;
     padding-top: 40px;
@@ -309,15 +309,15 @@ app-map > div {
   right: 8px;
   border: 1px solid #8394a0;
 }
-  
+
 .ol-zoom-extent {
   left: 0.5em;
   top: 88px;
-  @include hidden-xs;
+  // TODO @include hidden-xs;
 }
 
 .ol-full-screen {
-  @include hidden-xs;
+  // TODO @include hidden-xs;
   left: .5em;
   top: 9em;
 }
@@ -350,7 +350,7 @@ div.ol-zoom-extent > button {
   }
 }
 
-& .second-level {
+.user .second-level {
   display: none;
   position: absolute;
   right: 0px;
@@ -637,7 +637,7 @@ $drawing-panel-width: 300px;
   left: 50%;
   margin-left: -2px;
   cursor: w-resize;
-  user-select: none; 
+  user-select: none;
 }
 
 .slider-line {
@@ -664,7 +664,7 @@ $drawing-panel-width: 300px;
   width: 120px;
   bottom: 55px;
   right: 30px;
-  padding: 5px 3px; 
+  padding: 5px 3px;
   font-weight: bold;
   background-color: white;
 
@@ -687,8 +687,8 @@ $drawing-panel-width: 300px;
   -ms-user-select: none; /* IE 10+ */
   div {
     display: inline-block;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
   }

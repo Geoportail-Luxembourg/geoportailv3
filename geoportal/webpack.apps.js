@@ -57,7 +57,7 @@ const rules = [
 ];
 
 const noDevServer = process.env['NO_DEV_SERVER'] == 'TRUE';
-devServer = dev && !noDevServer;
+const devServer = dev && !noDevServer;
 
 console.log("Use dev mode: " + dev)
 console.log("Use dev server mode: " + devServer)
