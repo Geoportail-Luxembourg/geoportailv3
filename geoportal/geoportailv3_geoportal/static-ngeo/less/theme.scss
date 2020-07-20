@@ -25,7 +25,9 @@
 @mixin theme_($primary, $secondary, $tertiary) {
   .form-control {
     background-color: $secondary !important;
-    @include placeholder(white);
+    ::placeholder {
+        color: white;
+    }
     color: white;
   }
 
@@ -37,11 +39,11 @@
     border-color: darken($primary, 10%);
     color: white;
   }
-  &.no-touch .btn:hover {
+  .no-touch .btn:hover {
     color: white;
     background-color: $primary;
   }
-  &.no-touch .btn-primary:hover {
+  .no-touch .btn-primary:hover {
     background-color: darken($primary, 10%);
   }
 
@@ -84,7 +86,7 @@
     }
   }
 
-  &.no-touch .nav > li > a:hover {
+  .no-touch .nav > li > a:hover {
     color: white;
     background-color: $primary;
   }
@@ -93,7 +95,7 @@
     background-color: $primary;
     color: white;
   }
-  &.no-touch .toolbox-panel-top > li > a:hover {
+  .no-touch .toolbox-panel-top > li > a:hover {
     color: $primary;
     background-color: white;
   }
@@ -112,7 +114,7 @@
     }
   }
 
-  &.no-touch .footer .toolbox-panel > li > a:hover {
+  .no-touch .footer .toolbox-panel > li > a:hover {
     background-color: $primary;
   }
 
@@ -126,7 +128,7 @@
     }
   }
 
-  &.no-touch .footer .toolbox-panel > li > a:hover {
+  .no-touch .footer .toolbox-panel > li > a:hover {
     background-color: $primary;
   }
 
@@ -218,7 +220,7 @@
     color: white;
   }
 
-  &.no-touch .ol-control button:hover,
+  .no-touch .ol-control button:hover,
   .ol-control.active button,
   .ol-control button:active {
     background-color: $primary;
@@ -255,7 +257,7 @@
       color: white;
     }
   }
-  &.no-touch .navbar-default .navbar-nav > .active > a:hover {
+  .no-touch .navbar-default .navbar-nav > .active > a:hover {
     background-color: white;
     color: $primary;
   }
@@ -266,7 +268,7 @@
       color: white;
     }
   }
-  &.no-touch .theme-selector:hover {
+  .no-touch .theme-selector:hover {
     background-color: white;
     color: $primary;
   }
@@ -289,7 +291,7 @@
       opacity: 1;
     }
   }
-  &.no-touch .profile:hover {
+  .no-touch .profile:hover {
     color: $primary;
   }
 
@@ -420,7 +422,7 @@ header.navbar-default {
 
 
 // Trick for choosing colors: Use colorbrewer2.org and define a 5 class
-// range. 
+// range.
 // Then use the 3 darkest colors in the following order:
 // medium - light - dark
 

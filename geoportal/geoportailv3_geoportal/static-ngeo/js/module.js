@@ -31,7 +31,7 @@ import ngeoQueryModule from 'ngeo/query/module.js';
 import ngeoSearchModule from 'ngeo/search/module.js';
 import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
-import ngeoStatemanagerWfsPermalink from 'ngeo/statemanager/WfsPermalink.js';
+import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
 
 const fakeGmfAbstractAppControllerModule = angular.module('GmfAbstractAppControllerModule', []);
@@ -61,7 +61,7 @@ const exports = angular.module('Appmain', [
   ngeoQueryModule.name,
   ngeoSearchModule.name,
   ngeoStatemanagerModule.name,
-  ngeoStatemanagerWfsPermalink.module.name,
+  ngeoStatemanagerWfsPermalinkModule.name,
   'gettext']).run(function() {
     if (!TOUCH) {
       document.body.classList.add('no-touch');

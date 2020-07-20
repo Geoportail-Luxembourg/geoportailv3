@@ -1,7 +1,7 @@
 /**
  * @module app.print.Printservice
  */
-import ngeoPrintService from 'ngeo/print/Service.js';
+import {PrintService} from 'ngeo/print/Service.js';
 import {stableSort} from 'ol/array.js';
 import {assign} from 'ol/obj.js';
 import {toDegrees} from 'ol/math.js';
@@ -45,7 +45,7 @@ class AppVectorEncoder extends VectorEncoder {
   }
 }
 
-const exports = class extends ngeoPrintService {
+const exports = class extends PrintService {
   /**
    * @param {string} url URL to MapFish print web service.
    * @param {angular.$http} $http Angular $http service.
