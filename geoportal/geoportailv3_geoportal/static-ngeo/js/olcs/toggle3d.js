@@ -30,7 +30,7 @@ const toggle3d = {
   template: `
     <div class="ol-unselectable ol-control ol-toogle3d"
          ng-class="{active: $ctrl.manager && $ctrl.manager.is3dEnabled()}"
-         ng-if="::$ctrl.manager">
+         ng-if="$ctrl.manager">
       <button type="button" ng-click="$ctrl.manager.toggle3d()">3D</button>
     </div>`
 };
