@@ -14,7 +14,8 @@ import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/Target.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from './utils.js';
-import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
+
 
 function hasLocalStorage() {
   return 'localStorage' in window && localStorage;
