@@ -45,8 +45,6 @@ import Fuse from 'fuse.js';
  * manager.
  * @param {app.CoordinateString} appCoordinateString The cooridate string
  * service.
- * @param {ngeo.search.createGeoJSONBloodhound.Function}
- * createGeoJSONBloodhound The GeoJSON Bloodhound factory.
  * @param {app.Themes} appThemes Themes service.
  * @param {app.Theme} appTheme The current theme service.
  * @param {app.GetLayerForCatalogNode} appGetLayerForCatalogNode The layer
@@ -62,7 +60,7 @@ import Fuse from 'fuse.js';
  */
 const exports = function($scope, $window, $compile,
     gettextCatalog, ngeoBackgroundLayerMgr, ngeoFeatureOverlayMgr,
-    appCoordinateString, createGeoJSONBloodhound, appThemes, appTheme,
+    appCoordinateString, appThemes, appTheme,
     appGetLayerForCatalogNode, appShowLayerinfo, maxExtent,
     poiSearchServiceUrl, layerSearchServiceUrl, cmsSearchServiceUrl,
     appExcludeThemeLayerSearch, appRouting) {
