@@ -1,5 +1,5 @@
 import RasterSynchronizer from 'olcs/RasterSynchronizer';
-import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
+import MapBoxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 import {XYZ} from 'ol/source';
 import {Tile as TileLayer} from 'ol/layer';
 
