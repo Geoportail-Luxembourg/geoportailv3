@@ -73,8 +73,7 @@ const exports = angular.module('Appmain', [
 exports.config(['$compileProvider', function($compileProvider) {
   // activate pre-assigning bindings
   // See https://toddmotto.com/angular-1-6-is-here#component-and-oninit
-  // $compileProvider.preAssignBindingsEnabled(true);
-  console.log('No luck, there is this pre-assigning bindings stuff...');
+  $compileProvider.preAssignBindingsEnabled(true);
 
   // allow clicking the thumbnail link while offline
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?:|s?ftp:|mailto:|tel:|file:|data:image)/);
