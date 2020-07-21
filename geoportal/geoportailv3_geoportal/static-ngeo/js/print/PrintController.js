@@ -22,6 +22,7 @@ import {unByKey} from 'ol/Observable.js';
 import {getPointResolution} from 'ol/proj.js';
 import LayerGroup from 'ol/layer/Group.js';
 import olRenderEventType from 'ol/render/EventType.js';
+import MaskLayer from 'ngeo/print/Mask.js';
 
 /**
  * @param {angular.Scope} $scope Scope.
@@ -91,6 +92,11 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
    * @private
    */
   this.map_;
+
+  /**
+   * @private
+   */
+  this.maskLayer_ = new MaskLayer();
 
   /**
    * @type {angular.$timeout}
@@ -224,39 +230,34 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
   this['printing'] = false;
 
   /**
-   * @type {ol.EventsKey?}
-   */
-  var postcomposeListenerKey = null;
-
-  /**
    * @type {Array.<ol.layer.Layer>}
    * @private
    */
   this.layers_ = this['layers'];
 
-  /**
-   * @type {function(ol.render.Event)}
+    /**
+   * Return the size in dots of the map to print. Depends on
+   * the selected layout.
+   * @return {ol.Size} Size.
    */
-  var postcomposeListener = ngeoPrintUtils.createPrintMaskPostcompose(
-          /**
-           * Return the size in dots of the map to print. Depends on
-           * the selected layout.
-           * @return {ol.Size} Size.
-           */
-          (function() {
-            var layoutIdx = this['layouts'].indexOf(this['layout']);
-            console.assert(layoutIdx >= 0);
-            return exports.MAP_SIZES_[layoutIdx];
-          }).bind(this),
-          /**
-           * Return the scale of the map to print.
-           * @param {olx.FrameState} frameState Frame state.
-           * @return {number} Scale.
-           */
-          (function(frameState) {
-            return exports.adjustScale_(
-                this.map_.getView(), this['scale']);
-          }).bind(this));
+  const getSizeFn = () => {
+    var layoutIdx = this['layouts'].indexOf(this['layout']);
+    console.assert(layoutIdx >= 0);
+    return exports.MAP_SIZES_[layoutIdx];
+  };
+  this.maskLayer_.getSize = getSizeFn;
+
+  /**
+   * Return the scale of the map to print.
+   * @param {olx.FrameState} frameState Frame state.
+   * @return {number} Scale.
+   */
+  const getScaleFn = (frameState) => {
+    return exports.adjustScale_(
+        this.map_.getView(), this['scale']);
+  };
+  this.maskLayer_.getScale = getScaleFn;
+
 
   // Show/hide the print mask based on the value of the "open" property.
   $scope.$watch(function() {
@@ -274,13 +275,10 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       this.selectedFeatures_.clear();
       this.featurePopup_.hide();
       this.useOptimalScale_();
-      console.assert(postcomposeListenerKey === null);
-      postcomposeListenerKey = listen(this.map_,
-          olRenderEventType.POSTCOMPOSE, postcomposeListener);
+      this.map_.addLayer(this.maskLayer_);
       this.appMvtStylingService_.publishIfSerial(this.map_);
-    } else if (postcomposeListenerKey !== null) {
-      unByKey(postcomposeListenerKey);
-      postcomposeListenerKey = null;
+    } else {
+      this.map_.removeLayer(this.maskLayer_);
       this.appMvtStylingService_.unpublishIfSerial(this.map_);
     }
     this.map_.render();
