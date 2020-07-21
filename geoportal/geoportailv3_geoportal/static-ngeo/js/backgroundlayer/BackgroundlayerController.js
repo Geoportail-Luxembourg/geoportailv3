@@ -19,6 +19,7 @@
 
 import appModule from '../module.js';
 import {listen} from 'ol/events.js';
+import MapboxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 
 
 /**
@@ -90,7 +91,7 @@ class Controller {
       current.setVisible(true);
       this.bgLayer = current;
 
-      this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
+      this.activeMvt = this.bgLayer instanceof MapBoxLayer;
     });
   };
 
@@ -101,7 +102,7 @@ class Controller {
   setLayer(layer) {
     this.bgLayer = layer;
     this.backgroundLayerMgr_.set(this.map, layer);
-    this.activeMvt = this.bgLayer.getType() === 'GEOBLOCKS_MVT';
+    this.activeMvt = this.bgLayer instanceof MapBoxLayer;
   };
 
 };

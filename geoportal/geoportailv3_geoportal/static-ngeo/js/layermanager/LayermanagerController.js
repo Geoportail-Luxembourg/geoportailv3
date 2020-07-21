@@ -16,6 +16,7 @@
 
 import appModule from '../module.js';
 import {getUid} from 'ol/index.js';
+import MapboxLayer from '@geoblocks/mapboxlayer/src/MapBoxLayer.js';
 
 class Controller {
   /**
@@ -48,7 +49,7 @@ class Controller {
   get background() {
     let background = this.ngeoBackgroundLayerMgr_.get(this.map);
     if (background) {
-      this.activeMvt = background.getType() === 'GEOBLOCKS_MVT';
+      this.activeMvt = background instanceof MapboxLayer;
       this.backgroundInfo = background;
       return background.get('label');
     }

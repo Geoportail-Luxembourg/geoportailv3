@@ -29,7 +29,6 @@ import ngeoPrintModule from 'ngeo/print/module.js';
 import ngeoProfileModule from 'ngeo/profile/module.js';
 import ngeoQueryModule from 'ngeo/query/module.js';
 import ngeoSearchModule from 'ngeo/search/module.js';
-import ngeoStatemanagerLocation from 'ngeo/statemanager/Location.js';
 import ngeoStatemanagerModule from 'ngeo/statemanager/module.js';
 import ngeoStatemanagerWfsPermalinkModule from 'ngeo/statemanager/WfsPermalink.js';
 import MapBoxOffline from './offline/MapboxOffline.js';
