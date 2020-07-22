@@ -21,7 +21,7 @@ import {includes as arrayIncludes, extend as arrayExtend} from 'ol/array.js';
 import olCollectionEventType from 'ol/CollectionEventType.js';
 import {listen} from 'ol/events.js';
 import {getCenter, containsCoordinate} from 'ol/extent.js';
-import {transformExtent, get} from 'ol/proj.js';
+import {transformExtent, get, transform} from 'ol/proj.js';
 import olFeature from 'ol/Feature.js';
 import olFormatGeoJSON from 'ol/format/GeoJSON.js';
 import olGeomPoint from 'ol/geom/Point.js';
@@ -304,8 +304,12 @@ const exports = function($scope, $window, $compile,
         scope['click'] = function(event) {
           event.stopPropagation();
         };
-        var html = '<p>' + feature.get('label') +
-            ' (' + feature.get('epsgLabel') + ')</p>';
+        var html = '<p>' + feature.get('label');
+        var epsgLabel = feature.get('epsgLabel');
+        if (!(epsgLabel === 'UTM32N' || epsgLabel === 'UTM31N')) {
+          html = html + ' (' + epsgLabel + ')';
+        }
+        html = html + '</p>';
         return $compile(html)(scope);
       }.bind(this)
     })
@@ -533,6 +537,21 @@ exports.prototype.matchCoordinate_ =
       searchString = searchString.replace(/,/gi, '.');
       var results = [];
       var re = {
+        'EPSG:32631': {
+          regex: /(\d{6,6}[\,\.]?\d{0,3})\s*?\W*(\d{7,7}[\,\.]?\d{0,3})\s*?/,
+          label: 'UTM31N',
+          epsgCode: 'EPSG:32631'
+        },
+        'EPSG:32632': {
+          regex: /(\d{6,6}[\,\.]?\d{0,3})\s*?\W*(\d{7,7}[\,\.]?\d{0,3})\s*?/,
+          label: 'UTM32N',
+          epsgCode: 'EPSG:32632'
+        },
+        'EPSG:2169': {
+          regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
+          label: 'LUREF',
+          epsgCode: 'EPSG:2169'
+        },
         'EPSG:2169': {
           regex: /(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?\W*(\d{4,6}[\,\.]?\d{0,3})\s*([E|N])?/,
           label: 'LUREF',
@@ -570,7 +589,17 @@ exports.prototype.matchCoordinate_ =
            * @type {number | undefined}
            */
           var northing = undefined;
-          if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
+          if (epsgCode === 'EPSG:32631' || epsgCode === 'EPSG:32632') {
+            if ((m[1] !== undefined && m[1] !== null) && (m[2] !== undefined && m[2] !== null)) {
+              var coordinate = [parseFloat(m[1].replace(',', '.')), parseFloat(m[2].replace(',', '.'))];
+              var lonlat = /** @type {ol.Coordinate} */
+              (transform(coordinate, epsgCode, 'EPSG:4326'));
+              if (Math.floor(lonlat[0]) === 5 || Math.floor(lonlat[0]) === 6) {
+                easting = parseFloat(m[1].replace(',', '.'));
+                northing = parseFloat(m[2].replace(',', '.'));
+              }
+            }
+          } else if (epsgKey === 'EPSG:4326' || epsgKey === 'EPSG:2169') {
             if ((m[2] !== undefined && m[2] !== null) && (m[4] !== undefined && m[4] !== null)) {
               if (arrayIncludes(northArray, m[2].toUpperCase()) &&
               arrayIncludes(eastArray, m[4].toUpperCase())) {
