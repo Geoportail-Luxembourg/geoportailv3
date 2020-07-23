@@ -16,6 +16,8 @@ span.twitter-typeahead {
     cursor: hand;
     color: white;
     opacity: 0.5;
+    // FIXME: what about the old padding-base-vertical
+    // looks removed in ngeo
     padding: 5px;
     vertical-align: middle;
     border: 1px solid transparent;
