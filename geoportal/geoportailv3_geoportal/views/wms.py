@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from geoportailv3_geoportal.models import LuxLayerInternalWMS, LuxPredefinedWms
 from c2cgeoportal_commons.models import DBSession
 from c2cgeoportal_commons.models.main import RestrictionArea, Role, Layer
+from c2cgeoportal_geoportal.lib import get_url2
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest
 from pyramid.httpexceptions import HTTPNotFound, HTTPUnauthorized
@@ -136,7 +137,65 @@ class Wms(object):
             if restriction is None or not restriction.readwrite:
                 return HTTPUnauthorized()
 
+        param_wms = ""
+        if ((internal_wms.ogc_server.type == 'other')
+            and ('export' in internal_wms.url[-10:])):
+
+            # deactivated code for debug purpose
+            if False:
+                return Response('this is another hires layer\n',
+                                headers={"Content-Type": "text/plain"})
+
+            param_dict = {
+                'map_resolution': 'dpi',
+                'transparent': 'transparent',
+                'bbox': 'bbox',
+            }
+            for param in self.request.params:
+                if param.lower() in param_dict:
+                    param_wms = param_wms + param_dict[param.lower()] + "=" + \
+                                urllib.parse.quote(
+                                self.request.params.get(param, '').encode('utf-8')
+                                ) + "&"
+                elif param.lower() == 'crs':
+                    param_wms = param_wms + "imageSR=" + \
+                                urllib.parse.quote(self.request.params.get(param, '').encode('utf-8')
+                                ) + "&" \
+                                + "bboxSR=" + \
+                                urllib.parse.quote(self.request.params.get(param, '').encode('utf-8')
+                                ) + "&"
+                elif param.lower() == 'layers':
+                    param_wms = param_wms + param + "=" + \
+                                urllib.parse.quote(('show:' +
+                                internal_wms.layers).encode('utf-8')
+                                ) + "&"
+                elif param.lower() == 'format':
+                    param_wms = param_wms + param + "=" + \
+                                urllib.parse.quote(
+                                    self.request.params.get(param, '')
+                                    .split('/')[-1].encode('utf-8')
+                                ) + "&"
+                else:
+                    pass
+
+            kw = {k.lower(): v for (k, v) in self.request.params.items()
+                  if k.lower() in ('width', 'height')}
+            log.info(kw)
+
+            param_wms = param_wms + "size=" + \
+                        urllib.parse.quote(
+                            (kw.get('width', '')
+                             + ','
+                             + kw.get('height', '')).encode('utf-8')
+                        ) + "&f=image&"
+
+        # TODO: cleanup
+        # this is meant to temporarily enable routing from config file for debug purpose
+        # rh = internal_wms.url
+        # err = []
+        # remote_host = get_url2('dummy', rh, self.request, err)
         remote_host = internal_wms.url
+
         idx_arobase = remote_host.find("@")
         base64user = None
         if idx_arobase > -1:
@@ -149,20 +208,20 @@ class Wms(object):
             base64user = base64.b64encode(
                 "%s:%s" % (remote_user, remote_password)).replace("\n", "")
 
-        param_wms = ""
-        for param in self.request.params:
-            if param.lower() == "styles" and \
-               remote_host.lower().find("styles") > -1:
-                continue
+        if param_wms == "":
+            for param in self.request.params:
+                if param.lower() == "styles" and \
+                   remote_host.lower().find("styles") > -1:
+                    continue
 
-            if param.lower() != 'layers':
-                param_wms = param_wms + param + "=" + \
-                    urllib.parse.quote(
-                        self.request.params.get(param, '').encode('utf-8')
-                        ) + "&"
-            else:
-                param_wms = param_wms + param + "=" + \
-                    urllib.parse.quote(internal_wms.layers.encode('utf-8')) + "&"
+                if param.lower() != 'layers':
+                    param_wms = param_wms + param + "=" + \
+                                urllib.parse.quote(
+                                    self.request.params.get(param, '').encode('utf-8')
+                                ) + "&"
+                else:
+                    param_wms = param_wms + param + "=" + \
+                                urllib.parse.quote(internal_wms.layers.encode('utf-8')) + "&"
 
         # TODO : Specific action when user is logged in ?
         # Forward authorization to the remote host
@@ -190,6 +249,7 @@ class Wms(object):
         if base64user is not None:
             url_request.add_header("Authorization", "Basic %s" % base64user)
         try:
+            log.info('my url: '+url_request.full_url)
             f = urllib.request.urlopen(url_request, None, timeout)
             data = f.read()
         except:
