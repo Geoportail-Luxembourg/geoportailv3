@@ -7,7 +7,7 @@ $alert-warning-bg: #fcf850;
   left: 50%;
   right: 50%;
   width: $notify-width-sm;
-  margin-left: "calc(-#{$notify-width-sm} / 2)";
+  margin-left: calc(-#{$notify-width-sm} / 2);
   z-index: $zindex-popover;
 }
 
@@ -15,7 +15,7 @@ $alert-warning-bg: #fcf850;
   .notify {
 	width: $notify-width-md;
 	top: 40px;
-    margin-left: "calc(-#{$notify-width-md} / 2)";
+    margin-left: calc(-#{$notify-width-md} / 2);
   }
 }
 
@@ -23,7 +23,7 @@ $alert-warning-bg: #fcf850;
   .notify {
 	top: 40px;
 	max-width: 80%;
-    width: "calc(#{$notify-width-sm} - 10px)";
+    width: calc(#{$notify-width-sm} - 10px);
   }
 }
 @media (max-width: map-get($grid-breakpoints, "sm")) and (orientation: landscape) {
@@ -31,6 +31,6 @@ $alert-warning-bg: #fcf850;
 	left: 35%;
 	top: 40px;
     max-width: 80%;
-    width: "calc(100% - 10px)";
+    width: calc(100% - 10px);
   }
 }

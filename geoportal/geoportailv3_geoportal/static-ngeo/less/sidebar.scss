@@ -38,7 +38,7 @@
     float: left;
     width: 100%;
   }
-  
+
   .nav-tabs>li {
     padding-right: 5px;
     &>a {
@@ -60,7 +60,7 @@
     // 100% - h2 font-size - padding-top - padding-bottom -
     //  tab font-size - tab padding*2;
     // FIXME: use variables for the calculation
-    height: "calc(100% - 40px - 2 * 12px - 24px - 2 * 10px)";
+    height: calc(100% - 40px - 2 * 12px - 24px - 2 * 10px);
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -68,7 +68,7 @@
   #mymaps .tab-content {
     touch-action: none;
     // FIXME: use variables for the calculation
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     color: #FFFFFF;
@@ -80,14 +80,14 @@
 
   #routing .tab-content {
     // FIXME: use variables for the calculation
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
   }
 
   #infos .tab-content {
     // FIXME: use variables for the calculation
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -95,7 +95,7 @@
   }
 
   #legends .tab-content {
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -103,35 +103,35 @@
   }
 
   #feedback .tab-content {
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackanf .tab-content {
-    height: "calc(100% - 120px)";
+    height: calc(100% - 120px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackcrues .tab-content {
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #feedbackage .tab-content {
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
     color: #FFFFFF;
   }
   #vectoreditor .tab-content {
-    height: "calc(100% - 64px)";
+    height: calc(100% - 64px);
     overflow-y: auto;
     overflow-x: hidden;
     padding-top: 10px;
@@ -159,7 +159,7 @@
   .themes-switcher {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: "calc(100% - 105px - 2 * 12px - #{$input-height-base})";
+    max-height: calc(100% - 105px - 2 * 12px - #{$input-height-base});
     position: absolute;
     width:100%;
     -webkit-transition: none;
@@ -474,7 +474,7 @@
   .clear-style-btn {
     margin-top: 10px;
   }
-  
+
   .hillshade-visible {
     float: right;
     margin-right: 11px;
@@ -509,5 +509,9 @@ app-simple-style {
     border-radius: initial;
     -webkit-box-shadow: initial;
     box-shadow: initial;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> Remove strange calc strings
 }
