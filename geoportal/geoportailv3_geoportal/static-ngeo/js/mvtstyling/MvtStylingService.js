@@ -123,7 +123,11 @@ publishIfSerial(map) {
                 try {
                     const data = JSON.stringify(mbMap.getStyle());
                     clearInterval(interval);
-                    this.publishStyle(bgLayer, data);
+                    this.publishStyle(bgLayer, data).then(() => {
+                      // for OL-Cesium to refresh the background layer counterpart
+                      // and thus request tiles with custom style
+                      this.backgroundLayerMgr_.set(map, bgLayer);
+                    });
                 } catch (error) {
                     console.log(error);
                     return;
