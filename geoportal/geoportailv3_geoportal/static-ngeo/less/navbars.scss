@@ -24,7 +24,7 @@ header {
     line-height: 34px;
     cursor: pointer;
     text-transform: uppercase;
-    @media (max-width: map-get($grid-breakpoints, "md")) {
+    @media (max-width: map-get($grid-breakpoints, "lg")) {
       display: none;
     }
   }
