@@ -11,7 +11,7 @@ header {
       min-height: 40px;
     }
   }
-  @include box-shadow(0px 2px 6px -1px rgba(0, 0, 0, 0.5));
+  box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, 0.5);
 
   .container-fluid {
     padding-left: 0;
@@ -281,7 +281,7 @@ header {
 
 @media (min-width: map-get($grid-breakpoints, "sm")) {
   footer {
-    @include box-shadow(0px 2px 6px 1px rgba(0, 0, 0, 0.5));
+    box-shadow: 0px 2px 6px 1px rgba(0, 0, 0, 0.5);
   }
 }
 
