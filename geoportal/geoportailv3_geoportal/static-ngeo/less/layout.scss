@@ -1,3 +1,9 @@
+@media (max-width: map-get($grid-breakpoints, "sm")) {
+  .hidden-xs {
+    display: none !important;
+  }
+}
+
 /** Main layout **/
 html, body {
   position: relative;
@@ -313,11 +319,9 @@ app-map > div {
 .ol-zoom-extent {
   left: 0.5em;
   top: 88px;
-  // TODO @include hidden-xs;
 }
 
 .ol-full-screen {
-  // TODO @include hidden-xs;
   left: .5em;
   top: 9em;
 }
@@ -349,6 +353,9 @@ div.ol-zoom-extent > button {
     line-height: normal;
   }
 }
+
+// FIXME: check this
+// was the incorrect & .second-level {
 
 .user .second-level {
   display: none;
