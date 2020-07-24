@@ -501,7 +501,7 @@ const exports = function($scope, $window, $compile,
       }), this);
 
   this.facetsPanelOpen = false;
-  this.facets = {
+  this.initialFacets = {
     layers: true,
     cms: true,
     address: false,
@@ -510,6 +510,7 @@ const exports = function($scope, $window, $compile,
     extent: false,
     activeLayers: false
   };
+  this.facets = Object.assign({}, this.initialFacets);
 };
 
 
@@ -984,6 +985,14 @@ exports.prototype.isSearchFeature = function() {
  */
 exports.prototype.addLastSuggestedFeature = function() {
   this.addRoutePoint(this.lastSelectedSuggestion);
+};
+
+/**
+ * Reset facets search to initial state
+ * @export
+ */
+exports.prototype.resetFacets = function() {
+  this.facets = Object.assign({}, this.initialFacets);
 };
 
 appModule.controller('AppSearchController',
