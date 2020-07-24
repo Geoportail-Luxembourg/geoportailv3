@@ -328,7 +328,7 @@ exports.handleEvent = function(event) {
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return olInteractionPointer.handleEvent.call(this, event) && pass;
+  return olInteractionPointer.prototype.handleEvent.call(this, event) && pass;
 };
 
 

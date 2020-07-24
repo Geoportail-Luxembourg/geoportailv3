@@ -423,7 +423,7 @@ exports.handleEvent = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
 
-  return olInteractionPointer.handleEvent.call(this, mapBrowserEvent) && !handled;
+  return olInteractionPointer.prototype.handleEvent.call(this, mapBrowserEvent) && !handled;
 };
 
 
