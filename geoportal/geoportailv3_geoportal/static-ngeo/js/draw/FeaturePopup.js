@@ -10,7 +10,7 @@ import olOverlay from 'ol/Overlay.js';
 import {unByKey} from 'ol/Observable.js';
 import {listen, listenOnce} from 'ol/events.js';
 import olGeomLineString from 'ol/geom/LineString.js';
-import ngeoInteractionMeasure from 'ngeo/interaction/Measure.js';
+import {getFormattedArea, getFormattedLength} from 'ngeo/interaction/Measure.js';
 import olGeomGeometryType from 'ol/geom/GeometryType.js';
 import olGeomPoint from 'ol/geom/Point.js';
 import olGeomPolygon from 'ol/geom/Polygon.js';
@@ -250,7 +250,7 @@ exports.prototype.getAnchor = function(feature) {
 exports.prototype.formatArea = function(polygon) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedArea(
+  return getFormattedArea(
       polygon,
        /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -266,7 +266,7 @@ exports.prototype.formatArea = function(polygon) {
 exports.prototype.formatRadius = function(line) {
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedLength(
+  return getFormattedLength(
       line,
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
@@ -284,7 +284,7 @@ exports.prototype.formatLength = function(line) {
       line.getCoordinates()[0] : line.getCoordinates();
   var projection = this.map.getView().getProjection();
   console.assert(projection !== null);
-  return ngeoInteractionMeasure.getFormattedLength(
+  return getFormattedLength(
       new olGeomLineString(coordinates),
       /** @type {!ol.proj.Projection} */ (projection),
       undefined,
