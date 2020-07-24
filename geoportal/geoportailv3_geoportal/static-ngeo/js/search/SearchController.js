@@ -500,8 +500,10 @@ const exports = function($scope, $window, $compile,
         this.featureOverlay.clear();
       }), this);
 
-  this['facetsPanelOpen'] = false;
-  this['facets'] = {
+  this.facetsPanelOpen = false;
+  this.facets = {
+    layers: true,
+    cms: true,
     address: false,
     parcels: false,
     flik: false,

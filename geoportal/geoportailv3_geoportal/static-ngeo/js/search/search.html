@@ -2,7 +2,10 @@
   &#10005;
 </button>
 
-<div class="search-container">
+<div class="search-container" ng-class="{
+    hideCms: !ctrl.facets.cms,
+    hideLayers: !ctrl.facets.layers,
+  }">
   <form class="navbar-form" role="search">
     <div class="form-group">
         <input type="text" autocorrect="off" autocapitalize="none" class="form-control" placeholder="{{'Recherche adresse, parcelles, couches ...'|translate}}"
@@ -19,6 +22,21 @@
     <div class="facet-container" ng-show="ctrl.facetsPanelOpen">
       <button class="close-panel" ng-click="ctrl.facetsPanelOpen = false">&times;</button>
       <h3 translate>Paramètres de recherche</h3>
+      <h5 translate>Inclure</h5>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.cms ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.cms">
+          <span translate>Pages du site</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <i class="fa" ng-class="ctrl.facets.layers ? 'fa-check-square' : 'fa-square'"></i>
+          <input type="checkbox" ng-model="ctrl.facets.layers">
+          <span translate>Couches</span>
+        </label>
+      </div>
       <h5 translate>Limiter la recherche à</h5>
       <div class="checkbox">
         <label>
