@@ -132,7 +132,7 @@ exports.prototype.addFeature_ = function(feature) {
         this.handlePointerAtPixel_(this.lastPixel_, map);
       }
     }
-    this.FeatureListeners_.put(feature, listen(feature, 'change', this.handleFeatureChange_, this));
+    this.FeatureListeners_.set(feature, listen(feature, 'change', this.handleFeatureChange_, this));
   }
 };
 
@@ -150,7 +150,7 @@ exports.prototype.removeFeature_ = function(feature) {
     this.vertexFeature_ = null;
   }
 
-  const key = this.FeatureListeners_.remove(feature);
+  const key = this.FeatureListeners_.delete(feature);
   unlistenByKey(key);
 };
 
