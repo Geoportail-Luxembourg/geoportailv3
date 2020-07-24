@@ -78,7 +78,8 @@
         </label>
       </div>
       <hr>
-      <button class="btn btn-primary pull-right" translate>Sauvegarder la recherche</button>
+      <button class="btn btn-primary pull-right" ng-click="ctrl.saveSearch()" translate>Sauvegarder la recherche</button>
+      <button class="btn btn-text" ng-click="ctrl.resetFacets()" translate>Réinitialiser</button>
     </div>
   </form>
   <div ng-if="ctrl.isSearchFeature() && !ctrl.mobileActive" class="form-group itinary-button">
