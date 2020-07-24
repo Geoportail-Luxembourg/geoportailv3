@@ -8,6 +8,15 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts" !default;
 //@import "../../../node_modules/ngeo/contribs/gmf/src/sass/base.scss";
 
 
+// start legacy bootstrap3
+.hide {
+  display: none !important;
+}
+.show {
+  display: block !important;
+}
+// end legacy bootstrap 3
+
 @import "controls3d.scss";
 @import "variables.scss";
 @import "icons.scss";
