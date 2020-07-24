@@ -1,4 +1,4 @@
-<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parentUid}}"
+<a data-toggle="collapse" data-parent="#catalog-{{::layertreeCtrl.parent.uid}}"
    href="#catalog-{{::layertreeCtrl.uid}}"
    ng-if="::!layertreeCtrl.isRoot && layertreeCtrl.node.children && layertreeCtrl.depth < 10">
   {{layertreeCtrl.node.name | translate}}
