@@ -510,7 +510,10 @@ const exports = function($scope, $window, $compile,
     extent: false,
     activeLayers: false
   };
-  this.facets = Object.assign({}, this.initialFacets);
+  this.facets = Object.assign({}, localStorage.getItem('searchFacets')
+    ? JSON.parse(localStorage.getItem('searchFacets'))
+    :this.initialFacets
+  );
 };
 
 
@@ -993,6 +996,14 @@ exports.prototype.addLastSuggestedFeature = function() {
  */
 exports.prototype.resetFacets = function() {
   this.facets = Object.assign({}, this.initialFacets);
+};
+
+/**
+ * Save facets state
+ * @export
+ */
+exports.prototype.saveSearch = function() {
+  localStorage.setItem('searchFacets', JSON.stringify(this.facets))
 };
 
 appModule.controller('AppSearchController',
