@@ -47,58 +47,60 @@ ng-strict-di="true"
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
     <!-- Begin fixed top bar -->
-    <header class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
-      <div class="container-fluid">
-        <div class="navbar-inner">
-          <div class="pull-left brand">
-            <img src="<%=require("../../images/gov-light.png")%>" alt="Gouvernement du Grand-Duché de Luxembourg">
-          </div>
+    <header class="navbar navbar-default navbar-expand fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
+
+      <div class="navbar-inner">
+        <div class="pull-left brand">
+          <img src="<%=require("../../images/gov-light.png")%>" alt="Gouvernement du Grand-Duché de Luxembourg">
         </div>
-
-        <div class="offline-msg alert-danger" translate>
-          <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
-            <a href ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
-          </span>
-          <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
-        </div>
-
-        <ul class="nav navbar-nav pull-right">
-          <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
-          <li ng-click="mainCtrl.toggleThemeSelector();">
-            <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
-          </li>
-
-          <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
-            <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
-            <app-authentication app-authentication-lang="mainCtrl.lang"
-                app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
-          </li>
-
-
-          <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
-            <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
-            <ul class="nav toolbox-panel toolbox-panel-top">
-              <li ng-class="{active: mainCtrl.lang == 'lb'}">
-                <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lb</a>
-              </li>
-              <li ng-class="{active: mainCtrl.lang == 'fr'}">
-                <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
-              </li>
-              <li ng-class="{active: mainCtrl.lang == 'de'}">
-                <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
-              </li>
-              <li ng-class="{active: mainCtrl.lang == 'en'}">
-                <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <div class="icon theme-icon pull-right" ng-click="mainCtrl.toggleThemeSelector();"></div>
-        <app-search app-search-map="::mainCtrl.map"
-                    app-search-language="mainCtrl.lang"
-                    app-search-mobileactive="mainCtrl.mobileSearchActive"
-                    app-search-routing-open="mainCtrl.routingOpen"></app-search>
       </div>
+
+      <div class="offline-msg alert-danger" translate>
+        <span ng-if="!mainCtrl.offlineMode.isEnabled()">You are currently disconnected.
+          <a href ng-click="mainCtrl.offlineMode.activateOfflineMode()" ng-if="mainCtrl.offlineMode.hasData()" translate>Enable offline mode</a>
+        </span>
+        <span ng-if="mainCtrl.offlineMode.isEnabled()">You are currently offline.</span>
+      </div>
+
+      <app-search app-search-map="::mainCtrl.map"
+                  app-search-language="mainCtrl.lang"
+                  app-search-mobileactive="mainCtrl.mobileSearchActive"
+                  app-search-routing-open="mainCtrl.routingOpen"></app-search>
+
+      <div class="icon theme-icon" ng-click="mainCtrl.toggleThemeSelector();"></div>
+
+      <ul class="nav navbar-nav">
+        <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
+        <li ng-click="mainCtrl.toggleThemeSelector();">
+          <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
+        </li>
+
+        <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
+          <app-authentication app-authentication-lang="mainCtrl.lang"
+              app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
+        </li>
+
+
+        <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
+          <ul class="nav toolbox-panel toolbox-panel-top">
+            <li ng-class="{active: mainCtrl.lang == 'lb'}">
+              <a href ng-click="mainCtrl.switchLanguage('lb');mainCtrl.languageOpen = false">lb</a>
+            </li>
+            <li ng-class="{active: mainCtrl.lang == 'fr'}">
+              <a href ng-click="mainCtrl.switchLanguage('fr');mainCtrl.languageOpen = false">fr</a>
+            </li>
+            <li ng-class="{active: mainCtrl.lang == 'de'}">
+              <a href ng-click="mainCtrl.switchLanguage('de');mainCtrl.languageOpen = false">de</a>
+            </li>
+            <li ng-class="{active: mainCtrl.lang == 'en'}">
+              <a href ng-click="mainCtrl.switchLanguage('en');mainCtrl.languageOpen = false">en</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
     </header>
     <div class="routing-goto-route" ng-if="mainCtrl.hasRoutingResult">
       <button class="routing-rounded-button" ng-click="mainCtrl.routingOpen=true;" translate>Itinéraire en détail</button>

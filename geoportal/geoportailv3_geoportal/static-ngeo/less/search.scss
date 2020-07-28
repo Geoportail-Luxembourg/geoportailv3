@@ -108,14 +108,14 @@ span.twitter-typeahead {
   font-weight: bold;
   }
   &:after {
-  content: '\f002';
-  font-family: FontAwesome;
-  position: absolute;
-  top: 0;
-  left: .5em;
-  height: 36px;
-  line-height: 36px;
-  color: white;
+    content: '\e00d';
+    font-family: geoportail-icons;
+    position: absolute;
+    top: 0;
+    left: .5em;
+    height: 32px;
+    line-height: 32px;
+    color: white;
   }
 }
 .routing-route-container span.twitter-typeahead {

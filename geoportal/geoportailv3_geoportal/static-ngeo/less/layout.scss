@@ -31,6 +31,15 @@ body {
   display: none !important;
 }
 
+header.navbar {
+  padding: 0;
+  justify-content: space-between;
+}
+
+app-search {
+  height: 2.25em;
+}
+
 .navbar-nav {
   // keep margin and padding the same as for media width > map-get($grid-breakpoints, "sm")
   margin: 0;
@@ -318,12 +327,12 @@ app-map > div {
 
 .ol-zoom-extent {
   left: 0.5em;
-  top: 88px;
+  top: 86px;
 }
 
 .ol-full-screen {
   left: .5em;
-  top: 9em;
+  top: 135px;
 }
 
 div.ol-full-screen > button {
