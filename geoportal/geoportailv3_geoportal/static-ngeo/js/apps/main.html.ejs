@@ -46,6 +46,7 @@ ng-strict-di="true"
   </head>
 
   <body data-theme="{{mainCtrl.getEncodedCurrentTheme()}}" ng-class="{'offline-or-disconnected': mainCtrl.isDisconnectedOrOffline(), 'search-mobile': mainCtrl.mobileSearchActive, 'enabled-3d': mainCtrl.is3dEnabled(), 'embedded': mainCtrl.embedded, 'full': !mainCtrl.embedded}">
+
     <!-- Begin fixed top bar -->
     <header class="navbar navbar-default navbar-expand fixed-top" role="navigation" ng-show="::!mainCtrl.embedded">
 
@@ -67,20 +68,16 @@ ng-strict-di="true"
                   app-search-mobileactive="mainCtrl.mobileSearchActive"
                   app-search-routing-open="mainCtrl.routingOpen"></app-search>
 
-      <div class="icon theme-icon" ng-click="mainCtrl.toggleThemeSelector();"></div>
 
       <ul class="nav navbar-nav">
-        <li class="visible-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
-        <li ng-click="mainCtrl.toggleThemeSelector();">
-          <div class="theme-header">{{mainCtrl.getCurrentTheme()|translate}}</div>
-        </li>
 
-        <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
-          <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
-          <app-authentication app-authentication-lang="mainCtrl.lang"
-              app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
-        </li>
+        <li class="d-none d-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
 
+        <li class="icon theme-li">
+          <a href class="icon theme-icon" ng-click="mainCtrl.toggleThemeSelector();">
+            <span class="d-none d-xl-inline-block theme-label">{{mainCtrl.getCurrentTheme()|translate}}</span>
+          </a>
+        </li>
 
         <li class="lang icon" ng-class="mainCtrl.languageOpen ? 'active': ''">
           <a href translate ngeo-btn ng-model="mainCtrl.languageOpen"  ng-click="mainCtrl.userOpen = false">lang</a>
@@ -99,6 +96,13 @@ ng-strict-di="true"
             </li>
           </ul>
         </li>
+
+        <li class="user icon" ng-class="mainCtrl.userOpen ? 'active': ''">
+          <a href translate ngeo-btn ng-model="mainCtrl.userOpen" ng-click="mainCtrl.languageOpen = false">user</a>
+          <app-authentication app-authentication-lang="mainCtrl.lang"
+              app-authentication-useropen="mainCtrl.userOpen"></app-authentication>
+        </li>
+
       </ul>
 
     </header>
