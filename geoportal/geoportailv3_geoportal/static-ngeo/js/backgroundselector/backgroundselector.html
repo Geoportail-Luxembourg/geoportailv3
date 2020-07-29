@@ -3,10 +3,10 @@
     ng-click="ctrl.setBackgroundLayer(layer);"
     class="bg-selector-layer"
     ng-class="{active: ctrl.bgLayer === layer}">
-    <span class="bg-selector-layer-{{$index}}"></span>
+    <img class="bg-selector-layer-{{$index}}">
   </div>
 </div>
 
 <div class="bg-selector-opener" ng-click="ctrl.toggleSelector()" ng-class="ctrl.isOpened == true ? 'closed' : 'opened'">
-  <span ng-class="ctrl.openerClass"></span>
+  <img ng-class="ctrl.openerClass">
 </div>
