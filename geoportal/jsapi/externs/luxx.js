@@ -4,6 +4,13 @@
 var luxx;
 
 /**
+ * Function called to transform the result of the information popup.
+ * @type {function()|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.popupContentTransformer;
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object}
  */

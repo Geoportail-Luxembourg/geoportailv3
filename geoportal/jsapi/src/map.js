@@ -385,6 +385,16 @@ lux.Map = function(options) {
    */
   this.popupClass_ = undefined;
 
+  /**
+   * @private
+   * @type {function()=|undefined}
+   */
+  this.popupContentTransformer_ = undefined;
+  if (options.popupContentTransformer !== undefined) {
+    this.popupContentTransformer_ = options.popupContentTransformer;
+    delete options.popupContentTransformer;
+  }
+
   this.setPopupTarget(options.popupTarget, options.popupClassPrefix);
 
   ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
@@ -1922,18 +1932,25 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     // each item in the result corresponds to a layer
     var htmls = [];
     json.forEach(function(resultLayer) {
+      var curHtml = undefined;
       if ('tooltip' in resultLayer) {
         if (this.popupTarget_ !== undefined && this.popupClass_ !== undefined) {
-          htmls.push('<div class="' + this.popupClass_ +
+          curHtml = '<div class="' + this.popupClass_ +
             '_' + resultLayer['layer'] + '">' +
-            resultLayer['tooltip'] + '</div>');
+            resultLayer['tooltip'] + '</div>';
         } else{
-          htmls.push(resultLayer['tooltip']);
+          curHtml = resultLayer['tooltip'];
         }
       }
       var features = this.readJsonFeatures_(resultLayer);
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
+        if (this.popupContentTransformer_ !== undefined) {
+          curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
+        }
+      }
+      if (curHtml !== undefined) {
+        htmls.push(curHtml);
       }
     }.bind(this));
 
