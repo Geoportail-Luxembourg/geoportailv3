@@ -39,11 +39,11 @@
     border-color: darken($primary, 10%);
     color: white;
   }
-  .no-touch .btn:hover {
+  #{if(&, "&", "*")}.no-touch .btn:hover {
     color: white;
     background-color: $primary;
   }
-  .no-touch .btn-primary:hover {
+  #{if(&, "&", "*")}.no-touch .btn-primary:hover {
     background-color: darken($primary, 10%);
   }
 
@@ -86,7 +86,7 @@
     }
   }
 
-  .no-touch .nav > li > a:hover {
+  #{if(&, "&", "*")}.no-touch .nav > li > a:hover {
     color: white;
     background-color: $primary;
   }
@@ -95,7 +95,7 @@
     background-color: $primary;
     color: white;
   }
-  .no-touch .toolbox-panel-top > li > a:hover {
+  #{if(&, "&", "*")}.no-touch .toolbox-panel-top > li > a:hover {
     color: $primary;
     background-color: white;
   }
@@ -114,7 +114,7 @@
     }
   }
 
-  .no-touch .footer .toolbox-panel > li > a:hover {
+  #{if(&, "&", "*")}.no-touch .footer .toolbox-panel > li > a:hover {
     background-color: $primary;
   }
 
@@ -128,7 +128,7 @@
     }
   }
 
-  .no-touch .footer .toolbox-panel > li > a:hover {
+  #{if(&, "&", "*")}.no-touch .footer .toolbox-panel > li > a:hover {
     background-color: $primary;
   }
 
@@ -220,7 +220,7 @@
     color: white;
   }
 
-  .no-touch .ol-control button:hover,
+   #{if(&, "&", "*")}.no-touch .ol-control button:hover,
   .ol-control.active button,
   .ol-control button:active {
     background-color: $primary;
@@ -257,7 +257,7 @@
       color: white;
     }
   }
-  .no-touch .navbar-default .navbar-nav > .active > a:hover {
+  #{if(&, "&", "*")}.no-touch .navbar-default .navbar-nav > .active > a:hover {
     background-color: white;
     color: $primary;
   }
@@ -268,7 +268,7 @@
       color: white;
     }
   }
-  .no-touch .theme-selector:hover {
+  #{if(&, "&", "*")}.no-touch .theme-selector:hover {
     background-color: white;
     color: $primary;
   }
@@ -291,7 +291,7 @@
       opacity: 1;
     }
   }
-  .no-touch .profile:hover {
+  #{if(&, "&", "*")}.no-touch .profile:hover {
     color: $primary;
   }
 
