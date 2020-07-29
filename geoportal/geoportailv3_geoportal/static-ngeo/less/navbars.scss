@@ -28,6 +28,27 @@ header {
       display: none;
     }
   }
+  .navbar-nav  {
+    .theme-label {
+      text-indent: 0;
+    }
+    .theme-li a {
+      border-left: none;
+    }
+  }
+}
+@media (min-width: map-get($grid-breakpoints, "lg")) {
+  header .theme-li a {
+    text-indent: 0;
+    width: 6em;
+    text-align: right;
+    padding-left: 1.5em;
+    font-size: 120%;
+    padding-right: .5em;
+    &:after {
+      text-align: left;
+    }
+  }
 }
 .nav {
   > li {
@@ -262,6 +283,7 @@ header {
   .navbar-nav > li > a {
     border-left: 1px solid $navbars-button-border-color;
     text-indent: -9999px;
+    display: inline-block;
   }
 }
 .toolbox > li:first-child > a {
