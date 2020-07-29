@@ -56,6 +56,8 @@ app-search {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: $bottombar-height;
+  display: flex;
+  align-content: space-between;
 }
 
 #main-container {

@@ -71,6 +71,8 @@ header {
   float: none;
   // FIXME to be set to real width (may depend on media width)
   width: 300px;
+  display: flex;
+  flex-direction: row;
   .enabled-3d & {
     width: 48px;
     li a {
@@ -147,6 +149,8 @@ header {
   left: 0;
   transition: left 300ms 0 ease-out;
   z-index: 1;
+  display: flex;
+  flex-direction: row;
 }
 
 @media (max-width: map-get($grid-breakpoints, "sm")) {
@@ -186,7 +190,8 @@ header {
 
 /* Keep items in one line, even with not enough room for links */
 .footer-navigation {
-  margin-left: -125px;
+  display: flex;
+  flex-direction: row;
 }
 /***********/
 /* Sizing  */
@@ -199,6 +204,7 @@ header {
 .footer-navigation > li > a {
   padding-right: 7px;
   padding-left: 7px;
+  line-height: 3.5em;
 }
 .toolbox-panel-mapmatching > li > a {
   width: ($icon-width * 3) + 2;
@@ -290,8 +296,13 @@ header {
 }
 .toolbox,
 .sidebar-controls {
-  > li > a {
-    border-right: 1px solid $navbars-button-border-color;
+  > li {
+    position: relative;
+    & > a {
+      border-right: 1px solid $navbars-button-border-color;
+      display: inline-block;
+      padding: 32px 0 0;
+    }
   }
 }
 
