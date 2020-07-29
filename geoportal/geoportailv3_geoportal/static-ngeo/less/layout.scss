@@ -16,6 +16,7 @@ $leftbar-width: 320px;
 body {
   /* padding top by top bar height */
   padding-top: $topbar-height;
+  font-size: 1rem;
 }
 
 @media (max-width: map-get($grid-breakpoints, "sm")) {
