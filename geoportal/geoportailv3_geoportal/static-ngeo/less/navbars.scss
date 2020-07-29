@@ -40,10 +40,9 @@ header {
 @media (min-width: map-get($grid-breakpoints, "lg")) {
   header .theme-li a {
     text-indent: 0;
-    width: 6em;
+    width: 7em;
     text-align: right;
     padding-left: 1.5em;
-    font-size: 120%;
     padding-right: .5em;
     &:after {
       text-align: left;
@@ -114,12 +113,13 @@ header {
   white-space: nowrap;
 
   > li {
-    display: block;
-    float: left;
+    flex: 1;
     > a {
       padding: 0;
       text-align: center;
       margin-right: 1px;
+      display: block;
+      font-size: 1.4em;
     }
   }
 }
@@ -136,7 +136,7 @@ header {
 }
 
 .active .toolbox-panel {
-  display: block;
+  display: flex;
 }
 
 .active .toolbox-panel-mapmatching {
