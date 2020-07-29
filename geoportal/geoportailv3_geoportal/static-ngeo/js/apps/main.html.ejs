@@ -389,8 +389,10 @@ ng-strict-di="true"
     </div>
   </div>
     <!-- Begin bottom bar -->
+
     <footer class="footer" ng-show="::!mainCtrl.embedded">
-      <ul class="sidebar-controls nav navbar-nav pull-left"
+
+      <ul class="sidebar-controls nav navbar-nav"
           ng-class="{open: mainCtrl.sidebarOpen()}"
           ngeo-btn-group-active="mainCtrl.sidebarActive"
           ngeo-btn-group>
@@ -409,22 +411,11 @@ ng-strict-di="true"
         <li ngeo-btn ng-model="mainCtrl.routingOpen" class="routing icon">
           <a href translate>Routing</a>
         </li>
-        <li ngeo-btn ng-model="mainCtrl.vectorEditorOpen" class="hidden">
+        <li ngeo-btn ng-model="mainCtrl.vectorEditorOpen" class="d-none">
           <a href translate>Vector Editor</a>
         </li>
       </ul>
-      <ul class="footer-navigation nav navbar-nav pull-right hidden-xs">
-        <li><a ng-href="{{mainCtrl.geonetworkBaseUrl}}" target="_blank" translate>Geocatalogue</a></li>
-        <li ng-if="mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
-        <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
-        <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
-        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" target="_blank" translate>A Propos</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" target="_blank" translate>Aide</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" target="_blank" translate>Contact</a></li>
-        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" target="_blank" translate>Legalites</a></li>
-        <li><a ng-href="http://www.act.public.lu/" target="_blank">ACT</a></li>
-      </ul>
+
       <ul class="toolbox nav navbar-nav" ngeo-btn-group>
         <li class="draw icon hidden-3d" ng-class="mainCtrl.drawOpen ? 'active' : ''">
         <a href translate ngeo-btn ng-model="mainCtrl.drawOpen">Dessin</a>
@@ -458,6 +449,20 @@ ng-strict-di="true"
             app-share-show-long-url="mainCtrl.shareShowLongUrl"></app-share>
         </li>
       </ul>
+
+      <ul class="footer-navigation nav navbar-nav hidden-xs">
+        <li><a ng-href="{{mainCtrl.geonetworkBaseUrl}}" target="_blank" translate>Geocatalogue</a></li>
+        <li ng-if="mainCtrl.showCruesLink"><a href ng-click="mainCtrl.openFeedbackCrues()" translate>Feedback Crues</a></li>
+        <li ng-if="::mainCtrl.showAnfLink"><a href ng-click="mainCtrl.openFeedbackAnf()" translate>Feedback ANF</a></li>
+        <li ng-if="::mainCtrl.showAgeLink"><a href ng-click="mainCtrl.openFeedbackAge()" translate>Feedback AGE</a></li>
+        <li><a href ng-click="mainCtrl.openFeedback()" translate>Feedback</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/" target="_blank" translate>A Propos</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/documentation/" target="_blank" translate>Aide</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/contactez-nous/" target="_blank" translate>Contact</a></li>
+        <li><a ng-href="https://www.geoportail.lu/{{mainCtrl.lang}}/propos/mentions-legales/" target="_blank" translate>Legalites</a></li>
+        <li><a ng-href="http://www.act.public.lu/" target="_blank">ACT</a></li>
+      </ul>
+
     </footer>
 
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
