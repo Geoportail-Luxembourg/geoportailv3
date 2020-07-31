@@ -11,6 +11,14 @@ var luxx;
 luxx.MapOptions.prototype.popupContentTransformer;
 
 /**
+ * If the popup should automatically pan or not.
+ * Default is false.
+ * @type {boolean|undefined}
+ * @api
+ */
+luxx.MapOptions.prototype.popupAutoPan;
+
+/**
  * Object literal with config options for the map.
  * @typedef {Object}
  */
