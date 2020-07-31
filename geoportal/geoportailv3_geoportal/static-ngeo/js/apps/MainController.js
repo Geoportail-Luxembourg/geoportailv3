@@ -357,7 +357,14 @@ const MainController = function(
   }
 
   this.debouncedSaveHillshadeStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData));
+    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData))
+    .then(() => {
+      const config = JSON.stringify(this.hillshadeStylingData);
+      this.ngeoLocation_.updateParams({
+        'hillshade': config
+      });
+      this.ngeoLocation_.refresh();
+    });
   }, 2000, false);
 
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
@@ -941,6 +948,15 @@ const MainController = function(
   this.loadThemes_().then(() => {
     this.appThemes_.getBgLayers(this.map_).then(
           bgLayers => {
+
+            const hillshadeConfig = new URLSearchParams(window.location.search).get('hillshade');
+            if (hillshadeConfig) {
+              this.hillshadeStylingData = JSON.parse(hillshadeConfig);
+              setTimeout(() => {
+                this.getSetHillshadeVisible(JSON.parse(hillshadeConfig)[0]['visible']);
+              }, 750); // without it, get "Style is not done loading" error
+            }
+
             this.initCesium3D_(this.cesiumURL, this.$rootScope_, $scope);
             if (appOverviewMapShow) {
               var layer = /** @type {ol.layer.Base} */
@@ -1132,6 +1148,7 @@ const MainController = function(
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();
     this.ngeoLocation_.deleteParam('serial');
+    this.ngeoLocation_.deleteParam('hillshade');
   };
 
   /**
