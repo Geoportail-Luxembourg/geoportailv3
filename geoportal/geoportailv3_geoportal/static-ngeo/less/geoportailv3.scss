@@ -15,6 +15,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts" !default;
 .show {
   display: block !important;
 }
+.btn-default {
+  @extend .btn-secondary;
+}
 // end legacy bootstrap 3
 
 @import "controls3d.scss";
