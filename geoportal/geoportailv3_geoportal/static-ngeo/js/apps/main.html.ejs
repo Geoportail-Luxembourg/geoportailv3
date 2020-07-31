@@ -115,7 +115,7 @@ ng-strict-di="true"
            app-resizemap="mainCtrl.map" app-resizemap-state="mainCtrl.sidebarOpen()">
 
         <!-- Layers -->
-        <div id="layers" ng-class="mainCtrl.layersOpen ? 'show' : 'hide'">
+        <div id="layers" ng-class="mainCtrl.layersOpen ? 'd-flex' : 'd-none'">
           <h2 translate>layers</h2>
           <button class="close-panel" ng-click="mainCtrl.closeSidebar()">
             ✕
@@ -135,7 +135,7 @@ ng-strict-di="true"
               <a href="#catalog" data-toggle="tab" translate>Catalog</a>
             </li>
           </ul>
-          <div class="tab-content">
+          <div class="tab-content d-flex">
             <div id="mylayers" class="tab-pane col-xs-12">
               <app-layermanager app-layermanager-map="::mainCtrl.map"
                 app-layermanager-layers="::mainCtrl.selectedLayers"

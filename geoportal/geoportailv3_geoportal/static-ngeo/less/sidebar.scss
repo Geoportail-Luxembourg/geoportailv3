@@ -46,6 +46,10 @@
       font-size: 24px;
       line-height: 1;
       border: 0;
+      padding: 10px 15px;
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
   .tab-content {
@@ -54,15 +58,21 @@
   #mylayers, #catalog {
     touch-action: none;
   }
-  #layers .tab-content {
-    touch-action: none;
-    // Height calculation:
-    // 100% - h2 font-size - padding-top - padding-bottom -
-    //  tab font-size - tab padding*2;
-    // FIXME: use variables for the calculation
-    height: calc(100% - 40px - 2 * 12px - 24px - 2 * 10px);
-    overflow-y: auto;
-    overflow-x: hidden;
+  #catalog {
+    flex: 1;
+  }
+  app-catalog {
+    display: block;
+  }
+  #layers {
+    flex-direction: column;
+    .tab-content {
+      touch-action: none;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex-direction: column;
+    }
   }
 
   #mymaps .tab-content {
@@ -159,8 +169,6 @@
   .themes-switcher {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(100% - 105px - 2 * 12px - #{$input-height-base});
-    position: absolute;
     width:100%;
     -webkit-transition: none;
     transition: none;
