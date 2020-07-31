@@ -34,13 +34,17 @@ header {
     }
     .theme-li a {
       border-left: none;
+      width: auto;
+      padding-left: 3em;
+      &:hover .icon-only:after {
+        color: white;
+      }
     }
   }
 }
 @media (min-width: map-get($grid-breakpoints, "lg")) {
   header .theme-li a {
     text-indent: 0;
-    width: 7em;
     text-align: right;
     padding-left: 1.5em;
     padding-right: .5em;
