@@ -74,7 +74,8 @@ ng-strict-di="true"
         <li class="d-none d-xs-inline-block search icon" ng-click="mainCtrl.mobileSearchActive = true"><a href translate>search</a></li>
 
         <li class="icon theme-li">
-          <a href class="icon theme-icon" ng-click="mainCtrl.toggleThemeSelector();">
+          <a href class="icon theme-icon d-flex" ng-click="mainCtrl.toggleThemeSelector();">
+            <span class="icon-only"></span>
             <span class="d-none d-xl-inline-block theme-label">{{mainCtrl.getCurrentTheme()|translate}}</span>
           </a>
         </li>
