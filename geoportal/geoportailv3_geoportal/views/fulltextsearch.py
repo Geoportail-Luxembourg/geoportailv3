@@ -123,6 +123,24 @@ class FullTextSearchView(object):
             for cur_layer in layer.split(","):
                 filters['should'].append({"term": {"layer_name": cur_layer}})
 
+        extent = self.request.params.get('extent', False)
+        if extent:
+            extent = extent.split(',')
+            filters['must'].append({
+                "geo_shape": {
+                    "ts": {
+                        "shape": {
+                            "type": "envelope",
+                            "coordinates": [
+                                [ extent[0], extent[3] ],
+                                [ extent[2], extent[1] ]
+                                ]
+                            },
+                        "relation": "within"
+                        }
+                    }
+                })
+
         if self.request.user is None:
             filters['must'].append({"term": {"public": True}})
         else:
