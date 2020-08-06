@@ -721,12 +721,21 @@ exports.prototype.createAndInitPOIBloodhound_ =
       /** @type {BloodhoundOptions} */ ({
         remote: {
           url: searchServiceUrl,
-          prepare: function(query, settings) {
+          prepare: (query, settings) => {
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
                 '&limit=' + this.limitResults;
+            // Restrict to area
+            if (this.facets.extent) {
+              let extent = transformExtent(
+                this.map.getView().calculateExtent(),
+                'EPSG:3857',
+                'EPSG:4326'
+              );
+              settings.url += '&extent=' + extent.join(',')
+            }
             return settings;
-          }.bind(this),
+          },
           rateLimitWait: 50,
           transform: function(parsedResponse) {
             /** @type {GeoJSONFeatureCollection} */
