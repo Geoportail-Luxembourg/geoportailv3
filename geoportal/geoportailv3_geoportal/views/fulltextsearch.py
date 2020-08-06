@@ -104,6 +104,20 @@ class FullTextSearchView(object):
                             }
                         },
                         {
+                            "term": {
+                                "layer_name": {
+                                    "value": "Parcelle", "boost": 1
+                                }
+                            }
+                        },
+                        {
+                            "term": {
+                                "layer_name": {
+                                    "value": "FLIK", "boost": 1
+                                }
+                            }
+                        },
+                        {
                             "wildcard": {
                                 "layer_name": {
                                     "value": "editus_poi*",
