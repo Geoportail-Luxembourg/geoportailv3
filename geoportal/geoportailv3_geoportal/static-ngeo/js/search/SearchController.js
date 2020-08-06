@@ -725,6 +725,15 @@ exports.prototype.createAndInitPOIBloodhound_ =
             settings.url = settings.url +
                 '?query=' + encodeURIComponent(query) +
                 '&limit=' + this.limitResults;
+            // Facets
+            let layers = [ 'address', 'parcels', 'flik' ]
+              .filter(k => this.facets[k])
+              .map(k => ({
+                address: 'Adresse',
+                parcels: 'Parcelle',
+                flik: 'FLIK',
+              }[k]))
+            settings.url += (layers.length > 0) ? '&layer=' + layers.join(',') : ''
             // Restrict to area
             if (this.facets.extent) {
               let extent = transformExtent(
@@ -734,6 +743,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
               );
               settings.url += '&extent=' + extent.join(',')
             }
+            // TODO: Active layers only
             return settings;
           },
           rateLimitWait: 50,
