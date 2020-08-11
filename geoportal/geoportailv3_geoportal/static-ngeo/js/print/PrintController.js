@@ -450,16 +450,17 @@ exports.prototype.changeScale = function(newScale) {
   var optimalResolution = this.printUtils_.getOptimalResolution(
       /** @type {Array<number>} */ (mapSize), exports.MAP_SIZES_[layoutIdx], newScale);
 
+  /** @type {import("ol/View.js".default)} */
   var view = map.getView();
   var currentResolution = view.getResolution();
 
   if (currentResolution < optimalResolution) {
-    var newResolution = view.constrainResolution(optimalResolution, 0, 1);
+    var newResolution = view.getConstrainedResolution(optimalResolution, 1);
     console.assert(newResolution >= optimalResolution);
     view.animate({
       duration: 250,
       easing: easeOut,
-      resolution: currentResolution
+      resolution: newResolution
     });
   }
 

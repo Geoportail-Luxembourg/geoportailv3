@@ -1235,6 +1235,7 @@ MainController.prototype.createMap_ = function() {
     loadTilesWhileInteracting: true,
     loadTilesWhileAnimating: true,
     view: new olView({
+      // See in catalog controller for the real place where the view is defined...
       maxZoom: 19,
       minZoom: 8,
       enableRotation: true,
