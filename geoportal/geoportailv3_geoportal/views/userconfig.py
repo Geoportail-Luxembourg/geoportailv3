@@ -82,24 +82,31 @@ class Config(object):
     def apply_mvt_config(self):
         # Parse and make a dict from the styles config to apply
         config = json.loads(self.request.params['config'])
-        conf_dict = {}
+        paint_conf_dict = {}
+        layout_conf_dict = {}
         color_keys = ['background', 'line', 'fill', 'fillExtrusion']
         for conf in json.loads(config):
-            color = conf['color']
-            if 'opacity' in conf:
-                opacity = conf['opacity']
-                # visible = conf['visible']
-            for color_key in color_keys:
-                if 'fillExtrusion' in color_key:
-                    prop = 'fill-extrusion'
-                else:
-                    prop = color_key + 's'
+            if 'color' in conf:
+                color = conf['color']
+                if 'opacity' in conf:
+                    opacity = conf['opacity']
+                for color_key in color_keys:
+                    if 'fillExtrusion' in color_key:
+                        prop = 'fill-extrusion'
+                    else:
+                        prop = color_key + 's'
 
-                if prop in conf:
-                    for layer in conf[prop]:
-                        conf_dict.setdefault(layer, {})[color_key + '-color'] = color
-                        if 'opacity' in conf:
-                            conf_dict.setdefault(layer, {})[color_key + '-opacity'] = int(opacity)
+                    if prop in conf:
+                        for layer in conf[prop]:
+                            paint_conf_dict.setdefault(layer, {})[color_key + '-color'] = color
+                            if 'opacity' in conf:
+                                paint_conf_dict.setdefault(layer, {})[color_key + '-opacity'] = int(opacity)
+                            if 'visible' in conf:
+                                layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
+
+            for layer in conf.get('hillshades', []):
+                layout_conf_dict.setdefault(layer, {})['visibility'] = 'visible' if conf['visible'] else 'none'
+
 
         # Parse and modify the default config with the styles to apply
         style_url = self.request.params['style_url']
@@ -108,7 +115,9 @@ class Config(object):
             myjson = json.loads(default_styles)
 
             for layer in myjson['layers']:
-                for key, value in conf_dict.get(layer['id'], {}).items():
+                for key, value in paint_conf_dict.get(layer['id'], {}).items():
                     layer['paint'][key] = value
+                for key, value in layout_conf_dict.get(layer['id'], {}).items():
+                    layer.setdefault('layout', {})[key] = value
 
         return myjson
