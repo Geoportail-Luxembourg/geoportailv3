@@ -47,7 +47,7 @@ appModule.component('appMediumStyleItem', {
   template: `
   <div>
     <span class="stylinglabel">{{$ctrl.item.label | translate}}</span>
-    <input class="color" type="color" ng-model="$ctrl.getSetColor" ng-model-options="{getterSetter: true}">
+    <input class="color" type="color" ng-show="$ctrl.item.color" ng-model="$ctrl.getSetColor" ng-model-options="{getterSetter: true}">
     <input class="visible" type="checkbox" ng-model="$ctrl.getSetVisible" ng-model-options="{getterSetter: true}">
   </div>
   `,

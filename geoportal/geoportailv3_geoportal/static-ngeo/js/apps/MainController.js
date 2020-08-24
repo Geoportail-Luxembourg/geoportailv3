@@ -188,14 +188,6 @@ import DragRotate from 'ol/interaction/DragRotate';
 import { shiftKeyOnly, altShiftKeyOnly } from 'ol/events/condition';
 import Rotate from 'ol/control/Rotate';
 
-function getDefaultHillshadeStyling() {
-  const gettext = t => t;
-  return [{
-    label: gettext('Hillshade'),
-    hillshades: ['hillshade'],
-    visible: true
-  }];
-}
 // See intermediate_editor_spec.md
 function getDefaultMediumStyling() {
   const gettext = t => t;
@@ -233,8 +225,11 @@ function getDefaultMediumStyling() {
     color: '#e7e7e7',
     backgrounds: ['background'],
     visible: true
+  }, {
+    label: gettext('Hillshade'),
+    hillshades: ['hillshade'],
+    visible: true
   }
-
 ];
 }
 
@@ -326,10 +321,9 @@ const MainController = function(
   appMymaps.setOfflineMode(ngeoOfflineMode);
   appMymaps.setOfflineService(appMymapsOffline);
 
-  this.hillshadeStylingData = getDefaultHillshadeStyling();
   this.mediumStylingData = getDefaultMediumStyling();
 
-  function applyStyleToItem(mbMap, item) {
+  function applyStyleFromItem(mbMap, item) {
     appMvtStylingService.isCustomStyle = true;
     (item.fills || []).forEach(path => {
       mbMap.setPaintProperty(path, 'fill-color', item.color);
@@ -355,10 +349,6 @@ const MainController = function(
       mbMap.setLayoutProperty(path, 'visibility', item.visible ? 'visible' : 'none');
     });
   }
-
-  this.debouncedSaveHillshadeStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveHillshadeStyle(JSON.stringify(this.hillshadeStylingData));
-  }, 2000, false);
 
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
     appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
@@ -390,21 +380,21 @@ const MainController = function(
     this.simpleStylingData.forEach(function(data) {data['selected'] = false;});
   };
 
+  // Set the selected attribute on the simple style which matches the current medium style
   this.checkSelectedSimpleData = () => {
-    this.simpleStylingData.forEach(function(simpleStyle) {
-        var found = true;
+    this.simpleStylingData.forEach(simpleStyle => {
         simpleStyle['selected'] = false;
+        const mediumColors = this.mediumStylingData.filter(m => 'color' in m);
         for (let i = 0; i < simpleStyle['colors'].length; ++i) {
-          if (!this.mediumStylingData[i].visible ||
-              this.mediumStylingData[i].color !== simpleStyle['colors'][i]) {
-            found = false;
-            break;
+          if (!mediumColors[i].visible || mediumColors[i].color !== simpleStyle['colors'][i]) {
+            return;
           }
         }
-        if (found && simpleStyle['hillshade'] === this.hillshadeStylingData[0].visible) {
+        const hillshadeMediumItem = this.mediumStylingData.find(m => 'hillshades' in m);
+        if (simpleStyle['hillshade'] === hillshadeMediumItem.visible) {
           simpleStyle['selected'] = true;
         }
-    }, this);
+    });
   };
 
 
@@ -412,21 +402,22 @@ const MainController = function(
   this.onSimpleStylingSelected = selectedItem => {
     selectedItem['selected'] = true;
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
+    this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
+    const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
     const mbMap =  bgLayer.getMapBoxMap();
     for (let i = 0; i < selectedItem['colors'].length; ++i) {
-      const item = this.mediumStylingData[i];
+      const item = mediumStyles[i];
       item.color = selectedItem['colors'][i];
       item.visible = true;
-      applyStyleToItem(mbMap, item);
+      applyStyleFromItem(mbMap, item);
     }
+
+    const hillshadeItem = this.mediumStylingData.find(m => 'hillshades' in m);
+    hillshadeItem.visible = false;
+    applyStyleFromItem(mbMap, hillshadeItem)
+
     this.debouncedSaveBgStyle_(bgLayer);
-    this.mediumStylingData = getDefaultMediumStyling().map((item, idx) => {
-      item.color = selectedItem['colors'][idx];
-      item.visible = true;
-      return item;
-    });
     this.debouncedSaveMediumStyle_();
-    this.onHillshadeVisibilityChanged(selectedItem['hillshade']);
     this.trackOpenVTEditor('VTSimpleEditor/' + selectedItem['label']);
   };
 
@@ -437,32 +428,15 @@ const MainController = function(
         this.checkSelectedSimpleData();
       });
   }
-  const hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-  if (hillshadeStyle !== undefined) {
-    hillshadeStyle.then((style) => {
-      Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-      this.checkSelectedSimpleData();
-    });
-  }
+
   this.onMediumStylingChanged = item => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     const mbMap =  bgLayer.getMapBoxMap();
-    applyStyleToItem(mbMap, item);
+    applyStyleFromItem(mbMap, item);
     this.debouncedSaveMediumStyle_();
     this.debouncedSaveBgStyle_();
     this.checkSelectedSimpleData();
   };
-
-  this.onHillshadeVisibilityChanged = function(visible) {
-    const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const mbMap =  bgLayer.getMapBoxMap();
-    const item = this.hillshadeStylingData[0];
-    item.visible = visible;
-    applyStyleToItem(mbMap, item);
-    this.debouncedSaveHillshadeStyle_();
-    this.debouncedSaveBgStyle_();
-    this.checkSelectedSimpleData();
-};
 
   if (navigator.serviceWorker) {
     // Force online state on load since iOS/Safari does not support clientIds.
@@ -1079,13 +1053,6 @@ const MainController = function(
           this.checkSelectedSimpleData();
         });
     }
-    let hillshadeStyle = appMvtStylingService.getHillshadeStyle();
-    if (hillshadeStyle !== undefined) {
-      hillshadeStyle.then((style) => {
-          Object.assign(this.hillshadeStylingData, JSON.parse(style || '{}'));
-          this.checkSelectedSimpleData();
-        });
-    }
   });
 
   $scope.$on('mvtPanelOpen', () => {
@@ -1127,7 +1094,6 @@ const MainController = function(
     this.appMvtStylingService.removeStyles(bgLayer);
     bgLayer.getMapBoxMap().setStyle(bgLayer.get('defaultMapBoxStyle'));
     this.mediumStylingData = getDefaultMediumStyling();
-    this.hillshadeStylingData = getDefaultHillshadeStyling();
     this.resetLayerFor3d_();
     this.resetSelectedSimpleData();
     this.checkSelectedSimpleData();
@@ -1188,21 +1154,6 @@ MainController.prototype.getUrlVtStyle = function() {
     return this.appMvtStylingService.getUrlVtStyle(bgLayer);
   }
   return "";
-};
-
-/**
- * @param {string} visible The item visibility.
- * @return {string} The visibility of the item.
- * @export
- */
-MainController.prototype.getSetHillshadeVisible = function(visible) {
-  const item = this.hillshadeStylingData[0];
-  if (arguments.length) {
-    item.visible = visible;
-    this.onHillshadeVisibilityChanged(visible);
-  } else {
-    return item.visible;
-  }
 };
 
 /**

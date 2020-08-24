@@ -11,7 +11,6 @@ const url_config_mvt = '/apply_mvt_config'
 const ls_ = window.localStorage;
 const LS_KEY_EXPERT = 'expertStyling';
 const LS_KEY_MEDIUM = 'mediumStyling';
-const LS_KEY_HILLSHADE = 'hillshadeStyling';
 
 function getDefaultMapBoxStyleUrl() {
   const searchParams = new URLSearchParams(document.location.search);
@@ -67,12 +66,12 @@ class MvtStylingService {
             this.isCustomStyle = true;
             const style_url = `${this.getvtstyleUrl_}?id=${serial}`
             config.style = style_url;
-            return config;
+            return Promise.resolve(config);
         } else {
             console.log('Load mvt style from serialized config');
             this.isCustomStyle = true;
             config.style = this.apply_mvt_config(serial);
-            return config;
+            return Promise.resolve(config);
         }
     } else if (this.appUserManager_.isAuthenticated()) {
         return this.getDB_(LS_KEY_EXPERT).then(resultFromDB => {
@@ -233,35 +232,6 @@ getUrlVtStyle(layer) {
   return this.getvtstyleUrl_ + '?id=' + id;
 }
 
-getHillshadeStyle() {
-    if (this.appUserManager_.isAuthenticated()) {
-        return this.getDB_(LS_KEY_HILLSHADE).then(resultFromDB => {
-            const styleFromDB = resultFromDB.data;
-            if (styleFromDB.length > 0) {
-                console.log('Load mvt hillshade style from database and save it to local storage');
-                this.isCustomStyle = true;
-                this.saveLS_(LS_KEY_HILLSHADE, styleFromDB[0].value);
-                return styleFromDB[0].value;
-            }
-        });
-    } else if (hasLocalStorage() && this.hasLS_(LS_KEY_HILLSHADE)) {
-        console.log('Load mvt medium style from local storage');
-        return Promise.resolve(this.getLS_(LS_KEY_HILLSHADE));
-    }
-}
-
-saveHillshadeStyle(style) {
-    const promises = [];
-    this.isCustomStyle = true;
-    if (this.appUserManager_.isAuthenticated()) {
-        promises.push(this.saveDB_(LS_KEY_HILLSHADE, style));
-        console.log('Medium style saved in database');
-    }
-    this.saveLS_(LS_KEY_HILLSHADE, style);
-    console.log('Medium style saved in local storage');
-    return Promise.all(promises);
-}
-
 saveMediumStyle(style) {
     const promises = [];
     this.isCustomStyle = true;
@@ -277,14 +247,12 @@ saveMediumStyle(style) {
 removeStyles(layer) {
     this.deleteLS_(LS_KEY_EXPERT);
     this.deleteLS_(LS_KEY_MEDIUM);
-    this.deleteLS_(LS_KEY_HILLSHADE);
     const promises = [];
     promises.push(this.unpublishStyle(layer));
     console.log('Removed mvt style from local storage');
     if (this.appUserManager_.isAuthenticated()) {
         promises.push(this.deleteDB_(LS_KEY_EXPERT));
         promises.push(this.deleteDB_(LS_KEY_MEDIUM));
-        promises.push(this.deleteDB_(LS_KEY_HILLSHADE));
         console.log('Removed mvt style from database');
     }
     this.isCustomStyle = false;
