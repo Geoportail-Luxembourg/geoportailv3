@@ -50,6 +50,8 @@ Until the migration is finished, the database must be fixed by doing: `make fix-
 The local ldap contains a single user: c2c/test1234 with admin rights.
 See docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=act,dc=lu -D "login=c2c,ou=portail,dc=act,dc=lu" -w test1234 -LL '\*'
 
+Admin interface can be accessed at http://localhost:8080/admin/.
+
 The print service is available directly at http://localhost:28080/.
 
 Emails are sent to /var/mail/root. The `mutt` application is part of the image
