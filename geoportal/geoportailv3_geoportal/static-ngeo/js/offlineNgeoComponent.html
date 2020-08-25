@@ -1,9 +1,11 @@
 <div class="main-button">
   <span ng-if="!$ctrl.hasData()">
-    <div class="no-data" ng-click="$ctrl.toggleViewExtentSelection()"></div>
+    <div class="no-data far fa-arrow-alt-circle-down" ng-click="$ctrl.toggleViewExtentSelection()">
+    </div>
   </span>
   <span ng-if="$ctrl.hasData()">
-    <div class="with-data" ng-click="$ctrl.showMenu()"></div>
+    <div class="with-data far fa-arrow-alt-circle-down" ng-click="$ctrl.showMenu()">
+    </div>
   </span>
 </div>
 

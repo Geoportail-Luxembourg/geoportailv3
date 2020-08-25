@@ -5,7 +5,8 @@ ngeo-offline {
   .main-button {
     position: absolute;
     right: 8px;
-    bottom: 15rem;
+    bottom: 148px;
+    font-size: 27px;
     cursor: pointer;
     .no-data {
       color: black;
@@ -13,16 +14,11 @@ ngeo-offline {
     .no-data, .with-data {
       background-color: white;
       text-align: center;
-      font-size: 2.7rem;
-      font-family: FontAwesome;
       line-height: 1.5em;
       color: #2980b9;
       width: 41px;
       height: 41px;
       border: 1px solid #8394a0;
-      &::after {
-        content: \f0ab;
-      }
     }
     .with-data {
       color: red;
