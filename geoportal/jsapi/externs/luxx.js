@@ -391,6 +391,13 @@ luxx.LayerMetadataOptions.prototype.exclusion;
 luxx.MyMapOptions;
 
 /**
+ * Fit to the mymaps extent. Default value is true.
+ * @type {boolean}
+ * @api
+ */
+luxx.MyMapOptions.prototype.fitToExtent;
+
+/**
  * The map identifier.
  * @type {string}
  * @api

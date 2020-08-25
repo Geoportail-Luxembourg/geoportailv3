@@ -41,6 +41,14 @@ goog.require('ol.geom.MultiLineString');
  * @api stable
  */
 lux.MyMap = function(options) {
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.fitToExtent_ = true;
+  if (options.fitToExtent !== undefined) {
+    this.fitToExtent_ = options.fitToExtent;
+  }
 
   /**
    * @type {string}
@@ -198,10 +206,10 @@ lux.MyMap.prototype.loadFeatures_ = function() {
       feature.setStyle(featureStyleFunction);
     });
     this.sourceFeatures_.addFeatures(features);
-
-    var size = /** @type {Array<number>} */ (this.map_.getSize());
-    this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
-
+    if (this.fitToExtent_) {
+      var size = /** @type {Array<number>} */ (this.map_.getSize());
+      this.map_.getView().fit(this.sourceFeatures_.getExtent(), {size: size});
+    }
     this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
     });
