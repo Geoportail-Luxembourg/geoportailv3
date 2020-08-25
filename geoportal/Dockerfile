@@ -48,8 +48,6 @@ RUN \
   rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
 
 
-COPY bin/* /usr/bin/
-
 RUN mkdir -p /app/geoportailv3_geoportal/admin
 COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin
 RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear --force
@@ -91,6 +89,8 @@ COPY ./geoportailv3_geoportal/static-ngeo/ /app/geoportailv3_geoportal/static-ng
 COPY ./webpack.apps.js ./webpack.config.js /app/
 RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
 #RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
+
+COPY bin/* /usr/bin/
 
 COPY . /app
 
