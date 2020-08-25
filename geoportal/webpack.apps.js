@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const INTERFACE_THEME = {"desktop":"desktop","desktop_alt":"desktop","mobile":"mobile","mobile_alt":"mobile","oeview":"desktop","oeedit":"desktop"};
 
-const plugins = [];
+const buildPath = path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/build/');
 const entry = {};
 
 // The dev mode will be used for builds on local machine outside docker
@@ -14,11 +14,12 @@ const nodeEnv = process.env['NODE_ENV'] || 'development';
 const dev = nodeEnv == 'development'
 process.traceDeprecation = true;
 
+// FIXME: this looks strange: INTERFACE_THEME does not contain "main"
 const name = 'main';
 process.env.THEME = INTERFACE_THEME[name];
 
 entry[name] = 'geoportailv3/apps/MainController.js';
-plugins.push(
+const plugins = [
   new HtmlWebpackPlugin({
     inject: false,
     template: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/js/apps/' + name + '.html.ejs'),
@@ -28,8 +29,18 @@ plugins.push(
     vars: {
       entry_point: '${VISIBLE_ENTRY_POINT}',
     },
-  })
-);
+  }),
+  new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/images/*'),
+        to: buildPath + '/geoportailv3_geoportal/static-ngeo/images/',
+        toType: 'dir',
+        flatten: false,
+      },
+    ],
+  }),
+];
 
 const babelPresetEnv = ['@babel/preset-env', {
   targets: {
@@ -70,7 +81,7 @@ rules.push({
 
 module.exports = {
   output: {
-    path: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/build/'),
+    path: buildPath,
     publicPath: devServer ? '${VISIBLE_ENTRY_POINT}dev/' : '${VISIBLE_ENTRY_POINT}static-ngeo/UNUSED_CACHE_VERSION/build/'
   },
   entry: entry,
