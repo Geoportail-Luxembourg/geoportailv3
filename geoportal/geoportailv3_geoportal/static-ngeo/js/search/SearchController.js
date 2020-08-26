@@ -722,9 +722,10 @@ exports.prototype.createAndInitPOIBloodhound_ =
         remote: {
           url: searchServiceUrl,
           prepare: (query, settings) => {
-            settings.url = settings.url +
-                '?query=' + encodeURIComponent(query) +
-                '&limit=' + this.limitResults;
+            const url = new URL(settings.url)
+            const params = url.searchParams
+            params.set('query', encodeURIComponent(query))
+            params.set('limit', this.limitResults)
             // Facets
             let layers = [ 'address', 'parcels', 'flik' ]
               .filter(k => this.facets[k])
@@ -733,7 +734,7 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 parcels: 'Parcelle',
                 flik: 'FLIK',
               }[k]))
-            settings.url += (layers.length > 0) ? '&layer=' + layers.join(',') : ''
+            if (layers.length > 0) params.set('layer', layers.join(','))
             // Restrict to area
             if (this.facets.extent) {
               let extent = transformExtent(
@@ -741,10 +742,11 @@ exports.prototype.createAndInitPOIBloodhound_ =
                 'EPSG:3857',
                 'EPSG:4326'
               );
-              settings.url += '&extent=' + extent.join(',')
+              params.set('extent', extent.join(','))
             }
             // TODO: Active layers only
-            return settings;
+            settings.url = url.toString()
+            return settings
           },
           rateLimitWait: 50,
           transform: function(parsedResponse) {
