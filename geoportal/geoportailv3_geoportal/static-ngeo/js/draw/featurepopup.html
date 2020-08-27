@@ -31,11 +31,11 @@
   </div>
 
   <div class="feature-popup-footer hidden-3d">
-    <ul class="nav navbar-nav pull-left">
+    <ul class="nav navbar-nav float-left">
       <li ng-show="ctrl.isEditable() && !ctrl.feature.get('__editable__')" ng-click="ctrl.modifySelectedFeature()"><button class="btn btn-primary" translate>Editer l'objet</button></li>
       <li ng-show="ctrl.isEditable() && ctrl.feature.get('__editable__')" ng-click="ctrl.endModifySelectedFeature()"><button class="btn btn-primary" translate>Terminer édition</button></li>
     </ul>
-    <ul class="nav navbar-nav pull-right">
+    <ul class="nav navbar-nav float-right">
       <li>
         <a href ng-click="ctrl.fitFeature()">
           <span class="fa fa-search"></span>
@@ -94,7 +94,7 @@
       </div>
     </div>
   </div>
-  <div class="feature-popup-footer pull-right">
+  <div class="feature-popup-footer float-right">
     <button href class="btn btn-default" ng-click="ctrl.editingAttributes = false" translate>
       Cancel
     </button>
@@ -114,7 +114,7 @@
   <div class="feature-popup-body">
     <span translate>Êtes-vous certain de vouloir effacer cet élément de la carte ?</span>
   </div>
-  <div class="feature-popup-footer pull-right">
+  <div class="feature-popup-footer float-right">
     <button href class="btn btn-primary" ng-click="ctrl.deletingFeature = false" translate>
       Annuler
     </button>
@@ -134,7 +134,7 @@
       </div>
     </div>
   </div>
-  <div class="feature-popup-footer pull-right">
+  <div class="feature-popup-footer float-right">
     <button href class="btn btn-primary" ng-click="ctrl.askRadius = false" translate>
       Annuler
     </button>
