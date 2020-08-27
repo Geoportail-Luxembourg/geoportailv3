@@ -72,7 +72,7 @@
  <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
     <li ng-repeat="(key, feature) in ctrl.getMymapsFeatures()" class="feature"
         id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <span ng-hide="!ctrl.isEditable()" class="sortable-handle fa fa-reorder"></span>
+      <span ng-hide="!ctrl.isEditable()" class="sortable-handle fas fa-bars"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
@@ -110,7 +110,7 @@
   <ul class="features list-unstyled" ngeo-sortable="ctrl.featuresList"  ngeo-sortable-callback-ctx="::ctrl" ngeo-sortable-callback="::ctrl.afterReorder" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
     <li ng-repeat="(key, feature) in ctrl.getAnonymousFeatures()" class="feature"
         id="feature-{{ctrl.featuresList.indexOf(feature)}}">
-      <span class="sortable-handle fa fa-reorder"></span>
+      <span class="sortable-handle fas fa-bars"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'Point'" class="icon point"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'LineString'" class="icon line"></span>
       <span ng-show="ctrl.getFeatureType(feature) === 'Polygon'" class="icon polygon"></span>
@@ -298,7 +298,7 @@
       <td ng-click="ctrl.selectMymaps(map)">{{ map.owner }}</td>
       <td ng-click="ctrl.selectMymaps(map)">{{ map.last_feature_update | date:'dd/MM/yyyy - H:mm' }}</td>
       <td>
-        <span ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)" ng-if="!map.deletedWhileOffline" class="fa fa-trash-o"></span>
+        <span ng-click="ctrl.openConfirmDeleteAMap(map.uuid, map.title)" ng-if="!map.deletedWhileOffline" class="far fa-trash-alt"></span>
       </td>
       <td>
         <span ng-if="!ctrl.ngeoNetworkStatus.isDisconnected() && ctrl.ngeoOfflineMode.isEnabled() && map.dirty" ng-click="ctrl.syncOfflineMaps(map)" class="fa fa-refresh"></span>

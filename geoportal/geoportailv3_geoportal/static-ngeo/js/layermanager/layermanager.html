@@ -1,12 +1,12 @@
 <div ng-if="!ctrl.layers.length" translate>No layer selected</div>
 <ul id="layermanager-{{::ctrl.uid}}" class="layermanager" ngeo-sortable="ctrl.layers" ngeo-sortable-callback="ctrl.reorderCallback" ngeo-sortable-options="{handleClassName: 'sortable-handle', draggerClassName: 'sortable-dragger'}" >
   <li ng-repeat="layer in ctrl.layers" class="panel layermanager-panel" ng-if="!layer.get('metadata').hidden">
-  <span class="sortable-handle fa fa-reorder"></span>
+  <span class="sortable-handle fas fa-bars"></span>
     <app-layerinfo app-layerinfo-layer="::layer"></app-layerinfo>
     <div data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" data-target="#layermanager-item-{{$index}}" class="layer-label">
     {{layer.get('label') | translate}}
     </div>
-    <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="fa fa-trash-o"></span></a>
+    <a class="delete" ng-click="ctrl.removeLayer(layer);"><span class="far fa-trash-alt"></span></a>
     <a class="options-button" data-toggle="collapse" data-parent="#layermanager-{{::ctrl.uid}}" href="#layermanager-item-{{$index}}">
       <span class="collapsed fa fa-ellipsis-h"></span>
       <span class="expanded fa fa-remove"></span>
