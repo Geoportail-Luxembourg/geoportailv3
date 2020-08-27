@@ -1039,9 +1039,9 @@ const MainController = function(
    * Listen on login to finish to reload the mvt style
    */
   $scope.$on('authenticated', () => {
-    // If is to avoid 'undefined' error at page loading as the theme is not fully loaded yet
+    // bgLayer is undefined at page loading as the theme is not fully loaded yet
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    if (bgLayer) {
+    if (bgLayer && bgLayer.getMapBoxMap) {
       this.appMvtStylingService.getBgStyle().then(config => {
         bgLayer.getMapBoxMap().setStyle(config.style);
       });
