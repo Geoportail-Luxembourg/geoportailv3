@@ -1150,7 +1150,7 @@ const MainController = function(
  */
 MainController.prototype.getUrlVtStyle = function() {
   const bgLayer = this.backgroundLayerMgr_.get(this.map);
-  if (bgLayer !== null) {
+  if (bgLayer) {
     return this.appMvtStylingService.getUrlVtStyle(bgLayer);
   }
   return "";
