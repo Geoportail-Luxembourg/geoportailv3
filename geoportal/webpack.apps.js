@@ -33,9 +33,8 @@ const plugins = [
   new CopyWebpackPlugin({
     patterns: [
       {
-        from: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/images/*'),
+        from: path.resolve(__dirname, 'geoportailv3_geoportal/static-ngeo/images'),
         to: buildPath + '/geoportailv3_geoportal/static-ngeo/images/',
-        toType: 'dir',
         flatten: false,
       },
     ],
