@@ -170,8 +170,8 @@ body.embedded {
     position: absolute;
     top: 0.5em;
     left: 0.5em;
-    max-height: ~"calc(100% - 1em)";
-    width: ~"calc(50% - 0.5em)";
+    max-height: calc(100% - 1em);
+    width: calc(50% - 0.5em);
     background: white;
     z-index: 100;
     display: none;

@@ -165,7 +165,7 @@ only screen and ( min-resolution: 1.25dppx)
         }
     
         // Retina for small thumbnails
-        @media (max-width: @screen-xs-max) {
+        @media (max-width: 576px) {
             .bg-selector-layer-0 { // roadmap (mvt)
                 background-image: url(../images/backgroundselector/routiere_sm_retina.png);
             }
