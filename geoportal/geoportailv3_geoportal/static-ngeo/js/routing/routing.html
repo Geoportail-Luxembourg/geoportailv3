@@ -13,7 +13,7 @@
               </span>
               <span class="routing-icon">
                   <span ng-if="ctrl.isRoute()" class="fa fa-floppy-o icon-Trash" ng-click="ctrl.createMapFromRoute()"></span>
-                  <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoutes();"></span>
+                  <span class="far fa-trash icon-Trash" ng-click="ctrl.clearRoutes();"></span>
                   <span class="icon-Switch" ng-click="ctrl.exchangeRoutes()"></span>
               </span>
           </div>
@@ -32,7 +32,7 @@
                     <div class="icon-Target"></div>
                   </div>
                   <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length !== 0">
-                    <span class="fa fa-trash icon-Trash" ng-click="ctrl.clearRoute(key);"></span>
+                    <span class="far fa-trash icon-Trash" ng-click="ctrl.clearRoute(key);"></span>
                   </div>
                   <div class="tooltip routing-tooltip">{{ 'Insérez rapidement' | translate }} <span class="current-location" translate>votre position actuelle</span></div>
                 </div>
@@ -41,10 +41,10 @@
       </div>
   </div>
   <div class="route-options clearfix">
-      <div class="route-option"> 
+      <div class="route-option">
         <button class="route-option-button route-add" ng-click="ctrl.addRoute()" translate>Ajouter une étape</button>
       </div>
-      <div class="route-option dropdown"> 
+      <div class="route-option dropdown">
         <button class="route-option-button route-fastest" data-toggle="dropdown">{{ ((ctrl.getCriteria() == 0) ? "Le plus rapide" : "Le plus court") | translate}} <span class="caret"></button></label>
         <ul class="dropdown-menu" role="menu">
           <li><a href ng-click="ctrl.setCriteria(0)">{{ "Le plus rapide" | translate}}</a></li>
