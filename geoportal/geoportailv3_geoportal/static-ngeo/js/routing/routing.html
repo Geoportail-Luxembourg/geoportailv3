@@ -12,8 +12,8 @@
                   <span class="icon-Bike" ng-click="ctrl.setMode(2)"></span>
               </span>
               <span class="routing-icon">
-                  <span ng-if="ctrl.isRoute()" class="far fa-save icon-Trash" ng-click="ctrl.createMapFromRoute()"></span>
-                  <span class="far fa-trash-alt icon-Trash" ng-click="ctrl.clearRoutes();"></span>
+                  <span ng-if="ctrl.isRoute()" class="fas fa-save icon-Trash" ng-click="ctrl.createMapFromRoute()"></span>
+                  <span class="fas fa-trash-alt icon-Trash" ng-click="ctrl.clearRoutes();"></span>
                   <span class="icon-Switch" ng-click="ctrl.exchangeRoutes()"></span>
               </span>
           </div>
@@ -32,7 +32,7 @@
                     <div class="icon-Target"></div>
                   </div>
                   <div class="routing-icon" ng-if="ctrl.appRouting.routes[key].length !== 0">
-                    <span class="far fa-trash-alt icon-Trash" ng-click="ctrl.clearRoute(key);"></span>
+                    <span class="fas fa-trash-alt icon-Trash" ng-click="ctrl.clearRoute(key);"></span>
                   </div>
                   <div class="tooltip routing-tooltip">{{ 'Insérez rapidement' | translate }} <span class="current-location" translate>votre position actuelle</span></div>
                 </div>

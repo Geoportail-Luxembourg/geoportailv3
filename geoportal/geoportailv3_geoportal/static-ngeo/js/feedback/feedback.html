@@ -8,15 +8,15 @@
     <div class="form-group">
       <label for="dropdownLayerPicker" translate>Pick layer where problem occurs</label>
       <div class="dropdown" id="dropdownLayerPicker">
-        <button type="button" class="btn btn-default" data-toggle="dropdown">
-          {{ctrl.concernedLayer | translate}}<span class="caret"></span>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          {{ctrl.concernedLayer | translate}}
         </button>
         <ul class="dropdown-menu" role="menu">
          <li>
             <a href ng-click="ctrl.setConcernedLayer(ctrl.bgLayer)">{{ctrl.bgLayer.get('label')|translate}}</a>
           </li>
           <li ng-repeat="layer in ctrl.layers">
-            <a href ng-click="ctrl.setConcernedLayer(layer)">{{layer.get('label')|translate}}</a>
+            <a href class=".dropdown-item" ng-click="ctrl.setConcernedLayer(layer)">{{layer.get('label')|translate}}</a>
           </li>
         </ul>
       </div>
