@@ -204,8 +204,10 @@ body.embedded {
   }
 }
 
-body.full header,
 body.full footer,
+body.full header {
+  display: flex;
+}
 body.full .routing-goto-route,
 body.full .routing-rounded-button {
   display: block;
