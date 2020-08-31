@@ -106,7 +106,20 @@
   .navbar-nav > li > button {
     margin: 0px 0px 5px 0px;
   }
+
+  .modal-dialog {
+    min-width: 800px;
+  }
+
+  .modal-body form.mymaps-modal-form {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+  }
 }
+
 table.mymaps-list > tbody > tr {
   cursor: pointer;
   &.noclick {
