@@ -278,6 +278,9 @@ app-medium-style-item div {
     float: right;
     margin-right: 11px;
   }
+  input[type=checkbox] {
+    margin-top: 5px;
+  }
 }
 
 div[data-toggle="collapse"] {
