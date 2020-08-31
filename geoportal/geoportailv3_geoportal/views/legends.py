@@ -80,7 +80,7 @@ class Legends(object):
 
                 active_layers = internal_wms.layers.split(',')
                 localizer = self.request.localizer
-                 for l in data['layers']:
+                for l in data['layers']:
                     if str(l['layerId']) in active_layers:
                         html_legend += '<h4>%s</h4>\n' % localizer.translate(l['layerName'])
                         html_legend += '<div class="level4">\n'
