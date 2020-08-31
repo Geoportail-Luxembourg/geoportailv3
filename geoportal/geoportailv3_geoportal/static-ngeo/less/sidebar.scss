@@ -450,8 +450,10 @@
       left: 20px;
       color: white;
     }
-    .upload-style-button:after {
-      content: '\f0ee';
+    .upload-style-button:before {
+      content: "\f382";
+      font-family: "Font Awesome 5 Solid";
+      font-weight: 400;
     }
 
     .upload-style-button {
