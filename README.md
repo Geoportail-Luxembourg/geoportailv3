@@ -37,18 +37,31 @@ make build
 Local run and development
 -------------------------
 
+### TL; DR
+
+```bash
+git clone git@github.com:camptocamp/luxembourg_dev_db.git && cd luxembourg_dev_db
+make &
+cd ../geoportailv3
+# First run is slow (like ~15min).
+ln -s env-localdev .env
+make dev
+```
+
+
 To some extent, it is possible to simulate the services needed by the
-application using git@github.com:camptocamp/luxembourg_dev_db.git
+application using `git@github.com:camptocamp/luxembourg_dev_db.git`.
 Clone that repository and there run: `make`.
 In order to work with a database dump, simply put the sql file there before running `make`.
 
-To start the composition use: `make run` and open http://localhost:8080.
-Alternatively, to start the dev composition use: `make dev` and open http://localhost:8080/dev/main.html.
+To start the composition use in dev mode, run `make dev` and open
+http://localhost:8080/dev/main.html.
+Alternatively, to start the composition in prod mode run: `make run` and open http://localhost:8080.
 
 Until the migration is finished, the database must be fixed by doing: `make fix-db`.
 
 The local ldap contains a single user: c2c/test1234 with admin rights.
-See docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=act,dc=lu -D "login=c2c,ou=portail,dc=act,dc=lu" -w test1234 -LL '\*'
+See `docker-compose exec geoportal ldapsearch -x -H ldap://ldap -b ou=portail,dc=act,dc=lu -D "login=c2c,ou=portail,dc=act,dc=lu" -w test1234 -LL '\*'`
 
 The print service is available directly at http://localhost:28080/.
 
