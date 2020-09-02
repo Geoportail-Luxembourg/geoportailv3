@@ -400,7 +400,11 @@ const MainController = function(
 
 
   this.onSimpleStylingSelected = selectedItem => {
+    // First we reset the selected 'style' items
+    this.resetSelectedSimpleData();
+    // Then we select this item
     selectedItem['selected'] = true;
+  
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
     this.mediumStylingData = getDefaultMediumStyling(); // start again from a fresh style
     const mediumStyles = this.mediumStylingData.filter(m => 'color' in m);
