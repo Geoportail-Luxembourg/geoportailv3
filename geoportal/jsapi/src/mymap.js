@@ -213,6 +213,14 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     this.selectInteraction_ = new ol.interaction.Select({
       layers: [vector]
     });
+    // Hack to bypass this : https://github.com/openlayers/openlayers/issues/1988
+    // Will be probably solved with OL6
+    var originalHandleEvent = this.selectInteraction_.handleEvent;
+    this.selectInteraction_.handleEvent = function(mapBrowserEvent) {
+        originalHandleEvent.apply(this, arguments);
+        // true, not to stop event propagation.
+        return true;
+    };
     this.map_.addInteraction(this.selectInteraction_);
     ol.events.listen(
       this.selectInteraction_,
