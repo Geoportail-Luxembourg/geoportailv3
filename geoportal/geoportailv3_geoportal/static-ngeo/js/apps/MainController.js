@@ -355,7 +355,7 @@ const MainController = function(
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
-    const isPublished = false;
+    const isPublished = this.is3dEnabled();
     appMvtStylingService.saveBgStyle(bgLayer, isPublished)
     .then(() => {
       const config = JSON.stringify(this.mediumStylingData);
