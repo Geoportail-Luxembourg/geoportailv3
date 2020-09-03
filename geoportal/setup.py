@@ -25,6 +25,7 @@ setup(
           'db2es = geoportailv3_geoportal.scripts.db2es:main',
           'layers2es = geoportailv3_geoportal.scripts.layers2es:main',
           'tooltips2pot = geoportailv3_geoportal.scripts.tooltips2pot:main',
+          'legends2pot = geoportailv3_geoportal.scripts.legends2pot:main',
         ],
     },
 )
