@@ -52,7 +52,7 @@ app-search {
 
 .footer {
   position: absolute;
-  bottom: 0;
+  bottom: 2px; /* Empiric magic value to avoid page scroll */
   width: 100%;
   /* Set the fixed height of the footer here */
   height: $bottombar-height;
