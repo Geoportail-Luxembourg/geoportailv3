@@ -1780,7 +1780,9 @@ lux.Map.prototype.showPopup = function(position, title, content) {
  * @api
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
-  this.stateManager_.setMyMap(options.mapId);
+  if (options.mapId !== undefined) {
+    this.stateManager_.setMyMap(options.mapId);
+  }
   return Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     var mymap = new lux.MyMap(options);
     mymap.setMap(this);
