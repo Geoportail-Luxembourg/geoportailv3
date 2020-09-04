@@ -902,15 +902,6 @@ const MainController = function(
     }
   }.bind(this));
 
-  // Hide the vector editor panel when we choose non-vt layer with the selector
-  $scope.$watch(() => {
-    return this.activeMvt;
-  }, (newVal, oldVal) => {
-    if (newVal !== null && oldVal !== null && newVal !== oldVal) {
-      this.restoreLastOpenedPanel();
-    }
-  });
-
   this.appExport_.init(this.map_);
 
   this.addLocationControl_(ngeoFeatureOverlayMgr);
@@ -1061,7 +1052,6 @@ const MainController = function(
 
   $scope.$on('mvtPanelOpen', () => {
     this.vectorEditorOpen = true;
-    this.rememberCurrentlyOpenedPanel('mylayers');
     this.trackOpenVTEditor('openVTEditor');
   });
 
@@ -1466,32 +1456,6 @@ MainController.prototype.trackOpenVTEditor = function (documentTitle) {
   piwik.push(['trackPageView']);
 };
 
-
-/**
- * Remember the last panel opened when opening vector editor panel
- * @param {string} tab A tab name.
- * @export
- */
-MainController.prototype.rememberCurrentlyOpenedPanel = function (tab) {
-  if (tab === this.lastPanelOpened) {
-    this.restoreLastOpenedPanel();
-  } else {
-    this.lastPanelOpened = tab;
-  }
-};
-
-/**
- * Allows to get back to last panel when closing the vector editor panel.
- * @export
- */
-MainController.prototype.restoreLastOpenedPanel = function () {
-  if (this.lastPanelOpened) {
-    this[this.lastPanelOpened] = true;
-    this.lastPanelOpened = undefined;
-  } else {
-    new Error('The panel to open does not exist...');
-  }
-};
 
 /**
  * @param {string} lang Language code.
