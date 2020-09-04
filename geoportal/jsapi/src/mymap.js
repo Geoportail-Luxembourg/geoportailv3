@@ -51,6 +51,15 @@ lux.MyMap = function(options) {
   }
 
   /**
+   * @type {string | undefined}
+   * @private
+   */
+  this.layerName_;
+  if (options && options.name) {
+    this.layerName_ = options.name;
+  }
+
+  /**
    * @type {string}
    * @private
    */
@@ -191,7 +200,8 @@ lux.MyMap.prototype.loadFeatures_ = function() {
     var format = new ol.format.GeoJSON();
     this.sourceFeatures_ = new ol.source.Vector();
     var vector = new ol.layer.Vector({
-      source: this.sourceFeatures_
+      source: this.sourceFeatures_,
+      name: this.layerName_
     });
     this.map_.addLayer(vector);
     var features = format.readFeatures(json, {

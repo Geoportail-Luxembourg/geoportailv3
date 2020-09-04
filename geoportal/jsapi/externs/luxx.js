@@ -405,6 +405,13 @@ luxx.MyMapOptions.prototype.fitToExtent;
 luxx.MyMapOptions.prototype.mapId;
 
 /**
+ * The name of the mymaps layer.
+ * @type {string}
+ * @api
+ */
+luxx.MyMapOptions.prototype.name;
+
+/**
  * The id of the element in which to put the profile (without #). Optional. It
  * is recommended to set the display style to none at first. The display will
  * then be set to block adequately.
