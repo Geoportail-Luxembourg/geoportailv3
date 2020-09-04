@@ -14,6 +14,7 @@ __pycache__/
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-client.pot
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
 /geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
+/geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 /geoportal/geoportailv3_geoportal/locale/ngeo.pot
 /.build/
 /node_modules/

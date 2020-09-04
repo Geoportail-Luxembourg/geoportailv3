@@ -6,6 +6,7 @@ import urllib
 from urllib.parse import urlencode
 import httplib2
 import json
+import yaml
 from geojson import loads as geojson_loads
 import sqlalchemy
 from sqlalchemy.exc import NoSuchTableError, OperationalError, ProgrammingError
@@ -41,6 +42,7 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
         self.env = None
         self.messages = []
         self.fields = set()
+        self.TIMEOUT = 15
 
     def __call__(self, filename, options, fileobj=None, lineno=0):
         print('Entering into %s extractor' % self.__class__)
@@ -128,7 +130,7 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     extensions = [".ini"]
 
     def _extract_messages(self, db_session):
-        print('Hello, I entered into ESRI extractor')
+        print('Entering into ESRI extractor')
 
         from c2cgeoportal_commons.models import DBSession  # pylint: disable=import-outside-toplevel
         from geoportailv3_geoportal.models import LuxLayerInternalWMS
@@ -146,21 +148,21 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
     def _load_result(self, result, fields):
         if result.rest_url is not None and len(result.rest_url) > 0:
             full_url = result.rest_url + '/legend?f=pjson'
-            f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, 15)
+            f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
             data = json.load(f)
         if data is not None:
             for l in data['layers']:
                 attribute = l['layerName']
                 self._insert_attribute(attribute,
-                                       ("(ogc_server_id:%s Type:%s)"
-                                        % (result.ogc_server_id, result.item_type),
+                                       ("ogc_server_id:%s URL:%s Layer"
+                                        % (result.ogc_server_id, result.rest_url),
                                         result.layer),)
                 for leg in l['legend']:
                     attribute = leg['label']
                     self._insert_attribute(attribute,
-                                           ("(ogc_server_id:%s Type:%s)"
-                                            % (result.ogc_server_id, result.item_type),
-                                            result.layer),)
+                                           ("ogc_server_id:%s Layer: %s Sublayer"
+                                            % (result.ogc_server_id, result.layer),
+                                            l['layerName']),)
 
 
 class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
@@ -170,7 +172,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
     extensions = [".ini"]
 
     @staticmethod
-    def _get_url_with_token(self, url):
+    def _get_url_with_token(url):
         try:
             creds_re = re.compile('//(.*)@')
             creds = creds_re.findall(url)[0]
@@ -187,8 +189,6 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
         return None
 
     def _get_external_data(self, url, bbox=None, layer=None):
-
-        TIMEOUT = 15
 
         body = {'f': 'pjson',
                 'geometry': '',
@@ -219,7 +219,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
         try:
             print('Requesting %s' % query)
-            result = urllib.request.urlopen(query, None, TIMEOUT)
+            result = urllib.request.urlopen(query, None, self.TIMEOUT)
             content = result.read()
         except:
             print(query)
@@ -316,21 +316,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
 
     def _extract_messages(self, session):  # pragma: nocover
         print('Entering into the tooltip extractor')
-        # destination = "/tmp/tooltips.pot"
 
-        # session = get_session('development.ini', 'app')
         from c2cgeoportal_commons.models import DBSession, DBSessions
         from geoportailv3_geoportal.models import LuxGetfeatureDefinition, LuxLayerInternalWMS
-
-        # if not os.path.isfile(destination):
-        #     po = polib.POFile()
-        #     po.metadata = {
-        #         'MIME-Version': '1.0',
-        #         'Content-Type': 'text/plain; charset=utf-8',
-        #         'Content-Transfer-Encoding': '8bit',
-        #     }
-        # else:
-        #     po = polib.pofile(destination, encoding="utf-8")
 
         results = session.query(LuxGetfeatureDefinition).\
                   filter(LuxGetfeatureDefinition.remote_template == False).\
@@ -343,13 +331,15 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             engine = DBSessions[result.engine_gfi]
             first_row = None
             if result.query is not None and len(result.query) > 0:
-                # try:
+                try:
                     if "SELECT" in result.query.upper():
                         first_row = engine.execute(result.query).first()
                     else:
                         first_row = engine.execute("SELECT * FROM " + result.query).first()
-                 # except:
-                 #    print('query FAILED : SELECT * FROM ' + result.query)
+                except:
+                    print(colorize('query FAILED : SELECT * FROM ' + result.query, RED))
+                    if os.environ.get("IGNORE_I18N_ERRORS", "FALSE") != "TRUE":
+                        raise
             if result.rest_url is not None and len(result.rest_url) > 0:
                 first_row = self._get_external_data(
                     result.rest_url,
@@ -388,10 +378,8 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                 for attribute in attributes:
                     self._insert_attribute(
                         attribute,
-                        ("engine:%(engine)s Layer:%(layer)s *"
-                         "Role:%(role)s" % {
+                        (("engine:%(engine)s *"
+                         "Role:%(role)s Layer" % {
                              "engine": result.engine_gfi,
-                             "layer": result.layer,
                              "role": result.role,
-                         }))
-        # print("tooltips Pot file updated: %s" % destination)
+                         }), result.layer))
