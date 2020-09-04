@@ -399,10 +399,17 @@ luxx.MyMapOptions.prototype.fitToExtent;
 
 /**
  * The map identifier.
- * @type {string}
+ * @type {string | undefined}
  * @api
  */
 luxx.MyMapOptions.prototype.mapId;
+
+/**
+ *An array of map identifiers.
+ * @type {Array<string> | undefined}
+ * @api
+ */
+luxx.MyMapOptions.prototype.mapIds;
 
 /**
  * The name of the mymaps layer.
