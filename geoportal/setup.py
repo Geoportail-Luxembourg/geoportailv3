@@ -27,5 +27,9 @@ setup(
           'tooltips2pot = geoportailv3_geoportal.scripts.tooltips2pot:main',
           'legends2pot = geoportailv3_geoportal.scripts.legends2pot:main',
         ],
+        "lingua.extractors": [
+            "luxembourg-tooltips = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgTooltipsExtractor",
+            "luxembourg-legends = geoportailv3_geoportal.lib.lingua_extractor:LuxembourgESRILegendExtractor",
+        ],
     },
 )

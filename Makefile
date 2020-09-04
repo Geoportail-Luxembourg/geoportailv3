@@ -74,8 +74,12 @@ update-pots:
 	# Handle server.pot
 	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-server.cfg --output /tmp/server.pot $(SERVER_LOCALISATION_SOURCES_FILES)
 	docker cp $(DOCKER_CONTAINER):/tmp/server.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-server.pot
+	# Handle legends.pot
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-legend.cfg --output /tmp/legends.pot geoportal/development.ini
+	docker cp $(DOCKER_CONTAINER):/tmp/legends.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-legends.pot
 	# Handle tooltips.pot
-	docker exec $(DOCKER_CONTAINER) tooltips2pot
+	# docker exec $(DOCKER_CONTAINER) tooltips2pot
+	docker exec $(DOCKER_CONTAINER) pot-create --config lingua-tooltips.cfg --output /tmp/tooltips.pot geoportal/development.ini
 	docker exec $(DOCKER_CONTAINER) msguniq /tmp/tooltips.pot -o /tmp/tooltips.pot
 	docker cp $(DOCKER_CONTAINER):/tmp/tooltips.pot geoportal/geoportailv3_geoportal/locale/geoportailv3_geoportal-tooltips.pot
 
