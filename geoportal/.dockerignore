@@ -21,6 +21,8 @@
 !.tx
 !lingua-client.cfg
 !lingua-server.cfg
+!lingua-tooltips.cfg
+!lingua-legends.cfg
 !print-config.yaml.tmpl
 !fix-db.sh
 !tools

@@ -14,7 +14,7 @@ import json
 
 import logging
 
-_ = TranslationStringFactory("geoportailv3_geoportal-server")
+_ = TranslationStringFactory("geoportailv3_geoportal-legends")
 log = logging.getLogger(__name__)
 
 class Legends(object):
@@ -68,6 +68,9 @@ class Legends(object):
             if internal_wms is not None and ogc_server.type == 'arcgis':
                 log.info('found arcgis layer')
 
+                legend = TranslationStringFactory("geoportailv3_geoportal-legends")
+                server = TranslationStringFactory("geoportailv3_geoportal-server")
+
                 full_url = internal_wms.rest_url + '/legend?f=pjson'
                 log.info(full_url)
 
@@ -80,16 +83,18 @@ class Legends(object):
 
                 active_layers = internal_wms.layers.split(',')
                 localizer = self.request.localizer
+                # log.info('translation test: %s' % localizer.translate(server("Access constraints")))
+                log.info('translation test: %s' % localizer.translate(legend("f_Label")))
                 for l in data['layers']:
                     if str(l['layerId']) in active_layers:
-                        html_legend += '<h4>%s</h4>\n' % localizer.translate(l['layerName'])
+                        html_legend += '<h4>%s</h4>\n' % localizer.translate(legend("f_" + l['layerName']))
                         html_legend += '<div class="level4">\n'
                         html_legend += '<div class="table sectionedit1">\n'
                         html_legend += '<table class="inline">\n'
                         for leg in l['legend']:
                             html_legend += '<tr class="row0"><td class="col0">\n'
                             html_legend += '<img alt="" class="media" src="data:image/png;base64,%s" style="max-width:290px;"/>\n' % leg['imageData']
-                            html_legend += '</td><td class="col1">%s</td></tr>\n' % localizer.translate(leg['label'])
+                            html_legend += '</td><td class="col1">%s</td></tr>\n' % localizer.translate(legend("f_" + leg['label']))
 
                         html_legend += '</table></div></div>'
                 headers = {"Content-Type": "text/html; charset=utf-8"}
