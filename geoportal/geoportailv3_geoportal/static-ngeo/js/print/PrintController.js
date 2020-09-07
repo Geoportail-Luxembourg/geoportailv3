@@ -277,7 +277,10 @@ const exports = function($scope, $window, $timeout, $q, gettextCatalog,
       console.assert(postcomposeListenerKey === null);
       postcomposeListenerKey = listen(this.map_,
           olRenderEventType.POSTCOMPOSE, postcomposeListener);
-      this.appMvtStylingService_.publishIfSerial(this.map_);
+      const bgLayer = this.backgroundLayerMgr_.get(this.map_);
+      if (bgLayer.get('defaultMapBoxStyle')) {
+        this.appMvtStylingService_.publishIfSerial(this.map_);
+      }
     } else if (postcomposeListenerKey !== null) {
       unByKey(postcomposeListenerKey);
       postcomposeListenerKey = null;
