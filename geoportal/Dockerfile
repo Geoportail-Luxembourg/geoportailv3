@@ -124,7 +124,7 @@ RUN mv webpack.apps.js webpack.apps.js.tmpl
 ARG GIT_HASH
 
 RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
-    python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
+    python3 -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
 
 COPY ./tools/ /app/tools
