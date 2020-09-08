@@ -124,11 +124,16 @@ RUN mv webpack.apps.js webpack.apps.js.tmpl
 ARG GIT_HASH
 
 RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
-    python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
+    python3 -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
     c2cwsgiutils_genversion.py $GIT_HASH
 
 COPY ./tools/ /app/tools
 RUN ln -s . geoportal
+
+# patch to enable running the arcgis mod before update to geoportal 2.5
+RUN sed -i -e "s/ OGCSERVER_TYPE_GEOSERVER,/ OGCSERVER_TYPE_GEOSERVER,\n            'arcgis',/" \
+           -e "s/(OGCSERVER_TYPE_GEOSERVER, OGCSERVER_TYPE_GEOSERVER),/(OGCSERVER_TYPE_GEOSERVER, OGCSERVER_TYPE_GEOSERVER),\n                        ('arcgis', 'arcgis server'),/" \
+        /usr/local/lib/python3.6/dist-packages/c2cgeoportal_commons/models/main.py
 
 WORKDIR /app/apiv3
 ADD ./jsapi /app/apiv3/jsapi
