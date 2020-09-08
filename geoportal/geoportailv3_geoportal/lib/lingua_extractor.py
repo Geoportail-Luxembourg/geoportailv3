@@ -109,7 +109,7 @@ class LuxembourgExtractor(Extractor):  # pragma: no cover
             self.messages.append(
                 Message(
                     None,
-                    u'f_%(name)s' % {'name': attribute},
+                    u'%(name)s' % {'name': attribute},
                     None,
                     [],
                     "",
@@ -141,28 +141,28 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
                    .filter(OGCServer.type == 'arcgis')).all()
         print("%d ESRI layers to parse" % len(results))
 
-        fields = set()
         for result in results:
-            self._load_result(result, fields)
+            self._load_result(result)
 
-    def _load_result(self, result, fields):
+    def _load_result(self, result):
         if result.rest_url is not None and len(result.rest_url) > 0:
             full_url = result.rest_url + '/legend?f=pjson'
             f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, self.TIMEOUT)
             data = json.load(f)
         if data is not None:
             for l in data['layers']:
-                attribute = l['layerName']
-                self._insert_attribute(attribute,
-                                       ("ogc_server_id:%s URL:%s Layer"
-                                        % (result.ogc_server_id, result.rest_url),
-                                        result.layer),)
-                for leg in l['legend']:
-                    attribute = leg['label']
-                    self._insert_attribute(attribute,
-                                           ("ogc_server_id:%s Layer: %s Sublayer"
-                                            % (result.ogc_server_id, result.layer),
-                                            l['layerName']),)
+                if str(l['layerId']) in result.layers.split(','):
+                    attribute = l['layerName']
+                    self._insert_attribute(result.layer + ' : ' + attribute,
+                                           ("ogc_server_id:%s URL:%s Layer"
+                                            % (result.ogc_server_id, result.rest_url),
+                                            result.layer),)
+                    for leg in l['legend']:
+                        attribute = leg['label']
+                        self._insert_attribute(result.layer + ' / ' + l['layerName'] + ' : ' + attribute,
+                                               ("ogc_server_id:%s Layer:%s Sublayer"
+                                                % (result.ogc_server_id, result.layer),
+                                                l['layerName']),)
 
 
 class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
@@ -377,7 +377,7 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             if attributes is not None:
                 for attribute in attributes:
                     self._insert_attribute(
-                        attribute,
+                        "f_" + attribute,
                         (("engine:%(engine)s *"
                          "Role:%(role)s Layer" % {
                              "engine": result.engine_gfi,
