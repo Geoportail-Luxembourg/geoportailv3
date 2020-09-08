@@ -158,11 +158,15 @@ class Wms(object):
                                 self.request.params.get(param, '').encode('utf-8')
                                 ) + "&"
                 elif param.lower() == 'crs':
+                    crs = self.request.params.get(param, '')
+                    # strip EPSG: tag from mapserver to make it understandable for arcgis
+                    if "EPSG:" in crs:
+                        crs = crs[5:]
                     param_wms = param_wms + "imageSR=" + \
-                                urllib.parse.quote(self.request.params.get(param, '').encode('utf-8')
+                                urllib.parse.quote(crs.encode('utf-8')
                                 ) + "&" \
                                 + "bboxSR=" + \
-                                urllib.parse.quote(self.request.params.get(param, '').encode('utf-8')
+                                urllib.parse.quote(crs.encode('utf-8')
                                 ) + "&"
                 elif param.lower() == 'layers':
                     param_wms = param_wms + param + "=" + \
