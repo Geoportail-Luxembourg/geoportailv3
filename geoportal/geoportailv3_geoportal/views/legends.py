@@ -72,7 +72,8 @@ class Legends(object):
                 server = TranslationStringFactory("geoportailv3_geoportal-server")
 
                 full_url = internal_wms.rest_url + '/legend?f=pjson'
-                log.info(full_url)
+                if 'dpi' in self.request.params:
+                    full_url += "&dpi=" + self.request.params["dpi"]
 
                 f = urllib.request.urlopen(httplib2.iri2uri(full_url), None, 15)
                 data = json.load(f)
@@ -93,8 +94,8 @@ class Legends(object):
                         html_legend += '<table class="inline">\n'
                         for leg in l['legend']:
                             html_legend += '<tr class="row0"><td class="col0">\n'
-                            html_legend += '<img alt="" class="media" src="data:image/png;base64,%s" style="max-width:290px;"/>\n' % leg['imageData']
-                            html_legend += '</td><td class="col1">%s</td></tr>\n' % localizer.translate(
+                            html_legend += '<img alt="" class="media" src="data:image/png;base64,%s" style="max-width:32px;"/>\n' % leg['imageData']
+                            html_legend += '</td><td class="col1" style="padding-left:5px">%s</td></tr>\n' % localizer.translate(
                                 legend(internal_wms.layer + " / " + l['layerName']
                                        + " : " + leg['label'])
                             )
