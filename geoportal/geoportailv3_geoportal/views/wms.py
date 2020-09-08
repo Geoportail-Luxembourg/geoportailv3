@@ -138,7 +138,7 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         param_wms = ""
-        if ((internal_wms.ogc_server.type == 'other')
+        if ((internal_wms.ogc_server.type == 'arcgis')
             and ('export' in internal_wms.url[-10:])):
 
             # deactivated code for debug purpose
