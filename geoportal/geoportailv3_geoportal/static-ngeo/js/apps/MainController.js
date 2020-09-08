@@ -1224,6 +1224,9 @@ MainController.prototype.createMap_ = function() {
       ? shiftKeyOnly
       : altShiftKeyOnly
   });
+
+  let rotation = this.ngeoLocation_.getParam('rotation') || 0;
+
   var map = this['map'] = new appMap({
     logo: false,
     controls: [
@@ -1242,9 +1245,18 @@ MainController.prototype.createMap_ = function() {
       maxZoom: 19,
       minZoom: 8,
       enableRotation: true,
-      extent: this.maxExtent_
+      extent: this.maxExtent_,
+      rotation,
     })
   });
+
+  map.on('moveend', e => {
+    const rotation = map.getView().getRotation();
+    this.ngeoLocation_.updateParams({
+      rotation,
+    });
+  });
+
   return map;
 };
 
