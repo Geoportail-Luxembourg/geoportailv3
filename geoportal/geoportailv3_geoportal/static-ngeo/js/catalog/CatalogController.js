@@ -33,11 +33,12 @@ import olView from 'ol/View.js';
  * @param {app.ScalesService} appScalesService Service returning scales.
  * @param {Array.<number>} maxExtent Constraining extent.
  * @param {app.StateManager} appStateManager The state service.
+ * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
  * @export
  * @ngInject
  */
 const exports = function($scope, appThemes, appTheme,
-    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager) {
+    appGetLayerForCatalogNode, appScalesService, maxExtent, appStateManager, ngeoLocation) {
   /**
    * @type {app.StateManager}
    * @private
@@ -74,6 +75,12 @@ const exports = function($scope, appThemes, appTheme,
    * @private
    */
   this.getLayerFunc_ = appGetLayerForCatalogNode;
+
+  /**
+   * @type {ngeo.statemanager.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 
   listen(appThemes, appEventsThemesEventType.LOAD,
       /**
@@ -135,15 +142,23 @@ exports.prototype.setThemeZooms = function(tree) {
       var resolutions = tree['metadata']['resolutions'];
       maxZoom = resolutions.length + 7;
     }
+  
     var map = this['map'];
     var currentView = map.getView();
+
+    let rotation = 0;
+    if (this.ngeoLocation_.getParam('rotation') !== undefined) {
+      rotation = this.ngeoLocation_.getParam('rotation');
+    }
+
     map.setView(new olView({
       maxZoom: maxZoom,
       minZoom: 8,
       extent: this.maxExtent_,
       center: currentView.getCenter(),
       enableRotation: true,
-      zoom: currentView.getZoom()
+      zoom: currentView.getZoom(),
+      rotation,
     }));
   }
   this.scales_.setMaxZoomLevel(maxZoom);
