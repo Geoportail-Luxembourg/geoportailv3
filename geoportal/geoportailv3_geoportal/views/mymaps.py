@@ -1,9 +1,9 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import stat
 import uuid
 import imghdr
-import ldap3 as ldap
+import ldap3
 
 import geojson
 import transaction
@@ -1559,7 +1559,7 @@ class Mymaps(object):
     @view_config(route_name="mymaps_comment", renderer='json')
     def comment(self):
         id = self.request.matchdict.get("map_id")
-        map = Map.get(id)
+        map = Map.get(id, self.db_mymaps)
         if map is None:
             return HTTPNotFound()
 
@@ -1601,29 +1601,32 @@ class Mymaps(object):
             encode('ASCII', 'ignore').replace(' ', '_')
 
     def get_user_info(self, user):
-         connector = get_ldap_connector(self.request)
-         cm = connector.manager
-         with cm.connection() as conn:
-             dn_list = conn.search_s('ou=portail,dc=act,dc=lu',
-                                     ldap.SUBTREE, '(login=%s)' % user)
-             if len(dn_list) != 1:
-                 return HTTPInternalServerError()
+        connector = get_ldap_connector(self.request)
+        cm = connector.manager
+        with cm.connection() as conn:
+            try:
+                search_id = conn.search('ou=portail,dc=act,dc=lu', '(login=%s)' % user,
+                                        ldap3.SUBTREE)
+                res, status = conn.get_response(search_id)
+                #if not search_OK:
 
-             dn = dn_list[0][0]
-             attributes = conn.search_s(dn,
-                                        ldap.SCOPE_BASE,
+                dn = res[0]['dn']
+                search_id = conn.search(dn,
                                         '(objectClass=*)',
-                                        ['mail'])
-             if len(attributes) == 0 or len(attributes[0]) != 2:
-                 return HTTPInternalServerError()
-             attributes = attributes[0][1]
-             if 'mail' not in attributes or len(attributes['mail']) == 0:
-                 return HTTPNotFound()
-             mail_address = attributes['mail'][0]
-             if not mail_address:
-                 return HTTPNotFound()
-             conn.unbind()
-             return (user, mail_address)
+                                        ldap3.BASE,
+                                        attributes=['mail'])
+                #if not search_OK:
+                res, status = conn.get_response(search_id)
+                attributes = res[0]['attributes']
+            except:
+                return HTTPInternalServerError()
+            if 'mail' not in attributes or len(attributes['mail']) == 0:
+                return HTTPNotFound()
+            mail_address = attributes['mail'][0]
+            if not mail_address:
+                return HTTPNotFound()
+            conn.unbind()
+            return (user, mail_address)
 
     def notify_at_save(self, map, username, id, name, category):
 

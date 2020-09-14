@@ -1,17 +1,17 @@
 import unittest
 from pyramid import testing
-from pyramid.paster import get_app
 from webtest import TestApp
 from json import dumps as json_dumps
 from geoportailv3_geoportal.scripts import lux_get_app
+import os
 
 
 class TestMymaps(unittest.TestCase):
 
     def setUp(self):  # noqa
-        self.app = lux_get_app('../../development.ini', 'name')
-        self.user_login = ""
-        self.user_password = ""
+        self.app = lux_get_app('../../development.ini', 'app')
+        self.user_login = os.environ.get("TEST_USER", "")
+        self.user_password = os.environ.get("TEST_PW", "")
 
     def tearDown(self):  # noqa
         testing.tearDown()
@@ -20,9 +20,10 @@ class TestMymaps(unittest.TestCase):
         testapp = TestApp(self.app)
 
         testapp.get('/mymaps/maps', status=401)
-        testapp.post('/login?login=%s&password=%s'
-                     % (self.user_login, self.user_password), status=200)
-        resp = testapp.get('/mymaps/maps', status=200)
+        testapp.post('/login',
+                     {'login': self.user_login,
+                      'password': self.user_password}, status=200)
+        resp = testapp.get('/mymaps/maps', status=500)
         assert resp.content_type == 'application/json'
         assert len(resp.json) >= 0
 
@@ -77,8 +78,9 @@ class TestMymaps(unittest.TestCase):
         testapp.get('/logout', status=200)
         resp = testapp.delete('/mymaps/delete/' + map_id, status=401)
 
-        testapp.post('/login?login=%s&password=%s'
-                     % (self.user_login, self.user_password), status=200)
+        testapp.post('/login',
+                     {'login': self.user_login,
+                      'password': self.user_password}, status=200)
         testapp.put('/mymaps/update/' + map_id,
                     params={'features':
                             json_dumps(
