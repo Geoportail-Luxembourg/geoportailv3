@@ -138,8 +138,7 @@ class Wms(object):
                 return HTTPUnauthorized()
 
         param_wms = ""
-        if ((internal_wms.ogc_server.type == 'arcgis')
-            and ('export' in internal_wms.url[-10:])):
+        if internal_wms.ogc_server.type == 'arcgis':
 
             # deactivated code for debug purpose
             if False:
@@ -193,12 +192,10 @@ class Wms(object):
                              + kw.get('height', '')).encode('utf-8')
                         ) + "&f=image&"
 
-        # TODO: cleanup
-        # this is meant to temporarily enable routing from config file for debug purpose
-        # rh = internal_wms.url
-        # err = []
-        # remote_host = get_url2('dummy', rh, self.request, err)
-        remote_host = internal_wms.url
+            remote_host = internal_wms.rest_url + "/export"
+
+        else:
+            remote_host = internal_wms.url
 
         idx_arobase = remote_host.find("@")
         base64user = None
