@@ -138,8 +138,8 @@ class LuxembourgESRILegendExtractor(LuxembourgExtractor):  # pragma: no cover
 
         results = (DBSession.query(LuxLayerInternalWMS)
                    .join(OGCServer, LuxLayerInternalWMS.ogc_server_id == OGCServer.id)
-                   .filter(OGCServer.type == 'arcgis')).all()
-        print("%d ESRI layers to parse" % len(results))
+                   .filter(OGCServer.type == 'arcgis'))
+        print("%d ESRI layers to parse" % results.count())
 
         for result in results:
             self._load_result(result)
@@ -221,14 +221,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
             print('Requesting %s' % query)
             result = urllib.request.urlopen(query, None, self.TIMEOUT)
             content = result.read()
-        except:
-            print(query)
-            traceback.print_exc(file=sys.stdout)
-            return []
-
-        try:
             esricoll = geojson_loads(content)
         except:
+            traceback.print_exc(file=sys.stdout)
             return []
         if 'fieldAliases' not in esricoll:
             print(("Error with the layer:  %s using query : %s response: %s"
@@ -324,9 +319,9 @@ class LuxembourgTooltipsExtractor(LuxembourgExtractor):  # pragma: no cover
                   filter(LuxGetfeatureDefinition.remote_template == False).\
                   filter(
                       LuxGetfeatureDefinition.template.in_
-                      (['default.html', 'default_table.html', 'feedbackanf.html'])).all()  # noqa
+                      (['default.html', 'default_table.html', 'feedbackanf.html']))  # noqa
 
-        print("%d results" % len(results))
+        print("%d results" % results.count())
         for result in results:
             engine = DBSessions[result.engine_gfi]
             first_row = None

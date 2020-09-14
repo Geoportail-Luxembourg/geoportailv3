@@ -4,6 +4,7 @@ from pyramid.response import Response
 from c2cgeoportal_commons.models import DBSession
 from geoportailv3_geoportal.models import LuxLayerInternalWMS
 from c2cgeoportal_commons.models.main import OGCServer
+from pyramid.renderers import render
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from io import StringIO
 from bs4 import BeautifulSoup
@@ -84,24 +85,14 @@ class Legends(object):
 
                 active_layers = internal_wms.layers.split(',')
                 localizer = self.request.localizer
-                for l in data['layers']:
-                    if str(l['layerId']) in active_layers:
-                        html_legend += '<h4>%s</h4>\n' % localizer.translate(
-                            legend(internal_wms.layer + " : " + l['layerName'])
-                        )
-                        html_legend += '<div class="level4">\n'
-                        html_legend += '<div class="table sectionedit1">\n'
-                        html_legend += '<table class="inline">\n'
-                        for leg in l['legend']:
-                            html_legend += '<tr class="row0"><td class="col0">\n'
-                            html_legend += '<img alt="" class="media" src="data:image/png;base64,%s" style="max-width:32px;"/>\n' % leg['imageData']
-                            html_legend += '</td><td class="col1" style="padding-left:5px">%s</td></tr>\n' % localizer.translate(
-                                legend(internal_wms.layer + " / " + l['layerName']
-                                       + " : " + leg['label'])
-                            )
-
-                        html_legend += '</table></div></div>'
+                context = {
+                    "data": data,
+                    "active_layers": active_layers,
+                    "wms_layer": internal_wms.layer,
+                    "_l": lambda s: localizer.translate(legend(s)),
+                }
                 headers = {"Content-Type": "text/html; charset=utf-8"}
+                html_legend = render('geoportailv3_geoportal:templates/legends.html', context)
                 return Response(html_legend, headers=headers)
 
         url = \
