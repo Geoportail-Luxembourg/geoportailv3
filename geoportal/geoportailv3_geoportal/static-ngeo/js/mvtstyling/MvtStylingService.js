@@ -200,6 +200,10 @@ saveBgStyle(layer, isPublished) {
     this.isCustomStyle = true;
     this.saveLS_(LS_KEY_EXPERT, data);
     console.log('Expert style saved in local storage');
+
+    // Remove medium style as it is unactive
+    this.deleteLS_(LS_KEY_MEDIUM);
+
     if (isPublished) {
         promises.push(this.publishStyle(layer, data));
     }
@@ -232,7 +236,7 @@ getUrlVtStyle(layer) {
   return this.getvtstyleUrl_ + '?id=' + id;
 }
 
-saveMediumStyle(style) {
+saveMediumStyle(style, map) {
     const promises = [];
     this.isCustomStyle = true;
     if (this.appUserManager_.isAuthenticated()) {
@@ -241,6 +245,12 @@ saveMediumStyle(style) {
     }
     this.saveLS_(LS_KEY_MEDIUM, style);
     console.log('Medium style saved in local storage');
+
+    // Remove expert style as it is unactive
+    const bgLayer = this.backgroundLayerMgr_.get(map);
+    this.unpublishStyle(bgLayer);
+    this.deleteLS_(LS_KEY_EXPERT);
+
     return Promise.all(promises);
 }
 
