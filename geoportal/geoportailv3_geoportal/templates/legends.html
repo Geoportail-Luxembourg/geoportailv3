@@ -2,14 +2,17 @@
 % for l in data['layers']:
   % if str(l['layerId']) in active_layers:
     <h4>${_l(wms_layer + " : " + l['layerName'])}</h4>
-    <div class="level4">
-    <div class="table sectionedit1">
-    <table class="inline">
     % for leg in l['legend']:
-      <tr class="row0"><td class="col0">
-      <img alt="" class="media" src="data:image/png;base64,${leg['imageData']}" style="max-width:32px;"/>
-      </td><td class="col1" style="padding-left:5px">${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}</td></tr>
+      <div class="legend-row">
+        <div class="legend-icon">
+          <img class="legend-media"
+               src="data:image/png;base64,${leg['imageData']}"
+               />
+        </div>
+        <span class="legend-label">
+           ${_l(wms_layer + " / " + l['layerName'] + " : " + leg['label'])}
+        </span>
+      </div>
     % endfor
-    </table></div></div>
   % endif
 % endfor
