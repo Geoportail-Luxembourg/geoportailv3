@@ -70,7 +70,6 @@ class Legends(object):
                 log.info('found arcgis layer')
 
                 legend = TranslationStringFactory("geoportailv3_geoportal-legends")
-                server = TranslationStringFactory("geoportailv3_geoportal-server")
 
                 full_url = internal_wms.rest_url + '/legend?f=pjson'
                 if 'dpi' in self.request.params:
