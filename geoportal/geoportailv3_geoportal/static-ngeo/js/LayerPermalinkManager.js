@@ -192,25 +192,7 @@ exports.prototype.onLayerUpdate_ = function(layers) {
   var bgLabel = 'blank';
   if (bgLayer) {
     bgLabel = bgLayer.get('label');
-
-  // If there is a expert mvt style in the localstorage but no parameter in the url
-    const itemKey = 'remoteIdForStyle_' + bgLabel;
-    const stateMvtExpertStyle = this.stateManager_.getValueFromLocalStorage(itemKey);
-    if (stateMvtExpertStyle !== undefined && stateMvtExpertStyle !== null) {
-      this.ngeoLocation_.updateParams({
-        'serial': stateMvtExpertStyle
-      });
-    }
   }
-
-  // If there is a medium mvt style in the localstorage but no parameter in the url
-  const stateMvtMediumStyle = this.stateManager_.getValueFromLocalStorage('mediumStyling');
-  if (stateMvtMediumStyle !== undefined && stateMvtMediumStyle !== null) {
-    this.ngeoLocation_.updateParams({
-      'serial': stateMvtMediumStyle
-    });
-  }
-
   this.stateManager_.updateState({
     'layers': layerIds.join('-'),
     'opacities': opacities.join('-'),

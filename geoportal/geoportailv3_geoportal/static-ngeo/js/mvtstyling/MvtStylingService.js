@@ -32,9 +32,10 @@ class MvtStylingService {
    * @param {String} deletevtstyleUrl URL to delete a provisionned style
    * @param {String} getvtstyleUrl URL to get a provisionned style
    * @param {ngeo.map.BackgroundLayerMgr} ngeoBackgroundLayerMgr Background layer
+   * @param {ngeo.statemanager.Location} ngeoLocation ngeo location service.
    * @ngInject
    */
-  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, ngeoBackgroundLayerMgr) {
+  constructor($http, appUserManager, uploadvtstyleUrl, deletevtstyleUrl, getvtstyleUrl, ngeoBackgroundLayerMgr, ngeoLocation) {
     this.http_ = $http;
     this.appUserManager_ = appUserManager;
     this.isCustomStyle = false;
@@ -42,6 +43,7 @@ class MvtStylingService {
     this.deletevtstyleUrl_ = deletevtstyleUrl;
     this.getvtstyleUrl_ = getvtstyleUrl;
     this.backgroundLayerMgr_ = ngeoBackgroundLayerMgr;
+    this.ngeoLocation_ = ngeoLocation;
   }
 
   getBgStyle() {
@@ -49,7 +51,36 @@ class MvtStylingService {
     const itemKey = this.createRemoteItemKey_(label);
     let id = localStorage.getItem(itemKey);
     const xyz_custom = id ? this.createXYZCustom_(id) : undefined;
-    const serial = new URLSearchParams(window.location.search).get('serial');
+    let url = new URLSearchParams(window.location.search);
+
+
+    // If there is a medium mvt style in the localstorage, force parameter in the url
+    const stateMvtMediumStyle = this.getLS_('mediumStyling');
+    if (stateMvtMediumStyle) {
+
+        // Set the permalink visible in browser
+        this.ngeoLocation_.updateParams({
+            'serial': stateMvtMediumStyle
+        });
+
+        // Set the url object used in this method
+        url.set('serial', stateMvtMediumStyle);
+    }
+
+    // If there is a expert mvt style in the localstorage, force parameter in the url
+    const stateMvtExpertStyle = this.getLS_(itemKey);
+    if (stateMvtExpertStyle) {
+
+        // Set the permalink visible in browser
+         this.ngeoLocation_.updateParams({
+            'serial': stateMvtExpertStyle
+        });
+
+        // Set the url object used in this method
+        url.set('serial', stateMvtExpertStyle);
+    }
+
+    const serial = url.get('serial');
     const config = {
       label,
       defaultMapBoxStyle,
