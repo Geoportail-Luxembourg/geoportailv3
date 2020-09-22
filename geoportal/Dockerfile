@@ -25,7 +25,7 @@ RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/Im
 WORKDIR /app
 COPY webpack.*.js Makefile CONST_Makefile ls.js /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
-RUN make apps
+# RUN make apps
 
 COPY . /app
 
@@ -45,11 +45,6 @@ CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progr
 ###############################################################################
 
 FROM camptocamp/geomapfish:2.5 as runner
-
-COPY requirements.txt /tmp/requirements.txt
-RUN \
-  python3 -m pip install --disable-pip-version-check --no-cache-dir --requirement=/tmp/requirements.txt && \
-  rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
 
 COPY luxembourg_requirements.txt /tmp/
 RUN pip install --disable-pip-version-check --no-cache-dir --requirement /tmp/luxembourg_requirements.txt
@@ -100,7 +95,8 @@ RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/web
 # RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 # RUN mkdir -p /etc/static-ngeo/build
 
-COPY bin/* /usr/bin/     # has custom eval-templates and alembic launcher
+# no idea why this will not work
+# COPY ./bin/* /usr/bin/     # has custom eval-templates and alembic launcher
 
 RUN mkdir geoportailv3_geoportal/static-ngeo/build
 
@@ -127,6 +123,8 @@ RUN c2cwsgiutils_genversion.py ${GIT_HASH}
 
 ARG PGSCHEMA
 ENV PGSCHEMA=${PGSCHEMA}
+
+RUN cp bin/eval-templates /usr/bin
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
