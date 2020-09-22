@@ -2,21 +2,18 @@
 
 # The project Docker compose file for development.
 
-version: '2'
+version: '2.0'
 
 services:
   config:
-    image: camptocamp/geoportailv3-config:${DOCKER_TAG}
-#    user: www-data
-    environment:
-      - VISIBLE_WEB_HOST
-      - VISIBLE_WEB_PROTOCOL
-      - VISIBLE_ENTRY_POINT
-      - GEOPORTAL_INTERNAL_URL
+    extends:
+      file: docker-compose-lib.yaml
+      service: config
 
   print:
-    image: camptocamp/mapfish_print:3.18.4
-    user: www-data
+    extends:
+      file: docker-compose-lib.yaml
+      service: print
     volumes_from:
       - config:ro
     ports:
@@ -24,137 +21,44 @@ services:
     environment:
       - CATALINA_OPTS=-Xmx1024m
       - PGOPTIONS=-c statement_timeout=30000
-#      - DEFAULT_LOG_LEVEL=DEBUG
-#      - TOMCAT_LOG_LEVEL=DEBUG
-#      - LOG_LEVEL=DEBUG
-#      - SPRING_LOG_LEVEL=DEBUG
-#      - JASPER_LOG_LEVEL=DEBUG
-#      - APACHE_LOG_LEVEL=DEBUG
-#      - SQL_LOG_LEVEL=DEBUG
-
-  geoportal:
-    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
-#    user: www-data
-    volumes:
-      - /var/sig:/var/sig:ro
-      - ./data:/var/luxdata:ro
-      - ./geoportal/geoportailv3_geoportal/views:/app/geoportailv3_geoportal/views:ro
-      - ./geoportal/geoportailv3_geoportal/routing:/app/geoportailv3_geoportal/routing:ro
-      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/routing:ro
-      - ./geoportal/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:/app/c2cgeoportal/geoportal/c2cgeoportal_geoportal/templates:ro
-      - ./geoportal/geoportailv3_geoportal/templates:/app/geoportailv3_geoportal/templates:ro
-      - ./geoportal/geoportailv3_geoportal/scripts:/app/geoportailv3_geoportal/scripts:ro
-      - ./geoportal/geoportailv3_geoportal/lib:/app/geoportailv3_geoportal/lib:ro
-      - ./geoportal/geoportailv3_geoportal/static-ngeo/js:/app/geoportailv3_geoportal/static-ngeo/js:ro
-      - ./geoportal/geoportailv3_geoportal/static-ngeo/less:/app/geoportailv3_geoportal/static-ngeo/less:ro
-      - ./geoportal/jsapi:/app/apiv3/jsapi:ro
-#    entrypoint: ['/usr/local/bin/alembic', '--config', '/app/alembic.ini', '--name', 'main', 'heads']
-    environment:
-      - AUTHTKT_TIMEOUT
-      - AGE_CRUES_EMAIL
-      - AGE_CRUES_MAP_ID
-      - AGE_CRUES_SHOW_LINK
-      - AGE_CRUES_LAYERS
-      - AGE_CRUES_ROLES
-      - PAG_STAGING_URL
-      - PAG_PROD_URL
-      - PAG_FME_TOKEN
-      - PAG_OWNCLOUD_INTERNAL_URL
-      - PAG_OWNCLOUD_EXTERNAL_URL
-      - PAG_OWNCLOUD_USER
-      - PAG_OWNCLOUD_PASSWORD
-      - PAG_SMTP_SERVER
-      - PAG_BCC_ADDRESS
-      - PAG_FILE_SERVER
-      - PDS_STAGING_URL
-      - PDS_PROD_URL
-      - PDS_SMTP_SERVER
-      - PDS_BCC_ADDRESS
-      - CASIPO_STAGING_URL
-      - CASIPO_PROD_URL
-      - CASIPO_FME_TOKEN
-      - CASIPO_OWNCLOUD_INTERNAL_URL
-      - CASIPO_OWNCLOUD_EXTERNAL_URL
-      - CASIPO_OWNCLOUD_USER
-      - CASIPO_OWNCLOUD_PASSWORD
-      - CASIPO_SMTP_SERVER
-      - CASIPO_BCC_ADDRESS
-      - ANF_EMAIL
-      - ANF_MAP_ID
-      - DEBUG_TOOLBAR=1
-      - DB_MYMAPS
-      - DB_PGROUTE
-      - DB_ECADASTRE
-      - DB_POI
-      - VISIBLE_ENTRY_POINT
-      - VISIBLE_WEB_HOST
-      - VISIBLE_WEB_PROTOCOL
-      - PGHOST
-      - PGHOST_SLAVE
-      - PGPORT
-      - PGUSER
-      - PGPASSWORD
-      - PGDATABASE
-      - PGSCHEMA
-      - PGSCHEMA_STATIC
-      - PGOPTIONS
-      - PRINT_URL
-      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
-      - LOG_LEVEL=INFO
-      - C2CGEOPORTAL_LOG_LEVEL=INFO
-      - C2CWSGIUTILS_CONFIG=/app/development.ini
-      - SQL_LOG_LEVEL=INFO
-      - GUNICORN_LOG_LEVEL=INFO
-      - GUNICORN_ACCESS_LOG_LEVEL=INFO
-      - IGNORE_I18N_ERRORS=TRUE
-      - OTHER_LOG_LEVEL=WARN
-      - DEVSERVER_HOST
-      - REDIS_HOST
-      - REDIS_PORT
-      - C2C_REDIS_URL
-      - LDAP_BASE_DN
-      - LDAP_BIND
-      - LDAP_PASSWD
-      - LDAP_URL
-      - LDAP_FILTER_TMPL
-      - MAILER_DIRECTORY
-      - DEFAULT_MYMAPS_ROLE
-      - DHM_DEM_FILE=/var/luxdata/dem500.tif
-      - DHM_DEM_TYPE=gdal
-      - FAKE_REVERSE_GEOCODING=1
-      - FAKE_FULLTEXT_SEARCH=1
-      - FAKE_LAYERSEARCH=0
-      - FAKE_CMSSEARCH=1
-      - FAKE_PRINT_URLS=http://print:8080/print/geoportailv3,http://print:8080/print/geoportailv3
-      - SHORTENER_BASE_URL
-      - SHORTENER_ALLOWED_HOST
-      - ELASTIC_SERVERS
-      - ELASTIC_INDEX
-      - ROUTING_GRAPHHOPPER_API_KEY
-      - ROUTING_MAPQUEST_API_KEY
-      - AUTHTKT_SECURE=false
-      - AUTHTKT_SECRET=a_super_secret_for_auth_at_least_64_characters_long_for_sha512_algo_otherwise_not_good
-    ports:
-      - 8080:8080
 
   redis:
-    image: redis:3.2
-    user: www-data
-    restart: unless-stopped
-    command:
-      - redis-server
-      - --save
-      - ''
-      - --appendonly
-      - 'no'
-      - --maxmemory
-      - 512mb
-      - --maxmemory-policy
-      - allkeys-lru
+    extends:
+      file: docker-compose-lib.yaml
+      service: redis
 
-  ldap:
-    image: lux-dev-ldap
+  geoportal:
+    extends:
+      file: docker-compose-lib.yaml
+      service: geoportal
+    volumes_from:
+      - config:ro
+    volumes:
+      - /var/sig:/var/sig:ro
 
+  alembic:
+    extends:
+      file: docker-compose-lib.yaml
+      service: alembic
+
+  front:
+    extends:
+      file: docker-compose-lib.yaml
+      service: front
+    volumes_from:
+      - config:ro
+
+  # Rich image for project development with e.-g. vim, tree, awscli, psql, ...
+  tools:
+    volumes_from:
+      - config:rw
+    volumes:
+      - .:/src
+    extends:
+      file: docker-compose-lib.yaml
+      service: tools
+
+  # lux specific additions
   elasticsearch:
     image: elasticsearch:5.0
     environment:
@@ -164,17 +68,6 @@ services:
     ports:
       - 9200:9200
 
-  alembic:
-    image: camptocamp/geoportailv3-geoportal:${DOCKER_TAG}
-#    user: www-data
-    command: ./bin/alembic_upgrade_all.sh
-    environment:
-      - PGHOST
-      - PGHOST_SLAVE
-      - PGPORT
-      - PGUSER
-      - PGPASSWORD
-      - PGDATABASE
-      - PGSCHEMA
-      - PGSCHEMA_STATIC
-      - PGOPTIONS
+  ldap:
+    image: lux-dev-ldap
+
