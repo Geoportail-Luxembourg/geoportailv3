@@ -1206,7 +1206,7 @@ MainController.prototype.addLocationControl_ = function(featureOverlayMgr) {
 MainController.prototype.createMap_ = function() {
   var interactions = interactionDefaults({
     altShiftDragRotate: false,
-    pinchRotate: false,
+    pinchRotate: true,
     constrainResolution: true
   });
   const rotate = new DragRotate({
