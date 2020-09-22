@@ -126,6 +126,8 @@ ENV PGSCHEMA=${PGSCHEMA}
 
 RUN cp bin/eval-templates /usr/bin
 
+RUN chmod go+w /app  # to enable eval-templates to write into the folder
+
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
 
