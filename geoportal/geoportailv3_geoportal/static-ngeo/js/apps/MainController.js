@@ -351,7 +351,7 @@ const MainController = function(
   }
 
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData), this.map_);
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
