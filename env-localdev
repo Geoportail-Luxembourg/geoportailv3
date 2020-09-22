@@ -1,32 +1,106 @@
-DB_ECADASTRE=postgresql://172.17.0.1:5433/dummy
-DB_MYMAPS=postgresql://172.17.0.1:5433/lux
-DB_PGROUTE=postgresql://172.17.0.1:5433/dummy
-DB_POI=postgresql://172.17.0.1:5433/dummy
+# Default values for c2cgeoportal
+COMPOSE_PROJECT_NAME=geoportailv3
+DOCKER_PORT=8484
+DOCKER_BASE=camptocamp/geoportailv3
 DOCKER_TAG=latest
-VISIBLE_WEB_HOST=localhost:8080
-VISIBLE_WEB_PROTOCOL=http
+VISIBLE_WEB_HOST=localhost:8484
+VISIBLE_WEB_PROTOCOL=https
 VISIBLE_ENTRY_POINT=/
+AUTHTKT_TIMEOUT=86400
+AUTHTKT_REISSUE_TIME=9000
+AUTHTKT_MAXAGE=86400
+AUTHTKT_SECRET=aed4ma7pah7Riph9paMoow3raeB5ooSa2ayee4fooQuohT7Etinohshah7eib4Re
+AUTHTKT_COOKIENAME=auth_tkt_geoportailv3
+AUTHTKT_HTTP_ONLY=True
+AUTHTKT_SECURE=True
+AUTHTKT_SAMESITE=Lax
+BASICAUTH=False
+GEOPORTAL_INTERNAL_URL=http://geoportal:8080
+# For internal print
+GEOPORTAL_INTERNAL_HOST=geoportal
+GEOPORTAL_INTERNAL_PORT=8080
+TILECLOUDCHAIN_INTERNAL_URL=http://tilecloudchain:8080
+# For internal print
+TILECLOUDCHAIN_INTERNAL_HOST=tilecloudchain
+TILECLOUDCHAIN_INTERNAL_PORT=8080
+MAPSERVER_URL=http://mapserver:8080/
+TINYOWS_URL=http://tinyows:8080/
+QGISSERVER_URL=http://qgisserver:8080/
+QGIS_VERSION=3.10
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_DB=0
+GUNICORN_PARAMS=--bind=:8080 --worker-class=gthread --threads=10 --workers=1 --timeout=60 --max-requests=1000 --max-requests-jitter=100 --config=/etc/gunicorn/config.py
+DEVSERVER_HOST=webpack_dev_server:8080
+C2C_REDIS_URL=redis://redis:6379/0
+PGOPTIONS=-c statement_timeout=30000
+CATALINA_OPTS=-Xmx1024m
+C2C_BROADCAST_PREFIX=broadcast_geoportal_
+LOG_LEVEL=INFO
+C2CGEOPORTAL_LOG_LEVEL=INFO
+SQL_LOG_LEVEL=WARN
+GUNICORN_LOG_LEVEL=WARN
+OTHER_LOG_LEVEL=WARN
+DOGPILECACHE_LOG_LEVEL=WARN
+LOG_TYPE=console
+CPL_VSIL_CURL_USE_CACHE=TRUE
+CPL_VSIL_CURL_CACHE_SIZE=128000000
+CPL_VSIL_CURL_USE_HEAD=FALSE
+GDAL_DISABLE_READDIR_ON_OPEN=TRUE
+
+# Custom project values
+
+# Database
+PGDATABASE=lux
+PGSCHEMA=geov3
+PGSCHEMA_STATIC=geov3_static
+# To use the mutualised database.
+# PGHOST=pg-gs.camptocamp.com
+# PGHOST_SLAVE=pg-gs.camptocamp.com
+# PGPORT=30100
+# PGPORT_SLAVE=30101
+# PGUSER=<user>
+# PGPASSWORD=<pass>
+# # Should be set to 'prefer' to be able to connect to a local database
+# PGSSLMODE=require
+# To use a database on the host
 PGHOST=172.17.0.1
 PGHOST_SLAVE=172.17.0.1
 PGPORT=5433
 PGUSER=www-data
 PGPASSWORD=www-data
-PGDATABASE=lux
-PGSCHEMA=geov3
-PGSCHEMA_STATIC=geov3_static
-PGOPTIONS=-c statement_timeout=30000
-GEOPORTAL_INTERNAL_URL=http://geoportal:8080
-PRINT_URL=http://print:8080/print/
-DEVSERVER_HOST=webpack-dev-server:8080
-REDIS_HOST=redis
-REDIS_PORT=6379
-C2C_REDIS_URL=redis://redis:6379
+PGSSLMODE=prefer
+
+# Use the mutualised print, ask Camptocamp to configure your project.
+PRINT_URL=https://mutualized-print.apps.openshift-ch-1.camptocamp.com/print/geoportailv3/
+# To use the internal print:
+# PRINT_URL=http://print:8080/print/
+
+TILEGENERATION_SQS_QUEUE=<queue_name>
+TILEGENERATION_S3_BUCKET=<bucket_name>
+
+# For production
+# FRONT_INNER_PORT=80
+# FRONT_CONFIG=haproxy
+# For development (front in https)
+FRONT_INNER_PORT=443
+FRONT_CONFIG=haproxy_dev
+
+C2C_SECRET=c2crulez
+
+DB_ECADASTRE=postgresql://172.17.0.1:5433/dummy
+DB_MYMAPS=postgresql://172.17.0.1:5433/lux
+DB_PGROUTE=postgresql://172.17.0.1:5433/dummy
+DB_POI=postgresql://172.17.0.1:5433/dummy
+
 LDAP_PASSWD=test1234
 LDAP_URL=ldap://ldap:389
 LDAP_BIND=login=c2c,ou=portail,dc=act,dc=lu
 LDAP_FILTER_TMPL=(login=%%(login)s)
+
 SHORTENER_BASE_URL=http://localhost:8080/s/
 SHORTENER_ALLOWED_HOST=localhost
+
 ELASTIC_SERVERS=elasticsearch:9200
 ELASTIC_INDEX=index
 # Guillaume's routing keys
@@ -60,3 +134,5 @@ CASIPO_OWNCLOUD_PASSWORD=sdfgsdfg
 CASIPO_SMTP_SERVER=localhost
 CASIPO_BCC_ADDRESS=toto@localhost
 AUTHTKT_TIMEOUT=21600
+
+# Used env files: env.default env.project

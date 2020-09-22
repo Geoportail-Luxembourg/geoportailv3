@@ -23,7 +23,7 @@ RUN \
 RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
 
 WORKDIR /app
-COPY webpack.*.js Makefile CONST_Makefile /app/
+COPY webpack.*.js Makefile CONST_Makefile ls.js /app/
 COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
 RUN make apps
 
@@ -32,6 +32,12 @@ COPY . /app
 # RUN make checks
 RUN make build
 RUN mv webpack.apps.js webpack.apps.js.tmpl
+
+RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
+
+COPY luxembourg_requirements.txt /tmp/
+RUN pip install setuptools
+RUN pip install --disable-pip-version-check --no-cache-dir --requirement /tmp/luxembourg_requirements.txt
 
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
@@ -78,6 +84,8 @@ RUN \
 
 
 RUN mkdir -p /app/geoportailv3_geoportal
+RUN mkdir /app/node_modules/ngeo/dist/
+RUN cp /etc/static-ngeo/vendor-manifest.json node_modules/ngeo/dist/
 COPY ./geoportailv3_geoportal/static-ngeo/ /app/geoportailv3_geoportal/static-ngeo/
 COPY ./webpack.apps.js ./webpack.config.js /app/
 RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
@@ -92,11 +100,11 @@ RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/web
 # RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 # RUN mkdir -p /etc/static-ngeo/build
 
-# COPY bin/* /usr/bin/     # has custom eval-templates and alembic launcher
+COPY bin/* /usr/bin/     # has custom eval-templates and alembic launcher
+
+RUN mkdir geoportailv3_geoportal/static-ngeo/build
 
 RUN ./generate_i18n.sh
-
-RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
 
 RUN \
     ls -1 /etc/static-ngeo/build/*.html|while read file; do mv ${file} ${file}.tmpl; done && \

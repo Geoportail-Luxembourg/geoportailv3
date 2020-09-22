@@ -106,7 +106,7 @@ def main():
                 "build",
                 "--tag={}-config{}".format(base, tag),
                 "--build-arg=PGSCHEMA=" + schema,
-                ".",
+                "config",
             ],
         )
     if default or args.geoportal:
