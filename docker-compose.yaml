@@ -35,18 +35,88 @@ services:
       - config:ro
     volumes:
       - /var/sig:/var/sig:ro
+    environment:
+      - CASIPO_STAGING_URL
+      - PAG_OWNCLOUD_PASSWORD
+      - LDAP_PASSWD
+      - FAKE_REVERSE_GEOCODING=1
+      - PAG_OWNCLOUD_INTERNAL_URL
+      - FAKE_PRINT_URLS=http://print:8080/print/geoportailv3,http://print:8080/print/geoportailv3
+      - PAG_FME_TOKEN
+      - SHORTENER_BASE_URL
+      - ROUTING_MAPQUEST_API_KEY
+      - LOG_LEVEL=INFO
+      - AUTHTKT_SECURE=false
+      - CASIPO_OWNCLOUD_EXTERNAL_URL
+      - LDAP_BIND
+      - DB_MYMAPS
+      - FAKE_CMSSEARCH=1
+      - DHM_DEM_FILE=/var/luxdata/dem500.tif
+      - ANF_EMAIL
+      - GUNICORN_ACCESS_LOG_LEVEL=INFO
+      - PGSCHEMA
+      - PAG_PROD_URL
+      - IGNORE_I18N_ERRORS=TRUE
+      - SQL_LOG_LEVEL=INFO
+      - AGE_CRUES_EMAIL
+      - CASIPO_SMTP_SERVER
+      - LDAP_URL
+      - LDAP_FILTER_TMPL
+      - PDS_BCC_ADDRESS
+      - PAG_OWNCLOUD_USER
+      - FAKE_FULLTEXT_SEARCH=1
+      - AGE_CRUES_LAYERS
+      - CASIPO_PROD_URL
+      - CASIPO_OWNCLOUD_INTERNAL_URL
+      - C2CGEOPORTAL_LOG_LEVEL=INFO
+      - PAG_OWNCLOUD_EXTERNAL_URL
+      - ANF_MAP_ID
+      - ELASTIC_SERVERS
+      - DB_ECADASTRE
+      - DB_POI
+      - CASIPO_OWNCLOUD_USER
+      - DHM_DEM_TYPE=gdal
+      - PAG_STAGING_URL
+      - PDS_PROD_URL
+      - AUTHTKT_SECRET=a_super_secret_for_auth_at_least_64_characters_long_for_sha512_algo_otherwise_not_good
+      - CASIPO_BCC_ADDRESS
+      - AGE_CRUES_SHOW_LINK
+      - SHORTENER_ALLOWED_HOST
+      - DEBUG_TOOLBAR=1
+      - GUNICORN_LOG_LEVEL=INFO
+      - AGE_CRUES_ROLES
+      - PDS_SMTP_SERVER
+      - CASIPO_FME_TOKEN
+      - FAKE_LAYERSEARCH=0
+      - OTHER_LOG_LEVEL=WARN
+      - CASIPO_OWNCLOUD_PASSWORD
+      - PAG_SMTP_SERVER
+      - DEFAULT_MYMAPS_ROLE
+      - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
+      - DB_PGROUTE
+      - MAILER_DIRECTORY
+      - AGE_CRUES_MAP_ID
+      - PDS_STAGING_URL
+      - C2CWSGIUTILS_CONFIG=/app/development.ini
+      - PAG_BCC_ADDRESS
+      - ELASTIC_INDEX
+      - LDAP_BASE_DN
+      - PAG_FILE_SERVER
+      - ROUTING_GRAPHHOPPER_API_KEY
+    ports:
+      - 8080:8080
 
   alembic:
     extends:
       file: docker-compose-lib.yaml
       service: alembic
 
-  front:
-    extends:
-      file: docker-compose-lib.yaml
-      service: front
-    volumes_from:
-      - config:ro
+  # front:
+  #   extends:
+  #     file: docker-compose-lib.yaml
+  #     service: front
+  #   volumes_from:
+  #     - config:ro
 
   # Rich image for project development with e.-g. vim, tree, awscli, psql, ...
   tools:
