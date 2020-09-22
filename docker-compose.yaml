@@ -110,6 +110,17 @@ services:
     extends:
       file: docker-compose-lib.yaml
       service: alembic
+    environment:
+      - PGHOST
+      - PGHOST_SLAVE
+      - PGPORT
+      - PGUSER
+      - PGPASSWORD
+      - PGDATABASE
+      - PGSCHEMA
+      - PGSCHEMA_STATIC
+      - PGOPTIONS
+    command: ./bin/alembic_upgrade_all.sh
 
   # front:
   #   extends:
