@@ -29,6 +29,7 @@ environment:
 - {default: 'webpack-dev-server:8080', name: DEVSERVER_HOST}
 - {default: redis, name: REDIS_HOST}
 - {default: '6372', name: REDIS_PORT}
+- {default: '0', name: REDIS_DB}
 - {default: memcached, name: MEMCACHED_HOST}
 - {default: '11211', name: MEMCACHED_PORT}
 - {default: queue_name, name: TILEGENERATION_SQS_QUEUE}
@@ -87,9 +88,21 @@ postprocess:
 - expression: int({})
   vars: [cache.arguments.port]
 vars:
+  api:
+    ogc_server: '{default_ogc_server}'
   admin_interface:
-    available_functionalities: [default_basemap, default_theme, print_template, mapserver_substitution,
-      filterable_layers, preset_layer_filter, open_panel]
+    available_functionalities:
+      - name: default_basemap
+        single: true
+      - name: default_theme
+        single: true
+      - name: print_template
+      - name: mapserver_substitution
+      - name: filterable_layers
+      - name: preset_layer_filter
+        single: true
+      - name: open_panel
+        single: true
     available_metadata:
     - {name: attribution}
     - {name: bg_layer}
@@ -126,17 +139,27 @@ vars:
     - {name: start_y, type: float}
     - {name: start_zoom, type: float}
     layer_tree_max_nodes: 1000
-    map_x: 740000
-    map_y: 5860000
-    map_zoom: 10
   authorized_ips: null
   authorized_referers: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/']
   available_locale_names: [en, de, fr, lb]
   c2c.base_path: /c2c
   cache:
-    arguments: {db: 0, distributed_lock: true, host: '{REDIS_HOST}', port: '{REDIS_PORT}',
-      redis_expiration_time: 86400}
-    backend: dogpile.cache.redis
+    std:
+      backend: c2cgeoportal.hybrid
+      arguments:
+        host: '{REDIS_HOST}'
+        port: '{REDIS_PORT}'
+        db: '{REDIS_DB}'
+        lock_timeout: 120  # Two minutes
+        redis_expiration_time: 86400  # One day
+        distributed_lock: True
+    obj:
+      backend: dogpile.cache.redis
+      arguments:
+        host: '{REDIS_HOST}'
+        port: '{REDIS_PORT}'
+        db: '{REDIS_DB}'
+        expiration_time: -1
   pds:
     staging_url: '{PDS_STAGING_URL}'
     prod_url: '{PDS_PROD_URL}'
@@ -158,7 +181,7 @@ vars:
   checker:
     fulltextsearch: {level: 1, search: bat}
     lang:
-      files: [ngeo, cgxp-api]
+      files: [ngeo]
       level: 1
     phantomjs:
       disable: []
@@ -194,11 +217,11 @@ vars:
       - {level: 3, name: apijs}
       - {level: 3, name: xapijs}
       - {level: 3, name: printproxy_capabilities}
-      - display_name: mapserverproxy_wms
+      - checker_name: mapserverproxy_wms
         level: 3
         name: mapserverproxy
         params: {REQUEST: GetCapabilities, SERVICE: WMS, VERSION: 1.1.1}
-      - display_name: mapserverproxy_wfs
+      - checker_name: mapserverproxy_wfs
         level: 3
         name: mapserverproxy
         params: {REQUEST: GetCapabilities, SERVICE: WFS, VERSION: 1.1.0}
@@ -227,14 +250,9 @@ vars:
     languages: {de: german, en: english, fr: french}
     maxlimit: 200
   functionalities:
-    anonymous:
-      default_basemap: plan
-      default_theme: null
-      print_template: [1 A4 portrait, 2 A3 landscape]
     available_in_templates: [
       default_basemap, default_theme, filterable_layers, print_template,
       preset_layer_filter, open_panel]
-    registered: {}
   global_headers:
   - headers: {
       Referrer-Policy: origin,
@@ -247,6 +265,11 @@ vars:
         worker-src ''self'' blob:', Referrer-Policy: same-origin}
     pattern: ^/admin/.*
   headers:
+    dynamic: &header
+      cache_control_max_age: 600  # 10 minutes
+      access_control_max_age: 600  # 10 minutes
+      access_control_allow_origin:
+        - "*"
     api:
       access_control_allow_origin: ['*']
       access_control_max_age: 600
@@ -257,19 +280,7 @@ vars:
         '*']
       access_control_max_age: 600
       cache_control_max_age: 600
-    csvecho:
-      access_control_allow_origin: ['*']
-      access_control_max_age: 600
-      cache_control_max_age: 600
-    echo:
-      access_control_allow_origin: ['*']
-      access_control_max_age: 600
-      cache_control_max_age: 600
     error:
-      access_control_allow_origin: ['*']
-      access_control_max_age: 600
-      cache_control_max_age: 600
-    exportgpxkml:
       access_control_allow_origin: ['*']
       access_control_max_age: 600
       cache_control_max_age: 600
@@ -301,6 +312,17 @@ vars:
         '*']
       access_control_max_age: 600
       cache_control_max_age: 600
+    apihelp:
+      <<: *header
+      headers:
+        X-Frame-Options: SAMEORIGIN
+        X-Xss-Protection: 1; mode=block
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: origin
+        Strict-Transport-Security: max-age=31536000; includeSubDomains
+        Content-Security-Policy: 'default-src ''self''; script-src ''self''
+        ''unsafe-inline''; style-src ''self'' ''unsafe-inline''; img-src * data:;
+        worker-src ''self'' blob:'
     profile:
       access_control_allow_origin: ['*']
       access_control_max_age: 600
@@ -332,10 +354,13 @@ vars:
   https_proxy:
     unauthorized_ips: '{HTTPS_PROXY_UNAUTHORIZED_IPS}'
     authorized_hosts: '{HTTPS_PROXY_AUTHORIZED_HOSTS}'
-  interfaces: [main]
+  interfaces:
+    - name: main
+      default: True
+    - name: mobile
+    - name: iframe_api
   interfaces_config:
     main:
-      tree_params: {version: '2', catalogue: 'true', min_levels: '1'}
       constants:
         appAuthtktCookieName: auth_tkt_main
         appExcludeThemeLayerSearch: []
@@ -365,40 +390,44 @@ vars:
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
-      fulltextsearch_params: {
-        assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
-        authenticationBaseUrl: base, fulltextsearchUrl: fulltextsearch, gmfLayersUrl: layers_root,
-        gmfProfileCsvUrl: profile.csv, gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create,
-        limit: 30,
-        partitionlimit: 5
-      }
       routes: {
-        ping: ping,
-        arrowUrl: get_arrow_color, authenticationBaseUrl: base, casipoUrl: casipo_url,
-        cmsSearchServiceUrl: cmssearch, downloadmeasurementUrl: download_measurement,
-        downloadresourceUrl: download_resource, downloadsketchUrl: download_sketch,
-        echocsvUrl: echocsv, elevationServiceUrl: raster, exportgpxkmlUrl: exportgpxkml,
-        geocodingServiceUrl: geocode, getHtmlLegendUrl: get_html, getInfoServiceUrl: getfeatureinfo,
-        getPngLegendUrl: get_png, getRemoteTemplateServiceUrl: getremotetemplate,
-        getRouteUrl: getroute, getuserinfoUrl: getuserinfo, gmfLayersUrl: layers_root,
-        gmfPrintUrl: printproxy, gmfProfileCsvUrl: profile.csv, gmfProfileJsonUrl: profile.json,
-        gmfRasterUrl: raster, gmfShortenerCreateUrl: shortener_create, httpsProxyUrl: https_proxy,
-        isThemePrivateUrl: isthemeprivate, layerSearchServiceUrl: layersearch, loginUrl: login,
-        logoutUrl: logout, mymapsImageUrl: mymaps_image, mymapsMapsUrl: mymaps_getmaps,
-        mymapsUrl: mymaps, pagUrl: pag_url, pdsUrl: pds_url, poiSearchServiceUrl: fulltextsearch,
-        postFeedbackAnfUrl: feedbackanf, postFeedbackAgeUrl: feedbackage,postFeedbackCruesUrl: feedbackcrues,
-        postFeedbackUrl: feedback, predefinedWmsUrl: predefined_wms, previewMesurementUrl: preview_measurement,
-        printServiceUrl: printproxy, profileServiceUrl: profile.json,
-        qrServiceUrl: qr, reverseGeocodingServiceUrl: reverse_geocode, routingServiceUrl: getremoteroute,
-        shorturlServiceUrl: shortener_create, uploadvtstyleUrl: upload_vt_style, deletevtstyleUrl: delete_vt_style,
-        getvtstyleUrl: get_vt_style
+        ping: {name: ping},
+        arrowUrl: {name: get_arrow_color}, authenticationBaseUrl: {name: base}, casipoUrl: {name: casipo_url},
+        cmsSearchServiceUrl: {name: cmssearch}, downloadmeasurementUrl: {name: download_measurement},
+        downloadresourceUrl: {name: download_resource}, downloadsketchUrl: {name: download_sketch},
+        echocsvUrl: {name: echocsv}, elevationServiceUrl: {name: raster}, exportgpxkmlUrl: {name: exportgpxkml},
+        geocodingServiceUrl: {name: geocode}, getHtmlLegendUrl: {name: get_html},
+        getInfoServiceUrl: {name: getfeatureinfo},
+        getPngLegendUrl: {name: get_png}, getRemoteTemplateServiceUrl: {name: getremotetemplate},
+        getRouteUrl: {name: getroute}, getuserinfoUrl: {name: getuserinfo}, gmfLayersUrl: {name: layers_root},
+        gmfPrintUrl: {name: printproxy}, gmfProfileCsvUrl: {name: profile.csv},
+        gmfProfileJsonUrl: {name: profile.json},
+        gmfRasterUrl: {name: raster}, gmfShortenerCreateUrl: {name: shortener_create},
+        gmfTreeUrl: {name: themes, params: {limit: 30, partitionlimit: 5}, dynamic_params: {interface: interface}},
+        gmfShortenerCreateUrl: {name: shortener_create},
+        httpsProxyUrl: {name: https_proxy},
+        isThemePrivateUrl: {name: isthemeprivate}, layerSearchServiceUrl: {name: layersearch},
+        loginUrl: {name: login},
+        logoutUrl: {name: logout}, mymapsImageUrl: {name: mymaps_image}, mymapsMapsUrl: {name: mymaps_getmaps},
+        mymapsUrl: {name: mymaps}, pagUrl: {name: pag_url}, pdsUrl: {name: pds_url},
+        poiSearchServiceUrl: {name: fulltextsearch},
+        postFeedbackAnfUrl: {name: feedbackanf}, postFeedbackAgeUrl: {name: feedbackage},
+        postFeedbackCruesUrl: {name: feedbackcrues},
+        postFeedbackUrl: {name: feedback}, predefinedWmsUrl: {name: predefined_wms},
+        previewMesurementUrl: {name: preview_measurement},
+        printServiceUrl: {name: printproxy}, profileServiceUrl: {name: profile.json},
+        qrServiceUrl: {name: qr}, reverseGeocodingServiceUrl: {name: reverse_geocode},
+        routingServiceUrl: {name: getremoteroute},
+        shorturlServiceUrl: {name: shortener_create}, uploadvtstyleUrl: {name: upload_vt_style},
+        deletevtstyleUrl: {name: delete_vt_style},
+        getvtstyleUrl: {name: get_vt_style}
       }
       static: {
-        appImagesPath: 'geoportailv3_geoportal:static-ngeo/images/',
-        appQueryTemplatesPath: 'geoportailv3_geoportal:static-ngeo/js/query/',
-        arrowModelUrl: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb',
-        assetsBaseUrl: 'geoportailv3_geoportal:static-ngeo/',
-        cesiumURL: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'
+        appImagesPath: {name: 'geoportailv3_geoportal:static-ngeo/images/'},
+        appQueryTemplatesPath: {name: 'geoportailv3_geoportal:static-ngeo/js/query/'},
+        arrowModelUrl: {name: 'geoportailv3_geoportal:static-ngeo/models/arrow5.glb'},
+        assetsBaseUrl: {name: 'geoportailv3_geoportal:static-ngeo/'},
+        cesiumURL: {name: 'geoportailv3_geoportal:static-ngeo/node_modules/@camptocamp/cesium/Build/Cesium/Cesium.js'}
       }
       wfs_permalink:
         defaultFeatureNS: http://mapserver.gis.umn.edu/mapserver
@@ -420,6 +449,15 @@ vars:
   lingua_extractor: {}
   mailer: {message.encoding: UTF-8, transport.host: server-relay.mail.etat.lu, transport.use: smtp}
   mapserverproxy: {default_ogc_server: source for image/jpeg}
+  getitfixed:
+    enabled: False
+  metrics:
+    memory_maps_rss: False
+    memory_maps_size: False
+    memory_cache: True
+    memory_cache_all: False
+    raster_data: False
+    total_python_object_memory: True
   modify_notification: {admin_email: null, email_cc: null, url: null}
   no_proxy: localhost
   ogcproxy_enable: false
@@ -454,6 +492,7 @@ vars:
   reset_password: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
   resourceproxy:
     targets: {}
+    allowed_headers: []
   routing:
     graphhopper: {api_key: '{ROUTING_GRAPHHOPPER_API_KEY}', url: 'https://graphhopper.com/api/1/route'}
     mapquest: {api_key: '{ROUTING_MAPQUEST_API_KEY}', url: 'http://open.mapquestapi.com/directions/v2/route'}
@@ -481,7 +520,10 @@ vars:
   srid: 2169
   stats: {}
   tiles_url: ['{VISIBLE_WEB_PROTOCOL}://{VISIBLE_WEB_HOST}/main/tiles/']
-  tinyowsproxy: {tinyows_url: '{TINYOWS_URL}'}
+  default_ogc_server: source for image/png
+  tinyowsproxy:
+    tinyows_url: '{TINYOWS_URL}'
+    ogc_server: '{default_ogc_server}'
   urllogin: {}
   welcome_email: {email_body: 'unused', email_from: info@camptocamp.com, email_subject: unused}
   elastic.servers: '{ELASTIC_SERVERS}'
