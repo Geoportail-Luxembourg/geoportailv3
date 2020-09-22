@@ -1,11 +1,7 @@
-FROM camptocamp/c2cwsgiutils:2
+FROM camptocamp/geomapfish-tools:2.5.0.77 as builder
 LABEL maintainer Camptocamp "info@camptocamp.com"
-ARG HTTP_PROXY_URL
-ENV http_proxy $HTTP_PROXY_URL
-ARG HTTPS_PROXY_URL
-ENV https_proxy $HTTPS_PROXY_URL
 
-# Install Debian packages
+# new packages according to upgrade in progress
 RUN \
   . /etc/os-release && \
   echo "deb https://deb.nodesource.com/node_12.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list && \
@@ -27,50 +23,47 @@ RUN \
 RUN sed -i 's/rights="none" pattern="PDF"/rights="read" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
 
 WORKDIR /app
+COPY webpack.*.js Makefile CONST_Makefile /app/
+COPY geoportailv3_geoportal/static-ngeo /app/geoportailv3_geoportal/static-ngeo
+RUN make apps
 
-# Install python dependencies
+COPY . /app
+
+# RUN make checks
+RUN make build
+RUN mv webpack.apps.js webpack.apps.js.tmpl
+
+ENTRYPOINT [ "/usr/bin/eval-templates" ]
+CMD [ "webpack-dev-server", "--mode=development", "--debug", "--watch", "--progress", "--no-inline" ]
+
+###############################################################################
+
+FROM camptocamp/geomapfish:2.5 as runner
+
+COPY requirements.txt /tmp/requirements.txt
 RUN \
-  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-  python3 get-pip.py pip==19.0.3 wheel==0.33.1 setuptools==40.8.0
-
-COPY upstream_requirements.txt /app/
-RUN pip install --disable-pip-version-check --no-cache-dir --requirement upstream_requirements.txt
-
-COPY luxembourg_requirements.txt /app/
-RUN pip install --disable-pip-version-check --no-cache-dir --requirement luxembourg_requirements.txt
-
-COPY setup.py /app/
-RUN \
-  python3 setup.py install && \
-  # for mypy
-  touch /usr/local/lib/python3.6/dist-packages/zope/__init__.py && \
-  touch /usr/local/lib/python3.6/dist-packages/c2c/__init__.py && \
+  python3 -m pip install --disable-pip-version-check --no-cache-dir --requirement=/tmp/requirements.txt && \
   rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
 
-
-RUN mkdir -p /app/geoportailv3_geoportal/admin
-COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin
-RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear --force
-
-# jsapi generation
-# RUN mkdir /app/apiv3
-# WORKDIR /app/apiv3
-# RUN mkdir -p /app/apiv3/.build/externs
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js
-
-
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6-q_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js
-
-
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6-http-promise_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js
-
-
-# RUN wget -O /app/apiv3/.build/externs/jquery-1.9.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
-# COPY ./jsapi/package.json /app/apiv3/
-# RUN npm install --no-optional && npm cache clear --force
+COPY luxembourg_requirements.txt /tmp/
+RUN pip install --disable-pip-version-check --no-cache-dir --requirement /tmp/luxembourg_requirements.txt
 
 WORKDIR /app
+COPY . /app
+COPY --from=builder /app/geoportailv3_geoportal/locale/ /app/geoportailv3_geoportal/locale/
+COPY --from=builder /usr/lib/node_modules/ngeo/dist/* /etc/static-ngeo/
+COPY --from=builder /etc/static-ngeo/* /etc/static-ngeo/
+COPY --from=builder /app/alembic.ini /app/alembic.yaml ./
+RUN chmod go+w /etc/static-ngeo/ \
+    /app/geoportailv3_geoportal/locale/ \
+    /app/geoportailv3_geoportal/locale/*/LC_MESSAGES/geoportailv3_geoportal-client.po
 
+RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
+    python3 -m compileall -q /usr/local/lib/python3.7 \
+        -x '/usr/local/lib/python3.7/dist-packages/(pydevd|ptvsd|pipenv)/' && \
+    python3 -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.*
+
+## lux part
 COPY package.json /app
 RUN npm install --no-optional && npm cache clear --force
 
@@ -90,35 +83,59 @@ COPY ./webpack.apps.js ./webpack.config.js /app/
 RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
 #RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
 
-COPY bin/* /usr/bin/
+# RUN mkdir -p /app/geoportailv3_geoportal
+# COPY ./geoportailv3_geoportal/static-ngeo/ /etc/static-ngeo/
+# COPY ./webpack.apps.js ./webpack.config.js /app/
+# RUN cd /etc/static-ngeo && ln -s /app/node_modules
+# RUN cp node_modules/\@fortawesome/fontawesome-free/webfonts/* /etc/static-ngeo/webfonts/
+# #RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/webpack --mode=development --debug
+# RUN INTERFACE=main NODE_ENV=production node_modules/.bin/webpack --mode=production --debug
+# RUN mkdir -p /etc/static-ngeo/build
 
-COPY . /app
-
-RUN cd /app/geoportailv3_geoportal/static-ngeo && ln -s ../../node_modules
+# COPY bin/* /usr/bin/     # has custom eval-templates and alembic launcher
 
 RUN ./generate_i18n.sh
 
 RUN pykwalify --data-file config.yaml --schema-file CONST_config-schema.yaml
 
 RUN \
-    ls -1 geoportailv3_geoportal/static-ngeo/build/*.html|while read file; do mv ${file} ${file}.tmpl; done && \
-    ls -1 geoportailv3_geoportal/static-ngeo/build/*.css|while read file; do mv ${file} ${file}.tmpl; done
+    ls -1 /etc/static-ngeo/build/*.html|while read file; do mv ${file} ${file}.tmpl; done && \
+    ls -1 /etc/static-ngeo/build/*.css|while read file; do mv ${file} ${file}.tmpl; done
 
 # For webpack-dev server
 RUN mv webpack.apps.js webpack.apps.js.tmpl
+### end lux part
+
+COPY setup.py /app/
+RUN \
+  python3 setup.py install && \
+  # for mypy
+  touch /usr/local/lib/python3.7/dist-packages/zope/__init__.py && \
+  touch /usr/local/lib/python3.7/dist-packages/c2c/__init__.py && \
+  rm --recursive --force /tmp/* /var/tmp/* /root/.cache/*
 
 ARG GIT_HASH
+RUN c2cwsgiutils_genversion.py ${GIT_HASH}
 
-RUN pip install --disable-pip-version-check --no-cache-dir --editable=/app/ && \
-    python -m compileall -q /app/geoportailv3_geoportal -x /app/geoportailv3_geoportal/static.* && \
-    c2cwsgiutils_genversion.py $GIT_HASH
+ARG PGSCHEMA
+ENV PGSCHEMA=${PGSCHEMA}
 
-COPY ./tools/ /app/tools
-RUN ln -s . geoportal
-
-# WORKDIR /app/apiv3
-# ADD ./jsapi /app/apiv3/jsapi
-# RUN /app/apiv3/jsapi/rebuild_api.sh
-# WORKDIR /app
-ENTRYPOINT ["/usr/bin/eval-templates" ]
+ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
+
+ENV VISIBLE_ENTRY_POINT=/ \
+    AUTHTKT_TIMEOUT=86400 \
+    AUTHTKT_REISSUE_TIME=9000 \
+    AUTHTKT_MAXAGE=86400 \
+    AUTHTKT_COOKIENAME=auth_tkt \
+    AUTHTKT_HTTP_ONLY=True \
+    AUTHTKT_SECURE=True \
+    AUTHTKT_SAMESITE=Lax \
+    BASICAUTH=False \
+    LOG_LEVEL=INFO \
+    C2CGEOPORTAL_LOG_LEVEL=INFO \
+    C2CWSGIUTILS_LOG_LEVEL=INFO \
+    GUNICORN_LOG_LEVEL=INFO \
+    SQL_LOG_LEVEL=WARN \
+    DOGPILECACHE_LOG_LEVEL=INFO \
+    OTHER_LOG_LEVEL=WARN
