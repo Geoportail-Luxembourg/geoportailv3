@@ -74,7 +74,7 @@ from geoportailv3_geoportal.models import LuxPrintJob, LuxPrintServers, \
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
 log = logging.getLogger(__name__)
-cache_region = get_region()
+cache_region = get_region('std')
 
 
 class LuxPrintProxy(PrintProxy):

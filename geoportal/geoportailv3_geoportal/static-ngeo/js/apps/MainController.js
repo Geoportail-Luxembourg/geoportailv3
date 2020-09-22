@@ -13,7 +13,7 @@
 
 import 'core-js';
 import 'jquery';
-import 'bootstrap';
+import bootstrap from 'gmf/controllers/bootstrap.js';
 import angular from 'angular';
 import 'angular-gettext';
 import 'angular-dynamic-locale';
@@ -1702,5 +1702,6 @@ MainController.prototype.isDisconnectedOrOffline = function() {
 
 appModule.controller('MainController', MainController);
 
+bootstrap(appModule)
 
 export default MainController;
