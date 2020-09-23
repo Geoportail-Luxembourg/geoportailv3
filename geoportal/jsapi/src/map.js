@@ -309,13 +309,19 @@ lux.Map = function(options) {
     options.view.setZoom(9);
   }
 
-  var interactions = ol.interaction.defaults().extend([
-    new ol.interaction.DragRotate({
-      condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
-        ? ol.events.condition.shiftKeyOnly
-        : ol.events.condition.altShiftKeyOnly
+  var interactions = ol.interaction
+    .defaults({
+      altShiftDragRotate: false,
+      pinchRotate: true,
+      constrainResolution: true
     })
-  ]);
+    .extend([
+      new ol.interaction.DragRotate({
+        condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
+          ? ol.events.condition.shiftKeyOnly
+          : ol.events.condition.altShiftKeyOnly
+      })
+    ]);
   options.interactions = interactions;
 
   var controls;
