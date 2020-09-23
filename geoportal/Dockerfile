@@ -128,6 +128,11 @@ RUN cp bin/eval-templates /usr/bin
 
 RUN chmod go+w /app  # to enable eval-templates to write into the folder
 
+# patch c2cgeoportal in case of void urls:
+RUN sed -i -e "s/    return add_spliturl_params/    if not url:\n        url = ''\n    return add_spliturl_params/" \
+        /opt/c2cgeoportal/geoportal/c2cgeoportal_geoportal/lib/__init__.py
+
+
 ENTRYPOINT [ "/usr/bin/eval-templates" ]
 CMD ["c2cwsgiutils_run"]
 
