@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from pyramid.view import view_config
 from pyramid_ldap3 import get_ldap_connector
 from pyramid.security import unauthenticated_userid
@@ -121,13 +121,15 @@ def get_user_from_request(request):
             conn.unbind()
         try:
             # Loading the plain c2cgeoportal role used for authentication.
-            user.role = DBSession.query(Role).filter_by(id=roletheme).one()
+            user.roles = DBSession.query(Role).filter_by(id=roletheme)
         except Exception as e:
             # Fallback to the "Tous publics" role
-            user.role = DBSession.query(Role).filter_by(id=0).one()
+            user.roles = DBSession.query(Role).filter_by(id=0)
             log.exception(e)
 
-        user.role_name = user.role.name
+        # todo: check if this is sufficiently precise or if a request in static."User" is needed ?
+        user.settings_role = user.roles[0]
+
         user.functionalities = []
         return user
 
