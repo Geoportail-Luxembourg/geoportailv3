@@ -787,6 +787,7 @@ exports.prototype.createAndInitLayerBloodhoundEngine_ =
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       datumTokenizer: function() {},
       remote: {
+        cache: false,
         url: layerSearchServiceUrl,
         rateLimitWait: 50,
         replace: function(url, query) {
