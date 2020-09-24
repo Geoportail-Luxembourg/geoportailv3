@@ -197,13 +197,21 @@ class Getfeatureinfo(object):
         layers = self.request.params.get('layers', None)
         if layers is None:
             return HTTPBadRequest()
+        if not all(x.isdigit() for x in layers.split(',')):
+            return HTTPBadRequest()
+
         big_box = self.request.params.get('box1', None)
         small_box = self.request.params.get('box2', None)
         if big_box is None or small_box is None:
             return HTTPBadRequest()
 
         coordinates_big_box = big_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_big_box):
+            return HTTPBadRequest()
         coordinates_small_box = small_box.split(',')
+        if not all(x.replace('.', '', 1).isdigit() for x in coordinates_small_box):
+            return HTTPBadRequest()
+
         return self.get_info(
             fid, coordinates_big_box,
             coordinates_small_box, results, layers, big_box)
@@ -872,6 +880,16 @@ class Getfeatureinfo(object):
             'BBOX': bbox
         }
         metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_layers").first()
+        if metadata is not None:
+            body['LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_query_layers").first()
+        if metadata is not None:
+            body['QUERY_LAYERS'] = metadata.value
+
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
             filter(Metadata.name == "ogc_info_format").first()
         if metadata is not None:
             body['INFO_FORMAT'] = metadata.value
@@ -880,6 +898,10 @@ class Getfeatureinfo(object):
             filter(Metadata.name == "ogc_info_srs").first()
         if metadata is not None:
             ogc_info_srs = metadata.value
+        metadata = DBSession.query(Metadata).filter(Metadata.item_id == layer_id).\
+            filter(Metadata.name == "ogc_info_url").first()
+        if metadata is not None:
+            url = metadata.value
 
         separator = "?"
         if url.find(separator) > 0:
@@ -898,8 +920,15 @@ class Getfeatureinfo(object):
 
             for feature in ogc_features['features']:
                 geometry = feature['geometry']
-                if ogc_info_srs.lower() != "epsg:2169":
+
+                if geometry is not None and ogc_info_srs.lower() != "epsg:2169":
                     geometry = self.transform_(geometry, ogc_info_srs, "epsg:2169")
+                if geometry is None:
+                    box2 = self.request.params.get('box2', None)
+                    coords = box2.split(',')
+                    the_box = box(float(coords[0]), float(coords[1]),
+                        float(coords[2]), float(coords[3]))
+                    geometry = geojson_loads(geojson.dumps(mapping(the_box.centroid)))
                 f = self.to_feature(layer_id, None,
                                     geometry,
                                     feature['properties'],

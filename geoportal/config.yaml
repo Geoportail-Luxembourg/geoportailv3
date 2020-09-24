@@ -107,6 +107,7 @@ vars:
     - {name: metadata_id}
     - {name: ogc_info_format}
     - {name: ogc_info_srs}
+    - {name: ogc_query_layers}
     - {name: page_title}
     - {name: print_img}
     - {name: print_long_txt_de}

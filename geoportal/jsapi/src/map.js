@@ -403,6 +403,25 @@ lux.Map = function(options) {
    */
   this.popupClass_ = undefined;
 
+  /**
+   * @private
+   * @type {function()=|undefined}
+   */
+  this.popupContentTransformer_ = undefined;
+  if (options.popupContentTransformer !== undefined) {
+    this.popupContentTransformer_ = options.popupContentTransformer;
+    delete options.popupContentTransformer;
+  }
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.popupAutoPan_ = false;
+  if (options.popupAutoPan !== undefined) {
+    this.popupAutoPan_ = options.popupAutoPan;
+    delete options.popupAutoPan;
+  }
   this.setPopupTarget(options.popupTarget, options.popupClassPrefix);
 
   ol.events.listen(this, ol.MapBrowserEventType.SINGLECLICK,
@@ -1779,13 +1798,26 @@ lux.Map.prototype.showPopup = function(position, title, content) {
  * @api
  */
 lux.Map.prototype.addMyMapLayer = function(options) {
-  this.stateManager_.setMyMap(options.mapId);
+  if (options.mapId !== undefined) {
+    this.stateManager_.setMyMap(options.mapId);
+  }
   return Promise.all([this.i18nPromise, this.layersPromise]).then(function() {
     var mymap = new lux.MyMap(options);
     mymap.setMap(this);
     return mymap;
   }.bind(this));
 };
+
+
+/**
+ * Get the popup overlay.
+ * @return {ol.Overlay} The popup overlay.
+ * @export
+ */
+lux.Map.prototype.getPopupOverlay = function() {
+  return this.queryPopup_;
+};
+
 
 /**
  * Removes the popup or the information content.
@@ -1940,18 +1972,25 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
     // each item in the result corresponds to a layer
     var htmls = [];
     json.forEach(function(resultLayer) {
+      var curHtml = undefined;
       if ('tooltip' in resultLayer) {
         if (this.popupTarget_ !== undefined && this.popupClass_ !== undefined) {
-          htmls.push('<div class="' + this.popupClass_ +
+          curHtml = '<div class="' + this.popupClass_ +
             '_' + resultLayer['layer'] + '">' +
-            resultLayer['tooltip'] + '</div>');
+            resultLayer['tooltip'] + '</div>';
         } else{
-          htmls.push(resultLayer['tooltip']);
+          curHtml = resultLayer['tooltip'];
         }
       }
       var features = this.readJsonFeatures_(resultLayer);
       if (features.length != 0) {
         this.showLayer_.getSource().addFeatures(features);
+        if (this.popupContentTransformer_ !== undefined) {
+          curHtml = this.popupContentTransformer_.call(this, resultLayer, features, curHtml);
+        }
+      }
+      if (curHtml !== undefined) {
+        htmls.push(curHtml);
       }
     }.bind(this));
 
@@ -1966,11 +2005,12 @@ lux.Map.prototype.handleSingleclickEvent_ = function(evt) {
         position: this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]),
         positioning: 'bottom-center',
         offset: [0, -20],
-        insertFirst: false
+        insertFirst: false,
+        autoPan: this.popupAutoPan_
       });
-
       this.addOverlay(this.queryPopup_);
       this.renderSync();
+      this.queryPopup_.setPosition(this.getCoordinateFromPixel([evt.pixel[0], evt.pixel[1]]));
     }
   }.bind(this));
 
