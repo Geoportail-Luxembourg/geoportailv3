@@ -15,10 +15,14 @@ templates:
       keywords: ["map"]
     reportTemplate: a4_portrait.jrxml
     attributes: &attributes
-      name: !string {}
-      scale: !string {}
-      url: !string {}
-      qrimage: !string {}
+      name: !string
+        default: ""
+      scale: !string
+        default: ""
+      url: !string
+        default: ""
+      qrimage: !string
+        default: ""
       dataOwner: !string
         default: ""
       queryResults: !string
@@ -36,7 +40,8 @@ templates:
         dpiSuggestions: [72, 91, 128, 254, 300, 400]
         width: 470
         height: 650
-      lang: !string {}
+      lang: !string
+        default: ""
       legend: !datasource
         attributes:
           name: !string {}

@@ -2,6 +2,7 @@
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.view import view_config
 from pyramid.response import Response
+from c2cgeoportal_commons.models import DBSessions, DBSession
 import logging
 import owncloud
 import shutil
@@ -10,6 +11,7 @@ import smtplib
 import urllib.request
 from email.mime.text import MIMEText
 import time
+import datetime
 import sys
 
 _ = TranslationStringFactory("geoportailv3_geoportal-server")
@@ -34,14 +36,30 @@ class Casipo(object):
                  self.config["casipo"]["prod_url"],
                  num,
                  self.config["casipo"]["fme_token"])
+        db_ecadastre = DBSessions['ecadastre']
+        cnt = 0
+        try:
+            sql = "select nextval_daily ('casipo_seq')"
+            results = DBSession.execute(sql)
+            for res in results:
+                cnt = res[0]
+        except Exception as e:
+            log.exception(e)
         try:
             f = urllib.request.urlopen(url, None, 1800)
             data = f
-            self.filename = '/tmp/%s_%s.pdf' % (num, str(int(time.time())))
+            # YYYYMMJJ_Commune_Extrait_CASIPO_nn.pdf
+            commune = ""
+            sql = "select commune_administrative FROM DIFFDATA.communes_adm_cad_sections WHERE code_commune = " + str(int(num[0:3])) + " GROUP BY commune_administrative"
+            results = db_ecadastre.execute(sql)
+            for res in results:
+                commune = res['commune_administrative']
+
+            self.filename = '/tmp/%s_%s_Extrait_CASIPO_%s.pdf' % (str(datetime.datetime.now().strftime("%Y%m%d")), commune, str(cnt))
             with open(self.filename, 'wb') as fp:
                 shutil.copyfileobj(data, fp)
-        except:
-            log.error(sys.exc_info()[0])
+        except Exception as e:
+            log.exception(e)
             data = None
             log.debug(url)
         return
@@ -96,8 +114,8 @@ class Casipo(object):
         try:
             self.__download(oid)
             self.__upload2owncloud()
-        except:
-            log.error(sys.exc_info()[0])
+        except Exception as e:
+            log.exception(e)
             self.link = 'error'
         self.__log_download_stats(oid, self.link)
         self.__send_mail(email)
