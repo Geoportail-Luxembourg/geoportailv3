@@ -744,7 +744,16 @@ exports.prototype.createAndInitPOIBloodhound_ =
               );
               params.set('extent', extent.join(','))
             }
-            // TODO: Active layers only
+            if (this.facets.activeLayers) {
+              let layers = this.selectedLayers
+                .map(l => l.get('label'))
+                .filter(Boolean)
+              if (layers.length > 0) {
+                params.set('layer', layers.join(','))
+              } else {
+                console.error('Filter on active layers but no queryable layers')
+              }
+            }
             settings.url = url.toString()
             return settings
           },
