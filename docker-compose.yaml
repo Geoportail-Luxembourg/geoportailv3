@@ -23,7 +23,6 @@ services:
       - 28080:8080
     environment:
       - CATALINA_OPTS=-Xmx1024m
-      - PGOPTIONS=-c statement_timeout=30000
 #      - DEFAULT_LOG_LEVEL=DEBUG
 #      - TOMCAT_LOG_LEVEL=DEBUG
 #      - LOG_LEVEL=DEBUG
@@ -97,7 +96,6 @@ services:
       - PGDATABASE
       - PGSCHEMA
       - PGSCHEMA_STATIC
-      - PGOPTIONS
       - PRINT_URL
       - GUNICORN_PARAMS=--bind=:8080 --threads=10 --timeout=60 --reload --forwarded-allow-ips=*
       - LOG_LEVEL=INFO
@@ -177,4 +175,3 @@ services:
       - PGDATABASE
       - PGSCHEMA
       - PGSCHEMA_STATIC
-      - PGOPTIONS
