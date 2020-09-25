@@ -185,7 +185,7 @@ import '../../less/geoportailv3.less';
  /* eslint-enable no-unused-vars */
 
 import DragRotate from 'ol/interaction/DragRotate';
-import { shiftKeyOnly, altShiftKeyOnly } from 'ol/events/condition';
+import {platformModifierKeyOnly} from 'ol/events/condition';
 import Rotate from 'ol/control/Rotate';
 
 // See intermediate_editor_spec.md
@@ -1209,10 +1209,9 @@ MainController.prototype.createMap_ = function() {
     pinchRotate: true,
     constrainResolution: true
   });
+
   const rotate = new DragRotate({
-    condition: new URLSearchParams(document.location.search).has('shiftKeyRotate')
-      ? shiftKeyOnly
-      : altShiftKeyOnly
+    condition: platformModifierKeyOnly
   });
 
   let rotation = this.ngeoLocation_.getParam('rotation') || 0;
