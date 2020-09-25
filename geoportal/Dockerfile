@@ -53,21 +53,21 @@ COPY geoportailv3_geoportal/admin/package.json /app/geoportailv3_geoportal/admin
 RUN cd /app/geoportailv3_geoportal/admin && npm install --global && npm cache clear --force
 
 # jsapi generation
-# RUN mkdir /app/apiv3
-# WORKDIR /app/apiv3
-# RUN mkdir -p /app/apiv3/.build/externs
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js
+RUN mkdir /app/apiv3
+WORKDIR /app/apiv3
+RUN mkdir -p /app/apiv3/.build/externs
+RUN wget -O /app/apiv3/.build/externs/angular-1.6.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6.js
 
 
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6-q_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js
+RUN wget -O /app/apiv3/.build/externs/angular-1.6-q_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-q_templated.js
 
 
-# RUN wget -O /app/apiv3/.build/externs/angular-1.6-http-promise_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js
+RUN wget -O /app/apiv3/.build/externs/angular-1.6-http-promise_templated.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/angular-1.6-http-promise_templated.js
 
 
-# RUN wget -O /app/apiv3/.build/externs/jquery-1.9.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
-# COPY ./jsapi/package.json /app/apiv3/
-# RUN npm install --no-optional && npm cache clear --force
+RUN wget -O /app/apiv3/.build/externs/jquery-1.9.js https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js
+COPY ./jsapi/package.json /app/apiv3/
+RUN npm install --no-optional && npm cache clear --force
 
 WORKDIR /app
 
