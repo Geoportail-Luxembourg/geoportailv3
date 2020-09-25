@@ -12,6 +12,7 @@ import appModule from './module.js';
 
 import {extend as arrayExtend} from 'ol/array.js';
 import olEventsEventTarget from 'ol/events/EventTarget.js';
+import olSourceVector from 'ol/source/Vector.js';
 import appEventsThemesEventType from './events/ThemesEventType.js';
 import {inherits} from 'ol/index.js';
 import MapBoxLayer from '@geoblocks/mapboxlayer-legacy';
@@ -44,9 +45,13 @@ function replaceWithMVTLayer(bgLayers, target, styleConfig) {
         container: target,
       }, styleConfig)
       const mvtLayer = new MapBoxLayer(options);
-
-      console.log('Replacing layer with harcoded MVT one', label);
       mvtLayer.set('metadata', l.get('metadata'));
+      if ('attribution' in l.get('metadata')) {
+        const source = new olSourceVector({
+            attributions: l.get('metadata')['attribution']
+        });
+        mvtLayer.setSource(source);
+      }
       bgLayers[i] = mvtLayer;
     }
   });
