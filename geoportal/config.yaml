@@ -463,7 +463,7 @@ vars:
   schema_static: '{PGSCHEMA_STATIC}'
   servers: {my_maps: 'https://ws.geoportail.lu/mymaps', mapserver: 'https://ws.geoportail.lu'}
   shortener:
-    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'vt-staging.geoportail.lu', 'devrm.geoportail.lu', 'migration.geoportail.lu']
+    allowed_hosts: ['{SHORTENER_ALLOWED_HOST}', 'map.geoportail.lu', 'maps.geoportail.lu', 'maps.geoportal.lu', 'map.geoportal.lu', 'map.app.geoportail.lu', 'vt-staging.geoportail.lu', 'devrm.geoportail.lu', 'migration.geoportail.lu', 'nextprod.geoportail.lu']
     base_url: '{SHORTENER_BASE_URL}'
     email_body: 'unused'
     email_from: unused
