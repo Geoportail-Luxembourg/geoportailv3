@@ -188,10 +188,16 @@ body.embedded {
 }
 
 body.full header,
-body.full footer,
-body.full .routing-goto-route,
-body.full .routing-rounded-button {
+body.full footer {
   display: block;
+}
+@media (max-width: @screen-xs-max) {
+  body.full .routing-goto-route {
+    display: block;
+  }
+  body.full .routing-rounded-button {
+    display: inline-block;
+  }
 }
 
 
