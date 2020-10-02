@@ -351,7 +351,7 @@ const MainController = function(
   }
 
   this.debouncedSaveMediumStyle_ = ngeoDebounce(() => {
-    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData), this.map_);
+    appMvtStylingService.saveMediumStyle(JSON.stringify(this.mediumStylingData));
   }, 2000, false);
   this.debouncedSaveBgStyle_ = ngeoDebounce(() => {
     const bgLayer = this.backgroundLayerMgr_.get(this.map);
@@ -1076,6 +1076,9 @@ const MainController = function(
           'serial': id
         });
         this.ngeoLocation_.refresh();
+
+        // Remove unused mediumStyling key stored in ls/db
+        this.appMvtStylingService.removeMediumStyle();
       });
     });
 
