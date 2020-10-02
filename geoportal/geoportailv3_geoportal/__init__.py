@@ -513,38 +513,6 @@ def main(global_config, **settings):
     mailer = Mailer(mail_config)
     mailer.start()
 
-    # Add custom table in admin interace, that means re-add all normal table
-
-    from c2cgeoform.routes import register_models
-    from c2cgeoportal_commons.models.main import (
-        Role, LayerWMS, LayerWMTS, Theme, LayerGroup, Interface, OGCServer,
-        Functionality, RestrictionArea)
-    from c2cgeoportal_commons.models.static import User
-    from geoportailv3_geoportal.models import LuxDownloadUrl, \
-        LuxMeasurementLoginCommune, LuxMeasurementDirectory, LuxGetfeatureDefinition, \
-        LuxPrintServers, LuxPredefinedWms, LuxLayerExternalWMS, LuxLayerInternalWMS
-
-    register_models(config, (
-        ('themes', Theme),
-        ('layer_groups', LayerGroup),
-        # ('layers_wms', LayerWMS), removed we use LuxLayerExternalWMS and LuxLayerInternalWMS instead
-        ('layers_wmts', LayerWMTS),
-        ('ogc_servers', OGCServer),
-        ('restriction_areas', RestrictionArea),
-        ('users', User),
-        ('roles', Role),
-        ('functionalities', Functionality),
-        ('interfaces', Interface),
-        ('lux_download_url', LuxDownloadUrl),
-        ('lux_measurement_login_commune', LuxMeasurementLoginCommune),
-        ('lux_measurement_directory', LuxMeasurementDirectory),
-        ('lux_getfeature_definition', LuxGetfeatureDefinition),
-        ('lux_print_servers', LuxPrintServers),
-        ('lux_predefined_wms', LuxPredefinedWms),
-        ('lux_layer_external_wms', LuxLayerExternalWMS),
-        ('lux_layer_internal_wms', LuxLayerInternalWMS),
-    ), 'admin')
-
     # scan view decorator for adding routes
     config.scan()
 

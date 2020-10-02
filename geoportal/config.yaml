@@ -91,6 +91,25 @@ vars:
   api:
     ogc_server: '{default_ogc_server}'
   admin_interface:
+    exclude_pages:
+      - layers_wms
+    include_pages:
+      - url_path: lux_download_url
+        model: geoportailv3_geoportal.admin:LuxDownloadUrl
+      - url_path: lux_measurement_login_commune
+        model: geoportailv3_geoportal.admin:LuxMeasurementLoginCommune
+      - url_path: lux_measurement_directory
+        model: geoportailv3_geoportal.admin:LuxMeasurementDirectory
+      - url_path: lux_getfeature_definition
+        model: geoportailv3_geoportal.admin:LuxGetfeatureDefinition
+      - url_path: lux_print_servers
+        model: geoportailv3_geoportal.admin:LuxPrintServers
+      - url_path: lux_predefined_wms
+        model: geoportailv3_geoportal.admin:LuxPredefinedWms
+      - url_path: lux_layer_external_wms
+        model: geoportailv3_geoportal.admin:LuxLayerExternalWMS
+      - url_path: lux_layer_internal_wms
+        model: geoportailv3_geoportal.admin:LuxLayerInternalWMS
     available_functionalities:
       - name: default_basemap
         single: true
