@@ -36,7 +36,7 @@ help:
 
 
 .PHONY: build
-build: docker-build-geoportal docker-build-config docker-build-ldap
+build: docker-build-geoportal docker-build-config docker-build-print docker-build-ldap
 
 .PHONY: docker-build-geoportal
 docker-build-geoportal:
@@ -45,6 +45,10 @@ docker-build-geoportal:
 .PHONY: docker-build-config
 docker-build-config:
 	cd config && docker build --tag=$(DOCKER_BASE)-config:$(DOCKER_TAG) --build-arg=HTTP_PROXY_URL=$(http_proxy) --build-arg=HTTPS_PROXY_URL=$(https_proxy) .
+
+.PHONY: docker-build-print
+docker-build-print:
+	cd print && docker build --tag=$(DOCKER_BASE)-print:$(DOCKER_TAG) .
 
 .PHONY: docker-build-ldap
 docker-build-ldap:

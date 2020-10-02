@@ -21,5 +21,8 @@ RUN mv /tmp/config/bin/* /usr/bin/ && \
 
 VOLUME \
     /usr/local/tomcat/webapps/ROOT/print-apps
+ENV VISIBLE_ENTRY_POINT /
+ENV VISIBLE_WEB_HOST localhost:8080
 
+RUN eval-templates
 ENTRYPOINT [ "/usr/bin/entrypoint" ]
