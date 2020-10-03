@@ -409,6 +409,11 @@ vars:
         tiles3dUrl: https://3dtiles.geoportail.lu/3dtiles/
         proxyWmsUrl: '{PROXYWMSURL}'
         geonetworkBaseUrl: '{GEONETWORK_BASE_URL}'
+      dynamic_constants:
+        cacheVersion: cache_version
+        langUrls: lang_urls
+        gmfTwoFactorAuth: two_factor
+        gmfSearchGroups: fulltextsearch_groups
       routes: {
         ping: {name: ping},
         arrowUrl: {name: get_arrow_color}, authenticationBaseUrl: {name: base}, casipoUrl: {name: casipo_url},

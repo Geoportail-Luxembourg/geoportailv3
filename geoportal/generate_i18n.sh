@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-APP_OUTPUT_DIR=geoportailv3_geoportal/static-ngeo/build
+APP_OUTPUT_DIR=/etc/static-ngeo/build
 LOCALE=geoportailv3_geoportal/locale
 LANGS="en fr lb de"
 
