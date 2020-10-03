@@ -98,7 +98,7 @@ RUN INTERFACE=main NO_DEV_SERVER=TRUE NODE_ENV=development node_modules/.bin/web
 # no idea why this will not work
 # COPY ./bin/* /usr/bin/     # has custom eval-templates and alembic launcher
 
-RUN mkdir geoportailv3_geoportal/static-ngeo/build
+RUN mkdir /etc/static-ngeo/build
 
 RUN ./generate_i18n.sh
 
