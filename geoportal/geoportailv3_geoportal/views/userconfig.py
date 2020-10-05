@@ -84,15 +84,15 @@ class Config(object):
         config = json.loads(self.request.params['config'])
         paint_conf_dict = {}
         layout_conf_dict = {}
-        color_keys = ['background', 'line', 'fill', 'fillExtrusion']
+        color_keys = ['background', 'line', 'fill', 'fill-extrusion']
         for conf in json.loads(config):
             if 'color' in conf:
                 color = conf['color']
                 if 'opacity' in conf:
                     opacity = conf['opacity']
                 for color_key in color_keys:
-                    if 'fillExtrusion' in color_key:
-                        prop = 'fill-extrusion'
+                    if 'fill-extrusion' in color_key:
+                        prop = 'fillExtrusions'
                     else:
                         prop = color_key + 's'
 
