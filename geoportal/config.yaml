@@ -341,7 +341,7 @@ vars:
         appAuthtktCookieName: auth_tkt_main
         appExcludeThemeLayerSearch: []
         appOverviewMapBaseLayer: basemap_2015_global
-        appOverviewMapShow: true
+        appOverviewMapShow: false
         showAnfLink: false
         showAgeLink: '{AGE_SHOW_LINK}'
         showCruesLink: '{AGE_CRUES_SHOW_LINK}'
