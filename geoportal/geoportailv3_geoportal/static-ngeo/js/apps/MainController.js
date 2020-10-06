@@ -210,6 +210,7 @@ function getDefaultMediumStyling() {
   },{
     label: gettext('Buildings'),
     color: '#D6AA85',
+    opacity : '1',
     fillExtrusions: ['lu_building-3d_public','lu_building-3d'],
     fills: ['lu_building','lu_building_public'],
     lines: ["lu_bridge_railway","lu_railway","lu_tunnel_railway"],
@@ -236,8 +237,8 @@ function getDefaultMediumStyling() {
 function getSimpleStylings() {
   const gettext = t => t;
   return [
-// ['Roads primary','Roads secondary','Vegetation','Buildings','Water']
-// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133'],
+// ['Roads primary','Roads secondary','Vegetation','Buildings','Water', 'Background']
+// ['#bc1515', '#bcffdd','#bcffdd','#bc1133','#bc1133', '#f2f2f2'],
     {label: gettext('Light grey'), hillshade: false, colors: ['#ffffff', '#ffffff','#d6e0d7','#e1e1e1','#cccccc','#f2f2f2'], selected: false},
     {label: gettext('Dark grey'), hillshade: false, colors: ['#808080', '#808080','#494b4a','#505052','#232426','#454545'], selected: false},
     {label: gettext('Dark sand'), hillshade: false, colors: ['#9e9375', '#9e9375','#6b6249','#403928','#b8aa84','#1a1814'], selected: false},
