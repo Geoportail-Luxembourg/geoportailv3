@@ -687,11 +687,6 @@ const MainController = function(
   /**
    * @type {boolean}
    */
-  this['drawOpenMobile'] = false;
-
-  /**
-   * @type {boolean}
-   */
   this['infosOpen'] = false;
 
   /**
@@ -1172,7 +1167,6 @@ MainController.prototype.enable3dCallback_ = function(active) {
   piwik.push(['trackPageView']);
 
   this['drawOpen'] = false;
-  this['drawOpenMobile'] = false;
   this['measureOpen'] = false;
   this['printOpen'] = false;
 };
