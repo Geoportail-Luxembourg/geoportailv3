@@ -93,7 +93,7 @@
     "moment": "2.24.0",
     "node-sass": "4.13.1",
     "node-sass-importer": "1.0.0",
-    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/0458128a4f66e2130796b37664563428c4154fb1",
+    "ngeo": "https://api.github.com/repos/camptocamp/ngeo/tarball/7f9da30ea2933b730b59a24a447d7cd8e080d8d4",
     "ol": "6.1.1",
     "ol-cesium": "https://api.github.com/repos/openlayers/ol-cesium/tarball/c5edfe1194063832c72d872aef91b967b96b7fd7",
     "parse-absolute-css-unit": "1.0.2",
