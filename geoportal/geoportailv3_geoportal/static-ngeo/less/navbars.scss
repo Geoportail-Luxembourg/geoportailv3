@@ -329,12 +329,13 @@ header {
 @media (max-width: map-get($grid-breakpoints, "sm")) {
   .sidebar-controls,
   .toolbox {
+    flex-direction: column;
     > li {
       background-color: white;
       > a {
         border-right: 1px solid $navbars-button-border-color;
         border-bottom: 1px solid $navbars-button-border-color;
-        width: 150px;
+        width: 48px;
       }
     }
     > li:first-child > a {
