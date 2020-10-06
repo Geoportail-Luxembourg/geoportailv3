@@ -229,7 +229,7 @@ services:
       - ${DOCKER_PORT}:${FRONT_INNER_PORT}
 
   webpack_dev_server:
-    image: ${DOCKER_BASE}-geoportal-dev:${DOCKER_TAG}
+    image: ${DOCKER_BASE}-geoportal:${DOCKER_TAG}
     volumes:
       - ./geoportal/geoportailv3_geoportal/static-ngeo:/app/geoportailv3_geoportal/static-ngeo
     environment:
