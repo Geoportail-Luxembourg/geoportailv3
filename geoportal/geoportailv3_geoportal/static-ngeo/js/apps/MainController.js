@@ -1218,7 +1218,7 @@ MainController.prototype.createMap_ = function() {
     condition: platformModifierKeyOnly
   });
 
-  let rotation = this.ngeoLocation_.getParam('rotation') || 0;
+  let rotation = Number(this.ngeoLocation_.getParam('rotation')) || 0;
 
   var map = this['map'] = new appMap({
     logo: false,
