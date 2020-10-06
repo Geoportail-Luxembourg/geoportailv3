@@ -9,12 +9,46 @@
 import olMap from 'ol/Map.js';
 import {MapBoxLayerRenderer} from '@geoblocks/mapboxlayer-legacy';
 
+class ExtendedMapBoxLayerRenderer extends MapBoxLayerRenderer {
+
+  constructor(...args) {
+    super(...args);
+  }
+
+  /**
+   * Create a layer renderer.
+   * @param {import("../Map.js").default} _ The map renderer.
+   * @param {import("../../layer/Layer.js").default} layer The layer to be rendererd.
+   * @return {MapBoxLayerRenderer} The layer renderer.
+   */
+  static create(_, layer) {
+    return new ExtendedMapBoxLayerRenderer(/** @type {MapBoxLayer} */ (layer));
+  }
+
+  /**
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../PluggableMap.js").FrameState} frameState Frame state.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {function(import("../../Feature.js").FeatureLike, import("../../layer/Layer.js").default): T} callback Feature callback.
+   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
+   * @return {T|void} Callback result.
+   * @template T
+   */
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    declutteredFeatures
+  ) {}
+};
+
 const exports = class extends olMap {
 
   constructor(...args) {
     super(...args);
     this.getRenderer().registerLayerRenderers([
-      MapBoxLayerRenderer
+      ExtendedMapBoxLayerRenderer
     ]);
   }
   /**
